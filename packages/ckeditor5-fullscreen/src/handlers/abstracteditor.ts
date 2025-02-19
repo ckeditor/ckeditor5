@@ -9,6 +9,7 @@
 
 import { createElement } from 'ckeditor5/src/utils.js';
 import { type Editor } from 'ckeditor5/src/core.js';
+import type { AnnotationsUIs } from '@ckeditor/ckeditor5-comments';
 
 /**
  * The abstract editor type handler. It should be extended by the particular editor type handler.
@@ -29,6 +30,11 @@ export default class AbstractEditorHandler {
 	 * An editor instance. It should be set by the particular editor type handler.
 	 */
 	declare protected _editor: Editor;
+
+	/**
+	 * Data of the annotations UIs that were active before entering the fullscreen mode.
+	 */
+	protected annotationsUIsData: Map<string, Record<string, any>> | null = null;
 
 	/**
 	 * @inheritDoc
@@ -87,6 +93,20 @@ export default class AbstractEditorHandler {
 	 * Disables the fullscreen mode by restoring all moved elements and destroying the fullscreen container.
 	 */
 	public disable(): void {
+		// Restore previous state of the annotations UIs.
+		/* istanbul ignore if -- @preserve */
+		if ( this.annotationsUIsData ) {
+			const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as AnnotationsUIs;
+
+			annotationsUIs.deactivateAll();
+
+			for ( const [ uiName, data ] of [ ...this.annotationsUIsData ] ) {
+				annotationsUIs.activate( uiName, data.filter );
+			}
+
+			this.annotationsUIsData = null;
+		}
+
 		this._movedElements.forEach( ( placeholder, moved ) => {
 			placeholder.replaceWith( moved );
 			placeholder.remove();

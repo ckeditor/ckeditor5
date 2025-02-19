@@ -9,7 +9,7 @@
 
 import { MenuBarView } from 'ckeditor5/src/ui.js';
 import type { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { type AnnotationsUIs } from '@ckeditor/ckeditor5-comments';
+import type { AnnotationsUIs, Sidebar } from '@ckeditor/ckeditor5-comments';
 
 import AbstractEditorHandler from './abstracteditor.js';
 
@@ -62,16 +62,24 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 		}
 
 		/* istanbul ignore if -- @preserve */
-		// If annotations are enabled...
 		if ( this._editor.plugins.has( 'AnnotationsUIs' ) ) {
+			// Store the current state of the annotations UIs to restore when leaving fullscreen mode.
 			const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as AnnotationsUIs;
 
-			// And the sidebar is used...
-			if ( annotationsUIs.activeUIs.has( 'wideSidebar' ) || annotationsUIs.activeUIs.has( 'narrowSidebar' ) ) {
-				// Move the sidebar to the fullscreen mode.
-				this.moveToFullscreen( ( ( this._editor.config.get( 'sidebar.container' ) as HTMLElement )
-					.firstElementChild as HTMLElement ), 'right-sidebar' );
+			this.annotationsUIsData = new Map( annotationsUIs.uisData );
+
+			// Switch to the wide sidebar.
+			const sidebarPlugin = this._editor.plugins.get( 'Sidebar' ) as Sidebar;
+
+			if ( !sidebarPlugin.container ) {
+				sidebarPlugin.setContainer(
+					this.getContainer().querySelector( '[data-ck-fullscreen="right-sidebar"]' ) as HTMLElement
+				);
 			}
+
+			annotationsUIs.switchTo( 'wideSidebar' );
+
+			this.moveToFullscreen( ( sidebarPlugin.container!.firstElementChild as HTMLElement ), 'right-sidebar' );
 		}
 	}
 }

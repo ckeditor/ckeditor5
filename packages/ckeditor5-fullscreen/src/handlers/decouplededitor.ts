@@ -8,6 +8,7 @@
  */
 
 import type { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
+import type { AnnotationsUIs, Sidebar } from '@ckeditor/ckeditor5-comments';
 
 import AbstractEditorHandler from './abstracteditor.js';
 
@@ -42,6 +43,27 @@ export default class DecoupledEditorHandler extends AbstractEditorHandler {
 
 		if ( this._editor.config.get( 'fullscreen.menuBar.isVisible' ) ) {
 			this.moveToFullscreen( this._editor.ui.view.menuBarView.element!, 'menu-bar' );
+		}
+
+		/* istanbul ignore if -- @preserve */
+		if ( this._editor.plugins.has( 'AnnotationsUIs' ) ) {
+			// Store the current state of the annotations UIs to restore when leaving fullscreen mode.
+			const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as AnnotationsUIs;
+
+			this.annotationsUIsData = new Map( annotationsUIs.uisData );
+
+			// Switch to the wide sidebar.
+			const sidebarPlugin = this._editor.plugins.get( 'Sidebar' ) as Sidebar;
+
+			if ( !sidebarPlugin.container ) {
+				sidebarPlugin.setContainer(
+					this.getContainer().querySelector( '[data-ck-fullscreen="right-sidebar"]' ) as HTMLElement
+				);
+			}
+
+			annotationsUIs.switchTo( 'wideSidebar' );
+
+			this.moveToFullscreen( ( sidebarPlugin.container!.firstElementChild as HTMLElement ), 'right-sidebar' );
 		}
 	}
 }
