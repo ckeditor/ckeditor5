@@ -48,14 +48,15 @@ export function generateCKEditor5NpmBuild() {
 export function generateCKEditor5BrowserBuild( options = {} ) {
 	const {
 		name,
-		translations
+		translations,
+		sourceMap
 	} = options;
 
 	return build( {
 		output: dist( 'browser/ckeditor5.js' ),
 		tsconfig,
 		banner,
-		sourceMap: true,
+		sourceMap,
 		minify: true,
 		browser: true,
 		name,
