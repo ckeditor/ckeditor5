@@ -25,7 +25,7 @@ import {
 	KeystrokeHandler,
 	type Locale
 } from 'ckeditor5/src/utils.js';
-import { icons } from 'ckeditor5/src/core.js';
+import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
@@ -242,7 +242,7 @@ export default class BookmarkFormView extends View {
 		backButton.set( {
 			class: 'ck-button-back',
 			label: t( 'Back' ),
-			icon: icons.previousArrow,
+			icon: IconPreviousArrow,
 			tooltip: true
 		} );
 

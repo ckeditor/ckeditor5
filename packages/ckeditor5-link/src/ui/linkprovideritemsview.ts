@@ -24,7 +24,7 @@ import {
 	type Locale
 } from 'ckeditor5/src/utils.js';
 
-import { icons } from 'ckeditor5/src/core.js';
+import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
 import '../../theme/linkprovideritems.css';
 
@@ -248,7 +248,7 @@ export default class LinkProviderItemsView extends View {
 		backButton.set( {
 			class: 'ck-button-back',
 			label: t( 'Back' ),
-			icon: icons.previousArrow,
+			icon: IconPreviousArrow,
 			tooltip: true
 		} );
 

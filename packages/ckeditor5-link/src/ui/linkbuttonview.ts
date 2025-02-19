@@ -7,7 +7,7 @@
  * @module link/ui/linkbuttonview
  */
 
-import { icons } from 'ckeditor5/src/core.js';
+import { IconNextArrow } from '@ckeditor/ckeditor5-icons';
 import { ButtonView, IconView } from 'ckeditor5/src/ui.js';
 import type { Locale } from 'ckeditor5/src/utils.js';
 
@@ -60,7 +60,7 @@ export default class LinkButtonView extends ButtonView {
 	private _createArrowView() {
 		const arrowView = new IconView();
 
-		arrowView.content = icons.nextArrow;
+		arrowView.content = IconNextArrow;
 
 		return arrowView;
 	}
