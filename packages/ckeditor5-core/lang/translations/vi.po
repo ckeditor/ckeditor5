@@ -138,3 +138,7 @@ msgstr "Bộ chọn màu"
 msgctxt "The secondary text of the message shown to the user when no results are available for the search criteria."
 msgid "Please try a different phrase or check the spelling."
 msgstr "Vui lòng thử một cụm từ khác hoặc kiểm tra lại cụm từ."
+
+msgctxt "The label of the source editing related features used in toolbar buttons."
+msgid "Source"
+msgstr "Nguồn"

@@ -21,6 +21,7 @@ The following libraries are included in CKEditor&nbsp;5 emoji feature under the 
 * es-toolkit - Copyright (c) 2024 Viva Republica, Inc.
 * emoji-picker-element-data - Copyright (c) 2020 Nolan Lawson.
 * Fuse.js - Copyright (c) 2017 Kirollos Risk.
+* is-emoji-supported - Copyright (c) 2016-2020 Koala Interactive, Inc.
 
 Trademarks
 ----------

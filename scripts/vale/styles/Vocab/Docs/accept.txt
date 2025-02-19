@@ -89,6 +89,7 @@ monorepo
 [Nn]amespace
 namespacing
 NGModule
+Noto
 npm
 numberedList
 Nuxt
