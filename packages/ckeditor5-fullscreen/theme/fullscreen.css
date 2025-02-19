@@ -28,7 +28,7 @@ Fullscreen layout:
 */
 
 .ck-fullscreen__main-container {
-	position: fixed;
+	position: fixed; /* this prevents the overscroll on macos that would happen with `position: absolute`. */
 	top: 0;
 	left: 0;
 	width: 100%;
@@ -37,6 +37,11 @@ Fullscreen layout:
 	background: var(--ck-color-base-foreground);
 	display: flex;
 	flex-direction: column;
+}
+
+/* If the fullscreen container is not directly in the body, we need to make sure it's positioned absolutely. */
+:not(body> .ck-fullscreen__main-container).ck-fullscreen__main-container {
+	position: absolute;
 }
 
 .ck-fullscreen__menu-bar .ck.ck-menu-bar {
