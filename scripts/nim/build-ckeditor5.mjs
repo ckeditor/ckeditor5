@@ -43,8 +43,5 @@ import {
 	 */
 	console.log( chalk.cyan( '3/3: Generating browser build...' ) );
 
-	await generateCKEditor5BrowserBuild( {
-		name: 'CKEDITOR',
-		sourceMap: true
-	} );
+	await generateCKEditor5BrowserBuild();
 } )();

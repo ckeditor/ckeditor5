@@ -15,7 +15,7 @@ export function dist( path ) {
 	return upath.join( CKEDITOR5_ROOT_PATH, 'dist', path );
 }
 
-export function initializeCKEditor5NpmBuild() {
+export function initializeCKEditor5NpmBuild( overrides = {} ) {
 	return build( {
 		output: dist( 'ckeditor5.js' ),
 		tsconfig,
@@ -29,11 +29,12 @@ export function initializeCKEditor5NpmBuild() {
 		 * We don't want to repeat this in other steps.
 		 */
 		clean: true,
-		translations: 'packages/**/*.po'
+		translations: 'packages/**/*.po',
+		...overrides
 	} );
 }
 
-export function generateCKEditor5NpmBuild() {
+export function generateCKEditor5NpmBuild( overrides = {} ) {
 	return build( {
 		output: dist( 'tmp/ckeditor5.js' ),
 		tsconfig,
@@ -41,31 +42,26 @@ export function generateCKEditor5NpmBuild() {
 		sourceMap: true,
 		external: [
 			'ckeditor5'
-		]
+		],
+		...overrides
 	} );
 }
 
-export function generateCKEditor5BrowserBuild( options = {} ) {
-	const {
-		name,
-		translations,
-		sourceMap
-	} = options;
-
+export function generateCKEditor5BrowserBuild( overrides = {} ) {
 	return build( {
 		output: dist( 'browser/ckeditor5.js' ),
 		tsconfig,
 		banner,
-		sourceMap,
+		sourceMap: true,
 		minify: true,
 		browser: true,
-		name,
+		name: 'CKEDITOR',
 		external: [],
-		translations: translations ? 'packages/**/*.po' : ''
+		...overrides
 	} );
 }
 
-export async function generateCKEditor5PackageBuild( packagePath ) {
+export async function generateCKEditor5PackageBuild( packagePath, overrides = {} ) {
 	const pkg = await fs.readJson( upath.join( packagePath, 'package.json' ) );
 
 	return build( {
@@ -82,6 +78,7 @@ export async function generateCKEditor5PackageBuild( packagePath ) {
 		],
 		clean: true,
 		sourceMap: true,
-		translations: '**/*.po'
+		translations: '**/*.po',
+		...overrides
 	} );
 }
