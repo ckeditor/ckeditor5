@@ -5,9 +5,9 @@ Changelog
 
 We are happy to announce the release of CKEditor 5 v44.2.1.
 
-During a recent internal audit, we identified a Cross-Site Scripting (XSS) vulnerability in the CKEditor 5 real-time collaboration package ([`CVE-2025-25299`](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-j3mm-wmfm-mwvh)). This vulnerability can lead to unauthorized JavaScript code execution and affects user markers, which represent users' positions within the document.
+During a recent internal audit, we identified a cross-site scripting (XSS) vulnerability in the CKEditor 5 real-time collaboration package ([`CVE-2025-25299`](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-j3mm-wmfm-mwvh)). This vulnerability can lead to unauthorized JavaScript code execution and affects user markers, which represent users' positions within the document.
 
-This vulnerability affects only installations with [Real-time collaborative editing](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html) enabled.
+This vulnerability affects only installations with [real-time collaborative editing](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html) enabled.
 
 You can read more details in the relevant [security advisory](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-j3mm-wmfm-mwvh) and [contact us](mailto:security@cksource.com) if you have more questions.
 
