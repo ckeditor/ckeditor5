@@ -18,7 +18,8 @@
     "@ckeditor/ckeditor5-widget": "44.2.0",
     "@ckeditor/ckeditor5-utils": "44.2.0",
     "@ckeditor/ckeditor5-ui": "44.2.0",
-    "@ckeditor/ckeditor5-link": "44.2.0"
+    "@ckeditor/ckeditor5-link": "44.2.0",
+    "@ckeditor/ckeditor5-icons": "0.0.1"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "44.2.0",
