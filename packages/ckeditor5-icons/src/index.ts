@@ -74,7 +74,6 @@ export { default as IconImportExport } from '../theme/icons/import-export.svg';
 export { default as IconImportWord } from '../theme/icons/import-word.svg';
 export { default as IconIndent } from '../theme/icons/indent.svg';
 export { default as IconInsertMergeField } from '../theme/icons/insert-merge-field.svg';
-export { default as IconInstagram } from '../theme/icons/instagram.svg';
 export { default as IconItalic } from '../theme/icons/italic.svg';
 export { default as IconLegalStyleList } from '../theme/icons/legal-style-list.svg';
 export { default as IconLink } from '../theme/icons/link.svg';

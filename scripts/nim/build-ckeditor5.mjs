@@ -8,42 +8,21 @@
 /* eslint-env node */
 
 import { rm, copyFile } from 'fs/promises';
-import upath from 'upath';
 import chalk from 'chalk';
-import { build } from '@ckeditor/ckeditor5-dev-build-tools';
-import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
-
-function dist( path ) {
-	return upath.join( CKEDITOR5_ROOT_PATH, 'dist', path );
-}
+import {
+	dist,
+	generateCKEditor5BrowserBuild,
+	generateCKEditor5NpmBuild,
+	initializeCKEditor5NpmBuild
+} from './utils.mjs';
 
 ( async () => {
-	/**
-	 * Paths to the `tsconfig` and `banner` files relative to the root of the repository.
-	 */
-	const tsconfig = 'tsconfig.dist.ckeditor5.json';
-	const banner = 'scripts/nim/banner.mjs';
-
 	/**
 	 * Step 1
 	 */
 	console.log( chalk.cyan( '1/3: Generating NPM build...' ) );
 
-	await build( {
-		output: dist( 'ckeditor5.js' ),
-		tsconfig,
-		banner,
-		sourceMap: true,
-		external: [],
-
-		/**
-		 * Because this build runs first, it cleans up the old output folder
-		 * and generates TypeScript declarations and translation files.
-		 * We don't want to repeat this in other steps.
-		 */
-		clean: true,
-		translations: 'packages/**/*.po'
-	} );
+	await initializeCKEditor5NpmBuild();
 
 	await rm( dist( 'ckeditor5.js' ) );
 	await rm( dist( 'ckeditor5.js.map' ) );
@@ -53,15 +32,7 @@ function dist( path ) {
 	 */
 	console.log( chalk.cyan( '2/3: Generating `ckeditor5.js` for the NPM build...' ) );
 
-	await build( {
-		output: dist( 'tmp/ckeditor5.js' ),
-		tsconfig,
-		banner,
-		sourceMap: true,
-		external: [
-			'ckeditor5'
-		]
-	} );
+	await generateCKEditor5NpmBuild();
 
 	await copyFile( dist( 'tmp/ckeditor5.js' ), dist( 'ckeditor5.js' ) );
 	await copyFile( dist( 'tmp/ckeditor5.js.map' ), dist( 'ckeditor5.js.map' ) );
@@ -72,14 +43,5 @@ function dist( path ) {
 	 */
 	console.log( chalk.cyan( '3/3: Generating browser build...' ) );
 
-	await build( {
-		output: dist( 'browser/ckeditor5.js' ),
-		tsconfig,
-		banner,
-		sourceMap: true,
-		minify: true,
-		browser: true,
-		name: 'CKEDITOR',
-		external: []
-	} );
+	await generateCKEditor5BrowserBuild();
 } )();

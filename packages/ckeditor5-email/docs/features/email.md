@@ -2,12 +2,20 @@
 title: Email
 meta-title: Email | CKEditor 5 Documentation
 category: features
-modified_at: 2025-01-30
+modified_at: 2025-02-17
 ---
 
 {@snippet features/build-email-source}
 
 Creating and editing emails is a demanding task that has to overcome various semantic and technical difficulties due to a variety of software solutions and a lack of a standardized approach. The email feature is a set of tools aimed at making the email composition a better and more effective experience.
+
+## Demo
+
+Use the demo below to see the feature in action. The demo shall be delivered in a later iteration.
+
+<info-box info>
+	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
+</info-box>
 
 ## Installation
 
@@ -99,7 +107,11 @@ ClassicEditor
 ## Related features
 
 Here are some related CKEditor&nbsp;5 features that you may find helpful:
-* Export inline styles &nbsp; The export inline styles feature turn all external CSS styles to inline style, providing better compatibility with various email clients.
+
+* {@link features/export-inline-styles Export inline styles} &nbsp; The export inline styles feature turns all external CSS style sheets to inline styles, providing better compatibility with various email clients.
+* {@link module:table/tablelayout~TableLayout Table layout} &ndash; Create layout tables optimized for email templates with proper structure and styling.
+* {@link features/general-html-support General HTML support} &ndash; Add support for additional HTML elements and attributes in your content.
+* {@link features/style Style} &ndash; Apply predefined styles to content elements that can be exported as inline styles.
 
 ## Common API
 

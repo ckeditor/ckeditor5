@@ -45,6 +45,7 @@ DOM
 (?i)downcast
 draggable
 [Dd]ropdown
+[Ee]mail
 embeddable
 Embedly
 ESLint
@@ -88,6 +89,7 @@ monorepo
 [Nn]amespace
 namespacing
 NGModule
+Noto
 npm
 numberedList
 Nuxt

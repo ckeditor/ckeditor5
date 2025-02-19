@@ -1,4 +1,4 @@
-CKEditor&nbsp;5 Email integration feature
+CKEditor&nbsp;5 email integration feature
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-email.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-email)
@@ -18,6 +18,10 @@ npm install ckeditor5
 ## Create free account
 
 If you want to check full CKEditor&nbsp;5 capabilities, sign up for a [free non-commitment 14-day trial](https://portal.ckeditor.com/checkout?plan=free).
+
+## Demo
+
+Check out the [demo in the email feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/email.html#demo).
 
 ## Documentation
 

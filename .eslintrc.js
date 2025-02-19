@@ -17,7 +17,8 @@ module.exports = {
 		// The CKEditor 5 core DLL build is created from JavaScript files.
 		// ESLint should not process compiled TypeScript.
 		'src/*.js',
-		'**/*.d.ts'
+		'**/*.d.ts',
+		'packages/ckeditor5-emoji/src/utils/isemojisupported.ts'
 	],
 	rules: {
 		'ckeditor5-rules/ckeditor-imports': 'error',
@@ -41,6 +42,7 @@ module.exports = {
 		{
 			files: [ './packages/*/src/**/*.ts' ],
 			rules: {
+				'ckeditor5-rules/allow-svg-imports-only-in-icons-package': 'error',
 				'ckeditor5-rules/ckeditor-plugin-flags': [
 					'error',
 					{
