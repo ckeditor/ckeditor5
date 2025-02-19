@@ -6,5 +6,8 @@
 	],
 	"exclude": [
 		"tests"
-	]
+	],
+	"compilerOptions": {
+		"composite": true
+	}
 }
