@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -7,9 +7,10 @@
  * @module bookmark/bookmarkediting
  */
 
-import { Plugin, icons, type Editor } from 'ckeditor5/src/core.js';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import { toWidget } from 'ckeditor5/src/widget.js';
 import { IconView } from 'ckeditor5/src/ui.js';
+import { IconBookmarkInline } from 'ckeditor5/src/icons.js';
 import type { EventInfo } from 'ckeditor5/src/utils.js';
 
 import type {
@@ -179,7 +180,7 @@ export default class BookmarkEditing extends Plugin {
 			const icon = new IconView();
 
 			icon.set( {
-				content: icons.bookmarkInline,
+				content: IconBookmarkInline,
 				isColorInherited: false
 			} );
 

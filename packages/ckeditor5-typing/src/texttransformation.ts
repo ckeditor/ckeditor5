@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -18,7 +18,7 @@ import TextWatcher, { type TextWatcherMatchedDataEvent } from './textwatcher.js'
 import type { TextTransformationConfig, TextTransformationDescription } from './typingconfig.js';
 import type Delete from './delete.js';
 
-import { escapeRegExp } from 'lodash-es';
+import { escapeRegExp } from 'es-toolkit/compat';
 
 // All named transformations.
 const TRANSFORMATIONS: Record<string, TextTransformationDescription> = {

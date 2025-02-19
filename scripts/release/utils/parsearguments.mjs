@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -19,6 +19,7 @@ export default function parseArguments( cliArguments ) {
 			'internal',
 			'nightly',
 			'nightly-alpha',
+			'nightly-next',
 			'verbose',
 			'compile-only',
 			'ci',
@@ -40,6 +41,7 @@ export default function parseArguments( cliArguments ) {
 			internal: false,
 			nightly: false,
 			'nightly-alpha': false,
+			'nightly-next': false,
 			concurrency: os.cpus().length / 2,
 			'compile-only': false,
 			packages: null,
@@ -60,7 +62,8 @@ export default function parseArguments( cliArguments ) {
 	replaceKebabCaseWithCamelCase( options, [
 		'npm-tag',
 		'compile-only',
-		'nightly-alpha'
+		'nightly-alpha',
+		'nightly-next'
 	] );
 
 	if ( options.nightly ) {
@@ -70,6 +73,11 @@ export default function parseArguments( cliArguments ) {
 	if ( options.nightlyAlpha ) {
 		options.branch = 'release';
 		options.npmTag = 'alpha';
+	}
+
+	if ( options.nightlyNext ) {
+		options.branch = 'master-it84';
+		options.npmTag = 'nightly-next';
 	}
 
 	if ( options.internal ) {
@@ -91,6 +99,8 @@ export default function parseArguments( cliArguments ) {
  * @property {Boolean} nightly
  *
  * @property {Boolean} nightlyAlpha
+ *
+ * @property {Boolean} nightlyNext
  *
  * @property {Boolean} external
  *

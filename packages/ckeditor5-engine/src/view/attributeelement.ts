@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -166,6 +166,36 @@ export default class AttributeElement extends Element {
 		cloned._id = this._id;
 
 		return cloned;
+	}
+
+	/**
+	 * Used by {@link module:engine/view/element~Element#_mergeAttributesFrom} to verify if the given element can be merged without
+	 * conflicts into this element.
+	 *
+	 * @internal
+	 */
+	public override _canMergeAttributesFrom( otherElement: AttributeElement ): boolean {
+		// Can't merge if any of elements have an id or a difference of priority.
+		if ( this.id !== null || otherElement.id !== null || this.priority !== otherElement.priority ) {
+			return false;
+		}
+
+		return super._canMergeAttributesFrom( otherElement );
+	}
+
+	/**
+	 * Used by {@link module:engine/view/element~Element#_subtractAttributesOf} to verify if the given element attributes
+	 * can be fully subtracted from this element.
+	 *
+	 * @internal
+	 */
+	public override _canSubtractAttributesOf( otherElement: AttributeElement ): boolean {
+		// Can't subtract if any of elements have an id or a difference of priority.
+		if ( this.id !== null || otherElement.id !== null || this.priority !== otherElement.priority ) {
+			return false;
+		}
+
+		return super._canSubtractAttributesOf( otherElement );
 	}
 }
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -11,7 +11,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import Image from '@ckeditor/ckeditor5-image/src/image.js';
 import Link from '@ckeditor/ckeditor5-link/src/link.js';
 import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
-import { icons } from 'ckeditor5/src/core.js';
+import { IconImageAssetManager, IconBrowseFiles } from 'ckeditor5/src/icons.js';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import MenuBarMenuListItemButtonView from '@ckeditor/ckeditor5-ui/src/menubar/menubarmenulistitembuttonview.js';
@@ -90,7 +90,7 @@ describe( 'CKFinderUI', () => {
 
 			expect( dropdownButton ).to.be.instanceOf( ButtonView );
 			expect( dropdownButton.withText ).to.be.false;
-			expect( dropdownButton.icon ).to.equal( icons.imageAssetManager );
+			expect( dropdownButton.icon ).to.equal( IconImageAssetManager );
 			expect( dropdownButton.label ).to.equal( 'Insert image with file manager' );
 		} );
 
@@ -106,7 +106,7 @@ describe( 'CKFinderUI', () => {
 
 			expect( buttonView ).to.be.instanceOf( ButtonView );
 			expect( buttonView.withText ).to.be.true;
-			expect( buttonView.icon ).to.equal( icons.imageAssetManager );
+			expect( buttonView.icon ).to.equal( IconImageAssetManager );
 			expect( buttonView.label ).to.equal( 'Insert with file manager' );
 		} );
 
@@ -118,16 +118,17 @@ describe( 'CKFinderUI', () => {
 
 			expect( buttonView ).to.be.instanceOf( MenuBarMenuListItemButtonView );
 			expect( buttonView.withText ).to.be.true;
-			expect( buttonView.icon ).to.equal( icons.imageAssetManager );
+			expect( buttonView.icon ).to.equal( IconImageAssetManager );
 			expect( buttonView.label ).to.equal( 'With file manager' );
 		} );
 
 		it( 'should create CKFinder button in menu bar - only integration', () => {
-			const buttonView = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+			const submenu = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+			const buttonView = submenu.panelView.children.first.items.first.children.first;
 
 			expect( buttonView ).to.be.instanceOf( MenuBarMenuListItemButtonView );
 			expect( buttonView.withText ).to.be.true;
-			expect( buttonView.icon ).to.equal( icons.imageAssetManager );
+			expect( buttonView.icon ).to.equal( IconImageAssetManager );
 			expect( buttonView.label ).to.equal( 'Image' );
 		} );
 
@@ -187,7 +188,7 @@ describe( 'CKFinderUI', () => {
 		} );
 
 		it( 'should set an #icon of the #buttonView', () => {
-			expect( button.icon ).to.equal( icons.browseFiles );
+			expect( button.icon ).to.equal( IconBrowseFiles );
 		} );
 
 		it( 'should execute bold command on model execute event', () => {

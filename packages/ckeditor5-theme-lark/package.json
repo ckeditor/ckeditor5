@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-theme-lark",
-  "version": "44.1.0",
+  "version": "44.2.0",
   "description": "A bright theme for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -9,28 +9,16 @@
     "ckeditor5-theme"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-ui": "44.1.0"
+    "@ckeditor/ckeditor5-ui": "44.2.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "44.1.0",
-    "@ckeditor/ckeditor5-core": "44.1.0",
-    "@ckeditor/ckeditor5-editor-balloon": "44.1.0",
-    "@ckeditor/ckeditor5-editor-classic": "44.1.0",
-    "@ckeditor/ckeditor5-find-and-replace": "44.1.0",
-    "@ckeditor/ckeditor5-font": "44.1.0",
-    "@ckeditor/ckeditor5-highlight": "44.1.0",
-    "@ckeditor/ckeditor5-link": "44.1.0",
-    "@ckeditor/ckeditor5-media-embed": "44.1.0",
-    "@ckeditor/ckeditor5-page-break": "44.1.0",
-    "@ckeditor/ckeditor5-remove-format": "44.1.0",
-    "@ckeditor/ckeditor5-restricted-editing": "44.1.0",
-    "@ckeditor/ckeditor5-select-all": "44.1.0",
-    "@ckeditor/ckeditor5-show-blocks": "44.1.0",
-    "@ckeditor/ckeditor5-source-editing": "44.1.0",
-    "@ckeditor/ckeditor5-special-characters": "44.1.0",
-    "@ckeditor/ckeditor5-utils": "44.1.0",
-    "@ckeditor/ckeditor5-table": "44.1.0",
-    "ckeditor5": "44.1.0"
+    "@ckeditor/ckeditor5-basic-styles": "44.2.0",
+    "@ckeditor/ckeditor5-core": "44.2.0",
+    "@ckeditor/ckeditor5-editor-balloon": "44.2.0",
+    "@ckeditor/ckeditor5-editor-classic": "44.2.0",
+    "@ckeditor/ckeditor5-highlight": "44.2.0",
+    "@ckeditor/ckeditor5-utils": "44.2.0",
+    "ckeditor5": "44.2.0"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "SEE LICENSE IN LICENSE.md",

@@ -1,14 +1,13 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document */
 
+import { IconFontSize } from 'ckeditor5/src/icons.js';
 import FontSizeEditing from '../../src/fontsize/fontsizeediting.js';
 import FontSizeUI from '../../src/fontsize/fontsizeui.js';
-
-import fontSizeIcon from '../../theme/icons/font-size.svg';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -84,7 +83,7 @@ describe( 'FontSizeUI', () => {
 
 			expect( button ).to.have.property( 'label', 'Font Size' );
 			expect( button ).to.have.property( 'tooltip', true );
-			expect( button ).to.have.property( 'icon', fontSizeIcon );
+			expect( button ).to.have.property( 'icon', IconFontSize );
 		} );
 
 		it( 'should add custom CSS class to dropdown', () => {
@@ -327,7 +326,7 @@ describe( 'FontSizeUI', () => {
 			const button = subMenu.buttonView;
 
 			expect( button ).to.have.property( 'label', 'Font Size' );
-			expect( button ).to.have.property( 'icon', fontSizeIcon );
+			expect( button ).to.have.property( 'icon', IconFontSize );
 		} );
 
 		it( 'button has binding to isEnabled', () => {

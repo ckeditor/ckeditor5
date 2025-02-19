@@ -1,10 +1,11 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals document,Event */
 
+import { IconEraser, IconCheck, IconCancel } from '@ckeditor/ckeditor5-icons';
 import ColorSelectorView from './../../src/colorselector/colorselectorview.js';
 import ColorTileView from '../../src/colorgrid/colortileview.js';
 import FocusCycler from '../../src/focuscycler.js';
@@ -20,10 +21,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-
-import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
-import checkButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
-import cancelButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
+import { env } from '@ckeditor/ckeditor5-utils';
 
 const colorDefinitions = [
 	{
@@ -432,6 +430,11 @@ describe( 'ColorSelectorView', () => {
 		} );
 
 		it( 'should execute when color picker is focused and enter pressed', () => {
+			// Focusing input and then the color picker breaks focus handling in the test
+			// suite that uses a headless Chrome browser. It is a workaround for that, as
+			// this deactivates focusing input before the color picker.
+			env.isBlink = false;
+
 			const keyEvtData = {
 				keyCode: keyCodes.enter,
 				preventDefault: sinon.spy(),
@@ -601,7 +604,7 @@ describe( 'ColorSelectorView', () => {
 
 		it( 'should have proper settings', () => {
 			expect( removeButton.withText ).to.be.true;
-			expect( removeButton.icon ).to.equal( removeButtonIcon );
+			expect( removeButton.icon ).to.equal( IconEraser );
 			expect( removeButton.label ).to.equal( 'Remove color' );
 		} );
 
@@ -638,7 +641,7 @@ describe( 'ColorSelectorView', () => {
 
 			it( 'should have proper settings', () => {
 				expect( saveButton.withText ).to.be.false;
-				expect( saveButton.icon ).to.equal( checkButtonIcon );
+				expect( saveButton.icon ).to.equal( IconCheck );
 			} );
 
 			it( 'should not fire "execute" event with incorrect value', () => {
@@ -684,7 +687,7 @@ describe( 'ColorSelectorView', () => {
 
 			it( 'should have proper settings', () => {
 				expect( cancelButton.withText ).to.be.false;
-				expect( cancelButton.icon ).to.equal( cancelButtonIcon );
+				expect( cancelButton.icon ).to.equal( IconCancel );
 			} );
 
 			it( 'should fire "cancel" event', () => {

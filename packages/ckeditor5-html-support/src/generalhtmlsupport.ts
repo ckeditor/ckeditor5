@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -20,6 +20,7 @@ import ScriptElementSupport from './integrations/script.js';
 import TableElementSupport from './integrations/table.js';
 import StyleElementSupport from './integrations/style.js';
 import ListElementSupport from './integrations/list.js';
+import HorizontalLineElementSupport from './integrations/horizontalline.js';
 import CustomElementSupport from './integrations/customelement.js';
 import type { DataSchemaInlineElementDefinition } from './dataschema.js';
 import type { DocumentSelection, Item, Model, Range, Selectable } from 'ckeditor5/src/engine.js';
@@ -63,6 +64,7 @@ export default class GeneralHtmlSupport extends Plugin {
 			TableElementSupport,
 			StyleElementSupport,
 			ListElementSupport,
+			HorizontalLineElementSupport,
 			CustomElementSupport
 		] as const;
 	}

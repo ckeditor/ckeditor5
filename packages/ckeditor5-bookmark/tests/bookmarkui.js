@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -12,7 +12,8 @@ import { Link } from '@ckeditor/ckeditor5-link';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 
 import { View, ButtonView, ContextualBalloon, MenuBarMenuListItemButtonView, BalloonPanelView, LabelView } from '@ckeditor/ckeditor5-ui';
-import { icons } from '@ckeditor/ckeditor5-core';
+import { IconBookmark, IconPencil, IconRemove, IconBookmarkSmall, IconBookmarkMedium } from '@ckeditor/ckeditor5-icons';
+import { WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
 import { indexOf, isRange, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
@@ -21,10 +22,6 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import BookmarkFormView from '../src/ui/bookmarkformview.js';
 import BookmarkEditing from '../src/bookmarkediting.js';
 import BookmarkUI from '../src/bookmarkui.js';
-
-import { WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
-
-const bookmarkIcon = icons.bookmark;
 
 describe( 'BookmarkUI', () => {
 	let editor, element, button, balloon, bookmarkUIFeature, formView, widgetToolbarRepository, toolbarView;
@@ -95,7 +92,7 @@ describe( 'BookmarkUI', () => {
 		} );
 
 		it( 'should have an icon', () => {
-			expect( button.icon ).to.equal( bookmarkIcon );
+			expect( button.icon ).to.equal( IconBookmark );
 		} );
 
 		it( 'should bind #isEnabled to insert and update command', () => {
@@ -214,7 +211,7 @@ describe( 'BookmarkUI', () => {
 			} );
 
 			it( 'should have an icon', () => {
-				expect( button.icon ).to.equal( icons.pencil );
+				expect( button.icon ).to.equal( IconPencil );
 			} );
 
 			it( 'should bind #isEnabled to the UpdateBookmarkCommand', () => {
@@ -266,7 +263,7 @@ describe( 'BookmarkUI', () => {
 			} );
 
 			it( 'should have an icon', () => {
-				expect( button.icon ).to.equal( icons.remove );
+				expect( button.icon ).to.equal( IconRemove );
 			} );
 
 			it( 'should bind #isEnabled to the DeleteCommand', () => {
@@ -456,7 +453,7 @@ describe( 'BookmarkUI', () => {
 			clickNthLinksProvider( 0 );
 
 			expectedShownItems( [
-				{ label: 'foo', icon: icons.bookmarkMedium }
+				{ label: 'foo', icon: IconBookmarkMedium }
 			] );
 		} );
 
@@ -473,9 +470,9 @@ describe( 'BookmarkUI', () => {
 			clickNthLinksProvider( 0 );
 
 			expectedShownItems( [
-				{ label: 'aaa', icon: icons.bookmarkMedium },
-				{ label: 'ccc', icon: icons.bookmarkMedium },
-				{ label: 'zzz', icon: icons.bookmarkMedium }
+				{ label: 'aaa', icon: IconBookmarkMedium },
+				{ label: 'ccc', icon: IconBookmarkMedium },
+				{ label: 'zzz', icon: IconBookmarkMedium }
 			] );
 		} );
 
@@ -490,14 +487,14 @@ describe( 'BookmarkUI', () => {
 
 			linkCommand.value = '#zzz';
 
-			expect( button.icon ).to.equal( icons.bookmarkSmall );
+			expect( button.icon ).to.equal( IconBookmarkSmall );
 			expect( button.tooltip ).to.equal( t( 'Scroll to bookmark' ) );
 
 			button.destroy();
 
 			linkCommand.value = '#other_non_bookmark';
 
-			expect( button.icon ).not.to.be.equal( icons.bookmarkSmall );
+			expect( button.icon ).not.to.be.equal( IconBookmarkSmall );
 			expect( button.tooltip ).not.to.be.equal( t( 'Scroll to bookmark' ) );
 		} );
 

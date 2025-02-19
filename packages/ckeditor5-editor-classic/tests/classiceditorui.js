@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -19,7 +19,7 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import { isElement } from 'lodash-es';
+import { isElement } from 'es-toolkit/compat';
 import { ContextualBalloon, Dialog, DialogViewPosition } from '@ckeditor/ckeditor5-ui';
 
 describe( 'ClassicEditorUI', () => {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -7,8 +7,9 @@
  * @module ckfinder/ckfinderui
  */
 
-import { icons, Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
+import { IconBrowseFiles, IconImageAssetManager } from 'ckeditor5/src/icons.js';
 import type { ImageInsertUI } from '@ckeditor/ckeditor5-image';
 
 import type CKFinderCommand from './ckfindercommand.js';
@@ -84,7 +85,7 @@ export default class CKFinderUI extends Plugin {
 		const t = this.editor.locale.t;
 		const button = this._createButton( ButtonView );
 
-		button.icon = icons.browseFiles;
+		button.icon = IconBrowseFiles;
 		button.label = t( 'Insert image or file' );
 		button.tooltip = true;
 
@@ -100,7 +101,7 @@ export default class CKFinderUI extends Plugin {
 
 		const button = this._createButton( ButtonView );
 
-		button.icon = icons.imageAssetManager;
+		button.icon = IconImageAssetManager;
 		button.bind( 'label' ).to(
 			imageInsertUI,
 			'isImageSelected',
@@ -120,7 +121,7 @@ export default class CKFinderUI extends Plugin {
 
 		const button = this._createButton( ButtonView );
 
-		button.icon = icons.imageAssetManager;
+		button.icon = IconImageAssetManager;
 		button.withText = true;
 		button.bind( 'label' ).to(
 			imageInsertUI,
@@ -142,7 +143,7 @@ export default class CKFinderUI extends Plugin {
 		const t = this.editor.locale.t;
 		const button = this._createButton( MenuBarMenuListItemButtonView );
 
-		button.icon = icons.browseFiles;
+		button.icon = IconBrowseFiles;
 		button.withText = true;
 		button.label = t( 'File' );
 
@@ -158,7 +159,7 @@ export default class CKFinderUI extends Plugin {
 		const t = this.editor.locale.t;
 		const button = this._createButton( MenuBarMenuListItemButtonView );
 
-		button.icon = icons.imageAssetManager;
+		button.icon = IconImageAssetManager;
 		button.withText = true;
 
 		switch ( type ) {

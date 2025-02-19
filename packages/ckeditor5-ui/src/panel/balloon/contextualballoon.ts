@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -13,7 +13,7 @@ import ButtonView from '../../button/buttonview.js';
 import type { ButtonExecuteEvent } from '../../button/button.js';
 import type ViewCollection from '../../viewcollection.js';
 
-import { Plugin, icons, type Editor } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 import {
 	CKEditorError,
 	FocusTracker,
@@ -24,6 +24,7 @@ import {
 	type PositionOptions,
 	type DecoratedMethodEvent
 } from '@ckeditor/ckeditor5-utils';
+import { IconNextArrow, IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
 import '../../../theme/components/panel/balloonrotator.css';
 import '../../../theme/components/panel/fakepanel.css';
@@ -639,8 +640,8 @@ export class RotatorView extends View {
 		this.set( 'isNavigationVisible', true );
 
 		this.focusTracker = new FocusTracker();
-		this.buttonPrevView = this._createButtonView( t( 'Previous' ), icons.previousArrow );
-		this.buttonNextView = this._createButtonView( t( 'Next' ), icons.nextArrow );
+		this.buttonPrevView = this._createButtonView( t( 'Previous' ), IconPreviousArrow );
+		this.buttonNextView = this._createButtonView( t( 'Next' ), IconNextArrow );
 		this.content = this.createCollection();
 
 		this.setTemplate( {

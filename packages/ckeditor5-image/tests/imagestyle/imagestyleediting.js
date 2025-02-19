@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -176,7 +176,7 @@ describe( 'ImageStyleEditing', () => {
 				plugins: [ ImageBlockEditing, ImageStyleEditing ]
 			} );
 
-			sinon.assert.calledOnceWithMatch( normalizationSpy, {
+			expect( normalizationSpy.firstCall.args[ 0 ] ).to.deep.equal( {
 				configuredStyles: editor.config.get( 'image.styles' ),
 				isBlockPluginLoaded: editor.plugins.has( 'ImageBlockEditing' ),
 				isInlinePluginLoaded: editor.plugins.has( 'ImageInlineEditing' )

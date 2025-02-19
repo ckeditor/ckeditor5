@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -316,6 +316,42 @@ describe( 'DowncastWriter', () => {
 				'<attribute:b view-priority="1" style="position: relative;"></attribute:b>',
 				'<container:p>' +
 					'[<attribute:b view-priority="1" style="color:red;position:absolute;top:10px">test</attribute:b>]' +
+				'</container:p>'
+			);
+		} );
+
+		it( 'should not unwrap single element when styles are same but classes different', () => {
+			testUnwrap(
+				'<container:p>' +
+					'[<attribute:b view-priority="1" class="foo" style="color:red">test</attribute:b>]' +
+				'</container:p>',
+				'<attribute:b view-priority="1" style="color: red;"></attribute:b>',
+				'<container:p>' +
+					'[<attribute:b view-priority="1" class="foo">test</attribute:b>]' +
+				'</container:p>'
+			);
+		} );
+
+		it( 'should not unwrap single element when classes are same but styles different', () => {
+			testUnwrap(
+				'<container:p>' +
+					'[<attribute:b view-priority="1" class="foo bar" style="color:red">test</attribute:b>]' +
+				'</container:p>',
+				'<attribute:b view-priority="1" class="foo bar"></attribute:b>',
+				'<container:p>' +
+					'[<attribute:b view-priority="1" style="color:red">test</attribute:b>]' +
+				'</container:p>'
+			);
+		} );
+
+		it( 'should not unwrap single element when classes and styles are same but other attributes have different values', () => {
+			testUnwrap(
+				'<container:p>' +
+					'[<attribute:b view-priority="1" foo="bar" class="abc" style="color:red">test</attribute:b>]' +
+				'</container:p>',
+				'<attribute:b view-priority="1" foo="123" class="abc" style="color: red;"></attribute:b>',
+				'<container:p>' +
+					'[<attribute:b view-priority="1" class="abc" foo="bar" style="color:red">test</attribute:b>]' +
 				'</container:p>'
 			);
 		} );

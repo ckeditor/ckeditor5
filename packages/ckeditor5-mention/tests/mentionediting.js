@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -77,6 +77,14 @@ describe( 'MentionEditing', () => {
 		} );
 
 		it( 'should convert <span class="mention" data-mention="@John"> to mention attribute', () => {
+			editor.conversion.for( 'upcast' ).add( dispatcher => {
+				dispatcher.on( 'element:span', ( evt, data, { consumable } ) => {
+					expect( consumable.test( data.viewItem, { name: true } ) ).to.be.false;
+					expect( consumable.test( data.viewItem, { classes: 'mention' } ) ).to.be.false;
+					expect( consumable.test( data.viewItem, { attributes: 'data-mention' } ) ).to.be.false;
+				}, { priority: 'lowest' } );
+			} );
+
 			editor.setData( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 
 			const textNode = doc.getRoot().getChild( 0 ).getChild( 1 );
@@ -680,7 +688,7 @@ function addCustomMentionConverters( editor ) {
 	editor.conversion.for( 'upcast' ).elementToAttribute( {
 		view: {
 			name: 'b',
-			key: 'data-mention',
+			attributes: 'data-mention',
 			classes: 'mention'
 		},
 		model: {

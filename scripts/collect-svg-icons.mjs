@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -33,7 +33,7 @@ async function collectSvgIcons() {
 	logProcess( 'Collecting SVG icons...' );
 
 	const globOptions = { cwd: CKEDITOR5_ROOT_PATH, ignore: [ '**/build/**', '**/node_modules/**' ] };
-	const svgFilesData = globSync( '**/packages/*/theme/icons/*.svg', globOptions ).map( getDataFromPath );
+	const svgFilesData = globSync( '**/packages/ckeditor5-icons/theme/icons/*.svg', globOptions ).map( getDataFromPath );
 
 	logProcess( 'Converting to PNG...' );
 

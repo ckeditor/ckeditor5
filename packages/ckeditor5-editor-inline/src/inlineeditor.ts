@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -20,7 +20,7 @@ import { getDataFromElement, CKEditorError } from 'ckeditor5/src/utils.js';
 import InlineEditorUI from './inlineeditorui.js';
 import InlineEditorUIView from './inlineeditoruiview.js';
 
-import { isElement as _isElement } from 'lodash-es';
+import { isElement as _isElement } from 'es-toolkit/compat';
 
 /**
  * The inline editor implementation. It uses an inline editable and a floating toolbar.

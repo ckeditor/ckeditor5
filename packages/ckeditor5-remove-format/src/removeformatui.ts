@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -8,11 +8,10 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
+import { IconRemoveFormat } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 
 import type RemoveFormatCommand from './removeformatcommand.js';
-
-import removeFormatIcon from '../theme/icons/remove-format.svg';
 
 const REMOVE_FORMAT = 'removeFormat';
 
@@ -66,7 +65,7 @@ export default class RemoveFormatUI extends Plugin {
 
 		view.set( {
 			label: t( 'Remove Format' ),
-			icon: removeFormatIcon
+			icon: IconRemoveFormat
 		} );
 
 		view.bind( 'isEnabled' ).to( command, 'isEnabled' );

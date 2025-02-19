@@ -39,7 +39,7 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+				test: /\.svg$/,
 				use: [ 'raw-loader' ]
 			},
 			{
@@ -239,7 +239,7 @@ Here is a visual comparison of the features available in the new npm and CDN bui
 		<tr>
 			<td>Can be used with any modern bundler</td>
 			<td>✅</td>
-			<td>❌</td>
+			<td>✅</td>
 			<td>✅</td>
 			<td>❌</td>
 			<td>❌</td>
@@ -257,13 +257,13 @@ Here is a visual comparison of the features available in the new npm and CDN bui
 			<td>✅</td>
 			<td>✅</td>
 			<td>❌</td>
-			<td>⚠️ <sup>[2]</sup></td>
+			<td>⚠️ <sup>[1]</sup></td>
 			<td>❌</td>
 		</tr>
 		<tr>
 			<td>Icon customization</td>
-			<td>⚠️ <sup>[1]</sup></td>
-			<td>⚠️ <sup>[1]</sup></td>
+			<td>✅</td>
+			<td>❌</td>
 			<td>❌</td>
 			<td>✅</td>
 			<td>❌</td>
@@ -289,7 +289,7 @@ Here is a visual comparison of the features available in the new npm and CDN bui
 			<td>✅</td>
 			<td>✅</td>
 			<td>❌</td>
-			<td>⚠️<sup>[3]</sup></td>
+			<td>⚠️<sup>[2]</sup></td>
 			<td>❌</td>
 		</tr>
 		<tr>
@@ -303,9 +303,8 @@ Here is a visual comparison of the features available in the new npm and CDN bui
 	</tbody>
 </table>
 
-\[1\] Support for customizing icons is planned for future releases. See this [GitHub issue](https://github.com/ckeditor/ckeditor5/issues/16546) for more information.
-\[2\] Style customization is partially supported via webpack configuration.
-\[3\] CSS can be separated from JavaScript using custom webpack configuration.
+\[1\] Style customization is partially supported via webpack configuration.
+\[2\] CSS can be separated from JavaScript using custom webpack configuration.
 
 ## Sunset of old installation methods and deprecation timelines
 
@@ -313,17 +312,25 @@ With the release of version 42.0.0, we have decided to deprecate the older metho
 
 However, we understand that migrating to a new setup, even if easy, requires planning and work allocation. We would rather not block anyone from receiving bug fixes and improvements due to a deprecated update path. Therefore, we will support all existing methods according to the timelines given below.
 
-### Deprecation of the predefined builds and custom builds
+### Deprecation of the predefined builds
 
-The setup methods, which were “webpack-first” or provided predefined editors without the possibility of extending them will be supported until **the end of Q1 (March), 2025**.
+Our provided predefined editor builds, such as `ckeditor5-build-classic`, will be supported until **the end of Q1 (March), 2025**.
 
 What we will sunset on this date:
 
-1. The documentation for the predefined builds, superbuild, and custom builds will be removed.
+1. The documentation for the predefined builds and superbuild will be removed.
 2. No more new versions of predefined builds packages will be published to npm.
+5. We will update our environment to target ES2022 (or newer), thus dropping the support for webpack 4.
+
+### Deprecation of the custom builds
+
+The setup method which was “webpack-first”, in which you imported from specific packages from `src` folder, will be supported until **the end of 2025**.
+
+What we will sunset on this date:
+
+1. The documentation for the custom builds will be removed.
 3. New versions of npm packages published after this date will not have the `src` directory. It will not be possible to import files from those destinations, as `dist` will become the main folder.
 4. Deprecation of `@ckeditor/ckeditor5-dev-translations` package, as it will not be needed anymore.
-5. We will update our environment to target ES2022 (or newer), thus dropping the support for webpack 4.
 
 ### Deprecation of DLLs
 
@@ -337,7 +344,9 @@ What we will sunset on this date:
 2. New versions of npm packages published after this date will not have `build` directory. It will not be possible to import files from those destinations.
 
 <info-box>
-	If any of the above worries you, reach out to our support or inform us via the [GitHub issue tracker](https://github.com/ckeditor/ckeditor5/issues/new?assignees=&labels=type:question&projects=&template=8-question.md&title=). We are open to discussing the timelines or potential cases that you would need us to support.
+	We have an [active GitHub issue](https://github.com/ckeditor/ckeditor5/issues/17779) which goes into details, and also documents improvements we planned for new installation methods.
+
+	If any of the above worries you, comment on the above issue or reach out to our support. We are open to discussing the timelines or potential cases that you would need us to support.
 </info-box>
 
 

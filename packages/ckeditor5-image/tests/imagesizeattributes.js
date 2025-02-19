@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -290,7 +290,8 @@ describe( 'ImageSizeAttributes', () => {
 
 						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 							'<p><span class="ck-widget image-inline image_resized" contenteditable="false" style="width:50px">' +
-								'<img height="200" src="/assets/sample.png" style="aspect-ratio:100/200" width="100"></img>' +
+								'<img height="200" loading="lazy" src="/assets/sample.png" style="aspect-ratio:100/200" width="100">' +
+								'</img>' +
 							'</span></p>'
 						);
 
@@ -307,7 +308,8 @@ describe( 'ImageSizeAttributes', () => {
 
 						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 							'<p><span class="ck-widget image-inline" contenteditable="false">' +
-								'<img height="200" src="/assets/sample.png" style="aspect-ratio:100/200" width="100"></img>' +
+								'<img height="200" loading="lazy" src="/assets/sample.png" style="aspect-ratio:100/200" width="100">' +
+								'</img>' +
 							'</span></p>'
 						);
 
@@ -364,7 +366,7 @@ describe( 'ImageSizeAttributes', () => {
 									'<picture>' +
 										'<source media="(min-width: 800px)" sizes="2000px" srcset="/assets/sample.png" type="image/png">' +
 										'</source>' +
-										'<img height="200" src="/assets/sample.png" width="100"></img>' +
+										'<img height="200" loading="lazy" src="/assets/sample.png" width="100"></img>' +
 									'</picture>' +
 								'</span>' +
 							'</p>'
@@ -489,7 +491,8 @@ describe( 'ImageSizeAttributes', () => {
 
 						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 							'<figure class="ck-widget image image_resized" contenteditable="false" style="width:50px">' +
-								'<img height="200" src="/assets/sample.png" style="aspect-ratio:100/200" width="100"></img>' +
+								'<img height="200" loading="lazy" src="/assets/sample.png" style="aspect-ratio:100/200" width="100">' +
+								'</img>' +
 							'</figure>'
 						);
 
@@ -507,7 +510,8 @@ describe( 'ImageSizeAttributes', () => {
 
 						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 							'<figure class="ck-widget image" contenteditable="false">' +
-								'<img height="200" src="/assets/sample.png" style="aspect-ratio:100/200" width="100"></img>' +
+								'<img height="200" loading="lazy" src="/assets/sample.png" style="aspect-ratio:100/200" width="100">' +
+								'</img>' +
 							'</figure>'
 						);
 
@@ -561,7 +565,7 @@ describe( 'ImageSizeAttributes', () => {
 							'<figure class="ck-widget image" contenteditable="false">' +
 								'<picture>' +
 									'<source media="(max-width: 800px)" srcset="/assets/sample.png" type="image/png"></source>' +
-									'<img alt="" height="200" src="/assets/sample.png" width="100"></img>' +
+									'<img alt="" height="200" loading="lazy" src="/assets/sample.png" width="100"></img>' +
 								'</picture>' +
 							'</figure>'
 						);

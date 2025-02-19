@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -699,7 +699,7 @@ function shouldUseBogusParagraph(
 
 	for ( const attributeKey of item.getAttributeKeys() ) {
 		// Ignore selection attributes stored on block elements.
-		if ( attributeKey.startsWith( 'selection:' ) ) {
+		if ( attributeKey.startsWith( 'selection:' ) || attributeKey == 'htmlEmptyBlock' ) {
 			continue;
 		}
 

@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document */
 
+import { IconFontColor } from 'ckeditor5/src/icons.js';
 import FontColorEditing from './../../src/fontcolor/fontcolorediting.js';
 import FontColorUI from './../../src/fontcolor/fontcolorui.js';
 import ColorUI from './../../src/ui/colorui.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import fontColorIcon from '../../theme/icons/font-color.svg';
 
 describe( 'FontColorUI', () => {
 	let element, editor;
@@ -42,7 +42,7 @@ describe( 'FontColorUI', () => {
 
 		expect( fontColorUIPlugin.commandName ).to.equal( 'fontColor' );
 		expect( fontColorUIPlugin.componentName ).to.equal( 'fontColor' );
-		expect( fontColorUIPlugin.icon ).to.equal( fontColorIcon );
+		expect( fontColorUIPlugin.icon ).to.equal( IconFontColor );
 		expect( fontColorUIPlugin.dropdownLabel ).to.equal( 'Font Color' );
 		expect( fontColorUIPlugin.columns ).to.equal( 5 );
 	} );

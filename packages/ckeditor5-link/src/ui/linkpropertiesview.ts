@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -23,7 +23,7 @@ import {
 	KeystrokeHandler,
 	type Locale
 } from 'ckeditor5/src/utils.js';
-import { icons } from 'ckeditor5/src/core.js';
+import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
 import '../../theme/linkproperties.css';
 
@@ -175,7 +175,7 @@ export default class LinkPropertiesView extends View {
 		backButton.set( {
 			class: 'ck-button-back',
 			label: t( 'Back' ),
-			icon: icons.previousArrow,
+			icon: IconPreviousArrow,
 			tooltip: true
 		} );
 

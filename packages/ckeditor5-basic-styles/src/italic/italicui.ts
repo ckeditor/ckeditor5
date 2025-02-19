@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -8,10 +8,9 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
+import { IconItalic } from 'ckeditor5/src/icons.js';
 import { MenuBarMenuListItemButtonView, ButtonView } from 'ckeditor5/src/ui.js';
 import { getButtonCreator } from '../utils.js';
-
-import italicIcon from '../../theme/icons/italic.svg';
 
 const ITALIC = 'italic';
 
@@ -43,7 +42,7 @@ export default class ItalicUI extends Plugin {
 			editor,
 			commandName: ITALIC,
 			plugin: this,
-			icon: italicIcon,
+			icon: IconItalic,
 			keystroke: 'CTRL+I',
 			label: t( 'Italic' )
 		} );

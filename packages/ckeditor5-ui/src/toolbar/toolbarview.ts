@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -34,27 +34,33 @@ import {
 	type Locale,
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
-
 import {
-	icons,
-	type ToolbarConfig,
-	type ToolbarConfigItem
-} from '@ckeditor/ckeditor5-core';
+	IconAlignLeft,
+	IconBold,
+	IconImportExport,
+	IconParagraph,
+	IconPlus,
+	IconText,
+	IconThreeVerticalDots,
+	IconPilcrow,
+	IconDragIndicator
+} from '@ckeditor/ckeditor5-icons';
+import type { ToolbarConfig, ToolbarConfigItem } from '@ckeditor/ckeditor5-core';
 
-import { isObject } from 'lodash-es';
+import { isObject } from 'es-toolkit/compat';
 
 import '../../theme/components/toolbar/toolbar.css';
 
 export const NESTED_TOOLBAR_ICONS: Record<string, string | undefined> = /* #__PURE__ */ ( () => ( {
-	alignLeft: icons.alignLeft,
-	bold: icons.bold,
-	importExport: icons.importExport,
-	paragraph: icons.paragraph,
-	plus: icons.plus,
-	text: icons.text,
-	threeVerticalDots: icons.threeVerticalDots,
-	pilcrow: icons.pilcrow,
-	dragIndicator: icons.dragIndicator
+	alignLeft: IconAlignLeft,
+	bold: IconBold,
+	importExport: IconImportExport,
+	paragraph: IconParagraph,
+	plus: IconPlus,
+	text: IconText,
+	threeVerticalDots: IconThreeVerticalDots,
+	pilcrow: IconPilcrow,
+	dragIndicator: IconDragIndicator
 } ) )();
 
 /**
@@ -112,6 +118,14 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	public readonly focusables: ViewCollection<FocusableView>;
 
 	declare public locale: Locale;
+
+	/**
+	 * The property reflected by the `role` DOM attribute to be used by assistive technologies.
+	 *
+	 * @observable
+	 * @default 'toolbar'
+	 */
+	declare public role: string | undefined;
 
 	/**
 	 * Label used by assistive technologies to describe this toolbar element.
@@ -188,6 +202,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 
 		this.set( 'ariaLabel', t( 'Editor toolbar' ) );
 		this.set( 'maxWidth', 'auto' );
+		this.set( 'role', 'toolbar' );
 
 		this.items = this.createCollection();
 		this.focusTracker = new FocusTracker();
@@ -231,7 +246,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 			tag: 'div',
 			attributes: {
 				class: classes,
-				role: 'toolbar',
+				role: bind.to( 'role' ),
 				'aria-label': bind.to( 'ariaLabel' ),
 				style: {
 					maxWidth: bind.to( 'maxWidth' )
@@ -540,7 +555,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		// Allow disabling icon by passing false.
 		if ( icon !== false ) {
 			// A pre-defined icon picked by name, SVG string, a fallback (default) icon.
-			dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] || icon || icons.threeVerticalDots;
+			dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] || icon || IconThreeVerticalDots;
 		}
 		// If the icon is disabled, display the label automatically.
 		else {
@@ -1045,7 +1060,7 @@ class DynamicGrouping implements ToolbarBehavior {
 			label: t( 'Show more items' ),
 			tooltip: true,
 			tooltipPosition: locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw',
-			icon: icons.threeVerticalDots
+			icon: IconThreeVerticalDots
 		} );
 
 		return dropdown;

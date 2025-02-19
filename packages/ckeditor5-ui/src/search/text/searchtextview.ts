@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -13,7 +13,7 @@ import { default as SearchTextQueryView, type SearchTextQueryViewConfig } from '
 import SearchInfoView from '../searchinfoview.js';
 import SearchResultsView from '../searchresultsview.js';
 import FocusCycler, { type FocusableView } from '../../focuscycler.js';
-import { escapeRegExp } from 'lodash-es';
+import { escapeRegExp } from 'es-toolkit/compat';
 
 import type FilteredView from '../filteredview.js';
 import type ViewCollection from '../../viewcollection.js';
@@ -290,7 +290,7 @@ export default class SearchTextView<
 				let primaryText, secondaryText;
 
 				if ( data.totalItemsCount ) {
-					if ( defaultTextConfig && defaultTextConfig.notFound ) {
+					if ( defaultTextConfig?.notFound ) {
 						primaryText = defaultTextConfig.notFound.primary;
 						secondaryText = defaultTextConfig.notFound.secondary;
 					} else {
@@ -298,7 +298,7 @@ export default class SearchTextView<
 						secondaryText = '';
 					}
 				} else {
-					if ( defaultTextConfig && defaultTextConfig.noSearchableItems ) {
+					if ( defaultTextConfig?.noSearchableItems ) {
 						primaryText = defaultTextConfig.noSearchableItems.primary;
 						secondaryText = defaultTextConfig.noSearchableItems.secondary;
 					} else {

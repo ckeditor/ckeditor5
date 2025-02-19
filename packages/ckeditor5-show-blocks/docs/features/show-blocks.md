@@ -10,7 +10,7 @@ The show blocks feature allows the content creators to visualize all block-level
 
 ## Demo
 
-Toggle the block elements visibility with the show block {@icon @ckeditor/ckeditor5-show-blocks/theme/icons/show-blocks.svg Show blocks} toolbar button to see the feature in action. The content remains editable, so you can see how the blocks adjust to the content structure on the go. These outlines are not visible in the {@link features/export-pdf export to PDF} and {@link features/export-word export to Word} features, so there is no need to remove them before exporting.
+Toggle the block elements visibility with the show block {@icon @ckeditor/ckeditor5-icons/theme/icons/show-blocks.svg Show blocks} toolbar button to see the feature in action. The content remains editable, so you can see how the blocks adjust to the content structure on the go. These outlines are not visible in the {@link features/export-pdf export to PDF} and {@link features/export-word export to Word} features, so there is no need to remove them before exporting.
 
 {@snippet features/show-blocks}
 
@@ -57,7 +57,7 @@ ClassicEditor
 Other CKEditor&nbsp;5 features related to HTML editing that you may want to check:
 
 * {@link features/general-html-support General HTML Support} &ndash; Allows you to enable HTML features (elements, attributes, classes, styles) that are not supported by other dedicated CKEditor&nbsp;5 plugins.
-* {@link features/source-editing Source editing} &ndash; Provides the ability for viewing and editing the source of the document.
+* {@link features/source-editing-enhanced Enhanced source code editing} &ndash; Allows for viewing and editing the source code of the document in a handy modal window (compatible with all editor types) with syntax highlighting, autocompletion and more.
 * {@link features/full-page-html Full page HTML} &ndash; Allows using CKEditor&nbsp;5 to edit entire HTML pages, from `<html>` to `</html>`, including the page metadata.
 
 ## Common API

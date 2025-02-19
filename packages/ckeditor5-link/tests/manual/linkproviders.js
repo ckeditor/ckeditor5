@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -11,10 +11,9 @@ import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { IconLink } from '@ckeditor/ckeditor5-icons';
 import LinkUI from '../../src/linkui.js';
 import Link from '../../src/link.js';
-
-import linkIcon from '../../theme/icons/link.svg';
 
 const createPredefinedLinksProvider = provider => class MyLinkProvider extends Plugin {
 	static get requires() {
@@ -35,28 +34,28 @@ const SocialLinksPlugin = createPredefinedLinksProvider( {
 			id: 'facebook',
 			href: 'https://facebook.com',
 			label: '👥 Facebook',
-			icon: linkIcon,
+			icon: IconLink,
 			tooltip: 'Visit Facebook'
 		},
 		{
 			id: 'twitter',
 			href: 'https://twitter.com',
 			label: '🐦 Twitter',
-			icon: linkIcon,
+			icon: IconLink,
 			tooltip: 'Visit Twitter'
 		},
 		{
 			id: 'linkedin',
 			href: 'https://linkedin.com',
 			label: '💼 LinkedIn',
-			icon: linkIcon,
+			icon: IconLink,
 			tooltip: 'Visit LinkedIn'
 		},
 		{
 			id: 'instagram',
 			href: 'https://instagram.com',
 			label: '📸 Instagram',
-			icon: linkIcon,
+			icon: IconLink,
 			tooltip: 'Visit Instagram'
 		}
 	]
@@ -69,21 +68,21 @@ const ShopsLinksPlugin = createPredefinedLinksProvider( {
 			id: 'amazon',
 			href: 'https://amazon.com',
 			label: '🛒 Amazon',
-			icon: linkIcon,
+			icon: IconLink,
 			tooltip: 'Shop on Amazon'
 		},
 		{
 			id: 'ebay',
 			href: 'https://ebay.com',
 			label: '🛍️ eBay',
-			icon: linkIcon,
+			icon: IconLink,
 			tooltip: 'Shop on eBay'
 		},
 		{
 			id: 'allegro',
 			href: 'https://allegro.com',
 			label: '🛒 Allegro',
-			icon: linkIcon,
+			icon: IconLink,
 			tooltip: 'Shop on Allegro'
 		}
 	],
@@ -105,13 +104,13 @@ const CKLinkList = createPredefinedLinksProvider( {
 			id: 'ckeditor',
 			href: 'https://ckeditor.com',
 			label: 'CKEditor5',
-			icon: linkIcon
+			icon: IconLink
 		},
 		{
 			id: 'cksource',
 			href: 'https://cksource.com',
 			label: 'CKSource',
-			icon: linkIcon
+			icon: IconLink
 		}
 	],
 	navigate: item => {
@@ -127,19 +126,19 @@ const DummyLinkList = createPredefinedLinksProvider( {
 			id: 'dummy1',
 			href: 'https://example.com',
 			label: 'Example 1',
-			icon: linkIcon
+			icon: IconLink
 		},
 		{
 			id: 'dummy2',
 			href: 'https://example.com',
 			label: 'Example 2',
-			icon: linkIcon
+			icon: IconLink
 		},
 		{
 			id: 'dummy3',
 			href: 'https://example.com',
 			label: 'Example 3',
-			icon: linkIcon
+			icon: IconLink
 		}
 	]
 } );

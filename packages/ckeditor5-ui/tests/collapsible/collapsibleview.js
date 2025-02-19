@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { IconDropdownArrow } from '@ckeditor/ckeditor5-icons';
 import CollapsibleView from '../../src/collapsible/collapsibleview.js';
 import ButtonView from '../../src/button/buttonview.js';
 
-import dropdownArrowIcon from '../../theme/icons/dropdown-arrow.svg';
 import ViewCollection from '../../src/viewcollection.js';
 
 describe( 'CollapsibleView', () => {
@@ -53,7 +53,7 @@ describe( 'CollapsibleView', () => {
 
 			describe( 'main button', () => {
 				it( 'should have an icon', () => {
-					expect( view.buttonView.icon ).to.equal( dropdownArrowIcon );
+					expect( view.buttonView.icon ).to.equal( IconDropdownArrow );
 				} );
 
 				it( 'should display its text', () => {

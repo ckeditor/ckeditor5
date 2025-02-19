@@ -2,7 +2,7 @@ Software License Agreement
 ==========================
 
 **CKEditor&nbsp;5 CKBox feature** (https://github.com/ckeditor/ckeditor5)<br>
-Copyright (c) 2003–2024, [CKSource Holding sp. z o.o.](http://cksource.com) All rights reserved.
+Copyright (c) 2003–2025, [CKSource Holding sp. z o.o.](http://cksource.com) All rights reserved.
 
 Licensed under a dual-license model, this software is available under:
 
@@ -19,6 +19,7 @@ Where not otherwise indicated, all CKEditor content is authored by CKSource engi
 The following libraries are included in CKEditor under the [MIT license](https://opensource.org/licenses/MIT):
 
 * blurhash - Copyright (c) 2018 Wolt Enterprises (MIT license).
+* es-toolkit - Copyright (c) 2024 Viva Republica, Inc.
 
 Trademarks
 ----------

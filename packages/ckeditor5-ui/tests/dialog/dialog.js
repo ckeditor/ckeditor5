@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { IconFindReplace } from '@ckeditor/ckeditor5-icons';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Dialog, DialogView, DialogViewPosition, IconView } from '../../src/index.js';
-import { env, keyCodes } from '@ckeditor/ckeditor5-utils';
-import loupeIcon from '@ckeditor/ckeditor5-find-and-replace/theme/icons/find-replace.svg';
+import { env, keyCodes, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
 
 /* global document */
 
@@ -444,7 +444,7 @@ describe( 'Dialog', () => {
 
 		it( 'should properly setup the header view with the passed arguments', () => {
 			dialogPlugin._show( {
-				icon: loupeIcon,
+				icon: IconFindReplace,
 				title: 'foo',
 				hasCloseButton: false
 			} );
@@ -486,6 +486,29 @@ describe( 'Dialog', () => {
 			} );
 
 			expect( document.documentElement.classList.contains( 'ck-dialog-scroll-locked' ) ).to.be.false;
+		} );
+
+		it( 'should pass keystrokeHandlerOptions to its view', () => {
+			// The 'keystrokeHandlerOptions' are not stored anywhere so we need to somehow
+			// detect if those are passed correctly. It is passed like shown below:
+			//
+			// Dialog._show -> new DialogView( { ..., keystrokeHandlerOptions } )
+			// DialogView.constructor -> new FocusCycler( { ..., keystrokeHandler, keystrokeHandlerOptions } )
+			// FocusCycler.constructor -> keystrokeHandler.set( { ..., keystrokeHandlerOptions } )
+			//
+			// And so we spy on the `set` method of the KeystrokeHandler to check if options is passed there.
+			const spy = sinon.spy( KeystrokeHandler.prototype, 'set' );
+
+			const keystrokeHandlerOptions = {
+				filter: () => {}
+			};
+
+			dialogPlugin._show( {
+				keystrokeHandlerOptions
+			} );
+
+			expect( spy.args[ 0 ][ 2 ] ).to.equal( keystrokeHandlerOptions );
+			expect( spy.args[ 1 ][ 2 ] ).to.equal( keystrokeHandlerOptions );
 		} );
 	} );
 

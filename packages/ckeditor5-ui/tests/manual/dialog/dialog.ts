@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -30,7 +30,8 @@ import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specia
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials.js';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
 import { ButtonView, Dialog, DialogViewPosition, SwitchButtonView, View } from '../../../src/index.js';
-import { Plugin, icons } from '@ckeditor/ckeditor5-core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { IconColorPalette } from '@ckeditor/ckeditor5-icons';
 
 // Necessary to insert into config all of the generated buttons.
 const POSSIBLE_DIALOG_POSITIONS: Array<string> = [];
@@ -94,7 +95,7 @@ class ModalWithText extends Plugin {
 						},
 						{
 							label: t( 'Set custom title' ),
-							icon: icons.colorPalette,
+							icon: IconColorPalette,
 							withText: true,
 							onExecute: () => {
 								dialog.view!.headerView!.label = 'New title';

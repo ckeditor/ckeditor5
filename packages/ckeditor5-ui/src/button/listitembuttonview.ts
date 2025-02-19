@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -11,7 +11,7 @@ import type { ObservableChangeEvent, Locale } from '@ckeditor/ckeditor5-utils';
 import type ButtonLabel from './buttonlabel.js';
 import type ViewCollection from '../viewcollection.js';
 
-import { icons } from '@ckeditor/ckeditor5-core';
+import { IconCheck } from '@ckeditor/ckeditor5-icons';
 import ButtonView from './buttonview.js';
 import ButtonLabelView from './buttonlabelview.js';
 import IconView from '../icon/iconview.js';
@@ -183,7 +183,7 @@ export class CheckIconHolderView extends View {
 	private _createCheckIconView() {
 		const iconView = new IconView();
 
-		iconView.content = icons.check;
+		iconView.content = IconCheck;
 		iconView.extendTemplate( {
 			attributes: {
 				class: 'ck-list-item-button__check-icon'

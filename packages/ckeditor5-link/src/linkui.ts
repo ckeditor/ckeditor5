@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -7,7 +7,8 @@
  * @module link/linkui
  */
 
-import { Plugin, icons, type Editor } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { IconLink, IconPencil, IconUnlink, IconSettings } from 'ckeditor5/src/icons.js';
 import {
 	ClickObserver,
 	type ViewAttributeElement,
@@ -48,9 +49,6 @@ import {
 	extractTextFromLinkRange,
 	LINK_KEYSTROKE
 } from './utils.js';
-
-import linkIcon from '../theme/icons/link.svg';
-import unlinkIcon from '../theme/icons/unlink.svg';
 
 import '../theme/linktoolbar.css';
 
@@ -590,7 +588,7 @@ export default class LinkUI extends Plugin {
 
 			button.set( {
 				label: t( 'Unlink' ),
-				icon: unlinkIcon,
+				icon: IconUnlink,
 				tooltip: true
 			} );
 
@@ -611,7 +609,7 @@ export default class LinkUI extends Plugin {
 
 			button.set( {
 				label: t( 'Edit link' ),
-				icon: icons.pencil,
+				icon: IconPencil,
 				tooltip: true
 			} );
 
@@ -631,7 +629,7 @@ export default class LinkUI extends Plugin {
 
 			button.set( {
 				label: t( 'Link properties' ),
-				icon: icons.settings,
+				icon: IconSettings,
 				tooltip: true
 			} );
 
@@ -680,7 +678,7 @@ export default class LinkUI extends Plugin {
 
 		view.set( {
 			label: t( 'Link' ),
-			icon: linkIcon,
+			icon: IconLink,
 			keystroke: LINK_KEYSTROKE,
 			isToggleable: true
 		} );

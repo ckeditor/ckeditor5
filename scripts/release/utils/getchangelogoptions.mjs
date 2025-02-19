@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -28,10 +28,6 @@ export default function getChangelogOptions( cliArguments ) {
 
 			if ( name === 'ckeditor5-premium-feature' || name === 'premium-feature' ) {
 				return 'https://www.npmjs.com/package/ckeditor5-premium-feature';
-			}
-
-			if ( name === 'build-*' ) {
-				return 'https://www.npmjs.com/search?q=keywords%3Ackeditor5-build%20maintainer%3Ackeditor';
 			}
 
 			if ( name === 'editor-*' ) {

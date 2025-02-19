@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -16,7 +16,7 @@ import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
 import ListSeparatorView from '@ckeditor/ckeditor5-ui/src/list/listseparatorview.js';
 import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
-import { icons } from '@ckeditor/ckeditor5-core';
+import { IconTable } from '@ckeditor/ckeditor5-icons';
 
 describe( 'TableUI', () => {
 	let editor, element;
@@ -78,7 +78,7 @@ describe( 'TableUI', () => {
 		it( 'should register insertTable button', () => {
 			expect( insertTable ).to.be.instanceOf( DropdownView );
 			expect( insertTable.buttonView.label ).to.equal( 'Insert table' );
-			expect( insertTable.buttonView.icon ).to.equal( icons.table );
+			expect( insertTable.buttonView.icon ).to.equal( IconTable );
 		} );
 
 		it( 'should bind to insertTable command', () => {
@@ -160,7 +160,7 @@ describe( 'TableUI', () => {
 
 		it( 'should set properties on a button', () => {
 			expect( menuView.buttonView.label ).to.equal( 'Table' );
-			expect( menuView.buttonView.icon ).to.equal( icons.table );
+			expect( menuView.buttonView.icon ).to.equal( IconTable );
 		} );
 
 		it( 'should bind #isEnabled to the InsertTableCommand', () => {

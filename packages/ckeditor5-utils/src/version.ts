@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -9,12 +9,12 @@
 
 import CKEditorError from './ckeditorerror.js';
 
-const version = '44.1.0';
+const version = '44.2.0';
 
 export default version;
 
 // The second argument is not a month. It is `monthIndex` and starts from `0`.
-export const releaseDate = new Date( 2024, 11, 16 );
+export const releaseDate = new Date( 2025, 1, 12 );
 
 declare global {
 	// eslint-disable-next-line no-var
@@ -134,8 +134,7 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * the `@ckeditor/ckeditor5-<NAME>/src/*` files, it is not recommended as it can make migration to the new installation
 	 * methods more difficult.
 	 *
-	 * If you use this installation method, you should not import code from the `ckeditor5`, `ckeditor5-premium-features`,
-	 * or `@ckeditor/ckeditor5-build-<NAME>` packages.
+	 * If you use this installation method, you should not import code from the `ckeditor5` or `ckeditor5-premium-features` packages.
 	 *
 	 * Examples of valid and invalid import paths:
 	 *

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -62,15 +62,13 @@ export function getImageUrls( imageUrls: CKBoxImageUrls ): {
 export function getWorkspaceId( token: InitializedToken, defaultWorkspaceId?: string ): string | null {
 	const [ , binaryTokenPayload ] = token.value.split( '.' );
 	const payload = JSON.parse( atob( binaryTokenPayload ) );
-	const workspaces = ( payload.auth && payload.auth.ckbox && payload.auth.ckbox.workspaces ) || [ payload.aud ];
+	const workspaces = payload.auth?.ckbox?.workspaces || [ payload.aud ];
 
 	if ( !defaultWorkspaceId ) {
 		return workspaces[ 0 ];
 	}
 
-	const role = payload.auth && payload.auth.ckbox && payload.auth.ckbox.role;
-
-	if ( role == 'superadmin' || workspaces.includes( defaultWorkspaceId ) ) {
+	if ( payload.auth?.ckbox?.role == 'superadmin' || workspaces.includes( defaultWorkspaceId ) ) {
 		return defaultWorkspaceId;
 	}
 

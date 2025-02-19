@@ -1,16 +1,13 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document */
+import { IconMarker, IconPen, IconEraser } from 'ckeditor5/src/icons.js';
 
 import HighlightEditing from '../src/highlightediting.js';
 import HighlightUI from '../src/highlightui.js';
-
-import markerIcon from '../theme/icons/marker.svg';
-import penIcon from '../theme/icons/pen.svg';
-import eraserIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -89,7 +86,7 @@ describe( 'HighlightUI', () => {
 
 			expect( button ).to.have.property( 'label', 'Highlight' );
 			expect( button ).to.have.property( 'tooltip', true );
-			expect( button ).to.have.property( 'icon', markerIcon );
+			expect( button ).to.have.property( 'icon', IconMarker );
 			expect( button ).to.have.property( 'isToggleable', true );
 		} );
 
@@ -118,7 +115,7 @@ describe( 'HighlightUI', () => {
 			command.value = undefined;
 
 			expect( toolbar.items.map( item => item.icon ) )
-				.to.deep.equal( [ markerIcon, markerIcon, markerIcon, markerIcon, penIcon, penIcon, undefined, eraserIcon ] );
+				.to.deep.equal( [ IconMarker, IconMarker, IconMarker, IconMarker, IconPen, IconPen, undefined, IconEraser ] );
 		} );
 
 		it( 'should have proper colors in dropdown', () => {
@@ -349,7 +346,7 @@ describe( 'HighlightUI', () => {
 
 		it( 'should have correct attribute values', () => {
 			expect( menuView.buttonView.label ).to.equal( 'Highlight' );
-			expect( menuView.buttonView.icon ).to.equal( markerIcon );
+			expect( menuView.buttonView.icon ).to.equal( IconMarker );
 			expect( menuView.buttonView.iconView.fillColor ).to.equal( 'transparent' );
 		} );
 
@@ -371,13 +368,13 @@ describe( 'HighlightUI', () => {
 
 			it( 'should set #label and #icon of an option', () => {
 				expect( dumpItems( 'icon' ) ).to.have.deep.ordered.members( [
-					[ 'Yellow marker', markerIcon ],
-					[ 'Green marker', markerIcon ],
-					[ 'Pink marker', markerIcon ],
-					[ 'Blue marker', markerIcon ],
-					[ 'Red pen', penIcon ],
-					[ 'Green pen', penIcon ],
-					[ 'Remove highlight', eraserIcon ]
+					[ 'Yellow marker', IconMarker ],
+					[ 'Green marker', IconMarker ],
+					[ 'Pink marker', IconMarker ],
+					[ 'Blue marker', IconMarker ],
+					[ 'Red pen', IconPen ],
+					[ 'Green pen', IconPen ],
+					[ 'Remove highlight', IconEraser ]
 				] );
 			} );
 
@@ -464,7 +461,7 @@ describe( 'HighlightUI', () => {
 
 		it( 'should diplay the remove highlight button at the end', () => {
 			expect( menuView.panelView.children.first.items.get( 6 ) ).to.be.instanceOf( ListSeparatorView );
-			expect( menuView.panelView.children.first.items.last.children.first.icon ).to.equal( eraserIcon );
+			expect( menuView.panelView.children.first.items.last.children.first.icon ).to.equal( IconEraser );
 		} );
 
 		function dumpItems( propertyName ) {
@@ -488,7 +485,7 @@ describe( 'HighlightUI', () => {
 			expect( editor.ui.componentFactory.has( 'removeHighlight' ) ).to.be.true;
 			expect( removeHighlightButton ).to.have.property( 'tooltip', true );
 			expect( removeHighlightButton ).to.have.property( 'label', 'Remove highlight' );
-			expect( removeHighlightButton ).to.have.property( 'icon', eraserIcon );
+			expect( removeHighlightButton ).to.have.property( 'icon', IconEraser );
 		} );
 
 		it( 'should execute the command only once', () => {

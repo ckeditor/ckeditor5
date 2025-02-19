@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -8,6 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { IconTableCellProperties } from 'ckeditor5/src/icons.js';
 import {
 	ButtonView,
 	clickOutsideHandler,
@@ -27,11 +28,9 @@ import {
 	lengthFieldValidator,
 	lineWidthFieldValidator
 } from '../utils/ui/table-properties.js';
-import { debounce } from 'lodash-es';
+import { debounce } from 'es-toolkit/compat';
 import { getTableWidgetAncestor } from '../utils/ui/widget.js';
 import { getBalloonCellPositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon.js';
-
-import tableCellProperties from './../../theme/icons/table-cell-properties.svg';
 import { getNormalizedDefaultCellProperties, type NormalizedDefaultProperties } from '../utils/table-properties.js';
 import type { GetCallback, ObservableChangeEvent } from 'ckeditor5/src/utils.js';
 
@@ -145,7 +144,7 @@ export default class TableCellPropertiesUI extends Plugin {
 
 			view.set( {
 				label: t( 'Cell properties' ),
-				icon: tableCellProperties,
+				icon: IconTableCellProperties,
 				tooltip: true
 			} );
 
