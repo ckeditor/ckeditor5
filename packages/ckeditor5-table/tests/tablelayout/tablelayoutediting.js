@@ -54,8 +54,23 @@ describe( 'TableLayoutEditing', () => {
 	it( 'should set proper schema rules', () => {
 		// <caption> allowed only for content tables
 		expect( model.schema.checkChild( [ '$root', 'table' ], 'caption' ) ).to.be.true;
-		// TODO: it should be false for layout tables
-		expect( model.schema.checkChild( [ '$root', 'table' ], 'caption' ) ).to.be.false;
+	} );
+
+	it( 'should set proper schema rules for layout table and caption', () => {
+		setModelData(
+			model,
+			'<table tableType="layout">' +
+				'<tableRow>' +
+					'<tableCell>' +
+						'<paragraph>foo[]</paragraph>' +
+					'</tableCell>' +
+				'</tableRow>' +
+			'</table>'
+		);
+
+		const tableElement = model.document.getRoot().getChild( 0 );
+
+		expect( model.schema.checkChild( tableElement, 'caption' ) ).to.be.false;
 	} );
 
 	describe( 'dataDowncast', () => {
@@ -315,6 +330,52 @@ describe( 'TableLayoutEditing', () => {
 				'<table tableType="layout">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should set `tableType` to `content` when there is class `content-table` ' +
+				'and add the `headingRows` attribute', () => {
+			editor.setData(
+				'<table class="table content-table">' +
+					'<thead>' +
+						'<tr><th>1</th></tr>' +
+					'</thead>' +
+					'<tbody>' +
+						'<tr><td>2</td></tr>' +
+					'</tbody>' +
+				'</table>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<table headingRows="1" tableType="content">' +
+					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should set `tableType` to `content` when there is class `content-table` ' +
+				'and add the `headingColumns` attribute', () => {
+			editor.setData(
+				'<table class="table content-table">' +
+					'<tbody>' +
+						'<tr><th>a</th><td>b</td></tr>' +
+						'<tr><th>1</th><td>2</td></tr>' +
+					'</tbody>' +
+				'</table>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<table headingColumns="1" tableType="content">' +
+					'<tableRow>' +
+						'<tableCell><paragraph>a</paragraph></tableCell>' +
+						'<tableCell><paragraph>b</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>1</paragraph></tableCell>' +
+						'<tableCell><paragraph>2</paragraph></tableCell>' +
+					'</tableRow>' +
 				'</table>'
 			);
 		} );
