@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -21,7 +21,7 @@ import {
 	type FocusableView
 } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
-import { icons } from 'ckeditor5/src/core.js';
+import { IconPreviousArrow } from 'ckeditor5/src/icons.js';
 
 import '../../../theme/textalternativeform.css';
 
@@ -192,7 +192,7 @@ export default class TextAlternativeFormView extends View {
 		backButton.set( {
 			class: 'ck-button-back',
 			label: t( 'Back' ),
-			icon: icons.previousArrow,
+			icon: IconPreviousArrow,
 			tooltip: true
 		} );
 

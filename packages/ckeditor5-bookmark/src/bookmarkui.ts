@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -7,8 +7,8 @@
  * @module bookmark/bookmarkui
  */
 
-import { Plugin, type Editor, icons } from 'ckeditor5/src/core.js';
 import type { LinksProviderDetailedItem, LinksProviderListItem } from '@ckeditor/ckeditor5-link';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
 	ContextualBalloon,
@@ -19,7 +19,7 @@ import {
 	BalloonPanelView,
 	type ViewWithCssTransitionDisabler
 } from 'ckeditor5/src/ui.js';
-
+import { IconBookmark, IconRemove, IconBookmarkMedium, IconBookmarkSmall, IconPencil } from 'ckeditor5/src/icons.js';
 import {
 	type Element,
 	type ViewDocumentSelection,
@@ -251,7 +251,7 @@ export default class BookmarkUI extends Plugin {
 				id: bookmarkId,
 				href: `#${ bookmarkId }`,
 				label: bookmarkId,
-				icon: icons.bookmarkMedium
+				icon: IconBookmarkMedium
 			} ) );
 
 		const getItem = ( href: string ): LinksProviderDetailedItem | null => {
@@ -264,7 +264,7 @@ export default class BookmarkUI extends Plugin {
 			return {
 				href,
 				label: bookmark,
-				icon: icons.bookmarkSmall,
+				icon: IconBookmarkSmall,
 				tooltip: t( 'Scroll to bookmark' )
 			};
 		};
@@ -346,7 +346,7 @@ export default class BookmarkUI extends Plugin {
 
 			button.set( {
 				label: t( 'Edit bookmark' ),
-				icon: icons.pencil,
+				icon: IconPencil,
 				tooltip: true
 			} );
 
@@ -366,7 +366,7 @@ export default class BookmarkUI extends Plugin {
 
 			button.set( {
 				label: t( 'Remove bookmark' ),
-				icon: icons.remove,
+				icon: IconRemove,
 				tooltip: true
 			} );
 
@@ -394,7 +394,7 @@ export default class BookmarkUI extends Plugin {
 
 		view.set( {
 			label: t( 'Bookmark' ),
-			icon: icons.bookmark
+			icon: IconBookmark
 		} );
 
 		// Execute the command.

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -216,6 +216,22 @@ describe( 'Table cell refresh handler', () => {
 			[ '<p foo="bar">00</p>' ]
 		], { asWidget: true } ) );
 		expect( getViewForParagraph( table ) ).to.not.equal( previousView );
+	} );
+
+	it( 'should not rename <span> to <p> when setting a selection attribute on <paragraph>', () => {
+		editor.setData( '<table><tr><td><p>00</p></td></tr></table>' );
+
+		const table = root.getChild( 0 );
+		const previousView = getViewForParagraph( table );
+
+		model.change( writer => {
+			writer.setAttribute( 'selection:bold', true, table.getNodeByPath( [ 0, 0, 0 ] ) );
+		} );
+
+		expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+			[ '<span class="ck-table-bogus-paragraph">00</span>' ]
+		], { asWidget: true } ) );
+		expect( getViewForParagraph( table ) ).to.equal( previousView );
 	} );
 
 	it( 'should rename <p> to <span> when removing one of two paragraphs inside table cell', () => {

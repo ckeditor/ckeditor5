@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -7,11 +7,14 @@
  * @module image/imageupload/imageuploadui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import {
-	FileDialogButtonView, MenuBarMenuListItemFileDialogButtonView,
-	type ButtonView, type MenuBarMenuListItemButtonView
+	FileDialogButtonView,
+	MenuBarMenuListItemFileDialogButtonView,
+	type ButtonView,
+	type MenuBarMenuListItemButtonView
 } from 'ckeditor5/src/ui.js';
+import { IconImageUpload } from 'ckeditor5/src/icons.js';
 import { createImageTypeRegExp } from './utils.js';
 import type ImageInsertUI from '../imageinsert/imageinsertui.js';
 
@@ -85,7 +88,7 @@ export default class ImageUploadUI extends Plugin {
 			acceptedType: imageTypes.map( type => `image/${ type }` ).join( ',' ),
 			allowMultipleFiles: true,
 			label: t( 'Upload from computer' ),
-			icon: icons.imageUpload
+			icon: IconImageUpload
 		} );
 
 		view.bind( 'isEnabled' ).to( command );

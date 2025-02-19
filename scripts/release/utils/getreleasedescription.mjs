@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -17,6 +17,14 @@ export default async function getReleaseDescription( cliArguments ) {
 
 		return [
 			await releaseTools.getNextPreRelease( `${ CKE5_NEXT_RELEASE_VERSION }-alpha` ), null
+		];
+	}
+
+	if ( cliArguments.nightlyNext ) {
+		const releaseIdentifier = `0.0.0-nightly-next-${ releaseTools.getDateIdentifier() }`;
+
+		return [
+			await releaseTools.getNextPreRelease( releaseIdentifier ), null
 		];
 	}
 

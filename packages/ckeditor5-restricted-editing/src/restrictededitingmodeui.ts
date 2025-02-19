@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -8,6 +8,7 @@
  */
 
 import { Plugin, type Command } from 'ckeditor5/src/core.js';
+import { IconContentLock } from 'ckeditor5/src/icons.js';
 import {
 	ViewModel,
 	createDropdown,
@@ -17,8 +18,6 @@ import {
 	type ListDropdownItemDefinition, MenuBarMenuView, MenuBarMenuListView, MenuBarMenuListItemView
 } from 'ckeditor5/src/ui.js';
 import { Collection } from 'ckeditor5/src/utils.js';
-
-import lockIcon from '../theme/icons/contentlock.svg';
 
 /**
  * The restricted editing mode UI feature.
@@ -62,7 +61,7 @@ export default class RestrictedEditingModeUI extends Plugin {
 
 			dropdownView.buttonView.set( {
 				label: t( 'Navigate editable regions' ),
-				icon: lockIcon,
+				icon: IconContentLock,
 				tooltip: true,
 				isEnabled: true,
 				isOn: false
@@ -88,7 +87,7 @@ export default class RestrictedEditingModeUI extends Plugin {
 
 			menuView.buttonView.set( {
 				label: t( 'Navigate editable regions' ),
-				icon: lockIcon
+				icon: IconContentLock
 			} );
 
 			menuView.panelView.children.add( listView );

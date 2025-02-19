@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -7,7 +7,8 @@
  * @module highlight/highlightui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { IconEraser, IconMarker, IconPen } from 'ckeditor5/src/icons.js';
 import {
 	addToolbarToDropdown,
 	createDropdown,
@@ -22,8 +23,6 @@ import {
 	type DropdownView
 } from 'ckeditor5/src/ui.js';
 
-import markerIcon from './../theme/icons/marker.svg';
-import penIcon from './../theme/icons/pen.svg';
 import type { HighlightOption } from './highlightconfig.js';
 import type HighlightCommand from './highlightcommand.js';
 
@@ -112,7 +111,7 @@ export default class HighlightUI extends Plugin {
 		const t = this.editor.t;
 		const command: HighlightCommand = this.editor.commands.get( 'highlight' )!;
 
-		this._addButton( 'removeHighlight', t( 'Remove highlight' ), icons.eraser, null, button => {
+		this._addButton( 'removeHighlight', t( 'Remove highlight' ), IconEraser, null, button => {
 			button.bind( 'isEnabled' ).to( command, 'isEnabled' );
 		} );
 	}
@@ -320,7 +319,7 @@ export default class HighlightUI extends Plugin {
 
 			buttonView.set( {
 				label: t( 'Remove highlight' ),
-				icon: icons.eraser
+				icon: IconEraser
 			} );
 
 			buttonView.delegate( 'execute' ).to( menuView );
@@ -354,7 +353,7 @@ function bindToolbarIconStyleToActiveColor( dropdownView: DropdownView ): void {
  * Returns icon for given highlighter type.
  */
 function getIconForType( type: 'marker' | 'pen' ) {
-	return type === 'marker' ? markerIcon : penIcon;
+	return type === 'marker' ? IconMarker : IconPen;
 }
 
 type HighlightSplitButtonView = SplitButtonView & {

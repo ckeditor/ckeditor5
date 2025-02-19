@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -10,7 +10,7 @@ import HorizontalLineEditing from '../src/horizontallineediting.js';
 import HorizontalLineUI from '../src/horizontallineui.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { icons } from 'ckeditor5/src/core.js';
+import { IconHorizontalLine } from 'ckeditor5/src/icons.js';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
@@ -76,7 +76,7 @@ describe( 'HorizontalLineUI', () => {
 		it( 'should create UI component with correct attribute values', () => {
 			expect( button.isOn ).to.be.false;
 			expect( button.label ).to.equal( label );
-			expect( button.icon ).to.equal( icons.horizontalLine );
+			expect( button.icon ).to.equal( IconHorizontalLine );
 		} );
 
 		it( `should execute ${ featureName } command on model execute event and focus the view`, () => {

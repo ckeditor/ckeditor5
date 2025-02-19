@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -80,4 +80,17 @@ export interface GeneralHtmlSupportConfig {
 	 * ```
 	 */
 	allowEmpty?: Array<string>;
+
+	/**
+	 * Whether a filler text (non-breaking space entity — `&nbsp;`) will be inserted into empty block elements in HTML output.
+	 * This is used to render block elements properly with line-height.
+	 *
+	 * When set to `true`, empty blocks will be preserved in the editing view.
+	 * When `false` (default), empty blocks are only preserved in the data output.
+	 *
+	 * The option is used by the {@link module:html-support/emptyblock~EmptyBlock} feature.
+	 *
+	 * @default false
+	 */
+	preserveEmptyBlocksInEditingView?: boolean;
 }

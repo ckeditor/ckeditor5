@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -7,9 +7,9 @@
  * @module engine/conversion/viewconsumable
  */
 
-import { CKEditorError, toArray, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type Element from '../view/element.js';
+import type { default as Element, NormalizedConsumables } from '../view/element.js';
 import type Node from '../view/node.js';
 import type Text from '../view/text.js';
 import type DocumentFragment from '../view/documentfragment.js';
@@ -50,24 +50,8 @@ export default class ViewConsumable {
 	private _consumables = new Map<Node | DocumentFragment, ViewElementConsumables | boolean>();
 
 	/**
-	 * Adds {@link module:engine/view/text~Text text node} or
+	 * Adds view {@link module:engine/view/element~Element element}, {@link module:engine/view/text~Text text node} or
 	 * {@link module:engine/view/documentfragment~DocumentFragment document fragment} as ready to be consumed.
-	 *
-	 * ```ts
-	 * viewConsumable.add( textNode ); // Adds text node to consume.
-	 * viewConsumable.add( docFragment ); // Adds document fragment to consume.
-	 * ```
-	 *
-	 * See also: {@link #add:ELEMENT `add( element, consumables )`}.
-	 *
-	 * @label TEXT_OR_FRAGMENT
-	 */
-	public add(
-		textOrDocumentFragment: Text | DocumentFragment
-	): void;
-
-	/**
-	 * Adds {@link module:engine/view/element~Element view element} as ready to be consumed.
 	 *
 	 * ```ts
 	 * viewConsumable.add( p, { name: true } ); // Adds element's name to consume.
@@ -76,6 +60,8 @@ export default class ViewConsumable {
 	 * viewConsumable.add( p, { styles: 'color' } ); // Adds element's style
 	 * viewConsumable.add( p, { attributes: 'name', styles: 'color' } ); // Adds attribute and style.
 	 * viewConsumable.add( p, { classes: [ 'baz', 'bar' ] } ); // Multiple consumables can be provided.
+	 * viewConsumable.add( textNode ); // Adds text node to consume.
+	 * viewConsumable.add( docFragment ); // Adds document fragment to consume.
 	 * ```
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
@@ -86,9 +72,6 @@ export default class ViewConsumable {
 	 * viewConsumable.add( p, { styles: 'color' } ); // This is properly handled style.
 	 * ```
 	 *
-	 * See also: {@link #add:TEXT_OR_FRAGMENT `add( textOrDocumentFragment )`}.
-	 *
-	 * @label ELEMENT
 	 * @param consumables Used only if first parameter is {@link module:engine/view/element~Element view element} instance.
 	 * @param consumables.name If set to true element's name will be included.
 	 * @param consumables.attributes Attribute name or array of attribute names.
@@ -96,13 +79,8 @@ export default class ViewConsumable {
 	 * @param consumables.styles Style name or array of style names.
 	 */
 	public add(
-		element: Element,
-		consumables: Consumables
-	): void;
-
-	public add(
-		element: Node | DocumentFragment,
-		consumables?: Consumables
+		element: Text | Element | DocumentFragment,
+		consumables?: Consumables | NormalizedConsumables
 	): void {
 		let elementConsumables: ViewElementConsumables;
 
@@ -118,10 +96,10 @@ export default class ViewConsumable {
 			elementConsumables = new ViewElementConsumables( element );
 			this._consumables.set( element, elementConsumables );
 		} else {
-			elementConsumables = this._consumables.get( element ) as any;
+			elementConsumables = this._consumables.get( element ) as ViewElementConsumables;
 		}
 
-		elementConsumables.add( consumables! );
+		elementConsumables.add( consumables ? normalizeConsumables( consumables ) : element._getConsumables() );
 	}
 
 	/**
@@ -169,7 +147,7 @@ export default class ViewConsumable {
 		}
 
 		// For elements test consumables object.
-		return ( elementConsumables as ViewElementConsumables ).test( consumables! );
+		return ( elementConsumables as ViewElementConsumables ).test( normalizeConsumables( consumables! ) );
 	}
 
 	/**
@@ -204,19 +182,25 @@ export default class ViewConsumable {
 	 * otherwise returns `false`.
 	 */
 	public consume( element: Node | DocumentFragment, consumables?: Consumables | Match ): boolean {
-		if ( this.test( element, consumables ) ) {
-			if ( element.is( '$text' ) || element.is( 'documentFragment' ) ) {
-				// For text nodes and document fragments set value to false.
-				this._consumables.set( element, false );
-			} else {
-				// For elements - consume consumables object.
-				( this._consumables.get( element ) as ViewElementConsumables ).consume( consumables! );
+		if ( element.is( '$text' ) || element.is( 'documentFragment' ) ) {
+			if ( !this.test( element, consumables ) ) {
+				return false;
 			}
+
+			// For text nodes and document fragments set value to false.
+			this._consumables.set( element, false );
 
 			return true;
 		}
 
-		return false;
+		// For elements - consume consumables object.
+		const elementConsumables = this._consumables.get( element );
+
+		if ( elementConsumables === undefined ) {
+			return false;
+		}
+
+		return ( elementConsumables as ViewElementConsumables ).consume( normalizeConsumables( consumables! ) );
 	}
 
 	/**
@@ -250,7 +234,7 @@ export default class ViewConsumable {
 	 * @param consumables.classes Class name or array of class names.
 	 * @param consumables.styles Style name or array of style names.
 	 */
-	public revert( element: Node, consumables: Consumables ): void {
+	public revert( element: Node, consumables: Consumables | Match ): void {
 		const elementConsumables = this._consumables.get( element );
 
 		if ( elementConsumables !== undefined ) {
@@ -259,48 +243,9 @@ export default class ViewConsumable {
 				this._consumables.set( element, true );
 			} else {
 				// For elements - revert items from consumables object.
-				( elementConsumables as ViewElementConsumables ).revert( consumables );
+				( elementConsumables as ViewElementConsumables ).revert( normalizeConsumables( consumables ) );
 			}
 		}
-	}
-
-	/**
-	 * Creates consumable object from {@link module:engine/view/element~Element view element}. Consumable object will include
-	 * element's name and all its attributes, classes and styles.
-	 */
-	public static consumablesFromElement( element: Element ): Consumables & { element: Element } {
-		const consumables = {
-			element,
-			name: true,
-			attributes: [] as Array<string>,
-			classes: [] as Array<string>,
-			styles: [] as Array<string>
-		};
-
-		const attributes = element.getAttributeKeys();
-
-		for ( const attribute of attributes ) {
-			// Skip classes and styles - will be added separately.
-			if ( attribute == 'style' || attribute == 'class' ) {
-				continue;
-			}
-
-			consumables.attributes.push( attribute );
-		}
-
-		const classes = element.getClassNames();
-
-		for ( const className of classes ) {
-			consumables.classes.push( className );
-		}
-
-		const styles = element.getStyleNames();
-
-		for ( const style of styles ) {
-			consumables.styles.push( style );
-		}
-
-		return consumables;
 	}
 
 	/**
@@ -319,31 +264,47 @@ export default class ViewConsumable {
 
 		if ( from.is( '$text' ) ) {
 			instance.add( from );
-
-			return instance;
 		}
-
-		// Add `from` itself, if it is an element.
-		if ( from.is( 'element' ) ) {
-			instance.add( from, ViewConsumable.consumablesFromElement( from ) );
-		}
-
-		if ( from.is( 'documentFragment' ) ) {
+		else if ( from.is( 'element' ) || from.is( 'documentFragment' ) ) {
 			instance.add( from );
-		}
 
-		for ( const child of ( from as Element | DocumentFragment ).getChildren() ) {
-			instance = ViewConsumable.createFrom( child, instance );
+			for ( const child of from.getChildren() ) {
+				ViewConsumable.createFrom( child, instance );
+			}
 		}
 
 		return instance;
 	}
 }
 
+/**
+ * Object describing all features of a view element that could be consumed and converted individually.
+ * This is a non-normalized form of {@link module:engine/view/element~NormalizedConsumables} generated from the view Element.
+ *
+ * Example element:
+ *
+ * ```html
+ * <a class="foo bar" style="color: red; margin: 5px" href="https://ckeditor.com" rel="nofollow noreferrer" target="_blank">
+ * ```
+ *
+ * The `Consumables` would include:
+ *
+ * ```json
+ * {
+ * 	name: true,
+ * 	classes: [ "foo", "bar" ],
+ * 	styles: [ "color", "margin" ]
+ * }
+ * ```
+ *
+ * You could convert a `Consumable` into a {@link module:engine/view/element~NormalizedConsumables}
+ * using the {@link module:engine/conversion/viewconsumable~normalizeConsumables} helper.
+ */
 export interface Consumables {
 
 	/**
-	 * If set to true element's name will be included.
+	 * If set to `true` element's name will be included in a consumable.
+	 * Depending on the usage context it would be added as consumable, tested for being available for consume or consumed.
 	 */
 	name?: boolean;
 
@@ -363,40 +324,33 @@ export interface Consumables {
 	styles?: string | Array<string>;
 }
 
-const CONSUMABLE_TYPES = [ 'attributes', 'classes', 'styles' ] as const;
-
-type ConsumableType = ( typeof CONSUMABLE_TYPES )[ number ];
-
 /**
  * This is a private helper-class for {@link module:engine/conversion/viewconsumable~ViewConsumable}.
  * It represents and manipulates consumable parts of a single {@link module:engine/view/element~Element}.
  */
 export class ViewElementConsumables {
-	public readonly element: Node | DocumentFragment;
+	public readonly element: Element;
 
 	/**
 	 * Flag indicating if name of the element can be consumed.
 	 */
-	private _canConsumeName: boolean | null;
+	private _canConsumeName: boolean | null = null;
 
 	/**
-	 * Contains maps of element's consumables: attributes, classes and styles.
+	 * A map of element's consumables.
+	 * * For plain attributes the value is a boolean indicating whether the attribute is available to consume.
+	 * * For token based attributes (like class list and style) the value is a map of tokens to booleans
+	 * indicating whether the token is available to consume on the given attribute.
 	 */
-	private readonly _consumables: Record<ConsumableType, Map<string, boolean>>;
+	private readonly _attributes = new Map<string, boolean | Map<string, boolean>>();
 
 	/**
 	 * Creates ViewElementConsumables instance.
 	 *
-	 * @param from View node or document fragment from which `ViewElementConsumables` is being created.
+	 * @param from View element from which `ViewElementConsumables` is being created.
 	 */
-	constructor( from: Node | DocumentFragment ) {
+	constructor( from: Element ) {
 		this.element = from;
-		this._canConsumeName = null;
-		this._consumables = {
-			attributes: new Map(),
-			styles: new Map(),
-			classes: new Map()
-		};
 	}
 
 	/**
@@ -411,157 +365,36 @@ export class ViewElementConsumables {
 	 * Attributes classes and styles:
 	 *
 	 * ```ts
-	 * consumables.add( { attributes: 'title', classes: 'foo', styles: 'color' } );
-	 * consumables.add( { attributes: [ 'title', 'name' ], classes: [ 'foo', 'bar' ] );
+	 * consumables.add( { attributes: [ [ 'title' ], [ 'class', 'foo' ], [ 'style', 'color'] ] } );
+	 * consumables.add( { attributes: [ [ 'title' ], [ 'name' ], [ 'class', 'foo' ], [ 'class', 'bar' ] ] } );
 	 * ```
+	 *
+	 * Note: This method accepts only {@link module:engine/view/element~NormalizedConsumables}.
+	 * You can use {@link module:engine/conversion/viewconsumable~normalizeConsumables} helper to convert from
+	 * {@link module:engine/conversion/viewconsumable~Consumables} to `NormalizedConsumables`.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
 	 * attribute is provided - it should be handled separately by providing `style` and `class` in consumables object.
 	 *
 	 * @param consumables Object describing which parts of the element can be consumed.
-	 * @param consumables.name If set to `true` element's name will be added as consumable.
-	 * @param consumables.attributes Attribute name or array of attribute names to add as consumable.
-	 * @param consumables.classes Class name or array of class names to add as consumable.
-	 * @param consumables.styles Style name or array of style names to add as consumable.
 	 */
-	public add( consumables: Consumables ): void {
+	public add( consumables: NormalizedConsumables ): void {
 		if ( consumables.name ) {
 			this._canConsumeName = true;
 		}
 
-		for ( const type of CONSUMABLE_TYPES ) {
-			if ( type in consumables ) {
-				this._add( type, consumables[ type ]! );
-			}
-		}
-	}
+		for ( const [ name, token ] of consumables.attributes ) {
+			if ( token ) {
+				let attributeTokens = this._attributes.get( name );
 
-	/**
-	 * Tests if parts of the {@link module:engine/view/node~Node view node} can be consumed.
-	 *
-	 * Element's name can be tested:
-	 *
-	 * ```ts
-	 * consumables.test( { name: true } );
-	 * ```
-	 *
-	 * Attributes classes and styles:
-	 *
-	 * ```ts
-	 * consumables.test( { attributes: 'title', classes: 'foo', styles: 'color' } );
-	 * consumables.test( { attributes: [ 'title', 'name' ], classes: [ 'foo', 'bar' ] );
-	 * ```
-	 *
-	 * @param consumables Object describing which parts of the element should be tested.
-	 * @param consumables.name If set to `true` element's name will be tested.
-	 * @param consumables.attributes Attribute name or array of attribute names to test.
-	 * @param consumables.classes Class name or array of class names to test.
-	 * @param consumables.styles Style name or array of style names to test.
-	 * @returns `true` when all tested items can be consumed, `null` when even one of the items
-	 * was never marked for consumption and `false` when even one of the items was already consumed.
-	 */
-	public test( consumables: Consumables | Match ): boolean | null {
-		// Check if name can be consumed.
-		if ( consumables.name && !this._canConsumeName ) {
-			return this._canConsumeName;
-		}
-
-		for ( const type of CONSUMABLE_TYPES ) {
-			if ( type in consumables ) {
-				const value = this._test( type, consumables[ type ]! );
-
-				if ( value !== true ) {
-					return value;
+				if ( !attributeTokens || typeof attributeTokens == 'boolean' ) {
+					attributeTokens = new Map<string, boolean>();
+					this._attributes.set( name, attributeTokens );
 				}
+
+				attributeTokens.set( token, true );
 			}
-		}
-
-		// Return true only if all can be consumed.
-		return true;
-	}
-
-	/**
-	 * Consumes parts of {@link module:engine/view/element~Element view element}. This function does not check if consumable item
-	 * is already consumed - it consumes all consumable items provided.
-	 * Element's name can be consumed:
-	 *
-	 * ```ts
-	 * consumables.consume( { name: true } );
-	 * ```
-	 *
-	 * Attributes classes and styles:
-	 *
-	 * ```ts
-	 * consumables.consume( { attributes: 'title', classes: 'foo', styles: 'color' } );
-	 * consumables.consume( { attributes: [ 'title', 'name' ], classes: [ 'foo', 'bar' ] );
-	 * ```
-	 *
-	 * @param consumables Object describing which parts of the element should be consumed.
-	 * @param consumables.name If set to `true` element's name will be consumed.
-	 * @param consumables.attributes Attribute name or array of attribute names to consume.
-	 * @param consumables.classes Class name or array of class names to consume.
-	 * @param consumables.styles Style name or array of style names to consume.
-	 */
-	public consume( consumables: Consumables | Match ): void {
-		if ( consumables.name ) {
-			this._canConsumeName = false;
-		}
-
-		for ( const type of CONSUMABLE_TYPES ) {
-			if ( type in consumables ) {
-				this._consume( type, consumables[ type ]! );
-			}
-		}
-	}
-
-	/**
-	 * Revert already consumed parts of {@link module:engine/view/element~Element view Element}, so they can be consumed once again.
-	 * Element's name can be reverted:
-	 *
-	 * ```ts
-	 * consumables.revert( { name: true } );
-	 * ```
-	 *
-	 * Attributes classes and styles:
-	 *
-	 * ```ts
-	 * consumables.revert( { attributes: 'title', classes: 'foo', styles: 'color' } );
-	 * consumables.revert( { attributes: [ 'title', 'name' ], classes: [ 'foo', 'bar' ] );
-	 * ```
-	 *
-	 * @param consumables Object describing which parts of the element should be reverted.
-	 * @param consumables.name If set to `true` element's name will be reverted.
-	 * @param consumables.attributes Attribute name or array of attribute names to revert.
-	 * @param consumables.classes Class name or array of class names to revert.
-	 * @param consumables.styles Style name or array of style names to revert.
-	 */
-	public revert( consumables: Consumables ): void {
-		if ( consumables.name ) {
-			this._canConsumeName = true;
-		}
-
-		for ( const type of CONSUMABLE_TYPES ) {
-			if ( type in consumables ) {
-				this._revert( type, consumables[ type ]! );
-			}
-		}
-	}
-
-	/**
-	 * Helper method that adds consumables of a given type: attribute, class or style.
-	 *
-	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
-	 * type is provided - it should be handled separately by providing actual style/class type.
-	 *
-	 * @param type Type of the consumable item: `attributes`, `classes` or `styles`.
-	 * @param item Consumable item or array of items.
-	 */
-	private _add( type: ConsumableType, item: ArrayOrItem<string> ) {
-		const items = toArray( item );
-		const consumables = this._consumables[ type ];
-
-		for ( const name of items ) {
-			if ( type === 'attributes' && ( name === 'class' || name === 'style' ) ) {
+			else if ( name == 'style' || name == 'class' ) {
 				/**
 				 * Class and style attributes should be handled separately in
 				 * {@link module:engine/conversion/viewconsumable~ViewConsumable#add `ViewConsumable#add()`}.
@@ -582,48 +415,131 @@ export class ViewElementConsumables {
 				 */
 				throw new CKEditorError( 'viewconsumable-invalid-attribute', this );
 			}
-
-			consumables.set( name, true );
-
-			if ( type === 'styles' ) {
-				for ( const alsoName of this.element.document.stylesProcessor.getRelatedStyles( name ) ) {
-					consumables.set( alsoName, true );
-				}
+			else {
+				this._attributes.set( name, true );
 			}
 		}
 	}
 
 	/**
-	 * Helper method that tests consumables of a given type: attribute, class or style.
+	 * Tests if parts of the {@link module:engine/view/element~Element view element} can be consumed.
 	 *
-	 * @param type Type of the consumable item: `attributes`, `classes` or `styles`.
-	 * @param item Consumable item or array of items.
-	 * @returns Returns `true` if all items can be consumed, `null` when one of the items cannot be
-	 * consumed and `false` when one of the items is already consumed.
+	 * Element's name can be tested:
+	 *
+	 * ```ts
+	 * consumables.test( { name: true } );
+	 * ```
+	 *
+	 * Attributes classes and styles:
+	 *
+	 * ```ts
+	 * consumables.test( { attributes: [ [ 'title' ], [ 'class', 'foo' ], [ 'style', 'color' ] ] } );
+	 * consumables.test( { attributes: [ [ 'title' ], [ 'name' ], [ 'class', 'foo' ], [ 'class', 'bar' ] ] } );
+	 * ```
+	 *
+	 * @param consumables Object describing which parts of the element should be tested.
+	 * @returns `true` when all tested items can be consumed, `null` when even one of the items
+	 * was never marked for consumption and `false` when even one of the items was already consumed.
 	 */
-	private _test( type: ConsumableType, item: ArrayOrItem<string> ): boolean | null {
-		const items = toArray( item );
-		const consumables = this._consumables[ type ];
+	public test( consumables: NormalizedConsumables ): boolean | null {
+		// Check if name can be consumed.
+		if ( consumables.name && !this._canConsumeName ) {
+			return this._canConsumeName;
+		}
 
-		for ( const name of items ) {
-			if ( type === 'attributes' && ( name === 'class' || name === 'style' ) ) {
-				const consumableName = name == 'class' ? 'classes' : 'styles';
+		for ( const [ name, token ] of consumables.attributes ) {
+			const value = this._attributes.get( name );
 
-				// Check all classes/styles if class/style attribute is tested.
-				const value = this._test( consumableName, [ ...this._consumables[ consumableName ].keys() ] );
+			// Return null if attribute is not found.
+			if ( value === undefined ) {
+				return null;
+			}
 
-				if ( value !== true ) {
-					return value;
+			// Already consumed.
+			if ( value === false ) {
+				return false;
+			}
+
+			// Simple attribute is not consumed so continue to next attribute.
+			if ( value === true ) {
+				continue;
+			}
+
+			if ( !token ) {
+				// Tokenized attribute but token is not specified so check if all tokens are not consumed.
+				for ( const tokenValue of value.values() ) {
+					// Already consumed token.
+					if ( !tokenValue ) {
+						return false;
+					}
 				}
 			} else {
-				const value = consumables.get( name );
-				// Return null if attribute is not found.
-				if ( value === undefined ) {
+				const tokenValue = value.get( token );
+
+				// Return null if token is not found.
+				if ( tokenValue === undefined ) {
 					return null;
 				}
 
-				if ( !value ) {
+				// Already consumed.
+				if ( !tokenValue ) {
 					return false;
+				}
+			}
+		}
+
+		// Return true only if all can be consumed.
+		return true;
+	}
+
+	/**
+	 * Tests if parts of the {@link module:engine/view/element~Element view element} can be consumed and consumes them if available.
+	 * It returns `true` when all items included in method's call can be consumed, otherwise returns `false`.
+	 *
+	 * Element's name can be consumed:
+	 *
+	 * ```ts
+	 * consumables.consume( { name: true } );
+	 * ```
+	 *
+	 * Attributes classes and styles:
+	 *
+	 * ```ts
+	 * consumables.consume( { attributes: [ [ 'title' ], [ 'class', 'foo' ], [ 'style', 'color' ] ] } );
+	 * consumables.consume( { attributes: [ [ 'title' ], [ 'name' ], [ 'class', 'foo' ], [ 'class', 'bar' ] ] } );
+	 * ```
+	 *
+	 * @param consumables Object describing which parts of the element should be consumed.
+	 * @returns `true` when all tested items can be consumed and `false` when even one of the items could not be consumed.
+	 */
+	public consume( consumables: NormalizedConsumables ): boolean {
+		if ( !this.test( consumables ) ) {
+			return false;
+		}
+
+		if ( consumables.name ) {
+			this._canConsumeName = false;
+		}
+
+		for ( const [ name, token ] of consumables.attributes ) {
+			// `value` must be set, because `this.test()` returned `true`.
+			const value = this._attributes.get( name )!;
+
+			// Plain (not tokenized) not-consumed attribute.
+			if ( typeof value == 'boolean' ) {
+				// Use Element API to collect related attributes.
+				for ( const [ toConsume ] of this.element._getConsumables( name, token ).attributes ) {
+					this._attributes.set( toConsume, false );
+				}
+			} else if ( !token ) {
+				// Tokenized attribute but token is not specified so consume all tokens.
+				for ( const token of value.keys() ) {
+					value.set( token, false );
+				}
+			} else {
+				// Use Element API to collect related attribute tokens.
+				for ( const [ , toConsume ] of this.element._getConsumables( name, token ).attributes ) {
+					value.set( toConsume!, false );
 				}
 			}
 		}
@@ -632,56 +548,103 @@ export class ViewElementConsumables {
 	}
 
 	/**
-	 * Helper method that consumes items of a given type: attribute, class or style.
+	 * Revert already consumed parts of {@link module:engine/view/element~Element view Element}, so they can be consumed once again.
+	 * Element's name can be reverted:
 	 *
-	 * @param type Type of the consumable item: `attributes`, `classes` or `styles`.
-	 * @param item Consumable item or array of items.
+	 * ```ts
+	 * consumables.revert( { name: true } );
+	 * ```
+	 *
+	 * Attributes classes and styles:
+	 *
+	 * ```ts
+	 * consumables.revert( { attributes: [ [ 'title' ], [ 'class', 'foo' ], [ 'style', 'color' ] ] } );
+	 * consumables.revert( { attributes: [ [ 'title' ], [ 'name' ], [ 'class', 'foo' ], [ 'class', 'bar' ] ] } );
+	 * ```
+	 *
+	 * @param consumables Object describing which parts of the element should be reverted.
 	 */
-	private _consume( type: ConsumableType, item: ArrayOrItem<string> ) {
-		const items = toArray( item );
-		const consumables = this._consumables[ type ];
+	public revert( consumables: NormalizedConsumables ): void {
+		if ( consumables.name ) {
+			this._canConsumeName = true;
+		}
 
-		for ( const name of items ) {
-			if ( type === 'attributes' && ( name === 'class' || name === 'style' ) ) {
-				const consumableName = name == 'class' ? 'classes' : 'styles';
+		for ( const [ name, token ] of consumables.attributes ) {
+			const value = this._attributes.get( name );
 
-				// If class or style is provided for consumption - consume them all.
-				this._consume( consumableName, [ ...this._consumables[ consumableName ].keys() ] );
-			} else {
-				consumables.set( name, false );
+			// Plain consumed attribute.
+			if ( value === false ) {
+				this._attributes.set( name, true );
+				continue;
+			}
 
-				if ( type == 'styles' ) {
-					for ( const toConsume of this.element.document.stylesProcessor.getRelatedStyles( name ) ) {
-						consumables.set( toConsume, false );
-					}
+			// Unknown attribute or not consumed.
+			if ( value === undefined || value === true ) {
+				continue;
+			}
+
+			if ( !token ) {
+				// Tokenized attribute but token is not specified so revert all tokens.
+				for ( const token of value.keys() ) {
+					value.set( token, true );
 				}
+			} else {
+				const tokenValue = value.get( token );
+
+				if ( tokenValue === false ) {
+					value.set( token, true );
+				}
+
+				// Note that revert of consumed related styles is not handled.
 			}
 		}
 	}
+}
 
-	/**
-	 * Helper method that reverts items of a given type: attribute, class or style.
-	 *
-	 * @param type Type of the consumable item: `attributes`, `classes` or , `styles`.
-	 * @param item Consumable item or array of items.
-	 */
-	private _revert( type: ConsumableType, item: ArrayOrItem<string> ) {
-		const items = toArray( item );
-		const consumables = this._consumables[ type ];
+/**
+ * Normalizes a {@link module:engine/conversion/viewconsumable~Consumables} or {@link module:engine/view/matcher~Match}
+ * to a {@link module:engine/view/element~NormalizedConsumables}.
+ */
+export function normalizeConsumables( consumables: Consumables | Match ): NormalizedConsumables {
+	const attributes: Array<[string, string?]> = [];
 
-		for ( const name of items ) {
-			if ( type === 'attributes' && ( name === 'class' || name === 'style' ) ) {
-				const consumableName = name == 'class' ? 'classes' : 'styles';
+	if ( 'attributes' in consumables && consumables.attributes ) {
+		normalizeConsumablePart( attributes, consumables.attributes );
+	}
 
-				// If class or style is provided for reverting - revert them all.
-				this._revert( consumableName, [ ...this._consumables[ consumableName ].keys() ] );
-			} else {
-				const value = consumables.get( name );
+	if ( 'classes' in consumables && consumables.classes ) {
+		normalizeConsumablePart( attributes, consumables.classes, 'class' );
+	}
 
-				if ( value === false ) {
-					consumables.set( name, true );
-				}
-			}
+	if ( 'styles' in consumables && consumables.styles ) {
+		normalizeConsumablePart( attributes, consumables.styles, 'style' );
+	}
+
+	return {
+		name: consumables.name || false,
+		attributes
+	};
+}
+
+/**
+ * Normalizes a list of consumable attributes to a common tuple format.
+ */
+function normalizeConsumablePart(
+	attributes: Array<[string, string?]>,
+	items: string | Array<string> | Array<[string, string?]>,
+	prefix?: string
+) {
+	if ( typeof items == 'string' ) {
+		attributes.push( prefix ? [ prefix, items ] : [ items ] );
+
+		return;
+	}
+
+	for ( const item of items ) {
+		if ( Array.isArray( item ) ) {
+			attributes.push( item );
+		} else {
+			attributes.push( prefix ? [ prefix, item ] : [ item ] );
 		}
 	}
 }

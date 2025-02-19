@@ -1,16 +1,16 @@
 {
 	"plugins": [
 		{
-			"name": "Source editing",
+			"name": "Source code editing",
 			"className": "SourceEditing",
 			"description": "Allows for viewing and editing the source of the document.",
-			"docs": "features/source-editing.html",
+			"docs": "features/source-editing/source-editing.html",
 			"path": "src/sourceediting.js",
 			"uiComponents": [
 				{
 					"type": "Button",
 					"name": "sourceEditing",
-					"iconPath": "theme/icons/source-editing.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/source.svg"
 				}
 			]
 		}

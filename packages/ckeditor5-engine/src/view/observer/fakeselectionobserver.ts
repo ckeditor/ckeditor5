@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -17,7 +17,7 @@ import type {
 	ViewDocumentSelectionEventData
 } from './selectionobserver.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
-import { debounce, type DebouncedFunc } from 'lodash-es';
+import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
 
 /**
  * Fake selection observer class. If view selection is fake it is placed in dummy DOM container. This observer listens
@@ -28,9 +28,9 @@ import { debounce, type DebouncedFunc } from 'lodash-es';
  */
 export default class FakeSelectionObserver extends Observer {
 	/**
-	 * Fires debounced event `selectionChangeDone`. It uses `lodash#debounce` method to delay function call.
+	 * Fires debounced event `selectionChangeDone`. It uses `es-toolkit#debounce` method to delay function call.
 	 */
-	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunc<( data: ViewDocumentSelectionEventData ) => void>;
+	private readonly _fireSelectionChangeDoneDebounced: DebouncedFunction<( data: ViewDocumentSelectionEventData ) => void>;
 
 	/**
 	 * Creates new FakeSelectionObserver instance.

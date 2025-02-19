@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -26,7 +26,7 @@ import FindAndReplace from '../../src/findandreplace.js';
 import FindAndReplaceFormView from '../../src/ui/findandreplaceformview.js';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { icons } from 'ckeditor5/src/core.js';
+import { IconPreviousArrow } from 'ckeditor5/src/icons.js';
 
 describe( 'FindAndReplaceFormView', () => {
 	let view;
@@ -135,7 +135,7 @@ describe( 'FindAndReplaceFormView', () => {
 					} );
 
 					it( 'should have an icon', () => {
-						expect( view._findPrevButtonView.icon ).to.equal( icons.previousArrow );
+						expect( view._findPrevButtonView.icon ).to.equal( IconPreviousArrow );
 					} );
 
 					it( 'should have a tooltip', () => {
@@ -157,7 +157,7 @@ describe( 'FindAndReplaceFormView', () => {
 					} );
 
 					it( 'should have an icon', () => {
-						expect( view._findNextButtonView.icon ).to.equal( icons.previousArrow );
+						expect( view._findNextButtonView.icon ).to.equal( IconPreviousArrow );
 					} );
 
 					it( 'should have a tooltip', () => {

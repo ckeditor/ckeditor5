@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -10,7 +10,7 @@
 import type { Element, Item, Marker, Model, Range } from 'ckeditor5/src/engine.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 import { Collection, uid } from 'ckeditor5/src/utils.js';
-import { escapeRegExp } from 'lodash-es';
+import { escapeRegExp } from 'es-toolkit/compat';
 import type { ResultType } from './findandreplace.js';
 
 /**

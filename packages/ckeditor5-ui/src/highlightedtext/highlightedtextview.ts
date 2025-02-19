@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -8,7 +8,7 @@
  */
 
 import View from '../view.js';
-import { escape } from 'lodash-es';
+import { escape } from 'es-toolkit/compat';
 
 import '../../theme/components/highlightedtext/highlightedtext.css';
 

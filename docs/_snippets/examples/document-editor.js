@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -33,9 +33,9 @@ DecoupledEditor
 		licenseKey: 'GPL'
 	} )
 	.then( editor => {
-		const toolbarContainer = document.querySelector( '.document-editor__toolbar' );
-
-		toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+		document
+			.querySelector( '.document-editor__toolbar' )
+			?.appendChild( editor.ui.view.toolbar.element );
 
 		window.editor = editor;
 	} )

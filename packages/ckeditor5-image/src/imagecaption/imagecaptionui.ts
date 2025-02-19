@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -7,8 +7,9 @@
  * @module image/imagecaption/imagecaptionui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView } from 'ckeditor5/src/ui.js';
+import { IconCaption } from 'ckeditor5/src/icons.js';
 import ImageCaptionUtils from './imagecaptionutils.js';
 import type ToggleImageCaptionCommand from './toggleimagecaptioncommand.js';
 
@@ -51,7 +52,7 @@ export default class ImageCaptionUI extends Plugin {
 			const view = new ButtonView( locale );
 
 			view.set( {
-				icon: icons.caption,
+				icon: IconCaption,
 				tooltip: true,
 				isToggleable: true
 			} );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -7,6 +7,7 @@
  * @module widget/utils
  */
 
+import { IconDragHandle } from '@ckeditor/ckeditor5-icons';
 import {
 	Rect,
 	CKEditorError,
@@ -35,8 +36,6 @@ import { IconView } from '@ckeditor/ckeditor5-ui';
 
 import HighlightStack, { type HighlightStackChangeEvent } from './highlightstack.js';
 import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils.js';
-
-import dragHandleIcon from '../theme/icons/drag-handle.svg';
 
 /**
  * CSS class added to each widget element.
@@ -434,7 +433,7 @@ function addSelectionHandle( widgetElement: ViewContainerElement, writer: Downca
 
 		// Use the IconView from the ui library.
 		const icon = new IconView();
-		icon.set( 'content', dragHandleIcon );
+		icon.set( 'content', IconDragHandle );
 
 		// Render the icon view right away to append its #element to the selectionHandle DOM element.
 		icon.render();

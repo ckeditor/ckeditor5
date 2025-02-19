@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -7,11 +7,9 @@
  * @module ui/colorgrid/colortileview
  */
 
-import ButtonView from '../button/buttonview.js';
-
+import { IconColorTileCheck } from '@ckeditor/ckeditor5-icons';
 import { env, type Locale } from '@ckeditor/ckeditor5-utils';
-
-import checkIcon from '../../theme/icons/color-tile-check.svg';
+import ButtonView from '../button/buttonview.js';
 
 /**
  * This class represents a single color tile in the {@link module:ui/colorgrid/colorgridview~ColorGridView}.
@@ -36,7 +34,7 @@ export default class ColorTileView extends ButtonView {
 		this.set( 'color', undefined );
 		this.set( 'hasBorder', false );
 
-		this.icon = checkIcon;
+		this.icon = IconColorTileCheck;
 
 		this.extendTemplate( {
 			attributes: {

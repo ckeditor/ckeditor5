@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -7,7 +7,7 @@
  * @module html-support/integrations/list
  */
 
-import { isEqual } from 'lodash-es';
+import { isEqual } from 'es-toolkit/compat';
 import { Plugin } from 'ckeditor5/src/core.js';
 import type { UpcastElementEvent } from 'ckeditor5/src/engine.js';
 import type { GetCallback } from 'ckeditor5/src/utils.js';

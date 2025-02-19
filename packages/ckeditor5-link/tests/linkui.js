@@ -1,10 +1,11 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals document, window, Event */
 
+import { IconBookmarkMedium, IconBookmarkSmall, IconLink } from 'ckeditor5/src/icons.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
@@ -32,9 +33,6 @@ import LinkPreviewButtonView from '../src/ui/linkpreviewbuttonview.js';
 import LinkPropertiesView from '../src/ui/linkpropertiesview.js';
 import ManualDecorator from '../src/utils/manualdecorator.js';
 import { MenuBarMenuListItemButtonView, ToolbarView } from '@ckeditor/ckeditor5-ui';
-
-import linkIcon from '../theme/icons/link.svg';
-import { icons } from '@ckeditor/ckeditor5-core';
 
 describe( 'LinkUI', () => {
 	let editor, model, linkUIFeature, linkButton, balloon, formView, toolbarView, editorElement, propertiesView;
@@ -141,7 +139,7 @@ describe( 'LinkUI', () => {
 			it( 'should create UI component with correct attribute values', () => {
 				expect( linkButton.isOn ).to.be.false;
 				expect( linkButton.label ).to.equal( label );
-				expect( linkButton.icon ).to.equal( linkIcon );
+				expect( linkButton.icon ).to.equal( IconLink );
 				expect( linkButton.keystroke ).to.equal( 'Ctrl+K' );
 			} );
 
@@ -3165,7 +3163,7 @@ describe( 'LinkUI', () => {
 						{
 							href: 'https://ckeditor.com',
 							label: 'CKEditor',
-							icon: icons.bookmarkMedium
+							icon: IconBookmarkMedium
 						}
 					]
 				} );
@@ -3176,7 +3174,7 @@ describe( 'LinkUI', () => {
 				expect( button.isVisible ).to.be.true;
 				expect( button.label ).to.equal( 'CKEditor' );
 				expect( button.tooltip ).to.be.false;
-				expect( button.icon ).to.be.equal( icons.bookmarkMedium );
+				expect( button.icon ).to.be.equal( IconBookmarkMedium );
 			} );
 
 			it( 'should prefer to use preview tooltip and icon from `getItem` if present', () => {
@@ -3186,14 +3184,14 @@ describe( 'LinkUI', () => {
 						{
 							href: 'https://ckeditor.com',
 							label: 'CKEditor',
-							icon: icons.bookmarkMedium
+							icon: IconBookmarkMedium
 						}
 					],
 					getItem: href => {
 						if ( href === 'https://ckeditor.com' ) {
 							return {
 								label: 'CKEditor',
-								icon: icons.bookmarkMedium,
+								icon: IconBookmarkMedium,
 								tooltip: 'Tooltip'
 							};
 						}
@@ -3203,7 +3201,7 @@ describe( 'LinkUI', () => {
 				setModelData( model, '<paragraph><$text linkHref="https://ckeditor.com">Bar[]</$text></paragraph>' );
 
 				expect( button.tooltip ).to.be.equal( 'Tooltip' );
-				expect( button.icon ).to.be.equal( icons.bookmarkMedium );
+				expect( button.icon ).to.be.equal( IconBookmarkMedium );
 			} );
 
 			it( 'should not show any icon if preview if icon is null in `getItem`', () => {
@@ -3213,7 +3211,7 @@ describe( 'LinkUI', () => {
 						{
 							href: 'https://ckeditor.com',
 							label: 'CKEditor',
-							icon: icons.bookmarkMedium
+							icon: IconBookmarkMedium
 						}
 					],
 					getItem: href => {
@@ -3243,7 +3241,7 @@ describe( 'LinkUI', () => {
 						{
 							href: 'https://ckeditor.com',
 							label: 'CKEditor',
-							icon: icons.bookmarkMedium
+							icon: IconBookmarkMedium
 						}
 					],
 					navigate
@@ -3261,7 +3259,7 @@ describe( 'LinkUI', () => {
 				sinon.assert.calledWith( navigate, sinon.match( {
 					href: 'https://ckeditor.com',
 					label: 'CKEditor',
-					icon: icons.bookmarkMedium
+					icon: IconBookmarkMedium
 				} ) );
 			} );
 
@@ -3275,7 +3273,7 @@ describe( 'LinkUI', () => {
 						{
 							href: 'https://ckeditor.com',
 							label: 'CKEditor',
-							icon: icons.bookmarkMedium
+							icon: IconBookmarkMedium
 						}
 					],
 					navigate
@@ -3297,17 +3295,17 @@ describe( 'LinkUI', () => {
 				linkUIFeature.registerLinksListProvider( {
 					label: 'Foo',
 					getListItems: () => [
-						{ href: 'https://ckeditor.com', label: 'CKEditor', icon: icons.bookmarkMedium },
-						{ href: 'https://example.org', label: 'Example', icon: icons.bookmarkSmall },
-						{ href: 'https://example.com/2', label: 'Example 2', icon: icons.bookmarkSmall },
-						{ href: 'https://example.com/3', label: 'Example 3', icon: icons.bookmarkSmall }
+						{ href: 'https://ckeditor.com', label: 'CKEditor', icon: IconBookmarkMedium },
+						{ href: 'https://example.org', label: 'Example', icon: IconBookmarkSmall },
+						{ href: 'https://example.com/2', label: 'Example 2', icon: IconBookmarkSmall },
+						{ href: 'https://example.com/3', label: 'Example 3', icon: IconBookmarkSmall }
 					]
 				} );
 
 				linkUIFeature.registerLinksListProvider( {
 					label: 'Bar',
 					getListItems: () => [
-						{ href: 'https://ckeditor.com', label: 'CKEditor', icon: icons.bookmarkMedium }
+						{ href: 'https://ckeditor.com', label: 'CKEditor', icon: IconBookmarkMedium }
 					]
 				} );
 
