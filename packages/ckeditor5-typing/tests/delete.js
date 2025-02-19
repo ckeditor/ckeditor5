@@ -121,6 +121,11 @@ describe( 'Delete feature', () => {
 		expect( clickBackspace( editor ).preventedKeyDown ).to.be.false;
 
 		expect( getModelData( model ) ).to.equal( '<widget><nested>[]</nested></widget>' );
+	} );
+
+	// See https://github.com/ckeditor/ckeditor5/issues/17383.
+	it( 'handles the backspace key in an empty nested editable', () => {
+		setModelData( model, '<widget><nested>[]</nested></widget>' );
 
 		expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
 
