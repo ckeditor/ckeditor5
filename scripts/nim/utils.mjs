@@ -61,7 +61,7 @@ export function generateCKEditor5BrowserBuild( options = {} ) {
 		browser: true,
 		name,
 		external: [],
-		translations
+		translations: translations ? 'packages/**/*.po' : ''
 	} );
 }
 
