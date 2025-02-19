@@ -16,8 +16,6 @@ export default class InsertTableLayoutCommand extends InsertTableCommand {
 		options: {
 			rows?: number;
 			columns?: number;
-			headingRows?: number;
-			headingColumns?: number;
 		}
 	): void {
 		const editor = this.editor;
