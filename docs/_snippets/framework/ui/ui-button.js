@@ -3,7 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, document, console, Locale, ButtonView, icons, ToolbarView, ClassicEditor, TooltipManager, Essentials */
+/* globals window, document, console */
+
+import { ButtonView, ToolbarView, TooltipManager } from '@ckeditor/ckeditor5-ui';
+import { Locale } from '@ckeditor/ckeditor5-utils';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { IconCheck } from '@ckeditor/ckeditor5-icons';
 
 const locale = new Locale();
 
@@ -35,7 +41,7 @@ const saveButton = new ButtonView();
 saveButton.set( {
 	label: 'Save',
 	withText: false,
-	icon: icons.IconCheck,
+	icon: IconCheck,
 	class: 'ck-button-save'
 } );
 saveButton.render();

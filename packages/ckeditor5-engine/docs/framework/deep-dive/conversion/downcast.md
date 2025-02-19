@@ -79,8 +79,6 @@ editor.conversion
 	} );
 ```
 
-{@snippet framework/mini-inspector-paragraph}
-
 ## Converting text attributes
 
 As you should already know from the {@link framework/architecture/editing-engine#model chapter about the model}, an **attribute** may be applied to a model text node.
