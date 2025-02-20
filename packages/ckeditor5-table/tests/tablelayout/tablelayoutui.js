@@ -55,7 +55,8 @@ describe( 'TableLayoutUI', () => {
 
 			document.body.appendChild( insertTableLayout.element );
 
-			insertTableLayout.isOpen = true; // Dropdown is lazy loaded, so make sure it's open (#6193).
+			// Dropdown is lazy loaded, so make sure it's open. See https://github.com/ckeditor/ckeditor5/issues/6193.
+			insertTableLayout.isOpen = true;
 		} );
 
 		afterEach( () => {
