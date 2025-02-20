@@ -14,7 +14,7 @@ import {
 	View,
 	ViewCollection,
 	isFocusable,
-	submitHandler,
+	isViewWithFocusCycler,
 	type FocusableView
 } from 'ckeditor5/src/ui.js';
 import {
@@ -119,13 +119,9 @@ export default class EmojiPickerFormView extends View {
 	public override render(): void {
 		super.render();
 
-		submitHandler( {
-			view: this
-		} );
-
 		const childViews = [
-			this.backButtonView,
-			...this.children.filter( isFocusable ) as Array<FocusableView>
+			...this.children.filter( isFocusable ) as Array<FocusableView>,
+			this.backButtonView
 		];
 
 		childViews.forEach( v => {
@@ -134,6 +130,11 @@ export default class EmojiPickerFormView extends View {
 
 			// Register the view in the focus tracker.
 			this.focusTracker.add( v.element! );
+
+			// Register the view in the focus cycler to avoid nested focus cycles traps.
+			if ( isViewWithFocusCycler( v ) ) {
+				this._focusCycler.chain( v.focusCycler );
+			}
 		} );
 
 		// Start listening for the keystrokes coming from #element.
