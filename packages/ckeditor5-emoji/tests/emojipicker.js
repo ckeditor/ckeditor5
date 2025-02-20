@@ -387,6 +387,16 @@ describe( 'EmojiPicker', () => {
 			expect( emojiPicker.balloonPlugin.visibleView ).to.equal( null );
 		} );
 
+		it( 'should close when back button of form view is clicked', () => {
+			emojiPicker.showUI();
+
+			expect( emojiPicker.balloonPlugin.visibleView ).to.be.instanceOf( EmojiPickerFormView );
+
+			emojiPicker.emojiPickerFormView.backButtonView.fire( 'execute' );
+
+			expect( emojiPicker.balloonPlugin.visibleView ).to.equal( null );
+		} );
+
 		it( 'should load previous category after reopening the emoji picker', () => {
 			emojiPicker.showUI();
 			emojiPicker.emojiPickerView.categoriesView.categoryName = 'Food & Drinks';

@@ -95,7 +95,7 @@ export default class EmojiPickerFormView extends View {
 		} );
 
 		this.setTemplate( {
-			tag: 'form',
+			tag: 'div',
 
 			attributes: {
 				class: [
