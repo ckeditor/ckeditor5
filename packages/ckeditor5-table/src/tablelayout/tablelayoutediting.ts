@@ -112,7 +112,7 @@ export default class TableLayoutEditing extends Plugin {
 /**
  * View table element to model table element conversion helper.
  *
- * This conversion helper overrides the default table converter to met table layout conditions.
+ * This conversion helper overrides the default table converter to meet table layout conditions.
  *
  * @returns Conversion helper.
  */
@@ -132,7 +132,7 @@ function upcastTableOverride() {
 
 			const { rows, headingRows, headingColumns } = scanTable( viewTable );
 
-			// // Only set attributes if values is greater then 0.
+			// Only set attributes if values are greater then 0.
 			const attributes: { headingColumns?: number; headingRows?: number } = {};
 
 			const hasTableTypeContent = isTableTypeContent( viewTable );
@@ -197,8 +197,8 @@ function upcastTableToSetTableType() {
 
 /**
  * Checks if the table is a content table.
- * Returns `true` if on of below conditions is met:
- * - the `<table>` is wrapped with `< figure>`,
+ * Returns `true` if any of the following conditions are met:
+ * - the `<table>` is wrapped with `<figure>`,
  * - the `<table>` has class `content-table`
  * - the `<table>` has a `<caption>` element.
  * `false` otherwise.

@@ -11,7 +11,7 @@ import { Command } from 'ckeditor5/src/core.js';
 import type { Element } from 'ckeditor5/src/engine.js';
 import type TableUtils from '../tableutils.js';
 
-import { updateNumericAttribute } from '../utils/common.js';
+import { isTableTypeContent, updateNumericAttribute } from '../utils/common.js';
 import { getVerticallyOverlappingCells, splitHorizontally } from '../utils/structure.js';
 
 /**
@@ -49,7 +49,7 @@ export default class SetHeaderRowCommand extends Command {
 		let isContentTable = true;
 
 		if ( isInTable ) {
-			isContentTable = this._isTableTypeContent( selectedCells );
+			isContentTable = isTableTypeContent( selectedCells );
 		}
 
 		this.isEnabled = isInTable && isContentTable;
@@ -105,18 +105,5 @@ export default class SetHeaderRowCommand extends Command {
 		const headingRows = parseInt( table.getAttribute( 'headingRows' ) as string || '0' );
 
 		return !!headingRows && ( tableCell.parent as Element ).index! < headingRows;
-	}
-
-	/**
-	 * Checks if the table is a content table.
-	 */
-	private _isTableTypeContent( selectedCells: Array<Element> ): boolean {
-		const table = selectedCells[ 0 ].findAncestor( 'table' )!;
-
-		if ( table.getAttribute( 'tableType' ) == 'layout' ) {
-			return false;
-		}
-
-		return true;
 	}
 }
