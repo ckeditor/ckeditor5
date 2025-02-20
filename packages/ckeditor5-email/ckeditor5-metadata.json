@@ -1,0 +1,13 @@
+{
+	"plugins": [
+		{
+			"name": "EmailIntegration",
+			"className": "EmailIntegration",
+			"description": "Implements email integration features for CKEditor 5, providing basic functionality for handling email content.",
+			"path": "src/emailintegration.js",
+			"docs": "features/email.html",
+			"requires": [],
+			"uiComponents": []
+		}
+	]
+}

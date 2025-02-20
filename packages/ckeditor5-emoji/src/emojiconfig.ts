@@ -64,6 +64,23 @@ export interface EmojiConfig {
 	skinTone?: SkinToneId;
 
 	/**
+	 * The URL from which the emoji definitions should be loaded.
+	 *
+	 * ```ts
+	 *	ClassicEditor
+	 *		.create( editorElement, {
+	 *			plugins: [ Emoji, ... ],
+	 *			emoji: {
+	 *				definitionsUrl: ''
+	 *			}
+	 *		} )
+	 *		.then( ... )
+	 *		.catch( ... );
+	 * ```
+	 */
+	definitionsUrl?: string;
+
+	/**
 	 * The emoji database version.
 	 *
 	 * ```ts
@@ -78,9 +95,12 @@ export interface EmojiConfig {
 	 *		.catch( ... );
 	 * ```
 	 *
-	 * @default 16
+	 * If the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `emoji.definitionsUrl`}
+	 * option is provided, `version` is ignored as the defined URL takes precedence over the `version`.
 	 */
-	version?: 15 | 16;
+	version?: EmojiVersion;
 }
 
 export type SkinToneId = 'default' | 'light' | 'medium-light' | 'medium' | 'medium-dark' | 'dark';
+
+export type EmojiVersion = 15 | 16;
