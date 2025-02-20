@@ -44,7 +44,7 @@ export interface RestrictedEditingConfig {
 	 * };
 	 * ```
 	 *
-	 * Only inline content inserting or editing commands are allowed in this setting. It means, block content commands such as
+	 * Only inline content inserting or editing commands are allowed in this setting. Block content commands such as
 	 * `insertTable` or `enter` cannot be allowed via this setting, as they are not supported in the restricted editing mode.
 	 *
 	 * To make a command always enabled (also outside non-restricted areas) use the
