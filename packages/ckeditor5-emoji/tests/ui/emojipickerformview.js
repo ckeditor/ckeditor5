@@ -55,6 +55,11 @@ describe( 'EmojiPickerFormView', () => {
 
 			sinon.assert.calledOnce( spy );
 		} );
+
+		it( 'should create header view with proper label', () => {
+			expect( view.children.first ).to.be.instanceOf( FormHeaderView );
+			expect( view.children.first.label ).to.equal( 'Emoji picker' );
+		} );
 	} );
 
 	describe( 'render()', () => {
