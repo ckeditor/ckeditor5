@@ -156,6 +156,9 @@ export default class EmojiPicker extends Plugin {
 		}
 
 		if ( !this.balloonPlugin.hasView( this.emojiPickerFormView ) ) {
+			// Show back button if there is another balloon view visible.
+			this.emojiPickerFormView!.backButtonView.isVisible = !!this.balloonPlugin.visibleView;
+
 			this.balloonPlugin.add( {
 				view: this.emojiPickerFormView,
 				position: this._getBalloonPositionData()
