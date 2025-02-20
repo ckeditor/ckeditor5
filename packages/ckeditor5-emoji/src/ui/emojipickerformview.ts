@@ -13,6 +13,7 @@ import {
 	FormHeaderView,
 	View,
 	ViewCollection,
+	isFocusable,
 	submitHandler,
 	type FocusableView
 } from 'ckeditor5/src/ui.js';
@@ -36,6 +37,11 @@ import '../../theme/emojipickerform.css';
  */
 export default class EmojiPickerFormView extends View {
 	/**
+	 * The Back button view displayed in the header.
+	 */
+	public backButtonView: ButtonView;
+
+	/**
 	 * Tracks information about DOM focus in the form.
 	 */
 	public readonly focusTracker = new FocusTracker();
@@ -44,11 +50,6 @@ export default class EmojiPickerFormView extends View {
 	 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
 	 */
 	public readonly keystrokes = new KeystrokeHandler();
-
-	/**
-	 * The Back button view displayed in the header.
-	 */
-	public backButtonView: ButtonView;
 
 	/**
 	 * A collection of child views.
@@ -123,7 +124,8 @@ export default class EmojiPickerFormView extends View {
 		} );
 
 		const childViews = [
-			this.backButtonView
+			this.backButtonView,
+			...this.children.filter( isFocusable ) as Array<FocusableView>
 		];
 
 		childViews.forEach( v => {
@@ -181,7 +183,7 @@ export default class EmojiPickerFormView extends View {
 		const t = this.locale!.t;
 
 		const header = new FormHeaderView( this.locale, {
-			label: t( 'Emoji' )
+			label: t( 'Emoji picker' )
 		} );
 
 		header.children.add( this.backButtonView, 0 );
