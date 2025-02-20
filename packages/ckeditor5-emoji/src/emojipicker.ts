@@ -224,7 +224,7 @@ export default class EmojiPicker extends Plugin {
 		emojiPickerFormView.children.add( this.emojiPickerView! );
 
 		// Update the balloon position when layout is changed.
-		this.listenTo<EmojiPickerViewUpdateEvent>( emojiPickerFormView, 'update', () => {
+		this.listenTo<EmojiPickerViewUpdateEvent>( this.emojiPickerView!, 'update', () => {
 			if ( this.balloonPlugin.visibleView === emojiPickerFormView ) {
 				this.balloonPlugin.updatePosition();
 			}
@@ -256,10 +256,7 @@ export default class EmojiPicker extends Plugin {
 	 * Hides the balloon with the emoji picker.
 	 */
 	private _hideUI(): void {
-		if ( this.balloonPlugin.hasView( this.emojiPickerFormView! ) ) {
-			this.balloonPlugin.remove( this.emojiPickerFormView! );
-		}
-
+		this.balloonPlugin.remove( this.emojiPickerFormView! );
 		this.emojiPickerView!.searchView.setInputValue( '' );
 		this.editor.editing.view.focus();
 		this._hideFakeVisualSelection();
