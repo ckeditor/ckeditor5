@@ -87,20 +87,33 @@ Fullscreen layout:
 }
 
 .ck-fullscreen__left-sidebar {
+	font-family: Helvetica, Arial, sans-serif;
+	--ck-user-avatar-size: 32px;
 	position: sticky;
-	top: 0;
 	align-self: flex-start;
-	overflow-y: auto;
-	padding-top: var(--ck-fullscreen-editor-top-margin);
+	top: 0;
 	height: 100%;
 	background-color: transparent;
 	margin-top: 0px;
 	box-sizing: border-box;
+	overflow: auto;
+}
+
+.ck-fullscreen__left-sidebar > :first-child {
+	padding-top: var(--ck-fullscreen-editor-top-margin);
+}
+
+.ck-fullscreen__left-sidebar .ck-user {
+	font-size: 0.85em;
+}
+
+.ck-fullscreen__left-sidebar .ck-presence-list__users-counter__text {
+	font-size: 0.85em;
 }
 
 .ck-fullscreen__left-sidebar-item {
 	padding: var(--ck-spacing-medium);
-	margin-bottom: var(--ck-spacing-large);
+	margin-bottom: var(--ck-spacing-medium);
 }
 
 .ck-fullscreen__left-sidebar-header {
@@ -111,5 +124,30 @@ Fullscreen layout:
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
-	padding-bottom: var(--ck-spacing-medium);
+}
+
+.ck-fullscreen__left-sidebar--sticky {
+	position: sticky;
+	background: var(--ck-color-base-foreground);
+	top: 0;
+
+	&> :first-child {
+		padding-top: 0;
+	}
+}
+
+.ck-fullscreen__presence-list {
+	margin-top: var(--ck-spacing-medium);
+}
+
+.ck-fullscreen__left-sidebar-item--no-margin {
+	margin: 0;
+}
+
+.ck-fullscreen__left-sidebar .ck.ck-document-outline {
+	padding-top: 0;
+}
+
+.ck-fullscreen__document-outline-wrapper {
+	padding-top: 0;
 }

@@ -105,7 +105,9 @@ export default class AbstractEditorHandler {
 					<div class="ck ck-fullscreen__toolbar" data-ck-fullscreen="toolbar"></div>
 				</div>
 				<div class="ck ck-fullscreen__editor-wrapper">
-					<div class="ck ck-fullscreen__sidebar ck-fullscreen__left-sidebar" data-ck-fullscreen="left-sidebar"></div>
+					<div class="ck ck-fullscreen__sidebar ck-fullscreen__left-sidebar" data-ck-fullscreen="left-sidebar">
+						<div  class="ck ck-fullscreen__left-sidebar--sticky" data-ck-fullscreen="left-sidebar-sticky"></div> 
+					</div>
 					<div class="ck ck-fullscreen__editor" data-ck-fullscreen="editor"></div>
 					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="right-sidebar"></div>
 				</div>
@@ -155,7 +157,7 @@ export default class AbstractEditorHandler {
 
 		const fragment = document.createRange().createContextualFragment( presenceListWrapper );
 
-		document.querySelector( '[data-ck-fullscreen="left-sidebar"]' )!.appendChild( fragment );
+		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( fragment );
 
 		const presenceListUI: PresenceListUI = this._editor.plugins.get( PresenceListUI );
 
@@ -167,16 +169,24 @@ export default class AbstractEditorHandler {
 			return;
 		}
 
-		const documentOutlineWrapper = `
-			<div class="ck ck-fullscreen__left-sidebar-item">
-				<div class="ck ck-fullscreen__left-sidebar-header">Document Outline</div>
+		const documentOutlineHeader = `
+		<div class="ck-fullscreen__left-sidebar-item ck-fullscreen__left-sidebar-item--no-margin">
+			<div class="ck ck-fullscreen__left-sidebar-header ck-fullscreen__document-outline-header">
+				Document Outline
+			</div>
+		</div>
+		`;
+		const documentOutlineBody = `
+			<div class="ck ck-fullscreen__left-sidebar-item ck-fullscreen__document-outline-wrapper">
 				<div class="ck ck-fullscreen__document-outline" data-ck-fullscreen="document-outline"></div>
 			</div>
 		`;
 
-		const fragment = document.createRange().createContextualFragment( documentOutlineWrapper );
+		const documentOutlineHeaderFragment = document.createRange().createContextualFragment( documentOutlineHeader );
+		const documentOutlineBodyFragment = document.createRange().createContextualFragment( documentOutlineBody );
 
-		document.querySelector( '[data-ck-fullscreen="left-sidebar"]' )!.appendChild( fragment );
+		document.querySelector( '[data-ck-fullscreen="left-sidebar"]' )!.appendChild( documentOutlineBodyFragment );
+		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( documentOutlineHeaderFragment );
 
 		const documentOutlineUI: DocumentOutlineUI = this._editor.plugins.get( DocumentOutlineUI );
 
