@@ -8,6 +8,7 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import TableLayout from '../src/tablelayout.js';
 import PlainTableOutput from '../src/plaintableoutput.js';
+import TableColumnResize from '../src/tablecolumnresize.js';
 import TableLayoutEditing from '../src/tablelayout/tablelayoutediting.js';
 
 describe( 'TableLayout', () => {
@@ -27,9 +28,9 @@ describe( 'TableLayout', () => {
 		await editor.destroy();
 	} );
 
-	it( 'requires PlainTableOutput and TableLayoutEditing', () => {
+	it( 'requires PlainTableOutput, TableColumnResize and TableLayoutEditing', () => {
 		expect( TableLayout.requires ).to.deep.equal( [
-			PlainTableOutput, TableLayoutEditing
+			PlainTableOutput, TableColumnResize, TableLayoutEditing
 		] );
 	} );
 

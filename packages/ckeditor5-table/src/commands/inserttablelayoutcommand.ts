@@ -62,9 +62,7 @@ export default class InsertTableLayoutCommand extends Command {
 		const tableUtils: TableUtils = editor.plugins.get( 'TableUtils' );
 
 		model.change( writer => {
-			console.log( options );
 			const normalizedOptions = { rows: options.rows, columns: options.columns };
-			console.log( normalizedOptions );
 			const table = tableUtils.createTable( writer, normalizedOptions );
 
 			writer.setAttribute( 'tableWidth', '100%', table );
