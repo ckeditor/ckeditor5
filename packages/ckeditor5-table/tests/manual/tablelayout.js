@@ -38,17 +38,20 @@ const config = {
 		TableLayout
 	],
 	toolbar: [
+		'undo', 'redo', '|',
+		'insertTable', 'insertTableLayout', '|',
 		'heading', '|',
-		'insertTable', '|',
 		'bold', 'italic', 'link', '|',
-		'bulletedList', 'numberedList', 'blockQuote', '|',
-		'undo', 'redo'
+		'bulletedList', 'numberedList', 'blockQuote'
 	],
 	table: {
 		contentToolbar: [
-			'tableColumn', 'tableRow', 'mergeTableCells',
-			'tableProperties', 'tableCellProperties', 'toggleTableCaption'
-		]
+			'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
+		],
+		tableToolbar: [ 'bold', 'italic' ]
+	},
+	menuBar: {
+		isVisible: true
 	}
 };
 

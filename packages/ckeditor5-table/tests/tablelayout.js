@@ -10,6 +10,7 @@ import TableLayout from '../src/tablelayout.js';
 import PlainTableOutput from '../src/plaintableoutput.js';
 import TableColumnResize from '../src/tablecolumnresize.js';
 import TableLayoutEditing from '../src/tablelayout/tablelayoutediting.js';
+import TableLayoutUI from '../src/tablelayout/tablelayoutui.js';
 
 describe( 'TableLayout', () => {
 	let editor, editorElement;
@@ -28,9 +29,9 @@ describe( 'TableLayout', () => {
 		await editor.destroy();
 	} );
 
-	it( 'requires PlainTableOutput, TableColumnResize and TableLayoutEditing', () => {
+	it( 'requires PlainTableOutput, TableColumnResize, TableLayoutEditing and TableLayoutUI', () => {
 		expect( TableLayout.requires ).to.deep.equal( [
-			PlainTableOutput, TableColumnResize, TableLayoutEditing
+			PlainTableOutput, TableColumnResize, TableLayoutEditing, TableLayoutUI
 		] );
 	} );
 

@@ -1,9 +1,4 @@
 ---
-# Scope:
-# * Introduction to plugins.
-# * Exemplify use cases.
-# * Point to resources to learn plugin development.
-
 category: framework-architecture
 menu-title: Plugins in CKEditor 5
 meta-title: Plugins in CKEditor 5 | CKEditor 5 Documentation
@@ -11,7 +6,7 @@ toc-limit: 1
 order: 10
 ---
 
-# Plugins in CKEditor&nbsp;5
+# Plugins in CKEditor 5
 
 Features in CKEditor are introduced by plugins. In fact, without plugins, CKEditor&nbsp;5 is an empty API with no use. Plugins provided by the CKEditor core team are available in [npm](https://www.npmjs.com/search?q=ckeditor5) (and [GitHub](https://github.com/ckeditor?utf8=%E2%9C%93&q=ckeditor5&type=&language=), too) in the form of npm packages. A package may contain one or more plugins (for example, the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package contains {@link features/images-overview several granular plugins}).
 
