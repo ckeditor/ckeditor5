@@ -7,10 +7,12 @@
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
+import translations from 'ckeditor5/translations/ar.js';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-ui-language-rtl' ), {
 		language: 'ar',
+		translations,
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [

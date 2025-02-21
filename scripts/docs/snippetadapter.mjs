@@ -27,6 +27,14 @@ const __dirname = upath.dirname( fileURLToPath( import.meta.url ) );
  * @returns {Promise}
  */
 export default async function snippetAdapter( snippets, { allowedSnippets }, { getSnippetPlaceholder } ) {
+	const {
+		inputPath,
+		outputPath,
+		snippetsInputPath,
+		snippetsOutputPath
+	} = getPaths( snippets );
+
+	const allSnippets = getAllSnippets( snippetsInputPath );
 	const constants = await getConstantDefinitions( snippets );
 	const core = await getPackageJson( 'ckeditor5' );
 	const commercial = await getPackageJson( 'ckeditor5-premium-features' );
@@ -36,31 +44,54 @@ export default async function snippetAdapter( snippets, { allowedSnippets }, { g
 		Object.keys( commercial.dependencies )
 	);
 
-	let basePath = '';
+	const globalAsset = await buildGlobalAsset( upath.resolve( process.cwd(), 'docs', '_snippets', 'assets.js' ) );
+
+	const headerTags = [
+		// Stylesheets and importmap for the editor itself.
+		`<link
+			rel="stylesheet"
+			href="https://cdn.ckeditor.com/ckeditor5/nightly-next/ckeditor5.css"
+		/>`,
+		`<link
+			rel="stylesheet"
+			href="https://cdn.ckeditor.com/ckeditor5-premium-features/nightly-next/ckeditor5-premium-features.css"
+		/>`,
+		`<script type="importmap">${ JSON.stringify( { imports } ) }</script>`,
+
+		// Global constants and helpers used in snippets.
+		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
+		`<script>${ globalAsset }</script>`
+	];
 
 	// Remove snippets that do not match to patterns specified in `allowedSnippets`.
 	if ( allowedSnippets?.length ) {
+		// TODO
 		filterAllowedSnippets( snippets, allowedSnippets );
 		console.log( `Found ${ snippets.size } matching {@snippet} tags.` );
 	}
 
-	// Some snippets are used on multiple pages. We'll build them only once and reuse the result.
-	const builds = {};
+	for ( const [ name, files ] of Object.entries( allSnippets ) ) {
+		let data = await buildWithVite( inputPath, files, constants, Object.keys( imports ) );
+
+		data = data.replace( '<!--UMBERTO: SNIPPET: CSS-->', () => headerTags.join( '\n' ) );
+		data = data.replace( '<!--UMBERTO: SNIPPET: JS-->', () => '' );
+
+		if ( data ) {
+			const path = upath.resolve( snippetsOutputPath, name, 'snippet.html' );
+
+			fs.mkdirSync( upath.dirname( path ), { recursive: true } );
+			fs.writeFileSync( path, data );
+		}
+	}
 
 	// Group snippets by the destination document.
 	const documents = {};
 
 	// TODO: Use `Object.groupBy` instead, when we migrate to Node 22.
 	for ( const snippet of snippets ) {
-		basePath ||= upath.resolve( snippet.outputPath, '..' );
-
 		documents[ snippet.destinationPath ] ??= [];
 		documents[ snippet.destinationPath ].push( snippet );
 	}
-
-	console.log( 'Building documentation assets...' );
-
-	const globalAsset = await buildGlobalAsset( upath.resolve( process.cwd(), 'docs', '_snippets', 'assets.js' ) );
 
 	// For every page that contains at least one snippet, we need to replace Umberto comments with HTML code.
 	for ( const [ document, documentSnippets ] of Object.entries( documents ) ) {
@@ -68,39 +99,38 @@ export default async function snippetAdapter( snippets, { allowedSnippets }, { g
 
 		for ( const snippet of documentSnippets ) {
 			// If the snippet has been built already, we can reuse it.
-			builds[ snippet.snippetName ] ??= await buildWithVite( snippet, constants, Object.keys( imports ) );
+			const snippetPath = upath.resolve( snippetsOutputPath, snippet.snippetName, 'snippet.html' );
+			const data = fs.readFileSync( snippetPath, { encoding: 'utf-8' } );
 
 			documentContent = documentContent.replace(
 				getSnippetPlaceholder( snippet.snippetName ),
-				() => builds[ snippet.snippetName ]
+				() => data
 			);
 		}
 
-		const headerTags = [
-			// Stylesheets and importmap for the editor itself.
-			`<link
-				rel="stylesheet"
-				href="https://cdn.ckeditor.com/ckeditor5/nightly-next/ckeditor5.css"
-			/>`,
-			`<link
-				rel="stylesheet"
-				href="https://cdn.ckeditor.com/ckeditor5-premium-features/nightly-next/ckeditor5-premium-features.css"
-			/>`,
-			`<script type="importmap">${ JSON.stringify( { imports } ) }</script>`,
-
-			// Global constants and helpers used in snippets.
-			`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
-			`<script>${ globalAsset }</script>`,
-			`<script src="${ upath.relative( upath.dirname( document ), upath.join( basePath, 'assets', 'snippet.js' ) ) }"></script>`
+		const tags = [
+			...headerTags,
+			`<script src="${ upath.relative( upath.dirname( document ), upath.join( outputPath, 'assets', 'snippet.js' ) ) }"></script>`
 		];
 
-		documentContent = documentContent.replace( '<!--UMBERTO: SNIPPET: CSS-->', () => headerTags.join( '\n' ) );
+		documentContent = documentContent.replace( '<!--UMBERTO: SNIPPET: CSS-->', () => tags.join( '\n' ) );
 		documentContent = documentContent.replace( '<!--UMBERTO: SNIPPET: JS-->', () => '' );
 
 		fs.writeFileSync( document, documentContent );
 	}
 
 	console.log( 'Finished building snippets.' );
+}
+
+function getPaths( [ snippet ] ) {
+	const snippetsInputPath = upath.resolve( snippet.snippetSources.html, snippet.basePath );
+
+	return {
+		inputPath: upath.resolve( snippetsInputPath, '..' ),
+		outputPath: upath.resolve( snippet.outputPath, '..' ),
+		snippetsInputPath,
+		snippetsOutputPath: snippet.outputPath
+	};
 }
 
 /**
@@ -113,6 +143,35 @@ async function getPackageJson( packageName ) {
 	const content = fs.readFileSync( path, { encoding: 'utf-8' } );
 
 	return JSON.parse( content );
+}
+
+function getAllSnippets( path ) {
+	// Snippets grouped by their name.
+	const snippets = {};
+
+	for ( const entry of fs.readdirSync( path, { withFileTypes: true, recursive: true } ) ) {
+		if ( entry.isDirectory() ) {
+			continue;
+		}
+
+		/**
+		 * Given that the `snippetsFolder` is `/absolute/path/to`, the following values will be:
+		 *
+		 * path 					/absolute/path/to/some/resource.html
+		 * dir						/absolute/path/to/some
+		 * name						resource
+		 * ext						.html
+		 * snippetName		some/resource
+		 */
+		const filePath = upath.join( entry.parentPath, entry.name );
+		const { dir, name, ext } = upath.parse( filePath );
+		const snippetName = upath.relative( path, upath.join( dir, name ) );
+		const data = snippets[ snippetName ] ??= {};
+
+		data[ ext.substring( 1 ) ] = filePath;
+	}
+
+	return snippets;
 }
 
 /**
@@ -149,17 +208,22 @@ async function buildGlobalAsset( entry ) {
 }
 
 /**
- * @param {Object.<String,String>} snippet
+ * @param {String} inputPath
+ * @param {Object.<String,Object>} sources
  * @param {Object.<String,String>} constants
  * @param {Array.<String>} external
  * @returns {Promise<String>}
  */
-async function buildWithVite( snippet, constants = {}, external = [] ) {
-	const sources = snippet.snippetSources;
+async function buildWithVite( inputPath, sources, constants, external ) {
 	const definitions = {};
 
 	for ( const definitionKey in constants ) {
 		definitions[ definitionKey ] = JSON.stringify( constants[ definitionKey ] );
+	}
+
+	if ( !sources.html ) {
+		// Do not build JS- and CSS-only snippets.
+		return '';
 	}
 
 	const result = await build( {
@@ -195,7 +259,7 @@ async function buildWithVite( snippet, constants = {}, external = [] ) {
 						]
 							.filter( Boolean )
 							.join( '\n' )
-							.replace( /%BASE_PATH%/g, snippet.basePath );
+							.replace( /%BASE_PATH%/g, () => upath.relative( upath.dirname( sources.html ), inputPath ) );
 					}
 				}
 			},
@@ -234,7 +298,8 @@ async function buildWithVite( snippet, constants = {}, external = [] ) {
 function getImportMap( coreDependencies, commercialDependencies ) {
 	const imports = {
 		'ckeditor5': 'https://cdn.ckeditor.com/ckeditor5/nightly-next/ckeditor5.js',
-		'ckeditor5/': 'https://cdn.ckeditor.com/ckeditor5/nightly-next/',
+		'ckeditor5/translations/ar.js': 'https://cdn.ckeditor.com/ckeditor5/nightly-next/translations/ar.js',
+		'ckeditor5/translations/es.js': 'https://cdn.ckeditor.com/ckeditor5/nightly-next/translations/es.js',
 		'ckeditor5-premium-features': 'https://cdn.ckeditor.com/ckeditor5-premium-features/nightly-next/ckeditor5-premium-features.js',
 		'ckeditor5-premium-features/': 'https://cdn.ckeditor.com/ckeditor5-premium-features/nightly-next/',
 		'@ckeditor/ckeditor5-inspector': 'https://esm.sh/@ckeditor/ckeditor5-inspector@4.1.0/es2022/ckeditor5-inspector.mjs',
@@ -373,9 +438,6 @@ async function getConstantDefinitions( snippets ) {
  * @property {String} [basePath] Relative path from the processed file to the root of the documentation.
  *
  * @property {String} [relativeOutputPath] The same like `basePath` but for the output path (where processed file will be saved).
- *
- * @property {Snippet|undefined} [requiredFor] If the value is instance of `Snippet`, current snippet requires
- * the snippet defined as `requiredFor` to work.
  */
 
 /**
