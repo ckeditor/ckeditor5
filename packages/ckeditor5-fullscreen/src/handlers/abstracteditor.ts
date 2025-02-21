@@ -76,6 +76,8 @@ export default class AbstractEditorHandler {
 	 * Returns the moved elements to their original places.
 	 */
 	public returnMovedElements(): void {
+		this.restoreDocumentOutlineContainer();
+
 		this._movedElements.forEach( ( moved, placeholder ) => {
 			placeholder.replaceWith( moved );
 			placeholder.remove();
@@ -189,7 +191,19 @@ export default class AbstractEditorHandler {
 		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( documentOutlineHeaderFragment );
 
 		const documentOutlineUI: DocumentOutlineUI = this._editor.plugins.get( DocumentOutlineUI );
+		documentOutlineUI.view._documentOutlineContainer = document.querySelector( '[data-ck-fullscreen="left-sidebar"]' ) as HTMLElement;
 
 		this.moveToFullscreen( documentOutlineUI.view.element!, 'document-outline' );
+	}
+
+	public restoreDocumentOutlineContainer(): void {
+		if ( !this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
+			return;
+		}
+
+		const documentOutlineContainer = this._editor.config.get( 'documentOutline.container' ) as HTMLElement | undefined;
+		const documentOutlineUI: DocumentOutlineUI = this._editor.plugins.get( DocumentOutlineUI );
+
+		documentOutlineUI.view._documentOutlineContainer = documentOutlineContainer;
 	}
 }
