@@ -141,7 +141,6 @@
     "js-yaml": "^4.1.0",
     "lint-staged": "^15.0.0",
     "listr2": "^8.0.0",
-    "minimatch": "^5.1.0",
     "minimist": "^1.2.8",
     "mkdirp": "^1.0.4",
     "node-fetch": "^2.6.7",

@@ -11,7 +11,6 @@ import { createRequire } from 'module';
 import upath from 'upath';
 import { build } from 'vite';
 import { globSync } from 'glob';
-import minimatch from 'minimatch';
 import { viteSingleFile } from 'vite-plugin-singlefile';
 
 const require = createRequire( import.meta.url );
@@ -26,28 +25,13 @@ const __dirname = upath.dirname( fileURLToPath( import.meta.url ) );
  * @param {Object.<String, Function>} umbertoHelpers
  * @returns {Promise}
  */
-export default async function snippetAdapter( snippets, { allowedSnippets }, { getSnippetPlaceholder } ) {
-	const {
-		inputPath,
-		outputPath,
-		snippetsInputPath,
-		snippetsOutputPath
-	} = getPaths( snippets );
-
-	const allSnippets = getAllSnippets( snippetsInputPath );
+export default async function snippetAdapter( snippets, _, { getSnippetPlaceholder } ) {
+	const { inputPath, outputPath, snippetsInputPath, snippetsOutputPath } = getPaths( snippets );
 	const constants = await getConstantDefinitions( snippets );
-	const core = await getPackageJson( 'ckeditor5' );
-	const commercial = await getPackageJson( 'ckeditor5-premium-features' );
-
-	const imports = getImportMap(
-		Object.keys( core.dependencies ),
-		Object.keys( commercial.dependencies )
-	);
-
-	const globalAsset = await buildGlobalAsset( upath.resolve( process.cwd(), 'docs', '_snippets', 'assets.js' ) );
+	const imports = await getImportMap();
+	const globalAsset = await buildGlobalAsset( upath.resolve( snippetsInputPath, 'assets.js' ) );
 
 	const headerTags = [
-		// Stylesheets and importmap for the editor itself.
 		`<link
 			rel="stylesheet"
 			href="https://cdn.ckeditor.com/ckeditor5/nightly-next/ckeditor5.css"
@@ -57,32 +41,18 @@ export default async function snippetAdapter( snippets, { allowedSnippets }, { g
 			href="https://cdn.ckeditor.com/ckeditor5-premium-features/nightly-next/ckeditor5-premium-features.css"
 		/>`,
 		`<script type="importmap">${ JSON.stringify( { imports } ) }</script>`,
-
-		// Global constants and helpers used in snippets.
 		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
 		`<script>${ globalAsset }</script>`
 	];
 
-	// Remove snippets that do not match to patterns specified in `allowedSnippets`.
-	if ( allowedSnippets?.length ) {
-		// TODO
-		filterAllowedSnippets( snippets, allowedSnippets );
-		console.log( `Found ${ snippets.size } matching {@snippet} tags.` );
-	}
-
-	for ( const [ name, files ] of Object.entries( allSnippets ) ) {
-		let data = await buildWithVite( inputPath, files, constants, Object.keys( imports ) );
-
-		data = data.replace( '<!--UMBERTO: SNIPPET: CSS-->', () => headerTags.join( '\n' ) );
-		data = data.replace( '<!--UMBERTO: SNIPPET: JS-->', () => '' );
-
-		if ( data ) {
-			const path = upath.resolve( snippetsOutputPath, name, 'snippet.html' );
-
-			fs.mkdirSync( upath.dirname( path ), { recursive: true } );
-			fs.writeFileSync( path, data );
-		}
-	}
+	await buildSnippets(
+		getAllSnippets( snippetsInputPath ),
+		inputPath,
+		snippetsOutputPath,
+		constants,
+		imports,
+		headerTags
+	);
 
 	// Group snippets by the destination document.
 	const documents = {};
@@ -93,18 +63,15 @@ export default async function snippetAdapter( snippets, { allowedSnippets }, { g
 		documents[ snippet.destinationPath ].push( snippet );
 	}
 
-	// For every page that contains at least one snippet, we need to replace Umberto comments with HTML code.
 	for ( const [ document, documentSnippets ] of Object.entries( documents ) ) {
 		let documentContent = fs.readFileSync( document, { encoding: 'utf-8' } );
 
 		for ( const snippet of documentSnippets ) {
-			// If the snippet has been built already, we can reuse it.
-			const snippetPath = upath.resolve( snippetsOutputPath, snippet.snippetName, 'snippet.html' );
-			const data = fs.readFileSync( snippetPath, { encoding: 'utf-8' } );
+			const path = upath.resolve( snippetsOutputPath, snippet.snippetName, 'snippet.html' );
 
 			documentContent = documentContent.replace(
 				getSnippetPlaceholder( snippet.snippetName ),
-				() => data
+				() => fs.readFileSync( path, { encoding: 'utf-8' } )
 			);
 		}
 
@@ -198,104 +165,105 @@ async function buildGlobalAsset( entry ) {
 			viteSingleFile( {
 				removeViteModuleLoader: true
 			} )
-		],
-		esbuild: {
-			legalComments: 'none'
-		}
+		]
 	} );
 
 	return result[ 0 ].output[ 0 ].code;
 }
 
-/**
- * @param {String} inputPath
- * @param {Object.<String,Object>} sources
- * @param {Object.<String,String>} constants
- * @param {Array.<String>} external
- * @returns {Promise<String>}
- */
-async function buildWithVite( inputPath, sources, constants, external ) {
-	const definitions = {};
+async function buildSnippets( snippets, inputPath, snippetsOutputPath, constants, imports, headerTags ) {
+	const external = Object.keys( imports );
+	const define = {};
 
 	for ( const definitionKey in constants ) {
-		definitions[ definitionKey ] = JSON.stringify( constants[ definitionKey ] );
+		define[ definitionKey ] = JSON.stringify( constants[ definitionKey ] );
 	}
 
-	if ( !sources.html ) {
-		// Do not build JS- and CSS-only snippets.
-		return '';
-	}
+	for ( const [ name, files ] of Object.entries( snippets ) ) {
+		if ( !files.html ) {
+			continue; // Do not build JS- and CSS-only snippets.
+		}
 
-	const result = await build( {
-		clearScreen: false,
-		logLevel: 'warn',
-		define: definitions,
-		build: {
-			modulePreload: false,
-			target: 'es2022',
-			cssTarget: [ 'es2022' ],
-			write: false,
-			rollupOptions: {
-				input: sources.html,
-				external
-			}
-		},
-		plugins: [
-			{
-				name: 'virtual-html',
-				resolveId( id ) {
-					if ( id === sources.html ) {
-						return id;
-					}
-				},
-				async load( id ) {
-					if ( id === sources.html ) {
-						return [
-							'<div class="live-snippet">',
-							sources.css && `<link rel="stylesheet" href="${ sources.css }" type="text/css" data-cke="true">`,
-							fs.readFileSync( sources.html, { encoding: 'utf-8' } ),
-							sources.js && `<script type="module" src="${ sources.js }"></script>`,
-							'</div>'
-						]
-							.filter( Boolean )
-							.join( '\n' )
-							.replace( /%BASE_PATH%/g, () => upath.relative( upath.dirname( sources.html ), inputPath ) );
-					}
+		const result = await build( {
+			clearScreen: false,
+			logLevel: 'warn',
+			define,
+			build: {
+				modulePreload: false,
+				target: 'es2022',
+				cssTarget: [ 'es2022' ],
+				write: false,
+				rollupOptions: {
+					input: files.html,
+					external
 				}
 			},
-			viteSingleFile( {
-				removeViteModuleLoader: true
-			} )
-		],
+			plugins: [
+				{
+					name: 'virtual-html',
+					resolveId( id ) {
+						if ( id === files.html ) {
+							return id;
+						}
+					},
+					async load( id ) {
+						if ( id === files.html ) {
+							return [
+								'<div class="live-snippet">',
+								files.css && `<link rel="stylesheet" href="${ files.css }" type="text/css" data-cke="true">`,
+								fs.readFileSync( files.html, { encoding: 'utf-8' } ),
+								files.js && `<script type="module" src="${ files.js }"></script>`,
+								'</div>'
+							]
+								.filter( Boolean )
+								.join( '\n' )
+								.replace( /%BASE_PATH%/g, () => upath.relative( upath.dirname( files.html ), inputPath ) );
+						}
+					}
+				},
+				viteSingleFile( {
+					removeViteModuleLoader: true
+				} )
+			],
 
-		/**
-		 * The configuration below allows for JSX code in JS files. This is needed for snippets
-		 * that use React components, but still need the `.js` extension to be found by Umberto.
-		 */
-		esbuild: {
-			legalComments: 'none',
-			loader: 'jsx',
-			include: /.*\.jsx?$/,
-			exclude: []
-		},
-		optimizeDeps: {
-			esbuildOptions: {
-				loader: {
-					'.js': 'jsx'
+			/**
+			 * The configuration below allows for JSX code in JS files. This is needed for snippets
+			 * that use React components, but still need the `.js` extension to be found by Umberto.
+			 */
+			esbuild: {
+				loader: 'jsx',
+				include: /.*\.jsx?$/,
+				exclude: []
+			},
+			optimizeDeps: {
+				esbuildOptions: {
+					loader: {
+						'.js': 'jsx'
+					}
 				}
 			}
-		}
-	} );
+		} );
 
-	return result.output[ 0 ].source;
+		const data = result.output[ 0 ].source
+			.replace( '<!--UMBERTO: SNIPPET: CSS-->', () => headerTags.join( '\n' ) )
+			.replace( '<!--UMBERTO: SNIPPET: JS-->', () => '' );
+
+		const path = upath.resolve( snippetsOutputPath, name, 'snippet.html' );
+
+		fs.mkdirSync( upath.dirname( path ), { recursive: true } );
+		fs.writeFileSync( path, data );
+	}
 }
 
 /**
  * @param {Array.<String>} coreDependencies
  * @param {Array.<String>} commercialDependencies
- * @returns {Object.<String,String>}
+ * @returns {Promise.<Object.<String,String>>}
  */
-function getImportMap( coreDependencies, commercialDependencies ) {
+async function getImportMap() {
+	const core = await getPackageJson( 'ckeditor5' );
+	const commercial = await getPackageJson( 'ckeditor5-premium-features' );
+
 	const imports = {
 		'ckeditor5': 'https://cdn.ckeditor.com/ckeditor5/nightly-next/ckeditor5.js',
 		'ckeditor5/translations/ar.js': 'https://cdn.ckeditor.com/ckeditor5/nightly-next/translations/ar.js',
@@ -315,56 +283,17 @@ function getImportMap( coreDependencies, commercialDependencies ) {
 	 * Some snippets may use imports from individual packages instead of the main `ckeditor5` or
 	 * `ckeditor5-premium-features` packages. In such cases, we need to add these imports to the import map.
 	 */
-	for ( const dependency of coreDependencies ) {
+	for ( const dependency of Object.keys( core.dependencies ) ) {
 		imports[ dependency ] ||= imports.ckeditor5;
 		imports[ `${ dependency }/dist/index.js` ] ||= imports.ckeditor5;
 	}
 
-	for ( const dependency of commercialDependencies ) {
+	for ( const dependency of Object.keys( commercial.dependencies ) ) {
 		imports[ dependency ] ||= imports[ 'ckeditor5-premium-features' ];
 		imports[ `${ dependency }/dist/index.js` ] ||= imports[ 'ckeditor5-premium-features' ];
 	}
 
 	return imports;
-}
-
-/**
- * Removes snippets that names do not match to patterns specified in `allowedSnippets` array.
- *
- * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
- * @param {Array.<String>} allowedSnippets Snippet patterns that should be built.
- */
-function filterAllowedSnippets( snippets, allowedSnippets ) {
-	const snippetsToBuild = new Set();
-
-	// Find all snippets that matched to specified criteria.
-	for ( const snippetData of snippets ) {
-		const shouldBeBuilt = allowedSnippets.some( pattern => {
-			return minimatch( snippetData.snippetName, pattern ) || snippetData.snippetName.includes( pattern );
-		} );
-
-		if ( shouldBeBuilt ) {
-			snippetsToBuild.add( snippetData );
-		}
-	}
-
-	// Find all dependencies that are required for whitelisted snippets.
-	for ( const snippetData of snippets ) {
-		if ( snippetsToBuild.has( snippetData ) ) {
-			continue;
-		}
-
-		if ( snippetData.requiredFor && snippetsToBuild.has( snippetData.requiredFor ) ) {
-			snippetsToBuild.add( snippetData );
-		}
-	}
-
-	// Remove snippets that won't be built and aren't dependencies of other snippets.
-	for ( const snippetData of snippets ) {
-		if ( !snippetsToBuild.has( snippetData ) ) {
-			snippets.delete( snippetData );
-		}
-	}
 }
 
 /**
@@ -433,8 +362,6 @@ async function getConstantDefinitions( snippets ) {
  *
  * @property {String} destinationPath An absolute path to the file where the snippet is being used.
  *
- * @property {SnippetConfiguration} snippetConfig={} Additional configuration of the snippet. It's being read from the snippet's source.
- *
  * @property {String} [basePath] Relative path from the processed file to the root of the documentation.
  *
  * @property {String} [relativeOutputPath] The same like `basePath` but for the output path (where processed file will be saved).
@@ -448,10 +375,4 @@ async function getConstantDefinitions( snippets ) {
  * @property {String} css An absolute path to the CSS sample.
  *
  * @property {String} js An absolute path to the JS sample.
- */
-
-/**
- * @typedef {Object} SnippetConfiguration
- *
- * @property {Array.<String>} [dependencies] Names of samples that are required to working.
  */
