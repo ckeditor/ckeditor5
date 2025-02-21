@@ -36,6 +36,7 @@ import type {
 	InsertColumnCommand,
 	InsertRowCommand,
 	InsertTableCommand,
+	InsertTableLayoutCommand,
 	MergeCellCommand,
 	MergeCellsCommand,
 	RemoveColumnCommand,
@@ -107,6 +108,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		insertTableRowAbove: InsertRowCommand;
 		insertTableRowBelow: InsertRowCommand;
 		insertTable: InsertTableCommand;
+		insertTableLayout: InsertTableLayoutCommand;
 		mergeTableCellRight: MergeCellCommand;
 		mergeTableCellLeft: MergeCellCommand;
 		mergeTableCellDown: MergeCellCommand;
