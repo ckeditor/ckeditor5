@@ -202,7 +202,7 @@ function getViewTableFromFigure( figureView: ViewElement ) {
  *
  * @internal
  */
-export function scanTable( viewTable: ViewElement ): { headingRows: number; headingColumns: number; rows: Array<ViewElement> } {
+function scanTable( viewTable: ViewElement ) {
 	let headingRows = 0;
 	let headingColumns: number | undefined = undefined;
 

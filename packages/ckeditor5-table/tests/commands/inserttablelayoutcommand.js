@@ -143,7 +143,7 @@ describe( 'InsertTableLayoutCommand', () => {
 						[ '[]', '', '', '' ],
 						[ '', '', '', '' ],
 						[ '', '', '', '' ]
-					], { headingRows: 1, headingColumns: 2, tableType: 'layout' } )
+					], { tableType: 'layout' } )
 				);
 			} );
 
@@ -282,7 +282,7 @@ describe( 'InsertTableLayoutCommand', () => {
 							[ '', '', '', '' ],
 							[ '', '', '', '' ]
 						],
-						{ headingRows: 1, headingColumns: 2, tableType: 'layout', tableWidth: '100%' } )
+						{ tableType: 'layout', tableWidth: '100%' } )
 					);
 				} );
 

@@ -152,39 +152,6 @@ export default class TableUtils extends Plugin {
 	}
 
 	/**
-	 * Creates an empty layout table with a proper structure. The table needs to be inserted into the model,
-	 * for example, by using the {@link module:engine/model/model~Model#insertContent} function.
-	 * ```ts
-	 * model.change( ( writer ) => {
-	 *   // Create a layout table of 2 rows and 7 columns:
-	 *   const layoutTable = tableUtils.createTableLayout( writer, { rows: 2, columns: 7 } );
-	 *
-	 *   // Insert a layout table to the model at the best position taking the current selection:
-	 *   model.insertContent( layoutTable );
-	 * }
-	 * ```
-	 *
-	 * @param writer The model writer.
-	 * @param options.rows The number of rows to create. Default value is 2.
-	 * @param options.columns The number of columns to create. Default value is 2.
-	 * @returns The created table element.
-	 */
-	public createTableLayout(
-		writer: Writer,
-		options: {
-			rows?: number;
-			columns?: number;
-		}
-	): Element {
-		const table = this.createTable( writer, options );
-
-		writer.setAttribute( 'tableWidth', '100%', table );
-		writer.setAttribute( 'tableType', 'layout', table );
-
-		return table;
-	}
-
-	/**
 	 * Inserts rows into a table.
 	 *
 	 * ```ts

@@ -102,14 +102,3 @@ export function getSelectionAffectedTable( selection: DocumentSelection ): Eleme
 
 	return selection.getFirstPosition()!.findAncestor( 'table' )!;
 }
-
-/**
- * Based on selected table cells, checks if the table is a content table or not.
- *
- * @param selectedCells Selected table cells.
- */
-export function isTableTypeContent( selectedCells: Array<Element> ): boolean {
-	const table = selectedCells[ 0 ].findAncestor( 'table' )!;
-
-	return table.getAttribute( 'tableType' ) !== 'layout';
-}

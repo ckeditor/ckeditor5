@@ -8,17 +8,12 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type { EventInfo } from 'ckeditor5/src/utils.js';
 import type {
-	UpcastConversionApi,
-	UpcastConversionData,
 	UpcastDispatcher,
 	UpcastElementEvent,
-	ViewElement
+	ViewElement,
+	SchemaContext
 } from 'ckeditor5/src/engine.js';
-
-import { createEmptyTableCell } from '../utils/common.js';
-import { scanTable } from '../converters/upcasttable.js';
 
 import InsertTableLayoutCommand from './../commands/inserttablelayoutcommand.js';
 
@@ -60,12 +55,14 @@ export default class TableLayoutEditing extends Plugin {
 			allowAttributes: 'tableType'
 		} );
 
-		// Disallow adding caption to layout table.
-		schema.addChildCheck( context => {
-			if ( context.endsWith( 'table' ) && context.last.getAttribute( 'tableType' ) == 'layout' ) {
-				return false;
-			}
-		}, 'caption' );
+		// Disallow adding `caption` to layout table.
+		schema.addChildCheck( layoutTableCheck(), 'caption' );
+
+		// Disallow adding `headingRows` attribute to layout table.
+		schema.addAttributeCheck( layoutTableCheck(), 'headingRows' );
+
+		// Disallow adding `headingColumns` attribute to layout table.
+		schema.addAttributeCheck( layoutTableCheck(), 'headingColumns' );
 	}
 
 	/**
@@ -75,8 +72,7 @@ export default class TableLayoutEditing extends Plugin {
 		const { editor } = this;
 		const { conversion } = editor;
 
-		conversion.for( 'upcast' ).add( upcastTableOverride() );
-		conversion.for( 'upcast' ).add( upcastTableToSetTableType() );
+		conversion.for( 'upcast' ).add( upcastLayoutTable() );
 
 		editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
 			return dispatcher.on( 'attribute:tableType:table', ( evt, data, conversionApi ) => {
@@ -96,15 +92,21 @@ export default class TableLayoutEditing extends Plugin {
 			} );
 		} );
 
-		conversion.for( 'editingDowncast' ).add( dispatcher => {
-			dispatcher.on( 'attribute:tableType', ( evt, data, conversionApi ) => {
-				const { item, attributeNewValue } = data;
-				const { mapper, writer } = conversionApi;
-				const modelElement = item;
-				const viewElement = mapper.toViewElement( modelElement );
-
-				writer.addClass( `${ attributeNewValue }-table`, viewElement );
-			} );
+		editor.conversion.for( 'editingDowncast' ).attributeToAttribute( {
+			model: {
+				key: 'tableType',
+				values: [ 'layout', 'content' ]
+			},
+			view: {
+				layout: {
+					key: 'class',
+					value: [ 'layout-table' ]
+				},
+				content: {
+					key: 'class',
+					value: [ 'content-table' ]
+				}
+			}
 		} );
 	}
 }
@@ -116,72 +118,60 @@ export default class TableLayoutEditing extends Plugin {
  *
  * @returns Conversion helper.
  */
-function upcastTableOverride() {
+function upcastLayoutTable() {
 	return ( dispatcher: UpcastDispatcher ): void => {
-		dispatcher.on<UpcastElementEvent>( 'element:table', (
-			evt: EventInfo,
-			data: UpcastConversionData<ViewElement>,
-			conversionApi: UpcastConversionApi
-		) => {
+		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
 			const viewTable = data.viewItem;
+			const hasTableTypeContent = isTableTypeContent( viewTable );
 
-			// When element was already consumed then skip it.
-			if ( !conversionApi.consumable.test( viewTable, { name: true } ) ) {
+			// TODO: What to do with empty table `<table></table>`??
+			// const hasTableRows = Array.from( viewTable.getChildren() ).some( child => !child.is( 'element', 'tr' ) );
+
+			// When element was already consumed or it is a layout table then skip it.
+			if (
+				!conversionApi.consumable.test( viewTable, { name: true } ) ||
+				hasTableTypeContent /* ||
+				!hasTableRows */
+			) {
 				return;
 			}
 
-			const { rows, headingRows, headingColumns } = scanTable( viewTable );
+			const table = conversionApi.writer.createElement( 'table' );
 
-			// Only set attributes if values are greater then 0.
-			const attributes: { headingColumns?: number; headingRows?: number } = {};
-
-			const hasTableTypeContent = isTableTypeContent( viewTable );
-
-			if ( headingColumns && hasTableTypeContent ) {
-				attributes.headingColumns = headingColumns;
-			}
-
-			if ( headingRows && hasTableTypeContent ) {
-				attributes.headingRows = headingRows;
-			}
-
-			const table = conversionApi.writer.createElement( 'table', attributes );
+			// if ( !hasTableRows ) {
+			// 	conversionApi.consumable.consume( viewTable, { name: true } );
+			// 	return;
+			// }
 
 			if ( !conversionApi.safeInsert( table, data.modelCursor ) ) {
 				return;
 			}
 
 			conversionApi.consumable.consume( viewTable, { name: true } );
+			conversionApi.consumable.consume( viewTable, { attributes: [ 'role' ] } );
 
-			// Upcast table rows in proper order (heading rows first).
-			rows.forEach( row => conversionApi.convertItem( row, conversionApi.writer.createPositionAt( table, 'end' ) ) );
+			// Get all rows from the table and convert them.
+			// While looping over the children on `<table>` we can be sure that firts will be `<tbody>`
+			// and optionally `<thead>` and `<tfoot>`, and in these elements are the table rows found.
+			// We can be sure of that because of `DomParser` handle it.
+			for ( const tableChild of viewTable.getChildren() ) {
+				if ( tableChild.is( 'element' ) ) {
+					for ( const row of tableChild.getChildren() ) {
+						if ( row.is( 'element', 'tr' ) ) {
+							conversionApi.convertItem( row, conversionApi.writer.createPositionAt( table, 'end' ) );
+						}
+					}
+				}
+			}
 
 			// Convert everything else.
 			conversionApi.convertChildren( viewTable, conversionApi.writer.createPositionAt( table, 'end' ) );
 
-			// Create one row and one table cell for empty table.
-			if ( table.isEmpty ) {
-				const row = conversionApi.writer.createElement( 'tableRow' );
-				conversionApi.writer.insert( row, conversionApi.writer.createPositionAt( table, 'end' ) );
-
-				createEmptyTableCell( conversionApi.writer, conversionApi.writer.createPositionAt( row, 'end' ) );
-			}
-
 			conversionApi.updateConversionResult( table, data );
 		}, { priority: 'high' } );
-	};
-}
 
-/**
- * Sets only the table type attribute.
- */
-function upcastTableToSetTableType() {
-	return ( dispatcher: UpcastDispatcher ): void => {
-		dispatcher.on<UpcastElementEvent>( 'element:table', (
-			evt: EventInfo,
-			data: UpcastConversionData<ViewElement>,
-			conversionApi: UpcastConversionApi
-		) => {
+		// Sets only the table type attribute.
+		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
 			const { viewItem, modelRange } = data;
 
 			if ( modelRange ) {
@@ -209,4 +199,16 @@ function isTableTypeContent( viewTable: ViewElement ): boolean {
 	return parent.is( 'element', 'figure' ) ||
 		viewTable.hasClass( 'content-table' ) ||
 		Array.from( viewTable.getChildren() ).some( child => child.is( 'element', 'caption' ) );
+}
+
+/**
+ * Returns callback that checks if the element is a layout table.
+ * It is used to disallow attributes or children that is managed by `Schema`.
+ */
+function layoutTableCheck() {
+	return ( context: SchemaContext ) => {
+		if ( context.endsWith( 'table' ) && context.last.getAttribute( 'tableType' ) == 'layout' ) {
+			return false;
+		}
+	};
 }

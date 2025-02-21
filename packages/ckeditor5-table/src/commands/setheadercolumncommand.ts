@@ -12,7 +12,6 @@ import type TableUtils from '../tableutils.js';
 
 import {
 	isHeadingColumnCell,
-	isTableTypeContent,
 	updateNumericAttribute
 } from '../utils/common.js';
 import { getHorizontallyOverlappingCells, splitVertically } from '../utils/structure.js';
@@ -49,15 +48,18 @@ export default class SetHeaderColumnCommand extends Command {
 		const model = this.editor.model;
 
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
-		const isInTable = selectedCells.length > 0;
-		let isContentTable = true;
 
-		if ( isInTable ) {
-			isContentTable = isTableTypeContent( selectedCells );
+		if ( selectedCells.length === 0 ) {
+			this.isEnabled = false;
+			this.value = false;
+
+			return;
 		}
 
-		this.isEnabled = isInTable && isContentTable;
-		this.value = isInTable && selectedCells.every( cell => isHeadingColumnCell( tableUtils, cell ) );
+		const table = selectedCells[ 0 ].findAncestor( 'table' )!;
+
+		this.isEnabled = model.schema.checkAttribute( table, 'headingRows' );
+		this.value = selectedCells.every( cell => isHeadingColumnCell( tableUtils, cell ) );
 	}
 
 	/**

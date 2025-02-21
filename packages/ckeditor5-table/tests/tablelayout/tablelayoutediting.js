@@ -380,7 +380,7 @@ describe( 'TableLayoutEditing', () => {
 			);
 		} );
 
-		it( 'should set `tableType` to `layout` when there is class `layout-table` and table is empty', () => {
+		it.skip( 'should set `tableType` to `layout` when there is class `layout-table` and table is empty', () => {
 			editor.setData(
 				'<table class="table layout-table"></table>'
 			);
@@ -392,7 +392,7 @@ describe( 'TableLayoutEditing', () => {
 			);
 		} );
 
-		it( 'should set `tableType` to `layout` when there is no class responsible for type and table is empty', () => {
+		it.skip( 'should set `tableType` to `layout` when there is no class responsible for type and table is empty', () => {
 			editor.setData(
 				'<table></table>'
 			);

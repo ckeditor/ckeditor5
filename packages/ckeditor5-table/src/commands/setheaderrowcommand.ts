@@ -11,7 +11,7 @@ import { Command } from 'ckeditor5/src/core.js';
 import type { Element } from 'ckeditor5/src/engine.js';
 import type TableUtils from '../tableutils.js';
 
-import { isTableTypeContent, updateNumericAttribute } from '../utils/common.js';
+import { updateNumericAttribute } from '../utils/common.js';
 import { getVerticallyOverlappingCells, splitHorizontally } from '../utils/structure.js';
 
 /**
@@ -45,15 +45,18 @@ export default class SetHeaderRowCommand extends Command {
 		const model = this.editor.model;
 
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
-		const isInTable = selectedCells.length > 0;
-		let isContentTable = true;
 
-		if ( isInTable ) {
-			isContentTable = isTableTypeContent( selectedCells );
+		if ( selectedCells.length === 0 ) {
+			this.isEnabled = false;
+			this.value = false;
+
+			return;
 		}
 
-		this.isEnabled = isInTable && isContentTable;
-		this.value = isInTable && selectedCells.every( cell => this._isInHeading( cell, cell.parent!.parent as Element ) );
+		const table = selectedCells[ 0 ].findAncestor( 'table' )!;
+
+		this.isEnabled = model.schema.checkAttribute( table, 'headingColumns' );
+		this.value = selectedCells.every( cell => this._isInHeading( cell, cell.parent!.parent as Element ) );
 	}
 
 	/**
