@@ -16,6 +16,7 @@ import type {
 } from 'ckeditor5/src/engine.js';
 
 import InsertTableLayoutCommand from './../commands/inserttablelayoutcommand.js';
+import { createEmptyTableCell } from '../utils/common.js';
 
 /**
  * The table layout editing plugin.
@@ -122,26 +123,19 @@ function upcastLayoutTable() {
 	return ( dispatcher: UpcastDispatcher ): void => {
 		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
 			const viewTable = data.viewItem;
+
+			if ( !conversionApi.consumable.test( viewTable, { name: true } ) ) {
+				return;
+			}
+
 			const hasTableTypeContent = isTableTypeContent( viewTable );
 
-			// TODO: What to do with empty table `<table></table>`??
-			// const hasTableRows = Array.from( viewTable.getChildren() ).some( child => !child.is( 'element', 'tr' ) );
-
-			// When element was already consumed or it is a layout table then skip it.
-			if (
-				!conversionApi.consumable.test( viewTable, { name: true } ) ||
-				hasTableTypeContent /* ||
-				!hasTableRows */
-			) {
+			// When element is a layout table then skip it.
+			if ( hasTableTypeContent ) {
 				return;
 			}
 
 			const table = conversionApi.writer.createElement( 'table' );
-
-			// if ( !hasTableRows ) {
-			// 	conversionApi.consumable.consume( viewTable, { name: true } );
-			// 	return;
-			// }
 
 			if ( !conversionApi.safeInsert( table, data.modelCursor ) ) {
 				return;
@@ -166,6 +160,14 @@ function upcastLayoutTable() {
 
 			// Convert everything else.
 			conversionApi.convertChildren( viewTable, conversionApi.writer.createPositionAt( table, 'end' ) );
+
+			// Create one row and one table cell for empty table.
+			if ( table.isEmpty ) {
+				const row = conversionApi.writer.createElement( 'tableRow' );
+				conversionApi.writer.insert( row, conversionApi.writer.createPositionAt( table, 'end' ) );
+
+				createEmptyTableCell( conversionApi.writer, conversionApi.writer.createPositionAt( row, 'end' ) );
+			}
 
 			conversionApi.updateConversionResult( table, data );
 		}, { priority: 'high' } );

@@ -7,6 +7,7 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
@@ -380,7 +381,7 @@ describe( 'TableLayoutEditing', () => {
 			);
 		} );
 
-		it.skip( 'should set `tableType` to `layout` when there is class `layout-table` and table is empty', () => {
+		it( 'should set `tableType` to `layout` when there is class `layout-table` and table is empty', () => {
 			editor.setData(
 				'<table class="table layout-table"></table>'
 			);
@@ -392,7 +393,7 @@ describe( 'TableLayoutEditing', () => {
 			);
 		} );
 
-		it.skip( 'should set `tableType` to `layout` when there is no class responsible for type and table is empty', () => {
+		it( 'should set `tableType` to `layout` when there is no class responsible for type and table is empty', () => {
 			editor.setData(
 				'<table></table>'
 			);
@@ -412,6 +413,80 @@ describe( 'TableLayoutEditing', () => {
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<table tableType="content">' +
 					'<tableRow><tableCell><paragraph></paragraph></tableCell></tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should set outer <table> `tableType` to `content` and the inner <table> `tableType` to `layout`', () => {
+			editor.setData(
+				'<table class="table content-table">' +
+					'<tr>' +
+						'<td>' +
+							'<table>' +
+								'<tr>' +
+									'<td>inner</td>' +
+								'</tr>' +
+							'</table>' +
+						'</td>' +
+					'</tr>' +
+					'<tr>' +
+						'<td>outer</td>' +
+					'</tr>' +
+				'</table>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<table tableType="content">' +
+					'<tableRow><tableCell>' +
+						'<table tableType="layout">' +
+							'<tableRow><tableCell><paragraph>inner</paragraph></tableCell></tableRow>' +
+						'</table>' +
+					'</tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph>outer</paragraph></tableCell></tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should set `tableType` to `layout` also add tableWidth="30%" and apply tableColumnGroup', () => {
+			editor.setData(
+				'<table class="table layout-table" style="width:30%;" role="presentation">' +
+					'<colgroup>' +
+						'<col style="width:28.59%;">' +
+						'<col style="width:19.93%;">' +
+						'<col style="width:51.48%;">' +
+					'</colgroup>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>a</td>' +
+							'<td>b</td>' +
+							'<td>c</td>' +
+						'</tr>' +
+						'<tr>' +
+							'<td>1</td>' +
+							'<td>2</td>' +
+							'<td>3</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<table tableType="layout" tableWidth="30%">' +
+					'<tableRow>' +
+						'<tableCell><paragraph>a</paragraph></tableCell>' +
+						'<tableCell><paragraph>b</paragraph></tableCell>' +
+						'<tableCell><paragraph>c</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>1</paragraph></tableCell>' +
+						'<tableCell><paragraph>2</paragraph></tableCell>' +
+						'<tableCell><paragraph>3</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableColumnGroup>' +
+						'<tableColumn columnWidth="28.59%"></tableColumn>' +
+						'<tableColumn columnWidth="19.93%"></tableColumn>' +
+						'<tableColumn columnWidth="51.48%"></tableColumn>' +
+					'</tableColumnGroup>' +
 				'</table>'
 			);
 		} );
@@ -524,7 +599,7 @@ describe( 'TableLayoutEditing', () => {
 				);
 			} );
 
-			it( 'should set `tableType` to `content`even when there is a `layout-table` class ' +
+			it( 'should set `tableType` to `content` even when there is a `layout-table` class ' +
 					'and add the `headingRows` attribute', () => {
 				editor.setData(
 					'<figure class="table layout-table">' +
@@ -543,6 +618,113 @@ describe( 'TableLayoutEditing', () => {
 					'<table headingRows="1" tableType="content">' +
 						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 						'<tableRow><tableCell><paragraph>2</paragraph></tableCell></tableRow>' +
+					'</table>'
+				);
+			} );
+		} );
+
+		describe( 'GHS integration', () => {
+			let ghsEditor, model, editorElement;
+
+			beforeEach( async () => {
+				editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				ghsEditor = await ClassicTestEditor.create( editorElement, {
+					plugins: [
+						Table, TableCaption, TableColumnResize, PlainTableOutput,
+						TableLayoutEditing, Paragraph, GeneralHtmlSupport
+					],
+					htmlSupport: {
+						allow: [
+							{
+								name: /^.*$/,
+								styles: true,
+								attributes: true,
+								classes: true
+							}
+						]
+					}
+				} );
+
+				model = editor.model;
+				view = editor.editing.view;
+			} );
+
+			afterEach( async () => {
+				editorElement.remove();
+
+				await ghsEditor.destroy();
+			} );
+
+			it( 'should set `tableType` to `layout` when there is class `layout-table`', () => {
+				editor.setData(
+					'<table class="table layout-table">' +
+						'<tr><td>1</td></tr>' +
+					'</table>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<table tableType="layout">' +
+						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'role="presentation" attribute should be consumed', () => {
+				editor.setData(
+					'<table role="presentation">' +
+						'<tr><td>1</td></tr>' +
+					'</table>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<table tableType="layout">' +
+						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should set `tableType` to `layout` also add tableWidth="30%" and apply tableColumnGroup', () => {
+				editor.setData(
+					'<table class="table layout-table" style="width:30%;" role="presentation">' +
+						'<colgroup>' +
+							'<col style="width:28.59%;">' +
+							'<col style="width:19.93%;">' +
+							'<col style="width:51.48%;">' +
+						'</colgroup>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>a</td>' +
+								'<td>b</td>' +
+								'<td>c</td>' +
+							'</tr>' +
+							'<tr>' +
+								'<td>1</td>' +
+								'<td>2</td>' +
+								'<td>3</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<table tableType="layout" tableWidth="30%">' +
+						'<tableRow>' +
+							'<tableCell><paragraph>a</paragraph></tableCell>' +
+							'<tableCell><paragraph>b</paragraph></tableCell>' +
+							'<tableCell><paragraph>c</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>1</paragraph></tableCell>' +
+							'<tableCell><paragraph>2</paragraph></tableCell>' +
+							'<tableCell><paragraph>3</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableColumnGroup>' +
+							'<tableColumn columnWidth="28.59%"></tableColumn>' +
+							'<tableColumn columnWidth="19.93%"></tableColumn>' +
+							'<tableColumn columnWidth="51.48%"></tableColumn>' +
+						'</tableColumnGroup>' +
 					'</table>'
 				);
 			} );
