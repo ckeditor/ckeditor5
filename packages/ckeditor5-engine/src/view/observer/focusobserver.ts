@@ -10,6 +10,7 @@
 /* globals setTimeout, clearTimeout */
 
 import DomEventObserver from './domeventobserver.js';
+import SelectionObserver from './selectionobserver.js';
 import type DomEventData from './domeventdata.js';
 import type View from '../view.js';
 import type { ViewDocumentInputEvent } from './inputobserver.js';
@@ -152,6 +153,7 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 			// @if CK_DEBUG_TYPING // }
 
 			this.flush();
+			this.view.getObserver( SelectionObserver ).flush(); // TODO
 			this.view.change( () => {} );
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {

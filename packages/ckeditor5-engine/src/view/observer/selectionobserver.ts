@@ -90,6 +90,11 @@ export default class SelectionObserver extends Observer {
 	 */
 	private _loopbackCounter: number;
 
+	/**
+	 * TODO
+	 */
+	private _isSelectionChanging: boolean = false; // TODO find better name as this is related only to focus observer
+
 	constructor( view: View ) {
 		super( view );
 
@@ -238,6 +243,16 @@ export default class SelectionObserver extends Observer {
 		this._documentIsSelectingInactivityTimeoutDebounced.cancel();
 	}
 
+	/**
+	 * TODO
+	 */
+	public flush(): void {
+		if ( this._isSelectionChanging ) {
+			this._isSelectionChanging = false;
+			this._handleSelectionChange( window.document ); // TODO use proper DOM document
+		}
+	}
+
 	/* istanbul ignore next -- @preserve */
 	private _reportInfiniteLoop() {
 	// @if CK_DEBUG //		throw new Error(
@@ -283,6 +298,15 @@ export default class SelectionObserver extends Observer {
 
 		// Mark the latest focus change as complete (we got new selection after the focus so the selection is in the focused element).
 		this.focusObserver.flush();
+
+		if ( !this.view.document.isFocused ) {
+			console.warn( 'ignore selection change as editable is not focused!' ); // TODO
+			this._isSelectionChanging = true;
+
+			return;
+		}
+
+		this._isSelectionChanging = false;
 
 		if ( this.selection.isEqual( newViewSelection ) && this.domConverter.isDomSelectionCorrect( domSelection ) ) {
 			return;

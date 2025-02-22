@@ -972,17 +972,23 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 
 		const domRoot = this.domConverter.mapViewToDom( this.selection.editableElement! );
 
-		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
-		// @if CK_DEBUG_TYPING // 		`${ this.isFocused && domRoot ? 'Update' : 'Skip updating' } DOM selection:`,
-		// @if CK_DEBUG_TYPING // 		`isFocused: ${ this.isFocused }`
-		// @if CK_DEBUG_TYPING // 	) );
-		// @if CK_DEBUG_TYPING // }
-
 		// Do nothing if there is no focus, or there is no DOM element corresponding to selection's editable element.
 		if ( !this.isFocused || !domRoot ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+			// @if CK_DEBUG_TYPING // 		'Skip updating DOM selection:',
+			// @if CK_DEBUG_TYPING // 		`isFocused: ${ this.isFocused }, hasDomRoot: ${ !!domRoot }`
+			// @if CK_DEBUG_TYPING // 	) );
+			// @if CK_DEBUG_TYPING // }
+
 			return;
 		}
+
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+		// @if CK_DEBUG_TYPING // 		'Update DOM selection'
+		// @if CK_DEBUG_TYPING // 	) );
+		// @if CK_DEBUG_TYPING // }
 
 		// Render fake selection - create the fake selection container (if needed) and move DOM selection to it.
 		if ( this.selection.isFake ) {
