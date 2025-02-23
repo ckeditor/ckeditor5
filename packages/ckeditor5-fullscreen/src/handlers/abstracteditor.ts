@@ -100,7 +100,7 @@ export default class AbstractEditorHandler {
 				</div>
 				<div class="ck ck-fullscreen__editor-wrapper">
 					<div class="ck ck-fullscreen__sidebar ck-fullscreen__left-sidebar" data-ck-fullscreen="left-sidebar">
-						<div  class="ck ck-fullscreen__left-sidebar--sticky" data-ck-fullscreen="left-sidebar-sticky"></div> 
+						<div class="ck ck-fullscreen__left-sidebar--sticky" data-ck-fullscreen="left-sidebar-sticky"></div> 
 					</div>
 					<div class="ck ck-fullscreen__editor" data-ck-fullscreen="editor"></div>
 					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="right-sidebar"></div>
