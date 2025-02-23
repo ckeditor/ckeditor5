@@ -21,14 +21,19 @@ describe( 'DecoupledEditorHandler', () => {
 			plugins: [
 				Paragraph,
 				Essentials
-			]
+			],
+			fullscreen: {
+				menuBar: {
+					isVisible: true
+				}
+			}
 		} );
 
 		decoupledEditorHandler = new DecoupledEditorHandler( editor );
 	} );
 
 	afterEach( () => {
-		decoupledEditorHandler.getContainer().remove();
+		decoupledEditorHandler.disable();
 		domElement.remove();
 
 		return editor.destroy();
@@ -58,16 +63,6 @@ describe( 'DecoupledEditorHandler', () => {
 				.to.equal( editor.ui.view.toolbar.element );
 			expect( decoupledEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=menu-bar]' ).children[ 0 ] )
 				.to.equal( editor.ui.view.menuBarView.element );
-		} );
-	} );
-
-	describe( '#disable()', () => {
-		it( 'should call #returnMovedElements()', () => {
-			const spy = sinon.spy( decoupledEditorHandler, 'returnMovedElements' );
-
-			decoupledEditorHandler.disable();
-
-			expect( spy ).to.have.been.calledOnce;
 		} );
 	} );
 } );

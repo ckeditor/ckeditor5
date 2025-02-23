@@ -24,34 +24,21 @@ export default class DecoupledEditorHandler extends AbstractEditorHandler {
 	 * @inheritDoc
 	 */
 	constructor( editor: DecoupledEditor ) {
-		super();
+		super( editor );
 
 		this._editor = editor;
 
-		this._editor.on( 'destroy', () => {
-			this.disable();
-		} );
-	}
+		this._defaultEnable = () => {
+			this.moveToFullscreen( this._editor.ui.getEditableElement()!, 'editor' );
+			this.moveToFullscreen( this._editor.ui.view.toolbar.element!, 'toolbar' );
+			this.generatePresenceListElement();
+			this.generateDocumentOutlineElement();
 
-	/**
-	 * Moves the editor UI elements to the fullscreen mode.
-	 */
-	public override enable(): void {
-		this.moveToFullscreen( this._editor.ui.getEditableElement()!, 'editor' );
-		this.moveToFullscreen( this._editor.ui.view.toolbar.element!, 'toolbar' );
+			if ( this._editor.config.get( 'fullscreen.menuBar.isVisible' ) ) {
+				this.moveToFullscreen( this._editor.ui.view.menuBarView.element!, 'menu-bar' );
+			}
 
-		this.generatePresenceListElement();
-		this.generateDocumentOutlineElement();
-
-		if ( this._editor.config.get( 'fullscreen.menuBar.isVisible' ) ) {
-			this.moveToFullscreen( this._editor.ui.view.menuBarView.element!, 'menu-bar' );
-		}
-	}
-
-	/**
-	 * Restores the editor UI elements to their original positions.
-	 */
-	public override disable(): void {
-		this.returnMovedElements();
+			return this.getContainer();
+		};
 	}
 }

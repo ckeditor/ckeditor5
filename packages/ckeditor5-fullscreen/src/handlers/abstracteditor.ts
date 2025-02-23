@@ -9,7 +9,7 @@
 
 import { PresenceListUI } from '@ckeditor/ckeditor5-real-time-collaboration';
 import { DocumentOutlineUI } from '@ckeditor/ckeditor5-document-outline';
-import { CKEditorError, createElement } from 'ckeditor5/src/utils.js';
+import { createElement } from 'ckeditor5/src/utils.js';
 import { type Editor } from 'ckeditor5/src/core.js';
 
 /**
@@ -21,13 +21,19 @@ export default class AbstractEditorHandler {
 	 */
 	private _movedElements: Map<HTMLElement, HTMLElement>;
 
-	private _idToPlaceholder: Map<string, HTMLElement>;
+	private _idToPlaceholder: Map<string, HTMLElement> = new Map();
 
 	/**
 	 * The container element that holds the fullscreen mode layout.
 	 * It's independent of the editor type.
 	 */
 	private _container: HTMLElement | null = null;
+
+	/**
+	 * A function moving the editor UI elements to the fullscreen mode. It should be set by the particular editor type handler.
+	 * Returns the fullscreen mode container element so it can be further customized via `fullscreen.enableCallback` configuration property.
+	*/
+	protected _defaultEnable: () => HTMLElement;
 
 	/**
 	 * An editor instance. It should be set by the particular editor type handler.
@@ -37,9 +43,15 @@ export default class AbstractEditorHandler {
 	/**
 	 * @inheritDoc
 	 */
-	constructor() {
+	constructor( editor: Editor ) {
 		this._movedElements = new Map();
-		this._idToPlaceholder = new Map();
+		this._editor = editor;
+
+		this._defaultEnable = () => this.getContainer();
+
+		this._editor.on( 'destroy', () => {
+			this.disable();
+		} );
 	}
 
 	/**
@@ -69,26 +81,6 @@ export default class AbstractEditorHandler {
 			placeholder.remove();
 
 			this._movedElements.delete( placeholder );
-		}
-	}
-
-	/**
-	 * Returns the moved elements to their original places.
-	 */
-	public returnMovedElements(): void {
-		this.restoreDocumentOutlineContainer();
-
-		this._movedElements.forEach( ( moved, placeholder ) => {
-			placeholder.replaceWith( moved );
-			placeholder.remove();
-		} );
-
-		this._movedElements.clear();
-		this._idToPlaceholder.clear();
-
-		if ( this._container ) {
-			this._container.remove();
-			this._container = null;
 		}
 	}
 
@@ -125,24 +117,32 @@ export default class AbstractEditorHandler {
 	 * Enables the fullscreen mode. This is a virtual method that should be overridden by the particular editor type handler.
 	 */
 	public enable(): void {
-		/**
-		 * Invalid editor type. Fullscreen mode is compatible only with the classic and decoupled editors.
-		 *
-		 * @error fullscreen-invalid-editor-type
-		 */
-		throw new CKEditorError( 'fullscreen-invalid-editor-type', this._editor );
+		this._defaultEnable();
+
+		if ( this._editor.config.get( 'fullscreen.enableCallback' ) ) {
+			this._editor.config.get( 'fullscreen.enableCallback' )!( this.getContainer() );
+		}
 	}
 
 	/**
-	 * Disables the fullscreen mode. This is a virtual method that should be overridden by the particular editor type handler.
+	 * Disables the fullscreen mode by restoring all moved elements and destroying the fullscreen container.
 	 */
 	public disable(): void {
-		/**
-		 * Invalid editor type. Fullscreen mode is compatible only with the classic and decoupled editors.
-		 *
-		 * @error fullscreen-invalid-editor-type
-		 */
-		throw new CKEditorError( 'fullscreen-invalid-editor-type', this._editor );
+		if ( this._editor.config.get( 'fullscreen.disableCallback' ) ) {
+			this._editor.config.get( 'fullscreen.disableCallback' )!();
+		}
+
+		this._movedElements.forEach( ( placeholder, moved ) => {
+			placeholder.replaceWith( moved );
+			placeholder.remove();
+		} );
+
+		this._movedElements.clear();
+
+		if ( this._container ) {
+			this._container.remove();
+			this._container = null;
+		}
 	}
 
 	public generatePresenceListElement(): void {
