@@ -149,6 +149,7 @@ Form components across various features (Link, Bookmark, Image, Table) have been
 
 Notable changes:
 
-* A new `FormRowView` class has been introduced in the UI package for consistent form row layouts
-* All balloon panels now have consistent headers with back buttons
-* Form styles have been moved to a dedicated `form.css` in the theme-lark package
+* A new `FormRowView` class has been introduced in the UI package for consistent form row layouts.
+* All balloon panels now have consistent headers with back buttons.
+* Form styles have been moved to a dedicated `form.css` in the theme-lark package.
+``.
