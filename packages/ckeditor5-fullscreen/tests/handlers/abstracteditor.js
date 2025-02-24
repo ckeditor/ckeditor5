@@ -4,11 +4,11 @@
  */
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
+import RevisionHistoryMock from '../_utils/revisionhistorymock.js';
 import AbstractEditorHandler from '../../src/handlers/abstracteditor.js';
 
 describe( 'AbstractHandler', () => {
@@ -30,7 +30,7 @@ describe( 'AbstractHandler', () => {
 
 	afterEach( () => {
 		domElement.remove();
-		abstractHandler.getContainer().remove();
+		abstractHandler.disable();
 
 		return editor.destroy();
 	} );
@@ -46,7 +46,7 @@ describe( 'AbstractHandler', () => {
 		} );
 
 		it( 'should setup listener returning moved elements when editor is destroyed', async () => {
-			const spy = sinon.spy( abstractHandler, 'returnMovedElements' );
+			const spy = sinon.spy( abstractHandler, 'disable' );
 
 			await editor.destroy();
 
@@ -65,7 +65,7 @@ describe( 'AbstractHandler', () => {
 
 			expect( abstractHandler.getContainer().querySelector( '#element' ) ).to.equal( element );
 
-			abstractHandler.returnMovedElements();
+			abstractHandler.disable();
 			element.remove();
 		} );
 	} );
@@ -108,49 +108,6 @@ describe( 'AbstractHandler', () => {
 		} );
 	} );
 
-	describe( '#returnMovedElements()', () => {
-		it( 'should return all moved elements and destroy the placeholders', () => {
-			const element = global.document.createElement( 'div' );
-			const element2 = global.document.createElement( 'div' );
-
-			element.id = 'element';
-			element2.id = 'element2';
-			global.document.body.appendChild( element );
-			global.document.body.appendChild( element2 );
-
-			abstractHandler.moveToFullscreen( element, 'menu-bar' );
-			abstractHandler.moveToFullscreen( element2, 'editable' );
-
-			expect(
-				abstractHandler._placeholderToElement.has( global.document.querySelector( '[data-ck-fullscreen-placeholder="menu-bar"' ) )
-			).to.be.true;
-			expect(
-				abstractHandler._placeholderToElement.has( global.document.querySelector( '[data-ck-fullscreen-placeholder="editable"' ) )
-			).to.be.true;
-			expect( abstractHandler._idToPlaceholder.size ).to.equal( 2 );
-			expect( abstractHandler._placeholderToElement.size ).to.equal( 2 );
-
-			abstractHandler.returnMovedElements();
-
-			expect( abstractHandler._idToPlaceholder.size ).to.equal( 0 );
-			expect( abstractHandler._placeholderToElement.size ).to.equal( 0 );
-			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="menu-bar"' ) ).to.be.null;
-			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="editable"' ) ).to.be.null;
-
-			element.remove();
-			element2.remove();
-		} );
-
-		it( 'should destroy the container if it was created', () => {
-			const container = abstractHandler.getContainer();
-
-			abstractHandler.returnMovedElements();
-
-			expect( abstractHandler._container ).to.be.null;
-			expect( container.parentElement ).to.be.null;
-		} );
-	} );
-
 	describe( '#getContainer()', () => {
 		it( 'should create a container if it does not exist', () => {
 			expect( global.document.querySelector( '.ck-fullscreen__main-container' ) ).to.be.null;
@@ -184,22 +141,132 @@ describe( 'AbstractHandler', () => {
 	} );
 
 	describe( '#enable()', () => {
-		it( 'should throw an error', () => {
-			try {
-				abstractHandler.enable();
-			} catch ( error ) {
-				assertCKEditorError( error, /^fullscreen-invalid-editor-type/ );
-			}
+		it( 'should execute the #_defaultEnable method', () => {
+			const spy = sinon.spy( abstractHandler, '_defaultEnable' );
+
+			abstractHandler.enable();
+
+			expect( spy ).to.have.been.calledOnce;
+		} );
+
+		it( 'should execute the custom callback if configured', () => {
+			const spy = sinon.spy();
+
+			editor.config.set( 'fullscreen.enableCallback', spy );
+
+			abstractHandler.enable();
+
+			expect( spy ).to.have.been.calledOnce;
 		} );
 	} );
 
 	describe( '#disable()', () => {
-		it( 'should throw an error', () => {
-			try {
-				abstractHandler.disable();
-			} catch ( error ) {
-				assertCKEditorError( error, /^fullscreen-invalid-editor-type/ );
-			}
+		it( 'should execute the custom callback if configured', () => {
+			const spy = sinon.spy();
+
+			editor.config.set( 'fullscreen.disableCallback', spy );
+
+			abstractHandler.disable();
+
+			expect( spy ).to.have.been.calledOnce;
+		} );
+
+		it( 'should return all moved elements and destroy the placeholders', () => {
+			const element = global.document.createElement( 'div' );
+			const element2 = global.document.createElement( 'div' );
+
+			element.id = 'element';
+			element2.id = 'element2';
+			global.document.body.appendChild( element );
+			global.document.body.appendChild( element2 );
+
+			abstractHandler.moveToFullscreen( element, 'menu-bar' );
+			abstractHandler.moveToFullscreen( element2, 'editable' );
+
+			expect(
+				abstractHandler._placeholderToElement.has( global.document.querySelector( '[data-ck-fullscreen-placeholder="menu-bar"' ) )
+			).to.be.true;
+			expect(
+				abstractHandler._placeholderToElement.has( global.document.querySelector( '[data-ck-fullscreen-placeholder="editable"' ) )
+			).to.be.true;
+			expect( abstractHandler._idToPlaceholder.size ).to.equal( 2 );
+			expect( abstractHandler._placeholderToElement.size ).to.equal( 2 );
+
+			abstractHandler.disable();
+
+			expect( abstractHandler._idToPlaceholder.size ).to.equal( 0 );
+			expect( abstractHandler._placeholderToElement.size ).to.equal( 0 );
+			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="menu-bar"' ) ).to.be.null;
+			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="editable"' ) ).to.be.null;
+
+			element.remove();
+			element2.remove();
+		} );
+
+		it( 'should destroy the container if it was created', () => {
+			const container = abstractHandler.getContainer();
+
+			abstractHandler.disable();
+
+			expect( abstractHandler._container ).to.be.null;
+			expect( container.parentElement ).to.be.null;
+		} );
+	} );
+
+	describe( 'with Revision history plugin', () => {
+		let domElementForRevisionHistory, editorWithRevisionHistory, abstractEditorHandler;
+
+		beforeEach( async () => {
+			domElementForRevisionHistory = global.document.createElement( 'div' );
+			global.document.body.appendChild( domElementForRevisionHistory );
+
+			editorWithRevisionHistory = await ClassicEditor.create( domElementForRevisionHistory, {
+				plugins: [
+					Paragraph,
+					Essentials,
+					RevisionHistoryMock
+				]
+			} );
+
+			abstractEditorHandler = new AbstractEditorHandler( editorWithRevisionHistory );
+		} );
+
+		afterEach( async () => {
+			abstractEditorHandler.disable();
+			domElementForRevisionHistory.remove();
+
+			return editorWithRevisionHistory.destroy();
+		} );
+
+		it( 'should override default RH callbacks when fullscreen mode is enabled', () => {
+			const spy = sinon.spy( abstractEditorHandler, '_overrideRevisionHistoryCallbacks' );
+
+			expect( editorWithRevisionHistory.config.get( 'revisionHistory.showRevisionViewerCallback' ) ).to.equal(
+				RevisionHistoryMock.showRevisionViewerCallback
+			);
+			expect( editorWithRevisionHistory.config.get( 'revisionHistory.showRevisionViewerCallback' ) ).to.equal(
+				RevisionHistoryMock.showRevisionViewerCallback
+			);
+
+			abstractEditorHandler.enable();
+
+			expect( editorWithRevisionHistory.config.get( 'revisionHistory.closeRevisionViewerCallback' ) ).to.not.equal(
+				RevisionHistoryMock.closeRevisionViewerCallback
+			);
+			expect( editorWithRevisionHistory.config.get( 'revisionHistory.closeRevisionViewerCallback' ) ).to.not.equal(
+				RevisionHistoryMock.closeRevisionViewerCallback
+			);
+
+			expect( spy ).to.have.been.calledOnce;
+		} );
+
+		it( 'should restore default RH callbacks when fullscreen mode is disabled', () => {
+			const spy = sinon.spy( abstractEditorHandler, '_restoreRevisionHistoryCallbacks' );
+
+			abstractEditorHandler.enable();
+			abstractEditorHandler.disable();
+
+			expect( spy ).to.have.been.calledOnce;
 		} );
 	} );
 } );

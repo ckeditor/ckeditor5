@@ -28,6 +28,22 @@
 export default interface FullscreenConfig {
 
 	/**
+	 * Customizable callback that is called when the fullscreen mode is enabled.
+	 * It's executed after the editor UI elements are moved to the fullscreen mode.
+	 *
+	 * @default () => {}
+	 */
+	enableCallback: ( container: HTMLElement ) => void;
+
+	/**
+	 * Customizable callback that is called when the fullscreen mode is disabled.
+	 * It's executed before the editor UI elements are moved back to the normal mode.
+	 *
+	 * @default () => {}
+	 */
+	disableCallback: () => void;
+
+	/**
 	 * The configuration of the menu bar in the fullscreen mode.
 	 */
 	menuBar?: {

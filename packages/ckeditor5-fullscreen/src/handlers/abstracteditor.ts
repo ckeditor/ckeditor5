@@ -7,9 +7,9 @@
  * @module fullscreen/handlers/abstracteditorhandler
  */
 
-import { CKEditorError, createElement } from 'ckeditor5/src/utils.js';
 import type { Editor, EditorConfig } from 'ckeditor5/src/core.js';
 import type { RevisionViewerEditor } from '@ckeditor/ckeditor5-revision-history';
+import { createElement } from 'ckeditor5/src/utils.js';
 
 /**
  * The abstract editor type handler. It should be extended by the particular editor type handler.
@@ -42,6 +42,12 @@ export default class AbstractEditorHandler {
 	protected _closeRevisionViewerCallback: ( ( viewerEditor?: RevisionViewerEditor ) => Promise<unknown> ) | null = null;
 
 	/**
+	 * A function moving the editor UI elements to the fullscreen mode. It should be set by the particular editor type handler.
+	 * Returns the fullscreen mode container element so it can be further customized via `fullscreen.enableCallback` configuration property.
+	*/
+	protected _defaultEnable: () => HTMLElement;
+
+	/**
 	 * An editor instance. It should be set by the particular editor type handler.
 	 */
 	declare protected _editor: Editor;
@@ -54,14 +60,17 @@ export default class AbstractEditorHandler {
 		this._idToPlaceholder = new Map();
 		this._editor = editor;
 
-		editor.on( 'destroy', () => {
-			this.returnMovedElements();
-		} );
-
 		if ( editor.plugins.has( 'RevisionHistory' ) ) {
 			this._showRevisionViewerCallback = editor.config.get( 'revisionHistory.showRevisionViewerCallback' )!;
 			this._closeRevisionViewerCallback = editor.config.get( 'revisionHistory.closeRevisionViewerCallback' )!;
 		}
+		this._editor = editor;
+
+		this._defaultEnable = () => this.getContainer();
+
+		this._editor.on( 'destroy', () => {
+			this.disable();
+		} );
 	}
 
 	/**
@@ -100,19 +109,6 @@ export default class AbstractEditorHandler {
 	}
 
 	/**
-	 * Returns the moved elements to their original places.
-	 */
-	public returnMovedElements(): void {
-		for ( const placeholderName of this._idToPlaceholder.keys() ) {
-			this.returnMovedElement( placeholderName );
-		}
-
-		if ( this._idToPlaceholder.size === 0 ) {
-			this._destroyContainer();
-		}
-	}
-
-	/**
 	 * Returns the fullscreen mode container element.
 	 */
 	public getContainer(): HTMLElement {
@@ -140,27 +136,39 @@ export default class AbstractEditorHandler {
 	}
 
 	/**
-	 * Enables the fullscreen mode. This is a virtual method that should be overridden by the particular editor type handler.
+	 * Enables the fullscreen mode. It executes the editor-specific enable handler and then the configured callback.
 	 */
 	public enable(): void {
-		/**
-		 * Invalid editor type. Fullscreen mode is compatible only with the classic and decoupled editors.
-		 *
-		 * @error fullscreen-invalid-editor-type
-		 */
-		throw new CKEditorError( 'fullscreen-invalid-editor-type', this._editor );
+		this._defaultEnable();
+
+		if ( this._editor.plugins.has( 'RevisionHistory' ) ) {
+			this._overrideRevisionHistoryCallbacks();
+		}
+
+		if ( this._editor.config.get( 'fullscreen.enableCallback' ) ) {
+			this._editor.config.get( 'fullscreen.enableCallback' )!( this.getContainer() );
+		}
 	}
 
 	/**
-	 * Disables the fullscreen mode. This is a virtual method that should be overridden by the particular editor type handler.
+	 * Disables the fullscreen mode by restoring all moved elements and destroying the fullscreen container.
 	 */
 	public disable(): void {
-		/**
-		 * Invalid editor type. Fullscreen mode is compatible only with the classic and decoupled editors.
-		 *
-		 * @error fullscreen-invalid-editor-type
-		 */
-		throw new CKEditorError( 'fullscreen-invalid-editor-type', this._editor );
+		if ( this._editor.config.get( 'fullscreen.disableCallback' ) ) {
+			this._editor.config.get( 'fullscreen.disableCallback' )!();
+		}
+
+		if ( this._editor.plugins.has( 'RevisionHistory' ) ) {
+			this._restoreRevisionHistoryCallbacks();
+		}
+
+		for ( const placeholderName of this._idToPlaceholder.keys() ) {
+			this.returnMovedElement( placeholderName );
+		}
+
+		if ( this._idToPlaceholder.size === 0 ) {
+			this._destroyContainer();
+		}
 	}
 
 	/**

@@ -28,49 +28,32 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 		super( editor );
 
 		this._editor = editor;
-	}
 
-	/**
-	 * Moves the editor UI elements to the fullscreen mode.
-	 */
-	public override enable(): void {
-		const editorUI = this._editor.ui;
-		const editorUIView = editorUI.view;
+		this._defaultEnable = () => {
+			const editorUI = this._editor.ui;
+			const editorUIView = editorUI.view;
 
-		this.moveToFullscreen( editorUI.getEditableElement()!, 'editable' );
-		this.moveToFullscreen( editorUIView.toolbar.element!, 'toolbar' );
+			this.moveToFullscreen( editorUI.getEditableElement()!, 'editable' );
+			this.moveToFullscreen( editorUIView.toolbar.element!, 'toolbar' );
 
-		// In classic editor, the `dir` attribute is set on the top-level container and it affects the styling
-		// in both menu bar and toolbar (adding the side padding to the elements).
-		// Since we don't move the whole container but only parts, we need to reapply the attribute value manually.
-		// Decupled editor doesn't have this issue because there is no top-level container, so `dir` is set on each component separately.
-		this.getContainer().setAttribute( 'dir', editorUIView.element!.getAttribute( 'dir' )! );
+			// In classic editor, the `dir` attribute is set on the top-level container and it affects the styling
+			// in both menu bar and toolbar (adding the side padding to the elements).
+			// Since we don't move the whole container but only parts, we need to reapply the attribute value manually.
+			// Decupled editor doesn't have this issue because there is no top-level container,
+			// so `dir` is set on each component separately.
+			this.getContainer().setAttribute( 'dir', editorUIView.element!.getAttribute( 'dir' )! );
 
-		if ( this._editor.plugins.has( 'RevisionHistory' ) ) {
-			this._overrideRevisionHistoryCallbacks();
-		}
+			if ( this._editor.config.get( 'fullscreen.menuBar.isVisible' ) ) {
+				if ( !editorUIView.menuBarView ) {
+					editorUIView.menuBarView = new MenuBarView( this._editor.locale );
+					editorUIView.menuBarView.render();
+					editorUI.initMenuBar( editorUIView.menuBarView );
+				}
 
-		if ( !this._editor.config.get( 'fullscreen.menuBar.isVisible' ) ) {
-			return;
-		}
+				this.moveToFullscreen( editorUIView.menuBarView.element!, 'menu-bar' );
+			}
 
-		if ( !editorUIView.menuBarView ) {
-			editorUIView.menuBarView = new MenuBarView( this._editor.locale );
-			editorUIView.menuBarView.render();
-			editorUI.initMenuBar( editorUIView.menuBarView );
-		}
-
-		this.moveToFullscreen( editorUIView.menuBarView.element!, 'menu-bar' );
-	}
-
-	/**
-	 * Restores the editor UI elements to their original positions.
-	 */
-	public override disable(): void {
-		if ( this._editor.plugins.has( 'RevisionHistory' ) ) {
-			this._restoreRevisionHistoryCallbacks();
-		}
-
-		this.returnMovedElements();
+			return this.getContainer();
+		};
 	}
 }

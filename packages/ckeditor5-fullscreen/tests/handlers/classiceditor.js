@@ -9,7 +9,6 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
 import ClassicEditorHandler from '../../src/handlers/classiceditor.js';
-import RevisionHistoryMock from '../_utils/revisionhistorymock.js';
 
 describe( 'ClassicEditorHandler', () => {
 	let classicEditorHandler, domElement, editor;
@@ -29,7 +28,7 @@ describe( 'ClassicEditorHandler', () => {
 	} );
 
 	afterEach( () => {
-		classicEditorHandler.getContainer().remove();
+		classicEditorHandler.disable();
 		domElement.remove();
 
 		return editor.destroy();
@@ -85,73 +84,6 @@ describe( 'ClassicEditorHandler', () => {
 
 			tempDomElement.remove();
 			return tempEditor.destroy();
-		} );
-	} );
-
-	describe( '#disable()', () => {
-		it( 'should call #returnMovedElements()', () => {
-			const spy = sinon.spy( classicEditorHandler, 'returnMovedElements' );
-
-			classicEditorHandler.disable();
-
-			expect( spy ).to.have.been.calledOnce;
-		} );
-	} );
-
-	describe( 'with Revision history plugin', () => {
-		let domElementForRevisionHistory, editorWithRevisionHistory;
-
-		beforeEach( async () => {
-			domElementForRevisionHistory = global.document.createElement( 'div' );
-			global.document.body.appendChild( domElementForRevisionHistory );
-
-			editorWithRevisionHistory = await ClassicEditor.create( domElementForRevisionHistory, {
-				plugins: [
-					Paragraph,
-					Essentials,
-					RevisionHistoryMock
-				]
-			} );
-
-			classicEditorHandler = new ClassicEditorHandler( editorWithRevisionHistory );
-		} );
-
-		afterEach( async () => {
-			classicEditorHandler.disable();
-			domElementForRevisionHistory.remove();
-
-			return editorWithRevisionHistory.destroy();
-		} );
-
-		it( 'should override default RH callbacks when fullscreen mode is enabled', () => {
-			const spy = sinon.spy( classicEditorHandler, '_overrideRevisionHistoryCallbacks' );
-
-			expect( editorWithRevisionHistory.config.get( 'revisionHistory.showRevisionViewerCallback' ) ).to.equal(
-				RevisionHistoryMock.showRevisionViewerCallback
-			);
-			expect( editorWithRevisionHistory.config.get( 'revisionHistory.showRevisionViewerCallback' ) ).to.equal(
-				RevisionHistoryMock.showRevisionViewerCallback
-			);
-
-			classicEditorHandler.enable();
-
-			expect( editorWithRevisionHistory.config.get( 'revisionHistory.closeRevisionViewerCallback' ) ).to.not.equal(
-				RevisionHistoryMock.closeRevisionViewerCallback
-			);
-			expect( editorWithRevisionHistory.config.get( 'revisionHistory.closeRevisionViewerCallback' ) ).to.not.equal(
-				RevisionHistoryMock.closeRevisionViewerCallback
-			);
-
-			expect( spy ).to.have.been.calledOnce;
-		} );
-
-		it( 'should restore default RH callbacks when fullscreen mode is disabled', () => {
-			const spy = sinon.spy( classicEditorHandler, '_restoreRevisionHistoryCallbacks' );
-
-			classicEditorHandler.enable();
-			classicEditorHandler.disable();
-
-			expect( spy ).to.have.been.calledOnce;
 		} );
 	} );
 } );
