@@ -70,7 +70,7 @@ ClassicEditor
 
 ### Custom toolbar components
 
-Both Link and Bookmark features allow registering custom toolbar items that can be used in their respective toolbars. To add a custom item:
+Link and Bookmark features allow custom toolbar items to be registered in their respective toolbars. To add a custom item:
 
 1. Register it in the component factory
 2. Add it to the toolbar configuration
