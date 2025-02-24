@@ -548,6 +548,12 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 				]
  * 			},
  * 			{
+ * 				groupId: 'fullscreen',
+ * 				items: [
+ * 					'menuBar:fullscreen'
+ * 				]
+ * 			},
+ * 			{
  * 				groupId: 'restrictedEditingException',
  * 				items: [
  * 					'menuBar:restrictedEditingException'
@@ -810,6 +816,12 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 				groupId: 'previewMergeFields',
 				items: [
 					'menuBar:previewMergeFields'
+				]
+			},
+			{
+				groupId: 'fullscreen',
+				items: [
+					'menuBar:fullscreen'
 				]
 			},
 			{
