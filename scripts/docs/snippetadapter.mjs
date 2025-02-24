@@ -9,8 +9,8 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
 import upath from 'upath';
-import { build } from 'vite';
 import { globSync } from 'glob';
+import { build as esbuild } from 'esbuild';
 
 const require = createRequire( import.meta.url );
 const __dirname = upath.dirname( fileURLToPath( import.meta.url ) );
@@ -28,7 +28,10 @@ export default async function snippetAdapter( snippets, _, { getSnippetPlacehold
 	const { outputPath, snippetsInputPath, snippetsOutputPath } = getPaths( snippets );
 	const constants = await getConstantDefinitions( snippets );
 	const imports = await getImportMap();
-	const globalAsset = await buildGlobalAsset( upath.resolve( snippetsInputPath, 'assets.js' ) );
+	const globalAssets = await buildSnippet(
+		{ js: upath.resolve( snippetsInputPath, 'assets.js' ) },
+		snippetsOutputPath
+	);
 
 	const headerTags = [
 		`<link
@@ -41,7 +44,7 @@ export default async function snippetAdapter( snippets, _, { getSnippetPlacehold
 		/>`,
 		`<script type="importmap">${ JSON.stringify( { imports } ) }</script>`,
 		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
-		`<script>${ globalAsset }</script>`
+		...globalAssets
 	].join( '\n' );
 
 	await buildSnippets(
@@ -138,30 +141,6 @@ function getAllSnippets( path ) {
 	return snippets;
 }
 
-/**
- * @param {String} entry
- * @returns {Promise<String>}
- */
-async function buildGlobalAsset( entry ) {
-	const result = await build( {
-		clearScreen: false,
-		logLevel: 'warn',
-		build: {
-			modulePreload: false,
-			target: 'es2022',
-			write: false,
-			minify: true,
-			lib: {
-				entry,
-				name: 'asset',
-				formats: [ 'es' ]
-			}
-		}
-	} );
-
-	return result[ 0 ].output[ 0 ].code;
-}
-
 async function buildSnippets( snippets, snippetsOutputPath, constants, imports, headerTags ) {
 	const external = Object.keys( imports );
 	const define = {};
@@ -172,74 +151,15 @@ async function buildSnippets( snippets, snippetsOutputPath, constants, imports, 
 
 	for ( const [ name, files ] of Object.entries( snippets ) ) {
 		if ( !files.html || !files.js ) {
-			continue; // Do not build CSS-only snippets.
+			continue; // Only build snippets that have both HTML and JS files.
 		}
 
-		const result = await build( {
-			clearScreen: false,
-			logLevel: 'warn',
-			define,
-			build: {
-				modulePreload: false,
-				target: 'es2022',
-				write: false,
-				minify: true,
-				rollupOptions: {
-					external
-				},
-				lib: {
-					entry: files.js,
-					name: 'snippet',
-					formats: [ 'es' ]
-				}
-			},
-			plugins: [
-				{
-					name: 'virtual-js',
-					resolveId( id ) {
-						if ( id === files.js ) {
-							return id;
-						}
-					},
-					async load( id ) {
-						if ( id === files.js ) {
-							return [
-								files.css && `import './${ upath.basename( files.css ) }';`,
-								fs.readFileSync( files.js, { encoding: 'utf-8' } )
-							]
-								.filter( Boolean )
-								.join( '\n' );
-						}
-					}
-				}
-			],
-
-			/**
-			 * The configuration below allows for JSX code in JS files. This is needed for snippets
-			 * that use React components, but still need the `.js` extension to be found by Umberto.
-			 */
-			esbuild: {
-				loader: 'jsx',
-				include: /.*\.jsx?$/,
-				exclude: []
-			},
-			optimizeDeps: {
-				esbuildOptions: {
-					loader: {
-						'.js': 'jsx'
-					}
-				}
-			}
-		} );
+		const result = await buildSnippet( files, snippetsOutputPath, external, define );
 
 		const data = [
 			'<div class="live-snippet">',
 			fs.readFileSync( files.html, { encoding: 'utf-8' } ),
-			...result[ 0 ].output.map( output => {
-				return output.type === 'chunk' ?
-					`<script type="module">${ output.code }</script>` :
-					`<style data-cke="true">${ output.source }</style>`;
-			} ),
+			...result,
 			'</div>'
 		]
 			.filter( Boolean )
@@ -254,6 +174,53 @@ async function buildSnippets( snippets, snippetsOutputPath, constants, imports, 
 	}
 }
 
+async function buildSnippet( files, outputPath, externals = [], define = {} ) {
+	const { name, dir, base } = upath.parse( files.js );
+
+	const result = await esbuild( {
+		stdin: {
+			contents: `
+				${ files.css ? `import './${ name }.css';` : '' }
+				${ fs.readFileSync( files.js, { encoding: 'utf-8' } ) }
+			`,
+			resolveDir: dir,
+			sourcefile: base,
+			loader: 'jsx'
+		},
+		entryNames: '[dir]/snippet',
+		bundle: true,
+		minify: true,
+		write: false,
+		define,
+		outdir: upath.join( outputPath, name ),
+		platform: 'browser',
+		legalComments: 'none',
+		format: 'esm',
+		target: 'es2022',
+		tsconfigRaw: {},
+		loader: {
+			'.js': 'jsx',
+			'.svg': 'text'
+		},
+		plugins: [
+			{
+				name: 'external',
+				setup( build ) {
+					build.onResolve( { filter: /.*/ }, args => ( {
+						external: externals.some( name => name.endsWith( '/' ) ? args.path.startsWith( name ) : args.path === name )
+					} ) );
+				}
+			}
+		]
+	} );
+
+	return result.outputFiles.map( output => {
+		return upath.extname( output.path ) === '.css' ?
+			`<style data-cke="true">${ output.text }</style>` :
+			`<script type="module">${ output.text }</script>`;
+	} );
+}
+
 /**
  * @param {Array.<String>} coreDependencies
  * @param {Array.<String>} commercialDependencies
@@ -265,17 +232,12 @@ async function getImportMap() {
 
 	const imports = {
 		'ckeditor5': 'https://cdn.ckeditor.com/ckeditor5/nightly-next/ckeditor5.js',
-		'ckeditor5/translations/ar.js': 'https://cdn.ckeditor.com/ckeditor5/nightly-next/translations/ar.js',
-		'ckeditor5/translations/es.js': 'https://cdn.ckeditor.com/ckeditor5/nightly-next/translations/es.js',
+		'ckeditor5/': 'https://cdn.ckeditor.com/ckeditor5/nightly-next/',
 		'ckeditor5-premium-features': 'https://cdn.ckeditor.com/ckeditor5-premium-features/nightly-next/ckeditor5-premium-features.js',
 		'ckeditor5-premium-features/': 'https://cdn.ckeditor.com/ckeditor5-premium-features/nightly-next/',
 		'@ckeditor/ckeditor5-inspector': 'https://esm.sh/@ckeditor/ckeditor5-inspector@4.1.0/es2022/ckeditor5-inspector.mjs',
 		'@ckeditor/ckeditor5-inspector/build/miniinspector.js':
-			'https://esm.sh/@ckeditor/ckeditor5-inspector@4.1.0/es2022/build/miniinspector.mjs',
-		'react': 'https://esm.sh/react@18.2.0/es2022/react.mjs',
-		'react-dom/client': 'https://esm.sh/react-dom@18.2.0/es2022/client.bundle.mjs',
-		'lodash-es': 'https://esm.sh/lodash-es@4.17.15/es2022/lodash-es.bundle.mjs',
-		'mermaid/dist/mermaid.js': 'https://esm.sh/mermaid@9.4.3/es2022/mermaid.bundle.mjs'
+			'https://esm.sh/@ckeditor/ckeditor5-inspector@4.1.0/es2022/build/miniinspector.mjs'
 	};
 
 	/**

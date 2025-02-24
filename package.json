@@ -128,6 +128,7 @@
     "ckeditor5-premium-features": "44.2.0",
     "coveralls": "^3.1.0",
     "date-fns": "2.30.0",
+    "esbuild": "^0.25.0",
     "eslint": "^8.21.0",
     "eslint-config-ckeditor5": "^9.1.0",
     "eslint-formatter-stylish": "^8.40.0",
@@ -160,7 +161,6 @@
     "typescript": "5.0.4",
     "umberto": "^4.4.0",
     "upath": "^2.0.0",
-    "vite": "^6.1.0",
     "wait-on": "^6.0.1",
     "webpack": "^5.94.0"
   },
