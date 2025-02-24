@@ -12,7 +12,7 @@
 import Observer from './observer.js';
 import MutationObserver from './mutationobserver.js';
 import FocusObserver from './focusobserver.js';
-import { env } from '@ckeditor/ckeditor5-utils';
+import { env, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunc } from 'lodash-es';
 
 import type View from '../view.js';
@@ -64,7 +64,7 @@ export default class SelectionObserver extends Observer {
 	 * A set of documents which have added `selectionchange` listener to avoid adding a listener twice to the same
 	 * document.
 	 */
-	private readonly _documents: WeakSet<Document>;
+	private readonly _documents = new WeakSet<Document>();
 
 	/**
 	 * Fires debounced event `selectionChangeDone`. It uses `lodash#debounce` method to delay function call.
@@ -88,12 +88,13 @@ export default class SelectionObserver extends Observer {
 	/**
 	 * Private property to check if the code does not enter infinite loop.
 	 */
-	private _loopbackCounter: number;
+	private _loopbackCounter = 0;
 
 	/**
-	 * TODO
+	 * A set of DOM documents that have a pending selection change.
+	 * Pending selection change is recorded while selection change event is detected on non focused editable.
 	 */
-	private _isSelectionChanging: boolean = false; // TODO find better name as this is related only to focus observer
+	private _pendingSelectionChange = new Set<Document>();
 
 	constructor( view: View ) {
 		super( view );
@@ -103,8 +104,6 @@ export default class SelectionObserver extends Observer {
 		this.selection = this.document.selection;
 		this.domConverter = view.domConverter;
 
-		this._documents = new WeakSet();
-
 		this._fireSelectionChangeDoneDebounced = debounce( data => {
 			this.document.fire<ViewDocumentSelectionChangeDoneEvent>( 'selectionChangeDone', data );
 		}, 200 );
@@ -113,7 +112,22 @@ export default class SelectionObserver extends Observer {
 
 		this._documentIsSelectingInactivityTimeoutDebounced = debounce( () => ( this.document.isSelecting = false ), 5000 );
 
-		this._loopbackCounter = 0;
+		this.view.document.on<ObservableChangeEvent<boolean>>( 'change:isFocused', ( evt, name, isFocused ) => {
+			if ( isFocused && this._pendingSelectionChange.size ) {
+				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'SelectionObserver',
+				// @if CK_DEBUG_TYPING // 		'Flush pending selection change'
+				// @if CK_DEBUG_TYPING // 	) );
+				// @if CK_DEBUG_TYPING // }
+
+				// Iterate over a copy of set because it is modified in selection change handler.
+				for ( const domDocument of Array.from( this._pendingSelectionChange ) ) {
+					this._handleSelectionChange( domDocument );
+				}
+
+				this._pendingSelectionChange.clear();
+			}
+		} );
 	}
 
 	/**
@@ -243,16 +257,6 @@ export default class SelectionObserver extends Observer {
 		this._documentIsSelectingInactivityTimeoutDebounced.cancel();
 	}
 
-	/**
-	 * TODO
-	 */
-	public flush(): void {
-		if ( this._isSelectionChanging ) {
-			this._isSelectionChanging = false;
-			this._handleSelectionChange( window.document ); // TODO use proper DOM document
-		}
-	}
-
 	/* istanbul ignore next -- @preserve */
 	private _reportInfiniteLoop() {
 	// @if CK_DEBUG //		throw new Error(
@@ -299,14 +303,20 @@ export default class SelectionObserver extends Observer {
 		// Mark the latest focus change as complete (we got new selection after the focus so the selection is in the focused element).
 		this.focusObserver.flush();
 
+		// Ignore selection change as the editable is not focused.
 		if ( !this.view.document.isFocused ) {
-			console.warn( 'ignore selection change as editable is not focused!' ); // TODO
-			this._isSelectionChanging = true;
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'SelectionObserver',
+			// @if CK_DEBUG_TYPING // 		'Ignore selection change while editable is not focused'
+			// @if CK_DEBUG_TYPING // 	) );
+			// @if CK_DEBUG_TYPING // }
+
+			this._pendingSelectionChange.add( domDocument );
 
 			return;
 		}
 
-		this._isSelectionChanging = false;
+		this._pendingSelectionChange.delete( domDocument );
 
 		if ( this.selection.isEqual( newViewSelection ) && this.domConverter.isDomSelectionCorrect( domSelection ) ) {
 			return;
