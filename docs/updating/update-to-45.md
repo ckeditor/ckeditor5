@@ -52,7 +52,7 @@ ClassicEditor
 The Bookmark UI has been refactored to use the `WidgetToolbarRepository` instead of a custom `ActionsView`. Key changes include:
 
 * The custom `BookmarkUI#actionsView` has been removed in favor of using the standard widget toolbar system.
-* The bookmark toolbar is now configurable through the `bookmark.toolbar` configuration option.
+* The bookmark toolbar is configurable through the `bookmark.toolbar` configuration option.
 * The toolbar items are registered in `ComponentFactory` and can be customized.
 
 For bookmark features, you can configure the toolbar like this:
