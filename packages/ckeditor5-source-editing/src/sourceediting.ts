@@ -292,6 +292,32 @@ export default class SourceEditing extends Plugin {
 	}
 
 	/**
+	 * Restores all hidden editing roots and sets the source data in them.
+	 */
+	private _hideSourceEditing(): void {
+		const editor = this.editor;
+		const editingView = editor.editing.view;
+
+		this.updateEditorData();
+
+		editingView.change( writer => {
+			for ( const [ rootName ] of this._replacedRoots ) {
+				writer.removeClass( 'ck-hidden', editingView.document.getRoot( rootName )! );
+			}
+		} );
+
+		this._elementReplacer.restore();
+
+		this._replacedRoots.clear();
+		this._dataFromRoots.clear();
+
+		this._showDocumentOutline();
+		this._refreshAnnotationsVisibility();
+
+		editingView.focus();
+	}
+
+	/**
 	 * Hides the document outline if it is configured.
 	 */
 	private _hideDocumentOutline() {
@@ -316,32 +342,6 @@ export default class SourceEditing extends Plugin {
 		if ( this.editor.plugins.has( 'Annotations' ) ) {
 			( this.editor.plugins.get( 'Annotations' ) as Annotations ).refreshVisibility();
 		}
-	}
-
-	/**
-	 * Restores all hidden editing roots and sets the source data in them.
-	 */
-	private _hideSourceEditing(): void {
-		const editor = this.editor;
-		const editingView = editor.editing.view;
-
-		this.updateEditorData();
-
-		editingView.change( writer => {
-			for ( const [ rootName ] of this._replacedRoots ) {
-				writer.removeClass( 'ck-hidden', editingView.document.getRoot( rootName )! );
-			}
-		} );
-
-		this._elementReplacer.restore();
-
-		this._replacedRoots.clear();
-		this._dataFromRoots.clear();
-
-		this._showDocumentOutline();
-		this._refreshAnnotationsVisibility();
-
-		editingView.focus();
 	}
 
 	/**
