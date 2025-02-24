@@ -9,6 +9,7 @@ import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 
 import TableEditing from '../../src/tableediting.js';
 import TableColumnResize from '../../src/tablecolumnresize.js';
+import TableCaptionEditing from '../../src/tablecaption/tablecaptionediting.js';
 import TableLayoutEditing from '../../src/tablelayout/tablelayoutediting.js';
 import InsertTableLayoutCommand from '../../src/commands/inserttablelayoutcommand.js';
 
@@ -20,7 +21,7 @@ describe( 'InsertTableLayoutCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ Paragraph, TableEditing, TableLayoutEditing ]
+				plugins: [ Paragraph, TableEditing, TableCaptionEditing, TableLayoutEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -48,6 +49,15 @@ describe( 'InsertTableLayoutCommand', () => {
 			it( 'should be true if in table', () => {
 				setData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
 				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be false if in table caption', () => {
+				setData( model,
+					'<table>' +
+						'<tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow>' +
+						'<caption>[]</caption>' +
+					'</table>' );
+				expect( command.isEnabled ).to.be.false;
 			} );
 		} );
 

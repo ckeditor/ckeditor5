@@ -52,12 +52,11 @@ describe( 'TableLayoutEditing', () => {
 		expect( TableLayoutEditing.isPremiumPlugin ).to.be.false;
 	} );
 
-	it( 'should set proper schema rules', () => {
-		// <caption> allowed only for content tables
+	it( 'should set proper schema rule to allow <caption> for content tables', () => {
 		expect( model.schema.checkChild( [ '$root', 'table' ], 'caption' ) ).to.be.true;
 	} );
 
-	it( 'should set proper schema rules for layout table and caption', () => {
+	it( 'should set proper schema rule to not allow <caption> for layout tables', () => {
 		setModelData(
 			model,
 			'<table tableType="layout">' +

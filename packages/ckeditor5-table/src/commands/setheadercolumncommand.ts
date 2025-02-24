@@ -58,7 +58,7 @@ export default class SetHeaderColumnCommand extends Command {
 
 		const table = selectedCells[ 0 ].findAncestor( 'table' )!;
 
-		this.isEnabled = model.schema.checkAttribute( table, 'headingRows' );
+		this.isEnabled = model.schema.checkAttribute( table, 'headingColumns' );
 		this.value = selectedCells.every( cell => isHeadingColumnCell( tableUtils, cell ) );
 	}
 
