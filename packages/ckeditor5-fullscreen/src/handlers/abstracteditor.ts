@@ -92,7 +92,7 @@ export default class AbstractEditorHandler {
 	}
 
 	/**
-	 * Enables the fullscreen mode. This is a virtual method that should be overridden by the particular editor type handler.
+	 * Enables the fullscreen mode. It executes the editor-specific enable handler and then the configured callback.
 	 */
 	public enable(): void {
 		this._defaultEnable();
