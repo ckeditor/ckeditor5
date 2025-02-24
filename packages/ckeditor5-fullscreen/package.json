@@ -42,7 +42,7 @@
     "@ckeditor/ckeditor5-mention": "44.1.0",
     "@ckeditor/ckeditor5-page-break": "44.1.0",
     "@ckeditor/ckeditor5-paste-from-office": "44.1.0",
-    "ckeditor5-real-time-collaboration": "44.1.0",
+    "@ckeditor/ckeditor5-real-time-collaboration": "44.1.0",
     "@ckeditor/ckeditor5-remove-format": "44.1.0",
     "@ckeditor/ckeditor5-show-blocks": "44.1.0",
     "@ckeditor/ckeditor5-source-editing": "44.1.0",
