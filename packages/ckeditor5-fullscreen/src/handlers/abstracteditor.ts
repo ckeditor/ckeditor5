@@ -70,21 +70,6 @@ export default class AbstractEditorHandler {
 	}
 
 	/**
-	 * Returns a single moved element to its original place.
-	 */
-	public returnMovedElement( placeholderName: string ): void {
-		const placeholder = this._idToPlaceholder.get( placeholderName )!;
-		const element = this._movedElements.get( placeholder );
-
-		if ( element ) {
-			placeholder.replaceWith( element );
-			placeholder.remove();
-
-			this._movedElements.delete( placeholder );
-		}
-	}
-
-	/**
 	 * Returns the fullscreen mode container element.
 	 */
 	public getContainer(): HTMLElement {
@@ -194,16 +179,5 @@ export default class AbstractEditorHandler {
 		documentOutlineUI.view._documentOutlineContainer = document.querySelector( '[data-ck-fullscreen="left-sidebar"]' ) as HTMLElement;
 
 		this.moveToFullscreen( documentOutlineUI.view.element!, 'document-outline' );
-	}
-
-	public restoreDocumentOutlineContainer(): void {
-		if ( !this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
-			return;
-		}
-
-		const documentOutlineContainer = this._editor.config.get( 'documentOutline.container' ) as HTMLElement | undefined;
-		const documentOutlineUI: DocumentOutlineUI = this._editor.plugins.get( DocumentOutlineUI );
-
-		documentOutlineUI.view._documentOutlineContainer = documentOutlineContainer;
 	}
 }
