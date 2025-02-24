@@ -106,7 +106,7 @@ ClassicEditor
     .catch( /* ... */ );
 ```
 
-For a complete list of available toolbar items and configuration options, see the {@link module:link/linkconfig~LinkConfig#toolbar link configuration documentation}.
+For a complete list of available toolbar items and configuration options, see the {@link module:link/linkconfig~LinkConfig#toolbar link configuration documentation} and {@link module:bookmark/bookmarkconfig~BookmarkConfig#toolbar bookmark configuration documentation}.
 
 ### Link provider registration
 
