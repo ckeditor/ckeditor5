@@ -24,7 +24,7 @@ Below are the most important changes that require your attention when upgrading 
 
 ### UI toolbar refactoring
 
-Both Link and Bookmark features have been refactored to use standard toolbar components, making them more customizable and consistent:
+Link and Bookmark features have been refactored to use standard toolbar components, making them more customizable and consistent:
 
 #### Link feature changes
 
