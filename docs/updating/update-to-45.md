@@ -22,28 +22,50 @@ For the entire list of changes introduced in version 45.0.0, see the [release no
 
 Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v45.0.0.
 
-### Link UI refactoring
+### UI toolbar refactoring
+
+Both Link and Bookmark features have been refactored to use standard toolbar components, making them more customizable and consistent:
+
+#### Link feature changes
 
 The Link UI has been refactored to allow for easier customization of the link toolbar through configuration. The most notable changes include:
 
-* The custom `LinkActionsView` has been replaced with a standard `ToolbarView`. The toolbar is configurable via the `link.toolbar` configuration option.
+* The custom `LinkActionsView` has been replaced with a standard `ToolbarView`. The toolbar is accessible via `LinkUI#toolbarView` instead of `LinkUI#actionsView` and configurable through the `link.toolbar` configuration option.
 * Link properties (decorators) are now accessed through the toolbar instead of a separate settings panel.
 * The link toolbar now uses components registered in `ComponentFactory`, making it more extensible.
 
-Here's how to configure the link toolbar in your editor:
+#### Bookmark feature changes
+
+The Bookmark UI has been refactored to use the `WidgetToolbarRepository` instead of a custom `ActionsView`. Key changes include:
+
+* The custom `BookmarkUI#actionsView` has been removed in favor of using the standard widget toolbar system.
+* The bookmark toolbar is now configurable through the `bookmark.toolbar` configuration option.
+* The toolbar items are registered in `ComponentFactory` and can be customized.
+
+Here's how to configure toolbars for both features:
 
 ```js
 ClassicEditor
     .create( document.querySelector( '#editor' ), {
         link: {
             toolbar: [ 'myCustomLinkInfo', '|', 'editLink', 'linkProperties', 'unlink' ]
+        },
+        bookmark: {
+            toolbar: [ 'bookmarkPreview', '|', 'editBookmark', 'removeBookmark' ]
         }
     } )
     .then( /* ... */ )
     .catch( /* ... */ );
 ```
 
-You can also register custom toolbar items by implementing your own UI components. Here's an example of registering a custom link info component:
+### Custom toolbar components
+
+Both Link and Bookmark features allow registering custom toolbar items that can be used in their respective toolbars. To add a custom item:
+
+1. Register it in the component factory
+2. Add it to the toolbar configuration
+
+Here's an example of registering a custom component:
 
 ```js
 editor.ui.componentFactory.add( 'myCustomLinkInfo', locale => {
@@ -54,18 +76,30 @@ editor.ui.componentFactory.add( 'myCustomLinkInfo', locale => {
     button.bind( 'label' ).to( linkCommand, 'value' );
 
     button.on( 'execute', () => {
-        // Add your custom link info logic here
+        // Add your custom component logic here
     } );
 
     return button;
 } );
 ```
 
+Once registered, the component can be used in the toolbar configuration:
+
+```js
+ClassicEditor
+    .create( document.querySelector( '#editor' ), {
+        link: {
+            toolbar: [ 'myCustomLinkInfo', '|', 'editLink', 'unlink' ]
+        }
+    } )
+    .then( /* ... */ )
+    .catch( /* ... */ );
+```
+
 For a complete list of available toolbar items and configuration options, see the {@link module:link/linkconfig~LinkConfig#toolbar link configuration documentation}.
 
-#### Code changes
+#### Other code changes
 
-* `LinkUI#actionsView` has been removed. Use `LinkUI#toolbarView` instead.
 * The `createBookmarkCallbacks()` helper has been replaced with `isScrollableToTarget()` and `scrollToTarget()` helpers.
 
 ### Unified form styles
