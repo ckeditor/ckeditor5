@@ -11,7 +11,6 @@ import { createRequire } from 'module';
 import upath from 'upath';
 import { build } from 'vite';
 import { globSync } from 'glob';
-import { viteSingleFile } from 'vite-plugin-singlefile';
 
 const require = createRequire( import.meta.url );
 const __dirname = upath.dirname( fileURLToPath( import.meta.url ) );
@@ -26,7 +25,7 @@ const __dirname = upath.dirname( fileURLToPath( import.meta.url ) );
  * @returns {Promise}
  */
 export default async function snippetAdapter( snippets, _, { getSnippetPlaceholder } ) {
-	const { inputPath, outputPath, snippetsInputPath, snippetsOutputPath } = getPaths( snippets );
+	const { outputPath, snippetsInputPath, snippetsOutputPath } = getPaths( snippets );
 	const constants = await getConstantDefinitions( snippets );
 	const imports = await getImportMap();
 	const globalAsset = await buildGlobalAsset( upath.resolve( snippetsInputPath, 'assets.js' ) );
@@ -43,11 +42,10 @@ export default async function snippetAdapter( snippets, _, { getSnippetPlacehold
 		`<script type="importmap">${ JSON.stringify( { imports } ) }</script>`,
 		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
 		`<script>${ globalAsset }</script>`
-	];
+	].join( '\n' );
 
 	await buildSnippets(
 		getAllSnippets( snippetsInputPath ),
-		inputPath,
 		snippetsOutputPath,
 		constants,
 		imports,
@@ -64,24 +62,24 @@ export default async function snippetAdapter( snippets, _, { getSnippetPlacehold
 	}
 
 	for ( const [ document, documentSnippets ] of Object.entries( documents ) ) {
-		let documentContent = fs.readFileSync( document, { encoding: 'utf-8' } );
+		const snippetSrc = upath.relative( upath.dirname( document ), upath.join( outputPath, 'assets', 'snippet.js' ) );
+
+		let documentContent = fs
+			.readFileSync( document, { encoding: 'utf-8' } )
+			.replace( '<!--UMBERTO: SNIPPET: CSS-->', () => headerTags + `<script src="${ snippetSrc }"></script>` )
+			.replace( '<!--UMBERTO: SNIPPET: JS-->', () => '' );
 
 		for ( const snippet of documentSnippets ) {
-			const path = upath.resolve( snippetsOutputPath, snippet.snippetName, 'snippet.html' );
+			const data = fs.readFileSync(
+				upath.resolve( snippetsOutputPath, snippet.snippetName, 'snippet.html' ),
+				{ encoding: 'utf-8' }
+			);
 
 			documentContent = documentContent.replace(
 				getSnippetPlaceholder( snippet.snippetName ),
-				() => fs.readFileSync( path, { encoding: 'utf-8' } )
+				() => data.replaceAll( /%BASE_PATH%/g, () => snippet.basePath )
 			);
 		}
-
-		const tags = [
-			...headerTags,
-			`<script src="${ upath.relative( upath.dirname( document ), upath.join( outputPath, 'assets', 'snippet.js' ) ) }"></script>`
-		];
-
-		documentContent = documentContent.replace( '<!--UMBERTO: SNIPPET: CSS-->', () => tags.join( '\n' ) );
-		documentContent = documentContent.replace( '<!--UMBERTO: SNIPPET: JS-->', () => '' );
 
 		fs.writeFileSync( document, documentContent );
 	}
@@ -93,7 +91,6 @@ function getPaths( [ snippet ] ) {
 	const snippetsInputPath = upath.resolve( snippet.snippetSources.html, snippet.basePath );
 
 	return {
-		inputPath: upath.resolve( snippetsInputPath, '..' ),
 		outputPath: upath.resolve( snippet.outputPath, '..' ),
 		snippetsInputPath,
 		snippetsOutputPath: snippet.outputPath
@@ -150,28 +147,22 @@ async function buildGlobalAsset( entry ) {
 		clearScreen: false,
 		logLevel: 'warn',
 		build: {
+			modulePreload: false,
+			target: 'es2022',
+			write: false,
+			minify: true,
 			lib: {
 				entry,
 				name: 'asset',
-				fileName: 'asset.js',
 				formats: [ 'es' ]
-			},
-			modulePreload: false,
-			target: 'es2022',
-			cssTarget: [ 'es2022' ],
-			write: false
-		},
-		plugins: [
-			viteSingleFile( {
-				removeViteModuleLoader: true
-			} )
-		]
+			}
+		}
 	} );
 
 	return result[ 0 ].output[ 0 ].code;
 }
 
-async function buildSnippets( snippets, inputPath, snippetsOutputPath, constants, imports, headerTags ) {
+async function buildSnippets( snippets, snippetsOutputPath, constants, imports, headerTags ) {
 	const external = Object.keys( imports );
 	const define = {};
 
@@ -180,8 +171,8 @@ async function buildSnippets( snippets, inputPath, snippetsOutputPath, constants
 	}
 
 	for ( const [ name, files ] of Object.entries( snippets ) ) {
-		if ( !files.html ) {
-			continue; // Do not build JS- and CSS-only snippets.
+		if ( !files.html || !files.js ) {
+			continue; // Do not build CSS-only snippets.
 		}
 
 		const result = await build( {
@@ -191,39 +182,36 @@ async function buildSnippets( snippets, inputPath, snippetsOutputPath, constants
 			build: {
 				modulePreload: false,
 				target: 'es2022',
-				cssTarget: [ 'es2022' ],
 				write: false,
+				minify: true,
 				rollupOptions: {
-					input: files.html,
 					external
+				},
+				lib: {
+					entry: files.js,
+					name: 'snippet',
+					formats: [ 'es' ]
 				}
 			},
 			plugins: [
 				{
-					name: 'virtual-html',
+					name: 'virtual-js',
 					resolveId( id ) {
-						if ( id === files.html ) {
+						if ( id === files.js ) {
 							return id;
 						}
 					},
 					async load( id ) {
-						if ( id === files.html ) {
+						if ( id === files.js ) {
 							return [
-								'<div class="live-snippet">',
-								files.css && `<link rel="stylesheet" href="${ files.css }" type="text/css" data-cke="true">`,
-								fs.readFileSync( files.html, { encoding: 'utf-8' } ),
-								files.js && `<script type="module" src="${ files.js }"></script>`,
-								'</div>'
+								files.css && `import './${ upath.basename( files.css ) }';`,
+								fs.readFileSync( files.js, { encoding: 'utf-8' } )
 							]
 								.filter( Boolean )
-								.join( '\n' )
-								.replace( /%BASE_PATH%/g, () => upath.relative( upath.dirname( files.html ), inputPath ) );
+								.join( '\n' );
 						}
 					}
-				},
-				viteSingleFile( {
-					removeViteModuleLoader: true
-				} )
+				}
 			],
 
 			/**
@@ -244,8 +232,19 @@ async function buildSnippets( snippets, inputPath, snippetsOutputPath, constants
 			}
 		} );
 
-		const data = result.output[ 0 ].source
-			.replace( '<!--UMBERTO: SNIPPET: CSS-->', () => headerTags.join( '\n' ) )
+		const data = [
+			'<div class="live-snippet">',
+			fs.readFileSync( files.html, { encoding: 'utf-8' } ),
+			...result[ 0 ].output.map( output => {
+				return output.type === 'chunk' ?
+					`<script type="module">${ output.code }</script>` :
+					`<style data-cke="true">${ output.source }</style>`;
+			} ),
+			'</div>'
+		]
+			.filter( Boolean )
+			.join( '\n' )
+			.replace( '<!--UMBERTO: SNIPPET: CSS-->', () => headerTags )
 			.replace( '<!--UMBERTO: SNIPPET: JS-->', () => '' );
 
 		const path = upath.resolve( snippetsOutputPath, name, 'snippet.html' );
