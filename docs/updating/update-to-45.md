@@ -110,7 +110,7 @@ For a complete list of available toolbar items and configuration options, see th
 
 ### Link provider registration
 
-The Link UI now supports registering custom link providers through the new `LinkUI#registerLinksListProvider` method. This allows adding a list of predefined links that will be available in the link form. Here's a simple example:
+The Link UI now supports registering custom link providers through the new `LinkUI#registerLinksListProvider` method. This allows adding a list of predefined links available in the link form. Here's a simple example:
 
 ```js
 editor.plugins.get( 'LinkUI' ).registerLinksListProvider( {
