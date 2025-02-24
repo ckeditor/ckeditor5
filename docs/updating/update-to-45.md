@@ -98,6 +98,37 @@ ClassicEditor
 
 For a complete list of available toolbar items and configuration options, see the {@link module:link/linkconfig~LinkConfig#toolbar link configuration documentation}.
 
+### Link provider registration
+
+The Link UI now supports registering custom link providers through the new `LinkUI#registerLinksListProvider` method. This allows adding a list of predefined links that will be available in the link form. Here's a simple example:
+
+```js
+editor.plugins.get( 'LinkUI' ).registerLinksListProvider( {
+    label: 'My links',
+
+    // Return a list of links to display in the link form
+    getListItems: () => [
+        {
+            id: 'homepage',
+            href: 'https://example.com',
+            label: 'Homepage',
+            icon: linkIcon
+        }
+    ],
+
+    // Optional: Customize how links are displayed in preview
+    getItem: href => {
+        return {
+            href,
+            label: 'My custom label',
+            tooltip: 'Open link'
+        };
+    }
+} );
+```
+
+The registered links will appear as a button in the link form, allowing users to quickly insert commonly used links.
+
 #### Other code changes
 
 * The `createBookmarkCallbacks()` helper has been replaced with `isScrollableToTarget()` and `scrollToTarget()` helpers.
