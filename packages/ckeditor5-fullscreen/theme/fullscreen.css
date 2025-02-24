@@ -67,8 +67,7 @@ Fullscreen layout:
 
 .ck-fullscreen__main-container .ck-fullscreen__editor .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
 	box-sizing: border-box;
-	min-width: calc(210mm + 2px);
-	max-width: calc(210mm + 2px);
+	width: calc(210mm + 2px);
 	min-height: 297mm;
 	height: fit-content;
 	padding: 20mm 12mm;
@@ -78,5 +77,5 @@ Fullscreen layout:
 }
 
 .ck-fullscreen__main-container .ck-fullscreen__editor .ck-source-editing-area {
-	min-width: calc(210mm + 2px);
+	width: calc(210mm + 2px);
 }
