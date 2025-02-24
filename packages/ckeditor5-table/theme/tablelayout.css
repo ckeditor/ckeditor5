@@ -1,0 +1,83 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-table-layout-widget-type-around-button-size: 16px;
+	--ck-table-layout-widget-type-around-icon-width: 10px;
+	--ck-table-layout-widget-type-around-icon-height: 8px;
+}
+
+.ck-editor__editable .table.layout-table {
+	--ck-widget-type-around-button-size: var(--ck-table-layout-widget-type-around-button-size);
+
+	& table td,
+	& table th {
+		padding: 2px;
+	}
+
+	/* Widget type around overrides. */
+	&.ck-widget {
+		& .ck-widget__type-around__button svg {
+			width: var(--ck-table-layout-widget-type-around-icon-width);
+			height: var(--ck-table-layout-widget-type-around-icon-height);
+		}
+
+		& > .ck-widget__type-around {
+			& > .ck-widget__type-around__button {
+				&.ck-widget__type-around__button_before,
+				&.ck-widget__type-around__button_after {
+					transform: translateY(0);
+				}
+
+				&.ck-widget__type-around__button_before {
+					border-radius: 0 0 100px 100px;
+				}
+
+				&.ck-widget__type-around__button_after {
+					border-radius: 100px 100px 0 0;
+				}
+			}
+		}
+
+		&.ck-widget_with-selection-handle {
+			& > .ck-widget__type-around {
+				& > .ck-widget__type-around__button_before {
+					margin-left: 0;
+					/* To have equal space top left button and bottom left one. */
+					left: min(10%, 30px);
+				}
+			}
+		}
+
+		&.ck-widget.ck-widget_selected {
+			& > .ck-widget__type-around {
+				& > .ck-widget__type-around__button_before {
+					&::after {
+						border-radius: 0 0 100px 100px;
+					}
+				}
+
+				& > .ck-widget__type-around__button_after {
+					&::after {
+						border-radius: 100px 100px 0 0;
+					}
+				}
+			}
+		}
+	}
+}
+
+
+.ck-content {
+	& .table.layout-table {
+		/* Table layout set to fixed only when width is set. But we need to filter other possibilities `*-width`, */
+		&[style*=" width:"],
+		&[style*=";width:"],
+		&[style*="\"width:"],
+		&[style*="'width:"] {
+			table-layout: fixed;
+		}
+	}
+}
