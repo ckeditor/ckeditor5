@@ -34,6 +34,19 @@ The Link UI has been refactored to allow for easier customization of the link to
 * Link properties (decorators) are now accessed through the toolbar instead of a separate settings panel.
 * The link toolbar now uses components registered in `ComponentFactory`, making it more extensible.
 
+Here's how to configure the link toolbar:
+
+```js
+ClassicEditor
+    .create( document.querySelector( '#editor' ), {
+        link: {
+            toolbar: [ 'myCustomLinkInfo', '|', 'editLink', 'linkProperties', 'unlink' ]
+        }
+    } )
+    .then( /* ... */ )
+    .catch( /* ... */ );
+```
+
 #### Bookmark feature changes
 
 The Bookmark UI has been refactored to use the `WidgetToolbarRepository` instead of a custom `ActionsView`. Key changes include:
@@ -42,14 +55,11 @@ The Bookmark UI has been refactored to use the `WidgetToolbarRepository` instead
 * The bookmark toolbar is now configurable through the `bookmark.toolbar` configuration option.
 * The toolbar items are registered in `ComponentFactory` and can be customized.
 
-Here's how to configure toolbars for both features:
+For bookmark features, you can configure the toolbar like this:
 
 ```js
 ClassicEditor
     .create( document.querySelector( '#editor' ), {
-        link: {
-            toolbar: [ 'myCustomLinkInfo', '|', 'editLink', 'linkProperties', 'unlink' ]
-        },
         bookmark: {
             toolbar: [ 'bookmarkPreview', '|', 'editBookmark', 'removeBookmark' ]
         }
