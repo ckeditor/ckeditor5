@@ -24,7 +24,7 @@ import {
 } from 'ckeditor5/src/utils.js';
 import { IconPreviousArrow } from 'ckeditor5/src/icons.js';
 
-// See: #8833.
+// See: https://github.com/ckeditor/ckeditor5/issues/8833
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
@@ -86,7 +86,7 @@ export default class EmojiPickerFormView extends View {
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
-				// Navigate form fields backwards using the Shift + Tab keystroke.
+				// Navigate form fields backward using the Shift + Tab keystroke.
 				focusPrevious: 'shift + tab',
 
 				// Navigate form fields forwards using the Tab key.

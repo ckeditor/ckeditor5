@@ -78,7 +78,7 @@ describe( 'EmojiPickerFormView', () => {
 				view.destroy();
 			} );
 
-			it( 'so "tab" focuses the next focusable item', () => {
+			it( 'so "tab" focuses on the next focusable item', () => {
 				view = new EmojiPickerFormView( { t: str => str } );
 
 				const cancelButtonView = new ButtonView();
@@ -107,7 +107,7 @@ describe( 'EmojiPickerFormView', () => {
 				sinon.assert.calledOnce( spy );
 			} );
 
-			it( 'so "shift + tab" focuses the previous focusable item', () => {
+			it( 'so "shift + tab" focuses on the previous focusable item', () => {
 				view = new EmojiPickerFormView( { t: str => str } );
 
 				const cancelButtonView = new ButtonView();
