@@ -13,6 +13,10 @@
 .ck-editor__editable .table.layout-table {
 	--ck-widget-type-around-button-size: var(--ck-table-layout-widget-type-around-button-size);
 
+	/* Do not reserve space above and below the layout table. */
+	margin-top: 0;
+	margin-bottom: 0;
+
 	& table td,
 	& table th {
 		padding: 2px;
@@ -95,5 +99,17 @@
 		&[style*="'width:"] {
 			table-layout: fixed;
 		}
+	}
+}
+
+.ck.ck-editor__editable_inline {
+	/*
+	* This value should match with the default margins of the block elements (like .media, .image or .table)
+	* to avoid a content jumping when the fake selection container shows up (See https://github.com/ckeditor/ckeditor5/issues/9825).
+	*/
+	& > :last-child,
+	/* Fallback for hidden fake selection div */
+	& > :nth-last-child(2):has( + .ck-fake-selection-container) {
+		margin-bottom: var(--ck-spacing-large);
 	}
 }
