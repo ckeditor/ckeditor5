@@ -3,25 +3,54 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/* globals document */
+
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { PresenceListUI, PresenceList } from '@ckeditor/ckeditor5-real-time-collaboration';
+import { DocumentOutline, DocumentOutlineUI } from '@ckeditor/ckeditor5-document-outline';
+import mockCloudServices, { CloudServicesMock } from '@ckeditor/ckeditor5-real-time-collaboration/tests/_utils/mockcloudservices.js';
 
 import AbstractEditorHandler from '../../src/handlers/abstracteditor.js';
 
 describe( 'AbstractHandler', () => {
-	let abstractHandler, domElement, editor;
+	let abstractHandler, domElement, editor, presenceList, documentOutline;
+
+	mockCloudServices();
 
 	beforeEach( async () => {
 		domElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( domElement );
+		presenceList = document.createElement( 'div' );
+		document.body.appendChild( presenceList );
+		documentOutline = document.createElement( 'div' );
+		document.body.appendChild( documentOutline );
 
 		editor = await ClassicEditor.create( domElement, {
 			plugins: [
 				Paragraph,
-				Essentials
-			]
+				Essentials,
+				PresenceListUI,
+				PresenceList,
+				CloudServicesMock,
+				DocumentOutline,
+				DocumentOutlineUI
+			],
+			cloudServices: {
+				tokenUrl: 'abc',
+				webSocketUrl: 'web-socket-url'
+			},
+			collaboration: {
+				channelId: 'test'
+			},
+			presenceList: {
+				container: presenceList
+			},
+			documentOutline: {
+				container: documentOutline
+			}
 		} );
 
 		abstractHandler = new AbstractEditorHandler( editor );
@@ -29,6 +58,7 @@ describe( 'AbstractHandler', () => {
 
 	afterEach( () => {
 		domElement.remove();
+		presenceList.remove();
 		abstractHandler.disable();
 
 		return editor.destroy();
@@ -80,7 +110,7 @@ describe( 'AbstractHandler', () => {
 				</div>
 				<div class="ck ck-fullscreen__editor-wrapper">
 					<div class="ck ck-fullscreen__sidebar ck-fullscreen__left-sidebar" data-ck-fullscreen="left-sidebar">
-						<div class="ck ck-fullscreen__left-sidebar--sticky" data-ck-fullscreen="left-sidebar-sticky"></div> 
+						<div class="ck ck-fullscreen__left-sidebar--sticky" data-ck-fullscreen="left-sidebar-sticky"></div>
 					</div>
 					<div class="ck ck-fullscreen__editor" data-ck-fullscreen="editor"></div>
 					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="right-sidebar"></div>
@@ -168,6 +198,30 @@ describe( 'AbstractHandler', () => {
 
 			expect( abstractHandler._container ).to.be.null;
 			expect( container.parentElement ).to.be.null;
+		} );
+	} );
+
+	describe( 'generatePresenceListElement', () => {
+		it( 'should add presence list element to sidebar', () => {
+			const moveToFullscreenSpy = sinon.spy( abstractHandler, 'moveToFullscreen' );
+
+			abstractHandler.getContainer();
+			abstractHandler.generatePresenceListElement();
+
+			expect( moveToFullscreenSpy ).to.be.calledOnce;
+			expect( document.querySelector( '.ck-fullscreen__presence-list' ) ).not.to.be.null;
+		} );
+	} );
+
+	describe( 'generateDocumentOutlineElement', () => {
+		it( 'should add document outline element to sidebar', () => {
+			const moveToFullscreenSpy = sinon.spy( abstractHandler, 'moveToFullscreen' );
+
+			abstractHandler.getContainer();
+			abstractHandler.generateDocumentOutlineElement();
+
+			expect( moveToFullscreenSpy ).to.be.calledOnce;
+			expect( document.querySelector( '.ck-fullscreen__document-outline-header' ) ).not.to.be.null;
 		} );
 	} );
 } );
