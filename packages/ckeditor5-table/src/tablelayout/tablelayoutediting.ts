@@ -8,7 +8,9 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
+import type { ClipboardContentInsertionEvent, ClipboardPipeline } from 'ckeditor5/src/clipboard.js';
 import type {
+	DowncastDispatcher,
 	UpcastDispatcher,
 	UpcastElementEvent,
 	ViewElement,
@@ -42,6 +44,7 @@ export default class TableLayoutEditing extends Plugin {
 	public init(): void {
 		this._defineSchema();
 		this._defineConverters();
+		this._defineClipboardPasteHandlers();
 
 		this.editor.commands.add( 'insertTableLayout', new InsertTableLayoutCommand( this.editor ) );
 	}
@@ -57,13 +60,13 @@ export default class TableLayoutEditing extends Plugin {
 		} );
 
 		// Disallow adding `caption` to layout table.
-		schema.addChildCheck( layoutTableCheck(), 'caption' );
+		schema.addChildCheck( layoutTableCheck, 'caption' );
 
 		// Disallow adding `headingRows` attribute to layout table.
-		schema.addAttributeCheck( layoutTableCheck(), 'headingRows' );
+		schema.addAttributeCheck( layoutTableCheck, 'headingRows' );
 
 		// Disallow adding `headingColumns` attribute to layout table.
-		schema.addAttributeCheck( layoutTableCheck(), 'headingColumns' );
+		schema.addAttributeCheck( layoutTableCheck, 'headingColumns' );
 	}
 
 	/**
@@ -74,26 +77,8 @@ export default class TableLayoutEditing extends Plugin {
 		const { conversion } = editor;
 
 		conversion.for( 'upcast' ).add( upcastLayoutTable() );
-
-		editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
-			return dispatcher.on( 'attribute:tableType:table', ( evt, data, conversionApi ) => {
-				const { item, attributeNewValue } = data;
-				const { mapper, writer } = conversionApi;
-
-				if ( !conversionApi.consumable.test( item, evt.name ) ) {
-					return;
-				}
-
-				const table = mapper.toViewElement( item );
-
-				writer.addClass( `${ attributeNewValue }-table`, table );
-				writer.setAttribute( 'role', 'presentation', table );
-
-				conversionApi.consumable.consume( item, evt.name );
-			} );
-		} );
-
-		editor.conversion.for( 'editingDowncast' ).attributeToAttribute( {
+		conversion.for( 'dataDowncast' ).add( dataDowncastLayoutTable() );
+		conversion.for( 'editingDowncast' ).attributeToAttribute( {
 			model: {
 				key: 'tableType',
 				values: [ 'layout', 'content' ]
@@ -108,6 +93,41 @@ export default class TableLayoutEditing extends Plugin {
 					value: [ 'content-table' ]
 				}
 			}
+		} );
+	}
+
+	/**
+	 * Handles the clipboard content insertion events.
+	 *
+	 * - If the content is from another editor, do not override the table type.
+	 * - If the content is from another source, set the table type to 'content'.
+	 *
+	 * It handles the scenario when user copies `<table></table>` from Word. We do not want to
+	 * change the table type to `layout` because it is really `content` table.
+	 */
+	private _defineClipboardPasteHandlers(): void {
+		const { plugins } = this.editor;
+
+		if ( !plugins.has( 'ClipboardPipeline' ) ) {
+			return;
+		}
+
+		const clipboardPipeline: ClipboardPipeline = plugins.get( 'ClipboardPipeline' );
+
+		this.listenTo<ClipboardContentInsertionEvent>( clipboardPipeline, 'contentInsertion', ( evt, data ) => {
+			// If content is pasted from the other editor, skip overriding table type.
+			if ( data.sourceEditorId ) {
+				return;
+			}
+
+			// For content from other sources, always set table type to 'content'.
+			this.editor.model.change( writer => {
+				for ( const { item } of writer.createRangeIn( data.content ) ) {
+					if ( item.is( 'element', 'table' ) ) {
+						writer.setAttribute( 'tableType', 'content', item );
+					}
+				}
+			} );
 		} );
 	}
 }
@@ -130,7 +150,7 @@ function upcastLayoutTable() {
 
 			const hasTableTypeContent = isTableTypeContent( viewTable );
 
-			// When element is a layout table then skip it.
+			// When element is a content table then skip it.
 			if ( hasTableTypeContent ) {
 				return;
 			}
@@ -145,7 +165,7 @@ function upcastLayoutTable() {
 			conversionApi.consumable.consume( viewTable, { attributes: [ 'role' ] } );
 
 			// Get all rows from the table and convert them.
-			// While looping over the children on `<table>` we can be sure that firts will be `<tbody>`
+			// While looping over the children of `<table>` we can be sure that first will be `<tbody>`
 			// and optionally `<thead>` and `<tfoot>`, and in these elements are the table rows found.
 			// We can be sure of that because of `DomParser` handle it.
 			for ( const tableChild of viewTable.getChildren() ) {
@@ -164,8 +184,8 @@ function upcastLayoutTable() {
 			// Create one row and one table cell for empty table.
 			if ( table.isEmpty ) {
 				const row = conversionApi.writer.createElement( 'tableRow' );
-				conversionApi.writer.insert( row, conversionApi.writer.createPositionAt( table, 'end' ) );
 
+				conversionApi.writer.insert( row, conversionApi.writer.createPositionAt( table, 'end' ) );
 				createEmptyTableCell( conversionApi.writer, conversionApi.writer.createPositionAt( row, 'end' ) );
 			}
 
@@ -188,6 +208,31 @@ function upcastLayoutTable() {
 }
 
 /**
+ * Model table container element to view table element conversion helper.
+ *
+ * @returns Conversion helper.
+ */
+function dataDowncastLayoutTable() {
+	return ( dispatcher: DowncastDispatcher ): void => {
+		return dispatcher.on( 'attribute:tableType:table', ( evt, data, conversionApi ) => {
+			const { item, attributeNewValue } = data;
+			const { mapper, writer } = conversionApi;
+
+			if ( !conversionApi.consumable.test( item, evt.name ) ) {
+				return;
+			}
+
+			const table = mapper.toViewElement( item );
+
+			writer.addClass( `${ attributeNewValue }-table`, table );
+			writer.setAttribute( 'role', 'presentation', table );
+
+			conversionApi.consumable.consume( item, evt.name );
+		} );
+	};
+}
+
+/**
  * Checks if the table is a content table.
  * Returns `true` if any of the following conditions are met:
  * - the `<table>` is wrapped with `<figure>`,
@@ -204,13 +249,9 @@ function isTableTypeContent( viewTable: ViewElement ): boolean {
 }
 
 /**
- * Returns callback that checks if the element is a layout table.
+ * Checks if the element is a layout table.
  * It is used to disallow attributes or children that is managed by `Schema`.
  */
-function layoutTableCheck() {
-	return ( context: SchemaContext ) => {
-		if ( context.endsWith( 'table' ) && context.last.getAttribute( 'tableType' ) == 'layout' ) {
-			return false;
-		}
-	};
+function layoutTableCheck( context: SchemaContext ) {
+	return !( context.endsWith( 'table' ) && context.last.getAttribute( 'tableType' ) == 'layout' );
 }

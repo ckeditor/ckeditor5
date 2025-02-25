@@ -165,17 +165,17 @@ describe( 'TableColumnResizeEditing', () => {
 			it( 'the table width style set on <table> element to tableWidth attribute correctly', () => {
 				editor.setData(
 					`<table class="table" style="width: 100%">
-							<colgroup>
-								<col style="width:50%;">
-								<col style="width:50%;">
-							</colgroup>
-							<tbody>
-								<tr>
-									<td>11</td>
-									<td>12</td>
-								</tr>
-							</tbody>
-						</table>`
+						<colgroup>
+							<col style="width:50%;">
+							<col style="width:50%;">
+						</colgroup>
+						<tbody>
+							<tr>
+								<td>11</td>
+								<td>12</td>
+							</tr>
+						</tbody>
+					</table>`
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(

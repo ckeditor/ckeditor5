@@ -19,8 +19,6 @@ import TableCaption from '../../src/tablecaption.js';
 import PlainTableOutput from '../../src/plaintableoutput.js';
 import TableLayout from '../../src/tablelayout.js';
 
-window.editors = {};
-
 const config = {
 	image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 	plugins: [

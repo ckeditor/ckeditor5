@@ -52,12 +52,11 @@ describe( 'TableLayoutEditing', () => {
 		expect( TableLayoutEditing.isPremiumPlugin ).to.be.false;
 	} );
 
-	it( 'should set proper schema rules', () => {
-		// <caption> allowed only for content tables
+	it( 'should set proper schema rule to allow <caption> for content tables', () => {
 		expect( model.schema.checkChild( [ '$root', 'table' ], 'caption' ) ).to.be.true;
 	} );
 
-	it( 'should set proper schema rules for layout table and caption', () => {
+	it( 'should set proper schema rule to not allow <caption> for layout tables', () => {
 		setModelData(
 			model,
 			'<table tableType="layout">' +
@@ -807,7 +806,7 @@ describe( 'TableLayoutEditing', () => {
 				);
 			} );
 
-			it( 'should convert to content table if paste from external', () => {
+			it( 'should convert to content table if paste from external (with figure tag)', () => {
 				const dataTransferMock = createDataTransfer( {
 					'text/html': '<figure><table><tbody><tr><td>Foo</td></tr></tbody></table></figure>'
 				} );
@@ -831,6 +830,69 @@ describe( 'TableLayoutEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<table class="table content-table" role="presentation">' +
+						'<tbody>' +
+							'<tr><td>Foo</td></tr>' +
+						'</tbody>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should convert to content table if paste from external (without figure tag)', () => {
+				const dataTransferMock = createDataTransfer( {
+					'text/html': '<table><tbody><tr><td>Foo</td></tr></tbody></table>'
+				} );
+
+				view.document.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {},
+					method: 'paste'
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<table tableType="content">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>Foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<table class="table content-table" role="presentation">' +
+						'<tbody>' +
+							'<tr><td>Foo</td></tr>' +
+						'</tbody>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should not convert to content table if it\'s pasted from other editor (without figure)', () => {
+				const dataTransferMock = createDataTransfer( {
+					'application/ckeditor5-editor-id': 'other-editor',
+					'text/html': '<table><tbody><tr><td>Foo</td></tr></tbody></table>'
+				} );
+
+				view.document.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {},
+					method: 'paste'
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<table tableType="layout">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>Foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<table class="table layout-table" role="presentation">' +
 						'<tbody>' +
 							'<tr><td>Foo</td></tr>' +
 						'</tbody>' +
