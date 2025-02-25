@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 45.x | CKEditor 5 Documentation
 menu-title: Update to v45.x
 order: 79
-modified_at: 2024-11-28
+modified_at: 2025-02-25
 ---
 
 # Update to CKEditor&nbsp;5 v45.x
@@ -24,32 +24,32 @@ Below are the most important changes that require your attention when upgrading 
 
 ### UI toolbar refactoring
 
-Link and Bookmark features have been refactored to use standard toolbar components, making them more customizable and consistent:
+The {@link features/link link} and {@link features/bookmarks bookmark} features have been refactored to use standard toolbar components, making them more customizable and consistent:
 
 #### Link feature changes
 
-The Link UI has been refactored to allow for easier customization of the link toolbar through configuration. The most notable changes include:
+The link UI has been refactored to allow for easier customization of the link toolbar through configuration. The most notable changes include:
 
 * The custom `LinkActionsView` has been replaced with a standard `ToolbarView`. The toolbar is accessible via `LinkUI#toolbarView` instead of `LinkUI#actionsView` and configurable through the `link.toolbar` configuration option.
 * Link properties (decorators) are now accessed through the toolbar instead of a separate settings panel.
 * The link toolbar now uses components registered in `ComponentFactory`, making it more extensible.
 
-Here's how to configure the link toolbar:
+Here is how to configure the link toolbar:
 
 ```js
 ClassicEditor
-    .create( document.querySelector( '#editor' ), {
-        link: {
-            toolbar: [ 'myCustomLinkInfo', '|', 'editLink', 'linkProperties', 'unlink' ]
-        }
-    } )
-    .then( /* ... */ )
-    .catch( /* ... */ );
+	.create( document.querySelector( '#editor' ), {
+		link: {
+			toolbar: [ 'myCustomLinkInfo', '|', 'editLink', 'linkProperties', 'unlink' ]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 #### Bookmark feature changes
 
-The Bookmark UI has been refactored to use the `WidgetToolbarRepository` instead of a custom `ActionsView`. Key changes include:
+The bookmark UI has been refactored to use the `WidgetToolbarRepository` instead of a custom `ActionsView`. Key changes include:
 
 * The custom `BookmarkUI#actionsView` has been removed in favor of using the standard widget toolbar system.
 * The bookmark toolbar is configurable through the `bookmark.toolbar` configuration option.
@@ -59,37 +59,37 @@ For bookmark features, you can configure the toolbar like this:
 
 ```js
 ClassicEditor
-    .create( document.querySelector( '#editor' ), {
-        bookmark: {
-            toolbar: [ 'bookmarkPreview', '|', 'editBookmark', 'removeBookmark' ]
-        }
-    } )
-    .then( /* ... */ )
-    .catch( /* ... */ );
+	.create( document.querySelector( '#editor' ), {
+		bookmark: {
+			toolbar: [ 'bookmarkPreview', '|', 'editBookmark', 'removeBookmark' ]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 ### Custom toolbar components
 
-Link and Bookmark features allow custom toolbar items to be registered in their respective toolbars. To add a custom item:
+The link and bookmark features now allow custom toolbar items to be registered in their respective toolbars. To add a custom item:
 
 1. Register it in the component factory
 2. Add it to the toolbar configuration
 
-Here's an example of registering a custom component:
+Below is an example of registering a custom component:
 
 ```js
 editor.ui.componentFactory.add( 'myCustomLinkInfo', locale => {
-    const button = new ButtonView( locale );
-    const linkCommand = editor.commands.get( 'link' );
+	const button = new ButtonView( locale );
+	const linkCommand = editor.commands.get( 'link' );
 
-    button.bind( 'isEnabled' ).to( linkCommand, 'value', href => !!href );
-    button.bind( 'label' ).to( linkCommand, 'value' );
+	button.bind( 'isEnabled' ).to( linkCommand, 'value', href => !!href );
+	button.bind( 'label' ).to( linkCommand, 'value' );
 
-    button.on( 'execute', () => {
-        // Add your custom component logic here
-    } );
+	button.on( 'execute', () => {
+		// Add your custom component logic here
+	} );
 
-    return button;
+	return button;
 } );
 ```
 
@@ -97,43 +97,43 @@ Once registered, the component can be used in the toolbar configuration:
 
 ```js
 ClassicEditor
-    .create( document.querySelector( '#editor' ), {
-        link: {
-            toolbar: [ 'myCustomLinkInfo', '|', 'editLink', 'unlink' ]
-        }
-    } )
-    .then( /* ... */ )
-    .catch( /* ... */ );
+	.create( document.querySelector( '#editor' ), {
+		link: {
+			toolbar: [ 'myCustomLinkInfo', '|', 'editLink', 'unlink' ]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 For a complete list of available toolbar items and configuration options, see the {@link module:link/linkconfig~LinkConfig#toolbar link configuration documentation} and {@link module:bookmark/bookmarkconfig~BookmarkConfig#toolbar bookmark configuration documentation}.
 
 ### Link provider registration
 
-The Link UI now supports registering custom link providers through the new `LinkUI#registerLinksListProvider` method. This allows adding a list of predefined links available in the link form. Here's a simple example:
+The link UI now supports registering custom link providers through the new `LinkUI#registerLinksListProvider` method. This allows for adding a list of predefined links available in the link form. Here is a simple example:
 
 ```js
 editor.plugins.get( 'LinkUI' ).registerLinksListProvider( {
-    label: 'My links',
+	label: 'My links',
 
-    // Return a list of links to display in the link form
-    getListItems: () => [
-        {
-            id: 'homepage',
-            href: 'https://example.com',
-            label: 'Homepage',
-            icon: linkIcon
-        }
-    ],
+	// Return a list of links to display in the link form
+	getListItems: () => [
+		{
+			id: 'homepage',
+			href: 'https://example.com',
+			label: 'Homepage',
+			icon: linkIcon
+		}
+	],
 
-    // Optional: Customize how links are displayed in preview
-    getItem: href => {
-        return {
-            href,
-            label: 'My custom label',
-            tooltip: 'Open link'
-        };
-    }
+	// Optional: Customize how links are displayed in preview
+	getItem: href => {
+		return {
+			href,
+			label: 'My custom label',
+			tooltip: 'Open link'
+		};
+	}
 } );
 ```
 
@@ -141,11 +141,11 @@ The registered links will appear as a button in the link form, allowing users to
 
 #### Other code changes
 
-* The `createBookmarkCallbacks()` helper has been replaced with `isScrollableToTarget()` and `scrollToTarget()` helpers.
+* The `createBookmarkCallbacks()` helper has been replaced with the `isScrollableToTarget()` and `scrollToTarget()` helpers.
 
 ### Unified form styles
 
-Form components across various features (Link, Bookmark, Image, Table) have been unified using the new `ck-form` and `ck-form__row` classes. The form styling has been centralized in the theme-lark package.
+Form components across various features (link, bookmark, image, table) have been unified using the new `ck-form` and `ck-form__row` classes. The form styling has been centralized in the `theme-lark` package.
 
 Notable changes:
 
