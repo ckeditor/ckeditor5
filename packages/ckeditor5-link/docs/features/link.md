@@ -110,6 +110,7 @@ class MyCustomPlugin extends Plugin {
 	}
 }
 ```
+
 Once registered, the component can be used in the toolbar configuration:
 
 ```js
