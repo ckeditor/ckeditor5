@@ -13,7 +13,6 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@ckeditor/ckeditor5-bookmark": "44.2.1",
     "@ckeditor/ckeditor5-clipboard": "44.2.1",
     "@ckeditor/ckeditor5-core": "44.2.1",
     "@ckeditor/ckeditor5-engine": "44.2.1",

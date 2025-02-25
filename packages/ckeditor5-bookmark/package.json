@@ -15,13 +15,14 @@
   "dependencies": {
     "ckeditor5": "44.2.1",
     "@ckeditor/ckeditor5-core": "44.2.1",
-    "@ckeditor/ckeditor5-engine": "44.2.1",
     "@ckeditor/ckeditor5-icons": "0.0.1",
     "@ckeditor/ckeditor5-widget": "44.2.1",
     "@ckeditor/ckeditor5-utils": "44.2.1",
-    "@ckeditor/ckeditor5-ui": "44.2.1"
+    "@ckeditor/ckeditor5-ui": "44.2.1",
+    "@ckeditor/ckeditor5-link": "44.2.1"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-engine": "44.2.1",
     "@ckeditor/ckeditor5-basic-styles": "44.2.1",
     "@ckeditor/ckeditor5-block-quote": "44.2.1",
     "@ckeditor/ckeditor5-cloud-services": "44.2.1",
@@ -33,7 +34,6 @@
     "@ckeditor/ckeditor5-heading": "44.2.1",
     "@ckeditor/ckeditor5-html-support": "44.2.1",
     "@ckeditor/ckeditor5-image": "44.2.1",
-    "@ckeditor/ckeditor5-link": "44.2.1",
     "@ckeditor/ckeditor5-list": "44.2.1",
     "@ckeditor/ckeditor5-editor-multi-root": "44.2.1",
     "@ckeditor/ckeditor5-paragraph": "44.2.1",

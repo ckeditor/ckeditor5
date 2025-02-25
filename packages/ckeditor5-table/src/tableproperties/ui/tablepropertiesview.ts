@@ -13,6 +13,7 @@ import {
 	createLabeledDropdown,
 	createLabeledInputText,
 	FocusCycler,
+	FormRowView,
 	FormHeaderView,
 	LabeledFieldView,
 	LabelView,
@@ -41,9 +42,10 @@ import {
 	getBorderStyleLabels,
 	getLabeledColorInputCreator
 } from '../../utils/ui/table-properties.js';
-import FormRowView from '../../ui/formrowview.js';
 
-import '../../../theme/form.css';
+// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
+import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
+import '../../../theme/formrow.css';
 import '../../../theme/tableform.css';
 import '../../../theme/tableproperties.css';
 import type ColorInputView from '../../ui/colorinputview.js';
