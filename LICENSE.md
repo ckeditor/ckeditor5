@@ -21,8 +21,8 @@ The following libraries are included in CKEditor under the [MIT license](https:/
 * BlurHash - Copyright (c) 2018 Wolt Enterprises (MIT license).
 * color-convert - Copyright (c) 2011–2016 Heather Arthur <fayearthur@gmail.com>, copyright (c) 2016–2021 Josh Junon <josh@junon.me>.
 * color-parse - Copyright (c) 2015 Dmitry Ivanov.
-* emoji-picker-element-data - Copyright (c) 2020 Nolan Lawson.
-* Fuse.js - Copyright (c) 2017 Kirollos Risk.
+* emojibase-data - Copyright (c) 2017-2019 Miles Johnson.
+* fuzzysort - Copyright (c) 2018 Stephen Kamenar.
 * is-emoji-supported - Copyright (c) 2016-2020 Koala Interactive, Inc.
 * es-toolkit - Copyright (c) 2024 Viva Republica, Inc.
 * Marked - Copyright (c) 2018+, MarkedJS (https://github.com/markedjs/), copyright (c) 2011–2018, Christopher Jeffrey (https://github.com/chjj/).
