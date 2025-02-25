@@ -43,5 +43,6 @@
 	"Image upload complete": "Aria status message indicating that the image has been uploaded successfully. Example: 'Image upload complete'.",
 	"Error during image upload": "Aria status message indicating that an error has occurred during image upload. Example: 'Error during image upload'.",
 	"Image": "Label for the widget inserted by the image feature (as in 'insert image')",
-	"Image Resize": "The label for the header of the image resize balloon."
+	"Image Resize": "The label for the header of the image resize balloon.",
+	"Text Alternative": "The label of the input field for the text alternative of the image."
 }
