@@ -276,7 +276,7 @@ export default class EmojiRepository extends Plugin {
 		 * To avoid this, you can use the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `emoji.definitionsUrl`}
 		 * configuration option to provide a URL to your own emoji repository.
 		 *
-		 * If you want to suppress this warning, and use the default CDN, set this configuration option to `cdn`.
+         * If you want to suppress this warning, while using the default CDN, set this configuration option to `cdn`.
 		 *
 		 * @error emoji-repository-cdn-use
 		 */
