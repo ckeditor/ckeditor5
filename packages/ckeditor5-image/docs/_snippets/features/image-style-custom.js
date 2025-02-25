@@ -6,11 +6,11 @@
 /* globals ClassicEditor, console, window, document */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import centerIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/center.svg?raw';
-import inlineIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/inline.svg?raw';
-import leftIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/left.svg?raw';
-import rightIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/right.svg?raw';
-import sideIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/side.svg?raw';
+import centerIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/center.svg';
+import inlineIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/inline.svg';
+import leftIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/left.svg';
+import rightIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/right.svg';
+import sideIcon from '@ckeditor/ckeditor5-image/docs/assets/img/icons/side.svg';
 
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 

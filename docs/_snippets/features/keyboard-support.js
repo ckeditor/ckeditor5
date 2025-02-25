@@ -64,11 +64,11 @@ import { WProofreader } from '@webspellchecker/wproofreader-ckeditor5';
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 
 // Templates icons.
-import articleImageRightIcon from '../../assets/img/article-image-right.svg?raw';
-import financialReportIcon from '../../assets/img/financial-report.svg?raw';
-import formalLetterIcon from '../../assets/img/formal-letter.svg?raw';
-import resumeIcon from '../../assets/img/resume.svg?raw';
-import richTableIcon from '../../assets/img/rich-table.svg?raw';
+import articleImageRightIcon from '../../assets/img/article-image-right.svg';
+import financialReportIcon from '../../assets/img/financial-report.svg';
+import formalLetterIcon from '../../assets/img/formal-letter.svg';
+import resumeIcon from '../../assets/img/resume.svg';
+import richTableIcon from '../../assets/img/rich-table.svg';
 
 ClassicEditor
 	.create( document.querySelector( '#keyboard-support' ), {
