@@ -141,7 +141,7 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 	 *
 	 * @observable
 	 */
-	declare public position: typeof DialogViewPosition[ keyof typeof DialogViewPosition ];
+	declare public position: typeof DialogViewPosition[ keyof typeof DialogViewPosition ] | null;
 
 	/**
 	 * A flag indicating that the dialog should be shown. Once set to `true`, the dialog will be shown
@@ -322,6 +322,7 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 			}
 		} );
 
+		// to check
 		this.on( 'change:_isVisible', ( evt, name, isVisible ) => {
 			if ( isVisible ) {
 				// Let the content render first, then apply the position. Otherwise, the calculated DOM Rects
@@ -331,6 +332,7 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 
 				// FYI: RAF is too short. We need to wait a bit longer.
 				setTimeout( () => {
+					console.log( 'change:_isVisible' );
 					this.updatePosition();
 
 					this._isTransparent = false;
@@ -488,12 +490,14 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 			domRootRect = this._getVisibleDomRootRect( viewportRect );
 		}
 
+		console.log( 'viewportRect', viewportRect, domRootRect, this.element );
+
 		const defaultOffset = DialogView.defaultOffset;
 		const dialogRect = this._getDialogRect();
 
 		// @if CK_DEBUG_DIALOG // RectDrawer.clear();
 		// @if CK_DEBUG_DIALOG // RectDrawer.draw( viewportRect, { outlineColor: 'blue' }, 'Viewport' );
-
+		console.log( configuredPosition, 'configuredPosition' );
 		switch ( configuredPosition ) {
 			case DialogViewPosition.EDITOR_TOP_SIDE: {
 				// @if CK_DEBUG_DIALOG // if ( domRootRect ) {

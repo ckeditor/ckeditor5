@@ -13,6 +13,7 @@ import type { Editor, EditorConfig } from 'ckeditor5/src/core.js';
 import type { RevisionViewerEditor } from '@ckeditor/ckeditor5-revision-history';
 import { createElement } from 'ckeditor5/src/utils.js';
 import type { Annotation, AnnotationsUIs, Sidebar } from '@ckeditor/ckeditor5-comments';
+import { type Dialog } from 'ckeditor5/src/ui.js';
 
 /**
  * The abstract editor type handler. It should be extended by the particular editor type handler.
@@ -392,5 +393,15 @@ export default class AbstractEditorHandler {
 		this._editor.config.set( 'revisionHistory.closeRevisionViewerCallback', async () => {
 			return this._closeRevisionViewerCallback!();
 		} );
+	}
+
+	public updateDialogPosition(): void {
+		const dialog = this._editor.plugins.get( 'Dialog' ) as Dialog;
+		dialog.on( 'change:isOpen', ( ) => {
+			const dialogView = dialog.view!;
+			dialogView.position = null;
+
+			dialogView.moveTo( 0, 0 );
+		}, { priority: 'highest' } );
 	}
 }
