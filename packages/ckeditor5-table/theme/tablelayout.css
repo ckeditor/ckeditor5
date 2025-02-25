@@ -35,7 +35,6 @@
 		border: none;
 		outline: var(--ck-table-layout-default-border-color) 1px dashed;
 		outline-offset: -0.5px;
-		padding: 2px;
 	}
 
 	/* Widget type around overrides. */
