@@ -366,30 +366,6 @@ describe( 'EmojiRepository', () => {
 			await editor.destroy();
 		} );
 
-		it( 'should create a Fuse.js instance with the emoji database', async () => {
-			const { editor, domElement } = await createTestEditor( resolve => {
-				const response = JSON.stringify( [
-					{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 15 },
-					{ emoji: '😒', annotation: 'unamused face', group: 0, version: 15 }
-				] );
-
-				resolve( new Response( response ) );
-			} );
-
-			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
-
-			expect( emojiRepositoryPlugin._fuseSearch ).to.be.an( 'object' );
-
-			const searchIndex = emojiRepositoryPlugin._fuseSearch.getIndex();
-
-			expect( searchIndex.docs ).to.have.length( 2 );
-			expect( searchIndex.docs[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
-			expect( searchIndex.docs[ 1 ] ).to.have.property( 'annotation', 'unamused face' );
-
-			domElement.remove();
-			await editor.destroy();
-		} );
-
 		it( 'should log a warning and store emoji database as empty array when emoji database fetch failed', async () => {
 			const { editor, domElement } = await createTestEditor( resolve => {
 				resolve( new Response( null, { status: 500 } ) );
@@ -417,19 +393,6 @@ describe( 'EmojiRepository', () => {
 
 			expect( consoleStub.calledOnce ).to.equal( true );
 			expect( consoleStub.firstCall.args[ 0 ] ).to.equal( 'emoji-repository-load-failed' );
-
-			domElement.remove();
-			await editor.destroy();
-		} );
-
-		it( 'should not initialize Fuse.js instance when emoji database fetch failed', async () => {
-			const { editor, domElement } = await createTestEditor( ( resolve, reject ) => {
-				reject( new Response() );
-			} );
-
-			const emojiRepositoryPlugin = editor.plugins.get( EmojiRepository );
-
-			expect( emojiRepositoryPlugin._fuseSearch ).to.equal( null );
 
 			domElement.remove();
 			await editor.destroy();
@@ -584,8 +547,8 @@ describe( 'EmojiRepository', () => {
 			await editor.destroy();
 		} );
 
-		it( 'should return empty array if Fuse.js instance is not created', () => {
-			emojiRepositoryPlugin._fuseSearch = null;
+		it( 'should return empty array if emojis failed to load', () => {
+			emojiRepositoryPlugin._items = null;
 
 			const result = emojiRepositoryPlugin.getEmojiByQuery( 'face' );
 
@@ -634,8 +597,8 @@ describe( 'EmojiRepository', () => {
 			const result = emojiRepositoryPlugin.getEmojiByQuery( 'face' );
 
 			expect( result ).to.have.length( 2 );
-			expect( result[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
-			expect( result[ 1 ] ).to.have.property( 'annotation', 'unamused face' );
+			expect( result[ 0 ] ).to.have.property( 'annotation', 'unamused face' );
+			expect( result[ 1 ] ).to.have.property( 'annotation', 'neutral face' );
 		} );
 
 		it( 'should return emojis matched by tags (single match)', () => {
@@ -649,8 +612,8 @@ describe( 'EmojiRepository', () => {
 			const result = emojiRepositoryPlugin.getEmojiByQuery( 'whatever' );
 
 			expect( result ).to.have.length( 2 );
-			expect( result[ 0 ] ).to.have.property( 'annotation', 'neutral face' );
-			expect( result[ 1 ] ).to.have.property( 'annotation', 'unamused face' );
+			expect( result[ 0 ] ).to.have.property( 'annotation', 'unamused face' );
+			expect( result[ 1 ] ).to.have.property( 'annotation', 'neutral face' );
 		} );
 	} );
 
