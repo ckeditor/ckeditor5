@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -27,7 +27,13 @@ import {
 	type FocusableView
 } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type ObservableChangeEvent, type Locale } from 'ckeditor5/src/utils.js';
-import { icons } from 'ckeditor5/src/core.js';
+import {
+	IconCancel,
+	IconCheck,
+	IconObjectCenter,
+	IconObjectInlineLeft,
+	IconObjectInlineRight
+} from 'ckeditor5/src/icons.js';
 
 import {
 	fillToolbar,
@@ -639,6 +645,7 @@ export default class TablePropertiesView extends View {
 
 		const alignmentToolbar = new ToolbarView( locale! );
 		alignmentToolbar.set( {
+			role: 'radiogroup',
 			isCompact: true,
 			ariaLabel: t( 'Table alignment toolbar' )
 		} );
@@ -646,9 +653,9 @@ export default class TablePropertiesView extends View {
 		fillToolbar( {
 			view: this,
 			icons: {
-				left: icons.objectLeft,
-				center: icons.objectCenter,
-				right: icons.objectRight
+				left: IconObjectInlineLeft,
+				center: IconObjectCenter,
+				right: IconObjectInlineRight
 			},
 			toolbar: alignmentToolbar,
 			labels: this._alignmentLabels,
@@ -687,7 +694,7 @@ export default class TablePropertiesView extends View {
 
 		saveButtonView.set( {
 			label: t( 'Save' ),
-			icon: icons.check,
+			icon: IconCheck,
 			class: 'ck-button-save',
 			type: 'submit',
 			withText: true
@@ -699,7 +706,7 @@ export default class TablePropertiesView extends View {
 
 		cancelButtonView.set( {
 			label: t( 'Cancel' ),
-			icon: icons.cancel,
+			icon: IconCancel,
 			class: 'ck-button-cancel',
 			withText: true
 		} );

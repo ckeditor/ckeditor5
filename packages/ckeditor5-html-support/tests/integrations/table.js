@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -17,7 +17,7 @@ import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
 import TableElementSupport from '../../src/integrations/table.js';
 
-import { range } from 'lodash-es';
+import { range } from 'es-toolkit/compat';
 
 /* global document */
 

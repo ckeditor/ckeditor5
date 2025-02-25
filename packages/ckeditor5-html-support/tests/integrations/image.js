@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { range } from 'lodash-es';
+import { range } from 'es-toolkit/compat';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Image from '@ckeditor/ckeditor5-image/src/image.js';
@@ -2553,12 +2553,8 @@ describe( 'ImageElementSupport', () => {
 					// Apply filtering rules added after initial data load.
 					editor.setData( '' );
 
-					expect( schema.getDefinition( 'imageBlock' ).allowAttributes ).to.deep.equal( [
-						'htmlImgAttributes'
-					] );
-					expect( schema.getDefinition( 'imageInline' ).allowAttributes ).to.deep.equal( [
-						'htmlImgAttributes'
-					] );
+					expect( schema.getDefinition( 'imageBlock' ) ).to.be.undefined;
+					expect( schema.getDefinition( 'imageInline' ) ).to.be.undefined;
 				} );
 		} );
 

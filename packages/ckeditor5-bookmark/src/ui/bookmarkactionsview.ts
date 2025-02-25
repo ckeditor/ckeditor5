@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -22,8 +22,7 @@ import {
 	type LocaleTranslate,
 	type Locale
 } from 'ckeditor5/src/utils.js';
-
-import { icons } from 'ckeditor5/src/core.js';
+import { IconPencil, IconRemove } from 'ckeditor5/src/icons.js';
 
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
@@ -87,8 +86,8 @@ export default class BookmarkActionsView extends View {
 		const t = locale.t;
 
 		this.bookmarkPreviewView = this._createBookmarkPreviewView();
-		this.removeButtonView = this._createButton( t( 'Remove bookmark' ), icons.remove, 'remove', this.bookmarkPreviewView );
-		this.editButtonView = this._createButton( t( 'Edit bookmark' ), icons.pencil, 'edit', this.bookmarkPreviewView );
+		this.removeButtonView = this._createButton( t( 'Remove bookmark' ), IconRemove, 'remove', this.bookmarkPreviewView );
+		this.editButtonView = this._createButton( t( 'Edit bookmark' ), IconPencil, 'edit', this.bookmarkPreviewView );
 
 		this.set( 'id', undefined );
 

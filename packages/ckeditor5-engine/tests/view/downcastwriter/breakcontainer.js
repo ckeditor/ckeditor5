@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -63,6 +63,25 @@ describe( 'DowncastWriter', () => {
 			testBreakContainer(
 				'<container:div><container:p>foobar[]</container:p></container:div>',
 				'<container:div><container:p>foobar</container:p>[]</container:div>'
+			);
+		} );
+
+		it( 'break inside element with attributes, styles, and classes - should break container element at given position', () => {
+			testBreakContainer(
+				'<container:div>' +
+					'<container:p class="abc" foo="bar" style="color:red">' +
+						'<attribute:b>foo</attribute:b>[]<attribute:u>bar</attribute:u>' +
+					'</container:p>' +
+				'</container:div>',
+
+				'<container:div>' +
+					'<container:p class="abc" foo="bar" style="color:red">' +
+						'<attribute:b>foo</attribute:b>' +
+					'</container:p>' +
+					'[]<container:p class="abc" foo="bar" style="color:red">' +
+						'<attribute:u>bar</attribute:u>' +
+					'</container:p>' +
+				'</container:div>'
 			);
 		} );
 

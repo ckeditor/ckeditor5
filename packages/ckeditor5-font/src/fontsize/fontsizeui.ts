@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
+import { IconFontSize } from 'ckeditor5/src/icons.js';
 import {
 	ViewModel,
 	createDropdown,
@@ -26,8 +27,6 @@ import { FONT_SIZE } from '../utils.js';
 import '../../theme/fontsize.css';
 import type { FontSizeOption } from '../fontconfig.js';
 import type FontSizeCommand from './fontsizecommand.js';
-
-import fontSizeIcon from '../../theme/icons/font-size.svg';
 
 /**
  * The font size UI plugin. It introduces the `'fontSize'` dropdown.
@@ -73,7 +72,7 @@ export default class FontSizeUI extends Plugin {
 			// Create dropdown model.
 			dropdownView.buttonView.set( {
 				label: accessibleLabel,
-				icon: fontSizeIcon,
+				icon: IconFontSize,
 				tooltip: true
 			} );
 
@@ -101,7 +100,7 @@ export default class FontSizeUI extends Plugin {
 
 			menuView.buttonView.set( {
 				label: accessibleLabel,
-				icon: fontSizeIcon
+				icon: IconFontSize
 			} );
 
 			menuView.bind( 'isEnabled' ).to( command );

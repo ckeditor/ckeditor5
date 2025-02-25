@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -20,7 +20,7 @@ import {
 } from 'ckeditor5/src/ui.js';
 
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
-import { icons } from 'ckeditor5/src/core.js';
+import { IconCancel, IconCheck } from 'ckeditor5/src/icons.js';
 
 import '../../../theme/imagecustomresizeform.css';
 
@@ -90,10 +90,10 @@ export default class ImageCustomResizeFormView extends View {
 
 		this.labeledInput = this._createLabeledInputView();
 
-		this.saveButtonView = this._createButton( t( 'Save' ), icons.check, 'ck-button-save' );
+		this.saveButtonView = this._createButton( t( 'Save' ), IconCheck, 'ck-button-save' );
 		this.saveButtonView.type = 'submit';
 
-		this.cancelButtonView = this._createButton( t( 'Cancel' ), icons.cancel, 'ck-button-cancel', 'cancel' );
+		this.cancelButtonView = this._createButton( t( 'Cancel' ), IconCancel, 'ck-button-cancel', 'cancel' );
 
 		this._focusables = new ViewCollection();
 		this._validators = validators;

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -11,7 +11,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 
 import { View, ButtonView, ContextualBalloon, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
-import { icons } from '@ckeditor/ckeditor5-core';
+import { IconBookmark } from '@ckeditor/ckeditor5-icons';
 import { ClickObserver } from '@ckeditor/ckeditor5-engine';
 import { indexOf, isRange, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -22,8 +22,6 @@ import BookmarkFormView from '../src/ui/bookmarkformview.js';
 import BookmarkActionsView from '../src/ui/bookmarkactionsview.js';
 import BookmarkEditing from '../src/bookmarkediting.js';
 import BookmarkUI from '../src/bookmarkui.js';
-
-const bookmarkIcon = icons.bookmark;
 
 describe( 'BookmarkUI', () => {
 	let editor, element, button, balloon, bookmarkUIFeature, formView, actionsView;
@@ -92,7 +90,7 @@ describe( 'BookmarkUI', () => {
 		} );
 
 		it( 'should have an icon', () => {
-			expect( button.icon ).to.equal( bookmarkIcon );
+			expect( button.icon ).to.equal( IconBookmark );
 		} );
 
 		it( 'should bind #isEnabled to insert and update command', () => {

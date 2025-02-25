@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -18,7 +18,7 @@ import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification.j
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import Model from '@ckeditor/ckeditor5-ui/src/model.js';
-import { icons } from 'ckeditor5/src/core.js';
+import { IconImageUpload } from 'ckeditor5/src/icons.js';
 
 import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -120,7 +120,7 @@ describe( 'ImageUploadUI', () => {
 
 			expect( dropdownButton ).to.be.instanceOf( FileDialogButtonView );
 			expect( dropdownButton.withText ).to.be.false;
-			expect( dropdownButton.icon ).to.equal( icons.imageUpload );
+			expect( dropdownButton.icon ).to.equal( IconImageUpload );
 		} );
 
 		it( 'should create FileDialogButtonView in dropdown panel', () => {
@@ -135,7 +135,7 @@ describe( 'ImageUploadUI', () => {
 
 			expect( buttonView ).to.be.instanceOf( FileDialogButtonView );
 			expect( buttonView.withText ).to.be.true;
-			expect( buttonView.icon ).to.equal( icons.imageUpload );
+			expect( buttonView.icon ).to.equal( IconImageUpload );
 		} );
 
 		it( 'should bind to #isImageSelected and #isAccessAllowed', () => {
@@ -198,16 +198,18 @@ describe( 'ImageUploadUI', () => {
 
 			expect( button ).to.be.instanceOf( MenuBarMenuListItemFileDialogButtonView );
 			expect( button.withText ).to.be.true;
-			expect( button.icon ).to.equal( icons.imageUpload );
+			expect( button.icon ).to.equal( IconImageUpload );
 			expect( button.label ).to.equal( 'From computer' );
 		} );
 
 		it( 'should create FileDialogButtonView in insert image submenu - only integration', () => {
-			button = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+			const submenu = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+
+			button = submenu.panelView.children.first.items.first.children.first;
 
 			expect( button ).to.be.instanceOf( MenuBarMenuListItemFileDialogButtonView );
 			expect( button.withText ).to.be.true;
-			expect( button.icon ).to.equal( icons.imageUpload );
+			expect( button.icon ).to.equal( IconImageUpload );
 			expect( button.label ).to.equal( 'Image' );
 		} );
 	} );
@@ -252,7 +254,7 @@ describe( 'ImageUploadUI', () => {
 			expect( button.isOn ).to.be.false;
 			expect( button.label ).to.equal( label );
 			expect( button.allowMultipleFiles ).to.equal( true );
-			expect( button.icon ).to.equal( icons.imageUpload );
+			expect( button.icon ).to.equal( IconImageUpload );
 		} );
 
 		it( 'should set proper accepted mime-types for uploadImage button as defined in configuration', () => {

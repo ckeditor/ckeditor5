@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -21,8 +21,7 @@ import {
 import type { FocusTracker, KeystrokeHandler, Locale } from '@ckeditor/ckeditor5-utils';
 import type { ColorPickerViewConfig } from '../colorpicker/utils.js';
 import type { ColorSelectorColorPickerCancelEvent, ColorSelectorExecuteEvent } from './colorselectorview.js';
-
-import { icons } from '@ckeditor/ckeditor5-core';
+import { IconCancel, IconCheck } from '@ckeditor/ckeditor5-icons';
 
 /**
  * One of the fragments of {@link module:ui/colorselector/colorselectorview~ColorSelectorView}.
@@ -291,7 +290,7 @@ export default class ColorPickerFragmentView extends View {
 		const cancelButtonView = new ButtonView( locale );
 
 		saveButtonView.set( {
-			icon: icons.check,
+			icon: IconCheck,
 			class: 'ck-button-save',
 			type: 'button',
 			withText: false,
@@ -299,7 +298,7 @@ export default class ColorPickerFragmentView extends View {
 		} );
 
 		cancelButtonView.set( {
-			icon: icons.cancel,
+			icon: IconCancel,
 			class: 'ck-button-cancel',
 			type: 'button',
 			withText: false,

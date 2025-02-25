@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -7,7 +7,9 @@
  * @module typing/delete
  */
 
+import type { ViewDocumentKeyDownEvent } from '@ckeditor/ckeditor5-engine';
 import { Plugin } from '@ckeditor/ckeditor5-core';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import DeleteCommand from './deletecommand.js';
 import DeleteObserver, { type ViewDocumentDeleteEvent } from './deleteobserver.js';
 
@@ -81,6 +83,24 @@ export default class Delete extends Plugin {
 
 			view.scrollToTheSelection();
 		}, { priority: 'low' } );
+
+		// Handle the Backspace key while at the beginning of a nested editable. See https://github.com/ckeditor/ckeditor5/issues/17383.
+		this.listenTo<ViewDocumentKeyDownEvent>( viewDocument, 'keydown', ( evt, data ) => {
+			if (
+				viewDocument.isComposing ||
+				data.keyCode != keyCodes.backspace ||
+				!modelDocument.selection.isCollapsed
+			) {
+				return;
+			}
+
+			const ancestorLimit = editor.model.schema.getLimitElement( modelDocument.selection );
+			const limitStartPosition = editor.model.createPositionAt( ancestorLimit, 0 );
+
+			if ( limitStartPosition.isTouching( modelDocument.selection.getFirstPosition()! ) ) {
+				data.preventDefault();
+			}
+		} );
 
 		if ( this.editor.plugins.has( 'UndoEditing' ) ) {
 			this.listenTo<ViewDocumentDeleteEvent>( viewDocument, 'delete', ( evt, data ) => {

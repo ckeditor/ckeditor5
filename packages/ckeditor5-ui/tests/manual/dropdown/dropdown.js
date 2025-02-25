@@ -1,18 +1,15 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals window, console */
 
+import { IconAlignLeft, IconAlignCenter, IconAlignRight } from '@ckeditor/ckeditor5-icons';
 import Model from '../../../src/model.js';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
 
 import testUtils from '../../_utils/utils.js';
-
-import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
-import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
-import alignCenterIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
 import ButtonView from '../../../src/button/buttonview.js';
 import SplitButtonView from '../../../src/dropdown/button/splitbuttonview.js';
 
@@ -177,7 +174,7 @@ function testLongLabel() {
 function testToolbar() {
 	const locale = { t: langString => langString };
 
-	const icons = { left: alignLeftIcon, right: alignRightIcon, center: alignCenterIcon };
+	const icons = { left: IconAlignLeft, right: IconAlignRight, center: IconAlignCenter };
 
 	// Buttons to be obtained from factory later on.
 	const buttons = Object.keys( icons ).map( icon => new Model( { label: icon, isEnabled: true, isOn: false, icon: icons[ icon ] } ) );
@@ -225,7 +222,7 @@ function testSplitButton() {
 
 	dropdownView.buttonView.set( {
 		label: 'Dropdown',
-		icon: alignCenterIcon
+		icon: IconAlignCenter
 	} );
 
 	ui.splitButton.add( dropdownView );

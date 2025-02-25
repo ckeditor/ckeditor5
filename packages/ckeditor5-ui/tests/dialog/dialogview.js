@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document, Event, KeyboardEvent, MouseEvent, console */
 
+import { IconCancel } from '@ckeditor/ckeditor5-icons';
 import { FocusTracker, KeystrokeHandler, Locale, global, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { ButtonView, FormHeaderView, View, ViewCollection } from '../../src/index.js';
 import DialogView, { DialogViewPosition } from '../../src/dialog/dialogview.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
 describe( 'DialogView', () => {
 	let view, fakeDomRootElement;
@@ -404,6 +404,32 @@ describe( 'DialogView', () => {
 				} );
 			} );
 		} );
+
+		describe( 'keystrokeHandlerOptions', () => {
+			it( 'should use passed keystroke handler options filter', async () => {
+				const filterSpy = sinon.spy();
+
+				const newView = new DialogView( locale, {
+					getCurrentDomRoot: getCurrentDomRootStub,
+					getViewportOffset: getViewportOffsetStub,
+					keystrokeHandlerOptions: {
+						filter: filterSpy
+					}
+				} );
+
+				newView.render();
+
+				newView.keystrokes.press( {
+					keyCode: keyCodes.tab,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				} );
+
+				await wait( 5 );
+
+				expect( filterSpy ).to.be.calledOnce;
+			} );
+		} );
 	} );
 
 	describe( 'render()', () => {
@@ -701,7 +727,7 @@ describe( 'DialogView', () => {
 					expect( closeButtonView ).to.be.instanceOf( ButtonView );
 					expect( closeButtonView.label ).to.equal( 'Close' );
 					expect( closeButtonView.tooltip ).to.be.true;
-					expect( closeButtonView.icon ).to.equal( cancelIcon );
+					expect( closeButtonView.icon ).to.equal( IconCancel );
 				} );
 
 				it( 'should fire an event with data upon clicking', () => {

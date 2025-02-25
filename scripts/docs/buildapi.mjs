@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -29,10 +29,6 @@ export default function buildApiDocs() {
 
 			// Ignore not a direct sources.
 			'external/ckeditor5-commercial/packages/ckeditor5-operations-compressor/src/protobufdescriptions.ts',
-
-			// Ignore builds.
-			'packages/ckeditor5-build-*/src/**/*.ts',
-			'external/ckeditor5-commercial/packages/ckeditor5-build-*/src/**/*.ts',
 
 			// Ignore all declarations.
 			'packages/ckeditor5-*/src/**/*.d.ts',

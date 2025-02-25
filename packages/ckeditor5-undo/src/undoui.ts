@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module undo/undoui
  */
-
-import { icons, Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
+import { IconUndo, IconRedo } from '@ckeditor/ckeditor5-icons';
 
 /**
  * The undo UI feature. It introduces the `'undo'` and `'redo'` buttons to the editor.
@@ -36,8 +36,8 @@ export default class UndoUI extends Plugin {
 		const locale = editor.locale;
 		const t = editor.t;
 
-		const localizedUndoIcon = locale.uiLanguageDirection == 'ltr' ? icons.undo : icons.redo;
-		const localizedRedoIcon = locale.uiLanguageDirection == 'ltr' ? icons.redo : icons.undo;
+		const localizedUndoIcon = locale.uiLanguageDirection == 'ltr' ? IconUndo : IconRedo;
+		const localizedRedoIcon = locale.uiLanguageDirection == 'ltr' ? IconRedo : IconUndo;
 
 		this._addButtonsToFactory( 'undo', t( 'Undo' ), 'CTRL+Z', localizedUndoIcon );
 		this._addButtonsToFactory( 'redo', t( 'Redo' ), 'CTRL+Y', localizedRedoIcon );

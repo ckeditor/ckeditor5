@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -9,6 +9,7 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { Typing } from 'ckeditor5/src/typing.js';
+import { IconSpecialCharacters } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView, DialogViewPosition, Dialog } from 'ckeditor5/src/ui.js';
 import { CKEditorError, type Locale } from 'ckeditor5/src/utils.js';
 import CharacterGridView, {
@@ -18,8 +19,6 @@ import CharacterGridView, {
 } from './ui/charactergridview.js';
 import CharacterInfoView from './ui/characterinfoview.js';
 import SpecialCharactersView from './ui/specialcharactersview.js';
-
-import specialCharactersIcon from '../theme/icons/specialcharacters.svg';
 
 import '../theme/specialcharacters.css';
 import SpecialCharactersCategoriesView from './ui/specialcharacterscategoriesview.js';
@@ -266,7 +265,7 @@ export default class SpecialCharacters extends Plugin {
 
 		buttonView.set( {
 			label: t( 'Special characters' ),
-			icon: specialCharactersIcon,
+			icon: IconSpecialCharacters,
 			isToggleable: true
 		} );
 

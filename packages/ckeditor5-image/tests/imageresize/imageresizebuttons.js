@@ -1,10 +1,16 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document */
 
+import {
+	IconObjectSizeSmall,
+	IconObjectSizeMedium,
+	IconObjectSizeLarge,
+	IconObjectSizeFull
+} from 'ckeditor5/src/icons.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Image from '../../src/image.js';
@@ -19,11 +25,6 @@ import Table from '@ckeditor/ckeditor5-table/src/table.js';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-
-import iconSmall from '@ckeditor/ckeditor5-core/theme/icons/object-size-small.svg';
-import iconMedium from '@ckeditor/ckeditor5-core/theme/icons/object-size-medium.svg';
-import iconLarge from '@ckeditor/ckeditor5-core/theme/icons/object-size-large.svg';
-import iconFull from '@ckeditor/ckeditor5-core/theme/icons/object-size-full.svg';
 
 describe( 'ImageResizeButtons', () => {
 	let plugin, command, editor, editorElement;
@@ -370,10 +371,10 @@ describe( 'ImageResizeButtons', () => {
 			const button50 = editor.ui.componentFactory.create( 'resizeImage:50' );
 			const button75 = editor.ui.componentFactory.create( 'resizeImage:75' );
 
-			expect( buttonOriginal.icon ).to.deep.equal( iconFull );
-			expect( button25.icon ).to.deep.equal( iconSmall );
-			expect( button50.icon ).to.deep.equal( iconMedium );
-			expect( button75.icon ).to.deep.equal( iconLarge );
+			expect( buttonOriginal.icon ).to.deep.equal( IconObjectSizeFull );
+			expect( button25.icon ).to.deep.equal( IconObjectSizeSmall );
+			expect( button50.icon ).to.deep.equal( IconObjectSizeMedium );
+			expect( button75.icon ).to.deep.equal( IconObjectSizeLarge );
 		} );
 
 		it( 'should throw the CKEditorError if no `icon` is provided', async () => {

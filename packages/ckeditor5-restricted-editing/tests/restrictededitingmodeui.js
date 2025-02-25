@@ -1,17 +1,17 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document */
 
+import { IconContentLock } from 'ckeditor5/src/icons.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 
 import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting.js';
 import RestrictedEditingModeUI from './../src/restrictededitingmodeui.js';
-import lockIcon from '../theme/icons/contentlock.svg';
 
 describe( 'RestrictedEditingModeUI', () => {
 	let editor, element, goToPreviousCommand, goToNextCommand;
@@ -66,7 +66,7 @@ describe( 'RestrictedEditingModeUI', () => {
 
 			expect( button ).to.have.property( 'label', 'Navigate editable regions' );
 			expect( button ).to.have.property( 'tooltip', true );
-			expect( button ).to.have.property( 'icon', lockIcon );
+			expect( button ).to.have.property( 'icon', IconContentLock );
 			expect( button ).to.have.property( 'isEnabled', true );
 			expect( button ).to.have.property( 'isOn', false );
 		} );
@@ -167,7 +167,7 @@ describe( 'RestrictedEditingModeUI', () => {
 			const button = menuView.buttonView;
 
 			expect( button ).to.have.property( 'label', 'Navigate editable regions' );
-			expect( button ).to.have.property( 'icon', lockIcon );
+			expect( button ).to.have.property( 'icon', IconContentLock );
 			expect( button ).to.have.property( 'isEnabled', true );
 			expect( button ).to.have.property( 'isOn', false );
 		} );

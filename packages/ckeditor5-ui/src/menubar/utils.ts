@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -34,7 +34,7 @@ import {
 	type ObservableChangeEvent,
 	type PositioningFunction
 } from '@ckeditor/ckeditor5-utils';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'es-toolkit/compat';
 
 const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
 
@@ -524,6 +524,12 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 		label: 'View',
  * 		groups: [
  * 			{
+ * 				groupId: 'sourceEditingEnhanced',
+ * 				items: [
+ * 					'menuBar:sourceEditingEnhanced'
+ * 				]
+ * 			},
+ * 			{
  * 				groupId: 'sourceEditing',
  * 				items: [
  * 					'menuBar:sourceEditing'
@@ -568,7 +574,8 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 					'menuBar:link',
  * 					'menuBar:bookmark',
  * 					'menuBar:comment',
- * 					'menuBar:insertMergeField'
+ * 					'menuBar:insertMergeField',
+ * 					'menuBar:emoji'
  * 				]
  * 			},
  * 			{
@@ -782,6 +789,12 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 		label: 'View',
 		groups: [
 			{
+				groupId: 'sourceEditingEnhanced',
+				items: [
+					'menuBar:sourceEditingEnhanced'
+				]
+			},
+			{
 				groupId: 'sourceEditing',
 				items: [
 					'menuBar:sourceEditing'
@@ -826,7 +839,8 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 					'menuBar:link',
 					'menuBar:bookmark',
 					'menuBar:comment',
-					'menuBar:insertMergeField'
+					'menuBar:insertMergeField',
+					'menuBar:emoji'
 				]
 			},
 			{

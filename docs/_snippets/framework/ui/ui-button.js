@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, console, Locale, ButtonView, checkIcon, ToolbarView, ClassicEditor, TooltipManager, Essentials */
+/* globals document, console, Locale, ButtonView, icons, ToolbarView, ClassicEditor, TooltipManager, Essentials */
 
 const locale = new Locale();
 
@@ -35,7 +35,7 @@ const saveButton = new ButtonView();
 saveButton.set( {
 	label: 'Save',
 	withText: false,
-	icon: checkIcon,
+	icon: icons.IconCheck,
 	class: 'ck-button-save'
 } );
 saveButton.render();

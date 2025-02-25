@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -18,8 +18,10 @@ import type {
 	ScriptElementSupport,
 	StyleElementSupport,
 	TableElementSupport,
+	HorizontalLineElementSupport,
 	HtmlComment,
-	FullPage
+	FullPage,
+	EmptyBlock
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -48,7 +50,9 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ ScriptElementSupport.pluginName ]: ScriptElementSupport;
 		[ StyleElementSupport.pluginName ]: StyleElementSupport;
 		[ TableElementSupport.pluginName ]: TableElementSupport;
+		[ HorizontalLineElementSupport.pluginName ]: HorizontalLineElementSupport;
 		[ HtmlComment.pluginName ]: HtmlComment;
 		[ FullPage.pluginName ]: FullPage;
+		[ EmptyBlock.pluginName ]: EmptyBlock;
 	}
 }

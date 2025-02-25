@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -28,7 +28,7 @@ import {
 	type ViewDocumentMutationsEvent
 } from '@ckeditor/ckeditor5-engine';
 
-import { debounce } from 'lodash-es';
+import { debounce } from 'es-toolkit/compat';
 
 /**
  * Handles text input coming from the keyboard or other input methods.

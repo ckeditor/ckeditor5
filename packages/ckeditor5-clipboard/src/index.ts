@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -26,6 +26,7 @@ export {
 } from './clipboardmarkersutils.js';
 
 export { default as plainTextToHtml } from './utils/plaintexttohtml.js';
+export { default as viewToPlainText } from './utils/viewtoplaintext.js';
 
 export type {
 	ClipboardEventData
@@ -39,6 +40,7 @@ export { default as DragDropBlockToolbar } from './dragdropblocktoolbar.js';
 export type {
 	ViewDocumentClipboardInputEvent,
 	ViewDocumentCopyEvent,
+	ViewDocumentPasteEvent,
 	ViewDocumentCutEvent
 } from './clipboardobserver.js';
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -9,7 +9,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Model from '@ckeditor/ckeditor5-ui/src/model.js';
 import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
 
-import { icons } from '@ckeditor/ckeditor5-core';
+import { IconImageUrl } from '@ckeditor/ckeditor5-icons';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
@@ -279,7 +279,10 @@ describe( 'ImageInsertViaUrlUI', () => {
 
 			describe( 'menu bar button', () => {
 				beforeEach( () => {
-					button = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+					const menu = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+					const submenuList = menu.panelView.children.get( 0 );
+
+					button = submenuList.items.get( 0 ).children.get( 0 );
 				} );
 
 				testButton( MenuBarMenuListItemButtonView, 'Image' );
@@ -330,7 +333,7 @@ describe( 'ImageInsertViaUrlUI', () => {
 					expect( dropdown.buttonView ).to.be.instanceOf( SplitButtonView );
 					expect( dropdown.buttonView.tooltip ).to.be.true;
 					expect( dropdown.buttonView.label ).to.equal( 'Insert image' );
-					expect( dropdown.buttonView.actionView.icon ).to.equal( icons.imageUrl );
+					expect( dropdown.buttonView.actionView.icon ).to.equal( IconImageUrl );
 					expect( dropdown.buttonView.actionView.tooltip ).to.be.true;
 					expect( dropdown.buttonView.actionView.label ).to.equal( 'Insert image via URL' );
 				} );
@@ -404,7 +407,7 @@ describe( 'ImageInsertViaUrlUI', () => {
 		} );
 
 		it( 'should set an #icon of the #buttonView', () => {
-			expect( button.icon ).to.equal( icons.imageUrl );
+			expect( button.icon ).to.equal( IconImageUrl );
 		} );
 
 		it( 'should open insert image via url dialog', () => {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -8,6 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { IconLink } from 'ckeditor5/src/icons.js';
 import {
 	ClickObserver,
 	type ViewAttributeElement,
@@ -36,8 +37,6 @@ import {
 	createBookmarkCallbacks,
 	LINK_KEYSTROKE
 } from './utils.js';
-
-import linkIcon from '../theme/icons/link.svg';
 
 const VISUAL_SELECTION_MARKER_NAME = 'link-ui';
 
@@ -301,7 +300,7 @@ export default class LinkUI extends Plugin {
 
 		view.set( {
 			label: t( 'Link' ),
-			icon: linkIcon,
+			icon: IconLink,
 			keystroke: LINK_KEYSTROKE,
 			isToggleable: true
 		} );

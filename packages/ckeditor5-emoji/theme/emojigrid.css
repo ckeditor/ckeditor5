@@ -1,0 +1,55 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-emoji-grid-tile-size: 27px;
+}
+
+.ck.ck-emoji {
+	& .ck.ck-emoji__tiles {
+		max-width: 100%;
+		max-height: min(265px, 40vh);
+
+		overflow-y: auto;
+		overflow-x: hidden;
+		border-top: 1px solid var(--ck-color-base-border);
+
+		& .ck-emoji__grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(var(--ck-emoji-grid-tile-size), 1fr));
+			margin: var(--ck-spacing-standard) var(--ck-spacing-large);
+			grid-gap: var(--ck-spacing-small);
+		}
+
+		& .ck-emoji__tile {
+			width: var(--ck-emoji-grid-tile-size);
+			height: var(--ck-emoji-grid-tile-size);
+			min-width: var(--ck-emoji-grid-tile-size);
+			min-height: var(--ck-emoji-grid-tile-size);
+			font-size: 1.5em;
+			padding: 0;
+			transition: .2s ease box-shadow;
+			border: 0;
+
+			@media (prefers-reduced-motion: reduce) {
+				transition: none;
+			}
+
+			&:focus:not(.ck-disabled),
+			&:hover:not(.ck-disabled) {
+				/* Disable the default .ck-button's border ring. */
+				border: 0;
+				box-shadow: inset 0 0 0 1px var(--ck-color-base-background), 0 0 0 2px var(--ck-color-focus-border);
+			}
+
+			/* Make sure the glyph is rendered in the center of the button */
+			& .ck-button__label {
+				line-height: var(--ck-emoji-grid-tile-size);
+				width: 100%;
+				text-align: center;
+			}
+		}
+	}
+}

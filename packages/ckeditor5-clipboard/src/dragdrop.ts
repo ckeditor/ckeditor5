@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -276,7 +276,7 @@ export default class DragDrop extends Plugin {
 		// The handler for the drag start; it is responsible for setting data transfer object.
 		this.listenTo<ViewDocumentDragStartEvent>( viewDocument, 'dragstart', ( evt, data ) => {
 			// Don't drag the editable element itself.
-			if ( data.target && data.target.is( 'editableElement' ) ) {
+			if ( data.target?.is( 'editableElement' ) ) {
 				data.preventDefault();
 
 				return;

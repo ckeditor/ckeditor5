@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -7,11 +7,10 @@
  * @module ui/dropdown/menu/dropdownmenubuttonview
  */
 
+import { IconDropdownArrow } from '@ckeditor/ckeditor5-icons';
 import IconView from '../../icon/iconview.js';
 import ListItemButtonView from '../../button/listitembuttonview.js';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-
-import dropdownArrowIcon from '../../../theme/icons/dropdown-arrow.svg';
 
 import '../../../theme/components/dropdown/menu/dropdownmenubutton.css';
 
@@ -73,7 +72,7 @@ export default class DropdownMenuButtonView extends ListItemButtonView {
 	private _createArrowView() {
 		const arrowView = new IconView();
 
-		arrowView.content = dropdownArrowIcon;
+		arrowView.content = IconDropdownArrow;
 		arrowView.extendTemplate( {
 			attributes: {
 				class: 'ck-dropdown-menu-list__nested-menu__button__arrow'

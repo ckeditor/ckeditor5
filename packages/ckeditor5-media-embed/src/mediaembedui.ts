@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -8,11 +8,11 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
+import { IconMedia } from 'ckeditor5/src/icons.js';
 import { ButtonView, CssTransitionDisablerMixin, MenuBarMenuListItemButtonView, Dialog } from 'ckeditor5/src/ui.js';
 
 import MediaFormView from './ui/mediaformview.js';
 import MediaEmbedEditing from './mediaembedediting.js';
-import mediaIcon from '../theme/icons/media.svg';
 import type { LocaleTranslate } from 'ckeditor5/src/utils.js';
 import type MediaRegistry from './mediaregistry.js';
 
@@ -78,7 +78,7 @@ export default class MediaEmbedUI extends Plugin {
 		const command = editor.commands.get( 'mediaEmbed' )!;
 		const dialogPlugin = this.editor.plugins.get( 'Dialog' );
 
-		buttonView.icon = mediaIcon;
+		buttonView.icon = IconMedia;
 
 		buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -272,6 +272,5 @@ function _isBase64( string: string | Blob ): string is string {
 		return false;
 	}
 
-	const match = string.match( BASE64_HEADER_REG_EXP );
-	return !!( match && match.length );
+	return !!string.match( BASE64_HEADER_REG_EXP )?.length;
 }

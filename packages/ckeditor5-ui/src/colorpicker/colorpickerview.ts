@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -11,7 +11,7 @@ import { convertColor, convertToHex, registerCustomElement, type ColorPickerView
 
 import type { HexColor } from '@ckeditor/ckeditor5-core';
 import { type Locale, global, env } from '@ckeditor/ckeditor5-utils';
-import { debounce, type DebouncedFunc } from 'lodash-es';
+import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
 import View from '../view.js';
 import type InputTextView from '../inputtext/inputtextview.js';
 import type ViewCollection from '../viewcollection.js';
@@ -76,7 +76,7 @@ export default class ColorPickerView extends View {
 	 *
 	 * @private
 	 */
-	private _debounceColorPickerEvent: DebouncedFunc<( arg: string ) => void>;
+	private _debounceColorPickerEvent: DebouncedFunction<( arg: string ) => void>;
 
 	/**
 	 * A reference to the configuration of the color picker specified in the constructor.
@@ -199,13 +199,15 @@ export default class ColorPickerView extends View {
 	public focus(): void {
 		// In some browsers we need to move the focus to the input first.
 		// Otherwise, the color picker doesn't behave as expected.
+		// In Chrome, after selecting the color via slider the first time,
+		// the editor collapses the selection and doesn't apply the color change.
 		// In FF, after selecting the color via slider, it instantly moves back to the previous color.
 		// In all iOS browsers and desktop Safari, once the saturation slider is moved for the first time,
 		// editor collapses the selection and doesn't apply the color change.
 		// See: https://github.com/cksource/ckeditor5-internal/issues/3245, https://github.com/ckeditor/ckeditor5/issues/14119,
 		// https://github.com/cksource/ckeditor5-internal/issues/3268.
 		/* istanbul ignore next -- @preserve */
-		if ( !this._config.hideInput && ( env.isGecko || env.isiOS || env.isSafari ) ) {
+		if ( !this._config.hideInput && ( env.isGecko || env.isiOS || env.isSafari || env.isBlink ) ) {
 			const input: LabeledFieldView<InputTextView> = this.hexInputRow!.children.get( 1 )! as LabeledFieldView<InputTextView>;
 
 			input.focus();

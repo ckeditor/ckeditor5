@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -7,8 +7,9 @@
  * @module paragraph/paragraphbuttonui
  */
 
-import { Plugin, icons } from '@ckeditor/ckeditor5-core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
+import { IconParagraph } from '@ckeditor/ckeditor5-icons';
 
 import Paragraph from './paragraph.js';
 import type ParagraphCommand from './paragraphcommand.js';
@@ -50,7 +51,7 @@ export default class ParagraphButtonUI extends Plugin {
 			const command: ParagraphCommand = editor.commands.get( 'paragraph' )!;
 
 			view.label = t( 'Paragraph' );
-			view.icon = icons.paragraph;
+			view.icon = IconParagraph;
 			view.tooltip = true;
 			view.isToggleable = true;
 			view.bind( 'isEnabled' ).to( command );

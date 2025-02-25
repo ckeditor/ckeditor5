@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -15,9 +15,10 @@ import {
 	toUnit,
 	type EventInfo,
 	type Locale,
-	type DecoratedMethodEvent
+	type DecoratedMethodEvent,
+	type KeystrokeHandlerOptions
 } from '@ckeditor/ckeditor5-utils';
-import { icons } from '@ckeditor/ckeditor5-core';
+import { IconCancel } from '@ckeditor/ckeditor5-icons';
 import ViewCollection from '../viewcollection.js';
 import View from '../view.js';
 import FormHeaderView from '../formheader/formheaderview.js';
@@ -204,10 +205,12 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 	constructor( locale: Locale,
 		{
 			getCurrentDomRoot,
-			getViewportOffset
+			getViewportOffset,
+			keystrokeHandlerOptions
 		}: {
 			getCurrentDomRoot: () => HTMLElement;
 			getViewportOffset: () => EditorUI[ 'viewportOffset' ];
+			keystrokeHandlerOptions?: KeystrokeHandlerOptions;
 		}
 	) {
 		super( locale );
@@ -243,7 +246,8 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 
 				// Navigate form fields forwards using the Tab key.
 				focusNext: 'tab'
-			}
+			},
+			keystrokeHandlerOptions
 		} );
 
 		this.setTemplate( {
@@ -696,7 +700,7 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 		buttonView.set( {
 			label: t( 'Close' ),
 			tooltip: true,
-			icon: icons.cancel
+			icon: IconCancel
 		} );
 
 		buttonView.on<ButtonExecuteEvent>( 'execute', () => this.fire<DialogViewCloseEvent>( 'close', { source: 'closeButton' } ) );

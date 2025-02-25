@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -46,7 +46,7 @@ import {
 import { injectUiElementHandling } from './uielement.js';
 import { injectQuirksHandling } from './filler.js';
 
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'es-toolkit/compat';
 
 type IfTrue<T> = T extends true ? true : never;
 type DomRange = globalThis.Range;

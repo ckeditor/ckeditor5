@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -8,9 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
+import { IconPageBreak } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
-
-import pageBreakIcon from '../theme/icons/pagebreak.svg';
 
 /**
  * The page break UI plugin.
@@ -62,7 +61,7 @@ export default class PageBreakUI extends Plugin {
 
 		view.set( {
 			label: t( 'Page break' ),
-			icon: pageBreakIcon
+			icon: IconPageBreak
 		} );
 
 		view.bind( 'isEnabled' ).to( command, 'isEnabled' );

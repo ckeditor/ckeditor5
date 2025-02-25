@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -25,7 +25,7 @@ import {
 	type Collection,
 	type Locale
 } from 'ckeditor5/src/utils.js';
-import { icons } from 'ckeditor5/src/core.js';
+import { IconCancel, IconCheck } from 'ckeditor5/src/icons.js';
 
 import type LinkCommand from '../linkcommand.js';
 import type ManualDecorator from '../utils/manualdecorator.js';
@@ -109,9 +109,9 @@ export default class LinkFormView extends View {
 
 		this._validators = validators;
 		this.urlInputView = this._createUrlInput();
-		this.saveButtonView = this._createButton( t( 'Save' ), icons.check, 'ck-button-save' );
+		this.saveButtonView = this._createButton( t( 'Save' ), IconCheck, 'ck-button-save' );
 		this.saveButtonView.type = 'submit';
-		this.cancelButtonView = this._createButton( t( 'Cancel' ), icons.cancel, 'ck-button-cancel', 'cancel' );
+		this.cancelButtonView = this._createButton( t( 'Cancel' ), IconCancel, 'ck-button-cancel', 'cancel' );
 		this._manualDecoratorSwitches = this._createManualDecoratorSwitches( linkCommand );
 		this.children = this._createFormChildren( linkCommand.manualDecorators );
 

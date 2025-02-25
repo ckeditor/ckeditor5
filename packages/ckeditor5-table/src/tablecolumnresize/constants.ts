@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -22,3 +22,8 @@ export const COLUMN_MIN_WIDTH_IN_PIXELS = 40;
  * Determines how many digits after the decimal point are used to store the column width as a percentage value.
  */
 export const COLUMN_WIDTH_PRECISION = 2;
+
+/**
+ * The distance in pixels that the mouse has to move to start resizing the column.
+ */
+export const COLUMN_RESIZE_DISTANCE_THRESHOLD = 3;

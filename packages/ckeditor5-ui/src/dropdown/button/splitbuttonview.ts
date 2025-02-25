@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -7,20 +7,18 @@
  * @module ui/dropdown/button/splitbuttonview
  */
 
+import { IconDropdownArrow } from '@ckeditor/ckeditor5-icons';
+import {
+	KeystrokeHandler,
+	FocusTracker,
+	type Locale
+} from '@ckeditor/ckeditor5-utils';
 import View from '../../view.js';
 import ButtonView from '../../button/buttonview.js';
 import type ViewCollection from '../../viewcollection.js';
 import type Button from '../../button/button.js';
 import type DropdownButton from './dropdownbutton.js';
 import type { FocusableView } from '../../focuscycler.js';
-
-import {
-	KeystrokeHandler,
-	FocusTracker,
-	type Locale
-} from '@ckeditor/ckeditor5-utils';
-
-import dropdownArrowIcon from '../../../theme/icons/dropdown-arrow.svg';
 
 import '../../../theme/components/dropdown/splitbutton.css';
 
@@ -308,7 +306,7 @@ export default class SplitButtonView extends View<HTMLDivElement> implements Dro
 		const arrowView = new ButtonView();
 		const bind = arrowView.bindTemplate;
 
-		arrowView.icon = dropdownArrowIcon;
+		arrowView.icon = IconDropdownArrow;
 
 		arrowView.extendTemplate( {
 			attributes: {

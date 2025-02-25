@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
@@ -7,9 +7,9 @@
  * @module link/ui/linkactionsview
  */
 
+import { IconUnlink, IconPencil } from 'ckeditor5/src/icons.js';
 import { ButtonView, View, ViewCollection, FocusCycler, type FocusableView } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type LocaleTranslate, type Locale } from 'ckeditor5/src/utils.js';
-import { icons } from 'ckeditor5/src/core.js';
 
 import { ensureSafeUrl, openLink } from '../utils.js';
 
@@ -18,7 +18,6 @@ import { ensureSafeUrl, openLink } from '../utils.js';
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../../theme/linkactions.css';
 
-import unlinkIcon from '../../theme/icons/unlink.svg';
 import type { LinkConfig } from '../linkconfig.js';
 
 /**
@@ -84,8 +83,8 @@ export default class LinkActionsView extends View {
 
 		this._options = options;
 		this.previewButtonView = this._createPreviewButton();
-		this.unlinkButtonView = this._createButton( t( 'Unlink' ), unlinkIcon, 'unlink' );
-		this.editButtonView = this._createButton( t( 'Edit link' ), icons.pencil, 'edit' );
+		this.unlinkButtonView = this._createButton( t( 'Unlink' ), IconUnlink, 'unlink' );
+		this.editButtonView = this._createButton( t( 'Edit link' ), IconPencil, 'edit' );
 
 		this.set( 'href', undefined );
 
