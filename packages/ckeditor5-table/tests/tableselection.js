@@ -570,6 +570,28 @@ describe( 'TableSelection', () => {
 			expect( selection.isBackward ).to.be.true;
 		} );
 
+		it( 'should select all cells when selecting from a regular row to a row with colspan', () => {
+			setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ { contents: '11', colspan: 3 } ]
+			] ) );
+
+			table = modelRoot.getChild( 0 );
+
+			const anchorCell = table.getChild( 0 ).getChild( 0 );
+			const targetCell = table.getChild( 1 ).getChild( 0 );
+
+			tableSelection.setCellSelection( anchorCell, targetCell );
+
+			const selectedCells = tableSelection.getSelectedTableCells();
+
+			expect( selectedCells ).to.have.length( 4 );
+			expect( selectedCells[ 0 ] ).to.equal( table.getChild( 0 ).getChild( 0 ) );
+			expect( selectedCells[ 1 ] ).to.equal( table.getChild( 0 ).getChild( 1 ) );
+			expect( selectedCells[ 2 ] ).to.equal( table.getChild( 0 ).getChild( 2 ) );
+			expect( selectedCells[ 3 ] ).to.equal( table.getChild( 1 ).getChild( 0 ) );
+		} );
+
 		function assertSelection( anchorCell, focusCell, count ) {
 			const cells = [ ...selection.getRanges() ].map( range => range.getContainedElement() );
 
