@@ -106,6 +106,10 @@ ClassicEditor
 
 **Note**: Typing and deleting text is always possible in restricted editing regions. For more information, check out the {@link module:restricted-editing/restrictededitingconfig~RestrictedEditingConfig `config.restrictedEditing`} documentation.
 
+<info-box warning>
+	Only inline content inserting or editing commands are allowed in this setting. Block content commands such as `insertTable` or `enter` cannot be allowed via this setting, as they are not supported in the restricted editing mode. 
+</info-box>
+
 ### Enabling commands in the restricted editing mode
 
 The restricted editing mode allows modifying the editor content only in designated regions. Outside these regions, most of the editor commands are turned off by default. If you wish to enable some commands outside the restricted editing regions, you can use the {@link module:restricted-editing/restrictededitingmodeediting~RestrictedEditingModeEditing#enableCommand `RestrictedEditingModeEditing.enableCommand()`} method. You must execute this method in the {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} callback of an editor plugin.
@@ -121,10 +125,6 @@ class MyPlugin extends Plugin {
 }
 ```
 </code-switcher>
-
-<info-box warning>
-	Only inline content inserting or editing commands are allowed in this setting. Block content commands such as `insertTable` or `enter` cannot be allowed via this setting, as they are not supported in the restricted editing mode. 
-</info-box>
 
 ## Related features
 
