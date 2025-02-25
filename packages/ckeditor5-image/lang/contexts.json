@@ -32,7 +32,7 @@
 	"Image resize list": "The accessibility label of the image resize dropdown for screen readers.",
 	"Insert image via URL": "The input label for the Insert image via URL form.",
 	"Insert via URL": "The label for the insert image via url dropdown button.",
-	"Image via URL": "The label for the insert image menu bar button and the title of the balloon header.",
+	"Image via URL": "The label for the 'insert image' menu bar button and the title of the balloon header.",
 	"Via URL": "The label for the insert image via url menu bar button (inside 'Image' menu).",
 	"Update image URL": "The input label for the Insert image via URL form for a pre-existing image.",
 	"Caption for the image": "Text used by screen readers do describe an image when the image has no text alternative.",
