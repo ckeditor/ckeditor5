@@ -7,11 +7,11 @@
 	"Link properties": "Label for the link properties link balloon title.",
 	"Edit link": "Button opening the Link URL editing balloon.",
 	"Open link in new tab": "Button opening the link in new browser tab.",
-	"This link has no URL": "Label explaining that a link has no URL set (the URL is empty).",
 	"Open in a new tab": "The label of the switch button that controls whether the edited link will open in a new tab.",
-	"Scroll to target": "Button scrolling to the link target.",
 	"Downloadable": "The label of the switch button that controls whether the edited link refers to downloadable resource.",
 	"Create link": "Keystroke description for assistive technologies: keystroke for creating a link.",
 	"Move out of a link": "Keystroke description for assistive technologies: keystroke for moving out of a link.",
-	"Displayed text": "The label of the input field for the displayed text of the link."
+	"Displayed text": "The label of the input field for the displayed text of the link.",
+	"No links available": "Placeholder shown when placeholder items view is empty.",
+	"Text Alternative": "The label of the input field for the text alternative of the link."
 }
