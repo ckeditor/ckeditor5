@@ -11,6 +11,7 @@ import { PresenceListUI } from '@ckeditor/ckeditor5-real-time-collaboration';
 import { DocumentOutlineUI } from '@ckeditor/ckeditor5-document-outline';
 import { createElement } from 'ckeditor5/src/utils.js';
 import { type Editor } from 'ckeditor5/src/core.js';
+import { type Dialog } from 'ckeditor5/src/ui.js';
 
 /**
  * The abstract editor type handler. It should be extended by the particular editor type handler.
@@ -176,5 +177,15 @@ export default class AbstractEditorHandler {
 		documentOutlineUI.view._documentOutlineContainer = document.querySelector( '[data-ck-fullscreen="left-sidebar"]' ) as HTMLElement;
 
 		this.moveToFullscreen( documentOutlineUI.view.element!, 'document-outline' );
+	}
+
+	public updateDialogPosition(): void {
+		const dialog = this._editor.plugins.get( 'Dialog' ) as Dialog;
+		dialog.on( 'change:isOpen', ( ) => {
+			const dialogView = dialog.view!;
+			dialogView.position = null;
+
+			dialogView.moveTo( 0, 0 );
+		}, { priority: 'highest' } );
 	}
 }

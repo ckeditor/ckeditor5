@@ -33,6 +33,7 @@ export default class DecoupledEditorHandler extends AbstractEditorHandler {
 			this.moveToFullscreen( this._editor.ui.view.toolbar.element!, 'toolbar' );
 			this.generatePresenceListElement();
 			this.generateDocumentOutlineElement();
+			this.updateDialogPosition();
 
 			if ( this._editor.config.get( 'fullscreen.menuBar.isVisible' ) ) {
 				this.moveToFullscreen( this._editor.ui.view.menuBarView.element!, 'menu-bar' );
