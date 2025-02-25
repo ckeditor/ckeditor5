@@ -2,6 +2,7 @@
 title: Link
 meta-title: Links | CKEditor 5 Documentation
 category: features
+modified_at: 2025-02-25
 ---
 
 {@snippet features/build-link-source}
