@@ -8,11 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { IconTableLayout } from 'ckeditor5/src/icons.js'; // TODO: Remember to update in ckeditor5-icons when icon is ready.
-import {
-	createDropdown,
-	MenuBarMenuView
-} from 'ckeditor5/src/ui.js';
+import { IconTableLayout } from 'ckeditor5/src/icons.js';
+import { createDropdown, MenuBarMenuView } from 'ckeditor5/src/ui.js';
 import type { ObservableChangeEvent } from 'ckeditor5/src/utils.js';
 
 import InsertTableView from '../ui/inserttableview.js';
