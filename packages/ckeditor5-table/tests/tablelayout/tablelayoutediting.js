@@ -867,6 +867,38 @@ describe( 'TableLayoutEditing', () => {
 					'</table>'
 				);
 			} );
+
+			it( 'should not convert to content table if it\'s pasted from other editor (without figure)', () => {
+				const dataTransferMock = createDataTransfer( {
+					'application/ckeditor5-editor-id': 'other-editor',
+					'text/html': '<table><tbody><tr><td>Foo</td></tr></tbody></table>'
+				} );
+
+				view.document.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {},
+					method: 'paste'
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<table tableType="layout">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>Foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<table class="table layout-table" role="presentation">' +
+						'<tbody>' +
+							'<tr><td>Foo</td></tr>' +
+						'</tbody>' +
+					'</table>'
+				);
+			} );
 		} );
 
 		describe( 'copying tables', () => {
