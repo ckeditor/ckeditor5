@@ -64,10 +64,10 @@ The link UI contains a contextual toolbar that appears when a link is selected. 
 
 The following toolbar items are available:
 
-* `'linkPreview'` - Shows a preview of the link URL that you can click to open the link in a new tab.
-* `'editLink'` - Opens a form to edit the link URL and options.
-* `'linkProperties'` - Opens a panel to configure link properties (manual decorators). Only available when at least one manual decorator is defined.
-* `'unlink'` - Removes the link.
+* `'linkPreview'` &ndash; Shows a preview of the link URL that you can click to open the link in a new tab.
+* `'editLink'` &ndash; Opens a form to edit the link URL and options.
+* `'linkProperties'` &ndash; Opens a panel to configure link properties (manual decorators). Only available when at least one manual decorator is defined.
+* `'unlink'` &ndash; Removes the link.
 
 By default, the link toolbar is configured as follows:
 

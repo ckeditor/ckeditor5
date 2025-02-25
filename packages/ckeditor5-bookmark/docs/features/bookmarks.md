@@ -105,9 +105,9 @@ The bookmark UI contains a contextual toolbar that appears when a bookmark is se
 
 The following toolbar items are available:
 
-* `'bookmarkPreview'` - Shows the name of the bookmark.
-* `'editBookmark'` - Opens a form to edit the bookmark name.
-* `'removeBookmark'` - Removes the bookmark.
+* `'bookmarkPreview'` &ndash; Shows the name of the bookmark.
+* `'editBookmark'` &ndash; Opens a form to edit the bookmark name.
+* `'removeBookmark'` &ndash; Removes the bookmark.
 
 By default, the bookmark toolbar is configured as follows:
 
