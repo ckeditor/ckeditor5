@@ -99,6 +99,71 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
+## Bookmark toolbar configuration
+
+The bookmark UI contains a contextual toolbar that appears when a bookmark is selected. You can configure what items appear in this toolbar using the {@link module:bookmark/bookmarkconfig~BookmarkConfig#toolbar `config.bookmark.toolbar`} option.
+
+The following toolbar items are available:
+
+* `'bookmarkPreview'` - Shows the name of the bookmark.
+* `'editBookmark'` - Opens a form to edit the bookmark name.
+* `'removeBookmark'` - Removes the bookmark.
+
+By default, the bookmark toolbar is configured as follows:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		bookmark: {
+			toolbar: [ 'bookmarkPreview', '|', 'editBookmark', 'removeBookmark' ]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+### Custom toolbar items
+
+You can extend the bookmark toolbar with custom items by registering them in the {@link module:ui/componentfactory~ComponentFactory component factory} and adding them to the toolbar configuration.
+
+Here is an example of registering a custom component:
+
+```js
+class MyCustomPlugin extends Plugin {
+	init() {
+		const editor = this.editor;
+
+		editor.ui.componentFactory.add( 'myCustomBookmarkInfo', locale => {
+			const button = new ButtonView( locale );
+			const bookmarkCommand = editor.commands.get( 'insertBookmark' );
+
+			button.bind( 'isEnabled' ).to( bookmarkCommand, 'value', href => !!href );
+			button.bind( 'label' ).to( bookmarkCommand, 'value' );
+
+			button.on( 'execute', () => {
+				// Add your custom component logic here
+			} );
+
+			return button;
+		} );
+	}
+}
+```
+
+Once registered, the component can be used in the toolbar configuration:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ MyCustomPlugin, /* ... */ ],
+		bookmark: {
+			toolbar: [ 'myCustomBookmarkInfo', '|', 'editBookmark', 'removeBookmark' ]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
 ## Bookmarks on blocks
 
 At this time, if a bookmark is attached to a block, it appears before it. However, we plan to expand this solution in the future. We invite you to help us [gather feedback for linking directly to blocks and auto generating IDs](https://github.com/ckeditor/ckeditor5/issues/17264).
