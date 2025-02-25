@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
+import type { ClipboardContentInsertionEvent, ClipboardPipeline } from 'ckeditor5/src/clipboard.js';
 import type {
 	DowncastDispatcher,
 	UpcastDispatcher,
@@ -43,6 +44,7 @@ export default class TableLayoutEditing extends Plugin {
 	public init(): void {
 		this._defineSchema();
 		this._defineConverters();
+		this._defineClipboardPasteHandlers();
 
 		this.editor.commands.add( 'insertTableLayout', new InsertTableLayoutCommand( this.editor ) );
 	}
@@ -91,6 +93,41 @@ export default class TableLayoutEditing extends Plugin {
 					value: [ 'content-table' ]
 				}
 			}
+		} );
+	}
+
+	/**
+	 * Handles the clipboard content insertion events.
+	 *
+	 * - If the content is from another editor, do not override the table type.
+	 * - If the content is from another source, set the table type to 'content'.
+	 *
+	 * It handles the scenario when user copies `<table></table>` from Word. We do not want to
+	 * change the table type to `layout` because it is really `content` table.
+	 */
+	private _defineClipboardPasteHandlers(): void {
+		const { plugins } = this.editor;
+
+		if ( !plugins.has( 'ClipboardPipeline' ) ) {
+			return;
+		}
+
+		const clipboardPipeline: ClipboardPipeline = plugins.get( 'ClipboardPipeline' );
+
+		this.listenTo<ClipboardContentInsertionEvent>( clipboardPipeline, 'contentInsertion', ( evt, data ) => {
+			// If content is pasted from the other editor, skip overriding table type.
+			if ( data.sourceEditorId ) {
+				return;
+			}
+
+			// For content from other sources, always set table type to 'content'.
+			this.editor.model.change( writer => {
+				for ( const { item } of writer.createRangeIn( data.content ) ) {
+					if ( item.is( 'element', 'table' ) ) {
+						writer.setAttribute( 'tableType', 'content', item );
+					}
+				}
+			} );
 		} );
 	}
 }

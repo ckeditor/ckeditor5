@@ -806,9 +806,40 @@ describe( 'TableLayoutEditing', () => {
 				);
 			} );
 
-			it( 'should convert to content table if paste from external', () => {
+			it( 'should convert to content table if paste from external (with figure tag)', () => {
 				const dataTransferMock = createDataTransfer( {
 					'text/html': '<figure><table><tbody><tr><td>Foo</td></tr></tbody></table></figure>'
+				} );
+
+				view.document.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {},
+					method: 'paste'
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'[<table tableType="content">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>Foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<table class="table content-table" role="presentation">' +
+						'<tbody>' +
+							'<tr><td>Foo</td></tr>' +
+						'</tbody>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should convert to content table if paste from external (without figure tag)', () => {
+				const dataTransferMock = createDataTransfer( {
+					'text/html': '<table><tbody><tr><td>Foo</td></tr></tbody></table>'
 				} );
 
 				view.document.fire( 'paste', {
