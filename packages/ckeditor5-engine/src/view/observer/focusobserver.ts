@@ -77,7 +77,6 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 			// @if CK_DEBUG_TYPING // 	) );
 			// @if CK_DEBUG_TYPING // }
 
-			this._clearTimeout();
 			this._isFocusChanging = false;
 			this.document.isFocused = true;
 
@@ -141,10 +140,6 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 		this._renderTimeoutId = setTimeout( () => {
 			this._renderTimeoutId = null;
 
-			if ( !this._isFocusChanging ) {
-				return;
-			}
-
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.group( ..._buildLogMessage( this, 'FocusObserver',
 			// @if CK_DEBUG_TYPING // 		'flush on timeout'
@@ -180,7 +175,6 @@ export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 			// @if CK_DEBUG_TYPING // 	) );
 			// @if CK_DEBUG_TYPING // }
 
-			this._clearTimeout();
 			this.document.isFocused = false;
 			this._isFocusChanging = false;
 
