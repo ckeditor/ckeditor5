@@ -5,6 +5,7 @@
 
 /* eslint-env node */
 
+import url from 'url';
 import upath from 'upath';
 import fs from 'fs-extra';
 import { CKEDITOR5_ROOT_PATH, CKEDITOR5_COMMERCIAL_PATH } from '../constants.mjs';
@@ -12,21 +13,17 @@ import generateCKEditor5DocsBuild from './generate-ckeditor5-docs-build.mjs';
 
 export default async function buildSources() {
 	const { version } = await fs.readJson( upath.join( CKEDITOR5_ROOT_PATH, 'package.json' ) );
-	const basePath = upath.join( CKEDITOR5_ROOT_PATH, 'build/docs/ckeditor5', version, 'assets' );
+	const basePath = upath.join( CKEDITOR5_ROOT_PATH, 'build', 'docs', 'ckeditor5', version, 'assets' );
 
-	const output = getOutputFactory( basePath );
+	const output = path => upath.join( basePath, path );
 
 	await generateCKEditor5DocsBuild( output( 'ckeditor5/ckeditor5.js' ) );
 
 	if ( await fs.pathExists( CKEDITOR5_COMMERCIAL_PATH ) ) {
-		const { default: generateCKEditor5PremiumFeaturesDocsBuild } = await import(
-			'../../external/ckeditor5-commercial/scripts/docs/generate-ckeditor5-premium-features-docs-build.mjs'
-		);
+		const scriptPath = upath.join( CKEDITOR5_COMMERCIAL_PATH, 'scripts', 'docs', 'generate-ckeditor5-premium-features-docs-build.mjs' );
+		const { href } = url.pathToFileURL( scriptPath );
+		const { default: generateCKEditor5PremiumFeaturesDocsBuild } = await import( href );
 
 		await generateCKEditor5PremiumFeaturesDocsBuild( output( 'ckeditor5-premium-features/ckeditor5-premium-features.js' ) );
 	}
-}
-
-function getOutputFactory( basePath ) {
-	return path => upath.join( basePath, path );
 }
