@@ -58,6 +58,75 @@ ClassicEditor
 ```
 </code-switcher>
 
+## Link toolbar configuration
+
+The link UI contains a contextual toolbar that appears when a link is selected. You can configure what items appear in this toolbar using the {@link module:link/linkconfig~LinkConfig#toolbar `config.link.toolbar`} option.
+
+The following toolbar items are available:
+
+* `'linkPreview'` &ndash; Shows a preview of the link URL that you can click to open the link in a new tab.
+* `'editLink'` &ndash; Opens a form to edit the link URL and options.
+* `'linkProperties'` &ndash; Opens a panel to configure link properties (manual decorators). Only available when at least one manual decorator is defined.
+* `'unlink'` &ndash; Removes the link.
+
+By default, the link toolbar is configured as follows:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		link: {
+			toolbar: [ 'linkPreview', '|', 'editLink', 'linkProperties', 'unlink' ]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+### Custom toolbar items
+
+You can extend the link toolbar with custom items by registering them in the {@link module:ui/componentfactory~ComponentFactory component factory} and adding them to the toolbar configuration.
+
+Here is an example of registering a custom component:
+
+```js
+class MyCustomPlugin extends Plugin {
+	init() {
+		const editor = this.editor;
+
+		editor.ui.componentFactory.add( 'myCustomLinkInfo', locale => {
+			const button = new ButtonView( locale );
+			const linkCommand = editor.commands.get( 'link' );
+
+			button.bind( 'isEnabled' ).to( linkCommand, 'value', href => !!href );
+			button.bind( 'label' ).to( linkCommand, 'value' );
+
+			button.on( 'execute', () => {
+				// Add your custom component logic here
+			} );
+
+			return button;
+		} );
+	}
+}
+```
+Once registered, the component can be used in the toolbar configuration:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ MyCustomPlugin, /* ... */ ],
+		link: {
+			toolbar: [ 'myCustomLinkInfo', '|', 'editLink', 'unlink' ]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+<info-box>
+	The `linkProperties` item is only shown when manual decorators are configured through {@link module:link/linkconfig~LinkConfig#decorators `config.link.decorators`}. See the [custom link attributes](#custom-link-attributes-decorators) section for more details.
+</info-box>
+
 ## Custom link attributes (decorators)
 
 By default, all links created in the editor have the `href="..."` attribute in the {@link getting-started/setup/getting-and-setting-data#getting-the-editor-data-with-getdata editor data}. If you want your links to have additional link attributes, {@link module:link/linkconfig~LinkConfig#decorators link decorators} provide an easy way to configure and manage them.
