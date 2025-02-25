@@ -9,6 +9,12 @@ body.ck-fullscreen {
 	--ck-z-default: calc(var(--ck-z-fullscreen) + 1);
 	--ck-z-panel: calc(var(--ck-z-default) + 999);
 	--ck-z-dialog: 100000;
+
+	overflow: hidden;
+
+	& .ck-pagination-view-line {
+		z-index: calc(var(--ck-z-fullscreen) + 1);
+	}
 }
 
 /*
