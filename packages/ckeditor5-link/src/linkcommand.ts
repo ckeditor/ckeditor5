@@ -136,6 +136,7 @@ export default class LinkCommand extends Command {
 	 * decorator attributes.
 	 *
 	 * An optional parameter called `displayedText` is to add or update text of the link that represents the `href`. For example:
+	 *
 	 * ```ts
 	 * const linkCommand = editor.commands.get( 'link' );
 	 *
