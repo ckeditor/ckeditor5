@@ -19,7 +19,7 @@ import PlainTableOutput from '../../src/plaintableoutput.js';
 import TableEditing from '../../src/tableediting.js';
 
 describe( 'TableLayoutEditing', () => {
-	let editor, model, view, editorElement;
+	let editor, model, view, editorElement, insertTableCommand;
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
@@ -33,6 +33,7 @@ describe( 'TableLayoutEditing', () => {
 
 		model = editor.model;
 		view = editor.editing.view;
+		insertTableCommand = editor.commands.get( 'insertTable' );
 	} );
 
 	afterEach( async () => {
@@ -88,6 +89,27 @@ describe( 'TableLayoutEditing', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<table class="table layout-table" role="presentation">' +
+					'<tbody>' +
+						'<tr><td>foo</td></tr>' +
+					'</tbody>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should add `content-table` class and not add the `role="presentation"` attribute', () => {
+			setModelData(
+				model,
+				'<table tableType="content">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>foo[]</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<table class="table content-table">' +
 					'<tbody>' +
 						'<tr><td>foo</td></tr>' +
 					'</tbody>' +
@@ -829,7 +851,7 @@ describe( 'TableLayoutEditing', () => {
 				);
 
 				expect( editor.getData() ).to.equal(
-					'<table class="table content-table" role="presentation">' +
+					'<table class="table content-table">' +
 						'<tbody>' +
 							'<tr><td>Foo</td></tr>' +
 						'</tbody>' +
@@ -860,7 +882,7 @@ describe( 'TableLayoutEditing', () => {
 				);
 
 				expect( editor.getData() ).to.equal(
-					'<table class="table content-table" role="presentation">' +
+					'<table class="table content-table">' +
 						'<tbody>' +
 							'<tr><td>Foo</td></tr>' +
 						'</tbody>' +
@@ -953,7 +975,7 @@ describe( 'TableLayoutEditing', () => {
 					} );
 
 					expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
-						'<table class="table content-table" role="presentation">' +
+						'<table class="table content-table">' +
 							'<tbody>' +
 								'<tr><td>Bar</td></tr>' +
 							'</tbody>' +
@@ -1013,7 +1035,7 @@ describe( 'TableLayoutEditing', () => {
 					} );
 
 					expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
-						'<table class="table content-table" role="presentation">' +
+						'<table class="table content-table">' +
 							'<tbody>' +
 								'<tr><td>Bar</td></tr>' +
 							'</tbody>' +
@@ -1021,6 +1043,21 @@ describe( 'TableLayoutEditing', () => {
 					);
 				} );
 			} );
+		} );
+	} );
+
+	describe( 'postfixer', () => {
+		it( 'should add `tableType` attribute to the table', () => {
+			insertTableCommand.execute( { rows: 1, columns: 2 } );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<table tableType="content">' +
+					'<tableRow>' +
+						'<tableCell><paragraph></paragraph></tableCell>' +
+						'<tableCell><paragraph></paragraph></tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
 		} );
 	} );
 } );

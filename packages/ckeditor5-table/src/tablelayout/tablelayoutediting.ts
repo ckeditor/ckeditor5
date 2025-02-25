@@ -14,7 +14,8 @@ import type {
 	UpcastDispatcher,
 	UpcastElementEvent,
 	ViewElement,
-	SchemaContext
+	SchemaContext,
+	Writer
 } from 'ckeditor5/src/engine.js';
 
 import InsertTableLayoutCommand from './../commands/inserttablelayoutcommand.js';
@@ -47,6 +48,13 @@ export default class TableLayoutEditing extends Plugin {
 		this._defineClipboardPasteHandlers();
 
 		this.editor.commands.add( 'insertTableLayout', new InsertTableLayoutCommand( this.editor ) );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public afterInit(): void {
+		this._registerTableTypeAttributePostfixer();
 	}
 
 	/**
@@ -128,6 +136,35 @@ export default class TableLayoutEditing extends Plugin {
 					}
 				}
 			} );
+		} );
+	}
+
+	/**
+	 * Registers a post-fixer that sets the `tableType` attribute to `content` for inserted "default" tables.
+	 *
+	 * @internal
+	 */
+	private _registerTableTypeAttributePostfixer() {
+		const editor = this.editor;
+
+		editor.model.document.registerPostFixer( ( writer: Writer ) => {
+			const changes = editor.model.document.differ.getChanges();
+			let hasChanged = false;
+
+			for ( const entry of changes ) {
+				if ( entry.type == 'insert' && entry.name && entry.name == 'table' ) {
+					const tableType = entry.attributes.get( 'tableType' );
+
+					if ( tableType ) {
+						return false;
+					}
+
+					writer.setAttribute( 'tableType', 'content', entry.position.nodeAfter! );
+					hasChanged = true;
+				}
+			}
+
+			return hasChanged;
 		} );
 	}
 }
@@ -225,7 +262,10 @@ function dataDowncastLayoutTable() {
 			const table = mapper.toViewElement( item );
 
 			writer.addClass( `${ attributeNewValue }-table`, table );
-			writer.setAttribute( 'role', 'presentation', table );
+
+			if ( attributeNewValue == 'layout' ) {
+				writer.setAttribute( 'role', 'presentation', table );
+			}
 
 			conversionApi.consumable.consume( item, evt.name );
 		} );
@@ -253,5 +293,7 @@ function isTableTypeContent( viewTable: ViewElement ): boolean {
  * It is used to disallow attributes or children that is managed by `Schema`.
  */
 function layoutTableCheck( context: SchemaContext ) {
-	return !( context.endsWith( 'table' ) && context.last.getAttribute( 'tableType' ) == 'layout' );
+	if ( context.endsWith( 'table' ) && context.last.getAttribute( 'tableType' ) == 'layout' ) {
+		return false;
+	}
 }
