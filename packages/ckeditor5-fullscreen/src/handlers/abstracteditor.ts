@@ -21,8 +21,6 @@ export default class AbstractEditorHandler {
 	 */
 	private _movedElements: Map<HTMLElement, HTMLElement>;
 
-	private _idToPlaceholder: Map<string, HTMLElement> = new Map();
-
 	/**
 	 * The container element that holds the fullscreen mode layout.
 	 * It's independent of the editor type.
@@ -65,8 +63,7 @@ export default class AbstractEditorHandler {
 
 		this.getContainer().querySelector( `[data-ck-fullscreen="${ placeholderName }"]` )!.append( elementToMove );
 
-		this._movedElements.set( placeholderElement, elementToMove );
-		this._idToPlaceholder.set( placeholderName, placeholderElement );
+		this._movedElements.set( elementToMove, placeholderElement );
 	}
 
 	/**
