@@ -120,7 +120,7 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 		.catch( /* ... */ );
 	```
 
-* `version` &ndash; the emoji database version.
+* `version` &ndash; the emoji database version. By default, version 16 is used. This option is ignored if the `definitionsUrl` setting is provided.
 
 	```js
 	ClassicEditor
@@ -134,11 +134,23 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 		.catch( /* ... */ );
 	```
 
-<info-box info>
-	The emoji feature uses the `:` marker that opens a panel with a table of selectable emojis. If you are using {@link features/mentions mentions} or {@link features/merge-fields merge fields} features, they can also show UI panels by pressing a pre-configured key, and it may conflict with the emoji feature. In such a case, the {@link module:emoji/emojimention~EmojiMention} plugin will not integrate the autocompletion mechanism.
+### Emoji source
 
-	To prevent conflicts, make sure that {@link module:mention/mentionconfig~MentionFeed#marker mention's `marker`} and {@link module:merge-fields/mergefieldsconfig~MergeFieldsConfig#prefix merge field's `prefix`} configuration options are defined differently than `:`.
-</info-box>
+The database of English emoji is loaded by default from our CDN. Make sure that your {@link getting-started/setup/csp CSP rules} are correctly set up.
+
+If you do not want to use our distribution and prefer to self-host emoji, you can use the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `definitionsUrl`} option. You can download the data directly from the package mentioned above or from our CDN, and place it under a static assets URL, for example:
+
+1. Download the latest emoji database from [https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json](https://cdn.ckeditor.com/ckeditor5/data/emoji/16/en.json), or download version 15 for older Unicode versions.
+2. Place the downloaded file in your application's assets folder, for example `public/emoji/en.json`. The specific location may vary depending on your framework and setup.
+3. Update the configuration option `definitionsUrl` to point to the URL of your assets, for example: `https://example.com/emoji/en.json`.
+
+You can prepare your own database with a different emoji set, but it must have an identical structure as ours. Otherwise, the emoji feature will not work.
+
+### Marker conflicts
+
+The emoji feature uses the `:` marker that opens a panel with a table of selectable emojis. If you are using the {@link features/mentions mentions} or {@link features/merge-fields merge fields} features, they can also show UI panels by pressing a pre-configured key, and it may conflict with the emoji feature. In such a case, the {@link module:emoji/emojimention~EmojiMention} plugin will not integrate the autocompletion mechanism.
+
+To prevent conflicts, make sure that the {@link module:mention/mentionconfig~MentionFeed#marker mention's `marker`} and {@link module:merge-fields/mergefieldsconfig~MergeFieldsConfig#prefix merge field's `prefix`} configuration options are not defined as `:`.
 
 ## Related features
 
