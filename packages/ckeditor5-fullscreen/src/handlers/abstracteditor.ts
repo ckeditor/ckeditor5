@@ -9,7 +9,7 @@
 
 import { createElement } from 'ckeditor5/src/utils.js';
 import { type Editor } from 'ckeditor5/src/core.js';
-import type { AnnotationsUIs } from '@ckeditor/ckeditor5-comments';
+import type { AnnotationsUIs, Sidebar } from '@ckeditor/ckeditor5-comments';
 
 /**
  * The abstract editor type handler. It should be extended by the particular editor type handler.
@@ -27,6 +27,12 @@ export default class AbstractEditorHandler {
 	private _container: HTMLElement | null = null;
 
 	/**
+	 * A function moving the editor UI elements to the fullscreen mode. It should be set by the particular editor type handler.
+	 * Returns the fullscreen mode container element so it can be further customized via `fullscreen.enableCallback` configuration property.
+	*/
+	protected _defaultEnable: () => HTMLElement;
+
+	/**
 	 * An editor instance. It should be set by the particular editor type handler.
 	 */
 	declare protected _editor: Editor;
@@ -39,8 +45,15 @@ export default class AbstractEditorHandler {
 	/**
 	 * @inheritDoc
 	 */
-	constructor() {
+	constructor( editor: Editor ) {
 		this._movedElements = new Map();
+		this._editor = editor;
+
+		this._defaultEnable = () => this.getContainer();
+
+		this._editor.on( 'destroy', () => {
+			this.disable();
+		} );
 	}
 
 	/**
@@ -85,26 +98,34 @@ export default class AbstractEditorHandler {
 	}
 
 	/**
-	 * Enables the fullscreen mode. This is a virtual method that should be overridden by the particular editor type handler.
+	 * Enables the fullscreen mode. It executes the editor-specific enable handler and then the configured callback.
 	 */
-	public enable(): void {}
+	public enable(): void {
+		this._defaultEnable();
+
+		// Store the current state of the annotations UIs to restore it when leaving fullscreen mode.
+		/* istanbul ignore if -- @preserve */
+		if ( this._editor.plugins.has( 'AnnotationsUIs' ) ) {
+			this._overrideAnnotationsUIs();
+		}
+
+		if ( this._editor.config.get( 'fullscreen.enableCallback' ) ) {
+			this._editor.config.get( 'fullscreen.enableCallback' )!( this.getContainer() );
+		}
+	}
 
 	/**
 	 * Disables the fullscreen mode by restoring all moved elements and destroying the fullscreen container.
 	 */
 	public disable(): void {
+		if ( this._editor.config.get( 'fullscreen.disableCallback' ) ) {
+			this._editor.config.get( 'fullscreen.disableCallback' )!();
+		}
+
 		// Restore previous state of the annotations UIs.
 		/* istanbul ignore if -- @preserve */
 		if ( this.annotationsUIsData ) {
-			const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as AnnotationsUIs;
-
-			annotationsUIs.deactivateAll();
-
-			for ( const [ uiName, data ] of [ ...this.annotationsUIsData ] ) {
-				annotationsUIs.activate( uiName, data.filter );
-			}
-
-			this.annotationsUIsData = null;
+			this._restoreAnnotationsUIs();
 		}
 
 		this._movedElements.forEach( ( placeholder, moved ) => {
@@ -118,5 +139,42 @@ export default class AbstractEditorHandler {
 			this._container.remove();
 			this._container = null;
 		}
+	}
+
+	/**
+	 * Stores the current state of the annotations UIs to restore it when leaving fullscreen mode.
+	 */
+	private _overrideAnnotationsUIs() {
+		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as AnnotationsUIs;
+
+		this.annotationsUIsData = new Map( annotationsUIs.uisData );
+
+		// Switch to the wide sidebar.
+		const sidebarPlugin = this._editor.plugins.get( 'Sidebar' ) as Sidebar;
+
+		if ( !sidebarPlugin.container ) {
+			sidebarPlugin.setContainer(
+				this.getContainer().querySelector( '[data-ck-fullscreen="right-sidebar"]' ) as HTMLElement
+			);
+		}
+
+		annotationsUIs.switchTo( 'wideSidebar' );
+
+		this.moveToFullscreen( ( sidebarPlugin.container!.firstElementChild as HTMLElement ), 'right-sidebar' );
+	}
+
+	/**
+	 * Restores the saved state of the annotations UIs.
+	 */
+	private _restoreAnnotationsUIs() {
+		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as AnnotationsUIs;
+
+		annotationsUIs.deactivateAll();
+
+		for ( const [ uiName, data ] of [ ...this.annotationsUIsData! ] ) {
+			annotationsUIs.activate( uiName, data.filter );
+		}
+
+		this.annotationsUIsData = null;
 	}
 }

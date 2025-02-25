@@ -49,7 +49,7 @@ export default class FullscreenCommand extends Command {
 		} else if ( editor instanceof DecoupledEditor ) {
 			this._fullscreenHandler = new DecoupledEditorHandler( editor );
 		} else {
-			this._fullscreenHandler = new AbstractEditorHandler();
+			this._fullscreenHandler = new AbstractEditorHandler( editor );
 		}
 	}
 
