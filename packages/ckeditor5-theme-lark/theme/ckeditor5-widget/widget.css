@@ -136,6 +136,11 @@
 			}
 		}
 	}
+
+	/* Hide the selection handler on mouse hover over the widget of all the widget parents. */
+	&:has( .ck-widget:hover ) > .ck-widget__selection-handle {
+		opacity: 0;
+	}
 }
 
 /* In a RTL environment, align the selection handler to the right side of the widget */

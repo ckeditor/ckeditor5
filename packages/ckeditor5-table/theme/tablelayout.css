@@ -8,80 +8,100 @@
 	--ck-table-layout-widget-type-around-icon-width: 10px;
 	--ck-table-layout-widget-type-around-icon-height: 8px;
 	--ck-table-layout-default-border-color: hsl(0, 0%, 58%);
+	--ck-table-layout-widget-handler-icon-size: 10px;
 }
 
-.ck-editor__editable .table.layout-table {
-	--ck-widget-type-around-button-size: var(--ck-table-layout-widget-type-around-button-size);
-
-	/* Do not reserve space above and below the layout table. */
-	margin-top: 0;
-	margin-bottom: 0;
-
-	& table td,
-	& table th {
-		padding: 2px;
+.ck-editor__editable {
+	&.ck-editor__editable_inline {
+		& > .ck-widget.ck-widget_with-selection-handle.layout-table:first-child {
+			margin-top: var(--ck-spacing-large);
+		}
 	}
 
-	/* Removed default background color from focused table cell */
-	& > table  > tbody > tr > td {
-		--ck-color-selector-focused-cell-background: transparent;
-	}
+	& .table.layout-table {
+		--ck-widget-type-around-button-size: var(--ck-table-layout-widget-type-around-button-size);
 
-	/* Default table layout stylization in editing view. */
-	/* When border is not set: */
-	& > table:not([style*="border"]),
-	& > table td:not([style*="border"]),
-	& > table th:not([style*="border"]) {
-		border: none;
-		outline: var(--ck-table-layout-default-border-color) 1px dashed;
-		outline-offset: -0.5px;
-	}
+		/* Do not reserve space above and below the layout table. */
+		margin-top: 0;
+		margin-bottom: 0;
 
-	/* Widget type around overrides. */
-	&.ck-widget {
-		& .ck-widget__type-around__button svg {
-			width: var(--ck-table-layout-widget-type-around-icon-width);
-			height: var(--ck-table-layout-widget-type-around-icon-height);
+		& > table {
+			border-collapse: separate;
+			border-spacing: 0.5px;
 		}
 
-		& > .ck-widget__type-around {
-			& > .ck-widget__type-around__button {
-				&.ck-widget__type-around__button_before,
-				&.ck-widget__type-around__button_after {
-					transform: translateY(0);
-				}
+		/* Removed default background color from focused table cell */
+		& > table > tbody > tr > td {
+			--ck-color-selector-focused-cell-background: transparent;
 
-				&.ck-widget__type-around__button_before {
-					border-radius: 0 0 100px 100px;
-				}
+			padding: 2px;
+		}
 
-				&.ck-widget__type-around__button_after {
-					border-radius: 100px 100px 0 0;
-				}
+		/* Default table layout stylization in editing view. */
+		/* When border is not set: */
+		& > table:not([style*="border"]),
+		& > table > tbody > tr > td:not([style*="border"]) {
+			border: none;
+			outline: var(--ck-table-layout-default-border-color) 1px dashed;
+		}
+
+		/* Widget type around overrides. */
+		&.ck-widget {
+			& .ck-widget__type-around__button svg {
+				width: var(--ck-table-layout-widget-type-around-icon-width);
+				height: var(--ck-table-layout-widget-type-around-icon-height);
 			}
-		}
 
-		&.ck-widget_with-selection-handle {
 			& > .ck-widget__type-around {
-				& > .ck-widget__type-around__button_before {
-					margin-left: 0;
-					/* To have equal space top left button and bottom left one. */
-					left: min(10%, 30px);
-				}
-			}
-		}
+				& > .ck-widget__type-around__button {
+					&.ck-widget__type-around__button_before,
+					&.ck-widget__type-around__button_after {
+						transform: translateY(0);
+					}
 
-		&.ck-widget.ck-widget_selected {
-			& > .ck-widget__type-around {
-				& > .ck-widget__type-around__button_before {
-					&::after {
+					&.ck-widget__type-around__button_before {
 						border-radius: 0 0 100px 100px;
+					}
+
+					&.ck-widget__type-around__button_after {
+						border-radius: 100px 100px 0 0;
+					}
+				}
+			}
+
+			&.ck-widget_with-selection-handle {
+				--ck-widget-handler-icon-size: var(--ck-table-layout-widget-handler-icon-size);
+
+				& > .ck-widget__selection-handle {
+					transform: translateY(calc(0px - var(--ck-widget-outline-thickness)));
+					z-index: var(--ck-z-default);
+					opacity: 0.75;
+
+					&:hover {
+						opacity: 1;
 					}
 				}
 
-				& > .ck-widget__type-around__button_after {
-					&::after {
-						border-radius: 100px 100px 0 0;
+				& > .ck-widget__type-around {
+					& > .ck-widget__type-around__button_before {
+						margin-left: var(--ck-table-layout-widget-type-around-button-size);
+						left: min(10%, 30px);
+					}
+				}
+			}
+
+			&.ck-widget.ck-widget_selected {
+				& > .ck-widget__type-around {
+					& > .ck-widget__type-around__button_before {
+						&::after {
+							border-radius: 0 0 100px 100px;
+						}
+					}
+
+					& > .ck-widget__type-around__button_after {
+						&::after {
+							border-radius: 100px 100px 0 0;
+						}
 					}
 				}
 			}
