@@ -30,3 +30,8 @@
 	margin-right: -1px;
 	outline: solid 1px hsla(0, 0%, 100%, .5);
 }
+
+/* See: https://github.com/ckeditor/ckeditor5/issues/17964 */
+div.ck.ck-balloon-panel:has( .ck.ck-emoji ) {
+	z-index: 999;
+}
