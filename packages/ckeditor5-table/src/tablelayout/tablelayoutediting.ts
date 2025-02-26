@@ -46,15 +46,8 @@ export default class TableLayoutEditing extends Plugin {
 		this._defineSchema();
 		this._defineConverters();
 		this._defineClipboardPasteHandlers();
-
-		this.editor.commands.add( 'insertTableLayout', new InsertTableLayoutCommand( this.editor ) );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public afterInit(): void {
 		this._registerTableTypeAttributePostfixer();
+		this.editor.commands.add( 'insertTableLayout', new InsertTableLayoutCommand( this.editor ) );
 	}
 
 	/**
@@ -141,8 +134,6 @@ export default class TableLayoutEditing extends Plugin {
 
 	/**
 	 * Registers a post-fixer that sets the `tableType` attribute to `content` for inserted "default" tables.
-	 *
-	 * @internal
 	 */
 	private _registerTableTypeAttributePostfixer() {
 		const editor = this.editor;
@@ -152,15 +143,16 @@ export default class TableLayoutEditing extends Plugin {
 			let hasChanged = false;
 
 			for ( const entry of changes ) {
-				if ( entry.type == 'insert' && entry.name && entry.name == 'table' ) {
-					const tableType = entry.attributes.get( 'tableType' );
+				if ( entry.type == 'insert' && entry.name != '$text' ) {
+					const element = entry.position.nodeAfter!;
+					const range = writer.createRangeOn( element );
 
-					if ( tableType ) {
-						return false;
+					for ( const item of range.getItems() ) {
+						if ( item.is( 'element', 'table' ) && !item.hasAttribute( 'tableType' ) ) {
+							writer.setAttribute( 'tableType', 'content', item );
+							hasChanged = true;
+						}
 					}
-
-					writer.setAttribute( 'tableType', 'content', entry.position.nodeAfter! );
-					hasChanged = true;
 				}
 			}
 

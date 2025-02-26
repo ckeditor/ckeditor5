@@ -7,6 +7,7 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
@@ -27,7 +28,7 @@ describe( 'TableLayoutEditing', () => {
 
 		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [
-				Table, TableCaption, TableColumnResize, PlainTableOutput, TableLayoutEditing, Paragraph
+				Table, TableCaption, TableColumnResize, PlainTableOutput, TableLayoutEditing, Paragraph, BlockQuote
 			]
 		} );
 
@@ -1057,6 +1058,53 @@ describe( 'TableLayoutEditing', () => {
 						'<tableCell><paragraph></paragraph></tableCell>' +
 					'</tableRow>' +
 				'</table>'
+			);
+		} );
+
+		it( 'should add `tableType` attribute to all tables added in a single change block', () => {
+			const tableUtils = editor.plugins.get( 'TableUtils' );
+
+			editor.model.change( writer => {
+				const table1 = tableUtils.createTable( writer, { rows: 1, columns: 1 } );
+				const table2 = tableUtils.createTable( writer, { rows: 2, columns: 1 } );
+
+				model.insertObject( table1, null, null, { findOptimalPosition: 'auto', setSelection: 'after' } );
+				model.insertObject( table2, null, null, { findOptimalPosition: 'auto' } );
+
+				writer.setSelection( writer.createPositionAt( table2.getNodeByPath( [ 0, 0, 0 ] ), 0 ) );
+			} );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<table tableType="content">' +
+					'<tableRow><tableCell><paragraph></paragraph></tableCell></tableRow>' +
+				'</table>' +
+				'<table tableType="content">' +
+					'<tableRow><tableCell><paragraph></paragraph></tableCell></tableRow>' +
+					'<tableRow><tableCell><paragraph></paragraph></tableCell></tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should add `tableType` attribute to table in a blockquote added in a single change block', () => {
+			const tableUtils = editor.plugins.get( 'TableUtils' );
+
+			model.change( writer => {
+				const table = tableUtils.createTable( writer, { rows: 1, columns: 1 } );
+				const blockQuote = writer.createElement( 'blockQuote' );
+				const docFrag = writer.createDocumentFragment();
+
+				writer.append( blockQuote, docFrag );
+				writer.append( table, blockQuote );
+
+				editor.model.insertContent( docFrag );
+			} );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<blockQuote>' +
+					'<table tableType="content">' +
+						'<tableRow><tableCell><paragraph></paragraph></tableCell></tableRow>' +
+					'</table>' +
+				'</blockQuote>'
 			);
 		} );
 	} );
