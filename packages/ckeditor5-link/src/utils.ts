@@ -199,7 +199,7 @@ export function openLink( link: string ): void {
 /**
  * Returns a text of a link range.
  *
- * If the returned value is `undefined`, it means that the range contains elements other than text nodes.
+ * If the returned value is `undefined`, the range contains elements other than text nodes.
  */
 export function extractTextFromLinkRange( range: Range ): string | undefined {
 	let text = '';

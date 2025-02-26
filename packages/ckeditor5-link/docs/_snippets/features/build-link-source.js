@@ -8,7 +8,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
 import LinkUI from '@ckeditor/ckeditor5-link/src/linkui.js';
 import Link from '@ckeditor/ckeditor5-link/src/link.js';
-import linkIcon from '@ckeditor/ckeditor5-link/theme/icons/link.svg';
+import linkIcon from '@ckeditor/ckeditor5-icons/theme/icons/link.svg';
 import { AutoLink, LinkImage } from '@ckeditor/ckeditor5-link';
 import { Bookmark } from '@ckeditor/ckeditor5-bookmark';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';

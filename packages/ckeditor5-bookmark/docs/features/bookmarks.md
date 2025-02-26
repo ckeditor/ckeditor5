@@ -3,7 +3,7 @@ category: features
 menu-title: Bookmarks
 meta-title: Bookmarks | CKEditor 5 Documentation
 meta-description: The bookmarks feature allows for adding and managing bookmark anchors attached to the content.
-modified_at: 2024-11-20
+modified_at: 2025-02-25
 ---
 
 # Bookmarks
@@ -93,6 +93,71 @@ ClassicEditor
 		// ... Other configuration options ...
 		bookmark: {
 			enableNonEmptyAnchorConversion: false
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+## Bookmark toolbar configuration
+
+The bookmark UI contains a contextual toolbar that appears when a bookmark is selected. You can configure what items appear in this toolbar using the {@link module:bookmark/bookmarkconfig~BookmarkConfig#toolbar `config.bookmark.toolbar`} option.
+
+The following toolbar items are available:
+
+* `'bookmarkPreview'` &ndash; Shows the name of the bookmark.
+* `'editBookmark'` &ndash; Opens a form to edit the bookmark name.
+* `'removeBookmark'` &ndash; Removes the bookmark.
+
+By default, the bookmark toolbar is configured as follows:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		bookmark: {
+			toolbar: [ 'bookmarkPreview', '|', 'editBookmark', 'removeBookmark' ]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+### Custom toolbar items
+
+You can extend the bookmark toolbar with custom items by registering them in the {@link module:ui/componentfactory~ComponentFactory component factory} and adding them to the toolbar configuration.
+
+Here is an example of registering a custom component:
+
+```js
+class MyCustomPlugin extends Plugin {
+	init() {
+		const editor = this.editor;
+
+		editor.ui.componentFactory.add( 'myCustomBookmarkInfo', locale => {
+			const button = new ButtonView( locale );
+			const bookmarkCommand = editor.commands.get( 'insertBookmark' );
+
+			button.bind( 'isEnabled' ).to( bookmarkCommand, 'value', href => !!href );
+			button.bind( 'label' ).to( bookmarkCommand, 'value' );
+
+			button.on( 'execute', () => {
+				// Add your custom component logic here
+			} );
+
+			return button;
+		} );
+	}
+}
+```
+
+Once registered, the component can be used in the toolbar configuration:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ MyCustomPlugin, /* ... */ ],
+		bookmark: {
+			toolbar: [ 'myCustomBookmarkInfo', '|', 'editBookmark', 'removeBookmark' ]
 		}
 	} )
 	.then( /* ... */ )
