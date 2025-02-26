@@ -15,7 +15,8 @@ import type {
 	UpcastElementEvent,
 	ViewElement,
 	SchemaContext,
-	Writer
+	Writer,
+	Element
 } from 'ckeditor5/src/engine.js';
 
 import InsertTableLayoutCommand from './../commands/inserttablelayoutcommand.js';
@@ -141,8 +142,6 @@ export default class TableLayoutEditing extends Plugin {
 
 	/**
 	 * Registers a post-fixer that sets the `tableType` attribute to `content` for inserted "default" tables.
-	 *
-	 * @internal
 	 */
 	private _registerTableTypeAttributePostfixer() {
 		const editor = this.editor;
@@ -152,15 +151,40 @@ export default class TableLayoutEditing extends Plugin {
 			let hasChanged = false;
 
 			for ( const entry of changes ) {
-				if ( entry.type == 'insert' && entry.name && entry.name == 'table' ) {
-					const tableType = entry.attributes.get( 'tableType' );
+				if ( entry.type == 'insert' && entry.name ) {
+					const element = entry.position.nodeAfter! as Element;
 
-					if ( tableType ) {
-						return false;
+					// Check if the inserted element is a table.
+					if ( entry.name == 'table' ) {
+						const tableType = entry.attributes.get( 'tableType' );
+
+						if ( tableType ) {
+							continue;
+						}
+
+						writer.setAttribute( 'tableType', 'content', entry.position.nodeAfter! );
+						hasChanged = true;
+					} else {
+						// Check if the inserted element has children that contains table elements.
+						const elementChildren = Array.from( element.getChildren() );
+
+						if ( !elementChildren.length ) {
+							continue;
+						}
+
+						for ( const child of elementChildren ) {
+							if ( child.is( 'element', 'table' ) ) {
+								const tableType = child.getAttribute( 'tableType' );
+
+								if ( tableType ) {
+									continue;
+								}
+
+								writer.setAttribute( 'tableType', 'content', child );
+								hasChanged = true;
+							}
+						}
 					}
-
-					writer.setAttribute( 'tableType', 'content', entry.position.nodeAfter! );
-					hasChanged = true;
 				}
 			}
 
