@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
+
+:root {
+	--ck-bookmark-form-width: 340px;
+}
+
+@mixin ck-media-phone {
+	:root {
+		--ck-bookmark-form-width: 300px;
+	}
+}
+
+.ck.ck-bookmark-form {
+	width: var(--ck-bookmark-form-width);
+}

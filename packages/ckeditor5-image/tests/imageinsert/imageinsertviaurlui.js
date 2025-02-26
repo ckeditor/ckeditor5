@@ -117,7 +117,7 @@ describe( 'ImageInsertViaUrlUI', () => {
 		it( 'has two action buttons', () => {
 			expect( dialog.view.actionsView.children ).to.have.length( 2 );
 			expect( dialog.view.actionsView.children.get( 0 ).label ).to.equal( 'Cancel' );
-			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Accept' );
+			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Insert' );
 		} );
 
 		it( 'has submittable form', () => {
@@ -134,14 +134,29 @@ describe( 'ImageInsertViaUrlUI', () => {
 			expect( urlView.isImageSelected ).to.be.false;
 		} );
 
-		it( 'should change title if image is selected', () => {
-			expect( dialog.view.headerView.label ).to.equal( 'Insert image via URL' );
+		it( 'should have a title', () => {
+			const sinonSpy = sinon.spy( dialog, 'show' );
 
+			dialog.hide();
+			openDialog();
+
+			expect( sinonSpy ).to.have.been.calledWithMatch( { title: 'Image via URL' } );
+		} );
+
+		it( 'should show save button if image is selected', () => {
 			dialog.hide();
 			insertImageUI.isImageSelected = true;
 			openDialog();
 
-			expect( dialog.view.headerView.label ).to.equal( 'Update image URL' );
+			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Save' );
+		} );
+
+		it( 'should show insert button if image is not selected', () => {
+			dialog.hide();
+			insertImageUI.isImageSelected = false;
+			openDialog();
+
+			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Insert' );
 		} );
 
 		it( 'should bind #isEnabled', () => {
