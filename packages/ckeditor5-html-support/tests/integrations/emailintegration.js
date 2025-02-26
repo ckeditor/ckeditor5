@@ -5,7 +5,6 @@
 
 /* globals document */
 
-import { EmailIntegrationUtils } from '@ckeditor/ckeditor5-email';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -102,6 +101,14 @@ describe( 'EmailIntegrationSupport', () => {
 	} );
 
 	async function createEditor( callback ) {
+		class EmailIntegrationUtils extends Plugin {
+			static get pluginName() {
+				return 'EmailIntegrationUtils';
+			}
+
+			_logSuppressibleWarning() {}
+		}
+
 		class FakeSchemaRegisterPlugin extends Plugin {
 			static get pluginName() {
 				return 'FakeSchemaRegisterPlugin';
