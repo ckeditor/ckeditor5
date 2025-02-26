@@ -9,7 +9,7 @@ modified_at: 2025-01-21
 
 # Emoji
 
-The emoji feature lets you insert emojis into the document from the editor toolbar or while writing the content. The emojis are pulled from the CDN to lessen the editor load.
+The Emoji feature lets you insert emojis into the document from the editor toolbar or while writing the content. The emojis are pulled from the CDN to lessen the editor load.
 
 Since there is a large number of emojis, they have been conveniently divided into several categories for easier use, such as "Smileys & Expressions" or "Objects." You may also search for a specific emoji using the search field.
 
@@ -60,7 +60,7 @@ ClassicEditor
 </code-switcher>
 
 <info-box>
-	The emoji feature requires the {@link features/mentions mentions feature} to be installed to work properly.
+	The Emoji feature requires the {@link features/mentions mentions feature} to be installed to work properly.
 </info-box>
 
 The {@link module:emoji/emoji~Emoji emoji plugin} consists of two sub-plugins:
@@ -144,17 +144,17 @@ If you do not want to use our distribution and prefer to self-host emoji, you ca
 2. Place the downloaded file in your application's assets folder, for example `public/emoji/en.json`. The specific location may vary depending on your framework and setup.
 3. Update the configuration option `definitionsUrl` to point to the URL of your assets, for example: `https://example.com/emoji/en.json`.
 
-You can prepare your own database with a different emoji set, but it must have an identical structure as ours. Otherwise, the emoji feature will not work.
+You can prepare your own database with a different emoji set, but it must have an identical structure as ours. Otherwise, the Emoji feature will not work.
 
 ### Marker conflicts
 
-The emoji feature uses the `:` marker that opens a panel with a table of selectable emojis. If you are using the {@link features/mentions mentions} or {@link features/merge-fields merge fields} features, they can also show UI panels by pressing a pre-configured key, and it may conflict with the emoji feature. In such a case, the {@link module:emoji/emojimention~EmojiMention} plugin will not integrate the autocompletion mechanism.
+The Emoji feature uses the `:` marker that opens a panel with a table of selectable emojis. If you are using the {@link features/mentions mentions} or {@link features/merge-fields merge fields} features, they can also show UI panels by pressing a pre-configured key, and it may conflict with the Emoji feature. In such a case, the {@link module:emoji/emojimention~EmojiMention} plugin will not integrate the autocompletion mechanism.
 
 To prevent conflicts, make sure that the {@link module:mention/mentionconfig~MentionFeed#marker mention's `marker`} and {@link module:merge-fields/mergefieldsconfig~MergeFieldsConfig#prefix merge field's `prefix`} configuration options are not defined as `:`.
 
 ## Related features
 
-In addition to enabling the emoji feature, you may want to check the following related features:
+In addition to enabling the Emoji feature, you may want to check the following related features:
 
 * {@link features/special-characters Special characters} &ndash; Allows inserting **mathematical operators**, **currency symbols**, **punctuation**, **graphic symbols** (such as arrows or bullets), or Unicode letters typically not accessible from the keyboard (such as **umlauts** or **other diacritics**).
 * {@link features/mentions Mentions} &ndash; Brings support for smart autocompletion.
