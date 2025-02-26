@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/commands/inserttablecommand
+ * @module table/commands/inserttablelayoutcommand
  */
 
 import InsertTableCommand from './inserttablecommand.js';
