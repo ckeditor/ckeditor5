@@ -44,14 +44,22 @@ export default class SetHeaderColumnCommand extends Command {
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
-		const model = this.editor.model;
 		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
+		const model = this.editor.model;
 
 		const selectedCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
-		const isInTable = selectedCells.length > 0;
 
-		this.isEnabled = isInTable;
-		this.value = isInTable && selectedCells.every( cell => isHeadingColumnCell( tableUtils, cell ) );
+		if ( selectedCells.length === 0 ) {
+			this.isEnabled = false;
+			this.value = false;
+
+			return;
+		}
+
+		const table = selectedCells[ 0 ].findAncestor( 'table' )!;
+
+		this.isEnabled = model.schema.checkAttribute( table, 'headingColumns' );
+		this.value = selectedCells.every( cell => isHeadingColumnCell( tableUtils, cell ) );
 	}
 
 	/**
