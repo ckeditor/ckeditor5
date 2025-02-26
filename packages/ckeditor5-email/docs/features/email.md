@@ -1,9 +1,14 @@
 ---
 title: Email
 meta-title: Email | CKEditor 5 Documentation
+meta-description: Set of tools to easily turn CKEditor 5 into a robust email editor.
 category: features
+contributeUrl: false
 modified_at: 2025-02-17
+badges: [ premium ]
 ---
+
+# Email
 
 {@snippet features/build-email-source}
 
