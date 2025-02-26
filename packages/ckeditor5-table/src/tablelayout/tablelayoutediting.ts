@@ -15,8 +15,7 @@ import type {
 	UpcastElementEvent,
 	ViewElement,
 	SchemaContext,
-	Writer,
-	Element
+	Writer
 } from 'ckeditor5/src/engine.js';
 
 import InsertTableLayoutCommand from './../commands/inserttablelayoutcommand.js';
@@ -49,12 +48,6 @@ export default class TableLayoutEditing extends Plugin {
 		this._defineClipboardPasteHandlers();
 
 		this.editor.commands.add( 'insertTableLayout', new InsertTableLayoutCommand( this.editor ) );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public afterInit(): void {
 		this._registerTableTypeAttributePostfixer();
 	}
 
@@ -151,38 +144,14 @@ export default class TableLayoutEditing extends Plugin {
 			let hasChanged = false;
 
 			for ( const entry of changes ) {
-				if ( entry.type == 'insert' && entry.name ) {
-					const element = entry.position.nodeAfter! as Element;
+				if ( entry.type == 'insert' && entry.name != '$text' ) {
+					const element = entry.position.nodeAfter!;
+					const range = writer.createRangeOn( element );
 
-					// Check if the inserted element is a table.
-					if ( entry.name == 'table' ) {
-						const tableType = entry.attributes.get( 'tableType' );
-
-						if ( tableType ) {
-							continue;
-						}
-
-						writer.setAttribute( 'tableType', 'content', entry.position.nodeAfter! );
-						hasChanged = true;
-					} else {
-						// Check if the inserted element has children that contains table elements.
-						const elementChildren = Array.from( element.getChildren() );
-
-						if ( !elementChildren.length ) {
-							continue;
-						}
-
-						for ( const child of elementChildren ) {
-							if ( child.is( 'element', 'table' ) ) {
-								const tableType = child.getAttribute( 'tableType' );
-
-								if ( tableType ) {
-									continue;
-								}
-
-								writer.setAttribute( 'tableType', 'content', child );
-								hasChanged = true;
-							}
+					for ( const item of range.getItems() ) {
+						if ( item.is( 'element', 'table' ) && !item.hasAttribute( 'tableType' ) ) {
+							writer.setAttribute( 'tableType', 'content', item );
+							hasChanged = true;
 						}
 					}
 				}
