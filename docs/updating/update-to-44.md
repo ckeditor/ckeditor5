@@ -14,9 +14,21 @@ modified_at: 2024-11-28
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
+## Update to CKEditor&nbsp;5 v 44.2.1
+
+Released on February 20, 2025. ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v44.2.1))
+
+### Vulnerability removed
+
+During a recent internal audit, we identified a cross-site scripting (XSS) vulnerability in the CKEditor 5 real-time collaboration package ([`CVE-2025-25299`](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-j3mm-wmfm-mwvh)). This vulnerability can lead to unauthorized JavaScript code execution and affects user markers, which represent users' positions within the document.
+
+This vulnerability affects only installations with [real-time collaborative editing](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration.html) enabled.
+
+You can read more details in the relevant [security advisory](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-j3mm-wmfm-mwvh) and [contact us](mailto:security@cksource.com) if you have more questions.
+
 ## Update to CKEditor&nbsp;5 v 44.2.0
 
-_Released on February 12, 2025._
+Released on February 12, 2025. ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v44.2.0))
 
 ### Enhanced Source Code Editing
 
@@ -47,9 +59,25 @@ Here comes the final batch of the planned performance improvements in the editor
 
 We are greatly satisfied with the improved editor loading times. At the same time, we acknowledge some other problematic areas, and we will keep delivering more performance-related improvements in the future.
 
+### Minor breaking changes in this release
+
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: `Mapper#registerViewToModelLength()` is now deprecated and will be removed in one of the upcoming releases. This method is useful only in obscure and complex converters, where model element, or a group of model elements, are represented differently in the view. We believe that every feature using a custom view-to-model length callback can be rewritten in a way that this mechanism is no longer necessary. Note: if this method is used, the caching mechanism for `Mapper` will be turned off which may degrade performance when handling big documents. Note: this method is used by the deprecated legacy lists feature. As a result, you will not experience the performance improvements if you are still using the deprecated legacy lists feature.
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Starting this release, images that have `[height]` and `[width]` attributes set will automatically receive the `[loading="lazy"]` attribute in the editing area. This happens only for the content loaded into the editor, the data output produced by the editor remains the same. The reason for this change is to improve user experience in documents that may contain hundreds of images.
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The `lower-alpha` and `upper-alpha` list styles are now upcasted to `lower-latin` and `upper-latin` styles.
+* **[merge-fields](https://www.npmjs.com/package/@ckeditor/ckeditor5-merge-fields)**: The `MergeFieldsEditing#getLabel()` method will now return `null` instead of the merge field id if the merge field definition was not found or it did not contain the `label` property.
+* **[basic-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles)**: Elements which contains the `[style]` attribute with `word-wrap: break-word` will not be converted to `<code>`. See [#17789](https://github.com/ckeditor/ckeditor5/issues/17789).
+
+## Update to CKEditor&nbsp;5 v44.1.0
+
+Released on December 16, 2024 ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v44.1.0)).
+
+### Minor breaking changes in this release
+
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: `spliceArray` now modifies the target array and does not accept a fourth (`count`) argument.
+
 ## Update to CKEditor&nbsp;5 v44.0.0
 
-_Released on December 2, 2024._
+Released on December 2, 2024 ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v44.0.0)).
 
 For the entire list of changes introduced in version 44.0.0, see the [release notes for CKEditor&nbsp;5 v44.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v44.0.0).
 
@@ -100,3 +128,7 @@ The new self-service plans make accessing CKEditor Premium Features easier than 
 Plans are managed through a new, dedicated [Customer Portal](https://portal.ckeditor.com/), where you can access license keys, track usage, manage billing, and submit support requests-all from one place.
 
 Learn more about the [different plans available](https://ckeditor.com/pricing/) or start your [14-day free trial](https://portal.ckeditor.com/checkout?plan=free).
+
+### Major breaking changes in this release
+
+* `config.licenseKey` is now a required property in the editor configuration. Use `'GPL'` for installations under the GPL terms. See [#17317](https://github.com/ckeditor/ckeditor5/issues/17317).
