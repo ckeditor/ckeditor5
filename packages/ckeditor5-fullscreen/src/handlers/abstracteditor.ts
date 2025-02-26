@@ -9,6 +9,7 @@
 
 import { createElement } from 'ckeditor5/src/utils.js';
 import { type Editor } from 'ckeditor5/src/core.js';
+import type { PaginationRenderer } from '@ckeditor/ckeditor5-pagination';
 
 /**
  * The abstract editor type handler. It should be extended by the particular editor type handler.
@@ -97,6 +98,11 @@ export default class AbstractEditorHandler {
 	public enable(): void {
 		this._defaultEnable();
 
+		/* istanbul ignore if -- @preserve */
+		if ( this._editor.plugins.has( 'Pagination' ) ) {
+			( this._editor.plugins.get( 'PaginationRenderer' ) as PaginationRenderer ).setupScrollableAncestor();
+		}
+
 		if ( this._editor.config.get( 'fullscreen.enableCallback' ) ) {
 			this._editor.config.get( 'fullscreen.enableCallback' )!( this.getContainer() );
 		}
@@ -120,6 +126,11 @@ export default class AbstractEditorHandler {
 		if ( this._container ) {
 			this._container.remove();
 			this._container = null;
+		}
+
+		/* istanbul ignore if -- @preserve */
+		if ( this._editor.plugins.has( 'Pagination' ) ) {
+			( this._editor.plugins.get( 'PaginationRenderer' ) as PaginationRenderer ).setupScrollableAncestor();
 		}
 	}
 }
