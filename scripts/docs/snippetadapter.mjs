@@ -29,7 +29,7 @@ export default async function snippetAdapter( snippets, _options, { getSnippetPl
 	const imports = await getImportMap();
 
 	// Build global asset that is used in multiple snippets.
-	// TODO: Use direct import instead
+	// TODO: Use direct import to functions instead
 	const globalAssets = await buildSnippet(
 		{ js: upath.resolve( snippetsInputPath, 'assets.js' ) },
 		snippetsOutputPath
