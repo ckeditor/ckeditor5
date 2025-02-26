@@ -139,12 +139,6 @@ export default class ImageTextAlternativeUI extends Plugin {
 			this._hideForm( true );
 		} );
 
-		// Close the form on Esc key press.
-		this._form.keystrokes.set( 'Esc', ( data, cancel ) => {
-			this._hideForm( true );
-			cancel();
-		} );
-
 		// Reposition the balloon or hide the form if an image widget is no longer selected.
 		this.listenTo( editor.ui, 'update', () => {
 			if ( !imageUtils.getClosestSelectedImageWidget( viewDocument.selection ) ) {

@@ -31,5 +31,8 @@
 	"Source": "The label of the source editing related features used in toolbar buttons.",
 	"Paragraph": "Dropdown option label for the paragraph format.",
 	"Color picker": "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.).",
+	"Insert": "Label for the Insert button.",
+	"Update": "Label for the Update button.",
+	"Back": "Label for the Back button.",
 	"Please try a different phrase or check the spelling.": "The secondary text of the message shown to the user when no results are available for the search criteria."
 }

@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-theme-lark",
-  "version": "44.2.0",
+  "version": "44.2.1",
   "description": "A bright theme for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -9,16 +9,16 @@
     "ckeditor5-theme"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-ui": "44.2.0"
+    "@ckeditor/ckeditor5-ui": "44.2.1"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "44.2.0",
-    "@ckeditor/ckeditor5-core": "44.2.0",
-    "@ckeditor/ckeditor5-editor-balloon": "44.2.0",
-    "@ckeditor/ckeditor5-editor-classic": "44.2.0",
-    "@ckeditor/ckeditor5-highlight": "44.2.0",
-    "@ckeditor/ckeditor5-utils": "44.2.0",
-    "ckeditor5": "44.2.0"
+    "@ckeditor/ckeditor5-basic-styles": "44.2.1",
+    "@ckeditor/ckeditor5-core": "44.2.1",
+    "@ckeditor/ckeditor5-editor-balloon": "44.2.1",
+    "@ckeditor/ckeditor5-editor-classic": "44.2.1",
+    "@ckeditor/ckeditor5-highlight": "44.2.1",
+    "@ckeditor/ckeditor5-utils": "44.2.1",
+    "ckeditor5": "44.2.1"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "SEE LICENSE IN LICENSE.md",
