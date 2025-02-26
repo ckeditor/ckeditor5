@@ -46,9 +46,8 @@ export default class TableLayoutEditing extends Plugin {
 		this._defineSchema();
 		this._defineConverters();
 		this._defineClipboardPasteHandlers();
-
-		this.editor.commands.add( 'insertTableLayout', new InsertTableLayoutCommand( this.editor ) );
 		this._registerTableTypeAttributePostfixer();
+		this.editor.commands.add( 'insertTableLayout', new InsertTableLayoutCommand( this.editor ) );
 	}
 
 	/**
