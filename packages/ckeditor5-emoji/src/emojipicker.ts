@@ -16,7 +16,7 @@ import { IconEmoji } from 'ckeditor5/src/icons.js';
 import EmojiCommand from './emojicommand.js';
 import EmojiRepository from './emojirepository.js';
 import EmojiPickerView, { type EmojiPickerViewUpdateEvent } from './ui/emojipickerview.js';
-import EmojiPickerFormView, { type CancelEvent } from './ui/emojipickerformview.js';
+import EmojiPickerFormView, { type EmojiPickerFormViewCancelEvent } from './ui/emojipickerformview.js';
 import { type EmojiGridViewExecuteEvent } from './ui/emojigridview.js';
 import type { SkinToneId } from './emojiconfig.js';
 
@@ -231,7 +231,7 @@ export default class EmojiPicker extends Plugin {
 		} );
 
 		// Close the dialog when the back button is clicked.
-		this.listenTo<CancelEvent>( emojiPickerFormView, 'cancel', () => {
+		this.listenTo<EmojiPickerFormViewCancelEvent>( emojiPickerFormView, 'cancel', () => {
 			this._hideUI();
 		} );
 

@@ -198,7 +198,7 @@ export default class EmojiPickerFormView extends View {
  *
  * @eventName ~EmojiPickerFormView#cancel
  */
-export type CancelEvent = {
+export type EmojiPickerFormViewCancelEvent = {
 	name: 'cancel';
 	args: [];
 };
