@@ -5,11 +5,11 @@
 
 /* eslint-env node */
 
-import fs from 'fs';
+import { constants, readFile, writeFile, copyFile, readdir, access } from 'fs/promises';
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
 import upath from 'upath';
-import { globSync } from 'glob';
+import { glob } from 'glob';
 import { build as esbuild } from 'esbuild';
 
 const require = createRequire( import.meta.url );
@@ -28,42 +28,20 @@ export default async function snippetAdapter( snippets, _options, { getSnippetPl
 	const constants = await getConstantDefinitions( snippets );
 	const imports = await getImportMap();
 
-	// Build global asset that is used in multiple snippets.
-	// TODO: Use direct import to functions instead
-	const globalAssets = await buildSnippet(
-		{ js: upath.resolve( snippetsInputPath, 'assets.js' ) },
-		snippetsOutputPath
-	);
-
-	// Gather global headers added to every document.
-	const headerTags = [
-		`<link
-			rel="stylesheet"
-			href="https://cdn.ckeditor.com/ckeditor5/nightly-next/ckeditor5.css"
-		/>`,
-		`<link
-			rel="stylesheet"
-			href="https://cdn.ckeditor.com/ckeditor5-premium-features/nightly-next/ckeditor5-premium-features.css"
-		/>`,
-		`<script type="importmap">${ JSON.stringify( { imports } ) }</script>`,
-		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
-		...globalAssets
-	].join( '\n' );
-
-	// Build all snippets and save them as HTML files. At this stage, the %BASE_PATH% placeholders are not replaced yet.
+	// Build all JavaScript snippets.
 	await buildSnippets(
-		getAllSnippets( snippetsInputPath ),
+		await getAllSnippets( snippetsInputPath ),
 		snippetsOutputPath,
 		constants,
-		imports,
-		headerTags
+		imports
 	);
 
 	// Build all documents and replace the snippet and %BASE_PATH% placeholders with the actual content.
 	await buildDocuments(
 		snippets,
-		headerTags,
-		getSnippetPlaceholder
+		getSnippetPlaceholder,
+		constants,
+		imports
 	);
 
 	console.log( 'Finished building snippets.' );
@@ -95,7 +73,7 @@ function getPaths( [ snippet ] ) {
  */
 async function getPackageJson( packageName ) {
 	const path = require.resolve( `${ packageName }/package.json` );
-	const content = fs.readFileSync( path, { encoding: 'utf-8' } );
+	const content = await readFile( path, { encoding: 'utf-8' } );
 
 	return JSON.parse( content );
 }
@@ -104,15 +82,17 @@ async function getPackageJson( packageName ) {
  * Returns snippet files grouped by their name.
  *
  * @param {string} path
- * @returns {Record<string, SnippetSource>}
+ * @returns {Promise<Record<string, SnippetSource>>}
  */
-function getAllSnippets( path ) {
+async function getAllSnippets( path ) {
 	// TODO: Most of this logic can be removed, if JS files directly import CSS files.
+	// Then we can use glob to only search for JS files.
 
 	// Snippets grouped by their name.
 	const snippets = {};
+	const entries = await readdir( path, { withFileTypes: true, recursive: true } );
 
-	for ( const entry of fs.readdirSync( path, { withFileTypes: true, recursive: true } ) ) {
+	for ( const entry of entries ) {
 		if ( entry.isDirectory() ) {
 			continue;
 		}
@@ -144,9 +124,8 @@ function getAllSnippets( path ) {
  * @param {string} snippetsOutputPath
  * @param {Record<string, any>} constants
  * @param {Record<string, any>} imports
- * @param {string} headerTags
  */
-async function buildSnippets( snippets, snippetsOutputPath, constants, imports, headerTags ) {
+async function buildSnippets( snippets, snippetsOutputPath, constants, imports ) {
 	const external = Object.keys( imports );
 	const define = {};
 
@@ -155,42 +134,28 @@ async function buildSnippets( snippets, snippetsOutputPath, constants, imports, 
 	}
 
 	for ( const [ name, files ] of Object.entries( snippets ) ) {
-		if ( !files.html || !files.js ) {
+		if ( !files.js ) {
 			continue;
 		}
 
-		const result = await buildSnippet( files, snippetsOutputPath, external, define );
-
-		const data = [
-			'<div class="live-snippet">',
-			fs.readFileSync( files.html, { encoding: 'utf-8' } ),
-			...result,
-			'</div>'
-		]
-			.join( '\n' )
-			.replace( '<!--UMBERTO: SNIPPET: CSS-->', () => headerTags )
-			.replace( '<!--UMBERTO: SNIPPET: JS-->', () => '' );
-
-		const path = upath.resolve( snippetsOutputPath, name, 'snippet.html' );
-
-		fs.mkdirSync( upath.dirname( path ), { recursive: true } );
-		fs.writeFileSync( path, data );
+		await buildSnippet( name, files, snippetsOutputPath, external, define );
 	}
 }
 
 /**
- * Build individual snippet.
+ * Builds individual JavaScript snippet.
  *
+ * @param {string} name
  * @param {SnippetSource} files
  * @param {string} outputPath
  * @param {Array<string>} externals
  * @param {Record<string, string>} define
  * @returns {Promise<Array<string>>}
  */
-async function buildSnippet( files, outputPath, externals = [], define = {} ) {
-	const { name, dir, base } = upath.parse( files.js );
+async function buildSnippet( name, files, outputPath, externals, define ) {
+	const { name: filename, dir, base } = upath.parse( files.js );
 
-	const result = await esbuild( {
+	return esbuild( {
 		/**
 		 * TODO: If all JS snippets directly import CSS files, then we can use `entryPoints`
 		 * instead of `stdin` and simplify this.
@@ -198,8 +163,8 @@ async function buildSnippet( files, outputPath, externals = [], define = {} ) {
 		 */
 		stdin: {
 			contents: `
-				${ files.css ? `import './${ name }.css';` : '' }
-				${ fs.readFileSync( files.js, { encoding: 'utf-8' } ) }
+				${ files.css ? `import './${ filename }.css';` : '' }
+				${ await readFile( files.js, { encoding: 'utf-8' } ) }
 			`,
 			resolveDir: dir,
 			sourcefile: base,
@@ -208,7 +173,6 @@ async function buildSnippet( files, outputPath, externals = [], define = {} ) {
 		entryNames: '[dir]/snippet',
 		bundle: true,
 		minify: true,
-		write: false,
 		define,
 		outdir: upath.join( outputPath, name ),
 		platform: 'browser',
@@ -222,13 +186,10 @@ async function buildSnippet( files, outputPath, externals = [], define = {} ) {
 		},
 		plugins: [
 			/**
-			 * TODO: Esbuild has an `external` property. However, it doesn't look for direct match, but checks if the
-			 * path starts with the provided value. This means that if the `external` array includes `@ckeditor/ckeditor5-core`
-			 * and we import like `@ckeditor/ckeditor5-core/tests/...`, then it will be marked as external instead of bundled.
-			 * This will cause issues, because the `tests` directory is not available in the CDN build.
-			 *
-			 * If we update all imports in snippets to use the `ckeditor5` or `ckeditor5-premium-features` for all code that
-			 * is available publicly, then we can use the `external` property and simplify this.
+			 * Esbuild has an `external` property. However, it doesn't look for direct match, but checks if the path starts
+			 * with the provided value. This means that if the `external` array includes `@ckeditor/ckeditor5-core` and we
+			 * have an import like `@ckeditor/ckeditor5-core/tests/...`, then it will be marked as external instead of being
+       * bundled. This will cause issues, because the `tests` directory is not available in the CDN build.
 			 */
 			{
 				name: 'external',
@@ -240,26 +201,23 @@ async function buildSnippet( files, outputPath, externals = [], define = {} ) {
 			}
 		]
 	} );
-
-	return result.outputFiles.map( output => {
-		return upath.extname( output.path ) === '.css' ?
-			`<style data-cke="true">${ output.text }</style>` :
-			`<script type="module">${ output.text }</script>`;
-	} );
 }
 
 /**
  * Builds documents and replaces all placeholders with the actual content.
  *
  * @param {Array<Snippet>} snippets
- * @param {string} headerTags
  * @param {function} getSnippetPlaceholder
+ * @param {Record<string, any>} constants
+ * @param {Record<string, any>} imports
  */
-async function buildDocuments( snippets, headerTags, getSnippetPlaceholder ) {
-	const { outputPath, snippetsOutputPath } = getPaths( snippets );
+async function buildDocuments( snippets, getSnippetPlaceholder, constants, imports ) {
+	const getStyle = href => `<link rel="stylesheet" href="${ href }" data-cke="true" />`;
+	const getScript = src => `<script type="module" src="${ src }"></script>`;
+	const { snippetsInputPath, snippetsOutputPath, outputPath } = getPaths( snippets );
 
 	// Group snippets by the destination document.
-	const documents = {};
+	const documents = await getBootstrapDocumentData( snippetsInputPath, snippetsOutputPath, outputPath );
 
 	// TODO: Use `Object.groupBy` instead, when we migrate to Node 22.
 	for ( const snippet of snippets ) {
@@ -267,27 +225,52 @@ async function buildDocuments( snippets, headerTags, getSnippetPlaceholder ) {
 		documents[ snippet.destinationPath ].push( snippet );
 	}
 
+	// Gather global tags added to each document that do not require relative paths.
+	const globalTags = [
+		`<script type="importmap">${ JSON.stringify( { imports } ) }</script>`,
+		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`
+	];
+
+	// Iterate over each document and replace placeholders with the actual content.
 	for ( const [ document, documentSnippets ] of Object.entries( documents ) ) {
-		const snippetSrc = upath.relative( upath.dirname( document ), upath.join( outputPath, 'assets', 'snippet.js' ) );
+		const relativeOutputPath = upath.relative( upath.dirname( document ), outputPath );
 
-		let documentContent = fs
-			.readFileSync( document, { encoding: 'utf-8' } )
-			.replace( '<!--UMBERTO: SNIPPET: CSS-->', () => headerTags + `<script src="${ snippetSrc }"></script>` )
-			.replace( '<!--UMBERTO: SNIPPET: JS-->', () => '' );
+		// Get global tags added to each document that require relative paths.
+		const documentTags = [
+			...globalTags,
+			getStyle( 'https://cdn.ckeditor.com/ckeditor5/nightly-next/ckeditor5.css' ),
+			getStyle( 'https://cdn.ckeditor.com/ckeditor5-premium-features/nightly-next/ckeditor5-premium-features.css' ),
+			getStyle( upath.join( relativeOutputPath, 'assets', 'snippet-styles.css' ) ),
+			getStyle( upath.join( relativeOutputPath, 'snippets', 'assets', 'snippet.css' ) ),
+			getScript( upath.join( relativeOutputPath, 'assets', 'snippet.js' ) ),
+			getScript( upath.join( relativeOutputPath, 'snippets', 'assets', 'snippet.js' ) )
+		];
 
+		let documentContent = await readFile( document, { encoding: 'utf-8' } );
+
+		// Iterate over each snippet in the document and replace placeholders with the actual content.
 		for ( const snippet of documentSnippets ) {
-			const data = fs.readFileSync(
-				upath.resolve( snippetsOutputPath, snippet.snippetName, 'snippet.html' ),
-				{ encoding: 'utf-8' }
-			);
+			const data = await readFile( snippet.snippetSources.html, { encoding: 'utf-8' } );
 
 			documentContent = documentContent.replace(
 				getSnippetPlaceholder( snippet.snippetName ),
-				() => data.replaceAll( /%BASE_PATH%/g, () => snippet.basePath )
+				() => '<div class="live-snippet">' + data.replaceAll( /%BASE_PATH%/g, () => snippet.basePath ) + '</div>'
 			);
+
+			if ( await fileExists( upath.join( snippet.outputPath, snippet.snippetName, 'snippet.js' ) ) ) {
+				documentTags.push( getScript( upath.join( snippet.relativeOutputPath, snippet.snippetName, 'snippet.js' ) ) );
+			}
+
+			if ( await fileExists( upath.join( snippet.outputPath, snippet.snippetName, 'snippet.css' ) ) ) {
+				documentTags.push( getStyle( upath.join( snippet.relativeOutputPath, snippet.snippetName, 'snippet.css' ) ) );
+			}
 		}
 
-		fs.writeFileSync( document, documentContent );
+		documentContent = documentContent
+			.replace( '<!--UMBERTO: SNIPPET: CSS-->', () => documentTags.join( '\n' ) )
+			.replace( '<!--UMBERTO: SNIPPET: JS-->', () => '' );
+
+		await writeFile( document, documentContent );
 	}
 }
 
@@ -297,10 +280,6 @@ async function buildDocuments( snippets, headerTags, getSnippetPlaceholder ) {
  * @returns {Promise<Object<string, string>>}
  */
 async function getImportMap() {
-	/**
-	 * TODO: If we update all imports in snippets to use the `ckeditor5` or `ckeditor5-premium-features` for all code that
-	 * is available publicly, then we can skip loading the package.json files and have a static import map.
-	 */
 	const core = await getPackageJson( 'ckeditor5' );
 	const commercial = await getPackageJson( 'ckeditor5-premium-features' );
 
@@ -349,7 +328,7 @@ async function getConstantDefinitions( snippets ) {
 		while ( !knownPaths.has( directory ) ) {
 			knownPaths.add( directory );
 
-			const constantsFiles = globSync( 'constants.*js', {
+			const constantsFiles = await glob( 'constants.*js', {
 				absolute: true,
 				cwd: upath.join( directory, 'docs' )
 			} );
@@ -381,6 +360,57 @@ async function getConstantDefinitions( snippets ) {
 	}
 
 	return constantDefinitions;
+}
+
+/**
+ * Checks if a file exists at the given path.
+ *
+ * @param {string} path The path to the file.
+ * @returns {Promise<boolean>} True if the file exists, false otherwise.
+ */
+async function fileExists( path ) {
+	try {
+		await access( path, constants.F_OK );
+
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+/**
+ * The `examples/bootstrap-ui.html` is a special case, because it cannot be inlined like other snippets.
+ * This is because it includes Bootstrap assets which leak into the rest of the document, breaking the
+ * styles, so, we need to load it in an iframe. This function creates the necessary data for to process
+ * this snippet like a regular document, rather than a snippet.
+ *
+ * @param {string} snippetsInputPath
+ * @param {string} snippetsOutputPath
+ * @param {string} outputPath
+ * @returns {Promise<Record<string, unknown>>}
+ */
+async function getBootstrapDocumentData( snippetsInputPath, snippetsOutputPath, outputPath ) {
+	const destinationPath = upath.join( snippetsOutputPath, 'examples', 'bootstrap-ui.html' );
+	const basePath = upath.relative( upath.dirname( destinationPath ), outputPath );
+
+	const snippet = {
+		basePath,
+		destinationPath,
+		outputPath: snippetsOutputPath,
+		pageSourcePath: '',
+		relativeOutputPath: upath.join( basePath, 'snippets' ),
+		snippetName: 'examples/bootstrap-ui',
+		snippetSources: {
+			html: upath.join( snippetsInputPath, 'examples', 'bootstrap-ui.html' ),
+			js: upath.join( snippetsInputPath, 'examples', 'bootstrap-ui.js' )
+		}
+	};
+
+	await copyFile( snippet.snippetSources.html, destinationPath );
+
+	return {
+		[ destinationPath ]: [ snippet ]
+	};
 }
 
 /**

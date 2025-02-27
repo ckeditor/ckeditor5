@@ -3,11 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, ClassicEditor, HtmlComment */
+/* globals console, window, document */
 
+import { HtmlComment } from '@ckeditor/ckeditor5-html-support';
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 
-ClassicEditor
+// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
+import { GHSEditor } from './general-html-support-source.js';
+
+GHSEditor
 	.create( document.querySelector( '#snippet-html-comment' ), {
 		extraPlugins: [ HtmlComment ],
 		image: {
