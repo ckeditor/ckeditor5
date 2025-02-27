@@ -481,6 +481,27 @@ describe( 'DataFilter', () => {
 			);
 		} );
 
+		it( 'should allow empty element', () => {
+			dataFilter.allowElement( 'hr' );
+
+			editor.setData( '<hr>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<htmlHr></htmlHr>'
+			);
+
+			expect( editor.getData() ).to.equal( '<hr>' );
+
+			expect( getViewData( editor.editing.view, {
+				withoutSelection: true,
+				renderRawElements: true,
+				showType: true,
+				domConverter: editor.editing.view.domConverter
+			} ) ).to.equal(
+				'<empty:hr></empty:hr>'
+			);
+		} );
+
 		it( 'should allow attributes', () => {
 			dataFilter.allowElement( 'section' );
 			dataFilter.allowAttributes( {
@@ -882,6 +903,28 @@ describe( 'DataFilter', () => {
 			editor.setData( '<xyz>foo</xyz>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo</paragraph>' );
+		} );
+
+		it( 'should not register converters for non registered builtin features (register only fallbacks)', () => {
+			// Builtin feature - only additional attributed.
+			dataSchema.registerBlockElement( {
+				model: 'xyz',
+				view: 'xyz'
+			} );
+			// GHS - element and attributes.
+			dataSchema.registerBlockElement( {
+				model: 'htmlXyz',
+				view: 'xyz',
+				modelSchema: { inheritAllFrom: '$block' }
+			} );
+
+			dataFilter.allowElement( 'xyz' );
+
+			editor.setData( '<xyz>foo</xyz>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<htmlXyz>foo</htmlXyz>' );
+			expect( model.schema.isRegistered( 'xyz' ), 'xyz' ).to.be.false;
+			expect( model.schema.isRegistered( 'htmlXyz' ), 'htmlXyz' ).to.be.true;
 		} );
 
 		it( 'should not register view converters for existing features if a view has not been provided', () => {

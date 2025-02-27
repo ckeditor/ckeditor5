@@ -7,54 +7,53 @@
  * @module emoji/emojirepository
  */
 
-import Fuse from 'fuse.js';
+import fuzzysort from 'fuzzysort';
 import { groupBy } from 'lodash-es';
 
-import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import { logWarning } from 'ckeditor5/src/utils.js';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
+import { logWarning, version as editorVersion } from 'ckeditor5/src/utils.js';
+import EmojiUtils from './emojiutils.js';
 import type { SkinToneId } from './emojiconfig.js';
 
-// An endpoint from which the emoji database will be downloaded during plugin initialization.
+// An endpoint from which the emoji data will be downloaded during plugin initialization.
 // The `{version}` placeholder is replaced with the value from editor config.
-const EMOJI_DATABASE_URL = 'https://cdn.ckeditor.com/ckeditor5/data/emoji/{version}/en.json';
+const DEFAULT_EMOJI_DATABASE_URL = 'https://cdn.ckeditor.com/ckeditor5/data/emoji/{version}/en.json';
 
-const SKIN_TONE_MAP: Record<number, SkinToneId> = {
-	0: 'default',
-	1: 'light',
-	2: 'medium-light',
-	3: 'medium',
-	4: 'medium-dark',
-	5: 'dark'
-};
-
-const BASELINE_EMOJI_WIDTH = 24;
+const DEFAULT_EMOJI_VERSION = 16;
 
 /**
  * The emoji repository plugin.
  *
- * Loads the emoji database from URL during plugin initialization and provides utility methods to search it.
+ * Loads the emoji repository from URL during plugin initialization and provides utility methods to search it.
  */
 export default class EmojiRepository extends Plugin {
 	/**
-	 * Emoji database.
+	 * A callback to resolve the {@link #_repositoryPromise} to control the return value of this promise.
 	 */
-	private _database: Array<EmojiEntry>;
+	declare private _repositoryPromiseResolveCallback: ( value: boolean ) => void;
 
 	/**
-	 * A promise resolved after downloading the emoji database.
-	 * The promise resolves with `true` when the database is successfully downloaded or `false` otherwise.
+	 * Emoji repository in a configured version.
 	 */
-	private _databasePromise: Promise<boolean>;
+	private _items: Array<EmojiEntry> | null;
 
 	/**
-	 * A callback to resolve the {@link #_databasePromise} to control the return value of this promise.
+	 * The resolved URL from which the emoji repository is downloaded.
 	 */
-	declare private _databasePromiseResolveCallback: ( value: boolean ) => void;
+	private readonly _url: URL;
 
 	/**
-	 * An instance of the [Fuse.js](https://www.fusejs.io/) library.
+	 * A promise resolved after downloading the emoji collection.
+	 * The promise resolves with `true` when the repository is successfully downloaded or `false` otherwise.
 	 */
-	private _fuseSearch: Fuse<EmojiEntry> | null;
+	private readonly _repositoryPromise: Promise<boolean>;
+
+	/**
+	 * @inheritDoc
+	 */
+	public static get requires() {
+		return [ EmojiUtils ] as const;
+	}
 
 	/**
 	 * @inheritDoc
@@ -76,68 +75,47 @@ export default class EmojiRepository extends Plugin {
 	constructor( editor: Editor ) {
 		super( editor );
 
-		this.editor.config.define( 'emoji', {
-			version: 16,
-			skinTone: 'default'
+		editor.config.define( 'emoji', {
+			version: undefined,
+			skinTone: 'default',
+			definitionsUrl: undefined
 		} );
 
-		this._database = [];
-		this._databasePromise = new Promise<boolean>( resolve => {
-			this._databasePromiseResolveCallback = resolve;
+		this._url = this._getUrl();
+
+		this._repositoryPromise = new Promise<boolean>( resolve => {
+			this._repositoryPromiseResolveCallback = resolve;
 		} );
 
-		this._fuseSearch = null;
+		this._items = null;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public async init(): Promise<void> {
-		const emojiVersion = this.editor.config.get( 'emoji.version' )!;
-		const emojiDatabaseUrl = EMOJI_DATABASE_URL.replace( '{version}', `${ emojiVersion }` );
-		const emojiDatabase = await loadEmojiDatabase( emojiDatabaseUrl );
+		this._warnAboutCdnUse();
 
-		// Skip the initialization if the emoji database download has failed.
-		// An empty database prevents the initialization of other dependent plugins, such as `EmojiMention` and `EmojiPicker`.
-		if ( !emojiDatabase.length ) {
-			return this._databasePromiseResolveCallback( false );
+		await this._loadAndCacheEmoji();
+
+		this._items = this._getItems();
+
+		if ( !this._items ) {
+			return this._repositoryPromiseResolveCallback( false );
 		}
 
-		const container = createEmojiWidthTestingContainer();
-
-		// Store the emoji database after normalizing the raw data.
-		this._database = emojiDatabase
-			.filter( item => isEmojiCategoryAllowed( item ) )
-			.filter( item => EmojiRepository._isEmojiSupported( item, container ) )
-			.map( item => normalizeEmojiSkinTone( item ) );
-
-		container.remove();
-
-		// Create instance of the Fuse.js library with configured weighted search keys and disabled fuzzy search.
-		this._fuseSearch = new Fuse( this._database, {
-			keys: [
-				{ name: 'emoticon', weight: 5 },
-				{ name: 'annotation', weight: 3 },
-				{ name: 'tags', weight: 1 }
-			],
-			minMatchCharLength: 2,
-			threshold: 0,
-			ignoreLocation: true
-		} );
-
-		return this._databasePromiseResolveCallback( true );
+		return this._repositoryPromiseResolveCallback( true );
 	}
 
 	/**
 	 * Returns an array of emoji entries that match the search query.
-	 * If the emoji database is not loaded, the [Fuse.js](https://www.fusejs.io/) instance is not created,
-	 * hence this method returns an empty array.
+	 * If the emoji repository is not loaded this method returns an empty array.
 	 *
 	 * @param searchQuery A search query to match emoji.
 	 * @returns An array of emoji entries that match the search query.
 	 */
 	public getEmojiByQuery( searchQuery: string ): Array<EmojiEntry> {
-		if ( !this._fuseSearch ) {
+		if ( !this._items ) {
 			return [];
 		}
 
@@ -150,31 +128,38 @@ export default class EmojiRepository extends Plugin {
 			return [];
 		}
 
-		return this._fuseSearch
-			.search( {
-				'$or': [
-					{
-						emoticon: searchQuery
-					},
-					{
-						'$and': searchQueryTokens.map( token => ( { annotation: token } ) )
-					},
-					{
-						'$and': searchQueryTokens.map( token => ( { tags: token } ) )
+		return fuzzysort
+			.go( searchQuery, this._items, {
+				threshold: 0.6,
+				keys: [
+					'emoticon',
+					'annotation',
+					( emojiEntry: EmojiEntry ) => {
+						// Instead of searching over all tags, let's use only those that matches the query.
+						// It enables searching in tags with the space character in names.
+						const searchQueryTokens = searchQuery.split( /\s/ ).filter( Boolean );
+
+						const matchedTags = searchQueryTokens.flatMap( tok => {
+							return emojiEntry.tags?.filter( t => t.startsWith( tok ) );
+						} );
+
+						return matchedTags.join();
 					}
 				]
 			} )
-			.map( result => result.item );
+			.map( result => result.obj );
 	}
 
 	/**
 	 * Groups all emojis by categories.
-	 * If the emoji database is not loaded, it returns an empty array.
+	 * If the emoji repository is not loaded, it returns an empty array.
 	 *
 	 * @returns An array of emoji entries grouped by categories.
 	 */
 	public getEmojiCategories(): Array<EmojiCategory> {
-		if ( !this._database.length ) {
+		const repository = this._getItems();
+
+		if ( !repository ) {
 			return [];
 		}
 
@@ -192,7 +177,7 @@ export default class EmojiRepository extends Plugin {
 			{ title: t( 'Flags' ), icon: '🏁', groupId: 9 }
 		];
 
-		const groups = groupBy( this._database, 'group' );
+		const groups = groupBy( repository, 'group' );
 
 		return categories.map( category => {
 			return {
@@ -219,121 +204,161 @@ export default class EmojiRepository extends Plugin {
 	}
 
 	/**
-	 * Indicates whether the emoji database has been successfully downloaded and the plugin is operational.
+	 * Indicates whether the emoji repository has been successfully downloaded and the plugin is operational.
 	 */
 	public isReady(): Promise<boolean> {
-		return this._databasePromise;
+		return this._repositoryPromise;
 	}
 
 	/**
-	 * A function used to check if the given emoji is supported in the operating system.
+	 * Returns the URL from which the emoji repository is downloaded. If the URL is not provided
+	 * in the configuration, the default URL is used with the version from the configuration.
 	 *
-	 * Referenced for unit testing purposes.
+	 * If both the URL and version are provided, a warning is logged.
 	 */
-	private static _isEmojiSupported = isEmojiSupported;
-}
+	private _getUrl(): URL {
+		const { definitionsUrl, version } = this.editor.config.get( 'emoji' )!;
 
-/**
- * Makes the HTTP request to download the emoji database.
- */
-async function loadEmojiDatabase( emojiDatabaseUrl: string ): Promise<Array<EmojiCdnResource>> {
-	const result = await fetch( emojiDatabaseUrl )
-		.then( response => {
-			if ( !response.ok ) {
-				return [];
-			}
+		if ( !definitionsUrl || definitionsUrl === 'cdn' ) {
+			// URL was not provided or is set to 'cdn', so we use the default CDN URL.
+			const urlVersion = version || DEFAULT_EMOJI_VERSION;
+			const url = new URL( DEFAULT_EMOJI_DATABASE_URL.replace( '{version}', urlVersion.toString() ) );
 
-			return response.json();
-		} )
-		.catch( () => {
-			return [];
-		} );
+			url.searchParams.set( 'editorVersion', editorVersion );
 
-	if ( !result.length ) {
-		/**
-		 * Unable to load the emoji database from CDN.
-		 *
-		 * TODO: It could be a problem of CKEditor 5 CDN, but also, Content Security Policy that disallow the request.
-		 * It would be good to explain what to do in such a case.
-		 *
-		 * @error emoji-database-load-failed
-		 */
-		logWarning( 'emoji-database-load-failed' );
-	}
-
-	return result;
-}
-
-/**
- * Creates a div for emoji width testing purposes.
- */
-function createEmojiWidthTestingContainer(): HTMLDivElement {
-	const container = document.createElement( 'div' );
-
-	container.setAttribute( 'aria-hidden', 'true' );
-	container.style.position = 'absolute';
-	container.style.left = '-9999px';
-	container.style.whiteSpace = 'nowrap';
-	container.style.fontSize = BASELINE_EMOJI_WIDTH + 'px';
-	document.body.appendChild( container );
-
-	return container;
-}
-
-/**
- * Returns the width of the provided node.
- */
-function getNodeWidth( container: HTMLDivElement, node: string ): number {
-	const span = document.createElement( 'span' );
-	span.textContent = node;
-	container.appendChild( span );
-	const nodeWidth = span.offsetWidth;
-	container.removeChild( span );
-
-	return nodeWidth;
-}
-
-/**
- * Checks whether the emoji is supported in the operating system.
- */
-function isEmojiSupported( item: EmojiCdnResource, container: HTMLDivElement ): boolean {
-	const emojiWidth = getNodeWidth( container, item.emoji );
-
-	// On Windows, some supported emoji are ~50% bigger than the baseline emoji, but what we really want to guard
-	// against are the ones that are 2x the size, because those are truly broken (person with red hair = person with
-	// floating red wig, black cat = cat with black square, polar bear = bear with snowflake, etc.)
-	// So here we set the threshold at 1.8 times the size of the baseline emoji.
-	return ( emojiWidth / 1.8 < BASELINE_EMOJI_WIDTH ) && ( emojiWidth >= BASELINE_EMOJI_WIDTH );
-}
-
-/**
- * Adds default skin tone property to each emoji. If emoji defines other skin tones, they are added as well.
- */
-function normalizeEmojiSkinTone( item: EmojiCdnResource ): EmojiEntry {
-	const entry: EmojiEntry = {
-		...item,
-		skins: {
-			default: item.emoji
+			return url;
 		}
-	};
 
-	if ( item.skins ) {
-		item.skins.forEach( skin => {
-			const skinTone = SKIN_TONE_MAP[ skin.tone ];
+		if ( version ) {
+			/**
+			 * Both {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `emoji.definitionsUrl`} and
+			 * {@link module:emoji/emojiconfig~EmojiConfig#version `emoji.version`} configuration options
+			 * are set. Only the `emoji.definitionsUrl` option will be used.
+			 *
+			 * The `emoji.version` option will be ignored and should be removed from the configuration.
+			 *
+			 * @error emoji-repository-redundant-version
+			 */
+			logWarning( 'emoji-repository-redundant-version' );
+		}
 
-			entry.skins[ skinTone ] = skin.emoji;
-		} );
+		return new URL( definitionsUrl );
 	}
 
-	return entry;
-}
+	/**
+	 * Warn users on self-hosted installations that this plugin uses a CDN to fetch the emoji repository.
+	 */
+	private _warnAboutCdnUse(): void {
+		const editor = this.editor;
+		const config = editor.config.get( 'emoji' );
+		const licenseKey = editor.config.get( 'licenseKey' );
+		const distributionChannel = ( window as any )[ Symbol.for( 'cke distribution' ) ];
 
-/**
- * Checks whether the emoji belongs to a group that is allowed.
- */
-function isEmojiCategoryAllowed( item: EmojiCdnResource ): boolean {
-	// Category group=2 contains skin tones only, which we do not want to render.
-	return item.group !== 2;
+		if ( licenseKey === 'GPL' ) {
+			// Don't warn GPL users.
+			return;
+		}
+
+		if ( distributionChannel === 'cloud' ) {
+			// Don't warn cloud users, because they already use our CDN.
+			return;
+		}
+
+		if ( config && config.definitionsUrl ) {
+			// Don't warn users who have configured their own definitions URL.
+			return;
+		}
+
+		/**
+		 * It was detected that your installation uses a commercial license key,
+		 * and the default {@glink features/emoji#emoji-source CKEditor CDN for Emoji plugin data}.
+		 *
+		 * To avoid this, you can use the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `emoji.definitionsUrl`}
+		 * configuration option to provide a URL to your own emoji repository.
+		 *
+		 * If you want to suppress this warning, while using the default CDN, set this configuration option to `cdn`.
+		 *
+		 * @error emoji-repository-cdn-use
+		 */
+		logWarning( 'emoji-repository-cdn-use' );
+	}
+
+	/**
+	 * Returns the emoji repository in a configured version if it is a non-empty array. Returns `null` otherwise.
+	 */
+	private _getItems(): Array<EmojiEntry> | null {
+		const repository = EmojiRepository._results[ this._url.href ];
+
+		return repository && repository.length ? repository : null;
+	}
+
+	/**
+	 * Loads the emoji repository. If the repository is already loaded, it returns the cached result.
+	 * Otherwise, it fetches the repository from the URL and adds it to the cache.
+	 */
+	private async _loadAndCacheEmoji(): Promise<void> {
+		if ( EmojiRepository._results[ this._url.href ] ) {
+			// The repository has already been downloaded.
+			return;
+		}
+
+		const result: Array<EmojiCdnResource> = await fetch( this._url, { cache: 'force-cache' } )
+			.then( response => {
+				if ( !response.ok ) {
+					return [];
+				}
+
+				return response.json();
+			} )
+			.catch( () => {
+				return [];
+			} );
+
+		if ( !result.length ) {
+			/**
+			 * Unable to load the emoji repository from the URL.
+			 *
+			 * If the URL works properly and there is no disruption of communication, please check your
+			 * {@glink getting-started/setup/csp Content Security Policy (CSP)} setting and make sure
+			 * the URL connection is allowed by the editor.
+			 *
+			 * @error emoji-repository-load-failed
+			 */
+			logWarning( 'emoji-repository-load-failed' );
+		}
+
+		EmojiRepository._results[ this._url.href ] = this._normalizeEmoji( result );
+	}
+
+	/**
+	 * Normalizes the raw data fetched from CDN. By normalization, we meant:
+	 *
+	 *  * Filter out unsupported emoji (these that will not render correctly),
+	 *  * Prepare skin tone variants if an emoji defines them.
+	 */
+	private _normalizeEmoji( data: Array<EmojiCdnResource> ): Array<EmojiEntry> {
+		const emojiUtils = this.editor.plugins.get( 'EmojiUtils' );
+		const emojiSupportedVersionByOs = emojiUtils.getEmojiSupportedVersionByOs();
+
+		const container = emojiUtils.createEmojiWidthTestingContainer();
+		document.body.appendChild( container );
+
+		const results = data
+			.filter( item => emojiUtils.isEmojiCategoryAllowed( item ) )
+			.filter( item => emojiUtils.isEmojiSupported( item, emojiSupportedVersionByOs, container ) )
+			.map( item => emojiUtils.normalizeEmojiSkinTone( item ) );
+
+		container.remove();
+
+		return results;
+	}
+
+	/**
+	 * Versioned emoji repository.
+	 */
+	private static _results: {
+		[ key in string ]?: Array<EmojiEntry>
+	} = {};
 }
 
 /**
