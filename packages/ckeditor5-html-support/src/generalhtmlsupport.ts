@@ -22,7 +22,6 @@ import StyleElementSupport from './integrations/style.js';
 import ListElementSupport from './integrations/list.js';
 import HorizontalLineElementSupport from './integrations/horizontalline.js';
 import CustomElementSupport from './integrations/customelement.js';
-import EmailIntegrationSupport from './integrations/emailintegration.js';
 import type { DataSchemaInlineElementDefinition } from './dataschema.js';
 import type { DocumentSelection, Item, Model, Range, Selectable } from 'ckeditor5/src/engine.js';
 import { getHtmlAttributeName, modifyGhsAttribute } from './utils.js';
@@ -65,7 +64,6 @@ export default class GeneralHtmlSupport extends Plugin {
 			TableElementSupport,
 			StyleElementSupport,
 			ListElementSupport,
-			EmailIntegrationSupport,
 			HorizontalLineElementSupport,
 			CustomElementSupport
 		] as const;
