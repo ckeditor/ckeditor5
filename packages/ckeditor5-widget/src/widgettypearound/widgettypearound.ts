@@ -67,6 +67,8 @@ import {
 import { isWidget } from '../utils.js';
 import type Widget from '../widget.js';
 
+// @if CK_DEBUG_TYPING // const { _buildLogMessage } = require( '@ckeditor/ckeditor5-engine/src/dev-utils/utils.js' );
+
 import returnIcon from '../../theme/icons/return-arrow.svg';
 
 import '../../theme/widgettypearound.css';
@@ -235,9 +237,9 @@ export default class WidgetTypeAround extends Plugin {
 		}
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-		// @if CK_DEBUG_TYPING // 	console.info( '%c[WidgetTypeAround]%c Fake caret -> insert paragraph',
-		// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green', ''
-		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'WidgetTypeAround',
+		// @if CK_DEBUG_TYPING // 		'Fake caret -> insert paragraph',
+		// @if CK_DEBUG_TYPING // 	) );
 		// @if CK_DEBUG_TYPING // }
 
 		const selectedModelElement = modelSelection.getSelectedElement()!;

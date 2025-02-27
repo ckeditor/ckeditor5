@@ -35,6 +35,8 @@ describe( 'Input', () => {
 			viewDocument = view.document;
 			scrollToTheSelectionSpy = testUtils.sinon.stub( view, 'scrollToTheSelection' );
 			rendererUpdateTextNodeSpy = sinon.spy( view._renderer, '_updateTextNodeInternal' );
+
+			viewDocument.isFocused = true;
 		} );
 
 		afterEach( async () => {
