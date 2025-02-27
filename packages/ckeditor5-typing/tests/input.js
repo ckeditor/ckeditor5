@@ -82,7 +82,7 @@ describe( 'Input', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should preventDefault() the original beforeinput event if not composing', () => {
+			it( 'should not preventDefault() the original beforeinput event if not composing', () => {
 				const spy = sinon.spy();
 
 				viewDocument.fire( 'insertText', {
@@ -91,7 +91,7 @@ describe( 'Input', () => {
 					text: 'bar'
 				} );
 
-				sinon.assert.calledOnce( spy );
+				sinon.assert.notCalled( spy );
 			} );
 
 			it( 'should not preventDefault() the original beforeinput event if composing', () => {
@@ -1149,7 +1149,8 @@ describe( 'Input', () => {
 					data: data.replace( /\u00A0/g, ' ' ),
 					inputType: 'insertCompositionText',
 					targetRanges: [ range ],
-					preventDefault: sinon.spy()
+					preventDefault: sinon.spy(),
+					expectBrowserChange: true // TODO
 				} ) );
 			},
 

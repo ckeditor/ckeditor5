@@ -136,7 +136,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 
 		// Normalize the insertText data that includes new-line characters.
 		// https://github.com/ckeditor/ckeditor5/issues/2045.
-		if ( domEvent.inputType == 'insertText' && data && data.includes( '\n' ) ) {
+		if ( [ 'insertText', 'insertReplacementText' ].includes( domEvent.inputType ) && data && data.includes( '\n' ) ) {
 			// There might be a single new-line or double for new paragraph, but we translate
 			// it to paragraphs as it is our default action for enter handling.
 			const parts = data.split( /\n{1,2}/g );
@@ -183,7 +183,8 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 			dataTransfer,
 			targetRanges,
 			inputType: domEvent.inputType,
-			isComposing: domEvent.isComposing
+			isComposing: domEvent.isComposing,
+			expectBrowserChange: true
 		} );
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
@@ -256,4 +257,9 @@ export interface InputEventData extends DomEventData<InputEvent> {
 	 * (as returned by `InputEvent#getTargetRanges()`).
 	 */
 	readonly targetRanges: Array<ViewRange>;
+
+	/**
+	 * TODO
+	 */
+	readonly expectBrowserChange?: boolean;
 }
