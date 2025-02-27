@@ -38,6 +38,12 @@
 			"path": "src/dataschema.js"
 		},
 		{
+			"name": "Empty block",
+			"className": "EmptyBlock",
+			"description": "Allows for preserving empty block elements in the editor content instead of automatically filling them with block fillers (`&nbsp;`).",
+			"path": "src/emptyblock.js"
+		},
+		{
 			"name": "HTML comment",
 			"className": "HtmlComment",
 			"description": "Preserves the HTML comments in the editor data.",

@@ -21,8 +21,8 @@ import type {
 const EMPTY_BLOCK_MODEL_ATTRIBUTE = 'htmlEmptyBlock';
 
 /**
- * This is experimental plugin that allows for preserving empty block elements
- * in the editor content instead of automatically filling them with block fillers (`&nbsp;`).
+ * This plugin allows for preserving empty block elements in the editor content
+ * instead of automatically filling them with block fillers (`&nbsp;`).
  *
  * This is useful when you want to:
  *
@@ -50,8 +50,6 @@ const EMPTY_BLOCK_MODEL_ATTRIBUTE = 'htmlEmptyBlock';
  * <p class="spacer">&nbsp;</p>
  * <td>&nbsp;</td>
  * ```
- *
- * **Warning**: This is an experimental plugin. It may have bugs and breaking changes may be introduced without prior notice.
  */
 export default class EmptyBlock extends Plugin {
 	/**
