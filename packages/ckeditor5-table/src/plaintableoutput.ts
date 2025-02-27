@@ -11,6 +11,7 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import type { DowncastWriter, Element, Node, ViewContainerElement } from 'ckeditor5/src/engine.js';
 
 import Table from './table.js';
+import TableUtils from './tableutils.js';
 
 /**
  * The plain table output feature.
@@ -34,7 +35,7 @@ export default class PlainTableOutput extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ Table ] as const;
+		return [ Table, TableUtils ] as const;
 	}
 
 	/**
@@ -42,11 +43,14 @@ export default class PlainTableOutput extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const tableUtils = editor.plugins.get( 'TableUtils' );
 
 		// Override default table data downcast converter.
 		editor.conversion.for( 'dataDowncast' ).elementToStructure( {
 			model: 'table',
-			view: downcastTableElement,
+			view: ( modelElement, { writer } ) => {
+				return downcastTableElement( modelElement, { writer }, tableUtils );
+			},
 			converterPriority: 'high'
 		} );
 
@@ -75,10 +79,13 @@ export default class PlainTableOutput extends Plugin {
  *
  * @param table Table model element.
  * @param conversionApi The conversion API object.
+ * @param tableUtils The Table Utils plugin instance.
  * @returns Created element.
  */
-function downcastTableElement( table: Element, { writer }: { writer: DowncastWriter } ) {
+function downcastTableElement( table: Element, { writer }: { writer: DowncastWriter }, tableUtils: TableUtils ) {
 	const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+	const footerRows = table.getAttribute( 'footerRows' ) as number || 0;
+	const footerIndex = tableUtils.getRows( table ) as number - footerRows;
 
 	// Table head rows slot.
 	const headRowsSlot = writer.createSlot( ( element: Node ) =>
@@ -87,7 +94,12 @@ function downcastTableElement( table: Element, { writer }: { writer: DowncastWri
 
 	// Table body rows slot.
 	const bodyRowsSlot = writer.createSlot( ( element: Node ) =>
-		element.is( 'element', 'tableRow' ) && element.index! >= headingRows
+		element.is( 'element', 'tableRow' ) && element.index! >= headingRows && element.index! < footerIndex
+	);
+
+	// Table footer rows slot.
+	const footRowsSlot = writer.createSlot( ( element: Node ) =>
+		element.is( 'element', 'tableRow' ) && element.index! >= footerIndex
 	);
 
 	// Table children slot.
@@ -99,15 +111,22 @@ function downcastTableElement( table: Element, { writer }: { writer: DowncastWri
 	// Table <tbody> element with all the body rows.
 	const tbodyElement = writer.createContainerElement( 'tbody', null, bodyRowsSlot );
 
-	// Table contents element containing <thead> and <tbody> when necessary.
+	// Table <tfoot> element with all the footer rows.
+	const tfootElement = writer.createContainerElement( 'tfoot', null, footRowsSlot );
+
+	// Table contents element containing <thead>, <tbody>, and <tfoot> when necessary.
 	const tableContentElements: Array<ViewContainerElement> = [];
 
 	if ( headingRows ) {
 		tableContentElements.push( theadElement );
 	}
 
-	if ( headingRows < table.childCount ) {
+	if ( headingRows + footerRows < table.childCount ) {
 		tableContentElements.push( tbodyElement );
+	}
+
+	if ( footerRows ) {
+		tableContentElements.push( tfootElement );
 	}
 
 	// Create table structure.
@@ -120,6 +139,9 @@ function downcastTableElement( table: Element, { writer }: { writer: DowncastWri
 	//    <tbody>
 	//        {table-body-rows-slot}
 	//    </tbody>
+	//    <tfoot>
+	//        {table-foot-rows-slot}
+	//    </tfoot>
 	// </table>
 	return writer.createContainerElement( 'table', null, [ childrenSlot, ...tableContentElements ] );
 }
