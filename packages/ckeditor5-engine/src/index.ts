@@ -93,7 +93,6 @@ export { default as DocumentFragment } from './model/documentfragment.js';
 export { default as History } from './model/history.js';
 export { default as Text } from './model/text.js';
 export { default as TextProxy } from './model/textproxy.js';
-export { SchemaContext } from './model/schema.js';
 export type { default as Document, ModelPostFixer } from './model/document.js';
 export type { Marker } from './model/markercollection.js';
 export type { default as Batch } from './model/batch.js';
@@ -101,14 +100,15 @@ export type { default as Differ, DiffItem, DiffItemAttribute, DiffItemInsert, Di
 export type { default as Item } from './model/item.js';
 export type { default as Node, NodeAttributes } from './model/node.js';
 export type { default as RootElement } from './model/rootelement.js';
-export type {
-	default as Schema,
-	SchemaAttributeCheckCallback,
-	SchemaChildCheckCallback,
-	AttributeProperties,
-	SchemaItemDefinition,
-	SchemaCompiledItemDefinition,
-	SchemaContextDefinition
+export {
+	SchemaContext,
+	type default as Schema,
+	type SchemaAttributeCheckCallback,
+	type SchemaChildCheckCallback,
+	type AttributeProperties,
+	type SchemaItemDefinition,
+	type SchemaCompiledItemDefinition,
+	type SchemaContextDefinition
 } from './model/schema.js';
 export type { default as Selection, Selectable } from './model/selection.js';
 export type { default as TypeCheckable } from './model/typecheckable.js';
