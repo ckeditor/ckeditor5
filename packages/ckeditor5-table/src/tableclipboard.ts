@@ -15,7 +15,8 @@ import {
 	type ClipboardEventData,
 	type ViewDocumentCopyEvent,
 	type ViewDocumentCutEvent,
-	type ViewDocumentClipboardOutputEvent
+	type ViewDocumentClipboardOutputEvent,
+	type ClipboardContentInsertionEvent
 } from 'ckeditor5/src/clipboard.js';
 
 import { Plugin } from 'ckeditor5/src/core.js';
@@ -83,14 +84,39 @@ export default class TableClipboard extends Plugin {
 
 		this.listenTo<ViewDocumentCopyEvent>( viewDocument, 'copy', ( evt, data ) => this._onCopyCut( evt, data ) );
 		this.listenTo<ViewDocumentCutEvent>( viewDocument, 'cut', ( evt, data ) => this._onCopyCut( evt, data ) );
+		this._listenToContentInsertion();
+
+		this.decorate( '_replaceTableSlotCell' );
+	}
+
+	/**
+	 * Sets up listening for events from the clipboard pipeline to properly handle
+	 * table content merging during paste/drop operations.
+	 *
+	 * When a user is dragging and dropping a table, we want to insert the entire table into
+	 * a table cell instead of merging table contents. For paste and other events,
+	 * the normal table merge behavior is applied.
+	 */
+	private _listenToContentInsertion() {
+		const { editor } = this;
+		const clipboardPipeline = editor.plugins.get( ClipboardPipeline );
+
+		let isDrop = false;
+
+		clipboardPipeline.on<ClipboardContentInsertionEvent>( 'contentInsertion', ( evt, data ) => {
+			isDrop = data.method === 'drop';
+		} );
+
 		this.listenTo<ModelInsertContentEvent>(
 			editor.model,
 			'insertContent',
-			( evt, [ content, selectable ] ) => this._onInsertContent( evt, content, selectable ),
+			( evt, [ content, selectable ] ) => {
+				if ( !isDrop ) {
+					this._onInsertContent( evt, content, selectable );
+				}
+			},
 			{ priority: 'high' }
 		);
-
-		this.decorate( '_replaceTableSlotCell' );
 	}
 
 	/**
