@@ -36,7 +36,7 @@ We have added the {@link features/track-changes-preview track changes preview mo
 
 ### Emoji support
 
-With the new {@link features/emoji feature} you can insert emojis effortlessly in the editor by typing `:` or through a user-friendly emoji picker. This feature enhances the richness of your content by allowing quick access to a wide range of emojis.
+With the new {@link features/Emoji feature} you can insert emojis effortlessly in the editor by typing `:` or through a user-friendly emoji picker. This feature enhances the richness of your content by allowing quick access to a wide range of emojis.
 
 ### Performance improvements
 

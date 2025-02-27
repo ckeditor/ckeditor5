@@ -407,7 +407,7 @@ export type EmojiCdnResource = {
 };
 
 /**
- * Represents a single emoji item used by the emoji feature.
+ * Represents a single emoji item used by the Emoji feature.
  */
 export type EmojiEntry = Omit<EmojiCdnResource, 'skins'> & {
 	skins: EmojiMap;
