@@ -93,6 +93,7 @@ export { default as DocumentFragment } from './model/documentfragment.js';
 export { default as History } from './model/history.js';
 export { default as Text } from './model/text.js';
 export { default as TextProxy } from './model/textproxy.js';
+export { SchemaContext } from './model/schema.js';
 export type { default as Document, ModelPostFixer } from './model/document.js';
 export type { Marker } from './model/markercollection.js';
 export type { default as Batch } from './model/batch.js';
@@ -107,7 +108,6 @@ export type {
 	AttributeProperties,
 	SchemaItemDefinition,
 	SchemaCompiledItemDefinition,
-	SchemaContext,
 	SchemaContextDefinition
 } from './model/schema.js';
 export type { default as Selection, Selectable } from './model/selection.js';
