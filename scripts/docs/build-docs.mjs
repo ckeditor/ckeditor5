@@ -26,12 +26,8 @@ function buildDocs() {
 	}
 
 	return promise
-		.then( () => {
-			return runUmberto( options );
-		} )
-		.then( () => {
-			return buildSources();
-		} )
+		.then( () => runUmberto( options ) )
+		.then( () => options.skipSnippets || buildSources() )
 		.catch( err => {
 			console.error( err );
 
