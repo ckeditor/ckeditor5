@@ -242,8 +242,8 @@ async function buildDocuments( snippets, getSnippetPlaceholder, constants, impor
 		// Get global tags added to each document that require relative paths.
 		const documentTags = [
 			...globalTags,
-			getStyle( 'https://cdn.ckeditor.com/ckeditor5/nightly-next/ckeditor5.css' ),
-			getStyle( 'https://cdn.ckeditor.com/ckeditor5-premium-features/nightly-next/ckeditor5-premium-features.css' ),
+			getStyle( upath.join( relativeOutputPath, 'assets', 'ckeditor5', 'ckeditor5.css' ) ),
+			getStyle( upath.join( relativeOutputPath, 'assets', 'ckeditor5-premium-features', 'ckeditor5-premium-features.css' ) ),
 			getStyle( upath.join( relativeOutputPath, 'assets', 'snippet-styles.css' ) ),
 			getStyle( upath.join( relativeOutputPath, 'snippets', 'assets', 'snippet.css' ) ),
 			getScript( upath.join( relativeOutputPath, 'assets', 'snippet.js' ) ),
@@ -258,7 +258,7 @@ async function buildDocuments( snippets, getSnippetPlaceholder, constants, impor
 
 			documentContent = documentContent.replace(
 				getSnippetPlaceholder( snippet.snippetName ),
-				() => '<div class="live-snippet">' + data.replaceAll( /%BASE_PATH%/g, () => snippet.basePath ) + '</div>'
+				() => `<div class="live-snippet">${ data }</div>`
 			);
 
 			if ( await fileExists( upath.join( snippet.outputPath, snippet.snippetName, 'snippet.js' ) ) ) {
@@ -272,7 +272,8 @@ async function buildDocuments( snippets, getSnippetPlaceholder, constants, impor
 
 		documentContent = documentContent
 			.replace( '<!--UMBERTO: SNIPPET: CSS-->', () => documentTags.join( '\n' ) )
-			.replace( '<!--UMBERTO: SNIPPET: JS-->', () => '' );
+			.replace( '<!--UMBERTO: SNIPPET: JS-->', () => '' )
+			.replaceAll( /%BASE_PATH%/g, () => relativeOutputPath );
 
 		await writeFile( document, documentContent );
 	}
@@ -288,10 +289,10 @@ async function getImportMap() {
 	const commercial = await getDependencies( 'ckeditor5-premium-features' );
 
 	const imports = {
-		'ckeditor5': 'https://cdn.ckeditor.com/ckeditor5/nightly-next/ckeditor5.js',
-		'ckeditor5/': 'https://cdn.ckeditor.com/ckeditor5/nightly-next/',
-		'ckeditor5-premium-features': 'https://cdn.ckeditor.com/ckeditor5-premium-features/nightly-next/ckeditor5-premium-features.js',
-		'ckeditor5-premium-features/': 'https://cdn.ckeditor.com/ckeditor5-premium-features/nightly-next/'
+		'ckeditor5': '%BASE_PATH%/assets/ckeditor5/ckeditor5.js',
+		'ckeditor5/': '%BASE_PATH%/assets/ckeditor5/',
+		'ckeditor5-premium-features': '%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.js',
+		'ckeditor5-premium-features/': '%BASE_PATH%/assets/ckeditor5-premium-features/'
 	};
 
 	/**
