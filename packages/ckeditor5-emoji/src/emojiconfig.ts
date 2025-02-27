@@ -8,9 +8,9 @@
  */
 
 /**
- * The configuration of the emoji feature.
+ * The configuration of the Emoji feature.
  *
- * Read more about {@glink features/emoji#configuration configuring the emoji feature}.
+ * Read more about {@glink features/emoji#configuration configuring the Emoji feature}.
  *
  * ```ts
  *	ClassicEditor
