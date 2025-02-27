@@ -75,11 +75,6 @@
 				& > .ck-widget__selection-handle {
 					transform: translateY(calc(0px - var(--ck-widget-outline-thickness)));
 					z-index: var(--ck-z-default);
-					opacity: 0.75;
-
-					&:hover {
-						opacity: 1;
-					}
 				}
 
 				& > .ck-widget__type-around {
@@ -104,6 +99,20 @@
 						}
 					}
 				}
+			}
+
+			&:hover > .ck-widget__selection-handle {
+				opacity: 0.75;
+				visibility: visible;
+
+				&:hover {
+					opacity: 1;
+				}
+			}
+
+			&:has( .ck-widget:hover ) > .ck-widget__selection-handle {
+				opacity: 0;
+				visibility: hidden;
 			}
 		}
 	}
