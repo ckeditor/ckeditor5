@@ -13,9 +13,7 @@ const __dirname = upath.dirname( __filename );
 
 export const CKEDITOR5_ROOT_PATH = upath.join( __dirname, '..' );
 export const CKEDITOR5_COMMERCIAL_PATH = upath.resolve( CKEDITOR5_ROOT_PATH, 'external', 'ckeditor5-commercial' );
+export const CKEDITOR5_PREMIUM_FEATURES_PATH = upath.join( CKEDITOR5_COMMERCIAL_PATH, PACKAGES_DIRECTORY, 'ckeditor5-premium-features' );
 
 export const CKEDITOR5_INDEX = upath.join( CKEDITOR5_ROOT_PATH, 'src', 'index.ts' );
-
-export const CKEDITOR5_PREMIUM_FEATURES_INDEX = upath.join(
-	CKEDITOR5_COMMERCIAL_PATH, PACKAGES_DIRECTORY, 'ckeditor5-premium-features', 'src', 'index.ts'
-);
+export const CKEDITOR5_PREMIUM_FEATURES_INDEX = upath.join( CKEDITOR5_PREMIUM_FEATURES_PATH, 'src', 'index.ts' );

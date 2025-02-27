@@ -27,6 +27,7 @@
     "@ckeditor/ckeditor5-basic-styles": "44.2.1",
     "@ckeditor/ckeditor5-dev-utils": "^46.0.0",
     "@ckeditor/ckeditor5-editor-classic": "44.2.1",
+    "@ckeditor/ckeditor5-editor-balloon": "44.2.1",
     "@ckeditor/ckeditor5-engine": "44.2.1",
     "@ckeditor/ckeditor5-essentials": "44.2.1",
     "@ckeditor/ckeditor5-heading": "44.2.1",
