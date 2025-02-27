@@ -66,16 +66,20 @@ function getPaths( [ snippet ] ) {
 }
 
 /**
- * Returns the content of the `package.json` file for a given package.
+ * Returns dependencies of a given package.
  *
  * @param {string} packageName
- * @returns {Promise<Record<string, unknown>>}
+ * @returns {Promise<Array<string>>}
  */
-async function getPackageJson( packageName ) {
-	const path = require.resolve( `${ packageName }/package.json` );
-	const content = await readFile( path, { encoding: 'utf-8' } );
+async function getDependencies( packageName ) {
+	try {
+		const path = require.resolve( `${ packageName }/package.json` );
+		const content = await readFile( path, { encoding: 'utf-8' } );
 
-	return JSON.parse( content );
+		return Object.keys( JSON.parse( content ).dependencies );
+	} catch {
+		return [];
+	}
 }
 
 /**
@@ -280,8 +284,8 @@ async function buildDocuments( snippets, getSnippetPlaceholder, constants, impor
  * @returns {Promise<Object<string, string>>}
  */
 async function getImportMap() {
-	const core = await getPackageJson( 'ckeditor5' );
-	const commercial = await getPackageJson( 'ckeditor5-premium-features' );
+	const core = await getDependencies( 'ckeditor5' );
+	const commercial = await getDependencies( 'ckeditor5-premium-features' );
 
 	const imports = {
 		'ckeditor5': 'https://cdn.ckeditor.com/ckeditor5/nightly-next/ckeditor5.js',
@@ -294,12 +298,12 @@ async function getImportMap() {
 	 * Some snippets may use imports from individual packages instead of the main `ckeditor5` or
 	 * `ckeditor5-premium-features` packages. In such cases, we need to add these imports to the import map.
 	 */
-	for ( const dependency of Object.keys( core.dependencies ) ) {
+	for ( const dependency of core ) {
 		imports[ dependency ] ||= imports.ckeditor5;
 		imports[ `${ dependency }/dist/index.js` ] ||= imports.ckeditor5;
 	}
 
-	for ( const dependency of Object.keys( commercial.dependencies ) ) {
+	for ( const dependency of commercial ) {
 		imports[ dependency ] ||= imports[ 'ckeditor5-premium-features' ];
 		imports[ `${ dependency }/dist/index.js` ] ||= imports[ 'ckeditor5-premium-features' ];
 	}
