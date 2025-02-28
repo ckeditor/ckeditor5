@@ -20,6 +20,12 @@
 .ck.ck-link-providers {
 	width: var(--ck-link-providers-width);
 
+	& .ck-form__header__label {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
 	& > .ck-link-providers__list {
 		max-height: min( var(--ck-link-list-view-max-height), 40vh );
 
