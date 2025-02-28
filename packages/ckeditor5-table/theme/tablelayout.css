@@ -41,9 +41,9 @@
 .ck-content {
 	& .table.layout-table {
 		/* Table layout set to fixed only when width is set. But we need to filter other possibilities `*-width`, */
+		&[style^="width:"],
 		&[style*=" width:"],
 		&[style*=";width:"],
-		&[style*="\"width:"],
 		&[style*="'width:"] {
 			table-layout: fixed;
 		}

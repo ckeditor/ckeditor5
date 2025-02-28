@@ -25,6 +25,13 @@
 			--ck-color-selector-focused-cell-background: transparent;
 
 			padding: 2px;
+
+			&[style^="width:"],
+			&[style*=" width:"],
+			&[style*=";width:"],
+			&[style*="'width:"] {
+				min-width: auto;
+			}
 		}
 
 		/* Default table layout stylization in editing view. */
