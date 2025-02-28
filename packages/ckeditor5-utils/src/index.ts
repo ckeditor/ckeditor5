@@ -45,7 +45,7 @@ export { default as abortableDebounce, type AbortableFunc } from './abortabledeb
 export { default as count } from './count.js';
 export { default as compareArrays } from './comparearrays.js';
 export { default as createElement } from './dom/createelement.js';
-export { default as Config } from './config.js';
+export { default as Config, type GetSubConfig } from './config.js';
 export { default as isIterable } from './isiterable.js';
 export { default as DomEmitterMixin, type DomEmitter } from './dom/emittermixin.js';
 export { default as findClosestScrollableAncestor } from './dom/findclosestscrollableancestor.js';
