@@ -48,8 +48,7 @@ ClassicEditor
 				19,
 				21
 			]
-		},
-		licenseKey: 'GPL'
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

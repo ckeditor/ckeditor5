@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, setTimeout, LICENSE_KEY */
+/* globals console, window, document, setTimeout */
 
 import { Code, Strikethrough, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
@@ -80,8 +80,7 @@ ClassicEditor
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
-		},
-		licenseKey: LICENSE_KEY
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

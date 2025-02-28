@@ -100,8 +100,7 @@ const config = {
 		tokeUrl: TOKEN_URL,
 		allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 		forceDemoLabel: true
-	},
-	licenseKey: 'GPL'
+	}
 };
 
 DecoupledEditor

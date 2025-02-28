@@ -28,8 +28,7 @@ ClassicEditor
 				side: 'left',
 				label: 'This is'
 			}
-		},
-		licenseKey: 'GPL'
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

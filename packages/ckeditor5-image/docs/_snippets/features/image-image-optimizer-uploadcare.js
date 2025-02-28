@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals ClassicEditor, console, window, document, LICENSE_KEY */
+/* globals ClassicEditor, console, window, document */
 
 ClassicEditor
 	.create( document.querySelector( '#image-optimizer-uploadcare' ), {
@@ -48,8 +48,7 @@ ClassicEditor
 					'onedrive'
 				]
 			}
-		},
-		licenseKey: LICENSE_KEY
+		}
 	} )
 	.catch( err => {
 		console.error( err.stack );

@@ -1,9 +1,119 @@
-<iframe src="%BASE_PATH%/snippets/examples/bootstrap-ui-inner/snippet.html" id="snippet-bootstrap-ui-inner"></iframe>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+	
+		<!--UMBERTO: SNIPPET: CSS-->
+	</head>
+	<body>
+		<!-- The outermost cotainer of the editor. -->
+		<div class="ck-editor">
+			<!-- The toolbar of the editor. -->
+			<div class="btn-toolbar" role="toolbar" aria-label="Editor toolbar">
+				<!-- The headings dropdown. -->
+				<div class="btn-group mr-2" role="group" aria-label="Headings">
+					<div class="dropdown" id="heading">
+					  <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Headings</span></button>
+					  <div class="dropdown-menu" aria-labelledby="heading-button"></div>
+					</div>
+				</div>
 
-<style>
-	#snippet-bootstrap-ui-inner {
-		width: 100%;
-		height: 420px;
-		border: 0;
-	}
-</style>
+				<!-- Basic styles buttons. -->
+				<div class="btn-group mr-2" role="group" aria-label="Basic styles">
+					<button type="button" class="btn btn-primary btn-sm" id="bold">B</button>
+					<button type="button" class="btn btn-primary btn-sm" id="italic">I</button>
+					<button type="button" class="btn btn-primary btn-sm" id="underline">U</button>
+				</div>
+
+				<!-- Undo and redo buttons. -->
+				<div class="btn-group mr-2" role="group" aria-label="Undo">
+					<button type="button" class="btn btn-primary btn-sm" id="undo">&#x2190;</button>
+					<button type="button" class="btn btn-primary btn-sm" id="redo">&#x2192;</button>
+				</div>
+			</div>
+
+			<!-- The container containing data of the editor. -->
+			<div id="editor">
+				<h2>Custom UI</h2>
+				<p>
+					This editor uses <b>Bootstrap</b> components to build the user interface.
+				</p>
+			</div>
+		</div>
+
+		<button type="button" id="toggle-readonly">Toggle editor read&#x2013;only</button>
+
+		<style>
+			body {
+				padding: 0 .2em;
+			}
+
+			/* Let's give the editor some space and limits using a border. */
+			.ck-editor {
+				margin: 0 0 1em;
+				border: 1px solid hsla(0, 0%, 0%, 0.1);
+				border-radius: 4px;
+			}
+
+			/* Adding internal spacing, border and background to the toolbar.  */
+			.ck-editor .btn-toolbar {
+				padding: .5rem;
+				background: #f7f7f9;
+				border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
+			}
+
+			/* Tweaking the editable area for better readability. */
+			.ck-editor .ck-editor__editable {
+				padding: 2em 2em 1em;
+				overflow: auto;
+				height: 300px;
+			}
+
+			/* When in read–only mode, the editable should fade out. */
+			.ck-editor .ck-editor__editable.ck-read-only {
+				background: #fafafa;
+				color: hsl(0, 0%, 47%);
+			}
+
+			/* Make sure the headings dropdown button does not change its size
+			as different headings are selected */
+			.ck-editor .dropdown-toggle span {
+				display: inline-block;
+				width: 100px;
+				text-align: left;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				vertical-align: bottom;
+			}
+
+			/* Make the headings dropdown items visually distinctive. */
+			.ck-editor .heading-item_heading1 { font-size: 1.5em; }
+			.ck-editor .heading-item_heading2 { font-size: 1.3em; }
+			.ck-editor .heading-item_heading3 { font-size: 1.1em; }
+
+			.ck-editor [class*="heading-item_"] {
+				line-height: 22px;
+				padding: 10px;
+			}
+
+			.ck-editor [class*="heading-item_heading"] {
+			  font-weight: bold;
+			}
+
+			/* Give the basic styles buttons some icon–like shape */
+			.ck-editor #bold { font-weight: bold; }
+			.ck-editor #italic { font-style: italic; }
+			.ck-editor #underline { text-decoration: underline; }
+
+			/* https://github.com/ckeditor/ckeditor5/issues/903 */
+			.ck-editor .ck-content > :first-child {
+				margin-top: 0;
+			}
+		</style>
+
+		<!--UMBERTO: SNIPPET: JS-->
+	</body>
+</html>

@@ -67,6 +67,12 @@ function parseArguments( args ) {
 		'-e', '/ckfinder/',
 		'-e', '/api/',
 		'-e', '/assets/',
+
+		/**
+		 * MathType has a WASM telemetry file that esbuild fails to generate. Because
+		 * the code works fine without it, then we exclude the file from the scan.
+		 */
+		'-e', '/math-equations',
 		'-c', DEFAULT_CONCURRENCY
 	], config );
 

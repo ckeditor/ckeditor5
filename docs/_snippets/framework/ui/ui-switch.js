@@ -3,7 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals Locale, SwitchButtonView, ToolbarView, document */
+/* globals document */
+
+import { SwitchButtonView, ToolbarView } from '@ckeditor/ckeditor5-ui';
+import { Locale } from '@ckeditor/ckeditor5-utils';
 
 const locale = new Locale();
 

@@ -7,8 +7,6 @@ meta-title: Full page HTML | CKEditor 5 Documentation
 
 # Full page HTML
 
-{@snippet features/general-html-support-source}
-
 Thanks to the full page HTML feature you can use CKEditor&nbsp;5 to edit entire HTML pages (from `<html>` to `</html>`), including the page metadata. While the {@link features/general-html-support General HTML Support} feature focuses on elements inside the content (the document's `<body>`), this feature enables markup mostly invisible to the end user.
 
 ## Demo

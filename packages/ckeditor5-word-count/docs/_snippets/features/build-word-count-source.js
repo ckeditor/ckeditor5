@@ -102,8 +102,7 @@ BalloonEditor.defaultConfig = {
 		]
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
-	language: 'en',
-	licenseKey: 'GPL'
+	language: 'en'
 };
 
 class ClassicEditor extends ClassicEditorBase {
@@ -151,8 +150,7 @@ ClassicEditor.defaultConfig = {
 		]
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
-	language: 'en',
-	licenseKey: 'GPL'
+	language: 'en'
 };
 
 ClassicEditor.builtinPlugins.push( WordCount );

@@ -227,8 +227,7 @@ ClassicEditor
 			colorPicker: {
 				format: 'hex'
 			}
-		},
-		licenseKey: 'GPL'
+		}
 	} )
 	.then( editor => {
 		if ( !window.editors ) {

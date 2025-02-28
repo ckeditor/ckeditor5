@@ -18,7 +18,10 @@ module.exports = {
 		// ESLint should not process compiled TypeScript.
 		'src/*.js',
 		'**/*.d.ts',
-		'packages/ckeditor5-emoji/src/utils/isemojisupported.ts'
+		'packages/ckeditor5-emoji/src/utils/isemojisupported.ts',
+
+		// This file includes JSX which eslint can't parse without additional configuration.
+		'docs/_snippets/framework/tutorials/using-react-in-widget.js'
 	],
 	rules: {
 		'ckeditor5-rules/ckeditor-imports': 'error',

@@ -7,8 +7,6 @@ meta-title: General HTML Support | CKEditor 5 Documentation
 
 # General HTML Support
 
-{@snippet features/general-html-support-source}
-
 With the General HTML Support (GHS) feature, developers can enable HTML features that are not supported by any other dedicated CKEditor&nbsp;5 plugins. GHS lets you add elements, attributes, classes, and styles to the source. It also ensures this markup stays in the editor window and in the output.
 
 ## Demo

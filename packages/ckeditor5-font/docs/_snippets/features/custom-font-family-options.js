@@ -43,8 +43,7 @@ ClassicEditor
 				'Ubuntu, Arial, sans-serif',
 				'Ubuntu Mono, Courier New, Courier, monospace'
 			]
-		},
-		licenseKey: 'GPL'
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

@@ -7,8 +7,6 @@ meta-title: HTML comments element | CKEditor 5 Documentation
 
 # HTML comment element
 
-{@snippet features/general-html-support-source}
-
 By default, the editor filters out all HTML comments on initialization. The {@link module:html-support/htmlcomment~HtmlComment} feature lets developers keep HTML comments in the document without displaying them to the user.
 
 <info-box warning>

@@ -3,7 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, ListView, Locale, SearchTextView */
+/* globals document */
+
+import { ListView, SearchTextView } from '@ckeditor/ckeditor5-ui';
+import { Locale } from '@ckeditor/ckeditor5-utils';
 
 const locale = new Locale();
 

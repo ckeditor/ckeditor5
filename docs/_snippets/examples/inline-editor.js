@@ -25,8 +25,7 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
-		cloudServices: CS_CONFIG,
-		licenseKey: 'GPL'
+		cloudServices: CS_CONFIG
 	};
 
 	if ( inlineElement.tagName.toLowerCase() == 'header' ) {

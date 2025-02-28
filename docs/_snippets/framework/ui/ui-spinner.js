@@ -3,7 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, SpinnerView */
+/* globals document */
+
+import { SpinnerView } from '@ckeditor/ckeditor5-ui';
 
 const spinner = new SpinnerView();
 

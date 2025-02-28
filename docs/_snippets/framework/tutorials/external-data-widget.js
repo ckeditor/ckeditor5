@@ -12,7 +12,7 @@ import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { List } from '@ckeditor/ckeditor5-list';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src/index.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
 
 import BitcoinLogoIcon from '../../../assets/img/bitcoin-logo.svg';
@@ -194,8 +194,7 @@ class ExternalDataWidgetEditing extends Plugin {
 ClassicEditor
 	.create( document.querySelector( '#snippet-external-data-widget' ), {
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalDataWidget ],
-		toolbar: [ 'undo', 'redo', '|', 'external', '|', 'heading', '|', 'bold', 'italic', '|', 'numberedList', 'bulletedList' ],
-		licenseKey: 'GPL'
+		toolbar: [ 'undo', 'redo', '|', 'external', '|', 'heading', '|', 'bold', 'italic', '|', 'numberedList', 'bulletedList' ]
 	} )
 	.then( editor => {
 		console.log( 'Editor was initialized', editor );

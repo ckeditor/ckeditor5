@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, LICENSE_KEY */
+/* globals console, window, document */
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic.js';
@@ -59,8 +59,7 @@ ClassicEditor
 					classes: true
 				}
 			]
-		},
-		licenseKey: LICENSE_KEY
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

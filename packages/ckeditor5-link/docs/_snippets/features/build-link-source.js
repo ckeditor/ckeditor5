@@ -3,22 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window */
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { IconLink } from '@ckeditor/ckeditor5-icons';
+import { Link, LinkUI } from '@ckeditor/ckeditor5-link';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import LinkUI from '@ckeditor/ckeditor5-link/src/linkui.js';
-import Link from '@ckeditor/ckeditor5-link/src/link.js';
-import linkIcon from '@ckeditor/ckeditor5-icons/theme/icons/link.svg';
-import { AutoLink, LinkImage } from '@ckeditor/ckeditor5-link';
-import { Bookmark } from '@ckeditor/ckeditor5-bookmark';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-
-// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic.js';
-
-class SocialLinksPlugin extends Plugin {
+export class SocialLinksPlugin extends Plugin {
 	static get requires() {
 		return [ Link ];
 	}
@@ -33,25 +22,25 @@ class SocialLinksPlugin extends Plugin {
 					id: 'facebook',
 					href: 'https://facebook.com',
 					label: 'Facebook',
-					icon: linkIcon
+					icon: IconLink
 				},
 				{
 					id: 'twitter',
 					href: 'https://twitter.com',
 					label: 'Twitter',
-					icon: linkIcon
+					icon: IconLink
 				},
 				{
 					id: 'linkedin',
 					href: 'https://linkedin.com',
 					label: 'LinkedIn',
-					icon: linkIcon
+					icon: IconLink
 				},
 				{
 					id: 'instagram',
 					href: 'https://instagram.com',
 					label: 'Instagram',
-					icon: linkIcon
+					icon: IconLink
 				}
 			],
 
@@ -59,7 +48,7 @@ class SocialLinksPlugin extends Plugin {
 			getItem: href => {
 				return {
 					href,
-					icon: linkIcon,
+					icon: IconLink,
 					label: 'My custom label in link preview',
 					tooltip: 'My custom tooltip in link preview'
 				};
@@ -67,19 +56,3 @@ class SocialLinksPlugin extends Plugin {
 		} );
 	}
 }
-
-window.CKEditorPlugins = {
-	AutoLink,
-	Bookmark,
-	PictureEditing,
-	ImageInsert,
-	ImageResize,
-	AutoImage,
-	LinkImage,
-	CKBox,
-	CKBoxImageEdit,
-	SocialLinksPlugin
-};
-
-window.ClassicEditor = ClassicEditor;
-window.CS_CONFIG = CS_CONFIG;

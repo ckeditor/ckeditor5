@@ -73,8 +73,7 @@ ClassicEditor
 					]
 				}
 			]
-		},
-		licenseKey: 'GPL'
+		}
 	} )
 	.then( editor => {
 		const editingView = editor.editing.view;

@@ -79,8 +79,7 @@ ClassicEditor
 				defaultItem: 'imageStyle:block'
 			}, '|', 'toggleImageCaption', 'linkImage', '|', 'ckboxImageEdit'
 			]
-		},
-		licenseKey: 'GPL'
+		}
 	} )
 	.then( editor => {
 		window.editorStyleCustom = editor;

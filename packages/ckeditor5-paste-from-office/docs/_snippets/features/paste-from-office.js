@@ -78,8 +78,7 @@ ClassicEditor
 			}
 		},
 		placeholder: 'Paste the content here to test the feature.',
-		cloudServices: CS_CONFIG,
-		licenseKey: 'GPL'
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editor = editor;

@@ -40,8 +40,7 @@ ClassicEditor
 				{ language: 'css', label: 'CSS' },
 				{ language: 'html', label: 'HTML' }
 			]
-		},
-		licenseKey: 'GPL'
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

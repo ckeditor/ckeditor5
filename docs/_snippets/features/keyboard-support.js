@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, document, console, LICENSE_KEY */
+/* globals window, document, console */
 
 // Keep the guide listing updated with each change.
 
@@ -28,7 +28,8 @@ import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Highlight } from '@ckeditor/ckeditor5-highlight';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed';
-import { AutoImage,
+import {
+	AutoImage,
 	Image,
 	ImageCaption,
 	ImageInsert,
@@ -57,7 +58,7 @@ import { Style } from '@ckeditor/ckeditor5-style';
 import { Table, TableCaption, TableCellProperties, TableColumnResize, TableProperties, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { Template } from '@ckeditor/ckeditor5-template';
 import { TextTransformation } from '@ckeditor/ckeditor5-typing';
-import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader.js';
+import { WProofreader } from '@webspellchecker/wproofreader-ckeditor5';
 
 // import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
@@ -510,8 +511,7 @@ ClassicEditor
 			tokenUrl: TOKEN_URL,
 			forceDemoLabel: true,
 			allowExternalImagesEditing: [ /^data:/, 'origin' ]
-		},
-		licenseKey: LICENSE_KEY
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
