@@ -376,7 +376,7 @@ describe( 'EmojiRepository', () => {
 			expect( results ).to.deep.equal( [] );
 
 			expect( consoleStub.called ).to.equal( true );
-			sinon.assert.calledWith( consoleStub, 'emoji-repository-load-failed' );
+			sinon.assert.calledWith( consoleStub, 'emoji-repository-empty' );
 
 			domElement.remove();
 			await editor.destroy();
@@ -392,7 +392,7 @@ describe( 'EmojiRepository', () => {
 			expect( results ).to.deep.equal( [] );
 
 			expect( consoleStub.called ).to.equal( true );
-			sinon.assert.calledWith( consoleStub, 'emoji-repository-load-failed' );
+			sinon.assert.calledWith( consoleStub, 'emoji-repository-empty' );
 
 			domElement.remove();
 			await editor.destroy();
@@ -410,7 +410,7 @@ describe( 'EmojiRepository', () => {
 			} );
 
 			expect( consoleStub.called ).to.equal( true );
-			sinon.assert.calledWith( consoleStub, 'emoji-repository-load-failed' );
+			sinon.assert.calledWith( consoleStub, 'emoji-repository-empty' );
 
 			domElement.remove();
 			await editor.destroy();

@@ -169,7 +169,7 @@ The {@link module:emoji/emojipicker~EmojiPicker} plugin registers the UI button 
 
 ## Troubleshooting
 
-If you're experiencing issues with the Emoji plugin in CKEditor 5 and the `emoji-repository-load-failed` is displayed in the console, it may be due to missing system support for emoji fonts or problems loading the emoji repository. Below are some common issues and their solutions.
+If you're experiencing issues with the Emoji plugin in CKEditor 5 and the `emoji-repository-empty` is displayed in the console, it may be due to missing system support for emoji fonts or problems loading the emoji repository. Below are some common issues and their solutions.
 
 #### 1. No Emoji Font Installed
 

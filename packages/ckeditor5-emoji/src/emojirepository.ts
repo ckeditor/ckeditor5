@@ -102,16 +102,14 @@ export default class EmojiRepository extends Plugin {
 
 		if ( !this._items ) {
 			/**
-			 * Unable to load the emoji repository from the URL.
+			 * Unable to identify the available emoji to display
 			 *
-			 * If the URL works properly and there is no disruption of communication, please check your
-			 * {@glink getting-started/setup/csp Content Security Policy (CSP)} setting and make sure
-			 * the URL connection is allowed by the editor.
-			 * Also make sure, that proper emoji font is installed on your OS.
+			 * See the {@glink features/emoji#troubleshooting troubleshooting} section in the {@glink features/emoji Emoji feature} guide
+			 * for more details.
 			 *
-			 * @error emoji-repository-load-failed
+			 * @error emoji-repository-empty
 			 */
-			logWarning( 'emoji-repository-load-failed' );
+			logWarning( 'emoji-repository-empty' );
 
 			return this._repositoryPromiseResolveCallback( false );
 		}
