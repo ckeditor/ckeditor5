@@ -33,12 +33,21 @@ export default abstract class EditorUIView extends View {
 	public abstract get editable(): EditableUIView;
 
 	/**
-	 * Menu bar view instance. May not be initialized in some editor types.
+	 * Menu bar view instance. Initialized by default in:
+	 *
+	 * * balloon editor;
+	 * * decoupled editor;
+	 * * multiroot editor.
 	 */
 	public menuBarView?: MenuBarView;
 
 	/**
-	 * Toolbar view instance. May not be initialized in some editor types.
+	 * Toolbar view instance. Initialized by default in:
+	 *
+	 * * classic editor;
+	 * * decoupled editor;
+	 * * inline editor;
+	 * * multiroot editor.
 	 */
 	public toolbar?: ToolbarView;
 

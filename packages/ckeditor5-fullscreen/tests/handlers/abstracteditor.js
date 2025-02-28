@@ -37,8 +37,7 @@ describe( 'AbstractHandler', () => {
 
 	describe( 'constructor', () => {
 		it( 'should create element maps', () => {
-			expect( abstractHandler._idToPlaceholder ).to.be.an.instanceOf( Map );
-			expect( abstractHandler._placeholderToElement ).to.be.an.instanceOf( Map );
+			expect( abstractHandler._placeholderMap ).to.be.an.instanceOf( Map );
 		} );
 
 		it( 'should set the editor instance as a property', () => {
@@ -71,6 +70,11 @@ describe( 'AbstractHandler', () => {
 	} );
 
 	describe( '#returnMovedElement()', () => {
+		it( 'should not throw if map does not contain requested element', () => {
+			expect( abstractHandler._placeholderMap.has( 'menu-bar' ) ).to.be.false;
+			expect( () => abstractHandler.returnMovedElement( 'menu-bar' ) ).to.not.throw();
+		} );
+
 		it( 'should return only target moved element', () => {
 			const element = global.document.createElement( 'div' );
 			const element2 = global.document.createElement( 'div' );
@@ -84,8 +88,7 @@ describe( 'AbstractHandler', () => {
 			// Move `menu-bar` back.
 			abstractHandler.returnMovedElement( 'menu-bar' );
 
-			expect( abstractHandler._idToPlaceholder.size ).to.equal( 1 );
-			expect( abstractHandler._placeholderToElement.size ).to.equal( 1 );
+			expect( abstractHandler._placeholderMap.size ).to.equal( 1 );
 			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="menu-bar"' ) ).to.be.null;
 			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="editable"' ) ).to.not.be.null;
 
@@ -184,18 +187,16 @@ describe( 'AbstractHandler', () => {
 			abstractHandler.moveToFullscreen( element2, 'editable' );
 
 			expect(
-				abstractHandler._placeholderToElement.has( global.document.querySelector( '[data-ck-fullscreen-placeholder="menu-bar"' ) )
+				abstractHandler._placeholderMap.has( 'menu-bar' )
 			).to.be.true;
 			expect(
-				abstractHandler._placeholderToElement.has( global.document.querySelector( '[data-ck-fullscreen-placeholder="editable"' ) )
+				abstractHandler._placeholderMap.has( 'editable' )
 			).to.be.true;
-			expect( abstractHandler._idToPlaceholder.size ).to.equal( 2 );
-			expect( abstractHandler._placeholderToElement.size ).to.equal( 2 );
+			expect( abstractHandler._placeholderMap.size ).to.equal( 2 );
 
 			abstractHandler.disable();
 
-			expect( abstractHandler._idToPlaceholder.size ).to.equal( 0 );
-			expect( abstractHandler._placeholderToElement.size ).to.equal( 0 );
+			expect( abstractHandler._placeholderMap.size ).to.equal( 0 );
 			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="menu-bar"' ) ).to.be.null;
 			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="editable"' ) ).to.be.null;
 

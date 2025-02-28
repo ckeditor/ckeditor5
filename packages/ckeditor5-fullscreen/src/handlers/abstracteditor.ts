@@ -16,14 +16,9 @@ import { createElement } from 'ckeditor5/src/utils.js';
  */
 export default class AbstractEditorHandler {
 	/**
-	 * Maps placeholder elements to moved elements.
+	 * Maps placeholder names to placeholder elements and moved elements.
 	 */
-	private _placeholderToElement: Map<HTMLElement, HTMLElement>;
-
-	/**
-	 * Maps placeholder names to placeholder elements.
-	 */
-	private _idToPlaceholder: Map<string, HTMLElement>;
+	private _placeholderMap: Map<string, { placeholderElement: HTMLElement; movedElement: HTMLElement }>;
 
 	/**
 	 * The container element that holds the fullscreen mode layout.
@@ -56,19 +51,16 @@ export default class AbstractEditorHandler {
 	 * @inheritDoc
 	 */
 	constructor( editor: Editor ) {
-		this._placeholderToElement = new Map();
-		this._idToPlaceholder = new Map();
-		this._editor = editor;
+		this._placeholderMap = new Map();
 
 		if ( editor.plugins.has( 'RevisionHistory' ) ) {
 			this._showRevisionViewerCallback = editor.config.get( 'revisionHistory.showRevisionViewerCallback' )!;
 			this._closeRevisionViewerCallback = editor.config.get( 'revisionHistory.closeRevisionViewerCallback' )!;
 		}
+
 		this._editor = editor;
-
 		this._defaultEnable = () => this.getContainer();
-
-		this._editor.on( 'destroy', () => {
+		editor.on( 'destroy', () => {
 			this.disable();
 		} );
 	}
@@ -84,26 +76,25 @@ export default class AbstractEditorHandler {
 
 		this.getContainer().querySelector( `[data-ck-fullscreen="${ placeholderName }"]` )!.append( elementToMove );
 
-		this._placeholderToElement.set( placeholderElement, elementToMove );
-		this._idToPlaceholder.set( placeholderName, placeholderElement );
+		this._placeholderMap.set( placeholderName, { placeholderElement, movedElement: elementToMove } );
 	}
 
 	/**
 	 * Returns a single moved element to its original place.
 	 */
 	public returnMovedElement( placeholderName: string ): void {
-		const placeholder = this._idToPlaceholder.get( placeholderName )!;
-		const element = this._placeholderToElement.get( placeholder );
-
-		if ( element ) {
-			placeholder.replaceWith( element );
-			placeholder.remove();
-
-			this._idToPlaceholder.delete( placeholderName );
-			this._placeholderToElement.delete( placeholder );
+		if ( !this._placeholderMap.has( placeholderName ) ) {
+			return;
 		}
 
-		if ( this._idToPlaceholder.size === 0 ) {
+		const { placeholderElement, movedElement } = this._placeholderMap.get( placeholderName )!;
+
+		placeholderElement.replaceWith( movedElement );
+		placeholderElement.remove();
+
+		this._placeholderMap.delete( placeholderName );
+
+		if ( this._placeholderMap.size === 0 ) {
 			this._destroyContainer();
 		}
 	}
@@ -142,6 +133,12 @@ export default class AbstractEditorHandler {
 		this._defaultEnable();
 
 		if ( this._editor.plugins.has( 'RevisionHistory' ) ) {
+			// Code coverage is provided in the commercial package repository as integration unit tests.
+			/* istanbul ignore if -- @preserve */
+			if ( this._editor.plugins.get( 'RevisionHistory' ).isRevisionViewerOpen ) {
+				this._editor.config.get( 'revisionHistory.closeRevisionViewerCallback' )!();
+			}
+
 			this._overrideRevisionHistoryCallbacks();
 		}
 
@@ -162,11 +159,11 @@ export default class AbstractEditorHandler {
 			this._restoreRevisionHistoryCallbacks();
 		}
 
-		for ( const placeholderName of this._idToPlaceholder.keys() ) {
+		for ( const placeholderName of this._placeholderMap.keys() ) {
 			this.returnMovedElement( placeholderName );
 		}
 
-		if ( this._idToPlaceholder.size === 0 ) {
+		if ( this._placeholderMap.size === 0 ) {
 			this._destroyContainer();
 		}
 	}
@@ -185,10 +182,11 @@ export default class AbstractEditorHandler {
 	 * Modifies the revision history viewer callbacks to display the viewer in the fullscreen mode.
 	 */
 	protected _overrideRevisionHistoryCallbacks(): void {
-		/* istanbul ignore next -- @preserve */
 		// * Hide editor's editable and toolbar;
 		// * Disable menu bar;
 		// * Show revision viewer editable, toolbar and sidebar.
+		// Code coverage is provided in the commercial package repository as integration unit tests.
+		/* istanbul ignore next -- @preserve */
 		this._editor.config.set( 'revisionHistory.showRevisionViewerCallback', async () => {
 			const revisionViewer = await this._showRevisionViewerCallback!();
 
@@ -206,10 +204,11 @@ export default class AbstractEditorHandler {
 			return revisionViewer;
 		} );
 
-		/* istanbul ignore next -- @preserve */
 		// * Hide revision viewer editable, toolbar and sidebar;
 		// * Enable menu bar;
 		// * Show editor's editable and toolbar.
+		// Code coverage is provided in the commercial package repository as integration unit tests.
+		/* istanbul ignore next -- @preserve */
 		this._editor.config.set( 'revisionHistory.closeRevisionViewerCallback', async () => {
 			this.returnMovedElement( 'toolbar' );
 			this.returnMovedElement( 'editable' );
