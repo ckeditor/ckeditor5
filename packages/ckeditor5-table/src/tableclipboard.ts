@@ -117,6 +117,10 @@ export default class TableClipboard extends Plugin {
 			},
 			{ priority: 'high' }
 		);
+
+		clipboardPipeline.on<ClipboardContentInsertionEvent>( 'contentInsertion', () => {
+			isDrop = false;
+		}, { priority: 'lowest' } );
 	}
 
 	/**
