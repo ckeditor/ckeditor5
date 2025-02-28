@@ -27,10 +27,6 @@ The selected emoji category and skin tone are remembered by the feature, so next
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
-<info-box warning>
-	The availability of the emojis and their appearance depends on the operating system. If you want to standardize both the appearance and availability of emojis, please consider using an external font in your integration, such as [Noto Color Emoji](https://fonts.google.com/noto/specimen/Noto+Color+Emoji).
-</info-box>
-
 ## Installation
 
 <info-box info>
@@ -133,6 +129,29 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 		.then( /* ... */ )
 		.catch( /* ... */ );
 	```
+
+### Emoji's availability and appearance
+
+The availability of the emoji depends on the operating system. Different systems will have different Unicode support. You can decide that you want to lower the amount of newer emoji by setting a lower version of Unicode of the emoji repository (CKEditor hosts v15 and v16). This way the users with newer systems will not be able to use newer emoji. Keep in mind that this only affects the editor's feature. A user will still be able to use the native emoji insertion methods. The availability may also increase with the usage of a custom font. To learn more, read the next paragraph.
+
+If you want to standardize the appearance emojis accross operating systems, please consider using an external font in your integration, such as [Noto Color Emoji](https://fonts.google.com/noto/specimen/Noto+Color+Emoji). In the setup make sure to:
+
+1. Set in the `font-family` for the content, this way the emoji in the editable will use the custom font. For example:
+
+    ```css
+    body {
+    	font-family: 'Lato', 'Noto Color Emoji', sans-serif;
+    }
+    ```
+
+2. Update the `--ck-font-face` variable, so that emoji in the picker and mention use the custom font.
+
+    ```css
+    :root {
+        --ck-font-face: Helvetica, Arial, Tahoma, Verdana, 'Noto Color Emoji';
+    }
+    ```
+
 
 ### Emoji source
 
