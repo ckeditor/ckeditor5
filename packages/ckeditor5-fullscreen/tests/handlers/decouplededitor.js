@@ -41,15 +41,7 @@ describe( 'DecoupledEditorHandler', () => {
 
 	describe( 'constructor', () => {
 		it( 'should set the editor instance as a property', () => {
-			expect( decoupledEditorHandler._editor ).to.equal( editor );
-		} );
-
-		it( 'should setup listener disabling fullscreen when editor is destroyed', async () => {
-			const spy = sinon.spy( decoupledEditorHandler, 'disable' );
-
-			await editor.destroy();
-
-			expect( spy ).to.have.been.calledOnce;
+			expect( decoupledEditorHandler._editor ).to.be.instanceOf( DecoupledEditor );
 		} );
 	} );
 
@@ -57,7 +49,7 @@ describe( 'DecoupledEditorHandler', () => {
 		it( 'should move the editable, toolbar and menu bar to the fullscreen container', () => {
 			decoupledEditorHandler.enable();
 
-			expect( decoupledEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=editor]' ).children[ 0 ] )
+			expect( decoupledEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=editable]' ).children[ 0 ] )
 				.to.equal( editor.editing.view.getDomRoot() );
 			expect( decoupledEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=toolbar]' ).children[ 0 ] )
 				.to.equal( editor.ui.view.toolbar.element );

@@ -19,15 +19,15 @@ Fullscreen layout:
 		<div class="ck ck-fullscreen__menu-bar" data-ck-fullscreen="menu-bar"></div>
 		<div class="ck ck-fullscreen__toolbar" data-ck-fullscreen="toolbar"></div>
 	</div>
-	<div class="ck ck-fullscreen__editor-wrapper">
+	<div class="ck ck-fullscreen__editable-wrapper">
 		<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="left-sidebar"></div>
-		<div class="ck ck-fullscreen__editor" data-ck-fullscreen="editor"></div>
+		<div class="ck ck-fullscreen__editable" data-ck-fullscreen="editable"></div>
 		<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="right-sidebar"></div>
 	</div>
 </div>
 */
 
-.ck-fullscreen__main-container {
+.ck.ck-fullscreen__main-container {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -37,13 +37,18 @@ Fullscreen layout:
 	background: var(--ck-color-base-foreground);
 	display: flex;
 	flex-direction: column;
+
+	& .ck.ck-revision-history-ui__changes-navigation {
+		margin-top: 0px;
+		margin-bottom: 0px;
+	}
 }
 
 .ck-fullscreen__menu-bar .ck.ck-menu-bar {
 	border: none;
 }
 
-.ck-fullscreen__main-container .ck-fullscreen__editor-wrapper {
+.ck-fullscreen__main-container .ck-fullscreen__editable-wrapper {
 	display: flex;
 	justify-content: center;
 	overflow: auto;
@@ -51,7 +56,7 @@ Fullscreen layout:
 }
 
 .ck-fullscreen__main-container .ck-fullscreen__sidebar {
-	width: 270px;
+	width: 330px;
 	margin-top: 28px;
 	margin-left: 10px;
 	margin-right: 10px;
@@ -59,13 +64,13 @@ Fullscreen layout:
 	flex-shrink: 0;
 }
 
-.ck-fullscreen__main-container .ck-fullscreen__editor {
+.ck-fullscreen__main-container .ck-fullscreen__editable {
 	margin-top: 28px;
 	margin-bottom: 56px;
 	height: 100%;
 }
 
-.ck-fullscreen__main-container .ck-fullscreen__editor .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
+.ck-fullscreen__main-container .ck-fullscreen__editable .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
 	box-sizing: border-box;
 	min-width: calc(210mm + 2px);
 	max-width: calc(210mm + 2px);
@@ -77,6 +82,6 @@ Fullscreen layout:
 	box-shadow: 0 2px 3px hsla(0, 0%, 0%, 0.078);
 }
 
-.ck-fullscreen__main-container .ck-fullscreen__editor .ck-source-editing-area {
+.ck-fullscreen__main-container .ck-fullscreen__editable .ck-source-editing-area {
 	min-width: calc(210mm + 2px);
 }
