@@ -24,10 +24,22 @@ const SKIN_TONE_MAP: Record<number, SkinToneId> = {
 /**
  * A map representing an emoji and its release version.
  * It's used to identify a user's minimal supported emoji level.
+ * We skip versions with older patches, such as 15.0 instead of 15.1 etc.
  */
-const EMOJI_SUPPORT_LEVEL = {
+const EMOJI_SUPPORT_LEVEL: Record<string, number> = {
 	'🫩': 16, // Face with bags under eyes.
-	'🫨': 15.1 // Shaking head. Although the version of emoji is 15, it is used to detect versions 15 and 15.1.
+	'🫨': 15.1, // Shaking Face.
+	'🫠': 14, // Melting Face.
+	'😶‍🌫️': 13.1, // Face in Clouds.
+	'🧑‍💻': 12.1, // Technologist.
+	'🥰': 11, // Smiling Face with Hearts.
+	'🤪': 5, // Zany Face.
+	'⚕️': 4, // Medical Symbol.
+	'🤣': 3, // Rolling on the Floor Laughing.
+	'👋🏽': 2, // Waving Hand: Medium Skin Tone.
+	'😀': 1, // Grinning Face.
+	'😐': 0.7, // Neutral Face.
+	'😂': 0.6 // Face with Tears of Joy.
 };
 
 const BASELINE_EMOJI_WIDTH = 24;
@@ -72,14 +84,13 @@ export default class EmojiUtils extends Plugin {
 	 * Checks the supported emoji version by the OS, by sampling some representatives from different emoji releases.
 	 */
 	public getEmojiSupportedVersionByOs(): number {
-		return Object.entries( EMOJI_SUPPORT_LEVEL )
-			.reduce( ( currentVersion, [ emoji, newVersion ] ) => {
-				if ( newVersion > currentVersion && EmojiUtils._isEmojiSupported( emoji ) ) {
-					return newVersion;
-				}
+		for ( const [ emoji, emojiVersion ] of Object.entries( EMOJI_SUPPORT_LEVEL ) ) {
+			if ( EmojiUtils._isEmojiSupported( emoji ) ) {
+				return emojiVersion;
+			}
+		}
 
-				return currentVersion;
-			}, 0 );
+		return 0;
 	}
 
 	/**

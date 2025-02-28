@@ -89,7 +89,15 @@ describe( 'EmojiUtils', () => {
 	} );
 
 	describe( 'getEmojiSupportedVersionByOs()', () => {
-		it( 'should return version 15 for shaking head', async () => {
+		it( 'should return version 16 for Face with Bags Under Eyes', async () => {
+			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '🫩' );
+
+			const result = emojiUtils.getEmojiSupportedVersionByOs();
+
+			expect( result ).to.equal( 16 );
+		} );
+
+		it( 'should return version 15 for Shaking Face', async () => {
 			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '🫨' );
 
 			const result = emojiUtils.getEmojiSupportedVersionByOs();
@@ -97,12 +105,100 @@ describe( 'EmojiUtils', () => {
 			expect( result ).to.equal( 15.1 );
 		} );
 
-		it( 'should return version 16 for face with bags under eyes', async () => {
-			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '🫩' );
+		it( 'should return version 14 for Melting Face', async () => {
+			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '🫠' );
 
 			const result = emojiUtils.getEmojiSupportedVersionByOs();
 
-			expect( result ).to.equal( 16 );
+			expect( result ).to.equal( 14 );
+		} );
+
+		it( 'should return version 13 for Face in Clouds', async () => {
+			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '😶‍🌫️' );
+
+			const result = emojiUtils.getEmojiSupportedVersionByOs();
+
+			expect( result ).to.equal( 13.1 );
+		} );
+
+		it( 'should return version 12 for Technologist', async () => {
+			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '🧑‍💻' );
+
+			const result = emojiUtils.getEmojiSupportedVersionByOs();
+
+			expect( result ).to.equal( 12.1 );
+		} );
+
+		it( 'should return version 11 for Smiling Face with Hearts', async () => {
+			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '🥰' );
+
+			const result = emojiUtils.getEmojiSupportedVersionByOs();
+
+			expect( result ).to.equal( 11 );
+		} );
+
+		it( 'should return version 5 for Zany Face', async () => {
+			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '🤪' );
+
+			const result = emojiUtils.getEmojiSupportedVersionByOs();
+
+			expect( result ).to.equal( 5 );
+		} );
+
+		it( 'should return version 4 for Medical Symbol', async () => {
+			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '⚕️' );
+
+			const result = emojiUtils.getEmojiSupportedVersionByOs();
+
+			expect( result ).to.equal( 4 );
+		} );
+
+		it( 'should return version 3 for Rolling on the Floor Laughing', async () => {
+			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '🤣' );
+
+			const result = emojiUtils.getEmojiSupportedVersionByOs();
+
+			expect( result ).to.equal( 3 );
+		} );
+
+		it( 'should return version 2 for Waving Hand: Medium Skin Tone', async () => {
+			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '👋🏽' );
+
+			const result = emojiUtils.getEmojiSupportedVersionByOs();
+
+			expect( result ).to.equal( 2 );
+		} );
+
+		it( 'should return version 1 for Grinning Face', async () => {
+			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '😀' );
+
+			const result = emojiUtils.getEmojiSupportedVersionByOs();
+
+			expect( result ).to.equal( 1 );
+		} );
+
+		it( 'should return version 0.7 for Neutral Face', async () => {
+			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '😐' );
+
+			const result = emojiUtils.getEmojiSupportedVersionByOs();
+
+			expect( result ).to.equal( 0.7 );
+		} );
+
+		it( 'should return version 0.6 for Face with Tears of Joy', async () => {
+			sinon.stub( EmojiUtils, '_isEmojiSupported' ).callsFake( emoji => emoji === '😂' );
+
+			const result = emojiUtils.getEmojiSupportedVersionByOs();
+
+			expect( result ).to.equal( 0.6 );
+		} );
+
+		it( 'should return 0 when no emoji is supported', async () => {
+			sinon.stub( EmojiUtils, '_isEmojiSupported' ).returns( false );
+
+			const result = emojiUtils.getEmojiSupportedVersionByOs();
+
+			expect( result ).to.equal( 0 );
 		} );
 	} );
 
