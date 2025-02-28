@@ -322,7 +322,6 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 			}
 		} );
 
-		// to check
 		this.on( 'change:_isVisible', ( evt, name, isVisible ) => {
 			if ( isVisible ) {
 				// Let the content render first, then apply the position. Otherwise, the calculated DOM Rects
@@ -494,6 +493,7 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 
 		// @if CK_DEBUG_DIALOG // RectDrawer.clear();
 		// @if CK_DEBUG_DIALOG // RectDrawer.draw( viewportRect, { outlineColor: 'blue' }, 'Viewport' );
+
 		switch ( configuredPosition ) {
 			case DialogViewPosition.EDITOR_TOP_SIDE: {
 				// @if CK_DEBUG_DIALOG // if ( domRootRect ) {
