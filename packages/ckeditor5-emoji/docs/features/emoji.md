@@ -27,10 +27,6 @@ The selected emoji category and skin tone are remembered by the feature, so next
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
-<info-box warning>
-	The availability of the emojis and their appearance depends on the operating system. If you want to standardize both the appearance and availability of emojis, please consider using an external font in your integration, such as [Noto Color Emoji](https://fonts.google.com/noto/specimen/Noto+Color+Emoji).
-</info-box>
-
 ## Installation
 
 <info-box info>
@@ -134,6 +130,29 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 		.catch( /* ... */ );
 	```
 
+### Emoji's availability and appearance
+
+The availability of the emoji depends on the operating system. Different systems will have different Unicode support. You can decide that you want to lower the amount of newer emoji by setting a lower version of Unicode of the emoji repository (CKEditor hosts v15 and v16). This way the users with newer systems will not be able to use newer emoji. Keep in mind that this only affects the editor's feature. A user will still be able to use the native emoji insertion methods. The availability may also increase with the usage of a custom font. To learn more, read the next paragraph.
+
+If you want to standardize the appearance emojis accross operating systems, please consider using an external font in your integration, such as [Noto Color Emoji](https://fonts.google.com/noto/specimen/Noto+Color+Emoji). In the setup make sure to:
+
+1. Set in the `font-family` for the content, this way the emoji in the editable will use the custom font. For example:
+
+    ```css
+    body {
+    	font-family: 'Lato', 'Noto Color Emoji', sans-serif;
+    }
+    ```
+
+2. Update the `--ck-font-face` variable, so that emoji in the picker and mention use the custom font.
+
+    ```css
+    :root {
+        --ck-font-face: Helvetica, Arial, Tahoma, Verdana, 'Noto Color Emoji';
+    }
+    ```
+
+
 ### Emoji source
 
 The database of English emoji is loaded by default from our CDN. Make sure that your {@link getting-started/setup/csp CSP rules} are correctly set up.
@@ -166,6 +185,49 @@ The {@link module:emoji/emojipicker~EmojiPicker} plugin registers the UI button 
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor, such as internal data structures, selection, commands, and many more.
 </info-box>
+
+## Troubleshooting
+
+If you're experiencing issues with the Emoji plugin in CKEditor 5 and the `emoji-repository-empty` is displayed in the console, it may be due to missing system support for emoji fonts or problems loading the emoji repository. Below are some common issues and their solutions.
+
+#### 1. No Emoji Font Installed
+
+**Problem**:
+The system does not have an emoji font installed, preventing the Emoji plugin from rendering emojis correctly.
+
+**Solution**:
+To use the Emoji plugin, install an emoji font on your operating system:
+
+* macOS: `Apple Color Emoji`
+* Windows: `Segoe UI Emoji`
+* Linux: `Noto Color Emoji` (or an alternative like `Twemoji`)
+
+Once installed, restart your browser and reload the editor.
+
+#### 2. Server Error When Loading the Emoji Repository
+
+**Problem**:
+The request to load the emoji repository was completed, but the server returned an error (e.g., 404 Not Found, 500 Internal Server Error).
+
+**Solution**:
+
+* Ensure the emoji repository URL is correct and accessible.
+* If using a custom emoji repository, verify that it is properly configured.
+
+#### 3. Network Issues Preventing the Emoji Repository from Loading
+
+**Problem**:
+The emoji repository could not be loaded due to a network issue, CORS restriction, or blocked request.
+
+**Solution**:
+
+* Verify that the URL is correct and accessible.
+* Check your internet connection.
+* If applicable, update your Content Security Policy (CSP) settings to allow connections to the emoji repository.
+
+For more details on configuring CSP, see the {@link getting-started/setup/csp Content Security Policy guide.}
+
+By following these steps, you should be able to resolve common issues with the Emoji plugin in CKEditor 5. If problems persist, check your browser console for additional error messages or consult the CKEditor 5 [GitHub repository for support](https://github.com/ckeditor/ckeditor5/issues).
 
 ## Contribute
 
