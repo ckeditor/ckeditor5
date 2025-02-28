@@ -7,6 +7,7 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
 import Table from '../../src/table.js';
 import TableToolbar from '../../src/tabletoolbar.js';
@@ -23,6 +24,7 @@ const config = {
 	image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 	plugins: [
 		ArticlePluginSet,
+		GeneralHtmlSupport,
 		HorizontalLine,
 		Table,
 		TableToolbar,
@@ -45,6 +47,16 @@ const config = {
 	table: {
 		contentToolbar: [
 			'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
+		]
+	},
+	htmlSupport: {
+		allow: [
+			{
+				name: /.*/,
+				attributes: true,
+				classes: true,
+				styles: true
+			}
 		]
 	},
 	menuBar: {

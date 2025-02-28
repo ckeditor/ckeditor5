@@ -25,6 +25,7 @@
 			--ck-color-selector-focused-cell-background: transparent;
 
 			padding: 1px 2px;
+			border: none;
 
 			&[style^="width:"],
 			&[style*=" width:"],
@@ -34,10 +35,20 @@
 			}
 		}
 
-		/* Default table layout stylization in editing view. */
-		/* When border is not set: */
-		& > table:not([style*="border"]),
-		& > table > tbody > tr > td:not([style*="border"]) {
+		/* Default table layout stylization in editing view.
+		When border is not set.
+		But it need to be more strict cause of style attributes like `border-collapse`. */
+
+		& > table[style*="border-collapse"]:not(
+		& > table[style*="border:"],
+		& > table[style*="border-w"],
+		& > table[style*="border-s"],
+		& > table[style*="border-colo"]),
+		& > table > tbody > tr > td[style*="border-collapse"]:not(
+			& > table > tbody > tr > td[style*="border:"],
+			& > table > tbody > tr > td[style*="border-w"],
+			& > table > tbody > tr > td[style*="border-s"],
+			& > table > tbody > tr > td[style*="border-colo"]) {
 			border: none;
 			outline: var(--ck-table-layout-default-border-color) 1px dashed;
 		}
