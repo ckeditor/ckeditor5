@@ -14,6 +14,8 @@ import TableLayoutEditing from './tablelayout/tablelayoutediting.js';
 import PlainTableOutput from './plaintableoutput.js';
 import TableColumnResize from './tablecolumnresize.js';
 
+import '../theme/tablelayout.css';
+
 /**
  * The table layout plugin.
  */

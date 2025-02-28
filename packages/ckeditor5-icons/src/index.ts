@@ -152,7 +152,7 @@ export { default as IconTableOfContents } from '../theme/icons/table-of-contents
 export { default as IconTableProperties } from '../theme/icons/table-properties.svg';
 export { default as IconTableRow } from '../theme/icons/table-row.svg';
 export { default as IconTable } from '../theme/icons/table.svg';
-export { default as IconTableLayout } from '../theme/icons/table.svg'; // TODO: Add table layout icon.
+export { default as IconTableLayout } from '../theme/icons/table-layout.svg';
 export { default as IconTemplateGeneric } from '../theme/icons/template-generic.svg';
 export { default as IconTemplate } from '../theme/icons/template.svg';
 export { default as IconTextAlternative } from '../theme/icons/text-alternative.svg';

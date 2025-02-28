@@ -1,0 +1,51 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck-editor__editable {
+	&.ck-editor__editable_inline {
+		& > .ck-widget.ck-widget_with-selection-handle.layout-table:first-child {
+			margin-top: var(--ck-spacing-large);
+		}
+	}
+
+	& .table.layout-table {
+		/* Do not reserve space above and below the layout table. */
+		margin-top: 0;
+		margin-bottom: 0;
+
+		& > table {
+			border-spacing: 0.5px;
+		}
+
+		/* Widget type around overrides. */
+		&.ck-widget {
+			&:hover > .ck-widget__selection-handle {
+				opacity: 0.75;
+				visibility: visible;
+
+				&:hover {
+					opacity: 1;
+				}
+			}
+
+			&:has( .ck-widget:hover ) > .ck-widget__selection-handle {
+				opacity: 0;
+				visibility: hidden;
+			}
+		}
+	}
+}
+
+.ck-content {
+	& .table.layout-table:not(figure) {
+		/* Table layout set to fixed only when width is set. But we need to filter other possibilities `*-width`, */
+		&[style^="width:"],
+		&[style*=" width:"],
+		&[style*=";width:"],
+		&[style*="'width:"] {
+			table-layout: fixed;
+		}
+	}
+}
