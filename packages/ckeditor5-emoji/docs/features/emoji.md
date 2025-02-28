@@ -167,6 +167,49 @@ The {@link module:emoji/emojipicker~EmojiPicker} plugin registers the UI button 
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor, such as internal data structures, selection, commands, and many more.
 </info-box>
 
+## Troubleshooting
+
+If you're experiencing issues with the Emoji plugin in CKEditor 5 and the `emoji-repository-load-failed` is displayed in the console, it may be due to missing system support for emoji fonts or problems loading the emoji repository. Below are some common issues and their solutions.
+
+#### 1. No Emoji Font Installed
+
+**Problem**:
+The system does not have an emoji font installed, preventing the Emoji plugin from rendering emojis correctly.
+
+**Solution**:
+To use the Emoji plugin, install an emoji font on your operating system:
+
+* macOS: `Apple Color Emoji`
+* Windows: `Segoe UI Emoji`
+* Linux: `Noto Color Emoji` (or an alternative like `Twemoji`)
+
+Once installed, restart your browser and reload the editor.
+
+#### 2. Server Error When Loading the Emoji Repository
+
+**Problem**:
+The request to load the emoji repository was completed, but the server returned an error (e.g., 404 Not Found, 500 Internal Server Error).
+
+**Solution**:
+
+* Ensure the emoji repository URL is correct and accessible.
+* If using a custom emoji repository, verify that it is properly configured.
+
+#### 3. Network Issues Preventing the Emoji Repository from Loading
+
+**Problem**:
+The emoji repository could not be loaded due to a network issue, CORS restriction, or blocked request.
+
+**Solution**:
+
+* Verify that the URL is correct and accessible.
+* Check your internet connection.
+* If applicable, update your Content Security Policy (CSP) settings to allow connections to the emoji repository.
+
+For more details on configuring CSP, see the {@link getting-started/setup/csp Content Security Policy guide.}
+
+By following these steps, you should be able to resolve common issues with the Emoji plugin in CKEditor 5. If problems persist, check your browser console for additional error messages or consult the CKEditor 5 [GitHub repository for support](https://github.com/ckeditor/ckeditor5/issues).
+
 ## Contribute
 
 The source code of the feature is available at GitHub in [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-emoji](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-emoji).

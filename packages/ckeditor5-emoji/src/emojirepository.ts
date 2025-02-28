@@ -101,6 +101,18 @@ export default class EmojiRepository extends Plugin {
 		this._items = this._getItems();
 
 		if ( !this._items ) {
+			/**
+			 * Unable to load the emoji repository from the URL.
+			 *
+			 * If the URL works properly and there is no disruption of communication, please check your
+			 * {@glink getting-started/setup/csp Content Security Policy (CSP)} setting and make sure
+			 * the URL connection is allowed by the editor.
+			 * Also make sure, that proper emoji font is installed on your OS.
+			 *
+			 * @error emoji-repository-load-failed
+			 */
+			logWarning( 'emoji-repository-load-failed' );
+
 			return this._repositoryPromiseResolveCallback( false );
 		}
 
@@ -313,19 +325,6 @@ export default class EmojiRepository extends Plugin {
 			.catch( () => {
 				return [];
 			} );
-
-		if ( !result.length ) {
-			/**
-			 * Unable to load the emoji repository from the URL.
-			 *
-			 * If the URL works properly and there is no disruption of communication, please check your
-			 * {@glink getting-started/setup/csp Content Security Policy (CSP)} setting and make sure
-			 * the URL connection is allowed by the editor.
-			 *
-			 * @error emoji-repository-load-failed
-			 */
-			logWarning( 'emoji-repository-load-failed' );
-		}
 
 		EmojiRepository._results[ this._url.href ] = this._normalizeEmoji( result );
 	}
