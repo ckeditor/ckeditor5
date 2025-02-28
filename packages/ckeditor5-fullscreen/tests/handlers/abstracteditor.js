@@ -7,6 +7,12 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { PresenceListUI, PresenceList } from '@ckeditor/ckeditor5-real-time-collaboration';
+import { DocumentOutline, DocumentOutlineUI } from '@ckeditor/ckeditor5-document-outline';
+import { CloudServicesMock } from '@ckeditor/ckeditor5-real-time-collaboration/tests/_utils/mockcloudservices.js';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import { Dialog, DialogViewPosition } from '@ckeditor/ckeditor5-ui';
 
 import RevisionHistoryMock from '../_utils/revisionhistorymock.js';
 import AbstractEditorHandler from '../../src/handlers/abstracteditor.js';
@@ -270,6 +276,235 @@ describe( 'AbstractHandler', () => {
 			abstractEditorHandler.disable();
 
 			expect( spy ).to.have.been.calledOnce;
+		} );
+	} );
+
+	describe( 'registerFullscreenDialogPositionAdjustements', () => {
+		it( 'should not try to adjust position when there is no Dialog plugin loaded', async () => {
+			editor.destroy();
+
+			editor = await VirtualTestEditor.create( domElement, {
+				plugins: [
+					Paragraph,
+					Essentials,
+					PresenceListUI,
+					PresenceList,
+					CloudServicesMock,
+					DocumentOutline,
+					DocumentOutlineUI
+				].filter( plugin => plugin !== Dialog ),
+				cloudServices: {
+					tokenUrl: 'abc',
+					webSocketUrl: 'web-socket-url'
+				},
+				collaboration: {
+					channelId: 'test'
+				},
+				presenceList: {
+					container: presenceList
+				},
+				documentOutline: {
+					container: documentOutline
+				}
+			} );
+
+			abstractHandler = new AbstractEditorHandler( editor );
+
+			const spy = sinon.spy( abstractHandler, 'setNewDialogPosition' );
+
+			abstractHandler.registerFullscreenDialogPositionAdjustements();
+
+			expect( spy ).not.to.be.called;
+		} );
+
+		it( 'should call setNewDialogPosition when there is Dialog plugin loaded', () => {
+			const spy = sinon.spy( abstractHandler, 'setNewDialogPosition' );
+
+			abstractHandler.registerFullscreenDialogPositionAdjustements();
+
+			expect( spy ).to.be.called;
+		} );
+	} );
+
+	describe( 'unregisterFullscreenDialogPositionAdjustements', () => {
+		it( 'should change position of dialogview to editor-top-side for dialogview with position set to null', () => {
+			const dialogPlugin = editor.plugins.get( Dialog );
+			const dialogContentView = new View();
+
+			dialogContentView.setTemplate( {
+				tag: 'div',
+				attributes: {
+					style: {
+						width: '100px',
+						height: '50px'
+					}
+				}
+			} );
+
+			dialogPlugin.show( {
+				label: 'Foo',
+				content: dialogContentView,
+				position: null
+			} );
+
+			dialogPlugin.view.position = null;
+
+			const spy = sinon.spy( dialogPlugin.view, 'updatePosition' );
+
+			abstractHandler.unregisterFullscreenDialogPositionAdjustements();
+
+			expect( dialogPlugin.view.position ).to.equal( DialogViewPosition.EDITOR_TOP_SIDE );
+			expect( spy ).to.be.called;
+		} );
+	} );
+
+	describe( 'updateDialogPosition', () => {
+		it( 'should call setNewDialogPosition if modal is opened', () => {
+			const spy = sinon.spy( abstractHandler, 'setNewDialogPosition' );
+
+			abstractHandler.updateDialogPosition( {}, {}, true );
+
+			expect( spy ).to.be.called;
+		} );
+
+		it( 'should not call setNewDialogPosition if modal is not opened and restore dialogView.position value', () => {
+			const spy = sinon.spy( abstractHandler, 'setNewDialogPosition' );
+			const dialogPlugin = editor.plugins.get( Dialog );
+			const dialogContentView = new View();
+
+			dialogContentView.setTemplate( {
+				tag: 'div',
+				attributes: {
+					style: {
+						width: '100px',
+						height: '50px'
+					}
+				}
+			} );
+
+			dialogPlugin.show( {
+				label: 'Foo',
+				content: dialogContentView,
+				position: null
+			} );
+
+			dialogPlugin.view.position = null;
+
+			abstractHandler.updateDialogPosition( {}, {}, false );
+
+			expect( spy ).not.to.be.called;
+			expect( dialogPlugin.view.position ).to.equal( DialogViewPosition.EDITOR_TOP_SIDE );
+		} );
+	} );
+
+	describe( 'setNewDialogPosition', () => {
+		it( 'should not try to adjust position when there is no Dialog plugin loaded', async () => {
+			editor.destroy();
+
+			editor = await VirtualTestEditor.create( domElement, {
+				plugins: [
+					Paragraph,
+					Essentials,
+					PresenceListUI,
+					PresenceList,
+					CloudServicesMock,
+					DocumentOutline,
+					DocumentOutlineUI
+				].filter( plugin => plugin !== Dialog ),
+				cloudServices: {
+					tokenUrl: 'abc',
+					webSocketUrl: 'web-socket-url'
+				},
+				collaboration: {
+					channelId: 'test'
+				},
+				presenceList: {
+					container: presenceList
+				},
+				documentOutline: {
+					container: documentOutline
+				}
+			} );
+
+			abstractHandler = new AbstractEditorHandler( editor );
+
+			const spy = sinon.spy( editor.plugins, 'get' );
+
+			abstractHandler.setNewDialogPosition();
+
+			expect( spy ).not.to.be.called;
+		} );
+
+		it( 'should not try to adjust position when dialog position is different than editor-top-side', () => {
+			const spy = sinon.spy( abstractHandler, '_getVisibleContainerRect' );
+			const dialogPlugin = editor.plugins.get( Dialog );
+			const dialogContentView = new View();
+
+			dialogContentView.setTemplate( {
+				tag: 'div',
+				attributes: {
+					style: {
+						width: '100px',
+						height: '50px'
+					}
+				}
+			} );
+
+			dialogPlugin.show( {
+				label: 'Foo',
+				content: dialogContentView,
+				position: DialogViewPosition.EDITOR_TOP_CENTER
+			} );
+
+			abstractHandler.setNewDialogPosition();
+
+			expect( spy ).not.to.be.called;
+		} );
+
+		it( 'should change position of dialog', () => {
+			const container = document.createElement( 'div' );
+			container.style.width = '2000px';
+			container.style.height = '1000px';
+
+			document.body.appendChild( container );
+
+			abstractHandler._container = container;
+			const editorContainer = document.createElement( 'div' );
+			editorContainer.style.width = '1000px';
+			editorContainer.style.height = '500px';
+
+			editorContainer.classList.add( 'ck-fullscreen__editor' );
+			document.body.appendChild( editorContainer );
+
+			const dialogPlugin = editor.plugins.get( Dialog );
+			const dialogContentView = new View();
+
+			dialogContentView.setTemplate( {
+				tag: 'div',
+				attributes: {
+					style: {
+						width: '100px',
+						height: '50px'
+					}
+				}
+			} );
+
+			dialogPlugin.show( {
+				label: 'Foo',
+				content: dialogContentView,
+				position: DialogViewPosition.EDITOR_TOP_SIDE
+			} );
+
+			const dialogPositionLeft = dialogPlugin.view._left;
+			const dialogPositionTop = dialogPlugin.view._top;
+
+			abstractHandler.setNewDialogPosition();
+
+			expect( dialogPositionLeft ).not.to.equal( dialogPlugin.view._left );
+			expect( dialogPositionTop ).not.to.equal( dialogPlugin.view._top );
+
+			editorContainer.remove();
+			container.remove();
 		} );
 	} );
 } );
