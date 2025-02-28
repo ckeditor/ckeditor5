@@ -45,8 +45,7 @@ const config = {
 	table: {
 		contentToolbar: [
 			'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
-		],
-		tableToolbar: [ 'bold', 'italic' ]
+		]
 	},
 	menuBar: {
 		isVisible: true

@@ -24,7 +24,7 @@
 		& > table > tbody > tr > td {
 			--ck-color-selector-focused-cell-background: transparent;
 
-			padding: 2px;
+			padding: 1px 2px;
 
 			&[style^="width:"],
 			&[style*=" width:"],
