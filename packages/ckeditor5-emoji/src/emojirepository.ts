@@ -102,7 +102,7 @@ export default class EmojiRepository extends Plugin {
 
 		if ( !this._items ) {
 			/**
-			 * Unable to identify the available emoji to display
+			 * Unable to identify the available emoji to display.
 			 *
 			 * See the {@glink features/emoji#troubleshooting troubleshooting} section in the {@glink features/emoji Emoji feature} guide
 			 * for more details.
@@ -427,3 +427,13 @@ export type SkinTone = {
 	icon: string;
 	tooltip: string;
 };
+
+/**
+ * Unable to load the emoji repository from the URL.
+ *
+ * If the URL works properly and there is no disruption of communication, please check your
+ * {@glink getting-started/setup/csp Content Security Policy (CSP)} setting and make sure
+ * the URL connection is allowed by the editor.
+ *
+ * @error emoji-repository-load-failed
+ */
