@@ -84,9 +84,7 @@ export default class EmojiUtils extends Plugin {
 	 * Checks the supported emoji version by the OS, by sampling some representatives from different emoji releases.
 	 */
 	public getEmojiSupportedVersionByOs(): number {
-		for ( const emoji in EMOJI_SUPPORT_LEVEL ) {
-			const emojiVersion = EMOJI_SUPPORT_LEVEL[ emoji ];
-
+		for ( const [ emoji, emojiVersion ] of Object.entries( EMOJI_SUPPORT_LEVEL ) ) {
 			if ( EmojiUtils._isEmojiSupported( emoji ) ) {
 				return emojiVersion;
 			}
