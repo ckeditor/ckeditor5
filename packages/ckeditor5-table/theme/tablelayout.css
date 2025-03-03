@@ -15,10 +15,6 @@
 		margin-top: 0;
 		margin-bottom: 0;
 
-		& > table {
-			border-spacing: 0.5px;
-		}
-
 		/* Widget type around overrides. */
 		&.ck-widget {
 			&:hover > .ck-widget__selection-handle {
