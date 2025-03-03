@@ -51,8 +51,7 @@
 			[style*="border-right"],
 			[style*="border-width"],
 			[style*="border-style"],
-			[style*="border-color"]
-		) {
+			[style*="border-color"]) {
 			border-color: transparent;
 			outline: var(--ck-table-layout-default-border-color) 1px dashed;
 		}
