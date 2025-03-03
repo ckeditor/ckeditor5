@@ -6,13 +6,22 @@
 /* globals console, document */
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Emoji, EmojiMention, EmojiPicker } from '../../src/index.js';
+import { Emoji, EmojiMention, EmojiPicker, EmojiRepository } from '../../src/index.js';
 import { Mention } from '@ckeditor/ckeditor5-mention';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { List } from '@ckeditor/ckeditor5-list';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+
+const cssValue = [
+	':root {',
+	'	--ck-font-face: Helvetica, Arial, Tahoma, Verdana, \'Noto Color Emoji\';',
+	'}',
+	'body {',
+	'	font-family: Helvetica, Arial, Tahoma, Verdana, \'Noto Color Emoji\';',
+	'}'
+].join( '\n' );
 
 const elements = {
 	template: document.querySelector( '#content' ),
@@ -29,7 +38,12 @@ await reloadEditor();
 
 // Reload editors whenever the radio button is clicked.
 [ ...document.querySelectorAll( 'input[type="radio"]' ) ].forEach( element => {
-	element.addEventListener( 'input', async () => {
+	element.addEventListener( 'input', async event => {
+		// Clear the internal cache when messing up with the filtering mechanism.
+		if ( event.target.name === 'custom-font' ) {
+			EmojiRepository._results = {};
+		}
+
 		await reloadEditor();
 	} );
 } );
@@ -39,6 +53,17 @@ async function reloadEditor() {
 	await Promise.all(
 		editors.map( editor => editor.destroy() )
 	);
+
+	// Remove the custom style definitions.
+	document.getElementById( 'custom-emoji-style' )?.remove();
+
+	// Create new styles depending on a radio button.
+	if ( document.querySelector( 'input[name="custom-font"]:checked' ).value === 'true' ) {
+		const styleElement = document.createElement( 'style' );
+		styleElement.id = 'custom-emoji-style';
+		styleElement.appendChild( document.createTextNode( cssValue ) );
+		document.head.appendChild( styleElement );
+	}
 
 	// Clear references.
 	editors.length = 0;
@@ -67,7 +92,6 @@ async function reloadEditor() {
 			.catch( err => {
 				console.error( err.stack );
 			} )
-
 	];
 
 	// Store references.
@@ -85,12 +109,16 @@ function getEditorConfig( { extraPlugins, emojiButtonInToolbar = true } ) {
 
 	const dbVersion = document.querySelector( 'input[name="unicode"]:checked' ).value;
 	const skinTone = document.querySelector( 'input[name="skin"]:checked' ).value;
+	const customFont = document.querySelector( 'input[name="custom-font"]:checked' ).value;
 
 	if ( dbVersion !== 'null' ) {
 		emoji.version = parseInt( dbVersion );
 	}
 	if ( skinTone !== 'null' ) {
 		emoji.skinTone = skinTone;
+	}
+	if ( customFont === 'true' ) {
+		emoji.useCustomFont = true;
 	}
 
 	return {
