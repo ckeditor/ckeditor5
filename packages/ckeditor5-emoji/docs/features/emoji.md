@@ -214,7 +214,7 @@ The request to load the emoji repository was completed, but the server returned 
 * Ensure the emoji repository URL is correct and accessible.
 * If using a custom emoji repository, verify that it is properly configured.
 
-#### 3. Network Issues Preventing the Emoji Repository from Loading
+#### Network issues preventing the emoji repository from loading
 
 **Problem**:
 The emoji repository could not be loaded due to a network issue, CORS restriction, or blocked request.
