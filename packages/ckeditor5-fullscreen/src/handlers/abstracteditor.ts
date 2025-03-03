@@ -9,7 +9,7 @@
 
 import { createElement } from 'ckeditor5/src/utils.js';
 import { type Editor } from 'ckeditor5/src/core.js';
-import type { AnnotationsUIs, Sidebar } from '@ckeditor/ckeditor5-comments';
+import type { Annotation, AnnotationsUIs, Sidebar } from '@ckeditor/ckeditor5-comments';
 
 /**
  * The abstract editor type handler. It should be extended by the particular editor type handler.
@@ -103,7 +103,7 @@ export default class AbstractEditorHandler {
 	public enable(): void {
 		this._defaultEnable();
 
-		// Store the current state of the annotations UIs to restore it when leaving fullscreen mode.
+		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore if -- @preserve */
 		if ( this._editor.plugins.has( 'AnnotationsUIs' ) ) {
 			this._overrideAnnotationsUIs();
@@ -122,7 +122,7 @@ export default class AbstractEditorHandler {
 			this._editor.config.get( 'fullscreen.disableCallback' )!();
 		}
 
-		// Restore previous state of the annotations UIs.
+		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore if -- @preserve */
 		if ( this.annotationsUIsData ) {
 			this._restoreAnnotationsUIs();
@@ -143,7 +143,9 @@ export default class AbstractEditorHandler {
 
 	/**
 	 * Stores the current state of the annotations UIs to restore it when leaving fullscreen mode.
+	 * Code coverage is provided in the commercial package repository as integration unit tests.
 	 */
+	// /* istanbul ignore next -- @preserve */
 	private _overrideAnnotationsUIs() {
 		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as AnnotationsUIs;
 
@@ -158,14 +160,41 @@ export default class AbstractEditorHandler {
 			);
 		}
 
-		annotationsUIs.switchTo( 'wideSidebar' );
+		const annotationsFilters = new Map<string, ( annotation: Annotation ) => boolean>();
+
+		for ( const [ uiName, data ] of [ ...this.annotationsUIsData! ] ) {
+			// Default filter is `() => true`. Only store filters that are different.
+			if ( data.filter.toString() !== '() => true' ) {
+				annotationsFilters.set( uiName, data.filter );
+			}
+		}
+
+		annotationsUIs.deactivateAll();
+
+		// Check if someone has a filter defined for `wideSidebar`. If so, retrieve and apply it in fullscreen. Do not show any other UI.
+		if ( annotationsFilters.has( 'wideSidebar' ) ) {
+			annotationsUIs.activate( 'wideSidebar', annotationsFilters.get( 'wideSidebar' ) );
+		}
+		// If no filter is defined for `wideSidebar`, read the filters for the active display(s) mode and apply them.
+		// It's possible there are filters for both `narrowSidebar` and `inline` modes, so display annotations that match any of them.
+		else if ( annotationsFilters.size ) {
+			annotationsUIs.activate( 'wideSidebar',
+				annotation => [ ...annotationsFilters.values() ].some( filter => filter( annotation ) )
+			);
+		}
+		// If no filters are defined for the active display mode(s), simply display all annotations in the wide sidebar.
+		else {
+			annotationsUIs.switchTo( 'wideSidebar' );
+		}
 
 		this.moveToFullscreen( ( sidebarPlugin.container!.firstElementChild as HTMLElement ), 'right-sidebar' );
 	}
 
 	/**
 	 * Restores the saved state of the annotations UIs.
+	 * Code coverage is provided in the commercial package repository as integration unit tests.
 	 */
+	// /* istanbul ignore next -- @preserve */
 	private _restoreAnnotationsUIs() {
 		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as AnnotationsUIs;
 
