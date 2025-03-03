@@ -44,7 +44,7 @@ We have improved how the editor handles the document structure by making it more
 
 **We’re committed to ongoing performance enhancements**, so you can expect even faster, smoother experience in future updates.
 
-### **Export to Word watermark support**
+### Export to Word watermark support
 
 A new configuration option has been added to include a watermark when exporting documents to Word, providing additional flexibility in document branding and protection.
 
@@ -59,7 +59,7 @@ Below are the most important changes that require your attention when upgrading 
 ### Notable improvements
 
 * **Operational Transformation Stability**: Significant changes have been made to the OT system, enhancing the undo functionality and real-time collaboration, especially in conflict resolution scenarios. These improvements ensure smoother editor operations during complex interactions.
-* **Performance Improvements**: We have merged several community-driven performance enhancements (thanks @sunesimonsen), that optimize the editor’s core engine. While no changes to the editor’s logic were made, these updates improve overall efficiency and responsiveness.
+* **Performance Improvements**: We have merged several community-driven performance enhancements, that optimize the editor’s core engine. While no changes to the editor’s logic were made, these updates improve overall efficiency and responsiveness.
 
 ### More imports available via `ckeditor5` and `ckeditor5-premium-features` indexes
 
