@@ -69,10 +69,10 @@ describe( 'AbstractHandler', () => {
 		} );
 	} );
 
-	describe( '#returnMovedElement()', () => {
+	describe( '#restoreMovedElementLocation()', () => {
 		it( 'should not throw if map does not contain requested element', () => {
 			expect( abstractHandler._placeholderMap.has( 'menu-bar' ) ).to.be.false;
-			expect( () => abstractHandler.returnMovedElement( 'menu-bar' ) ).to.not.throw();
+			expect( () => abstractHandler.restoreMovedElementLocation( 'menu-bar' ) ).to.not.throw();
 		} );
 
 		it( 'should return only target moved element', () => {
@@ -86,13 +86,13 @@ describe( 'AbstractHandler', () => {
 			abstractHandler.moveToFullscreen( element2, 'editable' );
 
 			// Move `menu-bar` back.
-			abstractHandler.returnMovedElement( 'menu-bar' );
+			abstractHandler.restoreMovedElementLocation( 'menu-bar' );
 
 			expect( abstractHandler._placeholderMap.size ).to.equal( 1 );
 			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="menu-bar"' ) ).to.be.null;
 			expect( global.document.querySelector( '[data-ck-fullscreen-placeholder="editable"' ) ).to.not.be.null;
 
-			abstractHandler.returnMovedElement( 'editable' );
+			abstractHandler.restoreMovedElementLocation( 'editable' );
 			element.remove();
 			element2.remove();
 		} );
@@ -103,7 +103,7 @@ describe( 'AbstractHandler', () => {
 			global.document.body.appendChild( element );
 
 			abstractHandler.moveToFullscreen( element, 'menu-bar' );
-			abstractHandler.returnMovedElement( 'menu-bar' );
+			abstractHandler.restoreMovedElementLocation( 'menu-bar' );
 
 			expect( abstractHandler._container ).to.be.null;
 

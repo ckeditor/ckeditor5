@@ -82,7 +82,7 @@ export default class AbstractEditorHandler {
 	/**
 	 * Returns a single moved element to its original place.
 	 */
-	public returnMovedElement( placeholderName: string ): void {
+	public restoreMovedElementLocation( placeholderName: string ): void {
 		if ( !this._placeholderMap.has( placeholderName ) ) {
 			return;
 		}
@@ -160,7 +160,7 @@ export default class AbstractEditorHandler {
 		}
 
 		for ( const placeholderName of this._placeholderMap.keys() ) {
-			this.returnMovedElement( placeholderName );
+			this.restoreMovedElementLocation( placeholderName );
 		}
 
 		if ( this._placeholderMap.size === 0 ) {
@@ -190,8 +190,8 @@ export default class AbstractEditorHandler {
 		this._editor.config.set( 'revisionHistory.showRevisionViewerCallback', async () => {
 			const revisionViewer = await this._showRevisionViewerCallback!();
 
-			this.returnMovedElement( 'editable' );
-			this.returnMovedElement( 'toolbar' );
+			this.restoreMovedElementLocation( 'editable' );
+			this.restoreMovedElementLocation( 'toolbar' );
 
 			if ( this._editor.ui.view.menuBarView ) {
 				this._editor.ui.view.menuBarView.disable();
@@ -210,9 +210,9 @@ export default class AbstractEditorHandler {
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore next -- @preserve */
 		this._editor.config.set( 'revisionHistory.closeRevisionViewerCallback', async () => {
-			this.returnMovedElement( 'toolbar' );
-			this.returnMovedElement( 'editable' );
-			this.returnMovedElement( 'right-sidebar' );
+			this.restoreMovedElementLocation( 'toolbar' );
+			this.restoreMovedElementLocation( 'editable' );
+			this.restoreMovedElementLocation( 'right-sidebar' );
 
 			await this._closeRevisionViewerCallback!();
 
