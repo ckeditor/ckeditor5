@@ -101,6 +101,9 @@ export default class AbstractEditorHandler {
 	public enable(): void {
 		this._defaultEnable();
 
+		this.generatePresenceListElement();
+		this.generateDocumentOutlineElement();
+
 		if ( this._editor.config.get( 'fullscreen.enableCallback' ) ) {
 			this._editor.config.get( 'fullscreen.enableCallback' )!( this.getContainer() );
 		}
@@ -127,53 +130,57 @@ export default class AbstractEditorHandler {
 		}
 	}
 
+	/* istanbul ignore next -- @preserve */
 	public generatePresenceListElement(): void {
 		if ( !this._editor.plugins.has( 'PresenceListUI' ) ) {
 			return;
 		}
 
-		const presenceListWrapper = `
-			<div class="ck ck-fullscreen__left-sidebar-item">
-				<div class="ck ck-fullscreen__left-sidebar-header">Connected users</div>
-				<div class="ck ck-fullscreen__presence-list" data-ck-fullscreen="presence-list"></div>
-			</div>
+		const presneceListElement = createElement( document, 'div', {
+			class: 'ck ck-fullscreen__left-sidebar-item'
+		} );
+
+		presneceListElement.innerHTML = `
+			<div class="ck ck-fullscreen__left-sidebar-header">Connected users</div>
+			<div class="ck ck-fullscreen__presence-list" data-ck-fullscreen="presence-list"></div>
 		`;
 
-		const fragment = document.createRange().createContextualFragment( presenceListWrapper );
-
-		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( fragment );
+		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( presneceListElement );
 
 		const presenceListUI: PresenceListUI = this._editor.plugins.get( PresenceListUI );
 
 		this.moveToFullscreen( presenceListUI.view.element!, 'presence-list' );
 	}
 
+	/* istanbul ignore next -- @preserve */
 	public generateDocumentOutlineElement(): void {
 		if ( !this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
 			return;
 		}
 
-		const documentOutlineHeader = `
-		<div class="ck-fullscreen__left-sidebar-item ck-fullscreen__left-sidebar-item--no-margin">
+		const documentOutlineHeaderElement = createElement( document, 'div', {
+			class: 'ck-fullscreen__left-sidebar-item ck-fullscreen__left-sidebar-item--no-margin'
+		} );
+
+		documentOutlineHeaderElement.innerHTML = `
 			<div class="ck ck-fullscreen__left-sidebar-header ck-fullscreen__document-outline-header">
 				Document Outline
 			</div>
-		</div>
-		`;
-		const documentOutlineBody = `
-			<div class="ck ck-fullscreen__left-sidebar-item ck-fullscreen__document-outline-wrapper">
-				<div class="ck ck-fullscreen__document-outline" data-ck-fullscreen="document-outline"></div>
-			</div>
 		`;
 
-		const documentOutlineHeaderFragment = document.createRange().createContextualFragment( documentOutlineHeader );
-		const documentOutlineBodyFragment = document.createRange().createContextualFragment( documentOutlineBody );
+		const documentOutlineBodyElement = createElement( document, 'div', {
+			class: 'ck ck-fullscreen__left-sidebar-item ck-fullscreen__document-outline-wrapper'
+		} );
 
-		document.querySelector( '[data-ck-fullscreen="left-sidebar"]' )!.appendChild( documentOutlineBodyFragment );
-		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( documentOutlineHeaderFragment );
+		documentOutlineBodyElement.innerHTML = `
+			<div class="ck ck-fullscreen__document-outline" data-ck-fullscreen="document-outline"></div>
+		`;
+
+		document.querySelector( '[data-ck-fullscreen="left-sidebar"]' )!.appendChild( documentOutlineBodyElement );
+		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( documentOutlineHeaderElement );
 
 		const documentOutlineUI: DocumentOutlineUI = this._editor.plugins.get( DocumentOutlineUI );
-		documentOutlineUI.view._documentOutlineContainer = document.querySelector( '[data-ck-fullscreen="left-sidebar"]' ) as HTMLElement;
+		documentOutlineUI.view.documentOutlineContainer = document.querySelector( '[data-ck-fullscreen="left-sidebar"]' ) as HTMLElement;
 
 		this.moveToFullscreen( documentOutlineUI.view.element!, 'document-outline' );
 	}

@@ -52,10 +52,9 @@ Fullscreen layout:
 }
 
 .ck-fullscreen__sidebar {
-	width: 270px;
+	width: 300px;
 	margin-top: var(--ck-fullscreen-editor-top-margin);
 	margin-left: 10px;
-	background-color: hsl(34.29, 77.78%, 91.18%);
 	flex-shrink: 0;
 }
 
@@ -88,7 +87,7 @@ Fullscreen layout:
 
 .ck-fullscreen__left-sidebar {
 	font-family: Helvetica, Arial, sans-serif;
-	--ck-user-avatar-size: 32px;
+	--ck-user-avatar-size: 28px;
 	position: sticky;
 	align-self: flex-start;
 	top: 0;
@@ -97,6 +96,10 @@ Fullscreen layout:
 	margin-top: 0px;
 	box-sizing: border-box;
 	overflow: auto;
+}
+
+.ck-fullscreen__left-sidebar .ck.ck-presence-list--collapsed {
+	--ck-user-avatar-size: 32px;
 }
 
 .ck-fullscreen__left-sidebar > :first-child {

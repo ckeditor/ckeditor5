@@ -52,7 +52,6 @@ import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.
 import Style from '@ckeditor/ckeditor5-style/src/style.js';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
 import Bookmark from '@ckeditor/ckeditor5-bookmark/src/bookmark.js';
-import PresenceList from '@ckeditor/ckeditor5-real-time-collaboration/src/presencelist.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
@@ -81,8 +80,7 @@ const commonConfig = {
 		Alignment, IndentBlock, Bookmark, BlockQuote,
 		PasteFromOffice, PageBreak, HorizontalLine, ShowBlocks,
 		SpecialCharacters, SpecialCharactersEssentials,
-		CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport, Fullscreen,
-		PresenceList
+		CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport, Fullscreen
 	],
 	toolbar: [
 		'fullscreen',
@@ -237,9 +235,6 @@ const commonConfig = {
 				classes: [ 'fancy-code', 'fancy-code-bright' ]
 			}
 		]
-	},
-	presenceList: {
-		container: document.querySelector( '.presence' ) as HTMLElement | undefined
 	}
 };
 
