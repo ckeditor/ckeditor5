@@ -5,18 +5,28 @@
 
 /* globals console, window, document, setTimeout */
 
-import { Code, Strikethrough, Underline } from '@ckeditor/ckeditor5-basic-styles';
+import {
+	Code,
+	Strikethrough,
+	Underline,
+	CodeBlock,
+	HorizontalLine,
+	List,
+	TodoList,
+	AdjacentListsSupport,
+	Markdown,
+	PasteFromMarkdownExperimental,
+	CKBox,
+	CKBoxImageEdit,
+	PictureEditing,
+	ImageInsert,
+	ImageResize,
+	AutoImage,
+	LinkImage,
+	Font
+} from 'ckeditor5';
+import { SourceEditingEnhanced } from 'ckeditor5-premium-features';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { SourceEditingEnhanced } from '@ckeditor/ckeditor5-source-editing-enhanced';
-import { List, TodoList, AdjacentListsSupport } from '@ckeditor/ckeditor5-list';
-import { Markdown, PasteFromMarkdownExperimental } from '@ckeditor/ckeditor5-markdown-gfm';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
-import { LinkImage } from '@ckeditor/ckeditor5-link';
-import { Font } from '@ckeditor/ckeditor5-font';
-
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.

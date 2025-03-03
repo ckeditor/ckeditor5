@@ -4,12 +4,10 @@
  */
 
 /* globals window */
-import { Uploadcare, UploadcareImageEdit } from '@ckeditor/ckeditor5-uploadcare';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { ImageResize, ImageInsert, AutoImage, PictureEditing } from '@ckeditor/ckeditor5-image';
-import { LinkImage } from '@ckeditor/ckeditor5-link';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { Alignment } from '@ckeditor/ckeditor5-alignment';
+import {
+	CKBox, CKBoxImageEdit, ImageResize, ImageInsert, AutoImage, PictureEditing, LinkImage, HorizontalLine, Alignment
+} from 'ckeditor5';
+import { Uploadcare, UploadcareImageEdit } from 'ckeditor5-premium-features';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic.js';

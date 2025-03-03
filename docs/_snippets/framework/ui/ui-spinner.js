@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import { SpinnerView } from '@ckeditor/ckeditor5-ui';
+import { SpinnerView } from 'ckeditor5';
 
 const spinner = new SpinnerView();
 

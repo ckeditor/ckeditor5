@@ -5,20 +5,24 @@
 
 /* globals console, window, document */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Heading } from '@ckeditor/ckeditor5-heading';
-import { List } from '@ckeditor/ckeditor5-list';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { findAttributeRange } from '@ckeditor/ckeditor5-typing';
+import {
+	ClassicEditor,
+	Bold,
+	Italic,
+	Essentials,
+	Heading,
+	List,
+	Paragraph,
+	findAttributeRange,
+	Command,
+	Plugin,
+	ButtonView,
+	ContextualBalloon,
+	clickOutsideHandler
+} from 'ckeditor5';
 
+import { toMap } from 'ckeditor5-premium-features';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-
-import { Command, Plugin } from '@ckeditor/ckeditor5-core';
-import { toMap } from '@ckeditor/ckeditor5-utils';
-
-import { ButtonView, ContextualBalloon, clickOutsideHandler } from '@ckeditor/ckeditor5-ui';
 import FormView from './abbreviationView-level-3.js';
 
 class AbbreviationUI extends Plugin {

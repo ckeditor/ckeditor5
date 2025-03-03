@@ -5,7 +5,7 @@
 
 /* globals console, window, document */
 
-import { FullPage, GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import { FullPage, GeneralHtmlSupport } from 'ckeditor5';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';

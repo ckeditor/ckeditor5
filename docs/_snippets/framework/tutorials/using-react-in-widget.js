@@ -13,15 +13,7 @@ import { createRoot } from 'react-dom/client';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 // The base editor class and features required to run the editor.
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Bold, Italic, Underline } from '@ckeditor/ckeditor5-basic-styles';
-import { Command, Plugin } from '@ckeditor/ckeditor5-core';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Heading } from '@ckeditor/ckeditor5-heading';
-import { Link } from '@ckeditor/ckeditor5-link';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
-import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
+import { ClassicEditor, Bold, Italic, Underline, Command, Plugin, Essentials, Heading, Link, Paragraph, Table, TableToolbar, Widget, toWidget } from 'ckeditor5';
 
 class ProductPreviewEditing extends Plugin {
 	static get requires() {

@@ -5,7 +5,7 @@
 
 /* globals console, window, document, CS_CONFIG */
 
-import { AutoLink } from '@ckeditor/ckeditor5-link';
+import { AutoLink } from 'ckeditor5';
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.

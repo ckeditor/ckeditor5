@@ -5,20 +5,18 @@
 
 /* globals window */
 
-//
-// Editors and default plugins.
-//
-
-import { ClassicEditor as ClassicEditorBase } from '@ckeditor/ckeditor5-editor-classic';
-import { BalloonEditor as BalloonEditorBase } from '@ckeditor/ckeditor5-editor-balloon';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Alignment } from '@ckeditor/ckeditor5-alignment';
-import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { Heading } from '@ckeditor/ckeditor5-heading';
 import {
+	ClassicEditor as ClassicEditorBase,
+	BalloonEditor as BalloonEditorBase,
+	Essentials,
+	Alignment,
+	Autoformat,
+	Bold,
+	Italic,
+	BlockQuote,
+	CKBox,
+	CKBoxImageEdit,
+	Heading,
 	Image,
 	ImageInsert,
 	ImageCaption,
@@ -27,30 +25,25 @@ import {
 	ImageUpload,
 	PictureEditing,
 	ImageResize,
-	AutoImage
-} from '@ckeditor/ckeditor5-image';
-import { Indent } from '@ckeditor/ckeditor5-indent';
-import { Link, LinkImage } from '@ckeditor/ckeditor5-link';
-import { List } from '@ckeditor/ckeditor5-list';
-import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
-import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
-import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
-import { TextTransformation } from '@ckeditor/ckeditor5-typing';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-import { Font } from '@ckeditor/ckeditor5-font';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+	AutoImage,
+	Indent,
+	Link,
+	LinkImage,
+	List,
+	MediaEmbed,
+	PasteFromOffice,
+	Table,
+	TableToolbar,
+	TextTransformation,
+	CloudServices,
+	Font,
+	HorizontalLine,
+	DragDrop,
+	DragDropBlockToolbar,
+	BlockToolbar
+} from 'ckeditor5';
 
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
-
-//
-// Plugins for specific scenarios.
-//
-
-import {
-	DragDrop,
-	DragDropBlockToolbar
-} from '@ckeditor/ckeditor5-clipboard';
-import { BlockToolbar } from '@ckeditor/ckeditor5-ui';
 import { HCardEditing } from './hcard.js';
 
 const defaultPlugins = [

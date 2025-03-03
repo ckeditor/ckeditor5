@@ -5,21 +5,30 @@
 
 /* globals window, document */
 
-import { Alignment } from '@ckeditor/ckeditor5-alignment';
-import { Subscript, Superscript } from '@ckeditor/ckeditor5-basic-styles';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
+import {
+	Alignment,
+	Subscript,
+	Superscript,
+	CloudServices,
+	CodeBlock,
+	CKBox,
+	CKBoxImageEdit,
+	DecoupledEditor,
+	FontBackgroundColor,
+	FontColor,
+	FontFamily,
+	FontSize,
+	PictureEditing,
+	ImageInsert,
+	ImageResize,
+	ImageUpload,
+	IndentBlock,
+	PageBreak,
+	TableCellProperties,
+	TableProperties,
+	Minimap
+} from 'ckeditor5';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
-import { FontBackgroundColor, FontColor, FontFamily, FontSize } from '@ckeditor/ckeditor5-font';
-import { PictureEditing, ImageInsert, ImageResize, ImageUpload } from '@ckeditor/ckeditor5-image';
-import { IndentBlock } from '@ckeditor/ckeditor5-indent';
-import { PageBreak } from '@ckeditor/ckeditor5-page-break';
-import { TableCellProperties, TableProperties } from '@ckeditor/ckeditor5-table';
-
-import { Minimap } from '@ckeditor/ckeditor5-minimap';
-
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 

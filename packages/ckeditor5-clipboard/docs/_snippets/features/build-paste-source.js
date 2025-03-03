@@ -5,11 +5,9 @@
 
 /* globals window */
 
-import { Strikethrough, Underline } from '@ckeditor/ckeditor5-basic-styles';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
-import { LinkImage } from '@ckeditor/ckeditor5-link';
-import { Font } from '@ckeditor/ckeditor5-font';
+import {
+	Strikethrough, Underline, CKBox, CKBoxImageEdit, PictureEditing, ImageInsert, ImageResize, AutoImage, LinkImage, Font
+} from 'ckeditor5';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic.js';

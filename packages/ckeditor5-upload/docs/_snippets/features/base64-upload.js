@@ -5,7 +5,7 @@
 
 /* globals console, window, document */
 
-import { Base64UploadAdapter } from '@ckeditor/ckeditor5-upload';
+import { Base64UploadAdapter } from 'ckeditor5';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic.js';

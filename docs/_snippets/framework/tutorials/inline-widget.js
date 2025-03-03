@@ -5,18 +5,25 @@
 
 /* globals console, window, document */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Heading } from '@ckeditor/ckeditor5-heading';
-import { List } from '@ckeditor/ckeditor5-list';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import {
+	ClassicEditor,
+	Bold,
+	Italic,
+	Essentials,
+	Heading,
+	List,
+	Paragraph,
+	Command,
+	Plugin,
+	Widget,
+	toWidget,
+	viewToModelPositionOutsideModelElement,
+	ViewModel,
+	addListToDropdown,
+	createDropdown
+} from 'ckeditor5';
 
-import { Command, Plugin } from '@ckeditor/ckeditor5-core';
-import { Widget, toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget';
-
-import { ViewModel, addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui';
-import { Collection } from '@ckeditor/ckeditor5-utils';
+import { Collection } from 'ckeditor5-premium-features';
 
 class PlaceholderCommand extends Command {
 	execute( { value } ) {

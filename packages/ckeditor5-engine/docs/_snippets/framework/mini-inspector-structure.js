@@ -5,8 +5,7 @@
 
 /* globals console, window, document */
 
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { Essentials, Paragraph } from 'ckeditor5';
 import MiniCKEditorInspector from '@ckeditor/ckeditor5-inspector/build/miniinspector.js';
 
 // This file will be available when the documentation is built.

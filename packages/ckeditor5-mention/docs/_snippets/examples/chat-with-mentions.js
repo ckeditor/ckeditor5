@@ -5,8 +5,7 @@
 
 /* globals console, window, document, setTimeout */
 
-import { Underline, Strikethrough } from '@ckeditor/ckeditor5-basic-styles';
-import { Mention } from '@ckeditor/ckeditor5-mention';
+import { Underline, Strikethrough, Mention } from 'ckeditor5';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.

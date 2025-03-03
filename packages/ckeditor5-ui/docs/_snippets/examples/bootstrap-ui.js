@@ -5,28 +5,29 @@
 
 /* globals $, window, console:false */
 
-// Basic classes to create an editor.
-// Basic features to associated with the edited content.
-import { BoldEditing, ItalicEditing, UnderlineEditing } from '@ckeditor/ckeditor5-basic-styles';
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-// Interfaces to extend basic Editor API.
-// Helper function that binds editor with HTMLForm element.
-import { Editor, ElementApiMixin, attachToForm } from '@ckeditor/ckeditor5-core';
-// The easy image integration.
-import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
-import { Enter } from '@ckeditor/ckeditor5-enter';
-import { HeadingEditing } from '@ckeditor/ckeditor5-heading';
-import { Image, ImageUpload } from '@ckeditor/ckeditor5-image';
-// Basic features that every editor should enable.
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { Typing } from '@ckeditor/ckeditor5-typing';
-import { EditorUI, EditorUIView, InlineEditableUIView } from '@ckeditor/ckeditor5-ui';
-import { UndoEditing } from '@ckeditor/ckeditor5-undo';
-// Helper function for adding interfaces to the Editor class.
-// Helper function that gets data from HTML element that the Editor is attached to.
-import { ElementReplacer, getDataFromElement } from '@ckeditor/ckeditor5-utils';
+import {
+	BoldEditing,
+	ItalicEditing,
+	UnderlineEditing,
+	Clipboard,
+	CloudServices,
+	Editor,
+	ElementApiMixin,
+	attachToForm,
+	EasyImage,
+	Enter,
+	HeadingEditing,
+	Image,
+	ImageUpload,
+	Paragraph,
+	Typing,
+	EditorUI,
+	EditorUIView,
+	InlineEditableUIView,
+	UndoEditing
+} from 'ckeditor5';
+import { ElementReplacer, getDataFromElement } from 'ckeditor5-premium-features';
 
 // Extending the Editor class, which brings base editor API.
 export default class BootstrapEditor extends ElementApiMixin( Editor ) {

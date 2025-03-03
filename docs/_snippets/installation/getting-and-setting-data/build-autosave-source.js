@@ -5,9 +5,7 @@
 
 /* globals window */
 
-import { Autosave } from '@ckeditor/ckeditor5-autosave';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { Autosave, CKBox, CKBoxImageEdit, PictureEditing, ImageResize, AutoImage } from 'ckeditor5';
 import ClassicEditor from '../../build-classic.js';
 
 ClassicEditor.builtinPlugins.push( Autosave );

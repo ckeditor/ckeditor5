@@ -10,8 +10,8 @@ import {
 	ToolbarView,
 	createLabeledInputNumber,
 	createLabeledInputText
-} from '@ckeditor/ckeditor5-ui';
-import { Locale } from '@ckeditor/ckeditor5-utils';
+} from 'ckeditor5';
+import { Locale } from 'ckeditor5-premium-features';
 
 const locale = new Locale();
 

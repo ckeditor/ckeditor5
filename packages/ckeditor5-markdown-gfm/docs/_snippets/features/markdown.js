@@ -5,21 +5,25 @@
 
 /* globals console, window, document, setTimeout */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-
-import { Code, Strikethrough } from '@ckeditor/ckeditor5-basic-styles';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import {
+	ClassicEditor,
+	Code,
+	Strikethrough,
+	CloudServices,
+	CodeBlock,
+	CKBox,
+	CKBoxImageEdit,
+	HorizontalLine,
+	ImageUpload,
+	ImageInsert,
+	PictureEditing,
+	AutoImage,
+	TodoList,
+	Markdown
+} from 'ckeditor5';
+import { SourceEditingEnhanced } from 'ckeditor5-premium-features';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { ImageUpload, ImageInsert, PictureEditing, AutoImage } from '@ckeditor/ckeditor5-image';
-import { TodoList } from '@ckeditor/ckeditor5-list';
-import { SourceEditingEnhanced } from '@ckeditor/ckeditor5-source-editing-enhanced';
-
-import { Markdown } from '@ckeditor/ckeditor5-markdown-gfm';
-
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 
 ClassicEditor

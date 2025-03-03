@@ -7,28 +7,30 @@
 
 // Keep the guide listing updated with each change.
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Alignment } from '@ckeditor/ckeditor5-alignment';
-import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
-import { Bold, Code, Italic, Strikethrough, Subscript, Superscript, Underline } from '@ckeditor/ckeditor5-basic-styles';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { CaseChange } from '@ckeditor/ckeditor5-case-change';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
-import { TableOfContents } from '@ckeditor/ckeditor5-document-outline';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { ExportPdf } from '@ckeditor/ckeditor5-export-pdf';
-import { ExportWord } from '@ckeditor/ckeditor5-export-word';
-import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
-import { Font } from '@ckeditor/ckeditor5-font';
-import { FormatPainter } from '@ckeditor/ckeditor5-format-painter';
-import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
-import { Heading } from '@ckeditor/ckeditor5-heading';
-import { Highlight } from '@ckeditor/ckeditor5-highlight';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed';
 import {
+	ClassicEditor,
+	Alignment,
+	Autoformat,
+	Bold,
+	Code,
+	Italic,
+	Strikethrough,
+	Subscript,
+	Superscript,
+	Underline,
+	BlockQuote,
+	CKBox,
+	CKBoxImageEdit,
+	CloudServices,
+	CodeBlock,
+	Essentials,
+	FindAndReplace,
+	Font,
+	GeneralHtmlSupport,
+	Heading,
+	Highlight,
+	HorizontalLine,
+	HtmlEmbed,
 	AutoImage,
 	Image,
 	ImageCaption,
@@ -37,27 +39,47 @@ import {
 	ImageStyle,
 	ImageToolbar,
 	ImageUpload,
-	PictureEditing
-} from '@ckeditor/ckeditor5-image';
-import { ImportWord } from '@ckeditor/ckeditor5-import-word';
-import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
-import { AutoLink, Link, LinkImage } from '@ckeditor/ckeditor5-link';
-import { List, ListProperties, TodoList } from '@ckeditor/ckeditor5-list';
-import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
-import { Mention } from '@ckeditor/ckeditor5-mention';
-import { PageBreak } from '@ckeditor/ckeditor5-page-break';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
-import { PasteFromOfficeEnhanced } from '@ckeditor/ckeditor5-paste-from-office-enhanced';
-import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
-import { ShowBlocks } from '@ckeditor/ckeditor5-show-blocks';
-import { SlashCommand } from '@ckeditor/ckeditor5-slash-command';
-import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
-import { SpecialCharacters, SpecialCharactersEssentials } from '@ckeditor/ckeditor5-special-characters';
-import { Style } from '@ckeditor/ckeditor5-style';
-import { Table, TableCaption, TableCellProperties, TableColumnResize, TableProperties, TableToolbar } from '@ckeditor/ckeditor5-table';
-import { Template } from '@ckeditor/ckeditor5-template';
-import { TextTransformation } from '@ckeditor/ckeditor5-typing';
+	PictureEditing,
+	Indent,
+	IndentBlock,
+	AutoLink,
+	Link,
+	LinkImage,
+	List,
+	ListProperties,
+	TodoList,
+	MediaEmbed,
+	Mention,
+	PageBreak,
+	Paragraph,
+	PasteFromOffice,
+	RemoveFormat,
+	ShowBlocks,
+	TextTransformation,
+	SourceEditing,
+	SpecialCharacters,
+	SpecialCharactersEssentials,
+	Style,
+	Table,
+	TableCaption,
+	TableCellProperties,
+	TableColumnResize,
+	TableProperties,
+	TableToolbar
+} from 'ckeditor5';
+
+import {
+	CaseChange,
+	TableOfContents,
+	ExportPdf,
+	ExportWord,
+	FormatPainter,
+	ImportWord,
+	PasteFromOfficeEnhanced,
+	SlashCommand,
+	Template
+} from 'ckeditor5-premium-features';
+
 import { WProofreader } from '@webspellchecker/wproofreader-ckeditor5';
 
 // import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';

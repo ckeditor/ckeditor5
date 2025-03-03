@@ -5,17 +5,13 @@
 
 /* globals console, window, document */
 
+import { GeneralHtmlSupport, ShowBlocks, CKBox, CKBoxImageEdit, ImageInsert, PictureEditing } from 'ckeditor5';
+import { SourceEditingEnhanced } from 'ckeditor5-premium-features';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
+
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic.js';
-
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
-import { ShowBlocks } from '@ckeditor/ckeditor5-show-blocks';
-import { SourceEditingEnhanced } from '@ckeditor/ckeditor5-source-editing-enhanced';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { ImageInsert, PictureEditing } from '@ckeditor/ckeditor5-image';
-
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 
 ClassicEditor.builtinPlugins.push( ShowBlocks, GeneralHtmlSupport, SourceEditingEnhanced,
 	CKBox, CKBoxImageEdit, ImageInsert, PictureEditing );

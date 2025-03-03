@@ -10,31 +10,8 @@
  */
 
 // The editor creator to use.
-import { DecoupledEditor as DecoupledEditorBase } from '@ckeditor/ckeditor5-editor-decoupled';
-
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Alignment } from '@ckeditor/ckeditor5-alignment';
-import { FontSize, FontFamily, FontColor, FontBackgroundColor } from '@ckeditor/ckeditor5-font';
-import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
-import { Bold, Italic, Strikethrough, Underline } from '@ckeditor/ckeditor5-basic-styles';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
-import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
-import { Heading } from '@ckeditor/ckeditor5-heading';
-import { Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
-import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
-import { Link } from '@ckeditor/ckeditor5-link';
-import { List, ListProperties } from '@ckeditor/ckeditor5-list';
-import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
-import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
-import { TextTransformation } from '@ckeditor/ckeditor5-typing';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-
-export default class DecoupledEditor extends DecoupledEditorBase {}
-
-DecoupledEditor.builtinPlugins = [
+import {
+	DecoupledEditor as DecoupledEditorBase,
 	Essentials,
 	Alignment,
 	FontSize,
@@ -48,7 +25,6 @@ DecoupledEditor.builtinPlugins = [
 	Underline,
 	BlockQuote,
 	CKBox,
-	CloudServices,
 	EasyImage,
 	Heading,
 	Image,
@@ -57,6 +33,7 @@ DecoupledEditor.builtinPlugins = [
 	ImageStyle,
 	ImageToolbar,
 	ImageUpload,
+	PictureEditing,
 	Indent,
 	IndentBlock,
 	Link,
@@ -65,49 +42,88 @@ DecoupledEditor.builtinPlugins = [
 	MediaEmbed,
 	Paragraph,
 	PasteFromOffice,
-	PictureEditing,
 	Table,
 	TableToolbar,
-	TextTransformation
-];
+	TextTransformation,
+	CloudServices
+} from 'ckeditor5';
 
-DecoupledEditor.defaultConfig = {
-	toolbar: {
-		items: [
-			'undo', 'redo',
-			'|', 'heading',
-			'|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
-			'|', 'bold', 'italic', 'underline', 'strikethrough',
-			'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
-			'|', 'alignment',
-			'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
-		]
-	},
-	image: {
-		resizeUnit: 'px',
-		toolbar: [
-			'imageStyle:inline',
-			'imageStyle:wrapText',
-			'imageStyle:breakText',
-			'|',
-			'toggleImageCaption',
-			'imageTextAlternative'
-		]
-	},
-	table: {
-		contentToolbar: [
-			'tableColumn',
-			'tableRow',
-			'mergeTableCells'
-		]
-	},
-	list: {
-		properties: {
-			styles: true,
-			startIndex: true,
-			reversed: true
-		}
-	},
-	// This value must be kept in sync with the language defined in webpack.config.js.
-	language: 'en'
-};
+export default class DecoupledEditor extends DecoupledEditorBase {
+	static builtinPlugins = [
+		Essentials,
+		Alignment,
+		FontSize,
+		FontFamily,
+		FontColor,
+		FontBackgroundColor,
+		Autoformat,
+		Bold,
+		Italic,
+		Strikethrough,
+		Underline,
+		BlockQuote,
+		CKBox,
+		CloudServices,
+		EasyImage,
+		Heading,
+		Image,
+		ImageCaption,
+		ImageResize,
+		ImageStyle,
+		ImageToolbar,
+		ImageUpload,
+		Indent,
+		IndentBlock,
+		Link,
+		List,
+		ListProperties,
+		MediaEmbed,
+		Paragraph,
+		PasteFromOffice,
+		PictureEditing,
+		Table,
+		TableToolbar,
+		TextTransformation
+	];
+
+	static defaultConfig = {
+		toolbar: {
+			items: [
+				'undo', 'redo',
+				'|', 'heading',
+				'|', 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
+				'|', 'bold', 'italic', 'underline', 'strikethrough',
+				'|', 'link', 'uploadImage', 'insertTable', 'blockQuote', 'mediaEmbed',
+				'|', 'alignment',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			]
+		},
+		image: {
+			resizeUnit: 'px',
+			toolbar: [
+				'imageStyle:inline',
+				'imageStyle:wrapText',
+				'imageStyle:breakText',
+				'|',
+				'toggleImageCaption',
+				'imageTextAlternative'
+			]
+		},
+		table: {
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells'
+			]
+		},
+		list: {
+			properties: {
+				styles: true,
+				startIndex: true,
+				reversed: true
+			}
+		},
+		// This value must be kept in sync with the language defined in webpack.config.js.
+		language: 'en'
+	};
+}

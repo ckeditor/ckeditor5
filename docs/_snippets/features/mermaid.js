@@ -5,9 +5,7 @@
 
 /* globals console, window, document */
 
-import { CKBox } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
-import { LinkImage } from '@ckeditor/ckeditor5-link';
+import { CKBox, PictureEditing, ImageResize, AutoImage, LinkImage } from 'ckeditor5';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 import { Mermaid } from '@ckeditor/ckeditor5-mermaid/dist/index.js';

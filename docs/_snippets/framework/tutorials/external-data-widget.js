@@ -5,15 +5,20 @@
 
 /* globals console, window, document, fetch, setInterval, setTimeout, clearInterval */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Command, Plugin } from '@ckeditor/ckeditor5-core';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Heading } from '@ckeditor/ckeditor5-heading';
-import { List } from '@ckeditor/ckeditor5-list';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { ButtonView } from '@ckeditor/ckeditor5-ui';
-import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
+import {
+	ClassicEditor,
+	Bold,
+	Italic,
+	Command,
+	Plugin,
+	Essentials,
+	Heading,
+	List,
+	Paragraph,
+	ButtonView,
+	Widget,
+	toWidget
+} from 'ckeditor5';
 
 import BitcoinLogoIcon from '../../../assets/img/bitcoin-logo.svg';
 

@@ -5,11 +5,8 @@
 
 /* globals window */
 
-import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
-import { ExportPdf } from '@ckeditor/ckeditor5-export-pdf';
-import { ExportWord } from '@ckeditor/ckeditor5-export-word';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
+import { ExportPdf, ExportWord } from 'ckeditor5-premium-features';
+import { FindAndReplace, CKBox, CKBoxImageEdit, PictureEditing, ImageInsert, ImageResize, AutoImage } from 'ckeditor5';
 import ClassicEditor from '../build-classic.js';
 
 ClassicEditor.builtinPlugins.push( FindAndReplace );

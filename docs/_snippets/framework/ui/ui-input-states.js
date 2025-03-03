@@ -5,8 +5,8 @@
 
 /* globals document */
 
-import { LabeledFieldView, ToolbarView, createLabeledInputText } from '@ckeditor/ckeditor5-ui';
-import { Locale } from '@ckeditor/ckeditor5-utils';
+import { LabeledFieldView, ToolbarView, createLabeledInputText } from 'ckeditor5';
+import { Locale } from 'ckeditor5-premium-features';
 
 const locale = new Locale();
 

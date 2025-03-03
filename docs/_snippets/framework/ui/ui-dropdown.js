@@ -12,10 +12,11 @@ import {
 	addListToDropdown,
 	addToolbarToDropdown,
 	createDropdown,
-	ViewModel
-} from '@ckeditor/ckeditor5-ui';
-import { Collection, Locale } from '@ckeditor/ckeditor5-utils';
-import { IconBold, IconItalic } from '@ckeditor/ckeditor5-icons';
+	ViewModel,
+	IconBold,
+	IconItalic
+} from 'ckeditor5';
+import { Collection, Locale } from 'ckeditor5-premium-features';
 
 const locale = new Locale();
 

@@ -5,13 +5,11 @@
 
 /* globals window */
 
-import { Bold, Italic, Code, Strikethrough, Underline, Subscript, Superscript } from '@ckeditor/ckeditor5-basic-styles';
-import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
-import { Alignment } from '@ckeditor/ckeditor5-alignment';
-import { Font } from '@ckeditor/ckeditor5-font';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
-import { LinkImage } from '@ckeditor/ckeditor5-link';
+import {
+	Bold, Italic, Code, Strikethrough, Underline, Subscript, Superscript, RemoveFormat,
+	Alignment, Font, CKBox, CKBoxImageEdit, PictureEditing, ImageInsert, ImageResize,
+	AutoImage, LinkImage
+} from 'ckeditor5';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic.js';

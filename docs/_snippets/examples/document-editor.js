@@ -5,7 +5,7 @@
 
 /* globals console, window, document */
 
-import { TableColumnResize } from '@ckeditor/ckeditor5-table';
+import { TableColumnResize } from 'ckeditor5';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 import DecoupledEditor from '../build-decoupled-document.js';

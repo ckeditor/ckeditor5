@@ -5,14 +5,19 @@
 
 /* globals window, document, console */
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
+import {
+	ClassicEditor,
+	CloudServices,
+	ImageInsert,
+	ImageUpload,
+	PictureEditing,
+	CKBox,
+	CKBoxImageEdit
+} from 'ckeditor5';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { ImageInsert, ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
 import MathType from '@wiris/mathtype-ckeditor5/dist/index.js';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 
 ClassicEditor
 	.create( document.querySelector( '#mathtype-editor' ), {

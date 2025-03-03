@@ -5,12 +5,7 @@
 
 /* globals document, console, window */
 
-import { ButtonView, Dialog, View } from '@ckeditor/ckeditor5-ui';
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Bold, Italic, Underline } from '@ckeditor/ckeditor5-basic-styles';
-import { Plugin } from '@ckeditor/ckeditor5-core';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { ButtonView, Dialog, View, ClassicEditor, Essentials, Bold, Italic, Underline, Plugin, Paragraph } from 'ckeditor5';
 
 class MinimalisticModal extends Plugin {
 	get requires() {
