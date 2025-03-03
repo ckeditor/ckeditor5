@@ -5,8 +5,7 @@
 
 /* globals document */
 
-import { ListView, SearchTextView } from 'ckeditor5';
-import { Locale } from 'ckeditor5-premium-features';
+import { ListView, SearchTextView, Locale } from 'ckeditor5';
 
 const locale = new Locale();
 

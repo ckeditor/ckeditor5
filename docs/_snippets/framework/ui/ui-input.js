@@ -9,9 +9,9 @@ import {
 	LabeledFieldView,
 	ToolbarView,
 	createLabeledInputNumber,
-	createLabeledInputText
+	createLabeledInputText,
+	Locale
 } from 'ckeditor5';
-import { Locale } from 'ckeditor5-premium-features';
 
 const locale = new Locale();
 

@@ -5,8 +5,7 @@
 
 /* globals document */
 
-import { ButtonView, ToolbarSeparatorView, ToolbarView } from 'ckeditor5';
-import { Locale } from 'ckeditor5-premium-features';
+import { ButtonView, ToolbarSeparatorView, ToolbarView, Locale } from 'ckeditor5';
 
 const locale = new Locale();
 

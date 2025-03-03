@@ -18,10 +18,9 @@ import {
 	Plugin,
 	ButtonView,
 	ContextualBalloon,
-	clickOutsideHandler
+	clickOutsideHandler,
+	toMap
 } from 'ckeditor5';
-
-import { toMap } from 'ckeditor5-premium-features';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 import FormView from './abbreviationView-level-3.js';
 

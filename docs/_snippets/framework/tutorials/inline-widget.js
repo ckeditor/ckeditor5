@@ -20,10 +20,9 @@ import {
 	viewToModelPositionOutsideModelElement,
 	ViewModel,
 	addListToDropdown,
-	createDropdown
+	createDropdown,
+	Collection
 } from 'ckeditor5';
-
-import { Collection } from 'ckeditor5-premium-features';
 
 class PlaceholderCommand extends Command {
 	execute( { value } ) {

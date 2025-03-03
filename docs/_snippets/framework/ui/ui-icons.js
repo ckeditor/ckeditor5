@@ -5,8 +5,7 @@
 
 /* globals document */
 
-import { IconView, ToolbarView } from 'ckeditor5';
-import { Locale } from 'ckeditor5-premium-features';
+import { IconView, ToolbarView, Locale } from 'ckeditor5';
 import * as icons from 'ckeditor5';
 
 const locale = new Locale();

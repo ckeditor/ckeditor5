@@ -5,8 +5,15 @@
 
 /* globals window, document, console */
 
-import { ClassicEditor, Essentials, IconCheck, ButtonView, ToolbarView, TooltipManager } from 'ckeditor5';
-import { Locale } from 'ckeditor5-premium-features';
+import {
+	ClassicEditor,
+	Essentials,
+	IconCheck,
+	ButtonView,
+	ToolbarView,
+	TooltipManager,
+	Locale
+} from 'ckeditor5';
 
 const locale = new Locale();
 

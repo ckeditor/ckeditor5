@@ -5,8 +5,15 @@
 
 /* globals window */
 
-import { Plugin, Command, ButtonView, toWidget, toWidgetEditable, findOptimalInsertionRange } from 'ckeditor5';
-import { createElement } from 'ckeditor5-premium-features';
+import {
+	Plugin,
+	Command,
+	ButtonView,
+	toWidget,
+	toWidgetEditable,
+	findOptimalInsertionRange,
+	createElement
+} from 'ckeditor5';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic.js';

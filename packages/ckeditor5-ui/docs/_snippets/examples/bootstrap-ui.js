@@ -5,7 +5,6 @@
 
 /* globals $, window, console:false */
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 import {
 	BoldEditing,
 	ItalicEditing,
@@ -25,9 +24,12 @@ import {
 	EditorUI,
 	EditorUIView,
 	InlineEditableUIView,
-	UndoEditing
+	UndoEditing,
+	ElementReplacer,
+	getDataFromElement
 } from 'ckeditor5';
-import { ElementReplacer, getDataFromElement } from 'ckeditor5-premium-features';
+
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 // Extending the Editor class, which brings base editor API.
 export default class BootstrapEditor extends ElementApiMixin( Editor ) {

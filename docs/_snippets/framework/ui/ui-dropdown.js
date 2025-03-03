@@ -14,9 +14,10 @@ import {
 	createDropdown,
 	ViewModel,
 	IconBold,
-	IconItalic
+	IconItalic,
+	Collection,
+	Locale
 } from 'ckeditor5';
-import { Collection, Locale } from 'ckeditor5-premium-features';
 
 const locale = new Locale();
 

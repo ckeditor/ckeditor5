@@ -5,8 +5,7 @@
 
 /* globals document */
 
-import { SwitchButtonView, ToolbarView } from 'ckeditor5';
-import { Locale } from 'ckeditor5-premium-features';
+import { SwitchButtonView, ToolbarView, Locale } from 'ckeditor5';
 
 const locale = new Locale();
 

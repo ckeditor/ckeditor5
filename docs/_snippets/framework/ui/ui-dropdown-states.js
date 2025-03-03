@@ -5,8 +5,7 @@
 
 /* globals document */
 
-import { ButtonView, ToolbarView, addToolbarToDropdown, createDropdown } from 'ckeditor5';
-import { Locale } from 'ckeditor5-premium-features';
+import { ButtonView, ToolbarView, addToolbarToDropdown, createDropdown, Locale } from 'ckeditor5';
 
 const locale = new Locale();
 
