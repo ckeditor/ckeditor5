@@ -78,7 +78,8 @@ export default class EmojiRepository extends Plugin {
 		editor.config.define( 'emoji', {
 			version: undefined,
 			skinTone: 'default',
-			definitionsUrl: undefined
+			definitionsUrl: undefined,
+			useCustomFont: false
 		} );
 
 		this._url = this._getUrl();
@@ -334,14 +335,23 @@ export default class EmojiRepository extends Plugin {
 	 *  * Prepare skin tone variants if an emoji defines them.
 	 */
 	private _normalizeEmoji( data: Array<EmojiCdnResource> ): Array<EmojiEntry> {
-		const emojiUtils = this.editor.plugins.get( 'EmojiUtils' );
+		const editor = this.editor;
+		const useCustomFont = editor.config.get( 'emoji.useCustomFont' );
+		const emojiUtils = editor.plugins.get( 'EmojiUtils' );
+
+		const insertableEmoji = data.filter( item => emojiUtils.isEmojiCategoryAllowed( item ) );
+
+		// When using a custom font, the feature does not filter any emoji.
+		if ( useCustomFont ) {
+			return insertableEmoji.map( item => emojiUtils.normalizeEmojiSkinTone( item ) );
+		}
+
 		const emojiSupportedVersionByOs = emojiUtils.getEmojiSupportedVersionByOs();
 
 		const container = emojiUtils.createEmojiWidthTestingContainer();
 		document.body.appendChild( container );
 
-		const results = data
-			.filter( item => emojiUtils.isEmojiCategoryAllowed( item ) )
+		const results = insertableEmoji
 			.filter( item => emojiUtils.isEmojiSupported( item, emojiSupportedVersionByOs, container ) )
 			.map( item => emojiUtils.normalizeEmojiSkinTone( item ) );
 

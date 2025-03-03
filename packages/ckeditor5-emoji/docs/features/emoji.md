@@ -130,6 +130,20 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 		.catch( /* ... */ );
 	```
 
+* `useCustomFont` &ndash; if you customize the {@link features/emoji#emoji-availability-and-appearance emoji availability and appearance}. It that case, it is highly recommended to disable the filtering mechanism because it uses a font built-in to your system.
+
+	```js
+	ClassicEditor
+		.create( document.querySelector( '#editor' ), {
+			// ... Other configuration options ...
+			emoji: {
+				useCustomFont: true
+			}
+		} )
+		.then( /* ... */ )
+		.catch( /* ... */ );
+	```
+
 ### Emoji availability and appearance
 
 The availability of the emoji depends on the operating system. Different systems will have different Unicode support. You can decide that you want to lower the number of newer emoji by setting a lower version of Unicode of the emoji repository (CKEditor&nbsp;5 hosts v15 and v16). This way the users with newer systems will not be able to use newer emoji. Keep in mind that this only affects the editor feature. A user will still be able to use the native emoji insertion methods. The availability may also increase with the usage of a custom font.
@@ -149,6 +163,17 @@ If you want to standardize the appearance of emoji accross operating systems, pl
 	```css
 	:root {
 		--ck-font-face: Helvetica, Arial, Tahoma, Verdana, 'Noto Color Emoji';
+	}
+	```
+	
+3. Update the {@link module:core/editor/editorconfig~EditorConfig editor configuration} by adding the {@link module:emoji/emojiconfig~EmojiConfig#useCustomFont `emoji.useCustomFont`} option.
+
+	```js
+	{
+		// ... Other configuration options ...
+		emoji: {
+			useCustomFont: true
+		}
 	}
 	```
 
