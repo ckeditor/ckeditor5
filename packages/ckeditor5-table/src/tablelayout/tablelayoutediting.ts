@@ -181,6 +181,9 @@ function upcastLayoutTable() {
 
 			// When element is a content table then skip it.
 			if ( hasTableTypeContent ) {
+				conversionApi.consumable.consume( viewTable, { classes: [ 'layout-table' ] } );
+				conversionApi.consumable.consume( viewTable, { classes: [ 'content-table' ] } );
+
 				return;
 			}
 
@@ -192,6 +195,7 @@ function upcastLayoutTable() {
 
 			conversionApi.consumable.consume( viewTable, { name: true } );
 			conversionApi.consumable.consume( viewTable, { attributes: [ 'role' ] } );
+			conversionApi.consumable.consume( viewTable, { classes: [ 'layout-table' ] } );
 
 			// Get all rows from the table and convert them.
 			// While looping over the children of `<table>` we can be sure that first will be `<tbody>`
