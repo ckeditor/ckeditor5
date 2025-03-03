@@ -11,7 +11,6 @@
 	--ck-table-layout-widget-handler-icon-size: 10px;
 }
 
-
 .ck-editor__editable {
 	& .table.layout-table {
 		--ck-widget-type-around-button-size: var(--ck-table-layout-widget-type-around-button-size);
@@ -23,9 +22,7 @@
 		/* Removed default background color from focused table cell */
 		& > table > tbody > tr > td {
 			--ck-color-selector-focused-cell-background: transparent;
-
 			padding: 1px 2px;
-			border: none;
 
 			&[style^="width:"],
 			&[style*=" width:"],
@@ -35,20 +32,10 @@
 			}
 		}
 
-		/* Default table layout stylization in editing view.
-		When border is not set.
-		But it need to be more strict cause of style attributes like `border-collapse`. */
-
-		& > table[style*="border-collapse"]:not(
-		& > table[style*="border:"],
-		& > table[style*="border-w"],
-		& > table[style*="border-s"],
-		& > table[style*="border-colo"]),
-		& > table > tbody > tr > td[style*="border-collapse"]:not(
-			& > table > tbody > tr > td[style*="border:"],
-			& > table > tbody > tr > td[style*="border-w"],
-			& > table > tbody > tr > td[style*="border-s"],
-			& > table > tbody > tr > td[style*="border-colo"]) {
+		/* Default table layout stylization in editing view when border is not set.
+		But it need to be more strict cause of style attributes like `border-collapse`, `border-spacing`, etc. */
+		& > table:not([style*="border:"],[style*="border-top"],[style*="border-bottom"],[style*="border-left"],[style*="border-right"],[style*="border-width"],[style*="border-style"],[style*="border-color"]),
+		& > table > tbody > tr > td:not([style*="border:"],[style*="border-top"],[style*="border-bottom"],[style*="border-left"],[style*="border-right"],[style*="border-width"],[style*="border-style"],[style*="border-color"]) {
 			border: none;
 			outline: var(--ck-table-layout-default-border-color) 1px dashed;
 		}
