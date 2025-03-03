@@ -414,6 +414,30 @@
 		</tbody>
 	</table>
 	<p></p>
+
+	<hr>
+	<h2>Knows issues:</h2>
+	<h3>when table or table cell has for example set: <code>border-bottom-width:0</code> and <code>border-bottom-width:0</code> - outline is not shown but default border cames in on left and right</h3>
+	<p></p>
+	<table style="padding: 30px;">
+		<tr>
+			<td style="border-bottom-width:0;border-top-width:0; padding: 30px;">
+				<table class="table"
+					style="border-collapse: collapse; border-spacing: 0; border-radius: 0; border-color: red;">
+					<tr>
+						<td>a</td>
+						<td>b</td>
+						<td>c</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
 </div>
 
 <h2>Example table to copy and paste</h2>

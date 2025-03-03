@@ -34,9 +34,26 @@
 
 		/* Default table layout stylization in editing view when border is not set.
 		But it need to be more strict cause of style attributes like `border-collapse`, `border-spacing`, etc. */
-		& > table:not([style*="border:"],[style*="border-top"],[style*="border-bottom"],[style*="border-left"],[style*="border-right"],[style*="border-width"],[style*="border-style"],[style*="border-color"]),
-		& > table > tbody > tr > td:not([style*="border:"],[style*="border-top"],[style*="border-bottom"],[style*="border-left"],[style*="border-right"],[style*="border-width"],[style*="border-style"],[style*="border-color"]) {
-			border: none;
+		& > table:not(
+		[style*="border:"],
+		[style*="border-top"],
+		[style*="border-bottom"],
+		[style*="border-left"],
+		[style*="border-right"],
+		[style*="border-width"],
+		[style*="border-style"],
+		[style*="border-color"]),
+		& > table > tbody > tr > td:not(
+			[style*="border:"],
+			[style*="border-top"],
+			[style*="border-bottom"],
+			[style*="border-left"],
+			[style*="border-right"],
+			[style*="border-width"],
+			[style*="border-style"],
+			[style*="border-color"]
+		) {
+			border-color: transparent;
 			outline: var(--ck-table-layout-default-border-color) 1px dashed;
 		}
 
