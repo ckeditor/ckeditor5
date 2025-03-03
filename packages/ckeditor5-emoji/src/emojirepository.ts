@@ -177,14 +177,14 @@ export default class EmojiRepository extends Plugin {
 		const { t } = this.editor.locale;
 
 		const categories = [
-			{ title: t( 'Smileys & Expressions' ), icon: '😀', groupId: 0 },
+			{ title: t( 'Smileys & Expressions' ), icon: '😄', groupId: 0 },
 			{ title: t( 'Gestures & People' ), icon: '👋', groupId: 1 },
 			{ title: t( 'Animals & Nature' ), icon: '🐻', groupId: 3 },
 			{ title: t( 'Food & Drinks' ), icon: '🍎', groupId: 4 },
 			{ title: t( 'Travel & Places' ), icon: '🚘', groupId: 5 },
 			{ title: t( 'Activities' ), icon: '🏀', groupId: 6 },
 			{ title: t( 'Objects' ), icon: '💡', groupId: 7 },
-			{ title: t( 'Symbols' ), icon: '🟢', groupId: 8 },
+			{ title: t( 'Symbols' ), icon: '🔵', groupId: 8 },
 			{ title: t( 'Flags' ), icon: '🏁', groupId: 9 }
 		];
 
