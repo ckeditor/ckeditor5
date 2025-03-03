@@ -146,7 +146,7 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 
 ### Emoji availability and appearance
 
-The availability of the emoji depends on the operating system. Different systems will have different Unicode support. You can decide that you want to lower the number of newer emoji by setting a lower version of Unicode of the emoji repository (CKEditor&nbsp;5 hosts v15 and v16). This way the users with newer systems will not be able to use newer emoji. Keep in mind that this only affects the editor feature. A user will still be able to use the native emoji insertion methods. The availability may also increase with the usage of a custom font.
+The availability of the emoji depends on the operating system. Different systems will have different Unicode support. You can decide that you want to lower the number of newer emoji by setting a lower {@link module:emoji/emojiconfig~EmojiConfig#version `version`} of Unicode of the emoji repository (CKEditor&nbsp;5 hosts v15 and v16) or by providing a custom emoji repository using the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `definitionsUrl`}. This way the users with newer systems will not be able to use newer emoji. Keep in mind that this only affects the editor feature. A user will still be able to use the native emoji insertion methods. The availability may also increase with the usage of a custom font.
 
 If you want to standardize the appearance of emoji accross operating systems, please consider using an external font in your integration, such as [Noto Color Emoji](https://fonts.google.com/noto/specimen/Noto+Color+Emoji). In the setup make sure to:
 
