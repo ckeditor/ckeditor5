@@ -78,7 +78,8 @@ export default class EmojiRepository extends Plugin {
 		editor.config.define( 'emoji', {
 			version: undefined,
 			skinTone: 'default',
-			definitionsUrl: undefined
+			definitionsUrl: undefined,
+			useCustomFont: false
 		} );
 
 		this._url = this._getUrl();
@@ -101,6 +102,16 @@ export default class EmojiRepository extends Plugin {
 		this._items = this._getItems();
 
 		if ( !this._items ) {
+			/**
+			 * Unable to identify the available emoji to display.
+			 *
+			 * See the {@glink features/emoji#troubleshooting troubleshooting} section in the {@glink features/emoji Emoji feature} guide
+			 * for more details.
+			 *
+			 * @error emoji-repository-empty
+			 */
+			logWarning( 'emoji-repository-empty' );
+
 			return this._repositoryPromiseResolveCallback( false );
 		}
 
@@ -314,19 +325,6 @@ export default class EmojiRepository extends Plugin {
 				return [];
 			} );
 
-		if ( !result.length ) {
-			/**
-			 * Unable to load the emoji repository from the URL.
-			 *
-			 * If the URL works properly and there is no disruption of communication, please check your
-			 * {@glink getting-started/setup/csp Content Security Policy (CSP)} setting and make sure
-			 * the URL connection is allowed by the editor.
-			 *
-			 * @error emoji-repository-load-failed
-			 */
-			logWarning( 'emoji-repository-load-failed' );
-		}
-
 		EmojiRepository._results[ this._url.href ] = this._normalizeEmoji( result );
 	}
 
@@ -337,14 +335,23 @@ export default class EmojiRepository extends Plugin {
 	 *  * Prepare skin tone variants if an emoji defines them.
 	 */
 	private _normalizeEmoji( data: Array<EmojiCdnResource> ): Array<EmojiEntry> {
-		const emojiUtils = this.editor.plugins.get( 'EmojiUtils' );
+		const editor = this.editor;
+		const useCustomFont = editor.config.get( 'emoji.useCustomFont' );
+		const emojiUtils = editor.plugins.get( 'EmojiUtils' );
+
+		const insertableEmoji = data.filter( item => emojiUtils.isEmojiCategoryAllowed( item ) );
+
+		// When using a custom font, the feature does not filter any emoji.
+		if ( useCustomFont ) {
+			return insertableEmoji.map( item => emojiUtils.normalizeEmojiSkinTone( item ) );
+		}
+
 		const emojiSupportedVersionByOs = emojiUtils.getEmojiSupportedVersionByOs();
 
 		const container = emojiUtils.createEmojiWidthTestingContainer();
 		document.body.appendChild( container );
 
-		const results = data
-			.filter( item => emojiUtils.isEmojiCategoryAllowed( item ) )
+		const results = insertableEmoji
 			.filter( item => emojiUtils.isEmojiSupported( item, emojiSupportedVersionByOs, container ) )
 			.map( item => emojiUtils.normalizeEmojiSkinTone( item ) );
 
@@ -430,3 +437,13 @@ export type SkinTone = {
 	icon: string;
 	tooltip: string;
 };
+
+/**
+ * Unable to load the emoji repository from the URL.
+ *
+ * If the URL works properly and there is no disruption of communication, please check your
+ * {@glink getting-started/setup/csp Content Security Policy (CSP)} setting and make sure
+ * the URL connection is allowed by the editor.
+ *
+ * @error emoji-repository-load-failed
+ */
