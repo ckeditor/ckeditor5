@@ -14,6 +14,32 @@ modified_at: 2024-11-28
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
+## Update to CKEditor&nbsp;5 v 44.3.0
+
+Released on March 5, 2025. ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v44.3.0))
+
+### Fixed link decorators
+
+We fixed the behavior of the multiple manual link decorators that set the `rel` attribute. The fix happened so deep in the engine that we improved the overall performance of the editor slightly as well.
+
+### New `EmptyBlock` plugin
+
+Starting this release, a new `EmptyBlock` plugin prevents adding `&nbsp;` to the output data of blocks, works similarly to the [`fillEmptyBlocks`](https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fillEmptyBlocks) configuration in CKEditor 4.
+
+### Enhanced support for the `<hr>` element
+
+We have enhanced support for the `<hr>` element in the [General HTML Support](https://ckeditor.com/docs/ckeditor5/latest/features/html/general-html-support.html) plugin. Now, the attributes of the `<hr>` element are properly preserved if configuration allows it.
+
+## Enhanced emoji support
+
+We enhanced emoji support for better compatibility with users' devices.
+
+### Minor breaking changes in this release
+
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `ViewConsumable.consumablesFromElement()` is removed and replaced with the `view.Element#_getConsumables()` internal method. You should use `ViewConsumable.createFrom()` to create consumables if needed.
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `ViewElementConsumables` now accepts and outputs only normalized data. The `ViewConsumable` still accepts normalized or non-normalized input.
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `Matcher#match()` and `Matcher#matchAll()` output is now normalized. The `MatchResult#match` now contains normalized data compatible with changes in the `ViewConsumable`.
+
 ## Update to CKEditor&nbsp;5 v 44.2.1
 
 Released on February 20, 2025. ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v44.2.1))
