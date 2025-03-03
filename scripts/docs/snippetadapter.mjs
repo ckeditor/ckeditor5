@@ -125,60 +125,30 @@ async function getAllSnippets( path ) {
  * Builds all snippets from the provided paths and saves them to the output path.
  *
  * @param {Record<string, SnippetSource>} snippets
- * @param {string} snippetsOutputPath
+ * @param {string} outdir
  * @param {Record<string, any>} constants
  * @param {Record<string, any>} imports
  */
-async function buildSnippets( snippets, snippetsOutputPath, constants, imports ) {
-	const external = Object.keys( imports );
+async function buildSnippets( snippets, outdir, constants, imports ) {
+	const externals = Object.keys( imports );
 	const define = {};
 
 	for ( const definitionKey in constants ) {
 		define[ definitionKey ] = JSON.stringify( constants[ definitionKey ] );
 	}
 
-	for ( const [ name, files ] of Object.entries( snippets ) ) {
-		if ( !files.js ) {
-			continue;
-		}
-
-		await buildSnippet( name, files, snippetsOutputPath, external, define );
-	}
-}
-
-/**
- * Builds individual JavaScript snippet.
- *
- * @param {string} name
- * @param {SnippetSource} files
- * @param {string} outputPath
- * @param {Array<string>} externals
- * @param {Record<string, string>} define
- * @returns {Promise<Array<string>>}
- */
-async function buildSnippet( name, files, outputPath, externals, define ) {
-	const { name: filename, dir, base } = upath.parse( files.js );
+	const entryPoints = Object
+		.values( snippets )
+		.map( snippet => snippet.js )
+		.filter( Boolean );
 
 	return esbuild( {
-		/**
-		 * TODO: If all JS snippets directly import CSS files, then we can use `entryPoints`
-		 * instead of `stdin` and simplify this.
-		 * https://esbuild.github.io/api/#entry-points
-		 */
-		stdin: {
-			contents: `
-				${ files.css ? `import './${ filename }.css';` : '' }
-				${ await readFile( files.js, { encoding: 'utf-8' } ) }
-			`,
-			resolveDir: dir,
-			sourcefile: base,
-			loader: 'jsx'
-		},
-		entryNames: '[dir]/snippet',
+		entryPoints,
+		define,
+		outdir,
+		entryNames: '[dir]/[name]/snippet',
 		bundle: true,
 		minify: true,
-		define,
-		outdir: upath.join( outputPath, name ),
 		platform: 'browser',
 		legalComments: 'none',
 		format: 'esm',
@@ -193,7 +163,7 @@ async function buildSnippet( name, files, outputPath, externals, define ) {
 			 * Esbuild has an `external` property. However, it doesn't look for direct match, but checks if the path starts
 			 * with the provided value. This means that if the `external` array includes `@ckeditor/ckeditor5-core` and we
 			 * have an import like `@ckeditor/ckeditor5-core/tests/...`, then it will be marked as external instead of being
-       * bundled. This will cause issues, because the `tests` directory is not available in the CDN build.
+			 * bundled. This will cause issues, because the `tests` directory is not available in the CDN build.
 			 */
 			{
 				name: 'external',
