@@ -55,7 +55,6 @@
     "src/**/*.d.ts",
     "theme",
     "build",
-    "ckeditor5-metadata.json",
     "CHANGELOG.md"
   ],
   "scripts": {
