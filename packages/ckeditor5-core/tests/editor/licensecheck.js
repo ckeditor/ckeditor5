@@ -403,9 +403,11 @@ describe( 'Editor - license check', () => {
 					// Verify console.warn call with the warning message
 					sinon.assert.calledOnce( consoleWarnStub );
 
+					const article = licenseType === 'evaluation' ? 'an' : 'a';
+
 					sinon.assert.calledWith(
 						consoleWarnStub,
-						`⚠️ You are using a ${ licenseType } license of CKEditor 5` +
+						`⚠️ You are using ${ article } ${ licenseType } license of CKEditor 5` +
 						`${ licenseType === 'trial' ? ' which is for evaluation purposes only' : '' }. ` +
 						'For production usage, please obtain a production license at https://portal.ckeditor.com/'
 					);

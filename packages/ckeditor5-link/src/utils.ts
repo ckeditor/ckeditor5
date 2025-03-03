@@ -15,20 +15,17 @@ import type {
 	Schema,
 	ViewAttributeElement,
 	ViewNode,
-	ViewDocumentFragment
+	ViewDocumentFragment,
+	Range
 } from 'ckeditor5/src/engine.js';
 
-import type { Editor } from 'ckeditor5/src/core.js';
 import type { LocaleTranslate } from 'ckeditor5/src/utils.js';
-import type { BookmarkEditing } from '@ckeditor/ckeditor5-bookmark';
 
 import type {
 	LinkDecoratorAutomaticDefinition,
 	LinkDecoratorDefinition,
 	LinkDecoratorManualDefinition
 } from './linkconfig.js';
-
-import type { LinkActionsViewOptions } from './ui/linkactionsview.js';
 
 import { upperFirst } from 'es-toolkit/compat';
 
@@ -200,44 +197,22 @@ export function openLink( link: string ): void {
 }
 
 /**
- * Creates the bookmark callbacks for handling link opening experience.
+ * Returns a text of a link range.
+ *
+ * If the returned value is `undefined`, the range contains elements other than text nodes.
  */
-export function createBookmarkCallbacks( editor: Editor ): LinkActionsViewOptions {
-	const bookmarkEditing: BookmarkEditing | null = editor.plugins.has( 'BookmarkEditing' ) ?
-		editor.plugins.get( 'BookmarkEditing' ) :
-		null;
+export function extractTextFromLinkRange( range: Range ): string | undefined {
+	let text = '';
 
-	/**
-	 * Returns `true` when bookmark `id` matches the hash from `link`.
-	 */
-	function isScrollableToTarget( link: string | undefined ): boolean {
-		return !!link &&
-			link.startsWith( '#' ) &&
-			!!bookmarkEditing &&
-			!!bookmarkEditing.getElementForBookmarkId( link.slice( 1 ) );
+	for ( const item of range.getItems() ) {
+		if ( !item.is( '$text' ) && !item.is( '$textProxy' ) ) {
+			return;
+		}
+
+		text += item.data;
 	}
 
-	/**
-	 * Scrolls the view to the desired bookmark or open a link in new window.
-	 */
-	function scrollToTarget( link: string ): void {
-		const bookmarkId = link.slice( 1 );
-		const modelBookmark = bookmarkEditing!.getElementForBookmarkId( bookmarkId );
-
-		editor.model.change( writer => {
-			writer.setSelection( modelBookmark!, 'on' );
-		} );
-
-		editor.editing.view.scrollToTheSelection( {
-			alignToTop: true,
-			forceScroll: true
-		} );
-	}
-
-	return {
-		isScrollableToTarget,
-		scrollToTarget
-	};
+	return text;
 }
 
 export type NormalizedLinkDecoratorAutomaticDefinition = LinkDecoratorAutomaticDefinition & { id: string };

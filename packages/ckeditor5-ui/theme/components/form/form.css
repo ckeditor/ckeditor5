@@ -1,0 +1,87 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
+
+:root {
+	--ck-form-default-width: 340px;
+}
+
+.ck.ck-form {
+	padding: 0 0 var(--ck-spacing-large);
+
+	&.ck-form_default-width {
+		width: var(--ck-form-default-width);
+	}
+
+	&:focus {
+		outline: none;
+	}
+
+	& .ck.ck-input-text,
+	& .ck.ck-input-number {
+		min-width: 100%;
+		width: 0;
+	}
+
+	& .ck.ck-dropdown {
+		min-width: 100%;
+
+		& .ck-dropdown__button {
+			&:not(:focus) {
+				border: 1px solid var(--ck-color-base-border);
+			}
+
+			& .ck-button__label {
+				width: 100%;
+			}
+		}
+	}
+
+	/* Default `ck-responsive-form` customization when it lies next to `ck-form` class */
+	&.ck-responsive-form {
+		& .ck.ck-form__row {
+			&.ck-form__row_with-submit {
+				@mixin ck-media-phone {
+					flex-direction: column;
+					align-items: stretch;
+					padding: 0;
+				}
+
+				> .ck {
+					@mixin ck-media-phone {
+						margin: var(--ck-spacing-large) var(--ck-spacing-large) 0;
+					}
+				}
+
+				.ck-button_with-text {
+					@mixin ck-media-phone {
+						justify-content: center;
+					}
+				}
+			}
+
+			&.ck-form__row_large-bottom-padding {
+				@mixin ck-media-phone {
+					padding-bottom: var(--ck-spacing-large);
+				}
+			}
+		}
+
+		@mixin ck-dir ltr {
+			& > :not(:first-child) {
+				margin-left: 0;
+			}
+		}
+
+		@mixin ck-dir rtl {
+			& > :not(:last-child) {
+				margin-left: 0;
+			}
+		}
+	}
+	/* End of `ck-responsive-form` customization */
+}

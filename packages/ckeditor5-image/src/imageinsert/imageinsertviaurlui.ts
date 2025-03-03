@@ -183,9 +183,7 @@ export default class ImageInsertViaUrlUI extends Plugin {
 
 		dialog.show( {
 			id: 'insertImageViaUrl',
-			title: this._imageInsertUI.isImageSelected ?
-				t( 'Update image URL' ) :
-				t( 'Insert image via URL' ),
+			title: t( 'Image via URL' ),
 			isModal: true,
 			content: this._formView,
 			actionButtons: [
@@ -195,7 +193,7 @@ export default class ImageInsertViaUrlUI extends Plugin {
 					onExecute: () => dialog.hide()
 				},
 				{
-					label: t( 'Accept' ),
+					label: this._imageInsertUI.isImageSelected ? t( 'Save' ) : t( 'Insert' ),
 					class: 'ck-button-action',
 					withText: true,
 					onExecute: () => this._handleSave()

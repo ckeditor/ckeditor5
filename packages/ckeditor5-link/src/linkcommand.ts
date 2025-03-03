@@ -9,11 +9,11 @@
 
 import { Command } from 'ckeditor5/src/core.js';
 import { findAttributeRange } from 'ckeditor5/src/typing.js';
-import { Collection, first, toMap } from 'ckeditor5/src/utils.js';
-import type { Range, DocumentSelection, Model, Writer } from 'ckeditor5/src/engine.js';
+import { Collection, diff, first, toMap } from 'ckeditor5/src/utils.js';
+import { LivePosition, type Range, type Item } from 'ckeditor5/src/engine.js';
 
 import AutomaticDecorators from './utils/automaticdecorators.js';
-import { isLinkableElement } from './utils.js';
+import { extractTextFromLinkRange, isLinkableElement } from './utils.js';
 import type ManualDecorator from './utils/manualdecorator.js';
 
 /**
@@ -135,13 +135,34 @@ export default class LinkCommand extends Command {
 	 * **Note**: {@link module:link/unlinkcommand~UnlinkCommand#execute `UnlinkCommand#execute()`} removes all
 	 * decorator attributes.
 	 *
+	 * An optional parameter called `displayedText` is to add or update text of the link that represents the `href`. For example:
+	 *
+	 * ```ts
+	 * const linkCommand = editor.commands.get( 'link' );
+	 *
+	 * // Adding a new link with `displayedText` attribute.
+	 * linkCommand.execute( 'http://example.com', {}, 'Example' );
+	 * ```
+	 *
+	 * The above code will create an anchor like this:
+	 *
+	 * ```html
+	 * <a href="http://example.com">Example</a>
+	 * ```
+	 *
 	 * @fires execute
 	 * @param href Link destination.
 	 * @param manualDecoratorIds The information about manual decorator attributes to be applied or removed upon execution.
+	 * @param displayedText Text of the link.
 	 */
-	public override execute( href: string, manualDecoratorIds: Record<string, boolean> = {} ): void {
+	public override execute(
+		href: string,
+		manualDecoratorIds: Record<string, boolean> = {},
+		displayedText?: string
+	): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
+
 		// Stores information about manual decorators to turn them on/off when command is applied.
 		const truthyManualDecorators: Array<string> = [];
 		const falsyManualDecorators: Array<string> = [];
@@ -155,32 +176,104 @@ export default class LinkCommand extends Command {
 		}
 
 		model.change( writer => {
+			const updateLinkAttributes = ( itemOrRange: Item | Range ): void => {
+				writer.setAttribute( 'linkHref', href, itemOrRange );
+
+				truthyManualDecorators.forEach( item => writer.setAttribute( item, true, itemOrRange ) );
+				falsyManualDecorators.forEach( item => writer.removeAttribute( item, itemOrRange ) );
+			};
+
+			const updateLinkTextIfNeeded = ( range: Range, linkHref?: string ): Range | undefined => {
+				const linkText = extractTextFromLinkRange( range );
+
+				if ( !linkText ) {
+					return range;
+				}
+
+				// Make a copy not to override the command param value.
+				let newText = displayedText;
+
+				if ( !newText ) {
+					// Replace the link text with the new href if previously href was equal to text.
+					// For example: `<a href="http://ckeditor.com/">http://ckeditor.com/</a>`.
+					newText = linkHref && linkHref == linkText ? href : linkText;
+				}
+
+				// Only if needed.
+				if ( newText != linkText ) {
+					const changes = findChanges( linkText, newText );
+					let insertsLength = 0;
+
+					for ( const { offset, actual, expected } of changes ) {
+						const updatedOffset = offset + insertsLength;
+						const subRange = writer.createRange(
+							range.start.getShiftedBy( updatedOffset ),
+							range.start.getShiftedBy( updatedOffset + actual.length )
+						);
+
+						// Collect formatting attributes from replaced text.
+						const textNode = getLinkPartTextNode( subRange, range )!;
+						const attributes = textNode.getAttributes();
+						const formattingAttributes = Array
+							.from( attributes )
+							.filter( ( [ key ] ) => model.schema.getAttributeProperties( key ).isFormatting );
+
+						// Create a new text node.
+						const newTextNode = writer.createText( expected, formattingAttributes );
+
+						// Set link attributes before inserting to document to avoid Differ attributes edge case.
+						updateLinkAttributes( newTextNode );
+
+						// Replace text with formatting.
+						model.insertContent( newTextNode, subRange );
+
+						// Sum of all previous inserts.
+						insertsLength += expected.length;
+					}
+
+					return writer.createRange( range.start, range.start.getShiftedBy( newText.length ) );
+				}
+			};
+
+			const collapseSelectionAtLinkEnd = ( linkRange: Range ): void => {
+				const { plugins } = this.editor;
+
+				writer.setSelection( linkRange.end );
+
+				if ( plugins.has( 'TwoStepCaretMovement' ) ) {
+					// After replacing the text of the link, we need to move the caret to the end of the link,
+					// override it's gravity to forward to prevent keeping e.g. bold attribute on the caret
+					// which was previously inside the link.
+					//
+					// If the plugin is not available, the caret will be placed at the end of the link and the
+					// bold attribute will be kept even if command moved caret outside the link.
+					plugins.get( 'TwoStepCaretMovement' )._handleForwardMovement();
+				} else {
+					// Remove the `linkHref` attribute and all link decorators from the selection.
+					// It stops adding a new content into the link element.
+					for ( const key of [ 'linkHref', ...truthyManualDecorators, ...falsyManualDecorators ] ) {
+						writer.removeSelectionAttribute( key );
+					}
+				}
+			};
+
 			// If selection is collapsed then update selected link or insert new one at the place of caret.
 			if ( selection.isCollapsed ) {
 				const position = selection.getFirstPosition()!;
 
 				// When selection is inside text with `linkHref` attribute.
 				if ( selection.hasAttribute( 'linkHref' ) ) {
-					const linkText = extractTextFromSelection( selection );
-					// Then update `linkHref` value.
-					let linkRange = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
+					const linkHref = selection.getAttribute( 'linkHref' ) as string;
+					const linkRange = findAttributeRange( position, 'linkHref', linkHref, model );
+					const newLinkRange = updateLinkTextIfNeeded( linkRange, linkHref );
 
-					if ( selection.getAttribute( 'linkHref' ) === linkText ) {
-						linkRange = this._updateLinkContent( model, writer, linkRange, href );
+					updateLinkAttributes( newLinkRange || linkRange );
+
+					// Put the selection at the end of the updated link only when text was changed.
+					// When text was not altered we keep the original selection.
+					if ( newLinkRange ) {
+						collapseSelectionAtLinkEnd( newLinkRange );
 					}
-
-					writer.setAttribute( 'linkHref', href, linkRange );
-
-					truthyManualDecorators.forEach( item => {
-						writer.setAttribute( item, true, linkRange );
-					} );
-
-					falsyManualDecorators.forEach( item => {
-						writer.removeAttribute( item, linkRange );
-					} );
-
-					// Put the selection at the end of the updated link.
-					writer.setSelection( writer.createPositionAfter( linkRange.end.nodeBefore! ) );
 				}
 				// If not then insert text node with `linkHref` attribute in place of caret.
 				// However, since selection is collapsed, attribute value will be used as data for text node.
@@ -194,22 +287,19 @@ export default class LinkCommand extends Command {
 						attributes.set( item, true );
 					} );
 
-					const { end: positionAfter } = model.insertContent( writer.createText( href, attributes ), position );
+					const newLinkRange = model.insertContent( writer.createText( displayedText || href, attributes ), position );
 
 					// Put the selection at the end of the inserted link.
 					// Using end of range returned from insertContent in case nodes with the same attributes got merged.
-					writer.setSelection( positionAfter );
+					collapseSelectionAtLinkEnd( newLinkRange );
 				}
-
-				// Remove the `linkHref` attribute and all link decorators from the selection.
-				// It stops adding a new content into the link element.
-				[ 'linkHref', ...truthyManualDecorators, ...falsyManualDecorators ].forEach( item => {
-					writer.removeSelectionAttribute( item );
-				} );
 			} else {
+				// Non-collapsed selection.
+
 				// If selection has non-collapsed ranges, we change attribute on nodes inside those ranges
 				// omitting nodes where the `linkHref` attribute is disallowed.
-				const ranges = model.schema.getValidRanges( selection.getRanges(), 'linkHref' );
+				const selectionRanges = Array.from( selection.getRanges() );
+				const ranges = model.schema.getValidRanges( selectionRanges, 'linkHref' );
 
 				// But for the first, check whether the `linkHref` attribute is allowed on selected blocks (e.g. the "image" element).
 				const allowedRanges = [];
@@ -231,29 +321,31 @@ export default class LinkCommand extends Command {
 					}
 				}
 
-				for ( const range of rangesToUpdate ) {
-					let linkRange = range;
+				// Store the selection ranges in a pseudo live range array (stickiness to the outside of the range).
+				const stickyPseudoRanges = selectionRanges.map( range => ( {
+					start: LivePosition.fromPosition( range.start, 'toPrevious' ),
+					end: LivePosition.fromPosition( range.end, 'toNext' )
+				} ) );
 
-					if ( rangesToUpdate.length === 1 ) {
-						// Current text of the link in the document.
-						const linkText = extractTextFromSelection( selection );
+				// Update or set links (including text update if needed).
+				for ( let range of rangesToUpdate ) {
+					const linkHref = ( range.start.textNode || range.start.nodeAfter! ).getAttribute( 'linkHref' ) as string | undefined;
 
-						if ( selection.getAttribute( 'linkHref' ) === linkText ) {
-							linkRange = this._updateLinkContent( model, writer, range, href );
-							writer.setSelection( writer.createSelection( linkRange ) );
-						}
-					}
+					range = updateLinkTextIfNeeded( range, linkHref ) || range;
 
-					writer.setAttribute( 'linkHref', href, linkRange );
-
-					truthyManualDecorators.forEach( item => {
-						writer.setAttribute( item, true, linkRange );
-					} );
-
-					falsyManualDecorators.forEach( item => {
-						writer.removeAttribute( item, linkRange );
-					} );
+					updateLinkAttributes( range );
 				}
+
+				// The original selection got trimmed by replacing content so we need to restore it.
+				writer.setSelection( stickyPseudoRanges.map( pseudoRange => {
+					const start = pseudoRange.start.toPosition();
+					const end = pseudoRange.end.toPosition();
+
+					pseudoRange.start.detach();
+					pseudoRange.end.detach();
+
+					return model.createRange( start, end );
+				} ) );
 			}
 		} );
 	}
@@ -294,41 +386,106 @@ export default class LinkCommand extends Command {
 
 		return true;
 	}
-
-	/**
-	 * Updates selected link with a new value as its content and as its href attribute.
-	 *
-	 * @param model Model is need to insert content.
-	 * @param writer Writer is need to create text element in model.
-	 * @param range A range where should be inserted content.
-	 * @param href A link value which should be in the href attribute and in the content.
-	 */
-	private _updateLinkContent( model: Model, writer: Writer, range: Range, href: string ): Range {
-		const text = writer.createText( href, { linkHref: href } );
-
-		return model.insertContent( text, range );
-	}
 }
 
-// Returns a text of a link under the collapsed selection or a selection that contains the entire link.
-function extractTextFromSelection( selection: DocumentSelection ): string | null {
-	if ( selection.isCollapsed ) {
-		const firstPosition = selection.getFirstPosition();
+/**
+ * Compares two strings and returns an array of changes needed to transform one into another.
+ * Uses the diff utility to find the differences and groups them into chunks containing information
+ * about the offset and actual/expected content.
+ *
+ * @param oldText The original text to compare.
+ * @param newText The new text to compare against.
+ * @returns Array of change objects containing offset and actual/expected content.
+ *
+ * @example
+ * findChanges( 'hello world', 'hi there' );
+ *
+ * Returns:
+ * [
+ * 	{
+ * 		"offset": 1,
+ * 		"actual": "ello",
+ * 		"expected": "i"
+ * 	},
+ * 	{
+ * 		"offset": 2,
+ * 		"actual": "wo",
+ * 		"expected": "the"
+ * 	},
+ * 	{
+ * 		"offset": 3,
+ * 		"actual": "ld",
+ * 		"expected": "e"
+ * 	}
+ * ]
+ */
+function findChanges( oldText: string, newText: string ): Array<{ offset: number; actual: string; expected: string }> {
+	// Get array of operations (insert/delete/equal) needed to transform oldText into newText.
+	// Example: diff('abc', 'abxc') returns ['equal', 'equal', 'insert', 'equal']
+	const changes = diff( oldText, newText );
 
-		return firstPosition!.textNode && firstPosition!.textNode.data;
+	// Track position in both strings based on operation type.
+	const counter = { equal: 0, insert: 0, delete: 0 };
+	const result = [];
+
+	// Accumulate consecutive changes into slices before creating change objects.
+	let actualSlice = '';
+	let expectedSlice = '';
+
+	// Adding null as sentinel value to handle final accumulated changes.
+	for ( const action of [ ...changes, null ] ) {
+		if ( action == 'insert' ) {
+			// Example: for 'abc' -> 'abxc', at insert position, adds 'x' to expectedSlice.
+			expectedSlice += newText[ counter.equal + counter.insert ];
+		}
+		else if ( action == 'delete' ) {
+			// Example: for 'abc' -> 'ac', at delete position, adds 'b' to actualSlice.
+			actualSlice += oldText[ counter.equal + counter.delete ];
+		}
+		else if ( actualSlice.length || expectedSlice.length ) {
+			// On 'equal' or end: bundle accumulated changes into a single change object.
+			// Example: { offset: 2, actual: "", expected: "x" }
+			result.push( {
+				offset: counter.equal,
+				actual: actualSlice,
+				expected: expectedSlice
+			} );
+
+			actualSlice = '';
+			expectedSlice = '';
+		}
+
+		// Increment appropriate counter for the current operation.
+		if ( action ) {
+			counter[ action ]++;
+		}
+	}
+
+	return result;
+}
+
+/**
+ * Returns text node withing the link range that should be updated.
+ *
+ * @param range Partial link range.
+ * @param linkRange Range of the entire link.
+ * @returns Text node.
+ */
+function getLinkPartTextNode( range: Range, linkRange: Range ): Item | null {
+	if ( !range.isCollapsed ) {
+		return first( range.getItems() );
+	}
+
+	const position = range.start;
+
+	if ( position.textNode ) {
+		return position.textNode;
+	}
+
+	// If the range is at the start of a link range then prefer node inside a link range.
+	if ( !position.nodeBefore || position.isEqual( linkRange.start ) ) {
+		return position.nodeAfter;
 	} else {
-		const rangeItems = Array.from( selection.getFirstRange()!.getItems() );
-
-		if ( rangeItems.length > 1 ) {
-			return null;
-		}
-
-		const firstNode = rangeItems[ 0 ];
-
-		if ( firstNode.is( '$text' ) || firstNode.is( '$textProxy' ) ) {
-			return firstNode.data;
-		}
-
-		return null;
+		return position.nodeBefore;
 	}
 }
