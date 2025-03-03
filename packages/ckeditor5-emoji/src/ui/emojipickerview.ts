@@ -33,6 +33,11 @@ import type { EmojiCategory, SkinTone } from '../emojirepository.js';
  */
 export default class EmojiPickerView extends View<HTMLDivElement> {
 	/**
+	 * Tracks whether the panel is currently open.
+	 */
+	public isEmojiPanelOpen: boolean;
+
+	/**
 	 * A collection of the focusable children of the view.
 	 */
 	public readonly items: ViewCollection<FocusableView>;
@@ -91,6 +96,7 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 	) {
 		super( locale );
 
+		this.isEmojiPanelOpen = false;
 		const categoryName = emojiCategories[ 0 ].title;
 
 		this.gridView = new EmojiGridView( locale, {
@@ -160,7 +166,12 @@ export default class EmojiPickerView extends View<HTMLDivElement> {
 			],
 			attributes: {
 				tabindex: '-1',
-				class: [ 'ck', 'ck-emoji', 'ck-search' ]
+				class: [
+					'ck',
+					'ck-emoji',
+					'ck-search',
+					this.bindTemplate.if( 'isEmojiPanelOpen', 'ck-emoji__panel_open' )
+				]
 			}
 		} );
 

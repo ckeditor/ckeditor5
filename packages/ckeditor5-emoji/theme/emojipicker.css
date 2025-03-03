@@ -32,6 +32,6 @@
 }
 
 /* See: https://github.com/ckeditor/ckeditor5/issues/17964 */
-div.ck.ck-balloon-panel:has( .ck.ck-emoji ) {
+.ck-emoji__panel_open {
 	z-index: calc( var( --ck-z-dialog ) + 1 );
 }

@@ -463,6 +463,8 @@ export default class MentionUI extends Plugin {
 	 * Shows the mentions balloon. If the panel is already visible, it will reposition it.
 	 */
 	private _showOrUpdateUI( markerMarker: Marker ): void {
+		this._mentionsView.isMentionsPanelOpen = true;
+
 		if ( this._isUIVisible ) {
 			// @if CK_DEBUG_MENTION // console.log( '%c[UI]%c Updating position.', 'color: green', 'color: black' );
 
@@ -486,6 +488,8 @@ export default class MentionUI extends Plugin {
 	 * Hides the mentions balloon and removes the 'mention' marker from the markers collection.
 	 */
 	private _hideUIAndRemoveMarker(): void {
+		this._mentionsView.isMentionsPanelOpen = false;
+
 		// Remove the mention view from balloon before removing marker - it is used by balloon position target().
 		if ( this._balloon!.hasView( this._mentionsView ) ) {
 			// @if CK_DEBUG_MENTION // console.log( '%c[UI]%c Hiding the UI.', 'color: green', 'color: black' );

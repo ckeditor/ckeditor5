@@ -27,6 +27,6 @@
 }
 
 /* See: https://github.com/ckeditor/ckeditor5/issues/17964 */
-div.ck.ck-balloon-panel:has( .ck.ck-mentions ) {
+.ck-mentions__panel_open {
 	z-index: calc( var( --ck-z-dialog ) + 1 );
 }
