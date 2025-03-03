@@ -89,6 +89,7 @@ async function getDependencies( packageName ) {
  * @param {string} outputPath
  * @param {Record<string, any>} constants
  * @param {Record<string, any>} imports
+ * @returns {Promise<void>}
  */
 async function buildSnippets( inputPath, outputPath, constants, imports ) {
 	const entryPoints = await glob( `${ inputPath }/**/*.js`, { absolute: true } );
@@ -99,7 +100,7 @@ async function buildSnippets( inputPath, outputPath, constants, imports ) {
 		define[ definitionKey ] = JSON.stringify( constants[ definitionKey ] );
 	}
 
-	return esbuild( {
+	await esbuild( {
 		entryPoints,
 		define,
 		outdir: outputPath,
@@ -141,6 +142,7 @@ async function buildSnippets( inputPath, outputPath, constants, imports ) {
  * @param {function} getSnippetPlaceholder
  * @param {Record<string, any>} constants
  * @param {Record<string, any>} imports
+ * @returns {Promise<void>}
  */
 async function buildDocuments( snippets, getSnippetPlaceholder, constants, imports ) {
 	const getStyle = href => `<link rel="stylesheet" href="${ href }" data-cke="true" />`;
