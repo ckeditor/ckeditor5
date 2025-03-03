@@ -5,7 +5,7 @@
 
 /* eslint-env node */
 
-import { constants, readFile, writeFile, copyFile, readdir, access } from 'fs/promises';
+import { constants, readFile, writeFile, copyFile, access } from 'fs/promises';
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
 import upath from 'upath';
@@ -30,7 +30,7 @@ export default async function snippetAdapter( snippets, _options, { getSnippetPl
 
 	// Build all JavaScript snippets.
 	await buildSnippets(
-		await getAllSnippets( snippetsInputPath ),
+		snippetsInputPath,
 		snippetsOutputPath,
 		constants,
 		imports
@@ -83,53 +83,15 @@ async function getDependencies( packageName ) {
 }
 
 /**
- * Returns snippet files grouped by their name.
- *
- * @param {string} path
- * @returns {Promise<Record<string, SnippetSource>>}
- */
-async function getAllSnippets( path ) {
-	// TODO: Most of this logic can be removed, if JS files directly import CSS files.
-	// Then we can use glob to only search for JS files.
-
-	// Snippets grouped by their name.
-	const snippets = {};
-	const entries = await readdir( path, { withFileTypes: true, recursive: true } );
-
-	for ( const entry of entries ) {
-		if ( entry.isDirectory() ) {
-			continue;
-		}
-
-		/**
-		 * Given that the `snippetsFolder` is `/absolute/path/to`, the following values will be:
-		 *
-		 * path 					/absolute/path/to/some/resource.html
-		 * dir						/absolute/path/to/some
-		 * name						resource
-		 * ext						.html
-		 * snippetName		some/resource
-		 */
-		const filePath = upath.join( entry.parentPath, entry.name );
-		const { dir, name, ext } = upath.parse( filePath );
-		const snippetName = upath.relative( path, upath.join( dir, name ) );
-		const data = snippets[ snippetName ] ??= {};
-
-		data[ ext.substring( 1 ) ] = filePath;
-	}
-
-	return snippets;
-}
-
-/**
  * Builds all snippets from the provided paths and saves them to the output path.
  *
- * @param {Record<string, SnippetSource>} snippets
- * @param {string} outdir
+ * @param {string} inputPath
+ * @param {string} outputPath
  * @param {Record<string, any>} constants
  * @param {Record<string, any>} imports
  */
-async function buildSnippets( snippets, outdir, constants, imports ) {
+async function buildSnippets( inputPath, outputPath, constants, imports ) {
+	const entryPoints = await glob( `${ inputPath }/**/*.js`, { absolute: true } );
 	const externals = Object.keys( imports );
 	const define = {};
 
@@ -137,15 +99,10 @@ async function buildSnippets( snippets, outdir, constants, imports ) {
 		define[ definitionKey ] = JSON.stringify( constants[ definitionKey ] );
 	}
 
-	const entryPoints = Object
-		.values( snippets )
-		.map( snippet => snippet.js )
-		.filter( Boolean );
-
 	return esbuild( {
 		entryPoints,
 		define,
-		outdir,
+		outdir: outputPath,
 		entryNames: '[dir]/[name]/snippet',
 		bundle: true,
 		minify: true,
