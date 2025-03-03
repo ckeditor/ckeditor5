@@ -204,7 +204,7 @@ To use the Emoji plugin, install an emoji font on your operating system:
 
 Once installed, restart your browser and reload the editor.
 
-#### 2. Server Error When Loading the Emoji Repository
+#### Server error when loading the emoji repository
 
 **Problem**:
 The request to load the emoji repository was completed, but the server returned an error (e.g., 404 Not Found, 500 Internal Server Error).
