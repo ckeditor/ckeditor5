@@ -75,3 +75,14 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+// MathType has a WASM telemetry file that esbuild fails to generate. Because
+// the code works fine without it, then we accept the error during a scan.
+const metaElement = document.createElement( 'meta' );
+
+metaElement.name = 'x-cke-crawler-ignore-patterns';
+metaElement.content = JSON.stringify( {
+	'response-failure': 'wasm'
+} );
+
+document.head.appendChild( metaElement );
