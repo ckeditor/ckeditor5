@@ -10,7 +10,8 @@ import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-imag
 import { LinkImage } from '@ckeditor/ckeditor5-link';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
-import Mermaid from '@ckeditor/ckeditor5-mermaid/src/mermaid.js';
+import { Mermaid } from '@ckeditor/ckeditor5-mermaid/dist/index.js';
+import '@ckeditor/ckeditor5-mermaid/dist/index.css';
 
 // Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
 import ClassicEditor from '../build-classic.js';
@@ -39,8 +40,7 @@ ClassicEditor
 				top: window.getViewportTopOffsetConfig()
 			}
 		},
-		cloudServices: CS_CONFIG,
-		licenseKey: 'GPL'
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editor = editor;

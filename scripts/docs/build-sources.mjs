@@ -12,6 +12,8 @@ import { CKEDITOR5_ROOT_PATH, CKEDITOR5_COMMERCIAL_PATH } from '../constants.mjs
 import generateCKEditor5DocsBuild from './generate-ckeditor5-docs-build.mjs';
 
 export default async function buildSources() {
+	console.log( 'Started building `ckeditor5`.' );
+
 	const { version } = await fs.readJson( upath.join( CKEDITOR5_ROOT_PATH, 'package.json' ) );
 	const basePath = upath.join( CKEDITOR5_ROOT_PATH, 'build', 'docs', 'ckeditor5', version, 'assets' );
 
@@ -19,11 +21,17 @@ export default async function buildSources() {
 
 	await generateCKEditor5DocsBuild( output( 'ckeditor5/ckeditor5.js' ) );
 
+	console.log( 'Finished building `ckeditor5`.' );
+
 	if ( await fs.pathExists( CKEDITOR5_COMMERCIAL_PATH ) ) {
+		console.log( 'Started building `ckeditor5-premium-features`.' );
+
 		const scriptPath = upath.join( CKEDITOR5_COMMERCIAL_PATH, 'scripts', 'docs', 'generate-ckeditor5-premium-features-docs-build.mjs' );
 		const { href } = url.pathToFileURL( scriptPath );
 		const { default: generateCKEditor5PremiumFeaturesDocsBuild } = await import( href );
 
 		await generateCKEditor5PremiumFeaturesDocsBuild( output( 'ckeditor5-premium-features/ckeditor5-premium-features.js' ) );
+
+		console.log( 'Finished building `ckeditor5-premium-features`.' );
 	}
 }

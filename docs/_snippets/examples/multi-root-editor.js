@@ -18,8 +18,7 @@ MultiRootEditor
 		},
 		// Editor configration:
 		{
-			cloudServices: CS_CONFIG,
-			licenseKey: 'GPL'
+			cloudServices: CS_CONFIG
 		}
 	)
 	.then( editor => {

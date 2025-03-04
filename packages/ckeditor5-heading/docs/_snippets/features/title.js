@@ -105,8 +105,7 @@ BalloonEditor.defaultConfig = {
 		]
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
-	language: 'en',
-	licenseKey: 'GPL'
+	language: 'en'
 };
 
 BalloonEditor.builtinPlugins.push( Title );
@@ -134,8 +133,7 @@ BalloonEditor
 			'blockQuote',
 			'insertTable',
 			'mediaEmbed'
-		],
-		licenseKey: 'GPL'
+		]
 	} )
 	.then( editor => {
 		window.editor = editor;

@@ -16,9 +16,9 @@ export default async function generateCKEditor5DocsBuild( outputPath ) {
 		cwd: CKEDITOR5_ROOT_PATH,
 		output: outputPath,
 		name: '',
-		sourceMap: false,
-		declarations: false,
-		translations: 'packages/**/*.po'
+		sourceMap: true,
+		translations: 'packages/**/*.po',
+		logLevel: 'silent'
 	} );
 
 	const globPatternsToRemove = [
