@@ -103,8 +103,6 @@ export default class LinkUI extends Plugin {
 	 */
 	private _linksProviders: Collection<LinksProvider> = new Collection();
 
-	private _lastTouchedLinkElement: ViewElement | null = null;
-
 	/**
 	 * @inheritDoc
 	 */
@@ -713,8 +711,6 @@ export default class LinkUI extends Plugin {
 
 		if ( env.isiOS ) {
 			this.listenTo<ViewDocumentTouchStartEvent>( viewDocument, 'touchstart', ( evt, data ) => {
-				this._lastTouchedLinkElement = null;
-
 				// Get the view element directly from the event data.
 				const targetViewElement = data.target;
 
