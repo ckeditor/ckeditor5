@@ -200,12 +200,7 @@ export class MyComponent {
 An instance of the {@link module:watchdog/contextwatchdog~ContextWatchdog `ContextWatchdog`} class that is responsible for providing the same context to multiple editor instances and restarting the whole structure in case of crashes.
 
 ```ts
-import CKSource from 'path/to/custom/build';
 import { loadCKEditorCloud } from '@ckeditor/ckeditor5-angular';
-
-const Context = CKSource.Context;
-const Editor = CKSource.Editor;
-const ContextWatchdog = CKSource.ContextWatchdog;
 
 @Component( {
 	// ...
@@ -223,9 +218,14 @@ export class MyComponent {
 
 	private _setupEditor( cloud ) {
 		const {
-			ClassicEditor
+			ClassicEditor,
+			ContextWatchdog,
+			Context
 		} = cloud.CKEditor;
-		const contextConfig = {};
+
+		const contextConfig = {
+			// Your context configuration.
+		};
 
 		this.Editor = ClassicEditor;
 		this.ready = false;
