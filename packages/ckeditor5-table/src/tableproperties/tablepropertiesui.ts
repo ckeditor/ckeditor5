@@ -7,7 +7,8 @@
  * @module table/tableproperties/tablepropertiesui
  */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { IconTableProperties } from 'ckeditor5/src/icons.js';
 import {
 	ButtonView,
 	ContextualBalloon,
@@ -17,10 +18,9 @@ import {
 	type LabeledFieldView
 } from 'ckeditor5/src/ui.js';
 
-import { debounce } from 'lodash-es';
+import { debounce } from 'es-toolkit/compat';
 
 import TablePropertiesView from './ui/tablepropertiesview.js';
-import tableProperties from './../../theme/icons/table-properties.svg';
 import {
 	colorFieldValidator,
 	getLocalizedColorErrorText,
@@ -138,7 +138,7 @@ export default class TablePropertiesUI extends Plugin {
 
 			view.set( {
 				label: t( 'Table properties' ),
-				icon: tableProperties,
+				icon: IconTableProperties,
 				tooltip: true
 			} );
 

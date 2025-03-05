@@ -13,11 +13,9 @@
   "main": "src/index.ts",
   "dependencies": {
     "@ckeditor/ckeditor5-ui": "44.3.0",
-    "@types/lodash-es": "4.17.12",
-    "lodash-es": "4.17.21"
+    "es-toolkit": "1.32.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-build-classic": "44.3.0",
     "@ckeditor/ckeditor5-editor-classic": "44.3.0",
     "@ckeditor/ckeditor5-core": "44.3.0",
     "@ckeditor/ckeditor5-engine": "44.3.0",

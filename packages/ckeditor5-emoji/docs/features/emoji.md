@@ -15,7 +15,7 @@ Since there is a large number of emojis, they have been conveniently divided int
 
 ## Demo
 
-Use the emoji toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/emoji.svg Emoji} in the editor below to open a panel with a table of selectable emojis. You may also trigger the emoji UI while writing the content by typing the pre-configured `:` marker followed by at least two letters of desired emoji name. Then, you can either choose which emoji to insert from the suggestion list or select the `Show all emoji...` option to open the full panel. The marker must be preceded by a space to work.
+Use the emoji toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/emoji.svg Emoji} in the editor below to open a panel with a table of selectable emojis. You may also trigger the emoji UI while writing the content by typing the pre-configured `:` marker followed by at least two letters of desired emoji name. Then, you can either choose which emoji to insert from the suggestion list or select the `Show all emoji...` option to open the full panel. The marker must be preceded by a space to work.
 
 There is an option to set the skin tone of the emojis next to the search field, too.
 

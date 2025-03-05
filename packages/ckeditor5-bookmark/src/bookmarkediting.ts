@@ -7,9 +7,10 @@
  * @module bookmark/bookmarkediting
  */
 
-import { type Editor, Plugin, icons } from 'ckeditor5/src/core.js';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import { toWidget } from 'ckeditor5/src/widget.js';
 import { IconView } from 'ckeditor5/src/ui.js';
+import { IconBookmarkInline } from 'ckeditor5/src/icons.js';
 import type { EventInfo } from 'ckeditor5/src/utils.js';
 
 import type {
@@ -54,6 +55,17 @@ export default class BookmarkEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		editor.config.define( 'bookmark', {
+			toolbar: [ 'bookmarkPreview', '|', 'editBookmark', 'removeBookmark' ]
+		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const { editor } = this;
 
@@ -79,6 +91,13 @@ export default class BookmarkEditing extends Plugin {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Returns all unique bookmark names existing in the content.
+	 */
+	public getAllBookmarkNames(): Set<string> {
+		return new Set( this._bookmarkElements.values() );
 	}
 
 	/**
@@ -135,6 +154,7 @@ export default class BookmarkEditing extends Plugin {
 					class: 'ck-bookmark'
 				}, [ this._createBookmarkUIElement( writer ) ] );
 
+				writer.setCustomProperty( 'bookmark', true, containerElement );
 				this._bookmarkElements.set( modelElement, id );
 
 				// `getFillerOffset` is not needed to set here, because `toWidget` has already covered it.
@@ -160,7 +180,7 @@ export default class BookmarkEditing extends Plugin {
 			const icon = new IconView();
 
 			icon.set( {
-				content: icons.bookmarkInline,
+				content: IconBookmarkInline,
 				isColorInherited: false
 			} );
 

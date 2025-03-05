@@ -134,8 +134,7 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * the `@ckeditor/ckeditor5-<NAME>/src/*` files, it is not recommended as it can make migration to the new installation
 	 * methods more difficult.
 	 *
-	 * If you use this installation method, you should not import code from the `ckeditor5`, `ckeditor5-premium-features`,
-	 * or `@ckeditor/ckeditor5-build-<NAME>` packages.
+	 * If you use this installation method, you should not import code from the `ckeditor5` or `ckeditor5-premium-features` packages.
 	 *
 	 * Examples of valid and invalid import paths:
 	 *

@@ -26,7 +26,7 @@ import {
 import MultiRootEditorUI from './multirooteditorui.js';
 import MultiRootEditorUIView from './multirooteditoruiview.js';
 
-import { isElement as _isElement } from 'lodash-es';
+import { isElement as _isElement } from 'es-toolkit/compat';
 import {
 	type RootElement,
 	type ViewRootEditableElement,

@@ -84,7 +84,7 @@ ClassicEditor
 
 ### CKBox image editing
 
-The new release includes the {@link features/ckbox CKBox} image editing feature. You can access this feature either through a main toolbar button or the image contextual toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/ckbox-image-edit.svg Image upload}. It lets users perform quick image edits such as cropping, resizing, flipping, and rotating the image. Image editing is called from within the editor and the process takes place right in the asset manager. This speeds up and simplifies the content editing process.
+The new release includes the {@link features/ckbox CKBox} image editing feature. You can access this feature either through a main toolbar button or the image contextual toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/ckbox-image-edit.svg Image upload}. It lets users perform quick image edits such as cropping, resizing, flipping, and rotating the image. Image editing is called from within the editor and the process takes place right in the asset manager. This speeds up and simplifies the content editing process.
 
 {@img assets/img/ckbox-editing-area.png 1062 CKBox image editing panel.}
 
@@ -127,7 +127,7 @@ You can read more about image editing in the {@link @ckbox features/images/editi
 
 ### Expanded image insert dropdown
 
-We have updated the toolbar `insertImage` component. By default, the image toolbar dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image} provides access to all installed methods of inserting images into content:
+We have updated the toolbar `insertImage` component. By default, the image toolbar dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/image.svg Image} provides access to all installed methods of inserting images into content:
 
 * {@link features/image-upload Uploading images from your computer}.
 * Adding images from {@link features/using-file-managers file managers}.
@@ -190,14 +190,14 @@ Additional image inserting plugins:
 
 #### New image upload icons
 
-Due to the changes to the image insert mechanisms, we introduced new toolbar icons and replaced the old {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image} image icon.
+Due to the changes to the image insert mechanisms, we introduced new toolbar icons and replaced the old {@icon @ckeditor/ckeditor5-icons/theme/icons/image.svg Image} image icon.
 
 Now there are:
-* {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image upload} image upload icon that is the default for the dropdown or the upload from computer command.
-* {@icon @ckeditor/ckeditor5-core/theme/icons/image-asset-manager.svg Image manager} image manager icon.
-* {@icon @ckeditor/ckeditor5-core/theme/icons/image-url.svg Insert via URL} insert via URL icon.
+* {@icon @ckeditor/ckeditor5-icons/theme/icons/image-upload.svg Image upload} image upload icon that is the default for the dropdown or the upload from computer command.
+* {@icon @ckeditor/ckeditor5-icons/theme/icons/image-asset-manager.svg Image manager} image manager icon.
+* {@icon @ckeditor/ckeditor5-icons/theme/icons/image-url.svg Insert via URL} insert via URL icon.
 
-The toolbar dropdown will use the {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image upload} image upload icon by default. If no upload adapter is present, the toolbar will use the next available icon instead.
+The toolbar dropdown will use the {@icon @ckeditor/ckeditor5-icons/theme/icons/image-upload.svg Image upload} image upload icon by default. If no upload adapter is present, the toolbar will use the next available icon instead.
 
 ### Removal of the `insertImageViaUrl` option
 
@@ -244,7 +244,7 @@ If you omit the `type` setting in the configuration, the behavior defaults to in
 
 ### Updated image text alternative icon
 
-The {@link features/images-text-alternative image text alternative} (the `alt` attribute) helps screen reader users navigate and understand the document. We have updated the toolbar icon {@icon @ckeditor/ckeditor5-core/theme/icons/text-alternative.svg Alternative text} to be more intuitive and easier to recognize, following global standards.
+The {@link features/images-text-alternative image text alternative} (the `alt` attribute) helps screen reader users navigate and understand the document. We have updated the toolbar icon {@icon @ckeditor/ckeditor5-icons/theme/icons/text-alternative.svg Alternative text} to be more intuitive and easier to recognize, following global standards.
 
 ## Update to CKEditor&nbsp;5 v40.0.0
 

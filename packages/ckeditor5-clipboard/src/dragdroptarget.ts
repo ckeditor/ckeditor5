@@ -34,7 +34,7 @@ import {
 
 import LineView from './lineview.js';
 
-import { throttle } from 'lodash-es';
+import { throttle } from 'es-toolkit/compat';
 
 /**
  * Part of the Drag and Drop handling. Responsible for finding and displaying the drop target.

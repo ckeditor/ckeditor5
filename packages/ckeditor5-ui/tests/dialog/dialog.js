@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { IconFindReplace } from '@ckeditor/ckeditor5-icons';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Dialog, DialogView, DialogViewPosition, IconView } from '../../src/index.js';
 import { env, keyCodes, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
-import loupeIcon from '@ckeditor/ckeditor5-find-and-replace/theme/icons/find-replace.svg';
 
 /* global document */
 
@@ -444,7 +444,7 @@ describe( 'Dialog', () => {
 
 		it( 'should properly setup the header view with the passed arguments', () => {
 			dialogPlugin._show( {
-				icon: loupeIcon,
+				icon: IconFindReplace,
 				title: 'foo',
 				hasCloseButton: false
 			} );

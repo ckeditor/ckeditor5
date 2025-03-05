@@ -15,6 +15,7 @@ import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.
 import ImageUpload from '../../src/imageupload.js';
 import ImageResizeEditing from '../../src/imageresize/imageresizeediting.js';
 import ImageResizeButtons from '../../src/imageresize/imageresizebuttons.js';
+import ImageCustomResizeUI from '../../src/imageresize/imagecustomresizeui.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
@@ -27,6 +28,7 @@ const commonConfig = {
 		CloudServices,
 		EasyImage,
 		ImageResizeEditing,
+		ImageCustomResizeUI,
 		ImageResizeButtons
 	],
 	toolbar: [ 'heading', '|', 'bold', 'italic', 'link',
@@ -114,7 +116,14 @@ const imageConfig2 = {
 
 const config2 = {
 	...commonConfig,
-	image: imageConfig2
+	image: imageConfig2,
+	toolbar: [
+		...commonConfig.toolbar, '|',
+		'resizeImage:50',
+		'resizeImage:75',
+		'resizeImage:original',
+		'resizeImage:custom'
+	]
 };
 
 ClassicEditor
