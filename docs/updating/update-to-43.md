@@ -16,7 +16,7 @@ modified_at: 2024-07-31
 
 ## Update to CKEditor&nbsp;5 v43.3.1
 
-_Released on November 6, 2024._
+Released on November 6, 2024. ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v43.3.1))
 
 For the entire list of changes introduced in version 43.3.1, see the [release notes for CKEditor&nbsp;5 v43.3.1](https://github.com/ckeditor/ckeditor5/releases/tag/v43.3.1).
 
@@ -28,7 +28,7 @@ We had to revert a change introduced in v43.3.0 related to the icons export in o
 
 ## Update to CKEditor&nbsp;5 v43.3.0
 
-_Released on October 29, 2024._
+Released on October 29, 2024. ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v43.3.0))
 
 For the entire list of changes introduced in version 43.3.0, see the [release notes for CKEditor&nbsp;5 v43.3.0](https://github.com/ckeditor/ckeditor5/releases/tag/v43.3.0).
 
@@ -50,7 +50,7 @@ A new configuration option has been added to include a watermark when exporting 
 
 ## Update to CKEditor&nbsp;5 v43.2.0
 
-_Released on October 15, 2024._
+Released on October 15, 2024. ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v43.2.0))
 
 For the entire list of changes introduced in version 43.2.0, see the [release notes for CKEditor&nbsp;5 v43.2.0](https://github.com/ckeditor/ckeditor5/releases/tag/v43.2.0).
 
@@ -67,7 +67,7 @@ As users transition to new installation methods (v42.0.0+) with `ckeditor5` and 
 
 ## Update to CKEditor&nbsp;5 v43.1.1
 
-_Released on September 25, 2024._
+Released on September 25, 2024. ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v43.1.1))
 
 For the entire list of changes introduced in version 43.1.0, see the [release notes for CKEditor&nbsp;5 v43.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v43.1.0).
 
@@ -90,7 +90,7 @@ Taking the occasion, we decided to introduce additional hardening to some parts 
 
 ## Update to CKEditor&nbsp;5 v43.1.0
 
-_Released on September 5, 2024._
+Released on September 5, 2024. ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v43.1.0))
 
 For the entire list of changes introduced in version 43.1.0, see the [release notes for CKEditor&nbsp;5 v43.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v43.1.0).
 
@@ -114,7 +114,7 @@ The tables' user interface now clearly indicates the default border settings. It
 
 ## Update to CKEditor&nbsp;5 v43.0.0
 
-_Released on August 7, 2024._
+Released on August 7, 2024. ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v43.0.0))
 
 For the entire list of changes introduced in version 43.0.0, see the [release notes for CKEditor&nbsp;5 v43.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v43.0.0).
 
