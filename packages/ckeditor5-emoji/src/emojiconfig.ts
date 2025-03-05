@@ -8,9 +8,9 @@
  */
 
 /**
- * The configuration of the emoji feature.
+ * The configuration of the Emoji feature.
  *
- * Read more about {@glink features/emoji#configuration configuring the emoji feature}.
+ * Read more about {@glink features/emoji#configuration configuring the Emoji feature}.
  *
  * ```ts
  *	ClassicEditor
@@ -64,6 +64,23 @@ export interface EmojiConfig {
 	skinTone?: SkinToneId;
 
 	/**
+	 * The URL from which the emoji definitions should be loaded.
+	 *
+	 * ```ts
+	 *	ClassicEditor
+	 *		.create( editorElement, {
+	 *			plugins: [ Emoji, ... ],
+	 *			emoji: {
+	 *				definitionsUrl: ''
+	 *			}
+	 *		} )
+	 *		.then( ... )
+	 *		.catch( ... );
+	 * ```
+	 */
+	definitionsUrl?: string;
+
+	/**
 	 * The emoji database version.
 	 *
 	 * ```ts
@@ -78,9 +95,24 @@ export interface EmojiConfig {
 	 *		.catch( ... );
 	 * ```
 	 *
-	 * @default 16
+	 * If the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `emoji.definitionsUrl`}
+	 * option is provided, `version` is ignored as the defined URL takes precedence over the `version`.
 	 */
-	version?: 15 | 16;
+	version?: EmojiVersion;
+
+	/**
+	 * The availability of the emoji depends on the operating system. Different systems will have different Unicode support.
+	 *
+	 * By default, the feature tries to filter out emojis not supported by your operating system.
+	 * This means that instead of previewing an emoji, the feature renders a black square.
+	 *
+	 * If you customize the {@glink features/emoji#emoji-availability-and-appearance emoji availability and appearance}, it is
+	 * highly recommended to disable the filtering mechanism because it uses a font built into your system
+	 * instead of the provided custom font.
+	 */
+	useCustomFont?: boolean;
 }
 
 export type SkinToneId = 'default' | 'light' | 'medium-light' | 'medium' | 'medium-dark' | 'dark';
+
+export type EmojiVersion = 15 | 16;

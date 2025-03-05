@@ -676,6 +676,12 @@ export default class DataFilter extends Plugin {
 		const { view: viewName, model: modelName } = definition;
 
 		if ( !schema.isRegistered( definition.model ) ) {
+			// Do not register converters and empty schema for editor existing feature
+			// as empty schema won't allow element anywhere in the model.
+			if ( !definition.modelSchema ) {
+				return;
+			}
+
 			schema.register( definition.model, definition.modelSchema );
 
 			if ( !viewName ) {
@@ -693,7 +699,9 @@ export default class DataFilter extends Plugin {
 
 			conversion.for( 'downcast' ).elementToElement( {
 				model: modelName,
-				view: viewName
+				view: ( modelElement, { writer } ) => definition.isEmpty ?
+					writer.createEmptyElement( viewName ) :
+					writer.createContainerElement( viewName )
 			} );
 		}
 

@@ -210,7 +210,7 @@ export const MenuBarMenuBehaviors = {
 	 */
 	openAndFocusPanelOnArrowDownKey( menuView: MenuBarMenuView ): void {
 		menuView.keystrokes.set( 'arrowdown', ( data, cancel ) => {
-			if ( menuView.focusTracker.focusedElement === menuView.buttonView.element ) {
+			if ( menuView.isEnabled && menuView.focusTracker.focusedElement === menuView.buttonView.element ) {
 				if ( !menuView.isOpen ) {
 					menuView.isOpen = true;
 				}

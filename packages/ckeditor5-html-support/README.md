@@ -26,6 +26,7 @@ Check out the demo in the [General HTML Support feature guide](https://ckeditor.
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-html-support` package](https://ckeditor.com/docs/ckeditor5/latest/api/html-support.html) page as well as the [General HTML Support feature](https://ckeditor.com/docs/ckeditor5/latest/features/html/general-html-support.html) guide in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+
 ## License
 
 Licensed under a dual-license model, this software is available under:
