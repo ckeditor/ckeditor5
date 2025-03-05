@@ -118,12 +118,9 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * ```
 	 *
 	 * If you are missing some features from the
-	 * {@glink getting-started/legacy/installation-methods/predefined-builds#plugins-included-in-the-predefined-builds list of plugins},
+	 * list of plugins,
 	 * you should switch to the {@glink updating/nim-migration/migration-to-new-installation-methods new installation methods}
 	 * which do not have this limitation.
-	 * If you cannot migrate to the new installation methods, try the
-	 * {@glink getting-started/legacy/installation-methods/predefined-builds#superbuild superbuild} instead.
-	 * This build contains all the editor features.
 	 * </details>
 	 *
 	 * <details>
