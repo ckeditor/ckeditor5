@@ -478,6 +478,9 @@ function getWebpackConfig( snippets, config ) {
 			extensions: [ '.ts', '.js', '.json' ],
 			extensionAlias: {
 				'.js': [ '.js', '.ts' ]
+			},
+			fallback: {
+				crypto: false
 			}
 		},
 

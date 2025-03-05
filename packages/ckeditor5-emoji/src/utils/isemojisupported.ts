@@ -57,6 +57,7 @@ export default function isEmojiSupported( unicode: string ): boolean {
 	const y = Math.floor( i / 4 / CANVAS_WIDTH );
 	const b = ctx.getImageData( x, y, 1, 1 ).data;
 
+	/* istanbul ignore next -- @preserve */
 	if ( a[ i ] !== b[ 0 ] || a[ i + 2 ] !== b[ 2 ]) {
 		return false;
 	}
