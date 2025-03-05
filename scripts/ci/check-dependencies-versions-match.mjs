@@ -24,6 +24,25 @@ const shouldFix = process.argv[ 2 ] === '--fix';
 
 console.log( chalk.blue( '🔍 Starting checking dependencies versions...' ) );
 
+/**
+ * All dependencies should be pinned to the exact version. However, there are some exceptions,
+ * where we want to use the caret or tilde operator. This object contains such exceptions.
+ */
+const versionExceptions = {
+	/**
+	 * CodeMirror packages are modular and depend on each other. We must use the same versions
+	 * as they have in their dependencies to avoid issues with versions mismatch.
+	 *
+	 * See: https://github.com/cksource/ckeditor5-commercial/issues/6939.
+	 */
+	'@codemirror/autocomplete': '^',
+	'@codemirror/lang-html': '^',
+	'@codemirror/language': '^',
+	'@codemirror/state': '^',
+	'@codemirror/view': '^',
+	'@codemirror/theme-one-dark': '^'
+};
+
 const [ packageJsons, pathMappings ] = getPackageJsons( [
 	'package.json',
 	'packages/*/package.json',
@@ -162,14 +181,15 @@ function getExpectedDepsVersions( packageJsons, isCkeditor5Package ) {
  * @return {String}
  */
 function getNewestVersion( packageName, newVersion = '0.0.0', currentMaxVersion = '0.0.0' ) {
-	if ( !semver.valid( newVersion ) ) {
-		const versions = getVersionsList( packageName );
-		const newMaxVersion = semver.maxSatisfying( versions, newVersion );
-
-		return semver.gt( newMaxVersion, currentMaxVersion ) ? newMaxVersion : currentMaxVersion;
+	if ( versionExceptions[ packageName ] ) {
+		return newVersion;
 	}
 
-	return semver.gt( newVersion, currentMaxVersion ) ? newVersion : currentMaxVersion;
+	const newMaxVersion = semver.valid( newVersion ) ?
+		newVersion :
+		semver.maxSatisfying( getVersionsList( packageName ), newVersion );
+
+	return semver.gt( newMaxVersion, currentMaxVersion ) ? newMaxVersion : currentMaxVersion;
 }
 
 /**

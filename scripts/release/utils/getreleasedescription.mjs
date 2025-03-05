@@ -20,6 +20,14 @@ export default async function getReleaseDescription( cliArguments ) {
 		];
 	}
 
+	if ( cliArguments.nightlyNext ) {
+		const releaseIdentifier = `0.0.0-nightly-next-${ releaseTools.getDateIdentifier() }`;
+
+		return [
+			await releaseTools.getNextPreRelease( releaseIdentifier ), null
+		];
+	}
+
 	if ( cliArguments.nightly ) {
 		return [
 			await releaseTools.getNextNightly(), null
