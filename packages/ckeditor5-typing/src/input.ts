@@ -28,7 +28,7 @@ import {
 	type ViewDocumentMutationsEvent
 } from '@ckeditor/ckeditor5-engine';
 
-import { debounce } from 'lodash-es';
+import { debounce } from 'es-toolkit/compat';
 
 // @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '@ckeditor/ckeditor5-engine/src/dev-utils/utils.js' );
 

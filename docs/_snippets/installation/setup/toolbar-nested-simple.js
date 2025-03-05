@@ -48,8 +48,7 @@ ClassicEditor
 			tokenUrl: TOKEN_URL,
 			forceDemoLabel: true,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
-		},
-		licenseKey: 'GPL'
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

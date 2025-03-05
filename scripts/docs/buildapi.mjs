@@ -30,10 +30,6 @@ export default function buildApiDocs() {
 			// Ignore not a direct sources.
 			'external/ckeditor5-commercial/packages/ckeditor5-operations-compressor/src/protobufdescriptions.ts',
 
-			// Ignore builds.
-			'packages/ckeditor5-build-*/src/**/*.ts',
-			'external/ckeditor5-commercial/packages/ckeditor5-build-*/src/**/*.ts',
-
 			// Ignore all declarations.
 			'packages/ckeditor5-*/src/**/*.d.ts',
 			'external/ckeditor5-commercial/packages/ckeditor5-*/src/**/*.d.ts',

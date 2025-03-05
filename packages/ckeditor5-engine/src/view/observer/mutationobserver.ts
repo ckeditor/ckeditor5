@@ -11,7 +11,7 @@
 
 import Observer from './observer.js';
 import { startsWithFiller } from '../filler.js';
-import { isEqualWith } from 'lodash-es';
+import { isEqualWith } from 'es-toolkit/compat';
 
 import type DomConverter from '../domconverter.js';
 import type View from '../view.js';
@@ -259,7 +259,7 @@ export default class MutationObserver extends Observer {
 }
 
 function sameNodes( child1: ViewNode, child2: ViewNode ) {
-	// First level of comparison (array of children vs array of children) – use the Lodash's default behavior.
+	// First level of comparison (array of children vs array of children) – use the es-toolkit's default behavior.
 	if ( Array.isArray( child1 ) ) {
 		return;
 	}

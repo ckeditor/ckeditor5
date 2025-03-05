@@ -8,9 +8,9 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
+import { IconShowBlocks } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 
-import showBlocksIcon from '../theme/icons/show-blocks.svg';
 import '../theme/showblocks.css';
 
 /**
@@ -45,7 +45,7 @@ export default class ShowBlocksUI extends Plugin {
 
 			buttonView.set( {
 				tooltip: true,
-				icon: showBlocksIcon
+				icon: IconShowBlocks
 			} );
 
 			return buttonView;

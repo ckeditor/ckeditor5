@@ -7,11 +7,10 @@
  * @module ui/menubar/menubarmenubuttonview
  */
 
+import { IconDropdownArrow } from '@ckeditor/ckeditor5-icons';
 import IconView from '../icon/iconview.js';
 import ListItemButtonView from '../button/listitembuttonview.js';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-
-import dropdownArrowIcon from '../../theme/icons/dropdown-arrow.svg';
 
 import '../../theme/components/menubar/menubarmenubutton.css';
 
@@ -72,7 +71,7 @@ export default class MenuBarMenuButtonView extends ListItemButtonView {
 	private _createArrowView() {
 		const arrowView = new IconView();
 
-		arrowView.content = dropdownArrowIcon;
+		arrowView.content = IconDropdownArrow;
 		arrowView.extendTemplate( {
 			attributes: {
 				class: 'ck-menu-bar__menu__button__arrow'

@@ -20,5 +20,6 @@
 	"Medium Light skin tone": "Dropdown option label for using the \"Medium Light skin tone\" variant. Example emoji: 👋🏼.",
 	"Medium skin tone": "Dropdown option label for using the \"Medium skin tone\" variant. Example emoji: 👋🏽.",
 	"Medium Dark skin tone": "Dropdown option label for using the \"Medium Dark skin tone\" variant. Example emoji: 👋🏾.",
-	"Dark skin tone": "Dropdown option label for using the \"Dark skin tone\" variant. Example emoji: 👋🏿."
+	"Dark skin tone": "Dropdown option label for using the \"Dark skin tone\" variant. Example emoji: 👋🏿.",
+	"Emoji picker": "Header of the emoji picker balloon panel."
 }
