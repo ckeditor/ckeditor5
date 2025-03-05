@@ -143,9 +143,9 @@ export default class AbstractEditorHandler {
 
 	/**
 	 * Stores the current state of the annotations UIs to restore it when leaving fullscreen mode.
-	 * Code coverage is provided in the commercial package repository as integration unit tests.
 	 */
-	// /* istanbul ignore next -- @preserve */
+	// Code coverage is provided in the commercial package repository as integration unit tests.
+	/* istanbul ignore next -- @preserve */
 	private _overrideAnnotationsUIs() {
 		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as AnnotationsUIs;
 
@@ -192,9 +192,9 @@ export default class AbstractEditorHandler {
 
 	/**
 	 * Restores the saved state of the annotations UIs.
-	 * Code coverage is provided in the commercial package repository as integration unit tests.
 	 */
-	// /* istanbul ignore next -- @preserve */
+	// Code coverage is provided in the commercial package repository as integration unit tests.
+	/* istanbul ignore next -- @preserve */
 	private _restoreAnnotationsUIs() {
 		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as AnnotationsUIs;
 
