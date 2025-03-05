@@ -222,11 +222,8 @@
 
 	/*
 	 * Hide type around buttons of all widget parents when the widget is being hovered.
-	 * Also hide the outline of all widget parents.
 	 */
 	&:has( .ck-widget:hover ) {
-		outline-color: transparent;
-
 		& > .ck-widget__type-around > .ck-widget__type-around__button {
 			@mixin ck-widget-type-around-button-hidden;
 		}

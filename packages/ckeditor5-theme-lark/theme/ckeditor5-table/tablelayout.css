@@ -7,36 +7,18 @@
 	--ck-table-layout-widget-type-around-button-size: 16px;
 	--ck-table-layout-widget-type-around-icon-width: 10px;
 	--ck-table-layout-widget-type-around-icon-height: 8px;
-	--ck-table-layout-default-border-color: hsl(0, 0%, 58%);
 	--ck-table-layout-widget-handler-icon-size: 10px;
+	--ck-table-layout-default-border-color: hsl(0, 0%, 83%);
+
 }
 
 .ck-editor__editable {
 	& .table.layout-table {
-		--ck-widget-type-around-button-size: var(--ck-table-layout-widget-type-around-button-size);
-
+		/* Resetting the table border-collapse property to the user agent styles. */
 		& > table {
 			border-collapse: separate;
-		}
 
-		/* Removed default background color from focused table cell */
-		& > table > tbody > tr > td {
-			--ck-color-selector-focused-cell-background: transparent;
-			box-shadow: none;
-			padding: 0px 2px;
-
-			&[style^="width:"],
-			&[style*=" width:"],
-			&[style*=";width:"],
-			&[style*="'width:"] {
-				min-width: auto;
-			}
-		}
-
-		/* Default table layout stylization in editing view when border is not set.
-		But it need to be more strict cause of style attributes like `border-collapse`, `border-spacing`, etc. */
-		& > table,
-		& > table > tbody > tr > td {
+			/* The default table layout style in the editing view when the border is unset. */
 			&:not(
 			[style*="border:"],
 			[style*="border-top"],
@@ -48,7 +30,43 @@
 			[style*="border-color"]) {
 				border-color: transparent;
 				border-width: 0;
+				outline: none;
+			}
+		}
+
+		& > table > tbody > tr > td {
+			box-shadow: none;
+			padding: 0px 2px;
+
+			/* Resets the `min-width` style attribute that was added by the content table style. */
+			&[style^="width:"],
+			&[style*=" width:"],
+			&[style*=";width:"],
+			&[style*="'width:"] {
+				min-width: auto;
+			}
+
+			/* Remove the default background color from the focused table cell. */
+			&:focus {
+				background-color: transparent;
+			}
+
+			/* The default table layout cell style in the editing view when the border is unset.
+			But it need to be more strict cause of style attributes like `border-collapse`, `border-spacing`, etc. */
+			&:not(
+			[style*="border:"],
+			[style*="border-top"],
+			[style*="border-bottom"],
+			[style*="border-left"],
+			[style*="border-right"],
+			[style*="border-width"],
+			[style*="border-style"],
+			[style*="border-color"]) {
+				border-color: transparent;
+				/* Resetting `border-width` property to the user agent styles. */
+				border-width: 0;
 				outline: var(--ck-table-layout-default-border-color) 1px dashed;
+				outline-offset: -1px;
 
 				&:focus {
 					outline: var(--ck-color-focus-border) 1px solid;
@@ -58,12 +76,9 @@
 
 		/* Widget type around overrides. */
 		&.ck-widget {
-			& .ck-widget__type-around__button svg {
-				width: var(--ck-table-layout-widget-type-around-icon-width);
-				height: var(--ck-table-layout-widget-type-around-icon-height);
-			}
-
 			& > .ck-widget__type-around {
+				--ck-widget-type-around-button-size: var(--ck-table-layout-widget-type-around-button-size);
+
 				& > .ck-widget__type-around__button {
 					&.ck-widget__type-around__button_before,
 					&.ck-widget__type-around__button_after {
@@ -71,58 +86,38 @@
 					}
 
 					&.ck-widget__type-around__button_before {
-						border-radius: 0 0 100px 100px;
-					}
-
-					&.ck-widget__type-around__button_after {
-						border-radius: 100px 100px 0 0;
-					}
-				}
-			}
-
-			&.ck-widget_with-selection-handle {
-				--ck-widget-handler-icon-size: var(--ck-table-layout-widget-handler-icon-size);
-
-				& > .ck-widget__selection-handle {
-					transform: translateY(calc(0px - var(--ck-widget-outline-thickness)));
-					z-index: var(--ck-z-default);
-				}
-
-				& > .ck-widget__type-around {
-					& > .ck-widget__type-around__button_before {
 						margin-left: var(--ck-table-layout-widget-type-around-button-size);
 						left: min(10%, 30px);
-					}
-				}
-			}
+						border-radius: 0 0 100px 100px;
 
-			&.ck-widget.ck-widget_selected {
-				& > .ck-widget__type-around {
-					& > .ck-widget__type-around__button_before {
 						&::after {
 							border-radius: 0 0 100px 100px;
 						}
 					}
 
-					& > .ck-widget__type-around__button_after {
+					&.ck-widget__type-around__button_after {
+						border-radius: 100px 100px 0 0;
+
 						&::after {
 							border-radius: 100px 100px 0 0;
 						}
 					}
+
+					& svg {
+						width: var(--ck-table-layout-widget-type-around-icon-width);
+						height: var(--ck-table-layout-widget-type-around-icon-height);
+					}
+				}
+			}
+
+			&.ck-widget_with-selection-handle {
+				& > .ck-widget__selection-handle {
+					--ck-widget-handler-icon-size: var(--ck-table-layout-widget-handler-icon-size);
+
+					transform: translateY(calc(0px - var(--ck-widget-outline-thickness)));
+					z-index: var(--ck-z-default);
 				}
 			}
 		}
-	}
-}
-
-.ck.ck-editor__editable_inline {
-	/*
-	* This value should match with the default margins of the block elements (like .media, .image or .table)
-	* to avoid a content jumping when the fake selection container shows up (See https://github.com/ckeditor/ckeditor5/issues/9825).
-	*/
-	& > :last-child,
-	/* Fallback for hidden fake selection div */
-	& > :nth-last-child(2):has( + .ck-fake-selection-container) {
-		margin-bottom: var(--ck-spacing-large);
 	}
 }

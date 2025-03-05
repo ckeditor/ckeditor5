@@ -21,6 +21,8 @@ import type {
 import InsertTableLayoutCommand from './../commands/inserttablelayoutcommand.js';
 import { createEmptyTableCell } from '../utils/common.js';
 
+import '../../theme/tablelayout.css';
+
 /**
  * The table layout editing plugin.
  */
@@ -179,11 +181,8 @@ function upcastLayoutTable() {
 
 			const hasTableTypeContent = isTableTypeContent( viewTable );
 
-			// When element is a content table then skip it.
+			// When an element is a content table, then skip it.
 			if ( hasTableTypeContent ) {
-				conversionApi.consumable.consume( viewTable, { classes: [ 'layout-table' ] } );
-				conversionApi.consumable.consume( viewTable, { classes: [ 'content-table' ] } );
-
 				return;
 			}
 
@@ -235,6 +234,8 @@ function upcastLayoutTable() {
 					isTableTypeContent( viewItem ) ? 'content' : 'layout',
 					modelRange
 				);
+				conversionApi.consumable.consume( viewItem, { classes: [ 'layout-table' ] } );
+				conversionApi.consumable.consume( viewItem, { classes: [ 'content-table' ] } );
 			}
 		}, { priority: 'low' } );
 	};

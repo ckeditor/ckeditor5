@@ -5,8 +5,19 @@
 
 .ck-editor__editable {
 	&.ck-editor__editable_inline {
-		& > .ck-widget.ck-widget_with-selection-handle.layout-table:first-child {
-			margin-top: var(--ck-spacing-large);
+		& > .ck-widget.ck-widget_with-selection-handle.layout-table {
+			&:first-child {
+				margin-top: var(--ck-spacing-large);
+			}
+			/*
+			* This value should match with the default margins of the block elements (like .media, .image or .table)
+			* to avoid a content jumping when the fake selection container shows up (See https://github.com/ckeditor/ckeditor5/issues/9825).
+			*/
+			&:last-child,
+			/* Fallback for hidden fake selection div */
+			&:nth-last-child(2):has( + .ck-fake-selection-container) {
+				margin-bottom: var(--ck-spacing-large);
+			}
 		}
 	}
 
@@ -30,18 +41,6 @@
 				opacity: 0;
 				visibility: hidden;
 			}
-		}
-	}
-}
-
-.ck-content {
-	& .table.layout-table:not(figure) {
-		/* Table layout set to fixed only when width is set. But we need to filter other possibilities `*-width`, */
-		&[style^="width:"],
-		&[style*=" width:"],
-		&[style*=";width:"],
-		&[style*="'width:"] {
-			table-layout: fixed;
 		}
 	}
 }
