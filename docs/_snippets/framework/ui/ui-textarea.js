@@ -3,7 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, TextareaView */
+/* globals document */
+
+import { TextareaView } from '@ckeditor/ckeditor5-ui';
 
 const textarea = new TextareaView();
 

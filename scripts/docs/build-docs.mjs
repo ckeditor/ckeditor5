@@ -10,6 +10,7 @@
 import umberto from 'umberto';
 import buildApiDocs from './buildapi.mjs';
 import parseArguments from './parse-arguments.mjs';
+import buildSources from './build-sources.mjs';
 
 buildDocs();
 
@@ -25,9 +26,8 @@ function buildDocs() {
 	}
 
 	return promise
-		.then( () => {
-			return runUmberto( options );
-		} )
+		.then( () => runUmberto( options ) )
+		.then( () => options.skipSnippets || buildSources() )
 		.catch( err => {
 			console.error( err );
 

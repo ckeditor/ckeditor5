@@ -59,8 +59,7 @@ ClassicEditor
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		},
-		cloudServices: CS_CONFIG,
-		licenseKey: 'GPL'
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editorBasic = editor;

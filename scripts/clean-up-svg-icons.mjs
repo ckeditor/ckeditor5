@@ -46,12 +46,13 @@ import { execSync } from 'child_process';
 // A list of icons that should not NOT be cleaned up. Their internal structure should not be changed
 // because, for instance, CSS animations may depend on it.
 const EXCLUDED_ICONS = [
+	'settings.svg',
 	'return-arrow.svg',
 	'project-logo.svg'
 ];
 
 // A pattern to match all the icons.
-const ALL_ICONS_PATTERN = 'packages/*/theme/icons';
+const ALL_ICONS_PATTERN = 'packages/ckeditor5-icons/theme/icons';
 
 const { paths, verifyOnly } = parseArguments( process.argv.slice( 2 ) );
 

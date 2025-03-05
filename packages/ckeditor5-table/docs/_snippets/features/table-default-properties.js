@@ -53,8 +53,7 @@ ClassicEditor
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		},
-		placeholder: 'Insert the new table with the default styles applied.',
-		licenseKey: 'GPL'
+		placeholder: 'Insert the new table with the default styles applied.'
 	} )
 	.then( editor => {
 		window.editorDefaultStyles = editor;

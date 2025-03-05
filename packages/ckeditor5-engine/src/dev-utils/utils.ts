@@ -13,7 +13,7 @@
 
 /* globals console */
 
-// @if CK_DEBUG_TYPING // const { debounce } = require( 'lodash-es' );
+// @if CK_DEBUG_TYPING // const { debounce } = require( 'es-toolkit/compat' );
 
 /**
  * Helper function, converts a map to the 'key1="value1" key2="value1"' format.

@@ -66,8 +66,7 @@ ClassicEditor
 				'ckboxImageEdit'
 			]
 		},
-		cloudServices: CS_CONFIG,
-		licenseKey: 'GPL'
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editorResizeUI = editor;

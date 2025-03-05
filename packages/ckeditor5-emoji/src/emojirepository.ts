@@ -8,7 +8,7 @@
  */
 
 import fuzzysort from 'fuzzysort';
-import { groupBy } from 'lodash-es';
+import { groupBy } from 'es-toolkit/compat';
 
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import { logWarning, version as editorVersion } from 'ckeditor5/src/utils.js';
@@ -188,7 +188,7 @@ export default class EmojiRepository extends Plugin {
 			{ title: t( 'Flags' ), icon: '🏁', groupId: 9 }
 		];
 
-		const groups = groupBy( repository, 'group' );
+		const groups = groupBy( repository, item => item.group );
 
 		return categories.map( category => {
 			return {

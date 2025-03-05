@@ -9,8 +9,6 @@ The multi-root editor implementation for CKEditor&nbsp;5. Read more about the [m
 
 This package contains the [`MultiRootEditor`](https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-multi-root_multirooteditor-MultiRootEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
 
-This package contains the source version of the multi-root editor. Read more about [CKEditor&nbsp;5 predefined builds](https://ckeditor.com/docs/ckeditor5/latest/getting-started/legacy/advanced/alternative-setups/predefined-builds.html) in the CKEditor&nbsp;5 documentation.
-
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-editor-multi-root` package](https://ckeditor.com/docs/ckeditor5/latest/api/editor-multi-root.html) page in [CKEditor&nbsp;5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
