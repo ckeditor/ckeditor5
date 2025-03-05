@@ -13,6 +13,7 @@ export { default as DataSchema, type DataSchemaBlockElementDefinition } from './
 export { default as HtmlComment } from './htmlcomment.js';
 export { default as FullPage } from './fullpage.js';
 export { default as HtmlPageDataProcessor } from './htmlpagedataprocessor.js';
+export { default as EmptyBlock } from './emptyblock.js';
 export type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig.js';
 export type { default as CodeBlockElementSupport } from './integrations/codeblock.js';
 export type { default as CustomElementSupport } from './integrations/customelement.js';
@@ -24,5 +25,6 @@ export type { default as MediaEmbedElementSupport } from './integrations/mediaem
 export type { default as ScriptElementSupport } from './integrations/script.js';
 export type { default as StyleElementSupport } from './integrations/style.js';
 export type { default as TableElementSupport } from './integrations/table.js';
+export type { default as HorizontalLineElementSupport } from './integrations/horizontalline.js';
 
 import './augmentation.js';
