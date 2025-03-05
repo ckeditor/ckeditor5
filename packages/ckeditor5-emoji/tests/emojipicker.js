@@ -417,6 +417,16 @@ describe( 'EmojiPicker', () => {
 			);
 		} );
 
+		// See #17964
+		it( 'should have the ck-emoji-picker-balloon class to make sure z-index does not conflict with the dialog system', () => {
+			emojiPicker.showUI();
+
+			const ballon = document.querySelector( '.ck-emoji-picker-balloon' );
+
+			expect( ballon ).not.to.equal( null );
+			expect( ballon.innerText ).to.include( 'Find an emoji (min. 2 characters)' );
+		} );
+
 		describe( 'fake visual selection', () => {
 			describe( 'non-collapsed', () => {
 				it( 'should be displayed when a text fragment is selected', () => {
