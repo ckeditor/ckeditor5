@@ -861,7 +861,7 @@ describe( 'EditorUI', () => {
 
 					ui.addToolbar( visibleToolbarA );
 					ui.addToolbar( visibleToolbarB );
-					ui._initMenuBar( visibleMenuBar );
+					ui.initMenuBar( visibleMenuBar );
 
 					editingAreaA = document.createElement( 'div' );
 					editingAreaB = document.createElement( 'div' );
@@ -1226,7 +1226,7 @@ describe( 'EditorUI', () => {
 				init() {
 					super.init();
 
-					this._initMenuBar( this.view.menuBarView );
+					this.initMenuBar( this.view.menuBarView );
 				}
 			}
 

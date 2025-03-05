@@ -397,7 +397,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	/**
 	 * Initializes menu bar.
 	 */
-	protected _initMenuBar( menuBarView: MenuBarView ): void {
+	public initMenuBar( menuBarView: MenuBarView ): void {
 		const menuBarViewElement = menuBarView.element!;
 
 		this.focusTracker.add( menuBarViewElement );
