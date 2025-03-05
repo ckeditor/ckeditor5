@@ -41,8 +41,7 @@ ClassicEditor
 				'custom-block-indent-b',
 				'custom-block-indent-c'
 			]
-		},
-		licenseKey: 'GPL'
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

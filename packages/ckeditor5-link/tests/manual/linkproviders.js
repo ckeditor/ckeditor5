@@ -28,7 +28,7 @@ const createPredefinedLinksProvider = provider => class MyLinkProvider extends P
 };
 
 const SocialLinksPlugin = createPredefinedLinksProvider( {
-	label: '🌐 Social links',
+	label: '🌐 Social links 🌐 Social links 🌐 Social links 🌐 Social links 🌐 Social links',
 	getListItems: () => [
 		{
 			id: 'facebook',

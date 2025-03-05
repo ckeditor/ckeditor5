@@ -30,6 +30,8 @@ import {
 
 import { debounce } from 'es-toolkit/compat';
 
+// @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '@ckeditor/ckeditor5-engine/src/dev-utils/utils.js' );
+
 /**
  * Handles text input coming from the keyboard or other input methods.
  */
@@ -125,9 +127,10 @@ export default class Input extends Plugin {
 
 				if ( insertText.length == 0 && modelRanges[ 0 ].isCollapsed ) {
 					// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-					// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Ignore insertion of an empty data to the collapsed range.',
-					// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-style: italic'
-					// @if CK_DEBUG_TYPING // 	);
+					// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'Input',
+					// @if CK_DEBUG_TYPING // 		'%cIgnore insertion of an empty data to the collapsed range.',
+					// @if CK_DEBUG_TYPING // 		'font-style: italic'
+					// @if CK_DEBUG_TYPING // 	) );
 					// @if CK_DEBUG_TYPING // }
 
 					return;
@@ -145,22 +148,28 @@ export default class Input extends Plugin {
 			// We just wait for mutation observer to notice changes or as a fallback a timeout.
 			if ( env.isAndroid && view.document.isComposing ) {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-				// @if CK_DEBUG_TYPING // 	console.log( `%c[Input]%c Queue insertText:%c "${ commandData.text }"%c ` +
+				// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'Input',
+				// @if CK_DEBUG_TYPING // 		`%cQueue insertText:%c "${ commandData.text }"%c ` +
 				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getFirstPosition().path }]-` +
 				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getLastPosition().path }]` +
 				// @if CK_DEBUG_TYPING // 		` queue size: ${ this._compositionQueue.length + 1 }`,
-				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-weight: bold', 'color: blue', ''
-				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // 		'font-weight: bold',
+				// @if CK_DEBUG_TYPING // 		'color: blue',
+				// @if CK_DEBUG_TYPING // 		''
+				// @if CK_DEBUG_TYPING // 	) );
 				// @if CK_DEBUG_TYPING // }
 
 				this._compositionQueue.push( commandData );
 			} else {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-				// @if CK_DEBUG_TYPING // 	console.log( `%c[Input]%c Execute insertText:%c "${ commandData.text }"%c ` +
+				// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'Input',
+				// @if CK_DEBUG_TYPING // 		`%cExecute insertText:%c "${ commandData.text }"%c ` +
 				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getFirstPosition().path }]-` +
 				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getLastPosition().path }]`,
-				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-weight: bold', 'color: blue', ''
-				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // 		'font-weight: bold',
+				// @if CK_DEBUG_TYPING // 		'color: blue',
+				// @if CK_DEBUG_TYPING // 		''
+				// @if CK_DEBUG_TYPING // 	) );
 				// @if CK_DEBUG_TYPING // }
 
 				editor.execute( 'insertText', commandData );
@@ -182,10 +191,12 @@ export default class Input extends Plugin {
 				// @if CK_DEBUG_TYPING // 	const firstPositionPath = modelSelection.getFirstPosition()!.path;
 				// @if CK_DEBUG_TYPING // 	const lastPositionPath = modelSelection.getLastPosition()!.path;
 
-				// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c KeyDown 229%c -> model.deleteContent() ' +
+				// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'Input',
+				// @if CK_DEBUG_TYPING // 		'%cKeyDown 229%c -> model.deleteContent() ' +
 				// @if CK_DEBUG_TYPING // 		`[${ firstPositionPath }]-[${ lastPositionPath }]`,
-				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-weight: bold', '',
-				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // 		'font-weight: bold',
+				// @if CK_DEBUG_TYPING // 		''
+				// @if CK_DEBUG_TYPING // 	) );
 				// @if CK_DEBUG_TYPING // }
 
 				deleteSelectionContent( model, insertTextCommand );
@@ -202,10 +213,12 @@ export default class Input extends Plugin {
 				// @if CK_DEBUG_TYPING // 	const firstPositionPath = modelSelection.getFirstPosition()!.path;
 				// @if CK_DEBUG_TYPING // 	const lastPositionPath = modelSelection.getLastPosition()!.path;
 
-				// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Composition start%c -> model.deleteContent() ' +
+				// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'Input',
+				// @if CK_DEBUG_TYPING // 		'%cComposition start%c -> model.deleteContent() ' +
 				// @if CK_DEBUG_TYPING // 		`[${ firstPositionPath }]-[${ lastPositionPath }]`,
-				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-weight: bold', '',
-				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // 		'font-weight: bold',
+				// @if CK_DEBUG_TYPING // 		'',
+				// @if CK_DEBUG_TYPING // 	) );
 				// @if CK_DEBUG_TYPING // }
 
 				deleteSelectionContent( model, insertTextCommand );
@@ -234,9 +247,10 @@ export default class Input extends Plugin {
 				}
 
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-				// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Mutations not related to the composition.',
-				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-style: italic'
-				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'Input',
+				// @if CK_DEBUG_TYPING // 		'%cMutations not related to the composition.',
+				// @if CK_DEBUG_TYPING // 		'font-style: italic'
+				// @if CK_DEBUG_TYPING // 	) );
 				// @if CK_DEBUG_TYPING // }
 			} );
 
@@ -265,9 +279,10 @@ export default class Input extends Plugin {
 
 				if ( mutations.length ) {
 					// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-					// @if CK_DEBUG_TYPING // 	console.group( '%c[Input]%c Fire post-composition mutation fixes.',
-					// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green', 'font-weight: bold', ''
-					// @if CK_DEBUG_TYPING // 	);
+					// @if CK_DEBUG_TYPING // 	console.group( ..._buildLogMessage( this, 'Input',
+					// @if CK_DEBUG_TYPING // 		'%cFire post-composition mutation fixes.',
+					// @if CK_DEBUG_TYPING // 		'font-weight: bold'
+					// @if CK_DEBUG_TYPING // 	) );
 					// @if CK_DEBUG_TYPING // }
 
 					view.document.fire<ViewDocumentMutationsEvent>( 'mutations', { mutations } );
@@ -291,9 +306,10 @@ export default class Input extends Plugin {
 			// This is especially needed when user cancels composition, so we can clear nodes marked to sync.
 			this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-				// @if CK_DEBUG_TYPING // 	console.group( '%c[Input]%c Force render after composition end.',
-				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green', 'font-weight: bold', ''
-				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // 	console.group( ..._buildLogMessage( this, 'Input',
+				// @if CK_DEBUG_TYPING // 		'%cForce render after composition end.',
+				// @if CK_DEBUG_TYPING // 		'font-weight: bold'
+				// @if CK_DEBUG_TYPING // 	) );
 				// @if CK_DEBUG_TYPING // }
 
 				view.document.fire<ViewDocumentMutationsEvent>( 'mutations', { mutations: [] } );
@@ -427,9 +443,10 @@ class CompositionQueue {
 		}
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-		// @if CK_DEBUG_TYPING // 	console.group( `%c[Input]%c Flush insertText queue on ${ reason }.`,
-		// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-weight: bold'
-		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // 	console.group( ..._buildLogMessage( this, 'Input',
+		// @if CK_DEBUG_TYPING // 		`%cFlush insertText queue on ${ reason }.`,
+		// @if CK_DEBUG_TYPING // 		'font-weight: bold'
+		// @if CK_DEBUG_TYPING // 	) );
 		// @if CK_DEBUG_TYPING // }
 
 		const insertTextCommand = editor.commands.get( 'insertText' )!;
@@ -442,12 +459,14 @@ class CompositionQueue {
 				const commandData = this.shift();
 
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-				// @if CK_DEBUG_TYPING // 	console.log( '%c[Input]%c Execute queued insertText:%c ' +
-				// @if CK_DEBUG_TYPING // 		`"${ commandData.text }"%c ` +
-				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getFirstPosition().path }]-` +
-				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getLastPosition().path }]`,
-				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-weight: bold', 'color: blue', ''
-				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'Input',
+				// @if CK_DEBUG_TYPING // 		`%cExecute queued insertText:%c "${ commandData.text }"%c ` +
+				// @if CK_DEBUG_TYPING // 			`[${ commandData.selection.getFirstPosition().path }]-` +
+				// @if CK_DEBUG_TYPING // 			`[${ commandData.selection.getLastPosition().path }]`,
+				// @if CK_DEBUG_TYPING // 		'font-weight: bold',
+				// @if CK_DEBUG_TYPING // 		'color: blue',
+				// @if CK_DEBUG_TYPING // 		''
+				// @if CK_DEBUG_TYPING // 	) );
 				// @if CK_DEBUG_TYPING // }
 
 				editor.execute( 'insertText', commandData );

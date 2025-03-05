@@ -29,8 +29,7 @@ DecoupledEditor
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
-		},
-		licenseKey: 'GPL'
+		}
 	} )
 	.then( editor => {
 		document

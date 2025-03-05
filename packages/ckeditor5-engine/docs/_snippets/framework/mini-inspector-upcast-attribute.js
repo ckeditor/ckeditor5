@@ -3,7 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals DecoupledEditor, MiniCKEditorInspector, Essentials, console, document */
+/* globals console, document */
+
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import MiniCKEditorInspector from '@ckeditor/ckeditor5-inspector/build/miniinspector.js';
+
+// This file will be available when the documentation is built.
+import { MiniInspectorEditor } from '../mini-inspector.js';
 
 function Image( editor ) {
 	editor.model.schema.register( 'image', {
@@ -25,10 +31,9 @@ function Image( editor ) {
 	} );
 }
 
-DecoupledEditor.create( document.querySelector( '#mini-inspector-upcast-attribute' ), {
+MiniInspectorEditor.create( document.querySelector( '#mini-inspector-upcast-attribute' ), {
 	plugins: [ Essentials, Image ],
-	toolbar: [],
-	licenseKey: 'GPL'
+	toolbar: []
 } )
 	.then( editor => {
 		MiniCKEditorInspector.attach(
