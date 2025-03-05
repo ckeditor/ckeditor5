@@ -78,7 +78,8 @@ export default class EmojiRepository extends Plugin {
 		editor.config.define( 'emoji', {
 			version: undefined,
 			skinTone: 'default',
-			definitionsUrl: undefined
+			definitionsUrl: undefined,
+			useCustomFont: false
 		} );
 
 		this._url = this._getUrl();
@@ -101,6 +102,16 @@ export default class EmojiRepository extends Plugin {
 		this._items = this._getItems();
 
 		if ( !this._items ) {
+			/**
+			 * Unable to identify the available emoji to display.
+			 *
+			 * See the {@glink features/emoji#troubleshooting troubleshooting} section in the {@glink features/emoji Emoji feature} guide
+			 * for more details.
+			 *
+			 * @error emoji-repository-empty
+			 */
+			logWarning( 'emoji-repository-empty' );
+
 			return this._repositoryPromiseResolveCallback( false );
 		}
 
@@ -166,14 +177,14 @@ export default class EmojiRepository extends Plugin {
 		const { t } = this.editor.locale;
 
 		const categories = [
-			{ title: t( 'Smileys & Expressions' ), icon: '😀', groupId: 0 },
+			{ title: t( 'Smileys & Expressions' ), icon: '😄', groupId: 0 },
 			{ title: t( 'Gestures & People' ), icon: '👋', groupId: 1 },
 			{ title: t( 'Animals & Nature' ), icon: '🐻', groupId: 3 },
 			{ title: t( 'Food & Drinks' ), icon: '🍎', groupId: 4 },
 			{ title: t( 'Travel & Places' ), icon: '🚘', groupId: 5 },
 			{ title: t( 'Activities' ), icon: '🏀', groupId: 6 },
 			{ title: t( 'Objects' ), icon: '💡', groupId: 7 },
-			{ title: t( 'Symbols' ), icon: '🟢', groupId: 8 },
+			{ title: t( 'Symbols' ), icon: '🔵', groupId: 8 },
 			{ title: t( 'Flags' ), icon: '🏁', groupId: 9 }
 		];
 
@@ -270,11 +281,13 @@ export default class EmojiRepository extends Plugin {
 		}
 
 		/**
-		 * By default, the Emoji plugin fetches the emoji repository from CKEditor 5 CDN. To avoid this,
-		 * you can use the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `emoji.definitionsUrl`}
+		 * It was detected that your installation uses a commercial license key,
+		 * and the default {@glink features/emoji#emoji-source CKEditor CDN for Emoji plugin data}.
+		 *
+		 * To avoid this, you can use the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `emoji.definitionsUrl`}
 		 * configuration option to provide a URL to your own emoji repository.
 		 *
-		 * If you only want to suppress this warning, set this configuration option to `cdn`.
+		 * If you want to suppress this warning, while using the default CDN, set this configuration option to `cdn`.
 		 *
 		 * @error emoji-repository-cdn-use
 		 */
@@ -312,19 +325,6 @@ export default class EmojiRepository extends Plugin {
 				return [];
 			} );
 
-		if ( !result.length ) {
-			/**
-			 * Unable to load the emoji repository from the URL.
-			 *
-			 * If the URL works properly and there is no disruption of communication, please check your
-			 * {@glink getting-started/setup/csp Content Security Policy (CSP)} setting and make sure
-			 * the URL connection is allowed by the editor.
-			 *
-			 * @error emoji-repository-load-failed
-			 */
-			logWarning( 'emoji-repository-load-failed' );
-		}
-
 		EmojiRepository._results[ this._url.href ] = this._normalizeEmoji( result );
 	}
 
@@ -335,14 +335,23 @@ export default class EmojiRepository extends Plugin {
 	 *  * Prepare skin tone variants if an emoji defines them.
 	 */
 	private _normalizeEmoji( data: Array<EmojiCdnResource> ): Array<EmojiEntry> {
-		const emojiUtils = this.editor.plugins.get( 'EmojiUtils' );
+		const editor = this.editor;
+		const useCustomFont = editor.config.get( 'emoji.useCustomFont' );
+		const emojiUtils = editor.plugins.get( 'EmojiUtils' );
+
+		const insertableEmoji = data.filter( item => emojiUtils.isEmojiCategoryAllowed( item ) );
+
+		// When using a custom font, the feature does not filter any emoji.
+		if ( useCustomFont ) {
+			return insertableEmoji.map( item => emojiUtils.normalizeEmojiSkinTone( item ) );
+		}
+
 		const emojiSupportedVersionByOs = emojiUtils.getEmojiSupportedVersionByOs();
 
 		const container = emojiUtils.createEmojiWidthTestingContainer();
 		document.body.appendChild( container );
 
-		const results = data
-			.filter( item => emojiUtils.isEmojiCategoryAllowed( item ) )
+		const results = insertableEmoji
 			.filter( item => emojiUtils.isEmojiSupported( item, emojiSupportedVersionByOs, container ) )
 			.map( item => emojiUtils.normalizeEmojiSkinTone( item ) );
 
@@ -405,7 +414,7 @@ export type EmojiCdnResource = {
 };
 
 /**
- * Represents a single emoji item used by the emoji feature.
+ * Represents a single emoji item used by the Emoji feature.
  */
 export type EmojiEntry = Omit<EmojiCdnResource, 'skins'> & {
 	skins: EmojiMap;
@@ -428,3 +437,13 @@ export type SkinTone = {
 	icon: string;
 	tooltip: string;
 };
+
+/**
+ * Unable to load the emoji repository from the URL.
+ *
+ * If the URL works properly and there is no disruption of communication, please check your
+ * {@glink getting-started/setup/csp Content Security Policy (CSP)} setting and make sure
+ * the URL connection is allowed by the editor.
+ *
+ * @error emoji-repository-load-failed
+ */

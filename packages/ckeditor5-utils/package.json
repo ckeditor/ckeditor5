@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-utils",
-  "version": "44.2.1",
+  "version": "44.3.0",
   "description": "Miscellaneous utilities used by CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -12,13 +12,13 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@ckeditor/ckeditor5-ui": "44.2.1",
+    "@ckeditor/ckeditor5-ui": "44.3.0",
     "es-toolkit": "1.32.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-editor-classic": "44.2.1",
-    "@ckeditor/ckeditor5-core": "44.2.1",
-    "@ckeditor/ckeditor5-engine": "44.2.1",
+    "@ckeditor/ckeditor5-editor-classic": "44.3.0",
+    "@ckeditor/ckeditor5-core": "44.3.0",
+    "@ckeditor/ckeditor5-engine": "44.3.0",
     "typescript": "5.0.4"
   },
   "depcheckIgnore": [

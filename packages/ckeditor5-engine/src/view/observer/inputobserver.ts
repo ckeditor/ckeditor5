@@ -13,7 +13,7 @@ import type ViewRange from '../range.js';
 import DataTransfer from '../datatransfer.js';
 import { env } from '@ckeditor/ckeditor5-utils';
 
-// @if CK_DEBUG_TYPING // const { _debouncedLine } = require( '../../dev-utils/utils.js' );
+// @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
 
 /**
  * Observer for events connected with data input.
@@ -33,9 +33,9 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 	public onDomEvent( domEvent: InputEvent ): void {
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	_debouncedLine();
-		// @if CK_DEBUG_TYPING // 	console.group( `%c[InputObserver]%c ${ domEvent.type }: ${ domEvent.inputType }`,
-		// @if CK_DEBUG_TYPING // 		'color: green', 'color: default'
-		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // 	console.group( ..._buildLogMessage( this, 'InputObserver',
+		// @if CK_DEBUG_TYPING // 		`${ domEvent.type }: ${ domEvent.inputType }`
+		// @if CK_DEBUG_TYPING // 	) );
 		// @if CK_DEBUG_TYPING // }
 
 		const domTargetRanges = domEvent.getTargetRanges();
@@ -54,17 +54,21 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 			data = domEvent.data;
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-			// @if CK_DEBUG_TYPING // 	console.info( `%c[InputObserver]%c event data: %c${ JSON.stringify( data ) }`,
-			// @if CK_DEBUG_TYPING // 		'color: green; font-weight: bold', 'font-weight: bold', 'color: blue;'
-			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'InputObserver',
+			// @if CK_DEBUG_TYPING // 		`%cevent data: %c${ JSON.stringify( data ) }`,
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold',
+			// @if CK_DEBUG_TYPING // 		'color: blue;'
+			// @if CK_DEBUG_TYPING // 	) );
 			// @if CK_DEBUG_TYPING // }
 		} else if ( dataTransfer ) {
 			data = dataTransfer.getData( 'text/plain' );
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-			// @if CK_DEBUG_TYPING // 	console.info( `%c[InputObserver]%c event data transfer: %c${ JSON.stringify( data ) }`,
-			// @if CK_DEBUG_TYPING // 		'color: green; font-weight: bold', 'font-weight: bold', 'color: blue;'
-			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'InputObserver',
+			// @if CK_DEBUG_TYPING // 		`%cevent data transfer: %c${ JSON.stringify( data ) }`,
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold',
+			// @if CK_DEBUG_TYPING // 		'color: blue;'
+			// @if CK_DEBUG_TYPING // 	) );
 			// @if CK_DEBUG_TYPING // }
 		}
 
@@ -75,10 +79,12 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 			targetRanges = Array.from( viewDocument.selection.getRanges() );
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-			// @if CK_DEBUG_TYPING // 	console.info( '%c[InputObserver]%c using fake selection:',
-			// @if CK_DEBUG_TYPING // 		'color: green; font-weight: bold', 'font-weight: bold', targetRanges,
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'InputObserver',
+			// @if CK_DEBUG_TYPING // 		'%cusing fake selection:',
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold',
+			// @if CK_DEBUG_TYPING // 		targetRanges,
 			// @if CK_DEBUG_TYPING // 		viewDocument.selection.isFake ? 'fake view selection' : 'fake DOM parent'
-			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // 	) );
 			// @if CK_DEBUG_TYPING // }
 		} else if ( domTargetRanges.length ) {
 			targetRanges = domTargetRanges.map( domRange => {
@@ -97,9 +103,11 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 			} ).filter( ( range ): range is ViewRange => !!range );
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-			// @if CK_DEBUG_TYPING // 	console.info( '%c[InputObserver]%c using target ranges:',
-			// @if CK_DEBUG_TYPING // 		'color: green; font-weight: bold', 'font-weight: bold', targetRanges
-			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'InputObserver',
+			// @if CK_DEBUG_TYPING // 		'%cusing target ranges:',
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold',
+			// @if CK_DEBUG_TYPING // 		targetRanges
+			// @if CK_DEBUG_TYPING // 	) );
 			// @if CK_DEBUG_TYPING // }
 		}
 		// For Android devices we use a fallback to the current DOM selection, Android modifies it according
@@ -110,9 +118,11 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 			targetRanges = Array.from( view.domConverter.domSelectionToView( domSelection ).getRanges() );
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-			// @if CK_DEBUG_TYPING // 	console.info( '%c[InputObserver]%c using selection ranges:',
-			// @if CK_DEBUG_TYPING // 		'color: green; font-weight: bold', 'font-weight: bold', targetRanges
-			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'InputObserver',
+			// @if CK_DEBUG_TYPING // 		'%cusing selection ranges:',
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold',
+			// @if CK_DEBUG_TYPING // 		targetRanges
+			// @if CK_DEBUG_TYPING // 	) );
 			// @if CK_DEBUG_TYPING // }
 		}
 
