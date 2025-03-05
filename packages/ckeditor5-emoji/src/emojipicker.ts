@@ -138,8 +138,6 @@ export default class EmojiPicker extends Plugin {
 			this.emojiPickerView = this._createEmojiPickerView();
 		}
 
-		this.emojiPickerView.isEmojiPanelOpen = true;
-
 		if ( searchValue ) {
 			this.emojiPickerView.searchView.setInputValue( searchValue );
 		}
@@ -228,8 +226,6 @@ export default class EmojiPicker extends Plugin {
 	 * Hides the balloon with the emoji picker.
 	 */
 	private _hideUI(): void {
-		this.emojiPickerView!.isEmojiPanelOpen = false;
-
 		this.balloonPlugin.remove( this.emojiPickerView! );
 		this.emojiPickerView!.searchView.setInputValue( '' );
 		this.editor.editing.view.focus();

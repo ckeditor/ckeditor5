@@ -273,18 +273,6 @@ describe( 'EmojiPicker', () => {
 	} );
 
 	describe( 'showUI()', () => {
-		it( 'should toggle emojiPickerView', () => {
-			expect( emojiPicker.emojiPickerView ).to.equal( undefined );
-
-			emojiPicker.showUI();
-
-			expect( emojiPicker.emojiPickerView.isEmojiPanelOpen ).to.equal( true );
-
-			emojiPicker._hideUI();
-
-			expect( emojiPicker.emojiPickerView.isEmojiPanelOpen ).to.equal( false );
-		} );
-
 		it( 'should read categories from the repository plugin when creating UI', () => {
 			const { getEmojiCategories } = editor.plugins.get( 'EmojiRepository' );
 

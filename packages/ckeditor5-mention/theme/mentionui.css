@@ -25,8 +25,3 @@
 		flex-shrink: 0;
 	}
 }
-
-/* See: https://github.com/ckeditor/ckeditor5/issues/17964 */
-.ck-mentions__panel_open {
-	z-index: calc( var( --ck-z-dialog ) + 1 );
-}

@@ -69,10 +69,6 @@ describe( 'EmojiPickerView', () => {
 	describe( 'constructor()', () => {
 		const some = ( arg, callback ) => [ ...arg ].some( callback );
 
-		it( 'should create class with isEmojiPanelOpen set to false', () => {
-			expect( emojiPickerView.isEmojiPanelOpen ).to.equal( false );
-		} );
-
 		it( 'should create search info view', () => {
 			expect( some( emojiPickerView.items, view => view instanceof SearchInfoView ) ).to.equal( true );
 		} );

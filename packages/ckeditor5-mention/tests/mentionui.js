@@ -484,52 +484,6 @@ describe( 'MentionUI', () => {
 				} );
 		} );
 
-		it( 'should toggle isMentionsPanelOpen', () => {
-			return createClassicTestEditor( { feeds: [ Object.assign( { minimumCharacters: 2 }, staticConfig.feeds[ 0 ] ) ] } )
-				.then( () => {
-					expect( mentionsView.isMentionsPanelOpen ).to.equal( false );
-
-					setData( model, '<paragraph>foo []</paragraph>' );
-
-					model.change( writer => {
-						writer.insertText( '@', doc.selection.getFirstPosition() );
-					} );
-				} )
-				.then( () => {
-					expect( mentionsView.isMentionsPanelOpen ).to.equal( false );
-
-					model.change( writer => {
-						writer.insertText( 'B', doc.selection.getFirstPosition() );
-					} );
-				} )
-				.then( waitForDebounce )
-				.then( () => {
-					expect( mentionsView.isMentionsPanelOpen ).to.equal( false );
-
-					model.change( writer => {
-						writer.insertText( 'a', doc.selection.getFirstPosition() );
-					} );
-				} )
-				.then( waitForDebounce )
-				.then( () => {
-					expect( mentionsView.isMentionsPanelOpen ).to.equal( true );
-
-					model.change( writer => {
-						writer.insertText( 'r', doc.selection.getFirstPosition() );
-					} );
-				} )
-				.then( waitForDebounce )
-				.then( () => {
-					expect( mentionsView.isMentionsPanelOpen ).to.equal( true );
-
-					setData( model, '<paragraph></paragraph>' );
-				} )
-				.then( waitForDebounce )
-				.then( () => {
-					expect( mentionsView.isMentionsPanelOpen ).to.equal( false );
-				} );
-		} );
-
 		it( 'should show panel after the whole marker is matched', () => {
 			return createClassicTestEditor( {
 				feeds: [ { marker: '@@', feed: [ '@Barney', '@Lily', '@Marshall', '@Robin', '@Ted' ] } ]

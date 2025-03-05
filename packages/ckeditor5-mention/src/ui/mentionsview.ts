@@ -18,8 +18,6 @@ import '../../theme/mentionui.css';
  * The mention ui view.
  */
 export default class MentionsView extends ListView {
-	public isMentionsPanelOpen: boolean;
-
 	public selected: MentionListItemView | undefined;
 
 	public position: string | undefined;
@@ -30,13 +28,10 @@ export default class MentionsView extends ListView {
 	constructor( locale: Locale ) {
 		super( locale );
 
-		this.isMentionsPanelOpen = false;
-
 		this.extendTemplate( {
 			attributes: {
 				class: [
-					'ck-mentions',
-					this.bindTemplate.if( 'isMentionsPanelOpen', 'ck-mentions__panel_open' )
+					'ck-mentions'
 				],
 
 				tabindex: '-1'
