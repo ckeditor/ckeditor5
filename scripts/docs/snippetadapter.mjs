@@ -82,11 +82,12 @@ async function getDependencies( packageName ) {
  * @param {string} inputPath
  * @param {string} outputPath
  * @param {Record<string, any>} imports
+ * @returns {Promise<void>}
  */
 async function buildSnippets( snippets, inputPath, outputPath, imports ) {
 	const externals = Object.keys( imports );
 
-	return esbuild( {
+	await esbuild( {
 		entryPoints: Array.from( snippets ).map( snippet => snippet.snippetSources.js ).filter( Boolean ),
 		outdir: outputPath,
 		entryNames: '[dir]/[name]/snippet',
@@ -131,6 +132,7 @@ async function buildSnippets( snippets, inputPath, outputPath, imports ) {
  * @param {Set<Snippet>} snippets
  * @param {function} getSnippetPlaceholder
  * @param {Record<string, any>} imports
+ * @returns {Promise<void>}
  */
 async function buildDocuments( snippets, getSnippetPlaceholder, imports ) {
 	const getStyle = href => `<link rel="stylesheet" href="${ href }" data-cke="true" />`;

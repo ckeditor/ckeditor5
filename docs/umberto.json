@@ -46,6 +46,8 @@
 		"api/module_html-embed_inserthtmlembedcommand-InsertHtmlEmbedCommand.html": "api/module_html-embed_htmlembedcommand-HtmlEmbedCommand.html",
 		"api/module_html-embed_updatehtmlembedcommand.html": "api/module_html-embed_htmlembedcommand.html",
 		"api/module_html-embed_updatehtmlembedcommand-UpdateHtmlEmbedCommand.html": "api/module_html-embed_htmlembedcommand-HtmlEmbedCommand.html",
+		"api/module_link_utils-ManualDecorator.html": "api/module_link_utils_manualdecorator-ManualDecorator.html",
+		"api/module_link_utils-AutomaticDecorators.html": "api/module_link_utils_automaticdecorators-AutomaticDecorators.html",
 		"api/module_list_checktodolistcommand.html": "api/module_list_todolist_checktodolistcommand.html",
 		"api/module_list_checktodolistcommand-CheckTodoListCommand.html": "api/module_list_todolist_checktodolistcommand-CheckTodoListCommand.html",
 		"api/module_list_converters.html": "api/module_list_list_converters.html",
