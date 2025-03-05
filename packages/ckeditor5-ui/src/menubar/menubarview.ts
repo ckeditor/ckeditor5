@@ -171,6 +171,24 @@ export default class MenuBarView extends View implements FocusableView {
 	}
 
 	/**
+	 * Disables all menus in the bar.
+	 */
+	public disable(): void {
+		for ( const topLevelCategoryMenuView of this.children ) {
+			topLevelCategoryMenuView.isEnabled = false;
+		}
+	}
+
+	/**
+	 * Enables all menus in the bar.
+	 */
+	public enable(): void {
+		for ( const topLevelCategoryMenuView of this.children ) {
+			topLevelCategoryMenuView.isEnabled = true;
+		}
+	}
+
+	/**
 	 * Registers a menu view in the menu bar. Every {@link module:ui/menubar/menubarmenuview~MenuBarMenuView} instance must be registered
 	 * in the menu bar to be properly managed.
 	 */
