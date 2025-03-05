@@ -310,15 +310,15 @@ describe( 'AbstractHandler', () => {
 
 			abstractHandler = new AbstractEditorHandler( editor );
 
-			const spy = sinon.spy( abstractHandler, 'setNewDialogPosition' );
+			const spy = sinon.spy( abstractHandler, '_setNewDialogPosition' );
 
 			abstractHandler.registerFullscreenDialogPositionAdjustements();
 
 			expect( spy ).not.to.be.called;
 		} );
 
-		it( 'should call setNewDialogPosition when there is Dialog plugin loaded', () => {
-			const spy = sinon.spy( abstractHandler, 'setNewDialogPosition' );
+		it( 'should call _setNewDialogPosition when there is Dialog plugin loaded', () => {
+			const spy = sinon.spy( abstractHandler, '_setNewDialogPosition' );
 
 			abstractHandler.registerFullscreenDialogPositionAdjustements();
 
@@ -358,17 +358,17 @@ describe( 'AbstractHandler', () => {
 		} );
 	} );
 
-	describe( 'updateDialogPosition', () => {
-		it( 'should call setNewDialogPosition if modal is opened', () => {
-			const spy = sinon.spy( abstractHandler, 'setNewDialogPosition' );
+	describe( '_updateDialogPosition', () => {
+		it( 'should call _setNewDialogPosition if modal is opened', () => {
+			const spy = sinon.spy( abstractHandler, '_setNewDialogPosition' );
 
-			abstractHandler.updateDialogPosition( {}, {}, true );
+			abstractHandler._updateDialogPosition( {}, {}, true );
 
 			expect( spy ).to.be.called;
 		} );
 
-		it( 'should not call setNewDialogPosition if modal is not opened and restore dialogView.position value', () => {
-			const spy = sinon.spy( abstractHandler, 'setNewDialogPosition' );
+		it( 'should not call _setNewDialogPosition if modal is not opened and restore dialogView.position value', () => {
+			const spy = sinon.spy( abstractHandler, '_setNewDialogPosition' );
 			const dialogPlugin = editor.plugins.get( Dialog );
 			const dialogContentView = new View();
 
@@ -390,14 +390,14 @@ describe( 'AbstractHandler', () => {
 
 			dialogPlugin.view.position = null;
 
-			abstractHandler.updateDialogPosition( {}, {}, false );
+			abstractHandler._updateDialogPosition( {}, {}, false );
 
 			expect( spy ).not.to.be.called;
 			expect( dialogPlugin.view.position ).to.equal( DialogViewPosition.EDITOR_TOP_SIDE );
 		} );
 	} );
 
-	describe( 'setNewDialogPosition', () => {
+	describe( '_setNewDialogPosition', () => {
 		it( 'should not try to adjust position when there is no Dialog plugin loaded', async () => {
 			editor.destroy();
 
@@ -430,13 +430,26 @@ describe( 'AbstractHandler', () => {
 
 			const spy = sinon.spy( editor.plugins, 'get' );
 
-			abstractHandler.setNewDialogPosition();
+			abstractHandler._setNewDialogPosition();
 
 			expect( spy ).not.to.be.called;
 		} );
 
 		it( 'should not try to adjust position when dialog position is different than editor-top-side', () => {
-			const spy = sinon.spy( abstractHandler, '_getVisibleContainerRect' );
+			const container = document.createElement( 'div' );
+			container.style.width = '2000px';
+			container.style.height = '1000px';
+
+			document.body.appendChild( container );
+
+			abstractHandler._container = container;
+			const editorContainer = document.createElement( 'div' );
+			editorContainer.style.width = '1000px';
+			editorContainer.style.height = '500px';
+
+			editorContainer.classList.add( 'ck-fullscreen__editor' );
+			document.body.appendChild( editorContainer );
+
 			const dialogPlugin = editor.plugins.get( Dialog );
 			const dialogContentView = new View();
 
@@ -456,12 +469,19 @@ describe( 'AbstractHandler', () => {
 				position: DialogViewPosition.EDITOR_TOP_CENTER
 			} );
 
-			abstractHandler.setNewDialogPosition();
+			const dialogPositionLeft = dialogPlugin.view._left;
+			const dialogPositionTop = dialogPlugin.view._top;
 
-			expect( spy ).not.to.be.called;
+			abstractHandler._setNewDialogPosition();
+
+			expect( dialogPositionLeft ).to.equal( dialogPlugin.view._left );
+			expect( dialogPositionTop ).to.equal( dialogPlugin.view._top );
+
+			editorContainer.remove();
+			container.remove();
 		} );
 
-		it( 'should change position of dialog', () => {
+		it( 'should change position of dialog when dialog position is editor-top-side', () => {
 			const container = document.createElement( 'div' );
 			container.style.width = '2000px';
 			container.style.height = '1000px';
@@ -498,7 +518,7 @@ describe( 'AbstractHandler', () => {
 			const dialogPositionLeft = dialogPlugin.view._left;
 			const dialogPositionTop = dialogPlugin.view._top;
 
-			abstractHandler.setNewDialogPosition();
+			abstractHandler._setNewDialogPosition();
 
 			expect( dialogPositionLeft ).not.to.equal( dialogPlugin.view._left );
 			expect( dialogPositionTop ).not.to.equal( dialogPlugin.view._top );

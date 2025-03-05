@@ -13,7 +13,7 @@ import type { Editor, EditorConfig } from 'ckeditor5/src/core.js';
 import type { RevisionViewerEditor } from '@ckeditor/ckeditor5-revision-history';
 import type { Annotation, AnnotationsUIs, Sidebar } from '@ckeditor/ckeditor5-comments';
 import { type EventInfo, createElement, Rect } from 'ckeditor5/src/utils.js';
-import { DialogViewPosition, type Dialog } from 'ckeditor5/src/ui.js';
+import { DialogViewPosition } from 'ckeditor5/src/ui.js';
 
 /**
  * The abstract editor type handler. It should be extended by the particular editor type handler.
@@ -406,9 +406,9 @@ export default class AbstractEditorHandler {
 			return;
 		}
 
-		const dialog = this._editor.plugins.get( 'Dialog' ) as Dialog;
+		const dialog = this._editor.plugins.get( 'Dialog' );
 
-		this.setNewDialogPosition();
+		this._setNewDialogPosition();
 
 		dialog.on( 'change:isOpen', this.updateDialogPositionCallback, { priority: 'highest' } );
 	}
@@ -421,31 +421,36 @@ export default class AbstractEditorHandler {
 			return;
 		}
 
-		const dialog = this._editor.plugins.get( 'Dialog' ) as Dialog;
+		const dialog = this._editor.plugins.get( 'Dialog' );
 		const dialogView = dialog.view;
 
 		if ( dialogView && dialogView.position === null ) {
 			dialogView.position = DialogViewPosition.EDITOR_TOP_SIDE;
 		}
 
-		dialogView?.updatePosition();
+		if ( dialogView ) {
+			dialogView.updatePosition();
+		}
 
 		dialog.off( 'change:isOpen', this.updateDialogPositionCallback );
 	}
 
-	public updateDialogPositionCallback = this.updateDialogPosition.bind( this );
+	/**
+	 * Stores a bound reference to the _updateDialogPosition method, allowing it to be attached and detached from change event.
+	 */
+	public updateDialogPositionCallback = this._updateDialogPosition.bind( this );
 
 	/**
 	 * An event triggered on dialog opening that sets a new position or restores previous values.
 	 */
-	private updateDialogPosition( _evt: EventInfo, _name: string, isOpen: boolean ): void {
+	private _updateDialogPosition( _evt: EventInfo, _name: string, isOpen: boolean ): void {
 		if ( isOpen ) {
-			this.setNewDialogPosition();
+			this._setNewDialogPosition();
 		} else {
-			const dialog = this._editor.plugins.get( 'Dialog' ) as Dialog;
+			const dialog = this._editor.plugins.get( 'Dialog' );
 			const dialogView = dialog.view;
 
-			if ( dialogView?.position === null ) {
+			if ( dialogView && dialogView.position === null ) {
 				dialogView.position = DialogViewPosition.EDITOR_TOP_SIDE;
 			}
 		}
@@ -456,34 +461,30 @@ export default class AbstractEditorHandler {
 	 * The new dialog position should be on the right side of the fullscreen view with a 30px margin.
 	 * Only dialogs with the position set to "editor-top-side" should have their position changed.
 	 */
-	public setNewDialogPosition(): void {
+	private _setNewDialogPosition(): void {
 		if ( !this._editor.plugins.has( 'Dialog' ) ) {
 			return;
 		}
 
-		const dialog = this._editor.plugins.get( 'Dialog' ) as Dialog;
+		const dialog = this._editor.plugins.get( 'Dialog' );
 		const dialogView = dialog.view!;
 
 		if ( !dialogView || dialogView.position !== DialogViewPosition.EDITOR_TOP_SIDE ) {
 			return;
 		}
 
-		const fullscreenViewContainerRect = this._getVisibleContainerRect( this._container! );
-		const editorContainerRect = this._getVisibleContainerRect( document.querySelector( '.ck-fullscreen__editor' )! );
-		const dialogRect = this._getVisibleContainerRect( dialogView.element!.querySelector( '.ck-dialog' ) as HTMLElement );
+		const fullscreenViewContainerRect = new Rect( this._container! ).getVisible();
+		const editorContainerRect = new Rect( document.querySelector( '.ck-fullscreen__editor' ) as HTMLElement ).getVisible();
+		const dialogRect = new Rect( dialogView.element!.querySelector( '.ck-dialog' ) as HTMLElement ).getVisible();
 
 		if ( fullscreenViewContainerRect && editorContainerRect && dialogRect ) {
-			const DIALOG_OFFSET = 30;
+			const DIALOG_OFFSET = 28;
 			dialogView.position = null;
 
 			dialogView.moveTo(
 				fullscreenViewContainerRect.left + fullscreenViewContainerRect.width - dialogRect.width - DIALOG_OFFSET,
-				editorContainerRect.top + DIALOG_OFFSET
+				editorContainerRect.top
 			);
 		}
-	}
-
-	private _getVisibleContainerRect( container: HTMLElement ): Rect | null {
-		return new Rect( container )?.getVisible();
 	}
 }
