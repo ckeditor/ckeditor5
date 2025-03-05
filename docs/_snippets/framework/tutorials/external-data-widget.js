@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, fetch, setInterval, setTimeout, clearInterval */
-
 import {
 	ClassicEditor,
 	Bold,
@@ -19,8 +17,12 @@ import {
 	Widget,
 	toWidget
 } from 'ckeditor5';
+import {
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
 
-import BitcoinLogoIcon from '../../../assets/img/bitcoin-logo.svg';
+import BitcoinLogoIcon from '@assets/img/bitcoin-logo.svg';
 
 const RESOURCE_URL = 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT';
 
@@ -207,9 +209,8 @@ ClassicEditor
 		// Expose for playing in the console.
 		window.editor = editor;
 
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.label && item.label === 'Bitcoin rate' ),
+		attachTourBalloon( {
+			target: findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Bitcoin rate' ),
 			text: 'Click to add Bitcoin rate.',
 			tippyOptions: {
 				placement: 'bottom-start'

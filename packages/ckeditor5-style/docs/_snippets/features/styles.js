@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
 import {
 	ClassicEditor,
 	Code,
@@ -25,9 +24,15 @@ import {
 	ImageUpload,
 	Style
 } from 'ckeditor5';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
+
+import {
+	TOKEN_URL,
+	CS_CONFIG,
+	ArticlePluginSet,
+	getViewportTopOffsetConfig,
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-styles' ), {
@@ -114,7 +119,7 @@ ClassicEditor
 		cloudServices: CS_CONFIG,
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
@@ -126,8 +131,8 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
+		attachTourBalloon( {
+			target: findToolbarItem( editor.ui.view.toolbar,
 				item => item.buttonView && item.buttonView.label === 'Article category' ),
 			text: 'Click to apply styles.',
 			editor,

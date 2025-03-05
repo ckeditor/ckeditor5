@@ -12,8 +12,6 @@ The special characters feature lets you insert **mathematical operators**, **cur
 
 Use the special characters toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/special-characters.svg Special characters} in the editor below to open a [configurable](#configuration) panel with a table of selectable special characters.
 
-{@snippet features/special-characters-source}
-
 {@snippet features/special-characters}
 
 <info-box info>

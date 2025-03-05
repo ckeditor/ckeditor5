@@ -4,8 +4,6 @@ meta-title: Basic text styles | CKEditor 5 Documentation
 category: features
 ---
 
-{@snippet features/build-basic-styles-source}
-
 The basic styles feature lets you apply the most essential formatting such as bold, italic, underline, strikethrough, subscript, superscript, and code. Coupled with more [formatting features](#related-features), these serve as a base for any WYSIWYG editor toolset.
 
 ## Demo

@@ -3,9 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, console, window */
-
 import { ButtonView, Dialog, View, ClassicEditor, Essentials, Bold, Italic, Underline, Plugin, Paragraph } from 'ckeditor5';
+import {
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
 
 class MinimalisticModal extends Plugin {
 	get requires() {
@@ -80,9 +82,8 @@ ClassicEditor
 		toolbar: [ 'bold', 'italic', 'underline', '|', 'showModal' ]
 	} )
 	.then( editor => {
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.label === 'Show a modal' ),
+		attachTourBalloon( {
+			target: findToolbarItem( editor.ui.view.toolbar, item => item.label === 'Show a modal' ),
 			text: 'Click here to display a modal.',
 			editor,
 			tippyOptions: {

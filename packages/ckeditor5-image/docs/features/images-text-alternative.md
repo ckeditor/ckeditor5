@@ -5,7 +5,6 @@ meta-title: Image text alternative | CKEditor 5 Documentation
 meta-description: Setting and managing the alt tag on images in CKEditor 5
 order: 20
 ---
-{@snippet features/build-image-source}
 
 # Image text alternative
 

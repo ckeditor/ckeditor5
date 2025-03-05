@@ -8,8 +8,6 @@ modified_at: 2023-02-22
 
 # Tables in CKEditor&nbsp;5 (overview)
 
-{@snippet features/build-table-source}
-
 The table feature gives you tools to create and edit tables. Tables are great for organizing data in a clear, visually appealing way.
 
 ## Demo
@@ -23,8 +21,6 @@ Try toggling the caption on and off {@icon @ckeditor/ckeditor5-icons/theme/icons
 You may look for more interesting details in the [Tables in CKEditor&nbsp;5](https://ckeditor.com/blog/feature-of-the-month-tables-in-ckeditor-5/) blog post after reading this guide.
 
 ## Basic table features
-
-{@snippet features/build-table-source}
 
 The basic table features allow users to insert tables into content, add or remove columns and rows and merge or split cells.
 
@@ -44,8 +40,6 @@ The table selection plugin is loaded automatically by the `Table` plugin and can
 To type before or after a table easily, select the table, then press the Arrow key (<kbd>←</kbd> or <kbd>→</kbd>) once, depending on where you want to add content &ndash; before or after. The table is no longer selected and whatever text you type will appear in the desired position.
 
 ## Nesting tables
-
-{@snippet features/build-table-source}
 
 CKEditor&nbsp;5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can be formatted just like a regular one.
 

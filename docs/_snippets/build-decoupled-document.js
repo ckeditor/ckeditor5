@@ -3,13 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/*
- * This is a JavaScript version of CKEditor 5 Decoupled Document build.
- * It is used for all snippets used in the documentation to avoid importing a build source from the `src/` directory.
- * See: https://github.com/ckeditor/ckeditor5/issues/13552 to learn why it is a problem.
- */
-
-// The editor creator to use.
 import {
 	DecoupledEditor as DecoupledEditorBase,
 	Essentials,
@@ -48,7 +41,7 @@ import {
 	CloudServices
 } from 'ckeditor5';
 
-export default class DecoupledEditor extends DecoupledEditorBase {
+export class DecoupledEditor extends DecoupledEditorBase {
 	static builtinPlugins = [
 		Essentials,
 		Alignment,
@@ -123,7 +116,6 @@ export default class DecoupledEditor extends DecoupledEditorBase {
 				reversed: true
 			}
 		},
-		// This value must be kept in sync with the language defined in webpack.config.js.
 		language: 'en'
 	};
 }

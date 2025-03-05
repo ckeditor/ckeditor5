@@ -3,34 +3,46 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window */
-
 import {
-	Bold, Italic, Code, Strikethrough, Underline, Subscript, Superscript, RemoveFormat,
-	Alignment, Font, CKBox, CKBoxImageEdit, PictureEditing, ImageInsert, ImageResize,
-	AutoImage, LinkImage
-} from 'ckeditor5';
-
-// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic.js';
-
-ClassicEditor.builtinPlugins.push(
-	Alignment,
-	Font,
 	Bold,
 	Italic,
-	Underline,
+	Code,
 	Strikethrough,
+	Underline,
 	Subscript,
 	Superscript,
-	Code,
 	RemoveFormat,
+	Alignment,
+	Font,
+	CKBox,
+	CKBoxImageEdit,
 	PictureEditing,
 	ImageInsert,
 	ImageResize,
 	AutoImage,
-	LinkImage,
-	CKBox,
-	CKBoxImageEdit );
+	LinkImage
+} from 'ckeditor5';
+import { ClassicEditor } from '@snippets/index.js';
 
-window.ClassicEditor = ClassicEditor;
+export class RemoveFormatEditor extends ClassicEditor {
+	static builtinPlugins = [
+		...ClassicEditor.builtinPlugins,
+		Alignment,
+		Font,
+		Bold,
+		Italic,
+		Underline,
+		Strikethrough,
+		Subscript,
+		Superscript,
+		Code,
+		RemoveFormat,
+		PictureEditing,
+		ImageInsert,
+		ImageResize,
+		AutoImage,
+		LinkImage,
+		CKBox,
+		CKBoxImageEdit
+	];
+}

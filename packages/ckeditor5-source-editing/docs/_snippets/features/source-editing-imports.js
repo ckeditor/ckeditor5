@@ -3,67 +3,83 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window */
-
 import {
-	Code, Underline, Strikethrough, Subscript, Superscript, IndentBlock, TodoList, TableProperties,
-	TableCellProperties, SourceEditing, Markdown, GeneralHtmlSupport, CodeBlock, Alignment, CKBox,
-	CKBoxImageEdit, PictureEditing, ImageInsert, ImageResize, AutoImage, ImageCaption, LinkImage
-} from 'ckeditor5';
-
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
-
-// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic.js';
-
-ClassicEditor.builtinPlugins.push(
-	SourceEditing,
-	GeneralHtmlSupport,
-	TableCellProperties,
-	TableProperties,
-	IndentBlock,
-	CodeBlock,
+	Code,
 	Underline,
 	Strikethrough,
-	Code,
-	TodoList,
-	Superscript,
 	Subscript,
+	Superscript,
+	IndentBlock,
+	TodoList,
+	TableProperties,
+	TableCellProperties,
+	SourceEditing,
+	GeneralHtmlSupport,
+	CodeBlock,
 	Alignment,
-	ImageCaption,
-	LinkImage,
+	CKBox,
+	CKBoxImageEdit,
 	PictureEditing,
 	ImageInsert,
 	ImageResize,
 	AutoImage,
-	CKBox,
-	CKBoxImageEdit
-);
+	ImageCaption,
+	LinkImage
+} from 'ckeditor5';
+import {
+	CS_CONFIG,
+	TOKEN_URL,
+	ClassicEditor,
+	getViewportTopOffsetConfig
+} from '@snippets/index.js';
 
-ClassicEditor.defaultConfig = {
-	cloudServices: CS_CONFIG,
-	toolbar: {
-		items: [
-			'undo', 'redo',
-			'|', 'sourceEditing',
-			'|', 'heading',
-			'|', 'bold', 'italic',
-			'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
-			'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
-		]
-	},
-	ckbox: {
-		tokenUrl: TOKEN_URL,
-		allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
-		forceDemoLabel: true
-	},
-	ui: {
-		viewportOffset: {
-			top: window.getViewportTopOffsetConfig()
+export class SourceEditingEditor extends ClassicEditor {
+	static builtinPlugins = [
+		...ClassicEditor.builtinPlugins,
+		SourceEditing,
+		GeneralHtmlSupport,
+		TableCellProperties,
+		TableProperties,
+		IndentBlock,
+		CodeBlock,
+		Underline,
+		Strikethrough,
+		Code,
+		TodoList,
+		Superscript,
+		Subscript,
+		Alignment,
+		ImageCaption,
+		LinkImage,
+		PictureEditing,
+		ImageInsert,
+		ImageResize,
+		AutoImage,
+		CKBox,
+		CKBoxImageEdit
+	];
+
+	static defaultConfig = {
+		cloudServices: CS_CONFIG,
+		toolbar: {
+			items: [
+				'undo', 'redo',
+				'|', 'sourceEditing',
+				'|', 'heading',
+				'|', 'bold', 'italic',
+				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
+				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+			]
+		},
+		ckbox: {
+			tokenUrl: TOKEN_URL,
+			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
+			forceDemoLabel: true
+		},
+		ui: {
+			viewportOffset: {
+				top: getViewportTopOffsetConfig()
+			}
 		}
-	}
-};
-
-window.ClassicEditor = ClassicEditor;
-window.Markdown = Markdown;
+	};
+}

@@ -28,10 +28,13 @@ import {
 	Table,
 	TableToolbar,
 	TextTransformation,
-	CloudServices
+	CloudServices,
+	AutoImage,
+	ImageInsert,
+	Bookmark
 } from 'ckeditor5';
 
-export default class ClassicEditor extends ClassicEditorBase {
+export class ClassicEditor extends ClassicEditorBase {
 	static builtinPlugins = [
 		Essentials,
 		Autoformat,
@@ -56,7 +59,10 @@ export default class ClassicEditor extends ClassicEditorBase {
 		PictureEditing,
 		Table,
 		TableToolbar,
-		TextTransformation
+		TextTransformation,
+		AutoImage,
+		ImageInsert,
+		Bookmark
 	];
 
 	static defaultConfig = {
@@ -86,7 +92,6 @@ export default class ClassicEditor extends ClassicEditorBase {
 				'mergeTableCells'
 			]
 		},
-		// This value must be kept in sync with the language defined in webpack.config.js.
 		language: 'en'
 	};
 }

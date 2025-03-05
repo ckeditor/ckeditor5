@@ -34,7 +34,7 @@ import {
 	CloudServices
 } from 'ckeditor5';
 
-export default class BalloonBlockEditor extends BalloonEditorBase {
+export class BalloonBlockEditor extends BalloonEditorBase {
 	static builtinPlugins = [
 		Essentials,
 		CKFinderUploadAdapter,

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window */
-
 // Display a warning banner when browsing nightly documentation build or legacy guides. Source parameter for maintenance of 404 redirs.
 if ( window.location.host === 'ckeditor5.github.io' ) {
 	const stableUrl = window.location.href.replace( 'https://ckeditor5.github.io/docs/nightly', 'https://ckeditor.com/docs' );

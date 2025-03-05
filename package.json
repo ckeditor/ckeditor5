@@ -138,7 +138,6 @@
     "http-server": "^14.1.1",
     "husky": "^8.0.2",
     "ini": "^4.1.1",
-    "is-relative-url": "^3.0.0",
     "js-yaml": "^4.1.0",
     "lint-staged": "^15.0.0",
     "listr2": "^8.0.0",

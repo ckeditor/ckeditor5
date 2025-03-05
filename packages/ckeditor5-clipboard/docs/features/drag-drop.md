@@ -5,8 +5,6 @@ meta-description: Learn all about using the drag and drop mechanism to manage co
 category: features
 ---
 
-{@snippet features/build-drag-drop-source}
-
 # Drag and drop
 
 The drag and drop feature lets you drag and drop both text and content blocks such as paragraphs, tables, or lists inside the editor. This allows you to select an entire block or multiple blocks, and move them before or after other blocks. You can also drag and drop HTML and plain text content from outside the editor and use it to upload images.

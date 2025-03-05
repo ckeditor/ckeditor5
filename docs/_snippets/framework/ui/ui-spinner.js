@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import { SpinnerView } from 'ckeditor5';
 
 const spinner = new SpinnerView();

@@ -5,8 +5,6 @@ meta-title: Emoji | CKEditor 5 Documentation
 modified_at: 2025-01-21
 ---
 
-{@snippet features/emoji-source}
-
 # Emoji
 
 The emoji feature lets you insert emojis into the document from the editor toolbar or while writing the content. The emojis are pulled from the CDN to lessen the editor load.

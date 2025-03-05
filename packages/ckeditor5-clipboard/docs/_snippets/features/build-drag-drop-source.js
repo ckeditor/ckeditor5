@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window */
-
 import {
 	ClassicEditor as ClassicEditorBase,
 	BalloonEditor as BalloonEditorBase,
@@ -43,7 +41,11 @@ import {
 	BlockToolbar
 } from 'ckeditor5';
 
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
+import {
+	TOKEN_URL,
+	getViewportTopOffsetConfig
+} from '@snippets/index.js';
+
 import { HCardEditing } from './hcard.js';
 
 const defaultPlugins = [
@@ -121,7 +123,7 @@ const defaultConfig = {
 	},
 	ui: {
 		viewportOffset: {
-			top: window.getViewportTopOffsetConfig()
+			top: getViewportTopOffsetConfig()
 		}
 	},
 	ckbox: {
@@ -139,34 +141,36 @@ const defaultConfig = {
 	language: 'en'
 };
 
-class ClassicEditor extends ClassicEditorBase {}
-ClassicEditor.builtinPlugins = [ ...defaultPlugins, HCardEditing ];
-ClassicEditor.defaultConfig = defaultConfig;
+export class DragDropEditor extends ClassicEditorBase {
+	static builtinPlugins = [
+		...defaultPlugins,
+		HCardEditing
+	];
 
-class ClassicEditorExperimental extends ClassicEditorBase {}
-ClassicEditorExperimental.builtinPlugins = [
-	...defaultPlugins,
-	DragDrop
-];
-ClassicEditorExperimental.defaultConfig = defaultConfig;
+	static defaultConfig = defaultConfig;
+}
 
-class BalloonEditorExperimental extends BalloonEditorBase {}
-BalloonEditorExperimental.builtinPlugins = [
-	...defaultPlugins,
-	DragDrop,
-	DragDropBlockToolbar,
-	BlockToolbar
-];
+export class ClassicEditorExperimental extends ClassicEditorBase {
+	static builtinPlugins = [
+		...defaultPlugins,
+		DragDrop
+	];
 
-BalloonEditorExperimental.defaultConfig = {
-	...defaultConfig,
-	blockToolbar: defaultToolbar
-};
+	static defaultConfig = defaultConfig;
+}
 
-// Remove not needed toolbars.
-delete BalloonEditorExperimental.defaultConfig.toolbar;
-delete BalloonEditorExperimental.defaultConfig.balloonToolbar;
+export class BalloonEditorExperimental extends BalloonEditorBase {
+	static builtinPlugins = [
+		...defaultPlugins,
+		DragDrop,
+		DragDropBlockToolbar,
+		BlockToolbar
+	];
 
-window.ClassicEditor = ClassicEditor;
-window.ClassicEditorExperimental = ClassicEditorExperimental;
-window.BalloonEditorExperimental = BalloonEditorExperimental;
+	static defaultConfig = {
+		...defaultConfig,
+		toolbar: undefined,
+		balloonToolbar: undefined,
+		blockToolbar: defaultToolbar
+	};
+}

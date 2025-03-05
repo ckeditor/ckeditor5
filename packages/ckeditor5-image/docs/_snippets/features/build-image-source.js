@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window */
-
 import {
 	ImageResize,
 	ImageInsert,
@@ -16,20 +14,20 @@ import {
 	HorizontalLine,
 	Alignment
 } from 'ckeditor5';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { ClassicEditor, ArticlePluginSet } from '@snippets/index.js';
 
-// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic.js';
-
-ClassicEditor.builtinPlugins.push( ImageResize );
-ClassicEditor.builtinPlugins.push( ImageInsert );
-ClassicEditor.builtinPlugins.push( LinkImage );
-ClassicEditor.builtinPlugins.push( AutoImage );
-ClassicEditor.builtinPlugins.push( PictureEditing );
-ClassicEditor.builtinPlugins.push( CKBox );
-ClassicEditor.builtinPlugins.push( CKBoxImageEdit );
-ClassicEditor.builtinPlugins.push( ArticlePluginSet );
-ClassicEditor.builtinPlugins.push( HorizontalLine );
-ClassicEditor.builtinPlugins.push( Alignment );
-
-window.ClassicEditor = ClassicEditor;
+export class ImageEditor extends ClassicEditor {
+	static builtinPlugins = [
+		...ClassicEditor.builtinPlugins,
+		ImageResize,
+		ImageInsert,
+		LinkImage,
+		AutoImage,
+		PictureEditing,
+		CKBox,
+		CKBoxImageEdit,
+		ArticlePluginSet,
+		HorizontalLine,
+		Alignment
+	];
+}

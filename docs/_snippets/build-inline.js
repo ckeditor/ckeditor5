@@ -4,13 +4,36 @@
  */
 
 import {
-	InlineEditor as InlineEditorBase, Essentials, CKFinderUploadAdapter, Autoformat, Bold,
-	Italic, BlockQuote, CKBox, CKFinder, EasyImage, Heading, Image, ImageCaption, ImageStyle,
-	ImageToolbar, ImageUpload, PictureEditing, Indent, Link, List, MediaEmbed, Paragraph,
-	PasteFromOffice, Table, TableToolbar, TextTransformation, CloudServices
+	InlineEditor as InlineEditorBase,
+	Essentials,
+	CKFinderUploadAdapter,
+	Autoformat,
+	Bold,
+	Italic,
+	BlockQuote,
+	CKBox,
+	CKFinder,
+	EasyImage,
+	Heading,
+	Image,
+	ImageCaption,
+	ImageStyle,
+	ImageToolbar,
+	ImageUpload,
+	PictureEditing,
+	Indent,
+	Link,
+	List,
+	MediaEmbed,
+	Paragraph,
+	PasteFromOffice,
+	Table,
+	TableToolbar,
+	TextTransformation,
+	CloudServices
 } from 'ckeditor5';
 
-export default class InlineEditor extends InlineEditorBase {
+export class InlineEditor extends InlineEditorBase {
 	static builtinPlugins = [
 		Essentials,
 		CKFinderUploadAdapter,

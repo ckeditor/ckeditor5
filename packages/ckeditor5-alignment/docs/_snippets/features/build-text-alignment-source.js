@@ -3,22 +3,28 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window */
-
-import { CKBox, CKBoxImageEdit, PictureEditing, ImageInsert, ImageResize, AutoImage, LinkImage, Alignment } from 'ckeditor5';
-
-// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic.js';
-
-ClassicEditor.builtinPlugins.push(
+import {
+	CKBox,
+	CKBoxImageEdit,
 	PictureEditing,
+	ImageInsert,
 	ImageResize,
 	AutoImage,
-	ImageInsert,
 	LinkImage,
-	Alignment,
-	CKBox,
-	CKBoxImageEdit
-);
+	Alignment
+} from 'ckeditor5';
+import { ClassicEditor } from '@snippets/index.js';
 
-window.ClassicEditor = ClassicEditor;
+export class TextAlignmentEditor extends ClassicEditor {
+	static builtinPlugins = [
+		...ClassicEditor.builtinPlugins,
+		CKBox,
+		CKBoxImageEdit,
+		PictureEditing,
+		ImageInsert,
+		ImageResize,
+		AutoImage,
+		LinkImage,
+		Alignment
+	];
+}

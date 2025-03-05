@@ -3,17 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
-
 // source editing only added for testing purposes, remove when done
 
 import { CKBox, CKBoxImageEdit, PictureEditing, ImageInsert, ImageResize, AutoImage, LinkImage, Bookmark } from 'ckeditor5';
 import { SourceEditingEnhanced } from 'ckeditor5-premium-features';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
-
-// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic.js';
+import {
+	TOKEN_URL,
+	CS_CONFIG,
+	ClassicEditor,
+	getViewportTopOffsetConfig,
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
 
 ClassicEditor.builtinPlugins.push( Bookmark, PictureEditing, ImageInsert, SourceEditingEnhanced,
 	ImageResize, AutoImage, LinkImage, CKBox, CKBoxImageEdit );
@@ -40,7 +41,7 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
@@ -52,8 +53,9 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editorBasic = editor;
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Bookmark' ),
+
+		attachTourBalloon( {
+			target: findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Bookmark' ),
 			text: 'Click to insert a bookmark.',
 			editor,
 			tippyOptions: {

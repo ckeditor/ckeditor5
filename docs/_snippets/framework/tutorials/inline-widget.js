@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
-
 import {
 	ClassicEditor,
 	Bold,
@@ -23,6 +21,11 @@ import {
 	createDropdown,
 	Collection
 } from 'ckeditor5';
+import {
+	getViewportTopOffsetConfig,
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
 
 class PlaceholderCommand extends Command {
 	execute( { value } ) {
@@ -225,7 +228,7 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		}
 	} )
@@ -235,10 +238,8 @@ ClassicEditor
 		// Expose for playing in the console.
 		window.editor = editor;
 
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.buttonView && item.buttonView.label && item.buttonView.label.startsWith( 'Placeholder' )
-			),
+		attachTourBalloon( {
+			target: findToolbarItem( editor.ui.view.toolbar, item => item.buttonView?.label?.startsWith( 'Placeholder' ) ),
 			text: 'Click to add a placeholder.',
 			tippyOptions: {
 				placement: 'bottom-start'

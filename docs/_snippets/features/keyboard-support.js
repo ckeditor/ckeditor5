@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, document, console */
-
 // Keep the guide listing updated with each change.
 
 import {
@@ -67,7 +65,6 @@ import {
 	TableProperties,
 	TableToolbar
 } from 'ckeditor5';
-
 import {
 	CaseChange,
 	TableOfContents,
@@ -79,25 +76,27 @@ import {
 	SlashCommand,
 	Template
 } from 'ckeditor5-premium-features';
-
 import { WProofreader } from '@webspellchecker/wproofreader-ckeditor5';
-
-// import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
+import {
+	TOKEN_URL,
+	getViewportTopOffsetConfig,
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
 
 // Templates icons.
-import articleImageRightIcon from '../../assets/img/article-image-right.svg';
-import financialReportIcon from '../../assets/img/financial-report.svg';
-import formalLetterIcon from '../../assets/img/formal-letter.svg';
-import resumeIcon from '../../assets/img/resume.svg';
-import richTableIcon from '../../assets/img/rich-table.svg';
+import articleImageRightIcon from '@assets/img/article-image-right.svg';
+import financialReportIcon from '@assets/img/financial-report.svg';
+import formalLetterIcon from '@assets/img/formal-letter.svg';
+import resumeIcon from '@assets/img/resume.svg';
+import richTableIcon from '@assets/img/rich-table.svg';
 
 ClassicEditor
 	.create( document.querySelector( '#keyboard-support' ), {
 		// cloudServices: CS_CONFIG,
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		poweredBy: {
@@ -540,9 +539,11 @@ ClassicEditor
 		// Prevent showing a warning notification when user is pasting a content from MS Word or Google Docs.
 		window.preventPasteFromOfficeNotification = true;
 
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.label && item.label === 'Accessibility help' ),
+		attachTourBalloon( {
+			target: findToolbarItem(
+				editor.ui.view.toolbar,
+				item => item.label && item.label === 'Accessibility help'
+			),
 			text: 'Click to display keyboard shortcuts.',
 			editor,
 			tippyOptions: {

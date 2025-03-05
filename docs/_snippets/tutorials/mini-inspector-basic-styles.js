@@ -3,12 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
-
 import MiniCKEditorInspector from '@ckeditor/ckeditor5-inspector/build/miniinspector.js';
-
-// This file will be available when the documentation is built.
-import { MiniInspectorEditor } from '../mini-inspector.js';
+import { MiniInspectorEditor } from '@snippets/mini-inspector.js';
 
 MiniInspectorEditor
 	.create( document.querySelector( '#mini-inspector-basic-styles' ) )

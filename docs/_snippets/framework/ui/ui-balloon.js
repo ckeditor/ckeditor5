@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import { BalloonPanelView, ButtonView } from 'ckeditor5';
 
 const balloonButton = new ButtonView();

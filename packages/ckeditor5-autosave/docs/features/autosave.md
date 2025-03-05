@@ -4,8 +4,6 @@ meta-title: Autosave | CKEditor 5 Documentation
 modified_at: 2023-05-29
 ---
 
-{@snippet installation/getting-and-setting-data/build-autosave-source}
-
 # Autosave
 
 The autosave feature allows you to automatically save the data (for example, send it to the server) when needed. This can happen, for example, when the user changes the content.

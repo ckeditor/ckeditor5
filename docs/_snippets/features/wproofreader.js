@@ -3,14 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
-
-import { ClassicEditor, CloudServices, CKBox, CKBoxImageEdit, PictureEditing, ImageInsert, ImageUpload } from 'ckeditor5';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { CloudServices, CKBox, CKBoxImageEdit, PictureEditing, ImageInsert, ImageUpload } from 'ckeditor5';
 import { WProofreader } from '@webspellchecker/wproofreader-ckeditor5';
-
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
+import {
+	TOKEN_URL,
+	CS_CONFIG,
+	ArticlePluginSet,
+	ClassicEditor,
+	getViewportTopOffsetConfig,
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-wproofreader' ), {
@@ -33,7 +36,7 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
@@ -54,9 +57,8 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item?.buttonView?.label === 'WProofreader text checker' ),
+		attachTourBalloon( {
+			target: findToolbarItem( editor.ui.view.toolbar, item => item?.buttonView?.label === 'WProofreader text checker' ),
 			text: 'Click for spell and grammar checking.',
 			editor
 		} );

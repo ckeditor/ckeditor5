@@ -7,8 +7,6 @@ order: 60
 modified_at: 2024-06-25
 ---
 
-{@snippet features/build-ui-language-source}
-
 # Setting the UI language
 
 You can change the language of the editor's UI. On top of 41 fully translated languages (including [38 professional translations](#list-of-available-professional-translations)), there are many other languages covered by community translators.

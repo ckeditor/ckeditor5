@@ -3,15 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals ClassicEditor, console, window, document */
-
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
+import {
+	TOKEN_URL,
+	CS_CONFIG,
+	getViewportTopOffsetConfig,
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
+import { MediaEditor } from './build-media-source.js';
 
 const IFRAME_SRC = '//ckeditor.iframe.ly/api/iframe';
 const API_KEY = 'febab8169e71e501ae2e707f55105647';
 
-ClassicEditor
+MediaEditor
 	.create( document.querySelector( '#snippet-media-embed-preview' ), {
 		cloudServices: CS_CONFIG,
 		toolbar: {
@@ -30,7 +34,7 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
@@ -65,9 +69,8 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item?.label === 'Insert media' ),
+		attachTourBalloon( {
+			target: findToolbarItem( editor.ui.view.toolbar, item => item?.label === 'Insert media' ),
 			text: 'Click to embed media.',
 			editor
 		} );

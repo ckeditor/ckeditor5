@@ -4,13 +4,36 @@
  */
 
 import {
-	MultiRootEditor as MultiRootEditorBase, Essentials, CKFinderUploadAdapter, Autoformat,
-	Bold, Italic, BlockQuote, CKBox, CKFinder, EasyImage, Heading, Image, ImageCaption,
-	ImageStyle, ImageToolbar, ImageUpload, PictureEditing, Indent, Link, List, MediaEmbed,
-	Paragraph, PasteFromOffice, Table, TableToolbar, TextTransformation, CloudServices
+	MultiRootEditor as MultiRootEditorBase,
+	Essentials,
+	CKFinderUploadAdapter,
+	Autoformat,
+	Bold,
+	Italic,
+	BlockQuote,
+	CKBox,
+	CKFinder,
+	EasyImage,
+	Heading,
+	Image,
+	ImageCaption,
+	ImageStyle,
+	ImageToolbar,
+	ImageUpload,
+	PictureEditing,
+	Indent,
+	Link,
+	List,
+	MediaEmbed,
+	Paragraph,
+	PasteFromOffice,
+	Table,
+	TableToolbar,
+	TextTransformation,
+	CloudServices
 } from 'ckeditor5';
 
-export default class MultiRootEditor extends MultiRootEditorBase {
+export class MultiRootEditor extends MultiRootEditorBase {
 	static builtinPlugins = [
 		Essentials,
 		CKFinderUploadAdapter,

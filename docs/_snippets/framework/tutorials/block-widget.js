@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
 import {
 	ClassicEditor,
 	Bold,
@@ -19,6 +18,8 @@ import {
 	toWidget,
 	toWidgetEditable
 } from 'ckeditor5';
+
+import { getViewportTopOffsetConfig } from '@snippets/index.js';
 
 class SimpleBox extends Plugin {
 	static get requires() {
@@ -236,7 +237,7 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		}
 	} )

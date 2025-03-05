@@ -3,16 +3,25 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window */
+import {
+	Autosave,
+	CKBox,
+	CKBoxImageEdit,
+	PictureEditing,
+	ImageResize,
+	AutoImage
+} from 'ckeditor5';
+import { ClassicEditor } from '@snippets/index.js';
 
-import { Autosave, CKBox, CKBoxImageEdit, PictureEditing, ImageResize, AutoImage } from 'ckeditor5';
-import ClassicEditor from '../../build-classic.js';
+export class AutosaveEditor extends ClassicEditor {
+	static builtinPlugins = [
+		...ClassicEditor.builtinPlugins,
+		Autosave,
+		CKBox,
+		CKBoxImageEdit,
+		PictureEditing,
+		ImageResize,
+		AutoImage
+	];
+}
 
-ClassicEditor.builtinPlugins.push( Autosave );
-ClassicEditor.builtinPlugins.push( CKBox );
-ClassicEditor.builtinPlugins.push( CKBoxImageEdit );
-ClassicEditor.builtinPlugins.push( PictureEditing );
-ClassicEditor.builtinPlugins.push( ImageResize );
-ClassicEditor.builtinPlugins.push( AutoImage );
-
-window.ClassicEditor = ClassicEditor;

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, document */
-
 import {
 	Alignment,
 	Subscript,
@@ -28,9 +26,13 @@ import {
 	TableProperties,
 	Minimap
 } from 'ckeditor5';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
+import {
+	CS_CONFIG,
+	TOKEN_URL,
+	ArticlePluginSet,
+	attachTourBalloon,
+	getViewportTopOffsetConfig
+} from '@snippets/index.js';
 
 const config = {
 	plugins: [
@@ -102,7 +104,7 @@ const config = {
 	cloudServices: CS_CONFIG,
 	ui: {
 		viewportOffset: {
-			top: window.getViewportTopOffsetConfig()
+			top: getViewportTopOffsetConfig()
 		}
 	},
 	ckbox: {
@@ -121,7 +123,7 @@ DecoupledEditor
 
 		toolbarContainer.appendChild( editor.ui.view.toolbar.element );
 
-		window.attachTourBalloon( {
+		attachTourBalloon( {
 			target: editor.plugins.get( 'Minimap' )._minimapView.element,
 			text: 'Use the minimap for quick navigation',
 			editor,

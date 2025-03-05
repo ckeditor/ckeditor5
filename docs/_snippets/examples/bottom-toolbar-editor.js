@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
-
 import {
 	Plugin, IconFontColor, Font, Indent, List, Alignment, Autoformat, BlockQuote, DropdownView,
 	ToolbarView, createDropdown, EasyImage, Essentials, Heading, HorizontalLine, Image,
@@ -12,9 +10,12 @@ import {
 	MediaEmbed, Paragraph, RemoveFormat, Bold, Italic, Strikethrough, Superscript, Subscript,
 	Underline, Table, TableToolbar
 } from 'ckeditor5';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-
-import DecoupledEditor from '../build-decoupled-document.js';
+import {
+	CS_CONFIG,
+	DecoupledEditor,
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
 
 class FormattingOptions extends Plugin {
 	/**
@@ -203,9 +204,11 @@ DecoupledEditor
 		overrideTooltipPositions( editor.ui.view.toolbar );
 		overrideTooltipPositions( editor.plugins.get( 'FormattingOptions' ).toolbarView );
 
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.label && item.label === 'Formatting options' ),
+		attachTourBalloon( {
+			target: findToolbarItem(
+				editor.ui.view.toolbar,
+				item => item.label && item.label === 'Formatting options'
+			),
 			text: 'Click to open formatting options.',
 			editor,
 			tippyOptions: {

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
-
 import {
 	ClassicEditor,
 	Bold,
@@ -18,7 +16,12 @@ import {
 	ContextualBalloon,
 	clickOutsideHandler
 } from 'ckeditor5';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+import {
+	CS_CONFIG,
+	getViewportTopOffsetConfig,
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
 import FormView from './abbreviationView-level-2.js';
 
 class AbbreviationUI extends Plugin {
@@ -167,7 +170,7 @@ ClassicEditor
 		cloudServices: CS_CONFIG,
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		plugins: [ Essentials, Bold, Italic, Heading, List, Paragraph, Abbreviation ],
@@ -175,9 +178,12 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.label && item.label === 'Abbreviation' ),
+
+		attachTourBalloon( {
+			target: findToolbarItem(
+				editor.ui.view.toolbar,
+				item => item.label && item.label === 'Abbreviation'
+			),
 			text: 'Click here to create an abbreviation',
 			editor
 		} );
