@@ -118,6 +118,24 @@
 					z-index: var(--ck-z-default);
 				}
 			}
+
+			/* Show fake caret on border not above. */
+			&.ck-widget_type-around_show-fake-caret_before {
+				& > .ck-widget__type-around {
+					& > .ck-widget__type-around__fake-caret {
+						top: 0;
+					}
+				}
+			}
+
+			/* Show fake caret on border not below. */
+			&.ck-widget_type-around_show-fake-caret_after {
+				& > .ck-widget__type-around {
+					& > .ck-widget__type-around__fake-caret {
+						bottom: 0;
+					}
+				}
+			}
 		}
 	}
 }
