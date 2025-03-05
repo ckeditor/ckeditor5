@@ -8,9 +8,8 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
+import { IconSelectAll } from '@ckeditor/ckeditor5-icons';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
-
-import selectAllIcon from '../theme/icons/select-all.svg';
 
 /**
  * The select all UI feature.
@@ -67,7 +66,7 @@ export default class SelectAllUI extends Plugin {
 
 		view.set( {
 			label: t( 'Select all' ),
-			icon: selectAllIcon,
+			icon: IconSelectAll,
 			keystroke: 'Ctrl+A'
 		} );
 

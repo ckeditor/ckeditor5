@@ -9,12 +9,14 @@
 
 import { ButtonView, clickOutsideHandler, ContextualBalloon, Dialog, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import type { PositionOptions } from 'ckeditor5/src/utils.js';
-import { icons, Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import { Typing } from 'ckeditor5/src/typing.js';
+import { IconEmoji } from 'ckeditor5/src/icons.js';
 
 import EmojiCommand from './emojicommand.js';
 import EmojiRepository from './emojirepository.js';
 import EmojiPickerView, { type EmojiPickerViewUpdateEvent } from './ui/emojipickerview.js';
+import EmojiPickerFormView, { type EmojiPickerFormViewCancelEvent } from './ui/emojipickerformview.js';
 import { type EmojiGridViewExecuteEvent } from './ui/emojigridview.js';
 import type { SkinToneId } from './emojiconfig.js';
 
@@ -32,6 +34,11 @@ export default class EmojiPicker extends Plugin {
 	 * The actions view displayed inside the balloon.
 	 */
 	declare public emojiPickerView: EmojiPickerView | undefined;
+
+	/**
+	 * The form view displayed inside the balloon.
+	 */
+	declare public emojiPickerFormView: EmojiPickerFormView | undefined;
 
 	/**
 	 * The contextual balloon plugin instance.
@@ -144,9 +151,16 @@ export default class EmojiPicker extends Plugin {
 
 		this.emojiPickerView.searchView.search( searchValue );
 
-		if ( !this.balloonPlugin.hasView( this.emojiPickerView ) ) {
+		if ( !this.emojiPickerFormView ) {
+			this.emojiPickerFormView = this._createEmojiPickerFormView();
+		}
+
+		if ( !this.balloonPlugin.hasView( this.emojiPickerFormView ) ) {
+			// Show back button if there is another balloon view visible.
+			this.emojiPickerFormView!.backButtonView.isVisible = !!this.balloonPlugin.visibleView;
+
 			this.balloonPlugin.add( {
-				view: this.emojiPickerView,
+				view: this.emojiPickerFormView,
 				position: this._getBalloonPositionData()
 			} );
 		}
@@ -165,7 +179,7 @@ export default class EmojiPicker extends Plugin {
 
 		buttonView.set( {
 			label: t( 'Emoji' ),
-			icon: icons.emoji,
+			icon: IconEmoji,
 			isToggleable: true
 		} );
 
@@ -198,35 +212,51 @@ export default class EmojiPicker extends Plugin {
 			editor.execute( 'insertText', { text: textToInsert } );
 		} );
 
+		return emojiPickerView;
+	}
+
+	/**
+	 * Creates an instance of the `EmojiPickerFormView` class that represents a balloon with the emoji picker.
+	 */
+	private _createEmojiPickerFormView(): EmojiPickerFormView {
+		const emojiPickerFormView = new EmojiPickerFormView( this.editor.locale );
+
+		emojiPickerFormView.children.add( this.emojiPickerView! );
+
 		// Update the balloon position when layout is changed.
-		this.listenTo<EmojiPickerViewUpdateEvent>( emojiPickerView, 'update', () => {
-			if ( this.balloonPlugin.visibleView === emojiPickerView ) {
+		this.listenTo<EmojiPickerViewUpdateEvent>( this.emojiPickerView!, 'update', () => {
+			if ( this.balloonPlugin.visibleView === emojiPickerFormView ) {
 				this.balloonPlugin.updatePosition();
 			}
 		} );
 
+		// Close the dialog when the back button is clicked.
+		this.listenTo<EmojiPickerFormViewCancelEvent>( emojiPickerFormView, 'cancel', () => {
+			this._hideUI();
+		} );
+
 		// Close the panel on `Esc` key press when the **actions have focus**.
-		emojiPickerView.keystrokes.set( 'Esc', ( data, cancel ) => {
+		emojiPickerFormView.keystrokes.set( 'Esc', ( data, cancel ) => {
 			this._hideUI();
 			cancel();
 		} );
 
 		// Close the dialog when clicking outside of it.
 		clickOutsideHandler( {
-			emitter: emojiPickerView,
+			emitter: emojiPickerFormView,
 			contextElements: [ this.balloonPlugin.view.element! ],
 			callback: () => this._hideUI(),
-			activator: () => this.balloonPlugin.visibleView === emojiPickerView
+			activator: () => this.balloonPlugin.visibleView === emojiPickerFormView
 		} );
 
-		return emojiPickerView;
+		return emojiPickerFormView;
 	}
 
 	/**
 	 * Hides the balloon with the emoji picker.
 	 */
 	private _hideUI(): void {
-		this.balloonPlugin.remove( this.emojiPickerView! );
+		this.balloonPlugin.remove( this.emojiPickerFormView! );
 		this.emojiPickerView!.searchView.setInputValue( '' );
 		this.editor.editing.view.focus();
 		this._hideFakeVisualSelection();

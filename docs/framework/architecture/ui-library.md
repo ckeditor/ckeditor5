@@ -569,12 +569,12 @@ By default, the "Close" button ("X") is added to the header as long as you provi
 
 <code-switcher>
 ```js
-import { icons } from 'ckeditor5';
+import { IconPencil } from 'ckeditor5';
 
 // ...
 
 editor.plugins.get( 'Dialog' ).show( {
-	icon: icons.pencil,
+	icon: IconPencil,
 	title: 'My first dialog',
 	// Do not display the "Close" button.
 	hasCloseButton: false,

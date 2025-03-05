@@ -143,8 +143,7 @@ const defaultConfig = {
 		options: [ 10, 12, 14, 'default', 18, 20, 22 ],
 		supportAllValues: true
 	},
-	language: 'en',
-	licenseKey: 'GPL'
+	language: 'en'
 };
 
 class ClassicEditor extends ClassicEditorBase {}

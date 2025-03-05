@@ -19,7 +19,7 @@ import {
 } from 'ckeditor5/src/core.js';
 import { getDataFromElement, CKEditorError } from 'ckeditor5/src/utils.js';
 
-import { isElement as _isElement } from 'lodash-es';
+import { isElement as _isElement } from 'es-toolkit/compat';
 
 /**
  * The classic editor implementation. It uses an inline editable and a sticky toolbar, all enclosed in a boxed UI.

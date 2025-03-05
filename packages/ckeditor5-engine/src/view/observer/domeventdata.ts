@@ -7,7 +7,7 @@
  * @module engine/view/observer/domeventdata
  */
 
-import { extend } from 'lodash-es';
+import { extend } from 'es-toolkit/compat';
 
 import type Document from '../document.js';
 import type Element from '../element.js';

@@ -13,6 +13,8 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { List } from '@ckeditor/ckeditor5-list';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
+import { BalloonToolbar } from '@ckeditor/ckeditor5-ui';
+import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon';
 
 const cssValue = [
 	':root {',
@@ -27,7 +29,8 @@ const elements = {
 	template: document.querySelector( '#content' ),
 	emojiBoth: document.querySelector( '#editor-emoji-both' ),
 	emojiMention: document.querySelector( '#editor-emoji-mention' ),
-	emojiPicker: document.querySelector( '#editor-emoji-picker' )
+	emojiPicker: document.querySelector( '#editor-emoji-picker' ),
+	emojiPickerBalloonEditor: document.querySelector( '#editor-emoji-picker-balloon-editor' )
 };
 
 // Keeps active editor references.
@@ -88,6 +91,17 @@ async function reloadEditor() {
 			.create(
 				elements.emojiPicker,
 				getEditorConfig( { extraPlugins: [ EmojiPicker ] } )
+			)
+			.catch( err => {
+				console.error( err.stack );
+			} ),
+
+		BalloonEditor
+			.create(
+				elements.emojiPickerBalloonEditor,
+				getEditorConfig( {
+					extraPlugins: [ EmojiPicker, BalloonToolbar, Mention ]
+				} )
 			)
 			.catch( err => {
 				console.error( err.stack );

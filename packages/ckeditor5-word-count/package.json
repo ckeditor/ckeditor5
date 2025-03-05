@@ -16,7 +16,7 @@
     "@ckeditor/ckeditor5-core": "44.3.0",
     "@ckeditor/ckeditor5-ui": "44.3.0",
     "@ckeditor/ckeditor5-utils": "44.3.0",
-    "lodash-es": "4.17.21",
+    "es-toolkit": "1.32.0",
     "ckeditor5": "44.3.0"
   },
   "devDependencies": {

@@ -30,12 +30,10 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import { icons } from '@ckeditor/ckeditor5-core';
+import { IconPilcrow, IconDragIndicator } from '@ckeditor/ckeditor5-icons';
 
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
 import env from '@ckeditor/ckeditor5-utils/src/env.js';
-
-const { dragIndicator, pilcrow } = icons;
 
 describe( 'BlockToolbar', () => {
 	let editor, element, blockToolbar;
@@ -281,7 +279,7 @@ describe( 'BlockToolbar', () => {
 			} );
 
 			it( 'should have default SVG icon', () => {
-				expect( blockToolbar.buttonView.icon ).to.be.equal( dragIndicator );
+				expect( blockToolbar.buttonView.icon ).to.be.equal( IconDragIndicator );
 			} );
 
 			it( 'should set predefined SVG icon provided in config', () => {
@@ -294,7 +292,7 @@ describe( 'BlockToolbar', () => {
 				} ).then( editor => {
 					const blockToolbar = editor.plugins.get( BlockToolbar );
 
-					expect( blockToolbar.buttonView.icon ).to.be.equal( pilcrow );
+					expect( blockToolbar.buttonView.icon ).to.be.equal( IconPilcrow );
 
 					element.remove();
 
