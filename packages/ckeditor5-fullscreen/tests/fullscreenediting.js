@@ -43,4 +43,8 @@ describe( 'FullscreenEditing', () => {
 	it( 'should register the `fullscreen` command', () => {
 		expect( editor.commands.get( 'fullscreen' ) ).to.be.instanceOf( FullscreenCommand );
 	} );
+
+	it( 'should define the `fullscreen.menuBar.isVisible` config option to `true`', () => {
+		expect( editor.config.get( 'fullscreen.menuBar.isVisible' ) ).to.be.true;
+	} );
 } );
