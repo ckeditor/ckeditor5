@@ -361,7 +361,7 @@ export default class PluginCollection<TContext extends object>
 			 * property.
 			 *
 			 * **If you see this warning when using one of the deprecated CKEditor 5 Builds**,
-			 * it means that you tried to enable a plugin which was not included in that build. This may be due to a typo
+			 * it means that you tried to enable a plugin that was not included in that build. This may be due to a typo
 			 * in the plugin name or simply because that plugin was not a part of this build.
 			 *
 			 * **Predefined builds are no longer supported and you need to
