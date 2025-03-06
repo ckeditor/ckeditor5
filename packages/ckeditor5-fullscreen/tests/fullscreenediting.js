@@ -47,4 +47,11 @@ describe( 'FullscreenEditing', () => {
 	it( 'should define the `fullscreen.menuBar.isVisible` config option to `true`', () => {
 		expect( editor.config.get( 'fullscreen.menuBar.isVisible' ) ).to.be.true;
 	} );
+
+	it( 'should register keystrokes on init ', () => {
+		const spy = sinon.spy( editor.keystrokes, 'set' );
+		editor.plugins.get( 'FullscreenEditing' ).init();
+
+		expect( spy ).to.have.been.calledOnce;
+	} );
 } );
