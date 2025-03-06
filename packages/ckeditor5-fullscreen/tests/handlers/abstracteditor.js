@@ -418,7 +418,7 @@ describe( 'AbstractHandler', () => {
 			editorContainer.style.width = '1000px';
 			editorContainer.style.height = '500px';
 
-			editorContainer.classList.add( 'ck-fullscreen__editor' );
+			editorContainer.classList.add( 'ck-fullscreen__editable' );
 			document.body.appendChild( editorContainer );
 
 			const dialogPlugin = editor.plugins.get( Dialog );
@@ -464,7 +464,7 @@ describe( 'AbstractHandler', () => {
 			editorContainer.style.width = '1000px';
 			editorContainer.style.height = '500px';
 
-			editorContainer.classList.add( 'ck-fullscreen__editor' );
+			editorContainer.classList.add( 'ck-fullscreen__editable' );
 			document.body.appendChild( editorContainer );
 
 			const dialogPlugin = editor.plugins.get( Dialog );
