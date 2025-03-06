@@ -21,12 +21,14 @@ export default async function snippetAdapter( snippets, _options, { getSnippetPl
 
 	const { snippetsInputPath, snippetsOutputPath } = getPaths( snippets );
 	const imports = await getImportMap();
+	const constants = await getConstants();
 
 	// Build all JavaScript snippets.
 	await buildSnippets(
 		snippets,
 		snippetsInputPath,
 		snippetsOutputPath,
+		constants,
 		imports
 	);
 
@@ -34,6 +36,7 @@ export default async function snippetAdapter( snippets, _options, { getSnippetPl
 	await buildDocuments(
 		snippets,
 		getSnippetPlaceholder,
+		constants,
 		imports
 	);
 
@@ -81,14 +84,16 @@ async function getDependencies( packageName ) {
  * @param {Set<Snippet>} snippets
  * @param {string} inputPath
  * @param {string} outputPath
+ * @param {Record<string, string>} constants
  * @param {Record<string, any>} imports
  * @returns {Promise<void>}
  */
-async function buildSnippets( snippets, inputPath, outputPath, imports ) {
+async function buildSnippets( snippets, inputPath, outputPath, constants, imports ) {
 	const externals = Object.keys( imports );
 
 	await esbuild( {
 		entryPoints: Array.from( snippets ).map( snippet => snippet.snippetSources.js ).filter( Boolean ),
+		define: Object.fromEntries( Object.entries( constants ).map( ( [ key, value ] ) => [ key, JSON.stringify( value ) ] ) ),
 		outdir: outputPath,
 		entryNames: '[dir]/[name]/snippet',
 		bundle: true,
@@ -131,10 +136,11 @@ async function buildSnippets( snippets, inputPath, outputPath, imports ) {
  *
  * @param {Set<Snippet>} snippets
  * @param {function} getSnippetPlaceholder
+ * @param {Record<string, string>} constants
  * @param {Record<string, any>} imports
  * @returns {Promise<void>}
  */
-async function buildDocuments( snippets, getSnippetPlaceholder, imports ) {
+async function buildDocuments( snippets, getSnippetPlaceholder, constants, imports ) {
 	const getStyle = href => `<link rel="stylesheet" href="${ href }" data-cke="true" />`;
 	const getScript = src => `<script type="module" src="${ src }"></script>`;
 	const { outputPath, snippetsInputPath, snippetsOutputPath } = getPaths( snippets );
@@ -151,7 +157,7 @@ async function buildDocuments( snippets, getSnippetPlaceholder, imports ) {
 	// Gather global tags added to each document that do not require relative paths.
 	const globalTags = [
 		`<script type="importmap">${ JSON.stringify( { imports } ) }</script>`,
-		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ await getLicenseKey() }';</script>`
+		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`
 	];
 
 	// Iterate over each document and replace placeholders with the actual content.
@@ -199,14 +205,14 @@ async function buildDocuments( snippets, getSnippetPlaceholder, imports ) {
 /**
  * Returns the license key or 'GPL' if the file with the license key is not found.
  *
- * @returns {Promise<string>}
+ * @returns {Promise<Record<string, string>>}
  */
-async function getLicenseKey() {
+async function getConstants() {
 	try {
-		const { LICENSE_KEY } = await import( upath.resolve( CKEDITOR5_COMMERCIAL_PATH, 'docs', 'constants.cjs' ) );
-		return LICENSE_KEY;
+		const { default: constants } = await import( upath.resolve( CKEDITOR5_COMMERCIAL_PATH, 'docs', 'constants.cjs' ) );
+		return constants;
 	} catch {
-		return 'GPL';
+		return { LICENSE_KEY: 'GPL' };
 	}
 }
 
