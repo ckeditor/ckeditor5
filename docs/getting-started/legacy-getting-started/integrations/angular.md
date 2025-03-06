@@ -1,6 +1,6 @@
 ---
 menu-title: (Deprecated) Angular
-meta-title: Angular rich text editor component | Legacy CKEditor 5 documentation
+meta-title: Angular rich text editor component | Deprecated CKEditor 5 documentation
 category: legacy-integrations
 order: 20
 ---
@@ -10,5 +10,5 @@ order: 20
 # (Deprecated) Angular rich text editor component
 
 <info-box warning>
-	⚠️  We changed installation methods and this legacy guide was previously kept for users' convenience. As of April, 2025 integrations based on predefined builds are no longer supported. Please refer to the {@link getting-started/index#ckeditor-5-framework-integrations Quick Start} guide to choose one of the modern installation and integration methods available and {@link updating/nim-migration/migration-to-new-installation-methods migrate to new installation methods}.
+	⚠️ We changed installation methods and kept this legacy guide for users’ convenience. As of April 2025, integrations based on predefined builds are no longer supported. Please refer to the {@link getting-started/index#ckeditor-5-framework-integrations Quick Start} guide to choose one of the modern installation and integration methods available and {@link updating/nim-migration/migration-to-new-installation-methods migrate to new installation methods}.
 </info-box>
