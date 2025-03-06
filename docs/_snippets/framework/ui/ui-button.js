@@ -3,13 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, document, console */
-
-import { ButtonView, ToolbarView, TooltipManager } from '@ckeditor/ckeditor5-ui';
-import { Locale } from '@ckeditor/ckeditor5-utils';
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { IconCheck } from '@ckeditor/ckeditor5-icons';
+import {
+	ClassicEditor,
+	Essentials,
+	IconCheck,
+	ButtonView,
+	ToolbarView,
+	TooltipManager,
+	Locale
+} from 'ckeditor5';
 
 const locale = new Locale();
 

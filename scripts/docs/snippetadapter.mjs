@@ -6,15 +6,9 @@
 /* eslint-env node */
 
 import { constants, readFile, writeFile, copyFile, access } from 'fs/promises';
-import { fileURLToPath } from 'url';
-import { createRequire } from 'module';
 import upath from 'upath';
-import { glob } from 'glob';
 import { build as esbuild } from 'esbuild';
-import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
-
-const require = createRequire( import.meta.url );
-const __dirname = upath.dirname( fileURLToPath( import.meta.url ) );
+import { CKEDITOR5_COMMERCIAL_PATH, CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
 /**
  * Production CKEditor 5 documentation is built using packages published to npm. However, some of
@@ -46,11 +40,12 @@ export default async function snippetAdapter( snippets, _options, { getSnippetPl
 	console.log( 'Started building snippets.' );
 
 	const { snippetsInputPath, snippetsOutputPath } = getPaths( snippets );
-	const constants = await getConstantDefinitions( snippets );
 	const imports = await getImportMap();
+	const constants = await getConstants();
 
 	// Build all JavaScript snippets.
 	await buildSnippets(
+		snippets,
 		snippetsInputPath,
 		snippetsOutputPath,
 		constants,
@@ -94,7 +89,7 @@ function getPaths( [ snippet ] ) {
  */
 async function getDependencies( packageName ) {
 	try {
-		const path = require.resolve( `${ packageName }/package.json` );
+		const path = new URL( import.meta.resolve( `${ packageName }/package.json` ) );
 		const content = await readFile( path, { encoding: 'utf-8' } );
 
 		return Object.keys( JSON.parse( content ).dependencies );
@@ -106,34 +101,34 @@ async function getDependencies( packageName ) {
 /**
  * Builds all snippets from the provided paths and saves them to the output path.
  *
+ * @param {Set<Snippet>} snippets
  * @param {string} inputPath
  * @param {string} outputPath
- * @param {Record<string, any>} constants
+ * @param {Record<string, string>} constants
  * @param {Record<string, any>} imports
  * @returns {Promise<void>}
  */
-async function buildSnippets( inputPath, outputPath, constants, imports ) {
-	const entryPoints = await glob( `${ inputPath }/**/*.js`, { absolute: true } );
+async function buildSnippets( snippets, inputPath, outputPath, constants, imports ) {
 	const externals = Object.keys( imports );
-	const define = {};
-
-	for ( const definitionKey in constants ) {
-		define[ definitionKey ] = JSON.stringify( constants[ definitionKey ] );
-	}
 
 	await esbuild( {
-		entryPoints,
-		define,
+		entryPoints: Array.from( snippets ).map( snippet => snippet.snippetSources.js ).filter( Boolean ),
+		define: Object.fromEntries( Object.entries( constants ).map( ( [ key, value ] ) => [ key, JSON.stringify( value ) ] ) ),
 		outdir: outputPath,
 		entryNames: '[dir]/[name]/snippet',
 		bundle: true,
 		minify: true,
+		treeShaking: true,
 		platform: 'browser',
 		legalComments: 'none',
 		format: 'esm',
 		target: 'es2022',
 		tsconfigRaw: {},
-		alias: RESOLVE_ALIAS_MAP,
+		alias: {
+			...RESOLVE_ALIAS_MAP,
+			'@snippets': inputPath,
+			'@assets': upath.resolve( inputPath, '..', 'assets' )
+		},
 		loader: {
 			'.js': 'jsx',
 			'.svg': 'text'
@@ -160,16 +155,16 @@ async function buildSnippets( inputPath, outputPath, constants, imports ) {
 /**
  * Builds documents and replaces all placeholders with the actual content.
  *
- * @param {Array<Snippet>} snippets
+ * @param {Set<Snippet>} snippets
  * @param {function} getSnippetPlaceholder
- * @param {Record<string, any>} constants
+ * @param {Record<string, string>} constants
  * @param {Record<string, any>} imports
  * @returns {Promise<void>}
  */
 async function buildDocuments( snippets, getSnippetPlaceholder, constants, imports ) {
 	const getStyle = href => `<link rel="stylesheet" href="${ href }" data-cke="true" />`;
 	const getScript = src => `<script type="module" src="${ src }"></script>`;
-	const { snippetsInputPath, snippetsOutputPath, outputPath } = getPaths( snippets );
+	const { outputPath, snippetsInputPath, snippetsOutputPath } = getPaths( snippets );
 
 	// Group snippets by the destination document.
 	const documents = await getBootstrapDocumentData( snippetsInputPath, snippetsOutputPath, outputPath );
@@ -195,10 +190,8 @@ async function buildDocuments( snippets, getSnippetPlaceholder, constants, impor
 			...globalTags,
 			getStyle( upath.join( relativeOutputPath, 'assets', 'ckeditor5', 'ckeditor5.css' ) ),
 			getStyle( upath.join( relativeOutputPath, 'assets', 'ckeditor5-premium-features', 'ckeditor5-premium-features.css' ) ),
-			getStyle( upath.join( relativeOutputPath, 'assets', 'snippet-styles.css' ) ),
-			getStyle( upath.join( relativeOutputPath, 'snippets', 'assets', 'snippet.css' ) ),
-			getScript( upath.join( relativeOutputPath, 'assets', 'snippet.js' ) ),
-			getScript( upath.join( relativeOutputPath, 'snippets', 'assets', 'snippet.js' ) )
+			getStyle( upath.join( relativeOutputPath, 'assets', 'global.css' ) ),
+			getScript( upath.join( relativeOutputPath, 'assets', 'global.js' ) )
 		];
 
 		let documentContent = await readFile( document, { encoding: 'utf-8' } );
@@ -227,6 +220,20 @@ async function buildDocuments( snippets, getSnippetPlaceholder, constants, impor
 			.replaceAll( /%BASE_PATH%/g, () => relativeOutputPath );
 
 		await writeFile( document, documentContent );
+	}
+}
+
+/**
+ * Returns the license key or 'GPL' if the file with the license key is not found.
+ *
+ * @returns {Promise<Record<string, string>>}
+ */
+async function getConstants() {
+	try {
+		const { default: constants } = await import( upath.resolve( CKEDITOR5_COMMERCIAL_PATH, 'docs', 'constants.cjs' ) );
+		return constants;
+	} catch {
+		return { LICENSE_KEY: 'GPL' };
 	}
 }
 
@@ -261,61 +268,6 @@ async function getImportMap() {
 	}
 
 	return imports;
-}
-
-/**
- * Adds constants to the webpack process from external repositories containing `docs/constants.js` files.
- *
- * @param {Array<Snippet>} snippets
- * @returns {Promise<Record<string, unknown>>}
- */
-async function getConstantDefinitions( snippets ) {
-	const knownPaths = new Set();
-	const constantDefinitions = {};
-	const constantOrigins = new Map();
-
-	for ( const snippet of snippets ) {
-		if ( !snippet.pageSourcePath ) {
-			continue;
-		}
-
-		let directory = upath.dirname( snippet.pageSourcePath );
-
-		while ( !knownPaths.has( directory ) ) {
-			knownPaths.add( directory );
-
-			const constantsFiles = await glob( 'constants.*js', {
-				absolute: true,
-				cwd: upath.join( directory, 'docs' )
-			} );
-
-			for ( const item of constantsFiles ) {
-				const importPathToConstants = upath.relative( __dirname, item );
-
-				const { default: packageConstantDefinitions } = await import( './' + importPathToConstants );
-
-				for ( const constantName in packageConstantDefinitions ) {
-					const constantValue = packageConstantDefinitions[ constantName ];
-
-					if ( constantDefinitions[ constantName ] && constantDefinitions[ constantName ] !== constantValue ) {
-						throw new Error(
-							`Definition for the '${ constantName }' constant is duplicated` +
-							` (${ importPathToConstants }, ${ constantOrigins.get( constantName ) }).`
-						);
-					}
-
-					constantDefinitions[ constantName ] = constantValue;
-					constantOrigins.set( constantName, importPathToConstants );
-				}
-
-				Object.assign( constantDefinitions, packageConstantDefinitions );
-			}
-
-			directory = upath.dirname( directory );
-		}
-	}
-
-	return constantDefinitions;
 }
 
 /**

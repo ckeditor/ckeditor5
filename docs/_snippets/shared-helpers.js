@@ -3,12 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global console, window, document */
-
-import isRelativeUrl from 'is-relative-url';
-
-import './tour-balloon.css';
-
 /**
  * Attaches a tour balloon with a description to any DOM node element.
  *
@@ -17,23 +11,23 @@ import './tour-balloon.css';
  * Examples:
  *
  *		// Using a comparison callback to search for an item.
- *		window.attachTourBalloon( {
- *			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Insert HTML' ),
+ *		attachTourBalloon( {
+ *			target: findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Insert HTML' ),
  *			text: 'Tour text to help users discover the feature.',
  *			editor
  *		} );
  *
  *		// Using a toolbar item index.
- *		window.attachTourBalloon( {
- *			target: window.findToolbarItem( editor.ui.view.toolbar, 5 ),
+ *		attachTourBalloon( {
+ *			target: findToolbarItem( editor.ui.view.toolbar, 5 ),
  *			text: 'Tour text to help users discover the feature.',
  *			editor
  *		} );
  *
  *		// Specifying options of tippy.js, e.g. to customize the placement of the balloon.
  *		// See https://atomiks.github.io/tippyjs/v6/all-props/ for all options.
- *		window.attachTourBalloon( {
- *			target: window.findToolbarItem( editor.ui.view.toolbar, 5 ),
+ *		attachTourBalloon( {
+ *			target: findToolbarItem( editor.ui.view.toolbar, 5 ),
  *			text: 'Tour text to help users discover the feature.',
  *			editor,
  *			tippyOptions: {
@@ -47,7 +41,7 @@ import './tour-balloon.css';
  * @param {module:core/editor/editor~Editor} options.editor The editor instance.
  * @param {Object} [options.tippyOptions] Additional [configuration of tippy.js](https://atomiks.github.io/tippyjs/v6/all-props/).
  */
-window.attachTourBalloon = function( { target, text, editor, tippyOptions } ) {
+export function attachTourBalloon( { target, text, editor, tippyOptions } ) {
 	if ( !target ) {
 		console.warn( '[attachTourBalloon] The target DOM node for the feature tour balloon does not exist.', { text } );
 
@@ -89,24 +83,24 @@ window.attachTourBalloon = function( { target, text, editor, tippyOptions } ) {
 	}
 
 	return tooltip;
-};
+}
 
 /**
  * Searches for a toolbar item and returns the first one matching the criteria.
  *
  * You can search for toolbar items using a comparison callback:
  *
- *		window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label.startsWith( 'Insert HTML' ) );
+ *		findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label.startsWith( 'Insert HTML' ) );
  *
  * Or you pick toolbar items by their index:
  *
- *		window.findToolbarItem( editor.ui.view.toolbar, 3 );
+ *		findToolbarItem( editor.ui.view.toolbar, 3 );
  *
  * @param {module:ui/toolbar/toolbarview~ToolbarView} toolbarView Toolbar instance.
  * @param {Number|Function} indexOrCallback Index of a toolbar item or a callback passed to `ViewCollection#find`.
  * @returns {HTMLElement|undefined} HTML element or undefined
  */
-window.findToolbarItem = function( toolbarView, indexOrCallback ) {
+export function findToolbarItem( toolbarView, indexOrCallback ) {
 	const items = toolbarView.items;
 	let item;
 
@@ -117,47 +111,62 @@ window.findToolbarItem = function( toolbarView, indexOrCallback ) {
 	}
 
 	return item ? item.element : undefined;
-};
+}
 
-// Replaces all relative paths inside the content container with absolute URLs
-// to avoid a broken user experience when copying images between editors.
-// It parses all `<img>` elements and `<source>` elements if they belong to the `<picture>` node.
-( () => {
-	[ ...document.querySelectorAll( '.main__content-inner img' ) ]
-		.filter( img => isRelativeUrl( img.getAttribute( 'src' ) ) )
-		.forEach( img => {
-			// Update `<img src="...">`.
-			img.setAttribute( 'src', img.src );
+/**
+ * Returns the `config.ui.viewportOffset.top` config value for editors using floating toolbars that
+ * stick to the top of the viewport to remain visible to the user.
+ *
+ * The value is determined in styles by the `--ck-snippet-viewport-top-offset` custom property
+ * and may differ e.g. according to the used media queries.
+ *
+ * @returns {Number} The value of the offset.
+ */
+export function getViewportTopOffsetConfig() {
+	const documentElement = document.documentElement;
 
-			// Update `<img srcset="...">`.
-			if ( img.srcset ) {
-				updateSrcSetAttribute( img, img.baseURI );
+	return parseInt( window.getComputedStyle( documentElement ).getPropertyValue( '--ck-snippet-viewport-top-offset' ) );
+}
+
+/**
+ * Activates tabs in the given container.
+ *
+ * **Note**: The tabs container requires a proper markup to work correctly.
+ *
+ * @param {HTMLElement} tabsContainer
+ * @param {Function} onTabChange A callback executed when the tab is changed. It receives the index of the selected tab.
+ * It also gets called after the tabs are created.
+ */
+export function createTabs( tabsContainer, onTabChange ) {
+	const tabTextElements = Array.from( tabsContainer.querySelectorAll( '.tabs__list__tab-text' ) );
+	const tabPanels = Array.from( tabsContainer.querySelectorAll( '.tabs__panel' ) );
+
+	tabTextElements.forEach( tabTextElement => {
+		tabTextElement.addEventListener( 'click', evt => {
+			const clickedIndex = tabTextElements.indexOf( tabTextElement );
+
+			tabTextElements.forEach( element => {
+				element.parentElement.classList.toggle( 'tabs__list__tab_selected', tabTextElement === element );
+				element.setAttribute( 'aria-selected', tabTextElement === element );
+			} );
+
+			tabPanels.forEach( panel => {
+				panel.classList.toggle( 'tabs__panel_selected', tabPanels.indexOf( panel ) === clickedIndex );
+			} );
+
+			if ( onTabChange ) {
+				onTabChange( clickedIndex );
 			}
 
-			// Update `<source>` elements if grouped in the `<picture>` element.
-			if ( img.parentElement instanceof window.HTMLPictureElement ) {
-				[ ...img.parentElement.querySelectorAll( 'source' ) ]
-					.forEach( source => {
-						updateSrcSetAttribute( source, img.baseURI );
-					} );
-			}
+			evt.preventDefault();
 		} );
+	} );
 
-	function updateSrcSetAttribute( element, baseURI ) {
-		const srcset = element.srcset.split( ',' )
-			.map( item => {
-				const [ relativeUrl, ratio ] = item.trim().split( ' ' );
+	// Trigger the callback after the tabs are created.
+	if ( onTabChange ) {
+		const selectedTabTextElement = tabsContainer.querySelector( '.tabs__list__tab_selected .tabs__list__tab-text' ) ||
+			tabsContainer.querySelector( '.tabs__list li:first-of-type .tabs__list__tab-text' );
 
-				if ( !isRelativeUrl( relativeUrl ) ) {
-					return item;
-				}
-
-				const absoluteUrl = new window.URL( relativeUrl, baseURI ).toString();
-
-				return [ absoluteUrl, ratio ].filter( i => i ).join( ' ' );
-			} )
-			.join( ', ' );
-
-		element.setAttribute( 'srcset', srcset );
+		onTabChange( tabTextElements.indexOf( selectedTabTextElement ) );
 	}
-} )();
+}

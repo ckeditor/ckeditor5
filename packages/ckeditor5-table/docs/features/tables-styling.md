@@ -8,8 +8,6 @@ modified_at: 2022-05-19
 
 # Table and cell styling tools
 
-{@snippet features/build-table-source}
-
 CKEditor&nbsp;5 comes with some additional tools that help you change the look of tables and table cells. You can control border color and style, background color, padding, or text alignment.
 
 ## Demo

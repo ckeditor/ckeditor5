@@ -5,7 +5,6 @@ meta-title: Inserting images into content via URL | CKEditor 5 Documentation
 meta-description: Learn how to insert your images into the content.
 order: 75
 ---
-{@snippet features/build-image-source}
 
 # Inserting images
 

@@ -9,8 +9,6 @@ classes: main__content--no-toc
 
 # Balloon block editor
 
-{@snippet build-balloon-block-source}
-
 The balloon block editor type lets you create your content directly in its target location with the help of two toolbars:
 
 * A balloon toolbar that appears next to the selected editable document element (offering inline content formatting tools).

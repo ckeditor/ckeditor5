@@ -6,7 +6,6 @@ meta-description: Learn all about styling your images.
 order: 60
 modified_at: 2021-06-17
 ---
-{@snippet features/build-image-source}
 
 # Image styles
 

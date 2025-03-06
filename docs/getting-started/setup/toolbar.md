@@ -6,7 +6,6 @@ meta-description: Learn about configuring and handling the CKEditor 5 toolbars f
 toc-limit: 4
 order: 40
 ---
-{@snippet installation/setup/build-toolbar-source}
 
 # Editor toolbars
 

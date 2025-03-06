@@ -161,8 +161,6 @@ An example HTML file:
 An example JavaScript file:
 
 ```js
-/* globals console, window, document */
-
 import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 
 ClassicEditor
