@@ -266,7 +266,7 @@ export default class AbstractEditorHandler {
 	 * Modifies the revision history viewer callbacks to display the viewer in the fullscreen mode.
 	 */
 	private _overrideRevisionHistoryCallbacks(): void {
-		// * Hide editor's editable and toolbar;
+		// * Hide editor's editable, toolbar and sidebar;
 		// * Disable menu bar;
 		// * Show revision viewer editable, toolbar and sidebar.
 		// Code coverage is provided in the commercial package repository as integration unit tests.
@@ -276,6 +276,11 @@ export default class AbstractEditorHandler {
 
 			this.restoreMovedElementLocation( 'editable' );
 			this.restoreMovedElementLocation( 'toolbar' );
+			this.restoreMovedElementLocation( 'right-sidebar' );
+
+			if ( this.annotationsUIsData ) {
+				this._restoreAnnotationsUIs();
+			}
 
 			if ( this._editor.ui.view.menuBarView ) {
 				this._editor.ui.view.menuBarView.disable();
@@ -290,7 +295,7 @@ export default class AbstractEditorHandler {
 
 		// * Hide revision viewer editable, toolbar and sidebar;
 		// * Enable menu bar;
-		// * Show editor's editable and toolbar.
+		// * Show editor's editable, toolbar and sidebar.
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore next -- @preserve */
 		this._editor.config.set( 'revisionHistory.closeRevisionViewerCallback', async () => {
@@ -302,6 +307,10 @@ export default class AbstractEditorHandler {
 
 			this.moveToFullscreen( this._editor.ui.getEditableElement()!, 'editable' );
 			this.moveToFullscreen( this._editor.ui.view.toolbar!.element!, 'toolbar' );
+
+			if ( this._editor.plugins.has( 'AnnotationsUIs' ) ) {
+				this._overrideAnnotationsUIs();
+			}
 
 			if ( this._editor.ui.view.menuBarView ) {
 				this._editor.ui.view.menuBarView.enable();
