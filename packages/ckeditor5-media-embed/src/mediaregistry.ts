@@ -7,11 +7,11 @@
  * @module media-embed/mediaregistry
  */
 
-import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
 import { IconView, Template } from 'ckeditor5/src/ui.js';
-import { type Locale, logWarning, toArray } from 'ckeditor5/src/utils.js';
+import { IconMediaPlaceholder } from 'ckeditor5/src/icons.js';
+import { logWarning, toArray, type Locale } from 'ckeditor5/src/utils.js';
 
-import mediaPlaceholderIcon from '../theme/icons/media-placeholder.svg';
+import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
 import type { MediaEmbedConfig, MediaEmbedProvider } from './mediaembedconfig.js';
 import type { MediaOptions } from './utils.js';
 
@@ -258,7 +258,7 @@ class Media {
 		const icon = new IconView();
 		const t = this._locale.t;
 
-		icon.content = mediaPlaceholderIcon;
+		icon.content = IconMediaPlaceholder;
 		icon.viewBox = mediaPlaceholderIconViewBox;
 
 		const placeholder = new Template( {

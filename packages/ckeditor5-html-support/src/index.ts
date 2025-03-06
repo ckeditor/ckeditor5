@@ -25,5 +25,6 @@ export type { default as MediaEmbedElementSupport } from './integrations/mediaem
 export type { default as ScriptElementSupport } from './integrations/script.js';
 export type { default as StyleElementSupport } from './integrations/style.js';
 export type { default as TableElementSupport } from './integrations/table.js';
+export type { default as HorizontalLineElementSupport } from './integrations/horizontalline.js';
 
 import './augmentation.js';

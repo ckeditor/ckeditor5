@@ -39,8 +39,7 @@ ClassicEditor
 				'|',
 				'ckboxImageEdit'
 			]
-		},
-		licenseKey: 'GPL'
+		}
 	} )
 	.then( editor => {
 		window.editorInsertImageViaPastingUrlIntoEditor = editor;

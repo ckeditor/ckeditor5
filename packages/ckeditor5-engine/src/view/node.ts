@@ -15,7 +15,7 @@ import {
 	compareArrays
 } from '@ckeditor/ckeditor5-utils';
 
-import { clone } from 'lodash-es';
+import { clone } from 'es-toolkit/compat';
 
 import type { default as Document, ChangeType } from './document.js';
 import type DocumentFragment from './documentfragment.js';

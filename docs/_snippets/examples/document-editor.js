@@ -29,13 +29,12 @@ DecoupledEditor
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
-		},
-		licenseKey: 'GPL'
+		}
 	} )
 	.then( editor => {
-		const toolbarContainer = document.querySelector( '.document-editor__toolbar' );
-
-		toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+		document
+			.querySelector( '.document-editor__toolbar' )
+			?.appendChild( editor.ui.view.toolbar.element );
 
 		window.editor = editor;
 	} )

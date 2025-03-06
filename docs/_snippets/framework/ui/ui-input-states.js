@@ -3,7 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals Locale, LabeledFieldView, createLabeledInputText, LabeledFieldView, ToolbarView, document */
+/* globals document */
+
+import { LabeledFieldView, ToolbarView, createLabeledInputText } from '@ckeditor/ckeditor5-ui';
+import { Locale } from '@ckeditor/ckeditor5-utils';
 
 const locale = new Locale();
 

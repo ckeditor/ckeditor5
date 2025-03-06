@@ -138,3 +138,7 @@ msgstr "Alegere culoare"
 msgctxt "The secondary text of the message shown to the user when no results are available for the search criteria."
 msgid "Please try a different phrase or check the spelling."
 msgstr "Vă rugăm să încercați o altă expresie sau verificați ortografia."
+
+msgctxt "The label of the source editing related features used in toolbar buttons."
+msgid "Source"
+msgstr "Sursă"
