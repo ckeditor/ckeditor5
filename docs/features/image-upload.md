@@ -18,7 +18,7 @@ Inserting {@link features/images-overview images} into content created with CKEd
 
 ## Demo
 
-This demo is configured to use {@link features/ckbox CKBox} for image upload and management. Use the image upload button {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image} to upload images or the CKBox button {@icon @ckeditor/ckeditor5-core/theme/icons/browse-files.svg Open file manager} to browse and select existing images from the file manager. It also includes the `AutoImage` plugin, which lets you {@link features/images-inserting#inserting-images-via-pasting-a-url-into-the-editor paste image URLs directly}.
+This demo is configured to use {@link features/ckbox CKBox} for image upload and management. Use the image upload button {@icon @ckeditor/ckeditor5-icons/theme/icons/image-upload.svg Image} to upload images or the CKBox button {@icon @ckeditor/ckeditor5-icons/theme/icons/browse-files.svg Open file manager} to browse and select existing images from the file manager. It also includes the `AutoImage` plugin, which lets you {@link features/images-inserting#inserting-images-via-pasting-a-url-into-the-editor paste image URLs directly}.
 
 {@snippet features/image-upload}
 
@@ -59,7 +59,7 @@ It is a modern file uploader with a clean interface, automatic support for respo
 
 Thanks to the native CKEditor&nbsp;5 integration, Uploadcare supports drag-and-drop file upload as well as pasting images from the clipboard, Microsoft Word, or Google Docs.
 
-With Uploadcare, users can upload files from external services like Dropbox, Facebook, Google Drive, Google Photos, Instagram, OneDrive or from local computer. Images can be easily adjusted with built-in image editor.
+With Uploadcare, users can upload files from external services like Dropbox, Facebook, Google Drive, Google Photos, OneDrive or from local computer. Images can be easily adjusted with built-in image editor.
 
 {@link features/uploadcare **Learn how to use Uploadcare in your project**}.
 

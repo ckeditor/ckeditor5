@@ -67,7 +67,7 @@ import type ModelElement from '../model/element.js';
 
 import { toMap, type EventInfo } from '@ckeditor/ckeditor5-utils';
 
-import { isPlainObject } from 'lodash-es';
+import { isPlainObject } from 'es-toolkit/compat';
 
 /**
  * Writes the content of a model {@link module:engine/model/document~Document document} to an HTML-like string.

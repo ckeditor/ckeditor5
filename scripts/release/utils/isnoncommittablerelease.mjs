@@ -12,6 +12,7 @@
 export default function isNonCommittableRelease( cliArguments ) {
 	return [
 		cliArguments.nightlyAlpha,
+		cliArguments.nightlyNext,
 		cliArguments.nightly,
 		cliArguments.internal
 	].some( value => value === true );

@@ -47,7 +47,7 @@ The fullscreen mode is a free-to-use plugin that maximizes the editing area. It 
 
 ### Document converters
 
-The module includes the {@link features/paste-from-office-enhanced paste from Office enhanced} feature which makes pasting advanced rich-text content easy and reliable. Users can also use the {@link features/import-word import from Word} feature to import entire documents into the editor. Once the work is done or needs to be sent to another editor, handy one-click {@link features/export-pdf export to PDF} and {@link features/export-word export to Word} features offer portability and cross-platform interoperability.
+The module includes the {@link features/paste-from-office-enhanced enhanced Paste from Office} feature which makes pasting advanced rich-text content easy and reliable. Users can also use the {@link features/import-word import from Word} feature to import entire documents into the editor. Once the work is done or needs to be sent to another editor, handy one-click {@link features/export-pdf export to PDF} and {@link features/export-word export to Word} features offer portability and cross-platform interoperability.
 
 ### Templates
 

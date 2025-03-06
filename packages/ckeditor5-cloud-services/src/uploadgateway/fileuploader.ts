@@ -272,6 +272,5 @@ function _isBase64( string: string | Blob ): string is string {
 		return false;
 	}
 
-	const match = string.match( BASE64_HEADER_REG_EXP );
-	return !!( match && match.length );
+	return !!string.match( BASE64_HEADER_REG_EXP )?.length;
 }

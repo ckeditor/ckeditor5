@@ -19,10 +19,11 @@ bumpYear( {
 			}
 		},
 		{
-			pattern: '!(build|coverage|external)/**',
+			pattern: '!(build|coverage|external|release)/**',
 			options: {
 				ignore: [
-					'**/ckeditor5-*/build/**'
+					'**/ckeditor5-*/build/**',
+					'packages/ckeditor5-emoji/src/utils/isemojisupported.ts'
 				]
 			}
 		},

@@ -33,7 +33,7 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 			const editorUI = this._editor.ui;
 			const editorUIView = editorUI.view;
 
-			this.moveToFullscreen( editorUI.getEditableElement()!, 'editor' );
+			this.moveToFullscreen( editorUI.getEditableElement()!, 'editable' );
 			this.moveToFullscreen( editorUIView.toolbar.element!, 'toolbar' );
 
 			// In classic editor, the `dir` attribute is set on the top-level container and it affects the styling

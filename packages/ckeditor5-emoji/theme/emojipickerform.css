@@ -1,0 +1,17 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck.ck-form.ck-emoji-picker-form {
+	padding-bottom: 0;
+
+	/*
+	 * `.ck-form` overrides styling of all dropdowns by adding border around them.
+	 * The border is not needed in the emoji picker form so try to remove it keeping
+	 * specificity high enough to override the form styling.
+	 */
+	& .ck.ck-dropdown .ck-dropdown__button:not(:focus) {
+		border-color: transparent;
+	}
+}

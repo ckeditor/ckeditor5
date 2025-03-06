@@ -27,8 +27,6 @@ One major difference between the model and HTML is that in the model, both text 
 
 Let's see how the model compares to HTML.
 
-{@snippet framework/mini-inspector}
-
 {@snippet tutorials/mini-inspector-basic-styles}
 
 ### Schema

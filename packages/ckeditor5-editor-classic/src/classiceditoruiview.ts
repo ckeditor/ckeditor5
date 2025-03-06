@@ -27,7 +27,7 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	/**
 	 * Toolbar view instance.
 	 */
-	public readonly toolbar: ToolbarView;
+	public override readonly toolbar: ToolbarView;
 
 	/**
 	 * Editable UI view.

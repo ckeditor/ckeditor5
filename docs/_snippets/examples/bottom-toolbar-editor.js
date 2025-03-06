@@ -6,6 +6,7 @@
 /* globals console, window, document */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
+import { IconFontColor } from '@ckeditor/ckeditor5-icons';
 import { Font } from '@ckeditor/ckeditor5-font';
 import { Indent } from '@ckeditor/ckeditor5-indent';
 import { List } from '@ckeditor/ckeditor5-list';
@@ -25,8 +26,6 @@ import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 import { Bold, Italic, Strikethrough, Superscript, Subscript, Underline } from '@ckeditor/ckeditor5-basic-styles';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-
-import fontColorIcon from '@ckeditor/ckeditor5-font/theme/icons/font-color.svg';
 
 import DecoupledEditor from '../build-decoupled-document.js';
 
@@ -96,7 +95,7 @@ class FormattingOptions extends Plugin {
 			// Using the font color icon to visually represent the formatting.
 			dropdownView.buttonView.set( {
 				tooltip: t( 'Formatting options' ),
-				icon: fontColorIcon
+				icon: IconFontColor
 			} );
 
 			dropdownView.panelView.children.add( toolbarView );
@@ -202,15 +201,14 @@ DecoupledEditor
 				'mergeTableCells'
 			]
 		},
-		cloudServices: CS_CONFIG,
-		licenseKey: 'GPL'
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editor = editor;
 
-		const toolbarContainer = document.querySelector( '#editor-toolbar-container' );
-
-		toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+		document
+			.querySelector( '#editor-toolbar-container' )
+			?.appendChild( editor.ui.view.toolbar.element );
 
 		overrideDropdownPositionsToNorth( editor, editor.ui.view.toolbar );
 		overrideDropdownPositionsToNorth( editor, editor.plugins.get( 'FormattingOptions' ).toolbarView );

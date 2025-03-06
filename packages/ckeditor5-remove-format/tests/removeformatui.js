@@ -5,6 +5,7 @@
 
 /* global document */
 
+import { IconRemoveFormat } from 'ckeditor5/src/icons.js';
 import RemoveFormat from '../src/removeformat.js';
 import RemoveFormatUI from '../src/removeformatui.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -14,8 +15,6 @@ import {
 	_clear as clearTranslations,
 	add as addTranslations
 } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
-
-import removeFormatIcon from '../theme/icons/remove-format.svg';
 
 describe( 'RemoveFormatUI', () => {
 	let editor, element, button;
@@ -92,7 +91,7 @@ describe( 'RemoveFormatUI', () => {
 		it( 'should create UI component with correct attribute values', () => {
 			expect( button.isOn ).to.be.false;
 			expect( button.label ).to.equal( label );
-			expect( button.icon ).to.equal( removeFormatIcon );
+			expect( button.icon ).to.equal( IconRemoveFormat );
 		} );
 
 		it( `should execute ${ featureName } command on model execute event and focus the view`, () => {

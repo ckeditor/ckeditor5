@@ -2,13 +2,13 @@
 
 This test allows for testing of both `EmojiMention` and `EmojiPicker` plugins - both loaded in the editor or separately.
 
-### EmojiPicker
+### 👉️ `EmojiPicker`
 
 The `EmojiPicker` plugin creates a dropdown that allows inserting an emoji or filtering them by a category or a name.
 
 It can be accessed via the main toolbar button and the menu bar under `Insert > Emoji`.
 
-### EmojiMention
+### 👉️ `EmojiMention`
 
 The `EmojiMention` plugin allows by inserting emoji directly via typing.
 
@@ -22,11 +22,27 @@ Then, you can either choose which emoji to insert, or choose the last option: `S
 
 **Note**: The `Show all emoji...` option does not show up when the `EmojiPicker` plugin is not available.
 
+### 👉️ `EmojiRepository`
+
+Both emoji plugin based on the `EmojiRepository` plugin that keeps the available emoji.
+
+If it couldn't be loaded, `EmojiMention` should not show auto-complete options, and `EmojiPicker` should not display a toolbar icon.
+
 ---
 
 #### Configurable options:
 
 * **`Unicode version`** - its value is passed as `emoji.version` in the configuration.
 * **`Default skin tone`** - its value is passed as `emoji.skinTone` in the configuration.
+* **Use "Noto Color Emoji" font** - this option allow using the `Noto Color Emoji` font in the editor. It applies the following CSS rules to the document
+    ```css
+    :root {
+        --ck-font-face: Helvetica, Arial, Tahoma, Verdana, 'Noto Color Emoji';
+    }
+    
+    body {
+        font-family: Helvetica, Arial, Tahoma, Verdana, 'Noto Color Emoji';
+    }
+    ```
 
-Selecting the `use the plugin default` option does not pass anything. This way plugins use the default vaules.
+Selecting the `use the plugin default` option does not pass anything. This way plugins use the default values.

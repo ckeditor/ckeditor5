@@ -9,6 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { Collection } from 'ckeditor5/src/utils.js';
+import { IconFontFamily } from 'ckeditor5/src/icons.js';
 import {
 	ViewModel,
 	createDropdown,
@@ -25,8 +26,6 @@ import { FONT_FAMILY } from '../utils.js';
 
 import type { FontFamilyOption } from '../fontconfig.js';
 import type FontFamilyCommand from './fontfamilycommand.js';
-
-import fontFamilyIcon from '../../theme/icons/font-family.svg';
 
 /**
  * The font family UI plugin. It introduces the `'fontFamily'` dropdown.
@@ -70,7 +69,7 @@ export default class FontFamilyUI extends Plugin {
 
 			dropdownView.buttonView.set( {
 				label: accessibleLabel,
-				icon: fontFamilyIcon,
+				icon: IconFontFamily,
 				tooltip: true
 			} );
 
@@ -96,7 +95,7 @@ export default class FontFamilyUI extends Plugin {
 
 			menuView.buttonView.set( {
 				label: accessibleLabel,
-				icon: fontFamilyIcon
+				icon: IconFontFamily
 			} );
 
 			menuView.bind( 'isEnabled' ).to( command );

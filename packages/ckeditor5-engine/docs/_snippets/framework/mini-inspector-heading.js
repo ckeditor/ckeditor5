@@ -3,7 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals DecoupledEditor, MiniCKEditorInspector, Essentials, console, window, document */
+/* globals console, window, document */
+
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import MiniCKEditorInspector from '@ckeditor/ckeditor5-inspector/build/miniinspector.js';
+
+// This file will be available when the documentation is built.
+import { MiniInspectorEditor } from '../mini-inspector.js';
 
 function CustomHeading( editor ) {
 	editor.model.schema.register( 'heading', {
@@ -17,10 +23,9 @@ function CustomHeading( editor ) {
 	} );
 }
 
-DecoupledEditor.create( document.querySelector( '#mini-inspector-heading' ), {
+MiniInspectorEditor.create( document.querySelector( '#mini-inspector-heading' ), {
 	plugins: [ Essentials, CustomHeading ],
-	toolbar: [],
-	licenseKey: 'GPL'
+	toolbar: []
 } )
 	.then( editor => {
 		window.editor = editor;

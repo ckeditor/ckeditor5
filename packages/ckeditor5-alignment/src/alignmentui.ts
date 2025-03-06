@@ -7,7 +7,7 @@
  * @module alignment/alignmentui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import {
 	type Button,
 	ButtonView,
@@ -18,6 +18,7 @@ import {
 	MenuBarMenuView,
 	MenuBarMenuListView
 } from 'ckeditor5/src/ui.js';
+import { IconAlignCenter, IconAlignJustify, IconAlignLeft, IconAlignRight } from 'ckeditor5/src/icons.js';
 import type { Locale } from 'ckeditor5/src/utils.js';
 
 import { isSupported, normalizeAlignmentOptions } from './utils.js';
@@ -25,10 +26,10 @@ import type { AlignmentFormat, SupportedOption } from './alignmentconfig.js';
 import type AlignmentCommand from './alignmentcommand.js';
 
 const iconsMap = /* #__PURE__ */ ( () => new Map( [
-	[ 'left', icons.alignLeft ],
-	[ 'right', icons.alignRight ],
-	[ 'center', icons.alignCenter ],
-	[ 'justify', icons.alignJustify ]
+	[ 'left', IconAlignLeft ],
+	[ 'right', IconAlignRight ],
+	[ 'center', IconAlignCenter ],
+	[ 'justify', IconAlignJustify ]
 ] ) )();
 
 /**

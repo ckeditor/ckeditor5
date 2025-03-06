@@ -221,8 +221,7 @@ ClassicEditor
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
-		},
-		licenseKey: 'GPL'
+		}
 	} )
 	.then( editor => {
 		console.log( 'Editor was initialized', editor );
