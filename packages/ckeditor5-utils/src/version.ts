@@ -54,14 +54,14 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 *
 	 * - **New installation methods (NIM)** &ndash; Imports from the `ckeditor5` and `ckeditor5-premium-features` packages.
 	 * - **Optimized build** for the new installation methods &ndash; Imports from the `@ckeditor/ckeditor5-<NAME>/dist/index.js`.
-	 * - **Predefined builds** (legacy) &ndash; Imports from the `@ckeditor/ckeditor5-build-<NAME>` packages.
+	 * - **Predefined builds** (no longer supported) &ndash; Imports from the `@ckeditor/ckeditor5-build-<NAME>` packages.
 	 * - **Default imports** (legacy) &ndash; Imports from the `@ckeditor/ckeditor5-<NAME>` packages (default export).
 	 * - **`src`** (legacy) &ndash; Imports from the `@ckeditor/ckeditor5-<NAME>/src/*`.
 	 * - **DLL builds** (legacy) &ndash; Imports from the `ckeditor5/build/<NAME>` and `@ckeditor/ckeditor5-<NAME>/build/*`.
 	 *
 	 * The best way to avoid duplicate modules is to avoid mixing these installation methods. For example, if you use imports
 	 * specific to the optimized build, you should use them for all CKEditor&nbsp;5 packages. In addition, since
-	 * the Predefined and DLL builds already include the core of the editor, they cannot be used with other types of imports.
+	 * the DLL builds already include the core of the editor, they cannot be used with other types of imports.
 	 *
 	 * Here is a matrix showing which installation methods are compatible with each other:
 	 *
@@ -100,11 +100,15 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * </details>
 	 *
 	 * <details>
-	 * <summary>(Legacy) Predefined builds</summary>
+	 * <summary>(Deprecated) Predefined builds</summary>
 	 *
-	 * If you use the {@glink getting-started/legacy/installation-methods/predefined-builds Predefined builds},
-	 * you cannot import any additional plugins. These builds already include the editor's core
-	 * and selected plugins and importing additional ones will cause some modules to be bundled and loaded twice.
+	 * **As of April, 2025 predefined build are no longer supported. Please refer to the
+	 * {@glink getting-started/index Quick Start} guide
+	 * to choose one of the modern installation and integration methods available**.
+	 *
+	 * If you use the predefined builds, you cannot import any additional plugins.
+	 * These builds already include the editor's core and selected plugins and importing additional
+	 * ones will cause some modules to be bundled and loaded twice.
 	 *
 	 * Examples of valid and invalid import paths:
 	 *
@@ -117,9 +121,8 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * import '@ckeditor/ckeditor5-highlight/build/highlight'; // ❌
 	 * ```
 	 *
-	 * If you are missing some features from the
-	 * list of plugins,
-	 * you should switch to the {@glink updating/nim-migration/migration-to-new-installation-methods new installation methods}
+	 * If you are missing some features from the list of plugins, you should switch to the
+	 * {@glink updating/nim-migration/migration-to-new-installation-methods new installation methods}
 	 * which do not have this limitation.
 	 * </details>
 	 *

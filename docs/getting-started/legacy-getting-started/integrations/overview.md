@@ -9,5 +9,5 @@ menu-title: Overview
 # (Legacy) CKEditor&nbsp;5 integrations
 
 <info-box warning>
-	⚠️  We changed installation methods and this legacy guide were previously kept for users' convenience. Please refer to the {@link getting-started/integrations-cdn/quick-start Quick Start} guide to choose one of the modern installation and integration methods available.
+	⚠️  We changed installation methods and this legacy guide was previously kept for users' convenience. As of April, 2025 integrations based on predefined builds are no longer supported. Please refer to the {@link getting-started/index#ckeditor-5-framework-integrations Quick Start} guide to choose one of the modern installation and integration methods available and {@link updating/nim-migration/migration-to-new-installation-methods migrate to new installation methods}.
 </info-box>

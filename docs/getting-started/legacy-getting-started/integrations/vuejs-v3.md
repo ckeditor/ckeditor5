@@ -10,7 +10,5 @@ order: 50
 # Vue.js 3+ rich text editor component &ndash; Legacy guide
 
 <info-box warning>
-	⚠️  We changed installation methods, and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 Vue integration, please refer to the newest version of the {@link getting-started/integrations/vuejs-v3 CKEditor&nbsp;5 integration} guide.
+	⚠️  We changed installation methods and this legacy guide was previously kept for users' convenience. As of April, 2025 integrations based on predefined builds are no longer supported. Please refer to the {@link getting-started/index#ckeditor-5-framework-integrations Quick Start} guide to choose one of the modern installation and integration methods available and {@link updating/nim-migration/migration-to-new-installation-methods migrate to new installation methods}.
 </info-box>
-
-This integration used a predefined builds approach. Predefined CKEditor&nbsp;5 builds were a set of ready-to-use rich text editors. As of April, 2025 this method of installation has been discontinued. Please refer to the {@link getting-started/integrations-cdn/quick-start Quick Start} guide to choose one of the modern installation and integration methods available.
