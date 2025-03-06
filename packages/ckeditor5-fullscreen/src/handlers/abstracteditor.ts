@@ -145,6 +145,7 @@ export default class AbstractEditorHandler {
 
 		this.generatePresenceListElement();
 		this.generateDocumentOutlineElement();
+		this.registerFullscreenDialogPositionAdjustements();
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore if -- @preserve */
 		if ( this._editor.plugins.has( 'AnnotationsUIs' ) ) {
@@ -474,7 +475,7 @@ export default class AbstractEditorHandler {
 		}
 
 		const fullscreenViewContainerRect = new Rect( this._container! ).getVisible();
-		const editorContainerRect = new Rect( document.querySelector( '.ck-fullscreen__editor' ) as HTMLElement ).getVisible();
+		const editorContainerRect = new Rect( document.querySelector( '.ck-fullscreen__editable' ) as HTMLElement ).getVisible();
 		const dialogRect = new Rect( dialogView.element!.querySelector( '.ck-dialog' ) as HTMLElement ).getVisible();
 
 		if ( fullscreenViewContainerRect && editorContainerRect && dialogRect ) {
