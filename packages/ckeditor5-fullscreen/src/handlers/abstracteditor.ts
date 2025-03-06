@@ -125,6 +125,9 @@ export default class AbstractEditorHandler {
 					<div class="ck ck-fullscreen__editable" data-ck-fullscreen="editable"></div>
 					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="right-sidebar"></div>
 				</div>
+				<div class="ck ck-fullscreen__bottom-wrapper">
+					<div class="ck ck-fullscreen__body-wrapper" data-ck-fullscreen="body-wrapper"></div>
+				</div>
 			`;
 
 			document.body.appendChild( this._container );
@@ -196,10 +199,12 @@ export default class AbstractEditorHandler {
 	 * Destroys the fullscreen mode container.
 	 */
 	private _destroyContainer(): void {
-		if ( this._container ) {
-			this._container.remove();
-			this._container = null;
+		if ( !this._container ) {
+			return;
 		}
+
+		this._container.remove();
+		this._container = null;
 
 		/* istanbul ignore if -- @preserve */
 		if ( this._editor.plugins.has( 'Pagination' ) ) {
