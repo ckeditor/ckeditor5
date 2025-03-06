@@ -25,3 +25,7 @@
 		flex-shrink: 0;
 	}
 }
+
+div.ck.ck-balloon-panel.ck-mention-balloon {
+	z-index: calc( var( --ck-z-dialog ) + 1 );
+}
