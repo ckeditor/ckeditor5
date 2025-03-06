@@ -56,7 +56,7 @@ Below is an example showing how the `Bold` plugin can be documented using this f
 		{
 			"type": "Button",
 			"name": "bold",
-			"iconPath": "theme/icons/bold.svg"
+			"iconPath": "@ckeditor/ckeditor5-icons/theme/bold.svg"
 		}
 	],
 	"htmlOutput": [

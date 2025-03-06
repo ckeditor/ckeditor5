@@ -30,10 +30,6 @@ export default function getChangelogOptions( cliArguments ) {
 				return 'https://www.npmjs.com/package/ckeditor5-premium-feature';
 			}
 
-			if ( name === 'build-*' ) {
-				return 'https://www.npmjs.com/search?q=keywords%3Ackeditor5-build%20maintainer%3Ackeditor';
-			}
-
 			if ( name === 'editor-*' ) {
 				return 'https://www.npmjs.com/search?q=keywords%3Ackeditor5-editor%20maintainer%3Ackeditor';
 			}

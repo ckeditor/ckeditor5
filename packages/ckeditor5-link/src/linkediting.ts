@@ -39,7 +39,6 @@ import {
 	getLocalizedDecorators,
 	normalizeDecorators,
 	addLinkProtocolIfApplicable,
-	createBookmarkCallbacks,
 	openLink,
 	type NormalizedLinkDecoratorAutomaticDefinition,
 	type NormalizedLinkDecoratorManualDefinition
@@ -59,6 +58,11 @@ const EXTERNAL_LINKS_REGEXP = /^(https?:)?\/\//;
  * as well as `'link'` and `'unlink'` commands.
  */
 export default class LinkEditing extends Plugin {
+	/**
+	 * A list of functions that handles opening links. If any of them returns `true`, the link is considered to be opened.
+	 */
+	private readonly _linkOpeners: Array<LinkOpener> = [];
+
 	/**
 	 * @inheritDoc
 	 */
@@ -89,7 +93,8 @@ export default class LinkEditing extends Plugin {
 
 		editor.config.define( 'link', {
 			allowCreatingEmptyLinks: false,
-			addTargetToExternalLinks: false
+			addTargetToExternalLinks: false,
+			toolbar: [ 'linkPreview', '|', 'editLink', 'linkProperties', 'unlink' ]
 		} );
 	}
 
@@ -151,6 +156,16 @@ export default class LinkEditing extends Plugin {
 
 		// Handle adding default protocol to pasted links.
 		this._enableClipboardIntegration();
+	}
+
+	/**
+	 * Registers a function that opens links in a new browser tab.
+	 *
+	 * @param linkOpener The function that opens a link in a new browser tab.
+	 * @internal
+	 */
+	public _registerLinkOpener( linkOpener: LinkOpener ): void {
+		this._linkOpeners.push( linkOpener );
 	}
 
 	/**
@@ -261,15 +276,12 @@ export default class LinkEditing extends Plugin {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
-		const bookmarkCallbacks = createBookmarkCallbacks( editor );
 
-		function handleLinkOpening( url: string ): void {
-			if ( bookmarkCallbacks.isScrollableToTarget( url ) ) {
-				bookmarkCallbacks.scrollToTarget( url );
-			} else {
+		const handleLinkOpening = ( url: string ): void => {
+			if ( !this._linkOpeners.some( opener => opener( url ) ) ) {
 				openLink( url );
 			}
-		}
+		};
 
 		this.listenTo<ViewDocumentClickEvent>( viewDocument, 'click', ( evt, data ) => {
 			const shouldOpen = env.isMac ? data.domEvent.metaKey : data.domEvent.ctrlKey;
@@ -364,6 +376,13 @@ export default class LinkEditing extends Plugin {
 		} );
 	}
 }
+
+/**
+ * A function that handles opening links. It may be used to define custom link handlers.
+ *
+ * @returns `true` if the link was opened successfully.
+ */
+type LinkOpener = ( url: string ) => boolean;
 
 /**
  * Make the selection free of link-related model attributes.

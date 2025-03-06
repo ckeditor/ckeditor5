@@ -24,7 +24,7 @@ The following libraries are included in CKEditor under the [MIT license](https:/
 * emojibase-data - Copyright (c) 2017-2019 Miles Johnson.
 * fuzzysort - Copyright (c) 2018 Stephen Kamenar.
 * is-emoji-supported - Copyright (c) 2016-2020 Koala Interactive, Inc.
-* Lodash - Copyright (c) JS Foundation and other contributors https://js.foundation/. Based on Underscore.js, copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors http://underscorejs.org/.
+* es-toolkit - Copyright (c) 2024 Viva Republica, Inc.
 * Marked - Copyright (c) 2018+, MarkedJS (https://github.com/markedjs/), copyright (c) 2011–2018, Christopher Jeffrey (https://github.com/chjj/).
 * Turndown - Copyright (c) 2017+ Dom Christie.
 * turndown-plugin-gfm - Copyright (c) 2017+ Dom Christie.

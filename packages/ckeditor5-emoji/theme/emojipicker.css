@@ -13,6 +13,10 @@
 	padding-bottom: var(--ck-spacing-medium);
 	justify-content: space-between;
 	align-items: center;
+
+	& > .ck.ck-search {
+		flex: 1;
+	}
 }
 
 /*

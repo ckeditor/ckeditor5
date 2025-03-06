@@ -6,7 +6,7 @@
 /**
  * @module clipboard/clipboardmarkersutils
  */
-import { mapValues } from 'lodash-es';
+import { mapValues } from 'es-toolkit/compat';
 
 import { uid } from '@ckeditor/ckeditor5-utils';
 import { Plugin, type NonEmptyArray } from '@ckeditor/ckeditor5-core';
@@ -484,7 +484,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 			// set them new unique name.
 			let skipAssign = false;
 
-			if ( prevFakeMarker && prevFakeMarker.start && prevFakeMarker.end ) {
+			if ( prevFakeMarker?.start && prevFakeMarker?.end ) {
 				const config = this._getMarkerClipboardConfig( fakeMarker.name )!;
 
 				if ( config.duplicateOnPaste ) {

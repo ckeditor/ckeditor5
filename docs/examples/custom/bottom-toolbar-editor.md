@@ -59,10 +59,13 @@ import {
 	DropdownButtonView,
 	DropdownPanelView,
 	DropdownView,
-	ToolbarView
+	ToolbarView,
+	IconFontColor,
+	registerIcon
 } from 'ckeditor5';
 import { EasyImage } from 'ckeditor5-premium-features';
-import fontColorIcon from '@ckeditor/ckeditor5-font/theme/icons/font-color.svg';
+
+const fontColorIcon =/* #__PURE__ */ registerIcon( 'fontColor', IconFontColor );
 
 class FormattingOptions extends Plugin {
 	/**
@@ -143,7 +146,7 @@ class FormattingOptions extends Plugin {
 			// Using the font color icon to visually represent the formatting.
 			buttonView.set( {
 				tooltip: t( 'Formatting options' ),
-				icon: fontColorIcon
+				icon: fontColorIcon()
 			} );
 
 			dropdownView.panelView.children.add( toolbarView );

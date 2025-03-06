@@ -64,6 +64,26 @@ describe( 'EmojiRepository', () => {
 		expect( EmojiRepository.isPremiumPlugin ).to.equal( false );
 	} );
 
+	describe( 'editor config', () => {
+		it( 'defines the `emoji.useCustomFont` option', async () => {
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ annotation: 'neutral face', emoji: '😐️', group: 0, version: 15 },
+					{ annotation: 'unamused face', emoji: '😒', group: 0, version: 15 }
+				] );
+
+				resolve( new Response( response ) );
+			} );
+
+			const configValue = editor.config.get( 'emoji.useCustomFont' );
+
+			expect( configValue ).to.equal( false );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+	} );
+
 	describe( 'init()', () => {
 		it( 'should send editor version when fetching emoji', async () => {
 			const { editor, domElement } = await createTestEditor( resolve => {
@@ -308,6 +328,40 @@ describe( 'EmojiRepository', () => {
 			await editor.destroy();
 		} );
 
+		it( 'should not filter out emojis when passing the `emoji.useCustomFont=true` option', async () => {
+			const { editor, domElement } = await createTestEditor(
+				resolve => {
+					const response = JSON.stringify( [
+						{ emoji: '😐️', annotation: 'neutral face', group: 0, version: 16 },
+						{ emoji: '😒', annotation: 'unamused face', group: 0, version: 15 },
+						{ emoji: '🔬', annotation: 'microscope', group: 7, version: 15 }
+					] );
+
+					resolve( new Response( response ) );
+				},
+				{
+					substitutePlugins: [ EmojiUtilsMockVersion15 ],
+					emoji: {
+						useCustomFont: true
+					}
+				}
+			);
+
+			const results = EmojiRepository._results[ fetchStub.getCall( 0 ).args[ 0 ] ];
+
+			// EmojiUtilsMockVersion15 removes emoji assigned to version `16`.
+			// However, the filtering mechanism is disabled by passing `emoji.useCustomFont=true`.
+			// Hence, all definitions returned from the server should be available.
+			const hasNeutralFaceEmoji = results.find( item => item.annotation === 'neutral face' );
+			const hasUnamusedEmoji = results.find( item => item.annotation === 'unamused face' );
+
+			expect( hasNeutralFaceEmoji ).not.to.be.undefined;
+			expect( hasUnamusedEmoji ).not.to.be.undefined;
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
 		it( 'should set default skin tone for each emoji', async () => {
 			const { editor, domElement } = await createTestEditor( resolve => {
 				const response = JSON.stringify( [
@@ -375,8 +429,8 @@ describe( 'EmojiRepository', () => {
 
 			expect( results ).to.deep.equal( [] );
 
-			expect( consoleStub.calledOnce ).to.equal( true );
-			expect( consoleStub.firstCall.args[ 0 ] ).to.equal( 'emoji-repository-load-failed' );
+			expect( consoleStub.called ).to.equal( true );
+			sinon.assert.calledWith( consoleStub, 'emoji-repository-empty' );
 
 			domElement.remove();
 			await editor.destroy();
@@ -391,8 +445,26 @@ describe( 'EmojiRepository', () => {
 
 			expect( results ).to.deep.equal( [] );
 
-			expect( consoleStub.calledOnce ).to.equal( true );
-			expect( consoleStub.firstCall.args[ 0 ] ).to.equal( 'emoji-repository-load-failed' );
+			expect( consoleStub.called ).to.equal( true );
+			sinon.assert.calledWith( consoleStub, 'emoji-repository-empty' );
+
+			domElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'should log a warning if there are no supported emojis', async () => {
+			sinon.stub( EmojiUtils, '_isEmojiSupported' ).returns( false );
+
+			const { editor, domElement } = await createTestEditor( resolve => {
+				const response = JSON.stringify( [
+					{ annotation: 'smiling face', emoji: '🙂', group: 1, version: 15 }
+				] );
+
+				resolve( new Response( response ) );
+			} );
+
+			expect( consoleStub.called ).to.equal( true );
+			sinon.assert.calledWith( consoleStub, 'emoji-repository-empty' );
 
 			domElement.remove();
 			await editor.destroy();
@@ -413,8 +485,8 @@ describe( 'EmojiRepository', () => {
 				}
 			} );
 
-			expect( consoleStub.calledOnce ).to.equal( true );
-			expect( consoleStub.firstCall.args[ 0 ] ).to.equal( 'emoji-repository-redundant-version' );
+			expect( consoleStub.called ).to.equal( true );
+			sinon.assert.calledWith( consoleStub, 'emoji-repository-redundant-version' );
 
 			domElement.remove();
 			await editor.destroy();
@@ -434,8 +506,8 @@ describe( 'EmojiRepository', () => {
 				licenseKey
 			} );
 
-			expect( consoleStub.calledOnce ).to.equal( true );
-			expect( consoleStub.firstCall.args[ 0 ] ).to.equal( 'emoji-repository-cdn-use' );
+			expect( consoleStub.called ).to.equal( true );
+			sinon.assert.calledWith( consoleStub, 'emoji-repository-cdn-use' );
 
 			domElement.remove();
 			await editor.destroy();
@@ -453,7 +525,7 @@ describe( 'EmojiRepository', () => {
 				licenseKey: 'GPL'
 			} );
 
-			expect( consoleStub.calledOnce ).to.equal( false );
+			expect( consoleStub ).to.not.have.been.calledWith( 'emoji-repository-redundant-version' );
 
 			domElement.remove();
 			await editor.destroy();
@@ -478,7 +550,7 @@ describe( 'EmojiRepository', () => {
 				licenseKey
 			} );
 
-			expect( consoleStub.calledOnce ).to.equal( false );
+			expect( consoleStub ).to.not.have.been.calledWith( 'emoji-repository-redundant-version' );
 
 			domElement.remove();
 			await editor.destroy();
@@ -502,7 +574,7 @@ describe( 'EmojiRepository', () => {
 				}
 			} );
 
-			expect( consoleStub.calledOnce ).to.equal( false );
+			expect( consoleStub ).to.not.have.been.calledWith( 'emoji-repository-redundant-version' );
 
 			domElement.remove();
 			await editor.destroy();

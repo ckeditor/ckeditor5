@@ -7,7 +7,7 @@
  * @module core/editor/utils/attachtoform
  */
 
-import { isFunction } from 'lodash-es';
+import { isFunction } from 'es-toolkit/compat';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
