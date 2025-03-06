@@ -36,15 +36,7 @@ describe( 'ClassicEditorHandler', () => {
 
 	describe( 'constructor', () => {
 		it( 'should set the editor instance as a property', () => {
-			expect( classicEditorHandler._editor ).to.equal( editor );
-		} );
-
-		it( 'should setup listener disabling fullscreen when editor is destroyed', async () => {
-			const spy = sinon.spy( classicEditorHandler, 'disable' );
-
-			await editor.destroy();
-
-			expect( spy ).to.have.been.calledOnce;
+			expect( classicEditorHandler._editor ).to.be.instanceOf( ClassicEditor );
 		} );
 	} );
 
@@ -52,7 +44,7 @@ describe( 'ClassicEditorHandler', () => {
 		it( 'should move the editable and toolbar to the fullscreen container', () => {
 			classicEditorHandler.enable();
 
-			expect( classicEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=editor]' ).children[ 0 ] )
+			expect( classicEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=editable]' ).children[ 0 ] )
 				.to.equal( editor.editing.view.getDomRoot() );
 			expect( classicEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=toolbar]' ).children[ 0 ] )
 				.to.equal( editor.ui.view.toolbar.element );

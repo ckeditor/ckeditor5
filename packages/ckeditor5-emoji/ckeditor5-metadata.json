@@ -5,14 +5,27 @@
 			"className": "Emoji",
 			"description": "Allows for inserting emojis via a dropdown or by typing `:` followed by emoji name.",
 			"path": "src/emoji.js",
-			"docs": "features/emoji.html"
+			"docs": "features/emoji.html",
+			"requires": [
+				"Mention"
+			],
+			"uiComponents": [
+				{
+					"type": "Button",
+					"name": "emoji",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/emoji.svg"
+				}
+			]
 		},
 		{
 			"name": "Emoji mention",
 			"className": "EmojiMention",
 			"description": "Allows for inserting emojis by typing `:` followed by emoji name.",
 			"path": "src/emojimention.js",
-			"docs": "features/emoji.html"
+			"docs": "features/emoji.html",
+			"requires": [
+				"Mention"
+			]
 		},
 		{
 			"name": "Emoji picker",
@@ -24,7 +37,7 @@
 				{
 					"type": "Button",
 					"name": "emoji",
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/emoji.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/emoji.svg"
 				}
 			]
 		}

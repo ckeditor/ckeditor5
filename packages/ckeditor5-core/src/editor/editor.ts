@@ -7,7 +7,7 @@
  * @module core/editor/editor
  */
 
-import { set, get } from 'lodash-es';
+import { set, get } from 'es-toolkit/compat';
 
 import {
 	Config,
@@ -528,6 +528,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 			if ( [ 'development', 'evaluation', 'trial' ].includes( licensePayload.licenseType ) ) {
 				const { licenseType } = licensePayload;
 				const capitalizedLicenseType = licenseType[ 0 ].toUpperCase() + licenseType.slice( 1 );
+				const article = licenseType === 'evaluation' ? 'an' : 'a';
 
 				console.info(
 					`%cCKEditor 5 ${ capitalizedLicenseType } License`,
@@ -535,7 +536,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				);
 
 				console.warn(
-					`⚠️ You are using a ${ licenseType } license of CKEditor 5` +
+					`⚠️ You are using ${ article } ${ licenseType } license of CKEditor 5` +
 					`${ licenseType === 'trial' ? ' which is for evaluation purposes only' : '' }. ` +
 					'For production usage, please obtain a production license at https://portal.ckeditor.com/'
 				);

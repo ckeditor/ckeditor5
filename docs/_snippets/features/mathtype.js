@@ -11,7 +11,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { ImageInsert, ImageUpload, PictureEditing } from '@ckeditor/ckeditor5-image';
-import MathType from '@wiris/mathtype-ckeditor5';
+import MathType from '@wiris/mathtype-ckeditor5/dist/index.js';
 import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
 
 ClassicEditor
@@ -59,8 +59,7 @@ ClassicEditor
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		},
-		cloudServices: CS_CONFIG,
-		licenseKey: 'GPL'
+		cloudServices: CS_CONFIG
 	} )
 
 	.then( editor => {
@@ -76,3 +75,14 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+// MathType has a WASM telemetry file that esbuild fails to generate. Because
+// the code works fine without it, then we accept the error during a scan.
+const metaElement = document.createElement( 'meta' );
+
+metaElement.name = 'x-cke-crawler-ignore-patterns';
+metaElement.content = JSON.stringify( {
+	'response-failure': 'wasm'
+} );
+
+document.head.appendChild( metaElement );

@@ -6,25 +6,27 @@
 /* globals document */
 
 // TODO change to new plugin
+import {
+	IconBulletedList,
+	IconNumberedList,
+	IconListStyleCircle,
+	IconListStyleDecimal,
+	IconListStyleDecimalLeadingZero,
+	IconListStyleDisc,
+	IconListStyleLowerLatin,
+	IconListStyleLowerRoman,
+	IconListStyleSquare,
+	IconListStyleUpperLatin,
+	IconListStyleUpperRoman
+} from 'ckeditor5/src/icons.js';
 import ListProperties from '../../src/legacylistproperties.js';
 import ListPropertiesUI from '../../src/listproperties/listpropertiesui.js';
 
-import { icons } from 'ckeditor5/src/core.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
 import { View, ButtonView, LabeledFieldView, SwitchButtonView, MenuBarMenuView } from '@ckeditor/ckeditor5-ui';
-
-import listStyleDiscIcon from '../../theme/icons/liststyledisc.svg';
-import listStyleCircleIcon from '../../theme/icons/liststylecircle.svg';
-import listStyleSquareIcon from '../../theme/icons/liststylesquare.svg';
-import listStyleDecimalIcon from '../../theme/icons/liststyledecimal.svg';
-import listStyleDecimalWithLeadingZeroIcon from '../../theme/icons/liststyledecimalleadingzero.svg';
-import listStyleLowerRomanIcon from '../../theme/icons/liststylelowerroman.svg';
-import listStyleUpperRomanIcon from '../../theme/icons/liststyleupperroman.svg';
-import listStyleLowerLatinIcon from '../../theme/icons/liststylelowerlatin.svg';
-import listStyleUpperLatinIcon from '../../theme/icons/liststyleupperlatin.svg';
 
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -427,7 +429,7 @@ describe( 'ListPropertiesUI', () => {
 					} );
 
 					it( 'should have an #icon', () => {
-						expect( mainButtonView.icon ).to.equal( icons.bulletedList );
+						expect( mainButtonView.icon ).to.equal( IconBulletedList );
 					} );
 
 					it( 'should have a #tooltip based on a label', () => {
@@ -475,7 +477,7 @@ describe( 'ListPropertiesUI', () => {
 
 						expect( buttonView.label ).to.equal( 'Toggle the disc list style' );
 						expect( buttonView.tooltip ).to.equal( 'Disc' );
-						expect( buttonView.icon ).to.equal( listStyleDiscIcon );
+						expect( buttonView.icon ).to.equal( IconListStyleDisc );
 					} );
 
 					it( 'should bring the "circle" list style button', () => {
@@ -483,7 +485,7 @@ describe( 'ListPropertiesUI', () => {
 
 						expect( buttonView.label ).to.equal( 'Toggle the circle list style' );
 						expect( buttonView.tooltip ).to.equal( 'Circle' );
-						expect( buttonView.icon ).to.equal( listStyleCircleIcon );
+						expect( buttonView.icon ).to.equal( IconListStyleCircle );
 					} );
 
 					it( 'should bring the "square" list style button', () => {
@@ -491,7 +493,7 @@ describe( 'ListPropertiesUI', () => {
 
 						expect( buttonView.label ).to.equal( 'Toggle the square list style' );
 						expect( buttonView.tooltip ).to.equal( 'Square' );
-						expect( buttonView.icon ).to.equal( listStyleSquareIcon );
+						expect( buttonView.icon ).to.equal( IconListStyleSquare );
 					} );
 
 					it( 'should only bring the style buttons supported by the command', () => {
@@ -803,7 +805,7 @@ describe( 'ListPropertiesUI', () => {
 					} );
 
 					it( 'should have an #icon', () => {
-						expect( mainButtonView.icon ).to.equal( icons.numberedList );
+						expect( mainButtonView.icon ).to.equal( IconNumberedList );
 					} );
 
 					it( 'should have a #tooltip based on a label', () => {
@@ -851,7 +853,7 @@ describe( 'ListPropertiesUI', () => {
 
 						expect( buttonView.label ).to.equal( 'Toggle the decimal list style' );
 						expect( buttonView.tooltip ).to.equal( 'Decimal' );
-						expect( buttonView.icon ).to.equal( listStyleDecimalIcon );
+						expect( buttonView.icon ).to.equal( IconListStyleDecimal );
 					} );
 
 					it( 'should bring the "decimal-leading-zero" list style button', () => {
@@ -859,7 +861,7 @@ describe( 'ListPropertiesUI', () => {
 
 						expect( buttonView.label ).to.equal( 'Toggle the decimal with leading zero list style' );
 						expect( buttonView.tooltip ).to.equal( 'Decimal with leading zero' );
-						expect( buttonView.icon ).to.equal( listStyleDecimalWithLeadingZeroIcon );
+						expect( buttonView.icon ).to.equal( IconListStyleDecimalLeadingZero );
 					} );
 
 					it( 'should bring the "lower-roman" list style button', () => {
@@ -867,7 +869,7 @@ describe( 'ListPropertiesUI', () => {
 
 						expect( buttonView.label ).to.equal( 'Toggle the lower–roman list style' );
 						expect( buttonView.tooltip ).to.equal( 'Lower–roman' );
-						expect( buttonView.icon ).to.equal( listStyleLowerRomanIcon );
+						expect( buttonView.icon ).to.equal( IconListStyleLowerRoman );
 					} );
 
 					it( 'should bring the "upper-roman" list style button', () => {
@@ -875,7 +877,7 @@ describe( 'ListPropertiesUI', () => {
 
 						expect( buttonView.label ).to.equal( 'Toggle the upper–roman list style' );
 						expect( buttonView.tooltip ).to.equal( 'Upper-roman' );
-						expect( buttonView.icon ).to.equal( listStyleUpperRomanIcon );
+						expect( buttonView.icon ).to.equal( IconListStyleUpperRoman );
 					} );
 
 					it( 'should bring the "lower–latin" list style button', () => {
@@ -883,7 +885,7 @@ describe( 'ListPropertiesUI', () => {
 
 						expect( buttonView.label ).to.equal( 'Toggle the lower–latin list style' );
 						expect( buttonView.tooltip ).to.equal( 'Lower-latin' );
-						expect( buttonView.icon ).to.equal( listStyleLowerLatinIcon );
+						expect( buttonView.icon ).to.equal( IconListStyleLowerLatin );
 					} );
 
 					it( 'should bring the "upper–latin" list style button', () => {
@@ -891,7 +893,7 @@ describe( 'ListPropertiesUI', () => {
 
 						expect( buttonView.label ).to.equal( 'Toggle the upper–latin list style' );
 						expect( buttonView.tooltip ).to.equal( 'Upper-latin' );
-						expect( buttonView.icon ).to.equal( listStyleUpperLatinIcon );
+						expect( buttonView.icon ).to.equal( IconListStyleUpperLatin );
 					} );
 
 					it( 'should only bring the style buttons supported by the command', () => {
@@ -1353,7 +1355,7 @@ describe( 'ListPropertiesUI', () => {
 					} );
 
 					it( 'should have an #icon', () => {
-						expect( mainButtonView.icon ).to.equal( icons.bulletedList );
+						expect( mainButtonView.icon ).to.equal( IconBulletedList );
 					} );
 				} );
 
@@ -1373,7 +1375,7 @@ describe( 'ListPropertiesUI', () => {
 
 						expect( buttonView.label ).to.equal( 'Toggle the disc list style' );
 						expect( buttonView.tooltip ).to.equal( 'Disc' );
-						expect( buttonView.icon ).to.equal( listStyleDiscIcon );
+						expect( buttonView.icon ).to.equal( IconListStyleDisc );
 					} );
 
 					it( 'should bring the "circle" list style button', () => {
@@ -1381,7 +1383,7 @@ describe( 'ListPropertiesUI', () => {
 
 						expect( buttonView.label ).to.equal( 'Toggle the circle list style' );
 						expect( buttonView.tooltip ).to.equal( 'Circle' );
-						expect( buttonView.icon ).to.equal( listStyleCircleIcon );
+						expect( buttonView.icon ).to.equal( IconListStyleCircle );
 					} );
 
 					it( 'should bring the "square" list style button', () => {
@@ -1389,7 +1391,7 @@ describe( 'ListPropertiesUI', () => {
 
 						expect( buttonView.label ).to.equal( 'Toggle the square list style' );
 						expect( buttonView.tooltip ).to.equal( 'Square' );
-						expect( buttonView.icon ).to.equal( listStyleSquareIcon );
+						expect( buttonView.icon ).to.equal( IconListStyleSquare );
 					} );
 
 					it( 'should only bring the style buttons supported by the command', () => {
@@ -1652,7 +1654,7 @@ describe( 'ListPropertiesUI', () => {
 					} );
 
 					it( 'should have an #icon', () => {
-						expect( mainButtonView.icon ).to.equal( icons.numberedList );
+						expect( mainButtonView.icon ).to.equal( IconNumberedList );
 					} );
 				} );
 
@@ -1672,7 +1674,7 @@ describe( 'ListPropertiesUI', () => {
 
 						expect( buttonView.label ).to.equal( 'Toggle the decimal list style' );
 						expect( buttonView.tooltip ).to.equal( 'Decimal' );
-						expect( buttonView.icon ).to.equal( listStyleDecimalIcon );
+						expect( buttonView.icon ).to.equal( IconListStyleDecimal );
 					} );
 
 					it( 'should bring the "decimal-leading-zero" list style button', () => {
@@ -1680,7 +1682,7 @@ describe( 'ListPropertiesUI', () => {
 
 						expect( buttonView.label ).to.equal( 'Toggle the decimal with leading zero list style' );
 						expect( buttonView.tooltip ).to.equal( 'Decimal with leading zero' );
-						expect( buttonView.icon ).to.equal( listStyleDecimalWithLeadingZeroIcon );
+						expect( buttonView.icon ).to.equal( IconListStyleDecimalLeadingZero );
 					} );
 
 					it( 'should bring the "lower-roman" list style button', () => {
@@ -1688,7 +1690,7 @@ describe( 'ListPropertiesUI', () => {
 
 						expect( buttonView.label ).to.equal( 'Toggle the lower–roman list style' );
 						expect( buttonView.tooltip ).to.equal( 'Lower–roman' );
-						expect( buttonView.icon ).to.equal( listStyleLowerRomanIcon );
+						expect( buttonView.icon ).to.equal( IconListStyleLowerRoman );
 					} );
 
 					it( 'should bring the "upper-roman" list style button', () => {
@@ -1696,7 +1698,7 @@ describe( 'ListPropertiesUI', () => {
 
 						expect( buttonView.label ).to.equal( 'Toggle the upper–roman list style' );
 						expect( buttonView.tooltip ).to.equal( 'Upper-roman' );
-						expect( buttonView.icon ).to.equal( listStyleUpperRomanIcon );
+						expect( buttonView.icon ).to.equal( IconListStyleUpperRoman );
 					} );
 
 					it( 'should bring the "lower–latin" list style button', () => {
@@ -1704,7 +1706,7 @@ describe( 'ListPropertiesUI', () => {
 
 						expect( buttonView.label ).to.equal( 'Toggle the lower–latin list style' );
 						expect( buttonView.tooltip ).to.equal( 'Lower-latin' );
-						expect( buttonView.icon ).to.equal( listStyleLowerLatinIcon );
+						expect( buttonView.icon ).to.equal( IconListStyleLowerLatin );
 					} );
 
 					it( 'should bring the "upper–latin" list style button', () => {
@@ -1712,7 +1714,7 @@ describe( 'ListPropertiesUI', () => {
 
 						expect( buttonView.label ).to.equal( 'Toggle the upper–latin list style' );
 						expect( buttonView.tooltip ).to.equal( 'Upper-latin' );
-						expect( buttonView.icon ).to.equal( listStyleUpperLatinIcon );
+						expect( buttonView.icon ).to.equal( IconListStyleUpperLatin );
 					} );
 
 					it( 'should only bring the style buttons supported by the command', () => {

@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import { toArray } from 'ckeditor5/src/utils.js';
 import defaultConfig from './schemadefinitions.js';
-import { mergeWith } from 'lodash-es';
+import { mergeWith } from 'es-toolkit/compat';
 import type { AttributeProperties, SchemaItemDefinition } from 'ckeditor5/src/engine.js';
 
 /**
@@ -263,6 +263,11 @@ export interface DataSchemaDefinition {
 	 * Indicates that the definition describes inline element.
 	 */
 	isInline?: boolean;
+
+	/**
+	 * Indicates that the definition describes an empty HTML element like `<hr>`.
+	 */
+	isEmpty?: boolean;
 }
 
 /**

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, LICENSE_KEY */
+/* globals console, window, document */
 
 // source editing only added for testing purposes, remove when done
 
@@ -23,7 +23,6 @@ ClassicEditor.builtinPlugins.push( Bookmark, PictureEditing, ImageInsert, Source
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-bookmark' ), {
-		licenseKey: LICENSE_KEY,
 		toolbar: {
 			items: [
 				'bookmark',

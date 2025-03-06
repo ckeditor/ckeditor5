@@ -13,7 +13,7 @@ Currently, our `highlight` plugin requires the user to click the button in the e
 
 ## Adding keyboard shortcuts
 
-A common shortcut for highlighting text is <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>H</kbd> (on Windows systems), so this is what we are going to use in our plugin. On macOS these keystrokes will get automatically translated to <kbd>Cmd</kbd> + <kbd>Alt</kbd> + <kbd>H</kbd>
+A common shortcut for highlighting text is <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>H</kbd> (on Windows systems), so this is what we are going to use in our plugin. On macOS these keystrokes will get automatically translated to <kbd>Cmd</kbd> + <kbd>⌥</kbd> + <kbd>H</kbd>
 
 To execute the `highlight` command when those keys are pressed, add the following code to the end of the `Highlight` function:
 

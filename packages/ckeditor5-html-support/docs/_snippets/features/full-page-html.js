@@ -3,14 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, ClassicEditor, FullPage, GeneralHtmlSupport, ArticlePluginSet, LICENSE_KEY */
+/* globals console, window, document */
 
+import { FullPage, GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
 
 import './full-page-html.css';
 
-ClassicEditor
+// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
+import { GHSEditor } from './general-html-support-source.js';
+
+GHSEditor
 	.create( document.querySelector( '#snippet-full-page-html' ), {
 		extraPlugins: [
 			ArticlePluginSet,
@@ -70,8 +75,7 @@ ClassicEditor
 				},
 				{ name: 'script' }
 			]
-		},
-		licenseKey: LICENSE_KEY
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

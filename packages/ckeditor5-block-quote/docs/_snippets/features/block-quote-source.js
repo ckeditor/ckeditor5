@@ -45,8 +45,7 @@ ClassicEditor.defaultConfig = {
 	},
 	image: {
 		toolbar: [ 'toggleImageCaption', 'imageTextAlternative', 'ckboxImageEdit' ]
-	},
-	licenseKey: 'GPL'
+	}
 };
 
 window.ClassicEditor = ClassicEditor;

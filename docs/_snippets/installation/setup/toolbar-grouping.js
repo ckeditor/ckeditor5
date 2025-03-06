@@ -58,8 +58,7 @@ ClassicEditor
 				{ model: 'heading4', view: 'h5', title: 'Heading 4', class: 'ck-heading_heading4' }
 			]
 		},
-		cloudServices: CS_CONFIG,
-		licenseKey: 'GPL'
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editor = editor;

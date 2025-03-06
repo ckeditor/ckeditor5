@@ -7,7 +7,7 @@
  * @module html-support/integrations/list
  */
 
-import { isEqual } from 'lodash-es';
+import { isEqual } from 'es-toolkit/compat';
 import { Plugin } from 'ckeditor5/src/core.js';
 import type { UpcastElementEvent } from 'ckeditor5/src/engine.js';
 import type { GetCallback } from 'ckeditor5/src/utils.js';

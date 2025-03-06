@@ -15,6 +15,7 @@ import type { Locale, LocaleTranslate } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/editorui/editorui.css';
 import type MenuBarView from '../menubar/menubarview.js';
+import type ToolbarView from '../toolbar/toolbarview.js';
 
 /**
  * The editor UI view class. Base class for the editor main views.
@@ -32,9 +33,23 @@ export default abstract class EditorUIView extends View {
 	public abstract get editable(): EditableUIView;
 
 	/**
-	 * Menu bar view instance. May not be initialized in some editor types.
+	 * Menu bar view instance. Initialized by default in:
+	 *
+	 * * balloon editor;
+	 * * decoupled editor;
+	 * * multiroot editor.
 	 */
 	public menuBarView?: MenuBarView;
+
+	/**
+	 * Toolbar view instance. Initialized by default in:
+	 *
+	 * * classic editor;
+	 * * decoupled editor;
+	 * * inline editor;
+	 * * multiroot editor.
+	 */
+	public toolbar?: ToolbarView;
 
 	/**
 	 * Creates an instance of the editor UI view class.
