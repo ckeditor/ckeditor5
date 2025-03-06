@@ -161,7 +161,8 @@ export default class EmojiPicker extends Plugin {
 
 			this.balloonPlugin.add( {
 				view: this.emojiPickerFormView,
-				position: this._getBalloonPositionData()
+				position: this._getBalloonPositionData(),
+				balloonClassName: 'ck-emoji-picker-balloon'
 			} );
 		}
 
