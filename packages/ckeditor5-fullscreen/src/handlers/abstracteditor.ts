@@ -10,6 +10,7 @@
 import type { Editor, EditorConfig } from 'ckeditor5/src/core.js';
 import type { RevisionViewerEditor } from '@ckeditor/ckeditor5-revision-history';
 import { createElement } from 'ckeditor5/src/utils.js';
+import type { PaginationRenderer } from '@ckeditor/ckeditor5-pagination';
 import type { Annotation, AnnotationsUIs, Sidebar } from '@ckeditor/ckeditor5-comments';
 
 /**
@@ -124,6 +125,9 @@ export default class AbstractEditorHandler {
 					<div class="ck ck-fullscreen__editable" data-ck-fullscreen="editable"></div>
 					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="right-sidebar"></div>
 				</div>
+				<div class="ck ck-fullscreen__bottom-wrapper">
+					<div class="ck ck-fullscreen__body-wrapper" data-ck-fullscreen="body-wrapper"></div>
+				</div>
 			`;
 
 			document.body.appendChild( this._container );
@@ -137,6 +141,11 @@ export default class AbstractEditorHandler {
 	 */
 	public enable(): void {
 		this._defaultEnable();
+
+		/* istanbul ignore if -- @preserve */
+		if ( this._editor.plugins.has( 'Pagination' ) ) {
+			( this._editor.plugins.get( 'PaginationRenderer' ) as PaginationRenderer ).setupScrollableAncestor();
+		}
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore if -- @preserve */
@@ -190,9 +199,16 @@ export default class AbstractEditorHandler {
 	 * Destroys the fullscreen mode container.
 	 */
 	private _destroyContainer(): void {
-		if ( this._container ) {
-			this._container.remove();
-			this._container = null;
+		if ( !this._container ) {
+			return;
+		}
+
+		this._container.remove();
+		this._container = null;
+
+		/* istanbul ignore if -- @preserve */
+		if ( this._editor.plugins.has( 'Pagination' ) ) {
+			( this._editor.plugins.get( 'PaginationRenderer' ) as PaginationRenderer ).setupScrollableAncestor();
 		}
 	}
 

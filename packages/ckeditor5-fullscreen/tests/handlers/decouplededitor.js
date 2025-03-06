@@ -46,7 +46,7 @@ describe( 'DecoupledEditorHandler', () => {
 	} );
 
 	describe( '#enable()', () => {
-		it( 'should move the editable, toolbar and menu bar to the fullscreen container', () => {
+		it( 'should move the editable, toolbar, menu bar and body wrapper to the fullscreen container', () => {
 			decoupledEditorHandler.enable();
 
 			expect( decoupledEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=editable]' ).children[ 0 ] )
@@ -55,6 +55,8 @@ describe( 'DecoupledEditorHandler', () => {
 				.to.equal( editor.ui.view.toolbar.element );
 			expect( decoupledEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=menu-bar]' ).children[ 0 ] )
 				.to.equal( editor.ui.view.menuBarView.element );
+			expect( decoupledEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=body-wrapper]' ).children[ 0 ] )
+				.to.equal( global.document.querySelector( '.ck-body-wrapper' ) );
 		} );
 	} );
 } );
