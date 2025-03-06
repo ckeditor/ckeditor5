@@ -37,6 +37,7 @@
 		& > table > tbody > tr > td {
 			box-shadow: none;
 			padding: 0;
+			/* To make the caret visible. */
 			text-indent: 1px;
 
 			/* Resets the `min-width` style attribute that was added by the content table style. */
