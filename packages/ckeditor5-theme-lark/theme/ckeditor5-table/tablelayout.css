@@ -37,6 +37,7 @@
 		& > table > tbody > tr > td {
 			box-shadow: none;
 			padding: 0;
+			text-indent: 1px;
 
 			/* Resets the `min-width` style attribute that was added by the content table style. */
 			&[style^="width:"],
@@ -73,9 +74,10 @@
 				}
 			}
 
-			/* We need to set the offset for the caret, to make it visible and not covered by the outline. */
+			/* Reset the `width` and `text-indent` of the bogus paragraph because <td> has 1px text indent. */
 			& > .ck-table-bogus-paragraph {
-				text-indent: 1px;
+				width: calc(100% - 1px);
+				text-indent: 0;
 			}
 		}
 
