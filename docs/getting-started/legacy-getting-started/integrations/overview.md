@@ -1,6 +1,6 @@
 ---
 category: legacy-integrations
-menu-title: (Legacy) CKEditor 5 integrations
+menu-title: (Deprecated) CKEditor 5 integrations
 meta-title: CKEditor 5 integrations overview | Legacy CKEditor 5 documentation
 order: 10
 menu-title: Overview
