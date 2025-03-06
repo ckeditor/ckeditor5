@@ -164,7 +164,7 @@ export default class AbstractEditorHandler {
 
 		documentOutlineHeaderElement.innerHTML = `
 			<div class="ck ck-fullscreen__left-sidebar-header ck-fullscreen__document-outline-header">
-				Document Outline
+				Document outline
 			</div>
 		`;
 

@@ -46,7 +46,7 @@ Fullscreen layout:
 .ck-fullscreen__main-container .ck-fullscreen__editor-wrapper {
 	--ck-fullscreen-editor-top-margin: 28px;
 	display: flex;
-	justify-content: center;
+	justify-content: flex-start;
 	overflow: auto;
 	max-height: 100%;
 }
@@ -95,7 +95,8 @@ Fullscreen layout:
 	background-color: transparent;
 	margin-top: 0px;
 	box-sizing: border-box;
-	overflow: auto;
+	display: flex;
+	flex-direction: column;
 }
 
 .ck-fullscreen__left-sidebar .ck.ck-presence-list--collapsed {
@@ -119,8 +120,12 @@ Fullscreen layout:
 	margin-bottom: var(--ck-spacing-medium);
 }
 
+.ck-fullscreen__left-sidebar-item:last-child {
+	margin-bottom: 0;
+}
+
 .ck-fullscreen__left-sidebar-header {
-	--ck-fullscreen-presence-list-header-font-size: 13px;
+	--ck-fullscreen-presence-list-header-font-size: 0.875em;
 	font-size: var(--ck-fullscreen-presence-list-header-font-size);
 	font-weight: bold;
 	color: var(--ck-document-outline-item-default-color);
@@ -149,8 +154,11 @@ Fullscreen layout:
 
 .ck-fullscreen__left-sidebar .ck.ck-document-outline {
 	padding-top: 0;
+	padding-left: 0;
+	padding-right: 0;
 }
 
 .ck-fullscreen__document-outline-wrapper {
 	padding-top: 0;
+	overflow-y: auto;
 }
