@@ -11,9 +11,30 @@ import { createRequire } from 'module';
 import upath from 'upath';
 import { glob } from 'glob';
 import { build as esbuild } from 'esbuild';
+import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
 const require = createRequire( import.meta.url );
 const __dirname = upath.dirname( fileURLToPath( import.meta.url ) );
+
+/**
+ * Production CKEditor 5 documentation is built using packages published to npm. However, some of
+ * the imports used in snippets rely on code not available there. This map is used to resolve such
+ * imports to the actual source files not present in the "exports" field of the published packages.
+ */
+const RESOLVE_ALIAS_MAP = {
+	'@ckeditor/ckeditor5-image/docs/assets': upath.join(
+		CKEDITOR5_ROOT_PATH, 'packages', 'ckeditor5-image', 'docs', 'assets'
+	),
+	'@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js': upath.join(
+		CKEDITOR5_ROOT_PATH, 'packages', 'ckeditor5-core', 'tests', '_utils', 'articlepluginset.js'
+	),
+	'@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js': upath.join(
+		CKEDITOR5_ROOT_PATH, 'packages', 'ckeditor5-cloud-services', 'tests', '_utils', 'cloud-services-config.js'
+	),
+	'@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js': upath.join(
+		CKEDITOR5_ROOT_PATH, 'packages', 'ckeditor5-ckbox', 'tests', '_utils', 'ckbox-config.js'
+	)
+};
 
 /**
  * @param {Set<Snippet>} snippets Snippet collection extracted from documentation files.
@@ -112,6 +133,7 @@ async function buildSnippets( inputPath, outputPath, constants, imports ) {
 		format: 'esm',
 		target: 'es2022',
 		tsconfigRaw: {},
+		alias: RESOLVE_ALIAS_MAP,
 		loader: {
 			'.js': 'jsx',
 			'.svg': 'text'
