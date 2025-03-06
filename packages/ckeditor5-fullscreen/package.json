@@ -26,6 +26,8 @@
     "@ckeditor/ckeditor5-code-block": "44.3.0",
     "@ckeditor/ckeditor5-core": "44.3.0",
     "@ckeditor/ckeditor5-dev-utils": "^46.0.0",
+    "@ckeditor/ckeditor5-document-outline": "^44.3.0",
+    "@ckeditor/ckeditor5-real-time-collaboration": "44.3.0",
     "@ckeditor/ckeditor5-easy-image": "44.3.0",
     "@ckeditor/ckeditor5-find-and-replace": "44.3.0",
     "@ckeditor/ckeditor5-font": "44.3.0",
