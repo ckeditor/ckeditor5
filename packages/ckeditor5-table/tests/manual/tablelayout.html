@@ -198,7 +198,6 @@
 		</tbody>
 	</table>
 
-
 	<hr>
 	<h3>Source: &lt;table class="table content-table"&gt; containing &lt;thead&gt;/&lt;th&gt; => result = tableType will be content table and &lt;th&gt; will be preserved</h3>
 
@@ -303,7 +302,7 @@
 		</table>
 	</figure>
 
-<hr>
+	<hr>
 	<h3>Source: &lt;figure&gt;&lt;table&gt; containing &lt;thead&gt;/&lt;th&gt; => result = tableType will be content table and
 		&lt;thead&gt;/&lt;th&gt; will be preserved</h3>
 	<figure>
@@ -349,4 +348,146 @@
 			</tbody>
 		</table>
 	</figure>
+
+	<h3>Look of widget type around and selection handle is changed in layout tables, also only hovered table shows mention
+		earlier widget handlers.</h3>
+	<p></p>
+	<table class="table content-table" role="presentation">
+		<tbody>
+			<tr>
+				<td>
+					<p>foo</p>
+					<table class="table content-table" role="presentation">
+						<tbody>
+							<tr>
+								<td style="width:33.333333%;">bar</td>
+								<td style="width:33.333333%;">
+									<table class="table layout-table"
+										style="border-color:hsl(120, 75%, 60%);border-style:solid;width:100%;"
+										role="presentation">
+										<tbody>
+											<tr>
+												<td>baz</td>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+											</tr>
+											<tr>
+												<td>&nbsp;</td>
+												<td style="border-color:hsl(0, 75%, 60%);">&nbsp;</td>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+											</tr>
+											<tr>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+											</tr>
+											<tr>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+								<td style="width:33.333333%;">&nbsp;</td>
+							</tr>
+							<tr>
+								<td style="width:33.333333%;">&nbsp;</td>
+								<td style="width:33.333333%;">&nbsp;</td>
+								<td style="width:33.333333%;">&nbsp;</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+				<td>b</td>
+				<td>c</td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+		</tbody>
+	</table>
+	<p></p>
+
+	<hr>
+	<h2>Knows issues:</h2>
+	<h3>when table or table cell has for example set: <code>border-bottom-width:0</code> and <code>border-bottom-width:0</code> - outline is not shown but default border cames in on left and right</h3>
+	<p></p>
+	<table style="padding: 30px;">
+		<tr>
+			<td style="border-bottom-width:0;border-top-width:0; padding: 30px;">
+				<table class="table"
+					style="border-collapse: collapse; border-spacing: 0; border-radius: 0; border-color: red;">
+					<tr>
+						<td>a</td>
+						<td>b</td>
+						<td>c</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
 </div>
+
+<h2>Example table to copy and paste</h2>
+
+<div class="external-table-wrapper">
+
+	<table style="width: 40%;">
+		<tbody>
+			<tr>
+				<td>
+					<table>
+						<tbody>
+							<tr>
+								<td style="width:33.333333%;">&nbsp;</td>
+								<td style="width:33.333333%;">&nbsp;</td>
+								<td style="width:33.333333%;">&nbsp;</td>
+							</tr>
+							<tr>
+								<td style="width:33.333333%;">&nbsp;</td>
+								<td style="width:33.333333%;">&nbsp;</td>
+								<td style="width:33.333333%;">&nbsp;</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+				<td>b</td>
+				<td>c</td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<style>
+	.external-table-wrapper {
+		margin-top: 20px;
+		padding: 2em;
+		background-color: rgba(0, 0, 0, 0.1);
+		border: 1px solid grey;
+		border-radius: 8px;
+	}
+
+	.external-table-wrapper table,
+	.external-table-wrapper td,
+	.external-table-wrapper th {
+		border: 1px solid black;
+		border-collapse: collapse;
+	}
+</style>
