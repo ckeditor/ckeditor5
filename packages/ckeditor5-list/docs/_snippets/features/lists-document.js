@@ -51,8 +51,7 @@ ClassicEditor
 				reversed: true
 			}
 		},
-		cloudServices: CS_CONFIG,
-		licenseKey: 'GPL'
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editorStyles = editor;

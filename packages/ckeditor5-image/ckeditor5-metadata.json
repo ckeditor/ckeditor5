@@ -23,7 +23,7 @@
 				{
 					"type": "Button",
 					"name": "imageTextAlternative",
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/text-alternative.svg",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/text-alternative.svg",
 					"toolbars": [
 						"image.toolbar"
 					]
@@ -57,7 +57,7 @@
 				{
 					"type": "Button",
 					"name": "imageTextAlternative",
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/text-alternative.svg",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/text-alternative.svg",
 					"toolbars": [
 						"image.toolbar"
 					]
@@ -97,7 +97,7 @@
 				{
 					"type": "Button",
 					"name": "toggleImageCaption",
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/caption.svg",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/caption.svg",
 					"toolbars": [
 						"image.toolbar"
 					]
@@ -160,7 +160,7 @@
 					"toolbars": [
 						"image.toolbar"
 					],
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/object-inline.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/object-inline.svg"
 				},
 				{
 					"type": "Button",
@@ -168,7 +168,7 @@
 					"toolbars": [
 						"image.toolbar"
 					],
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/object-center.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/object-center.svg"
 				},
 				{
 					"type": "Button",
@@ -176,7 +176,7 @@
 					"toolbars": [
 						"image.toolbar"
 					],
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/object-right.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/object-right.svg"
 				}
 			],
 			"htmlOutput": [
@@ -231,7 +231,7 @@
 				{
 					"type": "Button",
 					"name": "uploadImage",
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/image.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/image.svg"
 				}
 			]
 		},
@@ -248,7 +248,7 @@
 				{
 					"type": "SplitButton",
 					"name": "insertImage",
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/image.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/image.svg"
 				}
 			]
 		},
@@ -262,7 +262,7 @@
 				{
 					"type": "Button",
 					"name": "insertImageViaUrl",
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/image-url.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/image-url.svg"
 				}
 			]
 		},

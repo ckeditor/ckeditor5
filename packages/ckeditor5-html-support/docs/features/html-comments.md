@@ -7,8 +7,6 @@ meta-title: HTML comments element | CKEditor 5 Documentation
 
 # HTML comment element
 
-{@snippet features/general-html-support-source}
-
 By default, the editor filters out all HTML comments on initialization. The {@link module:html-support/htmlcomment~HtmlComment} feature lets developers keep HTML comments in the document without displaying them to the user.
 
 <info-box warning>
@@ -19,7 +17,7 @@ By default, the editor filters out all HTML comments on initialization. The {@li
 
 ## Demo
 
-The editor below is configured to keep HTML comments in the document content. You can view the source of the document using the {@link features/source-editing-enhanced Enhanced source code editing} feature. Toggle the Enhanced source code editing mode {@icon @ckeditor/ckeditor5-core/theme/icons/source.svg Source editing} to see there is an HTML comment in the document source. Try uncommenting the paragraph below the picture. Once you leave the source editing mode, you will see this paragraph in the editable area.
+The editor below is configured to keep HTML comments in the document content. You can view the source of the document using the {@link features/source-editing-enhanced Enhanced source code editing} feature. Toggle the Enhanced source code editing mode {@icon @ckeditor/ckeditor5-icons/theme/icons/source.svg Source editing} to see there is an HTML comment in the document source. Try uncommenting the paragraph below the picture. Once you leave the source editing mode, you will see this paragraph in the editable area.
 
 {@snippet features/html-comment}
 

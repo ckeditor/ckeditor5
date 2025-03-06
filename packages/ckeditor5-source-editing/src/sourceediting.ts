@@ -9,7 +9,8 @@
 
 /* global console */
 
-import { type Editor, Plugin, PendingActions, icons } from 'ckeditor5/src/core.js';
+import { Plugin, PendingActions, type Editor } from 'ckeditor5/src/core.js';
+import { IconSource } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView, type Dialog } from 'ckeditor5/src/ui.js';
 import { CKEditorError, createElement, ElementReplacer } from 'ckeditor5/src/utils.js';
 import { formatHtml } from './utils/formathtml.js';
@@ -100,7 +101,7 @@ export default class SourceEditing extends Plugin {
 
 			buttonView.set( {
 				label: t( 'Source' ),
-				icon: icons.source,
+				icon: IconSource,
 				tooltip: true,
 				class: 'ck-source-editing-button'
 			} );

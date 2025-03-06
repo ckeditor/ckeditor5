@@ -3,7 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals ButtonView, View, document, ClassicEditor, Essentials, Bold, Italic, Underline, Dialog, Paragraph, Plugin, console, window */
+/* globals document, console, window */
+
+import { ButtonView, Dialog, View } from '@ckeditor/ckeditor5-ui';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Bold, Italic, Underline } from '@ckeditor/ckeditor5-basic-styles';
+import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 class MinimalisticDialog extends Plugin {
 	get requires() {
@@ -74,8 +81,7 @@ class MinimalisticDialog extends Plugin {
 ClassicEditor
 	.create( document.querySelector( '#ui-dialog-editor' ), {
 		plugins: [ Essentials, Paragraph, Bold, Italic, Underline, MinimalisticDialog, Dialog ],
-		toolbar: [ 'bold', 'italic', 'underline', '|', 'showDialog' ],
-		licenseKey: 'GPL'
+		toolbar: [ 'bold', 'italic', 'underline', '|', 'showDialog' ]
 	} )
 	.then( editor => {
 		window.attachTourBalloon( {

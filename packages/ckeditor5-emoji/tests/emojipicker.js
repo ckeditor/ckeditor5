@@ -17,8 +17,8 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import EmojiPicker from '../src/emojipicker.js';
 import EmojiRepository from '../src/emojirepository.js';
-import EmojiPickerView from '../src/ui/emojipickerview.js';
 import EmojiCommand from '../src/emojicommand.js';
+import EmojiPickerFormView from '../src/ui/emojipickerformview.js';
 
 function mockEmojiRepositoryValues( editor ) {
 	const repository = editor.plugins.get( 'EmojiRepository' );
@@ -305,7 +305,7 @@ describe( 'EmojiPicker', () => {
 
 			emojiPicker.showUI();
 
-			expect( emojiPicker.balloonPlugin.visibleView ).to.be.instanceOf( EmojiPickerView );
+			expect( emojiPicker.balloonPlugin.visibleView ).to.be.instanceOf( EmojiPickerFormView );
 		} );
 
 		it( 'should focus the query input when opens UI', async () => {
@@ -383,6 +383,16 @@ describe( 'EmojiPicker', () => {
 				keyCode: keyCodes.esc,
 				bubbles: true
 			} ) );
+
+			expect( emojiPicker.balloonPlugin.visibleView ).to.equal( null );
+		} );
+
+		it( 'should close when back button of form view is clicked', () => {
+			emojiPicker.showUI();
+
+			expect( emojiPicker.balloonPlugin.visibleView ).to.be.instanceOf( EmojiPickerFormView );
+
+			emojiPicker.emojiPickerFormView.backButtonView.fire( 'execute' );
 
 			expect( emojiPicker.balloonPlugin.visibleView ).to.equal( null );
 		} );

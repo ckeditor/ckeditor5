@@ -15,7 +15,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 import { type FocusableView } from '../focuscycler.js';
 import View from '../view.js';
-import { isObject } from 'lodash-es';
+import { isObject } from 'es-toolkit/compat';
 import ListItemView from '../list/listitemview.js';
 import ListSeparatorView from '../list/listseparatorview.js';
 import type ViewCollection from '../viewcollection.js';
