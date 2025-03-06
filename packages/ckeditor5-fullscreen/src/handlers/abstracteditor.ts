@@ -173,6 +173,8 @@ export default class AbstractEditorHandler {
 			this._editor.config.get( 'fullscreen.disableCallback' )!();
 		}
 
+		this.restoreDocumentOutlineDefaultContainer();
+
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore if -- @preserve */
 		if ( this.annotationsUIsData ) {
@@ -255,6 +257,19 @@ export default class AbstractEditorHandler {
 		documentOutlineUI.view.documentOutlineContainer = document.querySelector( '[data-ck-fullscreen="left-sidebar"]' ) as HTMLElement;
 
 		this.moveToFullscreen( documentOutlineUI.view.element!, 'document-outline' );
+	}
+
+	/**
+	 * Restores the default value of documentOutlineContainer, which is modified in fullscreen mode.
+	 */
+	/* istanbul ignore next -- @preserve */
+	public restoreDocumentOutlineDefaultContainer(): void {
+		if ( !this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
+			return;
+		}
+
+		const documentOutlineUI: DocumentOutlineUI = this._editor.plugins.get( DocumentOutlineUI );
+		documentOutlineUI.view.documentOutlineContainer = documentOutlineUI.view.element as HTMLElement;
 	}
 
 	/**
