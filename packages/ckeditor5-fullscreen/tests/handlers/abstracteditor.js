@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/* global document */
+
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
@@ -286,26 +288,8 @@ describe( 'AbstractHandler', () => {
 			editor = await VirtualTestEditor.create( domElement, {
 				plugins: [
 					Paragraph,
-					Essentials,
-					PresenceListUI,
-					PresenceList,
-					CloudServicesMock,
-					DocumentOutline,
-					DocumentOutlineUI
-				].filter( plugin => plugin !== Dialog ),
-				cloudServices: {
-					tokenUrl: 'abc',
-					webSocketUrl: 'web-socket-url'
-				},
-				collaboration: {
-					channelId: 'test'
-				},
-				presenceList: {
-					container: presenceList
-				},
-				documentOutline: {
-					container: documentOutline
-				}
+					Essentials
+				].filter( plugin => plugin !== Dialog )
 			} );
 
 			abstractHandler = new AbstractEditorHandler( editor );
@@ -410,20 +394,7 @@ describe( 'AbstractHandler', () => {
 					CloudServicesMock,
 					DocumentOutline,
 					DocumentOutlineUI
-				].filter( plugin => plugin !== Dialog ),
-				cloudServices: {
-					tokenUrl: 'abc',
-					webSocketUrl: 'web-socket-url'
-				},
-				collaboration: {
-					channelId: 'test'
-				},
-				presenceList: {
-					container: presenceList
-				},
-				documentOutline: {
-					container: documentOutline
-				}
+				].filter( plugin => plugin !== Dialog )
 			} );
 
 			abstractHandler = new AbstractEditorHandler( editor );
