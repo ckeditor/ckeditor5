@@ -5,7 +5,7 @@
 
 /* eslint-env node */
 
-import { constants, readFile, writeFile, copyFile, access } from 'fs/promises';
+import { constants, readFile, writeFile, copyFile, access, mkdir } from 'fs/promises';
 import upath from 'upath';
 import { build as esbuild } from 'esbuild';
 import { CKEDITOR5_COMMERCIAL_PATH, CKEDITOR5_ROOT_PATH } from '../constants.mjs';
@@ -39,26 +39,13 @@ const RESOLVE_ALIAS_MAP = {
 export default async function snippetAdapter( snippets, _options, { getSnippetPlaceholder } ) {
 	console.log( 'Started building snippets.' );
 
-	const { snippetsInputPath, snippetsOutputPath } = getPaths( snippets );
+	const paths = getPaths( snippets );
 	const imports = await getImportMap();
 	const constants = await getConstants();
 
-	// Build all JavaScript snippets.
-	await buildSnippets(
-		snippets,
-		snippetsInputPath,
-		snippetsOutputPath,
-		constants,
-		imports
-	);
-
-	// Build all documents and replace the snippet and %BASE_PATH% placeholders with the actual content.
-	await buildDocuments(
-		snippets,
-		getSnippetPlaceholder,
-		constants,
-		imports
-	);
+	await addBootstrapSnippet( snippets, paths );
+	await buildSnippets( snippets, paths, constants, imports );
+	await buildDocuments( snippets, paths, constants, imports, getSnippetPlaceholder );
 
 	console.log( 'Finished building snippets.' );
 }
@@ -67,17 +54,17 @@ export default async function snippetAdapter( snippets, _options, { getSnippetPl
  * Returns input and output paths for snippets and other assets.
  *
  * @param {Set<Snippet>} snippets
- * @returns {Record<string, string>}
+ * @returns {Paths}
  */
 function getPaths( [ snippet ] ) {
 	const version = upath.normalize( snippet.outputPath ).split( upath.sep ).at( -2 );
-	const inputPath = upath.normalize( snippet.snippetSources.html ).split( version, 1 ) + version;
+	const input = upath.normalize( snippet.snippetSources.html ).split( version, 1 ) + version;
 
 	return {
-		inputPath,
-		outputPath: upath.resolve( snippet.outputPath, '..' ),
-		snippetsInputPath: upath.resolve( inputPath, '_snippets' ),
-		snippetsOutputPath: snippet.outputPath
+		input,
+		output: upath.resolve( snippet.outputPath, '..' ),
+		snippetsInput: upath.resolve( input, '_snippets' ),
+		snippetsOutput: snippet.outputPath
 	};
 }
 
@@ -102,19 +89,18 @@ async function getDependencies( packageName ) {
  * Builds all snippets from the provided paths and saves them to the output path.
  *
  * @param {Set<Snippet>} snippets
- * @param {string} inputPath
- * @param {string} outputPath
+ * @param {Paths} paths
  * @param {Record<string, string>} constants
  * @param {Record<string, any>} imports
  * @returns {Promise<void>}
  */
-async function buildSnippets( snippets, inputPath, outputPath, constants, imports ) {
+async function buildSnippets( snippets, paths, constants, imports ) {
 	const externals = Object.keys( imports );
 
 	await esbuild( {
 		entryPoints: Array.from( snippets ).map( snippet => snippet.snippetSources.js ).filter( Boolean ),
 		define: Object.fromEntries( Object.entries( constants ).map( ( [ key, value ] ) => [ key, JSON.stringify( value ) ] ) ),
-		outdir: outputPath,
+		outdir: paths.snippetsOutput,
 		entryNames: '[dir]/[name]/snippet',
 		bundle: true,
 		minify: true,
@@ -126,8 +112,8 @@ async function buildSnippets( snippets, inputPath, outputPath, constants, import
 		tsconfigRaw: {},
 		alias: {
 			...RESOLVE_ALIAS_MAP,
-			'@snippets': inputPath,
-			'@assets': upath.resolve( inputPath, '..', 'assets' )
+			'@snippets': paths.snippetsInput,
+			'@assets': upath.resolve( paths.input, 'assets' )
 		},
 		loader: {
 			'.js': 'jsx',
@@ -156,18 +142,16 @@ async function buildSnippets( snippets, inputPath, outputPath, constants, import
  * Builds documents and replaces all placeholders with the actual content.
  *
  * @param {Set<Snippet>} snippets
- * @param {function} getSnippetPlaceholder
+ * @param {Paths} paths
  * @param {Record<string, string>} constants
  * @param {Record<string, any>} imports
+ * @param {function} getSnippetPlaceholder
  * @returns {Promise<void>}
  */
-async function buildDocuments( snippets, getSnippetPlaceholder, constants, imports ) {
+async function buildDocuments( snippets, paths, constants, imports, getSnippetPlaceholder ) {
 	const getStyle = href => `<link rel="stylesheet" href="${ href }" data-cke="true" />`;
 	const getScript = src => `<script type="module" src="${ src }"></script>`;
-	const { outputPath, snippetsInputPath, snippetsOutputPath } = getPaths( snippets );
-
-	// Group snippets by the destination document.
-	const documents = await getBootstrapDocumentData( snippetsInputPath, snippetsOutputPath, outputPath );
+	const documents = {};
 
 	// TODO: Use `Object.groupBy` instead, when we migrate to Node 22.
 	for ( const snippet of snippets ) {
@@ -183,7 +167,7 @@ async function buildDocuments( snippets, getSnippetPlaceholder, constants, impor
 
 	// Iterate over each document and replace placeholders with the actual content.
 	for ( const [ document, documentSnippets ] of Object.entries( documents ) ) {
-		const relativeOutputPath = upath.relative( upath.dirname( document ), outputPath );
+		const relativeOutputPath = upath.relative( upath.dirname( document ), paths.output );
 
 		// Get global tags added to each document that require relative paths.
 		const documentTags = [
@@ -293,33 +277,31 @@ async function fileExists( path ) {
  * styles, so, we need to load it in an iframe. This function creates the necessary data for to process
  * this snippet like a regular document, rather than a snippet.
  *
- * @param {string} snippetsInputPath
- * @param {string} snippetsOutputPath
- * @param {string} outputPath
- * @returns {Promise<Record<string, unknown>>}
+ * @param {Set<Snippet>} snippets
+ * @param {Paths} paths
+ * @returns {Promise<void>}
  */
-async function getBootstrapDocumentData( snippetsInputPath, snippetsOutputPath, outputPath ) {
-	const destinationPath = upath.join( snippetsOutputPath, 'examples', 'bootstrap-ui.html' );
-	const basePath = upath.relative( upath.dirname( destinationPath ), outputPath );
+async function addBootstrapSnippet( snippets, paths ) {
+	const destinationPath = upath.join( paths.snippetsOutput, 'examples', 'bootstrap-ui.html' );
+	const basePath = upath.relative( upath.dirname( destinationPath ), paths.output );
 
 	const snippet = {
 		basePath,
 		destinationPath,
-		outputPath: snippetsOutputPath,
+		outputPath: paths.snippetsOutput,
 		pageSourcePath: '',
 		relativeOutputPath: upath.join( basePath, 'snippets' ),
 		snippetName: 'examples/bootstrap-ui',
 		snippetSources: {
-			html: upath.join( snippetsInputPath, 'examples', 'bootstrap-ui.html' ),
-			js: upath.join( snippetsInputPath, 'examples', 'bootstrap-ui.js' )
+			html: upath.join( paths.snippetsInput, 'examples', 'bootstrap-ui.html' ),
+			js: upath.join( paths.snippetsInput, 'examples', 'bootstrap-ui.js' )
 		}
 	};
 
+	await mkdir( upath.dirname( destinationPath ), { recursive: true } );
 	await copyFile( snippet.snippetSources.html, destinationPath );
 
-	return {
-		[ destinationPath ]: [ snippet ]
-	};
+	snippets.add( snippet );
 }
 
 /**
@@ -337,4 +319,12 @@ async function getBootstrapDocumentData( snippetsInputPath, snippetsOutputPath, 
  * @property {string} html An absolute path to the HTML sample.
  * @property {string} css An absolute path to the CSS sample.
  * @property {string} js An absolute path to the JS sample.
+ */
+
+/**
+ * @typedef {Object} Paths
+ * @property {string} input Path to the directory created by Umberto containing all the documentation files.
+ * @property {string} output Path to the output directory where processed documentation will be saved.
+ * @property {string} snippetsInput Path to the directory created by Umberto containing the input snippets.
+ * @property {string} snippetsOutput Path to the directory where output snippets will be written.
  */
