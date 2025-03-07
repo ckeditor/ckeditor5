@@ -156,20 +156,3 @@ $( '#modal-container' ).modal( {
 ```
 
 [Check out the demo of CKEditor&nbsp;5 rich-text editor working correctly with Materialize.css](https://codepen.io/ckeditor/pen/gZebwy).
-
-## Compatibility with Semantic-UI
-
-CKEditor&nbsp;5 works properly with [Semantic-UI](https://semantic-ui.com/)<!-- after a small CSS tweak. To use the balloon editor inside a modal, it is necessary to configure the `z-index` property of the floating editor UI to make it render over the modal:
-
-```css
-/*
- * Configure the z-index of the editor UI, so when inside a Semantic-UI modal,
- * it will be rendered over the modal.
- */
-:root {
-	--ck-z-default: 100;
-	--ck-z-panel: calc( var(--ck-z-default) + 999 );
-}
-```
-
-[Check out the demo of CKEditor&nbsp;5 rich-text editor working correctly with Semantic-UI](https://codepen.io/ckeditor/pen/OrZBpV)-->.
