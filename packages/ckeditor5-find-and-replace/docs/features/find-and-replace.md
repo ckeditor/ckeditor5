@@ -5,8 +5,6 @@ category: features
 modified_at: 2024-01-03
 ---
 
-{@snippet features/build-find-and-replace-source}
-
 The find and replace feature lets you find and replace any text in your document. This speeds up your work and helps with the consistency of your content.
 
 ## Demo

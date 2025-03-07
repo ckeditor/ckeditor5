@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, CS_CONFIG */
-
-import { AutoLink } from '@ckeditor/ckeditor5-link';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
-
-// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic.js';
+import { AutoLink } from 'ckeditor5';
+import {
+	CS_CONFIG,
+	TOKEN_URL,
+	ClassicEditor,
+	getViewportTopOffsetConfig
+} from '@snippets/index.js';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-autolink' ), {
@@ -31,7 +31,7 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		}
 	} )

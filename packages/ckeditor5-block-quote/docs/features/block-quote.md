@@ -3,7 +3,6 @@ category: features
 menu-title: Block quote
 meta-title: Block quote | CKEditor 5 Documentation
 ---
-{@snippet features/block-quote-source}
 
 # Block quote
 

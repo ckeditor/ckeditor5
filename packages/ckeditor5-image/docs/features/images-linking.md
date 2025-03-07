@@ -5,7 +5,6 @@ meta-title: Linking images | CKEditor 5 Documentation
 meta-description: Learn how to use your images as link anchors.
 order: 70
 ---
-{@snippet features/build-image-source}
 
 # Linking images
 

@@ -70,6 +70,9 @@ module.exports = {
 		},
 		{
 			files: [ '**/docs/**/*.js' ],
+			env: {
+				browser: true
+			},
 			rules: {
 				'ckeditor5-rules/ckeditor-imports': 'off'
 			}

@@ -6,7 +6,6 @@ meta-description: Find out all about images in CKEditor 5 - available image feat
 order: 10
 modified_at: 2021-06-17
 ---
-{@snippet features/build-image-source}
 
 # Images in CKEditor&nbsp;5 (overview)
 

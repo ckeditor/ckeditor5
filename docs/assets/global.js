@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, document, setTimeout */
-
 // Show clipboard input notification when user tries to paste a content from MS Word or Google Docs.
 setTimeout( () => {
 	// Don't show the warning notification in "Paste from Office" and "Paste from Google Docs" demos.
@@ -54,7 +52,22 @@ function createClipboardInputNotification() {
 	<a href="/docs/ckeditor5/latest/features/pasting/paste-from-google-docs.html">Paste from Google Docs</a>
 	demos for the best experience.</p>`;
 
-	window.createNotification( title, message );
+	createNotification( title, message );
+}
+
+/**
+ * Returns the `config.ui.viewportOffset.top` config value for editors using floating toolbars that
+ * stick to the top of the viewport to remain visible to the user.
+ *
+ * The value is determined in styles by the `--ck-snippet-viewport-top-offset` custom property
+ * and may differ e.g. according to the used media queries.
+ *
+ * @returns {Number} The value of the offset.
+ */
+function getViewportTopOffsetConfig() {
+	const documentElement = document.documentElement;
+
+	return parseInt( window.getComputedStyle( documentElement ).getPropertyValue( '--ck-snippet-viewport-top-offset' ) );
 }
 
 /**
@@ -65,7 +78,7 @@ function createClipboardInputNotification() {
 *
 * @returns {Object} A notification element.
 */
-window.createNotification = function( title, message ) {
+function createNotification( title, message ) {
 	const notificationTemplate = `
 		<h3 class="main__notification-title">${ title }</h3>
 		<div class="main__notification-body">
@@ -83,7 +96,7 @@ window.createNotification = function( title, message ) {
 	notification.classList.add( 'main__notification', 'notice' );
 	notification.innerHTML = notificationTemplate;
 	// ATM we support only top-right position.
-	notification.style.top = window.getViewportTopOffsetConfig() + 10 + 'px';
+	notification.style.top = getViewportTopOffsetConfig() + 10 + 'px';
 	notification.style.right = '10px';
 	notification.appendChild( close );
 
@@ -106,63 +119,51 @@ window.createNotification = function( title, message ) {
 	} );
 
 	return notification;
-};
+}
 
-/**
- * Returns the `config.ui.viewportOffset.top` config value for editors using floating toolbars that
- * stick to the top of the viewport to remain visible to the user.
- *
- * The value is determined in styles by the `--ck-snippet-viewport-top-offset` custom property
- * and may differ e.g. according to the used media queries.
- *
- * @returns {Number} The value of the offset.
- */
-window.getViewportTopOffsetConfig = function() {
-	const documentElement = document.documentElement;
+// Replaces all relative paths inside the content container with absolute URLs
+// to avoid a broken user experience when copying images between editors.
+// It parses all `<img>` elements and `<source>` elements if they belong to the `<picture>` node.
+( () => {
+	function isRelativeUrl( url ) {
+		return !/^[a-zA-Z][a-zA-Z\d+\-.]*?:/.test( url );
+	}
 
-	return parseInt( window.getComputedStyle( documentElement ).getPropertyValue( '--ck-snippet-viewport-top-offset' ) );
-};
+	function updateSrcSetAttribute( element, baseURI ) {
+		const srcset = element.srcset.split( ',' )
+			.map( item => {
+				const [ relativeUrl, ratio ] = item.trim().split( ' ' );
 
-/**
- * Activates tabs in the given container.
- *
- * **Note**: The tabs container requires a proper markup to work correctly.
- *
- * @param {HTMLElement} tabsContainer
- * @param {Function} onTabChange A callback executed when the tab is changed. It receives the index of the selected tab.
- * It also gets called after the tabs are created.
- */
-window.createTabs = function( tabsContainer, onTabChange ) {
-	const tabTextElements = Array.from( tabsContainer.querySelectorAll( '.tabs__list__tab-text' ) );
-	const tabPanels = Array.from( tabsContainer.querySelectorAll( '.tabs__panel' ) );
+				if ( !isRelativeUrl( relativeUrl ) ) {
+					return item;
+				}
 
-	tabTextElements.forEach( tabTextElement => {
-		tabTextElement.addEventListener( 'click', evt => {
-			const clickedIndex = tabTextElements.indexOf( tabTextElement );
+				const absoluteUrl = new window.URL( relativeUrl, baseURI ).toString();
 
-			tabTextElements.forEach( element => {
-				element.parentElement.classList.toggle( 'tabs__list__tab_selected', tabTextElement === element );
-				element.setAttribute( 'aria-selected', tabTextElement === element );
-			} );
+				return [ absoluteUrl, ratio ].filter( i => i ).join( ' ' );
+			} )
+			.join( ', ' );
 
-			tabPanels.forEach( panel => {
-				panel.classList.toggle( 'tabs__panel_selected', tabPanels.indexOf( panel ) === clickedIndex );
-			} );
+		element.setAttribute( 'srcset', srcset );
+	}
 
-			if ( onTabChange ) {
-				onTabChange( clickedIndex );
+	[ ...document.querySelectorAll( '.main__content-inner img' ) ]
+		.filter( img => isRelativeUrl( img.getAttribute( 'src' ) ) )
+		.forEach( img => {
+			// Update `<img src="...">`.
+			img.setAttribute( 'src', img.src );
+
+			// Update `<img srcset="...">`.
+			if ( img.srcset ) {
+				updateSrcSetAttribute( img, img.baseURI );
 			}
 
-			evt.preventDefault();
+			// Update `<source>` elements if grouped in the `<picture>` element.
+			if ( img.parentElement instanceof window.HTMLPictureElement ) {
+				[ ...img.parentElement.querySelectorAll( 'source' ) ]
+					.forEach( source => {
+						updateSrcSetAttribute( source, img.baseURI );
+					} );
+			}
 		} );
-	} );
-
-	// Trigger the callback after the tabs are created.
-	if ( onTabChange ) {
-		const selectedTabTextElement = tabsContainer.querySelector( '.tabs__list__tab_selected .tabs__list__tab-text' ) ||
-			tabsContainer.querySelector( '.tabs__list li:first-of-type .tabs__list__tab-text' );
-
-		onTabChange( tabTextElements.indexOf( selectedTabTextElement ) );
-	}
-};
-
+} )();

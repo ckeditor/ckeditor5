@@ -4,8 +4,6 @@ category: features
 meta-title: Block indentation | CKEditor 5 Documentation
 ---
 
-{@snippet features/build-indent-source}
-
 The block indentation feature lets you set indentation for text blocks such as paragraphs, headings, or lists. This way you can visually distinguish parts of your content.
 
 ## Demo

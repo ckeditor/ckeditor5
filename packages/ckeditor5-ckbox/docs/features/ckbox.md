@@ -8,8 +8,6 @@ order: 10
 badges: [ premium ]
 ---
 
-{@snippet features/build-ckbox-source}
-
 # CKBox file manager
 
 CKBox is a dedicated asset manager supporting file and image upload. The CKBox feature lets you easily upload various files and insert images and links to other files into your content. It also offers image conversion and optimization capabilities and provides a {@link features/images-responsive responsive images mechanism} for CKEditor&nbsp;5.

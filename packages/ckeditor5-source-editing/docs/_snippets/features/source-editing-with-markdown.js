@@ -3,11 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, ClassicEditor, Markdown */
+import { Markdown } from 'ckeditor5';
+import {
+	TOKEN_URL,
+	getViewportTopOffsetConfig,
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
+import { SourceEditingEditor } from './source-editing-imports.js';
 
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
-
-ClassicEditor
+SourceEditingEditor
 	.create( document.querySelector( '#editor-markdown' ), {
 		extraPlugins: [ Markdown ],
 		toolbar: {
@@ -57,7 +62,7 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
@@ -69,9 +74,8 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.label && item.label === 'Source' ),
+		attachTourBalloon( {
+			target: findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Source' ),
 			text: 'Switch to the source mode to edit the Markdown source.',
 			editor,
 			tippyOptions: {
