@@ -24,7 +24,7 @@ export default class MultiRootEditorUIView extends EditorUIView {
 	/**
 	 * The main toolbar of the multi-root editor UI.
 	 */
-	public readonly toolbar: ToolbarView;
+	public override readonly toolbar: ToolbarView;
 
 	/**
 	 * Editable elements used by the multi-root editor UI.

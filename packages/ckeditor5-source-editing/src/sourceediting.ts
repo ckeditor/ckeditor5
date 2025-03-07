@@ -15,6 +15,8 @@ import { ButtonView, MenuBarMenuListItemButtonView, type Dialog } from 'ckeditor
 import { CKEditorError, createElement, ElementReplacer } from 'ckeditor5/src/utils.js';
 import { formatHtml } from './utils/formathtml.js';
 
+import type { Annotations } from '@ckeditor/ckeditor5-comments';
+
 import '../theme/sourceediting.css';
 
 const COMMAND_FORCE_DISABLE_ID = 'SourceEditingMode';
@@ -285,6 +287,8 @@ export default class SourceEditing extends Plugin {
 			this._dataFromRoots.set( rootName, data );
 		}
 
+		this._hideDocumentOutline();
+		this._refreshAnnotationsVisibility();
 		this._focusSourceEditing();
 	}
 
@@ -308,7 +312,37 @@ export default class SourceEditing extends Plugin {
 		this._replacedRoots.clear();
 		this._dataFromRoots.clear();
 
+		this._showDocumentOutline();
+		this._refreshAnnotationsVisibility();
+
 		editingView.focus();
+	}
+
+	/**
+	 * Hides the document outline if it is configured.
+	 */
+	private _hideDocumentOutline() {
+		if ( document.querySelector( '.ck-document-outline' ) ) {
+			( document.querySelector( '.ck-document-outline' )! as HTMLElement ).style.visibility = 'hidden';
+		}
+	}
+
+	/**
+	 * Shows the document outline if it was hidden when entering the source editing.
+	 */
+	private _showDocumentOutline() {
+		if ( document.querySelector( '.ck-document-outline' ) ) {
+			( document.querySelector( '.ck-document-outline' )! as HTMLElement ).style.visibility = '';
+		}
+	}
+
+	/**
+	 * Hides the annotations when entering the source editing mode and shows back them after leaving it.
+	 */
+	private _refreshAnnotationsVisibility() {
+		if ( this.editor.plugins.has( 'Annotations' ) ) {
+			( this.editor.plugins.get( 'Annotations' ) as Annotations ).refreshVisibility();
+		}
 	}
 
 	/**
