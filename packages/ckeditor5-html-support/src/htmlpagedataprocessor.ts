@@ -53,6 +53,11 @@ export default class HtmlPageDataProcessor extends HtmlDataProcessor {
 		// Using the DOM document with body content extracted as a skeleton of the page.
 		writer.setCustomProperty( '$fullPageDocument', domFragment.ownerDocument.documentElement.outerHTML, viewFragment );
 
+		// List of `<style>` elements extracted from document's `<head>` element.
+		const headStylesElements = Array.from( domFragment.ownerDocument.querySelectorAll( 'head style' ) );
+
+		writer.setCustomProperty( '$fullPageHeadStyles', headStylesElements, viewFragment );
+
 		if ( docType ) {
 			writer.setCustomProperty( '$fullPageDocType', docType, viewFragment );
 		}

@@ -21,6 +21,8 @@ import type {
 	TableColumnResizeEditing,
 	TableEditing,
 	TableKeyboard,
+	TableLayout,
+	TableLayoutEditing,
 	TableMouse,
 	TableProperties,
 	TablePropertiesEditing,
@@ -35,6 +37,7 @@ import type {
 	InsertColumnCommand,
 	InsertRowCommand,
 	InsertTableCommand,
+	InsertTableLayoutCommand,
 	MergeCellCommand,
 	MergeCellsCommand,
 	RemoveColumnCommand,
@@ -88,6 +91,8 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ TableColumnResizeEditing.pluginName ]: TableColumnResizeEditing;
 		[ TableEditing.pluginName ]: TableEditing;
 		[ TableKeyboard.pluginName ]: TableKeyboard;
+		[ TableLayout.pluginName ]: TableLayout;
+		[ TableLayoutEditing.pluginName ]: TableLayoutEditing;
 		[ TableMouse.pluginName ]: TableMouse;
 		[ TableProperties.pluginName ]: TableProperties;
 		[ TablePropertiesEditing.pluginName ]: TablePropertiesEditing;
@@ -105,6 +110,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		insertTableRowAbove: InsertRowCommand;
 		insertTableRowBelow: InsertRowCommand;
 		insertTable: InsertTableCommand;
+		insertTableLayout: InsertTableLayoutCommand;
 		mergeTableCellRight: MergeCellCommand;
 		mergeTableCellLeft: MergeCellCommand;
 		mergeTableCellDown: MergeCellCommand;
