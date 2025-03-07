@@ -21,7 +21,7 @@
 			/* To make the layout table outline visible when layout table is inside another layout table inside edge cells.
 			Currently this solution works on every browser except Safari. */
 			overflow: clip;
-			overflow-clip-margin: 3px;
+			overflow-clip-margin: var(--ck-widget-outline-thickness);
 
 			/* The default table layout style in the editing view when the border is unset. */
 			&:not(
