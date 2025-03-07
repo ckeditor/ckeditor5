@@ -5,8 +5,6 @@ meta-title: Code blocks | CKEditor 5 Documentation
 
 # Code blocks
 
-{@snippet features/build-code-block-source}
-
 The code block feature lets you insert and edit blocks of pre-formatted code. It is perfect for presenting programming-related content in an attractive, easy-to-read form.
 
 ## Demo

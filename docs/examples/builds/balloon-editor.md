@@ -9,8 +9,6 @@ classes: main__content--no-toc
 
 # Balloon editor
 
-{@snippet build-balloon-source}
-
 The balloon editor type lets you create your content directly in its target location with the help of a balloon toolbar that appears next to the selected editable document element.
 
 <info-box hint>

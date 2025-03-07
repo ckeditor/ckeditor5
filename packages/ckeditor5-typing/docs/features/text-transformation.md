@@ -6,8 +6,6 @@ meta-title: Automatic text transformation (autocorrect) | CKEditor 5 Documentati
 
 # Automatic text transformation (autocorrect)
 
-{@snippet features/build-text-transformation-source}
-
 The text transformation feature enables autocorrection. It automatically changes predefined text fragments into their improved forms.
 
 ## Demo

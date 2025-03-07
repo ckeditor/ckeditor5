@@ -6,7 +6,6 @@ meta-description: All about various ways of resizing images to fit the content b
 order: 50
 modified_at: 2021-06-17
 ---
-{@snippet features/build-image-source}
 
 # Resizing images
 

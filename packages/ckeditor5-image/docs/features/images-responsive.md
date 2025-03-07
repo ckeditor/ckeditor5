@@ -6,7 +6,6 @@ meta-description: Learn how responsive images can make your content better.
 order: 55
 modified_at: 2023-06-30
 ---
-{@snippet features/build-image-source}
 
 # Responsive images
 

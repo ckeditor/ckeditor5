@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
-import { IconLink } from '@ckeditor/ckeditor5-icons';
-import { Link, LinkUI } from '@ckeditor/ckeditor5-link';
+import { Plugin, IconLink, Link, LinkUI } from 'ckeditor5';
 
 export class SocialLinksPlugin extends Plugin {
 	static get requires() {
