@@ -7,9 +7,9 @@
  * @module fullscreen/handlers/abstracteditorhandler
  */
 
-import type { Editor, EditorConfig } from 'ckeditor5/src/core.js';
-import type { RevisionViewerEditor } from '@ckeditor/ckeditor5-revision-history';
 import { createElement } from 'ckeditor5/src/utils.js';
+import type { ElementApi, Editor, EditorConfig } from 'ckeditor5/src/core.js';
+import type { RevisionViewerEditor } from '@ckeditor/ckeditor5-revision-history';
 import type { Annotation, AnnotationsUIs, Sidebar } from '@ckeditor/ckeditor5-comments';
 
 /**
@@ -23,9 +23,13 @@ export default class AbstractEditorHandler {
 
 	/**
 	 * The container element that holds the fullscreen mode layout.
-	 * It's independent of the editor type.
 	 */
 	private _container: HTMLElement | null = null;
+
+	/**
+	 * The document object in which the editor is located.
+	 */
+	private _document: Document;
 
 	/**
 	 * A callback that shows the revision viewer, stored to restore the original one after exiting the fullscreen mode.
@@ -51,7 +55,7 @@ export default class AbstractEditorHandler {
 	/**
 	 * An editor instance. It should be set by the particular editor type handler.
 	 */
-	declare protected _editor: Editor;
+	declare protected _editor: Editor & Partial<ElementApi>;
 
 	/**
 	 * @inheritDoc
@@ -65,6 +69,9 @@ export default class AbstractEditorHandler {
 		}
 
 		this._editor = editor;
+		this._document = this._editor.sourceElement!.ownerDocument;
+		this._editor.config.define( 'fullscreen.container', this._document.body );
+
 		this._defaultEnable = () => this.getContainer();
 		editor.on( 'destroy', () => {
 			this.disable();
@@ -75,7 +82,7 @@ export default class AbstractEditorHandler {
 	 * Moves the given element to the fullscreen mode container, leaving a placeholder in its place.
 	 */
 	public moveToFullscreen( elementToMove: HTMLElement, placeholderName: string ): void {
-		const placeholderElement = createElement( document, 'div' );
+		const placeholderElement = createElement( this._document, 'div' );
 
 		placeholderElement.setAttribute( 'data-ck-fullscreen-placeholder', placeholderName );
 		elementToMove.replaceWith( placeholderElement );
@@ -110,7 +117,7 @@ export default class AbstractEditorHandler {
 	 */
 	public getContainer(): HTMLElement {
 		if ( !this._container ) {
-			this._container = createElement( document, 'div', {
+			this._container = createElement( this._document, 'div', {
 				class: 'ck ck-fullscreen__main-container'
 			} );
 
@@ -126,7 +133,7 @@ export default class AbstractEditorHandler {
 				</div>
 			`;
 
-			document.body.appendChild( this._container );
+			this._editor.config.get( 'fullscreen.container' )!.appendChild( this._container );
 		}
 
 		return this._container;
