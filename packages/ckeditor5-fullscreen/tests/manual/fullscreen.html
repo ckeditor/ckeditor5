@@ -1,3 +1,7 @@
+<head>
+	<meta http-equiv="Content-Security-Policy"
+		content="default-src 'none'; connect-src 'self' https://cksource.com http://*.cke-cs.com; script-src 'self' https://cksource.com; img-src * data:; style-src * 'self' 'unsafe-inline'; frame-src * data:">
+</head>
 <div class="dashboard">
 	<div>
 		<p><input name="menu-bar" type="checkbox" id="menu-bar"><label for="menu-bar">Show menu bar outside fullscreen</label></p>
@@ -88,9 +92,11 @@
 		<p><strong>Bilancino Hotel</strong></p>
 	</div>
 </div>
-<div class="custom-fullscreen-container" id="custom-fullscreen-container"></div>
 
-<iframe id="iframe" style="display:none;" srcdoc='<div class="editor-container">
+<iframe id="iframe"
+	class="iframe-with-editor"
+	srcdoc='<style>body { margin: 50px; }</style>
+	<div class="editor-container">
 	<div id="editor">
 		<h1 style="text-align:center;" id="e9c77dfcac3aa06596b87cc7b57f68dc4">The Flavorful Tuscany Meetup</h1>
 		<h2 style="text-align:center;" id="eb9c05774394678ddbdcdc66d1564fe11">Welcome letter</h2>
@@ -159,6 +165,8 @@
 </div>'>
 </iframe>
 
+<div class="custom-fullscreen-container" id="custom-fullscreen-container"></div>
+
 <style>
 	.editor-container {
 		width: 400px;
@@ -171,6 +179,12 @@
 		height: 700px;
 		background-color: hsl(51, 81%, 87%);
 		position: relative;
+		display: none;
+	}
+
+	.iframe-with-editor {
+		width: 1000px;
+		height: 700px;
 		display: none;
 	}
 </style>

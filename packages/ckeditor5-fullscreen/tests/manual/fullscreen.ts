@@ -77,6 +77,7 @@ const CUSTOM_CONTAINER_INPUT = document.getElementById( 'custom-container' ) as 
 let editorElement = document.getElementById( 'editor' )!;
 let editorInstance;
 let currentData;
+let iframeStylesInjected = false;
 
 const commonConfig = {
 	plugins: [
@@ -327,6 +328,16 @@ IFRAME_EDITOR_BUTTON.addEventListener( 'click', () => {
 	EDITOR_CONTAINER.style.display = 'none';
 	CUSTOM_FULLSCREEN_CONTAINER.style.display = CUSTOM_CONTAINER_INPUT.checked ? 'block' : 'none';
 	currentData = editorInstance.getData();
+
+	if ( !iframeStylesInjected ) {
+		const sheets = document.styleSheets;
+		for ( const sheet of sheets ) {
+			if ( sheet.ownerNode && ( sheet.ownerNode as any ).dataset.cke ) { // Typings does not have dataset so we need to cast.
+				IFRAME_DOCUMENT.head.appendChild( sheet.ownerNode.cloneNode( true ) );
+				iframeStylesInjected = true;
+			}
+		}
+	}
 
 	editorInstance.destroy().then( () => {
 		editorInstance.ui.view.toolbar.element.remove();

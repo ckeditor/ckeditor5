@@ -29,7 +29,6 @@ export default class AbstractEditorHandler {
 	private _container: HTMLElement | null = null;
 
 	/**
-<<<<<<< HEAD
 	 * A callback that shows the revision viewer, stored to restore the original one after exiting the fullscreen mode.
 	 */
 	protected _showRevisionViewerCallback: ( ( config?: EditorConfig ) => Promise<RevisionViewerEditor | null> ) | null = null;
@@ -38,11 +37,11 @@ export default class AbstractEditorHandler {
 	 * A callback that closes the revision viewer, stored to restore the original one after exiting the fullscreen mode.
 	 */
 	protected _closeRevisionViewerCallback: ( ( viewerEditor?: RevisionViewerEditor ) => Promise<unknown> ) | null = null;
-=======
+
+	/**
 	 * The document object in which the editor is located.
 	 */
 	private _document: Document;
->>>>>>> e486907331 (Add integration with iframe.)
 
 	/**
 	 * A function moving the editor UI elements to the fullscreen mode. It should be set by the particular editor type handler.
@@ -72,13 +71,10 @@ export default class AbstractEditorHandler {
 		}
 
 		this._editor = editor;
-<<<<<<< HEAD
-=======
 		this._document = this._editor.sourceElement!.ownerDocument;
 
 		this._editor.config.define( 'fullscreen.container', this._document.body );
 
->>>>>>> e486907331 (Add integration with iframe.)
 		this._defaultEnable = () => this.getContainer();
 		editor.on( 'destroy', () => {
 			this.disable();
