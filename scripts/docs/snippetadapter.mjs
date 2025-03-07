@@ -191,7 +191,8 @@ async function buildDocuments( snippets, getSnippetPlaceholder, constants, impor
 			getStyle( upath.join( relativeOutputPath, 'assets', 'ckeditor5', 'ckeditor5.css' ) ),
 			getStyle( upath.join( relativeOutputPath, 'assets', 'ckeditor5-premium-features', 'ckeditor5-premium-features.css' ) ),
 			getStyle( upath.join( relativeOutputPath, 'assets', 'global.css' ) ),
-			getScript( upath.join( relativeOutputPath, 'assets', 'global.js' ) )
+			getScript( upath.join( relativeOutputPath, 'assets', 'global.js' ) ),
+			'<script src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>'
 		];
 
 		let documentContent = await readFile( document, { encoding: 'utf-8' } );

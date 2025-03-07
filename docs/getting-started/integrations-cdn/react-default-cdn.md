@@ -6,8 +6,6 @@ category: react-cdn
 order: 10
 ---
 
-{@snippet installation/integrations/framework-integration}
-
 # React rich text editor component (CDN)
 
 <p>

@@ -5,8 +5,6 @@ category: legacy-integrations
 order: 50
 ---
 
-{@snippet installation/integrations/framework-integration}
-
 # Vue.js 3+ rich text editor component &ndash; Legacy guide
 
 <info-box warning>

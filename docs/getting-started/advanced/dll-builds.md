@@ -6,8 +6,6 @@ order: 20
 modified_at: 2022-02-22
 ---
 
-{@snippet installation/advanced/dll-builds}
-
 # (Legacy) CKEditor 5 DLL builds
 
 <info-box warning>

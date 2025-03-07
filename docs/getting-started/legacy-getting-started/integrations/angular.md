@@ -5,8 +5,6 @@ category: legacy-integrations
 order: 20
 ---
 
-{@snippet installation/integrations/framework-integration}
-
 # (Legacy) Angular rich text editor component
 
 <info-box warning>
