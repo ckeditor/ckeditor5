@@ -11,8 +11,9 @@ import { PresenceListUI } from '@ckeditor/ckeditor5-real-time-collaboration';
 import { DocumentOutlineUI } from '@ckeditor/ckeditor5-document-outline';
 import type { Editor, EditorConfig } from 'ckeditor5/src/core.js';
 import type { RevisionViewerEditor } from '@ckeditor/ckeditor5-revision-history';
-import { createElement } from 'ckeditor5/src/utils.js';
 import type { Annotation, AnnotationsUIs, Sidebar } from '@ckeditor/ckeditor5-comments';
+import { type EventInfo, createElement, Rect } from 'ckeditor5/src/utils.js';
+import { DialogViewPosition } from 'ckeditor5/src/ui.js';
 
 /**
  * The abstract editor type handler. It should be extended by the particular editor type handler.
@@ -144,6 +145,7 @@ export default class AbstractEditorHandler {
 
 		this.generatePresenceListElement();
 		this.generateDocumentOutlineElement();
+		this.registerFullscreenDialogPositionAdjustements();
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore if -- @preserve */
 		if ( this._editor.plugins.has( 'AnnotationsUIs' ) ) {
@@ -202,6 +204,8 @@ export default class AbstractEditorHandler {
 			this._container.remove();
 			this._container = null;
 		}
+
+		this.unregisterFullscreenDialogPositionAdjustements();
 	}
 
 	/* istanbul ignore next -- @preserve */
@@ -407,5 +411,96 @@ export default class AbstractEditorHandler {
 		this._editor.config.set( 'revisionHistory.closeRevisionViewerCallback', async () => {
 			return this._closeRevisionViewerCallback!();
 		} );
+	}
+
+	/**
+	 * Adds an event listener when the dialog opens to adjust its position in fullscreen mode,
+	 * utilizing the empty space on the right side of the editable element.
+	 */
+	public registerFullscreenDialogPositionAdjustements(): void {
+		if ( !this._editor.plugins.has( 'Dialog' ) ) {
+			return;
+		}
+
+		const dialog = this._editor.plugins.get( 'Dialog' );
+
+		this._setNewDialogPosition();
+
+		dialog.on( 'change:isOpen', this.updateDialogPositionCallback, { priority: 'highest' } );
+	}
+
+	/**
+	 * Removes an event listener that adjusts the dialog's position in fullscreen mode.
+	 */
+	public unregisterFullscreenDialogPositionAdjustements(): void {
+		if ( !this._editor.plugins.has( 'Dialog' ) ) {
+			return;
+		}
+
+		const dialog = this._editor.plugins.get( 'Dialog' );
+		const dialogView = dialog.view;
+
+		if ( dialogView && dialogView.position === null ) {
+			dialogView.position = DialogViewPosition.EDITOR_TOP_SIDE;
+		}
+
+		if ( dialogView ) {
+			dialogView.updatePosition();
+		}
+
+		dialog.off( 'change:isOpen', this.updateDialogPositionCallback );
+	}
+
+	/**
+	 * Stores a bound reference to the _updateDialogPosition method, allowing it to be attached and detached from change event.
+	 */
+	public updateDialogPositionCallback = this._updateDialogPosition.bind( this );
+
+	/**
+	 * An event triggered on dialog opening that sets a new position or restores previous values.
+	 */
+	private _updateDialogPosition( _evt: EventInfo, _name: string, isOpen: boolean ): void {
+		if ( isOpen ) {
+			this._setNewDialogPosition();
+		} else {
+			const dialog = this._editor.plugins.get( 'Dialog' );
+			const dialogView = dialog.view;
+
+			if ( dialogView && dialogView.position === null ) {
+				dialogView.position = DialogViewPosition.EDITOR_TOP_SIDE;
+			}
+		}
+	}
+
+	/**
+	 * Adjusts the dialog position to utilize the empty space on the right side of the editable.
+	 * The new dialog position should be on the right side of the fullscreen view with a 30px margin.
+	 * Only dialogs with the position set to "editor-top-side" should have their position changed.
+	 */
+	private _setNewDialogPosition(): void {
+		if ( !this._editor.plugins.has( 'Dialog' ) ) {
+			return;
+		}
+
+		const dialog = this._editor.plugins.get( 'Dialog' );
+		const dialogView = dialog.view!;
+
+		if ( !dialogView || dialogView.position !== DialogViewPosition.EDITOR_TOP_SIDE ) {
+			return;
+		}
+
+		const fullscreenViewContainerRect = new Rect( this._container! ).getVisible();
+		const editorContainerRect = new Rect( document.querySelector( '.ck-fullscreen__editable' ) as HTMLElement ).getVisible();
+		const dialogRect = new Rect( dialogView.element!.querySelector( '.ck-dialog' ) as HTMLElement ).getVisible();
+
+		if ( fullscreenViewContainerRect && editorContainerRect && dialogRect ) {
+			const DIALOG_OFFSET = 28;
+			dialogView.position = null;
+
+			dialogView.moveTo(
+				fullscreenViewContainerRect.left + fullscreenViewContainerRect.width - dialogRect.width - DIALOG_OFFSET,
+				editorContainerRect.top
+			);
+		}
 	}
 }
