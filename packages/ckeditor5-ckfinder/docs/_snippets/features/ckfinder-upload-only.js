@@ -12,6 +12,9 @@ import { CKFinderEditor } from './build-ckfinder-source.js';
 
 CKFinderEditor
 	.create( document.querySelector( '#snippet-ckfinder-upload-only' ), {
+		removePlugins: [
+			'CKBox'
+		],
 		toolbar: {
 			items: [
 				'undo', 'redo',

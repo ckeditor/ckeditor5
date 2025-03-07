@@ -6,8 +6,6 @@ category: cloud
 order: 30
 ---
 
-{@snippet installation/integrations/framework-integration}
-
 # Angular rich text editor component (CDN)
 
 <p>

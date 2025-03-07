@@ -15,6 +15,9 @@ ClassicEditor.builtinPlugins.push( Base64UploadAdapter );
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-base64-upload' ), {
+		removePlugins: [
+			'CKBox'
+		],
 		ui: {
 			viewportOffset: {
 				top: getViewportTopOffsetConfig()

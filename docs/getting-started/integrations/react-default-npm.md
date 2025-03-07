@@ -6,8 +6,6 @@ category: react-npm
 order: 10
 ---
 
-{@snippet installation/integrations/framework-integration}
-
 # React rich text editor component (npm)
 
 <p>

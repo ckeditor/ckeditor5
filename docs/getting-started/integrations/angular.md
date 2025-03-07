@@ -6,8 +6,6 @@ category: self-hosted
 order: 30
 ---
 
-{@snippet installation/integrations/framework-integration}
-
 # Angular rich text editor component (npm)
 
 <p>

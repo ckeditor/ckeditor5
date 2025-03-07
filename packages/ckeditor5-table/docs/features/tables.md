@@ -8,6 +8,8 @@ modified_at: 2023-02-22
 
 # Tables in CKEditor&nbsp;5 (overview)
 
+{@snippet features/build-table-source}
+
 The table feature gives you tools to create and edit tables. Tables are great for organizing data in a clear, visually appealing way.
 
 ## Demo

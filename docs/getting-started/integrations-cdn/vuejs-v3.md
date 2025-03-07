@@ -6,8 +6,6 @@ category: cloud
 order: 50
 ---
 
-{@snippet installation/integrations/framework-integration}
-
 # Vue.js 3+ rich text editor component (CDN)
 
 <p>

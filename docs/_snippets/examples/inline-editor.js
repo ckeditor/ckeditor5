@@ -9,6 +9,9 @@ const inlineInjectElements = document.querySelectorAll( '#snippet-inline-editor 
 
 Array.from( inlineInjectElements ).forEach( inlineElement => {
 	const config = {
+		removePlugins: [
+			'CKBox'
+		],
 		ui: {
 			viewportOffset: {
 				top: getViewportTopOffsetConfig()
@@ -28,6 +31,7 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 
 	if ( inlineElement.tagName.toLowerCase() == 'header' ) {
 		config.removePlugins = [
+			...config.removePlugins,
 			'Blockquote',
 			'Image',
 			'ImageCaption',

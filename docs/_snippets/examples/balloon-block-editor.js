@@ -11,6 +11,9 @@ import {
 
 BalloonBlockEditor
 	.create( document.querySelector( '#snippet-balloon-block-editor' ), {
+		removePlugins: [
+			'CKBox'
+		],
 		cloudServices: CS_CONFIG,
 		ui: {
 			viewportOffset: {

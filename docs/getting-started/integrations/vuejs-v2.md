@@ -6,8 +6,6 @@ category: self-hosted
 order: 40
 ---
 
-{@snippet installation/integrations/framework-integration}
-
 # Vue.js 2.x rich text editor component (npm)
 
 <p>

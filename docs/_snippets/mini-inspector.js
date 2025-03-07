@@ -54,6 +54,9 @@ export class MiniInspectorEditor extends DecoupledEditor {
 	];
 
 	static defaultConfig = {
+		removePlugins: [
+			'CKBox'
+		],
 		toolbar: {
 			items: [
 				'heading',

@@ -16,6 +16,9 @@ MultiRootEditor
 		},
 		// Editor configration:
 		{
+			removePlugins: [
+				'CKBox'
+			],
 			cloudServices: CS_CONFIG
 		}
 	)
