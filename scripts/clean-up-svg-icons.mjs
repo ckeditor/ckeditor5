@@ -48,7 +48,8 @@ import { execSync } from 'child_process';
 const EXCLUDED_ICONS = [
 	'settings.svg',
 	'return-arrow.svg',
-	'project-logo.svg'
+	'project-logo.svg',
+	'template-generic.svg'
 ];
 
 // A pattern to match all the icons.
