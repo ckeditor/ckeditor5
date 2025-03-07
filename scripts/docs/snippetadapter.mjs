@@ -178,21 +178,19 @@ async function buildDocuments( snippets, getSnippetPlaceholder, constants, impor
 	// Gather global tags added to each document that do not require relative paths.
 	const globalTags = [
 		`<script type="importmap">${ JSON.stringify( { imports } ) }</script>`,
-		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`
+		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
+		getScript( '%BASE_PATH%/assets/global.js' ),
+		getStyle( '%BASE_PATH%/assets/global.css' ),
+		getStyle( '%BASE_PATH%/assets/ckeditor5/ckeditor5.css' ),
+		getStyle( '%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.css' ),
+		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5/ckeditor5.js" />',
+		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.js" />'
 	];
 
 	// Iterate over each document and replace placeholders with the actual content.
 	for ( const [ document, documentSnippets ] of Object.entries( documents ) ) {
+		const documentTags = [ ...globalTags ];
 		const relativeOutputPath = upath.relative( upath.dirname( document ), outputPath );
-
-		// Get global tags added to each document that require relative paths.
-		const documentTags = [
-			...globalTags,
-			getStyle( upath.join( relativeOutputPath, 'assets', 'ckeditor5', 'ckeditor5.css' ) ),
-			getStyle( upath.join( relativeOutputPath, 'assets', 'ckeditor5-premium-features', 'ckeditor5-premium-features.css' ) ),
-			getStyle( upath.join( relativeOutputPath, 'assets', 'global.css' ) ),
-			getScript( upath.join( relativeOutputPath, 'assets', 'global.js' ) )
-		];
 
 		let documentContent = await readFile( document, { encoding: 'utf-8' } );
 
