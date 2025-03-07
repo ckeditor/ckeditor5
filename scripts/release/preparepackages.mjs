@@ -296,6 +296,7 @@ const tasks = new Listr( [
 		task: ctx => {
 			return releaseTools.commitAndTag( {
 				version: latestVersion,
+				dryRun: cliArguments.compileOnly,
 				files: [
 					'package.json',
 					`${ PACKAGES_DIRECTORY }/*/package.json`,
@@ -305,11 +306,6 @@ const tasks = new Listr( [
 		},
 		skip: () => {
 			if ( isNonCommittableRelease( cliArguments ) ) {
-				return true;
-			}
-
-			// When compiling the packages only, do not commit anything.
-			if ( cliArguments.compileOnly ) {
 				return true;
 			}
 
