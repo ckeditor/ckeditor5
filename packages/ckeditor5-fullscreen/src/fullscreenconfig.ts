@@ -44,6 +44,12 @@ export default interface FullscreenConfig {
 	disableCallback: () => void;
 
 	/**
+	 * The container element for the fullscreen mode. This should be a reference to an existing, positioned element in the DOM.
+	 * By default, the fullscreen mode is appended to the `<body>` element.
+	 */
+	container?: HTMLElement;
+
+	/**
 	 * The configuration of the menu bar in the fullscreen mode.
 	 */
 	menuBar?: {

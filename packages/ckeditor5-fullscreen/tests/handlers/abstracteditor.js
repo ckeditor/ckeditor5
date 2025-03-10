@@ -139,6 +139,9 @@ describe( 'AbstractHandler', () => {
 					<div class="ck ck-fullscreen__editable" data-ck-fullscreen="editable"></div>
 					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="right-sidebar"></div>
 				</div>
+				<div class="ck ck-fullscreen__bottom-wrapper">
+					<div class="ck ck-fullscreen__body-wrapper" data-ck-fullscreen="body-wrapper"></div>
+				</div>
 			` );
 
 			container.remove();
@@ -152,6 +155,29 @@ describe( 'AbstractHandler', () => {
 			expect( abstractHandler.getContainer().classList.contains( 'custom' ) ).to.be.true;
 
 			container.remove();
+		} );
+
+		it( 'should append the container to the body by default', () => {
+			const container = abstractHandler.getContainer();
+
+			expect( container.parentElement ).to.equal( global.document.body );
+
+			container.remove();
+		} );
+
+		it( 'should append the container to the custom container if configured', () => {
+			const customContainer = global.document.createElement( 'div' );
+
+			global.document.body.appendChild( customContainer );
+
+			editor.config.set( 'fullscreen.container', customContainer );
+
+			const container = abstractHandler.getContainer();
+
+			expect( container.parentElement ).to.equal( customContainer );
+
+			container.remove();
+			customContainer.remove();
 		} );
 	} );
 
@@ -223,6 +249,10 @@ describe( 'AbstractHandler', () => {
 
 			expect( abstractHandler._container ).to.be.null;
 			expect( container.parentElement ).to.be.null;
+		} );
+
+		it( 'should not throw if there is no container', () => {
+			expect( () => abstractHandler.disable() ).to.not.throw();
 		} );
 	} );
 

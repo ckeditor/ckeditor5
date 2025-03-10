@@ -9,7 +9,8 @@
 
 import { PresenceListUI } from '@ckeditor/ckeditor5-real-time-collaboration';
 import { DocumentOutlineUI } from '@ckeditor/ckeditor5-document-outline';
-import type { Editor, EditorConfig } from 'ckeditor5/src/core.js';
+import type { ElementApi, Editor, EditorConfig } from 'ckeditor5/src/core.js';
+import type { PaginationRenderer } from '@ckeditor/ckeditor5-pagination';
 import type { RevisionViewerEditor } from '@ckeditor/ckeditor5-revision-history';
 import type { Annotation, AnnotationsUIs, Sidebar } from '@ckeditor/ckeditor5-comments';
 import { type EventInfo, createElement, Rect } from 'ckeditor5/src/utils.js';
@@ -28,9 +29,13 @@ export default class AbstractEditorHandler {
 
 	/**
 	 * The container element that holds the fullscreen mode layout.
-	 * It's independent of the editor type.
 	 */
 	private _container: HTMLElement | null = null;
+
+	/**
+	 * The document object in which the editor is located.
+	 */
+	private _document: Document;
 
 	/**
 	 * A callback that shows the revision viewer, stored to restore the original one after exiting the fullscreen mode.
@@ -56,7 +61,7 @@ export default class AbstractEditorHandler {
 	/**
 	 * An editor instance. It should be set by the particular editor type handler.
 	 */
-	declare protected _editor: Editor;
+	declare protected _editor: Editor & Partial<ElementApi>;
 
 	/**
 	 * @inheritDoc
@@ -70,6 +75,9 @@ export default class AbstractEditorHandler {
 		}
 
 		this._editor = editor;
+		this._document = this._editor.sourceElement!.ownerDocument;
+		this._editor.config.define( 'fullscreen.container', this._document.body );
+
 		this._defaultEnable = () => this.getContainer();
 		editor.on( 'destroy', () => {
 			this.disable();
@@ -80,7 +88,7 @@ export default class AbstractEditorHandler {
 	 * Moves the given element to the fullscreen mode container, leaving a placeholder in its place.
 	 */
 	public moveToFullscreen( elementToMove: HTMLElement, placeholderName: string ): void {
-		const placeholderElement = createElement( document, 'div' );
+		const placeholderElement = createElement( this._document, 'div' );
 
 		placeholderElement.setAttribute( 'data-ck-fullscreen-placeholder', placeholderName );
 		elementToMove.replaceWith( placeholderElement );
@@ -115,7 +123,7 @@ export default class AbstractEditorHandler {
 	 */
 	public getContainer(): HTMLElement {
 		if ( !this._container ) {
-			this._container = createElement( document, 'div', {
+			this._container = createElement( this._document, 'div', {
 				class: 'ck ck-fullscreen__main-container'
 			} );
 
@@ -131,9 +139,12 @@ export default class AbstractEditorHandler {
 					<div class="ck ck-fullscreen__editable" data-ck-fullscreen="editable"></div>
 					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="right-sidebar"></div>
 				</div>
+				<div class="ck ck-fullscreen__bottom-wrapper">
+					<div class="ck ck-fullscreen__body-wrapper" data-ck-fullscreen="body-wrapper"></div>
+				</div>
 			`;
 
-			document.body.appendChild( this._container );
+			this._editor.config.get( 'fullscreen.container' )!.appendChild( this._container );
 		}
 
 		return this._container;
@@ -145,9 +156,16 @@ export default class AbstractEditorHandler {
 	public enable(): void {
 		this._defaultEnable();
 
-		this.generatePresenceListElement();
-		this.generateDocumentOutlineElement();
+		this._generatePresenceListElement();
+		this._generateDocumentOutlineElement();
 		this.registerFullscreenDialogPositionAdjustments();
+
+		// Code coverage is provided in the commercial package repository as integration unit tests.
+		/* istanbul ignore if -- @preserve */
+		if ( this._editor.plugins.has( 'Pagination' ) ) {
+			( this._editor.plugins.get( 'PaginationRenderer' ) as PaginationRenderer ).setupScrollableAncestor();
+		}
+
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore if -- @preserve */
 		if ( this._editor.plugins.has( 'AnnotationsUIs' ) ) {
@@ -177,6 +195,8 @@ export default class AbstractEditorHandler {
 			this._editor.config.get( 'fullscreen.disableCallback' )!();
 		}
 
+		this.restoreDocumentOutlineDefaultContainer();
+
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore if -- @preserve */
 		if ( this.annotationsUIsData ) {
@@ -200,38 +220,54 @@ export default class AbstractEditorHandler {
 	 * Destroys the fullscreen mode container.
 	 */
 	private _destroyContainer(): void {
-		if ( this._container ) {
-			this._container.remove();
-			this._container = null;
+		if ( !this._container ) {
+			return;
+		}
+
+		this._container.remove();
+		this._container = null;
+
+		// Code coverage is provided in the commercial package repository as integration unit tests.
+		/* istanbul ignore if -- @preserve */
+		if ( this._editor.plugins.has( 'Pagination' ) ) {
+			( this._editor.plugins.get( 'PaginationRenderer' ) as PaginationRenderer ).setupScrollableAncestor();
 		}
 
 		this.unregisterFullscreenDialogPositionAdjustments();
 	}
 
+	/**
+	 * Checks if the PresenceList plugin is available and moves its elements to fullscreen mode.
+	 */
+	// Code coverage is provided in the commercial package repository as integration unit tests.
 	/* istanbul ignore next -- @preserve */
-	public generatePresenceListElement(): void {
+	private _generatePresenceListElement(): void {
 		if ( !this._editor.plugins.has( 'PresenceListUI' ) ) {
 			return;
 		}
 
-		const presneceListElement = createElement( document, 'div', {
+		const presenceListElement = createElement( document, 'div', {
 			class: 'ck ck-fullscreen__left-sidebar-item'
 		} );
 
-		presneceListElement.innerHTML = `
+		presenceListElement.innerHTML = `
 			<div class="ck ck-fullscreen__left-sidebar-header">Connected users</div>
 			<div class="ck ck-fullscreen__presence-list" data-ck-fullscreen="presence-list"></div>
 		`;
 
-		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( presneceListElement );
+		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( presenceListElement );
 
 		const presenceListUI: PresenceListUI = this._editor.plugins.get( PresenceListUI );
 
 		this.moveToFullscreen( presenceListUI.view.element!, 'presence-list' );
 	}
 
+	/**
+	 * Checks if the DocumentOutline plugin is available and moves its elements to fullscreen mode.
+	 */
+	// Code coverage is provided in the commercial package repository as integration unit tests.
 	/* istanbul ignore next -- @preserve */
-	public generateDocumentOutlineElement(): void {
+	private _generateDocumentOutlineElement(): void {
 		if ( !this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
 			return;
 		}
@@ -261,6 +297,20 @@ export default class AbstractEditorHandler {
 		documentOutlineUI.view.documentOutlineContainer = document.querySelector( '[data-ck-fullscreen="left-sidebar"]' ) as HTMLElement;
 
 		this.moveToFullscreen( documentOutlineUI.view.element!, 'document-outline' );
+	}
+
+	/**
+	 * Restores the default value of documentOutlineContainer, which is modified in fullscreen mode.
+	 */
+	// Code coverage is provided in the commercial package repository as integration unit tests.
+	/* istanbul ignore next -- @preserve */
+	public restoreDocumentOutlineDefaultContainer(): void {
+		if ( !this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
+			return;
+		}
+
+		const documentOutlineUI: DocumentOutlineUI = this._editor.plugins.get( DocumentOutlineUI );
+		documentOutlineUI.view.documentOutlineContainer = documentOutlineUI.view.element as HTMLElement;
 	}
 
 	/**
@@ -389,11 +439,13 @@ export default class AbstractEditorHandler {
 	 *	Resets the revision history viewer callbacks to their original values.
 	 */
 	private _restoreRevisionHistoryCallbacks(): void {
+		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore next -- @preserve */
 		this._editor.config.set( 'revisionHistory.showRevisionViewerCallback', async () => {
 			return this._showRevisionViewerCallback!();
 		} );
 
+		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore next -- @preserve */
 		this._editor.config.set( 'revisionHistory.closeRevisionViewerCallback', async () => {
 			return this._closeRevisionViewerCallback!();

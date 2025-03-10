@@ -25,7 +25,7 @@ export default class FullscreenCommand extends Command {
 	 * @observable
 	 * @readonly
 	 */
-	public override value = false;
+	declare public value: boolean;
 
 	/**
 	 * Specialized class handling the fullscreen mode toggling for a specific editor type.
@@ -40,6 +40,7 @@ export default class FullscreenCommand extends Command {
 
 		this.affectsData = false;
 		this.isEnabled = true;
+		this.value = false;
 
 		// Choose the appropriate handler based on the editor type.
 		// Currently only ClassicEditor and DecoupledEditor are supported. For other editor types, the abstract handler is used

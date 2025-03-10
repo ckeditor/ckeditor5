@@ -41,13 +41,15 @@ describe( 'ClassicEditorHandler', () => {
 	} );
 
 	describe( '#enable()', () => {
-		it( 'should move the editable and toolbar to the fullscreen container', () => {
+		it( 'should move the editable, toolbar and body wrapper to the fullscreen container', () => {
 			classicEditorHandler.enable();
 
 			expect( classicEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=editable]' ).children[ 0 ] )
 				.to.equal( editor.editing.view.getDomRoot() );
 			expect( classicEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=toolbar]' ).children[ 0 ] )
 				.to.equal( editor.ui.view.toolbar.element );
+			expect( classicEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=body-wrapper]' ).children[ 0 ] )
+				.to.equal( global.document.querySelector( '.ck-body-wrapper' ) );
 		} );
 
 		it( 'should set [dir] attribute on the fullscreen container', () => {
