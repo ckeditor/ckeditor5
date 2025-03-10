@@ -1062,6 +1062,30 @@ describe( 'MenuBarView utils', () => {
 						]
 					);
 				} );
+
+				it( 'should do nothing on arrow down key if menu is disabled', () => {
+					const menuA = getMenuByLabel( menuBarView, 'A' );
+					const keyEvtData = {
+						keyCode: keyCodes.arrowdown,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					menuA.isEnabled = false;
+
+					menuA.buttonView.focus();
+					menuA.keystrokes.press( keyEvtData );
+
+					expect( barDump( menuBarView ) ).to.deep.equal(
+						[
+							{
+								label: 'A', isOpen: false, isFocused: true,
+								items: []
+							}
+
+						]
+					);
+				} );
 			} );
 
 			describe( 'toggleOnButtonClick()', () => {

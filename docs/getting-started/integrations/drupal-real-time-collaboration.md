@@ -41,9 +41,9 @@ You can use all the collaboration features **for {@link features/collaboration#a
 
 Apart from the real-time collaboration tools, the module provides various other plugins. The {@link features/format-painter format painter} feature lets users consistently style the edited text, while the {@link features/mentions mentions} feature allows you to tag other users in comments. Meanwhile, {@link features/slash-commands slash commands} let you create, insert, and format rich content on the go by typing the `/` character and choosing from many predefined actions, such as text formatting, and inserting headings, tables, or lists.
 
-### Full-screen mode
+### Fullscreen mode
 
-The full screen mode is a free-to-use plugin that maximizes the editing area. It is especially useful when using features like {@link features/document-outline document outline} or {@link features/comments comments} that take up extra space around the editor.
+The fullscreen mode is a free-to-use plugin that maximizes the editing area. It is especially useful when using features like {@link features/document-outline document outline} or {@link features/comments comments} that take up extra space around the editor.
 
 ### Document converters
 
@@ -73,7 +73,7 @@ Plugin Pack also makes it possible to use some of the premium features for free.
 Currently available premium features:
 
 * {@link features/template Templates}
-* Full-screen mode
+* Fullscreen mode
 
 Detailed descriptions of each plugin can be found on the [CKEditor&nbsp;5 Plugin Pack module page](https://www.drupal.org/project/ckeditor5_plugin_pack)
 
