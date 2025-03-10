@@ -18,7 +18,7 @@ This scenario allows you to fully control the building process of CKEditor&nbsp;
 First of all, you need to initialize a Vite project. You can use an official scaffolding tool for this purpose.
 
 <info-box>
-	Vite requires Node.js version 14.18+, 16+. However, some templates require a higher Node.js version to work, please upgrade if your package manager warns about it.
+	Vite requires Node.js version 18+, 20+, 22+. However, some templates require a higher Node.js version to work, please upgrade if your package manager warns about it.
 </info-box>
 
 The following command will initialize a basic Vite template inside the `ckeditor5-vite-example` folder.
