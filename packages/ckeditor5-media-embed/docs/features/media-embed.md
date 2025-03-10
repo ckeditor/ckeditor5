@@ -5,6 +5,8 @@ meta-title: Media embed | CKEditor 5 Documentation
 modified_at: 2021-10-08
 ---
 
+{@snippet features/build-media-source}
+
 # Media embed
 
 The media embed feature lets you insert embeddable media such as YouTube or Vimeo videos and tweets into your rich text content.

@@ -41,7 +41,8 @@ ReadOnlyEditor
 		exportPdf: {
 			stylesheets: [
 				'../assets/fonts.css',
-				'EDITOR_STYLES',
+				'../assets/ckeditor5/ckeditor5.css',
+				'../assets/ckeditor5-premium-features/ckeditor5-premium-features.css',
 				'../assets/read-only-export-pdf.css'
 			],
 			fileName: 'export-pdf-demo.pdf',
