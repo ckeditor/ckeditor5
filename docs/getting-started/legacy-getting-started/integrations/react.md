@@ -5,8 +5,6 @@ category: legacy-integrations
 order: 30
 ---
 
-{@snippet installation/integrations/framework-integration}
-
 # (Legacy) React rich text editor component
 
 <info-box warning>

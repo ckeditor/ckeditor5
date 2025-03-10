@@ -215,8 +215,8 @@ ClassicEditor
 		exportPdf: {
 			stylesheets: [
 				'../../assets/pagination-fonts.css',
-				'EDITOR_STYLES',
-				'../../snippets/features/pagination/snippet.css',
+				'../../assets/ckeditor5/ckeditor5.css',
+				'../../assets/ckeditor5-premium-features/ckeditor5-premium-features.css',
 				'../../assets/pagination.css'
 			],
 			fileName: 'export-pdf-demo.pdf',
@@ -232,7 +232,10 @@ ClassicEditor
 			tokenUrl: false
 		},
 		exportWord: {
-			stylesheets: [ 'EDITOR_STYLES' ],
+			stylesheets: [
+				'../../assets/ckeditor5/ckeditor5.css',
+				'../../assets/ckeditor5-premium-features/ckeditor5-premium-features.css'
+			],
 			fileName: 'export-word-demo.docx',
 			appID: 'cke5-docs',
 			converterOptions: {
