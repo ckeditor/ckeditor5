@@ -463,7 +463,7 @@ export default class AbstractEditorHandler {
 
 		const dialog = this._editor.plugins.get( 'Dialog' );
 
-		this._setNewDialogPosition( true );
+		this._setNewDialogPosition();
 
 		dialog.on( 'change:isOpen', this.updateDialogPositionCallback, { priority: 'highest' } );
 	}
@@ -496,18 +496,11 @@ export default class AbstractEditorHandler {
 	public updateDialogPositionCallback = this._updateDialogPosition.bind( this );
 
 	/**
-	 * An event triggered on dialog opening that sets a new position or restores previous values.
+	 * An event triggered on dialog opening that sets a new position.
 	 */
 	private _updateDialogPosition( _evt: EventInfo, _name: string, isOpen: boolean ): void {
 		if ( isOpen ) {
 			this._setNewDialogPosition();
-		} else {
-			const dialog = this._editor.plugins.get( 'Dialog' );
-			const dialogView = dialog.view;
-
-			if ( dialogView && dialogView.position === null ) {
-				dialogView.position = DialogViewPosition.EDITOR_TOP_SIDE;
-			}
 		}
 	}
 
@@ -516,7 +509,7 @@ export default class AbstractEditorHandler {
 	 * The new dialog position should be on the right side of the fullscreen view with a 30px margin.
 	 * Only dialogs with the position set to "editor-top-side" should have their position changed.
 	 */
-	private _setNewDialogPosition( isCalledOnFullscreenInit: boolean = false ): void {
+	private _setNewDialogPosition(): void {
 		if ( !this._editor.plugins.has( 'Dialog' ) ) {
 			return;
 		}
@@ -531,14 +524,9 @@ export default class AbstractEditorHandler {
 		const fullscreenViewContainerRect = new Rect( this._container! ).getVisible();
 		const editorContainerRect = new Rect( document.querySelector( '.ck-fullscreen__editable' ) as HTMLElement ).getVisible();
 		const dialogRect = new Rect( dialogView.element!.querySelector( '.ck-dialog' ) as HTMLElement ).getVisible();
-		let scrollOffset = 0;
-
-		if ( !isCalledOnFullscreenInit ) {
-			scrollOffset = new Rect(
-				document.querySelector( '.ck-fullscreen__editable-wrapper' ) as HTMLElement
-			).excludeScrollbarsAndBorders().getVisible()!.width -
+		const scrollOffset = new Rect( document.querySelector( '.ck-fullscreen__editable-wrapper' ) as HTMLElement )
+			.excludeScrollbarsAndBorders().getVisible()!.width -
 			new Rect( document.querySelector( '.ck-fullscreen__editable-wrapper' ) as HTMLElement ).getVisible()!.width;
-		}
 
 		if ( fullscreenViewContainerRect && editorContainerRect && dialogRect ) {
 			dialogView.position = null;

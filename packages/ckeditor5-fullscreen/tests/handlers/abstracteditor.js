@@ -372,7 +372,7 @@ describe( 'AbstractHandler', () => {
 	} );
 
 	describe( '_updateDialogPosition', () => {
-		it( 'should call _setNewDialogPosition if modal is opened', () => {
+		it( 'should call _setNewDialogPosition if dialog is opened', () => {
 			const spy = sinon.spy( abstractHandler, '_setNewDialogPosition' );
 
 			abstractHandler._updateDialogPosition( {}, {}, true );
@@ -380,7 +380,7 @@ describe( 'AbstractHandler', () => {
 			expect( spy ).to.be.called;
 		} );
 
-		it( 'should not call _setNewDialogPosition if modal is not opened and restore dialogView.position value', () => {
+		it( 'should not call _setNewDialogPosition if dialog is closed', () => {
 			const spy = sinon.spy( abstractHandler, '_setNewDialogPosition' );
 			const dialogPlugin = editor.plugins.get( Dialog );
 			const dialogContentView = new View();
@@ -401,12 +401,9 @@ describe( 'AbstractHandler', () => {
 				position: null
 			} );
 
-			dialogPlugin.view.position = null;
-
-			abstractHandler._updateDialogPosition( {}, {}, false );
+			dialogPlugin.hide();
 
 			expect( spy ).not.to.be.called;
-			expect( dialogPlugin.view.position ).to.equal( DialogViewPosition.EDITOR_TOP_SIDE );
 		} );
 	} );
 
