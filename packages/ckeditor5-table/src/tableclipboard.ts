@@ -100,26 +100,35 @@ export default class TableClipboard extends Plugin {
 	private _listenToContentInsertion() {
 		const { editor } = this;
 		const clipboardPipeline = editor.plugins.get( ClipboardPipeline );
+		const tableSelection = editor.plugins.get( TableSelection );
 
-		let isDrop = false;
+		let isPaste = false;
 
 		clipboardPipeline.on<ClipboardContentInsertionEvent>( 'contentInsertion', ( evt, data ) => {
-			isDrop = data.method === 'drop';
+			isPaste = data.method === 'paste';
 		} );
 
 		this.listenTo<ModelInsertContentEvent>(
 			editor.model,
 			'insertContent',
 			( evt, [ content, selectable ] ) => {
-				if ( !isDrop ) {
-					this._onInsertContent( evt, content, selectable );
+				// For non-paste operations (like drag & drop), only handle the event when multiple cells are selected.
+				// For paste operations, proceed regardless of selection size.
+				if ( !isPaste ) {
+					const selectedCells = tableSelection.getSelectedTableCells();
+
+					if ( !selectedCells || selectedCells.length === 1 ) {
+						return;
+					}
 				}
+
+				this._onInsertContent( evt, content, selectable );
 			},
 			{ priority: 'high' }
 		);
 
 		clipboardPipeline.on<ClipboardContentInsertionEvent>( 'contentInsertion', () => {
-			isDrop = false;
+			isPaste = false;
 		}, { priority: 'lowest' } );
 	}
 
