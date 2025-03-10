@@ -184,7 +184,10 @@ export function isSingleParagraphWithoutAttributes( modelElement: Element ): boo
 function toTableWidget( viewElement: ViewElement, writer: DowncastWriter ): ViewElement {
 	writer.setCustomProperty( 'table', true, viewElement );
 
-	return toWidget( viewElement, writer, { hasSelectionHandle: true } );
+	return toWidget( viewElement, writer, {
+		hasSelectionHandle: true,
+		label: 'It\'s a table widget with 4 x 4 cells.'
+	} );
 }
 
 /**
