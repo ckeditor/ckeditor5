@@ -9,9 +9,9 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
+import { IconFullscreenOff, IconFullscreenOn } from 'ckeditor5/src/icons.js';
 
 import FullscreenEditing from './fullscreenediting.js';
-import fullscreenIcon from '../theme/icons/fullscreen.svg';
 import '../theme/fullscreen.css';
 
 const COMMAND_NAME = 'fullscreen';
@@ -61,13 +61,13 @@ export default class FullscreenUI extends Plugin {
 		const view = new ButtonClass( editor.locale );
 
 		view.set( {
-			label: t( 'Fullscreen mode' ),
-			icon: fullscreenIcon,
 			isToggleable: true
 		} );
 
 		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
 		view.bind( 'isOn' ).to( command, 'value' );
+		view.bind( 'icon' ).to( command, 'value', value => value ? IconFullscreenOn : IconFullscreenOff );
+		view.bind( 'label' ).to( command, 'value', value => value ? t( 'Disable fullscreen mode' ) : t( 'Enable fullscreen mode' ) );
 
 		if ( ( view instanceof MenuBarMenuListItemButtonView ) ) {
 			view.set( {

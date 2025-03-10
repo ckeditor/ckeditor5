@@ -1,4 +1,4 @@
 {
-	"Enter fullscreen mode": "Button that enters fullscreen mode when pressed",
-	"Leave fullscreen mode": "Button that leaves fullscreen mode when pressed"
+	"Enable fullscreen mode": "Button that enables fullscreen mode when pressed",
+	"Disable fullscreen mode": "Button that disables fullscreen mode when pressed"
 }
