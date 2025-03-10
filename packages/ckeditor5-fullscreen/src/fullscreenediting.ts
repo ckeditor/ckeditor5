@@ -11,8 +11,6 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
 import FullscreenCommand from './fullscreencommand.js';
 
-const FULLSCREEN = 'fullscreen';
-
 /**
  * A plugin that registers the fullscreen mode command.
  */
@@ -49,13 +47,13 @@ export default class FullscreenEditing extends Plugin {
 		const t = this.editor.locale.t;
 
 		// Set the Ctrl+Shift+F keystroke.
-		this.editor.keystrokes.set( 'Ctrl+Shift+F', FULLSCREEN );
+		this.editor.keystrokes.set( 'Ctrl+Shift+F', 'fullscreen' );
 
 		// Add the information about the keystroke to the accessibility database.
 		this.editor.accessibility.addKeystrokeInfos( {
 			keystrokes: [
 				{
-					label: t( 'Fullscreen mode' ),
+					label: t( 'Toggle fullscreen mode' ),
 					keystroke: 'CTRL+SHIFT+F'
 				}
 			],
