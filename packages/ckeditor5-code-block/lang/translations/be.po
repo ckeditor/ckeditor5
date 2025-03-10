@@ -1,0 +1,40 @@
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: be\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && n % 100 != 11 ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "A label of the button that allows inserting a new code block into the editor content."
+msgid "Insert code block"
+msgstr "Уставіць код"
+
+msgctxt "A language of the code block in the editor content when no specific programming language is associated with it."
+msgid "Plain text"
+msgstr "Просты тэкст"
+
+msgctxt "Assistive technologies label for leaving the code block with a specified programming language. Example: 'Leaving JavaScript code snippet'"
+msgid "Leaving %0 code snippet"
+msgstr "Астаўляем фрагмент кода %0"
+
+msgctxt "Assistive technologies label for entering the code block with a specified programming language. Example: 'Entering JavaScript code snippet'"
+msgid "Entering %0 code snippet"
+msgstr "Увод фрагмента кода %0"
+
+msgctxt "Assistive technologies label for entering the code block with unspecified programming language."
+msgid "Entering code snippet"
+msgstr "Увод фрагмента кода"
+
+msgctxt "Assistive technologies label for leaving the code block with unspecified programming language."
+msgid "Leaving code snippet"
+msgstr "Астаўляем фрагмент кода"
+
+msgctxt "The accessible label of the menu bar button that inserts a code block into editor content."
+msgid "Code block"
+msgstr "Блок кода"

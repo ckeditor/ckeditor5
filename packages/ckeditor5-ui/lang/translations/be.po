@@ -1,0 +1,208 @@
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: be\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && n % 100 != 11 ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "Title of the CKEditor5 editor."
+msgid "Rich Text Editor"
+msgstr "Рэдактар"
+
+msgctxt "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Edit block"
+msgstr "Рэдагаваць блок"
+
+msgctxt "First part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Click to edit block"
+msgstr "Націсніце, каб рэдагаваць блок"
+
+msgctxt "Second part of the label of the block toolbar icon when functionality of drag and drop is available (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)"
+msgid "Drag to move"
+msgstr "Перацягніце"
+
+msgctxt "Label for a button showing the next thing (tab, page, etc.)."
+msgid "Next"
+msgstr "Наступны"
+
+msgctxt "Label for a button showing the previous thing (tab, page, etc.)."
+msgid "Previous"
+msgstr "Папярэдні"
+
+msgctxt "Label used by assistive technologies describing a generic editor toolbar."
+msgid "Editor toolbar"
+msgstr "Панэль інструментаў рэдактара"
+
+msgctxt "Label used by assistive technologies describing a toolbar displayed inside a dropdown."
+msgid "Dropdown toolbar"
+msgstr "Выпадаючая панэль інструментаў"
+
+msgctxt "Label used by assistive technologies describing a menu displayed inside a dropdown."
+msgid "Dropdown menu"
+msgstr "Выпадаючае меню"
+
+msgctxt "Label of a button that applies a black color in color pickers."
+msgid "Black"
+msgstr "Чорны"
+
+msgctxt "Label of a button that applies a dim grey color in color pickers."
+msgid "Dim grey"
+msgstr "Цёмны серы"
+
+msgctxt "Label of a button that applies a grey color in color pickers."
+msgid "Grey"
+msgstr "Серы"
+
+msgctxt "Label of a button that applies a light grey color in color pickers."
+msgid "Light grey"
+msgstr "Светла-серы"
+
+msgctxt "Label of a button that applies a white color in color pickers."
+msgid "White"
+msgstr "Белы"
+
+msgctxt "Label of a button that applies a red color in color pickers."
+msgid "Red"
+msgstr "Чырвоны"
+
+msgctxt "Label of a button that applies a orange color in color pickers."
+msgid "Orange"
+msgstr "Аранжавы"
+
+msgctxt "Label of a button that applies a yellow color in color pickers."
+msgid "Yellow"
+msgstr "Жоўты"
+
+msgctxt "Label of a button that applies a light green color in color pickers."
+msgid "Light green"
+msgstr "Салатавы"
+
+msgctxt "Label of a button that applies a green color in color pickers."
+msgid "Green"
+msgstr "Зялёны"
+
+msgctxt "Label of a button that applies a aquamarine color in color pickers."
+msgid "Aquamarine"
+msgstr "Аквамарынавы"
+
+msgctxt "Label of a button that applies a turquoise color in color pickers."
+msgid "Turquoise"
+msgstr "Бірузовы"
+
+msgctxt "Label of a button that applies a light blue color in color pickers."
+msgid "Light blue"
+msgstr "Блакітны"
+
+msgctxt "Label of a button that applies a blue color in color pickers."
+msgid "Blue"
+msgstr "Сіні"
+
+msgctxt "Label of a button that applies a purple color in color pickers."
+msgid "Purple"
+msgstr "Фіялетавы"
+
+msgctxt "Accessible label of a toolbar that shows up next to the blocks of content (e.g. headings, paragraphs)."
+msgid "Editor block content toolbar"
+msgstr "Панэль інструментаў рэдактара"
+
+msgctxt "Accessible label of a balloon toolbar that shows up right next to the user selection (the caret)."
+msgid "Editor contextual toolbar"
+msgstr "Кантэкстуальная панэль інструментаў рэдактара"
+
+msgctxt "Label of an input field for typing colors in the HEX color format."
+msgid "HEX"
+msgstr "HEX"
+
+msgctxt "The main text of the message shown to the user when given query does not match any results."
+msgid "No results found"
+msgstr "Няма вынікаў"
+
+msgctxt "The main text of the message shown to the user when no results are available."
+msgid "No searchable items"
+msgstr "Няма элементаў для пошуку"
+
+msgctxt "A default label of a dialog window displayed on top the editor."
+msgid "Editor dialog"
+msgstr "Дыялогавае акно рэдактара"
+
+msgctxt "The label and the tooltip for the close button in the dialog header."
+msgid "Close"
+msgstr "Закрыць"
+
+msgctxt "Accessibility help dialog assistive technologies label telling users how to exit the dialog."
+msgid "Help Contents. To close this dialog press ESC."
+msgstr "Змест дапамогі. Каб закрыць гэта дыялогавае акно, націсніце ESC."
+
+msgctxt "Accessibility help dialog text explaining what can be found in that dialog."
+msgid "Below, you can find a list of keyboard shortcuts that can be used in the editor."
+msgstr "Ніжэй вы можаце знайсці спіс камбінацый клавіш, якія можна выкарыстоўваць у рэдактары."
+
+msgctxt "Accessibility help dialog text displayed next to keystrokes that may require the Fn key on Mac."
+msgid "(may require <kbd>Fn</kbd>)"
+msgstr "(можа патрабаваць <kbd>Fn</kbd>)"
+
+msgctxt "The label for the button that opens the Accessibility help dialog from the application menu bar."
+msgid "Accessibility"
+msgstr "Даступнасць"
+
+msgctxt "Accessibility help dialog title."
+msgid "Accessibility help"
+msgstr "Дапамога па спецыяльных магчымасцях"
+
+msgctxt "Assistive technologies label added to each editor editing area informing users about the possibility of opening the accessibility help dialog."
+msgid "Press %0 for help."
+msgstr "Націсніце %0 для атрымання дапамогі."
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving focus out of an active dialog window."
+msgid "Move focus in and out of an active dialog window"
+msgstr "Перамясціць фокус у актыўнае дыялогавае акно і наадварот."
+
+msgctxt "The label of the top-level application menu bar menu containing buttons and features related to the whole document (e.g. export to PDF, import from Word, etc.)."
+msgid "MENU_BAR_MENU_FILE"
+msgstr "Файл"
+
+msgctxt "The label of the top-level application menu bar menu containing buttons and features related to general editing (e.g. undo, redo, select all, etc.)."
+msgid "MENU_BAR_MENU_EDIT"
+msgstr "Рэдагаваць"
+
+msgctxt "The label of the top-level application menu bar menu containing buttons and features related to the view of the editor (e.g. show source)."
+msgid "MENU_BAR_MENU_VIEW"
+msgstr "Паглядзець"
+
+msgctxt "The label of the top-level application menu bar menu containing buttons and features that insert content (e.g. insert table, insert image, etc.)."
+msgid "MENU_BAR_MENU_INSERT"
+msgstr "Уставіць"
+
+msgctxt "The label of the top-level application menu bar menu containing buttons and features related to content formatting (e.g. bold, font color, heading, etc.)."
+msgid "MENU_BAR_MENU_FORMAT"
+msgstr "Фармат"
+
+msgctxt "The label of the top-level application menu bar menu containing various editor tools (e.g. AI assistant, track changes, etc.)."
+msgid "MENU_BAR_MENU_TOOLS"
+msgstr "Інструменты"
+
+msgctxt "The label of the top-level application menu bar menu containing buttons and features helping users to learn about the editor (e.g. accessibility help)."
+msgid "MENU_BAR_MENU_HELP"
+msgstr "Дапамога"
+
+msgctxt "The label of the application menu bar menu containing buttons and features that apply formatting to a text (e.g. bold, italic, etc.)."
+msgid "MENU_BAR_MENU_TEXT"
+msgstr "Тэкст"
+
+msgctxt "The label of the application menu bar menu containing buttons and features that control the font of the edited content (e.g. font size, font color, etc.)."
+msgid "MENU_BAR_MENU_FONT"
+msgstr "Шрыфт"
+
+msgctxt "The accessible label of the editor menu bar used by assistive technologies."
+msgid "Editor menu bar"
+msgstr "Панэль меню рэдактара"
+
+msgctxt "An error text displayed when user attempted to enter an color that is not in HEX format."
+msgid "Please enter a valid color (e.g. \"ff0000\")."
+msgstr "Увядзіце сапраўдны колер (напрыклад, \"ff0000\")."
