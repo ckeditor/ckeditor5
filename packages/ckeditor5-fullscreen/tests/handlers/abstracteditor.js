@@ -144,6 +144,29 @@ describe( 'AbstractHandler', () => {
 
 			container.remove();
 		} );
+
+		it( 'should append the container to the body by default', () => {
+			const container = abstractHandler.getContainer();
+
+			expect( container.parentElement ).to.equal( global.document.body );
+
+			container.remove();
+		} );
+
+		it( 'should append the container to the custom container if configured', () => {
+			const customContainer = global.document.createElement( 'div' );
+
+			global.document.body.appendChild( customContainer );
+
+			editor.config.set( 'fullscreen.container', customContainer );
+
+			const container = abstractHandler.getContainer();
+
+			expect( container.parentElement ).to.equal( customContainer );
+
+			container.remove();
+			customContainer.remove();
+		} );
 	} );
 
 	describe( '#enable()', () => {
