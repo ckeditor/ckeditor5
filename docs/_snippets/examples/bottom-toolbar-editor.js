@@ -3,31 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
-
-import { Plugin } from '@ckeditor/ckeditor5-core';
-import { IconFontColor } from '@ckeditor/ckeditor5-icons';
-import { Font } from '@ckeditor/ckeditor5-font';
-import { Indent } from '@ckeditor/ckeditor5-indent';
-import { List } from '@ckeditor/ckeditor5-list';
-import { Alignment } from '@ckeditor/ckeditor5-alignment';
-import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { DropdownView, ToolbarView, createDropdown } from '@ckeditor/ckeditor5-ui';
-import { EasyImage } from '@ckeditor/ckeditor5-easy-image';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Heading } from '@ckeditor/ckeditor5-heading';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { Image, ImageInsert, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, ImageResize } from '@ckeditor/ckeditor5-image';
-import { Link } from '@ckeditor/ckeditor5-link';
-import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
-import { Bold, Italic, Strikethrough, Superscript, Subscript, Underline } from '@ckeditor/ckeditor5-basic-styles';
-import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-
-import DecoupledEditor from '../build-decoupled-document.js';
+import {
+	Plugin, IconFontColor, Font, Indent, List, Alignment, Autoformat, BlockQuote, DropdownView,
+	ToolbarView, createDropdown, EasyImage, Essentials, Heading, HorizontalLine, Image,
+	ImageInsert, ImageCaption, ImageStyle, ImageToolbar, ImageUpload, ImageResize, Link,
+	MediaEmbed, Paragraph, RemoveFormat, Bold, Italic, Strikethrough, Superscript, Subscript,
+	Underline, Table, TableToolbar
+} from 'ckeditor5';
+import {
+	CS_CONFIG,
+	DecoupledEditor,
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
 
 class FormattingOptions extends Plugin {
 	/**
@@ -201,8 +189,7 @@ DecoupledEditor
 				'mergeTableCells'
 			]
 		},
-		cloudServices: CS_CONFIG,
-		licenseKey: 'GPL'
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editor = editor;
@@ -217,9 +204,11 @@ DecoupledEditor
 		overrideTooltipPositions( editor.ui.view.toolbar );
 		overrideTooltipPositions( editor.plugins.get( 'FormattingOptions' ).toolbarView );
 
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.label && item.label === 'Formatting options' ),
+		attachTourBalloon( {
+			target: findToolbarItem(
+				editor.ui.view.toolbar,
+				item => item.label && item.label === 'Formatting options'
+			),
 			text: 'Click to open formatting options.',
 			editor,
 			tippyOptions: {

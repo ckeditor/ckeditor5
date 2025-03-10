@@ -8,9 +8,10 @@ import {
 	LabeledFieldView,
 	createLabeledInputText,
 	ButtonView,
-	submitHandler
-} from '@ckeditor/ckeditor5-ui';
-import { IconCheck, IconCancel } from '@ckeditor/ckeditor5-icons';
+	submitHandler,
+	IconCheck,
+	IconCancel
+} from 'ckeditor5';
 
 export default class FormView extends View {
 	constructor( locale ) {

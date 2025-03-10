@@ -3,16 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, ClassicEditor, CS_CONFIG, CKEditorPlugins */
-
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
+import { AutoLink } from 'ckeditor5';
+import {
+	CS_CONFIG,
+	TOKEN_URL,
+	ClassicEditor,
+	getViewportTopOffsetConfig,
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
+import { SocialLinksPlugin } from './build-link-source.js';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-link-providers' ), {
 		cloudServices: CS_CONFIG,
 		extraPlugins: [
-			CKEditorPlugins.AutoLink,
-			CKEditorPlugins.SocialLinksPlugin
+			AutoLink,
+			SocialLinksPlugin
 		],
 		toolbar: {
 			items: [
@@ -28,16 +35,15 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
-		},
-		licenseKey: 'GPL'
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
 
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Link' ),
+		attachTourBalloon( {
+			target: findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Link' ),
 			text: 'Use to access a link list.',
 			editor
 		} );

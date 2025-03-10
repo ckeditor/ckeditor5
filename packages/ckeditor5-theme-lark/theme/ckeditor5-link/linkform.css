@@ -48,6 +48,11 @@
 		& .ck-link__button {
 			padding: var(--ck-spacing-small) var(--ck-spacing-large);
 			border-radius: 0;
+
+			& > .ck-button__label {
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
 		}
 	}
 }

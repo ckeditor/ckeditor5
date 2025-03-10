@@ -5,8 +5,6 @@ meta-title: Headings | CKEditor 5 Documentation
 
 # Headings
 
-{@snippet features/heading-source}
-
 The heading feature helps you structure your document by adding headings to parts of the text. They make your content easier to scan by both readers and search engines.
 
 ## Demo

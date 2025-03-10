@@ -144,6 +144,12 @@ describe( 'MentionUI', () => {
 
 			expect( panelView.isVisible ).to.be.false;
 		} );
+
+		// See #17964
+		it( 'should have the ck-mention-balloon class to make sure z-index does not conflict with the dialog system', () => {
+			expect( balloonAddSpy.callCount ).to.equal( 1 );
+			expect( balloonAddSpy.firstCall.args[ 0 ].balloonClassName ).to.equal( 'ck-mention-balloon' );
+		} );
 	} );
 
 	describe( 'position', () => {

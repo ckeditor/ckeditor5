@@ -3,12 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals ClassicEditor, console, window, document */
+import {
+	CS_CONFIG,
+	TOKEN_URL,
+	getViewportTopOffsetConfig
+} from '@snippets/index.js';
+import { TextAlignmentEditor } from './build-text-alignment-source.js';
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
-
-ClassicEditor
+TextAlignmentEditor
 	.create( document.querySelector( '#snippet-custom-text-alignment-options' ), {
 		toolbar: {
 			items: [
@@ -28,7 +30,7 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
@@ -39,8 +41,7 @@ ClassicEditor
 		alignment: {
 			options: [ 'left', 'right' ]
 		},
-		cloudServices: CS_CONFIG,
-		licenseKey: 'GPL'
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editor = editor;

@@ -3,17 +3,27 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals ClassicEditor, CKEditorPlugins, console, window, document */
+import {
+	TableColumnResize,
+	TableCaption,
+	TableProperties,
+	TableCellProperties
+} from 'ckeditor5';
+import {
+	TOKEN_URL,
+	getViewportTopOffsetConfig,
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
+import { TableEditor } from './build-table-source.js';
 
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
-
-ClassicEditor
+TableEditor
 	.create( document.querySelector( '#snippet-tables' ), {
 		extraPlugins: [
-			CKEditorPlugins.TableColumnResize,
-			CKEditorPlugins.TableCaption,
-			CKEditorPlugins.TableProperties,
-			CKEditorPlugins.TableCellProperties
+			TableColumnResize,
+			TableCaption,
+			TableProperties,
+			TableCellProperties
 		],
 		table: {
 			contentToolbar: [ 'toggleTableCaption', '|', 'tableColumn', 'tableRow', 'mergeTableCells', '|',
@@ -33,23 +43,24 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
 			tokenUrl: TOKEN_URL,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
-		},
-		licenseKey: 'GPL'
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
 		window.editorCaption = editor;
 
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Insert table' ),
+		attachTourBalloon( {
+			target: findToolbarItem(
+				editor.ui.view.toolbar,
+				item => item.buttonView?.label === 'Insert table'
+			),
 			text: 'Click to create a table.',
 			editor,
 			tippyOptions: {

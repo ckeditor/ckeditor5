@@ -3,17 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
-
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import { TodoList } from '@ckeditor/ckeditor5-list';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
-
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
-
-// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic.js';
+import { TodoList, CKBox, CKBoxImageEdit, PictureEditing, ImageResize, AutoImage } from 'ckeditor5';
+import {
+	TOKEN_URL,
+	CS_CONFIG,
+	ClassicEditor,
+	getViewportTopOffsetConfig,
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
 
 ClassicEditor.builtinPlugins.push( TodoList, CKBox, CKBoxImageEdit, PictureEditing, ImageResize, AutoImage );
 
@@ -37,21 +35,20 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
 			tokenUrl: TOKEN_URL,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
-		},
-		licenseKey: 'GPL'
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
 
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'To-do List' ),
+		attachTourBalloon( {
+			target: findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'To-do List' ),
 			text: 'Click to create a to-do list.',
 			editor
 		} );

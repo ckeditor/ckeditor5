@@ -5,7 +5,6 @@ meta-title: Image upload overview | CKEditor 5 Documentation
 order: 10
 ---
 
-{@snippet features/build-image-upload-source}
 # Image upload overview
 
 Inserting {@link features/images-overview images} into content created with CKEditor&nbsp;5 is quite a common task. In a properly configured rich-text editor, there are several ways for the end user to insert images:

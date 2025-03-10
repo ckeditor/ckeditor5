@@ -360,12 +360,12 @@ export default class PluginCollection<TContext extends object>
 			 * This is usually done in CKEditor 5 builds by setting the {@link module:core/editor/editor~Editor.builtinPlugins}
 			 * property.
 			 *
-			 * **If you see this warning when using one of the CKEditor 5 Builds},
-			 * it means that you try to enable a plugin which was not included in that build. This may be due to a typo
-			 * in the plugin name or simply because that plugin is not a part of this build.
+			 * **If you see this warning when using one of the deprecated CKEditor 5 Builds**,
+			 * it means that you tried to enable a plugin that was not included in that build. This may be due to a typo
+			 * in the plugin name or simply because that plugin was not a part of this build.
 			 *
-			 * Predefined builds are a deprecated solution and we strongly advise
-			 * {@glink updating/nim-migration/migration-to-new-installation-methods migrating to new installation methods}.
+			 * **Predefined builds are no longer supported and you need to
+			 * {@glink updating/nim-migration/migration-to-new-installation-methods migrate to new installation methods}**.
 			 *
 			 * **If you see this warning when using one of the editor creators directly** (not a build), then it means
 			 * that you tried loading plugins by name. However, unlike CKEditor 4, CKEditor 5 does not implement a "plugin loader".

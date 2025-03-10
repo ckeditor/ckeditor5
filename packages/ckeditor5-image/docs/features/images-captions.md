@@ -5,7 +5,6 @@ meta-title: Image captions | CKEditor 5 Documentation
 meta-description: Utilizing image captions to enhance your rich content.
 order: 30
 ---
-{@snippet features/build-image-source}
 
 # Image captions
 

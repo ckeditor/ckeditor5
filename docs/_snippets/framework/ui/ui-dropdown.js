@@ -3,22 +3,33 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals Locale, Collection, Model, createDropdown, addListToDropdown, ButtonView,
-icons, SplitButtonView, addToolbarToDropdown, ToolbarView, document */
+import {
+	ButtonView,
+	SplitButtonView,
+	ToolbarView,
+	addListToDropdown,
+	addToolbarToDropdown,
+	createDropdown,
+	ViewModel,
+	IconBold,
+	IconItalic,
+	Collection,
+	Locale
+} from 'ckeditor5';
 
 const locale = new Locale();
 
 const collection = new Collection();
 collection.add( {
 	type: 'button',
-	model: new Model( {
+	model: new ViewModel( {
 		label: 'Button',
 		withText: true
 	} )
 } );
 collection.add( {
 	type: 'switchbutton',
-	model: new Model( {
+	model: new ViewModel( {
 		label: 'Switch button',
 		withText: true
 	} )
@@ -35,8 +46,8 @@ listDropdown.render();
 const bold = new ButtonView();
 const italic = new ButtonView();
 
-bold.set( { label: 'Bold', withText: false, icon: icons.IconBold } );
-italic.set( { label: 'Italic', withText: false, icon: icons.IconItalic } );
+bold.set( { label: 'Bold', withText: false, icon: IconBold } );
+italic.set( { label: 'Italic', withText: false, icon: IconItalic } );
 
 const buttons = [ bold, italic ];
 

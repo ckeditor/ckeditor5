@@ -3,12 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals ClassicEditor, console, document, window */
+import {
+	TOKEN_URL,
+	CS_CONFIG,
+	getViewportTopOffsetConfig,
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
+import { HeadingEditor } from './heading-source.js';
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
-
-ClassicEditor
+HeadingEditor
 	.create( document.querySelector( '#snippet-heading-buttons' ), {
 		cloudServices: CS_CONFIG,
 		toolbar: {
@@ -41,23 +45,20 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
 			tokenUrl: TOKEN_URL,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
-		},
-		licenseKey: 'GPL'
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
 
-		window.attachTourBalloon( {
-			target: window.findToolbarItem(
-				editor.ui.view.toolbar, item => item.label && item.label === 'Heading 1'
-			),
+		attachTourBalloon( {
+			target: findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Heading 1' ),
 			text: 'Click to choose heading level.',
 			editor,
 			tippyOptions: {

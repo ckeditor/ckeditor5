@@ -12,8 +12,6 @@ The special characters feature lets you insert **mathematical operators**, **cur
 
 Use the special characters toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/special-characters.svg Special characters} in the editor below to open a [configurable](#configuration) panel with a table of selectable special characters.
 
-{@snippet features/special-characters-source}
-
 {@snippet features/special-characters}
 
 <info-box info>
@@ -97,7 +95,7 @@ Below you can see a demo based on the example shown above. Use the special chara
 {@snippet features/special-characters-new-category}
 
 <info-box>
-	You may also check out the ready-to-use {@link features/emoji emoji feature} in order to quickly insert desired emoji into the document.
+	You may also check out the ready-to-use {@link features/emoji Emoji feature} in order to quickly insert desired emoji into the document.
 </info-box>
 
 ### Adding characters to an existing category

@@ -646,13 +646,13 @@ describe( 'TableLayoutEditing', () => {
 		} );
 
 		describe( 'GHS integration', () => {
-			let ghsEditor, model, editorElement;
+			let ghsEditor, ghsModel, ghsEditorElement;
 
 			beforeEach( async () => {
-				editorElement = document.createElement( 'div' );
-				document.body.appendChild( editorElement );
+				ghsEditorElement = document.createElement( 'div' );
+				document.body.appendChild( ghsEditorElement );
 
-				ghsEditor = await ClassicTestEditor.create( editorElement, {
+				ghsEditor = await ClassicTestEditor.create( ghsEditorElement, {
 					plugins: [
 						Table, TableCaption, TableColumnResize, PlainTableOutput,
 						TableLayoutEditing, Paragraph, GeneralHtmlSupport
@@ -669,24 +669,23 @@ describe( 'TableLayoutEditing', () => {
 					}
 				} );
 
-				model = editor.model;
-				view = editor.editing.view;
+				ghsModel = ghsEditor.model;
 			} );
 
 			afterEach( async () => {
-				editorElement.remove();
+				ghsEditorElement.remove();
 
 				await ghsEditor.destroy();
 			} );
 
 			it( 'should set `tableType` to `layout` when there is class `layout-table`', () => {
-				editor.setData(
+				ghsEditor.setData(
 					'<table class="table layout-table">' +
 						'<tr><td>1</td></tr>' +
 					'</table>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getModelData( ghsModel, { withoutSelection: true } ) ).to.equal(
 					'<table tableType="layout">' +
 						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 					'</table>'
@@ -694,21 +693,65 @@ describe( 'TableLayoutEditing', () => {
 			} );
 
 			it( 'role="presentation" attribute should be consumed', () => {
-				editor.setData(
+				ghsEditor.setData(
 					'<table role="presentation">' +
 						'<tr><td>1</td></tr>' +
 					'</table>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getModelData( ghsModel, { withoutSelection: true } ) ).to.equal(
 					'<table tableType="layout">' +
 						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
 					'</table>'
 				);
 			} );
 
+			it( 'class="layout-table" should be consumed but not `foobar` class', () => {
+				ghsEditor.setData(
+					'<table class="layout-table foobar">' +
+						'<tr><td>1</td></tr>' +
+					'</table>'
+				);
+
+				expect( getModelData( ghsModel, { withoutSelection: true } ) ).to.equal(
+					'<table htmlTableAttributes="{"classes":["foobar"]}" tableType="layout">' +
+						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'class="content-table" should be consumed and `tableType` set to `content', () => {
+				ghsEditor.setData(
+					'<table class="content-table foobar">' +
+						'<tr><td>1</td></tr>' +
+					'</table>'
+				);
+
+				expect( getModelData( ghsModel, { withoutSelection: true } ) ).to.equal(
+					'<table htmlTableAttributes="{"classes":["foobar"]}" tableType="content">' +
+						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+					'</table>'
+				);
+			} );
+
+			it( 'class="layout-table" should be consumed and `tabletype` set to `content`', () => {
+				ghsEditor.setData(
+					'<table class="table layout-table">' +
+						'<caption>Should be content table</caption>' +
+						'<tr><td>1</td></tr>' +
+					'</table>'
+				);
+
+				expect( getModelData( ghsModel, { withoutSelection: true } ) ).to.equal(
+					'<table tableType="content">' +
+						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+						'<caption>Should be content table</caption>' +
+					'</table>'
+				);
+			} );
+
 			it( 'should set `tableType` to `layout` also add tableWidth="30%" and apply tableColumnGroup', () => {
-				editor.setData(
+				ghsEditor.setData(
 					'<table class="table layout-table" style="width:30%;" role="presentation">' +
 						'<colgroup>' +
 							'<col style="width:28.59%;">' +
@@ -730,7 +773,7 @@ describe( 'TableLayoutEditing', () => {
 					'</table>'
 				);
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getModelData( ghsModel, { withoutSelection: true } ) ).to.equal(
 					'<table tableType="layout" tableWidth="30%">' +
 						'<tableRow>' +
 							'<tableCell><paragraph>a</paragraph></tableCell>' +

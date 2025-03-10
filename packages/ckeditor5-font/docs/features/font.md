@@ -4,8 +4,6 @@ meta-title: Font family, size, and color | CKEditor 5 Documentation
 category: features
 ---
 
-{@snippet features/build-font-source}
-
 The font feature lets you change font family, size, and color (including background color).
 
 ## Demo

@@ -5,8 +5,6 @@ category: features-lists
 order: 10
 ---
 
-{@snippet features/lists-source}
-
 # Ordered and unordered lists
 
 The list feature lets you create ordered (numbered) and unordered (bulleted) lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation.

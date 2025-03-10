@@ -15,7 +15,7 @@ Start by creating a template of the document in the standard editing mode. Selec
 
 Then switch to the restricted editing mode to see how the editable and non-editable regions behave.
 
-<info-box>
+<info-box info>
 	Tip: Use <kbd>Tab</kbd> to navigate from one editable region to another (and <kbd>Shift</kbd>+<kbd>Tab</kbd> to move back) in the restricted mode.
 </info-box>
 
@@ -30,7 +30,7 @@ Then switch to the restricted editing mode to see how the editable and non-edita
 The restricted editing feature enables two editing modes:
 
 * **Standard editing mode** &ndash; In this mode the user can edit the content and choose regions that should be editable in the restricted editing mode.
-* **Restricted editing mode** &ndash; When you initialize the editor in this mode, the user can edit the content only within the regions chosen by the user in the standard editing mode.
+* **Restricted editing mode** &ndash; When you initialize the editor in this mode, the user can edit the content only within the regions chosen by the user in the standard editing mode. This mode supports only inline-type changes. Users can type, delete content, and format the text. However, no block-type editions are available. This means no splitting paragraphs (striking the <kbd>Enter</kbd> key) is allowed. Tables or block images cannot be added in this mode, too.
 
 You can imagine a workflow where a certain group of users is responsible for creating templates of documents. At the same time, a second group of users can only fill the gaps (for example, fill in the missing data, like names, dates, product names, etc.).
 
@@ -105,6 +105,10 @@ ClassicEditor
 ```
 
 **Note**: Typing and deleting text is always possible in restricted editing regions. For more information, check out the {@link module:restricted-editing/restrictededitingconfig~RestrictedEditingConfig `config.restrictedEditing`} documentation.
+
+<info-box warning>
+	Only inline content inserting or editing commands are allowed in this setting. Block content commands such as `insertTable` or `enter` cannot be allowed via this setting, as they are not supported in the restricted editing mode. 
+</info-box>
 
 ### Enabling commands in the restricted editing mode
 

@@ -4,8 +4,6 @@ meta-title: Text alignment | CKEditor 5 Documentation
 category: features
 ---
 
-{@snippet features/build-text-alignment-source}
-
 The alignment feature lets you align your content to the left or right as well as center or justify it.
 
 ## Demo

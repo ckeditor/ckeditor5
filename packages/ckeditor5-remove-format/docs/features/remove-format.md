@@ -5,8 +5,6 @@ meta-title: Removing text formatting | CKEditor 5 Documentation
 category: features
 ---
 
-{@snippet features/build-remove-format-source}
-
 The remove format feature lets you quickly remove any text formatting applied using inline HTML elements and CSS styles, like {@link features/basic-styles basic text styles} (bold, italic) or {@link features/font font family, size, and color}. This feature does not remove block-level formatting ({@link features/headings headings}, {@link features/images-overview images}) or semantic data ({@link features/link links}).
 
 ## Demo

@@ -3,14 +3,25 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals ClassicEditor, CKEditorPlugins, console, window, document */
+import {
+	TableColumnResize,
+	TableProperties,
+	TableCaption,
+	Superscript
+} from 'ckeditor5';
+import {
+	TOKEN_URL,
+	getViewportTopOffsetConfig
+} from '@snippets/index.js';
+import { TableEditor } from './build-table-source.js';
 
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
-
-ClassicEditor
+TableEditor
 	.create( document.querySelector( '#snippet-table-column-resize' ), {
 		extraPlugins: [
-			CKEditorPlugins.TableColumnResize, CKEditorPlugins.TableProperties, CKEditorPlugins.TableCaption, CKEditorPlugins.Superscript
+			TableColumnResize,
+			TableProperties,
+			TableCaption,
+			Superscript
 		],
 		table: {
 			contentToolbar: [ 'toggleTableCaption', 'tableRow', 'mergeTableCells', 'tableProperties' ]
@@ -27,15 +38,14 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
 			tokenUrl: TOKEN_URL,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
-		},
-		licenseKey: 'GPL'
+		}
 	} )
 	.then( editor => {
 		window.editorCaption = editor;

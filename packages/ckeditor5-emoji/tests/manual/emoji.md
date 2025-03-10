@@ -34,5 +34,15 @@ If it couldn't be loaded, `EmojiMention` should not show auto-complete options, 
 
 * **`Unicode version`** - its value is passed as `emoji.version` in the configuration.
 * **`Default skin tone`** - its value is passed as `emoji.skinTone` in the configuration.
+* **Use "Noto Color Emoji" font** - this option allow using the `Noto Color Emoji` font in the editor. It applies the following CSS rules to the document
+    ```css
+    :root {
+        --ck-font-face: Helvetica, Arial, Tahoma, Verdana, 'Noto Color Emoji';
+    }
+    
+    body {
+        font-family: Helvetica, Arial, Tahoma, Verdana, 'Noto Color Emoji';
+    }
+    ```
 
 Selecting the `use the plugin default` option does not pass anything. This way plugins use the default values.
