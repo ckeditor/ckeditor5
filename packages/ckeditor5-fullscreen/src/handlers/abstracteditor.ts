@@ -142,8 +142,8 @@ export default class AbstractEditorHandler {
 	public enable(): void {
 		this._defaultEnable();
 
-		this.generatePresenceListElement();
-		this.generateDocumentOutlineElement();
+		this._generatePresenceListElement();
+		this._generateDocumentOutlineElement();
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore if -- @preserve */
 		if ( this._editor.plugins.has( 'AnnotationsUIs' ) ) {
@@ -204,30 +204,36 @@ export default class AbstractEditorHandler {
 		}
 	}
 
+	/**
+	 * Checks if the PresenceList plugin is available and moves its elements to fullscreen mode.
+	 */
 	/* istanbul ignore next -- @preserve */
-	public generatePresenceListElement(): void {
+	private _generatePresenceListElement(): void {
 		if ( !this._editor.plugins.has( 'PresenceListUI' ) ) {
 			return;
 		}
 
-		const presneceListElement = createElement( document, 'div', {
+		const presenceListElement = createElement( document, 'div', {
 			class: 'ck ck-fullscreen__left-sidebar-item'
 		} );
 
-		presneceListElement.innerHTML = `
+		presenceListElement.innerHTML = `
 			<div class="ck ck-fullscreen__left-sidebar-header">Connected users</div>
 			<div class="ck ck-fullscreen__presence-list" data-ck-fullscreen="presence-list"></div>
 		`;
 
-		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( presneceListElement );
+		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( presenceListElement );
 
 		const presenceListUI: PresenceListUI = this._editor.plugins.get( PresenceListUI );
 
 		this.moveToFullscreen( presenceListUI.view.element!, 'presence-list' );
 	}
 
+	/**
+	 * Checks if the DocumentOutline plugin is available and moves its elements to fullscreen mode.
+	 */
 	/* istanbul ignore next -- @preserve */
-	public generateDocumentOutlineElement(): void {
+	private _generateDocumentOutlineElement(): void {
 		if ( !this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
 			return;
 		}
