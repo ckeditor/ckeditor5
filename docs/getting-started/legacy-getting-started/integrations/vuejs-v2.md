@@ -8,7 +8,7 @@ order: 40
 # (Legacy) Vue.js 2.x rich text editor component
 
 <info-box warning>
-	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 Vue 2 integration, please refer to the newest version of the {@link getting-started/integrations/vuejs-v2 CKEditor&nbsp;5 integration} guide.
+	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. As of April 2025, integrations based on predefined builds are **no longer supported**. Please refer to the {@link getting-started/index#ckeditor-5-framework-integrations Quick Start} guide to choose one of the modern installation and integration methods available and {@link updating/nim-migration/migration-to-new-installation-methods migrate to new installation methods}.
 </info-box>
 
 <p>
@@ -17,9 +17,9 @@ order: 40
 	</a>
 </p>
 
-CKEditor&nbsp;5 consists of the {@link getting-started/legacy-getting-started/predefined-builds ready-to-use editor builds} and the {@link framework/index CKEditor&nbsp;5 Framework} upon which the builds are based.
+CKEditor&nbsp;5 consists of the editor builds and the {@link framework/index CKEditor&nbsp;5 Framework} upon which the builds are based.
 
-The easiest way to use CKEditor&nbsp;5 in your Vue.js application is by choosing one of the {@link getting-started/legacy-getting-started/predefined-builds#available-builds rich text editor builds} and simply passing it to the configuration of the Vue.js component. Read more about this solution in the [Quick start](#quick-start) section.
+The easiest way to use CKEditor&nbsp;5 in your Vue.js application is by choosing one of the rich text editor builds and simply passing it to the configuration of the Vue.js component. Read more about this solution in the [Quick start](#quick-start) section.
 
 Additionally, you can [integrate CKEditor&nbsp;5 from source](#using-ckeditor-from-source) which is a much more flexible and powerful solution, but requires some additional configuration.
 
@@ -29,7 +29,7 @@ Additionally, you can [integrate CKEditor&nbsp;5 from source](#using-ckeditor-fr
 
 ## Quick start
 
-Install the [CKEditor&nbsp;5 WYSIWYG editor component for Vue.js](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue2) and the {@link getting-started/legacy-getting-started/predefined-builds#available-builds editor build of your choice}.
+Install the [CKEditor&nbsp;5 WYSIWYG editor component for Vue.js](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue2) and the build of your choice.
 
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
@@ -543,7 +543,7 @@ CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI la
 
 ### Predefined builds
 
-When using one of the {@link getting-started/legacy-getting-started/predefined-builds predefined builds}, you need to import the translations first.
+When using one of the predefined builds, you need to import the translations first.
 
 * When using a [direct script include](#direct-script-include):
 	```html
