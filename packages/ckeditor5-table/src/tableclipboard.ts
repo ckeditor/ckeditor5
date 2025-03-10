@@ -114,15 +114,9 @@ export default class TableClipboard extends Plugin {
 			( evt, [ content, selectable ] ) => {
 				// Handles drag-and-drop of tables, where tables are inserted into selected cells rather than merged.
 				// The `isPaste` flag handles scenarios where other features (e.g., Templates) insert tables into specific cells.
-				if ( !isPaste ) {
-					const selectedCells = tableSelection.getSelectedTableCells();
-
-					if ( !selectedCells ) {
-						return;
-					}
+				if ( isPaste || tableSelection.getSelectedTableCells() !== null ) {
+					this._onInsertContent( evt, content, selectable );
 				}
-
-				this._onInsertContent( evt, content, selectable );
 			},
 			{ priority: 'high' }
 		);
