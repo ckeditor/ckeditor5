@@ -34,6 +34,5 @@
 	"Insert": "Label for the Insert button.",
 	"Update": "Label for the Update button.",
 	"Back": "Label for the Back button.",
-	"Please try a different phrase or check the spelling.": "The secondary text of the message shown to the user when no results are available for the search criteria.",
-	"Fullscreen mode": "Command that toggles fullscreen mode"
+	"Please try a different phrase or check the spelling.": "The secondary text of the message shown to the user when no results are available for the search criteria."
 }

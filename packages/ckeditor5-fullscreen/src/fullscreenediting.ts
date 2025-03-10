@@ -47,7 +47,13 @@ export default class FullscreenEditing extends Plugin {
 		const t = this.editor.locale.t;
 
 		// Set the Ctrl+Shift+F keystroke.
-		this.editor.keystrokes.set( 'Ctrl+Shift+F', 'fullscreen' );
+		this.editor.keystrokes.set( 'Ctrl+Shift+F', ( evt, cancel ) => {
+			this.editor.execute( 'fullscreen' );
+
+			this.editor.editing.view.focus();
+
+			cancel();
+		} );
 
 		// Add the information about the keystroke to the accessibility database.
 		this.editor.accessibility.addKeystrokeInfos( {

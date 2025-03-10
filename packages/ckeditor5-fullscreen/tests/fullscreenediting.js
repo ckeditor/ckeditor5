@@ -7,6 +7,8 @@ import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
 
 import FullscreenEditing from '../src/fullscreenediting.js';
 import FullscreenCommand from '../src/fullscreencommand.js';
@@ -53,5 +55,26 @@ describe( 'FullscreenEditing', () => {
 		editor.plugins.get( 'FullscreenEditing' ).init();
 
 		expect( spy ).to.have.been.calledOnce;
+	} );
+
+	it( 'should toggle fullscreen mode on keystroke combination', () => {
+		const spy = sinon.spy( editor, 'execute' );
+		const keyEventData = {
+			keyCode: keyCodes.f,
+			ctrlKey: !env.isMac,
+			metaKey: env.isMac,
+			shiftKey: true,
+			preventDefault: sinon.spy(),
+			stopPropagation: sinon.spy()
+		};
+
+		editor.keystrokes.press( keyEventData );
+
+		expect( spy.calledOnce ).to.be.true;
+		expect( spy.calledWithExactly( 'fullscreen' ) ).to.be.true;
+
+		editor.keystrokes.press( keyEventData );
+
+		expect( spy.calledTwice ).to.be.true;
 	} );
 } );
