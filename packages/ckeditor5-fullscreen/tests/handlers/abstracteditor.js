@@ -18,6 +18,7 @@ import { Dialog, DialogViewPosition } from '@ckeditor/ckeditor5-ui';
 
 import RevisionHistoryMock from '../_utils/revisionhistorymock.js';
 import AbstractEditorHandler from '../../src/handlers/abstracteditor.js';
+import Fullscreen from '../../src/fullscreen.js';
 
 describe( 'AbstractHandler', () => {
 	let abstractHandler, domElement, editor;
@@ -29,7 +30,8 @@ describe( 'AbstractHandler', () => {
 		editor = await ClassicEditor.create( domElement, {
 			plugins: [
 				Paragraph,
-				Essentials
+				Essentials,
+				Fullscreen
 			]
 		} );
 
@@ -281,7 +283,7 @@ describe( 'AbstractHandler', () => {
 		} );
 	} );
 
-	describe( 'registerFullscreenDialogPositionAdjustements', () => {
+	describe( 'registerFullscreenDialogPositionAdjustments', () => {
 		it( 'should not try to adjust position when there is no Dialog plugin loaded', async () => {
 			editor.destroy();
 
@@ -296,7 +298,7 @@ describe( 'AbstractHandler', () => {
 
 			const spy = sinon.spy( abstractHandler, '_setNewDialogPosition' );
 
-			abstractHandler.registerFullscreenDialogPositionAdjustements();
+			abstractHandler.registerFullscreenDialogPositionAdjustments();
 
 			expect( spy ).not.to.be.called;
 		} );
@@ -304,13 +306,13 @@ describe( 'AbstractHandler', () => {
 		it( 'should call _setNewDialogPosition when there is Dialog plugin loaded', () => {
 			const spy = sinon.spy( abstractHandler, '_setNewDialogPosition' );
 
-			abstractHandler.registerFullscreenDialogPositionAdjustements();
+			abstractHandler.registerFullscreenDialogPositionAdjustments();
 
 			expect( spy ).to.be.called;
 		} );
 	} );
 
-	describe( 'unregisterFullscreenDialogPositionAdjustements', () => {
+	describe( 'unregisterFullscreenDialogPositionAdjustments', () => {
 		it( 'should change position of dialogview to editor-top-side for dialogview with position set to null', () => {
 			const dialogPlugin = editor.plugins.get( Dialog );
 			const dialogContentView = new View();
@@ -335,7 +337,7 @@ describe( 'AbstractHandler', () => {
 
 			const spy = sinon.spy( dialogPlugin.view, 'updatePosition' );
 
-			abstractHandler.unregisterFullscreenDialogPositionAdjustements();
+			abstractHandler.unregisterFullscreenDialogPositionAdjustments();
 
 			expect( dialogPlugin.view.position ).to.equal( DialogViewPosition.EDITOR_TOP_SIDE );
 			expect( spy ).to.be.called;
@@ -486,10 +488,28 @@ describe( 'AbstractHandler', () => {
 				position: DialogViewPosition.EDITOR_TOP_SIDE
 			} );
 
+			dialogPlugin.hide();
+
 			const dialogPositionLeft = dialogPlugin.view._left;
 			const dialogPositionTop = dialogPlugin.view._top;
 
-			abstractHandler._setNewDialogPosition();
+			editor.commands.get( 'fullscreen' ).execute();
+
+			dialogContentView.setTemplate( {
+				tag: 'div',
+				attributes: {
+					style: {
+						width: '100px',
+						height: '50px'
+					}
+				}
+			} );
+
+			dialogPlugin.show( {
+				label: 'Foo',
+				content: dialogContentView,
+				position: DialogViewPosition.EDITOR_TOP_SIDE
+			} );
 
 			expect( dialogPositionLeft ).not.to.equal( dialogPlugin.view._left );
 			expect( dialogPositionTop ).not.to.equal( dialogPlugin.view._top );
