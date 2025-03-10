@@ -90,6 +90,8 @@ describe( 'FullscreenUI', () => {
 			button.fire( 'execute' );
 
 			sinon.assert.calledOnce( spy );
+
+			button.fire( 'execute' );
 		} );
 	} );
 
@@ -134,6 +136,8 @@ describe( 'FullscreenUI', () => {
 			button.fire( 'execute' );
 
 			sinon.assert.calledOnce( spy );
+
+			button.fire( 'execute' );
 		} );
 	} );
 } );

@@ -1,4 +1,5 @@
 {
 	"Enable fullscreen mode": "Button that enables fullscreen mode when pressed",
-	"Disable fullscreen mode": "Button that disables fullscreen mode when pressed"
+	"Disable fullscreen mode": "Button that disables fullscreen mode when pressed",
+	"Toggle fullscreen mode": "Command that toggles fullscreen mode"
 }

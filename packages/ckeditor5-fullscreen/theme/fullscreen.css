@@ -6,9 +6,8 @@
 /* Increase z-index of everything to make sure nothing sticks in front of the editor. */
 body.ck-fullscreen {
 	--ck-z-fullscreen: 10000;
-	--ck-z-default: calc(var(--ck-z-fullscreen) + 1);
-	--ck-z-panel: calc(var(--ck-z-default) + 999);
-	--ck-z-dialog: 100000;
+
+	overflow: hidden;
 }
 
 /*
@@ -23,6 +22,9 @@ Fullscreen layout:
 		<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="left-sidebar"></div>
 		<div class="ck ck-fullscreen__editable" data-ck-fullscreen="editable"></div>
 		<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="right-sidebar"></div>
+	</div>
+	<div class="ck ck-fullscreen__bottom-wrapper">
+		<div class="ck ck-fullscreen__body-wrapper" data-ck-fullscreen="body-wrapper"></div>
 	</div>
 </div>
 */
@@ -54,24 +56,29 @@ Fullscreen layout:
 }
 
 .ck-fullscreen__main-container .ck-fullscreen__editable-wrapper {
+	--ck-fullscreen-editor-top-margin: 28px;
 	display: flex;
-	justify-content: center;
+	justify-content: flex-start;
 	overflow: auto;
 	max-height: 100%;
 }
 
-.ck-fullscreen__main-container .ck-fullscreen__sidebar {
-	width: 330px;
-	margin-top: 28px;
+.ck-fullscreen__sidebar {
+	width: 300px;
+	margin-top: var(--ck-fullscreen-editor-top-margin);
 	margin-left: 10px;
-	margin-right: 10px;
 	flex-shrink: 0;
 }
 
+.ck-fullscreen__sidebar[data-ck-fullscreen="right-sidebar"]{
+	margin-right: auto;
+}
+
 .ck-fullscreen__main-container .ck-fullscreen__editable {
-	margin-top: 28px;
+	margin-top: var(--ck-fullscreen-editor-top-margin);
 	margin-bottom: 56px;
 	height: 100%;
+	margin-left: auto;
 }
 
 .ck-fullscreen__main-container .ck-fullscreen__editable .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
@@ -87,4 +94,82 @@ Fullscreen layout:
 
 .ck-fullscreen__main-container .ck-fullscreen__editable .ck-source-editing-area {
 	width: calc(210mm + 2px);
+}
+
+.ck-fullscreen__left-sidebar {
+	font-family: Helvetica, Arial, sans-serif;
+	--ck-user-avatar-size: 28px;
+	position: sticky;
+	align-self: flex-start;
+	top: 0;
+	height: 100%;
+	background-color: transparent;
+	margin-top: 0px;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+}
+
+.ck-fullscreen__left-sidebar .ck.ck-presence-list--collapsed {
+	--ck-user-avatar-size: 32px;
+}
+
+.ck-fullscreen__left-sidebar > :first-child {
+	padding-top: var(--ck-fullscreen-editor-top-margin);
+}
+
+.ck-fullscreen__left-sidebar .ck-user {
+	font-size: 0.85em;
+}
+
+.ck-fullscreen__left-sidebar .ck-presence-list__users-counter__text {
+	font-size: 0.85em;
+}
+
+.ck-fullscreen__left-sidebar-item {
+	padding: var(--ck-spacing-medium);
+	margin-bottom: var(--ck-spacing-medium);
+}
+
+.ck-fullscreen__left-sidebar-item:last-child {
+	margin-bottom: 0;
+}
+
+.ck-fullscreen__left-sidebar-header {
+	--ck-fullscreen-presence-list-header-font-size: 0.875em;
+	font-size: var(--ck-fullscreen-presence-list-header-font-size);
+	font-weight: bold;
+	color: var(--ck-document-outline-item-default-color);
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.ck-fullscreen__left-sidebar--sticky {
+	position: sticky;
+	background: var(--ck-color-base-foreground);
+	top: 0;
+
+	&> :first-child {
+		padding-top: 0;
+	}
+}
+
+.ck-fullscreen__presence-list {
+	margin-top: var(--ck-spacing-medium);
+}
+
+.ck-fullscreen__left-sidebar-item--no-margin {
+	margin: 0;
+}
+
+.ck-fullscreen__left-sidebar .ck.ck-document-outline {
+	padding-top: 0;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.ck-fullscreen__document-outline-wrapper {
+	padding-top: 0;
+	overflow-y: auto;
 }
