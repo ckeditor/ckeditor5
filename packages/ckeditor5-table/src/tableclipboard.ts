@@ -112,12 +112,12 @@ export default class TableClipboard extends Plugin {
 			editor.model,
 			'insertContent',
 			( evt, [ content, selectable ] ) => {
-				// For non-paste operations (like drag & drop), only handle the event when multiple cells are selected.
+				// For non-paste operations (like drag & drop), only handle the event when none or multiple cells are selected.
 				// For paste operations, proceed regardless of selection size.
 				if ( !isPaste ) {
 					const selectedCells = tableSelection.getSelectedTableCells();
 
-					if ( !selectedCells || selectedCells.length === 1 ) {
+					if ( selectedCells && selectedCells.length === 1 ) {
 						return;
 					}
 				}
