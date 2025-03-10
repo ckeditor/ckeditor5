@@ -116,6 +116,8 @@ describe( 'FullscreenCommand', () => {
 			command.execute();
 
 			expect( spy.calledOnce ).to.equal( true );
+
+			command.execute();
 		} );
 	} );
 } );
