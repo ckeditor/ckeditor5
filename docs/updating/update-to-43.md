@@ -75,7 +75,7 @@ Below are the most important changes that require your attention when upgrading 
 
 ### Vulnerability fix
 
-During a recent internal audit, we identified a Cross-Site Scripting (XSS) vulnerability in the CKEditor 5 clipboard package ([`CVE-2024-45613`](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-rgg8-g5x8-wr9v)). This vulnerability could be triggered by a specific user action, leading to unauthorized JavaScript code execution, if the attacker managed to insert malicious content into the editor, which might happen with only a specific editor configuration.
+During a recent internal audit, we identified a Cross-Site Scripting (XSS) vulnerability in the CKEditor 5 clipboard package ([`CVE-2024-45613`](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-rgg8-g5x8-wr9v)). This vulnerability could be triggered by a specific user action, leading to unauthorized JavaScript code execution if the attacker inserted malicious content into the editor, which might happen with only a particular editor configuration.
 
 This vulnerability affects **only** installations where the editor configuration meets the following criteria:
 
