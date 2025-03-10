@@ -11,6 +11,7 @@ import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 import { InlineEditor } from '@ckeditor/ckeditor5-editor-inline';
 import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
+import { removeEditorBodyOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup.js';
 
 import FullscreenCommand from '../src/fullscreencommand.js';
 import ClassicEditorHandler from '../src/handlers/classiceditor.js';
@@ -63,6 +64,7 @@ describe( 'FullscreenCommand', () => {
 
 		afterEach( () => {
 			tempElement.remove();
+			removeEditorBodyOrphans();
 		} );
 
 		it( 'for Classic editor', async () => {
@@ -114,6 +116,8 @@ describe( 'FullscreenCommand', () => {
 			command.execute();
 
 			expect( spy.calledOnce ).to.equal( true );
+
+			command.execute();
 		} );
 	} );
 } );

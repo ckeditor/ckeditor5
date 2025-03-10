@@ -61,14 +61,23 @@ declare global {
 	interface Window { editor: any }
 }
 
-const EDITOR_ELEMENT = document.getElementById( 'editor' )!;
+const EDITOR_CONTAINER = document.getElementById( 'editor-container' )!;
+const CUSTOM_FULLSCREEN_CONTAINER = document.getElementById( 'custom-fullscreen-container' )!;
+const IFRAME_ELEMENT = ( document.getElementById( 'iframe' )! as HTMLIFrameElement );
+const IFRAME_DOCUMENT = IFRAME_ELEMENT.contentWindow!.document;
+
 const DECOUPLED_EDITOR_BUTTON = document.getElementById( 'restart-decoupled' )!;
 const CLASSIC_EDITOR_BUTTON = document.getElementById( 'restart-classic' )!;
+const IFRAME_EDITOR_BUTTON = document.getElementById( 'restart-iframe' )!;
+
 const MENU_BAR_INPUT = document.getElementById( 'menu-bar' ) as HTMLInputElement;
 const MENU_BAR_FULLSCREEN_INPUT = document.getElementById( 'menu-bar-fullscreen' ) as HTMLInputElement;
+const CUSTOM_CONTAINER_INPUT = document.getElementById( 'custom-container' ) as HTMLInputElement;
 
+let editorElement = document.getElementById( 'editor' )!;
 let editorInstance;
 let currentData;
+let iframeStylesInjected = false;
 
 const commonConfig = {
 	plugins: [
@@ -239,6 +248,10 @@ const commonConfig = {
 };
 
 DECOUPLED_EDITOR_BUTTON.addEventListener( 'click', () => {
+	editorElement = document.getElementById( 'editor' )!;
+	EDITOR_CONTAINER.style.display = 'block';
+	IFRAME_ELEMENT.style.display = 'none';
+	CUSTOM_FULLSCREEN_CONTAINER.style.display = CUSTOM_CONTAINER_INPUT.checked ? 'block' : 'none';
 	currentData = editorInstance.getData();
 
 	editorInstance.destroy().then( () => {
@@ -249,17 +262,20 @@ DECOUPLED_EDITOR_BUTTON.addEventListener( 'click', () => {
 		}
 
 		DecoupledEditor
-			.create( EDITOR_ELEMENT, Object.assign( commonConfig,
+			.create( editorElement, Object.assign( commonConfig,
 				{
-					fullscreen: { menuBar: { isVisible: MENU_BAR_FULLSCREEN_INPUT.checked } }
+					fullscreen: {
+						menuBar: { isVisible: MENU_BAR_FULLSCREEN_INPUT.checked },
+						...( CUSTOM_CONTAINER_INPUT.checked ? { container: document.getElementById( 'custom-fullscreen-container' ) } : {} )
+					}
 				}
 			) )
 			.then( editor => {
-				( document.querySelector( '.document-editor__toolbar' ) as HTMLElement )
+				( document.querySelector( '.document-editor__toolbar' )! )
 					.appendChild( editor.ui.view.toolbar.element! );
 
 				if ( MENU_BAR_INPUT.checked ) {
-					( document.querySelector( '.document-editor__menu-bar' ) as HTMLElement )
+					( document.querySelector( '.document-editor__menu-bar' )! )
 						.appendChild( editor.ui.view.menuBarView.element! );
 				}
 
@@ -273,6 +289,10 @@ DECOUPLED_EDITOR_BUTTON.addEventListener( 'click', () => {
 } );
 
 CLASSIC_EDITOR_BUTTON.addEventListener( 'click', () => {
+	editorElement = document.getElementById( 'editor' )!;
+	EDITOR_CONTAINER.style.display = 'block';
+	IFRAME_ELEMENT.style.display = 'none';
+	CUSTOM_FULLSCREEN_CONTAINER.style.display = CUSTOM_CONTAINER_INPUT.checked ? 'block' : 'none';
 	currentData = editorInstance.getData();
 
 	editorInstance.destroy().then( () => {
@@ -283,10 +303,57 @@ CLASSIC_EDITOR_BUTTON.addEventListener( 'click', () => {
 		}
 
 		ClassicEditor
-			.create( EDITOR_ELEMENT, Object.assign( commonConfig,
+			.create( editorElement, Object.assign( commonConfig,
 				{
 					menuBar: { isVisible: MENU_BAR_INPUT.checked },
-					fullscreen: { menuBar: { isVisible: MENU_BAR_FULLSCREEN_INPUT.checked } }
+					fullscreen: {
+						menuBar: { isVisible: MENU_BAR_FULLSCREEN_INPUT.checked },
+						...( CUSTOM_CONTAINER_INPUT.checked ? { container: document.getElementById( 'custom-fullscreen-container' ) } : {} )
+					}
+				}
+			) )
+			.then( editor => {
+				window.editor = editorInstance = editor;
+				editor.setData( currentData );
+			} )
+			.catch( err => {
+				console.error( err.stack );
+			} );
+	} );
+} );
+
+IFRAME_EDITOR_BUTTON.addEventListener( 'click', () => {
+	editorElement = IFRAME_DOCUMENT.getElementById( 'editor' )!;
+	IFRAME_ELEMENT.style.display = 'block';
+	EDITOR_CONTAINER.style.display = 'none';
+	CUSTOM_FULLSCREEN_CONTAINER.style.display = CUSTOM_CONTAINER_INPUT.checked ? 'block' : 'none';
+	currentData = editorInstance.getData();
+
+	if ( !iframeStylesInjected ) {
+		const sheets = document.styleSheets;
+		for ( const sheet of sheets ) {
+			if ( sheet.ownerNode && ( sheet.ownerNode as any ).dataset.cke ) { // Typings does not have dataset so we need to cast.
+				IFRAME_DOCUMENT.head.appendChild( sheet.ownerNode.cloneNode( true ) );
+				iframeStylesInjected = true;
+			}
+		}
+	}
+
+	editorInstance.destroy().then( () => {
+		editorInstance.ui.view.toolbar.element.remove();
+
+		if ( editorInstance.ui.view.menuBarView ) {
+			editorInstance.ui.view.menuBarView.element.remove();
+		}
+
+		ClassicEditor
+			.create( editorElement, Object.assign( commonConfig,
+				{
+					menuBar: { isVisible: MENU_BAR_INPUT.checked },
+					fullscreen: {
+						menuBar: { isVisible: MENU_BAR_FULLSCREEN_INPUT.checked },
+						...( CUSTOM_CONTAINER_INPUT.checked ? { container: document.getElementById( 'custom-fullscreen-container' ) } : {} )
+					}
 				}
 			) )
 			.then( editor => {
@@ -300,7 +367,7 @@ CLASSIC_EDITOR_BUTTON.addEventListener( 'click', () => {
 } );
 
 ClassicEditor
-	.create( EDITOR_ELEMENT, Object.assign( commonConfig,
+	.create( editorElement, Object.assign( commonConfig,
 		{
 			menuBar: { isVisible: MENU_BAR_INPUT.checked },
 			fullscreen: { menuBar: { isVisible: MENU_BAR_FULLSCREEN_INPUT.checked } }
