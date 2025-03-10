@@ -9,10 +9,6 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import { PresenceListUI, PresenceList } from '@ckeditor/ckeditor5-real-time-collaboration';
-import { DocumentOutline, DocumentOutlineUI } from '@ckeditor/ckeditor5-document-outline';
-import { CloudServicesMock } from '@ckeditor/ckeditor5-real-time-collaboration/tests/_utils/mockcloudservices.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 import { Dialog, DialogViewPosition } from '@ckeditor/ckeditor5-ui';
 
@@ -315,13 +311,12 @@ describe( 'AbstractHandler', () => {
 
 	describe( 'registerFullscreenDialogPositionAdjustments', () => {
 		it( 'should not try to adjust position when there is no Dialog plugin loaded', async () => {
-			editor.destroy();
+			await editor.destroy();
 
-			editor = await VirtualTestEditor.create( domElement, {
+			editor = await ClassicEditor.create( domElement, {
 				plugins: [
-					Paragraph,
-					Essentials
-				].filter( plugin => plugin !== Dialog )
+					Paragraph
+				]
 			} );
 
 			abstractHandler = new AbstractEditorHandler( editor );
@@ -331,6 +326,8 @@ describe( 'AbstractHandler', () => {
 			abstractHandler.registerFullscreenDialogPositionAdjustments();
 
 			expect( spy ).not.to.be.called;
+
+			await editor.destroy();
 		} );
 
 		it( 'should call _setNewDialogPosition when there is Dialog plugin loaded', () => {
@@ -415,27 +412,23 @@ describe( 'AbstractHandler', () => {
 
 	describe( '_setNewDialogPosition', () => {
 		it( 'should not try to adjust position when there is no Dialog plugin loaded', async () => {
-			editor.destroy();
+			await editor.destroy();
 
-			editor = await VirtualTestEditor.create( domElement, {
+			editor = await ClassicEditor.create( domElement, {
 				plugins: [
-					Paragraph,
-					Essentials,
-					PresenceListUI,
-					PresenceList,
-					CloudServicesMock,
-					DocumentOutline,
-					DocumentOutlineUI
-				].filter( plugin => plugin !== Dialog )
-			} );
+					Paragraph
+				] } );
 
-			abstractHandler = new AbstractEditorHandler( editor );
+			const abstractHandler = new AbstractEditorHandler( editor );
 
 			const spy = sinon.spy( editor.plugins, 'get' );
 
 			abstractHandler._setNewDialogPosition();
+			abstractHandler.unregisterFullscreenDialogPositionAdjustments();
 
 			expect( spy ).not.to.be.called;
+
+			await editor.destroy();
 		} );
 
 		it( 'should not try to adjust position when dialog position is different than editor-top-side', () => {
@@ -545,6 +538,7 @@ describe( 'AbstractHandler', () => {
 			expect( dialogPositionTop ).not.to.equal( dialogPlugin.view._top );
 
 			editorContainer.remove();
+			editor.commands.get( 'fullscreen' ).execute();
 			container.remove();
 		} );
 	} );
