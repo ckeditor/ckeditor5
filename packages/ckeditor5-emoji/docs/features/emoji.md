@@ -146,7 +146,7 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 
 ### Emoji availability and appearance
 
-The availability of the emoji depends on the operating system. Different systems will have different Unicode support. You may decide to lower the number of newer emoji by setting a lower {@link module:emoji/emojiconfig~EmojiConfig#version `version`} of Unicode of the emoji repository (CKEditor&nbsp;5 hosts v15 and v16) or by providing a custom emoji repository using the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `definitionsUrl`}. This way the users with newer systems will not be able to use newer emoji. Keep in mind that this only affects the editor feature. A user will still be able to use the native emoji insertion methods. The availability may also increase with the usage of a custom font.
+The availability of the emoji depends on the operating system. Different systems will have different Unicode support. You may decide to lower the number of newer emoji by setting a lower {@link module:emoji/emojiconfig~EmojiConfig#version `version`} of Unicode of the emoji repository (CKEditor&nbsp;5 hosts v15 and v16) or by providing a custom emoji repository using the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `definitionsUrl`}. This way, the users with newer systems will not be able to use newer emojis. Keep in mind that this only affects the editor feature. A user will still be able to use the native emoji insertion methods. The availability may also increase with the usage of a custom font.
 
 If you want to standardize the appearance of emoji accross operating systems, please consider using an external font in your integration, such as [Noto Color Emoji](https://fonts.google.com/noto/specimen/Noto+Color+Emoji). In the setup make sure to:
 
@@ -191,7 +191,7 @@ You can prepare your own database with a different emoji set, but it must have a
 
 ### Marker conflicts
 
-The emoji feature uses the `:` marker that opens a panel with a table of selectable emojis. If you are using the {@link features/mentions mentions} or {@link features/merge-fields merge fields} features, they can also show UI panels by pressing a pre-configured key, and it may conflict with the emoji feature. In such a case, the {@link module:emoji/emojimention~EmojiMention} plugin will not integrate the autocompletion mechanism.
+The emoji feature uses the `:` marker that opens a panel with a table of selectable emojis. If you use the {@link features/mentions mentions} or {@link features/merge-fields merge fields} features, they can also show UI panels by pressing a pre-configured key. Those keys may conflict with the emoji feature. In such a case, the {@link module:emoji/emojimention~EmojiMention} plugin will not integrate the autocompletion mechanism.
 
 To prevent conflicts, make sure that the {@link module:mention/mentionconfig~MentionFeed#marker mention's `marker`} and {@link module:merge-fields/mergefieldsconfig~MergeFieldsConfig#prefix merge field's `prefix`} configuration options are not defined as `:`.
 
