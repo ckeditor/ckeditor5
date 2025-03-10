@@ -129,6 +129,9 @@ describe( 'AbstractHandler', () => {
 					<div class="ck ck-fullscreen__editable" data-ck-fullscreen="editable"></div>
 					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="right-sidebar"></div>
 				</div>
+				<div class="ck ck-fullscreen__bottom-wrapper">
+					<div class="ck ck-fullscreen__body-wrapper" data-ck-fullscreen="body-wrapper"></div>
+				</div>
 			` );
 
 			container.remove();
@@ -236,6 +239,10 @@ describe( 'AbstractHandler', () => {
 
 			expect( abstractHandler._container ).to.be.null;
 			expect( container.parentElement ).to.be.null;
+		} );
+
+		it( 'should not throw if there is no container', () => {
+			expect( () => abstractHandler.disable() ).to.not.throw();
 		} );
 	} );
 

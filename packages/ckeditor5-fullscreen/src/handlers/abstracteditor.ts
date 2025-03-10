@@ -11,6 +11,7 @@ import { createElement } from 'ckeditor5/src/utils.js';
 import { PresenceListUI } from '@ckeditor/ckeditor5-real-time-collaboration';
 import { DocumentOutlineUI } from '@ckeditor/ckeditor5-document-outline';
 import type { ElementApi, Editor, EditorConfig } from 'ckeditor5/src/core.js';
+import type { PaginationRenderer } from '@ckeditor/ckeditor5-pagination';
 import type { RevisionViewerEditor } from '@ckeditor/ckeditor5-revision-history';
 import type { Annotation, AnnotationsUIs, Sidebar } from '@ckeditor/ckeditor5-comments';
 
@@ -29,6 +30,11 @@ export default class AbstractEditorHandler {
 	private _container: HTMLElement | null = null;
 
 	/**
+	 * The document object in which the editor is located.
+	 */
+	private _document: Document;
+
+	/**
 	 * A callback that shows the revision viewer, stored to restore the original one after exiting the fullscreen mode.
 	 */
 	protected _showRevisionViewerCallback: ( ( config?: EditorConfig ) => Promise<RevisionViewerEditor | null> ) | null = null;
@@ -37,11 +43,6 @@ export default class AbstractEditorHandler {
 	 * A callback that closes the revision viewer, stored to restore the original one after exiting the fullscreen mode.
 	 */
 	protected _closeRevisionViewerCallback: ( ( viewerEditor?: RevisionViewerEditor ) => Promise<unknown> ) | null = null;
-
-	/**
-	 * The document object in which the editor is located.
-	 */
-	private _document: Document;
 
 	/**
 	 * A function moving the editor UI elements to the fullscreen mode. It should be set by the particular editor type handler.
@@ -72,7 +73,6 @@ export default class AbstractEditorHandler {
 
 		this._editor = editor;
 		this._document = this._editor.sourceElement!.ownerDocument;
-
 		this._editor.config.define( 'fullscreen.container', this._document.body );
 
 		this._defaultEnable = () => this.getContainer();
@@ -136,6 +136,9 @@ export default class AbstractEditorHandler {
 					<div class="ck ck-fullscreen__editable" data-ck-fullscreen="editable"></div>
 					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="right-sidebar"></div>
 				</div>
+				<div class="ck ck-fullscreen__bottom-wrapper">
+					<div class="ck ck-fullscreen__body-wrapper" data-ck-fullscreen="body-wrapper"></div>
+				</div>
 			`;
 
 			this._editor.config.get( 'fullscreen.container' )!.appendChild( this._container );
@@ -152,6 +155,13 @@ export default class AbstractEditorHandler {
 
 		this._generatePresenceListElement();
 		this._generateDocumentOutlineElement();
+
+		// Code coverage is provided in the commercial package repository as integration unit tests.
+		/* istanbul ignore if -- @preserve */
+		if ( this._editor.plugins.has( 'Pagination' ) ) {
+			( this._editor.plugins.get( 'PaginationRenderer' ) as PaginationRenderer ).setupScrollableAncestor();
+		}
+
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore if -- @preserve */
 		if ( this._editor.plugins.has( 'AnnotationsUIs' ) ) {
@@ -206,15 +216,24 @@ export default class AbstractEditorHandler {
 	 * Destroys the fullscreen mode container.
 	 */
 	private _destroyContainer(): void {
-		if ( this._container ) {
-			this._container.remove();
-			this._container = null;
+		if ( !this._container ) {
+			return;
+		}
+
+		this._container.remove();
+		this._container = null;
+
+		// Code coverage is provided in the commercial package repository as integration unit tests.
+		/* istanbul ignore if -- @preserve */
+		if ( this._editor.plugins.has( 'Pagination' ) ) {
+			( this._editor.plugins.get( 'PaginationRenderer' ) as PaginationRenderer ).setupScrollableAncestor();
 		}
 	}
 
 	/**
 	 * Checks if the PresenceList plugin is available and moves its elements to fullscreen mode.
 	 */
+	// Code coverage is provided in the commercial package repository as integration unit tests.
 	/* istanbul ignore next -- @preserve */
 	private _generatePresenceListElement(): void {
 		if ( !this._editor.plugins.has( 'PresenceListUI' ) ) {
@@ -240,6 +259,7 @@ export default class AbstractEditorHandler {
 	/**
 	 * Checks if the DocumentOutline plugin is available and moves its elements to fullscreen mode.
 	 */
+	// Code coverage is provided in the commercial package repository as integration unit tests.
 	/* istanbul ignore next -- @preserve */
 	private _generateDocumentOutlineElement(): void {
 		if ( !this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
@@ -276,6 +296,7 @@ export default class AbstractEditorHandler {
 	/**
 	 * Restores the default value of documentOutlineContainer, which is modified in fullscreen mode.
 	 */
+	// Code coverage is provided in the commercial package repository as integration unit tests.
 	/* istanbul ignore next -- @preserve */
 	public restoreDocumentOutlineDefaultContainer(): void {
 		if ( !this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
@@ -412,11 +433,13 @@ export default class AbstractEditorHandler {
 	 *	Resets the revision history viewer callbacks to their original values.
 	 */
 	private _restoreRevisionHistoryCallbacks(): void {
+		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore next -- @preserve */
 		this._editor.config.set( 'revisionHistory.showRevisionViewerCallback', async () => {
 			return this._showRevisionViewerCallback!();
 		} );
 
+		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore next -- @preserve */
 		this._editor.config.set( 'revisionHistory.closeRevisionViewerCallback', async () => {
 			return this._closeRevisionViewerCallback!();
