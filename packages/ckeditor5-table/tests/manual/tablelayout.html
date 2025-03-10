@@ -1,0 +1,493 @@
+<div id="editor">
+
+	<h2>Source structure: &lt;table&gt;</h2>
+	<hr>
+
+	<h3>Source: &lt;table class="table"&gt; => result = tableType will be layout table</h3>
+
+	<table class="table">
+		<tr>
+			<td>a</td>
+			<td>b</td>
+			<td>c</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+		</tr>
+	</table>
+	<h3>Source: &lt;table class="table layout-table"&gt; => result = tableType will be layout table</h3>
+
+	<table class="table layout-table">
+		<tr>
+			<td>a</td>
+			<td>b</td>
+			<td>c</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+		</tr>
+	</table>
+
+
+	<hr>
+	<h3>Source: &lt;table class="table layout-table ck-table-resized" style="width:30%;"&gt; => result = tableType will be layout table with specified columns width</h3>
+
+	<table class="table layout-table" style="width:30%;" role="presentation">
+		<colgroup>
+			<col style="width:28.59%;">
+			<col style="width:19.93%;">
+			<col style="width:51.48%;">
+		</colgroup>
+		<tbody>
+			<tr>
+				<td>a</td>
+				<td>b</td>
+				<td>c</td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<hr>
+	<h3>Source: &lt;table class="table layout-table"&gt; containing &lt;caption&gt; => result = tableType will be content table and &lt;caption&gt; will be preserved</h3>
+
+	<table class="table layout-table">
+		<caption>Should be content table</caption>
+		<tr>
+			<td>a</td>
+			<td>b</td>
+			<td>c</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+		</tr>
+	</table>
+
+	<hr>
+	<h3>Source: &lt;table class="table content-table"&gt; containing &lt;caption&gt; => result = tableType will be
+		content table and &lt;caption&gt; will be preserved</h3>
+
+	<table class="table content-table">
+		<caption>Should be content table</caption>
+		<tr>
+			<td>a</td>
+			<td>b</td>
+			<td>c</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+		</tr>
+	</table>
+
+	<hr>
+	<h3>Source: &lt;table class="table"&gt; containing &lt;caption&gt; => result = tableType will be content table and &lt;caption&gt; will be preserved</h3>
+
+	<table class="table">
+		<caption>Should be content table</caption>
+		<tr>
+			<td>a</td>
+			<td>b</td>
+			<td>c</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+		</tr>
+	</table>
+
+	<hr>
+	<h3>Source: &lt;table&gt; containing &lt;thead&gt;/&lt;th&gt; => result = tableType will be layout table and &lt;th&gt; will be changed into &lt;td&gt;</h3>
+
+	<table>
+		<thead>
+			<tr>
+				<th>0</th>
+				<th>1</th>
+				<th>2</th>
+				<th>3</th>
+				<th>4</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>a</td>
+				<td>b</td>
+				<td>c</td>
+				<td>d</td>
+				<td>e</td>
+			</tr>
+			<tr>
+				<td>f</td>
+				<td>g</td>
+				<td>h</td>
+				<td>i</td>
+				<td>j</td>
+			</tr>
+			<tr>
+				<td>k</td>
+				<td>l</td>
+				<td>m</td>
+				<td>n</td>
+				<td>o</td>
+			</tr>
+			<tr>
+				<td>p</td>
+				<td>q</td>
+				<td>r</td>
+				<td>s</td>
+				<td>t</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<hr>
+	<h3>Source: &lt;table class="table layout-table"&gt; containing &lt;thead&gt;/&lt;th&gt; => result = tableType will be layout table and &lt;th&gt; will be changed into &lt;td&gt;</h3>
+
+	<table class="table layout-table">
+		<thead>
+			<tr>
+				<th>0</th>
+				<th>1</th>
+				<th>2</th>
+				<th>3</th>
+				<th>4</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>a</td>
+				<td>b</td>
+				<td>c</td>
+				<td>d</td>
+				<td>e</td>
+			</tr>
+			<tr>
+				<td>f</td>
+				<td>g</td>
+				<td>h</td>
+				<td>i</td>
+				<td>j</td>
+			</tr>
+			<tr>
+				<td>k</td>
+				<td>l</td>
+				<td>m</td>
+				<td>n</td>
+				<td>o</td>
+			</tr>
+			<tr>
+				<td>p</td>
+				<td>q</td>
+				<td>r</td>
+				<td>s</td>
+				<td>t</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<hr>
+	<h3>Source: &lt;table class="table content-table"&gt; containing &lt;thead&gt;/&lt;th&gt; => result = tableType will be content table and &lt;th&gt; will be preserved</h3>
+
+	<table class="table content-table">
+		<thead>
+			<tr>
+				<th>0</th>
+				<th>1</th>
+				<th>2</th>
+				<th>3</th>
+				<th>4</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>a</td>
+				<td>b</td>
+				<td>c</td>
+				<td>d</td>
+				<td>e</td>
+			</tr>
+			<tr>
+				<td>f</td>
+				<td>g</td>
+				<td>h</td>
+				<td>i</td>
+				<td>j</td>
+			</tr>
+			<tr>
+				<td>k</td>
+				<td>l</td>
+				<td>m</td>
+				<td>n</td>
+				<td>o</td>
+			</tr>
+			<tr>
+				<td>p</td>
+				<td>q</td>
+				<td>r</td>
+				<td>s</td>
+				<td>t</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<hr>
+	<h2>Source structure: &lt;figure&gt;&lt;table&gt;</h2>
+	<hr>
+	<h3>Source: &lt;figure&gt;&lt;table&gt; => result = tableType will be content table</h3>
+
+	<figure>
+		<table>
+			<caption>Should be content table</caption>
+			<tr>
+				<td>a</td>
+				<td>b</td>
+				<td>c</td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+		</table>
+	</figure>
+
+	<hr>
+	<h3>Source: &lt;figure class="table"&gt;&lt;table&gt; => result = tableType will be content table</h3>
+
+	<figure class="table">
+		<table>
+			<caption>Should be content table</caption>
+			<tr>
+				<td>a</td>
+				<td>b</td>
+				<td>c</td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+		</table>
+	</figure>
+
+	<hr>
+	<h3>Source: &lt;figure&gt;&lt;table class="table layout-table"&gt; => result = tableType will be content table</h3>
+
+	<figure>
+		<table class="table layout-table">
+			<caption>Should be content table</caption>
+			<tr>
+				<td>a</td>
+				<td>b</td>
+				<td>c</td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+		</table>
+	</figure>
+
+	<hr>
+	<h3>Source: &lt;figure&gt;&lt;table&gt; containing &lt;thead&gt;/&lt;th&gt; => result = tableType will be content table and
+		&lt;thead&gt;/&lt;th&gt; will be preserved</h3>
+	<figure>
+		<table>
+			<thead>
+				<tr>
+					<th>0</th>
+					<th>1</th>
+					<th>2</th>
+					<th>3</th>
+					<th>4</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>a</td>
+					<td>b</td>
+					<td>c</td>
+					<td>d</td>
+					<td>e</td>
+				</tr>
+				<tr>
+					<td>f</td>
+					<td>g</td>
+					<td>h</td>
+					<td>i</td>
+					<td>j</td>
+				</tr>
+				<tr>
+					<td>k</td>
+					<td>l</td>
+					<td>m</td>
+					<td>n</td>
+					<td>o</td>
+				</tr>
+				<tr>
+					<td>p</td>
+					<td>q</td>
+					<td>r</td>
+					<td>s</td>
+					<td>t</td>
+				</tr>
+			</tbody>
+		</table>
+	</figure>
+
+	<h3>Look of widget type around and selection handle is changed in layout tables, also only hovered table shows mention
+		earlier widget handlers.</h3>
+	<p></p>
+	<table class="table content-table" role="presentation">
+		<tbody>
+			<tr>
+				<td>
+					<p>foo</p>
+					<table class="table content-table" role="presentation">
+						<tbody>
+							<tr>
+								<td style="width:33.333333%;">bar</td>
+								<td style="width:33.333333%;">
+									<table class="table layout-table"
+										style="border-color:hsl(120, 75%, 60%);border-style:solid;width:100%;"
+										role="presentation">
+										<tbody>
+											<tr>
+												<td>baz</td>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+											</tr>
+											<tr>
+												<td>&nbsp;</td>
+												<td style="border-color:hsl(0, 75%, 60%);">&nbsp;</td>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+											</tr>
+											<tr>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+											</tr>
+											<tr>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+											</tr>
+										</tbody>
+									</table>
+								</td>
+								<td style="width:33.333333%;">&nbsp;</td>
+							</tr>
+							<tr>
+								<td style="width:33.333333%;">&nbsp;</td>
+								<td style="width:33.333333%;">&nbsp;</td>
+								<td style="width:33.333333%;">&nbsp;</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+				<td>b</td>
+				<td>c</td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+		</tbody>
+	</table>
+	<p></p>
+
+	<hr>
+	<h2>Knows issues:</h2>
+	<h3>when table or table cell has for example set: <code>border-bottom-width:0</code> and <code>border-bottom-width:0</code> - outline is not shown but default border cames in on left and right</h3>
+	<p></p>
+	<table style="padding: 30px;">
+		<tr>
+			<td style="border-bottom-width:0;border-top-width:0; padding: 30px;">
+				<table class="table"
+					style="border-collapse: collapse; border-spacing: 0; border-radius: 0; border-color: red;">
+					<tr>
+						<td>a</td>
+						<td>b</td>
+						<td>c</td>
+					</tr>
+					<tr>
+						<td>1</td>
+						<td>2</td>
+						<td>3</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<h2>Example table to copy and paste</h2>
+
+<div class="external-table-wrapper">
+
+	<table style="width: 40%;">
+		<tbody>
+			<tr>
+				<td>
+					<table>
+						<tbody>
+							<tr>
+								<td style="width:33.333333%;">&nbsp;</td>
+								<td style="width:33.333333%;">&nbsp;</td>
+								<td style="width:33.333333%;">&nbsp;</td>
+							</tr>
+							<tr>
+								<td style="width:33.333333%;">&nbsp;</td>
+								<td style="width:33.333333%;">&nbsp;</td>
+								<td style="width:33.333333%;">&nbsp;</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+				<td>b</td>
+				<td>c</td>
+			</tr>
+			<tr>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<style>
+	.external-table-wrapper {
+		margin-top: 20px;
+		padding: 2em;
+		background-color: rgba(0, 0, 0, 0.1);
+		border: 1px solid grey;
+		border-radius: 8px;
+	}
+
+	.external-table-wrapper table,
+	.external-table-wrapper td,
+	.external-table-wrapper th {
+		border: 1px solid black;
+		border-collapse: collapse;
+	}
+</style>
