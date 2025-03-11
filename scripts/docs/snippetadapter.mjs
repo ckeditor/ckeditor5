@@ -149,7 +149,7 @@ async function buildSnippets( snippets, paths, constants, imports ) {
  * @returns {Promise<void>}
  */
 async function buildDocuments( snippets, paths, constants, imports, getSnippetPlaceholder ) {
-	const getStyle = href => `<link rel="stylesheet" href="${ href }" data-cke="true" />`;
+	const getStyle = href => `<link rel="stylesheet" href="${ href }" data-cke="true">`;
 	const getScript = src => `<script type="module" src="${ src }"></script>`;
 	const documents = {};
 
@@ -164,12 +164,12 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 		`<script type="importmap">${ JSON.stringify( { imports } ) }</script>`,
 		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
 		'<script src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>',
-		getScript( '%BASE_PATH%/assets/global.js' ),
+		'<script src="%BASE_PATH%/assets/global.js"></script>',
 		getStyle( '%BASE_PATH%/assets/global.css' ),
 		getStyle( '%BASE_PATH%/assets/ckeditor5/ckeditor5.css' ),
 		getStyle( '%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.css' ),
-		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5/ckeditor5.js" />',
-		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.js" />'
+		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5/ckeditor5.js">',
+		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.js">'
 	];
 
 	// Iterate over each document and replace placeholders with the actual content.
@@ -189,11 +189,11 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 			);
 
 			if ( await fileExists( upath.join( snippet.outputPath, snippet.snippetName, 'snippet.js' ) ) ) {
-				documentTags.push( getScript( upath.join( snippet.relativeOutputPath, snippet.snippetName, 'snippet.js' ) ) );
+				documentTags.push( getScript( `%BASE_PATH%/snippets/${ snippet.snippetName }/snippet.js` ) );
 			}
 
 			if ( await fileExists( upath.join( snippet.outputPath, snippet.snippetName, 'snippet.css' ) ) ) {
-				documentTags.push( getStyle( upath.join( snippet.relativeOutputPath, snippet.snippetName, 'snippet.css' ) ) );
+				documentTags.push( getStyle( `%BASE_PATH%/snippets/${ snippet.snippetName }/snippet.css` ) );
 			}
 		}
 
