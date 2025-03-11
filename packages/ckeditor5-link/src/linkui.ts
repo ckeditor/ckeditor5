@@ -14,8 +14,7 @@ import {
 	type ViewAttributeElement,
 	type ViewDocumentClickEvent,
 	type ViewElement,
-	type ViewPosition,
-	type ViewDocumentTouchStartEvent
+	type ViewPosition
 } from 'ckeditor5/src/engine.js';
 import {
 	ButtonView,
@@ -29,7 +28,7 @@ import {
 	type ButtonExecuteEvent
 } from 'ckeditor5/src/ui.js';
 
-import { Collection, env, type ObservableChangeEvent, type PositionOptions } from 'ckeditor5/src/utils.js';
+import { Collection, type ObservableChangeEvent, type PositionOptions } from 'ckeditor5/src/utils.js';
 import { isWidget } from 'ckeditor5/src/widget.js';
 
 import LinkEditing from './linkediting.js';
@@ -708,62 +707,6 @@ export default class LinkUI extends Plugin {
 	private _enableBalloonActivators(): void {
 		const editor = this.editor;
 		const viewDocument = editor.editing.view.document;
-
-		if ( env.isiOS ) {
-			this.listenTo<ViewDocumentTouchStartEvent>( viewDocument, 'touchstart', ( evt, data ) => {
-				// Get the view element directly from the event data.
-				const targetViewElement = data.target;
-
-				// If target is not an element, exit early.
-				if ( !targetViewElement.is( 'element' ) ) {
-					return;
-				}
-
-				// Find the closest link element (could be the target itself or one of its ancestors).
-				let linkElement: ViewElement | null = null;
-
-				if ( isLinkElement( targetViewElement ) ) {
-					linkElement = targetViewElement;
-				} else {
-					linkElement = targetViewElement.getAncestors().find( ancestor => isLinkElement( ancestor ) ) as ViewElement | null;
-				}
-
-				// If no link element found, exit early.
-				if ( !linkElement ) {
-					return;
-				}
-
-				// Check if touch happened in the middle of the link.
-				const domElement = editor.editing.view.domConverter.mapViewToDom( linkElement );
-				if ( !domElement || !data.domEvent ) {
-					return;
-				}
-
-				const rect = domElement.getBoundingClientRect();
-				const touchX = data.domEvent.touches[ 0 ].clientX;
-
-				// Define edge threshold in pixels.
-				const edgeThresholdPx = 10;
-
-				// Consider it a middle click if not on left or right edge.
-				const isNotLeftEdge = touchX > ( rect.left + edgeThresholdPx );
-				const isNotRightEdge = touchX < ( rect.right - edgeThresholdPx );
-				const isMiddleLinkClick = isNotLeftEdge && isNotRightEdge;
-
-				// If not a middle click, exit early.
-				if ( !isMiddleLinkClick ) {
-					return;
-				}
-
-				// Set the selection to the end of the link.
-				editor.model.change( writer => {
-					const viewRange = editor.editing.view.createPositionAt( linkElement!, 'end' );
-					const modelPosition = editor.editing.mapper.toModelPosition( viewRange );
-
-					writer.setSelection( modelPosition );
-				} );
-			} );
-		}
 
 		// Handle click on view document and show panel when selection is placed inside the link element.
 		// Keep panel open until selection will be inside the same link element.
