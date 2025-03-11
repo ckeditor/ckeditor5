@@ -1204,7 +1204,7 @@ export default class LinkUI extends Plugin {
 	 * selected and the **only** element within the selection boundaries, or when
 	 * a linked widget is selected.
 	 */
-	private _getSelectedLinkElement(): ViewElement | null {
+	private _getSelectedLinkElement(): ViewAttributeElement | null {
 		const view = this.editor.editing.view;
 		const selection = view.document.selection;
 		const selectedElement = selection.getSelectedElement();
