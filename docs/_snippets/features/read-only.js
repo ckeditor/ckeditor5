@@ -3,12 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals ClassicEditor, console, window, document */
+import {
+	CS_CONFIG,
+	TOKEN_URL,
+	getViewportTopOffsetConfig
+} from '@snippets/index.js';
+import { ReadOnlyEditor } from './read-only-build.js';
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
-
-ClassicEditor
+ReadOnlyEditor
 	.create( document.querySelector( '#snippet-read-only' ), {
 		cloudServices: CS_CONFIG,
 		toolbar: {
@@ -28,7 +30,7 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
@@ -39,7 +41,8 @@ ClassicEditor
 		exportPdf: {
 			stylesheets: [
 				'../assets/fonts.css',
-				'EDITOR_STYLES',
+				'../assets/ckeditor5/ckeditor5.css',
+				'../assets/ckeditor5-premium-features/ckeditor5-premium-features.css',
 				'../assets/read-only-export-pdf.css'
 			],
 			fileName: 'export-pdf-demo.pdf',

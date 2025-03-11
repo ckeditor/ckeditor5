@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import {
 	ButtonView,
 	SplitButtonView,
@@ -12,10 +10,12 @@ import {
 	addListToDropdown,
 	addToolbarToDropdown,
 	createDropdown,
-	ViewModel
-} from '@ckeditor/ckeditor5-ui';
-import { Collection, Locale } from '@ckeditor/ckeditor5-utils';
-import { IconBold, IconItalic } from '@ckeditor/ckeditor5-icons';
+	ViewModel,
+	IconBold,
+	IconItalic,
+	Collection,
+	Locale
+} from 'ckeditor5';
 
 const locale = new Locale();
 

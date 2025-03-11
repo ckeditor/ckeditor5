@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals ClassicEditor, window, document, console */
+import { BlockQuoteEditor } from './block-quote-source.js';
 
-ClassicEditor
+BlockQuoteEditor
 	.create( document.querySelector( '#snippet-nested-block-quote' ) )
 	.then( editor => {
 		window.editor2 = editor;

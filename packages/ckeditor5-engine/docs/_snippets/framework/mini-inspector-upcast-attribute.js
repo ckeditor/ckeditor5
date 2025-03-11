@@ -3,13 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, document */
-
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Essentials } from 'ckeditor5';
 import MiniCKEditorInspector from '@ckeditor/ckeditor5-inspector/build/miniinspector.js';
-
-// This file will be available when the documentation is built.
-import { MiniInspectorEditor } from '../mini-inspector.js';
+import { MiniInspectorEditor } from '@snippets/mini-inspector.js';
 
 function Image( editor ) {
 	editor.model.schema.register( 'image', {

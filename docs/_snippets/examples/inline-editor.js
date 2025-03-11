@@ -3,17 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals InlineEditor, console, window, document */
-
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+import { CS_CONFIG, InlineEditor, getViewportTopOffsetConfig } from '@snippets/index.js';
 
 const inlineInjectElements = document.querySelectorAll( '#snippet-inline-editor [data-inline-inject]' );
 
 Array.from( inlineInjectElements ).forEach( inlineElement => {
 	const config = {
+		removePlugins: [
+			'CKBox'
+		],
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		toolbar: {
@@ -30,6 +31,7 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 
 	if ( inlineElement.tagName.toLowerCase() == 'header' ) {
 		config.removePlugins = [
+			...config.removePlugins,
 			'Blockquote',
 			'Image',
 			'ImageCaption',

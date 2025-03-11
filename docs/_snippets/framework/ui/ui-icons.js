@@ -3,11 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
-import { IconView, ToolbarView } from '@ckeditor/ckeditor5-ui';
-import { Locale } from '@ckeditor/ckeditor5-utils';
-import * as icons from '@ckeditor/ckeditor5-icons';
+import { IconView, ToolbarView, Locale } from 'ckeditor5';
+import * as icons from 'ckeditor5';
 
 const locale = new Locale();
 const toolbarIcons = new ToolbarView( locale );

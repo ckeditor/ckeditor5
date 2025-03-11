@@ -7,7 +7,6 @@ order: 10
 ---
 
 # Source code editing
-{@snippet features/source-editing-imports}
 
 The source editing feature lets you view and edit the source of your document. This is the basic, open-source source code editing feature. You can also try the more advanced, premium {@link features/source-editing-enhanced Enhanced source code editing} plugin that provides the functionality in a handy modal window with syntax highlighting and more in all editor types.
 

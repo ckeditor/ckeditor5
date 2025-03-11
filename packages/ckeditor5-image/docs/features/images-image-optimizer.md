@@ -8,8 +8,6 @@ order: 40
 badges: [ premium ]
 ---
 
-{@snippet features/build-image-optimizer-source}
-
 Elevate your images with robust editing tools available through the premium {@link features/ckbox CKBox} and {@link features/uploadcare Uploadcare} integrations. In this guide you will discover how to modify and enhance visuals directly in the editor, giving you greater creative control.
 
 ## Image optimizer by Uploadcare

@@ -16,7 +16,7 @@ modified_at: 2024-07-31
 
 ## Update to CKEditor&nbsp;5 v43.3.1
 
-Released on November 6, 2024. ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v43.3.1))
+Released on November 6, 2024. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v43.3.1))
 
 For the entire list of changes introduced in version 43.3.1, see the [release notes for CKEditor&nbsp;5 v43.3.1](https://github.com/ckeditor/ckeditor5/releases/tag/v43.3.1).
 
@@ -28,7 +28,7 @@ We had to revert a change introduced in v43.3.0 related to the icons export in o
 
 ## Update to CKEditor&nbsp;5 v43.3.0
 
-Released on October 29, 2024. ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v43.3.0))
+Released on October 29, 2024. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v43.3.0))
 
 For the entire list of changes introduced in version 43.3.0, see the [release notes for CKEditor&nbsp;5 v43.3.0](https://github.com/ckeditor/ckeditor5/releases/tag/v43.3.0).
 
@@ -50,7 +50,7 @@ A new configuration option has been added to include a watermark when exporting 
 
 ## Update to CKEditor&nbsp;5 v43.2.0
 
-Released on October 15, 2024. ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v43.2.0))
+Released on October 15, 2024. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v43.2.0))
 
 For the entire list of changes introduced in version 43.2.0, see the [release notes for CKEditor&nbsp;5 v43.2.0](https://github.com/ckeditor/ckeditor5/releases/tag/v43.2.0).
 
@@ -67,7 +67,7 @@ As users transition to new installation methods (v42.0.0+) with `ckeditor5` and 
 
 ## Update to CKEditor&nbsp;5 v43.1.1
 
-Released on September 25, 2024. ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v43.1.1))
+Released on September 25, 2024. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v43.1.1))
 
 For the entire list of changes introduced in version 43.1.0, see the [release notes for CKEditor&nbsp;5 v43.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v43.1.0).
 
@@ -75,7 +75,7 @@ Below are the most important changes that require your attention when upgrading 
 
 ### Vulnerability fix
 
-During a recent internal audit, we identified a Cross-Site Scripting (XSS) vulnerability in the CKEditor 5 clipboard package ([`CVE-2024-45613`](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-rgg8-g5x8-wr9v)). This vulnerability could be triggered by a specific user action, leading to unauthorized JavaScript code execution, if the attacker managed to insert malicious content into the editor, which might happen with a very specific editor configuration.
+During a recent internal audit, we identified a Cross-Site Scripting (XSS) vulnerability in the CKEditor 5 clipboard package ([`CVE-2024-45613`](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-rgg8-g5x8-wr9v)). This vulnerability could be triggered by a specific user action, leading to unauthorized JavaScript code execution if the attacker inserted malicious content into the editor, which might happen with only a particular editor configuration.
 
 This vulnerability affects **only** installations where the editor configuration meets the following criteria:
 
@@ -86,11 +86,11 @@ This vulnerability affects **only** installations where the editor configuration
 
 You can read more details in the relevant [security advisory](https://github.com/ckeditor/ckeditor5/security/advisories/GHSA-rgg8-g5x8-wr9v) and [contact us](https://ckeditor.com/contact/) if you have more questions.
 
-Taking the occasion, we decided to introduce additional hardening to some parts of our codebase that introduce **theoretical and unexploitable issues**. Our security team confirmed that none of these issues were exploitable in a real scenario, however, we decided to fix them, to increase the overall security posture of our software.
+Taking the occasion, we decided to introduce additional hardening to some parts of our codebase that introduce **theoretical and non-exploitable issues**. Our security team confirmed that none of these issues were exploitable in a real scenario, however, we decided to fix them, to increase the overall security posture of our software.
 
 ## Update to CKEditor&nbsp;5 v43.1.0
 
-Released on September 5, 2024. ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v43.1.0))
+Released on September 5, 2024. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v43.1.0))
 
 For the entire list of changes introduced in version 43.1.0, see the [release notes for CKEditor&nbsp;5 v43.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v43.1.0).
 
@@ -114,7 +114,7 @@ The tables' user interface now clearly indicates the default border settings. It
 
 ## Update to CKEditor&nbsp;5 v43.0.0
 
-Released on August 7, 2024. ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v43.0.0))
+Released on August 7, 2024. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v43.0.0))
 
 For the entire list of changes introduced in version 43.0.0, see the [release notes for CKEditor&nbsp;5 v43.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v43.0.0).
 

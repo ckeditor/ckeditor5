@@ -3,9 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals ClassicEditor, console, window, document */
+import { getViewportTopOffsetConfig } from '@snippets/index.js';
+import { ImageOptimizerEditor } from './build-image-optimizer-source.js';
 
-ClassicEditor
+ImageOptimizerEditor
 	.create( document.querySelector( '#image-optimizer-uploadcare' ), {
 		removePlugins: [ 'CKBox', 'CKBoxImageEdit', 'LinkImage' ],
 		toolbar: {
@@ -31,7 +32,7 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		uploadcare: {

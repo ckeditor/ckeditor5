@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
-import { BalloonPanelView, ButtonView } from '@ckeditor/ckeditor5-ui';
+import { BalloonPanelView, ButtonView } from 'ckeditor5';
 
 const balloonButton = new ButtonView();
 balloonButton.set( { label: 'Balloon button', withText: true } );
