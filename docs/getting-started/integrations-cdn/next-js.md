@@ -89,7 +89,7 @@ export default CustomEditor;
 The `CustomEditor` component is ready to be used inside a page. The page's directory will differ depending on the selected routing strategy.
 
 CKEditor&nbsp;5 is a client-side text editor and relies on the browser APIs, so you need to disable server-side rendering for our custom component. You can lazily load the component using the `dynamic()` function built into Next.js.
-Prepare a wrapper for the `CustomEditor` component to load it on the client site.
+Prepare a wrapper for the `CustomEditor` component to load it on the client side.
 
 ```jsx
 // components/client-site-custom-editor.js
