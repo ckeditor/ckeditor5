@@ -637,7 +637,7 @@ export default class TwoStepCaretMovement extends Plugin {
 
 			// Set the selection to the end of the link.
 			editor.model.change( writer => {
-				const viewRange = editor.editing.view.createPositionAt( linkElement, 'end' );
+				const viewRange = editor.editing.view.createPositionAt( linkElement!, 'end' );
 				const modelPosition = editor.editing.mapper.toModelPosition( viewRange );
 
 				writer.setSelection( modelPosition );
