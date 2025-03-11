@@ -195,7 +195,7 @@
     "translations:synchronize": "node ./scripts/translations/synchronize.mjs",
     "translations:validate": "node ./scripts/translations/synchronize.mjs --validate-only",
     "translations:move": "node ./scripts/translations/move.mjs",
-    "build": "tsc -p ./tsconfig.release-ckeditor5.json",
+    "build": "tsc --build --force ./tsconfig.release-ckeditor5.json",
     "build:dist": "node scripts/nim/build-ckeditor5.mjs",
     "predll:build": "npm run build",
     "dll:build": "node scripts/dll/build-dlls.mjs --base-dll-config ./scripts/dll/webpack.config.dll.mjs",
