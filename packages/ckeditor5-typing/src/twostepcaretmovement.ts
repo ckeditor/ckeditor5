@@ -10,7 +10,6 @@
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 
 import { keyCodes, env } from '@ckeditor/ckeditor5-utils';
-
 import {
 	MouseObserver,
 	TouchObserver,
@@ -25,7 +24,9 @@ import {
 	type ViewDocumentTouchStartEvent,
 	type ModelInsertContentEvent,
 	type ModelDeleteContentEvent,
-	type ViewElement
+	type ViewElement,
+	type ViewNode,
+	type ViewDocumentFragment
 } from '@ckeditor/ckeditor5-engine';
 
 import type { ViewDocumentDeleteEvent } from './deleteobserver.js';
@@ -579,28 +580,20 @@ export default class TwoStepCaretMovement extends Plugin {
 	 * See: https://github.com/ckeditor/ckeditor5/issues/18023
 	 */
 	private _enableMiddleLinkTouchHandlerForIOS(): void {
-		const editor = this.editor;
+		const { editor } = this;
 		const viewDocument = editor.editing.view.document;
 
 		this.listenTo<ViewDocumentTouchStartEvent>( viewDocument, 'touchstart', ( evt, data ) => {
 			// Get the view element directly from the event data.
 			const targetViewElement = data.target;
 
-			// If target is not an element, exit early.
-			if ( !targetViewElement.is( 'element' ) ) {
-				return;
-			}
-
 			// Find the closest link element (could be the target itself or one of its ancestors).
 			let linkElement: ViewElement | null = null;
-			const isLink = targetViewElement.hasAttribute( 'linkHref' );
 
-			if ( isLink ) {
+			if ( isLinkElement( targetViewElement ) ) {
 				linkElement = targetViewElement;
 			} else {
-				linkElement = targetViewElement.getAncestors().find(
-					ancestor => ancestor.is( 'element' ) && ancestor.hasAttribute( 'linkHref' )
-				) as ViewElement | null;
+				linkElement = targetViewElement.getAncestors().find( isLinkElement ) as ViewElement | null;
 			}
 
 			// If no link element found, exit early.
@@ -609,12 +602,9 @@ export default class TwoStepCaretMovement extends Plugin {
 			}
 
 			// Check if touch happened in the middle of the link.
-			const domElement = editor.editing.view.domConverter.mapViewToDom( linkElement );
-			if ( !domElement || !data.domEvent ) {
-				return;
-			}
-
+			const domElement = editor.editing.view.domConverter.mapViewToDom( linkElement )!;
 			const rect = domElement.getBoundingClientRect();
+
 			const { clientX, clientY } = data.domEvent.touches[ 0 ];
 
 			// Define edge threshold in pixels for X axis only.
@@ -863,4 +853,11 @@ function isBetweenDifferentAttributes( position: Position, attributes: Set<strin
 	}
 
 	return false;
+}
+
+/**
+ * Returns `true` if a given view node is the link element.
+ */
+function isLinkElement( node: ViewNode | ViewDocumentFragment ): boolean {
+	return node.is( 'attributeElement' ) && !!node.getCustomProperty( 'link' );
 }
