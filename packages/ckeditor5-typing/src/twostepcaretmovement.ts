@@ -312,7 +312,7 @@ export default class TwoStepCaretMovement extends Plugin {
 		//
 		// or left the attribute
 		//
-		// 		<paragraph>foo<$text attribute>bar</$text>{}baz</$text></paragraph>
+		// 		<paragraph>foo<$text attribute>bar</$text>{}baz</paragraph>
 		//
 		// and the gravity will be restored automatically.
 		if ( this._isGravityOverridden ) {
@@ -407,7 +407,7 @@ export default class TwoStepCaretMovement extends Plugin {
 			// REMOVE SELECTION ATTRIBUTE when restoring gravity towards a non-existent content at the
 			// beginning of the block.
 			//
-			// 		<paragraph>{}<$text attribute>bar</</$text></paragraph>
+			// 		<paragraph>{}<$text attribute>bar</$text></paragraph>
 			//
 			if ( position.isAtStart ) {
 				if ( hasAnyAttribute( selection, attributes ) ) {
