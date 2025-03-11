@@ -8,4 +8,4 @@ modified_at: 2025-03-06
 
 # Layout tables
 
-Feature guide placeholder
+Layout tables are used to structure a web page content spatially rather than for presenting tabular data. They allow email integrators to create multi-column designs and precise positioning of elements on a page.
