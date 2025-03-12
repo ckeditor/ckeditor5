@@ -2,7 +2,7 @@
 category: self-hosted
 meta-title: Compatibility with Laravel using a ZIP archive | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with Laravel using a ZIP archive.
-order: 70
+order: 80
 menu-title: Laravel
 ---
 
