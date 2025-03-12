@@ -46,6 +46,7 @@ import type {
 	SelectRowCommand,
 	SetHeaderColumnCommand,
 	SetHeaderRowCommand,
+	SetTableType,
 	SplitCellCommand,
 	ToggleTableCaptionCommand,
 	TableCellBackgroundColorCommand,
@@ -122,6 +123,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		selectTableRow: SelectRowCommand;
 		setTableColumnHeader: SetHeaderColumnCommand;
 		setTableRowHeader: SetHeaderRowCommand;
+		SetTableType: SetTableType;
 		splitTableCellVertically: SplitCellCommand;
 		splitTableCellHorizontally: SplitCellCommand;
 		toggleTableCaption: ToggleTableCaptionCommand;
