@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /**
  * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
@@ -10,12 +12,21 @@ import upath from 'upath';
 import fs from 'fs-extra';
 import { CKEDITOR5_ROOT_PATH, CKEDITOR5_COMMERCIAL_PATH } from '../constants.mjs';
 import generateCKEditor5DocsBuild from './generate-ckeditor5-docs-build.mjs';
+import parseArguments from '../docs/parse-arguments.mjs';
 
-export default async function buildSources() {
+buildSources()
+	.catch( () => {
+		process.exitCode = 1;
+	} );
+
+async function buildSources() {
+	const options = parseArguments( process.argv.slice( 2 ) );
+
 	console.log( 'Started building `ckeditor5`.' );
 
-	const { version } = await fs.readJson( upath.join( CKEDITOR5_ROOT_PATH, 'package.json' ) );
-	const basePath = upath.join( CKEDITOR5_ROOT_PATH, 'build', 'docs', 'ckeditor5', version, 'assets' );
+	const basePath = upath.join( CKEDITOR5_ROOT_PATH, 'build', 'docs-assets' );
+
+	await fs.emptyDir( basePath );
 
 	const output = path => upath.join( basePath, path );
 
@@ -23,7 +34,9 @@ export default async function buildSources() {
 
 	console.log( 'Finished building `ckeditor5`.' );
 
-	if ( await fs.pathExists( CKEDITOR5_COMMERCIAL_PATH ) ) {
+	if ( options.skipCommercial ) {
+		console.log( 'Skipping `ckeditor5-premium-features`.' );
+	} else if ( await fs.pathExists( CKEDITOR5_COMMERCIAL_PATH ) ) {
 		console.log( 'Started building `ckeditor5-premium-features`.' );
 
 		const scriptPath = upath.join( CKEDITOR5_COMMERCIAL_PATH, 'scripts', 'docs', 'generate-ckeditor5-premium-features-docs-build.mjs' );

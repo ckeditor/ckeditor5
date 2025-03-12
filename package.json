@@ -187,6 +187,7 @@
     "reinstall": "yarn run clean && yarn run bootstrap",
     "docs": "node --max-old-space-size=8192 scripts/docs/build-docs.mjs",
     "docs:api": "node scripts/docs/build-api-docs.mjs",
+    "docs:ckeditor5": "node scripts/docs/build-ckeditor5.mjs",
     "docs:content-styles": "node -e \"import( './scripts/docs/build-content-styles.mjs' ).then( m => m.default() );\"",
     "docs:serve": "http-server ./build/docs/",
     "docs:verify": "node ./scripts/web-crawler/index.mjs --docs",
