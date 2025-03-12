@@ -165,9 +165,9 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
 		'<script src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>',
 		'<script src="%BASE_PATH%/assets/global.js"></script>',
-		getStyle( '%BASE_PATH%/assets/global.css' ),
 		getStyle( '%BASE_PATH%/assets/ckeditor5/ckeditor5.css' ),
 		getStyle( '%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.css' ),
+		getStyle( '%BASE_PATH%/assets/global.css' ),
 		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5/ckeditor5.js">',
 		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.js">'
 	];
