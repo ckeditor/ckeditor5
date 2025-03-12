@@ -88,14 +88,14 @@ CKEditor&nbsp;5 is a client-side text editor and relies on the browser APIs, so 
 Prepare a wrapper for the `CustomEditor` component to load it on the client side.
 
 ```jsx
-// components/client-site-custom-editor.js
+// components/client-side-custom-editor.js
 'use client' // Required only in App Router.
 
 import dynamic from 'next/dynamic';
 
-const ClientSiteCustomEditor = dynamic( () => import( '@/components/custom-editor' ), { ssr: false } );
+const ClientSideCustomEditor = dynamic( () => import( '@/components/custom-editor' ), { ssr: false } );
 
-export default ClientSiteCustomEditor;
+export default ClientSideCustomEditor;
 ```
 
 And then use it in your application.
@@ -104,11 +104,11 @@ And then use it in your application.
 // app/page.js (App Router)
 // pages/index.js (Pages Router)
 
-import ClientSiteCustomEditor from '@/components/client-site-custom-editor';
+import ClientSideCustomEditor from '@/components/client-side-custom-editor';
 
 function Home() {
   return (
-    <ClientSiteCustomEditor />
+    <ClientSideCustomEditor />
   );
 }
 
