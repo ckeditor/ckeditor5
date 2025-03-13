@@ -165,7 +165,7 @@
     "table": "^6.8.1",
     "terser-webpack-plugin": "^5.0.0",
     "typescript": "5.0.4",
-    "umberto": "^5.0.0",
+    "umberto": "^5.0.1",
     "upath": "^2.0.0",
     "wait-on": "^6.0.1",
     "webpack": "^5.94.0"
