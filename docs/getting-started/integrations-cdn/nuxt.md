@@ -9,9 +9,9 @@ modified_at: 2025-03-13
 
 # Integrate CKEditor 5 with Nuxt using CDN
 
-[Nuxt](https://nuxt.com/) is a Vue.js meta-framework that helps create full-stack web applications. It offers everything you would expect from a modern framework, including various rendering modes, file-based routing, automatic code splitting, a big ecosystem of plugins and hosting integrations, and more.
+[Nuxt](https://nuxt.com/) is a Vue.js meta-framework for creating full-stack web applications. It offers everything you would expect from a modern framework, including various rendering modes, file-based routing, automatic code splitting, a large ecosystem of plugins and hosting integrations, and more.
 
-CKEditor&nbsp;5 does not support server-side rendering, but you can still integrate it with the Nuxt framework. In this guide, you will add the editor to a Nuxt project. For this purpose, you will need a [Nuxt project](https://nuxt.com/docs/getting-started/installation) and the official {@link getting-started/integrations/vuejs-v3 CKEditor&nbsp;5 Vue component}.
+CKEditor&nbsp;5 does not support server-side rendering, but you can integrate it with the Nuxt framework. In this guide, you will add the editor to a Nuxt project. For this purpose, you will need a [Nuxt project](https://nuxt.com/docs/getting-started/installation) and the official {@link getting-started/integrations/vuejs-v3 CKEditor&nbsp;5 Vue component}.
 
 {@snippet getting-started/use-builder}
 
@@ -79,7 +79,7 @@ const config = computed( () => {
 </script>
 ```
 
-In the above example, the `useCKEditorCloud` hook is used to load the editor code and plugins from CDN. To use premium plugins, set the `premium` property to `true` and provide your license key in the configuration. For more information about the `useCKEditorCloud` helper, see the {@link getting-started/setup/loading-cdn-resources Loading CDN resources} guide.
+In the above example, the `useCKEditorCloud` hook loads the editor code and plugins from CDN. To use premium plugins, set the `premium` property to `true` and provide your license key in the configuration. For more information about the `useCKEditorCloud` helper, see the {@link getting-started/setup/loading-cdn-resources Loading CDN resources} guide.
 
 Now, you can import and use the `Editor.vue` component anywhere in your application.
 
