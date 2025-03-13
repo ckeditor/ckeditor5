@@ -20,6 +20,8 @@ import type { AdditionalSlot } from '../tableediting.js';
 export function downcastTable( tableUtils: TableUtils, options: DowncastTableOptions ): ElementCreatorFunction {
 	return ( table, { writer } ) => {
 		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
+		const footerRows = table.getAttribute( 'footerRows' ) as number || 0;
+		const rowCount = tableUtils.getRows( table ) as number || 0;
 		const tableElement = writer.createContainerElement( 'table', null, [] );
 		const figureElement = writer.createContainerElement( 'figure', { class: 'table' }, tableElement );
 
@@ -36,13 +38,39 @@ export function downcastTable( tableUtils: TableUtils, options: DowncastTableOpt
 		}
 
 		// Table body slot.
-		if ( headingRows < tableUtils.getRows( table ) ) {
+		if ( headingRows + footerRows < rowCount ) {
 			writer.insert(
 				writer.createPositionAt( tableElement, 'end' ),
 				writer.createContainerElement(
 					'tbody',
 					null,
-					writer.createSlot( element => element.is( 'element', 'tableRow' ) && element.index! >= headingRows )
+					writer.createSlot( element => {
+						if ( !element.is( 'element', 'tableRow' ) ) {
+							return false;
+						}
+
+						if ( element.index! < headingRows ) {
+							return false;
+						}
+
+						if ( element.index! >= rowCount - footerRows ) {
+							return false;
+						}
+
+						return true;
+					} )
+				)
+			);
+		}
+
+		// Table footer slot.
+		if ( footerRows > 0 ) {
+			writer.insert(
+				writer.createPositionAt( tableElement, 'end' ),
+				writer.createContainerElement(
+					'tfoot',
+					null,
+					writer.createSlot( element => element.is( 'element', 'tableRow' ) && element.index! >= rowCount - footerRows )
 				)
 			);
 		}
