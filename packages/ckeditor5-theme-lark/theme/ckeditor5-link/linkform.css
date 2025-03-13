@@ -21,7 +21,7 @@
 }
 
 /* Generic class that wraps each link balloon view. */
-.ck.ck-link-form {
+.ck.ck-form.ck-link-form {
 	width: var(--ck-link-panel-width);
 	padding-bottom: 0;
 

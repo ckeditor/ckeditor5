@@ -15,7 +15,9 @@ import PlainTableOutput from './plaintableoutput.js';
 import TableColumnResize from './tablecolumnresize.js';
 
 /**
- * The table layout plugin.
+ * The table plugin.
+ *
+ * For a detailed overview, check the {@glink features/tables/tables-layout Layout table feature documentation}.
  */
 export default class TableLayout extends Plugin {
 	/**

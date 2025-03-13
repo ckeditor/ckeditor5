@@ -24,7 +24,7 @@
     "@ckeditor/ckeditor5-basic-styles": "44.3.0",
     "@ckeditor/ckeditor5-cloud-services": "44.3.0",
     "@ckeditor/ckeditor5-code-block": "44.3.0",
-    "@ckeditor/ckeditor5-dev-utils": "^46.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^47.0.0",
     "@ckeditor/ckeditor5-easy-image": "44.3.0",
     "@ckeditor/ckeditor5-editor-decoupled": "44.3.0",
     "@ckeditor/ckeditor5-font": "44.3.0",
@@ -58,7 +58,7 @@
   ],
   "scripts": {
     "dll:build": "webpack",
-    "build": "tsc -p ./tsconfig.json",
+    "build": "tsc --build --force ./tsconfig.json",
     "build:dist": "node ../../scripts/nim/build-package.mjs"
   }
 }

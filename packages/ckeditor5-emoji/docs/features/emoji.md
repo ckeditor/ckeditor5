@@ -7,7 +7,7 @@ modified_at: 2025-01-21
 
 # Emoji
 
-The Emoji feature lets you insert emojis into the document from the editor toolbar or while writing the content. The emojis are pulled from the CDN to lessen the editor load.
+The emoji feature lets you insert emojis into the document from the editor toolbar or while writing the content. The emojis are pulled from the CDN to lessen the editor load.
 
 Since there is a large number of emojis, they have been conveniently divided into several categories for easier use, such as "Smileys & Expressions" or "Objects." You may also search for a specific emoji using the search field.
 
@@ -54,7 +54,7 @@ ClassicEditor
 </code-switcher>
 
 <info-box>
-	The Emoji feature requires the {@link features/mentions mentions feature} to be installed to work properly.
+	The emoji feature requires the {@link features/mentions mentions feature} to be installed to work properly.
 </info-box>
 
 The {@link module:emoji/emoji~Emoji emoji plugin} consists of two sub-plugins:
@@ -144,7 +144,7 @@ The feature can be configured via the {@link module:emoji/emojiconfig~EmojiConfi
 
 ### Emoji availability and appearance
 
-The availability of the emoji depends on the operating system. Different systems will have different Unicode support. You can decide that you want to lower the number of newer emoji by setting a lower {@link module:emoji/emojiconfig~EmojiConfig#version `version`} of Unicode of the emoji repository (CKEditor&nbsp;5 hosts v15 and v16) or by providing a custom emoji repository using the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `definitionsUrl`}. This way the users with newer systems will not be able to use newer emoji. Keep in mind that this only affects the editor feature. A user will still be able to use the native emoji insertion methods. The availability may also increase with the usage of a custom font.
+The availability of the emoji depends on the operating system. Different systems will have different Unicode support. You may decide to lower the number of newer emoji by setting a lower {@link module:emoji/emojiconfig~EmojiConfig#version `version`} of Unicode of the emoji repository (CKEditor&nbsp;5 hosts v15 and v16) or by providing a custom emoji repository using the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `definitionsUrl`}. This way, the users with newer systems will not be able to use newer emojis. Keep in mind that this only affects the editor feature. A user will still be able to use the native emoji insertion methods. The availability may also increase with the usage of a custom font.
 
 If you want to standardize the appearance of emoji accross operating systems, please consider using an external font in your integration, such as [Noto Color Emoji](https://fonts.google.com/noto/specimen/Noto+Color+Emoji). In the setup make sure to:
 
@@ -189,7 +189,7 @@ You can prepare your own database with a different emoji set, but it must have a
 
 ### Marker conflicts
 
-The Emoji feature uses the `:` marker that opens a panel with a table of selectable emojis. If you are using the {@link features/mentions mentions} or {@link features/merge-fields merge fields} features, they can also show UI panels by pressing a pre-configured key, and it may conflict with the Emoji feature. In such a case, the {@link module:emoji/emojimention~EmojiMention} plugin will not integrate the autocompletion mechanism.
+The emoji feature uses the `:` marker that opens a panel with a table of selectable emojis. If you use the {@link features/mentions mentions} or {@link features/merge-fields merge fields} features, they can also show UI panels by pressing a pre-configured key. Those keys may conflict with the emoji feature. In such a case, the {@link module:emoji/emojimention~EmojiMention} plugin will not integrate the autocompletion mechanism.
 
 To prevent conflicts, make sure that the {@link module:mention/mentionconfig~MentionFeed#marker mention's `marker`} and {@link module:merge-fields/mergefieldsconfig~MergeFieldsConfig#prefix merge field's `prefix`} configuration options are not defined as `:`.
 
@@ -234,11 +234,11 @@ The emoji repository could not be loaded due to a network issue, CORS restrictio
 
 For more details on configuring CSP, see the {@link getting-started/setup/csp Content Security Policy} guide.
 
-By following these steps, you should be able to resolve common issues with the Emoji plugin in CKEditor&nbsp;5. If problems persist, check your browser console for additional error messages or consult the CKEditor 5 [GitHub repository for support](https://github.com/ckeditor/ckeditor5/issues).
+By following these steps, you should be able to resolve common issues with the emoji plugin in CKEditor&nbsp;5. If problems persist, check your browser console for additional error messages or consult the CKEditor 5 [GitHub repository for support](https://github.com/ckeditor/ckeditor5/issues).
 
 ## Related features
 
-In addition to enabling the Emoji feature, you may want to check the following related features:
+In addition to enabling the emoji feature, you may want to check the following related features:
 
 * {@link features/special-characters Special characters} &ndash; Allows inserting **mathematical operators**, **currency symbols**, **punctuation**, **graphic symbols** (such as arrows or bullets), or Unicode letters typically not accessible from the keyboard (such as **umlauts** or **other diacritics**).
 * {@link features/mentions Mentions} &ndash; Brings support for smart autocompletion.
