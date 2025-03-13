@@ -226,17 +226,9 @@ In addition to the possibility of defining exclusions in the `<meta>` tag, it is
 <a href="path/to/page" data-cke-crawler-skip>No entry for crawler, sorry</a>
 ```
 
-## Generating content styles
+## Generating editor styles
 
-It is possible to generate a style sheet containing content styles brought by all CKEditor&nbsp;5 features. To do that, execute:
-
-```
-yarn docs:content-styles
-```
-
-The style sheet will be saved in the `build/content-styles` folder.
-
-To learn more, refer to the {@link getting-started/advanced/content-styles Content styles} guide.
+It is possible to generate a style sheet containing content styles brought by all CKEditor&nbsp;5 features. To obtain them, follow our {@link getting-started/advanced/integrating-from-source-webpack#option-extracting-css dedicated guide}. To learn more, refer to the {@link getting-started/advanced/content-styles Content styles} guide.
 
 ## Additional information for contributors
 
