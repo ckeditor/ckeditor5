@@ -4,6 +4,7 @@ meta-title: Integration with Nuxt using npm | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with the Nuxt framework using npm.
 category: self-hosted
 order: 50
+modified_at: 2025-03-13
 ---
 
 # Integrate CKEditor 5 with Nuxt using npm
@@ -40,21 +41,21 @@ npm install @ckeditor/ckeditor5-vue
 Next, you will use the installed dependencies in a Vue.js component. Create a new component in the `components` directory, for example, `components/Editor.vue`. It will use the `<ckeditor>` component to run the editor. The following example shows a single file component with open-source and premium CKEditor&nbsp;5 plugins.
 
 <info-box>
-  Starting from version 44.0.0, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from npm:
+	Starting from version 44.0.0, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from npm:
 
-  * You must either comply with the GPL or
-  * Obtain a license for {@link getting-started/licensing/license-key-and-activation self-hosting distribution}.
+	* You must either comply with the GPL or
+	* Obtain a license for {@link getting-started/licensing/license-key-and-activation self-hosting distribution}.
 
-  You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
+	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
 </info-box>
 
 ```html
 <template>
-  <ckeditor
-    v-model="data"
-    :editor="ClassicEditor"
-    :config="config"
-  />
+	<ckeditor
+		v-model="data"
+		:editor="ClassicEditor"
+		:config="config"
+	/>
 </template>
 
 <script setup>
@@ -69,11 +70,11 @@ import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 const data = ref( '<p>Hello world!</p>' );
 
 const config = computed( () => {
-  return {
-    licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-    plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
-    toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
-  };
+	return {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
+	};
 } );
 </script>
 ```
@@ -82,9 +83,9 @@ Now you can import and use the `Editor.vue` component anywhere in your applicati
 
 ```html
 <template>
-  <ClientOnly>
-    <Editor />
-  </ClientOnly>
+	<ClientOnly>
+		<Editor />
+	</ClientOnly>
 </template>
 ```
 

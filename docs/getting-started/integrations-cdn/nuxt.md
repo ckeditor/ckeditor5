@@ -4,6 +4,7 @@ meta-title: Integration with Nuxt using CDN | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with the Nuxt framework using CDN.
 category: cloud
 order: 50
+modified_at: 2025-03-13
 ---
 
 # Integrate CKEditor 5 with Nuxt using CDN
@@ -21,7 +22,7 @@ This guide assumes you already have a Nuxt project. To create such a project, fo
 ## Using from CDN
 
 <info-box>
-  To use our Cloud CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free). Learn more about {@link getting-started/licensing/license-key-and-activation license key activation}.
+	To use our Cloud CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free). Learn more about {@link getting-started/licensing/license-key-and-activation license key activation}.
 </info-box>
 
 Nuxt is based on Vue.js, so install the [CKEditor 5 WYSIWYG editor component for Vue.js](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue), too:
@@ -34,12 +35,12 @@ You will use the installed dependencies in a Vue.js component. Create a new comp
 
 ```html
 <template>
-  <ckeditor
-    v-if="editor"
-    v-model="data"
-    :editor="editor"
-    :config="config"
-  />
+	<ckeditor
+		v-if="editor"
+		v-model="data"
+		:editor="editor"
+		:config="config"
+	/>
 </template>
 
 <script setup>
@@ -47,33 +48,33 @@ import { ref, computed } from 'vue';
 import { Ckeditor, useCKEditorCloud } from '@ckeditor/ckeditor5-vue';
 
 const cloud = useCKEditorCloud( {
-  version: '{@var ckeditor5-version}',
-  premium: true
+	version: '{@var ckeditor5-version}',
+	premium: true
 } );
 
 const data = ref( '<p>Hello world!</p>' );
 
 const editor = computed( () => {
-  if ( !cloud.data.value ) {
-    return null;
-  }
+	if ( !cloud.data.value ) {
+		return null;
+	}
 
-  return cloud.data.value.CKEditor.ClassicEditor;
+	return cloud.data.value.CKEditor.ClassicEditor;
 } );
 
 const config = computed( () => {
-    if ( !cloud.data.value ) {
-    return null;
-  }
+		if ( !cloud.data.value ) {
+		return null;
+	}
 
-  const { Essentials, Paragraph, Bold, Italic } = cloud.data.value.CKEditor;
-  const { FormatPainter } = cloud.data.value.CKEditorPremiumFeatures;
+	const { Essentials, Paragraph, Bold, Italic } = cloud.data.value.CKEditor;
+	const { FormatPainter } = cloud.data.value.CKEditorPremiumFeatures;
 
-  return {
-    licenseKey: '<YOUR_LICENSE_KEY>',
-    plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
-    toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
-  };
+	return {
+		licenseKey: '<YOUR_LICENSE_KEY>',
+		plugins: [ Essentials, Paragraph, Bold, Italic, FormatPainter ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'italic', '|', 'formatPainter' ]
+	};
 } );
 </script>
 ```
@@ -84,9 +85,9 @@ Now, you can import and use the `Editor.vue` component anywhere in your applicat
 
 ```html
 <template>
-  <ClientOnly>
-    <Editor />
-  </ClientOnly>
+	<ClientOnly>
+		<Editor />
+	</ClientOnly>
 </template>
 ```
 
