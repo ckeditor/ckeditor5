@@ -43,7 +43,7 @@ describe( 'FullscreenEditing', () => {
 	} );
 
 	it( 'should register the `fullscreen` command', () => {
-		expect( editor.commands.get( 'fullscreen' ) ).to.be.instanceOf( FullscreenCommand );
+		expect( editor.commands.get( 'toggleFullscreen' ) ).to.be.instanceOf( FullscreenCommand );
 	} );
 
 	it( 'should define the `fullscreen.menuBar.isVisible` config option to `true`', () => {
@@ -71,7 +71,7 @@ describe( 'FullscreenEditing', () => {
 		editor.keystrokes.press( keyEventData );
 
 		expect( spy.calledOnce ).to.be.true;
-		expect( spy.calledWithExactly( 'fullscreen' ) ).to.be.true;
+		expect( spy.calledWithExactly( 'toggleFullscreen' ) ).to.be.true;
 
 		editor.keystrokes.press( keyEventData );
 

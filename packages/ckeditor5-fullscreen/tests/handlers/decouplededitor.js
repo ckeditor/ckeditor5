@@ -49,13 +49,13 @@ describe( 'DecoupledEditorHandler', () => {
 		it( 'should move the editable, toolbar, menu bar and body wrapper to the fullscreen container', () => {
 			decoupledEditorHandler.enable();
 
-			expect( decoupledEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=editable]' ).children[ 0 ] )
+			expect( decoupledEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=editable]' ).children[ 1 ] )
 				.to.equal( editor.editing.view.getDomRoot() );
-			expect( decoupledEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=toolbar]' ).children[ 0 ] )
+			expect( decoupledEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=toolbar]' ).children[ 0 ] )
 				.to.equal( editor.ui.view.toolbar.element );
-			expect( decoupledEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=menu-bar]' ).children[ 0 ] )
+			expect( decoupledEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=menu-bar]' ).children[ 0 ] )
 				.to.equal( editor.ui.view.menuBarView.element );
-			expect( decoupledEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=body-wrapper]' ).children[ 0 ] )
+			expect( decoupledEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=body-wrapper]' ).children[ 0 ] )
 				.to.equal( global.document.querySelector( '.ck-body-wrapper' ) );
 		} );
 	} );

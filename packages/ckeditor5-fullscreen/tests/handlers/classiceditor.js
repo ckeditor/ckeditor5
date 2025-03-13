@@ -44,18 +44,18 @@ describe( 'ClassicEditorHandler', () => {
 		it( 'should move the editable, toolbar and body wrapper to the fullscreen container', () => {
 			classicEditorHandler.enable();
 
-			expect( classicEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=editable]' ).children[ 0 ] )
+			expect( classicEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=editable]' ).children[ 1 ] )
 				.to.equal( editor.editing.view.getDomRoot() );
-			expect( classicEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=toolbar]' ).children[ 0 ] )
+			expect( classicEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=toolbar]' ).children[ 0 ] )
 				.to.equal( editor.ui.view.toolbar.element );
-			expect( classicEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=body-wrapper]' ).children[ 0 ] )
+			expect( classicEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=body-wrapper]' ).children[ 0 ] )
 				.to.equal( global.document.querySelector( '.ck-body-wrapper' ) );
 		} );
 
 		it( 'should set [dir] attribute on the fullscreen container', () => {
 			classicEditorHandler.enable();
 
-			expect( classicEditorHandler.getContainer().getAttribute( 'dir' ) ).to.equal( editor.ui.view.element.getAttribute( 'dir' ) );
+			expect( classicEditorHandler.getWrapper().getAttribute( 'dir' ) ).to.equal( editor.ui.view.element.getAttribute( 'dir' ) );
 		} );
 
 		it( 'should move menu bar if it is present', async () => {
@@ -81,7 +81,7 @@ describe( 'ClassicEditorHandler', () => {
 
 			tempClassicEditorHandler.enable();
 
-			expect( tempClassicEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=menu-bar]' ).children[ 0 ] )
+			expect( tempClassicEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=menu-bar]' ).children[ 0 ] )
 				.to.equal( tempEditor.ui.view.menuBarView.element );
 
 			tempDomElement.remove();

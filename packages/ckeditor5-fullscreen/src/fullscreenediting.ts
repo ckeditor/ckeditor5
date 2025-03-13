@@ -42,13 +42,13 @@ export default class FullscreenEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public init(): void {
-		this.editor.commands.add( 'fullscreen', new FullscreenCommand( this.editor ) );
+		this.editor.commands.add( 'toggleFullscreen', new FullscreenCommand( this.editor ) );
 
 		const t = this.editor.locale.t;
 
 		// Set the Ctrl+Shift+F keystroke.
 		this.editor.keystrokes.set( 'Ctrl+Shift+F', ( evt, cancel ) => {
-			this.editor.execute( 'fullscreen' );
+			this.editor.execute( 'toggleFullscreen' );
 
 			this.editor.editing.view.focus();
 

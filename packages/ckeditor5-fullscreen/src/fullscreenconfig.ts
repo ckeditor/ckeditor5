@@ -33,7 +33,7 @@ export default interface FullscreenConfig {
 	 *
 	 * @default () => {}
 	 */
-	enableCallback: ( container: HTMLElement ) => void;
+	enableCallback?: ( container: HTMLElement ) => void;
 
 	/**
 	 * Customizable callback that is called when the fullscreen mode is disabled.
@@ -41,7 +41,7 @@ export default interface FullscreenConfig {
 	 *
 	 * @default () => {}
 	 */
-	disableCallback: () => void;
+	disableCallback?: () => void;
 
 	/**
 	 * The container element for the fullscreen mode. This should be a reference to an existing, positioned element in the DOM.

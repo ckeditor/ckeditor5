@@ -5,16 +5,24 @@ meta-title: Fullscreen mode | CKEditor 5 Documentation
 category: features
 toc: false
 contributeUrl: false
-modified_at: 2025-01-22
+modified_at: 2025-03-17
 ---
 
-@TODO - description
+The fullscreen mode lets you temporarily expand the editor to the whole browser viewport, giving you more space to comfortably edit content and use editor's UI features.
 
 ## Demo
 
-@TODO
+Use the fullscreen mode toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/fullscreen-off.svg Enable fullscreen mode} in the editor below to see the feature in action. Once you enter the fullscreen mode, you will notice the following changes:
 
-<!-- {@snippet features/fullscreen} -->
+* Editor UI is stretched to the whole browser viewport.
+* Menu bar is visible by default, regardless of its presence outside fullscreen.
+* The editor editable area dimensions are changed.
+* Any dialogs that are normally displayed in the top-right (or top-left for RTL languages) corner of the editable area have their position adjusted to utilize increased space.
+* Annotations display mode is switched to wide sidebar (this affects only annotations UIs without filter function configured).
+
+Fullscreen mode can also be toggled using the <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd> (or <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd> on Mac) keystrokes.
+
+{@snippet features/fullscreen-default}
 
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
@@ -32,9 +40,9 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 
 <code-switcher>
 ```js
-import { DecoupledEditor, Fullscreen } from 'ckeditor5';
+import { ClassicEditor, Fullscreen } from 'ckeditor5';
 
-DecoupledEditor
+ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Fullscreen, /* ... */ ],
@@ -47,17 +55,117 @@ DecoupledEditor
 ```
 </code-switcher>
 
+### Supported editor types
+
+Fullscreen mode is ready-to-use for {@link getting-started/setup/editor-types#classic-editor classic} and {@link getting-started/setup/editor-types#decoupled-editor decoupled} editors. If you want to use it with other editor type, you can use custom callbacks to adjust the layout according to your needs. See the details in the [Configuration](#configuration) section.
+
 ## Configuration
+
+Fullscreen mode is designed to provide a great editing experience without an effort from the integrator. It provides integration with most of the official CKEditor 5 features out-of-the-box, detecting which of them are available. It is possible though to configure the behavior of menu bar and toolbar or set a custom container where the editor should be moved.
+
+### Menu bar visibility
+
+By default, menu bar is visible in fullscreen mode for any [supported editor type](#supported-editor-types), regardless of their original configuration. To disable it, use `config.fullscreen.menuBar.isVisible` option:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
+		fullscreen: {
+			menuBar: {
+				isVisible: false
+			}
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+Note that this setting does not change the original behavior defined in `config.menuBar.isVisible` configuration option.
+
+### Using a custom container
+
+If you want to use the fullscreen mode to enhance the editing experience but there are still some elements in your website layout that should stay visible, you can pass a custom container for the editor in fullscreen mode using `config.fullscreen.container` property.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
+		fullscreen: {
+			container: document.querySelector( '.main-area-without-sidebar' )
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
 
 <info-box>
 	For more technical details, please check the {@link module:fullscreen/fullscreenconfig~FullscreenConfig plugin configuration API}.
 </info-box>
 
+## Further customization
+
+Besides basic configuration, it is possible to do virtually any changes to the fullscreen mode layout using CSS and custom configurable callbacks.
+
+### Basic template
+
+To change the component styling (like editable area width or background color), you can use the CSS classes:
+
+* `ck-fullscreen__top-wrapper` - top wrapper holding the menu bar and toolbar.
+* `ck-fullscreen__menu-bar` - container with menu bar.
+* `ck-fullscreen__toolbar` - container with toolbar.
+* `ck-fullscreen__editable-wrapper` - container with sidebars and editable area.
+* `ck-fullscreen__sidebar` - this class is assigned to both left and right sidebar.
+* `ck-fullscreen__left-sidebar` - class that only left sidebar has.
+* `ck-fullscreen__right-sidebar` - class that only right sidebar has.
+* `ck-fullscreen__editable` - container with the editable area.
+* `ck-fullscreen__bottom-wrapper` - empty container that can be used for footer-like features.
+
+### Callbacks
+
+If you want to display some additional elements in the fullscreen mode, modify the `config.fullscreen.enableCallback` and `config.fullscreen.disableCallback` properties.
+
+`enableCallback` takes as a parameter the final container generated by default by the fullscreen feature, so it contains all the containers and features. You are free to e.g. relocate sidebars or push additional footer-like container.
+
+`disableCallback` should mostly take care of your custom components transferred to the fullscreen, restoring their original locations in the DOM.
+
+### Customized layout - pageless editor demo
+
+Below you'll find a customized demo:
+
+* instead of occupying the whole viewport, editor is stretched only over the main website area, not covering top and side navigation bars;
+* the "piece of paper" view is replaced by a pageless one, replicating the {@link getting-started/setup/editor-types#classic-editor classic editor} experience;
+* menu bar is not displayed.
+
+{@snippet features/fullscreen-pageless}
+
 ## Related features
 
-Here are some other CKEditor&nbsp;5 features that you can use to navigate content better:
+Here are some CKEditor&nbsp;5 features that are a perfect match for fullscreen mode:
 
-* @TODO
+* {@link features/document-outline Document outline} &ndash; Display the list of sections (headings) of the document next to the editor.
+* {@link features/track-changes Track changes} &ndash; Mark user changes in the content and show them as suggestions in the sidebar for acceptance or rejection.
+* {@link features/real-time-collaboration Real-time collaboration} &ndash; Work on the same document with other users simultaneously.
+* {@link features/pagination Pagination} &ndash; See the live preview of the document's page breaks and quickly navigate between pages.
+
+## Common API
+
+The fullscreen plugin registers:
+
+* the `fullscreen` UI button components for toolbar and menu bar,
+* the `fullscreen` command.
+
+You can execute the command using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
+
+
+```js
+// Toggle the fullscreen mode.
+editor.execute( 'toggleFullscreen' );
+```
+
+<info-box>
+	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
+</info-box>
 
 ## Contribute
 

@@ -33,6 +33,13 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 			const editorUI = this._editor.ui;
 			const editorUIView = editorUI.view;
 
+			/* istanbul ignore if -- @preserve */
+			if ( this._editor.plugins.has( 'Pagination' ) ) {
+				this.moveToFullscreen(
+					editorUI.getEditableElement()!.parentElement!.querySelector( '.ck-pagination-view' )!, 'pagination-view'
+				);
+			}
+
 			this.moveToFullscreen( editorUI.getEditableElement()!, 'editable' );
 			this.moveToFullscreen( editorUIView.toolbar.element!, 'toolbar' );
 			this.moveToFullscreen( document.querySelector( '.ck-body-wrapper' )!, 'body-wrapper' );
@@ -42,7 +49,7 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 			// Since we don't move the whole container but only parts, we need to reapply the attribute value manually.
 			// Decupled editor doesn't have this issue because there is no top-level container,
 			// so `dir` is set on each component separately.
-			this.getContainer().setAttribute( 'dir', editorUIView.element!.getAttribute( 'dir' )! );
+			this.getWrapper().setAttribute( 'dir', editorUIView.element!.getAttribute( 'dir' )! );
 
 			if ( this._editor.config.get( 'fullscreen.menuBar.isVisible' ) ) {
 				if ( !editorUIView.menuBarView ) {
@@ -54,7 +61,7 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 				this.moveToFullscreen( editorUIView.menuBarView.element!, 'menu-bar' );
 			}
 
-			return this.getContainer();
+			return this.getWrapper();
 		};
 	}
 }

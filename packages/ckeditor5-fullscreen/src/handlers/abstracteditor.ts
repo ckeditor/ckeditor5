@@ -7,14 +7,14 @@
  * @module fullscreen/handlers/abstracteditorhandler
  */
 
-import { PresenceListUI } from '@ckeditor/ckeditor5-real-time-collaboration';
-import { DocumentOutlineUI } from '@ckeditor/ckeditor5-document-outline';
+import { DialogViewPosition } from 'ckeditor5/src/ui.js';
+import { global, createElement, Rect, type EventInfo } from 'ckeditor5/src/utils.js';
 import type { ElementApi, Editor, EditorConfig } from 'ckeditor5/src/core.js';
+import type { PresenceListUI } from '@ckeditor/ckeditor5-real-time-collaboration';
+import type { DocumentOutlineUI } from '@ckeditor/ckeditor5-document-outline';
 import type { PaginationRenderer } from '@ckeditor/ckeditor5-pagination';
 import type { RevisionViewerEditor } from '@ckeditor/ckeditor5-revision-history';
 import type { Annotation, AnnotationsUIs, Sidebar } from '@ckeditor/ckeditor5-comments';
-import { type EventInfo, createElement, Rect } from 'ckeditor5/src/utils.js';
-import { DialogViewPosition } from 'ckeditor5/src/ui.js';
 
 const DIALOG_OFFSET = 28;
 
@@ -28,14 +28,19 @@ export default class AbstractEditorHandler {
 	private _placeholderMap: Map<string, { placeholderElement: HTMLElement; movedElement: HTMLElement }>;
 
 	/**
-	 * The container element that holds the fullscreen mode layout.
+	 * The wrapper element that holds the fullscreen mode layout.
 	 */
-	private _container: HTMLElement | null = null;
+	private _wrapper: HTMLElement | null = null;
 
 	/**
 	 * The document object in which the editor is located.
 	 */
 	private _document: Document;
+
+	/**
+	 * Data of the annotations UIs that were active before entering the fullscreen mode.
+	 */
+	private _annotationsUIsData: Map<string, Record<string, any>> | null = null;
 
 	/**
 	 * A callback that shows the revision viewer, stored to restore the original one after exiting the fullscreen mode.
@@ -54,11 +59,6 @@ export default class AbstractEditorHandler {
 	protected _defaultEnable: () => HTMLElement;
 
 	/**
-	 * Data of the annotations UIs that were active before entering the fullscreen mode.
-	 */
-	protected annotationsUIsData: Map<string, Record<string, any>> | null = null;
-
-	/**
 	 * An editor instance. It should be set by the particular editor type handler.
 	 */
 	declare protected _editor: Editor & Partial<ElementApi>;
@@ -75,12 +75,14 @@ export default class AbstractEditorHandler {
 		}
 
 		this._editor = editor;
-		this._document = this._editor.sourceElement!.ownerDocument;
+		this._document = this._editor.sourceElement ? this._editor.sourceElement.ownerDocument : global.document;
 		this._editor.config.define( 'fullscreen.container', this._document.body );
 
-		this._defaultEnable = () => this.getContainer();
+		this._defaultEnable = () => this.getWrapper();
 		editor.on( 'destroy', () => {
-			this.disable();
+			if ( this._wrapper ) {
+				this.disable();
+			}
 		} );
 	}
 
@@ -93,7 +95,7 @@ export default class AbstractEditorHandler {
 		placeholderElement.setAttribute( 'data-ck-fullscreen-placeholder', placeholderName );
 		elementToMove.replaceWith( placeholderElement );
 
-		this.getContainer().querySelector( `[data-ck-fullscreen="${ placeholderName }"]` )!.append( elementToMove );
+		this.getWrapper().querySelector( `[data-ck-fullscreen="${ placeholderName }"]` )!.append( elementToMove );
 
 		this._placeholderMap.set( placeholderName, { placeholderElement, movedElement: elementToMove } );
 	}
@@ -121,13 +123,13 @@ export default class AbstractEditorHandler {
 	/**
 	 * Returns the fullscreen mode container element.
 	 */
-	public getContainer(): HTMLElement {
-		if ( !this._container ) {
-			this._container = createElement( this._document, 'div', {
-				class: 'ck ck-fullscreen__main-container'
+	public getWrapper(): HTMLElement {
+		if ( !this._wrapper ) {
+			this._wrapper = createElement( this._document, 'div', {
+				class: 'ck ck-fullscreen__main-wrapper'
 			} );
 
-			this._container.innerHTML = `
+			this._wrapper.innerHTML = `
 				<div class="ck ck-fullscreen__top-wrapper ck-reset_all">
 					<div class="ck ck-fullscreen__menu-bar" data-ck-fullscreen="menu-bar"></div>
 					<div class="ck ck-fullscreen__toolbar" data-ck-fullscreen="toolbar"></div>
@@ -136,18 +138,20 @@ export default class AbstractEditorHandler {
 					<div class="ck ck-fullscreen__sidebar ck-fullscreen__left-sidebar" data-ck-fullscreen="left-sidebar">
 						<div class="ck ck-fullscreen__left-sidebar--sticky" data-ck-fullscreen="left-sidebar-sticky"></div>
 					</div>
-					<div class="ck ck-fullscreen__editable" data-ck-fullscreen="editable"></div>
-					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="right-sidebar"></div>
+					<div class="ck ck-fullscreen__editable" data-ck-fullscreen="editable">
+						<div class="ck ck-fullscreen__pagination-view" data-ck-fullscreen="pagination-view"></div>
+					</div>
+					<div class="ck ck-fullscreen__sidebar ck-fullscreen__right-sidebar" data-ck-fullscreen="right-sidebar"></div>
 				</div>
 				<div class="ck ck-fullscreen__bottom-wrapper">
 					<div class="ck ck-fullscreen__body-wrapper" data-ck-fullscreen="body-wrapper"></div>
 				</div>
 			`;
 
-			this._editor.config.get( 'fullscreen.container' )!.appendChild( this._container );
+			this._editor.config.get( 'fullscreen.container' )!.appendChild( this._wrapper );
 		}
 
-		return this._container;
+		return this._wrapper;
 	}
 
 	/**
@@ -156,9 +160,27 @@ export default class AbstractEditorHandler {
 	public enable(): void {
 		this._defaultEnable();
 
-		this._generatePresenceListElement();
-		this._generateDocumentOutlineElement();
-		this.registerFullscreenDialogPositionAdjustments();
+		// Block scroll if the fullscreen container is the body element. Otherwise the document has to stay scrollable.
+		if ( this._editor.config.get( 'fullscreen.container' ) === this._document.body ) {
+			this._document.body.classList.add( 'ck-fullscreen' );
+			this._document.body.parentElement!.classList.add( 'ck-fullscreen' );
+		}
+
+		if ( this._editor.plugins.has( 'Dialog' ) ) {
+			this._registerFullscreenDialogPositionAdjustments();
+		}
+
+		// Code coverage is provided in the commercial package repository as integration unit tests.
+		/* istanbul ignore if -- @preserve */
+		if ( this._editor.plugins.has( 'PresenceListUI' ) ) {
+			this._generatePresenceListContainer();
+		}
+
+		// Code coverage is provided in the commercial package repository as integration unit tests.
+		/* istanbul ignore if -- @preserve */
+		if ( this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
+			this._generateDocumentOutlineContainer();
+		}
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore if -- @preserve */
@@ -182,8 +204,15 @@ export default class AbstractEditorHandler {
 			this._overrideRevisionHistoryCallbacks();
 		}
 
+		// Hide all other elements in the container to ensure they don't create an empty unscrollable space.
+		for ( const element of this._editor.config.get( 'fullscreen.container' )!.children ) {
+			if ( element !== this._wrapper ) {
+				( element as HTMLElement ).style.display = 'none';
+			}
+		}
+
 		if ( this._editor.config.get( 'fullscreen.enableCallback' ) ) {
-			this._editor.config.get( 'fullscreen.enableCallback' )!( this.getContainer() );
+			this._editor.config.get( 'fullscreen.enableCallback' )!( this.getWrapper() );
 		}
 	}
 
@@ -195,11 +224,18 @@ export default class AbstractEditorHandler {
 			this._editor.config.get( 'fullscreen.disableCallback' )!();
 		}
 
-		this.restoreDocumentOutlineDefaultContainer();
+		this._document.body.classList.remove( 'ck-fullscreen' );
+		this._document.body.parentElement!.classList.remove( 'ck-fullscreen' );
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore if -- @preserve */
-		if ( this.annotationsUIsData ) {
+		if ( this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
+			this._restoreDocumentOutlineDefaultContainer();
+		}
+
+		// Code coverage is provided in the commercial package repository as integration unit tests.
+		/* istanbul ignore if -- @preserve */
+		if ( this._annotationsUIsData ) {
 			this._restoreAnnotationsUIs();
 		}
 
@@ -214,38 +250,43 @@ export default class AbstractEditorHandler {
 		if ( this._placeholderMap.size === 0 ) {
 			this._destroyContainer();
 		}
-	}
 
-	/**
-	 * Destroys the fullscreen mode container.
-	 */
-	private _destroyContainer(): void {
-		if ( !this._container ) {
-			return;
-		}
-
-		this._container.remove();
-		this._container = null;
-
+		// Pagination has to be restored after leaving fullscreen mode to ensure proper rendering.
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore if -- @preserve */
 		if ( this._editor.plugins.has( 'Pagination' ) ) {
 			( this._editor.plugins.get( 'PaginationRenderer' ) as PaginationRenderer ).setupScrollableAncestor();
 		}
 
-		this.unregisterFullscreenDialogPositionAdjustments();
+		// Also dialog position needs to be recalculated after leaving fullscreen mode.
+		if ( this._editor.plugins.has( 'Dialog' ) ) {
+			this._unregisterFullscreenDialogPositionAdjustments();
+		}
 	}
 
 	/**
-	 * Checks if the PresenceList plugin is available and moves its elements to fullscreen mode.
+	 * Destroys the fullscreen mode container.
 	 */
-	// Code coverage is provided in the commercial package repository as integration unit tests.
-	/* istanbul ignore next -- @preserve */
-	private _generatePresenceListElement(): void {
-		if ( !this._editor.plugins.has( 'PresenceListUI' ) ) {
+	private _destroyContainer(): void {
+		if ( !this._wrapper ) {
 			return;
 		}
 
+		this._wrapper.remove();
+		this._wrapper = null;
+
+		// Restore visibility of all other elements in the container.
+		for ( const element of this._editor.config.get( 'fullscreen.container' )!.children ) {
+			( element as HTMLElement ).style.display = '';
+		}
+	}
+
+	/**
+	 * Checks if the PresenceListUI plugin is available and moves its elements to fullscreen mode.
+	 */
+	// Code coverage is provided in the commercial package repository as integration unit tests.
+	/* istanbul ignore next -- @preserve */
+	private _generatePresenceListContainer(): void {
 		const presenceListElement = createElement( document, 'div', {
 			class: 'ck ck-fullscreen__left-sidebar-item'
 		} );
@@ -257,21 +298,17 @@ export default class AbstractEditorHandler {
 
 		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( presenceListElement );
 
-		const presenceListUI: PresenceListUI = this._editor.plugins.get( PresenceListUI );
+		const presenceListUI = this._editor.plugins.get( 'PresenceListUI' ) as PresenceListUI;
 
 		this.moveToFullscreen( presenceListUI.view.element!, 'presence-list' );
 	}
 
 	/**
-	 * Checks if the DocumentOutline plugin is available and moves its elements to fullscreen mode.
+	 * Checks if the DocumentOutlineUI plugin is available and moves its elements to fullscreen mode.
 	 */
 	// Code coverage is provided in the commercial package repository as integration unit tests.
 	/* istanbul ignore next -- @preserve */
-	private _generateDocumentOutlineElement(): void {
-		if ( !this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
-			return;
-		}
-
+	private _generateDocumentOutlineContainer(): void {
 		const documentOutlineHeaderElement = createElement( document, 'div', {
 			class: 'ck-fullscreen__left-sidebar-item ck-fullscreen__left-sidebar-item--no-margin'
 		} );
@@ -282,18 +319,18 @@ export default class AbstractEditorHandler {
 			</div>
 		`;
 
-		const documentOutlineBodyElement = createElement( document, 'div', {
+		const documentOutlineBodyWrapper = createElement( document, 'div', {
 			class: 'ck ck-fullscreen__left-sidebar-item ck-fullscreen__document-outline-wrapper'
 		} );
 
-		documentOutlineBodyElement.innerHTML = `
+		documentOutlineBodyWrapper.innerHTML = `
 			<div class="ck ck-fullscreen__document-outline" data-ck-fullscreen="document-outline"></div>
 		`;
 
-		document.querySelector( '[data-ck-fullscreen="left-sidebar"]' )!.appendChild( documentOutlineBodyElement );
+		document.querySelector( '[data-ck-fullscreen="left-sidebar"]' )!.appendChild( documentOutlineBodyWrapper );
 		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( documentOutlineHeaderElement );
 
-		const documentOutlineUI: DocumentOutlineUI = this._editor.plugins.get( DocumentOutlineUI );
+		const documentOutlineUI = this._editor.plugins.get( 'DocumentOutlineUI' ) as DocumentOutlineUI;
 		documentOutlineUI.view.documentOutlineContainer = document.querySelector( '[data-ck-fullscreen="left-sidebar"]' ) as HTMLElement;
 
 		this.moveToFullscreen( documentOutlineUI.view.element!, 'document-outline' );
@@ -304,12 +341,8 @@ export default class AbstractEditorHandler {
 	 */
 	// Code coverage is provided in the commercial package repository as integration unit tests.
 	/* istanbul ignore next -- @preserve */
-	public restoreDocumentOutlineDefaultContainer(): void {
-		if ( !this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
-			return;
-		}
-
-		const documentOutlineUI: DocumentOutlineUI = this._editor.plugins.get( DocumentOutlineUI );
+	private _restoreDocumentOutlineDefaultContainer(): void {
+		const documentOutlineUI = this._editor.plugins.get( 'DocumentOutlineUI' ) as DocumentOutlineUI;
 		documentOutlineUI.view.documentOutlineContainer = documentOutlineUI.view.element as HTMLElement;
 	}
 
@@ -321,20 +354,20 @@ export default class AbstractEditorHandler {
 	private _overrideAnnotationsUIs() {
 		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as AnnotationsUIs;
 
-		this.annotationsUIsData = new Map( annotationsUIs.uisData );
+		this._annotationsUIsData = new Map( annotationsUIs.uisData );
 
 		// Switch to the wide sidebar.
 		const sidebarPlugin = this._editor.plugins.get( 'Sidebar' ) as Sidebar;
 
 		if ( !sidebarPlugin.container ) {
 			sidebarPlugin.setContainer(
-				this.getContainer().querySelector( '[data-ck-fullscreen="right-sidebar"]' ) as HTMLElement
+				this.getWrapper().querySelector( '[data-ck-fullscreen="right-sidebar"]' ) as HTMLElement
 			);
 		}
 
 		const annotationsFilters = new Map<string, ( annotation: Annotation ) => boolean>();
 
-		for ( const [ uiName, data ] of [ ...this.annotationsUIsData! ] ) {
+		for ( const [ uiName, data ] of [ ...this._annotationsUIsData! ] ) {
 			// Default filter is `() => true`. Only store filters that are different.
 			if ( data.filter.toString() !== '() => true' ) {
 				annotationsFilters.set( uiName, data.filter );
@@ -372,11 +405,11 @@ export default class AbstractEditorHandler {
 
 		annotationsUIs.deactivateAll();
 
-		for ( const [ uiName, data ] of [ ...this.annotationsUIsData! ] ) {
+		for ( const [ uiName, data ] of [ ...this._annotationsUIsData! ] ) {
 			annotationsUIs.activate( uiName, data.filter );
 		}
 
-		this.annotationsUIsData = null;
+		this._annotationsUIsData = null;
 	}
 
 	/**
@@ -391,11 +424,15 @@ export default class AbstractEditorHandler {
 		this._editor.config.set( 'revisionHistory.showRevisionViewerCallback', async () => {
 			const revisionViewer = await this._showRevisionViewerCallback!();
 
+			if ( this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
+				( this.getWrapper().querySelector( '.ck-fullscreen__document-outline-header' ) as HTMLElement ).style.display = 'none';
+			}
+
 			this.restoreMovedElementLocation( 'editable' );
 			this.restoreMovedElementLocation( 'toolbar' );
 			this.restoreMovedElementLocation( 'right-sidebar' );
 
-			if ( this.annotationsUIsData ) {
+			if ( this._annotationsUIsData ) {
 				this._restoreAnnotationsUIs();
 			}
 
@@ -419,6 +456,10 @@ export default class AbstractEditorHandler {
 			this.restoreMovedElementLocation( 'toolbar' );
 			this.restoreMovedElementLocation( 'editable' );
 			this.restoreMovedElementLocation( 'right-sidebar' );
+
+			if ( this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
+				( this.getWrapper().querySelector( '.ck-fullscreen__document-outline-header' ) as HTMLElement ).style.display = '';
+			}
 
 			await this._closeRevisionViewerCallback!();
 
@@ -456,11 +497,7 @@ export default class AbstractEditorHandler {
 	 * Adds an event listener when the dialog opens to adjust its position in fullscreen mode,
 	 * utilizing the empty space on the right side of the editable element.
 	 */
-	public registerFullscreenDialogPositionAdjustments(): void {
-		if ( !this._editor.plugins.has( 'Dialog' ) ) {
-			return;
-		}
-
+	private _registerFullscreenDialogPositionAdjustments(): void {
 		const dialog = this._editor.plugins.get( 'Dialog' );
 
 		this._setNewDialogPosition();
@@ -471,11 +508,7 @@ export default class AbstractEditorHandler {
 	/**
 	 * Removes an event listener that adjusts the dialog's position in fullscreen mode.
 	 */
-	public unregisterFullscreenDialogPositionAdjustments(): void {
-		if ( !this._editor.plugins.has( 'Dialog' ) ) {
-			return;
-		}
-
+	private _unregisterFullscreenDialogPositionAdjustments(): void {
 		const dialog = this._editor.plugins.get( 'Dialog' );
 		const dialogView = dialog.view;
 
@@ -496,7 +529,7 @@ export default class AbstractEditorHandler {
 	public updateDialogPositionCallback = this._updateDialogPosition.bind( this );
 
 	/**
-	 * An event triggered on dialog opening that sets a new position.
+	 * If dialog is open, adjust its positioning.
 	 */
 	private _updateDialogPosition( _evt: EventInfo, _name: string, isOpen: boolean ): void {
 		if ( isOpen ) {
@@ -510,10 +543,6 @@ export default class AbstractEditorHandler {
 	 * Only dialogs with the position set to "editor-top-side" should have their position changed.
 	 */
 	private _setNewDialogPosition(): void {
-		if ( !this._editor.plugins.has( 'Dialog' ) ) {
-			return;
-		}
-
 		const dialog = this._editor.plugins.get( 'Dialog' );
 		const dialogView = dialog.view!;
 
@@ -521,7 +550,7 @@ export default class AbstractEditorHandler {
 			return;
 		}
 
-		const fullscreenViewContainerRect = new Rect( this._container! ).getVisible();
+		const fullscreenViewContainerRect = new Rect( this._wrapper! ).getVisible();
 		const editorContainerRect = new Rect( document.querySelector( '.ck-fullscreen__editable' ) as HTMLElement ).getVisible();
 		const dialogRect = new Rect( dialogView.element!.querySelector( '.ck-dialog' ) as HTMLElement ).getVisible();
 		const scrollOffset = new Rect( document.querySelector( '.ck-fullscreen__editable-wrapper' ) as HTMLElement )
