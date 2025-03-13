@@ -55,7 +55,7 @@ App Router, by default, uses server components. It means you need to mark a comp
 
 ```jsx
 // components/custom-editor.js
-'use client' // only in App Router
+'use client' // Required only in App Router.
 
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { ClassicEditor, Essentials, Paragraph, Bold, Italic } from 'ckeditor5';
@@ -85,17 +85,30 @@ The `CustomEditor` component is ready to be used inside a page. The page's direc
 
 CKEditor&nbsp;5 is a client-side text editor and relies on the browser APIs, so you need to disable server-side rendering for our custom component. You can lazily load the component using the `dynamic()` function built into Next.js.
 
+Prepare a wrapper for the `CustomEditor` component to load it on the client side.
+
+```jsx
+// components/client-side-custom-editor.js
+'use client' // Required only in App Router.
+
+import dynamic from 'next/dynamic';
+
+const ClientSideCustomEditor = dynamic( () => import( '@/components/custom-editor' ), { ssr: false } );
+
+export default ClientSideCustomEditor;
+```
+
+And then use it in your application.
+
 ```jsx
 // app/page.js (App Router)
 // pages/index.js (Pages Router)
 
-import dynamic from 'next/dynamic';
-
-const CustomEditor = dynamic( () => import( '@/components/custom-editor' ), { ssr: false } );
+import ClientSideCustomEditor from '@/components/client-side-custom-editor';
 
 function Home() {
   return (
-	<CustomEditor />
+    <ClientSideCustomEditor />
   );
 }
 
