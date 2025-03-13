@@ -3,7 +3,7 @@ menu-title: Vue.js 3+
 meta-title: Vue.js 3+ rich text editor component (npm) | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 3+ component with npm.
 category: self-hosted
-order: 50
+order: 70
 ---
 
 # Vue.js 3+ rich text editor component (npm)
