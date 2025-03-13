@@ -23,6 +23,8 @@ import { createEmptyTableCell } from '../utils/common.js';
 
 import '../../theme/tablelayout.css';
 
+const TABLE_TYPES = [ 'content', 'layout' ];
+
 /**
  * The table layout editing plugin.
  */
@@ -79,7 +81,9 @@ export default class TableLayoutEditing extends Plugin {
 		const { editor } = this;
 		const { conversion } = editor;
 
-		conversion.for( 'upcast' ).add( upcastLayoutTable() );
+		const preferredExternalTableType = editor.config.get( 'table.tableLayout.preferredExternalTableType' );
+
+		conversion.for( 'upcast' ).add( upcastLayoutTable( preferredExternalTableType ) );
 		conversion.for( 'dataDowncast' ).add( dataDowncastLayoutTable() );
 		conversion.for( 'editingDowncast' ).attributeToAttribute( {
 			model: {
@@ -170,7 +174,7 @@ export default class TableLayoutEditing extends Plugin {
  *
  * @returns Conversion helper.
  */
-function upcastLayoutTable() {
+function upcastLayoutTable( preferredExternalTableType: string | undefined ) {
 	return ( dispatcher: UpcastDispatcher ): void => {
 		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
 			const viewTable = data.viewItem;
@@ -179,14 +183,14 @@ function upcastLayoutTable() {
 				return;
 			}
 
-			const hasTableTypeContent = isTableTypeContent( viewTable );
+			const resolvedTableType = resolveTableType( viewTable, preferredExternalTableType );
 
 			// When an element is a content table, then skip it.
-			if ( hasTableTypeContent ) {
+			if ( resolvedTableType == 'content' ) {
 				return;
 			}
 
-			const table = conversionApi.writer.createElement( 'table' );
+			const table = conversionApi.writer.createElement( 'table', { tableType: 'layout' } );
 
 			if ( !conversionApi.safeInsert( table, data.modelCursor ) ) {
 				return;
@@ -231,7 +235,7 @@ function upcastLayoutTable() {
 			if ( modelRange ) {
 				conversionApi.writer.setAttribute(
 					'tableType',
-					isTableTypeContent( viewItem ) ? 'content' : 'layout',
+					resolveTableType( viewItem, preferredExternalTableType ),
 					modelRange
 				);
 				conversionApi.consumable.consume( viewItem, { classes: [ 'layout-table' ] } );
@@ -267,6 +271,25 @@ function dataDowncastLayoutTable() {
 			conversionApi.consumable.consume( item, evt.name );
 		} );
 	};
+}
+
+/**
+ * Resolves the table type based on the view table element and the preferred external table type.
+ */
+function resolveTableType( viewTable: ViewElement, preferredExternalTableType: string | undefined ): string {
+	if ( !preferredExternalTableType || !TABLE_TYPES.includes( preferredExternalTableType ) ) {
+		return isTableTypeContent( viewTable ) ? 'content' : 'layout';
+	}
+
+	if ( viewTable.hasClass( 'content-table' ) ) {
+		return 'content';
+	}
+
+	if ( viewTable.hasClass( 'layout-table' ) ) {
+		return 'layout';
+	}
+
+	return preferredExternalTableType;
 }
 
 /**
