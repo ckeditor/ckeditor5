@@ -15,7 +15,8 @@ import {
 	type ClipboardEventData,
 	type ViewDocumentCopyEvent,
 	type ViewDocumentCutEvent,
-	type ViewDocumentClipboardOutputEvent
+	type ViewDocumentClipboardOutputEvent,
+	type ClipboardContentInsertionEvent
 } from 'ckeditor5/src/clipboard.js';
 
 import { Plugin } from 'ckeditor5/src/core.js';
@@ -83,14 +84,46 @@ export default class TableClipboard extends Plugin {
 
 		this.listenTo<ViewDocumentCopyEvent>( viewDocument, 'copy', ( evt, data ) => this._onCopyCut( evt, data ) );
 		this.listenTo<ViewDocumentCutEvent>( viewDocument, 'cut', ( evt, data ) => this._onCopyCut( evt, data ) );
+		this._listenToContentInsertion();
+
+		this.decorate( '_replaceTableSlotCell' );
+	}
+
+	/**
+	 * Sets up listening for events from the clipboard pipeline to properly handle
+	 * table content merging during paste/drop operations.
+	 *
+	 * When a user is dragging and dropping a table, we want to insert the entire table into
+	 * a table cell instead of merging table contents. For paste and other events,
+	 * the normal table merge behavior is applied.
+	 */
+	private _listenToContentInsertion() {
+		const { editor } = this;
+		const clipboardPipeline = editor.plugins.get( ClipboardPipeline );
+		const tableSelection = editor.plugins.get( TableSelection );
+
+		let isPaste = false;
+
+		clipboardPipeline.on<ClipboardContentInsertionEvent>( 'contentInsertion', ( evt, data ) => {
+			isPaste = data.method === 'paste';
+		} );
+
 		this.listenTo<ModelInsertContentEvent>(
 			editor.model,
 			'insertContent',
-			( evt, [ content, selectable ] ) => this._onInsertContent( evt, content, selectable ),
+			( evt, [ content, selectable ] ) => {
+				// Handles drag-and-drop of tables, where tables are inserted into selected cells rather than merged.
+				// The `isPaste` flag handles scenarios where other features (e.g., Templates) insert tables into specific cells.
+				if ( isPaste || tableSelection.getSelectedTableCells() !== null ) {
+					this._onInsertContent( evt, content, selectable );
+				}
+			},
 			{ priority: 'high' }
 		);
 
-		this.decorate( '_replaceTableSlotCell' );
+		clipboardPipeline.on<ClipboardContentInsertionEvent>( 'contentInsertion', () => {
+			isPaste = false;
+		}, { priority: 'lowest' } );
 	}
 
 	/**

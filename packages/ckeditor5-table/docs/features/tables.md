@@ -10,7 +10,7 @@ modified_at: 2023-02-22
 
 {@snippet features/build-table-source}
 
-The table feature gives you tools to create and edit tables. Tables are great for organizing data in a clear, visually appealing way.
+The table feature gives you tools to create and edit tables. Tables are great for organizing data in a clear, visually appealing way, or creating structured content. They are also great for making document layouts for applications such as newsletters or email editors.
 
 ## Demo
 

@@ -79,11 +79,18 @@ ClassicEditor
 		window.editor = editor;
 
 		const element = document.getElementById( 'editor-data' );
-		element.innerText = formatHtml( editor.getData() );
+		const editorPreview = document.getElementById( 'editor-output-preview' );
+
+		updateOutput();
 
 		editor.model.document.on( 'change:data', () => {
-			element.innerText = formatHtml( editor.getData() );
+			updateOutput();
 		} );
+
+		function updateOutput() {
+			element.innerText = formatHtml( editor.getData() );
+			editorPreview.innerHTML = editor.getData();
+		}
 	} )
 	.catch( err => {
 		console.error( err.stack );

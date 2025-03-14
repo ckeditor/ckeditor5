@@ -830,7 +830,8 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 					'menuBar:insertImage',
 					'menuBar:ckbox',
 					'menuBar:ckfinder',
-					'menuBar:insertTable'
+					'menuBar:insertTable',
+					'menuBar:insertTableLayout'
 				]
 			},
 			{

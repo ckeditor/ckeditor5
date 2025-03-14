@@ -386,9 +386,8 @@ export default class TableColumnResizeEditing extends Plugin {
 		// Table width style
 		conversion.for( 'upcast' ).attributeToAttribute( {
 			view: {
-				name: 'figure',
-				key: 'style',
-				value: {
+				name: /^(figure|table)$/,
+				styles: {
 					width: /[\s\S]+/
 				}
 			},
