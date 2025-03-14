@@ -286,7 +286,10 @@ export function toWidgetEditable(
 ): ViewEditableElement {
 	writer.addClass( [ 'ck-editor__editable', 'ck-editor__nested-editable' ], editable );
 
-	writer.setAttribute( 'role', 'textbox', editable );
+	if ( editable.name !== 'td' && editable.name !== 'th' ) {
+		writer.setAttribute( 'role', 'textbox', editable );
+	}
+
 	writer.setAttribute( 'tabindex', '-1', editable );
 
 	if ( options.label ) {
