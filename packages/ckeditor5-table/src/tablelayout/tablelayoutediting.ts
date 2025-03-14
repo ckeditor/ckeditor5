@@ -20,6 +20,7 @@ import type {
 
 import InsertTableLayoutCommand from './../commands/inserttablelayoutcommand.js';
 import { createEmptyTableCell } from '../utils/common.js';
+import type { TableType } from '../tableconfig.js';
 
 import '../../theme/tablelayout.css';
 
@@ -174,7 +175,7 @@ export default class TableLayoutEditing extends Plugin {
  *
  * @returns Conversion helper.
  */
-function upcastLayoutTable( preferredExternalTableType: string | undefined ) {
+function upcastLayoutTable( preferredExternalTableType: TableType | undefined ) {
 	return ( dispatcher: UpcastDispatcher ): void => {
 		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
 			const viewTable = data.viewItem;
@@ -276,7 +277,7 @@ function dataDowncastLayoutTable() {
 /**
  * Resolves the table type based on the view table element and the preferred external table type.
  */
-function resolveTableType( viewTable: ViewElement, preferredExternalTableType: string | undefined ): string {
+function resolveTableType( viewTable: ViewElement, preferredExternalTableType: TableType | undefined ): TableType {
 	if ( !preferredExternalTableType || !TABLE_TYPES.includes( preferredExternalTableType ) ) {
 		return isTableTypeContent( viewTable ) ? 'content' : 'layout';
 	}
