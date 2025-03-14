@@ -228,7 +228,7 @@ In addition to the possibility of defining exclusions in the `<meta>` tag, it is
 
 ## Generating editor styles
 
-It is possible to generate a style sheet containing content styles brought by all CKEditor&nbsp;5 features. To obtain them, follow our {@link getting-started/advanced/integrating-from-source-webpack#option-extracting-css dedicated guide}. To learn more, refer to the {@link getting-started/advanced/content-styles Content styles} guide.
+It is possible to generate a style sheet containing content styles brought by all CKEditor&nbsp;5 features. To obtain such a style sheet, follow our {@link getting-started/advanced/integrating-from-source-webpack#option-extracting-css CSS extracting} guide. To learn more, refer to the {@link getting-started/advanced/content-styles Content styles} guide.
 
 ## Additional information for contributors
 
