@@ -47,7 +47,10 @@ EmojiEditor
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		},
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		emoji: {
+			definitionsUrl: 'cdn'
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
