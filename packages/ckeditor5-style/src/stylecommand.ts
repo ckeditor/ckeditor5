@@ -201,9 +201,15 @@ export default class StyleCommand extends Command {
 				if ( shouldAddStyle ) {
 					htmlSupport.addModelHtmlClass( definition.element, definition.classes, selectable );
 				} else {
+					// E.g. an inline element and its surrounding block could have different styles applied using the
+					// same class name. In order to not have the actual definition filtered out by
+					// "getDefinitionExclusiveClasses" we need to filter the active definitions by definition type.
+					const filteredActiveDefinition = activeDefinitions.filter( el =>
+						isBlockStyleDefinition( definition ) === isBlockStyleDefinition( el )
+					);
 					htmlSupport.removeModelHtmlClass(
 						definition.element,
-						getDefinitionExclusiveClasses( activeDefinitions, definition ),
+						getDefinitionExclusiveClasses( filteredActiveDefinition, definition ),
 						selectable
 					);
 				}
