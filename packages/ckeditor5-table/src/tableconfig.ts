@@ -208,6 +208,17 @@ export interface TableConfig {
 	 * Read more about configuring the table feature in {@link module:table/tableconfig~TableConfig}.
 	 */
 	tableCellProperties?: TableCellPropertiesConfig;
+
+	/**
+	 * Configuration of the table layout feature.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableLayout: ... // Table layout feature config.
+	 * };
+	 * ```
+	 */
+	tableLayout?: TableLayoutConfig;
 }
 
 /**
@@ -372,3 +383,35 @@ export interface TableCellPropertiesOptions {
 	 */
 	verticalAlignment?: string;
 }
+
+/**
+ * The configuration of the table layout feature.
+ */
+export interface TableLayoutConfig {
+
+	/**
+	 * The preferred type of the external table to be inserted.
+	 *
+	 * By using this setting you can change the table type detection heuristics.
+	 * The highest priority has recognition by CSS classnames: `content-table` and `layout-table`.
+	 * If the classnames are not present, the default heuristic is used.
+	 *
+	 * When `preferredExternalTableType` is set, the default heuristic is overridden and the table type is set to the value of this setting.
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( {
+	 * 		table: {
+	 * 			tableLayout: {
+	 * 				preferredExternalTableType: 'content' // or 'layout'
+	 * 			}
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 */
+	preferredExternalTableType: TableType;
+}
+
+export type TableType = 'content' | 'layout';
