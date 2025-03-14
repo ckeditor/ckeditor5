@@ -16,7 +16,7 @@ modified_at: 2024-11-28
 
 ## Update to CKEditor&nbsp;5 v 44.3.0
 
-Released on March 5, 2025. ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v44.3.0))
+Released on March 5, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v44.3.0))
 
 ### Fixed link decorators
 
@@ -24,7 +24,7 @@ We fixed the behavior of the multiple manual link decorators that set the `rel` 
 
 ### New `EmptyBlock` plugin
 
-Starting this release, a new `EmptyBlock` plugin prevents adding `&nbsp;` to the output data of blocks, works similarly to the [`fillEmptyBlocks`](https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fillEmptyBlocks) configuration in CKEditor 4.
+Starting this release, a new {@link module:html-support/emptyblock~EmptyBlock} plugin prevents adding `&nbsp;` to the output data of blocks, and works similarly to the [`fillEmptyBlocks`](https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fillEmptyBlocks) configuration in CKEditor 4.
 
 ### Enhanced support for the `<hr>` element
 
@@ -42,7 +42,7 @@ We enhanced emoji support for better compatibility with users' devices.
 
 ## Update to CKEditor&nbsp;5 v 44.2.1
 
-Released on February 20, 2025. ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v44.2.1))
+Released on February 20, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v44.2.1))
 
 ### Vulnerability removed
 
@@ -54,7 +54,7 @@ You can read more details in the relevant [security advisory](https://github.com
 
 ## Update to CKEditor&nbsp;5 v 44.2.0
 
-Released on February 12, 2025. ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v44.2.0))
+Released on February 12, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v44.2.0))
 
 ### Enhanced Source Code Editing
 
@@ -95,7 +95,7 @@ We are greatly satisfied with the improved editor loading times. At the same tim
 
 ## Update to CKEditor&nbsp;5 v44.1.0
 
-Released on December 16, 2024 ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v44.1.0)).
+Released on December 16, 2024 ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v44.1.0)).
 
 ### Minor breaking changes in this release
 
@@ -103,7 +103,7 @@ Released on December 16, 2024 ([See full release  notes](https://github.com/cked
 
 ## Update to CKEditor&nbsp;5 v44.0.0
 
-Released on December 2, 2024 ([See full release  notes](https://github.com/ckeditor/ckeditor5/releases/tag/v44.0.0)).
+Released on December 2, 2024 ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v44.0.0)).
 
 For the entire list of changes introduced in version 44.0.0, see the [release notes for CKEditor&nbsp;5 v44.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v44.0.0).
 

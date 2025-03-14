@@ -10,7 +10,7 @@
 	--ck-bookmark-icon-animation-curve: var(--ck-widget-handler-animation-curve);
 }
 
-.ck-bookmark {
+.ck .ck-bookmark {
 	&.ck-widget {
 		display: inline-block;
 		outline: none;
