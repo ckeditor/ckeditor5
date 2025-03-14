@@ -58,14 +58,7 @@ export default class TableTypeCommand extends Command {
 		model.change( writer => {
 			writer.setAttribute( 'tableType', tableType, table );
 
-			const allTableAttributes = table.getAttributes();
-
-			// Check if all attributes are allowed for the new table type.
-			for ( const [ attributeName ] of allTableAttributes ) {
-				if ( attributeName !== 'tableType' && !model.schema.checkAttribute( table, attributeName ) ) {
-					writer.removeAttribute( attributeName, table );
-				}
-			}
+			model.schema.removeDisallowedAttributes( [ table ], writer );
 
 			const tableChildren = table.getChildren();
 
