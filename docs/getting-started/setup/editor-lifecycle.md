@@ -119,4 +119,4 @@ editor
 	} );
 ```
 
-Once destroyed, resources used by the editor instance are released and the original element used to create the editor is automatically displayed and updated to reflect the final editor data.
+Once the editor is destroyed, resources used by the editor instance are released. However, if `updateSourceElementOnDestroy` is enabled, the original element (`<textarea>` or similar) used to create the editor is updated to reflect the final editor content upon destruction. This has some security implication, so enable it only after reading the {@link getting-started/setup/getting-and-setting-data#updating-the-source-element related section}.
