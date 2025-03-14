@@ -64,5 +64,6 @@
 	"Insert a new table row (when in the last cell of a table)": "Keystroke description for assistive technologies: keystroke for inserting a new table row.",
 	"Navigate through the table": "Keystroke description for assistive technologies: keystroke for navigating through the table.",
 	"Table": "The accessible label of the menu bar button that displays a user interface to insert a table into editor content.",
-	"Table layout": "The accessible label of the menu bar button that displays a user interface to insert a table layout into editor content."
+	"Table layout": "The accessible label of the menu bar or dropdown button that displays a user interface to insert a table layout into editor content.",
+	"Table content": "The accessible label of the menu bar or dropdown button that displays a user interface to insert table content into editor."
 }
