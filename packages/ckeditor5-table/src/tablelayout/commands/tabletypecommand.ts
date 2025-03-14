@@ -4,11 +4,10 @@
  */
 
 /**
- * @module table/tablelayout/commands/settabletype
+ * @module table/tablelayout/commands/tabletypecommand
  */
 
 import { Command } from 'ckeditor5/src/core.js';
-import type { Element } from 'ckeditor5/src/engine.js';
 
 import { getSelectionAffectedTable } from '../../utils/common.js';
 
@@ -18,15 +17,15 @@ export type TableType = 'layout' | 'content';
  * The set table type command.
  *
  * The command is registered by {@link module:table/tablelayout/tablelayoutediting~TableLayoutEditing}
- * as the `'setTableType'` editor command.
+ * as the `'tableType'` editor command.
  *
  * To set the table type at the current selection, execute the command and specify the table type:
  *
  * ```ts
- * editor.execute( 'setTableType', 'layout' );
+ * editor.execute( 'tableType', 'layout' );
  * ```
  */
-export default class SetTableType extends Command {
+export default class TableTypeCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
@@ -57,20 +56,25 @@ export default class SetTableType extends Command {
 		}
 
 		model.change( writer => {
-			const newTable = writer.createElement( 'table' );
+			writer.setAttribute( 'tableType', tableType, table );
 
-			writer.setAttribute( 'tableType', tableType, newTable );
+			const allTableAttributes = table.getAttributes();
 
-			const tableChildren = table.getChildren();
-
-			for ( const child of tableChildren ) {
-				if ( model.schema.checkChild( newTable, child ) ) {
-					writer.append( writer.cloneElement( child as Element ), newTable );
+			// Check if all attributes are allowed for the new table type.
+			for ( const [ attributeName ] of allTableAttributes ) {
+				if ( attributeName !== 'tableType' && !model.schema.checkAttribute( table, attributeName ) ) {
+					writer.removeAttribute( attributeName, table );
 				}
 			}
 
-			writer.insert( newTable, table, 'after' );
-			writer.remove( table );
+			const tableChildren = table.getChildren();
+
+			// Check if all children are allowed for the new table type.
+			for ( const child of tableChildren ) {
+				if ( !model.schema.checkChild( table, child ) ) {
+					writer.remove( child );
+				}
+			}
 		} );
 	}
 }
