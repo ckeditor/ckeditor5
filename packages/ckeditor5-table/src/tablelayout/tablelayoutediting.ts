@@ -19,6 +19,7 @@ import type {
 } from 'ckeditor5/src/engine.js';
 
 import InsertTableLayoutCommand from './../commands/inserttablelayoutcommand.js';
+import TableTypeCommand from './commands/tabletypecommand.js';
 import { createEmptyTableCell } from '../utils/common.js';
 
 import '../../theme/tablelayout.css';
@@ -50,6 +51,7 @@ export default class TableLayoutEditing extends Plugin {
 		this._defineClipboardPasteHandlers();
 		this._registerTableTypeAttributePostfixer();
 		this.editor.commands.add( 'insertTableLayout', new InsertTableLayoutCommand( this.editor ) );
+		this.editor.commands.add( 'tableType', new TableTypeCommand( this.editor ) );
 	}
 
 	/**
