@@ -9,8 +9,7 @@
 
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 
-import { keyCodes } from '@ckeditor/ckeditor5-utils';
-
+import { keyCodes, env } from '@ckeditor/ckeditor5-utils';
 import {
 	MouseObserver,
 	TouchObserver,
@@ -24,7 +23,10 @@ import {
 	type ViewDocumentSelectionChangeEvent,
 	type ViewDocumentTouchStartEvent,
 	type ModelInsertContentEvent,
-	type ModelDeleteContentEvent
+	type ModelDeleteContentEvent,
+	type ViewElement,
+	type ViewNode,
+	type ViewDocumentFragment
 } from '@ckeditor/ckeditor5-engine';
 
 import type { ViewDocumentDeleteEvent } from './deleteobserver.js';
@@ -504,6 +506,11 @@ export default class TwoStepCaretMovement extends Plugin {
 		let touched = false;
 		let clicked = false;
 
+		// Handle iOS-specific middle-link touch behavior.
+		if ( env.isiOS ) {
+			this._enableMiddleLinkTouchHandlerForIOS();
+		}
+
 		// This event should be fired before selection on mobile devices.
 		this.listenTo<ViewDocumentTouchStartEvent>( document, 'touchstart', () => {
 			clicked = false;
@@ -560,6 +567,71 @@ export default class TwoStepCaretMovement extends Plugin {
 			else if ( !this._isGravityOverridden ) {
 				this._overrideGravity();
 			}
+		} );
+	}
+
+	/**
+	 * Enables special handling for middle-link touches on iOS devices.
+	 * When a user touches the middle part of a link (not on edges), the cursor
+	 * will be positioned at the end of the link to allow easy typing after the link.
+	 *
+	 * This is iOS-specific behavior to improve the user experience when working with links.
+	 *
+	 * See: https://github.com/ckeditor/ckeditor5/issues/18023
+	 */
+	private _enableMiddleLinkTouchHandlerForIOS(): void {
+		const { editor } = this;
+		const viewDocument = editor.editing.view.document;
+
+		this.listenTo<ViewDocumentTouchStartEvent>( viewDocument, 'touchstart', ( evt, data ) => {
+			// Get the view element directly from the event data.
+			const targetViewElement = data.target;
+
+			// Find the closest link element (could be the target itself or one of its ancestors).
+			let linkElement: ViewElement | null = null;
+
+			if ( isLinkElement( targetViewElement ) ) {
+				linkElement = targetViewElement;
+			} else {
+				linkElement = targetViewElement.getAncestors().find( isLinkElement ) as ViewElement | null;
+			}
+
+			// If no link element found, exit early.
+			if ( !linkElement ) {
+				return;
+			}
+
+			// Check if touch happened in the middle of the link.
+			const domElement = editor.editing.view.domConverter.mapViewToDom( linkElement )!;
+			const rect = domElement.getBoundingClientRect();
+
+			const { clientX, clientY } = data.domEvent.touches[ 0 ];
+
+			// Define edge threshold in pixels for X axis only.
+			const edgeThresholdPx = 10;
+
+			// Consider it a middle click if:
+			// 1. Not on left or right edge (with threshold).
+			const isNotLeftEdge = clientX > ( rect.left + edgeThresholdPx );
+			const isNotRightEdge = clientX < ( rect.right - edgeThresholdPx );
+
+			// 2. Vertically within the link boundaries (no threshold).
+			const isVerticallyInside = clientY >= rect.top && clientY <= rect.bottom;
+
+			const isMiddleLinkClick = isNotLeftEdge && isNotRightEdge && isVerticallyInside;
+
+			// If not a middle click, exit early.
+			if ( !isMiddleLinkClick ) {
+				return;
+			}
+
+			// Set the selection to the end of the link.
+			editor.model.change( writer => {
+				const viewRange = editor.editing.view.createPositionAt( linkElement!, 'end' );
+				const modelPosition = editor.editing.mapper.toModelPosition( viewRange );
+
+				writer.setSelection( modelPosition );
+			} );
 		} );
 	}
 
@@ -781,4 +853,11 @@ function isBetweenDifferentAttributes( position: Position, attributes: Set<strin
 	}
 
 	return false;
+}
+
+/**
+ * Returns `true` if a given view node is the link element.
+ */
+function isLinkElement( node: ViewNode | ViewDocumentFragment ): boolean {
+	return node.is( 'attributeElement' ) && !!node.getCustomProperty( 'link' );
 }
