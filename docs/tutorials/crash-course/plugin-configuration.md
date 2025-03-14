@@ -3,7 +3,7 @@ category: crash-course
 order: 90
 menu-title: Plugin configuration
 meta-title: CKEditor 5 crash course - Plugin configuration | CKEditor 5 Documentation
-modified_at: 2023-08-16
+modified_at: 2025-03-14
 ---
 
 # Plugin configuration
@@ -62,6 +62,19 @@ button.set( {
 
 ```js
 editor.keystrokes.set( keystroke, 'highlight' ); // Update this line.
+```
+
+```js
+const t = editor.t;
+
+editor.accessibility.addKeystrokeInfos( {
+	keystrokes: [
+		{
+			label: t( 'Highlight text' ),
+			keystroke: keystroke // Update this line.
+		}
+	]
+} );
 ```
 
 ### Testing changes

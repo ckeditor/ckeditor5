@@ -4,7 +4,7 @@ order: 10
 menu-title: Editor and configuration
 meta-title: CKEditor 5 crash course - Editor and configuration | CKEditor 5 Documentation
 meta-description: Learn how to use CKEditor 5 APIs to create a custom editor plugin.
-modified_at: 2023-08-16
+modified_at: 2025-03-14
 ---
 
 # Editor and configuration
@@ -60,8 +60,8 @@ However, you may have noticed that the "Hello world!" text does not appear in th
 The editor itself does not do much - it is just an empty shell at this stage. What gives the editor almost all of its functionality are the plugins. We will talk more about plugins in the next chapter, but for now, let's just install two plugins that provide the bare minimum needed to type in the editor.
 
 ```js
-// Import plugins.
-import { Essentials, Paragraph } from 'ckeditor5';
+// Import plugins by adding them to the previously added import.
+import { ClassicEditor, Essentials, Paragraph } from 'ckeditor5';
 
 // Update the call to the `create()` method.
 const editor = await ClassicEditor.create( element, {
@@ -169,7 +169,11 @@ The editor and its contents should disappear. **This method returns a promise, s
 
 If you want to use the editor from CDN, you can adapt this tutorial by following these steps.
 
-First, clone the repository the same way as before. But do not install the dependencies. Instead, open the `index.html` file and add the following tags:
+First, clone the repository the same way as before. But do not install all the dependencies. Instead, run:
+```
+npm install vite
+```
+After that, open the `index.html` file and add the following tags:
 
 ```html
 <!DOCTYPE html>
@@ -181,12 +185,12 @@ First, clone the repository the same way as before. But do not install the depen
 		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 	</head>
 	<body>
-		<div id="editor">
+		<div id="app">
 			<p>Hello world!</p>
 		</div>
 		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
 
-		<script type="module" src="/main.js"></script>
+		<script type="module" src="/src/main.js"></script>
 	</body>
 </html>
 ```
@@ -210,6 +214,8 @@ import { ClassicEditor, Essentials, Bold, Italic, Paragraph } from 'ckeditor5';
 // After:
 const { ClassicEditor, Essentials, Bold, Italic, Paragraph } = CKEDITOR;
 ```
+
+Also, since the `GPL` key can't be used for CDN integration, you need to go to our [pricing page](https://ckeditor.com/pricing/) and select a plan that best suits your needs to obtain a license key that can be used in cloud integration. In `src/main.js` set `licenseKey` to your license key.
 
 After following these steps and running the `npm run dev` command, you should be able to open the editor in the browser.
 
