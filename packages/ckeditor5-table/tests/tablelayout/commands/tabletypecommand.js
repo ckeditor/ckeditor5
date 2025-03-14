@@ -65,14 +65,6 @@ describe( 'TableTypeCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		// it( 'should remove width from a selected table if passed the default value', () => {
-		// 	setData( model, modelTable( [ [ '[foo]' ] ], { tableWidth: '100px' } ) );
-
-		// 	command.execute( { value: '300px' } );
-
-		// 	assertTableStyle( editor, '' );
-		// } );
-
 		it( 'should change table attribute from `layout` to `content`', () => {
 			editor.setData(
 				'<table class="table layout-table">' +
