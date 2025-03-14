@@ -141,7 +141,7 @@ export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View
 	 *
 	 * @observable
 	 */
-	declare public position: typeof DialogViewPosition[ keyof typeof DialogViewPosition ];
+	declare public position: typeof DialogViewPosition[ keyof typeof DialogViewPosition ] | null;
 
 	/**
 	 * A flag indicating that the dialog should be shown. Once set to `true`, the dialog will be shown
