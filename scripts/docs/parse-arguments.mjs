@@ -35,6 +35,7 @@ export default function parseArguments( args ) {
 			'skip-validation': false,
 			'skip-guides': false,
 			'skip-ckeditor5': false,
+			'skip-commercial': false,
 			production: false,
 			watch: false,
 			verbose: false,

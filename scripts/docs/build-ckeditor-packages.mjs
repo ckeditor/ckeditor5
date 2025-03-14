@@ -14,12 +14,12 @@ import { CKEDITOR5_ROOT_PATH, CKEDITOR5_COMMERCIAL_PATH } from '../constants.mjs
 import generateCKEditor5DocsBuild from './generate-ckeditor5-docs-build.mjs';
 import parseArguments from '../docs/parse-arguments.mjs';
 
-buildSources()
+buildCKEditorPackages()
 	.catch( () => {
 		process.exitCode = 1;
 	} );
 
-async function buildSources() {
+async function buildCKEditorPackages() {
 	const options = parseArguments( process.argv.slice( 2 ) );
 
 	console.log( 'Started building `ckeditor5`.' );

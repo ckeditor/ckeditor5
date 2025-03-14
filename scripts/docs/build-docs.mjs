@@ -12,7 +12,6 @@ import { glob } from 'glob';
 import fs from 'fs-extra';
 import upath from 'upath';
 import umberto from 'umberto';
-// import { tools } from '@ckeditor/ckeditor5-dev-utils';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 import parseArguments from './parse-arguments.mjs';
 
@@ -31,10 +30,7 @@ async function buildDocs() {
 	const options = parseArguments( process.argv.slice( 2 ) );
 
 	if ( !options.skipApi ) {
-		await spawnAsync( 'yarn', [ 'run', '--silent', 'docs:api' ], {
-			cwd: CKEDITOR5_ROOT_PATH,
-			stdio: 'inherit'
-		} );
+		await spawnAsync( 'yarn', [ 'run', '--silent', 'docs:api' ] );
 	}
 
 	if ( shouldBuildCKEditorAssets( options ) ) {
@@ -44,10 +40,7 @@ async function buildDocs() {
 			ckeditor5AssetsArgs.push( '--skip-commercial' );
 		}
 
-		await spawnAsync( 'yarn', ckeditor5AssetsArgs, {
-			cwd: CKEDITOR5_ROOT_PATH,
-			stdio: 'inherit'
-		} );
+		await spawnAsync( 'yarn', ckeditor5AssetsArgs );
 	}
 
 	await umberto.buildSingleProject( {
@@ -99,9 +92,13 @@ function shouldBuildCKEditorAssets( options ) {
 	return true;
 }
 
-function spawnAsync( command, args, options ) {
+function spawnAsync( command, args ) {
 	return new Promise( ( resolve, reject ) => {
-		const process = spawn( command, args, options );
+		const process = spawn( command, args, {
+			cwd: CKEDITOR5_ROOT_PATH,
+			stdio: 'inherit',
+			shell: true
+		} );
 
 		process.on( 'close', code => {
 			if ( code === 0 ) {
