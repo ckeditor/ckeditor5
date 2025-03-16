@@ -21,7 +21,7 @@ Content styles are bundled along with editor UI styles and, together with the Ja
 
 By default, content styles are loaded by the editor JavaScript. This makes them present only when users edit their content and this, in turn, usually takes place in the backend of an application. If you want to use the same styles in the frontend, you may find yourself in a situation that requires you to load CKEditor just for that purpose, which is (performance–wise) not the best idea.
 
-To avoid unnecessary dependencies in your frontend, use a style sheet with a complete list of CKEditor&nbsp;5 content styles used by all editor features. TYou can generate it by using a dedicated script. Learn more in the {@link framework/contributing/development-environment#generating-content-styles Development environment} guide. Then, load the `content-styles.css` file in your application by adding the following code to the template:
+To avoid unnecessary dependencies in your frontend, use a style sheet with a complete list of CKEditor&nbsp;5 content styles used by all editor features. You can generate it by using a dedicated script. Learn more in the {@link framework/contributing/development-environment#generating-content-styles Development environment} guide. Then, load the `content-styles.css` file in your application by adding the following code to the template:
 
 ```html
 <link rel="stylesheet" href="path/to/assets/content-styles.css" type="text/css">
