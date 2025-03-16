@@ -142,6 +142,7 @@
     "lint-staged": "^15.0.0",
     "listr2": "^8.0.0",
     "minimist": "^1.2.8",
+    "mkdirp": "^1.0.4",
     "node-fetch": "^2.6.7",
     "nyc": "^15.0.1",
     "postcss-loader": "^4.3.0",
