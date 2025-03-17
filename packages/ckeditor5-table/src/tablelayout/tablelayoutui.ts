@@ -141,8 +141,6 @@ export default class TableLayoutUI extends Plugin {
 	/**
 	 * Registers the table type switch button. It overrides the default table properties button
 	 * with a dropdown that allows the user to choose between different table types.
-	 *
-	 * @internal
 	 */
 	private _registerTableTypeSwitchButton(): void {
 		const editor = this.editor;
@@ -181,15 +179,14 @@ export default class TableLayoutUI extends Plugin {
  *
  * @param editor The editor instance.
  * @returns A collection of dropdown items for the table type dropdown.
- * @internal
  */
 function createTableLayoutTypeDropdownItems( editor: Editor ) {
 	const t = editor.t;
 	const tableTypeCommand = editor.commands.get( 'tableType' )!;
 	const itemDefinitions = new Collection<ListDropdownButtonDefinition>();
 
-	itemDefinitions.add( createTableTypeDropdownItem( tableTypeCommand, 'layout', t( 'Layout table' ) ) );
-	itemDefinitions.add( createTableTypeDropdownItem( tableTypeCommand, 'content', t( 'Content table' ) ) );
+	itemDefinitions.add( createTableTypeDropdownItem( tableTypeCommand, 'layout', t( 'Table layout' ) ) );
+	itemDefinitions.add( createTableTypeDropdownItem( tableTypeCommand, 'content', t( 'Table content' ) ) );
 
 	return itemDefinitions;
 }
@@ -201,7 +198,6 @@ function createTableLayoutTypeDropdownItems( editor: Editor ) {
  * @param type The table type value ('layout' or 'content').
  * @param label The localized label for the dropdown item.
  * @returns The dropdown item definition.
- * @internal
  */
 function createTableTypeDropdownItem(
 	tableTypeCommand: TableTypeCommand,
