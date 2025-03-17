@@ -191,7 +191,7 @@ export default class TableLayoutUI extends Plugin {
 				return createTableTypeDropdown( baseButton, false );
 			}
 
-			return createTableTypeDropdown( this._createTableTypeSwitchBaseButton(), true );
+			return componentFactory.create( 'tableType' );
 		} );
 	}
 
