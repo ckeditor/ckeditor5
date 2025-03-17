@@ -7,13 +7,27 @@
  * @module table/tablelayout/tablelayoutui
  */
 
-import { Plugin } from 'ckeditor5/src/core.js';
+import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import { IconTableLayout } from 'ckeditor5/src/icons.js';
-import { createDropdown, MenuBarMenuView } from 'ckeditor5/src/ui.js';
-import type { ObservableChangeEvent } from 'ckeditor5/src/utils.js';
+import {
+	createDropdown,
+	MenuBarMenuView,
+	SplitButtonView,
+	addListToDropdown,
+	ViewModel,
+	type ListDropdownButtonDefinition,
+	type ButtonExecuteEvent
+} from 'ckeditor5/src/ui.js';
+import {
+	Collection,
+	type ObservableChangeEvent
+} from 'ckeditor5/src/utils.js';
 
 import InsertTableView from '../ui/inserttableview.js';
-import InsertTableLayoutCommand from '../commands/inserttablelayoutcommand.js';
+import TablePropertiesUI from '../tableproperties/tablepropertiesui.js';
+
+import type InsertTableLayoutCommand from '../commands/inserttablelayoutcommand.js';
+import type { default as TableTypeCommand, TableType } from './commands/tabletypecommand.js';
 
 /**
  * The table layout UI plugin. It introduces:
@@ -39,12 +53,16 @@ export default class TableLayoutUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static get requires() {
+		return [ TablePropertiesUI ] as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const editor = this.editor;
 		const t = this.editor.t;
-
-		// TODO: Remove after merging with the editing part.
-		editor.commands.add( 'insertTableLayout', new InsertTableLayoutCommand( editor ) );
 
 		editor.ui.componentFactory.add( 'insertTableLayout', locale => {
 			const command: InsertTableLayoutCommand = editor.commands.get( 'insertTableLayout' )!;
@@ -116,5 +134,94 @@ export default class TableLayoutUI extends Plugin {
 
 			return menuView;
 		} );
+
+		this._registerTableTypeSwitchButton();
 	}
+
+	/**
+	 * Registers the table type switch button. It overrides the default table properties button
+	 * with a dropdown that allows the user to choose between different table types.
+	 *
+	 * @internal
+	 */
+	private _registerTableTypeSwitchButton(): void {
+		const editor = this.editor;
+		const t = editor.t;
+		const { componentFactory } = editor.ui;
+		const tablePropertiesUI = editor.plugins.get( TablePropertiesUI );
+
+		// Override the tableProperties button with a dropdown.
+		componentFactory.add( 'tableProperties', locale => {
+			const originalButton = tablePropertiesUI._createTablePropertiesButton();
+
+			// Wrap the original button in a SplitButtonView.
+			const dropdownButton = new SplitButtonView( locale, originalButton );
+			const dropdownView = createDropdown( locale, dropdownButton );
+			const itemsDefinitions = createTableLayoutTypeDropdownItems( editor );
+
+			// Add table types to the dropdown.
+			addListToDropdown( dropdownView, itemsDefinitions, {
+				ariaLabel: t( 'Table type options' )
+			} );
+
+			dropdownButton.tooltip = t( 'Choose table type' );
+			dropdownView.on<ButtonExecuteEvent>( 'execute', evt => {
+				if ( typeof ( evt.source as any )._action === 'function' ) {
+					( evt.source as any )._action();
+				}
+			} );
+
+			return dropdownView;
+		} );
+	}
+}
+
+/**
+ * Creates dropdown items for table type selection.
+ *
+ * @param editor The editor instance.
+ * @returns A collection of dropdown items for the table type dropdown.
+ * @internal
+ */
+function createTableLayoutTypeDropdownItems( editor: Editor ) {
+	const t = editor.t;
+	const tableTypeCommand = editor.commands.get( 'tableType' )!;
+	const itemDefinitions = new Collection<ListDropdownButtonDefinition>();
+
+	itemDefinitions.add( createTableTypeDropdownItem( tableTypeCommand, 'layout', t( 'Layout table' ) ) );
+	itemDefinitions.add( createTableTypeDropdownItem( tableTypeCommand, 'content', t( 'Content table' ) ) );
+
+	return itemDefinitions;
+}
+
+/**
+ * Creates a dropdown item for a specific table type.
+ *
+ * @param tableTypeCommand The table type command.
+ * @param type The table type value ('layout' or 'content').
+ * @param label The localized label for the dropdown item.
+ * @returns The dropdown item definition.
+ * @internal
+ */
+function createTableTypeDropdownItem(
+	tableTypeCommand: TableTypeCommand,
+	type: TableType,
+	label: string
+): ListDropdownButtonDefinition {
+	const model = new ViewModel( {
+		label,
+		role: 'menuitemradio',
+		withText: true,
+		_action: () => {
+			tableTypeCommand.execute( type );
+		}
+	} );
+
+	model.bind( 'isEnabled' ).to( tableTypeCommand, 'isEnabled' );
+	model.bind( 'isOn' ).to( tableTypeCommand, 'value', value => value === type );
+
+	return {
+		type: 'button',
+		model
+	};
 }

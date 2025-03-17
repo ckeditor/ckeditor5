@@ -7,7 +7,7 @@
  * @module table/tablelayout/commands/tabletypecommand
  */
 
-import { Command } from 'ckeditor5/src/core.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
 
 import { getSelectionAffectedTable } from '../../utils/common.js';
 
@@ -27,13 +27,37 @@ export type TableType = 'layout' | 'content';
  */
 export default class TableTypeCommand extends Command {
 	/**
+	 * The table type of selected table.
+	 *
+	 * @observable
+	 * @readonly
+	 */
+	declare public value: TableType | null;
+
+	/**
+	 * Creates an instance of the command.
+	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		this.set( 'value', null );
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
+		const selectedTable = getSelectionAffectedTable( selection );
 
-		this.isEnabled = !!getSelectionAffectedTable( selection );
+		if ( selectedTable ) {
+			this.isEnabled = true;
+			this.value = selectedTable.getAttribute( 'tableType' ) as TableType;
+		} else {
+			this.isEnabled = false;
+			this.value = null;
+		}
 	}
 
 	/**
