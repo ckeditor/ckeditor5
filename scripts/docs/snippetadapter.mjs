@@ -103,6 +103,7 @@ async function buildSnippets( snippets, paths, constants, imports ) {
 		define: Object.fromEntries( Object.entries( constants ).map( ( [ key, value ] ) => [ key, JSON.stringify( value ) ] ) ),
 		outdir: paths.snippetsOutput,
 		entryNames: '[dir]/[name]/snippet',
+		nodePaths: [ upath.resolve( CKEDITOR5_ROOT_PATH, 'node_modules' ) ],
 		bundle: true,
 		minify: true,
 		treeShaking: true,
