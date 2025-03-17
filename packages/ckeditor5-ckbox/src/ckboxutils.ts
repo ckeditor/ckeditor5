@@ -105,6 +105,14 @@ export default class CKBoxUtils extends Plugin {
 		} else {
 			this._token = cloudServices.registerTokenUrl( ckboxTokenUrl );
 		}
+
+		// Grant access to private categories after token is fetched. This is done within the same promise chain
+		// to ensure all services using the token have access to private categories.
+		// This step is critical as previewing images from private categories requires proper cookies.
+		this._token = this._token.then( async token => {
+			await this._authorizePrivateCategoriesAccess( token.value );
+			return token;
+		} );
 	}
 
 	/**
@@ -242,6 +250,24 @@ export default class CKBoxUtils extends Plugin {
 				authorization: ( await token ).value
 			} );
 		}
+	}
+
+	/**
+	 * Authorize private categories access to the CKBox service. Request sets cookie for the current domain,
+	 * that allows user to preview images from private categories.
+	 */
+	private async _authorizePrivateCategoriesAccess( token: string ): Promise<void> {
+		const serviceUrl = this.editor.config.get( 'ckbox.serviceOrigin' )!;
+		const formData = new FormData();
+
+		formData.set( 'token', token );
+
+		await fetch( `${ serviceUrl }/categories/authorizePrivateAccess`, {
+			method: 'POST',
+			credentials: 'include',
+			mode: 'no-cors',
+			body: formData
+		} );
 	}
 }
 

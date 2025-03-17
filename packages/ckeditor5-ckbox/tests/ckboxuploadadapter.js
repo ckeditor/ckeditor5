@@ -44,6 +44,8 @@ describe( 'CKBoxUploadAdapter', () => {
 
 		TokenMock.initialToken = jwtToken;
 
+		sinon.stub( CKBoxUtils.prototype, '_authorizePrivateCategoriesAccess' ).resolves();
+
 		return ClassicTestEditor
 			.create( editorElement, {
 				plugins: [
