@@ -2,7 +2,7 @@
 category: crash-course
 order: 80
 meta-title: CKEditor 5 crash course - handling keystrokes | CKEditor 5 Documentation
-modified_at: 2023-08-16
+modified_at: 2025-03-14
 ---
 
 # Handling keystrokes
@@ -32,7 +32,7 @@ editor.keystrokes.set( 'Ctrl+Alt+H', ( event, cancel ) => {
 
 ## Adding shortcut information to the Accessibility help dialog
 
-The {@link features/accessibility#displaying-keyboard-shortcuts-in-the-editor Accessibility help dialog} displays a complete list of available keyboard shortcuts with their descriptions. It does not know about the [shortcut we just added](#adding-keyboard-shortcuts), though.
+The {@link features/accessibility#displaying-keyboard-shortcuts-in-the-editor Accessibility help dialog} displays a complete list of available keyboard shortcuts with their descriptions. It can be opened by pressing <kbd>Alt</kbd> + <kbd>0</kbd> (on Windows) or <kbd>⌥0</kbd> (on macOS). It does not know about the [shortcut we just added](#adding-keyboard-shortcuts), though.
 
 The dialog reads from the {@link module:core/accessibility~Accessibility `editor.accessibility`} namespace where all the information about keystrokes and their accessible labels is stored. There is an API to add new entries: ({@link module:core/accessibility~Accessibility#addKeystrokeInfos}, {@link module:core/accessibility~Accessibility#addKeystrokeInfoGroup}, and {@link module:core/accessibility~Accessibility#addKeystrokeInfoCategory} methods).
 
