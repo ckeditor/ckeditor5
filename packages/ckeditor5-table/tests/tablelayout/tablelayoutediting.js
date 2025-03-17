@@ -270,8 +270,7 @@ describe( 'TableLayoutEditing', () => {
 			);
 		} );
 
-		it( 'should set `tableType` to `content` even when there is a `layout-table` class' +
-				'but <table> contains a <caption> element inside', () => {
+		it( 'should set `tableType` to `layout` even when <table> contains a <caption> element inside', () => {
 			editor.setData(
 				'<table class="table layout-table">' +
 					'<caption>foo</caption>' +
@@ -280,9 +279,8 @@ describe( 'TableLayoutEditing', () => {
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<table tableType="content">' +
+				'<table tableType="layout">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
-					'<caption>foo</caption>' +
 				'</table>'
 			);
 		} );
@@ -944,7 +942,7 @@ describe( 'TableLayoutEditing', () => {
 				);
 			} );
 
-			it( 'class="layout-table" should be consumed and `tabletype` set to `content`', () => {
+			it( 'class="layout-table" should be consumed and `tabletype` set to `layout`', () => {
 				ghsEditor.setData(
 					'<table class="table layout-table">' +
 						'<caption>Should be content table</caption>' +
@@ -953,9 +951,8 @@ describe( 'TableLayoutEditing', () => {
 				);
 
 				expect( getModelData( ghsModel, { withoutSelection: true } ) ).to.equal(
-					'<table tableType="content">' +
+					'<table tableType="layout">' +
 						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
-						'<caption>Should be content table</caption>' +
 					'</table>'
 				);
 			} );

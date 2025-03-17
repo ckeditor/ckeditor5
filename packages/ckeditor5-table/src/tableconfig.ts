@@ -390,13 +390,9 @@ export interface TableCellPropertiesOptions {
 export interface TableLayoutConfig {
 
 	/**
-	 * The preferred type of the external table to be inserted.
+	 * Sets the preferred type for loading external tables.
 	 *
-	 * By using this setting you can change the table type detection heuristics.
-	 * The highest priority has recognition by CSS classnames: `content-table` and `layout-table`.
-	 * If the classnames are not present, the default heuristic is used.
-	 *
-	 * When `preferredExternalTableType` is set, the default heuristic is overridden and the table type is set to the value of this setting.
+	 * This setting overrides the default detection method and uses the specified type ('content' or 'layout').
 	 *
 	 * ```ts
 	 * ClassicEditor

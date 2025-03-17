@@ -278,10 +278,6 @@ function dataDowncastLayoutTable() {
  * Resolves the table type based on the view table element and the preferred external table type.
  */
 function resolveTableType( viewTable: ViewElement, preferredExternalTableType: TableType | undefined ): TableType {
-	if ( !preferredExternalTableType || !TABLE_TYPES.includes( preferredExternalTableType ) ) {
-		return isTableTypeContent( viewTable ) ? 'content' : 'layout';
-	}
-
 	if ( viewTable.hasClass( 'content-table' ) ) {
 		return 'content';
 	}
@@ -290,23 +286,25 @@ function resolveTableType( viewTable: ViewElement, preferredExternalTableType: T
 		return 'layout';
 	}
 
-	return preferredExternalTableType;
-}
+	if ( preferredExternalTableType && TABLE_TYPES.includes( preferredExternalTableType ) ) {
+		return preferredExternalTableType;
+	}
 
-/**
- * Checks if the table is a content table.
- * Returns `true` if any of the following conditions are met:
- * - the `<table>` is wrapped with `<figure>`,
- * - the `<table>` has class `content-table`
- * - the `<table>` has a `<caption>` element.
- * `false` otherwise.
- */
-function isTableTypeContent( viewTable: ViewElement ): boolean {
 	const parent = viewTable.parent!;
 
-	return parent.is( 'element', 'figure' ) ||
-		viewTable.hasClass( 'content-table' ) ||
-		Array.from( viewTable.getChildren() ).some( child => child.is( 'element', 'caption' ) );
+	/**
+	 * Checks if the table is a content table if any of the following conditions are met:
+	 * - the `<table>` is wrapped with `<figure>`,
+	 * - the `<table>` has a `<caption>` element.
+	 */
+	if (
+		parent.is( 'element', 'figure' ) ||
+		Array.from( viewTable.getChildren() ).some( child => child.is( 'element', 'caption' ) ) )
+	{
+		return 'content';
+	}
+
+	return 'layout';
 }
 
 /**
