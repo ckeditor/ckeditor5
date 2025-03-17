@@ -310,75 +310,67 @@ describe( 'TableLayoutUI', () => {
 		}
 	} );
 
-	describe( 'tableProperties dropdown without TablePropertiesUI', () => {
-		let tablePropertiesDropdown;
+	for ( const creatorName of [ 'tableProperties', 'tableType' ] ) {
+		describe( `${ creatorName } dropdown (without TablePropertiesUI)`, () => {
+			let dropdown;
 
-		beforeEach( async () => {
-			await editor.destroy();
+			beforeEach( async () => {
+				await editor.destroy();
 
-			// Create editor without TableProperties plugin
-			editor = await ClassicTestEditor.create( element, {
-				plugins: [ TableEditing, TableLayoutUI, TableLayoutEditing, TableUI ]
+				editor = await ClassicTestEditor.create( element, {
+					plugins: [ TableEditing, TableLayoutUI, TableLayoutEditing, TableUI ]
+				} );
+
+				const command = new TableTypeCommand( editor );
+				sinon.spy( command, 'execute' );
+				editor.commands.add( 'tableType', command );
+
+				dropdown = editor.ui.componentFactory.create( creatorName );
+				dropdown.render();
+				document.body.appendChild( dropdown.element );
 			} );
 
-			// Register TableTypeCommand
-			const command = new TableTypeCommand( editor );
-			sinon.spy( command, 'execute' );
-			editor.commands.add( 'tableType', command );
+			afterEach( () => {
+				dropdown?.element.remove();
+
+				return editor.destroy();
+			} );
+
+			it( 'should create a standalone button when TablePropertiesUI is not available', () => {
+				const baseButton = dropdown.buttonView.actionView;
+
+				expect( baseButton.label ).to.equal( 'Table type' );
+				expect( baseButton.icon ).to.equal( IconTableProperties );
+				expect( baseButton.tooltip ).to.be.true;
+			} );
+
+			it( 'should open dropdown when base button is clicked', () => {
+				const baseButton = dropdown.buttonView.actionView;
+
+				expect( dropdown.isOpen ).to.be.false;
+
+				baseButton.fire( 'execute' );
+
+				expect( dropdown.isOpen ).to.be.true;
+
+				baseButton.fire( 'execute' );
+
+				expect( dropdown.isOpen ).to.be.false;
+			} );
+
+			it( 'should bind isOn of the base button to isOpen of the dropdown', () => {
+				const baseButton = dropdown.buttonView.actionView;
+
+				expect( baseButton.isOn ).to.be.false;
+
+				dropdown.isOpen = true;
+
+				expect( baseButton.isOn ).to.be.true;
+
+				dropdown.isOpen = false;
+
+				expect( baseButton.isOn ).to.be.false;
+			} );
 		} );
-
-		afterEach( () => {
-			tablePropertiesDropdown?.element.remove();
-
-			return editor.destroy();
-		} );
-
-		it( 'should create a standalone button when TablePropertiesUI is not available', () => {
-			const tablePropertiesDropdown = renderTablePropertiesDropdown();
-			const baseButton = tablePropertiesDropdown.buttonView.actionView;
-
-			expect( baseButton.label ).to.equal( 'Table type' );
-			expect( baseButton.icon ).to.equal( IconTableProperties );
-			expect( baseButton.tooltip ).to.be.true;
-		} );
-
-		it( 'should open dropdown when base button is clicked', () => {
-			const tablePropertiesDropdown = renderTablePropertiesDropdown();
-			const baseButton = tablePropertiesDropdown.buttonView.actionView;
-
-			expect( tablePropertiesDropdown.isOpen ).to.be.false;
-
-			baseButton.fire( 'execute' );
-
-			expect( tablePropertiesDropdown.isOpen ).to.be.true;
-
-			baseButton.fire( 'execute' );
-
-			expect( tablePropertiesDropdown.isOpen ).to.be.false;
-		} );
-
-		it( 'should bind isOn of the base button to isOpen of the dropdown', () => {
-			const tablePropertiesDropdown = renderTablePropertiesDropdown();
-			const baseButton = tablePropertiesDropdown.buttonView.actionView;
-
-			expect( baseButton.isOn ).to.be.false;
-
-			tablePropertiesDropdown.isOpen = true;
-
-			expect( baseButton.isOn ).to.be.true;
-
-			tablePropertiesDropdown.isOpen = false;
-
-			expect( baseButton.isOn ).to.be.false;
-		} );
-
-		function renderTablePropertiesDropdown() {
-			tablePropertiesDropdown = editor.ui.componentFactory.create( 'tableProperties' );
-			tablePropertiesDropdown.render();
-
-			document.body.appendChild( tablePropertiesDropdown.element );
-
-			return tablePropertiesDropdown;
-		}
-	} );
+	}
 } );

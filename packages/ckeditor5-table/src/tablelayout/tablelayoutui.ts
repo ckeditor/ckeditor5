@@ -140,20 +140,17 @@ export default class TableLayoutUI extends Plugin {
 		const t = editor.t;
 		const { componentFactory } = editor.ui;
 
-		// Override the tableProperties button with a dropdown.
-		componentFactory.add( 'tableProperties', locale => {
+		const createTableTypeDropdown = ( baseButton: ButtonView, openOnClick: boolean ) => {
+			const locale = editor.locale;
 			const tableTypeCommand = editor.commands.get( 'tableType' )!;
-
-			// Create button that.
-			const baseButton = this._createTableTypeSwitchBaseButton();
 
 			// Wrap the original button in a SplitButtonView.
 			const dropdownButton = new SplitButtonView( locale, baseButton );
 			const dropdownView = createDropdown( locale, dropdownButton );
 			const itemsDefinitions = createTableLayoutTypeDropdownItems( editor );
 
-			// If table properties UI is not available, make clicking the button open the dropdown.
-			if ( !editor.plugins.has( 'TablePropertiesUI' ) ) {
+			// If the button should open the dropdown on click.
+			if ( openOnClick ) {
 				dropdownButton.on( 'execute', () => {
 					dropdownView.isOpen = !dropdownView.isOpen;
 				} );
@@ -177,6 +174,24 @@ export default class TableLayoutUI extends Plugin {
 			} );
 
 			return dropdownView;
+		};
+
+		// Create table type switch button.
+		componentFactory.add( 'tableType', () => {
+			return createTableTypeDropdown( this._createTableTypeSwitchBaseButton(), true );
+		} );
+
+		// Override the default table properties button with a dropdown.
+		// If it's not available, use the default button.
+		componentFactory.add( 'tableProperties', () => {
+			if ( editor.plugins.has( 'TablePropertiesUI' ) ) {
+				const tablePropertiesUI = editor.plugins.get( 'TablePropertiesUI' );
+				const baseButton = tablePropertiesUI._createTablePropertiesButton();
+
+				return createTableTypeDropdown( baseButton, false );
+			}
+
+			return createTableTypeDropdown( this._createTableTypeSwitchBaseButton(), true );
 		} );
 	}
 
@@ -187,14 +202,6 @@ export default class TableLayoutUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		// If table properties UI is available, use its button.
-		if ( editor.plugins.has( 'TablePropertiesUI' ) ) {
-			const tablePropertiesUI = editor.plugins.get( 'TablePropertiesUI' );
-
-			return tablePropertiesUI._createTablePropertiesButton();
-		}
-
-		// If it's not available, create a new button.
 		const view = new ButtonView( editor.locale );
 
 		view.set( {
