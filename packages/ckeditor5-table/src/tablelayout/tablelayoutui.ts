@@ -142,6 +142,8 @@ export default class TableLayoutUI extends Plugin {
 
 		// Override the tableProperties button with a dropdown.
 		componentFactory.add( 'tableProperties', locale => {
+			const tableTypeCommand = editor.commands.get( 'tableType' )!;
+
 			// Create button that.
 			const baseButton = this._createTableTypeSwitchBaseButton();
 
@@ -167,8 +169,10 @@ export default class TableLayoutUI extends Plugin {
 
 			dropdownButton.tooltip = t( 'Choose table type' );
 			dropdownView.on<ButtonExecuteEvent>( 'execute', evt => {
-				if ( typeof ( evt.source as any )._action === 'function' ) {
-					( evt.source as any )._action();
+				const tableType = ( evt.source as any ).tableType as TableType | undefined;
+
+				if ( tableType ) {
+					tableTypeCommand.execute( tableType );
 				}
 			} );
 
@@ -237,9 +241,7 @@ function createTableTypeDropdownItem(
 		label,
 		role: 'menuitemradio',
 		withText: true,
-		_action: () => {
-			tableTypeCommand.execute( type );
-		}
+		tableType: type
 	} );
 
 	model.bind( 'isEnabled' ).to( tableTypeCommand, 'isEnabled' );
