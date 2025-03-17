@@ -1150,6 +1150,57 @@ describe( 'TableLayoutEditing', () => {
 				'</blockQuote>'
 			);
 		} );
+
+		it( 'should change `tableType` attribute on existing table and remove disallowed children', () => {
+			setModelData(
+				model,
+				'[<table tableType="content">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<caption>Foo</caption>' +
+				'</table>]'
+			);
+
+			model.change( writer => {
+				const table = model.document.selection.getSelectedElement();
+
+				writer.setAttribute( 'tableType', 'layout', table );
+			} );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<table tableType="layout">' +
+					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should change `tableType` attribute on existing table and remove disallowed table attributes', () => {
+			setModelData(
+				model,
+				'[<table headingRows="1" headingColumns="1" tableType="content" >' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>]'
+			);
+
+			model.change( writer => {
+				const table = model.document.selection.getSelectedElement();
+
+				writer.setAttribute( 'tableType', 'layout', table );
+			} );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<table tableType="layout">' +
+					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+				'</table>'
+			);
+		} );
 	} );
 } );
 

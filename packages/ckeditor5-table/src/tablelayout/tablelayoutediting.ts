@@ -138,6 +138,7 @@ export default class TableLayoutEditing extends Plugin {
 
 	/**
 	 * Registers a post-fixer that sets the `tableType` attribute to `content` for inserted "default" tables.
+	 * Also fixes potential issues with the table structure when the `tableType` attribute has been changed.
 	 */
 	private _registerTableTypeAttributePostfixer() {
 		const editor = this.editor;
@@ -155,6 +156,26 @@ export default class TableLayoutEditing extends Plugin {
 						if ( item.is( 'element', 'table' ) && !item.hasAttribute( 'tableType' ) ) {
 							writer.setAttribute( 'tableType', 'content', item );
 							hasChanged = true;
+						}
+					}
+				}
+
+				// Remove disallowed attributes and children for layout tables
+				// when `tableType` attribute has been changed by `TableTypeCommand`.
+				if ( entry.type == 'attribute' && entry.attributeKey == 'tableType' ) {
+					for ( const item of entry.range.getItems() ) {
+						if ( item.is( 'element', 'table' ) ) {
+							editor.model.schema.removeDisallowedAttributes( [ item ], writer );
+
+							const tableChildren = item.getChildren();
+
+							// Check if all children are allowed for the new table type.
+							for ( const child of tableChildren ) {
+								if ( !editor.model.schema.checkChild( item, child ) ) {
+									writer.remove( child );
+									hasChanged = true;
+								}
+							}
 						}
 					}
 				}
