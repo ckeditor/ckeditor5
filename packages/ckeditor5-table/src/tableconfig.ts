@@ -410,4 +410,7 @@ export interface TableLayoutConfig {
 	preferredExternalTableType: TableType;
 }
 
+/**
+ * The type of the table.
+ */
 export type TableType = 'content' | 'layout';
