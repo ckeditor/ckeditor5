@@ -24,7 +24,7 @@ import type { TableType } from '../tableconfig.js';
 
 import '../../theme/tablelayout.css';
 
-const TABLE_TYPES = [ 'content', 'layout' ];
+const TABLE_TYPES: Array<TableType> = [ 'content', 'layout' ];
 
 /**
  * The table layout editing plugin.
