@@ -178,7 +178,18 @@ export default class TableLayoutUI extends Plugin {
 
 		// Create table type switch button.
 		componentFactory.add( 'tableType', () => {
-			return createTableTypeDropdown( this._createTableTypeSwitchBaseButton(), true );
+			const editor = this.editor;
+			const t = editor.t;
+
+			const button = new ButtonView( editor.locale );
+
+			button.set( {
+				label: t( 'Table type' ),
+				icon: IconTableProperties,
+				tooltip: true
+			} );
+
+			return createTableTypeDropdown( button, true );
 		} );
 
 		// Override the default table properties button with a dropdown.
@@ -191,26 +202,10 @@ export default class TableLayoutUI extends Plugin {
 				return createTableTypeDropdown( baseButton, false );
 			}
 
+			// If it's not present and `tableProperties` is still used, return the default button.
+			// This is a fallback for the case when the `TablePropertiesUI` plugin is not loaded.
 			return componentFactory.create( 'tableType' );
 		} );
-	}
-
-	/**
-	 * Creates the base button for the table type switch. This button is used in the dropdown
-	 */
-	private _createTableTypeSwitchBaseButton(): ButtonView {
-		const editor = this.editor;
-		const t = editor.t;
-
-		const view = new ButtonView( editor.locale );
-
-		view.set( {
-			label: t( 'Table type' ),
-			icon: IconTableProperties,
-			tooltip: true
-		} );
-
-		return view;
 	}
 }
 
