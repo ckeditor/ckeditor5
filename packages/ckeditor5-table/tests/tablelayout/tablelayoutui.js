@@ -217,7 +217,7 @@ describe( 'TableLayoutUI', () => {
 		} );
 	} );
 
-	describe( 'tableProperties dropdown', () => {
+	describe( 'tableProperties dropdown extending', () => {
 		let tablePropertiesDropdown;
 
 		beforeEach( async () => {
@@ -231,6 +231,14 @@ describe( 'TableLayoutUI', () => {
 			const command = new TableTypeCommand( editor );
 			sinon.spy( command, 'execute' );
 			editor.commands.add( 'tableType', command );
+
+			// Render dropdown.
+			tablePropertiesDropdown = editor.ui.componentFactory.create( 'tableProperties' );
+			tablePropertiesDropdown.render();
+
+			document.body.appendChild( tablePropertiesDropdown.element );
+
+			tablePropertiesDropdown.isOpen = true;
 		} );
 
 		afterEach( () => {
@@ -240,14 +248,11 @@ describe( 'TableLayoutUI', () => {
 		} );
 
 		it( 'should register tableProperties dropdown with a split button', () => {
-			const tablePropertiesDropdown = renderTablePropertiesDropdown();
-
 			expect( tablePropertiesDropdown.buttonView ).to.be.instanceOf( SplitButtonView );
 			expect( tablePropertiesDropdown.buttonView.tooltip ).to.equal( 'Choose table type' );
 		} );
 
 		it( 'should contain layout and content table options in the dropdown', () => {
-			const tablePropertiesDropdown = renderTablePropertiesDropdown();
 			const items = tablePropertiesDropdown.panelView.children.first.items;
 
 			expect( items.length ).to.equal( 2 );
@@ -258,7 +263,6 @@ describe( 'TableLayoutUI', () => {
 		} );
 
 		it( 'should execute tableType command when an item is selected', () => {
-			const tablePropertiesDropdown = renderTablePropertiesDropdown();
 			const items = tablePropertiesDropdown.panelView.children.first.items;
 			const command = editor.commands.get( 'tableType' );
 
@@ -276,7 +280,6 @@ describe( 'TableLayoutUI', () => {
 		} );
 
 		it( 'should bind list items to the tableType command state', () => {
-			const tablePropertiesDropdown = renderTablePropertiesDropdown();
 			const items = tablePropertiesDropdown.panelView.children.first.items;
 			const command = editor.commands.get( 'tableType' );
 
@@ -299,78 +302,120 @@ describe( 'TableLayoutUI', () => {
 			expect( items.get( 1 ).children.first.isEnabled ).to.be.true;
 		} );
 
-		function renderTablePropertiesDropdown() {
-			tablePropertiesDropdown = editor.ui.componentFactory.create( 'tableProperties' );
-			tablePropertiesDropdown.render();
+		it( 'should not register tableProperties if TablePropertiesUI is not present', async () => {
+			await editor.destroy();
 
-			document.body.appendChild( tablePropertiesDropdown.element );
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ TableEditing, TableLayoutUI, TableLayoutEditing ]
+			} );
 
-			tablePropertiesDropdown.isOpen = true;
-			return tablePropertiesDropdown;
-		}
+			const dropdown = editor.ui.componentFactory.has( 'tableProperties' );
+
+			expect( dropdown ).to.be.false;
+		} );
 	} );
 
-	for ( const creatorName of [ 'tableProperties', 'tableType' ] ) {
-		describe( `${ creatorName } dropdown (without TablePropertiesUI)`, () => {
-			let dropdown;
+	describe( 'tableType dropdown', () => {
+		let dropdown;
 
-			beforeEach( async () => {
-				await editor.destroy();
+		beforeEach( async () => {
+			await editor.destroy();
 
-				editor = await ClassicTestEditor.create( element, {
-					plugins: [ TableEditing, TableLayoutUI, TableLayoutEditing, TableUI ]
-				} );
-
-				const command = new TableTypeCommand( editor );
-				sinon.spy( command, 'execute' );
-				editor.commands.add( 'tableType', command );
-
-				dropdown = editor.ui.componentFactory.create( creatorName );
-				dropdown.render();
-				document.body.appendChild( dropdown.element );
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ TableEditing, TableLayoutUI, TableLayoutEditing, TableUI ]
 			} );
 
-			afterEach( () => {
-				dropdown?.element.remove();
+			const command = new TableTypeCommand( editor );
+			sinon.spy( command, 'execute' );
+			editor.commands.add( 'tableType', command );
 
-				return editor.destroy();
-			} );
-
-			it( 'should create a standalone button when TablePropertiesUI is not available', () => {
-				const baseButton = dropdown.buttonView.actionView;
-
-				expect( baseButton.label ).to.equal( 'Table type' );
-				expect( baseButton.icon ).to.equal( IconTableProperties );
-				expect( baseButton.tooltip ).to.be.true;
-			} );
-
-			it( 'should open dropdown when base button is clicked', () => {
-				const baseButton = dropdown.buttonView.actionView;
-
-				expect( dropdown.isOpen ).to.be.false;
-
-				baseButton.fire( 'execute' );
-
-				expect( dropdown.isOpen ).to.be.true;
-
-				baseButton.fire( 'execute' );
-
-				expect( dropdown.isOpen ).to.be.false;
-			} );
-
-			it( 'should bind isOn of the base button to isOpen of the dropdown', () => {
-				const baseButton = dropdown.buttonView.actionView;
-
-				expect( baseButton.isOn ).to.be.false;
-
-				dropdown.isOpen = true;
-
-				expect( baseButton.isOn ).to.be.true;
-
-				dropdown.isOpen = false;
-
-				expect( baseButton.isOn ).to.be.false;
-			} );
+			dropdown = editor.ui.componentFactory.create( 'tableType' );
+			dropdown.render();
+			document.body.appendChild( dropdown.element );
 		} );
-	}
+
+		afterEach( () => {
+			dropdown?.element.remove();
+
+			return editor.destroy();
+		} );
+
+		it( 'should create DropdownView', () => {
+			expect( dropdown ).to.be.instanceOf( DropdownView );
+		} );
+
+		it( 'should create a button with proper attributes', () => {
+			expect( dropdown.buttonView.label ).to.equal( 'Table type' );
+			expect( dropdown.buttonView.icon ).to.equal( IconTableProperties );
+			expect( dropdown.buttonView.tooltip ).to.be.equal( 'Choose table type' );
+		} );
+
+		it( 'should open dropdown when base button is clicked', () => {
+			expect( dropdown.isOpen ).to.be.false;
+
+			dropdown.buttonView.fire( 'execute' );
+
+			expect( dropdown.isOpen ).to.be.true;
+
+			dropdown.buttonView.fire( 'execute' );
+
+			expect( dropdown.isOpen ).to.be.false;
+		} );
+
+		it( 'should contain layout and content table options in the dropdown', () => {
+			dropdown.isOpen = true;
+
+			const items = dropdown.panelView.children.first.items;
+
+			expect( items.length ).to.equal( 2 );
+			expect( [ ...items ].every( item => item instanceof ListItemView ) ).to.be.true;
+
+			expect( items.get( 0 ).children.first.label ).to.equal( 'Table layout' );
+			expect( items.get( 1 ).children.first.label ).to.equal( 'Table content' );
+		} );
+
+		it( 'should execute tableType command when an item is selected', () => {
+			dropdown.isOpen = true;
+
+			const items = dropdown.panelView.children.first.items;
+			const command = editor.commands.get( 'tableType' );
+
+			items.get( 0 ).children.first.fire( 'execute' );
+
+			sinon.assert.calledOnce( command.execute );
+			sinon.assert.calledWithExactly( command.execute, 'layout' );
+
+			command.execute.resetHistory();
+
+			items.get( 1 ).children.first.fire( 'execute' );
+
+			sinon.assert.calledOnce( command.execute );
+			sinon.assert.calledWithExactly( command.execute, 'content' );
+		} );
+
+		it( 'should bind list items to the tableType command state', () => {
+			dropdown.isOpen = true;
+
+			const items = dropdown.panelView.children.first.items;
+			const command = editor.commands.get( 'tableType' );
+
+			// Test isOn binding.
+			command.value = 'layout';
+			expect( items.get( 0 ).children.first.isOn ).to.be.true;
+			expect( items.get( 1 ).children.first.isOn ).to.be.false;
+
+			command.value = 'content';
+			expect( items.get( 0 ).children.first.isOn ).to.be.false;
+			expect( items.get( 1 ).children.first.isOn ).to.be.true;
+
+			// Test isEnabled binding.
+			command.isEnabled = false;
+			expect( items.get( 0 ).children.first.isEnabled ).to.be.false;
+			expect( items.get( 1 ).children.first.isEnabled ).to.be.false;
+
+			command.isEnabled = true;
+			expect( items.get( 0 ).children.first.isEnabled ).to.be.true;
+			expect( items.get( 1 ).children.first.isEnabled ).to.be.true;
+		} );
+	} );
 } );

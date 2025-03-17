@@ -11,13 +11,13 @@ import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import { IconTableLayout, IconTableProperties } from 'ckeditor5/src/icons.js';
 import {
 	createDropdown,
+	addListToDropdown,
 	MenuBarMenuView,
 	SplitButtonView,
-	addListToDropdown,
+	DropdownButtonView,
 	ViewModel,
 	type ListDropdownButtonDefinition,
-	type ButtonExecuteEvent,
-	ButtonView
+	type ButtonExecuteEvent
 } from 'ckeditor5/src/ui.js';
 import {
 	Collection,
@@ -128,60 +128,12 @@ export default class TableLayoutUI extends Plugin {
 			return menuView;
 		} );
 
-		this._registerTableTypeSwitchButton();
-	}
-
-	/**
-	 * Registers the table type switch button. It overrides the default table properties button
-	 * with a dropdown that allows the user to choose between different table types.
-	 */
-	private _registerTableTypeSwitchButton(): void {
-		const editor = this.editor;
-		const t = editor.t;
-		const { componentFactory } = editor.ui;
-
-		const createTableTypeDropdown = ( baseButton: ButtonView, openOnClick: boolean ) => {
-			const locale = editor.locale;
-			const tableTypeCommand = editor.commands.get( 'tableType' )!;
-
-			// Wrap the original button in a SplitButtonView.
-			const dropdownButton = new SplitButtonView( locale, baseButton );
-			const dropdownView = createDropdown( locale, dropdownButton );
-			const itemsDefinitions = createTableLayoutTypeDropdownItems( editor );
-
-			// If the button should open the dropdown on click.
-			if ( openOnClick ) {
-				dropdownButton.on( 'execute', () => {
-					dropdownView.isOpen = !dropdownView.isOpen;
-				} );
-
-				// Mark button as active when dropdown is open.
-				baseButton.bind( 'isOn' ).to( dropdownView, 'isOpen' );
-			}
-
-			// Add table types to the dropdown.
-			addListToDropdown( dropdownView, itemsDefinitions, {
-				ariaLabel: t( 'Table type options' )
-			} );
-
-			dropdownButton.tooltip = t( 'Choose table type' );
-			dropdownView.on<ButtonExecuteEvent>( 'execute', evt => {
-				const tableType = ( evt.source as any ).tableType as TableType | undefined;
-
-				if ( tableType ) {
-					tableTypeCommand.execute( tableType );
-				}
-			} );
-
-			return dropdownView;
-		};
-
-		// Create table type switch button.
-		componentFactory.add( 'tableType', () => {
+		// Create table type dropdown button.
+		editor.ui.componentFactory.add( 'tableType', () => {
 			const editor = this.editor;
 			const t = editor.t;
 
-			const button = new ButtonView( editor.locale );
+			const button = new DropdownButtonView( editor.locale );
 
 			button.set( {
 				label: t( 'Table type' ),
@@ -189,24 +141,63 @@ export default class TableLayoutUI extends Plugin {
 				tooltip: true
 			} );
 
-			return createTableTypeDropdown( button, true );
-		} );
-
-		// Override the default table properties button with a dropdown.
-		// If it's not available, use the default button.
-		componentFactory.add( 'tableProperties', () => {
-			if ( editor.plugins.has( 'TablePropertiesUI' ) ) {
-				const tablePropertiesUI = editor.plugins.get( 'TablePropertiesUI' );
-				const baseButton = tablePropertiesUI._createTablePropertiesButton();
-
-				return createTableTypeDropdown( baseButton, false );
-			}
-
-			// If it's not present and `tableProperties` is still used, return the default button.
-			// This is a fallback for the case when the `TablePropertiesUI` plugin is not loaded.
-			return componentFactory.create( 'tableType' );
+			return createTableTypeDropdown( editor, button );
 		} );
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public afterInit(): void {
+		const editor = this.editor;
+
+		if ( !editor.plugins.has( 'TablePropertiesUI' ) ) {
+			return;
+		}
+
+		const tablePropertiesUI = editor.plugins.get( 'TablePropertiesUI' );
+
+		// Override the default table properties button to include the table type dropdown.
+		editor.ui.componentFactory.add( 'tableProperties', locale => {
+			const baseButton = tablePropertiesUI._createTablePropertiesButton();
+			const splitButtonView = new SplitButtonView( locale, baseButton );
+
+			return createTableTypeDropdown( editor, splitButtonView );
+		} );
+	}
+}
+
+/**
+ * Creates a dropdown for the table type selection.
+ *
+ * @param editor The editor instance.
+ * @param dropdownButton The button view that will be used as the dropdown trigger.
+ * @returns A dropdown view containing table type options.
+ */
+function createTableTypeDropdown( editor: Editor, dropdownButton: DropdownButtonView | SplitButtonView ) {
+	const t = editor.t;
+	const locale = editor.locale;
+	const tableTypeCommand = editor.commands.get( 'tableType' )!;
+
+	// Wrap the original button in a SplitButtonView.
+	const dropdownView = createDropdown( locale, dropdownButton );
+	const itemsDefinitions = createTableLayoutTypeDropdownItems( editor );
+
+	// Add table types to the dropdown.
+	addListToDropdown( dropdownView, itemsDefinitions, {
+		ariaLabel: t( 'Table type options' )
+	} );
+
+	dropdownButton.tooltip = t( 'Choose table type' );
+	dropdownView.on<ButtonExecuteEvent>( 'execute', evt => {
+		const tableType = ( evt.source as any ).tableType as TableType | undefined;
+
+		if ( tableType ) {
+			tableTypeCommand.execute( tableType );
+		}
+	} );
+
+	return dropdownView;
 }
 
 /**

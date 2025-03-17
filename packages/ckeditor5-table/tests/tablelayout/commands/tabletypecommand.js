@@ -156,6 +156,68 @@ describe( 'TableTypeCommand', () => {
 				);
 				expect( command.value ).to.equal( 'content' );
 			} );
+
+			it( 'should equal table type attribute value if selection is inside a table caption', () => {
+				setModelData(
+					model,
+					'<table tableType="layout">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[]foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				expect( command.value ).to.equal( 'layout' );
+
+				setModelData(
+					model,
+					'<table tableType="content">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<caption>bar[]baz</caption>' +
+					'</table>'
+				);
+
+				expect( command.value ).to.equal( 'content' );
+			} );
+
+			it( 'should equal table type attribute value if multiple table cells are selected', () => {
+				setModelData(
+					model,
+					'<table tableType="layout">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[foo</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>bar]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				expect( command.value ).to.equal( 'layout' );
+
+				setModelData(
+					model,
+					'<table tableType="content">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[foo</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>bar]</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+				expect( command.value ).to.equal( 'content' );
+			} );
 		} );
 	} );
 
