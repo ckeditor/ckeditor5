@@ -7,7 +7,7 @@
  * @module table/tablelayout/commands/tabletypecommand
  */
 
-import { Command, type Editor } from 'ckeditor5/src/core.js';
+import { Command } from 'ckeditor5/src/core.js';
 
 import { getSelectionAffectedTable } from '../../utils/common.js';
 
@@ -33,15 +33,6 @@ export default class TableTypeCommand extends Command {
 	 * @readonly
 	 */
 	declare public value: TableType | null;
-
-	/**
-	 * Creates an instance of the command.
-	 */
-	constructor( editor: Editor ) {
-		super( editor );
-
-		this.set( 'value', null );
-	}
 
 	/**
 	 * @inheritDoc

@@ -64,6 +64,101 @@ describe( 'TableTypeCommand', () => {
 		} );
 	} );
 
+	describe( 'value', () => {
+		describe( 'collapsed selection', () => {
+			it( 'should be null if selection does not have table', () => {
+				setModelData( model, '<paragraph>foo[]</paragraph>' );
+				expect( command.value ).to.be.null;
+			} );
+
+			it( 'should equal table type attribute value if selection has table', () => {
+				setModelData(
+					model,
+					'<table tableType="layout">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[]foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				expect( command.value ).to.equal( 'layout' );
+
+				setModelData(
+					model,
+					'<table tableType="content">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>[]foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+				expect( command.value ).to.equal( 'content' );
+			} );
+		} );
+
+		describe( 'non-collapsed selection', () => {
+			it( 'should be null if selection does not have table', () => {
+				setModelData( model, '<paragraph>f[o]o</paragraph>' );
+				expect( command.value ).to.be.null;
+			} );
+
+			it( 'should equal table type attribute value if selection is inside table', () => {
+				setModelData(
+					model,
+					'<table tableType="layout">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>f[o]o</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+				expect( command.value ).to.equal( 'layout' );
+
+				setModelData(
+					model,
+					'<table tableType="content">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>f[o]o</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+				expect( command.value ).to.equal( 'content' );
+			} );
+
+			it( 'should equal table type attribute value if selection is over table', () => {
+				setModelData(
+					model,
+					'[<table tableType="layout">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]'
+				);
+				expect( command.value ).to.equal( 'layout' );
+
+				setModelData(
+					model,
+					'[<table tableType="content">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>]'
+				);
+				expect( command.value ).to.equal( 'content' );
+			} );
+		} );
+	} );
+
 	describe( 'execute()', () => {
 		it( 'should change table attribute from `layout` to `content`', () => {
 			editor.setData(
