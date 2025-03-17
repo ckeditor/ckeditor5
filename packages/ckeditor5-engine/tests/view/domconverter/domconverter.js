@@ -48,6 +48,20 @@ describe( 'DomConverter', () => {
 		} );
 	} );
 
+	describe( 'domDocument', () => {
+		it( 'should return DOM document instance used by the DomConverter #1 - rendering mode data', () => {
+			expect( converter.domDocument ).to.be.instanceof( globalThis.Document );
+		} );
+
+		it( 'should return DOM document instance used by the DomConverter #2 - rendering mode editing', () => {
+			const converterEditing = new DomConverter( viewDocument, {
+				renderingMode: 'editing'
+			} );
+
+			expect( converterEditing.domDocument ).to.equal( globalThis.document );
+		} );
+	} );
+
 	describe( 'focus()', () => {
 		let viewEditable, domEditable, domEditableParent, viewDocument;
 
