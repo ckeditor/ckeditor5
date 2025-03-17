@@ -67,5 +67,6 @@
 	"Table layout": "The accessible label of the menu bar or dropdown button that displays a user interface to insert a table layout into editor content.",
 	"Table content": "The accessible label of the menu bar or dropdown button that displays a user interface to insert table content into editor.",
 	"Choose table type": "The accessible label of the table ballon button that displays a user interface to choose table type.",
+	"Table type": "The accessible label of the table balloon button shown when the button of properties plugin is not present.",
 	"Table type options": "The accessible label of dropdown list that displays a user interface to choose table type."
 }

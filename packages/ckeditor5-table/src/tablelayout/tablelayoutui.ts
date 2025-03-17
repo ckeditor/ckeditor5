@@ -8,7 +8,7 @@
  */
 
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
-import { IconTableLayout } from 'ckeditor5/src/icons.js';
+import { IconTableLayout, IconTableProperties } from 'ckeditor5/src/icons.js';
 import {
 	createDropdown,
 	MenuBarMenuView,
@@ -16,7 +16,8 @@ import {
 	addListToDropdown,
 	ViewModel,
 	type ListDropdownButtonDefinition,
-	type ButtonExecuteEvent
+	type ButtonExecuteEvent,
+	ButtonView
 } from 'ckeditor5/src/ui.js';
 import {
 	Collection,
@@ -24,7 +25,6 @@ import {
 } from 'ckeditor5/src/utils.js';
 
 import InsertTableView from '../ui/inserttableview.js';
-import TablePropertiesUI from '../tableproperties/tablepropertiesui.js';
 
 import type InsertTableLayoutCommand from '../commands/inserttablelayoutcommand.js';
 import type { default as TableTypeCommand, TableType } from './commands/tabletypecommand.js';
@@ -48,13 +48,6 @@ export default class TableLayoutUI extends Plugin {
 	 */
 	public static override get isOfficialPlugin(): true {
 		return true;
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public static get requires() {
-		return [ TablePropertiesUI ] as const;
 	}
 
 	/**
@@ -146,16 +139,26 @@ export default class TableLayoutUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const { componentFactory } = editor.ui;
-		const tablePropertiesUI = editor.plugins.get( TablePropertiesUI );
 
 		// Override the tableProperties button with a dropdown.
 		componentFactory.add( 'tableProperties', locale => {
-			const originalButton = tablePropertiesUI._createTablePropertiesButton();
+			// Create button that.
+			const baseButton = this._createTableTypeSwitchBaseButton();
 
 			// Wrap the original button in a SplitButtonView.
-			const dropdownButton = new SplitButtonView( locale, originalButton );
+			const dropdownButton = new SplitButtonView( locale, baseButton );
 			const dropdownView = createDropdown( locale, dropdownButton );
 			const itemsDefinitions = createTableLayoutTypeDropdownItems( editor );
+
+			// If table properties UI is not available, make clicking the button open the dropdown.
+			if ( !editor.plugins.has( 'TablePropertiesUI' ) ) {
+				dropdownButton.on( 'execute', () => {
+					dropdownView.isOpen = !dropdownView.isOpen;
+				} );
+
+				// Mark button as active when dropdown is open.
+				baseButton.bind( 'isOn' ).to( dropdownView, 'isOpen' );
+			}
 
 			// Add table types to the dropdown.
 			addListToDropdown( dropdownView, itemsDefinitions, {
@@ -171,6 +174,32 @@ export default class TableLayoutUI extends Plugin {
 
 			return dropdownView;
 		} );
+	}
+
+	/**
+	 * Creates the base button for the table type switch. This button is used in the dropdown
+	 */
+	private _createTableTypeSwitchBaseButton(): ButtonView {
+		const editor = this.editor;
+		const t = editor.t;
+
+		// If table properties UI is available, use its button.
+		if ( editor.plugins.has( 'TablePropertiesUI' ) ) {
+			const tablePropertiesUI = editor.plugins.get( 'TablePropertiesUI' );
+
+			return tablePropertiesUI._createTablePropertiesButton();
+		}
+
+		// If it's not available, create a new button.
+		const view = new ButtonView( editor.locale );
+
+		view.set( {
+			label: t( 'Table type' ),
+			icon: IconTableProperties,
+			tooltip: true
+		} );
+
+		return view;
 	}
 }
 

@@ -14,7 +14,7 @@ import TableLayoutUI from '../../src/tablelayout/tablelayoutui.js';
 import TableLayoutEditing from '../../src/tablelayout/tablelayoutediting.js';
 import InsertTableView from '../../src/ui/inserttableview.js';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
-import { IconTableLayout } from '@ckeditor/ckeditor5-icons';
+import { IconTableLayout, IconTableProperties } from '@ckeditor/ckeditor5-icons';
 import TableProperties from '../../src/tableproperties.js';
 import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
 import TableTypeCommand from '../../src/tablelayout/commands/tabletypecommand.js';
@@ -224,7 +224,7 @@ describe( 'TableLayoutUI', () => {
 			await editor.destroy();
 
 			editor = await ClassicTestEditor.create( element, {
-				plugins: [ TableEditing, TableLayoutUI, TableLayoutEditing, TableUI, TableProperties ]
+				plugins: [ TableProperties, TableEditing, TableLayoutUI, TableLayoutEditing, TableUI ]
 			} );
 
 			// Register TableTypeCommand
@@ -306,6 +306,78 @@ describe( 'TableLayoutUI', () => {
 			document.body.appendChild( tablePropertiesDropdown.element );
 
 			tablePropertiesDropdown.isOpen = true;
+			return tablePropertiesDropdown;
+		}
+	} );
+
+	describe( 'tableProperties dropdown without TablePropertiesUI', () => {
+		let tablePropertiesDropdown;
+
+		beforeEach( async () => {
+			await editor.destroy();
+
+			// Create editor without TableProperties plugin
+			editor = await ClassicTestEditor.create( element, {
+				plugins: [ TableEditing, TableLayoutUI, TableLayoutEditing, TableUI ]
+			} );
+
+			// Register TableTypeCommand
+			const command = new TableTypeCommand( editor );
+			sinon.spy( command, 'execute' );
+			editor.commands.add( 'tableType', command );
+		} );
+
+		afterEach( () => {
+			tablePropertiesDropdown?.element.remove();
+
+			return editor.destroy();
+		} );
+
+		it( 'should create a standalone button when TablePropertiesUI is not available', () => {
+			const tablePropertiesDropdown = renderTablePropertiesDropdown();
+			const baseButton = tablePropertiesDropdown.buttonView.actionView;
+
+			expect( baseButton.label ).to.equal( 'Table type' );
+			expect( baseButton.icon ).to.equal( IconTableProperties );
+			expect( baseButton.tooltip ).to.be.true;
+		} );
+
+		it( 'should open dropdown when base button is clicked', () => {
+			const tablePropertiesDropdown = renderTablePropertiesDropdown();
+			const baseButton = tablePropertiesDropdown.buttonView.actionView;
+
+			expect( tablePropertiesDropdown.isOpen ).to.be.false;
+
+			baseButton.fire( 'execute' );
+
+			expect( tablePropertiesDropdown.isOpen ).to.be.true;
+
+			baseButton.fire( 'execute' );
+
+			expect( tablePropertiesDropdown.isOpen ).to.be.false;
+		} );
+
+		it( 'should bind isOn of the base button to isOpen of the dropdown', () => {
+			const tablePropertiesDropdown = renderTablePropertiesDropdown();
+			const baseButton = tablePropertiesDropdown.buttonView.actionView;
+
+			expect( baseButton.isOn ).to.be.false;
+
+			tablePropertiesDropdown.isOpen = true;
+
+			expect( baseButton.isOn ).to.be.true;
+
+			tablePropertiesDropdown.isOpen = false;
+
+			expect( baseButton.isOn ).to.be.false;
+		} );
+
+		function renderTablePropertiesDropdown() {
+			tablePropertiesDropdown = editor.ui.componentFactory.create( 'tableProperties' );
+			tablePropertiesDropdown.render();
+
+			document.body.appendChild( tablePropertiesDropdown.element );
+
 			return tablePropertiesDropdown;
 		}
 	} );
