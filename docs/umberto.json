@@ -1,11 +1,6 @@
 {
 	"name": "CKEditor 5",
 	"slug": "ckeditor5",
-	"hooks": {
-		"beforeHexo": [
-			"../scripts/docs/build-content-styles.mjs"
-		]
-	},
 	"reportIssueWidget": {
 		"enabled": true,
 		"issueUrl": "https://github.com/ckeditor/ckeditor5/issues/new?labels=squad%3Accx%2Ctype%3Adocs&template=7-docs-issue-community.yml",
