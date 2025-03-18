@@ -27,7 +27,8 @@ import {
 import InsertTableView from '../ui/inserttableview.js';
 
 import type InsertTableLayoutCommand from '../commands/inserttablelayoutcommand.js';
-import type { default as TableTypeCommand, TableType } from './commands/tabletypecommand.js';
+import type { default as TableTypeCommand } from './commands/tabletypecommand.js';
+import type { TableType } from '../tableconfig.js';
 
 /**
  * The table layout UI plugin. It introduces:
