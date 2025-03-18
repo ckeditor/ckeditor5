@@ -50,6 +50,29 @@ describe( 'FullscreenEditing', () => {
 		expect( editor.config.get( 'fullscreen.menuBar.isVisible' ) ).to.be.true;
 	} );
 
+	it( 'should set the `fullscreen.toolbar.shouldNotGroupWhenFull` config to value of `toolbar.shouldNotGroupWhenFull`', async () => {
+		expect( editor.config.get( 'fullscreen.toolbar.shouldNotGroupWhenFull' ) ).to.be.true;
+
+		const tempDomElement = global.document.createElement( 'div' );
+		global.document.body.appendChild( tempDomElement );
+
+		const tempEditor = await ClassicEditor.create( tempDomElement, {
+			plugins: [
+				Paragraph,
+				Essentials,
+				FullscreenEditing
+			],
+			toolbar: {
+				shouldNotGroupWhenFull: false
+			}
+		} );
+
+		expect( tempEditor.config.get( 'fullscreen.toolbar.shouldNotGroupWhenFull' ) ).to.be.false;
+
+		tempDomElement.remove();
+		return tempEditor.destroy();
+	} );
+
 	it( 'should register keystrokes on init ', () => {
 		const spy = sinon.spy( editor.keystrokes, 'set' );
 		editor.plugins.get( 'FullscreenEditing' ).init();

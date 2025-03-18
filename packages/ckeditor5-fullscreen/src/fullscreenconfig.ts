@@ -61,4 +61,18 @@ export default interface FullscreenConfig {
 		 */
 		isVisible?: boolean;
 	};
+
+	/**
+	 * The configuration of the toolbar in the fullscreen mode.
+	 */
+	toolbar?: {
+
+		/**
+		 * When set to `true`, the toolbar will stop grouping items and let them wrap to the next line
+		 * if there is not enough space to display them in a single row.
+		 *
+		 * @default false
+		 */
+		shouldNotGroupWhenFull?: boolean;
+	};
 }

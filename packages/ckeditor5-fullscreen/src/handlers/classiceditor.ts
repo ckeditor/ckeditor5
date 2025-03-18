@@ -42,6 +42,11 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 
 			this.moveToFullscreen( editorUI.getEditableElement()!, 'editable' );
 			this.moveToFullscreen( editorUIView.toolbar.element!, 'toolbar' );
+
+			editorUIView.toolbar.switchBehavior(
+				this._editor.config.get( 'fullscreen.toolbar.shouldNotGroupWhenFull' ) === true ? 'static' : 'dynamic'
+			);
+
 			this.moveToFullscreen( document.querySelector( '.ck-body-wrapper' )!, 'body-wrapper' );
 
 			// In classic editor, the `dir` attribute is set on the top-level container and it affects the styling

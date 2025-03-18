@@ -247,6 +247,10 @@ export default class AbstractEditorHandler {
 			this.restoreMovedElementLocation( placeholderName );
 		}
 
+		this._editor.ui.view.toolbar!.switchBehavior(
+			this._editor.config.get( 'toolbar.shouldNotGroupWhenFull' ) === true ? 'static' : 'dynamic'
+		);
+
 		if ( this._placeholderMap.size === 0 ) {
 			this._destroyContainer();
 		}

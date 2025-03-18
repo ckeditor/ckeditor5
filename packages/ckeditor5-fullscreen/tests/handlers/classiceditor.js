@@ -9,6 +9,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
 import ClassicEditorHandler from '../../src/handlers/classiceditor.js';
+import FullscreenEditing from '../../src/fullscreenediting.js';
 
 describe( 'ClassicEditorHandler', () => {
 	let classicEditorHandler, domElement, editor;
@@ -86,6 +87,54 @@ describe( 'ClassicEditorHandler', () => {
 
 			tempDomElement.remove();
 			return tempEditor.destroy();
+		} );
+
+		it( 'should use the configured toolbar behavior', async () => {
+			const tempDomElementDynamicToolbar = global.document.createElement( 'div' );
+			global.document.body.appendChild( tempDomElementDynamicToolbar );
+
+			const tempEditorDynamicToolbar = await ClassicEditor.create( tempDomElementDynamicToolbar, {
+				plugins: [
+					Paragraph,
+					Essentials,
+					FullscreenEditing
+				],
+				fullscreen: {
+					toolbar: {
+						shouldNotGroupWhenFull: true
+					}
+				}
+			} );
+
+			tempEditorDynamicToolbar.execute( 'toggleFullscreen' );
+
+			expect( tempEditorDynamicToolbar.ui.view.toolbar.isGrouping ).to.be.false;
+
+			tempDomElementDynamicToolbar.remove();
+			await tempEditorDynamicToolbar.destroy();
+
+			const tempDomElementStaticToolbar = global.document.createElement( 'div' );
+			global.document.body.appendChild( tempDomElementStaticToolbar );
+
+			const tempEditorStaticToolbar = await ClassicEditor.create( tempDomElementStaticToolbar, {
+				plugins: [
+					Paragraph,
+					Essentials,
+					FullscreenEditing
+				],
+				fullscreen: {
+					toolbar: {
+						shouldNotGroupWhenFull: false
+					}
+				}
+			} );
+
+			tempEditorStaticToolbar.execute( 'toggleFullscreen' );
+
+			expect( tempEditorStaticToolbar.ui.view.toolbar.isGrouping ).to.be.true;
+
+			tempDomElementStaticToolbar.remove();
+			return tempEditorStaticToolbar.destroy();
 		} );
 	} );
 } );
