@@ -163,9 +163,10 @@ describe( 'TableTypeCommand', () => {
 					'<table tableType="layout">' +
 						'<tableRow>' +
 							'<tableCell>' +
-								'<paragraph>[]foo</paragraph>' +
+								'<paragraph>foo</paragraph>' +
 							'</tableCell>' +
 						'</tableRow>' +
+						'<caption>bar[]baz</caption>' +
 					'</table>'
 				);
 
