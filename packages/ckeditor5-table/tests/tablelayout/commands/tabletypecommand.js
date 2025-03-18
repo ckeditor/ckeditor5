@@ -158,19 +158,19 @@ describe( 'TableTypeCommand', () => {
 			} );
 
 			it( 'should equal table type attribute value if selection is inside a table caption', () => {
-				setModelData(
-					model,
-					'<table tableType="layout">' +
-						'<tableRow>' +
-							'<tableCell>' +
-								'<paragraph>foo</paragraph>' +
-							'</tableCell>' +
-						'</tableRow>' +
-						'<caption>bar[]baz</caption>' +
-					'</table>'
-				);
-
-				expect( command.value ).to.equal( 'layout' );
+				expect( () => {
+					setModelData(
+						model,
+						'<table tableType="layout">' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph>foo</paragraph>' +
+								'</tableCell>' +
+							'</tableRow>' +
+							'<caption>bar[]baz</caption>' +
+						'</table>'
+					);
+				} ).to.throw( /Element 'caption' was not allowed in given position/ );
 
 				setModelData(
 					model,
