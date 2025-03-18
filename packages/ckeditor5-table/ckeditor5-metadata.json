@@ -141,6 +141,41 @@
 			]
 		},
 		{
+			"name": "Table layout",
+			"className": "TableLayout",
+			"description": "Adds support for different table types and layouts, allowing to distinguish between content tables and layout tables.",
+			"docs": "features/tables/tables-styling.html",
+			"path": "src/tablelayout",
+			"requires": [
+				"Table",
+				"TableToolbar"
+			],
+			"uiComponents": [
+				{
+					"type": "Dropdown",
+					"name": "insertTableLayout",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-layout.svg",
+					"toolbars": [
+						"table.contentToolbar"
+					]
+				},
+				{
+					"type": "Dropdown",
+					"name": "tableType",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-properties.svg",
+					"toolbars": [
+						"table.contentToolbar"
+					]
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "figure",
+					"classes": "layout-layout"
+				}
+			]
+		},
+		{
 			"name": "Table toolbar",
 			"className": "TableToolbar",
 			"description": "Creates configurable toolbars for both the table feature and table content. They show up when the table widget or the content inside a table cell are selected.",
