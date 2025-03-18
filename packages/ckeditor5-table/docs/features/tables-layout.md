@@ -22,11 +22,9 @@ Use the editor below to see the layout tables plugin in action. Demo will be del
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
-## Table features comparison
+## Table toggling
 
-| Regular table | Plain table output | Layout table |
-| -------- | ------- | ------- |
-| ... | ... | ... |
+Describe.
 
 ## Installation
 
