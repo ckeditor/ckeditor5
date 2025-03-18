@@ -192,12 +192,12 @@ describe( 'TableTypeCommand', () => {
 					model,
 					'<table tableType="layout">' +
 						'<tableRow>' +
-							'<tableCell>' +
-								'<paragraph>[foo</paragraph>' +
-							'</tableCell>' +
-							'<tableCell>' +
-								'<paragraph>bar]</paragraph>' +
-							'</tableCell>' +
+							'[<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>]' +
+							'[<tableCell>' +
+								'<paragraph>bar</paragraph>' +
+							'</tableCell>]' +
 						'</tableRow>' +
 					'</table>'
 				);
@@ -208,12 +208,12 @@ describe( 'TableTypeCommand', () => {
 					model,
 					'<table tableType="content">' +
 						'<tableRow>' +
-							'<tableCell>' +
-								'<paragraph>[foo</paragraph>' +
-							'</tableCell>' +
-							'<tableCell>' +
-								'<paragraph>bar]</paragraph>' +
-							'</tableCell>' +
+							'[<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>]' +
+							'[<tableCell>' +
+								'<paragraph>bar</paragraph>' +
+							'</tableCell>]' +
 						'</tableRow>' +
 					'</table>'
 				);
