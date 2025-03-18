@@ -26,11 +26,11 @@ describe( 'TableLayoutEditing', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [
-				Table, TableCaption, TableColumnResize, PlainTableOutput, TableLayoutEditing, Paragraph, BlockQuote
-			]
-		} );
+		const plugins = [
+			Table, TableCaption, TableColumnResize, PlainTableOutput, TableLayoutEditing, Paragraph, BlockQuote
+		];
+
+		editor = await createEditor( editorElement, plugins );
 
 		model = editor.model;
 		view = editor.editing.view;
@@ -270,8 +270,7 @@ describe( 'TableLayoutEditing', () => {
 			);
 		} );
 
-		it( 'should set `tableType` to `content` even when there is a `layout-table` class' +
-				'but <table> contains a <caption> element inside', () => {
+		it( 'should set `tableType` to `layout` even when <table> contains a <caption> element inside', () => {
 			editor.setData(
 				'<table class="table layout-table">' +
 					'<caption>foo</caption>' +
@@ -280,9 +279,8 @@ describe( 'TableLayoutEditing', () => {
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<table tableType="content">' +
+				'<table tableType="layout">' +
 					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
-					'<caption>foo</caption>' +
 				'</table>'
 			);
 		} );
@@ -645,6 +643,215 @@ describe( 'TableLayoutEditing', () => {
 			} );
 		} );
 
+		describe( 'config.table.tableLayout', () => {
+			describe( 'preferredExternalTableType = "content"', () => {
+				let editor, model, editorElement;
+
+				beforeEach( async () => {
+					editorElement = document.createElement( 'div' );
+					document.body.appendChild( editorElement );
+
+					const plugins = [
+						Table, TableCaption, TableColumnResize, PlainTableOutput, TableLayoutEditing, Paragraph, BlockQuote
+					];
+					const config = {
+						table: {
+							tableLayout: {
+								preferredExternalTableType: 'content'
+							}
+						}
+					};
+
+					editor = await createEditor( editorElement, plugins, config );
+					model = editor.model;
+				} );
+
+				afterEach( async () => {
+					editorElement.remove();
+					await editor.destroy();
+				} );
+
+				it( 'should set `tableType` to `layout` when there is class `layout-table`', () => {
+					editor.setData(
+						'<table class="table layout-table">' +
+							'<tr><td>1</td></tr>' +
+						'</table>'
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table tableType="layout">' +
+							'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should set `tableType` to `content` when there is class `content-table`', () => {
+					editor.setData(
+						'<table class="table content-table">' +
+							'<tr><td>1</td></tr>' +
+						'</table>'
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table tableType="content">' +
+							'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should set `tableType` to `content` when there is no class that determine the table type', () => {
+					editor.setData(
+						'<table class="table">' +
+							'<tr><td>1</td></tr>' +
+						'</table>'
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table tableType="content">' +
+							'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should set `tableType` to `content` when there is no class that determine the table type ' +
+						'and table is wrapped with figure', () => {
+					editor.setData(
+						'<figure>' +
+							'<table>' +
+								'<tr><td>1</td></tr>' +
+							'</table>' +
+						'</figure>'
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table tableType="content">' +
+							'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should set `tableType` to `content` when there is no class that determine the table type' +
+						'and <table> contains a <caption> element inside', () => {
+					editor.setData(
+						'<table class="table">' +
+							'<caption>foo</caption>' +
+							'<tr><td>1</td></tr>' +
+						'</table>'
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table tableType="content">' +
+							'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+							'<caption>foo</caption>' +
+						'</table>'
+					);
+				} );
+			} );
+
+			describe( 'preferredExternalTableType = "layout"', () => {
+				let editor, model, editorElement;
+
+				beforeEach( async () => {
+					editorElement = document.createElement( 'div' );
+					document.body.appendChild( editorElement );
+
+					const plugins = [
+						Table, TableCaption, TableColumnResize, PlainTableOutput, TableLayoutEditing, Paragraph, BlockQuote
+					];
+					const config = {
+						table: {
+							tableLayout: {
+								preferredExternalTableType: 'layout'
+							}
+						}
+					};
+
+					editor = await createEditor( editorElement, plugins, config );
+					model = editor.model;
+				} );
+
+				afterEach( async () => {
+					editorElement.remove();
+					await editor.destroy();
+				} );
+
+				it( 'should set `tableType` to `layout` when there is class `layout-table`', () => {
+					editor.setData(
+						'<table class="table layout-table">' +
+							'<tr><td>1</td></tr>' +
+						'</table>'
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table tableType="layout">' +
+							'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should set `tableType` to `content` when there is class `content-table`', () => {
+					editor.setData(
+						'<table class="table content-table">' +
+							'<tr><td>1</td></tr>' +
+						'</table>'
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table tableType="content">' +
+							'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should set `tableType` to `layout` when there is no class that determine the table type', () => {
+					editor.setData(
+						'<table class="table">' +
+							'<tr><td>1</td></tr>' +
+						'</table>'
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table tableType="layout">' +
+							'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should set `tableType` to `layout` when there is no class that determine the table type ' +
+						'and table is wrapped with figure', () => {
+					editor.setData(
+						'<figure>' +
+							'<table>' +
+								'<tr><td>1</td></tr>' +
+							'</table>' +
+						'</figure>'
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table tableType="layout">' +
+							'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+						'</table>'
+					);
+				} );
+
+				it( 'should set `tableType` to `layout` when there is no class that determine the table type' +
+						'and <table> contains a <caption> element inside', () => {
+					editor.setData(
+						'<table class="table">' +
+							'<caption>foo</caption>' +
+							'<tr><td>1</td></tr>' +
+						'</table>'
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<table tableType="layout">' +
+							'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+						'</table>'
+					);
+				} );
+			} );
+		} );
+
 		describe( 'GHS integration', () => {
 			let ghsEditor, ghsModel, ghsEditorElement;
 
@@ -652,11 +859,11 @@ describe( 'TableLayoutEditing', () => {
 				ghsEditorElement = document.createElement( 'div' );
 				document.body.appendChild( ghsEditorElement );
 
-				ghsEditor = await ClassicTestEditor.create( ghsEditorElement, {
-					plugins: [
-						Table, TableCaption, TableColumnResize, PlainTableOutput,
-						TableLayoutEditing, Paragraph, GeneralHtmlSupport
-					],
+				const plugins = [
+					Table, TableCaption, TableColumnResize, PlainTableOutput,
+					TableLayoutEditing, Paragraph, GeneralHtmlSupport
+				];
+				const config = {
 					htmlSupport: {
 						allow: [
 							{
@@ -667,8 +874,9 @@ describe( 'TableLayoutEditing', () => {
 							}
 						]
 					}
-				} );
+				};
 
+				ghsEditor = await createEditor( ghsEditorElement, plugins, config );
 				ghsModel = ghsEditor.model;
 			} );
 
@@ -734,7 +942,7 @@ describe( 'TableLayoutEditing', () => {
 				);
 			} );
 
-			it( 'class="layout-table" should be consumed and `tabletype` set to `content`', () => {
+			it( 'class="layout-table" should be consumed and `tabletype` set to `layout`', () => {
 				ghsEditor.setData(
 					'<table class="table layout-table">' +
 						'<caption>Should be content table</caption>' +
@@ -743,9 +951,8 @@ describe( 'TableLayoutEditing', () => {
 				);
 
 				expect( getModelData( ghsModel, { withoutSelection: true } ) ).to.equal(
-					'<table tableType="content">' +
+					'<table tableType="layout">' +
 						'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
-						'<caption>Should be content table</caption>' +
 					'</table>'
 				);
 			} );
@@ -800,9 +1007,7 @@ describe( 'TableLayoutEditing', () => {
 		it( 'should not crash the editor if there is no clipboard plugin', async () => {
 			await editor.destroy();
 
-			editor = await ClassicTestEditor.create( editorElement, {
-				plugins: [ TableEditing, TableLayoutEditing ]
-			} );
+			editor = await createEditor( editorElement, [ TableEditing, TableLayoutEditing ] );
 
 			expect( editor.plugins.get( 'TableLayoutEditing' ) ).to.be.instanceOf( TableLayoutEditing );
 		} );
@@ -1150,6 +1355,57 @@ describe( 'TableLayoutEditing', () => {
 				'</blockQuote>'
 			);
 		} );
+
+		it( 'should change `tableType` attribute on existing table and remove disallowed children', () => {
+			setModelData(
+				model,
+				'[<table tableType="content">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<caption>Foo</caption>' +
+				'</table>]'
+			);
+
+			model.change( writer => {
+				const table = model.document.selection.getSelectedElement();
+
+				writer.setAttribute( 'tableType', 'layout', table );
+			} );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<table tableType="layout">' +
+					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should change `tableType` attribute on existing table and remove disallowed table attributes', () => {
+			setModelData(
+				model,
+				'[<table headingRows="1" headingColumns="1" tableType="content" >' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>]'
+			);
+
+			model.change( writer => {
+				const table = model.document.selection.getSelectedElement();
+
+				writer.setAttribute( 'tableType', 'layout', table );
+			} );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<table tableType="layout">' +
+					'<tableRow><tableCell><paragraph>1</paragraph></tableCell></tableRow>' +
+				'</table>'
+			);
+		} );
 	} );
 } );
 
@@ -1162,4 +1418,11 @@ function createDataTransfer( data = {} ) {
 			data[ type ] = value;
 		}
 	};
+}
+
+async function createEditor( editorElement, plugins, config = {} ) {
+	return await ClassicTestEditor.create( editorElement, {
+		plugins,
+		...config
+	} );
 }

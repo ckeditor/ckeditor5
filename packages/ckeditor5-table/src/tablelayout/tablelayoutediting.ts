@@ -21,8 +21,11 @@ import type {
 import InsertTableLayoutCommand from './../commands/inserttablelayoutcommand.js';
 import TableTypeCommand from './commands/tabletypecommand.js';
 import { createEmptyTableCell } from '../utils/common.js';
+import type { TableType } from '../tableconfig.js';
 
 import '../../theme/tablelayout.css';
+
+const TABLE_TYPES: Array<TableType> = [ 'content', 'layout' ];
 
 /**
  * The table layout editing plugin.
@@ -81,7 +84,9 @@ export default class TableLayoutEditing extends Plugin {
 		const { editor } = this;
 		const { conversion } = editor;
 
-		conversion.for( 'upcast' ).add( upcastLayoutTable() );
+		const preferredExternalTableType = editor.config.get( 'table.tableLayout.preferredExternalTableType' );
+
+		conversion.for( 'upcast' ).add( upcastLayoutTable( preferredExternalTableType ) );
 		conversion.for( 'dataDowncast' ).add( dataDowncastLayoutTable() );
 		conversion.for( 'editingDowncast' ).attributeToAttribute( {
 			model: {
@@ -138,6 +143,7 @@ export default class TableLayoutEditing extends Plugin {
 
 	/**
 	 * Registers a post-fixer that sets the `tableType` attribute to `content` for inserted "default" tables.
+	 * Also fixes potential issues with the table structure when the `tableType` attribute has been changed.
 	 */
 	private _registerTableTypeAttributePostfixer() {
 		const editor = this.editor;
@@ -158,6 +164,26 @@ export default class TableLayoutEditing extends Plugin {
 						}
 					}
 				}
+
+				// Remove disallowed attributes and children for layout tables
+				// when `tableType` attribute has been changed by `TableTypeCommand`.
+				if ( entry.type == 'attribute' && entry.attributeKey == 'tableType' ) {
+					for ( const item of entry.range.getItems() ) {
+						if ( item.is( 'element', 'table' ) ) {
+							editor.model.schema.removeDisallowedAttributes( [ item ], writer );
+
+							const tableChildren = item.getChildren();
+
+							// Check if all children are allowed for the new table type.
+							for ( const child of tableChildren ) {
+								if ( !editor.model.schema.checkChild( item, child ) ) {
+									writer.remove( child );
+									hasChanged = true;
+								}
+							}
+						}
+					}
+				}
 			}
 
 			return hasChanged;
@@ -172,7 +198,7 @@ export default class TableLayoutEditing extends Plugin {
  *
  * @returns Conversion helper.
  */
-function upcastLayoutTable() {
+function upcastLayoutTable( preferredExternalTableType: TableType | undefined ) {
 	return ( dispatcher: UpcastDispatcher ): void => {
 		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
 			const viewTable = data.viewItem;
@@ -181,14 +207,14 @@ function upcastLayoutTable() {
 				return;
 			}
 
-			const hasTableTypeContent = isTableTypeContent( viewTable );
+			const resolvedTableType = resolveTableType( viewTable, preferredExternalTableType );
 
 			// When an element is a content table, then skip it.
-			if ( hasTableTypeContent ) {
+			if ( resolvedTableType == 'content' ) {
 				return;
 			}
 
-			const table = conversionApi.writer.createElement( 'table' );
+			const table = conversionApi.writer.createElement( 'table', { tableType: 'layout' } );
 
 			if ( !conversionApi.safeInsert( table, data.modelCursor ) ) {
 				return;
@@ -233,7 +259,7 @@ function upcastLayoutTable() {
 			if ( modelRange ) {
 				conversionApi.writer.setAttribute(
 					'tableType',
-					isTableTypeContent( viewItem ) ? 'content' : 'layout',
+					resolveTableType( viewItem, preferredExternalTableType ),
 					modelRange
 				);
 				conversionApi.consumable.consume( viewItem, { classes: [ 'layout-table' ] } );
@@ -272,19 +298,36 @@ function dataDowncastLayoutTable() {
 }
 
 /**
- * Checks if the table is a content table.
- * Returns `true` if any of the following conditions are met:
- * - the `<table>` is wrapped with `<figure>`,
- * - the `<table>` has class `content-table`
- * - the `<table>` has a `<caption>` element.
- * `false` otherwise.
+ * Resolves the table type based on the view table element and the preferred external table type.
  */
-function isTableTypeContent( viewTable: ViewElement ): boolean {
+function resolveTableType( viewTable: ViewElement, preferredExternalTableType: TableType | undefined ): TableType {
+	if ( viewTable.hasClass( 'content-table' ) ) {
+		return 'content';
+	}
+
+	if ( viewTable.hasClass( 'layout-table' ) ) {
+		return 'layout';
+	}
+
+	if ( preferredExternalTableType && TABLE_TYPES.includes( preferredExternalTableType ) ) {
+		return preferredExternalTableType;
+	}
+
 	const parent = viewTable.parent!;
 
-	return parent.is( 'element', 'figure' ) ||
-		viewTable.hasClass( 'content-table' ) ||
-		Array.from( viewTable.getChildren() ).some( child => child.is( 'element', 'caption' ) );
+	/**
+	 * Checks if the table is a content table if any of the following conditions are met:
+	 * - the `<table>` is wrapped with `<figure>`,
+	 * - the `<table>` has a `<caption>` element.
+	 */
+	if (
+		parent.is( 'element', 'figure' ) ||
+		Array.from( viewTable.getChildren() ).some( child => child.is( 'element', 'caption' ) ) )
+	{
+		return 'content';
+	}
+
+	return 'layout';
 }
 
 /**
