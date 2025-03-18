@@ -172,8 +172,8 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 	const globalTags = [
 		`<script type="importmap">${ JSON.stringify( { imports } ) }</script>`,
 		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
-		'<script src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>',
-		'<script src="%BASE_PATH%/assets/global.js"></script>',
+		'<script defer src="%BASE_PATH%/assets/global.js"></script>',
+		'<script defer src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>',
 		getStyle( '%BASE_PATH%/assets/ckeditor5/ckeditor5.css' ),
 		getStyle( '%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.css' ),
 		getStyle( '%BASE_PATH%/assets/global.css' ),
