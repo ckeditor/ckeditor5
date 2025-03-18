@@ -212,8 +212,8 @@ function createTableLayoutTypeDropdownItems( editor: Editor ) {
 	const tableTypeCommand = editor.commands.get( 'tableType' )!;
 	const itemDefinitions = new Collection<ListDropdownButtonDefinition>();
 
-	itemDefinitions.add( createTableTypeDropdownItem( tableTypeCommand, 'layout', t( 'Table layout' ) ) );
-	itemDefinitions.add( createTableTypeDropdownItem( tableTypeCommand, 'content', t( 'Table content' ) ) );
+	itemDefinitions.add( createTableTypeDropdownItem( tableTypeCommand, 'layout', t( 'Layout table' ) ) );
+	itemDefinitions.add( createTableTypeDropdownItem( tableTypeCommand, 'content', t( 'Content table' ) ) );
 
 	return itemDefinitions;
 }

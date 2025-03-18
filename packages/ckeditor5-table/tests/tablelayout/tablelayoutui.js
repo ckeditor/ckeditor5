@@ -258,8 +258,8 @@ describe( 'TableLayoutUI', () => {
 			expect( items.length ).to.equal( 2 );
 			expect( [ ...items ].every( item => item instanceof ListItemView ) ).to.be.true;
 
-			expect( items.get( 0 ).children.first.label ).to.equal( 'Table layout' );
-			expect( items.get( 1 ).children.first.label ).to.equal( 'Table content' );
+			expect( items.get( 0 ).children.first.label ).to.equal( 'Layout table' );
+			expect( items.get( 1 ).children.first.label ).to.equal( 'Content table' );
 		} );
 
 		it( 'should execute tableType command when an item is selected', () => {
@@ -370,8 +370,8 @@ describe( 'TableLayoutUI', () => {
 			expect( items.length ).to.equal( 2 );
 			expect( [ ...items ].every( item => item instanceof ListItemView ) ).to.be.true;
 
-			expect( items.get( 0 ).children.first.label ).to.equal( 'Table layout' );
-			expect( items.get( 1 ).children.first.label ).to.equal( 'Table content' );
+			expect( items.get( 0 ).children.first.label ).to.equal( 'Layout table' );
+			expect( items.get( 1 ).children.first.label ).to.equal( 'Content table' );
 		} );
 
 		it( 'should execute tableType command when an item is selected', () => {
