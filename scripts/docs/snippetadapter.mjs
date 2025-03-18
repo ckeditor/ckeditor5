@@ -152,12 +152,14 @@ async function buildSnippets( snippets, paths, constants, imports ) {
 			{
 				name: 'throw-on-source-import',
 				setup( build ) {
-					build.onLoad( { filter: /\.ts$/ }, args => {
-						throw new Error(
-							`The source file "${ args.path }" was likely imported by mistake. ` +
-							'Update the import to use "ckeditor5" or "ckeditor5-premium-features" instead.'
-						);
-					} );
+					build.onLoad( { filter: /packages\/(.*)\/src/ }, args => ( {
+						errors: [
+							{
+								// eslint-disable-next-line max-len
+								text: `Can't use the source file "${ args.path }" in the snippet. Use "ckeditor5" or "ckeditor5-premium-features" import instead.`
+							}
+						]
+					} ) );
 				}
 			}
 		]
