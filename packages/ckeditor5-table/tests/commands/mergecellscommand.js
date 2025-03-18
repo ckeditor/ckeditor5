@@ -208,6 +208,49 @@ describe( 'MergeCellsCommand', () => {
 			expect( command.isEnabled ).to.be.false;
 		} );
 
+		it( 'should be false if selection has cells from footer and body sections', () => {
+			setData( model, modelTable( [
+				[ '00[]', '01' ],
+				[ '10', '11' ]
+			], { footerRows: 1 } ) );
+
+			tableSelection.setCellSelection(
+				root.getNodeByPath( [ 0, 0, 0 ] ),
+				root.getNodeByPath( [ 0, 1, 0 ] )
+			);
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be false if selection has cells from header and footer sections', () => {
+			setData( model, modelTable( [
+				[ '00[]', '01' ],
+				[ '10', '11' ]
+			], { headingRows: 1, footerRows: 1 } ) );
+
+			tableSelection.setCellSelection(
+				root.getNodeByPath( [ 0, 0, 0 ] ),
+				root.getNodeByPath( [ 0, 1, 0 ] )
+			);
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be false if selection has cells from header, footer, and body sections', () => {
+			setData( model, modelTable( [
+				[ '00[]', '01' ],
+				[ '10', '11' ],
+				[ '20', '21' ]
+			], { headingRows: 1, footerRows: 1 } ) );
+
+			tableSelection.setCellSelection(
+				root.getNodeByPath( [ 0, 0, 0 ] ),
+				root.getNodeByPath( [ 0, 2, 0 ] )
+			);
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
 		it( 'should be false if more than 10 rows selected and some are in heading section', () => {
 			setData( model, modelTable( [
 				[ '0' ],
@@ -226,6 +269,35 @@ describe( 'MergeCellsCommand', () => {
 				[ '13' ],
 				[ '14' ]
 			], { headingRows: 10 } ) );
+
+			const tableSelection = editor.plugins.get( TableSelection );
+			const modelRoot = model.document.getRoot();
+			tableSelection.setCellSelection(
+				modelRoot.getNodeByPath( [ 0, 1, 0 ] ),
+				modelRoot.getNodeByPath( [ 0, 12, 0 ] )
+			);
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be false if more than 10 rows selected and some are in footer section', () => {
+			setData( model, modelTable( [
+				[ '0' ],
+				[ '1' ],
+				[ '2' ],
+				[ '3' ],
+				[ '4' ],
+				[ '5' ],
+				[ '6' ],
+				[ '7' ],
+				[ '8' ],
+				[ '9' ],
+				[ '10' ],
+				[ '11' ],
+				[ '12' ],
+				[ '13' ],
+				[ '14' ]
+			], { footerRows: 10 } ) );
 
 			const tableSelection = editor.plugins.get( TableSelection );
 			const modelRoot = model.document.getRoot();
@@ -279,6 +351,20 @@ describe( 'MergeCellsCommand', () => {
 			expect( command.isEnabled ).to.be.true;
 		} );
 
+		it( 'should be true if selection has cells only from column footers - rows in footer section', () => {
+			setData( model, modelTable( [
+				[ '00[]', '01', '02', '03' ],
+				[ '10', '11', '12', '13' ]
+			], { headingColumns: 2, footerRows: 1 } ) );
+
+			tableSelection.setCellSelection(
+				root.getNodeByPath( [ 0, 1, 0 ] ),
+				root.getNodeByPath( [ 0, 1, 1 ] )
+			);
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
 		it( 'should be false if selection has cells only from column headers and other cells - rows in header section', () => {
 			setData( model, modelTable( [
 				[ '00[]', '01', '02', '03' ],
@@ -293,11 +379,39 @@ describe( 'MergeCellsCommand', () => {
 			expect( command.isEnabled ).to.be.false;
 		} );
 
+		it( 'should be false if selection has cells only from column footers and other cells - rows in footer section', () => {
+			setData( model, modelTable( [
+				[ '00[]', '01', '02', '03' ],
+				[ '10', '11', '12', '13' ]
+			], { headingColumns: 2, footerRows: 1 } ) );
+
+			tableSelection.setCellSelection(
+				root.getNodeByPath( [ 0, 1, 0 ] ),
+				root.getNodeByPath( [ 0, 1, 2 ] )
+			);
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
 		it( 'should be false if selection has cells from column headers, row headers and body sections', () => {
 			setData( model, modelTable( [
 				[ '00[]', '01', '02', '03' ],
 				[ '10', '11', '12', '13' ]
 			], { headingColumns: 2, headingRows: 1 } ) );
+
+			tableSelection.setCellSelection(
+				root.getNodeByPath( [ 0, 0, 0 ] ),
+				root.getNodeByPath( [ 0, 1, 2 ] )
+			);
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be false if selection has cells from column footers, row footers and body sections', () => {
+			setData( model, modelTable( [
+				[ '00[]', '01', '02', '03' ],
+				[ '10', '11', '12', '13' ]
+			], { headingColumns: 2, footerRows: 1 } ) );
 
 			tableSelection.setCellSelection(
 				root.getNodeByPath( [ 0, 0, 0 ] ),
