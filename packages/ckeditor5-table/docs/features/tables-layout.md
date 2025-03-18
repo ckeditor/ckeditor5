@@ -8,11 +8,15 @@ modified_at: 2025-03-06
 
 # Layout tables
 
+{@snippet features/build-table-source}
+
 Layout tables are used to structure a web page content spatially rather than for presenting tabular data. They allow integrators to create multi-column designs and precise positioning of elements on a page. This kind of functionality may be handy, for example, when preparing newsletter content.
 
 ## Demo
 
 Use the editor below to see the layout tables plugin in action. Demo will be delivered later.
+
+{@snippet features/table-layout}
 
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
@@ -42,7 +46,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableLayout, /* ... */ ],
-		toolbar: [ 'insetTable', 'insertTableLayout', /* ... */ ]
+		toolbar: [ 'insertTable', 'insertTableLayout', /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
