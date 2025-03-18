@@ -159,6 +159,10 @@ export default class TableLayoutUI extends Plugin {
 		const tablePropertiesUI = editor.plugins.get( 'TablePropertiesUI' );
 
 		// Override the default table properties button to include the table type dropdown.
+		// It needs to be done in `afterInit()` to make sure that `tableProperties` button is
+		// registered after the initialization of the `TablePropertiesUI`. Otherwise, the
+		// button will be overridden by the default one if the `TablePropertiesUI` is
+		// initialized after the `TableLayoutUI`.
 		editor.ui.componentFactory.add( 'tableProperties', locale => {
 			const baseButton = tablePropertiesUI._createTablePropertiesButton();
 			const splitButtonView = new SplitButtonView( locale, baseButton );
