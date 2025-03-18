@@ -14,6 +14,9 @@ import Table from './table.js';
 
 /**
  * The plain table output feature.
+ *
+ * This feature strips the `<figure>` tag from the table data. This is because this tag is not supported
+ * by most popular email clients and removing it ensures compatibility.
  */
 export default class PlainTableOutput extends Plugin {
 	/**
