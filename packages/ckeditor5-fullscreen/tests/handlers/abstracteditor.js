@@ -48,8 +48,8 @@ describe( 'AbstractHandler', () => {
 			expect( abstractHandler._editor ).to.equal( editor );
 		} );
 
-		it( 'should setup listener returning moved elements when editor is destroyed and fullscreen is enabled', async () => {
-			const spy = sinon.spy( abstractHandler, 'disable' );
+		it( 'should setup listener destroying moved elements when editor is destroyed and fullscreen is enabled', async () => {
+			const spy = sinon.spy( abstractHandler, 'destroy' );
 
 			abstractHandler.enable();
 
