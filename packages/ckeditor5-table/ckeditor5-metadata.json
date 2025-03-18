@@ -171,7 +171,7 @@
 			"htmlOutput": [
 				{
 					"elements": "figure",
-					"classes": "layout-layout"
+					"classes": [ "layout-table", "content-table" ]
 				}
 			]
 		},
