@@ -10,8 +10,7 @@
 import { Command } from 'ckeditor5/src/core.js';
 
 import { getSelectionAffectedTable } from '../../utils/common.js';
-
-export type TableType = 'layout' | 'content';
+import type { TableType } from '../../tableconfig.js';
 
 /**
  * The set table type command.
