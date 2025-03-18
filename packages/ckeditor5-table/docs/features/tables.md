@@ -10,7 +10,7 @@ modified_at: 2023-02-22
 
 {@snippet features/build-table-source}
 
-The table feature gives you tools to create and edit tables. Tables are great for organizing data in a clear, visually appealing way, or creating structured content. They are also great for making document layouts for applications such as newsletters or email editors.
+The table feature gives you tools to create and edit tables. Tables are great for organizing data in a clear, visually appealing way, or creating structured content. They are also great for making document layouts for applications such as newsletters or email editors. There are two basic types of tables available: content table, described in this feature guide, and the {@link features/tables-layout layout tables} used to organize the content rather, than present tabular data. You can easily {@link features/tables-toggling switch between these two types}.
 
 ## Demo
 
@@ -175,21 +175,6 @@ The above model structure will be rendered to the data and to the editing view a
 <info-box info>
 	At the moment, it is not possible to completely disallow block content in tables. See the [discussion on GitHub](https://github.com/ckeditor/ckeditor5-table/issues/101) about adding a configuration option that would enable that. Feel free to upvote 👍&nbsp; if this feature is important to you.
 </info-box>
-
-## Table types comparison
-
-The CKEditor&nbsp;5 table feature offers several approaches and plugins responsible for the execution of tables. These include:
-
-* {@link features/tables Regular content tables} &ndash; Content tables provide the basic table experience for presentation of tabular data.
-* {@link features/tables-layout Table layout} &ndash; Layout tables are used to structure the content spatially rather than present content. They allow for creating multi-column designs and precise positioning of elements on a page.
-* {@link module:table/plaintableoutput~PlainTableOutput Plain table output} &ndash; This plugin strips the `<figure>` tag from the table data. Is is basically an email client compatibility feature.
-
-| Regular table | Layout table | Plain table output |
-| -------- | ------- | ------- |
-| ... | ... | ... |
-
-To switch between different table modes, use the {@link features/tables-layout#table-toggling table toggling} feature.
-
 
 ## Installation
 

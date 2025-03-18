@@ -1,18 +1,30 @@
 ---
-menu-title: Layout tables
-meta-title: Tables overview | CKEditor 5 Documentation
+menu-title: Table toggling
+meta-title: Table toggling | CKEditor 5 Documentation
 category: tables
-order: 50
+order: 60
 modified_at: 2025-03-06
 ---
 
-# Layout tables
+# Table toggling
 
 {@snippet features/build-table-source}
 
-Layout tables are used to structure web page content spatially rather than for presenting tabular data. They allow integrators to create multi-column designs and precise positioning of elements on a page. This kind of functionality may be handy, for example, when preparing newsletter content.
+## Table types comparison
 
-## Demo
+The CKEditor&nbsp;5 table feature offers several approaches and plugins responsible for the execution of tables. These include:
+
+* {@link features/tables Regular content tables} &ndash; Content tables provide the basic table experience for presentation of tabular data.
+* {@link features/tables-layout Table layout} &ndash; Layout tables are used to structure the content spatially rather than present content. They allow for creating multi-column designs and precise positioning of elements on a page.
+* {@link module:table/plaintableoutput~PlainTableOutput Plain table output} &ndash; This plugin strips the `<figure>` tag from the table data. Is is basically an email client compatibility feature.
+
+| Regular table | Layout table | Plain table output |
+| -------- | ------- | ------- |
+| ... | ... | ... |
+
+To switch between different table modes, use the table toggling feature.
+
+<!-- ## Demo
 
 Use the editor below to see the layout tables plugin in action. Demo will be delivered later.
 
@@ -21,6 +33,7 @@ Use the editor below to see the layout tables plugin in action. Demo will be del
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
+-->
 
 ## Table toggling
 
@@ -66,9 +79,7 @@ There are other CKEditor&nbsp;5 features you may want to check:
 
 The {@link module:table/tablelayout~TableLayout} plugin registers the following UI components:
 
-* {@link module:table/tablelayout/tablelayoutediting~TableLayoutEditing} &ndash; The layout table editing command.
-* {@link module:table/tablelayout/tablelayoutui~TableLayoutUI} &ndash; The layout table UI.
-* {@link module:table/commands/inserttablelayoutcommand~InsertTableLayoutCommand} &ndash; The `insertTableLayotu` toolbar dropdown.
+* uodate
 
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
