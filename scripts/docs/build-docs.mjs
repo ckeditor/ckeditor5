@@ -7,41 +7,44 @@
 
 /* eslint-env node */
 
+import { spawn } from 'child_process';
+import { glob } from 'glob';
+import fs from 'fs-extra';
+import upath from 'upath';
 import umberto from 'umberto';
-import buildApiDocs from './buildapi.mjs';
+import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 import parseArguments from './parse-arguments.mjs';
-import buildSources from './build-sources.mjs';
 
-buildDocs();
+const { version } = await fs.readJson( upath.join( CKEDITOR5_ROOT_PATH, 'package.json' ) );
 
-function buildDocs() {
+const DOCS_DIRECTORY = 'docs';
+
+buildDocs()
+	.catch( err => {
+		console.error( err );
+
+		process.exitCode = 1;
+	} );
+
+async function buildDocs() {
 	const options = parseArguments( process.argv.slice( 2 ) );
 
-	let promise;
-
-	if ( options.skipApi ) {
-		promise = Promise.resolve();
-	} else {
-		promise = buildApiDocs();
+	if ( !options.skipApi ) {
+		await spawnAsync( 'yarn', [ 'run', '--silent', 'docs:api' ] );
 	}
 
-	return promise
-		.then( () => runUmberto( options ) )
-		.then( () => options.skipSnippets || buildSources() )
-		.catch( err => {
-			console.error( err );
+	if ( shouldBuildCKEditorAssets( options ) ) {
+		const ckeditor5AssetsArgs = [ 'run', '--silent', 'docs:ckeditor5' ];
 
-			process.exitCode = 1;
-		} );
-}
+		if ( options.skipCommercial ) {
+			ckeditor5AssetsArgs.push( '--skip-commercial' );
+		}
 
-/**
- * @param {DocumentationOptions} options
- * @return {Promise}
- */
-function runUmberto( options ) {
-	return umberto.buildSingleProject( {
-		configDir: 'docs',
+		await spawnAsync( 'yarn', ckeditor5AssetsArgs );
+	}
+
+	await umberto.buildSingleProject( {
+		configDir: DOCS_DIRECTORY,
 		clean: true,
 		dev: !options.production,
 		skipLiveSnippets: options.skipSnippets,
@@ -55,5 +58,54 @@ function runUmberto( options ) {
 		verbose: options.verbose,
 		watch: options.watch,
 		guides: options.guides
+	} );
+
+	if ( !options.skipSnippets ) {
+		const assetsPaths = await glob( '*/', {
+			cwd: upath.join( CKEDITOR5_ROOT_PATH, 'build', 'docs-assets' ),
+			absolute: true
+		} );
+
+		const destinationPath = upath.join( CKEDITOR5_ROOT_PATH, 'build', DOCS_DIRECTORY, 'ckeditor5', version, 'assets' );
+
+		if ( !assetsPaths.length ) {
+			throw new Error( 'CKEditor 5 assets needed to run snippets are not detected. Snippets will not work.' );
+		}
+
+		for ( const asset of assetsPaths ) {
+			const directoryName = upath.basename( asset );
+
+			await fs.copy( asset, upath.join( destinationPath, directoryName ) );
+		}
+	}
+}
+
+function shouldBuildCKEditorAssets( options ) {
+	if ( options.skipSnippets ) {
+		return false;
+	}
+
+	if ( options.skipCkeditor5 ) {
+		return false;
+	}
+
+	return true;
+}
+
+function spawnAsync( command, args ) {
+	return new Promise( ( resolve, reject ) => {
+		const process = spawn( command, args, {
+			cwd: CKEDITOR5_ROOT_PATH,
+			stdio: 'inherit',
+			shell: true
+		} );
+
+		process.on( 'close', code => {
+			if ( code === 0 ) {
+				resolve();
+			} else {
+				reject( new Error( `Process exited with code ${ code }` ) );
+			}
+		} );
 	} );
 }

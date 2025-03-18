@@ -24,7 +24,7 @@ We fixed the behavior of the multiple manual link decorators that set the `rel` 
 
 ### New `EmptyBlock` plugin
 
-Starting this release, a new `EmptyBlock` plugin prevents adding `&nbsp;` to the output data of blocks, works similarly to the [`fillEmptyBlocks`](https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fillEmptyBlocks) configuration in CKEditor 4.
+Starting this release, a new {@link module:html-support/emptyblock~EmptyBlock} plugin prevents adding `&nbsp;` to the output data of blocks, and works similarly to the [`fillEmptyBlocks`](https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fillEmptyBlocks) configuration in CKEditor 4.
 
 ### Enhanced support for the `<hr>` element
 

@@ -5,6 +5,7 @@
 
 /* eslint-env node */
 
+import url from 'url';
 import { constants, readFile, writeFile, copyFile, access, mkdir } from 'fs/promises';
 import upath from 'upath';
 import { build as esbuild } from 'esbuild';
@@ -102,6 +103,14 @@ async function buildSnippets( snippets, paths, constants, imports ) {
 		define: Object.fromEntries( Object.entries( constants ).map( ( [ key, value ] ) => [ key, JSON.stringify( value ) ] ) ),
 		outdir: paths.snippetsOutput,
 		entryNames: '[dir]/[name]/snippet',
+		nodePaths: [
+			/**
+			 * This script can be run from a location where the local `node_modules` directory is not available
+			 * (e.g. in https://github.com/cksource/docs/). To ensure that all dependencies can be resolved,
+			 * we need to add the local `node_modules` directory to the list of node paths.
+			 */
+			upath.join( CKEDITOR5_ROOT_PATH, 'node_modules' )
+		],
 		bundle: true,
 		minify: true,
 		treeShaking: true,
@@ -213,7 +222,10 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
  */
 async function getConstants() {
 	try {
-		const { default: constants } = await import( upath.resolve( CKEDITOR5_COMMERCIAL_PATH, 'docs', 'constants.cjs' ) );
+		const scriptPath = upath.join( CKEDITOR5_COMMERCIAL_PATH, 'docs', 'constants.cjs' );
+		const { href } = url.pathToFileURL( scriptPath );
+		const { default: constants } = await import( href );
+
 		return constants;
 	} catch {
 		return { LICENSE_KEY: 'GPL' };

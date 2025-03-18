@@ -19,10 +19,11 @@ export default function parseArguments( args ) {
 			'skip-snippets',
 			'skip-validation',
 			'skip-guides',
+			'skip-ckeditor5',
+			'skip-commercial',
 			'production',
 			'watch',
-			'verbose',
-			'ts'
+			'verbose'
 		],
 		string: [
 			'snippets',
@@ -33,12 +34,13 @@ export default function parseArguments( args ) {
 			'skip-snippets': false,
 			'skip-validation': false,
 			'skip-guides': false,
+			'skip-ckeditor5': false,
+			'skip-commercial': false,
 			production: false,
 			watch: false,
 			verbose: false,
 			snippets: [],
-			guides: [],
-			ts: false
+			guides: []
 		}
 	} );
 
@@ -51,7 +53,9 @@ export default function parseArguments( args ) {
 		'skip-api',
 		'skip-snippets',
 		'skip-validation',
-		'skip-guides'
+		'skip-guides',
+		'skip-ckeditor5',
+		'skip-commercial'
 	] );
 
 	return options;
@@ -74,13 +78,17 @@ function splitOptionsToArray( options, keys ) {
 /**
  * @typedef {Object} DocumentationOptions
  *
- * @param {Boolean} [skipApi=false] Whether to skip building API docs.
+ * @param {Boolean} [skipApi=false] Whether to skip preparing API pages.
  *
- * @param {Boolean} [skipSnippets=false] Whether to skip building live snippets.
+ * @param {Boolean} [skipSnippets=false] Whether to skip generating snippets.
  *
  * @param {Boolean} [skipValidation=false] Whether to skip validating URLs in the generated documentation.
  *
  * @param {Boolean} [skipGuides=false] Whether to skip processing guides.
+ *
+ * @param {Boolean} [skipCkeditor5=false] Whether to skip preparing CKEditor 5 assets (import map sources).
+ *
+ * @param {Boolean} [skipCommercial=false] Whether to skip preparing the CKEditor 5 commercial assets (import map sources).
  *
  * @param {Boolean} [production=false] Whether the documentation is being built on the production environment. It means that all files
  * will be minified. Increases the time needed for processing all files.
