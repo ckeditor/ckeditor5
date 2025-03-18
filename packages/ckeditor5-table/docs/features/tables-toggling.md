@@ -62,7 +62,7 @@ Switching between table types preserves the content while adjusting the table's 
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration.
 
-### Configuration with TablePropertiesUI
+### Configuration with TableProperties
 
 When the {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI} plugin is available, table type options will be integrated into the table properties dropdown:
 
@@ -84,7 +84,7 @@ ClassicEditor
 ```
 </code-switcher>
 
-### Configuration without TablePropertiesUI
+### Configuration without TableProperties
 
 If the TablePropertiesUI plugin is not available, you can use the dedicated `tableType` button in the content toolbar to change table types:
 
