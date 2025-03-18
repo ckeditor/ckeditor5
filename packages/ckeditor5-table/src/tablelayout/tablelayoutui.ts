@@ -186,7 +186,8 @@ function createTableTypeDropdown( editor: Editor, dropdownButton: DropdownButton
 
 	// Add table types to the dropdown.
 	addListToDropdown( dropdownView, itemsDefinitions, {
-		ariaLabel: t( 'Table type options' )
+		ariaLabel: t( 'Table type options' ),
+		role: 'menu'
 	} );
 
 	dropdownButton.tooltip = t( 'Choose table type' );
