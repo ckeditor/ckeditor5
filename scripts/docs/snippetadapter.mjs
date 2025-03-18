@@ -136,11 +136,28 @@ async function buildSnippets( snippets, paths, constants, imports ) {
 			 * bundled. This will cause issues, because the `tests` directory is not available in the CDN build.
 			 */
 			{
-				name: 'external',
+				name: 'externalize-ckeditor5',
 				setup( build ) {
 					build.onResolve( { filter: /.*/ }, args => ( {
 						external: externals.some( name => name.endsWith( '/' ) ? args.path.startsWith( name ) : args.path === name )
 					} ) );
+				}
+			},
+
+			/**
+			 * Code from "ckeditor5" and "ckeditor5-premium-features" is externalized to avoid bundling it with the snippet
+			 * code. However, if the source file is imported directly, it can be bundled and (in case of commercial features)
+			 * not obfuscated. To prevent this, we throw an error if such an import is detected.
+			 */
+			{
+				name: 'throw-on-source-import',
+				setup( build ) {
+					build.onLoad( { filter: /\.ts$/ }, args => {
+						throw new Error(
+							`The source file "${ args.path }" was likely imported by mistake. ` +
+							'Update the import to use "ckeditor5" or "ckeditor5-premium-features" instead.'
+						);
+					} );
 				}
 			}
 		]
