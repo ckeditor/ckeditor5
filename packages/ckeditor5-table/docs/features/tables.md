@@ -188,6 +188,8 @@ The CKEditor&nbsp;5 table feature offers several approaches and plugins responsi
 | -------- | ------- | ------- |
 | ... | ... | ... |
 
+To switch between different table modes, use the {@link features/tables-layout#table-toggling table toggling} feature.
+
 
 ## Installation
 
