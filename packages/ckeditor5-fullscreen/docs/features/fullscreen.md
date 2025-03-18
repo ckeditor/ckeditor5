@@ -83,6 +83,26 @@ ClassicEditor
 
 Note that this setting does not change the original behavior defined in `config.menuBar.isVisible` configuration option.
 
+### Toolbar grouping
+
+Toolbar grouping in fullscreen mode will behave the same as outside it. To define the behavior explicitly, use `config.fullscreen.toolbar.shouldNotGroupWhenFull` option:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
+		fullscreen: {
+			toolbar: {
+				shouldNotGroupWhenFull: true
+			}
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+Note that this setting does not change the original behavior defined in `config.toolbar.shouldNotGroupWhenFull` configuration option.
+
 ### Using a custom container
 
 If you want to use the fullscreen mode to enhance the editing experience but there are still some elements in your website layout that should stay visible, you can pass a custom container for the editor in fullscreen mode using `config.fullscreen.container` property.
