@@ -312,7 +312,7 @@ export default class TwoStepCaretMovement extends Plugin {
 		//
 		// or left the attribute
 		//
-		// 		<paragraph>foo<$text attribute>bar</$text>{}baz</paragraph>
+		// 		<paragraph>foo<$text attribute>bar</$text>{}baz</$text></paragraph>
 		//
 		// and the gravity will be restored automatically.
 		if ( this._isGravityOverridden ) {
@@ -506,15 +506,26 @@ export default class TwoStepCaretMovement extends Plugin {
 		let touched = false;
 		let clicked = false;
 
-		// Handle iOS-specific middle-link touch behavior.
-		if ( env.isiOS ) {
-			this._enableMiddleLinkTouchHandlerForIOS();
-		}
-
 		// This event should be fired before selection on mobile devices.
-		this.listenTo<ViewDocumentTouchStartEvent>( document, 'touchstart', () => {
-			clicked = false;
-			touched = true;
+		this.listenTo<ViewDocumentTouchStartEvent>( document, 'touchstart', ( _, data ) => {
+			let middleClickHandled = false;
+
+			// On iOS devices, touching the middle of an element causes the selection to move outside of it,
+			// even if the selection was not initially within the element. This behavior interferes with
+			// features like balloons that rely on the selection being inside the element. To address this,
+			// if a middle touch on an element is detected, the selection is forcibly set to encompass the
+			// entire element. This issue is commonly observed with links.
+			// See: https://github.com/ckeditor/ckeditor5/issues/18023
+			if ( env.isiOS && this._handleMiddleLinkTouchHandlerForIOS( data ) ) {
+				middleClickHandled = true;
+			}
+
+			// If the touch event was not handled by the middle link touch handler, proceed
+			// with the default behavior of two-step caret movement.
+			if ( !middleClickHandled ) {
+				clicked = false;
+				touched = true;
+			}
 		} );
 
 		// Track mouse click event.
@@ -578,61 +589,65 @@ export default class TwoStepCaretMovement extends Plugin {
 	 * This is iOS-specific behavior to improve the user experience when working with links.
 	 *
 	 * See: https://github.com/ckeditor/ckeditor5/issues/18023
+	 *
+	 * @param data The touch event data.
+	 * @returns `true` if the touch was handled and the selection was moved.
 	 */
-	private _enableMiddleLinkTouchHandlerForIOS(): void {
+	private _handleMiddleLinkTouchHandlerForIOS( data: DomEventData<TouchEvent> ): boolean {
 		const { editor } = this;
-		const viewDocument = editor.editing.view.document;
 
-		this.listenTo<ViewDocumentTouchStartEvent>( viewDocument, 'touchstart', ( evt, data ) => {
-			// Get the view element directly from the event data.
-			const targetViewElement = data.target;
+		// Get the view element directly from the event data.
+		const targetViewElement = data.target;
 
-			// Find the closest link element (could be the target itself or one of its ancestors).
-			let linkElement: ViewElement | null = null;
+		// Find the closest link element (could be the target itself or one of its ancestors).
+		let twoStepCaretElement: ViewElement | null = null;
 
-			if ( isLinkElement( targetViewElement ) ) {
-				linkElement = targetViewElement;
-			} else {
-				linkElement = targetViewElement.getAncestors().find( isLinkElement ) as ViewElement | null;
-			}
+		console.info( targetViewElement );
 
-			// If no link element found, exit early.
-			if ( !linkElement ) {
-				return;
-			}
+		if ( isTwoStepCaretElement( targetViewElement ) ) {
+			twoStepCaretElement = targetViewElement;
+		} else {
+			twoStepCaretElement = targetViewElement.getAncestors().find( isTwoStepCaretElement ) as ViewElement | null;
+		}
 
-			// Check if touch happened in the middle of the link.
-			const domElement = editor.editing.view.domConverter.mapViewToDom( linkElement )!;
-			const rect = domElement.getBoundingClientRect();
+		// If no link element found, exit early.
+		if ( !twoStepCaretElement ) {
+			return false;
+		}
 
-			const { clientX, clientY } = data.domEvent.touches[ 0 ];
+		// Check if touch happened in the middle of the link.
+		const domElement = editor.editing.view.domConverter.mapViewToDom( twoStepCaretElement )!;
+		const rect = domElement.getBoundingClientRect();
 
-			// Define edge threshold in pixels for X axis only.
-			const edgeThresholdPx = 10;
+		const { clientX, clientY } = data.domEvent.touches[ 0 ];
 
-			// Consider it a middle click if:
-			// 1. Not on left or right edge (with threshold).
-			const isNotLeftEdge = clientX > ( rect.left + edgeThresholdPx );
-			const isNotRightEdge = clientX < ( rect.right - edgeThresholdPx );
+		// Define edge threshold in pixels for X axis only.
+		const edgeThresholdPx = 10;
 
-			// 2. Vertically within the link boundaries (no threshold).
-			const isVerticallyInside = clientY >= rect.top && clientY <= rect.bottom;
+		// Consider it a middle click if:
+		// 1. Not on left or right edge (with threshold).
+		const isNotLeftEdge = clientX > ( rect.left + edgeThresholdPx );
+		const isNotRightEdge = clientX < ( rect.right - edgeThresholdPx );
 
-			const isMiddleLinkClick = isNotLeftEdge && isNotRightEdge && isVerticallyInside;
+		// 2. Vertically within the link boundaries (no threshold).
+		const isVerticallyInside = clientY >= rect.top && clientY <= rect.bottom;
 
-			// If not a middle click, exit early.
-			if ( !isMiddleLinkClick ) {
-				return;
-			}
+		const isMiddleLinkClick = isNotLeftEdge && isNotRightEdge && isVerticallyInside;
 
-			// Set the selection to the end of the link.
-			editor.model.change( writer => {
-				const viewRange = editor.editing.view.createPositionAt( linkElement!, 'end' );
-				const modelPosition = editor.editing.mapper.toModelPosition( viewRange );
+		// If not a middle click, exit early.
+		if ( !isMiddleLinkClick ) {
+			return false;
+		}
 
-				writer.setSelection( modelPosition );
-			} );
+		// Set the selection to the end of the link.
+		editor.model.change( writer => {
+			const viewRange = editor.editing.view.createPositionAt( twoStepCaretElement!, 'end' );
+			const modelPosition = editor.editing.mapper.toModelPosition( viewRange );
+
+			writer.setSelection( modelPosition );
 		} );
+
+		return true;
 	}
 
 	/**
@@ -856,8 +871,18 @@ function isBetweenDifferentAttributes( position: Position, attributes: Set<strin
 }
 
 /**
- * Returns `true` if a given view node is the link element.
+ * Returns `true` if a given view node is an element with two-step caret movement behavior.
  */
-function isLinkElement( node: ViewNode | ViewDocumentFragment ): boolean {
-	return node.is( 'attributeElement' ) && !!node.getCustomProperty( 'link' );
+function isTwoStepCaretElement( node: ViewNode | ViewDocumentFragment ): boolean {
+	if ( !node.is( 'attributeElement' ) ) {
+		return false;
+	}
+
+	for ( const property of [ 'link' ] ) {
+		if ( node.getCustomProperty( property ) ) {
+			return true;
+		}
+	}
+
+	return false;
 }
