@@ -216,6 +216,8 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 
 		this.set( 'class', undefined );
 		this.set( 'isCompact', false );
+		// Static toolbar can be vertical when needed.
+		this.set( 'isVertical', false );
 
 		this.itemsView = new ItemsView( locale );
 		this.children = this.createCollection();
@@ -249,9 +251,6 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 			// When vertical, the toolbar has an additional CSS class. Only used for static layout.
 			bind.if( 'isVertical', 'ck-toolbar_vertical' )
 		];
-
-		// Static toolbar can be vertical when needed.
-		this.set( 'isVertical', false );
 
 		if ( this.options.shouldGroupWhenFull && this.options.isFloating ) {
 			classes.push( 'ck-toolbar_floating' );
@@ -352,19 +351,17 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	/**
 	 * Changes the behavior of toolbar if it does not fit into the available space.
 	 */
-	public switchBehavior( newBehavior: 'dynamic' | 'static' ): void {
-		if (
-			this._behavior instanceof DynamicGrouping && newBehavior === 'static' ||
-			this._behavior instanceof StaticLayout && newBehavior === 'dynamic' ) {
+	public switchBehavior( newBehaviorType: 'dynamic' | 'static' ): void {
+		if ( this._behavior.type !== newBehaviorType ) {
 			this._behavior.destroy();
 			this.itemsView.children.clear();
 			this.focusables.clear();
 
-			if ( newBehavior === 'dynamic' ) {
+			if ( newBehaviorType === 'dynamic' ) {
 				this._behavior = new DynamicGrouping( this );
 				this._behavior.render( this );
 
-				( this._behavior as DynamicGrouping ).readdItems();
+				( this._behavior as DynamicGrouping ).refreshItems();
 			} else {
 				this._behavior = new StaticLayout( this );
 				this._behavior.render( this );
@@ -663,6 +660,11 @@ class ItemsView extends View {
  */
 class StaticLayout implements ToolbarBehavior {
 	/**
+	 * Toolbar behavior type.
+	 */
+	public readonly type = 'static';
+
+	/**
 	 * Creates an instance of the {@link module:ui/toolbar/toolbarview~StaticLayout} toolbar
 	 * behavior.
 	 *
@@ -708,6 +710,11 @@ class StaticLayout implements ToolbarBehavior {
  * ```
  */
 class DynamicGrouping implements ToolbarBehavior {
+	/**
+	 * Toolbar behavior type.
+	 */
+	public readonly type = 'dynamic';
+
 	/**
 	 * A toolbar view this behavior belongs to.
 	 */
@@ -899,7 +906,7 @@ class DynamicGrouping implements ToolbarBehavior {
 	/**
 	 * Re-adds all items to the toolbar. Use when the toolbar is re-rendered and the items grouping is lost.
 	 */
-	public readdItems(): void {
+	public refreshItems(): void {
 		const view = this.view;
 
 		if ( view.items.length ) {
@@ -1182,4 +1189,10 @@ export interface ToolbarBehavior {
 	 * event listeners, free up references, etc.
 	 */
 	destroy(): void;
+
+	/**
+	 * Indicates the type of the toolbar behavior. Dynamic toolbar can hide items that do not fit into the available space.
+	 * Static toolbar does not hide items and does not respond to the changes of the viewport.
+	 */
+	type: 'dynamic' | 'static';
 }
