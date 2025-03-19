@@ -480,10 +480,10 @@ export default class AbstractEditorHandler {
 				( this.getWrapper().querySelector( '.ck-fullscreen__document-outline-header' ) as HTMLElement ).style.display = '';
 			}
 
-			await this._closeRevisionViewerCallback!();
-
 			this.moveToFullscreen( this._editor.ui.getEditableElement()!, 'editable' );
 			this.moveToFullscreen( this._editor.ui.view.toolbar!.element!, 'toolbar' );
+
+			await this._closeRevisionViewerCallback!();
 
 			if ( this._editor.plugins.has( 'AnnotationsUIs' ) ) {
 				this._overrideAnnotationsUIs();
