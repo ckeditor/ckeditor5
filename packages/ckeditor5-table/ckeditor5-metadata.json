@@ -160,7 +160,7 @@
 					]
 				},
 				{
-					"type": "Dropdown",
+					"type": "Button",
 					"name": "tableType",
 					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-properties.svg",
 					"toolbars": [
