@@ -38,6 +38,11 @@ export default class DecoupledEditorHandler extends AbstractEditorHandler {
 
 			this.moveToFullscreen( this._editor.ui.getEditableElement()!, 'editable' );
 			this.moveToFullscreen( this._editor.ui.view.toolbar.element!, 'toolbar' );
+
+			this._editor.ui.view.toolbar.switchBehavior(
+				this._editor.config.get( 'fullscreen.toolbar.shouldNotGroupWhenFull' ) === true ? 'static' : 'dynamic'
+			);
+
 			this.moveToFullscreen( document.querySelector( '.ck-body-wrapper' )!, 'body-wrapper' );
 
 			if ( this._editor.config.get( 'fullscreen.menuBar.isVisible' ) ) {

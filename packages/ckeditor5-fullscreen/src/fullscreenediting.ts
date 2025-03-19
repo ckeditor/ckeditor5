@@ -36,6 +36,10 @@ export default class FullscreenEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'fullscreen.menuBar.isVisible', true );
+
+		// By default, toolbar should behave the same way in fullscreen mode as in normal mode.
+		// This means that the toolbar buttons should be grouped when the toolbar is full.
+		editor.config.define( 'fullscreen.toolbar.shouldNotGroupWhenFull', editor.config.get( 'toolbar.shouldNotGroupWhenFull' ) === true );
 	}
 
 	/**

@@ -1095,6 +1095,41 @@ describe( 'ToolbarView', () => {
 				} );
 			} );
 		} );
+
+		describe( '#switchBehavior()', () => {
+			it( 'should do nothing if changed to `static`', () => {
+				const spy = sinon.spy( view._behavior, 'render' );
+
+				view.switchBehavior( 'static' );
+
+				expect( view.isGrouping ).to.be.false;
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'should replace #_behavior with dynamic layout', () => {
+				const spy = sinon.spy( view._behavior, 'destroy' );
+
+				view.switchBehavior( 'dynamic' );
+
+				expect( view.isGrouping ).to.be.true;
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should update the bindings in the new behavior', () => {
+				const itemA = focusable();
+				const itemB = focusable();
+				const itemC = focusable();
+
+				view.items.add( itemA );
+				view.items.add( itemB );
+				view.items.add( itemC );
+
+				view.switchBehavior( 'dynamic' );
+
+				expect( view._behavior.ungroupedItems.length === 3 );
+				expect( view.focusables.length === 3 );
+			} );
+		} );
 	} );
 
 	describe( 'toolbar with a dynamic item grouping', () => {
@@ -1690,6 +1725,26 @@ describe( 'ToolbarView', () => {
 				sinon.assert.calledOnce( groupedItemsDropdown.focus );
 
 				view.element.remove();
+			} );
+		} );
+
+		describe( '#switchBehavior()', () => {
+			it( 'should do nothing if changed to `dynamic`', () => {
+				const spy = sinon.spy( view._behavior, 'render' );
+
+				view.switchBehavior( 'dynamic' );
+
+				expect( view.isGrouping ).to.be.true;
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'should replace #_behavior with static layout', () => {
+				const spy = sinon.spy( view._behavior, 'destroy' );
+
+				view.switchBehavior( 'static' );
+
+				expect( view.isGrouping ).to.be.false;
+				sinon.assert.calledOnce( spy );
 			} );
 		} );
 	} );

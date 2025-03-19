@@ -48,8 +48,8 @@ describe( 'AbstractHandler', () => {
 			expect( abstractHandler._editor ).to.equal( editor );
 		} );
 
-		it( 'should setup listener returning moved elements when editor is destroyed and fullscreen is enabled', async () => {
-			const spy = sinon.spy( abstractHandler, 'disable' );
+		it( 'should setup listener destroying moved elements when editor is destroyed and fullscreen is enabled', async () => {
+			const spy = sinon.spy( abstractHandler, 'destroy' );
 
 			abstractHandler.enable();
 
@@ -251,6 +251,64 @@ describe( 'AbstractHandler', () => {
 
 		it( 'should not throw if there is no wrapper', () => {
 			expect( () => abstractHandler.disable() ).to.not.throw();
+		} );
+
+		it( 'should restore default toolbar behavior', async () => {
+			const tempDomElementDynamicToolbar = global.document.createElement( 'div' );
+			global.document.body.appendChild( tempDomElementDynamicToolbar );
+
+			const tempEditorDynamicToolbar = await ClassicEditor.create( tempDomElementDynamicToolbar, {
+				plugins: [
+					Paragraph,
+					Essentials
+				],
+				toolbar: {
+					shouldNotGroupWhenFull: false
+				},
+				fullscreen: {
+					toolbar: {
+						shouldNotGroupWhenFull: true
+					}
+				}
+			} );
+
+			const tempAbstractHandlerDynamicToolbar = new AbstractEditorHandler( tempEditorDynamicToolbar );
+
+			tempAbstractHandlerDynamicToolbar.enable();
+			tempAbstractHandlerDynamicToolbar.disable();
+
+			expect( tempEditorDynamicToolbar.ui.view.toolbar.isGrouping ).to.be.true;
+
+			tempDomElementDynamicToolbar.remove();
+			await tempEditorDynamicToolbar.destroy();
+
+			const tempDomElementStaticToolbar = global.document.createElement( 'div' );
+			global.document.body.appendChild( tempDomElementStaticToolbar );
+
+			const tempEditorStaticToolbar = await ClassicEditor.create( tempDomElementStaticToolbar, {
+				plugins: [
+					Paragraph,
+					Essentials
+				],
+				toolbar: {
+					shouldNotGroupWhenFull: true
+				},
+				fullscreen: {
+					toolbar: {
+						shouldNotGroupWhenFull: false
+					}
+				}
+			} );
+
+			const tempAbstractHandlerStaticToolbar = new AbstractEditorHandler( tempEditorStaticToolbar );
+
+			tempAbstractHandlerStaticToolbar.enable();
+			tempAbstractHandlerStaticToolbar.disable();
+
+			expect( tempEditorStaticToolbar.ui.view.toolbar.isGrouping ).to.be.false;
+
+			tempDomElementStaticToolbar.remove();
+			return tempEditorStaticToolbar.destroy();
 		} );
 	} );
 

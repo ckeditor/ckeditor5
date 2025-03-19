@@ -81,7 +81,7 @@ export default class AbstractEditorHandler {
 		this._defaultEnable = () => this.getWrapper();
 		editor.on( 'destroy', () => {
 			if ( this._wrapper ) {
-				this.disable();
+				this.destroy();
 			}
 		} );
 	}
@@ -247,6 +247,10 @@ export default class AbstractEditorHandler {
 			this.restoreMovedElementLocation( placeholderName );
 		}
 
+		this._editor.ui.view.toolbar!.switchBehavior(
+			this._editor.config.get( 'toolbar.shouldNotGroupWhenFull' ) === true ? 'static' : 'dynamic'
+		);
+
 		if ( this._placeholderMap.size === 0 ) {
 			this._destroyContainer();
 		}
@@ -262,6 +266,21 @@ export default class AbstractEditorHandler {
 		if ( this._editor.plugins.has( 'Dialog' ) ) {
 			this._unregisterFullscreenDialogPositionAdjustments();
 		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public destroy(): void {
+		for ( const { placeholderElement, movedElement } of this._placeholderMap.values() ) {
+			placeholderElement.remove();
+			movedElement.remove();
+		}
+
+		this._destroyContainer();
+
+		this._document.body.classList.remove( 'ck-fullscreen' );
+		this._document.body.parentElement!.classList.remove( 'ck-fullscreen' );
 	}
 
 	/**
@@ -461,10 +480,10 @@ export default class AbstractEditorHandler {
 				( this.getWrapper().querySelector( '.ck-fullscreen__document-outline-header' ) as HTMLElement ).style.display = '';
 			}
 
-			await this._closeRevisionViewerCallback!();
-
 			this.moveToFullscreen( this._editor.ui.getEditableElement()!, 'editable' );
 			this.moveToFullscreen( this._editor.ui.view.toolbar!.element!, 'toolbar' );
+
+			await this._closeRevisionViewerCallback!();
 
 			if ( this._editor.plugins.has( 'AnnotationsUIs' ) ) {
 				this._overrideAnnotationsUIs();
