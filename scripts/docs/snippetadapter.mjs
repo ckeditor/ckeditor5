@@ -152,7 +152,7 @@ async function buildSnippets( snippets, paths, constants, imports ) {
 			{
 				name: 'throw-on-source-import',
 				setup( build ) {
-					build.onLoad( { filter: /packages\/(.*)\/src/ }, args => ( {
+					build.onLoad( { filter: /packages[\\/].*[\\/]src/ }, args => ( {
 						errors: [
 							{
 								// eslint-disable-next-line max-len
