@@ -118,9 +118,7 @@ ClassicEditor
 
 ### Configuration of the main editor toolbar
 
-You configure the main editor toolbar to use the content and layout tables selector dropdown. This may be handy if for some reason you do not want to use the table toolbar in your implementation.
-
-To use a single table selector dropdown configure the toolbar as follows:
+You can configure the main editor toolbar to use the content and layout tables selector dropdown. This is handy if for some reason you do not want to use the table toolbar in your implementation.
 
 <code-switcher>
 ```js
