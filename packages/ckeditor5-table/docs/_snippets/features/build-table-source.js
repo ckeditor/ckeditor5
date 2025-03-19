@@ -15,8 +15,7 @@ import {
 	ImageInsert,
 	ImageResize,
 	AutoImage,
-	LinkImage,
-	TableLayout
+	LinkImage
 } from 'ckeditor5';
 import {
 	CS_CONFIG,
@@ -39,8 +38,7 @@ export class TableEditor extends ClassicEditorBase {
 		AutoImage,
 		LinkImage,
 		CKBox,
-		CKBoxImageEdit,
-		TableLayout
+		CKBoxImageEdit
 	];
 
 	static defaultConfig = {
