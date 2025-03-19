@@ -170,7 +170,6 @@
 			],
 			"htmlOutput": [
 				{
-					"elements": "figure",
 					"classes": [ "layout-table", "content-table" ]
 				}
 			]
