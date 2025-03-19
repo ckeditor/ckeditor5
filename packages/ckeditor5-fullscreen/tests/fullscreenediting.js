@@ -51,7 +51,7 @@ describe( 'FullscreenEditing', () => {
 	} );
 
 	it( 'should set the `fullscreen.toolbar.shouldNotGroupWhenFull` config to value of `toolbar.shouldNotGroupWhenFull`', async () => {
-		expect( editor.config.get( 'fullscreen.toolbar.shouldNotGroupWhenFull' ) ).to.be.true;
+		expect( editor.config.get( 'fullscreen.toolbar.shouldNotGroupWhenFull' ) ).to.be.false;
 
 		const tempDomElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( tempDomElement );
@@ -63,11 +63,11 @@ describe( 'FullscreenEditing', () => {
 				FullscreenEditing
 			],
 			toolbar: {
-				shouldNotGroupWhenFull: false
+				shouldNotGroupWhenFull: true
 			}
 		} );
 
-		expect( tempEditor.config.get( 'fullscreen.toolbar.shouldNotGroupWhenFull' ) ).to.be.false;
+		expect( tempEditor.config.get( 'fullscreen.toolbar.shouldNotGroupWhenFull' ) ).to.be.true;
 
 		tempDomElement.remove();
 		return tempEditor.destroy();
