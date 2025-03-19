@@ -42,7 +42,7 @@ There are several table types available in CKeditor&nbsp;5. To switch between th
 
 ### Demo
 
-Use the editor below to see the tables type toggling feature in action. Select a table to invoke the table toolbar and apply the preferred table from the table properties dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/table-properties.svg}.
+Use the editor below to see the tables type toggling feature in action. Select a table to invoke the table toolbar and apply the preferred table type from the table properties dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/table-properties.svg}.
 
 {@snippet features/table-toggling}
 
