@@ -154,10 +154,7 @@
 				{
 					"type": "Button",
 					"name": "insertTableLayout",
-					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-layout.svg",
-					"toolbars": [
-						"table.contentToolbar"
-					]
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-layout.svg"
 				},
 				{
 					"type": "Button",
