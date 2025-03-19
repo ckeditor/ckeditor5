@@ -22,9 +22,8 @@
 	}
 
 	& .table.layout-table {
-		/* Do not reserve space above and below the layout table. */
-		margin-top: 0;
-		margin-bottom: 0;
+		display: table;
+		margin: 0;
 
 		/* Widget type around overrides. */
 		&.ck-widget {
@@ -45,5 +44,19 @@
 				visibility: hidden;
 			}
 		}
+	}
+}
+
+.ck-content {
+	& table.table.layout-table,
+	& figure.table.layout-table {
+		/* Do not reserve space above and below the layout table. */
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+
+	& table.table.layout-table,
+	& figure.table.layout-table> table {
+		border-spacing: 0;
 	}
 }

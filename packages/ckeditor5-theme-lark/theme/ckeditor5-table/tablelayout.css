@@ -15,9 +15,7 @@
 .ck-editor__editable {
 	& .table.layout-table {
 		& > table {
-			/* Resetting the table border-collapse property to the user agent styles. */
-			border-collapse: separate;
-
+			width: 100%;
 			/* Styles to make the layout table outline visible when the layout table is inside another layout table inside edge cells.
 			Currently, this solution works on every browser except Safari. */
 			overflow: clip;
@@ -42,6 +40,7 @@
 		& > table > tbody > tr > td {
 			box-shadow: none;
 			padding: 0;
+			min-width: 2em;
 			/* To make the caret visible. */
 			text-indent: 1px;
 
