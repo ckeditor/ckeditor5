@@ -26,13 +26,28 @@ import type { TableType } from '../../tableconfig.js';
  */
 export default class TableTypeCommand extends Command {
 	/**
+	 * The table type of selected table.
+	 *
+	 * @observable
+	 * @readonly
+	 */
+	declare public value: TableType | null;
+
+	/**
 	 * @inheritDoc
 	 */
 	public override refresh(): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
+		const selectedTable = getSelectionAffectedTable( selection );
 
-		this.isEnabled = !!getSelectionAffectedTable( selection );
+		if ( selectedTable ) {
+			this.isEnabled = true;
+			this.value = selectedTable.getAttribute( 'tableType' ) as TableType;
+		} else {
+			this.isEnabled = false;
+			this.value = null;
+		}
 	}
 
 	/**
