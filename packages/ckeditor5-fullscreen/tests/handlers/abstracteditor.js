@@ -9,6 +9,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 import { Dialog, DialogViewPosition } from '@ckeditor/ckeditor5-ui';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import RevisionHistoryMock from '../_utils/revisionhistorymock.js';
 import AbstractEditorHandler from '../../src/handlers/abstracteditor.js';
@@ -366,6 +368,70 @@ describe( 'AbstractHandler', () => {
 			abstractEditorHandler.disable();
 
 			expect( spy ).to.have.been.calledOnce;
+		} );
+	} );
+
+	describe( 'with source editing and document outline plugins', () => {
+		let domElementForSourceEditing, editorWithSourceEditing, abstractEditorHandler;
+
+		class DocumentOutlineUIMock extends Plugin {
+			static get pluginName() {
+				return 'DocumentOutlineUI';
+			}
+		}
+
+		beforeEach( async () => {
+			domElementForSourceEditing = global.document.createElement( 'div' );
+			global.document.body.appendChild( domElementForSourceEditing );
+
+			editorWithSourceEditing = await ClassicEditor.create( domElementForSourceEditing, {
+				plugins: [
+					Paragraph,
+					Essentials,
+					SourceEditing,
+					DocumentOutlineUIMock
+				]
+			} );
+
+			abstractEditorHandler = new AbstractEditorHandler( editorWithSourceEditing );
+			sinon.stub( abstractEditorHandler, '_generateDocumentOutlineContainer' );
+		} );
+
+		afterEach( async () => {
+			abstractEditorHandler.destroy();
+			domElementForSourceEditing.remove();
+
+			return editorWithSourceEditing.destroy();
+		} );
+
+		it( 'should hide document outline header when source editing is enabled in fullscreen mode', () => {
+			const stub = sinon.stub( abstractEditorHandler, '_sourceEditingCallback' );
+
+			abstractEditorHandler.enable();
+			editorWithSourceEditing.plugins.get( 'SourceEditing' ).isSourceEditingMode = true;
+
+			expect( stub.calledOnce ).to.be.true;
+		} );
+
+		it( 'should restore document outline header when fullscreen mode is disabled', () => {
+			const stub = sinon.stub( abstractEditorHandler, '_sourceEditingCallback' );
+
+			abstractEditorHandler.enable();
+			editorWithSourceEditing.plugins.get( 'SourceEditing' ).isSourceEditingMode = true;
+			editorWithSourceEditing.plugins.get( 'SourceEditing' ).isSourceEditingMode = false;
+
+			expect( stub.calledTwice ).to.be.true;
+		} );
+
+		it( 'should not be executed outside the fullscreen mode', () => {
+			const stub = sinon.stub( abstractEditorHandler, '_sourceEditingCallback' );
+			sinon.stub( abstractEditorHandler, '_restoreDocumentOutlineDefaultContainer' );
+
+			abstractEditorHandler.enable();
+			abstractEditorHandler.disable();
+			editorWithSourceEditing.plugins.get( 'SourceEditing' ).isSourceEditingMode = true;
+
+			expect( stub.called ).to.be.false;
 		} );
 	} );
 

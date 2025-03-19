@@ -322,8 +322,8 @@ export default class SourceEditing extends Plugin {
 	 * Hides the document outline if it is configured.
 	 */
 	private _hideDocumentOutline() {
-		if ( document.querySelector( '.ck-document-outline' ) ) {
-			( document.querySelector( '.ck-document-outline' )! as HTMLElement ).style.visibility = 'hidden';
+		if ( this.editor.plugins.has( 'DocumentOutline' ) ) {
+			( this.editor.plugins.get( 'DocumentOutlineUI' ) as any ).view.element.style.display = 'none';
 		}
 	}
 
@@ -331,8 +331,8 @@ export default class SourceEditing extends Plugin {
 	 * Shows the document outline if it was hidden when entering the source editing.
 	 */
 	private _showDocumentOutline() {
-		if ( document.querySelector( '.ck-document-outline' ) ) {
-			( document.querySelector( '.ck-document-outline' )! as HTMLElement ).style.visibility = '';
+		if ( this.editor.plugins.has( 'DocumentOutline' ) ) {
+			( this.editor.plugins.get( 'DocumentOutlineUI' ) as any ).view.element.style.display = '';
 		}
 	}
 
