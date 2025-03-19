@@ -176,7 +176,14 @@ export {
 
 export { default as DowncastWriter } from './view/downcastwriter.js';
 export { default as UpcastWriter } from './view/upcastwriter.js';
-export { default as Matcher, type MatcherPattern, type MatcherObjectPattern, type Match, type MatchResult } from './view/matcher.js';
+export {
+	default as Matcher,
+	type MatcherPattern,
+	type MatcherObjectPattern,
+	type PropertyPatterns,
+	type Match,
+	type MatchResult
+} from './view/matcher.js';
 
 export { default as BubblingEventInfo } from './view/observer/bubblingeventinfo.js';
 export { default as DomEventData } from './view/observer/domeventdata.js';
