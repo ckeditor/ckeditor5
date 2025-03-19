@@ -152,7 +152,7 @@
 			],
 			"uiComponents": [
 				{
-					"type": "Dropdown",
+					"type": "Button",
 					"name": "insertTableLayout",
 					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-layout.svg",
 					"toolbars": [
