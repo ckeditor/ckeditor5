@@ -74,6 +74,34 @@ To configure the table toggling feature, you have several options:
 
 The table type can also be set programmatically through the editor's API, making it suitable for integration with external controls or automated workflows.
 
+### Configuration of the main editor toolbar
+
+You configure the main editor toolbar to use the content an layout tables selector dropdown.
+
+To use a single table selector dropdown configure the toolbar as follows:
+
+<code-switcher>
+```js
+import { ClassicEditor, Table, TableLayout } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Table, TableLayout, /* ... */ ],
+		toolbar: [ 'insertTable', 'insertTableLayout', 'tableType', /* ... */ ],
+		table: {
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableType', /* ... */  ]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+</code-switcher>
+
+<info-box info>
+	Please note that the layout toggle button <!-- Add icon when ready -->does not insert new tables, just toggles the type. You need to also configure table insertion buttons, as shown above.
+</info-box>
+
 ### Configuration with `TableProperties`
 
 When the {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI} plugin is available, table type options will be integrated into the table properties dropdown:
@@ -129,7 +157,7 @@ There are other CKEditor&nbsp;5 features you may want to check:
 
 The {@link module:table/tablelayout~TableLayout} plugin registers the following UI components:
 
-* update
+* {@link module:table/tablelayout/commands/tabletypecommand~TableTypeCommand} &nbsp; The table type switching command.
 
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
