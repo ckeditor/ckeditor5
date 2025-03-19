@@ -10,21 +10,17 @@ modified_at: 2025-03-06
 
 {@snippet features/build-table-source}
 
-Layout tables are used to structure web page content spatially rather than for presenting tabular data. They allow integrators to create multi-column designs and precise positioning of elements on a page. This kind of functionality may be handy, for example, when preparing newsletter content.
+Layout tables are used to structure web page content spatially rather than for presenting tabular data. They allow integrators to create multi-column designs and precise positioning of elements on a page. This kind of functionality may be handy, for example, when preparing newsletter content. You can switch between {@link features/tables content tables} and layout tables by using the {@link features/tables-toggling table toggling} feature.
 
 ## Demo
 
-Use the editor below to see the layout tables plugin in action. Demo will be delivered later.
+Use the editor below to see the layout tables plugin in action. Demo will be delivered later. Use the layout table {@icon @ckeditor/ckeditor5-icons/theme/icons/table-layout.svg} toolbar button to insert a new layout table. 
 
 {@snippet features/table-layout}
 
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
-
-## Table toggling
-
-Describe.
 
 ## Installation
 

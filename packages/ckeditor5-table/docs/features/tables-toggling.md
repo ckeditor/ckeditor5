@@ -10,6 +10,8 @@ modified_at: 2025-03-06
 
 {@snippet features/build-table-source}
 
+There are several table types available in CKeditor&nbsp;5. To switch between these  different table modes, you can use the table toggling feature.
+
 ## Table types comparison
 
 The CKEditor&nbsp;5 table feature offers several approaches and plugins responsible for the execution of tables. These include:
@@ -21,35 +23,35 @@ The CKEditor&nbsp;5 table feature offers several approaches and plugins responsi
 | Regular table | Layout table | Plain table output |
 | -------- | ------- | ------- |
 | Used for presenting tabular data | Used for creating layouts and multi-column designs | Stripped of `<figure>` tags for email compatibility |
-| Rich formatting and data presentation | Focused on positioning and structure | Simplified output for maximum compatibility |
-| Default table type in CKEditor 5 | Available through toggling or direct insertion | Available as a plugin option |
-
-To switch between different table modes, use the table toggling feature.
+| Rich formatting and tabular data presentation | Focused on content positioning and structure | Simplified output for maximum interoperability |
+| Default table type in CKEditor&nbsp;5 | Available through toggling or direct insertion | Available as an optional plugin |
 
 ## Demo
 
-Use the editor below to see the layout tables plugin in action. Demo will be delivered later.
+Use the editor below to see the layout tables plugin in action. Select a table and use the toolbar button <!-- Add icon when ready -->to choose the preferred type of table to change to from the dropdown. Or click the table to invoke the table toolbar and apply the preferred table type to change an existing table using the table properties dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/table-properties.svg}.
 
-{@snippet features/table-layout}
+Please note that the layout toggle button <!-- Add icon when ready -->does not insert new tables, just toggles the type. Use the layout table {@icon @ckeditor/ckeditor5-icons/theme/icons/table-layout.svg} or content table {@icon @ckeditor/ckeditor5-icons/theme/icons/table.svg Insert table} toolbar buttons to insert a new table of either kind.
+
+{@snippet features/table-toggling}
 
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
 
-## Description
+## Additional feature information
 
-The table toggling feature allows users to change the type of an existing table by clicking on it and selecting the desired table type. This enables seamless switching between presentation-focused content tables and layout-oriented tables without recreating the structure from scratch.
+The table toggling feature allows users to change the type of an existing table by clicking it and selecting the desired table type. This enables seamless switching between presentation-focused content tables and layout-oriented tables without recreating the structure from scratch.
 
 When a table is selected, you can toggle its type in one of two ways:
 
-1. If the {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI} plugin is available, the table properties dropdown will include a "Table type" option that allows switching between regular content tables and layout tables.
+1. If the {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI} plugin is enabled, the table properties button {@icon @ckeditor/ckeditor5-icons/theme/icons/table-properties.svg} will include a "Table type" dropdown option that allows switching between regular content tables and layout tables.
 
 2. If the {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI} plugin is not available, you can use the dedicated `tableType` toolbar button to change the table type.
 
 Switching between table types preserves the content while adjusting the table's behavior and styling to match its new purpose. Layout tables focus on spatial arrangement and design, while content tables emphasize data presentation.
 
 <info-box warning>
-	Changing a regular table to a layout table may result in data loss. Some elements like table captions will be removed when converting to a layout table, as layout tables do not support these elements.
+	Changing a regular table to a layout table may result in data loss. Table captions will be removed when converting to a layout table, as layout tables do not support them.
 </info-box>
 
 ## Installation
@@ -62,10 +64,20 @@ Switching between table types preserves the content while adjusting the table's 
 
 After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration.
 
-### Configuration with TableProperties
+## Configuration
+
+To configure the table toggling feature, you have several options:
+
+1. Include the {@link module:table/tablelayout~TableLayout} plugin in your editor setup to enable toggling between table types.
+2. Add the `tableType` button to your table content toolbar if you want a dedicated button for toggling.
+3. For advanced UI integration scenarios, include both {@link module:table/tableproperties~TableProperties} and {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI} plugins, which will add the table type option to the table properties dropdown.
+
+The table type can also be set programmatically through the editor's API, making it suitable for integration with external controls or automated workflows.
+
+### Configuration with `TableProperties`
 
 When the {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI} plugin is available, table type options will be integrated into the table properties dropdown:
-
+<!-- Uodate main toolbar to table dropdown eventually. In both. -->
 <code-switcher>
 ```js
 import { ClassicEditor, Table, TableLayout, TableToggle, TableProperties, TablePropertiesUI } from 'ckeditor5';
@@ -84,9 +96,9 @@ ClassicEditor
 ```
 </code-switcher>
 
-### Configuration without TableProperties
+### Configuration without `TableProperties`
 
-If the TablePropertiesUI plugin is not available, you can use the dedicated `tableType` button in the content toolbar to change table types:
+If the `TablePropertiesUI` plugin is not available, you can use the dedicated `tableType` button in the content toolbar to change table types:
 
 <code-switcher>
 ```js
@@ -106,16 +118,6 @@ ClassicEditor
 ```
 </code-switcher>
 
-## Configuration
-
-To configure the table toggling feature, you have several options:
-
-1. Include the {@link module:table/tablelayout~TableLayout} plugin in your editor setup to enable toggling between table types.
-2. Add the `tableType` button to your table content toolbar if you want a dedicated button for toggling.
-3. For advanced UI integration scenarios, include both {@link module:table/tableproperties~TableProperties} and {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI} plugins, which will add the table type option to the table properties dropdown.
-
-The table type can also be set programmatically through the editor's API, making it suitable for integration with external controls or automated workflows.
-
 ## Related features
 
 There are other CKEditor&nbsp;5 features you may want to check:
@@ -127,7 +129,7 @@ There are other CKEditor&nbsp;5 features you may want to check:
 
 The {@link module:table/tablelayout~TableLayout} plugin registers the following UI components:
 
-* uodate
+* update
 
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.

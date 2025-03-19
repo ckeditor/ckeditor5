@@ -103,7 +103,7 @@ const COLOR_PALETTE = [
 ];
 
 TableEditor
-	.create( document.querySelector( '#snippet-table-layout' ), {
+	.create( document.querySelector( '#snippet-table-toggling' ), {
 		extraPlugins: [
 			TableLayout,
 			TableProperties,
@@ -114,7 +114,7 @@ TableEditor
 				'undo', 'redo',
 				'|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'insertImage', 'insertTable', 'insertTableLayout',
+				'|', 'link', 'insertImage', 'insertTable', 'insertTableLayout', 'tableType',
 				'|', 'alignment',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
@@ -157,9 +157,9 @@ TableEditor
 		attachTourBalloon( {
 			target: findToolbarItem(
 				editor.ui.view.toolbar,
-				item => item.buttonView?.label === 'Insert table layout'
+				item => item.buttonView?.label === 'Choose table type'
 			),
-			text: 'Click to insert a layout.',
+			text: 'Click to insert a table or a layout.',
 			editor,
 			tippyOptions: {
 				placement: 'bottom-start'
