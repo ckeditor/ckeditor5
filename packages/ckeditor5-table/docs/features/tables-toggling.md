@@ -28,9 +28,7 @@ The CKEditor&nbsp;5 table feature offers several approaches and plugins responsi
 
 ## Demo
 
-Use the editor below to see the layout tables plugin in action. Select a table and use the toolbar button <!-- Add icon when ready -->to choose the preferred type of table to change to from the dropdown. Or click the table to invoke the table toolbar and apply the preferred table type to change an existing table using the table properties dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/table-properties.svg}.
-
-Please note that the layout toggle button <!-- Add icon when ready -->does not insert new tables, just toggles the type. Use the layout table {@icon @ckeditor/ckeditor5-icons/theme/icons/table-layout.svg} or content table {@icon @ckeditor/ckeditor5-icons/theme/icons/table.svg Insert table} toolbar buttons to insert a new table of either kind.
+Use the editor below to see the tables type toggling feature in action. Select a table to invoke the table toolbar and apply the preferred table from the table properties dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/table-properties.svg}.
 
 {@snippet features/table-toggling}
 
@@ -73,34 +71,6 @@ To configure the table toggling feature, you have several options:
 3. For advanced UI integration scenarios, include both {@link module:table/tableproperties~TableProperties} and {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI} plugins, which will add the table type option to the table properties dropdown.
 
 The table type can also be set programmatically through the editor's API, making it suitable for integration with external controls or automated workflows.
-
-### Configuration of the main editor toolbar
-
-You configure the main editor toolbar to use the content an layout tables selector dropdown.
-
-To use a single table selector dropdown configure the toolbar as follows:
-
-<code-switcher>
-```js
-import { ClassicEditor, Table, TableLayout } from 'ckeditor5';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Table, TableLayout, /* ... */ ],
-		toolbar: [ 'insertTable', 'insertTableLayout', 'tableType', /* ... */ ],
-		table: {
-			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableType', /* ... */  ]
-		}
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-</code-switcher>
-
-<info-box info>
-	Please note that the layout toggle button <!-- Add icon when ready -->does not insert new tables, just toggles the type. You need to also configure table insertion buttons, as shown above.
-</info-box>
 
 ### Configuration with `TableProperties`
 
@@ -145,6 +115,38 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 </code-switcher>
+
+### Configuration of the main editor toolbar
+
+You configure the main editor toolbar to use the content and layout tables selector dropdown. This may be handy if for some reason you do not want to use the table toolbar in your implementation.
+
+To use a single table selector dropdown configure the toolbar as follows:
+
+<code-switcher>
+```js
+import { ClassicEditor, Table, TableLayout } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Table, TableLayout, /* ... */ ],
+		toolbar: [ 'insertTable', 'insertTableLayout', 'tableType', /* ... */ ],
+		table: {
+			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableType', /* ... */  ]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+</code-switcher>
+
+This will add table toggling button to the main editor toolbar:
+
+{@img assets/img/tables-toggling-toolbar.png 313 The table toggling button to the main editor toolbar.}
+
+<info-box info>
+	Please note that the layout toggle button does not insert new tables, it just toggles the type. You still need to configure the table insertion buttons, as shown above.
+</info-box>
 
 ## Related features
 

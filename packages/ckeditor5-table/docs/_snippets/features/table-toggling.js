@@ -114,7 +114,7 @@ TableEditor
 				'undo', 'redo',
 				'|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'insertImage', 'insertTable', 'insertTableLayout', 'tableType',
+				'|', 'link', 'insertImage', 'insertTable', 'insertTableLayout',
 				'|', 'alignment',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
