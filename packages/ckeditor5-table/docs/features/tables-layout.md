@@ -28,7 +28,7 @@ The CKEditor&nbsp;5 table feature offers several approaches and plugins responsi
 
 ## Demo
 
-Use the editor below to see the layout tables plugin in action. Demo will be delivered later. Use the layout table {@icon @ckeditor/ckeditor5-icons/theme/icons/table-layout.svg} toolbar button to insert a new layout table. 
+Use the editor below to see the layout tables plugin in action. Demo will be delivered later. Use the layout table {@icon @ckeditor/ckeditor5-icons/theme/icons/table-layout.svg} toolbar button to insert a new layout table.
 
 {@snippet features/table-layout}
 
@@ -78,7 +78,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 
 <code-switcher>
 ```js
-import { ClassicEditor, Table, TableLayout, TableToggle, TableProperties, TablePropertiesUI } from 'ckeditor5';
+import { ClassicEditor, Table, TableLayout, TableProperties, TablePropertiesUI } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -109,12 +109,12 @@ When the {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI
 <!-- Uodate main toolbar to table dropdown eventually. In both. -->
 <code-switcher>
 ```js
-import { ClassicEditor, Table, TableLayout, TableToggle, TableProperties, TablePropertiesUI } from 'ckeditor5';
+import { ClassicEditor, Table, TableLayout, TableProperties, TablePropertiesUI } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Table, TableLayout, TableToggle, TableProperties, TablePropertiesUI, /* ... */ ],
+		plugins: [ Table, TableLayout, TableProperties, TablePropertiesUI, /* ... */ ],
 		toolbar: [ 'insertTable', 'insertTableLayout', /* ... */ ],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties' ]
