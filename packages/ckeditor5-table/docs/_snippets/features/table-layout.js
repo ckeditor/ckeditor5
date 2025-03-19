@@ -7,7 +7,8 @@
 
 import {
 	TableProperties,
-	TableCellProperties
+	TableCellProperties,
+	TableLayout
 } from 'ckeditor5';
 import {
 	TOKEN_URL,
@@ -104,6 +105,7 @@ const COLOR_PALETTE = [
 TableEditor
 	.create( document.querySelector( '#snippet-table-layout' ), {
 		extraPlugins: [
+			TableLayout,
 			TableProperties,
 			TableCellProperties
 		],
