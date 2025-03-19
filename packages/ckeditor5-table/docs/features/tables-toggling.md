@@ -157,7 +157,20 @@ There are other CKEditor&nbsp;5 features you may want to check:
 
 The {@link module:table/tablelayout~TableLayout} plugin registers the following UI components:
 
-* {@link module:table/tablelayout/commands/tabletypecommand~TableTypeCommand} &nbsp; The table type switching command.
+* The `'tableType'` button that allows changing the type of a selected table.
+* The `'tableType'` command implemented by {@link module:table/tablelayout/commands/tabletypecommand~TableTypeCommand}.
+
+You can execute the command using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method. The command accepts a table type value ('content' or 'layout') as an argument.
+
+```js
+// Change the selected table to a layout table
+editor.execute('tableType', { type: 'layout' });
+
+// Change the selected table to a content table
+editor.execute('tableType', { type: 'content' });
+```
+
+Additionally, if the {@link module:table/tableproperties~TableProperties} plugin is loaded, the `'tableProperties'` button will be extended with a dropdown to select the table type, providing an alternative UI for changing the table type.
 
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
