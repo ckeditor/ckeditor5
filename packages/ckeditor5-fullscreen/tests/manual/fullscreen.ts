@@ -270,7 +270,7 @@ DECOUPLED_EDITOR_BUTTON.addEventListener( 'click', () => {
 		DecoupledEditor
 			.create( editorElement, Object.assign( commonConfig,
 				{
-					toolbar: { shouldNotGroupWhenFull: TOOLBAR_INPUT.checked },
+					toolbar: { items: toolbarItems, shouldNotGroupWhenFull: TOOLBAR_INPUT.checked },
 					fullscreen: {
 						menuBar: { isVisible: MENU_BAR_FULLSCREEN_INPUT.checked },
 						toolbar: { items: toolbarItems, shouldNotGroupWhenFull: TOOLBAR_FULLSCREEN_INPUT.checked },
