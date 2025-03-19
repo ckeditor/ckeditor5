@@ -163,11 +163,11 @@ The {@link module:table/tablelayout~TableLayout} plugin registers the following 
 You can execute the command using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method. The command accepts a table type value ('content' or 'layout') as an argument.
 
 ```js
-// Change the selected table to a layout table
-editor.execute('tableType', { type: 'layout' });
+// Change the selected table to a layout table.
+editor.execute('tableType', 'layout' );
 
-// Change the selected table to a content table
-editor.execute('tableType', { type: 'content' });
+// Change the selected table to a content table.
+editor.execute('tableType', 'content' );
 ```
 
 Additionally, if the {@link module:table/tableproperties~TableProperties} plugin is loaded, the `'tableProperties'` button will be extended with a dropdown to select the table type, providing an alternative UI for changing the table type.
