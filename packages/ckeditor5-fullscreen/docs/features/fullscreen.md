@@ -12,7 +12,7 @@ The fullscreen mode lets you temporarily expand the editor to the whole browser 
 
 ## Demo
 
-Use the fullscreen mode toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/fullscreen-off.svg Enable fullscreen mode} in the editor below to see the feature in action. Once you enter the fullscreen mode, you will notice the following changes:
+Use the fullscreen mode toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/fullscreen-enable.svg Enable fullscreen mode} in the editor below to see the feature in action. Once you enter the fullscreen mode, you will notice the following changes:
 
 * Editor UI is stretched to the whole browser viewport.
 * Menu bar is visible by default, regardless of its presence outside fullscreen.
@@ -129,7 +129,7 @@ Besides basic configuration, it is possible to do virtually any changes to the f
 
 ### Basic template
 
-To change the component styling (like editable area width or background color), you can use the CSS classes:
+To change the component styling (like editable area width or background color), you can use the CSS classes (precede each with `.ck.ck-fullscreen__main-wrapper` selector to ensure enough CSS specificity):
 
 * `ck-fullscreen__top-wrapper` - top wrapper holding the menu bar and toolbar.
 * `ck-fullscreen__menu-bar` - container with menu bar.
