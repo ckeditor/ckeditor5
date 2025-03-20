@@ -38,8 +38,8 @@
 		}
 
 		& > table > tbody > tr > td {
-			box-shadow: none;
-			padding: 0;
+			box-shadow: revert;
+			padding: revert;
 			min-width: 2em;
 			/* To make the caret visible. */
 			text-indent: 1px;
