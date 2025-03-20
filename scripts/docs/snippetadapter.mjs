@@ -136,10 +136,29 @@ async function buildSnippets( snippets, paths, constants, imports ) {
 			 * bundled. This will cause issues, because the `tests` directory is not available in the CDN build.
 			 */
 			{
-				name: 'external',
+				name: 'externalize-ckeditor5',
 				setup( build ) {
 					build.onResolve( { filter: /.*/ }, args => ( {
 						external: externals.some( name => name.endsWith( '/' ) ? args.path.startsWith( name ) : args.path === name )
+					} ) );
+				}
+			},
+
+			/**
+			 * Code from "ckeditor5" and "ckeditor5-premium-features" is externalized to avoid bundling it with the snippet
+			 * code. However, if the source file is imported directly, it can be bundled and (in case of commercial features)
+			 * not obfuscated. To prevent this, we throw an error if such an import is detected.
+			 */
+			{
+				name: 'throw-on-source-import',
+				setup( build ) {
+					build.onLoad( { filter: /packages[\\/].*[\\/]src/ }, args => ( {
+						errors: [
+							{
+								// eslint-disable-next-line max-len
+								text: `Can't use the source file "${ args.path }" in the snippet. Use "ckeditor5" or "ckeditor5-premium-features" import instead.`
+							}
+						]
 					} ) );
 				}
 			}
@@ -172,8 +191,8 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 	const globalTags = [
 		`<script type="importmap">${ JSON.stringify( { imports } ) }</script>`,
 		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
-		'<script src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>',
-		'<script src="%BASE_PATH%/assets/global.js"></script>',
+		'<script defer src="%BASE_PATH%/assets/global.js"></script>',
+		'<script defer src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>',
 		getStyle( '%BASE_PATH%/assets/ckeditor5/ckeditor5.css' ),
 		getStyle( '%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.css' ),
 		getStyle( '%BASE_PATH%/assets/global.css' ),
