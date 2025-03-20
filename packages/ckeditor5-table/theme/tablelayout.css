@@ -56,7 +56,7 @@
 	}
 
 	& table.table.layout-table,
-	& figure.table.layout-table> table {
+	& figure.table.layout-table > table {
 		border-spacing: 0;
 	}
 }
