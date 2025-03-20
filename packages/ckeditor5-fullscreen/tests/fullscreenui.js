@@ -106,9 +106,10 @@ describe( 'FullscreenUI', () => {
 			expect( button ).to.have.property( 'tooltip', false );
 			expect( button ).to.have.property( 'isToggleable', true );
 			expect( button ).to.have.property( 'role', 'menuitemcheckbox' );
+			expect( button ).to.have.property( 'label', 'Fullscreen mode' );
 		} );
 
-		it( '#isEnabled, #icon and #label should be bound to the `toggleFullscreen` command', () => {
+		it( '#isEnabled and #isOn should be bound to the `toggleFullscreen` command', () => {
 			const fullscreenCommand = editor.commands.get( 'toggleFullscreen' );
 
 			fullscreenCommand.isEnabled = false;
@@ -121,13 +122,11 @@ describe( 'FullscreenUI', () => {
 
 			fullscreenCommand.value = true;
 
-			expect( button.icon ).to.equal( IconFullscreenLeave );
-			expect( button.label ).to.equal( 'Leave fullscreen mode' );
+			expect( button.isOn ).to.be.true;
 
 			fullscreenCommand.value = false;
 
-			expect( button.icon ).to.equal( IconFullscreenEnter );
-			expect( button.label ).to.equal( 'Enter fullscreen mode' );
+			expect( button.isOn ).to.be.false;
 		} );
 
 		it( 'on #execute should call the `toggleFullscreen` command', () => {

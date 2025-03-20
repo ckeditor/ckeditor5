@@ -66,14 +66,15 @@ export default class FullscreenUI extends Plugin {
 
 		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
 		view.bind( 'isOn' ).to( command, 'value' );
-		view.bind( 'icon' ).to( command, 'value', value => value ? IconFullscreenLeave : IconFullscreenEnter );
-		view.bind( 'label' ).to( command, 'value', value => value ? t( 'Leave fullscreen mode' ) : t( 'Enter fullscreen mode' ) );
 
 		if ( ( view instanceof MenuBarMenuListItemButtonView ) ) {
 			view.set( {
-				role: 'menuitemcheckbox'
+				role: 'menuitemcheckbox',
+				label: t( 'Fullscreen mode' )
 			} );
 		} else {
+			view.bind( 'icon' ).to( command, 'value', value => value ? IconFullscreenLeave : IconFullscreenEnter );
+			view.bind( 'label' ).to( command, 'value', value => value ? t( 'Leave fullscreen mode' ) : t( 'Enter fullscreen mode' ) );
 			view.set( {
 				tooltip: true
 			} );

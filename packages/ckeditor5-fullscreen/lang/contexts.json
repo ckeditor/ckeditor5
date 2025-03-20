@@ -1,5 +1,6 @@
 {
-	"Enter fullscreen mode": "Button that enters fullscreen mode when pressed",
-	"Leave fullscreen mode": "Button that leaves fullscreen mode when pressed",
+	"Enter fullscreen mode": "Toolbar button that enters fullscreen mode when pressed",
+	"Leave fullscreen mode": "Toolbar button that leaves fullscreen mode when pressed",
+	"Fullscreen mode": "Menu bar button that toggles fullscreen mode",
 	"Toggle fullscreen mode": "Command that toggles fullscreen mode"
 }
