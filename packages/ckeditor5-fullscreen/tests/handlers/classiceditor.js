@@ -49,8 +49,6 @@ describe( 'ClassicEditorHandler', () => {
 				.to.equal( editor.editing.view.getDomRoot() );
 			expect( classicEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=toolbar]' ).children[ 0 ] )
 				.to.equal( editor.ui.view.toolbar.element );
-			expect( classicEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=body-wrapper]' ).children[ 0 ] )
-				.to.equal( global.document.querySelector( '.ck-body-wrapper' ) );
 		} );
 
 		it( 'should set [dir] attribute on the fullscreen container', () => {

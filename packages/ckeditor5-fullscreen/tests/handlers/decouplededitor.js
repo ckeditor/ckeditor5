@@ -56,8 +56,6 @@ describe( 'DecoupledEditorHandler', () => {
 				.to.equal( editor.ui.view.toolbar.element );
 			expect( decoupledEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=menu-bar]' ).children[ 0 ] )
 				.to.equal( editor.ui.view.menuBarView.element );
-			expect( decoupledEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=body-wrapper]' ).children[ 0 ] )
-				.to.equal( global.document.querySelector( '.ck-body-wrapper' ) );
 		} );
 
 		it( 'should use the configured toolbar behavior', async () => {

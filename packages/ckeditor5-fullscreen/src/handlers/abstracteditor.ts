@@ -7,7 +7,7 @@
  * @module fullscreen/handlers/abstracteditorhandler
  */
 
-import { DialogViewPosition } from 'ckeditor5/src/ui.js';
+import { BodyCollection, DialogViewPosition } from 'ckeditor5/src/ui.js';
 import { global, createElement, Rect, type EventInfo } from 'ckeditor5/src/utils.js';
 import type { ElementApi, Editor, EditorConfig } from 'ckeditor5/src/core.js';
 import type { PresenceListUI } from '@ckeditor/ckeditor5-real-time-collaboration';
@@ -41,6 +41,12 @@ export default class AbstractEditorHandler {
 	 * Data of the annotations UIs that were active before entering the fullscreen mode.
 	 */
 	private _annotationsUIsData: Map<string, Record<string, any>> | null = null;
+
+	/**
+	 * The pagination body collection that is used in the fullscreen mode.
+	 * If we don't move pagination lines to the fullscreen container, they won't be visible.
+	 */
+	private _paginationBodyCollection: BodyCollection | null = null;
 
 	/**
 	 * A callback that shows the revision viewer, stored to restore the original one after exiting the fullscreen mode.
@@ -185,7 +191,20 @@ export default class AbstractEditorHandler {
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore if -- @preserve */
 		if ( this._editor.plugins.has( 'Pagination' ) ) {
-			( this._editor.plugins.get( 'PaginationRenderer' ) as PaginationRenderer ).setupScrollableAncestor();
+			const paginationRenderer = this._editor.plugins.get( 'PaginationRenderer' ) as PaginationRenderer;
+
+			paginationRenderer.setupScrollableAncestor();
+
+			this._paginationBodyCollection = new BodyCollection( this._editor.locale );
+
+			this._paginationBodyCollection.attachToDom();
+			paginationRenderer.linesRepository.setViewCollection( this._paginationBodyCollection );
+
+			this._editor.once( 'destroy', () => {
+				this._paginationBodyCollection!.detachFromDom();
+			} );
+
+			this.moveToFullscreen( this._paginationBodyCollection.bodyCollectionContainer!, 'body-wrapper' );
 		}
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
@@ -206,7 +225,7 @@ export default class AbstractEditorHandler {
 
 		// Hide all other elements in the container to ensure they don't create an empty unscrollable space.
 		for ( const element of this._editor.config.get( 'fullscreen.container' )!.children ) {
-			if ( element !== this._wrapper ) {
+			if ( element !== this._wrapper && !element.classList.contains( 'ck-body-wrapper' ) ) {
 				( element as HTMLElement ).style.display = 'none';
 			}
 		}
@@ -259,7 +278,13 @@ export default class AbstractEditorHandler {
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore if -- @preserve */
 		if ( this._editor.plugins.has( 'Pagination' ) ) {
-			( this._editor.plugins.get( 'PaginationRenderer' ) as PaginationRenderer ).setupScrollableAncestor();
+			const paginationRenderer = this._editor.plugins.get( 'PaginationRenderer' ) as PaginationRenderer;
+
+			paginationRenderer.setupScrollableAncestor();
+			paginationRenderer.linesRepository.setViewCollection( this._editor.ui.view.body );
+
+			this._paginationBodyCollection!.detachFromDom();
+			this._paginationBodyCollection?.destroy();
 		}
 
 		// Also dialog position needs to be recalculated after leaving fullscreen mode.
