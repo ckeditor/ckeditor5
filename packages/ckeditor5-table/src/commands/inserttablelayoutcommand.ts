@@ -74,7 +74,7 @@ export default class InsertTableLayoutCommand extends Command {
 			const columnWidths = Array( normalizedOptions.columns ).fill( singleColumnWidth );
 			const tableWidthsCommand: TableWidthsCommand = editor.commands.get( 'resizeColumnWidths' )!;
 
-			// Make the table full-width with equal columns.
+			// Make the table full-width with equal columns width.
 			tableWidthsCommand.execute( { tableWidth: '100%', columnWidths, table } );
 
 			writer.setSelection( writer.createPositionAt( table.getNodeByPath( [ 0, 0, 0 ] ), 0 ) );
