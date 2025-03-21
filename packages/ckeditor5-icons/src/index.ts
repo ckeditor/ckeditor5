@@ -4,7 +4,7 @@
  */
 
 /**
- * @module icons
+ * @module icons/index
  */
 
 export { default as IconAccessibility } from '../theme/icons/accessibility.svg';
