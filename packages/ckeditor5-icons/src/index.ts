@@ -57,8 +57,8 @@ export { default as IconFontBackground } from '../theme/icons/font-background.sv
 export { default as IconFontColor } from '../theme/icons/font-color.svg';
 export { default as IconFontFamily } from '../theme/icons/font-family.svg';
 export { default as IconFontSize } from '../theme/icons/font-size.svg';
-export { default as IconFullscreenOff } from '../theme/icons/fullscreen-off.svg';
-export { default as IconFullscreenOn } from '../theme/icons/fullscreen-on.svg';
+export { default as IconFullscreenEnable } from '../theme/icons/fullscreen-enable.svg';
+export { default as IconFullscreenDisable } from '../theme/icons/fullscreen-disable.svg';
 export { default as IconGoogleDrive } from '../theme/icons/google-drive.svg';
 export { default as IconGooglePhotos } from '../theme/icons/google-photos.svg';
 export { default as IconHeading1 } from '../theme/icons/heading1.svg';

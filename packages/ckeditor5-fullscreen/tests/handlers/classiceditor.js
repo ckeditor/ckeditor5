@@ -9,6 +9,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
 import ClassicEditorHandler from '../../src/handlers/classiceditor.js';
+import FullscreenEditing from '../../src/fullscreenediting.js';
 
 describe( 'ClassicEditorHandler', () => {
 	let classicEditorHandler, domElement, editor;
@@ -44,18 +45,18 @@ describe( 'ClassicEditorHandler', () => {
 		it( 'should move the editable, toolbar and body wrapper to the fullscreen container', () => {
 			classicEditorHandler.enable();
 
-			expect( classicEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=editable]' ).children[ 0 ] )
+			expect( classicEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=editable]' ).children[ 1 ] )
 				.to.equal( editor.editing.view.getDomRoot() );
-			expect( classicEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=toolbar]' ).children[ 0 ] )
+			expect( classicEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=toolbar]' ).children[ 0 ] )
 				.to.equal( editor.ui.view.toolbar.element );
-			expect( classicEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=body-wrapper]' ).children[ 0 ] )
+			expect( classicEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=body-wrapper]' ).children[ 0 ] )
 				.to.equal( global.document.querySelector( '.ck-body-wrapper' ) );
 		} );
 
 		it( 'should set [dir] attribute on the fullscreen container', () => {
 			classicEditorHandler.enable();
 
-			expect( classicEditorHandler.getContainer().getAttribute( 'dir' ) ).to.equal( editor.ui.view.element.getAttribute( 'dir' ) );
+			expect( classicEditorHandler.getWrapper().getAttribute( 'dir' ) ).to.equal( editor.ui.view.element.getAttribute( 'dir' ) );
 		} );
 
 		it( 'should move menu bar if it is present', async () => {
@@ -81,11 +82,59 @@ describe( 'ClassicEditorHandler', () => {
 
 			tempClassicEditorHandler.enable();
 
-			expect( tempClassicEditorHandler.getContainer().querySelector( '[data-ck-fullscreen=menu-bar]' ).children[ 0 ] )
+			expect( tempClassicEditorHandler.getWrapper().querySelector( '[data-ck-fullscreen=menu-bar]' ).children[ 0 ] )
 				.to.equal( tempEditor.ui.view.menuBarView.element );
 
 			tempDomElement.remove();
 			return tempEditor.destroy();
+		} );
+
+		it( 'should use the configured toolbar behavior', async () => {
+			const tempDomElementDynamicToolbar = global.document.createElement( 'div' );
+			global.document.body.appendChild( tempDomElementDynamicToolbar );
+
+			const tempEditorDynamicToolbar = await ClassicEditor.create( tempDomElementDynamicToolbar, {
+				plugins: [
+					Paragraph,
+					Essentials,
+					FullscreenEditing
+				],
+				fullscreen: {
+					toolbar: {
+						shouldNotGroupWhenFull: true
+					}
+				}
+			} );
+
+			tempEditorDynamicToolbar.execute( 'toggleFullscreen' );
+
+			expect( tempEditorDynamicToolbar.ui.view.toolbar.isGrouping ).to.be.false;
+
+			tempDomElementDynamicToolbar.remove();
+			await tempEditorDynamicToolbar.destroy();
+
+			const tempDomElementStaticToolbar = global.document.createElement( 'div' );
+			global.document.body.appendChild( tempDomElementStaticToolbar );
+
+			const tempEditorStaticToolbar = await ClassicEditor.create( tempDomElementStaticToolbar, {
+				plugins: [
+					Paragraph,
+					Essentials,
+					FullscreenEditing
+				],
+				fullscreen: {
+					toolbar: {
+						shouldNotGroupWhenFull: false
+					}
+				}
+			} );
+
+			tempEditorStaticToolbar.execute( 'toggleFullscreen' );
+
+			expect( tempEditorStaticToolbar.ui.view.toolbar.isGrouping ).to.be.true;
+
+			tempDomElementStaticToolbar.remove();
+			return tempEditorStaticToolbar.destroy();
 		} );
 	} );
 } );

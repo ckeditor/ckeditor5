@@ -43,11 +43,34 @@ describe( 'FullscreenEditing', () => {
 	} );
 
 	it( 'should register the `fullscreen` command', () => {
-		expect( editor.commands.get( 'fullscreen' ) ).to.be.instanceOf( FullscreenCommand );
+		expect( editor.commands.get( 'toggleFullscreen' ) ).to.be.instanceOf( FullscreenCommand );
 	} );
 
 	it( 'should define the `fullscreen.menuBar.isVisible` config option to `true`', () => {
 		expect( editor.config.get( 'fullscreen.menuBar.isVisible' ) ).to.be.true;
+	} );
+
+	it( 'should set the `fullscreen.toolbar.shouldNotGroupWhenFull` config to value of `toolbar.shouldNotGroupWhenFull`', async () => {
+		expect( editor.config.get( 'fullscreen.toolbar.shouldNotGroupWhenFull' ) ).to.be.false;
+
+		const tempDomElement = global.document.createElement( 'div' );
+		global.document.body.appendChild( tempDomElement );
+
+		const tempEditor = await ClassicEditor.create( tempDomElement, {
+			plugins: [
+				Paragraph,
+				Essentials,
+				FullscreenEditing
+			],
+			toolbar: {
+				shouldNotGroupWhenFull: true
+			}
+		} );
+
+		expect( tempEditor.config.get( 'fullscreen.toolbar.shouldNotGroupWhenFull' ) ).to.be.true;
+
+		tempDomElement.remove();
+		return tempEditor.destroy();
 	} );
 
 	it( 'should register keystrokes on init ', () => {
@@ -71,7 +94,7 @@ describe( 'FullscreenEditing', () => {
 		editor.keystrokes.press( keyEventData );
 
 		expect( spy.calledOnce ).to.be.true;
-		expect( spy.calledWithExactly( 'fullscreen' ) ).to.be.true;
+		expect( spy.calledWithExactly( 'toggleFullscreen' ) ).to.be.true;
 
 		editor.keystrokes.press( keyEventData );
 

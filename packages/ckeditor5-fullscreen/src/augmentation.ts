@@ -28,7 +28,7 @@ declare module '@ckeditor/ckeditor5-core' {
 	}
 
 	interface CommandsMap {
-		fullscreen: FullscreenCommand;
+		toggleFullscreen: FullscreenCommand;
 	}
 }
 

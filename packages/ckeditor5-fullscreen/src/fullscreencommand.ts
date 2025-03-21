@@ -69,8 +69,6 @@ export default class FullscreenCommand extends Command {
 	 * Enables the fullscreen mode.
 	 */
 	private _enableFullscreenMode(): void {
-		document.body.classList.add( 'ck-fullscreen' );
-
 		this._fullscreenHandler.enable();
 
 		this.value = true;
@@ -80,8 +78,6 @@ export default class FullscreenCommand extends Command {
 	 * Disables the fullscreen mode.
 	 */
 	private _disableFullscreenMode(): void {
-		document.body.classList.remove( 'ck-fullscreen' );
-
 		this._fullscreenHandler.disable();
 
 		this.value = false;

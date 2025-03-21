@@ -36,19 +36,23 @@ export default class FullscreenEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'fullscreen.menuBar.isVisible', true );
+
+		// By default, toolbar should behave the same way in fullscreen mode as in normal mode.
+		// This means that the toolbar buttons should be grouped when the toolbar is full.
+		editor.config.define( 'fullscreen.toolbar.shouldNotGroupWhenFull', editor.config.get( 'toolbar.shouldNotGroupWhenFull' ) === true );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public init(): void {
-		this.editor.commands.add( 'fullscreen', new FullscreenCommand( this.editor ) );
+		this.editor.commands.add( 'toggleFullscreen', new FullscreenCommand( this.editor ) );
 
 		const t = this.editor.locale.t;
 
 		// Set the Ctrl+Shift+F keystroke.
 		this.editor.keystrokes.set( 'Ctrl+Shift+F', ( evt, cancel ) => {
-			this.editor.execute( 'fullscreen' );
+			this.editor.execute( 'toggleFullscreen' );
 
 			this.editor.editing.view.focus();
 

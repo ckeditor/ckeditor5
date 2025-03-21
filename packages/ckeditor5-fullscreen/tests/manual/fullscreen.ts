@@ -52,6 +52,7 @@ import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.
 import Style from '@ckeditor/ckeditor5-style/src/style.js';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
 import Bookmark from '@ckeditor/ckeditor5-bookmark/src/bookmark.js';
+import type { Editor } from '@ckeditor/ckeditor5-core';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
@@ -72,13 +73,40 @@ const IFRAME_EDITOR_BUTTON = document.getElementById( 'restart-iframe' )!;
 
 const MENU_BAR_INPUT = document.getElementById( 'menu-bar' ) as HTMLInputElement;
 const MENU_BAR_FULLSCREEN_INPUT = document.getElementById( 'menu-bar-fullscreen' ) as HTMLInputElement;
+const TOOLBAR_INPUT = document.getElementById( 'toolbar' ) as HTMLInputElement;
+const TOOLBAR_FULLSCREEN_INPUT = document.getElementById( 'toolbar-fullscreen' ) as HTMLInputElement;
 const CUSTOM_CONTAINER_INPUT = document.getElementById( 'custom-container' ) as HTMLInputElement;
 
 let editorElement = document.getElementById( 'editor' )!;
-let editorInstance;
-let currentData;
+let editorInstance: Editor;
+let currentData: string;
 let iframeStylesInjected = false;
 
+const toolbarItems = [
+	'fullscreen',
+	'|',
+	'heading', 'style',
+	'|',
+	'sourceEditing', 'showBlocks',
+	'|',
+	'removeFormat', 'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'link', 'bookmark',
+	'|',
+	'highlight', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
+	'|',
+	'bulletedList', 'numberedList', 'todoList',
+	'|',
+	'blockQuote', 'insertImage', 'insertTable', 'mediaEmbed', 'codeBlock',
+	'|',
+	'htmlEmbed',
+	'|',
+	'alignment', 'outdent', 'indent',
+	'|',
+	'pageBreak', 'horizontalLine', 'specialCharacters',
+	'|',
+	'textPartLanguage',
+	'|',
+	'undo', 'redo', 'findAndReplace'
+];
 const commonConfig = {
 	plugins: [
 		ArticlePluginSet, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
@@ -91,31 +119,9 @@ const commonConfig = {
 		SpecialCharacters, SpecialCharactersEssentials,
 		CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport, Fullscreen
 	],
-	toolbar: [
-		'fullscreen',
-		'|',
-		'heading', 'style',
-		'|',
-		'sourceEditing', 'showBlocks',
-		'|',
-		'removeFormat', 'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'link', 'bookmark',
-		'|',
-		'highlight', 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
-		'|',
-		'bulletedList', 'numberedList', 'todoList',
-		'|',
-		'blockQuote', 'insertImage', 'insertTable', 'mediaEmbed', 'codeBlock',
-		'|',
-		'htmlEmbed',
-		'|',
-		'alignment', 'outdent', 'indent',
-		'|',
-		'pageBreak', 'horizontalLine', 'specialCharacters',
-		'|',
-		'textPartLanguage',
-		'|',
-		'undo', 'redo', 'findAndReplace'
-	],
+	toolbar: {
+		items: toolbarItems
+	},
 	cloudServices: CS_CONFIG,
 	table: {
 		contentToolbar: [
@@ -264,8 +270,10 @@ DECOUPLED_EDITOR_BUTTON.addEventListener( 'click', () => {
 		DecoupledEditor
 			.create( editorElement, Object.assign( commonConfig,
 				{
+					toolbar: { items: toolbarItems, shouldNotGroupWhenFull: TOOLBAR_INPUT.checked },
 					fullscreen: {
 						menuBar: { isVisible: MENU_BAR_FULLSCREEN_INPUT.checked },
+						toolbar: { items: toolbarItems, shouldNotGroupWhenFull: TOOLBAR_FULLSCREEN_INPUT.checked },
 						...( CUSTOM_CONTAINER_INPUT.checked ? { container: document.getElementById( 'custom-fullscreen-container' ) } : {} )
 					}
 				}
@@ -306,8 +314,10 @@ CLASSIC_EDITOR_BUTTON.addEventListener( 'click', () => {
 			.create( editorElement, Object.assign( commonConfig,
 				{
 					menuBar: { isVisible: MENU_BAR_INPUT.checked },
+					toolbar: { items: toolbarItems, shouldNotGroupWhenFull: TOOLBAR_INPUT.checked },
 					fullscreen: {
 						menuBar: { isVisible: MENU_BAR_FULLSCREEN_INPUT.checked },
+						toolbar: { shouldNotGroupWhenFull: TOOLBAR_FULLSCREEN_INPUT.checked },
 						...( CUSTOM_CONTAINER_INPUT.checked ? { container: document.getElementById( 'custom-fullscreen-container' ) } : {} )
 					}
 				}
@@ -370,7 +380,14 @@ ClassicEditor
 	.create( editorElement, Object.assign( commonConfig,
 		{
 			menuBar: { isVisible: MENU_BAR_INPUT.checked },
-			fullscreen: { menuBar: { isVisible: MENU_BAR_FULLSCREEN_INPUT.checked } }
+			fullscreen: {
+				menuBar: {
+					isVisible: MENU_BAR_FULLSCREEN_INPUT.checked
+				},
+				toolbar: {
+					shouldNotGroupWhenFull: TOOLBAR_FULLSCREEN_INPUT.checked
+				}
+			}
 		}
 	) )
 	.then( editor => {
