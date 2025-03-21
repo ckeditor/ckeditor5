@@ -10,6 +10,24 @@ body.ck-fullscreen {
 	--ck-z-fullscreen: 10000;
 
 	overflow: hidden;
+
+	--ck-z-default: calc(var(--ck-z-fullscreen) + 1);
+	--ck-z-panel: calc(var(--ck-z-default) + 999);
+	--ck-z-dialog: 100000;
+
+	/* CKBox wrapper has z-index of 9999, let's bump it over the dialog's to ensure visibility like outside fullscreen mode. */
+	& .ckbox-reset:not(#n)>.ckbox--dialog {
+		--ckbox-z-index-root: calc(var(--ck-z-dialog) + 1);
+	}
+
+	& .ck-pagination-view-line {
+		z-index: calc(var(--ck-z-fullscreen) + 1);
+	}
+
+	& .page-break__label {
+		/* Needs to be higher than for .ck-pagination-view-line to be displayed on top of the line. */
+		z-index: calc(var(--ck-z-fullscreen) + 2);
+	}
 }
 
 /*
@@ -32,7 +50,8 @@ Fullscreen layout:
 */
 
 .ck.ck-fullscreen__main-wrapper {
-	position: fixed; /* this prevents the overscroll on macos that would happen with `position: absolute`. */
+	/* `position: fixed` prevents the overscroll on macos that would happen with `position: absolute`. */
+	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100%;

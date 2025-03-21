@@ -47,8 +47,6 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 				this._editor.config.get( 'fullscreen.toolbar.shouldNotGroupWhenFull' ) === true ? 'static' : 'dynamic'
 			);
 
-			this.moveToFullscreen( document.querySelector( '.ck-body-wrapper' )!, 'body-wrapper' );
-
 			// In classic editor, the `dir` attribute is set on the top-level container and it affects the styling
 			// in both menu bar and toolbar (adding the side padding to the elements).
 			// Since we don't move the whole container but only parts, we need to reapply the attribute value manually.
