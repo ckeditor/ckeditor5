@@ -25,6 +25,15 @@ import { updateViewAttributes, type GHSViewAttributes } from '../utils.js';
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
 import { getDescendantElement } from './integrationutils.js';
 
+const STYLE_ATTRIBUTES_TO_PROPAGATE = [
+	'width',
+	'max-width',
+	'min-width',
+	'height',
+	'min-height',
+	'max-height'
+];
+
 /**
  * Provides the General HTML Support integration with {@link module:table/table~Table Table} feature.
  */
@@ -212,15 +221,81 @@ function modelToViewTableAttributeConverter() {
 					return;
 				}
 
+				const figureStyles = getStylesToPropagateOnFigure( data.attributeNewValue as GHSViewAttributes );
+				const tableStyles = removeStylesPropagatedToFigure( data.attributeNewValue as GHSViewAttributes, figureStyles );
+
+				const figureAttributes = { ...data.attributeNewValue as GHSViewAttributes };
+				const tableAttributes = { ...data.attributeNewValue as GHSViewAttributes };
+
+				if ( figureStyles && Object.keys( figureStyles ).length ) {
+					figureAttributes.styles = figureStyles.styles;
+				}
+
+				if ( tableStyles && Object.keys( tableStyles ).length ) {
+					tableAttributes.styles = tableStyles.styles;
+				}
+
 				conversionApi.consumable.consume( data.item, evt.name );
 
 				updateViewAttributes(
 					conversionApi.writer,
 					data.attributeOldValue as GHSViewAttributes,
-					data.attributeNewValue as GHSViewAttributes,
+					tableAttributes,
 					viewElement!
+				);
+
+				updateViewAttributes(
+					conversionApi.writer,
+					data.attributeOldValue as GHSViewAttributes,
+					figureAttributes,
+					containerElement!
 				);
 			} );
 		}
 	};
+}
+
+/**
+ * TODO: description
+ */
+function getStylesToPropagateOnFigure( data: GHSViewAttributes ): GHSViewAttributes | null {
+	if ( !( 'styles' in data ) ) {
+		return null;
+	}
+
+	const result: GHSViewAttributes = {};
+
+	for ( const [ key, value ] of Object.entries( data.styles! ) ) {
+		if ( STYLE_ATTRIBUTES_TO_PROPAGATE.includes( key ) ) {
+			result.styles = { ...result.styles, [ key ]: value };
+		}
+	}
+
+	return Object.keys( result ).length === 0 ? null : result;
+}
+
+/**
+ * TODO: description
+ */
+function removeStylesPropagatedToFigure(
+	data: GHSViewAttributes,
+	stylesToFilterOut: GHSViewAttributes | null
+): GHSViewAttributes | null {
+	if ( !( 'styles' in data ) ) {
+		return null;
+	}
+
+	if ( !stylesToFilterOut || !( 'styles' in stylesToFilterOut ) ) {
+		return null;
+	}
+
+	const result: GHSViewAttributes = {};
+
+	for ( const [ key, value ] of Object.entries( data.styles! ) ) {
+		if ( !stylesToFilterOut.styles || stylesToFilterOut.styles[ key ] !== value ) {
+			result.styles = { ...result.styles, [ key ]: value };
+		}
+	}
+
+	return result;
 }
