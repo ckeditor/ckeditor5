@@ -11,6 +11,11 @@ Licensed under a dual-license model, this software is available under:
 
 For more information, see: [https://ckeditor.com/legal/ckeditor-licensing-options](https://ckeditor.com/legal/ckeditor-licensing-options).
 
+Sources of Intellectual Property Included in CKEditor
+-----------------------------------------------------
+
+Where not otherwise indicated, all CKEditor content is authored by CKSource engineers and consists of CKSource-owned intellectual property. In some specific instances, CKEditor will incorporate work done by developers outside of CKSource with their express permission.
+
 Trademarks
 ----------
 
