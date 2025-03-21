@@ -182,8 +182,8 @@ describe( 'AbstractHandler', () => {
 	} );
 
 	describe( '#enable()', () => {
-		it( 'should execute the #_defaultEnable method', () => {
-			const spy = sinon.spy( abstractHandler, '_defaultEnable' );
+		it( 'should execute the #_defaultOnEnter method', () => {
+			const spy = sinon.spy( abstractHandler, '_defaultOnEnter' );
 
 			abstractHandler.enable();
 
@@ -193,7 +193,7 @@ describe( 'AbstractHandler', () => {
 		it( 'should execute the custom callback if configured', () => {
 			const spy = sinon.spy();
 
-			editor.config.set( 'fullscreen.enableCallback', spy );
+			editor.config.set( 'fullscreen.onEnterCallback', spy );
 
 			abstractHandler.enable();
 
@@ -205,7 +205,7 @@ describe( 'AbstractHandler', () => {
 		it( 'should execute the custom callback if configured', () => {
 			const spy = sinon.spy();
 
-			editor.config.set( 'fullscreen.disableCallback', spy );
+			editor.config.set( 'fullscreen.onLeaveCallback', spy );
 
 			abstractHandler.disable();
 

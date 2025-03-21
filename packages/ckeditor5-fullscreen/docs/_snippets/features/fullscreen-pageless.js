@@ -382,7 +382,7 @@ FullscreenEditor
 		},
 		cloudServices: csConfig,
 		fullscreen: {
-			enableCallback: container => container.classList.add( 'formatted' ),
+			onEnterCallback: container => container.classList.add( 'formatted' ),
 			container: document.querySelector( '.main__content' ),
 			menuBar: {
 				isVisible: false

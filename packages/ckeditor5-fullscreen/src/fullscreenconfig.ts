@@ -28,20 +28,20 @@
 export default interface FullscreenConfig {
 
 	/**
-	 * Customizable callback that is called when the fullscreen mode is enabled.
+	 * Customizable callback that is called when you enter the fullscreen mode.
 	 * It's executed after the editor UI elements are moved to the fullscreen mode.
 	 *
 	 * @default () => {}
 	 */
-	enableCallback?: ( container: HTMLElement ) => void;
+	onEnterCallback?: ( container: HTMLElement ) => void;
 
 	/**
-	 * Customizable callback that is called when the fullscreen mode is disabled.
+	 * Customizable callback that is called when you leave the fullscreen mode.
 	 * It's executed before the editor UI elements are moved back to the normal mode.
 	 *
 	 * @default () => {}
 	 */
-	disableCallback?: ( container: HTMLElement ) => void;
+	onLeaveCallback?: ( container: HTMLElement ) => void;
 
 	/**
 	 * The container element for the fullscreen mode. This should be a reference to an existing, positioned element in the DOM.

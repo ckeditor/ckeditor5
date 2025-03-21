@@ -754,7 +754,7 @@ generateComments( csConfig, channelId, initialCommentsData )
 					container: document.querySelector( '#default_presence' )
 				},
 				fullscreen: {
-					enableCallback: container => container.classList.add( 'formatted' )
+					onEnterCallback: container => container.classList.add( 'formatted' )
 				}
 			} )
 			.then( editor => {

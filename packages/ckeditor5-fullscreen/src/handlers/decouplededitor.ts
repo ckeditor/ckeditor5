@@ -28,7 +28,7 @@ export default class DecoupledEditorHandler extends AbstractEditorHandler {
 
 		this._editor = editor;
 
-		this._defaultEnable = () => {
+		this._defaultOnEnter = () => {
 			/* istanbul ignore if -- @preserve */
 			if ( this._editor.plugins.has( 'Pagination' ) ) {
 				this.moveToFullscreen(

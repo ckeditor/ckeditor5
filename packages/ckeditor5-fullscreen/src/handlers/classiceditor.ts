@@ -29,7 +29,7 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 
 		this._editor = editor;
 
-		this._defaultEnable = () => {
+		this._defaultOnEnter = () => {
 			const editorUI = this._editor.ui;
 			const editorUIView = editorUI.view;
 

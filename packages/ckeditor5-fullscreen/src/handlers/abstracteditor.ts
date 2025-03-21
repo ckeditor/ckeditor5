@@ -64,9 +64,10 @@ export default class AbstractEditorHandler {
 
 	/**
 	 * A function moving the editor UI elements to the fullscreen mode. It should be set by the particular editor type handler.
-	 * Returns the fullscreen mode container element so it can be further customized via `fullscreen.enableCallback` configuration property.
-	*/
-	protected _defaultEnable: () => HTMLElement;
+	 * Returns the fullscreen mode container element so it can be further customized via
+	 * `fullscreen.onEnterCallback` configuration property.
+	 */
+	protected _defaultOnEnter: () => HTMLElement;
 
 	/**
 	 * An editor instance. It should be set by the particular editor type handler.
@@ -88,7 +89,7 @@ export default class AbstractEditorHandler {
 		this._document = this._editor.sourceElement ? this._editor.sourceElement.ownerDocument : global.document;
 		this._editor.config.define( 'fullscreen.container', this._document.body );
 
-		this._defaultEnable = () => this.getWrapper();
+		this._defaultOnEnter = () => this.getWrapper();
 		editor.on( 'destroy', () => {
 			if ( this._wrapper ) {
 				this.destroy();
@@ -168,7 +169,7 @@ export default class AbstractEditorHandler {
 	 * Enables the fullscreen mode. It executes the editor-specific enable handler and then the configured callback.
 	 */
 	public enable(): void {
-		this._defaultEnable();
+		this._defaultOnEnter();
 
 		// Block scroll if the fullscreen container is the body element. Otherwise the document has to stay scrollable.
 		if ( this._editor.config.get( 'fullscreen.container' ) === this._document.body ) {
@@ -225,8 +226,8 @@ export default class AbstractEditorHandler {
 			}
 		}
 
-		if ( this._editor.config.get( 'fullscreen.enableCallback' ) ) {
-			this._editor.config.get( 'fullscreen.enableCallback' )!( this.getWrapper() );
+		if ( this._editor.config.get( 'fullscreen.onEnterCallback' ) ) {
+			this._editor.config.get( 'fullscreen.onEnterCallback' )!( this.getWrapper() );
 		}
 	}
 
@@ -234,8 +235,8 @@ export default class AbstractEditorHandler {
 	 * Disables the fullscreen mode by restoring all moved elements and destroying the fullscreen container.
 	 */
 	public disable(): void {
-		if ( this._editor.config.get( 'fullscreen.disableCallback' ) ) {
-			this._editor.config.get( 'fullscreen.disableCallback' )!( this.getWrapper() );
+		if ( this._editor.config.get( 'fullscreen.onLeaveCallback' ) ) {
+			this._editor.config.get( 'fullscreen.onLeaveCallback' )!( this.getWrapper() );
 		}
 
 		this._document.body.classList.remove( 'ck-fullscreen' );
