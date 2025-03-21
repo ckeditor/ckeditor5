@@ -259,7 +259,7 @@ function modelToViewTableAttributeConverter() {
  * TODO: description
  */
 function getStylesToPropagateOnFigure( data: GHSViewAttributes ): GHSViewAttributes | null {
-	if ( !( 'styles' in data ) ) {
+	if ( !data || !( 'styles' in data ) ) {
 		return null;
 	}
 
@@ -281,7 +281,7 @@ function removeStylesPropagatedToFigure(
 	data: GHSViewAttributes,
 	stylesToFilterOut: GHSViewAttributes | null
 ): GHSViewAttributes | null {
-	if ( !( 'styles' in data ) ) {
+	if ( !data || !( 'styles' in data ) ) {
 		return null;
 	}
 
