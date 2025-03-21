@@ -225,7 +225,10 @@ export default class AbstractEditorHandler {
 
 		// Hide all other elements in the container to ensure they don't create an empty unscrollable space.
 		for ( const element of this._editor.config.get( 'fullscreen.container' )!.children ) {
-			if ( element !== this._wrapper && !element.classList.contains( 'ck-body-wrapper' ) ) {
+			// Do not hide body wrapper and ckbox wrapper to keep dialogs, balloons etc visible.
+			if ( element !== this._wrapper &&
+				!element.classList.contains( 'ck-body-wrapper' ) &&
+				!element.classList.contains( 'ckbox-wrapper' ) ) {
 				( element as HTMLElement ).style.display = 'none';
 			}
 		}
