@@ -1,3 +1,4 @@
+<h2>Editor:</h2>
 <div id="editor">
 	<table>
 		<caption>Monthly savings</caption>
@@ -16,17 +17,25 @@
 	</figure>
 </div>
 
+<h2>Editor output preview:</h2>
+<div id="editor-output-preview" class="ck-content"></div>
+
+<h2>Editor data:</h2>
+<div class="editor-output">
+	<pre id="editor-data" rows="20"></pre>
+</div>
+
 <style>
 	.editor-output {
-		margin-top: 30px;
+		padding: 10px;
+		border: 1px solid #ccc;
 	}
 
 	#editor-data {
 		width: 100%;
 	}
-</style>
 
-<div class="editor-output">
-	<h5>Editor data</h5>
-	<pre id="editor-data" rows="20"></pre>
-</div>
+	#editor-output-preview {
+		border: 1px solid #ccc;
+	}
+</style>

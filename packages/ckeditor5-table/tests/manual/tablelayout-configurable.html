@@ -1,0 +1,36 @@
+<div class="configuration-wrapper">
+	<fieldset>
+		<legend>Table layout configuration (upcast heuristics)</legend>
+		<div class="form-group">
+			<label for="tableType">preferred type of the external table</label>
+			<select id="tableType" class="form-control">
+				<option value="default">Default</option>
+				<option value="content">Content table</option>
+				<option value="layout">Layout table</option>
+			</select>
+		</div>
+	</fieldset>
+</div>
+
+<div id="editor"></div>
+
+<style>
+	.configuration-wrapper {
+		margin: 2em 0;
+	}
+
+	.external-table-wrapper {
+		margin-top: 20px;
+		padding: 2em;
+		background-color: rgba(0, 0, 0, 0.1);
+		border: 1px solid grey;
+		border-radius: 8px;
+	}
+
+	.external-table-wrapper table,
+	.external-table-wrapper td,
+	.external-table-wrapper th {
+		border: 1px solid black;
+		border-collapse: collapse;
+	}
+</style>

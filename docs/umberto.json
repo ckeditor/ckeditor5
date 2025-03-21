@@ -614,6 +614,11 @@
 					]
 				},
 				{
+					"name": "Email editing",
+					"id": "features-email",
+					"slug": "email-editing"
+				},
+				{
 					"name": "File management",
 					"id": "features-file-management",
 					"slug": "file-management"
