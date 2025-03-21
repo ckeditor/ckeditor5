@@ -3,7 +3,7 @@ menu-title: Layout tables
 meta-title: Layout tables | CKEditor 5 Documentation
 category: tables
 order: 50
-modified_at: 2025-03-06
+modified_at: 2025-03-21
 ---
 
 # Layout tables
