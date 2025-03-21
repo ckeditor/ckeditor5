@@ -235,7 +235,7 @@ export default class AbstractEditorHandler {
 	 */
 	public disable(): void {
 		if ( this._editor.config.get( 'fullscreen.disableCallback' ) ) {
-			this._editor.config.get( 'fullscreen.disableCallback' )!();
+			this._editor.config.get( 'fullscreen.disableCallback' )!( this.getWrapper() );
 		}
 
 		this._document.body.classList.remove( 'ck-fullscreen' );

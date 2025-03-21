@@ -18,6 +18,7 @@ Use the fullscreen mode toolbar button {@icon @ckeditor/ckeditor5-icons/theme/ic
 * Menu bar is visible by default, regardless of its presence outside fullscreen.
 * The editor editable area dimensions are changed.
 * Some dialogs are re-positioned to better utilize the increased space.
+* Website scroll is disabled.
 * Annotations display mode is switched to wide sidebar (this affects only annotations UIs without filter function configured).
 
 Fullscreen mode can also be toggled using the <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd> (or <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd>) keystroke.
@@ -119,6 +120,8 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
+When using a custom container, the website scroll will not be locked to allow for accessing the rest of its content.
+
 <info-box>
 	For more technical details, please check the {@link module:fullscreen/fullscreenconfig~FullscreenConfig plugin configuration API}.
 </info-box>
@@ -166,7 +169,6 @@ Here are some CKEditor&nbsp;5 features that are a perfect match for fullscreen m
 * {@link features/document-outline Document outline} &ndash; Display the list of all document headings next to the editing area.
 * {@link features/track-changes Track changes} &ndash; Mark user changes in the content and show them as suggestions in the sidebar for acceptance or rejection.
 * {@link features/real-time-collaboration Real-time collaboration} &ndash; Work on the same document with other users simultaneously.
-* {@link features/pagination Pagination} &ndash; See the live preview of the document's page breaks and quickly navigate between pages.
 
 ## Common API
 

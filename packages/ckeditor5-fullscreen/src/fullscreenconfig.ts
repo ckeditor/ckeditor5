@@ -41,7 +41,7 @@ export default interface FullscreenConfig {
 	 *
 	 * @default () => {}
 	 */
-	disableCallback?: () => void;
+	disableCallback?: ( container: HTMLElement ) => void;
 
 	/**
 	 * The container element for the fullscreen mode. This should be a reference to an existing, positioned element in the DOM.
@@ -68,10 +68,11 @@ export default interface FullscreenConfig {
 	toolbar?: {
 
 		/**
-		 * When set to `true`, the toolbar will stop grouping items and let them wrap to the next line
-		 * if there is not enough space to display them in a single row.
+		 * Whether toolbar should be grouping items for which there is not enough space.
+		 * By default, toolbar will behave the same as outside the fullscreen mode. You can specify this option to change this behavior
+		 * independently for the fullscreen mode.
 		 *
-		 * @default false
+		 * @default `!!config.toolbar.shouldNotGroupWhenFull`
 		 */
 		shouldNotGroupWhenFull?: boolean;
 	};
