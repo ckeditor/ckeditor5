@@ -17,6 +17,7 @@ import type {
 } from 'ckeditor5/src/engine.js';
 
 import type TableUtils from '../tableutils.js';
+import type TableWidthsCommand from '../../src/tablecolumnresize/tablewidthscommand.js';
 
 /**
  * The insert table layout command.
@@ -62,13 +63,19 @@ export default class InsertTableLayoutCommand extends Command {
 		const tableUtils: TableUtils = editor.plugins.get( 'TableUtils' );
 
 		model.change( writer => {
-			const normalizedOptions = { rows: options.rows, columns: options.columns };
+			const normalizedOptions = { rows: options.rows || 2, columns: options.columns || 2 };
 			const table = tableUtils.createTable( writer, normalizedOptions );
 
-			writer.setAttribute( 'tableWidth', '100%', table );
 			writer.setAttribute( 'tableType', 'layout', table );
 
 			model.insertObject( table, null, null, { findOptimalPosition: 'auto' } );
+
+			const singleColumnWidth = `${ 100 / normalizedOptions.columns! }%`;
+			const columnWidths = Array( normalizedOptions.columns ).fill( singleColumnWidth );
+			const tableWidthsCommand: TableWidthsCommand = editor.commands.get( 'resizeColumnWidths' )!;
+
+			// Make the table full-width with equal columns width.
+			tableWidthsCommand.execute( { tableWidth: '100%', columnWidths, table } );
 
 			writer.setSelection( writer.createPositionAt( table.getNodeByPath( [ 0, 0, 0 ] ), 0 ) );
 		} );
