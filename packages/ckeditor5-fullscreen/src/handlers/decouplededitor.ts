@@ -43,8 +43,6 @@ export default class DecoupledEditorHandler extends AbstractEditorHandler {
 				this._editor.config.get( 'fullscreen.toolbar.shouldNotGroupWhenFull' ) === true ? 'static' : 'dynamic'
 			);
 
-			this.moveToFullscreen( document.querySelector( '.ck-body-wrapper' )!, 'body-wrapper' );
-
 			if ( this._editor.config.get( 'fullscreen.menuBar.isVisible' ) ) {
 				this.moveToFullscreen( this._editor.ui.view.menuBarView.element!, 'menu-bar' );
 			}
