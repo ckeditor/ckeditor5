@@ -4,7 +4,7 @@
  */
 
 /**
- * @module fullscreen/fullscreensconfig
+ * @module fullscreen/fullscreenconfig
  */
 
 /**
@@ -31,7 +31,7 @@ export default interface FullscreenConfig {
 	 * Customizable callback that is called when you enter the fullscreen mode.
 	 * It's executed after the editor UI elements are moved to the fullscreen mode.
 	 *
-	 * @default () => {}
+	 * @default `() => {}`
 	 */
 	onEnterCallback?: ( container: HTMLElement ) => void;
 
@@ -39,7 +39,7 @@ export default interface FullscreenConfig {
 	 * Customizable callback that is called when you leave the fullscreen mode.
 	 * It's executed before the editor UI elements are moved back to the normal mode.
 	 *
-	 * @default () => {}
+	 * @default `() => {}`
 	 */
 	onLeaveCallback?: ( container: HTMLElement ) => void;
 

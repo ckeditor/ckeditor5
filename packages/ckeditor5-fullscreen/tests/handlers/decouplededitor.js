@@ -8,7 +8,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
-import DecoupledEditorHandler from '../../src/handlers/decouplededitor.js';
+import DecoupledEditorHandler from '../../src/handlers/decouplededitorhandler.js';
 import FullscreenEditing from '../../src/fullscreenediting.js';
 
 describe( 'DecoupledEditorHandler', () => {

@@ -13,7 +13,7 @@ import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import RevisionHistoryMock from '../_utils/revisionhistorymock.js';
-import AbstractEditorHandler from '../../src/handlers/abstracteditor.js';
+import AbstractEditorHandler from '../../src/handlers/abstracteditorhandler.js';
 import Fullscreen from '../../src/fullscreen.js';
 
 describe( 'AbstractHandler', () => {

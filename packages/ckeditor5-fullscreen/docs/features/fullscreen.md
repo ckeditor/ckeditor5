@@ -58,7 +58,7 @@ ClassicEditor
 
 ## Supported editor types
 
-Fullscreen mode is ready-to-use for {@link getting-started/setup/editor-types#classic-editor classic} and {@link getting-started/setup/editor-types#decoupled-editor decoupled} editors. If you want to use it with other editor type, you can use custom callbacks to adjust the layout according to your needs. See the details in the [Configuration](#configuration) section.
+Fullscreen mode is ready-to-use for {@link getting-started/setup/editor-types#classic-editor classic} and {@link getting-started/setup/editor-types#decoupled-editor-document decoupled} editors. If you want to use it with other editor type, you can use custom callbacks to adjust the layout according to your needs. See the details in the [Configuration](#configuration) section.
 
 ## Configuration
 

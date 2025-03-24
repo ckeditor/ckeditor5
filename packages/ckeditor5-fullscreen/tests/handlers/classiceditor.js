@@ -8,7 +8,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
-import ClassicEditorHandler from '../../src/handlers/classiceditor.js';
+import ClassicEditorHandler from '../../src/handlers/classiceditorhandler.js';
 import FullscreenEditing from '../../src/fullscreenediting.js';
 
 describe( 'ClassicEditorHandler', () => {
