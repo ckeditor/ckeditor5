@@ -244,7 +244,8 @@ function modelToViewTableAttributeConverter() {
 }
 
 /**
- * TODO: description
+ * Splits styles based on the `STYLE_ATTRIBUTES_TO_PROPAGATE` pattern that should be moved to the parent element
+ * and those that should remain on element.
  */
 function splitStylesBasedOnPattern( data: GHSViewAttributes ):
 { propagatedStyles: GHSViewAttributes; remainingStyles: GHSViewAttributes } {
