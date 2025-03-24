@@ -43,6 +43,16 @@ export default class AbstractEditorHandler {
 	private _annotationsUIsData: Map<string, Record<string, any>> | null = null;
 
 	/**
+	 * A callback that hides the document outline header when the source editing mode is enabled.
+	 * Document outline element itself is hidden by source editing plugin.
+	 */
+	/* istanbul ignore next -- @preserve */
+	private _sourceEditingCallback = ( _evt: EventInfo, _name: string, value: boolean ) => {
+		( this.getWrapper().querySelector( '.ck-fullscreen__document-outline-header' ) as HTMLElement ).style.display =
+			value ? 'none' : '';
+	};
+
+	/**
 	 * A callback that shows the revision viewer, stored to restore the original one after exiting the fullscreen mode.
 	 */
 	protected _showRevisionViewerCallback: ( ( config?: EditorConfig ) => Promise<RevisionViewerEditor | null> ) | null = null;
@@ -204,6 +214,10 @@ export default class AbstractEditorHandler {
 			this._overrideRevisionHistoryCallbacks();
 		}
 
+		if ( this._editor.plugins.has( 'SourceEditing' ) && this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
+			this._editor.plugins.get( 'SourceEditing' ).on( 'change:isSourceEditingMode', this._sourceEditingCallback );
+		}
+
 		// Hide all other elements in the container to ensure they don't create an empty unscrollable space.
 		for ( const element of this._editor.config.get( 'fullscreen.container' )!.children ) {
 			if ( element !== this._wrapper ) {
@@ -241,6 +255,10 @@ export default class AbstractEditorHandler {
 
 		if ( this._editor.plugins.has( 'RevisionHistory' ) ) {
 			this._restoreRevisionHistoryCallbacks();
+		}
+
+		if ( this._editor.plugins.has( 'SourceEditing' ) && this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
+			this._editor.plugins.get( 'SourceEditing' ).off( 'change:isSourceEditingMode', this._sourceEditingCallback );
 		}
 
 		for ( const placeholderName of this._placeholderMap.keys() ) {
