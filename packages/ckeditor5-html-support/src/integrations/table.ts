@@ -251,15 +251,17 @@ function splitStylesBasedOnPattern( data: GHSViewAttributes ):
 	const propagatedStyles: GHSViewAttributes = {};
 	const remainingStyles: GHSViewAttributes = { ...data };
 
+	if ( !data || !( 'styles' in data ) ) {
+		return { propagatedStyles, remainingStyles };
+	}
+
 	remainingStyles.styles = {};
 
-	if ( data && 'styles' in data ) {
-		for ( const [ key, value ] of Object.entries( data.styles! ) ) {
-			if ( STYLE_ATTRIBUTES_TO_PROPAGATE.includes( key ) ) {
-				propagatedStyles.styles = { ...propagatedStyles.styles, [ key ]: value };
-			} else {
-				remainingStyles.styles = { ...remainingStyles.styles, [ key ]: value };
-			}
+	for ( const [ key, value ] of Object.entries( data.styles! ) ) {
+		if ( STYLE_ATTRIBUTES_TO_PROPAGATE.includes( key ) ) {
+			propagatedStyles.styles = { ...propagatedStyles.styles, [ key ]: value };
+		} else {
+			remainingStyles.styles = { ...remainingStyles.styles, [ key ]: value };
 		}
 	}
 
