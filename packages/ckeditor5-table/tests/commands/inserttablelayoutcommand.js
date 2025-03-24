@@ -107,7 +107,7 @@ describe( 'InsertTableLayoutCommand', () => {
 						[ '[]', '' ],
 						[ '', '' ]
 					],
-					{ tableType: 'layout' } )
+					{ tableType: 'layout', tableWidth: '100%', columnWidths: '50%,50%' } )
 				);
 			} );
 
@@ -122,7 +122,7 @@ describe( 'InsertTableLayoutCommand', () => {
 						[ '[]', '' ],
 						[ '', '' ]
 					],
-					{ tableType: 'layout' } )
+					{ tableType: 'layout', tableWidth: '100%', columnWidths: '50%,50%' } )
 				);
 			} );
 
@@ -138,7 +138,7 @@ describe( 'InsertTableLayoutCommand', () => {
 						[ '', '', '', '' ],
 						[ '', '', '', '' ]
 					],
-					{ tableType: 'layout' } )
+					{ tableType: 'layout', tableWidth: '100%', columnWidths: '25%,25%,25%,25%' } )
 				);
 			} );
 
@@ -153,7 +153,7 @@ describe( 'InsertTableLayoutCommand', () => {
 						[ '[]', '', '', '' ],
 						[ '', '', '', '' ],
 						[ '', '', '', '' ]
-					], { tableType: 'layout' } )
+					], { tableType: 'layout', tableWidth: '100%', columnWidths: '25%,25%,25%,25%' } )
 				);
 			} );
 
@@ -167,7 +167,7 @@ describe( 'InsertTableLayoutCommand', () => {
 						[ '[]', '' ],
 						[ '', '' ]
 					],
-					{ tableType: 'layout' } ) +
+					{ tableType: 'layout', tableWidth: '100%', columnWidths: '50%,50%' } ) +
 					'<paragraph>foo</paragraph>'
 				);
 			} );
@@ -183,7 +183,7 @@ describe( 'InsertTableLayoutCommand', () => {
 						[ '', '', '', '' ],
 						[ '', '', '', '' ]
 					],
-					{ tableType: 'layout' } )
+					{ tableType: 'layout', tableWidth: '100%', columnWidths: '25%,25%,25%,25%' } )
 				);
 			} );
 		} );
@@ -199,7 +199,7 @@ describe( 'InsertTableLayoutCommand', () => {
 
 				expect( getData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' + modelTable( [ [ '[]', '' ] ],
-						{ tableType: 'layout' } ) + '<paragraph>bar</paragraph>'
+						{ tableType: 'layout', tableWidth: '100%', columnWidths: '50%,50%' } ) + '<paragraph>bar</paragraph>'
 				);
 			} );
 
@@ -210,7 +210,7 @@ describe( 'InsertTableLayoutCommand', () => {
 
 				expect( getData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' + modelTable( [ [ '[]', '' ] ],
-						{ tableType: 'layout' } ) + '<paragraph>bar</paragraph>'
+						{ tableType: 'layout', tableWidth: '100%', columnWidths: '50%,50%' } ) + '<paragraph>bar</paragraph>'
 				);
 			} );
 		} );
@@ -245,7 +245,7 @@ describe( 'InsertTableLayoutCommand', () => {
 							[ '[]', '' ],
 							[ '', '' ]
 						],
-						{ tableType: 'layout', tableWidth: '100%' } )
+						{ tableType: 'layout', tableWidth: '100%', columnWidths: '50%,50%' } )
 					);
 				} );
 
@@ -260,7 +260,7 @@ describe( 'InsertTableLayoutCommand', () => {
 							[ '[]', '' ],
 							[ '', '' ]
 						],
-						{ tableType: 'layout', tableWidth: '100%' } )
+						{ tableType: 'layout', tableWidth: '100%', columnWidths: '50%,50%' } )
 					);
 				} );
 
@@ -276,7 +276,7 @@ describe( 'InsertTableLayoutCommand', () => {
 							[ '', '', '', '' ],
 							[ '', '', '', '' ]
 						],
-						{ tableType: 'layout', tableWidth: '100%' } )
+						{ tableType: 'layout', tableWidth: '100%', columnWidths: '25%,25%,25%,25%' } )
 					);
 				} );
 
@@ -292,7 +292,7 @@ describe( 'InsertTableLayoutCommand', () => {
 							[ '', '', '', '' ],
 							[ '', '', '', '' ]
 						],
-						{ tableType: 'layout', tableWidth: '100%' } )
+						{ tableType: 'layout', tableWidth: '100%', columnWidths: '25%,25%,25%,25%' } )
 					);
 				} );
 
@@ -306,7 +306,7 @@ describe( 'InsertTableLayoutCommand', () => {
 							[ '[]', '' ],
 							[ '', '' ]
 						],
-						{ tableType: 'layout', tableWidth: '100%' } ) +
+						{ tableType: 'layout', tableWidth: '100%', columnWidths: '50%,50%' } ) +
 						'<paragraph>foo</paragraph>'
 					);
 				} );
@@ -322,7 +322,7 @@ describe( 'InsertTableLayoutCommand', () => {
 							[ '', '', '', '' ],
 							[ '', '', '', '' ]
 						],
-						{ tableType: 'layout', tableWidth: '100%' } )
+						{ tableType: 'layout', tableWidth: '100%', columnWidths: '25%,25%,25%,25%' } )
 					);
 				} );
 			} );
@@ -338,7 +338,7 @@ describe( 'InsertTableLayoutCommand', () => {
 
 					expect( getData( model ) ).to.equal(
 						'<paragraph>foo</paragraph>' + modelTable( [ [ '[]', '' ] ],
-							{ tableType: 'layout', tableWidth: '100%' } ) + '<paragraph>bar</paragraph>'
+							{ tableType: 'layout', tableWidth: '100%', columnWidths: '50%,50%' } ) + '<paragraph>bar</paragraph>'
 					);
 				} );
 
@@ -351,7 +351,7 @@ describe( 'InsertTableLayoutCommand', () => {
 
 					expect( getData( model ) ).to.equal(
 						'<paragraph>foo</paragraph>' + modelTable( [ [ '[]', '' ] ],
-							{ tableType: 'layout', tableWidth: '100%' } ) + '<paragraph>bar</paragraph>'
+							{ tableType: 'layout', tableWidth: '100%', columnWidths: '50%,50%' } ) + '<paragraph>bar</paragraph>'
 					);
 				} );
 			} );
@@ -361,7 +361,7 @@ describe( 'InsertTableLayoutCommand', () => {
 			it( 'should not have first row as a heading by default', async () => {
 				const editor = await ModelTestEditor
 					.create( {
-						plugins: [ Paragraph, TableEditing ],
+						plugins: [ Paragraph, TableEditing, TableColumnResize ],
 						table: {
 							defaultHeadings: { rows: 1 }
 						}
@@ -378,7 +378,7 @@ describe( 'InsertTableLayoutCommand', () => {
 					modelTable( [
 						[ '[]', '', '' ],
 						[ '', '', '' ]
-					] )
+					], { tableWidth: '100%', columnWidths: '33.33%,33.33%,33.34%' } )
 				);
 
 				await editor.destroy();
@@ -387,7 +387,7 @@ describe( 'InsertTableLayoutCommand', () => {
 			it( 'should not have first column as a heading by default', async () => {
 				const editor = await ModelTestEditor
 					.create( {
-						plugins: [ Paragraph, TableEditing ],
+						plugins: [ Paragraph, TableEditing, TableColumnResize ],
 						table: {
 							defaultHeadings: { columns: 1 }
 						}
@@ -404,7 +404,7 @@ describe( 'InsertTableLayoutCommand', () => {
 					modelTable( [
 						[ '[]', '', '' ],
 						[ '', '', '' ]
-					] )
+					], { tableWidth: '100%', columnWidths: '33.33%,33.33%,33.34%' } )
 				);
 
 				await editor.destroy();
@@ -413,7 +413,7 @@ describe( 'InsertTableLayoutCommand', () => {
 			it( 'should not have first row and first column as a heading by default', async () => {
 				const editor = await ModelTestEditor
 					.create( {
-						plugins: [ Paragraph, TableEditing ],
+						plugins: [ Paragraph, TableEditing, TableColumnResize ],
 						table: {
 							defaultHeadings: { rows: 1, columns: 1 }
 						}
@@ -431,7 +431,7 @@ describe( 'InsertTableLayoutCommand', () => {
 						[ '[]', '', '' ],
 						[ '', '', '' ],
 						[ '', '', '' ]
-					] )
+					], { tableWidth: '100%', columnWidths: '33.33%,33.33%,33.34%' } )
 				);
 
 				await editor.destroy();
@@ -440,7 +440,7 @@ describe( 'InsertTableLayoutCommand', () => {
 			it( 'should not have first three rows and two columns as a heading by default', async () => {
 				const editor = await ModelTestEditor
 					.create( {
-						plugins: [ Paragraph, TableEditing ],
+						plugins: [ Paragraph, TableEditing, TableColumnResize ],
 						table: {
 							defaultHeadings: { rows: 3, columns: 2 }
 						}
@@ -459,7 +459,7 @@ describe( 'InsertTableLayoutCommand', () => {
 						[ '', '', '' ],
 						[ '', '', '' ],
 						[ '', '', '' ]
-					] )
+					], { tableWidth: '100%', columnWidths: '33.33%,33.33%,33.34%' } )
 				);
 
 				await editor.destroy();
@@ -468,7 +468,7 @@ describe( 'InsertTableLayoutCommand', () => {
 			it( 'should not have auto headings not to be greater than table rows and columns', async () => {
 				const editor = await ModelTestEditor
 					.create( {
-						plugins: [ Paragraph, TableEditing ],
+						plugins: [ Paragraph, TableEditing, TableColumnResize ],
 						table: {
 							defaultHeadings: { rows: 3, columns: 3 }
 						}
@@ -485,7 +485,7 @@ describe( 'InsertTableLayoutCommand', () => {
 					modelTable( [
 						[ '[]', '' ],
 						[ '', '' ]
-					] )
+					], { tableWidth: '100%', columnWidths: '50%,50%' } )
 				);
 
 				await editor.destroy();
@@ -499,7 +499,7 @@ describe( 'InsertTableLayoutCommand', () => {
 			beforeEach( async () => {
 				editor = await ModelTestEditor
 					.create( {
-						plugins: [ Paragraph, TableEditing ],
+						plugins: [ Paragraph, TableEditing, TableColumnResize ],
 						table: {
 							defaultHeadings: { rows: 1 }
 						}
@@ -538,7 +538,7 @@ describe( 'InsertTableLayoutCommand', () => {
 					modelTable( [
 						[ '[]', '' ],
 						[ '', '' ]
-					], { pretty: true, smart: true } )
+					], { pretty: true, smart: true, tableWidth: '100%', columnWidths: '50%,50%' } )
 				);
 			} );
 
@@ -551,7 +551,7 @@ describe( 'InsertTableLayoutCommand', () => {
 					modelTable( [
 						[ '[]', '' ],
 						[ '', '' ]
-					], { pretty: true } ) +
+					], { pretty: true, tableWidth: '100%', columnWidths: '50%,50%' } ) +
 					'<paragraph pretty="true">foo</paragraph>' +
 					'<paragraph smart="true">bar</paragraph>'
 				);
@@ -566,7 +566,7 @@ describe( 'InsertTableLayoutCommand', () => {
 					modelTable( [
 						[ '[]', '' ],
 						[ '', '' ]
-					], { pretty: true, smart: true } )
+					], { pretty: true, smart: true, tableWidth: '100%', columnWidths: '50%,50%' } )
 				);
 			} );
 
@@ -582,7 +582,7 @@ describe( 'InsertTableLayoutCommand', () => {
 					modelTable( [
 						[ '[]', '' ],
 						[ '', '' ]
-					], { pretty: true, smart: true } )
+					], { pretty: true, smart: true, tableWidth: '100%', columnWidths: '50%,50%' } )
 				);
 			} );
 		} );
