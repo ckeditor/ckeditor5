@@ -9,6 +9,7 @@ import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 
 import TableEditing from '../../src/tableediting.js';
 import TableSelection from '../../src/tableselection.js';
+import { TableLayoutEditing } from '../../src/index.js';
 import { assertSelectedCells, modelTable } from '../_utils/utils.js';
 
 import SetHeaderRowCommand from '../../src/commands/setheaderrowcommand.js';
@@ -71,6 +72,39 @@ describe( 'SetHeaderRowCommand', () => {
 			);
 
 			expect( command.isEnabled ).to.be.true;
+		} );
+
+		describe( 'with `TableLayout` plugin', () => {
+			let editor, model, command;
+
+			beforeEach( () => {
+				return ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing, TableSelection, TableLayoutEditing ]
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+						command = new SetHeaderRowCommand( editor );
+					} );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			it( 'should be true if selection is in table', () => {
+				setData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be false if selection is in table with `tableType="layout"`', () => {
+				setData( model,
+					'<table tableType="layout">' +
+						'<tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow>' +
+					'</table>' );
+				expect( command.isEnabled ).to.be.false;
+			} );
 		} );
 	} );
 
