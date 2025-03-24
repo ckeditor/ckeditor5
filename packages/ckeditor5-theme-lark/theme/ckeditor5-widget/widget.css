@@ -37,6 +37,13 @@
 	&:hover {
 		outline-color: var(--ck-color-widget-hover-border);
 	}
+
+	/*
+	 * Hide the outline of all widget parents when the widget is being hovered.
+	 */
+	&:has( .ck-widget:hover ) {
+		outline-color: transparent;
+	}
 }
 
 .ck .ck-editor__nested-editable {
@@ -135,6 +142,12 @@
 				opacity: 1;
 			}
 		}
+	}
+
+	/* Hide the selection handle on mouse hover over the widget of all the widget parents. */
+	&:has( .ck-widget:hover ) > .ck-widget__selection-handle {
+		opacity: 0;
+		visibility: hidden;
 	}
 }
 
