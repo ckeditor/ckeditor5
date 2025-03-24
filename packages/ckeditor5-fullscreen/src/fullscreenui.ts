@@ -9,12 +9,12 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
-import { IconFullscreenOff, IconFullscreenOn } from 'ckeditor5/src/icons.js';
+import { IconFullscreenEnter, IconFullscreenLeave } from 'ckeditor5/src/icons.js';
 
 import FullscreenEditing from './fullscreenediting.js';
 import '../theme/fullscreen.css';
 
-const COMMAND_NAME = 'fullscreen';
+const COMMAND_NAME = 'toggleFullscreen';
 
 /**
  * A plugin registering the fullscreen mode buttons.
@@ -47,8 +47,8 @@ export default class FullscreenUI extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 
-		editor.ui.componentFactory.add( COMMAND_NAME, () => this._createButton( ButtonView ) );
-		editor.ui.componentFactory.add( `menuBar:${ COMMAND_NAME }`, () => this._createButton( MenuBarMenuListItemButtonView ) );
+		editor.ui.componentFactory.add( 'fullscreen', () => this._createButton( ButtonView ) );
+		editor.ui.componentFactory.add( 'menuBar:fullscreen', () => this._createButton( MenuBarMenuListItemButtonView ) );
 	}
 
 	/**
@@ -66,14 +66,15 @@ export default class FullscreenUI extends Plugin {
 
 		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
 		view.bind( 'isOn' ).to( command, 'value' );
-		view.bind( 'icon' ).to( command, 'value', value => value ? IconFullscreenOn : IconFullscreenOff );
-		view.bind( 'label' ).to( command, 'value', value => value ? t( 'Disable fullscreen mode' ) : t( 'Enable fullscreen mode' ) );
 
 		if ( ( view instanceof MenuBarMenuListItemButtonView ) ) {
 			view.set( {
-				role: 'menuitemcheckbox'
+				role: 'menuitemcheckbox',
+				label: t( 'Fullscreen mode' )
 			} );
 		} else {
+			view.bind( 'icon' ).to( command, 'value', value => value ? IconFullscreenLeave : IconFullscreenEnter );
+			view.bind( 'label' ).to( command, 'value', value => value ? t( 'Leave fullscreen mode' ) : t( 'Enter fullscreen mode' ) );
 			view.set( {
 				tooltip: true
 			} );

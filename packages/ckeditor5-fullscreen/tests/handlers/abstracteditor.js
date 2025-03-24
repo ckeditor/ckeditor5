@@ -3,17 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 import { Dialog, DialogViewPosition } from '@ckeditor/ckeditor5-ui';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import RevisionHistoryMock from '../_utils/revisionhistorymock.js';
-import AbstractEditorHandler from '../../src/handlers/abstracteditor.js';
+import AbstractEditorHandler from '../../src/handlers/abstracteditorhandler.js';
 import Fullscreen from '../../src/fullscreen.js';
 
 describe( 'AbstractHandler', () => {
@@ -50,8 +50,10 @@ describe( 'AbstractHandler', () => {
 			expect( abstractHandler._editor ).to.equal( editor );
 		} );
 
-		it( 'should setup listener returning moved elements when editor is destroyed', async () => {
-			const spy = sinon.spy( abstractHandler, 'disable' );
+		it( 'should setup listener destroying moved elements when editor is destroyed and fullscreen is enabled', async () => {
+			const spy = sinon.spy( abstractHandler, 'destroy' );
+
+			abstractHandler.enable();
 
 			await editor.destroy();
 
@@ -68,7 +70,7 @@ describe( 'AbstractHandler', () => {
 
 			abstractHandler.moveToFullscreen( element, 'editable' );
 
-			expect( abstractHandler.getContainer().querySelector( '#element' ) ).to.equal( element );
+			expect( abstractHandler.getWrapper().querySelector( '#element' ) ).to.equal( element );
 
 			abstractHandler.disable();
 			element.remove();
@@ -103,7 +105,7 @@ describe( 'AbstractHandler', () => {
 			element2.remove();
 		} );
 
-		it( 'should destroy the container if there are no other elements left', () => {
+		it( 'should destroy the wrapper if there are no other elements left', () => {
 			const element = global.document.createElement( 'div' );
 
 			global.document.body.appendChild( element );
@@ -111,19 +113,19 @@ describe( 'AbstractHandler', () => {
 			abstractHandler.moveToFullscreen( element, 'menu-bar' );
 			abstractHandler.restoreMovedElementLocation( 'menu-bar' );
 
-			expect( abstractHandler._container ).to.be.null;
+			expect( abstractHandler._wrapper ).to.be.null;
 
 			element.remove();
 		} );
 	} );
 
-	describe( '#getContainer()', () => {
-		it( 'should create a container if it does not exist', () => {
-			expect( global.document.querySelector( '.ck-fullscreen__main-container' ) ).to.be.null;
+	describe( '#getWrapper()', () => {
+		it( 'should create a wrapper if it does not exist', () => {
+			expect( global.document.querySelector( '.ck-fullscreen__main-wrapper' ) ).to.be.null;
 
-			const container = abstractHandler.getContainer();
+			const wrapper = abstractHandler.getWrapper();
 
-			expect( container.innerHTML ).to.equal( `
+			expect( wrapper.innerHTML ).to.equal( `
 				<div class="ck ck-fullscreen__top-wrapper ck-reset_all">
 					<div class="ck ck-fullscreen__menu-bar" data-ck-fullscreen="menu-bar"></div>
 					<div class="ck ck-fullscreen__toolbar" data-ck-fullscreen="toolbar"></div>
@@ -132,54 +134,56 @@ describe( 'AbstractHandler', () => {
 					<div class="ck ck-fullscreen__sidebar ck-fullscreen__left-sidebar" data-ck-fullscreen="left-sidebar">
 						<div class="ck ck-fullscreen__left-sidebar--sticky" data-ck-fullscreen="left-sidebar-sticky"></div>
 					</div>
-					<div class="ck ck-fullscreen__editable" data-ck-fullscreen="editable"></div>
-					<div class="ck ck-fullscreen__sidebar" data-ck-fullscreen="right-sidebar"></div>
+					<div class="ck ck-fullscreen__editable" data-ck-fullscreen="editable">
+						<div class="ck ck-fullscreen__pagination-view" data-ck-fullscreen="pagination-view"></div>
+					</div>
+					<div class="ck ck-fullscreen__sidebar ck-fullscreen__right-sidebar" data-ck-fullscreen="right-sidebar"></div>
 				</div>
 				<div class="ck ck-fullscreen__bottom-wrapper">
 					<div class="ck ck-fullscreen__body-wrapper" data-ck-fullscreen="body-wrapper"></div>
 				</div>
 			` );
 
-			container.remove();
+			wrapper.remove();
 		} );
 
-		it( 'should return a container if it already exists', () => {
-			const container = abstractHandler.getContainer();
+		it( 'should return a wrapper if it already exists', () => {
+			const wrapper = abstractHandler.getWrapper();
 
-			container.classList.add( 'custom' );
+			wrapper.classList.add( 'custom' );
 
-			expect( abstractHandler.getContainer().classList.contains( 'custom' ) ).to.be.true;
+			expect( abstractHandler.getWrapper().classList.contains( 'custom' ) ).to.be.true;
 
-			container.remove();
+			wrapper.remove();
 		} );
 
-		it( 'should append the container to the body by default', () => {
-			const container = abstractHandler.getContainer();
+		it( 'should append the wrapper to the body by default', () => {
+			const wrapper = abstractHandler.getWrapper();
 
-			expect( container.parentElement ).to.equal( global.document.body );
+			expect( wrapper.parentElement ).to.equal( global.document.body );
 
-			container.remove();
+			wrapper.remove();
 		} );
 
-		it( 'should append the container to the custom container if configured', () => {
+		it( 'should append the wrapper to the custom container if configured', () => {
 			const customContainer = global.document.createElement( 'div' );
 
 			global.document.body.appendChild( customContainer );
 
 			editor.config.set( 'fullscreen.container', customContainer );
 
-			const container = abstractHandler.getContainer();
+			const wrapper = abstractHandler.getWrapper();
 
-			expect( container.parentElement ).to.equal( customContainer );
+			expect( wrapper.parentElement ).to.equal( customContainer );
 
-			container.remove();
+			wrapper.remove();
 			customContainer.remove();
 		} );
 	} );
 
 	describe( '#enable()', () => {
-		it( 'should execute the #_defaultEnable method', () => {
-			const spy = sinon.spy( abstractHandler, '_defaultEnable' );
+		it( 'should execute the #_defaultOnEnter method', () => {
+			const spy = sinon.spy( abstractHandler, '_defaultOnEnter' );
 
 			abstractHandler.enable();
 
@@ -189,7 +193,7 @@ describe( 'AbstractHandler', () => {
 		it( 'should execute the custom callback if configured', () => {
 			const spy = sinon.spy();
 
-			editor.config.set( 'fullscreen.enableCallback', spy );
+			editor.config.set( 'fullscreen.onEnterCallback', spy );
 
 			abstractHandler.enable();
 
@@ -201,7 +205,7 @@ describe( 'AbstractHandler', () => {
 		it( 'should execute the custom callback if configured', () => {
 			const spy = sinon.spy();
 
-			editor.config.set( 'fullscreen.disableCallback', spy );
+			editor.config.set( 'fullscreen.onLeaveCallback', spy );
 
 			abstractHandler.disable();
 
@@ -238,17 +242,75 @@ describe( 'AbstractHandler', () => {
 			element2.remove();
 		} );
 
-		it( 'should destroy the container if it was created', () => {
-			const container = abstractHandler.getContainer();
+		it( 'should destroy the wrapper if it was created', () => {
+			const wrapper = abstractHandler.getWrapper();
 
 			abstractHandler.disable();
 
-			expect( abstractHandler._container ).to.be.null;
-			expect( container.parentElement ).to.be.null;
+			expect( abstractHandler._wrapper ).to.be.null;
+			expect( wrapper.parentElement ).to.be.null;
 		} );
 
-		it( 'should not throw if there is no container', () => {
+		it( 'should not throw if there is no wrapper', () => {
 			expect( () => abstractHandler.disable() ).to.not.throw();
+		} );
+
+		it( 'should restore default toolbar behavior', async () => {
+			const tempDomElementDynamicToolbar = global.document.createElement( 'div' );
+			global.document.body.appendChild( tempDomElementDynamicToolbar );
+
+			const tempEditorDynamicToolbar = await ClassicEditor.create( tempDomElementDynamicToolbar, {
+				plugins: [
+					Paragraph,
+					Essentials
+				],
+				toolbar: {
+					shouldNotGroupWhenFull: false
+				},
+				fullscreen: {
+					toolbar: {
+						shouldNotGroupWhenFull: true
+					}
+				}
+			} );
+
+			const tempAbstractHandlerDynamicToolbar = new AbstractEditorHandler( tempEditorDynamicToolbar );
+
+			tempAbstractHandlerDynamicToolbar.enable();
+			tempAbstractHandlerDynamicToolbar.disable();
+
+			expect( tempEditorDynamicToolbar.ui.view.toolbar.isGrouping ).to.be.true;
+
+			tempDomElementDynamicToolbar.remove();
+			await tempEditorDynamicToolbar.destroy();
+
+			const tempDomElementStaticToolbar = global.document.createElement( 'div' );
+			global.document.body.appendChild( tempDomElementStaticToolbar );
+
+			const tempEditorStaticToolbar = await ClassicEditor.create( tempDomElementStaticToolbar, {
+				plugins: [
+					Paragraph,
+					Essentials
+				],
+				toolbar: {
+					shouldNotGroupWhenFull: true
+				},
+				fullscreen: {
+					toolbar: {
+						shouldNotGroupWhenFull: false
+					}
+				}
+			} );
+
+			const tempAbstractHandlerStaticToolbar = new AbstractEditorHandler( tempEditorStaticToolbar );
+
+			tempAbstractHandlerStaticToolbar.enable();
+			tempAbstractHandlerStaticToolbar.disable();
+
+			expect( tempEditorStaticToolbar.ui.view.toolbar.isGrouping ).to.be.false;
+
+			tempDomElementStaticToolbar.remove();
+			return tempEditorStaticToolbar.destroy();
 		} );
 	} );
 
@@ -309,38 +371,84 @@ describe( 'AbstractHandler', () => {
 		} );
 	} );
 
-	describe( 'registerFullscreenDialogPositionAdjustments', () => {
-		it( 'should not try to adjust position when there is no Dialog plugin loaded', async () => {
-			await editor.destroy();
+	describe( 'with source editing and document outline plugins', () => {
+		let domElementForSourceEditing, editorWithSourceEditing, abstractEditorHandler;
 
-			editor = await ClassicEditor.create( domElement, {
+		class DocumentOutlineUIMock extends Plugin {
+			static get pluginName() {
+				return 'DocumentOutlineUI';
+			}
+
+			view = { element: global.document.createElement( 'div' ) };
+		}
+
+		beforeEach( async () => {
+			domElementForSourceEditing = global.document.createElement( 'div' );
+			global.document.body.appendChild( domElementForSourceEditing );
+
+			editorWithSourceEditing = await ClassicEditor.create( domElementForSourceEditing, {
 				plugins: [
-					Paragraph
+					Paragraph,
+					Essentials,
+					SourceEditing,
+					DocumentOutlineUIMock
 				]
 			} );
 
-			abstractHandler = new AbstractEditorHandler( editor );
-
-			const spy = sinon.spy( abstractHandler, '_setNewDialogPosition' );
-
-			abstractHandler.registerFullscreenDialogPositionAdjustments();
-
-			expect( spy ).not.to.be.called;
-
-			await editor.destroy();
+			abstractEditorHandler = new AbstractEditorHandler( editorWithSourceEditing );
+			sinon.stub( abstractEditorHandler, '_generateDocumentOutlineContainer' );
 		} );
 
-		it( 'should call _setNewDialogPosition when there is Dialog plugin loaded', () => {
+		afterEach( async () => {
+			abstractEditorHandler.destroy();
+			domElementForSourceEditing.remove();
+
+			return editorWithSourceEditing.destroy();
+		} );
+
+		it( 'should hide document outline header when source editing is enabled in fullscreen mode', () => {
+			const stub = sinon.stub( abstractEditorHandler, '_sourceEditingCallback' );
+
+			abstractEditorHandler.enable();
+			editorWithSourceEditing.plugins.get( 'SourceEditing' ).isSourceEditingMode = true;
+
+			expect( stub.calledOnce ).to.be.true;
+		} );
+
+		it( 'should restore document outline header when fullscreen mode is disabled', () => {
+			const stub = sinon.stub( abstractEditorHandler, '_sourceEditingCallback' );
+
+			abstractEditorHandler.enable();
+			editorWithSourceEditing.plugins.get( 'SourceEditing' ).isSourceEditingMode = true;
+			editorWithSourceEditing.plugins.get( 'SourceEditing' ).isSourceEditingMode = false;
+
+			expect( stub.calledTwice ).to.be.true;
+		} );
+
+		it( 'should not be executed outside the fullscreen mode', () => {
+			const stub = sinon.stub( abstractEditorHandler, '_sourceEditingCallback' );
+			sinon.stub( abstractEditorHandler, '_restoreDocumentOutlineDefaultContainer' );
+
+			abstractEditorHandler.enable();
+			abstractEditorHandler.disable();
+			editorWithSourceEditing.plugins.get( 'SourceEditing' ).isSourceEditingMode = true;
+
+			expect( stub.called ).to.be.false;
+		} );
+	} );
+
+	describe( '_registerFullscreenDialogPositionAdjustments', () => {
+		it( 'should call _setNewDialogPosition', () => {
 			const spy = sinon.spy( abstractHandler, '_setNewDialogPosition' );
 
-			abstractHandler.registerFullscreenDialogPositionAdjustments();
+			abstractHandler._registerFullscreenDialogPositionAdjustments();
 
 			expect( spy ).to.be.called;
 		} );
 	} );
 
-	describe( 'unregisterFullscreenDialogPositionAdjustments', () => {
-		it( 'should change position of dialogview to editor-top-side for dialogview with position set to null', () => {
+	describe( '_unregisterFullscreenDialogPositionAdjustments', () => {
+		it( 'should change position of dialogView to editor-top-side for dialogView with position set to null', () => {
 			const dialogPlugin = editor.plugins.get( Dialog );
 			const dialogContentView = new View();
 
@@ -364,7 +472,7 @@ describe( 'AbstractHandler', () => {
 
 			const spy = sinon.spy( dialogPlugin.view, 'updatePosition' );
 
-			abstractHandler.unregisterFullscreenDialogPositionAdjustments();
+			abstractHandler._unregisterFullscreenDialogPositionAdjustments();
 
 			expect( dialogPlugin.view.position ).to.equal( DialogViewPosition.EDITOR_TOP_SIDE );
 			expect( spy ).to.be.called;
@@ -408,41 +516,7 @@ describe( 'AbstractHandler', () => {
 	} );
 
 	describe( '_setNewDialogPosition', () => {
-		it( 'should not try to adjust position when there is no Dialog plugin loaded', async () => {
-			await editor.destroy();
-
-			editor = await ClassicEditor.create( domElement, {
-				plugins: [
-					Paragraph
-				] } );
-
-			const abstractHandler = new AbstractEditorHandler( editor );
-
-			const spy = sinon.spy( editor.plugins, 'get' );
-
-			abstractHandler._setNewDialogPosition();
-			abstractHandler.unregisterFullscreenDialogPositionAdjustments();
-
-			expect( spy ).not.to.be.called;
-
-			await editor.destroy();
-		} );
-
 		it( 'should not try to adjust position when dialog position is different than editor-top-side', () => {
-			const container = document.createElement( 'div' );
-			container.style.width = '2000px';
-			container.style.height = '1000px';
-
-			document.body.appendChild( container );
-
-			abstractHandler._container = container;
-			const editorContainer = document.createElement( 'div' );
-			editorContainer.style.width = '1000px';
-			editorContainer.style.height = '500px';
-
-			editorContainer.classList.add( 'ck-fullscreen__editable' );
-			document.body.appendChild( editorContainer );
-
 			const dialogPlugin = editor.plugins.get( Dialog );
 			const dialogContentView = new View();
 
@@ -462,33 +536,16 @@ describe( 'AbstractHandler', () => {
 				position: DialogViewPosition.EDITOR_TOP_CENTER
 			} );
 
-			const dialogPositionLeft = dialogPlugin.view._left;
-			const dialogPositionTop = dialogPlugin.view._top;
+			const originalDialogPositionLeft = dialogPlugin.view._left;
+			const originalDialogPositionTop = dialogPlugin.view._top;
 
 			abstractHandler._setNewDialogPosition();
 
-			expect( dialogPositionLeft ).to.equal( dialogPlugin.view._left );
-			expect( dialogPositionTop ).to.equal( dialogPlugin.view._top );
-
-			editorContainer.remove();
-			container.remove();
+			expect( originalDialogPositionLeft ).to.equal( dialogPlugin.view._left );
+			expect( originalDialogPositionTop ).to.equal( dialogPlugin.view._top );
 		} );
 
 		it( 'should change position of dialog when dialog position is editor-top-side', () => {
-			const container = document.createElement( 'div' );
-			container.style.width = '2000px';
-			container.style.height = '1000px';
-
-			document.body.appendChild( container );
-
-			abstractHandler._container = container;
-			const editorContainer = document.createElement( 'div' );
-			editorContainer.style.width = '1000px';
-			editorContainer.style.height = '500px';
-
-			editorContainer.classList.add( 'ck-fullscreen__editable' );
-			document.body.appendChild( editorContainer );
-
 			const dialogPlugin = editor.plugins.get( Dialog );
 			const dialogContentView = new View();
 
@@ -508,35 +565,15 @@ describe( 'AbstractHandler', () => {
 				position: DialogViewPosition.EDITOR_TOP_SIDE
 			} );
 
-			dialogPlugin.hide();
+			const originalDialogPositionLeft = dialogPlugin.view._left;
+			const originalDialogPositionTop = dialogPlugin.view._top;
 
-			const dialogPositionLeft = dialogPlugin.view._left;
-			const dialogPositionTop = dialogPlugin.view._top;
+			editor.commands.get( 'toggleFullscreen' ).execute();
 
-			editor.commands.get( 'fullscreen' ).execute();
+			expect( originalDialogPositionLeft ).not.to.equal( dialogPlugin.view._left );
+			expect( originalDialogPositionTop ).not.to.equal( dialogPlugin.view._top );
 
-			dialogContentView.setTemplate( {
-				tag: 'div',
-				attributes: {
-					style: {
-						width: '100px',
-						height: '50px'
-					}
-				}
-			} );
-
-			dialogPlugin.show( {
-				label: 'Foo',
-				content: dialogContentView,
-				position: DialogViewPosition.EDITOR_TOP_SIDE
-			} );
-
-			expect( dialogPositionLeft ).not.to.equal( dialogPlugin.view._left );
-			expect( dialogPositionTop ).not.to.equal( dialogPlugin.view._top );
-
-			editorContainer.remove();
-			editor.commands.get( 'fullscreen' ).execute();
-			container.remove();
+			editor.commands.get( 'toggleFullscreen' ).execute();
 		} );
 	} );
 } );

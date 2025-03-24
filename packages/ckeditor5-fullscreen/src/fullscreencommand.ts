@@ -11,9 +11,9 @@ import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 
-import AbstractEditorHandler from './handlers/abstracteditor.js';
-import ClassicEditorHandler from './handlers/classiceditor.js';
-import DecoupledEditorHandler from './handlers/decouplededitor.js';
+import AbstractEditorHandler from './handlers/abstracteditorhandler.js';
+import ClassicEditorHandler from './handlers/classiceditorhandler.js';
+import DecoupledEditorHandler from './handlers/decouplededitorhandler.js';
 
 /**
  * A command toggling the fullscreen mode.
@@ -69,8 +69,6 @@ export default class FullscreenCommand extends Command {
 	 * Enables the fullscreen mode.
 	 */
 	private _enableFullscreenMode(): void {
-		document.body.classList.add( 'ck-fullscreen' );
-
 		this._fullscreenHandler.enable();
 
 		this.value = true;
@@ -80,8 +78,6 @@ export default class FullscreenCommand extends Command {
 	 * Disables the fullscreen mode.
 	 */
 	private _disableFullscreenMode(): void {
-		document.body.classList.remove( 'ck-fullscreen' );
-
 		this._fullscreenHandler.disable();
 
 		this.value = false;

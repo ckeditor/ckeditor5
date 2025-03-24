@@ -7,7 +7,7 @@ import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import { IconFullscreenOff, IconFullscreenOn } from 'ckeditor5/src/icons.js';
+import { IconFullscreenEnter, IconFullscreenLeave } from 'ckeditor5/src/icons.js';
 
 import FullscreenEditing from '../src/fullscreenediting.js';
 import FullscreenUI from '../src/fullscreenui.js';
@@ -62,8 +62,8 @@ describe( 'FullscreenUI', () => {
 			expect( button ).to.have.property( 'isToggleable', true );
 		} );
 
-		it( '#isEnabled, #icon and #label should be bound to the `fullscreen` command', () => {
-			const fullscreenCommand = editor.commands.get( 'fullscreen' );
+		it( '#isEnabled, #icon and #label should be bound to the `toggleFullscreen` command', () => {
+			const fullscreenCommand = editor.commands.get( 'toggleFullscreen' );
 
 			fullscreenCommand.isEnabled = false;
 
@@ -75,17 +75,17 @@ describe( 'FullscreenUI', () => {
 
 			fullscreenCommand.value = true;
 
-			expect( button.icon ).to.equal( IconFullscreenOn );
-			expect( button.label ).to.equal( 'Disable fullscreen mode' );
+			expect( button.icon ).to.equal( IconFullscreenLeave );
+			expect( button.label ).to.equal( 'Leave fullscreen mode' );
 
 			fullscreenCommand.value = false;
 
-			expect( button.icon ).to.equal( IconFullscreenOff );
-			expect( button.label ).to.equal( 'Enable fullscreen mode' );
+			expect( button.icon ).to.equal( IconFullscreenEnter );
+			expect( button.label ).to.equal( 'Enter fullscreen mode' );
 		} );
 
 		it( 'on #execute should call the `fullscreen` command', () => {
-			const spy = sinon.spy( editor.commands.get( 'fullscreen' ), 'execute' );
+			const spy = sinon.spy( editor.commands.get( 'toggleFullscreen' ), 'execute' );
 
 			button.fire( 'execute' );
 
@@ -106,10 +106,11 @@ describe( 'FullscreenUI', () => {
 			expect( button ).to.have.property( 'tooltip', false );
 			expect( button ).to.have.property( 'isToggleable', true );
 			expect( button ).to.have.property( 'role', 'menuitemcheckbox' );
+			expect( button ).to.have.property( 'label', 'Fullscreen mode' );
 		} );
 
-		it( '#isEnabled, #icon and #label should be bound to the `fullscreen` command', () => {
-			const fullscreenCommand = editor.commands.get( 'fullscreen' );
+		it( '#isEnabled and #isOn should be bound to the `toggleFullscreen` command', () => {
+			const fullscreenCommand = editor.commands.get( 'toggleFullscreen' );
 
 			fullscreenCommand.isEnabled = false;
 
@@ -121,17 +122,15 @@ describe( 'FullscreenUI', () => {
 
 			fullscreenCommand.value = true;
 
-			expect( button.icon ).to.equal( IconFullscreenOn );
-			expect( button.label ).to.equal( 'Disable fullscreen mode' );
+			expect( button.isOn ).to.be.true;
 
 			fullscreenCommand.value = false;
 
-			expect( button.icon ).to.equal( IconFullscreenOff );
-			expect( button.label ).to.equal( 'Enable fullscreen mode' );
+			expect( button.isOn ).to.be.false;
 		} );
 
-		it( 'on #execute should call the `fullscreen` command', () => {
-			const spy = sinon.spy( editor.commands.get( 'fullscreen' ), 'execute' );
+		it( 'on #execute should call the `toggleFullscreen` command', () => {
+			const spy = sinon.spy( editor.commands.get( 'toggleFullscreen' ), 'execute' );
 
 			button.fire( 'execute' );
 

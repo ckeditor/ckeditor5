@@ -840,32 +840,50 @@ describe( 'SourceEditing', () => {
 	} );
 
 	describe( 'integration with document outline', () => {
-		it( 'should hide the document outline container when entering the source editing mode', () => {
-			const documentOutlineElement = document.createElement( 'div' );
+		let documentOutlineElement, documentOutlineEditor, documentOutlineEditorElement, documentOutlineEditorButton;
 
-			documentOutlineElement.classList.add( 'ck-document-outline' );
-			document.body.appendChild( documentOutlineElement );
+		class DocumentOutlineUIMock extends Plugin {
+			static get pluginName() {
+				return 'DocumentOutlineUI';
+			}
 
-			button.fire( 'execute' );
+			view = { element: document.createElement( 'div' ) };
+		}
 
-			expect( documentOutlineElement.style.visibility ).to.equal( 'hidden' );
+		beforeEach( async () => {
+			documentOutlineEditorElement = document.body.appendChild( document.createElement( 'div' ) );
+
+			documentOutlineEditor = await ClassicEditor.create( documentOutlineEditorElement, {
+				plugins: [ Paragraph, Heading, SourceEditing, DocumentOutlineUIMock ],
+				toolbar: [ 'heading' ]
+			} );
+
+			documentOutlineElement = documentOutlineEditor.plugins.get( 'DocumentOutlineUI' ).view.element;
+			documentOutlineEditorButton = documentOutlineEditor.ui.componentFactory.create( 'sourceEditing' );
+		} );
+
+		afterEach( async () => {
+			documentOutlineEditorElement.remove();
+
+			return documentOutlineEditor.destroy();
+		} );
+
+		it( 'should hide the document outline container when entering the source editing mode', async () => {
+			documentOutlineEditorButton.fire( 'execute' );
+
+			expect( documentOutlineElement.style.display ).to.equal( 'none' );
 
 			documentOutlineElement.remove();
 		} );
 
-		it( 'should show the document outline container when leaving the source editing mode', () => {
-			const documentOutlineElement = document.createElement( 'div' );
+		it( 'should show the document outline container when leaving the source editing mode', async () => {
+			documentOutlineEditorButton.fire( 'execute' );
 
-			documentOutlineElement.classList.add( 'ck-document-outline' );
-			document.body.appendChild( documentOutlineElement );
+			expect( documentOutlineElement.style.display ).to.equal( 'none' );
 
-			button.fire( 'execute' );
+			documentOutlineEditorButton.fire( 'execute' );
 
-			expect( documentOutlineElement.style.visibility ).to.equal( 'hidden' );
-
-			button.fire( 'execute' );
-
-			expect( documentOutlineElement.style.visibility ).to.equal( '' );
+			expect( documentOutlineElement.style.display ).to.equal( '' );
 
 			documentOutlineElement.remove();
 		} );

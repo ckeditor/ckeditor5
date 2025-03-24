@@ -4,7 +4,7 @@
  */
 
 /**
- * @module fullscreen/fullscreensconfig
+ * @module fullscreen/fullscreenconfig
  */
 
 /**
@@ -28,20 +28,20 @@
 export default interface FullscreenConfig {
 
 	/**
-	 * Customizable callback that is called when the fullscreen mode is enabled.
+	 * Customizable callback that is called when you enter the fullscreen mode.
 	 * It's executed after the editor UI elements are moved to the fullscreen mode.
 	 *
-	 * @default () => {}
+	 * @default `() => {}`
 	 */
-	enableCallback: ( container: HTMLElement ) => void;
+	onEnterCallback?: ( container: HTMLElement ) => void;
 
 	/**
-	 * Customizable callback that is called when the fullscreen mode is disabled.
+	 * Customizable callback that is called when you leave the fullscreen mode.
 	 * It's executed before the editor UI elements are moved back to the normal mode.
 	 *
-	 * @default () => {}
+	 * @default `() => {}`
 	 */
-	disableCallback: () => void;
+	onLeaveCallback?: ( container: HTMLElement ) => void;
 
 	/**
 	 * The container element for the fullscreen mode. This should be a reference to an existing, positioned element in the DOM.
@@ -60,5 +60,20 @@ export default interface FullscreenConfig {
 		 * @default true
 		 */
 		isVisible?: boolean;
+	};
+
+	/**
+	 * The configuration of the toolbar in the fullscreen mode.
+	 */
+	toolbar?: {
+
+		/**
+		 * Whether toolbar should be grouping items for which there is not enough space.
+		 * By default, toolbar will behave the same as outside the fullscreen mode. You can specify this option to change this behavior
+		 * independently for the fullscreen mode.
+		 *
+		 * @default `!!config.toolbar.shouldNotGroupWhenFull`
+		 */
+		shouldNotGroupWhenFull?: boolean;
 	};
 }

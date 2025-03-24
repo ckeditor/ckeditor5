@@ -9,7 +9,7 @@
 
 import type { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 
-import AbstractEditorHandler from './abstracteditor.js';
+import AbstractEditorHandler from './abstracteditorhandler.js';
 
 /**
  * The decoupled editor fullscreen mode handler.
@@ -28,16 +28,26 @@ export default class DecoupledEditorHandler extends AbstractEditorHandler {
 
 		this._editor = editor;
 
-		this._defaultEnable = () => {
+		this._defaultOnEnter = () => {
+			/* istanbul ignore if -- @preserve */
+			if ( this._editor.plugins.has( 'Pagination' ) ) {
+				this.moveToFullscreen(
+					this._editor.ui.getEditableElement()!.parentElement!.querySelector( '.ck-pagination-view' )!, 'pagination-view'
+				);
+			}
+
 			this.moveToFullscreen( this._editor.ui.getEditableElement()!, 'editable' );
 			this.moveToFullscreen( this._editor.ui.view.toolbar.element!, 'toolbar' );
-			this.moveToFullscreen( document.querySelector( '.ck-body-wrapper' )!, 'body-wrapper' );
+
+			this._editor.ui.view.toolbar.switchBehavior(
+				this._editor.config.get( 'fullscreen.toolbar.shouldNotGroupWhenFull' ) === true ? 'static' : 'dynamic'
+			);
 
 			if ( this._editor.config.get( 'fullscreen.menuBar.isVisible' ) ) {
 				this.moveToFullscreen( this._editor.ui.view.menuBarView.element!, 'menu-bar' );
 			}
 
-			return this.getContainer();
+			return this.getWrapper();
 		};
 	}
 }
