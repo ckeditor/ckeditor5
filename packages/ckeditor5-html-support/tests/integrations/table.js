@@ -1578,6 +1578,62 @@ describe( 'TableElementSupport', () => {
 		expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
 	} );
 
+	it( 'should propagate specific styles from table to figure element', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: /.*/,
+			attributes: true,
+			styles: true,
+			classes: true
+		} ] );
+
+		editor.setData(
+			'<table style="max-width: 49%; min-width: 49%; width: 100%; ' +
+					'max-height: 100px; min-height: 100px; height: 100px; background-color: red;">' +
+				'<tbody>' +
+					'<tr>' +
+						'<td>1</td>' +
+					'</tr>' +
+				'</tbody>' +
+			'</table>'
+		);
+
+		expect( editor.getData() ).to.equal(
+			'<figure class="table" style="height:100px;max-height:100px;max-width:49%;min-height:100px;min-width:49%;width:100%;">' +
+				'<table style="background-color:red;">' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>1</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table htmlTableAttributes="(1)">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
+			attributes: {
+				1: {
+					styles: {
+						'background-color': 'red',
+						'height': '100px',
+						'max-height': '100px',
+						'max-width': '49%',
+						'min-height': '100px',
+						'min-width': '49%',
+						width: '100%'
+					}
+				}
+			}
+		} );
+	} );
+
 	it( 'should remove htmlTheadAttributes if table does not have thead', () => {
 		dataFilter.loadAllowedConfig( [ {
 			name: /.*/,
