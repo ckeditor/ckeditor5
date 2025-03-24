@@ -15,6 +15,7 @@ import { ButtonView, MenuBarMenuListItemButtonView, type Dialog } from 'ckeditor
 import { CKEditorError, createElement, ElementReplacer } from 'ckeditor5/src/utils.js';
 import { formatHtml } from './utils/formathtml.js';
 
+import type { DocumentOutlineUI } from '@ckeditor/ckeditor5-document-outline';
 import type { Annotations } from '@ckeditor/ckeditor5-comments';
 
 import '../theme/sourceediting.css';
@@ -322,8 +323,8 @@ export default class SourceEditing extends Plugin {
 	 * Hides the document outline if it is configured.
 	 */
 	private _hideDocumentOutline() {
-		if ( document.querySelector( '.ck-document-outline' ) ) {
-			( document.querySelector( '.ck-document-outline' )! as HTMLElement ).style.visibility = 'hidden';
+		if ( this.editor.plugins.has( 'DocumentOutlineUI' ) ) {
+			( this.editor.plugins.get( 'DocumentOutlineUI' ) as DocumentOutlineUI ).view!.element!.style.display = 'none';
 		}
 	}
 
@@ -331,8 +332,8 @@ export default class SourceEditing extends Plugin {
 	 * Shows the document outline if it was hidden when entering the source editing.
 	 */
 	private _showDocumentOutline() {
-		if ( document.querySelector( '.ck-document-outline' ) ) {
-			( document.querySelector( '.ck-document-outline' )! as HTMLElement ).style.visibility = '';
+		if ( this.editor.plugins.has( 'DocumentOutlineUI' ) ) {
+			( this.editor.plugins.get( 'DocumentOutlineUI' ) as DocumentOutlineUI ).view!.element!.style.display = '';
 		}
 	}
 

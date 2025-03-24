@@ -477,7 +477,7 @@ generateComments( csConfig, channelId, initialCommentsData )
 					definitions: [
 						{
 							title: 'Document with an image',
-							description: 'Simple heading with text and and and image.',
+							description: 'Simple heading with text and image.',
 							icon: articleImageRightIcon,
 							data: `<h2>Title of the document</h2>
 								<figure class="image image-style-align-right image_resized" style="width:26.32%;">
@@ -754,7 +754,7 @@ generateComments( csConfig, channelId, initialCommentsData )
 					container: document.querySelector( '#default_presence' )
 				},
 				fullscreen: {
-					enableCallback: container => container.classList.add( 'formatted' )
+					onEnterCallback: container => container.classList.add( 'formatted' )
 				}
 			} )
 			.then( editor => {

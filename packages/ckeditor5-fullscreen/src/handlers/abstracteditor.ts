@@ -49,6 +49,16 @@ export default class AbstractEditorHandler {
 	private _paginationBodyCollection: BodyCollection | null = null;
 
 	/**
+	 * A callback that hides the document outline header when the source editing mode is enabled.
+	 * Document outline element itself is hidden by source editing plugin.
+	 */
+	/* istanbul ignore next -- @preserve */
+	private _sourceEditingCallback = ( _evt: EventInfo, _name: string, value: boolean ) => {
+		( this.getWrapper().querySelector( '.ck-fullscreen__document-outline-header' ) as HTMLElement ).style.display =
+			value ? 'none' : '';
+	};
+
+	/**
 	 * A callback that shows the revision viewer, stored to restore the original one after exiting the fullscreen mode.
 	 */
 	protected _showRevisionViewerCallback: ( ( config?: EditorConfig ) => Promise<RevisionViewerEditor | null> ) | null = null;
@@ -60,9 +70,10 @@ export default class AbstractEditorHandler {
 
 	/**
 	 * A function moving the editor UI elements to the fullscreen mode. It should be set by the particular editor type handler.
-	 * Returns the fullscreen mode container element so it can be further customized via `fullscreen.enableCallback` configuration property.
-	*/
-	protected _defaultEnable: () => HTMLElement;
+	 * Returns the fullscreen mode container element so it can be further customized via
+	 * `fullscreen.onEnterCallback` configuration property.
+	 */
+	protected _defaultOnEnter: () => HTMLElement;
 
 	/**
 	 * An editor instance. It should be set by the particular editor type handler.
@@ -84,7 +95,7 @@ export default class AbstractEditorHandler {
 		this._document = this._editor.sourceElement ? this._editor.sourceElement.ownerDocument : global.document;
 		this._editor.config.define( 'fullscreen.container', this._document.body );
 
-		this._defaultEnable = () => this.getWrapper();
+		this._defaultOnEnter = () => this.getWrapper();
 		editor.on( 'destroy', () => {
 			if ( this._wrapper ) {
 				this.destroy();
@@ -164,7 +175,7 @@ export default class AbstractEditorHandler {
 	 * Enables the fullscreen mode. It executes the editor-specific enable handler and then the configured callback.
 	 */
 	public enable(): void {
-		this._defaultEnable();
+		this._defaultOnEnter();
 
 		// Block scroll if the fullscreen container is the body element. Otherwise the document has to stay scrollable.
 		if ( this._editor.config.get( 'fullscreen.container' ) === this._document.body ) {
@@ -223,6 +234,10 @@ export default class AbstractEditorHandler {
 			this._overrideRevisionHistoryCallbacks();
 		}
 
+		if ( this._editor.plugins.has( 'SourceEditing' ) && this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
+			this._editor.plugins.get( 'SourceEditing' ).on( 'change:isSourceEditingMode', this._sourceEditingCallback );
+		}
+
 		// Hide all other elements in the container to ensure they don't create an empty unscrollable space.
 		for ( const element of this._editor.config.get( 'fullscreen.container' )!.children ) {
 			// Do not hide body wrapper and ckbox wrapper to keep dialogs, balloons etc visible.
@@ -235,8 +250,8 @@ export default class AbstractEditorHandler {
 			}
 		}
 
-		if ( this._editor.config.get( 'fullscreen.enableCallback' ) ) {
-			this._editor.config.get( 'fullscreen.enableCallback' )!( this.getWrapper() );
+		if ( this._editor.config.get( 'fullscreen.onEnterCallback' ) ) {
+			this._editor.config.get( 'fullscreen.onEnterCallback' )!( this.getWrapper() );
 		}
 	}
 
@@ -244,8 +259,8 @@ export default class AbstractEditorHandler {
 	 * Disables the fullscreen mode by restoring all moved elements and destroying the fullscreen container.
 	 */
 	public disable(): void {
-		if ( this._editor.config.get( 'fullscreen.disableCallback' ) ) {
-			this._editor.config.get( 'fullscreen.disableCallback' )!();
+		if ( this._editor.config.get( 'fullscreen.onLeaveCallback' ) ) {
+			this._editor.config.get( 'fullscreen.onLeaveCallback' )!( this.getWrapper() );
 		}
 
 		this._document.body.classList.remove( 'ck-fullscreen' );
@@ -265,6 +280,10 @@ export default class AbstractEditorHandler {
 
 		if ( this._editor.plugins.has( 'RevisionHistory' ) ) {
 			this._restoreRevisionHistoryCallbacks();
+		}
+
+		if ( this._editor.plugins.has( 'SourceEditing' ) && this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
+			this._editor.plugins.get( 'SourceEditing' ).off( 'change:isSourceEditingMode', this._sourceEditingCallback );
 		}
 
 		for ( const placeholderName of this._placeholderMap.keys() ) {
