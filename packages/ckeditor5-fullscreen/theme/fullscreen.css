@@ -78,6 +78,7 @@ Fullscreen layout:
 
 .ck-fullscreen__main-wrapper .ck-fullscreen__editable-wrapper {
 	--ck-fullscreen-editor-top-margin: 28px;
+	--ck-fullscreen-editor-bottom-margin: 28px;
 	display: flex;
 	justify-content: flex-start;
 	overflow: auto;
@@ -100,6 +101,12 @@ Fullscreen layout:
 	margin-bottom: 56px;
 	height: 100%;
 	margin-left: auto;
+
+	&::after {
+		content: '';
+		display: block;
+		height: var(--ck-fullscreen-editor-bottom-margin);
+	}
 }
 
 .ck-fullscreen__main-wrapper .ck-fullscreen__editable .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
