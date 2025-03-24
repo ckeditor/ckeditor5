@@ -892,7 +892,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		</tr>
 		<tr id="real-time-collaboration" class="feature">
 			<td>
-				{@link features/real-time-collaboration Real-time collaboration 
+				{@link features/real-time-collaboration Real-time collaboration
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 					<span class="tree__item__badge__text">Premium feature</span></span>
 				}
@@ -918,10 +918,13 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		<tr id="on-premises" class="subfeature background-gray">
 			<td>
 				<span>
-					<span class="subfeature-icon"></span>&nbsp;{@link @cs onpremises/index On-premises
+					<span class="subfeature-icon"></span>&nbsp;
+					<a href="https://ckeditor.com/docs/cs/latest/onpremises/index.html">
+						On-premises
 						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-						<span class="tree__item__badge__text">Premium feature</span></span>
-					}
+							<span class="tree__item__badge__text">Premium feature</span>
+						</span>
+					</a>
 				</span>
 			</td>
 			<td>
@@ -932,10 +935,13 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		<tr id="saas" class="subfeature background-gray">
 			<td>
 				<span>
-					<span class="subfeature-icon"></span>&nbsp;{@link @cs guides/collaboration/quick-start SaaS
+					<span class="subfeature-icon"></span>&nbsp;
+					<a href="https://ckeditor.com/docs/cs/latest/guides/collaboration/quick-start.html">
+						SaaS
 						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-						<span class="tree__item__badge__text">Premium feature</span></span>
-					}
+							<span class="tree__item__badge__text">Premium feature</span>
+						</span>
+					</a>
 				</span>
 			</td>
 			<td>Real-time collaboration provided as a service by CKSource.</td>
@@ -1077,7 +1083,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 		</tr>
 		<tr id="paste-markdown" class="feature">
 			<td>
-				{@link features/paste-markdown Paste Markdown 
+				{@link features/paste-markdown Paste Markdown
 					<span class="tree__item__badge tree__item__badge_new" data-badge-tooltip="Experimental feature">Exp</span>
 				}
 			</td>
@@ -1918,7 +1924,7 @@ Customize your editor even further. Use components and helpers from our UI libra
 		<tr id="cloud-services-rest-api" class="subfeature background-gray">
 			<td>
 				<span>
-					<span class="subfeature-icon"></span>&nbsp;{@link @cs developer-resources/apis/overview Cloud Services REST API}
+					<span class="subfeature-icon"></span>&nbsp;<a href="https://ckeditor.com/docs/cs/latest/developer-resources/apis/overview.html">Cloud Services REST API</a>
 				</span>
 			</td>
 			<td>The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration
