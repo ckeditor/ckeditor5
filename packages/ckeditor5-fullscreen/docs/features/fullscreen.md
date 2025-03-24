@@ -175,7 +175,7 @@ Here are some CKEditor&nbsp;5 features that are a perfect match for fullscreen m
 The fullscreen plugin registers:
 
 * the `fullscreen` UI button components for toolbar and menu bar,
-* the `fullscreen` command.
+* the `toggleFullscreen` command.
 
 You can execute the command using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 

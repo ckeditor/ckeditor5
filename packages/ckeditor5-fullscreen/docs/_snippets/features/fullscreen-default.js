@@ -273,7 +273,7 @@ generateComments( csConfig, channelId, initialCommentsData )
 
 		FullscreenEditor
 			.create( document.querySelector( '#default_editor' ), {
-				extraPlugins: DocumentOutlineToggler,
+				extraPlugins: [ DocumentOutlineToggler ],
 				initialData,
 				ui: {
 					viewportOffset: {
@@ -772,8 +772,8 @@ generateComments( csConfig, channelId, initialCommentsData )
 				document.querySelector( '#default_live-snippet__container' ).classList.add( 'loaded' );
 
 				attachTourBalloon( {
-					target: findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Enable fullscreen mode' ),
-					text: 'Click here to enable fullscreen mode.',
+					target: findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Enter fullscreen mode' ),
+					text: 'Click here to enter fullscreen mode.',
 					editor,
 					tippyOptions: {
 						placement: 'bottom-start'
