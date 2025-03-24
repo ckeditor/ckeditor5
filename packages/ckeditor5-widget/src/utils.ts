@@ -243,6 +243,7 @@ export function getLabel( element: ViewElement ): string {
  * * adds the `ck-editor__editable` and `ck-editor__nested-editable` CSS classes,
  * * adds the `ck-editor__nested-editable_focused` CSS class when the editable is focused and removes it when it is blurred.
  * * implements the {@link ~setHighlightHandling view highlight on widget's editable}.
+ * * sets the `role` attribute to `textbox` for accessibility purposes.
  *
  * Similarly to {@link ~toWidget `toWidget()`} this function should be used in `editingDowncast` only and it is usually
  * used together with {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`}.
@@ -275,6 +276,7 @@ export function getLabel( element: ViewElement ): string {
  *
  * @param options Additional options.
  * @param options.label Editable's label used by assistive technologies (e.g. screen readers).
+ * @param options.withAriaRole Whether to add the role="textbox" attribute on the editable. Defaults to `true`.
  * @returns Returns the same element that was provided in the `editable` parameter
  */
 export function toWidgetEditable(
@@ -282,11 +284,16 @@ export function toWidgetEditable(
 	writer: DowncastWriter,
 	options: {
 		label?: string;
+		withAriaRole?: boolean;
 	} = {}
 ): ViewEditableElement {
 	writer.addClass( [ 'ck-editor__editable', 'ck-editor__nested-editable' ], editable );
 
-	writer.setAttribute( 'role', 'textbox', editable );
+	// Set role="textbox" only if explicitly requested (defaults to true for backward compatibility)
+	if ( options.withAriaRole !== false ) {
+		writer.setAttribute( 'role', 'textbox', editable );
+	}
+
 	writer.setAttribute( 'tabindex', '-1', editable );
 
 	if ( options.label ) {
