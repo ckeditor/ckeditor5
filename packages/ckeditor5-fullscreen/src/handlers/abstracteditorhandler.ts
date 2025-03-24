@@ -59,6 +59,13 @@ export default class AbstractEditorHandler {
 	};
 
 	/**
+	 * A map of elements that were hidden when entering the fullscreen mode.
+	 * It is used to restore their previous visibility when leaving the fullscreen mode and avoid showing elements
+	 * that were hidden before entering the fullscreen mode.
+	 */
+	private _hiddenElements: Map<HTMLElement, string> = new Map();
+
+	/**
 	 * A callback that shows the revision viewer, stored to restore the original one after exiting the fullscreen mode.
 	 */
 	protected _showRevisionViewerCallback: ( ( config?: EditorConfig ) => Promise<RevisionViewerEditor | null> ) | null = null;
@@ -244,8 +251,11 @@ export default class AbstractEditorHandler {
 			if (
 				element !== this._wrapper &&
 				!element.classList.contains( 'ck-body-wrapper' ) &&
-				!element.classList.contains( 'ckbox-wrapper' )
+				!element.classList.contains( 'ckbox-wrapper' ) &&
+				// Already hidden elements are not hidden again to avoid accidentally showing them after leaving fullscreen.
+				( element as HTMLElement ).style.display !== 'none'
 			) {
+				this._hiddenElements.set( element as HTMLElement, ( element as HTMLElement ).style.display );
 				( element as HTMLElement ).style.display = 'none';
 			}
 		}
@@ -344,9 +354,11 @@ export default class AbstractEditorHandler {
 		this._wrapper = null;
 
 		// Restore visibility of all other elements in the container.
-		for ( const element of this._editor.config.get( 'fullscreen.container' )!.children ) {
-			( element as HTMLElement ).style.display = '';
+		for ( const [ element, displayValue ] of this._hiddenElements ) {
+			element.style.display = displayValue;
 		}
+
+		this._hiddenElements.clear();
 	}
 
 	/**
