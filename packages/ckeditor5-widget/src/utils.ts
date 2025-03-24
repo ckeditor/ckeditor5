@@ -289,7 +289,7 @@ export function toWidgetEditable(
 ): ViewEditableElement {
 	writer.addClass( [ 'ck-editor__editable', 'ck-editor__nested-editable' ], editable );
 
-	// Set role="textbox" only if explicitly requested (defaults to true for backward compatibility)
+	// Set role="textbox" only if explicitly requested (defaults to true for backward compatibility).
 	if ( options.withAriaRole !== false ) {
 		writer.setAttribute( 'role', 'textbox', editable );
 	}
