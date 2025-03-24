@@ -46,6 +46,10 @@ describe( 'TableLayoutEditing', () => {
 		expect( TableLayoutEditing.pluginName ).to.equal( 'TableLayoutEditing' );
 	} );
 
+	it( 'should require TableColumnResize plugin', () => {
+		expect( TableLayoutEditing.requires ).to.deep.equal( [ TableColumnResize ] );
+	} );
+
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
 		expect( TableLayoutEditing.isOfficialPlugin ).to.be.true;
 	} );

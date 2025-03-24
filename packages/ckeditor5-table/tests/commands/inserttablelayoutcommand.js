@@ -21,7 +21,7 @@ describe( 'InsertTableLayoutCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ Paragraph, TableEditing, TableCaptionEditing, TableLayoutEditing, TableColumnResize ]
+				plugins: [ Paragraph, TableEditing, TableCaptionEditing, TableLayoutEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

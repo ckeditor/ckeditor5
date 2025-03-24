@@ -12,7 +12,6 @@ import { ListItemView } from '@ckeditor/ckeditor5-ui';
 import TableEditing from '../../src/tableediting.js';
 import TableLayoutUI from '../../src/tablelayout/tablelayoutui.js';
 import TableLayoutEditing from '../../src/tablelayout/tablelayoutediting.js';
-import TableColumnResize from '../../src/tablecolumnresize.js';
 import InsertTableView from '../../src/ui/inserttableview.js';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
 import { IconTableLayout, IconTableProperties } from '@ckeditor/ckeditor5-icons';
@@ -32,7 +31,7 @@ describe( 'TableLayoutUI', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ TableEditing, TableLayoutUI, TableLayoutEditing, TableColumnResize ]
+				plugins: [ TableEditing, TableLayoutUI, TableLayoutEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
