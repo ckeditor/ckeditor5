@@ -221,23 +221,34 @@ function modelToViewTableAttributeConverter() {
 					return;
 				}
 
-				const { propagatedStyles, remainingStyles } = splitStylesBasedOnPattern( data.attributeNewValue as GHSViewAttributes );
-
 				conversionApi.consumable.consume( data.item, evt.name );
 
-				updateViewAttributes(
-					conversionApi.writer,
-					data.attributeOldValue as GHSViewAttributes,
-					remainingStyles,
-					viewElement!
-				);
+				// Downcast selected styles to a figure element instead of a table element.
+				if ( attributeName === 'htmlTableAttributes' && containerElement !== viewElement ) {
+					const oldAttributes = splitAttributesForFigureAndTable( data.attributeOldValue as GHSViewAttributes );
+					const newAttributes = splitAttributesForFigureAndTable( data.attributeNewValue as GHSViewAttributes );
 
-				updateViewAttributes(
-					conversionApi.writer,
-					data.attributeOldValue as GHSViewAttributes,
-					propagatedStyles,
-					containerElement!
-				);
+					updateViewAttributes(
+						conversionApi.writer,
+						oldAttributes.tableAttributes,
+						newAttributes.tableAttributes,
+						viewElement!
+					);
+
+					updateViewAttributes(
+						conversionApi.writer,
+						oldAttributes.figureAttributes,
+						newAttributes.figureAttributes,
+						containerElement!
+					);
+				} else {
+					updateViewAttributes(
+						conversionApi.writer,
+						data.attributeOldValue as GHSViewAttributes,
+						data.attributeNewValue as GHSViewAttributes,
+						viewElement!
+					);
+				}
 			} );
 		}
 	};
@@ -247,24 +258,26 @@ function modelToViewTableAttributeConverter() {
  * Splits styles based on the `STYLE_ATTRIBUTES_TO_PROPAGATE` pattern that should be moved to the parent element
  * and those that should remain on element.
  */
-function splitStylesBasedOnPattern( data: GHSViewAttributes ):
-{ propagatedStyles: GHSViewAttributes; remainingStyles: GHSViewAttributes } {
-	const propagatedStyles: GHSViewAttributes = {};
-	const remainingStyles: GHSViewAttributes = { ...data };
+function splitAttributesForFigureAndTable( data: GHSViewAttributes ): {
+	figureAttributes: GHSViewAttributes;
+	tableAttributes: GHSViewAttributes;
+} {
+	const figureAttributes: GHSViewAttributes = {};
+	const tableAttributes: GHSViewAttributes = { ...data };
 
 	if ( !data || !( 'styles' in data ) ) {
-		return { propagatedStyles, remainingStyles };
+		return { figureAttributes, tableAttributes };
 	}
 
-	remainingStyles.styles = {};
+	tableAttributes.styles = {};
 
 	for ( const [ key, value ] of Object.entries( data.styles! ) ) {
 		if ( STYLE_ATTRIBUTES_TO_PROPAGATE.includes( key ) ) {
-			propagatedStyles.styles = { ...propagatedStyles.styles, [ key ]: value };
+			figureAttributes.styles = { ...figureAttributes.styles, [ key ]: value };
 		} else {
-			remainingStyles.styles = { ...remainingStyles.styles, [ key ]: value };
+			tableAttributes.styles = { ...tableAttributes.styles, [ key ]: value };
 		}
 	}
 
-	return { propagatedStyles, remainingStyles };
+	return { figureAttributes, tableAttributes };
 }

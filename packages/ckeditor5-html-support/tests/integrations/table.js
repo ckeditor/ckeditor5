@@ -1634,6 +1634,101 @@ describe( 'TableElementSupport', () => {
 		} );
 	} );
 
+	it( 'should propagate specific styles change from table to figure element', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: /.*/,
+			attributes: true,
+			styles: true,
+			classes: true
+		} ] );
+
+		editor.setData(
+			'<table style="width: 100%; background-color: red;">' +
+				'<tbody>' +
+					'<tr>' +
+						'<td>1</td>' +
+					'</tr>' +
+				'</tbody>' +
+			'</table>'
+		);
+
+		expect( editor.getData() ).to.equal(
+			'<figure class="table" style="width:100%;">' +
+				'<table style="background-color:red;">' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>1</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table htmlTableAttributes="(1)">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
+			attributes: {
+				1: {
+					styles: {
+						'background-color': 'red',
+						width: '100%'
+					}
+				}
+			}
+		} );
+
+		editor.model.change( writer => {
+			const table = writer.model.document.getRoot().getChild( 0 );
+			const tableAttributes = table.getAttribute( 'htmlTableAttributes' );
+			const newTableAttributes = {
+				...tableAttributes,
+				styles: {
+					...tableAttributes.styles,
+					width: '30%'
+				}
+			};
+
+			writer.setAttribute( 'htmlTableAttributes', newTableAttributes, table );
+		} );
+
+		expect( editor.getData() ).to.equal(
+			'<figure class="table" style="width:30%;">' +
+				'<table style="background-color:red;">' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>1</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table htmlTableAttributes="(1)">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
+			attributes: {
+				1: {
+					styles: {
+						'background-color': 'red',
+						width: '30%'
+					}
+				}
+			}
+		} );
+	} );
+
 	it( 'should remove htmlTheadAttributes if table does not have thead', () => {
 		dataFilter.loadAllowedConfig( [ {
 			name: /.*/,
