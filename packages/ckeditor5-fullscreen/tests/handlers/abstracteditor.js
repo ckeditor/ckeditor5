@@ -378,6 +378,8 @@ describe( 'AbstractHandler', () => {
 			static get pluginName() {
 				return 'DocumentOutlineUI';
 			}
+
+			view = { element: global.document.createElement( 'div' ) };
 		}
 
 		beforeEach( async () => {
