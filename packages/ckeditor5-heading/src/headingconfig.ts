@@ -106,6 +106,11 @@ export interface HeadingElementOption {
 	 * An array with all matched elements that the view-to-model conversion should also accept.
 	 */
 	upcastAlso?: ArrayOrItem<ViewElementDefinition | MatcherPattern>;
+
+	/**
+	 * The priority with which the converter will be run. Possible values: 'low', 'normal', 'high'.
+	 */
+	converterPriority?: 'low' | 'normal' | 'high';
 }
 
 export interface HeadingParagraphOption {
