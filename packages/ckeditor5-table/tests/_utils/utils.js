@@ -379,7 +379,6 @@ function makeRows( tableData, options ) {
 				if ( asWidget ) {
 					attributes.class = getClassToSet( attributes );
 					attributes.contenteditable = 'true';
-					attributes.role = 'textbox';
 					attributes.tabindex = '-1';
 				}
 
