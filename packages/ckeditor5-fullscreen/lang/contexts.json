@@ -1,6 +1,6 @@
 {
-	"Enter fullscreen mode": "Toolbar button that enters fullscreen mode when pressed",
-	"Leave fullscreen mode": "Toolbar button that leaves fullscreen mode when pressed",
-	"Fullscreen mode": "Menu bar button that toggles fullscreen mode",
-	"Toggle fullscreen mode": "Command that toggles fullscreen mode"
+	"Enter fullscreen mode": "Label for a toolbar button that enters the fullscreen when pressed",
+	"Leave fullscreen mode": "Label for a toolbar button that leaves the fullscreen when pressed",
+	"Fullscreen mode": "Label for a menu bar button that toggles fullscreen mode",
+	"Toggle fullscreen mode": "Keystroke description for assistive technologies: keystroke for toggling a fullscreen mode."
 }
