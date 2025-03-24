@@ -25,6 +25,15 @@ import { updateViewAttributes, type GHSViewAttributes } from '../utils.js';
 import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
 import { getDescendantElement } from './integrationutils.js';
 
+const STYLE_ATTRIBUTES_TO_PROPAGATE = [
+	'width',
+	'max-width',
+	'min-width',
+	'height',
+	'min-height',
+	'max-height'
+];
+
 /**
  * Provides the General HTML Support integration with {@link module:table/table~Table Table} feature.
  */
@@ -212,15 +221,49 @@ function modelToViewTableAttributeConverter() {
 					return;
 				}
 
+				const { propagatedStyles, remainingStyles } = splitStylesBasedOnPattern( data.attributeNewValue as GHSViewAttributes );
+
 				conversionApi.consumable.consume( data.item, evt.name );
 
 				updateViewAttributes(
 					conversionApi.writer,
 					data.attributeOldValue as GHSViewAttributes,
-					data.attributeNewValue as GHSViewAttributes,
+					remainingStyles,
 					viewElement!
+				);
+
+				updateViewAttributes(
+					conversionApi.writer,
+					data.attributeOldValue as GHSViewAttributes,
+					propagatedStyles,
+					containerElement!
 				);
 			} );
 		}
 	};
+}
+
+/**
+ * TODO: description
+ */
+function splitStylesBasedOnPattern( data: GHSViewAttributes ):
+{ propagatedStyles: GHSViewAttributes; remainingStyles: GHSViewAttributes } {
+	const propagatedStyles: GHSViewAttributes = {};
+	const remainingStyles: GHSViewAttributes = { ...data };
+
+	if ( !data || !( 'styles' in data ) ) {
+		return { propagatedStyles, remainingStyles };
+	}
+
+	remainingStyles.styles = {};
+
+	for ( const [ key, value ] of Object.entries( data.styles! ) ) {
+		if ( STYLE_ATTRIBUTES_TO_PROPAGATE.includes( key ) ) {
+			propagatedStyles.styles = { ...propagatedStyles.styles, [ key ]: value };
+		} else {
+			remainingStyles.styles = { ...remainingStyles.styles, [ key ]: value };
+		}
+	}
+
+	return { propagatedStyles, remainingStyles };
 }

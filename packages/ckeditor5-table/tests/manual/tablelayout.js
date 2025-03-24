@@ -6,9 +6,19 @@
 /* globals console, document, window  */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
+import { Essentials } from '@ckeditor/ckeditor5-essentials';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { Heading } from '@ckeditor/ckeditor5-heading';
+import { ImageInline, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';
+import { Indent } from '@ckeditor/ckeditor5-indent';
+import { Link } from '@ckeditor/ckeditor5-link';
+import { List } from '@ckeditor/ckeditor5-list';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import Table from '../../src/table.js';
 import TableToolbar from '../../src/tabletoolbar.js';
 import TableSelection from '../../src/tableselection.js';
@@ -21,21 +31,33 @@ import PlainTableOutput from '../../src/plaintableoutput.js';
 import TableLayout from '../../src/tablelayout.js';
 
 const config = {
-	image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 	plugins: [
-		ArticlePluginSet,
+		Autoformat,
+		BlockQuote,
+		Bold,
+		Essentials,
 		GeneralHtmlSupport,
+		Heading,
 		HorizontalLine,
-		Table,
-		TableToolbar,
-		TableSelection,
-		TableClipboard,
-		TableProperties,
-		TableCellProperties,
-		TableColumnResize,
-		TableCaption,
+		ImageCaption,
+		ImageInline,
+		ImageToolbar,
+		Indent,
+		Italic,
+		Link,
+		List,
+		MediaEmbed,
+		Paragraph,
 		PlainTableOutput,
-		TableLayout
+		Table,
+		TableCaption,
+		TableCellProperties,
+		TableClipboard,
+		TableColumnResize,
+		TableLayout,
+		TableProperties,
+		TableSelection,
+		TableToolbar
 	],
 	toolbar: [
 		'undo', 'redo', '|',
@@ -59,6 +81,7 @@ const config = {
 			}
 		]
 	},
+	image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 	menuBar: {
 		isVisible: true
 	}
