@@ -506,7 +506,7 @@ export default class AbstractEditorHandler {
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore next -- @preserve */
 		this._editor.config.set( 'revisionHistory.showRevisionViewerCallback', async () => {
-			const revisionViewer = await this._showRevisionViewerCallback!();
+			const revisionViewerEditor = await this._showRevisionViewerCallback!();
 
 			if ( this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
 				( this.getWrapper().querySelector( '.ck-fullscreen__document-outline-header' ) as HTMLElement ).style.display = 'none';
@@ -524,11 +524,11 @@ export default class AbstractEditorHandler {
 				this._editor.ui.view.menuBarView.disable();
 			}
 
-			this.moveToFullscreen( revisionViewer!.ui.getEditableElement()!, 'editable' );
-			this.moveToFullscreen( revisionViewer!.ui.view.toolbar.element!, 'toolbar' );
+			this.moveToFullscreen( revisionViewerEditor!.ui.getEditableElement()!, 'editable' );
+			this.moveToFullscreen( revisionViewerEditor!.ui.view.toolbar.element!, 'toolbar' );
 			this.moveToFullscreen( this._editor.config.get( 'revisionHistory.viewerSidebarContainer' )!, 'right-sidebar' );
 
-			return revisionViewer;
+			return revisionViewerEditor;
 		} );
 
 		// * Hide revision viewer editable, toolbar and sidebar;
