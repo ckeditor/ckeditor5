@@ -154,6 +154,7 @@ export default class AbstractEditorHandler {
 				class: 'ck ck-fullscreen__main-wrapper'
 			} );
 
+			// For now, the container is generated in a very straightforward way. If necessary, it may be rewritten using our UI lib.
 			this._wrapper.innerHTML = `
 				<div class="ck ck-fullscreen__top-wrapper ck-reset_all">
 					<div class="ck ck-fullscreen__menu-bar" data-ck-fullscreen="menu-bar"></div>
