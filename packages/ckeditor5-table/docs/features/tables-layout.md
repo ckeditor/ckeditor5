@@ -28,7 +28,7 @@ The CKEditor&nbsp;5 table feature offers several approaches and plugins responsi
 
 ## Demo
 
-Use the editor below to see the layout tables plugin in action. Demo will be delivered later. Use the layout table {@icon @ckeditor/ckeditor5-icons/theme/icons/table-layout.svg} toolbar button to insert a new layout table.
+Check the editor below to see the layout tables plugin in action. Use the layout table {@icon @ckeditor/ckeditor5-icons/theme/icons/table-layout.svg} toolbar button to insert a new layout table.
 
 {@snippet features/table-layout}
 
@@ -42,7 +42,7 @@ There are several table types available in CKeditor&nbsp;5. To switch between th
 
 ### Demo
 
-Use the editor below to see the tables type toggling feature in action. Select a table to invoke the table toolbar and apply the preferred table type from the table properties dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/table-properties.svg}.
+Use the editor below to see the tables type toggling feature in action. Select a table to invoke the table toolbar and click the preferred table type from the table properties dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/table-properties.svg}.
 
 {@snippet features/table-toggling}
 
