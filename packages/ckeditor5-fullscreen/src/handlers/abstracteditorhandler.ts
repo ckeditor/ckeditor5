@@ -87,8 +87,8 @@ export default class AbstractEditorHandler {
 		this._placeholderMap = new Map();
 
 		if ( editor.plugins.has( 'RevisionHistory' ) ) {
-			this._showRevisionViewerCallback = editor.config.get( 'revisionHistory.showRevisionViewerCallback' )!;
-			this._closeRevisionViewerCallback = editor.config.get( 'revisionHistory.closeRevisionViewerCallback' )!;
+			this._showRevisionViewerCallback = editor.config.get( 'revisionHistory' )!.showRevisionViewerCallback;
+			this._closeRevisionViewerCallback = editor.config.get( 'revisionHistory' )!.closeRevisionViewerCallback;
 		}
 
 		this._editor = editor;
