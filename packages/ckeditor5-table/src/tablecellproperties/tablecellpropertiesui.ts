@@ -153,7 +153,11 @@ export default class TableCellPropertiesUI extends Plugin {
 				isRightToLeftContent: editor.locale.contentLanguageDirection === 'rtl'
 			}
 		);
-		this._defaultLayoutTableCellProperties = getNormalizedDefaultProperties();
+		this._defaultLayoutTableCellProperties = getNormalizedDefaultProperties( undefined, {
+			includeVerticalAlignmentProperty: true,
+			includeHorizontalAlignmentProperty: true,
+			isRightToLeftContent: editor.locale.contentLanguageDirection === 'rtl'
+		} );
 
 		this._balloon = editor.plugins.get( ContextualBalloon );
 		this.view = null;

@@ -8,7 +8,13 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { addBackgroundRules, addBorderRules, type ViewElement, type Conversion, type Schema } from 'ckeditor5/src/engine.js';
+import {
+	addBackgroundRules,
+	addBorderRules,
+	type ViewElement,
+	type Conversion,
+	type Schema
+} from 'ckeditor5/src/engine.js';
 
 import TableEditing from '../tableediting.js';
 import {
@@ -166,15 +172,37 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 		.attributeToAttribute( {
 			model: {
 				name: 'table',
-				key: 'tableAlignment'
+				key: 'tableAlignment',
+				values: [ 'left', 'center', 'right' ]
 			},
-			view: alignment => ( {
-				key: 'style',
-				value: {
-					// Model: `alignment:center` => CSS: `float:none`.
-					float: alignment === 'center' ? 'none' : alignment
+			view: {
+				left: {
+					key: 'style',
+					value: {
+						float: 'left'
+					}
+				},
+				right: {
+					key: 'style',
+					value: {
+						float: 'right'
+					}
+				},
+				center: ( alignment, conversionApi, data ) => {
+					const value: Record<string, string> = data.item.getAttribute( 'tableType' ) !== 'layout' ? {
+						// Model: `alignment:center` => CSS: `float:none`.
+						float: 'none'
+					} : {
+						'margin-left': 'auto',
+						'margin-right': 'auto'
+					};
+
+					return {
+						key: 'style',
+						value
+					};
 				}
-			} ),
+			},
 			converterPriority: 'high'
 		} );
 

@@ -95,7 +95,7 @@ describe( 'table properties', () => {
 			} );
 
 			it( 'should set normalized default table properties', () => {
-				expect( tablePropertiesUI._defaultTableProperties ).to.be.an( 'object' );
+				expect( tablePropertiesUI._defaultContentTableProperties ).to.be.an( 'object' );
 			} );
 
 			describe( '#view', () => {

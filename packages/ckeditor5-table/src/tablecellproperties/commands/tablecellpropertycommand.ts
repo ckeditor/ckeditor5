@@ -52,7 +52,24 @@ export default class TableCellPropertyCommand extends Command {
 
 		this.attributeName = attributeName;
 		this._defaultContentTableValue = defaultValue;
-		this._defaultLayoutTableValue = attributeName === 'tableCellBorderStyle' ? 'none' : undefined;
+
+		// Hardcoded defaults for layout table.
+		switch ( attributeName ) {
+			case 'tableCellBorderStyle':
+				this._defaultLayoutTableValue = 'none';
+				break;
+
+			case 'tableCellHorizontalAlignment':
+				this._defaultLayoutTableValue = 'left';
+				break;
+
+			case 'tableCellVerticalAlignment':
+				this._defaultLayoutTableValue = 'middle';
+				break;
+
+			default:
+				this._defaultLayoutTableValue = undefined;
+		}
 	}
 
 	/**
