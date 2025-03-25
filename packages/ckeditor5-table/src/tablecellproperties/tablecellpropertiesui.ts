@@ -29,9 +29,13 @@ import {
 	lineWidthFieldValidator
 } from '../utils/ui/table-properties.js';
 import { debounce } from 'es-toolkit/compat';
-import { getTableWidgetAncestor } from '../utils/ui/widget.js';
+import { getSelectionAffectedTableWidget, getTableWidgetAncestor } from '../utils/ui/widget.js';
 import { getBalloonCellPositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon.js';
-import { getNormalizedDefaultCellProperties, type NormalizedDefaultProperties } from '../utils/table-properties.js';
+import {
+	getNormalizedDefaultCellProperties,
+	getNormalizedDefaultProperties,
+	type NormalizedDefaultProperties
+} from '../utils/table-properties.js';
 import type { GetCallback, ObservableChangeEvent } from 'ckeditor5/src/utils.js';
 
 import type TableCellBorderStyleCommand from './commands/tablecellborderstylecommand.js';
@@ -61,7 +65,12 @@ export default class TableCellPropertiesUI extends Plugin {
 	/**
 	 * The default table cell properties.
 	 */
-	private _defaultTableCellProperties!: NormalizedDefaultProperties;
+	private _defaultContentTableCellProperties!: NormalizedDefaultProperties;
+
+	/**
+	 * The default layout table cell properties.
+	 */
+	private _defaultLayoutTableCellProperties!: NormalizedDefaultProperties;
 
 	/**
 	 * The contextual balloon plugin instance.
@@ -72,6 +81,16 @@ export default class TableCellPropertiesUI extends Plugin {
 	 * The cell properties form view displayed inside the balloon.
 	 */
 	public view?: TableCellPropertiesView | null;
+
+	/**
+	 * The cell properties form view displayed inside the balloon (content table).
+	 */
+	private _viewWithContentTableDefaults?: TableCellPropertiesView | null;
+
+	/**
+	 * The cell properties form view displayed inside the balloon (layout table).
+	 */
+	private _viewWithLayoutTableDefaults?: TableCellPropertiesView | null;
 
 	/**
 	 * The batch used to undo all changes made by the form (which are live, as the user types)
@@ -125,7 +144,7 @@ export default class TableCellPropertiesUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		this._defaultTableCellProperties = getNormalizedDefaultCellProperties(
+		this._defaultContentTableCellProperties = getNormalizedDefaultCellProperties(
 			editor.config.get( 'table.tableCellProperties.defaultProperties' )!,
 			{
 				includeVerticalAlignmentProperty: true,
@@ -134,6 +153,7 @@ export default class TableCellPropertiesUI extends Plugin {
 				isRightToLeftContent: editor.locale.contentLanguageDirection === 'rtl'
 			}
 		);
+		this._defaultLayoutTableCellProperties = getNormalizedDefaultProperties();
 
 		this._balloon = editor.plugins.get( ContextualBalloon );
 		this.view = null;
@@ -179,7 +199,7 @@ export default class TableCellPropertiesUI extends Plugin {
 	 *
 	 * @returns The cell properties form view instance.
 	 */
-	private _createPropertiesView() {
+	private _createPropertiesView( defaultTableCellProperties: NormalizedDefaultProperties ) {
 		const editor = this.editor;
 		const config = editor.config.get( 'table.tableCellProperties' )!;
 		const borderColorsConfig = normalizeColorOptions( config.borderColors! );
@@ -191,7 +211,7 @@ export default class TableCellPropertiesUI extends Plugin {
 		const view = new TableCellPropertiesView( editor.locale, {
 			borderColors: localizedBorderColors,
 			backgroundColors: localizedBackgroundColors,
-			defaultTableCellProperties: this._defaultTableCellProperties,
+			defaultTableCellProperties,
 			colorPickerConfig: hasColorPicker ? ( config.colorPicker || {} ) : false
 		} );
 		const t = editor.t;
@@ -307,7 +327,10 @@ export default class TableCellPropertiesUI extends Plugin {
 
 		Object.entries( propertyToCommandMap )
 			.map( ( [ property, commandName ] ) => {
-				const defaultValue = this._defaultTableCellProperties[ property as keyof NormalizedDefaultProperties ] || '';
+				const propertyKey = property as keyof typeof propertyToCommandMap;
+				const defaultValue = this.view === this._viewWithContentTableDefaults ?
+					this._defaultContentTableCellProperties[ propertyKey ] || '' :
+					this._defaultLayoutTableCellProperties[ propertyKey ] || '';
 
 				return [
 					property as keyof typeof propertyToCommandMap,
@@ -336,9 +359,17 @@ export default class TableCellPropertiesUI extends Plugin {
 	protected _showView(): void {
 		const editor = this.editor;
 
-		if ( !this.view ) {
-			this.view = this._createPropertiesView();
+		const viewTable = getSelectionAffectedTableWidget( editor.editing.view.document.selection );
+		const modelTable = viewTable && editor.editing.mapper.toModelElement( viewTable );
+		const useDefaults = !modelTable || modelTable.getAttribute( 'tableType' ) !== 'layout';
+
+		if ( useDefaults && !this._viewWithContentTableDefaults ) {
+			this._viewWithContentTableDefaults = this._createPropertiesView( this._defaultContentTableCellProperties );
+		} else if ( !useDefaults && !this._viewWithLayoutTableDefaults ) {
+			this._viewWithLayoutTableDefaults = this._createPropertiesView( this._defaultLayoutTableCellProperties );
 		}
+
+		this.view = useDefaults ? this._viewWithContentTableDefaults! : this._viewWithLayoutTableDefaults!;
 
 		this.listenTo( editor.ui, 'update', () => {
 			this._updateView();
