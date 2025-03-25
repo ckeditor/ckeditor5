@@ -2,7 +2,7 @@
 category: cloud
 meta-title: Using CKEditor 5 with Laravel and CDN | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with Laravel using CDN.
-order: 70
+order: 80
 menu-title: Laravel
 ---
 

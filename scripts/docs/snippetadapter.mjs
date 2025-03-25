@@ -5,30 +5,11 @@
 
 /* eslint-env node */
 
+import url from 'url';
 import { constants, readFile, writeFile, copyFile, access, mkdir } from 'fs/promises';
 import upath from 'upath';
 import { build as esbuild } from 'esbuild';
 import { CKEDITOR5_COMMERCIAL_PATH, CKEDITOR5_ROOT_PATH } from '../constants.mjs';
-
-/**
- * Production CKEditor 5 documentation is built using packages published to npm. However, some of
- * the imports used in snippets rely on code not available there. This map is used to resolve such
- * imports to the actual source files not present in the "exports" field of the published packages.
- */
-const RESOLVE_ALIAS_MAP = {
-	'@ckeditor/ckeditor5-image/docs/assets': upath.join(
-		CKEDITOR5_ROOT_PATH, 'packages', 'ckeditor5-image', 'docs', 'assets'
-	),
-	'@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js': upath.join(
-		CKEDITOR5_ROOT_PATH, 'packages', 'ckeditor5-core', 'tests', '_utils', 'articlepluginset.js'
-	),
-	'@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js': upath.join(
-		CKEDITOR5_ROOT_PATH, 'packages', 'ckeditor5-cloud-services', 'tests', '_utils', 'cloud-services-config.js'
-	),
-	'@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js': upath.join(
-		CKEDITOR5_ROOT_PATH, 'packages', 'ckeditor5-ckbox', 'tests', '_utils', 'ckbox-config.js'
-	)
-};
 
 /**
  * @param {Set<Snippet>} snippets Snippet collection extracted from documentation files.
@@ -102,6 +83,14 @@ async function buildSnippets( snippets, paths, constants, imports ) {
 		define: Object.fromEntries( Object.entries( constants ).map( ( [ key, value ] ) => [ key, JSON.stringify( value ) ] ) ),
 		outdir: paths.snippetsOutput,
 		entryNames: '[dir]/[name]/snippet',
+		nodePaths: [
+			/**
+			 * This script can be run from a location where the local `node_modules` directory is not available
+			 * (e.g. in https://github.com/cksource/docs/). To ensure that all dependencies can be resolved,
+			 * we need to add the local `node_modules` directory to the list of node paths.
+			 */
+			upath.join( CKEDITOR5_ROOT_PATH, 'node_modules' )
+		],
 		bundle: true,
 		minify: true,
 		treeShaking: true,
@@ -111,7 +100,6 @@ async function buildSnippets( snippets, paths, constants, imports ) {
 		target: 'es2022',
 		tsconfigRaw: {},
 		alias: {
-			...RESOLVE_ALIAS_MAP,
 			'@snippets': paths.snippetsInput,
 			'@assets': upath.resolve( paths.input, 'assets' )
 		},
@@ -127,10 +115,29 @@ async function buildSnippets( snippets, paths, constants, imports ) {
 			 * bundled. This will cause issues, because the `tests` directory is not available in the CDN build.
 			 */
 			{
-				name: 'external',
+				name: 'externalize-ckeditor5',
 				setup( build ) {
 					build.onResolve( { filter: /.*/ }, args => ( {
 						external: externals.some( name => name.endsWith( '/' ) ? args.path.startsWith( name ) : args.path === name )
+					} ) );
+				}
+			},
+
+			/**
+			 * Code from "ckeditor5" and "ckeditor5-premium-features" is externalized to avoid bundling it with the snippet
+			 * code. However, if the source file is imported directly, it can be bundled and (in case of commercial features)
+			 * not obfuscated. To prevent this, we throw an error if such an import is detected.
+			 */
+			{
+				name: 'throw-on-source-import',
+				setup( build ) {
+					build.onLoad( { filter: /packages[\\/].*[\\/]src/ }, args => ( {
+						errors: [
+							{
+								// eslint-disable-next-line max-len
+								text: `Can't use the source file "${ args.path }" in the snippet. Use "ckeditor5" or "ckeditor5-premium-features" import instead.`
+							}
+						]
 					} ) );
 				}
 			}
@@ -149,7 +156,7 @@ async function buildSnippets( snippets, paths, constants, imports ) {
  * @returns {Promise<void>}
  */
 async function buildDocuments( snippets, paths, constants, imports, getSnippetPlaceholder ) {
-	const getStyle = href => `<link rel="stylesheet" href="${ href }" data-cke="true" />`;
+	const getStyle = href => `<link rel="stylesheet" href="${ href }" data-cke="true">`;
 	const getScript = src => `<script type="module" src="${ src }"></script>`;
 	const documents = {};
 
@@ -162,22 +169,20 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 	// Gather global tags added to each document that do not require relative paths.
 	const globalTags = [
 		`<script type="importmap">${ JSON.stringify( { imports } ) }</script>`,
-		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`
+		`<script>window.CKEDITOR_GLOBAL_LICENSE_KEY = '${ constants.LICENSE_KEY }';</script>`,
+		'<script defer src="%BASE_PATH%/assets/global.js"></script>',
+		'<script defer src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>',
+		getStyle( '%BASE_PATH%/assets/ckeditor5/ckeditor5.css' ),
+		getStyle( '%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.css' ),
+		getStyle( '%BASE_PATH%/assets/global.css' ),
+		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5/ckeditor5.js">',
+		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.js">'
 	];
 
 	// Iterate over each document and replace placeholders with the actual content.
 	for ( const [ document, documentSnippets ] of Object.entries( documents ) ) {
+		const documentTags = [ ...globalTags ];
 		const relativeOutputPath = upath.relative( upath.dirname( document ), paths.output );
-
-		// Get global tags added to each document that require relative paths.
-		const documentTags = [
-			...globalTags,
-			getStyle( upath.join( relativeOutputPath, 'assets', 'ckeditor5', 'ckeditor5.css' ) ),
-			getStyle( upath.join( relativeOutputPath, 'assets', 'ckeditor5-premium-features', 'ckeditor5-premium-features.css' ) ),
-			getStyle( upath.join( relativeOutputPath, 'assets', 'global.css' ) ),
-			getScript( upath.join( relativeOutputPath, 'assets', 'global.js' ) ),
-			'<script src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>'
-		];
 
 		let documentContent = await readFile( document, { encoding: 'utf-8' } );
 
@@ -191,11 +196,11 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 			);
 
 			if ( await fileExists( upath.join( snippet.outputPath, snippet.snippetName, 'snippet.js' ) ) ) {
-				documentTags.push( getScript( upath.join( snippet.relativeOutputPath, snippet.snippetName, 'snippet.js' ) ) );
+				documentTags.push( getScript( `%BASE_PATH%/snippets/${ snippet.snippetName }/snippet.js` ) );
 			}
 
 			if ( await fileExists( upath.join( snippet.outputPath, snippet.snippetName, 'snippet.css' ) ) ) {
-				documentTags.push( getStyle( upath.join( snippet.relativeOutputPath, snippet.snippetName, 'snippet.css' ) ) );
+				documentTags.push( getStyle( `%BASE_PATH%/snippets/${ snippet.snippetName }/snippet.css` ) );
 			}
 		}
 
@@ -215,7 +220,10 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
  */
 async function getConstants() {
 	try {
-		const { default: constants } = await import( upath.resolve( CKEDITOR5_COMMERCIAL_PATH, 'docs', 'constants.cjs' ) );
+		const scriptPath = upath.join( CKEDITOR5_COMMERCIAL_PATH, 'docs', 'constants.cjs' );
+		const { href } = url.pathToFileURL( scriptPath );
+		const { default: constants } = await import( href );
+
 		return constants;
 	} catch {
 		return { LICENSE_KEY: 'GPL' };

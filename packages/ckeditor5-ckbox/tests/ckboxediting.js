@@ -38,6 +38,8 @@ describe( 'CKBoxEditing', () => {
 	beforeEach( async () => {
 		TokenMock.initialToken = 'ckbox-token';
 
+		sinon.stub( CKBoxUtils.prototype, '_authorizePrivateCategoriesAccess' ).resolves();
+
 		originalCKBox = window.CKBox;
 		window.CKBox = {};
 

@@ -29,6 +29,7 @@ import CKBoxEditing from '../../src/ckboxediting.js';
 import CKBoxImageEditEditing from '../../src/ckboximageedit/ckboximageeditediting.js';
 
 import { blurHashToDataUrl } from '../../src/utils.js';
+import CKBoxUtils from '../../src/ckboxutils.js';
 
 const CKBOX_API_URL = 'https://upload.example.com';
 
@@ -46,6 +47,8 @@ describe( 'CKBoxImageEditCommand', () => {
 			// Signature.
 			'signature'
 		].join( '.' );
+
+		sinon.stub( CKBoxUtils.prototype, '_authorizePrivateCategoriesAccess' ).resolves();
 
 		domElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( domElement );

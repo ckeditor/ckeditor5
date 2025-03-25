@@ -316,7 +316,7 @@ Check out the difference in the live demo below:
 
 ## Image optimization and responsive images
 
-When using the {@link features/ckbox CKBox file manager} service, it produces sets of resized, optimized images. The users can invoke these resized versions if needed. To learn more about these capabilities, refer to the {@link features/images-responsive responsive images} guide and the {@link @ckbox features/images/conversion CKBox conversion} guide.
+When using the {@link features/ckbox CKBox file manager} service, it produces sets of resized, optimized images. The users can invoke these resized versions if needed. To learn more about these capabilities, refer to the {@link features/images-responsive responsive images} guide and the [CKBox conversion](https://ckeditor.com/docs/ckbox/latest/features/images/conversion.html) guide.
 
 ## Installation
 

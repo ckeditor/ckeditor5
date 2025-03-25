@@ -46,10 +46,13 @@ import { execSync } from 'child_process';
 // A list of icons that should not NOT be cleaned up. Their internal structure should not be changed
 // because, for instance, CSS animations may depend on it.
 const EXCLUDED_ICONS = [
-	'settings.svg',
-	'return-arrow.svg',
+	'paint-roller-cursor-text.svg',
+	'preview-merge-fields.svg',
 	'project-logo.svg',
-	'template-generic.svg'
+	'return-arrow.svg',
+	'settings.svg',
+	'template-generic.svg',
+	'warning.svg'
 ];
 
 // A pattern to match all the icons.

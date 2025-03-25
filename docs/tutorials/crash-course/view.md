@@ -3,7 +3,7 @@ category: crash-course
 order: 60
 menu-title: Editor UI
 meta-title: CKEditor 5 crash course - Editor UI | CKEditor 5 Documentation
-modified_at: 2023-08-16
+modified_at: 2025-03-14
 ---
 
 # Editor UI
@@ -28,7 +28,8 @@ In this section, we will focus on updating the toolbar.
 Let's import the `ButtonView` constructor in the `src/plugin.js` file:
 
 ```js
-import { ButtonView } from 'ckeditor5';
+// Import ButtonView by adding it to the previously added import.
+import { Command, ButtonView } from 'ckeditor5';
 ```
 
 Then add the following code at the bottom of the `Highlight` method:
