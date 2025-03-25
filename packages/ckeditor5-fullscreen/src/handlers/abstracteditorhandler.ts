@@ -228,7 +228,7 @@ export default class AbstractEditorHandler {
 			// Code coverage is provided in the commercial package repository as integration unit tests.
 			/* istanbul ignore if -- @preserve */
 			if ( this._editor.plugins.get( 'RevisionHistory' ).isRevisionViewerOpen ) {
-				// Closing the revision history viewer is an asynchronous operation.
+				// Keep in mind that closing the revision history viewer is an asynchronous operation.
 				this._editor.config.get( 'revisionHistory.closeRevisionViewerCallback' )!();
 			}
 
