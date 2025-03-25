@@ -28,43 +28,46 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 		super( editor );
 
 		this._editor = editor;
+	}
 
-		this._defaultOnEnter = () => {
-			const editorUI = this._editor.ui;
-			const editorUIView = editorUI.view;
+	/**
+	 * A function that moves the editor UI elements to the fullscreen mode.
+	 */
+	protected override _defaultOnEnter(): HTMLElement {
+		const editorUI = this._editor.ui;
+		const editorUIView = editorUI.view;
 
-			/* istanbul ignore if -- @preserve */
-			if ( this._editor.plugins.has( 'Pagination' ) ) {
-				this.moveToFullscreen(
-					editorUI.getEditableElement()!.parentElement!.querySelector( '.ck-pagination-view' )!, 'pagination-view'
-				);
-			}
-
-			this.moveToFullscreen( editorUI.getEditableElement()!, 'editable' );
-			this.moveToFullscreen( editorUIView.toolbar.element!, 'toolbar' );
-
-			editorUIView.toolbar.switchBehavior(
-				this._editor.config.get( 'fullscreen.toolbar.shouldNotGroupWhenFull' ) === true ? 'static' : 'dynamic'
+		/* istanbul ignore if -- @preserve */
+		if ( this._editor.plugins.has( 'Pagination' ) ) {
+			this.moveToFullscreen(
+				editorUI.getEditableElement()!.parentElement!.querySelector( '.ck-pagination-view' )!, 'pagination-view'
 			);
+		}
 
-			// In classic editor, the `dir` attribute is set on the top-level container and it affects the styling
-			// in both menu bar and toolbar (adding the side padding to the elements).
-			// Since we don't move the whole container but only parts, we need to reapply the attribute value manually.
-			// Decupled editor doesn't have this issue because there is no top-level container,
-			// so `dir` is set on each component separately.
-			this.getWrapper().setAttribute( 'dir', editorUIView.element!.getAttribute( 'dir' )! );
+		this.moveToFullscreen( editorUI.getEditableElement()!, 'editable' );
+		this.moveToFullscreen( editorUIView.toolbar.element!, 'toolbar' );
 
-			if ( this._editor.config.get( 'fullscreen.menuBar.isVisible' ) ) {
-				if ( !editorUIView.menuBarView ) {
-					editorUIView.menuBarView = new MenuBarView( this._editor.locale );
-					editorUIView.menuBarView.render();
-					editorUI.initMenuBar( editorUIView.menuBarView );
-				}
+		editorUIView.toolbar.switchBehavior(
+			this._editor.config.get( 'fullscreen.toolbar.shouldNotGroupWhenFull' ) === true ? 'static' : 'dynamic'
+		);
 
-				this.moveToFullscreen( editorUIView.menuBarView.element!, 'menu-bar' );
+		// In classic editor, the `dir` attribute is set on the top-level container and it affects the styling
+		// in both menu bar and toolbar (adding the side padding to the elements).
+		// Since we don't move the whole container but only parts, we need to reapply the attribute value manually.
+		// Decupled editor doesn't have this issue because there is no top-level container,
+		// so `dir` is set on each component separately.
+		this.getWrapper().setAttribute( 'dir', editorUIView.element!.getAttribute( 'dir' )! );
+
+		if ( this._editor.config.get( 'fullscreen.menuBar.isVisible' ) ) {
+			if ( !editorUIView.menuBarView ) {
+				editorUIView.menuBarView = new MenuBarView( this._editor.locale );
+				editorUIView.menuBarView.render();
+				editorUI.initMenuBar( editorUIView.menuBarView );
 			}
 
-			return this.getWrapper();
-		};
+			this.moveToFullscreen( editorUIView.menuBarView.element!, 'menu-bar' );
+		}
+
+		return this.getWrapper();
 	}
 }

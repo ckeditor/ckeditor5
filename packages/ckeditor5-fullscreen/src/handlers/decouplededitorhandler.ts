@@ -27,27 +27,30 @@ export default class DecoupledEditorHandler extends AbstractEditorHandler {
 		super( editor );
 
 		this._editor = editor;
+	}
 
-		this._defaultOnEnter = () => {
-			/* istanbul ignore if -- @preserve */
-			if ( this._editor.plugins.has( 'Pagination' ) ) {
-				this.moveToFullscreen(
-					this._editor.ui.getEditableElement()!.parentElement!.querySelector( '.ck-pagination-view' )!, 'pagination-view'
-				);
-			}
-
-			this.moveToFullscreen( this._editor.ui.getEditableElement()!, 'editable' );
-			this.moveToFullscreen( this._editor.ui.view.toolbar.element!, 'toolbar' );
-
-			this._editor.ui.view.toolbar.switchBehavior(
-				this._editor.config.get( 'fullscreen.toolbar.shouldNotGroupWhenFull' ) === true ? 'static' : 'dynamic'
+	/**
+	 * A function that moves the editor UI elements to the fullscreen mode.
+	 */
+	protected override _defaultOnEnter(): HTMLElement {
+		/* istanbul ignore if -- @preserve */
+		if ( this._editor.plugins.has( 'Pagination' ) ) {
+			this.moveToFullscreen(
+				this._editor.ui.getEditableElement()!.parentElement!.querySelector( '.ck-pagination-view' )!, 'pagination-view'
 			);
+		}
 
-			if ( this._editor.config.get( 'fullscreen.menuBar.isVisible' ) ) {
-				this.moveToFullscreen( this._editor.ui.view.menuBarView.element!, 'menu-bar' );
-			}
+		this.moveToFullscreen( this._editor.ui.getEditableElement()!, 'editable' );
+		this.moveToFullscreen( this._editor.ui.view.toolbar.element!, 'toolbar' );
 
-			return this.getWrapper();
-		};
+		this._editor.ui.view.toolbar.switchBehavior(
+			this._editor.config.get( 'fullscreen.toolbar.shouldNotGroupWhenFull' ) === true ? 'static' : 'dynamic'
+		);
+
+		if ( this._editor.config.get( 'fullscreen.menuBar.isVisible' ) ) {
+			this.moveToFullscreen( this._editor.ui.view.menuBarView.element!, 'menu-bar' );
+		}
+
+		return this.getWrapper();
 	}
 }

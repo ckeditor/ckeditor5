@@ -76,14 +76,6 @@ export default class AbstractEditorHandler {
 	protected _closeRevisionViewerCallback: ( ( viewerEditor?: RevisionViewerEditor ) => Promise<unknown> ) | null = null;
 
 	/**
-	 * A function that moves the editor UI elements to the fullscreen mode. It should be set by the particular editor type handler.
-	 *
-	 * Returns the fullscreen mode container element so it can be further customized via
-	 * `fullscreen.onEnterCallback` configuration property.
-	 */
-	protected _defaultOnEnter: () => HTMLElement;
-
-	/**
 	 * An editor instance. It should be set by the particular editor type handler.
 	 */
 	declare protected _editor: Editor & Partial<ElementApi>;
@@ -103,7 +95,6 @@ export default class AbstractEditorHandler {
 		this._document = this._editor.sourceElement ? this._editor.sourceElement.ownerDocument : global.document;
 		this._editor.config.define( 'fullscreen.container', this._document.body );
 
-		this._defaultOnEnter = () => this.getWrapper();
 		editor.on( 'destroy', () => {
 			if ( this._wrapper ) {
 				this.destroy();
@@ -343,6 +334,16 @@ export default class AbstractEditorHandler {
 
 		this._document.body.classList.remove( 'ck-fullscreen' );
 		this._document.body.parentElement!.classList.remove( 'ck-fullscreen' );
+	}
+
+	/**
+	 * A function that moves the editor UI elements to the fullscreen mode. It should be set by the particular editor type handler.
+	 *
+	 * Returns the fullscreen mode container element so it can be further customized via
+	 * `fullscreen.onEnterCallback` configuration property.
+	 */
+	protected _defaultOnEnter(): HTMLElement {
+		return this.getWrapper();
 	}
 
 	/**
