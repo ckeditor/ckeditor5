@@ -1076,6 +1076,8 @@ Collaborate also regarding different formats. With content conversions, you can 
 		<tr id="tables-layout" class="feature">
 			<td>
 				{@link features/export-inline-styles Export with inline styles}
+						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+						<span class="tree__item__badge__text">Premium feature</span></span>
 			</td>
 			<td>
 				The
@@ -1629,6 +1631,28 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				editor, the editors are “connected.” All editable areas of the same
 				editor instance share the same configuration, toolbar, undo stack, and
 				produce one document.
+			</td>
+		</tr>
+		<tr id="email-editing" class="feature">
+			<td>
+				{@link features/email Email toolbox}
+			</td>
+			<td>
+				CKEditor 5 provides a wide variety of tools and functions for editing almost
+				any kind of content. This includes a wide array of tools and solutions to make
+				email editing easier and more compatible with various email clients.
+			</td>
+		</tr>
+		<tr id="email-editing-helper" class="subfeature background-gray">
+			<td>
+				<span>
+					<span class="subfeature-icon"></span>&nbsp;{@link features/email-configuration Email editing helper}
+						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+						<span class="tree__item__badge__text">Premium feature</span></span>
+			</td>
+			<td>
+				While configuring an email editor looks like a demanding task, the email configuration
+				helper plugin is the best way to start and make this experience more manageable.
 			</td>
 		</tr>
 		<tr id="professionally-translated-language-packs" class="feature">
