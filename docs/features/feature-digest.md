@@ -668,6 +668,19 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				accessibility as they are recognized by screen readers.
 			</td>
 		</tr>
+		<tr id="tables-layout" class="subfeature background-gray">
+			<td>
+				<span>
+					<span class="subfeature-icon"></span>&nbsp;{@link features/tables-layout Layout tables}
+				</span>
+			</td>
+			<td>
+				The
+				<code>{@link module:table/tablelayout~TableLayout}</code>
+				plugin is used to structure web page content spatially rather than for presenting tabular data.
+				It lets integrators create multi-column designs and precise positioning of elements on a page.
+			</td>
+		</tr>
 		<tr id="text-alignment" class="feature">
 			<td>
 				{@link features/text-alignment Text alignment}
@@ -1058,6 +1071,16 @@ Collaborate also regarding different formats. With content conversions, you can 
 				Effortlessly transform Word documents into clean HTML within CKEditor 5
 				while retaining the original styling, as well as comments and change
 				tracking annotations.
+			</td>
+		</tr>
+		<tr id="tables-layout" class="feature">
+			<td>
+				{@link features/export-inline-styles Export with inline styles}
+			</td>
+			<td>
+				The
+				<code>{@link module:export-inline-styles/exportinlinestyles~ExportInlineStyles}</code>
+				plugin applies the styles defined by CSS style sheets directly on HTML elements.
 			</td>
 		</tr>
 		<tr id="markdown-output" class="feature">
