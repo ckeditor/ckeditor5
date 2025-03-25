@@ -4,7 +4,7 @@
  */
 
 /**
- * @module utils
+ * @module utils/index
  */
 
 export { default as env } from './env.js';

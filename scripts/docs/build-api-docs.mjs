@@ -12,7 +12,8 @@ import { build } from '@ckeditor/ckeditor5-dev-docs';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
 buildApiDocs()
-	.catch( () => {
+	.catch( (e) => {
+		console.log( e );
 		process.exitCode = 1;
 	} );
 
@@ -28,8 +29,8 @@ async function buildApiDocs() {
 		tsconfig: path.join( CKEDITOR5_ROOT_PATH, 'tsconfig.typedoc.json' ),
 		sourceFiles: [
 			// CKEditor 5 sources.
-			'packages/ckeditor5-*/src/**/*.ts',
-			'external/ckeditor5-commercial/packages/ckeditor5-*/src/**/*.ts'
+			'packages/ckeditor5-utils/src/**/*.ts',
+			// 'external/ckeditor5-commercial/packages/ckeditor5-*/src/**/*.ts'
 		],
 		ignoreFiles: [
 			// Ignore libraries or generated files.
