@@ -76,7 +76,8 @@ export default class AbstractEditorHandler {
 	protected _closeRevisionViewerCallback: ( ( viewerEditor?: RevisionViewerEditor ) => Promise<unknown> ) | null = null;
 
 	/**
-	 * A function moving the editor UI elements to the fullscreen mode. It should be set by the particular editor type handler.
+	 * A function that moves the editor UI elements to the fullscreen mode. It should be set by the particular editor type handler.
+	 *
 	 * Returns the fullscreen mode container element so it can be further customized via
 	 * `fullscreen.onEnterCallback` configuration property.
 	 */
@@ -557,7 +558,7 @@ export default class AbstractEditorHandler {
 	}
 
 	/**
-	 *	Resets the revision history viewer callbacks to their original values.
+	 * Resets the revision history viewer callbacks to their original values.
 	 */
 	private _restoreRevisionHistoryCallbacks(): void {
 		// Code coverage is provided in the commercial package repository as integration unit tests.

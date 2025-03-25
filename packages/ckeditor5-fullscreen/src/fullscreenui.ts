@@ -52,7 +52,7 @@ export default class FullscreenUI extends Plugin {
 	}
 
 	/**
-	 * Creates a button toggling the fullscreen mode.
+	 * Creates a button that toggles the fullscreen mode.
 	 */
 	private _createButton( ButtonClass: typeof ButtonView | typeof MenuBarMenuListItemButtonView ) {
 		const editor = this.editor;
