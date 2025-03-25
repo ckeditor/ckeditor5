@@ -838,6 +838,88 @@ describe( 'SourceEditing', () => {
 
 		await editor.destroy();
 	} );
+
+	describe( 'integration with document outline', () => {
+		let documentOutlineElement, documentOutlineEditor, documentOutlineEditorElement, documentOutlineEditorButton;
+
+		class DocumentOutlineUIMock extends Plugin {
+			static get pluginName() {
+				return 'DocumentOutlineUI';
+			}
+
+			view = { element: document.createElement( 'div' ) };
+		}
+
+		beforeEach( async () => {
+			documentOutlineEditorElement = document.body.appendChild( document.createElement( 'div' ) );
+
+			documentOutlineEditor = await ClassicEditor.create( documentOutlineEditorElement, {
+				plugins: [ Paragraph, Heading, SourceEditing, DocumentOutlineUIMock ],
+				toolbar: [ 'heading' ]
+			} );
+
+			documentOutlineElement = documentOutlineEditor.plugins.get( 'DocumentOutlineUI' ).view.element;
+			documentOutlineEditorButton = documentOutlineEditor.ui.componentFactory.create( 'sourceEditing' );
+		} );
+
+		afterEach( async () => {
+			documentOutlineEditorElement.remove();
+
+			return documentOutlineEditor.destroy();
+		} );
+
+		it( 'should hide the document outline container when entering the source editing mode', async () => {
+			documentOutlineEditorButton.fire( 'execute' );
+
+			expect( documentOutlineElement.style.display ).to.equal( 'none' );
+
+			documentOutlineElement.remove();
+		} );
+
+		it( 'should show the document outline container when leaving the source editing mode', async () => {
+			documentOutlineEditorButton.fire( 'execute' );
+
+			expect( documentOutlineElement.style.display ).to.equal( 'none' );
+
+			documentOutlineEditorButton.fire( 'execute' );
+
+			expect( documentOutlineElement.style.display ).to.equal( '' );
+
+			documentOutlineElement.remove();
+		} );
+	} );
+
+	describe( 'integration with annotations', () => {
+		class AnnotationsMock extends Plugin {
+			static get pluginName() {
+				return 'Annotations';
+			}
+
+			refreshVisibility() {}
+		}
+
+		it( 'should refresh annotations visibility when entering and leaving source editing mode', async () => {
+			const editorElement = document.body.appendChild( document.createElement( 'div' ) );
+			const editor = await ClassicEditor.create( editorElement, {
+				plugins: [ Paragraph, Heading, SourceEditing, AnnotationsMock ],
+				toolbar: [ 'heading' ]
+			} );
+
+			const spy = sinon.spy( editor.plugins.get( 'Annotations' ), 'refreshVisibility' );
+
+			editor.plugins.get( 'SourceEditing' ).isSourceEditingMode = true;
+
+			sinon.assert.calledOnce( spy );
+
+			editor.plugins.get( 'SourceEditing' ).isSourceEditingMode = false;
+
+			sinon.assert.calledTwice( spy );
+
+			editorElement.remove();
+
+			return editor.destroy();
+		} );
+	} );
 } );
 
 describe( 'SourceEditing - integration with Markdown', () => {
