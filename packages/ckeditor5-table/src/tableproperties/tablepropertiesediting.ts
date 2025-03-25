@@ -8,12 +8,15 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
+import { first } from 'ckeditor5/src/utils.js';
 import {
 	addBackgroundRules,
 	addBorderRules,
 	type ViewElement,
 	type Conversion,
-	type Schema
+	type Schema,
+	type UpcastConversionApi,
+	type UpcastConversionData
 } from 'ckeditor5/src/engine.js';
 
 import TableEditing from '../tableediting.js';
@@ -217,7 +220,18 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 			},
 			model: {
 				key: 'tableAlignment',
-				value: ( viewElement: ViewElement ) => {
+				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
+					let localDefaultValue = defaultValue;
+
+					// Adjust default for layout tables.
+					if ( data.modelRange ) {
+						const modelElement = first( data.modelRange.getItems( { shallow: true } ) );
+
+						if ( modelElement && modelElement.is( 'element' ) && modelElement.getAttribute( 'tableType' ) == 'layout' ) {
+							localDefaultValue = '';
+						}
+					}
+
 					let align = viewElement.getStyle( 'float' );
 
 					// CSS: `float:none` => Model: `alignment:center`.
@@ -225,7 +239,7 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 						align = 'center';
 					}
 
-					return align === defaultValue ? null : align;
+					return align === localDefaultValue ? null : align;
 				}
 			}
 		} )
@@ -239,10 +253,21 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 			model: {
 				name: 'table',
 				key: 'tableAlignment',
-				value: ( viewElement: ViewElement ) => {
+				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
+					let localDefaultValue = defaultValue;
+
+					// Adjust default for layout tables.
+					if ( data.modelRange ) {
+						const modelElement = first( data.modelRange.getItems( { shallow: true } ) );
+
+						if ( modelElement && modelElement.is( 'element' ) && modelElement.getAttribute( 'tableType' ) == 'layout' ) {
+							localDefaultValue = '';
+						}
+					}
+
 					const align = viewElement.getAttribute( 'align' );
 
-					return align === defaultValue ? null : align;
+					return align === localDefaultValue ? null : align;
 				}
 			}
 		} );
