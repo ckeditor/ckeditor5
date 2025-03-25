@@ -453,7 +453,7 @@ export default class AbstractEditorHandler {
 
 		for ( const [ uiName, data ] of [ ...this._annotationsUIsData! ] ) {
 			// Default filter is `() => true`. Only store filters that are different.
-			if ( data.filter.toString() !== '() => true' ) {
+			if ( data.filter !== annotationsUIs.defaultFilter ) {
 				annotationsFilters.set( uiName, data.filter );
 			}
 		}
