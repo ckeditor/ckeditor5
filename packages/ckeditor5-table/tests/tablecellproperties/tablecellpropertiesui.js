@@ -850,7 +850,7 @@ describe( 'table cell properties', () => {
 				} );
 			} );
 
-			describe( 'Showing the #view', () => {
+			describe( 'Showing the #view (content table)', () => {
 				beforeEach( () => {
 					editor.model.change( writer => {
 						writer.setSelection( editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ), 0 );

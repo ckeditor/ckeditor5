@@ -914,8 +914,6 @@ describe( 'table properties', () => {
 
 			describe( 'Showing the #view (layout table)', () => {
 				beforeEach( async () => {
-					await editor.destroy();
-
 					editor = await ClassicTestEditor.create( editorElement, {
 						plugins: [ Table, TablePropertiesEditing, TablePropertiesUI, Paragraph, Undo, ClipboardPipeline, TableLayout ],
 						initialData: '<table><tr><td>foo</td></tr></table><p>bar</p>',
@@ -947,6 +945,10 @@ describe( 'table properties', () => {
 					tablePropertiesUI._hideView();
 
 					tablePropertiesView = tablePropertiesUI.view;
+				} );
+
+				afterEach( async () => {
+					await editor.destroy();
 				} );
 
 				it( 'should use hardcoded defaults for layout table instead of configuration', () => {

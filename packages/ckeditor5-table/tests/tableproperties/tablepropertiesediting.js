@@ -1269,21 +1269,21 @@ describe( 'table properties', () => {
 						await editor.destroy();
 					} );
 
-					it( 'should downcast "center" alignment for regular table using float:none', () => {
+					it( 'should downcast "center" alignment for content table using float:none', () => {
 						setModelData( model,
 							'<table headingRows="0" headingColumns="0">' +
-								'<tableRow><tableCell><paragraph>regular table</paragraph></tableCell></tableRow>' +
+								'<tableRow><tableCell><paragraph>content table</paragraph></tableCell></tableRow>' +
 							'</table>'
 						);
 
-						const regularTable = model.document.getRoot().getNodeByPath( [ 0 ] );
-						model.change( writer => writer.setAttribute( 'tableAlignment', 'center', regularTable ) );
+						const contentTable = model.document.getRoot().getNodeByPath( [ 0 ] );
+						model.change( writer => writer.setAttribute( 'tableAlignment', 'center', contentTable ) );
 
 						expect( editor.getData() ).to.be.equal(
 							'<figure class="table content-table" style="float:none;">' +
 								'<table>' +
 									'<tbody>' +
-										'<tr><td>regular table</td></tr>' +
+										'<tr><td>content table</td></tr>' +
 									'</tbody>' +
 								'</table>' +
 							'</figure>'
@@ -1298,7 +1298,6 @@ describe( 'table properties', () => {
 						);
 
 						const layoutTable = model.document.getRoot().getNodeByPath( [ 0 ] );
-
 						model.change( writer => writer.setAttribute( 'tableAlignment', 'center', layoutTable ) );
 
 						expect( editor.getData() ).to.be.equal(
@@ -1429,14 +1428,14 @@ describe( 'table properties', () => {
 					editor.setData( '<table style="background-color:#00f"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'backgroundColor' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBackgroundColor' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default `background` value', () => {
 					editor.setData( '<table style="background:#00f"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'backgroundColor' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBackgroundColor' ) ).to.be.undefined;
 				} );
 			} );
 
@@ -1445,14 +1444,14 @@ describe( 'table properties', () => {
 					editor.setData( '<table style="width:250px"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'width' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableWidth' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default `width` value from <figure>', () => {
 					editor.setData( '<figure class="table" style="width:250px"><table><tr><td>foo</td></tr></table></figure>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'width' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableWidth' ) ).to.be.undefined;
 				} );
 			} );
 
@@ -1461,14 +1460,14 @@ describe( 'table properties', () => {
 					editor.setData( '<table style="height:150px"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'height' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableHeight' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default `height` value from <figure>', () => {
 					editor.setData( '<figure class="table" style="height:150px"><table><tr><td>foo</td></tr></table></figure>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'height' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableHeight' ) ).to.be.undefined;
 				} );
 			} );
 
@@ -1513,9 +1512,13 @@ describe( 'table properties', () => {
 						table: {
 							tableProperties: {
 								defaultProperties: {
+									alignment: 'left',
 									borderStyle: 'none',
 									borderColor: '',
-									borderWidth: ''
+									borderWidth: '',
+									backgroundColor: '#00f',
+									width: '250px',
+									height: '150px'
 								}
 							}
 						}
@@ -1532,7 +1535,7 @@ describe( 'table properties', () => {
 			} );
 
 			describe( 'border', () => {
-				it( 'should not upcast the default border values', () => {
+				it( 'should not upcast the default `border` values', () => {
 					editor.setData(
 						'<table class="layout-table" style="border-style: none">' +
 							'<tr>' +
@@ -1548,20 +1551,6 @@ describe( 'table properties', () => {
 					expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
 				} );
 
-				it( 'should upcast non-default `border-color` value', () => {
-					editor.setData(
-						'<table class="layout-table" style="border-color:#ff0">' +
-							'<tr>' +
-								'<td>foo</td>' +
-							'</tr>' +
-						'</table>'
-					);
-
-					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
-
-					expect( table.getAttribute( 'tableBorderColor' ) ).to.be.equal( '#ff0' );
-				} );
-
 				it( 'should upcast non-default `border-style` value', () => {
 					editor.setData(
 						'<table class="layout-table" style="border-style:dashed">' +
@@ -1574,6 +1563,20 @@ describe( 'table properties', () => {
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'tableBorderStyle' ) ).to.be.equal( 'dashed' );
+				} );
+
+				it( 'should upcast non-default `border-color` value', () => {
+					editor.setData(
+						'<table class="layout-table" style="border-color:#ff0">' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>'
+					);
+
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableBorderColor' ) ).to.be.equal( '#ff0' );
 				} );
 
 				it( 'should upcast non-default `border-width` value', () => {
@@ -1592,7 +1595,7 @@ describe( 'table properties', () => {
 			} );
 
 			describe( 'background color', () => {
-				it( 'should not upcast the default `background-color` value', () => {
+				it( 'should upcast non-default `background-color` value', () => {
 					editor.setData(
 						'<table class="layout-table" style="background-color:#00f">' +
 							'<tr>' +
@@ -1602,10 +1605,10 @@ describe( 'table properties', () => {
 					);
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'backgroundColor' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBackgroundColor' ) ).to.be.equal( '#00f' );
 				} );
 
-				it( 'should not upcast the default `background` value', () => {
+				it( 'should upcast non-default `background` value', () => {
 					editor.setData(
 						'<table class="layout-table" style="background:#00f">' +
 							'<tr>' +
@@ -1615,12 +1618,12 @@ describe( 'table properties', () => {
 					);
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'backgroundColor' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBackgroundColor' ) ).to.be.equal( '#00f' );
 				} );
 			} );
 
 			describe( 'width', () => {
-				it( 'should not upcast the default `width` value from <table>', () => {
+				it( 'should upcast non-default `width` value from <table>', () => {
 					editor.setData(
 						'<table class="layout-table" style="width:250px">' +
 							'<tr>' +
@@ -1630,27 +1633,12 @@ describe( 'table properties', () => {
 					);
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'width' ) ).to.be.undefined;
-				} );
-
-				it( 'should not upcast the default `width` value from <figure>', () => {
-					editor.setData(
-						'<figure class="table layout-table" style="width:250px">' +
-						'<table>' +
-							'<tr>' +
-								'<td>foo</td>' +
-							'</tr>' +
-						'</table>' +
-						'</figure>'
-					);
-					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
-
-					expect( table.getAttribute( 'width' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableWidth' ) ).to.be.equal( '250px' );
 				} );
 			} );
 
 			describe( 'height', () => {
-				it( 'should not upcast the default `height` value from <table>', () => {
+				it( 'should upcast non-default `height` value from <table>', () => {
 					editor.setData(
 						'<table class="layout-table" style="height:150px">' +
 							'<tr>' +
@@ -1660,22 +1648,7 @@ describe( 'table properties', () => {
 					);
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'height' ) ).to.be.undefined;
-				} );
-
-				it( 'should not upcast the default `height` value from <figure>', () => {
-					editor.setData(
-						'<figure class="table layout-table" style="height:150px">' +
-							'<table>' +
-								'<tr>' +
-									'<td>foo</td>' +
-								'</tr>' +
-							'</table>' +
-						'</figure>'
-					);
-					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
-
-					expect( table.getAttribute( 'height' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableHeight' ) ).to.be.equal( '150px' );
 				} );
 			} );
 
