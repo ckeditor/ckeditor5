@@ -36,7 +36,7 @@ import {
 
 import { TextWatcher, type TextWatcherMatchedEvent } from 'ckeditor5/src/typing.js';
 
-import { debounce } from 'lodash-es';
+import { debounce } from 'es-toolkit/compat';
 
 import MentionsView from './ui/mentionsview.js';
 import DomWrapperView from './ui/domwrapperview.js';
@@ -89,7 +89,7 @@ export default class MentionUI extends Plugin {
 	private _lastRequested?: string;
 
 	/**
-	 * Debounced feed requester. It uses `lodash#debounce` method to delay function call.
+	 * Debounced feed requester. It uses `es-toolkit#debounce` method to delay function call.
 	 */
 	private _requestFeedDebounced: ( marker: string, feedText: string ) => void;
 
@@ -474,7 +474,8 @@ export default class MentionUI extends Plugin {
 			this._balloon!.add( {
 				view: this._mentionsView,
 				position: this._getBalloonPanelPositionData( markerMarker, this._mentionsView.position ),
-				singleViewMode: true
+				singleViewMode: true,
+				balloonClassName: 'ck-mention-balloon'
 			} );
 		}
 

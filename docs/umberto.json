@@ -1,11 +1,6 @@
 {
 	"name": "CKEditor 5",
 	"slug": "ckeditor5",
-	"hooks": {
-		"beforeHexo": [
-			"../scripts/docs/build-content-styles.mjs"
-		]
-	},
 	"reportIssueWidget": {
 		"enabled": true,
 		"issueUrl": "https://github.com/ckeditor/ckeditor5/issues/new?labels=squad%3Accx%2Ctype%3Adocs&template=7-docs-issue-community.yml",
@@ -286,6 +281,7 @@
 		"installation/getting-started/quick-start.html#creating-custom-builds-with-online-builder": "installation/legacy-getting-started/quick-start-other.html#creating-custom-builds-with-online-builder",
 		"installation/overview.html": "getting-started/index.html",
 		"installation/getting-started/configuration.html#adding-simple-standalone-features": "installation/legacy-getting-started/extending-features.html",
+		"installation/legacy/advanced/content-styles.html": "getting-started/setup/css.html",
 		"support/getting-support.html": "support/index.html",
 		"support/versioning-policy.html": "updating/versioning-policy.html",
 		"builds/guides/license-and-legal.html": "getting-started/licensing/license-and-legal.html",
@@ -616,6 +612,11 @@
 							]
 						}
 					]
+				},
+				{
+					"name": "Email editing",
+					"id": "features-email",
+					"slug": "email-editing"
 				},
 				{
 					"name": "File management",

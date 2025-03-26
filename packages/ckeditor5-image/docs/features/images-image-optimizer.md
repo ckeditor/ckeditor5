@@ -8,8 +8,6 @@ order: 40
 badges: [ premium ]
 ---
 
-{@snippet features/build-image-optimizer-source}
-
 Elevate your images with robust editing tools available through the premium {@link features/ckbox CKBox} and {@link features/uploadcare Uploadcare} integrations. In this guide you will discover how to modify and enhance visuals directly in the editor, giving you greater creative control.
 
 ## Image optimizer by Uploadcare
@@ -18,7 +16,7 @@ Uploadcare provides not only basic image editing capabilities, but also image pr
 
 ### Demo
 
-Click on the image to invoke the image toolbar, then use the image editing button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/ckbox-image-edit.svg} to access the Uploadcare editor.
+Click on the image to invoke the image toolbar, then use the image editing button {@icon @ckeditor/ckeditor5-icons/theme/icons/ckbox-image-edit.svg} to access the Uploadcare editor.
 
 {@snippet features/image-image-optimizer-uploadcare}
 
@@ -51,7 +49,7 @@ Image optimizer by Uploadcare also provides a wide range of predefined photo fil
 
 To set up the editing capabilities, read the {@link features/uploadcare#adding-image-editing-capabilities Uploadcare documentation}.
 
-All features listed above are available both for images uploaded to Uploadcare before editing and &ndash; if you enable the {@link features/uploadcare#editing-external-images external images editing option} &ndash; for images from other sources (external). Keep in mind that external images will be automatically uploaded to your Uploadcare account, once you click the edit image button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/ckbox-image-edit.svg} to enable all the editing capabilities.
+All features listed above are available both for images uploaded to Uploadcare before editing and &ndash; if you enable the {@link features/uploadcare#editing-external-images external images editing option} &ndash; for images from other sources (external). Keep in mind that external images will be automatically uploaded to your Uploadcare account, once you click the edit image button {@icon @ckeditor/ckeditor5-icons/theme/icons/ckbox-image-edit.svg} to enable all the editing capabilities.
 
 ## Image optimizer by CKBox
 
@@ -59,7 +57,7 @@ CKBox provides image editing tools, straight from the asset manager or CKEditor&
 
 ### Demo
 
-Click on the image to invoke the image toolbar, then use the image editing button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/ckbox-image-edit.svg} to access the CKBox image editor.
+Click on the image to invoke the image toolbar, then use the image editing button {@icon @ckeditor/ckeditor5-icons/theme/icons/ckbox-image-edit.svg} to access the CKBox image editor.
 
 {@snippet features/image-image-optimizer-ckbox}
 
@@ -81,4 +79,4 @@ All edits result in a new image being created on your CKBox account. This is don
 
 To set up the editing capabilities, read the {@link features/ckbox#installation CKBox documentation}.
 
-All the listed features are available both for images uploaded to CKBox before, and &ndash; if you enable  the {@link features/ckbox#editing-external-images external images editing option} &ndash; images from other sources (external). Keep in mind that external images will be instantly uploaded to your CKBox account, once you click the edit image button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/ckbox-image-edit.svg} to enable all the editing capabilities.
+All the listed features are available both for images uploaded to CKBox before, and &ndash; if you enable  the {@link features/ckbox#editing-external-images external images editing option} &ndash; images from other sources (external). Keep in mind that external images will be instantly uploaded to your CKBox account, once you click the edit image button {@icon @ckeditor/ckeditor5-icons/theme/icons/ckbox-image-edit.svg} to enable all the editing capabilities.

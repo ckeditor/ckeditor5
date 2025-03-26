@@ -25,7 +25,6 @@ import isCKEditor5PackageFactory from './utils/isckeditor5packagefactory.mjs';
 import compileTypeScriptCallback from './utils/compiletypescriptcallback.mjs';
 import updatePackageEntryPoint from './utils/updatepackageentrypoint.mjs';
 import prepareDllBuildsCallback from './utils/preparedllbuildscallback.mjs';
-import buildCKEditor5BuildsCallback from './utils/buildckeditor5buildscallback.mjs';
 import getListrOptions from './utils/getlistroptions.mjs';
 import getCdnVersion from './utils/getcdnversion.mjs';
 import isNonCommittableRelease from './utils/isnoncommittablerelease.mjs';
@@ -165,20 +164,6 @@ const tasks = new Listr( [
 					}
 				},
 				{
-					title: 'Preparing "ckeditor5-build-*" builds.',
-					task: ( ctx, task ) => {
-						return releaseTools.executeInParallel( {
-							packagesDirectory: PACKAGES_DIRECTORY,
-							packagesDirectoryFilter: packageDirectory => {
-								return upath.basename( packageDirectory ).startsWith( 'ckeditor5-build-' );
-							},
-							listrTask: task,
-							taskToExecute: buildCKEditor5BuildsCallback,
-							concurrency: 2
-						} );
-					}
-				},
-				{
 					title: 'Compiling TypeScript in `ckeditor5-*` packages.',
 					task: ( ctx, task ) => {
 						return releaseTools.executeInParallel( {
@@ -269,6 +254,7 @@ const tasks = new Listr( [
 						await fs.copy( './dist/translations', `./${ RELEASE_ZIP_DIRECTORY }/ckeditor5/translations/` );
 						await fs.copy( './scripts/release/assets/zip', `./${ RELEASE_ZIP_DIRECTORY }/` );
 						await fs.copy( './LICENSE.md', `./${ RELEASE_ZIP_DIRECTORY }/LICENSE.md` );
+						await fs.copy( './COPYING.GPL', `./${ RELEASE_ZIP_DIRECTORY }/COPYING.GPL` );
 
 						await fs.ensureDir( `./${ RELEASE_CDN_DIRECTORY }/zip` );
 
@@ -314,7 +300,6 @@ const tasks = new Listr( [
 				files: [
 					'package.json',
 					`${ PACKAGES_DIRECTORY }/*/package.json`,
-					`${ PACKAGES_DIRECTORY }/ckeditor5-build-*/build/**`,
 					...ctx.updatedFiles
 				]
 			} );

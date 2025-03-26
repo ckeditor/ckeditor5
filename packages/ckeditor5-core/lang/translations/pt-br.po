@@ -142,3 +142,55 @@ msgstr "Tente uma frase diferente ou verifique a grafia."
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
 msgstr "Fonte"
+
+msgctxt "Label for the Insert button."
+msgid "Insert"
+msgstr ""
+
+msgctxt "Label for the Update button."
+msgid "Update"
+msgstr ""
+
+msgctxt "Label for the Back button."
+msgid "Back"
+msgstr ""
+
+msgctxt "Part of the date label used to describe the past days of the week (e.g., 'Last Monday'). Used for comments and suggestions."
+msgid "Last"
+msgstr ""
+
+msgctxt "Label for \"Today\". Used as a date label for comments and suggestions."
+msgid "Today"
+msgstr ""
+
+msgctxt "Label for \"Yesterday\". Used as a date label for comments and suggestions."
+msgid "Yesterday"
+msgstr ""
+
+msgctxt "Name of \"Monday\" day of the week. Used as a part of the date label for days of the week (e.g., 'Last Monday') for comments and suggestions."
+msgid "Monday"
+msgstr ""
+
+msgctxt "Name of \"Tuesday\" day of the week. Used as a part of the date label for days of the week (e.g., 'Last Tuesday') for comments and suggestions."
+msgid "Tuesday"
+msgstr ""
+
+msgctxt "Name of \"Wednesday\" day of the week. Used as a part of the date label for days of the week (e.g., 'Last Wednesday') for comments and suggestions."
+msgid "Wednesday"
+msgstr ""
+
+msgctxt "Name of \"Thursday\" day of the week. Used as a part of the date label for days of the week (e.g., 'Last Thursday') for comments and suggestions."
+msgid "Thursday"
+msgstr ""
+
+msgctxt "Name of \"Friday\" day of the week. Used as a part of the date label for days of the week (e.g., 'Last Friday') for comments and suggestions."
+msgid "Friday"
+msgstr ""
+
+msgctxt "Name of \"Saturday\" day of the week. Used as a part of the date label for days of the week (e.g., 'Last Saturday') for comments and suggestions."
+msgid "Saturday"
+msgstr ""
+
+msgctxt "Name of \"Sunday\" day of the week. Used as a part of the date label for days of the week (e.g., 'Last Sunday') for comments and suggestions."
+msgid "Sunday"
+msgstr ""

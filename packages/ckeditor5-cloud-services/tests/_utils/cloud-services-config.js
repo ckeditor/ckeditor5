@@ -13,7 +13,10 @@ export const TOKEN_URL = 'https://33333.cke-cs.com/token/dev/ijrDsqFix838Gh3wGO3
 
 export const UPLOAD_URL = 'https://33333.cke-cs.com/easyimage/upload/';
 
+export const WEB_SOCKET_URL = '33333.cke-cs.com/ws';
+
 export const CS_CONFIG = {
 	tokenUrl: TOKEN_URL,
-	uploadUrl: UPLOAD_URL
+	uploadUrl: UPLOAD_URL,
+	webSocketUrl: WEB_SOCKET_URL
 };

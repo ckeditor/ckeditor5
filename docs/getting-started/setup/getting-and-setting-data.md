@@ -5,8 +5,6 @@ meta-description: Deep-dive into handling data with CKEditor 5.
 order: 10
 ---
 
-{@snippet installation/getting-and-setting-data/build-autosave-source}
-
 # Getting and setting data
 
 In CKEditor&nbsp;5 there are several ways to load and save data. In this guide, you can learn about the available options and their advantages and disadvantages.

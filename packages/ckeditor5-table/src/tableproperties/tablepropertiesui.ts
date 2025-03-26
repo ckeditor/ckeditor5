@@ -7,7 +7,8 @@
  * @module table/tableproperties/tablepropertiesui
  */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { IconTableProperties } from 'ckeditor5/src/icons.js';
 import {
 	ButtonView,
 	ContextualBalloon,
@@ -17,10 +18,9 @@ import {
 	type LabeledFieldView
 } from 'ckeditor5/src/ui.js';
 
-import { debounce } from 'lodash-es';
+import { debounce } from 'es-toolkit/compat';
 
 import TablePropertiesView from './ui/tablepropertiesview.js';
-import tableProperties from './../../theme/icons/table-properties.svg';
 import {
 	colorFieldValidator,
 	getLocalizedColorErrorText,
@@ -122,7 +122,6 @@ export default class TablePropertiesUI extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
-		const t = editor.t;
 
 		this._defaultTableProperties = getNormalizedDefaultTableProperties(
 			editor.config.get( 'table.tableProperties.defaultProperties' )!,
@@ -133,26 +132,36 @@ export default class TablePropertiesUI extends Plugin {
 
 		this._balloon = editor.plugins.get( ContextualBalloon );
 
-		editor.ui.componentFactory.add( 'tableProperties', locale => {
-			const view = new ButtonView( locale );
+		editor.ui.componentFactory.add( 'tableProperties', () => this._createTablePropertiesButton() );
+	}
 
-			view.set( {
-				label: t( 'Table properties' ),
-				icon: tableProperties,
-				tooltip: true
-			} );
+	/**
+	 * Creates the table properties button.
+	 *
+	 * @internal
+	 */
+	public _createTablePropertiesButton(): ButtonView {
+		const editor = this.editor;
+		const t = editor.t;
 
-			this.listenTo( view, 'execute', () => this._showView() );
+		const view = new ButtonView( editor.locale );
 
-			const commands = Object.values( propertyToCommandMap )
-				.map( commandName => editor.commands.get( commandName )! );
-
-			view.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( ...areEnabled ) => (
-				areEnabled.some( isCommandEnabled => isCommandEnabled )
-			) );
-
-			return view;
+		view.set( {
+			label: t( 'Table properties' ),
+			icon: IconTableProperties,
+			tooltip: true
 		} );
+
+		this.listenTo( view, 'execute', () => this._showView() );
+
+		const commands = Object.values( propertyToCommandMap )
+			.map( commandName => editor.commands.get( commandName )! );
+
+		view.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( ...areEnabled ) => (
+			areEnabled.some( isCommandEnabled => isCommandEnabled )
+		) );
+
+		return view;
 	}
 
 	/**

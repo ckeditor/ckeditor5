@@ -3,11 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals ClassicEditor, console, window, document */
+import {
+	TOKEN_URL,
+	getViewportTopOffsetConfig,
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
+import { ImageUploadEditor } from './build-image-upload-source.js';
 
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
-
-ClassicEditor
+ImageUploadEditor
 	.create( document.querySelector( '#snippet-image-upload' ), {
 		toolbar: {
 			items: [
@@ -54,22 +58,23 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
 			tokenUrl: TOKEN_URL,
 			forceDemoLabel: true,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
-		},
-		licenseKey: 'GPL'
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
 
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.label && item.label === 'Open file manager' ),
+		attachTourBalloon( {
+			target: findToolbarItem(
+				editor.ui.view.toolbar,
+				item => item.label && item.label === 'Open file manager'
+			),
 			text: 'Click to open the file manager.',
 			editor
 		} );

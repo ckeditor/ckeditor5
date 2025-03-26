@@ -17,8 +17,8 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import EmojiPicker from '../src/emojipicker.js';
 import EmojiRepository from '../src/emojirepository.js';
-import EmojiPickerView from '../src/ui/emojipickerview.js';
 import EmojiCommand from '../src/emojicommand.js';
+import EmojiPickerFormView from '../src/ui/emojipickerformview.js';
 
 function mockEmojiRepositoryValues( editor ) {
 	const repository = editor.plugins.get( 'EmojiRepository' );
@@ -305,7 +305,7 @@ describe( 'EmojiPicker', () => {
 
 			emojiPicker.showUI();
 
-			expect( emojiPicker.balloonPlugin.visibleView ).to.be.instanceOf( EmojiPickerView );
+			expect( emojiPicker.balloonPlugin.visibleView ).to.be.instanceOf( EmojiPickerFormView );
 		} );
 
 		it( 'should focus the query input when opens UI', async () => {
@@ -387,6 +387,16 @@ describe( 'EmojiPicker', () => {
 			expect( emojiPicker.balloonPlugin.visibleView ).to.equal( null );
 		} );
 
+		it( 'should close when back button of form view is clicked', () => {
+			emojiPicker.showUI();
+
+			expect( emojiPicker.balloonPlugin.visibleView ).to.be.instanceOf( EmojiPickerFormView );
+
+			emojiPicker.emojiPickerFormView.backButtonView.fire( 'execute' );
+
+			expect( emojiPicker.balloonPlugin.visibleView ).to.equal( null );
+		} );
+
 		it( 'should load previous category after reopening the emoji picker', () => {
 			emojiPicker.showUI();
 			emojiPicker.emojiPickerView.categoriesView.categoryName = 'Food & Drinks';
@@ -415,6 +425,16 @@ describe( 'EmojiPicker', () => {
 			expect( getModelData( editor.model ) ).to.equal(
 				'<paragraph>Lorem Ipsum is simply dummy [text] of the printing and typesetting industry.</paragraph>'
 			);
+		} );
+
+		// See #17964
+		it( 'should have the ck-emoji-picker-balloon class to make sure z-index does not conflict with the dialog system', () => {
+			emojiPicker.showUI();
+
+			const ballon = document.querySelector( '.ck-emoji-picker-balloon' );
+
+			expect( ballon ).not.to.equal( null );
+			expect( ballon.innerText ).to.include( 'Find an emoji (min. 2 characters)' );
 		} );
 
 		describe( 'fake visual selection', () => {

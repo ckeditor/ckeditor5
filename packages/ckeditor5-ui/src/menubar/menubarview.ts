@@ -15,7 +15,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 import { type FocusableView } from '../focuscycler.js';
 import View from '../view.js';
-import { isObject } from 'lodash-es';
+import { isObject } from 'es-toolkit/compat';
 import ListItemView from '../list/listitemview.js';
 import ListSeparatorView from '../list/listseparatorview.js';
 import type ViewCollection from '../viewcollection.js';
@@ -167,6 +167,24 @@ export default class MenuBarView extends View implements FocusableView {
 	public close(): void {
 		for ( const topLevelCategoryMenuView of this.children ) {
 			topLevelCategoryMenuView.isOpen = false;
+		}
+	}
+
+	/**
+	 * Disables all menus in the bar.
+	 */
+	public disable(): void {
+		for ( const topLevelCategoryMenuView of this.children ) {
+			topLevelCategoryMenuView.isEnabled = false;
+		}
+	}
+
+	/**
+	 * Enables all menus in the bar.
+	 */
+	public enable(): void {
+		for ( const topLevelCategoryMenuView of this.children ) {
+			topLevelCategoryMenuView.isEnabled = true;
 		}
 	}
 

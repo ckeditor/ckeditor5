@@ -3,19 +3,26 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, fetch, setInterval, setTimeout, clearInterval */
+import {
+	ClassicEditor,
+	Bold,
+	Italic,
+	Command,
+	Plugin,
+	Essentials,
+	Heading,
+	List,
+	Paragraph,
+	ButtonView,
+	Widget,
+	toWidget
+} from 'ckeditor5';
+import {
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Command, Plugin } from '@ckeditor/ckeditor5-core';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Heading } from '@ckeditor/ckeditor5-heading';
-import { List } from '@ckeditor/ckeditor5-list';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src/index.js';
-import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
-
-import BitcoinLogoIcon from '../../../assets/img/bitcoin-logo.svg';
+import BitcoinLogoIcon from '@assets/img/bitcoin-logo.svg';
 
 const RESOURCE_URL = 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT';
 
@@ -194,8 +201,7 @@ class ExternalDataWidgetEditing extends Plugin {
 ClassicEditor
 	.create( document.querySelector( '#snippet-external-data-widget' ), {
 		plugins: [ Essentials, Paragraph, Heading, List, Bold, Italic, ExternalDataWidget ],
-		toolbar: [ 'undo', 'redo', '|', 'external', '|', 'heading', '|', 'bold', 'italic', '|', 'numberedList', 'bulletedList' ],
-		licenseKey: 'GPL'
+		toolbar: [ 'undo', 'redo', '|', 'external', '|', 'heading', '|', 'bold', 'italic', '|', 'numberedList', 'bulletedList' ]
 	} )
 	.then( editor => {
 		console.log( 'Editor was initialized', editor );
@@ -203,9 +209,8 @@ ClassicEditor
 		// Expose for playing in the console.
 		window.editor = editor;
 
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.label && item.label === 'Bitcoin rate' ),
+		attachTourBalloon( {
+			target: findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Bitcoin rate' ),
 			text: 'Click to add Bitcoin rate.',
 			tippyOptions: {
 				placement: 'bottom-start'

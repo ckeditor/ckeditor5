@@ -16,7 +16,7 @@
     "@ckeditor/ckeditor5-core": "44.3.0",
     "@ckeditor/ckeditor5-engine": "44.3.0",
     "@ckeditor/ckeditor5-utils": "44.3.0",
-    "lodash-es": "4.17.21"
+    "es-toolkit": "1.32.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-autoformat": "44.3.0",
@@ -60,7 +60,7 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsc -p ./tsconfig.json",
+    "build": "tsc --build --force ./tsconfig.json",
     "build:dist": "node ../../scripts/nim/build-package.mjs"
   }
 }

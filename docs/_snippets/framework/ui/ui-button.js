@@ -3,7 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, console, Locale, ButtonView, checkIcon, ToolbarView, ClassicEditor, TooltipManager, Essentials */
+import {
+	ClassicEditor,
+	Essentials,
+	IconCheck,
+	ButtonView,
+	ToolbarView,
+	TooltipManager,
+	Locale
+} from 'ckeditor5';
 
 const locale = new Locale();
 
@@ -35,7 +43,7 @@ const saveButton = new ButtonView();
 saveButton.set( {
 	label: 'Save',
 	withText: false,
-	icon: checkIcon,
+	icon: IconCheck,
 	class: 'ck-button-save'
 } );
 saveButton.render();
@@ -68,11 +76,10 @@ document.querySelector( '.ui-button' ).append( toolbarButtons.element );
 
 ClassicEditor
 	.create( document.querySelector( '#ui-button-editor' ), {
-		plugins: [ Essentials ],
-		licenseKey: 'GPL'
+		plugins: [ Essentials ]
 	} )
 	.then( editor => {
-		this.tooltipManager = new TooltipManager( editor );
+		window.tooltipManager = new TooltipManager( editor );
 	} )
 	.catch( error => {
 		console.error( error.stack );

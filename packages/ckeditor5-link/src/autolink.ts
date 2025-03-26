@@ -48,6 +48,9 @@ const URL_REG_EXP = new RegExp(
 					// TLD identifier name.
 					'(?:[a-z\\u00a1-\\uffff]{2,63})' +
 				')' +
+				'|' +
+				// Allow localhost as a valid hostname
+				'localhost' +
 			')' +
 			// port number (optional)
 			'(?::\\d{2,5})?' +

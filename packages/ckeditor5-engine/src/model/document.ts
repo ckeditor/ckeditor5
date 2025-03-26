@@ -28,7 +28,7 @@ import {
 	isInsideCombinedSymbol
 } from '@ckeditor/ckeditor5-utils';
 
-import { clone } from 'lodash-es';
+import { clone } from 'es-toolkit/compat';
 
 // @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
 

@@ -15,6 +15,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-core": "44.3.0",
     "@ckeditor/ckeditor5-engine": "44.3.0",
+    "@ckeditor/ckeditor5-icons": "0.0.1",
     "@ckeditor/ckeditor5-heading": "44.3.0",
     "@ckeditor/ckeditor5-list": "44.3.0",
     "@ckeditor/ckeditor5-ui": "44.3.0",
@@ -22,7 +23,7 @@
     "ckeditor5": "44.3.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-utils": "^46.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^47.0.0",
     "@ckeditor/ckeditor5-editor-classic": "44.3.0",
     "@ckeditor/ckeditor5-paragraph": "44.3.0",
     "@ckeditor/ckeditor5-theme-lark": "44.3.0",
@@ -51,7 +52,7 @@
   ],
   "scripts": {
     "dll:build": "webpack",
-    "build": "tsc -p ./tsconfig.json",
+    "build": "tsc --build --force ./tsconfig.json",
     "build:dist": "node ../../scripts/nim/build-package.mjs"
   }
 }

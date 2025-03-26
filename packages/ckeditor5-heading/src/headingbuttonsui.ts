@@ -7,20 +7,21 @@
  * @module heading/headingbuttonsui
  */
 
-import { icons, Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView } from 'ckeditor5/src/ui.js';
+import { IconHeading1, IconHeading2, IconHeading3, IconHeading4, IconHeading5, IconHeading6 } from 'ckeditor5/src/icons.js';
 
 import { getLocalizedOptions } from './utils.js';
 import type { HeadingOption } from './headingconfig.js';
 import type HeadingCommand from './headingcommand.js';
 
 const defaultIcons: Record<string, string> = /* #__PURE__ */ ( () => ( {
-	heading1: icons.heading1,
-	heading2: icons.heading2,
-	heading3: icons.heading3,
-	heading4: icons.heading4,
-	heading5: icons.heading5,
-	heading6: icons.heading6
+	heading1: IconHeading1,
+	heading2: IconHeading2,
+	heading3: IconHeading3,
+	heading4: IconHeading4,
+	heading5: IconHeading5,
+	heading6: IconHeading6
 } ) )();
 
 /**

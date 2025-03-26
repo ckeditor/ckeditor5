@@ -16,6 +16,7 @@
     "@ckeditor/ckeditor5-clipboard": "44.3.0",
     "@ckeditor/ckeditor5-core": "44.3.0",
     "@ckeditor/ckeditor5-engine": "44.3.0",
+    "@ckeditor/ckeditor5-icons": "0.0.1",
     "@ckeditor/ckeditor5-typing": "44.3.0",
     "@ckeditor/ckeditor5-ui": "44.3.0",
     "@ckeditor/ckeditor5-undo": "44.3.0",
@@ -25,7 +26,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "44.3.0",
-    "@ckeditor/ckeditor5-dev-utils": "^46.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^47.0.0",
     "@ckeditor/ckeditor5-editor-balloon": "44.3.0",
     "@ckeditor/ckeditor5-editor-classic": "44.3.0",
     "@ckeditor/ckeditor5-image": "44.3.0",
@@ -33,10 +34,10 @@
     "@ckeditor/ckeditor5-paragraph": "44.3.0",
     "@ckeditor/ckeditor5-table": "44.3.0",
     "@ckeditor/ckeditor5-theme-lark": "44.3.0",
+    "es-toolkit": "1.32.0",
     "typescript": "5.0.4",
     "webpack": "^5.94.0",
-    "webpack-cli": "^5.1.4",
-    "lodash-es": "^4.17.15"
+    "webpack-cli": "^5.1.4"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "SEE LICENSE IN LICENSE.md",
@@ -59,7 +60,7 @@
   ],
   "scripts": {
     "dll:build": "webpack",
-    "build": "tsc -p ./tsconfig.json",
+    "build": "tsc --build --force ./tsconfig.json",
     "build:dist": "node ../../scripts/nim/build-package.mjs"
   }
 }

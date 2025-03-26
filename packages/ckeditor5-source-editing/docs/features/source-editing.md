@@ -7,13 +7,12 @@ order: 10
 ---
 
 # Source code editing
-{@snippet features/source-editing-imports}
 
 The source editing feature lets you view and edit the source of your document. This is the basic, open-source source code editing feature. You can also try the more advanced, premium {@link features/source-editing-enhanced Enhanced source code editing} plugin that provides the functionality in a handy modal window with syntax highlighting and more in all editor types.
 
 ## Demo
 
-Use the editor below to see the source editing plugin in action. Toggle the source editing mode {@icon @ckeditor/ckeditor5-core/theme/icons/source.svg Source editing} and make some changes in the HTML code (for example, add a new paragraph or an ordered list). Then leave the source editing mode and see that the changes are present in the document content.
+Use the editor below to see the source editing plugin in action. Toggle the source editing mode {@icon @ckeditor/ckeditor5-icons/theme/icons/source.svg Source editing} and make some changes in the HTML code (for example, add a new paragraph or an ordered list). Then leave the source editing mode and see that the changes are present in the document content.
 
 You can also use one of the many CKEditor&nbsp;5 features available in the toolbar and check how they render in the HTML source. Notice the collapsible table of contents, available thanks to the {@link features/general-html-support general HTML support} feature. The feature introduces HTML elements not yet covered by the official plugins.
 

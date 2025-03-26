@@ -75,11 +75,6 @@ export default function parseArguments( cliArguments ) {
 		options.npmTag = 'alpha';
 	}
 
-	if ( options.nightlyNext ) {
-		options.branch = 'master-it84';
-		options.npmTag = 'nightly-next';
-	}
-
 	if ( options.internal ) {
 		options.npmTag = 'internal';
 	}

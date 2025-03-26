@@ -56,6 +56,8 @@ export default function getCKEditor5PackageJson() {
 			'build/ckeditor5-dll.js',
 			'build/ckeditor5-dll.manifest.json',
 			'build/translations/*.js',
+			'COPYING.GPL',
+
 			// npm default files.
 			'CHANGELOG.md',
 			'LICENSE.md',

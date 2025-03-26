@@ -186,3 +186,11 @@ msgstr "Chyba pri nahrávaní obrázka"
 msgctxt "Label for the widget inserted by the image feature (as in 'insert image')"
 msgid "Image"
 msgstr "Obrázok"
+
+msgctxt "The label for the header of the image resize balloon."
+msgid "Image Resize"
+msgstr ""
+
+msgctxt "The label of the input field for the text alternative of the image."
+msgid "Text Alternative"
+msgstr ""

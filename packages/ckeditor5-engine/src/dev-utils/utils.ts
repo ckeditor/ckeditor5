@@ -13,7 +13,7 @@
 
 /* globals console */
 
-// @if CK_DEBUG_TYPING // const { debounce } = require( 'lodash-es' );
+// @if CK_DEBUG_TYPING // const { debounce } = require( 'es-toolkit/compat' );
 
 /**
  * Helper function, converts a map to the 'key1="value1" key2="value1"' format.
@@ -97,3 +97,40 @@ export function logDocument( document: any, version: any ): void {
 // @if CK_DEBUG_TYPING // 		'font-weight: bold; color: red'
 // @if CK_DEBUG_TYPING // 	);
 // @if CK_DEBUG_TYPING // }, 300 );
+
+// @if CK_DEBUG_TYPING // export function _buildLogMessage( context, className, message = '', ...rest ) {
+// @if CK_DEBUG_TYPING // 	const editor = _findAllEditorInstances().find( editor => (
+// @if CK_DEBUG_TYPING // 		_getLogNodes( editor ).includes( context )
+// @if CK_DEBUG_TYPING // 	) );
+// @if CK_DEBUG_TYPING // 	const editorName = editor && Object.getPrototypeOf( editor ).constructor.name;
+// @if CK_DEBUG_TYPING // 	const editorPrefix = editor ? `${ editorName }-${ editor.id.slice( -4 ) } ` : 'UNKNOWN ';
+// @if CK_DEBUG_TYPING // 	return [
+// @if CK_DEBUG_TYPING // 		`%c${ editorPrefix }%c[${ className }]%c ${ message }`,
+// @if CK_DEBUG_TYPING //		'font-weight: normal;',
+// @if CK_DEBUG_TYPING //		'font-weight: bold; color: green',
+// @if CK_DEBUG_TYPING //		'',
+// @if CK_DEBUG_TYPING // 		...rest
+// @if CK_DEBUG_TYPING // 	];
+// @if CK_DEBUG_TYPING // }
+
+// @if CK_DEBUG_TYPING // function _findAllEditorInstances() {
+// @if CK_DEBUG_TYPING // 	const editors = new Set();
+// @if CK_DEBUG_TYPING // 	for ( const domEditable of document.querySelectorAll( '.ck.ck-content.ck-editor__editable' ) ) {
+// @if CK_DEBUG_TYPING // 		if ( domEditable.ckeditorInstance ) {
+// @if CK_DEBUG_TYPING // 			editors.add( domEditable.ckeditorInstance );
+// @if CK_DEBUG_TYPING // 		}
+// @if CK_DEBUG_TYPING // 	}
+// @if CK_DEBUG_TYPING // 	return Array.from( editors );
+// @if CK_DEBUG_TYPING // }
+
+// @if CK_DEBUG_TYPING // function _getLogNodes( editor ) {
+// @if CK_DEBUG_TYPING // 	return [
+// @if CK_DEBUG_TYPING // 		editor.editing.view._renderer,
+// @if CK_DEBUG_TYPING // 		editor.editing.view.domConverter,
+// @if CK_DEBUG_TYPING // 		...editor.editing.view._observers.values(),
+// @if CK_DEBUG_TYPING // 		editor.plugins.get( 'Input' ),
+// @if CK_DEBUG_TYPING // 		editor.plugins.get( 'WidgetTypeAround' ),
+// @if CK_DEBUG_TYPING // 		editor.commands.get( 'delete' ),
+// @if CK_DEBUG_TYPING // 		editor.commands.get( 'deleteForward' )
+// @if CK_DEBUG_TYPING // 	];
+// @if CK_DEBUG_TYPING // }

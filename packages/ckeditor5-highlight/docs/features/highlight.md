@@ -5,13 +5,11 @@ meta-title: Highlight | CKEditor 5 Documentation
 
 # Highlight
 
-{@snippet features/build-highlight-source}
-
 The highlight feature lets you mark text fragments with different colors. You can use it both as a marker (to change the background color) and as a pen (to change the text color).
 
 ## Demo
 
-Select the text you want to highlight. Then use the highlight toolbar button {@icon @ckeditor/ckeditor5-highlight/theme/icons/marker.svg Highlight} to choose a desired color from the dropdown.
+Select the text you want to highlight. Then use the highlight toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/marker.svg Highlight} to choose a desired color from the dropdown.
 
 {@snippet features/highlight}
 

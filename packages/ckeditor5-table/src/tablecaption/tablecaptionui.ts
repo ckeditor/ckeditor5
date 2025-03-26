@@ -6,9 +6,9 @@
 /**
 * @module table/tablecaption/tablecaptionui
 */
-
-import { Plugin, icons } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView } from 'ckeditor5/src/ui.js';
+import { IconCaption } from 'ckeditor5/src/icons.js';
 import type ToggleTableCaptionCommand from './toggletablecaptioncommand.js';
 
 import { getCaptionFromModelSelection } from './utils.js';
@@ -44,7 +44,7 @@ export default class TableCaptionUI extends Plugin {
 			const view = new ButtonView( locale );
 
 			view.set( {
-				icon: icons.caption,
+				icon: IconCaption,
 				tooltip: true,
 				isToggleable: true
 			} );

@@ -1,0 +1,32 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck.ck-form__row {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: flex-start;
+	padding: var(--ck-spacing-standard) var(--ck-spacing-large) 0;
+
+	&.ck-form__row_large-top-padding {
+		padding-top: var(--ck-spacing-large);
+	}
+
+	&.ck-form__row_large-bottom-padding {
+		padding-bottom: var(--ck-spacing-large);
+	}
+
+	&.ck-form__row_with-submit {
+		flex-wrap: nowrap;
+
+		& > *:not(:first-child) {
+			margin-inline-start: var(--ck-spacing-standard);
+		}
+	}
+
+	& > .ck.ck-form__row {
+		padding: 0;
+	}
+}

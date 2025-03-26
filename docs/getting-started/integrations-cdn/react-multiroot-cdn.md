@@ -7,8 +7,6 @@ order: 20
 modified_at: 2024-04-25
 ---
 
-{@snippet installation/integrations/framework-integration}
-
 # React rich text multi-root editor hook with CDN
 
 <p>
