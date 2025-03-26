@@ -550,7 +550,7 @@ function parseAttributeValue( attribute: string ): any {
 // When value is an Object stringify it.
 function stringifyAttributeValue( data: any ): string {
 	if ( isPlainObject( data ) ) {
-		return JSON.stringify( data );
+		return JSON.stringify( data ).replaceAll( '"', '&quot;' );
 	}
 
 	return data;
