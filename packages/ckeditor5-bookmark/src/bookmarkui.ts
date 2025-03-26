@@ -136,6 +136,7 @@ export default class BookmarkUI extends Plugin {
 			items: editor.config.get( 'bookmark.toolbar' )!,
 
 			getRelatedElement: getSelectedBookmarkWidget,
+			balloonClassName: 'ck-bookmark-balloon',
 
 			// Override positions to the same list as for balloon panel default
 			// so widget toolbar will try to use same position as form view.
