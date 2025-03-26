@@ -95,7 +95,7 @@ ClassicEditor
 
 ### Configuring the preferred type for loading external tables.
 
-By default external tables are loaded using internal heuristics. This can be configurable by setting the preferred table type for loading all externals tables by setting the {@link module:table/tableconfig~TableLayoutConfig#preferredExternalTableType `config.table.tableLayout.preferredExternalTableType`} option to `content` or `layout`.
+By default, external tables are loaded using internal heuristics. This can be configured by setting the preferred table type for loading all externals tables by setting the {@link module:table/tableconfig~TableLayoutConfig#preferredExternalTableType `config.table.tableLayout.preferredExternalTableType`} option to `content` or `layout`.
 
 <code-switcher>
 ```js
