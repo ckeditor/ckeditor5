@@ -223,13 +223,15 @@
 		{
 			"name": "PlainTableOutput",
 			"className": "PlainTableOutput",
-			"description": "This plugin strips the `<figure>` tag from the table data.",
+			"description": "This plugin strips the `<figure>` tag from the table data at the output.",
 			"docs": "features/tables/tables-layout.html",
 			"path": "src/plaintableoutput.js",
 			"htmlOutput": [
 				{
 					"elements": [
 						"table",
+						"thead",
+						"tbody",
 						"tr"
 					]
 				},
