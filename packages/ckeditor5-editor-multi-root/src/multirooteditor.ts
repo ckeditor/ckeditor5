@@ -529,9 +529,11 @@ export default class MultiRootEditor extends Editor {
 	 * **Important! Lazy roots loading is an experimental feature, and may become deprecated. Be advised of the following limitations:**
 	 *
 	 * * **Real-time collaboration integrations that use
-	 * [uploaded editor bundles](https://ckeditor.com/docs/cs/latest/guides/collaboration/editor-bundle.html) are not supported.**
+	 * [uploaded editor bundles](https://ckeditor.com/docs/cs/latest/guides/collaboration/editor-bundle.html) are not supported. Using
+	 * lazy roots will lead to unexpected behavior and data loss.**
 	 * * **Revision history feature will read and process the whole document on editor initialization, possibly defeating the purpose
-	 * of using the lazy roots loading.**
+	 * of using the lazy roots loading. Additionally, when the document is loaded for the first time, all roots need to be loaded,
+	 * to make sure that the initial revision data includes all roots. Otherwise, you may experience data loss.**
 	 * * **Multiple features, that require all document data to be loaded, may also produce incorrect or confusing results if not all
 	 * roots are loaded. These include: bookmarks, find and replace, word count, pagination, document exports, document outline,
 	 * and table of contents.**
