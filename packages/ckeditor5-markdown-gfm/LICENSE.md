@@ -18,11 +18,11 @@ Where not otherwise indicated, all CKEditor content is authored by CKSource engi
 
 The following libraries are included in CKEditor under the [MIT license](https://opensource.org/licenses/MIT):
 
+* @types/marked - Copyright (c) DefinitelyTyped.
+* @types/turndown - Copyright (c) DefinitelyTyped.
 * marked - Copyright (c) 2018+, MarkedJS (https://github.com/markedjs/), Copyright (c) 2011–2018, Christopher Jeffrey (https://github.com/chjj/).
 * turndown - Copyright (c) 2017 Dom Christie.
 * turndown-plugin-gfm - Copyright (c) 2017 Dom Christie.
-* @types/marked - Copyright (c) DefinitelyTyped.
-* @types/turndown - Copyright (c) DefinitelyTyped.
 
 Trademarks
 ----------
