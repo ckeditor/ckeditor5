@@ -210,7 +210,7 @@ export const MenuBarMenuBehaviors = {
 	 */
 	openAndFocusPanelOnArrowDownKey( menuView: MenuBarMenuView ): void {
 		menuView.keystrokes.set( 'arrowdown', ( data, cancel ) => {
-			if ( menuView.focusTracker.focusedElement === menuView.buttonView.element ) {
+			if ( menuView.isEnabled && menuView.focusTracker.focusedElement === menuView.buttonView.element ) {
 				if ( !menuView.isOpen ) {
 					menuView.isOpen = true;
 				}
@@ -548,6 +548,12 @@ export const MenuBarMenuViewPanelPositioningFunctions: Record<string, Positionin
  * 				]
  * 			},
  * 			{
+ * 				groupId: 'fullscreen',
+ * 				items: [
+ * 					'menuBar:fullscreen'
+ * 				]
+ * 			},
+ * 			{
  * 				groupId: 'restrictedEditingException',
  * 				items: [
  * 					'menuBar:restrictedEditingException'
@@ -813,6 +819,12 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 				]
 			},
 			{
+				groupId: 'fullscreen',
+				items: [
+					'menuBar:fullscreen'
+				]
+			},
+			{
 				groupId: 'restrictedEditing',
 				items: [
 					'menuBar:restrictedEditing'
@@ -830,7 +842,8 @@ export const DefaultMenuBarItems: MenuBarConfigObject[ 'items' ] = [
 					'menuBar:insertImage',
 					'menuBar:ckbox',
 					'menuBar:ckfinder',
-					'menuBar:insertTable'
+					'menuBar:insertTable',
+					'menuBar:insertTableLayout'
 				]
 			},
 			{

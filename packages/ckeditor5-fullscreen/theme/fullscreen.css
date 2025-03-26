@@ -1,0 +1,206 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+/* Increase z-index of everything to make sure nothing sticks in front of the editor.
+Disable scrollbars that can be present due to the rest of the website content. */
+html.ck-fullscreen,
+body.ck-fullscreen {
+	--ck-z-fullscreen: 10000;
+
+	overflow: hidden;
+
+	--ck-z-default: calc(var(--ck-z-fullscreen) + 1);
+	--ck-z-panel: calc(var(--ck-z-default) + 999);
+	--ck-z-dialog: 100000;
+
+	/* CKBox wrappers have z-index of 9999, let's bump them over the dialog's to ensure visibility like outside fullscreen mode. */
+	& .ckbox-reset:not(#n)>.ckbox--dialog {
+		--ckbox-z-index-root: calc(var(--ck-z-dialog) + 1);
+	}
+
+	& .ckbox:not(#n) .ckbox-img-editor {
+		--ckbox-z-index-preview: calc(var(--ck-z-dialog) + 1);
+	}
+
+	& .ck-pagination-view-line {
+		z-index: calc(var(--ck-z-fullscreen) + 1);
+	}
+
+	& .page-break__label {
+		/* Needs to be higher than for .ck-pagination-view-line to be displayed on top of the line. */
+		z-index: calc(var(--ck-z-fullscreen) + 2);
+	}
+}
+
+/*
+Fullscreen layout:
+
+<div class="ck ck-fullscreen__main-wrapper">
+	<div class="ck ck-fullscreen__top-wrapper ck-reset_all">
+		<div class="ck ck-fullscreen__menu-bar" data-ck-fullscreen="menu-bar"></div>
+		<div class="ck ck-fullscreen__toolbar" data-ck-fullscreen="toolbar"></div>
+	</div>
+	<div class="ck ck-fullscreen__editable-wrapper">
+		<div class="ck ck-fullscreen__sidebar ck-fullscreen__left-sidebar" data-ck-fullscreen="left-sidebar"></div>
+		<div class="ck ck-fullscreen__editable" data-ck-fullscreen="editable"></div>
+		<div class="ck ck-fullscreen__sidebar ck-fullscreen__right-sidebar" data-ck-fullscreen="right-sidebar"></div>
+	</div>
+	<div class="ck ck-fullscreen__bottom-wrapper">
+		<div class="ck ck-fullscreen__body-wrapper" data-ck-fullscreen="body-wrapper"></div>
+	</div>
+</div>
+*/
+
+.ck.ck-fullscreen__main-wrapper {
+	/* `position: fixed` prevents the overscroll on macos that would happen with `position: absolute`. */
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: var(--ck-z-fullscreen);
+	background: var(--ck-color-base-foreground);
+	display: flex;
+	flex-direction: column;
+
+	& .ck.ck-revision-history-ui__changes-navigation {
+		margin-top: 0px;
+		margin-bottom: 0px;
+	}
+}
+
+/* If the fullscreen container is not directly in the body, we need to make sure it's positioned absolutely. */
+:not(body> .ck-fullscreen__main-wrapper).ck-fullscreen__main-wrapper {
+	position: absolute;
+}
+
+.ck-fullscreen__menu-bar .ck.ck-menu-bar {
+	border: none;
+}
+
+.ck-fullscreen__main-wrapper .ck-fullscreen__editable-wrapper {
+	--ck-fullscreen-editor-top-margin: 28px;
+	--ck-fullscreen-editor-bottom-margin: 28px;
+	display: flex;
+	justify-content: flex-start;
+	overflow: auto;
+	max-height: 100%;
+}
+
+.ck-fullscreen__sidebar {
+	width: 300px;
+	margin-top: var(--ck-fullscreen-editor-top-margin);
+	margin-left: 10px;
+	flex-shrink: 0;
+}
+
+.ck-fullscreen__sidebar[data-ck-fullscreen="right-sidebar"] {
+	margin-right: auto;
+}
+
+.ck-fullscreen__main-wrapper .ck-fullscreen__editable {
+	margin-top: var(--ck-fullscreen-editor-top-margin);
+	margin-bottom: 56px;
+	height: 100%;
+	margin-left: auto;
+
+	&::after {
+		content: '';
+		display: block;
+		height: var(--ck-fullscreen-editor-bottom-margin);
+	}
+}
+
+.ck-fullscreen__main-wrapper .ck-fullscreen__editable .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
+	box-sizing: border-box;
+	width: calc(210mm + 2px);
+	min-height: 297mm;
+	height: fit-content;
+	padding: 20mm 12mm;
+	border: 1px var(--ck-color-base-border) solid;
+	background: hsl(0, 0%, 100%);
+	box-shadow: 0 2px 3px hsla(0, 0%, 0%, 0.078);
+}
+
+.ck-fullscreen__main-wrapper .ck-fullscreen__editable .ck-source-editing-area {
+	width: calc(210mm + 2px);
+}
+
+.ck-fullscreen__left-sidebar {
+	font-family: Helvetica, Arial, sans-serif;
+	--ck-user-avatar-size: 28px;
+	position: sticky;
+	align-self: flex-start;
+	top: 0;
+	height: 100%;
+	background-color: transparent;
+	margin-top: 0px;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+}
+
+.ck-fullscreen__left-sidebar .ck.ck-presence-list--collapsed {
+	--ck-user-avatar-size: 32px;
+}
+
+.ck-fullscreen__left-sidebar> :first-child {
+	padding-top: var(--ck-fullscreen-editor-top-margin);
+}
+
+.ck-fullscreen__left-sidebar .ck-user {
+	font-size: 0.85em;
+}
+
+.ck-fullscreen__left-sidebar .ck-presence-list__users-counter__text {
+	font-size: 0.85em;
+}
+
+.ck-fullscreen__left-sidebar-item {
+	padding: var(--ck-spacing-medium);
+	margin-bottom: var(--ck-spacing-medium);
+}
+
+.ck-fullscreen__left-sidebar-item:last-child {
+	margin-bottom: 0;
+}
+
+.ck-fullscreen__left-sidebar-header {
+	--ck-fullscreen-presence-list-header-font-size: 0.875em;
+	font-size: var(--ck-fullscreen-presence-list-header-font-size);
+	font-weight: bold;
+	color: var(--ck-document-outline-item-default-color);
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.ck-fullscreen__left-sidebar--sticky {
+	position: sticky;
+	top: 0;
+
+	&> :first-child {
+		padding-top: 0;
+	}
+}
+
+.ck-fullscreen__presence-list {
+	margin-top: var(--ck-spacing-medium);
+}
+
+.ck-fullscreen__left-sidebar-item--no-margin {
+	margin: 0;
+}
+
+.ck-fullscreen__left-sidebar .ck.ck-document-outline {
+	padding-top: 0;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.ck-fullscreen__document-outline-wrapper {
+	padding-top: 0;
+	overflow-y: auto;
+}

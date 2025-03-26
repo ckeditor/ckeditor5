@@ -86,7 +86,7 @@ The "License keys" section provides authorization for standalone features. You c
 
 {@img assets/img/ckeditor-free-dashboard-keys.png 990 License keys.}
 
-For services such as document converters, you will need different kinds of authorization. For details on how to apply those credentials, please refer to respective feature guides. Or find out installation details available in the {@link @cs guides/overview Cloud Services section} of the documentation.
+For services such as document converters, you will need different kinds of authorization. For details on how to apply those credentials, please refer to respective feature guides. Or find out installation details available in the [Cloud Services section](https://ckeditor.com/docs/cs/latest/guides/overview.html) of the documentation.
 
 To use the access credentials for services, you first need to choose the environment. You may need to create one if there is none.
 

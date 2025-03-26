@@ -57,12 +57,12 @@ For instance, the `image.jgeg` file uploaded by the user will have the following
 	</picture>
 ```
 
-The variety of the image sizes in the `srcset` attribute allows the web browser to choose the best one for the particular screen size. As a result, it loads faster and with less data transferred. Read the {@link @ckbox features/images/responsive-images CKBox responsive images} guide to learn how are the intermediate file sizes calculated.
+The variety of the image sizes in the `srcset` attribute allows the web browser to choose the best one for the particular screen size. As a result, it loads faster and with less data transferred. Read the [CKBox responsive images](https://ckeditor.com/docs/ckbox/latest/features/images/responsive-images.html) guide to learn how are the intermediate file sizes calculated.
 
 Regardless of the original file format, the responsive versions will be served as `.webp`.
 
 <info-box>
-	CKBox converts image formats and resizes images on the fly. Refer to the {@link @ckbox features/images/conversion CKBox image conversion} guide to find out how to do it.
+	CKBox converts image formats and resizes images on the fly. Refer to the [CKBox image conversion](https://ckeditor.com/docs/ckbox/latest/features/images/conversion.html) guide to find out how to do it.
 </info-box>
 
 ## Installation

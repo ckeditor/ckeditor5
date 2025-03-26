@@ -118,7 +118,7 @@ export default class ClassicEditorUI extends EditorUI {
 		this._initToolbar();
 
 		if ( view.menuBarView ) {
-			this._initMenuBar( view.menuBarView );
+			this.initMenuBar( view.menuBarView );
 		}
 
 		this._initDialogPluginIntegration();

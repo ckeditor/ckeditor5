@@ -8,7 +8,7 @@
  */
 
 export { default as GeneralHtmlSupport } from './generalhtmlsupport.js';
-export { default as DataFilter } from './datafilter.js';
+export { default as DataFilter, type DataFilterRegisterEvent } from './datafilter.js';
 export { default as DataSchema, type DataSchemaBlockElementDefinition } from './dataschema.js';
 export { default as HtmlComment } from './htmlcomment.js';
 export { default as FullPage } from './fullpage.js';

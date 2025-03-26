@@ -123,7 +123,7 @@ image: {
 },
 ```
 
-You can read more about image editing in the {@link @ckbox features/images/editing CKBox documentation}.
+You can read more about image editing in the [CKBox documentation](https://ckeditor.com/docs/ckbox/latest/features/images/editing/editing.html).
 
 ### Expanded image insert dropdown
 

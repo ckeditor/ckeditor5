@@ -516,7 +516,9 @@ describe( 'AutoLink', () => {
 				'http://127.0.0.1:8080/ckeditor5/latest/features/link.html',
 				'http://192.168.43.58/ckeditor5/latest/features/link.html',
 				'http://83.127.13.40',
-				'http://userid@83.127.13.40'
+				'http://userid@83.127.13.40',
+				'http://localhost',
+				'http://localhost:8080'
 			];
 
 			for ( const supportedURL of supportedURLs ) {
@@ -553,7 +555,6 @@ describe( 'AutoLink', () => {
 				':// foo bar',
 				'ftps://foo.bar/',
 				'http://-error-.invalid/',
-				'http://localhost',
 				'http:/cksource.com',
 				'http://www.cksource', // https://github.com/ckeditor/ckeditor5/issues/8050.
 				'cksource.com',

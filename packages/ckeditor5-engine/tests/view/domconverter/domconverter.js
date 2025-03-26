@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, console */
+/* globals document, console, globalThis */
 
 import DomConverter from '../../../src/view/domconverter.js';
 import ViewEditable from '../../../src/view/editableelement.js';
@@ -45,6 +45,20 @@ describe( 'DomConverter', () => {
 
 			converter = new DomConverter( viewDocument, { renderingMode: 'editing' } );
 			expect( converter.blockFillerMode ).to.equal( 'br' );
+		} );
+	} );
+
+	describe( 'domDocument', () => {
+		it( 'should return DOM document instance used by the DomConverter #1 - rendering mode data', () => {
+			expect( converter.domDocument ).to.be.instanceof( globalThis.Document );
+		} );
+
+		it( 'should return DOM document instance used by the DomConverter #2 - rendering mode editing', () => {
+			const converterEditing = new DomConverter( viewDocument, {
+				renderingMode: 'editing'
+			} );
+
+			expect( converterEditing.domDocument ).to.equal( globalThis.document );
 		} );
 	} );
 

@@ -112,7 +112,7 @@ export function downcastCell( options: { asWidget?: boolean } = {} ): ElementCre
 				const cellElementName = isHeading ? 'th' : 'td';
 
 				result = options.asWidget ?
-					toWidgetEditable( writer.createEditableElement( cellElementName ), writer ) :
+					toWidgetEditable( writer.createEditableElement( cellElementName ), writer, { withAriaRole: false } ) :
 					writer.createContainerElement( cellElementName );
 				break;
 			}
