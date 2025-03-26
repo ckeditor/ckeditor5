@@ -913,7 +913,12 @@ describe( 'table properties', () => {
 			} );
 
 			describe( 'Showing the #view (layout table)', () => {
+				let editor, editorElement, tablePropertiesUI, tablePropertiesView, tablePropertiesButton;
+
 				beforeEach( async () => {
+					editorElement = document.createElement( 'div' );
+					document.body.appendChild( editorElement );
+
 					editor = await ClassicTestEditor.create( editorElement, {
 						plugins: [ Table, TablePropertiesEditing, TablePropertiesUI, Paragraph, Undo, ClipboardPipeline, TableLayout ],
 						initialData: '<table><tr><td>foo</td></tr></table><p>bar</p>',
@@ -934,7 +939,6 @@ describe( 'table properties', () => {
 
 					tablePropertiesUI = editor.plugins.get( TablePropertiesUI );
 					tablePropertiesButton = editor.ui.componentFactory.create( 'tableProperties' );
-					contextualBalloon = editor.plugins.get( ContextualBalloon );
 
 					editor.model.change( writer => {
 						writer.setSelection( editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ), 0 );
@@ -948,7 +952,9 @@ describe( 'table properties', () => {
 				} );
 
 				afterEach( async () => {
-					await editor.destroy();
+					editorElement.remove();
+
+					return editor.destroy();
 				} );
 
 				it( 'should use hardcoded defaults for layout table instead of configuration', () => {
