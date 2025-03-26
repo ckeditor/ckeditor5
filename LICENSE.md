@@ -34,6 +34,7 @@ The following libraries are included in CKEditor under the [MIT license](https:/
 * turndown - Copyright (c) 2017 Dom Christie.
 * turndown-plugin-gfm - Copyright (c) 2017 Dom Christie.
 * vanilla-colorful - Copyright (c) 2020 Serhii Kulykov <iamkulykov@gmail.com>.
+* Regular Expression for URL validation - Copyright (c) 2010-2018 Diego Perini.
 
 Trademarks
 ----------
