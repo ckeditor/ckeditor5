@@ -93,6 +93,29 @@ ClassicEditor
 
 ## Configuration
 
+### Configuring the preferred type for loading external tables.
+
+By default external tables are loaded using internal heuristics. This can be configurable by setting the preferred table type for loading all externals tables by setting the {@link module:table/tableconfig~TableLayoutConfig#preferredExternalTableType `config.table.tableLayout.preferredExternalTableType`} option to `content` or `layout`.
+
+<code-switcher>
+```js
+import { ClassicEditor, Table, TableLayout } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Table, TableLayout /* ... */ ],
+		table: {
+			tableLayout :{
+				preferredExternalTableType: 'content' // or 'layout'
+			}
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+</code-switcher>
+
 ### Configuring the table toggle feature
 
 To configure the table toggling feature, you have several options:
@@ -215,5 +238,5 @@ Additionally, if the {@link module:table/tableproperties~TableProperties} plugin
 
 ## Contribute
 
-The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-source-editing](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-source-editing).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-table](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-table).
 
