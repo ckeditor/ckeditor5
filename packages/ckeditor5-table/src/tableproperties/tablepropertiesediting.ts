@@ -8,7 +8,16 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { addBackgroundRules, addBorderRules, type ViewElement, type Conversion, type Schema } from 'ckeditor5/src/engine.js';
+import { first } from 'ckeditor5/src/utils.js';
+import {
+	addBackgroundRules,
+	addBorderRules,
+	type ViewElement,
+	type Conversion,
+	type Schema,
+	type UpcastConversionApi,
+	type UpcastConversionData
+} from 'ckeditor5/src/engine.js';
 
 import TableEditing from '../tableediting.js';
 import {
@@ -166,15 +175,37 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 		.attributeToAttribute( {
 			model: {
 				name: 'table',
-				key: 'tableAlignment'
+				key: 'tableAlignment',
+				values: [ 'left', 'center', 'right' ]
 			},
-			view: alignment => ( {
-				key: 'style',
-				value: {
-					// Model: `alignment:center` => CSS: `float:none`.
-					float: alignment === 'center' ? 'none' : alignment
+			view: {
+				left: {
+					key: 'style',
+					value: {
+						float: 'left'
+					}
+				},
+				right: {
+					key: 'style',
+					value: {
+						float: 'right'
+					}
+				},
+				center: ( alignment, conversionApi, data ) => {
+					const value: Record<string, string> = data.item.getAttribute( 'tableType' ) !== 'layout' ? {
+						// Model: `alignment:center` => CSS: `float:none`.
+						float: 'none'
+					} : {
+						'margin-left': 'auto',
+						'margin-right': 'auto'
+					};
+
+					return {
+						key: 'style',
+						value
+					};
 				}
-			} ),
+			},
 			converterPriority: 'high'
 		} );
 
@@ -189,7 +220,18 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 			},
 			model: {
 				key: 'tableAlignment',
-				value: ( viewElement: ViewElement ) => {
+				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
+					let localDefaultValue = defaultValue;
+
+					// Adjust default for layout tables.
+					if ( data.modelRange ) {
+						const modelElement = first( data.modelRange.getItems( { shallow: true } ) );
+
+						if ( modelElement && modelElement.is( 'element' ) && modelElement.getAttribute( 'tableType' ) == 'layout' ) {
+							localDefaultValue = '';
+						}
+					}
+
 					let align = viewElement.getStyle( 'float' );
 
 					// CSS: `float:none` => Model: `alignment:center`.
@@ -197,7 +239,7 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 						align = 'center';
 					}
 
-					return align === defaultValue ? null : align;
+					return align === localDefaultValue ? null : align;
 				}
 			}
 		} )
@@ -211,10 +253,21 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 			model: {
 				name: 'table',
 				key: 'tableAlignment',
-				value: ( viewElement: ViewElement ) => {
+				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
+					let localDefaultValue = defaultValue;
+
+					// Adjust default for layout tables.
+					if ( data.modelRange ) {
+						const modelElement = first( data.modelRange.getItems( { shallow: true } ) );
+
+						if ( modelElement && modelElement.is( 'element' ) && modelElement.getAttribute( 'tableType' ) == 'layout' ) {
+							localDefaultValue = '';
+						}
+					}
+
 					const align = viewElement.getAttribute( 'align' );
 
-					return align === defaultValue ? null : align;
+					return align === localDefaultValue ? null : align;
 				}
 			}
 		} );
