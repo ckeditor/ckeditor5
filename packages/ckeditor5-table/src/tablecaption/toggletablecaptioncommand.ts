@@ -47,7 +47,7 @@ export default class ToggleTableCaptionCommand extends Command {
 		const editor = this.editor;
 		const tableElement = getSelectionAffectedTable( editor.model.document.selection );
 
-		this.isEnabled = !!tableElement;
+		this.isEnabled = !!tableElement && editor.model.schema.checkChild( tableElement, 'caption' );
 
 		if ( !this.isEnabled ) {
 			this.value = false;

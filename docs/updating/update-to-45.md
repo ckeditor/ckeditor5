@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 45.x | CKEditor 5 Documentation
 menu-title: Update to v45.x
 order: 79
-modified_at: 2025-02-25
+modified_at: 2025-03-26
 ---
 
 # Update to CKEditor&nbsp;5 v45.x
@@ -16,7 +16,7 @@ modified_at: 2025-02-25
 
 ## Update to CKEditor&nbsp;5 v45.0.0
 
-_Released on Month X, 2024._
+_Released on April 2, 2024._
 
 For the entire list of changes introduced in version 45.0.0, see the [release notes for CKEditor&nbsp;5 v45.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v45.0.0).
 

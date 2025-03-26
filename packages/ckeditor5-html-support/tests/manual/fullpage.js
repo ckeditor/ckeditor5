@@ -18,11 +18,12 @@ const initialData = `
 <head>
 	<title>Page title</title>
 	<meta name="robots" content="noindex, nofollow" />
-	<style> body { background: #f00; } </style>
+	<style> body { background: #f00; } h2 { font-size: 40px; color: green; } p { color: blue; } </style>
 	<script> alert( 'should not show this alert' ); </script>
 	<!-- some comment-->
 </head>
 <body style="margin:0 !important; padding:0 !important;">
+	<h2>Heading</h2>
 	<p>Page content</p>
 </body>
 </html>`;

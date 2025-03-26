@@ -119,7 +119,7 @@ export default class DomConverter {
 	public readonly unsafeElements: Array<string>;
 
 	/**
-	 * The DOM Document used to create DOM nodes.
+	 * The DOM Document used by `DomConverter` to create DOM nodes.
 	 */
 	private readonly _domDocument: DomDocument;
 
@@ -189,6 +189,13 @@ export default class DomConverter {
 		this.unsafeElements = [ 'script', 'style' ];
 
 		this._domDocument = this.renderingMode === 'editing' ? global.document : global.document.implementation.createHTMLDocument( '' );
+	}
+
+	/**
+	 * The DOM Document used by `DomConverter` to create DOM nodes.
+	 */
+	public get domDocument(): DomDocument {
+		return this._domDocument;
 	}
 
 	/**
