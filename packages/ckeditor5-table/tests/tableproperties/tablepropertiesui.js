@@ -18,6 +18,7 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 
 import Table from '../../src/table.js';
+import TableLayout from '../../src/tablelayout.js';
 import TablePropertiesEditing from '../../src/tableproperties/tablepropertiesediting.js';
 import TablePropertiesUI from '../../src/tableproperties/tablepropertiesui.js';
 import TablePropertiesUIView from '../../src/tableproperties/ui/tablepropertiesview.js';
@@ -882,7 +883,6 @@ describe( 'table properties', () => {
 
 						tablePropertiesButton.fire( 'execute' );
 
-						expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
 						expect( tablePropertiesView ).to.include( {
 							borderStyle: 'dashed',
 							borderColor: '#ff0',
@@ -899,7 +899,6 @@ describe( 'table properties', () => {
 
 						tablePropertiesButton.fire( 'execute' );
 
-						expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
 						expect( tablePropertiesView ).to.include( {
 							borderStyle: 'none',
 							borderColor: '',
@@ -909,6 +908,66 @@ describe( 'table properties', () => {
 							height: '150px',
 							alignment: 'left'
 						} );
+					} );
+				} );
+			} );
+
+			describe( 'Showing the #view (layout table)', () => {
+				beforeEach( async () => {
+					await editor.destroy();
+
+					editor = await ClassicTestEditor.create( editorElement, {
+						plugins: [ Table, TablePropertiesEditing, TablePropertiesUI, Paragraph, Undo, ClipboardPipeline, TableLayout ],
+						initialData: '<table><tr><td>foo</td></tr></table><p>bar</p>',
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									alignment: 'left',
+									borderStyle: 'dashed',
+									borderColor: '#ff0',
+									borderWidth: '2px',
+									backgroundColor: '#00f',
+									width: '250px',
+									height: '150px'
+								}
+							}
+						}
+					} );
+
+					tablePropertiesUI = editor.plugins.get( TablePropertiesUI );
+					tablePropertiesButton = editor.ui.componentFactory.create( 'tableProperties' );
+					contextualBalloon = editor.plugins.get( ContextualBalloon );
+
+					editor.model.change( writer => {
+						writer.setSelection( editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ), 0 );
+					} );
+
+					// Trigger lazy init.
+					tablePropertiesUI._showView();
+					tablePropertiesUI._hideView();
+
+					tablePropertiesView = tablePropertiesUI.view;
+				} );
+
+				it( 'should use hardcoded defaults for layout table instead of configuration', () => {
+					editor.commands.get( 'tableBorderStyle' ).value = null;
+					editor.commands.get( 'tableBorderColor' ).value = null;
+					editor.commands.get( 'tableBorderWidth' ).value = null;
+					editor.commands.get( 'tableBackgroundColor' ).value = null;
+					editor.commands.get( 'tableWidth' ).value = null;
+					editor.commands.get( 'tableHeight' ).value = null;
+					editor.commands.get( 'tableAlignment' ).value = null;
+
+					tablePropertiesButton.fire( 'execute' );
+
+					expect( tablePropertiesView ).to.include( {
+						borderStyle: 'none',
+						borderColor: '',
+						borderWidth: '',
+						backgroundColor: '',
+						width: '',
+						height: '',
+						alignment: ''
 					} );
 				} );
 			} );

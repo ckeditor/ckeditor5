@@ -18,6 +18,7 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 
 import Table from '../../src/table.js';
+import TableLayout from '../../src/tablelayout.js';
 import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting.js';
 import TableCellWidthEditing from '../../src/tablecellwidth/tablecellwidthediting.js';
 import TableCellPropertiesUI from '../../src/tablecellproperties/tablecellpropertiesui.js';
@@ -777,9 +778,12 @@ describe( 'table cell properties', () => {
 					.create( editorElement, {
 						plugins: [
 							Table, TableCellPropertiesEditing, TableCellPropertiesUI, TableCellWidthEditing,
-							ClipboardPipeline, Paragraph, Undo
+							ClipboardPipeline, Paragraph, Undo, TableLayout
 						],
-						initialData: '<table><tr><td>foo</td></tr></table><p>bar</p>',
+						initialData:
+							'<table class="content-table"><tr><td>foo</td></tr></table>' +
+							'<p>bar</p>' +
+							'<table class="layout-table"><tr><td>foo</td></tr></table>',
 						table: {
 							tableCellProperties: {
 								defaultProperties: {
@@ -902,6 +906,49 @@ describe( 'table cell properties', () => {
 							padding: '10px',
 							horizontalAlignment: 'center',
 							verticalAlignment: 'bottom'
+						} );
+					} );
+				} );
+			} );
+
+			describe( 'Showing the #view (layout table)', () => {
+				beforeEach( () => {
+					editor.model.change( writer => {
+						writer.setSelection( editor.model.document.getRoot().getChild( 2 ).getChild( 0 ).getChild( 0 ), 0 );
+					} );
+
+					// Trigger lazy init.
+					tableCellPropertiesUI._showView();
+					tableCellPropertiesUI._hideView();
+
+					tableCellPropertiesView = tableCellPropertiesUI.view;
+				} );
+
+				describe( 'initial data', () => {
+					it( 'should use hardcoded defaults for layout table instead of configuration', () => {
+						editor.commands.get( 'tableCellBorderStyle' ).value = null;
+						editor.commands.get( 'tableCellBorderColor' ).value = null;
+						editor.commands.get( 'tableCellBorderWidth' ).value = null;
+						editor.commands.get( 'tableCellBackgroundColor' ).value = null;
+						editor.commands.get( 'tableCellWidth' ).value = null;
+						editor.commands.get( 'tableCellHeight' ).value = null;
+						editor.commands.get( 'tableCellPadding' ).value = null;
+						editor.commands.get( 'tableCellHorizontalAlignment' ).value = null;
+						editor.commands.get( 'tableCellVerticalAlignment' ).value = null;
+
+						tableCellPropertiesButton.fire( 'execute' );
+
+						expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+						expect( tableCellPropertiesView ).to.include( {
+							borderStyle: 'none',
+							borderColor: '',
+							borderWidth: '',
+							backgroundColor: '',
+							width: '',
+							height: '',
+							padding: '',
+							horizontalAlignment: 'left',
+							verticalAlignment: 'middle'
 						} );
 					} );
 				} );
