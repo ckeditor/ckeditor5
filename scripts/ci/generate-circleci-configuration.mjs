@@ -32,7 +32,8 @@ const FEATURE_COVERAGE_BATCH_FILENAME_PLACEHOLDER = '.out/combined_features_batc
  * one batch will be automatically added to cover remaining tests.
  */
 const FEATURE_BATCH_SIZES = [
-	30
+	20,
+	15
 ];
 
 const NON_FULL_COVERAGE_PACKAGES = [
