@@ -4,7 +4,7 @@ menu-title: Customizing icons
 meta-title: Customizing icons | CKEditor 5 Documentation
 meta-description: Learn how to customize editor icons.
 order: 95
-modified_at: 2025-01-24
+modified_at: 2025-03-26
 ---
 
 # Customizing icons
