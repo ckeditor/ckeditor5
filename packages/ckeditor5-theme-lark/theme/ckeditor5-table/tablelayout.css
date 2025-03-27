@@ -23,6 +23,9 @@
 			overflow: clip;
 			overflow-clip-margin: var(--ck-widget-outline-thickness);
 
+			/* Resetting `border-collapse` property to the user agent styles. */
+			border-collapse: revert;
+
 			/* The default table layout style in the editing view when the border is unset. */
 			&:not(
 			[style*="border:"],
