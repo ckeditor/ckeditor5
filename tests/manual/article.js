@@ -87,7 +87,7 @@ function Section( editor ) {
 
 	// Collect all removed section elements and their positions.
 	editor.model.on( 'applyOperation', ( evt, [ operation ] ) => {
-		if ( !operation.isDocumentOperation || operation.type !== 'remove' ) {
+		if ( !operation.isDocumentOperation || operation.type !== 'remove' || !operation.batch.isLocal ) {
 			return;
 		}
 
@@ -140,6 +140,12 @@ function Section( editor ) {
 		// Sort removed sections by their original position in the document to preserve the order.
 		removedSections.sort( ( a, b ) => a.originalPosition.isAfter( b.originalPosition ) ? -1 : 1 );
 
+		const root = editor.model.document.getRoot();
+
+		if ( removedSections.length && !editor.model.hasContent( root ) && !root.isEmpty ) {
+			writer.remove( writer.createRangeIn( root ) );
+		}
+
 		// Reinsert removed sections.
 		for ( const section of removedSections ) {
 			// Only when already not reinserted (for example drag-drop or undo).
@@ -162,11 +168,20 @@ function Section( editor ) {
 	} );
 
 	// Make sure that removed section element is not replaced with an empty paragraph.
-	editor.model.on( 'deleteContent', ( evt, [ selection, options ] ) => {
+	editor.model.on( 'deleteContent', ( evt, args ) => {
+		const selection = args[ 0 ];
+		const options = args[ 1 ] || {};
+
+		// options.doNotResetEntireContent = true;
+
 		const selectedElement = selection.getSelectedElement();
 
 		if ( selectedElement && selectedElement.is( 'element', 'section' ) ) {
 			options.doNotAutoparagraph = true;
+
+			if ( args[ 1 ] !== options ) {
+				args[ 1 ] = options;
+			}
 		}
 	}, { priority: 'high' } );
 }
