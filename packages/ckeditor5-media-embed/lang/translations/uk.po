@@ -53,4 +53,4 @@ msgstr "Відкрити медіа у новій вкладці"
 
 msgctxt "The label for the Media Embed balloon."
 msgid "Media embed"
-msgstr ""
+msgstr "Вбудувати медіа"

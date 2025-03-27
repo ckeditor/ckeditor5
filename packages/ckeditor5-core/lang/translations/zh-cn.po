@@ -145,52 +145,52 @@ msgstr "源"
 
 msgctxt "Label for the Insert button."
 msgid "Insert"
-msgstr ""
+msgstr "插入"
 
 msgctxt "Label for the Update button."
 msgid "Update"
-msgstr ""
+msgstr "更新"
 
 msgctxt "Label for the Back button."
 msgid "Back"
-msgstr ""
+msgstr "返回"
 
 msgctxt "Part of the date label used to describe the past days of the week (e.g., 'Last Monday'). Used for comments and suggestions."
 msgid "Last"
-msgstr ""
+msgstr "最后"
 
 msgctxt "Label for \"Today\". Used as a date label for comments and suggestions."
 msgid "Today"
-msgstr ""
+msgstr "今天"
 
 msgctxt "Label for \"Yesterday\". Used as a date label for comments and suggestions."
 msgid "Yesterday"
-msgstr ""
+msgstr "昨天"
 
 msgctxt "Name of \"Monday\" day of the week. Used as a part of the date label for days of the week (e.g., 'Last Monday') for comments and suggestions."
 msgid "Monday"
-msgstr ""
+msgstr "星期一"
 
 msgctxt "Name of \"Tuesday\" day of the week. Used as a part of the date label for days of the week (e.g., 'Last Tuesday') for comments and suggestions."
 msgid "Tuesday"
-msgstr ""
+msgstr "星期二"
 
 msgctxt "Name of \"Wednesday\" day of the week. Used as a part of the date label for days of the week (e.g., 'Last Wednesday') for comments and suggestions."
 msgid "Wednesday"
-msgstr ""
+msgstr "星期三"
 
 msgctxt "Name of \"Thursday\" day of the week. Used as a part of the date label for days of the week (e.g., 'Last Thursday') for comments and suggestions."
 msgid "Thursday"
-msgstr ""
+msgstr "星期四"
 
 msgctxt "Name of \"Friday\" day of the week. Used as a part of the date label for days of the week (e.g., 'Last Friday') for comments and suggestions."
 msgid "Friday"
-msgstr ""
+msgstr "星期五"
 
 msgctxt "Name of \"Saturday\" day of the week. Used as a part of the date label for days of the week (e.g., 'Last Saturday') for comments and suggestions."
 msgid "Saturday"
-msgstr ""
+msgstr "星期六"
 
 msgctxt "Name of \"Sunday\" day of the week. Used as a part of the date label for days of the week (e.g., 'Last Sunday') for comments and suggestions."
 msgid "Sunday"
-msgstr ""
+msgstr "星期日"

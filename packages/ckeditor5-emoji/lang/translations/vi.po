@@ -101,4 +101,4 @@ msgstr "Tông màu da tối"
 
 msgctxt "Header of the emoji picker balloon panel."
 msgid "Emoji picker"
-msgstr ""
+msgstr "Bảng chọn biểu tượng cảm xúc"

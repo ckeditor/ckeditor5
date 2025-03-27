@@ -53,4 +53,4 @@ msgstr "Åbn medie i ny fane"
 
 msgctxt "The label for the Media Embed balloon."
 msgid "Media embed"
-msgstr ""
+msgstr "Medieindlejring"

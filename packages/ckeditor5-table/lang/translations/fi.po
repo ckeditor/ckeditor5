@@ -269,28 +269,28 @@ msgstr "Taulukko"
 
 msgctxt "Label for the insert table layout toolbar button."
 msgid "Insert table layout"
-msgstr ""
+msgstr "Lisää taulukon asettelu"
 
 msgctxt "The accessible label used in the table layout insert UI element."
 msgid "Table layout"
-msgstr ""
+msgstr "Taulukon asettelu"
 
 msgctxt "The accessible label of the layout table type dropdown button."
 msgid "Layout table"
-msgstr ""
+msgstr "Asettelutaulukko"
 
 msgctxt "The accessible label of the content table type dropdown button."
 msgid "Content table"
-msgstr ""
+msgstr "Sisältötaulukko"
 
 msgctxt "The accessible label of the table balloon button that displays a user interface to choose table type."
 msgid "Choose table type"
-msgstr ""
+msgstr "Valitse taulukon tyyppi"
 
 msgctxt "The accessible label of the table type toolbar button."
 msgid "Table type"
-msgstr ""
+msgstr "Taulukon tyyppi"
 
 msgctxt "The accessible label of dropdown list that displays a user interface to choose table type."
 msgid "Table type options"
-msgstr ""
+msgstr "Taulukkotyypin vaihtoehdot"

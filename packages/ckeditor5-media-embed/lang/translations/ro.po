@@ -53,4 +53,4 @@ msgstr "Deschideți conținutul media într-o filă nouă"
 
 msgctxt "The label for the Media Embed balloon."
 msgid "Media embed"
-msgstr ""
+msgstr "Încorporare media"

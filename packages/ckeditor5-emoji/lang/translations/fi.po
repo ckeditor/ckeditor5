@@ -101,4 +101,4 @@ msgstr "Tumma ihonväri"
 
 msgctxt "Header of the emoji picker balloon panel."
 msgid "Emoji picker"
-msgstr ""
+msgstr "Emojien valitsin"

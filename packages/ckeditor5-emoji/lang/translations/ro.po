@@ -101,4 +101,4 @@ msgstr "Ton de piele închis"
 
 msgctxt "Header of the emoji picker balloon panel."
 msgid "Emoji picker"
-msgstr ""
+msgstr "Selector emoji"

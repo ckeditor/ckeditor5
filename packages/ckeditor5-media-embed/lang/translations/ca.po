@@ -53,4 +53,4 @@ msgstr "Obriu l'enllaç a una nova pestanya"
 
 msgctxt "The label for the Media Embed balloon."
 msgid "Media embed"
-msgstr ""
+msgstr "Insereix contingut multimèdia"

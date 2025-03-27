@@ -101,4 +101,4 @@ msgstr "גוון עור כהה"
 
 msgctxt "Header of the emoji picker balloon panel."
 msgid "Emoji picker"
-msgstr ""
+msgstr "בורר אימוג'י"

@@ -269,28 +269,28 @@ msgstr "Lentelė"
 
 msgctxt "Label for the insert table layout toolbar button."
 msgid "Insert table layout"
-msgstr ""
+msgstr "Įterpti lentelės maketą"
 
 msgctxt "The accessible label used in the table layout insert UI element."
 msgid "Table layout"
-msgstr ""
+msgstr "Lentelės maketas"
 
 msgctxt "The accessible label of the layout table type dropdown button."
 msgid "Layout table"
-msgstr ""
+msgstr "Maketo lentelė"
 
 msgctxt "The accessible label of the content table type dropdown button."
 msgid "Content table"
-msgstr ""
+msgstr "Turinio lentelė"
 
 msgctxt "The accessible label of the table balloon button that displays a user interface to choose table type."
 msgid "Choose table type"
-msgstr ""
+msgstr "Pasirinkti lentelės tipą"
 
 msgctxt "The accessible label of the table type toolbar button."
 msgid "Table type"
-msgstr ""
+msgstr "Lentelės tipas"
 
 msgctxt "The accessible label of dropdown list that displays a user interface to choose table type."
 msgid "Table type options"
-msgstr ""
+msgstr "Lentelės tipo parinktys"

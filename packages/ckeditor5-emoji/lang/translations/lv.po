@@ -101,4 +101,4 @@ msgstr "Tumšs ietvara tonis"
 
 msgctxt "Header of the emoji picker balloon panel."
 msgid "Emoji picker"
-msgstr ""
+msgstr "Emocijzīmju atlasītājs"

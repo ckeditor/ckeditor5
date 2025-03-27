@@ -49,16 +49,16 @@ msgstr "tiện ích đánh dấu trang"
 
 msgctxt "The label used by assistive technologies describing an bookmark toolbar attached to a bookmark widget."
 msgid "Bookmark toolbar"
-msgstr ""
+msgstr "Thanh công cụ Đánh dấu trang"
 
 msgctxt "Title for a feature displaying a list of bookmarks."
 msgid "Bookmarks"
-msgstr ""
+msgstr "Dấu trang"
 
 msgctxt "A message displayed instead of a list of bookmarks if it is empty."
 msgid "No bookmarks available."
-msgstr ""
+msgstr "Không có dấu trang khả dụng."
 
 msgctxt "Tooltip shown after hovering the bookmark link preview."
 msgid "Scroll to bookmark"
-msgstr ""
+msgstr "Cuộn chuột đến dấu trang"

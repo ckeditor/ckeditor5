@@ -53,4 +53,4 @@ msgstr "नए टैब में मीडिया खोलें"
 
 msgctxt "The label for the Media Embed balloon."
 msgid "Media embed"
-msgstr ""
+msgstr "मीडिया एंबेड"

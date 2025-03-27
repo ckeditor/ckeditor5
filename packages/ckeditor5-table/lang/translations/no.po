@@ -269,28 +269,28 @@ msgstr "Tabell"
 
 msgctxt "Label for the insert table layout toolbar button."
 msgid "Insert table layout"
-msgstr ""
+msgstr "Sett inn tabelloppsett"
 
 msgctxt "The accessible label used in the table layout insert UI element."
 msgid "Table layout"
-msgstr ""
+msgstr "Tabelloppsett"
 
 msgctxt "The accessible label of the layout table type dropdown button."
 msgid "Layout table"
-msgstr ""
+msgstr "Oppsettstabell"
 
 msgctxt "The accessible label of the content table type dropdown button."
 msgid "Content table"
-msgstr ""
+msgstr "Innholdstabell"
 
 msgctxt "The accessible label of the table balloon button that displays a user interface to choose table type."
 msgid "Choose table type"
-msgstr ""
+msgstr "Velg tabelltype"
 
 msgctxt "The accessible label of the table type toolbar button."
 msgid "Table type"
-msgstr ""
+msgstr "Tabelltype"
 
 msgctxt "The accessible label of dropdown list that displays a user interface to choose table type."
 msgid "Table type options"
-msgstr ""
+msgstr "Alternativer for tabelltype"
