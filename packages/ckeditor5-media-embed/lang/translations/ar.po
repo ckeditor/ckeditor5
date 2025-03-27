@@ -53,4 +53,4 @@ msgstr "فتح الوسائط في علامة تبويب جديدة"
 
 msgctxt "The label for the Media Embed balloon."
 msgid "Media embed"
-msgstr ""
+msgstr "تضمين الوسائط"

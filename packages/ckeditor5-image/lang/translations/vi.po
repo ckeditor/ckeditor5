@@ -189,8 +189,8 @@ msgstr "Hình ảnh"
 
 msgctxt "The label for the header of the image resize balloon."
 msgid "Image Resize"
-msgstr ""
+msgstr "Đổi kích thước hình ảnh"
 
 msgctxt "The label of the input field for the text alternative of the image."
 msgid "Text Alternative"
-msgstr ""
+msgstr "Văn bản thay thế"

@@ -53,4 +53,4 @@ msgstr "Άνοιγμα πολυμέσων σε νέα καρτέλα"
 
 msgctxt "The label for the Media Embed balloon."
 msgid "Media embed"
-msgstr ""
+msgstr "Ενσωμάτωση πολυμέσων"

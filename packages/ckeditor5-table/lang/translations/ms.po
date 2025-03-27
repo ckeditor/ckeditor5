@@ -269,28 +269,28 @@ msgstr "Jadual"
 
 msgctxt "Label for the insert table layout toolbar button."
 msgid "Insert table layout"
-msgstr ""
+msgstr "Sisipkan tataletak jadual"
 
 msgctxt "The accessible label used in the table layout insert UI element."
 msgid "Table layout"
-msgstr ""
+msgstr "Tataletak jadual"
 
 msgctxt "The accessible label of the layout table type dropdown button."
 msgid "Layout table"
-msgstr ""
+msgstr "Jadual tataletak"
 
 msgctxt "The accessible label of the content table type dropdown button."
 msgid "Content table"
-msgstr ""
+msgstr "Jadual kandungan"
 
 msgctxt "The accessible label of the table balloon button that displays a user interface to choose table type."
 msgid "Choose table type"
-msgstr ""
+msgstr "Pilih jenis jadual"
 
 msgctxt "The accessible label of the table type toolbar button."
 msgid "Table type"
-msgstr ""
+msgstr "Jenis jadual"
 
 msgctxt "The accessible label of dropdown list that displays a user interface to choose table type."
 msgid "Table type options"
-msgstr ""
+msgstr "Pilihan jenis jadual"

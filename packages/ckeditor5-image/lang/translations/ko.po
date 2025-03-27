@@ -189,8 +189,8 @@ msgstr "이미지 삽입 기능으로 삽입된 위젯"
 
 msgctxt "The label for the header of the image resize balloon."
 msgid "Image Resize"
-msgstr ""
+msgstr "이미지 크기 조절"
 
 msgctxt "The label of the input field for the text alternative of the image."
 msgid "Text Alternative"
-msgstr ""
+msgstr "대체 텍스트"

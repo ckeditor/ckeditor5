@@ -101,4 +101,4 @@ msgstr "To de pell fosc"
 
 msgctxt "Header of the emoji picker balloon panel."
 msgid "Emoji picker"
-msgstr ""
+msgstr "Selector d'emojis"

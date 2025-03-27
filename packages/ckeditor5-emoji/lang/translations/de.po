@@ -101,4 +101,4 @@ msgstr "Dunkle Hautfarbe"
 
 msgctxt "Header of the emoji picker balloon panel."
 msgid "Emoji picker"
-msgstr ""
+msgstr "Emoji-Auswahl"

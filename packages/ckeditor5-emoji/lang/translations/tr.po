@@ -101,4 +101,4 @@ msgstr "Koyu ten tonu"
 
 msgctxt "Header of the emoji picker balloon panel."
 msgid "Emoji picker"
-msgstr ""
+msgstr "Emoji seçici"

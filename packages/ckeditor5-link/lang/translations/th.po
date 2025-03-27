@@ -57,12 +57,12 @@ msgstr "ย้ายออกจากลิงก์"
 
 msgctxt "Label for the link properties link balloon title."
 msgid "Link properties"
-msgstr ""
+msgstr "คุณสมบัติลิงก์"
 
 msgctxt "The label of the input field for the displayed text of the link."
 msgid "Displayed text"
-msgstr ""
+msgstr "ข้อความที่แสดง"
 
 msgctxt "Placeholder shown when placeholder items view is empty."
 msgid "No links available"
-msgstr ""
+msgstr "ไม่มีลิงก์พร้อมใช้งาน"

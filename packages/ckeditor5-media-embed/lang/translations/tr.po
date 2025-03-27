@@ -53,4 +53,4 @@ msgstr "Medyayı yeni sekmede aç"
 
 msgctxt "The label for the Media Embed balloon."
 msgid "Media embed"
-msgstr ""
+msgstr "Medya yerleştirme"

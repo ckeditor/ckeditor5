@@ -101,4 +101,4 @@ msgstr "Темний тон шкіри"
 
 msgctxt "Header of the emoji picker balloon panel."
 msgid "Emoji picker"
-msgstr ""
+msgstr "Вибір емодзі"

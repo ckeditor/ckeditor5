@@ -53,4 +53,4 @@ msgstr "Abrir medio en una pestaña nueva"
 
 msgctxt "The label for the Media Embed balloon."
 msgid "Media embed"
-msgstr ""
+msgstr "Inserción de medios"

@@ -101,4 +101,4 @@ msgstr "Tmavý tón pleti"
 
 msgctxt "Header of the emoji picker balloon panel."
 msgid "Emoji picker"
-msgstr ""
+msgstr "Výber emodži"
