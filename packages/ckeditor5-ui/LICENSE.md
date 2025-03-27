@@ -18,7 +18,11 @@ Where not otherwise indicated, all CKEditor content is authored by CKSource engi
 
 The following libraries are included in CKEditor under the [MIT license](https://opensource.org/licenses/MIT):
 
+* @types/color-convert - Copyright (c) DefinitelyTyped.
 * es-toolkit - Copyright (c) 2024 Viva Republica, Inc.
+* color-convert - Copyright (c) 2011–2016 Heather Arthur <fayearthur@gmail.com>, copyright (c) 2016–2021 Josh Junon <josh@junon.me>.
+* color-parse - Copyright (c) 2015 Dmitry Ivanov.
+* vanilla-colorful - Copyright (c) 2020 Serhii Kulykov <iamkulykov@gmail.com>.
 
 Trademarks
 ----------
