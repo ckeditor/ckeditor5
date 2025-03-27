@@ -18,7 +18,7 @@ The CKEditor&nbsp;5 table feature offers several approaches and plugins responsi
 
 * {@link features/tables Regular content tables} &ndash; Content tables provide the basic table experience for presentation of tabular data.
 * {@link features/tables-layout Table layout} &ndash; Layout tables are used to structure the content spatially rather than present content. They allow for creating multi-column designs and precise positioning of elements on a page.
-* {@link module:table/plaintableoutput~PlainTableOutput Plain table output} &ndash; This plugin strips the `<figure>` tag from the table data. Is is basically an email client compatibility feature.
+* {@link module:table/plaintableoutput~PlainTableOutput Plain table output} &ndash; This plugin strips the `<figure>` tag from the table data. It is basically an email client compatibility feature.
 
 | Regular table | Layout table | Plain table output |
 | -------- | ------- | ------- |
@@ -38,7 +38,7 @@ Check the editor below to see the layout tables plugin in action. Use the layout
 
 ## Table toggling
 
-There are several table types available in CKeditor&nbsp;5. To switch between these  different table modes, you can use the table toggling feature.
+There are several table types available in CKEditor&nbsp;5. To switch between these  different table modes, you can use the table toggling feature.
 
 ### Demo
 
@@ -95,7 +95,7 @@ ClassicEditor
 
 ### Configuring the preferred type for loading external tables.
 
-By default, external tables are loaded using internal heuristics. This can be configured by setting the preferred table type for loading all externals tables by setting the {@link module:table/tableconfig~TableLayoutConfig#preferredExternalTableType `config.table.tableLayout.preferredExternalTableType`} option to `content` or `layout`.
+By default, external tables are loaded using internal heuristics. This can be configured by setting the preferred table type for loading all external tables by setting the {@link module:table/tableconfig~TableLayoutConfig#preferredExternalTableType `config.table.tableLayout.preferredExternalTableType`} option to `content` or `layout`.
 
 <code-switcher>
 ```js
@@ -213,7 +213,7 @@ The {@link module:table/tablelayout~TableLayout} plugin registers the following 
 
 * {@link module:table/tablelayout/tablelayoutediting~TableLayoutEditing} &ndash; The layout table editing command.
 * {@link module:table/tablelayout/tablelayoutui~TableLayoutUI} &ndash; The layout table UI.
-* {@link module:table/commands/inserttablelayoutcommand~InsertTableLayoutCommand} &ndash; The `insertTableLayotu` toolbar dropdown.
+* {@link module:table/commands/inserttablelayoutcommand~InsertTableLayoutCommand} &ndash; The `insertTableLayout` toolbar dropdown.
 
 The {@link module:table/tablelayout~TableLayout} plugin registers the following UI components:
 
