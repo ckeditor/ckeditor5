@@ -553,7 +553,7 @@ function stringifyAttributeValue( data: any ): string {
 		return JSON.stringify( data ).replaceAll( '"', '&quot;' );
 	}
 
-	return data.replaceAll( '"', '&quot;' );
+	return data;
 }
 
 // Loop trough attributes map and converts each value by passed converter.
