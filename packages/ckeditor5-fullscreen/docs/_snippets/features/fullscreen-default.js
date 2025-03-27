@@ -332,10 +332,10 @@ generateComments( csConfig, channelId, initialCommentsData )
 						showCommentHighlights: true
 					} ),
 					stylesheets: [
-						'../../assets/pagination-fonts.css',
-						'../../assets/ckeditor5/ckeditor5.css',
-						'../../assets/ckeditor5-premium-features/ckeditor5-premium-features.css',
-						'../../assets/pagination.css'
+						'../assets/pagination-fonts.css',
+						'../assets/ckeditor5/ckeditor5.css',
+						'../assets/ckeditor5-premium-features/ckeditor5-premium-features.css',
+						'../assets/pagination.css'
 					],
 					fileName: 'export-pdf-demo.pdf',
 					appID: 'cke5-docs',
@@ -351,8 +351,8 @@ generateComments( csConfig, channelId, initialCommentsData )
 				},
 				exportWord: {
 					stylesheets: [
-						'../../assets/ckeditor5/ckeditor5.css',
-						'../../assets/ckeditor5-premium-features/ckeditor5-premium-features.css'
+						'../assets/ckeditor5/ckeditor5.css',
+						'../assets/ckeditor5-premium-features/ckeditor5-premium-features.css'
 					],
 					fileName: 'export-word-demo.docx',
 					appID: 'cke5-docs',
@@ -481,7 +481,7 @@ generateComments( csConfig, channelId, initialCommentsData )
 							icon: articleImageRightIcon,
 							data: `<h2>Title of the document</h2>
 								<figure class="image image-style-align-right image_resized" style="width:26.32%;">
-									<img src="../../assets/img/ckeditor-logo.png">
+									<img src="../assets/img/ckeditor-logo.png">
 									<figcaption>A caption of the image.</figcaption>
 								</figure>
 								<p>The content of the document.&nbsp;</p>`
@@ -543,7 +543,7 @@ generateComments( csConfig, channelId, initialCommentsData )
 							icon: resumeIcon,
 							data: `<figure class="image image_resized" style="width:11.42%;">
 									<picture>
-										<img src="../../assets/img/user-avatar.png">
+										<img src="../assets/img/user-avatar.png">
 									</picture>
 								</figure>
 								<h2 style="text-align:center;">John Doe</h2>
