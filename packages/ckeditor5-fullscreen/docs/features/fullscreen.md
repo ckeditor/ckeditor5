@@ -3,7 +3,6 @@ title: Fullscreen mode
 menu-title: Fullscreen mode
 meta-title: Fullscreen mode | CKEditor 5 Documentation
 category: features
-toc: false
 modified_at: 2025-03-26
 ---
 
@@ -151,7 +150,7 @@ If you want to display some additional elements in the fullscreen mode, set the 
 
 `onLeaveCallback( container )` is fired when you leave fullscreen mode. Passed parameter is the container with the fullscreen mode DOM structure. The callback should be used to take care of any of your custom components, e.g. if some elements were moved to the fullscreen DOM structure, restore their original locations in the DOM.
 
-### Customized layout - pageless editor demo
+### Demo - customized layout: pageless editor
 
 Below you'll find a customized demo:
 
