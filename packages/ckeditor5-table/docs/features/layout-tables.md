@@ -76,9 +76,9 @@ There are several table types available in CKEditor&nbsp;5. To switch between th
 
 When a table is selected, you can toggle its type in one of two ways:
 
-1. If the {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI} plugin is enabled, the table properties button {@icon @ckeditor/ckeditor5-icons/theme/icons/table-properties.svg} will include a "Table type" dropdown option that allows switching between regular content tables and layout tables.
+1. If the {@link module:table/tableproperties~TableProperties} plugin is enabled, the table properties button {@icon @ckeditor/ckeditor5-icons/theme/icons/table-properties.svg} will include a "Table type" dropdown option that allows switching between regular content tables and layout tables.
 
-2. If the {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI} plugin is not available, you can use the dedicated `tableType` toolbar button to change the table type.
+2. If the {@link module:table/tableproperties~TableProperties} plugin is not available, you can use the dedicated `tableType` toolbar button to change the table type.
 
 Switching between table types preserves the content while adjusting the table's behavior and styling to match its new purpose. Layout tables focus on spatial arrangement and design, while content tables emphasize data presentation.
 
