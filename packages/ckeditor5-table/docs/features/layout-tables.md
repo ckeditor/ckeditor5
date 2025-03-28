@@ -21,12 +21,42 @@ The CKEditor&nbsp;5 table feature offers several approaches and plugins responsi
 * {@link features/layout-tables Table layout} &ndash; Layout tables are used to structure the content spatially rather than present content. They allow for creating multi-column designs and precise positioning of elements on a page.
 * {@link module:table/plaintableoutput~PlainTableOutput Plain table output} &ndash; This plugin strips the `<figure>` tag from the table data. It is basically an email client compatibility feature.
 
-| | Regular table | Layout table | Plain table output |
-| -------- | -------- | ------- | ------- |
-| Usage | Used for presenting tabular data | Used for creating layouts and multi-column designs | Stripped of `<figure>` tags for email compatibility |
-| Purpose | Rich formatting and tabular data presentation | Focused on content positioning and structure | Simplified output for maximum interoperability |
-| Setup | Default table type in CKEditor&nbsp;5 | Available through toggling or direct insertion | Available as an optional plugin |
-| Markup influence | Affects editing view and output data | Affects editing view and output data | Affects only output data |
+<table>
+	<thead>
+		<tr>
+			<th>&nbsp;</th>
+			<th>Regular table</th>
+			<th>Layout table</th>
+			<th>Plain table output</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>Usage</th>
+			<td>Used for presenting tabular data</td>
+			<td>Used for creating layouts and multi-column designs</td>
+			<td>Stripped of <code>&lt;figure&gt;</code> tags for email compatibility</td>
+		</tr>
+		<tr>
+			<th>Purpose</th>
+			<td>Rich formatting and tabular data presentation</td>
+			<td>Focused on content positioning and structure</td>
+			<td>Simplified output for maximum interoperability</td>
+		</tr>
+		<tr>
+			<th>Setup</th>
+			<td>Default table type in CKEditor&nbsp;5</td>
+			<td>Available through toggling or direct insertion</td>
+			<td>Available as an optional plugin</td>
+		</tr>
+		<tr>
+			<th>Markup influence</th>
+			<td>Affects editing view and output data</td>
+			<td>Affects editing view and output data</td>
+			<td>Affects only output data</td>
+		</tr>
+	</tbody>
+</table>
 
 ## Demo
 
@@ -40,21 +70,7 @@ Check the editor below to see the layout tables plugin in action. Use the layout
 
 ## Table toggling
 
-There are several table types available in CKEditor&nbsp;5. To switch between these  different table modes, you can use the table toggling feature.
-
-### Demo
-
-Use the editor below to see the tables type toggling feature in action. Select a table to invoke the table toolbar and click the preferred table type from the table properties dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/table-properties.svg}.
-
-{@snippet features/table-toggling}
-
-<info-box info>
-	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
-</info-box>
-
-### Additional feature information
-
-The table toggling feature allows users to change the type of an existing table by clicking it and selecting the desired table type. This enables seamless switching between presentation-focused content tables and layout-oriented tables without recreating the structure from scratch.
+There are several table types available in CKEditor&nbsp;5. To switch between these  different table modes, you can use the table toggling feature. It allows users to change the type of an existing table by clicking it and selecting the desired table type. This enables seamless switching between presentation-focused content tables and layout-oriented tables without recreating the structure from scratch.
 
 When a table is selected, you can toggle its type in one of two ways:
 
@@ -80,7 +96,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 
 <code-switcher>
 ```js
-import { ClassicEditor, Table, TableLayout, TableProperties, TablePropertiesUI } from 'ckeditor5';
+import { ClassicEditor, Table, TableLayout, TableProperties, TableToolbar } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -134,12 +150,12 @@ When the {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI
 <!-- Uodate main toolbar to table dropdown eventually. In both. -->
 <code-switcher>
 ```js
-import { ClassicEditor, Table, TableLayout, TableProperties, TablePropertiesUI } from 'ckeditor5';
+import { ClassicEditor, Table, TableLayout, TableProperties, TableToolbar } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Table, TableLayout, TableProperties, TablePropertiesUI, /* ... */ ],
+		plugins: [ Table, TableLayout, TableProperties, TableToolbar, /* ... */ ],
 		toolbar: [ 'insertTable', 'insertTableLayout', /* ... */ ],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties' ]
