@@ -57,12 +57,12 @@ msgstr "Linkauswahl aufheben"
 
 msgctxt "Label for the link properties link balloon title."
 msgid "Link properties"
-msgstr ""
+msgstr "Linkeigenschaften"
 
 msgctxt "The label of the input field for the displayed text of the link."
 msgid "Displayed text"
-msgstr ""
+msgstr "Angezeigter Text"
 
 msgctxt "Placeholder shown when placeholder items view is empty."
 msgid "No links available"
-msgstr ""
+msgstr "Keine Links verfügbar"

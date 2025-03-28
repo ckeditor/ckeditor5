@@ -57,12 +57,12 @@ msgstr "Presunúť sa mimo odkazu"
 
 msgctxt "Label for the link properties link balloon title."
 msgid "Link properties"
-msgstr ""
+msgstr "Vlastnosti odkazu"
 
 msgctxt "The label of the input field for the displayed text of the link."
 msgid "Displayed text"
-msgstr ""
+msgstr "Zobrazený text"
 
 msgctxt "Placeholder shown when placeholder items view is empty."
 msgid "No links available"
-msgstr ""
+msgstr "Nie sú dostupné žiadne odkazy"

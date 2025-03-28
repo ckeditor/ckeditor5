@@ -13,16 +13,16 @@ msgstr ""
 
 msgctxt "Label for a toolbar button that enters the fullscreen when pressed"
 msgid "Enter fullscreen mode"
-msgstr ""
+msgstr "Masuk ke mode layar penuh"
 
 msgctxt "Label for a toolbar button that leaves the fullscreen when pressed"
 msgid "Leave fullscreen mode"
-msgstr ""
+msgstr "Keluar dari mode layar penuh"
 
 msgctxt "Label for a menu bar button that toggles fullscreen mode"
 msgid "Fullscreen mode"
-msgstr ""
+msgstr "Mode layar penuh"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for toggling a fullscreen mode."
 msgid "Toggle fullscreen mode"
-msgstr ""
+msgstr "Alihkan mode layar penuh"

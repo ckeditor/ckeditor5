@@ -53,4 +53,4 @@ msgstr "新しいタブでメディアを開く"
 
 msgctxt "The label for the Media Embed balloon."
 msgid "Media embed"
-msgstr ""
+msgstr "メディアの埋め込み"

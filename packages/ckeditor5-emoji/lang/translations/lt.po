@@ -101,4 +101,4 @@ msgstr "Tamsus spalvos tonas"
 
 msgctxt "Header of the emoji picker balloon panel."
 msgid "Emoji picker"
-msgstr ""
+msgstr "Jausmaženklių pasirinkimas"

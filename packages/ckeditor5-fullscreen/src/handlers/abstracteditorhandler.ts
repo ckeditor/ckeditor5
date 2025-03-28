@@ -200,8 +200,8 @@ export default class AbstractEditorHandler {
 		}
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
-		/* istanbul ignore if -- @preserve */
-		if ( this._editor.plugins.has( 'Pagination' ) ) {
+		/* istanbul ignore next -- @preserve */
+		if ( this._editor.plugins.has( 'Pagination' ) && this._editor.plugins.get( 'Pagination' ).isEnabled ) {
 			const paginationRenderer = this._editor.plugins.get( 'PaginationRenderer' ) as PaginationRenderer;
 
 			paginationRenderer.setupScrollableAncestor();
@@ -304,8 +304,8 @@ export default class AbstractEditorHandler {
 
 		// Pagination has to be restored after leaving fullscreen mode to ensure proper rendering.
 		// Code coverage is provided in the commercial package repository as integration unit tests.
-		/* istanbul ignore if -- @preserve */
-		if ( this._editor.plugins.has( 'Pagination' ) ) {
+		/* istanbul ignore next -- @preserve */
+		if ( this._editor.plugins.has( 'Pagination' ) && this._editor.plugins.get( 'Pagination' ).isEnabled ) {
 			const paginationRenderer = this._editor.plugins.get( 'PaginationRenderer' ) as PaginationRenderer;
 
 			paginationRenderer.setupScrollableAncestor();

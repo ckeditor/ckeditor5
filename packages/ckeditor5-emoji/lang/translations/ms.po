@@ -101,4 +101,4 @@ msgstr "Tona kulit gelap"
 
 msgctxt "Header of the emoji picker balloon panel."
 msgid "Emoji picker"
-msgstr ""
+msgstr "Pemilih emoji"

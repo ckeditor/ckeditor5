@@ -101,4 +101,4 @@ msgstr "गहरे रंग का स्किन टोन"
 
 msgctxt "Header of the emoji picker balloon panel."
 msgid "Emoji picker"
-msgstr ""
+msgstr "इमोजी पिकर"

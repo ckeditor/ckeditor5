@@ -53,4 +53,4 @@ msgstr "Отворите медије у новој картици"
 
 msgctxt "The label for the Media Embed balloon."
 msgid "Media embed"
-msgstr ""
+msgstr "Ugradi medij"

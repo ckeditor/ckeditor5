@@ -53,4 +53,4 @@ msgstr "Öppna media i ny flik"
 
 msgctxt "The label for the Media Embed balloon."
 msgid "Media embed"
-msgstr ""
+msgstr "Medieinbäddning"

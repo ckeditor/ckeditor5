@@ -101,4 +101,4 @@ msgstr "Σκούρος τόνος επιδερμίδας"
 
 msgctxt "Header of the emoji picker balloon panel."
 msgid "Emoji picker"
-msgstr ""
+msgstr "Επιλογέας emoji"

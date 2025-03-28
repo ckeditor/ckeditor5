@@ -13,16 +13,16 @@ msgstr ""
 
 msgctxt "Label for a toolbar button that enters the fullscreen when pressed"
 msgid "Enter fullscreen mode"
-msgstr ""
+msgstr "फ़ुलस्क्रीन मोड में प्रवेश करें"
 
 msgctxt "Label for a toolbar button that leaves the fullscreen when pressed"
 msgid "Leave fullscreen mode"
-msgstr ""
+msgstr "फ़ुलस्क्रीन मोड छोड़ें"
 
 msgctxt "Label for a menu bar button that toggles fullscreen mode"
 msgid "Fullscreen mode"
-msgstr ""
+msgstr "फ़ुलस्क्रीन मोड"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for toggling a fullscreen mode."
 msgid "Toggle fullscreen mode"
-msgstr ""
+msgstr "फ़ुलस्क्रीन मोड स्विच करें"

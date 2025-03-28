@@ -13,16 +13,16 @@ msgstr ""
 
 msgctxt "Label for a toolbar button that enters the fullscreen when pressed"
 msgid "Enter fullscreen mode"
-msgstr ""
+msgstr "전체 화면으로 보기"
 
 msgctxt "Label for a toolbar button that leaves the fullscreen when pressed"
 msgid "Leave fullscreen mode"
-msgstr ""
+msgstr "전체 화면 나가기"
 
 msgctxt "Label for a menu bar button that toggles fullscreen mode"
 msgid "Fullscreen mode"
-msgstr ""
+msgstr "전체 화면 모드"
 
 msgctxt "Keystroke description for assistive technologies: keystroke for toggling a fullscreen mode."
 msgid "Toggle fullscreen mode"
-msgstr ""
+msgstr "전체 화면 모드 전환"

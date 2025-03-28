@@ -53,4 +53,4 @@ msgstr "在新分頁打開媒體"
 
 msgctxt "The label for the Media Embed balloon."
 msgid "Media embed"
-msgstr ""
+msgstr "媒體嵌入"

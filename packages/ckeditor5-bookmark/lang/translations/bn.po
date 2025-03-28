@@ -49,16 +49,16 @@ msgstr "বুকমার্ক উইজেট"
 
 msgctxt "The label used by assistive technologies describing an bookmark toolbar attached to a bookmark widget."
 msgid "Bookmark toolbar"
-msgstr ""
+msgstr "বুকমার্ক টুলবার"
 
 msgctxt "Title for a feature displaying a list of bookmarks."
 msgid "Bookmarks"
-msgstr ""
+msgstr "বুকমার্কস"
 
 msgctxt "A message displayed instead of a list of bookmarks if it is empty."
 msgid "No bookmarks available."
-msgstr ""
+msgstr "কোনো বুকমার্কস উপলব্ধ নেই।"
 
 msgctxt "Tooltip shown after hovering the bookmark link preview."
 msgid "Scroll to bookmark"
-msgstr ""
+msgstr "বুকমার্কে স্ক্রল করুন"

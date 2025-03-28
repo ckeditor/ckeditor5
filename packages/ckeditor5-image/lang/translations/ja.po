@@ -189,8 +189,8 @@ msgstr "画像"
 
 msgctxt "The label for the header of the image resize balloon."
 msgid "Image Resize"
-msgstr ""
+msgstr "画像のサイズ変更"
 
 msgctxt "The label of the input field for the text alternative of the image."
 msgid "Text Alternative"
-msgstr ""
+msgstr "代替テキスト"

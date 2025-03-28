@@ -101,4 +101,4 @@ msgstr "গাঢ় স্কিন টোন"
 
 msgctxt "Header of the emoji picker balloon panel."
 msgid "Emoji picker"
-msgstr ""
+msgstr "ইমোজি পিকার"

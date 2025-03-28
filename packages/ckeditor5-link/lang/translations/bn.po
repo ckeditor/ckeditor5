@@ -59,12 +59,12 @@ msgstr "কোনো লিঙ্কের বাইরে সরান"
 
 msgctxt "Label for the link properties link balloon title."
 msgid "Link properties"
-msgstr ""
+msgstr "লিঙ্কের বৈশিষ্ট্যসমূহ"
 
 msgctxt "The label of the input field for the displayed text of the link."
 msgid "Displayed text"
-msgstr ""
+msgstr "প্রদর্শিত টেক্সট"
 
 msgctxt "Placeholder shown when placeholder items view is empty."
 msgid "No links available"
-msgstr ""
+msgstr "কোনো লিঙ্ক উপলব্ধ নেই"

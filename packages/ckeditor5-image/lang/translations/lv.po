@@ -189,8 +189,8 @@ msgstr "Attēls"
 
 msgctxt "The label for the header of the image resize balloon."
 msgid "Image Resize"
-msgstr ""
+msgstr "Attēla izmēru maiņa"
 
 msgctxt "The label of the input field for the text alternative of the image."
 msgid "Text Alternative"
-msgstr ""
+msgstr "Alternatīva esošajam tekstam"

@@ -189,8 +189,8 @@ msgstr "इमेज"
 
 msgctxt "The label for the header of the image resize balloon."
 msgid "Image Resize"
-msgstr ""
+msgstr "तस्वीर का आकर बदलें"
 
 msgctxt "The label of the input field for the text alternative of the image."
 msgid "Text Alternative"
-msgstr ""
+msgstr "टेक्स्ट का विकल्प"

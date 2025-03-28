@@ -57,12 +57,12 @@ msgstr "लिंक के बाहर जाएँ"
 
 msgctxt "Label for the link properties link balloon title."
 msgid "Link properties"
-msgstr ""
+msgstr "गुण लिंक करें"
 
 msgctxt "The label of the input field for the displayed text of the link."
 msgid "Displayed text"
-msgstr ""
+msgstr "प्रदर्शित टेक्स्ट"
 
 msgctxt "Placeholder shown when placeholder items view is empty."
 msgid "No links available"
-msgstr ""
+msgstr "कोई लिंक उपलब्ध नहीं है"
