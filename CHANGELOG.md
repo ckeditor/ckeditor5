@@ -12,7 +12,7 @@ The CKEditor 5 v45.0.0 release brings powerful new features and improvements, ma
 We are making it easier to create and edit emails directly in CKEditor 5 with several enhancements. This release introduces the following new features:
 
 * [**Export with Inline Styles**](https://ckeditor.com/docs/ckeditor5/latest/features/export-with-inline-styles.html) (⭐) provides the ability to export email content with automatically inlined styles, ensuring compatibility and proper rendering across different email clients.
-* [**Email Configuration Helper**](https://ckeditor.com/docs/ckeditor5/latest/features/email-editing/email-configuration.html) (⭐) is a new configuration helper plugin that provides guidance for integrators to correctly set up an email-friendly editor while avoiding common pitfalls.
+* [**Email Configuration Helper**](https://ckeditor.com/docs/ckeditor5/latest/features/email-editing/email-configuration-helper.html) (⭐) is a new configuration helper plugin that provides guidance for integrators to correctly set up an email-friendly editor while avoiding common pitfalls.
 * [**Layout tables:**](https://ckeditor.com/docs/ckeditor5/latest/features/tables/layout-tables.html) are a new type of tables that has been introduced to simplify the creation of structured email designs, offering better control over layout, alignment and spacing.
 
 Apart from these new features, this update also brings various fixes and improvements related to table behavior, enhanced HTML support, and better handling of complex email structures. These refinements help ensure a more seamless email editing experience, reducing inconsistencies and improving compatibility with external email clients.

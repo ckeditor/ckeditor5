@@ -1653,7 +1653,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		<tr id="email-configuration-helper" class="subfeature background-gray">
 			<td>
 				<span>
-					<span class="subfeature-icon"></span>&nbsp;{@link features/email-configuration Email configuration helper}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/email-configuration-helper Email configuration helper}
 						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 						<span class="tree__item__badge__text">Premium feature</span></span>
 			</td>
