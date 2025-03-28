@@ -1075,7 +1075,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 		</tr>
 		<tr id="tables-layout" class="feature">
 			<td>
-				{@link features/export-with-inline-styles Export with inline styles}
+				{@link features/export-inline-styles Export with inline styles}
 						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 						<span class="tree__item__badge__text">Premium feature</span></span>
 			</td>

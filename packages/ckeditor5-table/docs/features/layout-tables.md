@@ -1,6 +1,7 @@
 ---
 menu-title: Layout tables
 meta-title: Layout tables | CKEditor 5 Documentation
+meta-description: Add support for different table types to distinguish between content tables and layout tables and allow to create table-based layouts.
 category: tables
 order: 50
 modified_at: 2025-03-26
@@ -20,11 +21,12 @@ The CKEditor&nbsp;5 table feature offers several approaches and plugins responsi
 * {@link features/layout-tables Table layout} &ndash; Layout tables are used to structure the content spatially rather than present content. They allow for creating multi-column designs and precise positioning of elements on a page.
 * {@link module:table/plaintableoutput~PlainTableOutput Plain table output} &ndash; This plugin strips the `<figure>` tag from the table data. It is basically an email client compatibility feature.
 
-| Regular table | Layout table | Plain table output |
-| -------- | ------- | ------- |
-| Used for presenting tabular data | Used for creating layouts and multi-column designs | Stripped of `<figure>` tags for email compatibility |
-| Rich formatting and tabular data presentation | Focused on content positioning and structure | Simplified output for maximum interoperability |
-| Default table type in CKEditor&nbsp;5 | Available through toggling or direct insertion | Available as an optional plugin |
+| | Regular table | Layout table | Plain table output |
+| -------- | -------- | ------- | ------- |
+| Usage | Used for presenting tabular data | Used for creating layouts and multi-column designs | Stripped of `<figure>` tags for email compatibility |
+| Purpose | Rich formatting and tabular data presentation | Focused on content positioning and structure | Simplified output for maximum interoperability |
+| Setup | Default table type in CKEditor&nbsp;5 | Available through toggling or direct insertion | Available as an optional plugin |
+| Markup influence | Affects editing view and output data | Affects editing view and output data | Affects only output data |
 
 ## Demo
 
