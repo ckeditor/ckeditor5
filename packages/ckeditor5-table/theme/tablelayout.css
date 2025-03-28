@@ -28,8 +28,8 @@
 		/* Widget type around overrides. */
 		&.ck-widget {
 			&:hover {
-				/* To prevent cut off of the widget outline at the bottom,
-				when next cell or table has, for example, background color. */
+				/* To prevent the widget outline from being cut off at the bottom
+				when the next cell or table has a background color, for example. */
 				z-index: var(--ck-z-default);
 			}
 
