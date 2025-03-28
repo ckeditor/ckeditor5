@@ -3,7 +3,7 @@ menu-title: Layout tables
 meta-title: Layout tables | CKEditor 5 Documentation
 category: tables
 order: 50
-modified_at: 2025-03-21
+modified_at: 2025-03-26
 ---
 
 # Layout tables
@@ -28,7 +28,7 @@ The CKEditor&nbsp;5 table feature offers several approaches and plugins responsi
 
 ## Demo
 
-Use the editor below to see the layout tables plugin in action. Demo will be delivered later. Use the layout table {@icon @ckeditor/ckeditor5-icons/theme/icons/table-layout.svg} toolbar button to insert a new layout table.
+Check the editor below to see the layout tables plugin in action. Use the layout table {@icon @ckeditor/ckeditor5-icons/theme/icons/table-layout.svg} toolbar button to insert a new layout table.
 
 {@snippet features/table-layout}
 
@@ -42,7 +42,7 @@ There are several table types available in CKeditor&nbsp;5. To switch between th
 
 ### Demo
 
-Use the editor below to see the tables type toggling feature in action. Select a table to invoke the table toolbar and apply the preferred table type from the table properties dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/table-properties.svg}.
+Use the editor below to see the tables type toggling feature in action. Select a table to invoke the table toolbar and click the preferred table type from the table properties dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/table-properties.svg}.
 
 {@snippet features/table-toggling}
 
@@ -92,6 +92,29 @@ ClassicEditor
 </code-switcher>
 
 ## Configuration
+
+### Configuring the preferred type for loading external tables.
+
+By default, external tables are loaded using internal heuristics. This can be configured by setting the preferred table type for loading all externals tables by setting the {@link module:table/tableconfig~TableLayoutConfig#preferredExternalTableType `config.table.tableLayout.preferredExternalTableType`} option to `content` or `layout`.
+
+<code-switcher>
+```js
+import { ClassicEditor, Table, TableLayout } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Table, TableLayout /* ... */ ],
+		table: {
+			tableLayout :{
+				preferredExternalTableType: 'content' // or 'layout'
+			}
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+</code-switcher>
 
 ### Configuring the table toggle feature
 
@@ -215,5 +238,5 @@ Additionally, if the {@link module:table/tableproperties~TableProperties} plugin
 
 ## Contribute
 
-The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-source-editing](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-source-editing).
+The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-table](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-table).
 

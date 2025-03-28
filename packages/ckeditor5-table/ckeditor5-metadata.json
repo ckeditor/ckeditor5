@@ -219,6 +219,33 @@
 					"styles": "width"
 				}
 			]
+		},
+		{
+			"name": "PlainTableOutput",
+			"className": "PlainTableOutput",
+			"description": "This plugin strips the `<figure>` tag which surrounds tables, and moves attributes to the `<table>` in the data downcast.",
+			"docs": "features/tables/tables-layout.html",
+			"path": "src/plaintableoutput.js",
+			"htmlOutput": [
+				{
+					"elements": [
+						"table",
+						"thead",
+						"tbody",
+						"tr"
+					]
+				},
+				{
+					"elements": [
+						"td",
+						"th"
+					],
+					"attributes": [
+						"colspan",
+						"rowspan"
+					]
+				}
+			]
 		}
 	]
 }

@@ -46,6 +46,7 @@
     "@ckeditor/ckeditor5-essentials": "44.3.0",
     "@ckeditor/ckeditor5-find-and-replace": "44.3.0",
     "@ckeditor/ckeditor5-font": "44.3.0",
+    "@ckeditor/ckeditor5-fullscreen": "0.0.1",
     "@ckeditor/ckeditor5-heading": "44.3.0",
     "@ckeditor/ckeditor5-highlight": "44.3.0",
     "@ckeditor/ckeditor5-horizontal-line": "44.3.0",
