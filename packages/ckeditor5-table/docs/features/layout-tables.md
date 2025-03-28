@@ -168,6 +168,10 @@ ClassicEditor
 ```
 </code-switcher>
 
+This will add table toggling button to the table toolbar:
+
+{@img assets/img/tables-toggling.png 380 The table toggling button to the table toolbar.}
+
 ### Configuring table toggle without `TableProperties`
 
 If the `TableProperties` plugin is not available, you can use the dedicated `tableType` button in the content toolbar to change table types:
