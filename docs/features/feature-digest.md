@@ -1380,6 +1380,13 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				the formatting options for each new section.
 			</td>
 		</tr>
+		<tr id="fullscreen" class="feature">
+			<td>
+				{@link features/fullscreen Fullscreen mode}
+			</td>
+			<td>The fullscreen mode lets you temporarily expand the editor to the whole browser viewport, giving you more space to comfortably edit content and use editor's UI features.
+			</td>
+		</tr>
 		<tr id="keyboard-shortcuts" class="feature">
 			<td>
 				{@link features/accessibility#keyboard-shortcuts Keyboard shortcuts}

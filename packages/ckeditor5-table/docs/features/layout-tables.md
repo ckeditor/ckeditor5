@@ -72,6 +72,8 @@ Check the editor below to see the layout tables plugin in action. Use the layout
 
 There are several table types available in CKEditor&nbsp;5. To switch between these  different table modes, you can use the table toggling feature. It allows users to change the type of an existing table by clicking it and selecting the desired table type. This enables seamless switching between presentation-focused content tables and layout-oriented tables without recreating the structure from scratch.
 
+{@img assets/img/tables-toggling.png 380 Table toggling dropdown.}
+
 When a table is selected, you can toggle its type in one of two ways:
 
 1. If the {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI} plugin is enabled, the table properties button {@icon @ckeditor/ckeditor5-icons/theme/icons/table-properties.svg} will include a "Table type" dropdown option that allows switching between regular content tables and layout tables.
