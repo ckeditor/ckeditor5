@@ -1635,7 +1635,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		</tr>
 		<tr id="email-editing" class="feature">
 			<td>
-				{@link features/email Email toolbox}
+				{@link features/email Email editing}
 			</td>
 			<td>
 				CKEditor 5 provides a wide variety of tools and functions for editing almost
@@ -1643,10 +1643,10 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				email editing easier and more compatible with various email clients.
 			</td>
 		</tr>
-		<tr id="email-editing-helper" class="subfeature background-gray">
+		<tr id="email-configuration-helper" class="subfeature background-gray">
 			<td>
 				<span>
-					<span class="subfeature-icon"></span>&nbsp;{@link features/email-configuration Email editing helper}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/email-configuration Email configuration helper}
 						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 						<span class="tree__item__badge__text">Premium feature</span></span>
 			</td>
