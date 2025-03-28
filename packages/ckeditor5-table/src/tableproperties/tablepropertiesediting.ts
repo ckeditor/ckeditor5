@@ -8,7 +8,6 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { first } from 'ckeditor5/src/utils.js';
 import {
 	addBackgroundRules,
 	addBorderRules,
@@ -23,6 +22,7 @@ import TableEditing from '../tableediting.js';
 import {
 	downcastAttributeToStyle,
 	downcastTableAttribute,
+	getDefaultValueAdjusted,
 	upcastBorderStyles,
 	upcastStyleToAttribute
 } from '../converters/tableproperties.js';
@@ -221,23 +221,32 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 			model: {
 				key: 'tableAlignment',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					let localDefaultValue = defaultValue;
-
-					// Adjust default for layout tables.
-					if ( data.modelRange ) {
-						const modelElement = first( data.modelRange.getItems( { shallow: true } ) );
-
-						if ( modelElement && modelElement.is( 'element' ) && modelElement.getAttribute( 'tableType' ) == 'layout' ) {
-							localDefaultValue = '';
-						}
-					}
-
+					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
 					let align = viewElement.getStyle( 'float' );
 
 					// CSS: `float:none` => Model: `alignment:center`.
 					if ( align === 'none' ) {
 						align = 'center';
 					}
+
+					return align === localDefaultValue ? null : align;
+				}
+			}
+		} )
+		// Support for the `margin-left:auto; margin-right:auto;` CSS definition for the table alignment.
+		.attributeToAttribute( {
+			view: {
+				name: /^(table|figure)$/,
+				styles: {
+					'margin-left': 'auto',
+					'margin-right': 'auto'
+				}
+			},
+			model: {
+				key: 'tableAlignment',
+				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
+					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
+					const align = 'center';
 
 					return align === localDefaultValue ? null : align;
 				}
@@ -254,17 +263,7 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 				name: 'table',
 				key: 'tableAlignment',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					let localDefaultValue = defaultValue;
-
-					// Adjust default for layout tables.
-					if ( data.modelRange ) {
-						const modelElement = first( data.modelRange.getItems( { shallow: true } ) );
-
-						if ( modelElement && modelElement.is( 'element' ) && modelElement.getAttribute( 'tableType' ) == 'layout' ) {
-							localDefaultValue = '';
-						}
-					}
-
+					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
 					const align = viewElement.getAttribute( 'align' );
 
 					return align === localDefaultValue ? null : align;

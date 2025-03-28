@@ -357,8 +357,8 @@ export default class PluginCollection<TContext extends object>
 			 * A plugin is not available and could not be loaded.
 			 *
 			 * Plugin classes (constructors) need to be provided to the editor before they can be loaded by name.
-			 * This is usually done in CKEditor 5 builds by setting the {@link module:core/editor/editor~Editor.builtinPlugins}
-			 * property.
+			 * This is usually done in the now deprecated CKEditor 5 builds by setting
+			 * the {@link module:core/editor/editor~Editor.builtinPlugins} property.
 			 *
 			 * **If you see this warning when using one of the deprecated CKEditor 5 Builds**,
 			 * it means that you tried to enable a plugin that was not included in that build. This may be due to a typo
