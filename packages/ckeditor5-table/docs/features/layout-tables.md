@@ -17,7 +17,7 @@ Layout tables are used to structure web page content spatially rather than for p
 The CKEditor&nbsp;5 table feature offers several approaches and plugins responsible for the execution of tables. These include:
 
 * {@link features/tables Regular content tables} &ndash; Content tables provide the basic table experience for presentation of tabular data.
-* {@link features/tables-layout Table layout} &ndash; Layout tables are used to structure the content spatially rather than present content. They allow for creating multi-column designs and precise positioning of elements on a page.
+* {@link features/layout-tables Table layout} &ndash; Layout tables are used to structure the content spatially rather than present content. They allow for creating multi-column designs and precise positioning of elements on a page.
 * {@link module:table/plaintableoutput~PlainTableOutput Plain table output} &ndash; This plugin strips the `<figure>` tag from the table data. It is basically an email client compatibility feature.
 
 | Regular table | Layout table | Plain table output |

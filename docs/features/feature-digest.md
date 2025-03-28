@@ -671,7 +671,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="tables-layout" class="subfeature background-gray">
 			<td>
 				<span>
-					<span class="subfeature-icon"></span>&nbsp;{@link features/tables-layout Layout tables}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/layout-tables Layout tables}
 				</span>
 			</td>
 			<td>
@@ -1075,7 +1075,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 		</tr>
 		<tr id="tables-layout" class="feature">
 			<td>
-				{@link features/export-inline-styles Export with inline styles}
+				{@link features/export-with-inline-styles Export with inline styles}
 						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 						<span class="tree__item__badge__text">Premium feature</span></span>
 			</td>
