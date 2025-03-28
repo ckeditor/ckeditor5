@@ -1487,7 +1487,14 @@ describe( 'table properties', () => {
 				} );
 
 				it( 'should upcast style="float:none" as "center" option', () => {
-					editor.setData( '<table style="float:none;""><tr><td>foo</td></tr></table>' );
+					editor.setData( '<table style="float:none;"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'center' );
+				} );
+
+				it( 'should upcast style="margin-left:auto;margin-right:auto;" as "center" option', () => {
+					editor.setData( '<table style="margin-left:auto;margin-right:auto;"><tr><td>foo</td></tr></table>' );
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'center' );
@@ -1498,6 +1505,27 @@ describe( 'table properties', () => {
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'center' );
+				} );
+
+				it( 'should not upcast the default value (center) from style margin auto', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									alignment: 'center'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					editor.setData( '<table style="margin-left:auto;margin-right:auto;"><tr><td>foo</td></tr></table>' );
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableAlignment' ) ).to.be.undefined;
+
+					await editor.destroy();
 				} );
 			} );
 		} );
@@ -1679,6 +1707,32 @@ describe( 'table properties', () => {
 					expect( table.getAttribute( 'tableAlignment' ) ).to.be.equal( 'left' );
 				} );
 
+				it( 'should upcast the non-default value from the style attribute (float:right)', () => {
+					editor.setData(
+						'<table class="layout-table" style="float:right">' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>'
+					);
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableAlignment' ) ).to.be.equal( 'right' );
+				} );
+
+				it( 'should upcast the non-default value from the style attribute (margin-left:auto;margin-right:auto)', () => {
+					editor.setData(
+						'<table class="layout-table" style="margin-left:auto;margin-right:auto">' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>'
+					);
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableAlignment' ) ).to.be.equal( 'center' );
+				} );
+
 				it( 'should upcast align=left attribute', () => {
 					editor.setData(
 						'<table class="layout-table" align="left">' +
@@ -1690,6 +1744,42 @@ describe( 'table properties', () => {
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'left' );
+				} );
+
+				it( 'should upcast align=right attribute', () => {
+					editor.setData(
+						'<table class="layout-table" align="right">' +
+							'<tr>' +
+								'<td>foo</td>' +
+							'</tr>' +
+						'</table>'
+					);
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'right' );
+				} );
+
+				it( 'should upcast the table default value from the style attribute (margin-left:auto;margin-right:auto)', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing, TableLayoutEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									alignment: 'center'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					editor.setData(
+						'<table class="layout-table" style="margin-left:auto;margin-right:auto;"><tr><td>foo</td></tr></table>'
+					);
+					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
+
+					expect( table.getAttribute( 'tableAlignment' ) ).to.equal( 'center' );
+
+					await editor.destroy();
 				} );
 			} );
 		} );
