@@ -100,4 +100,25 @@ describe( 'FullscreenEditing', () => {
 
 		expect( spy.calledTwice ).to.be.true;
 	} );
+
+	it( 'should force editable blur on keystroke combination on non-Chromium browsers', () => {
+		const keyEventData = {
+			keyCode: keyCodes.f,
+			ctrlKey: !env.isMac,
+			metaKey: env.isMac,
+			shiftKey: true,
+			preventDefault: sinon.spy(),
+			stopPropagation: sinon.spy()
+		};
+
+		sinon.stub( env, 'isBlink' ).value( false );
+
+		editor.keystrokes.press( keyEventData );
+
+		expect( global.document.activeElement ).to.equal( editor.ui.getEditableElement() );
+
+		editor.keystrokes.press( keyEventData );
+
+		expect( global.document.activeElement ).to.equal( editor.ui.getEditableElement() );
+	} );
 } );
