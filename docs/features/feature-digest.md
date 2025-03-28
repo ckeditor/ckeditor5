@@ -671,7 +671,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 		<tr id="tables-layout" class="subfeature background-gray">
 			<td>
 				<span>
-					<span class="subfeature-icon"></span>&nbsp;{@link features/tables-layout Layout tables}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/layout-tables Layout tables}
 				</span>
 			</td>
 			<td>
@@ -1075,7 +1075,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 		</tr>
 		<tr id="tables-layout" class="feature">
 			<td>
-				{@link features/export-inline-styles Export with inline styles}
+				{@link features/export-with-inline-styles Export with inline styles}
 						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 						<span class="tree__item__badge__text">Premium feature</span></span>
 			</td>
@@ -1380,6 +1380,13 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				the formatting options for each new section.
 			</td>
 		</tr>
+		<tr id="fullscreen" class="feature">
+			<td>
+				{@link features/fullscreen Fullscreen mode}
+			</td>
+			<td>The fullscreen mode lets you temporarily expand the editor to the whole browser viewport, giving you more space to comfortably edit content and use editor's UI features.
+			</td>
+		</tr>
 		<tr id="keyboard-shortcuts" class="feature">
 			<td>
 				{@link features/accessibility#keyboard-shortcuts Keyboard shortcuts}
@@ -1635,7 +1642,7 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 		</tr>
 		<tr id="email-editing" class="feature">
 			<td>
-				{@link features/email Email toolbox}
+				{@link features/email Email editing}
 			</td>
 			<td>
 				CKEditor 5 provides a wide variety of tools and functions for editing almost
@@ -1643,10 +1650,10 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				email editing easier and more compatible with various email clients.
 			</td>
 		</tr>
-		<tr id="email-editing-helper" class="subfeature background-gray">
+		<tr id="email-configuration-helper" class="subfeature background-gray">
 			<td>
 				<span>
-					<span class="subfeature-icon"></span>&nbsp;{@link features/email-configuration Email editing helper}
+					<span class="subfeature-icon"></span>&nbsp;{@link features/email-configuration Email configuration helper}
 						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 						<span class="tree__item__badge__text">Premium feature</span></span>
 			</td>
