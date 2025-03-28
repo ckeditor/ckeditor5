@@ -229,7 +229,7 @@ This will add table toggling button to the main editor toolbar:
 There are other CKEditor&nbsp;5 features you may want to check:
 
 * {@link features/email Email editing} &ndash; The email editing solution is a set of tools aimed at making the email composition a better and more effective experience.
-* {@link features/email-configuration Email configuration helper} &ndash; The email configuration helper plugin is the best way to start writing and editing emails.
+* {@link features/email-configuration-helper Email configuration helper} &ndash; The email configuration helper plugin is the best way to start writing and editing emails.
 
 ## Common API
 
