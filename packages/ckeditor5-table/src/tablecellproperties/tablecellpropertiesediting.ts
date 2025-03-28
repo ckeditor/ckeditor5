@@ -8,7 +8,6 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import { first } from 'ckeditor5/src/utils.js';
 import {
 	addBorderRules,
 	addPaddingRules,
@@ -20,7 +19,7 @@ import {
 	type UpcastConversionData
 } from 'ckeditor5/src/engine.js';
 
-import { downcastAttributeToStyle, upcastBorderStyles } from '../converters/tableproperties.js';
+import { downcastAttributeToStyle, getDefaultValueAdjusted, upcastBorderStyles } from '../converters/tableproperties.js';
 import TableEditing from './../tableediting.js';
 import TableCellWidthEditing from '../tablecellwidth/tablecellwidthediting.js';
 import TableCellPaddingCommand from './commands/tablecellpaddingcommand.js';
@@ -211,19 +210,7 @@ function enableHorizontalAlignmentProperty( schema: Schema, conversion: Conversi
 			model: {
 				key: 'tableCellHorizontalAlignment',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					let localDefaultValue = defaultValue;
-
-					// Adjust default for layout tables.
-					if ( data.modelRange ) {
-						const modelElement = first( data.modelRange.getItems( { shallow: true } ) );
-						const tableElement = modelElement && modelElement.is( 'element' ) &&
-							modelElement.findAncestor( 'table', { includeSelf: true } );
-
-						if ( tableElement && tableElement.getAttribute( 'tableType' ) == 'layout' ) {
-							localDefaultValue = 'left';
-						}
-					}
-
+					const localDefaultValue = getDefaultValueAdjusted( defaultValue, 'left', data );
 					const align = viewElement.getStyle( 'text-align' );
 
 					return align === localDefaultValue ? null : align;
@@ -241,19 +228,7 @@ function enableHorizontalAlignmentProperty( schema: Schema, conversion: Conversi
 			model: {
 				key: 'tableCellHorizontalAlignment',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					let localDefaultValue = defaultValue;
-
-					// Adjust default for layout tables.
-					if ( data.modelRange ) {
-						const modelElement = first( data.modelRange.getItems( { shallow: true } ) );
-						const tableElement = modelElement && modelElement.is( 'element' ) &&
-							modelElement.findAncestor( 'table', { includeSelf: true } );
-
-						if ( tableElement && tableElement.getAttribute( 'tableType' ) == 'layout' ) {
-							localDefaultValue = 'left';
-						}
-					}
-
+					const localDefaultValue = getDefaultValueAdjusted( defaultValue, 'left', data );
 					const align = viewElement.getAttribute( 'align' );
 
 					return align === localDefaultValue ? null : align;
@@ -298,19 +273,7 @@ function enableVerticalAlignmentProperty( schema: Schema, conversion: Conversion
 			model: {
 				key: 'tableCellVerticalAlignment',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					let localDefaultValue = defaultValue;
-
-					// Adjust default for layout tables.
-					if ( data.modelRange ) {
-						const modelElement = first( data.modelRange.getItems( { shallow: true } ) );
-						const tableElement = modelElement && modelElement.is( 'element' ) &&
-							modelElement.findAncestor( 'table', { includeSelf: true } );
-
-						if ( tableElement && tableElement.getAttribute( 'tableType' ) == 'layout' ) {
-							localDefaultValue = 'middle';
-						}
-					}
-
+					const localDefaultValue = getDefaultValueAdjusted( defaultValue, 'middle', data );
 					const align = viewElement.getStyle( 'vertical-align' );
 
 					return align === localDefaultValue ? null : align;
@@ -328,19 +291,7 @@ function enableVerticalAlignmentProperty( schema: Schema, conversion: Conversion
 			model: {
 				key: 'tableCellVerticalAlignment',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					let localDefaultValue = defaultValue;
-
-					// Adjust default for layout tables.
-					if ( data.modelRange ) {
-						const modelElement = first( data.modelRange.getItems( { shallow: true } ) );
-						const tableElement = modelElement && modelElement.is( 'element' ) &&
-							modelElement.findAncestor( 'table', { includeSelf: true } );
-
-						if ( tableElement && tableElement.getAttribute( 'tableType' ) == 'layout' ) {
-							localDefaultValue = 'middle';
-						}
-					}
-
+					const localDefaultValue = getDefaultValueAdjusted( defaultValue, 'middle', data );
 					const valign = viewElement.getAttribute( 'valign' );
 
 					return valign === localDefaultValue ? null : valign;

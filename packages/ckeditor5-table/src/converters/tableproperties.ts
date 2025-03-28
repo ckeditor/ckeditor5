@@ -53,18 +53,7 @@ export function upcastStyleToAttribute(
 					return;
 				}
 
-				let localDefaultValue = defaultValue;
-
-				// Adjust default for layout tables.
-				if ( data.modelRange ) {
-					const modelElement = first( data.modelRange.getItems( { shallow: true } ) );
-					const tableElement = modelElement && modelElement.is( 'element' ) &&
-						modelElement.findAncestor( 'table', { includeSelf: true } );
-
-					if ( tableElement && tableElement.getAttribute( 'tableType' ) == 'layout' ) {
-						localDefaultValue = '';
-					}
-				}
+				const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
 
 				const normalized = viewElement.getNormalizedStyle( styleName ) as Record<Side, string>;
 				const value = reduceBoxSides ? reduceBoxSidesValue( normalized ) : normalized;
@@ -230,6 +219,24 @@ export function downcastTableAttribute(
 			writer.removeStyle( styleName, table );
 		}
 	} ) );
+}
+
+/**
+ * Returns the default value for table or table cell property adjusted for layout tables.
+ */
+export function getDefaultValueAdjusted(
+	defaultValue: string,
+	layoutTableDefault: string,
+	data: UpcastConversionData<ViewElement>
+): string {
+	const modelElement = data.modelRange && first( data.modelRange.getItems( { shallow: true } ) );
+	const tableElement = modelElement && modelElement.is( 'element' ) && modelElement.findAncestor( 'table', { includeSelf: true } );
+
+	if ( tableElement && tableElement.getAttribute( 'tableType' ) === 'layout' ) {
+		return layoutTableDefault;
+	}
+
+	return defaultValue;
 }
 
 type Side = 'top' | 'right' | 'bottom' | 'left';
