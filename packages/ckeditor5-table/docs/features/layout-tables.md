@@ -148,7 +148,7 @@ The table type can also be set programmatically through the editor's API, making
 
 ### Configuring table toggle with `TableProperties`
 
-When the {@link module:table/tableproperties/tableproperties~TableProperties} plugin is available, table type options will be integrated into the table properties dropdown:
+When the {@link module:table/tableproperties~TableProperties} plugin is available, table type options will be integrated into the table properties dropdown:
 <!-- Uodate main toolbar to table dropdown eventually. In both. -->
 <code-switcher>
 ```js
