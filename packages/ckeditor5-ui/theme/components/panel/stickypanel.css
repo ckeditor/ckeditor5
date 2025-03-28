@@ -3,15 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+:root {
+	--ck-visual-viewport-left: 0px;
+	--ck-visual-viewport-top: 0px;
+}
+
 .ck.ck-sticky-panel {
 	& .ck-sticky-panel__content_sticky {
 		z-index: var(--ck-z-panel); /* #315 */
 		position: fixed;
 		top: 0;
+		transform: translate(var(--ck-visual-viewport-left, 0px), var(--ck-visual-viewport-top, 0px));
 	}
 
 	& .ck-sticky-panel__content_sticky_bottom-limit {
 		top: auto;
 		position: absolute;
+		transform: none;
 	}
 }
