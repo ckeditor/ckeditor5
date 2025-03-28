@@ -243,6 +243,12 @@ export default class StickyPanelView extends View {
 		this.listenTo<ObservableChangeEvent>( this, 'change:isActive', () => {
 			this.checkIfShouldBeSticky();
 		} );
+
+		if ( global.window.visualViewport ) {
+			this.listenTo( global.window.visualViewport, 'scroll', () => this._updateVisualViewport() );
+			this.listenTo( global.window.visualViewport, 'resize', () => this._updateVisualViewport() );
+			this._updateVisualViewport();
+		}
 	}
 
 	/**
@@ -388,5 +394,13 @@ export default class StickyPanelView extends View {
 	 */
 	private get _contentPanelRect(): Rect {
 		return new Rect( this.contentPanelElement );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _updateVisualViewport(): void {
+		this.element!.style.setProperty( '--ck-visual-viewport-left', `${ global.window.visualViewport!.offsetLeft }px` );
+		this.element!.style.setProperty( '--ck-visual-viewport-top', `${ global.window.visualViewport!.offsetTop }px` );
 	}
 }
