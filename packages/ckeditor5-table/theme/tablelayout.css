@@ -27,6 +27,12 @@
 
 		/* Widget type around overrides. */
 		&.ck-widget {
+			&:hover {
+				/* To prevent cut off of the widget outline at the bottom,
+				when next cell or table has, for example, background color. */
+				z-index: var(--ck-z-default);
+			}
+
 			&:hover > .ck-widget__selection-handle {
 				opacity: 0.75;
 				visibility: visible;
