@@ -153,7 +153,7 @@ Notable changes:
 * All balloon panels now have consistent headers with back buttons.
 * Form styles have been moved to a dedicated `form.css` in the theme-lark package.
 
-### MAjor breaking changes in this release
+### Major breaking changes in this release
 
 * **[bookmark](https://www.npmjs.com/package/@ckeditor/ckeditor5-bookmark)**: The `BookmarkUI#actionsView` is no longer available. The bookmark feature is now using the `WidgetToolbarRepository` instead.
 * **[build-*](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-*)**: CKEditor 5 predefined builds are no longer available.
