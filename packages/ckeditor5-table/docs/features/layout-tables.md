@@ -142,13 +142,13 @@ To configure the table toggling feature, you have several options:
 
 1. Include the {@link module:table/tablelayout~TableLayout} plugin in your editor setup to enable toggling between table types.
 2. Add the `tableType` button to your table content toolbar if you want a dedicated button for toggling.
-3. For advanced UI integration scenarios, include both {@link module:table/tableproperties~TableProperties} and {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI} plugins, which will add the table type option to the table properties dropdown.
+3. For advanced UI integration scenarios, include both {@link module:table/tableproperties~TableProperties} and {@link module:table/tabletoolbar~TableToolbar} plugins, which will add the table type option to the table properties dropdown.
 
 The table type can also be set programmatically through the editor's API, making it suitable for integration with external controls or automated workflows.
 
 ### Configuring table toggle with `TableProperties`
 
-When the {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI} plugin is available, table type options will be integrated into the table properties dropdown:
+When the {@link module:table/tableproperties/tableproperties~TableProperties} plugin is available, table type options will be integrated into the table properties dropdown:
 <!-- Uodate main toolbar to table dropdown eventually. In both. -->
 <code-switcher>
 ```js
@@ -170,7 +170,7 @@ ClassicEditor
 
 ### Configuring table toggle without `TableProperties`
 
-If the `TablePropertiesUI` plugin is not available, you can use the dedicated `tableType` button in the content toolbar to change table types:
+If the `TableProperties` plugin is not available, you can use the dedicated `tableType` button in the content toolbar to change table types:
 
 <code-switcher>
 ```js
