@@ -431,9 +431,9 @@ export default class BookmarkUI extends Plugin {
 			activator: () => this._isFormInPanel,
 			contextElements: () => [ this._balloon.view.element! ],
 			callback: () => {
-				// Focusing editable during click outside the balloon panel might cause
-				// the selection to move to beginning of the editable. So, we avoid focusing
-				// the editable during this action.
+				// Focusing on the editable during a click outside the balloon panel might
+				// cause the selection to move to the beginning of the editable, so we avoid
+				// focusing on it during this action.
 				// See: https://github.com/ckeditor/ckeditor5/issues/18253
 				this._hideFormView( false );
 			}
