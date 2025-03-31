@@ -156,8 +156,8 @@ If you want to display some additional elements in the fullscreen mode, set the 
 
 Below you will find a customized demo:
 
-* Instead of occupying the whole viewport, editor is stretched only over the main website area, not covering top and side navigation bars.
-* The "piece of paper" view is replaced by "pageless" view, replicating the {@link getting-started/setup/editor-types#classic-editor classic editor} experience.
+* Instead of occupying the whole viewport, the editor is stretched only over the main website area, not covering top and side navigation bars.
+* The "piece of paper" view is replaced by the "pageless" view, replicating the {@link getting-started/setup/editor-types#classic-editor classic editor} experience.
 * Menu bar is not displayed.
 
 {@snippet features/fullscreen-pageless}
