@@ -761,7 +761,13 @@ export default class LinkUI extends Plugin {
 			emitter: this.formView!,
 			activator: () => this._isUIInPanel,
 			contextElements: () => [ this._balloon.view.element! ],
-			callback: () => this._hideUI( false )
+			callback: () => {
+				// Focusing editable during click outside the balloon panel might cause
+				// the selection to move to beginning of the editable. So, we avoid focusing
+				// the editable during this action.
+				// See: https://github.com/ckeditor/ckeditor5/issues/18253
+				this._hideUI( false );
+			}
 		} );
 	}
 
