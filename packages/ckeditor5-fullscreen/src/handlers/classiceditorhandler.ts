@@ -56,8 +56,14 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 		// in both menu bar and toolbar (adding the side padding to the elements).
 		// Since we don't move the whole container but only parts, we need to reapply the attribute value manually.
 		// Decupled editor doesn't have this issue because there is no top-level container,
-		// so `dir` is set on each component separately.
+		// so `dir` attribute is set on each component separately.
 		this.getWrapper().setAttribute( 'dir', editorUIView.element!.getAttribute( 'dir' )! );
+
+		// The `ck-rounded-corners` class is added to the wrapper element to ensure that the corners in menu bar, toolbar etc are rounded
+		// when the editor is in fullscreen mode.
+		// Decupled editor doesn't have this issue because there is no top-level container,
+		// so `ck-rounded-corners` class is set on each component separately.
+		this.getWrapper().classList.add( 'ck-rounded-corners' );
 
 		if ( this._editor.config.get( 'fullscreen.menuBar.isVisible' ) ) {
 			if ( !editorUIView.menuBarView ) {
