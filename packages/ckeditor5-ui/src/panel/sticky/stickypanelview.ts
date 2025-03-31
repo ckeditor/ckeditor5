@@ -398,7 +398,7 @@ export default class StickyPanelView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Sets custom CSS properties to the panel element to make it aware of the visual viewport offset.
 	 */
 	private _updateVisualViewport(): void {
 		this.element!.style.setProperty( '--ck-visual-viewport-left', `${ global.window.visualViewport!.offsetLeft }px` );
