@@ -57,6 +57,12 @@ describe( 'ClassicEditorHandler', () => {
 			expect( classicEditorHandler.getWrapper().getAttribute( 'dir' ) ).to.equal( editor.ui.view.element.getAttribute( 'dir' ) );
 		} );
 
+		it( 'should set `.ck-rounded-corners` class on the fullscreen container', () => {
+			classicEditorHandler.enable();
+
+			expect( classicEditorHandler.getWrapper().classList.contains( 'ck-rounded-corners' ) ).to.be.true;
+		} );
+
 		it( 'should move menu bar if it is present', async () => {
 			const tempDomElement = global.document.createElement( 'div' );
 			global.document.body.appendChild( tempDomElement );
