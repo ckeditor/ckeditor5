@@ -132,7 +132,7 @@ ClassicEditor
 					'<meta charset="utf-8">' +
 					`<base href="${ location.href }">` +
 					`<title>${ document.title }</title>` +
-					links.map( link => `<link rel="stylesheet" href="${ link.href }" type="text/css">` ).join( '' ) +
+					links.map( link => `<link rel="stylesheet" href="${ link.href }">` ).join( '' ) +
 					`<style>
 						body {
 							padding: 20px;

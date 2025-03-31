@@ -80,7 +80,7 @@ ClassicEditor
 			iframeElement.srcdoc = '<html>' +
 				'<head>' +
 					`<title>${ document.title }</title>` +
-					links.map( link => `<link rel="stylesheet" href="${ link.href }" type="text/css">` ).join( '' ) +
+					links.map( link => `<link rel="stylesheet" href="${ link.href }">` ).join( '' ) +
 				'</head>' +
 				'<body class="ck-content">' +
 					editor.getData() +
