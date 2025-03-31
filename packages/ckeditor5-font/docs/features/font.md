@@ -443,7 +443,7 @@ ClassicEditor
 
 ### Email client color format compatibility
 
-When designing content for emails, it's important to be aware that many email clients have limited support for various color formats. For maximum compatibility in email templates, consider the following limitations:
+When designing content for emails, it is important to be aware that many email clients have limited support for various color formats. For maximum compatibility in email templates, consider the following limitations:
 
 #### Unsupported color formats in most email clients:
 
@@ -459,9 +459,9 @@ When designing content for emails, it's important to be aware that many email cl
 
 #### Recommended color formats for email compatibility:
 
-* Hexadecimal (e.g., #FF0000)
-* RGB (e.g., rgb(255, 0, 0))
-* Named colors (e.g., red)
+* Hexadecimal (for example, `#FF0000`)
+* RGB (for example, `rgb(255, 0, 0)`)
+* Named colors (for example, `red`)
 
 Using these compatible formats will ensure your content displays consistently across different email clients.
 
