@@ -709,7 +709,7 @@ generateComments( csConfig, channelId, initialCommentsData )
 				document.querySelector( '#default_toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
 				editor.plugins.get( 'AnnotationsUIs' ).switchTo( 'narrowSidebar' );
 
-				window.editor = editor;
+				window.editorDefault = editor;
 
 				// Prevent showing a warning notification when user is pasting a content from MS Word or Google Docs.
 				window.preventPasteFromOfficeNotification = true;

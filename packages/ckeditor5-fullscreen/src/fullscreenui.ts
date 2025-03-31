@@ -83,6 +83,26 @@ export default class FullscreenUI extends Plugin {
 		this.listenTo( view, 'execute', () => {
 			editor.execute( COMMAND_NAME );
 			editor.editing.view.focus();
+
+			let viewportOffset: number | { top: number; bottom: number; left: number; right: number };
+
+			if ( editor.config.get( 'ui.viewportOffset' ) ) {
+				viewportOffset = {
+					top: editor.config.get( 'ui.viewportOffset' )!.top || 0,
+					bottom: editor.config.get( 'ui.viewportOffset' )!.bottom || 0,
+					left: editor.config.get( 'ui.viewportOffset' )!.left || 0,
+					right: editor.config.get( 'ui.viewportOffset' )!.right || 0
+				};
+			} else {
+				viewportOffset = 0;
+			}
+
+			editor.editing.view.scrollToTheSelection( {
+				alignToTop: true,
+				forceScroll: true,
+				ancestorOffset: 50,
+				viewportOffset
+			} );
 		} );
 
 		return view;

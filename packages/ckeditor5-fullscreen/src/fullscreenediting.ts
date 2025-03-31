@@ -62,7 +62,26 @@ export default class FullscreenEditing extends Plugin {
 				this.editor.editing.view.document.isFocused = false;
 			}
 
+			let viewportOffset: number | { top: number; bottom: number; left: number; right: number };
+
+			if ( this.editor.config.get( 'ui.viewportOffset' ) ) {
+				viewportOffset = {
+					top: this.editor.config.get( 'ui.viewportOffset' )!.top || 0,
+					bottom: this.editor.config.get( 'ui.viewportOffset' )!.bottom || 0,
+					left: this.editor.config.get( 'ui.viewportOffset' )!.left || 0,
+					right: this.editor.config.get( 'ui.viewportOffset' )!.right || 0
+				};
+			} else {
+				viewportOffset = 0;
+			}
+
 			this.editor.editing.view.focus();
+			this.editor.editing.view.scrollToTheSelection( {
+				alignToTop: true,
+				forceScroll: true,
+				ancestorOffset: 50,
+				viewportOffset
+			} );
 
 			cancel();
 		} );
