@@ -1525,7 +1525,7 @@ describe( 'BookmarkUI', () => {
 			bookmarkUIFeature._showFormView();
 			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
-			sinon.assert.calledWithExactly( spy );
+			sinon.assert.calledWithExactly( spy, false );
 		} );
 
 		it( 'should not hide the UI upon clicking inside the the UI', () => {
