@@ -253,21 +253,8 @@ function downcastImageLinkManualDecorator( decorator: ManualDecorator ): ( dispa
 				return;
 			}
 
-			if ( decorator.value ) {
-				// Handle activated manual decorator.
-				for ( const [ key, val ] of toMap( decorator.attributes ) ) {
-					conversionApi.writer.setAttribute( key, val, linkInImage );
-				}
-
-				if ( decorator.classes ) {
-					conversionApi.writer.addClass( decorator.classes, linkInImage );
-				}
-
-				for ( const key in decorator.styles ) {
-					conversionApi.writer.setStyle( key, decorator.styles[ key ], linkInImage );
-				}
-			} else if ( decorator.value === undefined ) {
-				// Handle deactivated manual decorator.
+			// Handle deactivated manual decorator.
+			if ( decorator.value === undefined ) {
 				for ( const key in decorator.attributes ) {
 					conversionApi.writer.removeAttribute( key, linkInImage );
 				}
@@ -279,6 +266,21 @@ function downcastImageLinkManualDecorator( decorator: ManualDecorator ): ( dispa
 				for ( const key in decorator.styles ) {
 					conversionApi.writer.removeStyle( key, linkInImage );
 				}
+
+				return;
+			}
+
+			// Handle activated manual decorator.
+			for ( const [ key, val ] of toMap( decorator.attributes ) ) {
+				conversionApi.writer.setAttribute( key, val, linkInImage );
+			}
+
+			if ( decorator.classes ) {
+				conversionApi.writer.addClass( decorator.classes, linkInImage );
+			}
+
+			for ( const key in decorator.styles ) {
+				conversionApi.writer.setStyle( key, decorator.styles[ key ], linkInImage );
 			}
 		} );
 	};
