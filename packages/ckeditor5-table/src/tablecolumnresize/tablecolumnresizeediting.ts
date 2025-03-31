@@ -13,6 +13,7 @@ import {
 	global,
 	DomEmitterMixin,
 	Rect,
+	toUnit,
 	type EventInfo,
 	type DomEmitter,
 	type ObservableChangeEvent
@@ -60,6 +61,8 @@ import {
 import { COLUMN_MIN_WIDTH_IN_PIXELS, COLUMN_RESIZE_DISTANCE_THRESHOLD } from './constants.js';
 import type TableColumnResize from '../tablecolumnresize.js';
 
+const toPx = /* #__PURE__ */ toUnit( 'px' );
+
 type ResizingData = {
 	columnPosition: number;
 	flags: {
@@ -92,6 +95,11 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * A flag indicating if the column resizing is in progress.
 	 */
 	private _isResizingActive: boolean;
+
+	/**
+	 * A flag indicating if the column resizer element is hovered.
+	 */
+	private _isResizerElementHovered: boolean;
 
 	/**
 	 * A flag indicating if the column resizing is allowed. It is not allowed if the editor is in read-only
@@ -151,6 +159,7 @@ export default class TableColumnResizeEditing extends Plugin {
 		super( editor );
 
 		this._isResizingActive = false;
+		this._isResizerElementHovered = false;
 		this.set( '_isResizingAllowed', true );
 		this._resizingData = null;
 		this._domEmitter = new ( DomEmitterMixin() )();
@@ -470,11 +479,58 @@ export default class TableColumnResizeEditing extends Plugin {
 		editingView.addObserver( MouseEventsObserver );
 		editingView.document.on( 'mouseover', this._onMouseOverHandler.bind( this ), { priority: 'high' } );
 		editingView.document.on( 'mousedown', this._onMouseDownHandler.bind( this ), { priority: 'high' } );
+		editingView.document.on( 'mouseout', this._onMouseOutHandler.bind( this ), { priority: 'high' } );
 
 		this._domEmitter.listenTo( global.window.document, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ) );
 		this._domEmitter.listenTo( global.window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
 	}
 
+	/**
+	 * TODO: description
+	 */
+	private _recalculateResizerElement( viewResizer: ViewElement ): void {
+		const editor = this.editor;
+
+		// Get DOM target figure ancestor element.
+		const domTable = editor.editing.view.domConverter.mapViewToDom( viewResizer.findAncestor( 'table' )! )!;
+
+		// Get DOM target element.
+		const domCell = editor.editing.view.domConverter.mapViewToDom(
+			viewResizer.findAncestor( item => [ 'td', 'th' ].includes( item.name ) )!
+		)!;
+
+		const rectFigure = new Rect( domTable );
+		const rectCell = new Rect( domCell );
+
+		if ( rectFigure.height == rectCell.height ) {
+			return;
+		}
+
+		// Calculate the top position of the column resizer element.
+		const targetTopPosition = toPx( rectFigure.top - rectCell.top );
+		// Calculate the bottom position of the column resizer element.
+		const targetBottomPosition = toPx( rectCell.bottom - rectFigure.bottom );
+
+		// Set `top` and `bottom` styles to the column resizer element.
+		editor.editing.view.change( viewWriter => {
+			viewWriter.setStyle( 'top', targetTopPosition, viewResizer );
+			viewWriter.setStyle( 'bottom', targetBottomPosition, viewResizer );
+		} );
+	}
+
+	/**
+	 * TODO: description
+	 */
+	private _resetResizerStyles( viewResizer: ViewElement ): void {
+		this.editor.editing.view.change( viewWriter => {
+			viewWriter.removeStyle( 'top', viewResizer );
+			viewWriter.removeStyle( 'bottom', viewResizer );
+		} );
+	}
+
+	/**
+	 * TODO: description
+	 */
 	private _onMouseOverHandler( eventInfo: EventInfo, domEventData: DomEventData ) {
 		const target = domEventData.target;
 
@@ -486,34 +542,30 @@ export default class TableColumnResizeEditing extends Plugin {
 			return;
 		}
 
-		const editor = this.editor;
+		this._isResizerElementHovered = true;
+		this._recalculateResizerElement( target );
+	}
 
-		// Get DOM target figure ancestor element.
-		const domTable = editor.editing.view.domConverter.mapViewToDom( target.findAncestor( 'table' )! )!;
+	/**
+	 * TODO: description
+	 */
+	private _onMouseOutHandler( eventInfo: EventInfo, domEventData: DomEventData ) {
+		const target = domEventData.target;
 
-		// Get DOM target element.
-		const domCell = editor.editing.view.domConverter.mapViewToDom(
-			target.findAncestor( item => [ 'td', 'th' ].includes( item.name ) )!
-		)!;
-
-		const rectFigure = new Rect( domTable );
-		const rectCell = new Rect( domCell );
-
-		if ( rectFigure.height == rectCell.height ) {
+		if ( !target.hasClass( 'ck-table-column-resizer' ) ) {
 			return;
 		}
 
-		// Calculate the top position of the column resizer element.
-		const targetTopPosition = `${ rectFigure.top - rectCell.top }px`;
-		// Calculate the bottom position of the column resizer element.
-		const targetBottomPosition = `${ rectCell.bottom - rectFigure.bottom }px`;
+		if ( !this._isResizingAllowed ) {
+			return;
+		}
 
-		// TODO update also on mousemove (while dragging) and reset on end/mouseout.
-		// Set `top` and `bottom` styles to the column resizer element.
-		editor.editing.view.change( viewWriter => {
-			viewWriter.setStyle( 'top', targetTopPosition, target );
-			viewWriter.setStyle( 'bottom', targetBottomPosition, target );
-		} );
+		if ( this._isResizingActive ) {
+			return;
+		}
+
+		this._isResizerElementHovered = false;
+		this._resetResizerStyles( target );
 	}
 
 	/**
@@ -684,7 +736,8 @@ export default class TableColumnResizeEditing extends Plugin {
 			elements: {
 				viewFigure,
 				viewLeftColumn,
-				viewRightColumn
+				viewRightColumn,
+				viewResizer
 			},
 			widths: {
 				viewFigureParentWidth,
@@ -730,6 +783,8 @@ export default class TableColumnResizeEditing extends Plugin {
 				writer.setStyle( 'width', `${ rightColumnWidthAsPercentage }%`, viewRightColumn! );
 			}
 		} );
+
+		this._recalculateResizerElement( viewResizer );
 	}
 
 	/**
@@ -822,6 +877,10 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		this._isResizingActive = false;
 		this._resizingData = null;
+
+		if ( !this._isResizerElementHovered ) {
+			this._resetResizerStyles( viewResizer );
+		}
 	}
 
 	/**
