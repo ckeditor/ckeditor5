@@ -12,6 +12,7 @@ import { throttle, isEqual } from 'es-toolkit/compat';
 import {
 	global,
 	DomEmitterMixin,
+	Rect,
 	type EventInfo,
 	type DomEmitter,
 	type ObservableChangeEvent
@@ -467,10 +468,49 @@ export default class TableColumnResizeEditing extends Plugin {
 		const editingView = this.editor.editing.view;
 
 		editingView.addObserver( MouseEventsObserver );
+		editingView.document.on( 'mouseover', this._onMouseOverHandler.bind( this ), { priority: 'high' } );
 		editingView.document.on( 'mousedown', this._onMouseDownHandler.bind( this ), { priority: 'high' } );
 
 		this._domEmitter.listenTo( global.window.document, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ) );
 		this._domEmitter.listenTo( global.window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
+	}
+
+	private _onMouseOverHandler( eventInfo: EventInfo, domEventData: DomEventData ) {
+		const target = domEventData.target;
+
+		if ( !target.hasClass( 'ck-table-column-resizer' ) ) {
+			return;
+		}
+
+		if ( !this._isResizingAllowed ) {
+			return;
+		}
+
+		const editor = this.editor;
+
+		// Get DOM target figure ancestor element.
+		const domFigureAncestor = editor.editing.view.domConverter.mapViewToDom( target.findAncestor( 'figure' )! )!;
+
+		// Get DOM target element.
+		const domTarget = editor.editing.view.domConverter.mapViewToDom( target )!;
+
+		const rectFigure = new Rect( domFigureAncestor );
+		const rectTarget = new Rect( domTarget );
+
+		if ( rectFigure.height == rectTarget.height ) {
+			return;
+		}
+
+		// Calculate the top position of the column resizer element.
+		const targetTopPosition = `${ rectFigure.top - rectTarget.top }px`;
+		// Calculate the bottom position of the column resizer element.
+		const targetBottomPosition = `${ rectTarget.bottom - rectFigure.bottom }px`;
+
+		// Set `top` and `bottom` styles to the column resizer element.
+		editor.editing.view.change( viewWriter => {
+			viewWriter.setStyle( 'top', targetTopPosition, target );
+			viewWriter.setStyle( 'bottom', targetBottomPosition, target );
+		} );
 	}
 
 	/**

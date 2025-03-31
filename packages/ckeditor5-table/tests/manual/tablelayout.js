@@ -13,7 +13,7 @@ import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 import { Heading } from '@ckeditor/ckeditor5-heading';
-import { ImageInline, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';
+import { ImageInline, ImageCaption, ImageToolbar, ImageResize } from '@ckeditor/ckeditor5-image';
 import { Indent } from '@ckeditor/ckeditor5-indent';
 import { Link } from '@ckeditor/ckeditor5-link';
 import { List } from '@ckeditor/ckeditor5-list';
@@ -42,6 +42,7 @@ const config = {
 		ImageCaption,
 		ImageInline,
 		ImageToolbar,
+		ImageResize,
 		Indent,
 		Italic,
 		Link,
