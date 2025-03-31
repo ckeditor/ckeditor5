@@ -66,15 +66,21 @@ ClassicEditor
 
 		// The "Print editor data" button logic.
 		document.querySelector( '#print-data-action' ).addEventListener( 'click', () => {
-			const snippetCSSElement = [ ...document.querySelectorAll( 'link' ) ]
-				.find( linkElement => linkElement.href.endsWith( 'snippet.css' ) );
+			const stylesheets = [
+				'ckeditor5.css',
+				'ckeditor5-premium-features.css'
+			];
+
+			const links = Array
+				.from( document.querySelectorAll( 'link' ) )
+				.filter( element => stylesheets.some( name => element.href.endsWith( name ) ) );
 
 			const iframeElement = document.querySelector( '#print-data-container' );
 
 			iframeElement.srcdoc = '<html>' +
 				'<head>' +
 					`<title>${ document.title }</title>` +
-					`<link rel="stylesheet" href="${ snippetCSSElement.href }" type="text/css">` +
+					links.map( link => `<link rel="stylesheet" href="${ link.href }" type="text/css">` ).join( '' ) +
 				'</head>' +
 				'<body class="ck-content">' +
 					editor.getData() +

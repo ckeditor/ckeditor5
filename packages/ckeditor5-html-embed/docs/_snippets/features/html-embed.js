@@ -113,10 +113,15 @@ ClassicEditor
 
 		// The "Preview editor data" button logic.
 		document.querySelector( '#preview-data-action' ).addEventListener( 'click', () => {
-			const mainCSSElement = [ ...document.querySelectorAll( 'link' ) ]
-				.find( linkElement => linkElement.href.endsWith( 'css/styles.css' ) );
-			const snippetCSSElement = [ ...document.querySelectorAll( 'link' ) ]
-				.find( linkElement => linkElement.href.endsWith( 'snippet.css' ) );
+			const stylesheets = [
+				'css/styles.css',
+				'ckeditor5.css',
+				'ckeditor5-premium-features.css'
+			];
+
+			const links = Array
+				.from( document.querySelectorAll( 'link' ) )
+				.filter( element => stylesheets.some( name => element.href.endsWith( name ) ) );
 
 			const iframeElement = document.querySelector( '#preview-data-container' );
 
@@ -127,8 +132,7 @@ ClassicEditor
 					'<meta charset="utf-8">' +
 					`<base href="${ location.href }">` +
 					`<title>${ document.title }</title>` +
-					`<link rel="stylesheet" href="${ mainCSSElement.href }" type="text/css">` +
-					`<link rel="stylesheet" href="${ snippetCSSElement.href }" type="text/css">` +
+					links.map( link => `<link rel="stylesheet" href="${ link.href }" type="text/css">` ).join( '' ) +
 					`<style>
 						body {
 							padding: 20px;

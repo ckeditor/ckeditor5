@@ -248,7 +248,8 @@ ClassicEditor
 			iframeElement.srcdoc = '<html>' +
 				'<head>' +
 					`<title>${ document.title }</title>` +
-					'<link rel="stylesheet" href="https://ckeditor.com/docs/ckeditor5/latest/snippets/features/page-break/snippet.css" type="text/css">' +
+					'<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ckeditor5/dist/browser/ckeditor5.css" type="text/css">' +
+					'<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ckeditor5-premium-features/dist/browser/ckeditor5-premium-features.css" type="text/css">' +
 				'</head>' +
 				'<body class="ck-content">' +
 					editor.getData() +
