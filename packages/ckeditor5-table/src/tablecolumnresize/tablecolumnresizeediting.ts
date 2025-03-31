@@ -489,23 +489,26 @@ export default class TableColumnResizeEditing extends Plugin {
 		const editor = this.editor;
 
 		// Get DOM target figure ancestor element.
-		const domFigureAncestor = editor.editing.view.domConverter.mapViewToDom( target.findAncestor( 'figure' )! )!;
+		const domTable = editor.editing.view.domConverter.mapViewToDom( target.findAncestor( 'table' )! )!;
 
 		// Get DOM target element.
-		const domTarget = editor.editing.view.domConverter.mapViewToDom( target )!;
+		const domCell = editor.editing.view.domConverter.mapViewToDom(
+			target.findAncestor( item => [ 'td', 'th' ].includes( item.name ) )!
+		)!;
 
-		const rectFigure = new Rect( domFigureAncestor );
-		const rectTarget = new Rect( domTarget );
+		const rectFigure = new Rect( domTable );
+		const rectCell = new Rect( domCell );
 
-		if ( rectFigure.height == rectTarget.height ) {
+		if ( rectFigure.height == rectCell.height ) {
 			return;
 		}
 
 		// Calculate the top position of the column resizer element.
-		const targetTopPosition = `${ rectFigure.top - rectTarget.top }px`;
+		const targetTopPosition = `${ rectFigure.top - rectCell.top }px`;
 		// Calculate the bottom position of the column resizer element.
-		const targetBottomPosition = `${ rectTarget.bottom - rectFigure.bottom }px`;
+		const targetBottomPosition = `${ rectCell.bottom - rectFigure.bottom }px`;
 
+		// TODO update also on mousemove (while dragging) and reset on end/mouseout.
 		// Set `top` and `bottom` styles to the column resizer element.
 		editor.editing.view.change( viewWriter => {
 			viewWriter.setStyle( 'top', targetTopPosition, target );
