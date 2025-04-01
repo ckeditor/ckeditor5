@@ -11,7 +11,7 @@ modified_at: 2025-04-02
 
 This article explains how to obtain a commercial license for CKEditor&nbsp;5 and the CKEditor premium features.
 
-<info-box>
+<info-box info>
 	CKEditor&nbsp;5 without premium features can be used as {@link getting-started/licensing/license-and-legal open source software under the GPL}. It will then {@link getting-started/licensing/managing-ckeditor-logo display a small "Powered by CKEditor" logo} in the editor area.
 
 	If you are not meeting the criteria of the GPL, you need to obtain a commercial one.
@@ -132,7 +132,7 @@ This key grants access to your subscription features without imposing any operat
 * **Intended use**: Meant for production environments where the software is actively used by end-users.
 * **Usage limitation**: None specified.
 * **Editor loads**: Depending on your plan type:
-    * It consumes editor loads if you are on our usage-based billing plans.
+	* It consumes editor loads if you are on our usage-based billing plans.
 	* It does not consume editor loads if you are not on a plan with usage-based billing.
 
 ### Evaluation license key
@@ -174,8 +174,8 @@ Alternatively, refer to the installation sections in the plugin documentation to
 
 The Customer Portal provides an optional approved hosts whitelisting feature for production license keys. This feature allows you to restrict the editor's usage to specific domains or IP addresses. This security enhancement prevents unauthorized use of your license key.
 
-* **Default behavior**: This is an opt-in feature - by default, production license keys have no domain restrictions.
-* **Configuration**: You can specify up to 5 domains or IP addresses where the license key can be used.
+* **Default behavior**: This is an opt-in feature &ndash; by default, production license keys have no domain restrictions.
+* **Configuration**: You can specify up to 5 domains or IP addresses for which the license key can be used.
 
 To set it up:
 
@@ -183,14 +183,14 @@ To set it up:
 2. Visit the _License keys_ tab.
 3. Click _Manage_ action for your production key.
 4. Add up to five approved domains. Available patterns:
-    * Domain or IP address: specify exact domains (e.g. `example.com`) or IP addresses (e.g. `192.168.0.0`).
-    * Wildcard in domain: use `*` for subdomains (e.g. `*.example.com` allows `api.example.com` and `www.example.com`).
-    * Wildcard in IP address: use `*` for segments (e.g. `192.168.*.*` allows `192.168.0.0` to `192.168.255.255`).
+	* Domain or IP address: specify exact domains (for example: `example.com`) or IP addresses (`192.168.0.0`).
+	* Wildcard in domain: use `*` for subdomains (`*.example.com` allows `api.example.com` and `www.example.com`).
+	* Wildcard in IP address: use `*` for segments (`192.168.*.*` allows `192.168.0.0` to `192.168.255.255`).
 5. Save the changes.
 6. Replace the license key in your editor with the new one created so that it starts working.
 
-<info-box>
-	After setting up, all new keys created from now on will have approved hosts added.
+<info-box info>
+	All new keys created after setting this option will have the approved hosts added automatically.
 </info-box>
 
 ## License key recreation
@@ -201,6 +201,6 @@ New license keys may be created in your account. Recreation may happen under the
 * **Feature updates**: New keys will be created if new features are added to your subscription, either through a plan upgrade or additions to your current plan.
 * **Approved host whitelisting**: When you create or update the approved hosts list, a new key will be created.
 
-<info-box>
+<info-box info>
 	Your current license keys will remain functional even after recreation, ensuring you have sufficient time to migrate to the updated keys without disruption. You will always see two last keys of a type.
 </info-box>
