@@ -53,6 +53,7 @@ import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Undo } from '@ckeditor/ckeditor5-undo';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
 
 describe( 'TableColumnResizeEditing', () => {
 	let model, editor, view, editorElement, contentDirection, resizePlugin;
@@ -1098,6 +1099,8 @@ describe( 'TableColumnResizeEditing', () => {
 				[ '10', '11', '12' ]
 			], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
 
+			const tableRect = getDomTableRects( getDomTable( view ) );
+
 			const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 			const resizerBeforeMouseOver = getDomResizer( getDomTable( view ), 0, 0 );
 
@@ -1110,11 +1113,16 @@ describe( 'TableColumnResizeEditing', () => {
 			const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
 			const resizerAfterMouseOver = getDomResizer( getDomTable( view ), 0, 0 );
 
-			expect( getComputedStyle( resizerAfterMouseOver, 'top' ) ).to.equal( '-0.5px' );
-			expect( getComputedStyle( resizerAfterMouseOver, 'bottom' ) ).to.equal( '-32.7969px' );
+			const resizerRect = new Rect( resizerAfterMouseOver.parentElement );
+
+			const top = Number( ( tableRect.top - resizerRect.top ).toFixed( 4 ) );
+			const bottom = Number( ( resizerRect.bottom - tableRect.bottom ).toFixed( 4 ) );
+
+			expect( getComputedStyle( resizerAfterMouseOver, 'top' ) ).to.equal( top + 'px' );
+			expect( getComputedStyle( resizerAfterMouseOver, 'bottom' ) ).to.equal( bottom + 'px' );
 
 			expect( resizerAfterMouseOver.outerHTML ).to.equal(
-				'<div class="ck-table-column-resizer" style="bottom:-32.7969px;top:-0.5px;"></div>'
+				`<div class="ck-table-column-resizer" style="bottom:${ bottom }px;top:${ top }px;"></div>`
 			);
 
 			const resizerAfterMouseOut = getDomResizer( getDomTable( view ), 0, 0 );
