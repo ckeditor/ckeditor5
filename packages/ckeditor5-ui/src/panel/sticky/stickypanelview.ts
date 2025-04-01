@@ -315,7 +315,7 @@ export default class StickyPanelView extends View {
 
 				// Check if sticking the panel to the bottom of the limiter does not cause it to suddenly
 				// move upwards if there's not enough space for it.
-				// Adding 1 to avoid rounding problems and toolbar flickering when offset almost equals the height.
+				// Adding 1 avoids rounding problems and toolbar flickering when offset almost equals the height.
 				if ( limiterRect.bottom - stickyBottomOffset > limiterRect.top + this._contentPanelRect.height + 1 ) {
 					this._stickToBottomOfLimiter( stickyBottomOffset );
 				} else {
