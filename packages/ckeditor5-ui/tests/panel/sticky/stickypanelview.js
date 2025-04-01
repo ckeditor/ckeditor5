@@ -589,6 +589,63 @@ describe( 'StickyPanelView', () => {
 						} );
 					} );
 
+					it( 'avoid flickering of the panel when sticking to the bottom and offset almost equals the height', () => {
+						const stickToBottomSpy = testUtils.sinon.spy( view, '_stickToBottomOfLimiter' );
+
+						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
+							top: 40,
+							bottom: 140,
+							height: 100,
+							width: 100,
+							left: 0,
+							right: 100
+						} );
+
+						const limiterStub = testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' );
+
+						limiterStub.returns( {
+							top: -12,
+							bottom: 60,
+							height: 140,
+							width: 100,
+							left: 0,
+							right: 100
+						} );
+
+						testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+							height: 20
+						} );
+
+						view.checkIfShouldBeSticky( scrollableContainer );
+
+						expect( view.isSticky ).to.be.true;
+						expect( view._isStickyToTheBottomOfLimiter ).to.be.true;
+
+						sinon.assert.calledOnce( stickToBottomSpy );
+						assureStickiness( {
+							isSticky: true,
+							_isStickyToTheBottomOfLimiter: true,
+							_stickyTopOffset: null,
+							_stickyBottomOffset: 50,
+							_marginLeft: '0px'
+						} );
+
+						// Check if extra `+ 1px` works properly. It should fail.
+						limiterStub.returns( {
+							top: -11,
+							bottom: 60,
+							height: 140,
+							width: 100,
+							left: 0,
+							right: 100
+						} );
+
+						view.checkIfShouldBeSticky( scrollableContainer );
+
+						expect( view.isSticky ).to.be.false;
+						expect( view._isStickyToTheBottomOfLimiter ).to.be.false;
+					} );
+
 					it( 'should unstick the panel if the limiter top is still visible', () => {
 						const stickToBottomSpy = testUtils.sinon.spy( view, '_stickToBottomOfLimiter' );
 						const stickToTopSpy = testUtils.sinon.spy( view, '_stickToTopOfAncestors' );
