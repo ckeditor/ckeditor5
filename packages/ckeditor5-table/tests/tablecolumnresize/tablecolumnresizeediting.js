@@ -25,6 +25,7 @@ import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeli
 import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils.js';
 import { modelTable } from '../_utils/utils.js';
 import {
+	getComputedStyle,
 	getDomTable,
 	getModelTable,
 	getViewTable,
@@ -52,6 +53,7 @@ import WidgetResize from '@ckeditor/ckeditor5-widget/src/widgetresize.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Undo } from '@ckeditor/ckeditor5-undo';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
 
 describe( 'TableColumnResizeEditing', () => {
 	let model, editor, view, editorElement, contentDirection, resizePlugin;
@@ -1004,6 +1006,16 @@ describe( 'TableColumnResizeEditing', () => {
 
 			expect( resizePlugin._isResizingActive ).to.be.false;
 			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
+
+			tableColumnResizeMouseSimulator.over( editor, view.getDomRoot() );
+
+			expect( resizePlugin._isResizingActive ).to.be.false;
+			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
+
+			tableColumnResizeMouseSimulator.out( editor, view.getDomRoot() );
+
+			expect( resizePlugin._isResizingActive ).to.be.false;
+			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
 		} );
 
 		it( 'if resizing is not allowed', () => {
@@ -1015,6 +1027,16 @@ describe( 'TableColumnResizeEditing', () => {
 			resizePlugin._isResizingAllowed = false;
 
 			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
+
+			expect( resizePlugin._isResizingActive ).to.be.false;
+			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
+
+			tableColumnResizeMouseSimulator.over( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
+
+			expect( resizePlugin._isResizingActive ).to.be.false;
+			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
+
+			tableColumnResizeMouseSimulator.out( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
 
 			expect( resizePlugin._isResizingActive ).to.be.false;
 			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
@@ -1066,6 +1088,53 @@ describe( 'TableColumnResizeEditing', () => {
 			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 10, y: 0 } );
 
 			const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+
+			expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
+			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
+		} );
+
+		it( 'after mouseover sets resizer sizes, after mouseout removes them', () => {
+			setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
+
+			const tableRect = getDomTableRects( getDomTable( view ) );
+
+			const initialViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+			const resizerBeforeMouseOver = getDomResizer( getDomTable( view ), 0, 0 );
+
+			expect( resizerBeforeMouseOver.outerHTML ).to.equal( '<div class="ck-table-column-resizer"></div>' );
+			expect( getComputedStyle( resizerBeforeMouseOver, 'top' ) ).to.equal( '0px' );
+			expect( getComputedStyle( resizerBeforeMouseOver, 'bottom' ) ).to.equal( '0px' );
+
+			tableColumnResizeMouseSimulator.over( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
+
+			const finalViewColumnWidthsPx = getViewColumnWidthsPx( getDomTable( view ) );
+			const resizerAfterMouseOver = getDomResizer( getDomTable( view ), 0, 0 );
+
+			const resizerRect = new Rect( resizerAfterMouseOver.parentElement );
+
+			const top = Number( ( tableRect.top - resizerRect.top ).toFixed( 4 ) );
+			const bottom = Number( ( resizerRect.bottom - tableRect.bottom ).toFixed( 4 ) );
+
+			expect( getComputedStyle( resizerAfterMouseOver, 'top' ) ).to.equal( top + 'px' );
+			expect( getComputedStyle( resizerAfterMouseOver, 'bottom' ) ).to.equal( bottom + 'px' );
+
+			expect( resizerAfterMouseOver.outerHTML ).to.equal(
+				`<div class="ck-table-column-resizer" style="bottom:${ bottom }px;top:${ top }px;"></div>`
+			);
+
+			const resizerAfterMouseOut = getDomResizer( getDomTable( view ), 0, 0 );
+
+			tableColumnResizeMouseSimulator.out( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 10, y: 0 } );
+
+			expect( getComputedStyle( resizerAfterMouseOut, 'top' ) ).to.equal( '0px' );
+			expect( getComputedStyle( resizerAfterMouseOut, 'bottom' ) ).to.equal( '0px' );
+
+			expect( resizerAfterMouseOut.outerHTML ).to.equal(
+				'<div class="ck-table-column-resizer"></div>'
+			);
 
 			expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
 			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
@@ -1127,6 +1196,43 @@ describe( 'TableColumnResizeEditing', () => {
 
 			expect( finalViewColumnWidthsPx ).to.deep.equal( initialViewColumnWidthsPx );
 			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
+		} );
+
+		it( 'does not clean the resizer styles on mouseover if resizing was not finished', () => {
+			setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ]
+			], { columnWidths: '20%,25%,55%', tableWidth: '500px' } ) );
+
+			const tableRect = getDomTableRects( getDomTable( view ) );
+
+			tableColumnResizeMouseSimulator.over( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
+			tableColumnResizeMouseSimulator.down( editor, getDomResizer( getDomTable( view ), 0, 0 ) );
+			tableColumnResizeMouseSimulator.move( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 10, y: 0 } );
+
+			const resizerAfterMouseOver = getDomResizer( getDomTable( view ), 0, 0 );
+			const resizerRect = new Rect( resizerAfterMouseOver.parentElement );
+
+			const top = Number( ( tableRect.top - resizerRect.top ).toFixed( 4 ) );
+			const bottom = Number( ( resizerRect.bottom - tableRect.bottom ).toFixed( 4 ) );
+
+			expect( getComputedStyle( resizerAfterMouseOver, 'top' ) ).to.equal( top + 'px' );
+			expect( getComputedStyle( resizerAfterMouseOver, 'bottom' ) ).to.equal( bottom + 'px' );
+
+			expect( resizerAfterMouseOver.outerHTML ).to.equal(
+				`<div class="ck-table-column-resizer ck-table-column-resizer__active" style="bottom:${ bottom }px;top:${ top }px;"></div>`
+			);
+
+			const resizerAfterMouseOut = getDomResizer( getDomTable( view ), 0, 0 );
+
+			tableColumnResizeMouseSimulator.out( editor, getDomResizer( getDomTable( view ), 0, 0 ), { x: 10, y: 0 } );
+
+			expect( getComputedStyle( resizerAfterMouseOut, 'top' ) ).to.equal( top + 'px' );
+			expect( getComputedStyle( resizerAfterMouseOut, 'bottom' ) ).to.equal( bottom + 'px' );
+
+			expect( resizerAfterMouseOut.outerHTML ).to.equal(
+				`<div class="ck-table-column-resizer ck-table-column-resizer__active" style="bottom:${ bottom }px;top:${ top }px;"></div>`
+			);
 		} );
 
 		it( 'does not change the widths if the movement vector was {0,0}', () => {
