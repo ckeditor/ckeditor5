@@ -13,7 +13,9 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
+    "@ckeditor/ckeditor5-comments": "44.3.0",
     "@ckeditor/ckeditor5-core": "44.3.0",
+    "@ckeditor/ckeditor5-document-outline": "44.3.0",
     "@ckeditor/ckeditor5-icons": "0.0.1",
     "@ckeditor/ckeditor5-ui": "44.3.0",
     "@ckeditor/ckeditor5-utils": "44.3.0",
