@@ -176,6 +176,14 @@ describe( 'LinkUI', () => {
 
 				expect( balloon.visibleView ).to.equal( linkUIFeature.formView );
 			} );
+
+			it( 'should scroll to the selection when the button is executed', () => {
+				const scrollSpy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+				linkButton.fire( 'execute' );
+
+				sinon.assert.calledOnce( scrollSpy );
+			} );
 		}
 
 		describe( 'the "linkPreview" toolbar button', () => {
@@ -1354,6 +1362,20 @@ describe( 'LinkUI', () => {
 				stopPropagation: sinon.spy()
 			} );
 			sinon.assert.calledWithExactly( spy, true );
+		} );
+
+		it( 'should scroll to the selection on Ctrl+K keystroke', () => {
+			const scrollSpy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+			editor.keystrokes.press( {
+				keyCode: keyCodes.k,
+				ctrlKey: !env.isMac,
+				metaKey: env.isMac,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			sinon.assert.calledOnce( scrollSpy );
 		} );
 
 		it( 'should not show the UI on Ctrl+K keystroke on content with LinkCommand disabled', () => {

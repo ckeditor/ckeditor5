@@ -95,6 +95,14 @@ describe( 'BookmarkUI', () => {
 			expect( button.icon ).to.equal( IconBookmark );
 		} );
 
+		it( 'should scroll to the selection when executed', () => {
+			const scrollSpy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+			button.fire( 'execute' );
+
+			sinon.assert.calledOnce( scrollSpy );
+		} );
+
 		it( 'should bind #isEnabled to insert and update command', () => {
 			const insertBookmark = editor.commands.get( 'insertBookmark' );
 			const updateBookmark = editor.commands.get( 'updateBookmark' );
@@ -125,6 +133,14 @@ describe( 'BookmarkUI', () => {
 		} );
 
 		testButton( 'bookmark', 'Bookmark', MenuBarMenuListItemButtonView );
+
+		it( 'should scroll to the selection when executed', () => {
+			const scrollSpy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+			button.fire( 'execute' );
+
+			sinon.assert.calledOnce( scrollSpy );
+		} );
 	} );
 
 	function testButton( featureName, label, Component ) {
