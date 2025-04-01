@@ -4,7 +4,6 @@ menu-title: Fullscreen mode
 meta-title: Fullscreen mode | CKEditor 5 Documentation
 meta-description: The fullscreen mode lets you expand the editor to the whole browser viewport to comfortably edit content and use editor's UI features.
 category: features
-toc: false
 modified_at: 2025-03-26
 ---
 
@@ -153,12 +152,12 @@ If you want to display some additional elements in the fullscreen mode, set the 
 
 `onLeaveCallback( container )` is fired when you leave fullscreen mode. Passed parameter is the container with the fullscreen mode DOM structure. The callback should be used to take care of any of your custom components, for example, if some elements were moved to the fullscreen DOM structure, restore their original locations in the DOM.
 
-### Customized layout - pageless editor demo
+### Demo - customized layout: pageless editor
 
 Below you will find a customized demo:
 
-* Instead of occupying the whole viewport, editor is stretched only over the main website area, not covering top and side navigation bars.
-* The "piece of paper" view is replaced by "pageless" view, replicating the {@link getting-started/setup/editor-types#classic-editor classic editor} experience.
+* Instead of occupying the whole viewport, the editor is stretched only over the main website area, not covering top and side navigation bars.
+* The "piece of paper" view is replaced by the "pageless" view, replicating the {@link getting-started/setup/editor-types#classic-editor classic editor} experience.
 * Menu bar is not displayed.
 
 {@snippet features/fullscreen-pageless}

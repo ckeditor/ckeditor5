@@ -253,6 +253,24 @@ function downcastImageLinkManualDecorator( decorator: ManualDecorator ): ( dispa
 				return;
 			}
 
+			// Handle deactivated manual decorator.
+			if ( decorator.value === undefined ) {
+				for ( const key in decorator.attributes ) {
+					conversionApi.writer.removeAttribute( key, linkInImage );
+				}
+
+				if ( decorator.classes ) {
+					conversionApi.writer.removeClass( decorator.classes, linkInImage );
+				}
+
+				for ( const key in decorator.styles ) {
+					conversionApi.writer.removeStyle( key, linkInImage );
+				}
+
+				return;
+			}
+
+			// Handle activated manual decorator.
 			for ( const [ key, val ] of toMap( decorator.attributes ) ) {
 				conversionApi.writer.setAttribute( key, val, linkInImage );
 			}

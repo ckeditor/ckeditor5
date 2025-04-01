@@ -1621,7 +1621,7 @@ describe( 'LinkUI', () => {
 			linkUIFeature._showUI();
 			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
-			sinon.assert.calledWithExactly( spy );
+			sinon.assert.calledWithExactly( spy, false );
 		} );
 
 		it( 'should hide the UI when link is in not currently visible stack', () => {
@@ -1640,7 +1640,7 @@ describe( 'LinkUI', () => {
 
 			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
-			sinon.assert.calledWithExactly( spy );
+			sinon.assert.calledWithExactly( spy, false );
 		} );
 
 		it( 'should not hide the UI upon clicking inside the the UI', () => {
@@ -3379,7 +3379,7 @@ describe( 'LinkUI', () => {
 
 				document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
-				sinon.assert.calledWithExactly( spy );
+				sinon.assert.calledWithExactly( spy, false );
 				expect( linkUIFeature._balloon.visibleView ).to.be.null;
 			} );
 

@@ -337,7 +337,7 @@ describe( 'BookmarkUI', () => {
 			setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
 			sinon.assert.calledWithMatch( spy, sinon.match( ( { balloonClassName, view } ) => {
-				return view === toolbarView && balloonClassName === 'ck-bookmark-balloon';
+				return view === toolbarView && balloonClassName === 'ck-bookmark-balloon ck-toolbar-container';
 			} ) );
 		} );
 
@@ -378,7 +378,7 @@ describe( 'BookmarkUI', () => {
 						defaultPositions.viewportStickyNorth
 					]
 				},
-				balloonClassName: 'ck-bookmark-balloon'
+				balloonClassName: 'ck-bookmark-balloon ck-toolbar-container'
 			} );
 		} );
 
@@ -1541,7 +1541,7 @@ describe( 'BookmarkUI', () => {
 			bookmarkUIFeature._showFormView();
 			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
-			sinon.assert.calledWithExactly( spy );
+			sinon.assert.calledWithExactly( spy, false );
 		} );
 
 		it( 'should not hide the UI upon clicking inside the the UI', () => {
