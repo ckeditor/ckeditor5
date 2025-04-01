@@ -543,14 +543,14 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( [ 'development', 'evaluation', 'trial' ].includes( licensePayload.licenseType ) ) {
 				const { licenseType } = licensePayload;
-				const sessionStarted = sessionStorage.getItem( 'ckeditor5-session-started' );
+				const sessionStarted = sessionStorage.getItem( 'ckeditor5-development-session-started' );
 
 				if ( licenseType != 'development' || !sessionStarted ) {
 					warnAboutNonProductionLicenseKey( licenseType );
 				}
 
 				if ( licenseType == 'development' && !sessionStarted ) {
-					sessionStorage.setItem( 'ckeditor5-session-started', 'true' );
+					sessionStorage.setItem( 'ckeditor5-development-session-started', 'true' );
 				}
 			}
 
