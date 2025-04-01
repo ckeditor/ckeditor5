@@ -192,6 +192,26 @@ describe( 'EmojiPicker', () => {
 				sinon.assert.calledOnce( stub );
 			} );
 
+			it( 'should scroll to the selection when the "emoji" toolbar component is executed', () => {
+				const scrollSpy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+				const toolbarButton = editor.ui.componentFactory.create( 'emoji' );
+
+				toolbarButton.fire( 'execute' );
+
+				sinon.assert.calledOnce( scrollSpy );
+			} );
+
+			it( 'should scroll to the selection when the "menuBar:emoji" toolbar component is executed', () => {
+				const scrollSpy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+				const toolbarButton = editor.ui.componentFactory.create( 'menuBar:emoji' );
+
+				toolbarButton.fire( 'execute' );
+
+				sinon.assert.calledOnce( scrollSpy );
+			} );
+
 			it( 'should provide the "menuBar:emoji" toolbar component', () => {
 				expect( editor.ui.componentFactory.has( 'menuBar:emoji' ) ).to.equal( true );
 

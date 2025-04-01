@@ -688,6 +688,7 @@ export default class LinkUI extends Plugin {
 
 		// Show the panel on button click.
 		this.listenTo<ButtonExecuteEvent>( view, 'execute', () => {
+			editor.editing.view.scrollToTheSelection();
 			this._showUI( true );
 
 			// Open the form view on-top of the toolbar view if it's already visible.
@@ -725,6 +726,7 @@ export default class LinkUI extends Plugin {
 			cancel();
 
 			if ( editor.commands.get( 'link' )!.isEnabled ) {
+				editor.editing.view.scrollToTheSelection();
 				this._showUI( true );
 			}
 		} );

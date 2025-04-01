@@ -243,6 +243,12 @@ export default class StickyPanelView extends View {
 		this.listenTo<ObservableChangeEvent>( this, 'change:isActive', () => {
 			this.checkIfShouldBeSticky();
 		} );
+
+		if ( global.window.visualViewport ) {
+			this.listenTo( global.window.visualViewport, 'scroll', () => this._updateVisualViewport() );
+			this.listenTo( global.window.visualViewport, 'resize', () => this._updateVisualViewport() );
+			this._updateVisualViewport();
+		}
 	}
 
 	/**
@@ -309,7 +315,8 @@ export default class StickyPanelView extends View {
 
 				// Check if sticking the panel to the bottom of the limiter does not cause it to suddenly
 				// move upwards if there's not enough space for it.
-				if ( limiterRect.bottom - stickyBottomOffset > limiterRect.top + this._contentPanelRect.height ) {
+				// Adding 1 avoids rounding problems and toolbar flickering when offset almost equals the height.
+				if ( limiterRect.bottom - stickyBottomOffset > limiterRect.top + this._contentPanelRect.height + 1 ) {
 					this._stickToBottomOfLimiter( stickyBottomOffset );
 				} else {
 					this._unstick();
@@ -388,5 +395,13 @@ export default class StickyPanelView extends View {
 	 */
 	private get _contentPanelRect(): Rect {
 		return new Rect( this.contentPanelElement );
+	}
+
+	/**
+	 * Sets custom CSS properties to the panel element to make it aware of the visual viewport offset.
+	 */
+	private _updateVisualViewport(): void {
+		this.element!.style.setProperty( '--ck-visual-viewport-left', `${ global.window.visualViewport!.offsetLeft }px` );
+		this.element!.style.setProperty( '--ck-visual-viewport-top', `${ global.window.visualViewport!.offsetTop }px` );
 	}
 }

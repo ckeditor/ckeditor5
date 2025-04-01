@@ -185,6 +185,7 @@ export default class EmojiPicker extends Plugin {
 		} );
 
 		buttonView.on( 'execute', () => {
+			this.editor.editing.view.scrollToTheSelection();
 			this.showUI();
 		} );
 

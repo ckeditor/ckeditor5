@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, Event */
+/* globals visualViewport, document, Event */
 
 import { Rect, global } from '@ckeditor/ckeditor5-utils';
 import StickyPanelView from '../../../src/panel/sticky/stickypanelview.js';
@@ -228,6 +228,96 @@ describe( 'StickyPanelView', () => {
 
 			view.isActive = false;
 			expect( spy.calledThrice ).to.be.true;
+		} );
+
+		it( 'sets up listeners for visualViewport events when available', () => {
+			const viewportStub = sinon.stub( visualViewport, 'addEventListener' );
+			const updateSpy = testUtils.sinon.spy( StickyPanelView.prototype, '_updateVisualViewport' );
+
+			view.render();
+
+			expect( updateSpy.calledOnce ).to.be.true;
+
+			expect( visualViewport.addEventListener.calledWith( 'scroll' ) ).to.be.true;
+			expect( visualViewport.addEventListener.calledWith( 'resize' ) ).to.be.true;
+
+			viewportStub.restore();
+		} );
+	} );
+
+	describe( '_updateVisualViewport()', () => {
+		let view, viewportStub, updateVisualViewportSpy;
+
+		beforeEach( () => {
+			view = new StickyPanelView();
+
+			viewportStub = sinon.stub( visualViewport, 'addEventListener' );
+			updateVisualViewportSpy = testUtils.sinon.spy( view, '_updateVisualViewport' );
+
+			view.render();
+		} );
+
+		afterEach( () => {
+			sinon.restore();
+		} );
+
+		it( 'should call updateVisualViewport() on render()', () => {
+			expect( updateVisualViewportSpy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should set CSS custom properties based on visual viewport offsets', () => {
+			sinon.stub( visualViewport, 'offsetLeft' ).get( () => 15 );
+			sinon.stub( visualViewport, 'offsetTop' ).get( () => 25 );
+
+			view._updateVisualViewport();
+
+			expect( view.element.style.getPropertyValue( '--ck-visual-viewport-left' ) ).to.equal( '15px' );
+			expect( view.element.style.getPropertyValue( '--ck-visual-viewport-top' ) ).to.equal( '25px' );
+		} );
+
+		it( 'should update CSS properties when offsetLeft and offsetTop changes', () => {
+			// Initial state.
+			view._updateVisualViewport();
+
+			expect( view.element.style.getPropertyValue( '--ck-visual-viewport-left' ) ).to.equal( '0px' );
+			expect( view.element.style.getPropertyValue( '--ck-visual-viewport-top' ) ).to.equal( '0px' );
+
+			// Update viewport position.
+			sinon.stub( visualViewport, 'offsetLeft' ).get( () => 30 );
+			sinon.stub( visualViewport, 'offsetTop' ).get( () => 40 );
+
+			view._updateVisualViewport();
+
+			expect( view.element.style.getPropertyValue( '--ck-visual-viewport-left' ) ).to.equal( '30px' );
+			expect( view.element.style.getPropertyValue( '--ck-visual-viewport-top' ) ).to.equal( '40px' );
+		} );
+
+		it( 'should react to visual viewport scroll events', () => {
+			// Check if correct event listener was added.
+			expect( viewportStub.calledWith( 'scroll' ) ).to.be.true;
+
+			// Get the callback function that was registered.
+			const scrollCallback = viewportStub.args.find( args => args[ 0 ] === 'scroll' )[ 1 ];
+
+			// Simulate the scroll event by calling the callback directly.
+			scrollCallback();
+
+			// Check if the method was called again.
+			expect( updateVisualViewportSpy.calledTwice ).to.be.true;
+		} );
+
+		it( 'should react to visual viewport resize events', () => {
+			// Check if correct event listener was added.
+			expect( viewportStub.calledWith( 'resize' ) ).to.be.true;
+
+			// Get the callback function that was registered.
+			const resizeCallback = viewportStub.args.find( args => args[ 0 ] === 'resize' )[ 1 ];
+
+			// Simulate the resize event by calling the callback directly.
+			resizeCallback();
+
+			// Check if the method was called again.
+			expect( updateVisualViewportSpy.calledTwice ).to.be.true;
 		} );
 	} );
 
@@ -497,6 +587,63 @@ describe( 'StickyPanelView', () => {
 							_stickyBottomOffset: 50,
 							_marginLeft: '0px'
 						} );
+					} );
+
+					it( 'avoid flickering of the panel when sticking to the bottom and offset almost equals the height', () => {
+						const stickToBottomSpy = testUtils.sinon.spy( view, '_stickToBottomOfLimiter' );
+
+						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
+							top: 40,
+							bottom: 140,
+							height: 100,
+							width: 100,
+							left: 0,
+							right: 100
+						} );
+
+						const limiterStub = testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' );
+
+						limiterStub.returns( {
+							top: -12,
+							bottom: 60,
+							height: 140,
+							width: 100,
+							left: 0,
+							right: 100
+						} );
+
+						testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+							height: 20
+						} );
+
+						view.checkIfShouldBeSticky( scrollableContainer );
+
+						expect( view.isSticky ).to.be.true;
+						expect( view._isStickyToTheBottomOfLimiter ).to.be.true;
+
+						sinon.assert.calledOnce( stickToBottomSpy );
+						assureStickiness( {
+							isSticky: true,
+							_isStickyToTheBottomOfLimiter: true,
+							_stickyTopOffset: null,
+							_stickyBottomOffset: 50,
+							_marginLeft: '0px'
+						} );
+
+						// Check if extra `+ 1px` works properly. It should fail.
+						limiterStub.returns( {
+							top: -11,
+							bottom: 60,
+							height: 140,
+							width: 100,
+							left: 0,
+							right: 100
+						} );
+
+						view.checkIfShouldBeSticky( scrollableContainer );
+
+						expect( view.isSticky ).to.be.false;
+						expect( view._isStickyToTheBottomOfLimiter ).to.be.false;
 					} );
 
 					it( 'should unstick the panel if the limiter top is still visible', () => {
