@@ -7,6 +7,7 @@
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
+import { global } from '@ckeditor/ckeditor5-utils';
 import Editor from '../../src/editor/editor.js';
 import testUtils from '../../tests/_utils/utils.js';
 import generateKey from '../_utils/generatelicensekey.js';
@@ -452,6 +453,9 @@ describe( 'Editor - license check', () => {
 					licenseType: 'development'
 				} );
 
+				// Clear sessionStorage to simulate a new session and show the warning.
+				global.window.sessionStorage.clear();
+
 				const editor = new TestEditor( { licenseKey } );
 
 				expect( editor.isReadOnly ).to.be.false;
@@ -467,6 +471,39 @@ describe( 'Editor - license check', () => {
 				// Verify console.warn call with the warning message
 				sinon.assert.calledOnce( consoleWarnStub );
 
+				sinon.assert.calledWith(
+					consoleWarnStub,
+					'⚠️ You are using a development license of CKEditor 5. ' +
+					'For production usage, please obtain a production license at https://portal.ckeditor.com/'
+				);
+			} );
+
+			it( 'should show the warning only once per browser session', () => {
+				const { licenseKey } = generateKey( {
+					licenseType: 'development'
+				} );
+
+				const editor1 = new TestEditor( { licenseKey } );
+				expect( editor1.isReadOnly ).to.be.false;
+
+				// Session was already started in the previous test.
+				sinon.assert.notCalled( consoleInfoStub );
+				sinon.assert.notCalled( consoleWarnStub );
+
+				// Clear sessionStorage to simulate a new session.
+				global.window.sessionStorage.clear();
+
+				const editor2 = new TestEditor( { licenseKey } );
+				expect( editor2.isReadOnly ).to.be.false;
+
+				sinon.assert.calledOnce( consoleInfoStub );
+				sinon.assert.calledWith(
+					consoleInfoStub,
+					'%cCKEditor 5 Development License',
+					'color: #ffffff; background: #743CCD; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
+				);
+
+				sinon.assert.calledOnce( consoleWarnStub );
 				sinon.assert.calledWith(
 					consoleWarnStub,
 					'⚠️ You are using a development license of CKEditor 5. ' +

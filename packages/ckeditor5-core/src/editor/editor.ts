@@ -461,6 +461,22 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 					.some( octets => segments.every( ( segment, index ) => octets[ index ] === segment || octets[ index ] === '*' ) );
 			}
 
+			function warnAboutNonProductionLicenseKey( licenseType: string ) {
+				const capitalizedLicenseType = licenseType[ 0 ].toUpperCase() + licenseType.slice( 1 );
+				const article = licenseType === 'evaluation' ? 'an' : 'a';
+
+				console.info(
+					`%cCKEditor 5 ${ capitalizedLicenseType } License`,
+					'color: #ffffff; background: #743CCD; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
+				);
+
+				console.warn(
+					`⚠️ You are using ${ article } ${ licenseType } license of CKEditor 5` +
+					`${ licenseType === 'trial' ? ' which is for evaluation purposes only' : '' }. ` +
+					'For production usage, please obtain a production license at https://portal.ckeditor.com/'
+				);
+			}
+
 			if ( licenseKey == 'GPL' ) {
 				if ( distributionChannel == 'cloud' ) {
 					blockEditor( 'distributionChannel' );
@@ -527,19 +543,15 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( [ 'development', 'evaluation', 'trial' ].includes( licensePayload.licenseType ) ) {
 				const { licenseType } = licensePayload;
-				const capitalizedLicenseType = licenseType[ 0 ].toUpperCase() + licenseType.slice( 1 );
-				const article = licenseType === 'evaluation' ? 'an' : 'a';
+				const sessionStarted = sessionStorage.getItem( 'ckeditor5-session-started' );
 
-				console.info(
-					`%cCKEditor 5 ${ capitalizedLicenseType } License`,
-					'color: #ffffff; background: #743CCD; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
-				);
+				if ( licenseType != 'development' || !sessionStarted ) {
+					warnAboutNonProductionLicenseKey( licenseType );
+				}
 
-				console.warn(
-					`⚠️ You are using ${ article } ${ licenseType } license of CKEditor 5` +
-					`${ licenseType === 'trial' ? ' which is for evaluation purposes only' : '' }. ` +
-					'For production usage, please obtain a production license at https://portal.ckeditor.com/'
-				);
+				if ( licenseType == 'development' && !sessionStarted ) {
+					sessionStorage.setItem( 'ckeditor5-session-started', 'true' );
+				}
 			}
 
 			if ( [ 'evaluation', 'trial' ].includes( licensePayload.licenseType ) ) {
