@@ -499,10 +499,6 @@ export default class TableColumnResizeEditing extends Plugin {
 		const rectTable = new Rect( domTable );
 		const rectCell = new Rect( domCell );
 
-		if ( rectTable.height == rectCell.height ) {
-			return;
-		}
-
 		// Calculate the top, and bottom positions of the column resizer element.
 		const targetTopPosition = toPx( Number( ( rectTable.top - rectCell.top ).toFixed( 4 ) ) );
 		const targetBottomPosition = toPx( Number( ( rectCell.bottom - rectTable.bottom ).toFixed( 4 ) ) );
