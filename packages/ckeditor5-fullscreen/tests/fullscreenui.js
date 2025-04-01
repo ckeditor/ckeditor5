@@ -84,14 +84,76 @@ describe( 'FullscreenUI', () => {
 			expect( button.label ).to.equal( 'Enter fullscreen mode' );
 		} );
 
-		it( 'on #execute should call the `fullscreen` command', () => {
-			const spy = sinon.spy( editor.commands.get( 'toggleFullscreen' ), 'execute' );
+		describe( 'on #execute', () => {
+			it( 'should call the `fullscreen` command', () => {
+				const spy = sinon.spy( editor.commands.get( 'toggleFullscreen' ), 'execute' );
 
-			button.fire( 'execute' );
+				button.fire( 'execute' );
 
-			sinon.assert.calledOnce( spy );
+				sinon.assert.calledOnce( spy );
+			} );
 
-			button.fire( 'execute' );
+			describe( 'should scroll', () => {
+				it( 'to the selection', () => {
+					const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+					button.fire( 'execute' );
+
+					expect( spy.calledOnce ).to.be.true;
+				} );
+
+				it( 'and set viewportOffset to 0 if not configured', () => {
+					const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+					button.fire( 'execute' );
+
+					expect( spy.calledOnce ).to.be.true;
+
+					sinon.assert.calledOnceWithExactly( spy, {
+						alignToTop: true,
+						forceScroll: true,
+						ancestorOffset: 50,
+						viewportOffset: 0
+					} );
+				} );
+
+				it( 'and use `config.ui.viewportOffset` if configured', () => {
+					const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+					editor.config.set( 'ui.viewportOffset', {
+						top: 100,
+						bottom: 200,
+						left: 300,
+						right: 400
+					} );
+
+					button.fire( 'execute' );
+
+					expect( spy.calledOnce ).to.be.true;
+
+					sinon.assert.calledOnceWithExactly( spy, {
+						alignToTop: true,
+						forceScroll: true,
+						ancestorOffset: 50,
+						viewportOffset: { top: 100, bottom: 200, left: 300, right: 400 }
+					} );
+				} );
+
+				it( 'and substitute missing values in `config.ui.viewportOffset`', () => {
+					const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+					editor.config.set( 'ui.viewportOffset', {} );
+
+					button.fire( 'execute' );
+
+					expect( spy.calledOnce ).to.be.true;
+
+					sinon.assert.calledOnceWithExactly( spy, {
+						alignToTop: true,
+						forceScroll: true,
+						ancestorOffset: 50,
+						viewportOffset: { top: 0, bottom: 0, left: 0, right: 0 }
+					} );
+				} );
+			} );
 		} );
 	} );
 
@@ -129,14 +191,76 @@ describe( 'FullscreenUI', () => {
 			expect( button.isOn ).to.be.false;
 		} );
 
-		it( 'on #execute should call the `toggleFullscreen` command', () => {
-			const spy = sinon.spy( editor.commands.get( 'toggleFullscreen' ), 'execute' );
+		describe( 'on #execute', () => {
+			it( 'should call the `fullscreen` command', () => {
+				const spy = sinon.spy( editor.commands.get( 'toggleFullscreen' ), 'execute' );
 
-			button.fire( 'execute' );
+				button.fire( 'execute' );
 
-			sinon.assert.calledOnce( spy );
+				sinon.assert.calledOnce( spy );
+			} );
 
-			button.fire( 'execute' );
+			describe( 'should scroll', () => {
+				it( 'to the selection', () => {
+					const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+					button.fire( 'execute' );
+
+					expect( spy.calledOnce ).to.be.true;
+				} );
+
+				it( 'and set viewportOffset to 0 if not configured', () => {
+					const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+					button.fire( 'execute' );
+
+					expect( spy.calledOnce ).to.be.true;
+
+					sinon.assert.calledOnceWithExactly( spy, {
+						alignToTop: true,
+						forceScroll: true,
+						ancestorOffset: 50,
+						viewportOffset: 0
+					} );
+				} );
+
+				it( 'and use `config.ui.viewportOffset` if configured', () => {
+					const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+					editor.config.set( 'ui.viewportOffset', {
+						top: 100,
+						bottom: 200,
+						left: 300,
+						right: 400
+					} );
+
+					button.fire( 'execute' );
+
+					expect( spy.calledOnce ).to.be.true;
+
+					sinon.assert.calledOnceWithExactly( spy, {
+						alignToTop: true,
+						forceScroll: true,
+						ancestorOffset: 50,
+						viewportOffset: { top: 100, bottom: 200, left: 300, right: 400 }
+					} );
+				} );
+
+				it( 'and substitute missing values in `config.ui.viewportOffset`', () => {
+					const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+					editor.config.set( 'ui.viewportOffset', {} );
+
+					button.fire( 'execute' );
+
+					expect( spy.calledOnce ).to.be.true;
+
+					sinon.assert.calledOnceWithExactly( spy, {
+						alignToTop: true,
+						forceScroll: true,
+						ancestorOffset: 50,
+						viewportOffset: { top: 0, bottom: 0, left: 0, right: 0 }
+					} );
+				} );
+			} );
 		} );
 	} );
 } );

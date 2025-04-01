@@ -80,8 +80,7 @@ describe( 'FullscreenEditing', () => {
 		expect( spy ).to.have.been.calledOnce;
 	} );
 
-	it( 'should toggle fullscreen mode on keystroke combination', () => {
-		const spy = sinon.spy( editor, 'execute' );
+	describe( 'on keystroke combination', () => {
 		const keyEventData = {
 			keyCode: keyCodes.f,
 			ctrlKey: !env.isMac,
@@ -91,34 +90,91 @@ describe( 'FullscreenEditing', () => {
 			stopPropagation: sinon.spy()
 		};
 
-		editor.keystrokes.press( keyEventData );
+		it( 'should toggle fullscreen mode', () => {
+			const spy = sinon.spy( editor, 'execute' );
 
-		expect( spy.calledOnce ).to.be.true;
-		expect( spy.calledWithExactly( 'toggleFullscreen' ) ).to.be.true;
+			editor.keystrokes.press( keyEventData );
 
-		editor.keystrokes.press( keyEventData );
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.calledWithExactly( 'toggleFullscreen' ) ).to.be.true;
 
-		expect( spy.calledTwice ).to.be.true;
-	} );
+			editor.keystrokes.press( keyEventData );
 
-	it( 'should force editable blur on keystroke combination on non-Chromium browsers', () => {
-		const keyEventData = {
-			keyCode: keyCodes.f,
-			ctrlKey: !env.isMac,
-			metaKey: env.isMac,
-			shiftKey: true,
-			preventDefault: sinon.spy(),
-			stopPropagation: sinon.spy()
-		};
+			expect( spy.calledTwice ).to.be.true;
+		} );
 
-		sinon.stub( env, 'isBlink' ).value( false );
+		it( 'should force editable blur on non-Chromium browsers', () => {
+			sinon.stub( env, 'isBlink' ).value( false );
 
-		editor.keystrokes.press( keyEventData );
+			editor.keystrokes.press( keyEventData );
 
-		expect( global.document.activeElement ).to.equal( editor.ui.getEditableElement() );
+			expect( global.document.activeElement ).to.equal( editor.ui.getEditableElement() );
 
-		editor.keystrokes.press( keyEventData );
+			editor.keystrokes.press( keyEventData );
 
-		expect( global.document.activeElement ).to.equal( editor.ui.getEditableElement() );
+			expect( global.document.activeElement ).to.equal( editor.ui.getEditableElement() );
+		} );
+
+		describe( 'should scroll', () => {
+			it( 'to the selection', () => {
+				const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+				editor.keystrokes.press( keyEventData );
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'and set viewportOffset to 0 if not configured', () => {
+				const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+				editor.keystrokes.press( keyEventData );
+
+				expect( spy.calledOnce ).to.be.true;
+
+				sinon.assert.calledOnceWithExactly( spy, {
+					alignToTop: true,
+					forceScroll: true,
+					ancestorOffset: 50,
+					viewportOffset: 0
+				} );
+			} );
+
+			it( 'and use `config.ui.viewportOffset` if configured', () => {
+				const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+				editor.config.set( 'ui.viewportOffset', {
+					top: 100,
+					bottom: 200,
+					left: 300,
+					right: 400
+				} );
+
+				editor.keystrokes.press( keyEventData );
+
+				expect( spy.calledOnce ).to.be.true;
+
+				sinon.assert.calledOnceWithExactly( spy, {
+					alignToTop: true,
+					forceScroll: true,
+					ancestorOffset: 50,
+					viewportOffset: { top: 100, bottom: 200, left: 300, right: 400 }
+				} );
+			} );
+
+			it( 'and substitute missing values in `config.ui.viewportOffset`', () => {
+				const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+				editor.config.set( 'ui.viewportOffset', {} );
+
+				editor.keystrokes.press( keyEventData );
+
+				expect( spy.calledOnce ).to.be.true;
+
+				sinon.assert.calledOnceWithExactly( spy, {
+					alignToTop: true,
+					forceScroll: true,
+					ancestorOffset: 50,
+					viewportOffset: { top: 0, bottom: 0, left: 0, right: 0 }
+				} );
+			} );
+		} );
 	} );
 } );
