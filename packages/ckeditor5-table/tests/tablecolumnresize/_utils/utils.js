@@ -51,6 +51,40 @@ export const tableColumnResizeMouseSimulator = {
 		this._getPlugin( editor )._onMouseUpHandler();
 	},
 
+	over( editor, domTarget, options = {} ) {
+		const preventDefault = options.preventDefault || sinon.spy().named( 'preventDefault' );
+		const stop = options.stop || sinon.spy().named( 'stop' );
+
+		const clientX = getColumnResizerRect( domTarget ).x;
+
+		const eventInfo = { stop };
+
+		const domEventData = {
+			target: editor.editing.view.domConverter.domToView( domTarget ),
+			domEvent: { clientX, clientY: 0 },
+			preventDefault
+		};
+
+		this._getPlugin( editor )._onMouseOverHandler( eventInfo, domEventData );
+	},
+
+	out( editor, domTarget, options = {} ) {
+		const preventDefault = options.preventDefault || sinon.spy().named( 'preventDefault' );
+		const stop = options.stop || sinon.spy().named( 'stop' );
+
+		const clientX = getColumnResizerRect( domTarget ).x;
+
+		const eventInfo = { stop };
+
+		const domEventData = {
+			target: editor.editing.view.domConverter.domToView( domTarget ),
+			domEvent: { clientX, clientY: 0 },
+			preventDefault
+		};
+
+		this._getPlugin( editor )._onMouseOutHandler( eventInfo, domEventData );
+	},
+
 	resize( editor, domTable, columnIndex, vector, rowIndex, options ) {
 		const domResizer = getDomResizer( domTable, columnIndex, rowIndex );
 
@@ -122,4 +156,8 @@ export function getColumnResizerRect( resizerElement ) {
 	const resizerPosition = new Point( cellRect.right, cellRect.top + cellRect.height / 2 );
 
 	return resizerPosition;
+}
+
+export function getComputedStyle( element, property ) {
+	return global.window.getComputedStyle( element )[ property ];
 }

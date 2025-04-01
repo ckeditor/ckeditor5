@@ -503,9 +503,9 @@ export default class TableColumnResizeEditing extends Plugin {
 		}
 
 		// Calculate the top position of the column resizer element.
-		const targetTopPosition = toPx( rectFigure.top - rectCell.top );
+		const targetTopPosition = toPx( Number( ( rectFigure.top - rectCell.top ).toFixed( 4 ) ) );
 		// Calculate the bottom position of the column resizer element.
-		const targetBottomPosition = toPx( rectCell.bottom - rectFigure.bottom );
+		const targetBottomPosition = toPx( Number( ( rectCell.bottom - rectFigure.bottom ).toFixed( 4 ) ) );
 
 		// Set `top` and `bottom` styles to the column resizer element.
 		editor.editing.view.change( viewWriter => {
