@@ -486,26 +486,26 @@ export default class TableColumnResizeEditing extends Plugin {
 	 */
 	private _recalculateResizerElement( viewResizer: ViewElement ): void {
 		const editor = this.editor;
+		const domConverter = editor.editing.view.domConverter;
 
 		// Get DOM target figure ancestor element.
-		const domTable = editor.editing.view.domConverter.mapViewToDom( viewResizer.findAncestor( 'table' )! )!;
+		const domTable = domConverter.mapViewToDom( viewResizer.findAncestor( 'table' )! )!;
 
-		// Get DOM target element.
-		const domCell = editor.editing.view.domConverter.mapViewToDom(
+		// Get DOM table cell element.
+		const domCell = domConverter.mapViewToDom(
 			viewResizer.findAncestor( item => [ 'td', 'th' ].includes( item.name ) )!
 		)!;
 
-		const rectFigure = new Rect( domTable );
+		const rectTable = new Rect( domTable );
 		const rectCell = new Rect( domCell );
 
-		if ( rectFigure.height == rectCell.height ) {
+		if ( rectTable.height == rectCell.height ) {
 			return;
 		}
 
-		// Calculate the top position of the column resizer element.
-		const targetTopPosition = toPx( Number( ( rectFigure.top - rectCell.top ).toFixed( 4 ) ) );
-		// Calculate the bottom position of the column resizer element.
-		const targetBottomPosition = toPx( Number( ( rectCell.bottom - rectFigure.bottom ).toFixed( 4 ) ) );
+		// Calculate the top, and bottom positions of the column resizer element.
+		const targetTopPosition = toPx( Number( ( rectTable.top - rectCell.top ).toFixed( 4 ) ) );
+		const targetBottomPosition = toPx( Number( ( rectCell.bottom - rectTable.bottom ).toFixed( 4 ) ) );
 
 		// Set `top` and `bottom` styles to the column resizer element.
 		editor.editing.view.change( viewWriter => {
@@ -879,7 +879,7 @@ export default class TableColumnResizeEditing extends Plugin {
 			writer.removeClass( 'ck-table-column-resizer__active', viewResizer );
 		} );
 
-		const element = this.editor.editing.view.domConverter.mapViewToDom( viewResizer )!;
+		const element = editingView.domConverter.mapViewToDom( viewResizer )!;
 
 		if ( !element.matches( ':hover' ) ) {
 			this._resetResizerStyles( viewResizer );
