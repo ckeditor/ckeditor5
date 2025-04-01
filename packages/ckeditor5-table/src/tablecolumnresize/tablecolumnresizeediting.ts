@@ -480,7 +480,9 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
-	 * TODO: description
+	 * Calculate and set `top` and `bottom` styles to the column resizer element to fit the height of the table.
+	 *
+	 * @param viewResizer The column resizer element.
 	 */
 	private _recalculateResizerElement( viewResizer: ViewElement ): void {
 		const editor = this.editor;
@@ -513,7 +515,9 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
-	 * TODO: description
+	 * Remove `top` and `bottom` styles of the column resizer element.
+	 *
+	 * @param viewResizer The column resizer element.
 	 */
 	private _resetResizerStyles( viewResizer: ViewElement ): void {
 		this.editor.editing.view.change( viewWriter => {
@@ -523,7 +527,11 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
-	 * TODO: description
+	 * Handles the `mouseover` event on column resizer element.
+	 * Recalculates the `top` and `bottom` styles of the column resizer element to fit the height of the table.
+	 *
+	 * @param eventInfo An object containing information about the fired event.
+	 * @param domEventData The data related to the DOM event.
 	 */
 	private _onMouseOverHandler( eventInfo: EventInfo, domEventData: DomEventData ) {
 		const target = domEventData.target;
@@ -540,7 +548,11 @@ export default class TableColumnResizeEditing extends Plugin {
 	}
 
 	/**
-	 * TODO: description
+	 * Handles the `mouseout` event on column resizer element.
+	 * When resizing is not active, it resets the `top` and `bottom` styles of the column resizer element.
+	 *
+	 * @param eventInfo An object containing information about the fired event.
+	 * @param domEventData The data related to the DOM event.
 	 */
 	private _onMouseOutHandler( eventInfo: EventInfo, domEventData: DomEventData ) {
 		const target = domEventData.target;
