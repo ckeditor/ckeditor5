@@ -97,11 +97,6 @@ export default class TableColumnResizeEditing extends Plugin {
 	private _isResizingActive: boolean;
 
 	/**
-	 * A flag indicating if the column resizer element is hovered.
-	 */
-	private _isResizerElementHovered: boolean;
-
-	/**
 	 * A flag indicating if the column resizing is allowed. It is not allowed if the editor is in read-only
 	 * or comments-only mode or the `TableColumnResize` plugin is disabled.
 	 *
@@ -159,7 +154,6 @@ export default class TableColumnResizeEditing extends Plugin {
 		super( editor );
 
 		this._isResizingActive = false;
-		this._isResizerElementHovered = false;
 		this.set( '_isResizingAllowed', true );
 		this._resizingData = null;
 		this._domEmitter = new ( DomEmitterMixin() )();
@@ -542,7 +536,6 @@ export default class TableColumnResizeEditing extends Plugin {
 			return;
 		}
 
-		this._isResizerElementHovered = true;
 		this._recalculateResizerElement( target );
 	}
 
@@ -564,7 +557,6 @@ export default class TableColumnResizeEditing extends Plugin {
 			return;
 		}
 
-		this._isResizerElementHovered = false;
 		this._resetResizerStyles( target );
 	}
 
@@ -875,12 +867,14 @@ export default class TableColumnResizeEditing extends Plugin {
 			writer.removeClass( 'ck-table-column-resizer__active', viewResizer );
 		} );
 
-		this._isResizingActive = false;
-		this._resizingData = null;
+		const element = this.editor.editing.view.domConverter.mapViewToDom( viewResizer )!;
 
-		if ( !this._isResizerElementHovered ) {
+		if ( !element.matches( ':hover' ) ) {
 			this._resetResizerStyles( viewResizer );
 		}
+
+		this._isResizingActive = false;
+		this._resizingData = null;
 	}
 
 	/**
