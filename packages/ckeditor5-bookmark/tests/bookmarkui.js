@@ -321,7 +321,7 @@ describe( 'BookmarkUI', () => {
 			setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
 			sinon.assert.calledWithMatch( spy, sinon.match( ( { balloonClassName, view } ) => {
-				return view === toolbarView && balloonClassName === 'ck-bookmark-balloon';
+				return view === toolbarView && balloonClassName === 'ck-bookmark-balloon ck-toolbar-container';
 			} ) );
 		} );
 
@@ -362,7 +362,7 @@ describe( 'BookmarkUI', () => {
 						defaultPositions.viewportStickyNorth
 					]
 				},
-				balloonClassName: 'ck-bookmark-balloon'
+				balloonClassName: 'ck-bookmark-balloon ck-toolbar-container'
 			} );
 		} );
 
