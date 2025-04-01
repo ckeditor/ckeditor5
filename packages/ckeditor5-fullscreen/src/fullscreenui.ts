@@ -83,6 +83,7 @@ export default class FullscreenUI extends Plugin {
 		this.listenTo( view, 'execute', () => {
 			editor.execute( COMMAND_NAME );
 			editor.editing.view.focus();
+			editor.editing.view.scrollToTheSelection();
 		} );
 
 		return view;

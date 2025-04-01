@@ -63,6 +63,7 @@ export default class FullscreenEditing extends Plugin {
 			}
 
 			this.editor.editing.view.focus();
+			this.editor.editing.view.scrollToTheSelection();
 
 			cancel();
 		} );

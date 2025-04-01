@@ -515,7 +515,7 @@ describe( 'AbstractHandler', () => {
 		} );
 	} );
 
-	describe( '_setNewDialogPosition', () => {
+	describe( '#_setNewDialogPosition()', () => {
 		it( 'should not try to adjust position when dialog position is different than editor-top-side', () => {
 			const dialogPlugin = editor.plugins.get( Dialog );
 			const dialogContentView = new View();
@@ -574,6 +574,52 @@ describe( 'AbstractHandler', () => {
 			expect( originalDialogPositionTop ).not.to.equal( dialogPlugin.view._top );
 
 			editor.commands.get( 'toggleFullscreen' ).execute();
+		} );
+	} );
+
+	describe( '#_saveAncestorsScrollPositions()', () => {
+		it( 'should not add anything to #_savedAncestorsScrollPositions if domElement does not have a parent', () => {
+			const parentlessElement = global.document.createElement( 'div' );
+
+			abstractHandler._saveAncestorsScrollPositions( parentlessElement );
+			expect( abstractHandler._savedAncestorsScrollPositions ).to.be.empty;
+			parentlessElement.remove();
+		} );
+
+		it( 'should add elements with scroll positions to #_savedAncestorsScrollPositions', () => {
+			const outerScrollableAncestor = global.document.createElement( 'div' );
+			const innerScrollableAncestor = global.document.createElement( 'div' );
+			const innerElement = global.document.createElement( 'div' );
+
+			outerScrollableAncestor.style.overflow = 'scroll';
+			outerScrollableAncestor.style.width = '100px';
+			outerScrollableAncestor.style.height = '100px';
+			innerScrollableAncestor.style.overflow = 'scroll';
+			innerScrollableAncestor.style.width = '200px';
+			innerScrollableAncestor.style.height = '200px';
+			innerElement.style.width = '400px';
+			innerElement.style.height = '400px';
+
+			global.document.body.appendChild( outerScrollableAncestor );
+			outerScrollableAncestor.appendChild( innerScrollableAncestor );
+			innerScrollableAncestor.appendChild( innerElement );
+
+			outerScrollableAncestor.scrollTo( 30, 50 );
+			innerScrollableAncestor.scrollTo( 60, 100 );
+
+			abstractHandler._saveAncestorsScrollPositions( innerElement );
+
+			expect( abstractHandler._savedAncestorsScrollPositions.size ).to.equal( 3 );
+			expect( abstractHandler._savedAncestorsScrollPositions.get( outerScrollableAncestor ).scrollLeft ).to.equal( 30 );
+			expect( abstractHandler._savedAncestorsScrollPositions.get( outerScrollableAncestor ).scrollTop ).to.equal( 50 );
+			expect( abstractHandler._savedAncestorsScrollPositions.get( innerScrollableAncestor ).scrollLeft ).to.equal( 60 );
+			expect( abstractHandler._savedAncestorsScrollPositions.get( innerScrollableAncestor ).scrollTop ).to.equal( 100 );
+			expect( abstractHandler._savedAncestorsScrollPositions.get( global.document.body.parentElement ).scrollTop ).to.equal( 0 );
+			expect( abstractHandler._savedAncestorsScrollPositions.get( global.document.body.parentElement ).scrollLeft ).to.equal( 0 );
+
+			outerScrollableAncestor.remove();
+			innerScrollableAncestor.remove();
+			innerElement.remove();
 		} );
 	} );
 } );

@@ -84,14 +84,30 @@ describe( 'FullscreenUI', () => {
 			expect( button.label ).to.equal( 'Enter fullscreen mode' );
 		} );
 
-		it( 'on #execute should call the `fullscreen` command', () => {
-			const spy = sinon.spy( editor.commands.get( 'toggleFullscreen' ), 'execute' );
+		describe( 'on #execute', () => {
+			it( 'should call the `fullscreen` command', () => {
+				const spy = sinon.spy( editor.commands.get( 'toggleFullscreen' ), 'execute' );
 
-			button.fire( 'execute' );
+				button.fire( 'execute' );
 
-			sinon.assert.calledOnce( spy );
+				sinon.assert.calledOnce( spy );
+			} );
 
-			button.fire( 'execute' );
+			it( 'should focus the editable element', () => {
+				const spy = sinon.spy( editor.editing.view, 'focus' );
+
+				button.fire( 'execute' );
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'should scroll to the selection', () => {
+				const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+				button.fire( 'execute' );
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
 		} );
 	} );
 
@@ -129,14 +145,30 @@ describe( 'FullscreenUI', () => {
 			expect( button.isOn ).to.be.false;
 		} );
 
-		it( 'on #execute should call the `toggleFullscreen` command', () => {
-			const spy = sinon.spy( editor.commands.get( 'toggleFullscreen' ), 'execute' );
+		describe( 'on #execute', () => {
+			it( 'should call the `fullscreen` command', () => {
+				const spy = sinon.spy( editor.commands.get( 'toggleFullscreen' ), 'execute' );
 
-			button.fire( 'execute' );
+				button.fire( 'execute' );
 
-			sinon.assert.calledOnce( spy );
+				sinon.assert.calledOnce( spy );
+			} );
 
-			button.fire( 'execute' );
+			it( 'should focus the editable element', () => {
+				const spy = sinon.spy( editor.editing.view, 'focus' );
+
+				button.fire( 'execute' );
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'should scroll to the selection', () => {
+				const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+				button.fire( 'execute' );
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
 		} );
 	} );
 } );

@@ -66,6 +66,11 @@ export default class AbstractEditorHandler {
 	private _hiddenElements: Map<HTMLElement, string> = new Map();
 
 	/**
+	 * A map matching the ancestors of the editable element with their scroll positions before entering fullscreen mode.
+	 */
+	private _savedAncestorsScrollPositions: Map<HTMLElement, { scrollLeft: number; scrollTop: number }> = new Map();
+
+	/**
 	 * A callback that shows the revision viewer, stored to restore the original one after exiting the fullscreen mode.
 	 */
 	protected _showRevisionViewerCallback: ( ( config?: EditorConfig ) => Promise<RevisionViewerEditor | null> ) | null = null;
@@ -175,6 +180,7 @@ export default class AbstractEditorHandler {
 	 * Enables the fullscreen mode. It executes the editor-specific enable handler and then the configured callback.
 	 */
 	public enable(): void {
+		this._saveAncestorsScrollPositions( this._editor.ui.getEditableElement()! )!;
 		this._defaultOnEnter();
 
 		// Block scroll if the fullscreen container is the body element. Otherwise the document has to stay scrollable.
@@ -301,6 +307,15 @@ export default class AbstractEditorHandler {
 		if ( this._placeholderMap.size === 0 ) {
 			this._destroyContainer();
 		}
+
+		// Restore scroll positions of all ancestors. It may include the closest editable wrapper causing the editor to change
+		// the visible content, which is not what we want. Thus, after executing the command, we use
+		// `editor.editing.view.scrollToTheSelection()` to scroll the editor viewport to the current selection.
+		for ( const [ ancestor, value ] of this._savedAncestorsScrollPositions ) {
+			ancestor.scrollTo( value.scrollLeft, value.scrollTop );
+		}
+
+		this._savedAncestorsScrollPositions.clear();
 
 		// Pagination has to be restored after leaving fullscreen mode to ensure proper rendering.
 		// Code coverage is provided in the commercial package repository as integration unit tests.
@@ -648,6 +663,35 @@ export default class AbstractEditorHandler {
 				fullscreenViewContainerRect.left + fullscreenViewContainerRect.width - dialogRect.width - DIALOG_OFFSET + scrollOffset,
 				editorContainerRect.top
 			);
+		}
+	}
+
+	/**
+	 * Saves the scroll positions of all ancestors of the given element.
+	 */
+	private _saveAncestorsScrollPositions( domElement: HTMLElement ): void {
+		let element = domElement.parentElement;
+
+		if ( !element ) {
+			return;
+		}
+
+		while ( element ) {
+			const overflow = element.style.overflowY || global.window.getComputedStyle( element ).overflowY;
+
+			if ( overflow === 'auto' || overflow === 'scroll' ) {
+				this._savedAncestorsScrollPositions.set( element, {
+					scrollLeft: element.scrollLeft,
+					scrollTop: element.scrollTop
+				} );
+			} else if ( element.tagName === 'HTML' ) {
+				this._savedAncestorsScrollPositions.set( element, {
+					scrollLeft: element.scrollLeft,
+					scrollTop: element.scrollTop
+				} );
+			}
+
+			element = element.parentElement;
 		}
 	}
 }
