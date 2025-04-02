@@ -45,9 +45,15 @@
 			/* Because of setting the opacity to 0.75 to the selection handle for the layout table,
 			it overrides the similar selector in widget (specificity is higher),
 			thats why we must override it here also. */
-			&:has( .ck-widget:hover ) > .ck-widget__selection-handle {
+			&:has( .ck-widget.table:hover ) > .ck-widget__selection-handle {
 				opacity: 0;
 				visibility: hidden;
+			}
+
+			&.ck-widget_selected {
+				/* To prevent the widget outline from being cut off at the bottom
+				when the next cell or table has a background color, for example. */
+				z-index: var(--ck-z-default);
 			}
 		}
 	}

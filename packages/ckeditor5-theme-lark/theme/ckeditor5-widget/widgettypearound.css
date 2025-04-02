@@ -219,15 +219,6 @@
 			opacity: 0
 		}
 	}
-
-	/*
-	 * Hide type around buttons of all widget parents when the widget is being hovered.
-	 */
-	&:has( .ck-widget:hover ) {
-		& > .ck-widget__type-around > .ck-widget__type-around__button {
-			@mixin ck-widget-type-around-button-hidden;
-		}
-	}
 }
 
 /*
@@ -255,6 +246,15 @@
 				@mixin ck-widget-type-around-button-hidden;
 			}
 		}
+	}
+}
+
+/*
+ * Hide type around buttons of all widget parents when the widget is being hovered.
+ */
+.ck .ck-widget:has( .ck-widget.table:hover ) {
+	& > .ck-widget__type-around > .ck-widget__type-around__button {
+		@mixin ck-widget-type-around-button-hidden;
 	}
 }
 
