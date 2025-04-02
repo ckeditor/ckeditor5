@@ -23,7 +23,7 @@ import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imag
 import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
 
 // Delay related to word-count throttling.
-const DELAY = 255;
+const DELAY = 300;
 
 describe( 'WordCount', () => {
 	testUtils.createSinonSandbox();
