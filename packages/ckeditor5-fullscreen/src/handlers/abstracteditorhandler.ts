@@ -677,9 +677,16 @@ export default class AbstractEditorHandler {
 		}
 
 		while ( element ) {
-			const overflow = element.style.overflowY || global.window.getComputedStyle( element ).overflowY;
+			const overflowY = element.style.overflowY || global.window.getComputedStyle( element ).overflowY;
+			const overflowX = element.style.overflowX || global.window.getComputedStyle( element ).overflowX;
 
-			if ( overflow === 'auto' || overflow === 'scroll' ) {
+			// Out of 5 possible keyword values: visible, hidden, clip, scroll and auto - only the last two allow for scrolling.
+			if (
+				overflowY === 'auto' ||
+				overflowY === 'scroll' ||
+				overflowX === 'auto' ||
+				overflowX === 'scroll'
+			) {
 				this._savedAncestorsScrollPositions.set( element, {
 					scrollLeft: element.scrollLeft,
 					scrollTop: element.scrollTop
