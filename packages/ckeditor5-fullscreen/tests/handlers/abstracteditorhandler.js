@@ -614,8 +614,12 @@ describe( 'AbstractHandler', () => {
 			expect( abstractHandler._savedAncestorsScrollPositions.get( outerScrollableAncestor ).scrollTop ).to.equal( 50 );
 			expect( abstractHandler._savedAncestorsScrollPositions.get( innerScrollableAncestor ).scrollLeft ).to.equal( 60 );
 			expect( abstractHandler._savedAncestorsScrollPositions.get( innerScrollableAncestor ).scrollTop ).to.equal( 100 );
-			expect( abstractHandler._savedAncestorsScrollPositions.get( global.document.body.parentElement ).scrollTop ).to.equal( 0 );
-			expect( abstractHandler._savedAncestorsScrollPositions.get( global.document.body.parentElement ).scrollLeft ).to.equal( 0 );
+			expect( abstractHandler._savedAncestorsScrollPositions.get( global.document.body.parentElement ).scrollTop ).to.equal(
+				global.document.body.parentElement.scrollTop
+			);
+			expect( abstractHandler._savedAncestorsScrollPositions.get( global.document.body.parentElement ).scrollLeft ).to.equal(
+				global.document.body.parentElement.scrollLeft
+			);
 
 			outerScrollableAncestor.remove();
 			innerScrollableAncestor.remove();
