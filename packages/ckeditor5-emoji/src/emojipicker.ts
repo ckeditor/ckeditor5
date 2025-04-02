@@ -247,7 +247,13 @@ export default class EmojiPicker extends Plugin {
 		clickOutsideHandler( {
 			emitter: emojiPickerFormView,
 			contextElements: [ this.balloonPlugin.view.element! ],
-			callback: () => this._hideUI(),
+			callback: () => {
+				// Focusing on the editable during a click outside the balloon panel might
+				// cause the selection to move to the beginning of the editable, so we avoid
+				// focusing on it during this action.
+				// See: https://github.com/ckeditor/ckeditor5/issues/18253
+				this._hideUI( false );
+			},
 			activator: () => this.balloonPlugin.visibleView === emojiPickerFormView
 		} );
 
@@ -256,11 +262,17 @@ export default class EmojiPicker extends Plugin {
 
 	/**
 	 * Hides the balloon with the emoji picker.
+	 *
+	 * @param updateFocus Whether to focus the editor after closing the emoji picker.
 	 */
-	private _hideUI(): void {
+	private _hideUI( updateFocus: boolean = true ): void {
 		this.balloonPlugin.remove( this.emojiPickerFormView! );
 		this.emojiPickerView!.searchView.setInputValue( '' );
-		this.editor.editing.view.focus();
+
+		if ( updateFocus ) {
+			this.editor.editing.view.focus();
+		}
+
 		this._hideFakeVisualSelection();
 	}
 

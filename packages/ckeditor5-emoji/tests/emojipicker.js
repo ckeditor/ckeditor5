@@ -391,9 +391,12 @@ describe( 'EmojiPicker', () => {
 		it( 'should close the picker when clicking outside of it', () => {
 			emojiPicker.showUI();
 
+			const focusSpy = sinon.spy( editor.editing.view, 'focus' );
+
 			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
 			expect( emojiPicker.balloonPlugin.visibleView ).to.equal( null );
+			expect( focusSpy ).not.to.be.called;
 		} );
 
 		it( 'should close the picker when focus is on the picker and escape is clicked', () => {
