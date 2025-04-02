@@ -583,7 +583,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 						 * Please ensure that your setup does not block requests to the validation endpoint.
 						 *
 						 * @error license-key-validation-endpoint-not-reachable
-						 * @param {String} url The URL that was attempted to be reached for validation.
+						 * @param {string} url The URL that was attempted to be reached for validation.
 						 */
 						logError( 'license-key-validation-endpoint-not-reachable', { url: licensePayload.usageEndpoint } );
 					} );

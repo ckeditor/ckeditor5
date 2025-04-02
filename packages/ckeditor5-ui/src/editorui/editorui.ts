@@ -384,7 +384,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		 * {@link module:ui/editorui/editorui~EditorUI#getEditableElement `getEditableElement()`} methods instead.
 		 *
 		 * @error editor-ui-deprecated-editable-elements
-		 * @param editorUI Editor UI instance the deprecated property belongs to.
+		 * @param {module:ui/editorui/editorui~EditorUI} editorUI Editor UI instance the deprecated property belongs to.
 		 */
 		console.warn(
 			'editor-ui-deprecated-editable-elements: ' +
