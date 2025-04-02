@@ -376,7 +376,7 @@ export default class StickyPanelView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Returns normalized visual viewport offsets (only for Safari and iOS).
 	 */
 	private _getVisualViewportOffset(): { left: number; top: number } {
 		const visualViewport = global.window.visualViewport;
