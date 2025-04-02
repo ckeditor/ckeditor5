@@ -98,7 +98,7 @@ After {@link getting-started/integrations-cdn/quick-start installing the editor}
 
 <code-switcher>
 ```js
-import { ClassicEditor, Table, TableLayout, TableProperties, TableToolbar } from 'ckeditor5';
+import { ClassicEditor, Table, TableLayout } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -178,12 +178,12 @@ If the `TableProperties` plugin is not available, you can use the dedicated `tab
 
 <code-switcher>
 ```js
-import { ClassicEditor, Table, TableLayout } from 'ckeditor5';
+import { ClassicEditor, Table, TableLayout, TableToolbar } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ Table, TableLayout, /* ... */ ],
+		plugins: [ Table, TableLayout, TableToolbar, /* ... */ ],
 		toolbar: [ 'insertTable', 'insertTableLayout', /* ... */ ],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableType', /* ... */  ]
@@ -206,10 +206,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableLayout, /* ... */ ],
-		toolbar: [ 'insertTable', 'insertTableLayout', 'tableType', /* ... */ ],
-		table: {
-			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells', 'tableType', /* ... */  ]
-		}
+		toolbar: [ 'insertTable', 'insertTableLayout', 'tableType', /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
