@@ -63,6 +63,7 @@ export default class FullscreenEditing extends Plugin {
 				this.editor.ui.view.toolbar!.focusTracker.focusedElement = null;
 			}
 
+			// The order of scroll and focus is not important here.
 			this.editor.editing.view.scrollToTheSelection();
 			this.editor.editing.view.focus();
 
