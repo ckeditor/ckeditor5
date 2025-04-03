@@ -21,9 +21,14 @@ import type { default as View, UIViewRenderEvent } from '../view.js';
 
 import {
 	ObservableMixin,
+	DomEmitterMixin,
+	global,
 	isVisible,
 	FocusTracker,
-	type EventInfo, type CollectionAddEvent, type CollectionRemoveEvent
+	Rect,
+	type EventInfo,
+	type CollectionAddEvent,
+	type CollectionRemoveEvent
 } from '@ckeditor/ckeditor5-utils';
 
 import type { Editor } from '@ckeditor/ckeditor5-core';
@@ -123,6 +128,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		right?: number;
 		top?: number;
 		bottom?: number;
+		visualTop?: number; // TODO
 	};
 
 	/**
@@ -144,6 +150,11 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 * The last focused element to which focus should return on `Esc` press.
 	 */
 	private _lastFocusedForeignElement: HTMLElement | null = null;
+
+	/**
+	 * TODO
+	 */
+	private _domEmitter = new ( DomEmitterMixin() )();
 
 	/**
 	 * Creates an instance of the editor UI class.
@@ -174,6 +185,12 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		// Informs UI components that should be refreshed after layout change.
 		this.listenTo<ViewDocumentLayoutChangedEvent>( editingView.document, 'layoutChanged', this.update.bind( this ) );
 		this.listenTo<ViewScrollToTheSelectionEvent>( editingView, 'scrollToTheSelection', this._handleScrollToTheSelection.bind( this ) );
+
+		// TODO this is needed only for iOS and Safari so maybe should not be watched globally.
+		if ( global.window.visualViewport ) {
+			this._domEmitter.listenTo( global.window.visualViewport, 'scroll', () => this._updateVisualViewportOffset() );
+			this._domEmitter.listenTo( global.window.visualViewport, 'resize', () => this._updateVisualViewportOffset() );
+		}
 
 		this._initFocusTracking();
 	}
@@ -223,6 +240,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 
 		this._editableElementsMap = new Map();
 		this._focusableToolbarDefinitions = [];
+		this._domEmitter.stopListening();
 	}
 
 	/**
@@ -696,6 +714,21 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		body.on<CollectionRemoveEvent<View>>( 'remove', ( evt, view ) => {
 			this.focusTracker.remove( view.element! );
 		} );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _updateVisualViewportOffset() {
+		const visualViewportOffsetTop = Rect.getVisualViewportOffset().top;
+		let viewportTopOffset = this.viewportOffset.top || 0;
+
+		viewportTopOffset = visualViewportOffsetTop > viewportTopOffset ? 0 : viewportTopOffset - visualViewportOffsetTop;
+
+		this.viewportOffset = {
+			...this.viewportOffset,
+			visualTop: viewportTopOffset
+		};
 	}
 }
 
