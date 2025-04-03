@@ -11,6 +11,7 @@ import { IconFullscreenEnter, IconFullscreenLeave } from 'ckeditor5/src/icons.js
 
 import FullscreenEditing from '../src/fullscreenediting.js';
 import FullscreenUI from '../src/fullscreenui.js';
+import { env } from '@ckeditor/ckeditor5-utils';
 
 describe( 'FullscreenUI', () => {
 	let domElement, editor;
@@ -93,6 +94,26 @@ describe( 'FullscreenUI', () => {
 				sinon.assert.calledOnce( spy );
 			} );
 
+			it( 'should force toolbar blur on non-Chromium browsers', () => {
+				sinon.stub( env, 'isBlink' ).value( false );
+
+				editor.ui.view.toolbar.items.add( button );
+
+				// Focus the toolbar button when entering fullscreen mode.
+				editor.ui.view.toolbar.focusTracker.focusedElement = editor.ui.view.toolbar.items.first.element;
+
+				button.fire( 'execute' );
+
+				expect( editor.ui.view.toolbar.focusTracker.focusedElement ).to.be.null;
+
+				// Focus the toolbar button when leaving fullscreen mode.
+				editor.ui.view.toolbar.focusTracker.focusedElement = editor.ui.view.toolbar.items.first.element;
+
+				button.fire( 'execute' );
+
+				expect( editor.ui.view.toolbar.focusTracker.focusedElement ).to.be.null;
+			} );
+
 			it( 'should focus the editable element', () => {
 				const spy = sinon.spy( editor.editing.view, 'focus' );
 
@@ -152,6 +173,28 @@ describe( 'FullscreenUI', () => {
 				button.fire( 'execute' );
 
 				sinon.assert.calledOnce( spy );
+			} );
+
+			// This test is purely technical. It's currently impossible to reproduce such a situation
+			// in the browser.
+			it( 'should force toolbar blur on non-Chromium browsers', () => {
+				sinon.stub( env, 'isBlink' ).value( false );
+
+				editor.ui.view.toolbar.items.add( button );
+
+				// Focus the toolbar button when entering fullscreen mode.
+				editor.ui.view.toolbar.focusTracker.focusedElement = editor.ui.view.toolbar.items.first.element;
+
+				button.fire( 'execute' );
+
+				expect( editor.ui.view.toolbar.focusTracker.focusedElement ).to.be.null;
+
+				// Focus the toolbar button when leaving fullscreen mode.
+				editor.ui.view.toolbar.focusTracker.focusedElement = editor.ui.view.toolbar.items.first.element;
+
+				button.fire( 'execute' );
+
+				expect( editor.ui.view.toolbar.focusTracker.focusedElement ).to.be.null;
 			} );
 
 			it( 'should focus the editable element', () => {
