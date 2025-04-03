@@ -100,6 +100,10 @@
 		padding-right: var(--ck-spacing-large);
 	}
 
+	.presence {
+		height: 55px;
+	}
+
 	#default_revision-viewer-container {
 		display: none;
 	}
@@ -116,6 +120,7 @@
 		border: 1px solid var(--ck-color-base-border);
 		border-left: 0;
 		padding-right: 0;
+		min-width: 300px;
 	}
 
 	#demo-container .ck.ck-editor {
@@ -424,31 +429,11 @@
 		box-shadow: 5px 5px 0 #b3b3b3;
 	}
 
-
-
 	/* ---------------------- Umberto overrides ------------------------ */
 
-	/* Style the document editor like Google Docs.*/
-
-	@media only screen and (min-width: 1360px) {
-		.main .main__content.main__content-wide {
-			padding-right: 0;
-		}
-	}
-
 	@media only screen and (min-width: 1600px) {
-		.main .main__content.main__content-wide {
-			width: 24cm;
-		}
-
-		.main .main__content.main__content-wide .main__content-inner {
-			width: auto;
-			margin: 0 50px;
-		}
-
-		/* Keep "page" look based on viewport width. */
-		.main__content-wide .document-editor__editable-container .document-editor__editable.ck-editor__editable {
-			width: 60%;
-		}
+		.main .main__content-inner {
+            width: 905px;
+        }
 	}
 </style>
