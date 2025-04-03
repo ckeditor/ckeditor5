@@ -12,6 +12,7 @@ import env from '@ckeditor/ckeditor5-utils/src/env.js';
 
 import FullscreenEditing from '../src/fullscreenediting.js';
 import FullscreenCommand from '../src/fullscreencommand.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'FullscreenEditing', () => {
 	let domElement, editor;
@@ -103,16 +104,28 @@ describe( 'FullscreenEditing', () => {
 			expect( spy.calledTwice ).to.be.true;
 		} );
 
-		it( 'should force editable blur on non-Chromium browsers', () => {
+		it( 'should force editable and toolbar blur on non-Chromium browsers', () => {
 			sinon.stub( env, 'isBlink' ).value( false );
 
+			// Add button to the toolbar.
+			const buttonView = new ButtonView();
+			buttonView.render();
+			editor.ui.view.toolbar.items.add( buttonView );
+
+			// Focus the toolbar button when entering fullscreen mode.
+			editor.ui.view.toolbar.focusTracker.focusedElement = editor.ui.view.toolbar.items.first.element;
+
 			editor.keystrokes.press( keyEventData );
 
 			expect( global.document.activeElement ).to.equal( editor.ui.getEditableElement() );
+			expect( editor.ui.view.toolbar.focusTracker.focusedElement ).to.be.null;
 
+			// Focus the toolbar button when leaving fullscreen mode.
+			editor.ui.view.toolbar.focusTracker.focusedElement = editor.ui.view.toolbar.items.first.element;
 			editor.keystrokes.press( keyEventData );
 
 			expect( global.document.activeElement ).to.equal( editor.ui.getEditableElement() );
+			expect( editor.ui.view.toolbar.focusTracker.focusedElement ).to.be.null;
 		} );
 
 		it( 'should focus the editable element', () => {
