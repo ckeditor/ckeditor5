@@ -12,11 +12,12 @@ import Link from '@ckeditor/ckeditor5-link/src/link.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
 import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
+import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Link, Bold, Italic, Typing, Paragraph, Undo, Enter ],
-		toolbar: [ 'link', 'bold', 'italic', '|', 'undo', 'redo' ],
+		plugins: [ Link, Bold, Italic, Typing, Paragraph, Undo, Enter, TestPlugin ],
+		toolbar: [ 'link', 'bold', 'italic', '|', 'undo', 'redo', '|', 'scrollToSelection', 'showBalloon' ],
 		ui: { viewportOffset: { top: 120 } }
 	} )
 	.then( editor => {
@@ -25,3 +26,69 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+function TestPlugin( editor ) {
+	const editingView = editor.editing.view;
+
+	editor.ui.componentFactory.add( 'scrollToSelection', () => {
+		const view = new ButtonView( editor.locale );
+
+		view.set( {
+			label: 'Scroll to the selection',
+			withText: true
+		} );
+
+		view.on( 'execute', () => {
+			editor.editing.view.scrollToTheSelection();
+			editor.editing.view.focus();
+		} );
+
+		return view;
+	} );
+
+	editor.ui.componentFactory.add( 'showBalloon', () => {
+		const showButton = new ButtonView( editor.locale );
+
+		showButton.set( {
+			label: 'Show balloon',
+			withText: true
+		} );
+
+		showButton.on( 'execute', () => {
+			editor.editing.view.focus();
+			showButton.isEnabled = false;
+
+			const balloon = editor.plugins.get( 'ContextualBalloon' );
+			const hideButton = new ButtonView( editor.locale );
+
+			hideButton.set( {
+				label: 'Hide balloon',
+				withText: true
+			} );
+
+			hideButton.on( 'execute', () => {
+				editor.editing.view.focus();
+				balloon.remove( hideButton );
+				editor.ui.stopListening( editor.ui, 'update', update );
+				showButton.isEnabled = true;
+			} );
+
+			balloon.add( {
+				view: hideButton,
+				position: {
+					target: editingView.domConverter.viewRangeToDom( editingView.document.selection.getFirstRange() )
+				}
+			} );
+
+			editor.ui.on( 'update', update );
+
+			function update() {
+				balloon.updatePosition( {
+					target: editingView.domConverter.viewRangeToDom( editingView.document.selection.getFirstRange() )
+				} );
+			}
+		} );
+
+		return showButton;
+	} );
+}
