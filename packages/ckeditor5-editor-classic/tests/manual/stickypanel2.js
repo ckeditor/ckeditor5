@@ -5,7 +5,7 @@
 
 /* globals console:false, window, document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import ClassicEditor from '../../src/classiceditor.js';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
 import Link from '@ckeditor/ckeditor5-link/src/link.js';

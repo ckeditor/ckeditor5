@@ -28,10 +28,11 @@ import {
 	Rect,
 	type EventInfo,
 	type CollectionAddEvent,
-	type CollectionRemoveEvent
+	type CollectionRemoveEvent,
+	type ObservableSetEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { Editor, ViewportOffsetConfig } from '@ckeditor/ckeditor5-core';
 import type { ViewDocumentLayoutChangedEvent, ViewScrollToTheSelectionEvent } from '@ckeditor/ckeditor5-engine';
 import type {
 	default as MenuBarView,
@@ -106,7 +107,8 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 * 	top: 50,
 	 * 	right: 50,
 	 * 	bottom: 50,
-	 * 	left: 50
+	 * 	left: 50,
+	 * 	visualTop: 50
 	 * }
 	 * ```
 	 *
@@ -123,13 +125,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 *
 	 * @observable
 	 */
-	public declare viewportOffset: {
-		left?: number;
-		right?: number;
-		top?: number;
-		bottom?: number;
-		visualTop?: number; // TODO
-	};
+	public declare viewportOffset: ViewportOffset;
 
 	/**
 	 * Stores all editable elements used by the editor instance.
@@ -185,6 +181,10 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		// Informs UI components that should be refreshed after layout change.
 		this.listenTo<ViewDocumentLayoutChangedEvent>( editingView.document, 'layoutChanged', this.update.bind( this ) );
 		this.listenTo<ViewScrollToTheSelectionEvent>( editingView, 'scrollToTheSelection', this._handleScrollToTheSelection.bind( this ) );
+
+		this.on<ObservableSetEvent>( 'set:viewportOffset', ( evt, name, value ) => {
+			evt.return = { ...value, visualTop: this._getVisualViewportTopOffset( value ) };
+		} );
 
 		// TODO this is needed only for iOS and Safari so maybe should not be watched globally.
 		if ( global.window.visualViewport ) {
@@ -467,6 +467,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 * 	right: Number,
 	 * 	bottom: Number,
 	 * 	left: Number
+	 * 	TODO
 	 * }
 	 * ```
 	 *
@@ -477,7 +478,10 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		const viewportOffsetConfig = editor.config.get( 'ui.viewportOffset' );
 
 		if ( viewportOffsetConfig ) {
-			return viewportOffsetConfig;
+			return {
+				...viewportOffsetConfig,
+				visualTop: viewportOffsetConfig.top
+			};
 		}
 
 		// Not present in EditorConfig type, because it's legacy. Hence the `as` expression.
@@ -498,11 +502,17 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 				'It will be removed from future CKEditor versions. Use `ui.viewportOffset.top` instead.'
 			);
 
-			return { top: legacyOffsetConfig };
+			return {
+				top: legacyOffsetConfig,
+				visualTop: legacyOffsetConfig
+			};
 		}
 
 		// More keys to come in the future.
-		return { top: 0 };
+		return {
+			top: 0,
+			visualTop: 0
+		};
 	}
 
 	/**
@@ -720,15 +730,20 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 * TODO
 	 */
 	private _updateVisualViewportOffset() {
-		const visualViewportOffsetTop = Rect.getVisualViewportOffset().top;
-		let viewportTopOffset = this.viewportOffset.top || 0;
-
-		viewportTopOffset = visualViewportOffsetTop > viewportTopOffset ? 0 : viewportTopOffset - visualViewportOffsetTop;
-
 		this.viewportOffset = {
 			...this.viewportOffset,
-			visualTop: viewportTopOffset
+			visualTop: this._getVisualViewportTopOffset( this.viewportOffset )
 		};
+	}
+
+	/**
+	 * TODO
+	 */
+	private _getVisualViewportTopOffset( viewportOffset: { top?: number } ): number {
+		const visualViewportOffsetTop = Rect.getVisualViewportOffset().top;
+		const viewportTopOffset = viewportOffset.top || 0;
+
+		return visualViewportOffsetTop > viewportTopOffset ? 0 : viewportTopOffset - visualViewportOffsetTop;
 	}
 }
 
@@ -798,6 +813,16 @@ export interface FocusableToolbarOptions {
 	 * <kbd>Esc</kbd> keystroke but before the focus goes back to the {@link ~EditorUI#setEditableElement editable element}.
 	 */
 	afterBlur?: () => void;
+}
+
+export interface ViewportOffset extends ViewportOffsetConfig {
+
+	/**
+	 * The top offset of the visual viewport.
+	 *
+	 * This value is calculated based on the visual viewport position.
+	 */
+	visualTop?: number;
 }
 
 /**
