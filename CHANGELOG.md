@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## [45.0.0](https://github.com/ckeditor/ckeditor5/compare/v44.3.0...v45.0.0) (April 2, 2025)
+## [45.0.0](https://github.com/ckeditor/ckeditor5/compare/v44.3.0...v45.0.0) (April 7, 2025)
 
 The CKEditor 5 v45.0.0 release brings powerful new features and improvements, making content creation smoother and more versatile. From enhanced email editing to a refined linking experience and a brand-new full-screen mode, this update is packed with valuable upgrades.
 
