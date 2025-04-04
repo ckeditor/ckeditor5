@@ -386,14 +386,16 @@ export default class AbstractEditorHandler {
 	// Code coverage is provided in the commercial package repository as integration unit tests.
 	/* istanbul ignore next -- @preserve */
 	private _generatePresenceListContainer(): void {
+		const t = this._editor.t;
 		const presenceListElement = createElement( document, 'div', {
 			class: 'ck ck-fullscreen__left-sidebar-item'
 		} );
 
 		presenceListElement.innerHTML = `
-			<div class="ck ck-fullscreen__left-sidebar-header">Connected users</div>
+			<div class="ck ck-fullscreen__left-sidebar-header"></div>
 			<div class="ck ck-fullscreen__presence-list" data-ck-fullscreen="presence-list"></div>
 		`;
+		( presenceListElement.firstElementChild as HTMLElement ).innerText = t( 'Connected users' );
 
 		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( presenceListElement );
 
@@ -408,15 +410,15 @@ export default class AbstractEditorHandler {
 	// Code coverage is provided in the commercial package repository as integration unit tests.
 	/* istanbul ignore next -- @preserve */
 	private _generateDocumentOutlineContainer(): void {
+		const t = this._editor.t;
 		const documentOutlineHeaderElement = createElement( document, 'div', {
 			class: 'ck-fullscreen__left-sidebar-item ck-fullscreen__left-sidebar-item--no-margin'
 		} );
 
 		documentOutlineHeaderElement.innerHTML = `
-			<div class="ck ck-fullscreen__left-sidebar-header ck-fullscreen__document-outline-header">
-				Document outline
-			</div>
+			<div class="ck ck-fullscreen__left-sidebar-header ck-fullscreen__document-outline-header"></div>
 		`;
+		( documentOutlineHeaderElement.firstElementChild as HTMLElement ).innerText = t( 'Document outline' );
 
 		const documentOutlineBodyWrapper = createElement( document, 'div', {
 			class: 'ck ck-fullscreen__left-sidebar-item ck-fullscreen__document-outline-wrapper'
