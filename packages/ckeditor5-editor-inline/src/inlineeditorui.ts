@@ -133,7 +133,7 @@ export default class InlineEditorUI extends EditorUI {
 		// Set–up the view#panel.
 		view.panel.bind( 'isVisible' ).to( this.focusTracker, 'isFocused' );
 
-		view.bind( 'viewportTopOffset' ).to( this, 'viewportOffset', ( { top } ) => top || 0 );
+		view.bind( 'viewportTopOffset' ).to( this, 'viewportOffset', ( { visualTop } ) => visualTop || 0 );
 
 		// https://github.com/ckeditor/ckeditor5-editor-inline/issues/4
 		view.listenTo<EditorUIUpdateEvent>( editor.ui, 'update', () => {
