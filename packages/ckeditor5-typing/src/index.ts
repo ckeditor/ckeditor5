@@ -10,6 +10,7 @@
 export { default as Typing } from './typing.js';
 export { default as Input } from './input.js';
 export { default as Delete } from './delete.js';
+export { default as ShowTags } from './showtags.js';
 
 export { default as TextWatcher } from './textwatcher.js';
 export { default as TwoStepCaretMovement } from './twostepcaretmovement.js';
