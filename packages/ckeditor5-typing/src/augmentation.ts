@@ -8,6 +8,7 @@ import type {
 	DeleteCommand,
 	Input,
 	InsertTextCommand,
+	ShowTags,
 	TextTransformation,
 	TwoStepCaretMovement,
 	Typing,
@@ -37,5 +38,6 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ TextTransformation.pluginName ]: TextTransformation;
 		[ TwoStepCaretMovement.pluginName ]: TwoStepCaretMovement;
 		[ Typing.pluginName ]: Typing;
+		[ ShowTags.pluginName ]: ShowTags;
 	}
 }
