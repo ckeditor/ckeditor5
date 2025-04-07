@@ -19,7 +19,7 @@ const RTL_LANGUAGE_CODES = [
 	'he', 'heb', // Hebrew
 	'ku', 'kur', // Kurdish
 	'ug', 'uig', // Uighur, Uyghur
-	'ur' // Urdu
+	'ur', 'urd' // Urdu
 ];
 
 /**
