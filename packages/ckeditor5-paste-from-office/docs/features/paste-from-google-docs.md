@@ -5,8 +5,6 @@ category: features-pasting
 order: 20
 ---
 
-{@snippet features/build-paste-from-office-source}
-
 # Pasting content from Google Docs
 
 The paste from Google Docs feature lets you paste content from Google Docs and preserve its original structure and formatting.

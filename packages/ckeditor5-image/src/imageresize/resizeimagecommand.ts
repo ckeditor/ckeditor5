@@ -17,7 +17,7 @@ export default class ResizeImageCommand extends Command {
 	/**
 	 * Desired image width and height.
 	 */
-	declare public value: null | {
+	declare public value: undefined | null | {
 		width: string | null;
 		height: string | null;
 	};

@@ -3,14 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals ClassicEditor, window, document, console */
+import {
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
+import { BlockQuoteEditor } from './block-quote-source.js';
 
-ClassicEditor
+BlockQuoteEditor
 	.create( document.querySelector( '#snippet-block-quote' ) )
 	.then( editor => {
 		window.editor = editor;
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Block quote' ),
+
+		attachTourBalloon( {
+			target: findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Block quote' ),
 			text: 'Click to insert a block quote.',
 			editor
 		} );

@@ -4,13 +4,11 @@ meta-title: Font family, size, and color | CKEditor 5 Documentation
 category: features
 ---
 
-{@snippet features/build-font-source}
-
 The font feature lets you change font family, size, and color (including background color).
 
 ## Demo
 
-Use the toolbar dropdowns in the demo below to control the font size {@icon @ckeditor/ckeditor5-font/theme/icons/font-size.svg Font size} and font family {@icon @ckeditor/ckeditor5-font/theme/icons/font-family.svg Font family}. You can also change both the font color {@icon @ckeditor/ckeditor5-font/theme/icons/font-color.svg Font color} and the font background color {@icon @ckeditor/ckeditor5-font/theme/icons/font-background.svg Font background color} with predefined palette or color picker {@icon @ckeditor/ckeditor5-core/theme/icons/color-palette.svg Color picker}.
+Use the toolbar dropdowns in the demo below to control the font size {@icon @ckeditor/ckeditor5-icons/theme/icons/font-size.svg Font size} and font family {@icon @ckeditor/ckeditor5-icons/theme/icons/font-family.svg Font family}. You can also change both the font color {@icon @ckeditor/ckeditor5-icons/theme/icons/font-color.svg Font color} and the font background color {@icon @ckeditor/ckeditor5-icons/theme/icons/font-background.svg Font background color} with predefined palette or color picker {@icon @ckeditor/ckeditor5-icons/theme/icons/color-palette.svg Color picker}.
 
 {@snippet features/font}
 
@@ -442,6 +440,30 @@ ClassicEditor
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+
+### Email client color format compatibility
+
+When designing content for emails, it is important to be aware that many email clients have limited support for various color formats. For maximum compatibility in email templates, consider the following limitations:
+
+#### Unsupported color formats in most email clients:
+
+* hsl
+* hsla
+* hwb
+* lab
+* lch
+* oklab
+* oklch
+* color-mix
+* rgba
+
+#### Recommended color formats for email compatibility:
+
+* Hexadecimal (for example, `#FF0000`)
+* RGB (for example, `rgb(255, 0, 0)`)
+* Named colors (for example, `red`)
+
+Using these compatible formats will ensure your content displays consistently across different email clients.
 
 ## Related features
 

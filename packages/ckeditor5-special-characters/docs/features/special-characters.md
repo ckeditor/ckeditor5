@@ -10,9 +10,7 @@ The special characters feature lets you insert **mathematical operators**, **cur
 
 ## Demo
 
-Use the special characters toolbar button {@icon @ckeditor/ckeditor5-special-characters/theme/icons/specialcharacters.svg Special characters} in the editor below to open a [configurable](#configuration) panel with a table of selectable special characters.
-
-{@snippet features/special-characters-source}
+Use the special characters toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/special-characters.svg Special characters} in the editor below to open a [configurable](#configuration) panel with a table of selectable special characters.
 
 {@snippet features/special-characters}
 
@@ -92,7 +90,7 @@ After adding the above plugin to the editor configuration, the new category will
 	The third argument of the {@link module:special-characters/specialcharacters~SpecialCharacters#addItems `SpecialCharacters#addItems()`} method is optional. You can use it to specify a label displayed as a category name. It is useful when your editor uses a language other than English. Check out the {@link getting-started/setup/ui-language UI language guide} to learn more.
 </info-box>
 
-Below you can see a demo based on the example shown above. Use the special characters toolbar button {@icon @ckeditor/ckeditor5-special-characters/theme/icons/specialcharacters.svg Special characters} and then select "Emoticons" from the dropdown. This will let you insert an emoji into the content.
+Below you can see a demo based on the example shown above. Use the special characters toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/special-characters.svg Special characters} and then select "Emoticons" from the dropdown. This will let you insert an emoji into the content.
 
 {@snippet features/special-characters-new-category}
 
@@ -128,7 +126,7 @@ ClassicEditor
 	The title of a special character must be unique across the entire special characters set.
 </info-box>
 
-Below you can see a demo based on the example shown above. Use the special characters toolbar button {@icon @ckeditor/ckeditor5-special-characters/theme/icons/specialcharacters.svg Special characters} and then select "Mathematical" from the dropdown. You will see that the category now contains the additional Greek letters introduced by the configuration above.
+Below you can see a demo based on the example shown above. Use the special characters toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/special-characters.svg Special characters} and then select "Mathematical" from the dropdown. You will see that the category now contains the additional Greek letters introduced by the configuration above.
 
 {@snippet features/special-characters-extended-category}
 
@@ -163,7 +161,7 @@ ClassicEditor
 ```
 </code-switcher>
 
-Below you can see a demo based on the example shown above. After clicking the special characters toolbar button {@icon @ckeditor/ckeditor5-special-characters/theme/icons/specialcharacters.svg Special characters}, you can see that it contains fewer categories compared to the other editors on this page.
+Below you can see a demo based on the example shown above. After clicking the special characters toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/special-characters.svg Special characters}, you can see that it contains fewer categories compared to the other editors on this page.
 
 {@snippet features/special-characters-limited-categories}
 

@@ -1,0 +1,1072 @@
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: be\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && n % 100 != 11 ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "Name of the special characters plugins, visible in a dropdown and as a button tooltip."
+msgid "Special characters"
+msgstr "Спецыяльныя сімвалы"
+
+msgctxt "A label for a special character dropdown with symbol categories."
+msgid "Category"
+msgstr "Катэгорыя"
+
+msgctxt "A category name is displayed in a special characters dropdown representing all available symbols."
+msgid "All"
+msgstr "Усе"
+
+msgctxt "A category name is displayed in a special characters dropdown representing arrow symbols."
+msgid "Arrows"
+msgstr "Стрэлкі"
+
+msgctxt "A category name is displayed in a special characters dropdown representing currency symbols."
+msgid "Currency"
+msgstr "Валюта"
+
+msgctxt "A category name is displayed in a special characters dropdown representing latin symbols."
+msgid "Latin"
+msgstr "Латынскія"
+
+msgctxt "A category name is displayed in a special characters dropdown representing mathematical symbols."
+msgid "Mathematical"
+msgstr "Матэматычныя"
+
+msgctxt "A category name is displayed in a special characters dropdown representing text symbols."
+msgid "Text"
+msgstr "Тэкст"
+
+msgctxt "A label for the \"leftwards simple arrow\" symbol."
+msgid "leftwards simple arrow"
+msgstr "простая стрэлка ўлева"
+
+msgctxt "A label for the \"rightwards simple arrow\" symbol."
+msgid "rightwards simple arrow"
+msgstr "простая стрэлка ўправа"
+
+msgctxt "A label for the \"upwards simple arrow\" symbol."
+msgid "upwards simple arrow"
+msgstr "простая стрэлка ўверх"
+
+msgctxt "A label for the \"downwards simple arrow\" symbol."
+msgid "downwards simple arrow"
+msgstr "простая стрэлка ўніз"
+
+msgctxt "A label for the \"leftwards double arrow\" symbol."
+msgid "leftwards double arrow"
+msgstr "двойная стрэлка ўлева"
+
+msgctxt "A label for the \"rightwards double arrow\" symbol."
+msgid "rightwards double arrow"
+msgstr "двойная стрэлка ўправа"
+
+msgctxt "A label for the \"upwards double arrow\" symbol."
+msgid "upwards double arrow"
+msgstr "двойная стрэлка ўверх"
+
+msgctxt "A label for the \"downwards double arrow\" symbol."
+msgid "downwards double arrow"
+msgstr "двойная стрэлка ўніз"
+
+msgctxt "A label for the \"leftwards dashed arrow\" symbol."
+msgid "leftwards dashed arrow"
+msgstr "пунктырная стрэлка ўлева"
+
+msgctxt "A label for the \"rightwards dashed arrow\" symbol."
+msgid "rightwards dashed arrow"
+msgstr "пунктырная стрэлка ўправа"
+
+msgctxt "A label for the \"upwards dashed arrow\" symbol."
+msgid "upwards dashed arrow"
+msgstr "пунктырная стрэлка ўверх"
+
+msgctxt "A label for the \"downwards dashed arrow\" symbol."
+msgid "downwards dashed arrow"
+msgstr "пунктырная стрэлка ўніз"
+
+msgctxt "A label for the \"leftwards arrow to bar\" symbol."
+msgid "leftwards arrow to bar"
+msgstr "стрэлка ўлева, упіраючая ў планку"
+
+msgctxt "A label for the \"rightwards arrow to bar\" symbol."
+msgid "rightwards arrow to bar"
+msgstr "стрэлка ўправа, упіраючая ў планку"
+
+msgctxt "A label for the \"upwards arrow to bar\" symbol."
+msgid "upwards arrow to bar"
+msgstr "стрэлка ўверх, упіраючая ў планку"
+
+msgctxt "A label for the \"downwards arrow to bar\" symbol."
+msgid "downwards arrow to bar"
+msgstr "стрэлка ўніз, упіраючая ў планку"
+
+msgctxt "A label for the \"up down arrow with base\" symbol."
+msgid "up down arrow with base"
+msgstr "стрэлка ўверх і ўніз ад планкі ўніз"
+
+msgctxt "A label for the \"back with leftwards arrow above\" symbol."
+msgid "back with leftwards arrow above"
+msgstr "стрэлка ўлева над словам BACK (назад)"
+
+msgctxt "A label for the \"end with leftwards arrow above\" symbol."
+msgid "end with leftwards arrow above"
+msgstr "стрэлка ўлева над словам END (канец)"
+
+msgctxt "A label for the \"on with exclamation mark with left right arrow above\" symbol."
+msgid "on with exclamation mark with left right arrow above"
+msgstr "стрэлка ўлева і ўправа над словам ON! (уключыць)"
+
+msgctxt "A label for the \"soon with rightwards arrow above\" symbol."
+msgid "soon with rightwards arrow above"
+msgstr "стрэлка ўправа над словам SOON (хутка)"
+
+msgctxt "A label for the \"top with upwards arrow above\" symbol."
+msgid "top with upwards arrow above"
+msgstr "стрэлка ўверх над словам TOP (зверху)"
+
+msgctxt "A label for the \"dollar sign\" symbol."
+msgid "Dollar sign"
+msgstr "Сімвал долара"
+
+msgctxt "A label for the \"euro sign\" symbol."
+msgid "Euro sign"
+msgstr "Сімвал эўра"
+
+msgctxt "A label for the \"yen sign\" symbol."
+msgid "Yen sign"
+msgstr "Сімвал іены"
+
+msgctxt "A label for the \"pound sign\" symbol."
+msgid "Pound sign"
+msgstr "Сімвал фунта стерлінгаў"
+
+msgctxt "A label for the \"cent sign\" symbol."
+msgid "Cent sign"
+msgstr "Сімвал цэнта"
+
+msgctxt "A label for the \"euro-currency sign\" symbol."
+msgid "Euro-currency sign"
+msgstr "Сімвал эўравалюты"
+
+msgctxt "A label for the \"colon sign\" symbol."
+msgid "Colon sign"
+msgstr "Сімвал двукроп'я"
+
+msgctxt "A label for the \"cruzeiro sign\" symbol."
+msgid "Cruzeiro sign"
+msgstr "Сімвал бразільскага крузэйра"
+
+msgctxt "A label for the \"french franc sign\" symbol."
+msgid "French franc sign"
+msgstr "Сімвал французскага франка"
+
+msgctxt "A label for the \"lira sign\" symbol."
+msgid "Lira sign"
+msgstr "Сімвал італьянскай ліры"
+
+msgctxt "A label for the \"currency sign\" symbol."
+msgid "Currency sign"
+msgstr "Сімвал валюты"
+
+msgctxt "A label for the \"bitcoin sign\" symbol."
+msgid "Bitcoin sign"
+msgstr "Сімвал біткойна"
+
+msgctxt "A label for the \"mill sign\" symbol."
+msgid "Mill sign"
+msgstr "Сімвал мілі"
+
+msgctxt "A label for the \"naira sign\" symbol."
+msgid "Naira sign"
+msgstr "Сімвал найры"
+
+msgctxt "A label for the \"peseta sign\" symbol."
+msgid "Peseta sign"
+msgstr "Сімвал песеты"
+
+msgctxt "A label for the \"rupee sign\" symbol."
+msgid "Rupee sign"
+msgstr "Сімвал рупіі"
+
+msgctxt "A label for the \"won sign\" symbol."
+msgid "Won sign"
+msgstr "Сімвал воны"
+
+msgctxt "A label for the \"new sheqel sign\" symbol."
+msgid "New sheqel sign"
+msgstr "Сімвал новага шекеля"
+
+msgctxt "A label for the \"dong sign\" symbol."
+msgid "Dong sign"
+msgstr "Сімвал донга"
+
+msgctxt "A label for the \"kip sign\" symbol."
+msgid "Kip sign"
+msgstr "Сімвал кіпа"
+
+msgctxt "A label for the \"tugrik sign\" symbol."
+msgid "Tugrik sign"
+msgstr "Сімвал тугрика"
+
+msgctxt "A label for the \"drachma sign\" symbol."
+msgid "Drachma sign"
+msgstr "Сімвал драхмы"
+
+msgctxt "A label for the \"german penny sign\" symbol."
+msgid "German penny sign"
+msgstr "Сімвал нямецкага пенні"
+
+msgctxt "A label for the \"peso sign\" symbol."
+msgid "Peso sign"
+msgstr "Сімвал песа"
+
+msgctxt "A label for the \"guarani sign\" symbol."
+msgid "Guarani sign"
+msgstr "Сімвал гуарані"
+
+msgctxt "A label for the \"austral sign\" symbol."
+msgid "Austral sign"
+msgstr "Сімвал аргентынскага аустраля"
+
+msgctxt "A label for the \"hryvnia sign\" symbol."
+msgid "Hryvnia sign"
+msgstr "Сімвал грыўні"
+
+msgctxt "A label for the \"cedi sign\" symbol."
+msgid "Cedi sign"
+msgstr "Сімвал ганскага седи"
+
+msgctxt "A label for the \"livre tournois sign\" symbol."
+msgid "Livre tournois sign"
+msgstr "Сімвал турскага лівра"
+
+msgctxt "A label for the \"spesmilo sign\" symbol."
+msgid "Spesmilo sign"
+msgstr "Сімвал спесміло"
+
+msgctxt "A label for the \"tenge sign\" symbol."
+msgid "Tenge sign"
+msgstr "Сімвал тэнге"
+
+msgctxt "A label for the \"indian rupee sign\" symbol."
+msgid "Indian rupee sign"
+msgstr "Сімвал індыйскай рупіі"
+
+msgctxt "A label for the \"turkish lira sign\" symbol."
+msgid "Turkish lira sign"
+msgstr "Сімвал турэцкай ліры"
+
+msgctxt "A label for the \"nordic mark sign\" symbol."
+msgid "Nordic mark sign"
+msgstr "Сімвал скандынаўскай маркі"
+
+msgctxt "A label for the \"manat sign\" symbol."
+msgid "Manat sign"
+msgstr "Сімвал маната"
+
+msgctxt "A label for the \"ruble sign\" symbol."
+msgid "Ruble sign"
+msgstr "Сімвал рубля"
+
+msgctxt "A label for the \"latin capital letter a with macron\" symbol."
+msgid "Latin capital letter a with macron"
+msgstr "Лацінская загальная літара «A» з макронам"
+
+msgctxt "A label for the \"latin small letter a with macron\" symbol."
+msgid "Latin small letter a with macron"
+msgstr "Лацінская маленькая літара «a» з макронам"
+
+msgctxt "A label for the \"latin capital letter a with breve\" symbol."
+msgid "Latin capital letter a with breve"
+msgstr "Лацінская загальная літара «A» з брэве"
+
+msgctxt "A label for the \"latin small letter a with breve\" symbol."
+msgid "Latin small letter a with breve"
+msgstr "Лацінская маленькая літара «a» з брэве"
+
+msgctxt "A label for the \"latin capital letter a with ogonek\" symbol."
+msgid "Latin capital letter a with ogonek"
+msgstr "Лацінская загальная літара «A» з агонэкам"
+
+msgctxt "A label for the \"latin small letter a with ogonek\" symbol."
+msgid "Latin small letter a with ogonek"
+msgstr "Лацінская маленькая літара «a» з агонэкам"
+
+msgctxt "A label for the \"latin capital letter c with acute\" symbol."
+msgid "Latin capital letter c with acute"
+msgstr "Лацінская загальная літара «C» з акутам"
+
+msgctxt "A label for the \"latin small letter c with acute\" symbol."
+msgid "Latin small letter c with acute"
+msgstr "Лацінская маленькая літара «c» з акутам"
+
+msgctxt "A label for the \"latin capital letter c with circumflex\" symbol."
+msgid "Latin capital letter c with circumflex"
+msgstr "Лацінская загальная літара «C» з цыркумфлексам"
+
+msgctxt "A label for the \"latin small letter c with circumflex\" symbol."
+msgid "Latin small letter c with circumflex"
+msgstr "Лацінская маленькая літара «c» з цыркумфлексам"
+
+msgctxt "A label for the \"latin capital letter c with dot above\" symbol."
+msgid "Latin capital letter c with dot above"
+msgstr "Лацінская загальная літара «C» з кропкай зверху"
+
+msgctxt "A label for the \"latin small letter c with dot above\" symbol."
+msgid "Latin small letter c with dot above"
+msgstr "Лацінская маленькая літара «c» з кропкай зверху"
+
+msgctxt "A label for the \"latin capital letter c with caron\" symbol."
+msgid "Latin capital letter c with caron"
+msgstr "Лацінская загальная літара «C» з гачэкам"
+
+msgctxt "A label for the \"latin small letter c with caron\" symbol."
+msgid "Latin small letter c with caron"
+msgstr "Лацінская маленькая літара «c» з гачэкам"
+
+msgctxt "A label for the \"latin capital letter d with caron\" symbol."
+msgid "Latin capital letter d with caron"
+msgstr "Лацінская загальная літара «D» з гачэкам"
+
+msgctxt "A label for the \"latin small letter d with caron\" symbol."
+msgid "Latin small letter d with caron"
+msgstr "Лацінская маленькая літара «d» з гачэкам"
+
+msgctxt "A label for the \"latin capital letter d with stroke\" symbol."
+msgid "Latin capital letter d with stroke"
+msgstr "Лацінская загальная літара «D» з штрыхам"
+
+msgctxt "A label for the \"latin small letter d with stroke\" symbol."
+msgid "Latin small letter d with stroke"
+msgstr "Лацінская маленькая літара «d» з штрыхам"
+
+msgctxt "A label for the \"latin capital letter e with macron\" symbol."
+msgid "Latin capital letter e with macron"
+msgstr "Лацінская загальная літара «E» з макронам"
+
+msgctxt "A label for the \"latin small letter e with macron\" symbol."
+msgid "Latin small letter e with macron"
+msgstr "Лацінская маленькая літара «e» з макронам"
+
+msgctxt "A label for the \"latin capital letter e with breve\" symbol."
+msgid "Latin capital letter e with breve"
+msgstr "Лацінская загальная літара «E» з брэве"
+
+msgctxt "A label for the \"latin small letter e with breve\" symbol."
+msgid "Latin small letter e with breve"
+msgstr "Лацінская маленькая літара «e» з брэве"
+
+msgctxt "A label for the \"latin capital letter e with dot above\" symbol."
+msgid "Latin capital letter e with dot above"
+msgstr "Лацінская загальная літара «E» з кропкай зверху"
+
+msgctxt "A label for the \"latin small letter e with dot above\" symbol."
+msgid "Latin small letter e with dot above"
+msgstr "Лацінская маленькая літара «e» з кропкай зверху"
+
+msgctxt "A label for the \"latin capital letter e with ogonek\" symbol."
+msgid "Latin capital letter e with ogonek"
+msgstr "Лацінская загальная літара «E» з агонэкам"
+
+msgctxt "A label for the \"latin small letter e with ogonek\" symbol."
+msgid "Latin small letter e with ogonek"
+msgstr "Лацінская маленькая літара «e» з агонэкам"
+
+msgctxt "A label for the \"latin capital letter e with caron\" symbol."
+msgid "Latin capital letter e with caron"
+msgstr "Лацінская загальная літара «E» з гачэкам"
+
+msgctxt "A label for the \"latin small letter e with caron\" symbol."
+msgid "Latin small letter e with caron"
+msgstr "Лацінская маленькая літара «e» з гачэкам"
+
+msgctxt "A label for the \"latin capital letter g with circumflex\" symbol."
+msgid "Latin capital letter g with circumflex"
+msgstr "Лацінская загальная літара «G» з цыркумфлексам"
+
+msgctxt "A label for the \"latin small letter g with circumflex\" symbol."
+msgid "Latin small letter g with circumflex"
+msgstr "Лацінская маленькая літара «g» з цыркумфлексам"
+
+msgctxt "A label for the \"latin capital letter g with breve\" symbol."
+msgid "Latin capital letter g with breve"
+msgstr "Лацінская загальная літара «G» з брэве"
+
+msgctxt "A label for the \"latin small letter g with breve\" symbol."
+msgid "Latin small letter g with breve"
+msgstr "Лацінская маленькая літара «g» з брэве"
+
+msgctxt "A label for the \"latin capital letter g with dot above\" symbol."
+msgid "Latin capital letter g with dot above"
+msgstr "Лацінская загальная літара «G» з кропкай зверху"
+
+msgctxt "A label for the \"latin small letter g with dot above\" symbol."
+msgid "Latin small letter g with dot above"
+msgstr "Лацінская маленькая літара «g» з кропкай зверху"
+
+msgctxt "A label for the \"latin capital letter g with cedilla\" symbol."
+msgid "Latin capital letter g with cedilla"
+msgstr "Лацінская загальная літара «G» з седыллю"
+
+msgctxt "A label for the \"latin small letter g with cedilla\" symbol."
+msgid "Latin small letter g with cedilla"
+msgstr "Лацінская маленькая літара «g» з седыллю"
+
+msgctxt "A label for the \"latin capital letter h with circumflex\" symbol."
+msgid "Latin capital letter h with circumflex"
+msgstr "Лацінская загальная літара «H» з цыркумфлексам"
+
+msgctxt "A label for the \"latin small letter h with circumflex\" symbol."
+msgid "Latin small letter h with circumflex"
+msgstr "Лацінская маленькая літара «h» з цыркумфлексам"
+
+msgctxt "A label for the \"latin capital letter h with stroke\" symbol."
+msgid "Latin capital letter h with stroke"
+msgstr "Лацінская загальная літара «H» з штрыхам"
+
+msgctxt "A label for the \"latin small letter h with stroke\" symbol."
+msgid "Latin small letter h with stroke"
+msgstr "Лацінская маленькая літара «h» з штрыхам"
+
+msgctxt "A label for the \"latin capital letter i with tilde\" symbol."
+msgid "Latin capital letter i with tilde"
+msgstr "Лацінская загальная літара «I» з тыльдай"
+
+msgctxt "A label for the \"latin small letter i with tilde\" symbol."
+msgid "Latin small letter i with tilde"
+msgstr "Лацінская маленькая літара «i» з тыльдай"
+
+msgctxt "A label for the \"latin capital letter i with macron\" symbol."
+msgid "Latin capital letter i with macron"
+msgstr "Лацінская загальная літара «I» з макронам"
+
+msgctxt "A label for the \"latin small letter i with macron\" symbol."
+msgid "Latin small letter i with macron"
+msgstr "Лацінская маленькая літара «i» з макронам"
+
+msgctxt "A label for the \"latin capital letter i with breve\" symbol."
+msgid "Latin capital letter i with breve"
+msgstr "Лацінская загальная літара «I» з брэве"
+
+msgctxt "A label for the \"latin small letter i with breve\" symbol."
+msgid "Latin small letter i with breve"
+msgstr "Лацінская маленькая літара «i» з брэве"
+
+msgctxt "A label for the \"latin capital letter i with ogonek\" symbol."
+msgid "Latin capital letter i with ogonek"
+msgstr "Лацінская загальная літара «I» з агонэкам"
+
+msgctxt "A label for the \"latin small letter i with ogonek\" symbol."
+msgid "Latin small letter i with ogonek"
+msgstr "Лацінская маленькая літара «i» з агонэкам"
+
+msgctxt "A label for the \"latin capital letter i with dot above\" symbol."
+msgid "Latin capital letter i with dot above"
+msgstr "Лацінская загальная літара «I» з кропкай зверху"
+
+msgctxt "A label for the \"latin small letter dotless i\" symbol."
+msgid "Latin small letter dotless i"
+msgstr "Лацінская маленькая літара «i» без кропкі"
+
+msgctxt "A label for the \"latin capital ligature ij\" symbol."
+msgid "Latin capital ligature ij"
+msgstr "Лацінская загальная літара «IJ»"
+
+msgctxt "A label for the \"latin small ligature ij\" symbol."
+msgid "Latin small ligature ij"
+msgstr "Лацінская маленькая літара «ij»"
+
+msgctxt "A label for the \"latin capital letter j with circumflex\" symbol."
+msgid "Latin capital letter j with circumflex"
+msgstr "Лацінская загальная літара «J» з цыркумфлексам"
+
+msgctxt "A label for the \"latin small letter j with circumflex\" symbol."
+msgid "Latin small letter j with circumflex"
+msgstr "Лацінская маленькая літара «j» з цыркумфлексам"
+
+msgctxt "A label for the \"latin capital letter k with cedilla\" symbol."
+msgid "Latin capital letter k with cedilla"
+msgstr "Лацінская загальная літара «K» з седыллю"
+
+msgctxt "A label for the \"latin small letter k with cedilla\" symbol."
+msgid "Latin small letter k with cedilla"
+msgstr "Лацінская маленькая літара «k» з седыллю"
+
+msgctxt "A label for the \"latin small letter kra\" symbol."
+msgid "Latin small letter kra"
+msgstr "Лацінская маленькая літара кра"
+
+msgctxt "A label for the \"latin capital letter l with acute\" symbol."
+msgid "Latin capital letter l with acute"
+msgstr "Лацінская загальная літара «L» з акутам"
+
+msgctxt "A label for the \"latin small letter l with acute\" symbol."
+msgid "Latin small letter l with acute"
+msgstr "Лацінская маленькая літара «l» з акутам"
+
+msgctxt "A label for the \"latin capital letter l with cedilla\" symbol."
+msgid "Latin capital letter l with cedilla"
+msgstr "Лацінская загальная літара «L» з седыллю"
+
+msgctxt "A label for the \"latin small letter l with cedilla\" symbol."
+msgid "Latin small letter l with cedilla"
+msgstr "Лацінская маленькая літара «l» з седыллю"
+
+msgctxt "A label for the \"latin capital letter l with caron\" symbol."
+msgid "Latin capital letter l with caron"
+msgstr "Лацінская загальная літара «L» з гачэкам"
+
+msgctxt "A label for the \"latin small letter l with caron\" symbol."
+msgid "Latin small letter l with caron"
+msgstr "Лацінская маленькая літара «l» з гачэкам"
+
+msgctxt "A label for the \"latin capital letter l with middle dot\" symbol."
+msgid "Latin capital letter l with middle dot"
+msgstr "Лацінская загальная літара «L» з кропкай унутры"
+
+msgctxt "A label for the \"latin small letter l with middle dot\" symbol."
+msgid "Latin small letter l with middle dot"
+msgstr "Лацінская маленькая літара «l» з кропкай унутры"
+
+msgctxt "A label for the \"latin capital letter l with stroke\" symbol."
+msgid "Latin capital letter l with stroke"
+msgstr "Лацінская загальная літара «L» з штрыхам"
+
+msgctxt "A label for the \"latin small letter l with stroke\" symbol."
+msgid "Latin small letter l with stroke"
+msgstr "Лацінская маленькая літара «l» з штрыхам"
+
+msgctxt "A label for the \"latin capital letter n with acute\" symbol."
+msgid "Latin capital letter n with acute"
+msgstr "Лацінская загальная літара «N» з акутам"
+
+msgctxt "A label for the \"latin small letter n with acute\" symbol."
+msgid "Latin small letter n with acute"
+msgstr "Лацінская маленькая літара «n» з акутам"
+
+msgctxt "A label for the \"latin capital letter n with cedilla\" symbol."
+msgid "Latin capital letter n with cedilla"
+msgstr "Лацінская загальная літара «N» з седыллю"
+
+msgctxt "A label for the \"latin small letter n with cedilla\" symbol."
+msgid "Latin small letter n with cedilla"
+msgstr "Лацінская маленькая літара «n» з седыллю"
+
+msgctxt "A label for the \"latin capital letter n with caron\" symbol."
+msgid "Latin capital letter n with caron"
+msgstr "Лацінская загальная літара «N» з гачэкам"
+
+msgctxt "A label for the \"latin small letter n with caron\" symbol."
+msgid "Latin small letter n with caron"
+msgstr "Лацінская маленькая літара «n» з гачэкам"
+
+msgctxt "A label for the \"latin small letter n preceded by apostrophe\" symbol."
+msgid "Latin small letter n preceded by apostrophe"
+msgstr "Лацінская маленькая літара «n» з апострафам перад"
+
+msgctxt "A label for the \"latin capital letter eng\" symbol."
+msgid "Latin capital letter eng"
+msgstr "Лацінская загальная літара eng"
+
+msgctxt "A label for the \"latin small letter eng\" symbol."
+msgid "Latin small letter eng"
+msgstr "Лацінская маленькая літара eng"
+
+msgctxt "A label for the \"latin capital letter o with macron\" symbol."
+msgid "Latin capital letter o with macron"
+msgstr "Лацінская загальная літара «O» з макронам"
+
+msgctxt "A label for the \"latin small letter o with macron\" symbol."
+msgid "Latin small letter o with macron"
+msgstr "Лацінская маленькая літара «o» з макронам"
+
+msgctxt "A label for the \"latin capital letter o with breve\" symbol."
+msgid "Latin capital letter o with breve"
+msgstr "Лацінская загальная літара «O» з брэве"
+
+msgctxt "A label for the \"latin small letter o with breve\" symbol."
+msgid "Latin small letter o with breve"
+msgstr "Лацінская маленькая літара «o» з брэве"
+
+msgctxt "A label for the \"latin capital letter o with double acute\" symbol."
+msgid "Latin capital letter o with double acute"
+msgstr "Лацінская загальная літара «O» з двойным акутам"
+
+msgctxt "A label for the \"latin small letter o with double acute\" symbol."
+msgid "Latin small letter o with double acute"
+msgstr "Лацінская маленькая літара «o» з двойным акутам"
+
+msgctxt "A label for the \"latin capital ligature oe\" symbol."
+msgid "Latin capital ligature oe"
+msgstr "Лацінская загальная літара «OE»"
+
+msgctxt "A label for the \"latin small ligature oe\" symbol."
+msgid "Latin small ligature oe"
+msgstr "Лацінская маленькая літара «oe»"
+
+msgctxt "A label for the \"latin capital letter r with acute\" symbol."
+msgid "Latin capital letter r with acute"
+msgstr "Лацінская загальная літара «R» з акутам"
+
+msgctxt "A label for the \"latin small letter r with acute\" symbol."
+msgid "Latin small letter r with acute"
+msgstr "Лацінская маленькая літара «r» з акутам"
+
+msgctxt "A label for the \"latin capital letter r with cedilla\" symbol."
+msgid "Latin capital letter r with cedilla"
+msgstr "Лацінская загальная літара «R» з седыллю"
+
+msgctxt "A label for the \"latin small letter r with cedilla\" symbol."
+msgid "Latin small letter r with cedilla"
+msgstr "Лацінская маленькая літара «r» з седыллю"
+
+msgctxt "A label for the \"latin capital letter r with caron\" symbol."
+msgid "Latin capital letter r with caron"
+msgstr "Лацінская загальная літара «R» з гачэкам"
+
+msgctxt "A label for the \"latin small letter r with caron\" symbol."
+msgid "Latin small letter r with caron"
+msgstr "Лацінская маленькая літара «r» з гачэкам"
+
+msgctxt "A label for the \"latin capital letter s with acute\" symbol."
+msgid "Latin capital letter s with acute"
+msgstr "Лацінская загальная літара «S» з акутам"
+
+msgctxt "A label for the \"latin small letter s with acute\" symbol."
+msgid "Latin small letter s with acute"
+msgstr "Лацінская маленькая літара «s» з акутам"
+
+msgctxt "A label for the \"latin capital letter s with circumflex\" symbol."
+msgid "Latin capital letter s with circumflex"
+msgstr "Лацінская загальная літара «S» з цыркумфлексам"
+
+msgctxt "A label for the \"latin small letter s with circumflex\" symbol."
+msgid "Latin small letter s with circumflex"
+msgstr "Лацінская маленькая літара «s» з цыркумфлексам"
+
+msgctxt "A label for the \"latin capital letter s with cedilla\" symbol."
+msgid "Latin capital letter s with cedilla"
+msgstr "Лацінская загальная літара «S» з седыллю"
+
+msgctxt "A label for the \"latin small letter s with cedilla\" symbol."
+msgid "Latin small letter s with cedilla"
+msgstr "Лацінская маленькая літара «s» з седыллю"
+
+msgctxt "A label for the \"latin capital letter s with caron\" symbol."
+msgid "Latin capital letter s with caron"
+msgstr "Лацінская загальная літара «S» з гачэкам"
+
+msgctxt "A label for the \"latin small letter s with caron\" symbol."
+msgid "Latin small letter s with caron"
+msgstr "Лацінская маленькая літара «s» з гачэкам"
+
+msgctxt "A label for the \"latin capital letter t with cedilla\" symbol."
+msgid "Latin capital letter t with cedilla"
+msgstr "Лацінская загальная літара «T» з седыллю"
+
+msgctxt "A label for the \"latin small letter t with cedilla\" symbol."
+msgid "Latin small letter t with cedilla"
+msgstr "Лацінская маленькая літара «t» з седыллю"
+
+msgctxt "A label for the \"latin capital letter t with caron\" symbol."
+msgid "Latin capital letter t with caron"
+msgstr "Лацінская загальная літара «T» з гачэкам"
+
+msgctxt "A label for the \"latin small letter t with caron\" symbol."
+msgid "Latin small letter t with caron"
+msgstr "Лацінская маленькая літара «t» з гачэкам"
+
+msgctxt "A label for the \"latin capital letter t with stroke\" symbol."
+msgid "Latin capital letter t with stroke"
+msgstr "Лацінская загальная літара «T» з штрыхам"
+
+msgctxt "A label for the \"latin small letter t with stroke\" symbol."
+msgid "Latin small letter t with stroke"
+msgstr "Лацінская маленькая літара «t» з штрыхам"
+
+msgctxt "A label for the \"latin capital letter u with tilde\" symbol."
+msgid "Latin capital letter u with tilde"
+msgstr "Лацінская загальная літара «U» з тыльдай"
+
+msgctxt "A label for the \"latin small letter u with tilde\" symbol."
+msgid "Latin small letter u with tilde"
+msgstr "Лацінская маленькая літара «u» з тыльдай"
+
+msgctxt "A label for the \"latin capital letter u with macron\" symbol."
+msgid "Latin capital letter u with macron"
+msgstr "Лацінская загальная літара «U» з макронам"
+
+msgctxt "A label for the \"latin small letter u with macron\" symbol."
+msgid "Latin small letter u with macron"
+msgstr "Лацінская маленькая літара «u» з макронам"
+
+msgctxt "A label for the \"latin capital letter u with breve\" symbol."
+msgid "Latin capital letter u with breve"
+msgstr "Лацінская загальная літара «U» з брэве"
+
+msgctxt "A label for the \"latin small letter u with breve\" symbol."
+msgid "Latin small letter u with breve"
+msgstr "Лацінская маленькая літара «u» з брэве"
+
+msgctxt "A label for the \"latin capital letter u with ring above\" symbol."
+msgid "Latin capital letter u with ring above"
+msgstr "Лацінская загальная літара «U» з кружком зверху"
+
+msgctxt "A label for the \"latin small letter u with ring above\" symbol."
+msgid "Latin small letter u with ring above"
+msgstr "Лацінская маленькая літара «u» з кружком зверху"
+
+msgctxt "A label for the \"latin capital letter u with double acute\" symbol."
+msgid "Latin capital letter u with double acute"
+msgstr "Лацінская загальная літара «U» з двойным акутам"
+
+msgctxt "A label for the \"latin small letter u with double acute\" symbol."
+msgid "Latin small letter u with double acute"
+msgstr "Лацінская маленькая літара «u» з двойным акутам"
+
+msgctxt "A label for the \"latin capital letter u with ogonek\" symbol."
+msgid "Latin capital letter u with ogonek"
+msgstr "Лацінская загальная літара «U» з огонекам"
+
+msgctxt "A label for the \"latin small letter u with ogonek\" symbol."
+msgid "Latin small letter u with ogonek"
+msgstr "Лацінская маленькая літара «u» з огонекам"
+
+msgctxt "A label for the \"latin capital letter w with circumflex\" symbol."
+msgid "Latin capital letter w with circumflex"
+msgstr "Лацінская загальная літара «W» з цыркумфлексам"
+
+msgctxt "A label for the \"latin small letter w with circumflex\" symbol."
+msgid "Latin small letter w with circumflex"
+msgstr "Лацінская маленькая літара «w» з цыркумфлексам"
+
+msgctxt "A label for the \"latin capital letter y with circumflex\" symbol."
+msgid "Latin capital letter y with circumflex"
+msgstr "Лацінская загальная літара «Y» з цыркумфлексам"
+
+msgctxt "A label for the \"latin small letter y with circumflex\" symbol."
+msgid "Latin small letter y with circumflex"
+msgstr "Лацінская маленькая літара «y» з цыркумфлексам"
+
+msgctxt "A label for the \"latin capital letter y with diaeresis\" symbol."
+msgid "Latin capital letter y with diaeresis"
+msgstr "Лацінская загальная літара «Y» з дыэрезисам"
+
+msgctxt "A label for the \"latin capital letter z with acute\" symbol."
+msgid "Latin capital letter z with acute"
+msgstr "Лацінская загальная літара «Z» з акутам"
+
+msgctxt "A label for the \"latin small letter z with acute\" symbol."
+msgid "Latin small letter z with acute"
+msgstr "Лацінская маленькая літара «z» з акутам"
+
+msgctxt "A label for the \"latin capital letter z with dot above\" symbol."
+msgid "Latin capital letter z with dot above"
+msgstr "Лацінская загальная літара «Z» з кропкай зверху"
+
+msgctxt "A label for the \"latin small letter z with dot above\" symbol."
+msgid "Latin small letter z with dot above"
+msgstr "Лацінская маленькая літара «z» з кропкай зверху"
+
+msgctxt "A label for the \"latin capital letter z with caron\" symbol."
+msgid "Latin capital letter z with caron"
+msgstr "Лацінская загальная літара «Z» з гачэкам"
+
+msgctxt "A label for the \"latin small letter z with caron\" symbol."
+msgid "Latin small letter z with caron"
+msgstr "Лацінская маленькая літара «z» з гачэкам"
+
+msgctxt "A label for the \"latin small letter long s\" symbol."
+msgid "Latin small letter long s"
+msgstr "Лацінская маленькая літара «s» з вялікім штрыхам"
+
+msgctxt "A label for the \"less-than sign\" symbol."
+msgid "Less-than sign"
+msgstr "Знак меньш"
+
+msgctxt "A label for the \"greater-than sign\" symbol."
+msgid "Greater-than sign"
+msgstr "Знак больш"
+
+msgctxt "A label for the \"less-than or equal to\" symbol."
+msgid "Less-than or equal to"
+msgstr "Меньшы або роўны"
+
+msgctxt "A label for the \"greater-than or equal to\" symbol."
+msgid "Greater-than or equal to"
+msgstr "Большы або роўны"
+
+msgctxt "A label for the \"en dash\" symbol."
+msgid "En dash"
+msgstr "Сярэдняе злучок"
+
+msgctxt "A label for the \"em dash\" symbol."
+msgid "Em dash"
+msgstr "Дыягарэм"
+
+msgctxt "A label for the \"macron\" symbol."
+msgid "Macron"
+msgstr "Макрон"
+
+msgctxt "A label for the \"overline\" symbol."
+msgid "Overline"
+msgstr "Надчэрківанне"
+
+msgctxt "A label for the \"degree sign\" symbol."
+msgid "Degree sign"
+msgstr "Знак градуса"
+
+msgctxt "A label for the \"minus sign\" symbol."
+msgid "Minus sign"
+msgstr "Знак мінус"
+
+msgctxt "A label for the \"plus-minus sign\" symbol."
+msgid "Plus-minus sign"
+msgstr "Знак плюс-мінус"
+
+msgctxt "A label for the \"division sign\" symbol."
+msgid "Division sign"
+msgstr "Знак дзялення"
+
+msgctxt "A label for the \"fraction slash\" symbol."
+msgid "Fraction slash"
+msgstr "Дробная наклоная рыса"
+
+msgctxt "A label for the \"multiplication sign\" symbol."
+msgid "Multiplication sign"
+msgstr "Знак множання"
+
+msgctxt "A label for the \"latin small letter f with hook\" symbol."
+msgid "Latin small letter f with hook"
+msgstr "Лацінская маленькая літара «f» з хвостыкам"
+
+msgctxt "A label for the \"integral\" symbol."
+msgid "Integral"
+msgstr "Інтэграл"
+
+msgctxt "A label for the \"n-ary summation\" symbol."
+msgid "N-ary summation"
+msgstr "N-арная сума"
+
+msgctxt "A label for the \"infinity\" symbol."
+msgid "Infinity"
+msgstr "Бесканечнасць"
+
+msgctxt "A label for the \"square root\" symbol."
+msgid "Square root"
+msgstr "Квадратны корань"
+
+msgctxt "A label for the \"tilde operator\" symbol."
+msgid "Tilde operator"
+msgstr "Аператар тыльда"
+
+msgctxt "A label for the \"approximately equal to\" symbol."
+msgid "Approximately equal to"
+msgstr "Геаметрычнае роўнасць"
+
+msgctxt "A label for the \"almost equal to\" symbol."
+msgid "Almost equal to"
+msgstr "Падобны"
+
+msgctxt "A label for the \"not equal to\" symbol."
+msgid "Not equal to"
+msgstr "Не роўны"
+
+msgctxt "A label for the \"identical to\" symbol."
+msgid "Identical to"
+msgstr "Ідэнтычны"
+
+msgctxt "A label for the \"element of\" symbol."
+msgid "Element of"
+msgstr "Належыць"
+
+msgctxt "A label for the \"not an element of\" symbol."
+msgid "Not an element of"
+msgstr "Не належыць"
+
+msgctxt "A label for the \"contains as member\" symbol."
+msgid "Contains as member"
+msgstr "Утрымлівае як член"
+
+msgctxt "A label for the \"n-ary product\" symbol."
+msgid "N-ary product"
+msgstr "N-арны здабытак"
+
+msgctxt "A label for the \"logical and\" symbol."
+msgid "Logical and"
+msgstr "Лагічнае І"
+
+msgctxt "A label for the \"logical or\" symbol."
+msgid "Logical or"
+msgstr "Лагічнае АБО"
+
+msgctxt "A label for the \"not sign\" symbol."
+msgid "Not sign"
+msgstr "Знак адмоўнасці"
+
+msgctxt "A label for the \"intersection\" symbol."
+msgid "Intersection"
+msgstr "Перасячэнне"
+
+msgctxt "A label for the \"union\" symbol."
+msgid "Union"
+msgstr "Аб'яднанне"
+
+msgctxt "A label for the \"partial differential\" symbol."
+msgid "Partial differential"
+msgstr "Частковы дыферэнцыял"
+
+msgctxt "A label for the \"for all\" symbol."
+msgid "For all"
+msgstr "Для ўсіх"
+
+msgctxt "A label for the \"there exists\" symbol."
+msgid "There exists"
+msgstr "Існуе"
+
+msgctxt "A label for the \"empty set\" symbol."
+msgid "Empty set"
+msgstr "Пустое мноства"
+
+msgctxt "A label for the \"nabla\" symbol."
+msgid "Nabla"
+msgstr "Набла"
+
+msgctxt "A label for the \"asterisk operator\" symbol."
+msgid "Asterisk operator"
+msgstr "Аператар зірка"
+
+msgctxt "A label for the \"proportional to\" symbol."
+msgid "Proportional to"
+msgstr "Прапарцыйна"
+
+msgctxt "A label for the \"angle\" symbol."
+msgid "Angle"
+msgstr "Вугал"
+
+msgctxt "A label for the \"vulgar fraction one quarter\" symbol."
+msgid "Vulgar fraction one quarter"
+msgstr "Дроб – адна чэцверць"
+
+msgctxt "A label for the \"vulgar fraction one half\" symbol."
+msgid "Vulgar fraction one half"
+msgstr "Дроб – адна другая"
+
+msgctxt "A label for the \"vulgar fraction three quarters\" symbol."
+msgid "Vulgar fraction three quarters"
+msgstr "Дроб – тры чэцверці"
+
+msgctxt "A label for the \"single left-pointing angle quotation mark\" symbol."
+msgid "Single left-pointing angle quotation mark"
+msgstr "Адзінарнае адкрываючае (левае) французскае вуглавое двукоссе"
+
+msgctxt "A label for the \"single right-pointing angle quotation mark\" symbol."
+msgid "Single right-pointing angle quotation mark"
+msgstr "Адзінарнае закрываючае (правае) французскае вуглавое двукоссе"
+
+msgctxt "A label for the \"left-pointing double angle quotation mark\" symbol."
+msgid "Left-pointing double angle quotation mark"
+msgstr "Адкрываючае левае двукоссе «ёлачка»"
+
+msgctxt "A label for the \"right-pointing double angle quotation mark\" symbol."
+msgid "Right-pointing double angle quotation mark"
+msgstr "Закрываючае правае двукоссе «ёлачка»"
+
+msgctxt "A label for the \"left single quotation mark\" symbol."
+msgid "Left single quotation mark"
+msgstr "Адкрываючае адзінарнае двукоссе"
+
+msgctxt "A label for the \"right single quotation mark\" symbol."
+msgid "Right single quotation mark"
+msgstr "Закрываючае адзінарнае двукоссе"
+
+msgctxt "A label for the \"left double quotation mark\" symbol."
+msgid "Left double quotation mark"
+msgstr "Адкрываючае двойнае двукоссе"
+
+msgctxt "A label for the \"right double quotation mark\" symbol."
+msgid "Right double quotation mark"
+msgstr "Закрываючае двойнае двукоссе"
+
+msgctxt "A label for the \"single low-9 quotation mark\" symbol."
+msgid "Single low-9 quotation mark"
+msgstr "Нижняе адзінарнае адкрываючае двукоссе"
+
+msgctxt "A label for the \"double low-9 quotation mark\" symbol."
+msgid "Double low-9 quotation mark"
+msgstr "Нижняе двойнае адкрываючае двукоссе"
+
+msgctxt "A label for the \"inverted exclamation mark\" symbol."
+msgid "Inverted exclamation mark"
+msgstr "Перавернуты клічнік"
+
+msgctxt "A label for the \"inverted question mark\" symbol."
+msgid "Inverted question mark"
+msgstr "Перавернуты пытальнік"
+
+msgctxt "A label for the \"two dot leader\" symbol."
+msgid "Two dot leader"
+msgstr "Двухточны пунктыр"
+
+msgctxt "A label for the \"horizontal ellipsis\" symbol."
+msgid "Horizontal ellipsis"
+msgstr "Шматкроп'е"
+
+msgctxt "A label for the \"double dagger\" symbol."
+msgid "Double dagger"
+msgstr "Двайны крыжык"
+
+msgctxt "A label for the \"per mille sign\" symbol."
+msgid "Per mille sign"
+msgstr "Знак прамілле"
+
+msgctxt "A label for the \"per ten thousand sign\" symbol."
+msgid "Per ten thousand sign"
+msgstr "Знак на дзесяць тысяч"
+
+msgctxt "A label for the \"double exclamation mark\" symbol."
+msgid "Double exclamation mark"
+msgstr "Двайны клічнік"
+
+msgctxt "A label for the \"question exclamation mark\" symbol."
+msgid "Question exclamation mark"
+msgstr "Пытальнік клічнік"
+
+msgctxt "A label for the \"exclamation question mark\" symbol."
+msgid "Exclamation question mark"
+msgstr "Клічнік пытальнік"
+
+msgctxt "A label for the \"double question mark\" symbol."
+msgid "Double question mark"
+msgstr "Двайны пытальнік"
+
+msgctxt "A label for the \"copyright sign\" symbol."
+msgid "Copyright sign"
+msgstr "Знак аўтарскага права"
+
+msgctxt "A label for the \"registered sign\" symbol."
+msgid "Registered sign"
+msgstr "Знак зарэгістраванага тэрміну"
+
+msgctxt "A label for the \"trade mark sign\" symbol."
+msgid "Trade mark sign"
+msgstr "Знак торгавой маркі"
+
+msgctxt "A label for the \"section sign\" symbol."
+msgid "Section sign"
+msgstr "Параграф"
+
+msgctxt "A label for the \"paragraph sign\" symbol."
+msgid "Paragraph sign"
+msgstr "Знак параграфа"
+
+msgctxt "A label for the \"reversed paragraph sign\" symbol."
+msgid "Reversed paragraph sign"
+msgstr "Зваротны знак абзаца"

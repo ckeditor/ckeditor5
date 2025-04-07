@@ -266,3 +266,31 @@ msgstr "Navigate through the table"
 msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
 msgid "Table"
 msgstr "Table"
+
+msgctxt "Label for the insert table layout toolbar button."
+msgid "Insert table layout"
+msgstr "Insert table layout"
+
+msgctxt "The accessible label used in the table layout insert UI element."
+msgid "Table layout"
+msgstr "Table layout"
+
+msgctxt "The accessible label of the layout table type dropdown button."
+msgid "Layout table"
+msgstr "Layout table"
+
+msgctxt "The accessible label of the content table type dropdown button."
+msgid "Content table"
+msgstr "Content table"
+
+msgctxt "The accessible label of the table balloon button that displays a user interface to choose table type."
+msgid "Choose table type"
+msgstr "Choose table type"
+
+msgctxt "The accessible label of the table type toolbar button."
+msgid "Table type"
+msgstr "Table type"
+
+msgctxt "The accessible label of dropdown list that displays a user interface to choose table type."
+msgid "Table type options"
+msgstr "Table type options"

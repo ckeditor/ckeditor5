@@ -7,27 +7,8 @@
 
 /* eslint-env node */
 
-import upath from 'upath';
-import fs from 'fs-extra';
-import { build } from '@ckeditor/ckeditor5-dev-build-tools';
+import { generateCKEditor5PackageBuild } from './utils.mjs';
 
 ( async () => {
-	const pkg = await fs.readJson( upath.join( process.cwd(), './package.json' ) );
-
-	await build( {
-		input: 'src/index.ts',
-		output: upath.resolve( process.cwd(), './dist/index.js' ),
-		tsconfig: 'tsconfig.dist.json',
-		banner: '../../scripts/nim/banner.mjs',
-		external: [
-			'ckeditor5',
-			...Object.keys( {
-				...pkg.dependencies,
-				...pkg.peerDependencies
-			} )
-		],
-		clean: true,
-		sourceMap: true,
-		translations: '**/*.po'
-	} );
+	await generateCKEditor5PackageBuild( process.cwd() );
 } )();

@@ -4,13 +4,11 @@ category: features
 meta-title: Block indentation | CKEditor 5 Documentation
 ---
 
-{@snippet features/build-indent-source}
-
 The block indentation feature lets you set indentation for text blocks such as paragraphs, headings, or lists. This way you can visually distinguish parts of your content.
 
 ## Demo
 
-Use the indent {@icon @ckeditor/ckeditor5-core/theme/icons/indent.svg Indent} or outdent {@icon @ckeditor/ckeditor5-core/theme/icons/outdent.svg Outdent} toolbar buttons in the editor below to change the indentation level. Try this on different elements: paragraphs, headings, and list items.
+Use the indent {@icon @ckeditor/ckeditor5-icons/theme/icons/indent.svg Indent} or outdent {@icon @ckeditor/ckeditor5-icons/theme/icons/outdent.svg Outdent} toolbar buttons in the editor below to change the indentation level. Try this on different elements: paragraphs, headings, and list items.
 
 {@snippet features/indent}
 

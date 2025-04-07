@@ -5,11 +5,10 @@
 
 /* global document */
 
+import { IconAlignLeft, IconAlignRight } from 'ckeditor5/src/icons.js';
+
 import AlignmentEditing from '../src/alignmentediting.js';
 import AlignmentUI from '../src/alignmentui.js';
-
-import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/align-left.svg';
-import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/align-right.svg';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
@@ -327,11 +326,11 @@ describe( 'Alignment UI', () => {
 				// Trigger toolbar view creation (lazy init).
 				dropdown.isOpen = true;
 
-				expect( dropdown.buttonView.icon ).to.equal( alignLeftIcon );
+				expect( dropdown.buttonView.icon ).to.equal( IconAlignLeft );
 
 				command.value = 'right';
 
-				expect( dropdown.buttonView.icon ).to.equal( alignRightIcon );
+				expect( dropdown.buttonView.icon ).to.equal( IconAlignRight );
 			} );
 
 			it( 'should be disabled if command is not enabled', () => {
@@ -428,7 +427,7 @@ describe( 'Alignment UI', () => {
 
 			it( 'should have default icon set (LTR content)', () => {
 				command.value = undefined;
-				expect( dropdown.buttonView.icon ).to.equal( alignLeftIcon );
+				expect( dropdown.buttonView.icon ).to.equal( IconAlignLeft );
 			} );
 
 			it( 'should have default icon set (RTL content)', async () => {
@@ -447,7 +446,7 @@ describe( 'Alignment UI', () => {
 						dropdown = newEditor.ui.componentFactory.create( 'alignment' );
 						editor.commands.get( 'alignment' ).value = undefined;
 
-						expect( dropdown.buttonView.icon ).to.equal( alignRightIcon );
+						expect( dropdown.buttonView.icon ).to.equal( IconAlignRight );
 
 						return newEditor.destroy();
 					} );

@@ -6,10 +6,12 @@ Copyright (c) 2003–2025, [CKSource Holding sp. z o.o.](https://cksource.com) A
 
 Licensed under a dual-license model, this software is available under:
 
-* the [GNU General Public License Version 2 or later](https://www.gnu.org/licenses/gpl.html),
+* the [GNU General Public License Version 2 or later](https://www.gnu.org/licenses/gpl.html) (see COPYING.GPL),
 * or commercial license terms from CKSource Holding sp. z o.o.
 
 For more information, see: [https://ckeditor.com/legal/ckeditor-licensing-options](https://ckeditor.com/legal/ckeditor-licensing-options).
+
+If you are using CKEditor under commercial terms, you are free to remove the COPYING.GPL file with the full copy of a GPL license.
 
 Sources of Intellectual Property Included in CKEditor
 -----------------------------------------------------
@@ -24,7 +26,7 @@ The following libraries are included in CKEditor under the [MIT license](https:/
 * emojibase-data - Copyright (c) 2017-2019 Miles Johnson.
 * fuzzysort - Copyright (c) 2018 Stephen Kamenar.
 * is-emoji-supported - Copyright (c) 2016-2020 Koala Interactive, Inc.
-* Lodash - Copyright (c) JS Foundation and other contributors https://js.foundation/. Based on Underscore.js, copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors http://underscorejs.org/.
+* es-toolkit - Copyright (c) 2024 Viva Republica, Inc.
 * Marked - Copyright (c) 2018+, MarkedJS (https://github.com/markedjs/), copyright (c) 2011–2018, Christopher Jeffrey (https://github.com/chjj/).
 * Turndown - Copyright (c) 2017+ Dom Christie.
 * turndown-plugin-gfm - Copyright (c) 2017+ Dom Christie.

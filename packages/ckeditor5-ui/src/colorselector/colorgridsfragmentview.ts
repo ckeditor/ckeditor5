@@ -20,7 +20,8 @@ import type { FocusTracker, Locale } from '@ckeditor/ckeditor5-utils';
 import type ViewCollection from '../viewcollection.js';
 import type { FocusableView } from '../focuscycler.js';
 import type { ColorSelectorExecuteEvent, ColorSelectorColorPickerShowEvent } from './colorselectorview.js';
-import { icons } from '@ckeditor/ckeditor5-core';
+
+import { IconEraser, IconColorPalette } from '@ckeditor/ckeditor5-icons';
 
 /**
  * One of the fragments of {@link module:ui/colorselector/colorselectorview~ColorSelectorView}.
@@ -336,7 +337,7 @@ export default class ColorGridsFragmentView extends View {
 		this.colorPickerButtonView.set( {
 			label: this._colorPickerLabel,
 			withText: true,
-			icon: icons.colorPalette,
+			icon: IconColorPalette,
 			class: 'ck-color-selector__color-picker'
 		} );
 
@@ -353,7 +354,7 @@ export default class ColorGridsFragmentView extends View {
 
 		buttonView.set( {
 			withText: true,
-			icon: icons.eraser,
+			icon: IconEraser,
 			label: this._removeButtonLabel
 		} );
 
@@ -410,7 +411,7 @@ export default class ColorGridsFragmentView extends View {
 
 				colorTile.set( {
 					color: colorObj.color,
-					hasBorder: colorObj.options && colorObj.options.hasBorder
+					hasBorder: colorObj.options?.hasBorder
 				} );
 
 				if ( colorObj.label ) {

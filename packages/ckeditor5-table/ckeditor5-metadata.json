@@ -10,12 +10,12 @@
 				{
 					"type": "SplitButton",
 					"name": "insertTable",
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/table.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table.svg"
 				},
 				{
 					"type": "Button",
 					"name": "tableColumn",
-					"iconPath": "theme/icons/table-column.svg",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-column.svg",
 					"toolbars": [
 						"table.contentToolbar"
 					]
@@ -23,7 +23,7 @@
 				{
 					"type": "Button",
 					"name": "tableRow",
-					"iconPath": "theme/icons/table-row.svg",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-row.svg",
 					"toolbars": [
 						"table.contentToolbar"
 					]
@@ -31,7 +31,7 @@
 				{
 					"type": "Button",
 					"name": "mergeTableCells",
-					"iconPath": "theme/icons/table-merge-cell.svg",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-merge-cell.svg",
 					"toolbars": [
 						"table.contentToolbar"
 					]
@@ -76,7 +76,7 @@
 				{
 					"type": "Button",
 					"name": "tableCellProperties",
-					"iconPath": "theme/icons/table-cell-properties.svg",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-cell-properties.svg",
 					"toolbars": [
 						"table.contentToolbar"
 					]
@@ -115,7 +115,7 @@
 				{
 					"type": "Button",
 					"name": "tableProperties",
-					"iconPath": "theme/icons/table-properties.svg",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-properties.svg",
 					"toolbars": [
 						"table.contentToolbar"
 					]
@@ -137,6 +137,37 @@
 						"border",
 						"border-*"
 					]
+				}
+			]
+		},
+		{
+			"name": "Table layout",
+			"className": "TableLayout",
+			"description": "Adds support for different table types and layouts, allowing to distinguish between content tables and layout tables.",
+			"docs": "features/tables/layout-tables.html",
+			"path": "src/tablelayout",
+			"requires": [
+				"Table",
+				"TableToolbar"
+			],
+			"uiComponents": [
+				{
+					"type": "Button",
+					"name": "insertTableLayout",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-layout.svg"
+				},
+				{
+					"type": "Button",
+					"name": "tableType",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/table-properties.svg",
+					"toolbars": [
+						"table.contentToolbar"
+					]
+				}
+			],
+			"htmlOutput": [
+				{
+					"classes": [ "layout-table", "content-table" ]
 				}
 			]
 		},
@@ -186,6 +217,33 @@
 				{
 					"elements": "col",
 					"styles": "width"
+				}
+			]
+		},
+		{
+			"name": "PlainTableOutput",
+			"className": "PlainTableOutput",
+			"description": "This plugin strips the `<figure>` tag which surrounds tables, and moves attributes to the `<table>` in the data downcast.",
+			"docs": "features/tables/layout-tables.html",
+			"path": "src/plaintableoutput.js",
+			"htmlOutput": [
+				{
+					"elements": [
+						"table",
+						"thead",
+						"tbody",
+						"tr"
+					]
+				},
+				{
+					"elements": [
+						"td",
+						"th"
+					],
+					"attributes": [
+						"colspan",
+						"rowspan"
+					]
 				}
 			]
 		}

@@ -142,3 +142,15 @@ msgstr "Bitte versuchen Sie einen anderen Ausdruck oder überprüfen Sie die Sch
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
 msgstr "Quelle"
+
+msgctxt "Label for the Insert button."
+msgid "Insert"
+msgstr "Einfügen"
+
+msgctxt "Label for the Update button."
+msgid "Update"
+msgstr "Aktualisieren"
+
+msgctxt "Label for the Back button."
+msgid "Back"
+msgstr "Zurück"

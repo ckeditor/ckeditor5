@@ -7,7 +7,7 @@
  * @module image/imagetextalternative/imagetextalternativeui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
 	ContextualBalloon,
@@ -15,6 +15,7 @@ import {
 	CssTransitionDisablerMixin,
 	type ViewWithCssTransitionDisabler
 } from 'ckeditor5/src/ui.js';
+import { IconTextAlternative } from 'ckeditor5/src/icons.js';
 
 import TextAlternativeFormView, {
 	type TextAlternativeFormViewCancelEvent,
@@ -94,7 +95,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 
 			view.set( {
 				label: t( 'Change image text alternative' ),
-				icon: icons.textAlternative,
+				icon: IconTextAlternative,
 				tooltip: true
 			} );
 
@@ -136,12 +137,6 @@ export default class ImageTextAlternativeUI extends Plugin {
 
 		this.listenTo<TextAlternativeFormViewCancelEvent>( this._form, 'cancel', () => {
 			this._hideForm( true );
-		} );
-
-		// Close the form on Esc key press.
-		this._form.keystrokes.set( 'Esc', ( data, cancel ) => {
-			this._hideForm( true );
-			cancel();
 		} );
 
 		// Reposition the balloon or hide the form if an image widget is no longer selected.

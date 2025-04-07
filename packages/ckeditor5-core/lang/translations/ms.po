@@ -142,3 +142,15 @@ msgstr "Sila cuba frasa berbeza atau semak ejaan."
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
 msgstr "Sumber"
+
+msgctxt "Label for the Insert button."
+msgid "Insert"
+msgstr "Masukkan"
+
+msgctxt "Label for the Update button."
+msgid "Update"
+msgstr "Kemaskini"
+
+msgctxt "Label for the Back button."
+msgid "Back"
+msgstr "Kembali"

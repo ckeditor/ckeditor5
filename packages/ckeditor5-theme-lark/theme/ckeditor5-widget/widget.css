@@ -168,6 +168,19 @@
 	}
 }
 
+/*
+* Hide the outline of all widget parents when the widget is being hovered.
+*/
+.ck .ck-widget:has( .ck-widget.table:hover ) {
+	outline-color: transparent;
+}
+
+/* Hide the selection handle on mouse hover over the widget of all the widget parents. */
+.ck .ck-widget.ck-widget_with-selection-handle:has( .ck-widget.table:hover ) > .ck-widget__selection-handle {
+	opacity: 0;
+	visibility: hidden;
+}
+
 /* Style the widget when it's selected but the editable it belongs to lost focus. */
 /* stylelint-disable-next-line no-descending-specificity */
 .ck.ck-editor__editable.ck-blurred .ck-widget {

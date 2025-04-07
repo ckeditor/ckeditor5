@@ -21,12 +21,7 @@ Content styles are bundled along with editor UI styles and, together with the Ja
 
 By default, content styles are loaded by the editor JavaScript. This makes them present only when users edit their content and this, in turn, usually takes place in the backend of an application. If you want to use the same styles in the frontend, you may find yourself in a situation that requires you to load CKEditor just for that purpose, which is (performance–wise) not the best idea.
 
-To avoid unnecessary dependencies in your frontend, use a style sheet with a complete list of CKEditor&nbsp;5 content styles used by all editor features. There are two ways to obtain it:
-
-* By taking it directly from [this guide](#the-full-list-of-content-styles) and saving it as a static resource in your application (for example, `content-styles.css`) (**recommended**).
-* By generating it using a dedicated script. Learn more in the {@link framework/contributing/development-environment#generating-content-styles Development environment} guide.
-
-Load the `content-styles.css` file in your application by adding the following code to the template:
+To avoid unnecessary dependencies in your frontend, use a style sheet with a complete list of CKEditor&nbsp;5 content styles used by all editor features. You can generate it by using a dedicated script. Learn more in the {@link framework/contributing/development-environment#generating-content-styles Development environment} guide. Then, load the `content-styles.css` file in your application by adding the following code to the template:
 
 ```html
 <link rel="stylesheet" href="path/to/assets/content-styles.css" type="text/css">
@@ -44,10 +39,27 @@ The content in the frontend of your application should now look the same as when
 	If you are not afraid to get your hands dirty, you can always create a custom CKEditor&nbsp;5 preset from the source code with **all** the CSS (both UI and the content) extracted to a separate file. See how to do that in a {@link getting-started/advanced/integrating-from-source-webpack#option-extracting-css dedicated guide}.
 </info-box>
 
-## The full list of content styles
+## Styling the published content
 
-Below there is a full list of content styles used by the editor features. You can copy it and use it straight in your project. **Make sure to add the `ck-content` class to your content container for the styles to work** ([see above](#sharing-content-styles-between-frontend-and-backend)).
+Your application is typically divided into two areas. *Content creation*, which hosts the editor and is a writing tool, and *content publishing*, which presents the written content.
 
-```css
-{@exec ../scripts/docs/read-content-styles-file.cjs}
+It is important to use the content styles on the publishing side of your application. Otherwise, the content will look different in the editor and for your end users.
+
+There are two ways to obtain the content styles:
+
+* From the `npm` packages, in the `dist/ckeditor5-content.css` and `ckeditor5-premium-features-content.css` location.
+* From our CDN, `https://cdn.ckeditor.com/ckeditor5/`
+
+Below is an example with placeholder paths showing how to load the `ckeditor5-content.css` (and `ckeditor5-premium-features-content.css`, if needed) file on the publishing side.
+
+```html
+<link rel="stylesheet" href="path/to/assets/ckeditor5-content.css">
+
+<!-- If you are using premium features: -->
+<link rel="stylesheet" href="path/to/assets/ckeditor5-premium-features-content.css">
+
+<!-- If you have other style sheet that changes the look of the content: -->
+<link rel="stylesheet" href="path/to/assets/styles.css">
 ```
+
+The final setup depends on how your application is structured. As mentioned earlier, you can use our CDN, or your JS bundler already creates and serves combined style sheets. Choose the solution that works best for your case.

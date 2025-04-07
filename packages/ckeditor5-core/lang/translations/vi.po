@@ -142,3 +142,15 @@ msgstr "Vui lòng thử một cụm từ khác hoặc kiểm tra lại cụm t�
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
 msgstr "Nguồn"
+
+msgctxt "Label for the Insert button."
+msgid "Insert"
+msgstr "Chèn"
+
+msgctxt "Label for the Update button."
+msgid "Update"
+msgstr "Cập nhật"
+
+msgctxt "Label for the Back button."
+msgid "Back"
+msgstr "Quay lại"

@@ -251,12 +251,17 @@ describe( 'UpcastHelpers', () => {
 				},
 				model: {
 					key: 'fontSize',
-					value: ( viewElement, conversionApi ) => {
+					value: ( viewElement, conversionApi, data ) => {
 						const fontSize = viewElement.getStyle( 'font-size' );
 						const value = fontSize.substr( 0, fontSize.length - 2 );
 
 						// To ensure conversion API is provided.
 						expect( conversionApi.writer ).to.instanceof( Writer );
+
+						// To ensure upcast conversion data is provided.
+						expect( data.modelCursor ).to.be.instanceof( ModelPosition );
+						expect( data.viewItem ).to.equal( viewElement );
+						expect( data.modelRange ).to.be.null;
 
 						if ( value <= 10 ) {
 							return 'small';
@@ -708,12 +713,19 @@ describe( 'UpcastHelpers', () => {
 				},
 				model: {
 					key: 'styled',
-					value: ( viewElement, conversionApi ) => {
+					value: ( viewElement, conversionApi, data ) => {
 						const regexp = /styled-([\S]+)/;
 						const match = viewElement.getAttribute( 'class' ).match( regexp );
 
 						// To ensure conversion API is provided.
 						expect( conversionApi.writer ).to.instanceof( Writer );
+
+						// To ensure upcast conversion data is provided.
+						expect( data.modelCursor ).to.be.instanceof( ModelPosition );
+						expect( data.viewItem ).to.equal( viewElement );
+						expect( data.modelRange ).to.be.instanceOf( ModelRange );
+						expect( data.modelRange.start.path ).to.be.deep.equal( [ 0 ] );
+						expect( data.modelRange.end.path ).to.be.deep.equal( [ 1 ] );
 
 						return match[ 1 ];
 					}

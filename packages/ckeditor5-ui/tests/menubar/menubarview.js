@@ -2204,6 +2204,89 @@ describe( 'MenuBarView', () => {
 		} );
 	} );
 
+	describe( 'disable()', () => {
+		it( 'should disable all top-level sub-menus', () => {
+			menuBarView.fillFromConfig( normalizeMenuBarConfig( {
+				items: [
+					{
+						menuId: 'edit',
+						label: 'Edit',
+						groups: [
+							{
+								groupId: '1',
+								items: [
+									'item1'
+								]
+							}
+						]
+					},
+					{
+						menuId: 'format',
+						label: 'Format',
+						groups: [
+							{
+								groupId: '1',
+								items: [
+									'item1'
+								]
+							}
+						]
+					}
+				]
+			} ), factory );
+
+			menuBarView.render();
+
+			getMenuByLabel( menuBarView, 'Edit' ).isOpen = true;
+
+			menuBarView.disable();
+
+			expect( getMenuByLabel( menuBarView, 'Edit' ).isEnabled ).to.be.false;
+			expect( getMenuByLabel( menuBarView, 'Format' ).isEnabled ).to.be.false;
+		} );
+	} );
+
+	describe( 'enable()', () => {
+		it( 'should enable all top-level sub-menus', () => {
+			menuBarView.fillFromConfig( normalizeMenuBarConfig( {
+				items: [
+					{
+						menuId: 'edit',
+						label: 'Edit',
+						groups: [
+							{
+								groupId: '1',
+								items: [
+									'item1'
+								]
+							}
+						]
+					},
+					{
+						menuId: 'format',
+						label: 'Format',
+						groups: [
+							{
+								groupId: '1',
+								items: [
+									'item1'
+								]
+							}
+						]
+					}
+				]
+			} ), factory );
+
+			menuBarView.render();
+
+			menuBarView.disable();
+			menuBarView.enable();
+
+			expect( getMenuByLabel( menuBarView, 'Edit' ).isEnabled ).to.be.true;
+			expect( getMenuByLabel( menuBarView, 'Format' ).isEnabled ).to.be.true;
+		} );
+	} );
+
 	describe( 'registerMenu()', () => {
 		it( 'should set all properties and add the menu to the list of known menus', () => {
 			const menuViewA = new MenuBarMenuView( locale );

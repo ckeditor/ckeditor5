@@ -142,3 +142,15 @@ msgstr "Vennligst forsøk en annen frase eller sjekk stavemåte."
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
 msgstr "Kilde"
+
+msgctxt "Label for the Insert button."
+msgid "Insert"
+msgstr "Sett inn"
+
+msgctxt "Label for the Update button."
+msgid "Update"
+msgstr "Oppdater"
+
+msgctxt "Label for the Back button."
+msgid "Back"
+msgstr "Tilbake"

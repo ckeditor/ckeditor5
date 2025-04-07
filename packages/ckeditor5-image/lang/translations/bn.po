@@ -186,3 +186,11 @@ msgstr "ইমেজ আপলোডের সময় ত্রুটি"
 msgctxt "Label for the widget inserted by the image feature (as in 'insert image')"
 msgid "Image"
 msgstr "ইমেজ"
+
+msgctxt "The label for the header of the image resize balloon."
+msgid "Image Resize"
+msgstr "ছবি আকার পরিবর্তন"
+
+msgctxt "The label of the input field for the text alternative of the image."
+msgid "Text Alternative"
+msgstr "টেক্সট বিকল্প"

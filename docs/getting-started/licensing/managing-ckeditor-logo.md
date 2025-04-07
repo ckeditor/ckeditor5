@@ -51,8 +51,6 @@ The complete reference is available in the {@link module:core/editor/editorconfi
 
 The example below shows how the logo can be adjusted using the available editor configuration. Focus the editor to display the customized logo.
 
-{@snippet build-classic-source}
-
 {@snippet support/managing-ckeditor-logo-position}
 
 And this is the configuration code necessary:

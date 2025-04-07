@@ -2,15 +2,14 @@
 title: Link
 meta-title: Links | CKEditor 5 Documentation
 category: features
+modified_at: 2025-03-26
 ---
 
-{@snippet features/build-link-source}
-
-The link feature lets you insert hyperlinks into your content and provides a UI to create and edit them. Thanks to the [autolink](#autolink-feature) plugin, typed or pasted URLs and email addresses automatically turn into working links.
+The link feature lets you insert hyperlinks into your content and provides a UI to create and edit them. Thanks to the [autolink](#autolink-feature) plugin, typed or pasted URLs and email addresses automatically become working links.
 
 ## Demo
 
-Use the link toolbar button {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Link} or press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>K</kbd> to create a new link. Clicking a link opens a contextual toolbar. The toolbar lets you edit existing links {@icon @ckeditor/ckeditor5-core/theme/icons/pencil.svg Edit link} or unlink them {@icon @ckeditor/ckeditor5-link/theme/icons/unlink.svg Unlink} with a click.
+Use the link toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/link.svg Link} or press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>K</kbd> to create a new link. Clicking a link opens a contextual toolbar. The toolbar lets you edit existing links {@icon @ckeditor/ckeditor5-icons/theme/icons/pencil.svg Edit link} or unlink them {@icon @ckeditor/ckeditor5-icons/theme/icons/unlink.svg Unlink} with a click.
 
 {@snippet features/link}
 
@@ -20,17 +19,15 @@ Use the link toolbar button {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg
 
 ## Typing around links
 
-CKEditor&nbsp;5 allows for typing both at the inner and outer boundaries of links to make editing easier for the users.
+CKEditor&nbsp;5 allows typing at the inner and outer link boundaries to make editing simpler for the users.
 
 **To type inside a link**, move the caret to its (start or end) boundary. As long as the link remains highlighted (by default: blue), typing and applying formatting happens within its boundaries:
 
 {@img assets/img/typing-inside.gif 770 The animation shows typing inside the link in CKEditor&nbsp;5 rich text editor.}
 
-**To type before or after a link**, move the caret to its boundary, then press the Arrow key (<kbd>←</kbd> or <kbd>→</kbd>) away from the link once. The link is no longer highlighted and whatever text you type or formatting you apply will not be inside the link:
+**To type before or after a link**, move the caret to its boundary, then press the Arrow key (<kbd>←</kbd> or <kbd>→</kbd>) away from the link once. The link stops from being highlighted, and whatever text you type or formatting apply will not be inside the link:
 
 {@img assets/img/typing-before.gif 770 The animation shows typing before the link in CKEditor&nbsp;5 rich text editor.}
-
-<!-- Add bookmars section once linking experience lands -->
 
 ## Installation
 
@@ -60,6 +57,76 @@ ClassicEditor
 ```
 </code-switcher>
 
+## Link toolbar configuration
+
+The link UI contains a contextual toolbar that appears when a link is selected. You can configure what items appear in this toolbar using the {@link module:link/linkconfig~LinkConfig#toolbar `config.link.toolbar`} option.
+
+The following toolbar items are available:
+
+* `'linkPreview'` &ndash; Shows a preview of the link URL that you can click to open the link in a new tab.
+* `'editLink'` &ndash; Opens a form to edit the link URL and options.
+* `'linkProperties'` &ndash; Opens a panel to configure link properties (manual decorators). Only available when at least one manual decorator is defined.
+* `'unlink'` &ndash; Removes the link.
+
+By default, the link toolbar is configured as follows:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		link: {
+			toolbar: [ 'linkPreview', '|', 'editLink', 'linkProperties', 'unlink' ]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+### Custom toolbar items
+
+You can extend the link toolbar with custom items by registering them in the {@link module:ui/componentfactory~ComponentFactory component factory} and adding them to the toolbar configuration.
+
+Here is an example of registering a custom component:
+
+```js
+class MyCustomPlugin extends Plugin {
+	init() {
+		const editor = this.editor;
+
+		editor.ui.componentFactory.add( 'myCustomLinkInfo', locale => {
+			const button = new ButtonView( locale );
+			const linkCommand = editor.commands.get( 'link' );
+
+			button.bind( 'isEnabled' ).to( linkCommand, 'value', href => !!href );
+			button.bind( 'label' ).to( linkCommand, 'value' );
+
+			button.on( 'execute', () => {
+				// Add your custom component logic here
+			} );
+
+			return button;
+		} );
+	}
+}
+```
+
+Once registered, the component can be used in the toolbar configuration:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ MyCustomPlugin, /* ... */ ],
+		link: {
+			toolbar: [ 'myCustomLinkInfo', '|', 'editLink', 'unlink' ]
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+
+<info-box>
+	The `linkProperties` item is only shown when manual decorators are configured through {@link module:link/linkconfig~LinkConfig#decorators `config.link.decorators`}. See the [custom link attributes](#custom-link-attributes-decorators) section for more details.
+</info-box>
+
 ## Custom link attributes (decorators)
 
 By default, all links created in the editor have the `href="..."` attribute in the {@link getting-started/setup/getting-and-setting-data#getting-the-editor-data-with-getdata editor data}. If you want your links to have additional link attributes, {@link module:link/linkconfig~LinkConfig#decorators link decorators} provide an easy way to configure and manage them.
@@ -75,7 +142,7 @@ There are two types of link decorators you can use:
 
 ### Demo
 
-In the editor below, all **external** links get the `target="_blank"` and `rel="noopener noreferrer"` attributes ([automatic decorator](#adding-attributes-to-links-based-on-predefined-rules-automatic-decorators)). Click a link and edit it {@icon @ckeditor/ckeditor5-core/theme/icons/pencil.svg Edit link} to see that you can control the `download` attribute of specific links using the switch button in the editing balloon ([manual decorator](#adding-attributes-to-links-using-the-ui-manual-decorators)). Take a look at the editor data below (updated live) to see the extra link attributes.
+In the editor below, all **external** links get the `target="_blank"` and `rel="noopener noreferrer"` attributes ([automatic decorator](#adding-attributes-to-links-based-on-predefined-rules-automatic-decorators)). Click a link and edit it {@icon @ckeditor/ckeditor5-icons/theme/icons/pencil.svg Edit link} to see that you can control the `download` attribute of specific links using the switch button in the editing balloon ([manual decorator](#adding-attributes-to-links-using-the-ui-manual-decorators)). Take a look at the editor data below (updated live) to see the extra link attributes.
 
 {@snippet features/linkdecorators}
 
@@ -233,7 +300,7 @@ ClassicEditor
 ```
 
 <info-box warning>
-	Please keep in mind that you customize this list at your own risk &ndash; adding unsafe protocols like `javascript` can lead to serious security vulnerabilities!
+	Please remember that you customize this list at your own risk &ndash; adding unsafe protocols like `javascript` can lead to serious security vulnerabilities!
 </info-box>
 
 #### Adding attributes to links based on predefined rules (automatic decorators)
@@ -310,10 +377,64 @@ The {@link module:link/autolink~AutoLink `AutoLink`} feature will automatically 
 To use the autolink function, press <kbd>Space</kbd>, <kbd>Enter</kbd>, or <kbd>Shift</kbd>+<kbd>Enter</kbd> after a link.
 
 <info-box>
-	You can always revert autolinking by the undo feature (<kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Z</kbd>).
+	You can always revert autolinking by the undo feature (<kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Z</kbd>) or the backspace (<kbd>⌫</kbd>) button.
 </info-box>
 
 {@snippet features/autolink}
+
+## Link providers
+
+### Demo
+
+The link feature integrates with {@link features/bookmarks bookmarks}, providing a smooth linking experience. Link providers allow adding predefined lists of links (similar to bookmarks). You can register any links you would like to use frequently in your content in the Link plugin using a custom method. These links will be available in the link UI form for easy access.
+
+{@snippet features/link-providers}
+
+### Configuration
+
+To define a list of links available in the link UI, you can use the `getListItems()` function in the link provider. Opening the group in the link UI calls the function every time. The function should return an array of objects, each representing a link.
+
+The `getItem()` function can resolve the link. Opening the link preview or navigating to the link from the editing view calls the function. It should return an object with the `href`, `icon`, `label`, and `tooltip` parameters. The properties are assigned to the link preview. It is useful when only part of the list items are shown in the list view (for example, in pagination), and the user interacts with a link that is not visible in the list view but is available in the editing.
+
+```js
+class SocialLinksPlugin extends Plugin {
+	static get requires() {
+		return [ Link ];
+	}
+
+	async init() {
+		const linkUI = this.editor.plugins.get( LinkUI );
+
+		linkUI.registerLinksListProvider( {
+			label: 'Social links',
+			getListItems: () => [
+				{
+					id: 'facebook',
+					href: 'https://facebook.com',
+					label: 'Facebook',
+					icon: linkIcon
+				},
+				{
+					id: 'twitter',
+					href: 'https://twitter.com',
+					label: 'Twitter',
+					icon: linkIcon
+				}
+			],
+
+			// Optionally: You can customize your link preview by custom implementation of link getter.
+			getItem: href => {
+				return {
+					href,
+					icon: linkIcon,
+					label: 'My custom label in link preview',
+					tooltip: 'My custom tooltip in link preview'
+				};
+			}
+		} );
+	}
+}
+```
 
 ## Common API
 

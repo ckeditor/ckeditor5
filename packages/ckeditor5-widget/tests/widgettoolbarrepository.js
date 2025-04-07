@@ -639,6 +639,113 @@ describe( 'WidgetToolbarRepository', () => {
 				balloonClassName: 'ck-toolbar-container'
 			} );
 		} );
+
+		it( 'should use a custom positions if provided', () => {
+			const editingView = editor.editing.view;
+			const balloonAddSpy = sinon.spy( balloon, 'add' );
+			const balloonUpdatePositionSpy = sinon.spy( balloon, 'updatePosition' );
+			const defaultPositions = BalloonPanelView.defaultPositions;
+
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: getSelectedFakeWidget,
+				positions: [
+					defaultPositions.southArrowNorth,
+					defaultPositions.northArrowSouth
+				]
+			} );
+
+			setData( model, '<paragraph>foo</paragraph>[<fake-widget></fake-widget>]' );
+
+			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
+			const widgetViewElement = editingView.document.getRoot().getChild( 1 );
+
+			sinon.assert.calledOnce( balloonAddSpy );
+			sinon.assert.calledWithExactly( balloonAddSpy, {
+				view: fakeWidgetToolbarView,
+				position: {
+					target: editingView.domConverter.mapViewToDom( widgetViewElement ),
+					positions: [
+						defaultPositions.southArrowNorth,
+						defaultPositions.northArrowSouth
+					]
+				},
+				balloonClassName: 'ck-toolbar-container'
+			} );
+
+			// Reposition check.
+			sinon.assert.notCalled( balloonUpdatePositionSpy );
+
+			editor.ui.update();
+
+			sinon.assert.calledOnce( balloonUpdatePositionSpy );
+			sinon.assert.calledWithExactly( balloonUpdatePositionSpy, {
+				target: editingView.domConverter.mapViewToDom( widgetViewElement ),
+				positions: [
+					defaultPositions.southArrowNorth,
+					defaultPositions.northArrowSouth
+				]
+			} );
+		} );
+
+		it( 'should update balloon custom position when stack with toolbar is switched in rotator to visible', () => {
+			const view = editor.editing.view;
+			const customView = new View();
+			const defaultPositions = BalloonPanelView.defaultPositions;
+
+			sinon.spy( balloon.view, 'pin' );
+
+			widgetToolbarRepository.register( 'fake', {
+				items: editor.config.get( 'fake.toolbar' ),
+				getRelatedElement: getSelectedFakeWidget,
+				positions: [
+					defaultPositions.southArrowNorth,
+					defaultPositions.northArrowSouth
+				]
+			} );
+
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'[<fake-widget></fake-widget>]'
+			);
+
+			const fakeViewElement = view.document.getRoot().getChild( 1 );
+			const fakeDomElement = editor.editing.view.domConverter.mapViewToDom( fakeViewElement );
+			const fakeWidgetToolbarView = widgetToolbarRepository._toolbarDefinitions.get( 'fake' ).view;
+
+			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.equal( fakeDomElement );
+
+			balloon.add( {
+				stackId: 'custom',
+				view: customView,
+				position: { target: {} }
+			} );
+
+			balloon.showStack( 'custom' );
+
+			expect( balloon.visibleView ).to.equal( customView );
+			expect( balloon.hasView( fakeWidgetToolbarView ) ).to.equal( true );
+
+			editor.execute( 'blockQuote' );
+			balloon.showStack( 'main' );
+
+			expect( balloon.visibleView ).to.equal( fakeWidgetToolbarView );
+			expect( balloon.hasView( customView ) ).to.equal( true );
+			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.not.equal( fakeDomElement );
+			expect( balloon.view.pin.lastCall.args[ 0 ].positions ).to.deep.equal( [
+				defaultPositions.southArrowNorth,
+				defaultPositions.northArrowSouth
+			] );
+
+			const newFakeViewElement = view.document.getRoot().getChild( 1 ).getChild( 0 );
+			const newFakeDomElement = editor.editing.view.domConverter.mapViewToDom( newFakeViewElement );
+
+			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.equal( newFakeDomElement );
+			expect( balloon.view.pin.lastCall.args[ 0 ].positions ).to.deep.equal( [
+				defaultPositions.southArrowNorth,
+				defaultPositions.northArrowSouth
+			] );
+		} );
 	} );
 } );
 

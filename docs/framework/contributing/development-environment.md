@@ -27,7 +27,7 @@ You can find all the official packages listed in the [CKEditor&nbsp;5 repository
 
 To start developing CKEditor&nbsp;5 you will require:
 
-* [Node.js](https://nodejs.org/en/) 18.0.0+
+* [Node.js](https://nodejs.org/en/) 20.0.0+
 * [Git](https://git-scm.com/)
 
 ## Setting up the CKEditor development environment
@@ -110,15 +110,6 @@ This task accepts the following arguments:
 
 * `--skip-api` &ndash; Skips building the API documentation (which takes the majority of the total time).
 * `--skip-snippets` &ndash; Skips building live snippets.
-* `--snippets=snippet-name` &ndash; Snippets to build. Accepts glob patterns that are matched against snippet names used in `{@snippet ...}` tags. Examples:
-
-	```
-	--snippets=image         // matches roughly {@snippet *image*}
-	--snippets="features/*"  // matches roughly {@snippet *features/*}
-	--snippets=classic-editor,build-classic-source
-	```
-
-	Note: If a snippet that you want to build uses another snippet as a source that provides an editor instance, you need to specify both snippets (for example,`--files=features/default-headings,build-classic-source`).
 * `--skip-validation` &ndash; Skips the final link validation.
 * `--skip-guides` &ndash; Skips building all guides except the `index.md` files which allows navigating over the partially built documentation.
 * `--guides=guide-name` &ndash; Guides to build. Accepts glob patterns that are matched against guide names. Examples:

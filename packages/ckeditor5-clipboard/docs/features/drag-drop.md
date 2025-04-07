@@ -5,8 +5,6 @@ meta-description: Learn all about using the drag and drop mechanism to manage co
 category: features
 ---
 
-{@snippet features/build-drag-drop-source}
-
 # Drag and drop
 
 The drag and drop feature lets you drag and drop both text and content blocks such as paragraphs, tables, or lists inside the editor. This allows you to select an entire block or multiple blocks, and move them before or after other blocks. You can also drag and drop HTML and plain text content from outside the editor and use it to upload images.
@@ -37,7 +35,7 @@ The drag and drop functions include:
 
 * Selection of the text, elements, multiple blocks, and moving these around.
 * Placement of blocks inside other blocks such as tables, blockquotes, etc.
-* The braille dots panel icon {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg Drag indicator}  in the [balloon block editor](#balloon-block-editor-demo) now behaves as a drag handle.
+* The braille dots panel icon {@icon @ckeditor/ckeditor5-icons/theme/icons/drag-indicator.svg Drag indicator}  in the [balloon block editor](#balloon-block-editor-demo) now behaves as a drag handle.
 
 ### Classic editor demo
 
@@ -47,7 +45,7 @@ Select a block or blocks, and drag them across the document. You can place block
 
 ### Balloon block editor demo
 
-In the balloon block editor, you can also drag content blocks using the drag handle. Select or focus on the block, and then drag the block with the braille dots panel icon {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg Drag indicator}.
+In the balloon block editor, you can also drag content blocks using the drag handle. Select or focus on the block, and then drag the block with the braille dots panel icon {@icon @ckeditor/ckeditor5-icons/theme/icons/drag-indicator.svg Drag indicator}.
 
 {@snippet features/block-balloon-drag-drop}
 

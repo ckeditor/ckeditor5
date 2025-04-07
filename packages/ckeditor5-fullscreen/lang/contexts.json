@@ -1,0 +1,8 @@
+{
+	"Enter fullscreen mode": "Label for a toolbar button that enters the fullscreen when pressed",
+	"Leave fullscreen mode": "Label for a toolbar button that leaves the fullscreen when pressed",
+	"Fullscreen mode": "Label for a menu bar button that toggles fullscreen mode",
+	"Toggle fullscreen mode": "Keystroke description for assistive technologies: keystroke for toggling a fullscreen mode.",
+	"Document outline": "Label for a sidebar header that contains a document outline",
+	"Connected users": "Label for a sidebar header that contains a list of connected users"
+}

@@ -23,12 +23,13 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { Notification } from 'ckeditor5/src/ui.js';
 import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
-import _ from 'lodash-es';
+import * as _ from 'es-toolkit/compat';
 import CloudServicesCoreMock from '../_utils/cloudservicescoremock.js';
 import CKBoxEditing from '../../src/ckboxediting.js';
 import CKBoxImageEditEditing from '../../src/ckboximageedit/ckboximageeditediting.js';
 
 import { blurHashToDataUrl } from '../../src/utils.js';
+import CKBoxUtils from '../../src/ckboxutils.js';
 
 const CKBOX_API_URL = 'https://upload.example.com';
 
@@ -46,6 +47,8 @@ describe( 'CKBoxImageEditCommand', () => {
 			// Signature.
 			'signature'
 		].join( '.' );
+
+		sinon.stub( CKBoxUtils.prototype, '_authorizePrivateCategoriesAccess' ).resolves();
 
 		domElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( domElement );

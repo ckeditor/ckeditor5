@@ -5,8 +5,6 @@ meta-title: Emoji | CKEditor 5 Documentation
 modified_at: 2025-01-21
 ---
 
-{@snippet features/emoji-source}
-
 # Emoji
 
 The emoji feature lets you insert emojis into the document from the editor toolbar or while writing the content. The emojis are pulled from the CDN to lessen the editor load.
@@ -15,7 +13,7 @@ Since there is a large number of emojis, they have been conveniently divided int
 
 ## Demo
 
-Use the emoji toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/emoji.svg Emoji} in the editor below to open a panel with a table of selectable emojis. You may also trigger the emoji UI while writing the content by typing the pre-configured `:` marker followed by at least two letters of desired emoji name. Then, you can either choose which emoji to insert from the suggestion list or select the `Show all emoji...` option to open the full panel. The marker must be preceded by a space to work.
+Use the emoji toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/emoji.svg Emoji} in the editor below to open a panel with a table of selectable emojis. You may also trigger the emoji UI while writing the content by typing the pre-configured `:` marker followed by at least two letters of desired emoji name. Then, you can either choose which emoji to insert from the suggestion list or select the `Show all emoji...` option to open the full panel. The marker must be preceded by a space to work.
 
 There is an option to set the skin tone of the emojis next to the search field, too.
 

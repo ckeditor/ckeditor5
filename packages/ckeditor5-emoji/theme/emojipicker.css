@@ -13,6 +13,10 @@
 	padding-bottom: var(--ck-spacing-medium);
 	justify-content: space-between;
 	align-items: center;
+
+	& > .ck.ck-search {
+		flex: 1;
+	}
 }
 
 /*
@@ -29,4 +33,8 @@
 	border-right: 1px solid var(--ck-color-base-text);
 	margin-right: -1px;
 	outline: solid 1px hsla(0, 0%, 100%, .5);
+}
+
+div.ck.ck-balloon-panel.ck-emoji-picker-balloon {
+	z-index: calc( var( --ck-z-dialog ) + 1 );
 }

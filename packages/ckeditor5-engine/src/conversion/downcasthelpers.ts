@@ -57,7 +57,7 @@ import {
 	type PriorityString
 } from '@ckeditor/ckeditor5-utils';
 
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'es-toolkit/compat';
 
 /**
  * Downcast conversion helper functions.

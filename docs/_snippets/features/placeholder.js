@@ -3,12 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, ClassicEditor */
+import {
+	CS_CONFIG,
+	TOKEN_URL,
+	getViewportTopOffsetConfig
+} from '@snippets/index.js';
+import { PlaceholderEditor } from './placeholder-build.js';
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
-
-ClassicEditor
+PlaceholderEditor
 	.create( document.querySelector( '#snippet-placeholder' ), {
 		cloudServices: CS_CONFIG,
 		toolbar: [
@@ -29,11 +31,10 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
-		placeholder: 'Type some content here!',
-		licenseKey: 'GPL'
+		placeholder: 'Type some content here!'
 	} )
 	.then( editor => {
 		window.editor = editor;

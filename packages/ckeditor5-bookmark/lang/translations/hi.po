@@ -15,14 +15,6 @@ msgctxt "The label of the bookmark toolbar button. Also, a bookmark form header.
 msgid "Bookmark"
 msgstr "बुकमार्क"
 
-msgctxt "The button in the bookmark insert form."
-msgid "Insert"
-msgstr "इंसर्ट"
-
-msgctxt "The button in the bookmark update form."
-msgid "Update"
-msgstr "अपडेट"
-
 msgctxt "Button opening the Bookmark editing balloon."
 msgid "Edit bookmark"
 msgstr "बुकमार्क एडिट करें"
@@ -54,3 +46,19 @@ msgstr "बुकमार्क नाम पहले से मौजूद �
 msgctxt "The label for the bookmark widget."
 msgid "bookmark widget"
 msgstr "बुकमार्क विजिट"
+
+msgctxt "The label used by assistive technologies describing an bookmark toolbar attached to a bookmark widget."
+msgid "Bookmark toolbar"
+msgstr "बुकमार्क टूलबार"
+
+msgctxt "Title for a feature displaying a list of bookmarks."
+msgid "Bookmarks"
+msgstr "बुकमार्क"
+
+msgctxt "A message displayed instead of a list of bookmarks if it is empty."
+msgid "No bookmarks available."
+msgstr "कोई बुकमार्क उपलब्ध नहीं है."
+
+msgctxt "Tooltip shown after hovering the bookmark link preview."
+msgid "Scroll to bookmark"
+msgstr "बुकमार्क करने के लिए स्क्रॉल करें"
