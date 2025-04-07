@@ -216,6 +216,28 @@ describe( 'StickyPanelView', () => {
 			expect( spy.calledTwice ).to.be.true;
 		} );
 
+		it( 'listens to visualViewport#scroll event and calls view.checkIfShouldBeSticky()', () => {
+			const spy = testUtils.sinon.spy( view, 'checkIfShouldBeSticky' );
+			expect( spy.notCalled ).to.be.true;
+
+			view.render();
+			expect( spy.calledOnce ).to.be.true;
+
+			global.window.visualViewport.dispatchEvent( new Event( 'scroll' ) );
+			expect( spy.calledTwice ).to.be.true;
+		} );
+
+		it( 'listens to visualViewport#resize event and calls view.checkIfShouldBeSticky()', () => {
+			const spy = testUtils.sinon.spy( view, 'checkIfShouldBeSticky' );
+			expect( spy.notCalled ).to.be.true;
+
+			view.render();
+			expect( spy.calledOnce ).to.be.true;
+
+			global.window.visualViewport.dispatchEvent( new Event( 'resize' ) );
+			expect( spy.calledTwice ).to.be.true;
+		} );
+
 		it( 'listens to view.isActive and calls view.checkIfShouldBeSticky()', () => {
 			const spy = testUtils.sinon.spy( view, 'checkIfShouldBeSticky' );
 			expect( spy.notCalled ).to.be.true;

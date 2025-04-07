@@ -245,7 +245,8 @@ describe( 'ContextualBalloon', () => {
 				limiter: balloon.positionLimiter,
 				target: 'fake',
 				viewportOffsetConfig: {
-					top: 0
+					top: 0,
+					visualTop: 0
 				}
 			} );
 		} );
@@ -269,7 +270,21 @@ describe( 'ContextualBalloon', () => {
 				}
 			} );
 
-			expect( balloon.getPositionOptions().viewportOffsetConfig ).to.be.equal( editor.ui.viewportOffset );
+			expect( balloon.getPositionOptions().viewportOffsetConfig ).to.deep.equal( editor.ui.viewportOffset );
+		} );
+
+		it( 'should re-map viewportOffsetConfig so visualTop is used instead of top', () => {
+			sinon.stub( editor.ui.viewportOffset, 'top' ).get( () => 70 );
+			sinon.stub( editor.ui.viewportOffset, 'visualTop' ).get( () => 40 );
+
+			balloon.add( {
+				view: viewA,
+				position: {
+					target: 'blank'
+				}
+			} );
+
+			expect( balloon.getPositionOptions().viewportOffsetConfig.top ).to.equal( 40 );
 		} );
 	} );
 

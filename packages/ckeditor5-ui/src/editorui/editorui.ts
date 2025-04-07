@@ -493,9 +493,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 				'It will be removed from future CKEditor versions. Use `ui.viewportOffset.top` instead.'
 			);
 
-			return {
-				top: legacyOffsetConfig
-			};
+			return { top: legacyOffsetConfig };
 		}
 
 		// More keys to come in the future.
