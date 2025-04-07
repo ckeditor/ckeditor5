@@ -382,7 +382,7 @@ FullscreenEditor
 		},
 		cloudServices: csConfig,
 		fullscreen: {
-			onEnterCallback: container => container.classList.add( 'formatted' ),
+			onEnterCallback: container => container.classList.add( 'formatted', 'live-snippet' ),
 			container: document.querySelector( '.main__content' ),
 			menuBar: {
 				isVisible: false
@@ -392,7 +392,7 @@ FullscreenEditor
 	.then( editor => {
 		document.querySelector( '#pageless_toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
 
-		window.editor = editor;
+		window.editorPageless = editor;
 
 		// Prevent showing a warning notification when user is pasting a content from MS Word or Google Docs.
 		window.preventPasteFromOfficeNotification = true;

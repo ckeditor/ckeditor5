@@ -186,3 +186,11 @@ msgstr "Грешка по време на качването на изображ
 msgctxt "Label for the widget inserted by the image feature (as in 'insert image')"
 msgid "Image"
 msgstr "Изображение"
+
+msgctxt "The label for the header of the image resize balloon."
+msgid "Image Resize"
+msgstr "Промяна на размера на изображението"
+
+msgctxt "The label of the input field for the text alternative of the image."
+msgid "Text Alternative"
+msgstr "Текстова алтернатива"

@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-indent",
-  "version": "44.3.0",
+  "version": "45.0.0",
   "description": "Block indentation feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -13,20 +13,20 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "44.3.0",
-    "@ckeditor/ckeditor5-engine": "44.3.0",
-    "@ckeditor/ckeditor5-icons": "0.0.1",
-    "@ckeditor/ckeditor5-heading": "44.3.0",
-    "@ckeditor/ckeditor5-list": "44.3.0",
-    "@ckeditor/ckeditor5-ui": "44.3.0",
-    "@ckeditor/ckeditor5-utils": "44.3.0",
-    "ckeditor5": "44.3.0"
+    "@ckeditor/ckeditor5-core": "45.0.0",
+    "@ckeditor/ckeditor5-engine": "45.0.0",
+    "@ckeditor/ckeditor5-icons": "45.0.0",
+    "@ckeditor/ckeditor5-heading": "45.0.0",
+    "@ckeditor/ckeditor5-list": "45.0.0",
+    "@ckeditor/ckeditor5-ui": "45.0.0",
+    "@ckeditor/ckeditor5-utils": "45.0.0",
+    "ckeditor5": "45.0.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-utils": "^47.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "44.3.0",
-    "@ckeditor/ckeditor5-paragraph": "44.3.0",
-    "@ckeditor/ckeditor5-theme-lark": "44.3.0",
+    "@ckeditor/ckeditor5-editor-classic": "45.0.0",
+    "@ckeditor/ckeditor5-paragraph": "45.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "45.0.0",
     "typescript": "5.0.4",
     "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4"

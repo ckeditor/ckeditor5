@@ -136,6 +136,7 @@ export default class BookmarkUI extends Plugin {
 			items: editor.config.get( 'bookmark.toolbar' )!,
 
 			getRelatedElement: getSelectedBookmarkWidget,
+			balloonClassName: 'ck-bookmark-balloon ck-toolbar-container',
 
 			// Override positions to the same list as for balloon panel default
 			// so widget toolbar will try to use same position as form view.
@@ -398,7 +399,10 @@ export default class BookmarkUI extends Plugin {
 		} );
 
 		// Execute the command.
-		this.listenTo( view, 'execute', () => this._showFormView() );
+		this.listenTo( view, 'execute', () => {
+			editor.editing.view.scrollToTheSelection();
+			this._showFormView();
+		} );
 
 		view.bind( 'isEnabled' ).toMany(
 			[ insertCommand, updateCommand ],
@@ -429,7 +433,13 @@ export default class BookmarkUI extends Plugin {
 			emitter: this.formView!,
 			activator: () => this._isFormInPanel,
 			contextElements: () => [ this._balloon.view.element! ],
-			callback: () => this._hideFormView()
+			callback: () => {
+				// Focusing on the editable during a click outside the balloon panel might
+				// cause the selection to move to the beginning of the editable, so we avoid
+				// focusing on it during this action.
+				// See: https://github.com/ckeditor/ckeditor5/issues/18253
+				this._hideFormView( false );
+			}
 		} );
 	}
 
@@ -469,7 +479,7 @@ export default class BookmarkUI extends Plugin {
 	/**
 	 * Removes the {@link #formView} from the {@link #_balloon}.
 	 */
-	private _removeFormView(): void {
+	private _removeFormView( updateFocus: boolean = true ): void {
 		// Blur the input element before removing it from DOM to prevent issues in some browsers.
 		// See https://github.com/ckeditor/ckeditor5/issues/1501.
 		this.formView!.saveButtonView.focus();
@@ -481,7 +491,9 @@ export default class BookmarkUI extends Plugin {
 
 		// Because the form has an input which has focus, the focus must be brought back
 		// to the editor. Otherwise, it would be lost.
-		this.editor.editing.view.focus();
+		if ( updateFocus ) {
+			this.editor.editing.view.focus();
+		}
 
 		this._hideFakeVisualSelection();
 	}
@@ -510,7 +522,7 @@ export default class BookmarkUI extends Plugin {
 	/**
 	 * Removes the {@link #formView} from the {@link #_balloon}.
 	 */
-	private _hideFormView(): void {
+	private _hideFormView( updateFocus: boolean = true ): void {
 		if ( !this._isFormInPanel ) {
 			return;
 		}
@@ -522,10 +534,12 @@ export default class BookmarkUI extends Plugin {
 
 		// Make sure the focus always gets back to the editable _before_ removing the focused form view.
 		// Doing otherwise causes issues in some browsers. See https://github.com/ckeditor/ckeditor5-link/issues/193.
-		editor.editing.view.focus();
+		if ( updateFocus ) {
+			editor.editing.view.focus();
+		}
 
 		// Remove form first because it's on top of the stack.
-		this._removeFormView();
+		this._removeFormView( updateFocus );
 
 		this._hideFakeVisualSelection();
 	}

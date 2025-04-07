@@ -73,8 +73,8 @@ export default class Context {
 	/**
 	 * The default configuration which is built into the `Context` class.
 	 *
-	 * It is used in CKEditor 5 builds featuring `Context` to provide the default configuration options which are later used during the
-	 * context initialization.
+	 * It was used in the now deprecated CKEditor 5 builds featuring `Context` to provide the default configuration options
+	 * which are later used during the context initialization.
 	 *
 	 * ```ts
 	 * Context.defaultConfig = {
@@ -106,8 +106,8 @@ export default class Context {
 	/**
 	 * An array of plugins built into the `Context` class.
 	 *
-	 * It is used in CKEditor 5 builds featuring `Context` to provide a list of context plugins which are later automatically initialized
-	 * during the context initialization.
+	 * It was used in the now deprecated CKEditor 5 builds featuring `Context` to provide the default configuration options
+	 * which are later used during the context initialization.
 	 *
 	 * They will be automatically initialized by `Context` unless `config.plugins` is passed.
 	 *

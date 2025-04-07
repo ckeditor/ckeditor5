@@ -142,3 +142,15 @@ msgstr "Prova en annan fras eller kontrollera stavningen."
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
 msgstr "Källa"
+
+msgctxt "Label for the Insert button."
+msgid "Insert"
+msgstr "Infoga"
+
+msgctxt "Label for the Update button."
+msgid "Update"
+msgstr "Uppdatera"
+
+msgctxt "Label for the Back button."
+msgid "Back"
+msgstr "Tillbaka"

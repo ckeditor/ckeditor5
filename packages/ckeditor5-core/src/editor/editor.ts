@@ -200,7 +200,8 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * The default configuration which is built into the editor class.
 	 *
-	 * It is used in CKEditor 5 builds to provide the default configuration options which are later used during the editor initialization.
+	 * It was used in the now deprecated CKEditor 5 builds to provide the default configuration options
+	 * which are later used during the editor initialization.
 	 *
 	 * ```ts
 	 * ClassicEditor.defaultConfig = {
@@ -231,7 +232,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * An array of plugins built into this editor class.
 	 *
-	 * It is used in CKEditor 5 builds to provide a list of plugins which are later automatically initialized
+	 * It is used in the now deprecated CKEditor 5 builds to provide a list of plugins which are later automatically initialized
 	 * during the editor initialization.
 	 *
 	 * They will be automatically initialized by the editor, unless listed in `config.removePlugins` and

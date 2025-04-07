@@ -98,3 +98,7 @@ msgstr "Сярэдні цёмны тон скуры"
 msgctxt "Dropdown option label for using the \"Dark skin tone\" variant. Example emoji: 👋🏿."
 msgid "Dark skin tone"
 msgstr "Цёмны тон скуры"
+
+msgctxt "Header of the emoji picker balloon panel."
+msgid "Emoji picker"
+msgstr ""

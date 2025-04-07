@@ -144,7 +144,7 @@
 			"name": "Table layout",
 			"className": "TableLayout",
 			"description": "Adds support for different table types and layouts, allowing to distinguish between content tables and layout tables.",
-			"docs": "features/tables/tables-layout.html",
+			"docs": "features/tables/layout-tables.html",
 			"path": "src/tablelayout",
 			"requires": [
 				"Table",
@@ -224,7 +224,7 @@
 			"name": "PlainTableOutput",
 			"className": "PlainTableOutput",
 			"description": "This plugin strips the `<figure>` tag which surrounds tables, and moves attributes to the `<table>` in the data downcast.",
-			"docs": "features/tables/tables-layout.html",
+			"docs": "features/tables/layout-tables.html",
 			"path": "src/plaintableoutput.js",
 			"htmlOutput": [
 				{

@@ -10,7 +10,7 @@ modified_at: 2023-02-22
 
 {@snippet features/build-table-source}
 
-The table feature gives you tools to create and edit tables. Tables are great for organizing data in a clear, visually appealing way, or creating structured content. They are also great for making document layouts for applications such as newsletters or email editors. There are two basic types of tables available: content table, described in this feature guide, and the {@link features/tables-layout layout tables} used to organize the content rather, than present tabular data. You can easily {@link features/tables-layout#table-toggling switch between these two types}.
+The table feature gives you tools to create and edit tables. Tables are great for organizing data in a clear, visually appealing way, or creating structured content. They are also great for making document layouts for applications such as newsletters or email editors. There are two basic types of tables available: content table, described in this feature guide, and the {@link features/layout-tables layout tables} used to organize the content rather, than present tabular data. You can easily {@link features/layout-tables#table-toggling switch between these two types}.
 
 ## Demo
 
