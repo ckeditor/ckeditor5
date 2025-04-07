@@ -340,6 +340,8 @@ describe( 'Editor - license check', () => {
 			} );
 
 			licenseTypes.forEach( licenseType => {
+				const licenseTypeCapitalized = licenseType[ 0 ].toUpperCase() + licenseType.slice( 1 );
+
 				it( `should not block if ${ licenseType } license did not expired`, () => {
 					const { licenseKey, todayTimestamp } = generateKey( {
 						licenseType,
@@ -397,7 +399,7 @@ describe( 'Editor - license check', () => {
 					sinon.assert.calledOnce( consoleInfoStub );
 					sinon.assert.calledWith(
 						consoleInfoStub,
-						`%cCKEditor 5 ${ licenseType[ 0 ].toUpperCase() + licenseType.slice( 1 ) } License`,
+						`%cCKEditor 5 ${ licenseTypeCapitalized } License`,
 						'color: #ffffff; background: #743CCD; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
 					);
 
@@ -435,6 +437,42 @@ describe( 'Editor - license check', () => {
 
 					editor.destroy();
 					dateNow.restore();
+				} );
+
+				it( `should show the warning about ${ licenseType } license only once per browser session`, () => {
+					const { licenseKey } = generateKey( {
+						licenseType
+					} );
+
+					const editor1 = new TestEditor( { licenseKey } );
+					expect( editor1.isReadOnly ).to.be.false;
+
+					// Session was already started in the previous test.
+					sinon.assert.notCalled( consoleInfoStub );
+					sinon.assert.notCalled( consoleWarnStub );
+
+					// Clear sessionStorage to simulate a new session.
+					global.window.sessionStorage.clear();
+
+					const editor2 = new TestEditor( { licenseKey } );
+					expect( editor2.isReadOnly ).to.be.false;
+
+					sinon.assert.calledOnce( consoleInfoStub );
+					sinon.assert.calledWith(
+						consoleInfoStub,
+						`%cCKEditor 5 ${ licenseTypeCapitalized } License`,
+						'color: #ffffff; background: #743CCD; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
+					);
+
+					const article = licenseType === 'evaluation' ? 'an' : 'a';
+
+					sinon.assert.calledOnce( consoleWarnStub );
+					sinon.assert.calledWith(
+						consoleWarnStub,
+						`⚠️ You are using ${ article } ${ licenseType } license of CKEditor 5` +
+						`${ licenseType === 'trial' ? ' which is for evaluation purposes only' : '' }. ` +
+						'For production usage, please obtain a production license at https://portal.ckeditor.com/'
+					);
 				} );
 			} );
 		} );

@@ -546,11 +546,8 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 				const { licenseType } = licensePayload;
 				const sessionStarted = sessionStorage.getItem( 'ckeditor5-development-session-started' );
 
-				if ( licenseType != 'development' || !sessionStarted ) {
+				if ( !sessionStarted ) {
 					warnAboutNonProductionLicenseKey( licenseType );
-				}
-
-				if ( licenseType == 'development' && !sessionStarted ) {
 					sessionStorage.setItem( 'ckeditor5-development-session-started', 'true' );
 				}
 			}
