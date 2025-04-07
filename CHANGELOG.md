@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## [45.0.0](https://github.com/ckeditor/ckeditor5/compare/v44.3.0...v45.0.0) (April 2, 2025)
+## [45.0.0](https://github.com/ckeditor/ckeditor5/compare/v44.3.0...v45.0.0) (April 7, 2025)
 
 The CKEditor 5 v45.0.0 release brings powerful new features and improvements, making content creation smoother and more versatile. From enhanced email editing to a refined linking experience and a brand-new full-screen mode, this update is packed with valuable upgrades.
 
@@ -98,6 +98,9 @@ Happy editing!
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: The editor no longer crashes during initialization when the `ShiftEnter` plugin is removed.
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Do not open disabled menu bar menu items on arrow down press. Closes [#17915](https://github.com/ckeditor/ckeditor5/issues/17915). ([commit](https://github.com/ckeditor/ckeditor5/commit/f50514bc8fbeb6761348792911eab03983d8086c))
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The `ButtonView#icon` property can now be set/reset after the button's first render. ([commit](https://github.com/ckeditor/ckeditor5/commit/bca09868577c34b8b1ee8d579dded0e21b5e506e))
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Widgets UI elements should be visible when they are inside tables. Closes [#18268](https://github.com/ckeditor/ckeditor5/issues/18268).
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Nested tables outline should not be cut of at the bottom during hovering. Closes [#18262](https://github.com/ckeditor/ckeditor5/issues/18262).
+* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Link balloon no longer disappears when scrolling the page slightly on iOS. Closes [#18022](https://github.com/ckeditor/ckeditor5/issues/18022).
 
 ### Other changes
 
