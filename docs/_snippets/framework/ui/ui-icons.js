@@ -14,7 +14,7 @@ Object
 
 	/**
 	 * The `@ckeditor/ckeditor5-icons` import actually resolves to `ckeditor5`,
-	 * so it includes everything we export from th `ckeditor5` package. For this
+	 * so it includes everything we export from the `ckeditor5` package. For this
 	 * reason, we need to filter out only the icons.
 	 */
 	.filter( ( [ key, value ] ) => key.startsWith( 'Icon' ) && typeof value === 'string' && value.startsWith( '<svg' ) )
