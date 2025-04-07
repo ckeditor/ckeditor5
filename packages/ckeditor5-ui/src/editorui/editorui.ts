@@ -29,7 +29,8 @@ import {
 	type EventInfo,
 	type CollectionAddEvent,
 	type CollectionRemoveEvent,
-	type ObservableSetEvent
+	type ObservableSetEvent,
+	type DomEmitter
 } from '@ckeditor/ckeditor5-utils';
 
 import type { Editor, ViewportOffsetConfig } from '@ckeditor/ckeditor5-core';
@@ -148,9 +149,9 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	private _lastFocusedForeignElement: HTMLElement | null = null;
 
 	/**
-	 * TODO
+	 * The DOM emitter instance used for visual viewport watching.
 	 */
-	private _domEmitter = new ( DomEmitterMixin() )();
+	private _domEmitter?: DomEmitter;
 
 	/**
 	 * Creates an instance of the editor UI class.
@@ -170,7 +171,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		this.evaluationBadge = new EvaluationBadge( editor );
 		this.ariaLiveAnnouncer = new AriaLiveAnnouncer( editor );
 
-		this.set( 'viewportOffset', this._readViewportOffsetFromConfig() );
+		this._initViewportOffset( this._readViewportOffsetFromConfig() );
 
 		this.once<EditorUIReadyEvent>( 'ready', () => {
 			this._bindBodyCollectionWithFocusTracker();
@@ -182,17 +183,8 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		this.listenTo<ViewDocumentLayoutChangedEvent>( editingView.document, 'layoutChanged', this.update.bind( this ) );
 		this.listenTo<ViewScrollToTheSelectionEvent>( editingView, 'scrollToTheSelection', this._handleScrollToTheSelection.bind( this ) );
 
-		this.on<ObservableSetEvent>( 'set:viewportOffset', ( evt, name, value ) => {
-			evt.return = { ...value, visualTop: this._getVisualViewportTopOffset( value ) };
-		} );
-
-		// TODO this is needed only for iOS and Safari so maybe should not be watched globally.
-		if ( global.window.visualViewport ) {
-			this._domEmitter.listenTo( global.window.visualViewport, 'scroll', () => this._updateVisualViewportOffset() );
-			this._domEmitter.listenTo( global.window.visualViewport, 'resize', () => this._updateVisualViewportOffset() );
-		}
-
 		this._initFocusTracking();
+		this._initVisualViewportSupport();
 	}
 
 	/**
@@ -240,7 +232,10 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 
 		this._editableElementsMap = new Map();
 		this._focusableToolbarDefinitions = [];
-		this._domEmitter.stopListening();
+
+		if ( this._domEmitter ) {
+			this._domEmitter.stopListening();
+		}
 	}
 
 	/**
@@ -467,7 +462,6 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 * 	right: Number,
 	 * 	bottom: Number,
 	 * 	left: Number
-	 * 	TODO
 	 * }
 	 * ```
 	 *
@@ -478,10 +472,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		const viewportOffsetConfig = editor.config.get( 'ui.viewportOffset' );
 
 		if ( viewportOffsetConfig ) {
-			return {
-				...viewportOffsetConfig,
-				visualTop: viewportOffsetConfig.top
-			};
+			return viewportOffsetConfig;
 		}
 
 		// Not present in EditorConfig type, because it's legacy. Hence the `as` expression.
@@ -503,16 +494,12 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 			);
 
 			return {
-				top: legacyOffsetConfig,
-				visualTop: legacyOffsetConfig
+				top: legacyOffsetConfig
 			};
 		}
 
 		// More keys to come in the future.
-		return {
-			top: 0,
-			visualTop: 0
-		};
+		return { top: 0 };
 	}
 
 	/**
@@ -727,17 +714,51 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	}
 
 	/**
-	 * TODO
+	 * Set initial viewport offset and setup visualTop augmentation.
 	 */
-	private _updateVisualViewportOffset() {
-		this.viewportOffset = {
-			...this.viewportOffset,
-			visualTop: this._getVisualViewportTopOffset( this.viewportOffset )
-		};
+	private _initViewportOffset( viewportOffsetConfig: ViewportOffsetConfig ) {
+		// Augment the viewport offset set from outside the editor with the visualTop property.
+		this.on<ObservableSetEvent<ViewportOffset>>( 'set:viewportOffset', ( evt, name, value ) => {
+			const visualTop = this._getVisualViewportTopOffset( value );
+
+			// Update only if there is a change in a value, so we do not trigger
+			// listeners to the viewportOffset observable.
+			if ( value.visualTop !== visualTop ) {
+				evt.return = { ...value, visualTop };
+			}
+		} );
+
+		// Set the initial value after augmenting the setter.
+		this.set( 'viewportOffset', viewportOffsetConfig );
 	}
 
 	/**
-	 * TODO
+	 * Listen to visual viewport changes and update the viewportOffset with the visualTop property
+	 * according to the visible part of it (visual viewport).
+	 */
+	private _initVisualViewportSupport() {
+		if ( !global.window.visualViewport ) {
+			return;
+		}
+
+		const updateViewport = () => {
+			const visualTop = this._getVisualViewportTopOffset( this.viewportOffset );
+
+			// Update only if there is a change in a value, so we do not trigger
+			// listeners to the viewportOffset observable.
+			if ( this.viewportOffset.visualTop !== visualTop ) {
+				this.viewportOffset = { ...this.viewportOffset, visualTop };
+			}
+		};
+
+		// Listen to the changes in the visual viewport to adjust the visualTop of viewport offset.
+		this._domEmitter = new ( DomEmitterMixin() )();
+		this._domEmitter.listenTo( global.window.visualViewport, 'scroll', updateViewport );
+		this._domEmitter.listenTo( global.window.visualViewport, 'resize', updateViewport );
+	}
+
+	/**
+	 * Calculate the viewport top offset according to the visible part of it (visual viewport).
 	 */
 	private _getVisualViewportTopOffset( viewportOffset: { top?: number } ): number {
 		const visualViewportOffsetTop = Rect.getVisualViewportOffset().top;

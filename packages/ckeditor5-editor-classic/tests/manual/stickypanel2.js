@@ -92,3 +92,18 @@ function TestPlugin( editor ) {
 		return showButton;
 	} );
 }
+
+document.querySelector( '#header-size' ).addEventListener( 'click', evt => {
+	evt.preventDefault();
+
+	const header = document.querySelector( 'header' );
+	const headerPlaceholder = document.querySelector( '#header-placeholder' );
+	const height = window.editor.ui.viewportOffset.top > 100 ? 60 : 120;
+
+	header.style.height = `${ height }px`;
+	header.style.lineHeight = `${ height }px`;
+	headerPlaceholder.style.height = `${ height }px`;
+
+	window.editor.ui.viewportOffset = { top: height };
+	window.editor.focus();
+} );

@@ -508,7 +508,7 @@ export default class Rect {
 	}
 
 	/**
-	 * TODO This is not generic, rather browser engine specific so probably should be moved to some other place.
+	 * Returns the visual viewport offsets to adjust elements with `position: fixed` style.
 	 */
 	public static getVisualViewportOffset(): { left: number; top: number } {
 		const visualViewport = global.window.visualViewport;

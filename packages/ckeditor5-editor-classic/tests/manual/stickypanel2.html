@@ -1,9 +1,7 @@
 <header>
 	CKEditor&nbsp;5 - Sticky panel manual test
 </header>
-<div style="height: 120px;"></div>
-
-<!-- editor top edge: 40 + 120 + 400 = 560 -->
+<div id="header-placeholder"></div>
 
 <div id="editor">
 	<p>This is <a href="http://ckeditor.com"><strong>CKEditor5</strong></a> from <a href="http://cksource.com">CKSource</a>.</p>
@@ -15,10 +13,21 @@
 	<p></p>
 </div>
 
+<p>
+	<button id="header-size">Toggle header size</button>
+</p>
+
 <div style="height: 2000px;"></div>
 
 <style>
-	body { margin: 0; }
+	body {
+		margin: 0;
+	}
+
+	#header-placeholder {
+		height: 120px;
+	}
+
 	header {
 		position: fixed;
 		top: 0;
