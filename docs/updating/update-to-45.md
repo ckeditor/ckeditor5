@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 45.x | CKEditor 5 Documentation
 menu-title: Update to v45.x
 order: 79
-modified_at: 2025-03-26
+modified_at: 2025-04-07
 ---
 
 # Update to CKEditor&nbsp;5 v45.x

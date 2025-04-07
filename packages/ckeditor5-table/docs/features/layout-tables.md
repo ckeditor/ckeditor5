@@ -4,7 +4,7 @@ meta-title: Layout tables | CKEditor 5 Documentation
 meta-description: Add support for different table types to distinguish between content tables and layout tables and allow to create table-based layouts.
 category: tables
 order: 50
-modified_at: 2025-03-26
+modified_at: 2025-04-07
 ---
 
 # Layout tables

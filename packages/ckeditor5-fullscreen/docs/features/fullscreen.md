@@ -4,7 +4,7 @@ menu-title: Fullscreen mode
 meta-title: Fullscreen mode | CKEditor 5 Documentation
 meta-description: The fullscreen mode lets you expand the editor to the whole browser viewport to comfortably edit content and use editor's UI features.
 category: features
-modified_at: 2025-03-26
+modified_at: 2025-04-07
 ---
 
 The fullscreen mode lets you temporarily expand the editor to the whole browser viewport, giving you more space to comfortably edit content and use editor's UI features.
