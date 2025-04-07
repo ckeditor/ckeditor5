@@ -116,6 +116,7 @@ export type { default as Writer } from './model/writer.js';
 
 // Model utils.
 export * from './model/utils/autoparagraphing.js';
+export { mergeIntersectingRanges } from './model/utils/selection-post-fixer.js';
 
 // Model Events.
 export type { DocumentChangeEvent } from './model/document.js';
