@@ -42,7 +42,7 @@
 	margin-bottom: var(--ck-spacing-large);
 }
 
-/* Override default Umberto's styles because they apply margins to media embed widgets with iframe
+/* Override default Umberto styles because they apply margins to media embed widgets with iframe
 previews breaking their structure. */
 .ck.ck-content iframe {
 	margin: initial;
