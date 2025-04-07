@@ -29,6 +29,7 @@ Do you want to use a framework? Native integrations with the most popular librar
 * Integrate CKEditor&nbsp;5 with Angular using {@link getting-started/integrations-cdn/angular CDN} or {@link getting-started/integrations/angular npm}.
 * Integrate CKEditor&nbsp;5 with React using  {@link getting-started/integrations-cdn/react-default-cdn CDN} or {@link getting-started/integrations/react-default-npm npm}.
 * Integrate CKEditor&nbsp;5 with Next.js using {@link getting-started/integrations-cdn/next-js CDN} or {@link getting-started/integrations/next-js npm}.
+* Integrate CKEditor&nbsp;5 with Nuxt using {@link getting-started/integrations-cdn/nuxt CDN} or {@link getting-started/integrations/nuxt npm}.
 * Integrate CKEditor&nbsp;5 with Vue.js 3.x using {@link getting-started/integrations-cdn/vuejs-v3 CDN} or {@link getting-started/integrations/vuejs-v3 npm}.
 * Integrate CKEditor&nbsp;5 with Vue.js 2.x using {@link getting-started/integrations/vuejs-v2 npm}.
 

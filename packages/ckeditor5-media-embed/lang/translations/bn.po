@@ -50,3 +50,7 @@ msgstr "মিডিয়া টুলবার"
 msgctxt "A tooltip displayed when the user hovers a non-previewable media URL in the editor content."
 msgid "Open media in new tab"
 msgstr "নতুন ট্যাবে মিডিয়া খুলুন"
+
+msgctxt "The label for the Media Embed balloon."
+msgid "Media embed"
+msgstr "মিডিয়া এম্বেড"

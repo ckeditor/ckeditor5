@@ -142,3 +142,15 @@ msgstr "Παρακαλούμε δοκιμάστε μια διαφορετική 
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
 msgstr "Πηγή"
+
+msgctxt "Label for the Insert button."
+msgid "Insert"
+msgstr "Εισαγωγή"
+
+msgctxt "Label for the Update button."
+msgid "Update"
+msgstr "Ενημέρωση"
+
+msgctxt "Label for the Back button."
+msgid "Back"
+msgstr "Πίσω"

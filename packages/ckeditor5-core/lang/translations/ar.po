@@ -142,3 +142,15 @@ msgstr "يُرجى محاولة البحث باستخدام عبارة أخرى 
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
 msgstr "المصدر"
+
+msgctxt "Label for the Insert button."
+msgid "Insert"
+msgstr "إدراج"
+
+msgctxt "Label for the Update button."
+msgid "Update"
+msgstr "تحديث"
+
+msgctxt "Label for the Back button."
+msgid "Back"
+msgstr "الرجوع"

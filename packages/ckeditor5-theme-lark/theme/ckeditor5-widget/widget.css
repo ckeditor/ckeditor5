@@ -37,13 +37,6 @@
 	&:hover {
 		outline-color: var(--ck-color-widget-hover-border);
 	}
-
-	/*
-	 * Hide the outline of all widget parents when the widget is being hovered.
-	 */
-	&:has( .ck-widget:hover ) {
-		outline-color: transparent;
-	}
 }
 
 .ck .ck-editor__nested-editable {
@@ -143,12 +136,6 @@
 			}
 		}
 	}
-
-	/* Hide the selection handle on mouse hover over the widget of all the widget parents. */
-	&:has( .ck-widget:hover ) > .ck-widget__selection-handle {
-		opacity: 0;
-		visibility: hidden;
-	}
 }
 
 /* In a RTL environment, align the selection handler to the right side of the widget */
@@ -179,6 +166,19 @@
 			background: var(--ck-color-widget-blurred-border);
 		}
 	}
+}
+
+/*
+* Hide the outline of all widget parents when the widget is being hovered.
+*/
+.ck .ck-widget:has( .ck-widget.table:hover ) {
+	outline-color: transparent;
+}
+
+/* Hide the selection handle on mouse hover over the widget of all the widget parents. */
+.ck .ck-widget.ck-widget_with-selection-handle:has( .ck-widget.table:hover ) > .ck-widget__selection-handle {
+	opacity: 0;
+	visibility: hidden;
 }
 
 /* Style the widget when it's selected but the editable it belongs to lost focus. */

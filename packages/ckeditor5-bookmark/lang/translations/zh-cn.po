@@ -15,14 +15,6 @@ msgctxt "The label of the bookmark toolbar button. Also, a bookmark form header.
 msgid "Bookmark"
 msgstr "书签"
 
-msgctxt "The button in the bookmark insert form."
-msgid "Insert"
-msgstr "插入"
-
-msgctxt "The button in the bookmark update form."
-msgid "Update"
-msgstr "更新"
-
 msgctxt "Button opening the Bookmark editing balloon."
 msgid "Edit bookmark"
 msgstr "编辑书签"
@@ -54,3 +46,19 @@ msgstr "书签名称已存在。"
 msgctxt "The label for the bookmark widget."
 msgid "bookmark widget"
 msgstr "书签小组件"
+
+msgctxt "The label used by assistive technologies describing an bookmark toolbar attached to a bookmark widget."
+msgid "Bookmark toolbar"
+msgstr "书签工具栏"
+
+msgctxt "Title for a feature displaying a list of bookmarks."
+msgid "Bookmarks"
+msgstr "书签"
+
+msgctxt "A message displayed instead of a list of bookmarks if it is empty."
+msgid "No bookmarks available."
+msgstr "无可用书签。"
+
+msgctxt "Tooltip shown after hovering the bookmark link preview."
+msgid "Scroll to bookmark"
+msgstr "滚动到书签"

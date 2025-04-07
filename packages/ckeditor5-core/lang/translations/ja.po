@@ -142,3 +142,15 @@ msgstr "別のフレーズを試すかスペルを確認してください。"
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
 msgstr "ソース"
+
+msgctxt "Label for the Insert button."
+msgid "Insert"
+msgstr "インサート"
+
+msgctxt "Label for the Update button."
+msgid "Update"
+msgstr "アップデート"
+
+msgctxt "Label for the Back button."
+msgid "Back"
+msgstr "戻る"

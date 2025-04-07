@@ -441,6 +441,30 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
+### Email client color format compatibility
+
+When designing content for emails, it is important to be aware that many email clients have limited support for various color formats. For maximum compatibility in email templates, consider the following limitations:
+
+#### Unsupported color formats in most email clients:
+
+* hsl
+* hsla
+* hwb
+* lab
+* lch
+* oklab
+* oklch
+* color-mix
+* rgba
+
+#### Recommended color formats for email compatibility:
+
+* Hexadecimal (for example, `#FF0000`)
+* RGB (for example, `rgb(255, 0, 0)`)
+* Named colors (for example, `red`)
+
+Using these compatible formats will ensure your content displays consistently across different email clients.
+
 ## Related features
 
 Here are some more CKEditor&nbsp;5 features that can help you format your content:

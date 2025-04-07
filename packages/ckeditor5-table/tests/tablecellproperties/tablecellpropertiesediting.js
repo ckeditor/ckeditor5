@@ -7,6 +7,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
 import TableEditing from '../../src/tableediting.js';
+import TableLayoutEditing from '../../src/tablelayout/tablelayoutediting.js';
 import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting.js';
 
 import TableCellBorderColorCommand from '../../src/tablecellproperties/commands/tablecellbordercolorcommand.js';
@@ -1237,6 +1238,129 @@ describe( 'table cell properties', () => {
 					model.change( writer => writer.setAttribute( 'tableCellHeight', '1410em', tableCell ) );
 
 					assertTableCellStyle( editor, 'height:1410em;' );
+				} );
+			} );
+		} );
+
+		describe( 'table layout', () => {
+			beforeEach( async () => {
+				editor = await VirtualTestEditor.create( {
+					plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing, TableLayoutEditing ]
+				} );
+
+				model = editor.model;
+			} );
+
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
+			describe( 'upcast', () => {
+				describe( 'horizontal alignment', () => {
+					it( 'should not upcast text-align:left style (due to the default value of the property)', () => {
+						editor.setData( '<table class="layout-table"><tr><td style="text-align:left">foo</td></tr></table>' );
+						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.be.undefined;
+					} );
+
+					it( 'should upcast text-align:right style', () => {
+						editor.setData( '<table class="layout-table"><tr><td style="text-align:right">foo</td></tr></table>' );
+						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'right' );
+					} );
+
+					it( 'should upcast text-align:center style', () => {
+						editor.setData( '<table class="layout-table"><tr><td style="text-align:center">foo</td></tr></table>' );
+						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'center' );
+					} );
+
+					it( 'should upcast text-align:justify style', () => {
+						editor.setData( '<table class="layout-table"><tr><td style="text-align:justify">foo</td></tr></table>' );
+						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'justify' );
+					} );
+
+					describe( 'the `align` attribute', () => {
+						it( 'should not upcast the align="left" attribute (due to the default value of the property)', () => {
+							editor.setData( '<table class="layout-table"><tr><td align="left">foo</td></tr></table>' );
+							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.be.undefined;
+						} );
+
+						it( 'should upcast the align="right" attribute ', () => {
+							editor.setData( '<table class="layout-table"><tr><td align="right">foo</td></tr></table>' );
+							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.be.equal( 'right' );
+						} );
+
+						it( 'should upcast the align="center" attribute', () => {
+							editor.setData( '<table class="layout-table"><tr><td align="center">foo</td></tr></table>' );
+							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'center' );
+						} );
+
+						it( 'should upcast the align="justify" attribute', () => {
+							editor.setData( '<table class="layout-table"><tr><td align="justify">foo</td></tr></table>' );
+							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'justify' );
+						} );
+					} );
+				} );
+
+				describe( 'vertical alignment', () => {
+					it( 'should upcast "top" vertical-align', () => {
+						editor.setData( '<table class="layout-table"><tr><td style="vertical-align:top">foo</td></tr></table>' );
+
+						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( tableCell.getAttribute( 'tableCellVerticalAlignment' ) ).to.equal( 'top' );
+					} );
+
+					it( 'should upcast "bottom" vertical-align', () => {
+						editor.setData( '<table class="layout-table"><tr><td style="vertical-align:bottom">foo</td></tr></table>' );
+						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( tableCell.getAttribute( 'tableCellVerticalAlignment' ) ).to.equal( 'bottom' );
+					} );
+
+					it( 'should not upcast "middle" vertical-align (due to the default value of the property)', () => {
+						editor.setData( '<table class="layout-table"><tr><td style="vertical-align:middle">foo</td></tr></table>' );
+						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+						expect( tableCell.getAttribute( 'tableCellVerticalAlignment' ) ).to.be.undefined;
+					} );
+
+					describe( 'the `valign` attribute', () => {
+						it( 'should upcast "top" valign attribute', () => {
+							editor.setData( '<table class="layout-table"><tr><td valign="top">foo</td></tr></table>' );
+							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+							expect( tableCell.getAttribute( 'tableCellVerticalAlignment' ) ).to.equal( 'top' );
+						} );
+
+						it( 'should upcast "bottom" valign attribute', () => {
+							editor.setData( '<table class="layout-table"><tr><td valign="bottom">foo</td></tr></table>' );
+							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+							expect( tableCell.getAttribute( 'tableCellVerticalAlignment' ) ).to.equal( 'bottom' );
+						} );
+
+						it( 'should not upcast "middle" valign attribute (due to the default value of the property)', () => {
+							editor.setData( '<table class="layout-table"><tr><td valign="middle">foo</td></tr></table>' );
+							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+							expect( tableCell.getAttribute( 'tableCellVerticalAlignment' ) ).to.be.undefined;
+						} );
+					} );
 				} );
 			} );
 		} );

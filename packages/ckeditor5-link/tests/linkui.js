@@ -176,6 +176,14 @@ describe( 'LinkUI', () => {
 
 				expect( balloon.visibleView ).to.equal( linkUIFeature.formView );
 			} );
+
+			it( 'should scroll to the selection when the button is executed', () => {
+				const scrollSpy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+				linkButton.fire( 'execute' );
+
+				sinon.assert.calledOnce( scrollSpy );
+			} );
 		}
 
 		describe( 'the "linkPreview" toolbar button', () => {
@@ -1356,6 +1364,20 @@ describe( 'LinkUI', () => {
 			sinon.assert.calledWithExactly( spy, true );
 		} );
 
+		it( 'should scroll to the selection on Ctrl+K keystroke', () => {
+			const scrollSpy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+			editor.keystrokes.press( {
+				keyCode: keyCodes.k,
+				ctrlKey: !env.isMac,
+				metaKey: env.isMac,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			sinon.assert.calledOnce( scrollSpy );
+		} );
+
 		it( 'should not show the UI on Ctrl+K keystroke on content with LinkCommand disabled', () => {
 			const spy = testUtils.sinon.stub( linkUIFeature, '_showUI' ).returns( {} );
 			const command = editor.commands.get( 'link' );
@@ -1599,7 +1621,7 @@ describe( 'LinkUI', () => {
 			linkUIFeature._showUI();
 			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
-			sinon.assert.calledWithExactly( spy );
+			sinon.assert.calledWithExactly( spy, false );
 		} );
 
 		it( 'should hide the UI when link is in not currently visible stack', () => {
@@ -1618,7 +1640,7 @@ describe( 'LinkUI', () => {
 
 			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
-			sinon.assert.calledWithExactly( spy );
+			sinon.assert.calledWithExactly( spy, false );
 		} );
 
 		it( 'should not hide the UI upon clicking inside the the UI', () => {
@@ -3357,7 +3379,7 @@ describe( 'LinkUI', () => {
 
 				document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
-				sinon.assert.calledWithExactly( spy );
+				sinon.assert.calledWithExactly( spy, false );
 				expect( linkUIFeature._balloon.visibleView ).to.be.null;
 			} );
 

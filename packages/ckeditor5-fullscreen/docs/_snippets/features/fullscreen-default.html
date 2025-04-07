@@ -36,14 +36,6 @@
 	@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap');
 
 	/* ----------------------- Demo layout styles ------------------------------ */
-	.row {
-		width: 1250px;
-	}
-
-	.main .main__content .main__content-inner {
-		margin-left: 50px;
-	}
-
 	.demo-container {
 		display: grid;
 		grid-template-columns: minmax(250px, .5fr) 1.5fr;
@@ -56,7 +48,7 @@
 		border: 1px solid var(--ck-color-base-border);
 
 		/* The max height of the editor content wrapper before it becomes scrollable. */
-		--demo-content-height: 800px;
+		--demo-content-height: 550px;
 	}
 
 	.demo-container .toolbar-container {
@@ -97,28 +89,19 @@
 		flex: 1;
 		justify-content: center;
 		align-items: flex-start;
-
-		transform: translateZ(0);
-		/* It is a hack for safari not repainting headings in document when unfolding document outline */
 	}
 
 	.demo-container .document-outline-container {
-		max-height: var(--demo-content-height);
-		padding: var(--ck-spacing-large) 0 0;
-		display: flex;
-		overflow-y: auto;
-		/* Customize the default font size of the outline */
-		--ck-document-outline-base-font-size: 1em;
-	}
-
-	.demo-container .document-outline-container .ck-document-outline {
-		max-width: 350px;
-		text-overflow: ellipsis;
+		display: none;
 	}
 
 	.sidebar {
-		min-width: 320px;
+		min-width: 65px;
 		padding-right: var(--ck-spacing-large);
+	}
+
+	.presence {
+		height: 55px;
 	}
 
 	#default_revision-viewer-container {
@@ -137,6 +120,7 @@
 		border: 1px solid var(--ck-color-base-border);
 		border-left: 0;
 		padding-right: 0;
+		min-width: 300px;
 	}
 
 	#demo-container .ck.ck-editor {
@@ -153,55 +137,6 @@
 
 	.editing-area-scroll-wrapper {
 		overflow-x: auto;
-	}
-
-	/* ------------ DocumentOutlineToggler plugin styles ------------------- */
-
-	/* Styles of the topmost demo container when the outline gets collapsed. */
-	.demo-container.collapsed {
-		grid-template-columns: 50px 1fr;
-	}
-
-	/* Styles of the outline when it gets collapsed. */
-	.demo-container.collapsed .document-outline-container .ck-document-outline {
-		width: 0px;
-		margin: 0;
-		padding: 0;
-		overflow: hidden;
-		height: 0;
-	}
-
-	.demo-container .document-outline-container .ck-document-outline:empty::before {
-		width: max-content;
-	}
-
-	/* Styles of the outline collapse button. */
-	.demo-container .document-outline-container .ck-document-outline-toggle {
-		align-self: flex-start;
-		opacity: .5;
-		margin-left: var(--ck-spacing-large);
-		border-radius: 100%;
-	}
-
-	.demo-container .document-outline-container .ck-document-outline-toggle:hover {
-		opacity: 1;
-	}
-
-	.ck.ck-word-count {
-		display: flex;
-		justify-content: flex-end;
-
-		background: var(--ck-color-toolbar-background);
-		padding: var(--ck-spacing-small) var(--ck-spacing-standard);
-		margin-bottom: 15px;
-		border: 1px solid var(--ck-color-toolbar-border);
-		border-top-width: 0;
-		border-radius: 0 0 var(--ck-border-radius);
-		box-shadow: 2px 2px 2px hsla(0, 0%, 0%, 0.1);
-	}
-
-	.ck.ck-word-count .ck-word-count__words {
-		margin-right: var(--ck-spacing-standard);
 	}
 
 	.live-snippet {
@@ -249,7 +184,6 @@
 		animation: _spinner-color 6s ease-in-out infinite, _spinner-dash 1.5s ease-in-out infinite;
 		stroke-linecap: round;
 	}
-
 
 	@keyframes _fadein {
 		from {
@@ -314,8 +248,6 @@
 	/* Styles of the editor content container to make it look like a sheet of paper. */
 	.editor-content.ck.ck-content {
 		/* Min and max used to force width in flexbox. */
-		min-width: 210mm;
-		max-width: 210mm;
 		min-height: 297mm;
 		height: auto;
 		padding: 20mm 12mm;
@@ -497,31 +429,11 @@
 		box-shadow: 5px 5px 0 #b3b3b3;
 	}
 
-
-
 	/* ---------------------- Umberto overrides ------------------------ */
 
-	/* Style the document editor like Google Docs.*/
-
-	@media only screen and (min-width: 1360px) {
-		.main .main__content.main__content-wide {
-			padding-right: 0;
-		}
-	}
-
 	@media only screen and (min-width: 1600px) {
-		.main .main__content.main__content-wide {
-			width: 24cm;
-		}
-
-		.main .main__content.main__content-wide .main__content-inner {
-			width: auto;
-			margin: 0 50px;
-		}
-
-		/* Keep "page" look based on viewport width. */
-		.main__content-wide .document-editor__editable-container .document-editor__editable.ck-editor__editable {
-			width: 60%;
-		}
+		.main .main__content-inner {
+            width: 905px;
+        }
 	}
 </style>

@@ -330,7 +330,8 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 		};
 		model: string | {
 			key: string;
-			value: unknown | ( ( viewElement: ViewElement, conversionApi: UpcastConversionApi ) => unknown );
+			value: unknown |
+				( ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => unknown );
 			name?: string;
 		};
 		converterPriority?: PriorityString;
@@ -685,7 +686,8 @@ function upcastAttributeToAttribute( config: {
 	};
 	model: string | {
 		key: string;
-		value: unknown | ( ( viewElement: ViewElement, conversionApi: UpcastConversionApi ) => unknown );
+		value: unknown |
+			( ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => unknown );
 	};
 	converterPriority?: PriorityString;
 } ) {
@@ -1067,7 +1069,7 @@ function prepareToAttributeConverter(
 
 		const modelKey = config.model.key;
 		const modelValue: unknown = typeof config.model.value == 'function' ?
-			config.model.value( data.viewItem, conversionApi ) : config.model.value;
+			config.model.value( data.viewItem, conversionApi, data ) : config.model.value;
 
 		// Do not convert if attribute building function returned falsy value.
 		if ( modelValue === null ) {

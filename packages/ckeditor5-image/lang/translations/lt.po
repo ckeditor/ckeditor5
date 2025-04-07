@@ -186,3 +186,11 @@ msgstr "Įkeliant vaizdą, įvyko klaida"
 msgctxt "Label for the widget inserted by the image feature (as in 'insert image')"
 msgid "Image"
 msgstr "Vaizdas"
+
+msgctxt "The label for the header of the image resize balloon."
+msgid "Image Resize"
+msgstr "Paveikslėlio dydžio keitimas"
+
+msgctxt "The label of the input field for the text alternative of the image."
+msgid "Text Alternative"
+msgstr "Teksto alternatyva"

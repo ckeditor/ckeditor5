@@ -87,7 +87,7 @@ The {@link features/word-count word and character counter} will help you track p
 
 Use {@link features/autoformat Markdown syntax} to format content on the go to speed up the editing process. Thanks to {@link features/text-transformation automatic text transformations} (also known as autocorrect) and the {@link features/spelling-and-grammar-checking spell checker} {@icon @webspellchecker/wproofreader-ckeditor5/theme/icons/wproofreader.svg Spell and grammar check} you can ensure everything is correct. Create multi-language documents and correct them on the go with automatic language detection and {@link features/language text part language} feature.
 
-Keep full control of your work. Be safe and never lose anything thanks to the {@link features/real-time-collaboration-integration#the-autosave-plugin autosave plugin}.
+Keep full control of your work. Be safe and never lose anything thanks to the {@link features/real-time-collaboration-integration#the-autosave-plugin autosave plugin}. Create and edit content comfortably on larger viewport in the {@link features/fullscreen fullscreen mode} with better access to the UI.
 
 {@img assets/img/features-ai-assistant.png 800 CKEditor&nbsp;5 AI Assistant feature.}
 
