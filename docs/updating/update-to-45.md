@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 45.x | CKEditor 5 Documentation
 menu-title: Update to v45.x
 order: 79
-modified_at: 2025-03-26
+modified_at: 2025-04-07
 ---
 
 # Update to CKEditor&nbsp;5 v45.x
@@ -156,7 +156,7 @@ Notable changes:
 ### Major breaking changes in this release
 
 * **[bookmark](https://www.npmjs.com/package/@ckeditor/ckeditor5-bookmark)**: The `BookmarkUI#actionsView` is no longer available. The bookmark feature is now using the `WidgetToolbarRepository` instead.
-* **[build-*](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-*)**: CKEditor 5 predefined builds are no longer available.
+* **[build-*](https://www.npmjs.com/search?q=keywords%3Ackeditor5-build%20maintainer%3Ackeditor)**: CKEditor 5 predefined builds are no longer available.
 * **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: The `LinkUI#actionsView` is no longer available. The bookmark feature now uses the `LinkUI#toolbarView` (an instance of the `ToolbarView` class) instead of the custom `LinkActionsView`.
 
 ### Minor breaking changes in this release
