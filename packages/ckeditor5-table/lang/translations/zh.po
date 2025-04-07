@@ -266,3 +266,31 @@ msgstr "在表格中移動"
 msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
 msgid "Table"
 msgstr "表格"
+
+msgctxt "Label for the insert table layout toolbar button."
+msgid "Insert table layout"
+msgstr "插入表格版面配置"
+
+msgctxt "The accessible label used in the table layout insert UI element."
+msgid "Table layout"
+msgstr "表格版面配置"
+
+msgctxt "The accessible label of the layout table type dropdown button."
+msgid "Layout table"
+msgstr "版面配置表格"
+
+msgctxt "The accessible label of the content table type dropdown button."
+msgid "Content table"
+msgstr "內容表格"
+
+msgctxt "The accessible label of the table balloon button that displays a user interface to choose table type."
+msgid "Choose table type"
+msgstr "選擇表格類型"
+
+msgctxt "The accessible label of the table type toolbar button."
+msgid "Table type"
+msgstr "表格類型"
+
+msgctxt "The accessible label of dropdown list that displays a user interface to choose table type."
+msgid "Table type options"
+msgstr "表格類型選項"

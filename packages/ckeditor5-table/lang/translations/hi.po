@@ -266,3 +266,31 @@ msgstr "टेबल में नैविगेट करें"
 msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
 msgid "Table"
 msgstr "टेबल"
+
+msgctxt "Label for the insert table layout toolbar button."
+msgid "Insert table layout"
+msgstr "टेबल लेआउट सम्मिलित करें"
+
+msgctxt "The accessible label used in the table layout insert UI element."
+msgid "Table layout"
+msgstr "टेबल लेआउट"
+
+msgctxt "The accessible label of the layout table type dropdown button."
+msgid "Layout table"
+msgstr "लेआउट टेबल"
+
+msgctxt "The accessible label of the content table type dropdown button."
+msgid "Content table"
+msgstr "कंटेंट टेबल"
+
+msgctxt "The accessible label of the table balloon button that displays a user interface to choose table type."
+msgid "Choose table type"
+msgstr "टेबल प्रकार चुनें"
+
+msgctxt "The accessible label of the table type toolbar button."
+msgid "Table type"
+msgstr "टेबल प्रकार"
+
+msgctxt "The accessible label of dropdown list that displays a user interface to choose table type."
+msgid "Table type options"
+msgstr "टेबल प्रकार के विकल्प"

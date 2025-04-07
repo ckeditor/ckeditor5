@@ -4,14 +4,14 @@ order: 10
 meta-title: License key and activation | CKEditor 5 Documentation
 meta-description: Managing your license keys and activating the editor.
 menu-title: License key and activation
-modified_at: 2024-11-20
+modified_at: 2025-04-02
 ---
 
 # License key and activation
 
 This article explains how to obtain a commercial license for CKEditor&nbsp;5 and the CKEditor premium features.
 
-<info-box>
+<info-box info>
 	CKEditor&nbsp;5 without premium features can be used as {@link getting-started/licensing/license-and-legal open source software under the GPL}. It will then {@link getting-started/licensing/managing-ckeditor-logo display a small "Powered by CKEditor" logo} in the editor area.
 
 	If you are not meeting the criteria of the GPL, you need to obtain a commercial one.
@@ -21,7 +21,7 @@ This article explains how to obtain a commercial license for CKEditor&nbsp;5 and
 
 ### Purchasing a commercial license
 
-If you wish to purchase a commercial CKEditor 5 license there are two options to do that.
+If you wish to purchase a commercial CKEditor&nbsp;5 license there are two options to do that.
 
 1. Use our [pricing page](https://ckeditor.com/pricing/). You can choose from predefined plans that will allow you to use the editor with our Cloud CDN.
 2. [Contact our sales team](https://ckeditor.com/contact/) if you have some specific needs, and you want to use the self-hosted editor.
@@ -35,7 +35,7 @@ When you choose the editor license you need to decide how the editor will be dis
 
 ### Subscribing to the CKEditor Premium Features free trial
 
-If you wish to test our offer, you can create an account by [signing up for CKEditor Premium Features 14-day free trial](https://portal.ckeditor.com/checkout?plan=free). After signing up, you will receive access to the Customer Portal.
+If you wish to test our offer, you can create an account by [signing up for CKEditor Premium Features 14-day free trial](https://portal.ckeditor.com/checkout?plan=free). After signing up, you will receive access to the Customer Portal.
 
 The trial is commitment-free, and you do not need to provide credit card details to start it. The Premium Features free trial allows you to test all paid features and products at no cost.
 
@@ -47,11 +47,11 @@ CKEditor&nbsp;5 (without the premium features listed above) can be used in an op
 
 * a [free account using the Cloud distribution](https://ckeditor.com/pricing). You will be granted a unique license key and free editor loads.
 * legacy GPL accounts in our Customer Portal. Use the `'GPL'` value in the `licenseKey` field in your configuration.
-* without account setup as open-source software under the GPL. Use the `'GPL'` value in the `licenseKey` field in your configuration.
+* without account setup as open-source software under the GPL. Use the `'GPL'` value in the `licenseKey` field in your configuration.
 
-In both cases, the editor will {@link getting-started/licensing/managing-ckeditor-logo display a small “Powered by CKEditor” logo} in the editor area.
+In both cases, the editor will {@link getting-started/licensing/managing-ckeditor-logo display a small "Powered by CKEditor" logo} in the editor area.
 
-If you are running an Open Source project under an OSS license incompatible with GPL, please [contact us](https://ckeditor.com/contact/). We will be happy to [support your project with a free CKEditor 5 license](https://ckeditor.com/wysiwyg-editor-open-source/).
+If you are running an Open Source project under an OSS license incompatible with GPL, please [contact us](https://ckeditor.com/contact/). We will be happy to [support your project with a free CKEditor&nbsp;5 license](https://ckeditor.com/wysiwyg-editor-open-source/).
 
 For commercial purposes, {@link getting-started/licensing/license-and-legal trial, development, and production license keys} are available.
 
@@ -72,7 +72,7 @@ After signing up, you will receive access to the Customer Portal.
 
 ### Log in to the Customer Portal
 
-Log in to the [Customer Portal](https://portal.ckeditor.com/). During the first login, you will receive a confirmation email with a link to create a password for your account.
+Log in to the [Customer Portal](https://portal.ckeditor.com/). During the first login, you will receive a confirmation email with a link to create a password for your account.
 
 Keep the password safe, as this trial account will be converted into a commercial account if you decide to buy the license after the trial period is over.
 
@@ -132,7 +132,7 @@ This key grants access to your subscription features without imposing any operat
 * **Intended use**: Meant for production environments where the software is actively used by end-users.
 * **Usage limitation**: None specified.
 * **Editor loads**: Depending on your plan type:
-    * It consumes editor loads if you are on our usage-based billing plans.
+	* It consumes editor loads if you are on our usage-based billing plans.
 	* It does not consume editor loads if you are not on a plan with usage-based billing.
 
 ### Evaluation license key
@@ -144,7 +144,7 @@ This license key is a temporary, evaluation-only key generated by our team to su
 * **Functionality**: The editor is limited functionally, such as session time and the number of changes allowed.
 * **Intended use**: Ideal for quick evaluations, demos, or inclusion in code samples.
 * **Usage limitation**: Issued solely for evaluation purposes by our team; not authorized for production use.
-* **Editor loads**: This license does not consume editor loads, ensuring it’s lightweight for temporary testing.
+* **Editor loads**: This license does not consume editor loads, ensuring it is lightweight for temporary testing.
 
 ## Using the license key
 
@@ -159,7 +159,6 @@ ClassicEditor
 		// Load the plugins.
 		plugins: [ /* ... */ ],
 
-
 		// Display the feature UI element in the toolbar.
 		toolbar: [ /* ... */ ],
 	} )
@@ -171,12 +170,37 @@ To use premium features, you need to add the relevant plugins to your CKEditor&n
 
 Alternatively, refer to the installation sections in the plugin documentation to do it on your own. You can read more about {@link getting-started/setup/configuration installing plugins} and {@link getting-started/setup/toolbar toolbar configuration} in dedicated guides.
 
-## License key regeneration
+## Approved hosts whitelisting
 
-License keys may be regenerated, and you will always be informed when this occurs. Regeneration may happen under the following circumstances:
+The Customer Portal provides an optional approved hosts whitelisting feature for production license keys. This feature allows you to restrict the editor's usage to specific domains or IP addresses. This security enhancement prevents unauthorized use of your license key.
 
-* **Upon request**: You can request a license key regeneration.
-* **Feature updates**: Keys will be regenerated if new features are added to your subscription, either through a plan upgrade or additions to your current plan.
+* **Default behavior**: This is an opt-in feature &ndash; by default, production license keys have no domain restrictions.
+* **Configuration**: You can specify up to 5 domains or IP addresses for which the license key can be used.
 
-Your current license keys will remain functional even after regeneration, ensuring you have sufficient time to migrate to the updated keys without disruption.
+To set it up:
 
+1. [Sign in to the Customer Portal](https://portal.ckeditor.com/).
+2. Visit the _License keys_ tab.
+3. Click _Manage_ action for your production key.
+4. Add up to five approved domains. Available patterns:
+	* Domain or IP address: specify exact domains (for example: `example.com`) or IP addresses (`192.168.0.0`).
+	* Wildcard in domain: use `*` for subdomains (`*.example.com` allows `api.example.com` and `www.example.com`).
+	* Wildcard in IP address: use `*` for segments (`192.168.*.*` allows `192.168.0.0` to `192.168.255.255`).
+5. Save the changes.
+6. Replace the license key in your editor with the new one created so that it starts working.
+
+<info-box info>
+	All new keys created after setting this option will have the approved hosts added automatically.
+</info-box>
+
+## License key recreation
+
+New license keys may be created in your account. Recreation may happen under the following circumstances:
+
+* **Upon request**: You can request a license key creation.
+* **Feature updates**: New keys will be created if new features are added to your subscription, either through a plan upgrade or additions to your current plan.
+* **Approved host whitelisting**: When you create or update the approved hosts list, a new key will be created.
+
+<info-box info>
+	Your current license keys will remain functional even after recreation, ensuring you have sufficient time to migrate to the updated keys without disruption. You will always see two last keys of a type.
+</info-box>

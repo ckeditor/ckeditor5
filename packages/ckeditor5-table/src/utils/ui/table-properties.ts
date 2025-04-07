@@ -198,7 +198,12 @@ export function fillToolbar<TView extends View, TPropertyName extends keyof TVie
 		} );
 
 		button.on( 'execute', () => {
-			view[ propertyName ] = buttonValue as any;
+			// Allow toggling alignment if there is no default value specified (especially for layout tables).
+			if ( !defaultValue && buttonValue && view[ propertyName ] === buttonValue ) {
+				view[ propertyName ] = undefined as any;
+			} else {
+				view[ propertyName ] = buttonValue as any;
+			}
 		} );
 
 		toolbar.items.add( button );

@@ -142,3 +142,15 @@ msgstr "Lütfen farklı bir kelime grubu deneyin veya yazım denetimi yapın."
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
 msgstr "Kaynak"
+
+msgctxt "Label for the Insert button."
+msgid "Insert"
+msgstr "Ekle"
+
+msgctxt "Label for the Update button."
+msgid "Update"
+msgstr "Güncelle"
+
+msgctxt "Label for the Back button."
+msgid "Back"
+msgstr "Geri"

@@ -57,6 +57,7 @@ Gantt
 [Gg]etter
 global
 Grammarly
+gzipped
 hardcode
 hotlink
 hotlinked

@@ -15,14 +15,6 @@ msgctxt "The label of the bookmark toolbar button. Also, a bookmark form header.
 msgid "Bookmark"
 msgstr "Järjehoidja"
 
-msgctxt "The button in the bookmark insert form."
-msgid "Insert"
-msgstr "Sisesta"
-
-msgctxt "The button in the bookmark update form."
-msgid "Update"
-msgstr "Uuenda"
-
 msgctxt "Button opening the Bookmark editing balloon."
 msgid "Edit bookmark"
 msgstr "Muuda järjehoidjat"
@@ -54,3 +46,19 @@ msgstr "Järjehoidja nimi on juba olemas."
 msgctxt "The label for the bookmark widget."
 msgid "bookmark widget"
 msgstr "järjehoidja vidin"
+
+msgctxt "The label used by assistive technologies describing an bookmark toolbar attached to a bookmark widget."
+msgid "Bookmark toolbar"
+msgstr "Järjehoidjariba"
+
+msgctxt "Title for a feature displaying a list of bookmarks."
+msgid "Bookmarks"
+msgstr "Järjehoidjad"
+
+msgctxt "A message displayed instead of a list of bookmarks if it is empty."
+msgid "No bookmarks available."
+msgstr "Ühtegi järjehoidjat pole saadaval."
+
+msgctxt "Tooltip shown after hovering the bookmark link preview."
+msgid "Scroll to bookmark"
+msgstr "Keri järjehoidjani"
