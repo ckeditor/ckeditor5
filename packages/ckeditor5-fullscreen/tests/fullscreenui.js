@@ -11,6 +11,7 @@ import { IconFullscreenEnter, IconFullscreenLeave } from 'ckeditor5/src/icons.js
 
 import FullscreenEditing from '../src/fullscreenediting.js';
 import FullscreenUI from '../src/fullscreenui.js';
+import { env } from '@ckeditor/ckeditor5-utils';
 
 describe( 'FullscreenUI', () => {
 	let domElement, editor;
@@ -84,14 +85,50 @@ describe( 'FullscreenUI', () => {
 			expect( button.label ).to.equal( 'Enter fullscreen mode' );
 		} );
 
-		it( 'on #execute should call the `fullscreen` command', () => {
-			const spy = sinon.spy( editor.commands.get( 'toggleFullscreen' ), 'execute' );
+		describe( 'on #execute', () => {
+			it( 'should call the `fullscreen` command', () => {
+				const spy = sinon.spy( editor.commands.get( 'toggleFullscreen' ), 'execute' );
 
-			button.fire( 'execute' );
+				button.fire( 'execute' );
 
-			sinon.assert.calledOnce( spy );
+				sinon.assert.calledOnce( spy );
+			} );
 
-			button.fire( 'execute' );
+			it( 'should force toolbar blur on non-Chromium browsers', () => {
+				sinon.stub( env, 'isBlink' ).value( false );
+
+				editor.ui.view.toolbar.items.add( button );
+
+				// Focus the toolbar button when entering fullscreen mode.
+				editor.ui.view.toolbar.focusTracker.focusedElement = editor.ui.view.toolbar.items.first.element;
+
+				button.fire( 'execute' );
+
+				expect( editor.ui.view.toolbar.focusTracker.focusedElement ).to.be.null;
+
+				// Focus the toolbar button when leaving fullscreen mode.
+				editor.ui.view.toolbar.focusTracker.focusedElement = editor.ui.view.toolbar.items.first.element;
+
+				button.fire( 'execute' );
+
+				expect( editor.ui.view.toolbar.focusTracker.focusedElement ).to.be.null;
+			} );
+
+			it( 'should focus the editable element', () => {
+				const spy = sinon.spy( editor.editing.view, 'focus' );
+
+				button.fire( 'execute' );
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'should scroll to the selection', () => {
+				const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+				button.fire( 'execute' );
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
 		} );
 	} );
 
@@ -129,14 +166,52 @@ describe( 'FullscreenUI', () => {
 			expect( button.isOn ).to.be.false;
 		} );
 
-		it( 'on #execute should call the `toggleFullscreen` command', () => {
-			const spy = sinon.spy( editor.commands.get( 'toggleFullscreen' ), 'execute' );
+		describe( 'on #execute', () => {
+			it( 'should call the `fullscreen` command', () => {
+				const spy = sinon.spy( editor.commands.get( 'toggleFullscreen' ), 'execute' );
 
-			button.fire( 'execute' );
+				button.fire( 'execute' );
 
-			sinon.assert.calledOnce( spy );
+				sinon.assert.calledOnce( spy );
+			} );
 
-			button.fire( 'execute' );
+			// This test is purely technical. It's currently impossible to reproduce such a situation
+			// in the browser.
+			it( 'should force toolbar blur on non-Chromium browsers', () => {
+				sinon.stub( env, 'isBlink' ).value( false );
+
+				editor.ui.view.toolbar.items.add( button );
+
+				// Focus the toolbar button when entering fullscreen mode.
+				editor.ui.view.toolbar.focusTracker.focusedElement = editor.ui.view.toolbar.items.first.element;
+
+				button.fire( 'execute' );
+
+				expect( editor.ui.view.toolbar.focusTracker.focusedElement ).to.be.null;
+
+				// Focus the toolbar button when leaving fullscreen mode.
+				editor.ui.view.toolbar.focusTracker.focusedElement = editor.ui.view.toolbar.items.first.element;
+
+				button.fire( 'execute' );
+
+				expect( editor.ui.view.toolbar.focusTracker.focusedElement ).to.be.null;
+			} );
+
+			it( 'should focus the editable element', () => {
+				const spy = sinon.spy( editor.editing.view, 'focus' );
+
+				button.fire( 'execute' );
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'should scroll to the selection', () => {
+				const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+				button.fire( 'execute' );
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
 		} );
 	} );
 } );

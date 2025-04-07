@@ -186,3 +186,11 @@ msgstr "Fout tijdens het uploaden van afbeeldingen"
 msgctxt "Label for the widget inserted by the image feature (as in 'insert image')"
 msgid "Image"
 msgstr "Afbeelding"
+
+msgctxt "The label for the header of the image resize balloon."
+msgid "Image Resize"
+msgstr "Afbeeldingformaat wijzigen"
+
+msgctxt "The label of the input field for the text alternative of the image."
+msgid "Text Alternative"
+msgstr "Tekstalternatief"

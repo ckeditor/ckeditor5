@@ -7,7 +7,8 @@
  * @module table/converters/tableproperties
  */
 
-import type { Conversion, ViewElement } from 'ckeditor5/src/engine.js';
+import type { Conversion, UpcastConversionApi, UpcastConversionData, ViewElement } from 'ckeditor5/src/engine.js';
+import { first } from 'ckeditor5/src/utils.js';
 
 /**
  * Conversion helper for upcasting attributes using normalized styles.
@@ -47,15 +48,17 @@ export function upcastStyleToAttribute(
 		},
 		model: {
 			key: modelAttribute,
-			value: ( viewElement: ViewElement ) => {
+			value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
 				if ( !shouldUpcast( viewElement ) ) {
 					return;
 				}
 
+				const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
+
 				const normalized = viewElement.getNormalizedStyle( styleName ) as Record<Side, string>;
 				const value = reduceBoxSides ? reduceBoxSidesValue( normalized ) : normalized;
 
-				if ( defaultValue !== value ) {
+				if ( localDefaultValue !== value ) {
 					return value;
 				}
 			}
@@ -121,6 +124,17 @@ export function upcastBorderStyles(
 		}
 
 		const modelElement = [ ...data.modelRange.getItems( { shallow: true } ) ].pop();
+		const tableElement = modelElement.findAncestor( 'table', { includeSelf: true } );
+
+		let localDefaultBorder = defaultBorder;
+
+		if ( tableElement && tableElement.getAttribute( 'tableType' ) == 'layout' ) {
+			localDefaultBorder = {
+				style: 'none',
+				color: '',
+				width: ''
+			};
+		}
 
 		conversionApi.consumable.consume( data.viewItem, matcherPattern );
 
@@ -136,15 +150,15 @@ export function upcastBorderStyles(
 			width: reduceBoxSidesValue( normalizedBorder.width )
 		};
 
-		if ( reducedBorder.style !== defaultBorder.style ) {
+		if ( reducedBorder.style !== localDefaultBorder.style ) {
 			conversionApi.writer.setAttribute( modelAttributes.style, reducedBorder.style, modelElement );
 		}
 
-		if ( reducedBorder.color !== defaultBorder.color ) {
+		if ( reducedBorder.color !== localDefaultBorder.color ) {
 			conversionApi.writer.setAttribute( modelAttributes.color, reducedBorder.color, modelElement );
 		}
 
-		if ( reducedBorder.width !== defaultBorder.width ) {
+		if ( reducedBorder.width !== localDefaultBorder.width ) {
 			conversionApi.writer.setAttribute( modelAttributes.width, reducedBorder.width, modelElement );
 		}
 	} ) );
@@ -205,6 +219,24 @@ export function downcastTableAttribute(
 			writer.removeStyle( styleName, table );
 		}
 	} ) );
+}
+
+/**
+ * Returns the default value for table or table cell property adjusted for layout tables.
+ */
+export function getDefaultValueAdjusted(
+	defaultValue: string,
+	layoutTableDefault: string,
+	data: UpcastConversionData<ViewElement>
+): string {
+	const modelElement = data.modelRange && first( data.modelRange.getItems( { shallow: true } ) );
+	const tableElement = modelElement && modelElement.is( 'element' ) && modelElement.findAncestor( 'table', { includeSelf: true } );
+
+	if ( tableElement && tableElement.getAttribute( 'tableType' ) === 'layout' ) {
+		return layoutTableDefault;
+	}
+
+	return defaultValue;
 }
 
 type Side = 'top' | 'right' | 'bottom' | 'left';

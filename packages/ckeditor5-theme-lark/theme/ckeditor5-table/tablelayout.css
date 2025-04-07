@@ -16,10 +16,10 @@
 	& .table.layout-table {
 		& > table {
 			width: 100%;
-			/* Styles to make the layout table outline visible when the layout table is inside another layout table inside edge cells.
-			Currently, this solution works on every browser except Safari. */
-			overflow: clip;
-			overflow-clip-margin: var(--ck-widget-outline-thickness);
+			height: 100%;
+
+			/* Resetting `border-collapse` property to the user agent styles. */
+			border-collapse: revert;
 
 			/* The default table layout style in the editing view when the border is unset. */
 			&:not(
@@ -95,6 +95,8 @@
 					&.ck-widget__type-around__button_before,
 					&.ck-widget__type-around__button_after {
 						transform: translateY(0);
+						/* Same value as inline-image widget because it is after the inline-image in HTML structure */
+						z-index: 2;
 					}
 
 					&.ck-widget__type-around__button_before {
@@ -127,7 +129,9 @@
 					--ck-widget-handler-icon-size: var(--ck-table-layout-widget-handler-icon-size);
 
 					transform: translateY(calc(0px - var(--ck-widget-outline-thickness)));
-					z-index: var(--ck-z-default);
+					/* Value increased by 1 as in selected inline-image widget
+					because it is before the inline-image in HTML structure. */
+					z-index: 3;
 				}
 			}
 

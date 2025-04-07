@@ -266,3 +266,31 @@ msgstr "Navega a través de la taula"
 msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
 msgid "Table"
 msgstr "Taula"
+
+msgctxt "Label for the insert table layout toolbar button."
+msgid "Insert table layout"
+msgstr "Insereix un disseny de taula"
+
+msgctxt "The accessible label used in the table layout insert UI element."
+msgid "Table layout"
+msgstr "Disseny de la taula"
+
+msgctxt "The accessible label of the layout table type dropdown button."
+msgid "Layout table"
+msgstr "Taula de dissenys"
+
+msgctxt "The accessible label of the content table type dropdown button."
+msgid "Content table"
+msgstr "Taula de continguts"
+
+msgctxt "The accessible label of the table balloon button that displays a user interface to choose table type."
+msgid "Choose table type"
+msgstr "Tria el tipus de taula"
+
+msgctxt "The accessible label of the table type toolbar button."
+msgid "Table type"
+msgstr "Tipus de taula"
+
+msgctxt "The accessible label of dropdown list that displays a user interface to choose table type."
+msgid "Table type options"
+msgstr "Opcions de tipus de taula"

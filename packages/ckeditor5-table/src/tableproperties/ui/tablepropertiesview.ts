@@ -43,13 +43,14 @@ import {
 	getLabeledColorInputCreator
 } from '../../utils/ui/table-properties.js';
 
+import type ColorInputView from '../../ui/colorinputview.js';
+import type { TablePropertiesOptions } from '../../tableconfig.js';
+
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
 import '../../../theme/formrow.css';
 import '../../../theme/tableform.css';
 import '../../../theme/tableproperties.css';
-import type ColorInputView from '../../ui/colorinputview.js';
-import type { TablePropertiesOptions } from '../../tableconfig.js';
 
 /**
  * Additional configuration of the view.

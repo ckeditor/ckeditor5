@@ -142,3 +142,15 @@ msgstr "אנא נסו צירוף מילים שונה או בדקו את האיו
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
 msgstr "מקור"
+
+msgctxt "Label for the Insert button."
+msgid "Insert"
+msgstr "הכנס"
+
+msgctxt "Label for the Update button."
+msgid "Update"
+msgstr "עדכן"
+
+msgctxt "Label for the Back button."
+msgid "Back"
+msgstr "חזור"
