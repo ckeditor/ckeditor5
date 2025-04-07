@@ -572,6 +572,52 @@ describe( 'StickyPanelView', () => {
 						_marginLeft: null
 					} );
 				} );
+
+				it( 'should avoid flickering after stickiness change', () => {
+					const unstickSpy = testUtils.sinon.spy( view, '_unstick' );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: -2,
+						bottom: 69,
+						height: 71,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					const panelRectStub = testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' );
+
+					panelRectStub.returns( {
+						height: 20
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					sinon.assert.calledOnce( unstickSpy );
+					assureStickiness( {
+						isSticky: false,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: null,
+						_marginLeft: null
+					} );
+
+					// Sticky style adds bottom border so the height of the panel is 1px bigger.
+					panelRectStub.returns( {
+						height: 21
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					sinon.assert.calledTwice( unstickSpy );
+					assureStickiness( {
+						isSticky: false,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: null,
+						_marginLeft: null
+					} );
+				} );
 			} );
 
 			describe( 'if there is window scrollable and visual viewport (iOS)', () => {
