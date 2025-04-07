@@ -8,6 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { env } from 'ckeditor5/src/utils.js';
 
 import FullscreenCommand from './fullscreencommand.js';
 
@@ -54,6 +55,16 @@ export default class FullscreenEditing extends Plugin {
 		this.editor.keystrokes.set( 'Ctrl+Shift+F', ( evt, cancel ) => {
 			this.editor.execute( 'toggleFullscreen' );
 
+			// On non-Chromium browsers, the editor view and toolbar are not blurred properly after moving the editable,
+			// even though the `document.activeElement` is changed. Hence we need to blur them manually.
+			// Fixes https://github.com/ckeditor/ckeditor5/issues/18250 and https://github.com/ckeditor/ckeditor5/issues/18247.
+			if ( !env.isBlink ) {
+				this.editor.editing.view.document.isFocused = false;
+				this.editor.ui.view.toolbar!.focusTracker.focusedElement = null;
+			}
+
+			// The order of scroll and focus is not important here.
+			this.editor.editing.view.scrollToTheSelection();
 			this.editor.editing.view.focus();
 
 			cancel();

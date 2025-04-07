@@ -9,12 +9,12 @@
 
 import CKEditorError from './ckeditorerror.js';
 
-const version = '44.3.0';
+const version = '45.0.0';
 
 export default version;
 
 // The second argument is not a month. It is `monthIndex` and starts from `0`.
-export const releaseDate = new Date( 2025, 2, 5 );
+export const releaseDate = new Date( 2025, 3, 7 );
 
 declare global {
 	// eslint-disable-next-line no-var

@@ -688,6 +688,7 @@ export default class LinkUI extends Plugin {
 
 		// Show the panel on button click.
 		this.listenTo<ButtonExecuteEvent>( view, 'execute', () => {
+			editor.editing.view.scrollToTheSelection();
 			this._showUI( true );
 
 			// Open the form view on-top of the toolbar view if it's already visible.
@@ -725,6 +726,7 @@ export default class LinkUI extends Plugin {
 			cancel();
 
 			if ( editor.commands.get( 'link' )!.isEnabled ) {
+				editor.editing.view.scrollToTheSelection();
 				this._showUI( true );
 			}
 		} );
@@ -761,7 +763,13 @@ export default class LinkUI extends Plugin {
 			emitter: this.formView!,
 			activator: () => this._isUIInPanel,
 			contextElements: () => [ this._balloon.view.element! ],
-			callback: () => this._hideUI()
+			callback: () => {
+				// Focusing on the editable during a click outside the balloon panel might
+				// cause the selection to move to the beginning of the editable, so we avoid
+				// focusing on it during this action.
+				// See: https://github.com/ckeditor/ckeditor5/issues/18253
+				this._hideUI( false );
+			}
 		} );
 	}
 
@@ -920,7 +928,7 @@ export default class LinkUI extends Plugin {
 	/**
 	 * Removes the {@link #formView} from the {@link #_balloon}.
 	 */
-	private _removeFormView(): void {
+	private _removeFormView( updateFocus: boolean = true ): void {
 		if ( this._isFormInPanel ) {
 			// Blur the input element before removing it from DOM to prevent issues in some browsers.
 			// See https://github.com/ckeditor/ckeditor5/issues/1501.
@@ -934,7 +942,9 @@ export default class LinkUI extends Plugin {
 
 			// Because the form has an input which has focus, the focus must be brought back
 			// to the editor. Otherwise, it would be lost.
-			this.editor.editing.view.focus();
+			if ( updateFocus ) {
+				this.editor.editing.view.focus();
+			}
 
 			this._hideFakeVisualSelection();
 		}
@@ -1014,7 +1024,7 @@ export default class LinkUI extends Plugin {
 		this._removePropertiesView();
 
 		// Then remove the form view because it's beneath the properties form.
-		this._removeFormView();
+		this._removeFormView( updateFocus );
 
 		// Finally, remove the link toolbar view because it's last in the stack.
 		if ( this._isToolbarInPanel ) {

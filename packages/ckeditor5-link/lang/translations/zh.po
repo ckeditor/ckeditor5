@@ -39,10 +39,6 @@ msgctxt "Button opening the link in new browser tab."
 msgid "Open link in new tab"
 msgstr "在新視窗開啟連結"
 
-msgctxt "Label explaining that a link has no URL set (the URL is empty)."
-msgid "This link has no URL"
-msgstr "此連結沒有URL"
-
 msgctxt "The label of the switch button that controls whether the edited link will open in a new tab."
 msgid "Open in a new tab"
 msgstr "在新視窗開啟"
@@ -59,6 +55,14 @@ msgctxt "Keystroke description for assistive technologies: keystroke for moving 
 msgid "Move out of a link"
 msgstr "移出連結"
 
-msgctxt "Button scrolling to the link target."
-msgid "Scroll to target"
-msgstr "捲動至目標"
+msgctxt "Label for the link properties link balloon title."
+msgid "Link properties"
+msgstr "連結屬性"
+
+msgctxt "The label of the input field for the displayed text of the link."
+msgid "Displayed text"
+msgstr "顯示的文字"
+
+msgctxt "Placeholder shown when placeholder items view is empty."
+msgid "No links available"
+msgstr "無可用連結"

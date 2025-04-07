@@ -12,6 +12,8 @@ import { throttle, isEqual } from 'es-toolkit/compat';
 import {
 	global,
 	DomEmitterMixin,
+	Rect,
+	toUnit,
 	type EventInfo,
 	type DomEmitter,
 	type ObservableChangeEvent
@@ -58,6 +60,8 @@ import {
 
 import { COLUMN_MIN_WIDTH_IN_PIXELS, COLUMN_RESIZE_DISTANCE_THRESHOLD } from './constants.js';
 import type TableColumnResize from '../tablecolumnresize.js';
+
+const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 type ResizingData = {
 	columnPosition: number;
@@ -467,10 +471,101 @@ export default class TableColumnResizeEditing extends Plugin {
 		const editingView = this.editor.editing.view;
 
 		editingView.addObserver( MouseEventsObserver );
+		editingView.document.on( 'mouseover', this._onMouseOverHandler.bind( this ), { priority: 'high' } );
 		editingView.document.on( 'mousedown', this._onMouseDownHandler.bind( this ), { priority: 'high' } );
+		editingView.document.on( 'mouseout', this._onMouseOutHandler.bind( this ), { priority: 'high' } );
 
 		this._domEmitter.listenTo( global.window.document, 'mousemove', throttle( this._onMouseMoveHandler.bind( this ), 50 ) );
 		this._domEmitter.listenTo( global.window.document, 'mouseup', this._onMouseUpHandler.bind( this ) );
+	}
+
+	/**
+	 * Calculate and set `top` and `bottom` styles to the column resizer element to fit the height of the table.
+	 *
+	 * @param viewResizer The column resizer element.
+	 */
+	private _recalculateResizerElement( viewResizer: ViewElement ): void {
+		const editor = this.editor;
+		const domConverter = editor.editing.view.domConverter;
+
+		// Get DOM target figure ancestor element.
+		const domTable = domConverter.mapViewToDom( viewResizer.findAncestor( 'table' )! )!;
+
+		// Get DOM table cell element.
+		const domCell = domConverter.mapViewToDom(
+			viewResizer.findAncestor( item => [ 'td', 'th' ].includes( item.name ) )!
+		)!;
+
+		const rectTable = new Rect( domTable );
+		const rectCell = new Rect( domCell );
+
+		// Calculate the top, and bottom positions of the column resizer element.
+		const targetTopPosition = toPx( Number( ( rectTable.top - rectCell.top ).toFixed( 4 ) ) );
+		const targetBottomPosition = toPx( Number( ( rectCell.bottom - rectTable.bottom ).toFixed( 4 ) ) );
+
+		// Set `top` and `bottom` styles to the column resizer element.
+		editor.editing.view.change( viewWriter => {
+			viewWriter.setStyle( 'top', targetTopPosition, viewResizer );
+			viewWriter.setStyle( 'bottom', targetBottomPosition, viewResizer );
+		} );
+	}
+
+	/**
+	 * Remove `top` and `bottom` styles of the column resizer element.
+	 *
+	 * @param viewResizer The column resizer element.
+	 */
+	private _resetResizerStyles( viewResizer: ViewElement ): void {
+		this.editor.editing.view.change( viewWriter => {
+			viewWriter.removeStyle( 'top', viewResizer );
+			viewWriter.removeStyle( 'bottom', viewResizer );
+		} );
+	}
+
+	/**
+	 * Handles the `mouseover` event on column resizer element.
+	 * Recalculates the `top` and `bottom` styles of the column resizer element to fit the height of the table.
+	 *
+	 * @param eventInfo An object containing information about the fired event.
+	 * @param domEventData The data related to the DOM event.
+	 */
+	private _onMouseOverHandler( eventInfo: EventInfo, domEventData: DomEventData ) {
+		const target = domEventData.target;
+
+		if ( !target.hasClass( 'ck-table-column-resizer' ) ) {
+			return;
+		}
+
+		if ( !this._isResizingAllowed ) {
+			return;
+		}
+
+		this._recalculateResizerElement( target );
+	}
+
+	/**
+	 * Handles the `mouseout` event on column resizer element.
+	 * When resizing is not active, it resets the `top` and `bottom` styles of the column resizer element.
+	 *
+	 * @param eventInfo An object containing information about the fired event.
+	 * @param domEventData The data related to the DOM event.
+	 */
+	private _onMouseOutHandler( eventInfo: EventInfo, domEventData: DomEventData ) {
+		const target = domEventData.target;
+
+		if ( !target.hasClass( 'ck-table-column-resizer' ) ) {
+			return;
+		}
+
+		if ( !this._isResizingAllowed ) {
+			return;
+		}
+
+		if ( this._isResizingActive ) {
+			return;
+		}
+
+		this._resetResizerStyles( target );
 	}
 
 	/**
@@ -641,7 +736,8 @@ export default class TableColumnResizeEditing extends Plugin {
 			elements: {
 				viewFigure,
 				viewLeftColumn,
-				viewRightColumn
+				viewRightColumn,
+				viewResizer
 			},
 			widths: {
 				viewFigureParentWidth,
@@ -687,6 +783,8 @@ export default class TableColumnResizeEditing extends Plugin {
 				writer.setStyle( 'width', `${ rightColumnWidthAsPercentage }%`, viewRightColumn! );
 			}
 		} );
+
+		this._recalculateResizerElement( viewResizer );
 	}
 
 	/**
@@ -776,6 +874,12 @@ export default class TableColumnResizeEditing extends Plugin {
 		editingView.change( writer => {
 			writer.removeClass( 'ck-table-column-resizer__active', viewResizer );
 		} );
+
+		const element = editingView.domConverter.mapViewToDom( viewResizer )!;
+
+		if ( !element.matches( ':hover' ) ) {
+			this._resetResizerStyles( viewResizer );
+		}
 
 		this._isResizingActive = false;
 		this._resizingData = null;

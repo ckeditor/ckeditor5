@@ -439,11 +439,11 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 The build size of the project before and after the optimizations is as follows:
 
-|                    	| Before optimization 	| After optimization 	| Improvement 	|
-|--------------------	|---------------------	|--------------------	|-------------	|
-| JavaScript         	| 1,248.02 kB         	| 1,029.01 kB        	| -17.55%     	|
-| CSS                	| 340.45 kB           	| 172.84 kB          	| -49.23%     	|
-| JavaScript gzipped 	| 343.56 kB           	| 288.84 kB          	| -15.93%     	|
-| CSS gzipped        	| 46.16 kB            	| 28.71 kB           	| -37.80%     	|
+|                    | Before optimization | After optimization | Improvement |
+|--------------------|---------------------|--------------------|-------------|
+| JavaScript         | 1,012.12 kB         | 976.18 kB          | -3.55%      |
+| CSS                | 477.61 kB           | 191.16 kB          | -59.98%     |
+| JavaScript gzipped | 270.71 kB           | 259.11 kB          | -4.29%      |
+| CSS gzipped        | 65.26 kB            | 30.96 kB           | -52.56%     |
 
-Thanks to the above optimizations, we were able to reduce the total build size (JavaScript + CSS) by `386.62 kB` (`72.17 kB` gzipped), which in effect gives us ~75&ndash;80% of the original size. These results will vary depending on the features you use.
+Thanks to the above optimizations, we were able to reduce the total build size (JavaScript + CSS) by `322,39 kB` (`45,9 kB` gzipped), which in effect gives us ~80% of the original size. These results will vary depending on the editor features and bundler you use.

@@ -142,3 +142,15 @@ msgstr "Iltimos, boshqa iborani sinab ko'ring yoki imloni tekshiring."
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
 msgstr ""
+
+msgctxt "Label for the Insert button."
+msgid "Insert"
+msgstr ""
+
+msgctxt "Label for the Update button."
+msgid "Update"
+msgstr ""
+
+msgctxt "Label for the Back button."
+msgid "Back"
+msgstr ""
