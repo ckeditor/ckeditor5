@@ -268,3 +268,31 @@ msgstr "টেবিলের মধ্যে দিয়ে নেভিগে
 msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
 msgid "Table"
 msgstr "টেবিল"
+
+msgctxt "Label for the insert table layout toolbar button."
+msgid "Insert table layout"
+msgstr "**টেবিল লেআউট যুক্ত করুন**"
+
+msgctxt "The accessible label used in the table layout insert UI element."
+msgid "Table layout"
+msgstr "টেবিল লেআউট"
+
+msgctxt "The accessible label of the layout table type dropdown button."
+msgid "Layout table"
+msgstr "লেআউট টেবিল"
+
+msgctxt "The accessible label of the content table type dropdown button."
+msgid "Content table"
+msgstr "কনটেন্ট টেবিল"
+
+msgctxt "The accessible label of the table balloon button that displays a user interface to choose table type."
+msgid "Choose table type"
+msgstr "টেবিল টাইপ নির্বাচন করুন"
+
+msgctxt "The accessible label of the table type toolbar button."
+msgid "Table type"
+msgstr "টেবিল টাইপ"
+
+msgctxt "The accessible label of dropdown list that displays a user interface to choose table type."
+msgid "Table type options"
+msgstr "টেবিল টাইপ অপশনসমূহ"

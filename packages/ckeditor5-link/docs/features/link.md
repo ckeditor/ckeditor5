@@ -2,7 +2,7 @@
 title: Link
 meta-title: Links | CKEditor 5 Documentation
 category: features
-modified_at: 2025-02-25
+modified_at: 2025-03-26
 ---
 
 The link feature lets you insert hyperlinks into your content and provides a UI to create and edit them. Thanks to the [autolink](#autolink-feature) plugin, typed or pasted URLs and email addresses automatically become working links.

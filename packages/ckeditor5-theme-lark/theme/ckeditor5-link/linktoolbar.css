@@ -9,6 +9,12 @@
 	--ck-link-bookmark-icon-size: calc( var(--ck-icon-size) * 0.7); /* 0.7 = 14/20 cause default the icon size is 20px */
 }
 
+.ck.ck-toolbar.ck-link-toolbar {
+	& > .ck-toolbar__items {
+		flex-wrap: nowrap;
+	}
+}
+
 a.ck.ck-button.ck-link-toolbar__preview {
 	padding: 0 var(--ck-spacing-medium);
 	color: var(--ck-color-link-default);

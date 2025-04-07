@@ -51,6 +51,7 @@ import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.
 import Style from '@ckeditor/ckeditor5-style/src/style.js';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
 import Bookmark from '@ckeditor/ckeditor5-bookmark/src/bookmark.js';
+import Fullscreen from '@ckeditor/ckeditor5-fullscreen/src/fullscreen.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
@@ -65,7 +66,7 @@ ClassicEditor
 			Alignment, IndentBlock, Bookmark,
 			PasteFromOffice, PageBreak, HorizontalLine, ShowBlocks,
 			SpecialCharacters, SpecialCharactersEssentials, WordCount,
-			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport
+			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport, Fullscreen
 		],
 		toolbar: [
 			'heading', 'style',
@@ -88,7 +89,7 @@ ClassicEditor
 			'|',
 			'sourceEditing', 'showBlocks',
 			'|',
-			'undo', 'redo', 'findAndReplace'
+			'undo', 'redo', 'findAndReplace', 'fullscreen'
 		],
 		cloudServices: CS_CONFIG,
 		table: {
@@ -247,7 +248,8 @@ ClassicEditor
 			iframeElement.srcdoc = '<html>' +
 				'<head>' +
 					`<title>${ document.title }</title>` +
-					'<link rel="stylesheet" href="https://ckeditor.com/docs/ckeditor5/latest/snippets/features/page-break/snippet.css" type="text/css">' +
+					'<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/nightly/ckeditor5.css">' +
+					'<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/nightly/ckeditor5-premium-features.css">' +
 				'</head>' +
 				'<body class="ck-content">' +
 					editor.getData() +

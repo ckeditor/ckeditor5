@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 45.x | CKEditor 5 Documentation
 menu-title: Update to v45.x
 order: 79
-modified_at: 2025-02-25
+modified_at: 2025-03-26
 ---
 
 # Update to CKEditor&nbsp;5 v45.x
@@ -16,7 +16,7 @@ modified_at: 2025-02-25
 
 ## Update to CKEditor&nbsp;5 v45.0.0
 
-_Released on Month X, 2024._
+_Released on April 7, 2024._
 
 For the entire list of changes introduced in version 45.0.0, see the [release notes for CKEditor&nbsp;5 v45.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v45.0.0).
 
@@ -152,3 +152,16 @@ Notable changes:
 * A new `FormRowView` class has been introduced in the UI package for consistent form row layouts.
 * All balloon panels now have consistent headers with back buttons.
 * Form styles have been moved to a dedicated `form.css` in the theme-lark package.
+
+### Major breaking changes in this release
+
+* **[bookmark](https://www.npmjs.com/package/@ckeditor/ckeditor5-bookmark)**: The `BookmarkUI#actionsView` is no longer available. The bookmark feature is now using the `WidgetToolbarRepository` instead.
+* **[build-*](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-*)**: CKEditor 5 predefined builds are no longer available.
+* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: The `LinkUI#actionsView` is no longer available. The bookmark feature now uses the `LinkUI#toolbarView` (an instance of the `ToolbarView` class) instead of the custom `LinkActionsView`.
+
+### Minor breaking changes in this release
+
+* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: The `createBookmarkCallbacks()` helper is now replaced by the `isScrollableToTarget()` and `scrollToTarget()` helpers.
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The `FormRowView` class was moved to the `@ckeditor/ckeditor5-ui` package.
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The `form.css` component was moved to the `@ckeditor/ckeditor5-theme-lark` package.
+* All CKEditor 5 icons are now available in the `@ckeditor/ckeditor5-icons` package.

@@ -142,3 +142,15 @@ msgstr "कृपया किन्हीं और शब्दों का �
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
 msgstr "सोर्स"
+
+msgctxt "Label for the Insert button."
+msgid "Insert"
+msgstr "इंसर्ट"
+
+msgctxt "Label for the Update button."
+msgid "Update"
+msgstr "अपडेट"
+
+msgctxt "Label for the Back button."
+msgid "Back"
+msgstr "वापस जाएँ"
