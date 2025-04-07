@@ -295,10 +295,8 @@ export default class StickyPanelView extends View {
 		// * the limiter's ancestors are intersecting with each other so that some of their rects are visible,
 		// * and the limiter's top edge is above the visible ancestors' top edge.
 		if ( visibleLimiterRect && limiterRect.top < visibleLimiterRect.top ) {
-			const visibleLimiterTop = visibleLimiterRect.top;
-
 			// Check if there's a change the panel can be sticky to the bottom of the limiter.
-			if ( visibleLimiterTop + this._contentPanelRect.height + this.limiterBottomOffset > visibleLimiterRect.bottom ) {
+			if ( this._contentPanelRect.height + this.limiterBottomOffset > visibleLimiterRect.height ) {
 				const stickyBottomOffset = Math.max( limiterRect.bottom - visibleLimiterRect.bottom, 0 ) + this.limiterBottomOffset;
 				// @if CK_DEBUG_STICKYPANEL // const stickyBottomOffsetRect = new Rect( {
 				// @if CK_DEBUG_STICKYPANEL // 	top: limiterRect.bottom - stickyBottomOffset, left: 0, right: 2000,
@@ -313,13 +311,13 @@ export default class StickyPanelView extends View {
 				// Check if sticking the panel to the bottom of the limiter does not cause it to suddenly
 				// move upwards if there's not enough space for it.
 				// Adding 1 avoids rounding problems and toolbar flickering when offset almost equals the height.
-				if ( limiterRect.bottom - stickyBottomOffset > limiterRect.top + this._contentPanelRect.height + 1 ) {
+				if ( this._contentPanelRect.height + stickyBottomOffset + 1 < limiterRect.height ) {
 					this._stickToBottomOfLimiter( stickyBottomOffset );
 				} else {
 					this._unstick();
 				}
 			} else if ( this._contentPanelRect.height + this.limiterBottomOffset < limiterRect.height ) {
-				this._stickToTopOfAncestors( visibleLimiterTop );
+				this._stickToTopOfAncestors( visibleLimiterRect.top );
 			} else {
 				this._unstick();
 			}
