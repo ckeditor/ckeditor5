@@ -9,6 +9,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import FontColorEditing from '@ckeditor/ckeditor5-font/src/fontcolor/fontcolorediting.js';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import DataFilter from '../src/datafilter.js';
@@ -33,7 +34,7 @@ describe( 'DataFilter', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, FontColorEditing, LinkEditing, GeneralHtmlSupport, Clipboard ]
+				plugins: [ Bold, Paragraph, FontColorEditing, LinkEditing, GeneralHtmlSupport, Clipboard ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -1881,11 +1882,27 @@ describe( 'DataFilter', () => {
 			} );
 
 			editor.setData(
-				'<div class="constrained-box"><span class="test"></span></div>'
+				'<div class="constrained-box"><p><b>ABC</b><span class="test"></span><span class="test"></span></p></div>' +
+				'<p><b>ABC</b><span class="test"></span></p>'
 			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<constrainedBox><paragraph><$text bold="true">ABC</$text></paragraph></constrainedBox>' +
+					'<paragraph><$text bold="true">ABC</$text><htmlEmptyElement htmlSpan="(1)"></htmlEmptyElement></paragraph>',
+				attributes: {
+					1: {
+						classes: [ 'test' ]
+					}
+				}
+			} );
 
 			const dataTransferMock = createDataTransfer( {
 				'text/html': '<p>A <span class="test"></span> b</p>'
+			} );
+
+			editor.model.change( writer => {
+				writer.setSelection( model.document.getRoot().getChild( 0 ).getChild( 0 ), 0 );
 			} );
 
 			editor.editing.view.document.fire( 'paste', {
@@ -1895,7 +1912,10 @@ describe( 'DataFilter', () => {
 				method: 'paste'
 			} );
 
-			expect( editor.getData() ).to.equal( '<p>A b</p>' );
+			expect( editor.getData() ).to.equal(
+				'<div class="constrained-box"><p>A &nbsp;b<strong>ABC</strong></p></div>' +
+				'<p><strong>ABC</strong><span class="test"></span></p>'
+			);
 		} );
 	} );
 
