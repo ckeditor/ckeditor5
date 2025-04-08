@@ -782,7 +782,7 @@ export default class DataFilter extends Plugin {
 							continue;
 						}
 
-						// Check if the element still has any html* attributes
+						// Check if the element still has any html* attributes.
 						const hasHtmlAttributes = Array
 							.from( item.getAttributeKeys() )
 							.some( key => key.startsWith( 'html' ) );
