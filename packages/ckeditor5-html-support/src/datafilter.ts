@@ -761,7 +761,7 @@ export default class DataFilter extends Plugin {
 				inheritAllFrom: '$inlineObject'
 			} );
 
-			// Helper function to check if an element has any HTML attributes
+			// Helper function to check if an element has any HTML attributes.
 			const hasHtmlAttributes = ( element: Element | Item ): boolean =>
 				Array
 					.from( element.getAttributeKeys() )
