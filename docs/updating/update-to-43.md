@@ -18,8 +18,6 @@ modified_at: 2024-07-31
 
 Released on November 6, 2024. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v43.3.1))
 
-For the entire list of changes introduced in version 43.3.1, see the [release notes for CKEditor&nbsp;5 v43.3.1](https://github.com/ckeditor/ckeditor5/releases/tag/v43.3.1).
-
 Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v43.3.1.
 
 ### Reverted icon change
@@ -52,8 +50,6 @@ A new configuration option has been added to include a watermark when exporting 
 
 Released on October 15, 2024. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v43.2.0))
 
-For the entire list of changes introduced in version 43.2.0, see the [release notes for CKEditor&nbsp;5 v43.2.0](https://github.com/ckeditor/ckeditor5/releases/tag/v43.2.0).
-
 Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v43.2.0.
 
 ### Notable improvements
@@ -68,8 +64,6 @@ As users transition to new installation methods (v42.0.0+) with `ckeditor5` and 
 ## Update to CKEditor&nbsp;5 v43.1.1
 
 Released on September 25, 2024. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v43.1.1))
-
-For the entire list of changes introduced in version 43.1.0, see the [release notes for CKEditor&nbsp;5 v43.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v43.1.0).
 
 Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v43.1.0.
 
