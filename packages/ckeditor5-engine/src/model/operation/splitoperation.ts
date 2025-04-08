@@ -169,7 +169,7 @@ export default class SplitOperation extends Operation {
 			 * @error split-operation-split-in-root
 			 */
 			throw new CKEditorError( 'split-operation-split-in-root', this );
-		} else if ( this.howMany != element.maxOffset - this.splitPosition.offset ) {
+		} else if ( this.howMany !== Number.NEGATIVE_INFINITY && this.howMany != element.maxOffset - this.splitPosition.offset ) {
 			/**
 			 * Split operation specifies wrong number of nodes to move.
 			 *
@@ -184,6 +184,8 @@ export default class SplitOperation extends Operation {
 			 */
 			throw new CKEditorError( 'split-operation-graveyard-position-invalid', this );
 		}
+
+		this.howMany = this.splitPosition.parent.maxOffset - this.splitPosition.offset;
 	}
 
 	/**

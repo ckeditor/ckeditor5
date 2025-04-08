@@ -165,7 +165,7 @@ export default class MergeOperation extends Operation {
 			 * @error merge-operation-target-position-invalid
 			 */
 			throw new CKEditorError( 'merge-operation-target-position-invalid', this );
-		} else if ( this.howMany != sourceElement.maxOffset ) {
+		} else if ( this.howMany !== Number.NEGATIVE_INFINITY && this.howMany != sourceElement.maxOffset ) {
 			/**
 			 * Merge operation specifies wrong number of nodes to move.
 			 *
@@ -173,6 +173,8 @@ export default class MergeOperation extends Operation {
 			 */
 			throw new CKEditorError( 'merge-operation-how-many-invalid', this );
 		}
+
+		this.howMany = this.sourcePosition.parent.maxOffset;
 	}
 
 	/**
