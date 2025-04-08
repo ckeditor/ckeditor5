@@ -17,7 +17,9 @@ import {
 	type ViewElement,
 	type ViewConsumable,
 	type MatcherObjectPattern,
-	type DocumentSelectionChangeAttributeEvent
+	type DocumentSelectionChangeAttributeEvent,
+	type Writer,
+	type Element
 } from 'ckeditor5/src/engine.js';
 
 import {
@@ -759,6 +761,22 @@ export default class DataFilter extends Plugin {
 				inheritAllFrom: '$inlineObject'
 			} );
 
+			// Helper function to check for HTML attributes and remove element if none exist
+			const removeElementIfNoHtmlAttributes = ( element: Element, writer: Writer ) => {
+				// Check if the element still has any html* attributes.
+				const hasHtmlAttributes = Array
+					.from( element.getAttributeKeys() )
+					.some( key => key.startsWith( 'html' ) );
+
+				// If no html* attributes remain, remove the element.
+				if ( !hasHtmlAttributes ) {
+					writer.remove( element );
+					return true;
+				}
+
+				return false;
+			};
+
 			// Register a post-fixer that removes htmlEmptyElement when its htmlXX attribute is removed.
 			// See: https://github.com/ckeditor/ckeditor5/issues/18089
 			editor.model.document.registerPostFixer( writer => {
@@ -766,32 +784,27 @@ export default class DataFilter extends Plugin {
 				let changed = false;
 
 				for ( const change of changes ) {
-					// Only look for attribute removals.
-					if ( change.type !== 'attribute' || change.attributeNewValue !== null ) {
+					if ( change.type === 'remove' ) {
 						continue;
 					}
 
-					// Only look for html* attributes that were removed.
-					if ( !change.attributeKey.startsWith( 'html' ) ) {
-						continue;
+					// Look for removal of html* attributes.
+					if ( change.type === 'attribute' && change.attributeNewValue === null ) {
+						// Find htmlEmptyElement instances in the range that lost their html attribute.
+						for ( const { item } of change.range.getWalker() ) {
+							if ( !item.is( 'element', 'htmlEmptyElement' ) ) {
+								continue;
+							}
+
+							changed = removeElementIfNoHtmlAttributes( item, writer ) || changed;
+						}
 					}
 
-					// Find htmlEmptyElement instances in the range that lost their html attribute.
-					for ( const { item } of change.range.getWalker() ) {
-						if ( !item.is( 'element', 'htmlEmptyElement' ) ) {
-							continue;
-						}
-
-						// Check if the element still has any html* attributes.
-						const hasHtmlAttributes = Array
-							.from( item.getAttributeKeys() )
-							.some( key => key.startsWith( 'html' ) );
-
-						// If no html* attributes remain, remove the element.
-						if ( !hasHtmlAttributes ) {
-							writer.remove( item );
-							changed = true;
-						}
+					// Look for insertion of htmlEmptyElement.
+					if ( change.type === 'insert' &&
+							change.position.nodeAfter &&
+							change.position.nodeAfter.is( 'element', 'htmlEmptyElement' ) ) {
+						changed = removeElementIfNoHtmlAttributes( change.position.nodeAfter, writer ) || changed;
 					}
 				}
 
