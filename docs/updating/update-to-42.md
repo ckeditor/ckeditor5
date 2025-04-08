@@ -26,7 +26,7 @@ This release introduces new installation methods. We simplified dependency manag
 The most prominent changes:
 
 * All plugins and core features are now available from the unified [`ckeditor5`](https://www.npmjs.com/package/ckeditor5) and [`ckeditor5-premium-features`](https://www.npmjs.com/package/ckeditor5-premium-features) packages, reducing dependency management complexity.
-* Our packages became bundler-agnostic. You can use whatever bundler you want (such as Vite or esbuild), to integrate CKEditor 5.
+* Our packages became bundler-agnostic. You can use whatever bundler you want (such as Vite or esbuild) to integrate CKEditor 5.
 * CSS files are now distributed separately from JavaScript, allowing for parallel downloading, easier customization, and improved performance.
 * All the new distribution methods (available via npm, CDN, and ZIP downloads) allow dynamic plugin registration making it easy to add or remove plugins dynamically.
 
