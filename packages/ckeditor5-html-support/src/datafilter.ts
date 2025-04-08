@@ -758,6 +758,45 @@ export default class DataFilter extends Plugin {
 			schema.register( 'htmlEmptyElement', {
 				inheritAllFrom: '$inlineObject'
 			} );
+
+			// Register a post-fixer that removes htmlEmptyElement when its htmlXX attribute is removed.
+			// See: https://github.com/ckeditor/ckeditor5/issues/18089
+			editor.model.document.registerPostFixer( writer => {
+				const changes = editor.model.document.differ.getChanges();
+				let changed = false;
+
+				for ( const change of changes ) {
+					// Only look for attribute removals.
+					if ( change.type !== 'attribute' || change.attributeNewValue !== null ) {
+						continue;
+					}
+
+					// Only look for html* attributes that were removed.
+					if ( !change.attributeKey.startsWith( 'html' ) ) {
+						continue;
+					}
+
+					// Find htmlEmptyElement instances in the range that lost their html attribute.
+					for ( const { item } of change.range.getWalker() ) {
+						if ( !item.is( 'element', 'htmlEmptyElement' ) ) {
+							continue;
+						}
+
+						// Check if the element still has any html* attributes
+						const hasHtmlAttributes = Array
+							.from( item.getAttributeKeys() )
+							.some( key => key.startsWith( 'html' ) );
+
+						// If no html* attributes remain, remove the element.
+						if ( !hasHtmlAttributes ) {
+							writer.remove( item );
+							changed = true;
+						}
+					}
+				}
+
+				return changed;
+			} );
 		}
 
 		editor.data.htmlProcessor.domConverter.registerInlineObjectMatcher( element => {

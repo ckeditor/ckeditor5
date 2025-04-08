@@ -1643,6 +1643,190 @@ describe( 'DataFilter', () => {
 
 			expect( editor.getData() ).to.equal( '<p>foo &nbsp;bar</p>' );
 		} );
+
+		describe( 'remove element on removal all of attributes', () => {
+			it( 'should remove htmlEmptyElement when all html* attributes are removed', () => {
+				dataFilter.allowEmptyElement( 'i' );
+				dataFilter.allowElement( 'i' );
+				dataFilter.allowAttributes( { name: 'i', classes: true } );
+
+				editor.setData( '<p>foo<i class="a"></i>bar</p>' );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foo<htmlEmptyElement htmlI="(1)"></htmlEmptyElement>bar</paragraph>',
+					attributes: {
+						1: {
+							classes: [ 'a' ]
+						}
+					}
+				} );
+
+				model.change( writer => {
+					const paragraph = model.document.getRoot().getChild( 0 );
+					const htmlEmptyElement = paragraph.getChild( 1 );
+
+					writer.removeAttribute( 'htmlI', htmlEmptyElement );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foobar</paragraph>',
+					attributes: {}
+				} );
+
+				expect( editor.getData() ).to.equal( '<p>foobar</p>' );
+			} );
+
+			it( 'should not remove htmlEmptyElement when it still has html* attributes', () => {
+				dataFilter.allowEmptyElement( 'i' );
+				dataFilter.allowElement( 'i' );
+				dataFilter.allowElement( 'span' );
+
+				dataFilter.allowAttributes( { name: 'i', classes: true } );
+				dataFilter.allowAttributes( { name: 'span', classes: true } );
+
+				editor.setData( '<p>foo<i class="a"></i>bar</p>' );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foo<htmlEmptyElement htmlI="(1)"></htmlEmptyElement>bar</paragraph>',
+					attributes: {
+						1: {
+							classes: [ 'a' ]
+						}
+					}
+				} );
+
+				model.change( writer => {
+					const paragraph = model.document.getRoot().getChild( 0 );
+					const htmlEmptyElement = paragraph.getChild( 1 );
+
+					writer.removeAttribute( 'htmlI', htmlEmptyElement );
+					writer.setAttribute( 'htmlSpan', { classes: [ 'b' ] }, htmlEmptyElement );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foo<htmlEmptyElement htmlSpan="(1)"></htmlEmptyElement>bar</paragraph>',
+					attributes: {
+						1: {
+							classes: [ 'b' ]
+						}
+					}
+				} );
+			} );
+
+			it( 'should not affect elements other than htmlEmptyElement when removing html* attributes', () => {
+				dataFilter.allowEmptyElement( 'i' );
+				dataFilter.allowElement( 'i' );
+				dataFilter.allowAttributes( { name: 'i', classes: true } );
+
+				editor.setData( '<p><i class="a">foo</i><i></i></p>' );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><$text htmlI="(1)">foo</$text></paragraph>',
+					attributes: {
+						1: {
+							classes: [ 'a' ]
+						}
+					}
+				} );
+
+				model.change( writer => {
+					const paragraph = model.document.getRoot().getChild( 0 );
+					const textNode = paragraph.getChild( 0 );
+
+					writer.removeAttribute( 'htmlI', textNode );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foo</paragraph>',
+					attributes: {}
+				} );
+
+				expect( editor.getData() ).to.equal( '<p>foo</p>' );
+			} );
+
+			it( 'should not affect elements other than htmlEmptyElement when removing non-html attributes', () => {
+				dataFilter.allowEmptyElement( 'i' );
+				dataFilter.allowElement( 'i' );
+
+				dataFilter.allowElement( 'p' );
+				dataFilter.allowAttributes( { name: 'p', attributes: { 'data-foo': 'foo' } } );
+
+				editor.setData( '<p>foo<i></i></p>' );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foo</paragraph>',
+					attributes: {}
+				} );
+
+				const paragraph = model.document.getRoot().getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'myAttribute', 'value', paragraph );
+				} );
+
+				model.change( writer => {
+					writer.removeAttribute( 'myAttribute', paragraph );
+				} );
+
+				expect( editor.getData() ).to.equal( '<p>foo</p>' );
+			} );
+
+			it( 'should handle multiple html* attributes on htmlEmptyElement', () => {
+				dataFilter.allowEmptyElement( 'i' );
+				dataFilter.allowElement( 'i' );
+				dataFilter.allowAttributes( { name: 'i', classes: true } );
+				dataFilter.allowElement( 'span' );
+				dataFilter.allowAttributes( { name: 'span', classes: true } );
+
+				editor.setData( '<p>foo<i class="a"></i>bar</p>' );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foo<htmlEmptyElement htmlI="(1)"></htmlEmptyElement>bar</paragraph>',
+					attributes: {
+						1: {
+							classes: [ 'a' ]
+						}
+					}
+				} );
+
+				model.change( writer => {
+					const paragraph = model.document.getRoot().getChild( 0 );
+					const htmlEmptyElement = paragraph.getChild( 1 );
+
+					writer.setAttribute( 'htmlSpan', { classes: [ 'b' ] }, htmlEmptyElement );
+				} );
+
+				model.change( writer => {
+					const paragraph = model.document.getRoot().getChild( 0 );
+					const htmlEmptyElement = paragraph.getChild( 1 );
+
+					writer.removeAttribute( 'htmlI', htmlEmptyElement );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foo<htmlEmptyElement htmlSpan="(1)"></htmlEmptyElement>bar</paragraph>',
+					attributes: {
+						1: {
+							classes: [ 'b' ]
+						}
+					}
+				} );
+
+				model.change( writer => {
+					const paragraph = model.document.getRoot().getChild( 0 );
+					const htmlEmptyElement = paragraph.getChild( 1 );
+
+					writer.removeAttribute( 'htmlSpan', htmlEmptyElement );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foobar</paragraph>',
+					attributes: {}
+				} );
+
+				expect( editor.getData() ).to.equal( '<p>foobar</p>' );
+			} );
+		} );
 	} );
 
 	describe( 'attributes modifications', () => {
