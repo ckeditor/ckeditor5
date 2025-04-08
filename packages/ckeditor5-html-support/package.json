@@ -41,7 +41,6 @@
     "@ckeditor/ckeditor5-editor-classic": "45.0.0",
     "@ckeditor/ckeditor5-editor-multi-root": "45.0.0",
     "@ckeditor/ckeditor5-essentials": "45.0.0",
-    "@ckeditor/ckeditor5-bold": "45.0.0",
     "@ckeditor/ckeditor5-font": "45.0.0",
     "@ckeditor/ckeditor5-highlight": "45.0.0",
     "@ckeditor/ckeditor5-horizontal-line": "45.0.0",
