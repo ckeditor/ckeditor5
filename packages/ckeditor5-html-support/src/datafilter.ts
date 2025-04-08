@@ -18,7 +18,6 @@ import {
 	type ViewConsumable,
 	type MatcherObjectPattern,
 	type DocumentSelectionChangeAttributeEvent,
-	type Writer,
 	type Element,
 	type Item
 } from 'ckeditor5/src/engine.js';
@@ -762,27 +761,17 @@ export default class DataFilter extends Plugin {
 				inheritAllFrom: '$inlineObject'
 			} );
 
-			// Helper function to check for HTML attributes and remove element if none exist.
-			const removeElementIfNoHtmlAttributes = ( element: Element | Item, writer: Writer ) => {
-				// Check if the element still has any html* attributes.
-				const hasHtmlAttributes = Array
+			// Helper function to check if an element has any HTML attributes
+			const hasHtmlAttributes = ( element: Element | Item ): boolean =>
+				Array
 					.from( element.getAttributeKeys() )
 					.some( key => key.startsWith( 'html' ) );
-
-				// If no html* attributes remain, remove the element.
-				if ( !hasHtmlAttributes ) {
-					writer.remove( element );
-					return true;
-				}
-
-				return false;
-			};
 
 			// Register a post-fixer that removes htmlEmptyElement when its htmlXX attribute is removed.
 			// See: https://github.com/ckeditor/ckeditor5/issues/18089
 			editor.model.document.registerPostFixer( writer => {
 				const changes = editor.model.document.differ.getChanges();
-				let changed = false;
+				const elementsToRemove = new Set<Element>();
 
 				for ( const change of changes ) {
 					if ( change.type === 'remove' ) {
@@ -792,13 +781,9 @@ export default class DataFilter extends Plugin {
 					// Look for removal of html* attributes.
 					if ( change.type === 'attribute' && change.attributeNewValue === null ) {
 						// Find htmlEmptyElement instances in the range that lost their html attribute.
-						for ( const { item } of change.range.getWalker() ) {
-							if ( !item.is( 'element', 'htmlEmptyElement' ) ) {
-								continue;
-							}
-
-							if ( removeElementIfNoHtmlAttributes( item, writer ) ) {
-								changed = true;
+						for ( const { item } of change.range ) {
+							if ( item.is( 'element', 'htmlEmptyElement' ) && !hasHtmlAttributes( item ) ) {
+								elementsToRemove.add( item as Element );
 							}
 						}
 					}
@@ -808,19 +793,18 @@ export default class DataFilter extends Plugin {
 						const insertedElement = change.position.nodeAfter;
 
 						for ( const { item } of writer.createRangeOn( insertedElement ) ) {
-							if ( !item.is( 'element', 'htmlEmptyElement' ) ) {
-								continue;
-							}
-
-							// If the element has no html* attributes, remove it.
-							if ( removeElementIfNoHtmlAttributes( item, writer ) ) {
-								changed = true;
+							if ( item.is( 'element', 'htmlEmptyElement' ) && !hasHtmlAttributes( item ) ) {
+								elementsToRemove.add( item as Element );
 							}
 						}
 					}
 				}
 
-				return changed;
+				for ( const element of elementsToRemove ) {
+					writer.remove( element );
+				}
+
+				return elementsToRemove.size > 0;
 			} );
 		}
 
