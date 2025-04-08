@@ -10,6 +10,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
 import FontColorEditing from '@ckeditor/ckeditor5-font/src/fontcolor/fontcolorediting.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import DataFilter from '../src/datafilter.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -32,7 +33,7 @@ describe( 'DataFilter', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, FontColorEditing, LinkEditing, GeneralHtmlSupport ]
+				plugins: [ Paragraph, FontColorEditing, LinkEditing, GeneralHtmlSupport, Clipboard ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -1826,6 +1827,75 @@ describe( 'DataFilter', () => {
 
 				expect( editor.getData() ).to.equal( '<p>foobar</p>' );
 			} );
+		} );
+
+		it( 'should not insert empty element if has no attributes', () => {
+			const schema = editor.model.schema;
+
+			dataFilter.allowEmptyElement( 'span' );
+			dataFilter.allowElement( 'span' );
+			dataFilter.allowAttributes( { name: 'span', classes: true } );
+
+			schema.register( 'constrainedBox', {
+				isBlock: true,
+				isObject: true,
+				allowIn: '$root',
+				allowChildren: [ 'paragraph' ]
+			} );
+
+			const allowedAttributes = [ 'bold' ];
+			schema.addAttributeCheck( ( context, attributeName ) => {
+				const names = Array.from( context.getNames() );
+				if ( names.includes( 'constrainedBox' ) ) {
+					return allowedAttributes.includes( attributeName );
+				}
+			} );
+
+			editor.conversion.for( 'upcast' ).elementToElement( {
+				view: {
+					name: 'div',
+					classes: 'constrained-box'
+				},
+				model: ( viewElement, { writer } ) => {
+					return writer.createElement( 'constrainedBox', {}, [] );
+				}
+			} );
+
+			editor.conversion.for( 'dataDowncast' ).elementToElement( {
+				model: 'constrainedBox',
+				view: ( modelElement, { writer } ) => {
+					return writer.createContainerElement( 'div', {
+						class: 'constrained-box'
+					} );
+				}
+			} );
+
+			editor.conversion.for( 'editingDowncast' ).elementToElement( {
+				model: 'constrainedBox',
+				view: ( modelElement, { writer } ) => {
+					return writer.createContainerElement( 'div', {
+						class: 'constrained-box',
+						style: 'padding: 1em; border: thin solid grey'
+					} );
+				}
+			} );
+
+			editor.setData(
+				'<div class="constrained-box"><span class="test"></span></div>'
+			);
+
+			const dataTransferMock = createDataTransfer( {
+				'text/html': '<p>A <span class="test"></span> b</p>'
+			} );
+
+			editor.editing.view.document.fire( 'paste', {
+				dataTransfer: dataTransferMock,
+				preventDefault: () => {},
+				stopPropagation: () => {},
+				method: 'paste'
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>A b</p>' );
 		} );
 	} );
 
@@ -5723,3 +5793,17 @@ describe( 'DataFilter', () => {
 		} );
 	} );
 } );
+
+function createDataTransfer( data = {} ) {
+	const store = Object.create( data );
+
+	return {
+		setData( type, data ) {
+			store[ type ] = data;
+		},
+
+		getData( type ) {
+			return store[ type ];
+		}
+	};
+}

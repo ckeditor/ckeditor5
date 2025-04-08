@@ -783,7 +783,7 @@ export default class DataFilter extends Plugin {
 						// Find htmlEmptyElement instances in the range that lost their html attribute.
 						for ( const { item } of change.range ) {
 							if ( item.is( 'element', 'htmlEmptyElement' ) && !hasHtmlAttributes( item ) ) {
-								elementsToRemove.add( item as Element );
+								elementsToRemove.add( item );
 							}
 						}
 					}
@@ -794,7 +794,7 @@ export default class DataFilter extends Plugin {
 
 						for ( const { item } of writer.createRangeOn( insertedElement ) ) {
 							if ( item.is( 'element', 'htmlEmptyElement' ) && !hasHtmlAttributes( item ) ) {
-								elementsToRemove.add( item as Element );
+								elementsToRemove.add( item );
 							}
 						}
 					}
