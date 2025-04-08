@@ -34,7 +34,7 @@ describe( 'DataFilter', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Bold, Paragraph, FontColorEditing, LinkEditing, GeneralHtmlSupport, Clipboard ]
+				plugins: [ Paragraph, FontColorEditing, LinkEditing, GeneralHtmlSupport ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -1830,7 +1830,19 @@ describe( 'DataFilter', () => {
 			} );
 		} );
 
-		it( 'should not insert empty element if has no attributes', () => {
+		it( 'should not insert empty element if has no attributes', async () => {
+			await editor.destroy();
+
+			editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ Bold, Paragraph, FontColorEditing, LinkEditing, GeneralHtmlSupport, Clipboard ]
+			} );
+
+			model = editor.model;
+
+			dataFilter = editor.plugins.get( 'DataFilter' );
+			dataSchema = editor.plugins.get( 'DataSchema' );
+			htmlSupport = editor.plugins.get( 'GeneralHtmlSupport' );
+
 			const schema = editor.model.schema;
 
 			dataFilter.allowEmptyElement( 'span' );
