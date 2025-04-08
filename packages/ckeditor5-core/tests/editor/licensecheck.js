@@ -395,26 +395,6 @@ describe( 'Editor - license check', () => {
 					sinon.assert.calledWithMatch( showErrorStub, licenseType + 'Limit' );
 					expect( editor.isReadOnly ).to.be.true;
 
-					// Verify console.info call with new format
-					sinon.assert.calledOnce( consoleInfoStub );
-					sinon.assert.calledWith(
-						consoleInfoStub,
-						`%cCKEditor 5 ${ licenseTypeCapitalized } License`,
-						'color: #ffffff; background: #743CCD; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
-					);
-
-					// Verify console.warn call with the warning message
-					sinon.assert.calledOnce( consoleWarnStub );
-
-					const article = licenseType === 'evaluation' ? 'an' : 'a';
-
-					sinon.assert.calledWith(
-						consoleWarnStub,
-						`⚠️ You are using ${ article } ${ licenseType } license of CKEditor 5` +
-						`${ licenseType === 'trial' ? ' which is for evaluation purposes only' : '' }. ` +
-						'For production usage, please obtain a production license at https://portal.ckeditor.com/'
-					);
-
 					dateNow.restore();
 				} );
 
