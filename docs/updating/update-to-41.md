@@ -23,23 +23,25 @@ CKEditor 5's latest update brings a new premium feature: the {@link features/mul
 
 ### Paste from Office improvements for lists
 
-No more breaking numbering of lists when they are pasted from Office. Previously whenever a list were split by paragraphs, the counter started again from 1. With our latest improvement, the counter is correctly preserved. Moreover, if you use Paste from Office Enhanced ⭐️, the paragraphs will be merged into list items, to ensure proper, semantic content.
+No more breaking numbering of lists when they are pasted from Office. Previously whenever a list was split by paragraphs, the counter started again from 1. With our latest improvement, the counter is correctly preserved. Moreover, if you use Paste from Office Enhanced ⭐️, the paragraphs will be merged into list items to ensure proper semantic content.
 
-⚠️ If you use the `LegacyList` plugin to prolong the migration to the new list implementation, bear in mind that from this release Paste from Office stops working for the lists' implementation you are using. Migrate to `List` to maintain pasting lists functionality.
+<info-box warning>
+	⚠️ If you use the `LegacyList` plugin to prolong the migration to the new list implementation, bear in mind that from this release Paste from Office stops working for the lists' implementation you are using. Migrate to `List` to maintain pasting lists functionality.
+</info-box>
 
 ### Menu bar
 
-The menu bar is a user interface component popular in large editing desktop and online packages. It gives you access to all features provided by the editor, organized in menus and categories and improves usability of the editor, keeping the toolbar can be simple and tidy. This is especially welcome in heavily-featured editor integrations. 
+The menu bar is a user interface component popular in large editing desktop and online packages. It gives you access to all features provided by the editor, organized in menus and categories. It improves usability of the editor, keeping the toolbar simple and tidy. This is especially welcome in heavily-featured editor integrations. 
 
-The current release brings this battle-hardened solution to CKEditor 5! The {@link getting-started/setup/menubar menu bar} can easily be enabled in selected editor types, comes with a handy features preset and is also highly configurable.
+The current release brings this battle-hardened solution to CKEditor 5! The {@link getting-started/setup/menubar menu bar} can easily be enabled in selected editor types, comes with handy features preset, and is also highly configurable.
 
 ### Updated keyboard navigation
 
-This release brings in a fix for keyboard navigation with the <kbd>Tab</kbd> key. Before, it followed the default browser behavior, which could produce somewhat random effects. For example, when the cursor was positioned at the end of the end of the editable, the <kbd>Tab</kbd> keystroke could navigate you to the image caption on the top.
+This release brings in a fix for keyboard navigation with the <kbd>Tab</kbd> key. Before, it followed the default browser behavior, which could produce somewhat random effects. For example, when the cursor was positioned at the end of the editable, the <kbd>Tab</kbd> keystroke could navigate you to the image caption on the top.
 
-We changed it to an approach in which the <kbd>Tab</kbd> (and <kbd>Shift</kbd>+<kbd>Tab</kbd>), navigate to the next focusable field or an element outside the editor, so that the users can quickly navigate fields or links on the page. The navigation in the editor itself should be done by arrows, rather.
+We changed it to an approach in which the <kbd>Tab</kbd> (and <kbd>Shift</kbd>+<kbd>Tab</kbd>), navigates to the next focusable field or an element outside the editor so that the users can quickly navigate fields or links on the page. The navigation in the editor itself should be done by arrows, rather.
 
-There is one exception to the <kbd>Tab</kbd> behavior. When a widget is selected, the <kbd>Tab</kbd> key will move the selection to the first nested editable, such as a caption of an image. Pressing the <kbd>Esc</kbd> key, while inside a nested editable, will move the selection to the closest ancestor widget, for example: moving from an image caption to selecting the whole image widget.
+There is one exception to the <kbd>Tab</kbd> behavior. When a widget is selected, the <kbd>Tab</kbd> key will move the selection to the first nested editable, such as the caption of an image. Pressing the <kbd>Esc</kbd> key, while inside a nested editable, will move the selection to the closest ancestor widget, for example: moving from an image caption to selecting the whole image widget.
 
 ### Minor breaking changes in this release
 
@@ -75,7 +77,7 @@ The Accessibility Help Dialog is enabled by default in the `Essentials` plugin p
 
 ### Minor breaking changes in this release
 
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Comments will now be retained in the clipboard and pasted into the content when the user performs a cut-and-paste operation. To revert to previous behavior (with no retaining), set the `comments.copyMarkers` configuration property to an empty array.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Comments will now be retained in the clipboard and pasted into the content when the user performs a cut-and-paste operation. To revert to the previous behavior (with no retaining), set the `comments.copyMarkers` configuration property to an empty array.
 * **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The contents of the `BlockToolbar` and `BalloonToolbar` toolbars are now filled on the `EditorUIReadyEvent` instead of `Plugin#afterInit()`.
 * **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: When `config.ai.openAI.requestParameters` or `config.ai.aws.requestParameters` are set, the set value will fully overwrite the default value. Most importantly, if you do not specify some properties in `requestParameters` they will not be set to default. For example, if you set `openAI.requestParameters` to `{ max_tokens: 1000 }`, the request parameters will be set exactly to that object. Make sure that you pass all necessary parameters in `requestParameters`.
 
@@ -85,7 +87,7 @@ Released on February 7, 2024. ([See full release notes](https://github.com/ckedi
 
 ### Minor breaking changes in this release
 
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: We fixed how the missing `value` of the `"class"` and `"style"` attribute conversion is handled in the `attributeToAttribute()` upcast helper. Now while not providing the attribute's `value` to conversion the helper accepts and consumes all values. Previously those values were not consumed and left for other converters to convert. Note that you should use the `classes`, and the `styles` fields for the fine-tuned conversion of those attributes instead of a catch-all `"style"` and `"class"` specified in the `key` field.
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: We fixed how the missing `value` of the `"class"` and `"style"` attribute conversion is handled in the `attributeToAttribute()` upcast helper. Now while not providing the attribute's `value` to conversion the helper accepts and consumes all values. Previously those values were not consumed and left for other converters to convert. Note that you should use the `classes` and the `styles` fields for the fine-tuned conversion of those attributes instead of a catch-all `"style"` and `"class"` specified in the `key` field.
 * **[font](https://www.npmjs.com/package/@ckeditor/ckeditor5-font)**: The `colorSelectorView` property will no longer be accessible from the `ColorUI` plugin in the `@ckeditor/ckeditor5-font/src/ui/colorui.ts`.
 * **[source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing)**: The source editing feature will now throw an error when used with real-time collaboration as these features are not fully compatible and may lead to data loss. You will have to explicitly enable source editing for real-time collaboration by setting the `sourceEditing.allowCollaborationFeatures` configuration flag to `true`. If you want to use both these features, please read a [new guide discussing the risks](https://ckeditor.com/docs/ckeditor5/latest/features/source-editing.html#limitations-and-incompatibility) and add the flag to your configuration.
 
