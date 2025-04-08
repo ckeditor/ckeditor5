@@ -19,7 +19,8 @@ import {
 	type MatcherObjectPattern,
 	type DocumentSelectionChangeAttributeEvent,
 	type Writer,
-	type Element
+	type Element,
+	type Item
 } from 'ckeditor5/src/engine.js';
 
 import {
@@ -761,8 +762,8 @@ export default class DataFilter extends Plugin {
 				inheritAllFrom: '$inlineObject'
 			} );
 
-			// Helper function to check for HTML attributes and remove element if none exist
-			const removeElementIfNoHtmlAttributes = ( element: Element, writer: Writer ) => {
+			// Helper function to check for HTML attributes and remove element if none exist.
+			const removeElementIfNoHtmlAttributes = ( element: Element | Item, writer: Writer ) => {
 				// Check if the element still has any html* attributes.
 				const hasHtmlAttributes = Array
 					.from( element.getAttributeKeys() )
@@ -796,15 +797,26 @@ export default class DataFilter extends Plugin {
 								continue;
 							}
 
-							changed = removeElementIfNoHtmlAttributes( item, writer ) || changed;
+							if ( removeElementIfNoHtmlAttributes( item, writer ) ) {
+								changed = true;
+							}
 						}
 					}
 
 					// Look for insertion of htmlEmptyElement.
-					if ( change.type === 'insert' &&
-							change.position.nodeAfter &&
-							change.position.nodeAfter.is( 'element', 'htmlEmptyElement' ) ) {
-						changed = removeElementIfNoHtmlAttributes( change.position.nodeAfter, writer ) || changed;
+					if ( change.type === 'insert' && change.position.nodeAfter ) {
+						const insertedElement = change.position.nodeAfter;
+
+						for ( const { item } of writer.createRangeOn( insertedElement ) ) {
+							if ( !item.is( 'element', 'htmlEmptyElement' ) ) {
+								continue;
+							}
+
+							// If the element has no html* attributes, remove it.
+							if ( removeElementIfNoHtmlAttributes( item, writer ) ) {
+								changed = true;
+							}
+						}
 					}
 				}
 
