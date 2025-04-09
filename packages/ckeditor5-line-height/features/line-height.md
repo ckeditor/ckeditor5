@@ -34,10 +34,8 @@ import { ClassicEditor, LineHeight } from 'ckeditor5';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
-		plugins: [ LineHeight ],
-		toolbar: {
-			items: [ 'lineheight'  ]
-		}
+		plugins: [ LineHeight, /* ... */ ],
+		toolbar: [ 'lineheight', /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -47,7 +45,7 @@ ClassicEditor
 ## Related features
 
 Check out also these CKEditor&nbsp;5 features to gain better control over your content style and format:
-* 
+* list them
 
 <info-box info>
 	You can remove all basic text styles with the {@link features/remove-format remove format} feature.
@@ -55,11 +53,9 @@ Check out also these CKEditor&nbsp;5 features to gain better control over your c
 
 ## Common API
 
-The line height feature introduces the following UI elements:
+The line height feature registers the UI button:
 
-```js
-editor.execute( 'bold' );
-```
+* link it
 
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
