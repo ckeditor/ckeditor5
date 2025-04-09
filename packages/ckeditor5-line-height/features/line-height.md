@@ -9,7 +9,7 @@ The line height features lets you control the distance between the lines of cont
 
 ## Demo
 
-Select content and change the line height using the toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/line-height.svg Change line height}.
+Select content and change the line height using the toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/line-height.svg Change line height}. Please note that the feature can only be applied to whole block of content (such as paragraphs, tables or lists).
 
 {@snippet features/line-height}
 
@@ -41,6 +41,18 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 </code-switcher>
+
+## Configuration
+
+The feature can be configured to provide desired available values:
+
+```ts
+	const lineHeightConfig = {
+		options: [ 1, 2, 4 ]
+	};
+ ```
+
+The available values are always multipliers of the default line height applied to the edited content. Line height values have to be provided in a format without units. The default values are: 0.5, 1, 1.5, 2, 2.5.
 
 ## Related features
 
