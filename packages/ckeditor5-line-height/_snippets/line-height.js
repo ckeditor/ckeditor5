@@ -44,8 +44,6 @@ const config = {
 	}
 };
 
-// const { plugins, ...configWithoutPlugins } = config;
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), config )
 	.then( editor => {
