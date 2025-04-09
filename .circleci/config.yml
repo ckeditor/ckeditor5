@@ -7,7 +7,7 @@
 # the repository in a new workflow.
 #
 # To modify the commands to execute on CI, review the following files:
-# - scripts/ci/generate-circleci-configuration.js - the script that creates the `config-tests.yml` file used on the new workflow.
+# - scripts/ci/generate-circleci-configuration.mjs - the script that creates the `config-tests.yml` file used on the new workflow.
 # - .circleci/template.yml - the template filled with data to execute.
 #
 # Useful resources:
@@ -39,7 +39,7 @@ commands:
 jobs:
   generate_configuration:
     machine: true
-    resource_class: large
+    resource_class: medium
     parameters:
       isNightly:
         type: boolean
