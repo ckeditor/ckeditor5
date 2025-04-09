@@ -769,11 +769,11 @@ function bindDropdownToggleableButtonsAlignment( listItems: ViewCollection ) {
 	// Updates all buttons in the list to either allocate space for check marks or not.
 	// This ensures all buttons are properly aligned regardless of their toggleable state.
 	const updateAllButtonsCheckSpace = ( hasSpace: boolean ): void => {
-		for ( const button of listItems ) {
-			const toggleableButton = pickListItemButtonIfPresent( button );
+		for ( const listItem of listItems ) {
+			const listItemButton = pickListItemButtonIfPresent( listItem );
 
-			if ( toggleableButton ) {
-				toggleableButton.hasCheckSpace = hasSpace;
+			if ( listItemButton ) {
+				listItemButton.hasCheckSpace = hasSpace;
 			}
 		}
 	};
