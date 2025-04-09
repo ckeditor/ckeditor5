@@ -50,7 +50,7 @@ export default class LineHeightUI extends Plugin {
 
 		const options = this._getLineHeightOptions();
 		const command: LineHeightCommand = editor.commands.get( LINE_HEIGHT )!;
-		const accessibleLabel = t( 'Line Height' );
+		const accessibleLabel = t( 'Line height' );
 
 		const listOptions = this._prepareListOptions( options, command );
 
