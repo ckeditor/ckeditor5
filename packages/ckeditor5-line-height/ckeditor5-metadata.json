@@ -1,0 +1,18 @@
+{
+	"plugins": [
+		{
+			"name": "Line height",
+			"className": "LineHeight",
+			"description": "Allows setting line height for text.",
+			"docs": "features/line-height.html",
+			"path": "src/lineheight.ts",
+			"uiComponents": [
+				{
+					"name": "lineHeight",
+					"type": "SplitButton",
+					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/line-height.svg"
+				}
+			]
+		}
+	]
+}
