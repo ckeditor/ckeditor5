@@ -56,6 +56,7 @@
     "@ckeditor/ckeditor5-image": "45.0.0",
     "@ckeditor/ckeditor5-indent": "45.0.0",
     "@ckeditor/ckeditor5-language": "45.0.0",
+    "@ckeditor/ckeditor5-line-height": "0.0.1",
     "@ckeditor/ckeditor5-link": "45.0.0",
     "@ckeditor/ckeditor5-list": "45.0.0",
     "@ckeditor/ckeditor5-markdown-gfm": "45.0.0",
