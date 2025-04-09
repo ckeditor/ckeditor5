@@ -104,7 +104,7 @@ export default class RenameOperation extends Operation {
 				'rename-operation-wrong-position',
 				this
 			);
-		} else if ( element.name !== this.oldName ) {
+		} else if ( this.oldName !== '' && element.name !== this.oldName ) {
 			/**
 			 * Element to change has different name than operation's old name.
 			 *
@@ -115,6 +115,8 @@ export default class RenameOperation extends Operation {
 				this
 			);
 		}
+
+		this.oldName = element.name;
 	}
 
 	/**
