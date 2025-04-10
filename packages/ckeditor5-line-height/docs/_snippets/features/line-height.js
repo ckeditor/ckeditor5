@@ -27,9 +27,6 @@ const config = {
 		'bulletedList', 'numberedList'
 	],
 	cloudServices: CS_CONFIG,
-	menuBar: {
-		isVisible: true
-	},
 	image: {
 		toolbar: [
 			'imageStyle:inline',
