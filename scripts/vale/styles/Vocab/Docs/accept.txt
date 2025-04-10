@@ -45,6 +45,7 @@ DOM
 (?i)downcast
 draggable
 [Dd]ropdown
+[Ee]mail
 embeddable
 Embedly
 ESLint
@@ -56,6 +57,7 @@ Gantt
 [Gg]etter
 global
 Grammarly
+gzipped
 hardcode
 hotlink
 hotlinked

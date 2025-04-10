@@ -13,6 +13,7 @@ import {
 	createLabeledDropdown,
 	createLabeledInputText,
 	FocusCycler,
+	FormRowView,
 	FormHeaderView,
 	LabeledFieldView,
 	LabelView,
@@ -27,7 +28,13 @@ import {
 	type FocusableView
 } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type ObservableChangeEvent, type Locale } from 'ckeditor5/src/utils.js';
-import { icons } from 'ckeditor5/src/core.js';
+import {
+	IconCancel,
+	IconCheck,
+	IconObjectCenter,
+	IconObjectInlineLeft,
+	IconObjectInlineRight
+} from 'ckeditor5/src/icons.js';
 
 import {
 	fillToolbar,
@@ -35,13 +42,15 @@ import {
 	getBorderStyleLabels,
 	getLabeledColorInputCreator
 } from '../../utils/ui/table-properties.js';
-import FormRowView from '../../ui/formrowview.js';
 
-import '../../../theme/form.css';
-import '../../../theme/tableform.css';
-import '../../../theme/tableproperties.css';
 import type ColorInputView from '../../ui/colorinputview.js';
 import type { TablePropertiesOptions } from '../../tableconfig.js';
+
+// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
+import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
+import '../../../theme/formrow.css';
+import '../../../theme/tableform.css';
+import '../../../theme/tableproperties.css';
 
 /**
  * Additional configuration of the view.
@@ -647,9 +656,9 @@ export default class TablePropertiesView extends View {
 		fillToolbar( {
 			view: this,
 			icons: {
-				left: icons.objectLeft,
-				center: icons.objectCenter,
-				right: icons.objectRight
+				left: IconObjectInlineLeft,
+				center: IconObjectCenter,
+				right: IconObjectInlineRight
 			},
 			toolbar: alignmentToolbar,
 			labels: this._alignmentLabels,
@@ -688,7 +697,7 @@ export default class TablePropertiesView extends View {
 
 		saveButtonView.set( {
 			label: t( 'Save' ),
-			icon: icons.check,
+			icon: IconCheck,
 			class: 'ck-button-save',
 			type: 'submit',
 			withText: true
@@ -700,7 +709,7 @@ export default class TablePropertiesView extends View {
 
 		cancelButtonView.set( {
 			label: t( 'Cancel' ),
-			icon: icons.cancel,
+			icon: IconCancel,
 			class: 'ck-button-cancel',
 			withText: true
 		} );

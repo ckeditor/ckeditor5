@@ -1,0 +1,52 @@
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: be\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && n % 100 != 11 ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "Tooltip for the heading dropdown."
+msgid "Heading"
+msgstr "Стыль"
+
+msgctxt "Default label for the heading dropdown."
+msgid "Choose heading"
+msgstr "Выбар стылю"
+
+msgctxt "Dropdown option label for the heading level 1 format."
+msgid "Heading 1"
+msgstr "Загаловак 1"
+
+msgctxt "Dropdown option label for the heading level 2 format."
+msgid "Heading 2"
+msgstr "Загаловак 2"
+
+msgctxt "Dropdown option label for the heading level 3 format."
+msgid "Heading 3"
+msgstr "Загаловак 3"
+
+msgctxt "Dropdown option label for the heading level 4 format."
+msgid "Heading 4"
+msgstr "Загаловак 4"
+
+msgctxt "Dropdown option label for the heading level 5 format."
+msgid "Heading 5"
+msgstr "Загаловак 5"
+
+msgctxt "Dropdown option label for the heading level 6 format."
+msgid "Heading 6"
+msgstr "Загаловак 6"
+
+msgctxt "A default value of the placeholder for the content title."
+msgid "Type your title"
+msgstr "Увядзіце загаловак"
+
+msgctxt "A default value of the placeholder for the content body."
+msgid "Type or paste your content here."
+msgstr "Увядзіце або ўстаўце ваш тэкст"

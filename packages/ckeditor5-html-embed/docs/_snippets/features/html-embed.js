@@ -3,18 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, document, location, console */
-
-import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed';
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
-import { LinkImage } from '@ckeditor/ckeditor5-link';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
-
-// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic.js';
+import { HtmlEmbed, CodeBlock, CKBox, CKBoxImageEdit, PictureEditing, ImageInsert, ImageResize, AutoImage, LinkImage } from 'ckeditor5';
+import {
+	TOKEN_URL,
+	CS_CONFIG,
+	ClassicEditor,
+	getViewportTopOffsetConfig,
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
 
 ClassicEditor.builtinPlugins.push(
 	HtmlEmbed,
@@ -86,7 +83,7 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
@@ -109,18 +106,22 @@ ClassicEditor
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		},
-		cloudServices: CS_CONFIG,
-		licenseKey: 'GPL'
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editor = editor;
 
 		// The "Preview editor data" button logic.
 		document.querySelector( '#preview-data-action' ).addEventListener( 'click', () => {
-			const mainCSSElement = [ ...document.querySelectorAll( 'link' ) ]
-				.find( linkElement => linkElement.href.endsWith( 'css/styles.css' ) );
-			const snippetCSSElement = [ ...document.querySelectorAll( 'link' ) ]
-				.find( linkElement => linkElement.href.endsWith( 'snippet.css' ) );
+			const stylesheets = [
+				'css/styles.css',
+				'ckeditor5.css',
+				'ckeditor5-premium-features.css'
+			];
+
+			const links = Array
+				.from( document.querySelectorAll( 'link' ) )
+				.filter( element => stylesheets.some( name => element.href.endsWith( name ) ) );
 
 			const iframeElement = document.querySelector( '#preview-data-container' );
 
@@ -131,8 +132,7 @@ ClassicEditor
 					'<meta charset="utf-8">' +
 					`<base href="${ location.href }">` +
 					`<title>${ document.title }</title>` +
-					`<link rel="stylesheet" href="${ mainCSSElement.href }" type="text/css">` +
-					`<link rel="stylesheet" href="${ snippetCSSElement.href }" type="text/css">` +
+					links.map( link => `<link rel="stylesheet" href="${ link.href }">` ).join( '' ) +
 					`<style>
 						body {
 							padding: 20px;
@@ -153,8 +153,8 @@ ClassicEditor
 			iframeElement.contentWindow.document.close();
 		} );
 
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Insert HTML' ),
+		attachTourBalloon( {
+			target: findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Insert HTML' ),
 			text: 'Click to embed a new HTML snippet.',
 			editor
 		} );

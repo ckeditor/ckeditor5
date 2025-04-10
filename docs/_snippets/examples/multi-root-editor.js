@@ -3,10 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
-
-import MultiRootEditor from '@ckeditor/ckeditor5-build-multi-root';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+import { CS_CONFIG, MultiRootEditor } from '@snippets/index.js';
 
 MultiRootEditor
 	.create(
@@ -19,17 +16,10 @@ MultiRootEditor
 		},
 		// Editor configration:
 		{
-			cloudServices: CS_CONFIG,
-			toolbar: {
-				items: [
-					'undo', 'redo',
-					'|', 'heading',
-					'|', 'bold', 'italic',
-					'|', 'link', 'uploadImage', 'insertTable', 'mediaEmbed',
-					'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
-				]
-			},
-			licenseKey: 'GPL'
+			removePlugins: [
+				'CKBox'
+			],
+			cloudServices: CS_CONFIG
 		}
 	)
 	.then( editor => {

@@ -668,6 +668,19 @@ Core editing capability provides tools to create, edit, and style content. Here 
 				accessibility as they are recognized by screen readers.
 			</td>
 		</tr>
+		<tr id="tables-layout" class="subfeature background-gray">
+			<td>
+				<span>
+					<span class="subfeature-icon"></span>&nbsp;{@link features/layout-tables Layout tables}
+				</span>
+			</td>
+			<td>
+				The
+				<code>{@link module:table/tablelayout~TableLayout}</code>
+				plugin is used to structure web page content spatially rather than for presenting tabular data.
+				It lets integrators create multi-column designs and precise positioning of elements on a page.
+			</td>
+		</tr>
 		<tr id="text-alignment" class="feature">
 			<td>
 				{@link features/text-alignment Text alignment}
@@ -892,7 +905,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		</tr>
 		<tr id="real-time-collaboration" class="feature">
 			<td>
-				{@link features/real-time-collaboration Real-time collaboration 
+				{@link features/real-time-collaboration Real-time collaboration
 					<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
 					<span class="tree__item__badge__text">Premium feature</span></span>
 				}
@@ -918,10 +931,13 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		<tr id="on-premises" class="subfeature background-gray">
 			<td>
 				<span>
-					<span class="subfeature-icon"></span>&nbsp;{@link @cs onpremises/index On-premises
+					<span class="subfeature-icon"></span>&nbsp;
+					<a href="https://ckeditor.com/docs/cs/latest/onpremises/index.html">
+						On-premises
 						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-						<span class="tree__item__badge__text">Premium feature</span></span>
-					}
+							<span class="tree__item__badge__text">Premium feature</span>
+						</span>
+					</a>
 				</span>
 			</td>
 			<td>
@@ -932,10 +948,13 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 		<tr id="saas" class="subfeature background-gray">
 			<td>
 				<span>
-					<span class="subfeature-icon"></span>&nbsp;{@link @cs guides/collaboration/quick-start SaaS
+					<span class="subfeature-icon"></span>&nbsp;
+					<a href="https://ckeditor.com/docs/cs/latest/guides/collaboration/quick-start.html">
+						SaaS
 						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
-						<span class="tree__item__badge__text">Premium feature</span></span>
-					}
+							<span class="tree__item__badge__text">Premium feature</span>
+						</span>
+					</a>
 				</span>
 			</td>
 			<td>Real-time collaboration provided as a service by CKSource.</td>
@@ -1054,6 +1073,18 @@ Collaborate also regarding different formats. With content conversions, you can 
 				tracking annotations.
 			</td>
 		</tr>
+		<tr id="tables-layout" class="feature">
+			<td>
+				{@link features/export-with-inline-styles Export with inline styles}
+						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+						<span class="tree__item__badge__text">Premium feature</span></span>
+			</td>
+			<td>
+				The
+				<code>{@link module:export-inline-styles/exportinlinestyles~ExportInlineStyles}</code>
+				plugin applies the styles defined by CSS style sheets directly on HTML elements.
+			</td>
+		</tr>
 		<tr id="markdown-output" class="feature">
 			<td>
 				{@link features/markdown Markdown output}
@@ -1077,7 +1108,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 		</tr>
 		<tr id="paste-markdown" class="feature">
 			<td>
-				{@link features/paste-markdown Paste Markdown 
+				{@link features/paste-markdown Paste Markdown
 					<span class="tree__item__badge tree__item__badge_new" data-badge-tooltip="Experimental feature">Exp</span>
 				}
 			</td>
@@ -1349,6 +1380,13 @@ Speed up the content creation process with dedicated productivity utilities. Aut
 				the formatting options for each new section.
 			</td>
 		</tr>
+		<tr id="fullscreen" class="feature">
+			<td>
+				{@link features/fullscreen Fullscreen mode}
+			</td>
+			<td>The fullscreen mode lets you temporarily expand the editor to the whole browser viewport, giving you more space to comfortably edit content and use editor's UI features.
+			</td>
+		</tr>
 		<tr id="keyboard-shortcuts" class="feature">
 			<td>
 				{@link features/accessibility#keyboard-shortcuts Keyboard shortcuts}
@@ -1600,6 +1638,28 @@ Configure CKEditor 5 to your liking. Choose the editor type, modify the toolbar,
 				editor, the editors are “connected.” All editable areas of the same
 				editor instance share the same configuration, toolbar, undo stack, and
 				produce one document.
+			</td>
+		</tr>
+		<tr id="email-editing" class="feature">
+			<td>
+				{@link features/email Email editing}
+			</td>
+			<td>
+				CKEditor 5 provides a wide variety of tools and functions for editing almost
+				any kind of content. This includes a wide array of tools and solutions to make
+				email editing easier and more compatible with various email clients.
+			</td>
+		</tr>
+		<tr id="email-configuration-helper" class="subfeature background-gray">
+			<td>
+				<span>
+					<span class="subfeature-icon"></span>&nbsp;{@link features/email-configuration-helper Email configuration helper}
+						<span class="tree__item__badge tree__item__badge_premium" data-badge-tooltip="Premium feature">
+						<span class="tree__item__badge__text">Premium feature</span></span>
+			</td>
+			<td>
+				While configuring an email editor looks like a demanding task, the email configuration
+				helper plugin is the best way to start and make this experience more manageable.
 			</td>
 		</tr>
 		<tr id="professionally-translated-language-packs" class="feature">
@@ -1918,7 +1978,7 @@ Customize your editor even further. Use components and helpers from our UI libra
 		<tr id="cloud-services-rest-api" class="subfeature background-gray">
 			<td>
 				<span>
-					<span class="subfeature-icon"></span>&nbsp;{@link @cs developer-resources/apis/overview Cloud Services REST API}
+					<span class="subfeature-icon"></span>&nbsp;<a href="https://ckeditor.com/docs/cs/latest/developer-resources/apis/overview.html">Cloud Services REST API</a>
 				</span>
 			</td>
 			<td>The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration

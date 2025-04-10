@@ -5,7 +5,6 @@ meta-title: Inserting images into content via URL | CKEditor 5 Documentation
 meta-description: Learn how to insert your images into the content.
 order: 75
 ---
-{@snippet features/build-image-source}
 
 # Inserting images
 
@@ -15,7 +14,7 @@ You can insert images by uploading them directly from your disk, but you can als
 
 ### Demo
 
-To upload an image, use the image toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image}. If you want to add an image through a URL, click the arrow next to the image button and paste the URL in the dropdown panel. To update an existing image, select it and paste a new URL in the dropdown panel.
+To upload an image, use the image toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/image-upload.svg Image}. If you want to add an image through a URL, click the arrow next to the image button and paste the URL in the dropdown panel. To update an existing image, select it and paste a new URL in the dropdown panel.
 
 {@snippet features/image-insert-via-url}
 
@@ -48,7 +47,7 @@ ClassicEditor
 ```
 </code-switcher>
 
-This will add a new **Insert image** dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Insert image} in the toolbar.
+This will add a new **Insert image** dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/image.svg Insert image} in the toolbar.
 
 ## Inserting images via pasting a URL into the editor
 

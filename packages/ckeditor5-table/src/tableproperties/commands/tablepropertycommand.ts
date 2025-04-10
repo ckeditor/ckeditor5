@@ -32,8 +32,20 @@ export default class TablePropertyCommand extends Command {
 
 	/**
 	 * The default value for the attribute.
+	 *
+	 * @readonly
 	 */
-	protected readonly _defaultValue: string | undefined;
+	protected _defaultValue: string | undefined;
+
+	/**
+	 * The default value for the attribute for the content table.
+	 */
+	private readonly _defaultContentTableValue: string | undefined;
+
+	/**
+	 * The default value for the attribute for the layout table.
+	 */
+	private readonly _defaultLayoutTableValue: string | undefined;
 
 	/**
 	 * Creates a new `TablePropertyCommand` instance.
@@ -46,7 +58,8 @@ export default class TablePropertyCommand extends Command {
 		super( editor );
 
 		this.attributeName = attributeName;
-		this._defaultValue = defaultValue;
+		this._defaultContentTableValue = defaultValue;
+		this._defaultLayoutTableValue = attributeName === 'tableBorderStyle' ? 'none' : undefined;
 	}
 
 	/**
@@ -57,6 +70,10 @@ export default class TablePropertyCommand extends Command {
 		const selection = editor.model.document.selection;
 
 		const table = getSelectionAffectedTable( selection );
+
+		this._defaultValue = !table || table.getAttribute( 'tableType' ) !== 'layout' ?
+			this._defaultContentTableValue :
+			this._defaultLayoutTableValue;
 
 		this.isEnabled = !!table;
 		this.value = this._getValue( table );

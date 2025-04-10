@@ -123,6 +123,28 @@ describe( 'SelectionObserver', () => {
 		sinon.assert.calledOnce( flushSpy );
 	} );
 
+	it( 'should not fire selectionChange while editable is not focused', done => {
+		viewDocument.on( 'selectionChange', () => {
+			throw 'selectionChange fired while editable is not focused';
+		} );
+
+		viewDocument.isFocused = false;
+		changeDomSelection();
+
+		setTimeout( done, 100 );
+	} );
+
+	it( 'should fire selectionChange after editor is focused and there were pending selection changes', done => {
+		viewDocument.on( 'selectionChange', () => done() );
+
+		viewDocument.isFocused = false;
+		changeDomSelection();
+
+		setTimeout( () => {
+			viewDocument.isFocused = true;
+		}, 100 );
+	} );
+
 	it( 'should not fire selectionChange while user is composing', done => {
 		viewDocument.on( 'selectionChange', () => {
 			throw 'selectionChange fired while composing';

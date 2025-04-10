@@ -3,14 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, setTimeout */
-
-import { Underline, Strikethrough } from '@ckeditor/ckeditor5-basic-styles';
-import { Mention } from '@ckeditor/ckeditor5-mention';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-
-// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic.js';
+import { Underline, Strikethrough, Mention } from 'ckeditor5';
+import { CS_CONFIG, ClassicEditor, getViewportTopOffsetConfig } from '@snippets/index.js';
 
 ClassicEditor
 	.create( document.querySelector( '.chat__editor' ), {
@@ -26,7 +20,7 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		mention: {
@@ -73,8 +67,7 @@ ClassicEditor
 					]
 				}
 			]
-		},
-		licenseKey: 'GPL'
+		}
 	} )
 	.then( editor => {
 		const editingView = editor.editing.view;

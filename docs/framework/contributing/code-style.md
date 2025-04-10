@@ -1033,38 +1033,6 @@ class ClassWithSecrets {
 }
 ```
 
-### Importing a predefined build: `ckeditor5-rules/no-build-extensions`
-
-<info-box info>
-	This rule only applies to code snippets from the documentation.
-</info-box>
-
-While importing a predefined build, only this build is allowed to be imported, like this:
-
-```js
-// Assume we edit a file located in the path: `packages/ckeditor5-alignment/docs/_snippets/features/text-alignment.js`.
-
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-```
-
-Importing anything from the `src` directory to extend a CKEditor&nbsp;5 build is not allowed. Other directories from a predefined build are not published on npm, so such imports will not work.
-
-👎&nbsp; Examples of incorrect code for this rule:
-
-```js
-// Assume we edit a file located in the path: `packages/ckeditor5-alignment/docs/_snippets/features/text-alignment.js`.
-
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
-```
-
-```js
-// Assume we edit a file located in the path: `docs/_snippets/features/placeholder.js`.
-
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
-```
-
-[History of the change.](https://github.com/ckeditor/ckeditor5/issues/13689)
-
 ### Declaring module augmentation for the core package: `ckeditor5-rules/allow-declare-module-only-in-augmentation-file`
 
 <info-box warning>
@@ -1086,7 +1054,7 @@ This rule ensures that all imports from the `@ckeditor/*` packages are done thro
 import Table from '@ckeditor/ckeditor5-table/src/table';
 
 // Importing from the `/theme/` folder is not allowed.
-import BoldIcon from '@ckeditor/ckeditor5-core/theme/icons/bold.svg';
+import BoldIcon from '@ckeditor/ckeditor5-icons/theme/icons/bold.svg';
 ```
 
 👍&nbsp; Examples of correct code for this rule:
@@ -1251,3 +1219,7 @@ import { AIAssistant } from '@ckeditor/ckeditor5-ai';
 import { Plugin } from 'ckeditor5';
 import { AIAssistant } from 'ckeditor5-premium-features';
 ```
+
+### SVG imports only in the `@ckeditor/ckeditor5-icons` package
+
+This rule ensures that SVG files are imported and exported only in the `@ckeditor/ckeditor5-icons` package. This package should include all icons used in CKEditor&nbsp;5.

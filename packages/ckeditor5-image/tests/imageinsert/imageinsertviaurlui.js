@@ -9,7 +9,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Model from '@ckeditor/ckeditor5-ui/src/model.js';
 import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
 
-import { icons } from '@ckeditor/ckeditor5-core';
+import { IconImageUrl } from '@ckeditor/ckeditor5-icons';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
@@ -117,7 +117,7 @@ describe( 'ImageInsertViaUrlUI', () => {
 		it( 'has two action buttons', () => {
 			expect( dialog.view.actionsView.children ).to.have.length( 2 );
 			expect( dialog.view.actionsView.children.get( 0 ).label ).to.equal( 'Cancel' );
-			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Accept' );
+			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Insert' );
 		} );
 
 		it( 'has submittable form', () => {
@@ -134,14 +134,29 @@ describe( 'ImageInsertViaUrlUI', () => {
 			expect( urlView.isImageSelected ).to.be.false;
 		} );
 
-		it( 'should change title if image is selected', () => {
-			expect( dialog.view.headerView.label ).to.equal( 'Insert image via URL' );
+		it( 'should have a title', () => {
+			const sinonSpy = sinon.spy( dialog, 'show' );
 
+			dialog.hide();
+			openDialog();
+
+			expect( sinonSpy ).to.have.been.calledWithMatch( { title: 'Image via URL' } );
+		} );
+
+		it( 'should show save button if image is selected', () => {
 			dialog.hide();
 			insertImageUI.isImageSelected = true;
 			openDialog();
 
-			expect( dialog.view.headerView.label ).to.equal( 'Update image URL' );
+			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Save' );
+		} );
+
+		it( 'should show insert button if image is not selected', () => {
+			dialog.hide();
+			insertImageUI.isImageSelected = false;
+			openDialog();
+
+			expect( dialog.view.actionsView.children.get( 1 ).label ).to.equal( 'Insert' );
 		} );
 
 		it( 'should bind #isEnabled', () => {
@@ -333,7 +348,7 @@ describe( 'ImageInsertViaUrlUI', () => {
 					expect( dropdown.buttonView ).to.be.instanceOf( SplitButtonView );
 					expect( dropdown.buttonView.tooltip ).to.be.true;
 					expect( dropdown.buttonView.label ).to.equal( 'Insert image' );
-					expect( dropdown.buttonView.actionView.icon ).to.equal( icons.imageUrl );
+					expect( dropdown.buttonView.actionView.icon ).to.equal( IconImageUrl );
 					expect( dropdown.buttonView.actionView.tooltip ).to.be.true;
 					expect( dropdown.buttonView.actionView.label ).to.equal( 'Insert image via URL' );
 				} );
@@ -407,7 +422,7 @@ describe( 'ImageInsertViaUrlUI', () => {
 		} );
 
 		it( 'should set an #icon of the #buttonView', () => {
-			expect( button.icon ).to.equal( icons.imageUrl );
+			expect( button.icon ).to.equal( IconImageUrl );
 		} );
 
 		it( 'should open insert image via url dialog', () => {

@@ -8,7 +8,7 @@
  */
 
 import type { BoxSides } from 'ckeditor5/src/engine.js';
-import { isObject } from 'lodash-es';
+import { isObject } from 'es-toolkit/compat';
 
 /**
  * Returns a string if all four values of box sides are equal.
@@ -116,7 +116,7 @@ export type NormalizeTableDefaultPropertiesOptions = {
  * @param options Options used to determine which properties should be added.
  */
 export function getNormalizedDefaultProperties(
-	config: Partial<NormalizedDefaultProperties> | undefined,
+	config?: Partial<NormalizedDefaultProperties>,
 	options: NormalizeTableDefaultPropertiesOptions = {}
 ): NormalizedDefaultProperties {
 	const normalizedConfig: NormalizedDefaultProperties = {
@@ -155,7 +155,7 @@ export function getNormalizedDefaultProperties(
  * @param options Options used to determine which properties should be added.
  */
 export function getNormalizedDefaultTableProperties(
-	config: Partial<NormalizedDefaultProperties> | undefined,
+	config?: Partial<NormalizedDefaultProperties>,
 	options?: NormalizeTableDefaultPropertiesOptions
 ): NormalizedDefaultProperties {
 	return getNormalizedDefaultProperties( {
@@ -175,7 +175,7 @@ export function getNormalizedDefaultTableProperties(
  * @param options Options used to determine which properties should be added.
  */
 export function getNormalizedDefaultCellProperties(
-	config: Partial<NormalizedDefaultProperties> | undefined,
+	config?: Partial<NormalizedDefaultProperties>,
 	options?: NormalizeTableDefaultPropertiesOptions
 ): NormalizedDefaultProperties {
 	return getNormalizedDefaultProperties( {

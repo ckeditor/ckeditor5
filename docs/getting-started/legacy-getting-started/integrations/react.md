@@ -5,12 +5,10 @@ category: legacy-integrations
 order: 30
 ---
 
-{@snippet installation/integrations/framework-integration}
-
 # (Legacy) React rich text editor component
 
 <info-box warning>
-	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. If you are looking for current CKEditor 5 React integration, please refer to the newest version of the {@link getting-started/integrations/react-default-npm CKEditor&nbsp;5 integration} guide.
+	⚠️  We changed installation methods and this legacy guide is kept for users' convenience. As of April 2025, integrations based on predefined builds are **no longer supported**. Please refer to the {@link getting-started/index#ckeditor-5-framework-integrations Quick Start} guide to choose one of the modern installation and integration methods available and {@link updating/nim-migration/migration-to-new-installation-methods migrate to new installation methods}.
 </info-box>
 
 <p>
@@ -19,15 +17,15 @@ order: 30
 	</a>
 </p>
 
-CKEditor&nbsp;5 consists of {@link getting-started/legacy-getting-started/predefined-builds ready-to-use editor builds} and {@link framework/index CKEditor&nbsp;5 Framework} upon which the builds are based.
+CKEditor&nbsp;5 consists of editor builds and {@link framework/index CKEditor&nbsp;5 Framework} upon which the builds are based.
 
-The easiest way to use CKEditor&nbsp;5 in your React application is by choosing one of the {@link getting-started/legacy-getting-started/predefined-builds#available-builds rich text editor builds}. Additionally, it is also possible to integrate [CKEditor&nbsp;5 built from source](#integrating-ckeditor-5-built-from-source) into your application. You can also use a customized editor built by using [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/) in any React application.
+The easiest way to use CKEditor&nbsp;5 in your React application is by choosing one of the rich text editor builds. Additionally, it is also possible to integrate [CKEditor&nbsp;5 built from source](#integrating-ckeditor-5-built-from-source) into your application. You can also use a customized editor built by using [CKEditor&nbsp;5 online builder](https://ckeditor.com/ckeditor-5/online-builder/) in any React application.
 
 ## Quick start
 
 This guide assumes you already have a React project. If you want to create a new one, you can use the [`create-react-app`](https://create-react-app.dev/) CLI. It allows you to create and customize your project with templates. For example, you can set up your project with TypeScript support.
 
-Install the [CKEditor&nbsp;5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the {@link getting-started/legacy-getting-started/predefined-builds#available-builds editor build of your choice}. Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
+Install the [CKEditor&nbsp;5 WYSIWYG editor component for React](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) and the editor build of your choice. Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
 ```bash
 npm install --save @ckeditor/ckeditor5-react @ckeditor/ckeditor5-build-classic
@@ -175,7 +173,7 @@ The `CKEditorContext` component supports the following properties:
 
 ## Customizing the builds
 
-The {@link getting-started/legacy-getting-started/predefined-builds CKEditor&nbsp;5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link getting-started/setup/toolbar toolbar} or remove some plugins, you need to rebuild the editor to add more plugins.
+The CKEditor&nbsp;5 builds come ready to use, with a set of built-in plugins and a predefined configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link getting-started/setup/toolbar toolbar} or remove some plugins, you need to rebuild the editor to add more plugins.
 
 There are three main ways to do that.
 
@@ -450,7 +448,7 @@ Then, add two new elements to the exported object under the `module.rules` array
 
 ```js
 {
-	test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+	test: /ckeditor5-icons\/theme\/icons\/[^/\\]+\.svg$/,
 	use: [ 'raw-loader' ]
 },
 {
@@ -522,7 +520,7 @@ Finally, exclude CKEditor&nbsp;5 SVG and CSS files from `file-loader`. Find the 
 			/\.(js|mjs|jsx|ts|tsx)$/,
 			/\.html$/,
 			/\.json$/,
-			/ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+			/\.svg$/,
 			/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/
 		],
 		name: 'static/media/[name].[hash:8].[ext]',
@@ -683,7 +681,7 @@ CKEditor&nbsp;5 supports {@link getting-started/setup/ui-language multiple UI la
 
 ### Predefined builds
 
-When using one of the {@link getting-started/legacy-getting-started/predefined-builds predefined builds} or the editor built by the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), you need to import the translations first:
+When using one of the builds or the editor built by the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), you need to import the translations first:
 
 **Official editor builds:**
 

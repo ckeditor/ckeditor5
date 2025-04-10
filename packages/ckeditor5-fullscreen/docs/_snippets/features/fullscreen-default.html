@@ -1,0 +1,439 @@
+<!-- include CKBox from CDN -->
+
+<div class="live-snippet__loader" id="default_live-snippet__loader">
+	<svg class="spinner" viewBox="25 25 50 50">
+		<circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
+	</svg>
+</div>
+
+<div class="live-snippet__container revision-integration" id="default_live-snippet__container">
+	<div class="presence" id="default_presence"></div>
+
+	<div class="row">
+		<div class="demo-container" id="default_demo-container">
+			<div class="toolbar-container" id="default_toolbar-container"></div>
+			<div class="editing-area-scroll-wrapper">
+				<div class="editing-area-wrapper">
+					<div class="document-outline-container" id="default_document-outline-container"></div>
+					<div class="editor-content-wrapper">
+						<div id="default_editor" class="editor-content"></div>
+						<div class="sidebar" id="default_sidebar-container"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="default_revision-viewer-container">
+			<div class="revision-editor-container">
+				<div id="default_revision-viewer-editor"></div>
+				<div class="sidebar" id="default_revision-viewer-sidebar"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+	@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap');
+
+	/* ----------------------- Demo layout styles ------------------------------ */
+	.demo-container {
+		display: grid;
+		grid-template-columns: minmax(250px, .5fr) 1.5fr;
+		grid-template-rows: auto 1fr;
+		gap: 0px 0px;
+		grid-template-areas:
+			"Toolbar Toolbar"
+			"Content Content";
+		background: var(--ck-color-base-foreground);
+		border: 1px solid var(--ck-color-base-border);
+
+		/* The max height of the editor content wrapper before it becomes scrollable. */
+		--demo-content-height: 550px;
+	}
+
+	.demo-container .toolbar-container {
+		grid-area: Toolbar;
+		box-shadow: 0 2px 3px hsla(0, 0%, 0%, 0.078);
+
+		/* Makes the shadow display over the editor content. */
+		position: relative;
+	}
+
+	/* Adjust borders of the toolbar to fit well into the layout. Avoid duplicated borders. */
+	.demo-container .toolbar-container>.ck.ck-toolbar {
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+		border-top: 0;
+		border-left: 0;
+		border-right: 0;
+	}
+
+	.demo-container .editing-area-scroll-wrapper {
+		grid-area: Content;
+		overflow-y: scroll;
+		overflow-x: auto;
+		display: flex;
+	}
+
+	.demo-container .editing-area-wrapper {
+		display: flex;
+		flex: 1;
+		width: fit-content;
+	}
+
+	.demo-container .editor-content-wrapper {
+		max-height: var(--demo-content-height);
+
+		/* Center the editor content in this grid area. */
+		display: flex;
+		flex: 1;
+		justify-content: center;
+		align-items: flex-start;
+	}
+
+	.demo-container .document-outline-container {
+		display: none;
+	}
+
+	.sidebar {
+		min-width: 65px;
+		padding-right: var(--ck-spacing-large);
+	}
+
+	.presence {
+		height: 55px;
+	}
+
+	#default_revision-viewer-container {
+		display: none;
+	}
+
+	.revision-editor-container {
+		display: flex;
+	}
+
+	.revision-editor-container .ck-editor {
+		margin: 0;
+	}
+
+	.revision-editor-container .sidebar {
+		border: 1px solid var(--ck-color-base-border);
+		border-left: 0;
+		padding-right: 0;
+		min-width: 300px;
+	}
+
+	#demo-container .ck.ck-editor {
+		width: 860px;
+	}
+
+	#demo-container .sidebar {
+		margin-left: 20px;
+	}
+
+	#demo-container .sidebar.narrow {
+		width: 30px;
+	}
+
+	.editing-area-scroll-wrapper {
+		overflow-x: auto;
+	}
+
+	.live-snippet {
+		min-height: 200px;
+	}
+
+	.live-snippet__container {
+		overflow: visible;
+		margin: 1.5em 0;
+		opacity: 0;
+		display: none;
+	}
+
+	.live-snippet__container.loaded {
+		display: block;
+		opacity: 1;
+		animation: 300ms _fadein ease-in-out;
+	}
+
+	.live-snippet__loader {
+		position: absolute;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		opacity: 1;
+		width: 100%;
+		text-align: center;
+		margin: 50px auto;
+	}
+
+	.live-snippet__loader.fadeout {
+		display: none;
+		animation: 300ms _fadeout ease-in-out;
+	}
+
+	.live-snippet__loader .spinner {
+		display: block;
+		height: 75px;
+		width: 75px;
+	}
+
+	.live-snippet__loader .spinner .path {
+		stroke-dasharray: 1, 200;
+		stroke-dashoffset: 0;
+		animation: _spinner-color 6s ease-in-out infinite, _spinner-dash 1.5s ease-in-out infinite;
+		stroke-linecap: round;
+	}
+
+	@keyframes _fadein {
+		from {
+			opacity: 0;
+		}
+
+		to {
+			opacity: 1;
+		}
+	}
+
+	@keyframes _fadeout {
+		from {
+			opacity: 1;
+		}
+
+		to {
+			opacity: 0;
+		}
+	}
+
+	@keyframes _spinner-color {
+
+		100%,
+		0% {
+			stroke: #f75b4b;
+		}
+
+		40% {
+			stroke: #0387d0;
+		}
+
+		66% {
+			stroke: #1ebd60;
+		}
+
+		80%,
+		90% {
+			stroke: #8d44ad;
+		}
+	}
+
+	@keyframes _spinner-dash {
+		0% {
+			stroke-dasharray: 1, 200;
+			stroke-dashoffset: 0;
+		}
+
+		50% {
+			stroke-dasharray: 89, 200;
+			stroke-dashoffset: -35px;
+		}
+
+		100% {
+			stroke-dasharray: 89, 200;
+			stroke-dashoffset: -124px;
+		}
+	}
+
+	/* ----------------------- Content styles ------------------------------ */
+
+	/* Styles of the editor content container to make it look like a sheet of paper. */
+	.editor-content.ck.ck-content {
+		/* Min and max used to force width in flexbox. */
+		min-height: 297mm;
+		height: auto;
+		padding: 20mm 12mm;
+		margin: calc( 2 * var(--ck-spacing-large) );
+		box-sizing: border-box;
+		background: hsl(0, 0%, 100%);
+		box-shadow: 0 2px 8px hsla(0, 0%, 0%, .08);
+		overflow: hidden;
+		flex: 1 1 auto;
+		word-break: break-word;
+	}
+
+	.editor-content.ck.ck-content,
+	.editor-content.ck.ck-content.ck-focused {
+		border: 1px solid hsl(0, 0%, 88%);
+		box-shadow: 0 2px 8px hsla(0, 0%, 0%, .08);
+	}
+
+	/* Vertical rhythm of the blocks in the editor content below. */
+	.editor-content.ck.ck-content h2 {
+		font-size: 2.06em;
+		line-height: 1.58em;
+		padding-top: 0.455em;
+		margin-bottom: 0.333em;
+	}
+
+	.editor-content.ck.ck-content h3 {
+		font-size: 1.75em;
+		line-height: 1.86em;
+		padding-top: 0.571em;
+		margin-bottom: 0.357em;
+	}
+
+	.editor-content.ck.ck-content h4 {
+		font-size: 1.44em;
+		line-height: 1.13em;
+		padding-top: 0.217em;
+		margin-bottom: 0.913em;
+	}
+
+	.editor-content.ck.ck-content h5 {
+		font-size: 1.19em;
+		line-height: 1.37em;
+		padding-top: 0.368em;
+		margin-bottom: 1.00em;
+	}
+
+	.editor-content.ck.ck-content p {
+		font-size: 1.00em;
+		line-height: 1.63em;
+		padding-top: 0.500em;
+		margin-bottom: 1.13em;
+	}
+
+	/* Styles dropdown styles */
+
+	.ck.ck-content {
+		line-height: 1.6;
+		padding: 2em;
+	}
+
+	.ck-content .ck-horizontal-line {
+		margin-bottom: 1em;
+	}
+
+	.ck.ck-content h3.category {
+		font-family: 'Bebas Neue';
+		font-size: 20px;
+		font-weight: bold;
+		color: #555;
+		letter-spacing: 10px;
+		margin: 0;
+		padding: 0;
+	}
+
+	.ck.ck-content h2.document-title {
+		font-family: 'Bebas Neue';
+		font-size: 50px;
+		font-weight: bold;
+		margin: 0;
+		padding: 0;
+		border: 0;
+	}
+
+	.ck.ck-content h3.document-subtitle {
+		font-family: 'Bebas Neue';
+		font-size: 20px;
+		color: #555;
+		margin: 0 0 1em;
+		font-weight: normal;
+		padding: 0;
+	}
+
+	.ck.ck-content p.info-box {
+		--background-size: 30px;
+		--background-color: #e91e63;
+		padding: 1.2em 2em;
+		border: 1px solid var(--background-color);
+		background: linear-gradient(135deg, var(--background-color) 0%, var(--background-color) var(--background-size), transparent var(--background-size)), linear-gradient(135deg, transparent calc(100% - var(--background-size)), var(--background-color) calc(100% - var(--background-size)), var(--background-color));
+		border-radius: 10px;
+		margin: 1.5em 2em;
+		box-shadow: 5px 5px 0 #ffe6ef;
+	}
+
+	.ck.ck-content blockquote.side-quote {
+		font-family: 'Bebas Neue';
+		font-style: normal;
+		float: right;
+		width: 35%;
+		position: relative;
+		border: 0;
+		overflow: visible;
+		z-index: 1;
+		margin-left: 1em;
+	}
+
+	.ck.ck-content blockquote.side-quote::before {
+		content: "“";
+		position: absolute;
+		top: -37px;
+		left: -10px;
+		display: block;
+		font-size: 200px;
+		color: #e7e7e7;
+		z-index: -1;
+		line-height: 1;
+	}
+
+	.ck.ck-content blockquote.side-quote p {
+		font-size: 2em;
+		line-height: 1;
+	}
+
+	.ck.ck-content blockquote.side-quote p:last-child:not(:first-child) {
+		font-size: 1.3em;
+		text-align: right;
+		color: #555;
+	}
+
+	.ck.ck-content span.marker {
+		background: yellow;
+	}
+
+	.ck.ck-content span.spoiler {
+		background: #000;
+		color: #000;
+	}
+
+	.ck.ck-content span.spoiler:hover {
+		background: #000;
+		color: #fff;
+	}
+
+	.ck.ck-content pre.fancy-code {
+		border: 0;
+		margin-left: 2em;
+		margin-right: 2em;
+		border-radius: 10px;
+	}
+
+	.ck.ck-content pre.fancy-code::before {
+		content: "";
+		display: block;
+		height: 13px;
+		background: url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1NCAxMyI+CiAgPGNpcmNsZSBjeD0iNi41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiNGMzZCNUMiLz4KICA8Y2lyY2xlIGN4PSIyNi41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiNGOUJFNEQiLz4KICA8Y2lyY2xlIGN4PSI0Ny41IiBjeT0iNi41IiByPSI2LjUiIGZpbGw9IiM1NkM0NTMiLz4KPC9zdmc+Cg==);
+		margin-bottom: 8px;
+		background-repeat: no-repeat;
+	}
+
+	.ck.ck-content pre.fancy-code-dark {
+		background: #272822;
+		color: #fff;
+		box-shadow: 5px 5px 0 #0000001f;
+	}
+
+	.ck.ck-content pre.fancy-code-bright {
+		background: #dddfe0;
+		color: #000;
+		box-shadow: 5px 5px 0 #b3b3b3;
+	}
+
+	/* ---------------------- Umberto overrides ------------------------ */
+
+	@media only screen and (min-width: 1600px) {
+		.main .main__content-inner {
+            width: 905px;
+        }
+	}
+</style>

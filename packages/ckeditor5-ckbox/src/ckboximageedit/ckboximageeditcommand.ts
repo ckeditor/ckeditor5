@@ -20,7 +20,7 @@ import {
 } from 'ckeditor5/src/utils.js';
 import type { Element as ModelElement } from 'ckeditor5/src/engine.js';
 import { Notification } from 'ckeditor5/src/ui.js';
-import { isEqual } from 'lodash-es';
+import { isEqual } from 'es-toolkit/compat';
 
 import { sendHttpRequest } from '../utils.js';
 import { prepareImageAssetAttributes } from '../ckboxcommand.js';

@@ -1,0 +1,20 @@
+<head>
+	<!--
+		For a totally unknown reason, loading a large script inside an iframe is aborted in Puppeteer,
+		so this request has been added to exclusions for the crawler.
+	-->
+	<meta name="x-cke-crawler-ignore-patterns" content='{
+		"request-failure": [ "iframeeditor.js", "localhost" ]
+	}'>
+</head>
+
+<body>
+	<iframe id="iframe" src="iframeeditor.html"></iframe>
+</body>
+
+<style>
+	#iframe {
+		width: 1000px;
+		height: 500px;
+	}
+</style>

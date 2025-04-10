@@ -42,6 +42,8 @@ import type EditableElement from './editableelement.js';
 import type ViewTextProxy from './textproxy.js';
 import type ViewRawElement from './rawelement.js';
 
+// @if CK_DEBUG_TYPING // const { _buildLogMessage } = require( '../dev-utils/utils.js' );
+
 type DomNode = globalThis.Node;
 type DomElement = globalThis.HTMLElement;
 type DomDocument = globalThis.Document;
@@ -117,7 +119,7 @@ export default class DomConverter {
 	public readonly unsafeElements: Array<string>;
 
 	/**
-	 * The DOM Document used to create DOM nodes.
+	 * The DOM Document used by `DomConverter` to create DOM nodes.
 	 */
 	private readonly _domDocument: DomDocument;
 
@@ -187,6 +189,13 @@ export default class DomConverter {
 		this.unsafeElements = [ 'script', 'style' ];
 
 		this._domDocument = this.renderingMode === 'editing' ? global.document : global.document.implementation.createHTMLDocument( '' );
+	}
+
+	/**
+	 * The DOM Document used by `DomConverter` to create DOM nodes.
+	 */
+	public get domDocument(): DomDocument {
+		return this._domDocument;
 	}
 
 	/**
@@ -1098,36 +1107,52 @@ export default class DomConverter {
 	public focus( viewEditable: EditableElement ): void {
 		const domEditable = this.mapViewToDom( viewEditable );
 
-		if ( domEditable && domEditable.ownerDocument.activeElement !== domEditable ) {
-			// Save the scrollX and scrollY positions before the focus.
-			const { scrollX, scrollY } = global.window;
-			const scrollPositions: Array<[ number, number ]> = [];
+		if ( !domEditable || domEditable.ownerDocument.activeElement === domEditable ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'DomConverter',
+			// @if CK_DEBUG_TYPING // 		'%cDOM editable is already active or does not exist',
+			// @if CK_DEBUG_TYPING // 		'font-style: italic'
+			// @if CK_DEBUG_TYPING // 	) );
+			// @if CK_DEBUG_TYPING // }
 
-			// Save all scrollLeft and scrollTop values starting from domEditable up to
-			// document#documentElement.
-			forEachDomElementAncestor( domEditable, node => {
-				const { scrollLeft, scrollTop } = ( node as DomElement );
-
-				scrollPositions.push( [ scrollLeft, scrollTop ] );
-			} );
-
-			domEditable.focus();
-
-			// Restore scrollLeft and scrollTop values starting from domEditable up to
-			// document#documentElement.
-			// https://github.com/ckeditor/ckeditor5-engine/issues/951
-			// https://github.com/ckeditor/ckeditor5-engine/issues/957
-			forEachDomElementAncestor( domEditable, node => {
-				const [ scrollLeft, scrollTop ] = scrollPositions.shift() as [ number, number ];
-
-				node.scrollLeft = scrollLeft;
-				node.scrollTop = scrollTop;
-			} );
-
-			// Restore the scrollX and scrollY positions after the focus.
-			// https://github.com/ckeditor/ckeditor5-engine/issues/951
-			global.window.scrollTo( scrollX, scrollY );
+			return;
 		}
+
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'DomConverter',
+		// @if CK_DEBUG_TYPING // 		'Focus DOM editable:',
+		// @if CK_DEBUG_TYPING // 		{ domEditable }
+		// @if CK_DEBUG_TYPING // 	) );
+		// @if CK_DEBUG_TYPING // }
+
+		// Save the scrollX and scrollY positions before the focus.
+		const { scrollX, scrollY } = global.window;
+		const scrollPositions: Array<[ number, number ]> = [];
+
+		// Save all scrollLeft and scrollTop values starting from domEditable up to
+		// document#documentElement.
+		forEachDomElementAncestor( domEditable, node => {
+			const { scrollLeft, scrollTop } = ( node as DomElement );
+
+			scrollPositions.push( [ scrollLeft, scrollTop ] );
+		} );
+
+		domEditable.focus();
+
+		// Restore scrollLeft and scrollTop values starting from domEditable up to
+		// document#documentElement.
+		// https://github.com/ckeditor/ckeditor5-engine/issues/951
+		// https://github.com/ckeditor/ckeditor5-engine/issues/957
+		forEachDomElementAncestor( domEditable, node => {
+			const [ scrollLeft, scrollTop ] = scrollPositions.shift() as [ number, number ];
+
+			node.scrollLeft = scrollLeft;
+			node.scrollTop = scrollTop;
+		} );
+
+		// Restore the scrollX and scrollY positions after the focus.
+		// https://github.com/ckeditor/ckeditor5-engine/issues/951
+		global.window.scrollTo( scrollX, scrollY );
 	}
 
 	/**

@@ -142,3 +142,15 @@ msgstr "Будь ласка, спробуйте іншу фразу або пе�
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
 msgstr "Вихідний код"
+
+msgctxt "Label for the Insert button."
+msgid "Insert"
+msgstr "Вставити"
+
+msgctxt "Label for the Update button."
+msgid "Update"
+msgstr "Оновити"
+
+msgctxt "Label for the Back button."
+msgid "Back"
+msgstr "Назад"

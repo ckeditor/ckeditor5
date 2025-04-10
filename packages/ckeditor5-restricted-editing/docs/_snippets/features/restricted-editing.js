@@ -3,18 +3,26 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, document */
-
-import { StandardEditingMode, RestrictedEditingMode } from '@ckeditor/ckeditor5-restricted-editing';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
-import { LinkImage } from '@ckeditor/ckeditor5-link';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
-
-// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic.js';
+import {
+	StandardEditingMode,
+	RestrictedEditingMode,
+	CKBox,
+	CKBoxImageEdit,
+	PictureEditing,
+	ImageInsert,
+	ImageResize,
+	AutoImage,
+	LinkImage
+} from 'ckeditor5';
+import {
+	TOKEN_URL,
+	CS_CONFIG,
+	ArticlePluginSet,
+	ClassicEditor,
+	getViewportTopOffsetConfig,
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
 
 ClassicEditor.builtinPlugins.push(
 	RestrictedEditingMode,
@@ -75,7 +83,7 @@ async function startStandardEditingMode() {
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
@@ -83,8 +91,7 @@ async function startStandardEditingMode() {
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
 		},
-		updateSourceElementOnDestroy: true,
-		licenseKey: 'GPL'
+		updateSourceElementOnDestroy: true
 	} );
 }
 
@@ -101,15 +108,14 @@ async function startRestrictedEditingMode() {
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
 			tokenUrl: TOKEN_URL,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
 		},
-		updateSourceElementOnDestroy: true,
-		licenseKey: 'GPL'
+		updateSourceElementOnDestroy: true
 	} );
 }
 
@@ -120,8 +126,8 @@ async function reloadEditor( config ) {
 
 	window.editor = await ClassicEditor.create( document.querySelector( '#restricted-editing-editor' ), config );
 
-	window.attachTourBalloon( {
-		target: window.findToolbarItem(
+	attachTourBalloon( {
+		target: findToolbarItem(
 			window.editor.ui.view.toolbar,
 			item => item.label && [ 'Enable editing', 'Disable editing' ].includes( item.label )
 		),

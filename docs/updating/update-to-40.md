@@ -15,11 +15,7 @@ order: 84
 
 ## Update to CKEditor&nbsp;5 v40.2.0
 
-_Released on December 12, 2023._
-
-For the entire list of changes introduced in version 40.2.0, see the [release notes for CKEditor&nbsp;5 v40.2.0](https://github.com/ckeditor/ckeditor5/releases/tag/v40.2.0).
-
-Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v40.2.0.
+Released on December 12, 2023. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v40.2.0))
 
 ### AI Assistant integration
 
@@ -84,7 +80,7 @@ ClassicEditor
 
 ### CKBox image editing
 
-The new release includes the {@link features/ckbox CKBox} image editing feature. You can access this feature either through a main toolbar button or the image contextual toolbar button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/ckbox-image-edit.svg Image upload}. It lets users perform quick image edits such as cropping, resizing, flipping, and rotating the image. Image editing is called from within the editor and the process takes place right in the asset manager. This speeds up and simplifies the content editing process.
+The new release includes the {@link features/ckbox CKBox} image editing feature. You can access this feature either through a main toolbar button or the image contextual toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/ckbox-image-edit.svg Image upload}. It lets users perform quick image edits such as cropping, resizing, flipping, and rotating the image. Image editing is called from within the editor and the process takes place right in the asset manager. This speeds up and simplifies the content editing process.
 
 {@img assets/img/ckbox-editing-area.png 1062 CKBox image editing panel.}
 
@@ -123,11 +119,11 @@ image: {
 },
 ```
 
-You can read more about image editing in the {@link @ckbox features/images/editing CKBox documentation}.
+You can read more about image editing in the [CKBox documentation](https://ckeditor.com/docs/ckbox/latest/features/images/editing/editing.html).
 
 ### Expanded image insert dropdown
 
-We have updated the toolbar `insertImage` component. By default, the image toolbar dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image} provides access to all installed methods of inserting images into content:
+We have updated the toolbar `insertImage` component. By default, the image toolbar dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/image.svg Image} provides access to all installed methods of inserting images into content:
 
 * {@link features/image-upload Uploading images from your computer}.
 * Adding images from {@link features/using-file-managers file managers}.
@@ -190,24 +186,29 @@ Additional image inserting plugins:
 
 #### New image upload icons
 
-Due to the changes to the image insert mechanisms, we introduced new toolbar icons and replaced the old {@icon @ckeditor/ckeditor5-core/theme/icons/image.svg Image} image icon.
+Due to the changes to the image insert mechanisms, we introduced new toolbar icons and replaced the old {@icon @ckeditor/ckeditor5-icons/theme/icons/image.svg Image} image icon.
 
 Now there are:
-* {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image upload} image upload icon that is the default for the dropdown or the upload from computer command.
-* {@icon @ckeditor/ckeditor5-core/theme/icons/image-asset-manager.svg Image manager} image manager icon.
-* {@icon @ckeditor/ckeditor5-core/theme/icons/image-url.svg Insert via URL} insert via URL icon.
+* {@icon @ckeditor/ckeditor5-icons/theme/icons/image-upload.svg Image upload} image upload icon that is the default for the dropdown or the upload from computer command.
+* {@icon @ckeditor/ckeditor5-icons/theme/icons/image-asset-manager.svg Image manager} image manager icon.
+* {@icon @ckeditor/ckeditor5-icons/theme/icons/image-url.svg Insert via URL} insert via URL icon.
 
-The toolbar dropdown will use the {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image upload} image upload icon by default. If no upload adapter is present, the toolbar will use the next available icon instead.
+The toolbar dropdown will use the {@icon @ckeditor/ckeditor5-icons/theme/icons/image-upload.svg Image upload} image upload icon by default. If no upload adapter is present, the toolbar will use the next available icon instead.
 
 ### Removal of the `insertImageViaUrl` option
 
 The `insertImageViaUrl` configuration option was unused and was removed. If you have it somewhere in your editor configuration, remove it to avoid getting an error.
 
+### Minor breaking changes in this release
+
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The configuration for AI Assistant has changed and will require an update. Additionally, a proper adapter (`OpenAIAdapter`, `AWSAdapter`, or a custom adapter) must be now explicitly added to the plugin list.
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `ImageInsertUI` plugin internals were cleaned up, as it worked a bit magically with hard-coded dependencies. For example, it automatically enabled the behavior of inserting image via URL. As of now, it will not enable any external behaviors. See the [update guide](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-40.html#update-to-ckeditor-5-v4020) for details.
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The `CollapsibleView` has been moved from the `@ckeditor/ckeditor5-list` package to `@ckeditor/ckeditor5-ui`. You can import it like this: `import { CollapsibleView } from '@ckeditor/ckeditor5-ui';`
+
+
 ## Update to CKEditor&nbsp;5 v40.1.0
 
-_Released on November 15, 2023._
-
-For the entire list of changes introduced in version 40.1.0, see the [release notes for CKEditor&nbsp;5 v40.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v40.1.0).
+Released on November 15, 2023. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v40.1.0))
 
 Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v40.1.0.
 
@@ -244,13 +245,18 @@ If you omit the `type` setting in the configuration, the behavior defaults to in
 
 ### Updated image text alternative icon
 
-The {@link features/images-text-alternative image text alternative} (the `alt` attribute) helps screen reader users navigate and understand the document. We have updated the toolbar icon {@icon @ckeditor/ckeditor5-core/theme/icons/text-alternative.svg Alternative text} to be more intuitive and easier to recognize, following global standards.
+The {@link features/images-text-alternative image text alternative} (the `alt` attribute) helps screen reader users navigate and understand the document. We have updated the toolbar icon {@icon @ckeditor/ckeditor5-icons/theme/icons/text-alternative.svg Alternative text} to be more intuitive and easier to recognize, following global standards.
+
+### Minor breaking changes in this release
+
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The `config.aiAssistant.uiCssClass` configuration has been replaced by `config.aiAssistant.useTheme` and changed its function. A new complementary `.ck-ai-assistant-ui_theme` CSS class has also been introduced to the AI Assistant's UI elements. Please refer to the API documentation and the UI customization guide to learn more.
+* **[editor-multi-root](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root)**: If you have a custom plugin that uses roots attributes, it is highly recommended to use the newly added `MultiRootEditor#registerRootAttribute()` method to register a custom root attribute.
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: By default, images are inserted as block images (not inline). To switch to the previous behavior (determining image type by insertion context), set the editor configuration `image.insert.type` to `'auto'`.
+* **[import-word](https://www.npmjs.com/package/@ckeditor/ckeditor5-import-word)**: Introduced the new `config.importWord.formatting` configuration property which is an object accepting the following properties: `resets`, `defaults`, `styles`, and `comments`. The old properties: `config.importWord.defaultStyles` and `config.importWord.commentsStyles` were removed. Use `formatting.defaults` and `formatting.comments` instead.
 
 ## Update to CKEditor&nbsp;5 v40.0.0
 
-_Released on October 4, 2023._
-
-For the entire list of changes introduced in version 40.0.0, see the [release notes for CKEditor&nbsp;5 v40.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v40.0.0).
+Released on October 4, 2023. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v40.0.0))
 
 Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v40.0.0.
 
@@ -442,3 +448,16 @@ We implemented the list v2 (document list) feature in 2022 to add support for bl
 You can follow the current state of works in the [Document list feature parity](https://github.com/ckeditor/ckeditor5/issues/14632) issue. Considering this progress, we will replace the old lists feature with the new document lists in one of the upcoming releases. We will also sunset the old lists at the beginning of 2024. The change will be seamless for the users, but there are significant changes between these plugins. We will update the information about this process as it unfolds.
 
 See the [#14767](https://github.com/ckeditor/ckeditor5/issues/14767) issue for more details.
+
+### Major breaking changes in this release
+
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The model attribute name of the resized image has been changed to `resizedWidth`. The `width` and `height` attributes are now used to preserve the image's natural width and height.
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The `srcset` model attribute has been simplified. It is no longer an object `{ data: "...", width: "..." }`, but a value previously stored in the `data` part.
+
+### Minor breaking changes in this release
+
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: The comment thread's "resolved" state has been separated from the "unlinked" state (a state when the related editor content was removed from the document). A thread can have any combination of these states. If a comment thread is either "resolved" or "unlinked," it is moved to the comments archive. This new approach is reflected in the comments archive UI. Notably, an "unlinked" comment thread can become resolved and reopened while still being in the comments archive. Additionally, the "unlinked" comment threads have a gray header to differentiate them from the "resolved" comment threads.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: The `Comment#archivedAt` is now the property to check when deciding whether the comment thread is inside the comments archive (that property was `#resolvedAt` before).
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: `CommentsArchive#resolvedThreads` has been renamed to `#archivedThreads`. If your custom code used that property, ensure to apply this change.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: The `deletedAt` property is no longer passed in `AddCommentThreadEvent` as it is not needed anymore. Instead, deleted comment threads should never be handled in `addCommentThread` as they should never be added to the repository. If your custom code used that property, ensure to apply this change.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: In a real-time collaboration environment, removed comment threads will no longer be added to `CommentsRepository` after re-initializing the editor. Before, the comment thread was removed from `CommentsRepository` but was added back when the editor re-connected to Cloud Services. If your custom code expected the old (incorrect) behavior, it might need a change. This change was reflected in the comments outside the editor documentation page.

@@ -3,18 +3,44 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window */
+import { Plugin, IconLink, Link, LinkUI } from 'ckeditor5';
 
-import { AutoLink, LinkImage } from '@ckeditor/ckeditor5-link';
-import { Bookmark } from '@ckeditor/ckeditor5-bookmark';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+export class SocialLinksPlugin extends Plugin {
+	static get requires() {
+		return [ Link ];
+	}
 
-// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic.js';
+	async init() {
+		const linkUI = this.editor.plugins.get( LinkUI );
 
-window.CKEditorPlugins = { AutoLink, Bookmark, PictureEditing, ImageInsert, ImageResize, AutoImage, LinkImage, CKBox, CKBoxImageEdit };
-
-window.ClassicEditor = ClassicEditor;
-window.CS_CONFIG = CS_CONFIG;
+		linkUI.registerLinksListProvider( {
+			label: 'Social links',
+			getListItems: () => [
+				{
+					id: 'facebook',
+					href: 'https://facebook.com',
+					label: 'Facebook',
+					icon: IconLink
+				},
+				{
+					id: 'twitter',
+					href: 'https://twitter.com',
+					label: 'Twitter',
+					icon: IconLink
+				},
+				{
+					id: 'linkedin',
+					href: 'https://linkedin.com',
+					label: 'LinkedIn',
+					icon: IconLink
+				},
+				{
+					id: 'instagram',
+					href: 'https://instagram.com',
+					label: 'Instagram',
+					icon: IconLink
+				}
+			]
+		} );
+	}
+}

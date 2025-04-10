@@ -40,7 +40,7 @@ import {
 	type Schema
 } from '@ckeditor/ckeditor5-engine';
 
-import { debounce, type DebouncedFunc } from 'lodash-es';
+import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
 
 const toPx = /* #__PURE__ */ toUnit( 'px' );
 
@@ -83,7 +83,7 @@ export default class BalloonToolbar extends Plugin {
 	private readonly _balloon: ContextualBalloon;
 
 	/**
-	 * Fires `_selectionChangeDebounced` event using `lodash#debounce`.
+	 * Fires `_selectionChangeDebounced` event using `es-toolkit#debounce`.
 	 *
 	 * This event is an internal plugin event which is fired 200 ms after model selection last change.
 	 * This is to makes easy test debounced action without need to use `setTimeout`.
@@ -91,7 +91,7 @@ export default class BalloonToolbar extends Plugin {
 	 * This function is stored as a plugin property to make possible to cancel
 	 * trailing debounced invocation on destroy.
 	 */
-	private readonly _fireSelectionChangeDebounced: DebouncedFunc<() => void>;
+	private readonly _fireSelectionChangeDebounced: DebouncedFunction<() => unknown>;
 
 	/**
 	 * @inheritDoc

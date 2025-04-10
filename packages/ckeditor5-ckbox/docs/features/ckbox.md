@@ -8,8 +8,6 @@ order: 10
 badges: [ premium ]
 ---
 
-{@snippet features/build-ckbox-source}
-
 # CKBox file manager
 
 CKBox is a dedicated asset manager supporting file and image upload. The CKBox feature lets you easily upload various files and insert images and links to other files into your content. It also offers image conversion and optimization capabilities and provides a {@link features/images-responsive responsive images mechanism} for CKEditor&nbsp;5.
@@ -25,18 +23,18 @@ As a full-fledged file manager, CKBox also replaces the basic CKEditor&nbsp;5 im
 * Enables drag & drop uploads of images and other files.
 * Transforms the _Image_ toolbar button, allowing the user to quickly upload and insert an image without opening the CKBox UI.
 * Adds a separate dedicated toolbar button to open the CKBox UI to manage and reuse uploaded files.
-* Provides {@link @ckbox features/images/editing basic editing capabilities}, like crop, resize, rotate, and flip right from the {@link features/images-overview#image-contextual-toolbar image contextual toolbar} for images served by CKBox.
+* Provides [basic editing capabilities](https://ckeditor.com/docs/ckbox/latest/features/images/editing/editing.html), like crop, resize, rotate, and flip right from the {@link features/images-overview#image-contextual-toolbar image contextual toolbar} for images served by CKBox.
 * Supports workspaces that allow separating assets for different users.
 
 With CKBox you no longer need to write server-side code to upload and scale images or manage uploaded files.
 
-To find out more about CKBox, the brand-new file manager and image editor, visit the [CKBox website](https://ckeditor.com/ckbox/) and read the dedicated {@link @ckbox guides/index CKBox documentation page}.
+To find out more about CKBox, the brand-new file manager and image editor, visit the [CKBox website](https://ckeditor.com/ckbox/) and read the dedicated [CKBox documentation page](https://ckeditor.com/docs/ckbox/latest/guides/index.html).
 
 ## Demo
 
-To upload a file using CKBox, use the open file manager toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/browse-files.svg Open file manager}. You can choose more than one file at a time. Use the edit image button {@icon @ckeditor/ckeditor5-ckbox/theme/icons/ckbox-image-edit.svg} from either the main toolbar or the image contextual toolbar to edit the selected image.
+To upload a file using CKBox, use the open file manager toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/browse-files.svg Open file manager}. You can choose more than one file at a time. Use the edit image button {@icon @ckeditor/ckeditor5-icons/theme/icons/ckbox-image-edit.svg} from either the main toolbar or the image contextual toolbar to edit the selected image.
 
-Note that the image toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image upload} will now also upload images right into the CKBox file manager and you can {@link features/drag-drop drag and drop} them, too. You can then access the files from the management panel.
+Note that the image toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/image-upload.svg Image upload} will now also upload images right into the CKBox file manager and you can {@link features/drag-drop drag and drop} them, too. You can then access the files from the management panel.
 
 {@snippet features/ckbox}
 
@@ -134,7 +132,7 @@ The feature can be configured via the {@link module:ckbox/ckboxconfig~CKBoxConfi
 	If you already have a valid license, please log into your [user dashboard](https://dashboard.ckeditor.com/) to access the feature settings.
 </info-box>
 
-After you purchase a license, log into the CKEditor Ecosystem customer dashboard to create access credentials, as explained in the {@link @ckbox guides/configuration/authentication CKBox configuration guide}.
+After you purchase a license, log into the CKEditor Ecosystem customer dashboard to create access credentials, as explained in the [CKBox configuration guide](https://ckeditor.com/docs/ckbox/latest/guides/configuration/authentication.html).
 
 ### Defining upload categories
 
@@ -170,7 +168,7 @@ If you define your own upload category mappings for a particular image type, onl
 
 The [CKBox workspaces](https://ckeditor.com/docs/ckbox/latest/features/file-management/workspaces.html) provide a convenient solution for achieving data isolation and user separation within CKBox. With workspaces, you can easily create separate storage and data spaces, giving you precise control over assigning specific users, user groups, or tenants to each workspace.
 
-If the user is assigned to more than one workspace, by default all the files uploaded directly from CKEditor are located in the first workspace in the list of workspaces allowed in the user's JWT token. This corresponds to uploads through drag and drop into the editor area, pasting images from the clipboard, or images uploaded using the Image {@icon @ckeditor/ckeditor5-core/theme/icons/image-upload.svg Image} feature. If you would like to define a specific workspace for files uploaded this way, you can define its ID in the `defaultUploadWorkspaceId` option. After that, all the files uploaded directly from CKEditor will be placed in the specified workspace.
+If the user is assigned to more than one workspace, by default all the files uploaded directly from CKEditor are located in the first workspace in the list of workspaces allowed in the user's JWT token. This corresponds to uploads through drag and drop into the editor area, pasting images from the clipboard, or images uploaded using the Image {@icon @ckeditor/ckeditor5-icons/theme/icons/image-upload.svg Image} feature. If you would like to define a specific workspace for files uploaded this way, you can define its ID in the `defaultUploadWorkspaceId` option. After that, all the files uploaded directly from CKEditor will be placed in the specified workspace.
 
 ```js
 ClassicEditor

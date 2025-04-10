@@ -5,8 +5,6 @@ meta-title: Mentions| CKEditor 5 Documentation
 modified_at: 2021-10-20
 ---
 
-{@snippet features/build-mention-source}
-
 # Mentions (autocompletion)
 
 The mention feature enables smart autocompletion based on user input. When you type a pre-configured marker, such as `@` or `#`, a panel displays with autocomplete suggestions.

@@ -3,29 +3,32 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window */
-
-import { Emoji } from '@ckeditor/ckeditor5-emoji';
-import { Mention } from '@ckeditor/ckeditor5-mention';
-import { Font } from '@ckeditor/ckeditor5-font';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
-import { LinkImage } from '@ckeditor/ckeditor5-link';
-
-// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic.js';
-
-ClassicEditor.builtinPlugins.push(
-	Mention,
+import {
 	Emoji,
+	Mention,
 	Font,
+	CKBox,
+	CKBoxImageEdit,
 	PictureEditing,
 	ImageInsert,
 	ImageResize,
 	AutoImage,
-	LinkImage,
-	CKBox,
-	CKBoxImageEdit
-);
+	LinkImage
+} from 'ckeditor5';
+import { ClassicEditor } from '@snippets/index.js';
 
-window.ClassicEditor = ClassicEditor;
+export class EmojiEditor extends ClassicEditor {
+	static builtinPlugins = [
+		...ClassicEditor.builtinPlugins,
+		Mention,
+		Emoji,
+		Font,
+		PictureEditing,
+		ImageInsert,
+		ImageResize,
+		AutoImage,
+		LinkImage,
+		CKBox,
+		CKBoxImageEdit
+	];
+}

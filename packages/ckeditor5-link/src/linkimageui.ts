@@ -9,6 +9,7 @@
 
 import { ButtonView } from 'ckeditor5/src/ui.js';
 import { Plugin } from 'ckeditor5/src/core.js';
+import { IconLink } from 'ckeditor5/src/icons.js';
 import type {
 	DocumentSelection,
 	Selection,
@@ -22,8 +23,6 @@ import LinkEditing from './linkediting.js';
 import type LinkCommand from './linkcommand.js';
 
 import { LINK_KEYSTROKE } from './utils.js';
-
-import linkIcon from '../theme/icons/link.svg';
 
 /**
  * The link image UI plugin.
@@ -78,7 +77,7 @@ export default class LinkImageUI extends Plugin {
 	 * Creates a `LinkImageUI` button view.
 	 *
 	 * Clicking this button shows a {@link module:link/linkui~LinkUI#_balloon} attached to the selection.
-	 * When an image is already linked, the view shows {@link module:link/linkui~LinkUI#actionsView} or
+	 * When an image is already linked, the view shows {@link module:link/linkui~LinkUI#toolbarView} or
 	 * {@link module:link/linkui~LinkUI#formView} if it is not.
 	 */
 	private _createToolbarLinkImageButton(): void {
@@ -93,7 +92,7 @@ export default class LinkImageUI extends Plugin {
 			button.set( {
 				isEnabled: true,
 				label: t( 'Link image' ),
-				icon: linkIcon,
+				icon: IconLink,
 				keystroke: LINK_KEYSTROKE,
 				tooltip: true,
 				isToggleable: true
@@ -106,7 +105,7 @@ export default class LinkImageUI extends Plugin {
 			// Show the actionsView or formView (both from LinkUI) on button click depending on whether the image is linked already.
 			this.listenTo( button, 'execute', () => {
 				if ( this._isSelectedLinkedImage( editor.model.document.selection ) ) {
-					plugin._addActionsView();
+					plugin._addToolbarView();
 				} else {
 					plugin._showUI( true );
 				}

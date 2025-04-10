@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals Locale, ButtonView, createDropdown,addToolbarToDropdown, createDropdown, ToolbarView, document */
+import { ButtonView, ToolbarView, addToolbarToDropdown, createDropdown, Locale } from 'ckeditor5';
 
 const locale = new Locale();
 

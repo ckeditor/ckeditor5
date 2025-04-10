@@ -348,6 +348,22 @@ describe( 'table utils', () => {
 				expect( view.someProperty ).to.equal( '' );
 			} );
 
+			it( 'should toggle the property value when an active button is clicked', () => {
+				// Set the property to match one of the button values.
+				view.someProperty = 'first';
+				expect( toolbar.items.first.isOn ).to.be.true;
+
+				// Click the active button.
+				toolbar.items.first.fire( 'execute' );
+
+				// The property should be reset to undefined.
+				expect( view.someProperty ).to.be.undefined;
+
+				// Clicking the button again should set the value back.
+				toolbar.items.first.fire( 'execute' );
+				expect( view.someProperty ).to.equal( 'first' );
+			} );
+
 			describe( 'skipping "nameToValue" callback', () => {
 				let view, locale, toolbar;
 

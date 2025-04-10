@@ -5,13 +5,13 @@
 
 /* globals document */
 
+import { IconParagraph } from '@ckeditor/ckeditor5-icons';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Paragraph from '../src/paragraph.js';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
 import ParagraphButtonUI from '../src/paragraphbuttonui.js';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import icon from '@ckeditor/ckeditor5-core/theme/icons/paragraph.svg';
 
 describe( 'HeadingButtonUI', () => {
 	let editorElement, editor;
@@ -48,7 +48,7 @@ describe( 'HeadingButtonUI', () => {
 			const paragraphButton = editor.ui.componentFactory.create( 'paragraph' );
 
 			expect( paragraphButton.label ).to.equal( 'Paragraph' );
-			expect( paragraphButton.icon ).to.equal( icon );
+			expect( paragraphButton.icon ).to.equal( IconParagraph );
 			expect( paragraphButton.tooltip ).to.equal( true );
 			expect( paragraphButton.isToggleable ).to.equal( true );
 		} );

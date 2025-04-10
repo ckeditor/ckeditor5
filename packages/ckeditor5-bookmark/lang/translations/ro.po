@@ -15,14 +15,6 @@ msgctxt "The label of the bookmark toolbar button. Also, a bookmark form header.
 msgid "Bookmark"
 msgstr "Marcaj"
 
-msgctxt "The button in the bookmark insert form."
-msgid "Insert"
-msgstr "Inserează"
-
-msgctxt "The button in the bookmark update form."
-msgid "Update"
-msgstr "Actualizează"
-
 msgctxt "Button opening the Bookmark editing balloon."
 msgid "Edit bookmark"
 msgstr "Editează marcajul"
@@ -54,3 +46,19 @@ msgstr "Numele marcajului există deja."
 msgctxt "The label for the bookmark widget."
 msgid "bookmark widget"
 msgstr "widget marcaj"
+
+msgctxt "The label used by assistive technologies describing an bookmark toolbar attached to a bookmark widget."
+msgid "Bookmark toolbar"
+msgstr "Bara de instrumente Marcaj"
+
+msgctxt "Title for a feature displaying a list of bookmarks."
+msgid "Bookmarks"
+msgstr "Marcaje"
+
+msgctxt "A message displayed instead of a list of bookmarks if it is empty."
+msgid "No bookmarks available."
+msgstr "Nu sunt disponibile marcaje."
+
+msgctxt "Tooltip shown after hovering the bookmark link preview."
+msgid "Scroll to bookmark"
+msgstr "Derulați la marcaj"

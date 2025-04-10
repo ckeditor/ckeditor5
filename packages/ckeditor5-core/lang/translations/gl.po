@@ -142,3 +142,15 @@ msgstr "Probe cunha frase diferente ou revise a ortografía."
 msgctxt "The label of the source editing related features used in toolbar buttons."
 msgid "Source"
 msgstr ""
+
+msgctxt "Label for the Insert button."
+msgid "Insert"
+msgstr ""
+
+msgctxt "Label for the Update button."
+msgid "Update"
+msgstr ""
+
+msgctxt "Label for the Back button."
+msgid "Back"
+msgstr ""

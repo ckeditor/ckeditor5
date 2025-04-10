@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
+
+:root {
+	--ck-link-properties-width: 340px;
+}
+
+@mixin ck-media-phone {
+	:root {
+		--ck-link-properties-width: 300px;
+	}
+}
+
+.ck.ck-link-properties {
+	width: var(--ck-link-properties-width);
+}
