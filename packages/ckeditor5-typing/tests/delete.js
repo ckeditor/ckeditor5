@@ -9,6 +9,7 @@ import Typing from '../src/typing.js';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import TodoList from '@ckeditor/ckeditor5-list/src/todolist.js';
 import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -29,7 +30,7 @@ describe( 'Delete feature', () => {
 		document.body.appendChild( element );
 
 		return ClassicTestEditor
-			.create( element, { plugins: [ Paragraph, Widget, Delete, Typing ] } )
+			.create( element, { plugins: [ Paragraph, Widget, Delete, Typing, TodoList ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
@@ -45,6 +46,10 @@ describe( 'Delete feature', () => {
 				model.schema.extend( '$text', {
 					allowIn: [ 'nested' ],
 					allowAttributes: [ 'attr', 'bttr' ]
+				} );
+
+				model.schema.extend( 'paragraph', {
+					allowIn: 'nested'
 				} );
 
 				editor.conversion.for( 'downcast' )
@@ -140,6 +145,20 @@ describe( 'Delete feature', () => {
 		expect( clickBackspace( editor, true ).preventedKeyDown ).to.be.true;
 
 		expect( getModelData( model ) ).to.equal( '<widget><nested>[]</nested></widget>' );
+	} );
+
+	// See https://github.com/ckeditor/ckeditor5/issues/18356
+	it( 'should not prevent the backspace on paragraphs with attributes (root editable)', () => {
+		setModelData( model, '<paragraph listIndent="0" listType="todo">[]</paragraph>' );
+
+		expect( clickBackspace( editor ).preventedKeyDown ).to.be.false;
+	} );
+
+	// See https://github.com/ckeditor/ckeditor5/issues/18356
+	it( 'should not prevent the backspace on paragraphs with attributes (nested editable)', () => {
+		setModelData( model, '<widget><nested><paragraph listIndent="0" listType="todo">[]</paragraph></nested></widget>' );
+
+		expect( clickBackspace( editor ).preventedKeyDown ).to.be.false;
 	} );
 
 	it( 'passes options.selection parameter to delete command if selection to remove was specified and unit is "selection"', () => {
