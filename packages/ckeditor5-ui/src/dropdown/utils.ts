@@ -740,7 +740,7 @@ function bindViewCollectionItemsToDefinitions(
  * @param listItems Collection of list items to observe for toggleable buttons.
  */
 function bindDropdownToggleableButtonsAlignment( listItems: ViewCollection ) {
-	// Keep track of how many toggleable buttons are in the list
+	// Keep track of how many toggleable buttons are in the list.
 	let toggleableButtonsCount = 0;
 
 	// Helper function that checks if a view item is a list item button.
