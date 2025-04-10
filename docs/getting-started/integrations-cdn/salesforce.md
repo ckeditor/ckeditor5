@@ -64,12 +64,12 @@ We will start from adding resources required for running CKEditor 5 (CSS and Jav
 <apex:page showHeader="false" standardStylesheets="false" docType="html-5.0">
     <head>
 		<!-- Load your editor's JavaScript and CSS from the CDN -->
-        <script src="https://cdn.ckeditor.com/ckeditor5/44.3.0/ckeditor5.umd.js"></script>
-        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.3.0/ckeditor5.css" />
+        <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
+        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 
         <!-- Add if you use premium features. -->
-        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/44.3.0/ckeditor5-premium-features.css" />
-        <script src="https://cdn.ckeditor.com/ckeditor5-premium-features/44.3.0/ckeditor5-premium-features.umd.js"></script>
+        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
+        <script src="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
     </head>
     <body>
         <!-- Editor container will be added here -->
@@ -127,12 +127,12 @@ Putting everything together, the full integration code looks as follows (remembe
 <apex:page showHeader="false" standardStylesheets="false" docType="html-5.0">
     <head>
 		<!-- Load your editor's JavaScript and CSS from the CDN -->
-        <script src="https://cdn.ckeditor.com/ckeditor5/44.3.0/ckeditor5.umd.js"></script>
-        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.3.0/ckeditor5.css" />
+        <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
+        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
 
         <!-- Add if you use premium features. -->
-        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/44.3.0/ckeditor5-premium-features.css" />
-        <script src="https://cdn.ckeditor.com/ckeditor5-premium-features/44.3.0/ckeditor5-premium-features.umd.js"></script>
+        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
+        <script src="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
     </head>
     <body>
         <!-- Editor container -->
@@ -217,14 +217,3 @@ Users can install your package by logging into their Salesforce account and visi
 </info-box>
 
 After installation, users can add the CKEditor 5 component to their Lightning pages following the steps described in the [Using CKEditor 5 Visualforce component in Lightning page](#using-ckeditor-5-visualforce-component-in-lightning-page) section.
-
-
-
-
-
-
-
-
-
-
-

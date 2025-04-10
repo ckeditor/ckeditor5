@@ -244,14 +244,3 @@ Users can install your package by logging into their Salesforce account and visi
 </info-box>
 
 After installation, users can add the CKEditor 5 component to their Lightning pages following the steps described in the [Using CKEditor 5 Visualforce component in Lightning page](#using-ckeditor-5-visualforce-component-in-lightning-page) section.
-
-
-
-
-
-
-
-
-
-
-
