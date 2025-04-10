@@ -57,7 +57,10 @@ The available values are always multipliers of the default line height applied t
 ## Related features
 
 Check out also these CKEditor&nbsp;5 features to gain better control over your content style and format:
-* list them
+* {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic*, and others.
+* {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
+* {@link features/style Styles} &ndash; Apply pre-configured styles to existing elements in the editor content.
+* {@link features/text-alignment Text alignment} &ndash; Because it does matter whether the content is left, right, centered, or justified.
 
 <info-box info>
 	You can remove all basic text styles with the {@link features/remove-format remove format} feature.
@@ -65,9 +68,10 @@ Check out also these CKEditor&nbsp;5 features to gain better control over your c
 
 ## Common API
 
-The line height feature registers the UI button:
+The line height feature registers the following components:
 
-* link it
+* The {@link module:line-height/lineheightcommand~LineHeightCommand} command
+* The {@link module:line-height/lineheightui~LineHeightUI} UI dropdown
 
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.

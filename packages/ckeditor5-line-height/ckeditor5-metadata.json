@@ -5,7 +5,7 @@
 			"className": "LineHeight",
 			"description": "Allows setting line height for text.",
 			"docs": "features/line-height.html",
-			"path": "src/lineheight.ts",
+			"path": "src/lineheight.js",
 			"uiComponents": [
 				{
 					"name": "lineHeight",
