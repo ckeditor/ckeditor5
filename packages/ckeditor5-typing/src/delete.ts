@@ -95,11 +95,29 @@ export default class Delete extends Plugin {
 			}
 
 			const ancestorLimit = editor.model.schema.getLimitElement( modelDocument.selection );
+			const selectionPosition = modelDocument.selection.getFirstPosition()!;
 			const limitStartPosition = editor.model.createPositionAt( ancestorLimit, 0 );
 
-			if ( limitStartPosition.isTouching( modelDocument.selection.getFirstPosition()! ) ) {
-				data.preventDefault();
+			// If the selection is not at the beginning of the nested editable, do nothing.
+			if ( !limitStartPosition.isTouching( selectionPosition ) ) {
+				return;
 			}
+
+			// Workaround for Safari where pressing Backspace at the beginning of a nested editable
+			// can move the selection to the parent element and delete the entire element.
+			// This issue primarily affects empty paragraphs without attributes, while elements
+			// with custom attributes (e.g., list items) and custom rendering based on those attributes work correctly.
+			// This is an approximation - we assume elements with any attributes have some additional UI rendering.
+			// See: https://github.com/ckeditor/ckeditor5/issues/18356
+			if (
+				selectionPosition.parent !== ancestorLimit &&
+				selectionPosition.parent.is( 'element' ) &&
+				[ ...selectionPosition.parent.getAttributeKeys() ].length
+			) {
+				return;
+			}
+
+			data.preventDefault();
 		} );
 
 		if ( this.editor.plugins.has( 'UndoEditing' ) ) {
