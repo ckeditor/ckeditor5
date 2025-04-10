@@ -1,15 +1,17 @@
 ---
 menu-title: Salesforce
-meta-title: Salesforce integration using a ZIP archive | CKEditor 5 Documentation
-meta-description: Integrate CKEditor 5 with Salesforce using a ZIP archive
-category: self-hosted
-order: 100
+meta-title: Salesforce integration with CDN | CKEditor 5 Documentation
+meta-description: Integrate CKEditor 5 with Salesforce and CKEditor 5 CDN
+category: cloud
+order: 110
 modified_at: 2025-04-04
 ---
 
 # Integrate CKEditor 5 with Salesforce
 
 Salesforce is a cloud-based Customer Relationship Management (CRM) platform that enables organizations to manage customer interactions, sales processes, and business operations. The platform supports custom development through its Lightning Platform (formerly Force.com), allowing developers to create custom objects, fields, pages, and components. While [CKEditor 5 does not support Shadow DOM yet](https://github.com/ckeditor/ckeditor5/issues/3891), which is required by Lightning modules, it can be integrated into Salesforce using [Visualforce pages](https://help.salesforce.com/s/articleView?id=platform.pages_pages.htm&type=5). This integration approach enables rich text editing capabilities within Salesforce applications.
+
+{@snippet getting-started/use-builder}
 
 ## Prerequisites
 
@@ -31,52 +33,7 @@ Enter the Visualforce pages tab and add a new page by clicking the *New* button.
 
 Fill out the required fields in the form, check the *Available for Lightning Experience, Experience Builder sites, and the mobile app* checkbox, then save the page. You are now ready to integrate the editor.
 
-## Integrating CKEditor 5 in Visualforce page using a ZIP archive
-
-<info-box>
-	Starting from version 44.0.0, the `licenseKey` property is required to use the editor. If you use a self-hosted editor from ZIP:
-
-	* You must either comply with the GPL or
-	* Obtain a license for {@link getting-started/licensing/license-key-and-activation self-hosting distribution}.
-
-	You can set up [a free trial](https://portal.ckeditor.com/checkout?plan=free) to test the editor and evaluate the self-hosting.
-</info-box>
-
-### Preparing the ZIP package with CKEditor 5
-
-Before starting the Salesforce integration, you need to prepare a ZIP package with CKEditor 5 that will be used inside your Visualforce page. CKEditor 5 offers an Online Builder that allows you to easily configure your editor through a user-friendly interface. The Online Builder provides a convenient way to select features, plugins, and customize the toolbar according to your specific requirements without writing any code.
-
-To create your custom CKEditor 5 build, visit the [CKEditor 5 Online Builder](https://ckeditor.com/ckeditor-5/online-builder/). After configuring all the desired features and settings for your editor, you'll reach the final step where you can choose your preferred technology and integration method. For Salesforce integration, select "Vanilla JavaScript" as your technology and "Self-hosted (ZIP)" as your integration method. This selection will generate and download a ZIP archive containing your customized editor.
-
-The downloaded ZIP archive includes all the necessary files for integrating CKEditor 5 into your Salesforce Visualforce page, including the main JavaScript file, CSS styles, and sample implementation code. This package is ready for integration and doesn't require any additional build steps. Once you have your custom CKEditor 5 build, you can proceed with uploading these resources to Salesforce as static resources, which we'll cover in the next section.
-
-{@snippet getting-started/use-builder}
-
-### Uploading CKEditor 5 files as static resources
-
-To use CKEditor 5 in your Visualforce page, you need to upload the editor files as static resources in Salesforce. Static resources allow you to store assets like JavaScript files, CSS files, images, and other web resources that can be referenced in your Visualforce pages.
-
-First, extract the downloaded ZIP package to access the `ckeditor5` directory containing `ckeditor5.umd.js` and `ckeditor5.css` files. After extraction, navigate to the Salesforce Setup page and search for "Static Resources" in the Quick Find box.
-
-{@img assets/img/salesforce-integration-sh-1.png Screenshot of searching for Static Resources in Salesforce setup.}
-
-Click on "Static Resources" to open the Static Resources page. From there, click the "New" button to create a new static resource.
-
-{@img assets/img/salesforce-integration-sh-2.png Screenshot of the Static Resources page with New button.}
-
-When creating a static resource for the JavaScript file, fill in the form with a name such as "CKEditor5JS" and an optional description like "CKEditor 5 JavaScript file". Click "Choose File" to select the `ckeditor5.umd.js` file from your extracted package. For Cache Control, select "Public" to allow the browser to cache the resource. Click "Save" to upload the JavaScript file.
-
-You'll need to repeat this process for the CSS file. Create another static resource with a name like "CKEditor5CSS" and a description such as "CKEditor 5 CSS file". Select the `ckeditor5.css` file and set Cache Control to "Public" before saving.
-
-After uploading both files, they will appear in your Static Resources list and can be referenced in your Visualforce page.
-
-{@img assets/img/salesforce-integration-sh-3.png Screenshot of static resources in Salesforce.}
-
-<info-box>
-    If you're using premium features, you'll need to upload those files as separate static resources as well.
-</info-box>
-
-Once your static resources are uploaded, you can reference them in your Visualforce page using the `$Resource` global variable with the `<apex:includeScript>` and `<apex:stylesheet>` tags, as shown in the next section.
+## Integrating CKEditor 5 in Visualforce page using CDN
 
 ### Setting up the page structure
 
@@ -95,16 +52,24 @@ For our CKEditor 5 integration, we'll use a basic page structure that includes n
 </apex:page>
 ```
 
-### Adding CKEditor 5 static resources
+### Adding CKEditor 5 resources
 
-We will start from adding resources required for running CKEditor 5 (CSS and JavaScript) to the `<head>` tag using the static resources we uploaded in the previous step. We'll use Visualforce's `<apex:includeScript>` and `<apex:stylesheet>` tags to reference these resources:
+<info-box>
+	To use our Cloud CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free). Learn more about {@link getting-started/licensing/license-key-and-activation license key activation}.
+</info-box>
+
+We will start from adding resources required for running CKEditor 5 (CSS and JavaScript) to the `<head>` tag. However, before we do it, make sure to add `https://cdn.ckeditor.com` domain to [Trusted URLs](https://help.salesforce.com/s/articleView?id=xcloud.security_trusted_urls_manage.htm&type=5):
 
 ```html
 <apex:page showHeader="false" standardStylesheets="false" docType="html-5.0">
     <head>
-        <!-- Load CKEditor 5 JavaScript and CSS from static resources -->
-        <apex:includeScript value="{!$Resource.CKEditor5JS}"/>
-        <apex:stylesheet value="{!$Resource.CKEditor5CSS}"/>
+		<!-- Load your editor's JavaScript and CSS from the CDN -->
+        <script src="https://cdn.ckeditor.com/ckeditor5/44.3.0/ckeditor5.umd.js"></script>
+        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.3.0/ckeditor5.css" />
+
+        <!-- Add if you use premium features. -->
+        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/44.3.0/ckeditor5-premium-features.css" />
+        <script src="https://cdn.ckeditor.com/ckeditor5-premium-features/44.3.0/ckeditor5-premium-features.umd.js"></script>
     </head>
     <body>
         <!-- Editor container will be added here -->
@@ -126,7 +91,7 @@ Now, we can add the container that will hold our editor and introduce an initial
 		 <div id="editor" style="min-height: 300px; border: 1px solid #ccc;"></div>
 
 		 <!-- Initialization script -->
-		  <script type="module">
+		  <script>
             const {
                 ClassicEditor,
                 Essentials,
@@ -135,14 +100,16 @@ Now, we can add the container that will hold our editor and introduce an initial
                 Font,
                 Paragraph
             } = CKEDITOR;
+            const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
 
             ClassicEditor
                 .create( document.querySelector( '#editor' ), {
-                    licenseKey: '<YOUR-LICENSE-KEY>' // Or 'GPL',
-                    plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+                    licenseKey: '<YOUR-LICENSE-KEY>',
+                    plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
                     toolbar: [
                         'undo', 'redo', '|', 'bold', 'italic', '|',
-                        'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+                        'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+                        'formatPainter'
                     ]
                 } )
                 .then( /* ... */ )
@@ -159,16 +126,20 @@ Putting everything together, the full integration code looks as follows (remembe
 ```html
 <apex:page showHeader="false" standardStylesheets="false" docType="html-5.0">
     <head>
-		<!-- Load CKEditor 5 JavaScript and CSS from static resources -->
-        <apex:includeScript value="{!$Resource.CKEditor5JS}"/>
-        <apex:stylesheet value="{!$Resource.CKEditor5CSS}"/>
+		<!-- Load your editor's JavaScript and CSS from the CDN -->
+        <script src="https://cdn.ckeditor.com/ckeditor5/44.3.0/ckeditor5.umd.js"></script>
+        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.3.0/ckeditor5.css" />
+
+        <!-- Add if you use premium features. -->
+        <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/44.3.0/ckeditor5-premium-features.css" />
+        <script src="https://cdn.ckeditor.com/ckeditor5-premium-features/44.3.0/ckeditor5-premium-features.umd.js"></script>
     </head>
     <body>
         <!-- Editor container -->
 		 <div id="editor" style="min-height: 300px; border: 1px solid #ccc;">CKEditor 5 integration with Salesforce.</div>
 
 		 <!-- Initialization script -->
-		  <script type="module">
+		  <script>
             const {
                 ClassicEditor,
                 Essentials,
@@ -177,14 +148,16 @@ Putting everything together, the full integration code looks as follows (remembe
                 Font,
                 Paragraph
             } = CKEDITOR;
+            const { FormatPainter } = CKEDITOR_PREMIUM_FEATURES;
 
             ClassicEditor
                 .create( document.querySelector( '#editor' ), {
-                    licenseKey: '<YOUR-LICENSE-KEY>' // Or 'GPL',
-                    plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+                    licenseKey: '<YOUR-LICENSE-KEY>',
+                    plugins: [ Essentials, Bold, Italic, Font, Paragraph, FormatPainter ],
                     toolbar: [
                         'undo', 'redo', '|', 'bold', 'italic', '|',
-                        'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+                        'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+                        'formatPainter'
                     ]
                 } )
                 .then( /* ... */ )
@@ -196,7 +169,7 @@ Putting everything together, the full integration code looks as follows (remembe
 
 Now, you can save your component and click the *Preview* button to see it live. A new page should open in your browser, and you should see the CKEditor 5 instance:
 
-{@img assets/img/salesforce-integration-sh-4.png Screenshot of CKEditor 5 inside the Visualforce component.}
+{@img assets/img/salesforce-integration-3.png Screenshot of CKEditor 5 inside the Visualforce component.}
 
 ## Using CKEditor 5 Visualforce component in Lightning page
 
@@ -208,11 +181,11 @@ To add your CKEditor 5 component to a Lightning page, first navigate to the Ligh
 
 You should end up with something similar to this:
 
-{@img assets/img/salesforce-integration-sh-5.png Screenshot of Lightning App builder.}
+{@img assets/img/salesforce-integration-4.png Screenshot of Lightning App builder.}
 
 Now, you can view your Lightning page and use your editor:
 
-{@img assets/img/salesforce-integration-sh-6.png Screenshot of CKEditor 5 inside a Lightning page.}
+{@img assets/img/salesforce-integration-5.png Screenshot of CKEditor 5 inside a Lightning page.}
 
 ## Distributing your CKEditor 5 component
 
