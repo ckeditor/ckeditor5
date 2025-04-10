@@ -21,18 +21,15 @@ export default class LineHeightCommand extends Command {
 	public override refresh(): void {
 		const model = this.editor.model;
 		const document = model.document;
-
-		this.value = document.selection.getAttribute( LINE_HEIGHT );
-
-		console.log( 'this.value', this.value );
-
-		// Get elements where the command applies. If there are no such
-		// elements, disable the command.
 		const blocks = Array.from( document.selection.getSelectedBlocks() );
 
-		console.log( 'blocks', blocks );
+		// Get the value of the line height first block.
+		const valueOfFirstBlock = blocks[ 0 ].getAttribute( LINE_HEIGHT );
 
-		// this.isEnabled = blocks.every( block => block.hasAttribute( LINE_HEIGHT ) );
+		// Set value to the value of the first block if all blocks have the same line height.
+		this.value = blocks.every(
+			block => block.hasAttribute( LINE_HEIGHT ) && block.getAttribute( LINE_HEIGHT ) === valueOfFirstBlock
+		) ? valueOfFirstBlock : undefined;
 
 		if ( !blocks.length ) {
 			this.isEnabled = false;
@@ -55,10 +52,10 @@ export default class LineHeightCommand extends Command {
 		const value = options.value;
 
 		model.change( writer => {
-			// Get blocks where selection starts and ends
+			// Get blocks where selection starts and ends.
 			const blocks = Array.from( selection.getSelectedBlocks() );
 
-			// Apply or remove the line height to/from selected blocks
+			// Apply or remove the line height to/from selected blocks.
 			for ( const block of blocks ) {
 				if ( value ) {
 					writer.setAttribute( LINE_HEIGHT, value, block );

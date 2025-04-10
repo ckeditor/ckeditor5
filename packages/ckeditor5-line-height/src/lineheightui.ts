@@ -105,6 +105,7 @@ export default class LineHeightUI extends Plugin {
 	 */
 	private _prepareListOptions( options: Array<LineHeightOption>, command: LineHeightCommand ): Collection<ListDropdownButtonDefinition> {
 		const itemDefinitions = new Collection<ListDropdownButtonDefinition>();
+		const t = this.editor.t;
 
 		// Create item for removing the line-height attribute.
 		const removeLineHeightButton = {
@@ -112,7 +113,7 @@ export default class LineHeightUI extends Plugin {
 			model: new ViewModel( {
 				commandName: LINE_HEIGHT,
 				commandParam: undefined,
-				label: this.editor.t( 'Default' ),
+				label: t( 'Default' ),
 				class: 'ck-line-height-option',
 				withText: true
 			} )

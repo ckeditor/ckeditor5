@@ -3,10 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type { LineHeightConfig } from './lineheightconfig.js';
-import type LineHeight from './lineheight.js';
-import type LineHeightEditing from './lineheightediting.js';
-import type LineHeightUI from './lineheightui.js';
+import type {
+	LineHeight,
+	LineHeightEditing,
+	LineHeightUI,
+	LineHeightConfig
+} from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
 	interface PluginsMap {
