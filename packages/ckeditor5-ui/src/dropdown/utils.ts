@@ -712,7 +712,7 @@ function bindViewCollectionItemsToDefinitions(
  *
  * Buttons in dropdowns have reserved space for a check icon when they are toggleable.
  * When at least one button in the list is toggleable, all other buttons (even non-toggleable ones)
- * will have space allocated on their left side to align properly with toggleable buttons.
+ * will have space on their left side to align with toggleable buttons.
  *
  * This function handles a special case where a new toggleable button is added (or removed) to a list
  * where previous buttons weren't toggleable. In that case, those previous buttons will
@@ -754,7 +754,7 @@ function bindDropdownToggleableButtonsAlignment( listItems: ViewCollection ) {
 	};
 
 	// Helper function that checks if a view item is a toggleable button.
-	// Returns the button if it's toggleable, otherwise returns null.
+	// Returns the button if it's toggleable - otherwise, returns null.
 	const pickListItemToggleableButtonIfPresent = ( item: View<HTMLElement> ) => {
 		const listItemButtonView = pickListItemButtonIfPresent( item );
 
@@ -810,7 +810,7 @@ function bindDropdownToggleableButtonsAlignment( listItems: ViewCollection ) {
 		// Check if the current state has changed.
 		const currentToggleable = toggleableButtonsCount > 0;
 
-		// Only update button alignment if we've crossed the threshold between.
+		// Only update button alignment if we've crossed the threshold between
 		// having no toggleable buttons and having at least one.
 		if ( prevToggleable !== currentToggleable ) {
 			updateAllButtonsCheckSpace( currentToggleable );
