@@ -20,6 +20,20 @@ Released on April 7, 2024. ([See full release notes](https://github.com/ckeditor
 
 Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v45.0.0.
 
+### Email editing enhancements
+
+We are making it easier to create and edit emails directly in CKEditor 5 with several enhancements. This release introduces the following new features:
+
+* {@link features/export-with-inline-styles Export with Inline Styles} (⭐) provides the ability to export email content with automatically inlined styles, ensuring compatibility and proper rendering across different email clients.
+* {@link features/email-configuration-helper Email Configuration Helper} (⭐) is a new configuration helper plugin that provides guidance for integrators to correctly set up an email-friendly editor while avoiding common pitfalls.
+* {@link features/layout-tables Layout tables} are a new type of tables that has been introduced to simplify the creation of structured email designs, offering better control over layout, alignment and spacing.
+
+Apart from these new features, this update also brings various fixes and improvements related to table behavior, enhanced HTML support, and better handling of complex email structures. These refinements help ensure a more seamless email editing experience, reducing inconsistencies and improving compatibility with external email clients.
+
+### The fullscreen feature
+
+A long-requested feature has finally arrived with the {@link features/fullscreen introduction of full-screen editing} for the classic and decoupled editor types. This new mode provides a focused writing experience by making the editor the centerpiece of the screen. The expanded screen space allows for better visibility of content in sidebars such as comments, suggestions, and document outlines, enhancing your overall workflow.
+
 ### UI toolbar refactoring
 
 The {@link features/link link} and {@link features/bookmarks bookmark} features have been refactored to use standard toolbar components, making them more customizable and consistent:
@@ -150,6 +164,14 @@ Notable changes:
 * A new `FormRowView` class has been introduced in the UI package for consistent form row layouts.
 * All balloon panels now have consistent headers with back buttons.
 * Form styles have been moved to a dedicated `form.css` in the theme-lark package.
+
+### New installation methods improvements: icons replacement
+
+We are continuing to strengthen the new installation methods while phasing out older solutions. We added one of the key components you asked for: replacing our icons with your custom ones. It is now possible to replace the icons via the {@link getting-started/setup/customizing-icons package’s override mechanism}.
+
+<info-box info>
+	To achieve a proper solution for icons replacement for the npm builds, we needed to introduce a breaking change. If you used our icons for any purposes, make sure to update their paths.
+</info-box>
 
 ### Major breaking changes in this release
 
