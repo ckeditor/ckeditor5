@@ -111,32 +111,6 @@ describe( 'ImageResizeEditing', () => {
 			expect( consumeSpy.calledOnce ).to.be.true;
 		} );
 
-		it( 'consumes aspect-ratio style if image_resized class present on element', () => {
-			const consumeSpy = sinon.spy( ( evt, data, conversionApi ) => {
-				expect( conversionApi.consumable.test( data.viewItem, { styles: [ 'aspect-ratio' ] } ) ).to.be.false;
-			} );
-
-			editor.data.upcastDispatcher.on( 'element:figure', consumeSpy, { priority: 'lowest' } );
-			editor.setData(
-				`<figure class="image image_resized" style="width:100px;aspect-ratio:1/1;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>`
-			);
-
-			expect( consumeSpy.calledOnce ).to.be.true;
-		} );
-
-		it( 'should not consume aspect-ratio style if image_resized class not present on element', () => {
-			const consumeSpy = sinon.spy( ( evt, data, conversionApi ) => {
-				expect( conversionApi.consumable.test( data.viewItem, { styles: [ 'aspect-ratio' ] } ) ).to.be.true;
-			} );
-
-			editor.data.upcastDispatcher.on( 'element:figure', consumeSpy, { priority: 'lowest' } );
-			editor.setData(
-				`<figure class="image" style="width:100px;aspect-ratio:1/1;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>`
-			);
-
-			expect( consumeSpy.calledOnce ).to.be.true;
-		} );
-
 		describe( 'width', () => {
 			it( 'upcasts 100px width correctly', () => {
 				editor.setData( `<figure class="image" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
@@ -321,40 +295,6 @@ describe( 'ImageResizeEditing', () => {
 						`<img src="${ IMAGE_SRC_FIXTURE }" style="width:100px;" class="image_resized">` +
 					'</span>' +
 					'ipsum' +
-				'</p>'
-			);
-
-			expect( consumeSpy.calledOnce ).to.be.true;
-		} );
-
-		it( 'consumes aspect-ratio style if image_resized class present on element', () => {
-			const consumeSpy = sinon.spy( ( evt, data, conversionApi ) => {
-				expect( conversionApi.consumable.test( data.viewItem, { styles: [ 'aspect-ratio' ] } ) ).to.be.false;
-			} );
-			editor.data.upcastDispatcher.on( 'element:img', consumeSpy, { priority: 'lowest' } );
-			editor.setData(
-				'<p>Lorem ' +
-					'<span class="image-inline">' +
-						`<img src="${ IMAGE_SRC_FIXTURE }" style="width:100px;aspect-ratio:1/1;" class="image_resized">` +
-					'</span>' +
-					' ipsum' +
-				'</p>'
-			);
-			expect( consumeSpy.calledOnce ).to.be.true;
-		} );
-
-		it( 'should not consume aspect-ratio style if image_resized class not present on element', () => {
-			const consumeSpy = sinon.spy( ( evt, data, conversionApi ) => {
-				expect( conversionApi.consumable.test( data.viewItem, { styles: [ 'aspect-ratio' ] } ) ).to.be.true;
-			} );
-
-			editor.data.upcastDispatcher.on( 'element:img', consumeSpy, { priority: 'lowest' } );
-			editor.setData(
-				'<p>Lorem ' +
-					'<span class="image-inline">' +
-						`<img src="${ IMAGE_SRC_FIXTURE }" style="width:100px;aspect-ratio:1/1;">` +
-					'</span>' +
-					' ipsum' +
 				'</p>'
 			);
 

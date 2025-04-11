@@ -213,11 +213,7 @@ export default class ImageResizeEditing extends Plugin {
 
 		editor.conversion.for( 'upcast' ).add( dispatcher => {
 			dispatcher.on( `element:${ imageType === 'imageBlock' ? 'figure' : 'img' }`, ( evt, data, conversionApi ) => {
-				const consumed = conversionApi.consumable.consume( data.viewItem, { classes: [ 'image_resized' ] } );
-
-				if ( consumed ) {
-					conversionApi.consumable.consume( data.viewItem, { styles: [ 'aspect-ratio' ] } );
-				}
+				conversionApi.consumable.consume( data.viewItem, { classes: [ 'image_resized' ] } );
 			} );
 		} );
 	}
