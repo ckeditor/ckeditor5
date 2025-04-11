@@ -220,19 +220,20 @@ To make your CKEditor&nbsp;5 Visualforce component available to other Salesforce
 
 ### Creating a package
 
-To create a package, navigate to the Salesforce Setup page and use the Quick Find box to search for "Packages". Click the "New" button to start creating your package. In the package creation form, provide a meaningful name like "CKEditor&nbsp;5 Integration" and a clear description that explains the purpose of your component. Set the initial version to "1.0" and consider selecting "Managed Package" if you want to maintain control over future updates. This option allows you to push updates to all installations of your package.
+To create a package, navigate to the Salesforce Setup page and use the Quick Find box to search for *Packages*. Click the *New* button to start creating your package. In the package creation form, provide a meaningful name like "CKEditor&nbsp;5 Integration" and a clear description that explains the purpose of your component. Set the initial version to "1.0" and consider selecting "Managed Package" if you want to maintain control over future updates. This option allows you to push updates to all installations of your package.
 
 ### Adding components to the package
 
-After creating the package, you will need to add your CKEditor&nbsp;5 Visualforce page to it. In the package details page, use the "Add" button to include new components. Select "Visualforce Page" from the component type dropdown and choose your CKEditor&nbsp;5 Visualforce page from the list. This will include all the necessary code and resources in your package.
+After creating the package, you will need to add your CKEditor&nbsp;5 Visualforce page to it. In the package details page, use the *Add* button to include new components. Select "Visualforce Page" from the component type dropdown and choose your CKEditor&nbsp;5 Visualforce page from the list. This will include all the necessary code and resources in your package.
 
 ### Uploading the package
 
-Once you have added all required components, you can upload your package. The upload process involves choosing whether to make the package public or private. Public packages are visible in the Salesforce AppExchange, while private packages are only accessible via direct installation links. After selecting the visibility option and accepting the terms and conditions, click "Upload" to make your package available for distribution.
+Once you have added all required components, you can upload your package. The upload process involves choosing whether to make the package public or private. Public packages are visible in the Salesforce AppExchange, while private packages are only accessible via direct installation links. After selecting the visibility option and accepting the terms and conditions, click *Upload* to make your package available for distribution.
 
 ### Installing the package
 
 After the upload is complete, you will receive an installation URL that looks like this:
+
 ```
 https://login.salesforce.com/packaging/installPackage.apexp?p0=04td20000002WVF&isdtp=p1
 ```
