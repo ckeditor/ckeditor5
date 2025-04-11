@@ -154,15 +154,23 @@ function indentLine( line: string, indentCount: number, indentChar: string = '  
  * @param isPreviousLinePreFormatted Information on whether the previous line was preformatted (and how).
  */
 function isPreformattedBlockLine( line: string, isPreviousLinePreFormatted: 'first' | 'last' | 'middle' | false ) {
+	let preLineType = false;
 	if ( new RegExp( '<pre( .*?)?>' ).test( line ) ) {
-		return 'first';
-	} else if ( new RegExp( '</pre>' ).test( line ) ) {
-		return 'last';
-	} else if ( isPreviousLinePreFormatted === 'first' || isPreviousLinePreFormatted === 'middle' ) {
-		return 'middle';
-	} else {
-		return false;
+		preLineType = 'first';
 	}
+	if ( new RegExp( '</pre>' ).test( line ) ) {
+		// If both an opening and closing a <pre> tag, no special treatment needed.
+		if ( preLineType === 'first' ) {
+			preLineType = false;
+		}
+		else {
+			preLineType = 'last';
+		}
+	}
+	if ( !preLineType && ( isPreviousLinePreFormatted === 'first' || isPreviousLinePreFormatted === 'middle' ) ) {
+		preLineType = 'middle';
+	}
+	return preLineType;
 }
 
 /**
