@@ -312,6 +312,58 @@ describe( 'AbstractHandler', () => {
 			tempDomElementStaticToolbar.remove();
 			return tempEditorStaticToolbar.destroy();
 		} );
+
+		it( 'should restore saved scroll positions', () => {
+			global.document.body.parentElement.style.height = '2000px';
+			global.document.body.parentElement.style.scrollBehavior = 'smooth';
+
+			const outerScrollableAncestor = global.document.createElement( 'div' );
+			const innerScrollableAncestor = global.document.createElement( 'div' );
+			const innerElement = global.document.createElement( 'div' );
+
+			outerScrollableAncestor.style.overflow = 'scroll';
+			outerScrollableAncestor.style.width = '100px';
+			outerScrollableAncestor.style.height = '100px';
+			innerScrollableAncestor.style.overflow = 'scroll';
+			innerScrollableAncestor.style.width = '200px';
+			innerScrollableAncestor.style.height = '200px';
+			innerElement.style.width = '400px';
+			innerElement.style.height = '400px';
+
+			global.document.body.appendChild( outerScrollableAncestor );
+			outerScrollableAncestor.appendChild( innerScrollableAncestor );
+			innerScrollableAncestor.appendChild( innerElement );
+			innerElement.appendChild( editor.ui.view.element );
+
+			global.document.body.parentElement.scrollTo( { left: 0, top: 1000, behavior: 'instant' } );
+			outerScrollableAncestor.scrollTo( 30, 50 );
+			innerScrollableAncestor.scrollTo( 60, 100 );
+
+			const savedDocumentScrollLeft = global.document.body.parentElement.scrollLeft;
+			const savedDocumentScrollTop = global.document.body.parentElement.scrollTop;
+
+			expect( global.document.body.parentElement.scrollTop ).to.equal( 1000 );
+
+			editor.execute( 'toggleFullscreen' );
+
+			// In test runner scroll is not reset to 0 when fullscreen is enabled, unlike for real browsers, so we need to set it manually.
+			global.document.body.parentElement.scrollTo( { left: 0, top: 0, behavior: 'instant' } );
+
+			expect( editor.commands.get( 'toggleFullscreen' )._fullscreenHandler._savedAncestorsScrollPositions.size ).to.equal( 3 );
+
+			editor.execute( 'toggleFullscreen' );
+
+			expect( outerScrollableAncestor.scrollLeft ).to.equal( 30 );
+			expect( outerScrollableAncestor.scrollTop ).to.equal( 50 );
+			expect( innerScrollableAncestor.scrollLeft ).to.equal( 60 );
+			expect( innerScrollableAncestor.scrollTop ).to.equal( 100 );
+			expect( global.document.body.parentElement.scrollTop ).to.equal( savedDocumentScrollTop );
+			expect( global.document.body.parentElement.scrollLeft ).to.equal( savedDocumentScrollLeft );
+
+			outerScrollableAncestor.remove();
+			innerScrollableAncestor.remove();
+			innerElement.remove();
+		} );
 	} );
 
 	describe( 'with Revision history plugin', () => {
