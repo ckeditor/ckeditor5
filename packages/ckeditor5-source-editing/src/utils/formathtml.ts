@@ -154,7 +154,7 @@ function indentLine( line: string, indentCount: number, indentChar: string = '  
  * @param isPreviousLinePreFormatted Information on whether the previous line was preformatted (and how).
  */
 function isPreformattedBlockLine( line: string, isPreviousLinePreFormatted: 'first' | 'last' | 'middle' | false ) {
-	let preLineType = false;
+	let preLineType: 'first' | 'last' | 'middle' | false = false;
 	if ( new RegExp( '<pre( .*?)?>' ).test( line ) ) {
 		preLineType = 'first';
 	}
