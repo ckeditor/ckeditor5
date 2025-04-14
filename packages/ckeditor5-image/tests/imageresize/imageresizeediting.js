@@ -98,6 +98,19 @@ describe( 'ImageResizeEditing', () => {
 			editor = await createEditor();
 		} );
 
+		it( 'consumes image_resized class during upcast', () => {
+			const consumeSpy = sinon.spy( ( evt, data, conversionApi ) => {
+				expect( conversionApi.consumable.test( data.viewItem, { classes: [ 'image_resized' ] } ) ).to.be.false;
+			} );
+
+			editor.data.upcastDispatcher.on( 'element:figure', consumeSpy, { priority: 'lowest' } );
+			editor.setData(
+				`<figure class="image image_resized" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>`
+			);
+
+			expect( consumeSpy.calledOnce ).to.be.true;
+		} );
+
 		describe( 'width', () => {
 			it( 'upcasts 100px width correctly', () => {
 				editor.setData( `<figure class="image" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
@@ -268,6 +281,24 @@ describe( 'ImageResizeEditing', () => {
 	describe( 'conversion (inline images)', () => {
 		beforeEach( async () => {
 			editor = await createEditor();
+		} );
+
+		it( 'consumes image_resized class during upcast', () => {
+			const consumeSpy = sinon.spy( ( evt, data, conversionApi ) => {
+				expect( conversionApi.consumable.test( data.viewItem, { classes: [ 'image_resized' ] } ) ).to.be.false;
+			} );
+
+			editor.data.upcastDispatcher.on( 'element:img', consumeSpy, { priority: 'lowest' } );
+			editor.setData(
+				'<p>Lore' +
+					'<span class="image-inline">' +
+						`<img src="${ IMAGE_SRC_FIXTURE }" style="width:100px;" class="image_resized">` +
+					'</span>' +
+					'ipsum' +
+				'</p>'
+			);
+
+			expect( consumeSpy.calledOnce ).to.be.true;
 		} );
 
 		describe( 'width', () => {
