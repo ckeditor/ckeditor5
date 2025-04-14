@@ -341,6 +341,70 @@ export default class Rect {
 	}
 
 	/**
+	 * Checks if any parent element can extend this rect. Returns a new rect that
+	 * represents the extended area or null if no parent can extend this rect.
+	 *
+	 * This method traverses all ancestor elements up to the <body> to find any
+	 * parent that has a larger area than the current rect and checks if the parent's
+	 * styling (overflow and position) would cause it to crop the child rect.
+	 *
+	 * ```ts
+	 * const extendedRect = new Rect(element).getExtendingParent();
+	 * ```
+	 *
+	 * @returns An extended rect instance or `null` if no parent can extend this rect.
+	 */
+	public getExtendingParent(): Rect | null {
+		const source: RectSource & { parentNode?: Node | null; commonAncestorContainer?: Node | null } = this._source;
+
+		// There's no ancestor to extend <body>.
+		if ( isBody( source ) || !isDomElement( source ) ) {
+			return null;
+		}
+
+		let parent = source.parentNode;
+		let child: HTMLElement | null = source as HTMLElement;
+		let absolutelyPositionedChildElement;
+
+		// Check the ancestors all the way up to the <body>.
+		while ( parent && !isBody( parent ) ) {
+			// Skip if the parent is not a DOM element
+			if ( !isDomElement( parent ) ) {
+				parent = parent.parentNode;
+				child = null;
+				continue;
+			}
+
+			const isParentOverflowVisible = getElementOverflow( parent as HTMLElement ) === 'visible';
+
+			if ( child instanceof HTMLElement && getElementPosition( child ) === 'absolute' ) {
+				absolutelyPositionedChildElement = child;
+			}
+
+			const parentElementPosition = getElementPosition( parent );
+
+			// If the parent has overflow that's not visible and doesn't meet the skip conditions,
+			// it will crop the child rect and should be considered for extending the rect
+			const shouldSkipParent = isParentOverflowVisible ||
+				absolutelyPositionedChildElement && (
+					( parentElementPosition === 'relative' && isParentOverflowVisible ) ||
+					parentElementPosition !== 'relative'
+				);
+
+			// Skip parents that won't crop the child rect due to their overflow/position settings
+			if ( shouldSkipParent ) {
+				child = parent as HTMLElement;
+				parent = parent.parentNode;
+				continue;
+			}
+
+			break;
+		}
+
+		return new Rect( parent as HTMLElement ).getVisible();
+	}
+
+	/**
 	 * Checks if all property values ({@link #top}, {@link #left}, {@link #right},
 	 * {@link #bottom}, {@link #width} and {@link #height}) are the equal in both rect
 	 * instances.

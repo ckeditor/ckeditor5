@@ -737,15 +737,33 @@ export default class BalloonPanelView extends View {
 			// ------- Sticky
 
 			viewportStickyNorth: ( targetRect, balloonRect, viewportRect, limiterRect ) => {
-				const boundaryRect = limiterRect || viewportRect;
+				let boundaryRect: Rect | null = limiterRect || viewportRect;
 
+				if ( limiterRect ) {
+					const extendedLimiterRect = limiterRect.getExtendingParent();
+					const visibleViewportRect = viewportRect.getVisible();
+
+					if ( extendedLimiterRect && visibleViewportRect ) {
+						boundaryRect = extendedLimiterRect.getIntersection( visibleViewportRect ) || limiterRect || viewportRect;
+					}
+				}
+
+				// Check if the target is in the boundary.
 				if ( !targetRect.getIntersection( boundaryRect ) ) {
 					return null;
 				}
 
-				// Engage when the target top and bottom edges are close or off the boundary.
-				// By close, it means there's not enough space for the balloon arrow (offset).
-				if ( boundaryRect.height - targetRect.height > stickyVerticalOffset ) {
+				// Check if the target is too tall for sticky behavior
+				if ( boundaryRect.height - targetRect.height > stickyVerticalOffset && !targetRect.getVisible() ) {
+					return null;
+				}
+
+				// Checks if there is enough space to put the balloon on the top or bottom of the target.
+				// If not, it makes the balloon sticky.
+				if ( !(
+					boundaryRect.top - targetRect.top - stickyVerticalOffset < balloonRect.height &&
+					boundaryRect.bottom - targetRect.bottom < balloonRect.height
+				) ) {
 					return null;
 				}
 
