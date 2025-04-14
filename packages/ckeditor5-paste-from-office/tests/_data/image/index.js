@@ -257,3 +257,10 @@ export const browserFixtures = {
 		inputRtf: {}
 	}
 };
+
+// paste from wps
+import pasteFromWpsRtf from './paste-from-wps/input.wps.rtf';
+
+export const pasteFromWpsFixtures = {
+	pasteFromWpsRtf
+};
