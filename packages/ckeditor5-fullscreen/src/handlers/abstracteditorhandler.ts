@@ -311,8 +311,12 @@ export default class AbstractEditorHandler {
 		// Restore scroll positions of all ancestors. It may include the closest editable wrapper causing the editor to change
 		// the visible content, which is not what we want. Thus, after executing the command, we use
 		// `editor.editing.view.scrollToTheSelection()` to scroll the editor viewport to the current selection.
+		// Using `behavior: 'instant'` is necessary to force scroll if some of the containers has `scroll-behavior: smooth` set (otherwise
+		// the scroll won't happen).
 		for ( const [ ancestor, value ] of this._savedAncestorsScrollPositions ) {
-			ancestor.scrollTo( value.scrollLeft, value.scrollTop );
+			// `ScrollBehavior` has incorrect type definition in currently used TS version (5.0.4). Fix should be present since 5.1.0:
+			// https://github.com/Microsoft/TypeScript/issues/28755. Hence we need a type assertion here.
+			ancestor.scrollTo( { left: value.scrollLeft, top: value.scrollTop, behavior: 'instant' as ScrollBehavior } );
 		}
 
 		this._savedAncestorsScrollPositions.clear();

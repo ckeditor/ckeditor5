@@ -17,7 +17,9 @@ import {
 	type ViewElement,
 	type ViewConsumable,
 	type MatcherObjectPattern,
-	type DocumentSelectionChangeAttributeEvent
+	type DocumentSelectionChangeAttributeEvent,
+	type Element,
+	type Item
 } from 'ckeditor5/src/engine.js';
 
 import {
@@ -757,6 +759,52 @@ export default class DataFilter extends Plugin {
 		if ( !schema.isRegistered( 'htmlEmptyElement' ) ) {
 			schema.register( 'htmlEmptyElement', {
 				inheritAllFrom: '$inlineObject'
+			} );
+
+			// Helper function to check if an element has any HTML attributes.
+			const hasHtmlAttributes = ( element: Element | Item ): boolean =>
+				Array
+					.from( element.getAttributeKeys() )
+					.some( key => key.startsWith( 'html' ) );
+
+			// Register a post-fixer that removes htmlEmptyElement when its htmlXX attribute is removed.
+			// See: https://github.com/ckeditor/ckeditor5/issues/18089
+			editor.model.document.registerPostFixer( writer => {
+				const changes = editor.model.document.differ.getChanges();
+				const elementsToRemove = new Set<Element>();
+
+				for ( const change of changes ) {
+					if ( change.type === 'remove' ) {
+						continue;
+					}
+
+					// Look for removal of html* attributes.
+					if ( change.type === 'attribute' && change.attributeNewValue === null ) {
+						// Find htmlEmptyElement instances in the range that lost their html attribute.
+						for ( const { item } of change.range ) {
+							if ( item.is( 'element', 'htmlEmptyElement' ) && !hasHtmlAttributes( item ) ) {
+								elementsToRemove.add( item );
+							}
+						}
+					}
+
+					// Look for insertion of htmlEmptyElement.
+					if ( change.type === 'insert' && change.position.nodeAfter ) {
+						const insertedElement = change.position.nodeAfter;
+
+						for ( const { item } of writer.createRangeOn( insertedElement ) ) {
+							if ( item.is( 'element', 'htmlEmptyElement' ) && !hasHtmlAttributes( item ) ) {
+								elementsToRemove.add( item );
+							}
+						}
+					}
+				}
+
+				for ( const element of elementsToRemove ) {
+					writer.remove( element );
+				}
+
+				return elementsToRemove.size > 0;
 			} );
 		}
 
