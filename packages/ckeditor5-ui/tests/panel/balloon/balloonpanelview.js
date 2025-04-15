@@ -1525,22 +1525,22 @@ describe( 'BalloonPanelView', () => {
 				bottom: 800,
 				left: 0,
 				right: 200,
-				width: 0,
-				height: 0
+				width: 200,
+				height: 500
 			} );
 
 			targetRect = new Rect( {
-				top: 200,
-				bottom: 400,
+				top: 400,
+				bottom: 800,
 				left: 50,
 				right: 100,
-				width: 0,
-				height: 0
+				width: 50,
+				height: 600
 			} );
 
 			expect( positions.viewportStickyNorth( targetRect, balloonRect, viewportRect ) ).to.deep.equal( {
 				top: 300 + stickyOffset,
-				left: 25,
+				left: 50,
 				name: 'arrowless',
 				config: {
 					withArrow: false
@@ -1667,6 +1667,24 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should respect the "stickyVerticalOffset" option', () => {
+			viewportRect = new Rect( {
+				top: 300,
+				bottom: 800,
+				left: 0,
+				right: 200,
+				width: 200,
+				height: 500
+			} );
+
+			targetRect = new Rect( {
+				top: 300,
+				bottom: 800,
+				left: 50,
+				right: 100,
+				width: 50,
+				height: 500
+			} );
+
 			const generatedPositions = BalloonPanelView.generatePositions( {
 				stickyVerticalOffset: BalloonPanelView.stickyVerticalOffset + 100
 			} );
@@ -1685,6 +1703,24 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should respect the "config" option', () => {
+			viewportRect = new Rect( {
+				top: 300,
+				bottom: 800,
+				left: 0,
+				right: 200,
+				width: 200,
+				height: 500
+			} );
+
+			targetRect = new Rect( {
+				top: 300,
+				bottom: 800,
+				left: 50,
+				right: 100,
+				width: 50,
+				height: 500
+			} );
+
 			const generatedPositions = BalloonPanelView.generatePositions( {
 				config: {
 					foo: 'bar',
