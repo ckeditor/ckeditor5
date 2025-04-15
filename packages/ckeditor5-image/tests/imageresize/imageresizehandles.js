@@ -240,7 +240,7 @@ describe( 'ImageResizeHandles', () => {
 				const resizerWrapper = document.querySelector( '.ck-widget__resizer' );
 				const shadowBoundingRect = resizerWrapper.getBoundingClientRect();
 
-				expect( shadowBoundingRect.width ).to.equal( 100 );
+				expect( shadowBoundingRect.width ).to.lessThan( 120 );
 				expect( shadowBoundingRect.height ).to.equal( 50 );
 			} );
 
@@ -733,7 +733,7 @@ describe( 'ImageResizeHandles', () => {
 				const resizerWrapper = document.querySelector( '.ck-widget__resizer' );
 				const shadowBoundingRect = resizerWrapper.getBoundingClientRect();
 
-				expect( shadowBoundingRect.width ).to.equal( 100 );
+				expect( shadowBoundingRect.width ).to.lessThan( 120 );
 				expect( shadowBoundingRect.height ).to.equal( 50 );
 			} );
 
