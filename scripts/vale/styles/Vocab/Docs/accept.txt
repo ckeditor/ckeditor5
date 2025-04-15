@@ -149,6 +149,7 @@ uploadImage
 upvoting
 utils
 (?i)viewport
+Visualforce
 Vite
 Vue
 walkthrough

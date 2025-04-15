@@ -37,7 +37,8 @@ import {
 	type FocusTracker,
 	type Collection,
 	type Locale,
-	type ObservableChangeEvent
+	type ObservableChangeEvent,
+	type CollectionChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/dropdown/toolbardropdown.css';
@@ -663,26 +664,7 @@ function bindViewCollectionItemsToDefinitions(
 	definitions: Collection<ListDropdownItemDefinition>,
 	locale: Locale
 ) {
-	// List item checkboxes have a reserved space for the check icon, so we need to know if there are any checkboxes in the list
-	// to adjust the layout accordingly. It'd look weird if the items on the list were not aligned horizontally.
-	//
-	// Possible theoretical performance problem if many items are added one by one, as this will be called for each item.
-	listItems.on( 'change', () => {
-		// Filter-map. Check all items, leave only these that have buttons and return the buttons.
-		const listItemButtons = [ ...listItems ].reduce<Array<ListItemButtonView>>( ( acc, item ) => {
-			if ( item instanceof ListItemView && item.children.first instanceof ListItemButtonView ) {
-				acc.push( item.children.first );
-			}
-
-			return acc;
-		}, [] );
-
-		const hasAnyCheckboxOnList = listItemButtons.some( button => button.isToggleable );
-
-		listItemButtons.forEach( item => {
-			item.hasCheckSpace = hasAnyCheckboxOnList;
-		} );
-	} );
+	bindDropdownToggleableButtonsAlignment( listItems );
 
 	listItems.bindTo( definitions ).using( def => {
 		if ( def.type === 'separator' ) {
@@ -722,6 +704,117 @@ function bindViewCollectionItemsToDefinitions(
 		}
 
 		return null;
+	} );
+}
+
+/**
+ * Sets up alignment handling for toggleable buttons in a dropdown list.
+ *
+ * Buttons in dropdowns have reserved space for a check icon when they are toggleable.
+ * When at least one button in the list is toggleable, all other buttons (even non-toggleable ones)
+ * will have space on their left side to align with toggleable buttons.
+ *
+ * This function handles a special case where a new toggleable button is added (or removed) to a list
+ * where previous buttons weren't toggleable. In that case, those previous buttons will
+ * automatically allocate space to align with the new toggleable button.
+ *
+ * Example:
+ * ```
+ * Before adding toggleable button:
+ * +----------------+
+ * | Normal Button  |
+ * +----------------+
+ * | Another Button |
+ * +----------------+
+ *
+ * After adding toggleable button:
+ * +-------------------+
+ * |    Normal Button  |
+ * +-------------------+
+ * |    Another Button |
+ * +-------------------+
+ * | ✓ Toggle Button   |
+ * +-------------------+
+ * ```
+ *
+ * @param listItems Collection of list items to observe for toggleable buttons.
+ */
+function bindDropdownToggleableButtonsAlignment( listItems: ViewCollection ) {
+	// Keep track of how many toggleable buttons are in the list.
+	let toggleableButtonsCount = 0;
+
+	// Helper function that checks if a view item is a list item button.
+	const pickListItemButtonIfPresent = ( item: View<HTMLElement> ) => {
+		// Check if the item is a ListItemView with a ListItemButtonView as its first child.
+		if ( !( item instanceof ListItemView ) || !( item.children.first instanceof ListItemButtonView ) ) {
+			return null;
+		}
+
+		return item.children.first;
+	};
+
+	// Helper function that checks if a view item is a toggleable button.
+	// Returns the button if it's toggleable - otherwise, returns null.
+	const pickListItemToggleableButtonIfPresent = ( item: View<HTMLElement> ) => {
+		const listItemButtonView = pickListItemButtonIfPresent( item );
+
+		// Only return buttons that are configured as toggleable.
+		if ( !listItemButtonView || !listItemButtonView.isToggleable ) {
+			return null;
+		}
+
+		return listItemButtonView;
+	};
+
+	// Updates all buttons in the list to either allocate space for check marks or not.
+	// This ensures all buttons are properly aligned regardless of their toggleable state.
+	const updateAllButtonsCheckSpace = ( hasSpace: boolean ): void => {
+		for ( const listItem of listItems ) {
+			const listItemButton = pickListItemButtonIfPresent( listItem );
+
+			if ( listItemButton ) {
+				listItemButton.hasCheckSpace = hasSpace;
+			}
+		}
+	};
+
+	// Listen for changes in the list items collection.
+	listItems.on<CollectionChangeEvent<FocusableView>>( 'change', ( evt, data ) => {
+		// Remember the current state - whether we have any toggleable buttons.
+		const prevToggleable = toggleableButtonsCount > 0;
+
+		// Process removed items - decrease count for each toggleable button removed.
+		for ( const item of data.removed ) {
+			if ( pickListItemToggleableButtonIfPresent( item ) ) {
+				toggleableButtonsCount--;
+			}
+		}
+
+		// Process added items - increase count for each toggleable button added.
+		for ( const item of data.added ) {
+			const button = pickListItemButtonIfPresent( item );
+
+			if ( !button ) {
+				continue;
+			}
+
+			if ( button.isToggleable ) {
+				// Check if the button is toggleable and increase the count.
+				toggleableButtonsCount++;
+			}
+
+			// Depending on the current state, set the check space for the button.
+			button.hasCheckSpace = toggleableButtonsCount > 0;
+		}
+
+		// Check if the current state has changed.
+		const currentToggleable = toggleableButtonsCount > 0;
+
+		// Only update button alignment if we've crossed the threshold between
+		// having no toggleable buttons and having at least one.
+		if ( prevToggleable !== currentToggleable ) {
+			updateAllButtonsCheckSpace( currentToggleable );
+		}
 	} );
 }
 
