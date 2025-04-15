@@ -740,11 +740,11 @@ export default class BalloonPanelView extends View {
 				let boundaryRect: Rect | null = limiterRect || viewportRect;
 
 				if ( limiterRect ) {
-					const extendedLimiterRect = limiterRect.getExtendingParent();
+					const extendedLimiterRect = limiterRect.getClippingAncestor().getVisible();
 					const visibleViewportRect = viewportRect.getVisible();
 
 					if ( extendedLimiterRect && visibleViewportRect ) {
-						boundaryRect = extendedLimiterRect.getIntersection( visibleViewportRect ) || limiterRect || viewportRect;
+						boundaryRect = extendedLimiterRect.getIntersection( visibleViewportRect )!;
 					}
 				}
 
@@ -759,7 +759,7 @@ export default class BalloonPanelView extends View {
 				}
 
 				// Checks if there is enough space to put the balloon on the top or bottom of the target.
-				// If not, it makes the balloon sticky.
+				// If not, makes the balloon sticky.
 				if ( !(
 					boundaryRect.top - targetRect.top - stickyVerticalOffset < balloonRect.height &&
 					boundaryRect.bottom - targetRect.bottom < balloonRect.height
