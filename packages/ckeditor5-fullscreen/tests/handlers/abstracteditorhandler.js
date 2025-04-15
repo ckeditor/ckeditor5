@@ -363,6 +363,8 @@ describe( 'AbstractHandler', () => {
 			outerScrollableAncestor.remove();
 			innerScrollableAncestor.remove();
 			innerElement.remove();
+			global.document.body.parentElement.style.height = '';
+			global.document.body.parentElement.style.scrollBehavior = '';
 		} );
 	} );
 
