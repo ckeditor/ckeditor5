@@ -11,6 +11,8 @@ modified_at: 2025-04-04
 
 Salesforce is a cloud-based Customer Relationship Management (CRM) platform that enables organizations to manage customer interactions, sales processes, and business operations. The platform supports custom development through its Lightning Platform (formerly Force.com), allowing developers to create custom objects, fields, pages, and components. While [CKEditor&nbsp;5 does not support Shadow DOM yet](https://github.com/ckeditor/ckeditor5/issues/3891), which is required by Lightning modules, it can be integrated into Salesforce using [Visualforce pages](https://help.salesforce.com/s/articleView?id=platform.pages_pages.htm&type=5). This integration approach enables rich text editing capabilities within Salesforce applications.
 
+{@snippet getting-started/use-builder}
+
 ## Prerequisites
 
 This section assumes you are working within the [Salesforce development platform](https://www.salesforce.com/form/developer-signup). We will guide you through creating a new Visualforce page that incorporates CKEditor&nbsp;5. Visualforce pages provide a way to create custom user interfaces in Salesforce using a markup language similar to HTML, making it an ideal solution for integrating third-party components like CKEditor&nbsp;5.
