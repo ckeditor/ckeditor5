@@ -173,9 +173,8 @@ The pattern for ignoring an error must be defined in `<meta>` tag on a page, whe
 * Each key is the error type, that can be detected by the crawler.
 * Each value is the text or an array of texts, that are used for finding a match in error messages. The special wildcard value `*` can be used to ignore all errors for a given error type.
 
-The following error types are supported: `uncaught-exception`, `request-failure`, `response-failure`, `console-error`, `navigation-error` and `page-crash`:
+The following error types are supported: `request-failure`, `response-failure`, `console-error`, `navigation-error` and `page-crash`:
 
-* `uncaught-exception` &ndash; As the name suggests, these are uncaught exceptions from the page.
 * `request-failure` &ndash; This error occurs, when the request has not been sent (for example, it was blocked by the browser) or has not received any response (for example, due to a timeout or in case the remote server is unreachable). HTTP error responses, such as 404 or 500, are considered successful ones from the HTTP standpoint. Such requests will not be logged as request failures but as response failures.
 * `response-failure` &ndash; Each HTTP response with a status code equal to or greater than 400 is treated as a failed one.
 * `console-error` &ndash; All `console.error()` calls are treated as an error.
@@ -187,7 +186,6 @@ The following error types are supported: `uncaught-exception`, `request-failure`
 
 | Error&nbsp;type      | Example              |
 |----------------------|----------------------|
-| `uncaught-exception` | `"uncaught-exception": "ckeditor-duplicated-modules"`<br> This pattern ignores only the `ckeditor-duplicated-modules` exception. |
 | `request-failure`    | `"request-failure": "missing-file.jpg"`<br> All requests containing the `missing-file.jpg` in the URL are ignored. |
 | `response-failure`   | `"response-failure": "HTTP response status code: 401"`<br> All requests requiring authorization are ignored. |
 | `console-error`      | `"console-error": "Example error message"`<br> All console errors containing "Example error message" substring are ignored. |
@@ -199,7 +197,6 @@ These patterns are simply added as keys and values in a JSON object to the `<met
 ```html
 <meta name="x-cke-crawler-ignore-patterns" content='{
 	"page-crash": "Error: Page crashed!",
-	"uncaught-exception": "ckeditor-duplicated-modules",
 	"console-error": "Example error message"
 }'>
 ```
