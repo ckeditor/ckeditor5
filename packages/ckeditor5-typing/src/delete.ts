@@ -7,11 +7,11 @@
  * @module typing/delete
  */
 
-import type { ViewDocumentKeyDownEvent } from '@ckeditor/ckeditor5-engine';
+import { BubblingEventInfo, DomEventData, type ViewDocumentKeyDownEvent } from '@ckeditor/ckeditor5-engine';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import DeleteCommand from './deletecommand.js';
-import DeleteObserver, { type ViewDocumentDeleteEvent } from './deleteobserver.js';
+import DeleteObserver, { type DeleteEventData, type ViewDocumentDeleteEvent } from './deleteobserver.js';
 
 /**
  * The delete and backspace feature. Handles keys such as <kbd>Delete</kbd> and <kbd>Backspace</kbd>, other
@@ -95,29 +95,31 @@ export default class Delete extends Plugin {
 			}
 
 			const ancestorLimit = editor.model.schema.getLimitElement( modelDocument.selection );
-			const selectionPosition = modelDocument.selection.getFirstPosition()!;
 			const limitStartPosition = editor.model.createPositionAt( ancestorLimit, 0 );
 
-			// If the selection is not at the beginning of the nested editable, do nothing.
-			if ( !limitStartPosition.isTouching( selectionPosition ) ) {
-				return;
-			}
+			if ( limitStartPosition.isTouching( modelDocument.selection.getFirstPosition()! ) ) {
+				// Stop the beforeinput event as it could be invalid.
+				data.preventDefault();
 
-			// Workaround for Safari where pressing Backspace at the beginning of a nested editable
-			// can move the selection to the parent element and delete the entire element.
-			// This issue primarily affects empty paragraphs without attributes, while elements
-			// with custom attributes (e.g., list items) and custom rendering based on those attributes work correctly.
-			// This is an approximation - we assume elements with any attributes have some additional UI rendering.
-			// See: https://github.com/ckeditor/ckeditor5/issues/18356
-			if (
-				selectionPosition.parent !== ancestorLimit &&
-				selectionPosition.parent.is( 'element' ) &&
-				[ ...selectionPosition.parent.getAttributeKeys() ].length
-			) {
-				return;
-			}
+				// Create a fake delete event so all features can act on it and the target range is proper.
+				const modelRange = editor.model.schema.getNearestSelectionRange( limitStartPosition, 'forward' );
 
-			data.preventDefault();
+				if ( !modelRange ) {
+					return;
+				}
+
+				const viewSelection = view.createSelection( editor.editing.mapper.toViewRange( modelRange ) );
+				const targetRange = viewSelection.getFirstRange()!;
+
+				const eventInfo = new BubblingEventInfo( document, 'delete', targetRange );
+				const deleteData: Partial<DeleteEventData> = {
+					unit: 'selection',
+					direction: 'backward',
+					selectionToRemove: viewSelection
+				};
+
+				viewDocument.fire( eventInfo, new DomEventData( view, data.domEvent, deleteData ) );
+			}
 		} );
 
 		if ( this.editor.plugins.has( 'UndoEditing' ) ) {
