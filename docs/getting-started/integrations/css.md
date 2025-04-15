@@ -16,6 +16,8 @@ CKEditor&nbsp;5 is compatible with most of the popular CSS frameworks. However, 
 
 In this guide, you will learn how to address these integration issues and use the CKEditor&nbsp;5 WYSIWYG editor with the most popular frontend frameworks.
 
+{@snippet getting-started/use-builder}
+
 ## Compatibility with Bootstrap
 
 ### Bootstrap modals
