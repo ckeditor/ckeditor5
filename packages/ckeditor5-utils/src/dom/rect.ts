@@ -267,16 +267,54 @@ export default class Rect {
 
 		// Check the ancestors all the way up to the <body>.
 		while ( parent && !isBody( parent ) ) {
+			const isParentOverflowVisible = getElementOverflow( parent as HTMLElement ) === 'visible';
+
 			if ( child instanceof HTMLElement && getElementPosition( child ) === 'absolute' ) {
 				absolutelyPositionedChildElement = child;
 			}
 
-			const shouldSkipThisParent = shouldSkipParent(
-				parent as HTMLElement,
-				absolutelyPositionedChildElement
-			);
+			const parentElementPosition = getElementPosition( parent );
 
-			if ( shouldSkipThisParent ) {
+			// The child will be cropped only if it has `position: absolute` and the parent has `position: relative` + some overflow.
+			// Otherwise there's no chance of visual clipping and the parent can be skipped
+			// https://github.com/ckeditor/ckeditor5/issues/14107.
+			//
+			// condition: isParentOverflowVisible
+			// 		+---------------------------+
+			//		| #parent					|
+			//		| (overflow: visible)		|
+			//		|				+-----------+---------------+
+			//		|				| child						|
+			//		|				+-----------+---------------+
+			//		+---------------------------+
+			//
+			// condition: absolutelyPositionedChildElement && parentElementPosition === 'relative' && isParentOverflowVisible
+			// 		+---------------------------+
+			//		| parent					|
+			//		| (position: relative;)		|
+			//		| (overflow: visible;)		|
+			//		|				+-----------+---------------+
+			//		|				| child  					|
+			//		|				| (position: absolute;)		|
+			//		|				+-----------+---------------+
+			//		+---------------------------+
+			//
+			// condition: absolutelyPositionedChildElement && parentElementPosition !== 'relative'
+			// 		+---------------------------+
+			//		| parent					|
+			//		| (position: static;)		|
+			//		|				+-----------+---------------+
+			//		|				| child  					|
+			//		|				| (position: absolute;)		|
+			//		|				+-----------+---------------+
+			//		+---------------------------+
+			if (
+				isParentOverflowVisible ||
+				absolutelyPositionedChildElement && (
+					( parentElementPosition === 'relative' && isParentOverflowVisible ) ||
+					parentElementPosition !== 'relative'
+				)
+			) {
 				child = parent;
 				parent = parent.parentNode;
 				continue;
@@ -300,65 +338,6 @@ export default class Rect {
 		}
 
 		return visibleRect;
-	}
-
-	/**
-	 * Checks if any parent element can extend this rect. Returns a new rect that
-	 * represents the extended area or null if no parent can extend this rect.
-	 *
-	 * This method traverses all ancestor elements up to the <body> to find any
-	 * parent that has a larger area than the current rect and checks if the parent's
-	 * styling (overflow and position) would cause it to crop the child rect.
-	 *
-	 * ```ts
-	 * const extendedRect = new Rect( element ).getClippingAncestor();
-	 * ```
-	 *
-	 * @returns An extended rect instance.
-	 */
-	public getClippingAncestor(): Rect {
-		const source: RectSource & { parentNode?: Node | null; commonAncestorContainer?: Node | null } = this._source;
-
-		// There's no ancestor to extend <body>.
-		if ( isBody( source ) || !isDomElement( source ) ) {
-			return this.clone();
-		}
-
-		let parent = source.parentNode;
-		let child: HTMLElement | null = source as HTMLElement;
-		let absolutelyPositionedChildElement;
-
-		// Check the ancestors all the way up to the <body>.
-		while ( parent && !isBody( parent ) ) {
-			// Skip if the parent is not a DOM element
-			if ( !isDomElement( parent ) ) {
-				parent = parent.parentNode;
-				child = null;
-				continue;
-			}
-
-			if ( child instanceof HTMLElement && getElementPosition( child ) === 'absolute' ) {
-				absolutelyPositionedChildElement = child;
-			}
-
-			// If the parent has overflow that's not visible and doesn't meet the skip conditions,
-			// it will crop the child rect and should be considered for extending the rect
-			const shouldSkipThisParent = shouldSkipParent(
-				parent as HTMLElement,
-				absolutelyPositionedChildElement
-			);
-
-			// Skip parents that won't crop the child rect due to their overflow/position settings
-			if ( shouldSkipThisParent ) {
-				child = parent as HTMLElement;
-				parent = parent.parentNode;
-				continue;
-			}
-
-			break;
-		}
-
-		return new Rect( parent as HTMLElement );
 	}
 
 	/**
@@ -627,62 +606,4 @@ function shiftRectToCompensatePositionedAncestor( rect: Rect, positionedElementA
 	moveY -= ancestorBorderWidths.top;
 
 	rect.moveBy( moveX, moveY );
-}
-
-/**
- * Determines if a parent element should be skipped when evaluating overflow constraints.
- * A parent should be skipped if it won't clip/crop its children based on its overflow and position styles.
- *
- * The child will be cropped only if it has `position: absolute` and the parent has `position: relative` + some overflow.
- * Otherwise there's no chance of visual clipping and the parent can be skipped
- * https://github.com/ckeditor/ckeditor5/issues/14107.
- *
- *```text
- * condition: isParentOverflowVisible
- *
- *		+---------------------------+
- *		| #parent                   |
- *		| (overflow: visible)        |
- *		|               +-----------+---------------+
- *		|               | child                     |
- *		|               +-----------+---------------+
- *		+---------------------------+
- *
- * condition: absolutelyPositionedChildElement && parentElementPosition === 'relative' && isParentOverflowVisible
- *		+---------------------------+
- *		| parent                    |
- *		| (position: relative;)     |
- *		| (overflow: visible;)       |
- *		|               +-----------+---------------+
- *		|               | child                     |
- *		|               | (position: absolute;)     |
- *		|               +-----------+---------------+
- *		+---------------------------+
- *
- * condition: absolutelyPositionedChildElement && parentElementPosition !== 'relative'
- *		+---------------------------+
- *		| parent                    |
- *		| (position: static;)       |
- *		|               +-----------+---------------+
- *		|               | child                     |
- *		|               | (position: absolute;)     |
- *		|               +-----------+---------------+
- *		+---------------------------+
- *```
- * @param parent The parent element to evaluate.
- * @param absolutelyPositionedChildElement Optional reference to an absolutely positioned child.
- * @returns True if the parent should be skipped, false otherwise.
- */
-function shouldSkipParent(
-	parent: HTMLElement,
-	absolutelyPositionedChildElement: HTMLElement | undefined
-): boolean {
-	const isParentOverflowVisible = getElementOverflow( parent ) === 'visible';
-	const parentElementPosition = getElementPosition( parent );
-
-	return isParentOverflowVisible ||
-		!!absolutelyPositionedChildElement && (
-			( parentElementPosition === 'relative' && isParentOverflowVisible ) ||
-			parentElementPosition !== 'relative'
-		);
 }

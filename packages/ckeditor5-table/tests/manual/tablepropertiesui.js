@@ -33,12 +33,3 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
-
-const overflowHiddenCheckbox = document.querySelector( '#overflow-hidden-checkbox' );
-const overflowHiddenStyle = document.querySelector( '#overflow-hidden' );
-
-overflowHiddenStyle.disabled = true;
-
-overflowHiddenCheckbox.addEventListener( 'change', () => {
-	overflowHiddenStyle.disabled = !overflowHiddenStyle.disabled;
-} );

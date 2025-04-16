@@ -22,7 +22,7 @@ import {
 	type ObservableChangeEvent,
 	type DomPoint,
 	type PositionOptions,
-	type Rect,
+	Rect,
 	type PositioningFunction
 } from '@ckeditor/ckeditor5-utils';
 
@@ -736,39 +736,42 @@ export default class BalloonPanelView extends View {
 
 			// ------- Sticky
 
-			viewportStickyNorth: ( targetRect, balloonRect, viewportRect, limiterRect ) => {
-				let boundaryRect: Rect | null = limiterRect || viewportRect;
+			viewportStickyNorth: ( targetRect, balloonRect, viewportRect ) => {
+				// Get the intersection of the viewport and the document body.
+				const boundaryRect = new Rect( global.document.body ).getIntersection( viewportRect.getVisible()! );
 
-				if ( limiterRect ) {
-					const extendedLimiterRect = limiterRect.getClippingAncestor().getVisible();
-					const visibleViewportRect = viewportRect.getVisible();
+				if ( !boundaryRect ) {
+					return null;
+				}
 
-					if ( extendedLimiterRect && visibleViewportRect ) {
-						boundaryRect = extendedLimiterRect.getIntersection( visibleViewportRect )!;
-					}
+				// Get the visible intersection of the boundary and the document body.
+				const visibleBoundaryRect = boundaryRect.getVisible();
+
+				if ( !visibleBoundaryRect ) {
+					return null;
 				}
 
 				// Check if the target is in the boundary.
-				if ( !targetRect.getIntersection( boundaryRect ) ) {
+				if ( !targetRect.getIntersection( visibleBoundaryRect ) ) {
 					return null;
 				}
 
 				// Check if the target is too tall for sticky behavior
-				if ( boundaryRect.height - targetRect.height > stickyVerticalOffset && !targetRect.getVisible() ) {
+				if ( visibleBoundaryRect.height - targetRect.height > stickyVerticalOffset && !targetRect.getVisible() ) {
 					return null;
 				}
 
 				// Checks if there is enough space to put the balloon on the top or bottom of the target.
 				// If not, makes the balloon sticky.
 				if ( !(
-					boundaryRect.top - targetRect.top - stickyVerticalOffset < balloonRect.height &&
-					boundaryRect.bottom - targetRect.bottom < balloonRect.height
+					visibleBoundaryRect.top - targetRect.top - stickyVerticalOffset < balloonRect.height &&
+					visibleBoundaryRect.bottom - targetRect.bottom < balloonRect.height
 				) ) {
 					return null;
 				}
 
 				return {
-					top: boundaryRect.top + stickyVerticalOffset,
+					top: visibleBoundaryRect.top + stickyVerticalOffset,
 					left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
 					name: 'arrowless',
 					config: {
