@@ -64,6 +64,10 @@ Happy editing!
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The `form.css` component was moved to the `@ckeditor/ckeditor5-theme-lark` package.
 * All CKEditor 5 icons are now available in the `@ckeditor/ckeditor5-icons` package.
 
+### DISTRIBUTION CHANGES
+
+* All packages and CDN source code now target ES2022 as the ECMAScript version.
+
 ### Features
 
 * **[email](https://www.npmjs.com/package/@ckeditor/ckeditor5-email)**: Introduced a new package to validate the editor configuration for email compatibility. It helps prevent misconfigurations by enforcing best practices and future-proof rules. Added utilities for post-processing CSS, improving support across various email clients by adjusting styles for better rendering consistency.

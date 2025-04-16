@@ -191,3 +191,7 @@ We also dropped support for Webpack 4 in both the **old and new** installation m
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The `FormRowView` class was moved to the `@ckeditor/ckeditor5-ui` package.
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The `form.css` component was moved to the `@ckeditor/ckeditor5-theme-lark` package.
 * All CKEditor 5 icons are now available in the `@ckeditor/ckeditor5-icons` package.
+
+### Distribution changes
+
+* All packages and CDN source code now target ES2022 as the ECMAScript version.
