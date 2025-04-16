@@ -54,7 +54,7 @@ describe( 'FullscreenCommand', () => {
 		expect( command.isEnabled ).to.equal( true );
 	} );
 
-	describe( 'should set proper #_fullscreenHandler for each editor type', () => {
+	describe( 'should set proper #fullscreenHandler for each editor type', () => {
 		let tempElement;
 
 		beforeEach( async () => {
@@ -91,7 +91,7 @@ describe( 'FullscreenCommand', () => {
 			const tempEditor = await editorConstructor.create( element, basicConfig );
 			const tempCommand = new FullscreenCommand( tempEditor );
 
-			expect( tempCommand._fullscreenHandler ).to.be.instanceOf( editorHandler );
+			expect( tempCommand.fullscreenHandler ).to.be.instanceOf( editorHandler );
 
 			return tempEditor.destroy();
 		}
