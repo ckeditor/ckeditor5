@@ -745,19 +745,20 @@ export default class BalloonPanelView extends View {
 				}
 
 				// Get the visible intersection of the boundary and the document body.
-				const visibleBoundaryRect = boundaryRect.getVisible();
-
-				if ( !visibleBoundaryRect ) {
-					return null;
-				}
+				const visibleBoundaryRect = boundaryRect.getVisible()!;
 
 				// Check if the target is in the boundary.
 				if ( !targetRect.getIntersection( visibleBoundaryRect ) ) {
 					return null;
 				}
 
-				// Check if the target is too tall for sticky behavior
-				if ( visibleBoundaryRect.height - targetRect.height > stickyVerticalOffset && !targetRect.getVisible() ) {
+				// Check if the difference between the height of the visible boundary and the target
+				// is greater than the sticky vertical offset and if the top of the visible boundary
+				// is greater than or equal to the top of the balloon.
+				if (
+					visibleBoundaryRect.height - targetRect.height > stickyVerticalOffset &&
+					visibleBoundaryRect.top >= balloonRect.top
+				) {
 					return null;
 				}
 
