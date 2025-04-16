@@ -290,6 +290,24 @@ describe( 'Delete feature', () => {
 				'</widget>'
 			);
 		} );
+
+		it( 'should handle case where there is no valid selection range available', () => {
+			model.schema.register( 'emptyLimitContainer', {
+				allowIn: '$root',
+				isLimit: true
+			} );
+
+			editor.conversion.for( 'downcast' ).elementToElement( {
+				model: 'emptyLimitContainer',
+				view: ( modelItem, { writer } ) => writer.createContainerElement( 'div' )
+			} );
+
+			setModelData( model, '<emptyLimitContainer>[]</emptyLimitContainer>' );
+
+			expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
+
+			expect( getModelData( model ) ).to.equal( '<emptyLimitContainer>[]</emptyLimitContainer>' );
+		} );
 	} );
 } );
 
