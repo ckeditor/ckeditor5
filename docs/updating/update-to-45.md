@@ -173,6 +173,12 @@ We are continuing to strengthen the new installation methods while phasing out o
 	To achieve a proper solution for icons replacement for the npm builds, we needed to introduce a breaking change. If you used our icons for any purposes, make sure to update their paths.
 </info-box>
 
+### ⚠️ Deprecations in old installation methods: stage 1 completed
+
+We are progressing with deprecation according to [our sunset plan](https://github.com/ckeditor/ckeditor5/issues/17779). From this release, predefined builds’ packages, such as `@ckeditor/ckeditor-build-classic`, are now officially deprecated.
+
+We also dropped support for Webpack 4 in both the **old and new** installation methods. All packages and CDN from this version are now distributed with ES2022 as the target ECMAScript version, providing better compatibility with modern JavaScript features and improved performance.
+
 ### Major breaking changes in this release
 
 * **[bookmark](https://www.npmjs.com/package/@ckeditor/ckeditor5-bookmark)**: The `BookmarkUI#actionsView` is no longer available. The bookmark feature is now using the `WidgetToolbarRepository` instead.
@@ -185,3 +191,7 @@ We are continuing to strengthen the new installation methods while phasing out o
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The `FormRowView` class was moved to the `@ckeditor/ckeditor5-ui` package.
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The `form.css` component was moved to the `@ckeditor/ckeditor5-theme-lark` package.
 * All CKEditor 5 icons are now available in the `@ckeditor/ckeditor5-icons` package.
+
+### Distribution changes
+
+* All packages and CDN source code now target ES2022 as the ECMAScript version.
