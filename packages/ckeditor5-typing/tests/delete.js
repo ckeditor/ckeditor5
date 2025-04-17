@@ -9,6 +9,9 @@ import Typing from '../src/typing.js';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import TodoList from '@ckeditor/ckeditor5-list/src/todolist.js';
+import List from '@ckeditor/ckeditor5-list/src/list.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
 import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -29,7 +32,7 @@ describe( 'Delete feature', () => {
 		document.body.appendChild( element );
 
 		return ClassicTestEditor
-			.create( element, { plugins: [ Paragraph, Widget, Delete, Typing ] } )
+			.create( element, { plugins: [ Paragraph, Widget, Delete, Typing, TodoList, List, Heading ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
@@ -38,13 +41,25 @@ describe( 'Delete feature', () => {
 				model.schema.register( 'widget', {
 					inheritAllFrom: '$blockObject'
 				} );
+
 				model.schema.register( 'nested', {
 					allowIn: 'widget',
 					isLimit: true
 				} );
+
+				model.schema.register( 'nested-description', {
+					isLimit: true,
+					allowIn: 'widget',
+					allowContentOf: '$root'
+				} );
+
 				model.schema.extend( '$text', {
 					allowIn: [ 'nested' ],
 					allowAttributes: [ 'attr', 'bttr' ]
+				} );
+
+				model.schema.extend( 'paragraph', {
+					allowIn: 'nested'
 				} );
 
 				editor.conversion.for( 'downcast' )
@@ -61,6 +76,15 @@ describe( 'Delete feature', () => {
 						view: ( modelItem, { writer } ) =>
 							toWidgetEditable( writer.createEditableElement( 'figcaption', { contenteditable: true } ), writer )
 					} );
+
+				editor.conversion.for( 'editingDowncast' ).elementToElement( {
+					model: 'nested-description',
+					view: ( modelElement, { writer: viewWriter } ) => {
+						const div = viewWriter.createEditableElement( 'div' );
+
+						return toWidgetEditable( div, viewWriter );
+					}
+				} );
 			} );
 	} );
 
@@ -119,25 +143,6 @@ describe( 'Delete feature', () => {
 		expect( getModelData( model ) ).to.equal( '<widget><nested>f[]</nested></widget>' );
 
 		expect( clickBackspace( editor ).preventedKeyDown ).to.be.false;
-
-		expect( getModelData( model ) ).to.equal( '<widget><nested>[]</nested></widget>' );
-	} );
-
-	// See https://github.com/ckeditor/ckeditor5/issues/17383.
-	it( 'handles the backspace key in an empty nested editable', () => {
-		setModelData( model, '<widget><nested>[]</nested></widget>' );
-
-		expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
-
-		expect( getModelData( model ) ).to.equal( '<widget><nested>[]</nested></widget>' );
-	} );
-
-	// See https://github.com/ckeditor/ckeditor5/issues/17383.
-	// There was an edge case tied to deleting whole lines.
-	it( 'handles the backspace key + meta key in a nested editable', () => {
-		setModelData( model, '<widget><nested>[]</nested></widget>' );
-
-		expect( clickBackspace( editor, true ).preventedKeyDown ).to.be.true;
 
 		expect( getModelData( model ) ).to.equal( '<widget><nested>[]</nested></widget>' );
 	} );
@@ -206,6 +211,103 @@ describe( 'Delete feature', () => {
 		} );
 
 		sinon.assert.notCalled( spy );
+	} );
+
+	// See:
+	// https://github.com/ckeditor/ckeditor5/issues/17383
+	// https://github.com/ckeditor/ckeditor5/issues/18356
+	describe( 'prevent backspace at the beginning of editables', () => {
+		it( 'handles the backspace key in an empty nested editable', () => {
+			setModelData( model, '<widget><nested>[]</nested></widget>' );
+
+			expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
+
+			expect( getModelData( model ) ).to.equal( '<widget><nested><paragraph>[]</paragraph></nested></widget>' );
+		} );
+
+		it( 'handles the backspace key + meta key in a nested editable', () => {
+			setModelData( model, '<widget><nested>[]</nested></widget>' );
+
+			expect( clickBackspace( editor, true ).preventedKeyDown ).to.be.true;
+
+			expect( getModelData( model ) ).to.equal( '<widget><nested><paragraph>[]</paragraph></nested></widget>' );
+		} );
+
+		it( 'handles backspace on list items (root editable)', () => {
+			setModelData( model, '<paragraph listIndent="0" listItemId="e5f06169" listType="todo">[]</paragraph>' );
+
+			expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+		} );
+
+		it( 'handles backspace on list items (nested root-like editable)', () => {
+			setModelData(
+				model,
+				'<widget>' +
+					'<nested-description>' +
+						'<paragraph listIndent="0" listItemId="e5f06162" listType="todo">[]</paragraph>' +
+					'</nested-description>' +
+				'</widget>'
+			);
+
+			expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
+
+			expect( getModelData( model ) ).to.equal(
+				'<widget>' +
+					'<nested-description>' +
+						'<paragraph>[]</paragraph>' +
+					'</nested-description>' +
+				'</widget>'
+			);
+		} );
+
+		it( 'handles backspace on empty headings (root editable)', () => {
+			setModelData( model, '<heading1>[]</heading1>' );
+
+			expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+		} );
+
+		it( 'handles backspace on empty headings (nested root-like editable)', () => {
+			setModelData(
+				model,
+				'<widget>' +
+					'<nested-description>' +
+						'<heading1>[]</heading1>' +
+					'</nested-description>' +
+				'</widget>'
+			);
+
+			expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
+
+			expect( getModelData( model ) ).to.equal(
+				'<widget>' +
+					'<nested-description>' +
+						'<paragraph>[]</paragraph>' +
+					'</nested-description>' +
+				'</widget>'
+			);
+		} );
+
+		it( 'should handle case where there is no valid selection range available', () => {
+			model.schema.register( 'emptyLimitContainer', {
+				allowIn: '$root',
+				isLimit: true
+			} );
+
+			editor.conversion.for( 'downcast' ).elementToElement( {
+				model: 'emptyLimitContainer',
+				view: ( modelItem, { writer } ) => writer.createContainerElement( 'div' )
+			} );
+
+			setModelData( model, '<emptyLimitContainer>[]</emptyLimitContainer>' );
+
+			expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
+
+			expect( getModelData( model ) ).to.equal( '<emptyLimitContainer>[]</emptyLimitContainer>' );
+		} );
 	} );
 } );
 
