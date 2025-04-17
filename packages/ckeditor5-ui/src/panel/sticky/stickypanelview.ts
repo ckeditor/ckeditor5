@@ -17,6 +17,7 @@ import {
 	type ObservableChangeEvent,
 	Rect,
 	toUnit,
+	getVisualViewportOffset,
 	global
 } from '@ckeditor/ckeditor5-utils';
 
@@ -283,7 +284,7 @@ export default class StickyPanelView extends View {
 		const {
 			left: visualViewportOffsetLeft,
 			top: visualViewportOffsetTop
-		} = Rect.getVisualViewportOffset();
+		} = getVisualViewportOffset();
 
 		limiterRect.moveBy( visualViewportOffsetLeft, visualViewportOffsetTop );
 
@@ -353,7 +354,7 @@ export default class StickyPanelView extends View {
 		this._isStickyToTheBottomOfLimiter = false;
 		this._stickyTopOffset = topOffset;
 		this._stickyBottomOffset = null;
-		this._marginLeft = toPx( -global.window.scrollX + Rect.getVisualViewportOffset().left );
+		this._marginLeft = toPx( -global.window.scrollX + getVisualViewportOffset().left );
 	}
 
 	/**
@@ -367,7 +368,7 @@ export default class StickyPanelView extends View {
 		this._isStickyToTheBottomOfLimiter = true;
 		this._stickyTopOffset = null;
 		this._stickyBottomOffset = stickyBottomOffset;
-		this._marginLeft = toPx( -global.window.scrollX + Rect.getVisualViewportOffset().left );
+		this._marginLeft = toPx( -global.window.scrollX + getVisualViewportOffset().left );
 	}
 
 	/**

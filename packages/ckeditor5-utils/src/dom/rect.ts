@@ -13,7 +13,6 @@ import getBorderWidths from './getborderwidths.js';
 import isText from './istext.js';
 import getPositionedAncestor from './getpositionedancestor.js';
 import global from './global.js';
-import env from '../env.js';
 
 const rectProperties: Array<keyof RectLike> = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
 
@@ -505,22 +504,6 @@ export default class Rect {
 		boundingRectData.height = boundingRectData.bottom - boundingRectData.top;
 
 		return new Rect( boundingRectData );
-	}
-
-	/**
-	 * Returns the visual viewport offsets to adjust elements with `position: fixed` style.
-	 */
-	public static getVisualViewportOffset(): { left: number; top: number } {
-		const visualViewport = global.window.visualViewport;
-
-		if ( !visualViewport || !( env.isiOS || env.isSafari ) ) {
-			return { left: 0, top: 0 };
-		}
-
-		const left = Math.max( Math.round( visualViewport.offsetLeft ), 0 );
-		const top = Math.max( Math.round( visualViewport.offsetTop ), 0 );
-
-		return { left, top };
 	}
 }
 

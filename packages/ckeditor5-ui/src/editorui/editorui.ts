@@ -25,7 +25,7 @@ import {
 	global,
 	isVisible,
 	FocusTracker,
-	Rect,
+	getVisualViewportOffset,
 	type EventInfo,
 	type CollectionAddEvent,
 	type CollectionRemoveEvent,
@@ -759,7 +759,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 * Calculate the viewport top offset according to the visible part of it (visual viewport).
 	 */
 	private _getVisualViewportTopOffset( viewportOffset: { top?: number } ): number {
-		const visualViewportOffsetTop = Rect.getVisualViewportOffset().top;
+		const visualViewportOffsetTop = getVisualViewportOffset().top;
 		const viewportTopOffset = viewportOffset.top || 0;
 
 		return visualViewportOffsetTop > viewportTopOffset ? 0 : viewportTopOffset - visualViewportOffsetTop;
