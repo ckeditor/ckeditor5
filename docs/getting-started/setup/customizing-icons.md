@@ -127,7 +127,7 @@ You can read more about the `resolutions` field in the [pnpm documentation](http
 
 If you are using a bundler, you can use resolve aliases to replace the default `@ckeditor/ckeditor5-icons` package with your custom icon file. This method is similar to the one described above, but does not require creating a custom package.
 
-This section only shows selected bundlers as examples, but other bundlers support similar functionality out of the box or with third-party plugins.
+This section only shows selected bundlers as examples, but other bundlers support similar functionality out of the box or with first-party plugins.
 
 ### Prepare custom icon file
 
@@ -193,7 +193,7 @@ build( {
 
 #### Rollup
 
-Rollup does not support aliases by default, so you need to install the third-party `@rollup/plugin-alias` plugin if you do not already have it. Then add the following code to the `rollup.config.js` file:
+Rollup does not support aliases by default, so you need to install the first-party `@rollup/plugin-alias` plugin if you do not already have it. Then add the following code to the `rollup.config.js` file:
 
 ```js
 import { resolve } from 'path';
