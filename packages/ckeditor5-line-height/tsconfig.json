@@ -1,7 +1,14 @@
 {
-	"extends": "../../tsconfig.json",
+	"extends": "../../tsconfig.release.json",
 	"include": [
-		"src/**/*.ts",
-		"tests/**/*.ts"
-	]
+		"src",
+		"../../typings"
+	],
+	"exclude": [
+		"tests"
+	],
+	"compilerOptions": {
+		"composite": true,
+		"tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo"
+	}
 }
