@@ -16,11 +16,23 @@ modified_at: 2025-04-07
 
 ## Update to CKEditor&nbsp;5 v45.0.0
 
-_Released on April 7, 2024._
-
-For the entire list of changes introduced in version 45.0.0, see the [release notes for CKEditor&nbsp;5 v45.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v45.0.0).
+Released on April 7, 2024. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v45.0.0))
 
 Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v45.0.0.
+
+### Email editing enhancements
+
+We are making it easier to create and edit emails directly in CKEditor 5 with several enhancements. This release introduces the following new features:
+
+* {@link features/export-with-inline-styles Export with Inline Styles} (⭐) provides the ability to export email content with automatically inlined styles, ensuring compatibility and proper rendering across different email clients.
+* {@link features/email-configuration-helper Email Configuration Helper} (⭐) is a new configuration helper plugin that provides guidance for integrators to correctly set up an email-friendly editor while avoiding common pitfalls.
+* {@link features/layout-tables Layout tables} are a new type of tables that has been introduced to simplify the creation of structured email designs, offering better control over layout, alignment and spacing.
+
+Apart from these new features, this update also brings various fixes and improvements related to table behavior, enhanced HTML support, and better handling of complex email structures. These refinements help ensure a more seamless email editing experience, reducing inconsistencies and improving compatibility with external email clients.
+
+### The fullscreen feature
+
+A long-requested feature has finally arrived with the {@link features/fullscreen introduction of full-screen editing} for the classic and decoupled editor types. This new mode provides a focused writing experience by making the editor the centerpiece of the screen. The expanded screen space allows for better visibility of content in sidebars such as comments, suggestions, and document outlines, enhancing your overall workflow.
 
 ### UI toolbar refactoring
 
@@ -153,6 +165,20 @@ Notable changes:
 * All balloon panels now have consistent headers with back buttons.
 * Form styles have been moved to a dedicated `form.css` in the theme-lark package.
 
+### New installation methods improvements: icons replacement
+
+We are continuing to strengthen the new installation methods while phasing out older solutions. We added one of the key components you asked for: replacing our icons with your custom ones. It is now possible to replace the icons via the {@link getting-started/setup/customizing-icons package’s override mechanism}.
+
+<info-box info>
+	To achieve a proper solution for icons replacement for the npm builds, we needed to introduce a breaking change. If you used our icons for any purposes, make sure to update their paths.
+</info-box>
+
+### ⚠️ Deprecations in old installation methods: stage 1 completed
+
+We are progressing with deprecation according to [our sunset plan](https://github.com/ckeditor/ckeditor5/issues/17779). From this release, predefined builds’ packages, such as `@ckeditor/ckeditor-build-classic`, are now officially deprecated.
+
+We also dropped support for Webpack 4 in both the **old and new** installation methods. All packages and CDN from this version are now distributed with ES2022 as the target ECMAScript version, providing better compatibility with modern JavaScript features and improved performance.
+
 ### Major breaking changes in this release
 
 * **[bookmark](https://www.npmjs.com/package/@ckeditor/ckeditor5-bookmark)**: The `BookmarkUI#actionsView` is no longer available. The bookmark feature is now using the `WidgetToolbarRepository` instead.
@@ -165,3 +191,7 @@ Notable changes:
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The `FormRowView` class was moved to the `@ckeditor/ckeditor5-ui` package.
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The `form.css` component was moved to the `@ckeditor/ckeditor5-theme-lark` package.
 * All CKEditor 5 icons are now available in the `@ckeditor/ckeditor5-icons` package.
+
+### Distribution changes
+
+* All packages and CDN source code now target ES2022 as the ECMAScript version.

@@ -131,6 +131,32 @@ describe( 'ImageSizeAttributes', () => {
 
 					expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'height' ) ).to.be.undefined;
 				} );
+
+				it( 'should consume aspect-ratio style during upcast when width and height are set', () => {
+					const consumeSpy = sinon.spy( ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: [ 'aspect-ratio' ] } ) ).to.be.false;
+					} );
+
+					editor.data.upcastDispatcher.on( 'element:img', consumeSpy, { priority: 'lowest' } );
+					editor.setData(
+						'<p>Lorem <img width="100" height="50" style="aspect-ratio: 2/1;" src="/assets/sample.png"> ipsum</p>'
+					);
+
+					expect( consumeSpy ).to.be.called;
+				} );
+
+				it( 'should not consume aspect-ratio style during upcast when width or height is missing', () => {
+					const consumeSpy = sinon.spy( ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: [ 'aspect-ratio' ] } ) ).to.be.true;
+					} );
+
+					editor.data.upcastDispatcher.on( 'element:img', consumeSpy, { priority: 'lowest' } );
+					editor.setData(
+						'<p>Lorem <img width="100" style="aspect-ratio: 2/1;" src="/assets/sample.png"> ipsum</p>'
+					);
+
+					expect( consumeSpy ).to.be.called;
+				} );
 			} );
 
 			describe( 'block images', () => {
@@ -178,6 +204,32 @@ describe( 'ImageSizeAttributes', () => {
 					);
 
 					expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'height' ) ).to.be.undefined;
+				} );
+
+				it( 'should consume aspect-ratio style during upcast when width and height are set', () => {
+					const consumeSpy = sinon.spy( ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: [ 'aspect-ratio' ] } ) ).to.be.false;
+					} );
+
+					editor.data.upcastDispatcher.on( 'element:img', consumeSpy, { priority: 'lowest' } );
+					editor.setData(
+						'<figure class="image"><img width="100" height="50" style="aspect-ratio: 2/1;" src="/assets/sample.png"></figure>'
+					);
+
+					expect( consumeSpy ).to.be.called;
+				} );
+
+				it( 'should not consume aspect-ratio style during upcast when width or height is missing', () => {
+					const consumeSpy = sinon.spy( ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: [ 'aspect-ratio' ] } ) ).to.be.true;
+					} );
+
+					editor.data.upcastDispatcher.on( 'element:img', consumeSpy, { priority: 'lowest' } );
+					editor.setData(
+						'<figure class="image"><img height="50" style="aspect-ratio: 2/1;" src="/assets/sample.png"></figure>'
+					);
+
+					expect( consumeSpy ).to.be.called;
 				} );
 			} );
 		} );
