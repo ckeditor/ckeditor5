@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-block-quote": "45.0.0",
-    "@ckeditor/ckeditor5-dev-utils": "^47.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "https://gitpkg.vercel.app/ckeditor/ckeditor5-dev/packages/ckeditor5-dev-utils?ck/18364-update-dependencies",
     "@ckeditor/ckeditor5-editor-classic": "45.0.0",
     "@ckeditor/ckeditor5-engine": "45.0.0",
     "@ckeditor/ckeditor5-enter": "45.0.0",
