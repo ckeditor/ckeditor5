@@ -1,0 +1,19 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck-content p {
+	/* Ensure default paragraphs have proper line-height by default */
+	line-height: 1.5;
+}
+
+.ck.ck-line-height-dropdown .ck-dropdown__panel .ck-list {
+	/* Extend dropdown height for better UX */
+	max-height: 300px;
+}
+
+.ck.ck-line-height-dropdown .ck-dropdown__panel .ck-button.ck-line-height-option {
+	/* Add some minimum width to avoid too narrow buttons */
+	min-width: 6em;
+}
