@@ -10,11 +10,6 @@
 import { BodyCollection, DialogViewPosition } from 'ckeditor5/src/ui.js';
 import { global, createElement, Rect, type EventInfo } from 'ckeditor5/src/utils.js';
 import type { ElementApi, Editor, EditorConfig } from 'ckeditor5/src/core.js';
-import type { PresenceListUI } from '@ckeditor/ckeditor5-real-time-collaboration';
-import type { DocumentOutlineUI } from '@ckeditor/ckeditor5-document-outline';
-import type { PaginationRenderer } from '@ckeditor/ckeditor5-pagination';
-import type { RevisionViewerEditor } from '@ckeditor/ckeditor5-revision-history';
-import type { Annotation, AnnotationsUIs, Sidebar } from '@ckeditor/ckeditor5-comments';
 
 const DIALOG_OFFSET = 28;
 
@@ -73,12 +68,12 @@ export default class AbstractEditorHandler {
 	/**
 	 * A callback that shows the revision viewer, stored to restore the original one after exiting the fullscreen mode.
 	 */
-	protected _showRevisionViewerCallback: ( ( config?: EditorConfig ) => Promise<RevisionViewerEditor | null> ) | null = null;
+	protected _showRevisionViewerCallback: ( ( config?: EditorConfig ) => Promise<any> ) | null = null;
 
 	/**
 	 * A callback that closes the revision viewer, stored to restore the original one after exiting the fullscreen mode.
 	 */
-	protected _closeRevisionViewerCallback: ( ( viewerEditor?: RevisionViewerEditor ) => Promise<unknown> ) | null = null;
+	protected _closeRevisionViewerCallback: ( ( viewerEditor?: any ) => Promise<unknown> ) | null = null;
 
 	/**
 	 * An editor instance. It should be set by the particular editor type handler.
@@ -92,8 +87,8 @@ export default class AbstractEditorHandler {
 		this._placeholderMap = new Map();
 
 		if ( editor.plugins.has( 'RevisionHistory' ) ) {
-			this._showRevisionViewerCallback = editor.config.get( 'revisionHistory' )!.showRevisionViewerCallback;
-			this._closeRevisionViewerCallback = editor.config.get( 'revisionHistory' )!.closeRevisionViewerCallback;
+			this._showRevisionViewerCallback = ( editor.config.get( 'revisionHistory' ) as any ).showRevisionViewerCallback;
+			this._closeRevisionViewerCallback = ( editor.config.get( 'revisionHistory' ) as any ).closeRevisionViewerCallback;
 		}
 
 		this._editor = editor;
@@ -207,8 +202,8 @@ export default class AbstractEditorHandler {
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore next -- @preserve */
-		if ( this._editor.plugins.has( 'Pagination' ) && this._editor.plugins.get( 'Pagination' ).isEnabled ) {
-			const paginationRenderer = this._editor.plugins.get( 'PaginationRenderer' ) as PaginationRenderer;
+		if ( this._editor.plugins.has( 'Pagination' ) && ( this._editor.plugins.get( 'Pagination' ) as any ).isEnabled ) {
+			const paginationRenderer = this._editor.plugins.get( 'PaginationRenderer' ) as any;
 
 			paginationRenderer.setupScrollableAncestor();
 
@@ -233,16 +228,16 @@ export default class AbstractEditorHandler {
 		if ( this._editor.plugins.has( 'RevisionHistory' ) ) {
 			// Code coverage is provided in the commercial package repository as integration unit tests.
 			/* istanbul ignore if -- @preserve */
-			if ( this._editor.plugins.get( 'RevisionHistory' ).isRevisionViewerOpen ) {
+			if ( ( this._editor.plugins.get( 'RevisionHistory' ) as any ).isRevisionViewerOpen ) {
 				// Keep in mind that closing the revision history viewer is an asynchronous operation.
-				this._editor.config.get( 'revisionHistory.closeRevisionViewerCallback' )!();
+				( this._editor.config.get( 'revisionHistory.closeRevisionViewerCallback' ) as any )();
 			}
 
 			this._overrideRevisionHistoryCallbacks();
 		}
 
 		if ( this._editor.plugins.has( 'SourceEditing' ) && this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
-			this._editor.plugins.get( 'SourceEditing' ).on( 'change:isSourceEditingMode', this._sourceEditingCallback );
+			( this._editor.plugins.get( 'SourceEditing' ) as any ).on( 'change:isSourceEditingMode', this._sourceEditingCallback );
 		}
 
 		// Hide all other elements in the container to ensure they don't create an empty unscrollable space.
@@ -293,7 +288,7 @@ export default class AbstractEditorHandler {
 		}
 
 		if ( this._editor.plugins.has( 'SourceEditing' ) && this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
-			this._editor.plugins.get( 'SourceEditing' ).off( 'change:isSourceEditingMode', this._sourceEditingCallback );
+			( this._editor.plugins.get( 'SourceEditing' ) as any ).off( 'change:isSourceEditingMode', this._sourceEditingCallback );
 		}
 
 		for ( const placeholderName of this._placeholderMap.keys() ) {
@@ -324,8 +319,8 @@ export default class AbstractEditorHandler {
 		// Pagination has to be restored after leaving fullscreen mode to ensure proper rendering.
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore next -- @preserve */
-		if ( this._editor.plugins.has( 'Pagination' ) && this._editor.plugins.get( 'Pagination' ).isEnabled ) {
-			const paginationRenderer = this._editor.plugins.get( 'PaginationRenderer' ) as PaginationRenderer;
+		if ( this._editor.plugins.has( 'Pagination' ) && ( this._editor.plugins.get( 'Pagination' ) as any ).isEnabled ) {
+			const paginationRenderer = this._editor.plugins.get( 'PaginationRenderer' ) as any;
 
 			paginationRenderer.setupScrollableAncestor();
 			paginationRenderer.linesRepository.setViewCollection( this._editor.ui.view.body );
@@ -403,7 +398,7 @@ export default class AbstractEditorHandler {
 
 		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( presenceListElement );
 
-		const presenceListUI = this._editor.plugins.get( 'PresenceListUI' ) as PresenceListUI;
+		const presenceListUI = this._editor.plugins.get( 'PresenceListUI' ) as any;
 
 		this.moveToFullscreen( presenceListUI.view.element!, 'presence-list' );
 	}
@@ -435,7 +430,7 @@ export default class AbstractEditorHandler {
 		document.querySelector( '[data-ck-fullscreen="left-sidebar"]' )!.appendChild( documentOutlineBodyWrapper );
 		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( documentOutlineHeaderElement );
 
-		const documentOutlineUI = this._editor.plugins.get( 'DocumentOutlineUI' ) as DocumentOutlineUI;
+		const documentOutlineUI = this._editor.plugins.get( 'DocumentOutlineUI' ) as any;
 		documentOutlineUI.view.documentOutlineContainer = document.querySelector( '[data-ck-fullscreen="left-sidebar"]' ) as HTMLElement;
 
 		this.moveToFullscreen( documentOutlineUI.view.element!, 'document-outline' );
@@ -447,7 +442,7 @@ export default class AbstractEditorHandler {
 	// Code coverage is provided in the commercial package repository as integration unit tests.
 	/* istanbul ignore next -- @preserve */
 	private _restoreDocumentOutlineDefaultContainer(): void {
-		const documentOutlineUI = this._editor.plugins.get( 'DocumentOutlineUI' ) as DocumentOutlineUI;
+		const documentOutlineUI = this._editor.plugins.get( 'DocumentOutlineUI' ) as any;
 		documentOutlineUI.view.documentOutlineContainer = documentOutlineUI.view.element as HTMLElement;
 	}
 
@@ -457,12 +452,12 @@ export default class AbstractEditorHandler {
 	// Code coverage is provided in the commercial package repository as integration unit tests.
 	/* istanbul ignore next -- @preserve */
 	private _overrideAnnotationsUIs() {
-		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as AnnotationsUIs;
+		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as any;
 
 		this._annotationsUIsData = new Map( annotationsUIs.uisData );
 
 		// Switch to the wide sidebar.
-		const sidebarPlugin = this._editor.plugins.get( 'Sidebar' ) as Sidebar;
+		const sidebarPlugin = this._editor.plugins.get( 'Sidebar' ) as any;
 
 		if ( !sidebarPlugin.container ) {
 			sidebarPlugin.setContainer(
@@ -470,7 +465,7 @@ export default class AbstractEditorHandler {
 			);
 		}
 
-		const annotationsFilters = new Map<string, ( annotation: Annotation ) => boolean>();
+		const annotationsFilters = new Map<string, ( annotation: any ) => boolean>();
 
 		for ( const [ uiName, data ] of [ ...this._annotationsUIsData! ] ) {
 			// Default filter is `() => true`. Only store filters that are different.
@@ -489,7 +484,7 @@ export default class AbstractEditorHandler {
 		// It's possible there are filters for both `narrowSidebar` and `inline` modes, so display annotations that match any of them.
 		else if ( annotationsFilters.size ) {
 			annotationsUIs.activate( 'wideSidebar',
-				annotation => [ ...annotationsFilters.values() ].some( filter => filter( annotation ) )
+				( annotation: any ) => [ ...annotationsFilters.values() ].some( filter => filter( annotation ) )
 			);
 		}
 		// If no filters are defined for the active display mode(s), simply display all annotations in the wide sidebar.
@@ -506,7 +501,7 @@ export default class AbstractEditorHandler {
 	// Code coverage is provided in the commercial package repository as integration unit tests.
 	/* istanbul ignore next -- @preserve */
 	private _restoreAnnotationsUIs() {
-		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as AnnotationsUIs;
+		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as any;
 
 		annotationsUIs.deactivateAll();
 
@@ -545,9 +540,9 @@ export default class AbstractEditorHandler {
 				this._editor.ui.view.menuBarView.disable();
 			}
 
-			this.moveToFullscreen( revisionViewerEditor!.ui.getEditableElement()!, 'editable' );
-			this.moveToFullscreen( revisionViewerEditor!.ui.view.toolbar.element!, 'toolbar' );
-			this.moveToFullscreen( this._editor.config.get( 'revisionHistory.viewerSidebarContainer' )!, 'right-sidebar' );
+			this.moveToFullscreen( revisionViewerEditor.ui.getEditableElement(), 'editable' );
+			this.moveToFullscreen( revisionViewerEditor.ui.view.toolbar.element, 'toolbar' );
+			this.moveToFullscreen( this._editor.config.get( 'revisionHistory.viewerSidebarContainer' ) as any, 'right-sidebar' );
 
 			return revisionViewerEditor;
 		} );

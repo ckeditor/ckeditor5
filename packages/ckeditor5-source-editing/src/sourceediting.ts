@@ -15,9 +15,6 @@ import { ButtonView, MenuBarMenuListItemButtonView, type Dialog } from 'ckeditor
 import { CKEditorError, createElement, ElementReplacer } from 'ckeditor5/src/utils.js';
 import { formatHtml } from './utils/formathtml.js';
 
-import type { DocumentOutlineUI } from '@ckeditor/ckeditor5-document-outline';
-import type { Annotations } from '@ckeditor/ckeditor5-comments';
-
 import '../theme/sourceediting.css';
 
 const COMMAND_FORCE_DISABLE_ID = 'SourceEditingMode';
@@ -324,7 +321,7 @@ export default class SourceEditing extends Plugin {
 	 */
 	private _hideDocumentOutline() {
 		if ( this.editor.plugins.has( 'DocumentOutlineUI' ) ) {
-			( this.editor.plugins.get( 'DocumentOutlineUI' ) as DocumentOutlineUI ).view!.element!.style.display = 'none';
+			( this.editor.plugins.get( 'DocumentOutlineUI' ) as any ).view!.element!.style.display = 'none';
 		}
 	}
 
@@ -333,7 +330,7 @@ export default class SourceEditing extends Plugin {
 	 */
 	private _showDocumentOutline() {
 		if ( this.editor.plugins.has( 'DocumentOutlineUI' ) ) {
-			( this.editor.plugins.get( 'DocumentOutlineUI' ) as DocumentOutlineUI ).view!.element!.style.display = '';
+			( this.editor.plugins.get( 'DocumentOutlineUI' ) as any ).view!.element!.style.display = '';
 		}
 	}
 
@@ -342,7 +339,7 @@ export default class SourceEditing extends Plugin {
 	 */
 	private _refreshAnnotationsVisibility() {
 		if ( this.editor.plugins.has( 'Annotations' ) ) {
-			( this.editor.plugins.get( 'Annotations' ) as Annotations ).refreshVisibility();
+			( this.editor.plugins.get( 'Annotations' ) as any ).refreshVisibility();
 		}
 	}
 

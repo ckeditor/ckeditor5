@@ -39,7 +39,7 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore next -- @preserve */
-		if ( this._editor.plugins.has( 'Pagination' ) && this._editor.plugins.get( 'Pagination' ).isEnabled ) {
+		if ( this._editor.plugins.has( 'Pagination' ) && ( this._editor.plugins.get( 'Pagination' ) as any ).isEnabled ) {
 			this.moveToFullscreen(
 				editorUI.getEditableElement()!.parentElement!.querySelector( '.ck-pagination-view' )!, 'pagination-view'
 			);
