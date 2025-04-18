@@ -106,6 +106,16 @@ describe( 'DomEmitterMixin', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
+		it( 'should listen to native DOM events - VisualViewport (EventTarget) as source', () => {
+			const spy = testUtils.sinon.spy();
+
+			domEmitter.listenTo( window.visualViewport, 'test', spy );
+
+			window.visualViewport.dispatchEvent( new Event( 'test' ) );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
 		// #187
 		it( 'should work for DOM Nodes belonging to another window', done => {
 			const spy = testUtils.sinon.spy();
@@ -375,6 +385,20 @@ describe( 'DomEmitterMixin', () => {
 
 			sinon.assert.calledOnce( spy1 );
 			sinon.assert.calledTwice( spy2 );
+		} );
+
+		it( 'should stop listening to all events from a VisualViewport (EventTarget)', () => {
+			const spy = testUtils.sinon.spy();
+
+			domEmitter.listenTo( window.visualViewport, 'event', spy );
+
+			window.visualViewport.dispatchEvent( new Event( 'event' ) );
+
+			domEmitter.stopListening( window.visualViewport );
+
+			window.visualViewport.dispatchEvent( new Event( 'event' ) );
+
+			sinon.assert.calledOnce( spy );
 		} );
 
 		it( 'should stop listening to everything', () => {

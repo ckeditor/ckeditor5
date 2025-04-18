@@ -16,10 +16,11 @@ import { EditorUIView, InlineEditableUIView, MenuBarView, View } from '../../src
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { Editor } from '@ckeditor/ckeditor5-core';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import ClassicTestEditor, { ClassicTestEditorUI } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-/* global document, console */
+/* global document, window, console */
 
 class MyEditorUI extends EditorUI {
 	constructor( editor ) {
@@ -410,7 +411,7 @@ describe( 'EditorUI', () => {
 
 			const ui = new MyEditorUI( editor );
 
-			expect( ui.viewportOffset ).to.deep.equal( { top: 200 } );
+			expect( ui.viewportOffset ).to.deep.equal( { top: 200, visualTop: 200 } );
 			sinon.assert.calledOnce( stub );
 		} );
 
@@ -425,8 +426,193 @@ describe( 'EditorUI', () => {
 
 			const ui = new MyEditorUI( editor );
 
-			expect( ui.viewportOffset ).to.deep.equal( { top: 200 } );
+			expect( ui.viewportOffset ).to.deep.equal( { top: 200, visualTop: 200 } );
 			sinon.assert.calledWithMatch( consoleStub, 'editor-ui-deprecated-viewport-offset-config' );
+		} );
+
+		it( 'should generate viewportOffset.visualTop property when viewportOffset is set', () => {
+			const ui = new MyEditorUI( editor );
+
+			ui.viewportOffset = { top: 100, left: 20 };
+
+			expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100, left: 20 } );
+		} );
+
+		it( 'should not create domEmitter if visualViewport is not supported', () => {
+			testUtils.sinon.stub( window, 'visualViewport' ).get( () => null );
+
+			const ui = new MyEditorUI( editor );
+
+			expect( ui._domEmitter ).to.be.undefined;
+		} );
+
+		describe( 'on iOS', () => {
+			beforeEach( () => {
+				testUtils.sinon.stub( env, 'isiOS' ).get( () => true );
+			} );
+
+			it( 'should update viewportOffset.visualTop when visual viewport is scrolled', () => {
+				let offsetTop = 0;
+
+				testUtils.sinon.stub( window.visualViewport, 'offsetTop' ).get( () => offsetTop );
+
+				const ui = new MyEditorUI( editor );
+
+				ui.viewportOffset = { top: 100 };
+
+				// Fully visible top offset.
+				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100 } );
+
+				// Partly non-visible top offset.
+				offsetTop = 30;
+				window.visualViewport.dispatchEvent( new window.Event( 'scroll' ) );
+
+				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 70 } );
+
+				// Top offset fully outside the visual viewport.
+				offsetTop = 110;
+				window.visualViewport.dispatchEvent( new window.Event( 'scroll' ) );
+
+				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 0 } );
+			} );
+
+			it( 'should update viewportOffset.visualTop when visual viewport is resized', () => {
+				let offsetTop = 0;
+
+				testUtils.sinon.stub( window.visualViewport, 'offsetTop' ).get( () => offsetTop );
+
+				const ui = new MyEditorUI( editor );
+
+				ui.viewportOffset = { top: 100 };
+
+				// Fully visible top offset.
+				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100 } );
+
+				// Partly non-visible top offset.
+				offsetTop = 30;
+				window.visualViewport.dispatchEvent( new window.Event( 'resize' ) );
+
+				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 70 } );
+
+				// Top offset fully outside the visual viewport.
+				offsetTop = 110;
+				window.visualViewport.dispatchEvent( new window.Event( 'resize' ) );
+
+				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 0 } );
+			} );
+		} );
+
+		describe( 'in Safari', () => {
+			beforeEach( () => {
+				testUtils.sinon.stub( env, 'isSafari' ).get( () => true );
+			} );
+
+			it( 'should not update viewportOffset.visualTop when visual viewport is scrolled', () => {
+				let offsetTop = 0;
+
+				testUtils.sinon.stub( window.visualViewport, 'offsetTop' ).get( () => offsetTop );
+
+				const ui = new MyEditorUI( editor );
+
+				ui.viewportOffset = { top: 100 };
+
+				// Fully visible top offset.
+				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100 } );
+
+				// Partly non-visible top offset.
+				offsetTop = 30;
+				window.visualViewport.dispatchEvent( new window.Event( 'scroll' ) );
+
+				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 70 } );
+
+				// Top offset fully outside the visual viewport.
+				offsetTop = 110;
+				window.visualViewport.dispatchEvent( new window.Event( 'scroll' ) );
+
+				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 0 } );
+			} );
+
+			it( 'should not update viewportOffset.visualTop when visual viewport is resized', () => {
+				let offsetTop = 0;
+
+				testUtils.sinon.stub( window.visualViewport, 'offsetTop' ).get( () => offsetTop );
+
+				const ui = new MyEditorUI( editor );
+
+				ui.viewportOffset = { top: 100 };
+
+				// Fully visible top offset.
+				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100 } );
+
+				// Partly non-visible top offset.
+				offsetTop = 30;
+				window.visualViewport.dispatchEvent( new window.Event( 'resize' ) );
+
+				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 70 } );
+
+				// Top offset fully outside the visual viewport.
+				offsetTop = 110;
+				window.visualViewport.dispatchEvent( new window.Event( 'resize' ) );
+
+				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 0 } );
+			} );
+		} );
+
+		describe( 'in non-Safari browser', () => {
+			beforeEach( () => {
+				testUtils.sinon.stub( env, 'isSafari' ).get( () => false );
+				testUtils.sinon.stub( env, 'isiOS' ).get( () => false );
+			} );
+
+			it( 'should not update viewportOffset.visualTop when visual viewport is scrolled', () => {
+				let offsetTop = 0;
+
+				testUtils.sinon.stub( window.visualViewport, 'offsetTop' ).get( () => offsetTop );
+
+				const ui = new MyEditorUI( editor );
+
+				ui.viewportOffset = { top: 100 };
+
+				// Fully visible top offset.
+				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100 } );
+
+				// Partly non-visible top offset.
+				offsetTop = 30;
+				window.visualViewport.dispatchEvent( new window.Event( 'scroll' ) );
+
+				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100 } );
+
+				// Top offset fully outside the visual viewport.
+				offsetTop = 110;
+				window.visualViewport.dispatchEvent( new window.Event( 'scroll' ) );
+
+				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100 } );
+			} );
+
+			it( 'should not update viewportOffset.visualTop when visual viewport is resized', () => {
+				let offsetTop = 0;
+
+				testUtils.sinon.stub( window.visualViewport, 'offsetTop' ).get( () => offsetTop );
+
+				const ui = new MyEditorUI( editor );
+
+				ui.viewportOffset = { top: 100 };
+
+				// Fully visible top offset.
+				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100 } );
+
+				// Partly non-visible top offset.
+				offsetTop = 30;
+				window.visualViewport.dispatchEvent( new window.Event( 'resize' ) );
+
+				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100 } );
+
+				// Top offset fully outside the visual viewport.
+				offsetTop = 110;
+				window.visualViewport.dispatchEvent( new window.Event( 'resize' ) );
+
+				expect( ui.viewportOffset ).to.deep.equal( { top: 100, visualTop: 100 } );
+			} );
 		} );
 	} );
 

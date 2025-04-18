@@ -1,0 +1,45 @@
+<header>
+	CKEditor&nbsp;5 - Sticky panel manual test
+</header>
+<div id="header-placeholder"></div>
+
+<div id="editor">
+	<p>This is <a href="http://ckeditor.com"><strong>CKEditor5</strong></a> from <a href="http://cksource.com">CKSource</a>.</p>
+	<p></p>
+	<p></p>
+	<p></p>
+	<p></p>
+	<p></p>
+	<p></p>
+</div>
+
+<p>
+	<button id="header-size">Toggle header size</button>
+</p>
+
+<div style="height: 2000px;"></div>
+
+<style>
+	body {
+		margin: 0;
+	}
+
+	#header-placeholder {
+		height: 120px;
+	}
+
+	header {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 120px;
+		background: rgba(46, 116, 181, 0.5);
+		color: white;
+		line-height: 120px;
+		text-wrap: nowrap;
+		font-family: sans-serif;
+		text-align: center;
+		z-index: 9000;
+	}
+</style>
