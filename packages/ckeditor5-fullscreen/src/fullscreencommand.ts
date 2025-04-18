@@ -43,8 +43,8 @@ export default class FullscreenCommand extends Command {
 		this.value = false;
 
 		// Choose the appropriate handler based on the editor type.
-		// Currently only ClassicEditor and DecoupledEditor are supported. For other editor types, you should create a custom handler
-		// that extends AbstractEditorHandler and replace `fullscreenHandler` with it.
+		// Currently only `ClassicEditor` and `DecoupledEditor` are supported. For other editor types, you should create a custom handler
+		// that extends `AbstractEditorHandler` and replace `fullscreenHandler` with it.
 		if ( isClassicEditor( editor ) ) {
 			this.fullscreenHandler = new ClassicEditorHandler( editor );
 		} else if ( isDecoupledEditor( editor ) ) {
