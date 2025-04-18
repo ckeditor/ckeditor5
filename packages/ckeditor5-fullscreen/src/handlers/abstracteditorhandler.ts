@@ -20,6 +20,7 @@ const DIALOG_OFFSET = 28;
 
 /**
  * The abstract editor type handler. It should be extended by the particular editor type handler.
+ * This class is exported to allow for custom integrations.
  */
 export default class AbstractEditorHandler {
 	/**
