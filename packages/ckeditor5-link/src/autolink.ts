@@ -265,6 +265,7 @@ export default class AutoLink extends Plugin {
 
 			let rangeToCheck: Range;
 
+			// Previous sibling might not be an element if enter was blocked due to be triggered in a limit element.
 			if ( position.parent.previousSibling?.is( 'element' ) ) {
 				rangeToCheck = model.createRangeIn( position.parent.previousSibling );
 			} else {

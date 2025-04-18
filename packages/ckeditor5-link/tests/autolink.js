@@ -418,7 +418,7 @@ describe( 'AutoLink', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/15862
-		it( 'adds linkHref to a text link inside a limit element on enter', () => {
+		it( 'adds linkHref to a text link inside an inline limit element on enter', () => {
 			editor.model.schema.register( 'limit', {
 				isLimit: true,
 				allowIn: '$block',
@@ -444,6 +444,23 @@ describe( 'AutoLink', () => {
 				'<paragraph>outer text' +
 				'<limit>inner text <$text linkHref="https://www.cksource.com">https://www.cksource.com[]</$text> inner text</limit>' +
 				'outer text</paragraph>'
+			);
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/15862
+		it( 'adds linkHref to a text link inside a block limit element on enter', () => {
+			setData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
+
+			editor.model.schema.extend( 'paragraph', {
+				isLimit: true
+			} );
+
+			editor.execute( 'enter' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>' +
+				'<$text linkHref="https://www.cksource.com">https://www.cksource.com[]</$text>' +
+				'</paragraph>'
 			);
 		} );
 
