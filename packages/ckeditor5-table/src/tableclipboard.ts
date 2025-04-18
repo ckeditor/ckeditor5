@@ -252,7 +252,14 @@ export default class TableClipboard extends Plugin {
 		// Content table to which we insert a pasted table.
 		const selectedTable = selectedTableCells[ 0 ].findAncestor( 'table' )!;
 
-		const cellsToSelect = this._replaceSelectedCellsWithPasted( pastedTable, pastedDimensions, selectedTable, selection, writer );
+		const cellsToSelect = this._replaceSelectedCellsWithPasted(
+			pastedTable,
+			pastedDimensions,
+			selectedTable,
+			selection,
+			writer,
+			tableUtils
+		);
 
 		if ( this.editor.plugins.get( 'TableSelection' ).isEnabled ) {
 			// Selection ranges must be sorted because the first and last selection ranges are considered
@@ -276,7 +283,8 @@ export default class TableClipboard extends Plugin {
 		pastedDimensions: Record<string, number>,
 		selectedTable: Element,
 		selection: Record<string, number>,
-		writer: Writer
+		writer: Writer,
+		tableUtils: TableUtils
 	) {
 		const { width: pastedWidth, height: pastedHeight } = pastedDimensions;
 
@@ -339,9 +347,12 @@ export default class TableClipboard extends Plugin {
 		// If there are any headings, all the cells that overlap from heading must be splitted.
 		const headingRows = parseInt( selectedTable.getAttribute( 'headingRows' ) as string || '0' );
 		const headingColumns = parseInt( selectedTable.getAttribute( 'headingColumns' ) as string || '0' );
+		const footerRows = parseInt( selectedTable.getAttribute( 'footerRows' ) as string || '0' );
+		const footerIndex = tableUtils.getRows( selectedTable ) - footerRows;
 
 		const areHeadingRowsIntersectingSelection = selection.firstRow < headingRows && headingRows <= selection.lastRow;
 		const areHeadingColumnsIntersectingSelection = selection.firstColumn < headingColumns && headingColumns <= selection.lastColumn;
+		const areFooterRowsIntersectingSelection = selection.lastRow >= footerIndex && footerIndex >= selection.firstRow;
 
 		if ( areHeadingRowsIntersectingSelection ) {
 			const columnsLimit = { first: selection.firstColumn, last: selection.lastColumn };
@@ -353,6 +364,13 @@ export default class TableClipboard extends Plugin {
 		if ( areHeadingColumnsIntersectingSelection ) {
 			const rowsLimit = { first: selection.firstRow, last: selection.lastRow };
 			const newCells = doVerticalSplit( selectedTable, headingColumns, rowsLimit, writer ) as Array<Element>;
+
+			cellsToSelect.push( ...newCells );
+		}
+
+		if ( areFooterRowsIntersectingSelection ) {
+			const columnsLimit = { first: selection.firstColumn, last: selection.lastColumn };
+			const newCells = doHorizontalSplit( selectedTable, footerIndex, columnsLimit, writer, selection.firstRow ) as Array<Element>;
 
 			cellsToSelect.push( ...newCells );
 		}
