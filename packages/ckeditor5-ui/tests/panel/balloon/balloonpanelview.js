@@ -1520,27 +1520,75 @@ describe( 'BalloonPanelView', () => {
 
 		it( 'should stick position to the top when top position of the element is above the viewport and the element' +
 			'area intersects with the viewport area', () => {
+			mockBoundingBox( document.body, {
+				top: 300,
+				bottom: 800,
+				left: 0,
+				right: 200,
+				width: 200,
+				height: 500
+			} );
+
 			viewportRect = new Rect( {
 				top: 300,
 				bottom: 800,
 				left: 0,
 				right: 200,
-				width: 0,
-				height: 0
+				width: 200,
+				height: 500
 			} );
 
 			targetRect = new Rect( {
-				top: 200,
-				bottom: 400,
+				top: 400,
+				bottom: 800,
 				left: 50,
 				right: 100,
-				width: 0,
-				height: 0
+				width: 50,
+				height: 600
 			} );
 
 			expect( positions.viewportStickyNorth( targetRect, balloonRect, viewportRect ) ).to.deep.equal( {
 				top: 300 + stickyOffset,
-				left: 25,
+				left: 50,
+				name: 'arrowless',
+				config: {
+					withArrow: false
+				}
+			} );
+		} );
+
+		it( 'should stick position to the top when top position of the element is below the viewport and the balloon' +
+			'is too tall to place it above the viewport', () => {
+			mockBoundingBox( document.body, {
+				top: 0,
+				bottom: 800,
+				left: 0,
+				right: 600,
+				width: 600,
+				height: 800
+			} );
+
+			viewportRect = new Rect( {
+				top: 0,
+				bottom: 800,
+				left: 0,
+				right: 600,
+				width: 600,
+				height: 800
+			} );
+
+			targetRect = new Rect( {
+				top: 10,
+				bottom: 900,
+				left: 100,
+				right: 500,
+				width: 400,
+				height: 890
+			} );
+
+			expect( positions.viewportStickyNorth( targetRect, balloonRect, viewportRect ) ).to.deep.equal( {
+				top: stickyOffset,
+				left: 275,
 				name: 'arrowless',
 				config: {
 					withArrow: false
@@ -1667,6 +1715,33 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should respect the "stickyVerticalOffset" option', () => {
+			mockBoundingBox( document.body, {
+				top: 300,
+				bottom: 800,
+				left: 0,
+				right: 200,
+				width: 200,
+				height: 500
+			} );
+
+			viewportRect = new Rect( {
+				top: 300,
+				bottom: 800,
+				left: 0,
+				right: 200,
+				width: 200,
+				height: 500
+			} );
+
+			targetRect = new Rect( {
+				top: 300,
+				bottom: 800,
+				left: 50,
+				right: 100,
+				width: 50,
+				height: 500
+			} );
+
 			const generatedPositions = BalloonPanelView.generatePositions( {
 				stickyVerticalOffset: BalloonPanelView.stickyVerticalOffset + 100
 			} );
@@ -1685,6 +1760,33 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should respect the "config" option', () => {
+			mockBoundingBox( document.body, {
+				top: 300,
+				bottom: 800,
+				left: 0,
+				right: 200,
+				width: 200,
+				height: 500
+			} );
+
+			viewportRect = new Rect( {
+				top: 300,
+				bottom: 800,
+				left: 0,
+				right: 200,
+				width: 200,
+				height: 500
+			} );
+
+			targetRect = new Rect( {
+				top: 300,
+				bottom: 800,
+				left: 50,
+				right: 100,
+				width: 50,
+				height: 500
+			} );
+
 			const generatedPositions = BalloonPanelView.generatePositions( {
 				config: {
 					foo: 'bar',
