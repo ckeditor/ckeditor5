@@ -752,16 +752,6 @@ export default class BalloonPanelView extends View {
 					return null;
 				}
 
-				// Check if the difference between the height of the visible boundary and the target
-				// is greater than the sticky vertical offset and if the top of the visible boundary
-				// is greater than or equal to the top of the balloon.
-				if (
-					visibleBoundaryRect.height - targetRect.height > stickyVerticalOffset &&
-					visibleBoundaryRect.top >= balloonRect.top
-				) {
-					return null;
-				}
-
 				// Checks if there is enough space to put the balloon on the top or bottom of the target.
 				// If not, makes the balloon sticky.
 				if ( !(
