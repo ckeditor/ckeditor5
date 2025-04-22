@@ -23,7 +23,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-adapter-ckfinder": "45.0.0",
     "@ckeditor/ckeditor5-clipboard": "45.0.0",
-    "@ckeditor/ckeditor5-dev-utils": "^47.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^48.0.0",
     "@ckeditor/ckeditor5-editor-classic": "45.0.0",
     "@ckeditor/ckeditor5-engine": "45.0.0",
     "@ckeditor/ckeditor5-link": "45.0.0",
