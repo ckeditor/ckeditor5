@@ -16,6 +16,8 @@ CKEditor&nbsp;5 is compatible with most of the popular CSS frameworks. However, 
 
 In this guide, you will learn how to address these integration issues and use the CKEditor&nbsp;5 WYSIWYG editor with the most popular frontend frameworks.
 
+{@snippet getting-started/use-builder}
+
 ## Compatibility with Bootstrap
 
 ### Bootstrap modals
@@ -159,7 +161,7 @@ $( '#modal-container' ).modal( {
 
 ## Compatibility with Semantic-UI
 
-CKEditor&nbsp;5 works properly with [Semantic-UI](https://semantic-ui.com/) after a small CSS tweak. To use the {@link getting-started/legacy-getting-started/predefined-builds#balloon-editor balloon editor} inside a modal, it is necessary to configure the `z-index` property of the floating editor UI to make it render over the modal:
+CKEditor&nbsp;5 works properly with [Semantic-UI](https://semantic-ui.com/). To use the balloon editor inside a modal, it is necessary to configure the `z-index` property of the floating editor UI to make it render over the modal:
 
 ```css
 /*
@@ -171,5 +173,3 @@ CKEditor&nbsp;5 works properly with [Semantic-UI](https://semantic-ui.com/) afte
 	--ck-z-panel: calc( var(--ck-z-default) + 999 );
 }
 ```
-
-[Check out the demo of CKEditor&nbsp;5 rich-text editor working correctly with Semantic-UI](https://codepen.io/ckeditor/pen/OrZBpV).

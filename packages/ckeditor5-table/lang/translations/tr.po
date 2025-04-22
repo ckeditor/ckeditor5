@@ -266,3 +266,31 @@ msgstr "Tabloda gezin"
 msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
 msgid "Table"
 msgstr "Tablo"
+
+msgctxt "Label for the insert table layout toolbar button."
+msgid "Insert table layout"
+msgstr "Tablo düzeni ekle"
+
+msgctxt "The accessible label used in the table layout insert UI element."
+msgid "Table layout"
+msgstr "Tablo düzeni"
+
+msgctxt "The accessible label of the layout table type dropdown button."
+msgid "Layout table"
+msgstr "Düzen tablosu"
+
+msgctxt "The accessible label of the content table type dropdown button."
+msgid "Content table"
+msgstr "İçerik tablosu"
+
+msgctxt "The accessible label of the table balloon button that displays a user interface to choose table type."
+msgid "Choose table type"
+msgstr "Tablo türünü seç"
+
+msgctxt "The accessible label of the table type toolbar button."
+msgid "Table type"
+msgstr "Tablo türü"
+
+msgctxt "The accessible label of dropdown list that displays a user interface to choose table type."
+msgid "Table type options"
+msgstr "Tablo türü seçenekleri"

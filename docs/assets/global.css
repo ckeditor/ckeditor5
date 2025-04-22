@@ -1,0 +1,352 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	/* This custom property is read by the JS and passed to editor configurations
+	as config.ui.viewportOffset.top. */
+	--ck-snippet-viewport-top-offset: 100
+}
+
+@media (max-width: 960px) {
+	:root {
+		/* The mobile layout of Umberto is different and the toolbar offset must be
+		smaller (https://github.com/ckeditor/ckeditor5/issues/1348). */
+		--ck-snippet-viewport-top-offset: 55;
+	}
+}
+
+.ck.ck-editor {
+	margin: 1.5em 0;
+}
+
+.ck.ck-content {
+	padding: 1em;
+}
+
+.ck.ck-content > :first-child {
+	margin-top: 0;
+}
+
+/*
+ * Override Umberto styles to avoid content jumping when the fake selection container shows up.
+ * To work properly, this must match 1:1 the styles brought by Umberto.
+ * https://github.com/ckeditor/ckeditor5/issues/9825
+ */
+.ck.ck-content > p,
+.ck.ck-content > ul,
+.ck.ck-content > ol,
+.ck.ck-content > blockquote,
+.ck.ck-content > pre {
+	margin-bottom: var(--ck-spacing-large);
+}
+
+/* Override default Umberto styles because they apply margins to media embed widgets with iframe
+previews breaking their structure. */
+.ck.ck-content iframe {
+	margin: initial;
+}
+
+/* Reset h1's styling – https://github.com/ckeditor/ckeditor5-heading/issues/86 */
+.ck.ck-content h1 {
+	display: block;
+	margin-bottom: .5em;
+}
+
+/* By default Umberto uses a trick with non breaking spaces around <code> to fix space rendering.
+It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
+.ck.ck-content code:before,
+.ck.ck-content code:after {
+	content: '' !important;
+	letter-spacing: 0 !important;
+	display: none !important; /* Firefox is very stubborn. */
+}
+
+/* Restore default browser styles for <sub> and <sup>. */
+.ck.ck-content sub {
+	vertical-align: sub;
+	font-size: smaller;
+}
+
+.ck.ck-content sup {
+	vertical-align: super;
+	font-size: smaller;
+}
+
+.demo-row {
+	width: 100%;
+	display: -ms-flexbox;
+	display: flex;
+}
+
+.demo-row__half {
+	width: 50%;
+}
+
+.demo-row__half:first-of-type {
+	padding-right: .5rem;
+}
+
+.demo-row__half:last-of-type {
+	padding-left: .5rem;
+}
+
+.demo-row__third {
+	width: 33.3333%;
+}
+
+.demo-row__third > div {
+	padding: 2.5rem;
+	border: 1px solid hsla(0, 0%, 0%, 0.15);
+}
+
+.demo-row__third:nth-of-type(2) {
+	padding-left: 1rem;
+	padding-right: 1rem;
+}
+
+.demo-row h3 {
+	margin: 0;
+}
+
+/* stylelint-disable-next-line */
+.demo-row p {
+	margin-bottom: 0;
+}
+
+/* warning notification */
+
+.main__notification.notice {
+	position: fixed;
+	max-width: 650px;
+	border: 1px solid hsl(0, 0%, 89%);
+	border-left-color: hsl(38.8, 92.3%, 69.4%);
+	border-left-width: 3px;
+	box-shadow: 0 2px 6px hsla(0, 0%, 0%, 0.18);
+	/* override .notice class' margins and paddings */
+	padding: 20px 40px 20px 20px;
+	margin: 0;
+	/* elevate the warning above the editor's toolbars */
+	z-index: 99999999;
+	animation: fadeIn .3s ease-in-out forwards;
+}
+
+/* class chaining for style overriding */
+.formatted .main__notification-title {
+	font-weight: bold;
+	font-size: 16px;
+	padding: 0;
+	margin: 0;
+}
+
+/* See https://github.com/ckeditor/ckeditor5/issues/494 */
+/* See https://github.com/ckeditor/ckeditor5/issues/16935 */
+.formatted .ck.ck-list {
+	margin: 0;
+}
+
+.main__notification-body {
+	margin-top: 10px;
+}
+
+/* stylelint-disable-next-line */
+.main__notification-body p {
+	margin-bottom: 0.3em;
+}
+
+.main__notification-body p:last-child {
+	margin-bottom: 0;
+}
+
+.main__notification-close {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 10px;
+	/* reset default button styling */
+	background: none;
+	border: none;
+	box-shadow: none;
+	line-height: 1;
+	transition: background 150ms ease;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	cursor: pointer;
+}
+
+.main__notification-close:hover {
+	background: hsl(0, 0%, 93%);
+}
+
+.main__notification-close:active:focus {
+	outline: none;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+.ck.ck-editor__editable.ck-show-blocks ul,
+.ck.ck-editor__editable.ck-show-blocks ol {
+	padding-inline-start: 40px;
+}
+
+.ck.ck-editor__editable.ck-show-blocks[dir=ltr] ul,
+.ck.ck-editor__editable.ck-show-blocks[dir=ltr] ol {
+	margin-left: 0;
+}
+
+.ck.ck-editor__editable.ck-show-blocks[dir=rtl] ul,
+.ck.ck-editor__editable.ck-show-blocks[dir=rtl] ol {
+	margin-right: 0;
+}
+
+/* examples/builds/inline-editor.html */
+.live-snippet .image-style-left, .live-snippet .image-style-right {
+	float: left;
+	height: auto;
+	width: 50%;
+	margin-top: .5rem;
+	margin-right: 2.5rem;
+}
+
+.live-snippet .image-style-right {
+	float: right;
+	margin-right: 0;
+	margin-left: 2.5rem;
+}
+
+/* Umberto stylesheet is centering `<img>` inside a `<p>`, let's overwrite it with higher CSS Specificity.
+ * See: https://github.com/ckeditor/ckeditor5/issues/2080.
+ */
+.live-snippet p img {
+	display: initial;
+	margin: initial;
+	box-sizing: initial;
+}
+
+.live-snippet .image img {
+	margin: 0 auto;
+}
+
+/* https://github.com/ckeditor/ckeditor5/issues/899 */
+.live-snippet .ck-dropdown .ck.ck-list {
+	margin: 0;
+}
+
+/* https://github.com/ckeditor/ckeditor5/pull/1060 */
+.live-snippet .ck.ck-content .table table {
+	margin: 0;
+	display: table;
+}
+
+/* https://github.com/ckeditor/ckeditor5/issues/7310 */
+.live-snippet .ck.ck-content .table td,
+.live-snippet .ck.ck-content .table th {
+	vertical-align: middle;
+}
+
+/* https://github.com/ckeditor/ckeditor5/issues/1282 */
+.live-snippet .ck.ck-content .table p:first-child {
+	padding-top: 0;
+}
+
+/* https://github.com/ckeditor/ckeditor5/issues/1282 */
+.live-snippet .ck.ck-content .table p:last-child,
+.live-snippet .ck.ck-content .table ul:last-child,
+.live-snippet .ck.ck-content .table ol:last-child {
+	margin-bottom: 0;
+}
+
+#snippet-inline-editor .ck-content {
+	margin-bottom: 1rem;
+	padding: 2rem;
+}
+
+/* Visually separate inline editors from example description.
+https://github.com/ckeditor/ckeditor5/issues/1545 */
+#snippet-inline-editor .ck-content:not(.ck-focused),
+#snippet-balloon-editor.ck-content:not(.ck-focused),
+#snippet-balloon-block-editor.ck-content:not(.ck-focused) {
+	border: 1px solid hsla(0, 0%, 0%, 0.15);
+}
+
+#snippet-inline-editor h2, #snippet-inline-editor h3 {
+	margin-top: 0;
+	padding-top: 0;
+	border-bottom: 0;
+}
+
+#snippet-inline-editor header.ck-content {
+	text-align: center;
+}
+
+#snippet-inline-editor header.ck-content h2 {
+	margin-bottom: 0;
+	font-size: 2.1rem;
+}
+
+#snippet-inline-editor header.ck-content h3 {
+	color: hsla(212, 79%, 9%, 0.59);
+	font-size: 1.6rem;
+}
+
+/* examples/builds/document-editor.html */
+
+.live-snippet .document-editor {
+	margin: 1.5em 0;
+}
+
+/* https://github.com/ckeditor/ckeditor5/issues/10731 */
+.live-snippet .ck-source-editing-area textarea {
+	width: 100%;
+	overflow: auto;
+}
+
+/* https://github.com/cksource/ckeditor5-internal/issues/3223 */
+.ck-body-wrapper .ck.ck-powered-by-balloon.ck-balloon-panel.ck-balloon-panel_visible {
+	display: none;
+}
+
+/* ------------- TOUR BALLOON ------------- */
+
+.tippy-content {
+	padding: 8px 6px;
+}
+
+.tippy-content .tippy-content__message {
+	display: flex;
+	align-items: center;
+	min-height: 36px;
+	margin-right: 28px;
+	padding-left:  44px;
+	line-height: 1.5;
+
+	background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIzOHB4IiBoZWlnaHQ9IjM3cHgiIHZpZXdCb3g9IjAgMCAzOCAzNyIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4gICAgICAgIDx0aXRsZT5oaW50PC90aXRsZT4gICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+ICAgIDxnIGlkPSJQYWdlLTEiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPiAgICAgICAgPGcgaWQ9IkFydGJvYXJkIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtOTg5LjAwMDAwMCwgLTQzNS4wMDAwMDApIj4gICAgICAgICAgICA8ZyBpZD0icG9wdXAtaW52ZXJ0ZWQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDk3My41MDAwMDAsIDQwOC4wMDAwMDApIj4gICAgICAgICAgICAgICAgPGcgaWQ9ImhpbnQiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDE2LjAwMDAwMCwgMjcuMDAwMDAwKSI+ICAgICAgICAgICAgICAgICAgICA8Y2lyY2xlIGlkPSJPdmFsIiBmaWxsLW9wYWNpdHk9IjAuMTE5NTkxMzQ2IiBmaWxsPSIjRkZGRkZGIiBjeD0iMTguOTMwMjMyNiIgY3k9IjE4LjUiIHI9IjE4LjUiPjwvY2lyY2xlPiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTE4Ljg5MTEyMDUsMzAuMjkyMzI1NyBDMTkuNDg4NTg4MSwzMC4yOTIzMjU3IDE5Ljk3MjkzMTIsMjkuODA3OTgyNiAxOS45NzI5MzEyLDI5LjIxMDUxNSBDMTkuOTcyOTMxMiwyOC42MTMwNDc1IDE5LjQ4ODU4ODEsMjkuMDE5MDMyNCAxOC44OTExMjA1LDI5LjAxOTAzMjQgQzE4LjI5MzY1MjksMjkuMDE5MDMyNCAxNy44MDkzMDk4LDI4LjYxMzA0NzUgMTcuODA5MzA5OCwyOS4yMTA1MTUgQzE3LjgwOTMwOTgsMjkuODA3OTgyNiAxOC4yOTM2NTI5LDMwLjI5MjMyNTcgMTguODkxMTIwNSwzMC4yOTIzMjU3IFoiIGlkPSJPdmFsIiBmaWxsPSIjMDAwMDAwIj48L3BhdGg+ICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTUuNjA1NzA4MiwyNS4xNDkwNDg2IEwyMi4xNzY1MzI4LDI1LjE0OTA0ODYgTDIyLjA3MTIzNDEsMjcuMzUxMzMxNyBDMjIuMDIwMjU0NiwyOC40MTc1NDg5IDIxLjE0MDk1MTYsMjkuMjU1ODE0IDIwLjA3MzUxNjMsMjkuMjU1ODE0IEwxNy43MDg3MjQ3LDI5LjI1NTgxNCBDMTYuNjQxMjg5NCwyOS4yNTU4MTQgMTUuNzYxOTg2NCwyOC40MTc1NDg5IDE1LjcxMTAwNjksMjcuMzUxMzMxNyBMMTUuNjA1NzA4MiwyNS4xNDkwNDg2IEwxNS42MDU3MDgyLDI1LjE0OTA0ODYgWiIgaWQ9IkNvbWJpbmVkLVNoYXBlIiBmaWxsPSIjQUJBQkFCIj48L3BhdGg+ICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTguODkxMTIwNSw5Ljg5NTM0ODg0IEMyMi41MjAwODY3LDkuODk1MzQ4ODQgMjUuNDYxOTQ1LDEyLjc4MDYzMyAyNS40NjE5NDUsMTYuMzM5ODExNCBDMjUuNDYxOTQ1LDE3LjQ5NTAyMTkgMjUuMTUyMDI4NiwxOC41NzkyMzk2IDI0LjYwOTI5MiwxOS41MTY4NTA5IEMyNC41OTEzODY5LDE5LjU5MjczMDIgMjQuNTQ5NzEyNSwxOS42NzI1MzE2IDI0LjQ4MjgxNjUsMTkuNzU1NjE1MiBMMjQuMzYyNTAzNywxOS45MDk3MTk2IEMyNC4yMzYwOTQyLDIwLjA5NTcwODYgMjQuMTAwMDg4MiwyMC4yNzQ4ODY4IDIzLjk1NTE3OTYsMjAuNDQ2NTczNyBDMjMuMTEwMjA1LDIxLjYwNzczNDggMjIuNTE3Nzk5NCwyMi43NDUwNTg1IDIyLjE3NjUzMjgsMjMuODU4MzUxIEwyMi4xNzY1MzI4LDI1LjI5MDM0MjggTDE1LjYwNTcwODIsMjUuMjkwMzQyOCBMMTUuNjA1NzA4MiwyMy44NTgzNTEgQzE1LjI0NTI3MzIsMjIuNzYyNDIyNCAxNC42NjgyMDA5LDIxLjY0MzIwNjQgMTMuODc0NDkxMywyMC41MDA3MDI4IEMxMi45MDQzMjA5LDE5LjM3NzY3MzEgMTIuMzIwMjk2LDE3LjkyNTYzMzggMTIuMzIwMjk2LDE2LjMzOTgxMTQgQzEyLjMyMDI5NiwxMi43ODA2MzMgMTUuMjYyMTU0Myw5Ljg5NTM0ODg0IDE4Ljg5MTEyMDUsOS44OTUzNDg4NCBaIE0xOC40ODA0NDQsMTEuMTI3Mzc4NCBDMTUuNzU4NzE5MywxMS4xMjczNzg0IDEzLjU1MjMyNTYsMTMuMzMzNzcyMiAxMy41NTIzMjU2LDE2LjA1NTQ5NjggQzEzLjU1MjMyNTYsMTYuMjQyMjEzNyAxMy41NjI3MDk1LDE2LjQyNjUwNTIgMTMuNTgyOTMxNCwxNi42MDc4MjU1IEwxMy42MjA1NzQ0LDE2Ljg3NzUwOTIgTDE0LjQ1NTk4NTQsMTYuODc3NjIwOCBDMTQuNDAyMDEyOCwxNi42MTE5OTQ1IDE0LjM3MzY3ODYsMTYuMzM3MDU0NSAxNC4zNzM2Nzg2LDE2LjA1NTQ5NjggQzE0LjM3MzY3ODYsMTMuODUyMTk1OSAxNi4xMDg3NzQ3LDEyLjA1NDE0ODQgMTguMjg3MTE5NiwxMS45NTMyMDE1IEwxOC40ODA0NDQsMTEuOTQ4NzMxNSBMMTguNDgwNDQ0LDExLjEyNzM3ODQgWiIgaWQ9IlNoYXBlIiBmaWxsPSIjRjhDMjcyIj48L3BhdGg+ICAgICAgICAgICAgICAgICAgICA8ZyBpZD0iR3JvdXAtNSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNy43NDQxODYsIDE1LjUyNzQ4NCkiIHN0cm9rZT0iI0Y4QzI3MiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4gICAgICAgICAgICAgICAgICAgICAgICA8bGluZSB4MT0iMS42MDM1OTQwOCIgeTE9IjEuNjAzNTk0MDgiIHgyPSIxLjYwMzU5NDA4IiB5Mj0iLTAuNTQ3NTY4NzEiIGlkPSJQYXRoLTItQ29weSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMS42MDM1OTQsIDAuNTI4MDEzKSByb3RhdGUoOTAuMDAwMDAwKSB0cmFuc2xhdGUoLTEuNjAzNTk0LCAtMC41MjgwMTMpICI+PC9saW5lPiAgICAgICAgICAgICAgICAgICAgICAgIDxsaW5lIHgxPSIyMC4yNjAwNDIzIiB5MT0iMS42MDM1OTQwOCIgeDI9IjIwLjI2MDA0MjMiIHkyPSItMC41NDc1Njg3MSIgaWQ9IlBhdGgtMi1Db3B5LTIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDIwLjI2MDA0MiwgMC41MjgwMTMpIHJvdGF0ZSg5MC4wMDAwMDApIHRyYW5zbGF0ZSgtMjAuMjYwMDQyLCAtMC41MjgwMTMpICI+PC9saW5lPiAgICAgICAgICAgICAgICAgICAgPC9nPiAgICAgICAgICAgICAgICAgICAgPGcgaWQ9Ikdyb3VwLTUtQ29weSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTguNTk5MTg0LCAxNi40NDUyMTMpIHJvdGF0ZSgtMzAuMDAwMDAwKSB0cmFuc2xhdGUoLTE4LjU5OTE4NCwgLTE2LjQ0NTIxMykgdHJhbnNsYXRlKDcuODQzMzcwLCAxNS41ODQ3NDgpIiBzdHJva2U9IiNGOEMyNzIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+ICAgICAgICAgICAgICAgICAgICAgICAgPGxpbmUgeDE9IjEuNjAzNTk0MDgiIHkxPSIxLjYwMzU5NDA4IiB4Mj0iMS42MDM1OTQwOCIgeTI9Ii0wLjU0NzU2ODcxIiBpZD0iUGF0aC0yLUNvcHkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDEuNjAzNTk0LCAwLjUyODAxMykgcm90YXRlKDkwLjAwMDAwMCkgdHJhbnNsYXRlKC0xLjYwMzU5NCwgLTAuNTI4MDEzKSAiPjwvbGluZT4gICAgICAgICAgICAgICAgICAgICAgICA8bGluZSB4MT0iMjAuMjYwMDQyMyIgeTE9IjEuNjAzNTk0MDgiIHgyPSIyMC4yNjAwNDIzIiB5Mj0iLTAuNTQ3NTY4NzEiIGlkPSJQYXRoLTItQ29weS0yIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyMC4yNjAwNDIsIDAuNTI4MDEzKSByb3RhdGUoOTAuMDAwMDAwKSB0cmFuc2xhdGUoLTIwLjI2MDA0MiwgLTAuNTI4MDEzKSAiPjwvbGluZT4gICAgICAgICAgICAgICAgICAgIDwvZz4gICAgICAgICAgICAgICAgICAgIDxnIGlkPSJHcm91cC01LUNvcHktMyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMjMuNDg1MzgyLCA4LjE4MDQzOCkgcm90YXRlKC02MC4wMDAwMDApIHRyYW5zbGF0ZSgtMjMuNDg1MzgyLCAtOC4xODA0MzgpIHRyYW5zbGF0ZSgyMi4xOTQ2ODUsIDcuMzE5OTczKSIgc3Ryb2tlPSIjRjhDMjcyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPiAgICAgICAgICAgICAgICAgICAgICAgIDxsaW5lIHgxPSIxLjI1MTU4NTYyIiB5MT0iMS42MDM1OTQwOCIgeDI9IjEuMjUxNTg1NjIiIHkyPSItMC41NDc1Njg3MSIgaWQ9IlBhdGgtMi1Db3B5LTIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDEuMjUxNTg2LCAwLjUyODAxMykgcm90YXRlKDkwLjAwMDAwMCkgdHJhbnNsYXRlKC0xLjI1MTU4NiwgLTAuNTI4MDEzKSAiPjwvbGluZT4gICAgICAgICAgICAgICAgICAgIDwvZz4gICAgICAgICAgICAgICAgICAgIDxnIGlkPSJHcm91cC01LUNvcHktNCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTQuMDk4NDkwLCA4LjAyMzk5MCkgcm90YXRlKC0xMjAuMDAwMDAwKSB0cmFuc2xhdGUoLTE0LjA5ODQ5MCwgLTguMDIzOTkwKSB0cmFuc2xhdGUoMTIuODA3NzkzLCA3LjE2MzUyNSkiIHN0cm9rZT0iI0Y4QzI3MiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4gICAgICAgICAgICAgICAgICAgICAgICA8bGluZSB4MT0iMS4yNTE1ODU2MiIgeTE9IjEuNjAzNTk0MDgiIHgyPSIxLjI1MTU4NTYyIiB5Mj0iLTAuNTQ3NTY4NzEiIGlkPSJQYXRoLTItQ29weS0yIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxLjI1MTU4NiwgMC41MjgwMTMpIHJvdGF0ZSg5MC4wMDAwMDApIHRyYW5zbGF0ZSgtMS4yNTE1ODYsIC0wLjUyODAxMykgIj48L2xpbmU+ICAgICAgICAgICAgICAgICAgICA8L2c+ICAgICAgICAgICAgICAgICAgICA8ZyBpZD0iR3JvdXAtNS1Db3B5LTIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDE4Ljg3MDE2MCwgMTYuMTc0MjM3KSByb3RhdGUoLTE1MC4wMDAwMDApIHRyYW5zbGF0ZSgtMTguODcwMTYwLCAtMTYuMTc0MjM3KSB0cmFuc2xhdGUoOC4xMTQzNDYsIDE1LjMxMzc3MikiIHN0cm9rZT0iI0Y4QzI3MiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4gICAgICAgICAgICAgICAgICAgICAgICA8bGluZSB4MT0iMS42MDM1OTQwOCIgeTE9IjEuNjAzNTk0MDgiIHgyPSIxLjYwMzU5NDA4IiB5Mj0iLTAuNTQ3NTY4NzEiIGlkPSJQYXRoLTItQ29weSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMS42MDM1OTQsIDAuNTI4MDEzKSByb3RhdGUoOTAuMDAwMDAwKSB0cmFuc2xhdGUoLTEuNjAzNTk0LCAtMC41MjgwMTMpICI+PC9saW5lPiAgICAgICAgICAgICAgICAgICAgICAgIDxsaW5lIHgxPSIyMC4yNjAwNDIzIiB5MT0iMS42MDM1OTQwOCIgeDI9IjIwLjI2MDA0MjMiIHkyPSItMC41NDc1Njg3MSIgaWQ9IlBhdGgtMi1Db3B5LTIiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDIwLjI2MDA0MiwgMC41MjgwMTMpIHJvdGF0ZSg5MC4wMDAwMDApIHRyYW5zbGF0ZSgtMjAuMjYwMDQyLCAtMC41MjgwMTMpICI+PC9saW5lPiAgICAgICAgICAgICAgICAgICAgPC9nPiAgICAgICAgICAgICAgICAgICAgPGxpbmUgeDE9IjE5LjAwODQ1NjciIHkxPSI4LjA1NzA4MjQ1IiB4Mj0iMTkuMDA4NDU2NyIgeTI9IjUuOTA1OTE5NjYiIGlkPSJQYXRoLTIiIHN0cm9rZT0iI0Y4QzI3MiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48L2xpbmU+ICAgICAgICAgICAgICAgIDwvZz4gICAgICAgICAgICA8L2c+ICAgICAgICA8L2c+ICAgIDwvZz48L3N2Zz4=);
+	background-position: top left;
+	background-repeat: no-repeat;
+}
+
+.tippy-content .tippy-content__close-button {
+	color: var(--ck-color-text);
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+.tippy-content .tippy-content__close-button::after {
+	content: '✖';
+}
+
+.tippy-content .ck.ck-button.tippy-content__close-button:hover {
+	background: none;
+	cursor: pointer;
+}

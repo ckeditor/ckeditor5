@@ -1,7 +1,11 @@
 <head>
 	<meta name="x-cke-crawler-ignore-patterns" content='{
-		"uncaught-exception": "CKEditorError: ckeditor-duplicated-modules"
+		"uncaught-exception": "ckeditor-duplicated-modules"
 	}'>
+
+	<meta http-equiv="Content-Security-Policy"
+		content="connect-src 'self' https://cksource.com http://*.cke-cs.com https://cdn.ckeditor.com">
+	<script src="https://cdn.ckeditor.com/ckeditor5/44.2.0/ckeditor5.umd.js" crossorigin></script>
 </head>
 
 <div id="editor"></div>

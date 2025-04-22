@@ -34,27 +34,33 @@ import {
 	type Locale,
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
-
 import {
-	icons,
-	type ToolbarConfig,
-	type ToolbarConfigItem
-} from '@ckeditor/ckeditor5-core';
+	IconAlignLeft,
+	IconBold,
+	IconImportExport,
+	IconParagraph,
+	IconPlus,
+	IconText,
+	IconThreeVerticalDots,
+	IconPilcrow,
+	IconDragIndicator
+} from '@ckeditor/ckeditor5-icons';
+import type { ToolbarConfig, ToolbarConfigItem } from '@ckeditor/ckeditor5-core';
 
-import { isObject } from 'lodash-es';
+import { isObject } from 'es-toolkit/compat';
 
 import '../../theme/components/toolbar/toolbar.css';
 
 export const NESTED_TOOLBAR_ICONS: Record<string, string | undefined> = /* #__PURE__ */ ( () => ( {
-	alignLeft: icons.alignLeft,
-	bold: icons.bold,
-	importExport: icons.importExport,
-	paragraph: icons.paragraph,
-	plus: icons.plus,
-	text: icons.text,
-	threeVerticalDots: icons.threeVerticalDots,
-	pilcrow: icons.pilcrow,
-	dragIndicator: icons.dragIndicator
+	alignLeft: IconAlignLeft,
+	bold: IconBold,
+	importExport: IconImportExport,
+	paragraph: IconParagraph,
+	plus: IconPlus,
+	text: IconText,
+	threeVerticalDots: IconThreeVerticalDots,
+	pilcrow: IconPilcrow,
+	dragIndicator: IconDragIndicator
 } ) )();
 
 /**
@@ -167,6 +173,11 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	declare public isVertical: boolean;
 
 	/**
+	 * Indicates whether the toolbar responds to changes in the geometry (e.g. window resize) by grouping excessive items or not.
+	 */
+	declare public isGrouping: boolean;
+
+	/**
 	 * Helps cycling over {@link #focusables focusable items} in the toolbar.
 	 */
 	private readonly _focusCycler: FocusCycler;
@@ -176,7 +187,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	 *
 	 * See {@link module:ui/toolbar/toolbarview~ToolbarBehavior} to learn more.
 	 */
-	private readonly _behavior: ToolbarBehavior;
+	private _behavior: ToolbarBehavior;
 
 	/**
 	 * Creates an instance of the {@link module:ui/toolbar/toolbarview~ToolbarView} class.
@@ -197,6 +208,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		this.set( 'ariaLabel', t( 'Editor toolbar' ) );
 		this.set( 'maxWidth', 'auto' );
 		this.set( 'role', 'toolbar' );
+		this.set( 'isGrouping', !!this.options.shouldGroupWhenFull );
 
 		this.items = this.createCollection();
 		this.focusTracker = new FocusTracker();
@@ -204,6 +216,8 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 
 		this.set( 'class', undefined );
 		this.set( 'isCompact', false );
+		// Static toolbar can be vertical when needed.
+		this.set( 'isVertical', false );
 
 		this.itemsView = new ItemsView( locale );
 		this.children = this.createCollection();
@@ -229,7 +243,13 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 			'ck',
 			'ck-toolbar',
 			bind.to( 'class' ),
-			bind.if( 'isCompact', 'ck-toolbar_compact' )
+			bind.if( 'isCompact', 'ck-toolbar_compact' ),
+
+			// To group items dynamically, the toolbar needs a dedicated CSS class. Only used for dynamic grouping.
+			bind.if( 'isGrouping', 'ck-toolbar_grouping' ),
+
+			// When vertical, the toolbar has an additional CSS class. Only used for static layout.
+			bind.if( 'isVertical', 'ck-toolbar_vertical' )
 		];
 
 		if ( this.options.shouldGroupWhenFull && this.options.isFloating ) {
@@ -326,6 +346,27 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		removeItems?: Array<string>
 	): void {
 		this.items.addMany( this._buildItemsFromConfig( itemsOrConfig, factory, removeItems ) );
+	}
+
+	/**
+	 * Changes the behavior of toolbar if it does not fit into the available space.
+	 */
+	public switchBehavior( newBehaviorType: 'dynamic' | 'static' ): void {
+		if ( this._behavior.type !== newBehaviorType ) {
+			this._behavior.destroy();
+			this.itemsView.children.clear();
+			this.focusables.clear();
+
+			if ( newBehaviorType === 'dynamic' ) {
+				this._behavior = new DynamicGrouping( this );
+				this._behavior.render( this );
+
+				( this._behavior as DynamicGrouping ).refreshItems();
+			} else {
+				this._behavior = new StaticLayout( this );
+				this._behavior.render( this );
+			}
+		}
 	}
 
 	/**
@@ -549,7 +590,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 		// Allow disabling icon by passing false.
 		if ( icon !== false ) {
 			// A pre-defined icon picked by name, SVG string, a fallback (default) icon.
-			dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] || icon || icons.threeVerticalDots;
+			dropdownView.buttonView.icon = NESTED_TOOLBAR_ICONS[ icon! ] || icon || IconThreeVerticalDots;
 		}
 		// If the icon is disabled, display the label automatically.
 		else {
@@ -619,31 +660,24 @@ class ItemsView extends View {
  */
 class StaticLayout implements ToolbarBehavior {
 	/**
+	 * Toolbar behavior type.
+	 */
+	public readonly type = 'static';
+
+	/**
 	 * Creates an instance of the {@link module:ui/toolbar/toolbarview~StaticLayout} toolbar
 	 * behavior.
 	 *
 	 * @param view An instance of the toolbar that this behavior is added to.
 	 */
 	constructor( view: ToolbarView ) {
-		const bind = view.bindTemplate;
-
-		// Static toolbar can be vertical when needed.
-		view.set( 'isVertical', false );
+		view.isGrouping = false;
 
 		// 1:1 pass–through binding, all ToolbarView#items are visible.
 		view.itemsView.children.bindTo( view.items ).using( item => item );
 
 		// 1:1 pass–through binding, all ToolbarView#items are focusable.
 		view.focusables.bindTo( view.items ).using( item => isFocusable( item ) ? item : null );
-
-		view.extendTemplate( {
-			attributes: {
-				class: [
-					// When vertical, the toolbar has an additional CSS class.
-					bind.if( 'isVertical', 'ck-toolbar_vertical' )
-				]
-			}
-		} );
 	}
 
 	/**
@@ -676,6 +710,11 @@ class StaticLayout implements ToolbarBehavior {
  * ```
  */
 class DynamicGrouping implements ToolbarBehavior {
+	/**
+	 * Toolbar behavior type.
+	 */
+	public readonly type = 'dynamic';
+
 	/**
 	 * A toolbar view this behavior belongs to.
 	 */
@@ -784,6 +823,7 @@ class DynamicGrouping implements ToolbarBehavior {
 		this.viewItemsView = view.itemsView;
 		this.viewFocusTracker = view.focusTracker;
 		this.viewLocale = view.locale;
+		this.view.isGrouping = true;
 
 		this.ungroupedItems = view.createCollection();
 		this.groupedItems = view.createCollection();
@@ -832,15 +872,6 @@ class DynamicGrouping implements ToolbarBehavior {
 			// some new space is available and we could do some ungrouping.
 			this._updateGrouping();
 		} );
-
-		view.extendTemplate( {
-			attributes: {
-				class: [
-					// To group items dynamically, the toolbar needs a dedicated CSS class.
-					'ck-toolbar_grouping'
-				]
-			}
-		} );
 	}
 
 	/**
@@ -863,7 +894,30 @@ class DynamicGrouping implements ToolbarBehavior {
 		// so let's make sure it's actually destroyed along with the toolbar.
 		this.groupedItemsDropdown.destroy();
 
+		// Do not try to remove the same elements if they are already removed.
+		if ( this.viewChildren.length > 1 ) {
+			this.viewChildren.remove( this.groupedItemsDropdown );
+			this.viewChildren.remove( this.viewChildren.last! );
+		}
+
 		this.resizeObserver!.destroy();
+	}
+
+	/**
+	 * Re-adds all items to the toolbar. Use when the toolbar is re-rendered and the items grouping is lost.
+	 */
+	public refreshItems(): void {
+		const view = this.view;
+
+		if ( view.items.length ) {
+			for ( let currentIndex = 0; currentIndex < view.items.length; currentIndex++ ) {
+				const item = [ ...view.items ][ currentIndex ];
+
+				this.ungroupedItems.add( item, currentIndex );
+			}
+
+			this._updateGrouping();
+		}
 	}
 
 	/**
@@ -1054,7 +1108,7 @@ class DynamicGrouping implements ToolbarBehavior {
 			label: t( 'Show more items' ),
 			tooltip: true,
 			tooltipPosition: locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw',
-			icon: icons.threeVerticalDots
+			icon: IconThreeVerticalDots
 		} );
 
 		return dropdown;
@@ -1135,4 +1189,10 @@ export interface ToolbarBehavior {
 	 * event listeners, free up references, etc.
 	 */
 	destroy(): void;
+
+	/**
+	 * Indicates the type of the toolbar behavior. Dynamic toolbar can hide items that do not fit into the available space.
+	 * Static toolbar does not hide items and does not respond to the changes of the viewport.
+	 */
+	type: 'dynamic' | 'static';
 }

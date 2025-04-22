@@ -8,9 +8,9 @@ order: 20
 
 CKEditor&nbsp;5 is a modular editing framework that allows various flexible configurations. This includes the usage of a third–party user interface on top of the base editor classes.
 
-In this guide, a [classic–like](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic) editor will be bound to a completely separate, existing UI created in [Bootstrap](http://getbootstrap.com/), providing the basic structure and toolbar items necessary to start editing.
+In this guide, a {@link getting-started/setup/editor-types#classic-editor classic-like} editor will be bound to a completely separate, existing UI created in [Bootstrap](http://getbootstrap.com/), providing the basic structure and toolbar items necessary to start editing.
 
-{@snippet examples/bootstrap-ui}
+<iframe src="%BASE_PATH%/snippets/examples/bootstrap-ui.html" style="width: 100%;height: 420px;border: 0;"></iframe>
 
 ## Readying the editor side
 
@@ -495,5 +495,3 @@ BootstrapEditor.create( $( '#editor' ).get( 0 ), {
 	console.error( err.stack );
 } );
 ```
-
-Once everything works as expected, you may want to create a custom preset of your editor to ship it across the applications. To learn more check out the {@link getting-started/legacy-getting-started/quick-start-other#building-the-editor-from-source Creating custom builds guide}.

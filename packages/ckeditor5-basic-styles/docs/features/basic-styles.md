@@ -4,18 +4,16 @@ meta-title: Basic text styles | CKEditor 5 Documentation
 category: features
 ---
 
-{@snippet features/build-basic-styles-source}
-
 The basic styles feature lets you apply the most essential formatting such as bold, italic, underline, strikethrough, subscript, superscript, and code. Coupled with more [formatting features](#related-features), these serve as a base for any WYSIWYG editor toolset.
 
 ## Demo
 
 You may apply basic formatting options with toolbar buttons. You can also make use of the {@link features/autoformat autoformatting feature} that changes Markdown code to formatted text as you type. Use one of these to format text:
 
-* Bold &ndash; Use the bold toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/bold.svg Bold} or type `**text**` or `__text__`.
-* Italic &ndash; Use the italic toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg Italic} or type `*text*` or `_text_`.
-* Code &ndash; Use the code toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/code.svg Code} or type ``` `text` ```.
-* Strikethrough &ndash; Use the strikethrough toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/strikethrough.svg Strikethrough} or type `~~text~~`.
+* Bold &ndash; Use the bold toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/bold.svg Bold} or type `**text**` or `__text__`.
+* Italic &ndash; Use the italic toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/italic.svg Italic} or type `*text*` or `_text_`.
+* Code &ndash; Use the code toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/code.svg Code} or type ``` `text` ```.
+* Strikethrough &ndash; Use the strikethrough toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/strikethrough.svg Strikethrough} or type `~~text~~`.
 
 {@snippet features/basic-styles}
 

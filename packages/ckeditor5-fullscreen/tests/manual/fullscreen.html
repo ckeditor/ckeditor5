@@ -1,0 +1,117 @@
+<head>
+	<meta http-equiv="Content-Security-Policy"
+		content="default-src 'none'; connect-src 'self' https://cksource.com http://*.cke-cs.com; script-src 'self' https://cksource.com; img-src * data:; style-src * 'self' 'unsafe-inline'; frame-src * data:">
+</head>
+<div class="dashboard">
+	<div>
+		<p><input name="menu-bar" type="checkbox" id="menu-bar"><label for="menu-bar">Show menu bar outside fullscreen</label></p>
+		<p><input name="menu-bar-fullscreen" type="checkbox" id="menu-bar-fullscreen" checked><label for="menu-bar-fullscreen">Show menu bar in fullscreen</label></p>
+		<p><input name="toolbar" type="checkbox" id="toolbar"><label for="toolbar">Do not group toolbar outside fullscreen</label></p>
+		<p><input name="toolbar-fullscreen" type="checkbox" id="toolbar-fullscreen"><label for="toolbar-fullscreen">Do not group toolbar in fullscreen</label></p>
+		<p><input name="custom-container" type="checkbox" id="custom-container"><label for="custom-container">Use custom container</label></p>
+	</div>
+	<hr>
+	<div>
+		<p><button id="restart-classic">Restart as Classic editor</button></p>
+		<p><button id="restart-decoupled">Restart as Decoupled editor</button></p>
+	</div>
+</div>
+
+<div class="editor-container" id="editor-container">
+	<div class="document-editor__menu-bar"></div>
+	<div class="document-editor__toolbar"></div>
+	<div id="editor">
+		<h1 style="text-align:center;" id="e9c77dfcac3aa06596b87cc7b57f68dc4">The Flavorful Tuscany Meetup</h1>
+		<h2 style="text-align:center;" id="eb9c05774394678ddbdcdc66d1564fe11">Welcome letter</h2>
+		<p>Dear Guest,</p>
+		<p>We are delighted to welcome you to the annual <i>Flavorful Tuscany Meetup</i>. We hope you will enjoy the
+			program as
+			well as your stay at the <a target="_blank" rel="noopener noreferrer" href="http://ckeditor.com">Bilancino
+				Hotel</a>.</p>
+		<figure class="image"><img src="https://ckeditor.com/assets/images/ckdemo/editor-types/malta.jpg"
+				alt="Bilancino Hotel" srcset="
+						https://ckeditor.com/assets/images/ckdemo/editor-types/malta.jpg,
+						https://ckeditor.com/assets/images/ckdemo/editor-types/malta_2x.jpg 2x
+					" sizes="100vw">
+			<figcaption>Bilancino Hotel</figcaption>
+		</figure>
+		<p>Please find below the full schedule of the event.</p>
+		<figure class="table">
+			<table>
+				<thead>
+					<tr>
+						<th colspan="2">Saturday, July 14</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>9:30 AM - 11:30 AM</td>
+						<td>
+							<p><strong>Americano vs. Brewed</strong> - “know your coffee” with:&nbsp;</p>
+							<ul style="list-style-type:circle;">
+								<li>Giulia Orlanda</li>
+								<li>Stefano Garau</li>
+								<li>Giuseppe Russo</li>
+							</ul>
+						</td>
+					</tr>
+					<tr>
+						<td>1:00 PM - 3:00 PM</td>
+						<td>
+							<p><strong>Regional delicacies of Tuscany</strong> - live cooking</p>
+							<p>Incorporate the freshest ingredients&nbsp;&nbsp;<br>with Rita Fresco</p>
+						</td>
+					</tr>
+					<tr>
+						<td>5:00 PM - 8:00 PM</td>
+						<td><strong>Tuscan vineyards at a glance</strong> - wine-tasting&nbsp;&nbsp;<br>with Frederico
+							Riscoli
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</figure>
+		<blockquote>
+			<p>The annual Flavorful Tuscany meetups are always a culinary discovery. You get the best of Tuscan flavors
+				during
+				an intense one-day stay at one of the top hotels in the region. All the sessions are led by top chefs
+				passionate
+				about their profession. I would recommend saving the date in your calendar for this one!</p>
+			<p>Angelina Calvino, food journalist</p>
+		</blockquote>
+		<p>Please arrive at the <a target="_blank" rel="noopener noreferrer" href="http://ckeditor.com">Bilancino
+				Hotel</a>
+			reception desk <span style="background-color:#ffecb3;">at least half an hour earlier</span> to ensure that
+			the
+			registration process goes as smoothly as possible.</p>
+		<p>We look forward to welcoming you to the event.</p>
+		<p><img class="image_resized" style="width:180px;"
+				src="https://ckeditor.com/assets/images/ckdemo/editor-types/signature.png"
+				alt="Victoria Valc signature"></p>
+		<p><strong>Victoria Valc</strong></p>
+		<p><strong>Event Manager</strong></p>
+		<p><strong>Bilancino Hotel</strong></p>
+	</div>
+</div>
+
+<div class="custom-fullscreen-container" id="custom-fullscreen-container"></div>
+
+<style>
+	html {
+		scroll-behavior: smooth;
+	}
+
+	.editor-container {
+		width: 400px;
+		height: 1500px;
+		overflow: scroll;
+	}
+
+	.custom-fullscreen-container {
+		width: 1000px;
+		height: 700px;
+		background-color: hsl(51, 81%, 87%);
+		position: relative;
+		display: none;
+	}
+</style>

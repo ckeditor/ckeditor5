@@ -20,6 +20,8 @@ import {
 	type ViewSelection
 } from '@ckeditor/ckeditor5-engine';
 
+// @if CK_DEBUG_TYPING // const { _buildLogMessage } = require( '@ckeditor/ckeditor5-engine/src/dev-utils/utils.js' );
+
 const TYPING_INPUT_TYPES = [
 	// For collapsed range:
 	//	- This one is a regular typing (all browsers, all systems).
@@ -112,9 +114,11 @@ export default class InsertTextObserver extends Observer {
 				}
 
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-				// @if CK_DEBUG_TYPING // 	console.log( `%c[InsertTextObserver]%c Fire insertText event, %c${ JSON.stringify( data ) }`,
-				// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', 'font-weight: bold', 'color: blue'
-				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'InsertTextObserver',
+				// @if CK_DEBUG_TYPING // 		`%cFire insertText event, %c${ JSON.stringify( data ) }`,
+				// @if CK_DEBUG_TYPING // 		'font-weight: bold',
+				// @if CK_DEBUG_TYPING // 		 'color: blue'
+				// @if CK_DEBUG_TYPING // 	) );
 				// @if CK_DEBUG_TYPING // }
 
 				// How do we know where to insert the composed text?

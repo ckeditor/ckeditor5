@@ -13,6 +13,7 @@ import reflection from './reflection/input.word2016.html';
 import adjacentGroups from './adjacent-groups/input.word2016.html';
 import onlineOffline from './online-offline/input.word2016.html';
 import shapesOnlineOffline from './shapes-online-offline/input.word2016.html';
+import mixedImagesFromFilesystem from './mixed-images-from-filesystem/input.word2023.html';
 
 import offlineNormalized from './offline/normalized.word2016.html';
 import linkedNormalized from './linked/normalized.word2016.html';
@@ -23,6 +24,7 @@ import reflectionNormalized from './reflection/normalized.word2016.html';
 import adjacentGroupsNormalized from './adjacent-groups/normalized.word2016.html';
 import onlineOfflineNormalized from './online-offline/normalized.word2016.html';
 import shapesOnlineOfflineNormalized from './shapes-online-offline/normalized.word2016.html';
+import mixedImagesFromFilesystemNormalized from './mixed-images-from-filesystem/normalized.word2023.html';
 
 import offlineModel from './offline/model.word2016.html';
 import linkedModel from './linked/model.word2016.html';
@@ -33,6 +35,9 @@ import reflectionModel from './reflection/model.word2016.html';
 import adjacentGroupsModel from './adjacent-groups/model.word2016.html';
 import onlineOfflineModel from './online-offline/model.word2016.html';
 import shapesOnlineOfflineModel from './shapes-online-offline/model.word2016.html';
+import mixedImagesFromFilesystemModel from './mixed-images-from-filesystem/model.word2023.html';
+
+import mixedImagesFromFilesystemBlob from './mixed-images-from-filesystem/input.word2023.rtf';
 
 const genericFixtures = {
 	input: {
@@ -44,7 +49,8 @@ const genericFixtures = {
 		reflection,
 		adjacentGroups,
 		onlineOffline,
-		shapesOnlineOffline
+		shapesOnlineOffline,
+		mixedImagesFromFilesystem
 	},
 	normalized: {
 		offline: offlineNormalized,
@@ -55,7 +61,8 @@ const genericFixtures = {
 		reflection: reflectionNormalized,
 		adjacentGroups: adjacentGroupsNormalized,
 		onlineOffline: onlineOfflineNormalized,
-		shapesOnlineOffline: shapesOnlineOfflineNormalized
+		shapesOnlineOffline: shapesOnlineOfflineNormalized,
+		mixedImagesFromFilesystem: mixedImagesFromFilesystemNormalized
 	},
 	model: {
 		offline: offlineModel,
@@ -66,9 +73,12 @@ const genericFixtures = {
 		reflection: reflectionModel,
 		adjacentGroups: adjacentGroupsModel,
 		onlineOffline: onlineOfflineModel,
-		shapesOnlineOffline: shapesOnlineOfflineModel
+		shapesOnlineOffline: shapesOnlineOfflineModel,
+		mixedImagesFromFilesystem: mixedImagesFromFilesystemModel
 	},
-	inputBlob: {}
+	inputRtf: {
+		mixedImagesFromFilesystem: mixedImagesFromFilesystemBlob
+	}
 };
 
 export const fixtures = genericFixtures;
@@ -170,6 +180,7 @@ export const browserFixtures = {
 			noImgTagAltText: noImgTagModelAltTextChrome
 		},
 		inputRtf: {
+			...genericFixtures.inputRtf,
 			offline: offlineRtfChrome,
 			linked: linkedRtfChrome,
 			rotated: rotatedRtfChrome,
@@ -189,6 +200,7 @@ export const browserFixtures = {
 		normalized: Object.assign( {}, genericFixtures.normalized ),
 		model: Object.assign( {}, genericFixtures.model ),
 		inputRtf: {
+			...genericFixtures.inputRtf,
 			offline: offlineRtfFirefox,
 			linked: linkedRtfFirefox,
 			rotated: rotatedRtfFirefox,
@@ -208,6 +220,7 @@ export const browserFixtures = {
 			adjacentGroups: adjacentGroupsModelEdge
 		} ),
 		inputRtf: {
+			...genericFixtures.inputRtf,
 			offline: offlineRtfEdge,
 			linked: linkedRtfEdge,
 			rotated: rotatedRtfEdge,

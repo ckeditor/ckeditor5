@@ -6,7 +6,6 @@ meta-description: Learn about configuring and handling the CKEditor 5 toolbars f
 toc-limit: 4
 order: 40
 ---
-{@snippet installation/setup/build-toolbar-source}
 
 # Editor toolbars
 
@@ -98,7 +97,7 @@ toolbar: {
 
 * **{@link module:core/editor/editorconfig~ToolbarConfig#shouldNotGroupWhenFull `shouldNotGroupWhenFull`}** &ndash; When set to `true`, the toolbar will stop grouping items and let them wrap to the next line when there is not enough space to display them in a single row. This setting is `false` by default, which enables item grouping.
 
-The demo below presents the "regular" toolbar look with `shouldNotGroupWhenFull` set to `false`. If there are more toolbar items than can fit in the toolbar in the current display width, some items get hidden. You can access them by clicking the show more items button {@icon @ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg Show more items}.
+The demo below presents the "regular" toolbar look with `shouldNotGroupWhenFull` set to `false`. If there are more toolbar items than can fit in the toolbar in the current display width, some items get hidden. You can access them by clicking the show more items button {@icon @ckeditor/ckeditor5-icons/theme/icons/three-vertical-dots.svg Show more items}.
 
 {@snippet installation/setup/toolbar-grouping}
 
@@ -183,7 +182,7 @@ toolbar: [
 ]
 ```
 
-It will create a "Basic styles" dropdown with a three vertical dots icon {@icon @ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg Three vertical dots} containing the additional basic text styles buttons set. You can test it in the demo below along with a few more toolbar dropdowns.
+It will create a "Basic styles" dropdown with a three vertical dots icon {@icon @ckeditor/ckeditor5-icons/theme/icons/three-vertical-dots.svg Three vertical dots} containing the additional basic text styles buttons set. You can test it in the demo below along with a few more toolbar dropdowns.
 
 {@snippet installation/setup/toolbar-nested-simple}
 
@@ -215,15 +214,15 @@ You can use one of the icons listed below for your dropdown:
 
 | Icon name         | Preview                                                                     |
 |-------------------|-----------------------------------------------------------------------------|
-| `'threeVerticalDots'` **(default)** | {@icon @ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg Three vertical dots} |
-| `'alignLeft'`     | {@icon @ckeditor/ckeditor5-core/theme/icons/align-left.svg Align left}      |
-| `'bold'`          | {@icon @ckeditor/ckeditor5-core/theme/icons/bold.svg Bold}                  |
-| `'importExport'`  | {@icon @ckeditor/ckeditor5-core/theme/icons/importexport.svg Import export} |
-| `'paragraph'`     | {@icon @ckeditor/ckeditor5-core/theme/icons/paragraph.svg Paragraph}        |
-| `'text'`          | {@icon @ckeditor/ckeditor5-core/theme/icons/text.svg Text}                  |
-| `'plus'`          | {@icon @ckeditor/ckeditor5-core/theme/icons/plus.svg Plus}                  |
-| `'dragIndicator'` | {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg Drag indicator} |
-| `'pilcrow'`       | {@icon @ckeditor/ckeditor5-core/theme/icons/pilcrow.svg Pilcrow}            |
+| `'threeVerticalDots'` **(default)** | {@icon @ckeditor/ckeditor5-icons/theme/icons/three-vertical-dots.svg Three vertical dots} |
+| `'alignLeft'`     | {@icon @ckeditor/ckeditor5-icons/theme/icons/align-left.svg Align left}      |
+| `'bold'`          | {@icon @ckeditor/ckeditor5-icons/theme/icons/bold.svg Bold}                  |
+| `'importExport'`  | {@icon @ckeditor/ckeditor5-icons/theme/icons/import-export.svg Import export} |
+| `'paragraph'`     | {@icon @ckeditor/ckeditor5-icons/theme/icons/paragraph.svg Paragraph}        |
+| `'text'`          | {@icon @ckeditor/ckeditor5-icons/theme/icons/text.svg Text}                  |
+| `'plus'`          | {@icon @ckeditor/ckeditor5-icons/theme/icons/plus.svg Plus}                  |
+| `'dragIndicator'` | {@icon @ckeditor/ckeditor5-icons/theme/icons/drag-indicator.svg Drag indicator} |
+| `'pilcrow'`       | {@icon @ckeditor/ckeditor5-icons/theme/icons/pilcrow.svg Pilcrow}            |
 
 * The default icons are loaded from the `ckeditor5-core` package.
 * If no icon is specified, `'threeVerticalDots'` will be used as a default.
@@ -333,7 +332,7 @@ The block toolbar provides an additional configurable toolbar on the left-hand s
 ### Demo
 
 <info-box hint>
-	In the editor below, move the caret around the content. You will see that the block toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg drag indicator}  is following your selection. Click the button to show the toolbar.
+	In the editor below, move the caret around the content. You will see that the block toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/drag-indicator.svg drag indicator}  is following your selection. Click the button to show the toolbar.
 </info-box>
 
 {@snippet installation/setup/blocktoolbar}
@@ -344,9 +343,9 @@ The block toolbar provides an additional configurable toolbar on the left-hand s
 
 ### Additional feature information
 
-To access the block toolbar, you need to click the button with braille pattern dots icon {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg drag indicator} on the left-hand side of the content area (the gutter). The button appears next to the selected block element (for example, a paragraph), following the caret as the user edits the content and navigates the document.
+To access the block toolbar, you need to click the button with braille pattern dots icon {@icon @ckeditor/ckeditor5-icons/theme/icons/drag-indicator.svg drag indicator} on the left-hand side of the content area (the gutter). The button appears next to the selected block element (for example, a paragraph), following the caret as the user edits the content and navigates the document.
 
-The icon {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg drag indicator} is also a handle to drag blocks of content around the editor. Click a heading in the demo above and drag it all the way down between the following paragraphs to see this functionality in action.
+The icon {@icon @ckeditor/ckeditor5-icons/theme/icons/drag-indicator.svg drag indicator} is also a handle to drag blocks of content around the editor. Click a heading in the demo above and drag it all the way down between the following paragraphs to see this functionality in action.
 
 The block toolbar complements the [balloon editor type](https://ckeditor.com/ckeditor-5/builder/?redirect=docs) where it falls short, for example when you must insert some content (like an image), but the selection is collapsed, so you cannot access the toolbar. It can, however, be added to any type of editor and configure accordingly (see below).
 
@@ -418,7 +417,7 @@ If you plan to run the editor in a right–to–left (RTL) language, keep in min
 
 You can use the `shouldNotGroupWhenFull` [configuration option](#multiline-wrapping-toolbar) to prevent {@link module:core/editor/editorconfig~EditorConfig#toolbar automatic items grouping} in the block toolbar.
 
-You can also change the current default toolbar icon `'dragIndicator'` {@icon @ckeditor/ckeditor5-core/theme/icons/drag-indicator.svg Drag indicator} by choosing predefined icon from [icon list](#changing-the-icon) using the `icon` option or by passing a `SVG` string:
+You can also change the current default toolbar icon `'dragIndicator'` {@icon @ckeditor/ckeditor5-icons/theme/icons/drag-indicator.svg Drag indicator} by choosing predefined icon from [icon list](#changing-the-icon) using the `icon` option or by passing a `SVG` string:
 
 ```js
 blockToolbar: {

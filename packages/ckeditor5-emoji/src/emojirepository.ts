@@ -7,8 +7,8 @@
  * @module emoji/emojirepository
  */
 
-import Fuse from 'fuse.js';
-import { groupBy } from 'lodash-es';
+import fuzzysort from 'fuzzysort';
+import { groupBy } from 'es-toolkit/compat';
 
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import { logWarning, version as editorVersion } from 'ckeditor5/src/utils.js';
@@ -33,9 +33,9 @@ export default class EmojiRepository extends Plugin {
 	declare private _repositoryPromiseResolveCallback: ( value: boolean ) => void;
 
 	/**
-	 * An instance of the [Fuse.js](https://www.fusejs.io/) library.
+	 * Emoji repository in a configured version.
 	 */
-	private _fuseSearch: Fuse<EmojiEntry> | null;
+	private _items: Array<EmojiEntry> | null;
 
 	/**
 	 * The resolved URL from which the emoji repository is downloaded.
@@ -78,7 +78,8 @@ export default class EmojiRepository extends Plugin {
 		editor.config.define( 'emoji', {
 			version: undefined,
 			skinTone: 'default',
-			definitionsUrl: undefined
+			definitionsUrl: undefined,
+			useCustomFont: false
 		} );
 
 		this._url = this._getUrl();
@@ -87,7 +88,7 @@ export default class EmojiRepository extends Plugin {
 			this._repositoryPromiseResolveCallback = resolve;
 		} );
 
-		this._fuseSearch = null;
+		this._items = null;
 	}
 
 	/**
@@ -98,39 +99,34 @@ export default class EmojiRepository extends Plugin {
 
 		await this._loadAndCacheEmoji();
 
-		const items = this._getItems();
+		this._items = this._getItems();
 
-		// Skip plugin initialization if the emoji repository is not available.
-		// The initialization of other dependent plugins, such as `EmojiMention` and `EmojiPicker`, is prevented as well.
-		if ( !items ) {
+		if ( !this._items ) {
+			/**
+			 * Unable to identify the available emoji to display.
+			 *
+			 * See the {@glink features/emoji#troubleshooting troubleshooting} section in the {@glink features/emoji Emoji feature} guide
+			 * for more details.
+			 *
+			 * @error emoji-repository-empty
+			 */
+			logWarning( 'emoji-repository-empty' );
+
 			return this._repositoryPromiseResolveCallback( false );
 		}
-
-		// Create instance of the Fuse.js library with configured weighted search keys and disabled fuzzy search.
-		this._fuseSearch = new Fuse( items, {
-			keys: [
-				{ name: 'emoticon', weight: 5 },
-				{ name: 'annotation', weight: 3 },
-				{ name: 'tags', weight: 1 }
-			],
-			minMatchCharLength: 2,
-			threshold: 0,
-			ignoreLocation: true
-		} );
 
 		return this._repositoryPromiseResolveCallback( true );
 	}
 
 	/**
 	 * Returns an array of emoji entries that match the search query.
-	 * If the emoji repository is not loaded, the [Fuse.js](https://www.fusejs.io/) instance is not created,
-	 * hence this method returns an empty array.
+	 * If the emoji repository is not loaded this method returns an empty array.
 	 *
 	 * @param searchQuery A search query to match emoji.
 	 * @returns An array of emoji entries that match the search query.
 	 */
 	public getEmojiByQuery( searchQuery: string ): Array<EmojiEntry> {
-		if ( !this._fuseSearch ) {
+		if ( !this._items ) {
 			return [];
 		}
 
@@ -143,21 +139,26 @@ export default class EmojiRepository extends Plugin {
 			return [];
 		}
 
-		return this._fuseSearch
-			.search( {
-				'$or': [
-					{
-						emoticon: searchQuery
-					},
-					{
-						'$and': searchQueryTokens.map( token => ( { annotation: token } ) )
-					},
-					{
-						'$and': searchQueryTokens.map( token => ( { tags: token } ) )
+		return fuzzysort
+			.go( searchQuery, this._items, {
+				threshold: 0.6,
+				keys: [
+					'emoticon',
+					'annotation',
+					( emojiEntry: EmojiEntry ) => {
+						// Instead of searching over all tags, let's use only those that matches the query.
+						// It enables searching in tags with the space character in names.
+						const searchQueryTokens = searchQuery.split( /\s/ ).filter( Boolean );
+
+						const matchedTags = searchQueryTokens.flatMap( tok => {
+							return emojiEntry.tags?.filter( t => t.startsWith( tok ) );
+						} );
+
+						return matchedTags.join();
 					}
 				]
 			} )
-			.map( result => result.item );
+			.map( result => result.obj );
 	}
 
 	/**
@@ -176,18 +177,18 @@ export default class EmojiRepository extends Plugin {
 		const { t } = this.editor.locale;
 
 		const categories = [
-			{ title: t( 'Smileys & Expressions' ), icon: '😀', groupId: 0 },
+			{ title: t( 'Smileys & Expressions' ), icon: '😄', groupId: 0 },
 			{ title: t( 'Gestures & People' ), icon: '👋', groupId: 1 },
 			{ title: t( 'Animals & Nature' ), icon: '🐻', groupId: 3 },
 			{ title: t( 'Food & Drinks' ), icon: '🍎', groupId: 4 },
 			{ title: t( 'Travel & Places' ), icon: '🚘', groupId: 5 },
 			{ title: t( 'Activities' ), icon: '🏀', groupId: 6 },
 			{ title: t( 'Objects' ), icon: '💡', groupId: 7 },
-			{ title: t( 'Symbols' ), icon: '🟢', groupId: 8 },
+			{ title: t( 'Symbols' ), icon: '🔵', groupId: 8 },
 			{ title: t( 'Flags' ), icon: '🏁', groupId: 9 }
 		];
 
-		const groups = groupBy( repository, 'group' );
+		const groups = groupBy( repository, item => item.group );
 
 		return categories.map( category => {
 			return {
@@ -280,11 +281,13 @@ export default class EmojiRepository extends Plugin {
 		}
 
 		/**
-		 * By default, the Emoji plugin fetches the emoji repository from CKEditor 5 CDN. To avoid this,
-		 * you can use the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `emoji.definitionsUrl`}
+		 * It was detected that your installation uses a commercial license key,
+		 * and the default {@glink features/emoji#emoji-source CKEditor CDN for Emoji plugin data}.
+		 *
+		 * To avoid this, you can use the {@link module:emoji/emojiconfig~EmojiConfig#definitionsUrl `emoji.definitionsUrl`}
 		 * configuration option to provide a URL to your own emoji repository.
 		 *
-		 * If you only want to suppress this warning, set this configuration option to `cdn`.
+		 * If you want to suppress this warning, while using the default CDN, set this configuration option to `cdn`.
 		 *
 		 * @error emoji-repository-cdn-use
 		 */
@@ -322,19 +325,6 @@ export default class EmojiRepository extends Plugin {
 				return [];
 			} );
 
-		if ( !result.length ) {
-			/**
-			 * Unable to load the emoji repository from the URL.
-			 *
-			 * If the URL works properly and there is no disruption of communication, please check your
-			 * {@glink getting-started/setup/csp Content Security Policy (CSP)} setting and make sure
-			 * the URL connection is allowed by the editor.
-			 *
-			 * @error emoji-repository-load-failed
-			 */
-			logWarning( 'emoji-repository-load-failed' );
-		}
-
 		EmojiRepository._results[ this._url.href ] = this._normalizeEmoji( result );
 	}
 
@@ -345,14 +335,23 @@ export default class EmojiRepository extends Plugin {
 	 *  * Prepare skin tone variants if an emoji defines them.
 	 */
 	private _normalizeEmoji( data: Array<EmojiCdnResource> ): Array<EmojiEntry> {
-		const emojiUtils = this.editor.plugins.get( 'EmojiUtils' );
+		const editor = this.editor;
+		const useCustomFont = editor.config.get( 'emoji.useCustomFont' );
+		const emojiUtils = editor.plugins.get( 'EmojiUtils' );
+
+		const insertableEmoji = data.filter( item => emojiUtils.isEmojiCategoryAllowed( item ) );
+
+		// When using a custom font, the feature does not filter any emoji.
+		if ( useCustomFont ) {
+			return insertableEmoji.map( item => emojiUtils.normalizeEmojiSkinTone( item ) );
+		}
+
 		const emojiSupportedVersionByOs = emojiUtils.getEmojiSupportedVersionByOs();
 
 		const container = emojiUtils.createEmojiWidthTestingContainer();
 		document.body.appendChild( container );
 
-		const results = data
-			.filter( item => emojiUtils.isEmojiCategoryAllowed( item ) )
+		const results = insertableEmoji
 			.filter( item => emojiUtils.isEmojiSupported( item, emojiSupportedVersionByOs, container ) )
 			.map( item => emojiUtils.normalizeEmojiSkinTone( item ) );
 
@@ -415,7 +414,7 @@ export type EmojiCdnResource = {
 };
 
 /**
- * Represents a single emoji item used by the emoji feature.
+ * Represents a single emoji item used by the Emoji feature.
  */
 export type EmojiEntry = Omit<EmojiCdnResource, 'skins'> & {
 	skins: EmojiMap;
@@ -438,3 +437,13 @@ export type SkinTone = {
 	icon: string;
 	tooltip: string;
 };
+
+/**
+ * Unable to load the emoji repository from the URL.
+ *
+ * If the URL works properly and there is no disruption of communication, please check your
+ * {@glink getting-started/setup/csp Content Security Policy (CSP)} setting and make sure
+ * the URL connection is allowed by the editor.
+ *
+ * @error emoji-repository-load-failed
+ */

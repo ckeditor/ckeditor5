@@ -7,7 +7,7 @@
  * @module engine/view/stylesmap
  */
 
-import { get, isObject, merge, set, unset } from 'lodash-es';
+import { get, isObject, merge, set, unset } from 'es-toolkit/compat';
 import type { ElementAttributeValue } from './element.js';
 import { type ArrayOrItem, toArray } from '@ckeditor/ckeditor5-utils';
 import { isPatternMatched } from './matcher.js';
@@ -429,12 +429,12 @@ export default class StylesMap implements ElementAttributeValue {
 		}
 
 		if ( expand ) {
-			this._cachedExpandedStyleNames = this._cachedExpandedStyleNames || this._styleProcessor.getStyleNames( this._styles );
+			this._cachedExpandedStyleNames ||= this._styleProcessor.getStyleNames( this._styles );
 
 			return this._cachedExpandedStyleNames;
 		}
 
-		this._cachedStyleNames = this._cachedStyleNames || this.getStylesEntries().map( ( [ key ] ) => key );
+		this._cachedStyleNames ||= this.getStylesEntries().map( ( [ key ] ) => key );
 
 		return this._cachedStyleNames;
 	}

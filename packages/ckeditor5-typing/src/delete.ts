@@ -7,9 +7,11 @@
  * @module typing/delete
  */
 
+import { BubblingEventInfo, DomEventData, type ViewDocumentKeyDownEvent } from '@ckeditor/ckeditor5-engine';
 import { Plugin } from '@ckeditor/ckeditor5-core';
+import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import DeleteCommand from './deletecommand.js';
-import DeleteObserver, { type ViewDocumentDeleteEvent } from './deleteobserver.js';
+import DeleteObserver, { type DeleteEventData, type ViewDocumentDeleteEvent } from './deleteobserver.js';
 
 /**
  * The delete and backspace feature. Handles keys such as <kbd>Delete</kbd> and <kbd>Backspace</kbd>, other
@@ -81,6 +83,44 @@ export default class Delete extends Plugin {
 
 			view.scrollToTheSelection();
 		}, { priority: 'low' } );
+
+		// Handle the Backspace key while at the beginning of a nested editable. See https://github.com/ckeditor/ckeditor5/issues/17383.
+		this.listenTo<ViewDocumentKeyDownEvent>( viewDocument, 'keydown', ( evt, data ) => {
+			if (
+				viewDocument.isComposing ||
+				data.keyCode != keyCodes.backspace ||
+				!modelDocument.selection.isCollapsed
+			) {
+				return;
+			}
+
+			const ancestorLimit = editor.model.schema.getLimitElement( modelDocument.selection );
+			const limitStartPosition = editor.model.createPositionAt( ancestorLimit, 0 );
+
+			if ( limitStartPosition.isTouching( modelDocument.selection.getFirstPosition()! ) ) {
+				// Stop the beforeinput event as it could be invalid.
+				data.preventDefault();
+
+				// Create a fake delete event so all features can act on it and the target range is proper.
+				const modelRange = editor.model.schema.getNearestSelectionRange( limitStartPosition, 'forward' );
+
+				if ( !modelRange ) {
+					return;
+				}
+
+				const viewSelection = view.createSelection( editor.editing.mapper.toViewRange( modelRange ) );
+				const targetRange = viewSelection.getFirstRange()!;
+
+				const eventInfo = new BubblingEventInfo( document, 'delete', targetRange );
+				const deleteData: Partial<DeleteEventData> = {
+					unit: 'selection',
+					direction: 'backward',
+					selectionToRemove: viewSelection
+				};
+
+				viewDocument.fire( eventInfo, new DomEventData( view, data.domEvent, deleteData ) );
+			}
+		} );
 
 		if ( this.editor.plugins.has( 'UndoEditing' ) ) {
 			this.listenTo<ViewDocumentDeleteEvent>( viewDocument, 'delete', ( evt, data ) => {

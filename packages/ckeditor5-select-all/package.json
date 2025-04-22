@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-select-all",
-  "version": "44.2.0",
+  "version": "45.0.0",
   "description": "Select all feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -13,19 +13,20 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "44.2.0",
-    "@ckeditor/ckeditor5-engine": "44.2.0",
-    "@ckeditor/ckeditor5-utils": "44.2.0",
-    "@ckeditor/ckeditor5-ui": "44.2.0"
+    "@ckeditor/ckeditor5-core": "45.0.0",
+    "@ckeditor/ckeditor5-icons": "45.0.0",
+    "@ckeditor/ckeditor5-engine": "45.0.0",
+    "@ckeditor/ckeditor5-utils": "45.0.0",
+    "@ckeditor/ckeditor5-ui": "45.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "44.2.0",
-    "@ckeditor/ckeditor5-essentials": "44.2.0",
-    "@ckeditor/ckeditor5-heading": "44.2.0",
-    "@ckeditor/ckeditor5-image": "44.2.0",
-    "@ckeditor/ckeditor5-paragraph": "44.2.0",
-    "@ckeditor/ckeditor5-table": "44.2.0",
-    "@ckeditor/ckeditor5-editor-classic": "44.2.0",
+    "@ckeditor/ckeditor5-basic-styles": "45.0.0",
+    "@ckeditor/ckeditor5-essentials": "45.0.0",
+    "@ckeditor/ckeditor5-heading": "45.0.0",
+    "@ckeditor/ckeditor5-image": "45.0.0",
+    "@ckeditor/ckeditor5-paragraph": "45.0.0",
+    "@ckeditor/ckeditor5-table": "45.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "45.0.0",
     "typescript": "5.0.4",
     "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4"
@@ -44,12 +45,11 @@
     "lang",
     "src/**/*.js",
     "src/**/*.d.ts",
-    "theme",
     "ckeditor5-metadata.json",
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsc -p ./tsconfig.json",
+    "build": "tsc --build --force ./tsconfig.json",
     "build:dist": "node ../../scripts/nim/build-package.mjs"
   }
 }

@@ -1,0 +1,74 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck-editor__editable {
+	&.ck-editor__editable_inline {
+		& > .ck-widget.ck-widget_with-selection-handle.layout-table {
+			&:first-child {
+				margin-top: var(--ck-spacing-large);
+			}
+			/*
+			* This value should match with the default margins of the block elements (like .media, .image or .table)
+			* to avoid a content jumping when the fake selection container shows up (See https://github.com/ckeditor/ckeditor5/issues/9825).
+			*/
+			&:last-child,
+			/* Fallback for hidden fake selection div */
+			&:nth-last-child(2):has( + .ck-fake-selection-container) {
+				margin-bottom: var(--ck-spacing-large);
+			}
+		}
+	}
+
+	& .table.layout-table {
+		display: table;
+		margin: 0;
+
+		/* Widget type around overrides. */
+		&.ck-widget {
+			&:hover {
+				/* To prevent the widget outline from being cut off at the bottom
+				when the next cell or table has a background color, for example. */
+				z-index: var(--ck-z-default);
+			}
+
+			&:hover > .ck-widget__selection-handle {
+				opacity: 0.75;
+				visibility: visible;
+
+				&:hover {
+					opacity: 1;
+				}
+			}
+
+			/* Because of setting the opacity to 0.75 to the selection handle for the layout table,
+			it overrides the similar selector in widget (specificity is higher),
+			thats why we must override it here also. */
+			&:has( .ck-widget.table:hover ) > .ck-widget__selection-handle {
+				opacity: 0;
+				visibility: hidden;
+			}
+
+			&.ck-widget_selected {
+				/* To prevent the widget outline from being cut off at the bottom
+				when the next cell or table has a background color, for example. */
+				z-index: var(--ck-z-default);
+			}
+		}
+	}
+}
+
+.ck-content {
+	& table.table.layout-table,
+	& figure.table.layout-table {
+		/* Do not reserve space above and below the layout table. */
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+
+	& table.table.layout-table,
+	& figure.table.layout-table > table {
+		border-spacing: 0;
+	}
+}

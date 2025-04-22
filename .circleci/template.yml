@@ -100,24 +100,9 @@ commands:
             echo export CKE5_COMMIT_SHA1=$CIRCLE_SHA1 >> $BASH_ENV
 
 jobs:
-  cke5_manual:
-    machine: true
-    resource_class: xlarge
-    steps:
-      - checkout_command
-      - halt_if_short_flow
-      - bootstrap_repository_command
-      - prepare_environment_command
-      - run:
-          name: Prepare DLL builds in CKEditor 5
-          command: yarn run dll:build
-      - run:
-          name: Verify CKEditor 5 manual tests
-          command: bash scripts/check-manual-tests.sh -r ckeditor5 -f ckeditor5
-
   cke5_validators:
     machine: true
-    resource_class: large
+    resource_class: medium
     steps:
       - checkout_command
       - bootstrap_repository_command
@@ -218,26 +203,6 @@ jobs:
           name: Trigger the Uber CI
           command: yarn ckeditor5-dev-ci-trigger-circle-build
 
-  release_prepare:
-    machine: true
-    resource_class: xlarge
-    steps:
-      - checkout_command
-      - halt_if_short_flow
-      - bootstrap_repository_command
-      - prepare_environment_command
-      - run:
-          name: Check if packages are ready to be released
-          command: npm run release:prepare-packages -- --compile-only --verbose
-
-      - run:
-          name: Lint generated packages
-          command: yarn run release:lint-packages
-
-      - run:
-          name: Check dependencies
-          command: yarn run check-dependencies
-
   notify_ci_failure:
     machine: true
     resource_class: medium
@@ -259,7 +224,7 @@ jobs:
 
   stale_bot:
     machine: true
-    resource_class: large
+    resource_class: medium
     steps:
       - checkout_command
       - bootstrap_repository_command
@@ -297,24 +262,12 @@ workflows:
               ignore:
                 - stable
       - cke5_validators
-      - cke5_manual:
-          filters:
-            branches:
-              ignore:
-                - stable
-      - release_prepare:
-          filters:
-            branches:
-              ignore:
-                - stable
       - cke5_trigger_uber_ci:
           requires:
             - cke5_tests_framework
             - cke5_tests_features_batch_n
             - cke5_coverage
             - cke5_validators
-            - cke5_manual
-            - release_prepare
           filters:
             branches:
               only:
@@ -324,8 +277,6 @@ workflows:
             - cke5_tests_framework
             - cke5_tests_features_batch_n
             - cke5_validators
-            - cke5_manual
-            - release_prepare
           filters:
             branches:
               only:
@@ -335,7 +286,6 @@ workflows:
             branches:
               only:
                 - master
-                - master-it84
                 - stable
                 - release
 
@@ -345,8 +295,6 @@ workflows:
       - cke5_tests_framework
       - cke5_tests_features_batch_n
       - cke5_validators
-      - cke5_manual
-      - release_prepare
       - notify_ci_failure:
           hideAuthor: "true"
           filters:

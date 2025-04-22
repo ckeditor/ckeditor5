@@ -240,6 +240,27 @@ describe( 'widget utils', () => {
 			expect( element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
+		it( 'should add role attribute by default for backward compatibility', () => {
+			const element = new ViewEditableElement( viewDocument, 'div' );
+			toWidgetEditable( element, writer );
+
+			expect( element.getAttribute( 'role' ) ).to.equal( 'textbox' );
+		} );
+
+		it( 'should add role attribute when withAriaRole is set to true', () => {
+			const element = new ViewEditableElement( viewDocument, 'div' );
+			toWidgetEditable( element, writer, { withAriaRole: true } );
+
+			expect( element.getAttribute( 'role' ) ).to.equal( 'textbox' );
+		} );
+
+		it( 'should not add role attribute when withAriaRole is set to false', () => {
+			const element = new ViewEditableElement( viewDocument, 'div' );
+			toWidgetEditable( element, writer, { withAriaRole: false } );
+
+			expect( element.hasAttribute( 'role' ) ).to.be.false;
+		} );
+
 		it( 'should add label if it was passed through options', () => {
 			toWidgetEditable( element, writer, { label: 'foo' } );
 			expect( element.getAttribute( 'aria-label' ) ).to.equal( 'foo' );

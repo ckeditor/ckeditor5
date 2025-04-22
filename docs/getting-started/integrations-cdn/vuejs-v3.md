@@ -3,10 +3,8 @@ menu-title: Vue.js 3+
 meta-title: Vue.js 3+ rich text editor component with CDN | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 3+ component with CDN.
 category: cloud
-order: 50
+order: 70
 ---
-
-{@snippet installation/integrations/framework-integration}
 
 # Vue.js 3+ rich text editor component (CDN)
 

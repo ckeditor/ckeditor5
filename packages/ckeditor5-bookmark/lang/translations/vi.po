@@ -15,14 +15,6 @@ msgctxt "The label of the bookmark toolbar button. Also, a bookmark form header.
 msgid "Bookmark"
 msgstr "Dấu trang"
 
-msgctxt "The button in the bookmark insert form."
-msgid "Insert"
-msgstr "Chèn"
-
-msgctxt "The button in the bookmark update form."
-msgid "Update"
-msgstr "Cập nhật"
-
 msgctxt "Button opening the Bookmark editing balloon."
 msgid "Edit bookmark"
 msgstr "Chỉnh sửa dấu trang"
@@ -54,3 +46,19 @@ msgstr "Tên dấu trang đã tồn tại."
 msgctxt "The label for the bookmark widget."
 msgid "bookmark widget"
 msgstr "tiện ích đánh dấu trang"
+
+msgctxt "The label used by assistive technologies describing an bookmark toolbar attached to a bookmark widget."
+msgid "Bookmark toolbar"
+msgstr "Thanh công cụ Đánh dấu trang"
+
+msgctxt "Title for a feature displaying a list of bookmarks."
+msgid "Bookmarks"
+msgstr "Dấu trang"
+
+msgctxt "A message displayed instead of a list of bookmarks if it is empty."
+msgid "No bookmarks available."
+msgstr "Không có dấu trang khả dụng."
+
+msgctxt "Tooltip shown after hovering the bookmark link preview."
+msgid "Scroll to bookmark"
+msgstr "Cuộn chuột đến dấu trang"

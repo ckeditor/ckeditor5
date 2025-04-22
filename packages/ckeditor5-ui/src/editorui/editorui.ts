@@ -397,7 +397,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	/**
 	 * Initializes menu bar.
 	 */
-	protected _initMenuBar( menuBarView: MenuBarView ): void {
+	public initMenuBar( menuBarView: MenuBarView ): void {
 		const menuBarViewElement = menuBarView.element!;
 
 		this.focusTracker.add( menuBarViewElement );
@@ -786,7 +786,7 @@ function getToolbarDefinitionWeight( toolbarDef: FocusableToolbarDefinition ): n
 
 	// Prioritize contextual toolbars. They are displayed at the selection.
 	if ( options.isContextual ) {
-		weight--;
+		weight -= 2;
 	}
 
 	return weight;

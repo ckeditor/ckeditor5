@@ -1,0 +1,6 @@
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45">
+    <path fill="#F0F0F0" d="M2 0h41s2 0 2 2v41s0 2 -2 2h-41s-2 0 -2 -2v-41s0 -2 2 -2" />
+    <path fill="#D5D5D5" d="M11 10h10s1 0 1 1v24s0 1 -1 1h-10s-1 0 -1 -1v-24s0 -1 1 -1" />
+    <path fill="#D5D5D5" d="M25 10h10s1 0 1 1v10s0 1 -1 1h-10s-1 0 -1 -1v-10s0 -1 1 -1" />
+    <path fill="#D5D5D5" d="M25 24h10s1 0 1 1v10s0 1 -1 1h-10s-1 0 -1 -1v-10s0 -1 1 -1" />
+</svg>

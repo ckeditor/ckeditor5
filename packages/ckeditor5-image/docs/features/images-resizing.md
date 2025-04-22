@@ -6,7 +6,6 @@ meta-description: All about various ways of resizing images to fit the content b
 order: 50
 modified_at: 2021-06-17
 ---
-{@snippet features/build-image-source}
 
 # Resizing images
 
@@ -24,7 +23,7 @@ The plugin also gives you the ability to change the size of the image through th
 
 In this case, you can resize an image by dragging square handles displayed in each of its corners. After you enable image resizing, this option does not require any additional configuration.
 
-Use the corner handles to resize the image and adjust it to the text as needed. You can also use the alignment options from the image toolbar {@icon @ckeditor/ckeditor5-core/theme/icons/object-center.svg Image align} to achieve the desired effect.
+Use the corner handles to resize the image and adjust it to the text as needed. You can also use the alignment options from the image toolbar {@icon @ckeditor/ckeditor5-icons/theme/icons/object-center.svg Image align} to achieve the desired effect.
 
 Images can also be pre-resized using styling, as shown below (the last three images are hard-set to 28% for visual consistency).
 
@@ -93,7 +92,7 @@ const imageConfiguration = {
 }
 ```
 
-Try out the live demo of the resize dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/object-size-medium.svg Image resize} available in the image toolbar:
+Try out the live demo of the resize dropdown {@icon @ckeditor/ckeditor5-icons/theme/icons/object-size-medium.svg Image resize} available in the image toolbar:
 
 {@snippet features/image-resize-buttons-dropdown}
 
@@ -146,7 +145,7 @@ const imageConfiguration = {
 }
 ```
 
-Try out the live demo of the individual resize buttons {@icon @ckeditor/ckeditor5-core/theme/icons/object-size-large.svg Image resize} available in the image toolbar:
+Try out the live demo of the individual resize buttons {@icon @ckeditor/ckeditor5-icons/theme/icons/object-size-large.svg Image resize} available in the image toolbar:
 
 {@snippet features/image-resize-buttons}
 
@@ -317,7 +316,7 @@ Check out the difference in the live demo below:
 
 ## Image optimization and responsive images
 
-When using the {@link features/ckbox CKBox file manager} service, it produces sets of resized, optimized images. The users can invoke these resized versions if needed. To learn more about these capabilities, refer to the {@link features/images-responsive responsive images} guide and the {@link @ckbox features/images/conversion CKBox conversion} guide.
+When using the {@link features/ckbox CKBox file manager} service, it produces sets of resized, optimized images. The users can invoke these resized versions if needed. To learn more about these capabilities, refer to the {@link features/images-responsive responsive images} guide and the [CKBox conversion](https://ckeditor.com/docs/ckbox/latest/features/images/conversion.html) guide.
 
 ## Installation
 

@@ -15,22 +15,85 @@ order: 83
 
 ## Update to CKEditor&nbsp;5 v41.3.0
 
-_Released on April 10, 2024._
+Released on April 10, 2024. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v41.3.0))
 
-For the entire list of changes introduced in version 41.3.0, see the [release notes for CKEditor&nbsp;5 v41.3.0](https://github.com/ckeditor/ckeditor5/releases/tag/v41.3.0).
+### Multi-level lists
 
-Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v41.3.0.
+CKEditor 5's latest update brings a new premium feature: the {@link features/multi-level-lists multi-level list} feature. It allows for easy creation and modification of numbered lists with counters (`1., 1.1., 1.1.1`), crucial for clear referencing and hierarchical organization in complex documents. The feature ensures compatibility with Microsoft Word. When lists with such formatting are pasted to the editor, the numbering format and counters are retained.
+
+### Paste from Office improvements for lists
+
+No more breaking numbering of lists when they are pasted from Office. Previously whenever a list was split by paragraphs, the counter started again from 1. With our latest improvement, the counter is correctly preserved. Moreover, if you use Paste from Office Enhanced ⭐️, the paragraphs will be merged into list items to ensure proper semantic content.
+
+<info-box warning>
+	⚠️ If you use the `LegacyList` plugin to prolong the migration to the new list implementation, bear in mind that from this release Paste from Office stops working for the lists' implementation you are using. Migrate to `List` to maintain pasting lists functionality.
+</info-box>
+
+### Menu bar
+
+The menu bar is a user interface component popular in large editing desktop and online packages. It gives you access to all features provided by the editor, organized in menus and categories. It improves usability of the editor, keeping the toolbar simple and tidy. This is especially welcome in heavily-featured editor integrations. 
+
+The current release brings this battle-hardened solution to CKEditor 5! The {@link getting-started/setup/menubar menu bar} can easily be enabled in selected editor types, comes with handy features preset, and is also highly configurable.
+
+### Updated keyboard navigation
+
+This release brings in a fix for keyboard navigation with the <kbd>Tab</kbd> key. Before, it followed the default browser behavior, which could produce somewhat random effects. For example, when the cursor was positioned at the end of the editable, the <kbd>Tab</kbd> keystroke could navigate you to the image caption on the top.
+
+We changed it to an approach in which the <kbd>Tab</kbd> (and <kbd>Shift</kbd>+<kbd>Tab</kbd>), navigates to the next focusable field or an element outside the editor so that the users can quickly navigate fields or links on the page. The navigation in the editor itself should be done by arrows, rather.
+
+There is one exception to the <kbd>Tab</kbd> behavior. When a widget is selected, the <kbd>Tab</kbd> key will move the selection to the first nested editable, such as the caption of an image. Pressing the <kbd>Esc</kbd> key, while inside a nested editable, will move the selection to the closest ancestor widget, for example: moving from an image caption to selecting the whole image widget.
+
+### Minor breaking changes in this release
+
+* **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: The CSS custom property `--ck-color-image-caption-highligted-background` has been renamed to `--ck-color-image-caption-highlighted-background`. Please make sure to update your custom CSS accordingly.
+* **[real-time-collaboration](https://www.npmjs.com/package/@ckeditor/ckeditor5-real-time-collaboration)**: The username displayed next to the user marker in the edited content is no longer a CSS pseudo-element. Use the `.ck-user__marker-tooltip` CSS class to customize usernames instead.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: When `config.ai.openAI.requestParameters` or `config.ai.aws.requestParameters` are set, the set value will fully overwrite the default value. Most importantly, if you do not specify some properties in `requestParameters` they will not be set to default. For example, if you set `openAI.requestParameters` to `{ max_tokens: 1000 }`, the request parameters will be set exactly to that object. Make sure that you pass all necessary parameters in `requestParameters`. Important: this change happened in version 41.2.0 but has not been previously announced in the changelog.
+* **[upload](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload)**: The `FileDialogButtonView` class has been moved from `ckeditor5-upload` to `ckeditor5-ui`. Please update your import paths accordingly (was: `import { FileDialogButtonView } from 'ckeditor5/src/upload.js';`, is: `import { FileDialogButtonView } from 'ckeditor5/src/ui.js';`).
+* **[theme-lark](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark)**: The default vertical spacing around `ButtonView` in `ListItemView` (`--ck-list-button-padding`) has been reduced for better readability. This affects the presentation of various editor features that use this type of UI (headings, font size, font family, etc.). You can restore the previous value by setting `--ck-list-button-padding: calc(.2 * var(--ck-line-height-base) * var(--ck-font-size-base)) calc(.4 * var(--ck-line-height-base) * var(--ck-font-size-base));` in your custom styles sheet.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: From this release on, the UI of the Comments Archive feature is displayed in a dialog instead of a dropdown.
+* **[revision-history](https://www.npmjs.com/package/@ckeditor/ckeditor5-revision-history)**: The UI for saving the new revision is displayed in a dialog instead of a dropdown.
 
 ### Legacy lists compatibility
 
 As of this release, due to a bug that needed fixing, the {@link module:list/legacylist~LegacyList legacy lists plugin} (lists v1 ) is no longer compatible with the {@link features/paste-from-office paste from Office} feature. List items will be added as paragraphs instead. Please consider {@link updating/update-to-41#breaking-changes-to-the-list-plugin upgrading to the modern list plugin} to avoid it.
 
+## Update to CKEditor&nbsp;5 v41.2.0
+
+Released on March 6, 2024. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v41.2.0))
+
+### Copy-paste comments
+
+Since the beginning, collaboration has been a focal point for CKEditor 5. This release brings another highly anticipated improvement for the popular comments feature!
+
+Now, when you cut-paste, copy-and-paste, or drag around a piece of content that includes comments, the comments will be retained. The improvement allows users to restructure their content without losing the information or discussion available in the comments.
+
+By default, the comments are retained only on cut-and-paste and drag-and-drop actions. You can configure this behavior to be applied also on copy-paste or you can turn it off.
+
+### Accessibility Help Dialog
+
+CKEditor 5 v41.2.0 introduces the {@link features/accessibility#keyboard-shortcuts Accessibility Help Dialog}. With the hit of <kbd>Alt</kbd>/<kbd>Option</kbd>+<kbd>0</kbd> in the editor, users can now access the full list of available keyboard shortcuts. A toolbar button is available as well. This feature further improves the editor's usability and accessibility. It allows all users to navigate and operate CKEditor 5 more efficiently, thereby promoting a more inclusive user experience.
+
+The Accessibility Help Dialog is enabled by default in the `Essentials` plugin pack, making it available straight away in most integrations. If your editor build does not use the `Essentials` pack, make sure that you add the `AccessibilityHelp` plugin in your configuration.
+
+### Minor breaking changes in this release
+
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Comments will now be retained in the clipboard and pasted into the content when the user performs a cut-and-paste operation. To revert to the previous behavior (with no retaining), set the `comments.copyMarkers` configuration property to an empty array.
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The contents of the `BlockToolbar` and `BalloonToolbar` toolbars are now filled on the `EditorUIReadyEvent` instead of `Plugin#afterInit()`.
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: When `config.ai.openAI.requestParameters` or `config.ai.aws.requestParameters` are set, the set value will fully overwrite the default value. Most importantly, if you do not specify some properties in `requestParameters` they will not be set to default. For example, if you set `openAI.requestParameters` to `{ max_tokens: 1000 }`, the request parameters will be set exactly to that object. Make sure that you pass all necessary parameters in `requestParameters`.
+
+## Update to CKEditor&nbsp;5 v41.1.0
+
+Released on February 7, 2024. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v41.1.0))
+
+### Minor breaking changes in this release
+
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: We fixed how the missing `value` of the `"class"` and `"style"` attribute conversion is handled in the `attributeToAttribute()` upcast helper. Now while not providing the attribute's `value` to conversion the helper accepts and consumes all values. Previously those values were not consumed and left for other converters to convert. Note that you should use the `classes` and the `styles` fields for the fine-tuned conversion of those attributes instead of a catch-all `"style"` and `"class"` specified in the `key` field.
+* **[font](https://www.npmjs.com/package/@ckeditor/ckeditor5-font)**: The `colorSelectorView` property will no longer be accessible from the `ColorUI` plugin in the `@ckeditor/ckeditor5-font/src/ui/colorui.ts`.
+* **[source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing)**: The source editing feature will now throw an error when used with real-time collaboration as these features are not fully compatible and may lead to data loss. You will have to explicitly enable source editing for real-time collaboration by setting the `sourceEditing.allowCollaborationFeatures` configuration flag to `true`. If you want to use both these features, please read a [new guide discussing the risks](https://ckeditor.com/docs/ckeditor5/latest/features/source-editing.html#limitations-and-incompatibility) and add the flag to your configuration.
 
 ## Update to CKEditor&nbsp;5 v41.0.0
 
-_Released on January 17, 2024._
-
-For the entire list of changes introduced in version 41.0.0, see the [release notes for CKEditor&nbsp;5 v41.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v41.0.0).
+Released on January 17, 2024. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v41.0.0))
 
 Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v41.0.0.
 
@@ -265,3 +328,39 @@ Starting with v41.0.0, the UI of the {@link features/ai-assistant-overview AI as
 The migration from a dropdown panel to a dialog window brought some changes to the DOM structure of the UI. Customizations based on certain CSS selectors may not work anymore and may require adjustments.
 
 * The UI header element (`div.ck-form__header`) is no longer available inside the form element (`form.ck-ai-form`). You should apply CSS customizations to the {@link framework/architecture/ui-library#header header element} of the dialog instead (`.ck.ck-dialog .ck.ck-form__header`).
+
+### Major breaking changes in this release
+
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: From this release on, the UI of the AI Assistant feature is displayed in a dialog instead of a balloon. See [#14973](https://github.com/ckeditor/ckeditor5/issues/14973).
+* **[find-and-replace](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace)**: From this release on, the UI of the find and replace feature is displayed by default in a dialog instead of a dropdown. To bring the previous user experience back, you can use the [`config.findAndReplace.uiType`](https://ckeditor.com/docs/ckeditor5/latest/api/module_core_editor_editorconfig-EditorConfig.html#member-findAndReplace) configuration option. See [#14973](https://github.com/ckeditor/ckeditor5/issues/14973).
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The `AdjacentListsSupport` plugin is moved from the `documentlist` directory to the `list` directory. See [#14942](https://github.com/ckeditor/ckeditor5/issues/14942).
+
+### Minor breaking changes in this release
+
+* **[adapter-ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder)**: Rename export of the `UploadAdapter` class to `CKFinderUploadAdapter`. See [#15511](https://github.com/ckeditor/ckeditor5/issues/15511).
+* **[ai](https://www.npmjs.com/package/@ckeditor/ckeditor5-ai)**: The layout of the UI changed. Customizations based on certain CSS selectors may not work anymore because of a different DOM structure in the UI. [Learn more](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-41.html) about the scope of changes. See [#14973](https://github.com/ckeditor/ckeditor5/issues/14973).
+* **[ckfinder](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckfinder)**: Moved the `browseFiles` icon to the `core` package and added it to the `icons` object exported from it. See [#15511](https://github.com/ckeditor/ckeditor5/issues/15511).
+* **[ckbox](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox)**: Moved the `browseFiles` icon to the `core` package and added it to the `icons` object exported from it. See [#15511](https://github.com/ckeditor/ckeditor5/issues/15511).
+* **[code-block](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block)**: Moved the `codeBlock` icon to the `core` package and added it to the `icons` object exported from it. See [#15511](https://github.com/ckeditor/ckeditor5/issues/15511).
+* **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: Bumped the TypeScript version to 5.0. See [#15452](https://github.com/ckeditor/ckeditor5/issues/15452).
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Renamed export of the `View` class to `EditingView`. See [#15511](https://github.com/ckeditor/ckeditor5/issues/15511).
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Moved the `findOptimalInsertionRange` function to the `Schema` class as a new method. See [#15511](https://github.com/ckeditor/ckeditor5/issues/15511).
+* **[find-and-replace](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace)**: The layout of the UI changed. Customizations based on certain CSS selectors may not work anymore because of a different DOM structure in the UI. [Learn more](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-41.html) about the scope of changes. See [#14973](https://github.com/ckeditor/ckeditor5/issues/14973).
+* **[heading](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading)**: Moved the `heading1`, `heading2`, `heading3`, `heading4`, `heading5`, and `heading6` icons to the `core` package and added them to the `icons` object exported from it. See [#15511](https://github.com/ckeditor/ckeditor5/issues/15511).
+* **[horizontal-line](https://www.npmjs.com/package/@ckeditor/ckeditor5-horizontal-line)**: Moved the `horizontalLine` icon to the `core` package and added it to the `icons` object exported from it. See [#15511](https://github.com/ckeditor/ckeditor5/issues/15511).
+* **[html-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-embed)**: Moved the `html` icon to the `core` package and added it to the `icons` object exported from it. See [#15511](https://github.com/ckeditor/ckeditor5/issues/15511).
+* **[indent](https://www.npmjs.com/package/@ckeditor/ckeditor5-indent)**: Moved the `indent` and `outdent` icons to the `core` package and added them to the `icons` object exported from it. See [#15511](https://github.com/ckeditor/ckeditor5/issues/15511).
+* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: Added validation to the URL field to disallow empty URLs by default. See [#12501](https://github.com/ckeditor/ckeditor5/issues/12501).
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: All old list plugins are now prefixed with `Legacy` (including directory names):  `List` -> `LegacyList`, `ListProperties` -> `LegacyListProperties`, `TodoList` -> `LegacyTodoList`, `ListEditing` -> `LegacyListEditing`, `ListUtils` -> `LegacyListUtils`, `ListPropertiesEditing` -> `LegacyListPropertiesEditing`, `TodoListEditing` -> `LegacyTodoListEditing`. See [#14942](https://github.com/ckeditor/ckeditor5/issues/14942).
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The document list plugins are no longer prefixed with `Document` (including directory names): `DocumentList` -> `List`, `DocumentListProperties` -> `ListProperties`, `TodoDocumentList` -> `TodoList`, `DocumentListEditing` -> `ListEditing`, `DocumentListUtils` -> `ListUtils`, `DocumentListPropertiesEditing` -> `ListPropertiesEditing`, `DocumentListPropertiesUtils` -> `ListPropertiesUtils`, `TodoDocumentListEditing` -> `TodoListEditing`. See [#14942](https://github.com/ckeditor/ckeditor5/issues/14942).
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The `ListStyle` plugin was removed since it had been deprecated for a while. Use the `ListProperties` plugin instead. See [#14942](https://github.com/ckeditor/ckeditor5/issues/14942).
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Moved the `bulletedList`, `numberedList`, and `todoList` icons to the `core` package and added them to the `icons` object exported from it. See [#15511](https://github.com/ckeditor/ckeditor5/issues/15511).
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Moved the `table` icon to the `core` package and added it to the `icons` object exported from it. See [#15511](https://github.com/ckeditor/ckeditor5/issues/15511).
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: Moved the `colorPalette`, `previousArrow`, and `nextArrow` icons to the `core` package and added them to the `icons` object exported from it. See [#15511](https://github.com/ckeditor/ckeditor5/issues/15511).
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The `--ck-z-modal` CSS custom property was renamed to `--ck-z-panel`. We recommend updating custom CSS and integrations that use this custom property to avoid presentation issues. See [#14973](https://github.com/ckeditor/ckeditor5/issues/14973).
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The view collection (`focusables`) required by [`FocusCycler#constructor()`](https://ckeditor.com/docs/ckeditor5/latest/api/module_ui_focuscycler-FocusCycler.html#function-constructor) must only contain views implementing the [`FocusableView`](https://ckeditor.com/docs/ckeditor5/latest/api/module_ui_focuscycler-FocusableView.html) interface. Failing to do so will result in a TypeScript error. If your custom code creates `FocusCycler` instances, make sure that all views passed in `focusables` implement the `focus()` method. See [#14973](https://github.com/ckeditor/ckeditor5/issues/14973).
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The font size of the `FormHeaderView` component was increased. This change affects the look of the [find and replace](https://ckeditor.com/docs/ckeditor5/latest/features/find-and-replace.html) and [table styling](https://ckeditor.com/docs/ckeditor5/latest/features/tables/tables-styling.html) features as well as custom user interfaces that use this component. See [#14973](https://github.com/ckeditor/ckeditor5/issues/14973).
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The type of `AriaLiveAnnouncerPoliteness` changed (previously `enum`, now a constant `object`). See [#14973](https://github.com/ckeditor/ckeditor5/issues/14973).
+* **[ui](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)**: The `#next` and `#previous` properties of a [`FocusCycler`](https://ckeditor.com/docs/ckeditor5/latest/api/module_ui_focuscycler-FocusCycler.html) will now point to the same view if there is only one focusable view (previously `null`). This change may affect integrations that use this helper to manage advanced focus navigation in dynamic UIs. See [#14973](https://github.com/ckeditor/ckeditor5/issues/14973).
+* **[undo](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo)**: Moved the `undo` and `redo` icons to the `core` package and added them to the `icons` object exported from it. See [#15511](https://github.com/ckeditor/ckeditor5/issues/15511).
+* **[utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)**: Renamed the `Position` interface to `DomPoint`. See [#15511](https://github.com/ckeditor/ckeditor5/issues/15511).

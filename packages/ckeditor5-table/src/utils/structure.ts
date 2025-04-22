@@ -59,8 +59,17 @@ export function cropTableToDimensions(
 ): Element {
 	const { startRow, startColumn, endRow, endColumn } = cropDimensions;
 
-	// Create empty table with empty rows equal to crop height.
+	// Initialize the cropped table element.
 	const croppedTable = writer.createElement( 'table' );
+
+	// Copy table type attribute if present.
+	const sourceTableType = sourceTable.getAttribute( 'tableType' );
+
+	if ( sourceTableType ) {
+		writer.setAttribute( 'tableType', sourceTableType, croppedTable );
+	}
+
+	// Create empty table with empty rows equal to crop height.
 	const cropHeight = endRow - startRow + 1;
 
 	for ( let i = 0; i < cropHeight; i++ ) {

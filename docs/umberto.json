@@ -1,11 +1,6 @@
 {
 	"name": "CKEditor 5",
 	"slug": "ckeditor5",
-	"hooks": {
-		"beforeHexo": [
-			"../scripts/docs/build-content-styles.mjs"
-		]
-	},
 	"reportIssueWidget": {
 		"enabled": true,
 		"issueUrl": "https://github.com/ckeditor/ckeditor5/issues/new?labels=squad%3Accx%2Ctype%3Adocs&template=7-docs-issue-community.yml",
@@ -46,6 +41,8 @@
 		"api/module_html-embed_inserthtmlembedcommand-InsertHtmlEmbedCommand.html": "api/module_html-embed_htmlembedcommand-HtmlEmbedCommand.html",
 		"api/module_html-embed_updatehtmlembedcommand.html": "api/module_html-embed_htmlembedcommand.html",
 		"api/module_html-embed_updatehtmlembedcommand-UpdateHtmlEmbedCommand.html": "api/module_html-embed_htmlembedcommand-HtmlEmbedCommand.html",
+		"api/module_link_utils-ManualDecorator.html": "api/module_link_utils_manualdecorator-ManualDecorator.html",
+		"api/module_link_utils-AutomaticDecorators.html": "api/module_link_utils_automaticdecorators-AutomaticDecorators.html",
 		"api/module_list_checktodolistcommand.html": "api/module_list_todolist_checktodolistcommand.html",
 		"api/module_list_checktodolistcommand-CheckTodoListCommand.html": "api/module_list_todolist_checktodolistcommand-CheckTodoListCommand.html",
 		"api/module_list_converters.html": "api/module_list_list_converters.html",
@@ -284,6 +281,7 @@
 		"installation/getting-started/quick-start.html#creating-custom-builds-with-online-builder": "installation/legacy-getting-started/quick-start-other.html#creating-custom-builds-with-online-builder",
 		"installation/overview.html": "getting-started/index.html",
 		"installation/getting-started/configuration.html#adding-simple-standalone-features": "installation/legacy-getting-started/extending-features.html",
+		"installation/legacy/advanced/content-styles.html": "getting-started/setup/css.html",
 		"support/getting-support.html": "support/index.html",
 		"support/versioning-policy.html": "updating/versioning-policy.html",
 		"builds/guides/license-and-legal.html": "getting-started/licensing/license-and-legal.html",
@@ -432,7 +430,7 @@
 		}
 	},
 	"og": {
-		"description": "Learn how to install, integrate and configure CKEditor 5 Builds and how to work with CKEditor 5 Framework, customize it, create your own plugins and custom editors, change the UI or even bring your own UI to the editor. API reference and examples included."
+		"description": "Learn how to install, integrate and configure CKEditor 5 and how to work with CKEditor 5 Framework, customize it, create your own plugins and custom editors, change the UI or even bring your own UI to the editor. API reference and examples included."
 	},
 	"groups": [
 		{
@@ -614,6 +612,11 @@
 							]
 						}
 					]
+				},
+				{
+					"name": "Email editing",
+					"id": "features-email",
+					"slug": "email-editing"
 				},
 				{
 					"name": "File management",

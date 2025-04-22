@@ -3,35 +3,30 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window */
-
 import {
 	SpecialCharacters,
-	SpecialCharactersEssentials,
-	SpecialCharactersCurrency,
-	SpecialCharactersMathematical
-} from '@ckeditor/ckeditor5-special-characters';
-import { Font } from '@ckeditor/ckeditor5-font';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
-import { LinkImage } from '@ckeditor/ckeditor5-link';
-
-// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic.js';
-
-ClassicEditor.builtinPlugins.push(
-	SpecialCharacters,
 	Font,
+	CKBox,
+	CKBoxImageEdit,
 	PictureEditing,
 	ImageInsert,
 	ImageResize,
 	AutoImage,
-	LinkImage,
-	CKBox,
-	CKBoxImageEdit );
+	LinkImage
+} from 'ckeditor5';
+import { ClassicEditor } from '@snippets/index.js';
 
-window.ClassicEditor = ClassicEditor;
-window.SpecialCharacters = SpecialCharacters;
-window.SpecialCharactersCurrency = SpecialCharactersCurrency;
-window.SpecialCharactersMathematical = SpecialCharactersMathematical;
-window.SpecialCharactersEssentials = SpecialCharactersEssentials;
+export class SpecialCharactersEditor extends ClassicEditor {
+	static builtinPlugins = [
+		...ClassicEditor.builtinPlugins,
+		SpecialCharacters,
+		Font,
+		PictureEditing,
+		ImageInsert,
+		ImageResize,
+		AutoImage,
+		LinkImage,
+		CKBox,
+		CKBoxImageEdit
+	];
+}

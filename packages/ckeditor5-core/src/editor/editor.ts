@@ -7,7 +7,7 @@
  * @module core/editor/editor
  */
 
-import { set, get } from 'lodash-es';
+import { set, get } from 'es-toolkit/compat';
 
 import {
 	Config,
@@ -200,7 +200,8 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * The default configuration which is built into the editor class.
 	 *
-	 * It is used in CKEditor 5 builds to provide the default configuration options which are later used during the editor initialization.
+	 * It was used in the now deprecated CKEditor 5 builds to provide the default configuration options
+	 * which are later used during the editor initialization.
 	 *
 	 * ```ts
 	 * ClassicEditor.defaultConfig = {
@@ -231,7 +232,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * An array of plugins built into this editor class.
 	 *
-	 * It is used in CKEditor 5 builds to provide a list of plugins which are later automatically initialized
+	 * It is used in the now deprecated CKEditor 5 builds to provide a list of plugins which are later automatically initialized
 	 * during the editor initialization.
 	 *
 	 * They will be automatically initialized by the editor, unless listed in `config.removePlugins` and
@@ -461,6 +462,22 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 					.some( octets => segments.every( ( segment, index ) => octets[ index ] === segment || octets[ index ] === '*' ) );
 			}
 
+			function warnAboutNonProductionLicenseKey( licenseType: string ) {
+				const capitalizedLicenseType = licenseType[ 0 ].toUpperCase() + licenseType.slice( 1 );
+				const article = licenseType === 'evaluation' ? 'an' : 'a';
+
+				console.info(
+					`%cCKEditor 5 ${ capitalizedLicenseType } License`,
+					'color: #ffffff; background: #743CCD; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
+				);
+
+				console.warn(
+					`⚠️ You are using ${ article } ${ licenseType } license of CKEditor 5` +
+					`${ licenseType === 'trial' ? ' which is for evaluation purposes only' : '' }. ` +
+					'For production usage, please obtain a production license at https://portal.ckeditor.com/'
+				);
+			}
+
 			if ( licenseKey == 'GPL' ) {
 				if ( distributionChannel == 'cloud' ) {
 					blockEditor( 'distributionChannel' );
@@ -527,18 +544,12 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( [ 'development', 'evaluation', 'trial' ].includes( licensePayload.licenseType ) ) {
 				const { licenseType } = licensePayload;
-				const capitalizedLicenseType = licenseType[ 0 ].toUpperCase() + licenseType.slice( 1 );
+				const sessionStarted = sessionStorage.getItem( 'ckeditor5-development-session-started' );
 
-				console.info(
-					`%cCKEditor 5 ${ capitalizedLicenseType } License`,
-					'color: #ffffff; background: #743CCD; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
-				);
-
-				console.warn(
-					`⚠️ You are using a ${ licenseType } license of CKEditor 5` +
-					`${ licenseType === 'trial' ? ' which is for evaluation purposes only' : '' }. ` +
-					'For production usage, please obtain a production license at https://portal.ckeditor.com/'
-				);
+				if ( !sessionStarted ) {
+					warnAboutNonProductionLicenseKey( licenseType );
+					sessionStorage.setItem( 'ckeditor5-development-session-started', 'true' );
+				}
 			}
 
 			if ( [ 'evaluation', 'trial' ].includes( licensePayload.licenseType ) ) {

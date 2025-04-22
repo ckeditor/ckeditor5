@@ -5,7 +5,6 @@ meta-title: Linking images | CKEditor 5 Documentation
 meta-description: Learn how to use your images as link anchors.
 order: 70
 ---
-{@snippet features/build-image-source}
 
 # Linking images
 
@@ -13,7 +12,7 @@ The {@link module:link/linkimage~LinkImage} plugin lets you use images as links.
 
 ## Demo
 
-Click one of the images to open the contextual toolbar. Use the link icon {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Link} to add a link to the image. After you do this, an icon will appear in the top-right corner of the image, indicating there is a link attached to it.
+Click one of the images to open the contextual toolbar. Use the link icon {@icon @ckeditor/ckeditor5-icons/theme/icons/link.svg Link} to add a link to the image. After you do this, an icon will appear in the top-right corner of the image, indicating there is a link attached to it.
 
 {@snippet features/image-link}
 
