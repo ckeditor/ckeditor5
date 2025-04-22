@@ -227,7 +227,6 @@ const metaElement = document.createElement( 'meta' );
 
 metaElement.name = 'x-cke-crawler-ignore-patterns';
 metaElement.content = JSON.stringify( {
-	'request-failure': 'binance.com',
 	'console-error': [ 'Access to fetch at', 'Failed to fetch' ]
 } );
 

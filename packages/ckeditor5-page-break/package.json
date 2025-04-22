@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-cloud-services": "45.0.0",
-    "@ckeditor/ckeditor5-dev-utils": "^47.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^48.0.0",
     "@ckeditor/ckeditor5-easy-image": "45.0.0",
     "@ckeditor/ckeditor5-editor-classic": "45.0.0",
     "@ckeditor/ckeditor5-engine": "45.0.0",
