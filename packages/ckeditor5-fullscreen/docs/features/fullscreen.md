@@ -58,7 +58,7 @@ ClassicEditor
 
 ## Supported editor types
 
-Fullscreen mode is ready-to-use for {@link getting-started/setup/editor-types#classic-editor classic} and {@link getting-started/setup/editor-types#decoupled-editor-document decoupled} editors. If you want to use it with other editor type, you can use custom callbacks to adjust the layout according to your needs. See the details in the [Further customization](#further-customization) section.
+Fullscreen mode is ready-to-use for {@link getting-started/setup/editor-types#classic-editor classic} and {@link getting-started/setup/editor-types#decoupled-editor-document decoupled} editors. If you want to use it with other editor type, you can use custom callbacks to adjust the layout according to your needs. See the details in the [Enabling other editor types](#enabling-other-editor-types) section.
 
 ## Configuration
 
@@ -161,6 +161,66 @@ Below you will find a customized demo:
 * Menu bar is not displayed.
 
 {@snippet features/fullscreen-pageless}
+
+### Enabling other editor types
+
+This section covers how to provide fullscreen mode integration for other {@link getting-started/setup/editor-types editor types} than classic and decoupled. Please note that only those two are officially supported, so the code snippets below are exemplary and may not solve all technical challenges.
+
+First, you need to create a custom class extending {@link module:fullscreen/handlers/abstracteditorhandler~AbstractEditorHandler `AbstractEditorHandler`}. Besides the optional typing improvements, the most important thing is to implement its custom {@link module:fullscreen/handlers/abstracteditorhandler~AbstractEditorHandler#_defaultOnEnter `#_defaultOnEnter()`} method. It should move the editor UI elements proper for your editor type to the fullscreen container, preferably using {@link module:fullscreen/handlers/abstracteditorhandler~AbstractEditorHandler#moveToFullscreen `#moveToFullscreen()`} helper - it will assure the elements are moved back in DOM when leaving fullscreen mode.
+
+Then, in the editor's `toggleFullscreen` command, you will need to substitute the {@link module:fullscreen/fullscreencommand~FullscreenCommand#fullscreenHandler `#fullscreenHandler`} property with an instance of your custom class. It can be done either by adding a custom plugin (like shown in the snippet below), or in the `.then()` clause when the editor is created - in both cases, the code that should be executed is:
+
+```ts
+editor.commands.get( 'toggleFullscreen' ).fullscreenHandler = new CustomEditorHandler( editor );
+```
+
+Finally, if you're using the plugin approach, remember to add it to your editor configuration.
+
+See the full example below.
+
+```ts
+import { AbstractEditorHandler, FullscreenEditing } from '@ckeditor/ckeditor5-fullscreen';
+import { Plugin } from 'ckeditor5/src/core';
+
+class CustomEditorHandler extends AbstractEditorHandler {
+	// It's not mandatory to override `#_editor` property, but that will help TypeScript to properly handle the class.
+	// Skip if you are not using TS.
+	protected override readonly _editor: CustomEditorClass;
+
+	// Assign the custom editor class.
+	constructor( editor: CustomEditorClass ) {
+		super( editor );
+
+		this._editor = editor;
+	}
+
+	protected override _defaultOnEnter() {
+		// Implement your fullscreen logic here.
+		// For DOM manipulation, use `this.moveToFullscreen()` helper to ensure the elements are properly cleaned up
+		// after leaving fullscreen mode.
+	}
+}
+
+class CustomFullscreenHandling extends Plugin {
+	// Ensure 'toggleFullscreen' command, registered in `FullscreenEditing` plugin, is already available in the editor.
+	public static get requires() {
+		return [ FullscreenEditing ] as const;
+	}
+
+	init() {
+		// Substitute the default editor handler with a custom one.
+		this.editor.commands.get( 'toggleFullscreen' ).fullscreenHandler = new CustomEditorHandler( this.editor );
+	}
+}
+
+CustomEditorClass
+	.create( document.querySelector( '#editor' ), {
+		// Other configuration options.
+		plugins: [ Fullscreen, CustomFullscreenHandling,
+			// Other plugins.
+		]
+	} );
+```
 
 ## Related features
 

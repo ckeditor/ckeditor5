@@ -29,6 +29,19 @@ export default class FullscreenCommand extends Command {
 
 	/**
 	 * Specialized class handling the fullscreen mode toggling for a specific editor type.
+	 *
+	 * If you want to add support for a new editor type (for now, only Classic and Decoupled editors are handled),
+	 * create a custom handler that extends `AbstractEditorHandler` and replace `fullscreenHandler` with it after editor initialization:
+	 *
+	 * ```ts
+	 * // See the details of how to implement a custom handler in the `AbstractEditorHandler` class API docs.
+	 * class CustomEditorHandler extends AbstractEditorHandler {}
+	 *
+	 * CustomEditorClass.create( document.querySelector( '#editor' ), {} )
+	 * 	.then( ( editor ) => {
+	 * 		editor.commands.get( 'toggleFullscreen' ).fullscreenHandler = new CustomEditorHandler( editor );
+	 * 	} );
+	 * ```
 	 */
 	public fullscreenHandler: AbstractEditorHandler;
 
@@ -87,13 +100,13 @@ export default class FullscreenCommand extends Command {
 /**
  * Classic editor typeguard.
  */
-function isClassicEditor( editor: ClassicEditor | DecoupledEditor | Editor ): editor is ClassicEditor {
+function isClassicEditor( editor: Editor ): editor is ClassicEditor {
 	return ( editor.constructor as typeof Editor ).editorName === 'ClassicEditor';
 }
 
 /**
  * Decoupled editor typeguard.
  */
-function isDecoupledEditor( editor: ClassicEditor | DecoupledEditor | Editor ): editor is DecoupledEditor {
+function isDecoupledEditor( editor: Editor ): editor is DecoupledEditor {
 	return ( editor.constructor as typeof Editor ).editorName === 'DecoupledEditor';
 }
