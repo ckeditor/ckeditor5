@@ -80,7 +80,7 @@ ClassicEditor
 
 ## Configuration
 
-By default, enabling the {@link module:html-support/generalhtmlsupport~GeneralHtmlSupport} plugin does not enable support for any given element. You need to configure the elements the user wants to use via the {@link module:core/editor/editorconfig~EditorConfig#htmlSupport `config.htmlSupport`} option:
+By default, enabling the {@link module:html-support/generalhtmlsupport~GeneralHtmlSupport} plugin does not enable support for any given element. You need to configure the elements the user wants to use via the {@link module:core/editor/editorconfig~EditorConfig#htmlSupport `config.htmlSupport`} option. List of predefined elements than can be enabled this way is [available further in this guide](#predefined-supported-elements). It is also possible to define and enable [custom elements](#enabling-custom-elements).
 
 ```js
 ClassicEditor
@@ -314,6 +314,110 @@ dataSchema.registerBlockElement( {
 
 dataFilter.allowElement( 'object-block' );
 ```
+### Predefined supported elements
+
+The HTML elements listed below can be turned on directly via the `allow` setting of the `config.htmlSupport` option (mentioned above)[#configuration].
+
+#### Block elements
+
+* address
+* article
+* aside
+* blockquote
+* center
+* details
+* dir
+* div
+* dl
+* dt
+ * dd
+* fieldset
+* figure
+  * figcaption
+* footer
+* form
+  * button
+  * input
+  * textarea
+* header
+* hgroup
+* hr
+* hx
+* img
+* legend
+* li
+* main
+* menu
+* nav
+* ol
+* p
+* pre
+* section
+* summary
+* table
+  * caption
+  * col
+  * colgroup
+  * tbody
+  * tfoot
+  * thead
+  * td
+  * th
+  * tr
+* ul
+
+#### Inline elements
+
+* a
+* abbr
+* acronym
+* audio
+* b
+* bdi
+* bdo
+* big
+* canvas
+* cite
+* code
+* del
+* dfn
+* embed
+* em
+* figure
+* font
+* i
+* iframe
+* ins
+* kbd
+* li
+* mark
+* meter
+* object
+* oembed
+* ol
+* output
+* progress
+* q
+* s
+* samp
+* script
+* select
+* small
+* span
+* strong
+* style
+* sub
+* sup
+* tbody
+* thead
+* time
+* tt
+* u
+* ul
+* var
+* video
+
+
 
 ## Known issues
 
