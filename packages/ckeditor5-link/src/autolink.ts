@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import type { ClipboardInputTransformationData } from 'ckeditor5/src/clipboard.js';
-import type { DocumentSelectionChangeEvent, Element, Model, Position, Range, Writer } from 'ckeditor5/src/engine.js';
+import type { DocumentSelectionChangeEvent, Model, Position, Range, Writer } from 'ckeditor5/src/engine.js';
 import { Delete, TextWatcher, getLastTextLine, findAttributeRange, type TextWatcherMatchedDataEvent } from 'ckeditor5/src/typing.js';
 import type { EnterCommand, ShiftEnterCommand } from 'ckeditor5/src/enter.js';
 
@@ -263,11 +263,14 @@ export default class AutoLink extends Plugin {
 		enterCommand.on( 'execute', () => {
 			const position = model.document.selection.getFirstPosition()!;
 
-			if ( !position.parent.previousSibling ) {
-				return;
-			}
+			let rangeToCheck: Range;
 
-			const rangeToCheck = model.createRangeIn( position.parent.previousSibling as Element );
+			// Previous sibling might not be an element if enter was blocked due to be triggered in a limit element.
+			if ( position.parent.previousSibling?.is( 'element' ) ) {
+				rangeToCheck = model.createRangeIn( position.parent.previousSibling );
+			} else {
+				rangeToCheck = model.createRange( model.createPositionAt( position.parent, 0 ), position );
+			}
 
 			this._checkAndApplyAutoLinkOnRange( rangeToCheck );
 		} );
