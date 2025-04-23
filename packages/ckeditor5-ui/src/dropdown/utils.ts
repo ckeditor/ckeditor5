@@ -113,8 +113,6 @@ import type { DropdownMenuDefinition } from './menu/utils.js';
  *
  * @param locale The locale instance.
  * @param ButtonClassOrInstance The dropdown button view class. Needs to implement the
- * @param behaviorOptions Attributes for the default behavior of the dropdown.
- *
  * {@link module:ui/dropdown/button/dropdownbutton~DropdownButton} interface.
  * @returns The dropdown view instance.
  */

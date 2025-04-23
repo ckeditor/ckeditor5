@@ -74,7 +74,6 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * Do not use any other custom selection object within callback, as this will lead to out-of-bounds exceptions in rare scenarios.
 	 *
 	 * @param action Type of clipboard action.
-	 * @param writer An instance of the model writer.
 	 * @param selection Selection to be checked.
 	 * @param getCopiedFragment	Callback that performs copy of selection and returns it as fragment.
 	 * @internal
@@ -144,7 +143,6 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * 	* Fake marker elements inside `getPastedDocumentElement` can be cloned, but their ranges cannot overlap.
 	 * 	* If `duplicateOnPaste` is `true` in marker config then associated marker ID is regenerated before pasting.
 	 *
-	 * @param action Type of clipboard action.
 	 * @param markers Object that maps marker name to corresponding range.
 	 * @param getPastedDocumentElement Getter used to get target markers element.
 	 * @internal

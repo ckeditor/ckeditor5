@@ -60,7 +60,6 @@ export default class TextProxy extends TypeCheckable {
 	 * @param offsetInText Offset in {@link module:engine/view/textproxy~TextProxy#textNode text node}
 	 * from which the text proxy starts.
 	 * @param length Text proxy length, that is how many text node's characters, starting from `offsetInText` it represents.
-	 * @constructor
 	 */
 	constructor( textNode: Text, offsetInText: number, length: number ) {
 		super();

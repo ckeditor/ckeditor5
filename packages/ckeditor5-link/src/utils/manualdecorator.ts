@@ -60,12 +60,13 @@ export default class ManualDecorator extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Creates a new instance of {@link module:link/utils/manualdecorator~ManualDecorator}.
 	 *
+	 * @param config The configuration object.
 	 * @param config.id The name of the attribute used in the model that represents a given manual decorator.
 	 * For example: `'linkIsExternal'`.
 	 * @param config.label The label used in the user interface to toggle the manual decorator.
 	 * @param config.attributes A set of attributes added to output data when the decorator is active for a specific link.
 	 * Attributes should keep the format of attributes defined in {@link module:engine/view/elementdefinition~ElementDefinition}.
-	 * @param [config.defaultValue] Controls whether the decorator is "on" by default.
+	 * @param config.defaultValue Controls whether the decorator is "on" by default.
 	 */
 	constructor( { id, label, attributes, classes, styles, defaultValue }: NormalizedLinkDecoratorManualDefinition ) {
 		super();

@@ -33,6 +33,7 @@ export default class LegacyListStartCommand extends Command {
 	 * Executes the command.
 	 *
 	 * @fires execute
+	 * @param options Execute options.
 	 * @param options.startIndex The list start index.
 	 */
 	public override execute( { startIndex = 1 }: { startIndex?: number } = {} ): void {

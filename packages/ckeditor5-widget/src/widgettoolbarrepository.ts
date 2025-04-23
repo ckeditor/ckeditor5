@@ -139,6 +139,7 @@ export default class WidgetToolbarRepository extends Plugin {
 	 * callback (or later) to make sure that the given toolbar items were already registered by other plugins.
 	 *
 	 * @param toolbarId An id for the toolbar. Used to
+	 * @param options Detailed options
 	 * @param options.ariaLabel Label used by assistive technologies to describe this toolbar element.
 	 * @param options.items Array of toolbar items.
 	 * @param options.getRelatedElement Callback which returns an element the toolbar should be attached to.
