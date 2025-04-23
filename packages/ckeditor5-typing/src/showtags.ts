@@ -9,11 +9,13 @@
 
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 import {
+	type DowncastWriter,
 	type MapperModelToViewPositionEvent,
 	type ViewElement,
 	type ViewNode,
-	type DowncastWriter,
-	type ViewUIElement
+	type ViewUIElement,
+	type ViewAttributeElement,
+	type ViewContainerElement
 	// type ViewDocumentSelectionChangeEvent,
 	// _stringifyView
 } from '@ckeditor/ckeditor5-engine';
@@ -62,20 +64,8 @@ export default class ShowTags extends Plugin {
 		return true;
 	}
 
-	private _renderedTags: WeakMap<object, any>;
-
-	/**
-	 * @inheritDoc
-	 */
-	constructor( editor: Editor ) {
-		super( editor );
-
-		this._renderedTags = new WeakMap();
-	}
-
 	public init(): void {
 		const editor = this.editor;
-		// let x = 0;
 
 		editor.editing.view.document.registerPostFixer( writer => {
 			// Theoretically, post-fixer should return info whether it made any changes.
@@ -85,6 +75,10 @@ export default class ShowTags extends Plugin {
 			//
 			// let hasInsertedTags = false;
 
+			const elementsToRefresh: Set<ViewContainerElement | ViewAttributeElement> = new Set();
+			const startTagElementsToRefresh: Set<ViewUIElement> = new Set();
+			const endTagElementsToRefresh: Set<ViewUIElement> = new Set();
+
 			// TODO can be done via listening to change:children instead of accessing private API
 			/* @ts-ignore */
 			editor.editing.view._renderer.markedChildren.forEach( child => {
@@ -92,80 +86,115 @@ export default class ShowTags extends Plugin {
 
 				if ( child.is( 'rootElement' ) ) {
 					walker = writer.createRangeIn( child ).getWalker();
-				} else {
+				}
+				// Odd case: when clicking on the marked position <p>[]<strong>x</strong></p>
+				// we get an empty and detached <strong> element.
+				else if ( child.parent ) {
 					walker = writer.createRangeOn( child ).getWalker();
+				} else {
+					return;
 				}
 
 				for ( const value of walker ) {
-					// Inf loop protection for testing purposes.
-					// It was necessary when I was testing the `hasInsertedTags` return value because it was
-					// too easy to trigger inf loops.
-					// if ( x++ > 10000 ) {
-					// 	throw new Error( 'inf loop protection' );
-					// }
-
 					if ( value.type === 'elementStart' ) {
 						const currentItem = value.item;
 						const shouldShowTags = ( currentItem.is( 'containerElement' ) || currentItem.is( 'attributeElement' ) ) &&
 							!EXCLUDED_ELEMENTS[ currentItem.name ];
 
 						if ( shouldShowTags ) {
-							const { tagStart, tagEnd, areNew } = this._getTagElements( writer, currentItem );
-
-							if ( areNew ) {
-								const positionAtStart = writer.createPositionAt( currentItem, 0 );
-								writer.insert( positionAtStart, tagStart );
-								writer.insert( writer.createPositionAt( currentItem, 'end' ), tagEnd );
-
-								// CASE 3:
-								//
-								// I'm naively fixing only collapsed selection but it'd be good to
-								// check it in all the cases.
-								const viewSelection = editor.editing.view.document.selection;
-
-								if ( viewSelection.isCollapsed && viewSelection.isSimilar( writer.createSelection( positionAtStart ) ) ) {
-									console.log( '[INFO] Fixed selection position (CASE 3).' );
-									writer.setSelection( positionAtStart.getShiftedBy( 1 ) );
-								}
-
-								// hasInsertedTags = true;
-							} else {
-								if ( currentItem.getChildIndex( tagStart ) != 0 ) {
-									writer.insert( writer.createPositionAt( currentItem, 0 ), tagStart );
-
-									// hasInsertedTags = true;
-								}
-
-								if ( currentItem.getChildIndex( tagEnd ) != currentItem.childCount - 1 ) {
-									writer.insert( writer.createPositionAt( currentItem, 'end' ), tagEnd );
-
-									// hasInsertedTags = true;
-								}
-							}
+							elementsToRefresh.add( currentItem );
+						} else if ( this._isStartTagElement( currentItem as ViewElement ) ) {
+							startTagElementsToRefresh.add( currentItem as ViewUIElement );
+						} else if ( this._isEndTagElement( currentItem as ViewElement ) ) {
+							endTagElementsToRefresh.add( currentItem as ViewUIElement );
 						}
 					}
 				}
 			} );
 
-			// CASE 2:
-			//
-			// Fix selection converted to a position at the end of an attribute element:
-			// <b><X/>foo<X/>[]</b>bar -> <b><X/>foo[]<X/></b>bar
-			//
-			// This cannot be done in modelToViewPosition listener, as at the point of position mapping
-			// the selection is located here: <b><X/>foo<X/></b>[]bar
-			// It's only moved to </b> after its attributes are converted, which is a later, separate step of
-			// selection conversion.
+			// console.log( 'ELEMENTS TO REFRESH', elementsToRefresh );
+			// console.log( 'TAG ELEMENTS TO REFRESH', startTagElementsToRefresh );
+
+			for ( const elementToRefresh of elementsToRefresh ) {
+				let addStart = false;
+				let addEnd = false;
+				const firstChild = elementToRefresh.getChild( 0 );
+
+				if ( firstChild ) {
+					// Can cast to ViewNode because if firstChild exists, last one must exist too (can't be undefined).
+					const lastChild = elementToRefresh.getChild( elementToRefresh.childCount - 1 ) as ViewNode;
+
+					if ( this._isStartTagElement( firstChild ) ) {
+						startTagElementsToRefresh.delete( firstChild as ViewUIElement );
+					} else {
+						addStart = true;
+					}
+
+					if ( firstChild != lastChild ) {
+						if ( this._isEndTagElement( lastChild ) ) {
+							endTagElementsToRefresh.delete( lastChild as ViewUIElement );
+						} else {
+							addEnd = true;
+						}
+					} else {
+						addEnd = true;
+					}
+				} else {
+					addStart = true;
+					addEnd = true;
+				}
+
+				if ( addStart ) {
+					const tagElement = this._createStartTagElement( writer, elementToRefresh.name );
+					writer.insert( writer.createPositionAt( elementToRefresh, 0 ), tagElement );
+				}
+
+				if ( addEnd ) {
+					const tagElement = this._createEndTagElement( writer, elementToRefresh.name );
+					writer.insert( writer.createPositionAt( elementToRefresh, 'end' ), tagElement );
+				}
+			}
+
+			for ( const tagElementToRefresh of startTagElementsToRefresh ) {
+				if ( tagElementToRefresh.index != 0 ) {
+					writer.remove( tagElementToRefresh );
+				}
+			}
+
+			for ( const tagElementToRefresh of endTagElementsToRefresh ) {
+				if ( tagElementToRefresh.parent && tagElementToRefresh.index != ( tagElementToRefresh.parent.childCount - 1 ) ) {
+					writer.remove( tagElementToRefresh );
+				}
+			}
+
 			const viewSelection = editor.editing.view.document.selection;
 
 			if ( viewSelection.isCollapsed ) {
 				const selectionPosition = viewSelection.focus;
 				const nodeBefore = selectionPosition?.nodeBefore;
+				const nodeAfter = selectionPosition?.nodeAfter;
 
+				// CASE 2:
+				//
+				// Fix selection converted to a position at the end of an attribute element:
+				// <b><X/>foo<X/>[]</b>bar -> <b><X/>foo[]<X/></b>bar
+				//
+				// This cannot be done in modelToViewPosition listener, as at the point of position mapping
+				// the selection is located here: <b><X/>foo<X/></b>[]bar
+				// It's only moved to </b> after its attributes are converted, which is a later, separate step of
+				// selection conversion.
 				if ( nodeBefore && this._isEndTagElement( nodeBefore ) ) {
 					console.log( '[INFO] Fixed selection position (CASE 2).' );
 
 					writer.setSelection( writer.createPositionBefore( nodeBefore ) );
+				}
+				// CASE 3:
+				//
+				// <p>[]<X/>foo<X/></p> -> <p><X/>[]foo<X/></p>
+				else if ( !nodeBefore && nodeAfter && this._isStartTagElement( nodeAfter ) ) {
+					console.log( '[INFO] Fixed selection position (CASE 3).' );
+
+					writer.setSelection( writer.createPositionAfter( nodeAfter ) );
 				}
 			}
 
@@ -222,30 +251,24 @@ export default class ShowTags extends Plugin {
 		// }, 2000 );
 	}
 
-	private _getTagElements( writer: DowncastWriter, currentItem: ViewElement ): TagElements {
-		if ( this._renderedTags.has( currentItem ) ) {
-			return this._renderedTags.get( currentItem );
-		}
-
-		const tagStart = writer.createUIElement( 'span', { class: 'tag-start' }, function( domDocument ) {
+	private _createStartTagElement( writer: DowncastWriter, name: string ): ViewUIElement {
+		return writer.createUIElement( 'span', { class: 'tag-start' }, function( domDocument ) {
 			const domElement = this.toDomElement( domDocument );
 			domElement.setAttribute( 'contenteditable', 'false' );
-			domElement.append( currentItem.name );
+			domElement.append( name );
 
 			return domElement;
 		} );
+	}
 
-		const tagEnd = writer.createUIElement( 'span', { class: 'tag-end' }, function( domDocument ) {
+	private _createEndTagElement( writer: DowncastWriter, name: string ): ViewUIElement {
+		return writer.createUIElement( 'span', { class: 'tag-end' }, function( domDocument ) {
 			const domElement = this.toDomElement( domDocument );
 			domElement.setAttribute( 'contenteditable', 'false' );
-			domElement.append( '/' + currentItem.name );
+			domElement.append( '/' + name );
 
 			return domElement;
 		} );
-
-		this._renderedTags.set( currentItem, { tagStart, tagEnd } );
-
-		return { tagStart, tagEnd, areNew: true };
 	}
 
 	private _isStartTagElement( element: ViewNode ): boolean {
