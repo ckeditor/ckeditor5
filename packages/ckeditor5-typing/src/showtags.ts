@@ -11,9 +11,11 @@ import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 import {
 	type MapperModelToViewPositionEvent,
 	type ViewElement,
+	type ViewNode,
 	type DowncastWriter,
-	type ViewUIElement,
-	type ViewPosition
+	type ViewUIElement
+	// type ViewDocumentSelectionChangeEvent,
+	// _stringifyView
 } from '@ckeditor/ckeditor5-engine';
 import { priorities } from '@ckeditor/ckeditor5-utils';
 
@@ -73,17 +75,21 @@ export default class ShowTags extends Plugin {
 
 	public init(): void {
 		const editor = this.editor;
-		let x = 0;
+		// let x = 0;
 
 		editor.editing.view.document.registerPostFixer( writer => {
-			let hasInsertedTags = false;
+			// Theoretically, post-fixer should return info whether it made any changes.
+			// However, for performance reasons, in this case where as an integrator you control the entire situation
+			// (and can tweak the code to have this post-fixer as the last one) it may be worth saving one post-fixer loop
+			// by always returning void.
+			//
+			// let hasInsertedTags = false;
 
-			// TODO can be done via listening to change:children
+			// TODO can be done via listening to change:children instead of accessing private API
 			/* @ts-ignore */
 			editor.editing.view._renderer.markedChildren.forEach( child => {
-				// console.log( 'child', child );
-
 				let walker;
+
 				if ( child.is( 'rootElement' ) ) {
 					walker = writer.createRangeIn( child ).getWalker();
 				} else {
@@ -91,12 +97,12 @@ export default class ShowTags extends Plugin {
 				}
 
 				for ( const value of walker ) {
-					// console.log( 'value', value );
-
 					// Inf loop protection for testing purposes.
-					if ( x++ > 10000 ) {
-						throw new Error( 'inf loop protection' );
-					}
+					// It was necessary when I was testing the `hasInsertedTags` return value because it was
+					// too easy to trigger inf loops.
+					// if ( x++ > 10000 ) {
+					// 	throw new Error( 'inf loop protection' );
+					// }
 
 					if ( value.type === 'elementStart' ) {
 						const currentItem = value.item;
@@ -107,39 +113,33 @@ export default class ShowTags extends Plugin {
 							const { tagStart, tagEnd, areNew } = this._getTagElements( writer, currentItem );
 
 							if ( areNew ) {
-								// console.log( 'areNew', currentItem );
 								const positionAtStart = writer.createPositionAt( currentItem, 0 );
 								writer.insert( positionAtStart, tagStart );
 								writer.insert( writer.createPositionAt( currentItem, 'end' ), tagEnd );
 
+								// CASE 3:
+								//
 								// I'm naively fixing only collapsed selection but it'd be good to
 								// check it in all the cases.
-								const selection = editor.editing.view.document.selection;
+								const viewSelection = editor.editing.view.document.selection;
 
-								console.log(
-									selection.focus?.parent,
-									selection.focus?.offset,
-									selection.isSimilar( writer.createSelection( positionAtStart ) )
-								);
-								if ( selection.isCollapsed && selection.isSimilar( writer.createSelection( positionAtStart ) ) ) {
-									console.log( 'fixed position in postFixer' );
+								if ( viewSelection.isCollapsed && viewSelection.isSimilar( writer.createSelection( positionAtStart ) ) ) {
+									console.log( '[INFO] Fixed selection position (CASE 3).' );
 									writer.setSelection( positionAtStart.getShiftedBy( 1 ) );
 								}
 
-								hasInsertedTags = true;
+								// hasInsertedTags = true;
 							} else {
 								if ( currentItem.getChildIndex( tagStart ) != 0 ) {
-									// console.log( tagStart.index, currentItem );
 									writer.insert( writer.createPositionAt( currentItem, 0 ), tagStart );
 
-									hasInsertedTags = true;
+									// hasInsertedTags = true;
 								}
 
 								if ( currentItem.getChildIndex( tagEnd ) != currentItem.childCount - 1 ) {
-									// console.log( tagEnd.index, currentItem.childCount, currentItem );
 									writer.insert( writer.createPositionAt( currentItem, 'end' ), tagEnd );
 
-									hasInsertedTags = true;
+									// hasInsertedTags = true;
 								}
 							}
 						}
@@ -147,30 +147,79 @@ export default class ShowTags extends Plugin {
 				}
 			} );
 
-			// TODO I wonder if we could return false here all the time...
-			// Otherwise, after adding the UI elements, we do another pass through the tree.
-			return hasInsertedTags;
+			// CASE 2:
+			//
+			// Fix selection converted to a position at the end of an attribute element:
+			// <b><X/>foo<X/>[]</b>bar -> <b><X/>foo[]<X/></b>bar
+			//
+			// This cannot be done in modelToViewPosition listener, as at the point of position mapping
+			// the selection is located here: <b><X/>foo<X/></b>[]bar
+			// It's only moved to </b> after its attributes are converted, which is a later, separate step of
+			// selection conversion.
+			const viewSelection = editor.editing.view.document.selection;
+
+			if ( viewSelection.isCollapsed ) {
+				const selectionPosition = viewSelection.focus;
+				const nodeBefore = selectionPosition?.nodeBefore;
+
+				if ( nodeBefore && this._isEndTagElement( nodeBefore ) ) {
+					console.log( '[INFO] Fixed selection position (CASE 2).' );
+
+					writer.setSelection( writer.createPositionBefore( nodeBefore ) );
+				}
+			}
+
+			// return hasInsertedTags;
+			return false;
 		} );
 
+		// CASE 1:
+		//
+		// Listen after the default mapping proposed a view position and correct the position in the following cases:
+		//
+		// <p>[]<X/>foo<X/></p> -> <p><X/>[]foo<X/></p>
 		editor.editing.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', ( event, data ) => {
 			const viewPosition = data.viewPosition;
 
 			if ( !viewPosition ) {
-				console.log( 'aborted because no viewPosition... should not happen' );
+				console.log( '[WARN] Aborted because no viewPosition... should not happen.' );
 				return;
 			}
-
 			if ( viewPosition.isAtStart ) {
 				const parent = viewPosition.parent;
+
 				if ( parent.is( 'element' ) ) {
 					const firstChild = parent.getChild( 0 );
-					if ( firstChild && firstChild.is( 'uiElement' ) && firstChild.hasClass( 'tag-start' ) ) {
-						console.log( 'fixed position in modelToViewPosition' );
+
+					if ( firstChild && this._isStartTagElement( firstChild ) ) {
+						console.log( '[INFO] Fixed position in modelToViewPosition (CASE 1).' );
+
 						data.viewPosition = viewPosition.getShiftedBy( 1 );
 					}
 				}
 			}
 		}, { priority: priorities.low - 1 } );
+
+		// editor.editing.view.document.on<ViewDocumentSelectionChangeEvent>( 'selectionChange', ( evt, data ) => {
+		// 	const viewPosition = data.newSelection.focus;
+		// 	if ( viewPosition ) {
+		// 		console.log( 'vDoc#selChange', _stringifyView( viewPosition.root, viewPosition ) );
+		// 	}
+		// }, { priority: 'lowest' } );
+
+		// editor.editing.view.document.selection.on( 'change', ( evt, data ) => {
+		// 	const viewPosition = editor.editing.view.document.selection.focus;
+		// 	if ( viewPosition ) {
+		// 		console.log( 'vDoc.sel#change', _stringifyView( viewPosition.root, viewPosition ) );
+		// 	}
+		// }, { priority: 'lowest' } );
+
+		// setInterval( () => {
+		// 	const viewPosition = editor.editing.view.document.selection.focus;
+		// 	if ( viewPosition ) {
+		// 		console.log( 'interval', _stringifyView( viewPosition.root, viewPosition ) );
+		// 	}
+		// }, 2000 );
 	}
 
 	private _getTagElements( writer: DowncastWriter, currentItem: ViewElement ): TagElements {
@@ -197,6 +246,14 @@ export default class ShowTags extends Plugin {
 		this._renderedTags.set( currentItem, { tagStart, tagEnd } );
 
 		return { tagStart, tagEnd, areNew: true };
+	}
+
+	private _isStartTagElement( element: ViewNode ): boolean {
+		return element.is( 'uiElement' ) && element.hasClass( 'tag-start' );
+	}
+
+	private _isEndTagElement( element: ViewNode ): boolean {
+		return element.is( 'uiElement' ) && element.hasClass( 'tag-end' );
 	}
 }
 
