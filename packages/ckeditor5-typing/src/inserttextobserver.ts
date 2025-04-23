@@ -85,8 +85,7 @@ export default class InsertTextObserver extends Observer {
 
 			viewDocument.fire( eventInfo, new DomEventData( view, domEvent, {
 				text,
-				selection: view.createSelection( targetRanges ),
-				expectBrowserChange: data.expectBrowserChange
+				selection: view.createSelection( targetRanges )
 			} ) );
 
 			// Stop the beforeinput event if `delete` event was stopped.
@@ -174,9 +173,4 @@ export interface InsertTextEventData extends DomEventData {
 	 * If not specified, the insertion should occur at the current view selection.
 	 */
 	selection?: ViewSelection | ViewDocumentSelection;
-
-	/**
-	 * TODO
-	 */
-	readonly expectBrowserChange?: boolean;
 }

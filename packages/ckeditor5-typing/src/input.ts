@@ -132,6 +132,7 @@ export default class Input extends Plugin {
 				}
 			}
 
+			// TODO should we store the live range or flush queue on model change as RTC could change the model?
 			const commandData: InsertTextCommandOptions = {
 				text: insertText,
 				selection: model.createSelection( modelRanges )
@@ -158,8 +159,8 @@ export default class Input extends Plugin {
 
 			this._compositionQueue.push( commandData );
 
-			if ( !data.expectBrowserChange ) {
-				this._compositionQueue.flush( 'synthetic insertText event' );
+			if ( data.domEvent.defaultPrevented ) {
+				this._compositionQueue.flush( 'beforeinput default prevented - synthetic insertText event' );
 			}
 		} );
 
