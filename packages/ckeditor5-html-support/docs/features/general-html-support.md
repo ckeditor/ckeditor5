@@ -320,237 +320,115 @@ The HTML elements listed below can be turned on directly via the `allow` setting
 
 #### Block elements
 
-<table style="border-style:none;">
-	<tbody>
-		<tr>
-			<td>
-				<ul>
-					<li>address</li>
-					<li>article</li>
-					<li>aside</li>
-					<li>blockquote</li>
-					<li>center</li>
-					<li>details</li>
-					<li>dir</li>
-					<li>div</li>
-					<li>dl</li>
-					<li>dt</li>
-					<li>dd</li>
-					<li>fieldset</li>
-					<li>figure<ul>
-							<li>figcaption</li>
-						</ul>
-					</li>
-					<li>footer</li>
-					<li>form<ul>
-							<li>button</li>
-							<li>input</li>
-							<li>textarea</li>
-						</ul>
-					</li>
-					<li>header</li>
-					<li>hgroup</li>
-					<li>hr</li>
-				</ul>
-			</td>
-			<td>
-				<ul>
-					<li>hx</li>
-					<li>img</li>
-					<li>legend</li>
-					<li>limain</li>
-					<li>menu</li>
-					<li>nav</li>
-					<li>ol</li>
-					<li>p</li>
-					<li>pre</li>
-					<li>section</li>
-					<li>summary</li>
-					<li>table<ul>
-							<li>caption</li>
-							<li>col</li>
-							<li>colgroup</li>
-							<li>tbody</li>
-							<li>tfoot</li>
-							<li>thead</li>
-							<li>td</li>
-							<li>th</li>
-							<li>tr</li>
-						</ul>
-					</li>
-					<li>ul</li>
-				</ul>
-			</td>
-		</tr>
-	</tbody>
-</table>
+<ul style="display: grid; grid-template-columns: 1fr 1fr;">
+	<li>address</li>
+	<li>article</li>
+	<li>aside</li>
+	<li>blockquote</li>
+	<li>center</li>
+	<li>details</li>
+	<li>dir</li>
+	<li>div</li>
+	<li>dl</li>
+	<li>dt</li>
+	<li>dd</li>
+	<li>fieldset</li>
+	<li style="grid-row-end: span 2;">figure
+		<ul>
+			<li>figcaption</li>
+		</ul>
+	</li>
+	<li>footer</li>
+	<li style="grid-row-end: span 4;">form
+		<ul>
+			<li>button</li>
+			<li>input</li>
+			<li>textarea</li>
+		</ul>
+	</li>
+	<li>header</li>
+	<li>hgroup</li>
+	<li>hr</li>
+	<li>hx</li>
+	<li>img</li>
+	<li>legend</li>
+	<li>li</li>
+	<li>main</li>
+	<li>menu</li>
+	<li>nav</li>
+	<li>ol</li>
+	<li>p</li>
+	<li>pre</li>
+	<li>section</li>
+	<li>summary</li>
+	<li style="grid-row-end: span 10;">table
+		<ul>
+			<li>caption</li>
+			<li>col</li>
+			<li>colgroup</li>
+			<li>tbody</li>
+			<li>tfoot</li>
+			<li>thead</li>
+			<li>td</li>
+			<li>th</li>
+			<li>tr</li>
+		</ul>
+	</li>
+	<li>ul</li>
+</ul>
 
 #### Inline elements
 
-<table>
-	<tbody>
-		<tr>
-			<td>
-				<ul>
-					<li>a</li>
-					<li>abbr</li>
-					<li>acronym</li>
-					<li>audio</li>
-					<li>b</li>
-					<li>bdi</li>
-					<li>bdo</li>
-					<li>big</li>
-					<li>canvas</li>
-					<li>cite</li>
-					<li>code</li>
-					<li>del</li>
-					<li>dfn</li>
-					<li>embed</li>
-					<li>em</li>
-					<li>figure</li>
-					<li>font</li>
-					<li>i</li>
-					<li>iframe</li>
-					<li>ins</li>
-					<li>kbd</li>
-					<li>li</li>
-					<li>mark</li>
-					<li>meter</li>
-				</ul>
-			</td>
-			<td>
-				<ul>
-					<li>object</li>
-					<li>oembed</li>
-					<li>ol</li>
-					<li>output</li>
-					<li>progress</li>
-					<li>q</li>
-					<li>s</li>
-					<li>samp</li>
-					<li>script</li>
-					<li>select</li>
-					<li>small</li>
-					<li>span</li>
-					<li>strong</li>
-					<li>style</li>
-					<li>sub</li>
-					<li>sup</li>
-					<li>tbody</li>
-					<li>thead</li>
-					<li>time</li>
-					<li>tt</li>
-					<li>u</li>
-					<li>ul</li>
-					<li>var</li>
-					<li>video</li>
-				</ul>
-			</td>
-		</tr>
-	</tbody>
-</table>
-
-<!-- 
-#### Block elements
-
-* address
-* article
-* aside
-* blockquote
-* center
-* details
-* dir
-* div
-* dl
-* dt
- * dd
-* fieldset
-* figure
-  * figcaption
-* footer
-* form
-  * button
-  * input
-  * textarea
-* header
-* hgroup
-* hr
-* hx
-* img
-* legend
-* li
-* main
-* menu
-* nav
-* ol
-* p
-* pre
-* section
-* summary
-* table
-  * caption
-  * col
-  * colgroup
-  * tbody
-  * tfoot
-  * thead
-  * td
-  * th
-  * tr
-* ul
-
-#### Inline elements
-
-* a
-* abbr
-* acronym
-* audio
-* b
-* bdi
-* bdo
-* big
-* canvas
-* cite
-* code
-* del
-* dfn
-* embed
-* em
-* figure
-* font
-* i
-* iframe
-* ins
-* kbd
-* li
-* mark
-* meter
-* object
-* oembed
-* ol
-* output
-* progress
-* q
-* s
-* samp
-* script
-* select
-* small
-* span
-* strong
-* style
-* sub
-* sup
-* tbody
-* thead
-* time
-* tt
-* u
-* ul
-* var
-* video
-
--->
+<ul style="display: grid; grid-template-columns: 1fr 1fr;">
+	<li>a</li>
+	<li>abbr</li>
+	<li>acronym</li>
+	<li>audio</li>
+	<li>b</li>
+	<li>bdi</li>
+	<li>bdo</li>
+	<li>big</li>
+	<li>canvas</li>
+	<li>cite</li>
+	<li>code</li>
+	<li>del</li>
+	<li>dfn</li>
+	<li>embed</li>
+	<li>em</li>
+	<li>figure</li>
+	<li>font</li>
+	<li>i</li>
+	<li>iframe</li>
+	<li>ins</li>
+	<li>kbd</li>
+	<li>li</li>
+	<li>mark</li>
+	<li>meter</li>
+	<li>object</li>
+	<li>oembed</li>
+	<li>ol</li>
+	<li>output</li>
+	<li>progress</li>
+	<li>q</li>
+	<li>s</li>
+	<li>samp</li>
+	<li>script</li>
+	<li>select</li>
+	<li>small</li>
+	<li>span</li>
+	<li>strong</li>
+	<li>style</li>
+	<li>sub</li>
+	<li>sup</li>
+	<li>tbody</li>
+	<li>thead</li>
+	<li>time</li>
+	<li>tt</li>
+	<li>u</li>
+	<li>ul</li>
+	<li>var</li>
+	<li>video</li>
+</ul>
 
 ## Known issues
 
