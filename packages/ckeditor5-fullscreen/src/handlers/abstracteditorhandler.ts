@@ -21,6 +21,17 @@ const DIALOG_OFFSET = 28;
 /**
  * The abstract editor type handler.
  *
+ * This class defines some actions and behaviors that are applied when fullscreen mode is toggled, and which are common
+ * regardless of the editor type. Then, specific classes like `ClassicEditorHandler` or `DecoupledEditorHandler`
+ * extend this class with actions specific for these editor types.
+ *
+ * Extend this class to provide fullscreen mode handling for unsupported editor types, or if you wish to heavily customize the default behavior.
+  *
+  * The only method that is necessary to provide when extending this class is `#_defaultOnEnter()`. However, make sure to
+  * familiarize yourself with the below full list of actions taken by `AbstractEditorHandler` to understand what is covered by default,
+  * and what should be provided by you.
+  *
+ *
  * When entering the fullscreen mode, the `#enable()` method is called. It creates the properly styled container
  * and handles the editor features that need it, in the following order:
  *
