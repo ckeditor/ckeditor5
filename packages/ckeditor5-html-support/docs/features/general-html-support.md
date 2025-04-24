@@ -316,7 +316,7 @@ dataFilter.allowElement( 'object-block' );
 ```
 ### Predefined supported elements
 
-The HTML elements listed below can be turned on directly via the `allow` setting of the `config.htmlSupport` option (mentioned above)[#configuration].
+The HTML elements listed below can be turned on directly via the `allow` setting of the `config.htmlSupport` option [mentioned above](#configuration).
 
 #### Block elements
 
