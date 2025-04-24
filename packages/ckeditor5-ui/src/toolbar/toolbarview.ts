@@ -151,7 +151,7 @@ export default class ToolbarView extends View implements DropdownPanelFocusable 
 	 * An additional CSS class added to the {@link #element}.
 	 *
 	 * @observable
-	 * @member {String} #class
+	 * @type {String}
 	 */
 	declare public class: string | undefined;
 

@@ -137,13 +137,14 @@ export default class ColorSelectorView extends View {
 	 * Creates a view to be inserted as a child of {@link module:ui/dropdown/dropdownview~DropdownView}.
 	 *
 	 * @param locale The localization services instance.
-	 * @param colors An array with definitions of colors to be displayed in the table.
-	 * @param columns The number of columns in the color grid.
-	 * @param removeButtonLabel The label of the button responsible for removing the color.
-	 * @param colorPickerLabel The label of the button responsible for color picker appearing.
-	 * @param documentColorsLabel The label for the section with the document colors.
-	 * @param documentColorsCount The number of colors in the document colors section inside the color dropdown.
-	 * @param colorPickerViewConfig The configuration of color picker feature. If set to `false`, the color picker will be hidden.
+	 * @param options Constructor options.
+	 * @param options.colors An array with definitions of colors to be displayed in the table.
+	 * @param options.columns The number of columns in the color grid.
+	 * @param options.removeButtonLabel The label of the button responsible for removing the color.
+	 * @param options.colorPickerLabel The label of the button responsible for color picker appearing.
+	 * @param options.documentColorsLabel The label for the section with the document colors.
+	 * @param options.documentColorsCount The number of colors in the document colors section inside the color dropdown.
+	 * @param options.colorPickerViewConfig The configuration of color picker feature. If set to `false`, the color picker will be hidden.
 	 */
 	constructor(
 		locale: Locale,

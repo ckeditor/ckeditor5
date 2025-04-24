@@ -51,7 +51,6 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  * @param model The model in context of which the insertion should be performed.
  * @param content The content to insert.
  * @param selectable Selection into which the content should be inserted.
- * @param placeOrOffset Sets place or offset of the selection.
  * @returns Range which contains all the performed changes. This is a range that, if removed,
  * would return the model to the state before the insertion. If no changes were preformed by `insertContent`, returns a range collapsed
  * at the insertion position.
