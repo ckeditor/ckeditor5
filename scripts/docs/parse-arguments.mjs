@@ -5,7 +5,7 @@
 
 /* eslint-env node */
 
-import { parseArgs } from 'util';
+import { parseArgs, styleText } from 'util';
 import replaceKebabCaseWithCamelCase from '../utils/replacekebabcasewithcamelcase.mjs';
 
 /**
@@ -80,6 +80,10 @@ export default function parseArguments( args ) {
 		values.dev ||= !values.production;
 	}
 
+	if ( values.dev ) {
+		warnAboutUsingDevEnvironment();
+	}
+
 	splitOptionsToArray( values, [
 		'snippets',
 		'guides'
@@ -110,6 +114,18 @@ function splitOptionsToArray( options, keys ) {
 			options[ key ] = options[ key ].split( ',' ).filter( item => item.length );
 		}
 	}
+}
+
+/**
+ * Logs a warning about not sharing the documentation built with the `--dev` flag.
+ */
+function warnAboutUsingDevEnvironment() {
+	const warning = styleText(
+		[ 'bgRed', 'white' ],
+		'The "--dev" flag prevents the code from being optimized or obfuscated. Please do not share it with anyone!'
+	);
+
+	console.log( `\n${ warning }\n` );
 }
 
 /**
