@@ -325,32 +325,28 @@ The HTML elements listed below can be turned on directly via the `allow` setting
 	<li>article</li>
 	<li>aside</li>
 	<li>blockquote</li>
+	<li>button</li>
+	<li>caption</li>
 	<li>center</li>
+	<li>col</li>
+	<li>colgroup</li>
+	<li>dd</li>
 	<li>details</li>
 	<li>dir</li>
 	<li>div</li>
 	<li>dl</li>
 	<li>dt</li>
-	<li>dd</li>
 	<li>fieldset</li>
-	<li style="grid-row-end: span 2;">figure
-		<ul>
-			<li>figcaption</li>
-		</ul>
-	</li>
+	<li>figcaption</li>
+	<li>figure</li>
 	<li>footer</li>
-	<li style="grid-row-end: span 4;">form
-		<ul>
-			<li>button</li>
-			<li>input</li>
-			<li>textarea</li>
-		</ul>
-	</li>
+	<li>form</li>
 	<li>header</li>
 	<li>hgroup</li>
 	<li>hr</li>
 	<li>hx</li>
 	<li>img</li>
+	<li>input</li>
 	<li>legend</li>
 	<li>li</li>
 	<li>main</li>
@@ -361,19 +357,13 @@ The HTML elements listed below can be turned on directly via the `allow` setting
 	<li>pre</li>
 	<li>section</li>
 	<li>summary</li>
-	<li style="grid-row-end: span 10;">table
-		<ul>
-			<li>caption</li>
-			<li>col</li>
-			<li>colgroup</li>
-			<li>tbody</li>
-			<li>tfoot</li>
-			<li>thead</li>
-			<li>td</li>
-			<li>th</li>
-			<li>tr</li>
-		</ul>
-	</li>
+	<li>table</li>
+	<li>tbody</li>
+	<li>td</li>
+	<li>tfoot</li>
+	<li>th</li>
+	<li>thead</li>
+	<li>tr</li>
 	<li>ul</li>
 </ul>
 
