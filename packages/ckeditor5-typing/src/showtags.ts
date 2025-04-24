@@ -15,9 +15,10 @@ import {
 	type ViewNode,
 	type ViewUIElement,
 	type ViewAttributeElement,
-	type ViewContainerElement
-	// type ViewDocumentSelectionChangeEvent,
+	type ViewContainerElement,
+	type ViewRenderEvent
 	// _stringifyView
+	// type ViewDocumentSelectionChangeEvent,
 } from '@ckeditor/ckeditor5-engine';
 import { priorities } from '@ckeditor/ckeditor5-utils';
 
@@ -66,14 +67,14 @@ export default class ShowTags extends Plugin {
 
 	public init(): void {
 		const editor = this.editor;
+		let blockPostFixer = false;
 
 		editor.editing.view.document.registerPostFixer( writer => {
-			// Theoretically, post-fixer should return info whether it made any changes.
-			// However, for performance reasons, in this case where as an integrator you control the entire situation
-			// (and can tweak the code to have this post-fixer as the last one) it may be worth saving one post-fixer loop
-			// by always returning void.
-			//
-			// let hasInsertedTags = false;
+			if ( blockPostFixer ) {
+				return false;
+			}
+
+			let changed = false;
 
 			const elementsToRefresh: Set<ViewContainerElement | ViewAttributeElement> = new Set();
 			const startTagElementsToRefresh: Set<ViewUIElement> = new Set();
@@ -137,6 +138,7 @@ export default class ShowTags extends Plugin {
 					if ( firstChild != lastChild ) {
 						if ( this._isEndTagElement( lastChild ) ) {
 							endTagElementsToRefresh.delete( lastChild as ViewUIElement );
+
 							this._updateEndTagName( lastChild as ViewUIElement, elementToRefresh.name );
 						} else {
 							addEnd = true;
@@ -152,26 +154,40 @@ export default class ShowTags extends Plugin {
 				if ( addStart ) {
 					const tagElement = this._createStartTagElement( writer, elementToRefresh.name );
 					writer.insert( writer.createPositionAt( elementToRefresh, 0 ), tagElement );
+
+					changed = true;
 				}
 
 				if ( addEnd ) {
 					const tagElement = this._createEndTagElement( writer, elementToRefresh.name );
 					writer.insert( writer.createPositionAt( elementToRefresh, 'end' ), tagElement );
+
+					changed = true;
 				}
 			}
 
 			for ( const tagElementToRefresh of startTagElementsToRefresh ) {
 				if ( tagElementToRefresh.index != 0 ) {
 					writer.remove( tagElementToRefresh );
+
+					changed = true;
 				}
 			}
 
 			for ( const tagElementToRefresh of endTagElementsToRefresh ) {
 				if ( tagElementToRefresh.parent && tagElementToRefresh.index != ( tagElementToRefresh.parent.childCount - 1 ) ) {
 					writer.remove( tagElementToRefresh );
+
+					changed = true;
 				}
 			}
 
+			return changed;
+		} );
+
+		// This post-fixer is used to fix the selection after the tag-element-related post-fixer has run.
+		// It could be merged, but then this bit of logic must be excluded from the the early-abort on "blockPostFixer".
+		editor.editing.view.document.registerPostFixer( writer => {
 			const viewSelection = editor.editing.view.document.selection;
 
 			if ( viewSelection.isCollapsed ) {
@@ -203,14 +219,12 @@ export default class ShowTags extends Plugin {
 				}
 			}
 
-			// return hasInsertedTags;
 			return false;
 		} );
 
+		// Listen after the default mapping proposed a view position and correct the position in the following case:
+		//
 		// CASE 1:
-		//
-		// Listen after the default mapping proposed a view position and correct the position in the following cases:
-		//
 		// <p>[]<X/>foo<X/></p> -> <p><X/>[]foo<X/></p>
 		editor.editing.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', ( event, data ) => {
 			const viewPosition = data.viewPosition;
@@ -219,6 +233,9 @@ export default class ShowTags extends Plugin {
 				console.log( '[WARN] Aborted because no viewPosition... should not happen.' );
 				return;
 			}
+
+			// console.log( '[INFO] viewPosition', _stringifyView( viewPosition.root, viewPosition ) );
+
 			if ( viewPosition.isAtStart ) {
 				const parent = viewPosition.parent;
 
@@ -233,6 +250,44 @@ export default class ShowTags extends Plugin {
 				}
 			}
 		}, { priority: priorities.low - 1 } );
+
+		// This is a safety net to ensure that the selection is always in a valid state.
+		//
+		// Scenario that may trigger it:
+		//
+		// 1. If, by an unfortunate turn of events, we reached this state: <p><b>foo<UI/>x{}</b></p>.
+		// 2. The post-fixer will want to remove the <UI/> element.
+		// 3. Once the element is remove, the "x" text node is merged into "foo".
+		// 4. The selection is now in a detached "x" text node.
+		//
+		// The issue stems from the fact that downcast writer does not fix the selection when performing certain operations.
+		// In a normal flow, the selection is set as the last step of conversion process, once the tree is fully set up.
+		// In this case, we alter the tree, so the selection needs refreshing. Unfortunately, there's no dedicated event for this.
+		//
+		// For production implementation, we'd suggest handling the most popular scenario (typing at the end of an attribute element)
+		// right inside the post-fixer by calculating the expected selection position manually
+		// (without triggering the entire conversion process, which cannot be done inside the post-fixer). This will reduce the
+		// following listener to a rarely used fallback.
+		editor.editing.view.on<ViewRenderEvent>( 'render', () => {
+			// NOTE: when blocking the post-fixer, we need to make sure that the selection is still post-fixed
+			// so we, we're blocking only the tag-element-related post-fixer.
+			blockPostFixer = true;
+
+			const viewSelection = editor.editing.view.document.selection;
+
+			// TODO anchor should be checked too. Either side of the selection might've gone missing.
+			if ( viewSelection.focus?.parent && !( viewSelection.focus?.parent as ViewNode ).isAttached() ) {
+				console.log( '[WARN] Fixing selection pre-render.' );
+
+				editor.editing.view.change( writer => {
+					editor.editing.downcastDispatcher.convertSelection(
+						editor.editing.model.document.selection, editor.editing.model.markers, writer
+					);
+				} );
+			}
+
+			blockPostFixer = false;
+		}, { priority: priorities.highest + 99999 } );
 
 		// editor.editing.view.document.on<ViewDocumentSelectionChangeEvent>( 'selectionChange', ( evt, data ) => {
 		// 	const viewPosition = data.newSelection.focus;
