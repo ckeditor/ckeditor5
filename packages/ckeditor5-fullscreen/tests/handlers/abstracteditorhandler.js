@@ -182,8 +182,8 @@ describe( 'AbstractHandler', () => {
 	} );
 
 	describe( '#enable()', () => {
-		it( 'should execute the #_defaultOnEnter method', () => {
-			const spy = sinon.spy( abstractHandler, '_defaultOnEnter' );
+		it( 'should execute the #defaultOnEnter method', () => {
+			const spy = sinon.spy( abstractHandler, 'defaultOnEnter' );
 
 			abstractHandler.enable();
 

@@ -168,15 +168,7 @@ This section covers how to provide fullscreen mode integration for other {@link 
 
 First, you need to create a custom class extending {@link module:fullscreen/handlers/abstracteditorhandler~AbstractEditorHandler `AbstractEditorHandler`}. Besides the optional typing improvements, the most important thing is to implement its custom {@link module:fullscreen/handlers/abstracteditorhandler~AbstractEditorHandler#_defaultOnEnter `#_defaultOnEnter()`} method. It should move the editor UI elements proper for your editor type to the fullscreen container, preferably using {@link module:fullscreen/handlers/abstracteditorhandler~AbstractEditorHandler#moveToFullscreen `#moveToFullscreen()`} helper - it will assure the elements are moved back in DOM when leaving fullscreen mode.
 
-Then, in the editor's `toggleFullscreen` command, you will need to substitute the {@link module:fullscreen/fullscreencommand~FullscreenCommand#fullscreenHandler `#fullscreenHandler`} property with an instance of your custom class. It can be done either by adding a custom plugin (like shown in the snippet below), or in the `.then()` clause when the editor is created - in both cases, the code that should be executed is:
-
-```ts
-editor.commands.get( 'toggleFullscreen' ).fullscreenHandler = new CustomEditorHandler( editor );
-```
-
-Finally, if you're using the plugin approach, remember to add it to your editor configuration.
-
-See the full example below.
+Then, in the editor's `toggleFullscreen` command, you will need to substitute the {@link module:fullscreen/fullscreencommand~FullscreenCommand#fullscreenHandler `#fullscreenHandler`} property with an instance of your custom class. It can be done by adding a custom plugin that should be later added to the editor configuration (see the full example below).
 
 ```ts
 import { AbstractEditorHandler, FullscreenEditing } from '@ckeditor/ckeditor5-fullscreen';

@@ -25,49 +25,53 @@ const DIALOG_OFFSET = 28;
  * regardless of the editor type. Then, specific classes like `ClassicEditorHandler` or `DecoupledEditorHandler`
  * extend this class with actions specific for these editor types.
  *
- * Extend this class to provide fullscreen mode handling for unsupported editor types, or if you wish to heavily customize the default behavior.
-  *
-  * The only method that is necessary to provide when extending this class is `#_defaultOnEnter()`. However, make sure to
-  * familiarize yourself with the below full list of actions taken by `AbstractEditorHandler` to understand what is covered by default,
-  * and what should be provided by you.
-  *
+ * Extend this class to provide fullscreen mode handling for unsupported editor types,
+ * or if you wish to heavily customize the default behavior.
  *
- * When entering the fullscreen mode, the `#enable()` method is called. It creates the properly styled container
+ * The only method that is necessary to provide when extending this class is {@link #defaultOnEnter}. However, make sure to
+ * familiarize yourself with the below full list of actions taken by `AbstractEditorHandler` to understand what is covered by default,
+ * and what should be provided by you.
+ *
+ * When entering the fullscreen mode, the {@link #enable} method is called. It creates the properly styled container
  * and handles the editor features that need it, in the following order:
  *
- * 1. Save the scroll positions of all ancestors of the editable element to restore them after leaving the fullscreen mode.
- * 2. Execute the `#_defaultOnEnter()` method to move the proper editor UI elements to the fullscreen mode. **If you extend the abstract
- * 	handler, you should override this method** to move the elements that are specific to your editor type, like:
+ * 1. Saves the scroll positions of all ancestors of the editable element to restore them after leaving the fullscreen mode.
+ * 2. Executes the {@link #defaultOnEnter} method to move the proper editor UI elements to the fullscreen mode.
+ * **If you extend the abstract handler, you should override this method** to move the elements that are specific to your editor type, like:
  * 	editable, toolbar, menu bar.
- * 	Use `#moveToFullscreen()` method for this purpose to ensure they are automatically cleaned up after leaving the fullscreen mode.
- * 3. Add proper classes to the <body> and <html> elements to block page scrolling, adjust z-index etc.
- * 4. Change the position of some dialogs to utilize the empty space on the right side of the editable element.
+ * 	Use {@link #moveToFullscreen} method for this purpose to ensure they are automatically cleaned up after leaving the fullscreen mode.
+ * 3. Adds proper classes to the `<body>` and `<html>` elements to block page scrolling, adjust `z-index` etc.
+ * 4. Changes the position of some dialogs to utilize the empty space on the right side of the editable element.
  *
  * Steps 5-11 are only executed if the corresponding features are used.
  *
- * 5. If presence list is used, move it to the fullscreen mode container.
- * 6. If document outline is used, move it to the fullscreen mode.
- * 7. If pagination is used, adjust it's configuration for the changed view.
- * 8. If annotations are used, move them to the fullscreen mode.
- * 9. If revision history is used, override the callbacks to show the revision viewer in the fullscreen mode.
- * 10. If source editing and document outline are both used, hide the document outline header.
- * 11. If custom container is used, hide all other elements in it to ensure they don't create an empty unscrollable space.
+ * 5. If presence list is used, moves it to the fullscreen mode container.
+ * 6. If document outline is used, moves it to the fullscreen mode.
+ * 7. If pagination is used, adjusts it's configuration for the changed view.
+ * 8. If annotations are used, moves them to the fullscreen mode.
+ * 9. If revision history is used, overrides the callbacks to show the revision viewer in the fullscreen mode.
+ * 10. If source editing and document outline are both used, hides the document outline header.
+ * 11. If custom container is used, hides all other elements in it to ensure they don't create an empty unscrollable space.
  *
  * Then finally:
  *
- * 12. Execute the configured `config.fullscreen.onEnterCallback` function.
+ * 12. Executes the configured {@link module:fullscreen/fullscreenconfig~FullscreenConfig#onEnterCallback
+ * 	`config.fullscreen.onEnterCallback`} function.
+ * 	By default, it returns the fullscreen mode container element so it can be further customized.
  *
- * When leaving the fullscreen mode, the `#disable()` method is called. It does the following:
+ * When leaving the fullscreen mode, the {@link #disable} method is called. It does the following:
  *
- * 1. Execute the configured `config.fullscreen.onLeaveCallback` function.
- * 2. Remove the classes added to the <body> and <html> elements.
+ * 1. Execute the configured {@link module:fullscreen/fullscreenconfig~FullscreenConfig#onLeaveCallback
+ * 	`config.fullscreen.onLeaveCallback`} function.
+ * 2. Remove the classes added to the `<body>` and `<html>` elements.
  * 3. If document outline is used, restore its default container.
  * 4. If annotations are used, restore their original state (UI, filters etc).
  * 5. If revision history is used, restore the original callbacks.
  * 6. If source editing and document outline are both used, restore the document outline header.
  * 7. Restore all moved elements to their original place.
  * 8. Destroy the fullscreen mode container.
- * 9. If the editor has a toolbar, switch its behavior to the one configured in the `config.toolbar.shouldNotGroupWhenFull` property.
+ * 9. If the editor has a toolbar, switch its behavior to the one configured in the
+ * 	{@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} property.
  * 10. Restore the scroll positions of all ancestors of the editable element.
  * 11. If pagination is used, restore its default configuration.
  * 12. Restore default dialogs positions.
@@ -234,7 +238,7 @@ export default class AbstractEditorHandler {
 	 */
 	public enable(): void {
 		this._saveAncestorsScrollPositions( this._editor.ui.getEditableElement()! )!;
-		this._defaultOnEnter();
+		this.defaultOnEnter();
 
 		// Block scroll if the fullscreen container is the body element. Otherwise the document has to stay scrollable.
 		if ( this._editor.config.get( 'fullscreen.container' ) === this._document.body ) {
@@ -416,7 +420,7 @@ export default class AbstractEditorHandler {
 	 * Returns the fullscreen mode container element so it can be further customized via
 	 * `fullscreen.onEnterCallback` configuration property.
 	 */
-	protected _defaultOnEnter(): HTMLElement {
+	public defaultOnEnter(): HTMLElement {
 		return this.getWrapper();
 	}
 
