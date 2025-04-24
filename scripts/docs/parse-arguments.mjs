@@ -122,7 +122,7 @@ function splitOptionsToArray( options, keys ) {
 function warnAboutUsingDevEnvironment() {
 	const warning = styleText(
 		[ 'bgRed', 'white' ],
-		'The "--dev" flag causes the code to not be optimized and obfuscated. Please do not share it with anyone!'
+		'The "--dev" flag prevents the code from being optimized or obfuscated. Please do not share it with anyone!'
 	);
 
 	console.log( `\n${ warning }\n` );
