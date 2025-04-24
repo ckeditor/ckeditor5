@@ -280,6 +280,7 @@ These frameworks offer better support for testing CKEditor&nbsp;5 and provide a 
 If this is not possible and you still want to use Jest, you can mock some of the required APIs. Below is an example of how to mock some of the APIs used by CKEditor&nbsp;5:
 
 ```jsx
+import { TextEncoder } from 'util';
 import React, { useRef } from 'react';
 import { render, waitFor, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
@@ -288,6 +289,8 @@ import { DecoupledEditor, Essentials, Paragraph } from 'ckeditor5';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 beforeAll( () => {
+	window.TextEncoder = TextEncoder;
+
 	window.scrollTo = jest.fn();
 
 	window.ResizeObserver = class ResizeObserver {
