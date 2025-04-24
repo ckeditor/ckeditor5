@@ -7,7 +7,7 @@
  * @module typing/showtags
  */
 
-import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import {
 	type DowncastWriter,
 	type MapperModelToViewPositionEvent,
@@ -126,6 +126,10 @@ export default class ShowTags extends Plugin {
 
 					if ( this._isStartTagElement( firstChild ) ) {
 						startTagElementsToRefresh.delete( firstChild as ViewUIElement );
+
+						// In some "wrap" cases like applying bold to `<a><X/>[foo]<X/></a>` tag elements may
+						// get disconnected with their original element.
+						this._updateStartTagName( firstChild as ViewUIElement, elementToRefresh.name );
 					} else {
 						addStart = true;
 					}
@@ -133,6 +137,7 @@ export default class ShowTags extends Plugin {
 					if ( firstChild != lastChild ) {
 						if ( this._isEndTagElement( lastChild ) ) {
 							endTagElementsToRefresh.delete( lastChild as ViewUIElement );
+							this._updateEndTagName( lastChild as ViewUIElement, elementToRefresh.name );
 						} else {
 							addEnd = true;
 						}
@@ -251,21 +256,21 @@ export default class ShowTags extends Plugin {
 		// }, 2000 );
 	}
 
-	private _createStartTagElement( writer: DowncastWriter, name: string ): ViewUIElement {
+	private _createStartTagElement( writer: DowncastWriter, tagName: string ): ViewUIElement {
 		return writer.createUIElement( 'span', { class: 'tag-start' }, function( domDocument ) {
 			const domElement = this.toDomElement( domDocument );
 			domElement.setAttribute( 'contenteditable', 'false' );
-			domElement.append( name );
+			domElement.append( tagName );
 
 			return domElement;
 		} );
 	}
 
-	private _createEndTagElement( writer: DowncastWriter, name: string ): ViewUIElement {
+	private _createEndTagElement( writer: DowncastWriter, tagName: string ): ViewUIElement {
 		return writer.createUIElement( 'span', { class: 'tag-end' }, function( domDocument ) {
 			const domElement = this.toDomElement( domDocument );
 			domElement.setAttribute( 'contenteditable', 'false' );
-			domElement.append( '/' + name );
+			domElement.append( '/' + tagName );
 
 			return domElement;
 		} );
@@ -278,10 +283,12 @@ export default class ShowTags extends Plugin {
 	private _isEndTagElement( element: ViewNode ): boolean {
 		return element.is( 'uiElement' ) && element.hasClass( 'tag-end' );
 	}
-}
 
-type TagElements = {
-	tagStart: ViewUIElement;
-	tagEnd: ViewUIElement;
-	areNew: boolean;
-};
+	private _updateStartTagName( element: ViewUIElement, tagName: string ): void {
+		this.editor.editing.view.domConverter.viewToDom( element ).textContent = tagName;
+	}
+
+	private _updateEndTagName( element: ViewUIElement, tagName: string ): void {
+		this.editor.editing.view.domConverter.viewToDom( element ).textContent = '/' + tagName;
+	}
+}
