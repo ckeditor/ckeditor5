@@ -320,7 +320,7 @@ The HTML elements listed below can be turned on directly via the `allow` setting
 
 #### Block elements
 
-<ul style="display: grid; grid-template-columns: 1fr 1fr;">
+<ul style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
 	<li>address</li>
 	<li>article</li>
 	<li>aside</li>
@@ -369,7 +369,7 @@ The HTML elements listed below can be turned on directly via the `allow` setting
 
 #### Inline elements
 
-<ul style="display: grid; grid-template-columns: 1fr 1fr;">
+<ul style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
 	<li>a</li>
 	<li>abbr</li>
 	<li>acronym</li>
