@@ -164,7 +164,7 @@ Below you will find a customized demo:
 
 ### Enabling other editor types
 
-This section covers how to provide fullscreen mode integration for other {@link getting-started/setup/editor-types editor types} than classic and decoupled. Please note that only those two are officially supported, so the code snippets below are exemplary and may not solve all technical challenges.
+This section covers how to provide fullscreen mode integration for other {@link getting-started/setup/editor-types editor types} than classic and decoupled. Please note that only these two editor types are officially supported, so the code snippets below are exemplary and may not solve all technical challenges.
 
 First, you need to create a custom class extending {@link module:fullscreen/handlers/abstracteditorhandler~AbstractEditorHandler `AbstractEditorHandler`}. Besides the optional typing improvements, the most important thing is to implement its custom {@link module:fullscreen/handlers/abstracteditorhandler~AbstractEditorHandler#_defaultOnEnter `#_defaultOnEnter()`} method. It should move the editor UI elements proper for your editor type to the fullscreen container, preferably using {@link module:fullscreen/handlers/abstracteditorhandler~AbstractEditorHandler#moveToFullscreen `#moveToFullscreen()`} helper - it will assure the elements are moved back in DOM when leaving fullscreen mode.
 
