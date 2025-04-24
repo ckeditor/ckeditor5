@@ -34,7 +34,7 @@ const DIALOG_OFFSET = 28;
  *
  * Steps 5-11 are only executed if the corresponding features are used.
  *
- * 5. If presence list is used, move it to the fullscreen mode.
+ * 5. If presence list is used, move it to the fullscreen mode container.
  * 6. If document outline is used, move it to the fullscreen mode.
  * 7. If pagination is used, adjust it's configuration for the changed view.
  * 8. If annotations are used, move them to the fullscreen mode.
