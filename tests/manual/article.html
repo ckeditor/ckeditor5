@@ -8,15 +8,22 @@
 		.tag-start, .tag-end {
 			display: inline-block;
 			padding: 0 2px;
-			border-radius: 4px;
 			background-color: #f0f0f0;
 			border: 1px solid #ccc;
 			margin: 0 3px;
 			user-select: none;
 		}
+
+		.tag-start {
+			border-radius: 0 4px 4px 0;
+		}
+
+		.tag-end {
+			border-radius: 4px 0 0 4px;
+		}
 	</style>
 </head>
-<div id="editor">
+<!-- <div id="editor">
 	<h2>Heading 1</h2>
 	<p>Paragraph</p>
 	<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
@@ -40,4 +47,7 @@
 		</ul>
 		<p>Quote</p>
 	</blockquote>
+</div> -->
+<div id="editor">
+	<p>foo<strong>abc</strong>bar</p>
 </div>

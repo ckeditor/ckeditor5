@@ -69,6 +69,14 @@ export default class ShowTags extends Plugin {
 		const editor = this.editor;
 		let blockPostFixer = false;
 
+		// This post-fixer is used to add missing and remove extra tag elements.
+		// I went for a sweep and fix approach, because it's easier to reason about.
+		// It may be optimized in the future:
+		// * by listening to change:children instead of accessing private API and collecting precise information
+		// about modified children,
+		// * mapping UI elements to their corresponding container elements (can't be done for attribute elements because
+		// they change too frequently) if that may help saving some cycles,
+		// * replacing the use of tree walker with a lighter tree-traversal mechanism.
 		editor.editing.view.document.registerPostFixer( writer => {
 			if ( blockPostFixer ) {
 				return false;
@@ -80,7 +88,9 @@ export default class ShowTags extends Plugin {
 			const startTagElementsToRefresh: Set<ViewUIElement> = new Set();
 			const endTagElementsToRefresh: Set<ViewUIElement> = new Set();
 
-			// TODO can be done via listening to change:children instead of accessing private API
+			// TODO can be done via listening to viewRoot#change instead of accessing private API.
+			// The nice thing about ViewNodeChangeEvent is it provides more context about the change.
+			// For example, right now the algorithm often scans the entire root. This would be ideal to avoid.
 			/* @ts-ignore */
 			editor.editing.view._renderer.markedChildren.forEach( child => {
 				let walker;
@@ -121,6 +131,10 @@ export default class ShowTags extends Plugin {
 				let addEnd = false;
 				const firstChild = elementToRefresh.getChild( 0 );
 
+				// TODO The logic in this if-else block should be reviewed and ideally, unit tested (which should be
+				// easy to do in an elegant way).
+				// The idea here is to handle all the permutations of missing/misplaced tag elements. I'm quite sure there are
+				// holes in this logic now.
 				if ( firstChild ) {
 					// Can cast to ViewNode because if firstChild exists, last one must exist too (can't be undefined).
 					const lastChild = elementToRefresh.getChild( elementToRefresh.childCount - 1 ) as ViewNode;
