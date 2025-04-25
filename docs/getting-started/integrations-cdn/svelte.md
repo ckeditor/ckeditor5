@@ -19,7 +19,7 @@ modified_at: 2025-04-24
 	To use our Cloud CDN services, [create a free account](https://portal.ckeditor.com/checkout?plan=free). Learn more about {@link getting-started/licensing/license-key-and-activation license key activation}.
 </info-box>
 
-This guide shows how to integrate CKEditor&nbsp;5 into a Svelte application using the CDN distribution. If you're new to Svelte, check out their [official tutorial](https://svelte.dev/docs/svelte/getting-started).
+This guide will show you how to integrate CKEditor&nbsp;5 into a Svelte application using the CDN distribution. If you are new to Svelte, check out their [official tutorial](https://svelte.dev/docs/svelte/getting-started).
 
 ### Setting up a Svelte project
 
@@ -52,40 +52,40 @@ When completed, the folder structure of your project should resemble this one:
 ```
 
 The integration requires:
-- Modifying `index.html` to include CKEditor&nbsp;5 scripts and stylesheets
-- Creating the `src/lib/Editor.svelte` component
-- Updating the `src/App.svelte` main application component
+* Modifying `index.html` to include CKEditor&nbsp;5 scripts and style sheets
+* Creating the `src/lib/Editor.svelte` component
+* Updating the `src/App.svelte` main application component
 
 Let's implement these changes next.
 
 ### Adding CKEditor&nbsp;5 scripts and styles
 
-To load CKEditor&nbsp;5 from CDN, modify the main HTML file of your project (`index.html`) to include the necessary scripts and stylesheets:
+To load CKEditor&nbsp;5 from CDN, modify the main HTML file of your project (`index.html`) to include the necessary scripts and style sheets:
 
 ```html
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CKEditor 5 + Svelte</title>
-    <!-- CKEditor 5 CSS -->
-    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
-    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
-    <!-- CKEditor 5 Scripts -->
-    <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
-    <script src="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="icon" type="image/svg+xml" href="/vite.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CKEditor 5 + Svelte</title>
+		<!-- CKEditor 5 CSS -->
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.css" />
+		<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.css" />
+		<!-- CKEditor 5 Scripts -->
+		<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/ckeditor5.umd.js"></script>
+		<script src="https://cdn.ckeditor.com/ckeditor5-premium-features/{@var ckeditor5-version}/ckeditor5-premium-features.umd.js"></script>
+	</head>
+	<body>
+		<div id="app"></div>
+		<script type="module" src="/src/main.js"></script>
+	</body>
 </html>
 ```
 
 <info-box>
-	The premium features scripts and stylesheets are optional and used in this guide to demonstrate a complete integration. You can use only the open-source features if you prefer.
+	The premium features scripts and style sheets are optional and used in this guide to demonstrate a complete integration. You can use just the open-source features if you prefer.
 </info-box>
 
 ### Implementing the Editor component

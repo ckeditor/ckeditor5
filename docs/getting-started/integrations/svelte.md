@@ -15,7 +15,7 @@ modified_at: 2025-04-24
 
 ## Quick start
 
-This guide shows how to integrate CKEditor&nbsp;5 into a Svelte application using the npm distribution. If you're new to Svelte, check out their [official tutorial](https://svelte.dev/docs/svelte/getting-started).
+This guide will show you how to integrate CKEditor&nbsp;5 into a Svelte application using the npm distribution. If you are new to Svelte, check out their [official tutorial](https://svelte.dev/docs/svelte/getting-started).
 
 ### Setting up a Svelte project
 
@@ -29,14 +29,14 @@ npm install
 
 ### Installing CKEditor&nbsp;5
 
-Next, install `ckeditor5` and the `ckeditor5-premium-features` packages:
+Next, install the `ckeditor5` and the `ckeditor5-premium-features` packages:
 
 ```bash
 npm install ckeditor5 ckeditor5-premium-features
 ```
 
 <info-box>
-	The premium features package is optional and used in this guide to demonstrate a complete integration. You can use only the open-source features if you prefer.
+	The premium features package is optional and used in this guide to demonstrate a complete integration. You can use just the open-source features if you prefer.
 </info-box>
 
 ### Project structure
@@ -60,8 +60,8 @@ When completed, the folder structure of your project should resemble this one:
 ```
 
 The integration requires two key Svelte components:
-- `src/lib/Editor.svelte` - the component that wraps CKEditor functionality
-- `src/App.svelte` - the main application component that uses the Editor component
+* `src/lib/Editor.svelte` - the component that wraps CKEditor functionality
+* `src/App.svelte` - the main application component that uses the Editor component
 
 Let's implement these components next.
 
