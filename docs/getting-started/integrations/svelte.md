@@ -3,7 +3,7 @@ menu-title: Svelte
 meta-title: Integration with Svelte using npm | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with Svelte using npm
 category: self-hosted
-order: 100
+order: 110
 modified_at: 2025-04-24
 ---
 
@@ -72,8 +72,10 @@ Create a new file `src/lib/Editor.svelte` with the following content:
 ```html
 <script>
 	import { onMount, onDestroy } from 'svelte';
+	
 	import { ClassicEditor, Essentials, Bold, Italic, Font, Paragraph } from 'ckeditor5';
 	import { FormatPainter } from 'ckeditor5-premium-features';
+	
 	import 'ckeditor5/ckeditor5.css';
 	import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 

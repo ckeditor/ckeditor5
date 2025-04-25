@@ -3,7 +3,7 @@ menu-title: Svelte
 meta-title: Integration with Svelte using CDN | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with Svelte using CDN
 category: cloud
-order: 100
+order: 110
 modified_at: 2025-04-24
 ---
 
