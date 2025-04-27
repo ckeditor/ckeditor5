@@ -16,7 +16,8 @@ import {
 	type ViewUIElement,
 	type ViewAttributeElement,
 	type ViewContainerElement,
-	type ViewRenderEvent
+	type ViewRenderEvent,
+	_stringifyView
 	// _stringifyView
 	// type ViewDocumentSelectionChangeEvent,
 } from '@ckeditor/ckeditor5-engine';
@@ -67,7 +68,9 @@ export default class ShowTags extends Plugin {
 
 	public init(): void {
 		const editor = this.editor;
-		let blockPostFixer = false;
+
+		let blockPostFixerUntilRendered = false;
+		let loop = 0;
 
 		// This post-fixer is used to add missing and remove extra tag elements.
 		// I went for a sweep and fix approach, because it's easier to reason about.
@@ -78,9 +81,15 @@ export default class ShowTags extends Plugin {
 		// they change too frequently) if that may help saving some cycles,
 		// * replacing the use of tree walker with a lighter tree-traversal mechanism.
 		editor.editing.view.document.registerPostFixer( writer => {
-			if ( blockPostFixer ) {
+			if ( loop++ > 1000 ) {
+				throw new Error( 'inf loop' );
+			}
+
+			if ( blockPostFixerUntilRendered ) {
 				return false;
 			}
+
+			blockPostFixerUntilRendered = true;
 
 			let changed = false;
 
@@ -88,9 +97,13 @@ export default class ShowTags extends Plugin {
 			const startTagElementsToRefresh: Set<ViewUIElement> = new Set();
 			const endTagElementsToRefresh: Set<ViewUIElement> = new Set();
 
-			// TODO can be done via listening to viewRoot#change instead of accessing private API.
-			// The nice thing about ViewNodeChangeEvent is it provides more context about the change.
-			// For example, right now the algorithm often scans the entire root. This would be ideal to avoid.
+			//
+			// STEP 1. Collect all the elements that need to be refreshed.
+			//
+
+			// TODO no public API for this for now.
+			// Theoretically, we could listen to ViewNodeChangeEvent on the root element, but that ain't easy
+			// because from what I can see it accumulates more noise. To be investigated...
 			/* @ts-ignore */
 			editor.editing.view._renderer.markedChildren.forEach( child => {
 				let walker;
@@ -123,6 +136,12 @@ export default class ShowTags extends Plugin {
 				}
 			} );
 
+			console.log( 'BEFORE', _stringifyView( editor.editing.view.document.getRoot()!, editor.editing.view.document.selection ) );
+
+			//
+			// STEP 2. Refresh the elements that need to be refreshed.
+			//
+
 			// console.log( 'ELEMENTS TO REFRESH', elementsToRefresh );
 			// console.log( 'TAG ELEMENTS TO REFRESH', startTagElementsToRefresh );
 
@@ -131,11 +150,15 @@ export default class ShowTags extends Plugin {
 				let addEnd = false;
 				const firstChild = elementToRefresh.getChild( 0 );
 
+				if ( this._isLeftoverAttributeElement( elementToRefresh ) && !this._isSelectionInside( elementToRefresh ) ) {
+					this._cleanUpLeftoverAttributeElement( elementToRefresh, writer );
+					changed = true;
+				}
 				// TODO The logic in this if-else block should be reviewed and ideally, unit tested (which should be
 				// easy to do in an elegant way).
 				// The idea here is to handle all the permutations of missing/misplaced tag elements. I'm quite sure there are
 				// holes in this logic now.
-				if ( firstChild ) {
+				else if ( firstChild ) {
 					// Can cast to ViewNode because if firstChild exists, last one must exist too (can't be undefined).
 					const lastChild = elementToRefresh.getChild( elementToRefresh.childCount - 1 ) as ViewNode;
 
@@ -196,11 +219,13 @@ export default class ShowTags extends Plugin {
 				}
 			}
 
+			console.log( 'AFTER', _stringifyView( editor.editing.view.document.getRoot()!, editor.editing.view.document.selection ) );
+
 			return changed;
 		} );
 
 		// This post-fixer is used to fix the selection after the tag-element-related post-fixer has run.
-		// It could be merged, but then this bit of logic must be excluded from the the early-abort on "blockPostFixer".
+		// It could be merged, but then this bit of logic must be excluded from the the early-abort on "blockPostFixerUntilRendered".
 		editor.editing.view.document.registerPostFixer( writer => {
 			const viewSelection = editor.editing.view.document.selection;
 
@@ -285,7 +310,7 @@ export default class ShowTags extends Plugin {
 		editor.editing.view.on<ViewRenderEvent>( 'render', () => {
 			// NOTE: when blocking the post-fixer, we need to make sure that the selection is still post-fixed
 			// so we, we're blocking only the tag-element-related post-fixer.
-			blockPostFixer = true;
+			// blockPostFixerUntilRendered = true;
 
 			const viewSelection = editor.editing.view.document.selection;
 
@@ -300,7 +325,7 @@ export default class ShowTags extends Plugin {
 				} );
 			}
 
-			blockPostFixer = false;
+			blockPostFixerUntilRendered = false;
 		}, { priority: priorities.highest + 99999 } );
 
 		// editor.editing.view.document.on<ViewDocumentSelectionChangeEvent>( 'selectionChange', ( evt, data ) => {
@@ -345,6 +370,10 @@ export default class ShowTags extends Plugin {
 		} );
 	}
 
+	private _isTagElement( element: ViewNode ): boolean {
+		return element.is( 'uiElement' ) && ( element.hasClass( 'tag-start' ) || element.hasClass( 'tag-end' ) );
+	}
+
 	private _isStartTagElement( element: ViewNode ): boolean {
 		return element.is( 'uiElement' ) && element.hasClass( 'tag-start' );
 	}
@@ -359,5 +388,48 @@ export default class ShowTags extends Plugin {
 
 	private _updateEndTagName( element: ViewUIElement, tagName: string ): void {
 		this.editor.editing.view.domConverter.viewToDom( element ).textContent = '/' + tagName;
+	}
+
+	private _isLeftoverAttributeElement( element: ViewElement ): boolean {
+		if ( !element.is( 'attributeElement' ) ) {
+			return false;
+		}
+
+		const walker = this.editor.editing.view.createRangeIn( element ).getWalker();
+
+		for ( const value of walker ) {
+			if ( value.type === 'text' ) {
+				return false;
+			}
+			else if ( value.type === 'elementStart' && !this._isTagElement( value.item as ViewElement ) ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private _isSelectionInside( element: ViewElement ): boolean {
+		const selection = this.editor.editing.view.document.selection;
+
+		return selection.isCollapsed && selection.focus?.parent === element;
+	}
+
+	private _cleanUpLeftoverAttributeElement( element: ViewElement, writer: DowncastWriter ): void {
+		console.log( 'cleanUpLeftoverAttributeElement', element );
+
+		const walker = this.editor.editing.view.createRangeIn( element ).getWalker();
+		const toBeRemoved: Set<ViewUIElement> = new Set();
+
+		for ( const value of walker ) {
+			if ( value.type === 'elementStart' && value.item.is( 'uiElement' ) ) {
+				toBeRemoved.add( value.item );
+			}
+		}
+
+		for ( const element of toBeRemoved ) {
+			console.log( '- removed', element );
+			writer.remove( element );
+		}
 	}
 }
