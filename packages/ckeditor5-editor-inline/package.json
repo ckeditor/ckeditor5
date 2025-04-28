@@ -25,6 +25,7 @@
     "@ckeditor/ckeditor5-enter": "45.0.0",
     "@ckeditor/ckeditor5-heading": "45.0.0",
     "@ckeditor/ckeditor5-image": "45.0.0",
+    "@ckeditor/ckeditor5-link": "45.0.0",
     "@ckeditor/ckeditor5-paragraph": "45.0.0",
     "@ckeditor/ckeditor5-theme-lark": "45.0.0",
     "@ckeditor/ckeditor5-typing": "45.0.0",
