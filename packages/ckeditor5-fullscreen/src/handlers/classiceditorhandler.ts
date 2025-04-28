@@ -33,7 +33,7 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 	/**
 	 * A function that moves the editor UI elements to the fullscreen mode.
 	 */
-	protected override _defaultOnEnter(): HTMLElement {
+	public override defaultOnEnter(): HTMLElement {
 		const editorUI = this._editor.ui;
 		const editorUIView = editorUI.view;
 
