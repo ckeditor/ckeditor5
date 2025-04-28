@@ -16,7 +16,6 @@
 	],
 	"hexo-config": "docs/hexo-custom-config.json",
 	"extraStyles": "assets/styles.css",
-	"extraScripts": "assets/buildwarningbanner.js",
 	"packagesDir": [
 		"packages/*",
 		"external/ckeditor5-commercial/",
