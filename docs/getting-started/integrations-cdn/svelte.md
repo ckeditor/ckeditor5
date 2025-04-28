@@ -198,4 +198,3 @@ Basic styling is provided in the `App.svelte` component to ensure proper display
 * Explore the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide to learn how to handle content.
 * Learn more about {@link getting-started/setup/configuration configuration options} to customize your editor.
 * Check the {@link features/index features documentation} to add more functionality to your editor.
-
