@@ -162,3 +162,9 @@ Now, we need to put our script in the previous template. We need to put the scri
 ```
 
 Finally, in the root directory of your Laravel project, run `php artisan serve` to see the editor in action.
+
+## Next steps
+
+* See how to manipulate the editor's data in the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
+* Refer to further guides in the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
+* Check the {@link features/index features category} to learn more about individual features.
