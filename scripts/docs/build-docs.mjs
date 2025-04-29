@@ -33,7 +33,8 @@ async function buildDocs() {
 		await spawnAsync( 'yarn', [
 			'run',
 			'docs:api',
-			options.strict && '--strict'
+			options.strict && '--strict',
+			options.verbose && '--verbose'
 		].filter( Boolean ) );
 	}
 
