@@ -33,13 +33,13 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 	/**
 	 * A function that moves the editor UI elements to the fullscreen mode.
 	 */
-	protected override _defaultOnEnter(): HTMLElement {
+	public override defaultOnEnter(): HTMLElement {
 		const editorUI = this._editor.ui;
 		const editorUIView = editorUI.view;
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore next -- @preserve */
-		if ( this._editor.plugins.has( 'Pagination' ) && this._editor.plugins.get( 'Pagination' ).isEnabled ) {
+		if ( this._editor.plugins.has( 'Pagination' ) && ( this._editor.plugins.get( 'Pagination' ) as any ).isEnabled ) {
 			this.moveToFullscreen(
 				editorUI.getEditableElement()!.parentElement!.querySelector( '.ck-pagination-view' )!, 'pagination-view'
 			);
