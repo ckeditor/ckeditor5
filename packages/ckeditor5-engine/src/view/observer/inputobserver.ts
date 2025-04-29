@@ -35,7 +35,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	_debouncedLine();
 		// @if CK_DEBUG_TYPING // 	console.group( ..._buildLogMessage( this, 'InputObserver',
-		// @if CK_DEBUG_TYPING // 		`${ domEvent.type }: ${ domEvent.inputType }`
+		// @if CK_DEBUG_TYPING // 		`${ domEvent.type }: ${ domEvent.inputType } - ${ domEvent.isComposing ? 'is' : 'not' } composing`,
 		// @if CK_DEBUG_TYPING // 	) );
 		// @if CK_DEBUG_TYPING // }
 

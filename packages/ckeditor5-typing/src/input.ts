@@ -170,7 +170,7 @@ export default class Input extends Plugin {
 			// @if CK_DEBUG_TYPING // 	) );
 			// @if CK_DEBUG_TYPING // }
 
-			this._typingQueue.push( commandData );
+			this._typingQueue.push( commandData, Boolean( data.isComposing ) );
 
 			if ( data.domEvent.defaultPrevented ) {
 				this._typingQueue.flush( 'beforeinput default prevented - synthetic insertText event' );
@@ -267,7 +267,6 @@ export default class Input extends Plugin {
 			const mutations: Array<MutationData> = [];
 
 			if ( this._typingQueue.hasAffectedElements() ) {
-				// TODO flush affected elements for non-composed typing also.
 				for ( const element of this._typingQueue.flushAffectedElements() ) {
 					const viewElement = mapper.toViewElement( element );
 
@@ -340,6 +339,11 @@ class TypingQueue {
 	private _queue: Array<InsertTextCommandLiveOptions> = [];
 
 	/**
+	 * Whether there is any composition enqueued or plain typing only.
+	 */
+	private _isComposing = false;
+
+	/**
 	 * A set of model elements. The typing happened in those elements. It's used for mutations check.
 	 */
 	private _affectedElements = new Set<Element>();
@@ -373,7 +377,7 @@ class TypingQueue {
 	/**
 	 * Push next insertText command data to the queue.
 	 */
-	public push( commandData: InsertTextCommandOptions ): void {
+	public push( commandData: InsertTextCommandOptions, isComposing: boolean ): void {
 		const commandLiveData: InsertTextCommandLiveOptions = {
 			text: commandData.text
 		};
@@ -390,6 +394,7 @@ class TypingQueue {
 		}
 
 		this._queue.push( commandLiveData );
+		this._isComposing ||= isComposing;
 		this.flushDebounced();
 	}
 
@@ -462,6 +467,17 @@ class TypingQueue {
 			}
 
 			buffer.unlock();
+
+			if ( !this._isComposing ) {
+				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'Input',
+				// @if CK_DEBUG_TYPING // 		'Clear affected elements set'
+				// @if CK_DEBUG_TYPING // 	) );
+				// @if CK_DEBUG_TYPING // }
+				this._affectedElements.clear();
+			}
+
+			this._isComposing = false;
 		} );
 
 		view.scrollToTheSelection();
