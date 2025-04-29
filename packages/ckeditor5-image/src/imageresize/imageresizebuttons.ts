@@ -100,7 +100,7 @@ export default class ImageResizeButtons extends Plugin {
 	/**
 	 * A helper function that creates a standalone button component for the plugin.
 	 *
-	 * @param resizeOption A model of the resize option.
+	 * @param option A model of the resize option.
 	 */
 	private _registerImageResizeButton( option: ImageResizeOption ): void {
 		const editor = this.editor;
