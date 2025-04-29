@@ -312,8 +312,8 @@ function isValidOption(
 			 * are missing. Make sure these plugins are loaded in your editor to get this image style option working.
 			 *
 			 * @error image-style-missing-dependency
-			 * @param {String} [option] The name of the unsupported option.
-			 * @param {String} [missingPlugins] The names of the plugins one of which has to be loaded for the particular option.
+			 * @param {string} style The name of the unsupported option.
+			 * @param {Array.<string>} missingPlugins The names of the plugins one of which has to be loaded for the particular option.
 			 */
 			logWarning( 'image-style-missing-dependency', {
 				style: option,
@@ -356,8 +356,7 @@ function warnInvalidStyle( info: object ): void {
 	 * * {@link module:image/imageconfig~ImageStyleDropdownDefinition image style dropdown definition}
 	 *
 	 * @error image-style-configuration-definition-invalid
-	 * @param {String} [dropdown] The name of the invalid drop-down
-	 * @param {String} [style] The name of the invalid image style option
+	 * @param {object} info The information about the invalid definition.
 	 */
 	logWarning( 'image-style-configuration-definition-invalid', info );
 }

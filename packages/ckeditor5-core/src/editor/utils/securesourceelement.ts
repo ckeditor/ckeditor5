@@ -29,7 +29,7 @@ export default function secureSourceElement( editor: Editor, sourceElement: HTML
 		 * created with an unique DOM element.
 		 *
 		 * @error editor-source-element-already-used
-		 * @param element DOM element that caused the collision.
+		 * @param {HTMLElement} element DOM element that caused the collision.
 		 */
 		throw new CKEditorError(
 			'editor-source-element-already-used',

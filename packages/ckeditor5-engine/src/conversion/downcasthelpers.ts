@@ -1653,6 +1653,7 @@ function changeAttribute( attributeCreator: AttributeCreatorFunction ) {
 			 * ```
 			 *
 			 * @error conversion-attribute-to-attribute-on-text
+			 * @param {object} data The conversion data.
 			 */
 			throw new CKEditorError( 'conversion-attribute-to-attribute-on-text', conversionApi.dispatcher, data );
 		}
@@ -2003,7 +2004,7 @@ function downcastElementToStructure(
 			 * ```
 			 *
 			 * @error conversion-element-to-structure-disallowed-text
-			 * @param {String} elementName The name of the element the structure is to be created for.
+			 * @param {string} elementName The name of the element the structure is to be created for.
 			 */
 			throw new CKEditorError( 'conversion-element-to-structure-disallowed-text', dispatcher, { elementName: model.name } );
 		}
@@ -2556,9 +2557,9 @@ function createConsumer( model: NormalizedModelElementConfig ): ConsumerFunction
 }
 
 /**
- * Creates a function that create view slots.
+ * Creates a function that creates view slots.
  *
- * @returns Function exposed by writer as createSlot().
+ * @returns Function exposed by the writer as `createSlot()`.
  */
 function createSlotFactory( element: ModelElement, slotsMap: Map<ViewElement, Array<ModelNode>>, conversionApi: DowncastConversionApi ) {
 	return ( writer: DowncastWriter, modeOrFilter: 'children' | SlotFilter ) => {
@@ -2572,9 +2573,10 @@ function createSlotFactory( element: ModelElement, slotsMap: Map<ViewElement, Ar
 			children = Array.from( element.getChildren() ).filter( element => modeOrFilter( element ) );
 		} else {
 			/**
-			 * Unknown slot mode was provided to `writer.createSlot()` in downcast converter.
+			 * Unknown slot mode was provided to `writer.createSlot()` in the downcast converter.
 			 *
 			 * @error conversion-slot-mode-unknown
+			 * @param {never} modeOrFilter The specified mode or filter.
 			 */
 			throw new CKEditorError( 'conversion-slot-mode-unknown', conversionApi.dispatcher, { modeOrFilter } );
 		}

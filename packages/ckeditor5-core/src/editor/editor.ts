@@ -702,6 +702,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 			 * The lock ID is missing or it is not a string or symbol.
 			 *
 			 * @error editor-read-only-lock-id-invalid
+			 * @param {never} lockId Lock ID.
 			 */
 			throw new CKEditorError( 'editor-read-only-lock-id-invalid', null, { lockId } );
 		}
@@ -1103,6 +1104,7 @@ function collectUsageData( editor: Editor ): EditorUsageData {
 			 * Make sure that you are not setting the same path multiple times.
 			 *
 			 * @error editor-usage-data-path-already-set
+			 * @param {string} path The path that was already set.
 			 */
 			throw new CKEditorError( 'editor-usage-data-path-already-set', { path } );
 		}
