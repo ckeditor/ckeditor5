@@ -847,7 +847,7 @@ export default class DomConverter {
 
 	/**
 	 * Converts DOM Range to view {@link module:engine/view/range~Range}.
-	 * If the start or end position can not be converted `null` is returned.
+	 * If the start or end position cannot be converted `null` is returned.
 	 *
 	 * @param domRange DOM range.
 	 * @returns View range.
@@ -2077,7 +2077,7 @@ type BlockFillerMode = 'br' | 'nbsp' | 'markedNbsp';
  * ```
  *
  * @error domconverter-unsafe-attribute-detected
- * @param domElement The DOM element the attribute was set on.
- * @param key The original name of the attribute
- * @param value The value of the original attribute
+ * @param {HTMLElement} domElement The DOM element the attribute was set on.
+ * @param {string} key The original name of the attribute
+ * @param {string} value The value of the original attribute
  */

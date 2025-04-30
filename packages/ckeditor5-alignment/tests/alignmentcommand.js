@@ -80,7 +80,7 @@ describe( 'AlignmentCommand', () => {
 			expect( command ).to.have.property( 'isEnabled', true );
 		} );
 
-		it( 'is false when selection is in a block which can not be aligned', () => {
+		it( 'is false when selection is in a block which cannot be aligned', () => {
 			setModelData( model, '<div>x[]x</div>' );
 
 			expect( command ).to.have.property( 'isEnabled', false );

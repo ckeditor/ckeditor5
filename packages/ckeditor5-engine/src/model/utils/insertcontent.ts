@@ -490,8 +490,8 @@ class Insertion {
 			 * Given node cannot be inserted on the given position.
 			 *
 			 * @error insertcontent-wrong-position
-			 * @param node Node to insert.
-			 * @param position Position to insert the node at.
+			 * @param {module:engine/model/node~Node} node Node to insert.
+			 * @param {module:engine/model/position~Position} position Position to insert the node at.
 			 */
 			throw new CKEditorError(
 				'insertcontent-wrong-position',

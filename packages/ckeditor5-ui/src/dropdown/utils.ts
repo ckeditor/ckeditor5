@@ -505,7 +505,7 @@ export function focusChildOnDropdownOpen(
 			 * experience.
 			 *
 			 * @error ui-dropdown-focus-child-on-open-child-missing-focus
-			 * @param {module:ui/view~View} view
+			 * @param {module:ui/view~View} view Child to focus.
 			 */
 			logWarning( 'ui-dropdown-focus-child-on-open-child-missing-focus', { view: childToFocus } );
 		}

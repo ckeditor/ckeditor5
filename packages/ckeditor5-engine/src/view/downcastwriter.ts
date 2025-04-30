@@ -1454,7 +1454,7 @@ export default class DowncastWriter {
 	 * conversionApi.writer.insert( viewPosition, viewSlot );
 	 * ```
 	 *
-	 * While providing a filtered slot, make sure to provide slots for all child nodes. A single node can not be downcasted into
+	 * While providing a filtered slot, make sure to provide slots for all child nodes. A single node cannot be downcasted into
 	 * multiple slots.
 	 *
 	 * **Note**: You should not change the order of nodes. View elements should be in the same order as model nodes.

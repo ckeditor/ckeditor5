@@ -120,7 +120,7 @@ export default class ImageResizeButtons extends Plugin {
 				 * {@link module:image/imageconfig~ImageResizeOption plugin configuration}.
 				 *
 				 * @error imageresizebuttons-missing-icon
-				 * @param option Invalid image resize option.
+				 * @param {module:image/imageconfig~ImageResizeOption} option Invalid image resize option.
 				*/
 				throw new CKEditorError(
 					'imageresizebuttons-missing-icon',

@@ -84,7 +84,7 @@ export function getCode( key: string | Readonly<KeystrokeInfo> ): number {
 			 * Unknown key name. Only key names included in the {@link module:utils/keyboard#keyCodes} can be used.
 			 *
 			 * @error keyboard-unknown-key
-			 * @param {string} key
+			 * @param {string} key Ths specified key name.
 			 */
 			throw new CKEditorError( 'keyboard-unknown-key', null, { key } );
 		}

@@ -210,7 +210,7 @@ export default class ColorSelectorView extends View {
 
 		/**
 		 * This is kind of bindings. Unfortunately we could not use this.bind() method because the same property
-		 * can not be bound twice. So this is work around how to bind 'selectedColor' property between components.
+		 * cannot be bound twice. So this is work around how to bind 'selectedColor' property between components.
 		 */
 		this.on( 'change:selectedColor', ( evt, evtName, data ) => {
 			this.colorGridsFragmentView.set( 'selectedColor', data );
