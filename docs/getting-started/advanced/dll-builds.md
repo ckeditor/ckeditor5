@@ -87,6 +87,7 @@ For example:
 
 <script>
 	const config = {
+		licenseKey: 'GPL',
 		plugins: [
 			CKEditor5.autoformat.Autoformat,
 			CKEditor5.basicStyles.Bold,
