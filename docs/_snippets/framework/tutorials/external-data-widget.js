@@ -222,7 +222,6 @@ ClassicEditor
 		console.error( error.stack );
 	} );
 
-// For a totally unknown reason, Travis and Binance do not like each other and the test fail on CI.
 const metaElement = document.createElement( 'meta' );
 
 metaElement.name = 'x-cke-crawler-ignore-patterns';
