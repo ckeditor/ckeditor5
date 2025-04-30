@@ -158,3 +158,9 @@ Now, we need to put our script in the previous template. We put it under the `<d
 ```
 
 Finally, in the root directory of your .NET project, run `dotnet watch run` to see the app in action.
+
+## Next steps
+
+* See how to manipulate the editor's data in the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
+* Refer to further guides in the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
+* Check the {@link features/index features category} to learn more about individual features.
