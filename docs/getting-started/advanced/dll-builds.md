@@ -87,7 +87,7 @@ For example:
 
 <script>
 	const config = {
-			plugins: [
+		plugins: [
 			CKEditor5.autoformat.Autoformat,
 			CKEditor5.basicStyles.Bold,
 			CKEditor5.basicStyles.Italic,
