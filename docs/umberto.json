@@ -433,7 +433,7 @@
 			"icon": "premium",
 			"title": "NEW"
 		},
-		"message": "Free 14-Day Trial! <a target=\"_blank\" href=\"https://ckeditor.com/ckeditor-5/\" class=\"a11y text-decoration--underline\">Learn more</a>"
+		"message": "Free 14-Day Trial! <a target=\"_blank\" class=\"a11y link\" href=\"https://ckeditor.com/ckeditor-5/\" class=\"a11y text-decoration--underline\">Learn more</a>"
 	},
 	"og": {
 		"description": "Learn how to install, integrate and configure CKEditor 5 and how to work with CKEditor 5 Framework, customize it, create your own plugins and custom editors, change the UI or even bring your own UI to the editor. API reference and examples included."
