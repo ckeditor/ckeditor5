@@ -174,7 +174,6 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 		'<script defer src="https://cdn.ckbox.io/ckbox/latest/ckbox.js"></script>',
 		getStyle( '%BASE_PATH%/assets/ckeditor5/ckeditor5.css' ),
 		getStyle( '%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.css' ),
-		getStyle( '%BASE_PATH%/assets/global.css' ),
 		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5/ckeditor5.js">',
 		'<link rel="modulepreload" href="%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.js">'
 	];
@@ -192,7 +191,7 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 
 			documentContent = documentContent.replace(
 				getSnippetPlaceholder( snippet.snippetName ),
-				() => `<div class="live-snippet">${ data }</div>`
+				() => `<div class="doc live-snippet">${ data }</div>`
 			);
 
 			if ( await fileExists( upath.join( snippet.outputPath, snippet.snippetName, 'snippet.js' ) ) ) {
