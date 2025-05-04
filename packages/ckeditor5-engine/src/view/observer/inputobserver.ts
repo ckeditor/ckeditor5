@@ -96,7 +96,9 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 				let viewStart = view.domConverter.domPositionToView( domRange.startContainer, domRange.startOffset );
 				const viewEnd = view.domConverter.domPositionToView( domRange.endContainer, domRange.endOffset );
 
-				// TODO create ticked with description.
+				// When text replacement is enabled and browser tries to replace double space with dot, and space,
+				// but the first space is no longer where browser put it (it was moved to an attribute element),
+				// then we must extend the target range so it does not include a part of an inline filler.
 				if ( viewStart && startsWithFiller( domRange.startContainer ) && domRange.startOffset < INLINE_FILLER_LENGTH ) {
 					// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 					// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'InputObserver',

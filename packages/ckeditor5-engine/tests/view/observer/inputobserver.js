@@ -133,6 +133,51 @@ describe( 'InputObserver', () => {
 				expect( viewRange2.end.offset ).to.equal( 2 );
 			} );
 
+			it( 'should exclude inline filler from target ranges', () => {
+				// <p><span>foo</span></p>
+				view.change( writer => {
+					const paragraph = writer.createContainerElement( 'p' );
+					const span = writer.createAttributeElement( 'span' );
+					const text = writer.createText( 'foo' );
+
+					writer.insert( writer.createPositionAt( paragraph, 0 ), text );
+					writer.insert( writer.createPositionAt( viewRoot, 0 ), paragraph );
+					writer.wrap( writer.createRangeIn( paragraph ), span );
+					writer.setSelection( writer.createPositionAt( paragraph, 1 ) );
+				} );
+
+				// <p><span>foo</span> </p> (space after an inline filler)
+				view.change( writer => {
+					writer.insert( writer.createPositionAt( viewRoot.getChild( 0 ), 1 ), writer.createText( ' ' ) );
+				} );
+
+				const domRange = global.document.createRange();
+				const preventDefaultSpy = sinon.spy();
+
+				// Browser wants to replace last 2 chars with other text, but it includes an inline filler instead of a letter.
+				// <p><span>foo</span>[ ]</p>
+				domRange.setStart( domEditable.firstChild.childNodes[ 1 ], 6 );
+				domRange.setEnd( domEditable.firstChild.childNodes[ 1 ], 8 );
+
+				fireMockNativeBeforeInput( {
+					getTargetRanges: () => [ domRange ],
+					preventDefault: preventDefaultSpy
+				} );
+
+				expect( evtData.targetRanges ).to.have.length( 1 );
+
+				const viewRange = evtData.targetRanges[ 0 ];
+
+				expect( viewRange ).to.be.instanceOf( Range );
+
+				expect( viewRange.start.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 ) );
+				expect( viewRange.start.offset ).to.equal( 2 );
+				expect( viewRange.end.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 1 ) );
+				expect( viewRange.end.offset ).to.equal( 1 );
+
+				expect( preventDefaultSpy.calledOnce ).to.be.true;
+			} );
+
 			it( 'should provide fixed editing view ranges corresponding to DOM ranges passed along with the DOM event', () => {
 				const domRange = global.document.createRange();
 
@@ -328,6 +373,51 @@ describe( 'InputObserver', () => {
 			) ) ).to.be.true;
 
 			expect( thirdCallData.inputType ).to.equal( 'insertText' );
+			expect( thirdCallData.data ).to.equal( 'bar' );
+			expect( thirdCallData.targetRanges[ 0 ].isEqual( view.createRange(
+				view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 3 )
+			) ) ).to.be.true;
+		} );
+
+		it( 'single new-line surrounded by text (insertReplacementText)', () => {
+			const domRange = global.document.createRange();
+
+			domRange.setStart( domEditable.firstChild.firstChild, 0 );
+			domRange.setEnd( domEditable.firstChild.firstChild, 0 );
+
+			// Mocking view selection and offsets since there is no change in the model and view in this tests.
+			let i = 0;
+
+			sinon.stub( viewDocument.selection, 'getFirstRange' ).callsFake( () => {
+				return view.createRange(
+					view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), i++ )
+				);
+			} );
+
+			fireMockNativeBeforeInput( {
+				inputType: 'insertReplacementText',
+				data: 'foo\nbar',
+				getTargetRanges: () => [ domRange ]
+			} );
+
+			expect( beforeInputSpy.callCount ).to.equal( 3 );
+
+			const firstCallData = beforeInputSpy.getCall( 0 ).args[ 1 ];
+			const secondCallData = beforeInputSpy.getCall( 1 ).args[ 1 ];
+			const thirdCallData = beforeInputSpy.getCall( 2 ).args[ 1 ];
+
+			expect( firstCallData.inputType ).to.equal( 'insertReplacementText' );
+			expect( firstCallData.data ).to.equal( 'foo' );
+			expect( firstCallData.targetRanges[ 0 ].isEqual( view.createRange(
+				view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 0 )
+			) ) ).to.be.true;
+
+			expect( secondCallData.inputType ).to.equal( 'insertParagraph' );
+			expect( secondCallData.targetRanges[ 0 ].isEqual( view.createRange(
+				view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 1 )
+			) ) ).to.be.true;
+
+			expect( thirdCallData.inputType ).to.equal( 'insertReplacementText' );
 			expect( thirdCallData.data ).to.equal( 'bar' );
 			expect( thirdCallData.targetRanges[ 0 ].isEqual( view.createRange(
 				view.createPositionAt( viewRoot.getChild( 0 ).getChild( 0 ), 3 )
