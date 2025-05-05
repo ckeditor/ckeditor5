@@ -3,17 +3,17 @@ menu-title: SharePoint (SPFx)
 meta-title: SharePoint integration using npm | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with SharePoint SPFx using npm
 category: self-hosted
-order: 100
+order: 120
 modified_at: 2025-04-30
 ---
 
 # Integrate CKEditor&nbsp;5 with SharePoint SPFx
 
-[The SharePoint Framework (SPFx)](https://learn.microsoft.com/en-us/sharepoint/dev/spfx/sharepoint-framework-overview) is Microsoft's modern, client-side development model for building custom experiences that run in SharePoint Online, Microsoft Teams, Viva Connections, Outlook, and the Microsoft 365 app.
+[The SharePoint Framework (SPFx)](https://learn.microsoft.com/en-us/sharepoint/dev/spfx/sharepoint-framework-overview) is Microsoft's modern, client-side development model for building custom experiences that run in the SharePoint Online, Microsoft Teams, Viva Connections, Outlook, and the Microsoft 365 applications.
 
 ## Prerequisites
 
-Before integrating CKEditor 5 with SharePoint, make sure you have the following installed:
+Before integrating CKEditor&nbsp;5 with SharePoint, make sure you have the following installed:
 
 1. [Node.js](https://nodejs.org/) (LTS version)
 2. [Yeoman generator](https://yeoman.io/) and SharePoint generator plugin:
@@ -39,8 +39,8 @@ yo @microsoft/sharepoint
 ```
 
 When prompted for:
-- "**Which type of client-side component to create?**" - choose WebPart
-- "**Which template would you like to use?**" - choose React
+* "**Which type of client-side component to create?**" &ndash; choose WebPart
+* "**Which template would you like to use?**" &ndash; choose React
 
 
 You will be also prompted for names for the application and the web part, for example:
@@ -62,21 +62,19 @@ gulp serve
 
 A new browser tab with SPFx app should open automatically. You might be prompted to log in to your Microsoft account at this point.
 
-If the page doesn't open automatocally, navigate to:
+If the page does not open automatically, navigate to the following URL:
 ```
 https://your-tenant.sharepoint.com/_layouts/15/workbench.aspx
 ```
 
-
-If everything went fine, you should see screen like this:
+If everything went fine, you should see a screen similar to this one:
 {@img assets/img/sharepoint-integration_02.png Screenshot of SharePoint application.}
-
 
 ## CKEditor 5 web part integration
 
 ### Installing dependencies
 
-Now it's time to add CKEditor 5 to the application. First, install CKEditor 5 and React integration packages:
+Now it is time to add CKEditor&nbsp;5 to the application. First, install CKEditor&nbsp;5 and React integration packages:
 
 ```bash
 npm install --save @ckeditor/ckeditor5-react ckeditor5 ckeditor5-premium-features
@@ -91,7 +89,7 @@ In `tsconfig.json` file add:
 
 ### Creating CKEditor 5 web part component
 
-Assuming you named your web part "RichTextEditor", open the `src/webparts/richTextEditor/components/RichTextEditor.tsx` file and modify it to include CKEditor 5:
+Assuming you named your web part "RichTextEditor", open the `src/webparts/richTextEditor/components/RichTextEditor.tsx` file and modify it to include CKEditor&nbsp;5:
 
 ```typescript
 import * as React from 'react';
@@ -99,19 +97,19 @@ import type { IRichTextEditorProps } from './IRichTextEditorProps';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 import {
-  ClassicEditor,
-  Bold,
-  Essentials,
-  Italic,
-  Paragraph,
-  Font,
-  Heading,
-  Table,
-  List,
-  TableCellProperties,
-  TableProperties,
-  TableToolbar,
-  Autoformat
+	ClassicEditor,
+	Bold,
+	Essentials,
+	Italic,
+	Paragraph,
+	Font,
+	Heading,
+	Table,
+	List,
+	TableCellProperties,
+	TableProperties,
+	TableToolbar,
+	Autoformat
 } from 'ckeditor5';
 
 import { FormatPainter } from 'ckeditor5-premium-features';
@@ -120,58 +118,53 @@ import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 
 export default class RichTextEditor extends React.Component<IRichTextEditorProps> {
-  public render(): React.ReactElement<IRichTextEditorProps> {
-    return (
-        <CKEditor
-            editor={ ClassicEditor }
-            config={ {
-                licenseKey: '<YOUR-LICENSE-KEY>',
-                plugins: [
-                  Bold, Essentials, Italic, Paragraph, Font, Heading,
-                  Table, TableCellProperties, TableProperties, TableToolbar, List,
-                  Autoformat, FormatPainter
-                  ],
-                toolbar: [
-                  'undo', 'redo', '|', 'bold', 'italic', '|',
-                  'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor', '|',
-                  'formatPainter', 'insertTable', 'bulletedList', 'numberedList'
-                ],
-                initialData: '<p>Hello from CKEditor 5 in SPFX React app!</p>',
-                table: {
-                  contentToolbar: [
-                    'tableColumn', 'tableRow', 'mergeTableCells',
-                    'tableProperties', 'tableCellProperties'
-                  ]
-                }
-            } }
-        />
-    );
-  }
+	public render(): React.ReactElement<IRichTextEditorProps> {
+		return (
+				<CKEditor
+						editor={ ClassicEditor }
+						config={ {
+								licenseKey: '<YOUR-LICENSE-KEY>',
+								plugins: [
+									Bold, Essentials, Italic, Paragraph, Font, Heading,
+									Table, TableCellProperties, TableProperties, TableToolbar, List,
+									Autoformat, FormatPainter
+									],
+								toolbar: [
+									'undo', 'redo', '|', 'bold', 'italic', '|',
+									'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor', '|',
+									'formatPainter', 'insertTable', 'bulletedList', 'numberedList'
+								],
+								initialData: '<p>Hello from CKEditor 5 in SPFX React app!</p>',
+								table: {
+									contentToolbar: [
+										'tableColumn', 'tableRow', 'mergeTableCells',
+										'tableProperties', 'tableCellProperties'
+									]
+								}
+						} }
+				/>
+		);
+	}
 }
 ```
 
-Restart the server with:
+Restart the server and then refresh the page.
 ```bash
 gulp serve
 ```
-and refresh the page.
-  
+	
 ### Adding the editor web part on page
-  
-You should be now able to add the CKEditor 5 by clicking on the plus icon on the main page:
+	
+You should be now able to add CKEditor&nbsp;5 by clicking the plus icon on the main page:
 {@img assets/img/sharepoint-integration_03.png Screenshot of SharePoint application.}
-  
-  
+	
 Then choose CKEditor 5 component:
 {@img assets/img/sharepoint-integration_04.png Screenshot of SharePoint application.}
-  
-  
+	
 You should now be able to use the editor:
 {@img assets/img/sharepoint-integration_05.png Screenshot of SharePoint application.}
 
-
-
 ## Additional Resources
 
-- [SharePoint Framework Documentation](https://learn.microsoft.com/en-us/sharepoint/dev/spfx/sharepoint-framework-overview)
-- {@link getting-started/integrations/react-default-npm React integration documentation}
+* [SharePoint Framework Documentation](https://learn.microsoft.com/en-us/sharepoint/dev/spfx/sharepoint-framework-overview)
+* {@link getting-started/integrations/react-default-npm React integration documentation}
