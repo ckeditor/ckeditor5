@@ -17,10 +17,12 @@ Before integrating CKEditor&nbsp;5 with SharePoint, make sure you have the follo
 
 1. [Node.js](https://nodejs.org/) (LTS version)
 2. [Yeoman generator](https://yeoman.io/) and SharePoint generator plugin:
+
 ```bash
 npm install -g yo @microsoft/generator-sharepoint
 ```
 3. [Gulp](https://gulpjs.com/) (for building the project):
+
 ```bash
 npm install -g gulp
 ```
@@ -28,19 +30,21 @@ npm install -g gulp
 ## Creating a new web part project
 
 First, create a new folder and navigate into it:
+
 ```bash
 mkdir my-spfx-app
 cd my-spfx-app
 ```
 
 Generate a new SPFx web part project:
+
 ```bash
 yo @microsoft/sharepoint
 ```
 
 When prompted for:
-* "**Which type of client-side component to create?**" &ndash; choose WebPart
-* "**Which template would you like to use?**" &ndash; choose React
+* **Which type of client-side component to create?** &ndash; choose WebPart
+* **Which template would you like to use?** &ndash; choose React
 
 
 You will be also prompted for names for the application and the web part, for example:
@@ -51,11 +55,13 @@ You will be also prompted for names for the application and the web part, for ex
 ## Running the web part project
 
 After the project is created, go to `config/serve.json` file and update the `initialPage` property with your organization's URL:
+
 ```js
 "initialPage": "https://your-tenant.com/_layouts/workbench.aspx"
 ```
 
 At this point you should be able to run the project by executing:
+
 ```bash
 gulp serve
 ```
@@ -63,6 +69,7 @@ gulp serve
 A new browser tab with SPFx app should open automatically. You might be prompted to log in to your Microsoft account at this point.
 
 If the page does not open automatically, navigate to the following URL:
+
 ```
 https://your-tenant.sharepoint.com/_layouts/15/workbench.aspx
 ```
@@ -81,6 +88,7 @@ npm install --save @ckeditor/ckeditor5-react ckeditor5 ckeditor5-premium-feature
 ```
 
 In `tsconfig.json` file add:
+
 ```js
 ...
 "allowSyntheticDefaultImports": true
@@ -149,22 +157,32 @@ export default class RichTextEditor extends React.Component<IRichTextEditorProps
 ```
 
 Restart the server and then refresh the page.
+
 ```bash
 gulp serve
 ```
-	
+
 ### Adding the editor web part on page
-	
+
 You should be now able to add CKEditor&nbsp;5 by clicking the plus icon on the main page:
+
 {@img assets/img/sharepoint-integration_03.png Screenshot of SharePoint application.}
-	
+
 Then choose CKEditor 5 component:
+
 {@img assets/img/sharepoint-integration_04.png Screenshot of SharePoint application.}
-	
+
 You should now be able to use the editor:
+
 {@img assets/img/sharepoint-integration_05.png Screenshot of SharePoint application.}
 
 ## Additional Resources
 
 * [SharePoint Framework Documentation](https://learn.microsoft.com/en-us/sharepoint/dev/spfx/sharepoint-framework-overview)
 * {@link getting-started/integrations/react-default-npm React integration documentation}
+
+## Next steps
+
+* See how to manipulate the editor's data in the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
+* Refer to further guides in the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
+* Check the {@link features/index features category} to learn more about individual features.
