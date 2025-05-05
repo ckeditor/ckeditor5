@@ -1232,7 +1232,7 @@ describe( 'WidgetTypeAround', () => {
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 				} );
 
-				it( 'should not work when the plugin is disabled', async () => {
+				it( 'should not work when the plugin is disabled', () => {
 					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
 
 					editor.plugins.get( WidgetTypeAround ).isEnabled = false;
@@ -1243,9 +1243,6 @@ describe( 'WidgetTypeAround', () => {
 
 					fireKeyboardEvent( 'a' );
 					fireInsertTextEvent( 'a' );
-
-					// Wait for typing 50ms timeout as browser does not modify DOM itself in this case.
-					await timeout( 100 );
 
 					expect( getModelData( model ) ).to.equal( '<paragraph>a[]</paragraph>' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
@@ -1760,13 +1757,19 @@ describe( 'WidgetTypeAround', () => {
 		}
 
 		function fireInsertTextEvent( text ) {
+			const preventDefaultSpy = sinon.spy();
+
 			viewDocument.fire( 'insertText', {
 				text,
 				selection: editingView.createSelection(
 					editor.editing.mapper.toViewRange( editor.model.document.selection.getFirstRange() )
 				),
-				preventDefault: sinon.spy(),
-				domEvent: {}
+				preventDefault: preventDefaultSpy,
+				domEvent: {
+					get defaultPrevented() {
+						return preventDefaultSpy.called;
+					}
+				}
 			} );
 		}
 
@@ -2296,9 +2299,5 @@ describe( 'WidgetTypeAround', () => {
 					} );
 				}
 			} );
-	}
-
-	function timeout( ms ) {
-		return new Promise( res => window.setTimeout( res, ms ) );
 	}
 } );

@@ -86,6 +86,11 @@ export default class Input extends Plugin {
 		this.listenTo<ViewDocumentInsertTextEvent>( view.document, 'insertText', ( evt, data ) => {
 			const { text, selection: viewSelection } = data;
 
+			// In case of a synthetic event, make sure that selection is not fake.
+			if ( view.document.selection.isFake && viewSelection && view.document.selection.isSimilar( viewSelection ) ) {
+				data.preventDefault();
+			}
+
 			if ( !insertTextCommand.isEnabled ) {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'Input',
@@ -173,7 +178,7 @@ export default class Input extends Plugin {
 			this._typingQueue.push( commandData, Boolean( data.isComposing ) );
 
 			if ( data.domEvent.defaultPrevented ) {
-				this._typingQueue.flush( 'beforeinput default prevented - synthetic insertText event' );
+				this._typingQueue.flush( 'beforeinput default prevented' );
 			}
 		} );
 

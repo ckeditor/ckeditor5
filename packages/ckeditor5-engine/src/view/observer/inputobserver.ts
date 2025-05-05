@@ -79,6 +79,9 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 			// Future-proof: in case of multi-range fake selections being possible.
 			targetRanges = Array.from( viewDocument.selection.getRanges() );
 
+			// Do not allow typing inside a fake selection container, we will handle it manually.
+			domEvent.preventDefault();
+
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'InputObserver',
 			// @if CK_DEBUG_TYPING // 		'%cusing fake selection:',

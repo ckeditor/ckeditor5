@@ -322,7 +322,7 @@ describe( 'Input', () => {
 
 					sinon.assert.calledOnce( insertTextCommandSpy );
 					sinon.assert.calledOnce( typingQueuePushSpy );
-					sinon.assert.calledOnceWithExactly( typingQueueFlushSpy, 'beforeinput default prevented - synthetic insertText event' );
+					sinon.assert.calledOnceWithExactly( typingQueueFlushSpy, 'beforeinput default prevented' );
 				} );
 
 				it( 'should not push the event to the typing queue if command is disabled', () => {
