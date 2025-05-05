@@ -67,7 +67,7 @@ describe( 'HighlightCommand', () => {
 			expect( command ).to.have.property( 'isEnabled', true );
 		} );
 
-		it( 'is false when selection is on text which can not have highlight added', () => {
+		it( 'is false when selection is on text which cannot have highlight added', () => {
 			setData( model, '<x>fo[]o</x>' );
 			expect( command.isEnabled ).to.be.false;
 		} );

@@ -334,8 +334,8 @@ export default class Accessibility {
 			 * to add a new category or make sure the specified category exists.
 			 *
 			 * @error accessibility-unknown-keystroke-info-category
-			 * @param categoryId The id of the unknown keystroke category.
-			 * @param keystrokes Keystroke definitions about to be added.
+			 * @param {string} categoryId The id of the unknown keystroke category.
+			 * @param {module:core/accessibility~AddKeystrokeInfosData#keystrokes} keystrokes Keystroke definitions about to be added.
 			 */
 			throw new CKEditorError( 'accessibility-unknown-keystroke-info-category', this._editor, { categoryId, keystrokes } );
 		}
@@ -350,9 +350,9 @@ export default class Accessibility {
 			 * to add a new group or make sure the specified group exists.
 			 *
 			 * @error accessibility-unknown-keystroke-info-group
-			 * @param groupId The id of the unknown keystroke group.
-			 * @param categoryId The id of category the unknown group should belong to.
-			 * @param keystrokes Keystroke definitions about to be added.
+			 * @param {string} groupId The id of the unknown keystroke group.
+			 * @param {string} categoryId The id of category the unknown group should belong to.
+			 * @param {module:core/accessibility~AddKeystrokeInfosData#keystrokes} keystrokes Keystroke definitions about to be added.
 			 */
 			throw new CKEditorError( 'accessibility-unknown-keystroke-info-group', this._editor, { groupId, categoryId, keystrokes } );
 		}

@@ -144,7 +144,7 @@ export default class AlignmentUI extends Plugin {
 	/**
 	 * Helper method for initializing the toolnar dropdown and linking it with an appropriate command.
 	 *
-	 * @param option The name of the alignment option for which the button is added.
+	 * @param options The name of the alignment option for which the button is added.
 	 */
 	private _addToolbarDropdown( options: Array<AlignmentFormat> ): void {
 		const editor = this.editor;

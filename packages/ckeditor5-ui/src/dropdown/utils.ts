@@ -113,8 +113,6 @@ import type { DropdownMenuDefinition } from './menu/utils.js';
  *
  * @param locale The locale instance.
  * @param ButtonClassOrInstance The dropdown button view class. Needs to implement the
- * @param behaviorOptions Attributes for the default behavior of the dropdown.
- *
  * {@link module:ui/dropdown/button/dropdownbutton~DropdownButton} interface.
  * @returns The dropdown view instance.
  */
@@ -507,7 +505,7 @@ export function focusChildOnDropdownOpen(
 			 * experience.
 			 *
 			 * @error ui-dropdown-focus-child-on-open-child-missing-focus
-			 * @param {module:ui/view~View} view
+			 * @param {module:ui/view~View} view Child to focus.
 			 */
 			logWarning( 'ui-dropdown-focus-child-on-open-child-missing-focus', { view: childToFocus } );
 		}

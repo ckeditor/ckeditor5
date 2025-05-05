@@ -638,7 +638,7 @@ export default class Writer {
 	 *
 	 * Note that items can be moved only within the same tree. It means that you can move items within the same root
 	 * (element or document fragment) or between {@link module:engine/model/document~Document#roots documents roots},
-	 * but you can not move items from document fragment to the document or from one detached element to another. Use
+	 * but you cannot move items from document fragment to the document or from one detached element to another. Use
 	 * {@link module:engine/model/writer~Writer#insert} in such cases.
 	 *
 	 * @param range Source range.
@@ -935,7 +935,7 @@ export default class Writer {
 
 		if ( !splitElement.parent ) {
 			/**
-			 * Element with no parent can not be split.
+			 * Element with no parent cannot be split.
 			 *
 			 * @error writer-split-element-no-parent
 			 */

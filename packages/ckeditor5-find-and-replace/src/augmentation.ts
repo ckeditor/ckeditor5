@@ -12,7 +12,8 @@ import type {
 	FindNextCommand,
 	FindPreviousCommand,
 	ReplaceAllCommand,
-	ReplaceCommand
+	ReplaceCommand,
+	FindAndReplaceConfig
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -29,5 +30,15 @@ declare module '@ckeditor/ckeditor5-core' {
 		findPrevious: FindPreviousCommand;
 		replace: ReplaceCommand;
 		replaceAll: ReplaceAllCommand;
+	}
+
+	interface EditorConfig {
+
+		/**
+		 * The configuration of the {@link module:find-and-replace/findandreplace~FindAndReplace}.
+		 *
+		 * Read more in {@link module:find-and-replace/findandreplaceconfig~FindAndReplaceConfig}.
+		 */
+		findAndReplace?: FindAndReplaceConfig;
 	}
 }

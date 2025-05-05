@@ -73,6 +73,7 @@ export default class ColorUI extends Plugin {
 	 * Creates a plugin which introduces a dropdown with a pre–configured
 	 * {@link module:ui/colorselector/colorselectorview~ColorSelectorView}.
 	 *
+	 * @param editor An editor instance.
 	 * @param config The configuration object.
 	 * @param config.commandName The name of the command which will be executed when a color tile is clicked.
 	 * @param config.componentName The name of the dropdown in the {@link module:ui/componentfactory~ComponentFactory}

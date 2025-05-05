@@ -447,7 +447,7 @@ export default class TableCellPropertiesUI extends Plugin {
 	 * Creates a callback that when executed upon the {@link #view view's} property change
 	 * executes a related editor command with the new property value.
 	 *
-	 * @param defaultValue The default value of the command.
+	 * @param commandName The default value of the command.
 	 */
 	private _getPropertyChangeCallback(
 		commandName: 'tableCellBorderStyle' | 'tableCellHorizontalAlignment' | 'tableCellVerticalAlignment'

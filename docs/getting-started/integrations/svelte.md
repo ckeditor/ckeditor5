@@ -60,8 +60,8 @@ When completed, the folder structure of your project should resemble this one:
 ```
 
 The integration requires two key Svelte components:
-* `src/lib/Editor.svelte` - the component that wraps CKEditor functionality
-* `src/App.svelte` - the main application component that uses the Editor component
+* `src/lib/Editor.svelte` &ndash; the component that wraps CKEditor functionality
+* `src/App.svelte` &ndash; the main application component that uses the Editor component
 
 Let's implement these components next.
 
