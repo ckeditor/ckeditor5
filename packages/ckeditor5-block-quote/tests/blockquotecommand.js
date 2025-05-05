@@ -375,8 +375,8 @@ describe( 'BlockQuoteCommand', () => {
 				);
 			} );
 
-			it( 'should not wrap a block which can not be in a quote', () => {
-				// blockQuote is allowed in root, but fooBlock can not be inside blockQuote.
+			it( 'should not wrap a block which cannot be in a quote', () => {
+				// blockQuote is allowed in root, but fooBlock cannot be inside blockQuote.
 				model.schema.register( 'fooBlock', { inheritAllFrom: '$block' } );
 				model.schema.addChildCheck( ( ctx, childDef ) => {
 					if ( ctx.endsWith( 'blockQuote' ) && childDef.name == 'fooBlock' ) {

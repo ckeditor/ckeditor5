@@ -102,7 +102,6 @@ Fullscreen layout:
 
 .ck-fullscreen__main-wrapper .ck-fullscreen__editable {
 	margin-top: var(--ck-fullscreen-editor-top-margin);
-	margin-bottom: 56px;
 	height: 100%;
 	margin-left: auto;
 
@@ -115,9 +114,11 @@ Fullscreen layout:
 
 .ck-fullscreen__main-wrapper .ck-fullscreen__editable .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
 	box-sizing: border-box;
-	width: calc(210mm + 2px);
+	width: calc(210mm + 2px); /* Make sure the border is taken into account. */
+	max-width: calc(210mm + 2px); /* Make sure the border is taken into account. */
 	min-height: 297mm;
 	height: fit-content;
+	margin: 0; /* Reset margins that may be present on editable. We add them in other places. */
 	padding: 20mm 12mm;
 	border: 1px var(--ck-color-base-border) solid;
 	background: hsl(0, 0%, 100%);

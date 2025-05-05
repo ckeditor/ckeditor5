@@ -33,7 +33,8 @@ async function buildDocs() {
 		await spawnAsync( 'yarn', [
 			'run',
 			'docs:api',
-			options.strict && '--strict'
+			options.strict && '--strict',
+			options.verbose && '--verbose'
 		].filter( Boolean ) );
 	}
 
@@ -56,7 +57,7 @@ async function buildDocs() {
 			production: options.production,
 			allowedSnippets: options.snippets
 		},
-		skipApi: options.skipApi,
+		// skipApi: options.skipApi,
 		skipGuides: options.skipGuides,
 		verbose: options.verbose,
 		watch: options.watch,

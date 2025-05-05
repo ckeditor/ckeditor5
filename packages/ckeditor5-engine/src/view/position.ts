@@ -339,10 +339,10 @@ export default class Position extends TypeCheckable {
 
 		if ( !item.parent ) {
 			/**
-			 * You can not make a position after a root.
+			 * You cannot make a position after a root.
 			 *
 			 * @error view-position-after-root
-			 * @param {module:engine/view/node~Node} root
+			 * @param {module:engine/view/node~Node} root A root item.
 			 */
 			throw new CKEditorError( 'view-position-after-root', item, { root: item } );
 		}
@@ -367,7 +367,7 @@ export default class Position extends TypeCheckable {
 			 * You cannot make a position before a root.
 			 *
 			 * @error view-position-before-root
-			 * @param {module:engine/view/node~Node} root
+			 * @param {module:engine/view/node~Node} root A root item.
 			 */
 			throw new CKEditorError( 'view-position-before-root', item, { root: item } );
 		}

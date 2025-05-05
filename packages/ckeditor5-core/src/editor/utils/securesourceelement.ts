@@ -26,10 +26,10 @@ export default function secureSourceElement( editor: Editor, sourceElement: HTML
 		 * A DOM element used to create the editor (e.g.
 		 * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`})
 		 * has already been used to create another editor instance. Make sure each editor is
-		 * created with an unique DOM element.
+		 * created with a unique DOM element.
 		 *
 		 * @error editor-source-element-already-used
-		 * @param element DOM element that caused the collision.
+		 * @param {HTMLElement} element DOM element that caused the collision.
 		 */
 		throw new CKEditorError(
 			'editor-source-element-already-used',

@@ -160,7 +160,7 @@ For example:
 
 Presented below is a working sample editor using the DLL mechanism. Observe the source and then click **"Result"** to switch to the live view of the working CKEditor&nbsp;5 instance.
 
-<iframe width="100%" height="850" src="//jsfiddle.net/ckeditor/q7L8rd40/embedded/html,result/dark/" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
+<iframe width="100%" height="850" src="//jsfiddle.net/ckeditor/ex7hcoz1/embedded/html,result/dark/" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
 
 ## Localization
 

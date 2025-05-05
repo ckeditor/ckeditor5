@@ -143,10 +143,10 @@ export default class ListEditing extends Plugin {
 
 		if ( editor.plugins.has( 'LegacyListEditing' ) ) {
 			/**
-			 * The `List` feature can not be loaded together with the `LegacyList` plugin.
+			 * The `List` feature cannot be loaded together with the `LegacyList` plugin.
 			 *
 			 * @error list-feature-conflict
-			 * @param conflictPlugin Name of the plugin.
+			 * @param {string} conflictPlugin Name of the plugin.
 			 */
 			throw new CKEditorError( 'list-feature-conflict', this, { conflictPlugin: 'LegacyListEditing' } );
 		}

@@ -293,9 +293,7 @@ export default class FindAndReplaceUI extends Plugin {
 	}
 
 	/**
-	 * Sets up the form view for the find and replace.
-	 *
-	 * @param formView A related form view.
+	 * Sets up the form view for the findN and replace.
 	 */
 	private _createFormView(): FindAndReplaceFormView & ViewWithCssTransitionDisabler {
 		const editor = this.editor;

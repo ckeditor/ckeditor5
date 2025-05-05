@@ -295,6 +295,7 @@ export function mergeListItemBefore(
  * @internal
  * @param blocks The block or iterable of blocks.
  * @param writer The model writer.
+ * @param options Additional options.
  * @param options.expand Whether should expand the list of blocks to include complete list items.
  * @param options.indentBy The number of levels the indentation should change (could be negative).
  */

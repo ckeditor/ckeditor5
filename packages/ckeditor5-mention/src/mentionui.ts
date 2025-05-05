@@ -186,7 +186,7 @@ export default class MentionUI extends Plugin {
 				 * See {@link module:mention/mentionconfig~MentionConfig}.
 				 *
 				 * @error mentionconfig-incorrect-marker
-				 * @param marker Configured marker
+				 * @param {string} marker Configured marker
 				 */
 				throw new CKEditorError( 'mentionconfig-incorrect-marker', null, { marker } );
 			}
