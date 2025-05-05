@@ -118,3 +118,9 @@ Having all the dependencies of CKEditor&nbsp;5, modify the `welcome.blade.php` f
 ```
 
 Finally, in the root directory of your Laravel project, run `php artisan serve` to see the app in action.
+
+## Next steps
+
+* See how to manipulate the editor's data in the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
+* Refer to further guides in the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
+* Check the {@link features/index features category} to learn more about individual features.

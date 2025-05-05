@@ -9,7 +9,9 @@ const metaElement = document.createElement( 'meta' );
 metaElement.name = 'x-cke-crawler-ignore-patterns';
 metaElement.content = JSON.stringify( {
 	'console-error': [
-		'The Cross-Origin-Opener-Policy header has been ignored'
+		'The Cross-Origin-Opener-Policy header has been ignored',
+		'<svg> attribute preserveAspectRatio',
+		'transparent NaN'
 	]
 } );
 

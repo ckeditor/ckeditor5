@@ -79,8 +79,6 @@ MediaEditor
 		console.error( err.stack );
 	} );
 
-// For a totally unknown reason, Travis and Vimeo do not like each other and the test fail on CI.
-// Ignore errors from Facebook as well
 const metaElement = document.createElement( 'meta' );
 
 metaElement.name = 'x-cke-crawler-ignore-patterns';
