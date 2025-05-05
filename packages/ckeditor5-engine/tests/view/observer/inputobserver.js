@@ -523,10 +523,19 @@ describe( 'InputObserver', () => {
 	} );
 
 	function fireMockNativeBeforeInput( domEvtMock ) {
-		observer.onDomEvent( Object.assign( {
+		const eventData = Object.assign( {
 			type: 'beforeinput',
-			getTargetRanges: () => []
-		}, domEvtMock ) );
+			getTargetRanges: () => [],
+			preventDefault: sinon.spy()
+		}, domEvtMock );
+
+		eventData.domEvent = {
+			get defaultPrevented() {
+				return eventData.preventDefault.called;
+			}
+		};
+
+		observer.onDomEvent( eventData );
 
 		evtData = beforeInputSpy.firstCall.args[ 1 ];
 	}

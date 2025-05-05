@@ -10,12 +10,13 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { toWidget, Widget } from '@ckeditor/ckeditor5-widget';
+import { insertAt } from '@ckeditor/ckeditor5-utils';
 
 import Input from '../src/input.js';
 import InsertTextCommand from '../src/inserttextcommand.js';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import env from '@ckeditor/ckeditor5-utils/src/env.js';
-import { insertAt } from '@ckeditor/ckeditor5-utils';
 
 describe( 'Input', () => {
 	testUtils.createSinonSandbox();
@@ -29,7 +30,7 @@ describe( 'Input', () => {
 			document.body.appendChild( domElement );
 
 			editor = await ClassicTestEditor.create( domElement, {
-				plugins: [ Input, Paragraph, Bold ],
+				plugins: [ Input, Paragraph, Bold, Widget ],
 				initialData: '<p>foo</p>'
 			} );
 
@@ -42,6 +43,14 @@ describe( 'Input', () => {
 
 			typingQueuePushSpy = sinon.spy( inputPlugin._typingQueue, 'push' );
 			typingQueueFlushSpy = sinon.spy( inputPlugin._typingQueue, 'flush' );
+
+			editor.model.schema.register( 'widget', { inheritAllFrom: '$blockObject' } );
+			editor.conversion.for( 'downcast' ).elementToElement( {
+				model: 'widget',
+				view: ( modelItem, { writer } ) => {
+					return toWidget( writer.createContainerElement( 'div' ), writer, { label: 'element label' } );
+				}
+			} );
 
 			viewDocument.isFocused = true;
 		} );
@@ -123,6 +132,22 @@ describe( 'Input', () => {
 				const spy = sinon.spy();
 
 				editor.commands.get( 'insertText' ).forceDisabled();
+
+				viewDocument.fire( 'insertText', {
+					preventDefault: spy,
+					selection: viewDocument.selection,
+					text: 'bar',
+					domEvent: {}
+				} );
+
+				sinon.assert.calledOnce( spy );
+				sinon.assert.notCalled( insertTextCommandSpy );
+			} );
+
+			it( 'should preventDefault() the original beforeinput event if target ranges match fake selection', () => {
+				setModelData( editor.model, '[<widget></widget>]' );
+
+				const spy = sinon.spy();
 
 				viewDocument.fire( 'insertText', {
 					preventDefault: spy,
@@ -357,7 +382,8 @@ describe( 'Input', () => {
 					sinon.assert.notCalled( typingQueueFlushSpy );
 
 					viewDocument.fire( 'beforeinput', new DomEventData( view, {
-						target: view.getDomRoot()
+						target: view.getDomRoot(),
+						preventDefault: () => {}
 					}, {
 						inputType: 'insertParagraph',
 						targetRanges: []
