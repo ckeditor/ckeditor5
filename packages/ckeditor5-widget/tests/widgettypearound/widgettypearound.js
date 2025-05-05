@@ -472,14 +472,12 @@ describe( 'WidgetTypeAround', () => {
 			it( 'should not activate when the selection is before the widget but the non-arrow key was pressed', () => {
 				setModelData( editor.model, '<paragraph>foo[]</paragraph><blockWidget></blockWidget>' );
 
-				const viewTextNode = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
-
 				fireKeyboardEvent( 'a' );
 				fireInsertTextEvent( 'a' );
-				modifyDom( 'a', editingView.createRange( editingView.createPositionAt( viewTextNode, 'end' ) ) );
 
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
-				expect( getModelData( model ) ).to.equal( '<paragraph>fooa[]</paragraph><blockWidget></blockWidget>' );
+				// As the browser is modifying DOM while typing, the change is not applied here since those are mocked events.
+				expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><blockWidget></blockWidget>' );
 
 				const viewWidget = viewRoot.getChild( 1 );
 
@@ -1234,7 +1232,7 @@ describe( 'WidgetTypeAround', () => {
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
 				} );
 
-				it( 'should not work when the plugin is disabled', () => {
+				it( 'should not work when the plugin is disabled', async () => {
 					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
 
 					editor.plugins.get( WidgetTypeAround ).isEnabled = false;
@@ -1245,7 +1243,9 @@ describe( 'WidgetTypeAround', () => {
 
 					fireKeyboardEvent( 'a' );
 					fireInsertTextEvent( 'a' );
-					// modifyDom( 'a', viewDocument.selection.getFirstRange() );
+
+					// Wait for typing 50ms timeout as browser does not modify DOM itself in this case.
+					await timeout( 100 );
 
 					expect( getModelData( model ) ).to.equal( '<paragraph>a[]</paragraph>' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
@@ -2296,5 +2296,9 @@ describe( 'WidgetTypeAround', () => {
 					} );
 				}
 			} );
+	}
+
+	function timeout( ms ) {
+		return new Promise( res => window.setTimeout( res, ms ) );
 	}
 } );
