@@ -112,7 +112,7 @@ export default class Locale {
 	 * @param options.contentLanguage The editor content language code in the
 	 * [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format. If not specified, the same as `options.language`.
 	 * See {@link #contentLanguage}.
-	 * @param translations Translations passed as a editor config parameter.
+	 * @param options.translations Translations passed as a editor config parameter.
 	 */
 	constructor(
 		{

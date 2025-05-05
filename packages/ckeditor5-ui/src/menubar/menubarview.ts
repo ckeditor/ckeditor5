@@ -304,8 +304,8 @@ export default class MenuBarView extends View implements FocusableView {
 			 * {@link module:ui/menubar/menubarmenulistitembuttonview~MenuBarMenuListItemButtonView} (button).
 			 *
 			 * @error menu-bar-component-unsupported
-			 * @param componentName A name of the unsupported component used in the configuration.
-			 * @param componentView An unsupported component view.
+			 * @param {string} componentName A name of the unsupported component used in the configuration.
+			 * @param {module:ui/view~View} componentView An unsupported component view.
 			 */
 			logWarning( 'menu-bar-component-unsupported', {
 				componentName,

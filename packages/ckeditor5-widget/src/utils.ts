@@ -118,7 +118,7 @@ export function toWidget(
 		 * instance.
 		 *
 		 * @error widget-to-widget-wrong-element-type
-		 * @param element The view element passed to `toWidget()`.
+		 * @param {any} element The view element passed to `toWidget()`.
 		 */
 		throw new CKEditorError(
 			'widget-to-widget-wrong-element-type',

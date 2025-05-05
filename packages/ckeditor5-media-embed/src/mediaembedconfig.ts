@@ -195,7 +195,7 @@ export interface MediaEmbedConfig {
 	 * in the {@link module:media-embed/mediaembedconfig~MediaEmbedConfig#providers `config.mediaEmbed.providers`}
 	 * configuration description.
 	 *
-	 * @defualt false
+	 * @default false
 	 */
 	previewsInData?: boolean;
 
