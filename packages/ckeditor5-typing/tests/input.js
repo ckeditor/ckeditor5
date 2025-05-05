@@ -15,6 +15,7 @@ import Input from '../src/input.js';
 import InsertTextCommand from '../src/inserttextcommand.js';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { insertAt } from '@ckeditor/ckeditor5-utils';
 
 describe( 'Input', () => {
 	testUtils.createSinonSandbox();
@@ -1383,7 +1384,7 @@ describe( 'Input', () => {
 				if ( domRange.startContainer.nodeType === 3 ) {
 					domRange.startContainer.insertData( domRange.startOffset, data );
 				} else {
-					throw new Error( 'not supported' ); // TODO
+					insertAt( domRange.startContainer, domRange.startOffset, domRange.startContainer.ownerDocument.createTextNode( data ) );
 				}
 
 				// Make sure it is always no bigger than 1 entry to avoid problems with position mapping.
