@@ -5,6 +5,7 @@
 
 /* eslint-env node */
 
+import { fileURLToPath } from 'url';
 import path from 'upath';
 import webpack from 'webpack';
 import TerserPlugin from 'terser-webpack-plugin';
@@ -13,9 +14,6 @@ import { CKEditorTranslationsPlugin } from '@ckeditor/ckeditor5-dev-translations
 import FooterPlugin from './webpack-footer-plugin.mjs';
 import { addTypeScriptLoader } from '../docs/utils.mjs';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
-import module from 'module';
-
-const require = module.createRequire( import.meta.url );
 
 const IS_DEVELOPMENT_MODE = process.argv.includes( '--mode=development' );
 const { CI } = process.env;
@@ -124,7 +122,7 @@ const webpackConfig = {
 		rules: [
 			loaders.getIconsLoader( { matchExtensionOnly: true } ),
 			loaders.getStylesLoader( {
-				themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' ),
+				themePath: fileURLToPath( import.meta.resolve( '@ckeditor/ckeditor5-theme-lark' ) ),
 				minify: true
 			} )
 			// TypeScript is injected by the `addTypeScriptLoader()` function.
