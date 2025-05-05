@@ -24,7 +24,10 @@ async function buildApiDocs() {
 		outputPath: path.join( CKEDITOR5_ROOT_PATH, 'docs', 'api', 'output.json' ),
 		readmePath: 'README.md',
 		validateOnly: process.argv.includes( '--validate-only' ),
-		strict: process.argv.includes( '--strict' ),
+		validatorOptions: {
+			strict: process.argv.includes( '--strict' )
+		},
+		verbose: process.argv.includes( '--verbose' ),
 		tsconfig: path.join( CKEDITOR5_ROOT_PATH, 'tsconfig.typedoc.json' ),
 		sourceFiles: [
 			// CKEditor 5 sources.

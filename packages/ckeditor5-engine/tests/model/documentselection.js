@@ -88,7 +88,7 @@ describe( 'DocumentSelection', () => {
 			expect( count( selection.getAttributes() ) ).to.equal( 0 );
 		} );
 
-		it( 'should skip element when you can not put selection', () => {
+		it( 'should skip element when you cannot put selection', () => {
 			model = new Model();
 			doc = model.document;
 			root = doc.createRoot();

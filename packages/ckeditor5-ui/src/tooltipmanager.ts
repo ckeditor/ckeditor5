@@ -415,6 +415,8 @@ export default class TooltipManager extends /* #__PURE__ */ DomEmitterMixin() {
 	/**
 	 * Pins the tooltip to a specific DOM element.
 	 *
+	 * @param targetDomElement Element to be pinned to.
+	 * @param options Options for the tooltip.
 	 * @param options.text Text of the tooltip to display.
 	 * @param options.position The position of the tooltip.
 	 * @param options.cssClass Additional CSS class of the balloon with the tooltip.

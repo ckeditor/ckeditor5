@@ -99,10 +99,11 @@ export default class ColorPickerFragmentView extends View {
 	 * Creates an instance of the view.
 	 *
 	 * @param locale The localization services instance.
-	 * @param focusTracker Tracks information about the DOM focus in the list.
-	 * @param focusables A collection of views that can be focused in the view..
-	 * @param keystrokes An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
-	 * @param colorPickerViewConfig The configuration of color picker feature. If set to `false`, the color picker
+	 * @param options Constructor options.
+	 * @param options.focusTracker Tracks information about the DOM focus in the list.
+	 * @param options.focusables A collection of views that can be focused in the view.
+	 * @param options.keystrokes An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+	 * @param options.colorPickerViewConfig The configuration of color picker feature. If set to `false`, the color picker
 	 * will not be rendered.
 	 */
 	constructor(

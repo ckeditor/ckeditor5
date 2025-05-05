@@ -75,7 +75,7 @@ export default class EasyImage extends Plugin {
 			 * Please make sure your editor configuration is correct.
 			 *
 			 * @error easy-image-image-feature-missing
-			 * @param {module:core/editor/editor~Editor} editor
+			 * @param {module:core/editor/editor~Editor} editor The editor instance.
 			 */
 			logWarning( 'easy-image-image-feature-missing', editor );
 		}

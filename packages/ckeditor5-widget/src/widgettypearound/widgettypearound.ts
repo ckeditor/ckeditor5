@@ -196,8 +196,6 @@ export default class WidgetTypeAround extends Plugin {
 	 * @param event The name of the event.
 	 * @param callback The function to be called on event.
 	 * @param options Additional options.
-	 * @param options.priority The priority of this event callback. The higher the priority value the sooner
-	 * the callback will be fired. Events having the same priority are called in the order they were added.
 	 */
 	private _listenToIfEnabled<TEvent extends BaseEvent>(
 		emitter: Emitter,

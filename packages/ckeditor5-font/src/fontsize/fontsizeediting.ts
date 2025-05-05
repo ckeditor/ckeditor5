@@ -126,7 +126,7 @@ export default class FontSizeEditing extends Plugin {
 			 * See valid examples described in the {@link module:font/fontconfig~FontSizeConfig#options plugin configuration}.
 			 *
 			 * @error font-size-invalid-use-of-named-presets
-			 * @param {Array.<String>} presets Invalid values.
+			 * @param {Array.<string>} presets Invalid values.
 			 */
 			throw new CKEditorError(
 				'font-size-invalid-use-of-named-presets',

@@ -19,7 +19,7 @@
     "es-toolkit": "1.32.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-utils": "^48.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^49.0.0",
     "@ckeditor/ckeditor5-editor-classic": "45.0.0",
     "@ckeditor/ckeditor5-paragraph": "45.0.0",
     "@ckeditor/ckeditor5-source-editing": "45.0.0",
