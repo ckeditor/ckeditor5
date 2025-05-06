@@ -25,7 +25,8 @@ import {
 	type ViewDocumentCompositionStartEvent,
 	type ViewDocumentCompositionEndEvent,
 	type ViewDocumentKeyDownEvent,
-	type ViewDocumentMutationsEvent
+	type ViewDocumentMutationsEvent,
+	type ViewDocumentInputEvent
 } from '@ckeditor/ckeditor5-engine';
 
 import { debounce } from 'es-toolkit/compat';
@@ -39,7 +40,7 @@ export default class Input extends Plugin {
 	/**
 	 * The queue of `insertText` command executions that are waiting for the DOM to get updated after beforeinput event.
 	 */
-	private _compositionQueue!: CompositionQueue;
+	private _typingQueue!: TypingQueue;
 
 	/**
 	 * @inheritDoc
@@ -65,7 +66,7 @@ export default class Input extends Plugin {
 		const mapper = editor.editing.mapper;
 		const modelSelection = model.document.selection;
 
-		this._compositionQueue = new CompositionQueue( editor );
+		this._typingQueue = new TypingQueue( editor );
 
 		view.addObserver( InsertTextObserver );
 
@@ -76,20 +77,32 @@ export default class Input extends Plugin {
 		editor.commands.add( 'insertText', insertTextCommand );
 		editor.commands.add( 'input', insertTextCommand );
 
+		this.listenTo<ViewDocumentInputEvent>( view.document, 'beforeinput', () => {
+			// Flush queue on the next beforeinput event because it could happen
+			// that the mutation observer does not notice the DOM change in time.
+			this._typingQueue.flush( 'next beforeinput' );
+		}, { priority: 'high' } );
+
 		this.listenTo<ViewDocumentInsertTextEvent>( view.document, 'insertText', ( evt, data ) => {
-			// Rendering is disabled while composing so prevent events that will be rendered by the engine
-			// and should not be applied by the browser.
-			if ( !view.document.isComposing ) {
+			const { text, selection: viewSelection } = data;
+
+			// In case of a synthetic event, make sure that selection is not fake.
+			if ( view.document.selection.isFake && viewSelection && view.document.selection.isSimilar( viewSelection ) ) {
 				data.preventDefault();
 			}
 
-			// Flush queue on the next beforeinput event because it could happen
-			// that the mutation observer does not notice the DOM change in time.
-			if ( env.isAndroid && view.document.isComposing ) {
-				this._compositionQueue.flush( 'next beforeinput' );
-			}
+			if ( !insertTextCommand.isEnabled ) {
+				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'Input',
+				// @if CK_DEBUG_TYPING // 		'%cInsertText command is disabled - prevent DOM change.',
+				// @if CK_DEBUG_TYPING // 		'font-style: italic'
+				// @if CK_DEBUG_TYPING // 	) );
+				// @if CK_DEBUG_TYPING // }
 
-			const { text, selection: viewSelection } = data;
+				data.preventDefault();
+
+				return;
+			}
 
 			let modelRanges;
 
@@ -137,43 +150,35 @@ export default class Input extends Plugin {
 				}
 			}
 
+			// Note: the TypingQueue stores live-ranges internally as RTC could change the model while waiting for mutations.
 			const commandData: InsertTextCommandOptions = {
 				text: insertText,
 				selection: model.createSelection( modelRanges )
 			};
 
-			// This is a composition event and those are not cancellable, so we need to wait until browser updates the DOM
+			// This is a beforeinput event, so we need to wait until the browser updates the DOM,
 			// and we could apply changes to the model and verify if the DOM is valid.
 			// The browser applies changes to the DOM not immediately on beforeinput event.
 			// We just wait for mutation observer to notice changes or as a fallback a timeout.
-			if ( env.isAndroid && view.document.isComposing ) {
-				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-				// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'Input',
-				// @if CK_DEBUG_TYPING // 		`%cQueue insertText:%c "${ commandData.text }"%c ` +
-				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getFirstPosition().path }]-` +
-				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getLastPosition().path }]` +
-				// @if CK_DEBUG_TYPING // 		` queue size: ${ this._compositionQueue.length + 1 }`,
-				// @if CK_DEBUG_TYPING // 		'font-weight: bold',
-				// @if CK_DEBUG_TYPING // 		'color: blue',
-				// @if CK_DEBUG_TYPING // 		''
-				// @if CK_DEBUG_TYPING // 	) );
-				// @if CK_DEBUG_TYPING // }
+			//
+			// Previously we were cancelling the non-composition events, but it caused issues especially in Safari.
 
-				this._compositionQueue.push( commandData );
-			} else {
-				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-				// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'Input',
-				// @if CK_DEBUG_TYPING // 		`%cExecute insertText:%c "${ commandData.text }"%c ` +
-				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getFirstPosition().path }]-` +
-				// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getLastPosition().path }]`,
-				// @if CK_DEBUG_TYPING // 		'font-weight: bold',
-				// @if CK_DEBUG_TYPING // 		'color: blue',
-				// @if CK_DEBUG_TYPING // 		''
-				// @if CK_DEBUG_TYPING // 	) );
-				// @if CK_DEBUG_TYPING // }
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'Input',
+			// @if CK_DEBUG_TYPING // 		`%cQueue insertText:%c "${ commandData.text }"%c ` +
+			// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getFirstPosition().path }]-` +
+			// @if CK_DEBUG_TYPING // 		`[${ commandData.selection.getLastPosition().path }]` +
+			// @if CK_DEBUG_TYPING // 		` queue size: ${ this._typingQueue.length + 1 }`,
+			// @if CK_DEBUG_TYPING // 		'font-weight: bold',
+			// @if CK_DEBUG_TYPING // 		'color: blue',
+			// @if CK_DEBUG_TYPING // 		''
+			// @if CK_DEBUG_TYPING // 	) );
+			// @if CK_DEBUG_TYPING // }
 
-				editor.execute( 'insertText', commandData );
-				view.scrollToTheSelection();
+			this._typingQueue.push( commandData, Boolean( data.isComposing ) );
+
+			if ( data.domEvent.defaultPrevented ) {
+				this._typingQueue.flush( 'beforeinput default prevented' );
 			}
 		} );
 
@@ -222,52 +227,52 @@ export default class Input extends Plugin {
 				// @if CK_DEBUG_TYPING // }
 
 				deleteSelectionContent( model, insertTextCommand );
-			} );
+			}, { priority: 'high' } );
 		}
 
-		// Apply composed changes to the model.
-		if ( env.isAndroid ) {
-			// Apply changes to the model as they are applied to the DOM by the browser.
-			// On beforeinput event, the DOM is not yet modified. We wait for detected mutations to apply model changes.
-			this.listenTo<ViewDocumentMutationsEvent>( view.document, 'mutations', ( evt, { mutations } ) => {
-				if ( !view.document.isComposing ) {
-					return;
-				}
-
-				// Check if mutations are relevant for queued changes.
+		// Apply changes to the model as they are applied to the DOM by the browser.
+		// On beforeinput event, the DOM is not yet modified. We wait for detected mutations to apply model changes.
+		this.listenTo<ViewDocumentMutationsEvent>( view.document, 'mutations', ( evt, { mutations } ) => {
+			// Check if mutations are relevant for queued changes.
+			if ( this._typingQueue.hasAffectedElements() ) {
 				for ( const { node } of mutations ) {
 					const viewElement = findMappedViewAncestor( node, mapper );
 					const modelElement = mapper.toModelElement( viewElement )!;
 
-					if ( this._compositionQueue.isComposedElement( modelElement ) ) {
-						this._compositionQueue.flush( 'mutations' );
+					if ( this._typingQueue.isElementAffected( modelElement ) ) {
+						this._typingQueue.flush( 'mutations' );
 
 						return;
 					}
 				}
+			}
 
-				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-				// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'Input',
-				// @if CK_DEBUG_TYPING // 		'%cMutations not related to the composition.',
-				// @if CK_DEBUG_TYPING // 		'font-style: italic'
-				// @if CK_DEBUG_TYPING // 	) );
-				// @if CK_DEBUG_TYPING // }
-			} );
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'Input',
+			// @if CK_DEBUG_TYPING // 		'%cMutations not related to the composition.',
+			// @if CK_DEBUG_TYPING // 		'font-style: italic'
+			// @if CK_DEBUG_TYPING // 	) );
+			// @if CK_DEBUG_TYPING // }
+		} );
 
-			// Make sure that all changes are applied to the model before the end of composition.
-			this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => {
-				this._compositionQueue.flush( 'composition end' );
-			} );
+		// Make sure that all changes are applied to the model before the end of composition.
+		this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => {
+			this._typingQueue.flush( 'before composition end' );
+		}, { priority: 'high' } );
 
-			// Trigger mutations check after the composition completes to fix all DOM changes that got ignored during composition.
-			// On Android the Renderer is not disabled while composing. While updating DOM nodes we ignore some changes
-			// that are not that important (like NBSP vs plain space character) and could break the composition flow.
-			// After composition is completed we trigger additional `mutations` event for elements affected by the composition
-			// so the Renderer can adjust the DOM to the expected structure without breaking the composition.
-			this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => {
-				const mutations: Array<MutationData> = [];
+		// Trigger mutations check after the composition completes to fix all DOM changes that got ignored during composition.
+		// On Android, the Renderer is not disabled while composing. While updating DOM nodes, we ignore some changes
+		// that are not that important (like NBSP vs. plain space character) and could break the composition flow.
+		// After composition is completed, we trigger additional `mutations` event for elements affected by the composition
+		// so the Renderer can adjust the DOM to the expected structure without breaking the composition.
+		this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => {
+			// There could be new item queued on the composition end, so flush it.
+			this._typingQueue.flush( 'after composition end' );
 
-				for ( const element of this._compositionQueue.flushComposedElements() ) {
+			const mutations: Array<MutationData> = [];
+
+			if ( this._typingQueue.hasAffectedElements() ) {
+				for ( const element of this._typingQueue.flushAffectedElements() ) {
 					const viewElement = mapper.toViewElement( element );
 
 					if ( !viewElement ) {
@@ -276,49 +281,37 @@ export default class Input extends Plugin {
 
 					mutations.push( { type: 'children', node: viewElement } );
 				}
+			}
 
-				if ( mutations.length ) {
-					// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-					// @if CK_DEBUG_TYPING // 	console.group( ..._buildLogMessage( this, 'Input',
-					// @if CK_DEBUG_TYPING // 		'%cFire post-composition mutation fixes.',
-					// @if CK_DEBUG_TYPING // 		'font-weight: bold'
-					// @if CK_DEBUG_TYPING // 	) );
-					// @if CK_DEBUG_TYPING // }
-
-					view.document.fire<ViewDocumentMutationsEvent>( 'mutations', { mutations } );
-
-					// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-					// @if CK_DEBUG_TYPING // 	console.groupEnd();
-					// @if CK_DEBUG_TYPING // }
-				}
-			}, { priority: 'lowest' } );
-		} else {
-			// After composition end we need to verify if there are no left-overs.
-			// Listening at the lowest priority so after the `InsertTextObserver` added above (all composed text
+			// Fire composition mutations, if any.
+			//
+			// For non-Android:
+			// After the composition end, we need to verify if there are no left-overs.
+			// Listening at the lowest priority, so after the `InsertTextObserver` added above (all composed text
 			// should already be applied to the model, view, and DOM).
-			// On non-Android the `Renderer` is blocked while user is composing but the `MutationObserver` still collects
+			// On non-Android the `Renderer` is blocked while the user is composing, but the `MutationObserver` still collects
 			// mutated nodes and fires `mutations` events.
 			// Those events are recorded by the `Renderer` but not applied to the DOM while composing.
 			// We need to trigger those checks (and fixes) once again but this time without specifying the exact mutations
 			// since they are already recorded by the `Renderer`.
-			// It in the most cases just clears the internal record of mutated text nodes
+			// It in most cases just clears the internal record of mutated text nodes
 			// since all changes should already be applied to the DOM.
-			// This is especially needed when user cancels composition, so we can clear nodes marked to sync.
-			this.listenTo<ViewDocumentCompositionEndEvent>( view.document, 'compositionend', () => {
+			// This is especially needed when a user cancels composition, so we can clear nodes marked to sync.
+			if ( mutations.length || !env.isAndroid ) {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.group( ..._buildLogMessage( this, 'Input',
-				// @if CK_DEBUG_TYPING // 		'%cForce render after composition end.',
+				// @if CK_DEBUG_TYPING // 		'%cFire post-composition mutation fixes.',
 				// @if CK_DEBUG_TYPING // 		'font-weight: bold'
 				// @if CK_DEBUG_TYPING // 	) );
 				// @if CK_DEBUG_TYPING // }
 
-				view.document.fire<ViewDocumentMutationsEvent>( 'mutations', { mutations: [] } );
+				view.document.fire<ViewDocumentMutationsEvent>( 'mutations', { mutations } );
 
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.groupEnd();
 				// @if CK_DEBUG_TYPING // }
-			}, { priority: 'lowest' } );
-		}
+			}
+		}, { priority: 'lowest' } );
 	}
 
 	/**
@@ -327,14 +320,14 @@ export default class Input extends Plugin {
 	public override destroy(): void {
 		super.destroy();
 
-		this._compositionQueue.destroy();
+		this._typingQueue.destroy();
 	}
 }
 
 /**
  * The queue of `insertText` command executions that are waiting for the DOM to get updated after beforeinput event.
  */
-class CompositionQueue {
+class TypingQueue {
 	/**
 	 * The editor instance.
 	 */
@@ -351,9 +344,14 @@ class CompositionQueue {
 	private _queue: Array<InsertTextCommandLiveOptions> = [];
 
 	/**
-	 * A set of model elements. The composition happened in those elements. It's used for mutations check.
+	 * Whether there is any composition enqueued or plain typing only.
 	 */
-	private _compositionElements = new Set<Element>();
+	private _isComposing = false;
+
+	/**
+	 * A set of model elements. The typing happened in those elements. It's used for mutations check.
+	 */
+	private _affectedElements = new Set<Element>();
 
 	/**
 	 * @inheritDoc
@@ -367,7 +365,7 @@ class CompositionQueue {
 	 */
 	public destroy(): void {
 		this.flushDebounced.cancel();
-		this._compositionElements.clear();
+		this._affectedElements.clear();
 
 		while ( this._queue.length ) {
 			this.shift();
@@ -384,7 +382,7 @@ class CompositionQueue {
 	/**
 	 * Push next insertText command data to the queue.
 	 */
-	public push( commandData: InsertTextCommandOptions ): void {
+	public push( commandData: InsertTextCommandOptions, isComposing: boolean ): void {
 		const commandLiveData: InsertTextCommandLiveOptions = {
 			text: commandData.text
 		};
@@ -396,11 +394,12 @@ class CompositionQueue {
 				commandLiveData.selectionRanges.push( LiveRange.fromRange( range ) );
 
 				// Keep reference to the model element for later mutation checks.
-				this._compositionElements.add( range.start.parent as Element );
+				this._affectedElements.add( range.start.parent as Element );
 			}
 		}
 
 		this._queue.push( commandLiveData );
+		this._isComposing ||= isComposing;
 		this.flushDebounced();
 	}
 
@@ -473,6 +472,17 @@ class CompositionQueue {
 			}
 
 			buffer.unlock();
+
+			if ( !this._isComposing ) {
+				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'Input',
+				// @if CK_DEBUG_TYPING // 		'Clear affected elements set'
+				// @if CK_DEBUG_TYPING // 	) );
+				// @if CK_DEBUG_TYPING // }
+				this._affectedElements.clear();
+			}
+
+			this._isComposing = false;
 		} );
 
 		view.scrollToTheSelection();
@@ -483,19 +493,26 @@ class CompositionQueue {
 	}
 
 	/**
-	 * Returns `true` if the given model element is related to recent composition.
+	 * Returns `true` if the given model element is related to recent typing.
 	 */
-	public isComposedElement( element: Element ): boolean {
-		return this._compositionElements.has( element );
+	public isElementAffected( element: Element ): boolean {
+		return this._affectedElements.has( element );
 	}
 
 	/**
-	 * Returns an array of composition-related elements and clears the internal list.
+	 * Returns `true` if there are any affected elements in the queue.
 	 */
-	public flushComposedElements(): Array<Element> {
-		const result = Array.from( this._compositionElements );
+	public hasAffectedElements(): boolean {
+		return this._affectedElements.size > 0;
+	}
 
-		this._compositionElements.clear();
+	/**
+	 * Returns an array of typing-related elements and clears the internal list.
+	 */
+	public flushAffectedElements(): Array<Element> {
+		const result = Array.from( this._affectedElements );
+
+		this._affectedElements.clear();
 
 		return result;
 	}

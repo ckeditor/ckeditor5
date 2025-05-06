@@ -693,7 +693,7 @@ export default class WidgetTypeAround extends Plugin {
 			// Note: The priority must precede the default Input plugin compositionstart handler (to call it before delete content).
 			this._listenToIfEnabled<ViewDocumentCompositionStartEvent>( viewDocument, 'compositionstart', () => {
 				this._insertParagraphAccordingToFakeCaretPosition();
-			}, { priority: 'high' } );
+			}, { priority: 'highest' } );
 		}
 	}
 
