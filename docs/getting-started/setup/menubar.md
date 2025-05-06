@@ -83,7 +83,7 @@ Here's an example of a custom plugin that adds a button to the menu bar inside t
 
 <code-switcher>
 ```js
-import { Plugin, ButtonView } from 'ckeditor5';
+import { Plugin, MenuBarMenuListItemButtonView } from 'ckeditor5';
 
 class MyCustomPlugin extends Plugin {
 	init() {
@@ -91,7 +91,7 @@ class MyCustomPlugin extends Plugin {
 
 		// Register the toolbar button.
 		editor.ui.componentFactory.add( 'menuBar:myCustomButton', locale => {
-			const view = new ButtonView(locale);
+			const view = new MenuBarMenuListItemButtonView(locale);
 
 			view.set( {
 				label: 'My Custom Button',
