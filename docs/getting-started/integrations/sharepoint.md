@@ -54,7 +54,7 @@ You will be also prompted for names for the application and the web part, for ex
 
 ## Running the web part project
 
-After the project is created, go to `config/serve.json` file and update the `initialPage` property with your organization's URL:
+After the project is created, go to `config/serve.json` file and update the `initialPage` property with your SharePoint tenant URL:
 
 ```js
 "initialPage": "https://your-tenant.sharepoint.com/_layouts/workbench.aspx"
