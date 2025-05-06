@@ -82,9 +82,13 @@ export function formatHtml( input: string ): string {
 	let isPreformattedLine: ReturnType<typeof isPreformattedBlockLine> = false;
 
 	return lines
-		.filter( line => line.length )
 		.map( line => {
 			isPreformattedLine = isPreformattedBlockLine( line, isPreformattedLine );
+
+			// Ignore empty lines outside a <pre> block.
+			if ( !line.length && !isPreformattedLine ) {
+				return '';
+			}
 
 			if ( isNonVoidOpeningTag( line, elementsToFormat ) ) {
 				return indentLine( line, indentCount++ );
@@ -95,12 +99,13 @@ export function formatHtml( input: string ): string {
 			}
 
 			if ( isPreformattedLine === 'middle' || isPreformattedLine === 'last' ) {
-				return line;
+				return indentLine( line, 0 );
 			}
 
 			return indentLine( line, indentCount );
 		} )
-		.join( '\n' );
+		.join( '' )
+		.trimEnd();
 }
 
 /**
@@ -144,7 +149,7 @@ function isClosingTag( line: string, elementsToFormat: Array<ElementToFormat> ):
  */
 function indentLine( line: string, indentCount: number, indentChar: string = '    ' ): string {
 	// More about Math.max() here in https://github.com/ckeditor/ckeditor5/issues/10698.
-	return `${ indentChar.repeat( Math.max( 0, indentCount ) ) }${ line }`;
+	return `${ indentChar.repeat( Math.max( 0, indentCount ) ) }${ line }\n`;
 }
 
 /**
@@ -154,11 +159,18 @@ function indentLine( line: string, indentCount: number, indentChar: string = '  
  * @param isPreviousLinePreFormatted Information on whether the previous line was preformatted (and how).
  */
 function isPreformattedBlockLine( line: string, isPreviousLinePreFormatted: 'first' | 'last' | 'middle' | false ) {
-	if ( new RegExp( '<pre( .*?)?>' ).test( line ) ) {
+	const isPreOpen = /<pre( .*?)?>/.test( line );
+	const isPreClose = /<\/pre>/.test( line );
+
+	if ( isPreOpen && isPreClose ) {
+		// If both an opening and closing a <pre> tag, no special treatment needed.
+		return false;
+	} else if ( isPreOpen ) {
 		return 'first';
-	} else if ( new RegExp( '</pre>' ).test( line ) ) {
+	} else if ( isPreClose ) {
 		return 'last';
 	} else if ( isPreviousLinePreFormatted === 'first' || isPreviousLinePreFormatted === 'middle' ) {
+		// This line is just after a 'first' or 'middle' line of a multi-line pre-block.
 		return 'middle';
 	} else {
 		return false;

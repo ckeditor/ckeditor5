@@ -251,6 +251,73 @@ describe( 'SourceEditing utils', () => {
 			expect( formatHtml( source ) ).to.equal( sourceFormatted );
 		} );
 
+		// See https://github.com/ckeditor/ckeditor5/issues/18360.
+		it( 'should recognize single line code block', () => {
+			const source = '' +
+				'<p>a</p>' +
+				'<blockquote>' +
+					'<p>b</p>' +
+					'<pre><code>foo</code></pre>' +
+					'<p>c</p>' +
+				'</blockquote>' +
+				'<p>d</p>';
+
+			const sourceFormatted = '' +
+				'<p>\n' +
+				'    a\n' +
+				'</p>\n' +
+				'<blockquote>\n' +
+				'    <p>\n' +
+				'        b\n' +
+				'    </p>\n' +
+				'    <pre><code>foo</code></pre>\n' +
+				'    <p>\n' +
+				'        c\n' +
+				'    </p>\n' +
+				'</blockquote>\n' +
+				'<p>\n' +
+				'    d\n' +
+				'</p>';
+
+			expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		} );
+
+		it( 'should preserve empty lines inside code block', () => {
+			const source = '' +
+				'<p>a</p>' +
+				'<blockquote>' +
+					'<p>b</p>' +
+					'<pre><code>foo\n' +
+						'\n' + // This line must be preserved as it is inside a <pre> block.
+						'bar' +
+					'</code></pre>' +
+					'<p>c</p>' +
+				'</blockquote>' +
+				'<p>d</p>';
+
+			const sourceFormatted = '' +
+				'<p>\n' +
+				'    a\n' +
+				'</p>\n' +
+				'<blockquote>\n' +
+				'    <p>\n' +
+				'        b\n' +
+				'    </p>\n' +
+				'    <pre><code>foo\n' +
+				'\n' +
+				'bar' +
+				'</code></pre>\n' +
+				'    <p>\n' +
+				'        c\n' +
+				'    </p>\n' +
+				'</blockquote>\n' +
+				'<p>\n' +
+				'    d\n' +
+				'</p>';
+
+			expect( formatHtml( source ) ).to.equal( sourceFormatted );
+		} );
+
 		it( 'should keep all attributes unchanged', () => {
 			const source = '' +
 				'<p id="foo" class="class1 class2" data-value="bar" onclick="fn();">' +
