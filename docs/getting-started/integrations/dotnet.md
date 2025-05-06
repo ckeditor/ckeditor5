@@ -18,10 +18,6 @@ For the purpose of this guide, we will use a basic ASP.NET Core project created 
 
 ## Integrating using ZIP
 
-<info-box>
-	Our new CKEditor&nbsp;5 Builder does not provide ZIP output yet &ndash; but it will in the future. In the meantime, you can use one of the generic ZIP packages provided [on the download page](https://ckeditor.com/ckeditor-5/download/#zip).
-</info-box>
-
 After downloading and unpacking the ZIP archive, copy the `ckeditor5.js` and `ckeditor5.css` files in the `wwwroot/lib/ckeditor5/` directory. The folder structure of your app should resemble this one.
 
 ```plain
