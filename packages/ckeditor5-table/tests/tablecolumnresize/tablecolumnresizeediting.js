@@ -199,6 +199,42 @@ describe( 'TableColumnResizeEditing', () => {
 				);
 			} );
 
+			it( 'the table width style set on <figure> element and on <table> should be convert to tableWidth attribute correctly', () => {
+				editor.setData(
+					`<figure class="table" style="width: 200px">
+						<table style=";width:100px">
+							<colgroup>
+								<col style="width:50%;">
+								<col style="width:50%;">
+							</colgroup>
+							<tbody>
+								<tr>
+									<td>11</td>
+									<td>12</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>`
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<table tableWidth="200px">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>11</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>12</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<tableColumnGroup>' +
+							'<tableColumn columnWidth="50%"></tableColumn>' +
+							'<tableColumn columnWidth="50%"></tableColumn>' +
+						'</tableColumnGroup>' +
+					'</table>'
+				);
+			} );
+
 			describe( 'when upcasting <colgroup> element', () => {
 				it( 'should handle the correct number of <col> elements', () => {
 					editor.setData(
