@@ -57,7 +57,7 @@ You will be also prompted for names for the application and the web part, for ex
 After the project is created, go to `config/serve.json` file and update the `initialPage` property with your organization's URL:
 
 ```js
-"initialPage": "https://your-tenant.com/_layouts/workbench.aspx"
+"initialPage": "https://your-tenant.sharepoint.com/_layouts/workbench.aspx"
 ```
 
 At this point you should be able to run the project by executing:
@@ -71,7 +71,7 @@ A new browser tab with SPFx app should open automatically. You might be prompted
 If the page does not open automatically, navigate to the following URL:
 
 ```
-https://your-tenant.sharepoint.com/_layouts/15/workbench.aspx
+https://your-tenant.sharepoint.com/_layouts/workbench.aspx
 ```
 
 If everything went fine, you should see a screen similar to this one:
