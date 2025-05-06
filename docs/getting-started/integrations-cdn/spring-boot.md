@@ -4,6 +4,7 @@ meta-title: Using CKEditor 5 with Spring Boot and CDN | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with Spring Boot using CDN.
 order: 130
 menu-title: Spring Boot
+modified_at: 2025-05-06
 ---
 
 # Using CKEditor&nbsp;5 with Spring Boot and CDN
