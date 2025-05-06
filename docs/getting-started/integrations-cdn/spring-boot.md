@@ -64,7 +64,7 @@ The folder structure of the created project should resemble the one below:
 └── ...
 ```
 
-## Adding CKEditor5 container, scripts and styles
+## Adding CKEditor&nbsp;5 container, scripts and styles
 
 First, create or modify the `index.html` file in the `src/main/resources/templates` directory to include the CKEditor&nbsp;5 scripts and styles. All necessary scripts and links are in the HTML snippet below. You can copy and paste them into your template. Open-source and premium features are in separate files, so there are different tags for both types of plugins. Add tags for premium features only if you use them.
 
