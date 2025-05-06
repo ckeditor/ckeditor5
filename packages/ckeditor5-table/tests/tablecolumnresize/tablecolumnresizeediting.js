@@ -202,7 +202,7 @@ describe( 'TableColumnResizeEditing', () => {
 			it( 'the table width style set on <figure> element and on <table> should be convert to tableWidth attribute correctly', () => {
 				editor.setData(
 					`<figure class="table" style="width: 200px">
-						<table style=";width:100px">
+						<table style="width:100px">
 							<colgroup>
 								<col style="width:50%;">
 								<col style="width:50%;">
