@@ -209,9 +209,7 @@ export default class AbstractEditorHandler {
 					<div class="ck ck-fullscreen__toolbar" data-ck-fullscreen="toolbar"></div>
 				</div>
 				<div class="ck ck-fullscreen__editable-wrapper">
-					<div class="ck ck-fullscreen__sidebar ck-fullscreen__left-sidebar" data-ck-fullscreen="left-sidebar">
-						<div class="ck ck-fullscreen__left-sidebar--sticky" data-ck-fullscreen="left-sidebar-sticky"></div>
-					</div>
+					<div class="ck ck-fullscreen__sidebar ck-fullscreen__left-sidebar" data-ck-fullscreen="left-sidebar"></div>
 					<div class="ck ck-fullscreen__editable" data-ck-fullscreen="editable">
 						<div class="ck ck-fullscreen__pagination-view" data-ck-fullscreen="pagination-view"></div>
 					</div>
@@ -455,6 +453,15 @@ export default class AbstractEditorHandler {
 		`;
 		( presenceListElement.firstElementChild as HTMLElement ).innerText = t( 'Connected users' );
 
+		if ( !document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' ) ) {
+			document.querySelector( '[data-ck-fullscreen="left-sidebar"]' )!.appendChild(
+				createElement( document, 'div', {
+					class: 'ck ck-fullscreen__left-sidebar-sticky',
+					'data-ck-fullscreen': 'left-sidebar-sticky'
+				} )
+			);
+		}
+
 		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( presenceListElement );
 
 		const presenceListUI = this._editor.plugins.get( 'PresenceListUI' ) as any;
@@ -485,6 +492,15 @@ export default class AbstractEditorHandler {
 		documentOutlineBodyWrapper.innerHTML = `
 			<div class="ck ck-fullscreen__document-outline" data-ck-fullscreen="document-outline"></div>
 		`;
+
+		if ( !document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' ) ) {
+			document.querySelector( '[data-ck-fullscreen="left-sidebar"]' )!.appendChild(
+				createElement( document, 'div', {
+					class: 'ck ck-fullscreen__left-sidebar-sticky',
+					'data-ck-fullscreen': 'left-sidebar-sticky'
+				} )
+			);
+		}
 
 		document.querySelector( '[data-ck-fullscreen="left-sidebar"]' )!.appendChild( documentOutlineBodyWrapper );
 		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( documentOutlineHeaderElement );
