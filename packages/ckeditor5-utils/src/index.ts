@@ -97,6 +97,7 @@ export { default as wait } from './wait.js';
 export { default as parseBase64EncodedObject } from './parsebase64encodedobject.js';
 export { default as crc32, type CRCData } from './crc32.js';
 export { default as collectStylesheets } from './collectstylesheets.js';
+export { default as formatHtml } from './formathtml.js';
 
 export * from './unicode.js';
 

@@ -4,7 +4,7 @@
  */
 
 /**
- * @module source-editing/utils/formathtml
+ * @module utils/formathtml
  */
 
 /**
@@ -18,7 +18,7 @@
  *
  * @param input An HTML string to format.
  */
-export function formatHtml( input: string ): string {
+export default function formatHtml( input: string ): string {
 	// A list of block-like elements around which the new lines should be inserted, and within which
 	// the indentation of their children should be increased.
 	// The list is partially based on https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements that contains
@@ -26,7 +26,7 @@ export function formatHtml( input: string ): string {
 	// A void element is an element that cannot have any child - https://html.spec.whatwg.org/multipage/syntax.html#void-elements.
 	// Note that <pre> element is not listed on this list to avoid breaking whitespace formatting.
 	// Note that <br> element is not listed and handled separately so no additional white spaces are injected.
-	const elementsToFormat: Array<ElementToFormat> = [
+	const elementsToFormat: Array<FormattedElementDefinition> = [
 		{ name: 'address', isVoid: false },
 		{ name: 'article', isVoid: false },
 		{ name: 'aside', isVoid: false },
@@ -114,7 +114,7 @@ export function formatHtml( input: string ): string {
  * @param line String to check.
  * @param elementsToFormat Elements to be formatted.
  */
-function isNonVoidOpeningTag( line: string, elementsToFormat: Array<ElementToFormat> ): boolean {
+function isNonVoidOpeningTag( line: string, elementsToFormat: Array<FormattedElementDefinition> ): boolean {
 	return elementsToFormat.some( element => {
 		if ( element.isVoid ) {
 			return false;
@@ -134,7 +134,7 @@ function isNonVoidOpeningTag( line: string, elementsToFormat: Array<ElementToFor
  * @param line String to check.
  * @param elementsToFormat Elements to be formatted.
  */
-function isClosingTag( line: string, elementsToFormat: Array<ElementToFormat> ): boolean {
+function isClosingTag( line: string, elementsToFormat: Array<FormattedElementDefinition> ): boolean {
 	return elementsToFormat.some( element => {
 		return new RegExp( `</${ element.name }>` ).test( line );
 	} );
@@ -180,7 +180,7 @@ function isPreformattedBlockLine( line: string, isPreviousLinePreFormatted: 'fir
 /**
  * Element to be formatted.
  */
-interface ElementToFormat {
+interface FormattedElementDefinition {
 
 	/**
 	 *  Element name.
