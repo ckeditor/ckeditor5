@@ -23,7 +23,7 @@ A long-requested feature has finally arrived with the [introduction of full-scre
 
 #### Improved linking experience
 
-Linking in CKEditor 5 has been significantly [upgraded with a redesigned user interface](https://ckeditor.com/docs/ckeditor5/latest/features/link.html), making adding and editing links more intuitive. Users can now easily link to bookmarks within the document and select links from predefined lists (defined by the developer). These improvements make inserting and managing links faster and more flexible than ever before.
+Linking in CKEditor 5 has been significantly [upgraded with a redesigned user interface](https://ckeditor.com/docs/ckeditor5/latest/features/link.html), making adding and editing links more intuitive. We added the possibility to add and edit the display text of a link. Users can now easily link to bookmarks within the document and select links from predefined lists (defined by the developer). These improvements make inserting and managing links faster and more flexible than ever before.
 
 During this initiative, we also aligned visual and technical components of the editor. Each balloon got a header with the tile, we also unified the toolbar behavior and keystrokes of Link and Bookmarks with other widget’s toolbars like image and tables.
 
@@ -39,7 +39,9 @@ We are continuing to strengthen the new installation methods while phasing out o
 
 #### ⚠️ Deprecations in old installation methods: stage 1 completed
 
-We are progressing with deprecation according to [our sunset plan](https://github.com/ckeditor/ckeditor5/issues/17779). From this release, predefined builds’ packages, such as `@ckeditor/ckeditor-build-classic`, are now officially deprecated. We also dropped support for Webpack 4 in both the **old and new** installation methods.
+We are progressing with deprecation according to [our sunset plan](https://github.com/ckeditor/ckeditor5/issues/17779). From this release, predefined builds’ packages, such as `@ckeditor/ckeditor-build-classic`, are now officially deprecated.
+
+We also dropped support for Webpack 4 in both the **old and new** installation methods. All packages and CDN from this version are now distributed with ES2022 as the target ECMAScript version, providing better compatibility with modern JavaScript features and improved performance.
 
 By the end of 2025, custom builds that rely on webpack and DLL builds will also be deprecated. Refer to [our documentation and migration guides](https://ckeditor.com/docs/ckeditor5/latest/updating/nim-migration/migration-to-new-installation-methods.html) to ensure a smooth transition.
 
@@ -61,6 +63,10 @@ Happy editing!
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The `FormRowView` class was moved to the `@ckeditor/ckeditor5-ui` package.
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The `form.css` component was moved to the `@ckeditor/ckeditor5-theme-lark` package.
 * All CKEditor 5 icons are now available in the `@ckeditor/ckeditor5-icons` package.
+
+### DISTRIBUTION CHANGES
+
+* All packages and CDN source code now target ES2022 as the ECMAScript version.
 
 ### Features
 

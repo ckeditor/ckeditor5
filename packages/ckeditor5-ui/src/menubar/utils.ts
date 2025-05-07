@@ -1250,8 +1250,8 @@ function handleAdditions(
 			 * {@link module:core/editor/editorconfig~EditorConfig#menuBar menu bar configuration}.
 			 *
 			 * @error menu-bar-item-could-not-be-removed
-			 * @param menuBarConfig The full configuration of the menu bar.
-			 * @param itemName The name of the item that was not removed from the menu bar.
+			 * @param {object} menuBarConfig The full configuration of the menu bar.
+			 * @param {object} addedItemConfig The name of the item that was not removed from the menu bar.
 			 */
 			logWarning( 'menu-bar-item-could-not-be-added', {
 				menuBarConfig: originalConfig,
@@ -1344,9 +1344,9 @@ function purgeUnavailableComponents(
 					 * menu bar item.
 					 *
 					 * @error menu-bar-item-unavailable
-					 * @param menuBarConfig The full configuration of the menu bar.
-					 * @param parentMenuConfig The config of the menu the unavailable component was defined in.
-					 * @param componentName The name of the unavailable component.
+					 * @param {object} menuBarConfig The full configuration of the menu bar.
+					 * @param {object} parentMenuConfig The config of the menu the unavailable component was defined in.
+					 * @param {string} componentName The name of the unavailable component.
 					 */
 					logWarning( 'menu-bar-item-unavailable', {
 						menuBarConfig: originalConfig,
@@ -1446,8 +1446,8 @@ function warnAboutEmptyMenu(
 	 * to account for the missing menu items.
 	 *
 	 * @error menu-bar-menu-empty
-	 * @param menuBarConfig The full configuration of the menu bar.
-	 * @param emptyMenuConfig The definition of the menu that has no child items.
+	 * @param {object} menuBarConfig The full configuration of the menu bar.
+	 * @param {object} emptyMenuConfig The definition of the menu that has no child items.
 	 */
 	logWarning( 'menu-bar-menu-empty', {
 		menuBarConfig: originalConfig,

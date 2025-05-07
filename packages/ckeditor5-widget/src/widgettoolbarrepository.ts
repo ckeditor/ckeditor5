@@ -139,6 +139,7 @@ export default class WidgetToolbarRepository extends Plugin {
 	 * callback (or later) to make sure that the given toolbar items were already registered by other plugins.
 	 *
 	 * @param toolbarId An id for the toolbar. Used to
+	 * @param options Detailed options
 	 * @param options.ariaLabel Label used by assistive technologies to describe this toolbar element.
 	 * @param options.items Array of toolbar items.
 	 * @param options.getRelatedElement Callback which returns an element the toolbar should be attached to.
@@ -174,7 +175,7 @@ export default class WidgetToolbarRepository extends Plugin {
 			 * * {@link module:image/imageconfig~ImageConfig#toolbar `config.image.toolbar`}
 			 *
 			 * @error widget-toolbar-no-items
-			 * @param toolbarId The id of the toolbar that has not been configured correctly.
+			 * @param {string} toolbarId The id of the toolbar that has not been configured correctly.
 			 */
 			logWarning( 'widget-toolbar-no-items', { toolbarId } );
 
@@ -192,7 +193,7 @@ export default class WidgetToolbarRepository extends Plugin {
 			 * Toolbar with the given id was already added.
 			 *
 			 * @error widget-toolbar-duplicated
-			 * @param toolbarId Toolbar id.
+			 * @param {string} toolbarId Toolbar id.
 			 */
 			throw new CKEditorError( 'widget-toolbar-duplicated', this, { toolbarId } );
 		}

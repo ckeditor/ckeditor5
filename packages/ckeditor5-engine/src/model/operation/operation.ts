@@ -131,7 +131,7 @@ export default abstract class Operation {
 	 * Creates `Operation` object from deserialized object, i.e. from parsed JSON string.
 	 *
 	 * @param json Deserialized JSON object.
-	 * @param doc Document on which this operation will be applied.
+	 * @param document Document on which this operation will be applied.
 	 */
 	public static fromJSON( json: any, document: Document ): Operation {
 		return new ( this as any )( json.baseVersion );

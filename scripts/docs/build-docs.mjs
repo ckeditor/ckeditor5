@@ -30,30 +30,34 @@ async function buildDocs() {
 	const options = parseArguments( process.argv.slice( 2 ) );
 
 	if ( !options.skipApi ) {
-		await spawnAsync( 'yarn', [ 'run', '--silent', 'docs:api' ] );
+		await spawnAsync( 'yarn', [
+			'run',
+			'docs:api',
+			options.strict && '--strict',
+			options.verbose && '--verbose'
+		].filter( Boolean ) );
 	}
 
 	if ( shouldBuildCKEditorAssets( options ) ) {
-		const ckeditor5AssetsArgs = [ 'run', '--silent', 'docs:ckeditor5' ];
-
-		if ( options.skipCommercial ) {
-			ckeditor5AssetsArgs.push( '--skip-commercial' );
-		}
-
-		await spawnAsync( 'yarn', ckeditor5AssetsArgs );
+		await spawnAsync( 'yarn', [
+			'run',
+			'docs:ckeditor5',
+			options.skipCommercial && '--skip-commercial',
+			options.dev && '--skip-obfuscation'
+		].filter( Boolean ) );
 	}
 
 	await umberto.buildSingleProject( {
 		configDir: DOCS_DIRECTORY,
 		clean: true,
-		dev: !options.production,
+		dev: options.dev,
 		skipLiveSnippets: options.skipSnippets,
 		skipValidation: options.skipValidation,
 		snippetOptions: {
 			production: options.production,
 			allowedSnippets: options.snippets
 		},
-		skipApi: options.skipApi,
+		// skipApi: options.skipApi,
 		skipGuides: options.skipGuides,
 		verbose: options.verbose,
 		watch: options.watch,

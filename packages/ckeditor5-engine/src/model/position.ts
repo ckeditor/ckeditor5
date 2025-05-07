@@ -128,7 +128,7 @@ export default class Position extends TypeCheckable {
 			 * Position path must be an array with at least one item.
 			 *
 			 * @error model-position-path-incorrect-format
-			 * @param path
+			 * @param {Array.<number>} path A path to the position.
 			 */
 			throw new CKEditorError(
 				'model-position-path-incorrect-format',
@@ -193,7 +193,7 @@ export default class Position extends TypeCheckable {
 				 * the {@glink framework/architecture/editing-engine#indexes-and-offsets Editing engine architecture} guide.
 				 *
 				 * @error model-position-path-incorrect
-				 * @param position The incorrect position.
+				 * @param {module:engine/model/position~Position} position The incorrect position.
 				 */
 				throw new CKEditorError( 'model-position-path-incorrect', this, { position: this } );
 			}
@@ -948,10 +948,10 @@ export default class Position extends TypeCheckable {
 	public static _createAfter( item: Item | DocumentFragment, stickiness?: PositionStickiness ): Position {
 		if ( !item.parent ) {
 			/**
-			 * You can not make a position after a root element.
+			 * You cannot make a position after a root element.
 			 *
 			 * @error model-position-after-root
-			 * @param root
+			 * @param {module:engine/model/rootelement~RootElement} root The root element..
 			 */
 			throw new CKEditorError(
 				'model-position-after-root',
@@ -973,10 +973,10 @@ export default class Position extends TypeCheckable {
 	public static _createBefore( item: Item | DocumentFragment, stickiness?: PositionStickiness ): Position {
 		if ( !item.parent ) {
 			/**
-			 * You can not make a position before a root element.
+			 * You cannot make a position before a root element.
 			 *
 			 * @error model-position-before-root
-			 * @param root
+			 * @param {module:engine/model/rootelement~RootElement} root The root element..
 			 */
 			throw new CKEditorError(
 				'model-position-before-root',
@@ -1008,7 +1008,7 @@ export default class Position extends TypeCheckable {
 			 * Cannot create position for document. Root with specified name does not exist.
 			 *
 			 * @error model-position-fromjson-no-root
-			 * @param rootName
+			 * @param {string} rootName The root name.
 			 */
 			throw new CKEditorError(
 				'model-position-fromjson-no-root',

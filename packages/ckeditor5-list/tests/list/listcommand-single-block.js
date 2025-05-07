@@ -171,7 +171,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				expect( command.isEnabled ).to.be.true;
 			} );
 
-			it( 'should be false if all of the selected blocks can not be converted to a list', () => {
+			it( 'should be false if all of the selected blocks cannot be converted to a list', () => {
 				model.schema.register( 'block', { inheritAllFrom: '$blockObject' } );
 				editor.conversion.elementToElement( { model: 'block', view: 'div' } );
 

@@ -407,3 +407,9 @@ For more information, refer to the {@link getting-started/setup/ui-language "Set
 ## Contributing and reporting issues
 
 The source code of this component is available on GitHub in [https://github.com/ckeditor/ckeditor5-vue2](https://github.com/ckeditor/ckeditor5-vue2).
+
+## Next steps
+
+* See how to manipulate the editor's data in the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
+* Refer to further guides in the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
+* Check the {@link features/index features category} to learn more about individual features.

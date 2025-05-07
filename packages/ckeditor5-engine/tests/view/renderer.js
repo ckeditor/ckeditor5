@@ -4412,7 +4412,7 @@ describe( 'Renderer', () => {
 				);
 			} );
 
-			it( 'should rename attributes that can not be rendered in the editing pipeline', () => {
+			it( 'should rename attributes that cannot be rendered in the editing pipeline', () => {
 				setViewData( view,
 					'<container:p>' +
 						'bar' +

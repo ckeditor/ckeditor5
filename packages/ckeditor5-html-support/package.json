@@ -36,7 +36,7 @@
     "@ckeditor/ckeditor5-clipboard": "45.0.0",
     "@ckeditor/ckeditor5-cloud-services": "45.0.0",
     "@ckeditor/ckeditor5-code-block": "45.0.0",
-    "@ckeditor/ckeditor5-dev-utils": "^47.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^49.0.0",
     "@ckeditor/ckeditor5-easy-image": "45.0.0",
     "@ckeditor/ckeditor5-editor-classic": "45.0.0",
     "@ckeditor/ckeditor5-editor-multi-root": "45.0.0",

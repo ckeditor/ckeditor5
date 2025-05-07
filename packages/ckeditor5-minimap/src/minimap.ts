@@ -198,6 +198,12 @@ export default class Minimap extends Plugin {
 		const scrollableRootAncestorRect = getDomElementRect( this._scrollableRootAncestor! );
 		let scrollProgress;
 
+		// It's possible that at some point elements do not intersect, e.g. when entering the fullscreen mode.
+		// Prevent the minimap from being updated in such case.
+		if ( !scrollableRootAncestorRect.getIntersection( editingRootRect ) ) {
+			return;
+		}
+
 		// @if CK_DEBUG_MINIMAP // RectDrawer.clear();
 		// @if CK_DEBUG_MINIMAP // RectDrawer.draw( scrollableRootAncestorRect, { outlineColor: 'red' }, 'scrollableRootAncestor' );
 		// @if CK_DEBUG_MINIMAP // RectDrawer.draw( editingRootRect, { outlineColor: 'green' }, 'editingRoot' );

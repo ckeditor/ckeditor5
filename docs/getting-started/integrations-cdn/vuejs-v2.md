@@ -305,3 +305,9 @@ Corresponds to the {@link module:core/editor/editor~Editor#event:destroy `destro
 ```html
 <ckeditor :editor="editor" @destroy="onEditorDestroy" />
 ```
+
+## Next steps
+
+* See how to manipulate the editor's data in the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
+* Refer to further guides in the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
+* Check the {@link features/index features category} to learn more about individual features.
