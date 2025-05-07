@@ -237,9 +237,9 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 			 * The minimum number of rows is greater than the maximum number of rows.
 			 *
 			 * @error ui-textarea-view-min-rows-greater-than-max-rows
-			 * @param textareaView The misconfigured textarea view instance.
-			 * @param minRows The value of `minRows` property.
-			 * @param maxRows The value of `maxRows` property.
+			 * @param {module:ui/textarea/textareaview~TextareaView} textareaView The misconfigured textarea view instance.
+			 * @param {number} minRows The value of `minRows` property.
+			 * @param {number} maxRows The value of `maxRows` property.
 			 */
 			throw new CKEditorError( 'ui-textarea-view-min-rows-greater-than-max-rows', {
 				textareaView: this,

@@ -16,6 +16,7 @@ import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor.js';
 import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor.js';
+import Fullscreen from '@ckeditor/ckeditor5-fullscreen/src/fullscreen.js';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize.js';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties.js';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties.js';
@@ -38,6 +39,7 @@ const config = {
 		FontFamily,
 		FontColor,
 		FontBackgroundColor,
+		Fullscreen, // no minimap integration in FS, but it should not throw errors when used together
 		IndentBlock,
 		ImageUpload,
 		ImageResize,
@@ -60,7 +62,7 @@ const config = {
 		'indent', 'outdent', '|',
 		'subscript', 'superscript', '|',
 		'insertTable', 'imageUpload', '|',
-		'undo', 'redo'
+		'undo', 'redo', 'fullscreen'
 	],
 	image: {
 		toolbar: [

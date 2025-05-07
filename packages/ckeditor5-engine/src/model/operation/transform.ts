@@ -1254,21 +1254,76 @@ setTransformation( MarkerOperation, SplitOperation, ( a, b, context ) => {
 
 	if ( a.newRange ) {
 		if ( context.abRelation ) {
+			// If we have context, it means that there was previously a merge operation which transformed this marker operation, and that
+			// merge operation was then undone, and this split operation should reverse the marker to state before the merge operation.
 			const aNewRange = a.newRange._getTransformedBySplitOperation( b );
 
-			if ( a.newRange.start.isEqual( b.splitPosition ) && context.abRelation.wasStartBeforeMergedElement ) {
-				( a.newRange as any ).start = Position._createAt( b.insertionPosition );
-			} else if ( a.newRange.start.isEqual( b.splitPosition ) && !context.abRelation.wasInLeftElement ) {
-				( a.newRange as any ).start = Position._createAt( b.moveTargetPosition );
+			if ( a.newRange.start.isEqual( b.splitPosition ) ) {
+				// If marker range start is same as split position, we need to decide where marker start should be placed, as there
+				// are three possible options.
+				//
+				if ( context.abRelation.wasStartBeforeMergedElement ) {
+					// If the marker start was initially before the merged element, move it back to that place.
+					//
+					// <p>Foo</p>[<p>Bar]</p>  -- merge ->  <p>Foo[Bar]</p>  -- default split ->  <p>Foo</p><p>[Bar]</p>
+					// <p>Foo</p>[<p>Bar]</p>  -- merge ->  <p>Foo[Bar]</p>  --- fixed split -->  <p>Foo</p>[<p>Bar]</p>
+					//
+					( a.newRange as any ).start = Position._createAt( b.insertionPosition );
+				} else if ( context.abRelation.wasInLeftElement ) {
+					// If the marker start was initially in the "left" element, keep the start position there.
+					//
+					// <p>Foo[</p><p>Bar]</p>  -- merge ->  <p>Foo[Bar]</p>  -- default split ->  <p>Foo</p><p>[Bar]</p>
+					// <p>Foo[</p><p>Bar]</p>  -- merge ->  <p>Foo[Bar]</p>  --- fixed split -->  <p>Foo[</p><p>Bar]</p>
+					//
+					( a.newRange as any ).start = Position._createAt( a.newRange.start );
+				} else {
+					// Finally, the start position must have been at the beginning of the "right" (merged) element.
+					// In this case, move it back to the "right" element.
+					//
+					// Note, that this what the default transformation (`_getTransformedBySplitOperation()`) does, BUT ONLY for
+					// a non-collapsed marker. For a collapsed marker, by default, the whole marker is kept at the split position,
+					// which would be incorrect. This is why this case is needed, and why we don't use `aNewRange.start` here.
+					//
+					// <p>Foo</p><p>[]Bar</p>  -- merge ->  <p>Foo[]Bar</p>  -- default split ->  <p>Foo[]</p><p>Bar</p>
+					// <p>Foo</p><p>[]Bar</p>  -- merge ->  <p>Foo[]Bar</p>  --- fixed split -->  <p>Foo</p><p>[]Bar</p>
+					//
+					( a.newRange as any ).start = Position._createAt( b.moveTargetPosition );
+				}
 			} else {
+				// If marker range start is not the same as split position, simply use the default transformation, as there is no
+				// ambiguity in this case.
 				( a.newRange as any ).start = aNewRange.start;
 			}
 
-			if ( a.newRange.end.isEqual( b.splitPosition ) && context.abRelation.wasInRightElement ) {
-				( a.newRange as any ).end = Position._createAt( b.moveTargetPosition );
-			} else if ( a.newRange.end.isEqual( b.splitPosition ) && context.abRelation.wasEndBeforeMergedElement ) {
-				( a.newRange as any ).end = Position._createAt( b.insertionPosition );
+			if ( a.newRange.end.isEqual( b.splitPosition ) ) {
+				// If marker range end is same as split position, we need to decide where marker end should be placed, as there
+				// are three possible options.
+				//
+				if ( a.newRange.end.isEqual( b.splitPosition ) && context.abRelation.wasEndBeforeMergedElement ) {
+					// If the marker end was initially before the merged element, move it back to that place.
+					//
+					// <p>[Foo</p>]<p>Bar</p>  -- merge ->  <p>[Foo]Bar</p>  -- default split ->  <p>[Foo]</p><p>Bar</p>
+					// <p>[Foo</p>]<p>Bar</p>  -- merge ->  <p>[Foo]Bar</p>  --- fixed split -->  <p>[Foo</p>]<p>Bar</p>
+					//
+					( a.newRange as any ).end = Position._createAt( b.insertionPosition );
+				} else if ( context.abRelation.wasInRightElement ) {
+					// If the marker was initially in the "right" element, keep the end position there.
+					//
+					// <p>[Foo</p><p>]Bar</p>  -- merge ->  <p>[Foo]Bar</p>  -- default split ->  <p>[Foo]</p><p>Bar</p>
+					// <p>[Foo</p><p>]Bar</p>  -- merge ->  <p>[Foo]Bar</p>  --- fixed split -->  <p>[Foo</p><p>]Bar</p>
+					//
+					( a.newRange as any ).end = Position._createAt( b.moveTargetPosition );
+				} else {
+					// Finally, the end position must have been at the end of the "left" (merged) element.
+					// In this case, keep it where it is.
+					//
+					// Note, that this is what the default transformation does, so we could use `aNewRange.end`, but this is more clear.
+					//
+					( a.newRange as any ).end = Position._createAt( a.newRange.end );
+				}
 			} else {
+				// If marker range end is not the same as split position, simply use the default transformation, as there is no
+				// ambiguity in this case.
 				( a.newRange as any ).end = aNewRange.end;
 			}
 

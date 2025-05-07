@@ -23,7 +23,7 @@ A long-requested feature has finally arrived with the [introduction of full-scre
 
 #### Improved linking experience
 
-Linking in CKEditor 5 has been significantly [upgraded with a redesigned user interface](https://ckeditor.com/docs/ckeditor5/latest/features/link.html), making adding and editing links more intuitive. Users can now easily link to bookmarks within the document and select links from predefined lists (defined by the developer). These improvements make inserting and managing links faster and more flexible than ever before.
+Linking in CKEditor 5 has been significantly [upgraded with a redesigned user interface](https://ckeditor.com/docs/ckeditor5/latest/features/link.html), making adding and editing links more intuitive. We added the possibility to add and edit the display text of a link. Users can now easily link to bookmarks within the document and select links from predefined lists (defined by the developer). These improvements make inserting and managing links faster and more flexible than ever before.
 
 During this initiative, we also aligned visual and technical components of the editor. Each balloon got a header with the tile, we also unified the toolbar behavior and keystrokes of Link and Bookmarks with other widget’s toolbars like image and tables.
 

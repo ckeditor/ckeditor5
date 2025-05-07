@@ -18,10 +18,6 @@ For the purpose of this guide, we will use a basic ASP.NET Core project created 
 
 ## Integrating using ZIP
 
-<info-box>
-	Our new CKEditor&nbsp;5 Builder does not provide ZIP output yet &ndash; but it will in the future. In the meantime, you can use one of the generic ZIP packages provided [on the download page](https://ckeditor.com/ckeditor-5/download/#zip).
-</info-box>
-
 After downloading and unpacking the ZIP archive, copy the `ckeditor5.js` and `ckeditor5.css` files in the `wwwroot/lib/ckeditor5/` directory. The folder structure of your app should resemble this one.
 
 ```plain
@@ -110,3 +106,9 @@ Due to a [bug](https://issues.chromium.org/issues/40611854), Chromium does not s
 </info-box>
 
 Finally, in the root directory of your .NET project, run `dotnet watch run` to see the app in action.
+
+## Next steps
+
+* See how to manipulate the editor's data in the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
+* Refer to further guides in the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
+* Check the {@link features/index features category} to learn more about individual features.

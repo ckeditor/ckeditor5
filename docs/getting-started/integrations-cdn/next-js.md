@@ -129,3 +129,9 @@ If you have trouble seeing the editor, remember that the Next.js project ships w
 Also, pay attention to the import path &ndash; this guide uses the [default import alias](https://nextjs.org/docs/app/building-your-application/configuring/absolute-imports-and-module-aliases) (@). If you did not configure it, change the path
 
 In the example above, we only used basic features of the `<CKEditor>` component. To learn more about additional features and configuration options, refer to the {@link getting-started/integrations-cdn/react-default-cdn React integration guide}.
+
+## Next steps
+
+* See how to manipulate the editor's data in the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
+* Refer to further guides in the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
+* Check the {@link features/index features category} to learn more about individual features.

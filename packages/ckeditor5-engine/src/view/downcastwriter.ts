@@ -186,7 +186,8 @@ export default class DowncastWriter {
 	 * The location can be specified in the same form as {@link module:engine/view/view~View#createPositionAt view.createPositionAt()}
 	 * parameters.
 	 *
-	 * @param Offset or one of the flags. Used only when the first parameter is a {@link module:engine/view/item~Item view item}.
+	 * @param itemOrPosition
+	 * @param offset Offset or one of the flags. Used only when the first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
 	public setSelectionFocus( itemOrPosition: Item | Position, offset?: PositionOffset ): void {
 		this.document.selection._setFocus( itemOrPosition, offset );
@@ -1453,7 +1454,7 @@ export default class DowncastWriter {
 	 * conversionApi.writer.insert( viewPosition, viewSlot );
 	 * ```
 	 *
-	 * While providing a filtered slot, make sure to provide slots for all child nodes. A single node can not be downcasted into
+	 * While providing a filtered slot, make sure to provide slots for all child nodes. A single node cannot be downcasted into
 	 * multiple slots.
 	 *
 	 * **Note**: You should not change the order of nodes. View elements should be in the same order as model nodes.

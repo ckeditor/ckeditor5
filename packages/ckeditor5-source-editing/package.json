@@ -13,9 +13,7 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@ckeditor/ckeditor5-comments": "45.0.0",
     "@ckeditor/ckeditor5-core": "45.0.0",
-    "@ckeditor/ckeditor5-document-outline": "45.0.0",
     "@ckeditor/ckeditor5-icons": "45.0.0",
     "@ckeditor/ckeditor5-ui": "45.0.0",
     "@ckeditor/ckeditor5-utils": "45.0.0",
@@ -23,7 +21,7 @@
     "ckeditor5": "45.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-utils": "^47.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^49.0.0",
     "@ckeditor/ckeditor5-editor-classic": "45.0.0",
     "@ckeditor/ckeditor5-engine": "45.0.0",
     "@ckeditor/ckeditor5-essentials": "45.0.0",

@@ -483,6 +483,21 @@ describe( 'transform', () => {
 			expectClients( '<paragraph>Foo<m1:start></m1:start></paragraph><paragraph>Bar</paragraph>' );
 		} );
 
+		it( 'marker starts at the end of merge-target element then undo', () => {
+			john.setData( '<paragraph>Foo[</paragraph><paragraph>Bar]</paragraph>' );
+
+			john.setMarker( 'm1' );
+			john.setSelection( [ 1 ] );
+			john.merge();
+
+			expectClients( '<paragraph>Foo<m1:start></m1:start>Bar<m1:end></m1:end></paragraph>' );
+
+			john.undo();
+
+			expectClients( '<paragraph>Foo<m1:start></m1:start></paragraph><paragraph>Bar<m1:end></m1:end></paragraph>' );
+		} );
+
+		// This is different from the case above, because here the marker is collapsed after merge, while above it is non-collapsed.
 		it( 'empty marker between merged elements then undo', () => {
 			john.setData( '<paragraph>Foo[</paragraph><paragraph>]Bar</paragraph>' );
 

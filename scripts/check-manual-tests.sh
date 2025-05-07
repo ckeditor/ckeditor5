@@ -24,6 +24,8 @@ fi
 if [ ! -z "$IDENTITY_FILE" ]
 then
   MANUAL_TEST_SERVER_OPTIONS="$MANUAL_TEST_SERVER_OPTIONS -i $IDENTITY_FILE"
+else
+  MANUAL_TEST_SERVER_OPTIONS="$MANUAL_TEST_SERVER_OPTIONS --no-identity-file"
 fi
 
 echo "Starting the manual test server..."
@@ -34,7 +36,7 @@ node --max_old_space_size=8192 node_modules/@ckeditor/ckeditor5-dev-tests/bin/te
 MANUAL_TEST_SERVER_PROCESS_ID=$!
 
 echo "Waiting for the server..."
-node_modules/.bin/wait-on http://localhost:8125 && yarn run manual:verify --no-spinner
+node_modules/.bin/wait-on http://localhost:8125 && yarn run manual:verify
 
 MANUAL_VERIFY_EXIT_CODE=$?
 

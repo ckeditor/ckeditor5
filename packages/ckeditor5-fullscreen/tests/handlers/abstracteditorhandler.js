@@ -182,8 +182,8 @@ describe( 'AbstractHandler', () => {
 	} );
 
 	describe( '#enable()', () => {
-		it( 'should execute the #_defaultOnEnter method', () => {
-			const spy = sinon.spy( abstractHandler, '_defaultOnEnter' );
+		it( 'should execute the #defaultOnEnter method', () => {
+			const spy = sinon.spy( abstractHandler, 'defaultOnEnter' );
 
 			abstractHandler.enable();
 
@@ -349,7 +349,7 @@ describe( 'AbstractHandler', () => {
 			// In test runner scroll is not reset to 0 when fullscreen is enabled, unlike for real browsers, so we need to set it manually.
 			global.document.body.parentElement.scrollTo( { left: 0, top: 0, behavior: 'instant' } );
 
-			expect( editor.commands.get( 'toggleFullscreen' )._fullscreenHandler._savedAncestorsScrollPositions.size ).to.equal( 3 );
+			expect( editor.commands.get( 'toggleFullscreen' ).fullscreenHandler._savedAncestorsScrollPositions.size ).to.equal( 3 );
 
 			editor.execute( 'toggleFullscreen' );
 

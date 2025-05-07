@@ -785,7 +785,7 @@ class LiveSelection extends Selection {
 			 * UID obtained from the {@link module:engine/model/writer~Writer#overrideSelectionGravity} to restore.
 			 *
 			 * @error document-selection-gravity-wrong-restore
-			 * @param uid The unique identifier returned by
+			 * @param {string} uid The unique identifier returned by
 			 * {@link module:engine/model/documentselection~DocumentSelection#_overrideGravity}.
 			 */
 			throw new CKEditorError(
@@ -835,7 +835,7 @@ class LiveSelection extends Selection {
 				 * starts or ends at incorrect position.
 				 *
 				 * @error document-selection-wrong-position
-				 * @param range
+				 * @param {module:engine/model/range~Range} range The invalid range.
 				 */
 				throw new CKEditorError(
 					'document-selection-wrong-position',

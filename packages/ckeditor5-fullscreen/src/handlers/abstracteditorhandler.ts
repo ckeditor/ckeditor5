@@ -10,16 +10,68 @@
 import { BodyCollection, DialogViewPosition } from 'ckeditor5/src/ui.js';
 import { global, createElement, Rect, type EventInfo } from 'ckeditor5/src/utils.js';
 import type { ElementApi, Editor, EditorConfig } from 'ckeditor5/src/core.js';
-import type { PresenceListUI } from '@ckeditor/ckeditor5-real-time-collaboration';
-import type { DocumentOutlineUI } from '@ckeditor/ckeditor5-document-outline';
-import type { PaginationRenderer } from '@ckeditor/ckeditor5-pagination';
-import type { RevisionViewerEditor } from '@ckeditor/ckeditor5-revision-history';
-import type { Annotation, AnnotationsUIs, Sidebar } from '@ckeditor/ckeditor5-comments';
 
 const DIALOG_OFFSET = 28;
 
 /**
- * The abstract editor type handler. It should be extended by the particular editor type handler.
+ * The abstract editor type handler.
+ *
+ * This class defines some actions and behaviors that are applied when fullscreen mode is toggled, and which are common
+ * regardless of the editor type. Then, specific classes like `ClassicEditorHandler` or `DecoupledEditorHandler`
+ * extend this class with actions specific for these editor types.
+ *
+ * Extend this class to provide fullscreen mode handling for unsupported editor types,
+ * or if you wish to heavily customize the default behavior.
+ *
+ * The only method that is necessary to provide when extending this class is {@link #defaultOnEnter}. However, make sure to
+ * familiarize yourself with the below full list of actions taken by `AbstractEditorHandler` to understand what is covered by default,
+ * and what should be provided by you.
+ *
+ * When entering the fullscreen mode, the {@link #enable} method is called. It creates the properly styled container
+ * and handles the editor features that need it, in the following order:
+ *
+ * 1. Saves the scroll positions of all ancestors of the editable element to restore them after leaving the fullscreen mode.
+ * 2. Executes the {@link #defaultOnEnter} method to move the proper editor UI elements to the fullscreen mode.
+ * **If you extend the abstract handler, you should override this method** to move the elements that are specific to your editor type, like:
+ * 	editable, toolbar, menu bar.
+ * 	Use {@link #moveToFullscreen} method for this purpose to ensure they are automatically cleaned up after leaving the fullscreen mode.
+ * 3. Adds proper classes to the `<body>` and `<html>` elements to block page scrolling, adjust `z-index` etc.
+ * 4. Changes the position of some dialogs to utilize the empty space on the right side of the editable element.
+ *
+ * Steps 5-11 are only executed if the corresponding features are used.
+ *
+ * 5. If presence list is used, moves it to the fullscreen mode container.
+ * 6. If document outline is used, moves it to the fullscreen mode.
+ * 7. If pagination is used, adjusts it's configuration for the changed view.
+ * 8. If annotations are used, moves them to the fullscreen mode.
+ * 9. If revision history is used, overrides the callbacks to show the revision viewer in the fullscreen mode.
+ * 10. If source editing and document outline are both used, hides the document outline header.
+ * 11. If custom container is used, hides all other elements in it to ensure they don't create an empty unscrollable space.
+ *
+ * Then finally:
+ *
+ * 12. Executes the configured {@link module:fullscreen/fullscreenconfig~FullscreenConfig#onEnterCallback
+ * 	`config.fullscreen.onEnterCallback`} function.
+ * 	By default, it returns the fullscreen mode container element so it can be further customized.
+ *
+ * When leaving the fullscreen mode, the {@link #disable} method is called. It does the following:
+ *
+ * 1. Execute the configured {@link module:fullscreen/fullscreenconfig~FullscreenConfig#onLeaveCallback
+ * 	`config.fullscreen.onLeaveCallback`} function.
+ * 2. Remove the classes added to the `<body>` and `<html>` elements.
+ * 3. If document outline is used, restore its default container.
+ * 4. If annotations are used, restore their original state (UI, filters etc).
+ * 5. If revision history is used, restore the original callbacks.
+ * 6. If source editing and document outline are both used, restore the document outline header.
+ * 7. Restore all moved elements to their original place.
+ * 8. Destroy the fullscreen mode container.
+ * 9. If the editor has a toolbar, switch its behavior to the one configured in the
+ * 	{@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} property.
+ * 10. Restore the scroll positions of all ancestors of the editable element.
+ * 11. If pagination is used, restore its default configuration.
+ * 12. Restore default dialogs positions.
+ *
+ * This class is exported to allow for custom extensions.
  */
 export default class AbstractEditorHandler {
 	/**
@@ -73,12 +125,12 @@ export default class AbstractEditorHandler {
 	/**
 	 * A callback that shows the revision viewer, stored to restore the original one after exiting the fullscreen mode.
 	 */
-	protected _showRevisionViewerCallback: ( ( config?: EditorConfig ) => Promise<RevisionViewerEditor | null> ) | null = null;
+	protected _showRevisionViewerCallback: ( ( config?: EditorConfig ) => Promise<any> ) | null = null;
 
 	/**
 	 * A callback that closes the revision viewer, stored to restore the original one after exiting the fullscreen mode.
 	 */
-	protected _closeRevisionViewerCallback: ( ( viewerEditor?: RevisionViewerEditor ) => Promise<unknown> ) | null = null;
+	protected _closeRevisionViewerCallback: ( ( viewerEditor?: any ) => Promise<unknown> ) | null = null;
 
 	/**
 	 * An editor instance. It should be set by the particular editor type handler.
@@ -92,8 +144,8 @@ export default class AbstractEditorHandler {
 		this._placeholderMap = new Map();
 
 		if ( editor.plugins.has( 'RevisionHistory' ) ) {
-			this._showRevisionViewerCallback = editor.config.get( 'revisionHistory' )!.showRevisionViewerCallback;
-			this._closeRevisionViewerCallback = editor.config.get( 'revisionHistory' )!.closeRevisionViewerCallback;
+			this._showRevisionViewerCallback = ( editor.config.get( 'revisionHistory' ) as any ).showRevisionViewerCallback;
+			this._closeRevisionViewerCallback = ( editor.config.get( 'revisionHistory' ) as any ).closeRevisionViewerCallback;
 		}
 
 		this._editor = editor;
@@ -150,7 +202,7 @@ export default class AbstractEditorHandler {
 				class: 'ck ck-fullscreen__main-wrapper'
 			} );
 
-			// For now, the container is generated in a very straightforward way. If necessary, it may be rewritten using our UI lib.
+			// For now, the container is generated in a very straightforward way. If necessary, it may be rewritten using editor's UI lib.
 			this._wrapper.innerHTML = `
 				<div class="ck ck-fullscreen__top-wrapper ck-reset_all">
 					<div class="ck ck-fullscreen__menu-bar" data-ck-fullscreen="menu-bar"></div>
@@ -181,7 +233,7 @@ export default class AbstractEditorHandler {
 	 */
 	public enable(): void {
 		this._saveAncestorsScrollPositions( this._editor.ui.getEditableElement()! )!;
-		this._defaultOnEnter();
+		this.defaultOnEnter();
 
 		// Block scroll if the fullscreen container is the body element. Otherwise the document has to stay scrollable.
 		if ( this._editor.config.get( 'fullscreen.container' ) === this._document.body ) {
@@ -207,8 +259,8 @@ export default class AbstractEditorHandler {
 
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore next -- @preserve */
-		if ( this._editor.plugins.has( 'Pagination' ) && this._editor.plugins.get( 'Pagination' ).isEnabled ) {
-			const paginationRenderer = this._editor.plugins.get( 'PaginationRenderer' ) as PaginationRenderer;
+		if ( this._editor.plugins.has( 'Pagination' ) && ( this._editor.plugins.get( 'Pagination' ) as any ).isEnabled ) {
+			const paginationRenderer = this._editor.plugins.get( 'PaginationRenderer' ) as any;
 
 			paginationRenderer.setupScrollableAncestor();
 
@@ -233,16 +285,16 @@ export default class AbstractEditorHandler {
 		if ( this._editor.plugins.has( 'RevisionHistory' ) ) {
 			// Code coverage is provided in the commercial package repository as integration unit tests.
 			/* istanbul ignore if -- @preserve */
-			if ( this._editor.plugins.get( 'RevisionHistory' ).isRevisionViewerOpen ) {
+			if ( ( this._editor.plugins.get( 'RevisionHistory' ) as any ).isRevisionViewerOpen ) {
 				// Keep in mind that closing the revision history viewer is an asynchronous operation.
-				this._editor.config.get( 'revisionHistory.closeRevisionViewerCallback' )!();
+				( this._editor.config.get( 'revisionHistory.closeRevisionViewerCallback' ) as any )();
 			}
 
 			this._overrideRevisionHistoryCallbacks();
 		}
 
 		if ( this._editor.plugins.has( 'SourceEditing' ) && this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
-			this._editor.plugins.get( 'SourceEditing' ).on( 'change:isSourceEditingMode', this._sourceEditingCallback );
+			( this._editor.plugins.get( 'SourceEditing' ) as any ).on( 'change:isSourceEditingMode', this._sourceEditingCallback );
 		}
 
 		// Hide all other elements in the container to ensure they don't create an empty unscrollable space.
@@ -293,19 +345,21 @@ export default class AbstractEditorHandler {
 		}
 
 		if ( this._editor.plugins.has( 'SourceEditing' ) && this._editor.plugins.has( 'DocumentOutlineUI' ) ) {
-			this._editor.plugins.get( 'SourceEditing' ).off( 'change:isSourceEditingMode', this._sourceEditingCallback );
+			( this._editor.plugins.get( 'SourceEditing' ) as any ).off( 'change:isSourceEditingMode', this._sourceEditingCallback );
 		}
 
 		for ( const placeholderName of this._placeholderMap.keys() ) {
 			this.restoreMovedElementLocation( placeholderName );
 		}
 
-		this._editor.ui.view.toolbar!.switchBehavior(
-			this._editor.config.get( 'toolbar.shouldNotGroupWhenFull' ) === true ? 'static' : 'dynamic'
-		);
+		// Container is also destroyed in the `restoreMovedElementLocation()` method, but we need to do it here
+		// to ensure that the container is destroyed even if no elements were moved.
+		this._destroyContainer();
 
-		if ( this._placeholderMap.size === 0 ) {
-			this._destroyContainer();
+		if ( this._editor.ui.view.toolbar ) {
+			this._editor.ui.view.toolbar.switchBehavior(
+				this._editor.config.get( 'toolbar.shouldNotGroupWhenFull' ) === true ? 'static' : 'dynamic'
+			);
 		}
 
 		// Restore scroll positions of all ancestors. It may include the closest editable wrapper causing the editor to change
@@ -324,8 +378,8 @@ export default class AbstractEditorHandler {
 		// Pagination has to be restored after leaving fullscreen mode to ensure proper rendering.
 		// Code coverage is provided in the commercial package repository as integration unit tests.
 		/* istanbul ignore next -- @preserve */
-		if ( this._editor.plugins.has( 'Pagination' ) && this._editor.plugins.get( 'Pagination' ).isEnabled ) {
-			const paginationRenderer = this._editor.plugins.get( 'PaginationRenderer' ) as PaginationRenderer;
+		if ( this._editor.plugins.has( 'Pagination' ) && ( this._editor.plugins.get( 'Pagination' ) as any ).isEnabled ) {
+			const paginationRenderer = this._editor.plugins.get( 'PaginationRenderer' ) as any;
 
 			paginationRenderer.setupScrollableAncestor();
 			paginationRenderer.linesRepository.setViewCollection( this._editor.ui.view.body );
@@ -361,7 +415,7 @@ export default class AbstractEditorHandler {
 	 * Returns the fullscreen mode container element so it can be further customized via
 	 * `fullscreen.onEnterCallback` configuration property.
 	 */
-	protected _defaultOnEnter(): HTMLElement {
+	public defaultOnEnter(): HTMLElement {
 		return this.getWrapper();
 	}
 
@@ -403,7 +457,7 @@ export default class AbstractEditorHandler {
 
 		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( presenceListElement );
 
-		const presenceListUI = this._editor.plugins.get( 'PresenceListUI' ) as PresenceListUI;
+		const presenceListUI = this._editor.plugins.get( 'PresenceListUI' ) as any;
 
 		this.moveToFullscreen( presenceListUI.view.element!, 'presence-list' );
 	}
@@ -435,7 +489,7 @@ export default class AbstractEditorHandler {
 		document.querySelector( '[data-ck-fullscreen="left-sidebar"]' )!.appendChild( documentOutlineBodyWrapper );
 		document.querySelector( '[data-ck-fullscreen="left-sidebar-sticky"]' )!.appendChild( documentOutlineHeaderElement );
 
-		const documentOutlineUI = this._editor.plugins.get( 'DocumentOutlineUI' ) as DocumentOutlineUI;
+		const documentOutlineUI = this._editor.plugins.get( 'DocumentOutlineUI' ) as any;
 		documentOutlineUI.view.documentOutlineContainer = document.querySelector( '[data-ck-fullscreen="left-sidebar"]' ) as HTMLElement;
 
 		this.moveToFullscreen( documentOutlineUI.view.element!, 'document-outline' );
@@ -447,7 +501,7 @@ export default class AbstractEditorHandler {
 	// Code coverage is provided in the commercial package repository as integration unit tests.
 	/* istanbul ignore next -- @preserve */
 	private _restoreDocumentOutlineDefaultContainer(): void {
-		const documentOutlineUI = this._editor.plugins.get( 'DocumentOutlineUI' ) as DocumentOutlineUI;
+		const documentOutlineUI = this._editor.plugins.get( 'DocumentOutlineUI' ) as any;
 		documentOutlineUI.view.documentOutlineContainer = documentOutlineUI.view.element as HTMLElement;
 	}
 
@@ -457,12 +511,12 @@ export default class AbstractEditorHandler {
 	// Code coverage is provided in the commercial package repository as integration unit tests.
 	/* istanbul ignore next -- @preserve */
 	private _overrideAnnotationsUIs() {
-		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as AnnotationsUIs;
+		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as any;
 
 		this._annotationsUIsData = new Map( annotationsUIs.uisData );
 
 		// Switch to the wide sidebar.
-		const sidebarPlugin = this._editor.plugins.get( 'Sidebar' ) as Sidebar;
+		const sidebarPlugin = this._editor.plugins.get( 'Sidebar' ) as any;
 
 		if ( !sidebarPlugin.container ) {
 			sidebarPlugin.setContainer(
@@ -470,7 +524,7 @@ export default class AbstractEditorHandler {
 			);
 		}
 
-		const annotationsFilters = new Map<string, ( annotation: Annotation ) => boolean>();
+		const annotationsFilters = new Map<string, ( annotation: any ) => boolean>();
 
 		for ( const [ uiName, data ] of [ ...this._annotationsUIsData! ] ) {
 			// Default filter is `() => true`. Only store filters that are different.
@@ -489,7 +543,7 @@ export default class AbstractEditorHandler {
 		// It's possible there are filters for both `narrowSidebar` and `inline` modes, so display annotations that match any of them.
 		else if ( annotationsFilters.size ) {
 			annotationsUIs.activate( 'wideSidebar',
-				annotation => [ ...annotationsFilters.values() ].some( filter => filter( annotation ) )
+				( annotation: any ) => [ ...annotationsFilters.values() ].some( filter => filter( annotation ) )
 			);
 		}
 		// If no filters are defined for the active display mode(s), simply display all annotations in the wide sidebar.
@@ -506,7 +560,7 @@ export default class AbstractEditorHandler {
 	// Code coverage is provided in the commercial package repository as integration unit tests.
 	/* istanbul ignore next -- @preserve */
 	private _restoreAnnotationsUIs() {
-		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as AnnotationsUIs;
+		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as any;
 
 		annotationsUIs.deactivateAll();
 
@@ -545,9 +599,9 @@ export default class AbstractEditorHandler {
 				this._editor.ui.view.menuBarView.disable();
 			}
 
-			this.moveToFullscreen( revisionViewerEditor!.ui.getEditableElement()!, 'editable' );
-			this.moveToFullscreen( revisionViewerEditor!.ui.view.toolbar.element!, 'toolbar' );
-			this.moveToFullscreen( this._editor.config.get( 'revisionHistory.viewerSidebarContainer' )!, 'right-sidebar' );
+			this.moveToFullscreen( revisionViewerEditor.ui.getEditableElement(), 'editable' );
+			this.moveToFullscreen( revisionViewerEditor.ui.view.toolbar.element, 'toolbar' );
+			this.moveToFullscreen( this._editor.config.get( 'revisionHistory.viewerSidebarContainer' ) as any, 'right-sidebar' );
 
 			return revisionViewerEditor;
 		} );

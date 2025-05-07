@@ -2516,7 +2516,7 @@ describe( 'LinkUI', () => {
 				expect( formView.displayedTextInputView.isEnabled ).to.be.false;
 			} );
 
-			it( 'should disable displayed text field if it can not be modified as a plain text', () => {
+			it( 'should disable displayed text field if it cannot be modified as a plain text', () => {
 				linkUIFeature.selectedLinkableText = undefined;
 				expect( formView.displayedTextInputView.isEnabled ).to.be.false;
 

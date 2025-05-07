@@ -420,11 +420,13 @@ describe( 'Editor - license check', () => {
 				} );
 
 				it( `should show the warning about ${ licenseType } license only once per browser session`, () => {
-					const { licenseKey } = generateKey( {
+					const { licenseKey, todayTimestamp } = generateKey( {
 						licenseType
 					} );
 
+					const dateNow = sinon.stub( Date, 'now' ).returns( todayTimestamp );
 					const editor1 = new TestEditor( { licenseKey } );
+
 					expect( editor1.isReadOnly ).to.be.false;
 
 					// Session was already started in the previous test.
@@ -453,6 +455,8 @@ describe( 'Editor - license check', () => {
 						`${ licenseType === 'trial' ? ' which is for evaluation purposes only' : '' }. ` +
 						'For production usage, please obtain a production license at https://portal.ckeditor.com/'
 					);
+
+					dateNow.restore();
 				} );
 			} );
 		} );

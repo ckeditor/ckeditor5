@@ -24,16 +24,22 @@ If your dive into using our WYSIWYG editor is only starting, find out how to kic
 
 ## CKEditor&nbsp;5 framework integrations
 
-Do you want to use a framework? Native integrations with the most popular libraries will save you time and effort. There are five official integrations so far:
+Do you want to use a framework? Native integrations with the most popular libraries will save you time and effort. There are several official integrations so far:
 
-* Integrate CKEditor&nbsp;5 with Angular using {@link getting-started/integrations-cdn/angular CDN} or {@link getting-started/integrations/angular npm}.
-* Integrate CKEditor&nbsp;5 with React using  {@link getting-started/integrations-cdn/react-default-cdn CDN} or {@link getting-started/integrations/react-default-npm npm}.
-* Integrate CKEditor&nbsp;5 with Next.js using {@link getting-started/integrations-cdn/next-js CDN} or {@link getting-started/integrations/next-js npm}.
-* Integrate CKEditor&nbsp;5 with Nuxt using {@link getting-started/integrations-cdn/nuxt CDN} or {@link getting-started/integrations/nuxt npm}.
-* Integrate CKEditor&nbsp;5 with Vue.js 3.x using {@link getting-started/integrations-cdn/vuejs-v3 CDN} or {@link getting-started/integrations/vuejs-v3 npm}.
-* Integrate CKEditor&nbsp;5 with Vue.js 2.x using {@link getting-started/integrations/vuejs-v2 npm}.
+* Integrate CKEditor&nbsp;5 with **Angular** using {@link getting-started/integrations-cdn/angular CDN} or {@link getting-started/integrations/angular npm}.
+* Integrate CKEditor&nbsp;5 with **React** using  {@link getting-started/integrations-cdn/react-default-cdn CDN} or {@link getting-started/integrations/react-default-npm npm}.
+* Integrate CKEditor&nbsp;5 with **Next.js** using {@link getting-started/integrations-cdn/next-js CDN} or {@link getting-started/integrations/next-js npm}.
+* Integrate CKEditor&nbsp;5 with **Nuxt** using {@link getting-started/integrations-cdn/nuxt CDN} or {@link getting-started/integrations/nuxt npm}.
+* Integrate CKEditor&nbsp;5 with **Vue.js 3.x** using {@link getting-started/integrations-cdn/vuejs-v3 CDN} or {@link getting-started/integrations/vuejs-v3 npm}.
+* Integrate CKEditor&nbsp;5 with **Vue.js 2.x** using {@link getting-started/integrations/vuejs-v2 npm}.
+* Integrate CKEditor&nbsp;5 with **Salesforce** using {@link getting-started/integrations-cdn/salesforce CDN} or {@link getting-started/integrations/salesforce npm}.
+* Integrate CKEditor&nbsp;5 with **Svelte** using {@link getting-started/integrations-cdn/svelte CDN} or {@link getting-started/integrations/svelte npm}.
+* Integrate CKEditor&nbsp;5 with **Spring-boot** using {@link getting-started/integrations-cdn/spring-boot CDN} or {@link getting-started/integrations/spring-boot npm}.
+* Integrate CKEditor&nbsp;5 with {@link getting-started/integrations/sharepoint **Sharepoint SPFx**}.
+* Integrate CKEditor&nbsp;5 with {@link getting-started/integrations/drupal-real-time-collaboration **Drupal**}.
+* Integrate CKEditor&nbsp;5 with {@link getting-started/integrations/css **CSS frameworks**}.
 
-However, integration steps for some more frameworks are also documented. Refer to their documentation on the left to learn how to use them.
+<!-- However, integration steps for some more frameworks are also documented. Refer to their documentation on the left to learn how to use them. -->
 
 ### Support for other frameworks
 

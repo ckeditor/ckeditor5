@@ -80,7 +80,7 @@ ClassicEditor
 
 ## Configuration
 
-By default, enabling the {@link module:html-support/generalhtmlsupport~GeneralHtmlSupport} plugin does not enable support for any given element. You need to configure the elements the user wants to use via the {@link module:core/editor/editorconfig~EditorConfig#htmlSupport `config.htmlSupport`} option:
+By default, enabling the {@link module:html-support/generalhtmlsupport~GeneralHtmlSupport} plugin does not enable support for any given element. You need to configure the elements the user wants to use via the {@link module:core/editor/editorconfig~EditorConfig#htmlSupport `config.htmlSupport`} option. List of predefined elements than can be enabled this way is [available further in this guide](#predefined-supported-elements). It is also possible to define and enable [custom elements](#enabling-custom-elements).
 
 ```js
 ClassicEditor
@@ -314,6 +314,111 @@ dataSchema.registerBlockElement( {
 
 dataFilter.allowElement( 'object-block' );
 ```
+### Predefined supported elements
+
+The HTML elements listed below can be turned on directly via the `allow` setting of the `config.htmlSupport` option [mentioned above](#configuration).
+
+#### Block elements
+
+<ul style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
+	<li>address</li>
+	<li>article</li>
+	<li>aside</li>
+	<li>blockquote</li>
+	<li>button</li>
+	<li>caption</li>
+	<li>center</li>
+	<li>col</li>
+	<li>colgroup</li>
+	<li>dd</li>
+	<li>details</li>
+	<li>dir</li>
+	<li>div</li>
+	<li>dl</li>
+	<li>dt</li>
+	<li>fieldset</li>
+	<li>figcaption</li>
+	<li>figure</li>
+	<li>footer</li>
+	<li>form</li>
+	<li>header</li>
+	<li>hgroup</li>
+	<li>hr</li>
+	<li>hx</li>
+	<li>img</li>
+	<li>input</li>
+	<li>legend</li>
+	<li>li</li>
+	<li>main</li>
+	<li>menu</li>
+	<li>nav</li>
+	<li>ol</li>
+	<li>p</li>
+	<li>pre</li>
+	<li>section</li>
+	<li>summary</li>
+	<li>table</li>
+	<li>tbody</li>
+	<li>td</li>
+	<li>tfoot</li>
+	<li>th</li>
+	<li>thead</li>
+	<li>tr</li>
+	<li>ul</li>
+</ul>
+
+#### Inline elements
+
+<ul style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
+	<li>a</li>
+	<li>abbr</li>
+	<li>acronym</li>
+	<li>audio</li>
+	<li>b</li>
+	<li>bdi</li>
+	<li>bdo</li>
+	<li>big</li>
+	<li>canvas</li>
+	<li>cite</li>
+	<li>code</li>
+	<li>del</li>
+	<li>dfn</li>
+	<li>embed</li>
+	<li>em</li>
+	<li>figure</li>
+	<li>font</li>
+	<li>i</li>
+	<li>iframe</li>
+	<li>ins</li>
+	<li>kbd</li>
+	<li>li</li>
+	<li>mark</li>
+	<li>meter</li>
+	<li>object</li>
+	<li>oembed</li>
+	<li>ol</li>
+	<li>output</li>
+	<li>progress</li>
+	<li>q</li>
+	<li>s</li>
+	<li>samp</li>
+	<li>script</li>
+	<li>select</li>
+	<li>small</li>
+	<li>span</li>
+	<li>strong</li>
+	<li>style</li>
+	<li>sub</li>
+	<li>sup</li>
+	<li>tbody</li>
+	<li>thead</li>
+	<li>time</li>
+	<li>tt</li>
+	<li>u</li>
+	<li>ul</li>
+	<li>var</li>
+	<li>video</li>
+</ul>
 
 ## Known issues
 

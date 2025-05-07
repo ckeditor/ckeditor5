@@ -25,7 +25,7 @@ import { CKEditorError, isIterable } from '@ckeditor/ckeditor5-utils';
  *
  * @internal
  * @param position Position at which nodes should be inserted.
- * @param normalizedNodes Nodes to insert.
+ * @param nodes Nodes to insert.
  * @returns Range spanning over inserted elements.
  */
 export function _insert( position: Position, nodes: NodeSet ): Range {

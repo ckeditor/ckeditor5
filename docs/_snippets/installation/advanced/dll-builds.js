@@ -8,11 +8,10 @@ const metaElement = document.createElement( 'meta' );
 
 metaElement.name = 'x-cke-crawler-ignore-patterns';
 metaElement.content = JSON.stringify( {
-	'response-failure': [ 'jsfiddle.net' ],
-	'request-failure': [ 'jsfiddle.net' ],
 	'console-error': [
 		'The Cross-Origin-Opener-Policy header has been ignored',
-		'jsfiddle.net'
+		'<svg> attribute preserveAspectRatio',
+		'transparent NaN'
 	]
 } );
 
