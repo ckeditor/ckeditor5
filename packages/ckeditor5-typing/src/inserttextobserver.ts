@@ -71,7 +71,7 @@ export default class InsertTextObserver extends Observer {
 				return;
 			}
 
-			const { data: text, targetRanges, inputType, domEvent } = data;
+			const { data: text, targetRanges, inputType, domEvent, isComposing } = data;
 
 			if ( !typingInputTypes.includes( inputType ) ) {
 				return;
@@ -85,7 +85,8 @@ export default class InsertTextObserver extends Observer {
 
 			viewDocument.fire( eventInfo, new DomEventData( view, domEvent, {
 				text,
-				selection: view.createSelection( targetRanges )
+				selection: view.createSelection( targetRanges ),
+				isComposing
 			} ) );
 
 			// Stop the beforeinput event if `delete` event was stopped.
@@ -124,11 +125,12 @@ export default class InsertTextObserver extends Observer {
 				// 1. The SelectionObserver is blocked and the view is not updated with the composition changes.
 				// 2. The last moment before it's locked is the `compositionstart` event.
 				// 3. The `SelectionObserver` is listening for `compositionstart` event and immediately converts
-				//    the selection. Handles this at the lowest priority so after the rendering is blocked.
+				//    the selection. Handle this at the low priority so after the rendering is blocked.
 				viewDocument.fire( 'insertText', new DomEventData( view, domEvent, {
-					text: data
+					text: data,
+					isComposing: true
 				} ) );
-			}, { priority: 'lowest' } );
+			}, { priority: 'low' } );
 		}
 	}
 
@@ -173,4 +175,14 @@ export interface InsertTextEventData extends DomEventData {
 	 * If not specified, the insertion should occur at the current view selection.
 	 */
 	selection?: ViewSelection | ViewDocumentSelection;
+
+	/**
+	 * A flag indicating that event was fired during composition.
+	 *
+	 * Corresponds to the
+	 * {@link module:engine/view/document~Document#event:compositionstart},
+	 * {@link module:engine/view/document~Document#event:compositionupdate},
+	 * and {@link module:engine/view/document~Document#event:compositionend } trio.
+	 */
+	isComposing?: boolean;
 }

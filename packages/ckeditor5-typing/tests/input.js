@@ -10,24 +10,27 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { toWidget, Widget } from '@ckeditor/ckeditor5-widget';
+import { insertAt } from '@ckeditor/ckeditor5-utils';
 
 import Input from '../src/input.js';
 import InsertTextCommand from '../src/inserttextcommand.js';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import env from '@ckeditor/ckeditor5-utils/src/env.js';
 
 describe( 'Input', () => {
 	testUtils.createSinonSandbox();
 
 	describe( 'common', () => {
-		let domElement, editor, view, viewDocument, insertTextCommandSpy, scrollToTheSelectionSpy, rendererUpdateTextNodeSpy;
+		let domElement, editor, view, viewDocument, insertTextCommandSpy, scrollToTheSelectionSpy, rendererUpdateTextNodeSpy,
+			typingQueuePushSpy, typingQueueFlushSpy;
 
 		beforeEach( async () => {
 			domElement = document.createElement( 'div' );
 			document.body.appendChild( domElement );
 
 			editor = await ClassicTestEditor.create( domElement, {
-				plugins: [ Input, Paragraph, Bold ],
+				plugins: [ Input, Paragraph, Bold, Widget ],
 				initialData: '<p>foo</p>'
 			} );
 
@@ -35,6 +38,19 @@ describe( 'Input', () => {
 			viewDocument = view.document;
 			scrollToTheSelectionSpy = testUtils.sinon.stub( view, 'scrollToTheSelection' );
 			rendererUpdateTextNodeSpy = sinon.spy( view._renderer, '_updateTextNodeInternal' );
+
+			const inputPlugin = editor.plugins.get( 'Input' );
+
+			typingQueuePushSpy = sinon.spy( inputPlugin._typingQueue, 'push' );
+			typingQueueFlushSpy = sinon.spy( inputPlugin._typingQueue, 'flush' );
+
+			editor.model.schema.register( 'widget', { inheritAllFrom: '$blockObject' } );
+			editor.conversion.for( 'downcast' ).elementToElement( {
+				model: 'widget',
+				view: ( modelItem, { writer } ) => {
+					return toWidget( writer.createContainerElement( 'div' ), writer, { label: 'element label' } );
+				}
+			} );
 
 			viewDocument.isFocused = true;
 		} );
@@ -84,16 +100,17 @@ describe( 'Input', () => {
 				await editor.destroy();
 			} );
 
-			it( 'should preventDefault() the original beforeinput event if not composing', () => {
+			it( 'should not preventDefault() the original beforeinput event if not composing', () => {
 				const spy = sinon.spy();
 
 				viewDocument.fire( 'insertText', {
 					preventDefault: spy,
 					selection: viewDocument.selection,
-					text: 'bar'
+					text: 'bar',
+					domEvent: {}
 				} );
 
-				sinon.assert.calledOnce( spy );
+				sinon.assert.notCalled( spy );
 			} );
 
 			it( 'should not preventDefault() the original beforeinput event if composing', () => {
@@ -104,24 +121,63 @@ describe( 'Input', () => {
 				viewDocument.fire( 'insertText', {
 					preventDefault: spy,
 					selection: viewDocument.selection,
-					text: 'bar'
+					text: 'bar',
+					domEvent: {}
 				} );
 
 				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'should preventDefault() the original beforeinput event if insertText command is disabled', () => {
+				const spy = sinon.spy();
+
+				editor.commands.get( 'insertText' ).forceDisabled();
+
+				viewDocument.fire( 'insertText', {
+					preventDefault: spy,
+					selection: viewDocument.selection,
+					text: 'bar',
+					domEvent: {}
+				} );
+
+				sinon.assert.calledOnce( spy );
+				sinon.assert.notCalled( insertTextCommandSpy );
+			} );
+
+			it( 'should preventDefault() the original beforeinput event if target ranges match fake selection', () => {
+				setModelData( editor.model, '[<widget></widget>]' );
+
+				const spy = sinon.spy();
+
+				viewDocument.fire( 'insertText', {
+					preventDefault: spy,
+					selection: viewDocument.selection,
+					text: 'bar',
+					domEvent: {}
+				} );
+
+				sinon.assert.calledOnce( spy );
+				sinon.assert.notCalled( insertTextCommandSpy );
 			} );
 
 			it( 'should have the text property passed correctly to the insert text command', async () => {
 				viewDocument.fire( 'insertText', {
 					text: 'bar',
 					selection: viewDocument.selection,
-					preventDefault: () => {}
+					preventDefault: () => {},
+					domEvent: {
+						defaultPrevented: true // Just to trigger immediate queue flush.
+					}
 				} );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
 
 				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
 				expect( firstCallArgs.text ).to.equal( 'bar' );
 				expect( firstCallArgs.resultRange ).to.be.undefined;
+				expect( typingQueuePushSpy.calledOnce ).to.be.true;
+				expect( typingQueueFlushSpy.calledOnce ).to.be.true;
 			} );
 
 			it( 'should have the selection property passed correctly to the insert text command', async () => {
@@ -134,7 +190,10 @@ describe( 'Input', () => {
 					selection: view.createSelection(
 						view.createPositionAt( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 1 )
 					),
-					preventDefault: sinon.spy()
+					preventDefault: sinon.spy(),
+					domEvent: {
+						defaultPrevented: true // Just to trigger immediate queue flush.
+					}
 				} );
 
 				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
@@ -143,6 +202,8 @@ describe( 'Input', () => {
 				expect( firstCallArgs.text ).to.equal( 'bar' );
 				expect( firstCallArgs.selection.isEqual( expectedSelection ) ).to.be.true;
 				expect( firstCallArgs.resultRange ).to.be.undefined;
+				expect( typingQueuePushSpy.calledOnce ).to.be.true;
+				expect( typingQueueFlushSpy.calledOnce ).to.be.true;
 			} );
 
 			it( 'should use model document selection if the selection property is not passed', async () => {
@@ -156,7 +217,10 @@ describe( 'Input', () => {
 
 				viewDocument.fire( 'insertText', {
 					text: 'bar',
-					preventDefault: sinon.spy()
+					preventDefault: sinon.spy(),
+					domEvent: {
+						defaultPrevented: true // Just to trigger immediate queue flush.
+					}
 				} );
 
 				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
@@ -165,6 +229,8 @@ describe( 'Input', () => {
 				expect( firstCallArgs.text ).to.equal( 'bar' );
 				expect( firstCallArgs.selection.isEqual( expectedSelection ) ).to.be.true;
 				expect( firstCallArgs.resultRange ).to.be.undefined;
+				expect( typingQueuePushSpy.calledOnce ).to.be.true;
+				expect( typingQueueFlushSpy.calledOnce ).to.be.true;
 			} );
 
 			it( 'should delete selected content on composition start', () => {
@@ -241,11 +307,122 @@ describe( 'Input', () => {
 				viewDocument.fire( 'insertText', {
 					text: 'bar',
 					selection: viewDocument.selection,
-					preventDefault: () => {}
+					preventDefault: () => {},
+					domEvent: {
+						defaultPrevented: true // Just to trigger immediate queue flush.
+					}
 				} );
 
 				sinon.assert.calledOnce( insertTextCommandSpy );
 				sinon.assert.calledOnce( scrollToTheSelectionSpy );
+				expect( typingQueuePushSpy.calledOnce ).to.be.true;
+				expect( typingQueueFlushSpy.calledOnce ).to.be.true;
+			} );
+
+			describe( 'Typing queue', () => {
+				it( 'should push the event to the typing queue', () => {
+					viewDocument.fire( 'insertText', {
+						text: 'bar',
+						selection: viewDocument.selection,
+						preventDefault: () => {},
+						domEvent: {
+							defaultPrevented: false
+						}
+					} );
+
+					sinon.assert.notCalled( insertTextCommandSpy );
+					sinon.assert.calledOnce( typingQueuePushSpy );
+					sinon.assert.notCalled( typingQueueFlushSpy );
+				} );
+
+				it( 'should push the event to the typing queue and flush it if dom event is prevented', () => {
+					viewDocument.fire( 'insertText', {
+						text: 'bar',
+						selection: viewDocument.selection,
+						preventDefault: () => {},
+						domEvent: {
+							defaultPrevented: true
+						}
+					} );
+
+					sinon.assert.calledOnce( insertTextCommandSpy );
+					sinon.assert.calledOnce( typingQueuePushSpy );
+					sinon.assert.calledOnceWithExactly( typingQueueFlushSpy, 'beforeinput default prevented' );
+				} );
+
+				it( 'should not push the event to the typing queue if command is disabled', () => {
+					editor.commands.get( 'insertText' ).forceDisabled();
+
+					viewDocument.fire( 'insertText', {
+						text: 'bar',
+						selection: viewDocument.selection,
+						preventDefault: () => {},
+						domEvent: {
+							defaultPrevented: false
+						}
+					} );
+
+					sinon.assert.notCalled( insertTextCommandSpy );
+					sinon.assert.notCalled( typingQueuePushSpy );
+					sinon.assert.notCalled( typingQueueFlushSpy );
+				} );
+
+				it( 'should flush the typing queue on next beforeinput', () => {
+					viewDocument.fire( 'insertText', {
+						text: 'bar',
+						selection: viewDocument.selection,
+						preventDefault: () => {},
+						domEvent: {
+							defaultPrevented: false
+						}
+					} );
+
+					sinon.assert.notCalled( insertTextCommandSpy );
+					sinon.assert.calledOnce( typingQueuePushSpy );
+					sinon.assert.notCalled( typingQueueFlushSpy );
+
+					viewDocument.fire( 'beforeinput', new DomEventData( view, {
+						target: view.getDomRoot(),
+						preventDefault: () => {}
+					}, {
+						inputType: 'insertParagraph',
+						targetRanges: []
+					} ) );
+
+					sinon.assert.calledOnce( insertTextCommandSpy );
+					sinon.assert.calledOnce( typingQueuePushSpy );
+					sinon.assert.calledOnceWithExactly( typingQueueFlushSpy, 'next beforeinput' );
+				} );
+
+				it( 'should flush the typing queue on DOM mutations', () => {
+					insertTextCommandSpy.restore();
+					insertTextCommandSpy = testUtils.sinon.spy( editor.commands.get( 'insertText' ), 'execute' );
+
+					const root = editor.model.document.getRoot();
+					const viewParagraph = viewDocument.getRoot().getChild( 0 );
+
+					editor.model.change( writer => writer.setSelection( root.getChild( 0 ), 'end' ) );
+
+					// Verify initial model state.
+					expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
+
+					const composition = compositionHelper( editor, 1 );
+
+					// Simulate DOM changes triggered by browser. Flush MutationObserver as it is async.
+					composition.updateNonComposition(
+						'abc',
+						view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) )
+					);
+
+					sinon.assert.calledOnce( insertTextCommandSpy );
+					sinon.assert.calledOnce( typingQueuePushSpy );
+					sinon.assert.calledTwice( typingQueueFlushSpy );
+
+					expect( typingQueueFlushSpy.firstCall.args[ 0 ] ).to.equal( 'next beforeinput' );
+					expect( typingQueueFlushSpy.secondCall.args[ 0 ] ).to.equal( 'mutations' );
+
+					expect( getModelData( editor.model ) ).to.equal( '<paragraph>fooabc[]</paragraph>' );
+				} );
 			} );
 		} );
 
@@ -325,7 +502,8 @@ describe( 'Input', () => {
 	} );
 
 	describe( 'Android env', () => {
-		let domElement, editor, view, viewDocument, insertTextCommandSpy, scrollToTheSelectionSpy, rendererUpdateTextNodeSpy;
+		let domElement, editor, view, viewDocument, insertTextCommandSpy, scrollToTheSelectionSpy, rendererUpdateTextNodeSpy,
+			typingQueuePushSpy, typingQueueFlushSpy;
 
 		beforeEach( async () => {
 			testUtils.sinon.stub( env, 'isAndroid' ).value( true );
@@ -342,6 +520,11 @@ describe( 'Input', () => {
 			viewDocument = view.document;
 			scrollToTheSelectionSpy = testUtils.sinon.stub( view, 'scrollToTheSelection' );
 			rendererUpdateTextNodeSpy = sinon.spy( view._renderer, '_updateTextNodeInternal' );
+
+			const inputPlugin = editor.plugins.get( 'Input' );
+
+			typingQueuePushSpy = sinon.spy( inputPlugin._typingQueue, 'push' );
+			typingQueueFlushSpy = sinon.spy( inputPlugin._typingQueue, 'flush' );
 		} );
 
 		afterEach( async () => {
@@ -365,15 +548,22 @@ describe( 'Input', () => {
 						view.createPositionAt( viewParagraph.getChild( 0 ), 0 ),
 						view.createPositionAt( viewParagraph.getChild( 0 ), 'end' )
 					) ),
-					preventDefault: sinon.spy()
+					preventDefault: sinon.spy(),
+					domEvent: {
+						defaultPrevented: true // Just to trigger immediate queue flush.
+					}
 				} );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
 
 				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
 				expect( firstCallArgs.text ).to.equal( 'bar' );
 				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'end' ) ) ).to.be.true;
 				expect( firstCallArgs.resultRange ).to.be.undefined;
+
+				sinon.assert.calledOnce( typingQueuePushSpy );
+				sinon.assert.calledOnce( typingQueueFlushSpy );
 			} );
 
 			it( 'should adjust text and range to minimize model change (adding text, text and inline object selected)', () => {
@@ -393,18 +583,25 @@ describe( 'Input', () => {
 						view.createPositionAt( viewParagraph.getChild( 0 ), 0 ),
 						view.createPositionAt( viewParagraph.getChild( 2 ), 'end' )
 					) ),
-					preventDefault: sinon.spy()
+					preventDefault: sinon.spy(),
+					domEvent: {
+						defaultPrevented: true // Just to trigger immediate queue flush.
+					}
 				} );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
 
 				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
 				expect( firstCallArgs.text ).to.equal( 'bar' );
 				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( editor.model.createRange(
 					editor.model.createPositionAt( modelParagraph, 3 ),
 					editor.model.createPositionAt( modelParagraph, 4 )
 				) ) ) ).to.be.true;
 				expect( firstCallArgs.resultRange ).to.be.undefined;
+
+				sinon.assert.calledOnce( typingQueuePushSpy );
+				sinon.assert.calledOnce( typingQueueFlushSpy );
 			} );
 
 			it( 'should adjust text and range to minimize model change (removing text)', () => {
@@ -417,18 +614,25 @@ describe( 'Input', () => {
 						view.createPositionAt( viewParagraph.getChild( 0 ), 0 ),
 						view.createPositionAt( viewParagraph.getChild( 0 ), 'end' )
 					) ),
-					preventDefault: sinon.spy()
+					preventDefault: sinon.spy(),
+					domEvent: {
+						defaultPrevented: true // Just to trigger immediate queue flush.
+					}
 				} );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
 
 				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
 				expect( firstCallArgs.text ).to.equal( '' );
 				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( editor.model.createRange(
 					editor.model.createPositionAt( modelParagraph, 2 ),
 					editor.model.createPositionAt( modelParagraph, 3 )
 				) ) ) ).to.be.true;
 				expect( firstCallArgs.resultRange ).to.be.undefined;
+
+				sinon.assert.calledOnce( typingQueuePushSpy );
+				sinon.assert.calledOnce( typingQueueFlushSpy );
 			} );
 
 			it( 'should not adjust text and range if the whole selected text is replaced', () => {
@@ -441,15 +645,22 @@ describe( 'Input', () => {
 						view.createPositionAt( viewParagraph.getChild( 0 ), 0 ),
 						view.createPositionAt( viewParagraph.getChild( 0 ), 'end' )
 					) ),
-					preventDefault: sinon.spy()
+					preventDefault: sinon.spy(),
+					domEvent: {
+						defaultPrevented: true // Just to trigger immediate queue flush.
+					}
 				} );
+
+				sinon.assert.calledOnce( insertTextCommandSpy );
 
 				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
 
-				sinon.assert.calledOnce( insertTextCommandSpy );
 				expect( firstCallArgs.text ).to.equal( 'barfoo' );
 				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'in' ) ) ).to.be.true;
 				expect( firstCallArgs.resultRange ).to.be.undefined;
+
+				sinon.assert.calledOnce( typingQueuePushSpy );
+				sinon.assert.calledOnce( typingQueueFlushSpy );
 			} );
 
 			it( 'should not adjust text and range if the whole selected text is replaced with shorter text', () => {
@@ -462,7 +673,10 @@ describe( 'Input', () => {
 						view.createPositionAt( viewParagraph.getChild( 0 ), 0 ),
 						view.createPositionAt( viewParagraph.getChild( 0 ), 'end' )
 					) ),
-					preventDefault: sinon.spy()
+					preventDefault: sinon.spy(),
+					domEvent: {
+						defaultPrevented: true // Just to trigger immediate queue flush.
+					}
 				} );
 
 				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
@@ -471,6 +685,9 @@ describe( 'Input', () => {
 				expect( firstCallArgs.text ).to.equal( 'ba' );
 				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'in' ) ) ).to.be.true;
 				expect( firstCallArgs.resultRange ).to.be.undefined;
+
+				sinon.assert.calledOnce( typingQueuePushSpy );
+				sinon.assert.calledOnce( typingQueueFlushSpy );
 			} );
 
 			it( 'should not adjust text and range if the selection is collapsed', () => {
@@ -480,7 +697,10 @@ describe( 'Input', () => {
 				viewDocument.fire( 'insertText', {
 					text: 'bar',
 					selection: view.createSelection( viewParagraph.getChild( 0 ), 'end' ),
-					preventDefault: sinon.spy()
+					preventDefault: sinon.spy(),
+					domEvent: {
+						defaultPrevented: true // Just to trigger immediate queue flush.
+					}
 				} );
 
 				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
@@ -489,6 +709,9 @@ describe( 'Input', () => {
 				expect( firstCallArgs.text ).to.equal( 'bar' );
 				expect( firstCallArgs.selection.isEqual( editor.model.createSelection( modelParagraph, 'end' ) ) ).to.be.true;
 				expect( firstCallArgs.resultRange ).to.be.undefined;
+
+				sinon.assert.calledOnce( typingQueuePushSpy );
+				sinon.assert.calledOnce( typingQueueFlushSpy );
 			} );
 
 			it( 'should ignore insertText event if requires no model changes', () => {
@@ -497,7 +720,8 @@ describe( 'Input', () => {
 				viewDocument.fire( 'insertText', {
 					text: 'foo',
 					selection: view.createSelection( viewParagraph.getChild( 0 ), 'on' ),
-					preventDefault: sinon.spy()
+					preventDefault: sinon.spy(),
+					domEvent: {}
 				} );
 
 				sinon.assert.notCalled( insertTextCommandSpy );
@@ -572,11 +796,16 @@ describe( 'Input', () => {
 				viewDocument.fire( 'insertText', {
 					text: 'bar',
 					selection: viewDocument.selection,
-					preventDefault: () => {}
+					preventDefault: () => {},
+					domEvent: {
+						defaultPrevented: true // Just to trigger immediate queue flush.
+					}
 				} );
 
 				sinon.assert.calledOnce( insertTextCommandSpy );
 				sinon.assert.calledOnce( scrollToTheSelectionSpy );
+				sinon.assert.calledOnce( typingQueuePushSpy );
+				sinon.assert.calledOnce( typingQueueFlushSpy );
 			} );
 		} );
 
@@ -1115,7 +1344,7 @@ describe( 'Input', () => {
 
 				sinon.assert.notCalled( insertTextCommandSpy );
 
-				const queue = editor.plugins.get( 'Input' )._compositionQueue;
+				const queue = editor.plugins.get( 'Input' )._typingQueue;
 
 				expect( queue.length ).to.equal( 1 );
 
@@ -1126,7 +1355,7 @@ describe( 'Input', () => {
 		} );
 	} );
 
-	function compositionHelper( editor ) {
+	function compositionHelper( editor, expectedTypingQueueSize = env.isAndroid ? 1 : 0 ) {
 		const view = editor.editing.view;
 		const viewDocument = view.document;
 		const inputPlugin = editor.plugins.get( 'Input' );
@@ -1140,19 +1369,35 @@ describe( 'Input', () => {
 			update( data, range ) {
 				expect( viewDocument.isComposing ).to.be.true;
 
-				this.fireBeforeInputEvent( data, range );
-				this.modifyDom( data, range );
+				const preventDefaultSpy = this.fireBeforeInputEvent( data, range );
+
+				if ( !preventDefaultSpy.called ) {
+					this.modifyDom( data, range );
+				}
 			},
 
-			fireBeforeInputEvent( data, range ) {
+			updateNonComposition( data, range ) {
+				const preventDefaultSpy = this.fireBeforeInputEvent( data, range, 'insertText', false );
+
+				if ( !preventDefaultSpy.called ) {
+					this.modifyDom( data, range );
+				}
+			},
+
+			fireBeforeInputEvent( data, range, inputType = 'insertCompositionText', isComposing = true ) {
+				const preventDefaultSpy = sinon.spy();
+
 				viewDocument.fire( 'beforeinput', new DomEventData( view, {
 					target: view.getDomRoot()
 				}, {
 					data: data.replace( /\u00A0/g, ' ' ),
-					inputType: 'insertCompositionText',
+					inputType,
+					isComposing,
 					targetRanges: [ range ],
-					preventDefault: sinon.spy()
+					preventDefault: preventDefaultSpy
 				} ) );
+
+				return preventDefaultSpy;
 			},
 
 			modifyDom( data, range ) {
@@ -1165,11 +1410,11 @@ describe( 'Input', () => {
 				if ( domRange.startContainer.nodeType === 3 ) {
 					domRange.startContainer.insertData( domRange.startOffset, data );
 				} else {
-					throw new Error( 'not supported' ); // TODO
+					insertAt( domRange.startContainer, domRange.startOffset, domRange.startContainer.ownerDocument.createTextNode( data ) );
 				}
 
 				// Make sure it is always no bigger than 1 entry to avoid problems with position mapping.
-				expect( inputPlugin._compositionQueue.length ).to.equal( env.isAndroid ? 1 : 0 );
+				expect( inputPlugin._typingQueue.length ).to.equal( expectedTypingQueueSize );
 
 				window.getSelection().setBaseAndExtent(
 					domRange.startContainer, domRange.startOffset + data.length,
