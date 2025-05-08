@@ -193,6 +193,7 @@ export default class ListEditing extends Plugin {
 		this._setupTabIntegration();
 		this._setupClipboardIntegration();
 		this._setupAccessibilityIntegration();
+		this._setupListItemIdConversionStrategy();
 	}
 
 	/**
@@ -640,6 +641,20 @@ export default class ListEditing extends Plugin {
 					keystroke: 'Shift+Tab'
 				}
 			]
+		} );
+	}
+
+	/**
+	 * Convert `listItemId` attribute to `data-list-item-id` attribute on the view element in both downcast pipelines.
+	 */
+	private _setupListItemIdConversionStrategy() {
+		this.registerDowncastStrategy( {
+			scope: 'item',
+			attributeName: 'listItemId',
+
+			setAttributeOnDowncast( writer, attributeValue, viewElement ) {
+				writer.setAttribute( 'data-list-item-id', attributeValue, viewElement );
+			}
 		} );
 	}
 }
