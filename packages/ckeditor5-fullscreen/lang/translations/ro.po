@@ -29,8 +29,8 @@ msgstr "Comutare mod ecran complet"
 
 msgctxt "Label for a sidebar header that contains a document outline"
 msgid "Document outline"
-msgstr ""
+msgstr "Schița documentului"
 
 msgctxt "Label for a sidebar header that contains a list of connected users"
 msgid "Connected users"
-msgstr ""
+msgstr "Utilizatori conectați"

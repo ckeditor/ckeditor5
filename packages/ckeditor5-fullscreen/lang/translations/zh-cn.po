@@ -29,8 +29,8 @@ msgstr "切换全屏模式"
 
 msgctxt "Label for a sidebar header that contains a document outline"
 msgid "Document outline"
-msgstr ""
+msgstr "文档大纲"
 
 msgctxt "Label for a sidebar header that contains a list of connected users"
 msgid "Connected users"
-msgstr ""
+msgstr "已连接用户"

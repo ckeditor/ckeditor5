@@ -29,8 +29,8 @@ msgstr "Activa el mode de pantalla completa"
 
 msgctxt "Label for a sidebar header that contains a document outline"
 msgid "Document outline"
-msgstr ""
+msgstr "Esquema del document"
 
 msgctxt "Label for a sidebar header that contains a list of connected users"
 msgid "Connected users"
-msgstr ""
+msgstr "Usuaris connectats"

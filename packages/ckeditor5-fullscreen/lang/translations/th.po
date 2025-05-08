@@ -29,8 +29,8 @@ msgstr "สลับโหมดเต็มหน้าจอ"
 
 msgctxt "Label for a sidebar header that contains a document outline"
 msgid "Document outline"
-msgstr ""
+msgstr "โครงร่างของเอกสาร"
 
 msgctxt "Label for a sidebar header that contains a list of connected users"
 msgid "Connected users"
-msgstr ""
+msgstr "ผู้ใช้ที่เชื่อมต่ออยู่"

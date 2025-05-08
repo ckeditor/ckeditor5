@@ -29,8 +29,8 @@ msgstr "Chuyển đổi chế độ toàn màn hình"
 
 msgctxt "Label for a sidebar header that contains a document outline"
 msgid "Document outline"
-msgstr ""
+msgstr "Bố cục tài liệu"
 
 msgctxt "Label for a sidebar header that contains a list of connected users"
 msgid "Connected users"
-msgstr ""
+msgstr "Những người dùng đã kết nối"
