@@ -1117,6 +1117,12 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		const oldViewSelection = domSelection && this.domConverter.domSelectionToView( domSelection );
 
 		if ( oldViewSelection && this.selection.isEqual( oldViewSelection ) ) {
+			// Safari has a bug where the DOM selection does not reflect the user's visible selection,
+			// especially after complex DOM mutations. Force selection update if any DOM children were changed.
+			if ( env.isSafari && this.markedChildren.size && this.selection.isCollapsed ) {
+				return true;
+			}
+
 			return false;
 		}
 
