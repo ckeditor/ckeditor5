@@ -140,7 +140,7 @@ Now, we can add the container that will hold our editor and introduce an initial
 
 			ClassicEditor
 				.create( document.querySelector( '#editor' ), {
-					licenseKey: '<YOUR-LICENSE-KEY>' // Or 'GPL',
+					licenseKey: '<YOUR_LICENSE_KEY>' // Or 'GPL',
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 					toolbar: [
 						'undo', 'redo', '|', 'bold', 'italic', '|',
@@ -182,7 +182,7 @@ Putting everything together, the full integration code looks as follows (remembe
 
 			ClassicEditor
 				.create( document.querySelector( '#editor' ), {
-					licenseKey: '<YOUR-LICENSE-KEY>' // Or 'GPL',
+					licenseKey: '<YOUR_LICENSE_KEY>' // Or 'GPL',
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 					toolbar: [
 						'undo', 'redo', '|', 'bold', 'italic', '|',
