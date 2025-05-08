@@ -501,12 +501,19 @@ class ContextFactory {
 		//
 		if ( opA instanceof MoveOperation ) {
 			if ( opB instanceof MergeOperation ) {
+				const positionBeforeLastMovedElement = opA.sourcePosition.getShiftedBy( opA.howMany - 1 );
+				const pathBeforeLastMovedElement = positionBeforeLastMovedElement.path.slice();
+				pathBeforeLastMovedElement.push( 0 );
+				const positionInLastMovedElement = new Position( opA.sourcePosition.root, pathBeforeLastMovedElement );
+
 				if ( opA.targetPosition.isEqual( opB.sourcePosition ) || opB.movedRange.containsPosition( opA.targetPosition ) ) {
 					this._setRelation( opA, opB, 'insertAtSource' );
 				} else if ( opA.targetPosition.isEqual( opB.deletionPosition ) ) {
 					this._setRelation( opA, opB, 'insertBetween' );
 				} else if ( opA.targetPosition.isAfter( opB.sourcePosition ) ) {
 					this._setRelation( opA, opB, 'moveTargetAfter' );
+				} else if ( positionInLastMovedElement.isEqual( opB.sourcePosition ) && opA.howMany > 1 ) {
+					this._setRelation( opA, opB, 'mergedLastElement' );
 				}
 			} else if ( opB instanceof MoveOperation ) {
 				if ( opA.targetPosition.isEqual( opB.sourcePosition ) || opA.targetPosition.isBefore( opB.sourcePosition ) ) {
@@ -1864,7 +1871,7 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 	if ( moveRange.end.isEqual( b.insertionPosition ) ) {
 		// Do it only if this is a "natural" split, not a one that comes from undo.
 		// If this is undo split, only `targetPosition` needs to be changed (if the move is a remove).
-		if ( !b.graveyardPosition ) {
+		if ( !b.graveyardPosition || context.abRelation == 'mergedLastElement' ) {
 			a.howMany++;
 		}
 
