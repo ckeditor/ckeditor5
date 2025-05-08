@@ -981,7 +981,7 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 
 		const domEditable = this.domConverter.mapViewToDom( this.selection.editableElement! );
 
-		// Do nothing if there is no focus, or there is no DOM element corresponding to selection's editable element.
+		// Do not update DOM selection if there is no focus, or there is no DOM element corresponding to selection's editable element.
 		if ( !this.isFocused || !domEditable ) {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
@@ -990,10 +990,12 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 			// @if CK_DEBUG_TYPING // 	) );
 			// @if CK_DEBUG_TYPING // }
 
-			if ( this._fakeSelectionContainer && this._fakeSelectionContainer.isConnected ) {
+			// But if there was a fake selection, and it is not fake anymore - remove it as it can map to no longer existing widget.
+			// See https://github.com/ckeditor/ckeditor5/issues/18123.
+			if ( !this.selection.isFake && this._fakeSelectionContainer && this._fakeSelectionContainer.isConnected ) {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 				// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
-				// @if CK_DEBUG_TYPING // 		'Remove fake selection as editor is not focused'
+				// @if CK_DEBUG_TYPING // 		'Remove fake selection (not focused editable)'
 				// @if CK_DEBUG_TYPING // 	) );
 				// @if CK_DEBUG_TYPING // }
 
