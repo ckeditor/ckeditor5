@@ -29,8 +29,8 @@ msgstr "फ़ुलस्क्रीन मोड स्विच करें
 
 msgctxt "Label for a sidebar header that contains a document outline"
 msgid "Document outline"
-msgstr ""
+msgstr "डॉक्युमेंट की पूरी तस्वीर"
 
 msgctxt "Label for a sidebar header that contains a list of connected users"
 msgid "Connected users"
-msgstr ""
+msgstr "जुड़े हुए यूज़र"

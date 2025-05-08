@@ -29,8 +29,8 @@ msgstr "全画面モードの切り替え"
 
 msgctxt "Label for a sidebar header that contains a document outline"
 msgid "Document outline"
-msgstr ""
+msgstr "ドキュメントの概要"
 
 msgctxt "Label for a sidebar header that contains a list of connected users"
 msgid "Connected users"
-msgstr ""
+msgstr "接続ユーザー"
