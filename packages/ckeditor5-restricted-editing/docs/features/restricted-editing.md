@@ -42,8 +42,8 @@ By using this feature, the users of your application will be able to create temp
 
 ## Installation
 
-<info-box info>
-	⚠️ **New import paths**
+<info-box warning>
+	**New import paths**
 
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
@@ -95,7 +95,7 @@ You can configure which features should be available in the restricted mode. For
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		// ... Other confituration options ... 
+		// ... Other confituration options ...
 		restrictedEditing: {
 			allowedCommands: [ 'bold' ]
 		}
@@ -107,7 +107,7 @@ ClassicEditor
 **Note**: Typing and deleting text is always possible in restricted editing regions. For more information, check out the {@link module:restricted-editing/restrictededitingconfig~RestrictedEditingConfig `config.restrictedEditing`} documentation.
 
 <info-box warning>
-	Only inline content inserting or editing commands are allowed in this setting. Block content commands such as `insertTable` or `enter` cannot be allowed via this setting, as they are not supported in the restricted editing mode. 
+	Only inline content inserting or editing commands are allowed in this setting. Block content commands such as `insertTable` or `enter` cannot be allowed via this setting, as they are not supported in the restricted editing mode.
 </info-box>
 
 ### Enabling commands in the restricted editing mode
