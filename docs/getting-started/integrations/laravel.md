@@ -1,12 +1,12 @@
 ---
 category: self-hosted
-meta-title: Using CKEditor 5 with Laravel via ZIP archive | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with Laravelfrom ZIP archive | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with Laravel using a ZIP archive.
 order: 80
 menu-title: Laravel
 ---
 
-# Integrating CKEditor 5 with Laravel via ZIP
+# Integrating CKEditor&nbsp;5 with Laravel from ZIP
 
 As a pure JavaScript/TypeScript application, CKEditor&nbsp;5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom configuration of CKEditor&nbsp;5 in a non-JS framework of your choice, for example, the PHP-based [Laravel](https://laravel.com/).
 

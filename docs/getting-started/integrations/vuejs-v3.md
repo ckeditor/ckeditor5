@@ -1,12 +1,12 @@
 ---
 menu-title: Vue.js 3+
-meta-title: Using CKEditor 5 with Vue.js 3+ rich text editor component via npm | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with Vue.js 3+ rich text editor componentfrom npm | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 3+ component with npm.
 category: self-hosted
 order: 70
 ---
 
-# Integrating CKEditor 5 with Vue.js 3+ rich text editor component via npm
+# Integrating CKEditor&nbsp;5 with Vue.js 3+ rich text editor component from npm
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-vue" target="_blank" rel="noopener">

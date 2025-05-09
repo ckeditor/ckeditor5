@@ -1,13 +1,13 @@
 ---
 menu-title: Next.js
-meta-title: Using CKEditor 5 with Next.js via npm | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with Next.jsfrom npm | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with the Next.js framework using both routing strategies (App Router or Pages Router) and npm.
 category: self-hosted
 order: 40
 modified_at: 2023-11-14
 ---
 
-# Integrating CKEditor 5 with Next.js via npm
+# Integrating CKEditor&nbsp;5 with Next.js from npm
 
 [Next.js](https://nextjs.org/) is a React meta-framework that helps create full-stack web applications. It offers different rendering strategies like server-side rendering (SSR), client-side rendering (CSR), or static site generation (SSG). Additionally, it provides file-based routing, automatic code splitting, and other handy features out of the box.
 
