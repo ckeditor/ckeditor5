@@ -6,7 +6,7 @@ category: self-hosted
 order: 70
 ---
 
-# Integrating CKEditor&nbsp;5 with Vue.js 3+ rich text editor component from npm
+# Integrating CKEditor&nbsp;5 with Vue.js 3+ from npm
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-vue" target="_blank" rel="noopener">
