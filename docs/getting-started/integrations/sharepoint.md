@@ -136,7 +136,7 @@ export default class RichTextEditor extends React.Component<IRichTextEditorProps
 									Bold, Essentials, Italic, Paragraph, Font, Heading,
 									Table, TableCellProperties, TableProperties, TableToolbar, List,
 									Autoformat, FormatPainter
-									],
+								],
 								toolbar: [
 									'undo', 'redo', '|', 'bold', 'italic', '|',
 									'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor', '|',
@@ -176,7 +176,7 @@ You should now be able to use the editor:
 
 {@img assets/img/sharepoint-integration_05.png Screenshot of SharePoint application.}
 
-## Additional Resources
+## Additional resources
 
 * [SharePoint Framework Documentation](https://learn.microsoft.com/en-us/sharepoint/dev/spfx/sharepoint-framework-overview)
 * {@link getting-started/integrations/react-default-npm React integration documentation}
