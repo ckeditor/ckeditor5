@@ -1,13 +1,13 @@
 ---
 menu-title: SharePoint (SPFx)
-meta-title: SharePoint integration using npm | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with with SharePoint SPFx | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with SharePoint SPFx using npm
 category: self-hosted
 order: 120
 modified_at: 2025-04-30
 ---
 
-# Integrate CKEditor&nbsp;5 with SharePoint SPFx
+# Integrating CKEditor 5 with SharePoint SPFx
 
 [The SharePoint Framework (SPFx)](https://learn.microsoft.com/en-us/sharepoint/dev/spfx/sharepoint-framework-overview) is Microsoft's modern, client-side development model for building custom experiences that run in the SharePoint Online, Microsoft Teams, Viva Connections, Outlook, and the Microsoft 365 applications.
 

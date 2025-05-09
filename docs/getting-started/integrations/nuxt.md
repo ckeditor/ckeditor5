@@ -1,13 +1,13 @@
 ---
 menu-title: Nuxt
-meta-title: Integration with Nuxt using npm | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with Nuxt via npm | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with the Nuxt framework using npm.
 category: self-hosted
 order: 50
 modified_at: 2025-03-13
 ---
 
-# Integrate CKEditor 5 with Nuxt using npm
+# Integrating CKEditor 5 with Nuxt via npm
 
 [Nuxt](https://nuxt.com/) is a Vue.js meta-framework for creating full-stack web applications. It offers everything you would expect from a modern framework, including various rendering modes, file-based routing, automatic code splitting, a large ecosystem of plugins and hosting integrations, and more.
 

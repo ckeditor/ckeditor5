@@ -1,12 +1,12 @@
 ---
 menu-title: Angular
-meta-title: Angular rich text editor component (npm) | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with Angular rich text editor component via npm | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using the Angular component with npm.
 category: self-hosted
 order: 30
 ---
 
-# Angular rich text editor component (npm)
+# Integrating CKEditor 5 with Angular rich text editor component via npm
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-angular" target="_blank" rel="noopener">
