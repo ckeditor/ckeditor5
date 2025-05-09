@@ -461,8 +461,8 @@ describe( 'Editor - license check', () => {
 					// eslint-disable-next-line no-new
 					new TestEditor( { licenseKey } );
 
-					expect( consoleInfoStub.secondCall ).to.not.exist;
-					expect( consoleWarnStub.secondCall ).to.not.exist;
+					sinon.assert.calledOnce( consoleInfoStub );
+					sinon.assert.calledOnce( consoleWarnStub );
 
 					dateNow.restore();
 				} );
@@ -552,8 +552,8 @@ describe( 'Editor - license check', () => {
 				// eslint-disable-next-line no-new
 				new TestEditor( { licenseKey } );
 
-				expect( consoleInfoStub.secondCall ).to.not.exist;
-				expect( consoleWarnStub.secondCall ).to.not.exist;
+				sinon.assert.calledOnce( consoleInfoStub );
+				sinon.assert.calledOnce( consoleWarnStub );
 			} );
 
 			it( 'should not block the editor if 10 minutes have not passed (development license)', () => {
