@@ -49,6 +49,9 @@ import type { EditorConfig } from './editorconfig.js';
 declare global {
 	// eslint-disable-next-line no-var
 	var CKEDITOR_GLOBAL_LICENSE_KEY: string | undefined;
+
+	// eslint-disable-next-line no-var
+	var CKEDITOR_WARNING_SUPPRESSIONS: Record<string, boolean>;
 }
 
 /**
@@ -544,11 +547,13 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( [ 'development', 'evaluation', 'trial' ].includes( licensePayload.licenseType ) ) {
 				const { licenseType } = licensePayload;
-				const sessionStarted = sessionStorage.getItem( 'ckeditor5-development-session-started' );
 
-				if ( !sessionStarted ) {
+				window.CKEDITOR_WARNING_SUPPRESSIONS = window.CKEDITOR_WARNING_SUPPRESSIONS || {};
+
+				if ( !window.CKEDITOR_WARNING_SUPPRESSIONS[ licenseType ] ) {
 					warnAboutNonProductionLicenseKey( licenseType );
-					sessionStorage.setItem( 'ckeditor5-development-session-started', 'true' );
+
+					window.CKEDITOR_WARNING_SUPPRESSIONS[ licenseType ] = true;
 				}
 			}
 
