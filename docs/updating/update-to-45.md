@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 45.x | CKEditor 5 Documentation
 menu-title: Update to v45.x
 order: 79
-modified_at: 2025-04-07
+modified_at: 2025-05-08
 ---
 
 # Update to CKEditor&nbsp;5 v45.x
@@ -13,6 +13,14 @@ modified_at: 2025-04-07
 
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
+
+## Update to CKEditor&nbsp;5 v45.1.0
+
+Released on May 14, 2024. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v45.1.0))
+
+Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v45.1.0.
+
+### List it
 
 ## Update to CKEditor&nbsp;5 v45.0.0
 
@@ -173,7 +181,7 @@ We are continuing to strengthen the new installation methods while phasing out o
 	To achieve a proper solution for icons replacement for the npm builds, we needed to introduce a breaking change. If you used our icons for any purposes, make sure to update their paths.
 </info-box>
 
-### ⚠️ Deprecations in old installation methods: stage 1 completed
+### Deprecations in old installation methods: stage 1 completed
 
 We are progressing with deprecation according to [our sunset plan](https://github.com/ckeditor/ckeditor5/issues/17779). From this release, predefined builds’ packages, such as `@ckeditor/ckeditor-build-classic`, are now officially deprecated.
 
