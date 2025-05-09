@@ -74,7 +74,12 @@ describe( 'ColorUI', () => {
 		return ClassicTestEditor
 			.create( element, {
 				plugins: [ Paragraph, TestColorPlugin, Undo ],
-				testColor: testColorConfig
+				testColor: testColorConfig,
+				language: 'en',
+				translations: [ { en: {
+					dictionary: [],
+					getPluralForm: sinon.spy()
+				} } ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

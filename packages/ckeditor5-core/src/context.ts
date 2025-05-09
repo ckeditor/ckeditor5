@@ -20,6 +20,7 @@ import PluginCollection from './plugincollection.js';
 import type Editor from './editor/editor.js';
 import type { LoadedPlugins, PluginConstructor } from './plugin.js';
 import type { EditorConfig } from './editor/editorconfig.js';
+import { cloneDeep } from 'es-toolkit/compat';
 
 /**
  * Provides a common, higher-level environment for solutions that use multiple {@link module:core/editor/editor~Editor editors}
@@ -170,7 +171,7 @@ export default class Context {
 			 * Function _translate is called often and has no access to the editing editor config, so here is a better place to
 			 * check if translations will be taken from dev-translations, and if yes – update config.language.ui value.
 			 */
-			const devTranslations = global.window.CKEDITOR_TRANSLATIONS;
+			const devTranslations = cloneDeep( global.window.CKEDITOR_TRANSLATIONS );
 			const uiLanguageFromConfig = typeof languageConfig === 'string' ? languageConfig : languageConfig.ui;
 			const hasMatchingTranslations = devTranslations[ uiLanguageFromConfig! ];
 			const defaultDevTranslationsLanguage = Object.keys( devTranslations )[ 0 ];
@@ -178,7 +179,7 @@ export default class Context {
 			this.locale = new Locale( {
 				uiLanguage: hasMatchingTranslations ? uiLanguageFromConfig : defaultDevTranslationsLanguage,
 				contentLanguage: this.config.get( 'language.content' ),
-				translations: global.window.CKEDITOR_TRANSLATIONS
+				translations: devTranslations
 			} );
 
 			if ( !hasMatchingTranslations && this.config.get( 'language.ui' ) !== defaultDevTranslationsLanguage ) {

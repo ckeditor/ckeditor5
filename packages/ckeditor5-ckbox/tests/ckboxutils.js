@@ -314,6 +314,10 @@ describe( 'CKBoxUtils', () => {
 		it( 'should set default values', async () => {
 			const editor = await createTestEditor( {
 				language: 'pl',
+				translations: [ { pl: {
+					dictionary: [],
+					getPluralForm: sinon.spy()
+				} } ],
 				cloudServices: {
 					tokenUrl: 'http://cs.example.com'
 				}

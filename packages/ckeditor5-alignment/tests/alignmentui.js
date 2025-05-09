@@ -305,6 +305,10 @@ describe( 'Alignment UI', () => {
 						content: 'ar',
 						ui: 'ar'
 					},
+					translations: [ { ar: {
+						dictionary: [],
+						getPluralForm: sinon.spy()
+					} } ],
 					plugins: [ AlignmentEditing, AlignmentUI ]
 				} );
 
@@ -439,6 +443,10 @@ describe( 'Alignment UI', () => {
 						language: {
 							content: 'ar'
 						},
+						translations: [ { ar: {
+							dictionary: [],
+							getPluralForm: sinon.spy()
+						} } ],
 						plugins: [ AlignmentEditing, AlignmentUI ],
 						alignment: { options: [ 'center', 'justify' ] }
 					} )

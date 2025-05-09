@@ -756,7 +756,11 @@ describe( 'table cell properties', () => {
 					beforeEach( async () => {
 						editor = await VirtualTestEditor.create( {
 							plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
-							language: 'ar'
+							language: 'ar',
+							translations: [ { ar: {
+								dictionary: [],
+								getPluralForm: sinon.spy()
+							} } ]
 						} );
 
 						model = editor.model;

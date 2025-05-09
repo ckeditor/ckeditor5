@@ -262,7 +262,11 @@ describe( 'CKFinderCommand', () => {
 			return VirtualTestEditor
 				.create( {
 					plugins: [ Paragraph, ImageBlockEditing, ImageUploadEditing, LinkEditing, Notification, ClipboardPipeline ],
-					language: 'pl'
+					language: 'pl',
+					translations: [ { pl: {
+						dictionary: [],
+						getPluralForm: sinon.spy()
+					} } ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
