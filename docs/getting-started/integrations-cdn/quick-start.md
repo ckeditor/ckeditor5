@@ -1,12 +1,12 @@
 ---
 menu-title: Vanilla JS
-meta-title: Vanilla JS CKEditor 5 installation - quick start with CDN | CKEditor 5 Documentation
+meta-title: Vanilla JS CKEditor 5 installation - quick start from CDN | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using Vanilla JS with CDN.
 category: cloud
 order: 20
 ---
 
-# Installing Vanilla JS CKEditor&nbsp;5 using CDN
+# Installing Vanilla JS CKEditor&nbsp;5 from CDN
 
 CKEditor&nbsp;5 is a powerful, rich text editor you can embed in your web application. This guide will show you the fastest way to start using it.
 

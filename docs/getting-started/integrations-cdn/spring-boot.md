@@ -1,13 +1,13 @@
 ---
 category: cloud
-meta-title: Using CKEditor 5 with Spring Boot and CDN | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with Spring Boot from CDN | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with Spring Boot using CDN.
 order: 130
 menu-title: Spring Boot
 modified_at: 2025-05-06
 ---
 
-# Using CKEditor&nbsp;5 with Spring Boot and CDN
+# Integrating CKEditor&nbsp;5 with Spring Boot from CDN
 
 As a pure JavaScript/TypeScript library, CKEditor&nbsp;5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom configuration of CKEditor&nbsp;5 in a non-JS framework of your choice, for example, the Java-based [Spring Boot](https://spring.io/projects/spring-boot).
 

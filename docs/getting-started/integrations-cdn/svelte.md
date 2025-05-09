@@ -1,13 +1,13 @@
 ---
 menu-title: Svelte
-meta-title: Integration with Svelte using CDN | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with Svelte from CDN | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with Svelte using CDN
 category: cloud
 order: 110
 modified_at: 2025-04-24
 ---
 
-# Using CKEditor&nbsp;5 with Svelte and CDN
+# Integrating CKEditor&nbsp;5 with Svelte from CDN
 
 [Svelte](https://svelte.dev/) is a modern JavaScript compiler that builds highly optimized, reactive web applications. Unlike traditional frameworks, Svelte shifts most of the work from runtime to build time, resulting in highly efficient applications. CKEditor&nbsp;5 can be easily integrated with Svelte applications, providing powerful rich text editing capabilities to your projects.
 

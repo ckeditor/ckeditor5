@@ -1,13 +1,13 @@
 ---
 menu-title: Drupal
-meta-title: Real-time editing in Drupal | CKEditor 5 Documentation
+meta-title: CKEditor 5 real-time editing in Drupal | CKEditor 5 Documentation
 meta-description: Learn how to set up real-time collaboration in the Drupal editing platform with the CKEditor 5 Premium Features module.
 category: installation
 order: 100
 modified_at: 2023-10-06
 ---
 
-# Real-time editing in Drupal
+# CKEditor&nbsp;5 real-time editing in Drupal
 
 Drupal is a free and open-source web content management system (CMS) written in PHP. CKEditor&nbsp;5 WYSIWYG rich text editor is the default editor module for Drupal. The [CKEditor&nbsp;5 Premium Features module](https://www.drupal.org/project/ckeditor5_premium_features) provides instant integration of the real-time collaboration features with the editing platform.
 

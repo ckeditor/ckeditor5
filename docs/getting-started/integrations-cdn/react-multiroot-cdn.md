@@ -1,13 +1,13 @@
 ---
 menu-title: Multi-root integration
-meta-title: React rich text editor multi-root hook with CDN | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with React multi-root hook from CDN | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using the React multi-root hook with CDN.
 category: react-cdn
 order: 20
 modified_at: 2024-04-25
 ---
 
-# React rich text multi-root editor hook with CDN
+# Integrating CKEditor&nbsp;5 with React multi-root editor hook from CDN
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-react" target="_blank" rel="noopener">
