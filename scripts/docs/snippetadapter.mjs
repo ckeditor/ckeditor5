@@ -174,7 +174,8 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 	// Style paths for preloading and layered imports
 	const editorStylePaths = [
 		'%BASE_PATH%/assets/ckeditor5/ckeditor5.css',
-		'%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.css'
+		'%BASE_PATH%/assets/ckeditor5-premium-features/ckeditor5-premium-features.css',
+		'%BASE_PATH%/assets/global.css'
 	];
 
 	// Gather global tags added to each document that do not require relative paths.
