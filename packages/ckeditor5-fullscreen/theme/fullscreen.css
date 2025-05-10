@@ -77,7 +77,15 @@ Fullscreen layout:
 }
 
 .ck-fullscreen__menu-bar .ck.ck-menu-bar {
-	border: none;
+	border-left: 0;
+	border-right: 0;
+	border-radius: 0;
+}
+
+.ck-fullscreen__toolbar .ck.ck-toolbar {
+	border: 0;
+	border-bottom: 1px solid var(--ck-color-base-border);
+	border-radius: 0;
 }
 
 .ck-fullscreen__main-wrapper .ck-fullscreen__editable-wrapper {
