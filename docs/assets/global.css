@@ -6,7 +6,7 @@
 :root {
 	/* This custom property is read by the JS and passed to editor configurations
 	as config.ui.viewportOffset.top. */
-	--ck-snippet-viewport-top-offset: 110
+	--ck-snippet-viewport-top-offset: 109.56;
 }
 
 @media (max-width: 960px) {
