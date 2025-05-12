@@ -1,6 +1,6 @@
 ---
 menu-title: Vue.js 2.x
-meta-title: Using CKEditor 5 with Vue.js 2.x rich text editor componentfrom npm | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with Vue.js 2.x rich text editor component from npm | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 2.x component with npm.
 category: self-hosted
 order: 60

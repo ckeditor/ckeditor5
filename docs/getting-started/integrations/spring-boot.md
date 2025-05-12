@@ -1,6 +1,6 @@
 ---
 category: self-hosted
-meta-title: Using CKEditor 5 with Spring Bootfrom ZIP archive | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with Spring Boot from ZIP archive | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with Spring Boot using a ZIP archive.
 order: 130
 menu-title: Spring Boot

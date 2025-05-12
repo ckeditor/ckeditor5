@@ -1,6 +1,6 @@
 ---
 menu-title: Svelte
-meta-title: Using CKEditor&nbsp;5 with Sveltefrom npm | CKEditor 5 Documentation
+meta-title: Using CKEditor&nbsp;5 with Svelte from npm | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with Svelte using npm
 category: self-hosted
 order: 110
