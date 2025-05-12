@@ -193,9 +193,9 @@ export default class Config<Cfg> {
 
 		// Iterate over parts to check if currently stored configuration has proper structure.
 		for ( const part of parts ) {
-			// If there is no object for specified part then create one.
-			if ( !isPlainObject( target[ part ] ) ) {
-				target[ part ] = Object.create( null );
+			// If target[part] is not an object or array, initialize as empty object.
+			if ( typeof target[ part ] !== 'object' || target[ part ] === null ) {
+				target[ part ] = {};
 			}
 
 			// Nested object becomes a target.
@@ -206,7 +206,7 @@ export default class Config<Cfg> {
 		if ( isPlainObject( value ) ) {
 			// We take care of proper config structure.
 			if ( !isPlainObject( target[ name ] ) ) {
-				target[ name ] = Object.create( null );
+				target[ name ] = {};
 			}
 
 			target = target[ name ];
@@ -218,7 +218,7 @@ export default class Config<Cfg> {
 		}
 
 		// Do nothing if we are defining configuration for non empty name.
-		if ( isDefine && typeof target[ name ] != 'undefined' ) {
+		if ( isDefine && typeof target[ name ] !== 'undefined' ) {
 			return;
 		}
 
