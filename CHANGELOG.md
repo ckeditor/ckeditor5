@@ -68,7 +68,7 @@ A new method to start a "tracking session" has been introduced, preventing autom
 
 ### Other changes
 
-* **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: Non-production license notifications should only be displayed once per browser session. Closes [#18179](https://github.com/ckeditor/ckeditor5/issues/18179). ([commit](https://github.com/ckeditor/ckeditor5/commit/922fb1c7c48463134a8359ce9709b0ee0ca552c3))
+* **[core](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)**: Non-production license notifications should only be displayed once per page load. Closes [#18179](https://github.com/ckeditor/ckeditor5/issues/18179). ([commit](https://github.com/ckeditor/ckeditor5/commit/922fb1c7c48463134a8359ce9709b0ee0ca552c3))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced the `doNotFixSelection` option for `model.deleteContent()` which can be used to force making deletion exactly on the provided selection. Closes [#18448](https://github.com/ckeditor/ckeditor5/issues/18448). ([commit](https://github.com/ckeditor/ckeditor5/commit/b80b369ef320b094343b41250fe9df25dac4682a))
 * **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Fixed an incorrect French translation in the Track changes feature.
 * **[typing](https://www.npmjs.com/package/@ckeditor/ckeditor5-typing)**: Improved typing performance in large documents. ([commit](https://github.com/ckeditor/ckeditor5/commit/45a8182b9f216fcc905daad1ad2c3cf46ab33d2d))
