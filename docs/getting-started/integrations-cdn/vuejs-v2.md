@@ -1,12 +1,12 @@
 ---
 menu-title: Vue.js 2.x
-meta-title: Vue.js 2.x rich text editor component with CDN | CKEditor 5 Documentation
+meta-title: Using CKEdiotr 5 with Vue.js 2.x from CDN | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 2.x component with CDN.
 category: cloud
 order: 60
 ---
 
-# Vue.js 2.x rich text editor component
+# Integrating CKEditor&nbsp;5 with Vue.js 2.x from CDN
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-vue2" target="_blank" rel="noopener">
