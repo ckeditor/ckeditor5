@@ -237,6 +237,191 @@ describe( 'InputObserver', () => {
 				expect( viewRange.end.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
 				expect( viewRange.end.offset ).to.equal( 2 );
 			} );
+
+			describe( 'target range followed by an inline filler', () => {
+				it( 'should prevent default if target range end touches an inline filler', () => {
+					// <p>om<span>w</span></p>
+					view.change( writer => {
+						const paragraph = writer.createContainerElement( 'p' );
+						const span = writer.createAttributeElement( 'span' );
+
+						writer.insert( writer.createPositionAt( paragraph, 0 ), writer.createText( 'omw' ) );
+						writer.insert( writer.createPositionAt( viewRoot, 0 ), paragraph );
+
+						writer.wrap( writer.createRange(
+							writer.createPositionAt( paragraph.getChild( 0 ), 2 ),
+							writer.createPositionAt( paragraph.getChild( 0 ), 3 )
+						), span );
+
+						writer.setSelection( writer.createPositionAt( paragraph, 2 ) );
+					} );
+
+					const domRange = global.document.createRange();
+					const preventDefaultSpy = sinon.spy();
+
+					// The Browser wants to replace 'omw' with other text, but there is an inline filler just after it.
+					// <p>{om<span>w}</span>$INLINE_FILLER$</p> -> <p>{On my way!}$INLINE_FILLER$</p>
+					// So to avoid inline filler at the end of a text node, we must handle this in engine.
+					domRange.setStart( domEditable.firstChild.childNodes[ 0 ], 0 );
+					domRange.setEnd( domEditable.firstChild.childNodes[ 1 ].firstChild, 1 );
+
+					fireMockNativeBeforeInput( {
+						getTargetRanges: () => [ domRange ],
+						preventDefault: preventDefaultSpy
+					} );
+
+					expect( preventDefaultSpy.calledOnce ).to.be.true;
+
+					expect( evtData.targetRanges ).to.have.length( 1 );
+
+					const viewRange = evtData.targetRanges[ 0 ];
+
+					expect( viewRange ).to.be.instanceOf( Range );
+
+					expect( viewRange.start.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
+					expect( viewRange.start.offset ).to.equal( 0 );
+					expect( viewRange.end.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 1 ).getChild( 0 ) );
+					expect( viewRange.end.offset ).to.equal( 1 );
+				} );
+
+				it( 'should not prevent default if target range end does not touches an inline filler', () => {
+					// <p>foo<span>bar</span></p>
+					view.change( writer => {
+						const paragraph = writer.createContainerElement( 'p' );
+						const span = writer.createAttributeElement( 'span' );
+
+						writer.insert( writer.createPositionAt( paragraph, 0 ), writer.createText( 'foobar' ) );
+						writer.insert( writer.createPositionAt( viewRoot, 0 ), paragraph );
+
+						writer.wrap( writer.createRange(
+							writer.createPositionAt( paragraph.getChild( 0 ), 3 ),
+							writer.createPositionAt( paragraph.getChild( 0 ), 6 )
+						), span );
+
+						writer.setSelection( writer.createPositionAt( paragraph, 2 ) );
+					} );
+
+					const domRange = global.document.createRange();
+					const preventDefaultSpy = sinon.spy();
+
+					// <p>{foo<span>ba}r</span>$INLINE_FILLER$</p>
+					domRange.setStart( domEditable.firstChild.childNodes[ 0 ], 0 );
+					domRange.setEnd( domEditable.firstChild.childNodes[ 1 ].firstChild, 2 );
+
+					fireMockNativeBeforeInput( {
+						getTargetRanges: () => [ domRange ],
+						preventDefault: preventDefaultSpy
+					} );
+
+					expect( preventDefaultSpy.calledOnce ).to.be.false;
+
+					expect( evtData.targetRanges ).to.have.length( 1 );
+
+					const viewRange = evtData.targetRanges[ 0 ];
+
+					expect( viewRange ).to.be.instanceOf( Range );
+
+					expect( viewRange.start.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
+					expect( viewRange.start.offset ).to.equal( 0 );
+					expect( viewRange.end.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 1 ).getChild( 0 ) );
+					expect( viewRange.end.offset ).to.equal( 2 );
+				} );
+
+				it( 'should prevent default if target range end touches an inline filler (deeper nesting)', () => {
+					// <p>foo<i><span>bar</span></i></p>
+					view.change( writer => {
+						const paragraph = writer.createContainerElement( 'p' );
+						const span = writer.createAttributeElement( 'span' );
+						const italic = writer.createAttributeElement( 'i' );
+
+						writer.insert( writer.createPositionAt( paragraph, 0 ), writer.createText( 'foobar' ) );
+						writer.insert( writer.createPositionAt( viewRoot, 0 ), paragraph );
+
+						writer.wrap( writer.createRange(
+							writer.createPositionAt( paragraph.getChild( 0 ), 3 ),
+							writer.createPositionAt( paragraph.getChild( 0 ), 6 )
+						), span );
+
+						writer.wrap( writer.createRangeIn( paragraph.getChild( 1 ) ), italic );
+
+						writer.setSelection( writer.createPositionAt( paragraph, 2 ) );
+					} );
+
+					const domRange = global.document.createRange();
+					const preventDefaultSpy = sinon.spy();
+
+					// <p>{foo<i><span>bar}</i></span>$INLINE_FILLER$</p>
+					domRange.setStart( domEditable.firstChild.childNodes[ 0 ], 0 );
+					domRange.setEnd( domEditable.firstChild.childNodes[ 1 ].firstChild.firstChild, 3 );
+
+					fireMockNativeBeforeInput( {
+						getTargetRanges: () => [ domRange ],
+						preventDefault: preventDefaultSpy
+					} );
+
+					expect( preventDefaultSpy.calledOnce ).to.be.true;
+
+					expect( evtData.targetRanges ).to.have.length( 1 );
+
+					const viewRange = evtData.targetRanges[ 0 ];
+
+					expect( viewRange ).to.be.instanceOf( Range );
+
+					expect( viewRange.start.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
+					expect( viewRange.start.offset ).to.equal( 0 );
+					expect( viewRange.end.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 0 ) );
+					expect( viewRange.end.offset ).to.equal( 3 );
+				} );
+
+				it( 'should not prevent default if target range end does not touch an inline filler (deeper nesting)', () => {
+					// <p>foo<span><strong>ba</strong>r</span></p>
+					view.change( writer => {
+						const paragraph = writer.createContainerElement( 'p' );
+						const span = writer.createAttributeElement( 'span' );
+						const strong = writer.createAttributeElement( 'strong' );
+
+						writer.insert( writer.createPositionAt( paragraph, 0 ), writer.createText( 'foobar' ) );
+						writer.insert( writer.createPositionAt( viewRoot, 0 ), paragraph );
+
+						writer.wrap( writer.createRange(
+							writer.createPositionAt( paragraph.getChild( 0 ), 3 ),
+							writer.createPositionAt( paragraph.getChild( 0 ), 6 )
+						), span );
+
+						writer.wrap( writer.createRange(
+							writer.createPositionAt( paragraph.getChild( 1 ).getChild( 0 ), 0 ),
+							writer.createPositionAt( paragraph.getChild( 1 ).getChild( 0 ), 2 )
+						), strong );
+
+						writer.setSelection( writer.createPositionAt( paragraph, 2 ) );
+					} );
+
+					const domRange = global.document.createRange();
+					const preventDefaultSpy = sinon.spy();
+
+					// <p>{foo<span><strong>ba}</strong>r</span>$INLINE_FILLER$</p>
+					domRange.setStart( domEditable.firstChild.childNodes[ 0 ], 0 );
+					domRange.setEnd( domEditable.firstChild.childNodes[ 1 ].firstChild.firstChild, 2 );
+
+					fireMockNativeBeforeInput( {
+						getTargetRanges: () => [ domRange ],
+						preventDefault: preventDefaultSpy
+					} );
+
+					expect( preventDefaultSpy.calledOnce ).to.be.false;
+
+					expect( evtData.targetRanges ).to.have.length( 1 );
+
+					const viewRange = evtData.targetRanges[ 0 ];
+
+					expect( viewRange ).to.be.instanceOf( Range );
+
+					expect( viewRange.start.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
+					expect( viewRange.start.offset ).to.equal( 0 );
+					expect( viewRange.end.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 1 ).getChild( 0 ).getChild( 0 ) );
+					expect( viewRange.end.offset ).to.equal( 2 );
+				} );
+			} );
 		} );
 
 		describe( '#data', () => {
