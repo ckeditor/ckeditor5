@@ -506,7 +506,7 @@ export default class AbstractEditorHandler {
 	}
 
 	/**
-	 * Stores the current state of the annotations UIs to restore it when leaving fullscreen mode.
+	 * Stores the current state of the annotations UIs to restore it when leaving fullscreen mode and switches the UI to the wide sidebar.
 	 */
 	// Code coverage is provided in the commercial package repository as integration unit tests.
 	/* istanbul ignore next -- @preserve */
@@ -514,15 +514,6 @@ export default class AbstractEditorHandler {
 		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as any;
 
 		this._annotationsUIsData = new Map( annotationsUIs.uisData );
-
-		// Switch to the wide sidebar.
-		const sidebarPlugin = this._editor.plugins.get( 'Sidebar' ) as any;
-
-		if ( !sidebarPlugin.container ) {
-			sidebarPlugin.setContainer(
-				this.getWrapper().querySelector( '[data-ck-fullscreen="right-sidebar"]' ) as HTMLElement
-			);
-		}
 
 		const annotationsFilters = new Map<string, ( annotation: any ) => boolean>();
 
@@ -535,23 +526,53 @@ export default class AbstractEditorHandler {
 
 		annotationsUIs.deactivateAll();
 
-		// Check if someone has a filter defined for `wideSidebar`. If so, retrieve and apply it in fullscreen. Do not show any other UI.
-		if ( annotationsFilters.has( 'wideSidebar' ) ) {
-			annotationsUIs.activate( 'wideSidebar', annotationsFilters.get( 'wideSidebar' ) );
+		const sidebarPlugin = this._editor.plugins.get( 'Sidebar' ) as any;
+
+		// There are two scenarios to consider: if wide sidebar is already used and when it's not.
+		// If sidebar container is not set (e.g. in case of inline annotations), we need to:
+		// 1. Set the sidebar container in the sidebar plugin.
+		// 2. Activate the wide sidebar UI.
+		// 3. Move the sidebar element to the fullscreen mode.
+		if ( !sidebarPlugin.container ) {
+			sidebarPlugin.setContainer( this.getWrapper().querySelector( '[data-ck-fullscreen="right-sidebar"]' ) as HTMLElement );
+
+			switchToWideSidebar();
+
+			this.moveToFullscreen( ( sidebarPlugin.container!.firstElementChild as HTMLElement ), 'right-sidebar' );
 		}
-		// If no filter is defined for `wideSidebar`, read the filters for the active display(s) mode and apply them.
-		// It's possible there are filters for both `narrowSidebar` and `inline` modes, so display annotations that match any of them.
-		else if ( annotationsFilters.size ) {
-			annotationsUIs.activate( 'wideSidebar',
-				( annotation: any ) => [ ...annotationsFilters.values() ].some( filter => filter( annotation ) )
+		// If sidebar was already used:
+		// 1. Switch to the wide sidebar UI (it's possibly switch back but we deactivated all UIs before).
+		// 2. Move the sidebar element to the fullscreen mode.
+		// 3. Set the sidebar container in the sidebar plugin.
+		// If we set the container before moving the sidebar, we lose the reference to the original sidebar container and it won't be
+		// moved back to the correct position after leaving fullscreen.
+		else {
+			switchToWideSidebar();
+
+			this.moveToFullscreen( ( sidebarPlugin.container!.firstElementChild as HTMLElement ), 'right-sidebar' );
+
+			sidebarPlugin.setContainer(
+				this.getWrapper().querySelector( '[data-ck-fullscreen="right-sidebar"]' ) as HTMLElement
 			);
 		}
-		// If no filters are defined for the active display mode(s), simply display all annotations in the wide sidebar.
-		else {
-			annotationsUIs.switchTo( 'wideSidebar' );
-		}
 
-		this.moveToFullscreen( ( sidebarPlugin.container!.firstElementChild as HTMLElement ), 'right-sidebar' );
+		function switchToWideSidebar() {
+			// First, check if someone has a filter defined for `wideSidebar`. If so, retrieve and apply it in fullscreen.
+			if ( annotationsFilters.has( 'wideSidebar' ) ) {
+				annotationsUIs.activate( 'wideSidebar', annotationsFilters.get( 'wideSidebar' ) );
+			}
+			// If no filter is defined for `wideSidebar`, read the filters for the active display(s) mode and apply them on wide sidebar.
+			// It's possible there are filters for both `narrowSidebar` and `inline` modes, so display annotations that match any of them.
+			else if ( annotationsFilters.size ) {
+				annotationsUIs.activate( 'wideSidebar',
+					( annotation: any ) => [ ...annotationsFilters.values() ].some( filter => filter( annotation ) )
+				);
+			}
+			// If no filters are defined for the active display mode(s), simply display all annotations in the wide sidebar.
+			else {
+				annotationsUIs.switchTo( 'wideSidebar' );
+			}
+		}
 	}
 
 	/**
@@ -560,6 +581,14 @@ export default class AbstractEditorHandler {
 	// Code coverage is provided in the commercial package repository as integration unit tests.
 	/* istanbul ignore next -- @preserve */
 	private _restoreAnnotationsUIs() {
+		const sidebarPlugin = this._editor.plugins.get( 'Sidebar' ) as any;
+		const sidebarContainer = sidebarPlugin.context.config.get( 'sidebar.container' );
+
+		// If sidebar container was set initially, restore it to the original value from config.
+		if ( sidebarContainer ) {
+			sidebarPlugin.setContainer( sidebarContainer as HTMLElement );
+		}
+
 		const annotationsUIs = this._editor.plugins.get( 'AnnotationsUIs' ) as any;
 
 		annotationsUIs.deactivateAll();
