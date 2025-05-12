@@ -6,7 +6,8 @@
 import {
 	CS_CONFIG,
 	BalloonEditor,
-	getViewportTopOffsetConfig
+	getViewportTopOffsetConfig,
+	setViewportTopOffsetDynamically
 } from '@snippets/index.js';
 
 BalloonEditor
@@ -23,6 +24,8 @@ BalloonEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		setViewportTopOffsetDynamically( editor );
 	} )
 	.catch( err => {
 		console.error( err );

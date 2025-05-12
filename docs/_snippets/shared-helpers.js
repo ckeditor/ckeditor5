@@ -129,6 +129,24 @@ export function getViewportTopOffsetConfig() {
 }
 
 /**
+ * Function that sets the `editor.ui.viewportOffset.top` dynamically based on the media query.
+ * The media query breakpoint is set to `960px` and the value is taken from the `--ck-snippet-viewport-top-offset` CSS variable.
+ *
+ * @private
+ * @param {module:core/editor/editor~Editor} editor
+ */
+export function setViewportTopOffsetDynamically( editor ) {
+	const mediaQueryList = window.matchMedia( '(max-width: 960px)' );
+	const documentElement = document.documentElement;
+
+	mediaQueryList.onchange = () => {
+		const value = parseInt( window.getComputedStyle( documentElement ).getPropertyValue( '--ck-snippet-viewport-top-offset' ) );
+
+		editor.ui.viewportOffset.top = value;
+	};
+}
+
+/**
  * Activates tabs in the given container.
  *
  * **Note**: The tabs container requires a proper markup to work correctly.
