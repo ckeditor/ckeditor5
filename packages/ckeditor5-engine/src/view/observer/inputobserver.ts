@@ -105,7 +105,8 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 				if ( viewStart && startsWithFiller( domRange.startContainer ) && domRange.startOffset < INLINE_FILLER_LENGTH ) {
 					// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 					// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'InputObserver',
-					// @if CK_DEBUG_TYPING // 		'Target range starts in an inline filler - adjusting it',
+					// @if CK_DEBUG_TYPING // 		'%cTarget range starts in an inline filler - adjusting it',
+					// @if CK_DEBUG_TYPING // 		'font-style: italic'
 					// @if CK_DEBUG_TYPING // 	) );
 					// @if CK_DEBUG_TYPING // }
 
@@ -130,6 +131,12 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 
 				// Check if there is no an inline filler just after the target range.
 				if ( isFollowedByInlineFiller( domRange.endContainer, domRange.endOffset ) ) {
+					// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+					// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'InputObserver',
+					// @if CK_DEBUG_TYPING // 		'%cTarget range ends just before an inline filler - prevent default behavior',
+					// @if CK_DEBUG_TYPING // 		'font-style: italic'
+					// @if CK_DEBUG_TYPING // 	) );
+					// @if CK_DEBUG_TYPING // }
 					domEvent.preventDefault();
 				}
 
@@ -243,6 +250,10 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 	}
 }
 
+/**
+ * Returns `true` if there is an inline filler just after the position in DOM.
+ * It walks up the DOM tree if the offset is at the end of the node.
+ */
 function isFollowedByInlineFiller( node: Node, offset: number ): boolean {
 	while ( node.parentNode ) {
 		if ( isText( node ) ) {
@@ -258,7 +269,7 @@ function isFollowedByInlineFiller( node: Node, offset: number ): boolean {
 		offset = indexOf( node ) + 1;
 		node = node.parentNode;
 
-		if ( node.nextSibling && startsWithFiller( node.nextSibling ) ) {
+		if ( offset < node.childNodes.length && startsWithFiller( node.childNodes[ offset ] ) ) {
 			return true;
 		}
 	}
