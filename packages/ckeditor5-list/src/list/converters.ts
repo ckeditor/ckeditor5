@@ -360,7 +360,7 @@ export function listItemDowncastConverter(
 		const viewRange = insertCustomMarkerElements( listItem, viewElement, strategies, writer, { dataPipeline } );
 
 		// Then wrap them with the new list wrappers (UL, OL, LI).
-		wrapListItemBlock( listItem, viewRange, strategies, writer, { skipListItemIds: conversionApi.options.skipListItemIds } );
+		wrapListItemBlock( listItem, viewRange, strategies, writer, conversionApi.options );
 	};
 }
 

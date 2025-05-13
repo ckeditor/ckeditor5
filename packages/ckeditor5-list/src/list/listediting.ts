@@ -653,7 +653,7 @@ export default class ListEditing extends Plugin {
 			attributeName: 'listItemId',
 
 			setAttributeOnDowncast( writer, attributeValue, viewElement, options ) {
-				if ( options && options.skipListItemIds ) {
+				if ( options && ( options.skipListItemIds || options.isClipboardPipeline ) ) {
 					return;
 				}
 
