@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import View from '../../../src/view/view.js';
 import createViewRoot from '../../view/_utils/createroot.js';
 import { setData } from '../../../src/dev-utils/view.js';

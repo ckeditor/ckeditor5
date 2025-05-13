@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
@@ -1306,7 +1304,7 @@ describe( 'table clipboard', () => {
 					/* eslint-disable no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 0, 0, 0, 0 ],
-						[ 0, 1,    0 ],
+						[ 0, 1, 0 ],
 						[ 0, 1, 1, 0 ],
 						[ 0, 0, 0, 0 ]
 					] );
@@ -1335,10 +1333,10 @@ describe( 'table clipboard', () => {
 
 					/* eslint-disable no-multi-spaces */
 					assertSelectedCells( model, [
-						[ 1, 1,    0 ],
-						[ 1,       0 ],
+						[ 1, 1, 0 ],
+						[ 1, 0 ],
 						[ 1, 1, 1, 0 ],
-						[ 1,    1, 0 ]
+						[ 1, 1, 0 ]
 					] );
 					/* eslint-enable no-multi-spaces */
 				} );
@@ -1365,7 +1363,7 @@ describe( 'table clipboard', () => {
 					assertSelectedCells( model, [
 						[ 0, 0, 0, 0 ],
 						[ 0, 1, 1, 0 ],
-						[ 0,    1, 0 ],
+						[ 0, 1, 0 ],
 						[ 0, 0, 0, 0 ]
 					] );
 					/* eslint-enable no-multi-spaces */
@@ -1393,8 +1391,8 @@ describe( 'table clipboard', () => {
 					/* eslint-disable no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 1, 1, 1, 1 ],
-						[ 1,       1 ],
-						[       1, 1 ],
+						[ 1, 1 ],
+						[ 1, 1 ],
 						[ 0, 0, 0, 0 ]
 					] );
 					/* eslint-enable no-multi-spaces */
@@ -1451,10 +1449,10 @@ describe( 'table clipboard', () => {
 
 					/* eslint-disable no-multi-spaces */
 					assertSelectedCells( model, [
-						[ 1,    1, 1, 1, 0 ],
-						[ 1, 1,          0 ],
-						[ 1,          1, 0 ],
-						[    1, 1, 1,    0 ],
+						[ 1, 1, 1, 1, 0 ],
+						[ 1, 1, 0 ],
+						[ 1, 1, 0 ],
+						[ 1, 1, 1, 0 ],
 						[ 0, 0, 0, 0, 0, 0 ]
 					] );
 					/* eslint-enable no-multi-spaces */
@@ -1493,7 +1491,7 @@ describe( 'table clipboard', () => {
 						[ 1, 1, 1, 0 ],
 						[ 1, 1, 1, 0 ],
 						[ 1, 1, 1, 0 ],
-						[ 0, 0, 0    ]
+						[ 0, 0, 0 ]
 					] );
 					/* eslint-enable no-multi-spaces */
 				} );
@@ -1640,8 +1638,8 @@ describe( 'table clipboard', () => {
 					assertSelectedCells( model, [
 						[ 0, 0, 0, 0, 0 ],
 						[ 0, 0, 1, 1, 0 ],
-						[ 0,    1, 1, 0 ],
-						[ 0,    1, 1, 0 ],
+						[ 0, 1, 1, 0 ],
+						[ 0, 1, 1, 0 ],
 						[ 0, 0, 0, 0, 0 ]
 					] );
 					/* eslint-enable no-multi-spaces */
@@ -1693,8 +1691,8 @@ describe( 'table clipboard', () => {
 					/* eslint-disable no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 0, 0, 0, 0, 0, 0 ],
-						[ 0,    0, 1, 1, 0 ],
-						[ 0,       1, 1, 0 ],
+						[ 0, 0, 1, 1, 0 ],
+						[ 0, 1, 1, 0 ],
 						[ 0, 0, 0, 0, 0, 0 ]
 					] );
 					/* eslint-enable no-multi-spaces */
@@ -1900,10 +1898,10 @@ describe( 'table clipboard', () => {
 
 					/* eslint-disable no-multi-spaces */
 					assertSelectedCells( model, [
-						[ 1, 1,    0 ],
-						[ 1,       0 ],
+						[ 1, 1, 0 ],
+						[ 1, 0 ],
 						[ 1, 1, 1, 0 ],
-						[ 0, 0, 0    ]
+						[ 0, 0, 0 ]
 					] );
 					/* eslint-enable no-multi-spaces */
 				} );
@@ -1937,8 +1935,8 @@ describe( 'table clipboard', () => {
 					/* eslint-disable no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 1, 1, 1, 1 ],
-						[ 1,       1 ],
-						[       1, 1 ],
+						[ 1, 1 ],
+						[ 1, 1 ],
 						[ 0, 0, 0, 0 ]
 					] );
 					/* eslint-enable no-multi-spaces */
@@ -2011,10 +2009,10 @@ describe( 'table clipboard', () => {
 
 					/* eslint-disable no-multi-spaces */
 					assertSelectedCells( model, [
-						[ 1,    1, 1, 1, 0 ],
-						[ 1, 1,          0 ],
-						[ 1,          1, 0 ],
-						[    1, 1, 1,    0 ],
+						[ 1, 1, 1, 1, 0 ],
+						[ 1, 1, 0 ],
+						[ 1, 1, 0 ],
+						[ 1, 1, 1, 0 ],
 						[ 0, 0, 0, 0, 0, 0 ]
 					] );
 					/* eslint-enable no-multi-spaces */
@@ -2066,8 +2064,8 @@ describe( 'table clipboard', () => {
 					/* eslint-disable no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 1, 1, 1, 0 ],
-						[ 1,    1, 0 ],
-						[       1, 0 ],
+						[ 1, 1, 0 ],
+						[ 1, 0 ],
 						[ 0, 0, 0, 0 ]
 					] );
 					/* eslint-enable no-multi-spaces */
@@ -2119,8 +2117,8 @@ describe( 'table clipboard', () => {
 					/* eslint-disable no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 1, 1, 1, 0 ],
-						[ 1,    1, 0 ],
-						[       1, 0 ],
+						[ 1, 1, 0 ],
+						[ 1, 0 ],
 						[ 0, 0, 0, 0 ]
 					] );
 					/* eslint-enable no-multi-spaces */
@@ -2744,7 +2742,7 @@ describe( 'table clipboard', () => {
 					/* eslint-disable no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 0, 0, 0, 0 ],
-						[ 0, 1,    0 ],
+						[ 0, 1, 0 ],
 						[ 0, 1, 1, 0 ],
 						[ 0, 0, 0, 0 ]
 					] );
@@ -2773,10 +2771,10 @@ describe( 'table clipboard', () => {
 
 					/* eslint-disable no-multi-spaces */
 					assertSelectedCells( model, [
-						[ 1, 1,    0 ],
-						[ 1,       0 ],
+						[ 1, 1, 0 ],
+						[ 1, 0 ],
 						[ 1, 1, 1, 0 ],
-						[ 1,    1, 0 ]
+						[ 1, 1, 0 ]
 					] );
 					/* eslint-enable no-multi-spaces */
 				} );
@@ -2804,7 +2802,7 @@ describe( 'table clipboard', () => {
 					assertSelectedCells( model, [
 						[ 0, 0, 0, 0 ],
 						[ 0, 1, 1, 0 ],
-						[ 0,    1, 0 ],
+						[ 0, 1, 0 ],
 						[ 0, 0, 0, 0 ]
 					] );
 					/* eslint-enable no-multi-spaces */
@@ -2833,8 +2831,8 @@ describe( 'table clipboard', () => {
 					/* eslint-disable no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 1, 1, 1, 1 ],
-						[ 1,       1 ],
-						[       1, 1 ],
+						[ 1, 1 ],
+						[ 1, 1 ],
 						[ 0, 0, 0, 0 ]
 					] );
 					/* eslint-enable no-multi-spaces */
@@ -2892,9 +2890,9 @@ describe( 'table clipboard', () => {
 					/* eslint-disable no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 0, 0, 0, 0, 0, 0 ],
-						[ 0, 1,    1, 0, 0 ],
-						[ 0, 1, 1,    0, 0 ],
-						[ 0, 1,       0, 0 ],
+						[ 0, 1, 1, 0, 0 ],
+						[ 0, 1, 1, 0, 0 ],
+						[ 0, 1, 0, 0 ],
 						[ 0, 0, 0, 0, 0, 0 ]
 					] );
 					/* eslint-enable no-multi-spaces */
@@ -3256,7 +3254,7 @@ describe( 'table clipboard', () => {
 				assertSelectedCells( model, [
 					[ 1, 1, 0, 0 ],
 					[ 1, 1, 0, 0 ],
-					[ 1,    0, 0 ],
+					[ 1, 0, 0 ],
 					[ 0, 0, 0, 0 ]
 				] );
 				/* eslint-enable no-multi-spaces */
@@ -3302,7 +3300,7 @@ describe( 'table clipboard', () => {
 				/* eslint-disable no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 1, 1, 1, 0 ],
-					[ 1, 1,    0 ],
+					[ 1, 1, 0 ],
 					[ 0, 0, 0, 0 ],
 					[ 0, 0, 0, 0 ]
 				] );
@@ -3564,9 +3562,9 @@ describe( 'table clipboard', () => {
 
 				/* eslint-disable no-multi-spaces */
 				assertSelectedCells( model, [
-					[ 1,       1, 0, 0 ],
-					[          1, 0, 0 ],
-					[          1, 0, 0 ],
+					[ 1, 1, 0, 0 ],
+					[ 1, 0, 0 ],
+					[ 1, 0, 0 ],
 					[ 1, 1, 1, 1, 0, 0 ],
 					[ 0, 0, 0, 0, 0, 0 ],
 					[ 0, 0, 0, 0, 0, 0 ]
@@ -3624,9 +3622,9 @@ describe( 'table clipboard', () => {
 				/* eslint-disable no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0, 0 ],
-					[ 0, 1,    1, 1, 0 ],
-					[ 0,          1, 0 ],
-					[ 0, 1,    1, 1, 0 ],
+					[ 0, 1, 1, 1, 0 ],
+					[ 0, 1, 0 ],
+					[ 0, 1, 1, 1, 0 ],
 					[ 0, 1, 1, 1, 1, 0 ],
 					[ 0, 0, 0, 0, 0, 0 ]
 				] );
@@ -3684,9 +3682,9 @@ describe( 'table clipboard', () => {
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0, 0, 0 ],
 					[ 0, 0, 0, 0, 0, 0, 0 ],
-					[ 0, 0, 0, 1,       1 ],
-					[ 0, 0, 0, 1,       1 ],
-					[ 0, 0, 0,          1 ],
+					[ 0, 0, 0, 1, 1 ],
+					[ 0, 0, 0, 1, 1 ],
+					[ 0, 0, 0, 1 ],
 					[ 0, 0, 0, 1, 1, 1, 1 ]
 				] );
 				/* eslint-enable no-multi-spaces */
@@ -3747,9 +3745,9 @@ describe( 'table clipboard', () => {
 					[ 0, 0, 0, 0, 0, 0 ],
 					[ 0, 0, 0, 0, 0, 0 ],
 					[ 0, 0, 0, 0, 0, 0 ],
-					[ 0, 0, 1, 1,    1 ],
-					[ 0, 0,          1 ],
-					[ 0, 0,          1 ],
+					[ 0, 0, 1, 1, 1 ],
+					[ 0, 0, 1 ],
+					[ 0, 0, 1 ],
 					[ 0, 0, 1, 1, 1, 1 ]
 				] );
 				/* eslint-enable no-multi-spaces */
@@ -3806,11 +3804,11 @@ describe( 'table clipboard', () => {
 
 				/* eslint-disable no-multi-spaces */
 				assertSelectedCells( model, [
-					[ 1, 1, 1, 1    ],
-					[ 1, 1, 1, 1    ],
+					[ 1, 1, 1, 1 ],
+					[ 1, 1, 1, 1 ],
 					[ 1, 1, 1, 1, 1 ],
-					[ 1, 1, 1, 1    ],
-					[       1       ]
+					[ 1, 1, 1, 1 ],
+					[ 1 ]
 				] );
 				/* eslint-enable no-multi-spaces */
 			} );

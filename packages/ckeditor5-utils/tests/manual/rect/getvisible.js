@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, window */
-
 import Rect from '../../../src/dom/rect.js';
 import RectDrawer, { diagonalStylesBlack } from '../../_utils/rectdrawer.js';
 

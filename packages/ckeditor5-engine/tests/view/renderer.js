@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, window, NodeFilter, MutationObserver, HTMLImageElement, console */
-
 import View from '../../src/view/view.js';
 import ViewElement from '../../src/view/element.js';
 import ViewEditableElement from '../../src/view/editableelement.js';
@@ -4662,13 +4660,13 @@ describe( 'Renderer', () => {
 				'added: [ text: "bar" ], removed: []',	// <p><strong>123</strong>bar456</p>
 
 				// Insert <strong>xyz123</strong>.
-				'added: [ <strong> ], removed: []',		// <p><strong>123</strong>bar<strong>xyz123</strong>456</p>
+				'added: [ <strong> ], removed: []', // <p><strong>123</strong>bar<strong>xyz123</strong>456</p>
 
 				// Insert "abc". Note that "abc" is a final result of all changes in the mutation result.
-				'updated text: "123" to "abc"',			// <p><strong>abc123</strong>bar<strong>xyz123</strong>456</p>
+				'updated text: "123" to "abc"', // <p><strong>abc123</strong>bar<strong>xyz123</strong>456</p>
 
 				// Delete "123". Note that "abc" is a final result of all changes in the mutation result.
-				'updated text: "abc123" to "abc"'		// <p><strong>abc</strong>bar<strong>xyz123</strong>456</p>
+				'updated text: "abc123" to "abc"' // <p><strong>abc</strong>bar<strong>xyz123</strong>456</p>
 			] );
 		} );
 
@@ -4705,10 +4703,10 @@ describe( 'Renderer', () => {
 
 			expect( getMutationStats( observer.takeRecords() ) ).to.deep.equal( [
 				// Insert `<em>abc<em>`.
-				'added: [ <em> ], removed: []',		// <p><em>abc</em>foo<strong>123</strong>456</p>
+				'added: [ <em> ], removed: []', // <p><em>abc</em>foo<strong>123</strong>456</p>
 
 				// Insert "bar". Note that "bar" is a final result of all changes in the mutation result.
-				'updated text: "foo" to "bar"',		// <p><em>abc</em>barfoo<strong>123</strong>456</p>
+				'updated text: "foo" to "bar"', // <p><em>abc</em>barfoo<strong>123</strong>456</p>
 
 				// Delete "foo". Note that "bar" is a final result of all changes in the mutation result.
 				'updated text: "barfoo" to "bar"',	// <p><em>abc</em>bar<strong>123</strong>456</p>

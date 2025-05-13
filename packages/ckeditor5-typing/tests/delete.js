@@ -22,8 +22,6 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { fireBeforeInputDomEvent } from './_utils/utils.js';
 
-/* globals document */
-
 describe( 'Delete feature', () => {
 	let element, editor, model, viewDocument;
 

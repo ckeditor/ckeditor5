@@ -542,7 +542,7 @@ function convertToModelText() {
 function parseAttributeValue( attribute: string ): any {
 	try {
 		return JSON.parse( attribute );
-	} catch ( e ) {
+	} catch {
 		return attribute;
 	}
 }

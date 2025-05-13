@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import Config from '../src/config.js';
 import areConnectedThroughProperties from '../src/areconnectedthroughproperties.js';
 
@@ -207,43 +205,43 @@ describe( 'Config', () => {
 		it( 'should override and expand deep configurations', () => {
 			config.set( {
 				resize: {
-					minHeight: 400,		// Override
-					hidden: true,		// Expand
+					minHeight: 400, // Override
+					hidden: true, // Expand
 					icon: {
 						path: 'abc',	// Override
-						url: true		// Expand
+						url: true // Expand
 					}
 				}
 			} );
 
 			expect( config.get( 'resize' ) ).to.be.deep.equal( {
-				minHeight: 400,		// Overridden
-				maxHeight: 800,		// The same
-				hidden: true,		// Expanded
+				minHeight: 400, // Overridden
+				maxHeight: 800, // The same
+				hidden: true, // Expanded
 				icon: {
 					path: 'abc',	// Overridden
-					url: true		// Expanded
+					url: true // Expanded
 				}
 			} );
 		} );
 
 		it( 'should override and expand object when passing an object', () => {
 			config.set( 'resize', {
-				minHeight: 400,		// Override
-				hidden: true,		// Expand
+				minHeight: 400, // Override
+				hidden: true, // Expand
 				icon: {
 					path: 'abc',	// Override
-					url: true		// Expand
+					url: true // Expand
 				}
 			} );
 
 			expect( config.get( 'resize' ) ).to.deep.equal( {
-				minHeight: 400,		// Overridden
-				maxHeight: 800,		// The same
-				hidden: true,		// Expanded
+				minHeight: 400, // Overridden
+				maxHeight: 800, // The same
+				hidden: true, // Expanded
 				icon: {
 					path: 'abc',	// Overridden
-					url: true		// Expanded
+					url: true // Expanded
 				}
 			} );
 		} );
@@ -301,43 +299,43 @@ describe( 'Config', () => {
 		it( 'should expand but not override deep configurations', () => {
 			config.define( {
 				resize: {
-					minHeight: 400,		// No override
-					hidden: true,		// Expand
+					minHeight: 400, // No override
+					hidden: true, // Expand
 					icon: {
 						path: 'abc',	// No override
-						url: true		// Expand
+						url: true // Expand
 					}
 				}
 			} );
 
 			expect( config.get( 'resize' ) ).to.be.deep.equal( {
-				minHeight: 300,		// The same
-				maxHeight: 800,		// The same
-				hidden: true,		// Expanded
+				minHeight: 300, // The same
+				maxHeight: 800, // The same
+				hidden: true, // Expanded
 				icon: {
 					path: 'xyz',	// The same
-					url: true		// Expanded
+					url: true // Expanded
 				}
 			} );
 		} );
 
 		it( 'should expand but not override when passing an object', () => {
 			config.define( 'resize', {
-				minHeight: 400,		// No override
-				hidden: true,		// Expand
+				minHeight: 400, // No override
+				hidden: true, // Expand
 				icon: {
 					path: 'abc',	// No override
-					url: true		// Expand
+					url: true // Expand
 				}
 			} );
 
 			expect( config.get( 'resize' ) ).to.be.deep.equal( {
-				minHeight: 300,		// The same
-				maxHeight: 800,		// The same
-				hidden: true,		// Expanded
+				minHeight: 300, // The same
+				maxHeight: 800, // The same
+				hidden: true, // Expanded
 				icon: {
 					path: 'xyz',	// The same
-					url: true		// Expanded
+					url: true // Expanded
 				}
 			} );
 		} );

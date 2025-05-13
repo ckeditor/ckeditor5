@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global console */
-
 import { getData } from '../../src/dev-utils/model.js';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 

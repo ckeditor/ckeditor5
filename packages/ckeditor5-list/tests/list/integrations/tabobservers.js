@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import ListEditing from '../../../src/list/listediting.js';
 import stubUid from '../_utils/uid.js';
 import { modelList } from '../_utils/utils.js';

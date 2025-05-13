@@ -188,7 +188,7 @@ export default class ImageUploadEditing extends Plugin {
 				const notification: Notification = editor.plugins.get( 'Notification' );
 				const t = editor.locale.t;
 
-				// eslint-disable-next-line max-len
+				// eslint-disable-next-line @stylistic/max-len
 				notification.showWarning( t( 'You have no image upload permissions.' ), {
 					namespace: 'image'
 				} );

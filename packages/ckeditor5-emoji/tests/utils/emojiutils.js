@@ -7,8 +7,6 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import EmojiUtils from '../../src/emojiutils.ts';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-/* global document */
-
 describe( 'EmojiUtils', () => {
 	let editor, emojiUtils, editorElement;
 	testUtils.createSinonSandbox();

@@ -5,8 +5,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 // This script ensures that all "dependencies" in package JSONs listed below, use the same versions of
 // dependencies. It also checks that all versions are pinned, and they don't use the caret operator "^".
 // If you provide the "--fix" argument, the script will automatically fix the errors for you.

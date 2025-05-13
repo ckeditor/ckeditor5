@@ -381,15 +381,15 @@ function stringifyElement( content, listAttributes = {} ) {
 	let selectionAfter = '';
 
 	const regexp = new RegExp(
-		'^(?<selectionBefore>[\\[\\]])?' +													// [<element
+		'^(?<selectionBefore>[\\[\\]])?' + // [<element
 			'(?:' +
-				'<(?<nameSelfClosing>\\w+)(?<elementSelfClosingAttributes>[^>]+)?/>' +		// For instance <element/> OR <element attrs/>
+				'<(?<nameSelfClosing>\\w+)(?<elementSelfClosingAttributes>[^>]+)?/>' + // For instance <element/> OR <element attrs/>
 				'|' +
-				'<(?<name>\\w+)(?<elementAttributes>[^>]+)?>' +								// For instance <element> OR <element attrs>...
+				'<(?<name>\\w+)(?<elementAttributes>[^>]+)?>' + // For instance <element> OR <element attrs>...
 					'(?<content>.*)' +
-				'(?:</\\4>)' +																// Note: Match <name> here in the closing tag.
+				'(?:</\\4>)' + // Note: Match <name> here in the closing tag.
 			')' +
-		'(?<selectionAfter>[\\[\\]])?$'														// </element>] or <element/>]
+		'(?<selectionAfter>[\\[\\]])?$' // </element>] or <element/>]
 	);
 
 	const match = content.match( regexp );

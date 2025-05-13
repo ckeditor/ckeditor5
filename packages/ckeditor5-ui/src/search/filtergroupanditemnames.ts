@@ -22,9 +22,9 @@ export default function filterGroupAndItemNames(
 	regExp: RegExp | null,
 	items: ViewCollection<ListItemGroupView | ListItemView | ListSeparatorView>
 ): {
-	resultsCount: number;
-	totalItemsCount: number;
-} {
+		resultsCount: number;
+		totalItemsCount: number;
+	} {
 	let totalItemsCount = 0;
 	let resultsCount = 0;
 

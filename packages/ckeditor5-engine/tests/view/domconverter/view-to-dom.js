@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals Range, DocumentFragment, HTMLElement, Comment, document, Text, console */
-
 import ViewText from '../../../src/view/text.js';
 import ViewElement from '../../../src/view/element.js';
 import ViewUIElement from '../../../src/view/uielement.js';
@@ -837,22 +835,22 @@ describe( 'DomConverter', () => {
 			testConvert( [ 'x   ', '   y' ], 'x __ _ y' );
 			testConvert( [ 'x    ', '   y' ], 'x _ _ _ y' );
 
-			testConvert( [ 'x',	' '		], 'x_' );
+			testConvert( [ 'x',	' ' ], 'x_' );
 			testConvert( [ 'x',	'  '	], 'x _' );
 			testConvert( [ 'x',	'   '	], 'x __' );
-			testConvert( [ 'x ',	' '		], 'x__' );
+			testConvert( [ 'x ',	' ' ], 'x__' );
 			testConvert( [ 'x ',	'  '	], 'x_ _' );
 			testConvert( [ 'x ',	'   '	], 'x_ __' );
-			testConvert( [ 'x  ',	' '		], 'x __' );
+			testConvert( [ 'x  ',	' ' ], 'x __' );
 			testConvert( [ 'x  ',	'  '	], 'x _ _' );
 			testConvert( [ 'x  ',	'   '	], 'x _ __' );
-			testConvert( [ 'x   ',	' '		], 'x ___' );
+			testConvert( [ 'x   ',	' ' ], 'x ___' );
 			testConvert( [ 'x   ',	'  '	], 'x __ _' );
 			testConvert( [ 'x   ',	'   '	], 'x __ __' );
 
-			testConvert( [ ' ',	'x'		], '_x' );
-			testConvert( [ '  ',	'x'		], '_ x' );
-			testConvert( [ '   ',	'x'		], '_ _x' );
+			testConvert( [ ' ',	'x' ], '_x' );
+			testConvert( [ '  ',	'x' ], '_ x' );
+			testConvert( [ '   ',	'x' ], '_ _x' );
 			testConvert( [ ' ',	' x'	], '_ x' );
 			testConvert( [ '  ',	' x'	], '__ x' );
 			testConvert( [ '   ',	' x'	], '_ _ x' );
@@ -864,19 +862,19 @@ describe( 'DomConverter', () => {
 			testConvert( [ '   ',	'   x'	], '_ _ _ x' );
 
 			// "Non-empty" + "empty" text nodes.
-			testConvert( [ 'x',	' ',		'x'		],	'x x' );
-			testConvert( [ 'x',	' ',		' x'	],	'x_ x' );
-			testConvert( [ 'x',	'  ',		' x'	],	'x _ x' );
-			testConvert( [ 'x',	'   ',		'  x'	],	'x __ _x' );
-			testConvert( [ 'x ',	' ',		' x'	],	'x__ x' );
-			testConvert( [ 'x ',	'  ',		' x'	],	'x_ _ x' );
-			testConvert( [ 'x ',	'   ',		'  x'	],	'x_ __ _x' );
-			testConvert( [ 'x  ',	' ',		' x'	],	'x __ x' );
-			testConvert( [ 'x  ',	'  ',		' x'	],	'x _ _ x' );
-			testConvert( [ 'x  ',	'   ',		'  x'	],	'x _ __ _x' );
-			testConvert( [ 'x   ',	' ',		' x'	],	'x ___ x' );
-			testConvert( [ 'x   ',	'  ',		' x'	],	'x __ _ x' );
-			testConvert( [ 'x   ',	'   ',		'  x'	],	'x __ __ _x' );
+			testConvert( [ 'x',	' ', 'x' ],	'x x' );
+			testConvert( [ 'x',	' ', ' x'	],	'x_ x' );
+			testConvert( [ 'x',	'  ', ' x'	],	'x _ x' );
+			testConvert( [ 'x',	'   ', '  x'	],	'x __ _x' );
+			testConvert( [ 'x ',	' ', ' x'	],	'x__ x' );
+			testConvert( [ 'x ',	'  ', ' x'	],	'x_ _ x' );
+			testConvert( [ 'x ',	'   ', '  x'	],	'x_ __ _x' );
+			testConvert( [ 'x  ',	' ', ' x'	],	'x __ x' );
+			testConvert( [ 'x  ',	'  ', ' x'	],	'x _ _ x' );
+			testConvert( [ 'x  ',	'   ', '  x'	],	'x _ __ _x' );
+			testConvert( [ 'x   ',	' ', ' x'	],	'x ___ x' );
+			testConvert( [ 'x   ',	'  ', ' x'	],	'x __ _ x' );
+			testConvert( [ 'x   ',	'   ', '  x'	],	'x __ __ _x' );
 
 			// "Empty" + "empty" text nodes.
 			testConvert( [ ' ', ' ' ], '__' );

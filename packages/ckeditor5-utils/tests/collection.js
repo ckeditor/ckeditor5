@@ -807,7 +807,7 @@ describe( 'Collection', () => {
 
 			collection.on( 'remove', spy );
 
-			collection.remove( 1 );		// by index
+			collection.remove( 1 ); // by index
 			collection.remove( item1 );	// by model
 			collection.remove( 'bom' );	// by id
 

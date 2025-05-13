@@ -7,8 +7,6 @@
  * @module paste-from-office/filters/parse
  */
 
-/* globals DOMParser */
-
 import {
 	DomConverter,
 	ViewDocument,

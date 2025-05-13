@@ -7,8 +7,6 @@
  * @module upload/adapters/simpleuploadadapter
  */
 
-/* globals XMLHttpRequest, FormData */
-
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import FileRepository, { type UploadResponse, type FileLoader, type UploadAdapter } from '../filerepository.js';
 import type { SimpleUploadConfig } from '../uploadconfig.js';

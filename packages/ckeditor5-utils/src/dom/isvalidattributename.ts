@@ -17,7 +17,7 @@ import global from './global.js';
 export default function isValidAttributeName( name: string ): boolean {
 	try {
 		global.document.createAttribute( name );
-	} catch ( error ) {
+	} catch {
 		return false;
 	}
 

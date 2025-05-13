@@ -1768,16 +1768,16 @@ describe( 'List - utils - model', () => {
 				'0',
 				'* 1',
 				'  * 2',
-				'    * 3', 			// <- this is turned off.
-				'      * 4', 		// <- this has to become indent = 0, because it will be first item on a new list.
-				'        * 5', 		// <- this should be still be a child of item above, so indent = 1.
-				'    * 6', 			// <- this has to become indent = 0, because it should not be a child of any of items above.
-				'      * 7', 		// <- this should be still be a child of item above, so indent = 1.
-				'  * 8', 			// <- this has to become indent = 0.
-				'    * 9', 			// <- this should still be a child of item above, so indent = 1.
-				'      * 10', 		// <- this should still be a child of item above, so indent = 2.
-				'      * 11', 		// <- this should still be at the same level as item above, so indent = 2.
-				'* 12', 			// <- this and all below are left unchanged.
+				'    * 3', // <- this is turned off.
+				'      * 4', // <- this has to become indent = 0, because it will be first item on a new list.
+				'        * 5', // <- this should be still be a child of item above, so indent = 1.
+				'    * 6', // <- this has to become indent = 0, because it should not be a child of any of items above.
+				'      * 7', // <- this should be still be a child of item above, so indent = 1.
+				'  * 8', // <- this has to become indent = 0.
+				'    * 9', // <- this should still be a child of item above, so indent = 1.
+				'      * 10', // <- this should still be a child of item above, so indent = 2.
+				'      * 11', // <- this should still be at the same level as item above, so indent = 2.
+				'* 12', // <- this and all below are left unchanged.
 				'  * 13',
 				'    * 14'
 			] );

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals setTimeout, window, console, document */
-
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import EditorWatchdog from '../src/editorwatchdog.js';
 import MultiRootEditor from '@ckeditor/ckeditor5-editor-multi-root/src/multirooteditor.js';

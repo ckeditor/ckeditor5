@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, Event, setTimeout */
-
 import DragDrop from '../src/dragdrop.js';
 import DragDropTarget from '../src/dragdroptarget.js';
 import PastePlainText from '../src/pasteplaintext.js';

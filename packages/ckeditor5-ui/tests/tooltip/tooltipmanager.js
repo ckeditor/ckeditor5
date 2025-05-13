@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, MouseEvent, Event, KeyboardEvent */
-
 import EditorUI from '../../src/editorui/editorui.js';
 import View from '../../src/view.js';
 import BalloonPanelView from '../../src/panel/balloon/balloonpanelview.js';

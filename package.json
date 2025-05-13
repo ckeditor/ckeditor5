@@ -132,12 +132,14 @@
     "coveralls": "^3.1.0",
     "date-fns": "2.30.0",
     "esbuild": "^0.25.0",
-    "eslint": "^8.21.0",
-    "eslint-config-ckeditor5": "^9.1.0",
+    "eslint": "^9.26.0",
+    "eslint-config-ckeditor5": "^10.0.0-alpha.0",
     "eslint-formatter-stylish": "^8.40.0",
+    "eslint-plugin-ckeditor5-rules": "^10.0.0-alpha.0",
     "estree-walker": "^3.0.3",
     "fs-extra": "^11.0.0",
     "glob": "^10.0.0",
+    "globals": "^16.1.0",
     "http-server": "^14.1.1",
     "husky": "^8.0.2",
     "ini": "^4.1.1",
@@ -219,24 +221,13 @@
     "bump-year": "node ./scripts/bump-year.mjs"
   },
   "lint-staged": {
-    "**/*.{js,ts,mjs}": [
+    "**/*.{js,ts,mjs,cjs}": [
       "eslint --quiet"
     ],
     "**/*.css": [
       "stylelint --quiet --allow-empty-input"
     ]
   },
-  "eslintIgnore": [
-    "build/**",
-    "dist/**",
-    "packages/*/node_modules/**",
-    "packages/*/build/**",
-    "packages/*/dist/**",
-    "packages/*/src/lib/**",
-    "coverage/**",
-    "external/**",
-    "release/**"
-  ],
   "workspaces": {
     "packages": [
       "packages/*",

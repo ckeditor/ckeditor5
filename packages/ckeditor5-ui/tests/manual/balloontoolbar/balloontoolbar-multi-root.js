@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, console:false, document */
-
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import BalloonToolbar from '../../../src/toolbar/balloon/balloontoolbar.js';

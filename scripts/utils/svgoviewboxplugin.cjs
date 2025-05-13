@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global module */
-
 module.exports = {
 	name: 'svgoViewBoxPlugin',
 	description: 'Plugin that ensures that every SVG has defined valid viewBox.',

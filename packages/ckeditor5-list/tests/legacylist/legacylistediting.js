@@ -780,18 +780,18 @@ describe( 'LegacyListEditing', () => {
 					} );
 				}
 
-				testList( 'before ul',			[ 1 ],			[ 1 ] );	// --> before first `listItem`
-				testList( 'before first li',	[ 1, 0 ],		[ 1 ] );	// --> before first `listItem`
+				testList( 'before ul', [ 1 ], [ 1 ] );	// --> before first `listItem`
+				testList( 'before first li',	[ 1, 0 ], [ 1 ] );	// --> before first `listItem`
 				testList( 'beginning of li',	[ 1, 0, 0 ],	[ 1, 0 ] );	// --> beginning of first `listItem`
-				testList( 'end of li',			[ 1, 0, 1 ],	[ 1, 1 ] );	// --> end of first `listItem`
-				testList( 'before middle li',	[ 1, 1 ],		[ 2 ] );	// --> before middle `listItem`
-				testList( 'before last li',		[ 1, 2 ],		[ 3 ] );	// --> before last `listItem`
-				testList( 'after last li',		[ 1, 3 ],		[ 4 ] );	// --> after last `listItem` / before `paragraph`
-				testList( 'after ul',			[ 2 ],			[ 4 ] );	// --> after last `listItem` / before `paragraph`
-				testList( 'before ol',			[ 3 ],			[ 5 ] );	// --> before numbered `listItem`
-				testList( 'before only li',		[ 3, 0 ],		[ 5 ] );	// --> before numbered `listItem`
-				testList( 'after only li',		[ 3, 1 ],		[ 6 ] );	// --> after numbered `listItem`
-				testList( 'after ol',			[ 4 ],			[ 6 ] );	// --> after numbered `listItem`
+				testList( 'end of li', [ 1, 0, 1 ],	[ 1, 1 ] );	// --> end of first `listItem`
+				testList( 'before middle li',	[ 1, 1 ], [ 2 ] );	// --> before middle `listItem`
+				testList( 'before last li', [ 1, 2 ], [ 3 ] );	// --> before last `listItem`
+				testList( 'after last li', [ 1, 3 ], [ 4 ] );	// --> after last `listItem` / before `paragraph`
+				testList( 'after ul', [ 2 ], [ 4 ] );	// --> after last `listItem` / before `paragraph`
+				testList( 'before ol', [ 3 ], [ 5 ] );	// --> before numbered `listItem`
+				testList( 'before only li', [ 3, 0 ], [ 5 ] );	// --> before numbered `listItem`
+				testList( 'after only li', [ 3, 1 ], [ 6 ] );	// --> after numbered `listItem`
+				testList( 'after ol', [ 4 ], [ 6 ] );	// --> after numbered `listItem`
 			} );
 
 			describe( 'model to view', () => {
@@ -805,14 +805,14 @@ describe( 'LegacyListEditing', () => {
 					} );
 				}
 
-				testList( 'before first listItem',			[ 1 ],		[ 1 ] );			// --> before ul
+				testList( 'before first listItem', [ 1 ], [ 1 ] ); // --> before ul
 				testList( 'beginning of first listItem',	[ 1, 0 ],	[ 1, 0, 0, 0 ] );	// --> beginning of `b` text node
-				testList( 'end of first listItem',			[ 1, 1 ],	[ 1, 0, 0, 1 ] );	// --> end of `b` text node
-				testList( 'before middle listItem',			[ 2 ],		[ 1, 1 ] );			// --> before middle li
-				testList( 'before last listItem',			[ 3 ],		[ 1, 2 ] );			// --> before last li
-				testList( 'after last listItem',			[ 4 ],		[ 2 ] );			// --> after ul
-				testList( 'before numbered listItem',		[ 5 ],		[ 3 ] );			// --> before ol
-				testList( 'after numbered listItem',		[ 6 ],		[ 4 ] );			// --> after ol
+				testList( 'end of first listItem', [ 1, 1 ],	[ 1, 0, 0, 1 ] );	// --> end of `b` text node
+				testList( 'before middle listItem', [ 2 ], [ 1, 1 ] ); // --> before middle li
+				testList( 'before last listItem', [ 3 ], [ 1, 2 ] ); // --> before last li
+				testList( 'after last listItem', [ 4 ], [ 2 ] ); // --> after ul
+				testList( 'before numbered listItem', [ 5 ], [ 3 ] ); // --> before ol
+				testList( 'after numbered listItem', [ 6 ], [ 4 ] ); // --> after ol
 			} );
 		} );
 
@@ -1960,7 +1960,7 @@ describe( 'LegacyListEditing', () => {
 				'			xxx' +
 				'			<li>' +
 				'				<ul><li></li><li>1.1.2</li></ul>' +
-				'				<ol><li>1.1.3</li><li>1.1.4</li></ol>' +		// Will be changed to <ul>.
+				'				<ol><li>1.1.3</li><li>1.1.4</li></ol>' + // Will be changed to <ul>.
 				'			</li>' +
 				'			<li>' +
 				'				<ul><li>1.2.1</li></ul>' +
@@ -1973,19 +1973,19 @@ describe( 'LegacyListEditing', () => {
 				'		<ol>' +
 				'			<p>xxx</p>' +
 				'			<li>' +
-				'				3<strong>.</strong>1' +							// Test multiple text nodes in <li>.
+				'				3<strong>.</strong>1' + // Test multiple text nodes in <li>.
 				'				<ul>' +
 				'					<li>' +
 				'						3.1.1' +
 				'						<ol><li>3.1.1.1</li></ol>' +
-				'						<ul><li>3.1.1.2</li></ul>' +			// Will be changed to <ol>.
+				'						<ul><li>3.1.1.2</li></ul>' + // Will be changed to <ol>.
 				'					</li>' +
 				'					<li>3.1.2</li>' +
 				'				</ul>' +
 				'			</li>' +
 				'		</ol>' +
 				'		<p>xxx</p>' +
-				'		<ul>' +													// Since <p> gets removed, this will become <ol>.
+				'		<ul>' + // Since <p> gets removed, this will become <ol>.
 				'			<li>3.2</li>' +
 				'			<li>3.3</li>' +
 				'		</ul>' +
@@ -2193,31 +2193,31 @@ describe( 'LegacyListEditing', () => {
 					} );
 				}
 
-				testList( 'before ul#1',		[ 0 ],					[ 0 ] );	// --> before listItem "a"
-				testList( 'before li "a"',		[ 0, 0 ],				[ 0 ] );	// --> before listItem "a"
-				testList( 'before "a"',			[ 0, 0, 0 ],			[ 0, 0 ] );	// --> beginning of listItem "a"
-				testList( 'after "a"',			[ 0, 0, 1 ],			[ 0, 1 ] );	// --> end of listItem "a"
-				testList( 'before li "bbb"',	[ 0, 1 ],				[ 1 ] );	// --> before listItem "bbb"
-				testList( 'before "bbb"',		[ 0, 1, 0 ],			[ 1, 0 ] );	// --> beginning of listItem "bbb"
-				testList( 'after "bbb"',		[ 0, 1, 1 ],			[ 1, 3 ] );	// --> end of listItem "bbb"
-				testList( 'before li "c"',		[ 0, 1, 1, 0 ],			[ 2 ] );	// --> before listItem "c"
-				testList( 'before "c"',			[ 0, 1, 1, 0, 0 ],		[ 2, 0 ] );	// --> beginning of listItem "c"
-				testList( 'after "c"',			[ 0, 1, 1, 0, 1 ],		[ 2, 1 ] );	// --> end of listItem "c"
-				testList( 'before li "d"',		[ 0, 1, 1, 1 ],			[ 3 ] );	// --> before listItem "d"
-				testList( 'before li "e"',		[ 0, 1, 1, 2 ],			[ 4 ] );	// --> before listItem "e"
-				testList( 'before "empty" li',	[ 0, 1, 1, 3 ],			[ 5 ] );	// --> before "empty" listItem
-				testList( 'before ul#2',		[ 0, 1, 1, 3, 0 ],		[ 5, 0 ] ); // --> inside "empty" listItem
-				testList( 'before li "g"',		[ 0, 1, 1, 3, 0, 0 ],	[ 6 ] );	// --> before listItem "g"
-				testList( 'before li "h"',		[ 0, 1, 1, 3, 0, 1 ],	[ 7 ] );	// --> before listItem "h"
-				testList( 'before li "i"',		[ 0, 1, 1, 3, 0, 2 ],	[ 8 ] );	// --> before listItem "i"
-				testList( 'after li "i"',		[ 0, 1, 1, 3, 0, 3 ],	[ 9 ] );	// --> before listItem "j"
-				testList( 'after ul#2',			[ 0, 1, 1, 3, 1 ],		[ 9 ] );	// --> before listItem "j"
-				testList( 'before li "j"',		[ 0, 1, 1, 4 ],			[ 9 ] );	// --> before listItem "j"
-				testList( 'after li "j"',		[ 0, 1, 1, 5 ],			[ 10 ] );	// --> before listItem "k"
-				testList( 'end of li "bbb"',	[ 0, 1, 2 ],			[ 10 ] );	// --> before listItem "k"
-				testList( 'before li "k"',		[ 0, 2 ],				[ 10 ] );	// --> before listItem "k"
-				testList( 'after li "k"',		[ 0, 3 ],				[ 11 ] );	// --> after listItem "k"
-				testList( 'after ul',			[ 1 ],					[ 11 ] );	// --> after listItem "k"
+				testList( 'before ul#1', [ 0 ], [ 0 ] );	// --> before listItem "a"
+				testList( 'before li "a"', [ 0, 0 ], [ 0 ] );	// --> before listItem "a"
+				testList( 'before "a"', [ 0, 0, 0 ], [ 0, 0 ] );	// --> beginning of listItem "a"
+				testList( 'after "a"', [ 0, 0, 1 ], [ 0, 1 ] );	// --> end of listItem "a"
+				testList( 'before li "bbb"',	[ 0, 1 ], [ 1 ] );	// --> before listItem "bbb"
+				testList( 'before "bbb"', [ 0, 1, 0 ], [ 1, 0 ] );	// --> beginning of listItem "bbb"
+				testList( 'after "bbb"', [ 0, 1, 1 ], [ 1, 3 ] );	// --> end of listItem "bbb"
+				testList( 'before li "c"', [ 0, 1, 1, 0 ], [ 2 ] );	// --> before listItem "c"
+				testList( 'before "c"', [ 0, 1, 1, 0, 0 ], [ 2, 0 ] );	// --> beginning of listItem "c"
+				testList( 'after "c"', [ 0, 1, 1, 0, 1 ], [ 2, 1 ] );	// --> end of listItem "c"
+				testList( 'before li "d"', [ 0, 1, 1, 1 ], [ 3 ] );	// --> before listItem "d"
+				testList( 'before li "e"', [ 0, 1, 1, 2 ], [ 4 ] );	// --> before listItem "e"
+				testList( 'before "empty" li',	[ 0, 1, 1, 3 ], [ 5 ] );	// --> before "empty" listItem
+				testList( 'before ul#2', [ 0, 1, 1, 3, 0 ], [ 5, 0 ] ); // --> inside "empty" listItem
+				testList( 'before li "g"', [ 0, 1, 1, 3, 0, 0 ],	[ 6 ] );	// --> before listItem "g"
+				testList( 'before li "h"', [ 0, 1, 1, 3, 0, 1 ],	[ 7 ] );	// --> before listItem "h"
+				testList( 'before li "i"', [ 0, 1, 1, 3, 0, 2 ],	[ 8 ] );	// --> before listItem "i"
+				testList( 'after li "i"', [ 0, 1, 1, 3, 0, 3 ],	[ 9 ] );	// --> before listItem "j"
+				testList( 'after ul#2', [ 0, 1, 1, 3, 1 ], [ 9 ] );	// --> before listItem "j"
+				testList( 'before li "j"', [ 0, 1, 1, 4 ], [ 9 ] );	// --> before listItem "j"
+				testList( 'after li "j"', [ 0, 1, 1, 5 ], [ 10 ] );	// --> before listItem "k"
+				testList( 'end of li "bbb"',	[ 0, 1, 2 ], [ 10 ] );	// --> before listItem "k"
+				testList( 'before li "k"', [ 0, 2 ], [ 10 ] );	// --> before listItem "k"
+				testList( 'after li "k"', [ 0, 3 ], [ 11 ] );	// --> after listItem "k"
+				testList( 'after ul', [ 1 ], [ 11 ] );	// --> after listItem "k"
 			} );
 
 			describe( 'model to view', () => {
@@ -2231,25 +2231,25 @@ describe( 'LegacyListEditing', () => {
 					} );
 				}
 
-				testList( 'before listItem "a"',			[ 0 ],		[ 0 ] );				// --> before ul
-				testList( 'beginning of listItem "a"',		[ 0, 0 ],	[ 0, 0, 0, 0 ] );		// --> beginning of "a" text node
-				testList( 'end of listItem "a"',			[ 0, 1 ],	[ 0, 0, 0, 1 ] );		// --> end of "a" text node
-				testList( 'before listItem "bbb"',			[ 1 ],		[ 0, 1 ] );				// --> before li "bbb"
-				testList( 'beginning of listItem "bbb"',	[ 1, 0 ],	[ 0, 1, 0, 0 ] );		// --> beginning of "bbb" text node
-				testList( 'end of listItem "bbb"',			[ 1, 3 ],	[ 0, 1, 0, 3 ] );		// --> end of "bbb" text node
-				testList( 'before listItem "c"',			[ 2 ],		[ 0, 1, 1, 0 ] );		// --> before li "c"
-				testList( 'beginning of listItem "c"',		[ 2, 0 ],	[ 0, 1, 1, 0, 0, 0 ] );	// --> beginning of "c" text node
-				testList( 'end of listItem "c"',			[ 2, 1 ],	[ 0, 1, 1, 0, 0, 1 ] );	// --> end of "c" text node
-				testList( 'before listItem "d"',			[ 3 ],		[ 0, 1, 1, 1 ] );		// --> before li "d"
-				testList( 'before listItem "e"',			[ 4 ],		[ 0, 1, 1, 2 ] );		// --> before li "e"
-				testList( 'before "empty" listItem',		[ 5 ],		[ 0, 1, 1, 3 ] );		// --> before "empty" li
-				testList( 'inside "empty" listItem',		[ 5, 0 ],	[ 0, 1, 1, 3, 0 ] );	// --> before ul
-				testList( 'before listItem "g"',			[ 6 ],		[ 0, 1, 1, 3, 0, 0 ] );	// --> before li "g"
-				testList( 'before listItem "h"',			[ 7 ],		[ 0, 1, 1, 3, 0, 1 ] );	// --> before li "h"
-				testList( 'before listItem "i"',			[ 8 ],		[ 0, 1, 1, 3, 0, 2 ] );	// --> before li "i"
-				testList( 'before listItem "j"',			[ 9 ],		[ 0, 1, 1, 4 ] );		// --> before li "j"
-				testList( 'before listItem "k"',			[ 10 ],		[ 0, 2 ] );				// --> before li "k"
-				testList( 'after listItem "k"',				[ 11 ],		[ 1 ] );				// --> after ul
+				testList( 'before listItem "a"', [ 0 ], [ 0 ] ); // --> before ul
+				testList( 'beginning of listItem "a"', [ 0, 0 ],	[ 0, 0, 0, 0 ] ); // --> beginning of "a" text node
+				testList( 'end of listItem "a"', [ 0, 1 ],	[ 0, 0, 0, 1 ] ); // --> end of "a" text node
+				testList( 'before listItem "bbb"', [ 1 ], [ 0, 1 ] ); // --> before li "bbb"
+				testList( 'beginning of listItem "bbb"',	[ 1, 0 ],	[ 0, 1, 0, 0 ] ); // --> beginning of "bbb" text node
+				testList( 'end of listItem "bbb"', [ 1, 3 ],	[ 0, 1, 0, 3 ] ); // --> end of "bbb" text node
+				testList( 'before listItem "c"', [ 2 ], [ 0, 1, 1, 0 ] ); // --> before li "c"
+				testList( 'beginning of listItem "c"', [ 2, 0 ],	[ 0, 1, 1, 0, 0, 0 ] );	// --> beginning of "c" text node
+				testList( 'end of listItem "c"', [ 2, 1 ],	[ 0, 1, 1, 0, 0, 1 ] );	// --> end of "c" text node
+				testList( 'before listItem "d"', [ 3 ], [ 0, 1, 1, 1 ] ); // --> before li "d"
+				testList( 'before listItem "e"', [ 4 ], [ 0, 1, 1, 2 ] ); // --> before li "e"
+				testList( 'before "empty" listItem', [ 5 ], [ 0, 1, 1, 3 ] ); // --> before "empty" li
+				testList( 'inside "empty" listItem', [ 5, 0 ],	[ 0, 1, 1, 3, 0 ] );	// --> before ul
+				testList( 'before listItem "g"', [ 6 ], [ 0, 1, 1, 3, 0, 0 ] );	// --> before li "g"
+				testList( 'before listItem "h"', [ 7 ], [ 0, 1, 1, 3, 0, 1 ] );	// --> before li "h"
+				testList( 'before listItem "i"', [ 8 ], [ 0, 1, 1, 3, 0, 2 ] );	// --> before li "i"
+				testList( 'before listItem "j"', [ 9 ], [ 0, 1, 1, 4 ] ); // --> before li "j"
+				testList( 'before listItem "k"', [ 10 ], [ 0, 2 ] ); // --> before li "k"
+				testList( 'after listItem "k"', [ 11 ], [ 1 ] ); // --> after ul
 			} );
 		} );
 

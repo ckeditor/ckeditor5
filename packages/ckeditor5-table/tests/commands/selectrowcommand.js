@@ -171,9 +171,9 @@ describe( 'SelectRowCommand', () => {
 				/* eslint-disable no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 1, 0, 0, 0 ],
-					[          0, 0 ],
-					[       0,    0 ],
-					[    0, 0, 0, 0 ]
+					[ 0, 0 ],
+					[ 0, 0 ],
+					[ 0, 0, 0, 0 ]
 				] );
 				/* eslint-enable no-multi-spaces */
 
@@ -182,9 +182,9 @@ describe( 'SelectRowCommand', () => {
 				/* eslint-disable no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 1, 1, 1, 1, 1 ],
-					[          0, 0 ],
-					[       0,    0 ],
-					[    0, 0, 0, 0 ]
+					[ 0, 0 ],
+					[ 0, 0 ],
+					[ 0, 0, 0, 0 ]
 				] );
 				/* eslint-enable no-multi-spaces */
 			} );
@@ -199,9 +199,9 @@ describe( 'SelectRowCommand', () => {
 				/* eslint-disable no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0 ],
-					[          0, 0 ],
-					[       0,    1 ],
-					[    0, 0, 0, 0 ]
+					[ 0, 0 ],
+					[ 0, 1 ],
+					[ 0, 0, 0, 0 ]
 				] );
 				/* eslint-enable no-multi-spaces */
 
@@ -210,9 +210,9 @@ describe( 'SelectRowCommand', () => {
 				/* eslint-disable no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0 ],
-					[          0, 0 ],
-					[       1,    1 ],
-					[    0, 0, 0, 0 ]
+					[ 0, 0 ],
+					[ 1, 1 ],
+					[ 0, 0, 0, 0 ]
 				] );
 				/* eslint-enable no-multi-spaces */
 			} );
@@ -227,9 +227,9 @@ describe( 'SelectRowCommand', () => {
 				/* eslint-disable no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0 ],
-					[          0, 1 ],
-					[       0,    0 ],
-					[    0, 0, 0, 0 ]
+					[ 0, 1 ],
+					[ 0, 0 ],
+					[ 0, 0, 0, 0 ]
 				] );
 				/* eslint-enable no-multi-spaces */
 
@@ -238,9 +238,9 @@ describe( 'SelectRowCommand', () => {
 				/* eslint-disable no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0 ],
-					[          1, 1 ],
-					[       0,    0 ],
-					[    0, 0, 0, 0 ]
+					[ 1, 1 ],
+					[ 0, 0 ],
+					[ 0, 0, 0, 0 ]
 				] );
 				/* eslint-enable no-multi-spaces */
 			} );
@@ -255,9 +255,9 @@ describe( 'SelectRowCommand', () => {
 				/* eslint-disable no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 1 ],
-					[          0, 1 ],
-					[       0,    0 ],
-					[    0, 0, 0, 0 ]
+					[ 0, 1 ],
+					[ 0, 0 ],
+					[ 0, 0, 0, 0 ]
 				] );
 				/* eslint-enable no-multi-spaces */
 
@@ -266,9 +266,9 @@ describe( 'SelectRowCommand', () => {
 				/* eslint-disable no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 1, 1, 1, 1, 1 ],
-					[          1, 1 ],
-					[       0,    0 ],
-					[    0, 0, 0, 0 ]
+					[ 1, 1 ],
+					[ 0, 0 ],
+					[ 0, 0, 0, 0 ]
 				] );
 				/* eslint-enable no-multi-spaces */
 			} );
@@ -283,9 +283,9 @@ describe( 'SelectRowCommand', () => {
 				/* eslint-disable no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0 ],
-					[          1, 0 ],
-					[       0,    0 ],
-					[    0, 0, 1, 0 ]
+					[ 1, 0 ],
+					[ 0, 0 ],
+					[ 0, 0, 1, 0 ]
 				] );
 				/* eslint-enable no-multi-spaces */
 
@@ -294,9 +294,9 @@ describe( 'SelectRowCommand', () => {
 				/* eslint-disable no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0 ],
-					[          1, 1 ],
-					[       1,    1 ],
-					[    1, 1, 1, 1 ]
+					[ 1, 1 ],
+					[ 1, 1 ],
+					[ 1, 1, 1, 1 ]
 				] );
 				/* eslint-enable no-multi-spaces */
 			} );
