@@ -60,4 +60,7 @@ Check out our interactive Builder to quickly get a taste of CKEditor 5. It of
 You get ready-to-use code tailored to your needs!
 
 <ck:button-link target="_blank" href="https://ckeditor.com/ckeditor-5/builder?redirect=docs" variant="primary" label="Check out our interactive Builder" rounded="true"></ck:button-link>
+
+<div class="hex-bg-wrapper"><ck:svg file="hex-bg" trimDimensions="false" width="312" height="237"></ck:svg></div>
+
 </ck:banner>
