@@ -92,7 +92,6 @@ export default defineConfig( [
 	},
 	{
 		files: [ '**/*.@(js|cjs|mjs)' ],
-		ignores: [ '**/tests/**/*.@(js|cjs|mjs)' ],
 
 		languageOptions: {
 			globals: {
