@@ -652,7 +652,11 @@ export default class ListEditing extends Plugin {
 			scope: 'item',
 			attributeName: 'listItemId',
 
-			setAttributeOnDowncast( writer, attributeValue, viewElement ) {
+			setAttributeOnDowncast( writer, attributeValue, viewElement, options ) {
+				if ( options && options.skipListItemIds ) {
+					return;
+				}
+
 				writer.setAttribute( 'data-list-item-id', attributeValue, viewElement );
 			}
 		} );
@@ -677,7 +681,7 @@ export interface AttributeDowncastStrategy {
 	/**
 	 * Sets the property on the view element.
 	 */
-	setAttributeOnDowncast( writer: DowncastWriter, value: unknown, element: ViewElement ): void;
+	setAttributeOnDowncast( writer: DowncastWriter, value: unknown, element: ViewElement, options?: Record<string, unknown> ): void;
 }
 
 /**
