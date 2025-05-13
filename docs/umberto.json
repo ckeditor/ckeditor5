@@ -387,6 +387,7 @@
 	},
 	"docsearch": {
 		"apiKey": "fc463c26455365ad403d5ec51796cd73",
+		"appId": "BH4D9OD16A",
 		"indexName": "ckeditor_nightly",
 		"customRanking": [
 			{
