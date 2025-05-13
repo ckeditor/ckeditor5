@@ -360,7 +360,7 @@ export function listItemDowncastConverter(
 		const viewRange = insertCustomMarkerElements( listItem, viewElement, strategies, writer, { dataPipeline } );
 
 		// Then wrap them with the new list wrappers (UL, OL, LI).
-		wrapListItemBlock( listItem, viewRange, strategies, writer );
+		wrapListItemBlock( listItem, viewRange, strategies, writer, { skipListItemIds: conversionApi.options.skipListItemIds } );
 	};
 }
 
@@ -622,7 +622,8 @@ function wrapListItemBlock(
 	listItem: ListElement,
 	viewRange: ViewRange,
 	strategies: Array<DowncastStrategy>,
-	writer: DowncastWriter
+	writer: DowncastWriter,
+	options?: Record<string, unknown>
 ) {
 	if ( !listItem.hasAttribute( 'listIndent' ) ) {
 		return;
@@ -643,7 +644,8 @@ function wrapListItemBlock(
 				strategy.setAttributeOnDowncast(
 					writer,
 					currentListItem.getAttribute( strategy.attributeName ),
-					strategy.scope == 'list' ? listViewElement : listItemViewElement
+					strategy.scope == 'list' ? listViewElement : listItemViewElement,
+					options
 				);
 			}
 		}

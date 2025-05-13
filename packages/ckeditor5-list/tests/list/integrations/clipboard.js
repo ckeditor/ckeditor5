@@ -90,7 +90,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 			);
 
 			const modelFragment = model.getSelectedContent( model.document.selection );
-			const viewFragment = editor.data.toView( modelFragment );
+			const viewFragment = editor.data.toView( modelFragment, { skipListItemIds: true } );
 			const data = editor.data.htmlProcessor.toData( viewFragment );
 
 			expect( data ).to.equal(
@@ -116,7 +116,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 			);
 
 			const modelFragment = model.getSelectedContent( model.document.selection );
-			const viewFragment = editor.data.toView( modelFragment );
+			const viewFragment = editor.data.toView( modelFragment, { skipListItemIds: true } );
 			const data = editor.data.htmlProcessor.toData( viewFragment );
 
 			expect( data ).to.equal(
