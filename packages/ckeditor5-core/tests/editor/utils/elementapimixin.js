@@ -12,7 +12,6 @@ describe( 'ElementApiMixin', () => {
 	let editor;
 
 	beforeEach( () => {
-		// eslint-disable-next-line new-cap
 		class CustomEditor extends ElementApiMixin( Editor ) {
 		}
 

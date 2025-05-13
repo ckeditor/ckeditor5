@@ -808,8 +808,8 @@ describe( 'Collection', () => {
 			collection.on( 'remove', spy );
 
 			collection.remove( 1 ); // by index
-			collection.remove( item1 );	// by model
-			collection.remove( 'bom' );	// by id
+			collection.remove( item1 ); // by model
+			collection.remove( 'bom' ); // by id
 
 			sinon.assert.calledThrice( spy );
 			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item1, 0 );

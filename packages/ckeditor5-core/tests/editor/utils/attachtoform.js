@@ -23,7 +23,6 @@ describe( 'attachToForm()', () => {
 			evt.preventDefault();
 		} );
 
-		// eslint-disable-next-line new-cap
 		class CustomEditor extends ElementApiMixin( Editor ) {}
 
 		editor = new CustomEditor();

@@ -741,6 +741,8 @@ describe( 'DomConverter', () => {
 				return html.replace( /&nbsp;/g, '_' );
 			}
 
+			/* eslint-disable @stylistic/no-multi-spaces */
+
 			// At the beginning.
 			testConvert( ' x', '_x' );
 			testConvert( '  x', '_ x' );
@@ -835,22 +837,22 @@ describe( 'DomConverter', () => {
 			testConvert( [ 'x   ', '   y' ], 'x __ _ y' );
 			testConvert( [ 'x    ', '   y' ], 'x _ _ _ y' );
 
-			testConvert( [ 'x',	' ' ], 'x_' );
+			testConvert( [ 'x',	' '		], 'x_' );
 			testConvert( [ 'x',	'  '	], 'x _' );
 			testConvert( [ 'x',	'   '	], 'x __' );
-			testConvert( [ 'x ',	' ' ], 'x__' );
+			testConvert( [ 'x ',	' '		], 'x__' );
 			testConvert( [ 'x ',	'  '	], 'x_ _' );
 			testConvert( [ 'x ',	'   '	], 'x_ __' );
-			testConvert( [ 'x  ',	' ' ], 'x __' );
+			testConvert( [ 'x  ',	' '		], 'x __' );
 			testConvert( [ 'x  ',	'  '	], 'x _ _' );
 			testConvert( [ 'x  ',	'   '	], 'x _ __' );
-			testConvert( [ 'x   ',	' ' ], 'x ___' );
+			testConvert( [ 'x   ',	' '		], 'x ___' );
 			testConvert( [ 'x   ',	'  '	], 'x __ _' );
 			testConvert( [ 'x   ',	'   '	], 'x __ __' );
 
-			testConvert( [ ' ',	'x' ], '_x' );
-			testConvert( [ '  ',	'x' ], '_ x' );
-			testConvert( [ '   ',	'x' ], '_ _x' );
+			testConvert( [ ' ',	'x'		], '_x' );
+			testConvert( [ '  ',	'x'		], '_ x' );
+			testConvert( [ '   ',	'x'		], '_ _x' );
 			testConvert( [ ' ',	' x'	], '_ x' );
 			testConvert( [ '  ',	' x'	], '__ x' );
 			testConvert( [ '   ',	' x'	], '_ _ x' );
@@ -862,19 +864,19 @@ describe( 'DomConverter', () => {
 			testConvert( [ '   ',	'   x'	], '_ _ _ x' );
 
 			// "Non-empty" + "empty" text nodes.
-			testConvert( [ 'x',	' ', 'x' ],	'x x' );
-			testConvert( [ 'x',	' ', ' x'	],	'x_ x' );
-			testConvert( [ 'x',	'  ', ' x'	],	'x _ x' );
-			testConvert( [ 'x',	'   ', '  x'	],	'x __ _x' );
-			testConvert( [ 'x ',	' ', ' x'	],	'x__ x' );
-			testConvert( [ 'x ',	'  ', ' x'	],	'x_ _ x' );
-			testConvert( [ 'x ',	'   ', '  x'	],	'x_ __ _x' );
-			testConvert( [ 'x  ',	' ', ' x'	],	'x __ x' );
-			testConvert( [ 'x  ',	'  ', ' x'	],	'x _ _ x' );
-			testConvert( [ 'x  ',	'   ', '  x'	],	'x _ __ _x' );
-			testConvert( [ 'x   ',	' ', ' x'	],	'x ___ x' );
-			testConvert( [ 'x   ',	'  ', ' x'	],	'x __ _ x' );
-			testConvert( [ 'x   ',	'   ', '  x'	],	'x __ __ _x' );
+			testConvert( [ 'x',	' ',		'x'		],	'x x' );
+			testConvert( [ 'x',	' ',		' x'	],	'x_ x' );
+			testConvert( [ 'x',	'  ',		' x'	],	'x _ x' );
+			testConvert( [ 'x',	'   ',		'  x'	],	'x __ _x' );
+			testConvert( [ 'x ',	' ',		' x'	],	'x__ x' );
+			testConvert( [ 'x ',	'  ',		' x'	],	'x_ _ x' );
+			testConvert( [ 'x ',	'   ',		'  x'	],	'x_ __ _x' );
+			testConvert( [ 'x  ',	' ',		' x'	],	'x __ x' );
+			testConvert( [ 'x  ',	'  ',		' x'	],	'x _ _ x' );
+			testConvert( [ 'x  ',	'   ',		'  x'	],	'x _ __ _x' );
+			testConvert( [ 'x   ',	' ',		' x'	],	'x ___ x' );
+			testConvert( [ 'x   ',	'  ',		' x'	],	'x __ _ x' );
+			testConvert( [ 'x   ',	'   ',		'  x'	],	'x __ __ _x' );
 
 			// "Empty" + "empty" text nodes.
 			testConvert( [ ' ', ' ' ], '__' );
@@ -886,6 +888,8 @@ describe( 'DomConverter', () => {
 			testConvert( [ '  ', '   ' ], '__ __' );
 			testConvert( [ '   ', '  ' ], '_ _ _' );
 			testConvert( [ '   ', '   ' ], '_ _ __' );
+
+			/* eslint-enable @stylistic/no-multi-spaces */
 
 			it( 'not in preformatted blocks', () => {
 				const viewPre = new ViewContainerElement( viewDocument, 'pre', null, [

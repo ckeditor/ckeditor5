@@ -8,7 +8,6 @@
 // See: https://eslint.org/docs/user-guide/formatters/#stylish.
 const eslintStylishFormatter = require( 'eslint-formatter-stylish' );
 
-// eslint-disable-next-line @stylistic/max-len
 const CODE_STYLE_URL = 'https://ckeditor.com/docs/ckeditor5/latest/framework/contributing/code-style.html#ckeditor-5-custom-eslint-rules';
 
 /**

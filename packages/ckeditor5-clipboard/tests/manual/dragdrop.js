@@ -27,14 +27,16 @@ import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/cked
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
 const contacts = [
-	{ name: 'Huckleberry Finn', tel: '+48 1345 234 235', email: 'h.finn@example.com', avatar: 'hfin' },
-	{ name: 'D\'Artagnan', tel: '+45 2345 234 235', email: 'dartagnan@example.com', avatar: 'dartagnan' },
-	{ name: 'Phileas Fogg', tel: '+44 3345 234 235', email: 'p.fogg@example.com', avatar: 'pfog' },
-	{ name: 'Alice', tel: '+20 4345 234 235', email: 'alice@example.com', avatar: 'alice' },
+	/* eslint-disable @stylistic/no-multi-spaces */
+	{ name: 'Huckleberry Finn',			tel: '+48 1345 234 235', email: 'h.finn@example.com', avatar: 'hfin' },
+	{ name: 'D\'Artagnan',				tel: '+45 2345 234 235', email: 'dartagnan@example.com', avatar: 'dartagnan' },
+	{ name: 'Phileas Fogg',				tel: '+44 3345 234 235', email: 'p.fogg@example.com', avatar: 'pfog' },
+	{ name: 'Alice',					tel: '+20 4345 234 235', email: 'alice@example.com', avatar: 'alice' },
 	{ name: 'Little Red Riding Hood',	tel: '+45 2345 234 235', email: 'lrrh@example.com', avatar: 'lrrh' },
-	{ name: 'Winnetou', tel: '+44 3345 234 235', email: 'winnetou@example.com', avatar: 'winetou' },
-	{ name: 'Edmond Dantès', tel: '+20 4345 234 235', email: 'count@example.com', avatar: 'edantes' },
-	{ name: 'Robinson Crusoe', tel: '+45 2345 234 235', email: 'r.crusoe@example.com', avatar: 'rcrusoe' }
+	{ name: 'Winnetou',					tel: '+44 3345 234 235', email: 'winnetou@example.com', avatar: 'winetou' },
+	{ name: 'Edmond Dantès',			tel: '+20 4345 234 235', email: 'count@example.com', avatar: 'edantes' },
+	{ name: 'Robinson Crusoe',			tel: '+45 2345 234 235', email: 'r.crusoe@example.com', avatar: 'rcrusoe' }
+	/* eslint-enable @stylistic/no-multi-spaces */
 ];
 
 class HCardEditing extends Plugin {
