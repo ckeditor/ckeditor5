@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/* globals require */
+
 const http = require( 'http' );
 const fs = require( 'fs' );
 const querystring = require( 'querystring' );
