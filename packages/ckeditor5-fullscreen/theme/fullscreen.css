@@ -74,10 +74,22 @@ Fullscreen layout:
 /* If the fullscreen container is not directly in the body, we need to make sure it's positioned absolutely. */
 :not(body> .ck-fullscreen__main-wrapper).ck-fullscreen__main-wrapper {
 	position: absolute;
+
+	& .ck-fullscreen__top-wrapper {
+		border-top: 1px solid var(--ck-color-base-border);
+		border-left: 1px solid var(--ck-color-base-border);
+		border-right: 1px solid var(--ck-color-base-border);
+	}
 }
 
 .ck-fullscreen__menu-bar .ck.ck-menu-bar {
 	border: none;
+}
+
+.ck.ck-fullscreen__toolbar .ck-toolbar {
+	border-left: 0;
+	border-right: 0;
+	border-radius: 0;
 }
 
 .ck-fullscreen__main-wrapper .ck-fullscreen__editable-wrapper {
@@ -114,11 +126,13 @@ Fullscreen layout:
 
 .ck-fullscreen__main-wrapper .ck-fullscreen__editable .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
 	box-sizing: border-box;
-	width: calc(210mm + 2px); /* Make sure the border is taken into account. */
-	max-width: calc(210mm + 2px); /* Make sure the border is taken into account. */
+	/* Make sure the border is taken into account. */
+	width: calc(210mm + 2px);
+	max-width: calc(210mm + 2px);
 	min-height: 297mm;
 	height: fit-content;
-	margin: 0; /* Reset margins that may be present on editable. We add them in other places. */
+	/* Reset margins that may be present on editable. We add them in other places. */
+	margin: 0;
 	padding: 20mm 12mm;
 	border: 1px var(--ck-color-base-border) solid;
 	background: hsl(0, 0%, 100%);
