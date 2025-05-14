@@ -145,6 +145,20 @@ describe( 'SelectionObserver', () => {
 		}, 100 );
 	} );
 
+	// See https://github.com/ckeditor/ckeditor5/issues/18514.
+	it( 'should fire selectionChange while editable is not focused but the editor is in read-only mode', done => {
+		viewDocument.on( 'selectionChange', () => done() );
+
+		viewDocument.isFocused = false;
+		viewDocument.isReadOnly = true;
+
+		changeDomSelection();
+
+		setTimeout( () => {
+			throw 'selectionChange was not fired in read-only mode';
+		}, 100 );
+	} );
+
 	it( 'should not fire selectionChange while user is composing', done => {
 		viewDocument.on( 'selectionChange', () => {
 			throw 'selectionChange fired while composing';
