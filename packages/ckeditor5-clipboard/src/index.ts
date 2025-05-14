@@ -28,20 +28,18 @@ export {
 export { default as plainTextToHtml } from './utils/plaintexttohtml.js';
 export { default as viewToPlainText } from './utils/viewtoplaintext.js';
 
-export type {
-	ClipboardEventData
-} from './clipboardobserver.js';
-
 export { default as DragDrop } from './dragdrop.js';
 export { default as PastePlainText } from './pasteplaintext.js';
 export { default as DragDropTarget } from './dragdroptarget.js';
 export { default as DragDropBlockToolbar } from './dragdropblocktoolbar.js';
 
-export type {
-	ViewDocumentClipboardInputEvent,
-	ViewDocumentCopyEvent,
-	ViewDocumentPasteEvent,
-	ViewDocumentCutEvent
+export {
+	default as ClipboardObserver,
+	type ClipboardEventData,
+	type ViewDocumentClipboardInputEvent,
+	type ViewDocumentCopyEvent,
+	type ViewDocumentPasteEvent,
+	type ViewDocumentCutEvent
 } from './clipboardobserver.js';
 
 import './augmentation.js';

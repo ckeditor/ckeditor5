@@ -92,7 +92,8 @@ export default class History {
 			 * Only operations with matching versions can be added to the history.
 			 *
 			 * @error model-document-history-addoperation-incorrect-version
-			 * @param errorData The operation and the current document history version.
+			 * @param {module:engine/model/operation/operation~Operation} operation The current operation.
+			 * @param {number} historyVersion The current document history version.
 			 */
 			throw new CKEditorError( 'model-document-history-addoperation-incorrect-version', this, {
 				operation,

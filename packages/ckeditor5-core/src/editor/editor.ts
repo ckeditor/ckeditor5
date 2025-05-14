@@ -49,6 +49,9 @@ import type { EditorConfig } from './editorconfig.js';
 declare global {
 	// eslint-disable-next-line no-var
 	var CKEDITOR_GLOBAL_LICENSE_KEY: string | undefined;
+
+	// eslint-disable-next-line no-var
+	var CKEDITOR_WARNING_SUPPRESSIONS: Record<string, boolean>;
 }
 
 /**
@@ -462,6 +465,22 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 					.some( octets => segments.every( ( segment, index ) => octets[ index ] === segment || octets[ index ] === '*' ) );
 			}
 
+			function warnAboutNonProductionLicenseKey( licenseType: string ) {
+				const capitalizedLicenseType = licenseType[ 0 ].toUpperCase() + licenseType.slice( 1 );
+				const article = licenseType === 'evaluation' ? 'an' : 'a';
+
+				console.info(
+					`%cCKEditor 5 ${ capitalizedLicenseType } License`,
+					'color: #ffffff; background: #743CCD; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
+				);
+
+				console.warn(
+					`⚠️ You are using ${ article } ${ licenseType } license of CKEditor 5` +
+					`${ licenseType === 'trial' ? ' which is for evaluation purposes only' : '' }. ` +
+					'For production usage, please obtain a production license at https://portal.ckeditor.com/'
+				);
+			}
+
 			if ( licenseKey == 'GPL' ) {
 				if ( distributionChannel == 'cloud' ) {
 					blockEditor( 'distributionChannel' );
@@ -528,19 +547,14 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( [ 'development', 'evaluation', 'trial' ].includes( licensePayload.licenseType ) ) {
 				const { licenseType } = licensePayload;
-				const capitalizedLicenseType = licenseType[ 0 ].toUpperCase() + licenseType.slice( 1 );
-				const article = licenseType === 'evaluation' ? 'an' : 'a';
 
-				console.info(
-					`%cCKEditor 5 ${ capitalizedLicenseType } License`,
-					'color: #ffffff; background: #743CCD; font-size: 14px; padding: 4px 8px; border-radius: 4px;'
-				);
+				window.CKEDITOR_WARNING_SUPPRESSIONS = window.CKEDITOR_WARNING_SUPPRESSIONS || {};
 
-				console.warn(
-					`⚠️ You are using ${ article } ${ licenseType } license of CKEditor 5` +
-					`${ licenseType === 'trial' ? ' which is for evaluation purposes only' : '' }. ` +
-					'For production usage, please obtain a production license at https://portal.ckeditor.com/'
-				);
+				if ( !window.CKEDITOR_WARNING_SUPPRESSIONS[ licenseType ] ) {
+					warnAboutNonProductionLicenseKey( licenseType );
+
+					window.CKEDITOR_WARNING_SUPPRESSIONS[ licenseType ] = true;
+				}
 			}
 
 			if ( [ 'evaluation', 'trial' ].includes( licensePayload.licenseType ) ) {
@@ -584,7 +598,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 						 * Please ensure that your setup does not block requests to the validation endpoint.
 						 *
 						 * @error license-key-validation-endpoint-not-reachable
-						 * @param {String} url The URL that was attempted to be reached for validation.
+						 * @param {string} url The URL that was attempted to be reached for validation.
 						 */
 						logError( 'license-key-validation-endpoint-not-reachable', { url: licensePayload.usageEndpoint } );
 					} );
@@ -693,6 +707,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 			 * The lock ID is missing or it is not a string or symbol.
 			 *
 			 * @error editor-read-only-lock-id-invalid
+			 * @param {never} lockId Lock ID.
 			 */
 			throw new CKEditorError( 'editor-read-only-lock-id-invalid', null, { lockId } );
 		}
@@ -1094,6 +1109,7 @@ function collectUsageData( editor: Editor ): EditorUsageData {
 			 * Make sure that you are not setting the same path multiple times.
 			 *
 			 * @error editor-usage-data-path-already-set
+			 * @param {string} path The path that was already set.
 			 */
 			throw new CKEditorError( 'editor-usage-data-path-already-set', { path } );
 		}

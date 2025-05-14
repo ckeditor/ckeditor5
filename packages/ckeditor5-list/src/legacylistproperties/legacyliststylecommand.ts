@@ -108,7 +108,8 @@ export default class LegacyListStyleCommand extends Command {
 	/**
 	 * Checks if the provided list style is valid. Also changes the selection to a list if it's not set yet.
 	 *
-	 * @param The type of the list style. If `null` is specified, the function does nothing.
+	 * @param options Additional options.
+	 * @param options.type The type of the list style. If `null` is specified, the function does nothing.
 	*/
 	private _tryToConvertItemsToList( options: { type?: string | null } ) {
 		if ( !options.type ) {

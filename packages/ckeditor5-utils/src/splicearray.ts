@@ -19,10 +19,9 @@
  * spliceArray( [ 1, 2 ], [],       0 );	// [ 1, 2 ]
  * ```
  *
- * @param target Array to be spliced.
- * @param source Array of elements to be inserted to target.
- * @param start Index at which nodes should be inserted/removed.
- * @param count Number of items.
+ * @param targetArray Array to be spliced.
+ * @param insertArray Array of elements to be inserted to target.
+ * @param index Index at which nodes should be inserted.
  *
  * @returns New spliced array.
  */

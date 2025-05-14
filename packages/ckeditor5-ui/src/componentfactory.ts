@@ -96,7 +96,7 @@ export default class ComponentFactory {
 			 * {@link module:ui/componentfactory~ComponentFactory#add added} to the factory.
 			 *
 			 * @error componentfactory-item-missing
-			 * @param name The name of the missing component.
+			 * @param {string} name The name of the missing component.
 			 */
 			throw new CKEditorError(
 				'componentfactory-item-missing',

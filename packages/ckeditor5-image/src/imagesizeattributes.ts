@@ -130,6 +130,18 @@ export default class ImageSizeAttributes extends Plugin {
 			attachDowncastConverter( dispatcher, 'height', 'height', false );
 		} );
 
+		// Consume `aspect-ratio` style if `width` and `height` attributes are set on the image.
+		editor.conversion.for( 'upcast' ).add( dispatcher => {
+			dispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
+				const width = data.viewItem.getAttribute( 'width' );
+				const height = data.viewItem.getAttribute( 'height' );
+
+				if ( width && height ) {
+					conversionApi.consumable.consume( data.viewItem, { styles: [ 'aspect-ratio' ] } );
+				}
+			} );
+		} );
+
 		function attachDowncastConverter(
 			dispatcher: DowncastDispatcher,
 			modelAttributeName: string,

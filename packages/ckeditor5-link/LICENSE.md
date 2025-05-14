@@ -19,6 +19,7 @@ Where not otherwise indicated, all CKEditor content is authored by CKSource engi
 The following libraries are included in CKEditor under the [MIT license](https://opensource.org/licenses/MIT):
 
 * es-toolkit - Copyright (c) 2024 Viva Republica, Inc.
+* Regular Expression for URL validation - Copyright (c) 2010-2018 Diego Perini.
 
 Trademarks
 ----------

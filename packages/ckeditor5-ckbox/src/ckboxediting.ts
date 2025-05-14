@@ -151,7 +151,7 @@ export default class CKBoxEditing extends Plugin {
 			 * Please make sure your editor configuration is correct.
 			 *
 			 * @error ckbox-plugin-image-feature-missing
-			 * @param {module:core/editor/editor~Editor} editor
+			 * @param {module:core/editor/editor~Editor} editor The editor instance.
 			 */
 			logError( 'ckbox-plugin-image-feature-missing', editor );
 		}

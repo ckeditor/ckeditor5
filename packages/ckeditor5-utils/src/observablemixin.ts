@@ -263,8 +263,8 @@ export default function ObservableMixin( base?: Constructor<Emitter> ): unknown 
 				 * Cannot decorate an undefined method.
 				 *
 				 * @error observablemixin-cannot-decorate-undefined
-				 * @param {Object} object The object which method should be decorated.
-				 * @param {String} methodName Name of the method which does not exist.
+				 * @param {object} object The object which method should be decorated.
+				 * @param {string} methodName Name of the method which does not exist.
 				 */
 				throw new CKEditorError(
 					'observablemixin-cannot-decorate-undefined',
