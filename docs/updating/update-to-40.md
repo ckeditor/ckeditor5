@@ -43,11 +43,11 @@ ClassicEditor
 	} );
 ```
 
-Another change is related to the {@link module:ai/aiassistant~AIAssistantConfig configuration structure}:
+Another change is related to the {@link module:ai/aiassistant/aiassistant~AIAssistantConfig configuration structure}:
 
 * We introduced a new {@link module:ai/aiconfig~AIConfig `config.ai`} namespace.
-* We moved the `config.aiAssistant` option into {@link module:ai/aiassistant~AIAssistantConfig `config.ai.aiAssistant`}.
-* We extracted adapter-related properties to {@link module:ai/adapters/openaitextadapter~OpenAITextAdapterConfig `config.ai.openAI`}.
+* We moved the `config.aiAssistant` option into `config.ai.aiAssistant`.
+* We extracted adapter-related properties to `config.ai.openAI`.
 * Also, we renamed some properties.
 
 ```js
