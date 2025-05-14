@@ -131,7 +131,7 @@ export default class RichTextEditor extends React.Component<IRichTextEditorProps
 				<CKEditor
 						editor={ ClassicEditor }
 						config={ {
-								licenseKey: '<YOUR-LICENSE-KEY>',
+								licenseKey: '<YOUR_LICENSE_KEY>',
 								plugins: [
 									Bold, Essentials, Italic, Paragraph, Font, Heading,
 									Table, TableCellProperties, TableProperties, TableToolbar, List,
