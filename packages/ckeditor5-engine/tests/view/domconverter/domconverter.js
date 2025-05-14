@@ -134,16 +134,10 @@ describe( 'DomConverter', () => {
 				}
 			} );
 
-			Object.defineProperties( global.document.documentElement, {
-				scrollLeft: {
-					get: () => 60,
-					set: documentElementScrollLeftSpy
-				},
-				scrollTop: {
-					get: () => 600,
-					set: documentElementScrollTopSpy
-				}
-			} );
+			testUtils.sinon.stub( global.document.documentElement, 'scrollLeft' ).get( () => 60 );
+			testUtils.sinon.stub( global.document.documentElement, 'scrollTop' ).get( () => 600 );
+			testUtils.sinon.stub( global.document.documentElement, 'scrollLeft' ).set( documentElementScrollLeftSpy );
+			testUtils.sinon.stub( global.document.documentElement, 'scrollTop' ).set( documentElementScrollTopSpy );
 
 			testUtils.sinon.stub( global.window, 'scrollX' ).get( () => 10 );
 			testUtils.sinon.stub( global.window, 'scrollY' ).get( () => 100 );

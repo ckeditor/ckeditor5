@@ -141,8 +141,8 @@ export default class NodeList implements Iterable<Node> {
 			 * Given offset cannot be found in the node list.
 			 *
 			 * @error model-nodelist-offset-out-of-bounds
-			 * @param offset
-			 * @param nodeList Stringified node list.
+			 * @param {number} offset The offset value.
+			 * @param {module:engine/model/nodelist~NodeList} nodeList Stringified node list.
 			 */
 			throw new CKEditorError( 'model-nodelist-offset-out-of-bounds',
 				this,

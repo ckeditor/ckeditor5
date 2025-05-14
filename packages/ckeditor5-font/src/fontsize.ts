@@ -48,7 +48,7 @@ export default class FontSize extends Plugin {
 	 * Normalizes and translates the {@link module:font/fontconfig~FontSizeConfig#options configuration options}
 	 * to the {@link module:font/fontconfig~FontSizeOption} format.
 	 *
-	 * @param configuredOptions An array of options taken from the configuration.
+	 * @param options An array of options taken from the configuration.
 	 */
 	public normalizeSizeOptions( options: Array<string | number | FontSizeOption> ): Array<FontSizeOption> {
 		return normalizeOptions( options );

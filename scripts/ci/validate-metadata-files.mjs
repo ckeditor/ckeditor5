@@ -7,15 +7,13 @@
 
 /* eslint-env node */
 
-import { createRequire } from 'module';
+import { fileURLToPath } from 'url';
 import fs from 'fs-extra';
 import upath from 'upath';
 import parser from '@babel/parser';
 import minimist from 'minimist';
 import { glob } from 'glob';
 import chalk from 'chalk';
-
-const require = createRequire( import.meta.url );
 
 main()
 	.catch( err => {
@@ -163,7 +161,10 @@ function getMissingIcons( packageData, options ) {
 
 function isIconMissing( iconPath ) {
 	try {
-		require.resolve( iconPath );
+		fs.accessSync(
+			fileURLToPath( import.meta.resolve( iconPath ) ),
+			fs.constants.R_OK
+		);
 
 		return false;
 	} catch ( err ) {

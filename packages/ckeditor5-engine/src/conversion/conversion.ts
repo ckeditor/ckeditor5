@@ -659,7 +659,10 @@ export default class Conversion {
 	/**
 	 * Creates and caches conversion helpers for given dispatchers group.
 	 *
+	 * @param options Group name.
 	 * @param options.name Group name.
+	 * @param options.dispatchers Dispatchers to register.
+	 * @param options.isDowncast Whether downcast group.
 	 */
 	private _createConversionHelpers(
 		{ name, dispatchers, isDowncast }: {
