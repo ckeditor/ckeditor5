@@ -475,6 +475,15 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 
 		// Something weird happened and the stored node doesn't contain the filler's text.
 		if ( !startsWithFiller( domFillerNode ) ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'Renderer',
+			// @if CK_DEBUG_TYPING // 		'Inline filler node: ' +
+			// @if CK_DEBUG_TYPING // 		`%c${ _escapeTextNodeData( domFillerNode.data ) }%c (${ domFillerNode.data.length })`,
+			// @if CK_DEBUG_TYPING // 		'color: blue',
+			// @if CK_DEBUG_TYPING // 		''
+			// @if CK_DEBUG_TYPING // 	) );
+			// @if CK_DEBUG_TYPING // }
+
 			/**
 			 * The inline filler node was lost. Most likely, something overwrote the filler text node
 			 * in the DOM.

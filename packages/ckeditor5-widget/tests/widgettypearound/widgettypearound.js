@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/* globals window */
+
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
@@ -19,6 +21,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { insertAt } from '@ckeditor/ckeditor5-utils';
 
 describe( 'WidgetTypeAround', () => {
 	let element, plugin, editor, editingView, viewDocument, modelRoot, viewRoot, model, modelSelection;
@@ -473,7 +476,8 @@ describe( 'WidgetTypeAround', () => {
 				fireInsertTextEvent( 'a' );
 
 				expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
-				expect( getModelData( model ) ).to.equal( '<paragraph>fooa[]</paragraph><blockWidget></blockWidget>' );
+				// As the browser is modifying DOM while typing, the change is not applied here since those are mocked events.
+				expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><blockWidget></blockWidget>' );
 
 				const viewWidget = viewRoot.getChild( 1 );
 
@@ -1166,7 +1170,7 @@ describe( 'WidgetTypeAround', () => {
 				} );
 			} );
 
-			describe( 'on keydown of a "typing" character when the "fake caret" is activated ', () => {
+			describe( 'on keydown of a "typing" character when the "fake caret" is activated', () => {
 				it( 'should insert a character inside a new paragraph before a widget if the caret was "before" it', () => {
 					setModelData( editor.model, '[<blockWidget></blockWidget>]' );
 
@@ -1175,6 +1179,7 @@ describe( 'WidgetTypeAround', () => {
 
 					fireKeyboardEvent( 'a' );
 					fireInsertTextEvent( 'a' );
+					modifyDom( 'a', viewDocument.selection.getFirstRange() );
 
 					expect( getModelData( model ) ).to.equal( '<paragraph>a[]</paragraph><blockWidget></blockWidget>' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
@@ -1188,6 +1193,7 @@ describe( 'WidgetTypeAround', () => {
 
 					fireKeyboardEvent( 'a' );
 					fireInsertTextEvent( 'a' );
+					modifyDom( 'a', viewDocument.selection.getFirstRange() );
 
 					expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>a[]</paragraph>' );
 					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
@@ -1213,6 +1219,7 @@ describe( 'WidgetTypeAround', () => {
 					fireKeyboardEvent( 'arrowleft' );
 					fireKeyboardEvent( 'a' );
 					fireInsertTextEvent( 'a' );
+					modifyDom( 'a', viewDocument.selection.getFirstRange() );
 
 					expect( getModelData( model ) ).to.equal( '<paragraph>a[]</paragraph><blockWidget></blockWidget>' );
 
@@ -1750,13 +1757,40 @@ describe( 'WidgetTypeAround', () => {
 		}
 
 		function fireInsertTextEvent( text ) {
+			const preventDefaultSpy = sinon.spy();
+
 			viewDocument.fire( 'insertText', {
 				text,
 				selection: editingView.createSelection(
 					editor.editing.mapper.toViewRange( editor.model.document.selection.getFirstRange() )
 				),
-				preventDefault: sinon.spy()
+				preventDefault: preventDefaultSpy,
+				domEvent: {
+					get defaultPrevented() {
+						return preventDefaultSpy.called;
+					}
+				}
 			} );
+		}
+
+		function modifyDom( data, range ) {
+			const domRange = editingView.domConverter.viewRangeToDom( range );
+
+			if ( !domRange.collapsed ) {
+				domRange.deleteContents();
+			}
+
+			if ( domRange.startContainer.nodeType === 3 ) {
+				domRange.startContainer.insertData( domRange.startOffset, data );
+			} else {
+				insertAt( domRange.startContainer, domRange.startOffset, domRange.startContainer.ownerDocument.createTextNode( data ) );
+			}
+
+			window.getSelection().setBaseAndExtent(
+				domRange.startContainer, domRange.startOffset + data.length,
+				domRange.startContainer, domRange.startOffset + data.length
+			);
+			window.document.dispatchEvent( new window.Event( 'selectionchange' ) );
 		}
 
 		function fireKeyboardEvent( key, modifiers ) {

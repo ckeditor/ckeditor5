@@ -12,6 +12,7 @@ import type DomEventData from './domeventdata.js';
 import type ViewRange from '../range.js';
 import DataTransfer from '../datatransfer.js';
 import { env } from '@ckeditor/ckeditor5-utils';
+import { INLINE_FILLER_LENGTH, startsWithFiller } from '../filler.js';
 
 // @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
 
@@ -34,7 +35,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	_debouncedLine();
 		// @if CK_DEBUG_TYPING // 	console.group( ..._buildLogMessage( this, 'InputObserver',
-		// @if CK_DEBUG_TYPING // 		`${ domEvent.type }: ${ domEvent.inputType }`
+		// @if CK_DEBUG_TYPING // 		`${ domEvent.type }: ${ domEvent.inputType } - ${ domEvent.isComposing ? 'is' : 'not' } composing`,
 		// @if CK_DEBUG_TYPING // 	) );
 		// @if CK_DEBUG_TYPING // }
 
@@ -78,6 +79,9 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 			// Future-proof: in case of multi-range fake selections being possible.
 			targetRanges = Array.from( viewDocument.selection.getRanges() );
 
+			// Do not allow typing inside a fake selection container, we will handle it manually.
+			domEvent.preventDefault();
+
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'InputObserver',
 			// @if CK_DEBUG_TYPING // 		'%cusing fake selection:',
@@ -92,8 +96,37 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 				// We try to fall back to collapsed range at the valid end position.
 				// See https://github.com/ckeditor/ckeditor5/issues/14411.
 				// See https://github.com/ckeditor/ckeditor5/issues/14050.
-				const viewStart = view.domConverter.domPositionToView( domRange.startContainer, domRange.startOffset );
+				let viewStart = view.domConverter.domPositionToView( domRange.startContainer, domRange.startOffset );
 				const viewEnd = view.domConverter.domPositionToView( domRange.endContainer, domRange.endOffset );
+
+				// When text replacement is enabled and browser tries to replace double space with dot, and space,
+				// but the first space is no longer where browser put it (it was moved to an attribute element),
+				// then we must extend the target range so it does not include a part of an inline filler.
+				if ( viewStart && startsWithFiller( domRange.startContainer ) && domRange.startOffset < INLINE_FILLER_LENGTH ) {
+					// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+					// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'InputObserver',
+					// @if CK_DEBUG_TYPING // 		'Target range starts in an inline filler - adjusting it',
+					// @if CK_DEBUG_TYPING // 	) );
+					// @if CK_DEBUG_TYPING // }
+
+					domEvent.preventDefault();
+
+					let count = INLINE_FILLER_LENGTH - domRange.startOffset;
+
+					viewStart = viewStart.getLastMatchingPosition( value => {
+						// Ignore attribute and UI elements but stop on container elements.
+						if ( value.item.is( 'attributeElement' ) || value.item.is( 'uiElement' ) ) {
+							return true;
+						}
+
+						// Skip as many characters as inline filler was overlapped.
+						if ( value.item.is( '$textProxy' ) && count-- ) {
+							return true;
+						}
+
+						return false;
+					}, { direction: 'backward', singleCharacters: true } );
+				}
 
 				if ( viewStart ) {
 					return view.createRange( viewStart, viewEnd );
@@ -146,7 +179,7 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 
 		// Normalize the insertText data that includes new-line characters.
 		// https://github.com/ckeditor/ckeditor5/issues/2045.
-		if ( domEvent.inputType == 'insertText' && data && data.includes( '\n' ) ) {
+		if ( [ 'insertText', 'insertReplacementText' ].includes( domEvent.inputType ) && data && data.includes( '\n' ) ) {
 			// There might be a single new-line or double for new paragraph, but we translate
 			// it to paragraphs as it is our default action for enter handling.
 			const parts = data.split( /\n{1,2}/g );

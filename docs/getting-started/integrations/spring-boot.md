@@ -1,13 +1,13 @@
 ---
 category: self-hosted
-meta-title: Compatibility with Spring Boot using a ZIP archive | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with Spring Boot from ZIP archive | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with Spring Boot using a ZIP archive.
 order: 130
 menu-title: Spring Boot
 modified_at: 2025-05-06
 ---
 
-# Compatibility with Spring Boot using ZIP
+# Integrating CKEditor&nbsp;5 with Spring Boot from ZIP
 
 As a pure JavaScript/TypeScript application, CKEditor&nbsp;5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom configuration of CKEditor&nbsp;5 in a non-JS framework of your choice, for example, the Java-based [Spring Boot](https://spring.io/projects/spring-boot).
 
