@@ -74,10 +74,23 @@ Fullscreen layout:
 /* If the fullscreen container is not directly in the body, we need to make sure it's positioned absolutely. */
 :not(body> .ck-fullscreen__main-wrapper).ck-fullscreen__main-wrapper {
 	position: absolute;
+
+	& .ck-fullscreen__top-wrapper {
+		border-top: 1px solid var(--ck-color-base-border);
+		border-left: 1px solid var(--ck-color-base-border);
+		border-right: 1px solid var(--ck-color-base-border);
+		border-radius: var(--ck-border-radius) 0;
+	}
 }
 
 .ck-fullscreen__menu-bar .ck.ck-menu-bar {
 	border: none;
+}
+
+.ck.ck-fullscreen__toolbar .ck-toolbar {
+	border-left: 0;
+	border-right: 0;
+	border-radius: 0;
 }
 
 .ck-fullscreen__main-wrapper .ck-fullscreen__editable-wrapper {
