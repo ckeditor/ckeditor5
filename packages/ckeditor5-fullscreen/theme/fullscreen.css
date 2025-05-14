@@ -188,7 +188,7 @@ Fullscreen layout:
 	position: sticky;
 	top: 0;
 
-	&> :first-child {
+	& > :first-child {
 		padding-top: 0;
 	}
 }
