@@ -79,6 +79,7 @@ Fullscreen layout:
 		border-top: 1px solid var(--ck-color-base-border);
 		border-left: 1px solid var(--ck-color-base-border);
 		border-right: 1px solid var(--ck-color-base-border);
+		border-radius: var(--ck-border-radius) 0;
 	}
 }
 
