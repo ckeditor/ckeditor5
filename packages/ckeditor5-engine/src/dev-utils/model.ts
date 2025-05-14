@@ -501,7 +501,7 @@ function convertToModelElement( mapper: Mapper ) {
 function convertToModelText() {
 	return (
 		evt: EventInfo,
-		data: UpcastConversionData<ViewElement | ViewText >,
+		data: UpcastConversionData<ViewElement | ViewText>,
 		conversionApi: UpcastConversionApi
 	) => {
 		if ( !conversionApi.schema.checkChild( data.modelCursor, '$text' ) ) {

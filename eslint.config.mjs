@@ -12,19 +12,19 @@ export default defineConfig( [
 	{
 		ignores: [
 			'build/**',
+			'coverage/**',
 			'dist/**',
-			'packages/*/node_modules/**',
+			'external/**',
 			'packages/*/build/**',
 			'packages/*/dist/**',
 			'packages/*/src/lib/**',
-			'coverage/**',
-			'external/**',
 			'release/**',
 
 			// The CKEditor 5 core DLL build is created from JavaScript files.
 			// ESLint should not process compiled TypeScript.
 			'src/*.js',
 			'**/*.d.ts',
+
 			'packages/ckeditor5-emoji/src/utils/isemojisupported.ts',
 
 			// This file includes JSX which eslint can't parse without additional configuration.
