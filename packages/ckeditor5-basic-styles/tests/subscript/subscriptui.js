@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import SubscriptEditing from '../../src/subscript/subscriptediting.js';
 import SubscriptUI from '../../src/subscript/subscriptui.js';

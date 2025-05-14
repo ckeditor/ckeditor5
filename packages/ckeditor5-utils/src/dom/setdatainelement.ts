@@ -7,8 +7,6 @@
  * @module utils/dom/setdatainelement
  */
 
-/* globals HTMLTextAreaElement */
-
 /**
  * Sets data in a given element.
  *

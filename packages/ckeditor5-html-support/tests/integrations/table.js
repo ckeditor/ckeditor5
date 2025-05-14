@@ -19,8 +19,6 @@ import TableElementSupport from '../../src/integrations/table.js';
 
 import { range } from 'es-toolkit/compat';
 
-/* global document */
-
 describe( 'TableElementSupport', () => {
 	let editor, model, editorElement, dataFilter;
 
@@ -2134,7 +2132,7 @@ describe( 'TableElementSupport', () => {
 				styles: 'background'
 			} ] );
 
-			/* eslint-disable max-len */
+			/* eslint-disable @stylistic/max-len */
 			editor.setData(
 				'<figure class="table allow disallow" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
 					'<table class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
@@ -2237,7 +2235,7 @@ describe( 'TableElementSupport', () => {
 					'</table>' +
 				'</figure>'
 			);
-			/* eslint-enable max-len */
+			/* eslint-enable @stylistic/max-len */
 		} );
 	} );
 } );

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import MultiRootEditorUIView from '../src/multirooteditoruiview.js';
 import EditingView from '@ckeditor/ckeditor5-engine/src/view/view.js';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
@@ -150,7 +148,7 @@ describe( 'MultiRootEditorUIView', () => {
 				const editingView = new EditingView();
 				const fooViewRoot = createRoot( editingView.document, 'div', 'foo' );
 				const barViewRoot = createRoot( editingView.document, 'div', 'bar' );
-				const view = new MultiRootEditorUIView( locale, editingView, [ 'foo', 'bar' ], 	{
+				const view = new MultiRootEditorUIView( locale, editingView, [ 'foo', 'bar' ], {
 					label: {
 						foo: 'Foo',
 						bar: 'Bar'

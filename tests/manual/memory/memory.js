@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console:false, document */
-
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties.js';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties.js';
@@ -142,7 +140,7 @@ function initEditor() {
 			function printData() {
 				const iframeElement = document.getElementById( 'print-data-container' );
 
-				/* eslint-disable max-len */
+				/* eslint-disable @stylistic/max-len */
 				iframeElement.srcdoc = '<html>' +
 					'<head>' +
 					`<title>${ document.title }</title>` +
@@ -156,7 +154,7 @@ function initEditor() {
 					'</script>' +
 					'</body>' +
 					'</html>';
-				/* eslint-enable max-len */
+				/* eslint-enable @stylistic/max-len */
 			}
 
 			function clearData() {

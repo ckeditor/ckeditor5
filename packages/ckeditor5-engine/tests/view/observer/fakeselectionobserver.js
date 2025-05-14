@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
 import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver.js';
 import View from '../../../src/view/view.js';

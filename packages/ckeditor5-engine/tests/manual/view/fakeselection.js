@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, console */
-
 import View from '../../../src/view/view.js';
 import DomEventObserver from '../../../src/view/observer/domeventobserver.js';
 import ViewRange from '../../../src/view/range.js';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import Highlight from './../src/highlight.js';
 import HighlightEditing from './../src/highlightediting.js';
 import HighlightUI from './../src/highlightui.js';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals Event */
-
 /**
  * Fires the `beforeinput` DOM event on the editor's editing root DOM
  * element with given data.

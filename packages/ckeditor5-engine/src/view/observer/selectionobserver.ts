@@ -7,8 +7,6 @@
  * @module engine/view/observer/selectionobserver
  */
 
-/* global setInterval, clearInterval */
-
 import Observer from './observer.js';
 import MutationObserver from './mutationobserver.js';
 import FocusObserver from './focusobserver.js';

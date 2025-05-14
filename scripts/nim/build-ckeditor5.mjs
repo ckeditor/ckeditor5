@@ -5,8 +5,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 import { rm, copyFile } from 'fs/promises';
 import chalk from 'chalk';
 import {

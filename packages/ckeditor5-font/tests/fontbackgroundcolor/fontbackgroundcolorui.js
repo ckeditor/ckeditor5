@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import { IconFontBackground } from 'ckeditor5/src/icons.js';
 import FontBackgroundColorEditing from './../../src/fontbackgroundcolor/fontbackgroundcolorediting.js';
 import FontBackgroundColorUI from './../../src/fontbackgroundcolor/fontbackgroundcolorui.js';

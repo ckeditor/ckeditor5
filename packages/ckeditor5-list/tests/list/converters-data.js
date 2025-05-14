@@ -2108,7 +2108,7 @@ describe( 'ListEditing - converters - data pipeline', () => {
 				'		<ol>' +
 				'			<p>xxx</p>' +
 				'			<li>' +
-				'				3<strong>.</strong>1' +							// Test multiple text nodes in <li>.
+				'				3<strong>.</strong>1' + // Test multiple text nodes in <li>.
 				'				<ul>' +
 				'					<li>' +
 				'						3.1.1' +

@@ -7,8 +7,6 @@
  * @module engine/view/domconverter
  */
 
-/* globals Node, NodeFilter, DOMParser */
-
 import ViewText from './text.js';
 import ViewElement from './element.js';
 import ViewUIElement from './uielement.js';
@@ -1244,7 +1242,7 @@ export default class DomConverter {
 		try {
 			range.setStart( selection.anchorNode!, selection.anchorOffset );
 			range.setEnd( selection.focusNode!, selection.focusOffset );
-		} catch ( e ) {
+		} catch {
 			// Safari sometimes gives us a selection that makes Range.set{Start,End} throw.
 			// See https://github.com/ckeditor/ckeditor5/issues/12375.
 			return false;
@@ -2016,7 +2014,7 @@ function isGeckoRestrictedDomSelection( domSelection: DomSelection ): boolean {
 
 	try {
 		Object.prototype.toString.call( container );
-	} catch ( error ) {
+	} catch {
 		return true;
 	}
 

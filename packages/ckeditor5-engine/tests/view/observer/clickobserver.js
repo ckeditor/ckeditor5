@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import ClickObserver from '../../../src/view/observer/clickobserver.js';
 import View from '../../../src/view/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';

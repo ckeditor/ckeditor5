@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, window, btoa */
-
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';

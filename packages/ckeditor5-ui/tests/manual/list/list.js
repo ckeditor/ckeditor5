@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import { ButtonView, ListItemGroupView, ListItemView, ListView } from '../../../src/index.js';
 
 const playground = document.querySelector( '#playground' );

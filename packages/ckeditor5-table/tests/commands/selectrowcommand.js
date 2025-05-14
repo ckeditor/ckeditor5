@@ -168,25 +168,25 @@ describe( 'SelectRowCommand', () => {
 					modelRoot.getNodeByPath( [ 0, 0, 1 ] )
 				);
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 1, 0, 0, 0 ],
 					[          0, 0 ],
 					[       0,    0 ],
 					[    0, 0, 0, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 
 				command.execute();
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 1, 1, 1, 1, 1 ],
 					[          0, 0 ],
 					[       0,    0 ],
 					[    0, 0, 0, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 			} );
 
 			it( 'should not select row-spanned rows that start in other row', () => {
@@ -196,25 +196,25 @@ describe( 'SelectRowCommand', () => {
 					modelRoot.getNodeByPath( [ 0, 2, 1 ] )
 				);
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0 ],
 					[          0, 0 ],
 					[       0,    1 ],
 					[    0, 0, 0, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 
 				command.execute();
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0 ],
 					[          0, 0 ],
 					[       1,    1 ],
 					[    0, 0, 0, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 			} );
 
 			it( 'should not select row-spanned rows that start in other row but include those that start in selected row', () => {
@@ -224,25 +224,25 @@ describe( 'SelectRowCommand', () => {
 					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 				);
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0 ],
 					[          0, 1 ],
 					[       0,    0 ],
 					[    0, 0, 0, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 
 				command.execute();
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0 ],
 					[          1, 1 ],
 					[       0,    0 ],
 					[    0, 0, 0, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 			} );
 
 			it( 'should select properly for multiple not spanned cells selected', () => {
@@ -252,25 +252,25 @@ describe( 'SelectRowCommand', () => {
 					modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 				);
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 1 ],
 					[          0, 1 ],
 					[       0,    0 ],
 					[    0, 0, 0, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 
 				command.execute();
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 1, 1, 1, 1, 1 ],
 					[          1, 1 ],
 					[       0,    0 ],
 					[    0, 0, 0, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 			} );
 
 			it( 'should select properly for multiple cells selected including spanned one', () => {
@@ -280,25 +280,25 @@ describe( 'SelectRowCommand', () => {
 					modelRoot.getNodeByPath( [ 0, 3, 2 ] )
 				);
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0 ],
 					[          1, 0 ],
 					[       0,    0 ],
 					[    0, 0, 1, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 
 				command.execute();
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0 ],
 					[          1, 1 ],
 					[       1,    1 ],
 					[    1, 1, 1, 1 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 			} );
 		} );
 

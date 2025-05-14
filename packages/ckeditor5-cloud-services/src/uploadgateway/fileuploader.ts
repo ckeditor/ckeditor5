@@ -7,8 +7,6 @@
  * @module cloud-services/uploadgateway/fileuploader
  */
 
-/* globals XMLHttpRequest, FormData, Blob, atob */
-
 import type { UploadResponse } from 'ckeditor5/src/upload.js';
 import { EmitterMixin, CKEditorError } from 'ckeditor5/src/utils.js';
 import type { InitializedToken } from '../token/token.js';
@@ -254,7 +252,7 @@ function _base64ToBlob( base64: string, sliceSize = 512 ) {
 		}
 
 		return new Blob( byteArrays, { type: contentType } );
-	} catch ( error ) {
+	} catch {
 		/**
 		 * Problem with decoding Base64 image data.
 		 *

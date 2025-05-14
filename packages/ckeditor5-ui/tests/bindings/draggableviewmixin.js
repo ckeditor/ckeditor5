@@ -6,8 +6,6 @@
 import { View } from '../../src/index.js';
 import DraggableViewMixin from '../../src/bindings/draggableviewmixin.js';
 
-/* global document, MouseEvent, TouchEvent, Touch */
-
 describe( 'DraggableViewMixin', () => {
 	let view;
 

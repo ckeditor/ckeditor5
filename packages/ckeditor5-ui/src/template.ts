@@ -7,8 +7,6 @@
  * @module ui/template
  */
 
-/* global document */
-
 import View from './view.js';
 import ViewCollection from './viewcollection.js';
 
@@ -1815,8 +1813,8 @@ export type TemplateListenerSchema = ArrayOrItem<ListenerBinding>;
 // So let's invent some opaque types for outside use and only keep using `TemplateBinding` internally. They can be different for
 // `attribute` and `on` contexts.
 // To make them opaque, a non-exported symbol is used, so it's not possible to accidentally create an instance outside.
-declare const AttributeBindingSymbol: unique symbol;
-declare const ListenerBindingSymbol: unique symbol;
+declare const AttributeBindingSymbol: unique symbol; // eslint-disable-line @typescript-eslint/no-unused-vars
+declare const ListenerBindingSymbol: unique symbol; // eslint-disable-line @typescript-eslint/no-unused-vars
 
 export interface AttributeBinding { _opaqueAttributeBinding: typeof AttributeBindingSymbol }
 export interface ListenerBinding { _opaqueListenerBinding: typeof ListenerBindingSymbol }

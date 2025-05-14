@@ -432,7 +432,7 @@ export default class MentionUI extends Plugin {
 	private _handleFeedResponse( data: RequestFeedResponseEvent['args'][0] ) {
 		const { feed, marker } = data;
 
-		// eslint-disable-next-line max-len
+		// eslint-disable-next-line @stylistic/max-len
 		// @if CK_DEBUG_MENTION // console.log( `%c[Feed]%c Response for "${ data.feedText }" (${ feed.length })`, 'color: blue', 'color: black', feed );
 
 		// If the marker is not in the document happens when the selection had changed and the 'mention' marker was removed.

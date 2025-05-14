@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, setTimeout, console */
-
 import DecoupledEditor from '../src/decouplededitor.js';
 import DecoupledEditorUI from '../src/decouplededitorui.js';
 import DecoupledEditorUIView from '../src/decouplededitoruiview.js';

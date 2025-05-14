@@ -7,8 +7,6 @@
  * @module engine/dev-utils/operationreplayer
  */
 
-/* global setTimeout */
-
 import OperationFactory from '../model/operation/operationfactory.js';
 
 import type Model from '../model/model.js';

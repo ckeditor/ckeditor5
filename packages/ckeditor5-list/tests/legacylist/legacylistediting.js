@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/* eslint-disable @stylistic/no-multi-spaces */
+
 import LegacyListEditing from '../../src/legacylist/legacylistediting.js';
 import LegacyListCommand from '../../src/legacylist/legacylistcommand.js';
 import LegacyIndentCommand from '../../src/legacylist/legacyindentcommand.js';

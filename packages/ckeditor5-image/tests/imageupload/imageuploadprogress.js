@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window */
-
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
@@ -22,7 +20,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import ImageInlineEditing from '../../src/image/imageinlineediting.js';
 
 describe( 'ImageUploadProgress', () => {
-	// eslint-disable-next-line max-len
+	// eslint-disable-next-line @stylistic/max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
 	let editor, model, doc, fileRepository, view, nativeReaderMock, loader, adapterMock, imagePlaceholder;
 

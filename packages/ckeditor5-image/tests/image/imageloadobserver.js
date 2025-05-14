@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, Event */
-
 import ImageLoadObserver from '../../src/image/imageloadobserver.js';
 import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer.js';
 import View from '@ckeditor/ckeditor5-engine/src/view/view.js';

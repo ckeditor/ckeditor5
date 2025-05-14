@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, document */
-
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Emoji, EmojiMention, EmojiPicker, EmojiRepository } from '../../src/index.js';
 import { Mention } from '@ckeditor/ckeditor5-mention';

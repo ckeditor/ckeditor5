@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import View from '../../../src/view/view.js';
 import ViewPosition from '../../../src/view/position.js';
 import ViewRange from '../../../src/view/range.js';

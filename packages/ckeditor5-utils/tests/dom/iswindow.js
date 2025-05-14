@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global window */
-
 import isWindow from '../../src/dom/iswindow.js';
 
 describe( 'isWindow()', () => {
