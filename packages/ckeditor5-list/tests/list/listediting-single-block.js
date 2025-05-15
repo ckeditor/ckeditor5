@@ -343,6 +343,20 @@ describe( 'ListEditing (multiBlock=false)', () => {
 				'<listItem listIndent="0" listItemId="a03" listType="bulleted">bar</listItem>'
 			);
 		} );
+
+		it( 'should upcast `data-list-item-id` attribute as listItemId', () => {
+			editor.setData(
+				'<ul>' +
+					'<li data-list-item-id="c">' +
+						'<p>foo</p>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<listItem listIndent="0" listItemId="c" listType="bulleted">foo</listItem>'
+			);
+		} );
 	} );
 
 	describe( 'downcast - editing', () => {
@@ -394,6 +408,50 @@ describe( 'ListEditing (multiBlock=false)', () => {
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 				'<ul>' +
 					'<li><span class="ck-list-bogus-paragraph">foo</span></li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should add `data-list-item-id` attribute', () => {
+			setModelData( model,
+				'<listItem listIndent="0" listItemId="a" listType="bulleted" alignment="center">foo</listItem>'
+			);
+
+			editor.execute( 'alignment', { value: 'left' } );
+
+			expect( getViewData( view, { withoutSelection: true, skipListItemIds: false } ) ).to.equalMarkup(
+				'<ul>' +
+					'<li data-list-item-id="a"><span class="ck-list-bogus-paragraph">foo</span></li>' +
+				'</ul>'
+			);
+		} );
+	} );
+
+	describe( 'downcast - data', () => {
+		it( 'should add `data-list-item-id` attribute', () => {
+			setModelData( model,
+				'<listItem listIndent="0" listItemId="a" listType="bulleted" alignment="center">foo</listItem>'
+			);
+
+			editor.execute( 'alignment', { value: 'left' } );
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ul>' +
+					'<li data-list-item-id="a">foo</li>' +
+				'</ul>'
+			);
+		} );
+
+		it( 'should not add `data-list-item-id` attribute if `skipListItemIds` flag was used', () => {
+			setModelData( model,
+				'<listItem listIndent="0" listItemId="a" listType="bulleted" alignment="center">foo</listItem>'
+			);
+
+			editor.execute( 'alignment', { value: 'left' } );
+
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
+				'<ul>' +
+					'<li>foo</li>' +
 				'</ul>'
 			);
 		} );
