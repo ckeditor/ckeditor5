@@ -26,3 +26,11 @@ msgstr "Mode de pantalla completa"
 msgctxt "Keystroke description for assistive technologies: keystroke for toggling a fullscreen mode."
 msgid "Toggle fullscreen mode"
 msgstr "Activa el mode de pantalla completa"
+
+msgctxt "Label for a sidebar header that contains a document outline"
+msgid "Document outline"
+msgstr "Esquema del document"
+
+msgctxt "Label for a sidebar header that contains a list of connected users"
+msgid "Connected users"
+msgstr "Usuaris connectats"

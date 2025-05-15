@@ -26,3 +26,11 @@ msgstr "وضع ملء الشاشة"
 msgctxt "Keystroke description for assistive technologies: keystroke for toggling a fullscreen mode."
 msgid "Toggle fullscreen mode"
 msgstr "تبديل وضع ملء الشاشة"
+
+msgctxt "Label for a sidebar header that contains a document outline"
+msgid "Document outline"
+msgstr "مخطط المستند"
+
+msgctxt "Label for a sidebar header that contains a list of connected users"
+msgid "Connected users"
+msgstr "المستخدمون المتصلون"

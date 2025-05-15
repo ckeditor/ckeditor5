@@ -26,3 +26,11 @@ msgstr "全画面モード"
 msgctxt "Keystroke description for assistive technologies: keystroke for toggling a fullscreen mode."
 msgid "Toggle fullscreen mode"
 msgstr "全画面モードの切り替え"
+
+msgctxt "Label for a sidebar header that contains a document outline"
+msgid "Document outline"
+msgstr "ドキュメントの概要"
+
+msgctxt "Label for a sidebar header that contains a list of connected users"
+msgid "Connected users"
+msgstr "接続ユーザー"
