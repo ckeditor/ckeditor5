@@ -58,7 +58,7 @@ ClassicEditor
 	<li class="c-banner__list-item">the preferred distribution method.</li>
 </ul>
 <p class="c-banner__paragraph">You get ready-to-use code tailored to your needs!</p>
-<p class="c-banner__paragraph">
+<p class="c-banner__buttons">
 	<a class="c-button c-button--primary c-button--base c-button--rounded doc"
 		href="https://ckeditor.com/ckeditor-5/builder?redirect=docs" target="_blank" role="link">
 		<span class="c-button__label doc">Check out our interactive Builder</span>
@@ -83,9 +83,9 @@ ClassicEditor
 ### Banner light
 
 <div class="c-banner c-banner--light no-transform">
-<h2 class="c-banner__headline">Unlock this feature with a <span>CKEditor&nbsp;5</span></h2>
+<h2 class="c-banner__headline">Unlock this feature with a <span>CKEditor&nbsp;5 Paid Plan</span></h2>
 
-<p class="c-banner__paragraph">Provides access to all the premium features you need.</p>
+<p class="c-banner__paragraph">Try a trial with access to all the premium features – no credit card needed!</p>
 
 <p class="c-banner__buttons">
 <a class="c-button c-button--primary c-button--base c-button--rounded doc"
@@ -94,7 +94,7 @@ ClassicEditor
 </a>
 <a class="c-button c-button--secondary c-button--base c-button--rounded doc"
 	href="https://ckeditor.com/pricing/" target="_blank" role="link">
-	<span class="c-button__label doc">select the Plan</span>
+	<span class="c-button__label doc">Select the Plan</span>
 </a>
 </p>
 
