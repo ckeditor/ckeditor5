@@ -522,7 +522,11 @@ describe( 'EvaluationBadge', () => {
 		it( 'should position the badge to the left right if the UI language is RTL (and powered-by is on the left)', async () => {
 			const editor = await createEditor( element, {
 				language: 'ar',
-				licenseKey: developmentLicenseKey
+				licenseKey: developmentLicenseKey,
+				translations: [ { ar: {
+					dictionary: [],
+					getPluralForm: sinon.spy()
+				} } ]
 			} );
 
 			testUtils.sinon.stub( editor.ui.getEditableElement( 'main' ), 'getBoundingClientRect' ).returns( {

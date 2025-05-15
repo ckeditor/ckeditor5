@@ -380,7 +380,11 @@ describe( 'Badge', () => {
 
 		it( 'should position to the left side if the UI language is RTL and no side was configured', async () => {
 			const editor = await createEditor( element, {
-				language: 'ar'
+				language: 'ar',
+				translations: [ { ar: {
+					dictionary: [],
+					getPluralForm: sinon.spy()
+				} } ]
 			} );
 
 			badge = new BadgeExtended( editor );
