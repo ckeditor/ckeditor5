@@ -157,7 +157,14 @@ export function getBorderStyleDefinitions(
  * * have some icons,
  * * set a certain UI view property value upon execution.
  *
- * @param nameToValue A function that maps a button name to a value. By default names are the same as values.
+ * @param options Configuration options
+ * @param options.view The view that has the observable property.
+ * @param options.icons Object with button icons.
+ * @param options.toolbar The toolbar to fill with buttons.
+ * @param options.labels Object with button labels.
+ * @param options.propertyName The name of the observable property in the view.
+ * @param options.nameToValue A function that maps a button name to a value. By default names are the same as values.
+ * @param options.defaultValue Default value for the property.
  */
 export function fillToolbar<TView extends View, TPropertyName extends keyof TView>(
 	options: {
@@ -198,7 +205,12 @@ export function fillToolbar<TView extends View, TPropertyName extends keyof TVie
 		} );
 
 		button.on( 'execute', () => {
-			view[ propertyName ] = buttonValue as any;
+			// Allow toggling alignment if there is no default value specified (especially for layout tables).
+			if ( !defaultValue && buttonValue && view[ propertyName ] === buttonValue ) {
+				view[ propertyName ] = undefined as any;
+			} else {
+				view[ propertyName ] = buttonValue as any;
+			}
 		} );
 
 		toolbar.items.add( button );

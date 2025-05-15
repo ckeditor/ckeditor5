@@ -1,12 +1,12 @@
 ---
 menu-title: Default integration
-meta-title: React rich text editor component with CDN | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with React from CDN | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using the React component with CDN.
 category: react-cdn
 order: 10
 ---
 
-# React rich text editor component (CDN)
+# Integrating CKEditor&nbsp;5 with React from CDN
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-react" target="_blank" rel="noopener">
@@ -422,3 +422,9 @@ npm install --save-dev ckeditor5
 ## Contributing and reporting issues
 
 The source code of rich text editor component for React is available on GitHub in [https://github.com/ckeditor/ckeditor5-react](https://github.com/ckeditor/ckeditor5-react).
+
+## Next steps
+
+* See how to manipulate the editor's data in the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
+* Refer to further guides in the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
+* Check the {@link features/index features category} to learn more about individual features.

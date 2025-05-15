@@ -4,14 +4,14 @@ menu-title: Customizing icons
 meta-title: Customizing icons | CKEditor 5 Documentation
 meta-description: Learn how to customize editor icons.
 order: 95
-modified_at: 2025-01-24
+modified_at: 2025-04-07
 ---
 
 # Customizing icons
 
 CKEditor&nbsp;5 comes with a set of icons that are used in the editor UI. If you are using self-hosted installation method like npm or ZIP, you can customize the icons by overriding the default npm package that contains them.
 
-There are two ways to do this and both require overriding the `@ckeditor/ckeditor5-icons` package. One way is to create a custom icons package and override the default icons package in your project using a package manager. The other one is to create a bundler plugin that replaces the icons during the build process.
+There are two ways to do this, and both require overriding the `@ckeditor/ckeditor5-icons` package. One way is to create a custom icons package and override the default icons package in your project using a package manager. The other is to use resolve aliases to replace the icons during the build process.
 
 Let's start with the first method.
 
@@ -123,39 +123,105 @@ Then, run `pnpm install` to install the custom icons package.
 
 You can read more about the `resolutions` field in the [pnpm documentation](https://pnpm.io/package_json#pnpmoverrides).
 
-## Overriding icons using a bundler plugin
+## Override icons using resolve aliases
 
-If you are using a bundler like Vite, you can create a plugin to replace the icons during the build process. This document uses Vite as an example, and does not cover the specifics of creating plugins in other bundlers.
+If you are using a bundler, you can use resolve aliases to replace the default `@ckeditor/ckeditor5-icons` package with your custom icon file. This method is similar to the one described above, but does not require creating a custom package.
 
-### Prepare custom icons file
+This section only shows selected bundlers as examples, but other bundlers support similar functionality out of the box or with first-party plugins.
 
-Open the `node_modules` directory and look for the `@ckeditor/ckeditor5-icons` package. You will find the `dist/index.js` file inside. Copy the contents of this file.
+### Prepare custom icon file
 
-Create a new file outside the rest of the code (usually the `src` folder) and paste the content you copied before. You can modify the JavaScript strings containing SVG icons in this file to customize the icons.
+Open the `node_modules` directory and look for the `@ckeditor/ckeditor5-icons` package. Inside you will find the `dist/index.js` file. Make a copy of this file, move it to your project and rename it if necessary. Then remove the `//# sourceMappingURL=index.js.map` comment at the bottom.
 
-### Create a plugin
+You can modify the JavaScript strings containing SVG icons in this file to customize the icons.
 
-Open the `vite.config.js` or `rollup.config.js` file and add the following code:
+### Add resolve alias
+
+Now that you have a custom icon file, you can add a resolve alias to your bundler configuration. This will cause all imports from the `@ckeditor/ckeditor5-icons` package to resolve to your custom icon file.
+
+Follow the instruction below depending on the bundler you are using.
+
+<info-box>
+	The examples below assume that the custom icons are located in the `src/icons.js` file and that the bundler configuration file is in ES Modules format. If the configuration file is in CommonJS format instead, you may need to replace `import.meta.dirname` with `__dirname`.
+</info-box>
+
+#### Vite
+
+Open the `vite.config.js` file and add the following code:
 
 ```js
-import { readFileSync } from 'fs';
-import { defineConfig } from 'vite';
+import { resolve } from 'path';
 
-export default defineConfig({
-	optimizeDeps: {
-		exclude: [ '@ckeditor/ckeditor5-icons' ]
-	},
-	plugins: [
-		{
-			name: 'override-ckeditor5-icons',
-			load( id ) {
-				if ( id.includes( '@ckeditor/ckeditor5-icons' ) ) {
-					return readFileSync( './icons.js', { encoding: 'utf-8' } );
-				}
-			}
+export default {
+	resolve: {
+		alias: {
+			'@ckeditor/ckeditor5-icons/dist/index.js': resolve( import.meta.dirname, './src/icons.js' )
 		}
-	]
-});
+	}
+};
 ```
 
-This code will replace the `@ckeditor/ckeditor5-icons` package with the `icons.js` file you created.
+#### Webpack
+
+Open the `webpack.config.js` file and add the following code:
+
+```js
+import { resolve } from 'path';
+
+export default {
+	resolve: {
+		alias: {
+			'@ckeditor/ckeditor5-icons/dist/index.js': resolve( import.meta.dirname, './src/icons.js' )
+		}
+	}
+};
+```
+
+#### esbuild
+
+Open the esbuild configuration file and add the following code:
+
+```js
+import { resolve } from 'path';
+
+build( {
+	alias: {
+		'@ckeditor/ckeditor5-icons/dist/index.js': resolve( import.meta.dirname, './src/icons.js' )
+	}
+} );
+```
+
+#### Rollup
+
+Rollup does not support aliases by default, so you need to install the first-party `@rollup/plugin-alias` plugin if you do not already have it. Then add the following code to the `rollup.config.js` file:
+
+```js
+import { resolve } from 'path';
+import alias from '@rollup/plugin-alias';
+
+export default {
+	plugins: [
+		alias( {
+			entries: {
+				'@ckeditor/ckeditor5-icons/dist/index.js': resolve( import.meta.dirname, './src/icons.js' )
+			}
+		} )
+	]
+};
+```
+
+#### Rolldown
+
+Open the `rolldown.config.js` file and add the following code:
+
+```js
+import { resolve } from 'path';
+
+export default {
+	resolve: {
+		alias: {
+			'@ckeditor/ckeditor5-icons/dist/index.js': resolve( import.meta.dirname, './src/icons.js' )
+		}
+	}
+};
+```

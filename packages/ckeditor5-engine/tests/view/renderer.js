@@ -2150,6 +2150,22 @@ describe( 'Renderer', () => {
 				assertDomSelectionContents( domSelection, domParagraph, /^foo bar$/ );
 			} );
 
+			it( 'should remove fake selection container when selection is no longer fake even if editor is not focused', () => {
+				selection._setTo( selection.getRanges(), { fake: true } );
+				renderer.render();
+
+				renderer.isFocused = false;
+
+				selection._setTo( selection.getRanges(), { fake: false } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 1 );
+
+				const domParagraph = domRoot.childNodes[ 0 ];
+				expect( domParagraph.childNodes.length ).to.equal( 1 );
+				expect( domParagraph.tagName.toLowerCase() ).to.equal( 'p' );
+			} );
+
 			it( 'should reuse fake selection container #1', () => {
 				const label = 'fake selection label';
 
@@ -4412,7 +4428,7 @@ describe( 'Renderer', () => {
 				);
 			} );
 
-			it( 'should rename attributes that can not be rendered in the editing pipeline', () => {
+			it( 'should rename attributes that cannot be rendered in the editing pipeline', () => {
 				setViewData( view,
 					'<container:p>' +
 						'bar' +

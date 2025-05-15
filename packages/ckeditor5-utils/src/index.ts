@@ -4,7 +4,7 @@
  */
 
 /**
- * @module utils
+ * @module utils/index
  */
 
 export { default as env } from './env.js';
@@ -68,6 +68,7 @@ export { default as isValidAttributeName } from './dom/isvalidattributename.js';
 export { default as isVisible } from './dom/isvisible.js';
 export { getOptimalPosition, type Options as PositionOptions, type PositioningFunction, type DomPoint } from './dom/position.js';
 export { default as remove } from './dom/remove.js';
+export { default as getVisualViewportOffset } from './dom/getvisualviewportoffset.js';
 export * from './dom/scroll.js';
 
 export * from './keyboard.js';
@@ -96,6 +97,7 @@ export { default as wait } from './wait.js';
 export { default as parseBase64EncodedObject } from './parsebase64encodedobject.js';
 export { default as crc32, type CRCData } from './crc32.js';
 export { default as collectStylesheets } from './collectstylesheets.js';
+export { default as formatHtml } from './formathtml.js';
 
 export * from './unicode.js';
 

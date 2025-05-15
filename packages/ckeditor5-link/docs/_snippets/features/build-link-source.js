@@ -40,17 +40,7 @@ export class SocialLinksPlugin extends Plugin {
 					label: 'Instagram',
 					icon: IconLink
 				}
-			],
-
-			// Optionally: You can customize your link preview by custom implementation of link getter.
-			getItem: href => {
-				return {
-					href,
-					icon: IconLink,
-					label: 'My custom label in link preview',
-					tooltip: 'My custom tooltip in link preview'
-				};
-			}
+			]
 		} );
 	}
 }

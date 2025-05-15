@@ -1,12 +1,12 @@
 ---
 category: self-hosted
-meta-title: Compatibility with Laravel using a ZIP archive | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with Laravelfrom ZIP archive | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with Laravel using a ZIP archive.
 order: 80
 menu-title: Laravel
 ---
 
-# Compatibility with Laravel using ZIP
+# Integrating CKEditor&nbsp;5 with Laravel from ZIP
 
 As a pure JavaScript/TypeScript application, CKEditor&nbsp;5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom configuration of CKEditor&nbsp;5 in a non-JS framework of your choice, for example, the PHP-based [Laravel](https://laravel.com/).
 
@@ -17,10 +17,6 @@ As a pure JavaScript/TypeScript application, CKEditor&nbsp;5 will work inside an
 This guide assume you have a Laravel project. You can create a basic Laravel project using [Composer](https://getcomposer.org/). Refer to the [Laravel documentation](https://laravel.com/docs/10.x/installation) to learn how to set up a project in the framework.
 
 ## Integrating using ZIP
-
-<info-box>
-	Our new CKEditor&nbsp;5 Builder does not provide ZIP output yet &ndash; but it will in the future. In the meantime, you can use one of the generic ZIP packages provided [on the download page](https://ckeditor.com/ckeditor-5/download/#zip).
-</info-box>
 
 After downloading and unpacking the ZIP archive, copy the `ckeditor5.js` and `ckeditor5.css` files in the `public/assets/vendor/` directory. The folder structure of your app should resemble this one.
 
@@ -118,3 +114,9 @@ Having all the dependencies of CKEditor&nbsp;5, modify the `welcome.blade.php` f
 ```
 
 Finally, in the root directory of your Laravel project, run `php artisan serve` to see the app in action.
+
+## Next steps
+
+* See how to manipulate the editor's data in the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
+* Refer to further guides in the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
+* Check the {@link features/index features category} to learn more about individual features.

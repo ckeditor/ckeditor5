@@ -1,13 +1,13 @@
 ---
 menu-title: Next.js
-meta-title: Integration with Next.js using npm | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with Next.jsfrom npm | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with the Next.js framework using both routing strategies (App Router or Pages Router) and npm.
 category: self-hosted
 order: 40
 modified_at: 2023-11-14
 ---
 
-# Integrate CKEditor 5 with Next.js using npm
+# Integrating CKEditor&nbsp;5 with Next.js from npm
 
 [Next.js](https://nextjs.org/) is a React meta-framework that helps create full-stack web applications. It offers different rendering strategies like server-side rendering (SSR), client-side rendering (CSR), or static site generation (SSG). Additionally, it provides file-based routing, automatic code splitting, and other handy features out of the box.
 
@@ -135,3 +135,9 @@ We provide several **ready-to-use integrations** featuring collaborative editing
 * [CKEditor&nbsp;5 with offline comments, track changes and revision history features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/collaboration-for-next)
 
 It is not mandatory to build applications on top of the above samples, however, they should help you get started.
+
+## Next steps
+
+* See how to manipulate the editor's data in the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
+* Refer to further guides in the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
+* Check the {@link features/index features category} to learn more about individual features.

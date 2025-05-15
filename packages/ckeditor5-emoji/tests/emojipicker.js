@@ -192,6 +192,26 @@ describe( 'EmojiPicker', () => {
 				sinon.assert.calledOnce( stub );
 			} );
 
+			it( 'should scroll to the selection when the "emoji" toolbar component is executed', () => {
+				const scrollSpy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+				const toolbarButton = editor.ui.componentFactory.create( 'emoji' );
+
+				toolbarButton.fire( 'execute' );
+
+				sinon.assert.calledOnce( scrollSpy );
+			} );
+
+			it( 'should scroll to the selection when the "menuBar:emoji" toolbar component is executed', () => {
+				const scrollSpy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+				const toolbarButton = editor.ui.componentFactory.create( 'menuBar:emoji' );
+
+				toolbarButton.fire( 'execute' );
+
+				sinon.assert.calledOnce( scrollSpy );
+			} );
+
 			it( 'should provide the "menuBar:emoji" toolbar component', () => {
 				expect( editor.ui.componentFactory.has( 'menuBar:emoji' ) ).to.equal( true );
 
@@ -371,9 +391,12 @@ describe( 'EmojiPicker', () => {
 		it( 'should close the picker when clicking outside of it', () => {
 			emojiPicker.showUI();
 
+			const focusSpy = sinon.spy( editor.editing.view, 'focus' );
+
 			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
 			expect( emojiPicker.balloonPlugin.visibleView ).to.equal( null );
+			expect( focusSpy ).not.to.be.called;
 		} );
 
 		it( 'should close the picker when focus is on the picker and escape is clicked', () => {

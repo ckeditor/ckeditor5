@@ -32,9 +32,10 @@ export default class DecoupledEditorHandler extends AbstractEditorHandler {
 	/**
 	 * A function that moves the editor UI elements to the fullscreen mode.
 	 */
-	protected override _defaultOnEnter(): HTMLElement {
-		/* istanbul ignore if -- @preserve */
-		if ( this._editor.plugins.has( 'Pagination' ) ) {
+	public override defaultOnEnter(): HTMLElement {
+		// Code coverage is provided in the commercial package repository as integration unit tests.
+		/* istanbul ignore next -- @preserve */
+		if ( this._editor.plugins.has( 'Pagination' ) && ( this._editor.plugins.get( 'Pagination' ) as any ).isEnabled ) {
 			this.moveToFullscreen(
 				this._editor.ui.getEditableElement()!.parentElement!.querySelector( '.ck-pagination-view' )!, 'pagination-view'
 			);

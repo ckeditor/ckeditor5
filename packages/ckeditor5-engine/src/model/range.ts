@@ -869,7 +869,7 @@ export default class Range extends TypeCheckable implements Iterable<TreeWalkerV
 	 * If the deleted range contains transformed range, `null` will be returned.
 	 *
 	 * @internal
-	 * @param deletionPosition Position from which nodes are removed.
+	 * @param deletePosition Position from which nodes are removed.
 	 * @param howMany How many nodes are removed.
 	 * @returns Result of the transformation.
 	 */

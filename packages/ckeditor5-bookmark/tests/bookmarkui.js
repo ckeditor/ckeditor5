@@ -95,6 +95,14 @@ describe( 'BookmarkUI', () => {
 			expect( button.icon ).to.equal( IconBookmark );
 		} );
 
+		it( 'should scroll to the selection when executed', () => {
+			const scrollSpy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+			button.fire( 'execute' );
+
+			sinon.assert.calledOnce( scrollSpy );
+		} );
+
 		it( 'should bind #isEnabled to insert and update command', () => {
 			const insertBookmark = editor.commands.get( 'insertBookmark' );
 			const updateBookmark = editor.commands.get( 'updateBookmark' );
@@ -125,6 +133,14 @@ describe( 'BookmarkUI', () => {
 		} );
 
 		testButton( 'bookmark', 'Bookmark', MenuBarMenuListItemButtonView );
+
+		it( 'should scroll to the selection when executed', () => {
+			const scrollSpy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
+
+			button.fire( 'execute' );
+
+			sinon.assert.calledOnce( scrollSpy );
+		} );
 	} );
 
 	function testButton( featureName, label, Component ) {
@@ -321,7 +337,7 @@ describe( 'BookmarkUI', () => {
 			setModelData( editor.model, '<paragraph>[<bookmark bookmarkId="foo"></bookmark>]</paragraph>' );
 
 			sinon.assert.calledWithMatch( spy, sinon.match( ( { balloonClassName, view } ) => {
-				return view === toolbarView && balloonClassName === 'ck-toolbar-container';
+				return view === toolbarView && balloonClassName === 'ck-bookmark-balloon ck-toolbar-container';
 			} ) );
 		} );
 
@@ -362,7 +378,7 @@ describe( 'BookmarkUI', () => {
 						defaultPositions.viewportStickyNorth
 					]
 				},
-				balloonClassName: 'ck-toolbar-container'
+				balloonClassName: 'ck-bookmark-balloon ck-toolbar-container'
 			} );
 		} );
 
@@ -1525,7 +1541,7 @@ describe( 'BookmarkUI', () => {
 			bookmarkUIFeature._showFormView();
 			document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
-			sinon.assert.calledWithExactly( spy );
+			sinon.assert.calledWithExactly( spy, false );
 		} );
 
 		it( 'should not hide the UI upon clicking inside the the UI', () => {

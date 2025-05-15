@@ -475,6 +475,15 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 
 		// Something weird happened and the stored node doesn't contain the filler's text.
 		if ( !startsWithFiller( domFillerNode ) ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'Renderer',
+			// @if CK_DEBUG_TYPING // 		'Inline filler node: ' +
+			// @if CK_DEBUG_TYPING // 		`%c${ _escapeTextNodeData( domFillerNode.data ) }%c (${ domFillerNode.data.length })`,
+			// @if CK_DEBUG_TYPING // 		'color: blue',
+			// @if CK_DEBUG_TYPING // 		''
+			// @if CK_DEBUG_TYPING // 	) );
+			// @if CK_DEBUG_TYPING // }
+
 			/**
 			 * The inline filler node was lost. Most likely, something overwrote the filler text node
 			 * in the DOM.
@@ -970,16 +979,28 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 			return;
 		}
 
-		const domRoot = this.domConverter.mapViewToDom( this.selection.editableElement! );
+		const domEditable = this.domConverter.mapViewToDom( this.selection.editableElement! );
 
-		// Do nothing if there is no focus, or there is no DOM element corresponding to selection's editable element.
-		if ( !this.isFocused || !domRoot ) {
+		// Do not update DOM selection if there is no focus, or there is no DOM element corresponding to selection's editable element.
+		if ( !this.isFocused || !domEditable ) {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
 			// @if CK_DEBUG_TYPING // 		'Skip updating DOM selection:',
-			// @if CK_DEBUG_TYPING // 		`isFocused: ${ this.isFocused }, hasDomRoot: ${ !!domRoot }`
+			// @if CK_DEBUG_TYPING // 		`isFocused: ${ this.isFocused }, hasDomEditable: ${ !!domEditable }`
 			// @if CK_DEBUG_TYPING // 	) );
 			// @if CK_DEBUG_TYPING // }
+
+			// But if there was a fake selection, and it is not fake anymore - remove it as it can map to no longer existing widget.
+			// See https://github.com/ckeditor/ckeditor5/issues/18123.
+			if ( !this.selection.isFake && this._fakeSelectionContainer && this._fakeSelectionContainer.isConnected ) {
+				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+				// @if CK_DEBUG_TYPING // 		'Remove fake selection (not focused editable)'
+				// @if CK_DEBUG_TYPING // 	) );
+				// @if CK_DEBUG_TYPING // }
+
+				this._removeFakeSelection();
+			}
 
 			return;
 		}
@@ -992,30 +1013,30 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 
 		// Render fake selection - create the fake selection container (if needed) and move DOM selection to it.
 		if ( this.selection.isFake ) {
-			this._updateFakeSelection( domRoot );
+			this._updateFakeSelection( domEditable );
 		}
 		// There was a fake selection so remove it and update the DOM selection.
 		// This is especially important on Android because otherwise IME will try to compose over the fake selection container.
 		else if ( this._fakeSelectionContainer && this._fakeSelectionContainer.isConnected ) {
 			this._removeFakeSelection();
-			this._updateDomSelection( domRoot );
+			this._updateDomSelection( domEditable );
 		}
 		// Update the DOM selection in case of a plain selection change (no fake selection is involved).
 		// On non-Android the whole rendering is disabled in composition mode (including DOM selection update),
 		// but updating DOM selection should be also disabled on Android if in the middle of the composition
 		// (to not interrupt it).
 		else if ( !( this.isComposing && env.isAndroid ) ) {
-			this._updateDomSelection( domRoot );
+			this._updateDomSelection( domEditable );
 		}
 	}
 
 	/**
 	 * Updates the fake selection.
 	 *
-	 * @param domRoot A valid DOM root where the fake selection container should be added.
+	 * @param domEditable A valid DOM editable where the fake selection container should be added.
 	 */
-	private _updateFakeSelection( domRoot: DomElement ): void {
-		const domDocument = domRoot.ownerDocument;
+	private _updateFakeSelection( domEditable: DomElement ): void {
+		const domDocument = domEditable.ownerDocument;
 
 		if ( !this._fakeSelectionContainer ) {
 			this._fakeSelectionContainer = createFakeSelectionContainer( domDocument );
@@ -1026,12 +1047,12 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		// Bind fake selection container with the current selection *position*.
 		this.domConverter.bindFakeSelection( container, this.selection );
 
-		if ( !this._fakeSelectionNeedsUpdate( domRoot ) ) {
+		if ( !this._fakeSelectionNeedsUpdate( domEditable ) ) {
 			return;
 		}
 
-		if ( !container.parentElement || container.parentElement != domRoot ) {
-			domRoot.appendChild( container );
+		if ( !container.parentElement || container.parentElement != domEditable ) {
+			domEditable.appendChild( container );
 		}
 
 		container.textContent = this.selection.fakeSelectionLabel || '\u00A0';
@@ -1053,10 +1074,10 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Updates the DOM selection.
 	 *
-	 * @param domRoot A valid DOM root where the DOM selection should be rendered.
+	 * @param domEditable A valid DOM editable where the DOM selection should be rendered.
 	 */
-	private _updateDomSelection( domRoot: DomElement ) {
-		const domSelection = domRoot.ownerDocument.defaultView!.getSelection()!;
+	private _updateDomSelection( domEditable: DomElement ) {
+		const domSelection = domEditable.ownerDocument.defaultView!.getSelection()!;
 
 		// Let's check whether DOM selection needs updating at all.
 		if ( !this._domSelectionNeedsUpdate( domSelection ) ) {
@@ -1124,15 +1145,15 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Checks whether the fake selection needs to be updated.
 	 *
-	 * @param domRoot A valid DOM root where a new fake selection container should be added.
+	 * @param domEditable A valid DOM editable where a new fake selection container should be added.
 	 */
-	private _fakeSelectionNeedsUpdate( domRoot: DomElement ): boolean {
+	private _fakeSelectionNeedsUpdate( domEditable: DomElement ): boolean {
 		const container = this._fakeSelectionContainer;
-		const domSelection = domRoot.ownerDocument.getSelection()!;
+		const domSelection = domEditable.ownerDocument.getSelection()!;
 
 		// Fake selection needs to be updated if there's no fake selection container, or the container currently sits
 		// in a different root.
-		if ( !container || container.parentElement !== domRoot ) {
+		if ( !container || container.parentElement !== domEditable ) {
 			return true;
 		}
 

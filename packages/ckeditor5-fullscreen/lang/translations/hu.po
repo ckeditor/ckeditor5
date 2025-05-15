@@ -1,0 +1,36 @@
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "Label for a toolbar button that enters the fullscreen when pressed"
+msgid "Enter fullscreen mode"
+msgstr "Teljes képernyős mód"
+
+msgctxt "Label for a toolbar button that leaves the fullscreen when pressed"
+msgid "Leave fullscreen mode"
+msgstr "Kilépés a teljes képernyőből"
+
+msgctxt "Label for a menu bar button that toggles fullscreen mode"
+msgid "Fullscreen mode"
+msgstr "Teljes képernyős mód"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for toggling a fullscreen mode."
+msgid "Toggle fullscreen mode"
+msgstr "Váltás teljes képernyőre"
+
+msgctxt "Label for a sidebar header that contains a document outline"
+msgid "Document outline"
+msgstr "Dokumentum vázlata"
+
+msgctxt "Label for a sidebar header that contains a list of connected users"
+msgid "Connected users"
+msgstr "Csatlakozott felhasználók"

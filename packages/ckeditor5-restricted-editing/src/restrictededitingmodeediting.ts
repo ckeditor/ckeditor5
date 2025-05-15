@@ -201,7 +201,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		} ) );
 
 		// Currently the marker helpers are tied to other use-cases and do not render a collapsed marker as highlight.
-		// Also, markerToHighlight can not convert marker on an inline object. It handles only text and widgets,
+		// Also, markerToHighlight cannot convert marker on an inline object. It handles only text and widgets,
 		// but it is not a case in the data pipeline. That's why there are 3 downcast converters for them:
 		//
 		// 1. The custom inline item (text or inline object) converter (but not the selection).

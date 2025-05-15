@@ -1,7 +1,7 @@
 Software License Agreement
 ==========================
 
-**CKEditor&nbsp;5 Image feature** (https://github.com/ckeditor/ckeditor5)<br>
+**CKEditor&nbsp;5 Icon pack** (https://github.com/ckeditor/ckeditor5)<br>
 Copyright (c) 2003–2025, [CKSource Holding sp. z o.o.](https://cksource.com) All rights reserved.
 
 Licensed under a dual-license model, this software is available under:
@@ -15,10 +15,6 @@ Sources of Intellectual Property Included in CKEditor
 -----------------------------------------------------
 
 Where not otherwise indicated, all CKEditor content is authored by CKSource engineers and consists of CKSource-owned intellectual property. In some specific instances, CKEditor will incorporate work done by developers outside of CKSource with their express permission.
-
-The following libraries are included in CKEditor under the [MIT license](https://opensource.org/licenses/MIT):
-
-* Lodash - Copyright (c) JS Foundation and other contributors https://js.foundation/. Based on Underscore.js, copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors http://underscorejs.org/.
 
 Trademarks
 ----------

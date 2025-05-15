@@ -33,12 +33,13 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 	/**
 	 * A function that moves the editor UI elements to the fullscreen mode.
 	 */
-	protected override _defaultOnEnter(): HTMLElement {
+	public override defaultOnEnter(): HTMLElement {
 		const editorUI = this._editor.ui;
 		const editorUIView = editorUI.view;
 
-		/* istanbul ignore if -- @preserve */
-		if ( this._editor.plugins.has( 'Pagination' ) ) {
+		// Code coverage is provided in the commercial package repository as integration unit tests.
+		/* istanbul ignore next -- @preserve */
+		if ( this._editor.plugins.has( 'Pagination' ) && ( this._editor.plugins.get( 'Pagination' ) as any ).isEnabled ) {
 			this.moveToFullscreen(
 				editorUI.getEditableElement()!.parentElement!.querySelector( '.ck-pagination-view' )!, 'pagination-view'
 			);
@@ -55,8 +56,14 @@ export default class ClassicEditorHandler extends AbstractEditorHandler {
 		// in both menu bar and toolbar (adding the side padding to the elements).
 		// Since we don't move the whole container but only parts, we need to reapply the attribute value manually.
 		// Decupled editor doesn't have this issue because there is no top-level container,
-		// so `dir` is set on each component separately.
+		// so `dir` attribute is set on each component separately.
 		this.getWrapper().setAttribute( 'dir', editorUIView.element!.getAttribute( 'dir' )! );
+
+		// The `ck-rounded-corners` class is added to the wrapper element to ensure that the corners in menu bar, toolbar etc are rounded
+		// when the editor is in fullscreen mode.
+		// Decupled editor doesn't have this issue because there is no top-level container,
+		// so `ck-rounded-corners` class is set on each component separately.
+		this.getWrapper().classList.add( 'ck-rounded-corners' );
 
 		if ( this._editor.config.get( 'fullscreen.menuBar.isVisible' ) ) {
 			if ( !editorUIView.menuBarView ) {

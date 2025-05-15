@@ -8,7 +8,8 @@
  * Kebab-case keys will be removed.
  *
  * @param {Object} options
- * @param {Array.<String>} keys Kebab-case keys in `options` object.
+ * @param {Array<string>} keys Kebab-case keys in `options` object.
+ * @returns {void}
  */
 export default function replaceKebabCaseWithCamelCase( options, keys ) {
 	for ( const key of keys ) {

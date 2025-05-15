@@ -203,13 +203,10 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	 *
 	 * @param config Conversion configuration.
 	 * @param config.model The description or a name of the model element to convert.
-	 * @param config.model.attributes The list of attribute names that should be consumed while creating
-	 * the view element. Note that the view will be reconverted if any of the listed attributes changes.
- 	 * @param config.model.children Specifies whether the view element requires reconversion if the list
-	 * of the model child nodes changed.
 	 * @param config.view A view element definition or a function that takes the model element and
 	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
 	 * as parameters and returns a view container element.
+	 * @param config.converterPriority Converter priority.
 	 */
 	public elementToElement( config: {
 		model: string | {
@@ -327,12 +324,10 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
 	 *
 	 * @param config Conversion configuration.
  	 * @param config.model The description or a name of the model element to convert.
-	 * @param config.model.name The name of the model element to convert.
- 	 * @param config.model.attributes The list of attribute names that should be consumed while creating
-	 * the view structure. Note that the view will be reconverted if any of the listed attributes will change.
 	 * @param config.view A function that takes the model element and
 	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API} as parameters
 	 * and returns a view container element with slots for model child nodes to be converted into.
+	 * @param config.converterPriority Converter priority.
 	 */
 	public elementToStructure( config: {
 		model: string | {
@@ -1658,6 +1653,7 @@ function changeAttribute( attributeCreator: AttributeCreatorFunction ) {
 			 * ```
 			 *
 			 * @error conversion-attribute-to-attribute-on-text
+			 * @param {object} data The conversion data.
 			 */
 			throw new CKEditorError( 'conversion-attribute-to-attribute-on-text', conversionApi.dispatcher, data );
 		}
@@ -2008,7 +2004,7 @@ function downcastElementToStructure(
 			 * ```
 			 *
 			 * @error conversion-element-to-structure-disallowed-text
-			 * @param {String} elementName The name of the element the structure is to be created for.
+			 * @param {string} elementName The name of the element the structure is to be created for.
 			 */
 			throw new CKEditorError( 'conversion-element-to-structure-disallowed-text', dispatcher, { elementName: model.name } );
 		}
@@ -2561,9 +2557,9 @@ function createConsumer( model: NormalizedModelElementConfig ): ConsumerFunction
 }
 
 /**
- * Creates a function that create view slots.
+ * Creates a function that creates view slots.
  *
- * @returns Function exposed by writer as createSlot().
+ * @returns Function exposed by the writer as `createSlot()`.
  */
 function createSlotFactory( element: ModelElement, slotsMap: Map<ViewElement, Array<ModelNode>>, conversionApi: DowncastConversionApi ) {
 	return ( writer: DowncastWriter, modeOrFilter: 'children' | SlotFilter ) => {
@@ -2577,9 +2573,10 @@ function createSlotFactory( element: ModelElement, slotsMap: Map<ViewElement, Ar
 			children = Array.from( element.getChildren() ).filter( element => modeOrFilter( element ) );
 		} else {
 			/**
-			 * Unknown slot mode was provided to `writer.createSlot()` in downcast converter.
+			 * Unknown slot mode was provided to `writer.createSlot()` in the downcast converter.
 			 *
 			 * @error conversion-slot-mode-unknown
+			 * @param {never} modeOrFilter The specified mode or filter.
 			 */
 			throw new CKEditorError( 'conversion-slot-mode-unknown', conversionApi.dispatcher, { modeOrFilter } );
 		}

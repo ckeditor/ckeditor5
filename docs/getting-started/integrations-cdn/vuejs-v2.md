@@ -1,12 +1,12 @@
 ---
 menu-title: Vue.js 2.x
-meta-title: Vue.js 2.x rich text editor component with CDN | CKEditor 5 Documentation
+meta-title: Using CKEdiotr 5 with Vue.js 2.x from CDN | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 2.x component with CDN.
 category: cloud
 order: 60
 ---
 
-# Vue.js 2.x rich text editor component
+# Integrating CKEditor&nbsp;5 with Vue.js 2.x from CDN
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-vue2" target="_blank" rel="noopener">
@@ -305,3 +305,9 @@ Corresponds to the {@link module:core/editor/editor~Editor#event:destroy `destro
 ```html
 <ckeditor :editor="editor" @destroy="onEditorDestroy" />
 ```
+
+## Next steps
+
+* See how to manipulate the editor's data in the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
+* Refer to further guides in the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
+* Check the {@link features/index features category} to learn more about individual features.

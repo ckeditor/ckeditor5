@@ -1,12 +1,12 @@
 ---
 menu-title: Vue.js 3+
-meta-title: Vue.js 3+ rich text editor component with CDN | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with Vue.js 3+ from CDN | CKEditor 5 Documentation
 meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 3+ component with CDN.
 category: cloud
 order: 70
 ---
 
-# Vue.js 3+ rich text editor component (CDN)
+# Integrating CKEditor&nbsp;5 with Vue.js 3+ from CDN
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-vue" target="_blank" rel="noopener">
@@ -458,3 +458,9 @@ npm install --save-dev ckeditor5
 ## Contributing and reporting issues
 
 The source code of this component is available on GitHub in [https://github.com/ckeditor/ckeditor5-vue](https://github.com/ckeditor/ckeditor5-vue).
+
+## Next steps
+
+* See how to manipulate the editor's data in the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
+* Refer to further guides in the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
+* Check the {@link features/index features category} to learn more about individual features.

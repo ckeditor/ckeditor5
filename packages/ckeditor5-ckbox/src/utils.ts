@@ -119,10 +119,13 @@ export function blurHashToDataUrl( hash?: string ): string | undefined {
  * Sends the HTTP request.
  *
  * @internal
- * @param config.url the URL where the request will be sent.
- * @param config.method The HTTP method.
- * @param config.data Additional data to send.
- * @param config.onUploadProgress A callback informing about the upload progress.
+ * @param options Configuration options
+ * @param options.url The URL where the request will be sent.
+ * @param options.signal The AbortSignal to abort the request when needed.
+ * @param options.authorization The authorization token for the request.
+ * @param options.method The HTTP method (default: 'GET').
+ * @param options.data Additional data to send.
+ * @param options.onUploadProgress A callback informing about the upload progress.
  */
 export function sendHttpRequest( {
 	url,

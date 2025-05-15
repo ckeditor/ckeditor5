@@ -996,6 +996,54 @@ describe( 'utils', () => {
 					}
 				} );
 
+				it( 'should reserve checkbox holder space on non-toggleable items', () => {
+					definitions.addMany( [
+						{
+							type: 'button',
+							model: new Model( { label: 'a', role: 'menuitem' } )
+						},
+						{
+							type: 'button',
+							model: new Model( { label: 'b', role: 'menuitem' } )
+						},
+						{
+							type: 'button',
+							model: new Model( { label: 'c', role: 'menuitemradio' } )
+						}
+					] );
+
+					for ( const item of listItems ) {
+						expect( item.children.first.hasCheckSpace ).to.be.true;
+					}
+				} );
+
+				it( 'should restore checkbox holder space if the only toggleable was removed', () => {
+					definitions.addMany( [
+						{
+							type: 'button',
+							model: new Model( { label: 'a', role: 'menuitem' } )
+						},
+						{
+							type: 'button',
+							model: new Model( { label: 'b', role: 'menuitem' } )
+						},
+						{
+							type: 'button',
+							model: new Model( { label: 'c', role: 'menuitemradio' } )
+						}
+					] );
+
+					for ( const item of listItems ) {
+						expect( item.children.first.hasCheckSpace ).to.be.true;
+					}
+
+					definitions.remove( 2 );
+
+					for ( const item of listItems ) {
+						expect( item.children.first.hasCheckSpace ).to.be.false;
+					}
+				} );
+
 				it( 'should not reserve checkbox holder space if there is at least one toggleable item', () => {
 					definitions.addMany( [
 						{

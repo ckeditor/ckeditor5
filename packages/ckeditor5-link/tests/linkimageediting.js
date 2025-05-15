@@ -1117,6 +1117,76 @@ describe( 'LinkImageEditing', () => {
 				);
 			} );
 
+			it( 'should remove decorator attributes, classes and styles when manual decorator is deactivated', () => {
+				setModelData( model,
+					'<imageBlock alt="bar" linkHref="https://cksource.com" ' +
+					'linkIsDownloadable="true" linkIsExternal="true" ' +
+					'linkIsGallery="true" linkIsHighlighted="true" src="sample.jpg"></imageBlock>'
+				);
+
+				// Verify if decorators are present in the view
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget image" contenteditable="false">' +
+						'<a class="gallery highlighted" download="download" href="https://cksource.com" ' +
+						'rel="noopener noreferrer" style="text-decoration:underline" target="_blank">' +
+							'<img alt="bar" src="sample.jpg"></img>' +
+						'</a>' +
+					'</figure>'
+				);
+
+				// Remove each decorator one by one and verify if they are removed from the view.
+				const image = model.document.getRoot().getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'linkIsDownloadable', undefined, image );
+				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget image" contenteditable="false">' +
+						'<a class="gallery highlighted" href="https://cksource.com" ' +
+						'rel="noopener noreferrer" style="text-decoration:underline" target="_blank">' +
+							'<img alt="bar" src="sample.jpg"></img>' +
+						'</a>' +
+					'</figure>'
+				);
+
+				model.change( writer => {
+					writer.setAttribute( 'linkIsExternal', undefined, image );
+				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget image" contenteditable="false">' +
+						'<a class="gallery highlighted" href="https://cksource.com" style="text-decoration:underline">' +
+							'<img alt="bar" src="sample.jpg"></img>' +
+						'</a>' +
+					'</figure>'
+				);
+
+				model.change( writer => {
+					writer.setAttribute( 'linkIsGallery', undefined, image );
+				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget image" contenteditable="false">' +
+						'<a class="highlighted" href="https://cksource.com" style="text-decoration:underline">' +
+							'<img alt="bar" src="sample.jpg"></img>' +
+						'</a>' +
+					'</figure>'
+				);
+
+				model.change( writer => {
+					writer.setAttribute( 'linkIsHighlighted', undefined, image );
+				} );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget image" contenteditable="false">' +
+						'<a href="https://cksource.com">' +
+							'<img alt="bar" src="sample.jpg"></img>' +
+						'</a>' +
+					'</figure>'
+				);
+			} );
+
 			// See #8401.
 			it( 'should downcast without error if the image already has no link', () => {
 				setModelData( model,

@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 45.x | CKEditor 5 Documentation
 menu-title: Update to v45.x
 order: 79
-modified_at: 2025-03-26
+modified_at: 2025-05-08
 ---
 
 # Update to CKEditor&nbsp;5 v45.x
@@ -14,13 +14,50 @@ modified_at: 2025-03-26
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
+## Update to CKEditor&nbsp;5 v45.1.0
+
+Released on May 14, 2024. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v45.1.0))
+
+Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v45.1.0.
+
+### Typing Improvements
+
+The typing behavior has been improved for plain text typing. This adjustment allows the web browser to handle text insertion before the editor processes it, enhancing typing reliability across various scenarios, especially on Safari and iOS devices. Issues related to track changes, autocorrect, automatic text replacement, and other input methods have been addressed.
+
+### Track Changes Enhancements
+
+A new method to start a "tracking session" has been introduced, preventing automatic merging of adjacent suggestions. This allows for more precise control over individual changes, catering to workflows that require selective acceptance of edits.
+
+### Miscellaneous improvements
+
+* Sticky toolbars and balloons are now better aligned with the visual viewport on iOS and Safari, ensuring correct positioning when zooming.
+* The fullscreen plugin has been improved to maintain scroll position when exiting fullscreen, avoiding unexpected jumps on smooth-scrolling pages. Layout consistency has been refined by adjusting margins and editable width. Errors related to the Content minimap plugin in fullscreen mode have also been resolved.
+* Introduced a fix which ensures that the `data-author-id` and `data-suggestion` attributes are preserved in non-block suggestions when retrieving data with `showSuggestionHighlights: true`.
+* We improved the algorithm for images detection in the Paste from Office feature, in scenarios of mixed local and online images from Microsoft Word. Paste no longer causes some images not to appear.
+
+### Minor breaking changes in this release
+
+The default behavior of the `beforeinput` DOM events is no longer prevented in plain text typing scenarios. Now, the engine waits for DOM mutations and applies changes to the model afterward. This should not affect most integrations however, it may affect custom modifications to text insertion into the editor.
+
 ## Update to CKEditor&nbsp;5 v45.0.0
 
-_Released on April 2, 2024._
-
-For the entire list of changes introduced in version 45.0.0, see the [release notes for CKEditor&nbsp;5 v45.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v45.0.0).
+Released on April 7, 2024. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v45.0.0))
 
 Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v45.0.0.
+
+### Email editing enhancements
+
+We are making it easier to create and edit emails directly in CKEditor 5 with several enhancements. This release introduces the following new features:
+
+* {@link features/export-with-inline-styles Export with Inline Styles} (⭐) provides the ability to export email content with automatically inlined styles, ensuring compatibility and proper rendering across different email clients.
+* {@link features/email-configuration-helper Email Configuration Helper} (⭐) is a new configuration helper plugin that provides guidance for integrators to correctly set up an email-friendly editor while avoiding common pitfalls.
+* {@link features/layout-tables Layout tables} are a new type of tables that has been introduced to simplify the creation of structured email designs, offering better control over layout, alignment and spacing.
+
+Apart from these new features, this update also brings various fixes and improvements related to table behavior, enhanced HTML support, and better handling of complex email structures. These refinements help ensure a more seamless email editing experience, reducing inconsistencies and improving compatibility with external email clients.
+
+### The fullscreen feature
+
+A long-requested feature has finally arrived with the {@link features/fullscreen introduction of full-screen editing} for the classic and decoupled editor types. This new mode provides a focused writing experience by making the editor the centerpiece of the screen. The expanded screen space allows for better visibility of content in sidebars such as comments, suggestions, and document outlines, enhancing your overall workflow.
 
 ### UI toolbar refactoring
 
@@ -152,3 +189,34 @@ Notable changes:
 * A new `FormRowView` class has been introduced in the UI package for consistent form row layouts.
 * All balloon panels now have consistent headers with back buttons.
 * Form styles have been moved to a dedicated `form.css` in the theme-lark package.
+
+### New installation methods improvements: icons replacement
+
+We are continuing to strengthen the new installation methods while phasing out older solutions. We added one of the key components you asked for: replacing our icons with your custom ones. It is now possible to replace the icons via the {@link getting-started/setup/customizing-icons package’s override mechanism}.
+
+<info-box info>
+	To achieve a proper solution for icons replacement for the npm builds, we needed to introduce a breaking change. If you used our icons for any purposes, make sure to update their paths.
+</info-box>
+
+### Deprecations in old installation methods: stage 1 completed
+
+We are progressing with deprecation according to [our sunset plan](https://github.com/ckeditor/ckeditor5/issues/17779). From this release, predefined builds’ packages, such as `@ckeditor/ckeditor-build-classic`, are now officially deprecated.
+
+We also dropped support for Webpack 4 in both the **old and new** installation methods. All packages and CDN from this version are now distributed with ES2022 as the target ECMAScript version, providing better compatibility with modern JavaScript features and improved performance.
+
+### Major breaking changes in this release
+
+* **[bookmark](https://www.npmjs.com/package/@ckeditor/ckeditor5-bookmark)**: The `BookmarkUI#actionsView` is no longer available. The bookmark feature is now using the `WidgetToolbarRepository` instead.
+* **[build-*](https://www.npmjs.com/search?q=keywords%3Ackeditor5-build%20maintainer%3Ackeditor)**: CKEditor 5 predefined builds are no longer available.
+* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: The `LinkUI#actionsView` is no longer available. The bookmark feature now uses the `LinkUI#toolbarView` (an instance of the `ToolbarView` class) instead of the custom `LinkActionsView`.
+
+### Minor breaking changes in this release
+
+* **[link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link)**: The `createBookmarkCallbacks()` helper is now replaced by the `isScrollableToTarget()` and `scrollToTarget()` helpers.
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The `FormRowView` class was moved to the `@ckeditor/ckeditor5-ui` package.
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The `form.css` component was moved to the `@ckeditor/ckeditor5-theme-lark` package.
+* All CKEditor 5 icons are now available in the `@ckeditor/ckeditor5-icons` package.
+
+### Distribution changes
+
+* All packages and CDN source code now target ES2022 as the ECMAScript version.

@@ -1,13 +1,13 @@
 ---
 menu-title: Next.js
-meta-title: Integration with Next.js using CDN | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with Next.js from CDN | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with the Next.js framework using both routing strategies (App Router or Pages Router) and CDN.
 category: cloud
 order: 40
 modified_at: 2023-11-14
 ---
 
-# Integrate CKEditor 5 with Next.js using CDN
+# Integrating CKEditor&nbsp;5 with Next.js from CDN
 
 [Next.js](https://nextjs.org/) is a React meta-framework that helps create full-stack web applications. It offers different rendering strategies like server-side rendering (SSR), client-side rendering (CSR), or static site generation (SSG). Additionally, it provides file-based routing, automatic code splitting, and other handy features out of the box.
 
@@ -129,3 +129,9 @@ If you have trouble seeing the editor, remember that the Next.js project ships w
 Also, pay attention to the import path &ndash; this guide uses the [default import alias](https://nextjs.org/docs/app/building-your-application/configuring/absolute-imports-and-module-aliases) (@). If you did not configure it, change the path
 
 In the example above, we only used basic features of the `<CKEditor>` component. To learn more about additional features and configuration options, refer to the {@link getting-started/integrations-cdn/react-default-cdn React integration guide}.
+
+## Next steps
+
+* See how to manipulate the editor's data in the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
+* Refer to further guides in the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
+* Check the {@link features/index features category} to learn more about individual features.
