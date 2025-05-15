@@ -5,8 +5,6 @@ category: features-pasting
 order: 30
 ---
 
-{@snippet features/build-paste-source}
-
 # Pasting plain text
 
 With the plain text pasting feature, text pasted using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> keystroke will match the formatting of the content you paste it into.
@@ -32,27 +30,26 @@ Pasting plain text with a double line break will turn the break into a paragraph
 ## Installation
 
 <info-box info>
-	This feature is required by the clipboard plugin and is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own custom rich-text editor.
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-clipboard`](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard) package:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
-```
-npm install --save @ckeditor/ckeditor5-clipboard
-```
-
-Then add the {@link module:clipboard/clipboard~Clipboard `Clipboard`} plugin to your plugin list:
-
+<code-switcher>
 ```js
-import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
+import { Bold, ClassicEditor, Clipboard } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Clipboard, Bold, /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 The {@link module:clipboard/pasteplaintext~PastePlainText `PastePlainText`} plugin will activate along with the clipboard plugin.
 

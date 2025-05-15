@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import type { ClipboardInputTransformationData } from 'ckeditor5/src/clipboard.js';
-import type { DocumentSelectionChangeEvent, Element, Model, Position, Range, Writer } from 'ckeditor5/src/engine.js';
+import type { DocumentSelectionChangeEvent, Model, Position, Range, Writer } from 'ckeditor5/src/engine.js';
 import { Delete, TextWatcher, getLastTextLine, findAttributeRange, type TextWatcherMatchedDataEvent } from 'ckeditor5/src/typing.js';
 import type { EnterCommand, ShiftEnterCommand } from 'ckeditor5/src/enter.js';
 
@@ -48,6 +48,9 @@ const URL_REG_EXP = new RegExp(
 					// TLD identifier name.
 					'(?:[a-z\\u00a1-\\uffff]{2,63})' +
 				')' +
+				'|' +
+				// Allow localhost as a valid hostname
+				'localhost' +
 			')' +
 			// port number (optional)
 			'(?::\\d{2,5})?' +
@@ -83,6 +86,13 @@ export default class AutoLink extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'AutoLink' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 
 	/**
@@ -194,27 +204,40 @@ export default class AutoLink extends Plugin {
 		const editor = this.editor;
 
 		const watcher = new TextWatcher( editor.model, text => {
+			let mappedText = text;
+
 			// 1. Detect <kbd>Space</kbd> after a text with a potential link.
-			if ( !isSingleSpaceAtTheEnd( text ) ) {
+			if ( !isSingleSpaceAtTheEnd( mappedText ) ) {
 				return;
 			}
 
-			// 2. Check text before last typed <kbd>Space</kbd>.
-			const url = getUrlAtTextEnd( text.substr( 0, text.length - 1 ) );
+			// 2. Remove the last space character.
+			mappedText = mappedText.slice( 0, -1 );
+
+			// 3. Remove punctuation at the end of the URL if it exists.
+			if ( '!.:,;?'.includes( mappedText[ mappedText.length - 1 ] ) ) {
+				mappedText = mappedText.slice( 0, -1 );
+			}
+
+			// 4. Check text before last typed <kbd>Space</kbd> or punctuation.
+			const url = getUrlAtTextEnd( mappedText );
 
 			if ( url ) {
-				return { url };
+				return {
+					url,
+					removedTrailingCharacters: text.length - mappedText.length
+				};
 			}
 		} );
 
-		watcher.on<TextWatcherMatchedDataEvent<{ url: string }>>( 'matched:data', ( evt, data ) => {
-			const { batch, range, url } = data;
+		watcher.on<TextWatcherMatchedDataEvent<{ url: string; removedTrailingCharacters: number }>>( 'matched:data', ( evt, data ) => {
+			const { batch, range, url, removedTrailingCharacters } = data;
 
 			if ( !batch.isTyping ) {
 				return;
 			}
 
-			const linkEnd = range.end.getShiftedBy( -1 ); // Executed after a space character.
+			const linkEnd = range.end.getShiftedBy( -removedTrailingCharacters ); // Executed after a space character or punctuation.
 			const linkStart = linkEnd.getShiftedBy( -url.length );
 
 			const linkRange = editor.model.createRange( linkStart, linkEnd );
@@ -240,11 +263,14 @@ export default class AutoLink extends Plugin {
 		enterCommand.on( 'execute', () => {
 			const position = model.document.selection.getFirstPosition()!;
 
-			if ( !position.parent.previousSibling ) {
-				return;
-			}
+			let rangeToCheck: Range;
 
-			const rangeToCheck = model.createRangeIn( position.parent.previousSibling as Element );
+			// Previous sibling might not be an element if enter was blocked due to be triggered in a limit element.
+			if ( position.parent.previousSibling?.is( 'element' ) ) {
+				rangeToCheck = model.createRangeIn( position.parent.previousSibling );
+			} else {
+				rangeToCheck = model.createRange( model.createPositionAt( position.parent, 0 ), position );
+			}
 
 			this._checkAndApplyAutoLinkOnRange( rangeToCheck );
 		} );

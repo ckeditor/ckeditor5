@@ -1,16 +1,13 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document */
+import { IconMarker, IconPen, IconEraser } from 'ckeditor5/src/icons.js';
 
 import HighlightEditing from '../src/highlightediting.js';
 import HighlightUI from '../src/highlightui.js';
-
-import markerIcon from '../theme/icons/marker.svg';
-import penIcon from '../theme/icons/pen.svg';
-import eraserIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -69,6 +66,14 @@ describe( 'HighlightUI', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( HighlightUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( HighlightUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'highlight toolbar dropdown', () => {
 		let dropdown;
 
@@ -81,7 +86,7 @@ describe( 'HighlightUI', () => {
 
 			expect( button ).to.have.property( 'label', 'Highlight' );
 			expect( button ).to.have.property( 'tooltip', true );
-			expect( button ).to.have.property( 'icon', markerIcon );
+			expect( button ).to.have.property( 'icon', IconMarker );
 			expect( button ).to.have.property( 'isToggleable', true );
 		} );
 
@@ -110,7 +115,7 @@ describe( 'HighlightUI', () => {
 			command.value = undefined;
 
 			expect( toolbar.items.map( item => item.icon ) )
-				.to.deep.equal( [ markerIcon, markerIcon, markerIcon, markerIcon, penIcon, penIcon, undefined, eraserIcon ] );
+				.to.deep.equal( [ IconMarker, IconMarker, IconMarker, IconMarker, IconPen, IconPen, undefined, IconEraser ] );
 		} );
 
 		it( 'should have proper colors in dropdown', () => {
@@ -341,7 +346,7 @@ describe( 'HighlightUI', () => {
 
 		it( 'should have correct attribute values', () => {
 			expect( menuView.buttonView.label ).to.equal( 'Highlight' );
-			expect( menuView.buttonView.icon ).to.equal( markerIcon );
+			expect( menuView.buttonView.icon ).to.equal( IconMarker );
 			expect( menuView.buttonView.iconView.fillColor ).to.equal( 'transparent' );
 		} );
 
@@ -363,13 +368,13 @@ describe( 'HighlightUI', () => {
 
 			it( 'should set #label and #icon of an option', () => {
 				expect( dumpItems( 'icon' ) ).to.have.deep.ordered.members( [
-					[ 'Yellow marker', markerIcon ],
-					[ 'Green marker', markerIcon ],
-					[ 'Pink marker', markerIcon ],
-					[ 'Blue marker', markerIcon ],
-					[ 'Red pen', penIcon ],
-					[ 'Green pen', penIcon ],
-					[ 'Remove highlight', eraserIcon ]
+					[ 'Yellow marker', IconMarker ],
+					[ 'Green marker', IconMarker ],
+					[ 'Pink marker', IconMarker ],
+					[ 'Blue marker', IconMarker ],
+					[ 'Red pen', IconPen ],
+					[ 'Green pen', IconPen ],
+					[ 'Remove highlight', IconEraser ]
 				] );
 			} );
 
@@ -399,55 +404,29 @@ describe( 'HighlightUI', () => {
 				] );
 			} );
 
-			it( 'should bind #ariaChecked to the command', () => {
+			it( 'should bind `aria-checked` attribute to the command', () => {
 				command.value = 'pinkMarker';
 
-				expect( dumpItems( 'ariaChecked' ) ).to.have.deep.ordered.members( [
-					[ 'Yellow marker', false ],
-					[ 'Green marker', false ],
-					[ 'Pink marker', true ],
-					[ 'Blue marker', false ],
-					[ 'Red pen', false ],
-					[ 'Green pen', false ],
-					[ 'Remove highlight', undefined ]
+				expect( dumpItems( item => item.element.getAttribute( 'aria-checked' ) ) ).to.have.deep.ordered.members( [
+					[ 'Yellow marker', 'false' ],
+					[ 'Green marker', 'false' ],
+					[ 'Pink marker', 'true' ],
+					[ 'Blue marker', 'false' ],
+					[ 'Red pen', 'false' ],
+					[ 'Green pen', 'false' ],
+					[ 'Remove highlight', null ]
 				] );
 
 				command.value = 'redPen';
 
-				expect( dumpItems( 'ariaChecked' ) ).to.have.deep.ordered.members( [
-					[ 'Yellow marker', false ],
-					[ 'Green marker', false ],
-					[ 'Pink marker', false ],
-					[ 'Blue marker', false ],
-					[ 'Red pen', true ],
-					[ 'Green pen', false ],
-					[ 'Remove highlight', undefined ]
-				] );
-			} );
-
-			it( 'should bind #fillColor to #isOn', () => {
-				command.value = 'pinkMarker';
-
-				expect( dumpItems( buttonView => buttonView.iconView.fillColor ) ).to.have.deep.ordered.members( [
-					[ 'Yellow marker', 'var(--ck-highlight-marker-yellow)' ],
-					[ 'Green marker', 'var(--ck-highlight-marker-green)' ],
-					[ 'Pink marker', 'transparent' ],
-					[ 'Blue marker', 'var(--ck-highlight-marker-blue)' ],
-					[ 'Red pen', 'var(--ck-highlight-pen-red)' ],
-					[ 'Green pen', 'var(--ck-highlight-pen-green)' ],
-					[ 'Remove highlight', '' ]
-				] );
-
-				command.value = 'redPen';
-
-				expect( dumpItems( buttonView => buttonView.iconView.fillColor ) ).to.have.deep.ordered.members( [
-					[ 'Yellow marker', 'var(--ck-highlight-marker-yellow)' ],
-					[ 'Green marker', 'var(--ck-highlight-marker-green)' ],
-					[ 'Pink marker', 'var(--ck-highlight-marker-pink)' ],
-					[ 'Blue marker', 'var(--ck-highlight-marker-blue)' ],
-					[ 'Red pen', 'transparent' ],
-					[ 'Green pen', 'var(--ck-highlight-pen-green)' ],
-					[ 'Remove highlight', '' ]
+				expect( dumpItems( item => item.element.getAttribute( 'aria-checked' ) ) ).to.have.deep.ordered.members( [
+					[ 'Yellow marker', 'false' ],
+					[ 'Green marker', 'false' ],
+					[ 'Pink marker', 'false' ],
+					[ 'Blue marker', 'false' ],
+					[ 'Red pen', 'true' ],
+					[ 'Green pen', 'false' ],
+					[ 'Remove highlight', null ]
 				] );
 			} );
 
@@ -482,7 +461,7 @@ describe( 'HighlightUI', () => {
 
 		it( 'should diplay the remove highlight button at the end', () => {
 			expect( menuView.panelView.children.first.items.get( 6 ) ).to.be.instanceOf( ListSeparatorView );
-			expect( menuView.panelView.children.first.items.last.children.first.icon ).to.equal( eraserIcon );
+			expect( menuView.panelView.children.first.items.last.children.first.icon ).to.equal( IconEraser );
 		} );
 
 		function dumpItems( propertyName ) {
@@ -506,7 +485,7 @@ describe( 'HighlightUI', () => {
 			expect( editor.ui.componentFactory.has( 'removeHighlight' ) ).to.be.true;
 			expect( removeHighlightButton ).to.have.property( 'tooltip', true );
 			expect( removeHighlightButton ).to.have.property( 'label', 'Remove highlight' );
-			expect( removeHighlightButton ).to.have.property( 'icon', eraserIcon );
+			expect( removeHighlightButton ).to.have.property( 'icon', IconEraser );
 		} );
 
 		it( 'should execute the command only once', () => {

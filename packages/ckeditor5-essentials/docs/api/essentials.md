@@ -16,8 +16,10 @@ See the {@link module:essentials/essentials~Essentials} plugin documentation.
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-essentials
+npm install ckeditor5
 ```
 
 ## Contribute

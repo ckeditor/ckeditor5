@@ -226,44 +226,30 @@ The style sheet:
 ## Installation
 
 <info-box info>
-	The style feature is not available in any of the {@link installation/getting-started/predefined-builds predefined builds}.
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-style`](https://www.npmjs.com/package/@ckeditor/ckeditor5-style) package:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
-```plaintext
-npm install --save @ckeditor/ckeditor5-style
-```
-
-Then add it to the editor configuration:
-
+<code-switcher>
 ```js
-import { Style } from '@ckeditor/ckeditor5-style';
+import { ClassicEditor, Style } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Style, /* ... */ ],
-		toolbar: {
-			items: [
-				'style',
-				// More toolbar items.
-				// ...
-			],
-		},
+		toolbar: [ 'style', /* ... */ ],
 		style: {
-			definitions: [
-				// Styles definitions.
-				// ...
-			]
+			// Configuration.
 		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
+</code-switcher>
 
 ## Configuration
 
@@ -272,14 +258,7 @@ Configuring the styles feature takes two steps. First, you need to define the st
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Style, /* ... */ ],
-		toolbar: {
-			items: [
-				'style',
-				// More toolbar items.
-				// ...
-			],
-		},
+		// ... Other configuration options ...
 		style: {
 			definitions: [
 				{
@@ -297,7 +276,6 @@ ClassicEditor
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
-
 ```
 
 Then, define the corresponding CSS styles for the document:
@@ -331,6 +309,7 @@ At present, the style feature may clash with other features that bring in simila
 ## Related features
 
 Check out also these CKEditor&nbsp;5 features to gain better control over your content style and format:
+
 * {@link features/basic-styles Basic text styles} &ndash; Apply the most frequently used formatting such as bold, italic, underline, etc.
 * {@link features/font Font styles} &ndash; Control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
 * {@link features/headings Headings} &ndash; Divide your content into sections.

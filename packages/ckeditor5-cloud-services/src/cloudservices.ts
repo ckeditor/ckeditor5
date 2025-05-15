@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -72,6 +72,13 @@ export default class CloudServices extends ContextPlugin implements CloudService
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public static get requires() {
 		return [ CloudServicesCore ] as const;
 	}
@@ -94,11 +101,21 @@ export default class CloudServices extends ContextPlugin implements CloudService
 			return;
 		}
 
+		// Initialization of the token may fail. By default, the token is being refreshed on the failure.
+		// The problem is that if this happens here, then the token refresh interval will be executed even
+		// after destroying the editor (as the exception was thrown from `init` method). To prevent that
+		// behavior we need to catch the exception and destroy the uninitialized token instance.
+		// See: https://github.com/ckeditor/ckeditor5/issues/17531
 		const cloudServicesCore: CloudServicesCore = this.context.plugins.get( 'CloudServicesCore' );
+		const uninitializedToken = cloudServicesCore.createToken( this.tokenUrl );
 
-		this.token = await cloudServicesCore.createToken( this.tokenUrl ).init();
-
-		this._tokens.set( this.tokenUrl, this.token );
+		try {
+			this.token = await uninitializedToken.init();
+			this._tokens.set( this.tokenUrl, this.token );
+		} catch ( error ) {
+			uninitializedToken.destroy();
+			throw error;
+		}
 	}
 
 	/**

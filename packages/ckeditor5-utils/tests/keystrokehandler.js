@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import EmitterMixin from '../src/emittermixin.js';
@@ -139,6 +139,24 @@ describe( 'KeystrokeHandler', () => {
 
 			sinon.assert.callOrder( spy2, spy1, spy4 );
 			sinon.assert.notCalled( spy3 );
+		} );
+
+		it( 'should support event filtering using a callback', () => {
+			const spy = sinon.spy();
+
+			const keyEvtDataFails = getCtrlA();
+			const keyEvtDataPasses = getCtrlA();
+			keyEvtDataPasses.foo = true;
+
+			keystrokes.set( 'Ctrl+A', spy, {
+				filter: evt => evt.foo
+			} );
+
+			emitter.fire( 'keydown', keyEvtDataFails );
+			sinon.assert.notCalled( spy );
+
+			emitter.fire( 'keydown', keyEvtDataPasses );
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 

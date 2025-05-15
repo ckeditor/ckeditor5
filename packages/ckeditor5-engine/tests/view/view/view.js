@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals document, console, setTimeout, FocusEvent */
@@ -180,6 +180,36 @@ describe( 'view', () => {
 			sinon.assert.calledOnce( observerMock.observe );
 			sinon.assert.calledOnce( observerMockGlobalCount.observe );
 		} );
+
+		it( 'should transfer all DOM attributes to the root element', () => {
+			const domDiv = document.createElement( 'div' );
+			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+
+			domDiv.setAttribute( 'foo', 'bar' );
+			domDiv.setAttribute( 'baz', 'qux' );
+
+			view.attachDomRoot( domDiv );
+
+			expect( viewRoot.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			expect( viewRoot.getAttribute( 'baz' ) ).to.equal( 'qux' );
+		} );
+
+		it( 'should not transfer a DOM attribute to the root element if already exists before attaching', () => {
+			const domDiv = document.createElement( 'div' );
+			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+
+			domDiv.setAttribute( 'foo', 'bar' );
+			domDiv.setAttribute( 'baz', 'qux' );
+
+			view.change( writer => {
+				writer.setAttribute( 'foo', 'pre-existing', viewRoot );
+			} );
+
+			view.attachDomRoot( domDiv );
+
+			expect( viewRoot.getAttribute( 'foo' ) ).to.equal( 'pre-existing' );
+			expect( viewRoot.getAttribute( 'baz' ) ).to.equal( 'qux' );
+		} );
 	} );
 
 	describe( 'detachDomRoot()', () => {
@@ -229,6 +259,28 @@ describe( 'view', () => {
 			} );
 
 			domDiv.remove();
+		} );
+
+		it( 'should restore the DOM root attributes that have been set on the view root before attaching', () => {
+			const domDiv = document.createElement( 'div' );
+			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+
+			domDiv.setAttribute( 'foo', 'bar' );
+			domDiv.setAttribute( 'baz', 'qux' );
+
+			view.change( writer => {
+				writer.setAttribute( 'foo', 'pre-existing', viewRoot );
+			} );
+
+			view.attachDomRoot( domDiv );
+
+			expect( viewRoot.getAttribute( 'foo' ) ).to.equal( 'pre-existing' );
+			expect( viewRoot.getAttribute( 'baz' ) ).to.equal( 'qux' );
+
+			view.detachDomRoot( 'main' );
+
+			expect( domDiv.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			expect( domDiv.getAttribute( 'baz' ) ).to.equal( 'qux' );
 		} );
 
 		it( 'should remove the "contenteditable" attribute from the DOM root', () => {
@@ -1028,6 +1080,42 @@ describe( 'view', () => {
 				expect( document.getSelection().focusNode ).to.equal( domDiv.childNodes[ 0 ].childNodes[ 0 ] );
 				expect( document.getSelection().focusOffset ).to.equal( 3 );
 			} );
+		} );
+
+		it( 'should revert unexpected DOM changes', () => {
+			const domDiv = document.createElement( 'div' );
+
+			const view = new View( new StylesProcessor() );
+			const viewDocument = view.document;
+			createViewRoot( viewDocument, 'div', 'main' );
+			view.attachDomRoot( domDiv );
+
+			const viewP = new ViewElement( viewDocument, 'p' );
+			const viewText = new ViewText( viewDocument, 'foo' );
+
+			viewDocument.getRoot()._appendChild( viewP );
+			viewP._appendChild( viewText );
+			view.forceRender();
+
+			expect( domDiv.childNodes.length ).to.equal( 1 );
+			expect( domDiv.childNodes[ 0 ].tagName ).to.equal( 'P' );
+			expect( domDiv.childNodes[ 0 ].childNodes.length ).to.equal( 1 );
+			expect( domDiv.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'foo' );
+
+			domDiv.childNodes[ 0 ].childNodes[ 0 ].data = 'bar';
+			domDiv.appendChild( document.createElement( 'h1' ) );
+
+			expect( domDiv.childNodes.length ).to.equal( 2 );
+			expect( domDiv.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'bar' );
+
+			view.getObserver( MutationObserver ).flush();
+
+			expect( domDiv.childNodes.length ).to.equal( 1 );
+			expect( domDiv.childNodes[ 0 ].tagName ).to.equal( 'P' );
+			expect( domDiv.childNodes[ 0 ].childNodes.length ).to.equal( 1 );
+			expect( domDiv.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'foo' );
+
+			view.destroy();
 		} );
 	} );
 

@@ -188,8 +188,9 @@ Any UI {@link framework/architecture/ui-library#views view} can be focusable. To
 	The [`tabindex="-1"`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex) is a native DOM attribute that controls whether a DOM element can be focused (and in which order). Setting its value to `"-1"` tells the web browser that it should exclude it from the native keyboard navigation and allow it only to be focused using JavaScript. Because your component will belong to the editor focus management system, you should do that if you want to avoid collisions with the web browser.
 </info-box>
 
+<code-switcher>
 ```js
-import { View } from '@ckeditor/ckeditor5-ui';
+import { View } from 'ckeditor5';
 
 class MyListItemView extends View {
 	constructor( locale, text ) {
@@ -215,11 +216,13 @@ class MyListItemView extends View {
 	}
 }
 ```
+</code-switcher>
 
 If a view has many focusable children (like a list), the `focus()` method should focus the first child:
 
+<code-switcher>
 ```js
-import { View } from '@ckeditor/ckeditor5-ui';
+import { View } from 'ckeditor5';
 
 class MyListView extends View {
 	constructor( locale ) {
@@ -247,6 +250,7 @@ class MyListView extends View {
 	}
 }
 ```
+</code-switcher>
 
 Focusable views are what make it possible to navigate the interface of CKEditor using the keyboard. In the [next section](#using-the-focustracker-class), you will learn how parent views keep track of focus among their children using the `FocusTracker` class.
 
@@ -290,9 +294,9 @@ The continuity of editor focus is maintained **only** when the global focus trac
 
 Take a look at the following example of a list that has multiple items, a classic use case for a focus tracker:
 
+<code-switcher>
 ```js
-import { View } from '@ckeditor/ckeditor5-ui';
-import { FocusTracker } from '@ckeditor/ckeditor5-utils';
+import { View, FocusTracker } from 'ckeditor5';
 
 class MyListView extends View {
 	constructor( locale ) {
@@ -315,6 +319,7 @@ class MyListView extends View {
 	// ...
 }
 ```
+</code-switcher>
 
 To make sure your focus tracker instance and the `items` view collection stay synchronized, create  listeners that will update the tracker when a new child view is added or some are removed ({@link module:ui/viewcollection~ViewCollection view collections fire events}). The best way to do that is inside the {@link module:ui/view~View#render `render()`} method:
 
@@ -363,9 +368,9 @@ The {@link module:utils/keystrokehandler~KeystrokeHandler} helper class allows r
 
 However, in the context of focus management, it is used by the [focus cycler](#using-the-focuscycler-class) you will get familiar with in the next section. You can learn more about the {@link module:utils/keystrokehandler~KeystrokeHandler} class in the API documentation but for now, you should only know how to create and initialize it before moving forward:
 
+<code-switcher>
 ```js
-import { FocusCycler, View } from '@ckeditor/ckeditor5-ui';
-import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
+import { FocusCycler, View, FocusTracker, KeystrokeHandler } from 'ckeditor5';
 
 export default class MyListView extends View {
 	constructor( locale ) {
@@ -398,6 +403,7 @@ export default class MyListView extends View {
 	// ...
 }
 ```
+</code-switcher>
 
 ### Using the `FocusCycler` class
 
@@ -407,9 +413,9 @@ Each focus cycler instance works together with a [focus tracker](#using-the-focu
 
 Take a look at the example list class using focus cycler, keystroke handler and focus tracker instances together to enable the keyboard navigation. First, all the helpers must be created:
 
+<code-switcher>
 ```js
-import { FocusCycler, View } from '@ckeditor/ckeditor5-ui';
-import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
+import { FocusCycler, View, FocusTracker, KeystrokeHandler } from 'ckeditor5';
 
 class MyListView extends View {
 	constructor( locale ) {
@@ -446,6 +452,7 @@ class MyListView extends View {
 	// ...
 }
 ```
+</code-switcher>
 
 Similarly to the previous sections of this guide, feed the focus tracker and synchronize it with the list items collection in the `render()` method. Since the {@link module:ui/view~View#element `MyListView#element`} has already been rendered at that stage, this is also the right moment to start listening to the keyboard events:
 
@@ -503,9 +510,9 @@ class MyListView extends View {
 
 The complete code of a list class that hosts multiple item views and supports the keyboard navigation across them (when it gets focused) looks as follows:
 
+<code-switcher>
 ```js
-import { FocusCycler, View } from '@ckeditor/ckeditor5-ui';
-import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
+import { FocusCycler, View, FocusTracker, KeystrokeHandler } from 'ckeditor5';
 
 class MyListView extends View {
 	constructor( locale ) {
@@ -603,6 +610,7 @@ class MyListItemView extends View {
 	}
 }
 ```
+</code-switcher>
 
 You can quickly run it in the context of an existing editor in the following way:
 
@@ -653,19 +661,19 @@ Take a look at the following scenario where both mouse and keyboard are used to 
 And here are the steps of the scenario:
 
 1. The editor is not focused (the focus is somewhere else on the web page).
-2. The {@link module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView editable area} gets focused using the mouse. The main toolbar shows up and because the link was clicked, the {@link module:link/ui/linkactionsview~LinkActionsView link actions view} also pops up.
-3. The <kbd>Tab</kbd> key is used to focus the {@link module:link/ui/linkactionsview~LinkActionsView#previewButtonView link preview} in the balloon (a child of {@link module:link/ui/linkactionsview~LinkActionsView}).
-4. The <kbd>Tab</kbd> key is used to focus the {@link module:link/ui/linkactionsview~LinkActionsView#editButtonView "Edit link" button}.
+2. The {@link module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView editable area} gets focused using the mouse. The main toolbar shows up and because the link was clicked, the {@link module:ui/toolbar/toolbarview~ToolbarView toolbar view} also pops up.
+3. The <kbd>Tab</kbd> key is used to focus the {@link module:ui/toolbar/toolbarview~ToolbarView link preview} in the balloon.
+4. The <kbd>→</kbd> key is used to focus the {@link module:ui/toolbar/toolbarview~ToolbarView "Edit link" button}.
 5. The <kbd>Space</kbd> key is used to execute the "Edit link" button. The focus moves to the {@link module:link/ui/linkformview~LinkFormView#urlInputView input} in the {@link module:link/ui/linkformview~LinkFormView}.
-6. The <kbd>Tab</kbd> key is used to move from the link URL field to the {@link module:link/ui/linkformview~LinkFormView#saveButtonView "Save" button}.
-7. The <kbd>Tab</kbd> key is used to move from the "Save" button to the {@link module:link/ui/linkformview~LinkFormView#cancelButtonView "Cancel" button}.
-8. The <kbd>Space</kbd> key is used to execute the "Cancel" button and close the editing form.
+6. The <kbd>Tab</kbd> key is used to move from the link URL field to the {@link module:link/ui/linkformview~LinkFormView#saveButtonView "Update" button}.
+7. The <kbd>Tab</kbd> key is used to move from the "Update" button to the {@link features/bookmarks "Bookmarks" button}.
+8. The <kbd>Esc</kbd> key is used to close the editing form.
 9. The <kbd>Esc</kbd> key is used to close the link balloon and go back to the editable.
 
 There are 3 focus tracker instances at play in the scenario:
 
 1. The {@link module:ui/editorui/editorui~EditorUI#focusTracker `EditorUI#focusTracker`} (the ["global" focus tracker](#a-note-about-the-global-focus-tracker)),
-2. The {@link module:link/ui/linkactionsview~LinkActionsView#focusTracker `LinkActionsView#focusTracker`},
+2. The {@link module:ui/toolbar/toolbarview~ToolbarView#focusTracker `ToolbarView#focusTracker`},
 3. The {@link module:link/ui/linkformview~LinkFormView#focusTracker `LinkFormView#focusTracker`}.
 
 Let's see how they react to the user actions (states were recorded **after** each step):
@@ -675,7 +683,7 @@ Let's see how they react to the user actions (states were recorded **after** eac
 		<tr>
 			<th rowspan="2">Step</th>
 			<th colspan="2">{@link module:ui/editorui/editorui~EditorUI#focusTracker `EditorUI#focusTracker`}</th>
-			<th colspan="2">{@link module:link/ui/linkactionsview~LinkActionsView#focusTracker `LinkActionsView#focusTracker`}</th>
+			<th colspan="2">{@link module:ui/toolbar/toolbarview~ToolbarView#focusTracker `ToolbarView#focusTracker`}</th>
 			<th colspan="2">{@link module:link/ui/linkformview~LinkFormView#focusTracker `LinkFormView#focusTracker`}</th>
 		</tr>
 		<tr>
@@ -780,8 +788,8 @@ Let's see how they react to the user actions (states were recorded **after** eac
 	* It does not know which element is focused on deeper layers (for instance the "Edit link" button), though. All it knows is where the focus went (for example, from the editable to the balloon panel).
 	* It lacks precise information about the focus in the link UI because this is the responsibility of the focus tracker of the link UI layer.
 	* All editor features **can always depend on the global focus tracker** when necessary. For instance, the main editor toolbar is displayed as long as the global focus tracker knows the focus is somewhere in the editor.
-* You can see that the focus management is modular: `LinkActionsView` and `LinkFormView` only know about the focus as long as one of their children has it.
-* Focus trackers belonging to `LinkActionsView` and `LinkFormView` know precisely which element has focus. This is their region of interest and, unlike the global focus tracker of the editor, they need that information to allow navigation using the keyboard.
+* You can see that the focus management is modular: `ToolbarView` and `LinkFormView` only know about the focus as long as one of their children has it.
+* Focus trackers belonging to `ToolbarView` and `LinkFormView` know precisely which element has focus. This is their region of interest and, unlike the global focus tracker of the editor, they need that information to allow navigation using the keyboard.
 
 <style>
 .focus-tracking table {

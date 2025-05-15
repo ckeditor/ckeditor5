@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals console:false, window, document */
@@ -11,11 +11,12 @@ import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
 import Link from '../../src/link.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Link, Typing, Paragraph, Undo, Enter ],
-		toolbar: [ 'link', 'undo', 'redo' ]
+		plugins: [ Link, Bold, Italic, Typing, Paragraph, Undo, Enter ],
+		toolbar: [ 'link', 'bold', 'italic', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;

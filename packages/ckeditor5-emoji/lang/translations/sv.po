@@ -1,0 +1,104 @@
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: sv\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "Toolbar button tooltip for the Emoji feature."
+msgid "Emoji"
+msgstr "Emoji"
+
+msgctxt "Dropdown option label for opening an emoji picker offering more results to choose from."
+msgid "Show all emoji..."
+msgstr "Visa alla emojis ..."
+
+msgctxt "Label of an input field for filtering an emoji collection by the typed value."
+msgid "Find an emoji (min. 2 characters)"
+msgstr "Hitta en emoji (minst 2 tecken)"
+
+msgctxt "The main text of the message shown to the user when no emoji are available for the search criteria."
+msgid "No emojis were found matching \"%0\"."
+msgstr "Inga emojis motsvarande \"%0\" fanns."
+
+msgctxt "The main text of the message shown to the user when the provided search query does not contain the required number of characters."
+msgid "Keep on typing to see the emoji."
+msgstr "Fortsätt att skriva för att se emojin."
+
+msgctxt "The secondary text of the message shown to the user to explain how many characters the search query must consist of."
+msgid "The query must contain at least two characters."
+msgstr "Frågan måste innehålla minst två tecken."
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Smileys & Expressions\" category."
+msgid "Smileys & Expressions"
+msgstr "Smileys och uttryck"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Gestures & People\" category."
+msgid "Gestures & People"
+msgstr "Gester och personer"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Animals & Nature\" category."
+msgid "Animals & Nature"
+msgstr "Djur och natur"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Food & Drinks\" category."
+msgid "Food & Drinks"
+msgstr "Mat och dryck"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Travel & Places\" category."
+msgid "Travel & Places"
+msgstr "Resor och platser"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Activities\" category."
+msgid "Activities"
+msgstr "Aktiviteter"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Objects\" category."
+msgid "Objects"
+msgstr "Objekt"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Symbols\" category."
+msgid "Symbols"
+msgstr "Symboler"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Flags\" category."
+msgid "Flags"
+msgstr "Flaggor"
+
+msgctxt "Default label for the emoji skin tone dropdown."
+msgid "Select skin tone"
+msgstr "Välj hudton"
+
+msgctxt "Dropdown option label for using the \"Default skin tone\" variant. Example emoji: 👋."
+msgid "Default skin tone"
+msgstr "Standardhudton"
+
+msgctxt "Dropdown option label for using the \"Light skin tone\" variant. Example emoji: 👋🏻."
+msgid "Light skin tone"
+msgstr "Ljus hudton"
+
+msgctxt "Dropdown option label for using the \"Medium Light skin tone\" variant. Example emoji: 👋🏼."
+msgid "Medium Light skin tone"
+msgstr "Medelljus hudton"
+
+msgctxt "Dropdown option label for using the \"Medium skin tone\" variant. Example emoji: 👋🏽."
+msgid "Medium skin tone"
+msgstr "Mediumhudton"
+
+msgctxt "Dropdown option label for using the \"Medium Dark skin tone\" variant. Example emoji: 👋🏾."
+msgid "Medium Dark skin tone"
+msgstr "Medelmörk hudton"
+
+msgctxt "Dropdown option label for using the \"Dark skin tone\" variant. Example emoji: 👋🏿."
+msgid "Dark skin tone"
+msgstr "Mörk hudton"
+
+msgctxt "Header of the emoji picker balloon panel."
+msgid "Emoji picker"
+msgstr "Emojiväljare"

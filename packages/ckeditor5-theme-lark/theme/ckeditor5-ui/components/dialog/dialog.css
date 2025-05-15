@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 @import "../../../mixins/_rounded.css";
@@ -32,10 +32,15 @@
 	max-height: var(--ck-dialog-max-height);
 	max-width: var(--ck-dialog-max-width);
 	border: 1px solid var(--ck-color-base-border);
+	overscroll-behavior: contain;
 
 	& .ck.ck-form__header {
 		border-bottom: 1px solid var(--ck-color-dialog-form-header-border);
 	}
+}
+
+.ck-dialog-scroll-locked {
+	overflow: hidden;
 }
 
 @keyframes ck-dialog-fade-in {

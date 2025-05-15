@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals document */
@@ -119,11 +119,19 @@ describe( 'TableSelection - integration', () => {
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
 
-			viewDocument.fire( 'insertText', {
+			const eventData = {
 				text: 'x',
 				selection: view.createSelection( view.createPositionAt( viewCell.getChild( 0 ), 0 ) ),
 				preventDefault: sinon.spy()
-			} );
+			};
+
+			eventData.domEvent = {
+				get defaultPrevented() {
+					return eventData.preventDefault.called;
+				}
+			};
+
+			viewDocument.fire( 'insertText', eventData );
 
 			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '', '', '13' ],
@@ -136,11 +144,22 @@ describe( 'TableSelection - integration', () => {
 			const view = editor.editing.view;
 			const viewCell = editor.editing.mapper.toViewElement( modelRoot.getNodeByPath( [ 0, 0, 0 ] ) );
 
-			viewDocument.fire( 'insertText', {
+			const eventData = {
 				text: 'x',
 				selection: view.createSelection( view.createPositionAt( viewCell.getChild( 0 ), 0 ) ),
 				preventDefault: sinon.spy()
-			} );
+			};
+
+			eventData.domEvent = {
+				get defaultPrevented() {
+					return eventData.preventDefault.called;
+				}
+			};
+
+			viewDocument.fire( 'insertText', eventData );
+
+			// Do not wait for the browser to change DOM.
+			editor.plugins.get( 'Input' )._typingQueue.flush();
 
 			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ 'x[]11', '12', '13' ],

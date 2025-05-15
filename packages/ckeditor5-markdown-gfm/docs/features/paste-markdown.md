@@ -28,29 +28,20 @@ Paste some Markdown-formatted content into the demo editor below and see it turn
 ## Installation
 
 <info-box info>
-	This feature is not available in any of the {@link installation/getting-started/predefined-builds predefined builds}.
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-To enable this data processor in your editor, install the [`@ckeditor/ckeditor5-markdown-gfm`](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm) package:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
-```
-npm install --save @ckeditor/ckeditor5-markdown-gfm
-```
-
-Then add the {@link module:markdown-gfm/pastefrommarkdownexperimental~PasteFromMarkdownExperimental} plugin to the editor configuration:
-
+<code-switcher>
 ```js
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-// More imports.
-// ...
-
-import { PasteFromMarkdownExperimental } from '@ckeditor/ckeditor5-markdown-gfm';
+import { ClassicEditor, Bold, Italic, Essentials, PasteFromMarkdownExperimental } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [
 			PasteFromMarkdownExperimental,
 			Essentials,
@@ -59,17 +50,12 @@ ClassicEditor
 			// More plugins.
 			// ...
 		],
-		// More of editor's configuration.
-		// ...
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 
 ```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
+</code-switcher>
 
 ## Known issues
 

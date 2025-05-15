@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals window, document, Event */
@@ -26,7 +26,7 @@ import FindAndReplace from '../../src/findandreplace.js';
 import FindAndReplaceFormView from '../../src/ui/findandreplaceformview.js';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { icons } from 'ckeditor5/src/core.js';
+import { IconPreviousArrow } from 'ckeditor5/src/icons.js';
 
 describe( 'FindAndReplaceFormView', () => {
 	let view;
@@ -135,7 +135,7 @@ describe( 'FindAndReplaceFormView', () => {
 					} );
 
 					it( 'should have an icon', () => {
-						expect( view._findPrevButtonView.icon ).to.equal( icons.previousArrow );
+						expect( view._findPrevButtonView.icon ).to.equal( IconPreviousArrow );
 					} );
 
 					it( 'should have a tooltip', () => {
@@ -157,7 +157,7 @@ describe( 'FindAndReplaceFormView', () => {
 					} );
 
 					it( 'should have an icon', () => {
-						expect( view._findNextButtonView.icon ).to.equal( icons.previousArrow );
+						expect( view._findNextButtonView.icon ).to.equal( IconPreviousArrow );
 					} );
 
 					it( 'should have a tooltip', () => {
@@ -1286,7 +1286,7 @@ describe( 'FindAndReplaceFormView', () => {
 				expect( matchCounterElement.textContent ).to.equal( '2 of 3' );
 
 				replaceButton.fire( 'execute' );
-				expect( matchCounterElement.textContent ).to.equal( '1 of 2' );
+				expect( matchCounterElement.textContent ).to.equal( '2 of 2' );
 
 				replaceButton.fire( 'execute' );
 				expect( matchCounterElement.textContent ).to.equal( '1 of 1' );
@@ -1356,6 +1356,47 @@ describe( 'FindAndReplaceFormView', () => {
 
 				editor.execute( 'undo' );
 				expect( matchCounterElement.textContent ).to.equal( '4 of 4' );
+			} );
+
+			it( 'should keep highlighted offset after replacement', () => {
+				editor.setData(
+					`<p>
+						Chocolate <span style="color:#fff700;">cake</span> bar ice cream topping marzipan.
+						Powder gingerbread bear claw tootsie roll lollipop marzipan icing bonbon.
+					</p>
+					<p>
+						Chupa chups jelly beans halvah ice cream gingerbread bears candy halvah gummi bears.
+						cAke dragée dessert chocolate.
+					</p>
+					<p>
+						Sime text with text highlight: <mark class="marker-green">Chocolate</mark> bonbon
+						<mark class="marker-yellow">Chocolate</mark> ice cream <mark class="marker-blue">Chocolate</mark>
+						gummies <mark class="pen-green">Chocolate</mark> tootsie roll
+					</p>`
+				);
+
+				toggleDialog();
+
+				// Let's skip the first found item.
+				findInput.fieldView.value = 'Choco';
+				findButton.fire( 'execute' );
+				findNextButton.fire( 'execute' );
+
+				// Replace second and third one.
+				view._replaceInputView.fieldView.value = '###';
+
+				replaceButton.fire( 'execute' );
+				replaceButton.fire( 'execute' );
+
+				// And there check if the highlight is still in the right place.
+				replaceButton.fire( 'execute' );
+
+				expect( editor.getData() ).to.be.equal(
+					'<p>Chocolate cake bar ice cream topping marzipan. Powder gingerbread bear claw tootsie roll' +
+					' lollipop marzipan icing bonbon.</p><p>Chupa chups jelly beans halvah ice cream gingerbread ' +
+					'bears candy halvah gummi bears. cAke dragée dessert ###late.</p><p>Sime text with text highlight: ' +
+					'###late bonbon ###late ice cream Chocolate gummies Chocolate tootsie roll</p>'
+				);
 			} );
 		} );
 

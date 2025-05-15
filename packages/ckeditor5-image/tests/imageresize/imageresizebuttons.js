@@ -1,10 +1,17 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document */
 
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import {
+	IconObjectSizeSmall,
+	IconObjectSizeMedium,
+	IconObjectSizeLarge,
+	IconObjectSizeFull
+} from 'ckeditor5/src/icons.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Image from '../../src/image.js';
@@ -19,11 +26,6 @@ import Table from '@ckeditor/ckeditor5-table/src/table.js';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-
-import iconSmall from '@ckeditor/ckeditor5-core/theme/icons/object-size-small.svg';
-import iconMedium from '@ckeditor/ckeditor5-core/theme/icons/object-size-medium.svg';
-import iconLarge from '@ckeditor/ckeditor5-core/theme/icons/object-size-large.svg';
-import iconFull from '@ckeditor/ckeditor5-core/theme/icons/object-size-full.svg';
 
 describe( 'ImageResizeButtons', () => {
 	let plugin, command, editor, editorElement;
@@ -81,6 +83,14 @@ describe( 'ImageResizeButtons', () => {
 		it( 'should be named', () => {
 			expect( ImageResizeButtons.pluginName ).to.equal( 'ImageResizeButtons' );
 		} );
+
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( ImageResizeButtons.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( ImageResizeButtons.isPremiumPlugin ).to.be.false;
+		} );
 	} );
 
 	describe( 'constructor()', () => {
@@ -100,6 +110,108 @@ describe( 'ImageResizeButtons', () => {
 			command.isEnabled = false;
 
 			expect( plugin.isEnabled ).to.be.false;
+		} );
+	} );
+
+	describe( 'resize options main toolbar buttons', () => {
+		let editor;
+
+		beforeEach( async () => {
+			editor = await ClassicEditor
+				.create( editorElement, {
+					plugins: [ Image, ImageStyle, Paragraph, Undo, Table, ImageResizeButtons, ImageCustomResizeUI ],
+					image: {
+						resizeUnit: '%',
+						resizeOptions: [ {
+							name: 'resizeImage:original',
+							value: null,
+							icon: 'original'
+						},
+						{
+							name: 'resizeImage:custom',
+							value: 'custom',
+							icon: 'custom'
+						},
+						{
+							name: 'resizeImage:25',
+							value: '25',
+							icon: 'small'
+						},
+						{
+							name: 'resizeImage:50',
+							value: '50',
+							icon: 'medium'
+						},
+						{
+							name: 'resizeImage:75',
+							value: '75',
+							icon: 'large'
+						} ]
+					},
+					toolbar: [ 'resizeImage:original', 'resizeImage:custom', 'resizeImage:25', 'resizeImage:50', 'resizeImage:75' ]
+				} );
+
+			plugin = editor.plugins.get( 'ImageResizeButtons' );
+		} );
+
+		afterEach( async () => {
+			if ( editorElement ) {
+				editorElement.remove();
+			}
+
+			if ( editor && editor.state !== 'destroyed' ) {
+				await editor.destroy();
+			}
+		} );
+
+		it( 'should register resize options as items in the main toolbar', () => {
+			const toolbar = editor.ui.view.toolbar;
+
+			expect( toolbar.items.map( item => item.label ) ).to.deep.equal( [
+				'Resize image to the original size',
+				'Custom image size',
+				'Resize image to 25%',
+				'Resize image to 50%',
+				'Resize image to 75%'
+			] );
+		} );
+
+		it( 'should synchronize button states with command\'s isEnabled property', () => {
+			const toolbar = editor.ui.view.toolbar;
+			const resizeCommand = editor.commands.get( 'resizeImage' );
+			const resizeComponents = toolbar.items.filter( item => item.label && item.label.includes( 'Resize image' ) );
+
+			resizeCommand.isEnabled = true;
+			expect( resizeComponents.every( item => item.isEnabled ) ).to.be.true;
+
+			resizeCommand.isEnabled = false;
+			expect( resizeComponents.every( item => item.isEnabled ) ).to.be.false;
+		} );
+
+		it( 'should properly sync isOn states of buttons', () => {
+			const toolbar = editor.ui.view.toolbar;
+			const resizeCommand = editor.commands.get( 'resizeImage' );
+			const resizeComponents = toolbar.items.filter( item => item.label && item.label.includes( 'Resize image' ) );
+
+			resizeCommand.isEnabled = false;
+			resizeCommand.value = undefined;
+
+			expect( resizeComponents.every( item => item.isOn ) ).to.be.false;
+
+			resizeCommand.isEnabled = false;
+			expect( resizeComponents.every( item => item.isOn ) ).to.be.false;
+
+			resizeCommand.value = undefined;
+			resizeCommand.isEnabled = true;
+			expect( resizeComponents.every( item => item.isOn ) ).to.be.false;
+
+			resizeCommand.value = { width: '50%' };
+			resizeCommand.isEnabled = true;
+
+			expect( resizeComponents[ 2 ].isOn ).to.be.true;
+
+			resizeCommand.isEnabled = false;
+			expect( resizeComponents[ 2 ].isOn ).to.be.false;
 		} );
 	} );
 
@@ -252,7 +364,7 @@ describe( 'ImageResizeButtons', () => {
 				editorElement.remove();
 			}
 
-			if ( editor ) {
+			if ( editor && editor.state !== 'destroyed' ) {
 				await editor.destroy();
 			}
 		} );
@@ -296,7 +408,7 @@ describe( 'ImageResizeButtons', () => {
 			expect( buttonView.label ).to.equal( 'Resize image: 30%' );
 			expect( buttonView.labelView ).to.be.instanceOf( View );
 
-			editor.destroy();
+			await editor.destroy();
 		} );
 
 		it( 'should be created with invisible "Resize image to 50%" label when is not provided', async () => {
@@ -307,7 +419,7 @@ describe( 'ImageResizeButtons', () => {
 			expect( buttonView.label ).to.equal( 'Resize image to 50%' );
 			expect( buttonView.labelView ).to.be.instanceOf( View );
 
-			editor.destroy();
+			await editor.destroy();
 		} );
 
 		it( 'should be created with a proper tooltip in custom option', () => {
@@ -362,10 +474,10 @@ describe( 'ImageResizeButtons', () => {
 			const button50 = editor.ui.componentFactory.create( 'resizeImage:50' );
 			const button75 = editor.ui.componentFactory.create( 'resizeImage:75' );
 
-			expect( buttonOriginal.icon ).to.deep.equal( iconFull );
-			expect( button25.icon ).to.deep.equal( iconSmall );
-			expect( button50.icon ).to.deep.equal( iconMedium );
-			expect( button75.icon ).to.deep.equal( iconLarge );
+			expect( buttonOriginal.icon ).to.deep.equal( IconObjectSizeFull );
+			expect( button25.icon ).to.deep.equal( IconObjectSizeSmall );
+			expect( button50.icon ).to.deep.equal( IconObjectSizeMedium );
+			expect( button75.icon ).to.deep.equal( IconObjectSizeLarge );
 		} );
 
 		it( 'should throw the CKEditorError if no `icon` is provided', async () => {
@@ -386,7 +498,7 @@ describe( 'ImageResizeButtons', () => {
 				editor.ui.componentFactory.create( 'resizeImage:noicon' );
 			}, 'imageresizebuttons-missing-icon', editor );
 
-			editor.destroy();
+			await editor.destroy();
 		} );
 	} );
 } );

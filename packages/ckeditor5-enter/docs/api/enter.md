@@ -16,8 +16,10 @@ The plugins are usually enabled by the {@link module:essentials/essentials~Essen
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-enter
+npm install ckeditor5
 ```
 
 ## Contribute

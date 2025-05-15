@@ -1,0 +1,39 @@
+{
+  "name": "@ckeditor/ckeditor5-icons",
+  "version": "45.1.0",
+  "description": "Icon pack for CKEditor 5.",
+  "keywords": [
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5",
+    "ckeditor5-lib",
+    "ckeditor5-dll"
+  ],
+  "type": "module",
+  "main": "src/index.ts",
+  "author": "CKSource (http://cksource.com/)",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-icons"
+  },
+  "devDependencies": {
+    "typescript": "5.0.4",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "files": [
+    "dist",
+    "src/**/*.js",
+    "src/**/*.d.ts",
+    "theme",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsc --build --force ./tsconfig.json && node ../../scripts/update-icons-typings.mjs",
+    "build:dist": "node ../../scripts/nim/build-package.mjs"
+  }
+}

@@ -1,0 +1,104 @@
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=(n == 0 ? 0 : n == 1 ? 1 : n == 2 ? 2 : n % 100 >= 3 && n % 100 <= 10 ? 3 : n % 100 >= 11 ? 4 : 5);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "Toolbar button tooltip for the Emoji feature."
+msgid "Emoji"
+msgstr "الرموز التعبيرية"
+
+msgctxt "Dropdown option label for opening an emoji picker offering more results to choose from."
+msgid "Show all emoji..."
+msgstr "إظهار جميع الرموز التعبيرية..."
+
+msgctxt "Label of an input field for filtering an emoji collection by the typed value."
+msgid "Find an emoji (min. 2 characters)"
+msgstr "ابحث عن رمز تعبيري (حد أدنى حرفين)"
+
+msgctxt "The main text of the message shown to the user when no emoji are available for the search criteria."
+msgid "No emojis were found matching \"%0\"."
+msgstr "لم نعثر على أي رموز تعبيرية مطابقة لـ \"%0\"."
+
+msgctxt "The main text of the message shown to the user when the provided search query does not contain the required number of characters."
+msgid "Keep on typing to see the emoji."
+msgstr "استمر في الكتابة لرؤية الرمز التعبيري."
+
+msgctxt "The secondary text of the message shown to the user to explain how many characters the search query must consist of."
+msgid "The query must contain at least two characters."
+msgstr "يجب أن يحتوي الاستعلام على حرفين على الأقل."
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Smileys & Expressions\" category."
+msgid "Smileys & Expressions"
+msgstr "الابتسامات والتعبيرات"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Gestures & People\" category."
+msgid "Gestures & People"
+msgstr "الإيماءات والأشخاص"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Animals & Nature\" category."
+msgid "Animals & Nature"
+msgstr "الحيوانات والطبيعة"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Food & Drinks\" category."
+msgid "Food & Drinks"
+msgstr "الأطعمة والمشروبات"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Travel & Places\" category."
+msgid "Travel & Places"
+msgstr "السفر والأماكن"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Activities\" category."
+msgid "Activities"
+msgstr "الأنشطة"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Objects\" category."
+msgid "Objects"
+msgstr "الأشياء"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Symbols\" category."
+msgid "Symbols"
+msgstr "الرموز"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Flags\" category."
+msgid "Flags"
+msgstr "الأعلام"
+
+msgctxt "Default label for the emoji skin tone dropdown."
+msgid "Select skin tone"
+msgstr "حدد لون البشرة"
+
+msgctxt "Dropdown option label for using the \"Default skin tone\" variant. Example emoji: 👋."
+msgid "Default skin tone"
+msgstr "لون البشرة الافتراضي"
+
+msgctxt "Dropdown option label for using the \"Light skin tone\" variant. Example emoji: 👋🏻."
+msgid "Light skin tone"
+msgstr "لون البشرة الفاتح"
+
+msgctxt "Dropdown option label for using the \"Medium Light skin tone\" variant. Example emoji: 👋🏼."
+msgid "Medium Light skin tone"
+msgstr "لون بشرة فاتح متوسط"
+
+msgctxt "Dropdown option label for using the \"Medium skin tone\" variant. Example emoji: 👋🏽."
+msgid "Medium skin tone"
+msgstr "لون البشرة متوسط"
+
+msgctxt "Dropdown option label for using the \"Medium Dark skin tone\" variant. Example emoji: 👋🏾."
+msgid "Medium Dark skin tone"
+msgstr "لون البشرة ​​داكن متوسط"
+
+msgctxt "Dropdown option label for using the \"Dark skin tone\" variant. Example emoji: 👋🏿."
+msgid "Dark skin tone"
+msgstr "لون بشرة داكن"
+
+msgctxt "Header of the emoji picker balloon panel."
+msgid "Emoji picker"
+msgstr "أداة اختيار الرموز التعبيرية"

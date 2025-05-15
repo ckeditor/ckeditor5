@@ -14,8 +14,10 @@ See the {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin 
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-paste-from-office
+npm install ckeditor5
 ```
 
 ## Contribute

@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module block-quote/blockquoteui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { IconQuote } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
-import type BlockQuoteCommand from './blockquotecommand.js';
 
 import '../theme/blockquote.css';
 
@@ -31,9 +31,15 @@ export default class BlockQuoteUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const editor = this.editor;
-		const command: BlockQuoteCommand = editor.commands.get( 'blockQuote' )!;
 
 		editor.ui.componentFactory.add( 'blockQuote', () => {
 			const buttonView = this._createButton( ButtonView );
@@ -42,13 +48,18 @@ export default class BlockQuoteUI extends Plugin {
 				tooltip: true
 			} );
 
-			// Bind button model to command.
-			buttonView.bind( 'isOn' ).to( command, 'value' );
-
 			return buttonView;
 		} );
 
-		editor.ui.componentFactory.add( 'menuBar:blockQuote', () => this._createButton( MenuBarMenuListItemButtonView ) );
+		editor.ui.componentFactory.add( 'menuBar:blockQuote', () => {
+			const buttonView = this._createButton( MenuBarMenuListItemButtonView );
+
+			buttonView.set( {
+				role: 'menuitemcheckbox'
+			} );
+
+			return buttonView;
+		} );
 	}
 
 	/**
@@ -63,11 +74,12 @@ export default class BlockQuoteUI extends Plugin {
 
 		view.set( {
 			label: t( 'Block quote' ),
-			icon: icons.quote,
+			icon: IconQuote,
 			isToggleable: true
 		} );
 
 		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+		view.bind( 'isOn' ).to( command, 'value' );
 
 		// Execute the command.
 		this.listenTo( view, 'execute', () => {

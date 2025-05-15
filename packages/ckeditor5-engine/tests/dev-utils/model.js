@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import { stringify, parse, getData, setData } from '../../src/dev-utils/model.js';
@@ -550,6 +550,21 @@ describe( 'model test utils', () => {
 			check( fragment ) {
 				expect( fragment instanceof DocumentFragment ).to.be.true;
 			}
+		} );
+
+		it( 'should correctly parse whitespaces around custom inline object elements', () => {
+			model.schema.register( 'inlineObj', {
+				inheritAllFrom: '$inlineObject'
+			} );
+
+			const parsed = parse(
+				'<paragraph>Foo <inlineObj></inlineObj> bar</paragraph>',
+				model.schema,
+				{ inlineObjectElements: [ 'inlineObj' ] }
+			);
+
+			expect( parsed.getChild( 0 ).data ).to.equal( 'Foo ' );
+			expect( parsed.getChild( 2 ).data ).to.equal( ' bar' );
 		} );
 
 		it( 'throws when invalid XML', () => {

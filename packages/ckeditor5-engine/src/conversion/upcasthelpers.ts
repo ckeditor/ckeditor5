@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import Matcher, { type ClassPatterns, type MatcherPattern, type PropertyPatterns } from '../view/matcher.js';
@@ -19,7 +19,7 @@ import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphin
 
 import { priorities, type EventInfo, type PriorityString } from '@ckeditor/ckeditor5-utils';
 
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'es-toolkit/compat';
 
 /**
  * Contains the {@link module:engine/view/view view} to {@link module:engine/model/model model} converters for
@@ -330,7 +330,8 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 		};
 		model: string | {
 			key: string;
-			value: unknown | ( ( viewElement: ViewElement, conversionApi: UpcastConversionApi ) => unknown );
+			value: unknown |
+				( ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => unknown );
 			name?: string;
 		};
 		converterPriority?: PriorityString;
@@ -536,16 +537,7 @@ export function convertText() {
 				return;
 			}
 
-			// Wrap `$text` in paragraph and include any marker that is directly before `$text`. See #13053.
-			const nodeBefore = position.nodeBefore;
-
 			position = wrapInParagraph( position, writer );
-
-			if ( nodeBefore && nodeBefore.is( 'element', '$marker' ) ) {
-				// Move `$marker` to the paragraph.
-				writer.move( writer.createRangeOn( nodeBefore ), position );
-				position = writer.createPositionAfter( nodeBefore );
-			}
 		}
 
 		consumable.consume( data.viewItem );
@@ -694,7 +686,8 @@ function upcastAttributeToAttribute( config: {
 	};
 	model: string | {
 		key: string;
-		value: unknown | ( ( viewElement: ViewElement, conversionApi: UpcastConversionApi ) => unknown );
+		value: unknown |
+			( ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => unknown );
 	};
 	converterPriority?: PriorityString;
 } ) {
@@ -1076,7 +1069,7 @@ function prepareToAttributeConverter(
 
 		const modelKey = config.model.key;
 		const modelValue: unknown = typeof config.model.value == 'function' ?
-			config.model.value( data.viewItem, conversionApi ) : config.model.value;
+			config.model.value( data.viewItem, conversionApi, data ) : config.model.value;
 
 		// Do not convert if attribute building function returned falsy value.
 		if ( modelValue === null ) {

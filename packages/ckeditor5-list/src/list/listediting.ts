@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -45,7 +45,6 @@ import {
 	listItemDowncastConverter,
 	listItemDowncastRemoveConverter,
 	listItemUpcastConverter,
-	listUpcastCleanList,
 	reconvertItemsOnDataChange
 } from './converters.js';
 import {
@@ -114,6 +113,13 @@ export default class ListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public static get requires() {
 		return [ Enter, Delete, ListUtils, ClipboardPipeline ] as const;
 	}
@@ -137,10 +143,10 @@ export default class ListEditing extends Plugin {
 
 		if ( editor.plugins.has( 'LegacyListEditing' ) ) {
 			/**
-			 * The `List` feature can not be loaded together with the `LegacyList` plugin.
+			 * The `List` feature cannot be loaded together with the `LegacyList` plugin.
 			 *
 			 * @error list-feature-conflict
-			 * @param conflictPlugin Name of the plugin.
+			 * @param {string} conflictPlugin Name of the plugin.
 			 */
 			throw new CKEditorError( 'list-feature-conflict', this, { conflictPlugin: 'LegacyListEditing' } );
 		}
@@ -456,8 +462,6 @@ export default class ListEditing extends Plugin {
 			} )
 			.add( dispatcher => {
 				dispatcher.on<UpcastElementEvent>( 'element:li', listItemUpcastConverter() );
-				dispatcher.on<UpcastElementEvent>( 'element:ul', listUpcastCleanList(), { priority: 'high' } );
-				dispatcher.on<UpcastElementEvent>( 'element:ol', listUpcastCleanList(), { priority: 'high' } );
 			} );
 
 		if ( !multiBlock ) {
@@ -751,7 +755,8 @@ function modelChangePostFixer(
 	listEditing: ListEditing
 ) {
 	const changes = model.document.differ.getChanges();
-	const itemToListHead = new Map<ListElement, ListElement>();
+	const visited = new Set<Element>();
+	const itemToListHead = new Set<ListElement>();
 	const multiBlock = listEditing.editor.config.get( 'list.multiBlock' );
 
 	let applied = false;
@@ -771,30 +776,30 @@ function modelChangePostFixer(
 				}
 			}
 
-			findAndAddListHeadToMap( entry.position, itemToListHead );
+			findAndAddListHeadToMap( entry.position, itemToListHead, visited );
 
 			// Insert of a non-list item - check if there is a list after it.
 			if ( !entry.attributes.has( 'listItemId' ) ) {
-				findAndAddListHeadToMap( entry.position.getShiftedBy( entry.length ), itemToListHead );
+				findAndAddListHeadToMap( entry.position.getShiftedBy( entry.length ), itemToListHead, visited );
 			}
 
 			// Check if there is no nested list.
 			for ( const { item: innerItem, previousPosition } of model.createRangeIn( item as Element ) ) {
 				if ( isListItemBlock( innerItem ) ) {
-					findAndAddListHeadToMap( previousPosition, itemToListHead );
+					findAndAddListHeadToMap( previousPosition, itemToListHead, visited );
 				}
 			}
 		}
 		// Removed list item or block adjacent to a list.
 		else if ( entry.type == 'remove' ) {
-			findAndAddListHeadToMap( entry.position, itemToListHead );
+			findAndAddListHeadToMap( entry.position, itemToListHead, visited );
 		}
 		// Changed list item indent or type.
 		else if ( entry.type == 'attribute' && attributeNames.includes( entry.attributeKey ) ) {
-			findAndAddListHeadToMap( entry.range.start, itemToListHead );
+			findAndAddListHeadToMap( entry.range.start, itemToListHead, visited );
 
 			if ( entry.attributeNewValue === null ) {
-				findAndAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead );
+				findAndAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead, visited );
 			}
 		}
 
@@ -872,7 +877,7 @@ function createModelIndentPasteFixer( model: Model ): GetCallback<ModelInsertCon
 
 		if ( isListItemBlock( position.parent ) ) {
 			refItem = position.parent;
-		} else if ( isListItemBlock( position.nodeBefore ) ) {
+		} else if ( isListItemBlock( position.nodeBefore ) && isListItemBlock( position.nodeAfter ) ) {
 			refItem = position.nodeBefore;
 		} else {
 			return; // Content is not copied into a list.

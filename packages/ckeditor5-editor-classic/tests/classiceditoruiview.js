@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import ClassicEditorUIView from '../src/classiceditoruiview.js';
@@ -79,6 +79,42 @@ describe( 'ClassicEditorUIView', () => {
 
 					return view.destroy();
 				} );
+			} );
+		} );
+
+		describe( '#editable', () => {
+			it( 'creates an editing root with the default aria-label', () => {
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Rich Text Editor. Editing area: main' );
+			} );
+
+			it( 'creates an editing root with the configured aria-label (string format)', () => {
+				const editingView = new EditingView();
+				const editingViewRoot = createRoot( editingView.document );
+				const view = new ClassicEditorUIView( locale, editingView, {
+					label: 'Foo'
+				} );
+				view.editable.name = editingViewRoot.rootName;
+				view.render();
+
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Foo' );
+
+				view.destroy();
+			} );
+
+			it( 'creates an editing root with the configured aria-label (object format)', () => {
+				const editingView = new EditingView();
+				const editingViewRoot = createRoot( editingView.document );
+				const view = new ClassicEditorUIView( locale, editingView, {
+					label: {
+						main: 'Foo'
+					}
+				} );
+				view.editable.name = editingViewRoot.rootName;
+				view.render();
+
+				expect( editingViewRoot.getAttribute( 'aria-label' ) ).to.equal( 'Foo' );
+
+				view.destroy();
 			} );
 		} );
 

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -11,7 +11,6 @@ import {
 	Matcher,
 	type UpcastElementEvent,
 	type Model,
-	type Element,
 	type MatcherPattern,
 	type ViewElement,
 	type ViewDocumentKeyDownEvent,
@@ -19,7 +18,8 @@ import {
 	type MapperViewToModelPositionEvent,
 	type ViewDocumentFragment,
 	type SelectionChangeRangeEvent,
-	type DocumentFragment
+	type DocumentFragment,
+	type Element
 } from 'ckeditor5/src/engine.js';
 
 import {
@@ -32,7 +32,7 @@ import {
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import { isFirstBlockOfListItem, isListItemBlock } from '../list/utils/model.js';
+import { getAllListItemBlocks, isFirstBlockOfListItem, isListItemBlock } from '../list/utils/model.js';
 import ListEditing, {
 	type ListEditingCheckElementEvent,
 	type ListEditingPostFixerEvent
@@ -41,7 +41,7 @@ import ListCommand from '../list/listcommand.js';
 import CheckTodoListCommand from './checktodolistcommand.js';
 import TodoCheckboxChangeObserver, { type ViewDocumentTodoCheckboxChangeEvent } from './todocheckboxchangeobserver.js';
 
-const ITEM_TOGGLE_KEYSTROKE = parseKeystroke( 'Ctrl+Enter' );
+const ITEM_TOGGLE_KEYSTROKE = /* #__PURE__ */ parseKeystroke( 'Ctrl+Enter' );
 
 /**
  * The engine of the to-do list feature. It handles creating, editing and removing to-do lists and their items.
@@ -58,6 +58,13 @@ export default class TodoListEditing extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'TodoListEditing' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 
 	/**
@@ -85,21 +92,23 @@ export default class TodoListEditing extends Plugin {
 
 		model.schema.extend( '$listItem', { allowAttributes: 'todoListChecked' } );
 
-		model.schema.addAttributeCheck( ( context, attributeName ) => {
+		model.schema.addAttributeCheck( context => {
 			const item = context.last;
 
-			if ( attributeName != 'todoListChecked' ) {
-				return;
-			}
-
+			// Don't allow `todoListChecked` attribute on elements which are not todo list items.
 			if ( !item.getAttribute( 'listItemId' ) || item.getAttribute( 'listType' ) != 'todo' ) {
 				return false;
 			}
-		} );
+		}, 'todoListChecked' );
 
 		editor.conversion.for( 'upcast' ).add( dispatcher => {
 			// Upcast of to-do list item is based on a checkbox at the beginning of a <li> to keep compatibility with markdown input.
 			dispatcher.on( 'element:input', todoItemInputConverter() );
+
+			// Priority is set to low to allow generic list item converter to run first.
+			dispatcher.on( 'element:li', todoListItemUpcastConverter(), {
+				priority: 'low'
+			} );
 
 			// Consume other elements that are normally generated in data downcast, so they won't get captured by GHS.
 			dispatcher.on( 'element:label', elementUpcastConsumingConverter(
@@ -111,6 +120,7 @@ export default class TodoListEditing extends Plugin {
 			dispatcher.on( 'element:span', elementUpcastConsumingConverter(
 				{ name: 'span', classes: 'todo-list__label__description' }
 			) );
+
 			dispatcher.on( 'element:ul', attributeUpcastConsumingConverter(
 				{ name: 'ul', classes: 'todo-list' }
 			) );
@@ -390,6 +400,47 @@ export default class TodoListEditing extends Plugin {
 			lastFocusedCodeBlock = focusParent;
 		} );
 	}
+}
+
+/**
+ * Returns an upcast converter for to-do list items.
+ */
+function todoListItemUpcastConverter(): GetCallback<UpcastElementEvent> {
+	return ( evt, data, conversionApi ) => {
+		const { writer, schema } = conversionApi;
+
+		if ( !data.modelRange ) {
+			return;
+		}
+
+		// Group to-do list items by their listItemId attribute to ensure that all items of the same list item have the same checked state.
+		const groupedItems = Array
+			.from( data.modelRange.getItems( { shallow: true } ) )
+			.filter( ( item ): item is Element =>
+				item.getAttribute( 'listType' ) === 'todo' && schema.checkAttribute( item, 'listItemId' )
+			)
+			.reduce( ( acc, item ) => {
+				const listItemId = item.getAttribute( 'listItemId' ) as string;
+
+				if ( !acc.has( listItemId ) ) {
+					acc.set( listItemId, getAllListItemBlocks( item ) );
+				}
+
+				return acc;
+			}, new Map<string, Array<Element>>() );
+
+		// During the upcast, we need to ensure that all items of the same list have the same checked state. From time to time
+		// the checked state of the items can be different when the user pastes content from the clipboard with <input type="checkbox">
+		// that has checked state set to true. In such cases, we need to ensure that all items of the same list have the same checked state.
+		// See more: https://github.com/ckeditor/ckeditor5/issues/15602
+		for ( const [ , items ] of groupedItems.entries() ) {
+			if ( items.some( item => item.getAttribute( 'todoListChecked' ) ) ) {
+				for ( const item of items ) {
+					writer.setAttribute( 'todoListChecked', true, item );
+				}
+			}
+		}
+	};
 }
 
 /**

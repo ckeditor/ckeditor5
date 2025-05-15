@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -48,6 +48,13 @@ export default class LinkImageEditing extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'LinkImageEditing' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 
 	/**
@@ -246,6 +253,24 @@ function downcastImageLinkManualDecorator( decorator: ManualDecorator ): ( dispa
 				return;
 			}
 
+			// Handle deactivated manual decorator.
+			if ( decorator.value === undefined ) {
+				for ( const key in decorator.attributes ) {
+					conversionApi.writer.removeAttribute( key, linkInImage );
+				}
+
+				if ( decorator.classes ) {
+					conversionApi.writer.removeClass( decorator.classes, linkInImage );
+				}
+
+				for ( const key in decorator.styles ) {
+					conversionApi.writer.removeStyle( key, linkInImage );
+				}
+
+				return;
+			}
+
+			// Handle activated manual decorator.
 			for ( const [ key, val ] of toMap( decorator.attributes ) ) {
 				conversionApi.writer.setAttribute( key, val, linkInImage );
 			}

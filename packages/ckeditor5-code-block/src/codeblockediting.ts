@@ -1,13 +1,11 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module code-block/codeblockediting
  */
-
-import { lowerFirst, upperFirst } from 'lodash-es';
 
 import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core.js';
 import { ShiftEnter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter.js';
@@ -24,8 +22,7 @@ import {
 	type Element,
 	type SelectionChangeRangeEvent
 } from 'ckeditor5/src/engine.js';
-
-import type { ListEditing } from '@ckeditor/ckeditor5-list';
+import { ClipboardPipeline, type ClipboardContentInsertionEvent } from 'ckeditor5/src/clipboard.js';
 
 import CodeBlockCommand from './codeblockcommand.js';
 import IndentCodeBlockCommand from './indentcodeblockcommand.js';
@@ -34,7 +31,8 @@ import {
 	getNormalizedAndLocalizedLanguageDefinitions,
 	getLeadingWhiteSpaces,
 	rawSnippetTextToViewDocumentFragment,
-	getCodeBlockAriaAnnouncement
+	getCodeBlockAriaAnnouncement,
+	getTextNodeAtLineStart
 } from './utils.js';
 import {
 	modelToViewCodeBlockInsertion,
@@ -62,6 +60,13 @@ export default class CodeBlockEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public static get requires() {
 		return [ ShiftEnter ] as const;
 	}
@@ -80,6 +85,7 @@ export default class CodeBlockEditing extends Plugin {
 				{ language: 'cpp', label: 'C++' },
 				{ language: 'css', label: 'CSS' },
 				{ language: 'diff', label: 'Diff' },
+				{ language: 'go', label: 'Go' },
 				{ language: 'html', label: 'HTML' },
 				{ language: 'java', label: 'Java' },
 				{ language: 'javascript', label: 'JavaScript' },
@@ -103,8 +109,6 @@ export default class CodeBlockEditing extends Plugin {
 		const schema = editor.model.schema;
 		const model = editor.model;
 		const view = editor.editing.view;
-		const listEditing: ListEditing | null = editor.plugins.has( 'ListEditing' ) ?
-			editor.plugins.get( 'ListEditing' ) : null;
 
 		const normalizedLanguagesDefs = getNormalizedAndLocalizedLanguageDefinitions( editor );
 
@@ -133,28 +137,20 @@ export default class CodeBlockEditing extends Plugin {
 		schema.register( 'codeBlock', {
 			allowWhere: '$block',
 			allowChildren: '$text',
-			isBlock: true,
-			allowAttributes: [ 'language' ]
+			// Disallow `$inlineObject` and its derivatives like `inlineWidget` inside `codeBlock` to ensure that only text,
+			// not other inline elements like inline images, are allowed. This maintains the semantic integrity of code blocks.
+			disallowChildren: '$inlineObject',
+			allowAttributes: [ 'language' ],
+			allowAttributesOf: '$listItem',
+			isBlock: true
 		} );
 
-		// Allow all list* attributes on `codeBlock` (integration with DocumentList).
-		// Disallow all attributes on $text inside `codeBlock`.
+		// Disallow formatting attributes on `codeBlock` children.
 		schema.addAttributeCheck( ( context, attributeName ) => {
-			if (
-				context.endsWith( 'codeBlock' ) &&
-				listEditing && listEditing.getListAttributeNames().includes( attributeName )
-			) {
-				return true;
-			}
+			const parent = context.getItem( context.length - 2 );
+			const isFormatting = schema.getAttributeProperties( attributeName ).isFormatting;
 
-			if ( context.endsWith( 'codeBlock $text' ) ) {
-				return false;
-			}
-		} );
-
-		// Disallow object elements inside `codeBlock`. See #9567.
-		editor.model.schema.addChildCheck( ( context, childDefinition ) => {
-			if ( context.endsWith( 'codeBlock' ) && childDefinition.isObject ) {
+			if ( isFormatting && parent && parent.name == 'codeBlock' ) {
 				return false;
 			}
 		} );
@@ -201,6 +197,31 @@ export default class CodeBlockEditing extends Plugin {
 			// Pass the view fragment to the default clipboardInput handler.
 			data.content = rawSnippetTextToViewDocumentFragment( writer, text );
 		} );
+
+		if ( editor.plugins.has( 'ClipboardPipeline' ) ) {
+			// Elements may have a plain textual representation (hence be present in the 'text/plain' data transfer),
+			// but not be allowed in the code block.
+			// Filter them out before inserting the content to the model.
+			editor.plugins.get( ClipboardPipeline ).on<ClipboardContentInsertionEvent>( 'contentInsertion', ( evt, data ) => {
+				const model = editor.model;
+				const selection = model.document.selection;
+
+				if ( !selection.anchor!.parent.is( 'element', 'codeBlock' ) ) {
+					return;
+				}
+
+				model.change( writer => {
+					const contentRange = writer.createRangeIn( data.content );
+
+					for ( const item of [ ...contentRange.getItems() ] ) {
+						// Remove all nodes disallowed in the code block.
+						if ( item.is( 'node' ) && !schema.checkChild( selection.anchor!, item ) ) {
+							writer.remove( item );
+						}
+					}
+				} );
+			} );
+		}
 
 		// Make sure multi–line selection is always wrapped in a code block when `getSelectedContent()`
 		// is used (e.g. clipboard copy). Otherwise, only the raw text will be copied to the clipboard and,
@@ -338,9 +359,11 @@ export default class CodeBlockEditing extends Plugin {
 function breakLineOnEnter( editor: Editor ): void {
 	const model = editor.model;
 	const modelDoc = model.document;
+	// Use last position as other mechanisms (e.g. condition deciding whether this function should be called) also check that.
 	const lastSelectionPosition = modelDoc.selection.getLastPosition()!;
-	const node = lastSelectionPosition.nodeBefore || lastSelectionPosition.textNode;
 	let leadingWhiteSpaces: string | undefined;
+
+	const node = getTextNodeAtLineStart( lastSelectionPosition, model );
 
 	// Figure out the indentation (white space chars) at the beginning of the line.
 	if ( node && node.is( '$text' ) ) {

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -100,13 +100,16 @@ export function renderDowncastElement( styleAttr: string ) {
 /**
  * A helper that adds {@link module:ui/colorselector/colorselectorview~ColorSelectorView} to the color dropdown with proper initial values.
  *
- * @param config.dropdownView The dropdown view to which a {@link module:ui/colorselector/colorselectorview~ColorSelectorView}
+ * @param options Configuration options
+ * @param options.dropdownView The dropdown view to which a {@link module:ui/colorselector/colorselectorview~ColorSelectorView}
  * will be added.
- * @param config.colors An array with definitions representing colors to be displayed in the color selector.
- * @param config.removeButtonLabel The label for the button responsible for removing the color.
- * @param config.documentColorsLabel The label for the section with document colors.
- * @param config.documentColorsCount The number of document colors inside the dropdown.
- * @param config.colorPickerViewConfig Configuration of the color picker view.
+ * @param options.colors An array with definitions representing colors to be displayed in the color selector.
+ * @param options.columns The number of columns in the color grid.
+ * @param options.removeButtonLabel The label for the button responsible for removing the color.
+ * @param options.colorPickerLabel The label for the color picker button.
+ * @param options.documentColorsLabel The label for the section with document colors.
+ * @param options.documentColorsCount The number of document colors inside the dropdown.
+ * @param options.colorPickerViewConfig Configuration of the color picker view.
  * @returns The new color selector view.
  */
 export function addColorSelectorToDropdown(

@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import { Locale } from '@ckeditor/ckeditor5-utils';
 import { ButtonView, createLabeledInputText, IconView } from '@ckeditor/ckeditor5-ui';
 import SearchTextQueryView from '../../../src/search/text/searchtextqueryview.js';
-import { icons } from '@ckeditor/ckeditor5-core';
+import { IconCancel, IconLoupe } from '@ckeditor/ckeditor5-icons';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
@@ -49,7 +49,7 @@ describe( 'SearchTextQueryView', () => {
 				expect( resetButtonView.tooltip ).to.be.true;
 				expect( resetButtonView.class ).to.equal( 'ck-search__reset' );
 				expect( resetButtonView.label ).to.equal( 'Clear' );
-				expect( resetButtonView.icon ).to.equal( icons.cancel );
+				expect( resetButtonView.icon ).to.equal( IconCancel );
 			} );
 
 			it( 'should reset the search field value upon #execute', () => {
@@ -107,7 +107,7 @@ describe( 'SearchTextQueryView', () => {
 				expect( view.iconView ).to.equal( iconView );
 				expect( iconView ).to.equal( view.iconView );
 				expect( iconView ).to.be.instanceOf( IconView );
-				expect( iconView.content ).to.equal( icons.loupe );
+				expect( iconView.content ).to.equal( IconLoupe );
 			} );
 
 			it( 'should be possible to hide using view\'s configuration', () => {

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document, Event */
@@ -28,6 +28,7 @@ describe( 'TextAlternativeFormView', () => {
 			view.render();
 
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-form' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-text-alternative-form' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-responsive-form' ) ).to.be.true;
 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
@@ -44,12 +45,9 @@ describe( 'TextAlternativeFormView', () => {
 		it( 'should create child views', () => {
 			expect( view.labeledInput ).to.be.instanceOf( View );
 			expect( view.saveButtonView ).to.be.instanceOf( View );
-			expect( view.cancelButtonView ).to.be.instanceOf( View );
+			expect( view.backButtonView ).to.be.instanceOf( View );
 
 			view.render();
-
-			expect( view.saveButtonView.element.classList.contains( 'ck-button-save' ) ).to.be.true;
-			expect( view.cancelButtonView.element.classList.contains( 'ck-button-cancel' ) ).to.be.true;
 		} );
 
 		it( 'should create #_focusCycler instance', () => {
@@ -60,10 +58,18 @@ describe( 'TextAlternativeFormView', () => {
 			expect( view._focusables ).to.be.instanceOf( ViewCollection );
 		} );
 
-		it( 'should fire `cancel` event on cancelButtonView#execute', () => {
+		it( 'should create header element at the top', () => {
+			view.render();
+
+			const header = view.children.first;
+
+			expect( header.children.last.element.classList.contains( 'ck-form__header__label' ) ).to.be.true;
+		} );
+
+		it( 'should fire `cancel` event on backButtonView#execute', () => {
 			const spy = sinon.spy();
 			view.on( 'cancel', spy );
-			view.cancelButtonView.fire( 'execute' );
+			view.backButtonView.fire( 'execute' );
 
 			sinon.assert.calledOnce( spy );
 		} );
@@ -83,9 +89,9 @@ describe( 'TextAlternativeFormView', () => {
 				view.render();
 
 				expect( view._focusables.map( f => f ) ).to.have.members( [
+					view.backButtonView,
 					view.labeledInput,
-					view.saveButtonView,
-					view.cancelButtonView
+					view.saveButtonView
 				] );
 			} );
 
@@ -94,9 +100,9 @@ describe( 'TextAlternativeFormView', () => {
 
 				view.render();
 
-				sinon.assert.calledWithExactly( spy.getCall( 0 ), view.labeledInput.element );
-				sinon.assert.calledWithExactly( spy.getCall( 1 ), view.saveButtonView.element );
-				sinon.assert.calledWithExactly( spy.getCall( 2 ), view.cancelButtonView.element );
+				sinon.assert.calledWithExactly( spy.getCall( 0 ), view.backButtonView.element );
+				sinon.assert.calledWithExactly( spy.getCall( 1 ), view.labeledInput.element );
+				sinon.assert.calledWithExactly( spy.getCall( 2 ), view.saveButtonView.element );
 			} );
 
 			describe( 'activates keyboard navigation in the form', () => {
@@ -139,7 +145,7 @@ describe( 'TextAlternativeFormView', () => {
 
 					// Mock the cancel button is focused.
 					view.focusTracker.isFocused = true;
-					view.focusTracker.focusedElement = view.cancelButtonView.element;
+					view.focusTracker.focusedElement = view.backButtonView.element;
 
 					const spy = sinon.spy( view.saveButtonView, 'focus' );
 

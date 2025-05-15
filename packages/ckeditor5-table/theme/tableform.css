@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 .ck.ck-table-form {
@@ -30,6 +30,12 @@
 			& .ck-table-form__dimension-operator {
 				flex-grow: 0;
 			}
+		}
+
+		/* Ignore labels that work as fieldset legends */
+		/* Fallback for table dimension operator */
+		& > *:not(.ck-label, .ck-table-form__dimension-operator) {
+			flex-grow: 1;
 		}
 	}
 

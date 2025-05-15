@@ -1,27 +1,23 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
+import {
+	CS_CONFIG,
+	BalloonBlockEditor,
+	getViewportTopOffsetConfig
+} from '@snippets/index.js';
 
-import BalloonEditor from '@ckeditor/ckeditor5-build-balloon-block';
-
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-
-BalloonEditor
+BalloonBlockEditor
 	.create( document.querySelector( '#snippet-balloon-block-editor' ), {
-		cloudServices: CS_CONFIG,
-		blockToolbar: [
-			'undo', 'redo',
-			'|', 'heading',
-			'|', 'uploadImage', 'insertTable', 'mediaEmbed',
-			'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+		removePlugins: [
+			'CKBox'
 		],
-		toolbar: [ 'bold', 'italic', 'link' ],
+		cloudServices: CS_CONFIG,
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		}
 	} )

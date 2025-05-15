@@ -30,8 +30,10 @@ Besides these mentioned core functionalities, this package implements the follow
 
 ## Installation
 
-```plaintext
-npm install --save @ckeditor/ckeditor5-widget
+This package is part of our open-source aggregate package.
+
+```bash
+npm install ckeditor5
 ```
 
 ## Contribute

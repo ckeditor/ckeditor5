@@ -1,26 +1,21 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals ClassicEditor, console, window, document */
-
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+import { CS_CONFIG, attachTourBalloon } from '@snippets/index.js';
+import { DragDropEditor } from './build-drag-drop-source.js';
 
 const contactsContainer = document.querySelector( '.contacts' );
 
-//
-// Editor initialization.
-//
-
-ClassicEditor.create( document.querySelector( '#snippet-drag-drop' ), {
+DragDropEditor.create( document.querySelector( '#snippet-drag-drop' ), {
 	placeholder: 'Drop the content here to test the feature.',
 	cloudServices: CS_CONFIG
 } )
 	.then( editor => {
 		window.editor = editor;
 
-		window.attachTourBalloon( {
+		attachTourBalloon( {
 			target: contactsContainer.childNodes[ 2 ],
 			text: 'Drag and drop me in the editor.',
 			editor,
@@ -35,10 +30,6 @@ ClassicEditor.create( document.querySelector( '#snippet-drag-drop' ), {
 	.catch( err => {
 		console.error( err.stack );
 	} );
-
-//
-// Draggable H-Cards list.
-//
 
 const contacts = [
 	{

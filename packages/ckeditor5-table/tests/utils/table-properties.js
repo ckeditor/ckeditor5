@@ -1,9 +1,13 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { getNormalizedDefaultProperties } from '../../src/utils/table-properties.js';
+import {
+	getNormalizedDefaultCellProperties,
+	getNormalizedDefaultProperties,
+	getNormalizedDefaultTableProperties
+} from '../../src/utils/table-properties.js';
 
 describe( 'table utils', () => {
 	describe( 'table-properties', () => {
@@ -168,6 +172,32 @@ describe( 'table utils', () => {
 					borderWidth: '',
 					borderColor: '',
 					backgroundColor: '',
+					width: '',
+					height: ''
+				} );
+			} );
+		} );
+
+		describe( 'getNormalizedDefaultTableProperties()', () => {
+			it( 'should return proper default properties for table', () => {
+				expect( getNormalizedDefaultTableProperties() ).to.deep.equal( {
+					backgroundColor: '',
+					borderStyle: 'double',
+					borderColor: 'hsl(0, 0%, 70%)',
+					borderWidth: '1px',
+					width: '',
+					height: ''
+				} );
+			} );
+		} );
+
+		describe( 'getNormalizedDefaultCellProperties()', () => {
+			it( 'should return proper default properties for cell', () => {
+				expect( getNormalizedDefaultCellProperties() ).to.deep.equal( {
+					backgroundColor: '',
+					borderStyle: 'solid',
+					borderColor: 'hsl(0, 0%, 75%)',
+					borderWidth: '1px',
 					width: '',
 					height: ''
 				} );

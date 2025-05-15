@@ -18,8 +18,10 @@ See the {@link features/horizontal-line horizontal line feature guide} and the {
 
 ## Installation
 
-```plaintext
-npm install --save @ckeditor/ckeditor5-horizontal-line
+This package is part of our open-source aggregate package.
+
+```bash
+npm install ckeditor5
 ```
 
 ## Contribute

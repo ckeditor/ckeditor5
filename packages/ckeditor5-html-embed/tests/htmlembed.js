@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import HtmlEmbed from '../src/htmlembed.js';
@@ -15,5 +15,13 @@ describe( 'HtmlEmbed', () => {
 
 	it( 'should be named', () => {
 		expect( HtmlEmbed.pluginName ).to.equal( 'HtmlEmbed' );
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( HtmlEmbed.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( HtmlEmbed.isPremiumPlugin ).to.be.false;
 	} );
 } );

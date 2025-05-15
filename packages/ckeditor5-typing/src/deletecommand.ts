@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -12,6 +12,8 @@ import { count } from '@ckeditor/ckeditor5-utils';
 import type { DocumentSelection, Element, Selection, Writer } from '@ckeditor/ckeditor5-engine';
 
 import ChangeBuffer from './utils/changebuffer.js';
+
+// @if CK_DEBUG_TYPING // const { _buildLogMessage } = require( '@ckeditor/ckeditor5-engine/src/dev-utils/utils.js' );
 
 /**
  * The delete command. Used by the {@link module:typing/delete~Delete delete feature} to handle the <kbd>Delete</kbd> and
@@ -128,10 +130,11 @@ export default class DeleteCommand extends Command {
 			} );
 
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-			// @if CK_DEBUG_TYPING // 	console.log( '%c[DeleteCommand]%c Delete content',
-			// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green;', '',
-			// @if CK_DEBUG_TYPING // 		`[${ selection.getFirstPosition()!.path }]-[${ selection.getLastPosition()!.path }]`, options
-			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'DeleteCommand',
+			// @if CK_DEBUG_TYPING // 		'Delete content',
+			// @if CK_DEBUG_TYPING // 		`[${ selection.getFirstPosition()!.path }]-[${ selection.getLastPosition()!.path }]`,
+			// @if CK_DEBUG_TYPING // 		options
+			// @if CK_DEBUG_TYPING // 	) );
 			// @if CK_DEBUG_TYPING // }
 
 			model.deleteContent( selection, {

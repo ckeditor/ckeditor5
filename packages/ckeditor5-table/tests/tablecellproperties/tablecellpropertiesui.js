@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals document, Event */
@@ -18,6 +18,7 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 
 import Table from '../../src/table.js';
+import TableLayout from '../../src/tablelayout.js';
 import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting.js';
 import TableCellWidthEditing from '../../src/tablecellwidth/tablecellwidthediting.js';
 import TableCellPropertiesUI from '../../src/tablecellproperties/tablecellpropertiesui.js';
@@ -69,6 +70,14 @@ describe( 'table cell properties', () => {
 
 		it( 'should be named', () => {
 			expect( TableCellPropertiesUI.pluginName ).to.equal( 'TableCellPropertiesUI' );
+		} );
+
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( TableCellPropertiesUI.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( TableCellPropertiesUI.isPremiumPlugin ).to.be.false;
 		} );
 
 		it( 'should load ContextualBalloon', () => {
@@ -693,9 +702,9 @@ describe( 'table cell properties', () => {
 
 					expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
 					expect( tableCellPropertiesView ).to.include( {
-						borderStyle: 'none',
-						borderColor: '',
-						borderWidth: '',
+						borderStyle: 'solid',
+						borderColor: 'hsl(0, 0%, 75%)',
+						borderWidth: '1px',
 						height: '',
 						padding: '',
 						backgroundColor: '',
@@ -769,9 +778,12 @@ describe( 'table cell properties', () => {
 					.create( editorElement, {
 						plugins: [
 							Table, TableCellPropertiesEditing, TableCellPropertiesUI, TableCellWidthEditing,
-							ClipboardPipeline, Paragraph, Undo
+							ClipboardPipeline, Paragraph, Undo, TableLayout
 						],
-						initialData: '<table><tr><td>foo</td></tr></table><p>bar</p>',
+						initialData:
+							'<table class="content-table"><tr><td>foo</td></tr></table>' +
+							'<p>bar</p>' +
+							'<table class="layout-table"><tr><td>foo</td></tr></table>',
 						table: {
 							tableCellProperties: {
 								defaultProperties: {
@@ -838,7 +850,7 @@ describe( 'table cell properties', () => {
 				} );
 			} );
 
-			describe( 'Showing the #view', () => {
+			describe( 'Showing the #view (content table)', () => {
 				beforeEach( () => {
 					editor.model.change( writer => {
 						writer.setSelection( editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ), 0 );
@@ -894,6 +906,49 @@ describe( 'table cell properties', () => {
 							padding: '10px',
 							horizontalAlignment: 'center',
 							verticalAlignment: 'bottom'
+						} );
+					} );
+				} );
+			} );
+
+			describe( 'Showing the #view (layout table)', () => {
+				beforeEach( () => {
+					editor.model.change( writer => {
+						writer.setSelection( editor.model.document.getRoot().getChild( 2 ).getChild( 0 ).getChild( 0 ), 0 );
+					} );
+
+					// Trigger lazy init.
+					tableCellPropertiesUI._showView();
+					tableCellPropertiesUI._hideView();
+
+					tableCellPropertiesView = tableCellPropertiesUI.view;
+				} );
+
+				describe( 'initial data', () => {
+					it( 'should use hardcoded defaults for layout table instead of configuration', () => {
+						editor.commands.get( 'tableCellBorderStyle' ).value = null;
+						editor.commands.get( 'tableCellBorderColor' ).value = null;
+						editor.commands.get( 'tableCellBorderWidth' ).value = null;
+						editor.commands.get( 'tableCellBackgroundColor' ).value = null;
+						editor.commands.get( 'tableCellWidth' ).value = null;
+						editor.commands.get( 'tableCellHeight' ).value = null;
+						editor.commands.get( 'tableCellPadding' ).value = null;
+						editor.commands.get( 'tableCellHorizontalAlignment' ).value = null;
+						editor.commands.get( 'tableCellVerticalAlignment' ).value = null;
+
+						tableCellPropertiesButton.fire( 'execute' );
+
+						expect( contextualBalloon.visibleView ).to.equal( tableCellPropertiesView );
+						expect( tableCellPropertiesView ).to.include( {
+							borderStyle: 'none',
+							borderColor: '',
+							borderWidth: '',
+							backgroundColor: '',
+							width: '',
+							height: '',
+							padding: '',
+							horizontalAlignment: 'left',
+							verticalAlignment: 'middle'
 						} );
 					} );
 				} );

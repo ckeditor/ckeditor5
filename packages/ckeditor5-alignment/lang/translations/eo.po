@@ -1,0 +1,36 @@
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: eo\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "Toolbar button tooltip for aligning the text to the left."
+msgid "Align left"
+msgstr ""
+
+msgctxt "Toolbar button tooltip for aligning the text to the right."
+msgid "Align right"
+msgstr ""
+
+msgctxt "Toolbar button tooltip for aligning the text to center."
+msgid "Align center"
+msgstr ""
+
+msgctxt "Toolbar button tooltip for making the text justified."
+msgid "Justify"
+msgstr ""
+
+msgctxt "Dropdown button tooltip for the text alignment feature."
+msgid "Text alignment"
+msgstr ""
+
+msgctxt "Label used by assistive technologies describing the text alignment feature toolbar."
+msgid "Text alignment toolbar"
+msgstr ""

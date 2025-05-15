@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -38,8 +38,8 @@ import {
 	ensureSafeUrl,
 	getLocalizedDecorators,
 	normalizeDecorators,
-	openLink,
 	addLinkProtocolIfApplicable,
+	openLink,
 	type NormalizedLinkDecoratorAutomaticDefinition,
 	type NormalizedLinkDecoratorManualDefinition
 } from './utils.js';
@@ -59,10 +59,22 @@ const EXTERNAL_LINKS_REGEXP = /^(https?:)?\/\//;
  */
 export default class LinkEditing extends Plugin {
 	/**
+	 * A list of functions that handles opening links. If any of them returns `true`, the link is considered to be opened.
+	 */
+	private readonly _linkOpeners: Array<LinkOpener> = [];
+
+	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
 		return 'LinkEditing' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 
 	/**
@@ -81,7 +93,8 @@ export default class LinkEditing extends Plugin {
 
 		editor.config.define( 'link', {
 			allowCreatingEmptyLinks: false,
-			addTargetToExternalLinks: false
+			addTargetToExternalLinks: false,
+			toolbar: [ 'linkPreview', '|', 'editLink', 'linkProperties', 'unlink' ]
 		} );
 	}
 
@@ -143,6 +156,16 @@ export default class LinkEditing extends Plugin {
 
 		// Handle adding default protocol to pasted links.
 		this._enableClipboardIntegration();
+	}
+
+	/**
+	 * Registers a function that opens links in a new browser tab.
+	 *
+	 * @param linkOpener The function that opens a link in a new browser tab.
+	 * @internal
+	 */
+	public _registerLinkOpener( linkOpener: LinkOpener ): void {
+		this._linkOpeners.push( linkOpener );
 	}
 
 	/**
@@ -254,6 +277,12 @@ export default class LinkEditing extends Plugin {
 		const view = editor.editing.view;
 		const viewDocument = view.document;
 
+		const handleLinkOpening = ( url: string ): void => {
+			if ( !this._linkOpeners.some( opener => opener( url ) ) ) {
+				openLink( url );
+			}
+		};
+
 		this.listenTo<ViewDocumentClickEvent>( viewDocument, 'click', ( evt, data ) => {
 			const shouldOpen = env.isMac ? data.domEvent.metaKey : data.domEvent.ctrlKey;
 
@@ -280,7 +309,7 @@ export default class LinkEditing extends Plugin {
 			evt.stop();
 			data.preventDefault();
 
-			openLink( url );
+			handleLinkOpening( url );
 		}, { context: '$capture' } );
 
 		// Open link on Alt+Enter.
@@ -295,7 +324,7 @@ export default class LinkEditing extends Plugin {
 
 			evt.stop();
 
-			openLink( url );
+			handleLinkOpening( url );
 		} );
 	}
 
@@ -347,6 +376,13 @@ export default class LinkEditing extends Plugin {
 		} );
 	}
 }
+
+/**
+ * A function that handles opening links. It may be used to define custom link handlers.
+ *
+ * @returns `true` if the link was opened successfully.
+ */
+type LinkOpener = ( url: string ) => boolean;
 
 /**
  * Make the selection free of link-related model attributes.

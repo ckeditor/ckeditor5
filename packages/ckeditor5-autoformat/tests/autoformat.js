@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import Autoformat from '../src/autoformat.js';
@@ -67,6 +67,14 @@ describe( 'Autoformat', () => {
 
 		it( 'should have pluginName', () => {
 			expect( Autoformat.pluginName ).to.equal( 'Autoformat' );
+		} );
+
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( Autoformat.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( Autoformat.isPremiumPlugin ).to.be.false;
 		} );
 
 		it( 'should add keystroke accessibility info', () => {
@@ -1182,6 +1190,10 @@ describe( 'Autoformat', () => {
 					} );
 			} );
 
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
 			it( 'should not replace asterisk with bulleted list item', () => {
 				setData( model, '<paragraph>*[]</paragraph>' );
 				insertSpace();
@@ -1308,6 +1320,8 @@ describe( 'Autoformat', () => {
 						insertSpace();
 
 						expect( getData( model ) ).to.equal( '<paragraph>## []</paragraph>' );
+
+						return editor.destroy();
 					} );
 			} );
 		} );
@@ -2401,6 +2415,10 @@ describe( 'Autoformat', () => {
 					} );
 			} );
 
+			afterEach( async () => {
+				await editor.destroy();
+			} );
+
 			it( 'should not replace asterisk with bulleted list item', () => {
 				setData( model, '<paragraph>*[]</paragraph>' );
 				insertSpace();
@@ -2528,6 +2546,8 @@ describe( 'Autoformat', () => {
 						insertSpace();
 
 						expect( getData( model ) ).to.equal( '<paragraph>## []</paragraph>' );
+
+						return editor.destroy();
 					} );
 			} );
 		} );

@@ -1,0 +1,89 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+@import "../../../../mixins/_disabled.css";
+@import "../../../mixins/_button.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
+
+/*
+ * All menu buttons.
+ */
+.ck.ck-button.ck-dropdown-menu-list__nested-menu__button {
+	width: 100%;
+	padding: var(--ck-spacing-tiny) calc(2 * var(--ck-spacing-standard));
+	border-radius: 0;
+
+	&:focus {
+		border-color: transparent;
+		box-shadow: none;
+
+		&:not(.ck-on) {
+			background: var(--ck-color-button-default-hover-background);
+		}
+	}
+
+	& > .ck-button__label {
+		flex-grow: 1;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	&.ck-disabled > .ck-button__label {
+		@mixin ck-disabled;
+	}
+
+	/* Spacing in buttons that miss the icon. */
+	&.ck-icon-spacing:not(:has(.ck-button__icon)) > .ck-button__label {
+		margin-left: calc(var(--ck-icon-size) - var(--ck-spacing-small));
+	}
+
+	& > .ck-dropdown-menu-list__nested-menu__button__arrow {
+		width: var(--ck-dropdown-arrow-size);
+
+		@mixin ck-dir ltr {
+			transform: rotate(-90deg);
+
+			/* Nudge the arrow gently to the right because its center of gravity is to the left */
+			margin-right: calc(-1 * var(--ck-spacing-small));
+		}
+
+		@mixin ck-dir rtl {
+			transform: rotate(90deg);
+
+			/* Nudge the arrow gently to the left because its center of gravity is to the right (after rotation). */
+			margin-left: calc(-1 * var(--ck-spacing-small));
+		}
+	}
+
+	&.ck-disabled > .ck-dropdown-menu-list__nested-menu__button__arrow {
+		@mixin ck-disabled;
+	}
+
+	@mixin ck-dir ltr {
+		&:not(.ck-button_with-text) {
+			padding-left: var(--ck-spacing-small);
+		}
+
+		& > .ck-dropdown-menu-list__nested-menu__button__arrow {
+			right: var(--ck-spacing-standard);
+
+			/* A space to accommodate the triangle. */
+			margin-left: var(--ck-spacing-standard);
+		}
+	}
+
+	@mixin ck-dir rtl {
+		&:not(.ck-button_with-text) {
+			padding-right: var(--ck-spacing-small);
+		}
+
+		& > .ck-dropdown-menu-list__nested-menu__button__arrow {
+			left: var(--ck-spacing-standard);
+
+			/* A space to accommodate the triangle. */
+			margin-right: var(--ck-spacing-small);
+		}
+	}
+}

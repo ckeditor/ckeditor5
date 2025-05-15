@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
@@ -132,6 +132,53 @@ describe( 'InsertImageCommand', () => {
 			command.execute( { source: imgSrc } );
 
 			expect( getModelData( model ) ).to.equal( `<paragraph>f[<imageInline src="${ imgSrc }"></imageInline>]o</paragraph>` );
+		} );
+
+		it( 'should be possible to specify image type as image (imageBlock)', () => {
+			const imgSrc = 'foo/bar.jpg';
+
+			setModelData( model, '<paragraph>f[o]o</paragraph>' );
+
+			command.execute( {
+				imageType: 'imageBlock',
+				source: imgSrc
+			} );
+
+			expect( getModelData( model ) ).to.equal( `[<imageBlock src="${ imgSrc }"></imageBlock>]<paragraph>foo</paragraph>` );
+		} );
+
+		it( 'should be possible to specify image type as image (imageInline)', () => {
+			const imgSrc1 = 'foo/bar.jpg';
+			const imgSrc2 = 'foo/baz.jpg';
+
+			setModelData( model, '[]' );
+
+			command.execute( {
+				imageType: 'imageInline',
+				source: [ imgSrc1, imgSrc2 ]
+			} );
+
+			expect( getModelData( model ) )
+				.to.equal(
+					`<paragraph><imageInline src="${ imgSrc1 }"></imageInline>` +
+					`[<imageInline src="${ imgSrc2 }"></imageInline>]</paragraph>`
+				);
+		} );
+
+		it( 'should be possible to break the block with an inserted image', () => {
+			const imgSrc = 'foo/bar.jpg';
+
+			setModelData( model, '<paragraph>f[]oo</paragraph>' );
+
+			command.execute( {
+				imageType: 'imageBlock',
+				source: imgSrc,
+				breakBlock: true
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				`<paragraph>f</paragraph>[<imageBlock src="${ imgSrc }"></imageBlock>]<paragraph>oo</paragraph>`
+			);
 		} );
 
 		it( 'should insert multiple images at selection position as other widgets for inline type images', () => {

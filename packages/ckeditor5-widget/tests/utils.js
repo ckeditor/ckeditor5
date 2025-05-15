@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document */
@@ -238,6 +238,27 @@ describe( 'widget utils', () => {
 
 		it( 'should add proper tabindex', () => {
 			expect( element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
+		} );
+
+		it( 'should add role attribute by default for backward compatibility', () => {
+			const element = new ViewEditableElement( viewDocument, 'div' );
+			toWidgetEditable( element, writer );
+
+			expect( element.getAttribute( 'role' ) ).to.equal( 'textbox' );
+		} );
+
+		it( 'should add role attribute when withAriaRole is set to true', () => {
+			const element = new ViewEditableElement( viewDocument, 'div' );
+			toWidgetEditable( element, writer, { withAriaRole: true } );
+
+			expect( element.getAttribute( 'role' ) ).to.equal( 'textbox' );
+		} );
+
+		it( 'should not add role attribute when withAriaRole is set to false', () => {
+			const element = new ViewEditableElement( viewDocument, 'div' );
+			toWidgetEditable( element, writer, { withAriaRole: false } );
+
+			expect( element.hasAttribute( 'role' ) ).to.be.false;
 		} );
 
 		it( 'should add label if it was passed through options', () => {

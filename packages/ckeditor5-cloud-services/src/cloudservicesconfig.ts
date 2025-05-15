@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -38,7 +38,7 @@ export interface CloudServicesConfig {
 	 * The role of this endpoint is to securely authorize
 	 * the end users of your application to use [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services) only
 	 * if they should have access e.g. to upload files with {@glink features/file-management/ckbox CKBox} or to use the
-	 * {@glink @cs guides/collaboration/quick-start Collaboration} service.
+	 * [Collaboration](https://ckeditor.com/docs/cs/latest/guides/collaboration/quick-start.html) service.
 	 *
 	 * ```ts
 	 * ClassicEditor
@@ -88,9 +88,13 @@ export interface CloudServicesConfig {
 	 * 	} )
 	 * ```
 	 *
+	 * If the request to the token endpoint fails, the editor will call the token request function every 5 seconds in attempt
+	 * to refresh the token.
+	 *
 	 * You can find more information about token endpoints in the
-	 * {@glink @cs guides/easy-image/quick-start#create-token-endpoint Cloud Services - Quick start}
-	 * and {@glink @cs developer-resources/security/token-endpoint Cloud Services - Token endpoint} documentation.
+	 * [Easy Image](https://ckeditor.com/docs/cs/latest/developer-resources/easy-image/service-details.html) guide
+	 * and [Cloud Services - Token endpoint](https://ckeditor.com/docs/cs/latest/developer-resources/security/token-endpoint.html)
+	 * documentation.
 	 *
 	 * Without a properly working token endpoint (token URL) CKEditor plugins will not be able to connect to CKEditor Cloud Services.
 	 */
@@ -102,7 +106,9 @@ export interface CloudServicesConfig {
 	 *
 	 * The upload URL is unique for each customer and can be found in the
 	 * [CKEditor Ecosystem customer dashboard](https://dashboard.ckeditor.com) after subscribing to the Easy Image service.
-	 * To learn how to start using Easy Image, check the {@glink @cs guides/easy-image/quick-start Easy Image - Quick start} documentation.
+	 * To learn more, check the [Easy Image](https://ckeditor.com/docs/cs/latest/developer-resources/easy-image/service-details.html) guide.
+	 *
+	 * Note: Easy Image is a legacy product and only maintained for existing clients.
 	 *
 	 * Note: Make sure to also set the {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl} configuration option.
 	 */

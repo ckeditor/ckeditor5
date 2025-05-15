@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -180,6 +180,35 @@ export interface LinkConfig {
 	 * See also the {@glink features/link#custom-link-attributes-decorators link feature guide} for more information.
 	 */
 	decorators?: Record<string, LinkDecoratorDefinition>;
+
+	/**
+	 * Items to be placed in the link contextual toolbar.
+	 *
+	 * Assuming that you use the {@link module:link/linkui~LinkUI} feature, the following toolbar items will be available
+	 * in {@link module:ui/componentfactory~ComponentFactory}:
+	 *
+	 * * `'linkPreview'`,
+	 * * `'editLink'`,
+	 * * `'linkProperties'`
+	 * * `'unlink'`.
+	 *
+	 * The default configuration for link toolbar is:
+	 *
+	 * ```ts
+	 * const linkConfig = {
+	 * 	toolbar: [ 'linkPreview', '|', 'editLink', 'linkProperties', 'unlink' ]
+	 * };
+	 * ```
+	 *
+	 * The `linkProperties` toolbar item is only available when at least one manual decorator is defined in the
+	 * {@link module:link/linkconfig~LinkConfig#decorators decorators configuration}.
+	 *
+	 * Of course, the same buttons can also be used in the
+	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar main editor toolbar}.
+	 *
+	 * Read more about configuring the toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
+	 */
+	toolbar?: Array<string>;
 }
 
 /**

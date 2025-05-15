@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -15,8 +15,9 @@ import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
+import TableElementSupport from '../../src/integrations/table.js';
 
-import { range } from 'lodash-es';
+import { range } from 'es-toolkit/compat';
 
 /* global document */
 
@@ -43,6 +44,14 @@ describe( 'TableElementSupport', () => {
 		editorElement.remove();
 
 		return editor.destroy();
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( TableElementSupport.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( TableElementSupport.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should be named', () => {
@@ -1567,6 +1576,157 @@ describe( 'TableElementSupport', () => {
 
 		expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
 		expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+	} );
+
+	it( 'should propagate specific styles from table to figure element', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: /.*/,
+			attributes: true,
+			styles: true,
+			classes: true
+		} ] );
+
+		editor.setData(
+			'<table style="max-width: 49%; min-width: 49%; width: 100%; ' +
+					'max-height: 100px; min-height: 100px; height: 100px; background-color: red;">' +
+				'<tbody>' +
+					'<tr>' +
+						'<td>1</td>' +
+					'</tr>' +
+				'</tbody>' +
+			'</table>'
+		);
+
+		expect( editor.getData() ).to.equal(
+			'<figure class="table" style="height:100px;max-height:100px;max-width:49%;min-height:100px;min-width:49%;width:100%;">' +
+				'<table style="background-color:red;">' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>1</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table htmlTableAttributes="(1)">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
+			attributes: {
+				1: {
+					styles: {
+						'background-color': 'red',
+						'height': '100px',
+						'max-height': '100px',
+						'max-width': '49%',
+						'min-height': '100px',
+						'min-width': '49%',
+						width: '100%'
+					}
+				}
+			}
+		} );
+	} );
+
+	it( 'should propagate specific styles change from table to figure element', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: /.*/,
+			attributes: true,
+			styles: true,
+			classes: true
+		} ] );
+
+		editor.setData(
+			'<table style="width: 100%; background-color: red;">' +
+				'<tbody>' +
+					'<tr>' +
+						'<td>1</td>' +
+					'</tr>' +
+				'</tbody>' +
+			'</table>'
+		);
+
+		expect( editor.getData() ).to.equal(
+			'<figure class="table" style="width:100%;">' +
+				'<table style="background-color:red;">' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>1</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table htmlTableAttributes="(1)">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
+			attributes: {
+				1: {
+					styles: {
+						'background-color': 'red',
+						width: '100%'
+					}
+				}
+			}
+		} );
+
+		editor.model.change( writer => {
+			const table = writer.model.document.getRoot().getChild( 0 );
+			const tableAttributes = table.getAttribute( 'htmlTableAttributes' );
+			const newTableAttributes = {
+				...tableAttributes,
+				styles: {
+					...tableAttributes.styles,
+					width: '30%'
+				}
+			};
+
+			writer.setAttribute( 'htmlTableAttributes', newTableAttributes, table );
+		} );
+
+		expect( editor.getData() ).to.equal(
+			'<figure class="table" style="width:30%;">' +
+				'<table style="background-color:red;">' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>1</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>'
+		);
+
+		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+			data:
+				'<table htmlTableAttributes="(1)">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>1</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
+			attributes: {
+				1: {
+					styles: {
+						'background-color': 'red',
+						width: '30%'
+					}
+				}
+			}
+		} );
 	} );
 
 	it( 'should remove htmlTheadAttributes if table does not have thead', () => {

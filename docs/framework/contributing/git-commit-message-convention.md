@@ -1,7 +1,7 @@
 ---
 category: framework-contributing
 meta-title: Git commit message convention | CKEditor 5 Framework Documentation
-order: 50
+order: 60
 modified_at: 2021-09-07
 ---
 
@@ -96,6 +96,12 @@ The proper order of sections for a commit message is as follows:
 * Breaking change notes.
 
 All entries must be separated with a blank line, otherwise the lines will not be treated as separate entries.
+
+### Squash commits
+
+The changelog generator understands squash commits created by GitHub when merging a pull request.
+
+When using the _"Squash and merge"_ option, ensure the default commit title is not modified. It should contain the pull request title and its number, for example: `Sample pull request (#000)`. The changelog entries should be added as a commit description. They must follow the same rules as merge commits.
 
 ### Examples of correct and incorrect message formatting
 

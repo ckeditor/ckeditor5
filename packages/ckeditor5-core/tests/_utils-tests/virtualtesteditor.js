@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import Editor from '../../src/editor/editor.js';
@@ -16,18 +16,24 @@ describe( 'VirtualTestEditor', () => {
 	testUtils.createSinonSandbox();
 
 	describe( 'constructor()', () => {
-		it( 'creates an instance of editor', () => {
+		it( 'creates an instance of editor', async () => {
 			const editor = new VirtualTestEditor( { foo: 1 } );
 
 			expect( editor ).to.be.instanceof( Editor );
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 			expect( editor.config.get( 'foo' ) ).to.equal( 1 );
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 
-		it( 'creates main root element', () => {
+		it( 'creates main root element', async () => {
 			const editor = new VirtualTestEditor();
 
 			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 	} );
 

@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
+/* global document, console */
 
 import CloudServices from '../src/cloudservices.js';
 import CloudServicesCore from '../src/cloudservicescore.js';
@@ -39,6 +39,14 @@ describe( 'CloudServices', () => {
 
 	it( 'should be named', () => {
 		expect( CloudServices.pluginName ).to.equal( 'CloudServices' );
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CloudServices.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CloudServices.isPremiumPlugin ).to.be.false;
 	} );
 
 	describe( 'init()', () => {
@@ -161,6 +169,35 @@ describe( 'CloudServices', () => {
 
 					return context.destroy();
 				} );
+		} );
+
+		it( 'if token url crashes, then it should not create infinity loop of requests after destroy of the editor', async () => {
+			const clock = sinon.useFakeTimers();
+
+			sinon.stub( console, 'warn' );
+
+			const tokenUrlStub = sinon.stub().rejects( new Error( 'Token URL crashed' ) );
+
+			try {
+				await Context.create( {
+					plugins: [ CloudServices ],
+					cloudServices: {
+						tokenUrl: tokenUrlStub
+					}
+				} );
+
+				expect.fail( 'Context.create should reject' );
+			} catch ( error ) {
+				expect( error.message ).to.equal( 'Token URL crashed' );
+			}
+
+			expect( tokenUrlStub ).to.be.calledOnce;
+
+			clock.tick( 17000 );
+			clock.restore();
+
+			// Editor was destroyed at this moment, so no more requests should be made.
+			expect( tokenUrlStub ).to.be.calledOnce;
 		} );
 	} );
 

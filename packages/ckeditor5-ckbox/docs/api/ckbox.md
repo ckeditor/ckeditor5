@@ -20,8 +20,10 @@ Check out the {@link features/image-upload Image upload guide} to learn about ot
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-ckbox
+npm install ckeditor5
 ```
 
 ## Contribute

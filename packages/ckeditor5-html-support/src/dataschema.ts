@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import { toArray } from 'ckeditor5/src/utils.js';
 import defaultConfig from './schemadefinitions.js';
-import { mergeWith } from 'lodash-es';
+import { mergeWith } from 'es-toolkit/compat';
 import type { AttributeProperties, SchemaItemDefinition } from 'ckeditor5/src/engine.js';
 
 /**
@@ -56,6 +56,13 @@ export default class DataSchema extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'DataSchema' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 
 	/**
@@ -256,6 +263,11 @@ export interface DataSchemaDefinition {
 	 * Indicates that the definition describes inline element.
 	 */
 	isInline?: boolean;
+
+	/**
+	 * Indicates that the definition describes an empty HTML element like `<hr>`.
+	 */
+	isEmpty?: boolean;
 }
 
 /**

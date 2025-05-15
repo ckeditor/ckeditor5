@@ -71,6 +71,70 @@ Both the `{@link module:engine/model/schema~SchemaItemDefinition#allowIn}` and `
 	You can read more about the format of the item definition in the {@link module:engine/model/schema~SchemaItemDefinition} API guide.
 </info-box>
 
+## Disallowing structures
+
+The schema, in addition to allowing certain structures, can also be used to ensure some structures are explicitly disallowed. This can be achieved with the use of disallow rules.
+
+Typically, you will use {@link module:engine/model/schema~SchemaItemDefinition#disallowChildren} property for that. It can be used to define which nodes are disallowed inside given element:
+
+```js
+schema.register( 'myElement', {
+	inheritAllFrom: '$block',
+	disallowChildren: 'imageInline'
+} );
+```
+
+In the example above, a new custom element should behave like any block element (paragraph, heading, etc.) but it should not be possible to insert inline images inside it.
+
+### Precedence over allow rules
+
+In general, all `disallow` rules have higher priority than their `allow` counterparts. When we also take inheritance into the picture, the hierarchy of rules looks like this (from the highest priority):
+
+1. `disallowChildren` / `disallowIn` from the element's own definition.
+2. `allowChildren` / `allowIn` from the element's own definition.
+3. `disallowChildren` / `disallowIn` from the inherited element's definition.
+4. `allowChildren` / `allowIn` from the inherited element's definition.
+
+### Disallow rules examples
+
+While disallowing is easy to understand for simple cases, things might start to get unclear when more complex rules are involved. Below are some examples explaining how disallowing works when rules inheriting is involved.
+
+```js
+schema.register( 'baseChild' );
+schema.register( 'baseParent', { allowChildren: [ 'baseChild' ] } );
+
+schema.register( 'extendedChild', { inheritAllFrom: 'baseChild' } );
+schema.register( 'extendedParent', { inheritAllFrom: 'baseParent', disallowChildren: [ 'baseChild' ] } );
+```
+
+In this case, `extendedChild` will be allowed in `baseParent` (thanks to inheriting from `baseChild`) and in `extendedParent` (as it inherits `baseParent`).
+
+However, `baseChild` will be allowed only in `baseParent`. Although `extendedParent` inherits all rules from `baseParent`, it specifically disallows `baseChild` as part of its definition.
+
+Below is a different example, where instead `baseChild` is extended with `disallowIn` rule:
+
+```js
+schema.register( 'baseParent' );
+schema.register( 'baseChild', { allowIn: 'baseParent' } );
+
+schema.register( 'extendedParent', { inheritAllFrom: 'baseParent' } );
+schema.register( 'extendedChild', { inheritAllFrom: 'baseChild' } );
+schema.extend( 'baseChild', { disallowIn: 'extendedParent' } );
+```
+
+This changes how schema rules are resolved. `baseChild` will still be disallowed in `extendedParent` as before. But now, `extendedChild` will be disallowed in `extendedParent` as well. That is because it will inherit this rule from `baseChild`, and there is no other rule that would allow `extendedChild` in `extendedParent`. 
+
+Of course, you can mix `allowIn` with `disallowChildren` as well as `allowChildren` with `disallowIn`.
+
+Finally, a situation may come up, when you want to inherit from an item which is already disallowed, but the new element should be re-allowed again. In this case, the definitions should look like this:
+
+```js
+schema.register( 'baseParent', { inheritAllFrom: 'paragraph', disallowChildren: [ 'imageInline' ] } );
+schema.register( 'extendedParent', { inheritAllFrom: 'baseParent', allowChildren: [ 'imageInline' ] } );
+```
+
+Here, `imageInline` is allowed in paragraph, but will not be allowed in `baseParent`. However, `extendedParent` will again re-allow it, as own definitions are more important than inherited definitions.
+
 ## Defining additional semantics
 
 In addition to setting allowed structures, the schema can also define additional traits of model elements. By using the `is*` properties, a feature author may declare how a certain element should be treated by other features and by the engine.
@@ -611,31 +675,88 @@ Which, in turn, has these [semantics](#defining-additional-semantics):
 </$root>
 ```
 
-## Defining advanced rules in `checkChild()` callbacks
+## Defining advanced rules using callbacks
 
-The {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`} method which is the a base method used to check whether some element is allowed in a given structure is {@link module:utils/observablemixin~Observable#decorate a decorated method}. It means that you can add listeners to implement your specific rules which are not limited by the {@link module:engine/model/schema~SchemaItemDefinition declarative `SchemaItemDefinition` API}.
+The base {@link module:engine/model/schema~SchemaItemDefinition declarative `SchemaItemDefinition` API} is by its nature limited, and some custom rules might not be possible to be implemented this way.
 
-These listeners can be added either by listening directly to the {@link module:engine/model/schema~Schema#event:checkChild} event or by using the handy {@link module:engine/model/schema~Schema#addChildCheck `Schema#addChildCheck()`} method.
+For this reason, it is also possible to define schema checks by providing callbacks. This gives you flexibility to implement any logic that you need.
 
-For instance, to disallow nested `<blockQuote>` structures, you can define such a listener:
+These callbacks can be set both for child checks (model structure checks) and attribute checks.
+
+Note that the callbacks take precedence over the rules defined through the declarative API and can overwrite these rules.
+
+### Child checks (structure checks)
+
+Using {@link module:engine/model/schema~Schema#addChildCheck `Schema#addChildCheck()`} you can provide function callbacks to implement specific advanced rules for checking the model structure.
+
+You can provide callbacks that are fired only when a specific child is checked, or generic callbacks fired for all checks performed by the schema.
+
+Below is an example of a specific callback, that disallows inline images inside code blocks:
+
+```js
+schema.addChildCheck( context => {
+	if ( context.endsWith( 'codeBlock' ) ) {
+		return false;
+	}
+}, 'imageInline' );
+```
+
+The second parameter (`'imageInline'`) specifies that the callback will be used only if `imageInline` is being checked.
+
+You can also use a callback to force given item to be allowed. For example, allow special `$marker` item to be allowed everywhere:
+
+```js
+schema.addChildCheck( () => true, '$marker' );
+```
+
+Note that a callback may return `true`, `false`, or no value (`undefined`). If `true` or `false` is returned, the decision was made and further callbacks or declarative rules will not be checked. The item will be allowed or disallowed. If no value is returned, further checks will decide whether the item is allowed or not. 
+
+In some cases, you may need to define a generic listener that will be fired on every schema check.
+
+For instance, to disallow all block objects (for example tables) inside a block quotes, you can define following callback:
 
 ```js
 schema.addChildCheck( ( context, childDefinition ) => {
-	// Note that the context is automatically normalized to a SchemaContext instance and
-	// the child to its definition (SchemaCompiledItemDefinition).
-
-	// If checkChild() is called with a context that ends with blockQuote and blockQuote as a child
-	// to check, make the checkChild() method return false.
-	if ( context.endsWith( 'blockQuote' ) && childDefinition.name == 'blockQuote' ) {
+	if ( context.endsWith( 'blockQuote' ) && childDefinition.isBlock && childDefinition.isObject ) {
 		return false;
 	}
 } );
 ```
-<!--
-## Defining attributes
 
-TODO
--->
+The above will trigger on every `checkChild()` call giving you more flexibility. However, please keep in mind that using multiple generic callbacks might negatively impact the editor performance.
+
+### Attribute checks
+
+Similarly, you can define callbacks to check whether given attribute is or is not allowed on given item.
+
+This time, you will use {@link module:engine/model/schema~Schema#addAttributeCheck `Schema#addAttributeCheck()`} to provide the callback.
+
+For example, allow custom attribute `headingMarker` on all headings:
+
+```js
+schema.addAttributeCheck( ( context, attributeName ) => {
+	const isHeading = context.last.name.startsWith( 'heading' );
+	
+	if ( isHeading ) {
+		return true;
+	}
+}, 'headingMarker' );
+```
+
+Generic callbacks are available too. For example, disallow formatting attributes (like bold or italic) on text inside all headings:
+
+```js
+schema.addAttributeCheck( ( context, attributeName ) => {
+	const parent = context.getItem( context.length - 2 );
+	const insideHeading = parent && parent.name.startsWith( 'heading' );
+	
+	if ( insideHeading && context.endsWith( '$text' ) && schema.getAttributeProperties( attributeName ).isFormatting ) {
+		return false;
+	}
+} );
+```
+
+All notes related to child check callbacks apply to attribute callbacks as well.
 
 ## Implementing additional constraints
 

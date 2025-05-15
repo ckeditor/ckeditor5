@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-watchdog",
-  "version": "41.3.1",
+  "version": "45.1.0",
   "description": "A watchdog feature for CKEditor 5 editors. It keeps a CKEditor 5 editor instance running.",
   "keywords": [
     "ckeditor",
@@ -12,22 +12,20 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "lodash-es": "4.17.21"
+    "@ckeditor/ckeditor5-core": "45.1.0",
+    "@ckeditor/ckeditor5-editor-multi-root": "45.1.0",
+    "@ckeditor/ckeditor5-engine": "45.1.0",
+    "@ckeditor/ckeditor5-utils": "45.1.0",
+    "es-toolkit": "1.32.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-core": "41.3.1",
-    "@ckeditor/ckeditor5-comments": "41.3.1",
-    "@ckeditor/ckeditor5-editor-classic": "41.3.1",
-    "@ckeditor/ckeditor5-editor-multi-root": "41.3.1",
-    "@ckeditor/ckeditor5-paragraph": "41.3.1",
-    "@ckeditor/ckeditor5-utils": "41.3.1",
-    "@ckeditor/ckeditor5-track-changes": "41.3.1",
-    "@ckeditor/ckeditor5-clipboard": "41.3.1",
-    "ckeditor5": "41.3.1",
+    "@ckeditor/ckeditor5-clipboard": "45.1.0",
+    "@ckeditor/ckeditor5-editor-classic": "45.1.0",
+    "@ckeditor/ckeditor5-paragraph": "45.1.0",
     "typescript": "5.0.4"
   },
   "author": "CKSource (http://cksource.com/)",
-  "license": "GPL-2.0-or-later",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://ckeditor.com/ckeditor-5",
   "bugs": "https://github.com/ckeditor/ckeditor5/issues",
   "repository": {
@@ -45,7 +43,7 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsc -p ./tsconfig.json",
-    "build:dist": "node ../../scripts/build-package.mjs"
+    "build": "tsc --build --force ./tsconfig.json",
+    "build:dist": "node ../../scripts/nim/build-package.mjs"
   }
 }

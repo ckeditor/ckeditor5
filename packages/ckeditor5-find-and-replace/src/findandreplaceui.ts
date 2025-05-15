@@ -1,13 +1,14 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module find-and-replace/findandreplaceui
  */
 
-import { type Editor, Plugin } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
+import { IconFindReplace } from 'ckeditor5/src/icons.js';
 import {
 	ButtonView,
 	MenuBarMenuListItemButtonView,
@@ -20,7 +21,6 @@ import {
 	type ViewWithCssTransitionDisabler
 } from 'ckeditor5/src/ui.js';
 import FindAndReplaceFormView from './ui/findandreplaceformview.js';
-import loupeIcon from '../theme/icons/find-replace.svg';
 import type FindAndReplaceEditing from './findandreplaceediting.js';
 import type FindNextCommand from './findnextcommand.js';
 import type FindPreviousCommand from './findpreviouscommand.js';
@@ -46,6 +46,13 @@ export default class FindAndReplaceUI extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'FindAndReplaceUI' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 
 	/**
@@ -169,7 +176,7 @@ export default class FindAndReplaceUI extends Plugin {
 		}, { priority: 'low' } );
 
 		dropdownView.buttonView.set( {
-			icon: loupeIcon,
+			icon: IconFindReplace,
 			label: t( 'Find and replace' ),
 			keystroke: 'CTRL+F',
 			tooltip: true
@@ -214,6 +221,15 @@ export default class FindAndReplaceUI extends Plugin {
 	private _createDialogButtonForMenuBar(): MenuBarMenuListItemButtonView {
 		const buttonView = this._createButton( MenuBarMenuListItemButtonView );
 		const dialogPlugin = this.editor.plugins.get( 'Dialog' );
+		const dialog = this.editor.plugins.get( 'Dialog' );
+
+		buttonView.set( {
+			role: 'menuitemcheckbox',
+			isToggleable: true
+		} );
+
+		// Button should be on when the find and replace dialog is opened.
+		buttonView.bind( 'isOn' ).to( dialog, 'id', id => id === 'findAndReplace' );
 
 		buttonView.on( 'execute', () => {
 			if ( dialogPlugin.id === 'findAndReplace' ) {
@@ -241,7 +257,7 @@ export default class FindAndReplaceUI extends Plugin {
 		buttonView.bind( 'isEnabled' ).to( findCommand );
 
 		buttonView.set( {
-			icon: loupeIcon,
+			icon: IconFindReplace,
 			label: t( 'Find and replace' ),
 			keystroke: 'CTRL+F'
 		} );
@@ -277,9 +293,7 @@ export default class FindAndReplaceUI extends Plugin {
 	}
 
 	/**
-	 * Sets up the form view for the find and replace.
-	 *
-	 * @param formView A related form view.
+	 * Sets up the form view for the findN and replace.
 	 */
 	private _createFormView(): FindAndReplaceFormView & ViewWithCssTransitionDisabler {
 		const editor = this.editor;

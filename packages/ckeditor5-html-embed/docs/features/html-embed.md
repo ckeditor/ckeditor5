@@ -11,7 +11,7 @@ The HTML embed feature lets you embed any HTML snippet in your content. The feat
 
 ## Demo
 
-Use the HTML embed toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/html.svg HTML embed} in the editor below to see the plugin in action. Click the "Preview editor data" button under the editor to preview the editor content, including the embedded HTML.
+Use the HTML embed toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/html.svg HTML embed} in the editor below to see the plugin in action. Click the "Preview editor data" button under the editor to preview the editor content, including the embedded HTML.
 
 {@snippet features/html-embed}
 
@@ -43,32 +43,30 @@ We recommended using the {@link features/media-embed media embed} feature for em
 ## Installation
 
 <info-box info>
-	The HTML embed feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-html-embed`](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-embed) package:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
-```plaintext
-npm install --save @ckeditor/ckeditor5-html-embed
-```
-
-And add it to your plugin list configuration:
-
+<code-switcher>
 ```js
-import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed';
+import { ClassicEditor, HtmlEmbed } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ HtmlEmbed, /* ... */ ],
 		toolbar: [ 'htmlEmbed', /* ... */ ],
+		htmlEmbed: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
+</code-switcher>
 
 ## Configuration
 
@@ -81,8 +79,7 @@ However, by showing previews of the embedded HTML snippets, you expose the users
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ HtmlEmbed, /* ... */ ],
-		toolbar: [ 'htmlEmbed', /* ... */ ],
+		// ... Other configuration options ...
 		htmlEmbed: {
 			showPreviews: true,
 			sanitizeHtml: ( inputHtml ) => {

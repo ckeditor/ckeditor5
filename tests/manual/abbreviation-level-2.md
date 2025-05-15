@@ -103,8 +103,11 @@ import {
     LabeledFieldView,
     createLabeledInputText,
     ButtonView                                      // ADDED
-    } from '@ckeditor/ckeditor5-ui';
-import { icons } from '@ckeditor/ckeditor5-core';   // ADDED
+} from '@ckeditor/ckeditor5-ui';
+import {
+    IconCheck,
+		IconCancel
+} from '@ckeditor/ckeditor5-icons';					 // ADDED
 
 export default class FormView extends View {
 	constructor( locale ) {
@@ -112,14 +115,14 @@ export default class FormView extends View {
 
         // Create the save and cancel buttons.
         this.saveButtonView = this._createButton(
-            t( 'Save' ), icons.check, 'ck-button-save'
+            t( 'Save' ), IconCheck, 'ck-button-save'
         );
 		// Set the type to 'submit', which will trigger
 		// the submit event on entire form when clicked.
 		this.saveButtonView.type = 'submit';
 
 		this.cancelButtonView = this._createButton(
-            t( 'Cancel' ), icons.cancel, 'ck-button-cancel'
+            t( 'Cancel' ), IconCancel, 'ck-button-cancel'
         );
 		// Delegate ButtonView#execute to FormView#cancel.
 		this.cancelButtonView.delegate( 'execute' ).to( this, 'cancel' );
@@ -186,7 +189,7 @@ Import it into `AbbreviationUI`:
 ```js
 // abbreviation/abbreviationui.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 import './styles.css';													// ADDED
 
@@ -272,7 +275,7 @@ This is where we ended up with our UI in the first part of the tutorial.
 ```js
 // abbreviation/abbreviationui.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 class AbbreviationUI extends Plugin {
@@ -316,7 +319,7 @@ Finally, let's add our balloon and form view to the `init()` method.
 ```js
 // abbreviation/abbreviationui.js
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 import { ButtonView, ContextualBalloon } from '@ckeditor/ckeditor5-ui'; // ADDED
 import FormView from './abbreviationview';                          	// ADDED
 

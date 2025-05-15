@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import Range from '../../src/model/range.js';
@@ -250,6 +250,13 @@ describe( 'Range', () => {
 
 				expect( range.start.offset ).to.equal( 2 );
 				expect( range.end.offset ).to.equal( 9 );
+			} );
+
+			it( 'should combine ranges with reference range #2 - multiple backwards', () => {
+				const range = Range._createFromRanges( makeRanges( root, 4, 6, 3, 4, 2, 3, 6, 7, 1, 2 ) );
+
+				expect( range.start.offset ).to.equal( 1 );
+				expect( range.end.offset ).to.equal( 7 );
 			} );
 		} );
 	} );

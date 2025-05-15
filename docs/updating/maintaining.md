@@ -1,6 +1,6 @@
 ---
 category: updating
-order: 15
+order: 30
 meta-title: Maintaining your editor | CKEditor 5 Documentation
 meta-description: Learn how to maintain and keep your CKEditor 5 up-to-date at all times.
 ---
@@ -15,13 +15,9 @@ CKEditor&nbsp;5 is an active, rapidly developing software project. It is, theref
 
 CKEditor&nbsp;5 should be {@link updating/updating-ckeditor-5 updated frequently}, as bug fixes and new features are not backported. While installing and using a CKEditor&nbsp;5 instance, especially when adding new features, always make sure all the packages are of the same (preferably latest) version. If this requirement is not met, errors may occur.
 
-### Update your custom builds
+### Use Builder to add plugins
 
-If you want to skip some editor features, customize your build with {@link installation/getting-started/quick-start-other#creating-custom-builds-with-online-builder online builder} and remove unneeded functionality. Alternatively, {@link installation/getting-started/quick-start-other#building-the-editor-from-source create your own customized build from scratch}. It is a bad practice to download a {@link installation/getting-started/predefined-builds predefined editor build} and then remove plugins or buttons in your configuration. You will only be loading unnecessary stuff without any good reason.
-
-### Use online builder to add plugins
-
-Some releases would bring new features and new plugins and sometimes replace old ones and make them obsolete. If you want to install additional plugins, it is easier and safer to use online builder instead of adding them manually. This will reduce the risk of omitting plugin dependencies.
+Some releases would bring new features and new plugins and sometimes replace old ones and make them obsolete. If you want to install additional plugins, it is easier and safer to use the [CKEditor&nbsp;5 Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs) instead of adding them manually. This will reduce the risk of omitting plugin dependencies.
 
 ## Safety
 

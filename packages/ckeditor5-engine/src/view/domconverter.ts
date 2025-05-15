@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -41,6 +41,8 @@ import type DocumentSelection from './documentselection.js';
 import type EditableElement from './editableelement.js';
 import type ViewTextProxy from './textproxy.js';
 import type ViewRawElement from './rawelement.js';
+
+// @if CK_DEBUG_TYPING // const { _buildLogMessage } = require( '../dev-utils/utils.js' );
 
 type DomNode = globalThis.Node;
 type DomElement = globalThis.HTMLElement;
@@ -117,7 +119,7 @@ export default class DomConverter {
 	public readonly unsafeElements: Array<string>;
 
 	/**
-	 * The DOM Document used to create DOM nodes.
+	 * The DOM Document used by `DomConverter` to create DOM nodes.
 	 */
 	private readonly _domDocument: DomDocument;
 
@@ -174,7 +176,7 @@ export default class DomConverter {
 		this.document = document;
 		this.renderingMode = renderingMode;
 		this.blockFillerMode = blockFillerMode || ( renderingMode === 'editing' ? 'br' : 'nbsp' );
-		this.preElements = [ 'pre' ];
+		this.preElements = [ 'pre', 'textarea' ];
 		this.blockElements = [
 			'address', 'article', 'aside', 'blockquote', 'caption', 'center', 'dd', 'details', 'dir', 'div',
 			'dl', 'dt', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header',
@@ -187,6 +189,13 @@ export default class DomConverter {
 		this.unsafeElements = [ 'script', 'style' ];
 
 		this._domDocument = this.renderingMode === 'editing' ? global.document : global.document.implementation.createHTMLDocument( '' );
+	}
+
+	/**
+	 * The DOM Document used by `DomConverter` to create DOM nodes.
+	 */
+	public get domDocument(): DomDocument {
+		return this._domDocument;
 	}
 
 	/**
@@ -233,7 +242,7 @@ export default class DomConverter {
 			this._domToViewMapping.delete( domElement );
 			this._viewToDomMapping.delete( viewElement );
 
-			for ( const child of Array.from( domElement.children ) ) {
+			for ( const child of domElement.children ) {
 				this.unbindDomElement( child as DomElement );
 			}
 		}
@@ -563,7 +572,17 @@ export default class DomConverter {
 				!first( childView.getAttributes() );
 
 			if ( transparentRendering && this.renderingMode == 'data' ) {
-				yield* this.viewChildrenToDom( childView, options );
+				// `RawElement` doesn't have #children defined, so they need to be temporarily rendered
+				// and extracted directly.
+				if ( childView.is( 'rawElement' ) ) {
+					const tempElement = this._domDocument.createElement( childView.name );
+
+					childView.render( tempElement, this );
+
+					yield* [ ...tempElement.childNodes ];
+				} else {
+					yield* this.viewChildrenToDom( childView, options );
+				}
 			} else {
 				if ( transparentRendering ) {
 					/**
@@ -715,6 +734,11 @@ export default class DomConverter {
 		// Whitespace cleaning.
 		this._processDomInlineNodes( null, inlineNodes, options );
 
+		// This was a single block filler so just remove it.
+		if ( this.blockFillerMode == 'br' && isViewBrFiller( node ) ) {
+			return null;
+		}
+
 		// Text not got trimmed to an empty string so there is no result node.
 		if ( node.is( '$text' ) && node.data.length == 0 ) {
 			return null;
@@ -760,7 +784,10 @@ export default class DomConverter {
 					this._processDomInlineNodes( domElement, inlineNodes, options );
 				}
 
-				yield viewChild;
+				// Yield only if this is not a block filler.
+				if ( !( this.blockFillerMode == 'br' && isViewBrFiller( viewChild ) ) ) {
+					yield viewChild;
+				}
 
 				// Trigger children handling.
 				generator.next();
@@ -820,7 +847,7 @@ export default class DomConverter {
 
 	/**
 	 * Converts DOM Range to view {@link module:engine/view/range~Range}.
-	 * If the start or end position can not be converted `null` is returned.
+	 * If the start or end position cannot be converted `null` is returned.
 	 *
 	 * @param domRange DOM range.
 	 * @returns View range.
@@ -1080,36 +1107,52 @@ export default class DomConverter {
 	public focus( viewEditable: EditableElement ): void {
 		const domEditable = this.mapViewToDom( viewEditable );
 
-		if ( domEditable && domEditable.ownerDocument.activeElement !== domEditable ) {
-			// Save the scrollX and scrollY positions before the focus.
-			const { scrollX, scrollY } = global.window;
-			const scrollPositions: Array<[ number, number ]> = [];
+		if ( !domEditable || domEditable.ownerDocument.activeElement === domEditable ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'DomConverter',
+			// @if CK_DEBUG_TYPING // 		'%cDOM editable is already active or does not exist',
+			// @if CK_DEBUG_TYPING // 		'font-style: italic'
+			// @if CK_DEBUG_TYPING // 	) );
+			// @if CK_DEBUG_TYPING // }
 
-			// Save all scrollLeft and scrollTop values starting from domEditable up to
-			// document#documentElement.
-			forEachDomElementAncestor( domEditable, node => {
-				const { scrollLeft, scrollTop } = ( node as DomElement );
-
-				scrollPositions.push( [ scrollLeft, scrollTop ] );
-			} );
-
-			domEditable.focus();
-
-			// Restore scrollLeft and scrollTop values starting from domEditable up to
-			// document#documentElement.
-			// https://github.com/ckeditor/ckeditor5-engine/issues/951
-			// https://github.com/ckeditor/ckeditor5-engine/issues/957
-			forEachDomElementAncestor( domEditable, node => {
-				const [ scrollLeft, scrollTop ] = scrollPositions.shift() as [ number, number ];
-
-				node.scrollLeft = scrollLeft;
-				node.scrollTop = scrollTop;
-			} );
-
-			// Restore the scrollX and scrollY positions after the focus.
-			// https://github.com/ckeditor/ckeditor5-engine/issues/951
-			global.window.scrollTo( scrollX, scrollY );
+			return;
 		}
+
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'DomConverter',
+		// @if CK_DEBUG_TYPING // 		'Focus DOM editable:',
+		// @if CK_DEBUG_TYPING // 		{ domEditable }
+		// @if CK_DEBUG_TYPING // 	) );
+		// @if CK_DEBUG_TYPING // }
+
+		// Save the scrollX and scrollY positions before the focus.
+		const { scrollX, scrollY } = global.window;
+		const scrollPositions: Array<[ number, number ]> = [];
+
+		// Save all scrollLeft and scrollTop values starting from domEditable up to
+		// document#documentElement.
+		forEachDomElementAncestor( domEditable, node => {
+			const { scrollLeft, scrollTop } = ( node as DomElement );
+
+			scrollPositions.push( [ scrollLeft, scrollTop ] );
+		} );
+
+		domEditable.focus();
+
+		// Restore scrollLeft and scrollTop values starting from domEditable up to
+		// document#documentElement.
+		// https://github.com/ckeditor/ckeditor5-engine/issues/951
+		// https://github.com/ckeditor/ckeditor5-engine/issues/957
+		forEachDomElementAncestor( domEditable, node => {
+			const [ scrollLeft, scrollTop ] = scrollPositions.shift() as [ number, number ];
+
+			node.scrollLeft = scrollLeft;
+			node.scrollTop = scrollTop;
+		} );
+
+		// Restore the scrollX and scrollY positions after the focus.
+		// https://github.com/ckeditor/ckeditor5-engine/issues/951
+		global.window.scrollTo( scrollX, scrollY );
 	}
 
 	/**
@@ -1174,12 +1217,9 @@ export default class DomConverter {
 			return domNode.isEqualNode( BR_FILLER_REF );
 		}
 
-		// Special case for <p><br></p> in which <br> should be treated as filler even when we are not in the 'br' mode. See ckeditor5#5564.
-		if (
-			( domNode as DomElement ).tagName === 'BR' &&
-			hasBlockParent( domNode, this.blockElements ) &&
-			( domNode as DomElement ).parentNode!.childNodes.length === 1
-		) {
+		// Special case for <p><br></p> in which <br> should be treated as filler even when we are not in the 'br' mode.
+		// See https://github.com/ckeditor/ckeditor5/issues/5564.
+		if ( isOnlyBrInBlock( domNode as DomElement, this.blockElements ) ) {
 			return true;
 		}
 
@@ -1190,7 +1230,7 @@ export default class DomConverter {
 	/**
 	 * Returns `true` if given selection is a backward selection, that is, if it's `focus` is before `anchor`.
 	 *
-	 * @param DOM Selection instance to check.
+	 * @param selection Selection instance to check.
 	 */
 	public isDomSelectionBackward( selection: DomSelection ): boolean {
 		if ( selection.isCollapsed ) {
@@ -1363,7 +1403,9 @@ export default class DomConverter {
 		},
 		inlineNodes: Array<ViewNode>
 	): IterableIterator<ViewNode | ViewDocumentFragment | null> {
-		if ( this.isBlockFiller( domNode ) ) {
+		// Special case for <p><br></p> in which <br> should be treated as filler even when we are not in the 'br' mode.
+		// See https://github.com/ckeditor/ckeditor5/issues/5564.
+		if ( this.blockFillerMode != 'br' && isOnlyBrInBlock( domNode as DomElement, this.blockElements ) ) {
 			return null;
 		}
 
@@ -1463,6 +1505,9 @@ export default class DomConverter {
 			// for inline objects can verify if the element is empty.
 			if ( this._isInlineObjectElement( viewElement ) ) {
 				inlineNodes.push( viewElement );
+
+				// Inline object content should be handled as a flow-root.
+				this._processDomInlineNodes( null, nestedInlineNodes, options );
 			} else {
 				// It's an inline element that is not an object (like <b>, <i>) or a block element.
 				for ( const inlineNode of nestedInlineNodes ) {
@@ -1508,7 +1553,7 @@ export default class DomConverter {
 			let data: string;
 			let nodeEndsWithSpace: boolean = false;
 
-			if ( _hasViewParentOfType( node, this.preElements ) ) {
+			if ( this._isPreFormatted( node ) ) {
 				data = getDataWithoutFiller( node.data );
 			} else {
 				// Change all consecutive whitespace characters (from the [ \n\t\r] set –
@@ -1543,6 +1588,23 @@ export default class DomConverter {
 				// This causes a problem because the normal space would be removed in `.replace` calls above. To prevent that,
 				// the inline filler is removed only after the data is initially processed (by the `.replace` above). See ckeditor5#692.
 				data = getDataWithoutFiller( data );
+
+				// Block filler handling.
+				if ( this.blockFillerMode != 'br' && node.parent ) {
+					if ( isViewMarkedNbspFiller( node.parent, data ) ) {
+						data = '';
+
+						// Mark block element as it has a block filler and remove the `<span data-cke-filler="true">` element.
+						if ( node.parent.parent ) {
+							node.parent.parent._setCustomProperty( '$hasBlockFiller', true );
+							node.parent._remove();
+						}
+					}
+					else if ( isViewNbspFiller( node.parent, data, this.blockElements ) ) {
+						data = '';
+						node.parent._setCustomProperty( '$hasBlockFiller', true );
+					}
+				}
 
 				// At this point we should have removed all whitespaces from DOM text data.
 				//
@@ -1604,9 +1666,8 @@ export default class DomConverter {
 	private _processDataFromViewText( node: ViewText | ViewTextProxy ): string {
 		let data = node.data;
 
-		// If any of node ancestors has a name which is in `preElements` array, then currently processed
-		// view text node is (will be) in preformatted element. We should not change whitespaces then.
-		if ( node.getAncestors().some( parent => this.preElements.includes( ( parent as ViewElement ).name ) ) ) {
+		// If the currently processed view text node is preformatted, we should not change whitespaces.
+		if ( this._isPreFormatted( node ) ) {
 			return data;
 		}
 
@@ -1650,13 +1711,40 @@ export default class DomConverter {
 	 * @returns `true` if given `node` ends with space, `false` otherwise.
 	 */
 	private _nodeEndsWithSpace( node: ViewTextProxy ): boolean {
-		if ( node.getAncestors().some( parent => this.preElements.includes( ( parent as ViewElement ).name ) ) ) {
+		if ( this._isPreFormatted( node ) ) {
 			return false;
 		}
 
 		const data = this._processDataFromViewText( node );
 
 		return data.charAt( data.length - 1 ) == ' ';
+	}
+
+	/**
+	 * Checks whether given text contains preformatted white space. This is the case if
+	 * * any of node ancestors has a name which is in `preElements` array, or
+	 * * the closest ancestor that has the `white-space` CSS property sets it to a value that preserves spaces
+	 *
+	 * @param node Node to check
+	 * @returns `true` if given node contains preformatted white space, `false` otherwise.
+	 */
+	private _isPreFormatted( node: ViewText | ViewTextProxy ): boolean {
+		if ( _hasViewParentOfType( node, this.preElements ) ) {
+			return true;
+		}
+
+		for ( const ancestor of node.getAncestors( { parentFirst: true } ) ) {
+			if ( !ancestor.is( 'element' ) || !ancestor.hasStyle( 'white-space' ) || ancestor.getStyle( 'white-space' ) === 'inherit' ) {
+				continue;
+			}
+
+			// If the node contains the `white-space` property with a value that does not preserve spaces, it will take
+			// precedence over any white-space settings its ancestors contain, so no further parent checking needs to
+			// be done.
+			return [ 'pre', 'pre-wrap', 'break-spaces' ].includes( ancestor.getStyle( 'white-space' )! );
+		}
+
+		return false;
 	}
 
 	/**
@@ -1673,23 +1761,27 @@ export default class DomConverter {
 			direction: getNext ? 'forward' : 'backward'
 		} );
 
-		for ( const value of treeWalker ) {
+		for ( const { item } of treeWalker ) {
+			// Found a text node in the same container element.
+			if ( item.is( '$textProxy' ) ) {
+				return item;
+			}
+			// Found a transparent element, skip it and continue inside it.
+			else if ( item.is( 'element' ) && item.getCustomProperty( 'dataPipeline:transparentRendering' ) ) {
+				continue;
+			}
 			// <br> found – it works like a block boundary, so do not scan further.
-			if ( value.item.is( 'element', 'br' ) ) {
+			else if ( item.is( 'element', 'br' ) ) {
 				return null;
 			}
 			// Found an inline object (for example an image).
-			else if ( this._isInlineObjectElement( value.item ) ) {
-				return value.item;
+			else if ( this._isInlineObjectElement( item ) ) {
+				return item;
 			}
 			// ViewContainerElement is found on a way to next ViewText node, so given `node` was first/last
 			// text node in its container element.
-			else if ( value.item.is( 'containerElement' ) ) {
+			else if ( item.is( 'containerElement' ) ) {
 				return null;
-			}
-			// Found a text node in the same container element.
-			else if ( value.item.is( '$textProxy' ) ) {
-				return value.item;
 			}
 		}
 
@@ -1793,7 +1885,7 @@ export default class DomConverter {
  *
  * @returns`true` if such parent exists or `false` if it does not.
  */
-function _hasViewParentOfType( node: ViewNode, types: ReadonlyArray<string> ) {
+function _hasViewParentOfType( node: ViewNode | ViewTextProxy, types: ReadonlyArray<string> ) {
 	return node.getAncestors().some( parent => parent.is( 'element' ) && types.includes( parent.name ) );
 }
 
@@ -1813,7 +1905,7 @@ function forEachDomElementAncestor( element: DomElement, callback: ( node: DomEl
 }
 
 /**
- * Checks if given node is a nbsp block filler.
+ * Checks if given DOM node is a nbsp block filler.
  *
  * A &nbsp; is a block filler only if it is a single child of a block element.
  *
@@ -1834,6 +1926,60 @@ function hasBlockParent( domNode: DomNode, blockElements: ReadonlyArray<string> 
 	const parent = domNode.parentNode;
 
 	return !!parent && !!( parent as DomElement ).tagName && blockElements.includes( ( parent as DomElement ).tagName.toLowerCase() );
+}
+
+/**
+ * Checks if given view node is a nbsp block filler.
+ *
+ * A &nbsp; is a block filler only if it is a single child of a block element.
+ */
+function isViewNbspFiller( parent: ViewNode | ViewDocumentFragment, data: string, blockElements: Array<string> ): boolean {
+	return (
+		data == '\u00A0' &&
+		parent &&
+		parent.is( 'element' ) &&
+		parent.childCount == 1 &&
+		blockElements.includes( parent.name )
+	);
+}
+
+/**
+ * Checks if given view node is a marked-nbsp block filler.
+ *
+ * A &nbsp; is a block filler only if it is wrapped in `<span data-cke-filler="true">` element.
+ */
+function isViewMarkedNbspFiller( parent: ViewNode | ViewDocumentFragment, data: string ): boolean {
+	return (
+		data == '\u00A0' &&
+		parent &&
+		parent.is( 'element', 'span' ) &&
+		parent.childCount == 1 &&
+		parent.hasAttribute( 'data-cke-filler' )
+	);
+}
+
+/**
+ * Checks if given view node is a br block filler.
+ *
+ * A <br> is a block filler only if it has data-cke-filler attribute set.
+ */
+function isViewBrFiller( node: ViewNode ): boolean {
+	return (
+		node.is( 'element', 'br' ) &&
+		node.hasAttribute( 'data-cke-filler' )
+	);
+}
+
+/**
+ * Special case for `<p><br></p>` in which `<br>` should be treated as filler even when we are not in the 'br' mode.
+ */
+function isOnlyBrInBlock( domNode: DomElement, blockElements: Array<string> ): boolean {
+	// See https://github.com/ckeditor/ckeditor5/issues/5564.
+	return (
+		domNode.tagName === 'BR' &&
+		hasBlockParent( domNode, blockElements ) &&
+		domNode.parentNode!.childNodes.length === 1
+	);
 }
 
 /**
@@ -1931,7 +2077,7 @@ type BlockFillerMode = 'br' | 'nbsp' | 'markedNbsp';
  * ```
  *
  * @error domconverter-unsafe-attribute-detected
- * @param domElement The DOM element the attribute was set on.
- * @param key The original name of the attribute
- * @param value The value of the original attribute
+ * @param {HTMLElement} domElement The DOM element the attribute was set on.
+ * @param {string} key The original name of the attribute
+ * @param {string} value The value of the original attribute
  */

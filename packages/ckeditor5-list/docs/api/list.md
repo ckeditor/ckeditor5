@@ -18,8 +18,10 @@ See the {@link features/lists lists} and {@link features/todo-lists to-do list f
 
 ## Installation
 
-```
-npm install --save @ckeditor/ckeditor5-list
+This package is part of our open-source aggregate package.
+
+```bash
+npm install ckeditor5
 ```
 
 ## Contribute

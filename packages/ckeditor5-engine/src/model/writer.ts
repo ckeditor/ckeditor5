@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -231,7 +231,11 @@ export default class Writer {
 
 		const version = position.root.document ? position.root.document.version : null;
 
-		const insert = new InsertOperation( position, item, version );
+		const children = item instanceof DocumentFragment ?
+			item._removeChildren( 0, item.childCount ) :
+			item;
+
+		const insert = new InsertOperation( position, children, version );
 
 		if ( item instanceof Text ) {
 			insert.shouldReceiveAttributes = true;
@@ -634,7 +638,7 @@ export default class Writer {
 	 *
 	 * Note that items can be moved only within the same tree. It means that you can move items within the same root
 	 * (element or document fragment) or between {@link module:engine/model/document~Document#roots documents roots},
-	 * but you can not move items from document fragment to the document or from one detached element to another. Use
+	 * but you cannot move items from document fragment to the document or from one detached element to another. Use
 	 * {@link module:engine/model/writer~Writer#insert} in such cases.
 	 *
 	 * @param range Source range.
@@ -931,7 +935,7 @@ export default class Writer {
 
 		if ( !splitElement.parent ) {
 			/**
-			 * Element with no parent can not be split.
+			 * Element with no parent cannot be split.
 			 *
 			 * @error writer-split-element-no-parent
 			 */

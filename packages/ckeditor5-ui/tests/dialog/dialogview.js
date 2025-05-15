@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document, Event, KeyboardEvent, MouseEvent, console */
 
+import { IconCancel } from '@ckeditor/ckeditor5-icons';
 import { FocusTracker, KeystrokeHandler, Locale, global, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { ButtonView, FormHeaderView, View, ViewCollection } from '../../src/index.js';
 import DialogView, { DialogViewPosition } from '../../src/dialog/dialogview.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 
 describe( 'DialogView', () => {
 	let view, fakeDomRootElement;
@@ -130,6 +130,14 @@ describe( 'DialogView', () => {
 
 				it( 'should host the dialog', () => {
 					expect( overlayElement.firstChild.classList.contains( 'ck-dialog' ) ).to.be.true;
+				} );
+
+				it( 'should set the CSS class on the dialog element in the modal mode', () => {
+					view.isModal = false;
+					expect( overlayElement.firstChild.classList.contains( 'ck-dialog_modal' ) ).to.be.false;
+
+					view.isModal = true;
+					expect( overlayElement.firstChild.classList.contains( 'ck-dialog_modal' ) ).to.be.true;
 				} );
 			} );
 
@@ -396,6 +404,32 @@ describe( 'DialogView', () => {
 				} );
 			} );
 		} );
+
+		describe( 'keystrokeHandlerOptions', () => {
+			it( 'should use passed keystroke handler options filter', async () => {
+				const filterSpy = sinon.spy();
+
+				const newView = new DialogView( locale, {
+					getCurrentDomRoot: getCurrentDomRootStub,
+					getViewportOffset: getViewportOffsetStub,
+					keystrokeHandlerOptions: {
+						filter: filterSpy
+					}
+				} );
+
+				newView.render();
+
+				newView.keystrokes.press( {
+					keyCode: keyCodes.tab,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				} );
+
+				await wait( 5 );
+
+				expect( filterSpy ).to.be.calledOnce;
+			} );
+		} );
 	} );
 
 	describe( 'render()', () => {
@@ -403,15 +437,71 @@ describe( 'DialogView', () => {
 			view.render();
 		} );
 
-		it( 'should emit the event with data upon pressing Esc', () => {
-			const spy = sinon.spy();
+		describe( 'Esc key press handling', () => {
+			it( 'should emit the "close" event with data upon pressing Esc', () => {
+				const spy = sinon.spy();
 
-			view.on( 'close', spy );
+				view.on( 'close', spy );
 
-			view.element.dispatchEvent( new KeyboardEvent( 'keydown', { keyCode: keyCodes.a } ) );
-			sinon.assert.notCalled( spy );
-			view.element.dispatchEvent( new KeyboardEvent( 'keydown', { keyCode: keyCodes.esc } ) );
-			sinon.assert.calledWithExactly( spy, sinon.match.any, { source: 'escKeyPress' } );
+				const unrelatedDomEvent = new KeyboardEvent( 'keydown', {
+					keyCode: keyCodes.a,
+					bubbles: true,
+					cancelable: true
+				} );
+
+				sinon.stub( unrelatedDomEvent, 'stopPropagation' );
+				sinon.stub( unrelatedDomEvent, 'preventDefault' );
+
+				view.element.dispatchEvent( unrelatedDomEvent );
+
+				sinon.assert.notCalled( spy );
+				sinon.assert.notCalled( unrelatedDomEvent.stopPropagation );
+				sinon.assert.notCalled( unrelatedDomEvent.preventDefault );
+
+				const escDomEvent = new KeyboardEvent( 'keydown', {
+					keyCode: keyCodes.esc,
+					bubbles: true,
+					cancelable: true
+				} );
+
+				sinon.stub( escDomEvent, 'stopPropagation' );
+				sinon.stub( escDomEvent, 'preventDefault' );
+
+				view.element.dispatchEvent( escDomEvent );
+
+				sinon.assert.calledWithExactly( spy, sinon.match.any, {
+					source: 'escKeyPress'
+				} );
+
+				sinon.assert.calledOnce( escDomEvent.stopPropagation );
+				sinon.assert.calledOnce( escDomEvent.preventDefault );
+			} );
+
+			it( 'should not emit the "close" event if the original DOM event was preventDefaulted by some other logic', () => {
+				const spy = sinon.spy();
+				const childView = createContentView( 'A' );
+
+				view.setupParts( { content: childView } );
+				view.on( 'close', spy );
+
+				// Some child view's logic handling the key press.
+				childView.element.addEventListener( 'keydown', evt => {
+					evt.preventDefault();
+				} );
+
+				const escDomEvent = new KeyboardEvent( 'keydown', {
+					keyCode: keyCodes.esc,
+					bubbles: true,
+					cancelable: true
+				} );
+
+				sinon.stub( escDomEvent, 'stopPropagation' );
+
+				childView.element.dispatchEvent( escDomEvent );
+
+				sinon.assert.notCalled( spy );
+				sinon.assert.notCalled( escDomEvent.stopPropagation );
+			} );
 		} );
 
 		it( 'should move the dialog upon the #drag event', () => {
@@ -565,6 +655,16 @@ describe( 'DialogView', () => {
 			expect( view.dragHandleElement ).to.be.null;
 		} );
 
+		it( 'should not provide #dragHandleElement when in a modal mode because modals should not be draggable', () => {
+			view.setupParts( {
+				title: 'foo'
+			} );
+
+			view.isModal = true;
+
+			expect( view.dragHandleElement ).to.be.null;
+		} );
+
 		it( 'should be possible by dragging the #headerView', () => {
 			view.setupParts( {
 				title: 'foo'
@@ -627,7 +727,7 @@ describe( 'DialogView', () => {
 					expect( closeButtonView ).to.be.instanceOf( ButtonView );
 					expect( closeButtonView.label ).to.equal( 'Close' );
 					expect( closeButtonView.tooltip ).to.be.true;
-					expect( closeButtonView.icon ).to.equal( cancelIcon );
+					expect( closeButtonView.icon ).to.equal( IconCancel );
 				} );
 
 				it( 'should fire an event with data upon clicking', () => {
@@ -806,7 +906,7 @@ describe( 'DialogView', () => {
 			expect( view.element.firstChild.style.top ).to.equal( '5000px' );
 		} );
 
-		it( 'should consider viewport offset configuration', () => {
+		it( 'should consider viewport offset configuration (dialog mode)', () => {
 			getViewportOffsetStub.returns( {
 				top: 10,
 				right: 20,
@@ -832,6 +932,37 @@ describe( 'DialogView', () => {
 			view.moveTo( 1000, 5000 );
 
 			expect( view.element.firstChild.style.left ).to.equal( '380px' );
+			expect( view.element.firstChild.style.top ).to.equal( '5000px' );
+		} );
+
+		it( 'should ignore viewport offset configuration (modal mode)', () => {
+			getViewportOffsetStub.returns( {
+				top: 10,
+				right: 20,
+				bottom: 30,
+				left: 40
+			} );
+
+			view.isModal = true;
+
+			view.moveTo( 50, 5 );
+
+			expect( view.element.firstChild.style.left ).to.equal( '50px' );
+			expect( view.element.firstChild.style.top ).to.equal( '5px' );
+
+			view.moveTo( 0, 20 );
+
+			expect( view.element.firstChild.style.left ).to.equal( '0px' );
+			expect( view.element.firstChild.style.top ).to.equal( '20px' );
+
+			view.moveTo( 1000, 20 );
+
+			expect( view.element.firstChild.style.left ).to.equal( '400px' );
+			expect( view.element.firstChild.style.top ).to.equal( '20px' );
+
+			view.moveTo( 1000, 5000 );
+
+			expect( view.element.firstChild.style.left ).to.equal( '400px' );
 			expect( view.element.firstChild.style.top ).to.equal( '5000px' );
 		} );
 	} );
@@ -1128,7 +1259,7 @@ describe( 'DialogView', () => {
 			} );
 		} );
 
-		it( 'should consider viewport offsets', () => {
+		it( 'should consider viewport offsets (dialog mode)', () => {
 			getViewportOffsetStub.returns( {
 				top: 100,
 				right: 0,
@@ -1144,6 +1275,26 @@ describe( 'DialogView', () => {
 
 			expect( view.element.firstChild.style.left ).to.equal( '115px' );
 			expect( view.element.firstChild.style.top ).to.equal( '115px' );
+		} );
+
+		it( 'should ignore viewport offsets (modal mode)', () => {
+			view.isModal = true;
+
+			getViewportOffsetStub.returns( {
+				top: 100,
+				right: 0,
+				bottom: 0,
+				left: 100
+			} );
+
+			view.position = DialogViewPosition.EDITOR_TOP_SIDE;
+
+			testUtils.sinon.stub( locale, 'contentLanguageDirection' ).get( () => 'rtl' );
+
+			view.updatePosition();
+
+			expect( view.element.firstChild.style.left ).to.equal( '25px' );
+			expect( view.element.firstChild.style.top ).to.equal( '25px' );
 		} );
 
 		it( 'should not warn or throw if the view has not been rendered yet', () => {

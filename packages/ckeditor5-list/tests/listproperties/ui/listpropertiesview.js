@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals document */
@@ -125,9 +125,7 @@ describe( 'ListPropertiesView', () => {
 							startIndex: true,
 							reversed: true
 						},
-						styleButtonViews: [
-							new ButtonView( locale )
-						],
+						styleButtonViews: [],
 						styleGridAriaLabel: 'Foo'
 					} );
 
@@ -145,9 +143,7 @@ describe( 'ListPropertiesView', () => {
 							startIndex: true,
 							reversed: true
 						},
-						styleButtonViews: [
-							new ButtonView( locale )
-						],
+						styleButtonViews: [],
 						styleGridAriaLabel: 'Foo'
 					} );
 
@@ -190,9 +186,7 @@ describe( 'ListPropertiesView', () => {
 						enabledProperties: {
 							startIndex: true
 						},
-						styleButtonViews: [
-							new ButtonView( locale )
-						],
+						styleButtonViews: [],
 						styleGridAriaLabel: 'Foo'
 					} );
 
@@ -215,9 +209,7 @@ describe( 'ListPropertiesView', () => {
 						enabledProperties: {
 							reversed: true
 						},
-						styleButtonViews: [
-							new ButtonView( locale )
-						],
+						styleButtonViews: [],
 						styleGridAriaLabel: 'Foo'
 					} );
 
@@ -376,10 +368,7 @@ describe( 'ListPropertiesView', () => {
 							startIndex: true,
 							reversed: true
 						},
-						styleButtonViews: [
-							new ButtonView( locale ),
-							new ButtonView( locale )
-						],
+						styleButtonViews: [],
 						styleGridAriaLabel: 'Foo'
 					} );
 
@@ -399,10 +388,7 @@ describe( 'ListPropertiesView', () => {
 							startIndex: true,
 							reversed: true
 						},
-						styleButtonViews: [
-							new ButtonView( locale ),
-							new ButtonView( locale )
-						],
+						styleButtonViews: [],
 						styleGridAriaLabel: 'Foo'
 					} );
 
@@ -585,9 +571,7 @@ describe( 'ListPropertiesView', () => {
 					startIndex: true,
 					reversed: true
 				},
-				styleButtonViews: [
-					new ButtonView( locale )
-				],
+				styleButtonViews: [],
 				styleGridAriaLabel: 'Foo'
 			} );
 
@@ -608,7 +592,32 @@ describe( 'ListPropertiesView', () => {
 				enabledProperties: {
 					reversed: true
 				},
+				styleButtonViews: [],
+				styleGridAriaLabel: 'Foo'
+			} );
+
+			view.render();
+			document.body.appendChild( view.element );
+
+			const spy = sinon.spy( view.reversedSwitchButtonView, 'focus' );
+
+			view.focus();
+			sinon.assert.calledOnce( spy );
+
+			view.element.remove();
+			view.destroy();
+		} );
+
+		it( 'should focus first active button if present in the styles view', () => {
+			const view = new ListPropertiesView( locale, {
+				enabledProperties: {
+					styles: true,
+					startIndex: true,
+					reversed: true
+				},
 				styleButtonViews: [
+					new ButtonView( locale ),
+					new ButtonView( locale ),
 					new ButtonView( locale )
 				],
 				styleGridAriaLabel: 'Foo'
@@ -617,7 +626,9 @@ describe( 'ListPropertiesView', () => {
 			view.render();
 			document.body.appendChild( view.element );
 
-			const spy = sinon.spy( view.reversedSwitchButtonView, 'focus' );
+			view.stylesView.children.get( 1 ).isOn = true;
+
+			const spy = sinon.spy( view.stylesView.children.get( 1 ), 'focus' );
 
 			view.focus();
 			sinon.assert.calledOnce( spy );

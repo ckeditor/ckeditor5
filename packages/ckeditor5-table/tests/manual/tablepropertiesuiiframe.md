@@ -1,0 +1,1 @@
+### Table properties balloon positioning when editor is inside an iframe.

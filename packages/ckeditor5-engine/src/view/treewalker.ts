@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module engine/view/treewalker
  */
 
-import Element from './element.js';
-import Text from './text.js';
+import type Element from './element.js';
+import type Text from './text.js';
 import TextProxy from './textproxy.js';
 import Position from './position.js';
 import type Item from './item.js';
@@ -160,6 +160,31 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 	}
 
 	/**
+	 * Moves tree walker {@link #position} to provided `position`. Tree walker will
+	 * continue traversing from that position.
+	 *
+	 * Note: in contrary to {@link ~TreeWalker#skip}, this method does not iterate over the nodes along the way.
+	 * It simply sets the current tree walker position to a new one.
+	 * From the performance standpoint, it is better to use {@link ~TreeWalker#jumpTo} rather than {@link ~TreeWalker#skip}.
+	 *
+	 * If the provided position is before the start boundary, the position will be
+	 * set to the start boundary. If the provided position is after the end boundary,
+	 * the position will be set to the end boundary.
+	 * This is done to prevent the treewalker from traversing outside the boundaries.
+	 *
+	 * @param position Position to jump to.
+	 */
+	public jumpTo( position: Position ): void {
+		if ( this._boundaryStartParent && position.isBefore( this.boundaries!.start ) ) {
+			position = this.boundaries!.start;
+		} else if ( this._boundaryEndParent && position.isAfter( this.boundaries!.end ) ) {
+			position = this.boundaries!.end;
+		}
+
+		this._position = position.clone();
+	}
+
+	/**
 	 * Gets the next tree walker's value.
 	 *
 	 * @returns Object implementing iterator interface, returning
@@ -195,7 +220,7 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 		let node;
 
 		// Text is a specific parent because it contains string instead of child nodes.
-		if ( parent instanceof Text ) {
+		if ( parent && parent.is( 'view:$text' ) ) {
 			if ( position.isAtEnd ) {
 				// Prevent returning "elementEnd" for Text node. Skip that value and return the next walker step.
 				this._position = Position._createAfter( parent );
@@ -208,7 +233,27 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 			node = ( parent as Element | DocumentFragment ).getChild( position.offset );
 		}
 
-		if ( node instanceof Element ) {
+		if ( typeof node == 'string' ) {
+			let textLength;
+
+			if ( this.singleCharacters ) {
+				textLength = 1;
+			} else {
+				// Check if text stick out of walker range.
+				const endOffset = parent === this._boundaryEndParent ? this.boundaries!.end.offset : ( parent as Text ).data.length;
+
+				textLength = endOffset - position.offset;
+			}
+
+			const textProxy = new TextProxy( parent as Text, position.offset, textLength );
+
+			position.offset += textLength;
+			this._position = position;
+
+			return this._formatReturnValue( 'text', textProxy, previousPosition, position, textLength );
+		}
+
+		if ( node && node.is( 'view:element' ) ) {
 			if ( !this.shallow ) {
 				position = new Position( node, 0 );
 			} else {
@@ -225,7 +270,7 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 			return this._formatReturnValue( 'elementStart', node, previousPosition, position, 1 );
 		}
 
-		if ( node instanceof Text ) {
+		if ( node && node.is( 'view:$text' ) ) {
 			if ( this.singleCharacters ) {
 				position = new Position( node, 0 );
 				this._position = position;
@@ -250,26 +295,6 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 			this._position = position;
 
 			return this._formatReturnValue( 'text', item, previousPosition, position, charactersCount );
-		}
-
-		if ( typeof node == 'string' ) {
-			let textLength;
-
-			if ( this.singleCharacters ) {
-				textLength = 1;
-			} else {
-				// Check if text stick out of walker range.
-				const endOffset = parent === this._boundaryEndParent ? this.boundaries!.end.offset : ( parent as Text ).data.length;
-
-				textLength = endOffset - position.offset;
-			}
-
-			const textProxy = new TextProxy( parent as Text, position.offset, textLength );
-
-			position.offset += textLength;
-			this._position = position;
-
-			return this._formatReturnValue( 'text', textProxy, previousPosition, position, textLength );
 		}
 
 		// `node` is not set, we reached the end of current `parent`.
@@ -305,7 +330,7 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 		let node;
 
 		// Text {@link module:engine/view/text~Text} element is a specific parent because contains string instead of child nodes.
-		if ( parent instanceof Text ) {
+		if ( parent.is( 'view:$text' ) ) {
 			if ( position.isAtStart ) {
 				// Prevent returning "elementStart" for Text node. Skip that value and return the next walker step.
 				this._position = Position._createBefore( parent );
@@ -318,7 +343,28 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 			node = ( parent as Element | DocumentFragment ).getChild( position.offset - 1 );
 		}
 
-		if ( node instanceof Element ) {
+		if ( typeof node == 'string' ) {
+			let textLength;
+
+			if ( !this.singleCharacters ) {
+				// Check if text stick out of walker range.
+				const startOffset = parent === this._boundaryStartParent ? this.boundaries!.start.offset : 0;
+
+				textLength = position.offset - startOffset;
+			} else {
+				textLength = 1;
+			}
+
+			position.offset -= textLength;
+
+			const textProxy = new TextProxy( parent as Text, position.offset, textLength );
+
+			this._position = position;
+
+			return this._formatReturnValue( 'text', textProxy, previousPosition, position, textLength );
+		}
+
+		if ( node && node.is( 'view:element' ) ) {
 			if ( this.shallow ) {
 				position.offset--;
 				this._position = position;
@@ -336,7 +382,7 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 			return this._formatReturnValue( 'elementEnd', node, previousPosition, position );
 		}
 
-		if ( node instanceof Text ) {
+		if ( node && node.is( 'view:$text' ) ) {
 			if ( this.singleCharacters ) {
 				position = new Position( node, node.data.length );
 				this._position = position;
@@ -363,27 +409,6 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 			this._position = position;
 
 			return this._formatReturnValue( 'text', item, previousPosition, position, charactersCount );
-		}
-
-		if ( typeof node == 'string' ) {
-			let textLength;
-
-			if ( !this.singleCharacters ) {
-				// Check if text stick out of walker range.
-				const startOffset = parent === this._boundaryStartParent ? this.boundaries!.start.offset : 0;
-
-				textLength = position.offset - startOffset;
-			} else {
-				textLength = 1;
-			}
-
-			position.offset -= textLength;
-
-			const textProxy = new TextProxy( parent as Text, position.offset, textLength );
-
-			this._position = position;
-
-			return this._formatReturnValue( 'text', textProxy, previousPosition, position, textLength );
 		}
 
 		// `node` is not set, we reached the beginning of current `parent`.
@@ -413,7 +438,7 @@ export default class TreeWalker implements IterableIterator<TreeWalkerValue> {
 		// Walker doesn't enter to the Text except situations when walker is iterating over every single character,
 		// or the bound starts/ends inside the Text. So when the position is at the beginning or at the end of the Text
 		// we move it just before or just after Text.
-		if ( item instanceof TextProxy ) {
+		if ( item.is( 'view:$textProxy' ) ) {
 			// Position is at the end of Text.
 			if ( item.offsetInText + item.data.length == item.textNode.data.length ) {
 				if ( this.direction == 'forward' && !( this.boundaries && this.boundaries.end.isEqual( this.position ) ) ) {

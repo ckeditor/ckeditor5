@@ -1,0 +1,40 @@
+name: 🐛 CKEditor 5 Builder error
+description: Report something that does not work as expected in CKEditor 5 Builder
+labels: [ "squad:platform", "type:bug" ]
+body:
+  - type: textarea
+    attributes:
+      label: Reproduction steps
+      value: |-
+        1. …
+        2. …
+        3. …
+  - type: textarea
+    attributes:
+      label: Current behavior
+  - type: textarea
+    attributes:
+      label: Expected behavior
+  - type: textarea
+    attributes:
+      label: Definition of Done
+      description: >
+        A description of what must be done to consider the task completed.
+      value: |-
+        - _Please leave this field for us. We will fill it during the backlog refinement session._
+  - type: textarea
+    attributes:
+      label: Relevant debug data
+      description: Please copy and paste the relevant debug data. This will be automatically formatted into code, so there is no need for backticks.
+      render: shell
+  - type: textarea
+    attributes:
+      label: Other details
+      description: Any other details that do not fit into other categories.
+  - type: input
+    id: user-agent
+    attributes:
+        label: User agent
+        description: This provides information about your browser and OS. It is a value returned by the `navigator.userAgent` property.
+    validations:
+        required: true

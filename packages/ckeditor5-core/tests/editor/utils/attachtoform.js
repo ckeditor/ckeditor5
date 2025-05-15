@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import attachToForm from '../../../src/editor/utils/attachtoform.js';
@@ -45,12 +45,15 @@ describe( 'attachToForm()', () => {
 		}
 	} );
 
-	it( 'should throw an error when is used with editor without `ElementApiMixin`', () => {
+	it( 'should throw an error when is used with editor without `ElementApiMixin`', async () => {
 		const editor = new Editor();
 
 		expectToThrowCKEditorError( () => {
 			attachToForm( editor );
 		}, /^attachtoform-missing-elementapi-interface/, editor );
+
+		editor.fire( 'ready' );
+		await editor.destroy();
 	} );
 
 	it( 'should update editor#element after the "submit" event', () => {

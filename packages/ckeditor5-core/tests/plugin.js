@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import Plugin from '../src/plugin.js';
@@ -15,6 +15,14 @@ describe( 'Plugin', () => {
 
 	it( 'should not be marked as a context plugin', () => {
 		expect( Plugin.isContextPlugin ).to.false;
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `false`', () => {
+		expect( Plugin.isOfficialPlugin ).to.be.false;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Plugin.isPremiumPlugin ).to.be.false;
 	} );
 
 	describe( 'constructor()', () => {

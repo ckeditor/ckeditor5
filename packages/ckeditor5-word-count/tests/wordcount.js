@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global HTMLElement, setTimeout, document */
@@ -23,7 +23,7 @@ import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imag
 import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
 
 // Delay related to word-count throttling.
-const DELAY = 255;
+const DELAY = 300;
 
 describe( 'WordCount', () => {
 	testUtils.createSinonSandbox();
@@ -123,6 +123,14 @@ describe( 'WordCount', () => {
 
 		it( 'has a name', () => {
 			expect( WordCount.pluginName ).to.equal( 'WordCount' );
+		} );
+
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( WordCount.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( WordCount.isPremiumPlugin ).to.be.false;
 		} );
 	} );
 
@@ -598,8 +606,8 @@ describe( 'WordCount', () => {
 				} );
 		} );
 
-		afterEach( () => {
-			editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		it( 'should sum characters of each root', () => {

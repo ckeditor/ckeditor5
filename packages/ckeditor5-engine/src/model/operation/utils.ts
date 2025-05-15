@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -25,7 +25,7 @@ import { CKEditorError, isIterable } from '@ckeditor/ckeditor5-utils';
  *
  * @internal
  * @param position Position at which nodes should be inserted.
- * @param normalizedNodes Nodes to insert.
+ * @param nodes Nodes to insert.
  * @returns Range spanning over inserted elements.
  */
 export function _insert( position: Position, nodes: NodeSet ): Range {

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals document, window, NodeFilter, MutationObserver, HTMLImageElement, console */
@@ -185,6 +185,19 @@ describe( 'Renderer', () => {
 
 			expect( domRoot.getAttribute( 'class' ) ).to.equal( 'foo' );
 			expect( domRoot.getAttribute( 'id' ) ).to.be.not.ok;
+
+			expect( renderer.markedAttributes.size ).to.equal( 0 );
+		} );
+
+		it( 'should remove all attributes', () => {
+			domRoot.setAttribute( 'style', 'border:1px solid red' );
+			domRoot.setAttribute( 'class', 'bar' );
+
+			renderer.markToSync( 'attributes', viewRoot );
+			renderer.render();
+
+			expect( domRoot.getAttribute( 'class' ) ).to.be.not.ok;
+			expect( domRoot.getAttribute( 'style' ) ).to.be.not.ok;
 
 			expect( renderer.markedAttributes.size ).to.equal( 0 );
 		} );
@@ -2135,6 +2148,22 @@ describe( 'Renderer', () => {
 
 				const domSelection = domRoot.ownerDocument.getSelection();
 				assertDomSelectionContents( domSelection, domParagraph, /^foo bar$/ );
+			} );
+
+			it( 'should remove fake selection container when selection is no longer fake even if editor is not focused', () => {
+				selection._setTo( selection.getRanges(), { fake: true } );
+				renderer.render();
+
+				renderer.isFocused = false;
+
+				selection._setTo( selection.getRanges(), { fake: false } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 1 );
+
+				const domParagraph = domRoot.childNodes[ 0 ];
+				expect( domParagraph.childNodes.length ).to.equal( 1 );
+				expect( domParagraph.tagName.toLowerCase() ).to.equal( 'p' );
 			} );
 
 			it( 'should reuse fake selection container #1', () => {
@@ -4399,7 +4428,7 @@ describe( 'Renderer', () => {
 				);
 			} );
 
-			it( 'should rename attributes that can not be rendered in the editing pipeline', () => {
+			it( 'should rename attributes that cannot be rendered in the editing pipeline', () => {
 				setViewData( view,
 					'<container:p>' +
 						'bar' +
@@ -5632,29 +5661,6 @@ describe( 'Renderer', () => {
 	} );
 
 	describe( 'Blocking rendering while composing (IME)', () => {
-		it( 'should call #render() as soon as the user end composition in the document', () => {
-			const viewDocument = new ViewDocument( new StylesProcessor() );
-			const selection = new DocumentSelection();
-			const domConverter = new DomConverter( viewDocument, { renderingMode: 'editing' } );
-			const renderer = new Renderer( domConverter, selection );
-
-			renderer.domDocuments.add( document );
-
-			const renderSpy = sinon.spy( renderer, 'render' );
-
-			expect( renderer.isComposing ).to.be.false;
-
-			renderer.isComposing = true;
-
-			sinon.assert.notCalled( renderSpy );
-
-			renderer.isComposing = false;
-
-			sinon.assert.calledOnce( renderSpy );
-
-			viewDocument.destroy();
-		} );
-
 		describe( 'render()', () => {
 			let viewRoot, domRoot;
 
@@ -6136,6 +6142,34 @@ describe( 'Renderer', () => {
 			expect( domRoot.childNodes[ 0 ].tagName ).to.equal( 'B' );
 			expect( domRoot.childNodes[ 0 ].childNodes.length ).to.equal( 1 );
 			expect( domRoot.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'bar' );
+		} );
+
+		it( 'should not update text on Android if only NBSPs are changed while composing', () => {
+			testUtils.sinon.stub( env, 'isAndroid' ).value( true );
+
+			const viewText = new ViewText( viewDocument, 'foo  bar' );
+			viewRoot._appendChild( viewText );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foo \u00A0bar' );
+
+			// Browser modified NBSP while composing.
+			renderer.isComposing = true;
+			domRoot.childNodes[ 0 ].data = 'foo\u00A0 bar';
+			renderer._updateText( viewText, {} );
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foo\u00A0 bar' );
+
+			// Rendering after composition.
+			renderer.isComposing = false;
+			renderer._updateText( viewText, {} );
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foo \u00A0bar' );
 		} );
 	} );
 

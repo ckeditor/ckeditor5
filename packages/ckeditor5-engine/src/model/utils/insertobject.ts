@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -30,7 +30,6 @@ import { CKEditorError, first } from '@ckeditor/ckeditor5-utils';
  * @param object An object to be inserted into the model document.
  * @param selectable A selectable where the content should be inserted. If not specified, the current
  * {@link module:engine/model/document~Document#selection document selection} will be used instead.
- * @param placeOrOffset Specifies the exact place or offset for the insertion to take place, relative to `selectable`.
  * @param options Additional options.
  * @param options.findOptimalPosition An option that, when set, adjusts the insertion position (relative to
  * `selectable` and `placeOrOffset`) so that the content of `selectable` is not split upon insertion (a.k.a. non-destructive insertion).

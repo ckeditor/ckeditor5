@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -122,9 +122,8 @@ export default class RootAttributeOperation extends Operation {
 			 * The element to change is not a root element.
 			 *
 			 * @error rootattribute-operation-not-a-root
-			 * @param root
-			 * @param key
-			 * @param value
+			 * @param {module:engine/model/rootelement~RootElement} root The root element.
+			 * @param {string} key The key of the attribute.
 			 */
 			throw new CKEditorError(
 				'rootattribute-operation-not-a-root',
@@ -138,9 +137,8 @@ export default class RootAttributeOperation extends Operation {
 			 * The attribute which should be removed does not exist for the given node.
 			 *
 			 * @error rootattribute-operation-wrong-old-value
-			 * @param root
-			 * @param key
-			 * @param value
+			 * @param {module:engine/model/rootelement~RootElement} root The root element.
+			 * @param {string} key The key of the attribute.
 			 */
 			throw new CKEditorError(
 				'rootattribute-operation-wrong-old-value',
@@ -154,8 +152,8 @@ export default class RootAttributeOperation extends Operation {
 			 * The attribute with given key already exists for the given node.
 			 *
 			 * @error rootattribute-operation-attribute-exists
-			 * @param root
-			 * @param key
+			 * @param {module:engine/model/rootelement~RootElement} root The root element.
+			 * @param {string} key The key of the attribute.
 			 */
 			throw new CKEditorError(
 				'rootattribute-operation-attribute-exists',
@@ -204,10 +202,10 @@ export default class RootAttributeOperation extends Operation {
 	public static override fromJSON( json: any, document: Document ): RootAttributeOperation {
 		if ( !document.getRoot( json.root ) ) {
 			/**
-			 * Cannot create RootAttributeOperation for document. Root with specified name does not exist.
+			 * Cannot create RootAttributeOperation for document. Root with the specified name does not exist.
 			 *
 			 * @error rootattribute-operation-fromjson-no-root
-			 * @param rootName
+			 * @param {string} rootName The root name.
 			 */
 			throw new CKEditorError( 'rootattribute-operation-fromjson-no-root', this, { rootName: json.root } );
 		}

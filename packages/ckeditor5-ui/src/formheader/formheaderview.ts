@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -23,8 +23,7 @@ import '../../theme/components/formheader/formheader.css';
  * The component can also be extended by any other elements, like: icons, dropdowns, etc.
  *
  * It is used i.a.
- * by {@link module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView}
- * and {@link module:special-characters/ui/specialcharactersnavigationview~SpecialCharactersNavigationView}.
+ * by {@link module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView}.
  *
  * The latter is an example, where the component has been extended by {@link module:ui/dropdown/dropdownview~DropdownView} view.
  */

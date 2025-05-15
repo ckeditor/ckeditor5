@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global DOMParser */
@@ -10,7 +10,7 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-
+import { IconReturnArrow } from '@ckeditor/ckeditor5-icons';
 import { Template } from '@ckeditor/ckeditor5-ui';
 
 import {
@@ -67,14 +67,14 @@ import {
 import { isWidget } from '../utils.js';
 import type Widget from '../widget.js';
 
-import returnIcon from '../../theme/icons/return-arrow.svg';
+// @if CK_DEBUG_TYPING // const { _buildLogMessage } = require( '@ckeditor/ckeditor5-engine/src/dev-utils/utils.js' );
 
 import '../../theme/widgettypearound.css';
 
 const POSSIBLE_INSERTION_POSITIONS = [ 'before', 'after' ] as const;
 
 // Do the SVG parsing once and then clone the result <svg> DOM element for each new button.
-const RETURN_ARROW_ICON_ELEMENT = new DOMParser().parseFromString( returnIcon, 'image/svg+xml' ).firstChild!;
+const RETURN_ARROW_ICON_ELEMENT = new DOMParser().parseFromString( IconReturnArrow, 'image/svg+xml' ).firstChild!;
 
 const PLUGIN_DISABLED_EDITING_ROOT_CLASS = 'ck-widget__type-around_disabled';
 
@@ -101,6 +101,13 @@ export default class WidgetTypeAround extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'WidgetTypeAround' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 
 	/**
@@ -189,8 +196,6 @@ export default class WidgetTypeAround extends Plugin {
 	 * @param event The name of the event.
 	 * @param callback The function to be called on event.
 	 * @param options Additional options.
-	 * @param options.priority The priority of this event callback. The higher the priority value the sooner
-	 * the callback will be fired. Events having the same priority are called in the order they were added.
 	 */
 	private _listenToIfEnabled<TEvent extends BaseEvent>(
 		emitter: Emitter,
@@ -228,9 +233,9 @@ export default class WidgetTypeAround extends Plugin {
 		}
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-		// @if CK_DEBUG_TYPING // 	console.info( '%c[WidgetTypeAround]%c Fake caret -> insert paragraph',
-		// @if CK_DEBUG_TYPING // 		'font-weight: bold; color: green', ''
-		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'WidgetTypeAround',
+		// @if CK_DEBUG_TYPING // 		'Fake caret -> insert paragraph',
+		// @if CK_DEBUG_TYPING // 	) );
 		// @if CK_DEBUG_TYPING // }
 
 		const selectedModelElement = modelSelection.getSelectedElement()!;
@@ -688,7 +693,7 @@ export default class WidgetTypeAround extends Plugin {
 			// Note: The priority must precede the default Input plugin compositionstart handler (to call it before delete content).
 			this._listenToIfEnabled<ViewDocumentCompositionStartEvent>( viewDocument, 'compositionstart', () => {
 				this._insertParagraphAccordingToFakeCaretPosition();
-			}, { priority: 'high' } );
+			}, { priority: 'highest' } );
 		}
 	}
 

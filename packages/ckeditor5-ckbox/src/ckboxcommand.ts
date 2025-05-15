@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document, window, setTimeout, URL */
@@ -19,6 +19,7 @@ import type {
 	CKBoxAssetImageDefinition,
 	CKBoxAssetLinkAttributesDefinition,
 	CKBoxAssetLinkDefinition,
+	CKBoxConfig,
 	CKBoxRawAssetDefinition
 } from './ckboxconfig.js';
 
@@ -127,12 +128,29 @@ export default class CKBoxCommand extends Command {
 	 * - tokenUrl The token endpoint URL.
 	 * - serviceOrigin The base URL of the API service.
 	 * - forceDemoLabel Whether to force "Powered by CKBox" link.
-	 * - dialog.onClose The callback function invoked after closing the CKBox dialog.
 	 * - assets.onChoose The callback function invoked after choosing the assets.
+	 * - dialog.onClose The callback function invoked after closing the CKBox dialog.
+	 * - dialog.width The dialog width in pixels.
+	 * - dialog.height The dialog height in pixels.
+	 * - categories.icons Allows setting custom icons for categories.
+	 * - view.openLastView Sets if the last view visited by the user will be reopened
+	 * on the next startup.
+	 * - view.startupFolderId Sets the ID of the folder that will be opened on startup.
+	 * - view.startupCategoryId Sets the ID of the category that will be opened on startup.
+	 * - view.hideMaximizeButton Sets whether to hide the ‘Maximize’ button.
+	 * - view.componentsHideTimeout Sets timeout after which upload components are hidden
+	 * after completed upload.
+	 * - view.dialogMinimizeTimeout Sets timeout after which upload dialog is minimized
+	 * after completed upload.
 	 */
 	private _prepareOptions() {
 		const editor = this.editor;
 		const ckboxConfig = editor.config.get( 'ckbox' )!;
+
+		const dialog = ckboxConfig.dialog;
+		const categories = ckboxConfig.categories;
+		const view = ckboxConfig.view;
+		const upload = ckboxConfig.upload;
 
 		return {
 			theme: ckboxConfig.theme,
@@ -140,11 +158,27 @@ export default class CKBoxCommand extends Command {
 			tokenUrl: ckboxConfig.tokenUrl,
 			serviceOrigin: ckboxConfig.serviceOrigin,
 			forceDemoLabel: ckboxConfig.forceDemoLabel,
-			dialog: {
-				onClose: () => this.fire<CKBoxEvent<'close'>>( 'ckbox:close' )
-			},
+			choosableFileExtensions: ckboxConfig.choosableFileExtensions,
 			assets: {
 				onChoose: ( assets: Array<CKBoxRawAssetDefinition> ) => this.fire<CKBoxEvent<'choose'>>( 'ckbox:choose', assets )
+			},
+			dialog: {
+				onClose: () => this.fire<CKBoxEvent<'close'>>( 'ckbox:close' ),
+				width: dialog && dialog.width,
+				height: dialog && dialog.height
+			},
+			categories: categories && {
+				icons: categories.icons
+			},
+			view: view && {
+				openLastView: view.openLastView,
+				startupFolderId: view.startupFolderId,
+				startupCategoryId: view.startupCategoryId,
+				hideMaximizeButton: view.hideMaximizeButton
+			},
+			upload: upload && {
+				componentsHideTimeout: upload.componentsHideTimeout,
+				dialogMinimizeTimeout: upload.dialogMinimizeTimeout
 			}
 		};
 	}
@@ -156,6 +190,7 @@ export default class CKBoxCommand extends Command {
 		const editor = this.editor;
 		const model = editor.model;
 		const shouldInsertDataId = !editor.config.get( 'ckbox.ignoreDataId' );
+		const downloadableFilesConfig = editor.config.get( 'ckbox.downloadableFiles' );
 
 		// Refresh the command after firing the `ckbox:*` event.
 		this.on<CKBoxEvent>( 'ckbox', () => {
@@ -197,6 +232,7 @@ export default class CKBoxCommand extends Command {
 
 			const assetsToProcess = prepareAssets( {
 				assets,
+				downloadableFilesConfig,
 				isImageAllowed: imageCommand.isEnabled,
 				isLinkAllowed: linkCommand.isEnabled
 			} );
@@ -346,7 +382,8 @@ export default class CKBoxCommand extends Command {
  * Parses the chosen assets into the internal data format. Filters out chosen assets that are not allowed.
  */
 function prepareAssets(
-	{ assets, isImageAllowed, isLinkAllowed }: {
+	{ downloadableFilesConfig, assets, isImageAllowed, isLinkAllowed }: {
+		downloadableFilesConfig: CKBoxConfig[ 'downloadableFiles' ];
 		assets: Array<CKBoxRawAssetDefinition>;
 		isImageAllowed: boolean;
 		isLinkAllowed: boolean;
@@ -362,7 +399,7 @@ function prepareAssets(
 			{
 				id: asset.data.id,
 				type: 'link',
-				attributes: prepareLinkAssetAttributes( asset )
+				attributes: prepareLinkAssetAttributes( asset, downloadableFilesConfig )
 			} as const
 		)
 		.filter( asset => asset.type === 'image' ? isImageAllowed : isLinkAllowed );
@@ -391,12 +428,16 @@ export function prepareImageAssetAttributes( asset: CKBoxRawAssetDefinition ): C
 /**
  * Parses the assets attributes into the internal data format.
  *
- * @param origin The base URL for assets inserted into the editor.
+ * @param asset The asset to prepare the attributes for.
+ * @param config The CKBox download asset configuration.
  */
-function prepareLinkAssetAttributes( asset: CKBoxRawAssetDefinition ): CKBoxAssetLinkAttributesDefinition {
+function prepareLinkAssetAttributes(
+	asset: CKBoxRawAssetDefinition,
+	config: CKBoxConfig[ 'downloadableFiles' ]
+): CKBoxAssetLinkAttributesDefinition {
 	return {
 		linkName: asset.data.name,
-		linkHref: getAssetUrl( asset )
+		linkHref: getAssetUrl( asset, config )
 	};
 }
 
@@ -416,14 +457,34 @@ function isImage( asset: CKBoxRawAssetDefinition ) {
 /**
  * Creates the URL for the asset.
  *
- * @param origin The base URL for assets inserted into the editor.
+ * @param asset The asset to create the URL for.
+ * @param config The CKBox download asset configuration.
  */
-function getAssetUrl( asset: CKBoxRawAssetDefinition ) {
+function getAssetUrl( asset: CKBoxRawAssetDefinition, config: CKBoxConfig[ 'downloadableFiles' ] ) {
 	const url = new URL( asset.data.url );
 
-	url.searchParams.set( 'download', 'true' );
+	if ( isDownloadableAsset( asset, config ) ) {
+		url.searchParams.set( 'download', 'true' );
+	}
 
 	return url.toString();
+}
+
+/**
+ * Determines if download should be enabled for given asset based on configuration.
+ *
+ * @param asset The asset to check.
+ * @param config The CKBox download asset configuration.
+ */
+function isDownloadableAsset(
+	asset: CKBoxRawAssetDefinition,
+	config: CKBoxConfig[ 'downloadableFiles' ]
+): boolean {
+	if ( typeof config === 'function' ) {
+		return config( asset );
+	}
+
+	return true;
 }
 
 /**

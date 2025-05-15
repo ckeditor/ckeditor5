@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -32,6 +32,13 @@ export default class CodeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public static get requires() {
 		return [ TwoStepCaretMovement ] as const;
 	}
@@ -52,12 +59,7 @@ export default class CodeEditing extends Plugin {
 
 		editor.conversion.attributeToElement( {
 			model: CODE,
-			view: 'code',
-			upcastAlso: {
-				styles: {
-					'word-wrap': 'break-word'
-				}
-			}
+			view: 'code'
 		} );
 
 		// Create code command.

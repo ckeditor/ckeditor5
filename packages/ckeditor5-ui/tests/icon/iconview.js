@@ -1,10 +1,11 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import IconView from '../../src/icon/iconview.js';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 describe( 'IconView', () => {
 	let view;
@@ -40,6 +41,7 @@ describe( 'IconView', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-icon' ) ).to.be.true;
 			expect( view.element.getAttribute( 'viewBox' ) ).to.equal( '0 0 20 20' );
+			expect( view.element.getAttribute( 'aria-hidden' ) ).to.equal( 'true' );
 		} );
 	} );
 
@@ -116,6 +118,12 @@ describe( 'IconView', () => {
 
 				sinon.assert.notCalled( innerHTMLSpy.set );
 				sinon.assert.calledTwice( removeChildSpy );
+			} );
+
+			it( 'should throw an error on invalid SVG', () => {
+				expect( () => {
+					view.content = 'foo';
+				} ).to.throw( CKEditorError, 'ui-iconview-invalid-svg' );
 			} );
 
 			describe( 'preservation of presentational attributes on the <svg> element', () => {

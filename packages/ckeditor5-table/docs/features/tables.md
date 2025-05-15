@@ -10,12 +10,13 @@ modified_at: 2023-02-22
 
 {@snippet features/build-table-source}
 
-The table feature gives you tools to create and edit tables. Tables are great for organizing data in a clear, visually appealing way.
+The table feature gives you tools to create and edit tables. Tables are great for organizing data in a clear, visually appealing way, or creating structured content. They are also great for making document layouts for applications such as newsletters or email editors. There are two basic types of tables available: content table, described in this feature guide, and the {@link features/layout-tables layout tables} used to organize the content rather, than present tabular data. You can easily {@link features/layout-tables#table-toggling switch between these two types}.
 
 ## Demo
-Use the insert table button {@icon @ckeditor/ckeditor5-core/theme/icons/table.svg Insert table} to insert a new table into the content. Click inside the table to open a contextual toolbar. The toolbar lets you add or remove columns {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} and rows {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row}. You can also merge or split cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg Table cell}.
 
-Try toggling the caption on and off {@icon @ckeditor/ckeditor5-core/theme/icons/caption.svg Table caption}. You can also change the properties of the entire table {@icon @ckeditor/ckeditor5-table/theme/icons/table-properties.svg Table properties} or individual cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg Cell properties}. To control the width of a column, click and drag its edge.
+Use the insert table button {@icon @ckeditor/ckeditor5-icons/theme/icons/table.svg Insert table} to insert a new table into the content. Click inside the table to open a contextual toolbar. The toolbar lets you add or remove columns {@icon @ckeditor/ckeditor5-icons/theme/icons/table-column.svg Table column} and rows {@icon @ckeditor/ckeditor5-icons/theme/icons/table-row.svg Table row}. You can also merge or split cells {@icon @ckeditor/ckeditor5-icons/theme/icons/table-merge-cell.svg Table cell}.
+
+Try toggling the caption on and off {@icon @ckeditor/ckeditor5-icons/theme/icons/caption.svg Table caption}. You can also change the properties of the entire table {@icon @ckeditor/ckeditor5-icons/theme/icons/table-properties.svg Table properties} or individual cells {@icon @ckeditor/ckeditor5-icons/theme/icons/table-cell-properties.svg Cell properties}. To control the width of a column, click and drag its edge.
 
 {@snippet features/tables}
 
@@ -23,123 +24,9 @@ You may look for more interesting details in the [Tables in CKEditor&nbsp;5](htt
 
 ## Basic table features
 
-{@snippet features/build-table-source}
+The basic table features allow users to insert tables into content, add or remove columns and rows and merge or split cells.
 
-The basic table features allow users to insert tables into content, add or remove columns and rows and merge or split cells. It is also worth noting that you will find them out–of–the–box in all {@link installation/getting-started/predefined-builds predefined builds}.
-
-<info-box info>
-	The basic table feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
-
-The [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package contains multiple plugins that implement various table-related features. The {@link module:table/table~Table `Table`} plugin is at the core of the ecosystem. Available in all {@link installation/getting-started/predefined-builds predefined builds}, it provides the table functionality. There are many other features that extend the editor capabilities:
-
-The availability of these plugins varies in different {@link installation/getting-started/predefined-builds predefined editor builds} but the most important ones are present in all builds as presented in the table below:
-
-<figure class="table">
-	<table style="text-align: center">
-		<thead>
-			<tr>
-				<th rowspan="2"  style="vertical-align: middle">Image feature (plugin)</th>
-				<th colspan="6">Predefined editor build</th>
-			</tr>
-			<tr>
-				<th>{@link installation/getting-started/predefined-builds#classic-editor Classic}</th>
-				<th>{@link installation/getting-started/predefined-builds#inline-editor Inline}</th>
-				<th>{@link installation/getting-started/predefined-builds#balloon-editor Balloon}</th>
-				<th>{@link installation/getting-started/predefined-builds#balloon-block-editor Balloon block}</th>
-				<th>{@link installation/getting-started/predefined-builds#document-editor Document}</th>
-				<th>{@link installation/getting-started/predefined-builds#superbuild Superbuild}</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<th>{@link module:table/table~Table}</th>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th>{@link module:table/tabletoolbar~TableToolbar}</th>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th>{@link module:table/tableproperties~TableProperties}</th>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-			</tr>
-			<tr>
-				<th>{@link module:table/tablecellproperties~TableCellProperties}</th>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-			</tr>
-			<tr>
-				<th>{@link module:table/tablecolumnresize~TableColumnResize}</th>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-			</tr>
-			<tr>
-				<th>{@link module:table/tablecaption~TableCaption}</th>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-				<td>❌</td>
-			</tr>
-			<tr>
-				<th>{@link module:table/tableselection~TableSelection}</th>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th>{@link module:table/tableclipboard~TableClipboard}</th>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-			<tr>
-				<th>{@link module:table/tableutils~TableUtils}</th>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-				<td>✅</td>
-			</tr>
-		</tbody>
-	</table>
-</figure>
-
-<info-box>
-	You can add more table features to your editor using the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or by customizing your editor build.
-</info-box>
+The [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package contains multiple plugins that implement various table-related features. The {@link module:table/table~Table `Table`} plugin is at the core of the ecosystem and it provides the table functionality. There are many other features that extend the editor capabilities:
 
 ## Table selection
 
@@ -156,19 +43,13 @@ To type before or after a table easily, select the table, then press the Arrow k
 
 ## Nesting tables
 
-{@snippet features/build-table-source}
-
 CKEditor&nbsp;5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can be formatted just like a regular one.
-
-<info-box info>
-	The basic table feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
 
 ### Demo
 
 <!-- We may reconsider this demo, as the feature will still work in the first one -->
 
-You can test this feature in the demo below by adding a new table in the blank "abandoned" section at the bottom of the existing table. Click inside a cell and use the insert table button {@icon @ckeditor/ckeditor5-core/theme/icons/table.svg Insert table}. A nested table will appear inside the cell.
+You can test this feature in the demo below by adding a new table in the blank "abandoned" section at the bottom of the existing table. Click inside a cell and use the insert table button {@icon @ckeditor/ckeditor5-icons/theme/icons/table.svg Insert table}. A nested table will appear inside the cell.
 
 {@snippet features/table-nesting}
 
@@ -182,7 +63,7 @@ While table nesting is fully functional, the Markdown code generated with the {@
 
 ## Table contextual toolbar
 
-The {@link module:table/tabletoolbar~TableToolbar} plugin available in all editor builds introduces a contextual toolbar for table. The toolbar appears when a table or a cell is selected and contains various table-related buttons. These would typically include add or remove columns {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} and rows {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row} and merge or split cells {@icon @ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg Table cell}. If these features are configured, the toolbar will also contain buttons for captions {@icon @ckeditor/ckeditor5-core/theme/icons/caption.svg Table caption} and table {@icon @ckeditor/ckeditor5-table/theme/icons/table-properties.svg Table properties} and cell {@icon @ckeditor/ckeditor5-table/theme/icons/table-cell-properties.svg Cell properties} properties.
+The {@link module:table/tabletoolbar~TableToolbar} plugin introduces a contextual toolbar for table. The toolbar appears when a table or a cell is selected and contains various table-related buttons. These would typically include add or remove columns {@icon @ckeditor/ckeditor5-icons/theme/icons/table-column.svg Table column} and rows {@icon @ckeditor/ckeditor5-icons/theme/icons/table-row.svg Table row} and merge or split cells {@icon @ckeditor/ckeditor5-icons/theme/icons/table-merge-cell.svg Table cell}. If these features are configured, the toolbar will also contain buttons for captions {@icon @ckeditor/ckeditor5-icons/theme/icons/caption.svg Table caption} and table {@icon @ckeditor/ckeditor5-icons/theme/icons/table-properties.svg Table properties} and cell {@icon @ckeditor/ckeditor5-icons/theme/icons/table-cell-properties.svg Cell properties} properties.
 
 {@img assets/img/table-toolbar.png 569 An extended contextual toolbar.}
 
@@ -298,24 +179,39 @@ The above model structure will be rendered to the data and to the editing view a
 ## Installation
 
 <info-box info>
-	The basic table features are enabled by default in all predefined builds. The installation instructions are for developers interested in building their own, custom rich text editor.
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-To add only the basic table features to your editor, install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
-```
-npm install --save @ckeditor/ckeditor5-table
-```
-
-Then add the `Table` and `TableToolbar` plugins to your plugin list and configure the table toolbar:
-
+<code-switcher>
 ```js
-import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
+import { ClassicEditor, Table, TableToolbar } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Table, TableToolbar, Bold, /* ... */ ],
 		toolbar: [ 'insertTable', /* ... */ ],
+		table: {
+			// Configuration.
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+</code-switcher>
+
+### Table contextual toolbar
+
+Easily control your tables employing a dedicated toolbar.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		}
@@ -329,12 +225,9 @@ ClassicEditor
 To make every inserted table have `n` number of rows and columns as table headers by default, set an optional table configuration property `defaultHeadings` as follows:
 
 ```js
-import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Table, TableToolbar, Bold, /* ... */ ],
-		toolbar: [ 'insertTable', /* ... */ ],
+		// ... Other configuration options ...
 		table: {
 			defaultHeadings: { rows: 1, columns: 1 }
 		}
@@ -343,7 +236,7 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-Check the table with default headers applied to both the first row and the first column in the demo below. Click on the table and use the column properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} or the row properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row} UI button to toggle the respective headers.
+Check the table with default headers applied to both the first row and the first column in the demo below. Click on the table and use the column properties {@icon @ckeditor/ckeditor5-icons/theme/icons/table-column.svg Table column} or the row properties {@icon @ckeditor/ckeditor5-icons/theme/icons/table-row.svg Table row} UI button to toggle the respective headers.
 
 {@snippet features/table-default-headings}
 
@@ -366,13 +259,13 @@ function DisallowNestingTables( editor ) {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		extraPlugins: [ DisallowNestingTables ],
-
-		// The rest of the configuration.
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+
 <info-box>
 	Check the {@link tutorials/crash-course/editor step-by-step tutorial} if you need more information about the technical side of this solution.
 </info-box>
@@ -380,7 +273,6 @@ ClassicEditor
 <info-box>
 	We recommend using the official {@link framework/development-tools/inspector CKEditor&nbsp;5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
-
 
 ## Common API
 
@@ -390,7 +282,7 @@ The {@link module:table/table~Table} plugins register the following UI component
 
 <table>
 	<thead>
-		<th>{@link features/toolbar Component} name</th>
+		<th>{@link getting-started/setup/toolbar Component} name</th>
 		<th>Registered by</th>
 	</thead>
 	<tbody>

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -41,6 +41,13 @@ export default class TableSelection extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'TableSelection' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 
 	/**
@@ -343,6 +350,9 @@ export default class TableSelection extends Plugin {
 		const viewRanges = selectedCells.map( tableCell => view.createRangeOn( mapper.toViewElement( tableCell )! ) );
 
 		data.selection = view.createSelection( viewRanges );
+
+		// Do not let the browser handle it itself. We must modify the model and then apply changes to the view and DOM.
+		data.preventDefault();
 	}
 
 	/**
@@ -353,6 +363,7 @@ export default class TableSelection extends Plugin {
 	 */
 	private _getCellsToSelect( anchorCell: Element, targetCell: Element ) {
 		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
+
 		const startLocation = tableUtils.getCellLocation( anchorCell );
 		const endLocation = tableUtils.getCellLocation( targetCell );
 
@@ -360,11 +371,29 @@ export default class TableSelection extends Plugin {
 		const endRow = Math.max( startLocation.row, endLocation.row );
 
 		const startColumn = Math.min( startLocation.column, endLocation.column );
-		const endColumn = Math.max( startLocation.column, endLocation.column );
+
+		// Adjust the selection to include the entire row if a cell with colspan is selected.
+		// This ensures that the selection covers the full width of the colspan cell.
+		//
+		// Example:
+		// +---+---+---+---+
+		// | A | B | C | D |
+		// +---+---+---+---+
+		// | E             |
+		// +---+---+---+---+
+		//
+		// If the selection starts at `B` and ends at `E`, the entire first row should be selected.
+		//
+		// In other words, the selection will represent the following cells:
+		// 	* Without this adjustment, only `B`, `A` and `E` would be selected.
+		// 	* With this adjustment, `A`, `B`, `C`, `D`, and `E` are selected.
+		//
+		// See: https://github.com/ckeditor/ckeditor5/issues/17538
+		const endColumnExtraColspan = ( parseInt( targetCell.getAttribute( 'colspan' ) as string || '1' ) - 1 );
+		const endColumn = Math.max( startLocation.column, endLocation.column + endColumnExtraColspan );
 
 		// 2-dimensional array of the selected cells to ease flipping the order of cells for backward selections.
 		const selectionMap: Array<Array<Element>> = new Array( endRow - startRow + 1 ).fill( null ).map( () => [] );
-
 		const walkerOptions = {
 			startRow,
 			endRow,

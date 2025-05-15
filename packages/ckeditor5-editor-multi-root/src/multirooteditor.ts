@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -9,7 +9,6 @@
 
 import {
 	Editor,
-	Context,
 	secureSourceElement,
 	type EditorConfig,
 	type EditorReadyEvent
@@ -24,12 +23,10 @@ import {
 	type DecoratedMethodEvent
 } from 'ckeditor5/src/utils.js';
 
-import { ContextWatchdog, EditorWatchdog } from 'ckeditor5/src/watchdog.js';
-
 import MultiRootEditorUI from './multirooteditorui.js';
 import MultiRootEditorUIView from './multirooteditoruiview.js';
 
-import { isElement as _isElement } from 'lodash-es';
+import { isElement as _isElement } from 'es-toolkit/compat';
 import {
 	type RootElement,
 	type ViewRootEditableElement,
@@ -38,7 +35,7 @@ import {
 } from 'ckeditor5/src/engine.js';
 
 /**
- * The {@glink installation/getting-started/predefined-builds#multi-root-editor multi-root editor} implementation.
+ * The multi-root editor implementation.
  *
  * The multi-root editor provides multiple inline editable elements and a toolbar. All editable areas are controlled by one editor
  * instance, which means that they share common configuration, document ID, or undo stack.
@@ -50,24 +47,15 @@ import {
  * {@link module:editor-multi-root/multirooteditor~MultiRootEditor.create `MultiRootEditor.create()`} method.
  *
  * Note that you will need to attach the editor toolbar to your web page manually, in a desired place, after the editor is initialized.
- *
- * # Multi-root editor and multi-root editor build
- *
- * The multi-root editor can be used directly from source (if you installed the
- * [`@ckeditor/ckeditor5-editor-multi-root`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-multi-root) package)
- * but it is also available in the
- * {@glink installation/getting-started/predefined-builds#multi-root-editor multi-root editor build}.
- *
- * {@glink installation/getting-started/predefined-builds Builds} are ready-to-use editors with plugins bundled in.
- *
- * When using the editor from source you need to take care of loading all plugins by yourself
- * (through the {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} option).
- * Using the editor from source gives much better flexibility and allows for easier customization.
- *
- * Read more about initializing the editor from source or as a build in
- * {@link module:editor-multi-root/multirooteditor~MultiRootEditor.create `MultiRootEditor.create()`}.
  */
 export default class MultiRootEditor extends Editor {
+	/**
+	 * @inheritDoc
+	 */
+	public static override get editorName(): 'MultiRootEditor' {
+		return 'MultiRootEditor';
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -208,7 +196,8 @@ export default class MultiRootEditor extends Editor {
 
 		const options = {
 			shouldToolbarGroupWhenFull: !this.config.get( 'toolbar.shouldNotGroupWhenFull' ),
-			editableElements: sourceIsData ? undefined : sourceElementsOrData as Record<string, HTMLElement>
+			editableElements: sourceIsData ? undefined : sourceElementsOrData as Record<string, HTMLElement>,
+			label: this.config.get( 'label' )
 		};
 
 		const view = new MultiRootEditorUIView( this.locale, this.editing.view, rootNames, options );
@@ -504,10 +493,11 @@ export default class MultiRootEditor extends Editor {
 	 * @param root Root for which the editable element should be created.
 	 * @param placeholder Placeholder for the editable element. If not set, placeholder value from the
 	 * {@link module:core/editor/editorconfig~EditorConfig#placeholder editor configuration} will be used (if it was provided).
+	 * @param label The accessible label text describing the editable to the assistive technologies.
 	 * @returns The created DOM element. Append it in a desired place in your application.
 	 */
-	public createEditable( root: RootElement, placeholder?: string ): HTMLElement {
-		const editable = this.ui.view.createEditable( root.rootName );
+	public createEditable( root: RootElement, placeholder?: string, label?: string ): HTMLElement {
+		const editable = this.ui.view.createEditable( root.rootName, undefined, label );
 
 		this.ui.addEditable( editable, placeholder );
 
@@ -535,6 +525,19 @@ export default class MultiRootEditor extends Editor {
 	/**
 	 * Loads a root that has previously been declared in {@link module:core/editor/editorconfig~EditorConfig#lazyRoots `lazyRoots`}
 	 * configuration option.
+	 *
+	 * **Important! Lazy roots loading is an experimental feature, and may become deprecated. Be advised of the following
+	 * known limitations:**
+	 *
+	 * * **Real-time collaboration integrations that use
+	 * [uploaded editor bundles](https://ckeditor.com/docs/cs/latest/guides/collaboration/editor-bundle.html) are not supported. Using
+	 * lazy roots will lead to unexpected behavior and data loss.**
+	 * * **Revision history feature will read and process the whole document on editor initialization, possibly defeating the purpose
+	 * of using the lazy roots loading. Additionally, when the document is loaded for the first time, all roots need to be loaded,
+	 * to make sure that the initial revision data includes all roots. Otherwise, you may experience data loss.**
+	 * * **Multiple features, that require full document data to be loaded, will produce incorrect or confusing results if not all
+	 * roots are loaded. These include: bookmarks, find and replace, word count, pagination, document exports, document outline,
+	 * and table of contents.**
 	 *
 	 * Only roots specified in the editor config can be loaded. A root cannot be loaded multiple times. A root cannot be unloaded and
 	 * loading a root cannot be reverted using the undo feature.
@@ -856,18 +859,6 @@ export default class MultiRootEditor extends Editor {
 	 * See the {@link module:core/editor/editorconfig~EditorConfig editor configuration documentation} to learn more about
 	 * customizing plugins, toolbar and more.
 	 *
-	 * # Using the editor from source
-	 *
-	 * The code samples listed in the previous sections of this documentation assume that you are using an
-	 * {@glink installation/getting-started/predefined-builds editor build}
-	 * (for example – `@ckeditor/ckeditor5-build-multi-root`).
-	 *
-	 * If you want to use the multi-root editor from source (`@ckeditor/ckeditor5-editor-multi-root-editor/src/multirooteditor`),
-	 * you need to define the list of
-	 * {@link module:core/editor/editorconfig~EditorConfig#plugins plugins to be initialized} and
-	 * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar items}. Read more about using the editor from
-	 * source in the {@glink installation/advanced/alternative-setups/integrating-from-source-webpack dedicated guide}.
-	 *
 	 * @param sourceElementsOrData The DOM elements that will be the source for the created editor
 	 * or the editor's initial data. The editor will initialize multiple roots with names according to the keys in the passed object.
 	 *
@@ -913,27 +904,6 @@ export default class MultiRootEditor extends Editor {
 			);
 		} );
 	}
-
-	/**
-	 * The {@link module:core/context~Context} class.
-	 *
-	 * Exposed as static editor field for easier access in editor builds.
-	 */
-	public static Context = Context;
-
-	/**
-	 * The {@link module:watchdog/editorwatchdog~EditorWatchdog} class.
-	 *
-	 * Exposed as static editor field for easier access in editor builds.
-	 */
-	public static EditorWatchdog = EditorWatchdog;
-
-	/**
-	 * The {@link module:watchdog/contextwatchdog~ContextWatchdog} class.
-	 *
-	 * Exposed as static editor field for easier access in editor builds.
-	 */
-	public static ContextWatchdog = ContextWatchdog;
 
 	/**
 	 * @internal

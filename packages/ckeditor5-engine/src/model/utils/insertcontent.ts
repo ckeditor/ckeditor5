@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -51,7 +51,6 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  * @param model The model in context of which the insertion should be performed.
  * @param content The content to insert.
  * @param selectable Selection into which the content should be inserted.
- * @param placeOrOffset Sets place or offset of the selection.
  * @returns Range which contains all the performed changes. This is a range that, if removed,
  * would return the model to the state before the insertion. If no changes were preformed by `insertContent`, returns a range collapsed
  * at the insertion position.
@@ -408,31 +407,15 @@ class Insertion {
 	 * Handles insertion of a single node.
 	 */
 	private _handleNode( node: Node ): void {
-		// Let's handle object in a special way.
-		// * They should never be merged with other elements.
-		// * If they are not allowed in any of the selection ancestors, they could be either autoparagraphed or totally removed.
-		if ( this.schema.isObject( node ) ) {
-			this._handleObject( node as Element );
+		// Split the position.parent's branch up to a point where the node can be inserted.
+		// If it isn't allowed in the whole branch, then of course don't split anything.
+		if ( !this._checkAndSplitToAllowedPosition( node ) ) {
+			// Handle element children if it's not an object (strip container).
+			if ( !this.schema.isObject( node ) ) {
+				this._handleDisallowedNode( node );
+			}
 
 			return;
-		}
-
-		// Try to find a place for the given node.
-
-		// Check if a node can be inserted in the given position or it would be accepted if a paragraph would be inserted.
-		// Inserts the auto paragraph if it would allow for insertion.
-		let isAllowed = this._checkAndAutoParagraphToAllowedPosition( node );
-
-		if ( !isAllowed ) {
-			// Split the position.parent's branch up to a point where the node can be inserted.
-			// If it isn't allowed in the whole branch, then of course don't split anything.
-			isAllowed = this._checkAndSplitToAllowedPosition( node );
-
-			if ( !isAllowed ) {
-				this._handleDisallowedNode( node );
-
-				return;
-			}
 		}
 
 		// Add node to the current temporary DocumentFragment.
@@ -483,30 +466,12 @@ class Insertion {
 	}
 
 	/**
-	 * @param node The object element.
-	 */
-	private _handleObject( node: Element ): void {
-		// Try finding it a place in the tree.
-		if ( this._checkAndSplitToAllowedPosition( node ) ) {
-			this._appendToFragment( node );
-		}
-		// Try autoparagraphing.
-		else {
-			this._tryAutoparagraphing( node );
-		}
-	}
-
-	/**
 	 * @param node The disallowed node which needs to be handled.
 	 */
 	private _handleDisallowedNode( node: Node ): void {
 		// If the node is an element, try inserting its children (strip the parent).
 		if ( node.is( 'element' ) ) {
 			this.handleNodes( node.getChildren() );
-		}
-		// If text is not allowed, try autoparagraphing it.
-		else {
-			this._tryAutoparagraphing( node );
 		}
 	}
 
@@ -525,8 +490,8 @@ class Insertion {
 			 * Given node cannot be inserted on the given position.
 			 *
 			 * @error insertcontent-wrong-position
-			 * @param node Node to insert.
-			 * @param position Position to insert the node at.
+			 * @param {module:engine/model/node~Node} node Node to insert.
+			 * @param {module:engine/model/position~Position} position Position to insert the node at.
 			 */
 			throw new CKEditorError(
 				'insertcontent-wrong-position',
@@ -765,41 +730,9 @@ class Insertion {
 	}
 
 	/**
-	 * Tries wrapping the node in a new paragraph and inserting it this way.
-	 *
-	 * @param node The node which needs to be autoparagraphed.
+	 * Inserts a paragraph and moves the insertion position into it.
 	 */
-	private _tryAutoparagraphing( node: Node ): void {
-		const paragraph = this.writer.createElement( 'paragraph' );
-
-		// Do not autoparagraph if the paragraph won't be allowed there,
-		// cause that would lead to an infinite loop. The paragraph would be rejected in
-		// the next _handleNode() call and we'd be here again.
-		if ( this._getAllowedIn( this.position.parent as any, paragraph ) && this.schema.checkChild( paragraph, node ) ) {
-			paragraph._appendChild( node );
-			this._handleNode( paragraph );
-		}
-	}
-
-	/**
-	 * Checks if a node can be inserted in the given position or it would be accepted if a paragraph would be inserted.
-	 * It also handles inserting the paragraph.
-	 *
-	 * @returns Whether an allowed position was found.
-	 * `false` is returned if the node isn't allowed at the current position or in auto paragraph, `true` if was.
-	 */
-	private _checkAndAutoParagraphToAllowedPosition( node: Node ): boolean {
-		if ( this.schema.checkChild( this.position.parent as any, node ) ) {
-			return true;
-		}
-
-		// Do not auto paragraph if the paragraph won't be allowed there,
-		// cause that would lead to an infinite loop. The paragraph would be rejected in
-		// the next _handleNode() call and we'd be here again.
-		if ( !this.schema.checkChild( this.position.parent as any, 'paragraph' ) || !this.schema.checkChild( 'paragraph', node ) ) {
-			return false;
-		}
-
+	private _insertAutoParagraph(): void {
 		// Insert nodes collected in temporary DocumentFragment if the position parent needs change to process further nodes.
 		this._insertPartialFragment();
 
@@ -811,8 +744,6 @@ class Insertion {
 
 		this._lastAutoParagraph = paragraph;
 		this.position = this.writer.createPositionAt( paragraph, 0 );
-
-		return true;
 	}
 
 	/**
@@ -867,17 +798,32 @@ class Insertion {
 			}
 		}
 
+		// At this point, we split elements up to the parent in which `node` is allowed.
+		// Note that `_getAllowedIn()` checks if the `node` is allowed either directly, or when auto-paragraphed.
+		// So, let's check if the `node` is allowed directly. If not, we need to auto-paragraph it.
+		if ( !this.schema.checkChild( this.position.parent, node ) ) {
+			this._insertAutoParagraph();
+		}
+
 		return true;
 	}
 
 	/**
 	 * Gets the element in which the given node is allowed. It checks the passed element and all its ancestors.
 	 *
+	 * It also verifies if auto-paragraphing could help.
+	 *
 	 * @param contextElement The element in which context the node should be checked.
 	 * @param childNode The node to check.
 	 */
 	private _getAllowedIn( contextElement: Element, childNode: Node ): Element | null {
+		// Check if a node can be inserted in the given context...
 		if ( this.schema.checkChild( contextElement, childNode ) ) {
+			return contextElement;
+		}
+
+		// ...or it would be accepted if a paragraph would be inserted.
+		if ( this.schema.checkChild( contextElement, 'paragraph' ) && this.schema.checkChild( 'paragraph', childNode ) ) {
 			return contextElement;
 		}
 

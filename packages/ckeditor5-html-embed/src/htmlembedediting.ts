@@ -1,16 +1,17 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module html-embed/htmlembedediting
  */
 
-import { Plugin, icons, type Editor } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { ButtonView } from 'ckeditor5/src/ui.js';
 import { toWidget } from 'ckeditor5/src/widget.js';
 import { logWarning, createElement } from 'ckeditor5/src/utils.js';
+import { IconCancel, IconCheck, IconPencil } from 'ckeditor5/src/icons.js';
 
 import type { HtmlEmbedConfig } from './htmlembedconfig.js';
 import HtmlEmbedCommand from './htmlembedcommand.js';
@@ -37,6 +38,13 @@ export default class HtmlEmbedEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor: Editor ) {
 		super( editor );
 
@@ -44,7 +52,7 @@ export default class HtmlEmbedEditing extends Plugin {
 			showPreviews: false,
 			sanitizeHtml: rawHtml => {
 				/**
-				 * When using the HTML embed feature with the `htmlEmbed.showPreviews=true` option, it is strongly recommended to
+				 * When using the HTML embed feature with the `config.htmlEmbed.showPreviews` set to `true`, it is strongly recommended to
 				 * define a sanitize function that will clean up the input HTML in order to avoid XSS vulnerability.
 				 *
 				 * For a detailed overview, check the {@glink features/html/html-embed HTML embed feature} documentation.
@@ -401,7 +409,7 @@ function createUIButton( editor: Editor, type: 'edit' | 'save' | 'cancel', onCli
 
 	buttonView.set( {
 		class: `raw-html-embed__${ type }-button`,
-		icon: icons.pencil,
+		icon: IconPencil,
 		tooltip: true,
 		tooltipPosition: editor.locale.uiLanguageDirection === 'rtl' ? 'e' : 'w'
 	} );
@@ -410,21 +418,21 @@ function createUIButton( editor: Editor, type: 'edit' | 'save' | 'cancel', onCli
 
 	if ( type === 'edit' ) {
 		buttonView.set( {
-			icon: icons.pencil,
+			icon: IconPencil,
 			label: t( 'Edit source' )
 		} );
 
 		buttonView.bind( 'isEnabled' ).to( command );
 	} else if ( type === 'save' ) {
 		buttonView.set( {
-			icon: icons.check,
+			icon: IconCheck,
 			label: t( 'Save changes' )
 		} );
 
 		buttonView.bind( 'isEnabled' ).to( command );
 	} else {
 		buttonView.set( {
-			icon: icons.cancel,
+			icon: IconCancel,
 			label: t( 'Cancel' )
 		} );
 	}

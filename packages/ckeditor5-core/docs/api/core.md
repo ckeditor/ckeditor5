@@ -18,8 +18,10 @@ You can also browse the API documentation of this package by using the module tr
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-core
+npm install ckeditor5
 ```
 
 ## Contribute

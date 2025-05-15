@@ -1,18 +1,12 @@
-# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
 #
-#                                     !!! IMPORTANT !!!
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
 #
-#         Before you edit this file, please keep in mind that contributing to the project
-#                translations is possible ONLY via the Transifex online service.
-#
-#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
-#
-#                   To learn more, check out the official contributor's guide:
-#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
 #
 msgid ""
 msgstr ""
-"Language-Team: Bengali (https://app.transifex.com/ckeditor/teams/11143/bn/)\n"
 "Language: bn\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -52,3 +46,7 @@ msgstr "কোনো উইজেটের আগে সরাসরি টা�
 msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret after a widget."
 msgid "Move the caret to allow typing directly after a widget"
 msgstr "কোনো উইজেটের পরে সরাসরি টাইপ করতে দিতে ক্যারেটটি সরান"
+
+msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves selection from a nested editable area back to the parent widget."
+msgid "Move focus from an editable area back to the parent widget"
+msgstr "এডিটযোগ্য এরিয়া থেকে প্যারেন্ট উইজেটে ফোকাসে সরিয়ে নিন"

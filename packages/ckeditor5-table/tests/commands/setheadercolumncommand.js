@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
@@ -9,6 +9,7 @@ import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 
 import TableSelection from '../../src/tableselection.js';
 import TableEditing from '../../src/tableediting.js';
+import { TableLayoutEditing } from '../../src/index.js';
 import { assertSelectedCells, modelTable } from '../_utils/utils.js';
 
 import SetHeaderColumnCommand from '../../src/commands/setheadercolumncommand.js';
@@ -71,6 +72,39 @@ describe( 'SetHeaderColumnCommand', () => {
 			);
 
 			expect( command.isEnabled ).to.be.true;
+		} );
+
+		describe( 'with `TableLayout` plugin', () => {
+			let editor, model, command;
+
+			beforeEach( () => {
+				return ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing, TableSelection, TableLayoutEditing ]
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+						command = new SetHeaderColumnCommand( editor );
+					} );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			it( 'should be true if selection is in table', () => {
+				setData( model, '<table><tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow></table>' );
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be false if selection is in table with `tableType="layout"`', () => {
+				setData( model,
+					'<table tableType="layout">' +
+						'<tableRow><tableCell><paragraph>foo[]</paragraph></tableCell></tableRow>' +
+					'</table>' );
+				expect( command.isEnabled ).to.be.false;
+			} );
 		} );
 	} );
 

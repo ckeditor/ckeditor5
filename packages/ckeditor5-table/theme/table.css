@@ -1,55 +1,88 @@
 /*
- * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-.ck-content .table {
-	/* Give the table widget some air and center it horizontally */
-	/* The first value should be equal to --ck-spacing-large variable if used in the editor context
-	to avoid the content jumping (See https://github.com/ckeditor/ckeditor5/issues/9825). */
-	margin: 0.9em auto;
-	display: table;
+.ck-content {
+	/* Text alignment of the table header should match the editor settings and override the native browser styling,
+	when content is available outside the editor. See https://github.com/ckeditor/ckeditor5/issues/6638 */
+	&[dir="rtl"] .table th {
+		text-align: right;
+	}
 
-	& table {
+	&[dir="ltr"] .table th {
+		text-align: left;
+	}
+
+	& figure.table:not(.layout-table) {
+		display: table;
+
+		& > table {
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	& .table:not(.layout-table) {
+		/* Give the table widget some air and center it horizontally */
+		/* The first value should be equal to --ck-spacing-large variable if used in the editor context
+		to avoid the content jumping (See https://github.com/ckeditor/ckeditor5/issues/9825). */
+		margin: 0.9em auto;
+	}
+
+	& table.table:not(.layout-table),
+	& figure.table:not(.layout-table) > table {
 		/* The table cells should have slight borders */
 		border-collapse: collapse;
 		border-spacing: 0;
-
-		/* Table width and height are set on the parent <figure>. Make sure the table inside stretches
-		to the full dimensions of the container (https://github.com/ckeditor/ckeditor5/issues/6186). */
-		width: 100%;
-		height: 100%;
 
 		/* The outer border of the table should be slightly darker than the inner lines.
 		Also see https://github.com/ckeditor/ckeditor5-table/issues/50. */
 		border: 1px double hsl(0, 0%, 70%);
 
-		& td,
-		& th {
-			min-width: 2em;
-			padding: .4em;
+		& > thead,
+		& > tbody {
+			/* The linter is disabled here because linter is confused when resolving the `table.table:not(.layout-table)`
+			and `figure.table:not(.layout-table) > table` selectors combined with below selectors.
+			There is no need to split it into two large structures with same code just to make linter happy. */
+			/* stylelint-disable no-descending-specificity */
+			& > tr {
+				& > th {
+					font-weight: bold;
+					background: hsla(0, 0%, 0%, 5%);
+				}
 
-			/* The border is inherited from .ck-editor__nested-editable styles, so theoretically it's not necessary here.
-			However, the border is a content style, so it should use .ck-content (so it works outside the editor).
-			Hence, the duplication. See https://github.com/ckeditor/ckeditor5/issues/6314 */
-			border: 1px solid hsl(0, 0%, 75%);
-		}
+				& > td,
+				& > th {
+					/* stylelint-enable no-descending-specificity */
+					min-width: 2em;
+					padding: .4em;
 
-		& th {
-			font-weight: bold;
-			background: hsla(0, 0%, 0%, 5%);
+					/* The border is inherited from .ck-editor__nested-editable styles, so theoretically it's not necessary here.
+					However, the border is a content style, so it should use .ck-content (so it works outside the editor).
+					Hence, the duplication. See https://github.com/ckeditor/ckeditor5/issues/6314 */
+					border: 1px solid hsl(0, 0%, 75%);
+				}
+			}
 		}
 	}
 }
 
-/* Text alignment of the table header should match the editor settings and override the native browser styling,
-when content is available outside the editor. See https://github.com/ckeditor/ckeditor5/issues/6638 */
-.ck-content[dir="rtl"] .table th {
-	text-align: right;
-}
-
-.ck-content[dir="ltr"] .table th {
-	text-align: left;
+/**
+ * Expanding the table to the full height of the parent container is necessary because tables
+ * are rendered inside <figure> elements, which is kinda buggy in table height calculation.
+ * While setting `height: 100%` fixes the issue in the editing mode described here:
+ * https://github.com/ckeditor/ckeditor5/issues/6186
+ *
+ * it's causing another issue with the table height in the print preview mode here:
+ * https://github.com/ckeditor/ckeditor5/issues/16856
+ *
+ * For now, resetting the height to `initial` in the print mode works as a workaround.
+ */
+@media print {
+	.ck-content figure.table > table {
+		height: initial;
+	}
 }
 
 .ck-editor__editable .ck-table-bogus-paragraph {

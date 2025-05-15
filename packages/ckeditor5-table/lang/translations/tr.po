@@ -1,18 +1,12 @@
-# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
 #
-#                                     !!! IMPORTANT !!!
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
 #
-#         Before you edit this file, please keep in mind that contributing to the project
-#                translations is possible ONLY via the Transifex online service.
-#
-#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
-#
-#                   To learn more, check out the official contributor's guide:
-#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
 #
 msgid ""
 msgstr ""
-"Language-Team: Turkish (https://app.transifex.com/ckeditor/teams/11143/tr/)\n"
 "Language: tr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -245,10 +239,6 @@ msgctxt "The localized error string that can be displayed next to length (paddin
 msgid "The value is invalid. Try \"10px\" or \"2em\" or simply \"2\"."
 msgstr "Geçersiz değer. \"10px\" veya \"2em\" veya sadece \"2\" deneyin."
 
-msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
-msgid "Color picker"
-msgstr "Renk seçici"
-
 msgctxt "The placeholder text for the table caption displayed when the caption is empty."
 msgid "Enter table caption"
 msgstr "Tablo açıklaması gir"
@@ -276,3 +266,31 @@ msgstr "Tabloda gezin"
 msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
 msgid "Table"
 msgstr "Tablo"
+
+msgctxt "Label for the insert table layout toolbar button."
+msgid "Insert table layout"
+msgstr "Tablo düzeni ekle"
+
+msgctxt "The accessible label used in the table layout insert UI element."
+msgid "Table layout"
+msgstr "Tablo düzeni"
+
+msgctxt "The accessible label of the layout table type dropdown button."
+msgid "Layout table"
+msgstr "Düzen tablosu"
+
+msgctxt "The accessible label of the content table type dropdown button."
+msgid "Content table"
+msgstr "İçerik tablosu"
+
+msgctxt "The accessible label of the table balloon button that displays a user interface to choose table type."
+msgid "Choose table type"
+msgstr "Tablo türünü seç"
+
+msgctxt "The accessible label of the table type toolbar button."
+msgid "Table type"
+msgstr "Tablo türü"
+
+msgctxt "The accessible label of dropdown list that displays a user interface to choose table type."
+msgid "Table type options"
+msgstr "Tablo türü seçenekleri"

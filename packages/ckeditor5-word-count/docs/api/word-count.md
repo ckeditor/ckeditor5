@@ -18,8 +18,10 @@ See the {@link features/word-count word count and character count feature guide}
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-word-count
+npm install ckeditor5
 ```
 
 ## Contribute

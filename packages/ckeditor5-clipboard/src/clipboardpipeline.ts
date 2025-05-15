@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -151,6 +151,13 @@ export default class ClipboardPipeline extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public static get requires() {
 		return [ ClipboardMarkersUtils ] as const;
 	}
@@ -229,10 +236,12 @@ export default class ClipboardPipeline extends Plugin {
 			}
 
 			const eventInfo = new EventInfo( this, 'inputTransformation' );
+			const sourceEditorId = dataTransfer.getData( 'application/ckeditor5-editor-id' ) || null;
 
 			this.fire<ClipboardInputTransformationEvent>( eventInfo, {
 				content,
 				dataTransfer,
+				sourceEditorId,
 				targetRanges: data.targetRanges,
 				method: data.method as 'paste' | 'drop'
 			} );
@@ -271,6 +280,7 @@ export default class ClipboardPipeline extends Plugin {
 				this.fire<ClipboardContentInsertionEvent>( 'contentInsertion', {
 					content: modelFragment,
 					method: data.method,
+					sourceEditorId: data.sourceEditorId,
 					dataTransfer: data.dataTransfer,
 					targetRanges: data.targetRanges
 				} );
@@ -311,7 +321,7 @@ export default class ClipboardPipeline extends Plugin {
 		}, { priority: 'low' } );
 
 		this.listenTo<ClipboardOutputTransformationEvent>( this, 'outputTransformation', ( evt, data ) => {
-			const content = editor.data.toView( data.content );
+			const content = editor.data.toView( data.content, { isClipboardPipeline: true } );
 
 			viewDocument.fire<ViewDocumentClipboardOutputEvent>( 'clipboardOutput', {
 				dataTransfer: data.dataTransfer,
@@ -323,7 +333,8 @@ export default class ClipboardPipeline extends Plugin {
 		this.listenTo<ViewDocumentClipboardOutputEvent>( viewDocument, 'clipboardOutput', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {
 				data.dataTransfer.setData( 'text/html', this.editor.data.htmlProcessor.toData( data.content ) );
-				data.dataTransfer.setData( 'text/plain', viewToPlainText( data.content ) );
+				data.dataTransfer.setData( 'text/plain', viewToPlainText( editor.data.htmlProcessor.domConverter, data.content ) );
+				data.dataTransfer.setData( 'application/ckeditor5-editor-id', this.editor.id );
 			}
 
 			if ( data.method == 'cut' ) {
@@ -382,6 +393,11 @@ export interface ClipboardInputTransformationData {
 	 * Whether the event was triggered by a paste or a drop operation.
 	 */
 	method: 'paste' | 'drop';
+
+	/**
+	 * ID of the editor instance from which the content was copied.
+	 */
+	sourceEditorId: string | null;
 }
 
 /**
@@ -425,6 +441,11 @@ export interface ClipboardContentInsertionData {
 	 * Whether the event was triggered by a paste or a drop operation.
 	 */
 	method: 'paste' | 'drop';
+
+	/**
+	 * The ID of the editor instance from which the content was copied.
+	 */
+	sourceEditorId: string | null;
 
 	/**
 	 * The data transfer instance.

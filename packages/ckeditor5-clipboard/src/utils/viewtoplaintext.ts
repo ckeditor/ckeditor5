@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module clipboard/utils/viewtoplaintext
  */
 
-import type { ViewDocumentFragment, ViewElement, ViewItem } from '@ckeditor/ckeditor5-engine';
+import type { DomConverter, ViewDocumentFragment, ViewElement, ViewItem } from '@ckeditor/ckeditor5-engine';
 
 // Elements which should not have empty-line padding.
 // Most `view.ContainerElement` want to be separate by new-line, but some are creating one structure
@@ -19,10 +19,14 @@ const listElements = [ 'ol', 'ul' ];
 /**
  * Converts {@link module:engine/view/item~Item view item} and all of its children to plain text.
  *
+ * @param converter The converter instance.
  * @param viewItem View item to convert.
  * @returns Plain text representation of `viewItem`.
  */
-export default function viewToPlainText( viewItem: ViewItem | ViewDocumentFragment ): string {
+export default function viewToPlainText(
+	converter: DomConverter,
+	viewItem: ViewItem | ViewDocumentFragment
+): string {
 	if ( viewItem.is( '$text' ) || viewItem.is( '$textProxy' ) ) {
 		return viewItem.data;
 	}
@@ -44,8 +48,36 @@ export default function viewToPlainText( viewItem: ViewItem | ViewDocumentFragme
 	let prev: ViewElement | null = null;
 
 	for ( const child of ( viewItem as ViewElement | ViewDocumentFragment ).getChildren() ) {
-		text += newLinePadding( child as ViewElement, prev ) + viewToPlainText( child );
+		text += newLinePadding( child as ViewElement, prev ) + viewToPlainText( converter, child );
 		prev = child as ViewElement;
+	}
+
+	// If item is a raw element, the only way to get its content is to render it and read the text directly from DOM.
+	if ( viewItem.is( 'rawElement' ) ) {
+		const tempElement = document.createElement( 'div' );
+
+		viewItem.render( tempElement, converter );
+
+		text += domElementToPlainText( tempElement );
+	}
+
+	return text;
+}
+
+/**
+ * Recursively converts DOM element and all of its children to plain text.
+ */
+function domElementToPlainText( element: HTMLElement ): string {
+	let text = '';
+
+	if ( element.nodeType === Node.TEXT_NODE ) {
+		return element.textContent!;
+	} else if ( element.tagName === 'BR' ) {
+		return '\n';
+	}
+
+	for ( const child of element.childNodes ) {
+		text += domElementToPlainText( child as HTMLElement );
 	}
 
 	return text;
@@ -84,6 +116,14 @@ function newLinePadding(
 	if ( smallPaddingElements.includes( element.name ) || smallPaddingElements.includes( previous.name ) ) {
 		// Add small padding between selected container elements.
 		return '\n';
+	}
+
+	// Do not add padding around the elements that won't be rendered.
+	if (
+		element.is( 'element' ) && element.getCustomProperty( 'dataPipeline:transparentRendering' ) ||
+		previous.is( 'element' ) && previous.getCustomProperty( 'dataPipeline:transparentRendering' )
+	) {
+		return '';
 	}
 
 	// Add empty lines between container elements.

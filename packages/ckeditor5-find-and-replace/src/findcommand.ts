@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -60,15 +60,30 @@ export default class FindCommand extends Command {
 		const findAndReplaceUtils: FindAndReplaceUtils = editor.plugins.get( 'FindAndReplaceUtils' );
 
 		let findCallback: FindCallback | undefined;
+		let callbackSearchText: string = '';
 
 		// Allow to execute `find()` on a plugin with a keyword only.
 		if ( typeof callbackOrText === 'string' ) {
-			findCallback = findAndReplaceUtils.findByTextCallback( callbackOrText, { matchCase, wholeWords } );
-
-			this._state.searchText = callbackOrText;
+			findCallback = ( ...args ) => ( {
+				results: findAndReplaceUtils.findByTextCallback( callbackOrText, { matchCase, wholeWords } )( ...args ),
+				searchText: callbackOrText
+			} );
 		} else {
 			findCallback = callbackOrText;
 		}
+
+		// Wrap the callback to get the search text that will be assigned to the state.
+		const oldCallback = findCallback;
+
+		findCallback = ( ...args ) => {
+			const result = oldCallback( ...args );
+
+			if ( result && 'searchText' in result ) {
+				callbackSearchText = result.searchText;
+			}
+
+			return result;
+		};
 
 		// Initial search is done on all nodes in all roots inside the content.
 		const results = model.document.getRootNames()
@@ -82,10 +97,7 @@ export default class FindCommand extends Command {
 		this._state.clear( model );
 		this._state.results.addMany( results );
 		this._state.highlightedResult = results.get( 0 );
-
-		if ( typeof callbackOrText === 'string' ) {
-			this._state.searchText = callbackOrText;
-		}
+		this._state.searchText = callbackSearchText;
 
 		if ( findCallback ) {
 			this._state.lastSearchCallback = findCallback;

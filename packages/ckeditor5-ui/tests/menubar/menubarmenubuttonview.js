@@ -1,14 +1,14 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global Event */
 
+import { IconDropdownArrow } from '@ckeditor/ckeditor5-icons';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 import MenuBarMenuButtonView from '../../src/menubar/menubarmenubuttonview.js';
 import { ButtonView, IconView } from '../../src/index.js';
-import dropdownArrowIcon from '../../theme/icons/dropdown-arrow.svg';
 
 describe( 'MenuBarMenuButtonView', () => {
 	let buttonView, locale;
@@ -45,7 +45,7 @@ describe( 'MenuBarMenuButtonView', () => {
 			} );
 
 			it( 'should use a specific SVG icon', () => {
-				expect( buttonView.arrowView.content ).to.equal( dropdownArrowIcon );
+				expect( buttonView.arrowView.content ).to.equal( IconDropdownArrow );
 			} );
 		} );
 

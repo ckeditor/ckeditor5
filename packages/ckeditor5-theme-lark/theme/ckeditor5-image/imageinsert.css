@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
@@ -32,7 +32,6 @@
 	& > .ck.ck-button {
 		display: block;
 		width: 100%;
-		padding: var(--ck-list-button-padding);
 
 		@mixin ck-dir ltr {
 			text-align: left;

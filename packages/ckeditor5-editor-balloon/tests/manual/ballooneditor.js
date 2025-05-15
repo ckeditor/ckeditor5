@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals console:false, document, window */
@@ -33,6 +33,9 @@ function initEditors() {
 				window.editors[ selector ] = editor;
 				window.editables.push( editor.editing.view.document.getRoot() );
 
+				const editorNumber = selector.split( '-' )[ 1 ];
+				document.querySelector( `#menubar-container-${ editorNumber }` ).appendChild( editor.ui.view.menuBarView.element );
+
 				const observer = createObserver();
 
 				observer.observe(
@@ -51,7 +54,11 @@ function initEditors() {
 
 function destroyEditors() {
 	for ( const selector in window.editors ) {
-		window.editors[ selector ].destroy().then( () => {
+		const editor = window.editors[ selector ];
+
+		editor.destroy().then( () => {
+			editor.ui.view.menuBarView.element.remove();
+
 			console.log( `${ selector } was destroyed.` );
 		} );
 	}

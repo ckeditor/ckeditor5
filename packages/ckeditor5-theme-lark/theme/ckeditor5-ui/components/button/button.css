@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 @import "../../../mixins/_focus.css";
@@ -121,13 +121,11 @@ a.ck.ck-button {
 		/* stylelint-disable-next-line no-descending-specificity */
 		& .ck-button__icon {
 			@mixin ck-dir ltr {
-				margin-left: calc(-1 * var(--ck-spacing-small));
-				margin-right: var(--ck-spacing-small);
+				margin-right: var(--ck-spacing-medium);
 			}
 
 			@mixin ck-dir rtl {
-				margin-right: calc(-1 * var(--ck-spacing-small));
-				margin-left: var(--ck-spacing-small);
+				margin-left: var(--ck-spacing-medium);
 			}
 		}
 	}

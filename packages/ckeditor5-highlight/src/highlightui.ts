@@ -1,13 +1,14 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module highlight/highlightui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { IconEraser, IconMarker, IconPen } from 'ckeditor5/src/icons.js';
 import {
 	addToolbarToDropdown,
 	createDropdown,
@@ -22,8 +23,6 @@ import {
 	type DropdownView
 } from 'ckeditor5/src/ui.js';
 
-import markerIcon from './../theme/icons/marker.svg';
-import penIcon from './../theme/icons/pen.svg';
 import type { HighlightOption } from './highlightconfig.js';
 import type HighlightCommand from './highlightcommand.js';
 
@@ -84,6 +83,13 @@ export default class HighlightUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const options = this.editor.config.get( 'highlight.options' )!;
 
@@ -105,7 +111,7 @@ export default class HighlightUI extends Plugin {
 		const t = this.editor.t;
 		const command: HighlightCommand = this.editor.commands.get( 'highlight' )!;
 
-		this._addButton( 'removeHighlight', t( 'Remove highlight' ), icons.eraser, null, button => {
+		this._addButton( 'removeHighlight', t( 'Remove highlight' ), IconEraser, null, button => {
 			button.bind( 'isEnabled' ).to( command, 'isEnabled' );
 		} );
 	}
@@ -266,9 +272,9 @@ export default class HighlightUI extends Plugin {
 	private _addMenuBarButton( options: Array<HighlightOption> ) {
 		const editor = this.editor;
 		const t = editor.t;
+		const command: HighlightCommand = editor.commands.get( 'highlight' )!;
 
 		editor.ui.componentFactory.add( 'menuBar:highlight', locale => {
-			const command: HighlightCommand = editor.commands.get( 'highlight' )!;
 			const menuView = new MenuBarMenuView( locale );
 
 			menuView.buttonView.set( {
@@ -286,13 +292,15 @@ export default class HighlightUI extends Plugin {
 
 				buttonView.set( {
 					label: option.title,
-					icon: getIconForType( option.type )
+					icon: getIconForType( option.type ),
+					role: 'menuitemradio',
+					isToggleable: true
 				} );
+
+				buttonView.iconView.fillColor = option.color;
 
 				buttonView.delegate( 'execute' ).to( menuView );
 				buttonView.bind( 'isOn' ).to( command, 'value', value => value === option.model );
-				buttonView.bind( 'ariaChecked' ).to( buttonView, 'isOn' );
-				buttonView.iconView.bind( 'fillColor' ).to( buttonView, 'isOn', value => value ? 'transparent' : option.color );
 
 				buttonView.on( 'execute', () => {
 					editor.execute( 'highlight', { value: option.model } );
@@ -311,7 +319,7 @@ export default class HighlightUI extends Plugin {
 
 			buttonView.set( {
 				label: t( 'Remove highlight' ),
-				icon: icons.eraser
+				icon: IconEraser
 			} );
 
 			buttonView.delegate( 'execute' ).to( menuView );
@@ -345,7 +353,7 @@ function bindToolbarIconStyleToActiveColor( dropdownView: DropdownView ): void {
  * Returns icon for given highlighter type.
  */
 function getIconForType( type: 'marker' | 'pen' ) {
-	return type === 'marker' ? markerIcon : penIcon;
+	return type === 'marker' ? IconMarker : IconPen;
 }
 
 type HighlightSplitButtonView = SplitButtonView & {

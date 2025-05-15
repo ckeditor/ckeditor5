@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -10,6 +10,7 @@
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import type { Element, Batch } from 'ckeditor5/src/engine.js';
 import type TableUtils from '../../tableutils.js';
+import { getSelectionAffectedTable } from '../../utils/common.js';
 
 /**
  * The table cell attribute command.
@@ -24,8 +25,20 @@ export default class TableCellPropertyCommand extends Command {
 
 	/**
 	 * The default value for the attribute.
+	 *
+	 * @readonly
 	 */
-	protected readonly _defaultValue: string;
+	protected _defaultValue: string | undefined;
+
+	/**
+	 * The default value for the attribute for the content table.
+	 */
+	private readonly _defaultContentTableValue: string | undefined;
+
+	/**
+	 * The default value for the attribute for the layout table.
+	 */
+	private readonly _defaultLayoutTableValue: string | undefined;
 
 	/**
 	 * Creates a new `TableCellPropertyCommand` instance.
@@ -38,7 +51,25 @@ export default class TableCellPropertyCommand extends Command {
 		super( editor );
 
 		this.attributeName = attributeName;
-		this._defaultValue = defaultValue;
+		this._defaultContentTableValue = defaultValue;
+
+		// Hardcoded defaults for layout table.
+		switch ( attributeName ) {
+			case 'tableCellBorderStyle':
+				this._defaultLayoutTableValue = 'none';
+				break;
+
+			case 'tableCellHorizontalAlignment':
+				this._defaultLayoutTableValue = 'left';
+				break;
+
+			case 'tableCellVerticalAlignment':
+				this._defaultLayoutTableValue = 'middle';
+				break;
+
+			default:
+				this._defaultLayoutTableValue = undefined;
+		}
 	}
 
 	/**
@@ -46,8 +77,15 @@ export default class TableCellPropertyCommand extends Command {
 	 */
 	public override refresh(): void {
 		const editor = this.editor;
+		const selection = editor.model.document.selection;
 		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
-		const selectedTableCells = tableUtils.getSelectionAffectedTableCells( editor.model.document.selection );
+
+		const selectedTableCells = tableUtils.getSelectionAffectedTableCells( selection );
+		const table = getSelectionAffectedTable( selection );
+
+		this._defaultValue = !table || table.getAttribute( 'tableType' ) !== 'layout' ?
+			this._defaultContentTableValue :
+			this._defaultLayoutTableValue;
 
 		this.isEnabled = !!selectedTableCells.length;
 		this.value = this._getSingleValue( selectedTableCells );

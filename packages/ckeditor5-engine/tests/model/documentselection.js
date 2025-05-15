@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals console */
@@ -88,7 +88,7 @@ describe( 'DocumentSelection', () => {
 			expect( count( selection.getAttributes() ) ).to.equal( 0 );
 		} );
 
-		it( 'should skip element when you can not put selection', () => {
+		it( 'should skip element when you cannot put selection', () => {
 			model = new Model();
 			doc = model.document;
 			root = doc.createRoot();
@@ -2179,6 +2179,16 @@ describe( 'DocumentSelection', () => {
 
 			expect( spyRange.calledOnce ).to.be.true;
 		} );
+	} );
+
+	it( 'should throw if one of ranges has invalid position (position not exisitng in current model tree)', () => {
+		expectToThrowCKEditorError( () => {
+			doc.selection._setTo( new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 2, 22 ] ) ) );
+		}, /document-selection-wrong-position/, model );
+
+		expectToThrowCKEditorError( () => {
+			doc.selection._setTo( new Range( new Position( root, [ 1, 22 ] ), new Position( root, [ 2, 0 ] ) ) );
+		}, /document-selection-wrong-position/, model );
 	} );
 
 	it( 'should throw if one of ranges starts or ends inside surrogate pair', () => {

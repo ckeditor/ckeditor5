@@ -5,19 +5,45 @@ meta-title: Highlight | CKEditor 5 Documentation
 
 # Highlight
 
-{@snippet features/build-highlight-source}
-
 The highlight feature lets you mark text fragments with different colors. You can use it both as a marker (to change the background color) and as a pen (to change the text color).
 
 ## Demo
 
-Select the text you want to highlight. Then use the highlight toolbar button {@icon @ckeditor/ckeditor5-highlight/theme/icons/marker.svg Highlight} to choose a desired color from the dropdown.
+Select the text you want to highlight. Then use the highlight toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/marker.svg Highlight} to choose a desired color from the dropdown.
 
 {@snippet features/highlight}
 
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
+
+## Installation
+
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+<code-switcher>
+```js
+import { ClassicEditor, Highlight } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Highlight, /* ... */ ],
+		toolbar: [ 'highlight', /* ... */ ]
+		highlight: {
+			// Configuration.
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+</code-switcher>
 
 ## Configuring the highlight options
 
@@ -36,6 +62,7 @@ For example, the following editor supports two styles (a green marker and a red 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		highlight: {
 			options: [
 				{
@@ -53,10 +80,7 @@ ClassicEditor
 					type: 'pen'
 				}
 			]
-		},
-		toolbar: [
-			'heading', '|', 'bulletedList', 'numberedList', 'highlight', 'undo', 'redo'
-		]
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -71,6 +95,7 @@ Instead of using the (default) `'highlight'` button, the feature also supports a
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		toolbar: {
 			items: [
 				'heading',
@@ -120,6 +145,7 @@ You can use inline color values in the `rgba(R, G, B, A)`, `#RRGGBB[AA]`, or `hs
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		highlight: {
 			options: [
 				{
@@ -144,10 +170,7 @@ ClassicEditor
 					type: 'pen'
 				}
 			]
-		},
-		toolbar: [
-			'heading', '|', 'bulletedList', 'numberedList', 'highlight', 'undo', 'redo'
-		]
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -169,39 +192,10 @@ Then, update the classes in the style sheet so the content corresponds to the UI
 
 {@snippet features/custom-highlight-colors-inline}
 
-## Installation
-
-<info-box info>
-	The highlight feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-highlight`](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight) package:
-
-```bash
-npm install --save @ckeditor/ckeditor5-highlight
-```
-
-And add it to your plugin list and the toolbar configuration:
-
-```js
-import { Highlight } from '@ckeditor/ckeditor5-highlight';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Highlight, /* ... */ ],
-		toolbar: [ 'highlight', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
-
 ## Related features
 
 CKEditor&nbsp;5 has more features that can help you style your content:
+
 * {@link features/style Styles} &ndash; Apply pre-configured styles like highlight or spoiler to existing content elements.
 * {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic*, and others.
 * {@link features/font Font styles} &ndash; Control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.

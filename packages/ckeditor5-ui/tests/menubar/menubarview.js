@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document, console */
@@ -104,6 +104,13 @@ describe( 'MenuBarView', () => {
 
 			it( 'should have an aria-label attribute', () => {
 				expect( menuBarView.template.attributes[ 'aria-label' ] ).to.include.members( [ 'Editor menu bar' ] );
+			} );
+
+			it( 'has `isFocusBorderEnabled` bound to proper class name', () => {
+				menuBarView.isFocusBorderEnabled = true;
+				menuBarView.render();
+
+				expect( menuBarView.element.classList.contains( 'ck-menu-bar_focus-border-enabled' ) ).to.be.true;
 			} );
 		} );
 
@@ -269,6 +276,49 @@ describe( 'MenuBarView', () => {
 								label: 'menuBar:undo',
 								isFocused: false
 							}
+						]
+					}
+				]
+			);
+
+			menuBarView.destroy();
+		} );
+
+		it( 'should correctly process extra menu bar items', () => {
+			const locale = new Locale();
+			const menuBarView = new MenuBarView( locale );
+
+			menuBarView.fillFromConfig( normalizeMenuBarConfig( {
+				items: [
+					{
+						menuId: 'A',
+						label: 'A',
+						groups: [
+							{
+								groupId: 'A1',
+								items: [
+									'item1'
+								]
+							}
+						]
+					}
+				]
+			} ),
+			factory,
+			[
+				{
+					item: 'item2',
+					position: 'after:item1'
+				}
+			] );
+
+			expect( barDump( menuBarView, { fullDump: true } ) ).to.deep.equal(
+				[
+					{
+						label: 'A', isOpen: true, isFocused: false,
+						items: [
+							{ label: 'item1', isFocused: false },
+							{ label: 'item2', isFocused: false }
 						]
 					}
 				]
@@ -2051,6 +2101,14 @@ describe( 'MenuBarView', () => {
 
 			sinon.assert.calledOnceWithExactly( spy, menuBarView );
 		} );
+
+		it( 'should add a behavior that tracks if user performed keyboard focus interaction', () => {
+			const spy = sinon.spy( MenuBarBehaviors, 'enableFocusHighlightOnInteraction' );
+
+			menuBarView.render();
+
+			sinon.assert.calledOnceWithExactly( spy, menuBarView );
+		} );
 	} );
 
 	describe( 'focus()', () => {
@@ -2143,6 +2201,89 @@ describe( 'MenuBarView', () => {
 
 			expect( getMenuByLabel( menuBarView, 'Edit' ).isOpen ).to.be.false;
 			expect( getMenuByLabel( menuBarView, 'Format' ).isOpen ).to.be.false;
+		} );
+	} );
+
+	describe( 'disable()', () => {
+		it( 'should disable all top-level sub-menus', () => {
+			menuBarView.fillFromConfig( normalizeMenuBarConfig( {
+				items: [
+					{
+						menuId: 'edit',
+						label: 'Edit',
+						groups: [
+							{
+								groupId: '1',
+								items: [
+									'item1'
+								]
+							}
+						]
+					},
+					{
+						menuId: 'format',
+						label: 'Format',
+						groups: [
+							{
+								groupId: '1',
+								items: [
+									'item1'
+								]
+							}
+						]
+					}
+				]
+			} ), factory );
+
+			menuBarView.render();
+
+			getMenuByLabel( menuBarView, 'Edit' ).isOpen = true;
+
+			menuBarView.disable();
+
+			expect( getMenuByLabel( menuBarView, 'Edit' ).isEnabled ).to.be.false;
+			expect( getMenuByLabel( menuBarView, 'Format' ).isEnabled ).to.be.false;
+		} );
+	} );
+
+	describe( 'enable()', () => {
+		it( 'should enable all top-level sub-menus', () => {
+			menuBarView.fillFromConfig( normalizeMenuBarConfig( {
+				items: [
+					{
+						menuId: 'edit',
+						label: 'Edit',
+						groups: [
+							{
+								groupId: '1',
+								items: [
+									'item1'
+								]
+							}
+						]
+					},
+					{
+						menuId: 'format',
+						label: 'Format',
+						groups: [
+							{
+								groupId: '1',
+								items: [
+									'item1'
+								]
+							}
+						]
+					}
+				]
+			} ), factory );
+
+			menuBarView.render();
+
+			menuBarView.disable();
+			menuBarView.enable();
+
+			expect( getMenuByLabel( menuBarView, 'Edit' ).isEnabled ).to.be.true;
+			expect( getMenuByLabel( menuBarView, 'Format' ).isEnabled ).to.be.true;
 		} );
 	} );
 

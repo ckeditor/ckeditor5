@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -8,7 +8,7 @@
  */
 
 import type { BoxSides } from 'ckeditor5/src/engine.js';
-import { isObject } from 'lodash-es';
+import { isObject } from 'es-toolkit/compat';
 
 /**
  * Returns a string if all four values of box sides are equal.
@@ -79,23 +79,45 @@ export interface NormalizedDefaultProperties {
 }
 
 /**
+ * Options used to determine which properties should be added to the normalized configuration.
+ */
+export type NormalizeTableDefaultPropertiesOptions = {
+
+	/**
+	 * Whether the "alignment" property should be added.
+	 */
+	includeAlignmentProperty?: boolean;
+
+	/**
+	 * Whether the "padding" property should be added.
+	 */
+	includePaddingProperty?: boolean;
+
+	/**
+	 * Whether the "verticalAlignment" property should be added.
+	 */
+	includeVerticalAlignmentProperty?: boolean;
+
+	/**
+	 * Whether the "horizontalAlignment" property should be added.
+	 */
+	includeHorizontalAlignmentProperty?: boolean;
+
+	/**
+	 * Whether the content is right-to-left.
+	 */
+	isRightToLeftContent?: boolean;
+};
+
+/**
  * Returns the normalized configuration.
  *
- * @param options.includeAlignmentProperty Whether the "alignment" property should be added.
- * @param options.includePaddingProperty Whether the "padding" property should be added.
- * @param options.includeVerticalAlignmentProperty Whether the "verticalAlignment" property should be added.
- * @param options.includeHorizontalAlignmentProperty Whether the "horizontalAlignment" property should be added.
- * @param options.isRightToLeftContent Whether the content is right-to-left.
+ * @param config The configuration to normalize.
+ * @param options Options used to determine which properties should be added.
  */
 export function getNormalizedDefaultProperties(
-	config: Partial<NormalizedDefaultProperties> | undefined,
-	options: {
-		includeAlignmentProperty?: boolean;
-		includePaddingProperty?: boolean;
-		includeVerticalAlignmentProperty?: boolean;
-		includeHorizontalAlignmentProperty?: boolean;
-		isRightToLeftContent?: boolean;
-	} = {}
+	config?: Partial<NormalizedDefaultProperties>,
+	options: NormalizeTableDefaultPropertiesOptions = {}
 ): NormalizedDefaultProperties {
 	const normalizedConfig: NormalizedDefaultProperties = {
 		borderStyle: 'none',
@@ -124,4 +146,44 @@ export function getNormalizedDefaultProperties(
 	}
 
 	return normalizedConfig;
+}
+
+/**
+ * Returns the normalized default table properties.
+ *
+ * @param config The configuration to normalize.
+ * @param options Options used to determine which properties should be added.
+ */
+export function getNormalizedDefaultTableProperties(
+	config?: Partial<NormalizedDefaultProperties>,
+	options?: NormalizeTableDefaultPropertiesOptions
+): NormalizedDefaultProperties {
+	return getNormalizedDefaultProperties( {
+		// It adds support for border none in the table element, keep it in sync with the content styles
+		// See more: https://github.com/ckeditor/ckeditor5/issues/6841#issuecomment-1959195608
+		borderStyle: 'double',
+		borderColor: 'hsl(0, 0%, 70%)',
+		borderWidth: '1px',
+		...config
+	}, options );
+}
+
+/**
+ * Returns the normalized default cell properties.
+ *
+ * @param config The configuration to normalize.
+ * @param options Options used to determine which properties should be added.
+ */
+export function getNormalizedDefaultCellProperties(
+	config?: Partial<NormalizedDefaultProperties>,
+	options?: NormalizeTableDefaultPropertiesOptions
+): NormalizedDefaultProperties {
+	return getNormalizedDefaultProperties( {
+		// It adds support for border none in the table element, keep it in sync with the content styles
+		// See more: https://github.com/ckeditor/ckeditor5/issues/6841#issuecomment-1959195608
+		borderStyle: 'solid',
+		borderColor: 'hsl(0, 0%, 75%)',
+		borderWidth: '1px',
+		...config
+	}, options );
 }

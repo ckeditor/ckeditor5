@@ -1,20 +1,18 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module ui/collapsible/collapsibleview
  */
 
-import type { Locale } from '@ckeditor/ckeditor5-utils';
-
+import { IconDropdownArrow } from '@ckeditor/ckeditor5-icons';
 import View from '../view.js';
 import ButtonView from '../button/buttonview.js';
 import type ViewCollection from '../viewcollection.js';
 import type { FocusableView } from '../focuscycler.js';
-
-import dropdownArrowIcon from '../../theme/icons/dropdown-arrow.svg';
+import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/collapsible/collapsible.css';
 
@@ -136,7 +134,7 @@ export default class CollapsibleView extends View {
 
 		buttonView.set( {
 			withText: true,
-			icon: dropdownArrowIcon
+			icon: IconDropdownArrow
 		} );
 
 		buttonView.extendTemplate( {

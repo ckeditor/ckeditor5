@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
@@ -8,12 +8,13 @@ import LinkCommand from '../src/linkcommand.js';
 import ManualDecorator from '../src/utils/manualdecorator.js';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import AutomaticDecorators from '../src/utils/automaticdecorators.js';
+import LinkEditing from '../src/linkediting.js';
 
 describe( 'LinkCommand', () => {
 	let editor, model, command;
 
 	beforeEach( () => {
-		return ModelTestEditor.create()
+		return ModelTestEditor.create( { plugins: [ LinkEditing ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
@@ -21,7 +22,15 @@ describe( 'LinkCommand', () => {
 
 				model.schema.extend( '$text', {
 					allowIn: '$root',
-					allowAttributes: [ 'linkHref', 'bold' ]
+					allowAttributes: [ 'linkHref', 'bold', 'italic' ]
+				} );
+
+				editor.model.schema.setAttributeProperties( 'bold', {
+					isFormatting: true
+				} );
+
+				editor.model.schema.setAttributeProperties( 'italic', {
+					isFormatting: true
 				} );
 
 				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
@@ -293,6 +302,17 @@ describe( 'LinkCommand', () => {
 				expect( command.value ).to.equal( 'url' );
 			} );
 
+			it( 'should set `linkHref` attribute to selected text and change the selected text', () => {
+				setData( model, 'f[ooba]r' );
+
+				expect( command.value ).to.be.undefined;
+
+				command.execute( 'url', {}, 'xyz' );
+
+				expect( getData( model ) ).to.equal( 'f[<$text linkHref="url">xyz</$text>]r' );
+				expect( command.value ).to.equal( 'url' );
+			} );
+
 			it( 'should set `linkHref` attribute to selected text when text already has attributes', () => {
 				setData( model, 'f[o<$text bold="true">oba]r</$text>' );
 
@@ -361,6 +381,18 @@ describe( 'LinkCommand', () => {
 				expect( command.value ).to.equal( 'url' );
 			} );
 
+			it( 'should overwrite existing `linkHref` attribute and displayed text' +
+					'when whole text with `linkHref` attribute is selected', () => {
+				setData( model, 'fo[<$text linkHref="other url">o</$text>]bar' );
+
+				expect( command.value ).to.equal( 'other url' );
+
+				command.execute( 'url', {}, 'xyz' );
+
+				expect( getData( model ) ).to.equal( 'fo[<$text linkHref="url">xyz</$text>]bar' );
+				expect( command.value ).to.equal( 'url' );
+			} );
+
 			it( 'should set `linkHref` attribute to selected text when text is split by $block element', () => {
 				setData( model, '<paragraph>f[oo</paragraph><paragraph>ba]r</paragraph>' );
 
@@ -372,6 +404,38 @@ describe( 'LinkCommand', () => {
 					'<paragraph>f[<$text linkHref="url">oo</$text></paragraph><paragraph><$text linkHref="url">ba</$text>]r</paragraph>'
 				);
 				expect( command.value ).to.equal( 'url' );
+			} );
+
+			it( 'should update all links which is equal its href if selection is on more than one element', () => {
+				setData( model,
+					'<paragraph>' +
+						'abc<$text linkHref="foo">[foo</$text>' +
+					'</paragraph>' +
+					'<paragraph>' +
+						'<$text linkHref="foo">foo</$text>' +
+					'</paragraph>' +
+					'<paragraph>' +
+						'<$text linkHref="foo">www</$text>' +
+					'</paragraph>' +
+					'<paragraph>baz]xyz</paragraph>'
+				);
+
+				command.execute( 'bar123' );
+
+				expect( getData( model ) ).to.equal(
+					'<paragraph>' +
+						'abc[<$text linkHref="bar123">bar123</$text>' +
+					'</paragraph>' +
+					'<paragraph>' +
+						'<$text linkHref="bar123">bar123</$text>' +
+					'</paragraph>' +
+					'<paragraph>' +
+						'<$text linkHref="bar123">www</$text>' +
+					'</paragraph>' +
+					'<paragraph>' +
+						'<$text linkHref="bar123">baz</$text>]xyz' +
+					'</paragraph>'
+				);
 			} );
 
 			describe( 'for block elements allowing linkHref', () => {
@@ -548,6 +612,87 @@ describe( 'LinkCommand', () => {
 						'</paragraph>'
 					);
 				} );
+
+				it( 'should set `linkHref` attribute to allowed elements and not allow to change the displayed text', () => {
+					model.schema.register( 'linkableInline', {
+						isObject: true,
+						isInline: true,
+						allowWhere: '$text',
+						allowAttributes: [ 'linkHref' ]
+					} );
+
+					setData( model, '<paragraph>f[oo<linkableInline></linkableInline>ba]r</paragraph>' );
+
+					expect( command.value ).to.be.undefined;
+
+					command.execute( 'url', {}, 'xyz' );
+
+					expect( getData( model ) ).to.equal(
+						'<paragraph>' +
+							'f[<$text linkHref="url">oo</$text>' +
+							'<linkableInline linkHref="url"></linkableInline>' +
+							'<$text linkHref="url">ba</$text>]r' +
+						'</paragraph>'
+					);
+
+					expect( command.value ).to.equal( 'url' );
+				} );
+
+				describe( 'keep formatting attributes', () => {
+					it( 'should correctly replace selected text with keeping the text attributes', () => {
+						setData( model, 'foo[<$text bold="true" linkHref="url">textBar</$text>]baz' );
+
+						command.execute( 'url2', {}, 'abc' );
+
+						expect( getData( model ) ).to.equal( 'foo[<$text bold="true" linkHref="url2">abc</$text>]baz' );
+					} );
+
+					it( 'should keep formatting attributes in a partially replaced link text (changed link)', () => {
+						setData( model, 'f<$text linkHref="foo" bold="true">o[ob]a</$text>r' );
+
+						command.execute( 'url', {}, 'xyz' );
+
+						expect( getData( model ) ).to.equal(
+							'f<$text bold="true" linkHref="foo">o</$text>' +
+							'[<$text bold="true" linkHref="url">xyz</$text>]' +
+							'<$text bold="true" linkHref="foo">a</$text>r'
+						);
+					} );
+
+					it( 'should keep formatting attributes in a partially replaced link text (the same link)', () => {
+						setData( model, 'f<$text linkHref="foo" bold="true">o[ob]a</$text>r' );
+
+						command.execute( 'foo', {}, 'xyz' );
+
+						expect( getData( model ) ).to.equal( 'f<$text bold="true" linkHref="foo">o[xyz]a</$text>r' );
+					} );
+
+					it( 'should keep formatting attributes of a entirely deleted link text', () => {
+						setData( model, 'f<$text linkHref="foo" bold="true">[ooba]</$text>r' );
+
+						command.execute( 'url', {}, 'xyz' );
+
+						expect( getData( model ) ).to.equal( 'f[<$text bold="true" linkHref="url">xyz</$text>]r' );
+					} );
+
+					it( 'should not keep selection attributes if link is removed and selection starts on unformatted text', () => {
+						setData( model, 'f[oo<$text linkHref="foo" bold="true">ba</$text>]r' );
+
+						command.execute( 'url', {}, 'xyz' );
+
+						expect( getData( model ) ).to.equal( 'f[<$text linkHref="url">xyz</$text>]r' );
+					} );
+
+					it( 'should preserve the position of formatting attributes in complex text replacement', () => {
+						setData( model, '[<$text linkHref="url">Hello</$text> <$text bold="true" linkHref="url">World</$text>]' );
+
+						command.execute( 'url2', {}, 'Replacement Text' );
+
+						expect( getData( model ) ).to.equal(
+							'[<$text linkHref="url2">Replacement </$text><$text bold="true" linkHref="url2">Text</$text>]'
+						);
+					} );
+				} );
 			} );
 		} );
 
@@ -572,12 +717,12 @@ describe( 'LinkCommand', () => {
 				);
 			} );
 
-			it( 'should update `linkHref` attribute (text with `linkHref` attribute) and put the selection after the node', () => {
+			it( 'should update `linkHref` attribute (text with `linkHref` attribute) and keep the selection as was', () => {
 				setData( model, '<$text linkHref="other url">foo[]bar</$text>' );
 
 				command.execute( 'url' );
 
-				expect( getData( model ) ).to.equal( '<$text linkHref="url">foobar</$text>[]' );
+				expect( getData( model ) ).to.equal( '<$text linkHref="url">foo[]bar</$text>' );
 			} );
 
 			it( 'should not insert text with `linkHref` attribute when is not allowed in parent', () => {
@@ -597,7 +742,7 @@ describe( 'LinkCommand', () => {
 			it( 'should not insert text node if link is empty', () => {
 				setData( model, '<paragraph>foo[]bar</paragraph>' );
 
-				command.execute( '' );
+				command.execute( '', {}, '' );
 
 				expect( getData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 			} );
@@ -612,17 +757,244 @@ describe( 'LinkCommand', () => {
 
 				expect( getData( model ) ).to.equal( '<$text linkHref="url">foourl</$text>[]bar' );
 			} );
+
+			it( 'should overwrite existing `linkHref` attribute and displayed text', () => {
+				setData( model, 'fo<$text linkHref="other url">o[]b</$text>ar' );
+
+				expect( command.value ).to.equal( 'other url' );
+
+				command.execute( 'url', {}, 'xyz' );
+
+				expect( getData( model ) ).to.equal( 'fo<$text linkHref="url">xyz</$text>[]ar' );
+			} );
+
+			describe( 'keep formatting attributes (with TwoStepCaretMovement plugin available)', () => {
+				it( 'should maintain all formatting when changing only text inside a link', () => {
+					setData( model, 'foo<$text bold="true" linkHref="url" italic="true">te[]xt</$text>bar' );
+
+					command.execute( 'url', {}, 'new text' );
+
+					expect( getData( model ) ).to.equal(
+						'foo<$text bold="true" italic="true" linkHref="url">new text</$text>[]bar'
+					);
+				} );
+
+				it( 'should preserve mixed formatting before and after link text change', () => {
+					setData( model,
+						'foo' +
+						'<$text bold="true" linkHref="url">bo[]ld</$text>' +
+						'<$text italic="true" linkHref="url">italic</$text>' +
+						'bar'
+					);
+
+					command.execute( 'url', {}, 'new text' );
+
+					expect( getData( model ) ).to.equal(
+						'foo<$text bold="true" linkHref="url">new </$text>' +
+						'<$text italic="true" linkHref="url">text</$text>' +
+						'[]bar'
+					);
+				} );
+
+				it( 'should keep formatting attributes when changing URL but keeping the same text', () => {
+					setData( model, 'foo<$text bold="true" linkHref="url" italic="true">te[]xt</$text>bar' );
+
+					command.execute( 'url2' );
+
+					expect( getData( model ) ).to.equal(
+						'foo<$text bold="true" italic="true" linkHref="url2">te[]xt</$text>bar'
+					);
+				} );
+
+				it( 'should properly handle adjacent text nodes with different formatting', () => {
+					setData( model,
+						'foo' +
+						'<$text bold="true" linkHref="url">bold</$text>' +
+						'<$text italic="true" linkHref="url">ita[]lic</$text>' +
+						'bar'
+					);
+
+					command.execute( 'url', {}, 'new' );
+
+					expect( getData( model ) ).to.equal(
+						'foo<$text bold="true" linkHref="url">new</$text>[]bar'
+					);
+				} );
+
+				it( 'should update link range in text with mixed formatting attributes', () => {
+					setData( model,
+						'foo' +
+						'<$text bold="true">bo</$text>' +
+						'<$text bold="true" linkHref="url">ld []text</$text>' +
+						'<$text italic="true" linkHref="url">in link</$text>' +
+						'bar'
+					);
+
+					command.execute( 'url2', {}, 'replacement' );
+
+					expect( getData( model ) ).to.equal(
+						'foo<$text bold="true">bo</$text>' +
+						'<$text bold="true" linkHref="url2">replaceme</$text>' +
+						'<$text italic="true" linkHref="url2">nt</$text>' +
+						'[]bar'
+					);
+				} );
+
+				it( 'should be possible to prepend single character to the display text of the link' +
+					'if the selection is in the middle', () => {
+					setData( model, '<$text linkHref="url" bold="true">Lin[]k text</$text>' );
+
+					command.execute( 'url', {}, 'LLink text' );
+
+					expect( getData( model ) ).to.equal( '<$text bold="true" linkHref="url">LLink text</$text>[]' );
+				} );
+
+				it( 'should be possible to prepend single character to the display text of the link' +
+					'if the selection is in the end', () => {
+					setData( model, '<$text linkHref="url" bold="true">Link text[]</$text>' );
+
+					command.execute( 'url', {}, 'LLink text' );
+
+					expect( getData( model ) ).to.equal( '<$text bold="true" linkHref="url">LLink text</$text>[]' );
+				} );
+
+				it( 'should be possible to append single character to the display text of the link' +
+					'if the selection is in the middle', () => {
+					setData( model, '<$text linkHref="url" bold="true">Lin[]k text</$text>' );
+
+					command.execute( 'url', {}, 'Link textL' );
+
+					expect( getData( model ) ).to.equal( '<$text bold="true" linkHref="url">Link textL</$text>[]' );
+				} );
+
+				it( 'should be possible to append single character to the display text of the link' +
+					'if the selection is in the start', () => {
+					setData( model, '<$text linkHref="url" bold="true">[]Link text</$text>' );
+
+					command.execute( 'url', {}, 'LLink text' );
+
+					expect( getData( model ) ).to.equal( '<$text bold="true" linkHref="url">LLink text</$text>[]' );
+				} );
+			} );
+
+			describe( 'keep formatting attributes (without TwoStepCaretMovement plugin)', () => {
+				beforeEach( async () => {
+					await editor.destroy();
+
+					return ModelTestEditor.create()
+						.then( newEditor => {
+							editor = newEditor;
+							model = editor.model;
+							command = new LinkCommand( editor );
+
+							model.schema.extend( '$text', {
+								allowIn: '$root',
+								allowAttributes: [ 'linkHref', 'bold', 'italic' ]
+							} );
+
+							editor.model.schema.setAttributeProperties( 'bold', {
+								isFormatting: true
+							} );
+
+							editor.model.schema.setAttributeProperties( 'italic', {
+								isFormatting: true
+							} );
+
+							model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+						} );
+				} );
+
+				afterEach( () => {
+					return editor.destroy();
+				} );
+
+				it( 'should maintain all formatting when changing only text inside a link', () => {
+					setData( model, 'foo<$text bold="true" linkHref="url" italic="true">te[]xt</$text>bar' );
+
+					command.execute( 'url', {}, 'new text' );
+
+					expect( getData( model ) ).to.equal(
+						'foo<$text bold="true" italic="true" linkHref="url">new text</$text>' +
+						'<$text bold="true" italic="true">[]</$text>bar'
+					);
+				} );
+
+				it( 'should preserve mixed formatting before and after link text change', () => {
+					setData( model,
+						'foo' +
+						'<$text bold="true" linkHref="url">bo[]ld</$text>' +
+						'<$text italic="true" linkHref="url">italic</$text>' +
+						'bar'
+					);
+
+					command.execute( 'url', {}, 'new text' );
+
+					expect( getData( model ) ).to.equal(
+						'foo<$text bold="true" linkHref="url">new </$text>' +
+						'<$text italic="true" linkHref="url">text</$text>' +
+						'<$text italic="true">[]</$text>' +
+						'bar'
+					);
+				} );
+
+				it( 'should keep formatting attributes when changing URL but keeping the same text', () => {
+					setData( model, 'foo<$text bold="true" linkHref="url" italic="true">te[]xt</$text>bar' );
+
+					command.execute( 'url2' );
+
+					expect( getData( model ) ).to.equal(
+						'foo<$text bold="true" italic="true" linkHref="url2">te[]xt</$text>bar'
+					);
+				} );
+
+				it( 'should properly handle adjacent text nodes with different formatting', () => {
+					setData( model,
+						'foo' +
+						'<$text bold="true" linkHref="url">bold</$text>' +
+						'<$text italic="true" linkHref="url">ita[]lic</$text>' +
+						'bar'
+					);
+
+					command.execute( 'url', {}, 'new' );
+
+					expect( getData( model ) ).to.equal(
+						'foo<$text bold="true" linkHref="url">new</$text>' +
+						'<$text bold="true">[]</$text>' +
+						'bar'
+					);
+				} );
+
+				it( 'should update link range in text with mixed formatting attributes', () => {
+					setData( model,
+						'foo' +
+						'<$text bold="true">bo</$text>' +
+						'<$text bold="true" linkHref="url">ld []text</$text>' +
+						'<$text italic="true" linkHref="url">in link</$text>' +
+						'bar'
+					);
+
+					command.execute( 'url2', {}, 'replacement' );
+
+					expect( getData( model ) ).to.equal(
+						'foo<$text bold="true">bo</$text>' +
+						'<$text bold="true" linkHref="url2">replaceme</$text>' +
+						'<$text italic="true" linkHref="url2">nt</$text>' +
+						'<$text italic="true">[]</$text>' +
+						'bar'
+					);
+				} );
+			} );
 		} );
 	} );
 
 	describe( 'manual decorators', () => {
-		beforeEach( () => {
-			editor.destroy();
-			return ModelTestEditor.create()
+		beforeEach( async () => {
+			await editor.destroy();
+			return ModelTestEditor.create( { plugins: [ LinkEditing ] } )
 				.then( newEditor => {
 					editor = newEditor;
-					model = editor.model;
-					command = new LinkCommand( editor );
+					model = newEditor.model;
+					command = new LinkCommand( newEditor );
 
 					command.manualDecorators.add( new ManualDecorator( {
 						id: 'linkIsFoo',
@@ -690,7 +1062,7 @@ describe( 'LinkCommand', () => {
 				command.execute( 'url', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
 
 				expect( getData( model ) ).to
-					.equal( 'f<$text linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="true">ooba</$text>[]r' );
+					.equal( 'f<$text linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="true">o[]oba</$text>r' );
 			} );
 
 			it( 'should remove additional attributes to link if those are falsy', () => {
@@ -698,7 +1070,7 @@ describe( 'LinkCommand', () => {
 
 				command.execute( 'url', { linkIsFoo: false, linkIsBar: false } );
 
-				expect( getData( model ) ).to.equal( 'foo<$text linkHref="url">url</$text>[]bar' );
+				expect( getData( model ) ).to.equal( 'foo<$text linkHref="url">u[]rl</$text>bar' );
 			} );
 
 			it( 'should update content if href is equal to content', () => {
@@ -768,7 +1140,7 @@ describe( 'LinkCommand', () => {
 				);
 			} );
 
-			it( 'should update content if href is equal to content', () => {
+			it( 'should not update content even if href is equal to content', () => {
 				setData( model, '[<$text linkHref="url">url</$text>]' );
 
 				command.execute( 'url2', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
@@ -806,30 +1178,6 @@ describe( 'LinkCommand', () => {
 
 				expect( getData( model ) ).to
 					.equal( '[<$text linkHref="url2">url2</$text>]' );
-			} );
-
-			it( 'should not update link which is equal its href if selection is on more than one element', () => {
-				setData( model,
-					'<paragraph>' +
-						'<$text linkHref="foo">[foo</$text>' +
-					'</paragraph>' +
-					'<paragraph>bar</paragraph>' +
-					'<paragraph>baz]</paragraph>'
-				);
-
-				command.execute( 'foooo' );
-
-				expect( getData( model ) ).to
-					.equal( '<paragraph>' +
-								'[<$text linkHref="foooo">foo</$text>' +
-							'</paragraph>' +
-							'<paragraph>' +
-								'<$text linkHref="foooo">bar</$text>' +
-							'</paragraph>' +
-							'<paragraph>' +
-								'<$text linkHref="foooo">baz</$text>]' +
-							'</paragraph>'
-					);
 			} );
 		} );
 

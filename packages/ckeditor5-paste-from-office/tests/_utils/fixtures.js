@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 // Import fixtures.
@@ -17,6 +17,7 @@ import { fixtures as pageBreak } from '../_data/page-break/index.js';
 import { fixtures as fontWithoutTableProperties } from '../_data/font-without-table-properties/index.js';
 import { fixtures as googleDocsBrParagraphs } from '../_data/paste-from-google-docs/br-paragraph/index.js';
 import { fixtures as smartTags } from '../_data/other/index.js';
+import { fixtures as bookmark } from '../_data/bookmark/index.js';
 
 // Generic fixtures.
 export const generic = {
@@ -31,7 +32,8 @@ export const generic = {
 	table,
 	'page-break': pageBreak,
 	'font-without-table-properties': fontWithoutTableProperties,
-	'smart-tags': smartTags
+	'smart-tags': smartTags,
+	bookmark
 };
 
 // Browser specific fixtures.

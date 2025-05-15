@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document, console */
@@ -9,7 +9,9 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import FontColorEditing from '@ckeditor/ckeditor5-font/src/fontcolor/fontcolorediting.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard';
 import DataFilter from '../src/datafilter.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -48,6 +50,14 @@ describe( 'DataFilter', () => {
 		editorElement.remove();
 
 		return editor.destroy();
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( DataFilter.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( DataFilter.isPremiumPlugin ).to.be.false;
 	} );
 
 	describe( 'initialization', () => {
@@ -473,6 +483,27 @@ describe( 'DataFilter', () => {
 			);
 		} );
 
+		it( 'should allow empty element', () => {
+			dataFilter.allowElement( 'hr' );
+
+			editor.setData( '<hr>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<htmlHr></htmlHr>'
+			);
+
+			expect( editor.getData() ).to.equal( '<hr>' );
+
+			expect( getViewData( editor.editing.view, {
+				withoutSelection: true,
+				renderRawElements: true,
+				showType: true,
+				domConverter: editor.editing.view.domConverter
+			} ) ).to.equal(
+				'<empty:hr></empty:hr>'
+			);
+		} );
+
 		it( 'should allow attributes', () => {
 			dataFilter.allowElement( 'section' );
 			dataFilter.allowAttributes( {
@@ -497,6 +528,24 @@ describe( 'DataFilter', () => {
 
 			expect( editor.getData() ).to.equal(
 				'<section data-foo="foobar"><p>foobar</p></section>'
+			);
+		} );
+
+		it( 'should allow attributes (empty attributes match)', () => {
+			dataFilter.allowElement( 'section' );
+			dataFilter.allowAttributes( {
+				name: 'section'
+			} );
+
+			editor.setData( '<section data-foo="foobar"><p>foobar</p></section>' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<htmlSection><paragraph>foobar</paragraph></htmlSection>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<section><p>foobar</p></section>'
 			);
 		} );
 
@@ -856,6 +905,28 @@ describe( 'DataFilter', () => {
 			editor.setData( '<xyz>foo</xyz>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>foo</paragraph>' );
+		} );
+
+		it( 'should not register converters for non registered builtin features (register only fallbacks)', () => {
+			// Builtin feature - only additional attributed.
+			dataSchema.registerBlockElement( {
+				model: 'xyz',
+				view: 'xyz'
+			} );
+			// GHS - element and attributes.
+			dataSchema.registerBlockElement( {
+				model: 'htmlXyz',
+				view: 'xyz',
+				modelSchema: { inheritAllFrom: '$block' }
+			} );
+
+			dataFilter.allowElement( 'xyz' );
+
+			editor.setData( '<xyz>foo</xyz>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<htmlXyz>foo</htmlXyz>' );
+			expect( model.schema.isRegistered( 'xyz' ), 'xyz' ).to.be.false;
+			expect( model.schema.isRegistered( 'htmlXyz' ), 'htmlXyz' ).to.be.true;
 		} );
 
 		it( 'should not register view converters for existing features if a view has not been provided', () => {
@@ -1573,6 +1644,290 @@ describe( 'DataFilter', () => {
 			} );
 
 			expect( editor.getData() ).to.equal( '<p>foo &nbsp;bar</p>' );
+		} );
+
+		describe( 'remove element on removal all of attributes', () => {
+			it( 'should remove htmlEmptyElement when all html* attributes are removed', () => {
+				dataFilter.allowEmptyElement( 'i' );
+				dataFilter.allowElement( 'i' );
+				dataFilter.allowAttributes( { name: 'i', classes: true } );
+
+				editor.setData( '<p>foo<i class="a"></i>bar</p>' );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foo<htmlEmptyElement htmlI="(1)"></htmlEmptyElement>bar</paragraph>',
+					attributes: {
+						1: {
+							classes: [ 'a' ]
+						}
+					}
+				} );
+
+				model.change( writer => {
+					const paragraph = model.document.getRoot().getChild( 0 );
+					const htmlEmptyElement = paragraph.getChild( 1 );
+
+					writer.removeAttribute( 'htmlI', htmlEmptyElement );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foobar</paragraph>',
+					attributes: {}
+				} );
+
+				expect( editor.getData() ).to.equal( '<p>foobar</p>' );
+			} );
+
+			it( 'should not remove htmlEmptyElement when it still has html* attributes', () => {
+				dataFilter.allowEmptyElement( 'i' );
+				dataFilter.allowElement( 'i' );
+				dataFilter.allowElement( 'span' );
+
+				dataFilter.allowAttributes( { name: 'i', classes: true } );
+				dataFilter.allowAttributes( { name: 'span', classes: true } );
+
+				editor.setData( '<p>foo<i class="a"></i>bar</p>' );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foo<htmlEmptyElement htmlI="(1)"></htmlEmptyElement>bar</paragraph>',
+					attributes: {
+						1: {
+							classes: [ 'a' ]
+						}
+					}
+				} );
+
+				model.change( writer => {
+					const paragraph = model.document.getRoot().getChild( 0 );
+					const htmlEmptyElement = paragraph.getChild( 1 );
+
+					writer.removeAttribute( 'htmlI', htmlEmptyElement );
+					writer.setAttribute( 'htmlSpan', { classes: [ 'b' ] }, htmlEmptyElement );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foo<htmlEmptyElement htmlSpan="(1)"></htmlEmptyElement>bar</paragraph>',
+					attributes: {
+						1: {
+							classes: [ 'b' ]
+						}
+					}
+				} );
+			} );
+
+			it( 'should not affect elements other than htmlEmptyElement when removing html* attributes', () => {
+				dataFilter.allowEmptyElement( 'i' );
+				dataFilter.allowElement( 'i' );
+				dataFilter.allowAttributes( { name: 'i', classes: true } );
+
+				editor.setData( '<p><i class="a">foo</i><i></i></p>' );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph><$text htmlI="(1)">foo</$text></paragraph>',
+					attributes: {
+						1: {
+							classes: [ 'a' ]
+						}
+					}
+				} );
+
+				model.change( writer => {
+					const paragraph = model.document.getRoot().getChild( 0 );
+					const textNode = paragraph.getChild( 0 );
+
+					writer.removeAttribute( 'htmlI', textNode );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foo</paragraph>',
+					attributes: {}
+				} );
+
+				expect( editor.getData() ).to.equal( '<p>foo</p>' );
+			} );
+
+			it( 'should not affect elements other than htmlEmptyElement when removing non-html attributes', () => {
+				dataFilter.allowEmptyElement( 'i' );
+				dataFilter.allowElement( 'i' );
+
+				dataFilter.allowElement( 'p' );
+				dataFilter.allowAttributes( { name: 'p', attributes: { 'data-foo': 'foo' } } );
+
+				editor.setData( '<p>foo<i></i></p>' );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foo</paragraph>',
+					attributes: {}
+				} );
+
+				const paragraph = model.document.getRoot().getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'myAttribute', 'value', paragraph );
+				} );
+
+				model.change( writer => {
+					writer.removeAttribute( 'myAttribute', paragraph );
+				} );
+
+				expect( editor.getData() ).to.equal( '<p>foo</p>' );
+			} );
+
+			it( 'should handle multiple html* attributes on htmlEmptyElement', () => {
+				dataFilter.allowEmptyElement( 'i' );
+				dataFilter.allowElement( 'i' );
+				dataFilter.allowAttributes( { name: 'i', classes: true } );
+				dataFilter.allowElement( 'span' );
+				dataFilter.allowAttributes( { name: 'span', classes: true } );
+
+				editor.setData( '<p>foo<i class="a"></i>bar</p>' );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foo<htmlEmptyElement htmlI="(1)"></htmlEmptyElement>bar</paragraph>',
+					attributes: {
+						1: {
+							classes: [ 'a' ]
+						}
+					}
+				} );
+
+				model.change( writer => {
+					const paragraph = model.document.getRoot().getChild( 0 );
+					const htmlEmptyElement = paragraph.getChild( 1 );
+
+					writer.setAttribute( 'htmlSpan', { classes: [ 'b' ] }, htmlEmptyElement );
+				} );
+
+				model.change( writer => {
+					const paragraph = model.document.getRoot().getChild( 0 );
+					const htmlEmptyElement = paragraph.getChild( 1 );
+
+					writer.removeAttribute( 'htmlI', htmlEmptyElement );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foo<htmlEmptyElement htmlSpan="(1)"></htmlEmptyElement>bar</paragraph>',
+					attributes: {
+						1: {
+							classes: [ 'b' ]
+						}
+					}
+				} );
+
+				model.change( writer => {
+					const paragraph = model.document.getRoot().getChild( 0 );
+					const htmlEmptyElement = paragraph.getChild( 1 );
+
+					writer.removeAttribute( 'htmlSpan', htmlEmptyElement );
+				} );
+
+				expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+					data: '<paragraph>foobar</paragraph>',
+					attributes: {}
+				} );
+
+				expect( editor.getData() ).to.equal( '<p>foobar</p>' );
+			} );
+		} );
+
+		it( 'should not insert empty element if has no attributes', async () => {
+			await editor.destroy();
+
+			editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ Bold, Paragraph, FontColorEditing, LinkEditing, GeneralHtmlSupport, Clipboard ]
+			} );
+
+			model = editor.model;
+
+			dataFilter = editor.plugins.get( 'DataFilter' );
+			dataSchema = editor.plugins.get( 'DataSchema' );
+			htmlSupport = editor.plugins.get( 'GeneralHtmlSupport' );
+
+			const schema = editor.model.schema;
+
+			dataFilter.allowEmptyElement( 'span' );
+			dataFilter.allowElement( 'span' );
+			dataFilter.allowAttributes( { name: 'span', classes: true } );
+
+			schema.register( 'constrainedBox', {
+				isBlock: true,
+				isObject: true,
+				allowIn: '$root',
+				allowChildren: [ 'paragraph' ]
+			} );
+
+			const allowedAttributes = [ 'bold' ];
+			schema.addAttributeCheck( ( context, attributeName ) => {
+				const names = Array.from( context.getNames() );
+				if ( names.includes( 'constrainedBox' ) ) {
+					return allowedAttributes.includes( attributeName );
+				}
+			} );
+
+			editor.conversion.for( 'upcast' ).elementToElement( {
+				view: {
+					name: 'div',
+					classes: 'constrained-box'
+				},
+				model: ( viewElement, { writer } ) => {
+					return writer.createElement( 'constrainedBox', {}, [] );
+				}
+			} );
+
+			editor.conversion.for( 'dataDowncast' ).elementToElement( {
+				model: 'constrainedBox',
+				view: ( modelElement, { writer } ) => {
+					return writer.createContainerElement( 'div', {
+						class: 'constrained-box'
+					} );
+				}
+			} );
+
+			editor.conversion.for( 'editingDowncast' ).elementToElement( {
+				model: 'constrainedBox',
+				view: ( modelElement, { writer } ) => {
+					return writer.createContainerElement( 'div', {
+						class: 'constrained-box',
+						style: 'padding: 1em; border: thin solid grey'
+					} );
+				}
+			} );
+
+			editor.setData(
+				'<div class="constrained-box"><p><b>ABC</b><span class="test"></span><span class="test"></span></p></div>' +
+				'<p><b>ABC</b><span class="test"></span></p>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<constrainedBox><paragraph><$text bold="true">ABC</$text></paragraph></constrainedBox>' +
+					'<paragraph><$text bold="true">ABC</$text><htmlEmptyElement htmlSpan="(1)"></htmlEmptyElement></paragraph>',
+				attributes: {
+					1: {
+						classes: [ 'test' ]
+					}
+				}
+			} );
+
+			const dataTransferMock = createDataTransfer( {
+				'text/html': '<p>A <span class="test"></span> b</p>'
+			} );
+
+			editor.model.change( writer => {
+				writer.setSelection( model.document.getRoot().getChild( 0 ).getChild( 0 ), 0 );
+			} );
+
+			editor.editing.view.document.fire( 'paste', {
+				dataTransfer: dataTransferMock,
+				preventDefault: () => {},
+				stopPropagation: () => {},
+				method: 'paste'
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<div class="constrained-box"><p>A &nbsp;b<strong>ABC</strong></p></div>' +
+				'<p><strong>ABC</strong><span class="test"></span></p>'
+			);
 		} );
 	} );
 
@@ -5470,3 +5825,17 @@ describe( 'DataFilter', () => {
 		} );
 	} );
 } );
+
+function createDataTransfer( data = {} ) {
+	const store = Object.create( data );
+
+	return {
+		setData( type, data ) {
+			store[ type ] = data;
+		},
+
+		getData( type ) {
+			return store[ type ];
+		}
+	};
+}

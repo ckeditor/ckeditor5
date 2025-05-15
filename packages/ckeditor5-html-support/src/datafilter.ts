@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -17,7 +17,9 @@ import {
 	type ViewElement,
 	type ViewConsumable,
 	type MatcherObjectPattern,
-	type DocumentSelectionChangeAttributeEvent
+	type DocumentSelectionChangeAttributeEvent,
+	type Element,
+	type Item
 } from 'ckeditor5/src/engine.js';
 
 import {
@@ -53,7 +55,7 @@ import {
 	type GHSViewAttributes
 } from './utils.js';
 
-import { isPlainObject } from 'lodash-es';
+import { isPlainObject } from 'es-toolkit/compat';
 
 import '../theme/datafilter.css';
 
@@ -151,6 +153,13 @@ export default class DataFilter extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'DataFilter' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 
 	/**
@@ -669,6 +678,12 @@ export default class DataFilter extends Plugin {
 		const { view: viewName, model: modelName } = definition;
 
 		if ( !schema.isRegistered( definition.model ) ) {
+			// Do not register converters and empty schema for editor existing feature
+			// as empty schema won't allow element anywhere in the model.
+			if ( !definition.modelSchema ) {
+				return;
+			}
+
 			schema.register( definition.model, definition.modelSchema );
 
 			if ( !viewName ) {
@@ -686,7 +701,9 @@ export default class DataFilter extends Plugin {
 
 			conversion.for( 'downcast' ).elementToElement( {
 				model: modelName,
-				view: viewName
+				view: ( modelElement, { writer } ) => definition.isEmpty ?
+					writer.createEmptyElement( viewName ) :
+					writer.createContainerElement( viewName )
 			} );
 		}
 
@@ -742,6 +759,52 @@ export default class DataFilter extends Plugin {
 		if ( !schema.isRegistered( 'htmlEmptyElement' ) ) {
 			schema.register( 'htmlEmptyElement', {
 				inheritAllFrom: '$inlineObject'
+			} );
+
+			// Helper function to check if an element has any HTML attributes.
+			const hasHtmlAttributes = ( element: Element | Item ): boolean =>
+				Array
+					.from( element.getAttributeKeys() )
+					.some( key => key.startsWith( 'html' ) );
+
+			// Register a post-fixer that removes htmlEmptyElement when its htmlXX attribute is removed.
+			// See: https://github.com/ckeditor/ckeditor5/issues/18089
+			editor.model.document.registerPostFixer( writer => {
+				const changes = editor.model.document.differ.getChanges();
+				const elementsToRemove = new Set<Element>();
+
+				for ( const change of changes ) {
+					if ( change.type === 'remove' ) {
+						continue;
+					}
+
+					// Look for removal of html* attributes.
+					if ( change.type === 'attribute' && change.attributeNewValue === null ) {
+						// Find htmlEmptyElement instances in the range that lost their html attribute.
+						for ( const { item } of change.range ) {
+							if ( item.is( 'element', 'htmlEmptyElement' ) && !hasHtmlAttributes( item ) ) {
+								elementsToRemove.add( item );
+							}
+						}
+					}
+
+					// Look for insertion of htmlEmptyElement.
+					if ( change.type === 'insert' && change.position.nodeAfter ) {
+						const insertedElement = change.position.nodeAfter;
+
+						for ( const { item } of writer.createRangeOn( insertedElement ) ) {
+							if ( item.is( 'element', 'htmlEmptyElement' ) && !hasHtmlAttributes( item ) ) {
+								elementsToRemove.add( item );
+							}
+						}
+					}
+				}
+
+				for ( const element of elementsToRemove ) {
+					writer.remove( element );
+				}
+
+				return elementsToRemove.size > 0;
 			} );
 		}
 
@@ -827,39 +890,43 @@ function matchAndConsumeAttributes(
 	const stylesProcessor = viewElement.document.stylesProcessor;
 
 	return matches.reduce( ( result, { match } ) => {
-		// Verify and consume styles.
-		for ( const style of match.styles || [] ) {
-			// Check longer forms of the same style as those could be matched
-			// but not present in the element directly.
-			// Consider only longhand (or longer than current notation) so that
-			// we do not include all sides of the box if only one side is allowed.
-			const sortedRelatedStyles = stylesProcessor.getRelatedStyles( style )
-				.filter( relatedStyle => relatedStyle.split( '-' ).length > style.split( '-' ).length )
-				.sort( ( a, b ) => b.split( '-' ).length - a.split( '-' ).length );
+		for ( const [ key, token ] of match.attributes || [] ) {
+			// Verify and consume styles.
+			if ( key == 'style' ) {
+				const style = token!;
 
-			for ( const relatedStyle of sortedRelatedStyles ) {
-				if ( consumable.consume( viewElement, { styles: [ relatedStyle ] } ) ) {
-					result.styles.push( relatedStyle );
+				// Check longer forms of the same style as those could be matched
+				// but not present in the element directly.
+				// Consider only longhand (or longer than current notation) so that
+				// we do not include all sides of the box if only one side is allowed.
+				const sortedRelatedStyles = stylesProcessor.getRelatedStyles( style )
+					.filter( relatedStyle => relatedStyle.split( '-' ).length > style.split( '-' ).length )
+					.sort( ( a, b ) => b.split( '-' ).length - a.split( '-' ).length );
+
+				for ( const relatedStyle of sortedRelatedStyles ) {
+					if ( consumable.consume( viewElement, { styles: [ relatedStyle ] } ) ) {
+						result.styles.push( relatedStyle );
+					}
+				}
+
+				// Verify and consume style as specified in the matcher.
+				if ( consumable.consume( viewElement, { styles: [ style ] } ) ) {
+					result.styles.push( style );
 				}
 			}
+			// Verify and consume class names.
+			else if ( key == 'class' ) {
+				const className = token!;
 
-			// Verify and consume style as specified in the matcher.
-			if ( consumable.consume( viewElement, { styles: [ style ] } ) ) {
-				result.styles.push( style );
+				if ( consumable.consume( viewElement, { classes: [ className ] } ) ) {
+					result.classes.push( className );
+				}
 			}
-		}
-
-		// Verify and consume class names.
-		for ( const className of match.classes || [] ) {
-			if ( consumable.consume( viewElement, { classes: [ className ] } ) ) {
-				result.classes.push( className );
-			}
-		}
-
-		// Verify and consume other attributes.
-		for ( const attributeName of match.attributes || [] ) {
-			if ( consumable.consume( viewElement, { attributes: [ attributeName ] } ) ) {
-				result.attributes.push( attributeName );
+			else {
+				// Verify and consume other attributes.
+				if ( consumable.consume( viewElement, { attributes: [ key ] } ) ) {
+					result.attributes.push( key );
+				}
 			}
 		}
 

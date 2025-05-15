@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -8,7 +8,8 @@
  */
 
 import { createUIComponents } from './utils.js';
-import { icons, Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { IconBulletedList, IconNumberedList } from 'ckeditor5/src/icons.js';
 
 /**
  * The list UI feature. It introduces the `'numberedList'` and `'bulletedList'` buttons that
@@ -25,17 +26,24 @@ export default class ListUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const t = this.editor.t;
 
 		// Create button numberedList.
 		if ( !this.editor.ui.componentFactory.has( 'numberedList' ) ) {
-			createUIComponents( this.editor, 'numberedList', t( 'Numbered List' ), icons.numberedList );
+			createUIComponents( this.editor, 'numberedList', t( 'Numbered List' ), IconNumberedList );
 		}
 
 		// Create button bulletedList.
 		if ( !this.editor.ui.componentFactory.has( 'bulletedList' ) ) {
-			createUIComponents( this.editor, 'bulletedList', t( 'Bulleted List' ), icons.bulletedList );
+			createUIComponents( this.editor, 'bulletedList', t( 'Bulleted List' ), IconBulletedList );
 		}
 	}
 }

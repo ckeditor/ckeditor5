@@ -1,0 +1,68 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-bookmark-icon-hover-fill-color: var(--ck-color-widget-hover-border);
+	--ck-bookmark-icon-selected-fill-color: var(--ck-color-focus-border);
+	--ck-bookmark-icon-animation-duration: var(--ck-widget-handler-animation-duration);
+	--ck-bookmark-icon-animation-curve: var(--ck-widget-handler-animation-curve);
+}
+
+.ck .ck-bookmark {
+	&.ck-widget {
+		display: inline-block;
+		outline: none;
+
+		& .ck-bookmark__icon .ck-icon__fill {
+			transition: fill var(--ck-bookmark-icon-animation-duration) var(--ck-bookmark-icon-animation-curve);
+		}
+
+		&:hover {
+			& .ck-bookmark__icon .ck-icon__fill {
+				fill: var(--ck-bookmark-icon-hover-fill-color);
+			}
+		}
+
+		&.ck-widget_selected {
+			.ck-bookmark__icon .ck-icon__fill {
+				fill: var(--ck-bookmark-icon-selected-fill-color);
+			}
+		}
+
+		&.ck-widget_selected,
+		&.ck-widget_selected:hover {
+			outline: none;
+		}
+
+		& .ck-bookmark__icon {
+			position: relative;
+			display: block;
+			/* To make it align with text baseline. */
+			top: -0.1em;
+
+			& .ck-icon {
+				height: 1.2em;
+				width: auto;
+				vertical-align: middle;
+			}
+		}
+	}
+}
+
+/*
+ * Classes used by the "fake visual selection" displayed in the content when an input
+ * in the bookmark UI has focus (the browser does not render the native selection in this state).
+ */
+.ck .ck-fake-bookmark-selection {
+	background: var(--ck-color-link-fake-selection);
+}
+
+/* A collapsed fake visual selection. */
+.ck .ck-fake-bookmark-selection_collapsed {
+	height: 100%;
+	border-right: 1px solid var(--ck-color-base-text);
+	margin-right: -1px;
+	outline: solid 1px hsla(0, 0%, 100%, .5);
+}

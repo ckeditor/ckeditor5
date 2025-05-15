@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -8,9 +8,9 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
+import { IconShowBlocks } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 
-import showBlocksIcon from '../theme/icons/show-blocks.svg';
 import '../theme/showblocks.css';
 
 /**
@@ -30,6 +30,13 @@ export default class ShowBlocksUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const editor = this.editor;
 
@@ -38,7 +45,7 @@ export default class ShowBlocksUI extends Plugin {
 
 			buttonView.set( {
 				tooltip: true,
-				icon: showBlocksIcon
+				icon: IconShowBlocks
 			} );
 
 			return buttonView;
@@ -52,7 +59,7 @@ export default class ShowBlocksUI extends Plugin {
 	/**
 	 * Creates a button for show blocks command to use either in toolbar or in menu bar.
 	 */
-	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
+	private _createButton<T extends typeof ButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const command = editor.commands.get( 'showBlocks' )!;
@@ -60,7 +67,9 @@ export default class ShowBlocksUI extends Plugin {
 		const t = locale.t;
 
 		view.set( {
-			label: t( 'Show blocks' )
+			label: t( 'Show blocks' ),
+			isToggleable: true,
+			role: 'menuitemcheckbox'
 		} );
 
 		view.bind( 'isEnabled' ).to( command );

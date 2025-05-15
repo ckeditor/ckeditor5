@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals document */
@@ -37,21 +37,20 @@ describe( 'SuperscriptUI', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( SuperscriptUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( SuperscriptUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'toolbar button', () => {
 		beforeEach( () => {
 			superView = editor.ui.componentFactory.create( 'superscript' );
 		} );
 
 		testButton();
-
-		it( 'should bind `isOn` to superscript command', () => {
-			const command = editor.commands.get( 'superscript' );
-
-			expect( superView.isOn ).to.be.false;
-
-			command.value = true;
-			expect( superView.isOn ).to.be.true;
-		} );
 	} );
 
 	describe( 'menu bar button', () => {
@@ -60,6 +59,20 @@ describe( 'SuperscriptUI', () => {
 		} );
 
 		testButton();
+
+		it( 'should create button with `menuitemcheckbox` role', () => {
+			expect( superView.role ).to.equal( 'menuitemcheckbox' );
+		} );
+
+		it( 'should bind `isOn` to `aria-checked` attribute', () => {
+			superView.render();
+
+			superView.isOn = true;
+			expect( superView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'true' );
+
+			superView.isOn = false;
+			expect( superView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'false' );
+		} );
 	} );
 
 	function testButton() {
@@ -87,6 +100,18 @@ describe( 'SuperscriptUI', () => {
 
 			command.isEnabled = false;
 			expect( superView.isEnabled ).to.be.false;
+		} );
+
+		it( 'should bind `isOn` to `command`.`value`', () => {
+			const command = editor.commands.get( 'superscript' );
+
+			command.value = true;
+
+			expect( superView.isOn ).to.be.true;
+
+			command.value = false;
+
+			expect( superView.isOn ).to.be.false;
 		} );
 	}
 } );

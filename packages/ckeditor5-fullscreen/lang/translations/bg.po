@@ -1,0 +1,36 @@
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: bg\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "Label for a toolbar button that enters the fullscreen when pressed"
+msgid "Enter fullscreen mode"
+msgstr "Вход в режим на цял екран"
+
+msgctxt "Label for a toolbar button that leaves the fullscreen when pressed"
+msgid "Leave fullscreen mode"
+msgstr "Изход от режима на цял екран"
+
+msgctxt "Label for a menu bar button that toggles fullscreen mode"
+msgid "Fullscreen mode"
+msgstr "Режим на цял екран"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for toggling a fullscreen mode."
+msgid "Toggle fullscreen mode"
+msgstr "Превключване на режима на цял екран"
+
+msgctxt "Label for a sidebar header that contains a document outline"
+msgid "Document outline"
+msgstr "Вид на документа"
+
+msgctxt "Label for a sidebar header that contains a list of connected users"
+msgid "Connected users"
+msgstr "Свързани потребители"

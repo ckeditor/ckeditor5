@@ -1,7 +1,7 @@
 ---
 category: framework-contributing
 meta-title: Code style | CKEditor 5 Framework Documentation
-order: 30
+order: 40
 modified_at: 2022-11-03
 ---
 
@@ -153,13 +153,13 @@ class Foo extends Plugin {
 		super( editor );
 
 		/**
-		 * Some documentation...
-		 */
+		* Some documentation...
+		*/
 		this.foo = new Foo();
 
 		/**
-		 * Some documentation...
-		 */
+		* Some documentation...
+		*/
 		this.isBar = false;
 	}
 
@@ -370,31 +370,31 @@ Example:
 ```js
 class Foo {
 	/**
-	 * The constructor (public, as its visibility isn't defined).
-	 */
+	* The constructor (public, as its visibility isn't defined).
+	*/
 	constructor() {
 		/**
-		 * Public property.
-		 */
+		* Public property.
+		*/
 		this.foo = 1;
 
 		/**
-		 * Protected property.
-		 *
-		 * @protected
-		 */
+		* Protected property.
+		*
+		* @protected
+		*/
 		this._bar = 1;
 
 		/**
-		 * @private
-		 * @property {Number} _bom
-		 */
+		* @private
+		* @property {Number} _bom
+		*/
 		this[ Symbol( 'bom' ) ] = 1;
 	}
 
 	/**
-	 * @private
-	 */
+	* @private
+	*/
 	_somePrivateMethod() {}
 }
 
@@ -638,7 +638,7 @@ All buttons should follow the **verb + noun** or the **noun** convention. Exampl
 
 #### Commands
 
-As for commands, it is trickier. There are more possible combinations of their names than there are for buttons. Examples:
+As for commands, it is trickier. There are more combinations of their names possible than there are for buttons. Examples:
 
 * The **feature-related** convention:
 	* **noun-based** case:
@@ -827,7 +827,7 @@ Even if the import statement works locally, it will throw an error when develope
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-engine/src/model/model.js`
 
-import { CKEditorError } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError } from 'ckeditor5';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/7128)
@@ -875,7 +875,7 @@ throw new CKEditorError( 'editor-wrong-element', this );
 
 To make CKEditor&nbsp;5 plugins compatible with each other, we needed to introduce limitations when importing files from packages.
 
-Packages marked as "Base DLL build" can import between themselves without any restrictions. Names of these packages are specified in the {@link installation/advanced/dll-builds#anatomy-of-a-dll-build DLL builds} guide.
+Packages marked as "Base DLL build" can import between themselves without any restrictions. Names of these packages are specified in the {@link getting-started/advanced/dll-builds#anatomy-of-a-dll-build DLL builds} guide.
 
 The other CKEditor&nbsp;5 features (non-DLL) can import "Base DLL" packages using the `ckeditor5` package.
 
@@ -928,7 +928,7 @@ import { Plugin } from 'ckeditor5/src/core';
 ```js
 // Assume we edit a file located in the path: `packages/ckeditor5-widget/src/widget.js`
 
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { Plugin } from 'ckeditor5';
 ```
 
 History of changes:
@@ -949,13 +949,13 @@ However, some packages cannot import modules from CKEditor&nbsp;5 as it could le
 
 Currently, it applies to the `@ckeditor/ckeditor5-watchdog` package.
 
-👎&nbsp; Examples of an incorrect code for this rule:
+👎&nbsp; Examples of incorrect code for this rule:
 
 ```js
 // Assume we edit a file located in the `packages/ckeditor5-watchdog/` directory.
 
 import { toArray } from 'ckeditor5/src/utils';
-import { toArray } from '@ckeditor/ckeditor5-utils';
+import { toArray } from 'ckeditor5';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/9318)
@@ -1027,43 +1027,11 @@ class ClassWithSecrets {
 ```ts
 class ClassWithSecrets {
 	/**
-	 * @internal
-	 */
+	* @internal
+	*/
 	private _shouldNotBeEmitted: string;
 }
 ```
-
-### Importing a predefined build: `ckeditor5-rules/no-build-extensions`
-
-<info-box info>
-	This rule only applies to code snippets from the documentation.
-</info-box>
-
-While importing a predefined build, only this build is allowed to be imported, like this:
-
-```js
-// Assume we edit a file located in the path: `packages/ckeditor5-alignment/docs/_snippets/features/text-alignment.js`.
-
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-```
-
-Importing anything from the `src` directory to extend a CKEditor&nbsp;5 build is not allowed. Other directories from a predefined build are not published on npm, so such imports will not work.
-
-👎&nbsp; Examples of an incorrect code for this rule:
-
-```js
-// Assume we edit a file located in the path: `packages/ckeditor5-alignment/docs/_snippets/features/text-alignment.js`.
-
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
-```
-
-```js
-// Assume we edit a file located in the path: `docs/_snippets/features/placeholder.js`.
-
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
-```
-
-[History of the change.](https://github.com/ckeditor/ckeditor5/issues/13689)
 
 ### Declaring module augmentation for the core package: `ckeditor5-rules/allow-declare-module-only-in-augmentation-file`
 
@@ -1077,26 +1045,23 @@ This rule forces all `declare module '@ckeditor/ckeditor5-core'` to be defined i
 
 ### Importing from modules: `ckeditor5-rules/allow-imports-only-from-main-package-entry-point`
 
-<info-box warning>
-  This rule should only be used on `.ts` files.
-</info-box>
+This rule ensures that all imports from the `@ckeditor/*` packages are done through the main package entry points. This is required for the editor types to work properly and to ease migration to the installation methods introduced in CKEditor&nbsp;5 v42.0.0.
 
-As explained in the description of the `allow-declare-module-only-in-augmentation-file` rule, information about available plugins, configuration and commands is only available in the editor types when data from modules is imported from the main entry point.
-
-This rule forces all imports from `@ckeditor/*` packages to be done through the main entry point.
-
-👎&nbsp; Example of an incorrect code for this rule:
+👎&nbsp; Example of incorrect code for this rule:
 
 ```ts
 // Importing from the `/src/` folder is not allowed.
 import Table from '@ckeditor/ckeditor5-table/src/table';
+
+// Importing from the `/theme/` folder is not allowed.
+import BoldIcon from '@ckeditor/ckeditor5-icons/theme/icons/bold.svg';
 ```
 
 👍&nbsp; Examples of correct code for this rule:
 
 ```ts
 // ✔️ Importing from the main entry point is allowed.
-import { Table } from '@ckeditor/ckeditor5-table';
+import { Table } from 'ckeditor5';
 ```
 
 ### Require `as const`: `ckeditor5-rules/require-as-const-returns-in-methods`
@@ -1109,7 +1074,7 @@ In TypeScript, the types inferred from some values are simplified. For example, 
 
 The `require-as-const-returns-in-methods` rule requires some methods that depend on the exact type of returned data (for example, `'delete'` literal string instead of the generic `string` in the `pluginName` method, or `readonly [typeof Table]` instead of `[]` in the `requires` method) to have all return statements with `as const`.
 
-👎&nbsp; Examples of an incorrect code for this rule:
+👎&nbsp; Examples of incorrect code for this rule:
 
 ```ts
 export default class Delete extends Plugin {
@@ -1163,31 +1128,98 @@ import AlignmentEditing from './alignmentediting';
 
 ### Mandatory file extensions in imports: `ckeditor5-rules/require-file-extensions-in-imports`
 
-As required by the [ECMAScript (ESM)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) standard, all imports must include a file extension. If the import does not include it, this rule will try to automatically detect the correct file extension. In two cases this is impossible:
+As required by the [ECMAScript (ESM)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) standard, all imports and re-exports must include a file extension. If they do not include it, this rule will try to automatically detect the correct file extension. It is impossible in these two cases:
 
-* The imported file has an extension different from `.ts`, `.js`, or `.json`.
-* The imported file does not exist in the file system.
+* The file extension is different that `.ts`, `.js`, or `.json`.
+* The file does not exist in the file system.
 
-The second case is common in the documentation, because its pieces are in different directories and repositories. These pieces are merged during the build step, but before that, the imports are technically invalid.
+The second case is common for the documentation files, because its pieces are located in different directories and repositories. These pieces are merged during the build step, but before that, the imports are technically invalid.
 
 In such cases, you must add the file extension manually. Imports with file extensions are not validated.
 
-### Importing SVG files from other packages: `ckeditor5-rules/no-cross-package-svg-imports`
+### Require or disallow certain plugin flags: `ckeditor5-rules/ckeditor-plugin-flags`
 
-To ensure that all SVG icons are properly converted to JavaScript strings at build time, all icons must be imported either from the package's own `theme` folder or as a JavaScript object from another package. Importing from another package's `theme` folder is not allowed.
+<info-box warning>
+	This rule should only be used on `.ts` files.
+</info-box>
 
-👎  Example of incorrect SVG import:
+This rule ensures that plugin flags are either correctly set or not set at all. It checks whether the flags have the correct type and value, preventing common mistakes and ensuring compliance with the CKEditor&nbsp;5 plugin API.
 
-```js
-import CheckIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
+Options:
+
+* `requiredFlags` &ndash; (optional) An array of flags that must be set in the plugin.
+* `disallowedFlags` &ndash; (optional) An array of flags that must not be set in the plugin.
+
+The example configuration below requires the `isFooPlugin` flag to be set to `true` and disallows the `isBarPlugin` flag:
+
+```json
+{
+	"requiredFlags": [
+		{
+			"name": "isFooPlugin",
+			"returnValue": true
+		}
+	],
+	"disallowedFlags": [ "isBarPlugin" ]
+}
 ```
 
-👍 Examples of correct SVG imports:
+👎&nbsp; Examples of incorrect code for this rule:
 
-```js
-import CheckIcon from './../theme/icons/check.svg';
+```ts
+export default class MyPlugin extends Plugin {
+	static get pluginName() {
+		return 'MyPlugin';
+	}
+
+	public static override get isBarPlugin(): false {
+		return false;
+	}
+}
 ```
 
-```js
-import { icons } from '@ckeditor/ckeditor5-core';
+The `isBarPlugin` flag is disallowed, and the plugin has it set to `false`. Additionally, the `isFooPlugin` flag is required but not defined.
+
+👍&nbsp; Examples of correct code for this rule:
+
+```ts
+export default class MyPlugin extends Plugin {
+	static get pluginName() {
+		return 'MyPlugin';
+	}
+
+	public static override get isFooPlugin(): true {
+		return true;
+	}
+}
 ```
+
+The `isFooPlugin` flag is required and set to `true`, and the `isBarPlugin` flag is not defined.
+
+### No legacy imports
+
+This rule ensures that imports are done using the {@link updating/nim-migration/migration-to-new-installation-methods new installation methods}. All imports should be done using either the `ckeditor5` package to get the editor core and all open-source plugins, or `ckeditor5-premium-features` to get the premium features.
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```js
+// Import from `ckeditor5/src/*`.
+import { Plugin } from 'ckeditor5/src/core.js';
+
+// Import from individual open-source package.
+import { Plugin } from '@ckeditor/ckeditor5-core';
+
+// Import from individual premium package.
+import { AIAssistant } from '@ckeditor/ckeditor5-ai';
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```js
+import { Plugin } from 'ckeditor5';
+import { AIAssistant } from 'ckeditor5-premium-features';
+```
+
+### SVG imports only in the `@ckeditor/ckeditor5-icons` package
+
+This rule ensures that SVG files are imported and exported only in the `@ckeditor/ckeditor5-icons` package. This package should include all icons used in CKEditor&nbsp;5.

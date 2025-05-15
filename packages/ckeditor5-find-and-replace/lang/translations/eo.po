@@ -1,0 +1,68 @@
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: eo\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "The tooltip of a find and replace button in the toolbar. Also, the title of the find and replace form."
+msgid "Find and replace"
+msgstr ""
+
+msgctxt "The label for the searched text in the find and replace dropdown."
+msgid "Find in text…"
+msgstr ""
+
+msgctxt "The label for the find action button in the find and replace dropdown."
+msgid "Find"
+msgstr ""
+
+msgctxt "The label for the previous result button in the find and replace dropdown."
+msgid "Previous result"
+msgstr ""
+
+msgctxt "The label for the previous result button in the find and replace dropdown."
+msgid "Next result"
+msgstr ""
+
+msgctxt "The label for the (single) replace action button in the find and replace dropdown."
+msgid "Replace"
+msgstr ""
+
+msgctxt "The label for the replace all action button in the find and replace dropdown."
+msgid "Replace all"
+msgstr ""
+
+msgctxt "The label for the match case checkbox in the find and replace dropdown."
+msgid "Match case"
+msgstr ""
+
+msgctxt "The label for the whole words only checkbox in the find and replace dropdown."
+msgid "Whole words only"
+msgstr ""
+
+msgctxt "The label for the text replacement in the find and replace dropdown."
+msgid "Replace with…"
+msgstr ""
+
+msgctxt "An error text displayed when user attempted to find an empty text."
+msgid "Text to find must not be empty."
+msgstr ""
+
+msgctxt "A message displayed next to the replace field when disabled but user tries to use it."
+msgid "Tip: Find some text first in order to replace it."
+msgstr ""
+
+msgctxt "The label and the tooltip of the options dropdown button in the find and replace form."
+msgid "Advanced options"
+msgstr ""
+
+msgctxt "Keystroke description for assistive technologies: keystroke for opening the find and replace UI."
+msgid "Find in the document"
+msgstr ""

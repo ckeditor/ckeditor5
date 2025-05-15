@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import global from '../../src/dom/global.js';
@@ -30,7 +30,7 @@ export default class RectDrawer {
 	 * @param {Object} [userStyles] An optional object with custom styles for the rect.
 	 * @param {String} [name] The optional name of the rect.
 	 */
-	static draw( rect, userStyles = {}, name ) {
+	static draw( rect, userStyles = {}, name, options = {} ) {
 		if ( !RectDrawer._stylesElement ) {
 			RectDrawer._injectStyles();
 		}
@@ -38,7 +38,7 @@ export default class RectDrawer {
 		const element = global.document.createElement( 'div' );
 
 		// Make it work when the browser viewport is zoomed in (mainly on mobiles).
-		const { offsetLeft, offsetTop } = global.window.visualViewport;
+		const { offsetLeft, offsetTop } = options.visualViewportOrigin ? { offsetLeft: 0, offsetTop: 0 } : global.window.visualViewport;
 
 		const rectGeometryStyles = {
 			top: `${ rect.top + offsetTop }px`,

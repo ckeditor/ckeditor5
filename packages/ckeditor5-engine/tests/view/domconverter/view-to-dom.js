@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals Range, DocumentFragment, HTMLElement, Comment, document, Text, console */
@@ -1230,6 +1230,24 @@ describe( 'DomConverter', () => {
 				expect( domUl2Children[ 1 ].firstChild.data ).to.equal( '123' );
 
 				sinon.assert.notCalled( warnStub );
+			} );
+
+			it( 'should yield the `RawElement` children properly', () => {
+				const downcastWriter = new DowncastWriter( viewDocument );
+				const dataConverter = new DomConverter( viewDocument, {
+					renderingMode: 'data'
+				} );
+				const parentElement = downcastWriter.createContainerElement( 'p' );
+				const transparentRawElement = downcastWriter.createRawElement( 'span', {}, function( domElement ) {
+					domElement.innerHTML = 'foo <span style="color:red;">bar</span> <strong>is</strong> good';
+				} );
+
+				downcastWriter.insert( downcastWriter.createPositionAt( parentElement, 'end' ), transparentRawElement );
+				downcastWriter.setCustomProperty( 'dataPipeline:transparentRendering', true, transparentRawElement );
+
+				expect( dataConverter.viewToDom( parentElement ).outerHTML ).to.equal(
+					'<p>foo <span style="color:red;">bar</span> <strong>is</strong> good</p>'
+				);
 			} );
 
 			it( 'should not be transparent in the editing pipeline', () => {

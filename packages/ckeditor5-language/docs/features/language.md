@@ -24,6 +24,33 @@ The text part language feature is especially useful when your content includes t
 
 The text part language feature implements the [WCAG 3.1.2 Language of Parts](https://www.w3.org/TR/UNDERSTANDING-WCAG20/meaning-other-lang-id.html) specification.
 
+## Installation
+
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+<code-switcher>
+```js
+import { ClassicEditor, TextPartLanguage } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ TextPartLanguage, /* ... */ ],
+		toolbar: [ 'textPartLanguage', /* ... */ ]
+		language: {
+			// Configuration.
+		}
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+</code-switcher>
 
 ## Configuring available languages
 
@@ -33,9 +60,8 @@ The example below shows the configuration used for the [demo](#demo) above:
 
 ```js
 ClassicEditor
-    .create( document.querySelector( '#editor' ), {
-		// More of editor's configuration.
-		// ...
+	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		language: {
 			textPartLanguage: [
 				{ title: 'Arabic', languageCode: 'ar' },
@@ -44,46 +70,16 @@ ClassicEditor
 				{ title: 'Spanish', languageCode: 'es' }
 			]
 		}
-    } )
-    .then( /* ... */ )
-    .catch( /* ... */ );
-```
-
-## Installation
-
-<info-box info>
-	The Text part language feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-language`](https://www.npmjs.com/package/@ckeditor/ckeditor5-language) package:
-
-```plaintext
-npm install --save @ckeditor/ckeditor5-language
-```
-
-And add it to your plugin list configuration:
-
-```js
-import { TextPartLanguage } from '@ckeditor/ckeditor5-language';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ TextPartLanguage, /* ... */ ],
-		toolbar: [ 'textPartLanguage', /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
 
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
-
 ## Related features
 
 There are other language-related CKEditor&nbsp;5 features you may want to check:
 
-* {@link features/ui-language UI Language}  &ndash; Set the UI language.
+* {@link getting-started/setup/ui-language UI Language}  &ndash; Set the UI language.
 * {@link features/spelling-and-grammar-checking Spelling and grammar checking} &ndash; Employ multi-language spell check for flawless content.
 
 ## Common API

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -108,7 +108,8 @@ export default class LegacyListStyleCommand extends Command {
 	/**
 	 * Checks if the provided list style is valid. Also changes the selection to a list if it's not set yet.
 	 *
-	 * @param The type of the list style. If `null` is specified, the function does nothing.
+	 * @param options Additional options.
+	 * @param options.type The type of the list style. If `null` is specified, the function does nothing.
 	*/
 	private _tryToConvertItemsToList( options: { type?: string | null } ) {
 		if ( !options.type ) {

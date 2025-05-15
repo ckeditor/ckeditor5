@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -32,6 +32,8 @@ import type DocumentSelection from './documentselection.js';
 import type DomConverter from './domconverter.js';
 import type ViewElement from './element.js';
 import type ViewNode from './node.js';
+
+// @if CK_DEBUG_TYPING // const { _buildLogMessage } = require( '../dev-utils/utils.js' );
 
 import '../../theme/renderer.css';
 
@@ -138,6 +140,7 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 
 		this.set( 'isFocused', false );
 		this.set( 'isSelecting', false );
+		this.set( 'isComposing', false );
 
 		// Rendering the selection and inline filler manipulation should be postponed in (non-Android) Blink until the user finishes
 		// creating the selection in DOM to avoid accidental selection collapsing
@@ -150,14 +153,6 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 				}
 			} );
 		}
-
-		this.set( 'isComposing', false );
-
-		this.on<ObservableChangeEvent>( 'change:isComposing', () => {
-			if ( !this.isComposing ) {
-				this.render();
-			}
-		} );
 	}
 
 	/**
@@ -220,18 +215,20 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		// and we should not do it because the difference between view and DOM could lead to position mapping problems.
 		if ( this.isComposing && !env.isAndroid ) {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-			// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Rendering aborted while isComposing',
-			// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
-			// @if CK_DEBUG_TYPING // 	);
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+			// @if CK_DEBUG_TYPING // 		'%cRendering aborted while isComposing.',
+			// @if CK_DEBUG_TYPING // 		'font-style: italic'
+			// @if CK_DEBUG_TYPING // 	) );
 			// @if CK_DEBUG_TYPING // }
 
 			return;
 		}
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-		// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Rendering',
-		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
-		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // 	console.group( ..._buildLogMessage( this, 'Renderer',
+		// @if CK_DEBUG_TYPING // 		'%cRendering',
+		// @if CK_DEBUG_TYPING // 		'font-weight: bold'
+		// @if CK_DEBUG_TYPING // 	) );
 		// @if CK_DEBUG_TYPING // }
 
 		let inlineFillerPosition: ViewPosition | null = null;
@@ -478,6 +475,15 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 
 		// Something weird happened and the stored node doesn't contain the filler's text.
 		if ( !startsWithFiller( domFillerNode ) ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.log( ..._buildLogMessage( this, 'Renderer',
+			// @if CK_DEBUG_TYPING // 		'Inline filler node: ' +
+			// @if CK_DEBUG_TYPING // 		`%c${ _escapeTextNodeData( domFillerNode.data ) }%c (${ domFillerNode.data.length })`,
+			// @if CK_DEBUG_TYPING // 		'color: blue',
+			// @if CK_DEBUG_TYPING // 		''
+			// @if CK_DEBUG_TYPING // 	) );
+			// @if CK_DEBUG_TYPING // }
+
 			/**
 			 * The inline filler node was lost. Most likely, something overwrote the filler text node
 			 * in the DOM.
@@ -564,12 +570,13 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		}
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-		// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update text',
-		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
-		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // 	console.group( ..._buildLogMessage( this, 'Renderer',
+		// @if CK_DEBUG_TYPING // 		'%cUpdate text',
+		// @if CK_DEBUG_TYPING // 		'font-weight: normal'
+		// @if CK_DEBUG_TYPING // 	) );
 		// @if CK_DEBUG_TYPING // }
 
-		updateTextNode( domText, expectedText );
+		this._updateTextNode( domText, expectedText );
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 		// @if CK_DEBUG_TYPING // 	console.groupEnd();
@@ -592,20 +599,25 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 			return;
 		}
 
-		const domAttrKeys = Array.from( ( domElement as DomElement ).attributes ).map( attr => attr.name );
-		const viewAttrKeys = viewElement.getAttributeKeys();
+		// Remove attributes from DOM elements if they do not exist in the view.
+		//
+		// Note: It is important to first remove DOM attributes and then set new ones, because some view attributes may be renamed
+		// as they are set on DOM (due to unsafe attributes handling). If we set the view attribute first, and then remove
+		// non-existing DOM attributes, then we would remove the attribute that we just set.
+		//
+		// Note: The domElement.attributes is a live collection, so we need to convert it to an array to avoid issues.
+		for ( const domAttr of Array.from( ( domElement as DomElement ).attributes ) ) {
+			const key = domAttr.name;
 
-		// Add or overwrite attributes.
-		for ( const key of viewAttrKeys ) {
-			this.domConverter.setDomElementAttribute( domElement as DomElement, key, viewElement.getAttribute( key )!, viewElement );
-		}
-
-		// Remove from DOM attributes which do not exists in the view.
-		for ( const key of domAttrKeys ) {
 			// All other attributes not present in the DOM should be removed.
 			if ( !viewElement.hasAttribute( key ) ) {
 				this.domConverter.removeDomElementAttribute( domElement as DomElement, key );
 			}
+		}
+
+		// Add or overwrite attributes.
+		for ( const key of viewElement.getAttributeKeys() ) {
+			this.domConverter.setDomElementAttribute( domElement as DomElement, key, viewElement.getAttribute( key )!, viewElement );
 		}
 	}
 
@@ -628,9 +640,10 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		}
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-		// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update children',
-		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
-		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // 	console.group( ..._buildLogMessage( this, 'Renderer',
+		// @if CK_DEBUG_TYPING // 		'%cUpdate children',
+		// @if CK_DEBUG_TYPING // 		'font-weight: normal'
+		// @if CK_DEBUG_TYPING // 	) );
 		// @if CK_DEBUG_TYPING // }
 
 		// IME on Android inserts a new text node while typing after a link
@@ -670,6 +683,13 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		// The composition and different "language" browser extensions are fragile to text node being completely replaced.
 		const actions = this._findUpdateActions( diff, actualDomChildren, expectedDomChildren, areTextNodes );
 
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping && actions.every( a => a == 'equal' ) ) {
+		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+		// @if CK_DEBUG_TYPING // 		'%cNothing to update.',
+		// @if CK_DEBUG_TYPING // 		'font-style: italic'
+		// @if CK_DEBUG_TYPING // 	) );
+		// @if CK_DEBUG_TYPING // }
+
 		let i = 0;
 		const nodesToUnbind: Set<DomNode> = new Set();
 
@@ -682,10 +702,25 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		for ( const action of actions ) {
 			if ( action === 'delete' ) {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-				// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Remove node',
-				// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '', actualDomChildren[ i ]
-				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING //	const node = actualDomChildren[ i ];
+				// @if CK_DEBUG_TYPING // 	if ( isText( node ) ) {
+				// @if CK_DEBUG_TYPING // 		console.info( ..._buildLogMessage( this, 'Renderer',
+				// @if CK_DEBUG_TYPING // 			'%cRemove text node' +
+				// @if CK_DEBUG_TYPING // 			`${ this.isComposing ? ' while composing (may break composition)' : '' }: ` +
+				// @if CK_DEBUG_TYPING // 			`%c${ _escapeTextNodeData( node.data ) }%c (${ node.data.length })`,
+				// @if CK_DEBUG_TYPING // 			this.isComposing ? 'color: red; font-weight: bold' : '',
+				// @if CK_DEBUG_TYPING // 			'color: blue', ''
+				// @if CK_DEBUG_TYPING // 		) );
+				// @if CK_DEBUG_TYPING // 	} else {
+				// @if CK_DEBUG_TYPING // 		console.info( ..._buildLogMessage( this, 'Renderer',
+				// @if CK_DEBUG_TYPING // 			'%cRemove element' +
+				// @if CK_DEBUG_TYPING // 			`${ this.isComposing ? ' while composing (may break composition)' : '' }: `,
+				// @if CK_DEBUG_TYPING // 			this.isComposing ? 'color: red; font-weight: bold' : '',
+				// @if CK_DEBUG_TYPING // 			node
+				// @if CK_DEBUG_TYPING // 		) );
+				// @if CK_DEBUG_TYPING // 	}
 				// @if CK_DEBUG_TYPING // }
+
 				nodesToUnbind.add( actualDomChildren[ i ] as DomElement );
 				remove( actualDomChildren[ i ] );
 			} else if ( action === 'equal' || action === 'update' ) {
@@ -698,28 +733,32 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		for ( const action of actions ) {
 			if ( action === 'insert' ) {
 				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-				// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Insert node',
-				// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '', expectedDomChildren[ i ]
-				// @if CK_DEBUG_TYPING // 	);
+				// @if CK_DEBUG_TYPING //	const node = expectedDomChildren[ i ];
+				// @if CK_DEBUG_TYPING //	if ( isText( node ) ) {
+				// @if CK_DEBUG_TYPING //		console.info( ..._buildLogMessage( this, 'Renderer',
+				// @if CK_DEBUG_TYPING //			'%cInsert text node' +
+				// @if CK_DEBUG_TYPING //			`${ this.isComposing ? ' while composing (may break composition)' : '' }: ` +
+				// @if CK_DEBUG_TYPING //			`%c${ _escapeTextNodeData( node.data ) }%c (${ node.data.length })`,
+				// @if CK_DEBUG_TYPING //			this.isComposing ? 'color: red; font-weight: bold' : '',
+				// @if CK_DEBUG_TYPING //			'color: blue',
+				// @if CK_DEBUG_TYPING //			''
+				// @if CK_DEBUG_TYPING //		) );
+				// @if CK_DEBUG_TYPING //	} else {
+				// @if CK_DEBUG_TYPING //		console.info( ..._buildLogMessage( this, 'Renderer',
+				// @if CK_DEBUG_TYPING //			'%cInsert element:',
+				// @if CK_DEBUG_TYPING //			'font-weight: normal',
+				// @if CK_DEBUG_TYPING //			node
+				// @if CK_DEBUG_TYPING //		) );
+				// @if CK_DEBUG_TYPING //	}
 				// @if CK_DEBUG_TYPING // }
 
 				insertAt( domElement as DomElement, i, expectedDomChildren[ i ] );
 				i++;
 			}
-			// Update the existing text node data. Note that replace action is generated only for Android for now.
+			// Update the existing text node data.
 			else if ( action === 'update' ) {
-				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-				// @if CK_DEBUG_TYPING // 	console.group( '%c[Renderer]%c Update text node',
-				// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', ''
-				// @if CK_DEBUG_TYPING // 	);
-				// @if CK_DEBUG_TYPING // }
-
-				updateTextNode( actualDomChildren[ i ] as DomText, ( expectedDomChildren[ i ] as DomText ).data );
+				this._updateTextNode( actualDomChildren[ i ] as DomText, ( expectedDomChildren[ i ] as DomText ).data );
 				i++;
-
-				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-				// @if CK_DEBUG_TYPING // 	console.groupEnd();
-				// @if CK_DEBUG_TYPING // }
 			} else if ( action === 'equal' ) {
 				// Force updating text nodes inside elements which did not change and do not need to be re-rendered (#1125).
 				// Do it here (not in the loop above) because only after insertions the `i` index is correct.
@@ -817,6 +856,83 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
+	 * Checks if text needs to be updated and possibly updates it by removing and inserting only parts
+	 * of the data from the existing text node to reduce impact on the IME composition.
+	 *
+	 * @param domText DOM text node to update.
+	 * @param expectedText The expected data of a text node.
+	 */
+	private _updateTextNode( domText: DomText, expectedText: string ): void {
+		const actualText = domText.data;
+
+		if ( actualText == expectedText ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+			// @if CK_DEBUG_TYPING // 		'%cText node does not need update:%c ' +
+			// @if CK_DEBUG_TYPING // 		`${ _escapeTextNodeData( actualText ) }%c (${ actualText.length })`,
+			// @if CK_DEBUG_TYPING // 		'font-style: italic',
+			// @if CK_DEBUG_TYPING // 		'color: blue',
+			// @if CK_DEBUG_TYPING // 		''
+			// @if CK_DEBUG_TYPING // 	) );
+			// @if CK_DEBUG_TYPING // }
+
+			return;
+		}
+
+		// Our approach to interleaving space character with NBSP might differ with the one implemented by the browser.
+		// Avoid modifying the text node in the DOM if only NBSPs and spaces are interchanged.
+		// We should avoid DOM modifications while composing to avoid breakage of composition.
+		// See: https://github.com/ckeditor/ckeditor5/issues/13994.
+		if ( env.isAndroid && this.isComposing && actualText.replace( /\u00A0/g, ' ' ) == expectedText.replace( /\u00A0/g, ' ' ) ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+			// @if CK_DEBUG_TYPING // 		'%cText node ignore NBSP changes while composing: ' +
+			// @if CK_DEBUG_TYPING // 		`%c${ _escapeTextNodeData( actualText ) }%c (${ actualText.length }) -> ` +
+			// @if CK_DEBUG_TYPING // 		`%c${ _escapeTextNodeData( expectedText ) }%c (${ expectedText.length })`,
+			// @if CK_DEBUG_TYPING // 		'font-style: italic',
+			// @if CK_DEBUG_TYPING // 		'color: blue',
+			// @if CK_DEBUG_TYPING // 		'',
+			// @if CK_DEBUG_TYPING // 		'color: blue',
+			// @if CK_DEBUG_TYPING // 		''
+			// @if CK_DEBUG_TYPING // 	) );
+			// @if CK_DEBUG_TYPING // }
+
+			return;
+		}
+
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+		// @if CK_DEBUG_TYPING // 		'%cUpdate text node' +
+		// @if CK_DEBUG_TYPING // 		`${ this.isComposing ? ' while composing (may break composition)' : '' }: ` +
+		// @if CK_DEBUG_TYPING // 		`%c${ _escapeTextNodeData( actualText ) }%c (${ actualText.length }) -> ` +
+		// @if CK_DEBUG_TYPING // 		`%c${ _escapeTextNodeData( expectedText ) }%c (${ expectedText.length })`,
+		// @if CK_DEBUG_TYPING // 		this.isComposing ? 'color: red; font-weight: bold' : '',
+		// @if CK_DEBUG_TYPING // 		'color: blue',
+		// @if CK_DEBUG_TYPING // 		'',
+		// @if CK_DEBUG_TYPING // 		'color: blue',
+		// @if CK_DEBUG_TYPING // 		''
+		// @if CK_DEBUG_TYPING // 	) );
+		// @if CK_DEBUG_TYPING // }
+
+		this._updateTextNodeInternal( domText, expectedText );
+	}
+
+	/**
+	 * Part of the `_updateTextNode` method extracted for easier testing.
+	 */
+	private _updateTextNodeInternal( domText: DomText, expectedText: string ): void {
+		const actions = fastDiff( domText.data, expectedText );
+
+		for ( const action of actions ) {
+			if ( action.type === 'insert' ) {
+				domText.insertData( action.index, action.values.join( '' ) );
+			} else { // 'delete'
+				domText.deleteData( action.index, action.howMany );
+			}
+		}
+	}
+
+	/**
 	 * Marks text nodes to be synchronized.
 	 *
 	 * If a text node is passed, it will be marked. If an element is passed, all descendant text nodes inside it will be marked.
@@ -851,45 +967,76 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 
 		// If there is no selection - remove DOM and fake selections.
 		if ( this.selection.rangeCount === 0 ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+			// @if CK_DEBUG_TYPING // 		'Update DOM selection: remove all ranges'
+			// @if CK_DEBUG_TYPING // 	) );
+			// @if CK_DEBUG_TYPING // }
+
 			this._removeDomSelection();
 			this._removeFakeSelection();
 
 			return;
 		}
 
-		const domRoot = this.domConverter.mapViewToDom( this.selection.editableElement! );
+		const domEditable = this.domConverter.mapViewToDom( this.selection.editableElement! );
 
-		// Do nothing if there is no focus, or there is no DOM element corresponding to selection's editable element.
-		if ( !this.isFocused || !domRoot ) {
+		// Do not update DOM selection if there is no focus, or there is no DOM element corresponding to selection's editable element.
+		if ( !this.isFocused || !domEditable ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+			// @if CK_DEBUG_TYPING // 		'Skip updating DOM selection:',
+			// @if CK_DEBUG_TYPING // 		`isFocused: ${ this.isFocused }, hasDomEditable: ${ !!domEditable }`
+			// @if CK_DEBUG_TYPING // 	) );
+			// @if CK_DEBUG_TYPING // }
+
+			// But if there was a fake selection, and it is not fake anymore - remove it as it can map to no longer existing widget.
+			// See https://github.com/ckeditor/ckeditor5/issues/18123.
+			if ( !this.selection.isFake && this._fakeSelectionContainer && this._fakeSelectionContainer.isConnected ) {
+				// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+				// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+				// @if CK_DEBUG_TYPING // 		'Remove fake selection (not focused editable)'
+				// @if CK_DEBUG_TYPING // 	) );
+				// @if CK_DEBUG_TYPING // }
+
+				this._removeFakeSelection();
+			}
+
 			return;
 		}
 
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+		// @if CK_DEBUG_TYPING // 		'Update DOM selection'
+		// @if CK_DEBUG_TYPING // 	) );
+		// @if CK_DEBUG_TYPING // }
+
 		// Render fake selection - create the fake selection container (if needed) and move DOM selection to it.
 		if ( this.selection.isFake ) {
-			this._updateFakeSelection( domRoot );
+			this._updateFakeSelection( domEditable );
 		}
 		// There was a fake selection so remove it and update the DOM selection.
 		// This is especially important on Android because otherwise IME will try to compose over the fake selection container.
 		else if ( this._fakeSelectionContainer && this._fakeSelectionContainer.isConnected ) {
 			this._removeFakeSelection();
-			this._updateDomSelection( domRoot );
+			this._updateDomSelection( domEditable );
 		}
 		// Update the DOM selection in case of a plain selection change (no fake selection is involved).
 		// On non-Android the whole rendering is disabled in composition mode (including DOM selection update),
 		// but updating DOM selection should be also disabled on Android if in the middle of the composition
 		// (to not interrupt it).
 		else if ( !( this.isComposing && env.isAndroid ) ) {
-			this._updateDomSelection( domRoot );
+			this._updateDomSelection( domEditable );
 		}
 	}
 
 	/**
 	 * Updates the fake selection.
 	 *
-	 * @param domRoot A valid DOM root where the fake selection container should be added.
+	 * @param domEditable A valid DOM editable where the fake selection container should be added.
 	 */
-	private _updateFakeSelection( domRoot: DomElement ): void {
-		const domDocument = domRoot.ownerDocument;
+	private _updateFakeSelection( domEditable: DomElement ): void {
+		const domDocument = domEditable.ownerDocument;
 
 		if ( !this._fakeSelectionContainer ) {
 			this._fakeSelectionContainer = createFakeSelectionContainer( domDocument );
@@ -900,15 +1047,21 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		// Bind fake selection container with the current selection *position*.
 		this.domConverter.bindFakeSelection( container, this.selection );
 
-		if ( !this._fakeSelectionNeedsUpdate( domRoot ) ) {
+		if ( !this._fakeSelectionNeedsUpdate( domEditable ) ) {
 			return;
 		}
 
-		if ( !container.parentElement || container.parentElement != domRoot ) {
-			domRoot.appendChild( container );
+		if ( !container.parentElement || container.parentElement != domEditable ) {
+			domEditable.appendChild( container );
 		}
 
 		container.textContent = this.selection.fakeSelectionLabel || '\u00A0';
+
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+		// @if CK_DEBUG_TYPING // 		'Set DOM fake selection'
+		// @if CK_DEBUG_TYPING // 	) );
+		// @if CK_DEBUG_TYPING // }
 
 		const domSelection = domDocument.getSelection()!;
 		const domRange = domDocument.createRange();
@@ -921,13 +1074,20 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Updates the DOM selection.
 	 *
-	 * @param domRoot A valid DOM root where the DOM selection should be rendered.
+	 * @param domEditable A valid DOM editable where the DOM selection should be rendered.
 	 */
-	private _updateDomSelection( domRoot: DomElement ) {
-		const domSelection = domRoot.ownerDocument.defaultView!.getSelection()!;
+	private _updateDomSelection( domEditable: DomElement ) {
+		const domSelection = domEditable.ownerDocument.defaultView!.getSelection()!;
 
 		// Let's check whether DOM selection needs updating at all.
 		if ( !this._domSelectionNeedsUpdate( domSelection ) ) {
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+			// @if CK_DEBUG_TYPING // 		'%cDOM selection is already correct',
+			// @if CK_DEBUG_TYPING // 		'font-style: italic;'
+			// @if CK_DEBUG_TYPING // 	) );
+			// @if CK_DEBUG_TYPING // }
+
 			return;
 		}
 
@@ -940,9 +1100,11 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 		const focus = this.domConverter.viewPositionToDom( this.selection.focus! )!;
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Update DOM selection:',
-		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '', anchor, focus
-		// @if CK_DEBUG_TYPING // 	);
+		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+		// @if CK_DEBUG_TYPING // 		'Update DOM selection:',
+		// @if CK_DEBUG_TYPING // 		anchor,
+		// @if CK_DEBUG_TYPING // 		focus
+		// @if CK_DEBUG_TYPING // 	) );
 		// @if CK_DEBUG_TYPING // }
 
 		domSelection.setBaseAndExtent( anchor.parent, anchor.offset, focus.parent, focus.offset );
@@ -983,15 +1145,15 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Checks whether the fake selection needs to be updated.
 	 *
-	 * @param domRoot A valid DOM root where a new fake selection container should be added.
+	 * @param domEditable A valid DOM editable where a new fake selection container should be added.
 	 */
-	private _fakeSelectionNeedsUpdate( domRoot: DomElement ): boolean {
+	private _fakeSelectionNeedsUpdate( domEditable: DomElement ): boolean {
 		const container = this._fakeSelectionContainer;
-		const domSelection = domRoot.ownerDocument.getSelection()!;
+		const domSelection = domEditable.ownerDocument.getSelection()!;
 
 		// Fake selection needs to be updated if there's no fake selection container, or the container currently sits
 		// in a different root.
-		if ( !container || container.parentElement !== domRoot ) {
+		if ( !container || container.parentElement !== domEditable ) {
 			return true;
 		}
 
@@ -1036,13 +1198,30 @@ export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	 * Checks if focus needs to be updated and possibly updates it.
 	 */
 	private _updateFocus(): void {
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.group( ..._buildLogMessage( this, 'Renderer',
+		// @if CK_DEBUG_TYPING // 		`update focus: ${ this.isFocused ? 'focused' : 'not focused' }`
+		// @if CK_DEBUG_TYPING // 	) );
+		// @if CK_DEBUG_TYPING // }
+
 		if ( this.isFocused ) {
 			const editable = this.selection.editableElement;
+
+			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'Renderer',
+			// @if CK_DEBUG_TYPING // 		'focus editable:',
+			// @if CK_DEBUG_TYPING // 		{ editable }
+			// @if CK_DEBUG_TYPING // 	) );
+			// @if CK_DEBUG_TYPING // }
 
 			if ( editable ) {
 				this.domConverter.focus( editable );
 			}
 		}
+
+		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+		// @if CK_DEBUG_TYPING // 	console.groupEnd();
+		// @if CK_DEBUG_TYPING // }
 	}
 }
 
@@ -1209,41 +1388,11 @@ function createFakeSelectionContainer( domDocument: DomDocument ): DomElement {
 	return container;
 }
 
-/**
- * Checks if text needs to be updated and possibly updates it by removing and inserting only parts
- * of the data from the existing text node to reduce impact on the IME composition.
- *
- * @param domText DOM text node to update.
- * @param expectedText The expected data of a text node.
- */
-function updateTextNode( domText: DomText, expectedText: string ) {
-	const actualText = domText.data;
-
-	if ( actualText == expectedText ) {
-		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-		// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Text node does not need update:',
-		// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '',
-		// @if CK_DEBUG_TYPING // 		`"${ domText.data }" (${ domText.data.length })`
-		// @if CK_DEBUG_TYPING // 	);
-		// @if CK_DEBUG_TYPING // }
-
-		return;
-	}
-
-	// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-	// @if CK_DEBUG_TYPING // 	console.info( '%c[Renderer]%c Update text node:',
-	// @if CK_DEBUG_TYPING // 		'color: green;font-weight: bold', '',
-	// @if CK_DEBUG_TYPING // 		`"${ domText.data }" (${ domText.data.length }) -> "${ expectedText }" (${ expectedText.length })`
-	// @if CK_DEBUG_TYPING // 	);
-	// @if CK_DEBUG_TYPING // }
-
-	const actions = fastDiff( actualText, expectedText );
-
-	for ( const action of actions ) {
-		if ( action.type === 'insert' ) {
-			domText.insertData( action.index, action.values.join( '' ) );
-		} else { // 'delete'
-			domText.deleteData( action.index, action.howMany );
-		}
-	}
-}
+// @if CK_DEBUG_TYPING // function _escapeTextNodeData( text ) {
+// @if CK_DEBUG_TYPING // 	const escapedText = text
+// @if CK_DEBUG_TYPING // 		.replace( /&/g, '&amp;' )
+// @if CK_DEBUG_TYPING // 		.replace( /\u00A0/g, '&nbsp;' )
+// @if CK_DEBUG_TYPING // 		.replace( /\u2060/g, '&NoBreak;' );
+// @if CK_DEBUG_TYPING //
+// @if CK_DEBUG_TYPING // 	return `"${ escapedText }"`;
+// @if CK_DEBUG_TYPING // }

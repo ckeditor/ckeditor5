@@ -1,10 +1,10 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import { FileRepository } from 'ckeditor5/src/upload.js';
-import { Command } from 'ckeditor5/src/core.js';
+import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
 import type { Position } from 'ckeditor5/src/engine.js';
 
@@ -46,6 +46,26 @@ import type ImageUtils from '../imageutils.js';
  * ```
  */
 export default class UploadImageCommand extends Command {
+	/**
+	 * The command property: `false` if there is no permission on image upload, otherwise `true`.
+	 *
+	 * @observable
+	 * @internal
+	 */
+	declare public isAccessAllowed: boolean;
+
+	/**
+	 * Creates an instance of the `imageUlpoad` command. When executed, the command upload one of
+	 * the currently selected image from computer.
+	 *
+	 * @param editor The editor instance.
+	 */
+	constructor( editor: Editor ) {
+		super( editor );
+
+		this.set( 'isAccessAllowed', true );
+	}
+
 	/**
 	 * @inheritDoc
 	 */

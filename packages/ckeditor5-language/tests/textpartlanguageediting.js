@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
@@ -31,6 +31,14 @@ describe( 'TextPartLanguageEditing', () => {
 
 	it( 'should have pluginName', () => {
 		expect( TextPartLanguageEditing.pluginName ).to.equal( 'TextPartLanguageEditing' );
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( TextPartLanguageEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( TextPartLanguageEditing.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should be loaded', () => {
@@ -159,7 +167,7 @@ describe( 'TextPartLanguageEditing', () => {
 
 			expect( customEditor.config.get( 'language' ) ).to.deep.equal( languageConfig );
 
-			customEditor.destroy();
+			await customEditor.destroy();
 		} );
 	} );
 } );

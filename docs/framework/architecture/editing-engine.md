@@ -174,6 +174,11 @@ The {@link module:engine/model/schema~Schema model's schema} defines several asp
 * What attributes are allowed for a certain node. For example, `image` can have the `src` and `alt` attributes.
 * Additional semantics of model nodes. For example, `image` is of the "object" type and paragraph of the "block" type.
 
+The schema can also define which children and attributes are specifically disallowed, which is useful when nodes inherit properties from other nodes, but want to exclude some things:
+
+* Nodes can be disallowed in certain places. For example, a custom element `specialParagraph` inherits all properties from `paragraph` but needs to disallow `imageInline`.
+* Attributes can be disallowed on a certain node. For example, a custom element `specialPurposeHeading` inherits attributes from `heading2` but does not allow `alignment` attribute.
+
 This information is then used by the features and the engine to make decisions on how to process the model. For instance, the information from the schema will affect:
 
 * What happens with the pasted content and what is filtered out (note: in case of pasting the other important mechanism is the {@link framework/deep-dive/conversion/upcast conversion}. HTML elements and attributes that are not upcasted by any of the registered converters are filtered out before they even become model nodes, so the schema is not applied to them; the conversion will be covered later in this guide).

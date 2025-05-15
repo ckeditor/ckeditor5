@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 .ck-content .page-break {
@@ -49,5 +49,15 @@
 		&::after {
 			display: none;
 		}
+	}
+
+	/*
+	 * From time to time placing page-break directly after a block element with margin causes appending a new blank page in pagination mode.
+	 * Removing margin-bottom from the block element fixes that issue and the margin is not being moved to the next blank page.
+	 *
+	 * Keep this in sync with the pagination plugins.
+	 */
+	.ck-content *:has(+ .page-break) {
+		margin-bottom: 0;
 	}
 }

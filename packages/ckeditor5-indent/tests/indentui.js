@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document */
 
-import { icons } from 'ckeditor5/src/core.js';
+import { IconIndent, IconOutdent } from 'ckeditor5/src/icons.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
@@ -43,6 +43,14 @@ describe( 'IndentUI', () => {
 		expect( IndentUI.pluginName ).to.equal( 'IndentUI' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( IndentUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( IndentUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( IndentUI ) ).to.be.instanceOf( IndentUI );
 	} );
@@ -55,8 +63,8 @@ describe( 'IndentUI', () => {
 			} );
 
 			testButton( 'indent', 'Increase indent', {
-				ltrIcon: icons.indent,
-				rtlIcon: icons.outdent
+				ltrIcon: IconIndent,
+				rtlIcon: IconOutdent
 			}, ButtonView );
 
 			it( 'should have tooltip', () => {
@@ -71,8 +79,8 @@ describe( 'IndentUI', () => {
 			} );
 
 			testButton( 'outdent', 'Decrease indent', {
-				ltrIcon: icons.outdent,
-				rtlIcon: icons.indent
+				ltrIcon: IconOutdent,
+				rtlIcon: IconIndent
 			}, ButtonView );
 
 			it( 'should have tooltip', () => {
@@ -89,8 +97,8 @@ describe( 'IndentUI', () => {
 			} );
 
 			testButton( 'indent', 'Increase indent', {
-				ltrIcon: icons.indent,
-				rtlIcon: icons.outdent
+				ltrIcon: IconIndent,
+				rtlIcon: IconOutdent
 			}, ButtonView );
 		} );
 
@@ -101,8 +109,8 @@ describe( 'IndentUI', () => {
 			} );
 
 			testButton( 'outdent', 'Decrease indent', {
-				ltrIcon: icons.outdent,
-				rtlIcon: icons.indent
+				ltrIcon: IconOutdent,
+				rtlIcon: IconIndent
 			}, ButtonView );
 		} );
 	} );

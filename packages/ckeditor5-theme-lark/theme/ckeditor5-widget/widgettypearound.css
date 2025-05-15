@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 :root {
@@ -103,9 +103,8 @@
 	}
 
 	/*
-	 * Show type around buttons when the widget gets selected or being hovered.
+	 * Show type around buttons when the widget is being hovered.
 	 */
-	&.ck-widget_selected,
 	&:hover {
 		& > .ck-widget__type-around > .ck-widget__type-around__button {
 			@mixin ck-widget-type-around-button-visible;
@@ -137,6 +136,24 @@
 		}
 	}
 
+	&.ck-widget_selected {
+		/*
+		* Styles of the widget when the "fake caret" is blinking (e.g. upon keyboard navigation).
+		* Despite the widget being physically selected in the model, its outline should disappear.
+		*/
+		&.ck-widget_type-around_show-fake-caret_before,
+		&.ck-widget_type-around_show-fake-caret_after {
+			outline-color: transparent;
+		}
+
+		/*
+		* Show type around buttons when the widget gets selected.
+		*/
+		& > .ck-widget__type-around > .ck-widget__type-around__button {
+			@mixin ck-widget-type-around-button-visible;
+		}
+	}
+
 	/*
 	 * Styles for the "before" button when the widget has a selection handle. Because some space
 	 * is consumed by the handle, the button must be moved slightly to the right to let it breathe.
@@ -159,17 +176,6 @@
 		 */
 		outline: solid 1px hsla(0, 0%, 100%, .5);
 		background: var(--ck-color-base-text);
-	}
-
-	/*
-	 * Styles of the widget when the "fake caret" is blinking (e.g. upon keyboard navigation).
-	 * Despite the widget being physically selected in the model, its outline should disappear.
-	 */
-	&.ck-widget_selected {
-		&.ck-widget_type-around_show-fake-caret_before,
-		&.ck-widget_type-around_show-fake-caret_after {
-			outline-color: transparent;
-		}
 	}
 
 	&.ck-widget_type-around_show-fake-caret_before,
@@ -232,6 +238,7 @@
  * See https://github.com/ckeditor/ckeditor5/issues/7263.
  */
 .ck-editor__nested-editable.ck-editor__editable_selected {
+	/* stylelint-disable-next-line no-descending-specificity */
 	& .ck-widget {
 		&.ck-widget_selected,
 		&:hover {
@@ -239,6 +246,15 @@
 				@mixin ck-widget-type-around-button-hidden;
 			}
 		}
+	}
+}
+
+/*
+ * Hide type around buttons of all widget parents when the widget is being hovered.
+ */
+.ck .ck-widget:has( .ck-widget.table:hover ) {
+	& > .ck-widget__type-around > .ck-widget__type-around__button {
+		@mixin ck-widget-type-around-button-hidden;
 	}
 }
 

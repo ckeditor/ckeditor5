@@ -1,0 +1,52 @@
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: si_LK\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "Tooltip for the heading dropdown."
+msgid "Heading"
+msgstr ""
+
+msgctxt "Default label for the heading dropdown."
+msgid "Choose heading"
+msgstr ""
+
+msgctxt "Dropdown option label for the heading level 1 format."
+msgid "Heading 1"
+msgstr ""
+
+msgctxt "Dropdown option label for the heading level 2 format."
+msgid "Heading 2"
+msgstr ""
+
+msgctxt "Dropdown option label for the heading level 3 format."
+msgid "Heading 3"
+msgstr ""
+
+msgctxt "Dropdown option label for the heading level 4 format."
+msgid "Heading 4"
+msgstr ""
+
+msgctxt "Dropdown option label for the heading level 5 format."
+msgid "Heading 5"
+msgstr ""
+
+msgctxt "Dropdown option label for the heading level 6 format."
+msgid "Heading 6"
+msgstr ""
+
+msgctxt "A default value of the placeholder for the content title."
+msgid "Type your title"
+msgstr ""
+
+msgctxt "A default value of the placeholder for the content body."
+msgid "Type or paste your content here."
+msgstr ""

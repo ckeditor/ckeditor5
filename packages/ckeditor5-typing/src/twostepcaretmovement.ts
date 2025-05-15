@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -13,6 +13,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
 import {
 	MouseObserver,
+	TouchObserver,
 	type DocumentSelection,
 	type DocumentSelectionChangeRangeEvent,
 	type DomEventData,
@@ -21,6 +22,7 @@ import {
 	type ViewDocumentArrowKeyEvent,
 	type ViewDocumentMouseDownEvent,
 	type ViewDocumentSelectionChangeEvent,
+	type ViewDocumentTouchStartEvent,
 	type ModelInsertContentEvent,
 	type ModelDeleteContentEvent
 } from '@ckeditor/ckeditor5-engine';
@@ -180,6 +182,13 @@ export default class TwoStepCaretMovement extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor: Editor ) {
 		super( editor );
 
@@ -285,10 +294,11 @@ export default class TwoStepCaretMovement extends Plugin {
 	 * Updates the document selection and the view according to the two–step caret movement state
 	 * when moving **forwards**. Executed upon `keypress` in the {@link module:engine/view/view~View}.
 	 *
-	 * @param data Data of the key press.
+	 * @internal
+	 * @param eventData Data of the key press.
 	 * @returns `true` when the handler prevented caret movement.
 	 */
-	private _handleForwardMovement( data: DomEventData ): boolean {
+	public _handleForwardMovement( eventData?: DomEventData ): boolean {
 		const attributes = this.attributes;
 		const model = this.editor.model;
 		const selection = model.document.selection;
@@ -326,7 +336,9 @@ export default class TwoStepCaretMovement extends Plugin {
 		//		<paragraph>foo{}<$text attribute>bar</$text>baz</paragraph>
 		//
 		if ( isBetweenDifferentAttributes( position, attributes ) ) {
-			preventCaretMovement( data );
+			if ( eventData ) {
+				preventCaretMovement( eventData );
+			}
 
 			// CLEAR 2-SCM attributes if we are at the end of one 2-SCM and before
 			// the next one with a different value of the same attribute.
@@ -352,10 +364,11 @@ export default class TwoStepCaretMovement extends Plugin {
 	 * Updates the document selection and the view according to the two–step caret movement state
 	 * when moving **backwards**. Executed upon `keypress` in the {@link module:engine/view/view~View}.
 	 *
-	 * @param data Data of the key press.
+	 * @internal
+	 * @param eventData Data of the key press.
 	 * @returns `true` when the handler prevented caret movement
 	 */
-	private _handleBackwardMovement( data: DomEventData ): boolean {
+	public _handleBackwardMovement( eventData?: DomEventData ): boolean {
 		const attributes = this.attributes;
 		const model = this.editor.model;
 		const selection = model.document.selection;
@@ -370,7 +383,10 @@ export default class TwoStepCaretMovement extends Plugin {
 		//		<paragraph>foo<$text attribute>bar</$text>{}baz</paragraph>
 		//
 		if ( this._isGravityOverridden ) {
-			preventCaretMovement( data );
+			if ( eventData ) {
+				preventCaretMovement( eventData );
+			}
+
 			this._restoreGravity();
 
 			// CLEAR 2-SCM attributes if we are at the end of one 2-SCM and before
@@ -393,7 +409,10 @@ export default class TwoStepCaretMovement extends Plugin {
 			//
 			if ( position.isAtStart ) {
 				if ( hasAnyAttribute( selection, attributes ) ) {
-					preventCaretMovement( data );
+					if ( eventData ) {
+						preventCaretMovement( eventData );
+					}
+
 					setSelectionAttributesFromTheNodeBefore( model, attributes, position );
 
 					return true;
@@ -410,7 +429,10 @@ export default class TwoStepCaretMovement extends Plugin {
 				!hasAnyAttribute( selection, attributes ) &&
 				isBetweenDifferentAttributes( position, attributes, true )
 			) {
-				preventCaretMovement( data );
+				if ( eventData ) {
+					preventCaretMovement( eventData );
+				}
+
 				setSelectionAttributesFromTheNodeBefore( model, attributes, position );
 
 				return true;
@@ -436,7 +458,10 @@ export default class TwoStepCaretMovement extends Plugin {
 					!hasAnyAttribute( selection, attributes ) &&
 					isBetweenDifferentAttributes( position, attributes )
 				) {
-					preventCaretMovement( data );
+					if ( eventData ) {
+						preventCaretMovement( eventData );
+					}
+
 					setSelectionAttributesFromTheNodeBefore( model, attributes, position );
 
 					return true;
@@ -474,10 +499,22 @@ export default class TwoStepCaretMovement extends Plugin {
 		const document = editor.editing.view.document;
 
 		editor.editing.view.addObserver( MouseObserver );
+		editor.editing.view.addObserver( TouchObserver );
 
+		let touched = false;
 		let clicked = false;
 
-		// Detect the click.
+		// This event should be fired before selection on mobile devices.
+		this.listenTo<ViewDocumentTouchStartEvent>( document, 'touchstart', () => {
+			clicked = false;
+			touched = true;
+		} );
+
+		// Track mouse click event.
+		// Keep in mind that it's often called after the selection change on iOS devices.
+		// On the Android devices, it's called before the selection change.
+		// That's why we watch `touchstart` event on mobile and set `touched` flag, as it's fired before the selection change.
+		// See more: https://github.com/ckeditor/ckeditor5/issues/17171
 		this.listenTo<ViewDocumentMouseDownEvent>( document, 'mousedown', () => {
 			clicked = true;
 		} );
@@ -486,12 +523,13 @@ export default class TwoStepCaretMovement extends Plugin {
 		this.listenTo<ViewDocumentSelectionChangeEvent>( document, 'selectionChange', () => {
 			const attributes = this.attributes;
 
-			if ( !clicked ) {
+			if ( !clicked && !touched ) {
 				return;
 			}
 
-			// ...and it was caused by the click...
+			// ...and it was caused by the click or touch...
 			clicked = false;
+			touched = false;
 
 			// ...and no text is selected...
 			if ( !selection.isCollapsed ) {

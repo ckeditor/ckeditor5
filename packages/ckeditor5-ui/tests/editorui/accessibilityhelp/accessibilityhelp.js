@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
@@ -38,6 +38,14 @@ describe( 'AccessibilityHelp', () => {
 
 	it( 'should have a name', () => {
 		expect( AccessibilityHelp.pluginName ).to.equal( 'AccessibilityHelp' );
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( AccessibilityHelp.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( AccessibilityHelp.isPremiumPlugin ).to.be.false;
 	} );
 
 	describe( 'constructor()', () => {
@@ -112,6 +120,18 @@ describe( 'AccessibilityHelp', () => {
 				it( 'should set keystroke in the model', () => {
 					expect( button.keystroke ).to.equal( featureKeystroke );
 				} );
+
+				it( 'should set isOn=true if dialog is visible', () => {
+					button.fire( 'execute' );
+
+					expect( dialogPlugin.id ).to.be.equal( 'accessibilityHelp' );
+					expect( button.isOn ).to.be.true;
+
+					button.fire( 'execute' );
+
+					expect( dialogPlugin.id ).to.be.null;
+					expect( button.isOn ).to.be.false;
+				} );
 			}
 		} );
 
@@ -120,7 +140,23 @@ describe( 'AccessibilityHelp', () => {
 				const viewRoot = editor.editing.view.document.getRoot( 'main' );
 				const ariaLabel = viewRoot.getAttribute( 'aria-label' );
 
-				expect( ariaLabel ).to.equal( 'Editor editing area: main. Press Alt+0 for help.' );
+				expect( ariaLabel ).to.equal( 'Rich Text Editor. Editing area: main. Press Alt+0 for help.' );
+			} );
+
+			it( 'should inject a label into a root with no aria-label', async () => {
+				const editor = await ClassicTestEditor.create( domElement, {
+					plugins: [
+						AccessibilityHelp
+					],
+					label: ''
+				} );
+
+				const viewRoot = editor.editing.view.document.getRoot( 'main' );
+				const ariaLabel = viewRoot.getAttribute( 'aria-label' );
+
+				expect( ariaLabel ).to.equal( 'Press Alt+0 for help.' );
+
+				await editor.destroy();
 			} );
 
 			it( 'should work for multiple roots (MultiRootEditor)', async () => {
@@ -202,7 +238,7 @@ describe( 'AccessibilityHelp', () => {
 		it( 'should create #contentView', () => {
 			expect( plugin.contentView ).to.be.null;
 
-			plugin._showDialog();
+			plugin._toggleDialog();
 
 			expect( plugin.contentView ).to.be.instanceof( AccessibilityHelpContentView );
 		} );

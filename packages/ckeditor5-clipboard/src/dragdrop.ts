@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -195,6 +195,13 @@ export default class DragDrop extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public static get requires() {
 		return [ ClipboardPipeline, Widget, DragDropTarget, DragDropBlockToolbar ] as const;
 	}
@@ -269,7 +276,7 @@ export default class DragDrop extends Plugin {
 		// The handler for the drag start; it is responsible for setting data transfer object.
 		this.listenTo<ViewDocumentDragStartEvent>( viewDocument, 'dragstart', ( evt, data ) => {
 			// Don't drag the editable element itself.
-			if ( data.target && data.target.is( 'editableElement' ) ) {
+			if ( data.target?.is( 'editableElement' ) ) {
 				data.preventDefault();
 
 				return;
@@ -696,7 +703,7 @@ export default class DragDrop extends Plugin {
 			preview.style.backgroundColor = 'white';
 		}
 
-		preview.innerHTML = dataTransfer.getData( 'text/html' );
+		view.domConverter.setContentOf( preview, dataTransfer.getData( 'text/html' ) );
 
 		dataTransfer.setDragImage( preview, 0, 0 );
 

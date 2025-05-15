@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -30,7 +30,7 @@ import type Text from './text.js';
  *
  * **Note:** `TextProxy` instances are created on the fly basing on the current state of parent {@link module:engine/view/text~Text}.
  * Because of this it is highly unrecommended to store references to `TextProxy instances because they might get
- * invalidated due to operations on Document. Also TextProxy is not a {@link module:engine/view/node~Node} so it can not be
+ * invalidated due to operations on Document. Also TextProxy is not a {@link module:engine/view/node~Node} so it cannot be
  * inserted as a child of {@link module:engine/view/element~Element}.
  *
  * `TextProxy` instances are created by {@link module:engine/view/treewalker~TreeWalker view tree walker}. You should not need to create
@@ -60,7 +60,6 @@ export default class TextProxy extends TypeCheckable {
 	 * @param offsetInText Offset in {@link module:engine/view/textproxy~TextProxy#textNode text node}
 	 * from which the text proxy starts.
 	 * @param length Text proxy length, that is how many text node's characters, starting from `offsetInText` it represents.
-	 * @constructor
 	 */
 	constructor( textNode: Text, offsetInText: number, length: number ) {
 		super();

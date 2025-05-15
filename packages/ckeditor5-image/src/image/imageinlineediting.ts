@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -55,6 +55,13 @@ export default class ImageInlineEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const editor = this.editor;
 		const schema = editor.model.schema;
@@ -62,16 +69,10 @@ export default class ImageInlineEditing extends Plugin {
 		// Converters 'alt' and 'srcset' are added in 'ImageEditing' plugin.
 		schema.register( 'imageInline', {
 			inheritAllFrom: '$inlineObject',
-			allowAttributes: [ 'alt', 'src', 'srcset' ]
-		} );
-
-		// Disallow inline images in captions (for now). This is the best spot to do that because
-		// independent packages can introduce captions (ImageCaption, TableCaption, etc.) so better this
-		// be future-proof.
-		schema.addChildCheck( ( context, childDefinition ) => {
-			if ( context.endsWith( 'caption' ) && childDefinition.name === 'imageInline' ) {
-				return false;
-			}
+			allowAttributes: [ 'alt', 'src', 'srcset' ],
+			// Disallow inline images in captions (at least for now).
+			// This is the best spot to do that because independent packages can introduce captions (ImageCaption, TableCaption, etc.).
+			disallowIn: [ 'caption' ]
 		} );
 
 		this._setupConversion();

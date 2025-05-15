@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import BlockQuoteEditing from '../src/blockquoteediting.js';
@@ -44,8 +44,8 @@ describe( 'BlockQuoteCommand', () => {
 			} );
 	} );
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		await editor.destroy();
 	} );
 
 	it( 'is a command', () => {
@@ -375,8 +375,8 @@ describe( 'BlockQuoteCommand', () => {
 				);
 			} );
 
-			it( 'should not wrap a block which can not be in a quote', () => {
-				// blockQuote is allowed in root, but fooBlock can not be inside blockQuote.
+			it( 'should not wrap a block which cannot be in a quote', () => {
+				// blockQuote is allowed in root, but fooBlock cannot be inside blockQuote.
 				model.schema.register( 'fooBlock', { inheritAllFrom: '$block' } );
 				model.schema.addChildCheck( ( ctx, childDef ) => {
 					if ( ctx.endsWith( 'blockQuote' ) && childDef.name == 'fooBlock' ) {

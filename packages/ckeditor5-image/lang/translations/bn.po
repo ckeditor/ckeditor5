@@ -1,18 +1,12 @@
-# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
 #
-#                                     !!! IMPORTANT !!!
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
 #
-#         Before you edit this file, please keep in mind that contributing to the project
-#                translations is possible ONLY via the Transifex online service.
-#
-#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
-#
-#                   To learn more, check out the official contributor's guide:
-#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
 #
 msgid ""
 msgstr ""
-"Language-Team: Bengali (https://app.transifex.com/ckeditor/teams/11143/bn/)\n"
 "Language: bn\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -85,9 +79,13 @@ msgctxt "The label for the upload image from computer toolbar button."
 msgid "Upload image from computer"
 msgstr "কম্পিউটার থেকে ছবি আপলোড করুন"
 
-msgctxt "The label for the upload image from computer menu bar button."
+msgctxt "The label for the upload image from computer menu bar button (standalone button)."
 msgid "Image from computer"
 msgstr "কম্পিউটার থেকে ছবি"
+
+msgctxt "The label for the upload image from computer menu bar button (inside 'Image' menu)."
+msgid "From computer"
+msgstr "কম্পিউটার থেকে"
 
 msgctxt "The label for the replace image by upload from computer toolbar button."
 msgid "Replace image from computer"
@@ -96,6 +94,10 @@ msgstr "কম্পিউটার থেকে ছবি প্রতিস্
 msgctxt "The title of the notification displayed when upload fails."
 msgid "Upload failed"
 msgstr "আপলোড ব্যর্থ হয়েছে"
+
+msgctxt "The title of the notification displayed when there is no permission to upload assets."
+msgid "You have no image upload permissions."
+msgstr "আপনার কোনও ইমেজ আপলোডের অনুমতি নেই।"
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"
@@ -115,7 +117,7 @@ msgstr "মূল আকারে ছবির আকার পরিবর্�
 
 msgctxt "The label for image resize balloon input."
 msgid "Resize image (in %0)"
-msgstr ""
+msgstr "(%0 এ) ইমেজ রিসাইজ করুন"
 
 msgctxt "The default label for the resize option that resets the size of the image."
 msgid "Original"
@@ -123,27 +125,31 @@ msgstr "মূল"
 
 msgctxt "The accessibility label of the standalone image resize custom option button in the image toolbar for screen readers."
 msgid "Custom image size"
-msgstr ""
+msgstr "কাস্টম ইমেজ সাইজ"
 
 msgctxt "The label for the resize option that allows user to enter custom size of the image."
 msgid "Custom"
-msgstr ""
+msgstr "কাস্টম"
 
 msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
 msgstr "ছবির আকার পরিবর্তনের তালিকা"
 
-msgctxt "The label of the form submit button if the image source URL input has no value."
-msgid "Insert"
-msgstr "ঢোকান"
-
-msgctxt "The label of the form submit button if the image source URL input has a value."
-msgid "Update"
-msgstr "আপডেট করুন"
-
 msgctxt "The input label for the Insert image via URL form."
 msgid "Insert image via URL"
 msgstr "URL এর মাধ্যমে ছবি ঢোকান"
+
+msgctxt "The label for the insert image via url dropdown button."
+msgid "Insert via URL"
+msgstr "URL-এর মাধ্যমে প্রবেশ করান"
+
+msgctxt "The label for the insert image via url menu bar button (standalone button)."
+msgid "Image via URL"
+msgstr "URL-এর মাধ্যমে ইমেজ"
+
+msgctxt "The label for the insert image via url menu bar button (inside 'Image' menu)."
+msgid "Via URL"
+msgstr "URL-এর মাধ্যমে"
 
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
@@ -159,20 +165,32 @@ msgstr "ছবির জন্য ক্যাপশন: %0"
 
 msgctxt "Text used as error label when user submitted custom image resize form with blank value."
 msgid "The value must not be empty."
-msgstr ""
+msgstr "মানটি খালি রাখা যাবে না।"
 
 msgctxt "Text used as error label when user submitted custom image resize form with incorrect value."
 msgid "The value should be a plain number."
-msgstr ""
+msgstr "মানটি একটি সরল সংখ্যা হতে হবে।"
 
 msgctxt "Aria status message indicating that the image is being uploaded. Example: 'Uploading image'."
 msgid "Uploading image"
-msgstr ""
+msgstr "ইমেজ আপলোড হচ্ছে"
 
 msgctxt "Aria status message indicating that the image has been uploaded successfully. Example: 'Image upload complete'."
 msgid "Image upload complete"
-msgstr ""
+msgstr "ইমেজ আপলোড সম্পূর্ণ হয়েছে"
 
 msgctxt "Aria status message indicating that an error has occurred during image upload. Example: 'Error during image upload'."
 msgid "Error during image upload"
-msgstr ""
+msgstr "ইমেজ আপলোডের সময় ত্রুটি"
+
+msgctxt "Label for the widget inserted by the image feature (as in 'insert image')"
+msgid "Image"
+msgstr "ইমেজ"
+
+msgctxt "The label for the header of the image resize balloon."
+msgid "Image Resize"
+msgstr "ছবি আকার পরিবর্তন"
+
+msgctxt "The label of the input field for the text alternative of the image."
+msgid "Text Alternative"
+msgstr "টেক্সট বিকল্প"

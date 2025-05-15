@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -237,9 +237,9 @@ export default class TextareaView extends InputBase<HTMLTextAreaElement> {
 			 * The minimum number of rows is greater than the maximum number of rows.
 			 *
 			 * @error ui-textarea-view-min-rows-greater-than-max-rows
-			 * @param textareaView The misconfigured textarea view instance.
-			 * @param minRows The value of `minRows` property.
-			 * @param maxRows The value of `maxRows` property.
+			 * @param {module:ui/textarea/textareaview~TextareaView} textareaView The misconfigured textarea view instance.
+			 * @param {number} minRows The value of `minRows` property.
+			 * @param {number} maxRows The value of `maxRows` property.
 			 */
 			throw new CKEditorError( 'ui-textarea-view-min-rows-greater-than-max-rows', {
 				textareaView: this,

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -13,7 +13,7 @@ import ButtonView from '../../button/buttonview.js';
 import type { ButtonExecuteEvent } from '../../button/button.js';
 import type ViewCollection from '../../viewcollection.js';
 
-import { Plugin, icons, type Editor } from '@ckeditor/ckeditor5-core';
+import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 import {
 	CKEditorError,
 	FocusTracker,
@@ -21,13 +21,15 @@ import {
 	toUnit,
 	type Locale,
 	type ObservableChangeEvent,
-	type PositionOptions
+	type PositionOptions,
+	type DecoratedMethodEvent
 } from '@ckeditor/ckeditor5-utils';
+import { IconNextArrow, IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 
 import '../../../theme/components/panel/balloonrotator.css';
 import '../../../theme/components/panel/fakepanel.css';
 
-const toPx = toUnit( 'px' );
+const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 /**
  * Provides the common contextual balloon for the editor.
@@ -139,6 +141,13 @@ export default class ContextualBalloon extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor: Editor ) {
 		super( editor );
 
@@ -153,6 +162,8 @@ export default class ContextualBalloon extends Plugin {
 
 			return null;
 		};
+
+		this.decorate( 'getPositionOptions' );
 
 		this.set( 'visibleView', null );
 		this.set( '_numberOfStacks', 0 );
@@ -320,8 +331,36 @@ export default class ContextualBalloon extends Plugin {
 			this._visibleStack.get( this.visibleView! )!.position = position;
 		}
 
-		this.view.pin( this._getBalloonPosition()! );
+		this.view.pin( this.getPositionOptions()! );
 		this._fakePanelsView!.updatePosition();
+	}
+
+	/**
+	 * Returns position options of the last view in the stack.
+	 * This keeps the balloon in the same position when the view is changed.
+	 */
+	public getPositionOptions(): Partial<PositionOptions> | undefined {
+		let position = Array.from( this._visibleStack.values() ).pop()!.position;
+
+		if ( position ) {
+			// Use the default limiter if none has been specified.
+			if ( !position.limiter ) {
+				// Don't modify the original options object.
+				position = Object.assign( {}, position, {
+					limiter: this.positionLimiter
+				} );
+			}
+
+			// Don't modify the original options object.
+			position = Object.assign( {}, position, {
+				viewportOffsetConfig: {
+					...this.editor.ui.viewportOffset,
+					top: this.editor.ui.viewportOffset.visualTop
+				}
+			} );
+		}
+
+		return position;
 	}
 
 	/**
@@ -357,7 +396,6 @@ export default class ContextualBalloon extends Plugin {
 		this._view = new BalloonPanelView( this.editor.locale );
 
 		this.editor.ui.view.body.add( this._view );
-		this.editor.ui.focusTracker.add( this._view.element! );
 
 		this._rotatorView = this._createRotatorView();
 		this._fakePanelsView = this._createFakePanelsView();
@@ -495,39 +533,21 @@ export default class ContextualBalloon extends Plugin {
 
 		this._rotatorView!.showView( view );
 		this.visibleView = view;
-		this.view.pin( this._getBalloonPosition()! );
+		this.view.pin( this.getPositionOptions()! );
 		this._fakePanelsView!.updatePosition();
 
 		if ( singleViewMode ) {
 			this._singleViewMode = true;
 		}
 	}
-
-	/**
-	 * Returns position options of the last view in the stack.
-	 * This keeps the balloon in the same position when the view is changed.
-	 */
-	private _getBalloonPosition() {
-		let position = Array.from( this._visibleStack.values() ).pop()!.position;
-
-		if ( position ) {
-			// Use the default limiter if none has been specified.
-			if ( !position.limiter ) {
-				// Don't modify the original options object.
-				position = Object.assign( {}, position, {
-					limiter: this.positionLimiter
-				} );
-			}
-
-			// Don't modify the original options object.
-			position = Object.assign( {}, position, {
-				viewportOffsetConfig: this.editor.ui.viewportOffset
-			} );
-		}
-
-		return position;
-	}
 }
+
+/**
+ * An event fired when the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon} is about to get the position of the balloon.
+ *
+ * @eventName ~ContextualBalloon#getPositionOptions
+ */
+export type ContextualBalloonGetPositionOptionsEvent = DecoratedMethodEvent<ContextualBalloon, 'getPositionOptions'>;
 
 /**
  * The configuration of the view.
@@ -623,8 +643,8 @@ export class RotatorView extends View {
 		this.set( 'isNavigationVisible', true );
 
 		this.focusTracker = new FocusTracker();
-		this.buttonPrevView = this._createButtonView( t( 'Previous' ), icons.previousArrow );
-		this.buttonNextView = this._createButtonView( t( 'Next' ), icons.nextArrow );
+		this.buttonPrevView = this._createButtonView( t( 'Previous' ), IconPreviousArrow );
+		this.buttonNextView = this._createButtonView( t( 'Next' ), IconNextArrow );
 		this.content = this.createCollection();
 
 		this.setTemplate( {

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals Event, document */
@@ -343,19 +343,43 @@ describe( 'ButtonView', () => {
 			it( '-pressed reacts to #isOn', () => {
 				view.isToggleable = true;
 				view.isOn = true;
+
 				expect( view.element.attributes[ 'aria-pressed' ].value ).to.equal( 'true' );
+				expect( view.element.hasAttribute( 'aria-checked' ) ).to.be.false;
 
 				view.isOn = false;
+
 				expect( view.element.attributes[ 'aria-pressed' ].value ).to.equal( 'false' );
+				expect( view.element.hasAttribute( 'aria-checked' ) ).to.be.false;
 			} );
 
 			it( '-pressed is not present for non–toggleable button', () => {
 				view.isOn = true;
+
 				expect( view.element.hasAttribute( 'aria-pressed' ) ).to.be.false;
+				expect( view.element.hasAttribute( 'aria-checked' ) ).to.be.false;
 
 				view.isOn = false;
+
 				expect( view.element.hasAttribute( 'aria-pressed' ) ).to.be.false;
+				expect( view.element.hasAttribute( 'aria-checked' ) ).to.be.false;
 			} );
+
+			for ( const role of [ 'radio', 'checkbox', 'option', 'switch', 'menuitemcheckbox', 'menuitemradio' ] ) {
+				it( `-checked reacts to #isOn and "${ role }" button role`, () => {
+					view.role = role;
+					view.isToggleable = true;
+					view.isOn = true;
+
+					expect( view.element.attributes[ 'aria-checked' ].value ).to.equal( 'true' );
+					expect( view.element.hasAttribute( 'aria-pressed' ) ).to.be.false;
+
+					view.isOn = false;
+
+					expect( view.element.attributes[ 'aria-checked' ].value ).to.equal( 'false' );
+					expect( view.element.hasAttribute( 'aria-pressed' ) ).to.be.false;
+				} );
+			}
 
 			it( '-label reacts on #ariaLabel', () => {
 				view.ariaLabel = undefined;
@@ -462,6 +486,36 @@ describe( 'ButtonView', () => {
 
 			view.icon = '<svg>bar</svg>';
 			expect( view.iconView.content ).to.equal( '<svg>bar</svg>' );
+		} );
+
+		it( 'is added to the #children when view#icon is defined after render', () => {
+			view = new ButtonView( locale );
+			view.render();
+
+			view.icon = '<svg></svg>';
+			expect( view.element.childNodes ).to.have.length( 2 );
+			expect( view.element.childNodes[ 0 ] ).to.equal( view.iconView.element );
+
+			expect( view.iconView ).to.instanceOf( IconView );
+			expect( view.iconView.content ).to.equal( '<svg></svg>' );
+			expect( view.iconView.element.classList.contains( 'ck-button__icon' ) ).to.be.true;
+
+			view.icon = '<svg>bar</svg>';
+			expect( view.iconView.content ).to.equal( '<svg>bar</svg>' );
+		} );
+
+		it( 'is removed from the #children when view#icon is removed', () => {
+			view = new ButtonView( locale );
+			view.icon = '<svg></svg>';
+			view.render();
+
+			expect( view.element.childNodes ).to.have.length( 2 );
+			expect( view.element.childNodes[ 0 ] ).to.equal( view.iconView.element );
+			expect( view.element.childNodes[ 1 ] ).to.equal( view.labelView.element );
+
+			view.icon = undefined;
+			expect( view.element.childNodes ).to.have.length( 1 );
+			expect( view.element.childNodes[ 0 ] ).to.equal( view.labelView.element );
 		} );
 
 		it( 'is destroyed with the view', () => {

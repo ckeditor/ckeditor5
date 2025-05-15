@@ -1,0 +1,104 @@
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: bn\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "Toolbar button tooltip for the Emoji feature."
+msgid "Emoji"
+msgstr "ইমোজি"
+
+msgctxt "Dropdown option label for opening an emoji picker offering more results to choose from."
+msgid "Show all emoji..."
+msgstr "সমস্ত ইমোজি দেখান..."
+
+msgctxt "Label of an input field for filtering an emoji collection by the typed value."
+msgid "Find an emoji (min. 2 characters)"
+msgstr "একটি ইমোজির সন্ধান করুন (কমপক্ষে 2 টি ক্যারেক্টার)"
+
+msgctxt "The main text of the message shown to the user when no emoji are available for the search criteria."
+msgid "No emojis were found matching \"%0\"."
+msgstr "\"%0\" এর সাথে মেলে এমন কোনো ইমোজি পাওয়া যায়নি।"
+
+msgctxt "The main text of the message shown to the user when the provided search query does not contain the required number of characters."
+msgid "Keep on typing to see the emoji."
+msgstr "ইমোজিটি দেখতে টাইপ করতে থাকুন।"
+
+msgctxt "The secondary text of the message shown to the user to explain how many characters the search query must consist of."
+msgid "The query must contain at least two characters."
+msgstr "কোয়েরিটিতে কমপক্ষে দুটি ক্যারেক্টার থাকতে হবে।"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Smileys & Expressions\" category."
+msgid "Smileys & Expressions"
+msgstr "স্মাইলি ও অভিব্যক্তি"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Gestures & People\" category."
+msgid "Gestures & People"
+msgstr "অঙ্গভঙ্গি ও মানুষ"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Animals & Nature\" category."
+msgid "Animals & Nature"
+msgstr "প্রাণী ও প্রকৃতি"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Food & Drinks\" category."
+msgid "Food & Drinks"
+msgstr "খাদ্য ও পানীয়"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Travel & Places\" category."
+msgid "Travel & Places"
+msgstr "ভ্রমণ ও স্থান"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Activities\" category."
+msgid "Activities"
+msgstr "কার্যক্রম"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Objects\" category."
+msgid "Objects"
+msgstr "বস্তু"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Symbols\" category."
+msgid "Symbols"
+msgstr "প্রতীক"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Flags\" category."
+msgid "Flags"
+msgstr "পতাকা"
+
+msgctxt "Default label for the emoji skin tone dropdown."
+msgid "Select skin tone"
+msgstr "স্কিন টোন নির্বাচন করুন"
+
+msgctxt "Dropdown option label for using the \"Default skin tone\" variant. Example emoji: 👋."
+msgid "Default skin tone"
+msgstr "ডিফল্ট স্কিন টোন"
+
+msgctxt "Dropdown option label for using the \"Light skin tone\" variant. Example emoji: 👋🏻."
+msgid "Light skin tone"
+msgstr "হালকা স্কিন টোন"
+
+msgctxt "Dropdown option label for using the \"Medium Light skin tone\" variant. Example emoji: 👋🏼."
+msgid "Medium Light skin tone"
+msgstr "মাঝারি হালকা স্কিন টোন"
+
+msgctxt "Dropdown option label for using the \"Medium skin tone\" variant. Example emoji: 👋🏽."
+msgid "Medium skin tone"
+msgstr "মাঝারি স্কিন টোন"
+
+msgctxt "Dropdown option label for using the \"Medium Dark skin tone\" variant. Example emoji: 👋🏾."
+msgid "Medium Dark skin tone"
+msgstr "মাঝারি গাঢ় স্কিন টোন"
+
+msgctxt "Dropdown option label for using the \"Dark skin tone\" variant. Example emoji: 👋🏿."
+msgid "Dark skin tone"
+msgstr "গাঢ় স্কিন টোন"
+
+msgctxt "Header of the emoji picker balloon panel."
+msgid "Emoji picker"
+msgstr "ইমোজি পিকার"

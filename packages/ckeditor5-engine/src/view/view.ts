@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -28,7 +28,7 @@ import type Item from './item.js';
 
 import KeyObserver from './observer/keyobserver.js';
 import FakeSelectionObserver from './observer/fakeselectionobserver.js';
-import MutationObserver from './observer/mutationobserver.js';
+import MutationObserver, { type ViewDocumentMutationsEvent } from './observer/mutationobserver.js';
 import SelectionObserver from './observer/selectionobserver.js';
 import FocusObserver, { type ViewDocumentBlurEvent } from './observer/focusobserver.js';
 import CompositionObserver from './observer/compositionobserver.js';
@@ -46,7 +46,7 @@ import {
 import { injectUiElementHandling } from './uielement.js';
 import { injectQuirksHandling } from './filler.js';
 
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'es-toolkit/compat';
 
 type IfTrue<T> = T extends true ? true : never;
 type DomRange = globalThis.Range;
@@ -119,10 +119,8 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 
 	/**
 	 * Instance of the {@link module:engine/view/renderer~Renderer renderer}.
-	 *
-	 * @internal
 	 */
-	public readonly _renderer: Renderer;
+	private readonly _renderer: Renderer;
 
 	/**
 	 * A DOM root attributes cache. It saves the initial values of DOM root attributes before the DOM element
@@ -230,6 +228,17 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 				}
 			} );
 		}
+
+		// Listen to external content mutations (directly in the DOM) and mark them to get verified by the renderer.
+		this.listenTo<ViewDocumentMutationsEvent>( this.document, 'mutations', ( evt, { mutations } ) => {
+			mutations.forEach( mutation => this._renderer.markToSync( mutation.type, mutation.node ) );
+		}, { priority: 'low' } );
+
+		// After all mutated nodes were marked to sync we can trigger view to DOM synchronization
+		// to make sure the DOM structure matches the view.
+		this.listenTo<ViewDocumentMutationsEvent>( this.document, 'mutations', () => {
+			this.forceRender();
+		}, { priority: 'lowest' } );
 	}
 
 	/**
@@ -270,7 +279,12 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 			if ( name === 'class' ) {
 				this._writer.addClass( value.split( ' ' ), viewRoot );
 			} else {
-				this._writer.setAttribute( name, value, viewRoot );
+				// There is a chance that some attributes have already been set on the view root before attaching
+				// the DOM root and should be preserved. This is a similar case to the "class" attribute except
+				// this time there is no workaround using a some low-level API.
+				if ( !viewRoot.hasAttribute( name ) ) {
+					this._writer.setAttribute( name, value, viewRoot );
+				}
 			}
 		}
 

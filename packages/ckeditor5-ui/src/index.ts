@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -25,7 +25,8 @@ export type { default as ButtonLabel } from './button/buttonlabel.js';
 export { default as ButtonView } from './button/buttonview.js';
 export { default as ButtonLabelView } from './button/buttonlabelview.js';
 export { default as SwitchButtonView } from './button/switchbuttonview.js';
-export { default as FileDialogButtonView } from './button/filedialogbuttonview.js';
+export { default as ListItemButtonView } from './button/listitembuttonview.js';
+export { default as FileDialogButtonView, FileDialogListItemButtonView } from './button/filedialogbuttonview.js';
 
 export { default as CollapsibleView } from './collapsible/collapsibleview.js';
 
@@ -43,6 +44,8 @@ export {
 	type ColorSelectorColorPickerShowEvent
 } from './colorselector/colorselectorview.js';
 
+export { default as DocumentColorCollection } from './colorselector/documentcolorcollection.js';
+
 export { default as ComponentFactory } from './componentfactory.js';
 
 export { default as Dialog } from './dialog/dialog.js';
@@ -54,11 +57,19 @@ export { default as DropdownButtonView } from './dropdown/button/dropdownbuttonv
 export { default as SplitButtonView } from './dropdown/button/splitbuttonview.js';
 export * from './dropdown/utils.js';
 
+export * from './dropdown/menu/utils.js';
+export { default as DropdownMenuNestedMenuView } from './dropdown/menu/dropdownmenunestedmenuview.js';
+export { default as DropdownMenuRootListView } from './dropdown/menu/dropdownmenurootlistview.js';
+export { default as DropdownMenuListView } from './dropdown/menu/dropdownmenulistview.js';
+export { default as DropdownMenuListItemView } from './dropdown/menu/dropdownmenulistitemview.js';
+export { default as DropdownMenuListItemButtonView } from './dropdown/menu/dropdownmenulistitembuttonview.js';
+
 export { default as EditorUI, type EditorUIReadyEvent, type EditorUIUpdateEvent } from './editorui/editorui.js';
 export { default as EditorUIView } from './editorui/editoruiview.js';
 export { default as BoxedEditorUIView } from './editorui/boxed/boxededitoruiview.js';
 export { default as InlineEditableUIView } from './editableui/inline/inlineeditableuiview.js';
 
+export { default as FormRowView } from './formrow/formrowview.js';
 export { default as FormHeaderView } from './formheader/formheaderview.js';
 export {
 	default as FocusCycler,
@@ -80,6 +91,7 @@ export { default as TextareaView, type TextareaViewUpdateEvent } from './textare
 export { default as IframeView } from './iframe/iframeview.js';
 
 export { default as LabelView } from './label/labelview.js';
+
 export { type LabeledFieldViewCreator, default as LabeledFieldView } from './labeledfield/labeledfieldview.js';
 export * from './labeledfield/utils.js';
 
@@ -87,12 +99,13 @@ export { default as ListItemGroupView } from './list/listitemgroupview.js';
 export { default as ListItemView } from './list/listitemview.js';
 export { default as ListSeparatorView } from './list/listseparatorview.js';
 export { default as ListView } from './list/listview.js';
+export { default as filterGroupAndItemNames } from './search/filtergroupanditemnames.js';
 
 export { default as Notification } from './notification/notification.js';
 
 export { default as ViewModel } from './model.js';
 export { default as BalloonPanelView } from './panel/balloon/balloonpanelview.js';
-export { default as ContextualBalloon } from './panel/balloon/contextualballoon.js';
+export { default as ContextualBalloon, type ContextualBalloonGetPositionOptionsEvent } from './panel/balloon/contextualballoon.js';
 export { default as StickyPanelView } from './panel/sticky/stickypanelview.js';
 
 export { default as AutocompleteView, type AutocompleteViewConfig, type AutocompleteResultsView } from './autocomplete/autocompleteview.js';
@@ -100,6 +113,8 @@ export { default as SearchTextView, type SearchTextViewSearchEvent, type SearchT
 export { default as SearchInfoView } from './search/searchinfoview.js';
 export type { default as FilteredView, FilteredViewExecuteEvent } from './search/filteredview.js';
 export { default as HighlightedTextView } from './highlightedtext/highlightedtextview.js';
+export { default as ButtonLabelWithHighlightView } from './highlightedtext/buttonlabelwithhighlightview.js';
+export { default as LabelWithHighlightView } from './highlightedtext/labelwithhighlightview.js';
 
 export { default as TooltipManager } from './tooltipmanager.js';
 export { default as Template, type TemplateDefinition } from './template.js';
@@ -121,6 +136,6 @@ export { default as MenuBarMenuListView } from './menubar/menubarmenulistview.js
 export { default as MenuBarMenuListItemView } from './menubar/menubarmenulistitemview.js';
 export { default as MenuBarMenuListItemButtonView } from './menubar/menubarmenulistitembuttonview.js';
 export { default as MenuBarMenuListItemFileDialogButtonView } from './menubar/menubarmenulistitemfiledialogbuttonview.js';
-export { normalizeMenuBarConfig, DefaultMenuBarItems, _initMenuBar } from './menubar/utils.js';
+export { normalizeMenuBarConfig, DefaultMenuBarItems } from './menubar/utils.js';
 
 import './augmentation.js';

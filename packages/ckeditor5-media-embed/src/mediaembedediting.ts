@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -28,6 +28,13 @@ export default class MediaEmbedEditing extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'MediaEmbedEditing' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 
 	/**
@@ -88,6 +95,7 @@ export default class MediaEmbedEditing extends Plugin {
 					name: 'youtube',
 					url: [
 						/^(?:m\.)?youtube\.com\/watch\?v=([\w-]+)(?:&t=(\d+))?/,
+						/^(?:m\.)?youtube\.com\/shorts\/([\w-]+)(?:\?t=(\d+))?/,
 						/^(?:m\.)?youtube\.com\/v\/([\w-]+)(?:\?t=(\d+))?/,
 						/^youtube\.com\/embed\/([\w-]+)(?:\?start=(\d+))?/,
 						/^youtu\.be\/([\w-]+)(?:\?t=(\d+))?/
@@ -134,11 +142,17 @@ export default class MediaEmbedEditing extends Plugin {
 
 				{
 					name: 'instagram',
-					url: /^instagram\.com\/p\/(\w+)/
+					url: [
+						/^instagram\.com\/p\/(\w+)/,
+						/^instagram\.com\/reel\/(\w+)/
+					]
 				},
 				{
 					name: 'twitter',
-					url: /^twitter\.com/
+					url: [
+						/^twitter\.com/,
+						/^x\.com/
+					]
 				},
 				{
 					name: 'googleMaps',

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import { getLanguageDirection } from '../src/language.js';
@@ -36,7 +36,11 @@ describe( 'language', () => {
 
 			// Dhivehi, Divehi
 			{ code: 'dv', textDirection: 'rtl' },
-			{ code: 'div', textDirection: 'rtl' }
+			{ code: 'div', textDirection: 'rtl' },
+
+			// Urdu
+			{ code: 'ur', textDirection: 'rtl' },
+			{ code: 'urd', textDirection: 'rtl' }
 		].forEach( ( { code, textDirection } ) => {
 			it( `determines the "${ code }" language direction`, () => {
 				expect( getLanguageDirection( code ) ).to.equal( textDirection );

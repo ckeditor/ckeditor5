@@ -1,19 +1,9 @@
 /*
- * Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 .ck.ck-form__row {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
-	justify-content: space-between;
-
-	/* Ignore labels that work as fieldset legends */
-	& > *:not(.ck-label) {
-		flex-grow: 1;
-	}
-
 	&.ck-table-form__action-row {
 		& .ck-button-save,
 		& .ck-button-cancel {

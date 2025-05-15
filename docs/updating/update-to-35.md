@@ -9,7 +9,7 @@ modified_at: 2022-10-05
 # Update to CKEditor&nbsp;5 v35.x
 
 <info-box>
-	When updating your CKEditor&nbsp;5 installation, make sure **all the packages are the same version** to avoid errors.
+	When updating your CKEditor&nbsp;5 installation, ensure **all the packages are the same version** to avoid errors.
 
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
@@ -20,7 +20,7 @@ _Released on October 5, 2022._
 
 For the entire list of changes introduced in version 35.2.0, see the [release notes for CKEditor&nbsp;5 v35.2.0](https://github.com/ckeditor/ckeditor5/releases/tag/v35.2.0).
 
-Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v35.2.0.
+Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v35.2.0.
 
 ### Introducing external comments
 
@@ -99,7 +99,7 @@ _Released on August 31, 2022._
 
 For the entire list of changes introduced in version 35.1.0, see the [release notes for CKEditor&nbsp;5 v35.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v35.1.0).
 
-Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v35.1.0.
+Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v35.1.0.
 
 ### Changes to API providing accessible navigation between editing roots and toolbars on <kbd>Alt</kbd>+<kbd>F10</kbd> and <kbd>Esc</kbd> keystrokes
 
@@ -266,7 +266,7 @@ _Released on August 3, 2022._
 
 For the entire list of changes introduced in version 35.0.0, see the [release notes for CKEditor&nbsp;5 v35.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v35.0.0).
 
-Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v35.0.0.
+Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v35.0.0.
 
 ### The source element is not updated automatically after the editor destruction
 
@@ -275,10 +275,11 @@ The last version of CKEditor&nbsp;5 changes the default behavior of the source e
 However, this behavior is configurable. You can enable it with the {@link module:core/editor/editorconfig~EditorConfig#updateSourceElementOnDestroy `updateSourceElementOnDestroy`} configuration option:
 
 ```js
-ClassicEditor.create( sourceElement, {
-	// ...
-	updateSourceElementOnDestroy: true
-} );
+ClassicEditor
+	.create( sourceElement, {
+		// ...
+		updateSourceElementOnDestroy: true
+	} );
 ```
 
 <info-box warning>

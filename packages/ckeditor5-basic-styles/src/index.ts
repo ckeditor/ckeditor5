@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -28,6 +28,6 @@ export { default as SuperscriptUI } from './superscript/superscriptui.js';
 export { default as Underline } from './underline.js';
 export { default as UnderlineEditing } from './underline/underlineediting.js';
 export { default as UnderlineUI } from './underline/underlineui.js';
-export type { default as AttributeCommand } from './attributecommand.js';
+export { default as AttributeCommand } from './attributecommand.js';
 
 import './augmentation.js';

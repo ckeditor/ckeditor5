@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals AbortController, FormData, URL, window */
@@ -54,6 +54,13 @@ export default class CKBoxUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public async afterInit(): Promise<void> {
 		const editor = this.editor;
 
@@ -98,7 +105,7 @@ class Adapter implements UploadAdapter {
 	/**
 	 * CKEditor Cloud Services access token.
 	 */
-	public token: InitializedToken;
+	public token: Promise<InitializedToken>;
 
 	/**
 	 * The editor instance.
@@ -148,7 +155,7 @@ class Adapter implements UploadAdapter {
 		const uploadUrl = new URL( 'assets', this.serviceOrigin );
 		const formData = new FormData();
 
-		uploadUrl.searchParams.set( 'workspaceId', ckboxUtils.getWorkspaceId() );
+		uploadUrl.searchParams.set( 'workspaceId', await ckboxUtils.getWorkspaceId() );
 
 		formData.append( 'categoryId', category );
 		formData.append( 'file', file );
@@ -165,7 +172,7 @@ class Adapter implements UploadAdapter {
 				}
 			},
 			signal: this.controller.signal,
-			authorization: this.token.value
+			authorization: ( await this.token ).value
 		} as const;
 
 		return sendHttpRequest( requestConfig )

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global DOMParser */
@@ -11,7 +11,7 @@
 
 import View from '../view.js';
 
-import type { ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
+import { CKEditorError, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/icon/icon.css';
 
@@ -123,7 +123,8 @@ export default class IconView extends View {
 					// (https://github.com/ckeditor/ckeditor5/issues/12599).
 					bind.if( 'isColorInherited', 'ck-icon_inherit-color' )
 				],
-				viewBox: bind.to( 'viewBox' )
+				viewBox: bind.to( 'viewBox' ),
+				'aria-hidden': true
 			}
 		} );
 	}
@@ -155,7 +156,17 @@ export default class IconView extends View {
 	private _updateXMLContent() {
 		if ( this.content ) {
 			const parsed = new DOMParser().parseFromString( this.content.trim(), 'image/svg+xml' );
-			const svg = parsed.querySelector( 'svg' )!;
+			const svg = parsed.querySelector( 'svg' );
+
+			if ( !svg ) {
+				/**
+				 * The provided icon content is not a valid SVG.
+				 *
+				 * @error ui-iconview-invalid-svg
+				 */
+				throw new CKEditorError( 'ui-iconview-invalid-svg', this );
+			}
+
 			const viewBox = svg.getAttribute( 'viewBox' );
 
 			if ( viewBox ) {

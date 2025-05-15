@@ -1,0 +1,104 @@
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: ro\n"
+"Plural-Forms: nplurals=3; plural=(n == 1 ? 0 : (n == 0 || (n % 100 > 0 && n % 100 < 20)) ? 1 : 2);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "Toolbar button tooltip for the Emoji feature."
+msgid "Emoji"
+msgstr "Emoji"
+
+msgctxt "Dropdown option label for opening an emoji picker offering more results to choose from."
+msgid "Show all emoji..."
+msgstr "Arată toate emoji..."
+
+msgctxt "Label of an input field for filtering an emoji collection by the typed value."
+msgid "Find an emoji (min. 2 characters)"
+msgstr "Găsește un emoji (min. 2 caractere)"
+
+msgctxt "The main text of the message shown to the user when no emoji are available for the search criteria."
+msgid "No emojis were found matching \"%0\"."
+msgstr "Nu s-a găsit niciun emoji pentru \"%0\"."
+
+msgctxt "The main text of the message shown to the user when the provided search query does not contain the required number of characters."
+msgid "Keep on typing to see the emoji."
+msgstr "Mai încearcă să vezi emoji."
+
+msgctxt "The secondary text of the message shown to the user to explain how many characters the search query must consist of."
+msgid "The query must contain at least two characters."
+msgstr "Interogarea trebuie să conțină cel puțin două caractere."
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Smileys & Expressions\" category."
+msgid "Smileys & Expressions"
+msgstr "Smiley și expresii"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Gestures & People\" category."
+msgid "Gestures & People"
+msgstr "Gesturi și oameni"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Animals & Nature\" category."
+msgid "Animals & Nature"
+msgstr "Animale și natură"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Food & Drinks\" category."
+msgid "Food & Drinks"
+msgstr "Mâncare și băuturi"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Travel & Places\" category."
+msgid "Travel & Places"
+msgstr "Călătorii și locuri"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Activities\" category."
+msgid "Activities"
+msgstr "Activități"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Objects\" category."
+msgid "Objects"
+msgstr "Obiecte"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Symbols\" category."
+msgid "Symbols"
+msgstr "Sim"
+
+msgctxt "Tooltip for filtering the displayed emoji by the \"Flags\" category."
+msgid "Flags"
+msgstr "Steaguri"
+
+msgctxt "Default label for the emoji skin tone dropdown."
+msgid "Select skin tone"
+msgstr "Selectează tonul pielii"
+
+msgctxt "Dropdown option label for using the \"Default skin tone\" variant. Example emoji: 👋."
+msgid "Default skin tone"
+msgstr "Ton de piele implicit"
+
+msgctxt "Dropdown option label for using the \"Light skin tone\" variant. Example emoji: 👋🏻."
+msgid "Light skin tone"
+msgstr "Ton de piele deschis"
+
+msgctxt "Dropdown option label for using the \"Medium Light skin tone\" variant. Example emoji: 👋🏼."
+msgid "Medium Light skin tone"
+msgstr "Ton de piele mediu-deschis"
+
+msgctxt "Dropdown option label for using the \"Medium skin tone\" variant. Example emoji: 👋🏽."
+msgid "Medium skin tone"
+msgstr "Ton de piele mediu"
+
+msgctxt "Dropdown option label for using the \"Medium Dark skin tone\" variant. Example emoji: 👋🏾."
+msgid "Medium Dark skin tone"
+msgstr "Ton de piele mediu-închis"
+
+msgctxt "Dropdown option label for using the \"Dark skin tone\" variant. Example emoji: 👋🏿."
+msgid "Dark skin tone"
+msgstr "Ton de piele închis"
+
+msgctxt "Header of the emoji picker balloon panel."
+msgid "Emoji picker"
+msgstr "Selector emoji"

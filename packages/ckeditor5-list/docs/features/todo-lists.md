@@ -11,7 +11,7 @@ The to-do list feature lets you create a list of interactive checkboxes with lab
 
 ## Demo
 
-Use the to-do list toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/todolist.svg To-do list} to add a list to the editor content. Thanks to the integration with the {@link features/autoformat autoformatting feature}, you can also start a line with `[ ]` or `[x]` followed by a space to insert an unchecked or checked list item.
+Use the to-do list toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/todo-list.svg To-do list} to add a list to the editor content. Thanks to the integration with the {@link features/autoformat autoformatting feature}, you can also start a line with `[ ]` or `[x]` followed by a space to insert an unchecked or checked list item.
 
 {@snippet features/todo-list}
 
@@ -25,35 +25,31 @@ You can check and clear a list item by using the <kbd>Ctrl</kbd> + <kbd>Enter</k
 
 ## Installation
 
-The `TodoList` plugin provides the {@link features/todo-lists to-do list feature} for CKEditor&nbsp;5.
-
 <info-box info>
-	The to-do list feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
-```bash
-npm install --save @ckeditor/ckeditor5-list
-```
-
-Then add the `TodoList` plugin to your plugin list and the toolbar configuration:
-
+<code-switcher>
 ```js
-import { TodoList } from '@ckeditor/ckeditor5-list';
+import { ClassicEditor, TodoList } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ TodoList, /* ... */ ],
 		toolbar: [ 'todoList', /* ... */ ],
+		list: {
+			// Configuration.
+		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
+</code-switcher>
 
 ## Related features
 

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
@@ -23,6 +23,14 @@ describe( 'AutoLink', () => {
 
 	it( 'should be named', () => {
 		expect( AutoLink.pluginName ).to.equal( 'AutoLink' );
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( AutoLink.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( AutoLink.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should be loaded without Enter & ShiftEnter features', async () => {
@@ -409,6 +417,53 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/15862
+		it( 'adds linkHref to a text link inside an inline limit element on enter', () => {
+			editor.model.schema.register( 'limit', {
+				isLimit: true,
+				allowIn: '$block',
+				allowChildren: '$text'
+			} );
+			editor.conversion.elementToElement( {
+				model: 'limit',
+				view: {
+					name: 'span',
+					classes: 'limit'
+				}
+			} );
+
+			setData( model,
+				'<paragraph>outer text' +
+				'<limit>inner text https://www.cksource.com[] inner text</limit>' +
+				'outer text</paragraph>'
+			);
+
+			editor.execute( 'enter' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>outer text' +
+				'<limit>inner text <$text linkHref="https://www.cksource.com">https://www.cksource.com[]</$text> inner text</limit>' +
+				'outer text</paragraph>'
+			);
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/15862
+		it( 'adds linkHref to a text link inside a block limit element on enter', () => {
+			setData( model, '<paragraph>https://www.cksource.com[]</paragraph>' );
+
+			editor.model.schema.extend( 'paragraph', {
+				isLimit: true
+			} );
+
+			editor.execute( 'enter' );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>' +
+				'<$text linkHref="https://www.cksource.com">https://www.cksource.com[]</$text>' +
+				'</paragraph>'
+			);
+		} );
+
 		it( 'adds "mailto:" to link of detected email addresses', () => {
 			simulateTyping( 'newsletter@cksource.com ' );
 
@@ -445,6 +500,16 @@ describe( 'AutoLink', () => {
 
 			sinon.assert.notCalled( spy );
 		} );
+
+		for ( const punctuation of '!.:,;?' ) {
+			it( `does not include "${ punctuation }" at the end of the link after space`, () => {
+				simulateTyping( `https://www.cksource.com${ punctuation } ` );
+
+				expect( getData( model ) ).to.equal(
+					`<paragraph><$text linkHref="https://www.cksource.com">https://www.cksource.com</$text>${ punctuation } []</paragraph>`
+				);
+			} );
+		}
 
 		// Some examples came from https://mathiasbynens.be/demo/url-regex.
 		describe( 'supported URL', () => {
@@ -498,7 +563,9 @@ describe( 'AutoLink', () => {
 				'http://127.0.0.1:8080/ckeditor5/latest/features/link.html',
 				'http://192.168.43.58/ckeditor5/latest/features/link.html',
 				'http://83.127.13.40',
-				'http://userid@83.127.13.40'
+				'http://userid@83.127.13.40',
+				'http://localhost',
+				'http://localhost:8080'
 			];
 
 			for ( const supportedURL of supportedURLs ) {
@@ -535,7 +602,6 @@ describe( 'AutoLink', () => {
 				':// foo bar',
 				'ftps://foo.bar/',
 				'http://-error-.invalid/',
-				'http://localhost',
 				'http:/cksource.com',
 				'http://www.cksource', // https://github.com/ckeditor/ckeditor5/issues/8050.
 				'cksource.com',

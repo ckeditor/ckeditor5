@@ -1,34 +1,35 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
-
-/* globals window, document, open, console, LICENSE_KEY */
 
 // Keep the guide listing updated with each change.
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Alignment } from '@ckeditor/ckeditor5-alignment';
-import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
-import { Bold, Code, Italic, Strikethrough, Subscript, Superscript, Underline } from '@ckeditor/ckeditor5-basic-styles';
-import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import { CaseChange } from '@ckeditor/ckeditor5-case-change';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
-import { TableOfContents } from '@ckeditor/ckeditor5-document-outline';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { ExportPdf } from '@ckeditor/ckeditor5-export-pdf';
-import { ExportWord } from '@ckeditor/ckeditor5-export-word';
-import { FindAndReplace } from '@ckeditor/ckeditor5-find-and-replace';
-import { Font } from '@ckeditor/ckeditor5-font';
-import { FormatPainter } from '@ckeditor/ckeditor5-format-painter';
-import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
-import { Heading } from '@ckeditor/ckeditor5-heading';
-import { Highlight } from '@ckeditor/ckeditor5-highlight';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { HtmlEmbed } from '@ckeditor/ckeditor5-html-embed';
-import { AutoImage,
+import {
+	ClassicEditor,
+	Alignment,
+	Autoformat,
+	Bold,
+	Code,
+	Italic,
+	Strikethrough,
+	Subscript,
+	Superscript,
+	Underline,
+	BlockQuote,
+	CKBox,
+	CKBoxImageEdit,
+	CloudServices,
+	CodeBlock,
+	Essentials,
+	FindAndReplace,
+	Font,
+	GeneralHtmlSupport,
+	Heading,
+	Highlight,
+	HorizontalLine,
+	HtmlEmbed,
+	AutoImage,
 	Image,
 	ImageCaption,
 	ImageInsert,
@@ -36,51 +37,66 @@ import { AutoImage,
 	ImageStyle,
 	ImageToolbar,
 	ImageUpload,
-	PictureEditing
-} from '@ckeditor/ckeditor5-image';
-import { ImportWord } from '@ckeditor/ckeditor5-import-word';
-import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
-import { AutoLink, Link, LinkImage } from '@ckeditor/ckeditor5-link';
-import { List, ListProperties, TodoList } from '@ckeditor/ckeditor5-list';
-import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
-import { Mention } from '@ckeditor/ckeditor5-mention';
-import { PageBreak } from '@ckeditor/ckeditor5-page-break';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
-import { PasteFromOfficeEnhanced } from '@ckeditor/ckeditor5-paste-from-office-enhanced';
-import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
-import { ShowBlocks } from '@ckeditor/ckeditor5-show-blocks';
-import { SlashCommand } from '@ckeditor/ckeditor5-slash-command';
-import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
-import { SpecialCharacters, SpecialCharactersEssentials } from '@ckeditor/ckeditor5-special-characters';
-import { Style } from '@ckeditor/ckeditor5-style';
-import { Table, TableCaption, TableCellProperties, TableColumnResize, TableProperties, TableToolbar } from '@ckeditor/ckeditor5-table';
-import { Template } from '@ckeditor/ckeditor5-template';
-import { TextTransformation } from '@ckeditor/ckeditor5-typing';
-import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader.js';
-
-// Additional protection for internal license keys CF#2555.
-window.open.closed = 1;
-
-// import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
-
-// Allow using internal license keys in this sample. See CF#2555.
-open.closed = 1;
+	PictureEditing,
+	Indent,
+	IndentBlock,
+	AutoLink,
+	Link,
+	LinkImage,
+	List,
+	ListProperties,
+	TodoList,
+	MediaEmbed,
+	Mention,
+	PageBreak,
+	Paragraph,
+	PasteFromOffice,
+	RemoveFormat,
+	ShowBlocks,
+	TextTransformation,
+	SourceEditing,
+	SpecialCharacters,
+	SpecialCharactersEssentials,
+	Style,
+	Table,
+	TableCaption,
+	TableCellProperties,
+	TableColumnResize,
+	TableProperties,
+	TableToolbar
+} from 'ckeditor5';
+import {
+	CaseChange,
+	TableOfContents,
+	ExportPdf,
+	ExportWord,
+	FormatPainter,
+	ImportWord,
+	PasteFromOfficeEnhanced,
+	SlashCommand,
+	Template
+} from 'ckeditor5-premium-features';
+import { WProofreader } from '@webspellchecker/wproofreader-ckeditor5';
+import {
+	TOKEN_URL,
+	getViewportTopOffsetConfig,
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
 
 // Templates icons.
-import articleImageRightIcon from '../../assets/img/article-image-right.svg';
-import financialReportIcon from '../../assets/img/financial-report.svg';
-import formalLetterIcon from '../../assets/img/formal-letter.svg';
-import resumeIcon from '../../assets/img/resume.svg';
-import richTableIcon from '../../assets/img/rich-table.svg';
+import articleImageRightIcon from '@assets/img/article-image-right.svg';
+import financialReportIcon from '@assets/img/financial-report.svg';
+import formalLetterIcon from '@assets/img/formal-letter.svg';
+import resumeIcon from '@assets/img/resume.svg';
+import richTableIcon from '@assets/img/rich-table.svg';
 
 ClassicEditor
 	.create( document.querySelector( '#keyboard-support' ), {
 		// cloudServices: CS_CONFIG,
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		poweredBy: {
@@ -199,8 +215,8 @@ ClassicEditor
 		exportPdf: {
 			stylesheets: [
 				'../../assets/pagination-fonts.css',
-				'EDITOR_STYLES',
-				'../../snippets/features/pagination/snippet.css',
+				'../../assets/ckeditor5/ckeditor5.css',
+				'../../assets/ckeditor5-premium-features/ckeditor5-premium-features.css',
 				'../../assets/pagination.css'
 			],
 			fileName: 'export-pdf-demo.pdf',
@@ -216,16 +232,23 @@ ClassicEditor
 			tokenUrl: false
 		},
 		exportWord: {
-			stylesheets: [ 'EDITOR_STYLES' ],
+			stylesheets: [
+				'../../assets/ckeditor5/ckeditor5.css',
+				'../../assets/ckeditor5-premium-features/ckeditor5-premium-features.css'
+			],
 			fileName: 'export-word-demo.docx',
 			appID: 'cke5-docs',
 			converterOptions: {
-				format: 'B4',
-				margin_top: '20mm',
-				margin_bottom: '20mm',
-				margin_right: '12mm',
-				margin_left: '12mm',
-				page_orientation: 'portrait'
+				document: {
+					size: 'A4',
+					orientation: 'portrait',
+					margin: {
+						top: '20mm',
+						bottom: '20mm',
+						right: '12mm',
+						left: '12mm'
+					}
+				}
 			},
 			tokenUrl: false
 		},
@@ -235,9 +258,6 @@ ClassicEditor
 		fontSize: {
 			options: [ 10, 12, 14, 'default', 18, 20, 22 ],
 			supportAllValues: true
-		},
-		htmlEmbed: {
-			showPreviews: true
 		},
 		image: {
 			styles: [
@@ -316,7 +336,7 @@ ClassicEditor
 			definitions: [
 				{
 					title: 'Document with an image',
-					description: 'Simple heading with text and and and image.',
+					description: 'Simple heading with text and image.',
 					icon: articleImageRightIcon,
 					data: `<h2>Title of the document</h2>
 						<figure class="image image-style-align-right image_resized" style="width:26.32%;">
@@ -515,17 +535,18 @@ ClassicEditor
 			tokenUrl: TOKEN_URL,
 			forceDemoLabel: true,
 			allowExternalImagesEditing: [ /^data:/, 'origin' ]
-		},
-		licenseKey: LICENSE_KEY
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
 		// Prevent showing a warning notification when user is pasting a content from MS Word or Google Docs.
 		window.preventPasteFromOfficeNotification = true;
 
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.label && item.label === 'Accessibility help' ),
+		attachTourBalloon( {
+			target: findToolbarItem(
+				editor.ui.view.toolbar,
+				item => item.label && item.label === 'Accessibility help'
+			),
 			text: 'Click to display keyboard shortcuts.',
 			editor,
 			tippyOptions: {

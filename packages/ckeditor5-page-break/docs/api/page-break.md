@@ -18,8 +18,10 @@ See the {@link features/page-break page break feature guide} and the {@link modu
 
 ## Installation
 
-```plaintext
-npm install --save @ckeditor/ckeditor5-page-break
+This package is part of our open-source aggregate package.
+
+```bash
+npm install ckeditor5
 ```
 
 ## Contribute

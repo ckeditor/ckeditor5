@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -33,7 +33,8 @@ import {
 	getAllSupportedStyleTypes,
 	getListTypeFromListStyleType,
 	getListStyleTypeFromTypeAttribute,
-	getTypeAttributeFromListStyleType
+	getTypeAttributeFromListStyleType,
+	normalizeListStyle
 } from './utils/style.js';
 import ListPropertiesUtils from './listpropertiesutils.js';
 import {
@@ -42,6 +43,7 @@ import {
 
 import type { ListIndentCommandAfterExecuteEvent } from '../list/listindentcommand.js';
 import type { ListPropertiesConfig } from '../listconfig.js';
+import { getNormalizedConfig } from './utils/config.js';
 
 const DEFAULT_LIST_TYPE = 'default';
 
@@ -64,6 +66,13 @@ export default class ListPropertiesEditing extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'ListPropertiesEditing' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 
 	/**
@@ -256,9 +265,10 @@ export interface AttributeStrategy {
  */
 function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 	const strategies: Array<AttributeStrategy> = [];
+	const normalizedConfig = getNormalizedConfig( enabledProperties );
 
 	if ( enabledProperties.styles ) {
-		const useAttribute = typeof enabledProperties.styles == 'object' && enabledProperties.styles.useAttribute;
+		const useAttribute = normalizedConfig.styles.useAttribute;
 
 		strategies.push( {
 			attributeName: 'listStyle',
@@ -322,7 +332,7 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 				const style = listParent.getStyle( 'list-style-type' );
 
 				if ( style ) {
-					return style;
+					return normalizeListStyle( style );
 				}
 
 				const attribute = listParent.getAttribute( 'type' );

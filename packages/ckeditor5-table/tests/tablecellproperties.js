@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
@@ -44,6 +44,14 @@ describe( 'table cell properties', () => {
 
 		it( 'should have pluginName', () => {
 			expect( TableCellProperties.pluginName ).to.equal( 'TableCellProperties' );
+		} );
+
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( TableCellProperties.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( TableCellProperties.isPremiumPlugin ).to.be.false;
 		} );
 	} );
 } );

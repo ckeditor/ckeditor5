@@ -10,8 +10,9 @@ Emitters are heavily used throughout the entire editor architecture. They are th
 
 Any class can become an event emitter. All you need to do is mix the {@link module:utils/emittermixin~Emitter} into it:
 
+<code-switcher>
 ```js
-import { EmitterMixin, mix } from '@ckeditor/ckeditor5-utils';
+import { EmitterMixin, mix } from 'ckeditor5';
 
 class AnyClass {
 	// Class's code.
@@ -20,6 +21,7 @@ class AnyClass {
 
 mix( AnyClass, EmitterMixin );
 ```
+</code-switcher>
 
 ## Listening to events
 
@@ -149,8 +151,9 @@ All passed arguments will be available in all listeners that are added to the ev
 
 It is sometimes useful to know if an event was stopped by any of the listeners. There is an alternative way of firing an event just for that:
 
+<code-switcher>
 ```js
-import { EventInfo } from '@ckeditor/ckeditor5-utils';
+import { EventInfo } from 'ckeditor5';
 
 // Prepare the event info...
 const eventInfo = new EventInfo( this, 'eventName' );
@@ -163,6 +166,7 @@ if ( eventInfo.stop.called ) {
 	// The event was stopped.
 }
 ```
+</code-switcher>
 
 Note that {@link module:utils/eventinfo~EventInfo} expects the source object in the first parameter as the origin of the event.
 
@@ -286,8 +290,9 @@ this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
 
 Listeners registered in the context of a custom callback function:
 
+<code-switcher>
 ```js
-import { isWidget } from '@ckeditor/ckeditor5-widget';
+import { isWidget } from 'ckeditor5';
 
 this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
 	// Listener's code.
@@ -299,6 +304,7 @@ this.listenTo( view.document, 'arrowKey', ( evt, data ) => {
 	// ...
 }, { context: isWidget, priority: 'high' } );
 ```
+</code-switcher>
 
 **Note**: Without specifying the `context`, events are bound to the `'$document'` context.
 
@@ -339,7 +345,7 @@ Assuming the given content and selection (on a widget):
 <blockquote>
 	<p>
 		Foo
-		[<img />]	 // enhanced with toWidget()
+		[<img />]	// enhanced with toWidget()
 		bar
 	</p>
 </blockquote>
@@ -359,7 +365,7 @@ An even more complex example:
 
 ```html
 <blockquote>
-	<figure class="table">	 // enhanced with toWidget()
+	<figure class="table">	// enhanced with toWidget()
 		<table>
 			<tr>
 				<td>

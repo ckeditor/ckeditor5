@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -104,7 +104,7 @@ export default class Locale {
 
 	/**
 	 * Creates a new instance of the locale class. Learn more about
-	 * {@glink features/ui-language configuring the language of the editor}.
+	 * {@glink getting-started/setup/ui-language configuring the language of the editor}.
 	 *
 	 * @param options Locale configuration.
 	 * @param options.uiLanguage The editor UI language code in the
@@ -112,7 +112,7 @@ export default class Locale {
 	 * @param options.contentLanguage The editor content language code in the
 	 * [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format. If not specified, the same as `options.language`.
 	 * See {@link #contentLanguage}.
-	 * @param translations Translations passed as a editor config parameter.
+	 * @param options.translations Translations passed as a editor config parameter.
 	 */
 	constructor(
 		{

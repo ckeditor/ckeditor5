@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals CKEditorInspector, console, document */
@@ -213,6 +213,41 @@ ClassicEditor
 				styles: false,
 				startIndex: false,
 				reversed: false
+			}
+		}
+	} )
+	.then( editor => {
+		CKEditorInspector.attach( { 'No properties enabled': editor } );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+// ------------------------------------------------------------------
+
+ClassicEditor
+	.create( document.querySelector( '#editor-i' ), {
+		...config,
+		menuBar: {
+			isVisible: true
+		},
+		list: {
+			properties: {
+				styles: {
+					listStyleTypes: {
+						numbered: [
+							'decimal',
+							'decimal-leading-zero',
+							'lower-roman',
+							'upper-roman'
+						],
+						bulleted: [
+							'disc',
+							'circle',
+							'square'
+						]
+					}
+				}
 			}
 		}
 	} )

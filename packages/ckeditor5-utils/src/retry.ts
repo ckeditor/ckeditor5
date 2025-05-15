@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -12,11 +12,12 @@ import wait from './wait.js';
 /**
  * Tries calling the given callback until it sucessfully resolves.
  *
- * If the callback fails `maxRetries` times, the returned promise is rejected with the last error.
+ * If the callback fails `maxAttempts` times, the returned promise is rejected with the last error.
  *
  * @typeParam TResult The result of a successful callback invocation.
  * @param callback The function to call until it succeeds.
- * @param options.maxRetries Maximum number of retries.
+ * @param options Configuration options.
+ * @param options.maxAttempts Maximum number of attempts.
  * @param options.retryDelay The time in milliseconds between attempts. By default it implements exponential back-off policy.
  * @param options.signal The signal to abort further retries. The callback itself is not aborted automatically.
  */

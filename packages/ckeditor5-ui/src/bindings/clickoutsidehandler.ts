@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module ui/bindings/clickoutsidehandler
  */
 
-import type { DomEmitter } from '@ckeditor/ckeditor5-utils';
+import type { CallbackOptions, DomEmitter } from '@ckeditor/ckeditor5-utils';
 
 /* global document */
 
@@ -24,13 +24,15 @@ import type { DomEmitter } from '@ckeditor/ckeditor5-utils';
  * @param options.contextElements Array of HTML elements or a callback returning an array of HTML elements
  * that determine the scope of the handler. Clicking any of them or their descendants will **not** fire the callback.
  * @param options.callback An action executed by the handler.
+ * @param options.listenerOptions Additional options for the listener (like priority).
  */
 export default function clickOutsideHandler(
-	{ emitter, activator, callback, contextElements }: {
+	{ emitter, activator, callback, contextElements, listenerOptions }: {
 		emitter: DomEmitter;
 		activator: () => boolean;
-		contextElements: Array<HTMLElement> | ( () => Array<HTMLElement> );
+		contextElements: Array<Element> | ( () => Array<Element> );
 		callback: () => void;
+		listenerOptions?: CallbackOptions;
 	}
 ): void {
 	emitter.listenTo( document, 'mousedown', ( evt, domEvt ) => {
@@ -51,5 +53,5 @@ export default function clickOutsideHandler(
 		}
 
 		callback();
-	} );
+	}, listenerOptions );
 }

@@ -1,10 +1,10 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
- * @module utils
+ * @module utils/index
  */
 
 export { default as env } from './env.js';
@@ -41,12 +41,11 @@ export {
 export { default as CKEditorError, logError, logWarning } from './ckeditorerror.js';
 
 export { default as ElementReplacer } from './elementreplacer.js';
-
 export { default as abortableDebounce, type AbortableFunc } from './abortabledebounce.js';
 export { default as count } from './count.js';
 export { default as compareArrays } from './comparearrays.js';
 export { default as createElement } from './dom/createelement.js';
-export { default as Config } from './config.js';
+export { default as Config, type GetSubConfig } from './config.js';
 export { default as isIterable } from './isiterable.js';
 export { default as DomEmitterMixin, type DomEmitter } from './dom/emittermixin.js';
 export { default as findClosestScrollableAncestor } from './dom/findclosestscrollableancestor.js';
@@ -54,6 +53,7 @@ export { default as global } from './dom/global.js';
 export { default as getAncestors } from './dom/getancestors.js';
 export { default as getDataFromElement } from './dom/getdatafromelement.js';
 export { default as getBorderWidths } from './dom/getborderwidths.js';
+export { default as getRangeFromMouseEvent } from './dom/getrangefrommouseevent.js';
 export { default as isText } from './dom/istext.js';
 export { default as Rect, type RectSource } from './dom/rect.js';
 export { default as ResizeObserver } from './dom/resizeobserver.js';
@@ -68,6 +68,7 @@ export { default as isValidAttributeName } from './dom/isvalidattributename.js';
 export { default as isVisible } from './dom/isvisible.js';
 export { getOptimalPosition, type Options as PositionOptions, type PositioningFunction, type DomPoint } from './dom/position.js';
 export { default as remove } from './dom/remove.js';
+export { default as getVisualViewportOffset } from './dom/getvisualviewportoffset.js';
 export * from './dom/scroll.js';
 
 export * from './keyboard.js';
@@ -80,10 +81,11 @@ export {
 	type CollectionRemoveEvent
 } from './collection.js';
 export { default as first } from './first.js';
-export { default as FocusTracker } from './focustracker.js';
-export { default as KeystrokeHandler } from './keystrokehandler.js';
+export { default as FocusTracker, type ViewWithFocusTracker, isViewWithFocusTracker } from './focustracker.js';
+export { default as KeystrokeHandler, type KeystrokeHandlerOptions } from './keystrokehandler.js';
 export { default as toArray, type ArrayOrItem, type ReadonlyArrayOrItem } from './toarray.js';
 export { default as toMap } from './tomap.js';
+export { add } from './translation-service.js';
 export { default as priorities, type PriorityString } from './priorities.js';
 export { default as retry, exponentialDelay } from './retry.js';
 export { default as insertToPriorityArray } from './inserttopriorityarray.js';
@@ -91,8 +93,11 @@ export { default as spliceArray } from './splicearray.js';
 
 export { default as uid } from './uid.js';
 export { default as delay, type DelayedFunc } from './delay.js';
-export { default as verifyLicense } from './verifylicense.js';
 export { default as wait } from './wait.js';
+export { default as parseBase64EncodedObject } from './parsebase64encodedobject.js';
+export { default as crc32, type CRCData } from './crc32.js';
+export { default as collectStylesheets } from './collectstylesheets.js';
+export { default as formatHtml } from './formathtml.js';
 
 export * from './unicode.js';
 

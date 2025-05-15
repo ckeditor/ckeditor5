@@ -1,11 +1,13 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals ClassicEditor, console, window, document, setTimeout */
-
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+import {
+	CS_CONFIG,
+	getViewportTopOffsetConfig
+} from '@snippets/index.js';
+import { AutosaveEditor } from './build-autosave-source.js';
 
 let HTTP_SERVER_LAG = 500;
 let isDirty = false;
@@ -14,12 +16,12 @@ document.querySelector( '#snippet-manualsave-lag' ).addEventListener( 'change', 
 	HTTP_SERVER_LAG = evt.target.value;
 } );
 
-ClassicEditor
+AutosaveEditor
 	.create( document.querySelector( '#snippet-manualsave' ), {
 		cloudServices: CS_CONFIG,
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		}
 	} )

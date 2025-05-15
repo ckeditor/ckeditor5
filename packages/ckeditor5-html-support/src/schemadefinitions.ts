@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import type { DataSchemaBlockElementDefinition, DataSchemaInlineElementDefinition } from './dataschema.js';
@@ -48,6 +48,8 @@ import type { DataSchemaBlockElementDefinition, DataSchemaInlineElementDefinitio
 //
 // Skipped hidden elements:
 // noscript
+//
+// When adding elements to this list, update the feature guide listing, too.
 
 export default {
 	block: [
@@ -115,6 +117,10 @@ export default {
 		{
 			model: 'imageInline',
 			view: 'img'
+		},
+		{
+			model: 'horizontalLine',
+			view: 'hr'
 		},
 
 		// Compatibility features.
@@ -279,7 +285,15 @@ export default {
 			model: 'htmlSummary',
 			view: 'summary',
 			modelSchema: {
-				allowChildren: '$text',
+				allowChildren: [
+					'htmlH1',
+					'htmlH2',
+					'htmlH3',
+					'htmlH4',
+					'htmlH5',
+					'htmlH6',
+					'$text'
+				],
 				allowIn: 'htmlDetails',
 				isBlock: false
 			}
@@ -341,7 +355,10 @@ export default {
 			model: 'htmlHgroup',
 			view: 'hgroup',
 			modelSchema: {
+				allowIn: [ '$root', '$container' ],
 				allowChildren: [
+					'paragraph',
+					'htmlP',
 					'htmlH1',
 					'htmlH2',
 					'htmlH3',
@@ -511,6 +528,14 @@ export default {
 			modelSchema: {
 				inheritAllFrom: '$container',
 				isBlock: false
+			}
+		},
+		{
+			model: 'htmlHr',
+			view: 'hr',
+			isEmpty: true,
+			modelSchema: {
+				inheritAllFrom: '$blockObject'
 			}
 		}
 	] as Array<DataSchemaBlockElementDefinition>,

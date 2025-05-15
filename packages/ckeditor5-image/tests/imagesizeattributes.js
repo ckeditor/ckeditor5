@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global setTimeout */
@@ -41,6 +41,14 @@ describe( 'ImageSizeAttributes', () => {
 
 	it( 'should be named', () => {
 		expect( ImageSizeAttributes.pluginName ).to.equal( 'ImageSizeAttributes' );
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageSizeAttributes.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageSizeAttributes.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should be loaded', () => {
@@ -123,6 +131,32 @@ describe( 'ImageSizeAttributes', () => {
 
 					expect( editor.model.document.getRoot().getChild( 0 ).getChild( 1 ).getAttribute( 'height' ) ).to.be.undefined;
 				} );
+
+				it( 'should consume aspect-ratio style during upcast when width and height are set', () => {
+					const consumeSpy = sinon.spy( ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: [ 'aspect-ratio' ] } ) ).to.be.false;
+					} );
+
+					editor.data.upcastDispatcher.on( 'element:img', consumeSpy, { priority: 'lowest' } );
+					editor.setData(
+						'<p>Lorem <img width="100" height="50" style="aspect-ratio: 2/1;" src="/assets/sample.png"> ipsum</p>'
+					);
+
+					expect( consumeSpy ).to.be.called;
+				} );
+
+				it( 'should not consume aspect-ratio style during upcast when width or height is missing', () => {
+					const consumeSpy = sinon.spy( ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: [ 'aspect-ratio' ] } ) ).to.be.true;
+					} );
+
+					editor.data.upcastDispatcher.on( 'element:img', consumeSpy, { priority: 'lowest' } );
+					editor.setData(
+						'<p>Lorem <img width="100" style="aspect-ratio: 2/1;" src="/assets/sample.png"> ipsum</p>'
+					);
+
+					expect( consumeSpy ).to.be.called;
+				} );
 			} );
 
 			describe( 'block images', () => {
@@ -170,6 +204,32 @@ describe( 'ImageSizeAttributes', () => {
 					);
 
 					expect( editor.model.document.getRoot().getChild( 0 ).getAttribute( 'height' ) ).to.be.undefined;
+				} );
+
+				it( 'should consume aspect-ratio style during upcast when width and height are set', () => {
+					const consumeSpy = sinon.spy( ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: [ 'aspect-ratio' ] } ) ).to.be.false;
+					} );
+
+					editor.data.upcastDispatcher.on( 'element:img', consumeSpy, { priority: 'lowest' } );
+					editor.setData(
+						'<figure class="image"><img width="100" height="50" style="aspect-ratio: 2/1;" src="/assets/sample.png"></figure>'
+					);
+
+					expect( consumeSpy ).to.be.called;
+				} );
+
+				it( 'should not consume aspect-ratio style during upcast when width or height is missing', () => {
+					const consumeSpy = sinon.spy( ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: [ 'aspect-ratio' ] } ) ).to.be.true;
+					} );
+
+					editor.data.upcastDispatcher.on( 'element:img', consumeSpy, { priority: 'lowest' } );
+					editor.setData(
+						'<figure class="image"><img height="50" style="aspect-ratio: 2/1;" src="/assets/sample.png"></figure>'
+					);
+
+					expect( consumeSpy ).to.be.called;
 				} );
 			} );
 		} );
@@ -282,7 +342,8 @@ describe( 'ImageSizeAttributes', () => {
 
 						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 							'<p><span class="ck-widget image-inline image_resized" contenteditable="false" style="width:50px">' +
-								'<img height="200" src="/assets/sample.png" style="aspect-ratio:100/200" width="100"></img>' +
+								'<img height="200" loading="lazy" src="/assets/sample.png" style="aspect-ratio:100/200" width="100">' +
+								'</img>' +
 							'</span></p>'
 						);
 
@@ -299,7 +360,8 @@ describe( 'ImageSizeAttributes', () => {
 
 						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 							'<p><span class="ck-widget image-inline" contenteditable="false">' +
-								'<img height="200" src="/assets/sample.png" style="aspect-ratio:100/200" width="100"></img>' +
+								'<img height="200" loading="lazy" src="/assets/sample.png" style="aspect-ratio:100/200" width="100">' +
+								'</img>' +
 							'</span></p>'
 						);
 
@@ -356,7 +418,7 @@ describe( 'ImageSizeAttributes', () => {
 									'<picture>' +
 										'<source media="(min-width: 800px)" sizes="2000px" srcset="/assets/sample.png" type="image/png">' +
 										'</source>' +
-										'<img height="200" src="/assets/sample.png" width="100"></img>' +
+										'<img height="200" loading="lazy" src="/assets/sample.png" width="100"></img>' +
 									'</picture>' +
 								'</span>' +
 							'</p>'
@@ -481,7 +543,8 @@ describe( 'ImageSizeAttributes', () => {
 
 						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 							'<figure class="ck-widget image image_resized" contenteditable="false" style="width:50px">' +
-								'<img height="200" src="/assets/sample.png" style="aspect-ratio:100/200" width="100"></img>' +
+								'<img height="200" loading="lazy" src="/assets/sample.png" style="aspect-ratio:100/200" width="100">' +
+								'</img>' +
 							'</figure>'
 						);
 
@@ -499,7 +562,8 @@ describe( 'ImageSizeAttributes', () => {
 
 						expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 							'<figure class="ck-widget image" contenteditable="false">' +
-								'<img height="200" src="/assets/sample.png" style="aspect-ratio:100/200" width="100"></img>' +
+								'<img height="200" loading="lazy" src="/assets/sample.png" style="aspect-ratio:100/200" width="100">' +
+								'</img>' +
 							'</figure>'
 						);
 
@@ -553,7 +617,7 @@ describe( 'ImageSizeAttributes', () => {
 							'<figure class="ck-widget image" contenteditable="false">' +
 								'<picture>' +
 									'<source media="(max-width: 800px)" srcset="/assets/sample.png" type="image/png"></source>' +
-									'<img alt="" height="200" src="/assets/sample.png" width="100"></img>' +
+									'<img alt="" height="200" loading="lazy" src="/assets/sample.png" width="100"></img>' +
 								'</picture>' +
 							'</figure>'
 						);

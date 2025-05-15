@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -27,12 +27,7 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	/**
 	 * Toolbar view instance.
 	 */
-	public readonly toolbar: ToolbarView;
-
-	/**
-	 * Menu bar view instance.
-	 */
-	public readonly menuBarView?: MenuBarView;
+	public override readonly toolbar: ToolbarView;
 
 	/**
 	 * Editable UI view.
@@ -48,6 +43,8 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	 * @param options.shouldToolbarGroupWhenFull When set `true` enables automatic items grouping
 	 * in the main {@link module:editor-classic/classiceditoruiview~ClassicEditorUIView#toolbar toolbar}.
 	 * See {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} to learn more.
+	 * @param options.label When set, this value will be used as an accessible `aria-label` of the
+	 * {@link module:ui/editableui/editableuiview~EditableUIView editable view}.
 	 */
 	constructor(
 		locale: Locale,
@@ -55,6 +52,7 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 		options: {
 			shouldToolbarGroupWhenFull?: boolean;
 			useMenuBar?: boolean;
+			label?: string | Record<string, string>;
 		} = {}
 	) {
 		super( locale );
@@ -69,7 +67,9 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 			this.menuBarView = new MenuBarView( locale );
 		}
 
-		this.editable = new InlineEditableUIView( locale, editingView );
+		this.editable = new InlineEditableUIView( locale, editingView, undefined, {
+			label: options.label
+		} );
 	}
 
 	/**

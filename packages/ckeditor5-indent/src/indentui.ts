@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -8,7 +8,8 @@
  */
 
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
-import { icons, Plugin } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
+import { IconIndent, IconOutdent } from 'ckeditor5/src/icons.js';
 
 /**
  * The indent UI feature.
@@ -29,13 +30,20 @@ export default class IndentUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const editor = this.editor;
 		const locale = editor.locale;
 		const t = editor.t;
 
-		const localizedIndentIcon = locale.uiLanguageDirection == 'ltr' ? icons.indent : icons.outdent;
-		const localizedOutdentIcon = locale.uiLanguageDirection == 'ltr' ? icons.outdent : icons.indent;
+		const localizedIndentIcon = locale.uiLanguageDirection == 'ltr' ? IconIndent : IconOutdent;
+		const localizedOutdentIcon = locale.uiLanguageDirection == 'ltr' ? IconOutdent : IconIndent;
 
 		this._defineButton( 'indent', t( 'Increase indent' ), localizedIndentIcon );
 		this._defineButton( 'outdent', t( 'Decrease indent' ), localizedOutdentIcon );

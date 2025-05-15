@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -10,7 +10,7 @@
 import global from './global.js';
 import Rect, { type RectSource } from './rect.js';
 import getPositionedAncestor from './getpositionedancestor.js';
-import { isFunction } from 'lodash-es';
+import { isFunction } from 'es-toolkit/compat';
 
 // @if CK_DEBUG_POSITION // const {
 // @if CK_DEBUG_POSITION // 	default: RectDrawer,

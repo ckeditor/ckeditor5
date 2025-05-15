@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -33,6 +33,9 @@ export default abstract class Operation {
 	/**
 	 * {@link module:engine/model/batch~Batch Batch} to which the operation is added or `null` if the operation is not
 	 * added to any batch yet.
+	 *
+	 * Note, that a {@link #isDocumentOperation non-document operation} has this property always set to `null`, and is never added
+	 * to any batch.
 	 */
 	public batch: Batch | null;
 
@@ -111,7 +114,7 @@ export default abstract class Operation {
 		// Remove reference to the parent `Batch` to avoid circular dependencies.
 		delete json.batch;
 
-		// Only document operations are shared with other clients so it is not necessary to keep this information.
+		// This can be derived from `baseVersion` so we can remove it.
 		delete json.isDocumentOperation;
 
 		return json;
@@ -128,7 +131,7 @@ export default abstract class Operation {
 	 * Creates `Operation` object from deserialized object, i.e. from parsed JSON string.
 	 *
 	 * @param json Deserialized JSON object.
-	 * @param doc Document on which this operation will be applied.
+	 * @param document Document on which this operation will be applied.
 	 */
 	public static fromJSON( json: any, document: Document ): Operation {
 		return new ( this as any )( json.baseVersion );

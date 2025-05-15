@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -108,6 +108,13 @@ export default class AutomaticDecorators {
 				const viewFigure = mapper.toViewElement( data.item )!;
 				const linkInImage = Array.from( viewFigure.getChildren() )
 					.find( ( child ): child is ViewElement => child.is( 'element', 'a' ) )!;
+
+				// It's not guaranteed that the anchor is present in the image block during execution of this dispatcher.
+				// It might have been removed during the execution of unlink command that runs the image link downcast dispatcher
+				// that is executed before this one and removes the anchor from the image block.
+				if ( !linkInImage ) {
+					return;
+				}
 
 				for ( const item of this._definitions ) {
 					const attributes = toMap( item.attributes );

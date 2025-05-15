@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* eslint-disable new-cap */
@@ -12,7 +12,7 @@ import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxeded
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer.js';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement.js';
-import { isElement } from 'lodash-es';
+import { isElement } from 'es-toolkit/compat';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
 /**
@@ -52,7 +52,9 @@ export default class ClassicTestEditor extends ElementApiMixin( Editor ) {
 		this.ui = new ClassicTestEditorUI( this, new BoxedEditorUIView( this.locale ) );
 
 		// Expose properties normally exposed by the ClassicEditorUI.
-		this.ui.view.editable = new InlineEditableUIView( this.ui.view.locale, this.editing.view );
+		this.ui.view.editable = new InlineEditableUIView( this.ui.view.locale, this.editing.view, undefined, {
+			label: this.config.get( 'label' )
+		} );
 	}
 
 	/**

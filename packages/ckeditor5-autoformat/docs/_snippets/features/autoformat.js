@@ -1,22 +1,18 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
-
-import { Strikethrough, Code, Underline } from '@ckeditor/ckeditor5-basic-styles';
-import { TodoList } from '@ckeditor/ckeditor5-list';
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
-import { LinkImage } from '@ckeditor/ckeditor5-link';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
-
-// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic.js';
+import {
+	Strikethrough, Code, Underline, TodoList, CodeBlock, HorizontalLine, CKBox, CKBoxImageEdit,
+	PictureEditing, ImageInsert, ImageResize, AutoImage, LinkImage
+} from 'ckeditor5';
+import {
+	CS_CONFIG,
+	TOKEN_URL,
+	ClassicEditor,
+	getViewportTopOffsetConfig
+} from '@snippets/index.js';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-autoformat' ), {
@@ -51,7 +47,7 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {

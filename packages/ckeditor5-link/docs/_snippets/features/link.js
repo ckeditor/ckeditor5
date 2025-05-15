@@ -1,21 +1,39 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, ClassicEditor, CKEditorPlugins, CS_CONFIG */
-
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
+import { AutoLink, LinkImage, Bookmark, CKBox, CKBoxImageEdit, PictureEditing, ImageInsert, ImageResize, AutoImage } from 'ckeditor5';
+import {
+	TOKEN_URL,
+	CS_CONFIG,
+	ClassicEditor,
+	getViewportTopOffsetConfig,
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
+import { SocialLinksPlugin } from './build-link-source.js';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-link' ), {
-		extraPlugins: [ ...Object.values( CKEditorPlugins ) ],
+		extraPlugins: [
+			AutoLink,
+			Bookmark,
+			PictureEditing,
+			ImageInsert,
+			ImageResize,
+			AutoImage,
+			LinkImage,
+			CKBox,
+			CKBoxImageEdit,
+			SocialLinksPlugin
+		],
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'undo', 'redo', '|', 'heading',
 				'|', 'bold', 'italic',
-				'|', 'link', 'insertImage', 'insertTable', 'mediaEmbed',
+				'|', 'link', 'bookmark', 'insertImage', 'insertTable', 'mediaEmbed',
 				'|', 'bulletedList', 'numberedList', 'outdent', 'indent'
 			]
 		},
@@ -27,20 +45,40 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
 			tokenUrl: TOKEN_URL,
 			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ],
 			forceDemoLabel: true
+		},
+		link: {
+			addTargetToExternalLinks: false,
+			decorators: [
+				{
+					mode: 'manual',
+					label: 'Downloadable',
+					attributes: {
+						download: 'download'
+					}
+				},
+				{
+					mode: 'manual',
+					label: 'Open in a new tab',
+					attributes: {
+						target: '_blank',
+						rel: 'noopener noreferrer'
+					}
+				}
+			]
 		}
 	} )
 	.then( editor => {
 		window.editor = editor;
 
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Link' ),
+		attachTourBalloon( {
+			target: findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Link' ),
 			text: 'Click to create a link.',
 			editor
 		} );

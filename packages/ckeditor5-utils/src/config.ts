@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module utils/config
  */
 
-import { isPlainObject, isElement, cloneDeepWith } from 'lodash-es';
+import { isPlainObject, isElement, cloneDeepWith } from 'es-toolkit/compat';
 
 /**
  * Handles a configuration dictionary.
@@ -27,7 +27,7 @@ export default class Config<Cfg> {
 	 * @param defaultConfigurations The default configurations. Usually, provided by the system.
 	 */
 	constructor( configurations?: Partial<Cfg>, defaultConfigurations?: Partial<Cfg> ) {
-		this._config = {};
+		this._config = Object.create( null );
 
 		// Set default configuration.
 		if ( defaultConfigurations ) {
@@ -195,7 +195,7 @@ export default class Config<Cfg> {
 		for ( const part of parts ) {
 			// If there is no object for specified part then create one.
 			if ( !isPlainObject( target[ part ] ) ) {
-				target[ part ] = {};
+				target[ part ] = Object.create( null );
 			}
 
 			// Nested object becomes a target.
@@ -206,7 +206,7 @@ export default class Config<Cfg> {
 		if ( isPlainObject( value ) ) {
 			// We take care of proper config structure.
 			if ( !isPlainObject( target[ name ] ) ) {
-				target[ name ] = {};
+				target[ name ] = Object.create( null );
 			}
 
 			target = target[ name ];

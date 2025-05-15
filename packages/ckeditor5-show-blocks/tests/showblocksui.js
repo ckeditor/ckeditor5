@@ -1,8 +1,9 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { IconShowBlocks } from 'ckeditor5/src/icons.js';
 import { global } from '@ckeditor/ckeditor5-utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
@@ -11,8 +12,6 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import ShowBlocksEditing from '../src/showblocksediting.js';
 import ShowBlocksUI from '../src/showblocksui.js';
-
-import showBlocksIcon from '../theme/icons/show-blocks.svg';
 
 describe( 'ShowBlocksUI', () => {
 	let editor, element, button;
@@ -42,6 +41,14 @@ describe( 'ShowBlocksUI', () => {
 		expect( ShowBlocksUI.pluginName ).to.equal( 'ShowBlocksUI' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ShowBlocksUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ShowBlocksUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'the "showBlocks" toolbar button', () => {
 		beforeEach( () => {
 			button = editor.ui.componentFactory.create( 'showBlocks' );
@@ -54,7 +61,7 @@ describe( 'ShowBlocksUI', () => {
 		} );
 
 		it( 'should have an icon', () => {
-			expect( button.icon ).to.equal( showBlocksIcon );
+			expect( button.icon ).to.equal( IconShowBlocks );
 		} );
 	} );
 
@@ -64,6 +71,20 @@ describe( 'ShowBlocksUI', () => {
 		} );
 
 		testButton( 'showBlocks', 'Show blocks', MenuBarMenuListItemButtonView );
+
+		it( 'should create button with `menuitemcheckbox` role', () => {
+			expect( button.role ).to.equal( 'menuitemcheckbox' );
+		} );
+
+		it( 'should bind `isOn` to `aria-checked` attribute', () => {
+			button.render();
+
+			button.isOn = true;
+			expect( button.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'true' );
+
+			button.isOn = false;
+			expect( button.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'false' );
+		} );
 	} );
 
 	function testButton( featureName, label, Component ) {
@@ -73,6 +94,7 @@ describe( 'ShowBlocksUI', () => {
 
 		it( 'should create UI component with correct attribute values', () => {
 			expect( button.isOn ).to.be.false;
+			expect( button.isToggleable ).to.be.true;
 			expect( button.label ).to.equal( label );
 		} );
 

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals document, Event */
@@ -18,12 +18,12 @@ import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification.j
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import Model from '@ckeditor/ckeditor5-ui/src/model.js';
-import { icons } from 'ckeditor5/src/core.js';
+import { IconImageUpload } from 'ckeditor5/src/icons.js';
 
 import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { MenuBarMenuListItemFileDialogButtonView } from '@ckeditor/ckeditor5-ui';
+import { MenuBarMenuListItemButtonView, MenuBarMenuListItemFileDialogButtonView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'ImageUploadUI', () => {
 	let editor, model, editorElement, fileRepository, button;
@@ -68,22 +68,38 @@ describe( 'ImageUploadUI', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImageUploadUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImageUploadUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'toolbar button', () => {
-		beforeEach( () => {
-			button = editor.ui.componentFactory.create( 'imageUpload' );
+		describe( 'uploadImage', () => {
+			beforeEach( () => {
+				button = editor.ui.componentFactory.create( 'uploadImage' );
+			} );
+
+			testButton( 'uploadImage', 'Upload image from computer', ButtonView );
+
+			it( 'should have tooltip', () => {
+				expect( button.tooltip ).to.be.true;
+			} );
 		} );
 
-		testButton( 'uploadImage', 'Upload image from computer', ButtonView );
+		// Check backward compatibility.
+		describe( 'imageUpload', () => {
+			beforeEach( () => {
+				button = editor.ui.componentFactory.create( 'imageUpload' );
+			} );
 
-		it( 'should register imageUpload button as an alias for uploadImage button', () => {
-			const buttonCreator = editor.ui.componentFactory._components.get( 'uploadImage'.toLowerCase() );
-			const buttonAliasCreator = editor.ui.componentFactory._components.get( 'imageUpload'.toLowerCase() );
+			testButton( 'uploadImage', 'Upload image from computer', ButtonView );
 
-			expect( buttonCreator.callback ).to.equal( buttonAliasCreator.callback );
-		} );
-
-		it( 'should have tooltip', () => {
-			expect( button.tooltip ).to.be.true;
+			it( 'should have tooltip', () => {
+				expect( button.tooltip ).to.be.true;
+			} );
 		} );
 	} );
 
@@ -95,29 +111,22 @@ describe( 'ImageUploadUI', () => {
 		testButton( 'uploadImage', 'Image from computer', MenuBarMenuListItemFileDialogButtonView );
 	} );
 
-	describe( 'InsertImageUI integration', () => {
+	describe( 'InsertImageUI toolbar integration', () => {
 		it( 'should create FileDialogButtonView in split button dropdown button', () => {
-			mockAssetManagerIntegration();
+			mockAnotherIntegration();
 
-			const spy = sinon.spy( editor.ui.componentFactory, 'create' );
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 			const dropdownButton = dropdown.buttonView.actionView;
 
 			expect( dropdownButton ).to.be.instanceOf( FileDialogButtonView );
 			expect( dropdownButton.withText ).to.be.false;
-			expect( dropdownButton.icon ).to.equal( icons.imageUpload );
-
-			expect( spy.calledTwice ).to.be.true;
-			expect( spy.firstCall.args[ 0 ] ).to.equal( 'insertImage' );
-			expect( spy.secondCall.args[ 0 ] ).to.equal( 'uploadImage' );
-			expect( spy.firstCall.returnValue ).to.equal( dropdown.buttonView.actionView );
+			expect( dropdownButton.icon ).to.equal( IconImageUpload );
 		} );
 
 		it( 'should create FileDialogButtonView in dropdown panel', () => {
-			mockAssetManagerIntegration();
+			mockAnotherIntegration();
 
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
-			const spy = sinon.spy( editor.ui.componentFactory, 'create' );
 
 			dropdown.isOpen = true;
 
@@ -126,17 +135,14 @@ describe( 'ImageUploadUI', () => {
 
 			expect( buttonView ).to.be.instanceOf( FileDialogButtonView );
 			expect( buttonView.withText ).to.be.true;
-			expect( buttonView.icon ).to.equal( icons.imageUpload );
-
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.firstCall.args[ 0 ] ).to.equal( 'uploadImage' );
-			expect( spy.firstCall.returnValue ).to.equal( buttonView );
+			expect( buttonView.icon ).to.equal( IconImageUpload );
 		} );
 
-		it( 'should bind to #isImageSelected', () => {
+		it( 'should bind to #isImageSelected and #isAccessAllowed', () => {
 			const insertImageUI = editor.plugins.get( 'ImageInsertUI' );
+			const uploadImageCommand = editor.commands.get( 'uploadImage' );
 
-			mockAssetManagerIntegration();
+			mockAnotherIntegration();
 
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
@@ -153,10 +159,19 @@ describe( 'ImageUploadUI', () => {
 			insertImageUI.isImageSelected = true;
 			expect( dropdownButton.label ).to.equal( 'Replace image from computer' );
 			expect( buttonView.label ).to.equal( 'Replace from computer' );
+
+			uploadImageCommand.isAccessAllowed = false;
+			expect( dropdownButton.label ).to.equal( 'You have no image upload permissions.' );
+			expect( buttonView.label ).to.equal( 'Replace from computer' );
+
+			insertImageUI.isImageSelected = false;
+			uploadImageCommand.isAccessAllowed = false;
+			expect( dropdownButton.label ).to.equal( 'You have no image upload permissions.' );
+			expect( buttonView.label ).to.equal( 'Upload from computer' );
 		} );
 
 		it( 'should close dropdown on execute', () => {
-			mockAssetManagerIntegration();
+			mockAnotherIntegration();
 
 			const dropdown = editor.ui.componentFactory.create( 'insertImage' );
 
@@ -173,7 +188,33 @@ describe( 'ImageUploadUI', () => {
 		} );
 	} );
 
-	function mockAssetManagerIntegration() {
+	describe( 'InsertImageUI menu bar integration', () => {
+		it( 'should create FileDialogButtonView in insert image submenu', () => {
+			mockAnotherIntegration();
+
+			const submenu = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+
+			button = submenu.panelView.children.first.items.first.children.first;
+
+			expect( button ).to.be.instanceOf( MenuBarMenuListItemFileDialogButtonView );
+			expect( button.withText ).to.be.true;
+			expect( button.icon ).to.equal( IconImageUpload );
+			expect( button.label ).to.equal( 'From computer' );
+		} );
+
+		it( 'should create FileDialogButtonView in insert image submenu - only integration', () => {
+			const submenu = editor.ui.componentFactory.create( 'menuBar:insertImage' );
+
+			button = submenu.panelView.children.first.items.first.children.first;
+
+			expect( button ).to.be.instanceOf( MenuBarMenuListItemFileDialogButtonView );
+			expect( button.withText ).to.be.true;
+			expect( button.icon ).to.equal( IconImageUpload );
+			expect( button.label ).to.equal( 'Image' );
+		} );
+	} );
+
+	function mockAnotherIntegration() {
 		const insertImageUI = editor.plugins.get( 'ImageInsertUI' );
 		const observable = new Model( { isEnabled: true } );
 
@@ -193,6 +234,13 @@ describe( 'ImageUploadUI', () => {
 				button.label = 'bar';
 
 				return button;
+			},
+			menuBarButtonViewCreator() {
+				const button = new MenuBarMenuListItemButtonView( editor.locale );
+
+				button.label = 'menu foo';
+
+				return button;
 			}
 		} );
 	}
@@ -206,7 +254,7 @@ describe( 'ImageUploadUI', () => {
 			expect( button.isOn ).to.be.false;
 			expect( button.label ).to.equal( label );
 			expect( button.allowMultipleFiles ).to.equal( true );
-			expect( button.icon ).to.equal( icons.imageUpload );
+			expect( button.icon ).to.equal( IconImageUpload );
 		} );
 
 		it( 'should set proper accepted mime-types for uploadImage button as defined in configuration', () => {

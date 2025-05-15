@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
@@ -15,6 +15,7 @@ import stubUid from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 
 import { getModelDataWithAttributes } from '../_utils/utils.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import ListElementSupport from '../../src/integrations/list.js';
 
 /* global document */
 
@@ -42,6 +43,14 @@ describe( 'ListElementSupport', () => {
 		editorElement.remove();
 
 		return editor.destroy();
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ListElementSupport.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ListElementSupport.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should be named', () => {

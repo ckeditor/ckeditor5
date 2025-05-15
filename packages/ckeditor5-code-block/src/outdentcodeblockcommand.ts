@@ -1,19 +1,20 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module code-block/outdentcodeblockcommand
  */
 
-import type { Model, Position, Range, Text } from 'ckeditor5/src/engine.js';
+import type { Model, Position, Range } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 
 import {
 	getLeadingWhiteSpaces,
 	getIndentOutdentPositions,
-	isModelSelectionInCodeBlock
+	isModelSelectionInCodeBlock,
+	getTextNodeAtLineStart
 } from './utils.js';
 
 /**
@@ -129,7 +130,7 @@ export default class OutdentCodeBlockCommand extends Command {
 // @returns {<module:engine/model/range~Range>|null}
 function getLastOutdentableSequenceRange( model: Model, position: Position, sequence: string ): Range | null {
 	// Positions start before each text node (code line). Get the node corresponding to the position.
-	const nodeAtPosition = getCodeLineTextNodeAtPosition( position );
+	const nodeAtPosition = getTextNodeAtLineStart( position, model );
 
 	if ( !nodeAtPosition ) {
 		return null;
@@ -167,23 +168,4 @@ function getLastOutdentableSequenceRange( model: Model, position: Position, sequ
 		model.createPositionAt( parent!, startOffset! + lastIndexOfSequence ),
 		model.createPositionAt( parent!, startOffset! + lastIndexOfSequence + sequence.length )
 	);
-}
-
-function getCodeLineTextNodeAtPosition( position: Position ): Text | null {
-	// Positions start before each text node (code line). Get the node corresponding to the position.
-	let nodeAtPosition = position.parent.getChild( position.index );
-
-	// <codeBlock>foo^</codeBlock>
-	// <codeBlock>foo^<softBreak></softBreak>bar</codeBlock>
-	if ( !nodeAtPosition || nodeAtPosition.is( 'element', 'softBreak' ) ) {
-		nodeAtPosition = position.nodeBefore;
-	}
-
-	// <codeBlock>^</codeBlock>
-	// <codeBlock>foo^<softBreak></softBreak>bar</codeBlock>
-	if ( !nodeAtPosition || nodeAtPosition.is( 'element', 'softBreak' ) ) {
-		return null;
-	}
-
-	return nodeAtPosition as Text;
 }

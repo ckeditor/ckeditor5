@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import { CKEditorError, logWarning, type Locale } from 'ckeditor5/src/utils.js';
@@ -75,7 +75,7 @@ export function normalizeAlignmentOptions( configuredOptions: Array<string | Ali
 				 * The available options are: `'left'`, `'right'`, `'center'` and `'justify'`.
 				 *
 				 * @error alignment-config-name-not-recognized
-				 * @param option Options with unknown value of the `name` property.
+				 * @param {object} option Options with unknown value of the `name` property.
 				 */
 				logWarning( 'alignment-config-name-not-recognized', { option } );
 			}
@@ -91,7 +91,7 @@ export function normalizeAlignmentOptions( configuredOptions: Array<string | Ali
 		 * The `className` property has to be defined for all options once at least one option declares `className`.
 		 *
 		 * @error alignment-config-classnames-are-missing
-		 * @param configuredOptions Contents of `alignment.options`.
+		 * @param {object} configuredOptions Contents of `alignment.options`.
 		 */
 		throw new CKEditorError( 'alignment-config-classnames-are-missing', { configuredOptions } );
 	}
@@ -107,8 +107,8 @@ export function normalizeAlignmentOptions( configuredOptions: Array<string | Ali
 			 * Each `name` representing one alignment option can be set exactly once.
 			 *
 			 * @error alignment-config-name-already-defined
-			 * @param option First option that declares given `name`.
-			 * @param configuredOptions Contents of `alignment.options`.
+			 * @param {object} option First option that declares given `name`.
+			 * @param {object} configuredOptions Contents of `alignment.options`.
 			 */
 			throw new CKEditorError( 'alignment-config-name-already-defined', { option, configuredOptions } );
 		}
@@ -122,8 +122,8 @@ export function normalizeAlignmentOptions( configuredOptions: Array<string | Ali
 				 * The same `className` in one of the `alignment.options` was already declared.
 				 *
 				 * @error alignment-config-classname-already-defined
-				 * @param option First option that declares given `className`.
-				 * @param configuredOptions
+				 * @param {object} option First option that declares given `className`.
+				 * @param {object} configuredOptions
 				 * Contents of `alignment.options`.
 				 */
 				throw new CKEditorError( 'alignment-config-classname-already-defined', { option, configuredOptions } );

@@ -1,16 +1,13 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module image/imageinsert/imageinsertui
  */
 
-import {
-	Plugin,
-	type Editor
-} from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import {
 	logWarning,
 	type Locale,
@@ -18,12 +15,18 @@ import {
 } from 'ckeditor5/src/utils.js';
 import {
 	createDropdown,
-	SplitButtonView,
 	type ButtonView,
 	type DropdownButtonView,
 	type DropdownView,
-	type FocusableView
+	type FocusableView,
+	type MenuBarMenuListItemButtonView,
+	MenuBarMenuListItemView,
+	MenuBarMenuListView,
+	MenuBarMenuView,
+	SplitButtonView,
+	type View
 } from 'ckeditor5/src/ui.js';
+import { IconImage } from 'ckeditor5/src/icons.js';
 
 import ImageInsertFormView from './ui/imageinsertformview.js';
 import ImageUtils from '../imageutils.js';
@@ -36,6 +39,9 @@ import ImageUtils from '../imageutils.js';
  *
  * Adds the `'insertImage'` dropdown to the {@link module:ui/componentfactory~ComponentFactory UI component factory}
  * and also the `imageInsert` dropdown as an alias for backward compatibility.
+ *
+ * Adds the `'menuBar:insertImage'` sub-menu to the {@link module:ui/componentfactory~ComponentFactory UI component factory}, which is
+ * by default added to the `'Insert'` menu.
  */
 export default class ImageInsertUI extends Plugin {
 	/**
@@ -43,6 +49,13 @@ export default class ImageInsertUI extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'ImageInsertUI' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 
 	/**
@@ -97,10 +110,13 @@ export default class ImageInsertUI extends Plugin {
 		} );
 
 		const componentCreator = ( locale: Locale ) => this._createToolbarComponent( locale );
+		const menuBarComponentCreator = ( locale: Locale ) => this._createMenuBarComponent( locale );
 
 		// Register `insertImage` dropdown and add `imageInsert` dropdown as an alias for backward compatibility.
 		editor.ui.componentFactory.add( 'insertImage', componentCreator );
 		editor.ui.componentFactory.add( 'imageInsert', componentCreator );
+
+		editor.ui.componentFactory.add( 'menuBar:insertImage', menuBarComponentCreator );
 	}
 
 	/**
@@ -111,15 +127,19 @@ export default class ImageInsertUI extends Plugin {
 		observable,
 		buttonViewCreator,
 		formViewCreator,
-		requiresForm
+		menuBarButtonViewCreator,
+		requiresForm = false,
+		override = false
 	}: {
 		name: string;
 		observable: Observable & { isEnabled: boolean } | ( () => Observable & { isEnabled: boolean } );
 		buttonViewCreator: ( isOnlyOne: boolean ) => ButtonView;
-		formViewCreator: ( isOnlyOne: boolean ) => FocusableView;
+		formViewCreator: ( isOnlyOne: boolean ) => FocusableView | Array<FocusableView>;
+		menuBarButtonViewCreator: ( isOnlyOne: boolean ) => MenuBarMenuListItemButtonView | Array<MenuBarMenuListItemButtonView>;
 		requiresForm?: boolean;
+		override?: boolean;
 	} ): void {
-		if ( this._integrations.has( name ) ) {
+		if ( this._integrations.has( name ) && !override ) {
 			/**
 			 * There are two insert-image integrations registered with the same name.
 			 *
@@ -133,8 +153,9 @@ export default class ImageInsertUI extends Plugin {
 		this._integrations.set( name, {
 			observable,
 			buttonViewCreator,
+			menuBarButtonViewCreator,
 			formViewCreator,
-			requiresForm: !!requiresForm
+			requiresForm
 		} );
 	}
 
@@ -181,13 +202,50 @@ export default class ImageInsertUI extends Plugin {
 		) );
 
 		dropdownView.once( 'change:isOpen', () => {
-			const integrationViews = integrations.map( ( { formViewCreator } ) => formViewCreator( integrations.length == 1 ) );
+			const integrationViews = integrations.flatMap( ( { formViewCreator } ) => formViewCreator( integrations.length == 1 ) );
 			const imageInsertFormView = new ImageInsertFormView( editor.locale, integrationViews );
 
 			dropdownView.panelView.children.add( imageInsertFormView );
 		} );
 
 		return dropdownView;
+	}
+
+	/**
+	 * Creates the menu bar component.
+	 */
+	private _createMenuBarComponent( locale: Locale ): View {
+		const t = locale.t;
+
+		const integrations = this._prepareIntegrations();
+
+		if ( !integrations.length ) {
+			return null as any;
+		}
+
+		const integrationViews = integrations.flatMap( ( {
+			menuBarButtonViewCreator
+		} ) => menuBarButtonViewCreator( integrations.length == 1 ) );
+
+		const resultView = new MenuBarMenuView( locale );
+		const listView = new MenuBarMenuListView( locale );
+		resultView.panelView.children.add( listView );
+
+		resultView.buttonView.set( {
+			icon: IconImage,
+			label: t( 'Image' )
+		} );
+
+		for ( const integrationView of integrationViews ) {
+			const listItemView = new MenuBarMenuListItemView( locale, resultView );
+
+			listItemView.children.add( integrationView );
+			listView.items.add( listItemView );
+
+			integrationView.delegate( 'execute' ).to( resultView );
+		}
+
+		return resultView;
 	}
 
 	/**
@@ -252,6 +310,7 @@ export default class ImageInsertUI extends Plugin {
 type IntegrationData = {
 	observable: Observable & { isEnabled: boolean } | ( () => Observable & { isEnabled: boolean } );
 	buttonViewCreator: ( isOnlyOne: boolean ) => ButtonView;
-	formViewCreator: ( isOnlyOne: boolean ) => FocusableView;
+	menuBarButtonViewCreator: ( isOnlyOne: boolean ) => MenuBarMenuListItemButtonView | Array<MenuBarMenuListItemButtonView>;
+	formViewCreator: ( isOnlyOne: boolean ) => FocusableView | Array<FocusableView>;
 	requiresForm: boolean;
 };

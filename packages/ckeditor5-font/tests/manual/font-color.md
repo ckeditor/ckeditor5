@@ -2,9 +2,9 @@
 
 The data should be loaded with different text and background colors in the following order:
 
-* Colors 1-5 use the predefined palette,
-* Colors 6-8 use custom CSS colors, not defined in the configuration,
-* Color 9-10 use a mix from the predefined palette and custom ones.
+* Colors 1&ndash;5 use the predefined palette,
+* Colors 6&ndash;8 use custom CSS colors, not defined in the configuration,
+* Colors 9&ndash;10 use a mix from the predefined palette and custom ones.
 
 The format in the editor content is: `N. [font color]; [background color]`.
 

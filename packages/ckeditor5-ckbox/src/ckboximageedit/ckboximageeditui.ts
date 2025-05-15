@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -9,8 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView } from 'ckeditor5/src/ui.js';
-
-import ckboxImageEditIcon from '../../theme/icons/ckbox-image-edit.svg';
+import { IconCkboxImageEdit } from 'ckeditor5/src/icons.js';
 
 /**
  * The UI plugin of the CKBox image edit feature.
@@ -29,20 +28,31 @@ export default class CKBoxImageEditUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( 'ckboxImageEdit', locale => {
 			const command = editor.commands.get( 'ckboxImageEdit' )!;
+			const uploadImageCommand = editor.commands.get( 'uploadImage' )!;
 			const view = new ButtonView( locale );
 			const t = locale.t;
 
 			view.set( {
-				label: t( 'Edit image' ),
-				icon: ckboxImageEditIcon,
+				icon: IconCkboxImageEdit,
 				tooltip: true
 			} );
 
+			view.bind( 'label' ).to( uploadImageCommand, 'isAccessAllowed', isAccessAllowed => isAccessAllowed ?
+				t( 'Edit image' ) :
+				t( 'You have no image editing permissions.' )
+			);
 			view.bind( 'isOn' ).to( command, 'value', command, 'isEnabled', ( value, isEnabled ) => value && isEnabled );
 			view.bind( 'isEnabled' ).to( command );
 

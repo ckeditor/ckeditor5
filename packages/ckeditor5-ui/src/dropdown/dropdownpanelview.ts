@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -113,8 +113,8 @@ export default class DropdownPanelView extends View implements DropdownPanelFocu
 				 * provides the `focus()` method for the best user experience.
 				 *
 				 * @error ui-dropdown-panel-focus-child-missing-focus
-				 * @param childView
-				 * @param dropdownPanel
+				 * @param {module:ui/view~View} childView Child view.
+				 * @param {module:ui/dropdown/dropdownpanelview~DropdownPanelView} dropdownPanel A parent of a child.
 				 */
 				logWarning( 'ui-dropdown-panel-focus-child-missing-focus', { childView: this.children.first, dropdownPanel: this } );
 			}

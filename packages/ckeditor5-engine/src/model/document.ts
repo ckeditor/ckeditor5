@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -28,7 +28,7 @@ import {
 	isInsideCombinedSymbol
 } from '@ckeditor/ckeditor5-utils';
 
-import { clone } from 'lodash-es';
+import { clone } from 'es-toolkit/compat';
 
 // @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
 
@@ -433,7 +433,8 @@ export default class Document extends /* #__PURE__ */ EmitterMixin() {
 	 * @returns `true` if `range` is valid, `false` otherwise.
 	 */
 	public _validateSelectionRange( range: Range ): boolean {
-		return validateTextNodePosition( range.start ) && validateTextNodePosition( range.end );
+		return range.start.isValid() && range.end.isValid() &&
+			validateTextNodePosition( range.start ) && validateTextNodePosition( range.end );
 	}
 
 	/**

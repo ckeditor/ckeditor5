@@ -18,8 +18,10 @@ See the {@link features/link link feature guide} and the {@link module:link/link
 
 ## Installation
 
-```plaintext
-npm install --save @ckeditor/ckeditor5-link
+This package is part of our open-source aggregate package.
+
+```bash
+npm install ckeditor5
 ```
 
 ## Contribute

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 // WARNING: The URLs below should not be used for any other purpose than Easy Image plugin development.
@@ -13,7 +13,10 @@ export const TOKEN_URL = 'https://33333.cke-cs.com/token/dev/ijrDsqFix838Gh3wGO3
 
 export const UPLOAD_URL = 'https://33333.cke-cs.com/easyimage/upload/';
 
+export const WEB_SOCKET_URL = '33333.cke-cs.com/ws';
+
 export const CS_CONFIG = {
 	tokenUrl: TOKEN_URL,
-	uploadUrl: UPLOAD_URL
+	uploadUrl: UPLOAD_URL,
+	webSocketUrl: WEB_SOCKET_URL
 };

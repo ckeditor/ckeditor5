@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -8,7 +8,7 @@
  */
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-import FileDialogButtonView from '../button/filedialogbuttonview.js';
+import { FileDialogListItemButtonView } from '../button/filedialogbuttonview.js';
 
 import '../../theme/components/menubar/menubarmenulistitembutton.css';
 
@@ -17,7 +17,7 @@ import '../../theme/components/menubar/menubarmenulistitembutton.css';
  *
  * This component provides a button that opens the native file selection dialog.
  */
-export default class MenuBarMenuListItemFileDialogButtonView extends FileDialogButtonView {
+export default class MenuBarMenuListItemFileDialogButtonView extends FileDialogListItemButtonView {
 	/**
 	 * Creates an instance of the menu bar list button view.
 	 *

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import Model from '../../../src/model/model.js';
@@ -244,15 +244,29 @@ describe( 'DataController utils', () => {
 			);
 
 			test(
-				'do not remove end block if selection ends at start position of it',
+				'do not merge end block if selection ends at start position of it',
 				'<paragraph>x</paragraph><paragraph>[foo</paragraph><paragraph>]bar</paragraph><paragraph>y</paragraph>',
 				'<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>bar</paragraph><paragraph>y</paragraph>'
 			);
 
 			test(
-				'do not remove end block if selection ends at start position of it (multiple paragraphs)',
+				'do not merge end block if selection ends at start position of it (multiple paragraphs)',
 				'<paragraph>x</paragraph><paragraph>[foo</paragraph><paragraph>a</paragraph><paragraph>]bar</paragraph>',
 				'<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>bar</paragraph>'
+			);
+
+			test(
+				'merge end block if selection ends at start position of it with `doNotFixSelection` option',
+				'<paragraph>x</paragraph><paragraph>[foo</paragraph><paragraph>]bar</paragraph><paragraph>y</paragraph>',
+				'<paragraph>x</paragraph><paragraph>[]bar</paragraph><paragraph>y</paragraph>',
+				{ doNotFixSelection: true }
+			);
+
+			test(
+				'merge end block if selection ends at start position of it with `doNotFixSelection` option (multiple paragraphs)',
+				'<paragraph>x</paragraph><paragraph>[foo</paragraph><paragraph>a</paragraph><paragraph>]bar</paragraph>',
+				'<paragraph>x</paragraph><paragraph>[]bar</paragraph>',
+				{ doNotFixSelection: true }
 			);
 
 			test(

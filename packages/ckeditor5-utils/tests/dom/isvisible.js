@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document */
@@ -79,5 +79,18 @@ describe( 'isVisible()', () => {
 		ancestor.style.display = 'none';
 
 		expect( isVisible( element ) ).to.be.false;
+	} );
+
+	it( 'should return visibility of parent element if text node is passed', () => {
+		document.body.appendChild( element );
+
+		const textNode = document.createTextNode( 'foo' );
+		element.appendChild( textNode );
+
+		expect( isVisible( textNode ) ).to.be.true;
+
+		element.style.display = 'none';
+
+		expect( isVisible( textNode ) ).to.be.false;
 	} );
 } );

@@ -23,7 +23,7 @@
 				{
 					"type": "Button",
 					"name": "imageTextAlternative",
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/text-alternative.svg",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/text-alternative.svg",
 					"toolbars": [
 						"image.toolbar"
 					]
@@ -57,7 +57,7 @@
 				{
 					"type": "Button",
 					"name": "imageTextAlternative",
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/text-alternative.svg",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/text-alternative.svg",
 					"toolbars": [
 						"image.toolbar"
 					]
@@ -97,7 +97,7 @@
 				{
 					"type": "Button",
 					"name": "toggleImageCaption",
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/caption.svg",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/caption.svg",
 					"toolbars": [
 						"image.toolbar"
 					]
@@ -112,7 +112,7 @@
 		{
 			"name": "Image resize",
 			"className": "ImageResize",
-			"description": "Allows for resizing images using handles and offers the UI fine tune the sizes.",
+			"description": "Allows for resizing images using handles and offers the UI to fine tune the sizes.",
 			"docs": "features/images/images-resizing.html",
 			"path": "src/imageresize.js",
 			"requires": [
@@ -160,7 +160,7 @@
 					"toolbars": [
 						"image.toolbar"
 					],
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/object-inline.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/object-inline.svg"
 				},
 				{
 					"type": "Button",
@@ -168,7 +168,7 @@
 					"toolbars": [
 						"image.toolbar"
 					],
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/object-center.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/object-center.svg"
 				},
 				{
 					"type": "Button",
@@ -176,7 +176,7 @@
 					"toolbars": [
 						"image.toolbar"
 					],
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/object-right.svg"
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/object-right.svg"
 				}
 			],
 			"htmlOutput": [
@@ -230,16 +230,16 @@
 			"uiComponents": [
 				{
 					"type": "Button",
-					"name": "imageUpload",
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/image.svg"
+					"name": "uploadImage",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/image.svg"
 				}
 			]
 		},
 		{
 			"name": "Image insert",
 			"className": "ImageInsert",
-			"description": "Allows for inserting images via source URL",
-			"docs": "features/images/images-inserting.html#inserting-images-via-a-source-url",
+			"description": "Allows for inserting images via source URL.",
+			"docs": "features/images/images-inserting.html",
 			"path": "src/imageinsert.js",
 			"requires": [
 				"ImageUpload"
@@ -247,10 +247,38 @@
 			"uiComponents": [
 				{
 					"type": "SplitButton",
-					"name": "imageInsert",
-					"iconPath": "@ckeditor/ckeditor5-core/theme/icons/image.svg"
+					"name": "insertImage",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/image.svg"
 				}
 			]
+		},
+		{
+			"name": "Image insert via URL",
+			"className": "ImageInsertViaUrl",
+			"description": "The image insert via URL plugin. This plugin does not do anything directly, but it loads a set of specific plugins to enable image inserting via URL.",
+			"docs": "features/images/images-inserting.html#inserting-images-via-a-source-url",
+			"path": "src/imageinsertviaurl.js",
+			"uiComponents": [
+				{
+					"type": "Button",
+					"name": "insertImageViaUrl",
+					"iconPath": "@ckeditor/ckeditor5-icons/theme/icons/image-url.svg"
+				}
+			]
+		},
+		{
+			"name": "Image utils",
+			"className": "ImageUtils",
+			"description": "Provides utility functions for image handling.",
+			"docs": "features/images/images-overview.html",
+			"path": "src/imageutils.js"
+		},
+		{
+			"name": "Image editing",
+			"className": "ImageEditing",
+			"description": "Provides basic common image engine features.",
+			"docs": "features/images/images-overview.html",
+			"path": "src/image/imageediting.js"
 		}
 	]
 }

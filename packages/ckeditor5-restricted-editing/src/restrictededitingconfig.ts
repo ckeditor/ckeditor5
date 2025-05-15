@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -44,7 +44,10 @@ export interface RestrictedEditingConfig {
 	 * };
 	 * ```
 	 *
-	 * To make a command always enabled (also outside non-restricted areas) use
+	 * Only inline content inserting or editing commands are allowed in this setting. Block content commands such as
+	 * `insertTable` or `enter` cannot be allowed via this setting, as they are not supported in the restricted editing mode.
+	 *
+	 * To make a command always enabled (also outside non-restricted areas) use the
 	 * {@link module:restricted-editing/restrictededitingmodeediting~RestrictedEditingModeEditing#enableCommand} method.
 	 */
 	allowedCommands: Array<string>;

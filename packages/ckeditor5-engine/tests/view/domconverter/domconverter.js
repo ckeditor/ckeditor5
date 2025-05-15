@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, console */
+/* globals document, console, globalThis */
 
 import DomConverter from '../../../src/view/domconverter.js';
 import ViewEditable from '../../../src/view/editableelement.js';
@@ -45,6 +45,20 @@ describe( 'DomConverter', () => {
 
 			converter = new DomConverter( viewDocument, { renderingMode: 'editing' } );
 			expect( converter.blockFillerMode ).to.equal( 'br' );
+		} );
+	} );
+
+	describe( 'domDocument', () => {
+		it( 'should return DOM document instance used by the DomConverter #1 - rendering mode data', () => {
+			expect( converter.domDocument ).to.be.instanceof( globalThis.Document );
+		} );
+
+		it( 'should return DOM document instance used by the DomConverter #2 - rendering mode editing', () => {
+			const converterEditing = new DomConverter( viewDocument, {
+				renderingMode: 'editing'
+			} );
+
+			expect( converterEditing.domDocument ).to.equal( globalThis.document );
 		} );
 	} );
 
@@ -120,16 +134,10 @@ describe( 'DomConverter', () => {
 				}
 			} );
 
-			Object.defineProperties( global.document.documentElement, {
-				scrollLeft: {
-					get: () => 60,
-					set: documentElementScrollLeftSpy
-				},
-				scrollTop: {
-					get: () => 600,
-					set: documentElementScrollTopSpy
-				}
-			} );
+			testUtils.sinon.stub( global.document.documentElement, 'scrollLeft' ).get( () => 60 );
+			testUtils.sinon.stub( global.document.documentElement, 'scrollTop' ).get( () => 600 );
+			testUtils.sinon.stub( global.document.documentElement, 'scrollLeft' ).set( documentElementScrollLeftSpy );
+			testUtils.sinon.stub( global.document.documentElement, 'scrollTop' ).set( documentElementScrollTopSpy );
 
 			testUtils.sinon.stub( global.window, 'scrollX' ).get( () => 10 );
 			testUtils.sinon.stub( global.window, 'scrollY' ).get( () => 100 );

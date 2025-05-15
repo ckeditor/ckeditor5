@@ -12,7 +12,7 @@ The Markdown plugin lets you switch the default output from HTML to Markdown. Th
 The editor below is configured to output GitHub Flavored Markdown. Edit the content and see how the Markdown output changes (you can find it below the editor).
 
 <info-box info>
-	Please note that the source editing feature in the demo below is a {@link features/source-editing separate plugin}. If you would like to use it in your integration, you need to install it separately.
+	Please note that the Enhanced source code editing feature in the demo below is a {@link features/source-editing-enhanced separate plugin}. If you would like to use it in your integration, you need to install it separately.
 </info-box>
 
 {@snippet features/markdown}
@@ -26,6 +26,37 @@ The editor below is configured to output GitHub Flavored Markdown. Edit the cont
  Coupled with the {@link features/autoformat autoformatting} feature, the Markdown plugin offers the full-fledged Markdown WYSIWYG editing experience, as described in the ["CKEditor&nbsp;5: the best open source Markdown editor"](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/) blog post. Visit the [free online Markdown editor](https://onlinemarkdowneditor.dev/) to see this solution implemented.
 
 Please remember that Markdown syntax is really simple and it does not cover all the rich-text features. Some features provided by CKEditor&nbsp;5 will thus work as intended only when output to HTML as they have no Markdown equivalent.
+
+## Installation
+
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the {@link module:markdown-gfm/markdown~Markdown} plugin to the editor configuration. It will change the default {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} to the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor}:
+
+<code-switcher>
+```js
+import { ClassicEditor, Bold, Italic, Essentials, Markdown } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#snippet-markdown' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [
+			Markdown,
+			Essentials,
+			Bold,
+			Italic,
+			// More plugins.
+		],
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+
+```
+</code-switcher>
 
 ## Extending formatting support
 If you need more extensive Markdown support for formatting elements (for example, having the `title` attribute on links represented as `[Foo Bar](https://foo.bar "My link title")`), you can also install {@link features/general-html-support General HTML Support}. This advanced feature allows the integrators to provide additional tags, elements, and attributes, not yet supported by other CKEditor&nbsp;5 plugins and extend the formatting capabilities.
@@ -50,52 +81,6 @@ When converting the output produced by this data processor, make sure to use a c
 	And please do remember &ndash; using Markdown [does not automatically make your application or website secure](https://github.com/ckeditor/ckeditor5-markdown-gfm/issues/16#issuecomment-375752994).
 </info-box>
 
-## Installation
-
-<info-box info>
-	This feature is not available in any of the {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
-
-To enable this data processor in your editor, install the [`@ckeditor/ckeditor5-markdown-gfm`](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm) package:
-
-```
-npm install --save @ckeditor/ckeditor5-markdown-gfm
-```
-
-Then add the {@link module:markdown-gfm/markdown~Markdown} plugin to the editor configuration, which will change the default {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} to the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor}:
-
-```js
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-// More imports.
-// ...
-
-import { Markdown } from '@ckeditor/ckeditor5-markdown-gfm';
-
-ClassicEditor
-	.create( document.querySelector( '#snippet-markdown' ), {
-		plugins: [
-			Markdown,
-			Essentials,
-			Bold,
-			Italic,
-			// More plugins.
-			// ...
-		],
-		// More of editor's configuration.
-		// ...
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-
-```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
-
 ## Known issues
 
 <info-box info>
@@ -113,7 +98,7 @@ While the Markdown plugin is stable and ready to use, some issues are still bein
 
 Some other ways to output the edited content include:
 
-* {@link features/source-editing#markdown-source-view Source editing} &ndash; Allows for Markdown source edition if configured accordingly.
+* {@link features/source-editing-enhanced#markdown-source-view Enhanced source code editing} &ndash; Allows for Markdown source edition if configured accordingly.
 * {@link features/export-word Export to Word} &ndash; Generate editable `.docx` files out of your editor-created content.
 * {@link features/export-pdf Export to PDF} &ndash; Generate portable PDF files out of your editor-created content.
 * {@link features/autoformat Autoformatting} &ndash; Use Markdown syntax shortcodes to automatically format your content as you type!

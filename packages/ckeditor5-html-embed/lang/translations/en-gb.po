@@ -1,0 +1,40 @@
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "Toolbar button tooltip for the HTML embed feature."
+msgid "Insert HTML"
+msgstr ""
+
+msgctxt "The HTML snippet."
+msgid "HTML snippet"
+msgstr ""
+
+msgctxt "A placeholder that will be displayed in the raw HTML textarea field."
+msgid "Paste raw HTML here..."
+msgstr ""
+
+msgctxt "A label of a button that switches the HTML embed to the source editing mode."
+msgid "Edit source"
+msgstr ""
+
+msgctxt "A label of a button that saves the HTML embed content and navigates back to the preview."
+msgid "Save changes"
+msgstr ""
+
+msgctxt "An information displayed in the HTML embed preview if the content is not previewable."
+msgid "No preview available"
+msgstr ""
+
+msgctxt "An information displayed in the HTML embed preview if the HTML snippet has no content."
+msgid "Empty snippet content"
+msgstr ""

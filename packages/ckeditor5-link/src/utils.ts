@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -15,8 +15,10 @@ import type {
 	Schema,
 	ViewAttributeElement,
 	ViewNode,
-	ViewDocumentFragment
+	ViewDocumentFragment,
+	Range
 } from 'ckeditor5/src/engine.js';
+
 import type { LocaleTranslate } from 'ckeditor5/src/utils.js';
 
 import type {
@@ -25,7 +27,7 @@ import type {
 	LinkDecoratorManualDefinition
 } from './linkconfig.js';
 
-import { upperFirst } from 'lodash-es';
+import { upperFirst } from 'es-toolkit/compat';
 
 const ATTRIBUTE_WHITESPACES = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205f\u3000]/g; // eslint-disable-line no-control-regex
 
@@ -192,6 +194,25 @@ export function linkHasProtocol( link: string ): boolean {
  */
 export function openLink( link: string ): void {
 	window.open( link, '_blank', 'noopener' );
+}
+
+/**
+ * Returns a text of a link range.
+ *
+ * If the returned value is `undefined`, the range contains elements other than text nodes.
+ */
+export function extractTextFromLinkRange( range: Range ): string | undefined {
+	let text = '';
+
+	for ( const item of range.getItems() ) {
+		if ( !item.is( '$text' ) && !item.is( '$textProxy' ) ) {
+			return;
+		}
+
+		text += item.data;
+	}
+
+	return text;
 }
 
 export type NormalizedLinkDecoratorAutomaticDefinition = LinkDecoratorAutomaticDefinition & { id: string };

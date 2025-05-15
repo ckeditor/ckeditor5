@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import priorities, { type PriorityString } from './priorities.js';
@@ -35,13 +35,20 @@ export interface ObjectWithPriority {
 export default function insertToPriorityArray<T extends ObjectWithPriority>( objects: Array<T>, objectToInsert: T ): void {
 	const priority = priorities.get( objectToInsert.priority );
 
-	for ( let i = 0; i < objects.length; i++ ) {
-		if ( priorities.get( objects[ i ].priority ) < priority ) {
-			objects.splice( i, 0, objectToInsert );
+	// Binary search for better performance in large tables.
+	let left = 0;
+	let right = objects.length;
 
-			return;
+	while ( left < right ) {
+		const mid = ( left + right ) >> 1; // Use bitwise operator for faster floor division by 2.
+		const midPriority = priorities.get( objects[ mid ].priority );
+
+		if ( midPriority < priority ) {
+			right = mid;
+		} else {
+			left = mid + 1;
 		}
 	}
 
-	objects.push( objectToInsert );
+	objects.splice( left, 0, objectToInsert );
 }

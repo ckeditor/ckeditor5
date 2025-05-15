@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals document */
@@ -48,6 +48,14 @@ describe( 'TableSelection', () => {
 
 		it( 'should have pluginName', () => {
 			expect( TableSelection.pluginName ).to.equal( 'TableSelection' );
+		} );
+
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( TableSelection.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( TableSelection.isPremiumPlugin ).to.be.false;
 		} );
 
 		describe( 'plugin disabling support', () => {
@@ -560,6 +568,28 @@ describe( 'TableSelection', () => {
 			expect( tableSelection.getFocusCell() ).to.equal( focusCell );
 			expect( tableSelection.getAnchorCell() ).to.equal( anchorCell );
 			expect( selection.isBackward ).to.be.true;
+		} );
+
+		it( 'should select all cells when selecting from a regular row to a row with colspan', () => {
+			setModelData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ { contents: '11', colspan: 3 } ]
+			] ) );
+
+			table = modelRoot.getChild( 0 );
+
+			const anchorCell = table.getChild( 0 ).getChild( 0 );
+			const targetCell = table.getChild( 1 ).getChild( 0 );
+
+			tableSelection.setCellSelection( anchorCell, targetCell );
+
+			const selectedCells = tableSelection.getSelectedTableCells();
+
+			expect( selectedCells ).to.have.length( 4 );
+			expect( selectedCells[ 0 ] ).to.equal( table.getChild( 0 ).getChild( 0 ) );
+			expect( selectedCells[ 1 ] ).to.equal( table.getChild( 0 ).getChild( 1 ) );
+			expect( selectedCells[ 2 ] ).to.equal( table.getChild( 0 ).getChild( 2 ) );
+			expect( selectedCells[ 3 ] ).to.equal( table.getChild( 1 ).getChild( 0 ) );
 		} );
 
 		function assertSelection( anchorCell, focusCell, count ) {

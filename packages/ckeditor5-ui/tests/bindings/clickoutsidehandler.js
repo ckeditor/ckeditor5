@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document, Event */
@@ -38,6 +38,40 @@ describe( 'clickOutsideHandler', () => {
 		document.body.removeChild( contextElement1 );
 		document.body.removeChild( contextElement2 );
 		document.body.removeChild( shadowRootContainer );
+	} );
+
+	describe( 'listenerOptions', () => {
+		it( 'should forward listenerOptions parameter', () => {
+			const listenerOptions = { passive: true };
+			const emitter = Object.create( DomEmitterMixin );
+
+			const listenToSpy = sinon.spy( emitter, 'listenTo' );
+
+			clickOutsideHandler( {
+				emitter,
+				activator,
+				contextElements: [ contextElement1 ],
+				callback: actionSpy,
+				listenerOptions
+			} );
+
+			sinon.assert.calledWithMatch( listenToSpy.firstCall, document, 'mousedown', sinon.match.func, listenerOptions );
+		} );
+
+		it( 'should not forward listenerOptions parameter if not provided', () => {
+			const emitter = Object.create( DomEmitterMixin );
+
+			const listenToSpy = sinon.spy( emitter, 'listenTo' );
+
+			clickOutsideHandler( {
+				emitter,
+				activator,
+				contextElements: [ contextElement1 ],
+				callback: actionSpy
+			} );
+
+			sinon.assert.calledWithMatch( listenToSpy.firstCall, document, 'mousedown', sinon.match.func );
+		} );
 	} );
 
 	describe( 'static list of context elements', () => {

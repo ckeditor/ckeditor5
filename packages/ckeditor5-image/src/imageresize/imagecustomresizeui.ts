@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -58,6 +58,13 @@ export default class ImageCustomResizeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public override destroy(): void {
 		super.destroy();
 
@@ -98,12 +105,6 @@ export default class ImageCustomResizeUI extends Plugin {
 
 		this.listenTo<ImageCustomResizeFormViewCancelEvent>( this._form, 'cancel', () => {
 			this._hideForm( true );
-		} );
-
-		// Close the form on Esc key press.
-		this._form.keystrokes.set( 'Esc', ( data, cancel ) => {
-			this._hideForm( true );
-			cancel();
 		} );
 
 		// Close on click outside of balloon panel element.

@@ -1,18 +1,12 @@
-# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
 #
-#                                     !!! IMPORTANT !!!
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
 #
-#         Before you edit this file, please keep in mind that contributing to the project
-#                translations is possible ONLY via the Transifex online service.
-#
-#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
-#
-#                   To learn more, check out the official contributor's guide:
-#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
 #
 msgid ""
 msgstr ""
-"Language-Team: Korean (https://app.transifex.com/ckeditor/teams/11143/ko/)\n"
 "Language: ko\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -69,6 +63,14 @@ msgctxt "The label for the replace image with the file manager toolbar button."
 msgid "Replace image with file manager"
 msgstr "파일 관리자를 사용하여 이미지 교체"
 
+msgctxt "The label for a button that opens a file manager in order to insert a file."
+msgid "File"
+msgstr "파일"
+
+msgctxt "The label for the insert image with the file manager menu bar button (inside 'Insert' menu)"
+msgid "With file manager"
+msgstr "파일 관리 버튼으로 이미지 삽입"
+
 msgctxt "The button label for the object (e.g. image, table) toolbar for hiding the attached caption."
 msgid "Toggle caption off"
 msgstr "캡션 지우기"
@@ -124,3 +126,31 @@ msgstr "현재 포커스가 맞춰진 버튼을 실행합니다. 편집기 콘�
 msgctxt "Label of the button confirming the changes done in the current interface."
 msgid "Accept"
 msgstr "수락"
+
+msgctxt "Dropdown option label for the paragraph format."
+msgid "Paragraph"
+msgstr "문단"
+
+msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
+msgid "Color picker"
+msgstr "색상 선택기"
+
+msgctxt "The secondary text of the message shown to the user when no results are available for the search criteria."
+msgid "Please try a different phrase or check the spelling."
+msgstr "다른 문구를 사용해 보시거나 철자를 확인해 주세요."
+
+msgctxt "The label of the source editing related features used in toolbar buttons."
+msgid "Source"
+msgstr "소스"
+
+msgctxt "Label for the Insert button."
+msgid "Insert"
+msgstr "삽입"
+
+msgctxt "Label for the Update button."
+msgid "Update"
+msgstr "업데이트"
+
+msgctxt "Label for the Back button."
+msgid "Back"
+msgstr "뒤로"

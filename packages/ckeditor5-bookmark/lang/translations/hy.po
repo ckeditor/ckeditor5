@@ -1,0 +1,64 @@
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: hy\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "The label of the bookmark toolbar button. Also, a bookmark form header."
+msgid "Bookmark"
+msgstr ""
+
+msgctxt "Button opening the Bookmark editing balloon."
+msgid "Edit bookmark"
+msgstr ""
+
+msgctxt "Toolbar button tooltip for bookmark remove button."
+msgid "Remove bookmark"
+msgstr ""
+
+msgctxt "The label of the input in the bookmark insert and update form. Also, the tooltip for the bookmark name in the bookmark preview."
+msgid "Bookmark name"
+msgstr ""
+
+msgctxt "The description of bookmark input in the bookmark insert form."
+msgid "Enter the bookmark name without spaces."
+msgstr ""
+
+msgctxt "The error message. Displayed when the bookmark name is empty."
+msgid "Bookmark must not be empty."
+msgstr ""
+
+msgctxt "The error message. Displayed when provided name includes spaces."
+msgid "Bookmark name cannot contain space characters."
+msgstr ""
+
+msgctxt "The error message. Displayed when provided name already exists."
+msgid "Bookmark name already exists."
+msgstr ""
+
+msgctxt "The label for the bookmark widget."
+msgid "bookmark widget"
+msgstr ""
+
+msgctxt "The label used by assistive technologies describing an bookmark toolbar attached to a bookmark widget."
+msgid "Bookmark toolbar"
+msgstr ""
+
+msgctxt "Title for a feature displaying a list of bookmarks."
+msgid "Bookmarks"
+msgstr ""
+
+msgctxt "A message displayed instead of a list of bookmarks if it is empty."
+msgid "No bookmarks available."
+msgstr ""
+
+msgctxt "Tooltip shown after hovering the bookmark link preview."
+msgid "Scroll to bookmark"
+msgstr ""

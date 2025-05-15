@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -44,6 +44,13 @@ export default class FontSizeEditing extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'FontSizeEditing' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 
 	/**
@@ -119,7 +126,7 @@ export default class FontSizeEditing extends Plugin {
 			 * See valid examples described in the {@link module:font/fontconfig~FontSizeConfig#options plugin configuration}.
 			 *
 			 * @error font-size-invalid-use-of-named-presets
-			 * @param {Array.<String>} presets Invalid values.
+			 * @param {Array.<string>} presets Invalid values.
 			 */
 			throw new CKEditorError(
 				'font-size-invalid-use-of-named-presets',

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -9,13 +9,12 @@
 
 /* global console */
 
-import { type Editor, Plugin, PendingActions } from 'ckeditor5/src/core.js';
+import { Plugin, PendingActions, type Editor } from 'ckeditor5/src/core.js';
+import { IconSource } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView, type Dialog } from 'ckeditor5/src/ui.js';
-import { CKEditorError, createElement, ElementReplacer } from 'ckeditor5/src/utils.js';
-import { formatHtml } from './utils/formathtml.js';
+import { CKEditorError, createElement, ElementReplacer, formatHtml } from 'ckeditor5/src/utils.js';
 
 import '../theme/sourceediting.css';
-import sourceEditingIcon from '../theme/icons/source-editing.svg';
 
 const COMMAND_FORCE_DISABLE_ID = 'SourceEditingMode';
 
@@ -24,7 +23,7 @@ const COMMAND_FORCE_DISABLE_ID = 'SourceEditingMode';
  *
  * It provides the possibility to view and edit the source of the document.
  *
- * For a detailed overview, check the {@glink features/source-editing source editing feature documentation} and the
+ * For a detailed overview, check the {@glink features/source-editing/source-editing source editing feature documentation} and the
  * {@glink api/source-editing package page}.
  */
 export default class SourceEditing extends Plugin {
@@ -33,6 +32,13 @@ export default class SourceEditing extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'SourceEditing' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 
 	/**
@@ -92,7 +98,7 @@ export default class SourceEditing extends Plugin {
 
 			buttonView.set( {
 				label: t( 'Source' ),
-				icon: sourceEditingIcon,
+				icon: IconSource,
 				tooltip: true,
 				class: 'ck-source-editing-button'
 			} );
@@ -104,7 +110,8 @@ export default class SourceEditing extends Plugin {
 			const buttonView = this._createButton( MenuBarMenuListItemButtonView );
 
 			buttonView.set( {
-				label: t( 'Show source' )
+				label: t( 'Show source' ),
+				role: 'menuitemcheckbox'
 			} );
 
 			return buttonView;
@@ -169,7 +176,7 @@ export default class SourceEditing extends Plugin {
 			/**
 			 * Source editing feature is not fully compatible with real-time collaboration,
 			 * and using it may lead to data loss. Please read
-			 * {@glink features/source-editing#limitations-and-incompatibilities source editing feature guide} to learn more.
+			 * {@glink features/source-editing/source-editing#limitations-and-incompatibilities source editing feature guide} to learn more.
 			 *
 			 * If you understand the possible risk of data loss, you can enable the source editing
 			 * by setting the
@@ -277,6 +284,8 @@ export default class SourceEditing extends Plugin {
 			this._dataFromRoots.set( rootName, data );
 		}
 
+		this._hideDocumentOutline();
+		this._refreshAnnotationsVisibility();
 		this._focusSourceEditing();
 	}
 
@@ -300,7 +309,37 @@ export default class SourceEditing extends Plugin {
 		this._replacedRoots.clear();
 		this._dataFromRoots.clear();
 
+		this._showDocumentOutline();
+		this._refreshAnnotationsVisibility();
+
 		editingView.focus();
+	}
+
+	/**
+	 * Hides the document outline if it is configured.
+	 */
+	private _hideDocumentOutline() {
+		if ( this.editor.plugins.has( 'DocumentOutlineUI' ) ) {
+			( this.editor.plugins.get( 'DocumentOutlineUI' ) as any ).view!.element!.style.display = 'none';
+		}
+	}
+
+	/**
+	 * Shows the document outline if it was hidden when entering the source editing.
+	 */
+	private _showDocumentOutline() {
+		if ( this.editor.plugins.has( 'DocumentOutlineUI' ) ) {
+			( this.editor.plugins.get( 'DocumentOutlineUI' ) as any ).view!.element!.style.display = '';
+		}
+	}
+
+	/**
+	 * Hides the annotations when entering the source editing mode and shows back them after leaving it.
+	 */
+	private _refreshAnnotationsVisibility() {
+		if ( this.editor.plugins.has( 'Annotations' ) ) {
+			( this.editor.plugins.get( 'Annotations' ) as any ).refreshVisibility();
+		}
 	}
 
 	/**
@@ -392,12 +431,13 @@ export default class SourceEditing extends Plugin {
 		}
 	}
 
-	private _createButton<T extends typeof ButtonView | typeof MenuBarMenuListItemButtonView>( ButtonClass: T ): InstanceType<T> {
+	private _createButton<T extends typeof ButtonView>( ButtonClass: T ): InstanceType<T> {
 		const editor = this.editor;
 		const buttonView = new ButtonClass( editor.locale ) as InstanceType<T>;
 
 		buttonView.set( {
-			withText: true
+			withText: true,
+			isToggleable: true
 		} );
 
 		buttonView.bind( 'isOn' ).to( this, 'isSourceEditingMode' );

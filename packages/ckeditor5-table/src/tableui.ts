@@ -1,13 +1,14 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module table/tableui
  */
 
-import { icons, Plugin, type Command, type Editor } from 'ckeditor5/src/core.js';
+import { Plugin, type Command, type Editor } from 'ckeditor5/src/core.js';
+import { IconTable, IconTableColumn, IconTableRow, IconTableMergeCell } from 'ckeditor5/src/icons.js';
 import {
 	addListToDropdown,
 	createDropdown,
@@ -22,9 +23,6 @@ import { Collection, type ObservableChangeEvent, type Locale } from 'ckeditor5/s
 
 import InsertTableView from './ui/inserttableview.js';
 
-import tableColumnIcon from './../theme/icons/table-column.svg';
-import tableRowIcon from './../theme/icons/table-row.svg';
-import tableMergeCellIcon from './../theme/icons/table-merge-cell.svg';
 import type InsertTableCommand from './commands/inserttablecommand.js';
 import type MergeCellsCommand from './commands/mergecellscommand.js';
 
@@ -50,6 +48,13 @@ export default class TableUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const editor = this.editor;
 		const t = this.editor.t;
@@ -64,7 +69,7 @@ export default class TableUI extends Plugin {
 
 			// Decorate dropdown's button.
 			dropdownView.buttonView.set( {
-				icon: icons.table,
+				icon: IconTable,
 				label: t( 'Insert table' ),
 				tooltip: true
 			} );
@@ -111,7 +116,7 @@ export default class TableUI extends Plugin {
 
 			menuView.buttonView.set( {
 				label: t( 'Table' ),
-				icon: icons.table
+				icon: IconTable
 			} );
 
 			menuView.panelView.children.add( insertTableView );
@@ -162,7 +167,7 @@ export default class TableUI extends Plugin {
 				}
 			] as Array<ListDropdownItemDefinition>;
 
-			return this._prepareDropdown( t( 'Column' ), tableColumnIcon, options, locale );
+			return this._prepareDropdown( t( 'Column' ), IconTableColumn, options, locale );
 		} );
 
 		editor.ui.componentFactory.add( 'tableRow', locale => {
@@ -206,7 +211,7 @@ export default class TableUI extends Plugin {
 				}
 			] as Array<ListDropdownItemDefinition>;
 
-			return this._prepareDropdown( t( 'Row' ), tableRowIcon, options, locale );
+			return this._prepareDropdown( t( 'Row' ), IconTableRow, options, locale );
 		} );
 
 		editor.ui.componentFactory.add( 'mergeTableCells', locale => {
@@ -256,7 +261,7 @@ export default class TableUI extends Plugin {
 				}
 			] as Array<ListDropdownItemDefinition>;
 
-			return this._prepareMergeSplitButtonDropdown( t( 'Merge cells' ), tableMergeCellIcon, options, locale );
+			return this._prepareMergeSplitButtonDropdown( t( 'Merge cells' ), IconTableMergeCell, options, locale );
 		} );
 	}
 

@@ -8,7 +8,7 @@ order: 87
 # Update to CKEditor&nbsp;5 v37.x
 
 <info-box>
-	When updating your CKEditor&nbsp;5 installation, make sure **all the packages are the same version** to avoid errors.
+	When updating your CKEditor&nbsp;5 installation, ensure **all the packages are the same version** to avoid errors.
 
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
@@ -19,7 +19,7 @@ _Released on April 5, 2023._
 
 For the entire list of changes introduced in version 37.0.0, see the [release notes for CKEditor&nbsp;5 v37.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v37.0.0).
 
-Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v37.0.0.
+Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v37.0.0.
 
 ### Bump of minimal version of Node.js to 16.x
 
@@ -35,17 +35,17 @@ As of version 37.0.0, CKEditor&nbsp;5 provides native TypeScript types, so commu
 
 	For example:
 
-	  ```ts
-	  // typings/types.d.ts
+	 ```ts
+	 // typings/types.d.ts
 
-	  declare module 'ckeditor5/src/core' {
-		  export * from 'ckeditor__ckeditor5-core';
-	  }
+	 declare module 'ckeditor5/src/core' {
+		 export * from 'ckeditor__ckeditor5-core';
+	 }
 
-	  declare module 'ckeditor5/src/ui' {
-		  export * from 'ckeditor__ckeditor5-ui';
-	  }
-	  ```
+	 declare module 'ckeditor5/src/ui' {
+		 export * from 'ckeditor__ckeditor5-ui';
+	 }
+	 ```
 
 2. Replace community types with native types:
 	* Update any import statements to use native types instead of community types.
@@ -59,7 +59,7 @@ As of version 37.0.0, CKEditor&nbsp;5 provides native TypeScript types, so commu
 	import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 	// Do:
-	import { Plugin } from '@ckeditor/ckeditor5-core';
+	import { Plugin } from 'ckeditor5';
 	```
 
 3. Adjust your `tsconfig.json` to include at least:

@@ -6,6 +6,8 @@
 	"The URL must not be empty.": "An error message that informs about an empty value in the URL input.",
 	"This media URL is not supported.": "An error message that informs about unsupported media URL.",
 	"Insert media": "Toolbar button tooltip for the Media Embed feature.",
+	"Media embed": "The label for the Media Embed balloon.",
+	"Media": "Label describing type of the inserted content (e.g. 'insert media').",
 	"Media toolbar": "The label used by assistive technologies describing an image toolbar attached to an image widget.",
 	"Open media in new tab": "A tooltip displayed when the user hovers a non-previewable media URL in the editor content."
 }

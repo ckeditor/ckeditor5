@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -14,7 +14,7 @@ import Range from '../range.js';
 import type Document from '../document.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
-import { isEqual } from 'lodash-es';
+import { isEqual } from 'es-toolkit/compat';
 import type { Selectable } from '../selection.js';
 
 /**
@@ -144,9 +144,9 @@ export default class AttributeOperation extends Operation {
 				 * Changed node has different attribute value than operation's old attribute value.
 				 *
 				 * @error attribute-operation-wrong-old-value
-				 * @param item
-				 * @param key
-				 * @param value
+				 * @param {module:engine/model/item~Item} root The item element.
+				 * @param {string} key The key of the attribute.
+				 * @param {never} value The value.
 				 */
 				throw new CKEditorError(
 					'attribute-operation-wrong-old-value',
@@ -160,8 +160,8 @@ export default class AttributeOperation extends Operation {
 				 * The attribute with given key already exists for the given node.
 				 *
 				 * @error attribute-operation-attribute-exists
-				 * @param node
-				 * @param key
+				 * @param {module:engine/model/item~Item} root The item element.
+				 * @param {string} key The key of the attribute.
 				 */
 				throw new CKEditorError(
 					'attribute-operation-attribute-exists',

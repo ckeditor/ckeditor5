@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document, console, window */
@@ -18,7 +18,7 @@ import ImageToolbar from '../../src/imagetoolbar.js';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, HeadingPlugin, ImagePlugin, UndoPlugin, ClipboardPlugin, ImageToolbar ],
-		toolbar: [ 'heading', '|', 'undo', 'redo' ],
+		toolbar: [ 'heading', '|', 'undo', 'redo', '|', 'imageTextAlternative' ],
 		image: {
 			toolbar: [ 'imageTextAlternative' ]
 		}

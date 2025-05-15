@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document */
@@ -27,6 +27,14 @@ describe( 'ImagePlaceholder', () => {
 
 	it( 'should require ImageUtils', () => {
 		expect( ImagePlaceholder.requires ).to.deep.equal( [ ImageUtils ] );
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ImagePlaceholder.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ImagePlaceholder.isPremiumPlugin ).to.be.false;
 	} );
 
 	describe( 'imageBlock', () => {

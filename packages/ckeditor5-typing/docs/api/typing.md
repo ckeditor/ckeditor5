@@ -16,8 +16,10 @@ This plugin is usually enabled by the {@link module:essentials/essentials~Essent
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-typing
+npm install ckeditor5
 ```
 
 ## Contribute

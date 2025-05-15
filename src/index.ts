@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import '@ckeditor/ckeditor5-theme-lark/theme/index.css';
@@ -11,6 +11,7 @@ export * from '@ckeditor/ckeditor5-autoformat';
 export * from '@ckeditor/ckeditor5-autosave';
 export * from '@ckeditor/ckeditor5-basic-styles';
 export * from '@ckeditor/ckeditor5-block-quote';
+export * from '@ckeditor/ckeditor5-bookmark';
 export * from '@ckeditor/ckeditor5-ckbox';
 export * from '@ckeditor/ckeditor5-ckfinder';
 export * from '@ckeditor/ckeditor5-clipboard';
@@ -23,16 +24,19 @@ export * from '@ckeditor/ckeditor5-editor-classic';
 export * from '@ckeditor/ckeditor5-editor-decoupled';
 export * from '@ckeditor/ckeditor5-editor-inline';
 export * from '@ckeditor/ckeditor5-editor-multi-root';
+export * from '@ckeditor/ckeditor5-emoji';
 export * from '@ckeditor/ckeditor5-engine';
 export * from '@ckeditor/ckeditor5-enter';
 export * from '@ckeditor/ckeditor5-essentials';
 export * from '@ckeditor/ckeditor5-find-and-replace';
 export * from '@ckeditor/ckeditor5-font';
+export * from '@ckeditor/ckeditor5-fullscreen';
 export * from '@ckeditor/ckeditor5-heading';
 export * from '@ckeditor/ckeditor5-highlight';
 export * from '@ckeditor/ckeditor5-horizontal-line';
 export * from '@ckeditor/ckeditor5-html-embed';
 export * from '@ckeditor/ckeditor5-html-support';
+export * from '@ckeditor/ckeditor5-icons';
 export * from '@ckeditor/ckeditor5-image';
 export * from '@ckeditor/ckeditor5-indent';
 export * from '@ckeditor/ckeditor5-language';

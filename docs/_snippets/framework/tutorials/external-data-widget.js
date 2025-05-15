@@ -1,21 +1,28 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, fetch, setInterval, setTimeout, clearInterval */
+import {
+	ClassicEditor,
+	Bold,
+	Italic,
+	Command,
+	Plugin,
+	Essentials,
+	Heading,
+	List,
+	Paragraph,
+	ButtonView,
+	Widget,
+	toWidget
+} from 'ckeditor5';
+import {
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
 
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles';
-import { Command, Plugin } from '@ckeditor/ckeditor5-core';
-import { Essentials } from '@ckeditor/ckeditor5-essentials';
-import { Heading } from '@ckeditor/ckeditor5-heading';
-import { List } from '@ckeditor/ckeditor5-list';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import { ButtonView } from '@ckeditor/ckeditor5-ui/src/index.js';
-import { Widget, toWidget } from '@ckeditor/ckeditor5-widget';
-
-import BitcoinLogoIcon from '../../../assets/img/bitcoin-logo.svg';
+import BitcoinLogoIcon from '@assets/img/bitcoin-logo.svg';
 
 const RESOURCE_URL = 'https://api2.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT';
 
@@ -202,9 +209,8 @@ ClassicEditor
 		// Expose for playing in the console.
 		window.editor = editor;
 
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.label && item.label === 'Bitcoin rate' ),
+		attachTourBalloon( {
+			target: findToolbarItem( editor.ui.view.toolbar, item => item.label && item.label === 'Bitcoin rate' ),
 			text: 'Click to add Bitcoin rate.',
 			tippyOptions: {
 				placement: 'bottom-start'
@@ -216,12 +222,10 @@ ClassicEditor
 		console.error( error.stack );
 	} );
 
-// For a totally unknown reason, Travis and Binance do not like each other and the test fail on CI.
 const metaElement = document.createElement( 'meta' );
 
 metaElement.name = 'x-cke-crawler-ignore-patterns';
 metaElement.content = JSON.stringify( {
-	'request-failure': 'binance.com',
 	'console-error': [ 'Access to fetch at', 'Failed to fetch' ]
 } );
 

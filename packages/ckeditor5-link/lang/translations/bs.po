@@ -1,0 +1,68 @@
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: bs\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && n % 100 != 11 ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "Toolbar button tooltip for the Unlink feature."
+msgid "Unlink"
+msgstr ""
+
+msgctxt "Toolbar button tooltip for the Link feature."
+msgid "Link"
+msgstr ""
+
+msgctxt "Label for the URL input in the Link URL editing balloon."
+msgid "Link URL"
+msgstr ""
+
+msgctxt "An error text displayed when user attempted to enter an empty URL."
+msgid "Link URL must not be empty."
+msgstr ""
+
+msgctxt "Label for the image link button."
+msgid "Link image"
+msgstr ""
+
+msgctxt "Button opening the Link URL editing balloon."
+msgid "Edit link"
+msgstr ""
+
+msgctxt "Button opening the link in new browser tab."
+msgid "Open link in new tab"
+msgstr ""
+
+msgctxt "The label of the switch button that controls whether the edited link will open in a new tab."
+msgid "Open in a new tab"
+msgstr ""
+
+msgctxt "The label of the switch button that controls whether the edited link refers to downloadable resource."
+msgid "Downloadable"
+msgstr ""
+
+msgctxt "Keystroke description for assistive technologies: keystroke for creating a link."
+msgid "Create link"
+msgstr ""
+
+msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
+msgid "Move out of a link"
+msgstr ""
+
+msgctxt "Label for the link properties link balloon title."
+msgid "Link properties"
+msgstr ""
+
+msgctxt "The label of the input field for the displayed text of the link."
+msgid "Displayed text"
+msgstr ""
+
+msgctxt "Placeholder shown when placeholder items view is empty."
+msgid "No links available"
+msgstr ""

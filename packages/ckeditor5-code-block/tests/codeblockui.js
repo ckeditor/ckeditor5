@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document */
@@ -8,7 +8,7 @@
 import CodeBlockEditing from '../src/codeblockediting.js';
 import CodeBlockUI from '../src/codeblockui.js';
 
-import { icons } from 'ckeditor5/src/core.js';
+import { IconCodeBlock } from 'ckeditor5/src/icons.js';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
@@ -50,6 +50,14 @@ describe( 'CodeBlockUI', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CodeBlockUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CodeBlockUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'toolbar', () => {
 		let button;
 
@@ -75,7 +83,7 @@ describe( 'CodeBlockUI', () => {
 
 		it( 'has the base properties', () => {
 			expect( button ).to.have.property( 'label', 'Insert code block' );
-			expect( button ).to.have.property( 'icon', icons.codeBlock );
+			expect( button ).to.have.property( 'icon', IconCodeBlock );
 			expect( button ).to.have.property( 'tooltip', true );
 			expect( button ).to.have.property( 'isToggleable', true );
 		} );
@@ -125,6 +133,20 @@ describe( 'CodeBlockUI', () => {
 		beforeEach( () => {
 			subMenu = editor.ui.componentFactory.create( 'menuBar:codeBlock' );
 			languagesListView = subMenu.panelView.children.first;
+		} );
+
+		it( 'has proper menu item role on button', () => {
+			expect( subMenu.buttonView.role ).to.be.equal( 'menuitem' );
+		} );
+
+		it( 'sets item\'s aria-checked attribute depending on the value of the CodeBlockCommand', () => {
+			const { element } = languagesListView.items.get( 2 ).children.first;
+
+			expect( element.getAttribute( 'aria-checked' ) ).to.be.equal( 'false' );
+
+			command.value = 'cs';
+
+			expect( element.getAttribute( 'aria-checked' ) ).to.be.equal( 'true' );
 		} );
 
 		it( 'has isEnabled bound to command\'s isEnabled', () => {
@@ -226,6 +248,10 @@ describe( 'CodeBlockUI', () => {
 					},
 					{
 						label: 'Diff',
+						withText: true
+					},
+					{
+						label: 'Go',
 						withText: true
 					},
 					{

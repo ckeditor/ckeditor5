@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -61,6 +61,18 @@ import type Writer from '../writer.js';
  * **Note:** If there is no valid position for the selection, the paragraph will always be created:
  *
  * `[<imageBlock src="foo.jpg"></imageBlock>]` -> `<paragraph>[]</paragraph>`.
+ *
+ * @param options.doNotFixSelection Whether given selection-to-remove should be fixed if it ends at the beginning of an element.
+ *
+ * By default, `deleteContent()` will fix selection before performing a deletion, so that the selection does not end at the beginning of
+ * an element. For example, selection `<heading>[Heading</heading><paragraph>]Some text.</paragraph>` will be treated as it was
+ * `<heading>[Heading]</heading><paragraph>Some text.</paragraph>`. As a result, the elements will not get merged.
+ *
+ * If selection is as in example, visually, the next element (paragraph) is not selected and it may be confusing for the user that
+ * the elements got merged. Selection is set up like this by browsers when a user triple-clicks on some text.
+ *
+ * However, in some cases, it is expected to remove content exactly as selected in the selection, without any fixing. In these cases,
+ * this flag can be set to `true`, which will prevent fixing the selection.
  */
 export default function deleteContent(
 	model: Model,
@@ -69,6 +81,7 @@ export default function deleteContent(
 		leaveUnmerged?: boolean;
 		doNotResetEntireContent?: boolean;
 		doNotAutoparagraph?: boolean;
+		doNotFixSelection?: boolean;
 	} = {}
 ): void {
 	if ( selection.isCollapsed ) {
@@ -105,7 +118,14 @@ export default function deleteContent(
 		}
 
 		// Get the live positions for the range adjusted to span only blocks selected from the user perspective.
-		const [ startPosition, endPosition ] = getLivePositionsForSelectedBlocks( selRange );
+		let startPosition, endPosition;
+
+		if ( !options.doNotFixSelection ) {
+			[ startPosition, endPosition ] = getLivePositionsForSelectedBlocks( selRange );
+		} else {
+			startPosition = LivePosition.fromPosition( selRange.start, 'toPrevious' );
+			endPosition = LivePosition.fromPosition( selRange.end, 'toNext' );
+		}
 
 		// 2. Remove the content if there is any.
 		if ( !startPosition.isTouching( endPosition ) ) {

@@ -1,18 +1,12 @@
-# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
 #
-#                                     !!! IMPORTANT !!!
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
 #
-#         Before you edit this file, please keep in mind that contributing to the project
-#                translations is possible ONLY via the Transifex online service.
-#
-#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
-#
-#                   To learn more, check out the official contributor's guide:
-#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
 #
 msgid ""
 msgstr ""
-"Language-Team: Nepali (Nepal) (https://app.transifex.com/ckeditor/teams/11143/ne_NP/)\n"
 "Language: ne_NP\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -45,10 +39,6 @@ msgctxt "Button opening the link in new browser tab."
 msgid "Open link in new tab"
 msgstr "नयाँ ट्याबमा लिङ्क खोल्नुहोस्"
 
-msgctxt "Label explaining that a link has no URL set (the URL is empty)."
-msgid "This link has no URL"
-msgstr "यो लिङ्कसँग यूआरएल छैन"
-
 msgctxt "The label of the switch button that controls whether the edited link will open in a new tab."
 msgid "Open in a new tab"
 msgstr "नयाँ ट्याबमा खोल्न"
@@ -63,4 +53,16 @@ msgstr ""
 
 msgctxt "Keystroke description for assistive technologies: keystroke for moving out of a link."
 msgid "Move out of a link"
+msgstr ""
+
+msgctxt "Label for the link properties link balloon title."
+msgid "Link properties"
+msgstr ""
+
+msgctxt "The label of the input field for the displayed text of the link."
+msgid "Displayed text"
+msgstr ""
+
+msgctxt "Placeholder shown when placeholder items view is empty."
+msgid "No links available"
 msgstr ""

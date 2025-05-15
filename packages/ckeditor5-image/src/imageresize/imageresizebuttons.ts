@@ -1,14 +1,13 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module image/imageresize/imageresizebuttons
  */
-import { map } from 'lodash-es';
 
-import { Plugin, icons, type Editor } from 'ckeditor5/src/core.js';
+import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import {
 	ButtonView,
 	DropdownButtonView,
@@ -18,19 +17,26 @@ import {
 	type ListDropdownItemDefinition
 } from 'ckeditor5/src/ui.js';
 import { CKEditorError, Collection, type Locale } from 'ckeditor5/src/utils.js';
+import {
+	IconObjectSizeCustom,
+	IconObjectSizeFull,
+	IconObjectSizeLarge,
+	IconObjectSizeMedium,
+	IconObjectSizeSmall
+} from 'ckeditor5/src/icons.js';
 
 import ImageResizeEditing from './imageresizeediting.js';
 
 import type ResizeImageCommand from './resizeimagecommand.js';
 import type { ImageResizeOption } from '../imageconfig.js';
 
-const RESIZE_ICONS = {
-	small: icons.objectSizeSmall,
-	medium: icons.objectSizeMedium,
-	large: icons.objectSizeLarge,
-	custom: icons.objectSizeCustom,
-	original: icons.objectSizeFull
-};
+const RESIZE_ICONS = /* #__PURE__ */ ( () => ( {
+	small: IconObjectSizeSmall,
+	medium: IconObjectSizeMedium,
+	large: IconObjectSizeLarge,
+	custom: IconObjectSizeCustom,
+	original: IconObjectSizeFull
+} ) )();
 
 /**
  * The image resize buttons plugin.
@@ -50,6 +56,13 @@ export default class ImageResizeButtons extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'ImageResizeButtons' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 
 	/**
@@ -87,7 +100,7 @@ export default class ImageResizeButtons extends Plugin {
 	/**
 	 * A helper function that creates a standalone button component for the plugin.
 	 *
-	 * @param resizeOption A model of the resize option.
+	 * @param option A model of the resize option.
 	 */
 	private _registerImageResizeButton( option: ImageResizeOption ): void {
 		const editor = this.editor;
@@ -107,7 +120,7 @@ export default class ImageResizeButtons extends Plugin {
 				 * {@link module:image/imageconfig~ImageResizeOption plugin configuration}.
 				 *
 				 * @error imageresizebuttons-missing-icon
-				 * @param option Invalid image resize option.
+				 * @param {module:image/imageconfig~ImageResizeOption} option Invalid image resize option.
 				*/
 				throw new CKEditorError(
 					'imageresizebuttons-missing-icon',
@@ -136,7 +149,11 @@ export default class ImageResizeButtons extends Plugin {
 			} else {
 				const optionValueWithUnit = value ? value + this._resizeUnit : null;
 
-				button.bind( 'isOn' ).to( command, 'value', getIsOnButtonCallback( optionValueWithUnit ) );
+				button.bind( 'isOn' ).to(
+					command, 'value',
+					command, 'isEnabled',
+					getIsOnButtonCallback( optionValueWithUnit )
+				);
 
 				this.listenTo( button, 'execute', () => {
 					editor.execute( 'resizeImage', { width: optionValueWithUnit } );
@@ -294,9 +311,13 @@ export default class ImageResizeButtons extends Plugin {
 					} )
 				};
 
-				const allDropdownValues = map( optionsWithSerializedValues, 'valueWithUnits' );
+				const allDropdownValues = Object.values( optionsWithSerializedValues ).map( option => option.valueWithUnits );
 
-				definition.model.bind( 'isOn' ).to( command, 'value', getIsOnCustomButtonCallback( allDropdownValues ) );
+				definition.model.bind( 'isOn' ).to(
+					command, 'value',
+					command, 'isEnabled',
+					getIsOnCustomButtonCallback( allDropdownValues )
+				);
 			} else {
 				definition = {
 					type: 'button',
@@ -310,7 +331,11 @@ export default class ImageResizeButtons extends Plugin {
 					} )
 				};
 
-				definition.model.bind( 'isOn' ).to( command, 'value', getIsOnButtonCallback( option.valueWithUnits ) );
+				definition.model.bind( 'isOn' ).to(
+					command, 'value',
+					command, 'isEnabled',
+					getIsOnButtonCallback( option.valueWithUnits )
+				);
 			}
 
 			definition.model.bind( 'isEnabled' ).to( command, 'isEnabled' );
@@ -331,9 +356,14 @@ function isCustomImageResizeOption( option: ImageResizeOption ) {
 /**
  * A helper function for setting the `isOn` state of buttons in value bindings.
  */
-function getIsOnButtonCallback( value: string | null ): ( commandValue: unknown ) => boolean {
-	return ( commandValue: unknown ): boolean => {
-		const objectCommandValue = commandValue as null | { width: string | null };
+function getIsOnButtonCallback( value: string | null ) {
+	return ( commandValue: ResizeImageCommand['value'], isEnabled: boolean ): boolean => {
+		const objectCommandValue = commandValue as null | undefined | { width: string | null };
+
+		if ( objectCommandValue === undefined || !isEnabled ) {
+			return false;
+		}
+
 		if ( value === null && objectCommandValue === value ) {
 			return true;
 		}
@@ -345,8 +375,8 @@ function getIsOnButtonCallback( value: string | null ): ( commandValue: unknown 
 /**
  * A helper function for setting the `isOn` state of custom size button in value bindings.
  */
-function getIsOnCustomButtonCallback( allDropdownValues: Array<string | null> ): ( commandValue: unknown ) => boolean {
-	return ( commandValue: unknown ): boolean => !allDropdownValues.some(
-		dropdownValue => getIsOnButtonCallback( dropdownValue )( commandValue )
+function getIsOnCustomButtonCallback( allDropdownValues: Array<string | null> ) {
+	return ( commandValue: ResizeImageCommand['value'], isEnabled: boolean ): boolean => !allDropdownValues.some(
+		dropdownValue => getIsOnButtonCallback( dropdownValue )( commandValue, isEnabled )
 	);
 }

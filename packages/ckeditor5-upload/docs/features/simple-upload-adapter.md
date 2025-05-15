@@ -12,47 +12,39 @@ The simple upload adapter lets you upload images to your server using the [`XMLH
 ## Installation
 
 <info-box info>
-	This feature is not available in any of the {@link installation/getting-started/predefined-builds predefined builds}.
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
-```plaintext
-npm install --save @ckeditor/ckeditor5-upload
-```
-
-Add the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter `SimpleUploadAdapter`} to your plugin list and [configure](#configuration) the feature. For instance:
-
+<code-switcher>
 ```js
-import { SimpleUploadAdapter } from '@ckeditor/ckeditor5-upload';
+import { ClassicEditor, SimpleUploadAdapter } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ SimpleUploadAdapter, /* ... */ ],
 		toolbar: [ /* ... */ ],
 		simpleUpload: {
-			// Feature configuration.
+			// Configuration.
 		}
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
+</code-switcher>
 
 ## Configuration
 
 The client side of this feature is configurable using the {@link module:upload/uploadconfig~SimpleUploadConfig `config.simpleUpload`} object.
 
 ```js
-import { SimpleUploadAdapter } from '@ckeditor/ckeditor5-upload';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ SimpleUploadAdapter, /* ... */ ],
-		toolbar: [ /* ... */ ],
+		// ... Other configuration options ...
 		simpleUpload: {
 			// The URL that the images are uploaded to.
 			uploadUrl: 'http://example.com',
@@ -132,7 +124,7 @@ If the upload is successful, the server should return:
 The URL(s) in the server response are used:
 
 * To display the image during the editing (as seen by the user in the editor).
-* In the editor content {@link installation/getting-started/getting-and-setting-data saved to the database}.
+* In the editor content {@link getting-started/setup/getting-and-setting-data saved to the database}.
 
 ### Error handling
 

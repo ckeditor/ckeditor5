@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -12,21 +12,36 @@
 import ComponentFactory from '../componentfactory.js';
 import TooltipManager from '../tooltipmanager.js';
 import PoweredBy from './poweredby.js';
+import EvaluationBadge from './evaluationbadge.js';
 import AriaLiveAnnouncer from '../arialiveannouncer.js';
 
 import type EditorUIView from './editoruiview.js';
 import type ToolbarView from '../toolbar/toolbarview.js';
-import type { UIViewRenderEvent } from '../view.js';
+import type { default as View, UIViewRenderEvent } from '../view.js';
 
 import {
 	ObservableMixin,
+	DomEmitterMixin,
+	global,
 	isVisible,
 	FocusTracker,
-	type EventInfo
+	getVisualViewportOffset,
+	type EventInfo,
+	type CollectionAddEvent,
+	type CollectionRemoveEvent,
+	type ObservableSetEvent,
+	type DomEmitter
 } from '@ckeditor/ckeditor5-utils';
 
-import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { Editor, ViewportOffsetConfig } from '@ckeditor/ckeditor5-core';
 import type { ViewDocumentLayoutChangedEvent, ViewScrollToTheSelectionEvent } from '@ckeditor/ckeditor5-engine';
+import type {
+	default as MenuBarView,
+	MenuBarConfigAddedGroup,
+	MenuBarConfigAddedItem,
+	MenuBarConfigAddedMenu
+} from '../menubar/menubarview.js';
+import { normalizeMenuBarConfig } from '../menubar/utils.js';
 
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
@@ -60,6 +75,11 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	public readonly poweredBy: PoweredBy;
 
 	/**
+	 * A helper that enables the "evaluation badge" feature in the editor.
+	 */
+	public readonly evaluationBadge: EvaluationBadge;
+
+	/**
 	 * A helper that manages the content of an `aria-live` regions used by editor features to announce status changes
 	 * to screen readers.
 	 */
@@ -88,7 +108,8 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 * 	top: 50,
 	 * 	right: 50,
 	 * 	bottom: 50,
-	 * 	left: 50
+	 * 	left: 50,
+	 * 	visualTop: 50
 	 * }
 	 * ```
 	 *
@@ -105,12 +126,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 *
 	 * @observable
 	 */
-	public declare viewportOffset: {
-		left?: number;
-		right?: number;
-		top?: number;
-		bottom?: number;
-	};
+	public declare viewportOffset: ViewportOffset;
 
 	/**
 	 * Stores all editable elements used by the editor instance.
@@ -121,6 +137,21 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 * All available & focusable toolbars.
 	 */
 	private _focusableToolbarDefinitions: Array<FocusableToolbarDefinition> = [];
+
+	/**
+	 * All additional menu bar items, groups or menus that have their default location defined.
+	 */
+	private _extraMenuBarElements: Array<MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu> = [];
+
+	/**
+	 * The last focused element to which focus should return on `Esc` press.
+	 */
+	private _lastFocusedForeignElement: HTMLElement | null = null;
+
+	/**
+	 * The DOM emitter instance used for visual viewport watching.
+	 */
+	private _domEmitter?: DomEmitter;
 
 	/**
 	 * Creates an instance of the editor UI class.
@@ -137,11 +168,14 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		this.focusTracker = new FocusTracker();
 		this.tooltipManager = new TooltipManager( editor );
 		this.poweredBy = new PoweredBy( editor );
+		this.evaluationBadge = new EvaluationBadge( editor );
 		this.ariaLiveAnnouncer = new AriaLiveAnnouncer( editor );
 
-		this.set( 'viewportOffset', this._readViewportOffsetFromConfig() );
+		this._initViewportOffset( this._readViewportOffsetFromConfig() );
 
 		this.once<EditorUIReadyEvent>( 'ready', () => {
+			this._bindBodyCollectionWithFocusTracker();
+
 			this.isReady = true;
 		} );
 
@@ -150,6 +184,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		this.listenTo<ViewScrollToTheSelectionEvent>( editingView, 'scrollToTheSelection', this._handleScrollToTheSelection.bind( this ) );
 
 		this._initFocusTracking();
+		this._initVisualViewportSupport();
 	}
 
 	/**
@@ -187,6 +222,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		this.focusTracker.destroy();
 		this.tooltipManager.destroy( this.editor );
 		this.poweredBy.destroy();
+		this.evaluationBadge.destroy();
 
 		// Clean–up the references to the CKEditor instance stored in the native editable DOM elements.
 		for ( const domElement of this._editableElementsMap.values() ) {
@@ -196,6 +232,10 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 
 		this._editableElementsMap = new Map();
 		this._focusableToolbarDefinitions = [];
+
+		if ( this._domEmitter ) {
+			this._domEmitter.stopListening();
+		}
 	}
 
 	/**
@@ -287,16 +327,61 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 */
 	public addToolbar( toolbarView: ToolbarView, options: FocusableToolbarOptions = {} ): void {
 		if ( toolbarView.isRendered ) {
-			this.focusTracker.add( toolbarView.element! );
+			this.focusTracker.add( toolbarView );
 			this.editor.keystrokes.listenTo( toolbarView.element! );
 		} else {
 			toolbarView.once<UIViewRenderEvent>( 'render', () => {
-				this.focusTracker.add( toolbarView.element! );
+				this.focusTracker.add( toolbarView );
 				this.editor.keystrokes.listenTo( toolbarView.element! );
 			} );
 		}
 
 		this._focusableToolbarDefinitions.push( { toolbarView, options } );
+	}
+
+	/**
+	 * Registers an extra menu bar element, which could be a single item, a group of items, or a menu containing groups.
+	 *
+	 * ```ts
+	 * // Register a new menu bar item.
+	 * editor.ui.extendMenuBar( {
+	 *   item: 'menuBar:customFunctionButton',
+	 *   position: 'after:menuBar:bold'
+	 * } );
+	 *
+	 * // Register a new menu bar group.
+	 * editor.ui.extendMenuBar( {
+	 *   group: {
+	 *     groupId: 'customGroup',
+	 *     items: [
+	 *       'menuBar:customFunctionButton'
+	 *     ]
+	 *   },
+	 *   position: 'start:help'
+	 * } );
+	 *
+	 * // Register a new menu bar menu.
+	 * editor.ui.extendMenuBar( {
+	 *   menu: {
+	 *     menuId: 'customMenu',
+	 *     label: 'customMenu',
+	 *     groups: [
+	 *       {
+	 *         groupId: 'customGroup',
+	 *         items: [
+	 *           'menuBar:customFunctionButton'
+	 *         ]
+	 *       }
+	 *     ]
+	 *   },
+	 *   position: 'after:help'
+	 * } );
+	 * ```
+	 */
+	public extendMenuBar(
+		config: MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu
+	): void {
+		this._extraMenuBarElements.push( config );
 	}
 
 	/**
@@ -312,7 +397,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		 * {@link module:ui/editorui/editorui~EditorUI#getEditableElement `getEditableElement()`} methods instead.
 		 *
 		 * @error editor-ui-deprecated-editable-elements
-		 * @param editorUI Editor UI instance the deprecated property belongs to.
+		 * @param {module:ui/editorui/editorui~EditorUI} editorUI Editor UI instance the deprecated property belongs to.
 		 */
 		console.warn(
 			'editor-ui-deprecated-editable-elements: ' +
@@ -320,6 +405,52 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 			{ editorUI: this } );
 
 		return this._editableElementsMap;
+	}
+
+	/**
+	 * Initializes menu bar.
+	 */
+	public initMenuBar( menuBarView: MenuBarView ): void {
+		const menuBarViewElement = menuBarView.element!;
+
+		this.focusTracker.add( menuBarViewElement );
+		this.editor.keystrokes.listenTo( menuBarViewElement );
+
+		const normalizedMenuBarConfig = normalizeMenuBarConfig( this.editor.config.get( 'menuBar' ) || {} );
+
+		menuBarView.fillFromConfig( normalizedMenuBarConfig, this.componentFactory, this._extraMenuBarElements );
+
+		this.editor.keystrokes.set( 'Esc', ( data, cancel ) => {
+			if ( !menuBarViewElement.contains( this.editor.ui.focusTracker.focusedElement ) ) {
+				return;
+			}
+
+			// Bring focus back to where it came from before focusing the toolbar:
+			// If it came from outside the engine view (e.g. source editing), move it there.
+			if ( this._lastFocusedForeignElement ) {
+				this._lastFocusedForeignElement.focus();
+				this._lastFocusedForeignElement = null;
+			}
+			// Else just focus the view editing.
+			else {
+				this.editor.editing.view.focus();
+			}
+
+			cancel();
+		} );
+
+		this.editor.keystrokes.set( 'Alt+F9', ( data, cancel ) => {
+			// If menu bar is already focused do nothing.
+			if ( menuBarViewElement.contains( this.editor.ui.focusTracker.focusedElement ) ) {
+				return;
+			}
+
+			this._saveLastFocusedForeignElement();
+
+			menuBarView.isFocusBorderEnabled = true;
+			menuBarView.focus();
+			cancel();
+		} );
 	}
 
 	/**
@@ -376,24 +507,12 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 */
 	private _initFocusTracking(): void {
 		const editor = this.editor;
-		const editingView = editor.editing.view;
 
-		let lastFocusedForeignElement: HTMLElement | null;
 		let candidateDefinitions: Array<FocusableToolbarDefinition>;
 
 		// Focus the next focusable toolbar on <kbd>Alt</kbd> + <kbd>F10</kbd>.
 		editor.keystrokes.set( 'Alt+F10', ( data, cancel ) => {
-			const focusedElement = this.focusTracker.focusedElement as HTMLElement;
-
-			// Focus moved out of a DOM element that
-			// * is not a toolbar,
-			// * does not belong to the editing view (e.g. source editing).
-			if (
-				Array.from( this._editableElementsMap.values() ).includes( focusedElement ) &&
-				!Array.from( editingView.domRoots.values() ).includes( focusedElement )
-			) {
-				lastFocusedForeignElement = focusedElement;
-			}
+			this._saveLastFocusedForeignElement();
 
 			const currentFocusedToolbarDefinition = this._getCurrentFocusedToolbarDefinition();
 
@@ -443,9 +562,9 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 
 			// Bring focus back to where it came from before focusing the toolbar:
 			// 1. If it came from outside the engine view (e.g. source editing), move it there.
-			if ( lastFocusedForeignElement ) {
-				lastFocusedForeignElement.focus();
-				lastFocusedForeignElement = null;
+			if ( this._lastFocusedForeignElement ) {
+				this._lastFocusedForeignElement.focus();
+				this._lastFocusedForeignElement = null;
 			}
 			// 2. There are two possibilities left:
 			//   2.1. It could be that the focus went from an editable element in the view (root or nested).
@@ -462,6 +581,23 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 
 			cancel();
 		} );
+	}
+
+	/**
+	 * Saves last focused element that doen not belong to editing view to restore focus on `Esc`.
+	 */
+	private _saveLastFocusedForeignElement() {
+		const focusedElement = this.focusTracker.focusedElement as HTMLElement;
+
+		// Focus moved out of a DOM element that
+		// * is not a toolbar,
+		// * does not belong to the editing view (e.g. source editing).
+		if (
+			Array.from( this._editableElementsMap.values() ).includes( focusedElement ) &&
+			!Array.from( this.editor.editing.view.domRoots.values() ).includes( focusedElement )
+		) {
+			this._lastFocusedForeignElement = focusedElement;
+		}
 	}
 
 	/**
@@ -555,6 +691,79 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		data.viewportOffset.left += configuredViewportOffset.left;
 		data.viewportOffset.right += configuredViewportOffset.right;
 	}
+
+	/**
+	 * Ensures that the focus tracker is aware of all views' DOM elements in the body collection.
+	 */
+	private _bindBodyCollectionWithFocusTracker() {
+		const body = this.view.body;
+
+		for ( const view of body ) {
+			this.focusTracker.add( view.element! );
+		}
+
+		body.on<CollectionAddEvent<View>>( 'add', ( evt, view ) => {
+			this.focusTracker.add( view.element! );
+		} );
+
+		body.on<CollectionRemoveEvent<View>>( 'remove', ( evt, view ) => {
+			this.focusTracker.remove( view.element! );
+		} );
+	}
+
+	/**
+	 * Set initial viewport offset and setup visualTop augmentation.
+	 */
+	private _initViewportOffset( viewportOffsetConfig: ViewportOffsetConfig ) {
+		// Augment the viewport offset set from outside the editor with the visualTop property.
+		this.on<ObservableSetEvent<ViewportOffset>>( 'set:viewportOffset', ( evt, name, value ) => {
+			const visualTop = this._getVisualViewportTopOffset( value );
+
+			// Update only if there is a change in a value, so we do not trigger
+			// listeners to the viewportOffset observable.
+			if ( value.visualTop !== visualTop ) {
+				evt.return = { ...value, visualTop };
+			}
+		} );
+
+		// Set the initial value after augmenting the setter.
+		this.set( 'viewportOffset', viewportOffsetConfig );
+	}
+
+	/**
+	 * Listen to visual viewport changes and update the viewportOffset with the visualTop property
+	 * according to the visible part of it (visual viewport).
+	 */
+	private _initVisualViewportSupport() {
+		if ( !global.window.visualViewport ) {
+			return;
+		}
+
+		const updateViewport = () => {
+			const visualTop = this._getVisualViewportTopOffset( this.viewportOffset );
+
+			// Update only if there is a change in a value, so we do not trigger
+			// listeners to the viewportOffset observable.
+			if ( this.viewportOffset.visualTop !== visualTop ) {
+				this.viewportOffset = { ...this.viewportOffset, visualTop };
+			}
+		};
+
+		// Listen to the changes in the visual viewport to adjust the visualTop of viewport offset.
+		this._domEmitter = new ( DomEmitterMixin() )();
+		this._domEmitter.listenTo( global.window.visualViewport, 'scroll', updateViewport );
+		this._domEmitter.listenTo( global.window.visualViewport, 'resize', updateViewport );
+	}
+
+	/**
+	 * Calculate the viewport top offset according to the visible part of it (visual viewport).
+	 */
+	private _getVisualViewportTopOffset( viewportOffset: { top?: number } ): number {
+		const visualViewportOffsetTop = getVisualViewportOffset().top;
+		const viewportTopOffset = viewportOffset.top || 0;
+
+		return visualViewportOffsetTop > viewportTopOffset ? 0 : viewportTopOffset - visualViewportOffsetTop;
+	}
 }
 
 /**
@@ -625,6 +834,16 @@ export interface FocusableToolbarOptions {
 	afterBlur?: () => void;
 }
 
+export interface ViewportOffset extends ViewportOffsetConfig {
+
+	/**
+	 * The top offset of the visual viewport.
+	 *
+	 * This value is calculated based on the visual viewport position.
+	 */
+	visualTop?: number;
+}
+
 /**
  * Returns a number (weight) for a toolbar definition. Visible toolbars have a higher priority and so do
  * contextual toolbars (displayed in the context of a content, for instance, an image toolbar).
@@ -644,7 +863,7 @@ function getToolbarDefinitionWeight( toolbarDef: FocusableToolbarDefinition ): n
 
 	// Prioritize contextual toolbars. They are displayed at the selection.
 	if ( options.isContextual ) {
-		weight--;
+		weight -= 2;
 	}
 
 	return weight;

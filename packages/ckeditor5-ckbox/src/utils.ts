@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global atob */
@@ -62,15 +62,13 @@ export function getImageUrls( imageUrls: CKBoxImageUrls ): {
 export function getWorkspaceId( token: InitializedToken, defaultWorkspaceId?: string ): string | null {
 	const [ , binaryTokenPayload ] = token.value.split( '.' );
 	const payload = JSON.parse( atob( binaryTokenPayload ) );
-	const workspaces = ( payload.auth && payload.auth.ckbox && payload.auth.ckbox.workspaces ) || [ payload.aud ];
+	const workspaces = payload.auth?.ckbox?.workspaces || [ payload.aud ];
 
 	if ( !defaultWorkspaceId ) {
 		return workspaces[ 0 ];
 	}
 
-	const role = payload.auth && payload.auth.ckbox && payload.auth.ckbox.role;
-
-	if ( role == 'superadmin' || workspaces.includes( defaultWorkspaceId ) ) {
+	if ( payload.auth?.ckbox?.role == 'superadmin' || workspaces.includes( defaultWorkspaceId ) ) {
 		return defaultWorkspaceId;
 	}
 
@@ -121,10 +119,13 @@ export function blurHashToDataUrl( hash?: string ): string | undefined {
  * Sends the HTTP request.
  *
  * @internal
- * @param config.url the URL where the request will be sent.
- * @param config.method The HTTP method.
- * @param config.data Additional data to send.
- * @param config.onUploadProgress A callback informing about the upload progress.
+ * @param options Configuration options
+ * @param options.url The URL where the request will be sent.
+ * @param options.signal The AbortSignal to abort the request when needed.
+ * @param options.authorization The authorization token for the request.
+ * @param options.method The HTTP method (default: 'GET').
+ * @param options.data Additional data to send.
+ * @param options.onUploadProgress A callback informing about the upload progress.
  */
 export function sendHttpRequest( {
 	url,

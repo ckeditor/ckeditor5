@@ -18,8 +18,9 @@ They allow for "stringifying" the {@link framework/architecture/editing-engine#m
 
 For instance, to take a peek at the editor model, you could use the {@link module:engine/dev-utils/model~getData `getData()`} helper:
 
+<code-switcher>
 ```js
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { _getModelData } from 'ckeditor5';
 
 // More imports.
 // ...
@@ -28,9 +29,9 @@ ClassicEditor
 	.create( '<p>Hello <b>world</b>!</p>' )
 	.then( editor => {
 		console.log( getData( editor.model ) );
-
 		// -> '<paragraph>[]Hello <$text bold="true">world</$text>!</paragraph>'
 	} );
 ```
+</code-switcher>
 
-See the helper documentation to learn more about useful options.
+See the {@link module:engine/dev-utils/model~getData helper documentation} to learn more about useful options.

@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module clipboard/clipboardmarkersutils
  */
-import { mapValues } from 'lodash-es';
+import { mapValues } from 'es-toolkit/compat';
 
 import { uid } from '@ckeditor/ckeditor5-utils';
 import { Plugin, type NonEmptyArray } from '@ckeditor/ckeditor5-core';
@@ -44,6 +44,13 @@ export default class ClipboardMarkersUtils extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
 	 * Registers marker name as copyable in clipboard pipeline.
 	 *
 	 * @param markerName Name of marker that can be copied.
@@ -67,7 +74,6 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * Do not use any other custom selection object within callback, as this will lead to out-of-bounds exceptions in rare scenarios.
 	 *
 	 * @param action Type of clipboard action.
-	 * @param writer An instance of the model writer.
 	 * @param selection Selection to be checked.
 	 * @param getCopiedFragment	Callback that performs copy of selection and returns it as fragment.
 	 * @internal
@@ -137,7 +143,6 @@ export default class ClipboardMarkersUtils extends Plugin {
 	 * 	* Fake marker elements inside `getPastedDocumentElement` can be cloned, but their ranges cannot overlap.
 	 * 	* If `duplicateOnPaste` is `true` in marker config then associated marker ID is regenerated before pasting.
 	 *
-	 * @param action Type of clipboard action.
 	 * @param markers Object that maps marker name to corresponding range.
 	 * @param getPastedDocumentElement Getter used to get target markers element.
 	 * @internal
@@ -477,7 +482,7 @@ export default class ClipboardMarkersUtils extends Plugin {
 			// set them new unique name.
 			let skipAssign = false;
 
-			if ( prevFakeMarker && prevFakeMarker.start && prevFakeMarker.end ) {
+			if ( prevFakeMarker?.start && prevFakeMarker?.end ) {
 				const config = this._getMarkerClipboardConfig( fakeMarker.name )!;
 
 				if ( config.duplicateOnPaste ) {

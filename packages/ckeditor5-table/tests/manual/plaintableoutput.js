@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals console, document, window */
 
-import { formatHtml } from '@ckeditor/ckeditor5-source-editing/src/utils/formathtml.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import { formatHtml } from 'ckeditor5/src/utils.js';
 import Table from '../../src/table.js';
 import TableToolbar from '../../src/tabletoolbar.js';
 import TableSelection from '../../src/tableselection.js';
@@ -79,11 +79,18 @@ ClassicEditor
 		window.editor = editor;
 
 		const element = document.getElementById( 'editor-data' );
-		element.innerText = formatHtml( editor.getData() );
+		const editorPreview = document.getElementById( 'editor-output-preview' );
+
+		updateOutput();
 
 		editor.model.document.on( 'change:data', () => {
-			element.innerText = formatHtml( editor.getData() );
+			updateOutput();
 		} );
+
+		function updateOutput() {
+			element.innerText = formatHtml( editor.getData() );
+			editorPreview.innerHTML = editor.getData();
+		}
 	} )
 	.catch( err => {
 		console.error( err.stack );

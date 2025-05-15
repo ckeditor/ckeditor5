@@ -1,0 +1,36 @@
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: ro\n"
+"Plural-Forms: nplurals=3; plural=(n == 1 ? 0 : (n == 0 || (n % 100 > 0 && n % 100 < 20)) ? 1 : 2);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "Label for a toolbar button that enters the fullscreen when pressed"
+msgid "Enter fullscreen mode"
+msgstr "Intrați în modul ecran complet"
+
+msgctxt "Label for a toolbar button that leaves the fullscreen when pressed"
+msgid "Leave fullscreen mode"
+msgstr "Părăsiți modul ecran complet"
+
+msgctxt "Label for a menu bar button that toggles fullscreen mode"
+msgid "Fullscreen mode"
+msgstr "Mod ecran complet"
+
+msgctxt "Keystroke description for assistive technologies: keystroke for toggling a fullscreen mode."
+msgid "Toggle fullscreen mode"
+msgstr "Comutare mod ecran complet"
+
+msgctxt "Label for a sidebar header that contains a document outline"
+msgid "Document outline"
+msgstr "Schița documentului"
+
+msgctxt "Label for a sidebar header that contains a list of connected users"
+msgid "Connected users"
+msgstr "Utilizatori conectați"

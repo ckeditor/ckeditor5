@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -8,10 +8,8 @@
  */
 
 import type Element from './element.js';
-
-import { isPlainObject } from 'lodash-es';
-
 import { logWarning } from '@ckeditor/ckeditor5-utils';
+import { normalizeConsumables, type Consumables } from '../conversion/viewconsumable.js';
 
 /**
  * View matcher class.
@@ -82,21 +80,30 @@ export default class Matcher {
 	 * 	pattern: <pattern used to match found element>,
 	 * 	match: {
 	 * 		name: true,
-	 * 		attributes: [ 'title', 'href' ],
-	 * 		classes: [ 'foo' ],
-	 * 		styles: [ 'color', 'position' ]
+	 * 		attributes: [
+	 * 			[ 'title' ],
+	 * 			[ 'href' ],
+	 * 			[ 'class', 'foo' ],
+	 * 			[ 'style', 'color' ],
+	 * 			[ 'style', 'position' ]
+	 * 		]
 	 * 	}
 	 * }
 	 * ```
 	 *
+	 * You could use the `match` field from the above returned object as an input for the
+	 * {@link module:engine/conversion/viewconsumable~ViewConsumable#test `ViewConsumable#test()`} and
+	 * {@link module:engine/conversion/viewconsumable~ViewConsumable#consume `ViewConsumable#consume()`} methods.
+	 *
 	 * @see module:engine/view/matcher~Matcher#add
 	 * @see module:engine/view/matcher~Matcher#matchAll
 	 * @param element View element to match against stored patterns.
+	 * @returns The match information about found element or `null`.
 	 */
 	public match( ...element: Array<Element> ): MatchResult | null {
 		for ( const singleElement of element ) {
 			for ( const pattern of this._patterns ) {
-				const match = isElementMatching( singleElement, pattern );
+				const match = this._isElementMatching( singleElement, pattern );
 
 				if ( match ) {
 					return {
@@ -126,7 +133,7 @@ export default class Matcher {
 
 		for ( const singleElement of element ) {
 			for ( const pattern of this._patterns ) {
-				const match = isElementMatching( singleElement, pattern );
+				const match = this._isElementMatching( singleElement, pattern );
 
 				if ( match ) {
 					results.push( {
@@ -157,59 +164,77 @@ export default class Matcher {
 
 		return ( typeof pattern != 'function' && name && !( name instanceof RegExp ) ) ? name : null;
 	}
+
+	/**
+	 * Returns match information if {@link module:engine/view/element~Element element} is matching provided pattern.
+	 * If element cannot be matched to provided pattern - returns `null`.
+	 *
+	 * @returns Returns object with match information or null if element is not matching.
+	 */
+	private _isElementMatching( element: Element, pattern: MatcherFunctionPattern | MatcherObjectPattern ): Match | null {
+		// If pattern is provided as function - return result of that function;
+		if ( typeof pattern == 'function' ) {
+			const match = pattern( element );
+
+			// In some places we use Matcher with callback pattern that returns boolean.
+			if ( !match || typeof match != 'object' ) {
+				return match;
+			}
+
+			return normalizeConsumables( match );
+		}
+
+		const match: Match = {};
+
+		// Check element's name.
+		if ( pattern.name ) {
+			match.name = matchName( pattern.name, element.name );
+
+			if ( !match.name ) {
+				return null;
+			}
+		}
+
+		const attributesMatch: Array<[ string, string? ]> = [];
+
+		// Check element's attributes.
+		if ( pattern.attributes && !matchAttributes( pattern.attributes, element, attributesMatch ) ) {
+			return null;
+		}
+
+		// Check element's classes.
+		if ( pattern.classes && !matchClasses( pattern.classes, element, attributesMatch ) ) {
+			return null;
+		}
+
+		// Check element's styles.
+		if ( pattern.styles && !matchStyles( pattern.styles, element, attributesMatch ) ) {
+			return null;
+		}
+
+		// Note the `attributesMatch` array is populated by the above calls.
+		if ( attributesMatch.length ) {
+			match.attributes = attributesMatch;
+		}
+
+		return match;
+	}
 }
 
 /**
- * Returns match information if {@link module:engine/view/element~Element element} is matching provided pattern.
- * If element cannot be matched to provided pattern - returns `null`.
+ * Returns true if the given `item` matches the pattern.
  *
- * @returns Returns object with match information or null if element is not matching.
+ * @internal
+ * @param pattern A pattern representing a key/value we want to match.
+ * @param item An actual item key/value (e.g. `'src'`, `'background-color'`, `'ck-widget'`) we're testing against pattern.
  */
-function isElementMatching( element: Element, pattern: MatcherFunctionPattern | MatcherObjectPattern ): Match | null {
-	// If pattern is provided as function - return result of that function;
-	if ( typeof pattern == 'function' ) {
-		return pattern( element );
-	}
-
-	const match: Match = {};
-
-	// Check element's name.
-	if ( pattern.name ) {
-		match.name = matchName( pattern.name, element.name );
-
-		if ( !match.name ) {
-			return null;
-		}
-	}
-
-	// Check element's attributes.
-	if ( pattern.attributes ) {
-		match.attributes = matchAttributes( pattern.attributes, element );
-
-		if ( !match.attributes ) {
-			return null;
-		}
-	}
-
-	// Check element's classes.
-	if ( pattern.classes ) {
-		match.classes = matchClasses( pattern.classes, element );
-
-		if ( !match.classes ) {
-			return null;
-		}
-	}
-
-	// Check element's styles.
-	if ( pattern.styles ) {
-		match.styles = matchStyles( pattern.styles, element );
-
-		if ( !match.styles ) {
-			return null;
-		}
-	}
-
-	return match;
+export function isPatternMatched(
+	pattern: true | string | RegExp,
+	item: string
+): unknown {
+	return pattern === true ||
+		pattern === item ||
+		pattern instanceof RegExp && !!String( item ).match( pattern );
 }
 
 /**
@@ -227,102 +252,8 @@ function matchName( pattern: string | RegExp, name: string ): boolean {
 }
 
 /**
- * Checks if an array of key/value pairs can be matched against provided patterns.
- *
- * Patterns can be provided in a following ways:
- * - a boolean value matches any attribute with any value (or no value):
- *
- * ```ts
- * pattern: true
- * ```
- *
- * - a RegExp expression or object matches any attribute name:
- *
- * ```ts
- * pattern: /h[1-6]/
- * ```
- *
- * - an object matches any attribute that has the same name as the object item's key, where object item's value is:
- * 	- equal to `true`, which matches any attribute value:
- *
- * ```ts
- * pattern: {
- * 	required: true
- * }
- * ```
- *
- * 	- a string that is equal to attribute value:
- *
- * ```ts
- * pattern: {
- * 	rel: 'nofollow'
- * }
- * ```
- *
- * 	- a regular expression that matches attribute value,
- *
- * ```ts
- * pattern: {
- * 	src: /^https/
- * }
- * ```
- *
- * - an array with items, where the item is:
- * 	- a string that is equal to attribute value:
- *
- * ```ts
- * pattern: [ 'data-property-1', 'data-property-2' ],
- * ```
- *
- * 	- an object with `key` and `value` property, where `key` is a regular expression matching attribute name and
- * 		`value` is either regular expression matching attribute value or a string equal to attribute value:
- *
- * ```ts
- * pattern: [
- * 	{ key: /^data-property-/, value: true },
- * 	// or:
- * 	{ key: /^data-property-/, value: 'foobar' },
- * 	// or:
- * 	{ key: /^data-property-/, value: /^foo/ }
- * ]
- * ```
- *
- * @param patterns Object with information about attributes to match.
- * @param keys Attribute, style or class keys.
- * @param valueGetter A function providing value for a given item key.
- * @returns Returns array with matched attribute names or `null` if no attributes were matched.
- */
-function matchPatterns(
-	patterns: PropertyPatterns,
-	keys: Iterable<string>,
-	valueGetter: ( value: string ) => unknown
-): Array<string> | undefined {
-	const normalizedPatterns = normalizePatterns( patterns );
-	const normalizedItems = Array.from( keys );
-	const match: Array<string> = [];
-
-	normalizedPatterns.forEach( ( [ patternKey, patternValue ] ) => {
-		normalizedItems.forEach( itemKey => {
-			if (
-				isKeyMatched( patternKey, itemKey ) &&
-				isValueMatched( patternValue, itemKey, valueGetter )
-			) {
-				match.push( itemKey );
-			}
-		} );
-	} );
-
-	// Return matches only if there are at least as many of them as there are patterns.
-	// The RegExp pattern can match more than one item.
-	if ( !normalizedPatterns.length || match.length < normalizedPatterns.length ) {
-		return undefined;
-	}
-
-	return match;
-}
-
-/**
- * Bring all the possible pattern forms to an array of arrays where first item is a key and second is a value.
+ * Bring all the possible pattern forms to an array of tuples where first item is a key, second is a value,
+ * and third optional is a token value.
  *
  * Examples:
  *
@@ -387,62 +318,49 @@ function matchPatterns(
  *
  * @returns Returns an array of objects or null if provided patterns were not in an expected form.
  */
-function normalizePatterns( patterns: PropertyPatterns ): Array<[ true | string | RegExp, true | string | RegExp ]> {
+function normalizePatterns( patterns: PropertyPatterns, prefix?: string ): Array<NormalizedPropertyPattern> {
 	if ( Array.isArray( patterns ) ) {
-		return patterns.map( ( pattern: any ) => {
-			if ( isPlainObject( pattern ) ) {
-				if ( pattern.key === undefined || pattern.value === undefined ) {
-					// Documented at the end of matcher.js.
-					logWarning( 'matcher-pattern-missing-key-or-value', pattern );
-				}
-
-				return [ pattern.key, pattern.value ];
+		return patterns.map( pattern => {
+			if ( typeof pattern !== 'object' || pattern instanceof RegExp ) {
+				return prefix ?
+					[ prefix, pattern, true ] :
+					[ pattern, true ];
 			}
 
-			// Assume the pattern is either String or RegExp.
-			return [ pattern, true ];
+			if ( pattern.key === undefined || pattern.value === undefined ) {
+				// Documented at the end of matcher.js.
+				logWarning( 'matcher-pattern-missing-key-or-value', pattern );
+			}
+
+			return prefix ?
+				[ prefix, pattern.key, pattern.value ] :
+				[ pattern.key, pattern.value ];
 		} );
 	}
 
-	if ( isPlainObject( patterns ) ) {
-		return Object.entries( patterns );
+	if ( typeof patterns !== 'object' || patterns instanceof RegExp ) {
+		return [
+			prefix ?
+				[ prefix, patterns, true ] :
+				[ patterns, true ]
+		];
 	}
 
-	// Other cases (true, string or regexp).
-	return [ [ patterns as any, true ] ];
-}
+	// Below we do what Object.entries() does, but faster
+	const normalizedPatterns: Array<NormalizedPropertyPattern> = [];
 
-/**
- * @param patternKey A pattern representing a key we want to match.
- * @param itemKey An actual item key (e.g. `'src'`, `'background-color'`, `'ck-widget'`) we're testing against pattern.
- */
-function isKeyMatched( patternKey: true | string | RegExp, itemKey: string ): unknown {
-	return patternKey === true ||
-		patternKey === itemKey ||
-		patternKey instanceof RegExp && itemKey.match( patternKey );
-}
-
-/**
- * @param patternValue A pattern representing a value we want to match.
- * @param itemKey An item key, e.g. `background`, `href`, 'rel', etc.
- * @param valueGetter A function used to provide a value for a given `itemKey`.
- */
-function isValueMatched(
-	patternValue: true | string | RegExp,
-	itemKey: string,
-	valueGetter: ( itemKey: string ) => unknown
-): boolean {
-	if ( patternValue === true ) {
-		return true;
+	for ( const key in patterns ) {
+		// Replace with Object.hasOwn() when we upgrade to es2022.
+		if ( Object.prototype.hasOwnProperty.call( patterns, key ) ) {
+			normalizedPatterns.push(
+				prefix ?
+					[ prefix, key, patterns[ key ] ] :
+					[ key, patterns[ key ] ]
+			);
+		}
 	}
 
-	const itemValue = valueGetter( itemKey );
-
-	// For now, the reducers are not returning the full tree of properties.
-	// Casting to string preserves the old behavior until the root cause is fixed.
-	// More can be found in https://github.com/ckeditor/ckeditor5/issues/10399.
-	return patternValue === itemValue ||
-		patternValue instanceof RegExp && !!String( itemValue ).match( patternValue );
+	return normalizedPatterns;
 }
 
 /**
@@ -451,31 +369,32 @@ function isValueMatched(
  * @param patterns Object with information about attributes to match. Each key of the object will be
  * used as attribute name. Value of each key can be a string or regular expression to match against attribute value.
  * @param  element Element which attributes will be tested.
+ * @param match An array to populate with matching tuples.
  * @returns Returns array with matched attribute names or `null` if no attributes were matched.
  */
 function matchAttributes(
 	patterns: AttributePatterns,
-	element: Element
-): Array<string> | undefined {
-	const attributeKeys = new Set( element.getAttributeKeys() );
+	element: Element,
+	match: Array<[ string, string? ]>
+): boolean {
+	let excludeAttributes;
 
 	// `style` and `class` attribute keys are deprecated. Only allow them in object pattern
 	// for backward compatibility.
-	if ( isPlainObject( patterns ) ) {
-		if ( ( patterns as any ).style !== undefined ) {
+	if ( typeof patterns === 'object' && !( patterns instanceof RegExp ) && !Array.isArray( patterns ) ) {
+		if ( patterns.style !== undefined ) {
 			// Documented at the end of matcher.js.
-			logWarning( 'matcher-pattern-deprecated-attributes-style-key', patterns as any );
+			logWarning( 'matcher-pattern-deprecated-attributes-style-key', patterns );
 		}
-		if ( ( patterns as any ).class !== undefined ) {
+		if ( patterns.class !== undefined ) {
 			// Documented at the end of matcher.js.
-			logWarning( 'matcher-pattern-deprecated-attributes-class-key', patterns as any );
+			logWarning( 'matcher-pattern-deprecated-attributes-class-key', patterns );
 		}
 	} else {
-		attributeKeys.delete( 'style' );
-		attributeKeys.delete( 'class' );
+		excludeAttributes = [ 'class', 'style' ];
 	}
 
-	return matchPatterns( patterns, attributeKeys, key => element.getAttribute( key ) );
+	return element._collectAttributesMatch( normalizePatterns( patterns ), match, excludeAttributes );
 }
 
 /**
@@ -483,11 +402,15 @@ function matchAttributes(
  *
  * @param patterns Array of strings or regular expressions to match against element's classes.
  * @param element Element which classes will be tested.
+ * @param match An array to populate with matching tuples.
  * @returns Returns array with matched class names or `null` if no classes were matched.
  */
-function matchClasses( patterns: ClassPatterns, element: Element ): Array<string> | undefined {
-	// We don't need `getter` here because patterns for classes are always normalized to `[ className, true ]`.
-	return matchPatterns( patterns, element.getClassNames(), /* istanbul ignore next -- @preserve */ () => {} );
+function matchClasses(
+	patterns: ClassPatterns,
+	element: Element,
+	match: Array<[ string, string? ]>
+): boolean {
+	return element._collectAttributesMatch( normalizePatterns( patterns, 'class' ), match );
 }
 
 /**
@@ -496,10 +419,15 @@ function matchClasses( patterns: ClassPatterns, element: Element ): Array<string
  * @param patterns Object with information about styles to match. Each key of the object will be
  * used as style name. Value of each key can be a string or regular expression to match against style value.
  * @param element Element which styles will be tested.
+ * @param match An array to populate with matching tuples.
  * @returns Returns array with matched style names or `null` if no styles were matched.
  */
-function matchStyles( patterns: StylePatterns, element: Element ): Array<string> | undefined {
-	return matchPatterns( patterns, element.getStyleNames( true ), key => element.getStyle( key ) );
+function matchStyles(
+	patterns: StylePatterns,
+	element: Element,
+	match: Array<[ string, string? ]>
+): boolean {
+	return element._collectAttributesMatch( normalizePatterns( patterns, 'style' ), match );
 }
 
 /**
@@ -742,7 +670,7 @@ function matchStyles( patterns: StylePatterns, element: Element ): Array<string>
  * 		const size = fontSize.match( /(\d+)/px );
  *
  * 		if ( size && Number( size[ 1 ] ) > 26 ) {
- * 			return { name: true, attributes: [ 'font-size' ] };
+ * 			return { name: true, styles: [ 'font-size' ] };
  * 		}
  * 	}
  *
@@ -758,7 +686,7 @@ export type MatcherPattern = string | RegExp | MatcherFunctionPattern | MatcherO
 /**
  * A function describing `MatcherPattern`. See {@link ~MatcherPattern} for examples and other options.
  */
-export type MatcherFunctionPattern = ( element: Element ) => Match | null;
+export type MatcherFunctionPattern = ( element: Element ) => Match | Consumables | null;
 
 /**
  * An object describing `MatcherPattern`. See {@link ~MatcherPattern} for examples and other options.
@@ -769,8 +697,6 @@ export interface MatcherObjectPattern {
 	 * View element name to match.
 	 */
 	name?: string | RegExp;
-
-	key?: string;
 
 	/**
 	 * View element's classes to match.
@@ -799,19 +725,10 @@ export interface Match {
 	name?: boolean;
 
 	/**
-	 * Array with matched attribute names.
+	 * Array of matching tuples: attribute name, and optional token for tokenized attributes.
+	 * Note that there could be multiple entries for the same attribute with different tokens (class names or style properties).
 	 */
-	attributes?: Array<string>;
-
-	/**
-	 * Array with matched class names.
-	 */
-	classes?: Array<string>;
-
-	/**
-	 * Array with matched style names.
-	 */
-	styles?: Array<string>;
+	attributes?: Array<[string, string?]>;
 }
 
 /**
@@ -845,6 +762,12 @@ export type PropertyPatterns<ValuePattern = string | RegExp> =
 export type AttributePatterns = PropertyPatterns;
 export type StylePatterns = PropertyPatterns;
 export type ClassPatterns = PropertyPatterns<never>;
+
+export type NormalizedPropertyPattern = [
+	true | string | RegExp,
+	true | string | RegExp,
+	( true | string | RegExp )?
+];
 
 /**
  * The key-value matcher pattern is missing key or value. Both must be present.

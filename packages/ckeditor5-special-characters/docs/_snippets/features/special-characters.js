@@ -1,14 +1,19 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, document, console, ClassicEditor, SpecialCharactersEssentials */
+import { SpecialCharactersEssentials } from 'ckeditor5';
+import {
+	TOKEN_URL,
+	CS_CONFIG,
+	getViewportTopOffsetConfig,
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
+import { SpecialCharactersEditor } from './special-characters-source.js';
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
-
-ClassicEditor
+SpecialCharactersEditor
 	.create( document.querySelector( '#snippet-special-characters' ), {
 		extraPlugins: [ SpecialCharactersEssentials ],
 		toolbar: {
@@ -21,7 +26,7 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
@@ -49,9 +54,10 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Special characters' ),
+		attachTourBalloon( {
+			target: findToolbarItem(
+				editor.ui.view.toolbar, item => item.label && item.label === 'Special characters'
+			),
 			text: 'Click to insert special characters.',
 			editor
 		} );

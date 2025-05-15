@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -18,7 +18,7 @@ import TextPartLanguageUI from './textpartlanguageui.js';
  * This feature allows setting a language of the document's text part to support
  * [WCAG 3.1.2 Language of Parts](https://www.w3.org/TR/UNDERSTANDING-WCAG20/meaning-other-lang-id.html) specification.
  *
- * To change the editor's UI language, refer to the {@glink features/ui-language Setting the UI language} guide.
+ * To change the editor's UI language, refer to the {@glink getting-started/setup/ui-language Setting the UI language} guide.
  *
  * For more information about this feature, check the {@glink api/language package page} as well as the {@glink features/language
  * Text part language} feature guide.
@@ -40,5 +40,12 @@ export default class TextPartLanguage extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'TextPartLanguage' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 }

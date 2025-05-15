@@ -6,7 +6,6 @@ meta-description: Learn how responsive images can make your content better.
 order: 55
 modified_at: 2023-06-30
 ---
-{@snippet features/build-image-source}
 
 # Responsive images
 
@@ -14,7 +13,7 @@ The ability to have responsive images in the rich-text editor content is a great
 
 ## Demo
 
-Observe the responsive image in the demo. You can also add another one with the CKBox toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/browse-files.svg}. Resize your browser window to change the editor viewport and observe how the editor automatically serves the size-adjusted, optimized image.
+Observe the responsive image in the demo. You can also add another one with the CKBox toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/browse-files.svg}. Resize your browser window to change the editor viewport and observe how the editor automatically serves the size-adjusted, optimized image.
 
 {@snippet features/image-responsive}
 
@@ -58,18 +57,14 @@ For instance, the `image.jgeg` file uploaded by the user will have the following
 	</picture>
 ```
 
-The variety of the image sizes in the `srcset` attribute allows the web browser to choose the best one for the particular screen size. As a result, it loads faster and with less data transferred. Read the {@link @ckbox features/images/responsive-images CKBox responsive images} guide to learn how are the intermediate file sizes calculated.
+The variety of the image sizes in the `srcset` attribute allows the web browser to choose the best one for the particular screen size. As a result, it loads faster and with less data transferred. Read the [CKBox responsive images](https://ckeditor.com/docs/ckbox/latest/features/images/responsive-images.html) guide to learn how are the intermediate file sizes calculated.
 
 Regardless of the original file format, the responsive versions will be served as `.webp`.
 
 <info-box>
-	CKBox converts image formats and resizes images on the fly. Refer to the {@link @ckbox features/images/conversion CKBox image conversion} guide to find out how to do it.
+	CKBox converts image formats and resizes images on the fly. Refer to the [CKBox image conversion](https://ckeditor.com/docs/ckbox/latest/features/images/conversion.html) guide to find out how to do it.
 </info-box>
 
 ## Installation
-
-<info-box>
-	The CKBox file manager is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}.
-</info-box>
 
 For detailed information on how to configure and use CKBox, please refer to the {@link features/ckbox#installation CKBox file manager} installation guide.

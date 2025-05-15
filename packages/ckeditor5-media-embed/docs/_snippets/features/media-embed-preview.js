@@ -1,17 +1,21 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals ClassicEditor, console, window, document */
-
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
+import {
+	TOKEN_URL,
+	CS_CONFIG,
+	getViewportTopOffsetConfig,
+	attachTourBalloon,
+	findToolbarItem
+} from '@snippets/index.js';
+import { MediaEditor } from './build-media-source.js';
 
 const IFRAME_SRC = '//ckeditor.iframe.ly/api/iframe';
 const API_KEY = 'febab8169e71e501ae2e707f55105647';
 
-ClassicEditor
+MediaEditor
 	.create( document.querySelector( '#snippet-media-embed-preview' ), {
 		cloudServices: CS_CONFIG,
 		toolbar: {
@@ -30,7 +34,7 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {
@@ -65,9 +69,8 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar,
-				item => item.buttonView && item.buttonView.label && item.buttonView.label === 'Insert media' ),
+		attachTourBalloon( {
+			target: findToolbarItem( editor.ui.view.toolbar, item => item?.label === 'Insert media' ),
 			text: 'Click to embed media.',
 			editor
 		} );
@@ -76,15 +79,11 @@ ClassicEditor
 		console.error( err.stack );
 	} );
 
-// For a totally unknown reason, Travis and Vimeo do not like each other and the test fail on CI.
-// Ignore errors from Facebook as well
 const metaElement = document.createElement( 'meta' );
 
 metaElement.name = 'x-cke-crawler-ignore-patterns';
 metaElement.content = JSON.stringify( {
-	'request-failure': [ 'vimeo.com', 'facebook.com' ],
-	'response-failure': [ 'vimeo.com', 'facebook.com' ],
-	'console-error': [ '<svg> attribute preserveAspectRatio', 'vimeo.com', 'facebook.com', 'ErrorUtils' ]
+	'console-error': [ '<svg> attribute preserveAspectRatio', 'ErrorUtils', 'transparent NaN' ]
 } );
 
 document.head.appendChild( metaElement );

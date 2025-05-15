@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -9,7 +9,7 @@
 
 import type { Editor, Plugin } from 'ckeditor5/src/core.js';
 import type AttributeCommand from './attributecommand.js';
-import type { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
+import { MenuBarMenuListItemButtonView, type ButtonView } from 'ckeditor5/src/ui.js';
 
 /**
  * Returns a function that creates a (toolbar or menu bar) button for a basic style feature.
@@ -36,6 +36,17 @@ export function getButtonCreator( {
 		} );
 
 		view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+		view.bind( 'isOn' ).to( command, 'value' );
+
+		if ( view instanceof MenuBarMenuListItemButtonView ) {
+			view.set( {
+				role: 'menuitemcheckbox'
+			} );
+		} else {
+			view.set( {
+				tooltip: true
+			} );
+		}
 
 		// Execute the command.
 		plugin.listenTo( view, 'execute', () => {

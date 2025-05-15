@@ -1,0 +1,52 @@
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: jv\n"
+"Plural-Forms: nplurals=2; plural=(n !== 0);\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "The label used by assistive technologies describing a toolbar attached to a widget."
+msgid "Widget toolbar"
+msgstr ""
+
+msgctxt "The title displayed when a mouse is over a button that inserts a paragraph before a block."
+msgid "Insert paragraph before block"
+msgstr ""
+
+msgctxt "The title displayed when a mouse is over a button that inserts a paragraph after a block."
+msgid "Insert paragraph after block"
+msgstr ""
+
+msgctxt "Information to be read by screen reader about shortcuts to type around a widget."
+msgid "Press Enter to type after or press Shift + Enter to type before the widget"
+msgstr ""
+
+msgctxt "Accessibility help dialog section title for widget plugin keystrokes."
+msgid "Keystrokes that can be used when a widget is selected (for example: image, table, etc.)"
+msgstr ""
+
+msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph after a widget."
+msgid "Insert a new paragraph directly after a widget"
+msgstr ""
+
+msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that inserts a paragraph before a widget."
+msgid "Insert a new paragraph directly before a widget"
+msgstr ""
+
+msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret before a widget."
+msgid "Move the caret to allow typing directly before a widget"
+msgstr ""
+
+msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves the caret after a widget."
+msgid "Move the caret to allow typing directly after a widget"
+msgstr ""
+
+msgctxt "Accessibility help dialog entry explaining the meaning of the keystroke that moves selection from a nested editable area back to the parent widget."
+msgid "Move focus from an editable area back to the parent widget"
+msgstr ""

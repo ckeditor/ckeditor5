@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import ClipboardPipeline from '../src/clipboardpipeline.js';
@@ -43,6 +43,18 @@ describe( 'ClipboardPipeline feature', () => {
 				// Otherwise it will throw as it accesses the DOM to do its job.
 				scrollSpy = sinon.stub( view, 'scrollToTheSelection' );
 			} );
+	} );
+
+	afterEach( async () => {
+		await editor.destroy();
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( ClipboardPipeline.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( ClipboardPipeline.isPremiumPlugin ).to.be.false;
 	} );
 
 	describe( 'constructor()', () => {
@@ -450,10 +462,126 @@ describe( 'ClipboardPipeline feature', () => {
 			expect( spy.callCount ).to.equal( 1 );
 		} );
 
+		describe( 'source editor ID in events', () => {
+			it( 'should be null when pasting content from outside the editor', () => {
+				const dataTransferMock = createDataTransfer( { 'text/html': '<p>external content</p>' } );
+				const inputTransformationSpy = sinon.spy();
+
+				clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
+					inputTransformationSpy( data.sourceEditorId );
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				} );
+
+				sinon.assert.calledWith( inputTransformationSpy, null );
+			} );
+
+			it( 'should contain an editor ID when pasting content copied from the same editor (in dataTransfer)', () => {
+				const spy = sinon.spy();
+
+				setModelData( editor.model, '<paragraph>f[oo]bar</paragraph>' );
+
+				// Copy selected content.
+				const dataTransferMock = createDataTransfer();
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {}
+				} );
+
+				clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
+					spy( data.dataTransfer.getData( 'application/ckeditor5-editor-id' ) );
+				} );
+
+				// Paste the copied content.
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				} );
+
+				sinon.assert.calledWith( spy, editor.id );
+			} );
+
+			it( 'should contain an editor ID when pasting content copied from the same editor', () => {
+				const spy = sinon.spy();
+
+				setModelData( editor.model, '<paragraph>f[oo]bar</paragraph>' );
+
+				// Copy selected content.
+				const dataTransferMock = createDataTransfer();
+
+				viewDocument.fire( 'copy', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {}
+				} );
+
+				clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
+					spy( data.sourceEditorId );
+				} );
+
+				// Paste the copied content.
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				} );
+
+				sinon.assert.calledWith( spy, editor.id );
+			} );
+
+			it( 'should be propagated to contentInsertion event (when it\'s external content)', () => {
+				const dataTransferMock = createDataTransfer( { 'text/html': '<p>external content</p>' } );
+				const contentInsertionSpy = sinon.spy();
+
+				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+					contentInsertionSpy( data.sourceEditorId );
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				} );
+
+				sinon.assert.calledWith( contentInsertionSpy, null );
+			} );
+
+			it( 'should be propagated to contentInsertion event (when it\'s internal content)', () => {
+				const dataTransferMock = createDataTransfer( {
+					'text/html': '<p>internal content</p>',
+					'application/ckeditor5-editor-id': editor.id
+				} );
+
+				const contentInsertionSpy = sinon.spy();
+
+				clipboardPlugin.on( 'contentInsertion', ( evt, data ) => {
+					contentInsertionSpy( data.sourceEditorId );
+				} );
+
+				viewDocument.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: () => {},
+					stopPropagation: () => {}
+				} );
+
+				sinon.assert.calledWith( contentInsertionSpy, editor.id );
+			} );
+		} );
+
 		function createDataTransfer( data ) {
+			const state = Object.create( data || {} );
+
 			return {
 				getData( type ) {
-					return data[ type ];
+					return state[ type ];
+				},
+				setData( type, newData ) {
+					state[ type ] = newData;
 				}
 			};
 		}
@@ -473,9 +601,27 @@ describe( 'ClipboardPipeline feature', () => {
 				expect( data.dataTransfer ).to.equal( dataTransferMock );
 				expect( data.content ).is.instanceOf( ModelDocumentFragment );
 				expect( stringifyModel( data.content ) ).to.equal( '<paragraph>bc</paragraph><paragraph>de</paragraph>' );
-
 				done();
 			} );
+
+			viewDocument.fire( 'copy', {
+				dataTransfer: dataTransferMock,
+				preventDefault: preventDefaultSpy
+			} );
+		} );
+
+		it( 'triggers the conversion with the `isClipboardPipeline` flag', done => {
+			const dataTransferMock = createDataTransfer();
+			const preventDefaultSpy = sinon.spy();
+			const toViewSpy = sinon.spy( editor.data, 'toView' );
+
+			setModelData( editor.model, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
+
+			clipboardPlugin.on( 'outputTransformation', ( evt, data ) => {
+				expect( toViewSpy ).calledWithExactly( data.content, { isClipboardPipeline: true } );
+
+				done();
+			}, { priority: 'lowest' } );
 
 			viewDocument.fire( 'copy', {
 				dataTransfer: dataTransferMock,

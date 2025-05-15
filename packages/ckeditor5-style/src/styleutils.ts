@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -15,7 +15,7 @@ import type { TemplateDefinition } from 'ckeditor5/src/ui.js';
 import type { DataFilter, DataSchema, GeneralHtmlSupport, DataSchemaBlockElementDefinition } from '@ckeditor/ckeditor5-html-support';
 
 import type { StyleDefinition } from './styleconfig.js';
-import { isObject } from 'lodash-es';
+import { isObject } from 'es-toolkit/compat';
 
 // These are intermediate element names that can't be rendered as style preview because they don't make sense standalone.
 const NON_PREVIEWABLE_ELEMENT_NAMES = [
@@ -31,6 +31,13 @@ export default class StyleUtils extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'StyleUtils' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 
 	/**

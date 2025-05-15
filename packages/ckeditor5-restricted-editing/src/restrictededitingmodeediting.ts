@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -75,6 +75,13 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor: Editor ) {
 		super( editor );
 
@@ -135,6 +142,17 @@ export default class RestrictedEditingModeEditing extends Plugin {
 				writer.addClass( 'ck-restricted-editing_mode_restricted', root );
 			}
 		} );
+
+		// Remove existing restricted editing markers when setting new data to prevent marker resurrection.
+		// Without this, markers from removed content would be incorrectly restored due to the resurrection mechanism.
+		// See more: https://github.com/ckeditor/ckeditor5/issues/9646#issuecomment-843064995
+		editor.data.on( 'set', () => {
+			editor.model.change( writer => {
+				for ( const marker of editor.model.markers.getMarkersGroup( 'restrictedEditingException' ) ) {
+					writer.removeMarker( marker.name );
+				}
+			} );
+		}, { priority: 'high' } );
 	}
 
 	/**
@@ -183,7 +201,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		} ) );
 
 		// Currently the marker helpers are tied to other use-cases and do not render a collapsed marker as highlight.
-		// Also, markerToHighlight can not convert marker on an inline object. It handles only text and widgets,
+		// Also, markerToHighlight cannot convert marker on an inline object. It handles only text and widgets,
 		// but it is not a case in the data pipeline. That's why there are 3 downcast converters for them:
 		//
 		// 1. The custom inline item (text or inline object) converter (but not the selection).

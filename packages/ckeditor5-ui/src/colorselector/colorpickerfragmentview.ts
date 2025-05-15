@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -21,8 +21,7 @@ import {
 import type { FocusTracker, KeystrokeHandler, Locale } from '@ckeditor/ckeditor5-utils';
 import type { ColorPickerViewConfig } from '../colorpicker/utils.js';
 import type { ColorSelectorColorPickerCancelEvent, ColorSelectorExecuteEvent } from './colorselectorview.js';
-
-import { icons } from '@ckeditor/ckeditor5-core';
+import { IconCancel, IconCheck } from '@ckeditor/ckeditor5-icons';
 
 /**
  * One of the fragments of {@link module:ui/colorselector/colorselectorview~ColorSelectorView}.
@@ -100,10 +99,11 @@ export default class ColorPickerFragmentView extends View {
 	 * Creates an instance of the view.
 	 *
 	 * @param locale The localization services instance.
-	 * @param focusTracker Tracks information about the DOM focus in the list.
-	 * @param focusables A collection of views that can be focused in the view..
-	 * @param keystrokes An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
-	 * @param colorPickerViewConfig The configuration of color picker feature. If set to `false`, the color picker
+	 * @param options Constructor options.
+	 * @param options.focusTracker Tracks information about the DOM focus in the list.
+	 * @param options.focusables A collection of views that can be focused in the view.
+	 * @param options.keystrokes An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+	 * @param options.colorPickerViewConfig The configuration of color picker feature. If set to `false`, the color picker
 	 * will not be rendered.
 	 */
 	constructor(
@@ -291,7 +291,7 @@ export default class ColorPickerFragmentView extends View {
 		const cancelButtonView = new ButtonView( locale );
 
 		saveButtonView.set( {
-			icon: icons.check,
+			icon: IconCheck,
 			class: 'ck-button-save',
 			type: 'button',
 			withText: false,
@@ -299,7 +299,7 @@ export default class ColorPickerFragmentView extends View {
 		} );
 
 		cancelButtonView.set( {
-			icon: icons.cancel,
+			icon: IconCancel,
 			class: 'ck-button-cancel',
 			type: 'button',
 			withText: false,

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document, Event */
@@ -56,6 +56,14 @@ describe( 'TodoListEditing', () => {
 
 	it( 'should have pluginName', () => {
 		expect( TodoListEditing.pluginName ).to.equal( 'TodoListEditing' );
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( TodoListEditing.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( TodoListEditing.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should load ListEditing', () => {
@@ -201,6 +209,53 @@ describe( 'TodoListEditing', () => {
 				'</ul>',
 				'<paragraph listIndent="0" listItemId="a00" listType="todo">foo</paragraph>'
 			);
+		} );
+
+		it( 'should convert li with a checkbox and a paragraph ( when checked )', () => {
+			testUpcast(
+				'<ul>' +
+					'<li>' +
+						'<input type="checkbox" checked="checked">' +
+						'<p>foo</p>' +
+					'</li>' +
+				'</ul>',
+				'<paragraph listIndent="0" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>'
+			);
+		} );
+
+		it( 'should convert nested li with a checkbox and a paragraph ( when checked )', () => {
+			testUpcast(
+				'<ul>' +
+					'<li>' +
+						'<input type="checkbox">' +
+						'<ul>' +
+							'<li>' +
+								'<input type="checkbox" checked="checked">' +
+								'<p>foo</p>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>',
+				'<paragraph listIndent="0" listItemId="a01" listType="todo"></paragraph>' +
+				'<paragraph listIndent="1" listItemId="a00" listType="todo" todoListChecked="true">foo</paragraph>'
+			);
+		} );
+
+		it( 'should not convert nested li if it was already consumed', () => {
+			editor.data.upcastDispatcher.on( 'element:li', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.viewItem, { name: true } );
+			}, { priority: 'highest' } );
+
+			editor.setData(
+				'<ul>' +
+					'<li>' +
+						'<input type="checkbox" checked="checked">' +
+						'<p>foo</p>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
 		} );
 
 		it( 'should convert li with a checkbox and two paragraphs', () => {
@@ -593,7 +648,7 @@ describe( 'TodoListEditing', () => {
 								'<tbody>' +
 									'<tr>' +
 										'<td class="ck-editor__editable ck-editor__nested-editable" ' +
-											'contenteditable="true" role="textbox" tabindex="-1">' +
+											'contenteditable="true" tabindex="-1">' +
 											'<span class="ck-table-bogus-paragraph">foo</span>' +
 										'</td>' +
 									'</tr>' +

@@ -3,7 +3,7 @@ category: crash-course
 order: 90
 menu-title: Plugin configuration
 meta-title: CKEditor 5 crash course - Plugin configuration | CKEditor 5 Documentation
-modified_at: 2023-08-16
+modified_at: 2025-03-14
 ---
 
 # Plugin configuration
@@ -16,6 +16,7 @@ In this tutorial, we will add a single option to the `highlight` plugin to confi
 
 ```js
 const editor = await ClassicEditor.create( element, {
+	licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 	// Other options are omitted for readability - do not remove them.
 	highlight: {
 
@@ -63,6 +64,19 @@ button.set( {
 editor.keystrokes.set( keystroke, 'highlight' ); // Update this line.
 ```
 
+```js
+const t = editor.t;
+
+editor.accessibility.addKeystrokeInfos( {
+	keystrokes: [
+		{
+			label: t( 'Highlight text' ),
+			keystroke: keystroke // Update this line.
+		}
+	]
+} );
+```
+
 ### Testing changes
 
 Let's test our changes. In the browser, select some of the text in the editor and press the <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>H</kbd> to see if the default configuration works as it did before.
@@ -71,6 +85,7 @@ Then, open the `src/main.js` file and update the editor's configuration to chang
 
 ```js
 const editor = await ClassicEditor.create( element, {
+	licenseKey: 'GPL', // Or '<YOUR_LICENSE_KEY>'.
 	// Other options are omitted for readability - do not remove them.
 	highlight: {
 		keystroke: 'Ctrl+Alt+9'

@@ -18,8 +18,10 @@ See the {@link features/autoformat autoformat feature guide} and the {@link modu
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-autoformat
+npm install ckeditor5
 ```
 
 ## Contribute

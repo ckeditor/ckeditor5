@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals document, window, setTimeout */
@@ -20,6 +20,8 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 import testUtils from '../../tests/_utils/utils.js';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import Accessibility from '../../src/accessibility.js';
+import EditorWatchdog from '@ckeditor/ckeditor5-watchdog/src/editorwatchdog.js';
+import ContextWatchdog from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog.js';
 
 class TestEditor extends Editor {
 	static create( config ) {
@@ -214,6 +216,13 @@ describe( 'Editor', () => {
 			const editor = new TestEditor();
 
 			sinon.assert.calledWith( spy, editor.editing.view.document );
+		} );
+
+		it( 'should throw if `config.sanitizeHtml` is passed', () => {
+			expectToThrowCKEditorError( () => {
+				// eslint-disable-next-line no-new
+				new TestEditor( { sanitizeHtml: () => {} } );
+			}, 'editor-config-sanitizehtml-not-supported' );
 		} );
 	} );
 
@@ -464,7 +473,7 @@ describe( 'Editor', () => {
 			}, /editor-isreadonly-has-no-setter/ );
 		} );
 
-		it( 'should be set to true when at least one lock is set', () => {
+		it( 'should be set to true when at least one lock is set', async () => {
 			const editor = new TestEditor();
 
 			editor.enableReadOnlyMode( 'lock-1' );
@@ -477,9 +486,12 @@ describe( 'Editor', () => {
 			editor.disableReadOnlyMode( 'lock-2' );
 
 			expect( editor.isReadOnly ).to.be.false;
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 
-		it( 'should allow using symbols as lock IDs', () => {
+		it( 'should allow using symbols as lock IDs', async () => {
 			const editor = new TestEditor();
 
 			const s1 = Symbol( 'lock' );
@@ -495,11 +507,14 @@ describe( 'Editor', () => {
 			editor.disableReadOnlyMode( s2 );
 
 			expect( editor.isReadOnly ).to.be.false;
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 
 		// The `change:isReadOnly` event is fired manually and this test ensures
 		// the behavior is the same as when the `isReadOnly` would be a normal observable prop.
-		it( 'should be observable', () => {
+		it( 'should be observable', async () => {
 			const editor = new TestEditor();
 			const spy = sinon.spy();
 
@@ -524,6 +539,9 @@ describe( 'Editor', () => {
 				false,
 				true
 			] );
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 
 		// The `change:isReadOnly` event is fired manually and this test ensures
@@ -546,9 +564,12 @@ describe( 'Editor', () => {
 			editor.disableReadOnlyMode( 'unit-test' );
 
 			expect( customPlugin.isEditorReadOnly ).to.equal( false );
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 
-		it( 'setting read-only lock twice should not throw an error for the same lock ID', () => {
+		it( 'setting read-only lock twice should not throw an error for the same lock ID', async () => {
 			const editor = new TestEditor();
 
 			editor.enableReadOnlyMode( 'lock' );
@@ -559,9 +580,12 @@ describe( 'Editor', () => {
 			editor.disableReadOnlyMode( 'lock' );
 
 			expect( editor.isReadOnly ).to.be.false;
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 
-		it( 'clearing read-only lock should not throw an error if the lock ID is not present', () => {
+		it( 'clearing read-only lock should not throw an error if the lock ID is not present', async () => {
 			const editor = new TestEditor();
 
 			editor.disableReadOnlyMode( 'lock' );
@@ -576,9 +600,12 @@ describe( 'Editor', () => {
 			editor.disableReadOnlyMode( 'lock' );
 
 			expect( editor.isReadOnly ).to.be.false;
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 
-		it( 'setting read-only lock should throw an error when the lock ID is not a string', () => {
+		it( 'setting read-only lock should throw an error when the lock ID is not a string', async () => {
 			const editor = new TestEditor();
 
 			expectToThrowCKEditorError( () => {
@@ -588,9 +615,12 @@ describe( 'Editor', () => {
 			expectToThrowCKEditorError( () => {
 				editor.enableReadOnlyMode( 123 );
 			}, /editor-read-only-lock-id-invalid/, null, { lockId: 123 } );
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 
-		it( 'clearing read-only lock should throw an error when the lock ID is not a string', () => {
+		it( 'clearing read-only lock should throw an error when the lock ID is not a string', async () => {
 			const editor = new TestEditor();
 
 			expectToThrowCKEditorError( () => {
@@ -600,17 +630,23 @@ describe( 'Editor', () => {
 			expectToThrowCKEditorError( () => {
 				editor.disableReadOnlyMode( 123 );
 			}, /editor-read-only-lock-id-invalid/, null, { lockId: 123 } );
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 	} );
 
 	describe( 'conversion', () => {
-		it( 'should have conversion property', () => {
+		it( 'should have conversion property', async () => {
 			const editor = new TestEditor();
 
 			expect( editor ).to.have.property( 'conversion' );
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 
-		it( 'should have defined default conversion groups', () => {
+		it( 'should have defined default conversion groups', async () => {
 			const editor = new TestEditor();
 
 			expect( () => {
@@ -620,6 +656,9 @@ describe( 'Editor', () => {
 				editor.conversion.for( 'dataDowncast' );
 				editor.conversion.for( 'upcast' );
 			} ).not.to.throw();
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 	} );
 
@@ -677,7 +716,7 @@ describe( 'Editor', () => {
 	} );
 
 	describe( 'execute()', () => {
-		it( 'should execute specified command', () => {
+		it( 'should execute specified command', async () => {
 			class SomeCommand extends Command {
 				execute() {}
 			}
@@ -691,9 +730,12 @@ describe( 'Editor', () => {
 			editor.execute( 'someCommand' );
 
 			expect( command.execute.calledOnce ).to.be.true;
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 
-		it( 'should return the result of command\'s execute()', () => {
+		it( 'should return the result of command\'s execute()', async () => {
 			class SomeCommand extends Command {
 				execute() {}
 			}
@@ -710,14 +752,20 @@ describe( 'Editor', () => {
 
 			expect( editorResult, 'editor.execute()' ).to.equal( commandResult );
 			expect( editorResult, 'editor.execute()' ).to.deep.equal( { foo: 'bar' } );
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 
-		it( 'should throw an error if specified command has not been added', () => {
+		it( 'should throw an error if specified command has not been added', async () => {
 			const editor = new TestEditor();
 
 			expectToThrowCKEditorError( () => {
 				editor.execute( 'command' );
 			}, /^commandcollection-command-not-found/, editor );
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 
 		it.skip( 'should rethrow native errors as they are in the debug=true mode', () => {
@@ -741,7 +789,7 @@ describe( 'Editor', () => {
 			} ).to.throw( TypeError, /foo/ );
 		} );
 
-		it( 'should rethrow custom CKEditorError errors', () => {
+		it( 'should rethrow custom CKEditorError errors', async () => {
 			const editor = new TestEditor();
 
 			class SomeCommand extends Command {
@@ -761,11 +809,14 @@ describe( 'Editor', () => {
 			expectToThrowCKEditorError( () => {
 				editor.execute( 'someCommand' );
 			}, /foo/, editor );
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 	} );
 
 	describe( 'focus()', () => {
-		it( 'should call view\'s focus() method', () => {
+		it( 'should call view\'s focus() method', async () => {
 			const editor = new TestEditor();
 			const focusSpy = sinon.spy( editor.editing.view, 'focus' );
 
@@ -773,16 +824,19 @@ describe( 'Editor', () => {
 			editor.focus();
 
 			expect( focusSpy.calledOnce ).to.be.true;
+
+			editor.fire( 'ready' );
+			await editor.destroy();
 		} );
 	} );
 
 	describe( 'create()', () => {
-		it( 'should return a promise that resolves properly', () => {
+		it( 'should return a promise that resolves properly', async () => {
 			const promise = TestEditor.create();
 
 			expect( promise ).to.be.an.instanceof( Promise );
 
-			return promise;
+			await promise.then( editor => editor.destroy() );
 		} );
 
 		it( 'loads plugins', () => {
@@ -791,6 +845,8 @@ describe( 'Editor', () => {
 					expect( getPlugins( editor ).length ).to.equal( 1 );
 
 					expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
+
+					return editor.destroy();
 				} );
 		} );
 
@@ -808,8 +864,10 @@ describe( 'Editor', () => {
 			}
 
 			return TestEditor.create( { plugins: [ EventWatcher ] } )
-				.then( () => {
+				.then( editor => {
 					expect( fired ).to.deep.equal( [ 'ready' ] );
+
+					return editor.destroy();
 				} );
 		} );
 	} );
@@ -827,6 +885,9 @@ describe( 'Editor', () => {
 
 				expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
 				expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
+
+				editor.fire( 'ready' );
+				return editor.destroy();
 			} );
 		} );
 
@@ -847,6 +908,9 @@ describe( 'Editor', () => {
 						editor.plugins.get( PluginC ).afterInit,
 						editor.plugins.get( PluginD ).afterInit
 					);
+
+					editor.fire( 'ready' );
+					return editor.destroy();
 				} );
 		} );
 
@@ -893,6 +957,9 @@ describe( 'Editor', () => {
 						asyncSpy,
 						editor.plugins.get( PluginSync ).init
 					);
+
+					editor.fire( 'ready' );
+					return editor.destroy();
 				} );
 		} );
 
@@ -940,6 +1007,9 @@ describe( 'Editor', () => {
 						asyncSpy,
 						editor.plugins.get( PluginSync ).afterInit
 					);
+
+					editor.fire( 'ready' );
+					return editor.destroy();
 				} );
 		} );
 
@@ -955,6 +1025,9 @@ describe( 'Editor', () => {
 					expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
 					expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
 					expect( editor.plugins.get( PluginC ) ).to.be.an.instanceof( Plugin );
+
+					editor.fire( 'ready' );
+					return editor.destroy();
 				} );
 		} );
 
@@ -972,6 +1045,9 @@ describe( 'Editor', () => {
 					expect( getPlugins( editor ).length ).to.equal( 1 );
 
 					expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
+
+					editor.fire( 'ready' );
+					return editor.destroy();
 				} );
 		} );
 
@@ -997,6 +1073,9 @@ describe( 'Editor', () => {
 					expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
 					expect( editor.plugins.get( PluginC ) ).to.be.an.instanceof( Plugin );
 					expect( editor.plugins.get( PrivatePlugin ) ).to.be.an.instanceof( PrivatePlugin );
+
+					editor.fire( 'ready' );
+					return editor.destroy();
 				} );
 		} );
 
@@ -1018,6 +1097,9 @@ describe( 'Editor', () => {
 					expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
 					expect( editor.plugins.get( PluginC ) ).to.be.an.instanceof( Plugin );
 					expect( editor.plugins.get( PluginD ) ).to.be.an.instanceof( Plugin );
+
+					editor.fire( 'ready' );
+					return editor.destroy();
 				} );
 		} );
 
@@ -1039,6 +1121,9 @@ describe( 'Editor', () => {
 					expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
 					expect( editor.plugins.get( PluginC ) ).to.be.an.instanceof( Plugin );
 					expect( editor.plugins.get( PluginD ) ).to.be.an.instanceof( Plugin );
+
+					editor.fire( 'ready' );
+					return editor.destroy();
 				} );
 		} );
 
@@ -1053,6 +1138,9 @@ describe( 'Editor', () => {
 					.then( () => {
 						expect( getPlugins( editor ).length ).to.equal( 1 );
 						expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
+
+						editor.fire( 'ready' );
+						return editor.destroy();
 					} );
 			} );
 
@@ -1067,6 +1155,9 @@ describe( 'Editor', () => {
 					.then( () => {
 						expect( getPlugins( editor ).length ).to.equal( 1 );
 						expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
+
+						editor.fire( 'ready' );
+						return editor.destroy();
 					} );
 			} );
 
@@ -1083,6 +1174,9 @@ describe( 'Editor', () => {
 					.then( () => {
 						expect( getPlugins( editor ).length ).to.equal( 1 );
 						expect( editor.plugins.get( PluginA ) ).to.not.be.undefined;
+
+						editor.fire( 'ready' );
+						return editor.destroy();
 					} );
 			} );
 		} );
@@ -1098,6 +1192,9 @@ describe( 'Editor', () => {
 					.then( () => {
 						expect( getPlugins( editor ).length ).to.equal( 3 );
 						expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
+
+						editor.fire( 'ready' );
+						return editor.destroy();
 					} );
 			} );
 
@@ -1111,6 +1208,9 @@ describe( 'Editor', () => {
 					.then( () => {
 						expect( getPlugins( editor ).length ).to.equal( 2 );
 						expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
+
+						editor.fire( 'ready' );
+						return editor.destroy();
 					} );
 			} );
 
@@ -1125,6 +1225,9 @@ describe( 'Editor', () => {
 					.then( () => {
 						expect( getPlugins( editor ).length ).to.equal( 2 );
 						expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
+
+						editor.fire( 'ready' );
+						return editor.destroy();
 					} );
 			} );
 
@@ -1141,6 +1244,9 @@ describe( 'Editor', () => {
 					.then( () => {
 						expect( getPlugins( editor ).length ).to.equal( 2 );
 						expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
+
+						editor.fire( 'ready' );
+						return editor.destroy();
 					} );
 			} );
 		} );
@@ -1177,6 +1283,9 @@ describe( 'Editor', () => {
 						expect( getPlugins( editor ).length ).to.equal( 1 );
 						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( Plugin );
 						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( NoErrorPlugin );
+
+						editor.fire( 'ready' );
+						return editor.destroy();
 					} );
 			} );
 
@@ -1211,6 +1320,9 @@ describe( 'Editor', () => {
 						expect( getPlugins( editor ).length ).to.equal( 1 );
 						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( Plugin );
 						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( NoErrorPlugin );
+
+						editor.fire( 'ready' );
+						return editor.destroy();
 					} );
 			} );
 
@@ -1250,6 +1362,9 @@ describe( 'Editor', () => {
 						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( NoErrorPlugin );
 
 						Editor.builtinPlugins = originalBuiltinPlugins;
+
+						editor.fire( 'ready' );
+						return editor.destroy();
 					} );
 			} );
 		} );
@@ -1266,6 +1381,9 @@ describe( 'Editor', () => {
 						editor.plugins.get( PluginE ).init,
 						editor.plugins.get( PluginA ).afterInit
 					);
+
+					editor.fire( 'ready' );
+					return editor.destroy();
 				} );
 		} );
 
@@ -1281,6 +1399,9 @@ describe( 'Editor', () => {
 						editor.plugins.get( PluginA ).afterInit,
 						editor.plugins.get( PluginF ).afterInit
 					);
+
+					editor.fire( 'ready' );
+					return editor.destroy();
 				} );
 		} );
 	} );
@@ -1345,6 +1466,20 @@ describe( 'Editor', () => {
 				testUtils.sinon.assert.calledOnce( spy );
 				testUtils.sinon.assert.calledWith( spy, options );
 			} );
+		} );
+	} );
+
+	describe( 'static fields', () => {
+		it( 'Editor.Context', () => {
+			expect( Editor.Context ).to.equal( Context );
+		} );
+
+		it( 'Editor.EditorWatchdog', () => {
+			expect( Editor.EditorWatchdog ).to.equal( EditorWatchdog );
+		} );
+
+		it( 'Editor.ContextWatchdog', () => {
+			expect( Editor.ContextWatchdog ).to.equal( ContextWatchdog );
 		} );
 	} );
 } );

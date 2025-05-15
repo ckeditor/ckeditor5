@@ -5,7 +5,6 @@ meta-title: Image text alternative | CKEditor 5 Documentation
 meta-description: Setting and managing the alt tag on images in CKEditor 5
 order: 20
 ---
-{@snippet features/build-image-source}
 
 # Image text alternative
 
@@ -13,7 +12,7 @@ Image text alternative (the `alt` attribute) helps screen reader users navigate 
 
 ## Demo
 
-The editor below has the base image feature enabled. Click any of the images and use the contextual image toolbar {@icon @ckeditor/ckeditor5-core/theme/icons/text-alternative.svg Alternative text} to edit the text alternative.
+The editor below has the base image feature enabled. Click any of the images and use the contextual image toolbar {@icon @ckeditor/ckeditor5-icons/theme/icons/text-alternative.svg Alternative text} to edit the text alternative.
 
 {@snippet features/image-text-alternative}
 
@@ -44,11 +43,11 @@ CKEditor&nbsp;5 provides support for alternate image text using the {@link modul
 
 ### Utilizing CKBox to manage text alternatives
 
-When using the {@link features/ckbox CKBox file manager}, you can utilize its {@link @ckbox features/file-management/metadata#description metadata management tools} to set or change the text alternative. CKBox automatically adds the metadata `description` to the `alt` tag.
+When using the {@link features/ckbox CKBox file manager}, you can utilize its [metadata management tools](https://ckeditor.com/docs/ckbox/latest/features/file-management/assets/metadata.html#description) to set or change the text alternative. CKBox automatically adds the metadata `description` to the `alt` tag.
 
 ## Installation
 
-This feature is available in all {@link installation/getting-started/predefined-builds ready-to-use editor builds}. If your integration uses a custom editor build, check out the {@link features/images-installation image features installation guide} to learn how to enable this feature.
+Check out the {@link features/images-installation image features installation guide} to learn how to enable this feature.
 
 ## Common API
 

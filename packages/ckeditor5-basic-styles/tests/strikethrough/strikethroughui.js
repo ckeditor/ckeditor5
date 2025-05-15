@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals document */
@@ -45,15 +45,14 @@ describe( 'StrikethroughUI', () => {
 		} );
 
 		testButton();
+	} );
 
-		it( 'should bind `isOn` to strikethrough command', () => {
-			const command = editor.commands.get( 'strikethrough' );
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( StrikethroughUI.isOfficialPlugin ).to.be.true;
+	} );
 
-			expect( strikeView.isOn ).to.be.false;
-
-			command.value = true;
-			expect( strikeView.isOn ).to.be.true;
-		} );
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( StrikethroughUI.isPremiumPlugin ).to.be.false;
 	} );
 
 	describe( 'menu bar button', () => {
@@ -62,6 +61,20 @@ describe( 'StrikethroughUI', () => {
 		} );
 
 		testButton();
+
+		it( 'should create button with `menuitemcheckbox` role', () => {
+			expect( strikeView.role ).to.equal( 'menuitemcheckbox' );
+		} );
+
+		it( 'should bind `isOn` to `aria-checked` attribute', () => {
+			strikeView.render();
+
+			strikeView.isOn = true;
+			expect( strikeView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'true' );
+
+			strikeView.isOn = false;
+			expect( strikeView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'false' );
+		} );
 	} );
 
 	function testButton() {
@@ -112,6 +125,18 @@ describe( 'StrikethroughUI', () => {
 			expect( wasHandled ).to.be.true;
 			expect( spy.calledOnce ).to.be.true;
 			expect( keyEventData.preventDefault.calledOnce ).to.be.true;
+		} );
+
+		it( 'should bind `isOn` to `command`.`value`', () => {
+			const command = editor.commands.get( 'strikethrough' );
+
+			command.value = true;
+
+			expect( strikeView.isOn ).to.be.true;
+
+			command.value = false;
+
+			expect( strikeView.isOn ).to.be.false;
 		} );
 	}
 } );

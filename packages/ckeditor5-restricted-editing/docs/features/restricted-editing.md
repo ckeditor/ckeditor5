@@ -11,11 +11,11 @@ The restricted editing feature introduces two modes: the standard editing mode a
 
 The demo below lets you emulate both the standard editing mode and the restricted editing mode.
 
-Start by creating a template of the document in the standard editing mode. Select a section of the text and use the enable editing toolbar button {@icon @ckeditor/ckeditor5-restricted-editing/theme/icons/contentunlock.svg Enable editing} to turn a selected area into an editable region or remove an existing one.
+Start by creating a template of the document in the standard editing mode. Select a section of the text and use the enable editing toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/content-unlock.svg Enable editing} to turn a selected area into an editable region or remove an existing one.
 
 Then switch to the restricted editing mode to see how the editable and non-editable regions behave.
 
-<info-box>
+<info-box info>
 	Tip: Use <kbd>Tab</kbd> to navigate from one editable region to another (and <kbd>Shift</kbd>+<kbd>Tab</kbd> to move back) in the restricted mode.
 </info-box>
 
@@ -30,7 +30,7 @@ Then switch to the restricted editing mode to see how the editable and non-edita
 The restricted editing feature enables two editing modes:
 
 * **Standard editing mode** &ndash; In this mode the user can edit the content and choose regions that should be editable in the restricted editing mode.
-* **Restricted editing mode** &ndash; When you initialize the editor in this mode, the user can edit the content only within the regions chosen by the user in the standard editing mode.
+* **Restricted editing mode** &ndash; When you initialize the editor in this mode, the user can edit the content only within the regions chosen by the user in the standard editing mode. This mode supports only inline-type changes. Users can type, delete content, and format the text. However, no block-type editions are available. This means no splitting paragraphs (striking the <kbd>Enter</kbd> key) is allowed. Tables or block images cannot be added in this mode, too.
 
 You can imagine a workflow where a certain group of users is responsible for creating templates of documents. At the same time, a second group of users can only fill the gaps (for example, fill in the missing data, like names, dates, product names, etc.).
 
@@ -40,18 +40,62 @@ By using this feature, the users of your application will be able to create temp
 	See also the {@link features/read-only read-only feature} that lets you turn the entire WYSIWYG editor into read-only mode. You can also read the [dedicated blog post](https://ckeditor.com/blog/feature-of-the-month-restricted-editing-modes/) about write-restricted editor modes.
 </info-box>
 
+## Installation
+
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration.
+
+### Running the standard editing mode
+
+To initialize the editor in the standard editing mode, add the {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugin and add the `'restrictedEditingException'` button to the toolbar:
+
+<code-switcher>
+```js
+import { ClassicEditor, StandardEditingMode } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ StandardEditingMode, /* ... */ ],
+		toolbar: [ 'restrictedEditingException', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+</code-switcher>
+
+### Running the restricted editing mode
+
+To initialize the editor in the restricted editing mode, add the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} plugin and add the `'restrictedEditing'` button to the toolbar:
+
+<code-switcher>
+```js
+import { ClassicEditor, RestrictedEditingMode } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ RestrictedEditingMode, /* ... */ ],
+		toolbar: [ 'restrictedEditing', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+</code-switcher>
+
 ## Configuration
 
 You can configure which features should be available in the restricted mode. For instance, the following configuration allows the users to type, delete but also to bold text.
 
 ```js
-import { RestrictedEditingMode } from '@ckeditor/ckeditor5-restricted-editing';
-import { Bold } from '@ckeditor/ckeditor5-basic-styles';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Bold, RestrictedEditingMode, /* ... */ ],
-		toolbar: [ 'bold', '|', 'restrictedEditing', /* ... */ ],
+		// ... Other confituration options ... 
 		restrictedEditing: {
 			allowedCommands: [ 'bold' ]
 		}
@@ -62,12 +106,17 @@ ClassicEditor
 
 **Note**: Typing and deleting text is always possible in restricted editing regions. For more information, check out the {@link module:restricted-editing/restrictededitingconfig~RestrictedEditingConfig `config.restrictedEditing`} documentation.
 
+<info-box warning>
+	Only inline content inserting or editing commands are allowed in this setting. Block content commands such as `insertTable` or `enter` cannot be allowed via this setting, as they are not supported in the restricted editing mode. 
+</info-box>
+
 ### Enabling commands in the restricted editing mode
 
 The restricted editing mode allows modifying the editor content only in designated regions. Outside these regions, most of the editor commands are turned off by default. If you wish to enable some commands outside the restricted editing regions, you can use the {@link module:restricted-editing/restrictededitingmodeediting~RestrictedEditingModeEditing#enableCommand `RestrictedEditingModeEditing.enableCommand()`} method. You must execute this method in the {@link module:core/plugin~PluginInterface#afterInit `afterInit()`} callback of an editor plugin.
 
+<code-switcher>
 ```js
-import { Plugin } from '@ckeditor/ckeditor5-core';
+import { ClassicEditor, Plugin } from 'ckeditor5';
 
 class MyPlugin extends Plugin {
 	afterInit() {
@@ -75,54 +124,7 @@ class MyPlugin extends Plugin {
 	}
 }
 ```
-
-## Installation
-
-<info-box info>
-	The restricted editing feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
-
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-restricted-editing`](https://www.npmjs.com/package/@ckeditor/ckeditor5-restricted-editing) package:
-
-```plaintext
-npm install --save @ckeditor/ckeditor5-restricted-editing
-```
-
-### Running the standard editing mode
-
-To initialize the editor in the standard editing mode, add the {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugin and add the `'restrictedEditingException'` button to the toolbar:
-
-```js
-import { StandardEditingMode } from '@ckeditor/ckeditor5-restricted-editing';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ StandardEditingMode, /* ... */ ],
-		toolbar: [ 'restrictedEditingException', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-
-### Running the restricted editing mode
-
-To initialize the editor in the restricted editing mode, add the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} plugin and add the `'restrictedEditing'` button to the toolbar:
-
-```js
-import { RestrictedEditingMode } from '@ckeditor/ckeditor5-restricted-editing';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ RestrictedEditingMode, /* ... */ ],
-		toolbar: [ 'restrictedEditing', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
+</code-switcher>
 
 ## Related features
 

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -29,6 +29,7 @@ import LegacyListReversedCommand from './legacylistreversedcommand.js';
 import LegacyListStartCommand from './legacyliststartcommand.js';
 import { getSiblingListItem, getSiblingNodes } from '../legacylist/legacyutils.js';
 import type { ListPropertiesConfig } from '../listconfig.js';
+import { normalizeListStyle } from '../listproperties/utils/style.js';
 
 const DEFAULT_LIST_TYPE = 'default';
 
@@ -54,6 +55,13 @@ export default class LegacyListPropertiesEditing extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'LegacyListPropertiesEditing' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 
 	/**
@@ -300,7 +308,7 @@ function createAttributeStrategies( enabledProperties: ListPropertiesConfig ) {
 			},
 
 			getAttributeOnUpcast( listParent ) {
-				return listParent.getStyle( 'list-style-type' ) || DEFAULT_LIST_TYPE;
+				return normalizeListStyle( listParent.getStyle( 'list-style-type' )! ) || DEFAULT_LIST_TYPE;
 			}
 		} );
 	}

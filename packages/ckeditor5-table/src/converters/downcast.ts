@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -112,7 +112,7 @@ export function downcastCell( options: { asWidget?: boolean } = {} ): ElementCre
 				const cellElementName = isHeading ? 'th' : 'td';
 
 				result = options.asWidget ?
-					toWidgetEditable( writer.createEditableElement( cellElementName ), writer ) :
+					toWidgetEditable( writer.createEditableElement( cellElementName ), writer, { withAriaRole: false } ) :
 					writer.createContainerElement( cellElementName );
 				break;
 			}
@@ -191,9 +191,16 @@ function toTableWidget( viewElement: ViewElement, writer: DowncastWriter ): View
  * Checks if an element has any attributes set.
  */
 function hasAnyAttribute( element: Node ): boolean {
-	const iteratorItem = element.getAttributeKeys().next();
+	for ( const attributeKey of element.getAttributeKeys() ) {
+		// Ignore selection attributes stored on block elements.
+		if ( attributeKey.startsWith( 'selection:' ) || attributeKey == 'htmlEmptyBlock' ) {
+			continue;
+		}
 
-	return !iteratorItem.done;
+		return true;
+	}
+
+	return false;
 }
 
 export interface DowncastTableOptions {

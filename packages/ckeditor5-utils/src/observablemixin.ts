@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* eslint-disable @typescript-eslint/unified-signatures */
@@ -13,7 +13,7 @@ import EmitterMixin, { type Emitter } from './emittermixin.js';
 import CKEditorError from './ckeditorerror.js';
 import type { Constructor, Mixed } from './mix.js';
 
-import { isObject } from 'lodash-es';
+import { isObject } from 'es-toolkit/compat';
 
 const observablePropertiesSymbol = Symbol( 'observableProperties' );
 const boundObservablesSymbol = Symbol( 'boundObservables' );
@@ -263,8 +263,8 @@ export default function ObservableMixin( base?: Constructor<Emitter> ): unknown 
 				 * Cannot decorate an undefined method.
 				 *
 				 * @error observablemixin-cannot-decorate-undefined
-				 * @param {Object} object The object which method should be decorated.
-				 * @param {String} methodName Name of the method which does not exist.
+				 * @param {object} object The object which method should be decorated.
+				 * @param {string} methodName Name of the method which does not exist.
 				 */
 				throw new CKEditorError(
 					'observablemixin-cannot-decorate-undefined',
@@ -319,7 +319,7 @@ export default function ObservableMixin( base?: Constructor<Emitter> ): unknown 
 
 		public [ boundPropertiesSymbol ]?: Map<string, Binding>;
 
-		public [ boundObservablesSymbol]?: Map<Observable, Record<string, Set<Binding>>>;
+		public [ boundObservablesSymbol ]?: Map<Observable, Record<string, Set<Binding>>>;
 	}
 
 	return Mixin;

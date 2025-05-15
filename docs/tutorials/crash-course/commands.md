@@ -3,7 +3,7 @@ category: crash-course
 order: 50
 menu-title: Commands
 meta-title: CKEditor 5 crash course - Commands | CKEditor 5 Documentation
-modified_at: 2023-08-16
+modified_at: 2025-03-14
 ---
 
 # Commands
@@ -17,7 +17,7 @@ Now that we have the data conversion sorted out, let's register a `highlight` co
 Let's create a new `HighlightCommand` class below the `Highlight` function and add the necessary import in `src/plugin.js`:
 
 ```js
-import { Command } from 'ckeditor5/src/core';
+import { Command } from 'ckeditor5';
 
 class HighlightCommand extends Command {
 	refresh() {
@@ -51,8 +51,8 @@ The command state is managed by the `refresh()` method. This method is called wh
 
 Let's implement the `refresh()` method to update two command properties:
 
-* `isEnabled`, which indicates whether highlighting is allowed on the current selection,
-* `value`, which indicates whether the selection is already highlighted.
+* `value`, which indicates whether the selection is already highlighted,
+* `isEnabled`, which indicates whether highlighting is allowed on the current selection.
 
 ```js
 refresh() {

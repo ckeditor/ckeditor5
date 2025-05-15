@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -15,19 +15,21 @@ import {
 	global,
 	isRange,
 	toUnit,
+	isVisible,
+	isText,
+	ResizeObserver,
 	type Locale,
 	type ObservableChangeEvent,
 	type DomPoint,
 	type PositionOptions,
-	type PositioningFunction,
-	type Rect
+	Rect,
+	type PositioningFunction
 } from '@ckeditor/ckeditor5-utils';
 
-import { isElement } from 'lodash-es';
+import { isElement } from 'es-toolkit/compat';
 import '../../../theme/components/panel/balloonpanel.css';
 
-const toPx = toUnit( 'px' );
-const defaultLimiterElement = global.document.body;
+const toPx = /* #__PURE__ */ toUnit( 'px' );
 
 // A static balloon panel positioning function that moves the balloon far off the viewport.
 // It is used as a fallback when there is no way to position the balloon using provided
@@ -156,6 +158,11 @@ export default class BalloonPanelView extends View {
 	private _pinWhenIsVisibleCallback: ( () => void ) | null;
 
 	/**
+	 * An instance of resize observer used to detect if target element is still visible.
+	 */
+	private _resizeObserver: ResizeObserver | null;
+
+	/**
 	 * @inheritDoc
 	 */
 	constructor( locale?: Locale ) {
@@ -171,6 +178,8 @@ export default class BalloonPanelView extends View {
 		this.set( 'class', undefined );
 
 		this._pinWhenIsVisibleCallback = null;
+		this._resizeObserver = null;
+
 		this.content = this.createCollection();
 
 		this.setTemplate( {
@@ -193,6 +202,14 @@ export default class BalloonPanelView extends View {
 
 			children: this.content
 		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public override destroy(): void {
+		this.hide();
+		super.destroy();
 	}
 
 	/**
@@ -244,8 +261,16 @@ export default class BalloonPanelView extends View {
 	 *
 	 * @param options Positioning options compatible with {@link module:utils/dom/position~getOptimalPosition}.
 	 * Default `positions` array is {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
+	 * @returns Whether the balloon was shown and successfully attached or not. Attaching can fail if the target
+	 * provided in the options is invisible (e.g. element detached from DOM).
 	 */
-	public attachTo( options: Partial<PositionOptions> ): void {
+	public attachTo( options: Partial<PositionOptions> ): boolean {
+		const target = getDomElement( options.target );
+
+		if ( target && !isVisible( target ) ) {
+			return false;
+		}
+
 		this.show();
 
 		const defaultPositions = BalloonPanelView.defaultPositions;
@@ -264,7 +289,7 @@ export default class BalloonPanelView extends View {
 				defaultPositions.northArrowSouthEast,
 				defaultPositions.viewportStickyNorth
 			],
-			limiter: defaultLimiterElement,
+			limiter: global.document.body,
 			fitInViewport: true
 		}, options ) as PositionOptions;
 
@@ -283,6 +308,8 @@ export default class BalloonPanelView extends View {
 		this.left = left;
 		this.position = position;
 		this.withArrow = withArrow;
+
+		return true;
 	}
 
 	/**
@@ -322,6 +349,10 @@ export default class BalloonPanelView extends View {
 	public pin( options: Partial<PositionOptions> ): void {
 		this.unpin();
 
+		if ( !this._startPinning( options ) ) {
+			return;
+		}
+
 		this._pinWhenIsVisibleCallback = () => {
 			if ( this.isVisible ) {
 				this._startPinning( options );
@@ -329,8 +360,6 @@ export default class BalloonPanelView extends View {
 				this._stopPinning();
 			}
 		};
-
-		this._startPinning( options );
 
 		// Control the state of the listeners depending on whether the panel is visible
 		// or not.
@@ -360,12 +389,16 @@ export default class BalloonPanelView extends View {
 	 * Starts managing the pinned state of the panel. See {@link #pin}.
 	 *
 	 * @param options Positioning options compatible with {@link module:utils/dom/position~getOptimalPosition}.
+	 * @returns Whether the balloon was shown and successfully attached or not. Attaching can fail if the target
+	 * provided in the options is invisible (e.g. element detached from DOM).
 	 */
-	private _startPinning( options: Partial<PositionOptions> ) {
-		this.attachTo( options );
+	private _startPinning( options: Partial<PositionOptions> ): boolean {
+		if ( !this.attachTo( options ) ) {
+			return false;
+		}
 
-		const targetElement = getDomElement( options.target );
-		const limiterElement = options.limiter ? getDomElement( options.limiter ) : defaultLimiterElement;
+		let targetElement = getDomElement( options.target );
+		const limiterElement = options.limiter ? getDomElement( options.limiter ) : global.document.body;
 
 		// Then we need to listen on scroll event of eny element in the document.
 		this.listenTo( global.document, 'scroll', ( evt, domEvt ) => {
@@ -388,6 +421,30 @@ export default class BalloonPanelView extends View {
 		this.listenTo( global.window, 'resize', () => {
 			this.attachTo( options );
 		} );
+
+		// Hide the panel if the target element is no longer visible.
+		if ( !this._resizeObserver ) {
+			// If the target element is a text node, we need to check the parent element.
+			// It's because `ResizeObserver` accept only elements, not text nodes.
+			if ( targetElement && isText( targetElement ) ) {
+				targetElement = targetElement.parentElement;
+			}
+
+			if ( targetElement ) {
+				const checkVisibility = () => {
+					// If the target element is no longer visible, hide the panel.
+					if ( !isVisible( targetElement ) ) {
+						this.unpin();
+					}
+				};
+
+				// Element is being resized to 0x0 after it's parent became hidden,
+				// so we need to check size in order to determine if it's visible or not.
+				this._resizeObserver = new ResizeObserver( targetElement, checkVisibility );
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -396,6 +453,11 @@ export default class BalloonPanelView extends View {
 	private _stopPinning(): void {
 		this.stopListening( global.document, 'scroll' );
 		this.stopListening( global.window, 'resize' );
+
+		if ( this._resizeObserver ) {
+			this._resizeObserver.destroy();
+			this._resizeObserver = null;
+		}
 	}
 
 	/**
@@ -674,21 +736,33 @@ export default class BalloonPanelView extends View {
 
 			// ------- Sticky
 
-			viewportStickyNorth: ( targetRect, balloonRect, viewportRect, limiterRect ) => {
-				const boundaryRect = limiterRect || viewportRect;
+			viewportStickyNorth: ( targetRect, balloonRect, viewportRect ) => {
+				// Get the intersection of the viewport and the document body.
+				const boundaryRect = new Rect( global.document.body ).getIntersection( viewportRect.getVisible()! );
 
-				if ( !targetRect.getIntersection( boundaryRect ) ) {
+				if ( !boundaryRect ) {
 					return null;
 				}
 
-				// Engage when the target top and bottom edges are close or off the boundary.
-				// By close, it means there's not enough space for the balloon arrow (offset).
-				if ( boundaryRect.height - targetRect.height > stickyVerticalOffset ) {
+				// Get the visible intersection of the boundary and the document body.
+				const visibleBoundaryRect = boundaryRect.getVisible()!;
+
+				// Check if the target is in the boundary.
+				if ( !targetRect.getIntersection( visibleBoundaryRect ) ) {
+					return null;
+				}
+
+				// Checks if there is enough space to put the balloon on the top or bottom of the target.
+				// If not, makes the balloon sticky.
+				if ( !(
+					visibleBoundaryRect.top - targetRect.top - stickyVerticalOffset < balloonRect.height &&
+					visibleBoundaryRect.bottom - targetRect.bottom < balloonRect.height
+				) ) {
 					return null;
 				}
 
 				return {
-					top: boundaryRect.top + stickyVerticalOffset,
+					top: visibleBoundaryRect.top + stickyVerticalOffset,
 					left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
 					name: 'arrowless',
 					config: {
@@ -1170,7 +1244,7 @@ export default class BalloonPanelView extends View {
 	 * The name that the position function returns will be reflected in the balloon panel's class that
 	 * controls the placement of the "arrow". See {@link #position} to learn more.
 	 */
-	public static defaultPositions = BalloonPanelView.generatePositions();
+	public static defaultPositions = /* #__PURE__ */ BalloonPanelView.generatePositions();
 }
 
 /**

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global document */
@@ -47,6 +47,14 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 		it( 'should be named', () => {
 			expect( RestrictedEditingModeEditing.pluginName ).to.equal( 'RestrictedEditingModeEditing' );
+		} );
+
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( RestrictedEditingModeEditing.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( RestrictedEditingModeEditing.isPremiumPlugin ).to.be.false;
 		} );
 
 		it( 'should be loaded', () => {
@@ -234,6 +242,26 @@ describe( 'RestrictedEditingModeEditing', () => {
 
 				expect( model.markers.has( 'restrictedEditingException:1' ) ).to.be.false;
 			} );
+
+			it( 'should remove previous `restrictedEditingException` markers before setting new ones', () => {
+				editor.setData(
+					'<figure class="table">' +
+						'<table><tbody><tr><td><span class="restricted-editing-exception">bar</span></td></tr></tbody></table>' +
+					'</figure>'
+				);
+
+				expect( model.markers.has( 'restrictedEditingException:1' ) ).to.be.true;
+				expect( model.markers.has( 'restrictedEditingException:2' ) ).to.be.false;
+
+				editor.setData(
+					'<figure class="table">' +
+						'<table><tbody><tr><td><span class="restricted-editing-exception">bar</span></td></tr></tbody></table>' +
+					'</figure>'
+				);
+
+				expect( model.markers.has( 'restrictedEditingException:1' ) ).to.be.false;
+				expect( model.markers.has( 'restrictedEditingException:2' ) ).to.be.true;
+			} );
 		} );
 
 		describe( 'downcast', () => {
@@ -326,7 +354,7 @@ describe( 'RestrictedEditingModeEditing', () => {
 				).to.equalMarkup(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
-					'<table><tbody><tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" role="textbox" ' +
+					'<table><tbody><tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" ' +
 					'tabindex="-1">' +
 					'<span class="ck-table-bogus-paragraph"><span class="restricted-editing-exception"><b>foo bar baz</b></span></span>' +
 					'</td></tr></tbody></table>' +

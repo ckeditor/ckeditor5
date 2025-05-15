@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
@@ -346,6 +346,22 @@ describe( 'table utils', () => {
 				toolbar.items.last.fire( 'execute' );
 
 				expect( view.someProperty ).to.equal( '' );
+			} );
+
+			it( 'should toggle the property value when an active button is clicked', () => {
+				// Set the property to match one of the button values.
+				view.someProperty = 'first';
+				expect( toolbar.items.first.isOn ).to.be.true;
+
+				// Click the active button.
+				toolbar.items.first.fire( 'execute' );
+
+				// The property should be reset to undefined.
+				expect( view.someProperty ).to.be.undefined;
+
+				// Clicking the button again should set the value back.
+				toolbar.items.first.fire( 'execute' );
+				expect( view.someProperty ).to.equal( 'first' );
 			} );
 
 			describe( 'skipping "nameToValue" callback', () => {

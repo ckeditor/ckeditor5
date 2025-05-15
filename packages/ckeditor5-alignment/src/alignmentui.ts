@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module alignment/alignmentui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import {
 	type Button,
 	ButtonView,
@@ -18,18 +18,19 @@ import {
 	MenuBarMenuView,
 	MenuBarMenuListView
 } from 'ckeditor5/src/ui.js';
+import { IconAlignCenter, IconAlignJustify, IconAlignLeft, IconAlignRight } from 'ckeditor5/src/icons.js';
 import type { Locale } from 'ckeditor5/src/utils.js';
 
 import { isSupported, normalizeAlignmentOptions } from './utils.js';
 import type { AlignmentFormat, SupportedOption } from './alignmentconfig.js';
 import type AlignmentCommand from './alignmentcommand.js';
 
-const iconsMap = new Map( [
-	[ 'left', icons.alignLeft ],
-	[ 'right', icons.alignRight ],
-	[ 'center', icons.alignCenter ],
-	[ 'justify', icons.alignJustify ]
-] );
+const iconsMap = /* #__PURE__ */ ( () => new Map( [
+	[ 'left', IconAlignLeft ],
+	[ 'right', IconAlignRight ],
+	[ 'center', IconAlignCenter ],
+	[ 'justify', IconAlignJustify ]
+] ) )();
 
 /**
  * The default alignment UI plugin.
@@ -67,6 +68,13 @@ export default class AlignmentUI extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'AlignmentUI' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 
 	/**
@@ -136,7 +144,7 @@ export default class AlignmentUI extends Plugin {
 	/**
 	 * Helper method for initializing the toolnar dropdown and linking it with an appropriate command.
 	 *
-	 * @param option The name of the alignment option for which the button is added.
+	 * @param options The name of the alignment option for which the button is added.
 	 */
 	private _addToolbarDropdown( options: Array<AlignmentFormat> ): void {
 		const editor = this.editor;
@@ -219,16 +227,12 @@ export default class AlignmentUI extends Plugin {
 				const listItemView = new MenuBarMenuListItemView( locale, menuView );
 				const buttonView = new MenuBarMenuListItemButtonView( locale );
 
-				buttonView.extendTemplate( {
-					attributes: {
-						'aria-checked': buttonView.bindTemplate.to( 'isOn' )
-					}
-				} );
-
 				buttonView.delegate( 'execute' ).to( menuView );
 				buttonView.set( {
 					label: this.localizedOptionTitles[ option.name ],
-					icon: iconsMap.get( option.name )
+					icon: iconsMap.get( option.name ),
+					role: 'menuitemcheckbox',
+					isToggleable: true
 				} );
 
 				buttonView.on( 'execute', () => {

@@ -1,0 +1,40 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+.ck.ck-emoji {
+	width: 320px;
+}
+
+.ck .ck.ck-emoji__search {
+	display: flex;
+	padding: var(--ck-spacing-large);
+	padding-bottom: var(--ck-spacing-medium);
+	justify-content: space-between;
+	align-items: center;
+
+	& > .ck.ck-search {
+		flex: 1;
+	}
+}
+
+/*
+ * Classes used by the "fake visual selection" displayed in the content when an input
+ * in the emoji picker UI has focus (the browser does not render the native selection in this state).
+ */
+.ck .ck-fake-emoji-selection {
+	background: var(--ck-color-link-fake-selection);
+}
+
+/* A collapsed fake visual selection. */
+.ck .ck-fake-emoji-selection_collapsed {
+	height: 100%;
+	border-right: 1px solid var(--ck-color-base-text);
+	margin-right: -1px;
+	outline: solid 1px hsla(0, 0%, 100%, .5);
+}
+
+div.ck.ck-balloon-panel.ck-emoji-picker-balloon {
+	z-index: calc( var( --ck-z-dialog ) + 1 );
+}

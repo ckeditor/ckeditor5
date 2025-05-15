@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-markdown-gfm",
-  "version": "41.3.1",
+  "version": "45.1.0",
   "description": "GitHub Flavored Markdown data processor for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -10,45 +10,51 @@
     "ckeditor5-plugin",
     "ckeditor5-dll"
   ],
+  "sideEffects": [
+    "*.css",
+    "build/**/*.js",
+    "dist/translations/*.umd.js"
+  ],
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "ckeditor5": "41.3.1",
+    "@ckeditor/ckeditor5-clipboard": "45.1.0",
+    "@ckeditor/ckeditor5-core": "45.1.0",
+    "@ckeditor/ckeditor5-engine": "45.1.0",
+    "@types/marked": "4.3.2",
+    "@types/turndown": "5.0.5",
+    "ckeditor5": "45.1.0",
     "marked": "4.0.12",
-    "turndown": "6.0.0",
+    "turndown": "7.2.0",
     "turndown-plugin-gfm": "1.0.2"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-autoformat": "41.3.1",
-    "@ckeditor/ckeditor5-basic-styles": "41.3.1",
-    "@ckeditor/ckeditor5-block-quote": "41.3.1",
-    "@ckeditor/ckeditor5-clipboard": "41.3.1",
-    "@ckeditor/ckeditor5-code-block": "41.3.1",
-    "@ckeditor/ckeditor5-core": "41.3.1",
-    "@ckeditor/ckeditor5-dev-utils": "^40.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "41.3.1",
-    "@ckeditor/ckeditor5-engine": "41.3.1",
-    "@ckeditor/ckeditor5-essentials": "41.3.1",
-    "@ckeditor/ckeditor5-font": "41.3.1",
-    "@ckeditor/ckeditor5-heading": "41.3.1",
-    "@ckeditor/ckeditor5-horizontal-line": "41.3.1",
-    "@ckeditor/ckeditor5-image": "41.3.1",
-    "@ckeditor/ckeditor5-indent": "41.3.1",
-    "@ckeditor/ckeditor5-link": "41.3.1",
-    "@ckeditor/ckeditor5-list": "41.3.1",
-    "@ckeditor/ckeditor5-media-embed": "41.3.1",
-    "@ckeditor/ckeditor5-paragraph": "41.3.1",
-    "@ckeditor/ckeditor5-table": "41.3.1",
-    "@ckeditor/ckeditor5-theme-lark": "41.3.1",
-    "@ckeditor/ckeditor5-undo": "41.3.1",
-    "@ckeditor/ckeditor5-utils": "41.3.1",
-    "@types/marked": "^4.0.8",
+    "@ckeditor/ckeditor5-autoformat": "45.1.0",
+    "@ckeditor/ckeditor5-basic-styles": "45.1.0",
+    "@ckeditor/ckeditor5-block-quote": "45.1.0",
+    "@ckeditor/ckeditor5-code-block": "45.1.0",
+    "@ckeditor/ckeditor5-dev-utils": "^49.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "45.1.0",
+    "@ckeditor/ckeditor5-essentials": "45.1.0",
+    "@ckeditor/ckeditor5-font": "45.1.0",
+    "@ckeditor/ckeditor5-heading": "45.1.0",
+    "@ckeditor/ckeditor5-horizontal-line": "45.1.0",
+    "@ckeditor/ckeditor5-image": "45.1.0",
+    "@ckeditor/ckeditor5-indent": "45.1.0",
+    "@ckeditor/ckeditor5-link": "45.1.0",
+    "@ckeditor/ckeditor5-list": "45.1.0",
+    "@ckeditor/ckeditor5-media-embed": "45.1.0",
+    "@ckeditor/ckeditor5-paragraph": "45.1.0",
+    "@ckeditor/ckeditor5-table": "45.1.0",
+    "@ckeditor/ckeditor5-theme-lark": "45.1.0",
+    "@ckeditor/ckeditor5-undo": "45.1.0",
+    "@ckeditor/ckeditor5-utils": "45.1.0",
     "typescript": "5.0.4",
-    "webpack": "^5.58.1",
-    "webpack-cli": "^4.9.0"
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4"
   },
   "author": "CKSource (http://cksource.com/)",
-  "license": "GPL-2.0-or-later",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://ckeditor.com/ckeditor-5",
   "bugs": "https://github.com/ckeditor/ckeditor5/issues",
   "repository": {
@@ -74,7 +80,7 @@
   ],
   "scripts": {
     "dll:build": "webpack",
-    "build": "tsc -p ./tsconfig.json",
-    "build:dist": "node ../../scripts/build-package.mjs"
+    "build": "tsc --build --force ./tsconfig.json",
+    "build:dist": "node ../../scripts/nim/build-package.mjs"
   }
 }

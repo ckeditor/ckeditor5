@@ -1,3 +1,9 @@
+<head>
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'">
+</head>
+
+<script src="https://ckeditor.com/apps/ckfinder/3.5.0/ckfinder.js"></script>
+
 <p>
 	<button id="destroyEditor">Destroy editor</button>
 	<button id="initEditor">Init editor</button>
@@ -12,7 +18,19 @@
 <h2>The editable</h2>
 <div class="editable-container">
 	<div id="editor-intro"><p><strong>Exciting</strong> intro text to an article.</p></div>
-	<div id="editor-content"><h2>Exciting news!</h2><p>Lorem ipsum dolor sit amet.</p></div>
+	<div id="editor-content">
+		<table>
+			<tr>
+				<td>First cell</td>
+				<td>Second cell</td>
+			</tr>
+		</table>
+
+		<br />
+		<br />
+
+		<p>Hello World</p>
+	</div>
 	<div id="editor-outro"><p>Closing text.</p></div>
 </div>
 

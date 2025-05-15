@@ -1,36 +1,41 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, setTimeout */
-
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
-
-import { Code, Strikethrough } from '@ckeditor/ckeditor5-basic-styles';
-import { CloudServices } from '@ckeditor/ckeditor5-cloud-services';
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import { ImageUpload, ImageInsert, PictureEditing, AutoImage } from '@ckeditor/ckeditor5-image';
-import { TodoList } from '@ckeditor/ckeditor5-list';
-import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
-
-import { Markdown } from '@ckeditor/ckeditor5-markdown-gfm';
-
-import { TOKEN_URL } from '@ckeditor/ckeditor5-ckbox/tests/_utils/ckbox-config.js';
+import {
+	ClassicEditor,
+	Code,
+	Strikethrough,
+	CloudServices,
+	CodeBlock,
+	CKBox,
+	CKBoxImageEdit,
+	HorizontalLine,
+	ImageUpload,
+	ImageInsert,
+	PictureEditing,
+	AutoImage,
+	TodoList,
+	Markdown
+} from 'ckeditor5';
+import { SourceEditingEnhanced } from 'ckeditor5-premium-features';
+import {
+	CS_CONFIG,
+	TOKEN_URL,
+	ArticlePluginSet,
+	getViewportTopOffsetConfig
+} from '@snippets/index.js';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
 		plugins: [
-			ArticlePluginSet, SourceEditing, CKBox, CKBoxImageEdit, ImageInsert, ImageUpload, PictureEditing, AutoImage,
+			ArticlePluginSet, SourceEditingEnhanced, CKBox, CKBoxImageEdit, ImageInsert, ImageUpload, PictureEditing, AutoImage,
 			CloudServices, Markdown, Code, CodeBlock, TodoList, Strikethrough, HorizontalLine
 		],
 		toolbar: {
 			items: [
-				'undo', 'redo', '|', 'sourceEditing', '|', 'heading',
+				'undo', 'redo', '|', 'sourceEditingEnhanced', '|', 'heading',
 				'|', 'bold', 'italic', 'strikethrough', 'code',
 				'-', 'link', 'insertImage', 'insertTable', 'mediaEmbed', 'blockQuote', 'codeBlock', 'horizontalLine',
 				'|', 'bulletedList', 'numberedList', 'todoList', 'outdent', 'indent'
@@ -60,7 +65,7 @@ ClassicEditor
 		cloudServices: CS_CONFIG,
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		},
 		ckbox: {

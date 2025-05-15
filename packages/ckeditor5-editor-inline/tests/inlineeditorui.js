@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, Event, console */
+/* globals document, window, Event, console */
 
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 
@@ -16,9 +16,10 @@ import { Image, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import { isElement } from 'lodash-es';
+import { isElement } from 'es-toolkit/compat';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'InlineEditorUI', () => {
@@ -40,8 +41,10 @@ describe( 'InlineEditorUI', () => {
 			} );
 	} );
 
-	afterEach( () => {
-		editor.destroy();
+	afterEach( async () => {
+		if ( editor ) {
+			await editor.destroy();
+		}
 	} );
 
 	describe( 'constructor()', () => {
@@ -121,6 +124,34 @@ describe( 'InlineEditorUI', () => {
 
 						return editor.destroy();
 					} );
+			} );
+
+			it( 'updates the view#viewportTopOffset to the visible part of viewport top offset (iOS + visual viewport)', () => {
+				ui.viewportOffset = { top: 70 };
+
+				let offsetTop = 0;
+				sinon.stub( env, 'isiOS' ).get( () => true );
+				sinon.stub( window.visualViewport, 'offsetTop' ).get( () => offsetTop );
+
+				offsetTop = 0;
+				window.visualViewport.dispatchEvent( new Event( 'scroll' ) );
+
+				expect( ui.view.viewportTopOffset ).to.equal( 70 );
+
+				offsetTop = 10;
+				window.visualViewport.dispatchEvent( new Event( 'scroll' ) );
+
+				expect( ui.view.viewportTopOffset ).to.equal( 60 );
+
+				offsetTop = 50;
+				window.visualViewport.dispatchEvent( new Event( 'scroll' ) );
+
+				expect( ui.view.viewportTopOffset ).to.equal( 20 );
+
+				offsetTop = 80;
+				window.visualViewport.dispatchEvent( new Event( 'scroll' ) );
+
+				expect( ui.view.viewportTopOffset ).to.equal( 0 );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-editor-inline/issues/4
@@ -328,6 +359,20 @@ describe( 'InlineEditorUI', () => {
 
 			sinon.assert.callOrder( parentDestroySpy, viewDestroySpy );
 		} );
+
+		it( 'should not crash if the editable element is not present', async () => {
+			editor.editing.view.detachDomRoot( editor.ui.view.editable.name );
+
+			await editor.destroy();
+			editor = null;
+		} );
+
+		it( 'should not crash if called twice', async () => {
+			const editor = await VirtualInlineTestEditor.create( '' );
+
+			await editor.destroy();
+			await editor.destroy();
+		} );
 	} );
 
 	describe( 'element()', () => {
@@ -362,6 +407,7 @@ describe( 'Focus handling and navigation between editing root and editor toolbar
 		editor = await InlineEditor.create( editorElement, {
 			plugins: [ Paragraph, Image, ImageToolbar, ImageCaption ],
 			toolbar: [ 'imageTextAlternative' ],
+			menuBar: { isVisible: true },
 			image: {
 				toolbar: [ 'toggleImageCaption' ]
 			}

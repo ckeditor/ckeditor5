@@ -1,20 +1,44 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window */
+import {
+	Bold,
+	Italic,
+	Underline,
+	Strikethrough,
+	Subscript,
+	Superscript,
+	Code,
+	CKBox,
+	CKBoxImageEdit,
+	PictureEditing,
+	ImageInsert,
+	ImageResize,
+	AutoImage,
+	LinkImage,
+	RemoveFormat
+} from 'ckeditor5';
+import { ClassicEditor } from '@snippets/index.js';
 
-import { Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Code } from '@ckeditor/ckeditor5-basic-styles';
-import { CKBox, CKBoxImageEdit } from '@ckeditor/ckeditor5-ckbox';
-import { PictureEditing, ImageInsert, ImageResize, AutoImage } from '@ckeditor/ckeditor5-image';
-import { LinkImage } from '@ckeditor/ckeditor5-link';
-import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
-
-// Umberto combines all `packages/*/docs` into the `docs/` directory. The import path must be valid after merging all directories.
-import ClassicEditor from '../build-classic.js';
-
-ClassicEditor.builtinPlugins.push( Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Code, RemoveFormat,
-	PictureEditing, ImageInsert, ImageResize, AutoImage, LinkImage, CKBox, CKBoxImageEdit );
-
-window.ClassicEditor = ClassicEditor;
+export class BasicStylesEditor extends ClassicEditor {
+	static builtinPlugins = [
+		...ClassicEditor.builtinPlugins,
+		Bold,
+		Italic,
+		Underline,
+		Strikethrough,
+		Subscript,
+		Superscript,
+		Code,
+		CKBox,
+		CKBoxImageEdit,
+		PictureEditing,
+		ImageInsert,
+		ImageResize,
+		AutoImage,
+		LinkImage,
+		RemoveFormat
+	];
+}

@@ -4,13 +4,11 @@ meta-title: Font family, size, and color | CKEditor 5 Documentation
 category: features
 ---
 
-{@snippet features/build-font-source}
-
 The font feature lets you change font family, size, and color (including background color).
 
 ## Demo
 
-Use the toolbar dropdowns in the demo below to control the font size {@icon @ckeditor/ckeditor5-font/theme/icons/font-size.svg Font size} and font family {@icon @ckeditor/ckeditor5-font/theme/icons/font-family.svg Font family}. You can also change both the font color {@icon @ckeditor/ckeditor5-font/theme/icons/font-color.svg Font color} and the font background color {@icon @ckeditor/ckeditor5-font/theme/icons/font-background.svg Font background color} with predefined palette or color picker {@icon @ckeditor/ckeditor5-core/theme/icons/color-palette.svg Color picker}.
+Use the toolbar dropdowns in the demo below to control the font size {@icon @ckeditor/ckeditor5-icons/theme/icons/font-size.svg Font size} and font family {@icon @ckeditor/ckeditor5-icons/theme/icons/font-family.svg Font family}. You can also change both the font color {@icon @ckeditor/ckeditor5-icons/theme/icons/font-color.svg Font color} and the font background color {@icon @ckeditor/ckeditor5-icons/theme/icons/font-background.svg Font background color} with predefined palette or color picker {@icon @ckeditor/ckeditor5-icons/theme/icons/color-palette.svg Color picker}.
 
 {@snippet features/font}
 
@@ -23,6 +21,7 @@ Use the toolbar dropdowns in the demo below to control the font size {@icon @cke
 The font styles, just like the {@link features/basic-styles basic text styles}, can serve many purposes. You can apply the font size setting globally or to a selected part of the text to make it catch the eye of the reader. Using different font families can help differentiate between sections of the content that serve various purposes (like main text and a side quotation or a recap). Different font colors can work as markers and guides just like font background colors that stand out even more and draw attention.
 
 The plugin enables the following features in the rich-text editor:
+
 * {@link module:font/fontfamily~FontFamily} &ndash; Change the font family by applying inline `<span>` elements with a `font-family` in the `style` attribute.
 * {@link module:font/fontsize~FontSize} &ndash; Control the font size by applying inline `<span>` elements that either have a CSS class or a `font-size` in the `style` attribute.
 * {@link module:font/fontcolor~FontColor} &ndash; Control the font color by applying inline `<span>` elements with a `color` in the `style` attribute.
@@ -31,6 +30,54 @@ The plugin enables the following features in the rich-text editor:
 <info-box info>
 	You can remove all font formatting with the {@link features/remove-format remove format} feature.
 </info-box>
+
+## Installation
+
+<info-box info>
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
+</info-box>
+
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
+
+<code-switcher>
+```js
+import { ClassicEditor, Font } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
+		plugins: [ Font, /* ... */ ],
+		toolbar: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', /* ... */ ]
+		fontFamily: {
+			// Configuration.
+		}
+		fontColor: {
+			// Configuration.
+		}
+		// ...
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+</code-switcher>
+
+You can also add just one or a selected few of the font features to your plugin list and the toolbar configuration:
+
+<code-switcher>
+```js
+import { ClassicEditor, FontFamily } from 'ckeditor5';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ FontFamily, /* ... */ ],
+		toolbar: [ 'fontFamily', /* ... */ ]
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
+```
+</code-switcher>
 
 ## Configuring the font family feature
 
@@ -43,6 +90,7 @@ For example, the following editor supports two font families besides the default
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		fontFamily: {
 			options: [
 				'default',
@@ -67,6 +115,7 @@ By default, all `font-family` values that are not specified in the `config.fontF
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		fontFamily: {
 			options: [
 				// Font family configuration options are described in the "Configuring the font family feature" section.
@@ -75,7 +124,7 @@ ClassicEditor
 			supportAllValues: true
 		},
 		// More of editor's configuration.
-        // ...
+		// ...
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -131,6 +180,7 @@ An example of an editor that supports two font sizes:
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		fontSize: {
 			options: [
 				'tiny',
@@ -163,6 +213,7 @@ Here is an example of the WYSIWYG editor that supports numerical font sizes. Not
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		fontSize: {
 			options: [
 				9,
@@ -191,6 +242,7 @@ By default, all `font-size` values that are not specified in the `config.fontSiz
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		fontSize: {
 			options: [
 				// Numerical values.
@@ -199,7 +251,7 @@ ClassicEditor
 			supportAllValues: true
 		},
 		// More of editor's configuration.
-        // ...
+		// ...
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
@@ -228,6 +280,7 @@ It is possible to configure which colors are available in the color dropdown. Us
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		fontColor: {
 			colors: [
 				{
@@ -298,6 +351,7 @@ Usually, you will want to use this option when changing the number of [available
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		fontColor: {
 			colors: [
 				// 9 colors defined here.
@@ -331,6 +385,7 @@ By default, the number of displayed document colors is limited to one row, but y
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		fontColor: {
 			// Display 6 columns in the color grid.
 			columns: 6,
@@ -367,6 +422,7 @@ To turn off the color picker entirely for the given feature, set the {@link modu
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// ... Other configuration options ...
 		fontColor: {
 			colorPicker: {
 				// Use 'hex' format for output instead of 'hsl'.
@@ -385,49 +441,29 @@ ClassicEditor
 	.catch( /* ... */ );
 ```
 
-## Installation
+### Email client color format compatibility
 
-<info-box info>
-	The font styles feature is enabled by default in the {@link installation/getting-started/predefined-builds#document-editor document editor build} and {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
-</info-box>
+When designing content for emails, it is important to be aware that many email clients have limited support for various color formats. For maximum compatibility in email templates, consider the following limitations:
 
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-font`](https://www.npmjs.com/package/@ckeditor/ckeditor5-font) package:
+#### Unsupported color formats in most email clients:
 
-```bash
-npm install --save @ckeditor/ckeditor5-font
-```
+* hsl
+* hsla
+* hwb
+* lab
+* lch
+* oklab
+* oklch
+* color-mix
+* rgba
 
-Then add it to your plugin list and the toolbar configuration:
+#### Recommended color formats for email compatibility:
 
-```js
-import { Font } from '@ckeditor/ckeditor5-font';
+* Hexadecimal (for example, `#FF0000`)
+* RGB (for example, `rgb(255, 0, 0)`)
+* Named colors (for example, `red`)
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ Font, /* ... */ ],
-		toolbar: [ 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-
-You can also add just one or a selected few of the font features to your plugin list and the toolbar configuration:
-
-```js
-import { FontFamily } from '@ckeditor/ckeditor5-font';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ FontFamily, /* ... */ ],
-		toolbar: [ 'fontFamily', /* ... */ ]
-	} )
-	.then( /* ... */ )
-	.catch( /* ... */ );
-```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
+Using these compatible formats will ensure your content displays consistently across different email clients.
 
 ## Related features
 

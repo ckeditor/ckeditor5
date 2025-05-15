@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -253,7 +253,7 @@ export function getPositionShorthandNormalizer( shorthand: string ) {
  * ```
  */
 export function getShorthandValues( string: string ): Array<string> {
-	const matches = string.matchAll( CSS_SHORTHAND_VALUE_REGEXP );
+	const matches = string.trim().slice( 0, 1500 ).matchAll( CSS_SHORTHAND_VALUE_REGEXP );
 
 	return Array.from( matches ).map( i => i[ 0 ] );
 }

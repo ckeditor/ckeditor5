@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals btoa, console, document, window, AbortController, Response */
+/* globals btoa, console, document, window, AbortController, Response, FormData */
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
@@ -35,8 +35,11 @@ describe( 'CKBoxUtils', () => {
 
 	testUtils.createSinonSandbox();
 
+	let fetchStub;
+
 	beforeEach( async () => {
 		TokenMock.initialToken = token;
+		fetchStub = sinon.stub( window, 'fetch' ).resolves();
 
 		originalCKBox = window.CKBox;
 		window.CKBox = {};
@@ -53,6 +56,8 @@ describe( 'CKBoxUtils', () => {
 
 	afterEach( async () => {
 		window.CKBox = originalCKBox;
+		fetchStub.restore();
+
 		await editor.destroy();
 	} );
 
@@ -60,20 +65,131 @@ describe( 'CKBoxUtils', () => {
 		expect( CKBoxUtils.pluginName ).to.equal( 'CKBoxUtils' );
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( CKBoxUtils.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( CKBoxUtils.isPremiumPlugin ).to.be.false;
+	} );
+
 	it( 'should be loaded', () => {
 		expect( ckboxUtils ).to.be.instanceOf( CKBoxUtils );
 	} );
 
 	describe( 'getToken()', () => {
-		it( 'should return an instance of token', () => {
-			expect( ckboxUtils.getToken() ).to.be.instanceOf( Token );
+		it( 'should return an instance of token', async () => {
+			expect( await ckboxUtils.getToken() ).to.be.instanceOf( Token );
+		} );
+	} );
+
+	describe( '_authorizePrivateCategoriesAccess', () => {
+		it( 'should be called when retrieving a token', async () => {
+			await editor.destroy();
+
+			const authorizeSpy = sinon.spy( CKBoxUtils.prototype, '_authorizePrivateCategoriesAccess' );
+
+			editor = await createTestEditor( {
+				ckbox: {
+					tokenUrl: 'http://cs.example.com',
+					serviceOrigin: CKBOX_API_URL
+				}
+			} );
+
+			expect( authorizeSpy.calledOnce ).to.be.true;
+			expect( authorizeSpy.firstCall.args[ 0 ] ).to.equal( token );
+
+			authorizeSpy.restore();
+		} );
+
+		it( 'should make a fetch request with correct headers', async () => {
+			fetchStub.reset();
+
+			await ckboxUtils._authorizePrivateCategoriesAccess( 'test-token' );
+
+			expect( fetchStub.calledOnce ).to.be.true;
+
+			const fetchCall = fetchStub.firstCall;
+			const url = fetchCall.args[ 0 ];
+			const options = fetchCall.args[ 1 ];
+
+			expect( url ).to.equal( `${ CKBOX_API_URL }/categories/authorizePrivateAccess` );
+			expect( options.method ).to.equal( 'POST' );
+			expect( options.credentials ).to.equal( 'include' );
+			expect( options.mode ).to.equal( 'no-cors' );
+		} );
+
+		it( 'should make a fetch request with proper form data', async () => {
+			const testToken = 'example-token';
+
+			fetchStub.restore();
+			fetchStub = sinon.stub( window, 'fetch' ).callsFake( ( url, options ) => {
+				const formData = options.body;
+
+				expect( formData ).to.be.instanceOf( FormData );
+				expect( formData.get( 'token' ) ).to.equal( testToken );
+
+				return Promise.resolve();
+			} );
+
+			await ckboxUtils._authorizePrivateCategoriesAccess( testToken );
+
+			expect( fetchStub.calledOnce ).to.be.true;
+			expect( fetchStub.firstCall.args[ 0 ] ).to.equal( `${ CKBOX_API_URL }/categories/authorizePrivateAccess` );
+		} );
+	} );
+
+	describe( 'init()', () => {
+		it( 'should not block initialization of plugin while fetching token', async () => {
+			const defer = createDefer();
+			const slowToken = createToken( { auth: { ckbox: { workspaces: [ 'workspace1' ] } } } );
+
+			await editor.destroy();
+
+			class SlowCloudServices extends CloudServices {
+				async registerTokenUrl() {
+					await defer.promise;
+					return slowToken;
+				}
+			}
+
+			editor = await VirtualTestEditor.create( {
+				plugins: [
+					ImageBlockEditing,
+					ImageInlineEditing,
+					ImageCaptionEditing,
+					LinkEditing,
+					LinkImageEditing,
+					PictureEditing,
+					ImageUploadEditing,
+					ImageUploadProgress,
+					SlowCloudServices,
+					CKBoxUploadAdapter,
+					CKBoxEditing
+				],
+				substitutePlugins: [
+					CloudServicesCoreMock
+				],
+				ckbox: {
+					tokenUrl: 'http://cs.example.com',
+					serviceOrigin: CKBOX_API_URL
+				}
+			} );
+
+			ckboxUtils = editor.plugins.get( CKBoxUtils );
+			expect( ckboxUtils.getToken() ).to.be.instanceOf( Promise );
+
+			defer.resolve();
+			expect( await ckboxUtils.getToken() ).to.be.equal( slowToken );
 		} );
 	} );
 
 	describe( 'fetching token', () => {
-		it( 'should create an instance of Token class which is ready to use (specified ckbox.tokenUrl)', () => {
-			expect( ckboxUtils.getToken() ).to.be.instanceOf( Token );
-			expect( ckboxUtils.getToken().value ).to.equal( token );
+		it( 'should create an instance of Token class which is ready to use (specified ckbox.tokenUrl)', async () => {
+			const resolvedToken = await ckboxUtils.getToken();
+
+			expect( resolvedToken ).to.be.instanceOf( Token );
+			expect( resolvedToken.value ).to.equal( token );
 			expect( editor.plugins.get( 'CloudServicesCore' ).tokenUrl ).to.equal( 'http://cs.example.com' );
 		} );
 
@@ -105,8 +221,10 @@ describe( 'CKBoxUtils', () => {
 				} );
 
 			const ckboxUtils = editor.plugins.get( CKBoxUtils );
-			expect( ckboxUtils.getToken() ).to.be.instanceOf( Token );
-			expect( ckboxUtils.getToken().value ).to.equal( token );
+			const resolvedToken = await ckboxUtils.getToken();
+
+			expect( resolvedToken ).to.be.instanceOf( Token );
+			expect( resolvedToken.value ).to.equal( token );
 			expect( editor.plugins.get( 'CloudServicesCore' ).tokenUrl ).to.equal( 'http://cs.example.com' );
 
 			editorElement.remove();
@@ -142,8 +260,10 @@ describe( 'CKBoxUtils', () => {
 				} );
 
 			const ckboxUtils = editor.plugins.get( CKBoxUtils );
-			expect( ckboxUtils.getToken() ).to.be.instanceOf( Token );
-			expect( ckboxUtils.getToken().value ).to.equal( token );
+			const resolvedToken = await ckboxUtils.getToken();
+
+			expect( resolvedToken ).to.be.instanceOf( Token );
+			expect( resolvedToken.value ).to.equal( token );
 			expect( editor.plugins.get( 'CloudServicesCore' ).tokenUrl ).to.equal( 'http://ckbox.example.com' );
 
 			editorElement.remove();
@@ -179,8 +299,10 @@ describe( 'CKBoxUtils', () => {
 				} );
 
 			const ckboxUtils = editor.plugins.get( CKBoxUtils );
-			expect( ckboxUtils.getToken() ).to.be.instanceOf( Token );
-			expect( ckboxUtils.getToken().value ).to.equal( token );
+			const resolvedToken = await ckboxUtils.getToken();
+
+			expect( resolvedToken ).to.be.instanceOf( Token );
+			expect( resolvedToken.value ).to.equal( token );
 			expect( editor.plugins.get( 'CloudServicesCore' ).tokenUrl ).to.equal( 'http://example.com' );
 
 			editorElement.remove();
@@ -331,13 +453,13 @@ describe( 'CKBoxUtils', () => {
 	} );
 
 	describe( 'getCategoryIdForFile', () => {
-		let fetchStub;
 		const file = { name: 'image.jpg' };
 		const url = 'https://example.com/image';
 		const options = { signal: new AbortController().signal };
 
 		beforeEach( () => {
-			fetchStub = sinon.stub( window, 'fetch' ).resolves( new Response( null, { headers: { 'content-type': 'image/jpeg' } } ) );
+			fetchStub.reset();
+			fetchStub = fetchStub.resolves( new Response( null, { headers: { 'content-type': 'image/jpeg' } } ) );
 		} );
 
 		it( 'should pass abort signal to other calls (file)', async () => {
@@ -562,6 +684,24 @@ describe( 'CKBoxUtils', () => {
 			sinonXHR.restore();
 		} );
 
+		// See: https://github.com/ckeditor/ckeditor5/issues/16040
+		it( 'should not use `Number#toString()` method due to minification issues on some bundlers', async () => {
+			const categories = createCategories( 10 );
+			const toStringSpy = sinon.spy( Number.prototype, 'toString' );
+
+			sinonXHR.respondWith( 'GET', CKBOX_API_URL + '/categories?limit=50&offset=0&workspaceId=workspace1', [
+				200,
+				{ 'Content-Type': 'application/json' },
+				JSON.stringify( {
+					items: categories, offset: 0, limit: 50, totalCount: 10
+				} )
+			] );
+
+			await ckboxUtils._getAvailableCategories( options );
+
+			expect( toStringSpy ).not.to.be.called;
+		} );
+
 		it( 'should return categories in one call', async () => {
 			const categories = createCategories( 10 );
 
@@ -702,4 +842,17 @@ function createToken( tokenClaims ) {
 		// Signature.
 		'signature'
 	].join( '.' );
+}
+
+function createDefer() {
+	const deferred = {
+		resolve: ( ) => {},
+		promise: Promise.resolve( null )
+	};
+
+	deferred.promise = new Promise( resolve => {
+		deferred.resolve = resolve;
+	} );
+
+	return deferred;
 }

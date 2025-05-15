@@ -9,7 +9,7 @@ modified_at: 2022-02-01
 # Update to CKEditor&nbsp;5 v33.x
 
 <info-box>
-	When updating your CKEditor&nbsp;5 installation, make sure **all the packages are the same version** to avoid errors.
+	When updating your CKEditor&nbsp;5 installation, ensure **all the packages are the same version** to avoid errors.
 
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
@@ -20,11 +20,11 @@ _Released on March 9, 2022._
 
 For the entire list of changes introduced in version 33.0.0, see the [release notes for CKEditor&nbsp;5 v33.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v33.0.0).
 
-Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v33.0.0.
+Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v33.0.0.
 
 ### New import paths in the `ckeditor5-list` package
 
-Starting with v33.0.0, some import paths have changed in the [`ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package. If your application {@link installation/plugins/installing-plugins imports individual plugins} to integrate or build CKEditor&nbsp;5, you should update the paths accordingly:
+Starting with v33.0.0, some import paths have changed in the [`ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package. If your application imports individual plugins to integrate or build CKEditor&nbsp;5, you should update the paths accordingly:
 
 ```js
 // ❌ Old import paths:
@@ -46,7 +46,7 @@ import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listproperties/l
 
 ### Additional dependencies in CKEditor&nbsp;5 collaboration features
 
-We introduced the {@link installation/advanced/dll-builds DLL builds} support for collaboration features. As a result, some imports, plugin requirements, and cross-package dependencies have changed to allow for the new building process.
+The {@link getting-started/advanced/dll-builds DLL builds} support was introduced for collaboration features. As a result, some imports, plugin requirements and cross-package dependencies have changed to allow for the new building process.
 
 From now on, extra plugins will be required when you add the following CKEditor&nbsp;5 collaboration features to the editor:
 
@@ -232,15 +232,18 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import List from '@ckeditor/ckeditor5-list/src/list';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	// ...
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// ...
 
-	comments: {
-		editorConfig: {
-			extraPlugins: [ Autoformat, Bold, Italic, List ]
+		comments: {
+			editorConfig: {
+				extraPlugins: [ Autoformat, Bold, Italic, List ]
+			}
 		}
-	}
-} );
+	} )
+	.then( /* ... */ )
+	.catch( /* ... */ );
 ```
 
 <info-box>
@@ -254,13 +257,14 @@ If this configuration is not provided, a warning will be logged in the console a
 To hide the warning (and use the basic configuration), provide an empty configuration for the comments editor:
 
 ```js
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	// ...
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		// ...
 
-	comments: {
-		editorConfig: {}
-	}
-} );
+		comments: {
+			editorConfig: {}
+		}
+	} );
 ```
 
 ## New API

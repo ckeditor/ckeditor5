@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -8,7 +8,6 @@
  */
 
 import {
-	UpcastWriter,
 	type DowncastAttributeEvent,
 	type DowncastWriter,
 	type EditingController,
@@ -48,7 +47,7 @@ import {
 	isListItemView
 } from './utils/view.js';
 
-import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker.js';
+import ListWalker, { SiblingListBlocksIterator } from './utils/listwalker.js';
 import { findAndAddListHeadToMap } from './utils/postfixers.js';
 
 import type {
@@ -121,29 +120,6 @@ export function listItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 }
 
 /**
- * Returns the upcast converter for the `<ul>` and `<ol>` view elements that cleans the input view of garbage.
- * This is mostly to clean whitespaces from between the `<li>` view elements inside the view list element. However,
- * incorrect data can also be cleared if the view was incorrect.
- *
- * @internal
- */
-export function listUpcastCleanList(): GetCallback<UpcastElementEvent> {
-	return ( evt, data, conversionApi ) => {
-		if ( !conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
-			return;
-		}
-
-		const viewWriter = new UpcastWriter( data.viewItem.document );
-
-		for ( const child of Array.from( data.viewItem.getChildren() ) ) {
-			if ( !isListItemView( child ) && !isListView( child ) ) {
-				viewWriter.remove( child );
-			}
-		}
-	};
-}
-
-/**
  * Returns a model document change:data event listener that triggers conversion of related items if needed.
  *
  * @internal
@@ -161,33 +137,34 @@ export function reconvertItemsOnDataChange(
 	return () => {
 		const changes = model.document.differ.getChanges();
 		const itemsToRefresh = [];
-		const itemToListHead = new Map<ListElement, ListElement>();
+		const itemToListHead = new Set<ListElement>();
 		const changedItems = new Set<Node>();
+		const visited = new Set<Element>();
 
 		for ( const entry of changes ) {
 			if ( entry.type == 'insert' && entry.name != '$text' ) {
-				findAndAddListHeadToMap( entry.position, itemToListHead );
+				findAndAddListHeadToMap( entry.position, itemToListHead, visited );
 
 				// Insert of a non-list item.
 				if ( !entry.attributes.has( 'listItemId' ) ) {
-					findAndAddListHeadToMap( entry.position.getShiftedBy( entry.length ), itemToListHead );
+					findAndAddListHeadToMap( entry.position.getShiftedBy( entry.length ), itemToListHead, visited );
 				} else {
 					changedItems.add( entry.position.nodeAfter! );
 				}
 			}
 			// Removed list item.
 			else if ( entry.type == 'remove' && entry.attributes.has( 'listItemId' ) ) {
-				findAndAddListHeadToMap( entry.position, itemToListHead );
+				findAndAddListHeadToMap( entry.position, itemToListHead, visited );
 			}
 			// Changed list attribute.
 			else if ( entry.type == 'attribute' ) {
 				const item = entry.range.start.nodeAfter!;
 
 				if ( attributeNames.includes( entry.attributeKey ) ) {
-					findAndAddListHeadToMap( entry.range.start, itemToListHead );
+					findAndAddListHeadToMap( entry.range.start, itemToListHead, visited );
 
 					if ( entry.attributeNewValue === null ) {
-						findAndAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead );
+						findAndAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead, visited );
 
 						// Check if paragraph should be converted from bogus to plain paragraph.
 						if ( doesItemBlockRequiresRefresh( item as Element ) ) {
@@ -220,7 +197,7 @@ export function reconvertItemsOnDataChange(
 		const visited = new Set();
 		const stack: Array<ListItemAttributesMap> = [];
 
-		for ( const { node, previous } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
+		for ( const { node, previous } of new SiblingListBlocksIterator( listHead ) ) {
 			if ( visited.has( node ) ) {
 				continue;
 			}
@@ -722,7 +699,7 @@ function shouldUseBogusParagraph(
 
 	for ( const attributeKey of item.getAttributeKeys() ) {
 		// Ignore selection attributes stored on block elements.
-		if ( attributeKey.startsWith( 'selection:' ) ) {
+		if ( attributeKey.startsWith( 'selection:' ) || attributeKey == 'htmlEmptyBlock' ) {
 			continue;
 		}
 

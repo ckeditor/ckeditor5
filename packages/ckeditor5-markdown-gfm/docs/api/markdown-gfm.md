@@ -18,8 +18,10 @@ See the {@link features/markdown Markdown output guide} and the {@link module:ma
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-markdown-gfm
+npm install ckeditor5
 ```
 
 ## Contribute

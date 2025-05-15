@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import { global } from 'ckeditor5/src/utils.js';
@@ -20,17 +20,28 @@ export const tableColumnResizeMouseSimulator = {
 
 		const domEventData = {
 			target: editor.editing.view.domConverter.domToView( domTarget ),
-			domEvent: { clientX },
+			domEvent: { clientX, clientY: 0 },
 			preventDefault
 		};
-		this._getPlugin( editor )._onMouseDownHandler( eventInfo, domEventData );
+
+		const plugin = this._getPlugin( editor );
+
+		plugin._onMouseDownHandler( eventInfo, domEventData );
+
+		// Skip threshold checking as it is not needed for most of the tests.
+		if ( options.ignoreThreshold !== false && plugin._initialMouseEventData ) {
+			// Let's assume user moved the mouse by 5px.
+			plugin._startResizingAfterThreshold();
+			plugin._initialMouseEventData = null;
+		}
 	},
 
 	move( editor, domTarget, vector ) {
 		const eventInfo = {};
 
 		const domEventData = {
-			clientX: getColumnResizerRect( domTarget ).moveBy( vector.x, vector.y ).x
+			clientX: getColumnResizerRect( domTarget ).moveBy( vector.x, vector.y ).x,
+			clientY: 0
 		};
 
 		this._getPlugin( editor )._onMouseMoveHandler( eventInfo, domEventData );
@@ -38,6 +49,40 @@ export const tableColumnResizeMouseSimulator = {
 
 	up( editor ) {
 		this._getPlugin( editor )._onMouseUpHandler();
+	},
+
+	over( editor, domTarget, options = {} ) {
+		const preventDefault = options.preventDefault || sinon.spy().named( 'preventDefault' );
+		const stop = options.stop || sinon.spy().named( 'stop' );
+
+		const clientX = getColumnResizerRect( domTarget ).x;
+
+		const eventInfo = { stop };
+
+		const domEventData = {
+			target: editor.editing.view.domConverter.domToView( domTarget ),
+			domEvent: { clientX, clientY: 0 },
+			preventDefault
+		};
+
+		this._getPlugin( editor )._onMouseOverHandler( eventInfo, domEventData );
+	},
+
+	out( editor, domTarget, options = {} ) {
+		const preventDefault = options.preventDefault || sinon.spy().named( 'preventDefault' );
+		const stop = options.stop || sinon.spy().named( 'stop' );
+
+		const clientX = getColumnResizerRect( domTarget ).x;
+
+		const eventInfo = { stop };
+
+		const domEventData = {
+			target: editor.editing.view.domConverter.domToView( domTarget ),
+			domEvent: { clientX, clientY: 0 },
+			preventDefault
+		};
+
+		this._getPlugin( editor )._onMouseOutHandler( eventInfo, domEventData );
 	},
 
 	resize( editor, domTable, columnIndex, vector, rowIndex, options ) {
@@ -111,4 +156,8 @@ export function getColumnResizerRect( resizerElement ) {
 	const resizerPosition = new Point( cellRect.right, cellRect.top + cellRect.height / 2 );
 
 	return resizerPosition;
+}
+
+export function getComputedStyle( element, property ) {
+	return global.window.getComputedStyle( element )[ property ];
 }

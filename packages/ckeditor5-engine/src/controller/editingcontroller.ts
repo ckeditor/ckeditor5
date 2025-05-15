@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -222,7 +222,7 @@ export default class EditingController extends /* #__PURE__ */ ObservableMixin()
 			 * The marker with the provided name does not exist and cannot be reconverted.
 			 *
 			 * @error editingcontroller-reconvertmarker-marker-not-exist
-			 * @param {String} markerName The name of the reconverted marker.
+			 * @param {string} markerName The name of the reconverted marker.
 			 */
 			throw new CKEditorError( 'editingcontroller-reconvertmarker-marker-not-exist', this, { markerName } );
 		}

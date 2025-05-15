@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import { Editor } from '@ckeditor/ckeditor5-core';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'es-toolkit/compat';
 
 describe( 'Accessibility', () => {
 	let editor, accessibility;
@@ -16,7 +16,11 @@ describe( 'Accessibility', () => {
 	} );
 
 	afterEach( async () => {
-		editor.destroy();
+		if ( editor.state === 'initializing' ) {
+			editor.fire( 'ready' );
+		}
+
+		await editor.destroy();
 	} );
 
 	it( 'should provide default categories, groups, and keystrokes', () => {
@@ -95,7 +99,7 @@ describe( 'Accessibility', () => {
 		] );
 	} );
 
-	it( 'should add info specific to the menu bar when available', () => {
+	it( 'should add info specific to the menu bar when available', async () => {
 		const editor = new Editor( {
 			menuBar: {
 				isVisible: true
@@ -111,7 +115,8 @@ describe( 'Accessibility', () => {
 			mayRequireFn: true
 		} );
 
-		editor.destroy();
+		editor.fire( 'ready' );
+		await editor.destroy();
 	} );
 
 	describe( 'addKeystrokeInfoCategory()', () => {

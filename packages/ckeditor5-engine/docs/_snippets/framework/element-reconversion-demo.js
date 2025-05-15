@@ -1,14 +1,22 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals
-	ClassicEditor, Plugin, ButtonView, Command, toWidget, toWidgetEditable, createElement, findOptimalInsertionRange,
-	console, window, prompt, document
-*/
-
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+import {
+	Plugin,
+	Command,
+	ButtonView,
+	toWidget,
+	toWidgetEditable,
+	findOptimalInsertionRange,
+	createElement
+} from 'ckeditor5';
+import {
+	CS_CONFIG,
+	ClassicEditor,
+	getViewportTopOffsetConfig
+} from '@snippets/index.js';
 
 /**
  * Helper for extracting the side card type from a view element based on its CSS class.
@@ -347,7 +355,7 @@ ClassicEditor
 		},
 		ui: {
 			viewportOffset: {
-				top: window.getViewportTopOffsetConfig()
+				top: getViewportTopOffsetConfig()
 			}
 		}
 	} )

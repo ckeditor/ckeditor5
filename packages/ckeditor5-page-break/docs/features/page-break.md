@@ -10,7 +10,7 @@ The page break feature lets you insert page breaks into your content. This gives
 
 ## Demo
 
-Use the insert page break toolbar button {@icon @ckeditor/ckeditor5-page-break/theme/icons/pagebreak.svg Insert page break} to see the feature in action. Use the "Open print preview" button below the editor to preview the content.
+Use the insert page break toolbar button {@icon @ckeditor/ckeditor5-icons/theme/icons/page-break.svg Insert page break} to see the feature in action. Use the "Open print preview" button below the editor to preview the content.
 
 {@snippet features/page-break}
 
@@ -21,32 +21,27 @@ Use the insert page break toolbar button {@icon @ckeditor/ckeditor5-page-break/t
 ## Installation
 
 <info-box info>
-	The Page break feature is enabled by default in the {@link installation/getting-started/predefined-builds#superbuild superbuild} only.
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-page-break`](https://www.npmjs.com/package/@ckeditor/ckeditor5-page-break) package:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
-```plaintext
-npm install --save @ckeditor/ckeditor5-page-break
-```
-
-And add it to your plugin list configuration:
-
+<code-switcher>
 ```js
-import { PageBreak } from '@ckeditor/ckeditor5-page-break';
+import { ClassicEditor, PageBreak } from 'ckeditor5';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ PageBreak, /* ... */ ],
 		toolbar: [ 'pageBreak', /* ... */ ],
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
-</info-box>
+</code-switcher>
 
 ## Related features
 

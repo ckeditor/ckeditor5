@@ -26,8 +26,10 @@ See the {@link features/images-overview image feature guide} and the documentati
 
 ## Installation
 
+This package is part of our open-source aggregate package.
+
 ```bash
-npm install --save @ckeditor/ckeditor5-image
+npm install ckeditor5
 ```
 
 ## Contribute

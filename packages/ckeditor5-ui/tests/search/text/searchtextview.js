@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals document */
@@ -531,6 +531,16 @@ describe( 'SearchTextView', () => {
 			view.reset();
 
 			sinon.assert.calledOnceWithExactly( spy, '' );
+		} );
+
+		it( 'resets the list scroll', () => {
+			const list = view.filteredView;
+			const spy = sinon.spy( list.element, 'scrollTo' );
+
+			view.reset();
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWith( spy, 0, 0 );
 		} );
 	} );
 

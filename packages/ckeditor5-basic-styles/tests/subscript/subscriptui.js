@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals document */
@@ -37,21 +37,20 @@ describe( 'SubscriptUI', () => {
 		return editor.destroy();
 	} );
 
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( SubscriptUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( SubscriptUI.isPremiumPlugin ).to.be.false;
+	} );
+
 	describe( 'toolbar button', () => {
 		beforeEach( () => {
 			subView = editor.ui.componentFactory.create( 'subscript' );
 		} );
 
 		testButton();
-
-		it( 'should bind `isOn` to subscript command', () => {
-			const command = editor.commands.get( 'subscript' );
-
-			expect( subView.isOn ).to.be.false;
-
-			command.value = true;
-			expect( subView.isOn ).to.be.true;
-		} );
 	} );
 
 	describe( 'menu bar button', () => {
@@ -60,6 +59,20 @@ describe( 'SubscriptUI', () => {
 		} );
 
 		testButton();
+
+		it( 'should create button with `menuitemcheckbox` role', () => {
+			expect( subView.role ).to.equal( 'menuitemcheckbox' );
+		} );
+
+		it( 'should bind `isOn` to `aria-checked` attribute', () => {
+			subView.render();
+
+			subView.isOn = true;
+			expect( subView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'true' );
+
+			subView.isOn = false;
+			expect( subView.element.getAttribute( 'aria-checked' ) ).to.be.equal( 'false' );
+		} );
 	} );
 
 	function testButton() {
@@ -87,6 +100,18 @@ describe( 'SubscriptUI', () => {
 
 			command.isEnabled = false;
 			expect( subView.isEnabled ).to.be.false;
+		} );
+
+		it( 'should bind `isOn` to `command`.`value`', () => {
+			const command = editor.commands.get( 'subscript' );
+
+			command.value = true;
+
+			expect( subView.isOn ).to.be.true;
+
+			command.value = false;
+
+			expect( subView.isOn ).to.be.false;
 		} );
 	}
 } );

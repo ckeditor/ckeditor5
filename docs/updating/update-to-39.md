@@ -8,7 +8,7 @@ order: 85
 # Update to CKEditor&nbsp;5 v39.x
 
 <info-box>
-	When updating your CKEditor&nbsp;5 installation, make sure **all the packages are the same version** to avoid errors.
+	When updating your CKEditor&nbsp;5 installation, ensure **all the packages are the same version** to avoid errors.
 
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
@@ -19,7 +19,7 @@ _Released on August 2, 2023._
 
 For the entire list of changes introduced in version 39.0.0, see the [release notes for CKEditor&nbsp;5 v39.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v39.0.0).
 
-Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v39.0.0.
+Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v39.0.0.
 
 ### Introduction of color pickers to table and table cell properties features
 
@@ -60,7 +60,7 @@ ClassicEditor
 The [`@ckeditor/ckeditor5-cbox`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ckbox) package now solely operates with the [CKBox](https://ckeditor.com/docs/ckbox/latest/index.html) library version `2.0.0` or higher. Ensure you have the following script tag set in your HTML to load the correct version:
 
 ```html
-<script src="https://cdn.ckbox.io/CKBox/2.0.0/ckbox.js"></script>
+<script src="https://cdn.ckbox.io/ckbox/2.0.0/ckbox.js"></script>
 ```
 
 #### On-premises CKBox backend adjustments

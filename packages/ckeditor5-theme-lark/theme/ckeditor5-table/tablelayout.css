@@ -1,0 +1,157 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+:root {
+	--ck-table-layout-widget-type-around-button-size: 16px;
+	--ck-table-layout-widget-type-around-icon-width: 10px;
+	--ck-table-layout-widget-type-around-icon-height: 8px;
+	--ck-table-layout-widget-handler-icon-size: 10px;
+	--ck-table-layout-default-border-color: hsl(0, 0%, 83%);
+
+}
+
+.ck-editor__editable {
+	& .table.layout-table {
+		& > table {
+			width: 100%;
+			height: 100%;
+
+			/* Resetting `border-collapse` property to the user agent styles. */
+			border-collapse: revert;
+
+			/* The default table layout style in the editing view when the border is unset. */
+			&:not(
+			[style*="border:"],
+			[style*="border-top"],
+			[style*="border-bottom"],
+			[style*="border-left"],
+			[style*="border-right"],
+			[style*="border-width"],
+			[style*="border-style"],
+			[style*="border-color"]) {
+				border-color: transparent;
+				border-width: 0;
+				outline: none;
+			}
+		}
+
+		& > table > tbody > tr > td {
+			box-shadow: revert;
+			padding: revert;
+			min-width: 2em;
+			/* To make the caret visible. */
+			text-indent: 1px;
+
+			/* Resets the `min-width` style attribute that was added by the content table style. */
+			&[style^="width:"],
+			&[style*=" width:"],
+			&[style*=";width:"],
+			&[style*="'width:"] {
+				min-width: auto;
+			}
+
+			/* Remove the default background color from the focused table cell. */
+			&:focus {
+				background-color: transparent;
+			}
+
+			/* The default table layout cell style in the editing view when the border is unset.
+			But it need to be more strict cause of style attributes like `border-collapse`, `border-spacing`, etc. */
+			&:not(
+			[style*="border:"],
+			[style*="border-top"],
+			[style*="border-bottom"],
+			[style*="border-left"],
+			[style*="border-right"],
+			[style*="border-width"],
+			[style*="border-style"],
+			[style*="border-color"]) {
+				border-color: transparent;
+				/* Resetting `border-width` property to the user agent styles. */
+				border-width: 0;
+				outline: var(--ck-table-layout-default-border-color) 1px dashed;
+				outline-offset: -1px;
+
+				&:focus {
+					outline: var(--ck-color-focus-border) 1px solid;
+				}
+			}
+
+			/* Reset the `width` and `text-indent` of the bogus paragraph because <td> has 1px text indent. */
+			& > .ck-table-bogus-paragraph {
+				width: calc(100% - 1px);
+				text-indent: 0;
+			}
+		}
+
+		/* Widget type around overrides. */
+		&.ck-widget {
+			& > .ck-widget__type-around {
+				--ck-widget-type-around-button-size: var(--ck-table-layout-widget-type-around-button-size);
+
+				& > .ck-widget__type-around__button {
+					&.ck-widget__type-around__button_before,
+					&.ck-widget__type-around__button_after {
+						transform: translateY(0);
+						/* Same value as inline-image widget because it is after the inline-image in HTML structure */
+						z-index: 2;
+					}
+
+					&.ck-widget__type-around__button_before {
+						margin-left: var(--ck-table-layout-widget-type-around-button-size);
+						left: min(10%, 30px);
+						border-radius: 0 0 100px 100px;
+
+						&::after {
+							border-radius: 0 0 100px 100px;
+						}
+					}
+
+					&.ck-widget__type-around__button_after {
+						border-radius: 100px 100px 0 0;
+
+						&::after {
+							border-radius: 100px 100px 0 0;
+						}
+					}
+
+					& svg {
+						width: var(--ck-table-layout-widget-type-around-icon-width);
+						height: var(--ck-table-layout-widget-type-around-icon-height);
+					}
+				}
+			}
+
+			&.ck-widget_with-selection-handle {
+				& > .ck-widget__selection-handle {
+					--ck-widget-handler-icon-size: var(--ck-table-layout-widget-handler-icon-size);
+
+					transform: translateY(calc(0px - var(--ck-widget-outline-thickness)));
+					/* Value increased by 1 as in selected inline-image widget
+					because it is before the inline-image in HTML structure. */
+					z-index: 3;
+				}
+			}
+
+			/* Show fake caret on border not above. */
+			&.ck-widget_type-around_show-fake-caret_before {
+				& > .ck-widget__type-around {
+					& > .ck-widget__type-around__fake-caret {
+						top: 0;
+					}
+				}
+			}
+
+			/* Show fake caret on border not below. */
+			&.ck-widget_type-around_show-fake-caret_after {
+				& > .ck-widget__type-around {
+					& > .ck-widget__type-around__fake-caret {
+						bottom: 0;
+					}
+				}
+			}
+		}
+	}
+}

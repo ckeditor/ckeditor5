@@ -1,8 +1,9 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { IconFindReplace } from 'ckeditor5/src/icons.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
@@ -15,7 +16,6 @@ import MenuBarMenuListItemButtonView from '@ckeditor/ckeditor5-ui/src/menubar/me
 import DialogView from '@ckeditor/ckeditor5-ui/src/dialog/dialogview.js';
 import FindAndReplaceUI from '../src/findandreplaceui.js';
 import FindAndReplace from '../src/findandreplace.js';
-import loupeIcon from '../theme/icons/find-replace.svg';
 import FindAndReplaceFormView from '../src/ui/findandreplaceformview.js';
 
 /* global window */
@@ -27,6 +27,14 @@ describe( 'FindAndReplaceUI', () => {
 
 	it( 'should be named', () => {
 		expect( FindAndReplaceUI.pluginName ).to.equal( 'FindAndReplaceUI' );
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( FindAndReplaceUI.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( FindAndReplaceUI.isPremiumPlugin ).to.be.false;
 	} );
 
 	describe( 'init()', () => {
@@ -122,6 +130,10 @@ describe( 'FindAndReplaceUI', () => {
 					} );
 
 					testButton();
+
+					it( 'should have proper role set', () => {
+						expect( button.role ).to.be.equal( 'menuitemcheckbox' );
+					} );
 				} );
 
 				function testButton() {
@@ -137,6 +149,16 @@ describe( 'FindAndReplaceUI', () => {
 							button.fire( 'execute' );
 
 							sinon.assert.callOrder( disableCssTransitionsSpy, selectSpy, enableCssTransitionsSpy );
+						} );
+
+						it( 'should be bound to dialog id', () => {
+							dialogPlugin.id = 'findAndReplace';
+
+							expect( button.isOn ).to.be.true;
+
+							dialogPlugin.id = null;
+
+							expect( button.isOn ).to.be.false;
 						} );
 
 						it( 'the form should be reset', () => {
@@ -214,7 +236,7 @@ describe( 'FindAndReplaceUI', () => {
 					} );
 
 					it( 'should set an #icon of the #buttonView', () => {
-						expect( button.icon ).to.equal( loupeIcon );
+						expect( button.icon ).to.equal( IconFindReplace );
 					} );
 
 					it( 'should set a #label of the #buttonView', () => {
@@ -607,7 +629,7 @@ describe( 'FindAndReplaceUI', () => {
 
 				describe( 'button', () => {
 					it( 'should set an #icon of the #buttonView', () => {
-						expect( dropdown.buttonView.icon ).to.equal( loupeIcon );
+						expect( dropdown.buttonView.icon ).to.equal( IconFindReplace );
 					} );
 
 					it( 'should set a #label of the #buttonView', () => {

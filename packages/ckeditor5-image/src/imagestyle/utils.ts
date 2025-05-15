@@ -1,22 +1,24 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module image/imagestyle/utils
  */
 
-import { type Editor, icons, type PluginCollection } from 'ckeditor5/src/core.js';
 import { logWarning } from 'ckeditor5/src/utils.js';
+import {
+	IconObjectCenter,
+	IconObjectFullWidth,
+	IconObjectInline,
+	IconObjectInlineLeft,
+	IconObjectInlineRight,
+	IconObjectLeft,
+	IconObjectRight
+} from 'ckeditor5/src/icons.js';
+import type { Editor, PluginCollection } from 'ckeditor5/src/core.js';
 import type { ImageStyleConfig, ImageStyleDropdownDefinition, ImageStyleOptionDefinition } from '../imageconfig.js';
-
-const {
-	objectFullWidth,
-	objectInline,
-	objectLeft,	objectRight, objectCenter,
-	objectBlockLeft, objectBlockRight
-} = icons;
 
 /**
  * Default image style options provided by the plugin that can be referred in the {@link module:image/imageconfig~ImageConfig#styles}
@@ -42,7 +44,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'inline',
 			title: 'In line',
-			icon: objectInline,
+			icon: IconObjectInline,
 			modelElements: [ 'imageInline' ],
 			isDefault: true
 		};
@@ -53,7 +55,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'alignLeft',
 			title: 'Left aligned image',
-			icon: objectLeft,
+			icon: IconObjectInlineLeft,
 			modelElements: [ 'imageBlock', 'imageInline' ],
 			className: 'image-style-align-left'
 		};
@@ -64,7 +66,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'alignBlockLeft',
 			title: 'Left aligned image',
-			icon: objectBlockLeft,
+			icon: IconObjectLeft,
 			modelElements: [ 'imageBlock' ],
 			className: 'image-style-block-align-left'
 		};
@@ -75,7 +77,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'alignCenter',
 			title: 'Centered image',
-			icon: objectCenter,
+			icon: IconObjectCenter,
 			modelElements: [ 'imageBlock' ],
 			className: 'image-style-align-center'
 		};
@@ -86,7 +88,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'alignRight',
 			title: 'Right aligned image',
-			icon: objectRight,
+			icon: IconObjectInlineRight,
 			modelElements: [ 'imageBlock', 'imageInline' ],
 			className: 'image-style-align-right'
 		};
@@ -97,7 +99,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'alignBlockRight',
 			title: 'Right aligned image',
-			icon: objectBlockRight,
+			icon: IconObjectRight,
 			modelElements: [ 'imageBlock' ],
 			className: 'image-style-block-align-right'
 		};
@@ -108,7 +110,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'block',
 			title: 'Centered image',
-			icon: objectCenter,
+			icon: IconObjectCenter,
 			modelElements: [ 'imageBlock' ],
 			isDefault: true
 		};
@@ -119,7 +121,7 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
 		return {
 			name: 'side',
 			title: 'Side image',
-			icon: objectRight,
+			icon: IconObjectInlineRight,
 			modelElements: [ 'imageBlock' ],
 			className: 'image-style-side'
 		};
@@ -134,15 +136,15 @@ export const DEFAULT_OPTIONS: Record<string, ImageStyleOptionDefinition> = {
  *
  * There are 7 default icons available: `'full'`, `'left'`, `'inlineLeft'`, `'center'`, `'right'`, `'inlineRight'`, and `'inline'`.
  */
-export const DEFAULT_ICONS: Record<string, string> = {
-	full: objectFullWidth,
-	left: objectBlockLeft,
-	right: objectBlockRight,
-	center: objectCenter,
-	inlineLeft: objectLeft,
-	inlineRight: objectRight,
-	inline: objectInline
-};
+export const DEFAULT_ICONS: Record<string, string> = /* #__PURE__ */ ( () => ( {
+	full: IconObjectFullWidth,
+	left: IconObjectLeft,
+	right: IconObjectRight,
+	center: IconObjectCenter,
+	inlineLeft: IconObjectInlineLeft,
+	inlineRight: IconObjectInlineRight,
+	inline: IconObjectInline
+} ) )();
 
 /**
  * Default drop-downs provided by the plugin that can be referred in the {@link module:image/imageconfig~ImageConfig#toolbar}
@@ -310,8 +312,8 @@ function isValidOption(
 			 * are missing. Make sure these plugins are loaded in your editor to get this image style option working.
 			 *
 			 * @error image-style-missing-dependency
-			 * @param {String} [option] The name of the unsupported option.
-			 * @param {String} [missingPlugins] The names of the plugins one of which has to be loaded for the particular option.
+			 * @param {string} style The name of the unsupported option.
+			 * @param {Array.<string>} missingPlugins The names of the plugins one of which has to be loaded for the particular option.
 			 */
 			logWarning( 'image-style-missing-dependency', {
 				style: option,
@@ -354,8 +356,7 @@ function warnInvalidStyle( info: object ): void {
 	 * * {@link module:image/imageconfig~ImageStyleDropdownDefinition image style dropdown definition}
 	 *
 	 * @error image-style-configuration-definition-invalid
-	 * @param {String} [dropdown] The name of the invalid drop-down
-	 * @param {String} [style] The name of the invalid image style option
+	 * @param {object} info The information about the invalid definition.
 	 */
 	logWarning( 'image-style-configuration-definition-invalid', info );
 }

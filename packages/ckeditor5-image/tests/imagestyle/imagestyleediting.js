@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
@@ -37,12 +37,20 @@ describe( 'ImageStyleEditing', () => {
 			expect( ImageStyleEditing.pluginName ).to.equal( 'ImageStyleEditing' );
 		} );
 
+		it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+			expect( ImageStyleEditing.isOfficialPlugin ).to.be.true;
+		} );
+
+		it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+			expect( ImageStyleEditing.isPremiumPlugin ).to.be.false;
+		} );
+
 		it( 'requires ImageUtils ', () => {
 			expect( ImageStyleEditing.requires ).to.deep.equal( [ ImageUtils ] );
 		} );
 
-		afterEach( () => {
-			editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 	} );
 
@@ -87,7 +95,7 @@ describe( 'ImageStyleEditing', () => {
 						]
 					} );
 
-					editor.destroy();
+					await editor.destroy();
 				} );
 
 				it( 'should not set a default config if neither image editing plugins are loaded', async () => {
@@ -168,7 +176,7 @@ describe( 'ImageStyleEditing', () => {
 				plugins: [ ImageBlockEditing, ImageStyleEditing ]
 			} );
 
-			sinon.assert.calledOnceWithMatch( normalizationSpy, {
+			expect( normalizationSpy.firstCall.args[ 0 ] ).to.deep.equal( {
 				configuredStyles: editor.config.get( 'image.styles' ),
 				isBlockPluginLoaded: editor.plugins.has( 'ImageBlockEditing' ),
 				isInlinePluginLoaded: editor.plugins.has( 'ImageInlineEditing' )
@@ -201,7 +209,7 @@ describe( 'ImageStyleEditing', () => {
 
 			expect( editor.commands.get( 'imageStyle' ) ).to.be.instanceOf( ImageStyleCommand );
 
-			editor.destroy();
+			await editor.destroy();
 		} );
 	} );
 
@@ -225,8 +233,8 @@ describe( 'ImageStyleEditing', () => {
 			document = model.document;
 		} );
 
-		afterEach( () => {
-			editor.destroy();
+		afterEach( async () => {
+			await editor.destroy();
 		} );
 
 		it( 'should remove imageStyle attribute with invalid value', () => {

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -10,36 +10,43 @@
 import DropdownPanelView from './dropdownpanelview.js';
 import DropdownView from './dropdownview.js';
 import DropdownButtonView from './button/dropdownbuttonview.js';
+import DropdownMenuRootListView from './menu/dropdownmenurootlistview.js';
 import ToolbarView from '../toolbar/toolbarview.js';
 import ListView from '../list/listview.js';
 import ListItemView from '../list/listitemview.js';
 import ListSeparatorView from '../list/listseparatorview.js';
-import ButtonView from '../button/buttonview.js';
 import SplitButtonView from './button/splitbuttonview.js';
 import SwitchButtonView from '../button/switchbuttonview.js';
 import ViewCollection from '../viewcollection.js';
 
 import clickOutsideHandler from '../bindings/clickoutsidehandler.js';
 
-import type { default as View, UIViewRenderEvent } from '../view.js';
+import type { default as View } from '../view.js';
 import type { ButtonExecuteEvent } from '../button/button.js';
 import type Model from '../model.js';
 import type DropdownButton from './button/dropdownbutton.js';
+import type ButtonView from '../button/buttonview.js';
 import type { FocusableView } from '../focuscycler.js';
 import type { FalsyValue } from '../template.js';
+import type BodyCollection from '../editorui/bodycollection.js';
 
 import {
 	global,
 	priorities,
 	logWarning,
+	type FocusTracker,
 	type Collection,
 	type Locale,
-	type ObservableChangeEvent
+	type ObservableChangeEvent,
+	type CollectionChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/dropdown/toolbardropdown.css';
 import '../../theme/components/dropdown/listdropdown.css';
+
 import ListItemGroupView from '../list/listitemgroupview.js';
+import ListItemButtonView from '../button/listitembuttonview.js';
+import type { DropdownMenuDefinition } from './menu/utils.js';
 
 /**
  * A helper for creating dropdowns. It creates an instance of a {@link module:ui/dropdown/dropdownview~DropdownView dropdown},
@@ -127,9 +134,108 @@ export function createDropdown(
 		buttonView.bind( 'isOn' ).to( dropdownView, 'isOpen' );
 	}
 
-	addDefaultBehavior( dropdownView );
+	addDefaultBehaviors( dropdownView );
 
 	return dropdownView;
+}
+
+/**
+ * Adds a menu UI component to a dropdown and sets all common behaviors and interactions between the dropdown and the menu.
+ *
+ * Use this helper to create multi-level dropdown menus that are displayed in a toolbar.
+ *
+ * Internally, it creates an instance of {@link module:ui/dropdown/menu/dropdownmenurootlistview~DropdownMenuRootListView}.
+ *
+ * Example:
+ *
+ * ```ts
+ * const definitions = [
+ * 	{
+ * 		id: 'menu_1',
+ * 		menu: 'Menu 1',
+ * 		children: [
+ * 			{
+ * 				id: 'menu_1_a',
+ * 				label: 'Item A'
+ * 			},
+ * 			{
+ * 				id: 'menu_1_b',
+ * 				label: 'Item B'
+ * 			}
+ * 		]
+ * 	},
+ * 	{
+ * 		id: 'top_a',
+ * 		label: 'Top Item A'
+ * 	},
+ * 	{
+ * 		id: 'top_b',
+ * 		label: 'Top Item B'
+ * 	}
+ * ];
+ *
+ * const dropdownView = createDropdown( editor.locale );
+ *
+ * addMenuToDropdown( dropdownView, editor.ui.view.body, definitions );
+ * ```
+ *
+ * After using this helper, the `dropdown` will fire {@link module:ui/dropdown/dropdownview~DropdownViewEvent `execute`} event when
+ * a nested menu button is pressed.
+ *
+ * The helper will make sure that the `dropdownMenuRootListView` is lazy loaded, i.e., the menu component structure will be initialized
+ * and rendered only after the `dropdown` is opened for the first time.
+ *
+ * @param dropdownView A dropdown instance to which the menu component will be added.
+ * @param body Body collection to which floating menu panels will be added.
+ * @param definition The menu component definition.
+ * @param options.ariaLabel Label used by assistive technologies to describe the top-level menu.
+ */
+export function addMenuToDropdown(
+	dropdownView: DropdownView,
+	body: BodyCollection,
+	definition: DropdownMenuDefinition,
+	options: {
+		ariaLabel?: string;
+	} = {} ): void {
+	dropdownView.menuView = new DropdownMenuRootListView( dropdownView.locale!, body, definition );
+	dropdownView.focusTracker.add( dropdownView.menuView );
+
+	if ( dropdownView.isOpen ) {
+		addMenuToOpenDropdown( dropdownView, options );
+	} else {
+		// Load the UI elements only after the dropdown is opened for the first time - lazy loading.
+		dropdownView.once( 'change:isOpen', () => {
+			addMenuToOpenDropdown( dropdownView, options );
+		}, { priority: 'highest' } );
+	}
+}
+
+function addMenuToOpenDropdown(
+	dropdownView: DropdownView,
+	options: {
+		ariaLabel?: string;
+	}
+): void {
+	const dropdownMenuRootListView = dropdownView.menuView!;
+	const t = dropdownView.locale!.t;
+
+	dropdownMenuRootListView.delegate( 'menu:execute' ).to( dropdownView, 'execute' );
+	dropdownMenuRootListView.listenTo( dropdownView, 'change:isOpen', ( evt, name, isOpen ) => {
+		if ( !isOpen ) {
+			dropdownMenuRootListView.closeMenus();
+		}
+	}, { priority: 'low' } ); // Make sure this is fired after `focusDropdownButtonOnClose` behavior.
+
+	// When `dropdownMenuRootListView` is added as a `panelView` child, it becomes rendered (`panelView` is rendered at this point).
+	dropdownView.panelView.children.add( dropdownMenuRootListView );
+
+	// Nested menu panels are added to body collection, so they are not children of the `dropdownView` from DOM perspective.
+	// Add these panels to `dropdownView` focus tracker, so they are treated like part of the `dropdownView` for focus-related purposes.
+	for ( const menu of dropdownMenuRootListView.menus ) {
+		dropdownView.focusTracker.add( menu );
+	}
+
+	dropdownMenuRootListView.ariaLabel = options.ariaLabel || t( 'Dropdown menu' );
 }
 
 /**
@@ -255,6 +361,7 @@ function addToolbarToOpenDropdown(
 	}
 
 	dropdownView.panelView.children.add( toolbarView );
+	dropdownView.focusTracker.add( toolbarView );
 	toolbarView.items.delegate( 'execute' ).to( dropdownView );
 }
 
@@ -398,7 +505,7 @@ export function focusChildOnDropdownOpen(
 			 * experience.
 			 *
 			 * @error ui-dropdown-focus-child-on-open-child-missing-focus
-			 * @param {module:ui/view~View} view
+			 * @param {module:ui/view~View} view Child to focus.
 			 */
 			logWarning( 'ui-dropdown-focus-child-on-open-child-missing-focus', { view: childToFocus } );
 		}
@@ -411,7 +518,7 @@ export function focusChildOnDropdownOpen(
 /**
  * Add a set of default behaviors to dropdown view.
  */
-function addDefaultBehavior( dropdownView: DropdownView ) {
+function addDefaultBehaviors( dropdownView: DropdownView ) {
 	closeDropdownOnClickOutside( dropdownView );
 	closeDropdownOnExecute( dropdownView );
 	closeDropdownOnBlur( dropdownView );
@@ -424,19 +531,31 @@ function addDefaultBehavior( dropdownView: DropdownView ) {
  * Adds a behavior to a dropdownView that closes opened dropdown when user clicks outside the dropdown.
  */
 function closeDropdownOnClickOutside( dropdownView: DropdownView ) {
-	dropdownView.on<UIViewRenderEvent>( 'render', () => {
-		clickOutsideHandler( {
-			emitter: dropdownView,
-			activator: () => dropdownView.isOpen,
-			callback: () => {
-				dropdownView.isOpen = false;
-			},
-			contextElements: () => [
-				dropdownView.element!,
-				...( dropdownView.focusTracker._elements as Set<HTMLElement> )
-			]
-		} );
+	clickOutsideHandler( {
+		emitter: dropdownView,
+		activator: () => dropdownView.isRendered && dropdownView.isOpen,
+		callback: () => {
+			dropdownView.isOpen = false;
+		},
+		contextElements: () => [
+			dropdownView.element!,
+			// Include all elements connected to the dropdown's focus tracker, but exclude those that are direct children
+			// of DropdownView#element. They would be identified as descendants of #element anyway upon clicking and would
+			// not contribute to the logic.
+			...getFocusTrackerTreeElements( dropdownView.focusTracker ).filter( element => !dropdownView.element!.contains( element ) )
+		]
 	} );
+}
+
+/**
+ * Returns all DOM elements connected to a DropdownView's focus tracker, either directly (same DOM sub-tree)
+ * or indirectly (external views registered in the focus tracker).
+ */
+function getFocusTrackerTreeElements( focusTracker: FocusTracker ): Array<Element> {
+	return [
+		...focusTracker.elements,
+		...focusTracker.externalViews.flatMap( view => getFocusTrackerTreeElements( view.focusTracker ) )
+	];
 }
 
 /**
@@ -459,9 +578,11 @@ function closeDropdownOnExecute( dropdownView: DropdownView ) {
  */
 function closeDropdownOnBlur( dropdownView: DropdownView ) {
 	dropdownView.focusTracker.on<ObservableChangeEvent<boolean>>( 'change:isFocused', ( evt, name, isFocused ) => {
-		if ( dropdownView.isOpen && !isFocused ) {
-			dropdownView.isOpen = false;
+		if ( isFocused || !dropdownView.isOpen ) {
+			return;
 		}
+
+		dropdownView.isOpen = false;
 	} );
 }
 
@@ -496,12 +617,12 @@ function focusDropdownButtonOnClose( dropdownView: DropdownView ) {
 			return;
 		}
 
-		const element = dropdownView.panelView.element;
+		const elements = dropdownView.focusTracker.elements;
 
 		// If the dropdown was closed, move the focus back to the button (#12125).
 		// Don't touch the focus, if it moved somewhere else (e.g. moved to the editing root on #execute) (#12178).
 		// Note: Don't use the state of the DropdownView#focusTracker here. It fires #blur with the timeout.
-		if ( element && element.contains( global.document.activeElement ) ) {
+		if ( elements.some( element => element.contains( global.document.activeElement ) ) ) {
 			dropdownView.buttonView.focus();
 		}
 	} );
@@ -541,6 +662,8 @@ function bindViewCollectionItemsToDefinitions(
 	definitions: Collection<ListDropdownItemDefinition>,
 	locale: Locale
 ) {
+	bindDropdownToggleableButtonsAlignment( listItems );
+
 	listItems.bindTo( definitions ).using( def => {
 		if ( def.type === 'separator' ) {
 			return new ListSeparatorView( locale );
@@ -555,12 +678,16 @@ function bindViewCollectionItemsToDefinitions(
 
 			return groupView;
 		} else if ( def.type === 'button' || def.type === 'switchbutton' ) {
+			const isToggleable = def.model.role === 'menuitemcheckbox' || def.model.role === 'menuitemradio';
 			const listItemView = new ListItemView( locale );
-			let buttonView;
+
+			let buttonView: ButtonView;
 
 			if ( def.type === 'button' ) {
-				buttonView = new ButtonView( locale );
-				buttonView.bind( 'ariaChecked' ).to( buttonView, 'isOn' );
+				buttonView = new ListItemButtonView( locale );
+				buttonView.set( {
+					isToggleable
+				} );
 			} else {
 				buttonView = new SwitchButtonView( locale );
 			}
@@ -575,6 +702,117 @@ function bindViewCollectionItemsToDefinitions(
 		}
 
 		return null;
+	} );
+}
+
+/**
+ * Sets up alignment handling for toggleable buttons in a dropdown list.
+ *
+ * Buttons in dropdowns have reserved space for a check icon when they are toggleable.
+ * When at least one button in the list is toggleable, all other buttons (even non-toggleable ones)
+ * will have space on their left side to align with toggleable buttons.
+ *
+ * This function handles a special case where a new toggleable button is added (or removed) to a list
+ * where previous buttons weren't toggleable. In that case, those previous buttons will
+ * automatically allocate space to align with the new toggleable button.
+ *
+ * Example:
+ * ```
+ * Before adding toggleable button:
+ * +----------------+
+ * | Normal Button  |
+ * +----------------+
+ * | Another Button |
+ * +----------------+
+ *
+ * After adding toggleable button:
+ * +-------------------+
+ * |    Normal Button  |
+ * +-------------------+
+ * |    Another Button |
+ * +-------------------+
+ * | ✓ Toggle Button   |
+ * +-------------------+
+ * ```
+ *
+ * @param listItems Collection of list items to observe for toggleable buttons.
+ */
+function bindDropdownToggleableButtonsAlignment( listItems: ViewCollection ) {
+	// Keep track of how many toggleable buttons are in the list.
+	let toggleableButtonsCount = 0;
+
+	// Helper function that checks if a view item is a list item button.
+	const pickListItemButtonIfPresent = ( item: View<HTMLElement> ) => {
+		// Check if the item is a ListItemView with a ListItemButtonView as its first child.
+		if ( !( item instanceof ListItemView ) || !( item.children.first instanceof ListItemButtonView ) ) {
+			return null;
+		}
+
+		return item.children.first;
+	};
+
+	// Helper function that checks if a view item is a toggleable button.
+	// Returns the button if it's toggleable - otherwise, returns null.
+	const pickListItemToggleableButtonIfPresent = ( item: View<HTMLElement> ) => {
+		const listItemButtonView = pickListItemButtonIfPresent( item );
+
+		// Only return buttons that are configured as toggleable.
+		if ( !listItemButtonView || !listItemButtonView.isToggleable ) {
+			return null;
+		}
+
+		return listItemButtonView;
+	};
+
+	// Updates all buttons in the list to either allocate space for check marks or not.
+	// This ensures all buttons are properly aligned regardless of their toggleable state.
+	const updateAllButtonsCheckSpace = ( hasSpace: boolean ): void => {
+		for ( const listItem of listItems ) {
+			const listItemButton = pickListItemButtonIfPresent( listItem );
+
+			if ( listItemButton ) {
+				listItemButton.hasCheckSpace = hasSpace;
+			}
+		}
+	};
+
+	// Listen for changes in the list items collection.
+	listItems.on<CollectionChangeEvent<FocusableView>>( 'change', ( evt, data ) => {
+		// Remember the current state - whether we have any toggleable buttons.
+		const prevToggleable = toggleableButtonsCount > 0;
+
+		// Process removed items - decrease count for each toggleable button removed.
+		for ( const item of data.removed ) {
+			if ( pickListItemToggleableButtonIfPresent( item ) ) {
+				toggleableButtonsCount--;
+			}
+		}
+
+		// Process added items - increase count for each toggleable button added.
+		for ( const item of data.added ) {
+			const button = pickListItemButtonIfPresent( item );
+
+			if ( !button ) {
+				continue;
+			}
+
+			if ( button.isToggleable ) {
+				// Check if the button is toggleable and increase the count.
+				toggleableButtonsCount++;
+			}
+
+			// Depending on the current state, set the check space for the button.
+			button.hasCheckSpace = toggleableButtonsCount > 0;
+		}
+
+		// Check if the current state has changed.
+		const currentToggleable = toggleableButtonsCount > 0;
+
+		// Only update button alignment if we've crossed the threshold between
+		// having no toggleable buttons and having at least one.
+		if ( prevToggleable !== currentToggleable ) {
+			updateAllButtonsCheckSpace( currentToggleable );
+		}
 	} );
 }
 

@@ -1,13 +1,17 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+import { global } from '@ckeditor/ckeditor5-utils';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import UnlinkCommand from '../src/unlinkcommand.js';
 import LinkEditing from '../src/linkediting.js';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import LinkImageEditing from '../src/linkimageediting.js';
+import Image from '@ckeditor/ckeditor5-image/src/image.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 describe( 'UnlinkCommand', () => {
 	let editor, model, document, command;
@@ -429,8 +433,8 @@ describe( 'UnlinkCommand', () => {
 	} );
 
 	describe( 'manual decorators', () => {
-		beforeEach( () => {
-			editor.destroy();
+		beforeEach( async () => {
+			await editor.destroy();
 			return ModelTestEditor.create( {
 				extraPlugins: [ LinkEditing ],
 				link: {
@@ -506,6 +510,45 @@ describe( 'UnlinkCommand', () => {
 			command.execute();
 
 			expect( getData( model ) ).to.equal( '<paragraph>[<linkableInline></linkableInline>]</paragraph>' );
+		} );
+	} );
+
+	describe( '`Image` plugin integration', () => {
+		let editorElement;
+
+		beforeEach( async () => {
+			await editor.destroy();
+
+			editorElement = global.document.body.appendChild(
+				global.document.createElement( 'div' )
+			);
+
+			return ClassicTestEditor.create( editorElement, {
+				extraPlugins: [ LinkEditing, LinkImageEditing, Image ],
+				link: {
+					addTargetToExternalLinks: true
+				}
+			} )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					document = model.document;
+				} );
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+			editorElement.remove();
+		} );
+
+		it( 'should not crash during removal of external `linkHref` from `imageBlock` when `Image` plugin is present', () => {
+			setData( model, '[<imageBlock linkHref="url"></imageBlock>]' );
+
+			expect( () => {
+				editor.execute( 'unlink' );
+			} ).not.to.throw();
+
+			expect( getData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
 		} );
 	} );
 } );

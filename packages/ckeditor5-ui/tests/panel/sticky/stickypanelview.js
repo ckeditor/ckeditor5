@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, Event */
+/* globals visualViewport, document, Event */
 
 import { Rect, global } from '@ckeditor/ckeditor5-utils';
 import StickyPanelView from '../../../src/panel/sticky/stickypanelview.js';
@@ -11,6 +11,7 @@ import View from '../../../src/view.js';
 import LabelView from '../../../src/label/labelview.js';
 import ViewCollection from '../../../src/viewcollection.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
 
 describe( 'StickyPanelView', () => {
 	let view, element, contentPanelElement, placeholderElement, limiterElement, locale;
@@ -216,6 +217,28 @@ describe( 'StickyPanelView', () => {
 			expect( spy.calledTwice ).to.be.true;
 		} );
 
+		it( 'listens to visualViewport#scroll event and calls view.checkIfShouldBeSticky()', () => {
+			const spy = testUtils.sinon.spy( view, 'checkIfShouldBeSticky' );
+			expect( spy.notCalled ).to.be.true;
+
+			view.render();
+			expect( spy.calledOnce ).to.be.true;
+
+			global.window.visualViewport.dispatchEvent( new Event( 'scroll' ) );
+			expect( spy.calledTwice ).to.be.true;
+		} );
+
+		it( 'listens to visualViewport#resize event and calls view.checkIfShouldBeSticky()', () => {
+			const spy = testUtils.sinon.spy( view, 'checkIfShouldBeSticky' );
+			expect( spy.notCalled ).to.be.true;
+
+			view.render();
+			expect( spy.calledOnce ).to.be.true;
+
+			global.window.visualViewport.dispatchEvent( new Event( 'resize' ) );
+			expect( spy.calledTwice ).to.be.true;
+		} );
+
 		it( 'listens to view.isActive and calls view.checkIfShouldBeSticky()', () => {
 			const spy = testUtils.sinon.spy( view, 'checkIfShouldBeSticky' );
 			expect( spy.notCalled ).to.be.true;
@@ -250,6 +273,10 @@ describe( 'StickyPanelView', () => {
 	describe( 'checkIfShouldBeSticky()', () => {
 		beforeEach( () => {
 			view.limiterElement = limiterElement;
+
+			// Set visual viewport offsets - those should be ignored on non iOS and non Safari.
+			sinon.stub( visualViewport, 'offsetLeft' ).get( () => 15 );
+			sinon.stub( visualViewport, 'offsetTop' ).get( () => 25 );
 		} );
 
 		it( 'should unstick the panel if limiter element is not set', () => {
@@ -394,14 +421,512 @@ describe( 'StickyPanelView', () => {
 		} );
 
 		describe( 'after scrolling', () => {
-			it( 'should do nothing if scrolled element does not contain the panel', () => {
-				view.isActive = true;
+			describe( 'if there is only window scrollable', () => {
+				beforeEach( () => {
+					view.isActive = true;
+				} );
 
-				const separateElement = document.createElement( 'div' );
+				it( 'should make panel sticky to the top if the limiter top is not visible', () => {
+					const stickToTopSpy = testUtils.sinon.spy( view, '_stickToTopOfAncestors' );
 
-				view.checkIfShouldBeSticky( separateElement );
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: -10,
+						bottom: 190,
+						height: 200,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
 
-				expect( view.isSticky ).to.be.false;
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+						height: 20
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					sinon.assert.calledOnce( stickToTopSpy );
+					assureStickiness( {
+						isSticky: true,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: 0,
+						_stickyBottomOffset: null,
+						_marginLeft: '0px'
+					} );
+				} );
+
+				it( 'should make panel sticky to the bottom if there is enough space left', () => {
+					const stickToBottomSpy = testUtils.sinon.spy( view, '_stickToBottomOfLimiter' );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: -140,
+						bottom: 60,
+						height: 200,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+						height: 20
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					expect( view.isSticky ).to.be.true;
+					expect( view._isStickyToTheBottomOfLimiter ).to.be.true;
+
+					sinon.assert.calledOnce( stickToBottomSpy );
+					assureStickiness( {
+						isSticky: true,
+						_isStickyToTheBottomOfLimiter: true,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: 50,
+						_marginLeft: '0px'
+					} );
+				} );
+
+				it( 'should unstick the panel if the limiter top is still visible', () => {
+					const stickToBottomSpy = testUtils.sinon.spy( view, '_stickToBottomOfLimiter' );
+					const stickToTopSpy = testUtils.sinon.spy( view, '_stickToTopOfAncestors' );
+					const unstickSpy = testUtils.sinon.spy( view, '_unstick' );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: 20,
+						bottom: 220,
+						height: 200,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+						height: 20
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					sinon.assert.notCalled( stickToBottomSpy );
+					sinon.assert.notCalled( stickToTopSpy );
+					sinon.assert.calledOnce( unstickSpy );
+					assureStickiness( {
+						isSticky: false,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: null,
+						_marginLeft: null
+					} );
+				} );
+
+				it( 'should unstick the panel if there is not enough space left in the limiter', () => {
+					const spy = sinon.spy( view, '_unstick' );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: -152,
+						bottom: 48,
+						height: 200,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+						height: 150
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					sinon.assert.calledOnce( spy );
+					assureStickiness( {
+						isSticky: false,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: null,
+						_marginLeft: null
+					} );
+				} );
+
+				it( 'should unstick the panel if panel limiter is not visible in the viewport', () => {
+					const spy = sinon.spy( view, '_unstick' );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: -210,
+						bottom: -10,
+						height: 200,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+						height: 20
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					sinon.assert.calledOnce( spy );
+					assureStickiness( {
+						isSticky: false,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: null,
+						_marginLeft: null
+					} );
+				} );
+
+				it( 'should avoid flickering after stickiness change', () => {
+					const unstickSpy = testUtils.sinon.spy( view, '_unstick' );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: -2,
+						bottom: 69,
+						height: 71,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					const panelRectStub = testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' );
+
+					panelRectStub.returns( {
+						height: 20
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					sinon.assert.calledOnce( unstickSpy );
+					assureStickiness( {
+						isSticky: false,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: null,
+						_marginLeft: null
+					} );
+
+					// Sticky style adds bottom border so the height of the panel is 1px bigger.
+					panelRectStub.returns( {
+						height: 21
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					sinon.assert.calledTwice( unstickSpy );
+					assureStickiness( {
+						isSticky: false,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: null,
+						_marginLeft: null
+					} );
+				} );
+			} );
+
+			describe( 'if there is window scrollable and visual viewport (iOS)', () => {
+				beforeEach( () => {
+					sinon.stub( env, 'isiOS' ).get( () => true );
+					view.isActive = true;
+				} );
+
+				it( 'should make panel sticky to the top if the limiter top is not visible', () => {
+					const stickToTopSpy = testUtils.sinon.spy( view, '_stickToTopOfAncestors' );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: -10,
+						bottom: 190,
+						height: 200,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+						height: 20
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					sinon.assert.calledOnce( stickToTopSpy );
+					assureStickiness( {
+						isSticky: true,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: 25,
+						_stickyBottomOffset: null,
+						_marginLeft: '15px'
+					} );
+				} );
+
+				it( 'should make panel sticky to the bottom if there is enough space left', () => {
+					const stickToBottomSpy = testUtils.sinon.spy( view, '_stickToBottomOfLimiter' );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: -140,
+						bottom: 60,
+						height: 200,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+						height: 20
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					expect( view.isSticky ).to.be.true;
+					expect( view._isStickyToTheBottomOfLimiter ).to.be.true;
+
+					sinon.assert.calledOnce( stickToBottomSpy );
+					assureStickiness( {
+						isSticky: true,
+						_isStickyToTheBottomOfLimiter: true,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: 50,
+						_marginLeft: '15px'
+					} );
+				} );
+
+				it( 'should unstick the panel if the limiter top is still visible', () => {
+					const stickToBottomSpy = testUtils.sinon.spy( view, '_stickToBottomOfLimiter' );
+					const stickToTopSpy = testUtils.sinon.spy( view, '_stickToTopOfAncestors' );
+					const unstickSpy = testUtils.sinon.spy( view, '_unstick' );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: 20,
+						bottom: 220,
+						height: 200,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+						height: 20
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					sinon.assert.notCalled( stickToBottomSpy );
+					sinon.assert.notCalled( stickToTopSpy );
+					sinon.assert.calledOnce( unstickSpy );
+					assureStickiness( {
+						isSticky: false,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: null,
+						_marginLeft: null
+					} );
+				} );
+
+				it( 'should unstick the panel if there is not enough space left in the limiter', () => {
+					const spy = sinon.spy( view, '_unstick' );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: -152,
+						bottom: 48,
+						height: 200,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+						height: 150
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					sinon.assert.calledOnce( spy );
+					assureStickiness( {
+						isSticky: false,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: null,
+						_marginLeft: null
+					} );
+				} );
+
+				it( 'should unstick the panel if panel limiter is not visible in the viewport', () => {
+					const spy = sinon.spy( view, '_unstick' );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: -210,
+						bottom: -10,
+						height: 200,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+						height: 20
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					sinon.assert.calledOnce( spy );
+					assureStickiness( {
+						isSticky: false,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: null,
+						_marginLeft: null
+					} );
+				} );
+			} );
+
+			describe( 'if there is window scrollable and visual viewport and viewport top offset (iOS)', () => {
+				beforeEach( () => {
+					sinon.stub( env, 'isiOS' ).get( () => true );
+					view.viewportTopOffset = 5;
+					view.isActive = true;
+				} );
+
+				it( 'should make panel sticky to the top if the limiter top is not visible', () => {
+					const stickToTopSpy = testUtils.sinon.spy( view, '_stickToTopOfAncestors' );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: -10,
+						bottom: 190,
+						height: 200,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+						height: 20
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					sinon.assert.calledOnce( stickToTopSpy );
+					assureStickiness( {
+						isSticky: true,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: 30,
+						_stickyBottomOffset: null,
+						_marginLeft: '15px'
+					} );
+				} );
+
+				it( 'should make panel sticky to the bottom if there is enough space left', () => {
+					const stickToBottomSpy = testUtils.sinon.spy( view, '_stickToBottomOfLimiter' );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: -140,
+						bottom: 60,
+						height: 200,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+						height: 20
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					expect( view.isSticky ).to.be.true;
+					expect( view._isStickyToTheBottomOfLimiter ).to.be.true;
+
+					sinon.assert.calledOnce( stickToBottomSpy );
+					assureStickiness( {
+						isSticky: true,
+						_isStickyToTheBottomOfLimiter: true,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: 50,
+						_marginLeft: '15px'
+					} );
+				} );
+
+				it( 'should unstick the panel if the limiter top is still visible', () => {
+					const stickToBottomSpy = testUtils.sinon.spy( view, '_stickToBottomOfLimiter' );
+					const stickToTopSpy = testUtils.sinon.spy( view, '_stickToTopOfAncestors' );
+					const unstickSpy = testUtils.sinon.spy( view, '_unstick' );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: 20,
+						bottom: 220,
+						height: 200,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+						height: 20
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					sinon.assert.notCalled( stickToBottomSpy );
+					sinon.assert.notCalled( stickToTopSpy );
+					sinon.assert.calledOnce( unstickSpy );
+					assureStickiness( {
+						isSticky: false,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: null,
+						_marginLeft: null
+					} );
+				} );
+
+				it( 'should unstick the panel if there is not enough space left in the limiter', () => {
+					const spy = sinon.spy( view, '_unstick' );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: -152,
+						bottom: 48,
+						height: 200,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+						height: 150
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					sinon.assert.calledOnce( spy );
+					assureStickiness( {
+						isSticky: false,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: null,
+						_marginLeft: null
+					} );
+				} );
+
+				it( 'should unstick the panel if panel limiter is not visible in the viewport', () => {
+					const spy = sinon.spy( view, '_unstick' );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: -210,
+						bottom: -10,
+						height: 200,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+						height: 20
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					sinon.assert.calledOnce( spy );
+					assureStickiness( {
+						isSticky: false,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: null,
+						_marginLeft: null
+					} );
+				} );
 			} );
 
 			describe( 'if there is one scrollable non-window parent', () => {
@@ -421,197 +946,195 @@ describe( 'StickyPanelView', () => {
 					scrollableContainer.remove();
 				} );
 
-				describe( 'scrolled the container', () => {
-					it( 'should make panel sticky to the top if the limiter top is not visible', () => {
-						const stickToTopSpy = testUtils.sinon.spy( view, '_stickToTopOfAncestors' );
+				it( 'should make panel sticky to the top if the limiter top is not visible', () => {
+					const stickToTopSpy = testUtils.sinon.spy( view, '_stickToTopOfAncestors' );
 
-						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
-							top: 40,
-							bottom: 140,
-							height: 100,
-							width: 100,
-							left: 0,
-							right: 100
-						} );
-
-						testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
-							top: 20,
-							bottom: 200,
-							height: 180,
-							width: 100,
-							left: 0,
-							right: 100
-						} );
-
-						testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
-							height: 20
-						} );
-
-						view.checkIfShouldBeSticky( scrollableContainer );
-
-						sinon.assert.calledOnce( stickToTopSpy );
-						assureStickiness( {
-							isSticky: true,
-							_isStickyToTheBottomOfLimiter: false,
-							_stickyTopOffset: 40,
-							_stickyBottomOffset: null,
-							_marginLeft: '0px'
-						} );
+					testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
+						top: 40,
+						bottom: 140,
+						height: 100,
+						width: 100,
+						left: 0,
+						right: 100
 					} );
 
-					it( 'should make panel sticky to the bottom if there is enough space left', () => {
-						const stickToBottomSpy = testUtils.sinon.spy( view, '_stickToBottomOfLimiter' );
-
-						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
-							top: 40,
-							bottom: 140,
-							height: 100,
-							width: 100,
-							left: 0,
-							right: 100
-						} );
-
-						testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
-							top: -80,
-							bottom: 60,
-							height: 140,
-							width: 100,
-							left: 0,
-							right: 100
-						} );
-
-						testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
-							height: 20
-						} );
-
-						view.checkIfShouldBeSticky( scrollableContainer );
-
-						expect( view.isSticky ).to.be.true;
-						expect( view._isStickyToTheBottomOfLimiter ).to.be.true;
-
-						sinon.assert.calledOnce( stickToBottomSpy );
-						assureStickiness( {
-							isSticky: true,
-							_isStickyToTheBottomOfLimiter: true,
-							_stickyTopOffset: null,
-							_stickyBottomOffset: 50,
-							_marginLeft: '0px'
-						} );
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: 20,
+						bottom: 200,
+						height: 180,
+						width: 100,
+						left: 0,
+						right: 100
 					} );
 
-					it( 'should unstick the panel if the limiter top is still visible', () => {
-						const stickToBottomSpy = testUtils.sinon.spy( view, '_stickToBottomOfLimiter' );
-						const stickToTopSpy = testUtils.sinon.spy( view, '_stickToTopOfAncestors' );
-						const unstickSpy = testUtils.sinon.spy( view, '_unstick' );
-
-						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
-							top: 20,
-							bottom: 140,
-							height: 120,
-							width: 100,
-							left: 0,
-							right: 100
-						} );
-
-						testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
-							top: 20,
-							bottom: 200,
-							height: 180,
-							width: 100,
-							left: 0,
-							right: 100
-						} );
-
-						testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
-							height: 20
-						} );
-
-						view.checkIfShouldBeSticky( scrollableContainer );
-
-						sinon.assert.notCalled( stickToBottomSpy );
-						sinon.assert.notCalled( stickToTopSpy );
-						sinon.assert.calledOnce( unstickSpy );
-						assureStickiness( {
-							isSticky: false,
-							_isStickyToTheBottomOfLimiter: false,
-							_stickyTopOffset: null,
-							_stickyBottomOffset: null,
-							_marginLeft: null
-						} );
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+						height: 20
 					} );
 
-					it( 'should unstick the panel if there is not enough space left in the limiter', () => {
-						const spy = sinon.spy( view, '_unstick' );
+					view.checkIfShouldBeSticky();
 
-						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
-							top: 40,
-							bottom: 140,
-							height: 100,
-							width: 100,
-							left: 0,
-							right: 100
-						} );
+					sinon.assert.calledOnce( stickToTopSpy );
+					assureStickiness( {
+						isSticky: true,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: 40,
+						_stickyBottomOffset: null,
+						_marginLeft: '0px'
+					} );
+				} );
 
-						testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
-							top: -80,
-							bottom: 60,
-							height: 140,
-							width: 100,
-							left: 0,
-							right: 100
-						} );
+				it( 'should make panel sticky to the bottom if there is enough space left', () => {
+					const stickToBottomSpy = testUtils.sinon.spy( view, '_stickToBottomOfLimiter' );
 
-						testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
-							height: 100
-						} );
-
-						view.checkIfShouldBeSticky( scrollableContainer );
-
-						sinon.assert.calledOnce( spy );
-						assureStickiness( {
-							isSticky: false,
-							_isStickyToTheBottomOfLimiter: false,
-							_stickyTopOffset: null,
-							_stickyBottomOffset: null,
-							_marginLeft: null
-						} );
+					testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
+						top: 40,
+						bottom: 140,
+						height: 100,
+						width: 100,
+						left: 0,
+						right: 100
 					} );
 
-					it( 'should unstick the panel if panel limiter is not visible in the viewport', () => {
-						const spy = sinon.spy( view, '_unstick' );
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: -80,
+						bottom: 60,
+						height: 140,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
 
-						testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
-							top: 120,
-							bottom: 140,
-							height: 100,
-							width: 100,
-							left: 0,
-							right: 100
-						} );
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+						height: 20
+					} );
 
-						testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
-							top: -80,
-							bottom: 60,
-							height: 140,
-							width: 100,
-							left: 0,
-							right: 100
-						} );
+					view.checkIfShouldBeSticky();
 
-						testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
-							height: 20
-						} );
+					expect( view.isSticky ).to.be.true;
+					expect( view._isStickyToTheBottomOfLimiter ).to.be.true;
 
-						view.checkIfShouldBeSticky( scrollableContainer );
+					sinon.assert.calledOnce( stickToBottomSpy );
+					assureStickiness( {
+						isSticky: true,
+						_isStickyToTheBottomOfLimiter: true,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: 50,
+						_marginLeft: '0px'
+					} );
+				} );
 
-						sinon.assert.calledOnce( spy );
-						assureStickiness( {
-							isSticky: false,
-							_isStickyToTheBottomOfLimiter: false,
-							_stickyTopOffset: null,
-							_stickyBottomOffset: null,
-							_marginLeft: null
-						} );
+				it( 'should unstick the panel if the limiter top is still visible', () => {
+					const stickToBottomSpy = testUtils.sinon.spy( view, '_stickToBottomOfLimiter' );
+					const stickToTopSpy = testUtils.sinon.spy( view, '_stickToTopOfAncestors' );
+					const unstickSpy = testUtils.sinon.spy( view, '_unstick' );
+
+					testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
+						top: 20,
+						bottom: 140,
+						height: 120,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: 20,
+						bottom: 200,
+						height: 180,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+						height: 20
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					sinon.assert.notCalled( stickToBottomSpy );
+					sinon.assert.notCalled( stickToTopSpy );
+					sinon.assert.calledOnce( unstickSpy );
+					assureStickiness( {
+						isSticky: false,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: null,
+						_marginLeft: null
+					} );
+				} );
+
+				it( 'should unstick the panel if there is not enough space left in the limiter', () => {
+					const spy = sinon.spy( view, '_unstick' );
+
+					testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
+						top: 40,
+						bottom: 140,
+						height: 100,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: -80,
+						bottom: 60,
+						height: 140,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+						height: 100
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					sinon.assert.calledOnce( spy );
+					assureStickiness( {
+						isSticky: false,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: null,
+						_marginLeft: null
+					} );
+				} );
+
+				it( 'should unstick the panel if panel limiter is not visible in the viewport', () => {
+					const spy = sinon.spy( view, '_unstick' );
+
+					testUtils.sinon.stub( scrollableContainer, 'getBoundingClientRect' ).returns( {
+						top: 120,
+						bottom: 140,
+						height: 100,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					testUtils.sinon.stub( limiterElement, 'getBoundingClientRect' ).returns( {
+						top: -80,
+						bottom: 60,
+						height: 140,
+						width: 100,
+						left: 0,
+						right: 100
+					} );
+
+					testUtils.sinon.stub( contentPanelElement, 'getBoundingClientRect' ).returns( {
+						height: 20
+					} );
+
+					view.checkIfShouldBeSticky();
+
+					sinon.assert.calledOnce( spy );
+					assureStickiness( {
+						isSticky: false,
+						_isStickyToTheBottomOfLimiter: false,
+						_stickyTopOffset: null,
+						_stickyBottomOffset: null,
+						_marginLeft: null
 					} );
 				} );
 			} );
@@ -674,7 +1197,7 @@ describe( 'StickyPanelView', () => {
 						height: 20
 					} );
 
-					view.checkIfShouldBeSticky( scrollableOuterParent );
+					view.checkIfShouldBeSticky();
 
 					sinon.assert.calledOnce( unstickSpy );
 					assureStickiness( {
@@ -720,7 +1243,7 @@ describe( 'StickyPanelView', () => {
 						height: 20
 					} );
 
-					view.checkIfShouldBeSticky( scrollableOuterParent );
+					view.checkIfShouldBeSticky();
 
 					sinon.assert.calledOnce( stickToTopSpy );
 					assureStickiness( {
@@ -766,7 +1289,7 @@ describe( 'StickyPanelView', () => {
 						height: 20
 					} );
 
-					view.checkIfShouldBeSticky( scrollableOuterParent );
+					view.checkIfShouldBeSticky();
 
 					sinon.assert.calledOnce( unstickSpy );
 					assureStickiness( {
@@ -812,7 +1335,7 @@ describe( 'StickyPanelView', () => {
 						height: 20
 					} );
 
-					view.checkIfShouldBeSticky( scrollableOuterParent );
+					view.checkIfShouldBeSticky();
 
 					sinon.assert.calledOnce( unstickSpy );
 					assureStickiness( {

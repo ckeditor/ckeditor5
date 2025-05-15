@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -121,14 +121,12 @@ export default class PluginCollection<TContext extends object>
 			 *
 			 * Plugin classes (constructors) need to be provided to the editor and must be loaded before they can be obtained from
 			 * the plugin collection.
-			 * This is usually done in CKEditor 5 builds by setting the {@link module:core/editor/editor~Editor.builtinPlugins}
-			 * property.
 			 *
 			 * **Note**: You can use `{@link module:core/plugincollection~PluginCollection#has editor.plugins.has()}`
 			 * to check if a plugin was loaded.
 			 *
 			 * @error plugincollection-plugin-not-loaded
-			 * @param plugin The name of the plugin which is not loaded.
+			 * @param {string} plugin The name of the plugin which is not loaded.
 			 */
 			throw new CKEditorError( 'plugincollection-plugin-not-loaded', this._context, { plugin: pluginName } );
 		}
@@ -345,8 +343,8 @@ export default class PluginCollection<TContext extends object>
 				 * {@glink updating/guides/update-to-26 Migration to 26.0.0} guide.
 				 *
 				 * @error plugincollection-soft-required
-				 * @param missingPlugin The name of the required plugin.
-				 * @param requiredBy The name of the plugin that requires the other plugin.
+				 * @param {string} missingPlugin The name of the required plugin.
+				 * @param {string} requiredBy The name of the plugin that requires the other plugin.
 				 */
 				throw new CKEditorError(
 					'plugincollection-soft-required',
@@ -359,23 +357,24 @@ export default class PluginCollection<TContext extends object>
 			 * A plugin is not available and could not be loaded.
 			 *
 			 * Plugin classes (constructors) need to be provided to the editor before they can be loaded by name.
-			 * This is usually done in CKEditor 5 builds by setting the {@link module:core/editor/editor~Editor.builtinPlugins}
-			 * property.
+			 * This is usually done in the now deprecated CKEditor 5 builds by setting
+			 * the {@link module:core/editor/editor~Editor.builtinPlugins} property.
 			 *
-			 * **If you see this warning when using one of the {@glink installation/getting-started/predefined-builds
-			 * CKEditor 5 Builds}**,
-			 * it means that you try to enable a plugin which was not included in that build. This may be due to a typo
-			 * in the plugin name or simply because that plugin is not a part of this build. In the latter scenario,
-			 * read more about {@glink installation/getting-started/quick-start custom builds}.
+			 * **If you see this warning when using one of the deprecated CKEditor 5 Builds**,
+			 * it means that you tried to enable a plugin that was not included in that build. This may be due to a typo
+			 * in the plugin name or simply because that plugin was not a part of this build.
+			 *
+			 * **Predefined builds are no longer supported and you need to
+			 * {@glink updating/nim-migration/migration-to-new-installation-methods migrate to new installation methods}**.
 			 *
 			 * **If you see this warning when using one of the editor creators directly** (not a build), then it means
 			 * that you tried loading plugins by name. However, unlike CKEditor 4, CKEditor 5 does not implement a "plugin loader".
 			 * This means that CKEditor 5 does not know where to load the plugin modules from. Therefore, you need to
-			 * provide each plugin through a reference (as a constructor function). Check out the examples in
-			 * {@glink installation/advanced/alternative-setups/integrating-from-source-webpack "Building from source"}.
+			 * provide each plugin through a reference (as a constructor function). Check out the examples in the
+			 * {@glink getting-started/installation/cloud/quick-start Quick start} guide.
 			 *
 			 * @error plugincollection-plugin-not-found
-			 * @param plugin The name of the plugin which could not be loaded.
+			 * @param {string} plugin The name of the plugin which could not be loaded.
 			 */
 			throw new CKEditorError(
 				'plugincollection-plugin-not-found',
@@ -405,8 +404,8 @@ export default class PluginCollection<TContext extends object>
 			 * editor API.
 			 *
 			 * @error plugincollection-context-required
-			 * @param plugin The name of the required plugin.
-			 * @param requiredBy The name of the parent plugin.
+			 * @param {string} plugin The name of the required plugin.
+			 * @param {string} requiredBy The name of the parent plugin.
 			 */
 			throw new CKEditorError(
 				'plugincollection-context-required',
@@ -431,8 +430,8 @@ export default class PluginCollection<TContext extends object>
 			 * Cannot load a plugin because one of its dependencies is listed in the `removePlugins` option.
 			 *
 			 * @error plugincollection-required
-			 * @param plugin The name of the required plugin.
-			 * @param requiredBy The name of the parent plugin.
+			 * @param {string} plugin The name of the required plugin.
+			 * @param {string} requiredBy The name of the parent plugin.
 			 */
 			throw new CKEditorError(
 				'plugincollection-required',
@@ -480,6 +479,7 @@ export default class PluginCollection<TContext extends object>
 					 * The plugin replacing an existing plugin must be a function.
 					 *
 					 * @error plugincollection-replace-plugin-invalid-type
+					 * @param {never} pluginItem The plugin item.
 					 */
 					throw new CKEditorError( 'plugincollection-replace-plugin-invalid-type', null, { pluginItem } );
 				}
@@ -491,6 +491,7 @@ export default class PluginCollection<TContext extends object>
 					 * The plugin replacing an existing plugin must have a name.
 					 *
 					 * @error plugincollection-replace-plugin-missing-name
+					 * @param {module:core/plugin~PluginConstructor} pluginItem The plugin item.
 					 */
 					throw new CKEditorError( 'plugincollection-replace-plugin-missing-name', null, { pluginItem } );
 				}
@@ -500,6 +501,7 @@ export default class PluginCollection<TContext extends object>
 					 * The plugin replacing an existing plugin cannot depend on other plugins.
 					 *
 					 * @error plugincollection-plugin-for-replacing-cannot-have-dependencies
+					 * @param {string} pluginName The name of the plugin.
 					 */
 					throw new CKEditorError( 'plugincollection-plugin-for-replacing-cannot-have-dependencies', null, { pluginName } );
 				}
@@ -512,6 +514,7 @@ export default class PluginCollection<TContext extends object>
 					 * {@link module:core/plugincollection~PluginCollection available plugins} collection.
 					 *
 					 * @error plugincollection-plugin-for-replacing-not-exist
+					 * @param {string} pluginName The name of the plugin.
 					 */
 					throw new CKEditorError( 'plugincollection-plugin-for-replacing-not-exist', null, { pluginName } );
 				}
@@ -530,6 +533,7 @@ export default class PluginCollection<TContext extends object>
 					 * The replaced plugin will not be loaded so it cannot be replaced.
 					 *
 					 * @error plugincollection-plugin-for-replacing-not-loaded
+					 * @param {string} pluginName The name of the plugin.
 					 */
 					throw new CKEditorError( 'plugincollection-plugin-for-replacing-not-loaded', null, { pluginName } );
 				}
@@ -539,6 +543,7 @@ export default class PluginCollection<TContext extends object>
 					 * The replaced plugin cannot depend on other plugins.
 					 *
 					 * @error plugincollection-replaced-plugin-cannot-have-dependencies
+					 * @param {string} pluginName The name of the plugin.
 					 */
 					throw new CKEditorError( 'plugincollection-replaced-plugin-cannot-have-dependencies', null, { pluginName } );
 				}
@@ -592,6 +597,9 @@ export default class PluginCollection<TContext extends object>
 			 * {@link module:core/editor/editor~Editor.create `Editor.create()`}
 			 * or specified in {@link module:core/editor/editor~Editor.builtinPlugins `Editor.builtinPlugins`}.
 			 *
+			 * Predefined builds are a deprecated solution and we strongly advise
+			 * {@glink updating/nim-migration/migration-to-new-installation-methods migrating to new installation methods}.
+			 *
 			 * The second option is that your `node_modules/` directory contains duplicated versions of the same
 			 * CKEditor 5 packages. Normally, on clean installations, npm deduplicates packages in `node_modules/`, so
 			 * it may be enough to call `rm -rf node_modules && npm i`. However, if you installed conflicting versions
@@ -603,12 +611,10 @@ export default class PluginCollection<TContext extends object>
 			 * They are already built into that editor build and now get added for the second time as dependencies
 			 * of the plugin you are installing.
 			 *
-			 * Read more about {@glink installation/plugins/installing-plugins Installing plugins}.
-			 *
 			 * @error plugincollection-plugin-name-conflict
-			 * @param pluginName The duplicated plugin name.
-			 * @param plugin1 The first plugin constructor.
-			 * @param plugin2 The second plugin constructor.
+			 * @param {string} pluginName The duplicated plugin name.
+			 * @param {module:core/plugin~PluginConstructor} plugin1 The first plugin constructor.
+			 * @param {module:core/plugin~PluginConstructor} plugin2 The second plugin constructor.
 			 */
 			throw new CKEditorError(
 				'plugincollection-plugin-name-conflict',

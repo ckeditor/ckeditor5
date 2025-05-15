@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals window, setTimeout */
@@ -44,6 +44,14 @@ describe( 'Base64UploadAdapter', () => {
 
 	it( 'should be named', () => {
 		expect( Base64UploadAdapter.pluginName ).to.equal( 'Base64UploadAdapter' );
+	} );
+
+	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
+		expect( Base64UploadAdapter.isOfficialPlugin ).to.be.true;
+	} );
+
+	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
+		expect( Base64UploadAdapter.isPremiumPlugin ).to.be.false;
 	} );
 
 	describe( 'init()', () => {

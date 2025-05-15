@@ -1,17 +1,20 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
  * @module image/imageupload/imageuploadui
  */
 
-import { Plugin, icons } from 'ckeditor5/src/core.js';
+import { Plugin } from 'ckeditor5/src/core.js';
 import {
 	FileDialogButtonView,
-	MenuBarMenuListItemFileDialogButtonView
+	MenuBarMenuListItemFileDialogButtonView,
+	type ButtonView,
+	type MenuBarMenuListItemButtonView
 } from 'ckeditor5/src/ui.js';
+import { IconImageUpload } from 'ckeditor5/src/icons.js';
 import { createImageTypeRegExp } from './utils.js';
 import type ImageInsertUI from '../imageinsert/imageinsertui.js';
 
@@ -22,6 +25,11 @@ import type ImageInsertUI from '../imageinsert/imageinsertui.js';
  *
  * Adds the `'uploadImage'` button to the {@link module:ui/componentfactory~ComponentFactory UI component factory}
  * and also the `imageUpload` button as an alias for backward compatibility.
+ *
+ * Adds the `'menuBar:uploadImage'` menu button to the {@link module:ui/componentfactory~ComponentFactory UI component factory}.
+ *
+ * It also integrates with the `insertImage` toolbar component and `menuBar:insertImage` menu component, which are the default components
+ * through which image upload is available.
  */
 export default class ImageUploadUI extends Plugin {
 	/**
@@ -34,72 +42,35 @@ export default class ImageUploadUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public init(): void {
 		const editor = this.editor;
-		const t = editor.t;
-
-		const toolbarComponentCreator = () => {
-			const button = this._createButton( FileDialogButtonView );
-
-			button.set( {
-				label: t( 'Upload image from computer' ),
-				tooltip: true
-			} );
-
-			return button;
-		};
 
 		// Setup `uploadImage` button and add `imageUpload` button as an alias for backward compatibility.
-		editor.ui.componentFactory.add( 'uploadImage', toolbarComponentCreator );
-		editor.ui.componentFactory.add( 'imageUpload', toolbarComponentCreator );
+		editor.ui.componentFactory.add( 'uploadImage', () => this._createToolbarButton() );
+		editor.ui.componentFactory.add( 'imageUpload', () => this._createToolbarButton() );
 
-		editor.ui.componentFactory.add( 'menuBar:uploadImage', () => {
-			const button = this._createButton( MenuBarMenuListItemFileDialogButtonView );
-
-			button.label = t( 'Image from computer' );
-
-			return button;
-		} );
+		editor.ui.componentFactory.add( 'menuBar:uploadImage', () => this._createMenuBarButton( 'standalone' ) );
 
 		if ( editor.plugins.has( 'ImageInsertUI' ) ) {
-			const imageInsertUI: ImageInsertUI = editor.plugins.get( 'ImageInsertUI' );
-
-			imageInsertUI.registerIntegration( {
+			editor.plugins.get( 'ImageInsertUI' ).registerIntegration( {
 				name: 'upload',
 				observable: () => editor.commands.get( 'uploadImage' )!,
-
-				buttonViewCreator: () => {
-					const uploadImageButton = editor.ui.componentFactory.create( 'uploadImage' ) as FileDialogButtonView;
-
-					uploadImageButton.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
-						t( 'Replace image from computer' ) :
-						t( 'Upload image from computer' )
-					);
-
-					return uploadImageButton;
-				},
-
-				formViewCreator: () => {
-					const uploadImageButton = editor.ui.componentFactory.create( 'uploadImage' ) as FileDialogButtonView;
-
-					uploadImageButton.withText = true;
-					uploadImageButton.bind( 'label' ).to( imageInsertUI, 'isImageSelected', isImageSelected => isImageSelected ?
-						t( 'Replace from computer' ) :
-						t( 'Upload from computer' )
-					);
-
-					uploadImageButton.on( 'execute', () => {
-						imageInsertUI.dropdownView!.isOpen = false;
-					} );
-
-					return uploadImageButton;
-				}
+				buttonViewCreator: () => this._createToolbarButton(),
+				formViewCreator: () => this._createDropdownButton(),
+				menuBarButtonViewCreator: isOnly => this._createMenuBarButton( isOnly ? 'insertOnly' : 'insertNested' )
 			} );
 		}
 	}
 
 	/**
-	 * Creates a button for image upload command to use either in toolbar or in menu bar.
+	 * Creates the base for various kinds of the button component provided by this feature.
 	 */
 	private _createButton<T extends typeof FileDialogButtonView | typeof MenuBarMenuListItemFileDialogButtonView>(
 		ButtonClass: T
@@ -116,8 +87,8 @@ export default class ImageUploadUI extends Plugin {
 		view.set( {
 			acceptedType: imageTypes.map( type => `image/${ type }` ).join( ',' ),
 			allowMultipleFiles: true,
-			label: t( 'Upload image from computer' ),
-			icon: icons.imageUpload
+			label: t( 'Upload from computer' ),
+			icon: IconImageUpload
 		} );
 
 		view.bind( 'isEnabled' ).to( command );
@@ -133,5 +104,81 @@ export default class ImageUploadUI extends Plugin {
 		} );
 
 		return view;
+	}
+
+	/**
+	 * Creates a simple toolbar button, with an icon and a tooltip.
+	 */
+	private _createToolbarButton(): ButtonView {
+		const t = this.editor.locale.t;
+		const imageInsertUI: ImageInsertUI = this.editor.plugins.get( 'ImageInsertUI' );
+		const uploadImageCommand = this.editor.commands.get( 'uploadImage' )!;
+
+		const button = this._createButton( FileDialogButtonView );
+
+		button.tooltip = true;
+		button.bind( 'label' ).to(
+			imageInsertUI,
+			'isImageSelected',
+			uploadImageCommand,
+			'isAccessAllowed',
+			( isImageSelected, isAccessAllowed ) => {
+				if ( !isAccessAllowed ) {
+					return t( 'You have no image upload permissions.' );
+				}
+
+				return isImageSelected ? t( 'Replace image from computer' ) : t( 'Upload image from computer' );
+			}
+		);
+
+		return button;
+	}
+
+	/**
+	 * Creates a button for the dropdown view, with an icon, text and no tooltip.
+	 */
+	private _createDropdownButton(): ButtonView {
+		const t = this.editor.locale.t;
+		const imageInsertUI: ImageInsertUI = this.editor.plugins.get( 'ImageInsertUI' );
+
+		const button = this._createButton( FileDialogButtonView );
+
+		button.withText = true;
+
+		button.bind( 'label' ).to(
+			imageInsertUI,
+			'isImageSelected',
+			isImageSelected => isImageSelected ? t( 'Replace from computer' ) : t( 'Upload from computer' )
+		);
+
+		button.on( 'execute', () => {
+			imageInsertUI.dropdownView!.isOpen = false;
+		} );
+
+		return button;
+	}
+
+	/**
+	 * Creates a button for the menu bar.
+	 */
+	private _createMenuBarButton( type: 'standalone' | 'insertOnly' | 'insertNested' ): MenuBarMenuListItemButtonView {
+		const t = this.editor.locale.t;
+		const button = this._createButton( MenuBarMenuListItemFileDialogButtonView );
+
+		button.withText = true;
+
+		switch ( type ) {
+			case 'standalone':
+				button.label = t( 'Image from computer' );
+				break;
+			case 'insertOnly':
+				button.label = t( 'Image' );
+				break;
+			case 'insertNested':
+				button.label = t( 'From computer' );
+				break;
+		}
+
+		return button;
 	}
 }

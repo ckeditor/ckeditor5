@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -67,7 +67,7 @@ import type ModelElement from '../model/element.js';
 
 import { toMap, type EventInfo } from '@ckeditor/ckeditor5-utils';
 
-import { isPlainObject } from 'lodash-es';
+import { isPlainObject } from 'es-toolkit/compat';
 
 /**
  * Writes the content of a model {@link module:engine/model/document~Document document} to an HTML-like string.
@@ -152,6 +152,7 @@ export function setData(
 		selectionAttributes?: Record<string, unknown>;
 		lastRangeBackward?: boolean;
 		batchType?: BatchType;
+		inlineObjectElements?: Array<string>;
 	} = {}
 ): void {
 	if ( !( model instanceof Model ) ) {
@@ -166,7 +167,8 @@ export function setData(
 	const parsedResult = setData._parse( data, model.schema, {
 		lastRangeBackward: options.lastRangeBackward,
 		selectionAttributes: options.selectionAttributes,
-		context: [ modelRoot.name ]
+		context: [ modelRoot.name ],
+		inlineObjectElements: options.inlineObjectElements
 	} );
 
 	// Retrieve DocumentFragment and Selection from parsed model.
@@ -369,6 +371,7 @@ export function parse(
 		selectionAttributes?: Record<string, unknown> | Iterable<[ string, unknown ]>;
 		lastRangeBackward?: boolean;
 		context?: SchemaContextDefinition;
+		inlineObjectElements?: Array<string>;
 	} = {}
 ): ModelNode | ModelDocumentFragment | {
 	model: ModelNode | ModelDocumentFragment;
@@ -382,7 +385,8 @@ export function parse(
 	// Parse data to view using view utils.
 	const parsedResult = viewParse( data, {
 		sameSelectionCharacters: true,
-		lastRangeBackward: !!options.lastRangeBackward
+		lastRangeBackward: !!options.lastRangeBackward,
+		inlineObjectElements: options.inlineObjectElements
 	} );
 
 	// Retrieve DocumentFragment and Selection from parsed view.

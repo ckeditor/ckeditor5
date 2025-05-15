@@ -1,0 +1,48 @@
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+#
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
+#
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language: km\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "Toolbar button tooltip for applying yellow marker (text highlight)."
+msgid "Yellow marker"
+msgstr ""
+
+msgctxt "Toolbar button tooltip for applying green marker (text highlight)."
+msgid "Green marker"
+msgstr ""
+
+msgctxt "Toolbar button tooltip for applying pink marker (text highlight)."
+msgid "Pink marker"
+msgstr ""
+
+msgctxt "Toolbar button tooltip for applying blue marker (text highlight)."
+msgid "Blue marker"
+msgstr ""
+
+msgctxt "Toolbar button tooltip for applying red pen (text color)."
+msgid "Red pen"
+msgstr ""
+
+msgctxt "Toolbar button tooltip for applying green pen (text color)."
+msgid "Green pen"
+msgstr ""
+
+msgctxt "Toolbar button tooltip for removing text highlight."
+msgid "Remove highlight"
+msgstr ""
+
+msgctxt "Toolbar button tooltip for the text highlight feature."
+msgid "Highlight"
+msgstr ""
+
+msgctxt "Label used by assistive technologies describing the highlight feature toolbar."
+msgid "Text highlight toolbar"
+msgstr ""

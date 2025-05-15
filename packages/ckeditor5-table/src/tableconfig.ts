@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -208,6 +208,17 @@ export interface TableConfig {
 	 * Read more about configuring the table feature in {@link module:table/tableconfig~TableConfig}.
 	 */
 	tableCellProperties?: TableCellPropertiesConfig;
+
+	/**
+	 * Configuration of the table layout feature.
+	 *
+	 * ```ts
+	 * const tableConfig = {
+	 * 	tableLayout: ... // Table layout feature config.
+	 * };
+	 * ```
+	 */
+	tableLayout?: TableLayoutConfig;
 }
 
 /**
@@ -372,3 +383,34 @@ export interface TableCellPropertiesOptions {
 	 */
 	verticalAlignment?: string;
 }
+
+/**
+ * The configuration of the table layout feature.
+ */
+export interface TableLayoutConfig {
+
+	/**
+	 * Sets the preferred type for loading external tables.
+	 *
+	 * This setting overrides the default detection method and uses the specified type ('content' or 'layout').
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( {
+	 * 		table: {
+	 * 			tableLayout: {
+	 * 				preferredExternalTableType: 'content' // or 'layout'
+	 * 			}
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 */
+	preferredExternalTableType: TableType;
+}
+
+/**
+ * The type of the table.
+ */
+export type TableType = 'content' | 'layout';

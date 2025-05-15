@@ -1,0 +1,42 @@
+/*
+ * Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
+ */
+
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
+
+.ck.ck-button.ck-list-item-button {
+	padding: var(--ck-spacing-tiny) calc(2 * var(--ck-spacing-standard));
+
+	&,
+	&.ck-on {
+		background: var(--ck-color-list-background);
+		color: var(--ck-color-text);
+	}
+
+	&:has(.ck-list-item-button__check-holder) {
+		@mixin ck-dir ltr {
+			padding-left: var(--ck-spacing-small);
+		}
+
+		@mixin ck-dir rtl {
+			padding-right: var(--ck-spacing-small);
+		}
+	}
+
+	/*
+	 * `.ck-on` class and background styling is overridden for `ck-button` in many places.
+	 * This is a workaround to make sure that the background is not overridden and uses similar
+	 * selector specificity as the other overrides.
+	 */
+	&:hover:not(.ck-disabled),
+	&.ck-button.ck-on:hover,
+	&.ck-on:not(.ck-list-item-button_toggleable),
+	&.ck-on:hover {
+		background: var(--ck-color-list-button-hover-background);
+
+		&:not(.ck-disabled) {
+			color: var(--ck-color-text);
+		}
+	}
+}

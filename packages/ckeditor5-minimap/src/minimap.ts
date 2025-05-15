@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -31,6 +31,13 @@ export default class Minimap extends Plugin {
 	 */
 	public static get pluginName() {
 		return 'Minimap' as const;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public static override get isOfficialPlugin(): true {
+		return true;
 	}
 
 	/**
@@ -190,6 +197,12 @@ export default class Minimap extends Plugin {
 		const editingRootRect = getDomElementRect( editingRootElement );
 		const scrollableRootAncestorRect = getDomElementRect( this._scrollableRootAncestor! );
 		let scrollProgress;
+
+		// It's possible that at some point elements do not intersect, e.g. when entering the fullscreen mode.
+		// Prevent the minimap from being updated in such case.
+		if ( !scrollableRootAncestorRect.getIntersection( editingRootRect ) ) {
+			return;
+		}
 
 		// @if CK_DEBUG_MINIMAP // RectDrawer.clear();
 		// @if CK_DEBUG_MINIMAP // RectDrawer.draw( scrollableRootAncestorRect, { outlineColor: 'red' }, 'scrollableRootAncestor' );

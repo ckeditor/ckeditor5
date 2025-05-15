@@ -9,7 +9,7 @@ modified_at: 2022-04-05
 # Update to CKEditor&nbsp;5 v34.x
 
 <info-box>
-	When updating your CKEditor&nbsp;5 installation, make sure **all the packages are the same version** to avoid errors.
+	When updating your CKEditor&nbsp;5 installation, ensure **all the packages are the same version** to avoid errors.
 
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
@@ -20,7 +20,7 @@ _Released on April 12, 2022._
 
 For the entire list of changes introduced in version 34.0.0, see the [release notes for CKEditor&nbsp;5 v34.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v34.0.0).
 
-Listed below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v34.0.0.
+Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v34.0.0.
 
 ### Collaboration Server On-Premises version must be at least 4.5.0
 
@@ -30,7 +30,7 @@ Listed below are the most important changes that require your attention when upg
 
 ### Additional dependencies in CKEditor&nbsp;5 Collaboration Features
 
-The {@link installation/advanced/dll-builds DLL builds} support was introduced for revision history. As a result, some imports, plugin requirements and cross-package dependencies have changed to allow for the new building process. From now on, additional plugins will be required, when certain CKEditor&nbsp;5 collaboration features are added to the editor.
+The {@link getting-started/advanced/dll-builds DLL builds} support was introduced for revision history. As a result, some imports, plugin requirements and cross-package dependencies have changed to allow for the new building process. From now on, additional plugins will be required, when certain CKEditor&nbsp;5 collaboration features are added to the editor.
 
 **{@link module:real-time-collaboration/realtimecollaborativerevisionhistory~RealTimeCollaborativeRevisionHistory}** will require adding {@link module:revision-history/revisionhistory~RevisionHistory} to the list of the editor plugins:
 

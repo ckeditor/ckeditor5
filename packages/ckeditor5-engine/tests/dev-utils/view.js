@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* globals document */
@@ -569,6 +569,13 @@ describe( 'view test utils', () => {
 
 			const parsed2 = parse( '<container:div view-id="bar"></container:div>' );
 			expect( parsed2.id ).to.be.undefined;
+		} );
+
+		it( 'should correctly parse whitespaces around custom inline object elements', () => {
+			const parsed = parse( '<p>Foo <inlineObj></inlineObj> bar</p>', { inlineObjectElements: [ 'inlineObj' ] } );
+
+			expect( parsed.getChild( 0 ).data ).to.equal( 'Foo ' );
+			expect( parsed.getChild( 2 ).data ).to.equal( ' bar' );
 		} );
 
 		it( 'should paste nested elements and texts', () => {

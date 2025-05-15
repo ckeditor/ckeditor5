@@ -1,18 +1,12 @@
-# Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
+# Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
 #
-#                                     !!! IMPORTANT !!!
+# Want to contribute to this file? Submit your changes via a GitHub Pull Request.
 #
-#         Before you edit this file, please keep in mind that contributing to the project
-#                translations is possible ONLY via the Transifex online service.
-#
-#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
-#
-#                   To learn more, check out the official contributor's guide:
-#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+# Check out the official contributor's guide:
+# https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
 #
 msgid ""
 msgstr ""
-"Language-Team: Japanese (https://app.transifex.com/ckeditor/teams/11143/ja/)\n"
 "Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -245,10 +239,6 @@ msgctxt "The localized error string that can be displayed next to length (paddin
 msgid "The value is invalid. Try \"10px\" or \"2em\" or simply \"2\"."
 msgstr "この値は無効です。「10px」、「2em」または単純に「2」をお試しください。"
 
-msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
-msgid "Color picker"
-msgstr "カラーピッカー"
-
 msgctxt "The placeholder text for the table caption displayed when the caption is empty."
 msgid "Enter table caption"
 msgstr "テーブルキャプションを入力"
@@ -276,3 +266,31 @@ msgstr "テーブル内を移動する"
 msgctxt "The accessible label of the menu bar button that displays a user interface to insert a table into editor content."
 msgid "Table"
 msgstr "テーブル"
+
+msgctxt "Label for the insert table layout toolbar button."
+msgid "Insert table layout"
+msgstr "表のレイアウトを挿入コンテンツ表表の種類表の種類のオプション表示されるテキストリンクのプロパティメディアの埋め込み利用できるリンクがありません画像のサイズ変更代替テキスト全画面モードを終了全画面モードに入る"
+
+msgctxt "The accessible label used in the table layout insert UI element."
+msgid "Table layout"
+msgstr "表のレイアウト"
+
+msgctxt "The accessible label of the layout table type dropdown button."
+msgid "Layout table"
+msgstr "表のレイアウト"
+
+msgctxt "The accessible label of the content table type dropdown button."
+msgid "Content table"
+msgstr "コンテンツ表"
+
+msgctxt "The accessible label of the table balloon button that displays a user interface to choose table type."
+msgid "Choose table type"
+msgstr "表の種類を選択"
+
+msgctxt "The accessible label of the table type toolbar button."
+msgid "Table type"
+msgstr "表の種類"
+
+msgctxt "The accessible label of dropdown list that displays a user interface to choose table type."
+msgid "Table type options"
+msgstr "表の種類のオプション表示されるテキストリンクのプロパティメディアの埋め込み利用できるリンクがありません画像のサイズ変更代替テキスト全画面モードを終了全画面モードに入る"

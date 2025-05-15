@@ -1,13 +1,15 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar.js';
 import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import EmptyBlock from '@ckeditor/ckeditor5-html-support/src/emptyblock.js';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import Table from '../src/table.js';
 import TableToolbar from '../src/tabletoolbar.js';
@@ -97,6 +99,186 @@ describe( 'TableContentToolbar integration', () => {
 			sinon.assert.calledOnce( highestPrioritySpy );
 			sinon.assert.notCalled( highPrioritySpy );
 			sinon.assert.notCalled( normalPrioritySpy );
+		} );
+	} );
+
+	describe( 'with the EmptyBlock', () => {
+		let editor, editorElement;
+
+		beforeEach( async () => {
+			editorElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( editorElement );
+
+			editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ Table, Paragraph, Heading, EmptyBlock ]
+			} );
+		} );
+
+		afterEach( async () => {
+			editorElement.remove();
+			await editor.destroy();
+		} );
+
+		it( 'plain content in table cell', () => {
+			editor.setData(
+				'<table>' +
+					'<tr>' +
+						'<td>x</td>' +
+					'</tr>' +
+					'<tr>' +
+						'<td>&nbsp;</td>' +
+					'</tr>' +
+					'<tr>' +
+						'<td></td>' +
+					'</tr>' +
+				'</table>'
+			);
+
+			expect( getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>x</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell htmlEmptyBlock="true">' +
+							'<paragraph htmlEmptyBlock="true"></paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="table">' +
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>x</td>' +
+							'</tr>' +
+							'<tr>' +
+								'<td>&nbsp;</td>' +
+							'</tr>' +
+							'<tr>' +
+								'<td></td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
+			);
+		} );
+
+		it( 'content in paragraph in a table cell', () => {
+			editor.setData(
+				'<table>' +
+					'<tr>' +
+						'<td><p>x</p></td>' +
+					'</tr>' +
+					'<tr>' +
+						'<td><p>&nbsp;</p></td>' +
+					'</tr>' +
+					'<tr>' +
+						'<td><p></p></td>' +
+					'</tr>' +
+				'</table>'
+			);
+
+			expect( getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>x</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph htmlEmptyBlock="true"></paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="table">' +
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>x</td>' +
+							'</tr>' +
+							'<tr>' +
+								'<td>&nbsp;</td>' +
+							'</tr>' +
+							'<tr>' +
+								'<td></td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
+			);
+		} );
+
+		it( 'content in heading in a table cell', () => {
+			editor.setData(
+				'<table>' +
+					'<tr>' +
+						'<td><h2>x</h2></td>' +
+					'</tr>' +
+					'<tr>' +
+						'<td><h2>&nbsp;</h2></td>' +
+					'</tr>' +
+					'<tr>' +
+						'<td><h2></h2></td>' +
+					'</tr>' +
+				'</table>'
+			);
+
+			expect( getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<heading1>x</heading1>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<heading1></heading1>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<heading1 htmlEmptyBlock="true"></heading1>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="table">' +
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td><h2>x</h2></td>' +
+							'</tr>' +
+							'<tr>' +
+								'<td><h2>&nbsp;</h2></td>' +
+							'</tr>' +
+							'<tr>' +
+								'<td><h2></h2></td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
+			);
 		} );
 	} );
 } );

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -13,6 +13,7 @@ import {
 	createLabeledDropdown,
 	createLabeledInputText,
 	FocusCycler,
+	FormRowView,
 	FormHeaderView,
 	LabeledFieldView,
 	LabelView,
@@ -22,9 +23,7 @@ import {
 	ViewCollection,
 	type FocusableView,
 	type NormalizedColorOption,
-	type ColorPickerConfig,
-	type FocusCyclerBackwardCycleEvent,
-	type FocusCyclerForwardCycleEvent
+	type ColorPickerConfig
 } from 'ckeditor5/src/ui.js';
 import {
 	KeystrokeHandler,
@@ -32,7 +31,17 @@ import {
 	type Locale,
 	type ObservableChangeEvent
 } from 'ckeditor5/src/utils.js';
-import { icons } from 'ckeditor5/src/core.js';
+import {
+	IconAlignBottom,
+	IconAlignCenter,
+	IconAlignJustify,
+	IconAlignLeft,
+	IconAlignMiddle,
+	IconAlignRight,
+	IconAlignTop,
+	IconCancel,
+	IconCheck
+} from 'ckeditor5/src/icons.js';
 
 import {
 	fillToolbar,
@@ -40,23 +49,14 @@ import {
 	getBorderStyleLabels,
 	getLabeledColorInputCreator
 } from '../../utils/ui/table-properties.js';
-import FormRowView from '../../ui/formrowview.js';
 import type ColorInputView from '../../ui/colorinputview.js';
 import type { TableCellPropertiesOptions } from '../../tableconfig.js';
 
-import '../../../theme/form.css';
+// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
+import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
+import '../../../theme/formrow.css';
 import '../../../theme/tableform.css';
 import '../../../theme/tablecellproperties.css';
-
-const ALIGNMENT_ICONS = {
-	left: icons.alignLeft,
-	center: icons.alignCenter,
-	right: icons.alignRight,
-	justify: icons.alignJustify,
-	top: icons.alignTop,
-	middle: icons.alignMiddle,
-	bottom: icons.alignBottom
-};
 
 export interface TableCellPropertiesViewOptions {
 	borderColors: Array<NormalizedColorOption>;
@@ -394,15 +394,7 @@ export default class TableCellPropertiesView extends View {
 
 		// Maintain continuous focus cycling over views that have focusable children and focus cyclers themselves.
 		[ this.borderColorInput, this.backgroundInput ].forEach( view => {
-			view.fieldView.focusCycler.on<FocusCyclerForwardCycleEvent>( 'forwardCycle', evt => {
-				this._focusCycler.focusNext();
-				evt.stop();
-			} );
-
-			view.fieldView.focusCycler.on<FocusCyclerBackwardCycleEvent>( 'backwardCycle', evt => {
-				this._focusCycler.focusPrevious();
-				evt.stop();
-			} );
+			this._focusCycler.chain( view.fieldView.focusCycler );
 		} );
 
 		[
@@ -716,6 +708,16 @@ export default class TableCellPropertiesView extends View {
 
 		const alignmentLabel = new LabelView( locale );
 
+		const ALIGNMENT_ICONS = {
+			left: IconAlignLeft,
+			center: IconAlignCenter,
+			right: IconAlignRight,
+			justify: IconAlignJustify,
+			top: IconAlignTop,
+			middle: IconAlignMiddle,
+			bottom: IconAlignBottom
+		};
+
 		alignmentLabel.text = t( 'Table cell text alignment' );
 
 		// -- Horizontal ---------------------------------------------------
@@ -725,6 +727,7 @@ export default class TableCellPropertiesView extends View {
 
 		horizontalAlignmentToolbar.set( {
 			isCompact: true,
+			role: 'radiogroup',
 			ariaLabel: t( 'Horizontal text alignment toolbar' )
 		} );
 
@@ -755,6 +758,7 @@ export default class TableCellPropertiesView extends View {
 
 		verticalAlignmentToolbar.set( {
 			isCompact: true,
+			role: 'radiogroup',
 			ariaLabel: t( 'Vertical text alignment toolbar' )
 		} );
 
@@ -794,7 +798,7 @@ export default class TableCellPropertiesView extends View {
 
 		saveButtonView.set( {
 			label: t( 'Save' ),
-			icon: icons.check,
+			icon: IconCheck,
 			class: 'ck-button-save',
 			type: 'submit',
 			withText: true
@@ -806,7 +810,7 @@ export default class TableCellPropertiesView extends View {
 
 		cancelButtonView.set( {
 			label: t( 'Cancel' ),
-			icon: icons.cancel,
+			icon: IconCancel,
 			class: 'ck-button-cancel',
 			withText: true
 		} );

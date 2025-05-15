@@ -47,35 +47,30 @@ The following {@link features/basic-styles basic styles} inline formatting optio
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all {@link installation/getting-started/predefined-builds predefined builds}. The installation instructions are for developers interested in building their own, custom editor.
+	⚠️ **New import paths**
+
+	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>
 
-To add this feature to your editor install the [`@ckeditor/ckeditor5-autoformat`](https://www.npmjs.com/package/@ckeditor/ckeditor5-autoformat) package:
+After {@link getting-started/integrations-cdn/quick-start installing the editor}, add the feature to your plugin list and toolbar configuration:
 
-```bash
-npm install --save @ckeditor/ckeditor5-autoformat
-```
-
-And add it to your plugin list:
-
+<code-switcher>
 ```js
-import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
+import { ClassicEditor, Autoformat } from 'ckeditor5';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+ClassicEditor.
+	create( document.querySelector( '#editor' ), {
+		licenseKey: '<YOUR_LICENSE_KEY>', // Or 'GPL'.
 		plugins: [ Autoformat, /* ... */ ],
 		toolbar: [ /* ... */ ]
 	} )
 	.then( /* ... */ )
 	.catch( /* ... */ );
 ```
+</code-switcher>
 
 <info-box hint>
 	Remember to add proper features to the editor configuration. Autoformatting will be enabled only for the commands that are included in the actual configuration. For example, `bold` autoformatting will not work if there is no `bold` command registered in the editor.
-</info-box>
-
-<info-box info>
-	Read more about {@link installation/plugins/installing-plugins installing plugins}.
 </info-box>
 
 ## Creating custom autoformatters

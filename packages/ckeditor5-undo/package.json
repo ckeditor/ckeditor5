@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-undo",
-  "version": "41.3.1",
+  "version": "45.1.0",
   "description": "Undo feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -13,26 +13,27 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "41.3.1",
-    "@ckeditor/ckeditor5-engine": "41.3.1",
-    "@ckeditor/ckeditor5-ui": "41.3.1"
+    "@ckeditor/ckeditor5-core": "45.1.0",
+    "@ckeditor/ckeditor5-engine": "45.1.0",
+    "@ckeditor/ckeditor5-icons": "45.1.0",
+    "@ckeditor/ckeditor5-ui": "45.1.0",
+    "@ckeditor/ckeditor5-utils": "45.1.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "41.3.1",
-    "@ckeditor/ckeditor5-clipboard": "41.3.1",
-    "@ckeditor/ckeditor5-editor-classic": "41.3.1",
-    "@ckeditor/ckeditor5-enter": "41.3.1",
-    "@ckeditor/ckeditor5-heading": "41.3.1",
-    "@ckeditor/ckeditor5-paragraph": "41.3.1",
-    "@ckeditor/ckeditor5-typing": "41.3.1",
-    "@ckeditor/ckeditor5-table": "41.3.1",
-    "@ckeditor/ckeditor5-utils": "41.3.1",
+    "@ckeditor/ckeditor5-basic-styles": "45.1.0",
+    "@ckeditor/ckeditor5-clipboard": "45.1.0",
+    "@ckeditor/ckeditor5-editor-classic": "45.1.0",
+    "@ckeditor/ckeditor5-enter": "45.1.0",
+    "@ckeditor/ckeditor5-heading": "45.1.0",
+    "@ckeditor/ckeditor5-paragraph": "45.1.0",
+    "@ckeditor/ckeditor5-typing": "45.1.0",
+    "@ckeditor/ckeditor5-table": "45.1.0",
     "typescript": "5.0.4",
-    "webpack": "^5.58.1",
-    "webpack-cli": "^4.9.0"
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4"
   },
   "author": "CKSource (http://cksource.com/)",
-  "license": "GPL-2.0-or-later",
+  "license": "SEE LICENSE IN LICENSE.md",
   "homepage": "https://ckeditor.com/ckeditor-5",
   "bugs": "https://github.com/ckeditor/ckeditor5/issues",
   "repository": {
@@ -50,7 +51,7 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsc -p ./tsconfig.json",
-    "build:dist": "node ../../scripts/build-package.mjs"
+    "build": "tsc --build --force ./tsconfig.json",
+    "build:dist": "node ../../scripts/nim/build-package.mjs"
   }
 }

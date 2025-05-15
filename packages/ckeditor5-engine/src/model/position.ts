@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -123,12 +123,12 @@ export default class Position extends TypeCheckable {
 			);
 		}
 
-		if ( !( path instanceof Array ) || path.length === 0 ) {
+		if ( !Array.isArray( path ) || path.length === 0 ) {
 			/**
 			 * Position path must be an array with at least one item.
 			 *
 			 * @error model-position-path-incorrect-format
-			 * @param path
+			 * @param {Array.<number>} path A path to the position.
 			 */
 			throw new CKEditorError(
 				'model-position-path-incorrect-format',
@@ -177,7 +177,7 @@ export default class Position extends TypeCheckable {
 		let parent: any = this.root;
 
 		for ( let i = 0; i < this.path.length - 1; i++ ) {
-			parent = parent.getChild( parent.offsetToIndex( this.path[ i ] ) );
+			parent = parent.getChildAtOffset( this.path[ i ] );
 
 			if ( !parent ) {
 				/**
@@ -193,7 +193,7 @@ export default class Position extends TypeCheckable {
 				 * the {@glink framework/architecture/editing-engine#indexes-and-offsets Editing engine architecture} guide.
 				 *
 				 * @error model-position-path-incorrect
-				 * @param position The incorrect position.
+				 * @param {module:engine/model/position~Position} position The incorrect position.
 				 */
 				throw new CKEditorError( 'model-position-path-incorrect', this, { position: this } );
 			}
@@ -224,7 +224,7 @@ export default class Position extends TypeCheckable {
 	}
 
 	/**
-	 * Node directly after this position or `null` if this position is in text node.
+	 * Node directly after this position. Returns `null` if this position is at the end of its parent, or if it is in a text node.
 	 */
 	public get nodeAfter(): Node | null {
 		// Cache the parent and reuse for performance reasons. See #6579 and #6582.
@@ -234,7 +234,7 @@ export default class Position extends TypeCheckable {
 	}
 
 	/**
-	 * Node directly before this position or `null` if this position is in text node.
+	 * Node directly before this position. Returns `null` if this position is at the start of its parent, or if it is in a text node.
 	 */
 	public get nodeBefore(): Node | null {
 		// Cache the parent and reuse for performance reasons. See #6579 and #6582.
@@ -255,6 +255,27 @@ export default class Position extends TypeCheckable {
 	 */
 	public get isAtEnd(): boolean {
 		return this.offset == this.parent.maxOffset;
+	}
+
+	/**
+	 * Checks whether the position is valid in current model tree, that is whether it points to an existing place in the model.
+	 */
+	public isValid(): boolean {
+		if ( this.offset < 0 ) {
+			return false;
+		}
+
+		let parent: any = this.root;
+
+		for ( let i = 0; i < this.path.length - 1; i++ ) {
+			parent = parent.getChildAtOffset( this.path[ i ] );
+
+			if ( !parent ) {
+				return false;
+			}
+		}
+
+		return this.offset <= parent.maxOffset;
 	}
 
 	/**
@@ -876,7 +897,7 @@ export default class Position extends TypeCheckable {
 		offset?: PositionOffset,
 		stickiness: PositionStickiness = 'toNone'
 	): Position {
-		if ( itemOrPosition instanceof Position ) {
+		if ( itemOrPosition.is( 'model:position' ) ) {
 			return new Position( itemOrPosition.root, itemOrPosition.path, itemOrPosition.stickiness );
 		} else {
 			const node = itemOrPosition;
@@ -927,10 +948,10 @@ export default class Position extends TypeCheckable {
 	public static _createAfter( item: Item | DocumentFragment, stickiness?: PositionStickiness ): Position {
 		if ( !item.parent ) {
 			/**
-			 * You can not make a position after a root element.
+			 * You cannot make a position after a root element.
 			 *
 			 * @error model-position-after-root
-			 * @param root
+			 * @param {module:engine/model/rootelement~RootElement} root The root element..
 			 */
 			throw new CKEditorError(
 				'model-position-after-root',
@@ -952,10 +973,10 @@ export default class Position extends TypeCheckable {
 	public static _createBefore( item: Item | DocumentFragment, stickiness?: PositionStickiness ): Position {
 		if ( !item.parent ) {
 			/**
-			 * You can not make a position before a root element.
+			 * You cannot make a position before a root element.
 			 *
 			 * @error model-position-before-root
-			 * @param root
+			 * @param {module:engine/model/rootelement~RootElement} root The root element..
 			 */
 			throw new CKEditorError(
 				'model-position-before-root',
@@ -987,7 +1008,7 @@ export default class Position extends TypeCheckable {
 			 * Cannot create position for document. Root with specified name does not exist.
 			 *
 			 * @error model-position-fromjson-no-root
-			 * @param rootName
+			 * @param {string} rootName The root name.
 			 */
 			throw new CKEditorError(
 				'model-position-fromjson-no-root',
@@ -1071,10 +1092,11 @@ export type PositionStickiness = 'toNone' | 'toNext' | 'toPrevious';
  * * {@link module:engine/model/position~getNodeAfterPosition}
  * * {@link module:engine/model/position~getNodeBeforePosition}
  *
+ * @param position
  * @param positionParent The parent of the given position.
  */
 export function getTextNodeAtPosition( position: Position, positionParent: Element | DocumentFragment ): Text | null {
-	const node = positionParent.getChild( positionParent.offsetToIndex( position.offset ) );
+	const node = positionParent.getChildAtOffset( position.offset );
 
 	if ( node && node.is( '$text' ) && node.startOffset! < position.offset ) {
 		return node;
@@ -1102,6 +1124,7 @@ export function getTextNodeAtPosition( position: Position, positionParent: Eleme
  * * {@link module:engine/model/position~getTextNodeAtPosition}
  * * {@link module:engine/model/position~getNodeBeforePosition}
  *
+ * @param position Position to check.
  * @param positionParent The parent of the given position.
  * @param textNode Text node at the given position.
  */
@@ -1114,7 +1137,7 @@ export function getNodeAfterPosition(
 		return null;
 	}
 
-	return positionParent.getChild( positionParent.offsetToIndex( position.offset ) );
+	return positionParent.getChildAtOffset( position.offset );
 }
 
 /**
@@ -1127,6 +1150,7 @@ export function getNodeAfterPosition(
  * * {@link module:engine/model/position~getTextNodeAtPosition}
  * * {@link module:engine/model/position~getNodeAfterPosition}
  *
+ * @param position Position to check.
  * @param positionParent The parent of the given position.
  * @param textNode Text node at the given position.
  */

@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /**
@@ -60,7 +60,7 @@ export default class EditableElement extends /* #__PURE__ */ ObservableMixin( Co
 	 * @internal
 	 * @param document The document instance to which this element belongs.
 	 * @param name Node name.
-	 * @param attrs Collection of attributes.
+	 * @param attributes Collection of attributes.
 	 * @param children A list of nodes to be inserted into created element.
 	 */
 	constructor(

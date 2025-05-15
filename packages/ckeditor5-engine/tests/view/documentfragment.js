@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 import DocumentFragment from '../../src/view/documentfragment.js';
@@ -370,5 +370,11 @@ describe( 'DocumentFragment', () => {
 			expect( properties[ 2 ][ 0 ] ).to.equal( 'baz' );
 			expect( properties[ 2 ][ 1 ] ).to.equal( 3 );
 		} );
+	} );
+
+	it( 'name should return undefined', () => {
+		const fragment = new DocumentFragment( document );
+
+		expect( fragment.name ).to.be.undefined;
 	} );
 } );

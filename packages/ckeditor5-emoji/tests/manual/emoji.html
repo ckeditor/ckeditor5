@@ -1,0 +1,73 @@
+<head>
+    <!-- Required to fetch emoji database from https://cdn.jsdelivr.net -->
+    <meta http-equiv="Content-Security-Policy"
+          content="connect-src 'self' https://cksource.com http://*.cke-cs.com https://cdn.ckeditor.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" rel="stylesheet">
+</head>
+
+<p>
+    <b>Unicode version</b>:
+    <input type="radio" id="unicode-15" name="unicode" value="15"><label for="unicode-15">15</label>
+    <input type="radio" id="unicode-16" name="unicode" value="16"><label for="unicode-16">16</label>
+    <input type="radio" id="unicode-null" name="unicode" value="null" checked><label for="unicode-null">use the plugin default</label>
+    <input type="radio" id="unicode-666" name="unicode" value="666"><label for="unicode-666">invalid value</label>
+</p>
+
+<p>
+    <b>Default skin tone</b>:
+    <input type="radio" id="skin-default" name="skin" value="default"><label for="skin-default">👋</label>
+    <input type="radio" id="skin-light" name="skin" value="light"><label for="skin-light">👋🏻</label>
+    <input type="radio" id="skin-medium-light" name="skin" value="medium-light"><label for="skin-medium-light">👋🏼</label>
+    <input type="radio" id="skin-medium" name="skin" value="medium"><label for="skin-medium">👋🏽</label>
+    <input type="radio" id="skin-medium-dark" name="skin" value="medium-dark"><label for="skin-medium-dark">👋🏾</label>
+    <input type="radio" id="skin-dark" name="skin" value="dark"><label for="skin-dark">👋🏿</label>
+    <input type="radio" id="skin-null" name="skin" value="null" checked><label for="skin-null">use the plugin default</label>
+</p>
+
+<p>
+    <b>Use "Noto Color Emoji" font</b>:
+    <input type="radio" id="custom-font-apply" name="custom-font" value="true"><label for="custom-font-apply">Apply</label>
+    <input type="radio" id="custom-font-reject" name="custom-font" value="false" checked><label for="custom-font-reject">Reject</label>
+</p>
+
+<h3><code>EmojiMention</code> + <code>EmojiPicker</code></h3>
+<div id="editor-emoji-both">
+    <p>This is <a href="http://ckeditor.com">CKEditor 5</a> from <a href="http://cksource.com">CKSource</a>.</p>
+</div>
+
+<h3><code>EmojiMention</code></h3>
+<div id="editor-emoji-mention">
+    <p>This is <a href="http://ckeditor.com">CKEditor 5</a> from <a href="http://cksource.com">CKSource</a>.</p>
+</div>
+
+<h3><code>EmojiPicker</code></h3>
+<div id="editor-emoji-picker">
+    <p>This is <a href="http://ckeditor.com">CKEditor 5</a> from <a href="http://cksource.com">CKSource</a>.</p>
+</div>
+
+<h3><code>EmojiMention</code> + <code>EmojiPicker</code> + <code>BalloonEditor</code></h3>
+<div id="editor-emoji-picker-balloon-editor">
+    <p>This is <a href="http://ckeditor.com">CKEditor 5</a> from <a href="http://cksource.com">CKSource</a>.</p>
+</div>
+
+<template id="content">
+    <h3>Overview of Emojis</h3>
+
+    <p>
+        Emojis are small digital images or icons used to express emotions, ideas, or concepts in electronic communication. They
+        originated in Japan in the late 1990s, with the first set created by Shigetaka Kurita.
+    </p>
+
+    <h3>Examples of Common Emojis</h3>
+
+    <ul>
+        <li>😊 <strong>Smiling Face</strong>: Used to convey happiness, friendliness, or gratitude.</li>
+        <li>❤️ <strong>Red Heart</strong>: Represents love, affection, or appreciation.</li>
+        <li>😂 <strong>Face with Tears of Joy</strong>: Indicates laughter or something funny.</li>
+        <li>😢 <strong>Crying Face</strong>: Represents sadness, disappointment, or sympathy.</li>
+        <li>👍 <strong>Thumbs Up</strong>: Used to show approval, agreement, or to indicate that everything is good or okay.</li>
+        <li>🔥 <strong>Fire</strong>: Often used to signify something hot, trendy, or impressive.</li>
+    </ul>
+</template>

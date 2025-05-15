@@ -57,9 +57,9 @@ As the second argument, the translation function accepts a value or an array of 
     For the same reason, the first argument can only be a string literal or an object literal. Variables cannot be passed.
 </info-box>
 
-When using the `t()` function, you can create your own *localizable messages* or reuse *messages* created in CKEditor&nbsp;5 packages that your project depends on. In case of reusing *messages*, you will not need to worry about translating them as all work will be done by the CKEditor&nbsp;5 team and [Transifex translators](https://www.transifex.com/ckeditor/ckeditor5/). Obviously, {@link framework/contributing/contributing#translating your help in translating} will still be appreciated!
+When using the `t()` function, you can create your own *localizable messages* or reuse *messages* created in CKEditor&nbsp;5 packages that your project depends on. In the case of reusing *messages*, you will not need to worry about translating them as all the work will be done by the CKEditor&nbsp;5 team. Obviously, {@link framework/contributing/contributing#translating your help in translating} will still be appreciated!
 
-For simple *localizable messages*, use the string form for simplicity:
+For a simple *localizable messages*, use the string form for simplicity:
 
 ```js
 const emojiName = 'cat';
@@ -241,7 +241,7 @@ msgstr "Alinear a la izquierda"
 	If you develop your own plugin outside the CKEditor&nbsp;5 ecosystem and localize it by creating *PO files*, you should override both the `sourceFilesPattern` and the `packageNamePattern` options to allow the CKEditor&nbsp;5 webpack plugin to analyze the code and find *messages* with corresponding translations. You should also mention these webpack plugin changes in your package README to make other users build the localized CKEditor&nbsp;5 editor with your plugin correctly. This obstacle may be simplified in the future when the localization feature gets more popular.
 </info-box>
 
-To build and configure a localized editor, follow the steps from the {@link features/ui-language Setting the UI language guide}.
+To build and configure a localized editor, follow the steps from the {@link getting-started/setup/ui-language Setting the UI language guide}.
 
 ## Re-using translations from other packages
 
@@ -258,7 +258,7 @@ public getDefaultCommands() {
 		{
 			id: 'blockQuote',
 			commandName: 'blockQuote',
-			icon: icons.quote,
+			icon: IconQuote,
 			title: translateVariableKey( 'Block quote' ),
 			description: t( 'Create a block quote' )
 		},

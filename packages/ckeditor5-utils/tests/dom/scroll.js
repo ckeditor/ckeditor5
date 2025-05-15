@@ -1,6 +1,6 @@
 /**
- * @license Copyright (c) 2003-2024, CKSource Holding sp. z o.o. All rights reserved.
- * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ * @license Copyright (c) 2003-2025, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
 /* global window, document, Text */
@@ -431,6 +431,24 @@ describe( 'scrollViewportToShowTarget()', () => {
 			assertScrollPosition( iframeAncestor, { scrollTop: 1900, scrollLeft: 2700 } );
 			sinon.assert.calledWithExactly( iframeWindow.scrollTo, 100, -100 );
 			sinon.assert.calledWithExactly( window.scrollTo, 1820, 1520 );
+		} );
+
+		it( 'scroll content to the ancestor viewport if target is larger than it', () => {
+			stubGeometry( testUtils, target,
+				{ top: -500, right: 200, bottom: 200, left: 100, width: 100, height: 900 } );
+			stubGeometry( testUtils, targetAncestor,
+				{ top: 500, right: 300, bottom: 400, left: 0, width: 300, height: 300 },
+				{ scrollLeft: 200, scrollTop: -100 } );
+
+			stubGeometry( testUtils, iframe,
+				{ top: 200, right: 400, bottom: 400, left: 200, width: 200, height: 200 } );
+			stubGeometry( testUtils, iframeAncestor,
+				{ top: 0, right: 400, bottom: 400, left: 0, width: 400, height: 400 },
+				{ scrollLeft: 100, scrollTop: 100 } );
+
+			scrollViewportToShowTarget( { target } );
+			assertScrollPosition( targetAncestor, { scrollLeft: 200, scrollTop: -1100 } );
+			assertScrollPosition( iframeAncestor, { scrollTop: -200, scrollLeft: 100 } );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/930

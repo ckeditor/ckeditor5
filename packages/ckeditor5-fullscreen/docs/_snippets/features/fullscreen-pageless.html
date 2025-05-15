@@ -1,0 +1,55 @@
+<!-- include CKBox from CDN -->
+
+<div class="live-snippet__loader" id="pageless_live-snippet__loader">
+	<svg class="spinner" viewBox="25 25 50 50">
+		<circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
+	</svg>
+</div>
+
+<div class="live-snippet__container revision-integration" id="pageless_live-snippet__container">
+	<div class="row">
+		<div class="demo-container pageless_demo-container" id="pageless_demo-container">
+			<div class="toolbar-container" id="pageless_toolbar-container"></div>
+			<div class="editing-area-scroll-wrapper">
+				<div class="editing-area-wrapper">
+					<div class="editor-content-wrapper">
+						<div id="pageless_editor" class="editor-content"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Demo styles are in `fullscreen-default.html` file to avoid duplication. -->
+
+<style>
+	.main__content .ck.ck-fullscreen__main-wrapper {
+		--ck-fullscreen-editor-top-margin: 0;
+		background: hsl(0, 0%, 100%);
+	}
+
+	.main__content .ck.ck-fullscreen__main-wrapper .ck-fullscreen__sidebar {
+		display: none;
+	}
+
+	.main__content .ck.ck-fullscreen__main-wrapper .ck-fullscreen__editable {
+		width: 100%;
+		margin: 0;
+	}
+
+	.main__content .ck.ck-fullscreen__main-wrapper .ck-fullscreen__editable .editor-content.ck.ck-content {
+		width: 100%;
+		max-width: 100%;
+		min-height: 0;
+		margin: 0;
+		border: 0;
+		padding: 2em;
+	}
+
+	.pageless_demo-container .editor-content.ck.ck-content {
+		margin: 0;
+		border: 0;
+		padding: 2em;
+	}
+</style>
