@@ -284,7 +284,7 @@ describe( 'InputObserver', () => {
 					expect( viewRange.end.offset ).to.equal( 1 );
 				} );
 
-				it( 'should not prevent default if target range end does not touches an inline filler', () => {
+				it( 'should not prevent default if target range end does not touch an inline filler', () => {
 					// <p>foo<span>bar</span></p>
 					view.change( writer => {
 						const paragraph = writer.createContainerElement( 'p' );
