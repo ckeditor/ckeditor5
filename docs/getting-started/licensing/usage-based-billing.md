@@ -80,11 +80,11 @@ If you surpass your monthly limit, you will be automatically charged a standard 
 
 ### CKEditor Free plan
 
-If you use our CKEditor Free plan and exceed your allocated editor loads without providing a valid payment method, your editor will switch to read-only mode until the next month. If a valid payment method is provided, a standard charge of standard charging rate per additional block of 1,000 editor loads applies.
+If you use our {@link getting-started/licensing/license-key-and-activation#using-the-gpl-key CKEditor Free plan} and exceed your allocated editor loads without providing a valid payment method, your editor will switch to read-only mode until the next month. If a valid payment method is provided, a standard charge of standard charging rate per additional block of 1,000 editor loads applies.
 
 ### Trial period usage
 
-During your 14-day trial, you have unlimited editor loads and can test both distribution methods: cloud and self-hosted. However, once the trial ends, you must use the method included in your selected plan. For instance, if you tested npm (self-hosted) but are on a cloud plan, you will need to either {@link updating/index#migration-to-cdn migrate your implementation to use cloud} or [contact our sales team](https://ckeditor.com/contact/) to switch to a self-hosted plan.
+During {@link getting-started/licensing/license-key-and-activation#license-key-types your 14-day tria}l, you have unlimited editor loads and can test both distribution methods: cloud and self-hosted. However, once the trial ends, you must use the method included in your selected plan. For instance, if you tested npm (self-hosted) but are on a cloud plan, you will need to either {@link updating/index#migration-to-cdn migrate your implementation to use cloud} or [contact our sales team](https://ckeditor.com/contact/) to switch to a self-hosted plan.
 
 ### Managing your usage
 
