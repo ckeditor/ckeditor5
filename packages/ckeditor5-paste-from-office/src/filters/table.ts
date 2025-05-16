@@ -36,9 +36,13 @@ export default function transformTables(
 		// As this is a pasted table, we do not want default table styles to apply here
 		// so we set border node for sides that does not have any border style.
 		// It is enough to verify border style as border color and border width properties have default values in DOM.
-		for ( const side of sides ) {
-			if ( !item.hasStyle( `border-${ side }-style` ) ) {
-				writer.setStyle( `border-${ side }`, 'none', item );
+		if ( sides.every( side => !item.hasStyle( `border-${ side }-style` ) ) ) {
+			writer.setStyle( 'border-style', 'none', item );
+		} else {
+			for ( const side of sides ) {
+				if ( !item.hasStyle( `border-${ side }-style` ) ) {
+					writer.setStyle( `border-${ side }-style`, 'none', item );
+				}
 			}
 		}
 
