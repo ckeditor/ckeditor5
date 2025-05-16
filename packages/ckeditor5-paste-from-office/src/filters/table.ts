@@ -12,13 +12,11 @@ import {
 	type ViewDocumentFragment
 } from 'ckeditor5/src/engine.js';
 
-import {
-	convertCssLengthToPx,
-	isPx
-} from './utils.js';
+import { convertCssLengthToPx } from './utils.js';
 
 /**
- * TODO
+ * Applies border none for table and cells without a border specified.
+ * Normalizes style length units to px.
  */
 export default function transformTables(
 	documentFragment: ViewDocumentFragment,
@@ -44,11 +42,16 @@ export default function transformTables(
 			}
 		}
 
-		// Translate length units to px.
-		const props = [ 'width', 'height', ...sides.map( side => `border-${ side }-width` ) ];
+		// Translate style length units to px.
+		const props = [
+			'width',
+			'height',
+			...sides.map( side => `border-${ side }-width` ),
+			...sides.map( side => `padding-${ side }` )
+		];
 
 		for ( const prop of props ) {
-			if ( item.hasStyle( prop ) && !isPx( item.getStyle( prop ) ) ) {
+			if ( item.hasStyle( prop ) ) {
 				writer.setStyle( prop, convertCssLengthToPx( item.getStyle( prop )! ), item );
 			}
 		}
