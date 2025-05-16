@@ -30,19 +30,19 @@ In our ongoing commitment to accessibility, we provide a report based on the [IT
 We continuously update the <acronym title="Voluntary Product Accessibility Template">VPAT</acronym>**®** report to reflect any changes or improvements. You can download the latest version of the <acronym title="Voluntary Product Accessibility Template">VPAT</acronym>**®** document below.
 
 <info-box info>
-	⬇️ <a href="../assets/pdf/VPAT_CKEditor_5_v44.3.0.pdf" target="_blank"><b>Download <acronym title="Voluntary Product Accessibility Template">VPAT</acronym>**®** report for CKEditor&nbsp;5 v44.3.0 (Mar 5, 2025)</b></a>
+	📎 <a href="../assets/pdf/VPAT_CKEditor_5_v44.3.0.pdf" target="_blank"><b>Download <acronym title="Voluntary Product Accessibility Template">VPAT</acronym>**®** report for CKEditor&nbsp;5 v44.3.0 (Mar 5, 2025)</b></a>
 
 	<details>
 		<summary>Previous versions</summary>
 		<ul>
 			<li>
-				<a href="../assets/pdf/VPAT_CKEditor_5_v43.0.0.pdf" target="_blank"><acronym title="Voluntary Product Accessibility Template">VPAT</acronym><sup>®</sup> report for CKEditor&nbsp;5 v43.0.0 (Aug 7, 2024)</a>
+				📎 <a href="../assets/pdf/VPAT_CKEditor_5_v43.0.0.pdf" target="_blank"><acronym title="Voluntary Product Accessibility Template">VPAT</acronym><sup>®</sup> report for CKEditor&nbsp;5 v43.0.0 (Aug 7, 2024)</a>
 			</li>
 			<li>
-				<a href="../assets/pdf/VPAT_CKEditor_5_v41.4.2.pdf" target="_blank"><acronym title="Voluntary Product Accessibility Template">VPAT</acronym><sup>®</sup> report for CKEditor&nbsp;5 v41.4.2 (May 17, 2024)</a>
+				📎 <a href="../assets/pdf/VPAT_CKEditor_5_v41.4.2.pdf" target="_blank"><acronym title="Voluntary Product Accessibility Template">VPAT</acronym><sup>®</sup> report for CKEditor&nbsp;5 v41.4.2 (May 17, 2024)</a>
 			</li>
 			<li>
-				<a href="../assets/pdf/VPAT_CKEditor_5_v41.3.0.pdf" target="_blank"><acronym title="Voluntary Product Accessibility Template">VPAT</acronym><sup>®</sup> report for CKEditor&nbsp;5 v41.3.0 (Apr 10, 2024)</a>
+				📎 <a href="../assets/pdf/VPAT_CKEditor_5_v41.3.0.pdf" target="_blank"><acronym title="Voluntary Product Accessibility Template">VPAT</acronym><sup>®</sup> report for CKEditor&nbsp;5 v41.3.0 (Apr 10, 2024)</a>
 			</li>
 		</ul>
 	</details>

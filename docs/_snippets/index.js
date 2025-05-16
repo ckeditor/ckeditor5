@@ -11,6 +11,7 @@ export {
 	attachTourBalloon,
 	findToolbarItem,
 	getViewportTopOffsetConfig,
+	setViewportTopOffsetDynamically,
 	createTabs
 } from './shared-helpers.js';
 
