@@ -181,6 +181,14 @@ describe( 'FontColorEditing', () => {
 				} );
 			} );
 		} );
+
+		it( 'should downcast `fontColor` attribute only for text', () => {
+			setModelData( doc, '<paragraph fontColor="red"><$text fontColor="red">foo</$text></paragraph>' );
+
+			expect( editor.getData() ).to.equal(
+				'<p><span style="color:blue;">foo</span></p>'
+			);
+		} );
 	} );
 
 	describe( 'data pipeline conversions', () => {

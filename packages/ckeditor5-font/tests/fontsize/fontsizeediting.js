@@ -125,6 +125,14 @@ describe( 'FontSizeEditing', () => {
 
 					expect( editor.getData() ).to.equal( '<p>f<span style="font-size:8em;">o</span>o</p>' );
 				} );
+
+				it( 'should downcast `fontSize` attribute only for text', () => {
+					setModelData( doc, '<paragraph fontSize="8em"><$text fontSize="8em">foo</$text></paragraph>' );
+
+					expect( editor.getData() ).to.equal(
+						'<p><span style="font-size:8em;">foo</span></p>'
+					);
+				} );
 			} );
 
 			describe( 'data pipeline conversions', () => {

@@ -116,6 +116,14 @@ describe( 'FontFamilyEditing', () => {
 
 					expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Arial, Helvetica, sans-serif;">o</span>o</p>' );
 				} );
+
+				it( 'should downcast `fontFamily` attribute only for text', () => {
+					setModelData( doc, '<paragraph fontFamily="Arial"><$text fontFamily="Arial">foo</$text></paragraph>' );
+
+					expect( editor.getData() ).to.equal(
+						'<p><span style="font-family:Arial;">foo</span></p>'
+					);
+				} );
 			} );
 
 			describe( 'data pipeline conversions', () => {
