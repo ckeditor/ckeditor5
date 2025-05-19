@@ -56,7 +56,7 @@ import '@ckeditor/ckeditor5-table/dist/index.css';
 // ...
 ```
 
-The rule of thumb is to import styles from all the individual packages from which you import the editor features. In your IDE you likely can <kbd>Ctrl</kbd>+<kbd>Click</kbd> on the imported feature name to see in which pages they live. For example, if you click the `Bold` feature, it will lead you to the `@ckeditor/ckeditor5-basic-styles` package in `node_modules`. This means that should also import the styles from the `@ckeditor/ckeditor5-basic-styles/dist/index.css` file. Make sure to not to miss any of the plugins or import the same styles multiple times.
+The rule of thumb is to import styles from all the individual packages from which you import the editor features. In your IDE you likely can <kbd>Ctrl</kbd>+<kbd>Left click</kbd> the imported feature name to see in which pages they live. For example, if you click the `Bold` feature, it will lead you to the `@ckeditor/ckeditor5-basic-styles` package in `node_modules`. This means that should also import the styles from the `@ckeditor/ckeditor5-basic-styles/dist/index.css` file. Make sure to not to miss any of the plugins or import the same styles multiple times.
 
 You may notice that some plugin style sheets are empty. This is intentional, as some plugins do not have styles now but may have them in the future. Adding the imports now will ensure that you do not accidentally miss some styles if this happens. Importing empty style sheets does not increase the build size.
 
