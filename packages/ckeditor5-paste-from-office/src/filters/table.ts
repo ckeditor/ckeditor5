@@ -9,7 +9,8 @@
 
 import {
 	type UpcastWriter,
-	type ViewDocumentFragment
+	type ViewDocumentFragment,
+	type ViewElement
 } from 'ckeditor5/src/engine.js';
 
 import { convertCssLengthToPx } from './utils.js';
@@ -24,40 +25,52 @@ export default function transformTables(
 ): void {
 	for ( const item of writer.createRangeIn( documentFragment ).getItems() ) {
 		if (
-			!item.is( 'element', 'table' ) &&
-			!item.is( 'element', 'td' ) &&
-			!item.is( 'element', 'th' )
+			item.is( 'element', 'table' ) ||
+			item.is( 'element', 'td' ) ||
+			item.is( 'element', 'th' )
 		) {
-			continue;
+			normalizeBorders( item, writer );
+			normalizeLengthProperties( item, writer );
 		}
 
-		const sides = [ 'left', 'top', 'right', 'bottom' ];
+		if ( item.is( 'element', 'col' ) ) {
+			normalizeLengthProperties( item, writer );
+		}
+	}
+}
 
-		// As this is a pasted table, we do not want default table styles to apply here
-		// so we set border node for sides that does not have any border style.
-		// It is enough to verify border style as border color and border width properties have default values in DOM.
-		if ( sides.every( side => !item.hasStyle( `border-${ side }-style` ) ) ) {
-			writer.setStyle( 'border-style', 'none', item );
-		} else {
-			for ( const side of sides ) {
-				if ( !item.hasStyle( `border-${ side }-style` ) ) {
-					writer.setStyle( `border-${ side }-style`, 'none', item );
-				}
+const sides = [ 'left', 'top', 'right', 'bottom' ];
+const props = [
+	'width',
+	'height',
+	...sides.map( side => `border-${ side }-width` ),
+	...sides.map( side => `padding-${ side }` )
+];
+
+/**
+ * As this is a pasted table, we do not want default table styles to apply here
+ * so we set border node for sides that does not have any border style.
+ * It is enough to verify border style as border color and border width properties have default values in DOM.
+ */
+function normalizeBorders( element: ViewElement, writer: UpcastWriter ) {
+	if ( sides.every( side => !element.hasStyle( `border-${ side }-style` ) ) ) {
+		writer.setStyle( 'border-style', 'none', element );
+	} else {
+		for ( const side of sides ) {
+			if ( !element.hasStyle( `border-${ side }-style` ) ) {
+				writer.setStyle( `border-${ side }-style`, 'none', element );
 			}
 		}
+	}
+}
 
-		// Translate style length units to px.
-		const props = [
-			'width',
-			'height',
-			...sides.map( side => `border-${ side }-width` ),
-			...sides.map( side => `padding-${ side }` )
-		];
-
-		for ( const prop of props ) {
-			if ( item.hasStyle( prop ) ) {
-				writer.setStyle( prop, convertCssLengthToPx( item.getStyle( prop )! ), item );
-			}
+/**
+ * Normalizes length properties to px.
+ */
+function normalizeLengthProperties( element: ViewElement, writer: UpcastWriter ) {
+	for ( const prop of props ) {
+		if ( element.hasStyle( prop ) ) {
+			writer.setStyle( prop, convertCssLengthToPx( element.getStyle( prop )! ), element );
 		}
 	}
 }
