@@ -186,7 +186,7 @@ describe( 'FontColorEditing', () => {
 			setModelData( doc, '<paragraph fontColor="red"><$text fontColor="red">foo</$text></paragraph>' );
 
 			expect( editor.getData() ).to.equal(
-				'<p><span style="color:blue;">foo</span></p>'
+				'<p><span style="color:red;">foo</span></p>'
 			);
 		} );
 	} );
