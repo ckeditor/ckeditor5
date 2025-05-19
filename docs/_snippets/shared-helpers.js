@@ -45,11 +45,12 @@ export function attachTourBalloon( { target, text, editor } ) {
 	const tooltip = window.umberto.Tooltip.create( {
 		text,
 		trigger: target,
-		mode: 'manual',
+		mode: 'click',
 		variant: 'dark',
 		showCloseButton: true,
 		showAfterMount: true,
-		hideOnOutsideClick: false
+		hideOnOutsideClick: false,
+		destroyOnHide: true
 	} );
 
 	for ( const root of editor.editing.view.document.roots ) {
