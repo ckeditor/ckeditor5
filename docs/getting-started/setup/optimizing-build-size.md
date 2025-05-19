@@ -16,6 +16,10 @@ The build size optimization is only possible when using the npm build and module
 
 To optimize the build size, you only need to make a few changes to the way you import the styles and optionally the translations, compared to what was shown in the {@link getting-started/integrations-cdn/quick-start Quick start} guide. You do not need to change anything in the editor configuration or in the way you use the editor.
 
+<info-box>
+	Before version 45.0.0, we recommended importing the editor and its features using the `@ckeditor/ckeditor5-PACKAGE_NAME/dist/index.js` import paths. However, this is no longer necessary. As of version 45.0.0, the code has been improved to allow for better tree-shaking. Now, you can import all the code directly from the `ckeditor5` and `ckeditor5-premium-features` packages.
+</info-box>
+
 ### Styles
 
 The first step in optimizing build size is changing how styles are imported. Currently, you probably import one or both of the following style sheets, depending on whether or not you use the premium features:
