@@ -14,40 +14,11 @@ The build size optimization is only possible when using the npm build and module
 
 ## How to optimize the build size
 
-To optimize the build size, you only need to make a few changes to the way you import the editor, styles, and optionally the translations, compared to what was shown in the {@link getting-started/integrations-cdn/quick-start Quick start} guide. You do not need to change anything in the editor configuration or in the way you use the editor.
-
-### Code imports
-
-The first step in optimizing build size is to import only the editor features you need, as adding more plugins to the editor configuration will increase build size.
-
-The next step is to change the way you import the editor features. Currently, you are probably importing them from the following packages:
-
-```js
-import { /* ... */ } from 'ckeditor5';
-import { /* ... */ } from 'ckeditor5-premium-features';
-```
-
-These two packages export all the editor features, and most are tree-shakeable. However, some code may be added to the build even if it is not used. To ensure that the unused code is not imported, you can import the editor features directly from the packages that contain them.
-
-For example, if you are using the classic editor type with the bold, italic, and table features, you can change the imports like this:
-
-```diff
-- import { ClassicEditor, Bold, Italic and Table } from 'ckeditor5';
-
-+ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/dist/index.js';
-+ import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles/dist/index.js';
-+ import { Table } from '@ckeditor/ckeditor5-table/dist/index.js';
-```
-
-<info-box warning>
-	Note the `/dist/index.js` part of the import paths. This is important to ensure that the editor functions are imported from the correct files.
-</info-box>
-
-To find the correct package names, see the {@link getting-started/legacy-getting-started/legacy-imports#finding-individual-packages Finding individual packages} guide. Alternatively, if you are using an IDE with TypeScript support, you can use the `Go to Definition` feature to find the package names.
+To optimize the build size, you only need to make a few changes to the way you import the styles and optionally the translations, compared to what was shown in the {@link getting-started/integrations-cdn/quick-start Quick start} guide. You do not need to change anything in the editor configuration or in the way you use the editor.
 
 ### Styles
 
-Currently, you probably import one or both of the following style sheets, depending on whether or not you use the premium features:
+The first step in optimizing build size is changing how styles are imported. Currently, you probably import one or both of the following style sheets, depending on whether or not you use the premium features:
 
 ```js
 import 'ckeditor5/ckeditor5.css';
@@ -85,7 +56,7 @@ import '@ckeditor/ckeditor5-table/dist/index.css';
 // ...
 ```
 
-Regarding plugin styles, the rule of thumb is to import the styles from all the individual packages from which you import the editor features. For example, if you import the bold feature from `@ckeditor/ckeditor5-basic-styles/dist/index.js`, you should also import `@ckeditor/ckeditor5-basic-styles/dist/index.css`.
+The rule of thumb is to import styles from all the individual packages from which you import the editor features. In your IDE you likely can <kbd>Ctrl</kbd>+<kbd>Click</kbd> on the imported feature name to see in which pages they live. For example, if you click the `Bold` feature, it will lead you to the `@ckeditor/ckeditor5-basic-styles` package in `node_modules`. This means that should also import the styles from the `@ckeditor/ckeditor5-basic-styles/dist/index.css` file. Make sure to not to miss any of the plugins or import the same styles multiple times.
 
 You may notice that some plugin style sheets are empty. This is intentional, as some plugins do not have styles now but may have them in the future. Adding the imports now will ensure that you do not accidentally miss some styles if this happens. Importing empty style sheets does not increase the build size.
 
@@ -139,7 +110,7 @@ import basicStylesTranslations from '@ckeditor/ckeditor5-basic-styles/dist/trans
 import tableTranslations from '@ckeditor/ckeditor5-table/dist/translations/<LANGUAGE>.js';
 ```
 
-As with styles, the rule of thumb is to import translations from all the individual packages from which you import the editor features. For example, if you import the bold feature from the `@ckeditor/ckeditor5-basic-styles/dist/index.js` package, you should also import the translations from the `@ckeditor/ckeditor5-basic-styles/translations/<LANGUAGE>.js` file.
+As with styles, the rule of thumb is to import translations from all the individual packages from which you import the editor features. For example, if you import the bold feature from the `@ckeditor/ckeditor5-basic-styles` package, you should also import the translations from the `@ckeditor/ckeditor5-basic-styles/translations/<LANGUAGE>.js` file.
 
 Some plugins may not have translations. In such cases, you do not need to import translations for them.
 
@@ -441,9 +412,7 @@ The build size of the project before and after the optimizations is as follows:
 
 |                    | Before optimization | After optimization | Improvement |
 |--------------------|---------------------|--------------------|-------------|
-| JavaScript         | 1,012.12 kB         | 976.18 kB          | -3.55%      |
-| CSS                | 477.61 kB           | 191.16 kB          | -59.98%     |
-| JavaScript gzipped | 270.71 kB           | 259.11 kB          | -4.29%      |
-| CSS gzipped        | 65.26 kB            | 30.96 kB           | -52.56%     |
+| JavaScript gzipped | 269.18 kB           | 257.31 kB          | -4.41%      |
+| CSS gzipped        | 64.98 kB            | 30.80 kB           | -52.60%     |
 
-Thanks to the above optimizations, we were able to reduce the total build size (JavaScript + CSS) by `322,39 kB` (`45,9 kB` gzipped), which in effect gives us ~80% of the original size. These results will vary depending on the editor features and bundler you use.
+Thanks to the above optimizations, we were able to reduce the total build size (JavaScript + CSS) by `46,05 kB` gzipped, which in effect gives us ~85% of the original size. These results will vary depending on the editor features and bundler you use.
