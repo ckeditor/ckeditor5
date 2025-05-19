@@ -329,6 +329,15 @@ Here is a table listing various model elements and their properties registered i
 			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
+			<td><code>listItem</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
 			<td><code>media</code></td>
 			<td class="value_positive"><code>true</code></td>
 			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
