@@ -46,6 +46,8 @@ export function attachTourBalloon( { target, text, editor } ) {
 		text,
 		trigger: target,
 		mode: 'click',
+		variant: 'dark',
+		showCloseButton: true,
 		showAfterMount: true,
 		hideOnOutsideClick: false
 	} );
