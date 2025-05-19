@@ -55,7 +55,7 @@ export function attachTourBalloon( { target, text, editor } ) {
 	for ( const root of editor.editing.view.document.roots ) {
 		root.once( 'change:isFocused', ( evt, name, isFocused ) => {
 			if ( isFocused ) {
-				tooltip.hide();
+				tooltip.destroy();
 			}
 		} );
 	}
