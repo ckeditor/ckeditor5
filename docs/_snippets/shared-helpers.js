@@ -29,7 +29,7 @@
  * @param {String} options.text The description to be shown in the tooltip.
  * @param {module:core/editor/editor~Editor} options.editor The editor instance.
  */
-export function attachTourBalloon( { target, text, editor } ) {
+export function attachTourBalloon( { target, text, editor, tippyOptions } ) {
 	if ( !target ) {
 		console.warn( '[attachTourBalloon] The target DOM node for the feature tour balloon does not exist.', { text } );
 
@@ -48,10 +48,14 @@ export function attachTourBalloon( { target, text, editor } ) {
 		mode: 'click',
 		variant: 'dark',
 		icon: 'bulb',
+		disableOnMobile: false,
 		showCloseButton: true,
 		showAfterMount: true,
 		hideOnOutsideClick: false,
-		destroyOnHide: true
+		destroyOnHide: true,
+		...tippyOptions?.placement && {
+			position: tippyOptions.placement
+		}
 	} );
 
 	for ( const root of editor.editing.view.document.roots ) {
