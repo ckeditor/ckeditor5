@@ -126,11 +126,33 @@ describe( 'FontSizeEditing', () => {
 					expect( editor.getData() ).to.equal( '<p>f<span style="font-size:8em;">o</span>o</p>' );
 				} );
 
-				it( 'should downcast `fontSize` attribute only for text', () => {
-					setModelData( doc, '<paragraph fontSize="8em"><$text fontSize="8em">foo</$text></paragraph>' );
+				it( 'should downcast `fontSize` attribute only for text and inline objects', () => {
+					editor.model.schema.register( 'inlineObject', {
+						inheritAllFrom: '$inlineObject'
+					} );
+
+					editor.conversion.elementToElement( {
+						model: 'inlineObject',
+						view: {
+							name: 'span',
+							classes: 'inline-object'
+						}
+					} );
+
+					setModelData( doc,
+						'<paragraph fontSize="8em">' +
+							'<$text fontSize="8em">foo</$text>' +
+							'<inlineObject fontSize="8em"></inlineObject>' +
+						'</paragraph>'
+					);
 
 					expect( editor.getData() ).to.equal(
-						'<p><span style="font-size:8em;">foo</span></p>'
+						'<p>' +
+							'<span style="font-size:8em;">' +
+								'foo' +
+								'<span class="inline-object">&nbsp;</span>' +
+							'</span>' +
+						'</p>'
 					);
 				} );
 			} );

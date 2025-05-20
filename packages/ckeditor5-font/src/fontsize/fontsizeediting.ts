@@ -137,7 +137,7 @@ export default class FontSizeEditing extends Plugin {
 		editor.conversion.for( 'downcast' ).attributeToElement( {
 			model: FONT_SIZE,
 			view: ( attributeValue, { writer }, { item } ) => {
-				if ( !attributeValue || !item.is( '$textProxy' ) ) {
+				if ( !attributeValue || !item.is( 'selection' ) && !editor.model.schema.isInline( item ) ) {
 					return;
 				}
 

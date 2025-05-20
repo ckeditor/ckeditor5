@@ -100,7 +100,7 @@ export default class FontFamilyEditing extends Plugin {
 		editor.conversion.for( 'downcast' ).attributeToElement( {
 			model: FONT_FAMILY,
 			view: ( attributeValue, { writer }, { item } ) => {
-				if ( !item.is( '$textProxy' ) ) {
+				if ( !item.is( 'selection' ) && !editor.model.schema.isInline( item ) ) {
 					return null;
 				}
 

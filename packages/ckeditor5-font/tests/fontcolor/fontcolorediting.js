@@ -182,11 +182,33 @@ describe( 'FontColorEditing', () => {
 			} );
 		} );
 
-		it( 'should downcast `fontColor` attribute only for text', () => {
-			setModelData( doc, '<paragraph fontColor="red"><$text fontColor="red">foo</$text></paragraph>' );
+		it( 'should downcast `fontColor` attribute only for text and inline object', () => {
+			editor.model.schema.register( 'inlineObject', {
+				inheritAllFrom: '$inlineObject'
+			} );
+
+			editor.conversion.elementToElement( {
+				model: 'inlineObject',
+				view: {
+					name: 'span',
+					classes: 'inline-object'
+				}
+			} );
+
+			setModelData( doc,
+				'<paragraph fontColor="red">' +
+					'<$text fontColor="red">foo</$text>' +
+					'<inlineObject fontColor="red"></inlineObject>' +
+				'</paragraph>'
+			);
 
 			expect( editor.getData() ).to.equal(
-				'<p><span style="color:red;">foo</span></p>'
+				'<p>' +
+					'<span style="color:red;">' +
+						'foo' +
+						'<span class="inline-object">&nbsp;</span>' +
+					'</span>' +
+				'</p>'
 			);
 		} );
 	} );

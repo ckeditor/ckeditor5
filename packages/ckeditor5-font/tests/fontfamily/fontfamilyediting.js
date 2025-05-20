@@ -117,11 +117,33 @@ describe( 'FontFamilyEditing', () => {
 					expect( editor.getData() ).to.equal( '<p>f<span style="font-family:Arial, Helvetica, sans-serif;">o</span>o</p>' );
 				} );
 
-				it( 'should downcast `fontFamily` attribute only for text', () => {
-					setModelData( doc, '<paragraph fontFamily="Arial"><$text fontFamily="Arial">foo</$text></paragraph>' );
+				it( 'should downcast `fontFamily` attribute only for text and inline objects', () => {
+					editor.model.schema.register( 'inlineObject', {
+						inheritAllFrom: '$inlineObject'
+					} );
+
+					editor.conversion.elementToElement( {
+						model: 'inlineObject',
+						view: {
+							name: 'span',
+							classes: 'inline-object'
+						}
+					} );
+
+					setModelData( doc,
+						'<paragraph fontFamily="Arial">' +
+							'<$text fontFamily="Arial">foo</$text>' +
+							'<inlineObject fontFamily="Arial"></inlineObject>' +
+						'</paragraph>'
+					);
 
 					expect( editor.getData() ).to.equal(
-						'<p><span style="font-family:Arial;">foo</span></p>'
+						'<p>' +
+							'<span style="font-family:Arial;">' +
+								'foo' +
+								'<span class="inline-object">&nbsp;</span>' +
+							'</span>' +
+						'</p>'
 					);
 				} );
 			} );
