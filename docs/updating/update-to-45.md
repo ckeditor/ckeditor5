@@ -28,14 +28,6 @@ The typing behavior has been improved for plain text typing. This adjustment all
 
 A new method to start a "tracking session" has been introduced, preventing automatic merging of adjacent suggestions. This allows for more precise control over individual changes, catering to workflows that require selective acceptance of edits.
 
-### Tree-shaking improvements
-
-Several packages have been updated to allow more efficient tree-shaking. This means that bundlers will more effectively remove unused code, resulting in smaller bundle sizes and improved performance.
-
-If you previously followed the {@link getting-started/setup/optimizing-build-size Optimizing build size} guide, you no longer need to use the `@ckeditor/ckeditor5-PACKAGE_NAME/dist/index.js` import paths to load the editor and its features. Instead, you can now import all the code directly from the `ckeditor5` and `ckeditor5-premium-features` packages and achieve an almost identical bundle size. The old import paths will continue to work, so no changes are required if you prefer to keep using them.
-
-However, the optimized imports for styles and translations are still recommended for projects sensitive to bundle size.
-
 ### Miscellaneous improvements
 
 * Sticky toolbars and balloons are now better aligned with the visual viewport on iOS and Safari, ensuring correct positioning when zooming.
