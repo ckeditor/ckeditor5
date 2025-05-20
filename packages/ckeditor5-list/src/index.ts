@@ -26,6 +26,10 @@ export type { default as ListReversedCommand } from './listproperties/listrevers
 export type { default as ListStartCommand } from './listproperties/liststartcommand.js';
 export type { default as ListStyleCommand } from './listproperties/liststylecommand.js';
 
+// ListItemFormatting.
+export { default as ListItemFormatting } from './listitemformatting.js';
+export { default as ListItemFontFamilyIntegration } from './listitemformatting/listitemfontfamilyintegration.js';
+
 // TodoList/
 export { default as TodoList } from './todolist.js';
 export { default as TodoListUI } from './todolist/todolistui.js';

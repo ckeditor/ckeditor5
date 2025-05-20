@@ -35,6 +35,7 @@ import { CKEditorError, type GetCallback } from 'ckeditor5/src/utils.js';
 
 import ListIndentCommand from './listindentcommand.js';
 import ListCommand from './listcommand.js';
+import ListItemFormatting from '../listitemformatting.js';
 import ListMergeCommand from './listmergecommand.js';
 import ListSplitCommand from './listsplitcommand.js';
 import ListUtils from './listutils.js';
@@ -121,7 +122,7 @@ export default class ListEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public static get requires() {
-		return [ Enter, Delete, ListUtils, ClipboardPipeline ] as const;
+		return [ Enter, Delete, ListUtils, ClipboardPipeline, ListItemFormatting ] as const;
 	}
 
 	/**
