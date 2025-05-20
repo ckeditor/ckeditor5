@@ -1,21 +1,54 @@
 ---
 category: framework
 order: 500
-meta-title: Advanced CKEditor 5 How-tos | CKEditor 5 Documentation
+meta-title: Server-Side Editor API | CKEditor 5 Documentation
 modified_at: 2024-03-19
 ---
 
-# Advanced How-tos
+# Server-Side Editor API
 
-In this guide, we'll explore how to solve common challenges in CKEditor 5 by using API. Whether you're building custom features, working on server-side integrations, or need to automate content changes, these examples will show you how to do it.
+The Server-Side Editor API enables you to execute editor operations directly on your server. This means you can manipulate content and manage collaborative data such as suggestions, comments, and revision history - all from your server-side code.
 
-You might need these solutions when:
-- Building your own plugins or features
-- Creating server-side scripts to process content
-- Automating content updates across many documents
-- Integrating the editor with other systems
+## Why Use Server-Side Editor API?
 
-We'll start with simple tasks and work our way up to more complex scenarios. Each example includes real-world use cases and step-by-step explanations.
+While CKEditor 5 provides a rich client-side editing experience, there are many scenarios where server-side content processing is essential:
+
+- **Security**: Process sensitive content in a controlled environment without exposing it to client-side manipulation
+- **Performance**: Handle large-scale content operations without impacting the user's browser
+- **Consistency**: Ensure uniform content changes across multiple documents
+- **Integration**: Connect with other server-side systems and databases directly
+- **Automation**: Run content processing tasks as part of your server workflows
+- **Scalability**: Process multiple documents simultaneously without client-side limitations
+
+## Key Benefits
+
+- **Deep Integration**: Seamlessly connect your application with document data
+- **Automated Processing**: Handle content changes programmatically
+- **Bulk Operations**: Process multiple documents efficiently
+- **Custom Workflows**: Build tailored content management solutions
+
+## Common Use Cases
+
+- **Automated Review Systems**: Build systems that automatically review and suggest content changes
+- **Content Migration**: Update content structure and references across multiple documents
+- **Bulk Content Updates**: Make consistent changes across your entire content base
+- **Custom Integration**: Connect the editor with your existing systems and workflows
+- **Automated Publishing**: Prepare and process content for publication
+- **Content Analysis**: Analyze and improve content quality automatically
+- **Real-time Processing**: Update documents during live editing sessions
+- **AI-powered Editing**: Make automated suggestions while users are actively editing
+- **Shared Content Blocks**: Update multiple documents when source content changes
+- **Dynamic Content**: Periodically update values like stock prices or other real-time data
+
+## Getting Started with Server-Side Editor API
+
+The following sections provide practical examples of how to use the Server-Side Editor API. Each example demonstrates a specific use case and includes:
+
+- A clear explanation of what the code does
+- Step-by-step implementation details
+- Real-world scenarios where the solution is useful
+
+The examples progress from basic operations to more complex scenarios, helping you understand how to build powerful server-side content processing solutions.
 
 ## Working with Content
 
@@ -28,7 +61,7 @@ Let's start with something simple. Imagine you're working on a document and need
 editor.execute( 'replaceAll', 'entirely', 'completely' );
 ```
 
-That's it! This one line will:
+This one line will:
 - Find all instances of "entirely" in your document
 - Change each one to "completely"
 - Keep all the formatting around the changed text
@@ -39,18 +72,12 @@ This is perfect for fixing typos, updating old terms, or making any bulk changes
 
 Now, let's try something more complex. Imagine you need to update all links in your document from `/docs/` to `/documents/`. This is a common task when moving content between environments or updating your site structure.
 
-First, we need to get all the content from the document and prepare it for changes:
-
 ```js
 // Get the root element and create a range that covers all content.
 const root = editor.model.document.getRoot();
 const range = editor.model.createRangeIn( root );
 const items = Array.from( range.getItems() );
-```
 
-Then, we'll update each link we find:
-
-```js
 // Use model.change to ensure proper undo/redo support.
 editor.model.change( writer => {
     for ( const item of items ) {
@@ -74,19 +101,13 @@ This approach is particularly useful when you need to:
 
 Let's say you need to add a pre-made section to your document. This is useful when you want to add templates, import content from other systems, or create dynamic content.
 
-First, we need to prepare our HTML content and convert it to the editor's format:
-
 ```js
 // The HTML content we want to add.
 const html = '<h2>New section</h2><p>This is a <strong>new section</strong> inserted into the document using <u>server-side editor API</u>.</p>';
 
 // Convert HTML to the editor's model.
 const model = editor.data.parse( html );
-```
 
-Then, we'll find where to insert it and add the content:
-
-```js
 // Get the root element and create an insertion position.
 const root = editor.model.document.getRoot();
 const insertPosition = editor.model.createPositionAt( root, 1 );
@@ -100,17 +121,13 @@ This is perfect for:
 - Inserting ready-made templates
 - Adding content from the clipboard
 
-## Working with Suggestions and Comments
+## Working with Track Changes
 
-### Simple Suggestions
+Let's explore how to work with track changes in your documents. While the editor's UI is great for manual edits, the API is perfect for automating suggestions or making bulk changes. For more information about {@link features/track-changes track changes}, see the documentation.
 
-Let's start with the basics of suggestions. While the editor's UI is great for manual edits, the API is perfect for automating suggestions or making bulk changes. This is useful when:
-- You're building an automated review system
-- You need to suggest changes to multiple documents at once
-- You want to integrate suggestion creation with your own workflow
-- You're creating a custom UI for content review
+### Text Modifications
 
-Here's a simple example of how to make a text replacement as a suggestion:
+Let's start with a basic text replacement:
 
 ```js
 // Enable track changes to mark our edits as suggestions.
@@ -120,15 +137,18 @@ editor.execute( 'trackChanges' );
 editor.execute( 'replaceAll', 'I', 'you' );
 ```
 
-This approach is particularly useful for automated content updates. For example, you might use it to standardize terminology across multiple documents or update outdated references in your content. The `trackChanges` command ensures that your changes are marked as suggestions, making it easy for others to review and accept or reject them.
+This approach is particularly useful when:
+- You're building an automated review system or custom UI for content review
+- You need to process suggestions across multiple documents or sections
+- You want to integrate suggestion creation with your own workflow
+- You're implementing AI-powered suggestions or automated content updates
+- You need to handle shared content blocks and dynamic values
 
-### Making Complex Suggestions
+This is perfect for automated content updates. For example, you might use it to standardize terminology across multiple documents or update outdated references in your content. The `trackChanges` command ensures that your changes are marked as suggestions, making it easy for others to review and accept or reject them. It's also ideal for implementing AI-powered suggestions that appear in real-time during collaborative editing sessions.
 
-Now that we understand why we might want to use the API for suggestions, let's look at more complex scenarios.
+### Content Structure Changes
 
-**Scenario 1: Removing Content as a Suggestion**
-
-When you need to programmatically suggest content removal, here's how to do it:
+Now, let's look at how to suggest content removal:
 
 ```js
 // Enable track changes to mark our edits as suggestions.
@@ -145,9 +165,7 @@ editor.model.deleteContent( deleteSelection );
 
 This pattern is essential when building automated content review systems. You might use it to flag outdated sections, remove deprecated content, or clean up documents before publication. The API gives you precise control over what gets removed and how the changes are tracked.
 
-**Scenario 2: Adding New Content as a Suggestion**
-
-Similarly, when you need to programmatically add content as suggestions, here's how:
+Similarly, you can suggest adding new content:
 
 ```js
 // Enable track changes for the new content.
@@ -169,11 +187,42 @@ This approach shines in several real-world scenarios:
 - Integrating with content management systems to propose changes
 - Building custom workflows for content creation and review
 
-### Managing Comments
+### Attribute Modifications
 
-Comments are a great way to discuss changes with your team. Let's see how to work with them.
+Sometimes you need more advanced control over how your changes are recorded, especially when working with attributes. Let's look at how to suggest attribute changes, like updating link URLs:
 
-First, we'll get all the comment threads, then resolve any open ones:
+```js
+// Get the track changes editing plugin for direct access to suggestion recording.
+const tcEditing = editor.plugins.get( 'TrackChangesEditing' );
+
+// Get the root element and create a range that covers all content.
+const root = editor.model.document.getRoot();
+const range = editor.model.createRangeIn( root );
+const items = Array.from( range.getItems() );
+
+// Process each item in the document.
+for ( const item of items ) {
+    editor.model.change( writer => {
+        // Use _recordAttributeChanges to ensure the change is properly recorded as a suggestion.
+        tcEditing._recordAttributeChanges( () => {
+            let href = item.getAttribute( 'linkHref' );
+
+            // Only process text proxies (parts of text nodes) that have a `linkHref` attribute.
+            if ( item.is( 'textProxy' ) && href ) {
+                // Update the link URL, for example changing '/docs/' to '/documents/'.
+                href = href.replace( '/docs/', '/documents/' );
+
+                // Set the new attribute value, which will be recorded as a suggestion.
+                writer.setAttribute( 'linkHref', href, item );
+            }
+        } );
+    } );
+}
+```
+
+## Working with Comments
+
+{@link features/comments Comments} are a great way to discuss changes with your team. Let's see how to work with them:
 
 ```js
 // Get all comment threads from the document.
@@ -189,11 +238,11 @@ for ( const thread of threads ) {
 
 This code is particularly useful when you need to clean up a document before finalizing it. You might use it to automatically resolve old discussions, prepare documents for publication, or maintain a clean comment history in your content management system.
 
-## Working with Revisions
+## Working with Revision History
 
-Let's start with the basics of revision control. When you make changes, you can save them as a new revision.
+### Basic Revision Management
 
-First, make your changes, then save them as a new revision:
+Let's start with the basics of {@link features/revision-history revision control}. When you make changes, you can save them as a new revision:
 
 ```js
 // Make some changes to the document.
@@ -207,9 +256,7 @@ This approach is essential for maintaining a clear history of your document's ev
 
 ### Working with Revision Data
 
-Now, let's try something more complex. Let's say you need to work with different revisions of your document. This is useful when you want to compare revisions, export them, or build your own features.
-
-First, we'll get the necessary tools and the revision we want to work with:
+Now, let's try something more complex. Let's say you need to work with different revisions of your document:
 
 ```js
 // Get the revision management tools.
@@ -217,18 +264,17 @@ const revisionHistory = editor.plugins.get( 'RevisionHistory' );
 const revisionTracker = editor.plugins.get( 'RevisionTracker' );
 
 // Get the first revision from history.
-const revision = revisionHistory.getRevisions()[0];
-```
+const revision = revisionHistory.getRevisions()[ 0 ];
 
-Then, we can get all the data from that revision:
-
-```js
 // Get the content and attributes of the revision.
 const documentData = await revisionTracker.getRevisionDocumentData( revision );
 const attributes = await revisionTracker.getRevisionRootsAttributes( revision );
 ```
 
-This data can be used in many ways, such as:
-- Saving data to your database
-- Comparing different revisions
-- Building your own features
+This is useful when you want to:
+- Compare revisions
+- Export them
+- Build your own features
+- Retrieve and process document data of a given revision
+- Restore revisions server-side, possibly across multiple documents
+- Integrate revision data with external systems
