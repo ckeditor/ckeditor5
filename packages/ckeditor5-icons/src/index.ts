@@ -95,6 +95,7 @@ export { default as IconLoupe } from '../theme/icons/loupe.svg';
 export { default as IconLowVision } from '../theme/icons/low-vision.svg';
 export { default as IconMagicWand } from '../theme/icons/magic-wand.svg';
 export { default as IconMarker } from '../theme/icons/marker.svg';
+export { default as IconMaximize } from '../theme/icons/maximize.svg';
 export { default as IconMediaPlaceholder } from '../theme/icons/media-placeholder.svg';
 export { default as IconMedia } from '../theme/icons/media.svg';
 export { default as IconMultiLevelList } from '../theme/icons/multi-level-list.svg';
