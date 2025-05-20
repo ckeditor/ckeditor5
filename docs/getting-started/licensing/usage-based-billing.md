@@ -65,6 +65,10 @@ The server’s response confirms whether the license is valid. If invalid, the e
 
 Each pricing plan includes a specific number of editor loads. If you exceed this limit, you can either upgrade to a higher plan or pay for additional editor loads in blocks of 1,000.
 
+<info-box>
+	Please note there are several types of license keys and they may be handled differently in usage-based billing. Refer to the {@link getting-started/licensing/license-key-and-activation#license-key-types License key types} section for details.
+</info-box>
+
 ### Billing and metering cycles
 
 Your billing cycle depends on the type of subscription plan you have chosen  &ndash; **monthly** or **annual**.
@@ -80,7 +84,7 @@ If you surpass your monthly limit, you will be automatically charged a standard 
 
 ### CKEditor Free plan
 
-If you use our {@link getting-started/licensing/license-key-and-activation#using-the-gpl-key CKEditor Free plan} and exceed your allocated editor loads without providing a valid payment method, your editor will switch to read-only mode until the next month. If a valid payment method is provided, a standard charge of standard charging rate per additional block of 1,000 editor loads applies.
+If you use our CKEditor Free plan and exceed your allocated editor loads without providing a valid payment method, your editor will switch to read-only mode until the next month. If a valid payment method is provided, a standard charge of standard charging rate per additional block of 1,000 editor loads applies.
 
 ### Trial period usage
 
