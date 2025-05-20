@@ -82,10 +82,7 @@ ClassicEditor
 		editor.model.document.on( 'change', () => {
 			outputElement.innerText = editor.getData();
 
-			window.shikiHighlightCode( editor.getData(), {
-				lang: 'markdown',
-				theme: 'github-light'
-			} )
+			window.umberto.highlightCode( editor.getData(), 'markdown' )
 				.then( highlightedHTML => {
 					outputElement.innerHTML = highlightedHTML;
 				} );
@@ -93,7 +90,10 @@ ClassicEditor
 
 		// Set the initial data with delay so hightlight.js doesn't catch it.
 		setTimeout( () => {
-			outputElement.innerText = editor.getData();
+			window.umberto.highlightCode( editor.getData(), 'markdown' )
+				.then( highlightedHTML => {
+					outputElement.innerHTML = highlightedHTML;
+				} );
 		}, 500 );
 	} )
 	.catch( err => {
