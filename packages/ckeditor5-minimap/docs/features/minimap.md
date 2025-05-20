@@ -3,8 +3,6 @@ title: Content minimap
 menu-title: Content minimap
 meta-title: Content minimap | CKEditor 5 Documentation
 category: features
-classes: main__content--no-toc
-toc: false
 contributeUrl: false
 modified_at: 2021-07-12
 ---
