@@ -2,12 +2,12 @@
 category: framework
 order: 500
 meta-title: Server-Side Editor API | CKEditor 5 Documentation
-modified_at: 2024-03-19
+modified_at: 2025-05-20
 ---
 
 # Server-Side Editor API
 
-The Server-Side Editor API enables you to execute editor operations directly on your server. This means you can manipulate content and manage collaborative data such as suggestions, comments, and revision history - all from your server-side code.
+Server-Side Editor API allows for deep and complex integration of your application with document data, enabling you to manipulate content and manage collaborative data such as suggestions, comments, and revision history directly from your server-side code.
 
 ## Why Use Server-Side Editor API?
 
@@ -20,45 +20,34 @@ While CKEditor 5 provides a rich client-side editing experience, there are many 
 - **Automation**: Run content processing tasks as part of your server workflows
 - **Scalability**: Process multiple documents simultaneously without client-side limitations
 
-## Key Benefits
-
-- **Deep Integration**: Seamlessly connect your application with document data
-- **Automated Processing**: Handle content changes programmatically
-- **Bulk Operations**: Process multiple documents efficiently
-- **Custom Workflows**: Build tailored content management solutions
-
 ## Common Use Cases
 
-- **Automated Review Systems**: Build systems that automatically review and suggest content changes
-- **Content Migration**: Update content structure and references across multiple documents
-- **Bulk Content Updates**: Make consistent changes across your entire content base
-- **Custom Integration**: Connect the editor with your existing systems and workflows
-- **Automated Publishing**: Prepare and process content for publication
-- **Content Analysis**: Analyze and improve content quality automatically
-- **Real-time Processing**: Update documents during live editing sessions
-- **AI-powered Editing**: Make automated suggestions while users are actively editing
-- **Shared Content Blocks**: Update multiple documents when source content changes
-- **Dynamic Content**: Periodically update values like stock prices or other real-time data
+- **Bulk Content Updates**: Make consistent changes across your entire content base, ideal for updating document templates or standardizing terminology
+- **Content Migration**: Restructure and update references across multiple documents, perfect for website redesigns or content reorganization
+- **Shared Content Blocks**: Automatically update reusable content (like headers, footers, or common sections) across all documents that use it
+- **Dynamic Content**: Periodically update values like stock prices or other real-time data in your documents
+- **Automated Review Systems**: Build systems that automatically review and suggest content changes, like grammar checks or style improvements
+- **AI-powered Editing**: Make automated suggestions while users are actively editing, helping improve content quality
+- **Automated Revision Control**: Track and manage document versions automatically, perfect for maintaining content history and audit trails
+- **Automated Publishing**: Prepare and process content for publication, including formatting, metadata updates, and resolving comments
+- **Custom Integration**: Connect the editor with your existing systems and workflows, such as CMS or document management systems
+- **Automatic Checkpoints**: Create automatic checkpoints in your document
 
 ## Getting Started with Server-Side Editor API
 
-The following sections provide practical examples of how to use the Server-Side Editor API. Each example demonstrates a specific use case and includes:
+This guide shows you how to write scripts that can be executed through the Server-Side Editor API endpoint. The following sections provide examples of such scripts, each demonstrating a specific use case that can be automated on the server side.
 
-- A clear explanation of what the code does
-- Step-by-step implementation details
-- Real-world scenarios where the solution is useful
-
-The examples progress from basic operations to more complex scenarios, helping you understand how to build powerful server-side content processing solutions.
+For information about setting up and using the endpoint itself, see the {TODO: link Cloud Services Server-side Editor API} documentation.
 
 ## Working with Content
 
 ### Simple Text Changes
 
-Let's start with something simple. Imagine you're working on a document and need to change every instance of "entirely" to "completely". Instead of doing it manually, you can do it with one line of code:
+Here's a simple example. Imagine you're working on a document and need to change every instance of "entirely" to "completely". Instead of doing it manually, you can do it with one line of code:
 
 ```js
 // Replace all instances of "entirely" with "completely" in the document.
-editor.execute( 'replaceAll', 'entirely', 'completely' );
+editor.execute( 'replaceAll', 'completely', 'entirely' );
 ```
 
 This one line will:
@@ -66,11 +55,11 @@ This one line will:
 - Change each one to "completely"
 - Keep all the formatting around the changed text
 
-This is perfect for fixing typos, updating old terms, or making any bulk changes to your text.
+This is perfect for fixing typos, updating old terms, or making any bulk changes to your documents.
 
 ### Updating Links in Your Document
 
-Now, let's try something more complex. Imagine you need to update all links in your document from `/docs/` to `/documents/`. This is a common task when moving content between environments or updating your site structure.
+Now, consider a more complex scenario. You need to update all links in your document from `/docs/` to `/documents/`. This is a common task when moving content between environments or updating your site structure.
 
 ```js
 // Get the root element and create a range that covers all content.
@@ -119,11 +108,11 @@ editor.model.insertContent( model, insertPosition );
 This is perfect for:
 - Adding content from other places
 - Inserting ready-made templates
-- Adding content from the clipboard
+- Adding pre-formatted HTML content 
 
 ## Working with Track Changes
 
-Let's explore how to work with track changes in your documents. While the editor's UI is great for manual edits, the API is perfect for automating suggestions or making bulk changes. For more information about {@link features/track-changes track changes}, see the documentation.
+{@link features/track-changes Track changes} helps you manage content suggestions effectively, for tasks like automating content review, and implementing AI-powered suggestions.
 
 ### Text Modifications
 
@@ -137,14 +126,7 @@ editor.execute( 'trackChanges' );
 editor.execute( 'replaceAll', 'I', 'you' );
 ```
 
-This approach is particularly useful when:
-- You're building an automated review system or custom UI for content review
-- You need to process suggestions across multiple documents or sections
-- You want to integrate suggestion creation with your own workflow
-- You're implementing AI-powered suggestions or automated content updates
-- You need to handle shared content blocks and dynamic values
-
-This is perfect for automated content updates. For example, you might use it to standardize terminology across multiple documents or update outdated references in your content. The `trackChanges` command ensures that your changes are marked as suggestions, making it easy for others to review and accept or reject them. It's also ideal for implementing AI-powered suggestions that appear in real-time during collaborative editing sessions.
+The `trackChanges` command ensures that all changes are marked as suggestions, making it easy for others to review and accept or reject them.
 
 ### Content Structure Changes
 
@@ -220,9 +202,9 @@ for ( const item of items ) {
 }
 ```
 
-## Working with Comments
+## Resolving Comments
 
-{@link features/comments Comments} are a great way to discuss changes with your team. Let's see how to work with them:
+{@link features/comments Comments} help you track discussions in your documents. Here's how to get them and automatically resolve them:
 
 ```js
 // Get all comment threads from the document.
@@ -242,7 +224,7 @@ This code is particularly useful when you need to clean up a document before fin
 
 ### Basic Revision Management
 
-Let's start with the basics of {@link features/revision-history revision control}. When you make changes, you can save them as a new revision:
+Here's how to work with the basics of {@link features/revision-history revision history}. When you make changes, you can save them as a new revision:
 
 ```js
 // Make some changes to the document.
@@ -252,11 +234,11 @@ editor.execute( 'replaceAll', 'I', 'you' );
 editor.plugins.get( 'RevisionTracker' ).saveRevision( { name: 'New revision' } );
 ```
 
-This approach is essential for maintaining a clear history of your document's evolution. It's particularly useful when you need to track changes over time, create checkpoints in your work, or maintain an audit trail of content modifications.
+This approach is essential for maintaining a clear history of your document's evolution. It's particularly useful when you need to create checkpoints in your work or maintain an audit trail of content modifications.
 
 ### Working with Revision Data
 
-Now, let's try something more complex. Let's say you need to work with different revisions of your document:
+For more advanced scenarios, you might need to work with different revisions of your document:
 
 ```js
 // Get the revision management tools.
@@ -269,6 +251,8 @@ const revision = revisionHistory.getRevisions()[ 0 ];
 // Get the content and attributes of the revision.
 const documentData = await revisionTracker.getRevisionDocumentData( revision );
 const attributes = await revisionTracker.getRevisionRootsAttributes( revision );
+
+return { documentData, attributes };
 ```
 
 This is useful when you want to:
