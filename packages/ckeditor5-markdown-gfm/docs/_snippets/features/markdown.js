@@ -77,10 +77,18 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		const outputElement = document.querySelector( '#snippet-markdown-output' );
+		const outputElement = document.querySelector( '#snippet-markdown-output > pre > code' );
 
 		editor.model.document.on( 'change', () => {
 			outputElement.innerText = editor.getData();
+
+			window.shikiHighlightCode( editor.getData(), {
+				lang: 'markdown',
+				theme: 'github-light'
+			} )
+				.then( highlightedHTML => {
+					outputElement.innerHTML = highlightedHTML;
+				} );
 		} );
 
 		// Set the initial data with delay so hightlight.js doesn't catch it.
