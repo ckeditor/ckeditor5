@@ -58,11 +58,13 @@ describe( 'utils', () => {
 
 	describe( 'renderDowncastElement()', () => {
 		it( 'should create function executes viewWriter with proper arguments', () => {
-			const downcastViewConverterFn = renderDowncastElement( 'color' );
+			const fakeSchema = { isInline: () => true };
+			const downcastViewConverterFn = renderDowncastElement( 'color', fakeSchema );
 			const fake = testUtils.sinon.fake();
 			const fakeViewWriter = { createAttributeElement: fake };
+			const fakeItem = {};
 
-			downcastViewConverterFn( 'blue', { writer: fakeViewWriter } );
+			downcastViewConverterFn( 'blue', { writer: fakeViewWriter }, { fakeItem } );
 
 			sinon.assert.calledWithExactly( fake, 'span', { style: 'color:blue' }, { priority: 7 } );
 		} );
