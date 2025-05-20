@@ -84,7 +84,7 @@ If you surpass your monthly limit, you will be automatically charged a standard 
 
 ### CKEditor Free plan
 
-If you use our CKEditor Free plan and exceed your allocated editor loads without providing a valid payment method, your editor will switch to read-only mode until the next month. If a valid payment method is provided, a standard charge of standard charging rate per additional block of 1,000 editor loads applies.
+If you use our [CKEditor Free plan](https://portal.ckeditor.com/checkout?plan=free) and exceed your allocated editor loads without providing a valid payment method, your editor will switch to read-only mode until the next month. If a valid payment method is provided, a standard charge of standard charging rate per additional block of 1,000 editor loads applies.
 
 ### Trial period usage
 
