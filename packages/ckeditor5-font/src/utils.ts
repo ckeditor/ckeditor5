@@ -15,7 +15,9 @@ import type {
 	ViewElement,
 	MatcherPattern,
 	ViewElementDefinition,
-	DowncastConversionApi
+	DowncastConversionApi,
+	Schema,
+	Item
 } from 'ckeditor5/src/engine.js';
 
 /**
@@ -90,11 +92,20 @@ export function renderUpcastAttribute( styleAttr: string ) {
  *
  * **Note**: The `styleAttr` parameter should be either `'color'` or `'background-color'`.
  */
-export function renderDowncastElement( styleAttr: string ) {
-	return ( modelAttributeValue: string, { writer }: DowncastConversionApi ): ViewAttributeElement =>
-		writer.createAttributeElement( 'span', {
+export function renderDowncastElement( styleAttr: string, schema: Schema ) {
+	return (
+		modelAttributeValue: string,
+		{ writer }: DowncastConversionApi,
+		{ item }: { item: Item }
+	): ViewAttributeElement | null => {
+		if ( !schema.isInline( item ) ) {
+			return null;
+		}
+
+		return writer.createAttributeElement( 'span', {
 			style: `${ styleAttr }:${ modelAttributeValue }`
 		}, { priority: 7 } );
+	};
 }
 
 /**

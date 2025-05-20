@@ -137,13 +137,7 @@ export default class FontColorEditing extends Plugin {
 
 		editor.conversion.for( 'downcast' ).attributeToElement( {
 			model: FONT_COLOR,
-			view: ( value, conversionApi, { item } ) => {
-				if ( !item.is( '$textProxy' ) ) {
-					return null;
-				}
-
-				return renderDowncastElement( 'color' )( value, conversionApi );
-			}
+			view: renderDowncastElement( 'color', editor.model.schema )
 		} );
 
 		editor.commands.add( FONT_COLOR, new FontColorCommand( editor ) );

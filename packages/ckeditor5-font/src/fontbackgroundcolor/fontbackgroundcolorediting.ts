@@ -125,7 +125,7 @@ export default class FontBackgroundColorEditing extends Plugin {
 
 		editor.conversion.for( 'downcast' ).attributeToElement( {
 			model: FONT_BACKGROUND_COLOR,
-			view: renderDowncastElement( 'background-color' )
+			view: renderDowncastElement( 'background-color', editor.model.schema )
 		} );
 
 		editor.commands.add( FONT_BACKGROUND_COLOR, new FontBackgroundColorCommand( editor ) );
