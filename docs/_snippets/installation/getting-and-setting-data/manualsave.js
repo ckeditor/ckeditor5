@@ -102,15 +102,15 @@ function updateStatus( editor ) {
 let consoleUpdates = 0;
 
 function updateServerDataConsole( msg ) {
-	const console = document.querySelector( '#snippet-manualsave-console' );
+	const code = document.querySelector( '.doc.live-snippet pre code' );
 
 	consoleUpdates++;
-	console.classList.add( 'updated' );
-	console.textContent = msg;
+	code.classList.add( 'updated' );
+	code.textContent = msg;
 
 	setTimeout( () => {
 		if ( --consoleUpdates == 0 ) {
-			console.classList.remove( 'updated' );
+			code.classList.remove( 'updated' );
 		}
 	}, 500 );
 }
