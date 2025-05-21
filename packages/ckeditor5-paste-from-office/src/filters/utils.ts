@@ -54,5 +54,5 @@ export function isPx( value?: string ): value is string {
  * @internal
  */
 export function toPx( value: number ): string {
-	return value.toFixed( 2 ).replace( /\.?0+$/, '' ) + 'px';
+	return Math.round( value ) + 'px';
 }
