@@ -567,7 +567,11 @@ describe( 'PoweredBy', () => {
 
 		it( 'should position the to the left side if the UI language is RTL and no side was configured', async () => {
 			const editor = await createEditor( element, {
-				language: 'ar'
+				language: 'ar',
+				translations: [ { ar: {
+					dictionary: [],
+					getPluralForm: sinon.spy()
+				} } ]
 			} );
 
 			testUtils.sinon.stub( editor.ui.getEditableElement( 'main' ), 'getBoundingClientRect' ).returns( {

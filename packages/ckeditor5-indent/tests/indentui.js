@@ -28,7 +28,11 @@ describe( 'IndentUI', () => {
 		rtlEditor = await ClassicTestEditor
 			.create( element, {
 				plugins: [ IndentUI, IndentEditing ],
-				language: 'ar'
+				language: 'ar',
+				translations: [ { ar: {
+					dictionary: [],
+					getPluralForm: sinon.spy()
+				} } ]
 			} );
 	} );
 
