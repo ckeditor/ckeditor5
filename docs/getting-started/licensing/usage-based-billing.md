@@ -65,7 +65,7 @@ The server’s response confirms whether the license is valid. If invalid, the e
 
 Each pricing plan includes a specific number of editor loads. If you exceed this limit, you can either upgrade to a higher plan or pay for additional editor loads in blocks of 1,000.
 
-<info-box>
+<info-box info>
 	Please note there are several types of license keys and they may be handled differently in usage-based billing. Refer to the {@link getting-started/licensing/license-key-and-activation#license-key-types License key types} section for details.
 </info-box>
 
