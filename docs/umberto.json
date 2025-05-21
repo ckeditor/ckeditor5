@@ -16,7 +16,6 @@
 	],
 	"hexo-config": "docs/hexo-custom-config.json",
 	"extraStyles": "assets/styles.css",
-	"extraScripts": "assets/buildwarningbanner.js",
 	"packagesDir": [
 		"packages/*",
 		"external/ckeditor5-commercial/",
@@ -395,6 +394,7 @@
 	},
 	"docsearch": {
 		"apiKey": "fc463c26455365ad403d5ec51796cd73",
+		"appId": "BH4D9OD16A",
 		"indexName": "ckeditor_nightly",
 		"customRanking": [
 			{
@@ -435,6 +435,13 @@
 		"config": {
 			"trackingId": "G-H2PK3PSE3F"
 		}
+	},
+	"promobar": {
+		"prefix": {
+			"icon": "premium",
+			"title": "NEW"
+		},
+		"message": "Free 14-Day Trial! <a target=\"_blank\" href=\"https://ckeditor.com/ckeditor-5/\">Learn more</a>"
 	},
 	"og": {
 		"description": "Learn how to install, integrate and configure CKEditor 5 and how to work with CKEditor 5 Framework, customize it, create your own plugins and custom editors, change the UI or even bring your own UI to the editor. API reference and examples included."
@@ -852,6 +859,12 @@
 			"id": "support",
 			"navigationIncludeIndex": true,
 			"slug": "support"
+		},
+		{
+			"name": "Theme",
+			"id": "theme",
+			"sourceDir": "theme",
+			"slug": "theme"
 		}
 	]
 }

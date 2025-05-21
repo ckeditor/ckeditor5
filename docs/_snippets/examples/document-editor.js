@@ -7,7 +7,8 @@ import { TableColumnResize } from 'ckeditor5';
 import {
 	CS_CONFIG,
 	DecoupledEditor,
-	getViewportTopOffsetConfig
+	getViewportTopOffsetConfig,
+	setViewportTopOffsetDynamically
 } from '@snippets/index.js';
 
 DecoupledEditor
@@ -37,6 +38,8 @@ DecoupledEditor
 			?.appendChild( editor.ui.view.toolbar.element );
 
 		window.editor = editor;
+
+		setViewportTopOffsetDynamically( editor );
 	} )
 	.catch( err => {
 		console.error( err );

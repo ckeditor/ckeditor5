@@ -8,7 +8,7 @@ modified_at: 2024-06-25
 # Imports in the legacy setup
 
 <info-box warning>
-	⚠️  We changed installation methods and this legacy guide is kept for users who still need to use the old methods. If you want to switch to current CKEditor&nbsp;5 installation methods, please refer to the {@link updating/nim-migration/migration-to-new-installation-methods Migrating to new installation methods} guide.
+	We changed installation methods and this legacy guide is kept for users who still need to use the old methods. If you want to switch to current CKEditor&nbsp;5 installation methods, please refer to the {@link updating/nim-migration/migration-to-new-installation-methods Migrating to new installation methods} guide.
 </info-box>
 
 Starting with CKEditor&nbsp;5 v42.0.0, we introduced new installation methods. We changed the way plugins are shipped and hence the format of the import paths. This guide will help you learn how to import packages using legacy methods.
