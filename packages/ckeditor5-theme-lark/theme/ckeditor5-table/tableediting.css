@@ -30,13 +30,9 @@
 				}
 			}
 
-			/* Dashed outline for cell without border. */
+			/* Dashed outline for cell without any border. */
 			&[style*="border:none"],
-			&[style*="border-style:none"],
-			&[style*="border-left-style:none"],
-			&[style*="border-top-style:none"],
-			&[style*="border-right-style:none"],
-			&[style*="border-bottom-style:none"] {
+			&[style*="border-style:none"] {
 				outline: var(--ck-table-content-default-border-color) 1px dashed;
 				outline-offset: -1px;
 			}
