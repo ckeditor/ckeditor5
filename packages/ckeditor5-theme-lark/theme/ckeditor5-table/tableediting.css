@@ -5,6 +5,7 @@
 
 :root {
 	--ck-color-selector-focused-cell-background: hsla(212, 90%, 80%, .3);
+	--ck-table-content-default-border-color: hsl(0, 0%, 83%);
 }
 
 .ck-widget.table {
@@ -16,12 +17,29 @@
 		 * So do not use `@mixin ck-focus-ring;` here, or any other border styles.
 		 * See more: https://github.com/ckeditor/ckeditor5/issues/16979
 		 */
-		&.ck-editor__nested-editable.ck-editor__nested-editable_focused,
-		&.ck-editor__nested-editable:focus {
-			/* A very slight background to highlight the focused cell */
-			background: var(--ck-color-selector-focused-cell-background);
-			outline: 1px solid var(--ck-color-focus-border);
-			outline-offset: -1px; /* progressive enhancement - no IE support */
+		&.ck-editor__nested-editable {
+			outline: unset;
+
+			&:not(.ck-editor__editable_selected) {
+				&.ck-editor__nested-editable_focused,
+				&:focus {
+					/* A very slight background to highlight the focused cell */
+					background: var(--ck-color-selector-focused-cell-background);
+					outline: 1px solid var(--ck-color-focus-border);
+					outline-offset: -1px; /* progressive enhancement - no IE support */
+				}
+			}
+
+			/* Dashed outline for cell without border. */
+			&[style*="border:none"],
+			&[style*="border-style:none"],
+			&[style*="border-left-style:none"],
+			&[style*="border-top-style:none"],
+			&[style*="border-right-style:none"],
+			&[style*="border-bottom-style:none"] {
+				outline: var(--ck-table-content-default-border-color) 1px dashed;
+				outline-offset: -1px;
+			}
 		}
 	}
 }
