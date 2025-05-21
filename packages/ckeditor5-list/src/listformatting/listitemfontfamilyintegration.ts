@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/listitemformatting/listitemfontfamilyintegration
+ * @module list/listformatting/listitemfontfamilyintegration
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
@@ -43,7 +43,7 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 		const model = editor.model;
 		const listEditing: ListEditing = editor.plugins.get( 'ListEditing' );
 
-		if ( !editor.plugins.has( 'FontFamily' ) ) {
+		if ( !editor.plugins.has( 'FontFamilyEditing' ) ) {
 			return;
 		}
 

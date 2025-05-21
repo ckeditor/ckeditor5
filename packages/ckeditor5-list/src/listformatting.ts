@@ -4,22 +4,28 @@
  */
 
 /**
- * @module list/listitemformatting
+ * @module list/listformatting
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import ListItemFontFamilyIntegration from './listitemformatting/listitemfontfamilyintegration.js';
+import ListItemFontFamilyIntegration from './listformatting/listitemfontfamilyintegration.js';
 
 /**
- * The list item formatting plugin. It loads the list item integrations with formatting plugins.
+ * The list formatting plugin. It enables integration with formatting plugins to style the list marker.
+ * We integrate the following plugins:
+ * * Font color
+ * * Font size
+ * * Font family
+ * * Bold
+ * * Italic
  */
-export default class ListItemFormatting extends Plugin {
+export default class ListFormatting extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
-		return 'ListItemFormatting' as const;
+		return 'ListFormatting' as const;
 	}
 
 	/**
