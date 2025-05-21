@@ -685,7 +685,14 @@ function getLastValidMarkerInText(
 	let lastValidMarker: any;
 
 	for ( const feed of feedsWithPattern ) {
-		const currentMarkerLastIndex = text.lastIndexOf( feed.marker );
+		// RegExp to check inner markers inside the text such as @me@mysite.com
+		const markerInside = `${feed.marker}[\\S]+${feed.marker}[\\S]+`;
+		let currentMarkerLastIndex: any;
+		if (text.match(markerInside)) {
+			currentMarkerLastIndex = text.lastIndexOf( feed.marker, text.lastIndexOf(feed.marker) - 1);
+		} else {
+			currentMarkerLastIndex = text.lastIndexOf( feed.marker );
+		}
 
 		if ( currentMarkerLastIndex > 0 && !text.substring( currentMarkerLastIndex - 1 ).match( feed.pattern ) ) {
 			continue;
