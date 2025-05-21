@@ -122,58 +122,9 @@ BalloonEditor.defaultConfig = {
 
 BalloonEditor.builtinPlugins.push( Title );
 
-BalloonEditor
-	.create( document.querySelector( '#snippet-title' ), {
-		cloudServices: CS_CONFIG,
-		ui: {
-			viewportOffset: {
-				top: getViewportTopOffsetConfig()
-			}
-		},
-		ckbox: {
-			tokenUrl: TOKEN_URL,
-			allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
-		},
-		blockToolbar: [
-			'bulletedList',
-			'numberedList',
-			'|',
-			'outdent',
-			'indent',
-			'|',
-			'insertImage',
-			'blockQuote',
-			'insertTable',
-			'mediaEmbed'
-		]
-	} )
-	.then( editor => {
-		window.editor = editor;
-
-		const titlePlugin = editor.plugins.get( 'Title' );
-		const titleConsole = new Console( document.querySelector( '.title-console__title' ), 'plaintext' );
-		const bodyConsole = new Console( document.querySelector( '.title-console__body' ), 'html' );
-		const dataConsole = new Console( document.querySelector( '.title-console__data' ), 'html' );
-
-		editor.model.document.on( 'change:data', () => {
-			titleConsole.update( titlePlugin.getTitle() );
-			bodyConsole.update( titlePlugin.getBody() );
-			dataConsole.update( editor.getData() );
-		} );
-
-		// Load data.
-		titleConsole.update( '' );
-		bodyConsole.update( '<p>&nbsp;</p>' );
-		dataConsole.update( '<p>&nbsp;</p>' );
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
-
 class Console {
-	constructor( element, language ) {
+	constructor( element ) {
 		this.element = element;
-		this.language = language;
 		this.consoleUpdates = 0;
 		this.previousData = '';
 	}
@@ -190,9 +141,7 @@ class Console {
 
 		element.classList.add( 'updated' );
 
-		const content = window.Prism.highlight( data, window.Prism.languages[ this.language ], this.language );
-
-		element.innerHTML = `'${ content }'`;
+		element.textContent = data;
 
 		setTimeout( () => {
 			if ( --this.consoleUpdates == 0 ) {
@@ -201,3 +150,53 @@ class Console {
 		}, 500 );
 	}
 }
+
+document.addEventListener( 'DOMContentLoaded', () => {
+	BalloonEditor
+		.create( document.querySelector( '#snippet-title' ), {
+			cloudServices: CS_CONFIG,
+			ui: {
+				viewportOffset: {
+					top: getViewportTopOffsetConfig()
+				}
+			},
+			ckbox: {
+				tokenUrl: TOKEN_URL,
+				allowExternalImagesEditing: [ /^data:/, 'origin', /ckbox/ ]
+			},
+			blockToolbar: [
+				'bulletedList',
+				'numberedList',
+				'|',
+				'outdent',
+				'indent',
+				'|',
+				'insertImage',
+				'blockQuote',
+				'insertTable',
+				'mediaEmbed'
+			]
+		} )
+		.then( editor => {
+			window.editor = editor;
+
+			const titlePlugin = editor.plugins.get( 'Title' );
+			const titleConsole = new Console( document.querySelector( '#title-console__title.c-code-block code' ) );
+			const bodyConsole = new Console( document.querySelector( '#title-console__body.c-code-block code' ) );
+			const dataConsole = new Console( document.querySelector( '#title-console__data.c-code-block code' ) );
+
+			editor.model.document.on( 'change:data', () => {
+				titleConsole.update( titlePlugin.getTitle() );
+				bodyConsole.update( titlePlugin.getBody() );
+				dataConsole.update( editor.getData() );
+			} );
+
+			// Load data.
+			titleConsole.update( '' );
+			bodyConsole.update( '<p>&nbsp;</p>' );
+			dataConsole.update( '<p>&nbsp;</p>' );
+		} )
+		.catch( err => {
+			console.error( err.stack );
+		} );
+} );

@@ -5,75 +5,60 @@
 
 <h3>Console</h3>
 
-<pre class="console-container"><code class="no-highlight title-console title-console__title">''</code></pre>
-<pre class="console-container"><code class="no-highlight title-console title-console__body">'&lt;p>&amp;nbsp;&lt;/p>'</code></pre>
-<pre class="console-container"><code class="no-highlight title-console title-console__data">''</code></pre>
+<pre class="doc highlight" id="title-console__title"><code class="plain"></code></pre>
+<pre class="doc highlight" id="title-console__body"><code class="plain">'&lt;p>&amp;nbsp;&lt;/p>'</code></pre>
+<pre class="doc highlight" id="title-console__data"><code class="plain">'&lt;p>&amp;nbsp;&lt;/p>'</code></pre>
 
 <style>
-	.ck.ck-editor__editable_inline {
-		border-color: hsl(0, 0%, 77%);
-	}
+	@layer snippets {
+		.ck.ck-editor__editable_inline {
+			border-color: var(--color-gray-300);
+		}
 
-	/* Let's move pilcrow icon inside the editor space. */
-	.ck.ck-block-toolbar-button {
-		transform: translateX( 40px );
-	}
+		/* Let's move pilcrow icon inside the editor space. */
+		.ck.ck-block-toolbar-button {
+			transform: translateX( 40px );
+		}
 
-	#snippet-title {
-		min-height: 300px;
-		max-width: 450px;
-		padding: 50px;
-		margin: 50px auto 0;
-		box-shadow: 5px 5px 1px 0px hsla( 0, 0%, 0%, 0.1);
-	}
+		#snippet-title {
+			min-height: 300px;
+			max-width: 450px;
+			padding: var(--spacing-12);
+			margin: var(--spacing-12) auto 0;
+			box-shadow: 5px 5px 1px 0px hsla( 0, 0%, 0%, 0.1);
+		}
 
-	#snippet-title h1 {
-		padding-top: 0;
-	}
+		#snippet-title h1 {
+			padding-top: var(--spacing-0);
+		}
 
-	#title-console {
-		max-height: 300px;
-		overflow: auto;
-		white-space: normal;
-		background: #2b2c26;
-		margin-top: 20px;
-		transition: background-color 500ms;
-	}
+		.c-code-block.doc code.updated {
+			background: var(--color-green-100);
+		}
 
-	#title-console.updated {
-		background: green;
-	}
+		#title-console__title,
+		#title-console__body {
+			margin-bottom: var(--spacing-3);
+		}
 
-	pre.console-container {
-		background: #2b2c26;
-		padding-top: 1.333em;
-		padding-bottom: 1.333em;
-		color: #f8f8f2;
-		overflow-x: auto;
-	}
+		#title-console__title code::before,
+		#title-console__body code::before,
+		#title-console__data code::before {
+			display: inline-block;
+			margin-right: var(--spacing-1);
+			opacity: 0.5;
+		}
 
-	.title-console__title,
-	.title-console__body {
-		margin-bottom: 10px;
-	}
+		#title-console__title code::before {
+			content: 'Title:'
+		}
 
-	.title-console__title::before,
-	.title-console__body::before,
-	.title-console__data::before {
-		display: inline-block;
-		margin-right: 5px;
-		opacity: 0.5;
-	}
+		#title-console__body code::before {
+			content: 'Body:'
+		}
 
-	.title-console__title::before {
-		content: 'Title:'
-	}
-
-	.title-console__body::before {
-		content: 'Body:'
-	}
-
-	.title-console__data::before {
-		content: 'Data:';
+		#title-console__data code::before {
+			content: 'Data:';
+		}
 	}
 </style>
