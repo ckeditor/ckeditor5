@@ -5,6 +5,7 @@
 
 .ck.ck-emoji {
 	width: 320px;
+	min-width: 320px;
 }
 
 .ck .ck.ck-emoji__search {
@@ -37,4 +38,5 @@
 
 div.ck.ck-balloon-panel.ck-emoji-picker-balloon {
 	z-index: calc( var( --ck-z-dialog ) + 1 );
+	min-width: 320px;
 }
