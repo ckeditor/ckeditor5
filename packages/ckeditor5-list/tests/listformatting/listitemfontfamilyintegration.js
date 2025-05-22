@@ -87,7 +87,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="fontFamily:Arial">' +
+					'<li style="font-family:Arial">' +
 						'<p>foo</p>' +
 					'</li>' +
 				'</ul>'
@@ -95,7 +95,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="fontFamily:Arial;">' +
+					'<li style="font-family:Arial;">' +
 						'<p>foo</p>' +
 					'</li>' +
 				'</ul>'
@@ -114,7 +114,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="fontFamily:Arial">' +
+					'<li style="font-family:Arial">' +
 						'<p>foo</p>' +
 						'<p>bar</p>' +
 					'</li>' +
@@ -123,7 +123,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="fontFamily:Arial;">' +
+					'<li style="font-family:Arial;">' +
 						'<p>foo</p>' +
 						'<p>bar</p>' +
 					'</li>' +
@@ -140,7 +140,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="fontFamily:Arial">' +
+					'<li style="font-family:Arial">' +
 						'<blockquote>' +
 							'<p>foo</p>' +
 						'</blockquote>' +
@@ -150,7 +150,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="fontFamily:Arial;">' +
+					'<li style="font-family:Arial;">' +
 						'<blockquote>' +
 							'<p>foo</p>' +
 						'</blockquote>' +
@@ -168,7 +168,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="fontFamily:Arial">' +
+					'<li style="font-family:Arial">' +
 						'<pre data-language="Plain text" spellcheck="false">' +
 							'<code class="language-plaintext">foo</code>' +
 						'</pre>' +
@@ -178,7 +178,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="fontFamily:Arial;">' +
+					'<li style="font-family:Arial;">' +
 						'<pre>' +
 							'<code class="language-plaintext">foo</code>' +
 						'</pre>' +
@@ -196,7 +196,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="fontFamily:Arial">' +
+					'<li style="font-family:Arial">' +
 						'<h2>foo</h2>' +
 					'</li>' +
 				'</ul>'
@@ -204,7 +204,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="fontFamily:Arial;">' +
+					'<li style="font-family:Arial;">' +
 						'<h2>foo</h2>' +
 					'</li>' +
 				'</ul>'
@@ -224,7 +224,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
-					'<li style="fontFamily:Arial">' +
+					'<li style="font-family:Arial">' +
 						'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 							'<div class="ck ck-widget__selection-handle"></div>' +
 							'<table>' +
@@ -244,7 +244,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
-					'<li style="fontFamily:Arial;">' +
+					'<li style="font-family:Arial;">' +
 						'<figure class="table">' +
 							'<table>' +
 								'<tbody>' +
