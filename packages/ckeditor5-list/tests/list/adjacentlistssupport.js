@@ -227,7 +227,7 @@ describe( 'AdjacentListsSupport', () => {
 
 			editor.setData( data );
 
-			expect( editor.getData() ).to.equalMarkup( data );
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup( data );
 		} );
 
 		it( 'doesn\'t insert anything between two "ol" lists in output data', () => {
@@ -241,7 +241,7 @@ describe( 'AdjacentListsSupport', () => {
 
 			editor.setData( data );
 
-			expect( editor.getData() ).to.equalMarkup( data );
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup( data );
 		} );
 
 		it( 'doesn\'t insert anything between two different lists in output data', () => {
@@ -255,7 +255,7 @@ describe( 'AdjacentListsSupport', () => {
 
 			editor.setData( data );
 
-			expect( editor.getData() ).to.equalMarkup( data );
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup( data );
 		} );
 	} );
 } );

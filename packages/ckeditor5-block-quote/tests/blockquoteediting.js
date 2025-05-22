@@ -95,7 +95,7 @@ describe( 'BlockQuoteEditing', () => {
 			.then( editor => {
 				editor.setData( '<blockquote><ul><li>xx</li></ul></blockquote>' );
 
-				expect( editor.getData() ).to.equal( '<blockquote><ul><li>xx</li></ul></blockquote>' );
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<blockquote><ul><li>xx</li></ul></blockquote>' );
 
 				return editor.destroy();
 			} );

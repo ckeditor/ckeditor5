@@ -193,6 +193,7 @@ export default class ListEditing extends Plugin {
 		this._setupTabIntegration();
 		this._setupClipboardIntegration();
 		this._setupAccessibilityIntegration();
+		this._setupListItemIdConversionStrategy();
 	}
 
 	/**
@@ -642,6 +643,24 @@ export default class ListEditing extends Plugin {
 			]
 		} );
 	}
+
+	/**
+	 * Convert `listItemId` attribute to `data-list-item-id` attribute on the view element in both downcast pipelines.
+	 */
+	private _setupListItemIdConversionStrategy() {
+		this.registerDowncastStrategy( {
+			scope: 'item',
+			attributeName: 'listItemId',
+
+			setAttributeOnDowncast( writer, attributeValue, viewElement, options ) {
+				if ( options && ( options.skipListItemIds || options.isClipboardPipeline ) ) {
+					return;
+				}
+
+				writer.setAttribute( 'data-list-item-id', attributeValue, viewElement );
+			}
+		} );
+	}
 }
 
 /**
@@ -662,7 +681,7 @@ export interface AttributeDowncastStrategy {
 	/**
 	 * Sets the property on the view element.
 	 */
-	setAttributeOnDowncast( writer: DowncastWriter, value: unknown, element: ViewElement ): void;
+	setAttributeOnDowncast( writer: DowncastWriter, value: unknown, element: ViewElement, options?: Record<string, unknown> ): void;
 }
 
 /**

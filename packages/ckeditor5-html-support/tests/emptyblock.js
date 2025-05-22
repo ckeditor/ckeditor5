@@ -257,7 +257,7 @@ describe( 'EmptyBlock', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 					'<ul>' +
 						'<li>foo</li>' +
 						'<li>&nbsp;</li>' +

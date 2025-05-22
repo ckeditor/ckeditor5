@@ -863,7 +863,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equalMarkup(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 					'<ul>' +
 						'<li><input type="checkbox" value="123" disabled="disabled">foo</li>' +
 						'<li><input type="checkbox" value="321" disabled="disabled">bar</li>' +
@@ -887,7 +887,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equalMarkup(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 					'<ul>' +
 						'<li>' +
 							'<input type="checkbox" value="123" disabled="disabled">' +
@@ -960,7 +960,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equalMarkup(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 					'<ul>' +
 						'<li>' +
 							'<label class="label">' +
@@ -996,7 +996,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equalMarkup(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 					'<ul>' +
 						'<li>' +
 							'<label class="label">' +
@@ -1025,7 +1025,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equalMarkup(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 					'<ul>' +
 						'<li>' +
 							'<label class="label">' +

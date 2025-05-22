@@ -78,7 +78,10 @@ export function listItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 			return;
 		}
 
-		const listItemId = ListItemUid.next();
+		const listItemId = data.viewItem.getAttribute( 'data-list-item-id' ) || ListItemUid.next();
+
+		conversionApi.consumable.consume( data.viewItem, { attributes: 'data-list-item-id' } );
+
 		const listIndent = getIndent( data.viewItem );
 		let listType = data.viewItem.parent && data.viewItem.parent.is( 'element', 'ol' ) ? 'numbered' : 'bulleted';
 
@@ -360,7 +363,7 @@ export function listItemDowncastConverter(
 		const viewRange = insertCustomMarkerElements( listItem, viewElement, strategies, writer, { dataPipeline } );
 
 		// Then wrap them with the new list wrappers (UL, OL, LI).
-		wrapListItemBlock( listItem, viewRange, strategies, writer );
+		wrapListItemBlock( listItem, viewRange, strategies, writer, conversionApi.options );
 	};
 }
 
@@ -622,7 +625,8 @@ function wrapListItemBlock(
 	listItem: ListElement,
 	viewRange: ViewRange,
 	strategies: Array<DowncastStrategy>,
-	writer: DowncastWriter
+	writer: DowncastWriter,
+	options?: Record<string, unknown>
 ) {
 	if ( !listItem.hasAttribute( 'listIndent' ) ) {
 		return;
@@ -643,7 +647,8 @@ function wrapListItemBlock(
 				strategy.setAttributeOnDowncast(
 					writer,
 					currentListItem.getAttribute( strategy.attributeName ),
-					strategy.scope == 'list' ? listViewElement : listItemViewElement
+					strategy.scope == 'list' ? listViewElement : listItemViewElement,
+					options
 				);
 			}
 		}

@@ -188,7 +188,7 @@ describe( 'IndentBlock', () => {
 						const paragraph = doc.getRoot().getChild( 0 );
 
 						expect( paragraph.hasAttribute( 'blockIndent' ) ).to.be.false;
-						expect( editor.getData() ).to.equal( '<ul><li>foo</li></ul>' );
+						expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ul><li>foo</li></ul>' );
 					} );
 				} );
 			} );
