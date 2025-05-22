@@ -14,8 +14,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import stubUid from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
-
+import stubUid from '../list/_utils/uid.js';
 import ListEditing from '../../src/list/listediting.js';
 import ListItemFontFamilyIntegration from '../../src/listformatting/listitemfontfamilyintegration.js';
 
