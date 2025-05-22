@@ -133,6 +133,38 @@ ClassicEditor
 	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.
 </info-box>
 
+### Editor output configuration
+
+Starting with version 45.1.1, list items (`<li>` elements) in the editor data output contain an additional attribute called `data-list-item-id`. It's necessary to ensure better data comparisons within some editor features, like revision history.
+
+```html
+<ul>
+	<li data-list-item-id="e72808ee4144975064acb5d66e5cfba13">Hello</li>
+	<li data-list-item-id="e5d719ab356409767e9d4358485476358">There!</li>
+</ul>
+```
+
+If data loaded to the editor does not contain the `data-list-item-id` attribute on list items, it will be automatically added when data is saved.
+
+If you need to save the editor contents without this attribute, you can set the `skipListItemIds` flag to `true` when calling `editor.getData()` method:
+
+```js
+editor.getData( { skipListItemIds: true } );
+```
+
+Such output will not contain `data-list-item-id` attribute:
+
+```html
+<ul>
+	<li>Hello</li>
+	<li>There!</li>
+</ul>
+```
+
+<info-box>
+	It is not recommended to use data without `data-list-item-id` attribute in the long run as some features may work incorrectly.
+</info-box>
+
 ## Related features
 
 These CKEditor&nbsp;5 features provide similar functionality:
