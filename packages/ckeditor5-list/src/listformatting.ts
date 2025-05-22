@@ -13,12 +13,12 @@ import ListItemFontFamilyIntegration from './listformatting/listitemfontfamilyin
 
 /**
  * The list formatting plugin. It enables integration with formatting plugins to style the list marker.
- * We integrate the following plugins:
- * * Font color
- * * Font size
- * * Font family
- * * Bold
- * * Italic
+ * The list of supported formatting plugins includes:
+ * * Font color.
+ * * Font size.
+ * * Font family.
+ * * Bold.
+ * * Italic.
  */
 export default class ListFormatting extends Plugin {
 	/**
