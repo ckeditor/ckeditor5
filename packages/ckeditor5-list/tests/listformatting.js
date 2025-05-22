@@ -3,29 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-// import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-// import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import stubUid from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
-
-import ListFormatting from '../../src/listformatting.js';
+import ListFormatting from '../src/listformatting.js';
+import ListItemFontFamilyIntegration from '../src/listformatting/listitemfontfamilyintegration.js';
 
 describe( 'ListFormatting', () => {
 	let editor;
 
-	testUtils.createSinonSandbox();
-
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
-			plugins: [ ListFormatting, Paragraph ]
+			plugins: [ ListFormatting ]
 		} );
-
-		// model = editor.model;
-
-		stubUid();
 	} );
 
 	afterEach( async () => {
@@ -46,5 +35,11 @@ describe( 'ListFormatting', () => {
 
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( ListFormatting ) ).to.be.instanceOf( ListFormatting );
+	} );
+
+	it( 'should require integration plugins', () => {
+		expect( ListFormatting.requires ).to.deep.equal( [
+			ListItemFontFamilyIntegration
+		] );
 	} );
 } );
