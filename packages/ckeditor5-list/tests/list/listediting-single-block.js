@@ -357,6 +357,39 @@ describe( 'ListEditing (multiBlock=false)', () => {
 				'<listItem listIndent="0" listItemId="c" listType="bulleted">foo</listItem>'
 			);
 		} );
+
+		it( 'should consume `data-list-item-id` attribute', () => {
+			editor.conversion.for( 'upcast' ).add( dispatcher => {
+				dispatcher.on(
+					'element:li', ( evt, data, conversionApi ) => {
+						const viewElement = data.viewItem;
+						const attributeName = 'secondListItemId';
+
+						if ( !data.modelRange ) {
+							Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+						}
+
+						if ( conversionApi.consumable.test( viewElement, { attributes: 'data-list-item-id' } ) ) {
+							for ( const item of data.modelRange.getItems( { shallow: true } ) ) {
+								conversionApi.writer.setAttribute( attributeName, viewElement.getAttribute( 'data-list-item-id' ), item );
+							}
+						}
+					}, { priority: 'low' }
+				);
+			} );
+
+			editor.setData(
+				'<ul>' +
+					'<li data-list-item-id="c">' +
+						'<p>foo</p>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<listItem listIndent="0" listItemId="c" listType="bulleted">foo</listItem>'
+			);
+		} );
 	} );
 
 	describe( 'downcast - editing', () => {

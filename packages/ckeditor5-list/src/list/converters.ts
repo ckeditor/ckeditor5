@@ -79,6 +79,9 @@ export function listItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 		}
 
 		const listItemId = data.viewItem.getAttribute( 'data-list-item-id' ) || ListItemUid.next();
+
+		conversionApi.consumable.consume( data.viewItem, { attributes: 'data-list-item-id' } );
+
 		const listIndent = getIndent( data.viewItem );
 		let listType = data.viewItem.parent && data.viewItem.parent.is( 'element', 'ol' ) ? 'numbered' : 'bulleted';
 
