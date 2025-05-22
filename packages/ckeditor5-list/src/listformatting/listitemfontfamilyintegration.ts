@@ -58,9 +58,9 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 
 			setAttributeOnDowncast( writer, value, viewElement ) {
 				if ( value ) {
-					writer.setStyle( 'fontFamily', value as string, viewElement );
+					writer.setStyle( 'font-family', value as string, viewElement );
 				} else {
-					writer.removeStyle( 'fontFamily', viewElement );
+					writer.removeStyle( 'font-family', viewElement );
 				}
 			}
 		} );
