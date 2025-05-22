@@ -16,25 +16,29 @@ document.querySelector( '#snippet-manualsave-lag' ).addEventListener( 'change', 
 	HTTP_SERVER_LAG = evt.target.value;
 } );
 
-AutosaveEditor
-	.create( document.querySelector( '#snippet-manualsave' ), {
-		cloudServices: CS_CONFIG,
-		ui: {
-			viewportOffset: {
-				top: getViewportTopOffsetConfig()
+document.addEventListener( 'DOMContentLoaded', () => {
+	AutosaveEditor
+		.create( document.querySelector( '#snippet-manualsave' ), {
+			cloudServices: CS_CONFIG,
+			ui: {
+				viewportOffset: {
+					top: getViewportTopOffsetConfig()
+				}
 			}
-		}
-	} )
-	.then( editor => {
-		window.editor = editor;
+		} )
+		.then( editor => {
+			window.editor = editor;
 
-		handleStatusChanges( editor );
-		handleSaveButton( editor );
-		handleBeforeunload( editor );
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+			updateServerDataConsole( editor.getData() );
+
+			handleStatusChanges( editor );
+			handleSaveButton( editor );
+			handleBeforeunload( editor );
+		} )
+		.catch( err => {
+			console.error( err.stack );
+		} );
+} );
 
 // Handle clicking the "Save" button.
 function handleSaveButton( editor ) {
@@ -99,18 +103,8 @@ function updateStatus( editor ) {
 	}
 }
 
-let consoleUpdates = 0;
-
 function updateServerDataConsole( msg ) {
-	const code = document.querySelector( '.doc.live-snippet pre code' );
+	const console = document.querySelector( '#snippet-manualsave-console' );
 
-	consoleUpdates++;
-	code.classList.add( 'updated' );
-	code.textContent = msg;
-
-	setTimeout( () => {
-		if ( --consoleUpdates == 0 ) {
-			code.classList.remove( 'updated' );
-		}
-	}, 500 );
+	console.codeBlock.setCode( msg );
 }

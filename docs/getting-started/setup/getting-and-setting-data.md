@@ -311,3 +311,7 @@ How to understand this demo:
 * You will be asked whether you want to leave the page if an image is being uploaded or the data has not been saved successfully yet. You can test that by dropping a big image into the editor or changing the "HTTP server lag" to a high value (e.g. 9000ms) and clicking the "Save" button. These actions will make the editor "busy" for a longer time &ndash; try leaving the page then.
 
 {@snippet installation/getting-and-setting-data/manualsave}
+
+**Serwer data:**
+
+<ck:code-block id='snippet-manualsave-console' language='plain'></ck:code-block>

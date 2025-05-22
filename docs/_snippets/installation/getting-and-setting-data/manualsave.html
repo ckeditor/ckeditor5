@@ -13,14 +13,6 @@
 	</div>
 </div>
 
-<p>Server data:</p>
-
-<pre class="highlight doc" id="snippet-manualsave-console">
-	<code class="plain">
-		&#x3C;p&#x3E;Change the content of this editor, then save it on the server.&#x3C;/p&#x3E;
-	</code>
-</pre>
-
 <style>
 	@layer snippets {
 		#snippet-manualsave-header {
@@ -91,15 +83,7 @@
 		}
 
 		#snippet-manualsave-console {
-			max-height: 300px;
-			overflow: auto;
-			white-space: normal;
-			background: var(--color-gray-900);
 			transition: background-color 500ms;
-		}
-
-		#snippet-manualsave-console.updated {
-			background: var(--color-primary-500);
 		}
 
 		#snippet-manualsave-spinner {
@@ -113,7 +97,7 @@
 			width: var(--spacing-4);
 			height: var(--spacing-4);
 			border-radius: 50%;
-			border-top: var(--spacing-1) solid var(--color-gray-400);
+			border-top: var(--spacing-1) solid var(--color-primary-500);
 			border-right: var(--spacing-0-5) solid transparent;
 			animation: manualsave-spinner 1s linear infinite;
 		}
