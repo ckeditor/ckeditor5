@@ -548,6 +548,14 @@
 					]
 				},
 				{
+					"name": "Cloud Services",
+					"id": "cloud-services",
+					"slug": "cloud-services",
+					"badges": [
+						"premium"
+					]
+				},
+				{
 					"name": "Collaboration",
 					"id": "features-collaboration",
 					"slug": "collaboration",
