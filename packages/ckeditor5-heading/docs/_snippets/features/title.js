@@ -155,7 +155,7 @@ BalloonEditor
 		const bodyConsole = document.querySelector( '#title-console__body' );
 		const dataConsole = document.querySelector( '#title-console__data' );
 
-		editor.model.document.on( 'change:data', async () => {
+		editor.model.document.on( 'change:data', () => {
 			titleConsole.codeBlock.setCode( titlePlugin.getTitle() );
 			bodyConsole.codeBlock.setCode( titlePlugin.getBody() );
 			dataConsole.codeBlock.setCode( editor.getData() );
