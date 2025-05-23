@@ -37,14 +37,11 @@ ClassicEditor
 		} );
 
 		window.umberto.afterDomReady( () => {
-			const { fakeDevtools } = document.getElementById( 'base64-upload-console' );
-			const refreshDevTools = window.umberto.throttle( () => {
-				// Real console
-				console.info( window.editor.getData() );
+			const { throttle, formatHtml } = window.umberto;
+			const { codeBlock } = document.getElementById( 'base64-upload-console' );
 
-				// The fake one
-				fakeDevtools.clear();
-				fakeDevtools.loggers.info( window.editor.getData() );
+			const refreshDevTools = throttle( () => {
+				codeBlock.setCode( formatHtml( editor.getData() ) );
 			}, 200 );
 
 			editor.model.document.on( 'change:data', refreshDevTools );
