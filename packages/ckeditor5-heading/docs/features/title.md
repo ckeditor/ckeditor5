@@ -14,11 +14,17 @@ Use the editor below to create a document with distinct title and body sections.
 
 {@snippet features/title}
 
-<ck:code-block id="title-console__title" language="plain" copyable='false'></ck:code-block>
+<ck:code-block id="title-console__title" language="plain" copyable='false'>
+	Here will be the title of the document.
+</ck:code-block>
 
-<ck:code-block id="title-console__body" language="plain" copyable='false'></ck:code-block>
+<ck:code-block id="title-console__body" language="plain" copyable='false'>
+	Here will be the body of the document.
+</ck:code-block>
 
-<ck:code-block id="title-console__data" language="plain" copyable='false'></ck:code-block>
+<ck:code-block id="title-console__data" language="plain" copyable='false'>
+	Here will be the data of the document.
+</ck:code-block>
 
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
