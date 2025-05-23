@@ -52,8 +52,8 @@ function handleSaveButton( editor ) {
 		evt.preventDefault();
 
 		// Fake HTTP server's lag.
-		setTimeout( () => {
-			updateServerDataConsole( data );
+		setTimeout( async () => {
+			await updateServerDataConsole( data );
 
 			pendingActions.remove( action );
 
@@ -103,8 +103,8 @@ function updateStatus( editor ) {
 	}
 }
 
-function updateServerDataConsole( msg ) {
+async function updateServerDataConsole( msg ) {
 	const console = document.querySelector( '#snippet-manualsave-console' );
 
-	console.codeBlock.setCode( msg );
+	await console.codeBlock.setCode( msg );
 }
