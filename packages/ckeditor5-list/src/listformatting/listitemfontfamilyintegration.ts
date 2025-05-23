@@ -54,17 +54,13 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 			isFormatting: true
 		} );
 
-		model.schema.addAttributeCheck( ( context, attributeName ) => {
+		model.schema.addAttributeCheck( context => {
 			const item = context.last;
-
-			if ( attributeName != 'listItemFontFamily' ) {
-				return;
-			}
 
 			if ( !item.getAttribute( 'listItemId' ) ) {
 				return false;
 			}
-		} );
+		}, 'listItemFontFamily' );
 
 		listEditing.registerDowncastStrategy( {
 			scope: 'item',
