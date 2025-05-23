@@ -123,6 +123,8 @@ editor.editing.view.document.getRoot( 'main' ).placeholder = 'new placeholder';
 
 {@snippet features/update-placeholder}
 
+<ck:button id="update-placeholder-button" variant='secondary'>Update placeholder</ck:button>
+
 ## Contribute
 
 The source code of the feature is available on GitHub at [https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-core).

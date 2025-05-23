@@ -31,11 +31,12 @@ PlaceholderEditor
 		placeholder: 'Type some content here!'
 	} )
 	.then( editor => {
-		const button = document.getElementById( 'update-placeholder-button' );
 		window.editor = editor;
-
-		button.addEventListener( 'click', () => {
-			editor.editing.view.document.getRoot( 'main' ).placeholder = 'New placeholder';
+		window.umberto.afterDomReady( () => {
+			const button = document.getElementById( 'update-placeholder-button' );
+			button.addEventListener( 'click', () => {
+				editor.editing.view.document.getRoot( 'main' ).placeholder = 'New placeholder';
+			} );
 		} );
 	} )
 	.catch( err => {
