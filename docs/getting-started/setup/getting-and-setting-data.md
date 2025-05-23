@@ -314,4 +314,4 @@ How to understand this demo:
 
 **Serwer data:**
 
-<ck:code-block id='snippet-manualsave-console' language='plain'></ck:code-block>
+<ck:code-block id='snippet-manualsave-console' language='plain' copyable='false'></ck:code-block>
