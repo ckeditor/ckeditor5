@@ -155,11 +155,11 @@ BalloonEditor
 		const bodyConsole = document.querySelector( '#title-console__body' );
 		const dataConsole = document.querySelector( '#title-console__data' );
 
-		editor.model.document.on( 'change:data', () => {
-			titleConsole.codeBlock.setCode( titlePlugin.getTitle() );
-			bodyConsole.codeBlock.setCode( titlePlugin.getBody() );
-			dataConsole.codeBlock.setCode( editor.getData() );
-		} );
+		editor.model.document.on( 'change:data', window.umberto.throttle( async () => {
+			await titleConsole.codeBlock.setCode( titlePlugin.getTitle() );
+			await bodyConsole.codeBlock.setCode( titlePlugin.getBody() );
+			await dataConsole.codeBlock.setCode( editor.getData() );
+		}, 100 ) );
 	} )
 	.catch( err => {
 		console.error( err.stack );
