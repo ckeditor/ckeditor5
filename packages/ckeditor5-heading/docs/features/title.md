@@ -14,8 +14,6 @@ Use the editor below to create a document with distinct title and body sections.
 
 {@snippet features/title}
 
-### Console
-
 <ck:code-block id="title-console__title" language="plain" copyable='false'></ck:code-block>
 
 <ck:code-block id="title-console__body" language="plain" copyable='false'></ck:code-block>
