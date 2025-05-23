@@ -17,6 +17,10 @@ The editor below is configured to output GitHub Flavored Markdown. Edit the cont
 
 {@snippet features/markdown}
 
+Output:
+
+<ck:code-block id="snippet-markdown-output" language="markdown" />
+
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
