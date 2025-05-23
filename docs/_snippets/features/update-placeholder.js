@@ -35,7 +35,7 @@ PlaceholderEditor
 		window.umberto.afterDomReady( () => {
 			const button = document.getElementById( 'update-placeholder-button' );
 			button.addEventListener( 'click', () => {
-				editor.editing.view.document.getRoot( 'main' ).placeholder = 'New placeholder';
+				editor.editing.view.document.getRoot( 'main' ).placeholder = 'Updated placeholder';
 			} );
 		} );
 	} )
