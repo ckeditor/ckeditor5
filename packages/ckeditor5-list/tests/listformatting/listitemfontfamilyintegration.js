@@ -12,7 +12,7 @@ import FontFamilyEditing from '@ckeditor/ckeditor5-font/src/fontfamily/fontfamil
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import stubUid from '../list/_utils/uid.js';
@@ -309,6 +309,178 @@ describe( 'ListItemFontFamilyIntegration', () => {
 						'</p>' +
 					'</li>' +
 				'</ul>'
+			);
+		} );
+	} );
+
+	describe( 'upcast', () => {
+		it( 'should upcast style in <li> to listItemFontFamily attribute (unordered list)', () => {
+			editor.setData(
+				'<ul>' +
+					'<li style="font-family:Arial;">' +
+						'<span style="font-family:Arial;">foo</span>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
+					'<$text fontFamily="Arial">foo</$text>' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'should upcast style in <li> to listItemFontFamily attribute (ordered list)', () => {
+			editor.setData(
+				'<ol>' +
+					'<li style="font-family:Arial;">' +
+						'<span style="font-family:Arial;">foo</span>' +
+					'</li>' +
+				'</ol>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="numbered">' +
+					'<$text fontFamily="Arial">foo</$text>' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'should only upcast style set in <li> (not <ul> and not <p>)', () => {
+			editor.setData(
+				'<ul style="font-family:Tahoma;">' +
+					'<li style="font-family:Arial;">' +
+						'<p style="font-family:Verdana;">' +
+							'<span style="font-family:Arial;">foo</span>' +
+						'</p>' +
+					'</li>' +
+				'</ul>' +
+				'<p style="font-family:Helvetica;">baz</p>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
+					'<$text fontFamily="Arial">foo</$text>' +
+				'</paragraph>' +
+				'<paragraph>baz</paragraph>'
+			);
+		} );
+
+		it( 'should upcast style in <li> to listItemFontFamily attribute (nested list)', () => {
+			editor.setData(
+				'<ul>' +
+					'<li style="font-family:Arial;">' +
+						'<span style="font-family:Arial;">foo</span>' +
+						'<ul>' +
+							'<li style="font-family:Arial;">' +
+								'<span style="font-family:Arial;">bar</span>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a01" listType="bulleted">' +
+					'<$text fontFamily="Arial">foo</$text>' +
+				'</paragraph>' +
+				'<paragraph listIndent="1" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
+					'<$text fontFamily="Arial">bar</$text>' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'should upcast style in <li> to listItemFontFamily attribute in multi-block', () => {
+			editor.setData(
+				'<ul>' +
+					'<li style="font-family:Arial;">' +
+						'<p>' +
+							'<span style="font-family:Arial;">foo</span>' +
+						'</p>' +
+						'<p>' +
+							'<span style="font-family:Arial;">bar</span>' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
+					'<$text fontFamily="Arial">foo</$text>' +
+				'</paragraph>' +
+				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
+					'<$text fontFamily="Arial">bar</$text>' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'should upcast style in <li> to listItemFontFamily attribute for blockquote', () => {
+			editor.setData(
+				'<ul>' +
+					'<li style="font-family:Arial;">' +
+						'<blockquote>' +
+							'<span style="font-family:Arial;">foo</span>' +
+						'</blockquote>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<blockQuote listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
+					'<paragraph>' +
+						'<$text fontFamily="Arial">foo</$text>' +
+					'</paragraph>' +
+				'</blockQuote>'
+			);
+		} );
+
+		it( 'should upcast style in <li> to listItemFontFamily attribute for heading', () => {
+			editor.setData(
+				'<ul>' +
+					'<li style="font-family:Arial;">' +
+						'<h2>' +
+							'<span style="font-family:Arial;">foo</span>' +
+						'</h2>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<heading1 listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
+					'<$text fontFamily="Arial">foo</$text>' +
+				'</heading1>'
+			);
+		} );
+
+		it( 'should upcast style in <li> to listItemFontFamily attribute for table', () => {
+			editor.setData(
+				'<ul>' +
+					'<li style="font-family:Arial;">' +
+						'<figure class="table">' +
+							'<table>' +
+								'<tbody>' +
+									'<tr>' +
+										'<td>' +
+											'<span style="font-family:Arial;">foo</span>' +
+										'</td>' +
+									'</tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<table listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>' +
+								'<$text fontFamily="Arial">foo</$text>' +
+							'</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
 			);
 		} );
 	} );
