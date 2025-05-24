@@ -10,6 +10,7 @@ import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
 import FontFamilyEditing from '@ckeditor/ckeditor5-font/src/fontfamily/fontfamilyediting.js';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
@@ -76,6 +77,28 @@ describe( 'ListItemFontFamilyIntegration', () => {
 			expect( editor.model.schema.getAttributeProperties( 'listItemFontFamily' ) ).to.include( {
 				isFormatting: true
 			} );
+		} );
+
+		it( 'should set proper schema rules', () => {
+			const listItemParagraph = new ModelElement( 'paragraph', { listItemId: 'a' } );
+			const listItemBlockQuote = new ModelElement( 'blockQuote', { listItemId: 'a' } );
+			const listItemHeading = new ModelElement( 'heading1', { listItemId: 'a' } );
+			const listItemTable = new ModelElement( 'table', { listItemId: 'a' } );
+
+			const paragraph = new ModelElement( 'paragraph' );
+			const blockQuote = new ModelElement( 'blockQuote' );
+			const heading = new ModelElement( 'heading1' );
+			const table = new ModelElement( 'table' );
+
+			expect( model.schema.checkAttribute( [ '$root', listItemParagraph ], 'listItemFontFamily' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', listItemBlockQuote ], 'listItemFontFamily' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', listItemHeading ], 'listItemFontFamily' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', listItemTable ], 'listItemFontFamily' ) ).to.be.true;
+
+			expect( model.schema.checkAttribute( [ '$root', paragraph ], 'listItemFontFamily' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'listItemFontFamily' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', heading ], 'listItemFontFamily' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', table ], 'listItemFontFamily' ) ).to.be.false;
 		} );
 	} );
 
