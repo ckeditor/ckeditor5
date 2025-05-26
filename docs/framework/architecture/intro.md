@@ -3,13 +3,12 @@ category: framework-architecture
 menu-title: Introduction
 meta-title: Introduction to CKEditor 5 architecture | CKEditor 5 Framework Documentation
 order: 10
-toc: false
 feedback-widget: false
 ---
 
 # Introduction to CKEditor&nbsp;5 architecture
 
-This guide introduces the main pillars of the CKEditor&nbsp;5 architecture. 
+This guide introduces the main pillars of the CKEditor&nbsp;5 architecture.
 
 ## Basic CKEditor&nbsp;5 architecture
 

@@ -200,10 +200,11 @@ async function buildDocuments( snippets, paths, constants, imports, getSnippetPl
 		// Iterate over each snippet in the document and replace placeholders with the actual content.
 		for ( const snippet of documentSnippets ) {
 			const data = await readFile( snippet.snippetSources.html, { encoding: 'utf-8' } );
+			const snippetSizeCssClass = snippet.snippetSize ? `live-snippet--${ snippet.snippetSize }` : '';
 
 			documentContent = documentContent.replace(
 				getSnippetPlaceholder( snippet.snippetName ),
-				() => `<div class="doc live-snippet">${ data }</div>`
+				() => `<div class="doc live-snippet ${ snippetSizeCssClass }">${ data }</div>`
 			);
 
 			if ( await fileExists( upath.join( snippet.outputPath, snippet.snippetName, 'snippet.js' ) ) ) {

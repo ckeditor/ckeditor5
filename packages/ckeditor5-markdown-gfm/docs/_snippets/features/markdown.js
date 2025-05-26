@@ -77,16 +77,13 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		const outputElement = document.querySelector( '#snippet-markdown-output' );
+		const { codeBlock } = document.querySelector( '#snippet-markdown-output' );
+		const throttleRefreshPreview = window.umberto.throttle( () => {
+			codeBlock.setCode( editor.getData() );
+		}, 200 );
 
-		editor.model.document.on( 'change', () => {
-			outputElement.innerText = editor.getData();
-		} );
-
-		// Set the initial data with delay so hightlight.js doesn't catch it.
-		setTimeout( () => {
-			outputElement.innerText = editor.getData();
-		}, 500 );
+		editor.model.document.on( 'change', throttleRefreshPreview );
+		throttleRefreshPreview();
 	} )
 	.catch( err => {
 		console.error( err.stack );

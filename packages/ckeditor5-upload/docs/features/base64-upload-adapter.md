@@ -23,6 +23,8 @@ Use the editor below to see the adapter in action. Open the web browser console 
 
 {@snippet features/base64-upload}
 
+<ck:code-block id="base64-upload-console" language="html" />
+
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>

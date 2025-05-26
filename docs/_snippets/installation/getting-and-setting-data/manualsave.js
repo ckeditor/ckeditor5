@@ -16,25 +16,29 @@ document.querySelector( '#snippet-manualsave-lag' ).addEventListener( 'change', 
 	HTTP_SERVER_LAG = evt.target.value;
 } );
 
-AutosaveEditor
-	.create( document.querySelector( '#snippet-manualsave' ), {
-		cloudServices: CS_CONFIG,
-		ui: {
-			viewportOffset: {
-				top: getViewportTopOffsetConfig()
+document.addEventListener( 'DOMContentLoaded', () => {
+	AutosaveEditor
+		.create( document.querySelector( '#snippet-manualsave' ), {
+			cloudServices: CS_CONFIG,
+			ui: {
+				viewportOffset: {
+					top: getViewportTopOffsetConfig()
+				}
 			}
-		}
-	} )
-	.then( editor => {
-		window.editor = editor;
+		} )
+		.then( editor => {
+			window.editor = editor;
 
-		handleStatusChanges( editor );
-		handleSaveButton( editor );
-		handleBeforeunload( editor );
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+			updateServerDataConsole( editor.getData() );
+
+			handleStatusChanges( editor );
+			handleSaveButton( editor );
+			handleBeforeunload( editor );
+		} )
+		.catch( err => {
+			console.error( err.stack );
+		} );
+} );
 
 // Handle clicking the "Save" button.
 function handleSaveButton( editor ) {
@@ -48,8 +52,8 @@ function handleSaveButton( editor ) {
 		evt.preventDefault();
 
 		// Fake HTTP server's lag.
-		setTimeout( () => {
-			updateServerDataConsole( data );
+		setTimeout( async () => {
+			await updateServerDataConsole( data );
 
 			pendingActions.remove( action );
 
@@ -99,18 +103,8 @@ function updateStatus( editor ) {
 	}
 }
 
-let consoleUpdates = 0;
-
-function updateServerDataConsole( msg ) {
+async function updateServerDataConsole( msg ) {
 	const console = document.querySelector( '#snippet-manualsave-console' );
 
-	consoleUpdates++;
-	console.classList.add( 'updated' );
-	console.textContent = msg;
-
-	setTimeout( () => {
-		if ( --consoleUpdates == 0 ) {
-			console.classList.remove( 'updated' );
-		}
-	}, 500 );
+	await console.codeBlock.setCode( msg );
 }

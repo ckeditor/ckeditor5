@@ -204,11 +204,6 @@ To handle the former situation you can listen to the native [`window#beforeunloa
 ### Demo
 
 The example below shows how all these mechanisms can be used together to enable or disable a "Save" button and block the user from leaving the page without saving the data.
-<!-- Not sure how to handle that info
-<info-box>
-	The {@link module:core/pendingactions~PendingActions} plugin is unavailable in any of the builds by default so you need to install it.
-</info-box>
--->
 
 <code-switcher>
 ```js
@@ -316,3 +311,7 @@ How to understand this demo:
 * You will be asked whether you want to leave the page if an image is being uploaded or the data has not been saved successfully yet. You can test that by dropping a big image into the editor or changing the "HTTP server lag" to a high value (e.g. 9000ms) and clicking the "Save" button. These actions will make the editor "busy" for a longer time &ndash; try leaving the page then.
 
 {@snippet installation/getting-and-setting-data/manualsave}
+
+**Serwer data:**
+
+<ck:code-block id='snippet-manualsave-console' language='plain' copyable='false'></ck:code-block>
