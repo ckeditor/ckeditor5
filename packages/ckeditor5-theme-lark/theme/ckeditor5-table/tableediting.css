@@ -9,6 +9,12 @@
 }
 
 .ck-widget.table {
+	/* Dashed outline for table without any border. */
+	& table[style*="border:none"],
+	& table[style*="border-style:none"] {
+		outline: var(--ck-table-content-default-border-color) 1px dashed;
+	}
+
 	& td,
 	& th {
 		/**
@@ -28,13 +34,6 @@
 					outline: 1px solid var(--ck-color-focus-border);
 					outline-offset: -1px; /* progressive enhancement - no IE support */
 				}
-			}
-
-			/* Dashed outline for cell without any border. */
-			&[style*="border:none"],
-			&[style*="border-style:none"] {
-				outline: var(--ck-table-content-default-border-color) 1px dashed;
-				outline-offset: -1px;
 			}
 		}
 	}
