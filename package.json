@@ -222,7 +222,7 @@
   },
   "lint-staged": {
     "**/*": [
-      "eslint"
+      "eslint --quiet"
     ],
     "**/*.css": [
       "stylelint --quiet --allow-empty-input"
