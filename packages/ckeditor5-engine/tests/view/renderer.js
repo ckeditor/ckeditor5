@@ -5045,7 +5045,7 @@ describe( 'Renderer', () => {
 				} );
 
 				// https://github.com/ckeditor/ckeditor5/issues/11472.
-				it( 'should not remove the inline filler while the user is making selection', () => {
+				it( 'should not remove the inline filler while the user is making selection (#11472)', () => {
 					const domSelection = document.getSelection();
 
 					const {

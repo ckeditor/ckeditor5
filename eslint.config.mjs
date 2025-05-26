@@ -11,6 +11,7 @@ import ckeditor5Config from 'eslint-config-ckeditor5';
 export default defineConfig( [
 	{
 		ignores: [
+			'.*/',
 			'build/**',
 			'coverage/**',
 			'dist/**',

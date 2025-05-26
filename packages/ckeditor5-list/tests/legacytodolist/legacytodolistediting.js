@@ -1260,7 +1260,7 @@ describe( 'LegacyTodoListEditing', () => {
 				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
 			} );
 
-			it( 'should do nothing when other arrow key was pressed', () => {
+			it( 'should do nothing when other arrow key was pressed (the selection is at the beginning of text)', () => {
 				setModelData( model, '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
 
 				domEvtDataStub = {
