@@ -12,6 +12,7 @@ CKEditor&nbsp;5 offers an out-of-the-box read-only mode. You can use it to preve
 
 Use the button below to toggle the read-only mode. Some features, like exports or search, are still functional in the read-only mode. Others, like the replace function, are disabled.
 
+<br />
 <ck:button id="snippet-read-only-toggle">Switch to read-only mode</ck:button>
 
 {@snippet features/read-only}
