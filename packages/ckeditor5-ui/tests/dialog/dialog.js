@@ -10,8 +10,6 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Dialog, DialogView, DialogViewPosition, IconView } from '../../src/index.js';
 import { env, keyCodes, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
 
-/* global document */
-
 describe( 'Dialog', () => {
 	let editor, editorElement, dialogPlugin;
 

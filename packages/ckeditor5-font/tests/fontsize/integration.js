@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import FontSize from '../../src/fontsize.js';

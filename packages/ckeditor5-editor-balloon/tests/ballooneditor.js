@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, console */
-
 import BalloonEditor from '../src/ballooneditor.js';
 import BalloonEditorUI from '../src/ballooneditorui.js';
 import BalloonEditorUIView from '../src/ballooneditoruiview.js';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, Event */
-
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import ImageCustomResizeFormView from '../../../src/imageresize/ui/imagecustomresizeformview.js';
 import View from '@ckeditor/ckeditor5-ui/src/view.js';

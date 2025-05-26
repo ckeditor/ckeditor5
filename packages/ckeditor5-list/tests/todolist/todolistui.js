@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 // TODO use new list
 import LegacyTodoListEditing from '../../src/legacytodolist/legacytodolistediting.js';
 import TodoListUI from '../../src/todolist/todolistui.js';

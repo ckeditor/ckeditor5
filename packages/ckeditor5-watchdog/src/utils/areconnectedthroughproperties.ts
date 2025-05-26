@@ -7,8 +7,6 @@
  * @module watchdog/utils/areconnectedthroughproperties
  */
 
-/* globals console */
-
 import getSubNodes from './getsubnodes.js';
 
 /**

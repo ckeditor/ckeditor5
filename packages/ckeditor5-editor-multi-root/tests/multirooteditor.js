@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, console */
-
 import MultiRootEditor from '../src/multirooteditor.js';
 import MultiRootEditorUI from '../src/multirooteditorui.js';
 import MultiRootEditorUIView from '../src/multirooteditoruiview.js';

@@ -7,8 +7,6 @@
  * @module ui/editorui/editorui
  */
 
-/* globals console */
-
 import ComponentFactory from '../componentfactory.js';
 import TooltipManager from '../tooltipmanager.js';
 import PoweredBy from './poweredby.js';

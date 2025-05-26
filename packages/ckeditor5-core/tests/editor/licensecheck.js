@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, console, Response, globalThis, URL */
-
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { global } from '@ckeditor/ckeditor5-utils';
@@ -824,7 +822,7 @@ describe( 'Editor - license check', () => {
 
 			try {
 				clock.tick( 1 );
-			} catch ( e ) {
+			} catch {
 				// Do nothing.
 			}
 

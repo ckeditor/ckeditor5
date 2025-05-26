@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, setTimeout */
-
 import { scrollViewportToShowTarget } from '../../../src/dom/scroll.js';
 
 document.getElementById( 'navigation' ).addEventListener( 'click', evt => {

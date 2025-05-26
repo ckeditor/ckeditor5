@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 import fs from 'fs-extra';
 import { moveTranslations } from '@ckeditor/ckeditor5-dev-translations';
 import { parseArguments } from './utils.mjs';

@@ -7,8 +7,6 @@ import Batch from '../../src/model/batch.js';
 import Operation from '../../src/model/operation/operation.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-/* globals console */
-
 describe( 'Batch', () => {
 	describe( 'constructor', () => {
 		it( 'should set default types', () => {

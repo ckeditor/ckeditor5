@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, setTimeout */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import CloudServicesUploadAdapter from '../src/cloudservicesuploadadapter.js';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository.js';
