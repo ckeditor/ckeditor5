@@ -21,6 +21,14 @@ Paste some Markdown-formatted content into the demo editor below and see it turn
 
 {@snippet features/paste-from-markdown}
 
+Output:
+
+<ck:code-block id="snippet-paste-from-markdown-output" language="markdown">
+	## Markdown 🛫
+
+	Paste some Markdown-formatted content and see the output below.
+</ck:code-block>
+
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
