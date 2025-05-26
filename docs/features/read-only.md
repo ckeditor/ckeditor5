@@ -12,6 +12,8 @@ CKEditor&nbsp;5 offers an out-of-the-box read-only mode. You can use it to preve
 
 Use the button below to toggle the read-only mode. Some features, like exports or search, are still functional in the read-only mode. Others, like the replace function, are disabled.
 
+<ck:button id="snippet-read-only-toggle">Switch to read-only mode</ck:button>
+
 {@snippet features/read-only}
 
 <info-box info>
@@ -65,6 +67,9 @@ ClassicEditor
 When the button is clicked, the `editor.enableReadOnlyMode()` creates a lock that sets the read-only mode on the editor. This triggers the code showed above, which in turn hides the toolbar using CSS styles. After clicking the button once more, the `editor.disableReadOnlyMode()` is called, which removes the read-only lock and the editor's and the toolbar is visible again. This approach will work both for classic and decoupled editors.
 
 Use the demo below to see this code in action. Toggle the read-only mode with the button. You will see that the toolbar disappears in the read-only mode.
+
+<br />
+<ck:button id="snippet-read-only-toggle-toolbar">Switch to read-only mode</ck:button>
 
 {@snippet features/read-only-hide-toolbar}
 
