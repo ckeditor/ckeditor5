@@ -7,7 +7,7 @@ modified_at: 2022-05-19
 ---
 # Table column resize
 
-{@snippet features/build-table-source}
+{@snippet features/build-table-source empty}
 
 The {@link module:table/tablecolumnresize~TableColumnResize} plugin lets you resize tables and individual table columns. It gives you complete control over column width.
 

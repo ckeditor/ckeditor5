@@ -8,7 +8,7 @@ modified_at: 2022-05-19
 
 # Table caption
 
-{@snippet features/build-table-source}
+{@snippet features/build-table-source empty}
 
 The {@link module:table/tablecaption~TableCaption} plugin lets you add captions to your tables. Table captions also improve accessibility as they are recognized by screen readers.
 

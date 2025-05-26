@@ -5,7 +5,7 @@ meta-title: Media embed | CKEditor 5 Documentation
 modified_at: 2021-10-08
 ---
 
-{@snippet features/build-media-source}
+{@snippet features/build-media-source empty}
 
 # Media embed
 

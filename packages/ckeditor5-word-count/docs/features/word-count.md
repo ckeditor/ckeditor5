@@ -4,7 +4,7 @@ menu-title: Word and character count
 meta-title: Word and character count | CKEditor 5 Documentation
 ---
 
-{@snippet features/build-word-count-source}
+{@snippet features/build-word-count-source empty}
 
 # Word count and character count
 
