@@ -50,25 +50,24 @@
 	<p>&nbsp;</p>
 </div>
 
-<button type="button" id="print-data-action">Open print preview</button>
-<iframe id="print-data-container" aria-hidden="true" tabindex="-1"></iframe>
-
 <style>
-	.ck-content h2 {
-		border-bottom: none;
-		margin-bottom: 0;
-	}
+	@layer snippets {
+		.ck-content h2 {
+			border-bottom: none;
+			margin-bottom: 0;
+		}
 
-	#print-data-container {
-		position: absolute;
-		width: 1px;
-		height: 1px;
-		margin: -1px;
-		border: 0;
-		padding: 0;
-		white-space: nowrap;
-		clip-path: inset(100%);
-		clip: rect(0 0 0 0);
-		overflow: hidden;
+		#print-data-container {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			margin: -1px;
+			border: 0;
+			padding: 0;
+			white-space: nowrap;
+			clip-path: inset(100%);
+			clip: rect(0 0 0 0);
+			overflow: hidden;
+		}
 	}
 </style>

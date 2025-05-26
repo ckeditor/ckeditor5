@@ -14,6 +14,10 @@ Use the insert page break toolbar button {@icon @ckeditor/ckeditor5-icons/theme/
 
 {@snippet features/page-break}
 
+<ck:button type="button" id="print-data-action">Open print preview</ck:button>
+
+<iframe id="print-data-container" aria-hidden="true" tabindex="-1"></iframe>
+
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
