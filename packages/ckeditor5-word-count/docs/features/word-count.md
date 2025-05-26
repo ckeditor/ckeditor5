@@ -16,6 +16,8 @@ Add or remove some content and see how the counter below the editor changes in r
 
 {@snippet features/word-count}
 
+<div id="demo-word-count" class="word-count"></div>
+
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
 </info-box>
