@@ -301,8 +301,9 @@ export default class SelectionObserver extends Observer {
 		// Mark the latest focus change as complete (we got new selection after the focus so the selection is in the focused element).
 		this.focusObserver.flush();
 
-		// Ignore selection change as the editable is not focused.
-		if ( !this.view.document.isFocused ) {
+		// Ignore selection change as the editable is not focused. Note that in read-only mode, we have to update
+		// the model selection as there won't be any focus change to flush the pending selection changes.
+		if ( !this.view.document.isFocused && !this.view.document.isReadOnly ) {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'SelectionObserver',
 			// @if CK_DEBUG_TYPING // 		'Ignore selection change while editable is not focused'

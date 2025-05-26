@@ -123,7 +123,7 @@ describe( 'SelectionObserver', () => {
 
 	it( 'should not fire selectionChange while editable is not focused', done => {
 		viewDocument.on( 'selectionChange', () => {
-			throw 'selectionChange fired while editable is not focused';
+			throw new Error( 'selectionChange fired while editable is not focused' );
 		} );
 
 		viewDocument.isFocused = false;
@@ -143,9 +143,25 @@ describe( 'SelectionObserver', () => {
 		}, 100 );
 	} );
 
+	// See https://github.com/ckeditor/ckeditor5/issues/18514.
+	it( 'should fire selectionChange while editable is not focused but the editor is in read-only mode', done => {
+		const spy = sinon.spy();
+
+		viewDocument.on( 'selectionChange', spy );
+
+		viewDocument.isReadOnly = true;
+		viewDocument.isFocused = false;
+		changeDomSelection();
+
+		setTimeout( () => {
+			expect( spy.calledOnce ).to.be.true;
+			done();
+		}, 100 );
+	} );
+
 	it( 'should not fire selectionChange while user is composing', done => {
 		viewDocument.on( 'selectionChange', () => {
-			throw 'selectionChange fired while composing';
+			throw new Error( 'selectionChange fired while composing' );
 		} );
 
 		viewDocument.isComposing = true;
@@ -257,7 +273,7 @@ describe( 'SelectionObserver', () => {
 
 	it( 'should not fire selectionChange for ignored target', done => {
 		viewDocument.on( 'selectionChange', () => {
-			throw 'selectionChange fired in ignored elements';
+			throw new Error( 'selectionChange fired in ignored elements' );
 		} );
 
 		view.getObserver( MutationObserver ).disable();
@@ -270,7 +286,7 @@ describe( 'SelectionObserver', () => {
 
 	it( 'should not fire selectionChange on render', done => {
 		viewDocument.on( 'selectionChange', () => {
-			throw 'selectionChange on render';
+			throw new Error( 'selectionChange on render' );
 		} );
 
 		setTimeout( done, 70 );
@@ -286,7 +302,7 @@ describe( 'SelectionObserver', () => {
 		view.getObserver( SelectionObserver ).disable();
 
 		viewDocument.on( 'selectionChange', () => {
-			throw 'selectionChange on render';
+			throw new Error( 'selectionChange on render' );
 		} );
 
 		setTimeout( done, 70 );
@@ -640,7 +656,7 @@ describe( 'SelectionObserver', () => {
 			}, { priority: 'highest' } );
 
 			viewDocument.on( 'selectionChange', () => {
-				throw 'selectionChange fired';
+				throw new Error( 'selectionChange fired' );
 			} );
 
 			viewDocument.isSelecting = false;
