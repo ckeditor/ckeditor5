@@ -23,7 +23,7 @@ import isIterable from './isiterable.js';
  * @returns Map created from data.
  */
 export default function toMap<T>( data: { readonly [ key: string ]: T } | Iterable<readonly [ string, T ]> | null | undefined ):
-	Map<string, T>
+Map<string, T>
 {
 	if ( isIterable( data ) ) {
 		return new Map( data );

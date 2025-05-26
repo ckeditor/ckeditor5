@@ -7,8 +7,6 @@
  * @module engine/view/observer/mutationobserver
  */
 
-/* globals window */
-
 import Observer from './observer.js';
 import { startsWithFiller } from '../filler.js';
 import { isEqualWith } from 'es-toolkit/compat';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global setTimeout */
-
 import WidgetResize from '../../../src/widgetresize.js';
 
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect.js';

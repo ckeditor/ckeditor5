@@ -15,8 +15,6 @@ import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/c
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
-/* global document, Event */
-
 describe( 'ContextualBalloon', () => {
 	let editor, editorElement, balloon, viewA, viewB, viewC, viewD;
 

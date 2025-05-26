@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 import ini from 'ini';
 import yaml from 'js-yaml';
 import fs from 'fs-extra';

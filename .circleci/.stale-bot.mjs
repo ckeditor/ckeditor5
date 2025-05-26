@@ -3,8 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-/* eslint-disable max-len */
+/* eslint-disable @stylistic/max-len */
 
 export default {
 	GITHUB_TOKEN: process.env.CKE5_GITHUB_TOKEN,
@@ -44,4 +43,4 @@ export default {
 	STALE_PR_MESSAGE: 'There has been no activity on this PR for the past year. We\'ve marked it as stale and will close it in 30 days. We understand it may still be relevant, so if you\'re interested in the contribution, leave a comment or reaction under this PR.',
 	CLOSE_ISSUE_MESSAGE: 'We\'ve closed your issue due to inactivity. We understand that the issue may still be relevant. If so, feel free to open a new one (and link this issue to it).',
 	CLOSE_PR_MESSAGE: 'We\'ve closed your PR due to inactivity. While time has passed, the core of your contribution might still be relevant. If you\'re able, consider reopening a similar PR.'
-}
+};

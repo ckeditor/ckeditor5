@@ -5,8 +5,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 import { execSync } from 'child_process';
 import fs from 'fs/promises';
 import { glob } from 'glob';
@@ -91,7 +89,7 @@ function checkCodeCoverage() {
 			cwd: CKEDITOR5_ROOT_PATH,
 			stdio: 'inherit'
 		} );
-	} catch ( err ) {
+	} catch {
 		return 1;
 	}
 

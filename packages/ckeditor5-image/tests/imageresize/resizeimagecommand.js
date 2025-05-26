@@ -15,8 +15,6 @@ import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting.js';
 import Image from '../../src/image.js';
 import ImageStyle from '../../src/imagestyle.js';
 
-/* eslint-disable no-undef */
-
 describe( 'ResizeImageCommand', () => {
 	let editor, model, command, editorElement;
 

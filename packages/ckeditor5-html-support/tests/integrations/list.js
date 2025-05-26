@@ -17,8 +17,6 @@ import { getModelDataWithAttributes } from '../_utils/utils.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import ListElementSupport from '../../src/integrations/list.js';
 
-/* global document */
-
 describe( 'ListElementSupport', () => {
 	let editor, model, editorElement, dataFilter, dataSchema;
 

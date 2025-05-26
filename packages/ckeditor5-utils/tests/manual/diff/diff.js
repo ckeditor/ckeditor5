@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global console, setTimeout */
-
 import diff from '../../../src/diff.js';
 import getLongText from '../../_utils/longtext.js';
 

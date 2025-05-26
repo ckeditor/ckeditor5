@@ -882,10 +882,10 @@ function matchAndConsumeAttributes(
 	matcher: Matcher,
 	consumable: ViewConsumable
 ): {
-	attributes: Array<string>;
-	classes: Array<string>;
-	styles: Array<string>;
-} {
+		attributes: Array<string>;
+		classes: Array<string>;
+		styles: Array<string>;
+	} {
 	const matches = matcher.matchAll( viewElement ) || [];
 	const stylesProcessor = viewElement.document.stylesProcessor;
 

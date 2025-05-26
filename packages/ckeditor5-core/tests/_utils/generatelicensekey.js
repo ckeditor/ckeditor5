@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals btoa */
-
 import { releaseDate, crc32 } from '@ckeditor/ckeditor5-utils';
 
 /**

@@ -7,8 +7,6 @@
  * @module html-support/integrations/customelement
  */
 
-/* globals document */
-
 import { Plugin } from 'ckeditor5/src/core.js';
 import { UpcastWriter, type ViewDocumentFragment, type ViewNode } from 'ckeditor5/src/engine.js';
 
@@ -197,7 +195,7 @@ export default class CustomElementSupport extends Plugin {
 function isValidElementName( name: string ): boolean {
 	try {
 		document.createElement( name );
-	} catch ( error ) {
+	} catch {
 		return false;
 	}
 
