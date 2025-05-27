@@ -19,6 +19,13 @@ Then switch to the restricted editing mode to see how the editable and non-edita
 	Tip: Use <kbd>Tab</kbd> to navigate from one editable region to another (and <kbd>Shift</kbd>+<kbd>Tab</kbd> to move back) in the restricted mode.
 </info-box>
 
+**Mode:**
+
+<div class="u-flex-horizontal u-gap-5">
+	<ck:checkbox id="mode-standard" type="radio" name="editor-restriction-mode" value="standard" label="Standard" checked />
+	<ck:checkbox id="mode-restricted" type="radio" name="editor-restriction-mode" value="restricted" label="Restricted" />
+</div>
+
 {@snippet features/restricted-editing}
 
 <info-box info>
