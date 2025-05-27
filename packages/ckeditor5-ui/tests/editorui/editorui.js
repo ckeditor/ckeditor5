@@ -20,8 +20,6 @@ import env from '@ckeditor/ckeditor5-utils/src/env.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import ClassicTestEditor, { ClassicTestEditorUI } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-/* global document, window, console */
-
 class MyEditorUI extends EditorUI {
 	constructor( editor ) {
 		super( editor );

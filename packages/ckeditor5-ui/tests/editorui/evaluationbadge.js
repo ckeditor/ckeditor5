@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, window, HTMLElement, getComputedStyle, console  */
-
 import { Editor } from '@ckeditor/ckeditor5-core';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import EditorUI from '../../src/editorui/editorui.js';

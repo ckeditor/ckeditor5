@@ -47,7 +47,7 @@ import type {
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
-  interface EditorConfig {
+	interface EditorConfig {
 
 		/**
 		 * The configuration of the image features. Used by the image features in the `@ckeditor/ckeditor5-image` package.
@@ -89,7 +89,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ ImageUploadUI.pluginName ]: ImageUploadUI;
 	}
 
-  interface CommandsMap {
+	interface CommandsMap {
 		imageTypeBlock: ImageTypeCommand;
 		imageTypeInline: ImageTypeCommand;
 		insertImage: InsertImageCommand;

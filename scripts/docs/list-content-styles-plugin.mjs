@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 /**
  * Returns the PostCSS plugin that allows intercepting CSS definition used in the editor's build.
  *

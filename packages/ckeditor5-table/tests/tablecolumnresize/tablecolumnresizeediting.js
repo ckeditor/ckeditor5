@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import TableColumnResizeEditing from '../../src/tablecolumnresize/tablecolumnresizeediting.js';
 import TableColumnResize from '../../src/tablecolumnresize.js';
 import TableCaption from '../../src/tablecaption.js';
@@ -1178,7 +1176,7 @@ describe( 'TableColumnResizeEditing', () => {
 	} );
 
 	describe( 'while resizing', () => {
-		it( 'cancels resizing if resizing is not allowed during mousemove', () => {
+		it( 'cancels resizing if resizing is not allowed during mousemove (plugin does not allow)', () => {
 			setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '11', '12' ]
@@ -1199,7 +1197,7 @@ describe( 'TableColumnResizeEditing', () => {
 			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
 		} );
 
-		it( 'cancels resizing if resizing is not allowed during mousemove', () => {
+		it( 'cancels resizing if resizing is not allowed during mousemove (readonly mode)', () => {
 			setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '11', '12' ]

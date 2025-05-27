@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env commonjs, browser */
-
 import FileUploader from '../../src/uploadgateway/fileuploader.js';
 import Token from '../../src/token/token.js';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import View from '../../../src/view/view.js';
 import MutationObserver from '../../../src/view/observer/mutationobserver.js';
 import UIElement from '../../../src/view/uielement.js';

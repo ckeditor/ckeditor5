@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals btoa, console, document, window, AbortController, Response, FormData */
-
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
 import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting.js';

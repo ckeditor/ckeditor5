@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, console, setTimeout, FocusEvent */
-
 import View from '../../../src/view/view.js';
 import Observer from '../../../src/view/observer/observer.js';
 import KeyObserver from '../../../src/view/observer/keyobserver.js';
@@ -1320,7 +1318,6 @@ describe( 'view', () => {
 		it( 'should rethrow custom CKEditorError errors', () => {
 			expectToThrowCKEditorError( () => {
 				view.change( () => {
-					// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 					throw new CKEditorError( 'foo', view );
 				} );
 			}, /foo/, view );

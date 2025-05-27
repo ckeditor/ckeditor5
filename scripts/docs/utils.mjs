@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 import path from 'path';
 import fs from 'fs/promises';
 import { glob } from 'glob';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, window, setTimeout */
-
 import Image from '../../src/image.js';
 import ImageStyle from '../../src/imagestyle.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';

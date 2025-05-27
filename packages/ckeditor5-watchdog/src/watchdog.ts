@@ -7,8 +7,6 @@
  * @module watchdog/watchdog
  */
 
-/* globals window */
-
 import type { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import type { EditorWatchdogRestartEvent } from './editorwatchdog.js';
 import type { ContextWatchdogItemErrorEvent, ContextWatchdogItemRestartEvent } from './contextwatchdog.js';

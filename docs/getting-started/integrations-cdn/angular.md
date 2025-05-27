@@ -1,12 +1,12 @@
 ---
 menu-title: Angular
-meta-title: Angular rich text editor component with CDN | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with Angular from CDN | CKEditor 5 Documentation
 meta-description: Install, integrate, and configure CKEditor 5 using the Angular component with CDN.
 category: cloud
 order: 30
 ---
 
-# Angular rich text editor component (CDN)
+# Integrating CKEditor&nbsp;5 with Angular from CDN
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-angular" target="_blank" rel="noopener">

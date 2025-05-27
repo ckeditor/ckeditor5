@@ -7,8 +7,6 @@
  * @module list/legacytodolist/legacytodolistconverters
  */
 
-/* global document */
-
 import type {
 	DowncastAttributeEvent,
 	DowncastInsertEvent,

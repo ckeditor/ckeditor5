@@ -12,8 +12,6 @@ import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
 import VirtualTestEditor from './_utils/virtualtesteditor.js';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
-/* globals document, window */
-
 describe( 'Context', () => {
 	describe( 'config', () => {
 		it( 'should be created', () => {

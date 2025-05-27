@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals MouseEvent, document */
-
 import DomEventObserver from '../../../src/view/observer/domeventobserver.js';
 import Observer from '../../../src/view/observer/observer.js';
 import View from '../../../src/view/view.js';

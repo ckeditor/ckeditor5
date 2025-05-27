@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, window, console, Response */
-
 import collectStylesheets from '../src/collectstylesheets.js';
 
 describe( 'collectStylesheets', () => {

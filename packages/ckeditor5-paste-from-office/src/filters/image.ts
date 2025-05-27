@@ -7,8 +7,6 @@
  * @module paste-from-office/filters/image
  */
 
-/* globals btoa */
-
 import {
 	Matcher,
 	UpcastWriter,
@@ -275,18 +273,18 @@ function findAllImageElementsWithLocalSource(
  */
 type ImageWithIndex = {
 
-    /**
+	/**
      * The position index of the image in the document.
      * Used to map the image to its corresponding hexadecimal representation in RTF data.
      * RTF data contains hexadecimal representations of ALL images in the document,
      * not just those with file:// URLs.
      */
-    imageIndex: number;
+	imageIndex: number;
 
-    /**
+	/**
      * The image element.
      */
-    element: ViewElement;
+	element: ViewElement;
 };
 
 /**

@@ -38,11 +38,11 @@ import type { ToolbarConfig, ToolbarConfigItem } from '@ckeditor/ckeditor5-core'
 export default function normalizeToolbarConfig(
 	config: ToolbarConfig | undefined
 ): {
-	items: Array<ToolbarConfigItem>;
-	removeItems: Array<string>;
-	shouldNotGroupWhenFull?: boolean;
-	icon?: string;
-} {
+		items: Array<ToolbarConfigItem>;
+		removeItems: Array<string>;
+		shouldNotGroupWhenFull?: boolean;
+		icon?: string;
+	} {
 	if ( Array.isArray( config ) ) {
 		return {
 			items: config,

@@ -16,8 +16,6 @@ import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
 import CustomElementSupport from '../../src/integrations/customelement.js';
 
-/* global document, console */
-
 describe( 'CustomElementSupport', () => {
 	let editor, model, editorElement, dataFilter;
 
