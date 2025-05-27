@@ -10,7 +10,11 @@ CKEditor&nbsp;5 is a modular editing framework that allows various flexible conf
 
 In this guide, a {@link getting-started/setup/editor-types#classic-editor classic-like} editor will be bound to a completely separate, existing UI created in [Bootstrap](http://getbootstrap.com/), providing the basic structure and toolbar items necessary to start editing.
 
-<iframe src="%BASE_PATH%/snippets/examples/bootstrap-ui.html" style="width: 100%;height: 420px;border: 0;"></iframe>
+<iframe id='external-ui-preview' src="%BASE_PATH%/snippets/examples/bootstrap-ui.html" style="width: 100%;height: 380px;border: 0;"></iframe>
+
+<ck:button id='toggle-bootstrap-ui-readonly' variant='secondary'>Toggle editor read-only</ck:button>
+
+{@snippet examples/bootstrap-ui-toggle empty}
 
 ## Readying the editor side
 
