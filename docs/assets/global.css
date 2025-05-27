@@ -16,3 +16,8 @@
 		--ck-snippet-viewport-top-offset: 64;
 	}
 }
+
+/* https://github.com/cksource/ckeditor5-internal/issues/3223 */
+.ck-body-wrapper .ck.ck-powered-by-balloon.ck-balloon-panel.ck-balloon-panel_visible {
+	display: none;
+}
