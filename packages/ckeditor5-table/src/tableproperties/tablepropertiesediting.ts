@@ -111,6 +111,8 @@ export default class TablePropertiesEditing extends Plugin {
 		enableTableToFigureProperty( schema, conversion, {
 			modelAttribute: 'tableWidth',
 			styleName: 'width',
+			attributeName: 'width',
+			attributeType: 'length',
 			defaultValue: defaultTableProperties.width
 		} );
 		editor.commands.add( 'tableWidth', new TableWidthCommand( editor, defaultTableProperties.width ) );
@@ -118,6 +120,8 @@ export default class TablePropertiesEditing extends Plugin {
 		enableTableToFigureProperty( schema, conversion, {
 			modelAttribute: 'tableHeight',
 			styleName: 'height',
+			attributeName: 'height',
+			attributeType: 'length',
 			defaultValue: defaultTableProperties.height
 		} );
 		editor.commands.add( 'tableHeight', new TableHeightCommand( editor, defaultTableProperties.height ) );
@@ -126,6 +130,8 @@ export default class TablePropertiesEditing extends Plugin {
 		enableProperty( schema, conversion, {
 			modelAttribute: 'tableBackgroundColor',
 			styleName: 'background-color',
+			attributeName: 'bgcolor',
+			attributeType: 'color',
 			defaultValue: defaultTableProperties.backgroundColor
 		} );
 		editor.commands.add(
@@ -221,6 +227,9 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 			model: {
 				key: 'tableAlignment',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
+					// Consume the style even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { styles: 'float' } );
+
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
 					let align = viewElement.getStyle( 'float' );
 
@@ -245,6 +254,9 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 			model: {
 				key: 'tableAlignment',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
+					// Consume the styles even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { styles: [ 'margin-left', 'margin-right' ] } );
+
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
 					const align = 'center';
 
@@ -255,14 +267,17 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 		// Support for the `align` attribute as the backward compatibility while pasting from other sources.
 		.attributeToAttribute( {
 			view: {
+				name: 'table',
 				attributes: {
 					align: ALIGN_VALUES_REG_EXP
 				}
 			},
 			model: {
-				name: 'table',
 				key: 'tableAlignment',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
+					// Consume the attribute even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { attributes: 'align' } );
+
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
 					const align = viewElement.getAttribute( 'align' );
 
@@ -283,6 +298,8 @@ function enableProperty(
 	options: {
 		modelAttribute: string;
 		styleName: string;
+		attributeName?: string;
+		attributeType?: 'length' | 'color';
 		defaultValue: string;
 	}
 ) {
@@ -304,6 +321,8 @@ function enableTableToFigureProperty(
 	options: {
 		modelAttribute: string;
 		styleName: string;
+		attributeName?: string;
+		attributeType?: 'length' | 'color';
 		defaultValue: string;
 	}
 ) {
