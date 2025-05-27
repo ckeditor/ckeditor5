@@ -55,7 +55,7 @@ This will add a new **Insert image** dropdown {@icon @ckeditor/ckeditor5-icons/t
 
 You can paste an image URL directly into the editor content, and it will be automatically embedded.
 
-<input class="example-input" type="text" value="https://ckeditor.com/docs/ckeditor5/latest/assets/img/malta.jpg">
+<ck:input class="example-input" type="text" value="https://ckeditor.com/docs/ckeditor5/latest/assets/img/malta.jpg" expanded readonly icon="link" />
 
 {@snippet features/image-insert-via-pasting-url-into-editor}
 
