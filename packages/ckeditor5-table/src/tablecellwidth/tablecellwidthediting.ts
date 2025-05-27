@@ -55,6 +55,8 @@ export default class TableCellWidthEditing extends Plugin {
 		enableProperty( editor.model.schema, editor.conversion, {
 			modelAttribute: 'tableCellWidth',
 			styleName: 'width',
+			attributeName: 'width',
+			attributeType: 'length',
 			defaultValue: defaultTableCellProperties.width
 		} );
 
