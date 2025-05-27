@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, document, console:false, */
-
 import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor.js';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import List from '@ckeditor/ckeditor5-list/src/list.js';

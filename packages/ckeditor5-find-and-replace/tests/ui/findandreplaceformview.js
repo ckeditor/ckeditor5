@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, document, Event */
-
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';

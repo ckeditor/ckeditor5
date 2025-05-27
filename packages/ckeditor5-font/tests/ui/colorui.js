@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import TestColorPlugin from '../_utils/testcolorplugin.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import ColorGridView from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview.js';

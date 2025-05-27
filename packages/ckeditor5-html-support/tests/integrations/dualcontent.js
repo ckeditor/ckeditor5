@@ -14,8 +14,6 @@ import { getModelDataWithAttributes } from '../_utils/utils.js';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import DualContentModelElementSupport from '../../src/integrations/dualcontent.js';
 
-/* global document */
-
 describe( 'DualContentModelElementSupport', () => {
 	let editor, model, editorElement, dataFilter, dataSchema;
 

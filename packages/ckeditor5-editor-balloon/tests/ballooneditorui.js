@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, Event */
-
 import BalloonEditor from '../src/ballooneditor.js';
 import BalloonEditorUI from '../src/ballooneditorui.js';
 import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';

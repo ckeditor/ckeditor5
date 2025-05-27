@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, console */
-
 import { global } from '@ckeditor/ckeditor5-utils';
 import TextareaView from '../../src/textarea/textareaview.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';

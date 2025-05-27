@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import ViewElement from '../../../src/view/element.js';
 import ViewDocumentSelection from '../../../src/view/documentselection.js';
 import DomConverter from '../../../src/view/domconverter.js';

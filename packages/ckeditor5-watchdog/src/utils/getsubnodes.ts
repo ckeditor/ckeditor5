@@ -7,8 +7,6 @@
  * @module watchdog/utils/getsubnodes
  */
 
-/* globals EventTarget, Event */
-
 export default function getSubNodes( head: unknown, excludedProperties = new Set() ): Set<unknown> {
 	const nodes = [ head ];
 
@@ -39,10 +37,9 @@ export default function getSubNodes( head: unknown, excludedProperties = new Set
 					// @if CK_DEBUG_WATCHDOG // 	prevNodeMap.set( n, node );
 					// @if CK_DEBUG_WATCHDOG // }
 				}
-			} catch ( err ) {
+			} catch {
 				// Do not log errors for broken structures
 				// since we are in the error handling process already.
-				// eslint-disable-line no-empty
 			}
 		} else {
 			for ( const key in node ) {

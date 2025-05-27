@@ -5,8 +5,6 @@
 
 import parseBase64EncodedObject from '../src/parsebase64encodedobject.js';
 
-/* globals btoa */
-
 describe( 'parseBase64EncodedObject', () => {
 	it( 'should return a decoded object', () => {
 		const obj = { foo: 1 };

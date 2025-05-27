@@ -7,13 +7,10 @@
  * @module source-editing/sourceediting
  */
 
-/* global console */
-
 import { Plugin, PendingActions, type Editor } from 'ckeditor5/src/core.js';
 import { IconSource } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView, type Dialog } from 'ckeditor5/src/ui.js';
-import { CKEditorError, createElement, ElementReplacer } from 'ckeditor5/src/utils.js';
-import { formatHtml } from './utils/formathtml.js';
+import { CKEditorError, createElement, ElementReplacer, formatHtml } from 'ckeditor5/src/utils.js';
 
 import '../theme/sourceediting.css';
 

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 import url from 'url';
 import { constants, readFile, writeFile, copyFile, access, mkdir } from 'fs/promises';
 import upath from 'upath';
@@ -134,7 +132,7 @@ async function buildSnippets( snippets, paths, constants, imports ) {
 					build.onLoad( { filter: /packages[\\/].*[\\/]src/ }, args => ( {
 						errors: [
 							{
-								// eslint-disable-next-line max-len
+								// eslint-disable-next-line @stylistic/max-len
 								text: `Can't use the source file "${ args.path }" in the snippet. Use "ckeditor5" or "ckeditor5-premium-features" import instead.`
 							}
 						]

@@ -21,6 +21,12 @@
 		"external/ckeditor5-commercial/",
 		"external/ckeditor5-commercial/packages/*"
 	],
+	"sitemap": {
+		"hostname": "https://ckeditor5.github.io/docs/nightly/",
+		"excluded":  [
+			"snippets/examples/bootstrap-ui.html"
+		]
+	},
 	"path": "docs",
 	"observablesdocs": "module:utils/observablemixin~Observable",
 	"redirects": {
@@ -306,6 +312,7 @@
 		"updating/migration-to-34.html": "updating/guides/update-to-34.html",
 		"updating/migration-to-35.html": "updating/guides/update-to-35.html",
 		"updating/updating.html": "updating/updating-ckeditor-5.html",
+		"updating/migration-to-cdn/vanilla-js.html": "updating/migration/vanilla-js.html",
 		"installation/getting-started/editor-lifecycle.html": "getting-started/setup/editor-lifecycle.html",
 		"installation/working-with-typescript.html": "getting-started/setup/typescript-support.html",
 		"installation/getting-started/configuration.html": "getting-started/setup/configuration.html",

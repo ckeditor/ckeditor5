@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, console */
-
 import CloudServices from '../src/cloudservices.js';
 import CloudServicesCore from '../src/cloudservicescore.js';
 import Context from '@ckeditor/ckeditor5-core/src/context.js';
@@ -309,7 +307,7 @@ describe( 'CloudServices', () => {
 
 			try {
 				await context.destroy();
-			} catch ( error ) {
+			} catch {
 				expect.fail( 'Error should not be thrown.' );
 			}
 		} );

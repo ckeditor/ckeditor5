@@ -5,8 +5,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 import path from 'upath';
 import fsExtra from 'fs-extra';
 import { checkbox } from '@inquirer/prompts';

@@ -25,8 +25,6 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { env } from '@ckeditor/ckeditor5-utils';
 
-/* global Event, document */
-
 describe( 'LegacyTodoListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc;
 
@@ -1262,7 +1260,7 @@ describe( 'LegacyTodoListEditing', () => {
 				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
 			} );
 
-			it( 'should do nothing when other arrow key was pressed', () => {
+			it( 'should do nothing when other arrow key was pressed (the selection is at the beginning of text)', () => {
 				setModelData( model, '<listItem listIndent="0" listType="todo">[]bar</listItem>' );
 
 				domEvtDataStub = {

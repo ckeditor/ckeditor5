@@ -24,7 +24,7 @@ ClassicEditor.builtinPlugins.push(
 	CKBox,
 	CKBoxImageEdit );
 
-/* eslint-disable max-len */
+/* eslint-disable @stylistic/max-len */
 const initialData =
 `
 <h2>CKEditor 5 classic editor build</h2>

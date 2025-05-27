@@ -5,8 +5,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 import { Listr } from 'listr2';
 import { tools } from '@ckeditor/ckeditor5-dev-utils';
 import parseArguments from './utils/parsearguments.mjs';

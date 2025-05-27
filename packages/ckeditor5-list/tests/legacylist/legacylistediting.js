@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
+/* eslint-disable @stylistic/no-multi-spaces */
+
 import LegacyListEditing from '../../src/legacylist/legacylistediting.js';
 import LegacyListCommand from '../../src/legacylist/legacylistcommand.js';
 import LegacyIndentCommand from '../../src/legacylist/legacyindentcommand.js';
@@ -613,7 +615,7 @@ describe( 'LegacyListEditing', () => {
 					);
 				} );
 
-				describe.skip( 'multiple blocks', () => { // Skip due to #112 issue.
+				describe.skip( 'multiple blocks (skipped due to #112)', () => { // Skip due to #112 issue.
 					testList(
 						'nested items #1',
 						'<ol><li><p>123</p><ul><li><h2>Foo</h2><p>Bar</p></li></ul><p>456</p></li></ol>',

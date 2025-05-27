@@ -7,8 +7,6 @@
  * @module image/imageupload/imageuploadprogress
  */
 
-/* globals setTimeout */
-
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import { FileRepository, type FileLoader } from 'ckeditor5/src/upload.js';
 

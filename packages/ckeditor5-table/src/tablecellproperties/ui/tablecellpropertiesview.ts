@@ -450,7 +450,7 @@ export default class TableCellPropertiesView extends View {
 		borderStyleDropdown: LabeledFieldView;
 		borderColorInput: LabeledFieldView<ColorInputView>;
 		borderWidthInput: LabeledFieldView;
-		} {
+	} {
 		const defaultTableCellProperties = this.options.defaultTableCellProperties;
 		const defaultBorder = {
 			style: defaultTableCellProperties.borderStyle,
@@ -612,7 +612,7 @@ export default class TableCellPropertiesView extends View {
 		widthInput: LabeledFieldView;
 		operatorLabel: View;
 		heightInput: LabeledFieldView;
-		} {
+	} {
 		const locale = this.locale;
 		const t = this.t!;
 

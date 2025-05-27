@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console:false, document, window */
-
 import ClassicEditor from '../../src/classiceditor.js';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';

@@ -3,21 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, window, console */
-
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import Table from '@ckeditor/ckeditor5-table/src/table.js';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
 
 import SourceEditing from '../../src/sourceediting.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, Table, TableToolbar, SourceEditing ],
+		plugins: [ ArticlePluginSet, Table, TableToolbar, SourceEditing, CodeBlock ],
 		toolbar: [
 			'sourceEditing', '|', 'heading', '|', 'bold', 'italic', 'link', '|',
-			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
+			'bulletedList', 'numberedList', 'blockQuote', 'codeBlock', 'insertTable', '|',
 			'undo', 'redo'
 		],
 		menuBar: {

@@ -1,13 +1,13 @@
 ---
 menu-title: Salesforce
-meta-title: Salesforce integration using a ZIP archive | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with Salesforcefrom ZIP archive | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with Salesforce using a ZIP archive
 category: self-hosted
 order: 100
 modified_at: 2025-04-04
 ---
 
-# Integrate CKEditor&nbsp;5 with Salesforce
+# Integrating CKEditor&nbsp;5 with Salesforce from ZIP
 
 Salesforce is a cloud-based Customer Relationship Management (CRM) platform that enables organizations to manage customer interactions, sales processes, and business operations. The platform supports custom development through its Lightning Platform (formerly Force.com), allowing developers to create custom objects, fields, pages, and components. While [CKEditor&nbsp;5 does not support Shadow DOM yet](https://github.com/ckeditor/ckeditor5/issues/3891), which is required by Lightning modules, it can be integrated into Salesforce using [Visualforce pages](https://help.salesforce.com/s/articleView?id=platform.pages_pages.htm&type=5). This integration approach enables rich text editing capabilities within Salesforce applications.
 
@@ -140,7 +140,7 @@ Now, we can add the container that will hold our editor and introduce an initial
 
 			ClassicEditor
 				.create( document.querySelector( '#editor' ), {
-					licenseKey: '<YOUR-LICENSE-KEY>' // Or 'GPL',
+					licenseKey: '<YOUR_LICENSE_KEY>' // Or 'GPL',
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 					toolbar: [
 						'undo', 'redo', '|', 'bold', 'italic', '|',
@@ -182,7 +182,7 @@ Putting everything together, the full integration code looks as follows (remembe
 
 			ClassicEditor
 				.create( document.querySelector( '#editor' ), {
-					licenseKey: '<YOUR-LICENSE-KEY>' // Or 'GPL',
+					licenseKey: '<YOUR_LICENSE_KEY>' // Or 'GPL',
 					plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
 					toolbar: [
 						'undo', 'redo', '|', 'bold', 'italic', '|',

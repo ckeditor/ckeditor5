@@ -5,8 +5,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 import { spawn } from 'child_process';
 import { glob } from 'glob';
 import fs from 'fs-extra';
