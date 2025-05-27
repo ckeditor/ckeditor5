@@ -1,7 +1,0 @@
-extends: existence
-message: "In most cases, use 'from' or 'through' to describe a range of numbers."
-link: 'https://docs.microsoft.com/en-us/style-guide/numbers'
-nonword: true
-level: warning
-tokens:
-  - '\b\d+\s?[-–]\s?\d+\b'

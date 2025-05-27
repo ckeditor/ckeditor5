@@ -1,6 +1,0 @@
-{
-	"Styles": "The label of the styles dropdown button in the toolbar displayed when no style is currently active.",
-	"Multiple styles": "The label of the styles dropdown button in the toolbar displayed when multiple styles are currently active.",
-	"Block styles": "The label of the group in the styles dropdown containing styles applicable to blocks only (paragraphs, headings, etc.).",
-	"Text styles": "The label of the group in the styles dropdown containing inline applicable to text only."
-}

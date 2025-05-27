@@ -1,0 +1,83 @@
+<style>
+	.fancy-editor-wrapper figure {
+		padding: 20px;
+	}
+</style>
+
+<div id="editor">
+	<h2>Image (width: 200px)</h2>
+
+	<figure class="image image-style-side" style="width: 200px">
+		<img src="sample.jpg" alt="" />
+	</figure>
+
+	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat placerat. Vestibulum id tellus et mauris sagittis tincidunt quis id mauris. Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum.</p>
+	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat placerat. Vestibulum id tellus et mauris sagittis tincidunt quis id mauris. Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum.</p>
+
+	<h2>Image (width: not set)</h2>
+
+	<figure class="image">
+		<img src="sample.jpg" alt="" />
+	</figure>
+
+	<h2>Responsive image (width style: not set, width attribute present on the image)</h2>
+
+	<figure class="image">
+		<img alt="Picture of the Warsaw Old Town." width="4288" srcset="https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg/w_430 430w, https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg/w_860 860w, https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg/w_1290 1290w, https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg/w_1720 1720w, https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg/w_2150 2150w, https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg/w_2580 2580w, https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg/w_3010 3010w, https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg/w_3440 3440w, https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg/w_3870 3870w, https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg/w_4288 4288w" sizes="100vw" src="https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg">
+	</figure>
+
+	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat placerat. Vestibulum id telluset mauris sagittis tincidunt quis id mauris. Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum.</p>
+</div>
+
+<h1>Images with widths defined with other units</h1>
+
+<div id="editor-other-units">
+	<h2>Image (width: 40%)</h2>
+
+	<figure class="image" style="width: 40%">
+		<img src="sample.jpg" alt="" />
+	</figure>
+
+	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat placerat. Vestibulum id tellus et mauris sagittis tincidunt quis id mauris. Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum.</p>
+
+	<h2>Image (width: 10em)</h2>
+
+	<figure class="image" style="width: 10em">
+		<img src="sample.jpg" alt="" />
+	</figure>
+
+	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat placerat. Vestibulum id tellus et mauris sagittis tincidunt quis id mauris. Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum.</p>
+</div>
+
+<div style="background:red; padding: 10px">
+	<h1>Fancy editor (padding inside figure)</h1>
+
+	<p>Note: this feature doesn't well with padding and px units for now.</p>
+
+	<div class="fancy-editor-wrapper" style="background:red">
+		<div id="fancy-editor">
+			<h2>Image (width: 200px)</h2>
+
+			<figure class="image image-style-side" style="width: 200px">
+				<img src="sample.jpg" alt="" />
+			</figure>
+
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat placerat. Vestibulum id tellus et mauris sagittis tincidunt quis id mauris. Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum. </p>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat placerat. Vestibulum id tellus et mauris sagittis tincidunt quis id mauris. Curabitur consectetur lectus sit amet tellus mattis, non lobortis leo interdum. </p>
+
+			<h2>Image (width: not set)</h2>
+
+			<figure class="image">
+				<img src="sample.jpg" alt="" />
+			</figure>
+
+			<h2>Responsive image (width style: not set, width attribute present on the image)</h2>
+
+			<figure class="image">
+				<img alt="Picture of the Warsaw Old Town." width="4288" srcset="https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg/w_430 430w, https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg/w_860 860w, https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg/w_1290 1290w, https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg/w_1720 1720w, https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg/w_2150 2150w, https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg/w_2580 2580w, https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg/w_3010 3010w, https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg/w_3440 3440w, https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg/w_3870 3870w, https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg/w_4288 4288w" sizes="100vw" src="https://33333.cdn.cke-cs.com/0fNqCUeBSal4ENvGfd7K/images/c12cb88e596270d8d963b7c87bef1767880f42d94fb2ec43_warsaw01.jpg">
+			</figure>
+
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla finibus consequat placerat. Vestibulum id telluset mauris sagittis tincidunt quis id mauris. Curabitur consectetur lectus sit amet tellus mattis, non lobortisleo interdum. </p>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,65 @@
+# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Albanian (https://www.transifex.com/ckeditor/teams/11143/sq/)\n"
+"Language: sq\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Label for the image widget."
+msgid "image widget"
+msgstr "Vegla e fotos"
+
+msgctxt "Label for the Side image option."
+msgid "Side image"
+msgstr "Foto anësore"
+
+msgctxt "Label for the Full size image option."
+msgid "Full size image"
+msgstr "Foto me madhësi të plotë"
+
+msgctxt "Label for the Left aligned image option"
+msgid "Left aligned image"
+msgstr "Foto e vendosur majtas"
+
+msgctxt "Label for the Centered image option"
+msgid "Centered image"
+msgstr "Foto e vendosur në mes"
+
+msgctxt "Label for the Right aligned image option"
+msgid "Right aligned image"
+msgstr "Foto e vendosur djathtas"
+
+msgctxt "Label for the Change image text alternative button."
+msgid "Change image text alternative"
+msgstr "Ndrysho tekstin zgjedhor të fotos"
+
+msgctxt "Label for the image text alternative input."
+msgid "Text alternative"
+msgstr "Teksti zgjedhor"
+
+msgctxt "Placeholder text for image caption displayed when caption is empty."
+msgid "Enter image caption"
+msgstr "Shto përshkrimin e fotos"
+
+msgctxt "Label for the insert image toolbar button."
+msgid "Insert image"
+msgstr "Shto Foto"
+
+msgctxt "Title of the notification displayed when upload fails."
+msgid "Upload failed"
+msgstr "Ngarkimi dështoi"
+
+msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
+msgid "Image toolbar"
+msgstr ""

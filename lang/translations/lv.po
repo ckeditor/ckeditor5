@@ -1,0 +1,65 @@
+# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Latvian (https://www.transifex.com/ckeditor/teams/11143/lv/)\n"
+"Language: lv\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
+
+msgctxt "Label for the image widget."
+msgid "image widget"
+msgstr "attēla sīkrīks"
+
+msgctxt "Label for the Side image option."
+msgid "Side image"
+msgstr "Sānā novietots attēls"
+
+msgctxt "Label for the Full size image option."
+msgid "Full size image"
+msgstr "Pilna izmēra attēls"
+
+msgctxt "Label for the Left aligned image option"
+msgid "Left aligned image"
+msgstr "Pa kreisi līdzināts attēls"
+
+msgctxt "Label for the Centered image option"
+msgid "Centered image"
+msgstr "Centrēts attēls"
+
+msgctxt "Label for the Right aligned image option"
+msgid "Right aligned image"
+msgstr "Pa labi līdzināts attēls"
+
+msgctxt "Label for the Change image text alternative button."
+msgid "Change image text alternative"
+msgstr "Mainīt attēla alternatīvo tekstu"
+
+msgctxt "Label for the image text alternative input."
+msgid "Text alternative"
+msgstr "Alternatīvais teksts"
+
+msgctxt "Placeholder text for image caption displayed when caption is empty."
+msgid "Enter image caption"
+msgstr "Ievadiet attēla parakstu"
+
+msgctxt "Label for the insert image toolbar button."
+msgid "Insert image"
+msgstr "Ievietot attēlu"
+
+msgctxt "Title of the notification displayed when upload fails."
+msgid "Upload failed"
+msgstr "Augšupielāde neizdevusies"
+
+msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
+msgid "Image toolbar"
+msgstr "Attēlu rīkjosla"
