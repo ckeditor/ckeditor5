@@ -81,8 +81,6 @@
 		 * 	* The table is inside a figure element.
 		 * 	* The table has `display: table` style set.
 		 * 	* The block element is placed directly after the table.
-		 *
-		 * The print mode is not affected, the issue happens only in the column split mode or in the print preview mode.
 		 */
 		&:not(.layout-table):has(> table) {
 			display: block;
