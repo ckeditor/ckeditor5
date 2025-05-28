@@ -63,32 +63,142 @@ export default class ListFormatting extends Plugin {
 			let returnValue = false;
 
 			for ( const entry of changes ) {
-				if ( !( entry.type == 'attribute' ) || !( entry.attributeKey == 'fontFamily' ) ) {
-					continue;
-				}
+				// Changing format on text inside a list item.
+				if ( entry.type == 'attribute' && entry.attributeKey == 'fontFamily' ) {
+					const listItem = entry.range.start.parent;
 
-				const parent = entry.range.start.parent;
+					if ( !isListItemBlock( listItem ) ) {
+						continue;
+					}
 
-				if ( !isListItemBlock( parent ) ) {
-					continue;
-				}
+					const fontFamily = entry.attributeNewValue as string | null;
+					const listItemFontFamily = listItem.getAttribute( 'listItemFontFamily' );
 
-				const fontFamily = entry.attributeNewValue as string | null;
-				const listItemFontFamily = parent.getAttribute( 'listItemFontFamily' );
-
-				if ( fontFamily ) {
-					if ( this._isListItemConsistentlyFormatted( model, parent, 'fontFamily' ) ) {
-						if ( listItemFontFamily !== fontFamily ) {
-							this._addFormattingToListItem( writer, parent, 'listItemFontFamily', fontFamily );
+					if ( fontFamily ) {
+						if ( this._getListItemConsistentFormat( model, listItem, 'fontFamily' ) ) {
+							if ( listItemFontFamily !== fontFamily ) {
+								this._addFormattingToListItem( writer, listItem, 'listItemFontFamily', fontFamily );
+								returnValue = true;
+							}
+						} else if ( listItemFontFamily ) {
+							this._removeFormattingFromListItem( writer, listItem, 'listItemFontFamily' );
 							returnValue = true;
 						}
 					} else if ( listItemFontFamily ) {
-						this._removeFormattingFromListItem( writer, parent, 'listItemFontFamily' );
+						this._removeFormattingFromListItem( writer, listItem, 'listItemFontFamily' );
 						returnValue = true;
 					}
-				} else if ( listItemFontFamily ) {
-					this._removeFormattingFromListItem( writer, parent, 'listItemFontFamily' );
-					returnValue = true;
+
+					continue;
+				}
+
+				// Inserting a text node to a list item.
+				if ( entry.type == 'insert' && entry.name == '$text' ) {
+					// Inserting a text node.
+					const listItem = entry.position.parent;
+
+					if ( !isListItemBlock( listItem ) ) {
+						continue;
+					}
+
+					const fontFamily = this._getListItemConsistentFormat( model, listItem, 'fontFamily' );
+					const listItemFontFamily = listItem.getAttribute( 'listItemFontFamily' );
+
+					if ( fontFamily ) {
+						if ( listItemFontFamily != fontFamily ) {
+							this._addFormattingToListItem( writer, listItem, 'listItemFontFamily', fontFamily );
+							returnValue = true;
+						} else {
+							continue;
+						}
+					} else {
+						if ( listItem.hasAttribute( 'listItemFontFamily' ) ) {
+							this._removeFormattingFromListItem( writer, listItem, 'listItemFontFamily' );
+							returnValue = true;
+						}
+					}
+
+					continue;
+				}
+
+				// Removing a text node from a list item.
+				if ( entry.type == 'remove' && entry.name == '$text' ) {
+					const listItem = entry.position.parent;
+
+					if ( !isListItemBlock( listItem ) ) {
+						continue;
+					}
+
+					const fontFamily = this._getListItemConsistentFormat( model, listItem, 'fontFamily' );
+					const listItemFontFamily = listItem.getAttribute( 'listItemFontFamily' );
+
+					if ( fontFamily ) {
+						if ( listItemFontFamily != fontFamily ) {
+							this._addFormattingToListItem( writer, listItem, 'listItemFontFamily', fontFamily );
+							returnValue = true;
+						} else {
+							continue;
+						}
+					}
+
+					continue;
+				}
+
+				// Inserting a list item.
+				if ( entry.type == 'insert' ) {
+					const listItem = entry.position.nodeAfter;
+
+					if ( !isListItemBlock( listItem ) ) {
+						continue;
+					}
+
+					const fontFamily = this._getListItemConsistentFormat( model, listItem, 'fontFamily' );
+
+					if ( fontFamily && !listItem.getAttribute( 'listItemFontFamily' ) ) {
+						this._addFormattingToListItem( writer, listItem, 'listItemFontFamily', fontFamily );
+						returnValue = true;
+					}
+
+					continue;
+				}
+
+				// Removing a list item.
+				if ( entry.type == 'remove' ) {
+					const listItem = entry.position.parent;
+
+					if ( !isListItemBlock( listItem ) ) {
+						continue;
+					}
+
+					const fontFamily = this._getListItemConsistentFormat( model, listItem, 'fontFamily' );
+					const listItemFontFamily = listItem.getAttribute( 'listItemFontFamily' );
+
+					if ( !fontFamily && listItemFontFamily ) {
+						this._removeFormattingFromListItem( writer, listItem, 'listItemFontFamily' );
+						returnValue = true;
+					}
+				}
+
+				// Changing an element into a list item.
+				if (
+					entry.type == 'attribute' &&
+					entry.attributeKey == 'listItemId' &&
+					entry.attributeOldValue == null
+				) {
+					const listItem = entry.range.start.nodeAfter;
+
+					if ( !isListItemBlock( listItem ) ) {
+						continue;
+					}
+
+					const fontFamily = this._getListItemConsistentFormat( model, listItem, 'fontFamily' );
+
+					if ( fontFamily && !listItem.getAttribute( 'listItemFontFamily' ) ) {
+						this._addFormattingToListItem( writer, listItem, 'listItemFontFamily', fontFamily );
+						returnValue = true;
+					}
+
+					continue;
 				}
 			}
 
@@ -126,13 +236,13 @@ export default class ListFormatting extends Plugin {
 	/**
 	 * TODO
 	 */
-	private _isListItemConsistentlyFormatted( model: Model, listItem: Element, attributeKey: string ): boolean {
+	private _getListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ): string | false | undefined {
 		let hasListItemConsistentFormat = false;
 		let prevFontFamily;
 
 		for ( const child of listItem.getChildren() ) {
 			if ( model.schema.checkAttribute( child, attributeKey ) ) {
-				const fontFamily = child.getAttribute( attributeKey );
+				const fontFamily = child.getAttribute( attributeKey ) as string;
 
 				// First child.
 				if ( !prevFontFamily ) {
@@ -154,6 +264,6 @@ export default class ListFormatting extends Plugin {
 			}
 		}
 
-		return hasListItemConsistentFormat;
+		return hasListItemConsistentFormat && prevFontFamily;
 	}
 }
