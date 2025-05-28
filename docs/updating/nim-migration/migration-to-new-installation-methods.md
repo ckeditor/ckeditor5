@@ -9,7 +9,7 @@ modified_at: 2024-06-25
 
 # Migrating to new installation methods
 
-In this guide, we will explore the new installation methods introduced in CKEditor&nbsp;5 v42.0.0. These methods make CKEditor&nbsp;5 much easier to use by reducing the number of possible installation paths and removing most of the limitations of the old methods. Links to migration guides for specific installation methods can be found in the table of contents on the left <span class="navigation-hint_mobile">or under the **main menu button in the upper-left corner** on mobile </span>and at the end of this document.
+In this guide, we will explore the new installation methods introduced in CKEditor&nbsp;5 v42.0.0. These methods make CKEditor&nbsp;5 much easier to use by reducing the number of possible installation paths and removing most of the limitations of the old methods. Links to migration guides for specific installation methods can be found in the table of contents on the left <span class="l-hide-desktop">or under the **main menu button in the upper-left corner** on mobile </span>and at the end of this document.
 
 Let's start by comparing the new installation methods to the old ones to better understand what has changed.
 
