@@ -18,8 +18,6 @@ import FindAndReplaceUI from '../src/findandreplaceui.js';
 import FindAndReplace from '../src/findandreplace.js';
 import FindAndReplaceFormView from '../src/ui/findandreplaceformview.js';
 
-/* global window */
-
 describe( 'FindAndReplaceUI', () => {
 	let editorElement, editor, dropdown, findCommand, form, plugin;
 

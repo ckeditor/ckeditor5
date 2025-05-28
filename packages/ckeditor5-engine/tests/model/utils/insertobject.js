@@ -13,8 +13,6 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
-/* global console */
-
 describe( 'insertObject()', () => {
 	let model, doc, root, schema;
 	let insertContentSpy;

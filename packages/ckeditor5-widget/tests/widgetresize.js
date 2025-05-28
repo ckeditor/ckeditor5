@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, Event, window */
-
 import WidgetResize from '../src/widgetresize.js';
 
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.

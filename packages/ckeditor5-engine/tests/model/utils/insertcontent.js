@@ -14,8 +14,6 @@ import { setData, getData, parse, stringify } from '../../../src/dev-utils/model
 import Range from '../../../src/model/range.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-/* global console */
-
 describe( 'DataController utils', () => {
 	let model, doc, root;
 

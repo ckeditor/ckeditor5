@@ -10,8 +10,6 @@ import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
 import CodeBlockElementSupport from '../../src/integrations/codeblock.js';
 
-/* global document */
-
 describe( 'CodeBlockElementSupport', () => {
 	let editor, model, editorElement, dataFilter;
 

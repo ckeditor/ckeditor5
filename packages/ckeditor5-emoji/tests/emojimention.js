@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global window, document, console, Response */
-
 import { Typing } from '@ckeditor/ckeditor5-typing';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
@@ -400,7 +398,7 @@ describe( 'EmojiMention', () => {
 			} );
 
 			expect( getModelData( editor.model ) ).to.match(
-				// eslint-disable-next-line max-len
+				// eslint-disable-next-line @stylistic/max-len
 				/<paragraph>Hello world! <\$text mention="{"uid":"[a-z0-9]+","_text":"Barney","id":"@Barney"}">Barney<\/\$text> \[\]<\/paragraph>/
 			);
 

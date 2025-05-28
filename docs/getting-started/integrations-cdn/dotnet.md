@@ -1,12 +1,12 @@
 ---
 category: cloud
-meta-title: Using CKEditor 5 with .NET and CDN | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with .NET from CDN | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with .NET using CDN.
 order: 90
 menu-title: .NET
 ---
 
-# Using CKEditor&nbsp;5 with .NET and CDN
+# Integrating CKEditor&nbsp;5 with .NET from CDN
 
 As a pure JavaScript/TypeScript library, CKEditor&nbsp;5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom configuration of CKEditor&nbsp;5 in a non-JS framework of your choice, for example, Microsoft's [.NET](https://dotnet.microsoft.com/).
 

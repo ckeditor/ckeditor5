@@ -248,6 +248,15 @@ Here is a table listing various model elements and their properties registered i
 			<td class="value_negative"><code>false</code></td>
 		</tr>
 		<tr>
+			<td><code>bookmark</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+		</tr>
+		<tr>
 			<td><code>caption</code></td>
 			<td class="value_negative"><code>false</code></td>
 			<td class="value_positive"><code>true</code></td>
@@ -338,6 +347,24 @@ Here is a table listing various model elements and their properties registered i
 			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
+			<td><code>mergeField</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+		</tr>
+		<tr>
+			<td><code>mergeFieldBlock</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+		</tr>
+		<tr>
 			<td><code>pageBreak</code></td>
 			<td class="value_positive"><code>true</code></td>
 			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
@@ -354,6 +381,15 @@ Here is a table listing various model elements and their properties registered i
 			<td class="value_negative"><code>false</code></td>
 			<td class="value_negative"><code>false</code></td>
 			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
+			<td><code>rawHtml</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
 			<td><code>softBreak</code></td>
@@ -390,6 +426,33 @@ Here is a table listing various model elements and their properties registered i
 			<td class="value_negative"><code>false</code></td>
 			<td class="value_positive"><code>true</code></td>
 			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
+			<td><code>tableColumn</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
+			<td><code>tableColumnGroup</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
+			<td><code>tableOfContents</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 	</tbody>
 </table>

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import Title from '../src/title.js';
 import Heading from '../src/heading.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';

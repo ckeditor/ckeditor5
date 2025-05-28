@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals Event, document */
-
 import ColorGridView from './../../src/colorgrid/colorgridview.js';
 import ColorTileView from '../../src/colorgrid/colortileview.js';
 

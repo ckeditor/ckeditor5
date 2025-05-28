@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, Event */
-
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 
 import DecoupledEditor from '../src/decouplededitor.js';

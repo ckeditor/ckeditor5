@@ -5,8 +5,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 import { globSync } from 'glob';
 import chalk from 'chalk';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';

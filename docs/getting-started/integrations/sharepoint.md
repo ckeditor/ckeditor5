@@ -1,13 +1,13 @@
 ---
 menu-title: SharePoint (SPFx)
-meta-title: SharePoint integration using npm | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with with SharePoint SPFx | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with SharePoint SPFx using npm
 category: self-hosted
 order: 120
 modified_at: 2025-04-30
 ---
 
-# Integrate CKEditor&nbsp;5 with SharePoint SPFx
+# Integrating CKEditor&nbsp;5 with SharePoint SPFx from npm
 
 [The SharePoint Framework (SPFx)](https://learn.microsoft.com/en-us/sharepoint/dev/spfx/sharepoint-framework-overview) is Microsoft's modern, client-side development model for building custom experiences that run in the SharePoint Online, Microsoft Teams, Viva Connections, Outlook, and the Microsoft 365 applications.
 
@@ -136,7 +136,7 @@ export default class RichTextEditor extends React.Component<IRichTextEditorProps
 									Bold, Essentials, Italic, Paragraph, Font, Heading,
 									Table, TableCellProperties, TableProperties, TableToolbar, List,
 									Autoformat, FormatPainter
-									],
+								],
 								toolbar: [
 									'undo', 'redo', '|', 'bold', 'italic', '|',
 									'fontFamily', 'fontSize', 'fontColor', 'fontBackgroundColor', '|',
@@ -176,7 +176,7 @@ You should now be able to use the editor:
 
 {@img assets/img/sharepoint-integration_05.png Screenshot of SharePoint application.}
 
-## Additional Resources
+## Additional resources
 
 * [SharePoint Framework Documentation](https://learn.microsoft.com/en-us/sharepoint/dev/spfx/sharepoint-framework-overview)
 * {@link getting-started/integrations/react-default-npm React integration documentation}

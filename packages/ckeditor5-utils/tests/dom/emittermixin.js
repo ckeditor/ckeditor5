@@ -3,10 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-disable new-cap */
-
-/* globals document, window, Event, MouseEvent */
-
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import DomEmitterMixin from '../../src/dom/emittermixin.js';
 import EmitterMixin from '../../src/emittermixin.js';

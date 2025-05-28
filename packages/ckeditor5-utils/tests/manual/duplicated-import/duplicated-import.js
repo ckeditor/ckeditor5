@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, console */
-
 // The CKEditor 5 library is loaded both here, and in HTML via CDN.
 // Hence, we expect to throw the error:
 // https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-ckeditor-duplicated-modules

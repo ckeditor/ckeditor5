@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global window, console, Response */
-
 import { global } from '@ckeditor/ckeditor5-utils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
