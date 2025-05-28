@@ -9,6 +9,8 @@ badges: [ premium ]
 
 # CKFinder file manager
 
+{@snippet features/build-ckfinder-source}
+
 The CKFinder feature lets you insert images and links to files into your content. CKFinder is a powerful file manager with various image editing and image upload options.
 
 <info-box>
