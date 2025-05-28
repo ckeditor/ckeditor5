@@ -68,20 +68,40 @@
 	}
 }
 
-/**
- * Expanding the table to the full height of the parent container is necessary because tables
- * are rendered inside <figure> elements, which is kinda buggy in table height calculation.
- * While setting `height: 100%` fixes the issue in the editing mode described here:
- * https://github.com/ckeditor/ckeditor5/issues/6186
- *
- * it's causing another issue with the table height in the print preview mode here:
- * https://github.com/ckeditor/ckeditor5/issues/16856
- *
- * For now, resetting the height to `initial` in the print mode works as a workaround.
- */
 @media print {
-	.ck-content figure.table > table {
-		height: initial;
+	.ck-content figure.table {
+		/**
+		 * Sometimes Chrome incorrectly calculates the height of the last table row and some
+		 * of the content overlaps the paragraph that is placed directly after the table. It affects
+		 * the column split mode pagination calculation which causes mismatch between the print mode and
+		 * the preview mode.
+		 *
+		 * This issue happens only if:
+		 *
+		 * 	* The table is inside a figure element.
+		 * 	* The table has `display: table` style set.
+		 * 	* The block element is placed directly after the table.
+		 *
+		 * The print mode is not affected, the issue happens only in the column split mode or in the print preview mode.
+		 */
+		&:not(.layout-table):has(> table) {
+			display: block;
+		}
+
+		/**
+		 * Expanding the table to the full height of the parent container is necessary because tables
+		 * are rendered inside <figure> elements, which is kinda buggy in table height calculation.
+		 * While setting `height: 100%` fixes the issue in the editing mode described here:
+		 * https://github.com/ckeditor/ckeditor5/issues/6186
+		 *
+		 * it's causing another issue with the table height in the print preview mode here:
+		 * https://github.com/ckeditor/ckeditor5/issues/16856
+		 *
+		 * For now, resetting the height to `initial` in the print mode works as a workaround.
+		 */
+		&:not(.layout-table) > table {
+			height: initial;
+		}
 	}
 }
 
