@@ -1,6 +1,8 @@
 <style>
-	.ui-snippet {
-		margin: 0.8em 0;
+	.doc.live-snippet {
+		margin: var(--spacing-7) 0 !important;
+		min-height: auto !important;
+		width: 100% !important;
 	}
 	.ui-balloon {
 		margin: 4em 0px 0.8em 0px;
@@ -8,6 +10,9 @@
 	}
 	.ui-snippet-hidden {
 		display: none;
+	}
+	.ck.ck-balloon-panel {
+		z-index: var(--z-index-live-snippet);
 	}
 </style>
 
