@@ -8,6 +8,15 @@ import { defineConfig } from 'eslint/config';
 import ckeditor5Rules from 'eslint-plugin-ckeditor5-rules';
 import ckeditor5Config from 'eslint-config-ckeditor5';
 
+import rootPkgJson from './package.json' with { type: 'json' };
+
+const disallowedImports = Object.keys( rootPkgJson.devDependencies ).filter( pkgName => {
+	const isCKEditor5Package = pkgName.startsWith( 'ckeditor5-' ) || pkgName.startsWith( '@ckeditor/ckeditor5-' );
+	const isCKEditor5DevPackage = pkgName.startsWith( '@ckeditor/ckeditor5-dev-' );
+
+	return isCKEditor5Package && !isCKEditor5DevPackage;
+} );
+
 export default defineConfig( [
 	{
 		ignores: [
@@ -60,12 +69,9 @@ export default defineConfig( [
 					' */'
 				]
 			} ],
-			'ckeditor5-rules/require-file-extensions-in-imports': [
-				'error',
-				{
-					extensions: [ '.ts', '.js', '.json' ]
-				}
-			]
+			'ckeditor5-rules/require-file-extensions-in-imports': [ 'error', {
+				extensions: [ '.ts', '.js', '.json' ]
+			} ]
 		}
 	},
 	{
@@ -77,18 +83,16 @@ export default defineConfig( [
 
 		rules: {
 			'ckeditor5-rules/allow-svg-imports-only-in-icons-package': 'error',
-			'ckeditor5-rules/ckeditor-plugin-flags': [
-				'error',
-				{
-					requiredFlags: [
-						{
-							name: 'isOfficialPlugin',
-							returnValue: true
-						}
-					],
-					disallowedFlags: [ 'isPremiumPlugin' ]
-				}
-			]
+			'ckeditor5-rules/ckeditor-plugin-flags': [ 'error', {
+				requiredFlags: [ {
+					name: 'isOfficialPlugin',
+					returnValue: true
+				} ],
+				disallowedFlags: [ 'isPremiumPlugin' ]
+			} ],
+			'no-restricted-imports': [ 'error', {
+				'paths': disallowedImports
+			} ]
 		}
 	},
 	{
