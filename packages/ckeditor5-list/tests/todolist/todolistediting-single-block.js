@@ -46,6 +46,10 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 		view = editor.editing.view;
 
 		stubUid();
+
+		// Remove downcast strategy for listItemId to avoid having to take it into account in all tests.
+		editor.plugins.get( 'ListEditing' )._downcastStrategies.splice( editor.plugins.get( 'ListEditing' )._downcastStrategies.findIndex(
+			strategy => strategy.attributeName === 'listItemId' ), 1 );
 	} );
 
 	afterEach( async () => {
@@ -750,6 +754,6 @@ describe( 'TodoListEditing (multiBlock=false)', () => {
 
 	function testData( input, output ) {
 		setModelData( model, input );
-		expect( editor.getData() ).to.equalMarkup( output );
+		expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup( output );
 	}
 } );

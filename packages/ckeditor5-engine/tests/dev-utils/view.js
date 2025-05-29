@@ -444,6 +444,30 @@ describe( 'view test utils', () => {
 				.to.equal( '<container:p><raw:span><b>foo</b></raw:span></container:p>' );
 		} );
 
+		it( 'should not return `data-list-item-id` on <li> element by default (skipListItemIds=true)', () => {
+			const li = new ContainerElement( viewDocument, 'li', { 'data-list-item-id': 'foo' } );
+			const ol = new ContainerElement( viewDocument, 'ol', null, li );
+
+			expect( stringify( ol, null, { showType: true, skipListItemIds: true } ) )
+				.to.equal( '<container:ol><container:li></container:li></container:ol>' );
+		} );
+
+		it( 'should not return `data-list-item-id` on <li> element when set (skipListItemIds=true)', () => {
+			const li = new ContainerElement( viewDocument, 'li', { 'data-list-item-id': 'foo' } );
+			const ol = new ContainerElement( viewDocument, 'ol', null, li );
+
+			expect( stringify( ol, null, { showType: true, skipListItemIds: true } ) )
+				.to.equal( '<container:ol><container:li></container:li></container:ol>' );
+		} );
+
+		it( 'should return `data-list-item-id` on <li> element (skipListItemIds=true)', () => {
+			const li = new ContainerElement( viewDocument, 'li', { 'data-list-item-id': 'foo' } );
+			const ol = new ContainerElement( viewDocument, 'ol', null, li );
+
+			expect( stringify( ol, null, { showType: true, skipListItemIds: false } ) )
+				.to.equal( '<container:ol><container:li data-list-item-id="foo"></container:li></container:ol>' );
+		} );
+
 		it( 'should sort classes in specified element', () => {
 			const text = new Text( viewDocument, 'foobar' );
 			const b = new Element( viewDocument, 'b', {
