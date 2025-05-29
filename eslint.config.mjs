@@ -7,6 +7,13 @@ import globals from 'globals';
 import { defineConfig } from 'eslint/config';
 import ckeditor5Rules from 'eslint-plugin-ckeditor5-rules';
 import ckeditor5Config from 'eslint-config-ckeditor5';
+import ts from 'typescript-eslint';
+
+import rootPkgJson from './package.json' with { type: 'json' };
+
+const disallowedImports = Object.keys( rootPkgJson.devDependencies ).filter( pkgName => {
+	return pkgName.match( /^(@ckeditor\/)?ckeditor5-(?!dev-)/ );
+} );
 
 export default defineConfig( [
 	{
@@ -60,12 +67,9 @@ export default defineConfig( [
 					' */'
 				]
 			} ],
-			'ckeditor5-rules/require-file-extensions-in-imports': [
-				'error',
-				{
-					extensions: [ '.ts', '.js', '.json' ]
-				}
-			]
+			'ckeditor5-rules/require-file-extensions-in-imports': [ 'error', {
+				extensions: [ '.ts', '.js', '.json' ]
+			} ]
 		}
 	},
 	{
@@ -77,18 +81,46 @@ export default defineConfig( [
 
 		rules: {
 			'ckeditor5-rules/allow-svg-imports-only-in-icons-package': 'error',
-			'ckeditor5-rules/ckeditor-plugin-flags': [
-				'error',
-				{
-					requiredFlags: [
-						{
-							name: 'isOfficialPlugin',
-							returnValue: true
-						}
-					],
-					disallowedFlags: [ 'isPremiumPlugin' ]
-				}
-			]
+			'ckeditor5-rules/ckeditor-plugin-flags': [ 'error', {
+				requiredFlags: [ {
+					name: 'isOfficialPlugin',
+					returnValue: true
+				} ],
+				disallowedFlags: [ 'isPremiumPlugin' ]
+			} ]
+		}
+	},
+	{
+		files: [
+			'packages/*/@(src|tests)/**/*.js',
+			'src/**/*.js'
+		],
+
+		plugins: {
+			'ckeditor5-rules': ckeditor5Rules
+		},
+
+		rules: {
+			'no-restricted-imports': [ 'error', {
+				'paths': disallowedImports
+			} ]
+		}
+	},
+	{
+		files: [
+			'packages/*/@(src|tests)/**/*.ts',
+			'src/**/*.ts'
+		],
+
+		plugins: {
+			'ckeditor5-rules': ckeditor5Rules,
+			ts
+		},
+
+		rules: {
+			'@typescript-eslint/no-restricted-imports': [ 'error', {
+				'paths': disallowedImports
+			} ]
 		}
 	},
 	{
