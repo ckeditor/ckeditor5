@@ -441,9 +441,7 @@ The build size of the project before and after the optimizations is as follows:
 
 |                    | Before optimization | After optimization | Improvement |
 |--------------------|---------------------|--------------------|-------------|
-| JavaScript         | 1,012.12 kB         | 976.18 kB          | -3.55%      |
-| CSS                | 477.61 kB           | 191.16 kB          | -59.98%     |
-| JavaScript gzipped | 270.71 kB           | 259.11 kB          | -4.29%      |
-| CSS gzipped        | 65.26 kB            | 30.96 kB           | -52.56%     |
+| JavaScript gzipped | 269.18 kB           | 257.31 kB          | -4.41%      |
+| CSS gzipped        | 64.98 kB            | 30.80 kB           | -52.60%     |
 
-Thanks to the above optimizations, we were able to reduce the total build size (JavaScript + CSS) by `322,39 kB` (`45,9 kB` gzipped), which in effect gives us ~80% of the original size. These results will vary depending on the editor features and bundler you use.
+Thanks to the above optimizations, we were able to reduce the total build size (JavaScript + CSS) by `46,05 kB` gzipped, which in effect gives us ~85% of the original size. These results will vary depending on the editor features and bundler you use.

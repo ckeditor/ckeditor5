@@ -7,8 +7,6 @@
  * @module watchdog/contextwatchdog
  */
 
-/* globals console */
-
 import Watchdog, { type WatchdogConfig, type WatchdogState } from './watchdog.js';
 import EditorWatchdog, { type EditorCreatorFunction } from './editorwatchdog.js';
 import areConnectedThroughProperties from './utils/areconnectedthroughproperties.js';

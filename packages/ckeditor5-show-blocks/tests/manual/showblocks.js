@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, document, console */
-
 import ShowBlocks from '../../src/showblocks.js';
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';

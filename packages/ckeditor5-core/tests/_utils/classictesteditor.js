@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-disable new-cap */
-
 import Editor from '../../src/editor/editor.js';
 import ElementApiMixin from '../../src/editor/utils/elementapimixin.js';
 import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';
@@ -88,7 +86,6 @@ export default class ClassicTestEditor extends ElementApiMixin( Editor ) {
 					.then( () => {
 						if ( !isElement( sourceElementOrData ) && config.initialData ) {
 							// Documented in core/editor/editorconfig.jsdoc.
-							// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 							throw new CKEditorError( 'editor-create-initial-data', null );
 						}
 

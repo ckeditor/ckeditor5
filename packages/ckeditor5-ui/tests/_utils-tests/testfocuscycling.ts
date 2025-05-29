@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, KeyboardEvent */
-
 import { isVisible, parseKeystroke, wait } from '@ckeditor/ckeditor5-utils';
 import { View, type ViewCollection } from '../../src/index.js';
 import type { FocusableView, FocusCyclerActions, ViewWithFocusCycler } from '../../src/focuscycler.js';

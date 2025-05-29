@@ -84,7 +84,7 @@ describe( 'Accessibility', () => {
 											[ 'Enter' ],
 											[ 'Space' ]
 										],
-										// eslint-disable-next-line max-len
+										// eslint-disable-next-line @stylistic/max-len
 										label: 'Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content.'
 									}
 								],

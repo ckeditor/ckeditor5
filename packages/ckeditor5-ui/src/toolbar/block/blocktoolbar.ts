@@ -7,8 +7,6 @@
  * @module ui/toolbar/block/blocktoolbar
  */
 
-/* global window */
-
 import {
 	Plugin,
 	type Editor

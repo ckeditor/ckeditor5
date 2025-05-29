@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import findClosestScrollableAncestor from '../../src/dom/findclosestscrollableancestor.js';
 import createElement from '../../src/dom/createelement.js';
 

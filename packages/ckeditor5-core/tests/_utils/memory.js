@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global window, document, setTimeout */
-
 const TEST_RETRIES = 2;
 const TEST_TIMEOUT = 6500;
 const GARBAGE_COLLECTOR_TIMEOUT = 800;

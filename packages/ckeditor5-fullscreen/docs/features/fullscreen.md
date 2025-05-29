@@ -106,7 +106,9 @@ Note that this setting does not change the original behavior defined in `config.
 
 ### Using a custom container
 
-If you want to use the fullscreen mode to enhance the editing experience but there are still some elements in your website layout that should stay visible, you can pass a custom container for the editor in fullscreen mode using `config.fullscreen.container` property. The editor will be resized to match the size of the provided container.
+If you want to use the fullscreen mode to enhance the editing experience but still need certain elements of your website layout to remain visible, you can specify a custom container for the editor using the `config.fullscreen.container` property. The editor will be resized to match the dimensions of the specified container.
+
+**Important:** Be sure the container element has a positioning context (i.e., its `position` is not set to `static`) — typically `relative`, `absolute`, or `fixed`. This ensures the editor is correctly positioned and sized within the container.
 
 ```js
 ClassicEditor

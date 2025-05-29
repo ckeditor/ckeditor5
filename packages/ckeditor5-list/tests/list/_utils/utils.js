@@ -380,6 +380,7 @@ function stringifyElement( content, listAttributes = {} ) {
 	let selectionBefore = '';
 	let selectionAfter = '';
 
+	/* eslint-disable @stylistic/no-multi-spaces */
 	const regexp = new RegExp(
 		'^(?<selectionBefore>[\\[\\]])?' +													// [<element
 			'(?:' +
@@ -391,6 +392,7 @@ function stringifyElement( content, listAttributes = {} ) {
 			')' +
 		'(?<selectionAfter>[\\[\\]])?$'														// </element>] or <element/>]
 	);
+	/* eslint-enable @stylistic/no-multi-spaces */
 
 	const match = content.match( regexp );
 

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global console */
-
 import TodoDocumentList from '../src/tododocumentlist.js';
 import TodoList from '../src/todolist.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';

@@ -187,7 +187,7 @@ describe( 'LegacyListCommand', () => {
 				} );
 
 				it( 'should handle outdenting sub-items when list item is turned off', () => {
-					/* eslint-disable max-len */
+					/* eslint-disable @stylistic/max-len */
 					// Taken from docs.
 					//
 					// 1  * --------
@@ -223,7 +223,7 @@ describe( 'LegacyListCommand', () => {
 					// 12 * --------
 					// 13    * --------
 					// 14       * --------
-					/* eslint-enable max-len */
+					/* eslint-enable @stylistic/max-len */
 
 					setData(
 						model,

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals Range, DocumentFragment, HTMLElement, Comment, document, Text, console */
-
 import ViewText from '../../../src/view/text.js';
 import ViewElement from '../../../src/view/element.js';
 import ViewUIElement from '../../../src/view/uielement.js';
@@ -743,6 +741,8 @@ describe( 'DomConverter', () => {
 				return html.replace( /&nbsp;/g, '_' );
 			}
 
+			/* eslint-disable @stylistic/no-multi-spaces */
+
 			// At the beginning.
 			testConvert( ' x', '_x' );
 			testConvert( '  x', '_ x' );
@@ -888,6 +888,8 @@ describe( 'DomConverter', () => {
 			testConvert( [ '  ', '   ' ], '__ __' );
 			testConvert( [ '   ', '  ' ], '_ _ _' );
 			testConvert( [ '   ', '   ' ], '_ _ __' );
+
+			/* eslint-enable @stylistic/no-multi-spaces */
 
 			it( 'not in preformatted blocks', () => {
 				const viewPre = new ViewContainerElement( viewDocument, 'pre', null, [

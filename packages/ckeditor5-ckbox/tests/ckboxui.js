@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, window */
-
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
 import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting.js';
