@@ -37,8 +37,8 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
 import WordCount from '@ckeditor/ckeditor5-word-count/src/wordcount.js';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
-import DocumentList from '@ckeditor/ckeditor5-list/src/documentlist.js';
-import DocumentListProperties from '@ckeditor/ckeditor5-list/src/documentlistproperties.js';
+import List from '@ckeditor/ckeditor5-list/src/list.js';
+import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties.js';
 
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
@@ -90,8 +90,8 @@ const config = {
 		ImageUpload,
 		IndentBlock,
 		LinkImage,
-		DocumentList,
-		DocumentListProperties,
+		List,
+		ListProperties,
 		Mention,
 		PageBreak,
 		PasteFromOffice,

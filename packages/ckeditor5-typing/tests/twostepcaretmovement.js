@@ -25,7 +25,7 @@ describe( 'TwoStepCaretMovement', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		emitter = Object.create( DomEmitterMixin );
+		emitter = new ( DomEmitterMixin() )();
 
 		return VirtualTestEditor.create( {
 			plugins: [ TwoStepCaretMovement, Input, Delete ]

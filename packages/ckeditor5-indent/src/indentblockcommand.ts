@@ -121,8 +121,8 @@ export default class IndentBlockCommand extends Command {
 			return true;
 		}
 
-		const documentListUtils: ListUtils = editor.plugins.get( 'ListUtils' );
+		const listUtils: ListUtils = editor.plugins.get( 'ListUtils' );
 
-		return !documentListUtils.isListItemBlock( element );
+		return !listUtils.isListItemBlock( element );
 	}
 }
