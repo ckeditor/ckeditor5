@@ -109,7 +109,7 @@ describe( 'TableCellWidthEditing', () => {
 				editor.setData( '<table><tr><td style="width:123px">foo</td></tr></table>' );
 				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-				expect( tableCell.hasAttribute( 'tableCellHeight' ) ).to.be.false;
+				expect( tableCell.hasAttribute( 'tableCellWidth' ) ).to.be.false;
 
 				await editor.destroy();
 			} );
@@ -135,7 +135,7 @@ describe( 'TableCellWidthEditing', () => {
 				editor.setData( '<table><tr><td width="123">foo</td></tr></table>' );
 				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-				expect( tableCell.hasAttribute( 'tableCellHeight' ) ).to.be.false;
+				expect( tableCell.hasAttribute( 'tableCellWidth' ) ).to.be.false;
 
 				await editor.destroy();
 			} );
