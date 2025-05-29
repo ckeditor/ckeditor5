@@ -30,6 +30,11 @@ import { isListItemBlock } from '../src/list/utils/model.js';
  */
 export default class ListFormatting extends Plugin {
 	/**
+	 * The list of loaded formattings.
+	 */
+	private readonly _loadedFormattings: Record<string, string> = {};
+
+	/**
 	 * @inheritDoc
 	 */
 	public static get pluginName() {
@@ -53,39 +58,66 @@ export default class ListFormatting extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public init(): void {
-		const editor = this.editor;
-		const model = editor.model;
-		// const listEditing: ListEditing = editor.plugins.get( ListEditing );
+	public afterInit(): void {
+		for ( const listItemFormatAttribute in this._loadedFormattings ) {
+			this._registerPostfixerForListItemFormatting(
+				listItemFormatAttribute,
+				this._loadedFormattings[ listItemFormatAttribute ]
+			);
+		}
+	}
+
+	/**
+	 * TODO
+	 */
+	private _addFormattingToListItem(
+		writer: Writer,
+		listItem: Element,
+		attributeKey: string,
+		attributeValue: string
+	): void {
+		if ( !listItem.hasAttribute( attributeKey ) || listItem.getAttribute( attributeKey ) !== attributeValue ) {
+			writer.setAttribute( attributeKey, attributeValue, listItem );
+		}
+	}
+
+	/**
+	 * TODO
+	 */
+	private _registerPostfixerForListItemFormatting(
+		listItemFormatAttributeName: string,
+		formatAttributeName: string
+	): void {
+		const model = this.editor.model;
 
 		model.document.registerPostFixer( writer => {
-			const changes = editor.model.document.differ.getChanges();
+			const changes = model.document.differ.getChanges();
 			let returnValue = false;
 
 			for ( const entry of changes ) {
 				// Changing format on text inside a list item.
-				if ( entry.type == 'attribute' && entry.attributeKey == 'fontFamily' ) {
+				if ( entry.type == 'attribute' && entry.attributeKey == formatAttributeName ) {
 					const listItem = entry.range.start.parent;
 
 					if ( !isListItemBlock( listItem ) ) {
 						continue;
 					}
 
-					const fontFamily = entry.attributeNewValue as string | null;
-					const listItemFontFamily = listItem.getAttribute( 'listItemFontFamily' );
+					const formatAttribute = entry.attributeNewValue as string | null;
+					const listItemFormatAttribute = listItem.getAttribute( listItemFormatAttributeName );
 
-					if ( fontFamily ) {
-						if ( this._getListItemConsistentFormat( model, listItem, 'fontFamily' ) ) {
-							if ( listItemFontFamily !== fontFamily ) {
-								this._addFormattingToListItem( writer, listItem, 'listItemFontFamily', fontFamily );
+					if ( formatAttribute ) {
+						if ( this._getListItemConsistentFormat( model, listItem, formatAttributeName ) ) {
+							if ( listItemFormatAttribute !== formatAttribute ) {
+								this._addFormattingToListItem( writer, listItem, listItemFormatAttributeName, formatAttribute );
 								returnValue = true;
 							}
-						} else if ( listItemFontFamily ) {
-							this._removeFormattingFromListItem( writer, listItem, 'listItemFontFamily' );
+						} else if ( listItemFormatAttribute ) {
+							this._removeFormattingFromListItem( writer, listItem, listItemFormatAttributeName );
 							returnValue = true;
 						}
-					} else if ( listItemFontFamily ) {
-						this._removeFormattingFromListItem( writer, listItem, 'listItemFontFamily' );
+					} else if ( listItemFormatAttribute ) {
+						this._removeFormattingFromListItem( writer, listItem, listItemFormatAttributeName );
 						returnValue = true;
 					}
 
@@ -94,26 +126,25 @@ export default class ListFormatting extends Plugin {
 
 				// Inserting a text node to a list item.
 				if ( entry.type == 'insert' && entry.name == '$text' ) {
-					// Inserting a text node.
 					const listItem = entry.position.parent;
 
 					if ( !isListItemBlock( listItem ) ) {
 						continue;
 					}
 
-					const fontFamily = this._getListItemConsistentFormat( model, listItem, 'fontFamily' );
-					const listItemFontFamily = listItem.getAttribute( 'listItemFontFamily' );
+					const formatAttribute = this._getListItemConsistentFormat( model, listItem, formatAttributeName );
+					const listItemFormatAttribute = listItem.getAttribute( listItemFormatAttributeName );
 
-					if ( fontFamily ) {
-						if ( listItemFontFamily != fontFamily ) {
-							this._addFormattingToListItem( writer, listItem, 'listItemFontFamily', fontFamily );
+					if ( formatAttribute ) {
+						if ( listItemFormatAttribute != formatAttribute ) {
+							this._addFormattingToListItem( writer, listItem, listItemFormatAttributeName, formatAttribute );
 							returnValue = true;
 						} else {
 							continue;
 						}
 					} else {
-						if ( listItem.hasAttribute( 'listItemFontFamily' ) ) {
-							this._removeFormattingFromListItem( writer, listItem, 'listItemFontFamily' );
+						if ( listItem.hasAttribute( listItemFormatAttributeName ) ) {
+							this._removeFormattingFromListItem( writer, listItem, listItemFormatAttributeName );
 							returnValue = true;
 						}
 					}
@@ -129,12 +160,12 @@ export default class ListFormatting extends Plugin {
 						continue;
 					}
 
-					const fontFamily = this._getListItemConsistentFormat( model, listItem, 'fontFamily' );
-					const listItemFontFamily = listItem.getAttribute( 'listItemFontFamily' );
+					const formatAttribute = this._getListItemConsistentFormat( model, listItem, formatAttributeName );
+					const listItemFormatAttribute = listItem.getAttribute( listItemFormatAttributeName );
 
-					if ( fontFamily ) {
-						if ( listItemFontFamily != fontFamily ) {
-							this._addFormattingToListItem( writer, listItem, 'listItemFontFamily', fontFamily );
+					if ( formatAttribute ) {
+						if ( listItemFormatAttribute != formatAttribute ) {
+							this._addFormattingToListItem( writer, listItem, listItemFormatAttributeName, formatAttribute );
 							returnValue = true;
 						} else {
 							continue;
@@ -152,10 +183,10 @@ export default class ListFormatting extends Plugin {
 						continue;
 					}
 
-					const fontFamily = this._getListItemConsistentFormat( model, listItem, 'fontFamily' );
+					const formatAttribute = this._getListItemConsistentFormat( model, listItem, formatAttributeName );
 
-					if ( fontFamily && !listItem.getAttribute( 'listItemFontFamily' ) ) {
-						this._addFormattingToListItem( writer, listItem, 'listItemFontFamily', fontFamily );
+					if ( formatAttribute && !listItem.getAttribute( listItemFormatAttributeName ) ) {
+						this._addFormattingToListItem( writer, listItem, listItemFormatAttributeName, formatAttribute );
 						returnValue = true;
 					}
 
@@ -170,11 +201,11 @@ export default class ListFormatting extends Plugin {
 						continue;
 					}
 
-					const fontFamily = this._getListItemConsistentFormat( model, listItem, 'fontFamily' );
-					const listItemFontFamily = listItem.getAttribute( 'listItemFontFamily' );
+					const formatAttribute = this._getListItemConsistentFormat( model, listItem, formatAttributeName );
+					const listItemFormatAttribute = listItem.getAttribute( listItemFormatAttributeName );
 
-					if ( !fontFamily && listItemFontFamily ) {
-						this._removeFormattingFromListItem( writer, listItem, 'listItemFontFamily' );
+					if ( !formatAttribute && listItemFormatAttribute ) {
+						this._removeFormattingFromListItem( writer, listItem, listItemFormatAttributeName );
 						returnValue = true;
 					}
 				}
@@ -191,10 +222,10 @@ export default class ListFormatting extends Plugin {
 						continue;
 					}
 
-					const fontFamily = this._getListItemConsistentFormat( model, listItem, 'fontFamily' );
+					const formatAttribute = this._getListItemConsistentFormat( model, listItem, formatAttributeName );
 
-					if ( fontFamily && !listItem.getAttribute( 'listItemFontFamily' ) ) {
-						this._addFormattingToListItem( writer, listItem, 'listItemFontFamily', fontFamily );
+					if ( formatAttribute && !listItem.getAttribute( listItemFormatAttributeName ) ) {
+						this._addFormattingToListItem( writer, listItem, listItemFormatAttributeName, formatAttribute );
 						returnValue = true;
 					}
 
@@ -204,20 +235,6 @@ export default class ListFormatting extends Plugin {
 
 			return returnValue;
 		} );
-	}
-
-	/**
-	 * TODO
-	 */
-	private _addFormattingToListItem(
-		writer: Writer,
-		listItem: Element,
-		attributeKey: string,
-		attributeValue: string
-	): void {
-		if ( !listItem.hasAttribute( attributeKey ) || listItem.getAttribute( attributeKey ) !== attributeValue ) {
-			writer.setAttribute( attributeKey, attributeValue, listItem );
-		}
 	}
 
 	/**
@@ -238,16 +255,16 @@ export default class ListFormatting extends Plugin {
 	 */
 	private _getListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ): string | false | undefined {
 		let hasListItemConsistentFormat = false;
-		let prevFontFamily;
+		let prevFormatAttribute;
 
 		for ( const child of listItem.getChildren() ) {
 			if ( model.schema.checkAttribute( child, attributeKey ) ) {
-				const fontFamily = child.getAttribute( attributeKey ) as string;
+				const formatAttribute = child.getAttribute( attributeKey ) as string;
 
 				// First child.
-				if ( !prevFontFamily ) {
-					if ( fontFamily ) {
-						prevFontFamily = fontFamily;
+				if ( !prevFormatAttribute ) {
+					if ( formatAttribute ) {
+						prevFormatAttribute = formatAttribute;
 						hasListItemConsistentFormat = true;
 						continue;
 					} else {
@@ -257,13 +274,24 @@ export default class ListFormatting extends Plugin {
 				}
 
 				// Second and next children.
-				if ( fontFamily !== prevFontFamily ) {
+				if ( formatAttribute !== prevFormatAttribute ) {
 					hasListItemConsistentFormat = false;
 					break;
 				}
 			}
 		}
 
-		return hasListItemConsistentFormat && prevFontFamily;
+		return hasListItemConsistentFormat && prevFormatAttribute;
+	}
+
+	/**
+	 * Adds a formatting to the list of loaded formattings.
+	 *
+	 * @internal
+	 */
+	public _addFormatting( listItemFormatAttribute: string, formatAttribute: string ): void {
+		if ( !this._loadedFormattings[ listItemFormatAttribute ] ) {
+			this._loadedFormattings[ listItemFormatAttribute ] = formatAttribute;
+		}
 	}
 }

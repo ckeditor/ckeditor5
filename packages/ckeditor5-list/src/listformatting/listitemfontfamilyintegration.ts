@@ -11,6 +11,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { type ViewElement } from 'ckeditor5/src/engine.js';
 
 import ListEditing from '../list/listediting.js';
+import type ListFormatting from '../listformatting.js';
 
 /**
  * The list item font family integration plugin.
@@ -44,10 +45,13 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const listEditing: ListEditing = editor.plugins.get( 'ListEditing' );
+		const ListFormatting: ListFormatting = editor.plugins.get( 'ListFormatting' );
 
 		if ( !editor.plugins.has( 'FontFamilyEditing' ) ) {
 			return;
 		}
+
+		ListFormatting._addFormatting( 'listItemFontFamily', 'fontFamily' );
 
 		model.schema.extend( '$listItem', { allowAttributes: 'listItemFontFamily' } );
 		model.schema.setAttributeProperties( 'listItemFontFamily', {
