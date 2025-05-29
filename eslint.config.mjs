@@ -7,10 +7,11 @@ import globals from 'globals';
 import { defineConfig } from 'eslint/config';
 import ckeditor5Rules from 'eslint-plugin-ckeditor5-rules';
 import ckeditor5Config from 'eslint-config-ckeditor5';
+import ts from 'typescript-eslint';
 
 import rootPkgJson from './package.json' with { type: 'json' };
 
-const PACKAGE_WHITELIST = [
+const allowedPackages = [
 	'@ckeditor/ckeditor5-inspector',
 	'@ckeditor/ckeditor5-angular',
 	'@ckeditor/ckeditor5-react',
@@ -18,7 +19,7 @@ const PACKAGE_WHITELIST = [
 ];
 
 const disallowedImports = Object.keys( rootPkgJson.devDependencies ).filter( pkgName => {
-	return !PACKAGE_WHITELIST.includes( pkgName ) && pkgName.match( /^(@ckeditor\/)?ckeditor5-(?!dev-)/ );
+	return !allowedPackages.includes( pkgName ) && pkgName.match( /^(@ckeditor\/)?ckeditor5-(?!dev-)/ );
 } );
 
 export default defineConfig( [
@@ -98,15 +99,33 @@ export default defineConfig( [
 	},
 	{
 		files: [
-			'packages/*/@(src|tests)/**/*.@(ts|js)',
-			'src/**/*.@(ts|js)'
+			'packages/*/@(src|tests)/**/*.js',
+			'src/**/*.js'
 		],
 
 		plugins: {
 			'ckeditor5-rules': ckeditor5Rules
 		},
+
 		rules: {
 			'no-restricted-imports': [ 'error', {
+				'paths': disallowedImports
+			} ]
+		}
+	},
+	{
+		files: [
+			'packages/*/@(src|tests)/**/*.ts',
+			'src/**/*.ts'
+		],
+
+		plugins: {
+			'ckeditor5-rules': ckeditor5Rules,
+			ts
+		},
+
+		rules: {
+			'@typescript-eslint/no-restricted-imports': [ 'error', {
 				'paths': disallowedImports
 			} ]
 		}
