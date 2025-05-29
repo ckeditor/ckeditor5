@@ -40,7 +40,7 @@ While there is only one type of upcast called **data upcast**, there are two typ
 
 {@img assets/img/tutorial/data-conversion.jpg Diagram showing data upcast going into the model and the downcasts going from the model}
 
-The reason for two types of downcasts is that sometimes the resulting HTML should be different from what we see in the editor. One such example can be a table that in the output HTML data is just a plain HTML table, but in the editing view has additional UI handlers for resizing or buttons for adding new columns and rows. This is a asymmetric conversion for which these helpers are of no use.
+The reason for two types of downcasts is that sometimes the resulting HTML should be different from what we see in the editor. One such example can be a table that in the output HTML data is just a plain HTML table, but in the editing view has additional UI handlers for resizing or buttons for adding new columns and rows. This is an asymmetric conversion for which these helpers are of no use.
 
 ## Under the hood
 
