@@ -11,15 +11,8 @@ import ts from 'typescript-eslint';
 
 import rootPkgJson from './package.json' with { type: 'json' };
 
-const allowedPackages = [
-	'@ckeditor/ckeditor5-inspector',
-	'@ckeditor/ckeditor5-angular',
-	'@ckeditor/ckeditor5-react',
-	'@ckeditor/ckeditor5-vue'
-];
-
 const disallowedImports = Object.keys( rootPkgJson.devDependencies ).filter( pkgName => {
-	return !allowedPackages.includes( pkgName ) && pkgName.match( /^(@ckeditor\/)?ckeditor5-(?!dev-)/ );
+	return pkgName.match( /^(@ckeditor\/)?ckeditor5-(?!dev-)/ );
 } );
 
 export default defineConfig( [
