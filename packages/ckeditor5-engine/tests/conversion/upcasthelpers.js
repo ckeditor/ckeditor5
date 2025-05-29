@@ -301,11 +301,32 @@ describe( 'UpcastHelpers', () => {
 
 		it( 'should not do anything if returned model attribute is null', () => {
 			upcastHelpers.elementToAttribute( { view: 'strong', model: 'bold' } );
+
+			// On a high priority, so we could check if it does not consume anything before the above converter.
 			upcastHelpers.elementToAttribute( {
 				view: 'strong',
 				model: {
 					key: 'bold',
 					value: () => null
+				},
+				converterPriority: 'high'
+			} );
+
+			expectResult(
+				new ViewAttributeElement( viewDocument, 'strong', null, new ViewText( viewDocument, 'foo' ) ),
+				'<$text bold="true">foo</$text>'
+			);
+		} );
+
+		it( 'should not do anything if returned model attribute is undefined', () => {
+			upcastHelpers.elementToAttribute( { view: 'strong', model: 'bold' } );
+
+			// On a high priority, so we could check if it does not consume anything before the above converter.
+			upcastHelpers.elementToAttribute( {
+				view: 'strong',
+				model: {
+					key: 'bold',
+					value: () => undefined
 				},
 				converterPriority: 'high'
 			} );
@@ -752,6 +773,19 @@ describe( 'UpcastHelpers', () => {
 				allowAttributes: [ 'styled' ]
 			} );
 
+			// Run this first to verify if it does not consume.
+			upcastHelpers.attributeToAttribute( {
+				view: {
+					key: 'class',
+					value: 'styled'
+				},
+				model: {
+					key: 'styled',
+					value: () => null
+				}
+			} );
+
+			// This runs later as the above should not consume anything.
 			upcastHelpers.attributeToAttribute( {
 				view: {
 					key: 'class',
@@ -763,6 +797,18 @@ describe( 'UpcastHelpers', () => {
 				}
 			} );
 
+			expectResult(
+				new ViewAttributeElement( viewDocument, 'img', { class: 'styled' } ),
+				'<imageBlock styled="true"></imageBlock>'
+			);
+		} );
+
+		it( 'should not do anything if returned model attribute is undefined', () => {
+			schema.extend( 'imageBlock', {
+				allowAttributes: [ 'styled' ]
+			} );
+
+			// Run this first to verify if it does not consume.
 			upcastHelpers.attributeToAttribute( {
 				view: {
 					key: 'class',
@@ -770,7 +816,19 @@ describe( 'UpcastHelpers', () => {
 				},
 				model: {
 					key: 'styled',
-					value: () => null
+					value: () => undefined
+				}
+			} );
+
+			// This runs later as the above should not consume anything.
+			upcastHelpers.attributeToAttribute( {
+				view: {
+					key: 'class',
+					value: 'styled'
+				},
+				model: {
+					key: 'styled',
+					value: true
 				}
 			} );
 
