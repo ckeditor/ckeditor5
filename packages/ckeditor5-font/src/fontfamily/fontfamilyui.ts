@@ -21,7 +21,7 @@ import {
 	type ListDropdownButtonDefinition
 } from 'ckeditor5/src/ui.js';
 
-import { normalizeOptions } from './utils.js';
+import { normalizeFontFamilies, normalizeOptions } from './utils.js';
 import { FONT_FAMILY } from '../utils.js';
 
 import type { FontFamilyOption } from '../fontconfig.js';
@@ -186,7 +186,10 @@ function _prepareListOptions( options: Array<FontFamilyOption>, command: FontFam
 				return false;
 			}
 
-			return value.split( ',' )[ 0 ].replace( /'/g, '' ).toLowerCase() === option.model.toLowerCase();
+			const valueNormalized = normalizeFontFamilies( value )[ 0 ].toLowerCase();
+			const optionNormalized = normalizeFontFamilies( option.model )[ 0 ].toLowerCase();
+
+			return valueNormalized === optionNormalized;
 		} );
 
 		// Try to set a dropdown list item style.

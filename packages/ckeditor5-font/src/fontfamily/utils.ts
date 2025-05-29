@@ -24,6 +24,17 @@ export function normalizeOptions( configuredOptions: Array<string | FontFamilyOp
 }
 
 /**
+ * Normalizes the CSS `font-family` property value to an array of unquoted and trimmed font faces.
+ *
+ * @internal
+ */
+export function normalizeFontFamilies( fontDefinition: string ): Array<string> {
+	return fontDefinition
+		.replace( /["']/g, '' ).split( ',' )
+		.map( name => name.trim() );
+}
+
+/**
  * Returns an option definition either created from string shortcut.
  * If object is passed then this method will return it without alternating it. Returns undefined for item than cannot be parsed.
  *
@@ -59,7 +70,7 @@ function getOptionDefinition( option: string | FontFamilyOption ): FontFamilyOpt
  */
 function generateFontPreset( fontDefinition: string ): FontFamilyOption {
 	// Remove quotes from font names. They will be normalized later.
-	const fontNames = fontDefinition.replace( /"|'/g, '' ).split( ',' );
+	const fontNames = normalizeFontFamilies( fontDefinition );
 
 	// The first matched font name will be used as dropdown list item title and as model value.
 	const firstFontName = fontNames[ 0 ];
