@@ -10,8 +10,8 @@ import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties.js';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties.js';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock.js';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code.js';
-import DocumentList from '@ckeditor/ckeditor5-list/src/documentlist.js';
-import DocumentListProperties from '@ckeditor/ckeditor5-list/src/documentlistproperties.js';
+import List from '@ckeditor/ckeditor5-list/src/list.js';
+import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties.js';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import AutoFormat from '@ckeditor/ckeditor5-autoformat/src/autoformat.js';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
@@ -58,8 +58,8 @@ ClassicEditor
 			Code,
 			CodeBlock,
 			Strikethrough,
-			DocumentList,
-			DocumentListProperties,
+			List,
+			ListProperties,
 			TableProperties,
 			TableCellProperties,
 			HorizontalLine
