@@ -8,12 +8,6 @@ order: 60
 
 # Integrating CKEditor&nbsp;5 with Vue.js 2.x from CDN
 
-<p>
-	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-vue2" target="_blank" rel="noopener">
-		<img src="https://badge.fury.io/js/%40ckeditor%2Fckeditor5-vue2.svg" alt="npm version" loading="lazy">
-	</a>
-</p>
-
 <info-box warning>
 	This guide is about the CKEditor&nbsp;5 integration with Vue.js 2.x. However, Vue 2 has reached EOL and is no longer actively maintained. To learn more about the integration with Vue.js 3+, check out the {@link getting-started/integrations-cdn/vuejs-v3 Rich text editor component for Vue.js 3+} guide.
 </info-box>

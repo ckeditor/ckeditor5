@@ -11,12 +11,6 @@ order: 50
 	We changed installation methods and this legacy guide is kept for users' convenience. As of April 2025, integrations based on predefined builds are **no longer supported**. Please refer to the {@link getting-started/index#ckeditor-5-framework-integrations Quick Start} guide to choose one of the modern installation and integration methods available and {@link updating/nim-migration/migration-to-new-installation-methods migrate to new installation methods}.
 </info-box>
 
-<p>
-	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-vue" target="_blank" rel="noopener">
-		<img src="https://badge.fury.io/js/%40ckeditor%2Fckeditor5-vue.svg" alt="npm version" loading="lazy">
-	</a>
-</p>
-
 CKEditor&nbsp;5 consists of the editor builds and the {@link framework/index CKEditor&nbsp;5 Framework} upon which the builds are based.
 
 The easiest way to use CKEditor&nbsp;5 in your Vue.js application is by choosing one of the rich text editor builds and simply passing it to the configuration of the Vue.js component. Read more about this solution in the [Quick start](#quick-start) section of this guide.

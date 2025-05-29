@@ -9,12 +9,6 @@ modified_at: 2024-04-25
 
 # Integrating CKEditor&nbsp;5 with React multi-root editor hook from CDN
 
-<p>
-	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-react" target="_blank" rel="noopener">
-		<img src="https://badge.fury.io/js/%40ckeditor%2Fckeditor5-react.svg" alt="npm version" loading="lazy">
-	</a>
-</p>
-
 This page focuses on describing the usage of the multi-root editor in React applications. If you would like to use a different type of editor, you can find more information {@link getting-started/integrations/react-default-npm in this guide}.
 
 <info-box hint>
