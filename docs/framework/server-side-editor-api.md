@@ -13,25 +13,25 @@ Server-Side Editor API allows for deep and complex integration of your applicati
 
 While CKEditor 5 provides a rich client-side editing experience, there are many scenarios where server-side content processing is essential:
 
-- **Security**: Process sensitive content in a controlled environment without exposing it to client-side manipulation
-- **Performance**: Handle large-scale content operations without impacting the user's browser
-- **Consistency**: Ensure uniform content changes across multiple documents
-- **Integration**: Connect with other server-side systems and databases directly
-- **Automation**: Run content processing tasks as part of your server workflows
-- **Scalability**: Process multiple documents simultaneously without client-side limitations
+* **Security**: Process sensitive content in a controlled environment without exposing it to client-side manipulation
+* **Performance**: Handle large-scale content operations without impacting the user's browser
+* **Consistency**: Ensure uniform content changes across multiple documents
+* **Integration**: Connect with other server-side systems and databases directly
+* **Automation**: Run content processing tasks as part of your server workflows
+* **Scalability**: Process multiple documents simultaneously without client-side limitations
 
 ## Common Use Cases
 
-- **Bulk Content Updates**: Make consistent changes across your entire content base, ideal for updating document templates or standardizing terminology
-- **Content Migration**: Restructure and update references across multiple documents, perfect for website redesigns or content reorganization
-- **Shared Content Blocks**: Automatically update reusable content (like headers, footers, or common sections) across all documents that use it
-- **Dynamic Content**: Periodically update values like stock prices or other real-time data in your documents
-- **Automated Review Systems**: Build systems that automatically review and suggest content changes, like grammar checks or style improvements
-- **AI-powered Editing**: Make automated suggestions while users are actively editing, helping improve content quality
-- **Automated Revision Control**: Track and manage document versions automatically, perfect for maintaining content history and audit trails
-- **Automated Publishing**: Prepare and process content for publication, including formatting, metadata updates, and resolving comments
-- **Custom Integration**: Connect the editor with your existing systems and workflows, such as CMS or document management systems
-- **Automatic Checkpoints**: Create automatic checkpoints in your document
+* **Bulk Content Updates**: Make consistent changes across your entire content base, ideal for updating document templates or standardizing terminology
+* **Content Migration**: Restructure and update references across multiple documents, perfect for website redesigns or content reorganization
+* **Shared Content Blocks**: Automatically update reusable content (like headers, footers, or common sections) across all documents that use it
+* **Dynamic Content**: Periodically update values like stock prices or other real-time data in your documents
+* **Automated Review Systems**: Build systems that automatically review and suggest content changes, like grammar checks or style improvements
+* **AI-powered Editing**: Make automated suggestions while users are actively editing, helping improve content quality
+* **Automated Revision Control**: Track and manage document versions automatically, perfect for maintaining content history and audit trails
+* **Automated Publishing**: Prepare and process content for publication, including formatting, metadata updates, and resolving comments
+* **Custom Integration**: Connect the editor with your existing systems and workflows, such as CMS or document management systems
+* **Automatic Checkpoints**: Create automatic checkpoints in your document
 
 ## Getting Started with Server-Side Editor API
 
@@ -41,7 +41,9 @@ For information about setting up and using the endpoint itself, see the {TODO: l
 
 ## Working with Content
 
-### Simple Text Changes
+### Using Commands
+
+Commands provide a high-level API to interact with the editor and change the document content. Most editor features provide a command that you can use to trigger some action on the editor.
 
 Here's a simple example. Imagine you're working on a document and need to change every instance of "entirely" to "completely". Instead of doing it manually, you can do it with one line of code:
 
@@ -50,16 +52,34 @@ Here's a simple example. Imagine you're working on a document and need to change
 editor.execute( 'replaceAll', 'completely', 'entirely' );
 ```
 
-This one line will:
-- Find all instances of "entirely" in your document
-- Change each one to "completely"
-- Keep all the formatting around the changed text
+This one line will find all instances of "entirely" in your document and change them to "completely". This is perfect for making bulk updates in multiple documents. Simply, execute this call for every document you would like to change.
 
-This is perfect for fixing typos, updating old terms, or making any bulk changes to your documents.
+To learn more about commands architecture, visit the [Commands documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/core-editor-architecture.html#commands).
 
-### Updating Links in Your Document
+### Insert HTML Content
 
-Now, consider a more complex scenario. You need to update all links in your document from `/docs/` to `/documents/`. This is a common task when moving content between environments or updating your site structure.
+When you have HTML content ready (for example, from another system or a template), you can insert it directly into the editor. This is often simpler than building the content piece by piece using the editor API.
+
+```js
+// The HTML content we want to add.
+const html = '<h2>New section</h2><p>This is a <strong>new section</strong> inserted into the document using <u>server-side editor API</u>.</p>';
+
+// Convert HTML to the editor's model.
+const model = editor.data.parse( html );
+
+// Get the root element and create an insertion position.
+const root = editor.model.document.getRoot();
+const insertPosition = editor.model.createPositionAt( root, 1 );
+
+// Insert the content at the specified position.
+editor.model.insertContent( model, insertPosition );
+```
+
+### Using Editor Model API
+
+If you cannot find a command that would perform a specific action on the document, you can use editor document API to provide precise changes. This approach offers the biggest flexibility and should cover any need you have, although it requires a better understanding of CKEditor internals.
+
+For example, consider a scenario where you need to update all links in your document from `/docs/` to `/documents/`. This is a common task when moving content between environments or updating your site structure.
 
 ```js
 // Get the root element and create a range that covers all content.
@@ -81,40 +101,17 @@ editor.model.change( writer => {
 } );
 ```
 
-This approach is particularly useful when you need to:
-- Update many links at once
-- Fix broken links across your content
-- Change link patterns in bulk
+This approach is particularly useful when you need to update many links at once or fix broken links across your content.
 
-### Adding Complex HTML Content
-
-Let's say you need to add a pre-made section to your document. This is useful when you want to add templates, import content from other systems, or create dynamic content.
-
-```js
-// The HTML content we want to add.
-const html = '<h2>New section</h2><p>This is a <strong>new section</strong> inserted into the document using <u>server-side editor API</u>.</p>';
-
-// Convert HTML to the editor's model.
-const model = editor.data.parse( html );
-
-// Get the root element and create an insertion position.
-const root = editor.model.document.getRoot();
-const insertPosition = editor.model.createPositionAt( root, 1 );
-
-// Insert the content at the specified position.
-editor.model.insertContent( model, insertPosition );
-```
-
-This is perfect for:
-- Adding content from other places
-- Inserting ready-made templates
-- Adding pre-formatted HTML content 
+To learn more about working with the editor model, see the {@link framework/architecture/editing-engine Editing engine guide}.
 
 ## Working with Track Changes
 
 {@link features/track-changes Track changes} helps you manage content suggestions effectively, for tasks like automating content review, and implementing AI-powered suggestions.
 
-### Text Modifications
+### Using commands
+
+Track changes is integrated with most editor commands, so if you wish to change the document using commands and track these changes, all you need to do is turn on track changes mode.
 
 Let's start with a basic text replacement:
 
@@ -128,7 +125,7 @@ editor.execute( 'replaceAll', 'I', 'you' );
 
 The `trackChanges` command ensures that all changes are marked as suggestions, making it easy for others to review and accept or reject them.
 
-### Content Structure Changes
+### Content changes
 
 Now, let's look at how to suggest content removal:
 
@@ -164,14 +161,14 @@ editor.model.insertContent( modelFragment, insertPosition );
 ```
 
 This approach shines in several real-world scenarios:
-- Automatically suggesting content updates based on external data
-- Creating templates that need review before finalization
-- Integrating with content management systems to propose changes
-- Building custom workflows for content creation and review
+* Automatically suggesting content updates based on external data
+* Creating templates that need review before finalization
+* Integrating with content management systems to propose changes
+* Building custom workflows for content creation and review
 
 ### Attribute Modifications
 
-Sometimes you need more advanced control over how your changes are recorded, especially when working with attributes. Let's look at how to suggest attribute changes, like updating link URLs:
+If you wish to create attributes suggestions using the editor model API, you need to specifically tell track changes features to record these changes. Let's look how to correctly make a suggestion to update links URLs:
 
 ```js
 // Get the track changes editing plugin for direct access to suggestion recording.
@@ -204,7 +201,9 @@ for ( const item of items ) {
 
 ## Resolving Comments
 
-{@link features/comments Comments} help you track discussions in your documents. Here's how to get them and automatically resolve them:
+{@link features/comments Comments} feature allows your users to have discussions on certain parts of your documents. You can use Comments feature API to implement interactions with comments with no need to open the editor itself.
+
+For example, here's how to resolve all comment threads in a given document:
 
 ```js
 // Get all comment threads from the document.
@@ -255,10 +254,4 @@ const attributes = await revisionTracker.getRevisionRootsAttributes( revision );
 return { documentData, attributes };
 ```
 
-This is useful when you want to:
-- Compare revisions
-- Export them
-- Build your own features
-- Retrieve and process document data of a given revision
-- Restore revisions server-side, possibly across multiple documents
-- Integrate revision data with external systems
+This is useful if you need particular revision data for further processing. It will allow you build custom back-end features based on revisions, like previewing revisions data outside of editor, exporting a particular revision to PDF, or integrating revisions data with external systems.
