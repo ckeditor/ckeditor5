@@ -47,8 +47,8 @@ ClassicEditor
 When using the Decoupled, Balloon or Multi-root editor, you will need to insert the menu bar in a desired place yourself. The menu bar HTML element is available under the {@link module:ui/editorui/editoruiview~EditorUIView#menuBarView `editor.ui.view.menuBarView.element`} property.
 
 ```html
-	<div id="menuBarContainer"></div>
-	<div id="editor"><p>Document content.</p></div>
+<div id="menuBarContainer"></div>
+<div id="editor"><p>Document content.</p></div>
 ```
 
 ```js
