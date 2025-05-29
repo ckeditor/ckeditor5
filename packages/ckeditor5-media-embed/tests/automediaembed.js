@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global setTimeout */
-
 import MediaEmbed from '../src/mediaembed.js';
 import AutoMediaEmbed from '../src/automediaembed.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, setTimeout, window, console */
-
 import ContextWatchdog from '../src/contextwatchdog.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Context from '@ckeditor/ckeditor5-core/src/context.js';

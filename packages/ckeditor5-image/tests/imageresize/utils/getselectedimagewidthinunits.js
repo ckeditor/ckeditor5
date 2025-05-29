@@ -14,8 +14,6 @@ import ImageStyle from '../../../src/imagestyle.js';
 import { IMAGE_SRC_FIXTURE } from '../_utils/utils.js';
 import { getSelectedImageWidthInUnits } from '../../../src/imageresize/utils/getselectedimagewidthinunits.js';
 
-/* eslint-disable no-undef */
-
 describe( 'getSelectedImageWidthInUnits', () => {
 	let editor, model, editorElement;
 

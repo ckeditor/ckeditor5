@@ -8,8 +8,6 @@ import ElementApiMixin from '../../../src/editor/utils/elementapimixin.js';
 import Editor from '../../../src/editor/editor.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
-/* global document, Event */
-
 describe( 'attachToForm()', () => {
 	let editor, form, textarea, submitStub;
 
@@ -25,7 +23,6 @@ describe( 'attachToForm()', () => {
 			evt.preventDefault();
 		} );
 
-		// eslint-disable-next-line new-cap
 		class CustomEditor extends ElementApiMixin( Editor ) {}
 
 		editor = new CustomEditor();

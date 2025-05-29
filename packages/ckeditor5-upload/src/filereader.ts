@@ -7,8 +7,6 @@
  * @module upload/filereader
  */
 
-/* globals window */
-
 import { ObservableMixin } from '@ckeditor/ckeditor5-utils';
 
 type DomFileReader = globalThis.FileReader;

@@ -5,8 +5,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 // The script assumes that it is executed from the CKEditor 5 Commercial directory and aims to load
 // the template file (`.circleci/template.yml`) and store it under the `.circleci/config-tests.yml` path,
 // a source for a new workflow triggered from the main thread when a new build starts.

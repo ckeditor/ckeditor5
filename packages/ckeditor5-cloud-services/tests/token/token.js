@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env commonjs, browser */
-
 import Token from '../../src/token/token.js';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -305,7 +303,7 @@ describe( 'Token', () => {
 
 			try {
 				await initPromise;
-			} catch ( error ) {
+			} catch {
 				throw new Error( 'Promise should not be rejected' );
 			}
 

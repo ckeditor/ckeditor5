@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, Event */
-
 import ColorInputView from '../../src/ui/colorinputview.js';
 import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview.js';
 import ColorGridView from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview.js';

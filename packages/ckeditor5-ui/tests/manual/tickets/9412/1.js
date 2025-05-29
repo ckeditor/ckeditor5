@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, document, console:false */
-
 import { IconBold } from '@ckeditor/ckeditor5-icons';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
