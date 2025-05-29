@@ -10,11 +10,15 @@ import ckeditor5Config from 'eslint-config-ckeditor5';
 
 import rootPkgJson from './package.json' with { type: 'json' };
 
-const disallowedImports = Object.keys( rootPkgJson.devDependencies ).filter( pkgName => {
-	const isCKEditor5Package = pkgName.startsWith( 'ckeditor5-' ) || pkgName.startsWith( '@ckeditor/ckeditor5-' );
-	const isCKEditor5DevPackage = pkgName.startsWith( '@ckeditor/ckeditor5-dev-' );
+const PACKAGE_WHITELIST = [
+	'@ckeditor/ckeditor5-inspector',
+	'@ckeditor/ckeditor5-angular',
+	'@ckeditor/ckeditor5-react',
+	'@ckeditor/ckeditor5-vue'
+];
 
-	return isCKEditor5Package && !isCKEditor5DevPackage;
+const disallowedImports = Object.keys( rootPkgJson.devDependencies ).filter( pkgName => {
+	return !PACKAGE_WHITELIST.includes( pkgName ) && pkgName.match( /^(@ckeditor\/)?ckeditor5-(?!dev-)/ );
 } );
 
 export default defineConfig( [
@@ -89,7 +93,19 @@ export default defineConfig( [
 					returnValue: true
 				} ],
 				disallowedFlags: [ 'isPremiumPlugin' ]
-			} ],
+			} ]
+		}
+	},
+	{
+		files: [
+			'packages/*/@(src|tests)/**/*.@(ts|js)',
+			'src/**/*.@(ts|js)'
+		],
+
+		plugins: {
+			'ckeditor5-rules': ckeditor5Rules
+		},
+		rules: {
 			'no-restricted-imports': [ 'error', {
 				'paths': disallowedImports
 			} ]
