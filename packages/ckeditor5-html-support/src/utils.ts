@@ -11,6 +11,7 @@ import type {
 	DocumentSelection,
 	DowncastWriter,
 	Item,
+	Range,
 	ViewElement,
 	Writer
 } from 'ckeditor5/src/engine.js';
@@ -200,6 +201,32 @@ export function modifyGhsAttribute(
 		if ( item.is( 'documentSelection' ) ) {
 			writer.removeSelectionAttribute( ghsAttributeName );
 		} else {
+			writer.removeAttribute( ghsAttributeName, item );
+		}
+	}
+}
+
+/**
+ * TODO
+ *
+ * @internal
+ */
+export function removeFormatting( ghsAttributeName: string, itemRange: Range, writer: Writer ): void {
+	for ( const item of itemRange.getItems( { shallow: true } ) ) {
+		const value = item.getAttribute( ghsAttributeName ) as Record<string, any>;
+
+		if ( !value ) {
+			continue;
+		}
+
+		// Copy only attributes to the new attribute value.
+		if ( value.attributes && Object.keys( value.attributes ).length ) {
+			// But reset the GHS attribute only when there is anything more than just attributes.
+			if ( Object.keys( value ).length > 1 ) {
+				writer.setAttribute( ghsAttributeName, { attributes: value.attributes }, item );
+			}
+		} else {
+			// There are no attributes, so remove the GHS attribute completely.
 			writer.removeAttribute( ghsAttributeName, item );
 		}
 	}
