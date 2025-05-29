@@ -1267,7 +1267,7 @@ describe( 'table properties', () => {
 					expect( table.getAttribute( 'tableHeight' ) ).to.equal( '543px' );
 				} );
 
-				it( 'should consume width style even if it is default', async () => {
+				it( 'should consume height style even if it is default', async () => {
 					const editor = await VirtualTestEditor.create( {
 						plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
 						table: {
@@ -1293,7 +1293,7 @@ describe( 'table properties', () => {
 					await editor.destroy();
 				} );
 
-				it( 'should consume width attribute even if it is default', async () => {
+				it( 'should consume height attribute even if it is default', async () => {
 					const editor = await VirtualTestEditor.create( {
 						plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
 						table: {
@@ -1471,7 +1471,7 @@ describe( 'table properties', () => {
 					await editor.destroy();
 				} );
 
-				it( 'should consume width attribute even if it is default', async () => {
+				it( 'should consume align attribute even if it is default', async () => {
 					const editor = await VirtualTestEditor.create( {
 						plugins: [ TablePropertiesEditing, Paragraph, TableEditing ],
 						table: {

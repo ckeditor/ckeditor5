@@ -1173,7 +1173,7 @@ describe( 'table cell properties', () => {
 					editor.setData( '<table><tr><td style="vertical-align:bottom">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.hasAttribute( 'tableCellHorizontalAlignment' ) ).to.be.false;
+					expect( tableCell.hasAttribute( 'tableCellVerticalAlignment' ) ).to.be.false;
 
 					await editor.destroy();
 				} );
@@ -1199,7 +1199,7 @@ describe( 'table cell properties', () => {
 					editor.setData( '<table><tr><td valign="bottom">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.hasAttribute( 'tableCellHorizontalAlignment' ) ).to.be.false;
+					expect( tableCell.hasAttribute( 'tableCellVerticalAlignment' ) ).to.be.false;
 
 					await editor.destroy();
 				} );
