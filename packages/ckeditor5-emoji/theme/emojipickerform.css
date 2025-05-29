@@ -5,6 +5,7 @@
 
 .ck.ck-form.ck-emoji-picker-form {
 	padding-bottom: 0;
+	min-width: 320px;
 
 	/*
 	 * `.ck-form` overrides styling of all dropdowns by adding border around them.
