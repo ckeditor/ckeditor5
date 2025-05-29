@@ -7,7 +7,7 @@
  * @module remove-format/removeformatcommand
  */
 
-import type { DocumentSelection, Item, Schema } from 'ckeditor5/src/engine.js';
+import type { DocumentSelection, Item, Schema, Range, Writer } from 'ckeditor5/src/engine.js';
 import { Command } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
 
@@ -23,6 +23,14 @@ import { first } from 'ckeditor5/src/utils.js';
  */
 export default class RemoveFormatCommand extends Command {
 	declare public value: boolean;
+
+	/**
+	 * TODO
+	 */
+	private _customAttributesHandlers: Array<{
+		isFormatting: IsFormatting;
+		removeFormatting: RemoveFormatting;
+	}> = [];
 
 	/**
 	 * @inheritDoc
@@ -52,11 +60,39 @@ export default class RemoveFormatCommand extends Command {
 					const itemRange = writer.createRangeOn( item );
 
 					for ( const attributeName of this._getFormattingAttributes( item, schema ) ) {
-						writer.removeAttribute( attributeName, itemRange );
+						this._removeFormatting( attributeName, item, itemRange, writer );
 					}
 				}
 			}
 		} );
+	}
+
+	/**
+	 * TODO
+	 */
+	public registerCustomAttribute( isFormatting: IsFormatting, removeFormatting: RemoveFormatting ): void {
+		this._customAttributesHandlers.push( {
+			isFormatting,
+			removeFormatting
+		} );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _removeFormatting( attributeName: string, item: Item, itemRange: Range, writer: Writer ) {
+		let customHandled = false;
+
+		for ( const { isFormatting, removeFormatting } of this._customAttributesHandlers ) {
+			if ( isFormatting( attributeName, item ) ) {
+				removeFormatting( attributeName, itemRange, writer );
+				customHandled = true;
+			}
+		}
+
+		if ( !customHandled ) {
+			writer.removeAttribute( attributeName, itemRange );
+		}
 	}
 
 	/**
@@ -102,6 +138,12 @@ export default class RemoveFormatCommand extends Command {
 	 */
 	private* _getFormattingAttributes( item: Item | DocumentSelection, schema: Schema ) {
 		for ( const [ attributeName ] of item.getAttributes() ) {
+			for ( const { isFormatting } of this._customAttributesHandlers ) {
+				if ( isFormatting( attributeName, item ) ) {
+					yield attributeName;
+				}
+			}
+
 			const attributeProperties = schema.getAttributeProperties( attributeName );
 
 			if ( attributeProperties && attributeProperties.isFormatting ) {
@@ -110,3 +152,13 @@ export default class RemoveFormatCommand extends Command {
 		}
 	}
 }
+
+/**
+ * TODO
+ */
+export type IsFormatting = ( attributeName: string, item: Item | DocumentSelection ) => boolean;
+
+/**
+ * TODO
+ */
+export type RemoveFormatting = ( attributeName: string, range: Range, writer: Writer ) => void;
