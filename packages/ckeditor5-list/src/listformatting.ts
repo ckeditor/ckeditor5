@@ -170,6 +170,11 @@ export default class ListFormatting extends Plugin {
 						} else {
 							continue;
 						}
+					} else {
+						if ( listItemFormatAttribute ) {
+							this._removeFormattingFromListItem( writer, listItem, listItemFormatAttributeName );
+							returnValue = true;
+						}
 					}
 
 					continue;
