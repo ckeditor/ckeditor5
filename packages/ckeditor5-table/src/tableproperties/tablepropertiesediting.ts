@@ -227,8 +227,10 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 			model: {
 				key: 'tableAlignment',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					// Consume the style even if not applied to the element so it won't be processed by other converters.
-					conversionApi.consumable.consume( viewElement, { styles: 'float' } );
+					// Ignore other figure elements.
+					if ( viewElement.name == 'figure' && !viewElement.hasClass( 'table' ) ) {
+						return;
+					}
 
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
 					let align = viewElement.getStyle( 'float' );
@@ -238,7 +240,12 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 						align = 'center';
 					}
 
-					return align === localDefaultValue ? null : align;
+					if ( align !== localDefaultValue ) {
+						return align;
+					}
+
+					// Consume the style even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { styles: 'float' } );
 				}
 			}
 		} )
@@ -254,13 +261,20 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 			model: {
 				key: 'tableAlignment',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					// Consume the styles even if not applied to the element so it won't be processed by other converters.
-					conversionApi.consumable.consume( viewElement, { styles: [ 'margin-left', 'margin-right' ] } );
+					// Ignore other figure elements.
+					if ( viewElement.name == 'figure' && !viewElement.hasClass( 'table' ) ) {
+						return;
+					}
 
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
 					const align = 'center';
 
-					return align === localDefaultValue ? null : align;
+					if ( align !== localDefaultValue ) {
+						return align;
+					}
+
+					// Consume the styles even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { styles: [ 'margin-left', 'margin-right' ] } );
 				}
 			}
 		} )
@@ -275,13 +289,15 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 			model: {
 				key: 'tableAlignment',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					// Consume the attribute even if not applied to the element so it won't be processed by other converters.
-					conversionApi.consumable.consume( viewElement, { attributes: 'align' } );
-
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
 					const align = viewElement.getAttribute( 'align' );
 
-					return align === localDefaultValue ? null : align;
+					if ( align !== localDefaultValue ) {
+						return align;
+					}
+
+					// Consume the attribute even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { attributes: 'align' } );
 				}
 			}
 		} );
@@ -332,11 +348,6 @@ function enableTableToFigureProperty(
 		allowAttributes: [ modelAttribute ]
 	} );
 
-	upcastStyleToAttribute( conversion, {
-		viewElement: /^(table|figure)$/,
-		shouldUpcast: ( element: ViewElement ) => !( element.name == 'table' && element.parent!.name == 'figure' ),
-		...options
-	} );
-
+	upcastStyleToAttribute( conversion, { viewElement: /^(table|figure)$/, ...options } );
 	downcastAttributeToStyle( conversion, { modelElement: 'table', ...options } );
 }
