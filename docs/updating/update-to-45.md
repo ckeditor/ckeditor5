@@ -55,7 +55,7 @@ The default behavior of the `beforeinput` DOM events is no longer prevented in p
 
 ## Update to CKEditor&nbsp;5 v45.0.0
 
-Released on April 7, 5. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v45.0.0))
+Released on April 7, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v45.0.0))
 
 Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v45.0.0.
 
