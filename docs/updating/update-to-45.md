@@ -14,9 +14,23 @@ modified_at: 2025-05-08
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
+## Update to CKEditor&nbsp;5 v45.2.0
+
+Released on June 3, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v45.2.0))
+
+Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v45.2.0.
+
+* We fixed the copy-paste scenario in the read-only mode.
+* Tables pasted from Office, especially with borderless layouts, should preserve styling in the editor similar to the ones in the source file.
+* Improved the adoption of the fullscreen feature on smaller screens and includes subtle visual tweaks.
+
+### Minor breaking changes in this release
+
+* **[source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing)**: The `formatHtml()` helper function is extracted to the `@ckeditor/ckeditor5-utils` package. See [#18480](https://github.com/ckeditor/ckeditor5/issues/18480).
+
 ## Update to CKEditor&nbsp;5 v45.1.0
 
-Released on May 14, 2024. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v45.1.0))
+Released on May 14, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v45.1.0))
 
 Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v45.1.0.
 
@@ -41,7 +55,7 @@ The default behavior of the `beforeinput` DOM events is no longer prevented in p
 
 ## Update to CKEditor&nbsp;5 v45.0.0
 
-Released on April 7, 2024. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v45.0.0))
+Released on April 7, 5. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v45.0.0))
 
 Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v45.0.0.
 

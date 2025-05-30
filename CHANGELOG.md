@@ -7,11 +7,11 @@ We are happy to announce the release of CKEditor 5 v45.2.0.
 
 ### Release highlights
 
-CKEditor 5 v45.2.0 offers these improvements and bug fixes.
+CKEditor 5 v45.2.0 offers the following improvements and bug fixes.
 
 * We fixed the copy-paste scenario in the read-only mode.
 * Tables pasted from Office, especially with borderless layouts, should preserve styling in the editor similar to the ones in the source file.
-* Fullscreen now better adapts to smaller screens and includes subtle visual tweaks.
+* Improved the adoption of the fullscreen feature on smaller screens and includes subtle visual tweaks.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
@@ -34,8 +34,8 @@ CKEditor 5 v45.2.0 offers these improvements and bug fixes.
 * **[source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing)**: Empty lines in code blocks should not be removed in source editing mode. See [#18480](https://github.com/ckeditor/ckeditor5/issues/18480). ([commit](https://github.com/ckeditor/ckeditor5/commit/1f52f5309200b170c6d2df981c5903c41735e0da))
 * **[source-editing-enhanced](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing-enhanced)**: Single line pre-block should not cause loss of indentation on later lines in source mode. Closes [#18360](https://github.com/ckeditor/ckeditor5/issues/18360). ([commit](https://github.com/ckeditor/ckeditor5/commit/1f52f5309200b170c6d2df981c5903c41735e0da))
 * **[source-editing-enhanced](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing-enhanced)**: Empty lines in code blocks should not be removed in source editing mode. See [#18480](https://github.com/ckeditor/ckeditor5/issues/18480). ([commit](https://github.com/ckeditor/ckeditor5/commit/1f52f5309200b170c6d2df981c5903c41735e0da))
-* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Should apply the proper `[width]` attribute when it's used both on `<table>` and `<figure>` elements. Closes [#18469](https://github.com/ckeditor/ckeditor5/issues/18469). ([commit](https://github.com/ckeditor/ckeditor5/commit/fb4d3a88734112584442748185956a29053b48c0))
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Fixed crashes that could occur in real-time collaboration when a user splits suggestions rapidly in a short timeframe.
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Should apply the proper `[width]` attribute when it is used both on `<table>` and `<figure>` elements. Closes [#18469](https://github.com/ckeditor/ckeditor5/issues/18469). ([commit](https://github.com/ckeditor/ckeditor5/commit/fb4d3a88734112584442748185956a29053b48c0))
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Fixed crashes that could occur in real-time collaboration when a user splits suggestions rapidly in a short time frame.
 
 ### Other changes
 
