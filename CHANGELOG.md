@@ -1,7 +1,17 @@
 Changelog
 =========
 
-## [45.2.0](https://github.com/ckeditor/ckeditor5/compare/v45.1.0...v45.2.0) (May 30, 2025)
+## [45.2.0](https://github.com/ckeditor/ckeditor5/compare/v45.1.0...v45.2.0) (June 4, 2025)
+
+We are happy to announce the release of CKEditor 5 v45.2.0.
+
+### Release highlights
+
+CKEditor 5 v45.2.0 offers these improvements and bug fixes.
+
+* We fixed the copy-paste scenario in the read-only mode.
+* Tables pasted from Office, especially with borderless layouts, should preserve styling in the editor similar to the ones in the source file.
+* Fullscreen now better adapts to smaller screens and includes subtle visual tweaks.
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
@@ -13,7 +23,7 @@ Changelog
 
 ### Bug fixes
 
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Editor should not crash while using Mac text replacement in TC mode. ([commit](https://github.com/ckeditor/ckeditor5/commit/42ea203c753519cb2b80d41b78e55f08f7700a31))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The editor should not crash while using Mac text replacement in the Track changes mode. ([commit](https://github.com/ckeditor/ckeditor5/commit/42ea203c753519cb2b80d41b78e55f08f7700a31))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Copying content in read-only mode should use the current document selection. Closes [#18514](https://github.com/ckeditor/ckeditor5/issues/18514). ([commit](https://github.com/ckeditor/ckeditor5/commit/39c7c09cc0adf20110cce5da79ed62aa0a4e2d7c))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The editor should not crash after clearing content with a widget selected. Closes [#18123](https://github.com/ckeditor/ckeditor5/issues/18123), [#18458](https://github.com/ckeditor/ckeditor5/issues/18458). ([commit](https://github.com/ckeditor/ckeditor5/commit/deb0921414531002f176614c6693cead37c9c10d))
 * **[pagination](https://www.npmjs.com/package/@ckeditor/ckeditor5-pagination)**: Chrome no longer incorrectly pushes content to the next page when rendering documents consisting mainly of paragraphs with soft line breaks. Closes [#7316](https://github.com/cksource/ckeditor5-commercial/issues/7316).
@@ -24,13 +34,13 @@ Changelog
 * **[source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing)**: Empty lines in code blocks should not be removed in source editing mode. See [#18480](https://github.com/ckeditor/ckeditor5/issues/18480). ([commit](https://github.com/ckeditor/ckeditor5/commit/1f52f5309200b170c6d2df981c5903c41735e0da))
 * **[source-editing-enhanced](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing-enhanced)**: Single line pre-block should not cause loss of indentation on later lines in source mode. Closes [#18360](https://github.com/ckeditor/ckeditor5/issues/18360). ([commit](https://github.com/ckeditor/ckeditor5/commit/1f52f5309200b170c6d2df981c5903c41735e0da))
 * **[source-editing-enhanced](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing-enhanced)**: Empty lines in code blocks should not be removed in source editing mode. See [#18480](https://github.com/ckeditor/ckeditor5/issues/18480). ([commit](https://github.com/ckeditor/ckeditor5/commit/1f52f5309200b170c6d2df981c5903c41735e0da))
-* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Should apply the proper `width` attribute when it's used both on `<table>` and `<figure>` elements. Closes [#18469](https://github.com/ckeditor/ckeditor5/issues/18469). ([commit](https://github.com/ckeditor/ckeditor5/commit/fb4d3a88734112584442748185956a29053b48c0))
-* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Fixed crashes that could occur in real-time collaboration when a user split suggestions rapidly in a short timeframe.
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Should apply the proper `[width]` attribute when it's used both on `<table>` and `<figure>` elements. Closes [#18469](https://github.com/ckeditor/ckeditor5/issues/18469). ([commit](https://github.com/ckeditor/ckeditor5/commit/fb4d3a88734112584442748185956a29053b48c0))
+* **[track-changes](https://www.npmjs.com/package/@ckeditor/ckeditor5-track-changes)**: Fixed crashes that could occur in real-time collaboration when a user splits suggestions rapidly in a short timeframe.
 
 ### Other changes
 
 * **[paste-from-office](https://www.npmjs.com/package/@ckeditor/ckeditor5-paste-from-office)**: Normalized pasted table length units (dimensions and border widths). ([commit](https://github.com/ckeditor/ckeditor5/commit/c378aefd8c6fb6462a2d36383fec9a718fd9d696))
-* The repository now uses ESLint v9. Therefore, the required Node.js version has been upgraded to 22 to match the ESLint requirements. See [#18475](https://github.com/ckeditor/ckeditor5/issues/18475). ([commit](https://github.com/ckeditor/ckeditor5/commit/9a2ee77b3048bc94857b9ce8da14650e1cfd580f))
+* The development environment requires Node v22 due to migrating to the latest ESLint (v9) version. See [#18475](https://github.com/ckeditor/ckeditor5/issues/18475). ([commit](https://github.com/ckeditor/ckeditor5/commit/9a2ee77b3048bc94857b9ce8da14650e1cfd580f))
 
 ### Released packages
 
