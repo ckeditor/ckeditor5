@@ -16,7 +16,7 @@ modified_at: 2025-05-08
 
 ## Update to CKEditor&nbsp;5 v45.2.0
 
-Released on June 3, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v45.2.0))
+Released on June 4, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v45.2.0))
 
 Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v45.2.0.
 
