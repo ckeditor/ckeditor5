@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global CKEditorInspector, document, window */
-
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';

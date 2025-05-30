@@ -50,7 +50,7 @@ import type {
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
-  interface EditorConfig {
+	interface EditorConfig {
 
 		/**
 		 * The configuration of the {@link module:list/list~List} feature and the {@link module:list/legacylist~LegacyList} feature.
@@ -86,7 +86,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ TodoDocumentList.pluginName ]: TodoDocumentList;
 	}
 
-  interface CommandsMap {
+	interface CommandsMap {
 		numberedList: LegacyListCommand | ListCommand;
 		bulletedList: LegacyListCommand | ListCommand;
 		indentList: LegacyIndentCommand | ListIndentCommand;

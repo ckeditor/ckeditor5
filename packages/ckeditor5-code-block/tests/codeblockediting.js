@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import CodeBlockEditing from '../src/codeblockediting.js';
 import CodeBlockCommand from '../src/codeblockcommand.js';
 import IndentCodeBlockCommand from '../src/indentcodeblockcommand.js';

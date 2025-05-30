@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
 import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting.js';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';

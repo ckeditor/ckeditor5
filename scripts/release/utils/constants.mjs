@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 import upath from 'upath';
 
 export const PACKAGES_DIRECTORY = 'packages';

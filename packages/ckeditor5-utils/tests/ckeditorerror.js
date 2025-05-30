@@ -3,10 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-disable ckeditor5-rules/ckeditor-error-message */
-
-/* global console */
-
 import { default as CKEditorError, DOCUMENTATION_URL, logError, logWarning } from '../src/ckeditorerror.js';
 import { expectToThrowCKEditorError } from './_utils/utils.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';

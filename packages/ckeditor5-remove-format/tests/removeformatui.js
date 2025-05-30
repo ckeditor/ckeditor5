@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import { IconRemoveFormat } from 'ckeditor5/src/icons.js';
 import RemoveFormat from '../src/removeformat.js';
 import RemoveFormatUI from '../src/removeformatui.js';

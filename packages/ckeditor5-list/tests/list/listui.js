@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 // TODO change to new ListEditing
 import LegacyListEditing from '../../src/legacylist/legacylistediting.js';
 import ListUI from '../../src/list/listui.js';

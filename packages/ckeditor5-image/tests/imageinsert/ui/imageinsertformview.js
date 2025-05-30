@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, Event */
-
 import ImageInsertFormView from '../../../src/imageinsert/ui/imageinsertformview.js';
 import ImageInsertUrlView from '../../../src/imageinsert/ui/imageinserturlview.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';

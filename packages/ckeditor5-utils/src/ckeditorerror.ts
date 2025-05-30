@@ -7,8 +7,6 @@
  * @module utils/ckeditorerror
  */
 
-/* globals console */
-
 /**
  * URL to the documentation with error codes.
  */

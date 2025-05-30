@@ -303,9 +303,9 @@ export default class UpcastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 		viewItem: ViewElement | ViewDocumentFragment,
 		elementOrModelCursor: ModelPosition | ModelElement
 	): {
-		modelRange: ModelRange;
-		modelCursor: ModelPosition;
-	} {
+			modelRange: ModelRange;
+			modelCursor: ModelPosition;
+		} {
 		let nextModelCursor = elementOrModelCursor.is( 'position' ) ?
 			elementOrModelCursor : ModelPosition._createAt( elementOrModelCursor, 0 );
 

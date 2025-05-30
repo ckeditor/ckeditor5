@@ -99,6 +99,11 @@ describe( 'table cell properties', () => {
 
 			describe( 'upcast conversion', () => {
 				it( 'should not upcast border values which are same as default', () => {
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:td', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'border' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
 					editor.setData( '<table><tr><td style="border:1px solid #f00">foo</td></tr></table>' );
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
@@ -621,6 +626,72 @@ describe( 'table cell properties', () => {
 
 					expect( tableCell.getAttribute( 'tableCellBackgroundColor' ) ).to.equal( 'rgb(253, 253, 119)' );
 				} );
+
+				it( 'should upcast bgcolor attribute', () => {
+					editor.setData( '<table><tr><td bgcolor="#f00">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'tableCellBackgroundColor' ) ).to.equal( '#f00' );
+				} );
+
+				it( 'should upcast background-color style and ignore bgcolor attribute', () => {
+					editor.setData( '<table><tr><td bgcolor="blue" style="background-color:#f00">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'tableCellBackgroundColor' ) ).to.equal( '#f00' );
+				} );
+
+				it( 'should consume background color style even if it is default', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableCellProperties: {
+								defaultProperties: {
+									backgroundColor: '#f00'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:td', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'background-color' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<table><tr><td style="background-color:#f00">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.hasAttribute( 'tableCellBackgroundColor' ) ).to.be.false;
+
+					await editor.destroy();
+				} );
+
+				it( 'should consume bgcolor attribute even if it is default', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableCellProperties: {
+								defaultProperties: {
+									backgroundColor: '#f00'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:td', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'bgcolor' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<table><tr><td bgcolor="#f00">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.hasAttribute( 'tableCellBackgroundColor' ) ).to.be.false;
+
+					await editor.destroy();
+				} );
 			} );
 
 			describe( 'downcast conversion', () => {
@@ -693,6 +764,11 @@ describe( 'table cell properties', () => {
 
 			describe( 'upcast conversion', () => {
 				it( 'should upcast text-align:left style (due to the default value of the property)', () => {
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:td', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'text-align' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
 					editor.setData( '<table><tr><td style="text-align:left">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
@@ -748,6 +824,58 @@ describe( 'table cell properties', () => {
 
 						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'justify' );
 					} );
+				} );
+
+				it( 'should consume horizontal alignment style even if it is default', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableCellProperties: {
+								defaultProperties: {
+									horizontalAlignment: 'center'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:td', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'text-align' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<table><tr><td style="text-align:center">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.hasAttribute( 'tableCellHorizontalAlignment' ) ).to.be.false;
+
+					await editor.destroy();
+				} );
+
+				it( 'should consume align attribute even if it is default', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableCellProperties: {
+								defaultProperties: {
+									horizontalAlignment: 'center'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:td', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'align' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<table><tr><td align="center">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.hasAttribute( 'tableCellHorizontalAlignment' ) ).to.be.false;
+
+					await editor.destroy();
 				} );
 
 				describe( 'for RTL content language', () => {
@@ -992,6 +1120,11 @@ describe( 'table cell properties', () => {
 				} );
 
 				it( 'should not upcast "middle" vertical-align (due to the default value of the property)', () => {
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:td', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'vertical-align' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
 					editor.setData( '<table><tr><td style="vertical-align:middle">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
@@ -1017,6 +1150,58 @@ describe( 'table cell properties', () => {
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
 					expect( tableCell.getAttribute( 'tableCellVerticalAlignment' ) ).to.be.undefined;
+				} );
+
+				it( 'should consume vertical alignment style even if it is default', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableCellProperties: {
+								defaultProperties: {
+									verticalAlignment: 'bottom'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:td', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'vertical-align' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<table><tr><td style="vertical-align:bottom">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.hasAttribute( 'tableCellVerticalAlignment' ) ).to.be.false;
+
+					await editor.destroy();
+				} );
+
+				it( 'should consume valign attribute even if it is default', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableCellProperties: {
+								defaultProperties: {
+									verticalAlignment: 'bottom'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:td', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'valign' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<table><tr><td valign="bottom">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.hasAttribute( 'tableCellVerticalAlignment' ) ).to.be.false;
+
+					await editor.destroy();
 				} );
 			} );
 
@@ -1167,11 +1352,77 @@ describe( 'table cell properties', () => {
 			} );
 
 			describe( 'upcast conversion', () => {
-				it( 'should upcast height attribute on table cell', () => {
+				it( 'should upcast height style on table cell', () => {
 					editor.setData( '<table><tr><td style="height:20px">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
 					expect( tableCell.getAttribute( 'tableCellHeight' ) ).to.equal( '20px' );
+				} );
+
+				it( 'should upcast height attribute on table cell', () => {
+					editor.setData( '<table><tr><td height="20">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'tableCellHeight' ) ).to.equal( '20px' );
+				} );
+
+				it( 'should upcast height style on table cell and ignore height attribute', () => {
+					editor.setData( '<table><tr><td height="100" style="height:20px">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.getAttribute( 'tableCellHeight' ) ).to.equal( '20px' );
+				} );
+
+				it( 'should consume height style even if it is default', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableCellProperties: {
+								defaultProperties: {
+									height: '123px'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:td', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'height' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<table><tr><td style="height:123px">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.hasAttribute( 'tableCellHeight' ) ).to.be.false;
+
+					await editor.destroy();
+				} );
+
+				it( 'should consume height attribute even if it is default', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
+						table: {
+							tableCellProperties: {
+								defaultProperties: {
+									height: '123px'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// But it should consume it, so GHS won't store it.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:td', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'height' } ) ).to.be.false;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<table><tr><td height="123">foo</td></tr></table>' );
+					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+					expect( tableCell.hasAttribute( 'tableCellHeight' ) ).to.be.false;
+
+					await editor.destroy();
 				} );
 			} );
 
