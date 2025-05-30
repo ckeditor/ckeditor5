@@ -11,7 +11,7 @@ import CKEditorError from './ckeditorerror.js';
 
 if ( false ) {
 	/**
-	 * The {@link module:utils/locale~Locale#language `Locale#language`} property was deprecated and will
+	 * The `Locale#language` property was deprecated and will
 	 * be removed in the near future. Please use the {@link module:utils/locale~Locale#uiLanguage `Locale#uiLanguage`} and
 	 * {@link module:utils/locale~Locale#contentLanguage `Locale#contentLanguage`} properties instead.
 	 *
