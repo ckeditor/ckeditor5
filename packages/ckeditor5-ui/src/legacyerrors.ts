@@ -11,7 +11,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 if ( false ) {
 	/**
-	 * The {@link module:ui/editorui/editorui~EditorUI#_editableElements `EditorUI#_editableElements`} property has been
+	 * The `EditorUI#_editableElements` property has been
 	 * deprecated and will be removed in the near future. Please use
 	 * {@link module:ui/editorui/editorui~EditorUI#setEditableElement `setEditableElement()`} and
 	 * {@link module:ui/editorui/editorui~EditorUI#getEditableElement `getEditableElement()`} methods instead.

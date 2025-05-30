@@ -11,7 +11,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 if ( false ) {
 	/**
-	 * The {@link module:engine/model/batch~Batch#type `Batch#type` } property has been deprecated and will be removed in the near
+	 * The `Batch#type` property has been deprecated and will be removed in the near
 	 * future. Use `Batch#isLocal`, `Batch#isUndoable`, `Batch#isUndo` and `Batch#isTyping` instead.
 	 *
 	 * @error batch-type-deprecated
