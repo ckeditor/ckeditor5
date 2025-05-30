@@ -15,7 +15,8 @@
 .ck-content .table > figcaption {
 	display: table-caption;
 	caption-side: top;
-	word-break: break-word;
+	word-break: normal;
+	overflow-wrap: anywhere;
 	text-align: center;
 	color: var(--ck-color-selector-caption-text);
 	background-color: var(--ck-color-selector-caption-background);

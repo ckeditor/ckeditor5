@@ -8,10 +8,6 @@ const svgoViewBoxPlugin = require( './utils/svgoviewboxplugin.cjs' );
 module.exports = {
 	name: 'preset-default',
 	plugins: [
-		{
-			name: 'removeViewBox',
-			active: false
-		},
 		{ name: 'collapseGroups' },
 		{ name: 'removeDimensions' },
 		{

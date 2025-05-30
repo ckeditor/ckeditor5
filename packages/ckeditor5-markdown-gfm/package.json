@@ -21,7 +21,7 @@
     "@ckeditor/ckeditor5-clipboard": "45.1.0",
     "@ckeditor/ckeditor5-core": "45.1.0",
     "@ckeditor/ckeditor5-engine": "45.1.0",
-    "@types/marked": "4.3.2",
+    "@types/marked": "5.0.2",
     "@types/turndown": "5.0.5",
     "ckeditor5": "45.1.0",
     "marked": "4.0.12",
@@ -51,7 +51,7 @@
     "@ckeditor/ckeditor5-utils": "45.1.0",
     "typescript": "5.0.4",
     "webpack": "^5.94.0",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^6.0.1"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "SEE LICENSE IN LICENSE.md",

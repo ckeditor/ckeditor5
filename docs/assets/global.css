@@ -76,7 +76,6 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 
 .demo-row {
 	width: 100%;
-	display: -ms-flexbox;
 	display: flex;
 }
 

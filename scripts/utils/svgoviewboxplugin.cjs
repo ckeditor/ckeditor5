@@ -7,7 +7,6 @@ module.exports = {
 	name: 'svgoViewBoxPlugin',
 	description: 'Plugin that ensures that every SVG has defined valid viewBox.',
 	type: 'visitor',
-	active: true,
 	fn: () => ( {
 		element: {
 			enter: ( node, parentNode ) => {
