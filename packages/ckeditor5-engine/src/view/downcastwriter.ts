@@ -347,7 +347,7 @@ export default class DowncastWriter {
 			children = childrenOrOptions;
 		}
 
-		const containerElement = new ContainerElement( this.document, name, attributes, children as any );
+		const containerElement = new ContainerElement( this.document, name, attributes, children as Node | Iterable<Node> );
 
 		if ( options.renderUnsafeAttributes ) {
 			containerElement._unsafeAttributesToRender.push( ...options.renderUnsafeAttributes );
