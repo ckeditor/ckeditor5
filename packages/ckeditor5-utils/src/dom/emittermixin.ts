@@ -171,16 +171,6 @@ export default function DomEmitterMixin( base?: Constructor<Emitter> ): unknown 
 	return Mixin;
 }
 
-// Backward compatibility with `mix`
-( [
-	'_getProxyEmitter', '_getAllProxyEmitters',
-	'on', 'once', 'off', 'listenTo',
-	'stopListening', 'fire', 'delegate', 'stopDelegating',
-	'_addEventListener', '_removeEventListener'
-] ).forEach( key => {
-	( DomEmitterMixin as any )[ key ] = ( defaultEmitterClass.prototype as any )[ key ];
-} );
-
 /**
  * Creates a ProxyEmitter instance. Such an instance is a bridge between a DOM Node firing events
  * and any Host listening to them. It is backwards compatible with {@link module:utils/emittermixin~Emitter#on}.

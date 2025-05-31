@@ -11,7 +11,6 @@
 export { default as View, type UIViewRenderEvent } from './view.js';
 
 export { default as clickOutsideHandler } from './bindings/clickoutsidehandler.js';
-export { default as injectCssTransitionDisabler } from './bindings/injectcsstransitiondisabler.js';
 export { default as CssTransitionDisablerMixin, type ViewWithCssTransitionDisabler } from './bindings/csstransitiondisablermixin.js';
 export { default as submitHandler } from './bindings/submithandler.js';
 export { default as addKeyboardHandlingForGrid } from './bindings/addkeyboardhandlingforgrid.js';

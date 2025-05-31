@@ -1468,7 +1468,7 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should stop listening', () => {
-			const emitter = Object.create( EmitterMixin );
+			const emitter = new ( EmitterMixin() )();
 			const spy = sinon.spy();
 
 			model.listenTo( emitter, 'event', spy );

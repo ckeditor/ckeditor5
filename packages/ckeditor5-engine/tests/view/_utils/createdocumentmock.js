@@ -13,7 +13,7 @@ import { StylesProcessor } from '../../../src/view/stylesmap.js';
  * @returns {utils.ObservableMixin} Document mock
  */
 export default function createDocumentMock() {
-	const doc = Object.create( ObservableMixin );
+	const doc = new ( ObservableMixin() )();
 	doc.set( 'isFocused', false );
 	doc.set( 'isReadOnly', false );
 	doc.selection = new DocumentSelection();

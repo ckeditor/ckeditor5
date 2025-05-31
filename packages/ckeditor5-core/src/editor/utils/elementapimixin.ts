@@ -61,9 +61,6 @@ export default function ElementApiMixin<Base extends Constructor<Editor>>( base:
 	return Mixin as any;
 }
 
-// Backward compatibility with `mix`.
-( ElementApiMixin as any ).updateSourceElement = ( ElementApiMixin as any )( Object ).prototype.updateSourceElement;
-
 /**
  * Interface describing an editor that replaced a DOM element (was "initialized on an element").
  *

@@ -77,7 +77,7 @@ describe( 'EditingController', () => {
 		let model, modelRoot, viewRoot, domRoot, editing, listener;
 
 		beforeEach( () => {
-			listener = Object.create( EmitterMixin );
+			listener = new ( EmitterMixin() )();
 
 			model = new Model();
 			modelRoot = model.document.createRoot();

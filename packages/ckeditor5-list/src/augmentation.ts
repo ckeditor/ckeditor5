@@ -42,11 +42,7 @@ import type {
 	LegacyTodoListEditing,
 	LegacyCheckTodoListCommand,
 
-	ListConfig,
-
-	DocumentList,
-	DocumentListProperties,
-	TodoDocumentList
+	ListConfig
 } from './index.js';
 
 declare module '@ckeditor/ckeditor5-core' {
@@ -69,7 +65,7 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ ListPropertiesEditing.pluginName ]: ListPropertiesEditing;
 		[ ListPropertiesUtils.pluginName ]: ListPropertiesUtils;
 		[ ListPropertiesUI.pluginName ]: ListPropertiesUI;
-		[ TodoList.pluginName ]: TodoDocumentList;
+		[ TodoList.pluginName ]: TodoList;
 		[ TodoListEditing.pluginName ]: TodoListEditing;
 		[ TodoListUI.pluginName ]: TodoListUI;
 
@@ -80,10 +76,6 @@ declare module '@ckeditor/ckeditor5-core' {
 		[ LegacyListPropertiesEditing.pluginName ]: LegacyListPropertiesEditing;
 		[ LegacyTodoList.pluginName ]: LegacyTodoList;
 		[ LegacyTodoListEditing.pluginName ]: LegacyTodoListEditing;
-
-		[ DocumentList.pluginName ]: DocumentList;
-		[ DocumentListProperties.pluginName ]: DocumentListProperties;
-		[ TodoDocumentList.pluginName ]: TodoDocumentList;
 	}
 
 	interface CommandsMap {

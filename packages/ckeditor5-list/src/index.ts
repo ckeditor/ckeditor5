@@ -55,8 +55,4 @@ export type { default as LegacyCheckTodoListCommand } from './legacytodolist/leg
 export type { ListConfig, ListPropertiesConfig } from './listconfig.js';
 export { default as AdjacentListsSupport } from './list/adjacentlistssupport.js';
 
-export { default as DocumentList } from './documentlist.js';
-export { default as DocumentListProperties } from './documentlistproperties.js';
-export { default as TodoDocumentList } from './tododocumentlist.js';
-
 import './augmentation.js';

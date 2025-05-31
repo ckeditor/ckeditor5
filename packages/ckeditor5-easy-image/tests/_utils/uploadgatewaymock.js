@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import mix from '@ckeditor/ckeditor5-utils/src/mix.js';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
 
 export default class UploadGatewayMock {
@@ -23,7 +22,7 @@ export default class UploadGatewayMock {
 	}
 }
 
-class FileUploader {
+class FileUploader extends /* #__PURE__ */ EmitterMixin() {
 	onProgress( callback ) {
 		this.on( 'progress', ( event, data ) => callback( data ) );
 
@@ -46,5 +45,3 @@ class FileUploader {
 		this.aborted = true;
 	}
 }
-
-mix( FileUploader, EmitterMixin );

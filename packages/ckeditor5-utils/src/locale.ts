@@ -132,30 +132,6 @@ export default class Locale {
 	}
 
 	/**
-	 * The editor UI language code in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
-	 *
-	 * **Note**: This property was deprecated. Please use {@link #uiLanguage} and {@link #contentLanguage}
-	 * properties instead.
-	 *
-	 * @deprecated
-	 */
-	public get language(): string {
-		/**
-		 * The {@link module:utils/locale~Locale#language `Locale#language`} property was deprecated and will
-		 * be removed in the near future. Please use the {@link module:utils/locale~Locale#uiLanguage `Locale#uiLanguage`} and
-		 * {@link module:utils/locale~Locale#contentLanguage `Locale#contentLanguage`} properties instead.
-		 *
-		 * @error locale-deprecated-language-property
-		 */
-		console.warn(
-			'locale-deprecated-language-property: ' +
-			'The Locale#language property has been deprecated and will be removed in the near future. ' +
-			'Please use #uiLanguage and #contentLanguage properties instead.' );
-
-		return this.uiLanguage;
-	}
-
-	/**
 	 * An unbound version of the {@link #t} method.
 	 */
 	private _t( message: string | Message, values: number | string | ReadonlyArray<number | string> = [] ): string {

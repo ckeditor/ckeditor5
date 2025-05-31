@@ -82,30 +82,6 @@ export default class Batch implements BatchType {
 	}
 
 	/**
-	 * The type of the batch.
-	 *
-	 * **This property has been deprecated and is always set to the `'default'` value.**
-	 *
-	 * It can be one of the following values:
-	 * * `'default'` &ndash; All "normal" batches. This is the most commonly used type.
-	 * * `'transparent'` &ndash; A batch that should be ignored by other features, i.e. an initial batch or collaborative editing
-	 * changes.
-	 *
-	 * @deprecated
-	 */
-	public get type(): 'default' {
-		/**
-		 * The {@link module:engine/model/batch~Batch#type `Batch#type` } property has been deprecated and will be removed in the near
-		 * future. Use `Batch#isLocal`, `Batch#isUndoable`, `Batch#isUndo` and `Batch#isTyping` instead.
-		 *
-		 * @error batch-type-deprecated
-		 */
-		logWarning( 'batch-type-deprecated' );
-
-		return 'default';
-	}
-
-	/**
 	 * Returns the base version of this batch, which is equal to the base version of the first operation in the batch.
 	 * If there are no operations in the batch or neither operation has the base version set, it returns `null`.
 	 */

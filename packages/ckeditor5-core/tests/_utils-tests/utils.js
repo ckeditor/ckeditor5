@@ -4,7 +4,6 @@
  */
 
 import testUtils from '../_utils/utils.js';
-import mix from '@ckeditor/ckeditor5-utils/src/mix.js';
 
 describe( 'utils', () => {
 	testUtils.createSinonSandbox();
@@ -60,7 +59,7 @@ describe( 'utils', () => {
 		} );
 
 		it( 'should return true when given mixin is mixed to target class', () => {
-			mix( CustomClass, mixin );
+			CustomClass.prototype.foo = mixin.foo;
 
 			expect( testUtils.isMixed( CustomClass, mixin ) ).to.true;
 		} );

@@ -12,8 +12,6 @@ export { default as diff, type DiffResult } from './diff.js';
 export { default as fastDiff } from './fastdiff.js';
 export { default as diffToChanges } from './difftochanges.js';
 
-export { default as mix } from './mix.js';
-
 export type { Constructor, Mixed } from './mix.js';
 
 export {

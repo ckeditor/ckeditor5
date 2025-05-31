@@ -25,10 +25,6 @@ describe( 'ElementApiMixin', () => {
 		await editor.destroy();
 	} );
 
-	it( 'is compatible with `mix` function', () => {
-		expect( ElementApiMixin ).have.property( 'updateSourceElement' ).to.be.a( 'function' );
-	} );
-
 	describe( 'updateSourceElement()', () => {
 		it( 'should be added to editor interface', () => {
 			expect( editor ).have.property( 'updateSourceElement' ).to.be.a( 'function' );
