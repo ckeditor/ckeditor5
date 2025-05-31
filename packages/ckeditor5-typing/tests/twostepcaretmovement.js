@@ -14,54 +14,32 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { getData as getModelData, setData as setModelData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray.js';
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities.js';
+import { env } from '@ckeditor/ckeditor5-utils';
+import { Link } from '@ckeditor/ckeditor5-link';
 
 import Input from '../src/input.js';
 import Delete from '../src/delete.js';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles';
 
 describe( 'TwoStepCaretMovement', () => {
-	let editor, model, emitter, selection, view, plugin;
+	let editor, model, emitter, selection, view, plugin, element;
 	let preventDefaultSpy, evtStopSpy;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		emitter = Object.create( DomEmitterMixin );
+		element = document.body.appendChild(
+			document.createElement( 'div' )
+		);
 
-		return VirtualTestEditor.create( {
-			plugins: [ TwoStepCaretMovement, Input, Delete ]
-		} ).then( newEditor => {
-			editor = newEditor;
-			model = editor.model;
-			selection = model.document.selection;
-			view = editor.editing.view;
-			plugin = editor.plugins.get( TwoStepCaretMovement );
-
-			preventDefaultSpy = sinon.spy().named( 'preventDefault' );
-			evtStopSpy = sinon.spy().named( 'evt.stop' );
-
-			editor.model.schema.extend( '$text', {
-				allowAttributes: [ 'a', 'b', 'c' ],
-				allowIn: '$root'
-			} );
-			editor.model.schema.register( 'inlineObject', {
-				inheritAllFrom: '$inlineObject',
-				allowAttributes: [ 'src' ]
-			} );
-
-			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
-			editor.conversion.for( 'upcast' ).elementToAttribute( { view: 'a', model: 'a' } );
-			editor.conversion.for( 'upcast' ).elementToAttribute( { view: 'b', model: 'b' } );
-			editor.conversion.for( 'upcast' ).elementToAttribute( { view: 'c', model: 'c' } );
-			editor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
-			editor.conversion.elementToElement( { model: 'inlineObject', view: 'inlineObject' } );
-			editor.conversion.attributeToAttribute( { model: 'src', view: 'src' } );
-
-			plugin.registerAttribute( 'a' );
-		} );
+		return createEditor();
 	} );
 
-	afterEach( () => {
-		return editor.destroy();
+	afterEach( async () => {
+		await editor.destroy();
+		element.remove();
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
@@ -1425,6 +1403,284 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 	} );
 
+	describe( '_enableMiddleLinkTouchHandlerForIOS', () => {
+		let iosEnvironmentStub;
+
+		beforeEach( async () => {
+			iosEnvironmentStub = sinon.stub( env, 'isiOS' ).value( true );
+
+			await editor.destroy();
+			await createEditor();
+		} );
+
+		afterEach( () => {
+			if ( iosEnvironmentStub ) {
+				iosEnvironmentStub.restore();
+			}
+
+			return editor.destroy();
+		} );
+
+		it( 'should set selection to the end of link when touched in the middle', () => {
+			// Set initial content.
+			setModelData( model, '<paragraph>foo <$text linkHref="https://example.com">link</$text>[] bar</paragraph>' );
+
+			// Create a mock link view element.
+			const root = view.document.getRoot();
+			const paragraph = root.getChild( 0 );
+			const linkViewElement = paragraph.getChild( 1 );
+
+			// Stub the DOM converter to return our mock element.
+			const linkElement = editor.editing.view.domConverter.mapViewToDom( linkViewElement );
+
+			sinon.stub( linkElement, 'getBoundingClientRect' ).returns( {
+				left: 100,
+				right: 150,
+				top: 50,
+				bottom: 70
+			} );
+
+			// Initial position before the test
+			model.change( writer => {
+				writer.setSelection( model.createPositionAt( model.document.getRoot().getChild( 0 ), 2 ) );
+			} );
+
+			// Create a touch event in the middle of the link.
+			const touchStartData = new DomEventData(
+				view,
+				{
+					target: linkElement,
+					touches: [
+						{ clientX: 125, clientY: 60 }
+					]
+				}
+			);
+
+			view.document.fire( 'touchstart', touchStartData );
+
+			// Verify selection was moved to the end of the link
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo <$text linkHref="https://example.com">link[]</$text> bar</paragraph>'
+			);
+		} );
+
+		it( 'should not change selection when touched on left edge of link', () => {
+			setModelData( model, '<paragraph>foo <$text linkHref="https://example.com">link</$text> bar[]</paragraph>' );
+
+			const root = view.document.getRoot();
+			const paragraph = root.getChild( 0 );
+			const linkViewElement = paragraph.getChild( 1 );
+			const linkElement = editor.editing.view.domConverter.mapViewToDom( linkViewElement );
+
+			sinon.stub( linkElement, 'getBoundingClientRect' ).returns( {
+				left: 100,
+				right: 150,
+				top: 50,
+				bottom: 70
+			} );
+
+			// Touch on left edge (within edge threshold).
+			const touchStartData = new DomEventData(
+				view,
+				{
+					target: linkElement,
+					touches: [
+						{ clientX: 105, clientY: 60 }
+					]
+				}
+			);
+
+			view.document.fire( 'touchstart', touchStartData );
+
+			// Selection should not change
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo <$text linkHref="https://example.com">link</$text> bar[]</paragraph>'
+			);
+		} );
+
+		it( 'should not change selection when touched on right edge of link', () => {
+			setModelData( model, '<paragraph>foo <$text linkHref="https://example.com">link</$text> bar[]</paragraph>' );
+
+			const root = view.document.getRoot();
+			const paragraph = root.getChild( 0 );
+			const linkViewElement = paragraph.getChild( 1 );
+			const linkElement = editor.editing.view.domConverter.mapViewToDom( linkViewElement );
+
+			sinon.stub( linkElement, 'getBoundingClientRect' ).returns( {
+				left: 100,
+				right: 150,
+				top: 50,
+				bottom: 70
+			} );
+
+			// Touch on right edge (within edge threshold).
+			const touchStartData = new DomEventData(
+				view,
+				{
+					target: linkElement,
+					touches: [
+						{ clientX: 145, clientY: 60 }
+					]
+				}
+			);
+
+			view.document.fire( 'touchstart', touchStartData );
+
+			// Selection should not change.
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo <$text linkHref="https://example.com">link</$text> bar[]</paragraph>'
+			);
+		} );
+
+		it( 'should not change selection when touch vertically outside the link boundaries', () => {
+			setModelData( model, '<paragraph>foo <$text linkHref="https://example.com">link</$text> bar[]</paragraph>' );
+
+			const root = view.document.getRoot();
+			const paragraph = root.getChild( 0 );
+			const linkViewElement = paragraph.getChild( 1 );
+			const linkElement = editor.editing.view.domConverter.mapViewToDom( linkViewElement );
+
+			sinon.stub( linkElement, 'getBoundingClientRect' ).returns( {
+				left: 100,
+				right: 150,
+				top: 50,
+				bottom: 70
+			} );
+
+			// Touch above the link
+			const touchStartData = new DomEventData(
+				view,
+				{
+					target: linkElement,
+					touches: [
+						{ clientX: 125, clientY: 40 }
+					]
+				}
+			);
+
+			view.document.fire( 'touchstart', touchStartData );
+
+			// Selection should not change.
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo <$text linkHref="https://example.com">link</$text> bar[]</paragraph>'
+			);
+		} );
+
+		it( 'should work with nested elements inside link', () => {
+			// Create paragraph with link that has nested bold text.
+			editor.setData( '<p>foo <a href="https://example.com"><strong>bold link</strong></a> bar</p>' );
+
+			// Set initial selection somewhere else.
+			model.change( writer => {
+				writer.setSelection( model.createPositionAt( model.document.getRoot().getChild( 0 ), 0 ) );
+			} );
+
+			// Get the nested strong element inside the link.
+			const root = view.document.getRoot();
+			const paragraph = root.getChild( 0 );
+			const linkViewElement = paragraph.getChild( 1 );
+			const strongElement = linkViewElement.getChild( 0 );
+
+			// Get DOM elements
+			const strongDomElement = editor.editing.view.domConverter.mapViewToDom( strongElement );
+			const linkElement = editor.editing.view.domConverter.mapViewToDom( linkViewElement );
+
+			sinon.stub( linkElement, 'getBoundingClientRect' ).returns( {
+				left: 100,
+				right: 180,
+				top: 50,
+				bottom: 70
+			} );
+
+			// Touch in the middle of the bold text (which is inside the link).
+			const touchStartData = new DomEventData(
+				view,
+				{
+					target: strongDomElement,
+					touches: [
+						{ clientX: 140, clientY: 60 }
+					]
+				}
+			);
+
+			view.document.fire( 'touchstart', touchStartData );
+
+			// Verify selection was moved to the end of the link, even though we touched the nested element.
+			expect( getModelData( model ) ).to.include( 'bold link[]</$text>' );
+		} );
+
+		it( 'should not affect selection when touching non-link elements', () => {
+			setModelData( model, '<paragraph>foo <$text bold="true">bold link</$text> ba[]r</paragraph>' );
+
+			const root = view.document.getRoot();
+			const paragraph = root.getChild( 0 );
+			const strongNode = paragraph.getChild( 1 );
+			const strongElement = editor.editing.view.domConverter.mapViewToDom( strongNode );
+
+			// Touch on regular text
+			const touchStartData = new DomEventData(
+				view,
+				{
+					target: strongElement,
+					touches: [
+						{ clientX: 50, clientY: 60 }
+					]
+				}
+			);
+
+			view.document.fire( 'touchstart', touchStartData );
+
+			// Selection should remain unchanged.
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo <$text bold="true">bold link</$text> ba[]r</paragraph>'
+			);
+		} );
+
+		it( 'should correctly handle multiple links and set selection to the end of the touched link', () => {
+			setModelData( model,
+				'<paragraph>' +
+				'<$text linkHref="https://example1.com">first</$text> ' +
+				'<$text linkHref="https://example2.com">second</$text> ' +
+				'<$text linkHref="https://example3.com">third</$text>[]' +
+				'</paragraph>'
+			);
+
+			const root = view.document.getRoot();
+			const paragraph = root.getChild( 0 );
+			const secondLinkViewElement = paragraph.getChild( 2 );
+			const secondLinkElement = editor.editing.view.domConverter.mapViewToDom( secondLinkViewElement );
+
+			sinon.stub( secondLinkElement, 'getBoundingClientRect' ).returns( {
+				left: 150,
+				right: 220,
+				top: 50,
+				bottom: 70
+			} );
+
+			// Touch in the middle of the second link
+			const touchStartData = new DomEventData(
+				view,
+				{
+					target: secondLinkElement,
+					touches: [
+						{ clientX: 185, clientY: 60 }
+					]
+				}
+			);
+
+			view.document.fire( 'touchstart', touchStartData );
+
+			// Verify selection was moved to the end of the second link.
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>' +
+				'<$text linkHref="https://example1.com">first</$text> ' +
+				'<$text linkHref="https://example2.com">second[]</$text> ' +
+				'<$text linkHref="https://example3.com">third</$text>' +
+				'</paragraph>'
+			);
+		} );
+	} );
+
 	const keyMap = {
 		'→': 'arrowright',
 		'←': 'arrowleft'
@@ -1518,5 +1774,40 @@ describe( 'TwoStepCaretMovement', () => {
 				expect( evtStopSpy, stepString ).to.have.callCount( step.evtStop );
 			}
 		}
+	}
+
+	async function createEditor() {
+		editor = await ClassicTestEditor.create( element, {
+			plugins: [ TwoStepCaretMovement, Input, Delete, Link, Bold ]
+		} );
+
+		model = editor.model;
+		selection = model.document.selection;
+		view = editor.editing.view;
+		plugin = editor.plugins.get( TwoStepCaretMovement );
+
+		preventDefaultSpy = sinon.spy().named( 'preventDefault' );
+		evtStopSpy = sinon.spy().named( 'evt.stop' );
+
+		editor.model.schema.extend( '$text', {
+			allowAttributes: [ 'a', 'b', 'c' ],
+			allowIn: '$root'
+		} );
+		editor.model.schema.register( 'inlineObject', {
+			inheritAllFrom: '$inlineObject',
+			allowAttributes: [ 'src' ]
+		} );
+
+		model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+		editor.conversion.for( 'upcast' ).elementToAttribute( { view: 'a', model: 'a' } );
+		editor.conversion.for( 'upcast' ).elementToAttribute( { view: 'b', model: 'b' } );
+		editor.conversion.for( 'upcast' ).elementToAttribute( { view: 'c', model: 'c' } );
+		editor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
+		editor.conversion.elementToElement( { model: 'inlineObject', view: 'inlineObject' } );
+		editor.conversion.attributeToAttribute( { model: 'src', view: 'src' } );
+
+		plugin.registerAttribute( 'a' );
+
+		return editor;
 	}
 } );
