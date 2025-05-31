@@ -95,6 +95,32 @@ export default class ListFormatting extends Plugin {
 			let returnValue = false;
 
 			for ( const entry of changes ) {
+				// Changing format in empty list item (autoformat).
+				if ( entry.type == 'attribute' && entry.attributeKey == `selection:${ formatAttributeName }` ) {
+					const listItem = entry.range.start.nodeAfter;
+
+					if ( !isListItemBlock( listItem ) ) {
+						continue;
+					}
+
+					const formatAttribute = entry.attributeNewValue as string | null;
+					const listItemFormatAttribute = listItem.getAttribute( listItemFormatAttributeName );
+
+					if ( !listItem.isEmpty ) {
+						continue;
+					}
+
+					if ( formatAttribute ) {
+						if ( listItemFormatAttribute !== formatAttribute ) {
+							this._addFormattingToListItem( writer, listItem, listItemFormatAttributeName, formatAttribute );
+							returnValue = true;
+						}
+					} else if ( listItemFormatAttribute ) {
+						this._removeFormattingFromListItem( writer, listItem, listItemFormatAttributeName );
+						returnValue = true;
+					}
+				}
+
 				// Changing format on text inside a list item.
 				if ( entry.type == 'attribute' && entry.attributeKey == formatAttributeName ) {
 					const listItem = entry.range.start.parent;
