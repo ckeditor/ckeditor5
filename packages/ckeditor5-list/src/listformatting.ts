@@ -19,6 +19,8 @@ import type {
 
 import { isListItemBlock } from '../src/list/utils/model.js';
 
+import '../theme/listformatting.css';
+
 /**
  * The list formatting plugin. It enables integration with formatting plugins to style the list marker.
  * The list of supported formatting plugins includes:
@@ -285,6 +287,13 @@ export default class ListFormatting extends Plugin {
 	 * TODO
 	 */
 	private _getListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ): string | false | undefined {
+		return this._hasSingleListItemConsistentFormat( model, listItem, attributeKey );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _hasSingleListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ): string | false | undefined {
 		let hasListItemConsistentFormat = false;
 		let prevFormatAttribute;
 
