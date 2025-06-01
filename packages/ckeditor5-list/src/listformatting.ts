@@ -255,7 +255,14 @@ export default class ListFormatting extends Plugin {
 						continue;
 					}
 
-					const formatAttribute = this._getListItemConsistentFormat( model, listItem, formatAttributeName );
+					let formatAttribute;
+
+					// If an element is empty, take the format from the selection.
+					if ( listItem.isEmpty ) {
+						formatAttribute = listItem.getAttribute( `selection:${ formatAttributeName }` ) as string;
+					} else {
+						formatAttribute = this._getListItemConsistentFormat( model, listItem, formatAttributeName );
+					}
 
 					if ( formatAttribute && !listItem.getAttribute( listItemFormatAttributeName ) ) {
 						this._addFormattingToListItem( writer, listItem, listItemFormatAttributeName, formatAttribute );
