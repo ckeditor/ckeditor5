@@ -161,10 +161,6 @@ Such output will not contain `data-list-item-id` attribute:
 </ul>
 ```
 
-<info-box>
-	It is not recommended to use data without `data-list-item-id` attribute in the long run as some features may work incorrectly.
-</info-box>
-
 ## Related features
 
 These CKEditor&nbsp;5 features provide similar functionality:
