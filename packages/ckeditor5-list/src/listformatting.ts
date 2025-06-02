@@ -17,7 +17,10 @@ import type {
 	Writer
 } from 'ckeditor5/src/engine.js';
 
-import { isListItemBlock } from '../src/list/utils/model.js';
+import {
+	isListItemBlock,
+	getAllListItemBlocks
+} from '../src/list/utils/model.js';
 
 import '../theme/listformatting.css';
 
@@ -66,20 +69,6 @@ export default class ListFormatting extends Plugin {
 				listItemFormatAttribute,
 				this._loadedFormattings[ listItemFormatAttribute ]
 			);
-		}
-	}
-
-	/**
-	 * TODO
-	 */
-	private _addFormattingToListItem(
-		writer: Writer,
-		listItem: Element,
-		attributeKey: string,
-		attributeValue: string
-	): void {
-		if ( !listItem.hasAttribute( attributeKey ) || listItem.getAttribute( attributeKey ) !== attributeValue ) {
-			writer.setAttribute( attributeKey, attributeValue, listItem );
 		}
 	}
 
@@ -271,10 +260,54 @@ export default class ListFormatting extends Plugin {
 
 					continue;
 				}
+
+				// Changing a list item into a multi-block element.
+				if (
+					entry.type == 'attribute' &&
+					entry.attributeKey == 'listItemId' &&
+					entry.attributeNewValue != null &&
+					entry.attributeOldValue != null
+				) {
+					const listItem = entry.range.start.nodeAfter;
+
+					if ( !isListItemBlock( listItem ) ) {
+						continue;
+					}
+
+					const formatAttribute = this._getListItemConsistentFormat( model, listItem, formatAttributeName );
+					const listItemFormatAttribute = listItem.getAttribute( listItemFormatAttributeName );
+
+					if ( listItemFormatAttribute ) {
+						if ( listItemFormatAttribute != formatAttribute ) {
+							this._removeFormattingFromListItem( writer, listItem, listItemFormatAttributeName );
+							returnValue = true;
+						}
+					}
+					continue;
+				}
 			}
 
 			return returnValue;
 		} );
+	}
+
+	/**
+	 * TODO
+	 */
+	private _addFormattingToListItem(
+		writer: Writer,
+		listItem: Element,
+		attributeKey: string,
+		attributeValue: string
+	): void {
+		// Multi-block items should have consistent formatting.
+		const affectedListItems = getAllListItemBlocks( listItem );
+
+		for ( const listItem of affectedListItems ) {
+			if ( !listItem.hasAttribute( attributeKey ) || listItem.getAttribute( attributeKey ) !== attributeValue ) {
+				writer.setAttribute( attributeKey, attributeValue, listItem );
+			}
+		}
 	}
 
 	/**
@@ -285,8 +318,13 @@ export default class ListFormatting extends Plugin {
 		listItem: Element,
 		attributeKey: string
 	): void {
-		if ( listItem.hasAttribute( attributeKey ) ) {
-			writer.removeAttribute( attributeKey, listItem );
+		// Multi-block items should have consistent formatting.
+		const affectedListItems = getAllListItemBlocks( listItem );
+
+		for ( const listItem of affectedListItems ) {
+			if ( listItem.hasAttribute( attributeKey ) ) {
+				writer.removeAttribute( attributeKey, listItem );
+			}
 		}
 	}
 
@@ -294,7 +332,29 @@ export default class ListFormatting extends Plugin {
 	 * TODO
 	 */
 	private _getListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ): string | false | undefined {
-		return this._hasSingleListItemConsistentFormat( model, listItem, attributeKey );
+		// In case of multi-block, check if all blocks have the same format.
+		const affectedListItems = getAllListItemBlocks( listItem );
+		let format;
+
+		for ( const listItem of affectedListItems ) {
+			// First block.
+			if ( !format ) {
+				format = this._hasSingleListItemConsistentFormat( model, listItem, attributeKey );
+
+				if ( !format ) {
+					return false;
+				}
+
+				continue;
+			}
+
+			// Next blocks.
+			if ( format !== this._hasSingleListItemConsistentFormat( model, listItem, attributeKey ) ) {
+				return false;
+			}
+		}
+
+		return format;
 	}
 
 	/**
