@@ -83,7 +83,7 @@ const utils = {
 	},
 
 	/**
-	 * Checks if given mixin i mixed to given class using {@link module:utils/mix mix} util.
+	 * Checks if given mixin is mixed to given class.
 	 *
 	 * @param {Function} targetClass Class to check.
 	 * @param {Object} mixin Mixin to check.

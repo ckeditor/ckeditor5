@@ -371,15 +371,6 @@ export default function EmitterMixin( base?: Constructor ): unknown {
 	return Mixin;
 }
 
-// Backward compatibility with `mix`
-( [
-	'on', 'once', 'off', 'listenTo',
-	'stopListening', 'fire', 'delegate', 'stopDelegating',
-	'_addEventListener', '_removeEventListener'
-] ).forEach( key => {
-	( EmitterMixin as any )[ key ] = ( defaultEmitterClass.prototype as any )[ key ];
-} );
-
 /**
  * Emitter/listener interface.
  *

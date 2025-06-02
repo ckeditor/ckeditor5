@@ -1160,7 +1160,7 @@ describe( 'Observable', () => {
 
 			expect( foo.method ).to.not.equal( originalMethod );
 
-			foo.stopListening( Object.create( ObservableMixin ) );
+			foo.stopListening( new ( ObservableMixin() )() );
 
 			expect( foo.method ).to.not.equal( originalMethod );
 		} );

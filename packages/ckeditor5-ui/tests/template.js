@@ -33,7 +33,7 @@ describe( 'Template', () => {
 		} );
 
 		it( 'accepts and normalizes the definition', () => {
-			const bind = Template.bind( new Model( {} ), Object.create( DomEmitterMixin ) );
+			const bind = Template.bind( new Model( {} ), new ( DomEmitterMixin() )() );
 			const childNode = document.createElement( 'div' );
 			const childTemplate = new Template( {
 				tag: 'b'
@@ -265,7 +265,7 @@ describe( 'Template', () => {
 						backgroundColor: 'yellow'
 					} );
 
-					emitter = Object.create( EmitterMixin );
+					emitter = new ( EmitterMixin() )();
 					bind = Template.bind( observable, emitter );
 				} );
 
@@ -660,7 +660,7 @@ describe( 'Template', () => {
 					foo: 'bar'
 				} );
 
-				const emitter = Object.create( EmitterMixin );
+				const emitter = new ( EmitterMixin() )();
 				const bind = Template.bind( observable, emitter );
 				const el = new Template( {
 					tag: 'div',
@@ -680,7 +680,7 @@ describe( 'Template', () => {
 					foo: 'bar'
 				} );
 
-				const emitter = Object.create( EmitterMixin );
+				const emitter = new ( EmitterMixin() )();
 				const bind = Template.bind( observable, emitter );
 				const el = new Template( {
 					tag: 'div',
@@ -720,7 +720,7 @@ describe( 'Template', () => {
 				baz: 'qux'
 			} );
 
-			domEmitter = Object.create( DomEmitterMixin );
+			domEmitter = new ( DomEmitterMixin() )();
 			bind = Template.bind( observable, domEmitter );
 		} );
 
@@ -1108,7 +1108,7 @@ describe( 'Template', () => {
 				baz: 'qux'
 			} );
 
-			domEmitter = Object.create( DomEmitterMixin );
+			domEmitter = new ( DomEmitterMixin() )();
 			bind = Template.bind( observable, domEmitter );
 		} );
 
@@ -1584,7 +1584,7 @@ describe( 'Template', () => {
 					baz: 'qux'
 				} );
 
-				domEmitter = Object.create( DomEmitterMixin );
+				domEmitter = new ( DomEmitterMixin() )();
 				bind = Template.bind( observable, domEmitter );
 			} );
 
@@ -1801,7 +1801,7 @@ describe( 'Template', () => {
 					baz: 'qux'
 				} );
 
-				emitter = Object.create( EmitterMixin );
+				emitter = new ( EmitterMixin() )();
 				bind = Template.bind( observable, emitter );
 			} );
 
@@ -2303,7 +2303,7 @@ describe( 'Template', () => {
 				baz: 'qux'
 			} );
 
-			emitter = Object.create( DomEmitterMixin );
+			emitter = new ( DomEmitterMixin() )();
 			bind = Template.bind( observable, emitter );
 		} );
 

@@ -391,16 +391,6 @@ describe( 'EditorUI', () => {
 		} );
 	} );
 
-	describe( '_editableElements()', () => {
-		it( 'should warn about deprecation', () => {
-			const ui = new MyEditorUI( editor );
-			const stub = testUtils.sinon.stub( console, 'warn' );
-
-			expect( ui._editableElements ).to.be.instanceOf( Map );
-			sinon.assert.calledWithMatch( stub, 'editor-ui-deprecated-editable-elements' );
-		} );
-	} );
-
 	describe( 'viewportOffset', () => {
 		it( 'should return offset object', () => {
 			const stub = testUtils.sinon.stub( editor.config, 'get' )
