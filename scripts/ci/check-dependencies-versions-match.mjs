@@ -30,11 +30,19 @@ const versionExceptions = {
 	'@codemirror/theme-one-dark': '^'
 };
 
+const pkgJsonPatterns = [
+	'package.json',
+	'packages/*/package.json',
+	'external/ckeditor5-commercial/packages/*/package.json',
+	'external/ckeditor5-commercial/package.json'
+];
+
 isCKEditor5PackageFactory().then( isCkeditor5Package => {
 	checkVersionMatch( {
 		cwd: CKEDITOR5_ROOT_PATH,
 		fix: shouldFix,
 		isCkeditor5Package,
+		pkgJsonPatterns,
 		versionExceptions
 	} );
 } );
