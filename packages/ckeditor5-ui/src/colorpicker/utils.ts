@@ -145,7 +145,7 @@ type ParserColorSpaces =
 type ParsedColor<T extends ParserColorSpaces> = {
 	readonly space: T;
 	readonly alpha: number;
-	readonly values: T extends 'cmyk' ? [ number, number, number, number ] : [ number, number, number ];
+	readonly values: Array<number>;
 	readonly hexValue: T extends 'hex' ? string : never;
 };
 
@@ -173,7 +173,7 @@ function parseColorString( colorString: string ): ParsedColor<ParserColorSpaces>
 		return null;
 	}
 
-	return parsed;
+	return parsed as ParsedColor<Exclude<ParserColorSpaces, 'hex'>>;
 }
 
 function canConvertParsedColor( parsedColor: ParsedColor<ParserColorSpaces> ): parsedColor is ConvertableParsedColor {
