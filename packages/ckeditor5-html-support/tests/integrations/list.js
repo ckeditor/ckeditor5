@@ -67,7 +67,7 @@ describe( 'ListElementSupport', () => {
 
 		editor.setData( expectedHtml );
 
-		expect( editor.getData() ).to.equal( expectedHtml );
+		expect( editor.getData( { skipListItemIds: true } ) ).to.equal( expectedHtml );
 	} );
 
 	it( 'removes list attributes when list is changed to a paragraph', () => {
@@ -85,7 +85,7 @@ describe( 'ListElementSupport', () => {
 
 		editor.commands.get( 'bulletedList' ).execute( { forceValue: false } );
 
-		expect( editor.getData() ).to.equal( '<p data-foo="bar-p">1.</p>' );
+		expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<p data-foo="bar-p">1.</p>' );
 	} );
 
 	it( 'removes list attributes when list type changed (numbered -> bulleted)', () => {
@@ -103,7 +103,7 @@ describe( 'ListElementSupport', () => {
 
 		editor.commands.get( 'bulletedList' ).execute();
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 			'<ul>' +
 				'<li data-foo="bar-item">' +
 					'<p data-foo="bar-p">1.</p>' +
@@ -127,7 +127,7 @@ describe( 'ListElementSupport', () => {
 
 		editor.commands.get( 'numberedList' ).execute();
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 			'<ol>' +
 				'<li data-foo="bar-item">' +
 					'<p data-foo="bar-p">1.</p>' +
@@ -153,7 +153,7 @@ describe( 'ListElementSupport', () => {
 			writer.setAttribute( 'listType', 'customNumbered', model.document.getRoot().getChild( 0 ) );
 		} );
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 			'<ol data-foo="bar-list">' +
 				'<li data-foo="bar-item">' +
 					'<p data-foo="bar-p">1.</p>' +
@@ -179,7 +179,7 @@ describe( 'ListElementSupport', () => {
 			writer.setAttribute( 'listType', 'customBulleted', model.document.getRoot().getChild( 0 ) );
 		} );
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 			'<ul data-foo="bar-list">' +
 				'<li data-foo="bar-item">' +
 					'<p data-foo="bar-p">1.</p>' +
@@ -207,7 +207,7 @@ describe( 'ListElementSupport', () => {
 
 		editor.commands.get( 'bulletedList' ).execute();
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 			'<ul>' +
 				'<li data-foo="bar-item">' +
 					'<p data-foo="bar-p">1.</p>' +
@@ -235,7 +235,7 @@ describe( 'ListElementSupport', () => {
 
 		editor.commands.get( 'numberedList' ).execute();
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 			'<ol>' +
 				'<li data-foo="bar-item">' +
 					'<p data-foo="bar-p">1.</p>' +
@@ -261,7 +261,7 @@ describe( 'ListElementSupport', () => {
 				{ text: '3.' }
 			] ) );
 
-			expect( editor.getData() ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 				'<ul data-foo="foo" data-bar="bar">' +
 					'<li>1.</li>' +
 					'<li>2.</li>' +
@@ -277,7 +277,7 @@ describe( 'ListElementSupport', () => {
 				{ text: '3.' }
 			] ) );
 
-			expect( editor.getData() ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 				'<ul class="foo bar baz">' +
 					'<li>1.</li>' +
 					'<li>2.</li>' +
@@ -293,7 +293,7 @@ describe( 'ListElementSupport', () => {
 				{ text: '3.' }
 			] ) );
 
-			expect( editor.getData() ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 				'<ol style="background:blue;color:red;">' +
 					'<li>1.</li>' +
 					'<li>2.</li>' +
@@ -309,7 +309,7 @@ describe( 'ListElementSupport', () => {
 				{ text: '3.', attributes: { 'data-bar': 'baz' } }
 			] ) );
 
-			expect( editor.getData() ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 				'<ul>' +
 					'<li data-foo="foo">1.</li>' +
 					'<li data-foo="bar">2.</li>' +
@@ -325,7 +325,7 @@ describe( 'ListElementSupport', () => {
 				{ text: '3.', classes: [ 'baz' ] }
 			] ) );
 
-			expect( editor.getData() ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 				'<ol>' +
 					'<li class="foo">1.</li>' +
 					'<li class="foo bar">2.</li>' +
@@ -341,7 +341,7 @@ describe( 'ListElementSupport', () => {
 				{ text: '3.', styles: { background: 'blue', color: 'yellow' } }
 			] ) );
 
-			expect( editor.getData() ).to.equalMarkup(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 				'<ol>' +
 					'<li style="color:red;">1.</li>' +
 					'<li style="color:green;">2.</li>' +
@@ -994,7 +994,7 @@ describe( 'ListElementSupport', () => {
 
 			editor.commands.get( 'numberedList' ).execute( { forceValue: false } );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 				'<ol>' +
 					'<li class="background-list-item">1.1</li>' +
 				'</ol>' +
@@ -1024,7 +1024,7 @@ describe( 'ListElementSupport', () => {
 
 			editor.commands.get( 'numberedList' ).execute( { forceValue: false } );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 				'<p>1.1</p>' +
 				'<ol>' +
 					'<li class="background-list-item">1.2</li>' +
@@ -1050,7 +1050,7 @@ describe( 'ListElementSupport', () => {
 			editor.commands.execute( 'indentList' );
 			editor.commands.execute( 'enter' );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 				'<ul>' +
 					'<li>1.1' +
 						'<ul>' +
@@ -1174,7 +1174,7 @@ describe( 'ListElementSupport', () => {
 				}
 			} );
 
-			expect( editor.getData() ).to.be.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.be.equal(
 				'<ul data-foo="data">' +
 					'<li>a</li>' +
 					'<li data-foo="bar">' +
