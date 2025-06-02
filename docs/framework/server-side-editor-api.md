@@ -5,11 +5,11 @@ meta-title: Server-Side Editor API | CKEditor 5 Documentation
 modified_at: 2025-05-20
 ---
 
-# Server-Side Editor API
+# Server-side editor API
 
 Server-Side Editor API allows for deep and complex integration of your application with document data, enabling you to manipulate content and manage collaborative data such as suggestions, comments, and revision history directly from your server-side code.
 
-## Why Use Server-Side Editor API?
+## Why use server-side editor API?
 
 While CKEditor 5 provides a rich client-side editing experience, there are many scenarios where server-side content processing is essential:
 
@@ -20,28 +20,57 @@ While CKEditor 5 provides a rich client-side editing experience, there are many 
 * **Automation**: Run content processing tasks as part of your server workflows
 * **Scalability**: Process multiple documents simultaneously without client-side limitations
 
-## Common Use Cases
+## Common use cases
 
-* **Bulk Content Updates**: Make consistent changes across your entire content base, ideal for updating document templates or standardizing terminology
-* **Content Migration**: Restructure and update references across multiple documents, perfect for website redesigns or content reorganization
-* **Shared Content Blocks**: Automatically update reusable content (like headers, footers, or common sections) across all documents that use it
-* **Dynamic Content**: Periodically update values like stock prices or other real-time data in your documents
-* **Automated Review Systems**: Build systems that automatically review and suggest content changes, like grammar checks or style improvements
-* **AI-powered Editing**: Make automated suggestions while users are actively editing, helping improve content quality
-* **Automated Revision Control**: Track and manage document versions automatically, perfect for maintaining content history and audit trails
-* **Automated Publishing**: Prepare and process content for publication, including formatting, metadata updates, and resolving comments
-* **Custom Integration**: Connect the editor with your existing systems and workflows, such as CMS or document management systems
-* **Automatic Checkpoints**: Create automatic checkpoints in your document
+* **Bulk content updates**: Make consistent changes across your entire content base, ideal for updating document templates or standardizing terminology
+* **Content migration**: Restructure and update references across multiple documents, perfect for website redesigns or content reorganization
+* **Shared content blocks**: Automatically update reusable content (like headers, footers, or common sections) across all documents that use it
+* **Dynamic content**: Periodically update values like stock prices or other real-time data in your documents
+* **Automated review systems**: Build systems that automatically review and suggest content changes, like grammar checks or style improvements
+* **AI-powered editing**: Make automated suggestions while users are actively editing, helping improve content quality
+* **Automated revision control**: Track and manage document versions automatically, perfect for maintaining content history and audit trails
+* **Automated publishing**: Prepare and process content for publication, including formatting, metadata updates, and resolving comments
+* **Custom integration**: Connect the editor with your existing systems and workflows, such as CMS or document management systems
+* **Automatic checkpoints**: Create automatic checkpoints in your document
 
-## Getting Started with Server-Side Editor API
+## Getting started with server-side editor API
 
 This guide shows you how to write scripts that can be executed through the Server-Side Editor API endpoint. The following sections provide examples of such scripts, each demonstrating a specific use case that can be automated on the server side.
 
 For information about setting up and using the endpoint itself, see the {TODO: link Cloud Services Server-side Editor API} documentation.
 
-## Working with Content
+## Working with content
 
-### Using Commands
+### Getting editor data
+
+The most basic operation you can perform is getting the editor's data. Using the server-side editor API gives you control over the data format and allows you to process it before returning:
+
+```js
+// Get the editor data.
+const data = editor.getData();
+
+return data;
+```
+
+You can also retrieve the data with specific options and include additional information about the document:
+
+```js
+// Get the editor data with suggestion highlights visible.
+const data = editor.getData( { showSuggestionHighlights: true } );
+
+// Get additional document information.
+const wordCount = editor.plugins.get( 'WordCount' ).getWords();
+
+// Return both the content and metadata.
+return {
+    content: data,
+    wordCount: wordCount
+};
+```
+
+This approach allows you to not only retrieve the document content but also process it, extract metadata, or prepare it for specific use cases like exports or integrations with other systems.
+
+### Using commands
 
 Commands provide a high-level API to interact with the editor and change the document content. Most editor features provide a command that you can use to trigger some action on the editor.
 
@@ -56,7 +85,7 @@ This one line will find all instances of "entirely" in your document and change 
 
 To learn more about commands architecture, visit the [Commands documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/core-editor-architecture.html#commands).
 
-### Insert HTML Content
+### Insert HTML content
 
 When you have HTML content ready (for example, from another system or a template), you can insert it directly into the editor. This is often simpler than building the content piece by piece using the editor API.
 
@@ -75,7 +104,7 @@ const insertPosition = editor.model.createPositionAt( root, 1 );
 editor.model.insertContent( model, insertPosition );
 ```
 
-### Using Editor Model API
+### Using editor model API
 
 If you cannot find a command that would perform a specific action on the document, you can use editor document API to provide precise changes. This approach offers the biggest flexibility and should cover any need you have, although it requires a better understanding of CKEditor internals.
 
@@ -111,7 +140,7 @@ To learn more about working with the editor model, see the {@link framework/arch
 
 ### Using commands
 
-Track changes is integrated with most editor commands, so if you wish to change the document using commands and track these changes, all you need to do is turn on track changes mode.
+You can leverage {@link features/track-changes Track changes} feature API to manage existing content suggestions, retrieve final document data with all suggestions accepted, or implement automated or AI-powered content reviews.
 
 Let's start with a basic text replacement:
 
@@ -166,7 +195,50 @@ This approach shines in several real-world scenarios:
 * Integrating with content management systems to propose changes
 * Building custom workflows for content creation and review
 
-### Attribute Modifications
+### Working with suggestions
+
+You can use the track changes data plugin to get the document data with all suggestions either accepted or rejected:
+
+```js
+// Get the track changes data plugin.
+const trackChangesData = editor.plugins.get( 'TrackChangesData' );
+
+// Get the document data with all suggestions rejected.
+// You can also use trackChangesData.getDataWithAcceptedSuggestions() to get data with all suggestions accepted.
+const data = trackChangesData.getDataWithDiscardedSuggestions();
+
+return data;
+```
+
+This is particularly useful when you need to process the document data without considering pending suggestions or when you want to see how the document would look in its final form.
+
+While the previous example could be used to get the data, you may want to permanently accept or discard suggestions. You can do this for all suggestions at once using the following command:
+
+```js
+// Accept all suggestions in the document.
+editor.execute( 'acceptAllSuggestions' );
+```
+
+This is particularly useful for document finalization or in applications where the document is split into multiple CKEditor instances but appears as one document to the user. In such cases, you might want to offer a button to accept all suggestions across all document parts.
+
+For more granular control, you can also manage individual suggestions:
+
+```js
+// Get the track changes editing plugin.
+const trackChangesEditing = editor.plugins.get( 'TrackChangesEditing' );
+
+// Get a specific suggestion by its ID.
+const suggestion = trackChangesEditing.getSuggestion( 'suggestion-id' );
+
+// Accept or discard the suggestion.
+suggestion.accept();
+// or
+suggestion.discard();
+```
+
+This is especially useful when you want to display and manage suggestions outside of the editor, for example in a separate application view where users can see all comments and suggestions and resolve them without going into the editor.
+
+### Attribute modifications
 
 If you wish to create attributes suggestions using the editor model API, you need to specifically tell track changes features to record these changes. Let's look how to correctly make a suggestion to update links URLs:
 
@@ -199,7 +271,7 @@ for ( const item of items ) {
 }
 ```
 
-## Resolving Comments
+## Resolving comments
 
 {@link features/comments Comments} feature allows your users to have discussions on certain parts of your documents. You can use Comments feature API to implement interactions with comments with no need to open the editor itself.
 
@@ -221,21 +293,22 @@ This code is particularly useful when you need to clean up a document before fin
 
 ## Working with Revision History
 
-### Basic Revision Management
+Use {@link features/revision-history Revision history} feature API to build more functional integration between your application and the document revisions data.
 
-Here's how to work with the basics of {@link features/revision-history revision history}. When you make changes, you can save them as a new revision:
+### Basic revision management
+
+You can use Revision History API to save a new revision directly from your application back-end:
 
 ```js
-// Make some changes to the document.
-editor.execute( 'replaceAll', 'I', 'you' );
-
 // Save the current state as a new revision.
 editor.plugins.get( 'RevisionTracker' ).saveRevision( { name: 'New revision' } );
 ```
 
-This approach is essential for maintaining a clear history of your document's evolution. It's particularly useful when you need to create checkpoints in your work or maintain an audit trail of content modifications.
+This can be used after you performed some changes to the document to save them as a new revision.
 
-### Working with Revision Data
+You can also build an automated mechanism that will automatically create revisions in some time intervals, or based on other factors. It can be particularly useful when you need to create checkpoints for your documents to maintain an audit trail of content modifications.
+
+### Working with revision data
 
 For more advanced scenarios, you might need to work with different revisions of your document:
 
@@ -255,3 +328,11 @@ return { documentData, attributes };
 ```
 
 This is useful if you need particular revision data for further processing. It will allow you build custom back-end features based on revisions, like previewing revisions data outside of editor, exporting a particular revision to PDF, or integrating revisions data with external systems.
+
+## Custom plugins
+
+Server-side editor API capabilities could be extended by custom plugins. This approach is particularly useful when you need to implement complex logic or maintain reusable functionality across multiple server-side operations.
+
+When using custom plugins, you can access their API through the editor instance in your server-side scripts, making your code more organized and maintainable. This approach is especially recommended for complex operations that would be cumbersome to implement directly in the server-side script.
+
+For more information about creating custom plugins, see the {@link framework/architecture/plugins Plugins architecture guide} and the {@link tutorials/creating-simple-plugin-timestamp Creating a basic plugin} tutorial.
