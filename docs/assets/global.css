@@ -22,6 +22,18 @@
 	display: none;
 }
 
+.ck.ck-editor {
+	margin: 1.5em 0;
+}
+
+.ck.ck-content {
+	padding: 1em;
+}
+
+.ck.ck-content > :first-child {
+	margin-top: 0;
+}
+
 #snippet-inline-editor .ck-content {
 	margin-bottom: 1rem;
 	padding: 2rem;
