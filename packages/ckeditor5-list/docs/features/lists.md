@@ -135,7 +135,7 @@ ClassicEditor
 
 ### Editor output configuration
 
-Starting with version 45.1.1, list items (`<li>` elements) in the editor data output contain an additional attribute called `data-list-item-id`. It's necessary to ensure better data comparisons within some editor features, like revision history.
+Starting with version 45.1.1, list items (`<li>` elements) in the editor data output contain an additional attribute `data-list-item-id`. The attribute is necessary to ensure that the lists feature work correctly with other editor features and mechanisms.
 
 ```html
 <ul>
@@ -144,9 +144,9 @@ Starting with version 45.1.1, list items (`<li>` elements) in the editor data ou
 </ul>
 ```
 
-If data loaded to the editor does not contain the `data-list-item-id` attribute on list items, it will be automatically added when data is saved.
+If data loaded in the editor does not contain the `data-list-item-id` attributes on list items, they will be automatically added when data is saved.
 
-If you need to save the editor contents without this attribute, you can set the `skipListItemIds` flag to `true` when calling `editor.getData()` method:
+If you wish to save the editor contents without this attribute, you can set the `skipListItemIds` flag to `true` when calling `editor.getData()` method. **However, please note, that data without IDs should be used only for presentation purposes (e.g. displaying the document as HTML), and should not be used to initialize the editor.**
 
 ```js
 editor.getData( { skipListItemIds: true } );
