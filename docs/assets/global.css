@@ -35,7 +35,8 @@ https://github.com/ckeditor/ckeditor5/issues/1545 */
 	border: 1px solid hsla(0, 0%, 0%, 0.15);
 }
 
-#snippet-inline-editor h2, #snippet-inline-editor h3 {
+#snippet-inline-editor h2,
+#snippet-inline-editor h3 {
 	margin-top: 0;
 	padding-top: 0;
 	border-bottom: 0;
@@ -46,7 +47,6 @@ https://github.com/ckeditor/ckeditor5/issues/1545 */
 }
 
 #snippet-inline-editor header.ck-content h2 {
-	margin-bottom: 0;
 	font-size: 2.1rem;
 }
 
