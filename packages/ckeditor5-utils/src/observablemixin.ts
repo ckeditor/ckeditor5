@@ -325,16 +325,6 @@ export default function ObservableMixin( base?: Constructor<Emitter> ): unknown 
 	return Mixin;
 }
 
-// Backward compatibility with `mix`
-( [
-	'set', 'bind', 'unbind', 'decorate',
-	'on', 'once', 'off', 'listenTo',
-	'stopListening', 'fire', 'delegate', 'stopDelegating',
-	'_addEventListener', '_removeEventListener'
-] ).forEach( key => {
-	( ObservableMixin as any )[ key ] = ( defaultObservableClass.prototype as any )[ key ];
-} );
-
 interface Binding {
 
 	/**

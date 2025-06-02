@@ -17,7 +17,7 @@ import type {
 	DocumentSelection
 } from 'ckeditor5/src/engine.js';
 
-import { downcastAttributeToStyle, upcastStyleToAttribute } from './../converters/tableproperties.js';
+import { downcastAttributeToStyle, upcastStyleToAttribute } from '../converters/tableproperties.js';
 import type TableUtils from '../tableutils.js';
 
 /**
@@ -75,6 +75,8 @@ export function enableProperty(
 	options: {
 		modelAttribute: string;
 		styleName: string;
+		attributeName?: string;
+		attributeType?: 'length' | 'color';
 		defaultValue: string;
 		reduceBoxSides?: boolean;
 	}
