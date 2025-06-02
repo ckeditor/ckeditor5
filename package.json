@@ -158,7 +158,7 @@
     "sharp": "^0.34.2",
     "stylelint": "^15.0.0",
     "stylelint-config-ckeditor5": "^10.0.0",
-    "svgo": "^3.3.2",
+    "svgo": "^2.2.2",
     "table": "^6.8.1",
     "terser-webpack-plugin": "^5.0.0",
     "typescript": "5.0.4",
