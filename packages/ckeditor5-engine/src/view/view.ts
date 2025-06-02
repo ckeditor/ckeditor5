@@ -811,6 +811,8 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	}
 }
 
+export { View as EditingView };
+
 /**
  * Fired after a topmost {@link module:engine/view/view~View#change change block} and all
  * {@link module:engine/view/document~Document#registerPostFixer post-fixers} are executed.

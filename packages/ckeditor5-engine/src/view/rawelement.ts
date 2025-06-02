@@ -122,6 +122,8 @@ RawElement.prototype.is = function( type: string, name?: string ): boolean {
 	}
 };
 
+export { RawElement as ViewRawElement };
+
 /**
  * Returns `null` because block filler is not needed for raw elements.
  */

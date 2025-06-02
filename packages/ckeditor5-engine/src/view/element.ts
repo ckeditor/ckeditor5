@@ -1198,6 +1198,8 @@ Element.prototype.is = function( type: string, name?: string ): boolean {
 	}
 };
 
+export { Element as ViewElement };
+
 /**
  * Common interface for a {@link module:engine/view/tokenlist~TokenList} and {@link module:engine/view/stylesmap~StylesMap}.
  */

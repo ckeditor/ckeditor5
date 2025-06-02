@@ -248,3 +248,5 @@ TextProxy.prototype.is = function( type: string ): boolean {
 		// This are legacy values kept for backward compatibility.
 		type === 'textProxy' || type === 'model:textProxy';
 };
+
+export { TextProxy as ModelTextProxy };

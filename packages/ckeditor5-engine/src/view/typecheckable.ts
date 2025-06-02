@@ -503,3 +503,5 @@ export abstract class TypeCheckable {
 		throw new Error( 'is() method is abstract' );
 	}
 }
+
+export { TypeCheckable as ViewTypeCheckable };

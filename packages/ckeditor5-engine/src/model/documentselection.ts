@@ -9,7 +9,8 @@
 
 import { TypeCheckable } from './typecheckable.js';
 import { LiveRange } from './liverange.js';
-import Selection, {
+import {
+	Selection,
 	type SelectionChangeAttributeEvent,
 	type SelectionChangeRangeEvent
 } from './selection.js';
@@ -489,6 +490,8 @@ DocumentSelection.prototype.is = function( type: string ): boolean {
 		type == 'documentSelection' ||
 		type == 'model:documentSelection';
 };
+
+export { DocumentSelection as ModelDocumentSelection };
 
 /**
  * Fired when selection range(s) changed.

@@ -112,3 +112,5 @@ EditableElement.prototype.is = function( type: string, name?: string ): boolean 
 		);
 	}
 };
+
+export { EditableElement as ViewEditableElement };

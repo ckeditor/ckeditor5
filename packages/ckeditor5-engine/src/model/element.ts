@@ -404,6 +404,8 @@ Element.prototype.is = function( type: string, name?: string ): boolean {
 	return name === this.name && ( type === 'element' || type === 'model:element' );
 };
 
+export { Element as ModelElement };
+
 /**
  * Converts strings to Text and non-iterables to arrays.
  */

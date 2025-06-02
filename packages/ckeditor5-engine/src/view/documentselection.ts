@@ -8,7 +8,8 @@
  */
 
 import { TypeCheckable } from './typecheckable.js';
-import Selection, {
+import {
+	Selection,
 	type PlaceOrOffset,
 	type Selectable,
 	type SelectionOptions,
@@ -380,6 +381,8 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 		this._selection.setFocus( itemOrPosition, offset );
 	}
 }
+
+export { DocumentSelection as ViewDocumentSelection };
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.

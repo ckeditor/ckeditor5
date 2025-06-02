@@ -382,6 +382,8 @@ Position.prototype.is = function( type: string ): boolean {
 	return type === 'position' || type === 'view:position';
 };
 
+export { Position as ViewPosition };
+
 /**
  * A flag indicating whether this position is `'before'` or `'after'` or `'same'` as given position.
  * If positions are in different roots `'different'` flag is returned.

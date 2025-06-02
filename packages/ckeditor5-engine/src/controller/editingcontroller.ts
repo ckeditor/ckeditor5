@@ -17,7 +17,8 @@ import {
 import { RootEditableElement } from '../view/rooteditableelement.js';
 import { View } from '../view/view.js';
 import { Mapper } from '../conversion/mapper.js';
-import DowncastDispatcher, {
+import {
+	DowncastDispatcher,
 	type DowncastInsertEvent,
 	type DowncastRemoveEvent,
 	type DowncastSelectionEvent,

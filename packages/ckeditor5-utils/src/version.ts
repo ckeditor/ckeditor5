@@ -9,9 +9,7 @@
 
 import { CKEditorError } from './ckeditorerror.js';
 
-const version = '45.1.0';
-
-export default version;
+export const version = '45.1.0';
 
 // The second argument is not a month. It is `monthIndex` and starts from `0`.
 export const releaseDate = new Date( 2025, 4, 14 );

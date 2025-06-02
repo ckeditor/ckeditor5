@@ -82,3 +82,5 @@ RootEditableElement.prototype.is = function( type: string, name?: string ): bool
 		);
 	}
 };
+
+export { RootEditableElement as ViewRootEditableElement };

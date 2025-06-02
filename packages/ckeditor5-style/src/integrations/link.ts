@@ -13,7 +13,8 @@ import { findAttributeRange, findAttributeRangeBound } from 'ckeditor5/src/typin
 
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
-import StyleUtils, {
+import {
+	StyleUtils,
 	type InlineStyleDefinition,
 	type StyleUtilsGetAffectedInlineSelectableEvent,
 	type StyleUtilsIsStyleEnabledForInlineSelectionEvent,

@@ -7,7 +7,8 @@
  * @module utils/dom/emittermixin
  */
 
-import EmitterMixin, {
+import {
+	EmitterMixin,
 	_getEmitterListenedTo,
 	_setEmitterId,
 	type Emitter,

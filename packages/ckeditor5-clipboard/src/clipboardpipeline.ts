@@ -22,7 +22,8 @@ import type {
 	DocumentSelection
 } from '@ckeditor/ckeditor5-engine';
 
-import ClipboardObserver, {
+import {
+	ClipboardObserver,
 	type ClipboardEventData,
 	type ViewDocumentCopyEvent,
 	type ViewDocumentCutEvent,
@@ -30,7 +31,7 @@ import ClipboardObserver, {
 } from './clipboardobserver.js';
 
 import { plainTextToHtml } from './utils/plaintexttohtml.js';
-import { normalizeClipboardHtml } from './utils/normalizeclipboarddata.js';
+import { normalizeClipboardData } from './utils/normalizeclipboarddata.js';
 import { viewToPlainText } from './utils/viewtoplaintext.js';
 import { ClipboardMarkersUtils } from './clipboardmarkersutils.js';
 
@@ -227,7 +228,7 @@ export class ClipboardPipeline extends Plugin {
 				let contentData = '';
 
 				if ( dataTransfer.getData( 'text/html' ) ) {
-					contentData = normalizeClipboardHtml( dataTransfer.getData( 'text/html' ) );
+					contentData = normalizeClipboardData( dataTransfer.getData( 'text/html' ) );
 				} else if ( dataTransfer.getData( 'text/plain' ) ) {
 					contentData = plainTextToHtml( dataTransfer.getData( 'text/plain' ) );
 				}

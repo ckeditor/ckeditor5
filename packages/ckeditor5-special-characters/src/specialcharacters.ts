@@ -12,7 +12,8 @@ import { Typing } from 'ckeditor5/src/typing.js';
 import { IconSpecialCharacters } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView, DialogViewPosition, Dialog } from 'ckeditor5/src/ui.js';
 import { CKEditorError, type Locale } from 'ckeditor5/src/utils.js';
-import CharacterGridView, {
+import {
+	CharacterGridView,
 	type CharacterGridViewExecuteEvent,
 	type CharacterGridViewTileFocusEvent,
 	type CharacterGridViewTileHoverEvent

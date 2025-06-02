@@ -7,7 +7,8 @@
  * @module widget/widgetresize
  */
 
-import Resizer, {
+import {
+	Resizer,
 	type ResizerBeginEvent,
 	type ResizerCancelEvent,
 	type ResizerCommitEvent

@@ -38,13 +38,15 @@ import {
 
 import { StylesProcessor } from '../view/stylesmap.js';
 
-import DowncastDispatcher, {
+import {
+	DowncastDispatcher,
 	type DowncastAddMarkerEvent,
 	type DowncastAttributeEvent,
 	type DowncastInsertEvent,
 	type DowncastSelectionEvent
 } from '../conversion/downcastdispatcher.js';
-import UpcastDispatcher, {
+import {
+	UpcastDispatcher,
 	type UpcastDocumentFragmentEvent,
 	type UpcastElementEvent,
 	type UpcastTextEvent,

@@ -1029,3 +1029,5 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 Range.prototype.is = function( type: string ): boolean {
 	return type === 'range' || type === 'model:range';
 };
+
+export { Range as ModelRange };

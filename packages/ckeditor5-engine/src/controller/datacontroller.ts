@@ -19,7 +19,8 @@ import { Mapper } from '../conversion/mapper.js';
 import { DowncastDispatcher, type DowncastInsertEvent } from '../conversion/downcastdispatcher.js';
 import { insertAttributesAndChildren, insertText } from '../conversion/downcasthelpers.js';
 
-import UpcastDispatcher, {
+import {
+	UpcastDispatcher,
 	type UpcastDocumentFragmentEvent,
 	type UpcastElementEvent,
 	type UpcastTextEvent

@@ -12,7 +12,8 @@ import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { logWarning, first } from 'ckeditor5/src/utils.js';
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
-import StyleUtils, {
+import {
+	StyleUtils,
 	type BlockStyleDefinition,
 	type NormalizedStyleDefinition,
 	type NormalizedStyleDefinitions

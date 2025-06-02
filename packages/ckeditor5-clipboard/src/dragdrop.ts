@@ -42,11 +42,13 @@ import {
 	type DomEmitter
 } from '@ckeditor/ckeditor5-utils';
 
-import ClipboardPipeline, {
+import {
+	ClipboardPipeline,
 	type ClipboardContentInsertionEvent
 } from './clipboardpipeline.js';
 
-import ClipboardObserver, {
+import {
+	ClipboardObserver,
 	type ViewDocumentDragEndEvent,
 	type ViewDocumentDragEnterEvent,
 	type ViewDocumentDraggingEvent,

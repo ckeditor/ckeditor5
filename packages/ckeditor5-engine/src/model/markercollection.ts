@@ -8,7 +8,8 @@
  */
 
 import { TypeCheckable } from './typecheckable.js';
-import LiveRange, {
+import {
+	LiveRange,
 	type LiveRangeChangeContentEvent,
 	type LiveRangeChangeRangeEvent,
 	type LiveRangeChangeEvent

@@ -114,3 +114,5 @@ Text.prototype.is = function( type: string ): boolean {
 		// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
 		type === 'node' || type === 'model:node';
 };
+
+export { Text as ModelText };

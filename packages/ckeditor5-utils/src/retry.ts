@@ -21,7 +21,7 @@ import { wait } from './wait.js';
  * @param options.retryDelay The time in milliseconds between attempts. By default it implements exponential back-off policy.
  * @param options.signal The signal to abort further retries. The callback itself is not aborted automatically.
  */
-export default async function retry<TResult>(
+export async function retry<TResult>(
 	callback: () => Promise<TResult>,
 	options: {
 		maxAttempts?: number;

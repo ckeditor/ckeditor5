@@ -145,6 +145,8 @@ UIElement.prototype.is = function( type: string, name?: string ): boolean {
 	}
 };
 
+export { UIElement as ViewUIElement };
+
 /**
  * This function injects UI element handling to the given {@link module:engine/view/document~Document document}.
  *

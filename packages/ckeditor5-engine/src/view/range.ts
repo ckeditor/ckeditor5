@@ -500,6 +500,8 @@ Range.prototype.is = function( type: string ): boolean {
 	return type === 'range' || type === 'view:range';
 };
 
+export { Range as ViewRange };
+
 /**
  * Function used by getEnlarged and getTrimmed methods.
  */

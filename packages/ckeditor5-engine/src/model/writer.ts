@@ -1751,6 +1751,8 @@ export class Writer {
 	}
 }
 
+export { Writer as ModelWriter };
+
 /**
  * Sets given attribute to each node in given range. When attribute value is null then attribute will be removed.
  *

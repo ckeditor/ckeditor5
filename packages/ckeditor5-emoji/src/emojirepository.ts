@@ -7,7 +7,7 @@
  * @module emoji/emojirepository
  */
 
-import { fuzzysort } from 'fuzzysort';
+import fuzzysort from 'fuzzysort';
 import { groupBy } from 'es-toolkit/compat';
 
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';

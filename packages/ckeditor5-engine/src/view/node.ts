@@ -304,6 +304,8 @@ Node.prototype.is = function( type: string ): boolean {
 	return type === 'node' || type === 'view:node';
 };
 
+export { Node as ViewNode };
+
 /**
  * Fired when list of {@link module:engine/view/element~Element elements} children, attributes or text changes.
  *

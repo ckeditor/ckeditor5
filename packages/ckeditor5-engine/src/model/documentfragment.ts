@@ -405,6 +405,8 @@ DocumentFragment.prototype.is = function( type: string ): boolean {
 	return type === 'documentFragment' || type === 'model:documentFragment';
 };
 
+export { DocumentFragment as ModelDocumentFragment };
+
 /**
  * Converts strings to Text and non-iterables to arrays.
  */

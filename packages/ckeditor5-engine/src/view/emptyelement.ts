@@ -85,6 +85,8 @@ EmptyElement.prototype.is = function( type: string, name?: string ): boolean {
 	}
 };
 
+export { EmptyElement as ViewEmptyElement };
+
 /**
  * Returns `null` because block filler is not needed for EmptyElements.
  */

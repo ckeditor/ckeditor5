@@ -13,7 +13,8 @@ import { Text } from './text.js';
 import { isPlainObject } from 'es-toolkit/compat';
 import { Position, type PositionOffset } from './position.js';
 import { Range } from './range.js';
-import Selection, {
+import {
+	Selection,
 	type PlaceOrOffset,
 	type Selectable,
 	type SelectionOptions

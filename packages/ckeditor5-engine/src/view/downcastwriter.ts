@@ -9,7 +9,8 @@
 
 import { Position, type PositionOffset } from './position.js';
 import { Range } from './range.js';
-import Selection, {
+import {
+	Selection,
 	type PlaceOrOffset,
 	type Selectable,
 	type SelectionOptions
@@ -2047,6 +2048,8 @@ export class DowncastWriter {
 		// If other parts of code have reference to this element, they will be able to get references to other elements from the group.
 	}
 }
+
+export { DowncastWriter as ViewDowncastWriter };
 
 // Helper function for `view.writer.wrap`. Checks if given element has any children that are not ui elements.
 function _hasNonUiChildren( parent: Element ): boolean {

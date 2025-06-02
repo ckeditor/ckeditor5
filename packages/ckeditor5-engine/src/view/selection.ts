@@ -674,6 +674,8 @@ Selection.prototype.is = function( type: string ): boolean {
 	return type === 'selection' || type === 'view:selection';
 };
 
+export { Selection as ViewSelection };
+
 /**
  * Additional options for {@link ~Selection}.
  */

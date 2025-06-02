@@ -18,7 +18,8 @@ import {
 import { getBalloonPositionData } from '../image/ui/utils.js';
 import { getSelectedImageWidthInUnits } from './utils/getselectedimagewidthinunits.js';
 
-import ImageCustomResizeFormView, {
+import {
+	ImageCustomResizeFormView,
 	type ImageCustomResizeFormValidatorCallback,
 	type ImageCustomResizeFormViewCancelEvent,
 	type ImageCustomResizeFormViewSubmitEvent

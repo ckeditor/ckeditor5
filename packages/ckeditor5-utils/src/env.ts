@@ -100,7 +100,7 @@ export interface EnvFeaturesType {
 /**
  * A namespace containing environment and browser information.
  */
-const env: EnvType = {
+export const env: EnvType = {
 	isMac: /* #__PURE__ */ isMac( userAgent ),
 
 	isWindows: /* #__PURE__ */ isWindows( userAgent ),
@@ -127,8 +127,6 @@ const env: EnvType = {
 		isRegExpUnicodePropertySupported: /* #__PURE__ */ isRegExpUnicodePropertySupported()
 	}
 };
-
-export default env;
 
 /**
  * Checks if User Agent represented by the string is running on Macintosh.

@@ -18,7 +18,8 @@ import type {
 	ViewElement
 } from 'ckeditor5/src/engine.js';
 
-import ListEditing, {
+import {
+	ListEditing,
 	type ListType,
 	type ListEditingCheckAttributesEvent,
 	type ListEditingPostFixerEvent,

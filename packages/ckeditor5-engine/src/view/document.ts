@@ -205,6 +205,10 @@ export class Document extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PURE__
 	// @if CK_DEBUG_ENGINE // }
 }
 
+export {
+	Document as ViewDocument
+};
+
 /**
  * Document PostFixer.
  *

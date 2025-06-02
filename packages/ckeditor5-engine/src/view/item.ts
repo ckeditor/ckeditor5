@@ -15,3 +15,4 @@ import { type TextProxy } from './textproxy.js';
  */
 export type Item = Node | TextProxy;
 
+export { Item as ViewItem };

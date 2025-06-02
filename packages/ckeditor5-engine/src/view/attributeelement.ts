@@ -216,6 +216,8 @@ AttributeElement.prototype.is = function( type: string, name?: string ): boolean
 	}
 };
 
+export { AttributeElement as ViewAttributeElement };
+
 /**
  * Returns block {@link module:engine/view/filler~Filler filler} offset or `null` if block filler is not needed.
  *

@@ -13,7 +13,8 @@ import type { TableUtils } from '@ckeditor/ckeditor5-table';
 
 import type { DataFilter } from '@ckeditor/ckeditor5-html-support';
 
-import StyleUtils, {
+import {
+	StyleUtils,
 	type BlockStyleDefinition,
 	type StyleUtilsGetAffectedBlocksEvent,
 	type StyleUtilsIsEnabledForBlockEvent,

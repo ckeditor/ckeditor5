@@ -274,6 +274,8 @@ DocumentFragment.prototype.is = function( type: string ): boolean {
 	return type === 'documentFragment' || type === 'view:documentFragment';
 };
 
+export { DocumentFragment as ViewDocumentFragment };
+
 /**
  * Converts strings to Text and non-iterables to arrays.
  */

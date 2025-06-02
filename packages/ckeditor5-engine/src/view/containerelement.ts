@@ -71,6 +71,8 @@ ContainerElement.prototype.is = function( type: string, name?: string ): boolean
 	}
 };
 
+export { ContainerElement as ViewContainerElement };
+
 /**
  * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
  *

@@ -475,6 +475,8 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 	}
 }
 
+export { TreeWalker as ViewTreeWalker };
+
 /**
  * Type of the step made by {@link module:engine/view/treewalker~TreeWalker}.
  * Possible values: `'elementStart'` if walker is at the beginning of a node, `'elementEnd'` if walker is at the end

@@ -33,7 +33,8 @@ import {
 import { Plugin } from 'ckeditor5/src/core.js';
 
 import { getAllListItemBlocks, isFirstBlockOfListItem, isListItemBlock } from '../list/utils/model.js';
-import ListEditing, {
+import {
+	ListEditing,
 	type ListEditingCheckElementEvent,
 	type ListEditingPostFixerEvent
 } from '../list/listediting.js';

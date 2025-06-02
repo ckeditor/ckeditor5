@@ -17,7 +17,8 @@ import {
 } from 'ckeditor5/src/ui.js';
 import { IconTextAlternative } from 'ckeditor5/src/icons.js';
 
-import TextAlternativeFormView, {
+import {
+	TextAlternativeFormView,
 	type TextAlternativeFormViewCancelEvent,
 	type TextAlternativeFormViewSubmitEvent
 } from './ui/textalternativeformview.js';

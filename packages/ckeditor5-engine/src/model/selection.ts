@@ -776,6 +776,8 @@ Selection.prototype.is = function( type: string ): boolean {
 	return type === 'selection' || type === 'model:selection';
 };
 
+export { Selection as ModelSelection };
+
 /**
  * Describes one of the events: `change:range` or `change:attribute`.
  */

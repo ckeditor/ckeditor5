@@ -12,7 +12,7 @@ import type { Element, UpcastElementEvent } from 'ckeditor5/src/engine.js';
 
 import { ImageStyleCommand } from './imagestylecommand.js';
 import { ImageUtils } from '../imageutils.js';
-import { utils } from './utils.js';
+import { normalizeStyles, getDefaultStylesConfiguration } from './utils.js';
 import { viewToModelStyleAttribute, modelToViewStyleAttribute } from './converters.js';
 import type { ImageStyleOptionDefinition } from '../imageconfig.js';
 
@@ -59,7 +59,6 @@ export class ImageStyleEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	public init(): void {
-		const { normalizeStyles, getDefaultStylesConfiguration } = utils;
 		const editor = this.editor;
 		const isBlockPluginLoaded = editor.plugins.has( 'ImageBlockEditing' );
 		const isInlinePluginLoaded = editor.plugins.has( 'ImageInlineEditing' );
