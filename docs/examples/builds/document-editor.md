@@ -17,4 +17,4 @@ See the {@link framework/document-editor tutorial} to learn how to create this k
 	Check out the [source code](https://github.com/ckeditor/ckeditor5-demos/tree/master/user-interface-document) of this editor preset or build your custom editor setup with our [interactive Builder](https://ckeditor.com/ckeditor-5/builder/?redirect=docs).
 </info-box>
 
-{@snippet examples/document-editor}
+{@snippet examples/document-editor wide}

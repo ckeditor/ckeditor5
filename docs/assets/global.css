@@ -21,3 +21,36 @@
 .ck-body-wrapper .ck.ck-powered-by-balloon.ck-balloon-panel.ck-balloon-panel_visible {
 	display: none;
 }
+
+#snippet-inline-editor .ck-content {
+	margin-bottom: 1rem;
+	padding: 2rem;
+}
+
+/* Visually separate inline editors from example description.
+https://github.com/ckeditor/ckeditor5/issues/1545 */
+#snippet-inline-editor .ck-content:not(.ck-focused),
+#snippet-balloon-editor.ck-content:not(.ck-focused),
+#snippet-balloon-block-editor.ck-content:not(.ck-focused) {
+	border: 1px solid hsla(0, 0%, 0%, 0.15);
+}
+
+#snippet-inline-editor h2, #snippet-inline-editor h3 {
+	margin-top: 0;
+	padding-top: 0;
+	border-bottom: 0;
+}
+
+#snippet-inline-editor header.ck-content {
+	text-align: center;
+}
+
+#snippet-inline-editor header.ck-content h2 {
+	margin-bottom: 0;
+	font-size: 2.1rem;
+}
+
+#snippet-inline-editor header.ck-content h3 {
+	color: hsla(212, 79%, 9%, 0.59);
+	font-size: 1.6rem;
+}
