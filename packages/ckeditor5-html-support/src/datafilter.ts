@@ -730,7 +730,7 @@ export default class DataFilter extends Plugin {
 		const conversion = editor.conversion;
 		const attributeKey = definition.model;
 
-		// This element is stored in the model as an attribute on a block element, for example DocumentLists.
+		// This element is stored in the model as an attribute on a block element, for example Lists.
 		if ( definition.appliesToBlock ) {
 			return;
 		}

@@ -9,7 +9,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
-import DocumentListProperties from '@ckeditor/ckeditor5-list/src/documentlistproperties.js';
+import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties.js';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent.js';
 
@@ -19,7 +19,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			Bold,
-			DocumentListProperties,
+			ListProperties,
 			Essentials,
 			Italic,
 			Paragraph,

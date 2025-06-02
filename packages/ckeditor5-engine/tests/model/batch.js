@@ -69,19 +69,6 @@ describe( 'Batch', () => {
 		} );
 	} );
 
-	describe( 'type', () => {
-		it( 'should return "default" and log warning on console', () => {
-			testUtils.createSinonSandbox();
-
-			const stub = testUtils.sinon.stub( console, 'warn' );
-			const batch = new Batch();
-
-			batch.type;
-
-			sinon.assert.calledWithMatch( stub, 'batch-type-deprecated' );
-		} );
-	} );
-
 	describe( 'addOperation()', () => {
 		it( 'should add operation to the batch', () => {
 			const batch = new Batch();

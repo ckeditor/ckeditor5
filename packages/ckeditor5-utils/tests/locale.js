@@ -252,22 +252,4 @@ describe( 'Locale', () => {
 			} ).to.not.throw();
 		} );
 	} );
-
-	describe( 'language()', () => {
-		it( 'should return #uiLanguage', () => {
-			const stub = sinon.stub( console, 'warn' );
-			const locale = new Locale();
-
-			expect( locale.language ).to.equal( locale.uiLanguage );
-			sinon.assert.calledWithMatch( stub, 'locale-deprecated-language-property' );
-		} );
-
-		it( 'should warn about deprecation', () => {
-			const stub = sinon.stub( console, 'warn' );
-			const locale = new Locale();
-
-			expect( locale.language ).to.equal( 'en' );
-			sinon.assert.calledWithMatch( stub, 'locale-deprecated-language-property' );
-		} );
-	} );
 } );
