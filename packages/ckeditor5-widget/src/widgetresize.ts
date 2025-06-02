@@ -13,7 +13,7 @@ import Resizer, {
 	type ResizerCommitEvent
 } from './widgetresize/resizer.js';
 
-import type WidgetToolbarRepository from './widgettoolbarrepository.js';
+import { type WidgetToolbarRepository } from './widgettoolbarrepository.js';
 
 import {
 	Plugin,
@@ -48,7 +48,7 @@ import '../theme/widgetresize.css';
  *
  * Use the {@link module:widget/widgetresize~WidgetResize#attachTo} method to create a resizer for the specified widget.
  */
-export default class WidgetResize extends Plugin {
+export class WidgetResize extends Plugin {
 	/**
 	 * The currently selected resizer.
 	 *

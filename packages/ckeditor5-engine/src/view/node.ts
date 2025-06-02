@@ -7,7 +7,7 @@
  * @module engine/view/node
  */
 
-import TypeCheckable from './typecheckable.js';
+import { TypeCheckable } from './typecheckable.js';
 
 import {
 	CKEditorError,
@@ -17,9 +17,9 @@ import {
 
 import { clone } from 'es-toolkit/compat';
 
-import type { default as Document, ChangeType } from './document.js';
-import type DocumentFragment from './documentfragment.js';
-import type Element from './element.js';
+import type { Document, ChangeType } from './document.js';
+import { type DocumentFragment } from './documentfragment.js';
+import { type Element } from './element.js';
 
 /**
  * Abstract view node class.

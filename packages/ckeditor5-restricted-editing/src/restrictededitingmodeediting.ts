@@ -32,7 +32,7 @@ import type {
 	ClipboardPipeline
 } from 'ckeditor5/src/clipboard.js';
 
-import RestrictedEditingModeNavigationCommand from './restrictededitingmodenavigationcommand.js';
+import { RestrictedEditingModeNavigationCommand } from './restrictededitingmodenavigationcommand.js';
 import {
 	extendMarkerOnTypingPostFixer,
 	resurrectCollapsedMarkerPostFixer,
@@ -51,7 +51,7 @@ const COMMAND_FORCE_DISABLE_ID = 'RestrictedEditingMode';
  * * It registers the `'goToPreviousRestrictedEditingException'` and `'goToNextRestrictedEditingException'` commands.
  * * It also enables highlighting exception markers that are selected.
  */
-export default class RestrictedEditingModeEditing extends Plugin {
+export class RestrictedEditingModeEditing extends Plugin {
 	/**
 	 * Command names that are enabled outside the non-restricted regions.
 	 */

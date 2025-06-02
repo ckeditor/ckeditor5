@@ -7,13 +7,13 @@
  * @module ui/search/filtergroupanditemnames
  */
 
-import type ButtonView from '../button/buttonview.js';
-import type ButtonLabelWithHighlightView from '../highlightedtext/buttonlabelwithhighlightview.js';
-import type LabelWithHighlightView from '../highlightedtext/labelwithhighlightview.js';
-import type ViewCollection from '../viewcollection.js';
-import type ListItemGroupView from '../list/listitemgroupview.js';
-import type ListItemView from '../list/listitemview.js';
-import type ListSeparatorView from '../list/listseparatorview.js';
+import { type ButtonView } from '../button/buttonview.js';
+import { type ButtonLabelWithHighlightView } from '../highlightedtext/buttonlabelwithhighlightview.js';
+import { type LabelWithHighlightView } from '../highlightedtext/labelwithhighlightview.js';
+import { type ViewCollection } from '../viewcollection.js';
+import { type ListItemGroupView } from '../list/listitemgroupview.js';
+import { type ListItemView } from '../list/listitemview.js';
+import { type ListSeparatorView } from '../list/listseparatorview.js';
 
 /**
  * A filter function that returns matching item and group names in the list view.

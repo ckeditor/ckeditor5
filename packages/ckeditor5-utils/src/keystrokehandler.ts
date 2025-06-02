@@ -47,7 +47,7 @@ import type { PriorityString } from './priorities.js';
  * That keystroke handler will listen to `keydown` events fired in this view's main element.
  *
  */
-export default class KeystrokeHandler {
+export class KeystrokeHandler {
 	/**
 	 * Listener used to listen to events for easier keystroke handler destruction.
 	 */

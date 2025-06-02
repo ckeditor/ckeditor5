@@ -24,7 +24,7 @@ import StyleUtils, {
 
 import type { StyleDefinition } from '../styleconfig.js';
 
-export default class ListStyleSupport extends Plugin {
+export class ListStyleSupport extends Plugin {
 	private _listUtils!: ListUtils;
 	private _styleUtils!: StyleUtils;
 	private _htmlSupport!: GeneralHtmlSupport;

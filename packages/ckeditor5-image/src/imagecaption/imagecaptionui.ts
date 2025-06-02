@@ -10,13 +10,13 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView } from 'ckeditor5/src/ui.js';
 import { IconCaption } from 'ckeditor5/src/icons.js';
-import ImageCaptionUtils from './imagecaptionutils.js';
-import type ToggleImageCaptionCommand from './toggleimagecaptioncommand.js';
+import { ImageCaptionUtils } from './imagecaptionutils.js';
+import { type ToggleImageCaptionCommand } from './toggleimagecaptioncommand.js';
 
 /**
  * The image caption UI plugin. It introduces the `'toggleImageCaption'` UI button.
  */
-export default class ImageCaptionUI extends Plugin {
+export class ImageCaptionUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

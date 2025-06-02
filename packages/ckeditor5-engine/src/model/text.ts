@@ -22,7 +22,7 @@ import Node, { type NodeAttributes } from './node.js';
  * this behavior, keeping references to `Text` is not recommended. Instead, consider creating
  * {@link module:engine/model/liveposition~LivePosition live position} placed before the text node.
  */
-export default class Text extends Node {
+export class Text extends Node {
 	/**
 	 * Text data contained in this text node.
 	 *

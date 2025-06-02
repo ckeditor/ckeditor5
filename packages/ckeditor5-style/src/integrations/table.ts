@@ -20,7 +20,7 @@ import StyleUtils, {
 	type StyleUtilsConfigureGHSDataFilterEvent
 } from '../styleutils.js';
 
-export default class TableStyleSupport extends Plugin {
+export class TableStyleSupport extends Plugin {
 	private _tableUtils!: TableUtils;
 	private _styleUtils!: StyleUtils;
 

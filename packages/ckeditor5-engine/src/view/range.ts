@@ -7,14 +7,14 @@
  * @module engine/view/range
  */
 
-import TypeCheckable from './typecheckable.js';
-import Position from './position.js';
+import { TypeCheckable } from './typecheckable.js';
+import { Position } from './position.js';
 
-import type DocumentFragment from './documentfragment.js';
-import type Element from './element.js';
-import type Item from './item.js';
-import type Node from './node.js';
-import { default as TreeWalker, type TreeWalkerValue, type TreeWalkerOptions } from './treewalker.js';
+import { type DocumentFragment } from './documentfragment.js';
+import { type Element } from './element.js';
+import { type Item } from './item.js';
+import { type Node } from './node.js';
+import { TreeWalker, type TreeWalkerValue, type TreeWalkerOptions } from './treewalker.js';
 
 /**
  * Range in the view tree. A range is represented by its start and end {@link module:engine/view/position~Position positions}.
@@ -25,7 +25,7 @@ import { default as TreeWalker, type TreeWalkerValue, type TreeWalkerOptions } f
  * * {@link module:engine/view/downcastwriter~DowncastWriter}
  * * {@link module:engine/view/upcastwriter~UpcastWriter}
  */
-export default class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
+export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	/**
 	 * Start position.
 	 */

@@ -3,22 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type AttributeElement from './attributeelement.js';
-import type ContainerElement from './containerelement.js';
-import type DocumentFragment from './documentfragment.js';
-import type DocumentSelection from './documentselection.js';
-import type EditableElement from './editableelement.js';
-import type Element from './element.js';
-import type EmptyElement from './emptyelement.js';
-import type Node from './node.js';
-import type Position from './position.js';
-import type Range from './range.js';
-import type RawElement from './rawelement.js';
-import type RootEditableElement from './rooteditableelement.js';
-import type Selection from './selection.js';
-import type Text from './text.js';
-import type TextProxy from './textproxy.js';
-import type UIElement from './uielement.js';
+import { type AttributeElement } from './attributeelement.js';
+import { type ContainerElement } from './containerelement.js';
+import { type DocumentFragment } from './documentfragment.js';
+import { type DocumentSelection } from './documentselection.js';
+import { type EditableElement } from './editableelement.js';
+import { type Element } from './element.js';
+import { type EmptyElement } from './emptyelement.js';
+import { type Node } from './node.js';
+import { type Position } from './position.js';
+import { type Range } from './range.js';
+import { type RawElement } from './rawelement.js';
+import { type RootEditableElement } from './rooteditableelement.js';
+import { type Selection } from './selection.js';
+import { type Text } from './text.js';
+import { type TextProxy } from './textproxy.js';
+import { type UIElement } from './uielement.js';
 
 /**
  * @module engine/view/typecheckable

@@ -12,7 +12,7 @@ import type { IndentBehavior } from './indentbehavior.js';
 /**
  * The block indentation behavior that uses offsets to set indentation.
  */
-export default class IndentUsingOffset implements IndentBehavior {
+export class IndentUsingOffset implements IndentBehavior {
 	/**
 	 * The direction of indentation.
 	 */

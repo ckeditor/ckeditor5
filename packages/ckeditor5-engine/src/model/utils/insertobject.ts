@@ -7,13 +7,13 @@
  * @module engine/model/utils/insertobject
  */
 
-import type DocumentSelection from '../documentselection.js';
-import type Selection from '../selection.js';
+import { type DocumentSelection } from '../documentselection.js';
+import { type Selection } from '../selection.js';
 
-import type Element from '../element.js';
-import type Model from '../model.js';
-import type Range from '../range.js';
-import type Writer from '../writer.js';
+import { type Element } from '../element.js';
+import { type Model } from '../model.js';
+import { type Range } from '../range.js';
+import { type Writer } from '../writer.js';
 
 import { CKEditorError, first } from '@ckeditor/ckeditor5-utils';
 

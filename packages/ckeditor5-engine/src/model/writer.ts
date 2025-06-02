@@ -7,31 +7,31 @@
  * @module engine/model/writer
  */
 
-import AttributeOperation from './operation/attributeoperation.js';
-import DetachOperation from './operation/detachoperation.js';
-import InsertOperation from './operation/insertoperation.js';
-import MarkerOperation from './operation/markeroperation.js';
-import MergeOperation from './operation/mergeoperation.js';
-import MoveOperation from './operation/moveoperation.js';
-import RenameOperation from './operation/renameoperation.js';
-import RootAttributeOperation from './operation/rootattributeoperation.js';
-import RootOperation from './operation/rootoperation.js';
-import SplitOperation from './operation/splitoperation.js';
+import { AttributeOperation } from './operation/attributeoperation.js';
+import { DetachOperation } from './operation/detachoperation.js';
+import { InsertOperation } from './operation/insertoperation.js';
+import { MarkerOperation } from './operation/markeroperation.js';
+import { MergeOperation } from './operation/mergeoperation.js';
+import { MoveOperation } from './operation/moveoperation.js';
+import { RenameOperation } from './operation/renameoperation.js';
+import { RootAttributeOperation } from './operation/rootattributeoperation.js';
+import { RootOperation } from './operation/rootoperation.js';
+import { SplitOperation } from './operation/splitoperation.js';
 
-import DocumentFragment from './documentfragment.js';
-import DocumentSelection from './documentselection.js';
-import Element from './element.js';
+import { DocumentFragment } from './documentfragment.js';
+import { DocumentSelection } from './documentselection.js';
+import { Element } from './element.js';
 import Position, { type PositionOffset, type PositionStickiness } from './position.js';
-import Range from './range.js';
-import RootElement from './rootelement.js';
-import Text from './text.js';
+import { Range } from './range.js';
+import { RootElement } from './rootelement.js';
+import { Text } from './text.js';
 
 import type { Marker } from './markercollection.js';
-import type { default as Selection, PlaceOrOffset, Selectable } from './selection.js';
-import type Batch from './batch.js';
-import type Item from './item.js';
-import type Model from './model.js';
-import type { default as Node, NodeAttributes } from './node.js';
+import type { Selection, PlaceOrOffset, Selectable } from './selection.js';
+import { type Batch } from './batch.js';
+import { type Item } from './item.js';
+import { type Model } from './model.js';
+import type { Node, NodeAttributes } from './node.js';
 
 import { CKEditorError, logWarning, toMap } from '@ckeditor/ckeditor5-utils';
 
@@ -58,7 +58,7 @@ import { CKEditorError, logWarning, toMap } from '@ckeditor/ckeditor5-utils';
  * @see module:engine/model/model~Model#change
  * @see module:engine/model/model~Model#enqueueChange
  */
-export default class Writer {
+export class Writer {
 	/**
 	 * Instance of the model on which this writer operates.
 	 */

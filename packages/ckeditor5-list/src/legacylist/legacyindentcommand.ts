@@ -14,7 +14,7 @@ import { first } from 'ckeditor5/src/utils.js';
 /**
  * The list indent command. It is used by the {@link module:list/legacylist~LegacyList legacy list feature}.
  */
-export default class LegacyIndentCommand extends Command {
+export class LegacyIndentCommand extends Command {
 	/**
 	 * Determines by how much the command will change the list item's indent attribute.
 	 */

@@ -7,5 +7,5 @@
  * @module editor-classic
  */
 
-export { default as ClassicEditor } from './classiceditor.js';
-export { default as ClassicEditorUIView } from './classiceditoruiview.js';
+export { ClassicEditor } from './classiceditor.js';
+export { ClassicEditorUIView } from './classiceditoruiview.js';

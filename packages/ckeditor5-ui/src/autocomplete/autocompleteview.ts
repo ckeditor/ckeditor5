@@ -9,8 +9,8 @@
 
 import { getOptimalPosition, type PositioningFunction, type Locale, global, toUnit, Rect } from '@ckeditor/ckeditor5-utils';
 import SearchTextView, { type SearchTextViewConfig } from '../search/text/searchtextview.js';
-import type SearchResultsView from '../search/searchresultsview.js';
-import type InputBase from '../input/inputbase.js';
+import { type SearchResultsView } from '../search/searchresultsview.js';
+import { type InputBase } from '../input/inputbase.js';
 import type { FilteredViewExecuteEvent } from '../search/filteredview.js';
 
 import '../../theme/components/autocomplete/autocomplete.css';
@@ -20,7 +20,7 @@ import '../../theme/components/autocomplete/autocomplete.css';
  * with a floating {@link #resultsView} that shows up when the user starts typing and hides when they blur
  * the component.
  */
-export default class AutocompleteView<
+export class AutocompleteView<
 	TQueryFieldView extends InputBase<HTMLInputElement | HTMLTextAreaElement>
 > extends SearchTextView<TQueryFieldView> {
 	/**

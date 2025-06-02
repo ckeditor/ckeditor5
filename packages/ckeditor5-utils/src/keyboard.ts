@@ -10,8 +10,8 @@
  */
 
 import type { LanguageDirection } from './language.js';
-import CKEditorError from './ckeditorerror.js';
-import env from './env.js';
+import { CKEditorError } from './ckeditorerror.js';
+import { env } from './env.js';
 
 const modifiersToGlyphsMac = {
 	ctrl: '⌃',

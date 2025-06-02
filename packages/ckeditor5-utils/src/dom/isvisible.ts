@@ -7,7 +7,7 @@
  * @module utils/dom/isvisible
  */
 
-import isText from './istext.js';
+import { isText } from './istext.js';
 
 /**
  * Checks whether the element is visible to the user in DOM:

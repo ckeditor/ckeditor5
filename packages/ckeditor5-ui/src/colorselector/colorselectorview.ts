@@ -8,16 +8,16 @@
  */
 
 import FocusCycler, { type FocusableView } from '../focuscycler.js';
-import View from '../view.js';
-import ViewCollection from '../viewcollection.js';
+import { View } from '../view.js';
+import { ViewCollection } from '../viewcollection.js';
 import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
 
 import type { ColorPickerViewConfig } from '../colorpicker/utils.js';
 import type { ColorDefinition } from '../colorgrid/colorgridview.js';
 import type { Model } from '@ckeditor/ckeditor5-engine';
 
-import ColorGridsFragmentView from './colorgridsfragmentview.js';
-import ColorPickerFragmentView from './colorpickerfragmentview.js';
+import { ColorGridsFragmentView } from './colorgridsfragmentview.js';
+import { ColorPickerFragmentView } from './colorpickerfragmentview.js';
 
 import '../../theme/components/colorselector/colorselector.css';
 
@@ -69,7 +69,7 @@ import '../../theme/components/colorselector/colorselector.css';
  * document.body.appendChild( selectorView.element );
  * ```
  */
-export default class ColorSelectorView extends View {
+export class ColorSelectorView extends View {
 	/**
 	 * Tracks information about the DOM focus in the list.
 	 */

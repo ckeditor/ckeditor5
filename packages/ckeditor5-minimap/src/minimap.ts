@@ -25,7 +25,7 @@ import '../theme/minimap.css';
 /**
  * The content minimap feature.
  */
-export default class Minimap extends Plugin {
+export class Minimap extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

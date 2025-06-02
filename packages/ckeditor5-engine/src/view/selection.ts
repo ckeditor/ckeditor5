@@ -7,11 +7,11 @@
  * @module engine/view/selection
  */
 
-import TypeCheckable from './typecheckable.js';
-import Range from './range.js';
+import { TypeCheckable } from './typecheckable.js';
+import { Range } from './range.js';
 import Position, { type PositionOffset } from './position.js';
-import Node from './node.js';
-import DocumentSelection from './documentselection.js';
+import { Node } from './node.js';
+import { DocumentSelection } from './documentselection.js';
 
 import {
 	CKEditorError,
@@ -20,9 +20,9 @@ import {
 	isIterable
 } from '@ckeditor/ckeditor5-utils';
 
-import type Element from './element.js';
-import type Item from './item.js';
-import type EditableElement from './editableelement.js';
+import { type Element } from './element.js';
+import { type Item } from './item.js';
+import { type EditableElement } from './editableelement.js';
 
 /**
  * Class representing an arbirtary selection in the view.
@@ -36,7 +36,7 @@ import type EditableElement from './editableelement.js';
  * A selection can consist of {@link module:engine/view/range~Range ranges} that can be set by using
  * the {@link module:engine/view/selection~Selection#setTo `Selection#setTo()`} method.
  */
-export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
+export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
 	 * Stores all ranges that are selected.
 	 */

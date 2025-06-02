@@ -324,7 +324,7 @@ export interface ImageConfig {
 	 * {@link module:image/imagestyle/utils#DEFAULT_ICONS default icons} to choose from.
 	 *
 	 * ```ts
-	 * import customIcon from 'custom-icon.svg';
+	 * import { customIcon } from 'custom-icon.svg';
 	 *
 	 * // ...
 	 *
@@ -357,8 +357,8 @@ export interface ImageConfig {
 	 * to define the custom image style configuration properly.
 	 *
 	 * ```ts
-	 * import redIcon from 'red-icon.svg';
-	 * import blueIcon from 'blue-icon.svg';
+	 * import { redIcon } from 'red-icon.svg';
+	 * import { blueIcon } from 'blue-icon.svg';
 	 *
 	 * // ...
 	 *
@@ -616,7 +616,7 @@ export interface ImageStyleConfig {
  * * or defining a completely custom styling option by providing a custom name and implementing the following properties.
  *
  * ```ts
- * import fullSizeIcon from 'path/to/icon.svg';
+ * import { fullSizeIcon } from 'path/to/icon.svg';
  *
  * const imageStyleOptionDefinition = {
  * 	name: 'fullSize',

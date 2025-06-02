@@ -9,7 +9,7 @@
 
 import type { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
 import type { FocusableView } from '../focuscycler.js';
-import type ViewCollection from '../viewcollection.js';
+import { type ViewCollection } from '../viewcollection.js';
 
 /**
  * A helper that adds a keyboard navigation support (arrow up/down/left/right) for grids.

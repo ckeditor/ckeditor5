@@ -10,10 +10,10 @@
 import type { Element, ViewElement } from 'ckeditor5/src/engine.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 import { WidgetResize } from 'ckeditor5/src/widget.js';
-import ImageUtils from '../imageutils.js';
+import { ImageUtils } from '../imageutils.js';
 
 import ImageLoadObserver, { type ImageLoadedEvent } from '../image/imageloadobserver.js';
-import type ResizeImageCommand from './resizeimagecommand.js';
+import { type ResizeImageCommand } from './resizeimagecommand.js';
 
 const RESIZABLE_IMAGES_CSS_SELECTOR =
 	'figure.image.ck-widget > img,' +
@@ -31,7 +31,7 @@ const RESIZED_IMAGE_CLASS = 'image_resized';
  * It adds the ability to resize each image using handles or manually by
  * {@link module:image/imageresize/imageresizebuttons~ImageResizeButtons} buttons.
  */
-export default class ImageResizeHandles extends Plugin {
+export class ImageResizeHandles extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

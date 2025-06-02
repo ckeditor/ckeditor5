@@ -7,10 +7,10 @@
  * @module engine/model/operation/rootattributeoperation
  */
 
-import Operation from './operation.js';
+import { Operation } from './operation.js';
 
-import type Document from '../document.js';
-import type RootElement from '../rootelement.js';
+import { type Document } from '../document.js';
+import { type RootElement } from '../rootelement.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import type { Selectable } from '../selection.js';
@@ -25,7 +25,7 @@ import type { Selectable } from '../selection.js';
  * be a part of range because every {@link module:engine/model/position~Position} has to be inside a root.
  * {@link module:engine/model/position~Position} can't be created before a root element.
  */
-export default class RootAttributeOperation extends Operation {
+export class RootAttributeOperation extends Operation {
 	/**
 	 * Root element to change.
 	 */

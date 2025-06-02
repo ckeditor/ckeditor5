@@ -7,11 +7,11 @@
  * @module engine/model/operation/attributeoperation
  */
 
-import Operation from './operation.js';
+import { Operation } from './operation.js';
 import { _setAttribute } from './utils.js';
-import Range from '../range.js';
+import { Range } from '../range.js';
 
-import type Document from '../document.js';
+import { type Document } from '../document.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { isEqual } from 'es-toolkit/compat';
@@ -22,7 +22,7 @@ import type { Selectable } from '../selection.js';
  *
  * Using this class you can add, remove or change value of the attribute.
  */
-export default class AttributeOperation extends Operation {
+export class AttributeOperation extends Operation {
 	/**
 	 * Range on which operation should be applied.
 	 *

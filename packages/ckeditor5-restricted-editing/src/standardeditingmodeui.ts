@@ -16,7 +16,7 @@ import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
  *
  * It introduces the `'restrictedEditingException'` button that marks text as unrestricted for editing.
  */
-export default class StandardEditingModeUI extends Plugin {
+export class StandardEditingModeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

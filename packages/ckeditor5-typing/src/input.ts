@@ -36,7 +36,7 @@ import { debounce } from 'es-toolkit/compat';
 /**
  * Handles text input coming from the keyboard or other input methods.
  */
-export default class Input extends Plugin {
+export class Input extends Plugin {
 	/**
 	 * The queue of `insertText` command executions that are waiting for the DOM to get updated after beforeinput event.
 	 */

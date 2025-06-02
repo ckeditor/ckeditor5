@@ -7,7 +7,7 @@
  * @module engine/dataprocessor/dataprocessor
  */
 
-import type ViewDocumentFragment from '../view/documentfragment.js';
+import { type ViewDocumentFragment } from '../view/documentfragment.js';
 import type { MatcherPattern } from '../view/matcher.js';
 
 /**

@@ -44,7 +44,7 @@ const TYPING_INPUT_TYPES_ANDROID = [
 /**
  * Text insertion observer introduces the {@link module:engine/view/document~Document#event:insertText} event.
  */
-export default class InsertTextObserver extends Observer {
+export class InsertTextObserver extends Observer {
 	/**
 	 * Instance of the focus observer. Insert text observer calls
 	 * {@link module:engine/view/observer/focusobserver~FocusObserver#flush} to mark the latest focus change as complete.

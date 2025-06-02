@@ -14,7 +14,7 @@ import { getLanguageDirection, type LanguageDirection } from './language.js';
 /**
  * Represents the localization services.
  */
-export default class Locale {
+export class Locale {
 	/**
 	 * The editor UI language code in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
 	 *

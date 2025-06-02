@@ -14,7 +14,7 @@ import {
 
 import { first } from 'ckeditor5/src/utils.js';
 
-import type Autoformat from './autoformat.js';
+import { type Autoformat } from './autoformat.js';
 
 import type { Delete } from 'ckeditor5/src/typing.js';
 

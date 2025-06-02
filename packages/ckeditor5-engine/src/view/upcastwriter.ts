@@ -7,21 +7,21 @@
  * @module engine/view/upcastwriter
  */
 
-import DocumentFragment from './documentfragment.js';
+import { DocumentFragment } from './documentfragment.js';
 import Element, { type ElementAttributes } from './element.js';
-import Text from './text.js';
+import { Text } from './text.js';
 import { isPlainObject } from 'es-toolkit/compat';
 import Position, { type PositionOffset } from './position.js';
-import Range from './range.js';
+import { Range } from './range.js';
 import Selection, {
 	type PlaceOrOffset,
 	type Selectable,
 	type SelectionOptions
 } from './selection.js';
 
-import type Document from './document.js';
-import type Item from './item.js';
-import type Node from './node.js';
+import { type Document } from './document.js';
+import { type Item } from './item.js';
+import { type Node } from './node.js';
 
 /**
  * View upcast writer. It provides a set of methods used to manipulate non-semantic view trees.
@@ -44,7 +44,7 @@ import type Node from './node.js';
  * writer.appendChild( text, someViewElement );
  * ```
  */
-export default class UpcastWriter {
+export class UpcastWriter {
 	/**
 	 * The view document instance in which this upcast writer operates.
 	 */

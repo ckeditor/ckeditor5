@@ -8,29 +8,29 @@
  */
 
 import Batch, { type BatchType } from './batch.js';
-import Document from './document.js';
-import MarkerCollection from './markercollection.js';
+import { Document } from './document.js';
+import { MarkerCollection } from './markercollection.js';
 import ModelPosition, { type PositionOffset, type PositionStickiness } from './position.js';
-import ModelRange from './range.js';
+import { ModelRange } from './range.js';
 import ModelSelection, { type PlaceOrOffset, type Selectable } from './selection.js';
-import OperationFactory from './operation/operationfactory.js';
-import DocumentSelection from './documentselection.js';
-import Schema from './schema.js';
-import Writer from './writer.js';
-import Node from './node.js';
+import { OperationFactory } from './operation/operationfactory.js';
+import { DocumentSelection } from './documentselection.js';
+import { Schema } from './schema.js';
+import { Writer } from './writer.js';
+import { Node } from './node.js';
 
 import { autoParagraphEmptyRoots } from './utils/autoparagraphing.js';
 import { injectSelectionPostFixer } from './utils/selection-post-fixer.js';
-import deleteContent from './utils/deletecontent.js';
-import getSelectedContent from './utils/getselectedcontent.js';
-import insertContent from './utils/insertcontent.js';
-import insertObject from './utils/insertobject.js';
-import modifySelection from './utils/modifyselection.js';
+import { deleteContent } from './utils/deletecontent.js';
+import { getSelectedContent } from './utils/getselectedcontent.js';
+import { insertContent } from './utils/insertcontent.js';
+import { insertObject } from './utils/insertobject.js';
+import { modifySelection } from './utils/modifyselection.js';
 
-import type ModelDocumentFragment from './documentfragment.js';
-import type Item from './item.js';
-import type ModelElement from './element.js';
-import type Operation from './operation/operation.js';
+import { type ModelDocumentFragment } from './documentfragment.js';
+import { type Item } from './item.js';
+import { type ModelElement } from './element.js';
+import { type Operation } from './operation/operation.js';
 
 import {
 	CKEditorError,
@@ -45,7 +45,7 @@ import {
  * Editor's data model. Read about the model in the
  * {@glink framework/architecture/editing-engine engine architecture} guide.
  */
-export default class Model extends /* #__PURE__ */ ObservableMixin() {
+export class Model extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Model's marker collection.
 	 */

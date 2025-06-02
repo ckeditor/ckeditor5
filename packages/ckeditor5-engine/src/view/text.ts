@@ -7,9 +7,9 @@
  * @module engine/view/text
  */
 
-import Node from './node.js';
+import { Node } from './node.js';
 
-import type Document from './document.js';
+import { type Document } from './document.js';
 
 /**
  * Tree view text node.
@@ -20,7 +20,7 @@ import type Document from './document.js';
  * {@link module:engine/view/upcastwriter~UpcastWriter#createText `UpcastWriter#createText()`}
  * method when working on non-semantic views.
  */
-export default class Text extends Node {
+export class Text extends Node {
 	/**
 	 * The text content.
 	 *

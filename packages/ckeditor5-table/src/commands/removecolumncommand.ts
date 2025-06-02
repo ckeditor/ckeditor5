@@ -15,7 +15,7 @@ import type {
 } from 'ckeditor5/src/engine.js';
 
 import TableWalker, { type TableSlot } from '../tablewalker.js';
-import type TableUtils from '../tableutils.js';
+import { type TableUtils } from '../tableutils.js';
 
 /**
  * The remove column command.
@@ -28,7 +28,7 @@ import type TableUtils from '../tableutils.js';
  * editor.execute( 'removeTableColumn' );
  * ```
  */
-export default class RemoveColumnCommand extends Command {
+export class RemoveColumnCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

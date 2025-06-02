@@ -37,7 +37,7 @@ const STYLE_ATTRIBUTES_TO_PROPAGATE = [
 /**
  * Provides the General HTML Support integration with {@link module:table/table~Table Table} feature.
  */
-export default class TableElementSupport extends Plugin {
+export class TableElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

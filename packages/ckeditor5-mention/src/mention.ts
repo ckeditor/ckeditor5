@@ -11,7 +11,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import type { Element } from 'ckeditor5/src/engine.js';
 
 import MentionEditing, { _toMentionAttribute } from './mentionediting.js';
-import MentionUI from './mentionui.js';
+import { MentionUI } from './mentionui.js';
 
 import '../theme/mention.css';
 
@@ -20,7 +20,7 @@ import '../theme/mention.css';
  *
  * For a detailed overview, check the {@glink features/mentions Mention feature} guide.
  */
-export default class Mention extends Plugin {
+export class Mention extends Plugin {
 	/**
 	 * Creates a mention attribute value from the provided view element and additional data.
 	 *

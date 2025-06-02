@@ -36,11 +36,11 @@ import {
 import type { EditorUI } from '@ckeditor/ckeditor5-ui';
 import { ContextWatchdog, EditorWatchdog } from '@ckeditor/ckeditor5-watchdog';
 
-import Context from '../context.js';
-import PluginCollection from '../plugincollection.js';
+import { Context } from '../context.js';
+import { PluginCollection } from '../plugincollection.js';
 import CommandCollection, { type CommandsMap } from '../commandcollection.js';
-import EditingKeystrokeHandler from '../editingkeystrokehandler.js';
-import Accessibility from '../accessibility.js';
+import { EditingKeystrokeHandler } from '../editingkeystrokehandler.js';
+import { Accessibility } from '../accessibility.js';
 import { getEditorUsageData, type EditorUsageData } from './utils/editorusagedata.js';
 
 import type { LoadedPlugins, PluginConstructor } from '../plugin.js';

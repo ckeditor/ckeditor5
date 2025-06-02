@@ -15,12 +15,12 @@ import EmitterMixin, {
 	type BaseEvent,
 	type GetCallback
 } from '../emittermixin.js';
-import uid from '../uid.js';
-import isNode from './isnode.js';
-import isWindow from './iswindow.js';
-import type EventInfo from '../eventinfo.js';
+import { uid } from '../uid.js';
+import { isNode } from './isnode.js';
+import { isWindow } from './iswindow.js';
+import { type EventInfo } from '../eventinfo.js';
 import type { Constructor, Mixed } from '../mix.js';
-import global from './global.js';
+import { global } from './global.js';
 
 const defaultEmitterClass = /* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ EmitterMixin() );
 
@@ -34,7 +34,7 @@ const defaultEmitterClass = /* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ Emi
  * but it can also be mixed into any other class:
  *
  * ```ts
- * import DomEmitterMixin from '../utils/dom/emittermixin.js';
+ * import { DomEmitterMixin } from '../utils/dom/emittermixin.js';
  *
  * class BaseClass { ... }
  *
@@ -60,7 +60,7 @@ export default function DomEmitterMixin<Base extends Constructor<Emitter>>( base
  * but it can also be mixed into any other class:
  *
  * ```ts
- * import DomEmitterMixin from '../utils/dom/emittermixin.js';
+ * import { DomEmitterMixin } from '../utils/dom/emittermixin.js';
  *
  * class SomeView extends DomEmitterMixin() {}
  *

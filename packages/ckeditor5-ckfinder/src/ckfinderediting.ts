@@ -11,12 +11,12 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { Notification } from 'ckeditor5/src/ui.js';
 import { CKEditorError } from 'ckeditor5/src/utils.js';
 
-import CKFinderCommand from './ckfindercommand.js';
+import { CKFinderCommand } from './ckfindercommand.js';
 
 /**
  * The CKFinder editing feature. It introduces the {@link module:ckfinder/ckfindercommand~CKFinderCommand CKFinder command}.
  */
-export default class CKFinderEditing extends Plugin {
+export class CKFinderEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

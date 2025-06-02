@@ -34,7 +34,7 @@ import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
 /**
  * The TextAlternativeFormView class.
  */
-export default class TextAlternativeFormView extends View {
+export class TextAlternativeFormView extends View {
 	/**
 	 * Tracks information about the DOM focus in the form.
 	 */

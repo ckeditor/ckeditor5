@@ -55,8 +55,8 @@ import ClipboardObserver, {
 	type ViewDocumentClipboardInputEvent
 } from './clipboardobserver.js';
 
-import DragDropTarget from './dragdroptarget.js';
-import DragDropBlockToolbar from './dragdropblocktoolbar.js';
+import { DragDropTarget } from './dragdroptarget.js';
+import { DragDropBlockToolbar } from './dragdropblocktoolbar.js';
 
 import '../theme/clipboard.css';
 
@@ -145,7 +145,7 @@ import '../theme/clipboard.css';
  *
  * @internal
  */
-export default class DragDrop extends Plugin {
+export class DragDrop extends Plugin {
 	/**
 	 * The live range over the original content that is being dragged.
 	 */

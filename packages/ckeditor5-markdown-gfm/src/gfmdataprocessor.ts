@@ -23,7 +23,7 @@ import { HtmlToMarkdown } from './html2markdown/html2markdown.js';
  *
  * See the {@glink features/markdown Markdown output} guide to learn more on how to enable it.
  */
-export default class GFMDataProcessor implements DataProcessor {
+export class GFMDataProcessor implements DataProcessor {
 	/**
 	 * HTML data processor used to process HTML produced by the Markdown-to-HTML converter and the other way.
 	 */

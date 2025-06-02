@@ -14,7 +14,7 @@ import { Undo } from 'ckeditor5/src/undo.js';
 import { Delete } from 'ckeditor5/src/typing.js';
 import { global } from 'ckeditor5/src/utils.js';
 
-import ImageUtils from './imageutils.js';
+import { ImageUtils } from './imageutils.js';
 
 // Implements the pattern: http(s)://(www.)example.com/path/to/resource.ext?query=params&maybe=too.
 const IMAGE_URL_REGEXP = new RegExp( String( /^(http(s)?:\/\/)?[\w-]+\.[\w.~:/[\]@!$&'()*+,;=%-]+/.source +
@@ -26,7 +26,7 @@ const IMAGE_URL_REGEXP = new RegExp( String( /^(http(s)?:\/\/)?[\w-]+\.[\w.~:/[\
  * The auto-image plugin. It recognizes image links in the pasted content and embeds
  * them shortly after they are injected into the document.
  */
-export default class AutoImage extends Plugin {
+export class AutoImage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

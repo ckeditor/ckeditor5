@@ -33,7 +33,7 @@ type IndexesObject = { first: number; last: number };
 /**
  * The table utilities plugin.
  */
-export default class TableUtils extends Plugin {
+export class TableUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

@@ -20,7 +20,7 @@ import type { DataSchemaBlockElementDefinition } from '../dataschema.js';
 /**
  * Provides the General HTML Support for `script` elements.
  */
-export default class ScriptElementSupport extends Plugin {
+export class ScriptElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

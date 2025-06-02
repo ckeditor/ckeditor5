@@ -7,28 +7,28 @@
  * @module ui/dropdown/utils
  */
 
-import DropdownPanelView from './dropdownpanelview.js';
-import DropdownView from './dropdownview.js';
-import DropdownButtonView from './button/dropdownbuttonview.js';
-import DropdownMenuRootListView from './menu/dropdownmenurootlistview.js';
-import ToolbarView from '../toolbar/toolbarview.js';
-import ListView from '../list/listview.js';
-import ListItemView from '../list/listitemview.js';
-import ListSeparatorView from '../list/listseparatorview.js';
-import SplitButtonView from './button/splitbuttonview.js';
-import SwitchButtonView from '../button/switchbuttonview.js';
-import ViewCollection from '../viewcollection.js';
+import { DropdownPanelView } from './dropdownpanelview.js';
+import { DropdownView } from './dropdownview.js';
+import { DropdownButtonView } from './button/dropdownbuttonview.js';
+import { DropdownMenuRootListView } from './menu/dropdownmenurootlistview.js';
+import { ToolbarView } from '../toolbar/toolbarview.js';
+import { ListView } from '../list/listview.js';
+import { ListItemView } from '../list/listitemview.js';
+import { ListSeparatorView } from '../list/listseparatorview.js';
+import { SplitButtonView } from './button/splitbuttonview.js';
+import { SwitchButtonView } from '../button/switchbuttonview.js';
+import { ViewCollection } from '../viewcollection.js';
 
-import clickOutsideHandler from '../bindings/clickoutsidehandler.js';
+import { clickOutsideHandler } from '../bindings/clickoutsidehandler.js';
 
-import type { default as View } from '../view.js';
+import type { View } from '../view.js';
 import type { ButtonExecuteEvent } from '../button/button.js';
-import type Model from '../model.js';
-import type DropdownButton from './button/dropdownbutton.js';
-import type ButtonView from '../button/buttonview.js';
+import { type Model } from '../model.js';
+import { type DropdownButton } from './button/dropdownbutton.js';
+import { type ButtonView } from '../button/buttonview.js';
 import type { FocusableView } from '../focuscycler.js';
 import type { FalsyValue } from '../template.js';
-import type BodyCollection from '../editorui/bodycollection.js';
+import { type BodyCollection } from '../editorui/bodycollection.js';
 
 import {
 	global,
@@ -44,8 +44,8 @@ import {
 import '../../theme/components/dropdown/toolbardropdown.css';
 import '../../theme/components/dropdown/listdropdown.css';
 
-import ListItemGroupView from '../list/listitemgroupview.js';
-import ListItemButtonView from '../button/listitembuttonview.js';
+import { ListItemGroupView } from '../list/listitemgroupview.js';
+import { ListItemButtonView } from '../button/listitembuttonview.js';
 import type { DropdownMenuDefinition } from './menu/utils.js';
 
 /**

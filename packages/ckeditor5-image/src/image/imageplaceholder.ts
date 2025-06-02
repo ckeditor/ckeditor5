@@ -14,7 +14,7 @@ import type {
 	ViewElement
 } from 'ckeditor5/src/engine.js';
 
-import ImageUtils from '../imageutils.js';
+import { ImageUtils } from '../imageutils.js';
 import ImageLoadObserver, { type ImageLoadedEvent } from './imageloadobserver.js';
 
 import '../../theme/imageplaceholder.css';
@@ -22,7 +22,7 @@ import '../../theme/imageplaceholder.css';
 /**
  * Adds support for image placeholder that is automatically removed when the image is loaded.
  */
-export default class ImagePlaceholder extends Plugin {
+export class ImagePlaceholder extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

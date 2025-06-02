@@ -7,11 +7,11 @@
  * @module engine/model/textproxy
  */
 
-import TypeCheckable from './typecheckable.js';
-import type DocumentFragment from './documentfragment.js';
-import type Element from './element.js';
-import type Node from './node.js';
-import type Text from './text.js';
+import { TypeCheckable } from './typecheckable.js';
+import { type DocumentFragment } from './documentfragment.js';
+import { type Element } from './element.js';
+import { type Node } from './node.js';
+import { type Text } from './text.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -46,7 +46,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  * `TextProxy` instances are created by {@link module:engine/model/treewalker~TreeWalker model tree walker}. You should not need to create
  * an instance of this class by your own.
  */
-export default class TextProxy extends TypeCheckable {
+export class TextProxy extends TypeCheckable {
 	/**
 	 * Text node which part is represented by this text proxy.
 	 */

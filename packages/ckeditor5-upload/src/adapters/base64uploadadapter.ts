@@ -22,7 +22,7 @@ type DomFileReader = globalThis.FileReader;
  * Check out the {@glink features/images/image-upload/image-upload comprehensive "Image upload overview"} to learn about
  * other ways to upload images into CKEditor 5.
  */
-export default class Base64UploadAdapter extends Plugin {
+export class Base64UploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

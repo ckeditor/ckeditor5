@@ -22,16 +22,16 @@ import {
 	type ObservableChangeEvent
 } from 'ckeditor5/src/utils.js';
 import EmojiGridView, { type EmojiSearchQueryCallback } from './emojigridview.js';
-import EmojiCategoriesView from './emojicategoriesview.js';
-import EmojiSearchView from './emojisearchview.js';
-import EmojiToneView from './emojitoneview.js';
+import { EmojiCategoriesView } from './emojicategoriesview.js';
+import { EmojiSearchView } from './emojisearchview.js';
+import { EmojiToneView } from './emojitoneview.js';
 import type { SkinToneId } from '../emojiconfig.js';
 import type { EmojiCategory, SkinTone } from '../emojirepository.js';
 
 /**
  * A view that glues pieces of the emoji panel together.
  */
-export default class EmojiPickerView extends View<HTMLDivElement> {
+export class EmojiPickerView extends View<HTMLDivElement> {
 	/**
 	 * A collection of the focusable children of the view.
 	 */

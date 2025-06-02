@@ -13,32 +13,32 @@ import type { PositionOffset, ViewElement, SlotFilter } from 'ckeditor5/src/engi
 import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable.js';
 import { convertParagraphInTableCell, downcastCell, downcastRow, downcastTable } from './converters/downcast.js';
 
-import InsertTableCommand from './commands/inserttablecommand.js';
-import InsertRowCommand from './commands/insertrowcommand.js';
-import InsertColumnCommand from './commands/insertcolumncommand.js';
-import SplitCellCommand from './commands/splitcellcommand.js';
-import MergeCellCommand from './commands/mergecellcommand.js';
-import RemoveRowCommand from './commands/removerowcommand.js';
-import RemoveColumnCommand from './commands/removecolumncommand.js';
-import SetHeaderRowCommand from './commands/setheaderrowcommand.js';
-import SetHeaderColumnCommand from './commands/setheadercolumncommand.js';
-import MergeCellsCommand from './commands/mergecellscommand.js';
-import SelectRowCommand from './commands/selectrowcommand.js';
-import SelectColumnCommand from './commands/selectcolumncommand.js';
-import TableUtils from '../src/tableutils.js';
+import { InsertTableCommand } from './commands/inserttablecommand.js';
+import { InsertRowCommand } from './commands/insertrowcommand.js';
+import { InsertColumnCommand } from './commands/insertcolumncommand.js';
+import { SplitCellCommand } from './commands/splitcellcommand.js';
+import { MergeCellCommand } from './commands/mergecellcommand.js';
+import { RemoveRowCommand } from './commands/removerowcommand.js';
+import { RemoveColumnCommand } from './commands/removecolumncommand.js';
+import { SetHeaderRowCommand } from './commands/setheaderrowcommand.js';
+import { SetHeaderColumnCommand } from './commands/setheadercolumncommand.js';
+import { MergeCellsCommand } from './commands/mergecellscommand.js';
+import { SelectRowCommand } from './commands/selectrowcommand.js';
+import { SelectColumnCommand } from './commands/selectcolumncommand.js';
+import { TableUtils } from '../src/tableutils.js';
 
-import injectTableLayoutPostFixer from './converters/table-layout-post-fixer.js';
-import injectTableCellParagraphPostFixer from './converters/table-cell-paragraph-post-fixer.js';
+import { injectTableLayoutPostFixer } from './converters/table-layout-post-fixer.js';
+import { injectTableCellParagraphPostFixer } from './converters/table-cell-paragraph-post-fixer.js';
 
-import tableHeadingsRefreshHandler from './converters/table-headings-refresh-handler.js';
-import tableCellRefreshHandler from './converters/table-cell-refresh-handler.js';
+import { tableHeadingsRefreshHandler } from './converters/table-headings-refresh-handler.js';
+import { tableCellRefreshHandler } from './converters/table-cell-refresh-handler.js';
 
 import '../theme/tableediting.css';
 
 /**
  * The table editing feature.
  */
-export default class TableEditing extends Plugin {
+export class TableEditing extends Plugin {
 	/**
 	 * Handlers for creating additional slots in the table.
 	 */

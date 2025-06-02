@@ -21,7 +21,7 @@ import type { DataSchemaBlockElementDefinition } from '../dataschema.js';
 /**
  * Provides the General HTML Support for `style` elements.
  */
-export default class StyleElementSupport extends Plugin {
+export class StyleElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

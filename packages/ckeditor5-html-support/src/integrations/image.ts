@@ -24,7 +24,7 @@ import { getDescendantElement } from './integrationutils.js';
 /**
  * Provides the General HTML Support integration with the {@link module:image/image~Image Image} feature.
  */
-export default class ImageElementSupport extends Plugin {
+export class ImageElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

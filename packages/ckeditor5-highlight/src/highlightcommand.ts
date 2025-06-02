@@ -22,7 +22,7 @@ import type { TreeWalkerValue } from 'ckeditor5/src/engine.js';
  * inside a text with the highlight attribute, the command will remove the attribute from the entire range
  * of that text.
  */
-export default class HighlightCommand extends Command {
+export class HighlightCommand extends Command {
 	/**
 	 * A value indicating whether the command is active. If the selection has some highlight attribute,
 	 * it corresponds to the value of that attribute.

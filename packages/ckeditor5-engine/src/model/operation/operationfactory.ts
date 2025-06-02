@@ -7,19 +7,19 @@
  * @module engine/model/operation/operationfactory
  */
 
-import AttributeOperation from './attributeoperation.js';
-import InsertOperation from './insertoperation.js';
-import MarkerOperation from './markeroperation.js';
-import MoveOperation from './moveoperation.js';
-import NoOperation from './nooperation.js';
-import Operation from './operation.js';
-import RenameOperation from './renameoperation.js';
-import RootAttributeOperation from './rootattributeoperation.js';
-import RootOperation from './rootoperation.js';
-import SplitOperation from './splitoperation.js';
-import MergeOperation from './mergeoperation.js';
+import { AttributeOperation } from './attributeoperation.js';
+import { InsertOperation } from './insertoperation.js';
+import { MarkerOperation } from './markeroperation.js';
+import { MoveOperation } from './moveoperation.js';
+import { NoOperation } from './nooperation.js';
+import { Operation } from './operation.js';
+import { RenameOperation } from './renameoperation.js';
+import { RootAttributeOperation } from './rootattributeoperation.js';
+import { RootOperation } from './rootoperation.js';
+import { SplitOperation } from './splitoperation.js';
+import { MergeOperation } from './mergeoperation.js';
 
-import type Document from '../document.js';
+import { type Document } from '../document.js';
 
 const operations: {
 	[ className: string ]: {

@@ -8,11 +8,11 @@
  */
 
 import Node, { type NodeAttributes } from './node.js';
-import NodeList from './nodelist.js';
-import Text from './text.js';
-import TextProxy from './textproxy.js';
+import { NodeList } from './nodelist.js';
+import { Text } from './text.js';
+import { TextProxy } from './textproxy.js';
 
-import type Item from './item.js';
+import { type Item } from './item.js';
 
 import { isIterable } from '@ckeditor/ckeditor5-utils';
 
@@ -24,7 +24,7 @@ import { isIterable } from '@ckeditor/ckeditor5-utils';
  *
  * **Important**: see {@link module:engine/model/node~Node} to read about restrictions using `Element` and `Node` API.
  */
-export default class Element extends Node {
+export class Element extends Node {
 	/**
 	 * Element name.
 	 */

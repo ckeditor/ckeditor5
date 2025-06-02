@@ -16,8 +16,8 @@ import {
 	type DecoratedMethodEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import ResizeState from './resizerstate.js';
-import SizeView from './sizeview.js';
+import { ResizeState } from './resizerstate.js';
+import { SizeView } from './sizeview.js';
 
 import type { ResizerOptions } from '../widgetresize.js';
 import type { ViewElement } from '@ckeditor/ckeditor5-engine';
@@ -25,7 +25,7 @@ import type { ViewElement } from '@ckeditor/ckeditor5-engine';
 /**
  * Represents a resizer for a single resizable object.
  */
-export default class Resizer extends /* #__PURE__ */ ObservableMixin() {
+export class Resizer extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Flag that indicates whether resizer can be used.
 	 *

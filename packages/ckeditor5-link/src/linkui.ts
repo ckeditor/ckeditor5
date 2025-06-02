@@ -31,16 +31,16 @@ import {
 import { Collection, type ObservableChangeEvent, type PositionOptions } from 'ckeditor5/src/utils.js';
 import { isWidget } from 'ckeditor5/src/widget.js';
 
-import LinkEditing from './linkediting.js';
+import { LinkEditing } from './linkediting.js';
 
 import LinkPreviewButtonView, { type LinkPreviewButtonNavigateEvent } from './ui/linkpreviewbuttonview.js';
 import LinkFormView, { type LinkFormValidatorCallback } from './ui/linkformview.js';
-import LinkProviderItemsView from './ui/linkprovideritemsview.js';
-import LinkPropertiesView from './ui/linkpropertiesview.js';
-import LinkButtonView from './ui/linkbuttonview.js';
+import { LinkProviderItemsView } from './ui/linkprovideritemsview.js';
+import { LinkPropertiesView } from './ui/linkpropertiesview.js';
+import { LinkButtonView } from './ui/linkbuttonview.js';
 
-import type LinkCommand from './linkcommand.js';
-import type UnlinkCommand from './unlinkcommand.js';
+import { type LinkCommand } from './linkcommand.js';
+import { type UnlinkCommand } from './unlinkcommand.js';
 
 import {
 	addLinkProtocolIfApplicable,
@@ -60,7 +60,7 @@ const VISUAL_SELECTION_MARKER_NAME = 'link-ui';
  * It uses the
  * {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon plugin}.
  */
-export default class LinkUI extends Plugin {
+export class LinkUI extends Plugin {
 	/**
 	 * The toolbar view displayed inside of the balloon.
 	 */

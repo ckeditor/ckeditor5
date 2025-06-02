@@ -14,15 +14,15 @@ import {
 	type PriorityString
 } from '@ckeditor/ckeditor5-utils';
 
-import UpcastHelpers from './upcasthelpers.js';
+import { UpcastHelpers } from './upcasthelpers.js';
 import DowncastHelpers, {
 	type AttributeCreatorFunction,
 	type AttributeDescriptor
 } from './downcasthelpers.js';
 
-import type DowncastDispatcher from './downcastdispatcher.js';
-import type UpcastDispatcher from './upcastdispatcher.js';
-import type ElementDefinition from '../view/elementdefinition.js';
+import { type DowncastDispatcher } from './downcastdispatcher.js';
+import { type UpcastDispatcher } from './upcastdispatcher.js';
+import { type ElementDefinition } from '../view/elementdefinition.js';
 import type { MatcherPattern } from '../view/matcher.js';
 
 /**
@@ -71,7 +71,7 @@ import type { MatcherPattern } from '../view/matcher.js';
  * * {@link module:engine/conversion/conversion~Conversion#attributeToAttribute `attributeToAttribute()`} &ndash;
  * Model attribute to view attribute and vice versa.
  */
-export default class Conversion {
+export class Conversion {
 	/**
 	 * Maps dispatchers group name to ConversionHelpers instances.
 	 */

@@ -9,8 +9,8 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import IndentEditing from './indentediting.js';
-import IndentUI from './indentui.js';
+import { IndentEditing } from './indentediting.js';
+import { IndentUI } from './indentui.js';
 
 /**
  * The indent feature.
@@ -32,7 +32,7 @@ import IndentUI from './indentui.js';
  *
  * **Note**: In order for the commands and buttons to work, at least one of compatible features is required.
  */
-export default class Indent extends Plugin {
+export class Indent extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

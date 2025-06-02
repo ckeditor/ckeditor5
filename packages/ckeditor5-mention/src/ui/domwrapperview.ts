@@ -15,7 +15,7 @@ import type { Locale } from 'ckeditor5/src/utils.js';
  *
  * It allows to render any DOM element and use it in mentions list.
  */
-export default class DomWrapperView extends View {
+export class DomWrapperView extends View {
 	/**
 	 * The DOM element for which wrapper was created.
 	 */

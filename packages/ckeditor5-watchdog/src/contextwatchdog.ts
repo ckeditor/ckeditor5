@@ -9,8 +9,8 @@
 
 import Watchdog, { type WatchdogConfig, type WatchdogState } from './watchdog.js';
 import EditorWatchdog, { type EditorCreatorFunction } from './editorwatchdog.js';
-import areConnectedThroughProperties from './utils/areconnectedthroughproperties.js';
-import getSubNodes from './utils/getsubnodes.js';
+import { areConnectedThroughProperties } from './utils/areconnectedthroughproperties.js';
+import { getSubNodes } from './utils/getsubnodes.js';
 import type { ArrayOrItem, CKEditorError } from '@ckeditor/ckeditor5-utils';
 import type { Context, Editor, EditorConfig, ContextConfig } from '@ckeditor/ckeditor5-core';
 
@@ -22,7 +22,7 @@ const mainQueueId = Symbol( 'MainQueueId' );
  * See the {@glink features/watchdog Watchdog feature guide} to learn the rationale behind it and
  * how to use it.
  */
-export default class ContextWatchdog<TContext extends Context = Context> extends Watchdog {
+export class ContextWatchdog<TContext extends Context = Context> extends Watchdog {
 	/**
 	 * A map of internal watchdogs for added items.
 	 */

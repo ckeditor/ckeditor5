@@ -51,7 +51,7 @@ import ListWalker, { SiblingListBlocksIterator } from './utils/listwalker.js';
 import { findAndAddListHeadToMap } from './utils/postfixers.js';
 
 import type {
-	default as ListEditing,
+	ListEditing,
 	ListEditingCheckAttributesEvent,
 	ListEditingCheckElementEvent,
 	ListItemAttributesMap,

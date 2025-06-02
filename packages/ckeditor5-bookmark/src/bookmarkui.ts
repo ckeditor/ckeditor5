@@ -31,10 +31,10 @@ import type { DeleteCommand } from 'ckeditor5/src/typing.js';
 import { isWidget, WidgetToolbarRepository } from 'ckeditor5/src/widget.js';
 
 import BookmarkFormView, { type BookmarkFormViewCancelEvent, type BookmarkFormValidatorCallback } from './ui/bookmarkformview.js';
-import type UpdateBookmarkCommand from './updatebookmarkcommand.js';
-import type InsertBookmarkCommand from './insertbookmarkcommand.js';
+import { type UpdateBookmarkCommand } from './updatebookmarkcommand.js';
+import { type InsertBookmarkCommand } from './insertbookmarkcommand.js';
 
-import BookmarkEditing from './bookmarkediting.js';
+import { BookmarkEditing } from './bookmarkediting.js';
 
 import '../theme/bookmarktoolbar.css';
 
@@ -46,7 +46,7 @@ const VISUAL_SELECTION_MARKER_NAME = 'bookmark-ui';
  * It registers the `'bookmark'` UI button in the editor's {@link module:ui/componentfactory~ComponentFactory component factory}
  * which inserts the `bookmark` element upon selection.
  */
-export default class BookmarkUI extends Plugin {
+export class BookmarkUI extends Plugin {
 	/**
 	 * The form view displayed inside the balloon.
 	 */

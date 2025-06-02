@@ -8,33 +8,33 @@
  */
 
 import Document, { type ViewDocumentLayoutChangedEvent } from './document.js';
-import DowncastWriter from './downcastwriter.js';
-import Renderer from './renderer.js';
-import DomConverter from './domconverter.js';
+import { DowncastWriter } from './downcastwriter.js';
+import { Renderer } from './renderer.js';
+import { DomConverter } from './domconverter.js';
 import Position, { type PositionOffset } from './position.js';
-import Range from './range.js';
+import { Range } from './range.js';
 import Selection, {
 	type PlaceOrOffset,
 	type Selectable,
 	type SelectionOptions
 } from './selection.js';
 
-import type { default as Observer, ObserverConstructor } from './observer/observer.js';
+import type { Observer, ObserverConstructor } from './observer/observer.js';
 import type { ViewDocumentSelectionChangeEvent } from './documentselection.js';
 import type { StylesProcessor } from './stylesmap.js';
-import type Element from './element.js';
-import type { default as Node, ViewNodeChangeEvent } from './node.js';
-import type Item from './item.js';
+import { type Element } from './element.js';
+import type { Node, ViewNodeChangeEvent } from './node.js';
+import { type Item } from './item.js';
 
-import KeyObserver from './observer/keyobserver.js';
-import FakeSelectionObserver from './observer/fakeselectionobserver.js';
+import { KeyObserver } from './observer/keyobserver.js';
+import { FakeSelectionObserver } from './observer/fakeselectionobserver.js';
 import MutationObserver, { type ViewDocumentMutationsEvent } from './observer/mutationobserver.js';
-import SelectionObserver from './observer/selectionobserver.js';
+import { SelectionObserver } from './observer/selectionobserver.js';
 import FocusObserver, { type ViewDocumentBlurEvent } from './observer/focusobserver.js';
-import CompositionObserver from './observer/compositionobserver.js';
-import InputObserver from './observer/inputobserver.js';
-import ArrowKeysObserver from './observer/arrowkeysobserver.js';
-import TabObserver from './observer/tabobserver.js';
+import { CompositionObserver } from './observer/compositionobserver.js';
+import { InputObserver } from './observer/inputobserver.js';
+import { ArrowKeysObserver } from './observer/arrowkeysobserver.js';
+import { TabObserver } from './observer/tabobserver.js';
 
 import {
 	CKEditorError,
@@ -83,7 +83,7 @@ type DomRange = globalThis.Range;
  * If you do not need full a DOM - view management, and only want to transform a tree of view elements to a tree of DOM
  * elements you do not need this controller. You can use the {@link module:engine/view/domconverter~DomConverter DomConverter} instead.
  */
-export default class View extends /* #__PURE__ */ ObservableMixin() {
+export class View extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Instance of the {@link module:engine/view/document~Document} associated with this view controller.
 	 */

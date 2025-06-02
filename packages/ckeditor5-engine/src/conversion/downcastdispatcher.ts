@@ -7,24 +7,24 @@
  * @module engine/conversion/downcastdispatcher
  */
 
-import Consumable from './modelconsumable.js';
-import Range from '../model/range.js';
+import { Consumable } from './modelconsumable.js';
+import { Range } from '../model/range.js';
 
 import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
-import type { default as Differ, DiffItem } from '../model/differ.js';
-import type { default as MarkerCollection, Marker } from '../model/markercollection.js';
+import type { Differ, DiffItem } from '../model/differ.js';
+import type { MarkerCollection, Marker } from '../model/markercollection.js';
 import type { TreeWalkerValue } from '../model/treewalker.js';
-import type DocumentSelection from '../model/documentselection.js';
-import type DowncastWriter from '../view/downcastwriter.js';
-import type RootElement from '../model/rootelement.js';
-import type Element from '../model/element.js';
-import type Item from '../model/item.js';
-import type Mapper from './mapper.js';
-import type Position from '../model/position.js';
-import type Schema from '../model/schema.js';
-import type Selection from '../model/selection.js';
-import type ViewElement from '../view/element.js';
+import { type DocumentSelection } from '../model/documentselection.js';
+import { type DowncastWriter } from '../view/downcastwriter.js';
+import { type RootElement } from '../model/rootelement.js';
+import { type Element } from '../model/element.js';
+import { type Item } from '../model/item.js';
+import { type Mapper } from './mapper.js';
+import { type Position } from '../model/position.js';
+import { type Schema } from '../model/schema.js';
+import { type Selection } from '../model/selection.js';
+import { type ViewElement } from '../view/element.js';
 
 /**
  * The downcast dispatcher is a central point of downcasting (conversion from the model to the view), which is a process of reacting
@@ -117,7 +117,7 @@ import type ViewElement from '../view/element.js';
  * } );
  * ```
  */
-export default class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
+export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * A template for an interface passed by the dispatcher to the event callbacks.
 	 *

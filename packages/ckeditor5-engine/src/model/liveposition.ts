@@ -10,10 +10,10 @@
 import Position, { type PositionOffset, type PositionStickiness } from './position.js';
 
 import type { ModelApplyOperationEvent } from './model.js';
-import type DocumentFragment from './documentfragment.js';
-import type Item from './item.js';
-import type Operation from './operation/operation.js';
-import type RootElement from './rootelement.js';
+import { type DocumentFragment } from './documentfragment.js';
+import { type Item } from './item.js';
+import { type Operation } from './operation/operation.js';
+import { type RootElement } from './rootelement.js';
 
 import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
@@ -30,7 +30,7 @@ import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
  * have to be unbound.
  * Use {@link module:engine/model/liveposition~LivePosition#detach} whenever you don't need `LivePosition` anymore.
  */
-export default class LivePosition extends /* #__PURE__ */ EmitterMixin( Position ) {
+export class LivePosition extends /* #__PURE__ */ EmitterMixin( Position ) {
 	/**
 	 * Root of the position path.
 	 */

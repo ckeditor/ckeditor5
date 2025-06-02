@@ -15,8 +15,8 @@ import {
 	type PositionOptions
 } from '@ckeditor/ckeditor5-utils';
 
-import type View from '../view.js';
-import BalloonPanelView from '../panel/balloon/balloonpanelview.js';
+import { type View } from '../view.js';
+import { BalloonPanelView } from '../panel/balloon/balloonpanelview.js';
 
 import { throttle } from 'es-toolkit/compat';
 

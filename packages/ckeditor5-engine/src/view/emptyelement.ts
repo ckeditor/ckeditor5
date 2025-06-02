@@ -8,11 +8,11 @@
  */
 
 import Element, { type ElementAttributes } from './element.js';
-import Node from './node.js';
+import { Node } from './node.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type Document from './document.js';
-import type Item from './item.js';
+import { type Document } from './document.js';
+import { type Item } from './item.js';
 
 /**
  * Empty element class. It is used to represent elements that cannot contain any child nodes (for example `<img>` elements).
@@ -20,7 +20,7 @@ import type Item from './item.js';
  * To create a new empty element use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement `downcastWriter#createEmptyElement()`} method.
  */
-export default class EmptyElement extends Element {
+export class EmptyElement extends Element {
 	/**
 	 * Creates new instance of EmptyElement.
 	 *

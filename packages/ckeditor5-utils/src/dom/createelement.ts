@@ -7,7 +7,7 @@
  * @module utils/dom/createelement
  */
 
-import isIterable from '../isiterable.js';
+import { isIterable } from '../isiterable.js';
 import { isString } from 'es-toolkit/compat';
 
 /**

@@ -9,7 +9,7 @@
 
 import type { ViewElement } from 'ckeditor5/src/engine.js';
 import { global } from 'ckeditor5/src/utils.js';
-import type ImageUtils from '../imageutils.js';
+import { type ImageUtils } from '../imageutils.js';
 
 /**
  * Creates a regular expression used to test for image files.

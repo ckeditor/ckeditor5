@@ -7,11 +7,11 @@
  * @module ui/search/text/searchtextqueryview
  */
 import { IconCancel, IconLoupe } from '@ckeditor/ckeditor5-icons';
-import ButtonView from '../../button/buttonview.js';
-import IconView from '../../icon/iconview.js';
+import { ButtonView } from '../../button/buttonview.js';
+import { IconView } from '../../icon/iconview.js';
 import LabeledFieldView, { type LabeledFieldViewCreator } from '../../labeledfield/labeledfieldview.js';
 import { createLabeledInputText } from '../../labeledfield/utils.js';
-import type InputBase from '../../input/inputbase.js';
+import { type InputBase } from '../../input/inputbase.js';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
@@ -20,7 +20,7 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
  * @internal
  * @extends module:ui/labeledfield/labeledfieldview~LabeledFieldView
  */
-export default class SearchTextQueryView<
+export class SearchTextQueryView<
 	TQueryFieldView extends InputBase<HTMLInputElement | HTMLTextAreaElement>
 > extends LabeledFieldView<TQueryFieldView> {
 	/**

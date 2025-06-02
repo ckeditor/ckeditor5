@@ -10,7 +10,7 @@
  */
 
 import EmitterMixin, { type Emitter } from './emittermixin.js';
-import CKEditorError from './ckeditorerror.js';
+import { CKEditorError } from './ckeditorerror.js';
 import type { Constructor, Mixed } from './mix.js';
 
 import { isObject } from 'es-toolkit/compat';

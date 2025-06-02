@@ -24,7 +24,7 @@ import type { ListType } from './listediting.js';
 /**
  * A set of helpers related to document lists.
  */
-export default class ListUtils extends Plugin {
+export class ListUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

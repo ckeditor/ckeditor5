@@ -7,16 +7,16 @@
  * @module engine/view/documentfragment
  */
 
-import TypeCheckable from './typecheckable.js';
-import Text from './text.js';
-import TextProxy from './textproxy.js';
+import { TypeCheckable } from './typecheckable.js';
+import { Text } from './text.js';
+import { TextProxy } from './textproxy.js';
 
 import { EmitterMixin, isIterable } from '@ckeditor/ckeditor5-utils';
 
-import type { default as Document, ChangeType } from './document.js';
+import type { Document, ChangeType } from './document.js';
 
-import type Item from './item.js';
-import type Node from './node.js';
+import { type Item } from './item.js';
+import { type Node } from './node.js';
 
 /**
  * Document fragment.
@@ -25,7 +25,7 @@ import type Node from './node.js';
  * {@link module:engine/view/upcastwriter~UpcastWriter#createDocumentFragment `UpcastWriter#createDocumentFragment()`}
  * method.
  */
-export default class DocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) implements Iterable<Node> {
+export class DocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) implements Iterable<Node> {
 	/**
 	 * The document to which this document fragment belongs.
 	 */

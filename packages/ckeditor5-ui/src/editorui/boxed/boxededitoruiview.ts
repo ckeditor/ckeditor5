@@ -7,9 +7,9 @@
  * @module ui/editorui/boxed/boxededitoruiview
  */
 
-import EditorUIView from '../editoruiview.js';
-import LabelView from '../../label/labelview.js';
-import type ViewCollection from '../../viewcollection.js';
+import { EditorUIView } from '../editoruiview.js';
+import { LabelView } from '../../label/labelview.js';
+import { type ViewCollection } from '../../viewcollection.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 

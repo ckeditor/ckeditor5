@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type DocumentFragment from '../documentfragment.js';
-import type DocumentSelection from '../documentselection.js';
-import type Element from '../element.js';
-import type Model from '../model.js';
-import type Range from '../range.js';
-import type Selection from '../selection.js';
-import type Writer from '../writer.js';
+import { type DocumentFragment } from '../documentfragment.js';
+import { type DocumentSelection } from '../documentselection.js';
+import { type Element } from '../element.js';
+import { type Model } from '../model.js';
+import { type Range } from '../range.js';
+import { type Selection } from '../selection.js';
+import { type Writer } from '../writer.js';
 
 /**
  * @module engine/model/utils/getselectedcontent

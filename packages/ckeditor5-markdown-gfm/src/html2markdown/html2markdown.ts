@@ -7,7 +7,7 @@
  * @module markdown-gfm/html2markdown/html2markdown
  */
 
-import Turndown from 'turndown';
+import { Turndown } from 'turndown';
 
 // There no avaialble types for 'turndown-plugin-gfm' module and it's not worth to generate them on our own.
 /* eslint-disable @typescript-eslint/ban-ts-comment */

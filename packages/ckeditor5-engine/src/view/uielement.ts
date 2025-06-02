@@ -8,13 +8,13 @@
  */
 
 import Element, { type ElementAttributes } from './element.js';
-import Node from './node.js';
+import { Node } from './node.js';
 import { CKEditorError, keyCodes } from '@ckeditor/ckeditor5-utils';
 
-import type View from './view.js';
-import type Document from './document.js';
-import type DomConverter from './domconverter.js';
-import type Item from './item.js';
+import { type View } from './view.js';
+import { type Document } from './document.js';
+import { type DomConverter } from './domconverter.js';
+import { type Item } from './item.js';
 import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver.js';
 import type { KeyEventData } from './observer/keyobserver.js';
 
@@ -39,7 +39,7 @@ type DomElement = globalThis.HTMLElement;
  * To create a new UI element use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement `downcastWriter#createUIElement()`} method.
  */
-export default class UIElement extends Element {
+export class UIElement extends Element {
 	/**
 	 * Creates new instance of UIElement.
 	 *

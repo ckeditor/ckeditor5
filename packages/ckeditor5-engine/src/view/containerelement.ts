@@ -8,8 +8,8 @@
  */
 
 import Element, { type ElementAttributes } from './element.js';
-import type Document from './document.js';
-import type Node from './node.js';
+import { type Document } from './document.js';
+import { type Node } from './node.js';
 
 /**
  * Containers are elements which define document structure. They define boundaries for
@@ -30,7 +30,7 @@ import type Node from './node.js';
  * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement `DowncastWriter#createContainerElement()`}
  * method.
  */
-export default class ContainerElement extends Element {
+export class ContainerElement extends Element {
 	/**
 	 * Creates a container element.
 	 *

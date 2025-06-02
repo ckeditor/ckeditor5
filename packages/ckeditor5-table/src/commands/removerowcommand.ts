@@ -9,7 +9,7 @@
 
 import { Command } from 'ckeditor5/src/core.js';
 import type { Element, Node } from 'ckeditor5/src/engine.js';
-import type TableUtils from '../tableutils.js';
+import { type TableUtils } from '../tableutils.js';
 
 /**
  * The remove row command.
@@ -22,7 +22,7 @@ import type TableUtils from '../tableutils.js';
  * editor.execute( 'removeTableRow' );
  * ```
  */
-export default class RemoveRowCommand extends Command {
+export class RemoveRowCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

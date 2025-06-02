@@ -7,8 +7,8 @@
  * @module utils/dom/getvisualviewportoffset
  */
 
-import global from './global.js';
-import env from '../env.js';
+import { global } from './global.js';
+import { env } from '../env.js';
 
 /**
  * Returns the visual viewport offsets to adjust elements with `position: fixed` style.

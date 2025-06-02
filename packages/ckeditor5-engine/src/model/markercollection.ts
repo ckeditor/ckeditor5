@@ -7,15 +7,15 @@
  * @module engine/model/markercollection
  */
 
-import TypeCheckable from './typecheckable.js';
+import { TypeCheckable } from './typecheckable.js';
 import LiveRange, {
 	type LiveRangeChangeContentEvent,
 	type LiveRangeChangeRangeEvent,
 	type LiveRangeChangeEvent
 } from './liverange.js';
 
-import type Position from './position.js';
-import type Range from './range.js';
+import { type Position } from './position.js';
+import { type Range } from './range.js';
 
 import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
@@ -33,7 +33,7 @@ import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
  *
  * @see module:engine/model/markercollection~Marker
  */
-export default class MarkerCollection extends /* #__PURE__ */ EmitterMixin() implements Iterable<Marker> {
+export class MarkerCollection extends /* #__PURE__ */ EmitterMixin() implements Iterable<Marker> {
 	/**
 	 * Stores {@link ~Marker markers} added to the collection.
 	 */

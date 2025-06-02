@@ -7,12 +7,12 @@
  * @module engine/view/editableelement
  */
 
-import ContainerElement from './containerelement.js';
+import { ContainerElement } from './containerelement.js';
 import { ObservableMixin } from '@ckeditor/ckeditor5-utils';
 import type { ViewSelectionChangeEvent } from './selection.js';
 import type { ElementAttributes } from './element.js';
-import type Document from './document.js';
-import type Node from './node.js';
+import { type Document } from './document.js';
+import { type Node } from './node.js';
 
 /**
  * Editable element which can be a {@link module:engine/view/rooteditableelement~RootEditableElement root}
@@ -23,7 +23,7 @@ import type Node from './node.js';
  * The constructor of this class shouldn't be used directly. To create new `EditableElement` use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createEditableElement `downcastWriter#createEditableElement()`} method.
  */
-export default class EditableElement extends /* #__PURE__ */ ObservableMixin( ContainerElement ) {
+export class EditableElement extends /* #__PURE__ */ ObservableMixin( ContainerElement ) {
 	/**
 	 * Whether the editable is in read-write or read-only mode.
 	 *

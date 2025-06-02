@@ -7,15 +7,15 @@
  * @module utils/emittermixin
  */
 
-import EventInfo from './eventinfo.js';
-import uid from './uid.js';
+import { EventInfo } from './eventinfo.js';
+import { uid } from './uid.js';
 import priorities, { type PriorityString } from './priorities.js';
-import insertToPriorityArray from './inserttopriorityarray.js';
+import { insertToPriorityArray } from './inserttopriorityarray.js';
 import type { Constructor, Mixed } from './mix.js';
 
 // To check if component is loaded more than once.
 import './version.js';
-import CKEditorError from './ckeditorerror.js';
+import { CKEditorError } from './ckeditorerror.js';
 
 const _listeningTo = Symbol( 'listeningTo' );
 const _emitterId = Symbol( 'emitterId' );

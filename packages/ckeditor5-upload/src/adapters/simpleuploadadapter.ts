@@ -37,7 +37,7 @@ import { logWarning } from '@ckeditor/ckeditor5-utils';
  * Check out the {@glink features/images/image-upload/image-upload comprehensive "Image upload overview"} to learn about
  * other ways to upload images into CKEditor 5.
  */
-export default class SimpleUploadAdapter extends Plugin {
+export class SimpleUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

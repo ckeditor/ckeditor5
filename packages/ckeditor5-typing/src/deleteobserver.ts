@@ -127,7 +127,7 @@ const DELETE_EVENT_TYPES: Record<string, DeleteEventSpec> = {
 /**
  * Delete observer introduces the {@link module:engine/view/document~Document#event:delete} event.
  */
-export default class DeleteObserver extends Observer {
+export class DeleteObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */

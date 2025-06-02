@@ -22,7 +22,7 @@ import { viewToModelBlockAttributeConverter } from '../converters.js';
 /**
  * Provides the General HTML Support integration with the {@link module:horizontal-line/horizontalline~HorizontalLine} feature.
  */
-export default class HorizontalLineElementSupport extends Plugin {
+export class HorizontalLineElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

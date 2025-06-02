@@ -17,11 +17,11 @@ import CharacterGridView, {
 	type CharacterGridViewTileFocusEvent,
 	type CharacterGridViewTileHoverEvent
 } from './ui/charactergridview.js';
-import CharacterInfoView from './ui/characterinfoview.js';
-import SpecialCharactersView from './ui/specialcharactersview.js';
+import { CharacterInfoView } from './ui/characterinfoview.js';
+import { SpecialCharactersView } from './ui/specialcharactersview.js';
 
 import '../theme/specialcharacters.css';
-import SpecialCharactersCategoriesView from './ui/specialcharacterscategoriesview.js';
+import { SpecialCharactersCategoriesView } from './ui/specialcharacterscategoriesview.js';
 
 const ALL_SPECIAL_CHARACTERS_GROUP = 'All';
 
@@ -30,7 +30,7 @@ const ALL_SPECIAL_CHARACTERS_GROUP = 'All';
  *
  * Introduces the `'specialCharacters'` dropdown.
  */
-export default class SpecialCharacters extends Plugin {
+export class SpecialCharacters extends Plugin {
 	/**
 	 * Registered characters. A pair of a character name and its symbol.
 	 */

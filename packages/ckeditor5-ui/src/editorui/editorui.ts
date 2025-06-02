@@ -7,15 +7,15 @@
  * @module ui/editorui/editorui
  */
 
-import ComponentFactory from '../componentfactory.js';
-import TooltipManager from '../tooltipmanager.js';
-import PoweredBy from './poweredby.js';
-import EvaluationBadge from './evaluationbadge.js';
-import AriaLiveAnnouncer from '../arialiveannouncer.js';
+import { ComponentFactory } from '../componentfactory.js';
+import { TooltipManager } from '../tooltipmanager.js';
+import { PoweredBy } from './poweredby.js';
+import { EvaluationBadge } from './evaluationbadge.js';
+import { AriaLiveAnnouncer } from '../arialiveannouncer.js';
 
-import type EditorUIView from './editoruiview.js';
-import type ToolbarView from '../toolbar/toolbarview.js';
-import type { default as View, UIViewRenderEvent } from '../view.js';
+import { type EditorUIView } from './editoruiview.js';
+import { type ToolbarView } from '../toolbar/toolbarview.js';
+import type { View, UIViewRenderEvent } from '../view.js';
 
 import {
 	ObservableMixin,
@@ -34,7 +34,7 @@ import {
 import type { Editor, ViewportOffsetConfig } from '@ckeditor/ckeditor5-core';
 import type { ViewDocumentLayoutChangedEvent, ViewScrollToTheSelectionEvent } from '@ckeditor/ckeditor5-engine';
 import type {
-	default as MenuBarView,
+	MenuBarView,
 	MenuBarConfigAddedGroup,
 	MenuBarConfigAddedItem,
 	MenuBarConfigAddedMenu

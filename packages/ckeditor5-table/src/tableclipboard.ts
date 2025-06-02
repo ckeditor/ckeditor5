@@ -34,9 +34,9 @@ import type {
 	Writer
 } from 'ckeditor5/src/engine.js';
 
-import TableSelection from './tableselection.js';
+import { TableSelection } from './tableselection.js';
 import TableWalker, { type TableSlot } from './tablewalker.js';
-import TableUtils from './tableutils.js';
+import { TableUtils } from './tableutils.js';
 import {
 	cropTableToDimensions,
 	getHorizontallyOverlappingCells,
@@ -53,7 +53,7 @@ import {
  * This plugin adds support for copying/cutting/pasting fragments of tables.
  * It is loaded automatically by the {@link module:table/table~Table} plugin.
  */
-export default class TableClipboard extends Plugin {
+export class TableClipboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

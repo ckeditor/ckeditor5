@@ -7,10 +7,10 @@
  * @module ui/toolbar/balloon/balloontoolbar
  */
 
-import ContextualBalloon from '../../panel/balloon/contextualballoon.js';
+import { ContextualBalloon } from '../../panel/balloon/contextualballoon.js';
 import ToolbarView, { type ToolbarViewGroupedItemsUpdateEvent } from '../toolbarview.js';
-import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';
-import normalizeToolbarConfig from '../normalizetoolbarconfig.js';
+import { BalloonPanelView } from '../../panel/balloon/balloonpanelview.js';
+import { normalizeToolbarConfig } from '../normalizetoolbarconfig.js';
 
 import type {
 	EditorUIReadyEvent,
@@ -49,7 +49,7 @@ const toPx = /* #__PURE__ */ toUnit( 'px' );
  *
  * It uses the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon plugin}.
  */
-export default class BalloonToolbar extends Plugin {
+export class BalloonToolbar extends Plugin {
 	/**
 	 * The toolbar view displayed in the balloon.
 	 */

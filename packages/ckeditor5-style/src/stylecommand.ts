@@ -23,7 +23,7 @@ import StyleUtils, {
  *
  * Applies and removes styles from selection and elements.
  */
-export default class StyleCommand extends Command {
+export class StyleCommand extends Command {
 	/**
 	 * Set of currently applied styles on the current selection.
 	 *

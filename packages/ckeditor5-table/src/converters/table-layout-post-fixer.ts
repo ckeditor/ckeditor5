@@ -15,7 +15,7 @@ import type {
 	DiffItemAttribute
 } from 'ckeditor5/src/engine.js';
 
-import TableWalker from './../tablewalker.js';
+import { TableWalker } from './../tablewalker.js';
 import { createEmptyTableCell, updateNumericAttribute } from '../utils/common.js';
 
 /**

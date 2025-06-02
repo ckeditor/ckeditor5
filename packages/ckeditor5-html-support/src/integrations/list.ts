@@ -26,7 +26,7 @@ import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
 /**
  * Provides the General HTML Support integration with the {@link module:list/list~List List} feature.
  */
-export default class ListElementSupport extends Plugin {
+export class ListElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

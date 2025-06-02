@@ -36,7 +36,7 @@ import { getHtmlAttributeName } from '../utils.js';
  * Otherwise, it will be registered under {@link module:html-support/dataschema~DataSchemaBlockElementDefinition#paragraphLikeModel} model
  * name with model schema accepting only inline content (inheriting from `$block`).
  */
-export default class DualContentModelElementSupport extends Plugin {
+export class DualContentModelElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

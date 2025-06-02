@@ -60,7 +60,7 @@ import { isWidget } from './utils.js';
  * }
  * ```
  */
-export default class WidgetToolbarRepository extends Plugin {
+export class WidgetToolbarRepository extends Plugin {
 	/**
 	 * A map of toolbar definitions.
 	 */

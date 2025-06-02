@@ -7,7 +7,7 @@
  * @module enter/shiftenter
  */
 
-import ShiftEnterCommand from './shiftentercommand.js';
+import { ShiftEnterCommand } from './shiftentercommand.js';
 import EnterObserver, { type ViewDocumentEnterEvent } from './enterobserver.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
@@ -18,7 +18,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
  *
  * For more information about this feature see the {@glink api/enter package page}.
  */
-export default class ShiftEnter extends Plugin {
+export class ShiftEnter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

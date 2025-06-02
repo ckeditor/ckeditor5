@@ -7,14 +7,14 @@
  * @module ui/list/listview
  */
 
-import View from '../view.js';
+import { View } from '../view.js';
 import FocusCycler, { type FocusableView } from '../focuscycler.js';
 
-import ListItemView from './listitemview.js';
-import ListItemGroupView from './listitemgroupview.js';
-import type ListSeparatorView from './listseparatorview.js';
-import type DropdownPanelFocusable from '../dropdown/dropdownpanelfocusable.js';
-import ViewCollection from '../viewcollection.js';
+import { ListItemView } from './listitemview.js';
+import { ListItemGroupView } from './listitemgroupview.js';
+import { type ListSeparatorView } from './listseparatorview.js';
+import { type DropdownPanelFocusable } from '../dropdown/dropdownpanelfocusable.js';
+import { ViewCollection } from '../viewcollection.js';
 
 import {
 	FocusTracker,
@@ -29,7 +29,7 @@ import '../../theme/components/list/list.css';
 /**
  * The list view class.
  */
-export default class ListView extends View<HTMLUListElement> implements DropdownPanelFocusable {
+export class ListView extends View<HTMLUListElement> implements DropdownPanelFocusable {
 	/**
 	 * The collection of focusable views in the list. It is used to determine accessible navigation
 	 * between the {@link module:ui/list/listitemview~ListItemView list items} and

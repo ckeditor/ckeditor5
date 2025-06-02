@@ -16,7 +16,7 @@ import type { ResultType } from './findandreplace.js';
 /**
  * A set of helpers related to find and replace.
  */
-export default class FindAndReplaceUtils extends Plugin {
+export class FindAndReplaceUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

@@ -7,16 +7,16 @@
  * @module engine/view/element
  */
 
-import Node from './node.js';
-import Text from './text.js';
-import TextProxy from './textproxy.js';
+import { Node } from './node.js';
+import { Text } from './text.js';
+import { TextProxy } from './textproxy.js';
 import { type ArrayOrItem, isIterable, toMap } from '@ckeditor/ckeditor5-utils';
-import { default as Matcher, isPatternMatched, type MatcherPattern, type NormalizedPropertyPattern } from './matcher.js';
-import { default as StylesMap, type Styles, type StyleValue } from './stylesmap.js';
+import { Matcher, isPatternMatched, type MatcherPattern, type NormalizedPropertyPattern } from './matcher.js';
+import { StylesMap, type Styles, type StyleValue } from './stylesmap.js';
 
-import type Document from './document.js';
-import type Item from './item.js';
-import TokenList from './tokenlist.js';
+import { type Document } from './document.js';
+import { type Item } from './item.js';
+import { TokenList } from './tokenlist.js';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToTags } = require( '../dev-utils/utils' );
 
@@ -43,7 +43,7 @@ import TokenList from './tokenlist.js';
  * In such cases the {@link module:engine/view/upcastwriter~UpcastWriter#createElement `UpcastWriter#createElement()`} method
  * should be used to create generic view elements.
  */
-export default class Element extends Node {
+export class Element extends Node {
 	/**
 	 * Name of the element.
 	 */

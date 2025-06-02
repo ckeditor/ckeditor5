@@ -7,7 +7,7 @@
  * @module watchdog/utils/areconnectedthroughproperties
  */
 
-import getSubNodes from './getsubnodes.js';
+import { getSubNodes } from './getsubnodes.js';
 
 /**
  * Traverses both structures to find out whether there is a reference that is shared between both structures.

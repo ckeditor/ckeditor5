@@ -7,7 +7,7 @@
  * @module ui/bindings/draggableviewmixin
  */
 
-import type View from '../view.js';
+import { type View } from '../view.js';
 import { global, type Constructor, type Mixed, type EventInfo } from '@ckeditor/ckeditor5-utils';
 
 /**
@@ -15,7 +15,7 @@ import { global, type Constructor, type Mixed, type EventInfo } from '@ckeditor/
  * The view has to implement the {@link ~DraggableView} interface to use it:
  *
  * ```js
- * export default class MyDraggableView extends DraggableViewMixin( View ) implements DraggableView {
+ * export class MyDraggableView extends DraggableViewMixin( View ) implements DraggableView {
  * 		// ...
  * }
  * ```

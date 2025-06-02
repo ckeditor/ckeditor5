@@ -7,12 +7,12 @@
  * @module code-block
  */
 
-export { default as CodeBlock } from './codeblock.js';
-export { default as CodeBlockEditing } from './codeblockediting.js';
-export { default as CodeBlockUI } from './codeblockui.js';
-export type { default as CodeBlockCommand } from './codeblockcommand.js';
-export type { default as IndentCodeBlockCommand } from './indentcodeblockcommand.js';
-export type { default as OutdentCodeBlockCommand } from './outdentcodeblockcommand.js';
+export { CodeBlock } from './codeblock.js';
+export { CodeBlockEditing } from './codeblockediting.js';
+export { CodeBlockUI } from './codeblockui.js';
+export type { CodeBlockCommand } from './codeblockcommand.js';
+export type { IndentCodeBlockCommand } from './indentcodeblockcommand.js';
+export type { OutdentCodeBlockCommand } from './outdentcodeblockcommand.js';
 export type { CodeBlockConfig } from './codeblockconfig.js';
 
 import './augmentation.js';

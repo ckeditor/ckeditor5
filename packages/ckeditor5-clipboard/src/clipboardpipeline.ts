@@ -29,10 +29,10 @@ import ClipboardObserver, {
 	type ViewDocumentClipboardInputEvent
 } from './clipboardobserver.js';
 
-import plainTextToHtml from './utils/plaintexttohtml.js';
-import normalizeClipboardHtml from './utils/normalizeclipboarddata.js';
-import viewToPlainText from './utils/viewtoplaintext.js';
-import ClipboardMarkersUtils from './clipboardmarkersutils.js';
+import { plainTextToHtml } from './utils/plaintexttohtml.js';
+import { normalizeClipboardHtml } from './utils/normalizeclipboarddata.js';
+import { viewToPlainText } from './utils/viewtoplaintext.js';
+import { ClipboardMarkersUtils } from './clipboardmarkersutils.js';
 
 // Input pipeline events overview:
 //
@@ -140,7 +140,7 @@ import ClipboardMarkersUtils from './clipboardmarkersutils.js';
  *
  * Read more about the clipboard integration in the {@glink framework/deep-dive/clipboard clipboard deep-dive} guide.
  */
-export default class ClipboardPipeline extends Plugin {
+export class ClipboardPipeline extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

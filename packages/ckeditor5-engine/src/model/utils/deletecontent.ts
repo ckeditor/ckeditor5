@@ -7,17 +7,17 @@
  * @module engine/model/utils/deletecontent
  */
 
-import DocumentSelection from '../documentselection.js';
-import LivePosition from '../liveposition.js';
-import Range from '../range.js';
+import { DocumentSelection } from '../documentselection.js';
+import { LivePosition } from '../liveposition.js';
+import { Range } from '../range.js';
 
-import type DocumentFragment from '../documentfragment.js';
-import type Element from '../element.js';
-import type Model from '../model.js';
-import type Position from '../position.js';
-import type Schema from '../schema.js';
-import type Selection from '../selection.js';
-import type Writer from '../writer.js';
+import { type DocumentFragment } from '../documentfragment.js';
+import { type Element } from '../element.js';
+import { type Model } from '../model.js';
+import { type Position } from '../position.js';
+import { type Schema } from '../schema.js';
+import { type Selection } from '../selection.js';
+import { type Writer } from '../writer.js';
 
 /**
  * Deletes content of the selection and merge siblings. The resulting selection is always collapsed.

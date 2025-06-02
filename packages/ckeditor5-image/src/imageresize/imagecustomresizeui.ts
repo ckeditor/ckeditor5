@@ -30,7 +30,7 @@ import { getSelectedImagePossibleResizeRange } from './utils/getselectedimagepos
  *
  * The plugin uses the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon}.
  */
-export default class ImageCustomResizeUI extends Plugin {
+export class ImageCustomResizeUI extends Plugin {
 	/**
 	 * The contextual balloon plugin instance.
 	 */

@@ -7,24 +7,24 @@
  * @module engine/model/documentselection
  */
 
-import TypeCheckable from './typecheckable.js';
-import LiveRange from './liverange.js';
+import { TypeCheckable } from './typecheckable.js';
+import { LiveRange } from './liverange.js';
 import Selection, {
 	type SelectionChangeAttributeEvent,
 	type SelectionChangeRangeEvent
 } from './selection.js';
-import Text from './text.js';
-import TextProxy from './textproxy.js';
+import { Text } from './text.js';
+import { TextProxy } from './textproxy.js';
 
-import type { default as Document, DocumentChangeEvent } from './document.js';
-import type { default as Model, ModelApplyOperationEvent } from './model.js';
+import type { Document, DocumentChangeEvent } from './document.js';
+import type { Model, ModelApplyOperationEvent } from './model.js';
 import type { Marker, MarkerCollectionUpdateEvent } from './markercollection.js';
-import type Batch from './batch.js';
-import type Element from './element.js';
-import type Item from './item.js';
-import type { default as Position, PositionOffset } from './position.js';
-import type Range from './range.js';
-import type Schema from './schema.js';
+import { type Batch } from './batch.js';
+import { type Element } from './element.js';
+import { type Item } from './item.js';
+import type { Position, PositionOffset } from './position.js';
+import { type Range } from './range.js';
+import { type Schema } from './schema.js';
 
 import {
 	CKEditorError,
@@ -60,7 +60,7 @@ const storePrefix = 'selection:';
  * If you need to represent a selection in document fragment,
  * use {@link module:engine/model/selection~Selection Selection class} instead.
  */
-export default class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
+export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
 	 * Selection used internally by that class (`DocumentSelection` is a proxy to that selection).
 	 */

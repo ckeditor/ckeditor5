@@ -63,7 +63,7 @@ import {
 } from './utils.js';
 
 import { isWidget } from '../utils.js';
-import type Widget from '../widget.js';
+import { type Widget } from '../widget.js';
 
 // @if CK_DEBUG_TYPING // const { _buildLogMessage } = require( '@ckeditor/ckeditor5-engine/src/dev-utils/utils.js' );
 
@@ -86,7 +86,7 @@ const PLUGIN_DISABLED_EDITING_ROOT_CLASS = 'ck-widget__type-around_disabled';
  * user if the widget is next to the "tight spot". Once clicked, a paragraph is created with the selection anchored
  * in it so that users can type (or insert content, paste, etc.) straight away.
  */
-export default class WidgetTypeAround extends Plugin {
+export class WidgetTypeAround extends Plugin {
 	/**
 	 * A reference to the model widget element that has the fake caret active
 	 * on either side of it. It is later used to remove CSS classes associated with the fake caret

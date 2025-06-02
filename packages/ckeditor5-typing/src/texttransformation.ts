@@ -16,7 +16,7 @@ import type { Position } from '@ckeditor/ckeditor5-engine';
 
 import TextWatcher, { type TextWatcherMatchedDataEvent } from './textwatcher.js';
 import type { TextTransformationConfig, TextTransformationDescription } from './typingconfig.js';
-import type Delete from './delete.js';
+import { type Delete } from './delete.js';
 
 import { escapeRegExp } from 'es-toolkit/compat';
 
@@ -80,7 +80,7 @@ const DEFAULT_TRANSFORMATIONS = [
 /**
  * The text transformation plugin.
  */
-export default class TextTransformation extends Plugin {
+export class TextTransformation extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

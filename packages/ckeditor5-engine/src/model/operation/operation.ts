@@ -9,8 +9,8 @@
  * @module engine/model/operation/operation
  */
 
-import type Batch from '../batch.js';
-import type Document from '../document.js';
+import { type Batch } from '../batch.js';
+import { type Document } from '../document.js';
 import type { Selectable } from '../selection.js';
 
 /**

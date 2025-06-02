@@ -11,14 +11,14 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { Element, enablePlaceholder } from 'ckeditor5/src/engine.js';
 import { toWidgetEditable } from 'ckeditor5/src/widget.js';
 
-import injectTableCaptionPostFixer from '../converters/table-caption-post-fixer.js';
-import ToggleTableCaptionCommand from './toggletablecaptioncommand.js';
+import { injectTableCaptionPostFixer } from '../converters/table-caption-post-fixer.js';
+import { ToggleTableCaptionCommand } from './toggletablecaptioncommand.js';
 import { isTable, matchTableCaptionViewElement } from './utils.js';
 
 /**
  * The table caption editing plugin.
  */
-export default class TableCaptionEditing extends Plugin {
+export class TableCaptionEditing extends Plugin {
 	/**
 	 * A map that keeps saved JSONified table captions and table model elements they are
 	 * associated with.

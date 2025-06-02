@@ -7,15 +7,15 @@
  * @module engine/model/selection
  */
 
-import TypeCheckable from './typecheckable.js';
-import Node from './node.js';
+import { TypeCheckable } from './typecheckable.js';
+import { Node } from './node.js';
 import Position, { type PositionOffset } from './position.js';
-import Range from './range.js';
+import { Range } from './range.js';
 
-import type DocumentFragment from './documentfragment.js';
-import type DocumentSelection from './documentselection.js';
-import type Element from './element.js';
-import type Item from './item.js';
+import { type DocumentFragment } from './documentfragment.js';
+import { type DocumentSelection } from './documentselection.js';
+import { type Element } from './element.js';
+import { type Item } from './item.js';
 
 import { CKEditorError, EmitterMixin, isIterable } from '@ckeditor/ckeditor5-utils';
 
@@ -26,7 +26,7 @@ import { CKEditorError, EmitterMixin, isIterable } from '@ckeditor/ckeditor5-uti
  * Additionally, selection may have its own attributes (think – whether text typed in in this selection
  * should have those attributes – e.g. whether you type a bolded text).
  */
-export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
+export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
 	 * Specifies whether the last added range was added as a backward or forward range.
 	 */

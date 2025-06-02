@@ -9,11 +9,11 @@
  * @module engine/model/node
  */
 
-import TypeCheckable from './typecheckable.js';
+import { TypeCheckable } from './typecheckable.js';
 
-import type Document from './document.js';
-import type DocumentFragment from './documentfragment.js';
-import type Element from './element.js';
+import { type Document } from './document.js';
+import { type DocumentFragment } from './documentfragment.js';
+import { type Element } from './element.js';
 
 import { compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
 
