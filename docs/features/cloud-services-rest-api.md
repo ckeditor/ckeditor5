@@ -25,5 +25,5 @@ Each method can be used for different purposes. For example, the REST API method
 An example of using another API method is getting the content of the document from a collaborative editing session. This feature can be used to build an autosave mechanism for the document, which should reduce transfer costs &ndash; autosave requests are not executed by each connected user but only by the system once at a time.
 
 <info-box warning>
-	When using REST APIs, your data can be removed or modified. These operations **cannot be reversed**.
+When using REST APIs, data can be removed or modified via DELETE or PUT/PATCH methods. These operations cannot be reversed.
 </info-box>
