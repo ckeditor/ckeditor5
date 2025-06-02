@@ -8,7 +8,7 @@
  */
 
 import { View } from '../view.js';
-import FocusCycler, { type FocusableView } from '../focuscycler.js';
+import { FocusCycler, type FocusableView } from '../focuscycler.js';
 
 import { ListItemView } from './listitemview.js';
 import { ListItemGroupView } from './listitemgroupview.js';

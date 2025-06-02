@@ -21,7 +21,7 @@ import { SplitOperation } from './operation/splitoperation.js';
 import { DocumentFragment } from './documentfragment.js';
 import { DocumentSelection } from './documentselection.js';
 import { Element } from './element.js';
-import Position, { type PositionOffset, type PositionStickiness } from './position.js';
+import { Position, type PositionOffset, type PositionStickiness } from './position.js';
 import { Range } from './range.js';
 import { RootElement } from './rootelement.js';
 import { Text } from './text.js';

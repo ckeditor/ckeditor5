@@ -25,7 +25,7 @@ import { DropdownMenuPanelPositioningFunctions } from './utils.js';
 import { DropdownMenuBehaviors } from './dropdownmenubehaviors.js';
 
 import { View } from '../../view.js';
-import DropdownMenuNestedMenuPanelView, { type DropdownMenuNestedMenuPanelPosition } from './dropdownmenunestedmenupanelview.js';
+import { DropdownMenuNestedMenuPanelView, type DropdownMenuNestedMenuPanelPosition } from './dropdownmenunestedmenupanelview.js';
 
 import '../../../theme/components/dropdown/menu/dropdownmenu.css';
 

@@ -37,7 +37,7 @@ import { type View } from '../view.js';
  *
  * @param view View instance that should get this functionality.
  */
-export default function CssTransitionDisablerMixin<Base extends Constructor<View>>( view: Base ): Mixed<Base, ViewWithCssTransitionDisabler>
+export function CssTransitionDisablerMixin<Base extends Constructor<View>>( view: Base ): Mixed<Base, ViewWithCssTransitionDisabler>
 {
 	abstract class Mixin extends view {
 		declare public _isCssTransitionsDisabled: boolean;

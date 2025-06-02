@@ -42,7 +42,7 @@ type ChildrenElements = Node | string | Iterable<Node | string>;
  * @param children Child or any iterable of children. Strings will be automatically turned into Text nodes.
  * @returns SVG element.
  */
-export default function createElement<T extends keyof SVGElementTagNameMap>(
+export function createElement<T extends keyof SVGElementTagNameMap>(
 	doc: Document,
 	name: T,
 	attributes: SVGElementAttributes,
@@ -66,7 +66,7 @@ export default function createElement<T extends keyof SVGElementTagNameMap>(
  * @param children Child or any iterable of children. Strings will be automatically turned into Text nodes.
  * @returns HTML element.
  */
-export default function createElement<T extends keyof HTMLElementTagNameMap>(
+export function createElement<T extends keyof HTMLElementTagNameMap>(
 	doc: Document,
 	name: T,
 	attributes?: HTMLElementAttributes,
@@ -87,7 +87,7 @@ export default function createElement<T extends keyof HTMLElementTagNameMap>(
  * @param children Child or any iterable of children. Strings will be automatically turned into Text nodes.
  * @returns HTML or SVG element.
  */
-export default function createElement(
+export function createElement(
 	doc: Document,
 	name: string,
 	attributes: SVGElementAttributes | HTMLElementAttributes = {},

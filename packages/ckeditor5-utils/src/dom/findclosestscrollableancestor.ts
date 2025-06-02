@@ -15,7 +15,7 @@ import { global } from './global.js';
  * @param domElement DOM element.
  * @returns First ancestor of `domElement` that is scrollable or null if such ancestor doesn't exist.
  */
-export default function findClosestScrollableAncestor( domElement: HTMLElement ): HTMLElement | null {
+export function findClosestScrollableAncestor( domElement: HTMLElement ): HTMLElement | null {
 	let element = domElement.parentElement;
 	if ( !element ) {
 		return null;

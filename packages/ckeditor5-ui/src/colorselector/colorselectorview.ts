@@ -7,7 +7,7 @@
  * @module ui/colorselector/colorselectorview
  */
 
-import FocusCycler, { type FocusableView } from '../focuscycler.js';
+import { FocusCycler, type FocusableView } from '../focuscycler.js';
 import { View } from '../view.js';
 import { ViewCollection } from '../viewcollection.js';
 import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';

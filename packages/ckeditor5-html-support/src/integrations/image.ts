@@ -17,7 +17,7 @@ import type {
 } from 'ckeditor5/src/engine.js';
 import type { ImageUtils } from '@ckeditor/ckeditor5-image';
 
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
+import { DataFilter, type DataFilterRegisterEvent } from '../datafilter.js';
 import { type GHSViewAttributes, setViewAttributes, updateViewAttributes } from '../utils.js';
 import { getDescendantElement } from './integrationutils.js';
 

@@ -7,7 +7,7 @@
  * @module engine/model/element
  */
 
-import Node, { type NodeAttributes } from './node.js';
+import { Node, type NodeAttributes } from './node.js';
 import { NodeList } from './nodelist.js';
 import { Text } from './text.js';
 import { TextProxy } from './textproxy.js';

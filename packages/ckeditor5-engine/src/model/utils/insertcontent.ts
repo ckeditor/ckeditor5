@@ -55,7 +55,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  * would return the model to the state before the insertion. If no changes were preformed by `insertContent`, returns a range collapsed
  * at the insertion position.
  */
-export default function insertContent(
+export function insertContent(
 	model: Model,
 	content: Item | DocumentFragment,
 	selectable?: Selection | DocumentSelection

@@ -21,7 +21,7 @@ import type {
 } from '@ckeditor/ckeditor5-list';
 
 import { getHtmlAttributeName, setViewAttributes } from '../utils.js';
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
+import { DataFilter, type DataFilterRegisterEvent } from '../datafilter.js';
 
 /**
  * Provides the General HTML Support integration with the {@link module:list/list~List List} feature.

@@ -12,7 +12,7 @@ import { View } from '../../view.js';
 import { SearchTextQueryView, type SearchTextQueryViewConfig } from './searchtextqueryview.js';
 import { SearchInfoView } from '../searchinfoview.js';
 import { SearchResultsView } from '../searchresultsview.js';
-import FocusCycler, { type FocusableView } from '../../focuscycler.js';
+import { FocusCycler, type FocusableView } from '../../focuscycler.js';
 import { escapeRegExp } from 'es-toolkit/compat';
 
 import { type FilteredView } from '../filteredview.js';

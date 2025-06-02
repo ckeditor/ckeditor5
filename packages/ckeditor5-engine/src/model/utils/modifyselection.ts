@@ -10,7 +10,7 @@
 import { DocumentSelection } from '../documentselection.js';
 import { Position } from '../position.js';
 import { Range } from '../range.js';
-import TreeWalker, { type TreeWalkerValue } from '../treewalker.js';
+import { TreeWalker, type TreeWalkerValue } from '../treewalker.js';
 
 import { type Model } from '../model.js';
 import { type Schema } from '../schema.js';
@@ -55,7 +55,7 @@ const wordBoundaryCharacters = ' ,.?!:;"-()';
  * @param options.unit The unit by which selection should be modified. Default 'character'.
  * @param options.treatEmojiAsSingleUnit Whether multi-characer emoji sequences should be handled as single unit.
  */
-export default function modifySelection(
+export function modifySelection(
 	model: Model,
 	selection: Selection | DocumentSelection,
 	options: {

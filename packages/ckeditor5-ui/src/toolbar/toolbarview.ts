@@ -8,7 +8,7 @@
  */
 
 import { View } from '../view.js';
-import FocusCycler, { isFocusable, type FocusableView } from '../focuscycler.js';
+import { FocusCycler, isFocusable, type FocusableView } from '../focuscycler.js';
 import { ToolbarSeparatorView } from './toolbarseparatorview.js';
 import { ToolbarLineBreakView } from './toolbarlinebreakview.js';
 import { preventDefault } from '../bindings/preventdefault.js';

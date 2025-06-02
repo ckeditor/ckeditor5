@@ -14,7 +14,7 @@ import {
 
 import type { Position } from '@ckeditor/ckeditor5-engine';
 
-import TextWatcher, { type TextWatcherMatchedDataEvent } from './textwatcher.js';
+import { TextWatcher, type TextWatcherMatchedDataEvent } from './textwatcher.js';
 import type { TextTransformationConfig, TextTransformationDescription } from './typingconfig.js';
 import { type Delete } from './delete.js';
 

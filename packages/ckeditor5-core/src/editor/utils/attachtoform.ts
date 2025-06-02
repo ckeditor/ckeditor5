@@ -22,7 +22,7 @@ import type { ElementApi } from './elementapimixin.js';
  *
  * @param editor Editor instance.
  */
-export default function attachToForm( editor: Editor & ElementApi ): void {
+export function attachToForm( editor: Editor & ElementApi ): void {
 	if ( !isFunction( editor.updateSourceElement ) ) {
 		/**
 		 * The editor passed to `attachToForm()` must implement the

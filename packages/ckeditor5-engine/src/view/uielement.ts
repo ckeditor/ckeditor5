@@ -7,7 +7,7 @@
  * @module engine/view/uielement
  */
 
-import Element, { type ElementAttributes } from './element.js';
+import { Element, type ElementAttributes } from './element.js';
 import { Node } from './node.js';
 import { CKEditorError, keyCodes } from '@ckeditor/ckeditor5-utils';
 

@@ -235,7 +235,7 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common.js
  * </table>
  * ```
  */
-export default function injectTableLayoutPostFixer( model: Model ): void {
+export function injectTableLayoutPostFixer( model: Model ): void {
 	model.document.registerPostFixer( writer => tableLayoutPostFixer( writer, model ) );
 }
 

@@ -40,7 +40,7 @@ import type { EventInfo } from '@ckeditor/ckeditor5-utils';
  * @typeParam AdditionalData Additional data passed along with the event.
  */
 
-export default abstract class DomEventObserver<
+export abstract class DomEventObserver<
 	EventType extends keyof HTMLElementEventMap,
 	AdditionalData extends object = object
 > extends Observer {

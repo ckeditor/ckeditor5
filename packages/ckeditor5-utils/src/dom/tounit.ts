@@ -13,7 +13,7 @@
  *
  * @param unit An unit like "px" or "em".
  */
-export default function toUnit( unit: string ): ToUnitHelper {
+export function toUnit( unit: string ): ToUnitHelper {
 	return value => value + unit;
 }
 

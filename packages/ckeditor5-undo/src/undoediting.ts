@@ -9,7 +9,7 @@
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import UndoCommand, { type UndoCommandRevertEvent } from './undocommand.js';
+import { UndoCommand, type UndoCommandRevertEvent } from './undocommand.js';
 import { RedoCommand } from './redocommand.js';
 
 import type {

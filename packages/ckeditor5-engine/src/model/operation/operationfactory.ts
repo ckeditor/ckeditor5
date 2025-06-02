@@ -42,7 +42,7 @@ operations[ MergeOperation.className ] = MergeOperation;
 /**
  * A factory class for creating operations.
  */
-export default abstract class OperationFactory {
+export abstract class OperationFactory {
 	/**
 	 * Creates an operation instance from a JSON object (parsed JSON string).
 	 *

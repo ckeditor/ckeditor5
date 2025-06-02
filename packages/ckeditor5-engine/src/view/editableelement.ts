@@ -11,7 +11,7 @@ import { ContainerElement } from './containerelement.js';
 import { ObservableMixin } from '@ckeditor/ckeditor5-utils';
 import type { ViewSelectionChangeEvent } from './selection.js';
 import type { ElementAttributes } from './element.js';
-import { type Document } from './document.js';
+import { type ViewDocument } from './document.js';
 import { type Node } from './node.js';
 
 /**
@@ -64,7 +64,7 @@ export class EditableElement extends /* #__PURE__ */ ObservableMixin( ContainerE
 	 * @param children A list of nodes to be inserted into created element.
 	 */
 	constructor(
-		document: Document,
+		document: ViewDocument,
 		name: string,
 		attributes?: ElementAttributes,
 		children?: Node | Iterable<Node>

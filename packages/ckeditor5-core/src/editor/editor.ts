@@ -38,7 +38,7 @@ import { ContextWatchdog, EditorWatchdog } from '@ckeditor/ckeditor5-watchdog';
 
 import { Context } from '../context.js';
 import { PluginCollection } from '../plugincollection.js';
-import CommandCollection, { type CommandsMap } from '../commandcollection.js';
+import { CommandCollection, type CommandsMap } from '../commandcollection.js';
 import { EditingKeystrokeHandler } from '../editingkeystrokehandler.js';
 import { Accessibility } from '../accessibility.js';
 import { getEditorUsageData, type EditorUsageData } from './utils/editorusagedata.js';
@@ -72,7 +72,7 @@ declare global {
  * the specific editor implements also the {@link ~Editor#ui} property
  * (as most editor implementations do).
  */
-export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
+export abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * A required name of the editor class. The name should reflect the constructor name.
 	 */

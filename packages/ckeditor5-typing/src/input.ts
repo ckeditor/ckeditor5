@@ -10,8 +10,8 @@
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 import { env } from '@ckeditor/ckeditor5-utils';
 
-import InsertTextCommand, { type InsertTextCommandOptions } from './inserttextcommand.js';
-import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './inserttextobserver.js';
+import { InsertTextCommand, type InsertTextCommandOptions } from './inserttextcommand.js';
+import { InsertTextObserver, type ViewDocumentInsertTextEvent } from './inserttextobserver.js';
 
 import {
 	LiveRange,

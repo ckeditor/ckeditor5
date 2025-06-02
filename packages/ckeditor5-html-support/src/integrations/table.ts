@@ -22,7 +22,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import type { TableUtils } from '@ckeditor/ckeditor5-table';
 
 import { updateViewAttributes, type GHSViewAttributes } from '../utils.js';
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
+import { DataFilter, type DataFilterRegisterEvent } from '../datafilter.js';
 import { getDescendantElement } from './integrationutils.js';
 
 const STYLE_ATTRIBUTES_TO_PROPAGATE = [

@@ -13,6 +13,5 @@ import { type TextProxy } from './textproxy.js';
 /**
  * Item is a {@link module:engine/view/node~Node Node} or {@link module:engine/view/textproxy~TextProxy TextProxy}.
  */
-type Item = Node | TextProxy;
+export type Item = Node | TextProxy;
 
-export default Item;

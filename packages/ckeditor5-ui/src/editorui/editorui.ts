@@ -44,7 +44,7 @@ import { normalizeMenuBarConfig } from '../menubar/utils.js';
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
  */
-export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin() {
+export abstract class EditorUI extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * The editor that the UI belongs to.
 	 */

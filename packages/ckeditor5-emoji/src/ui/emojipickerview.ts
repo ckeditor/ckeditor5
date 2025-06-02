@@ -21,7 +21,7 @@ import {
 	type Locale,
 	type ObservableChangeEvent
 } from 'ckeditor5/src/utils.js';
-import EmojiGridView, { type EmojiSearchQueryCallback } from './emojigridview.js';
+import { EmojiGridView, type EmojiSearchQueryCallback } from './emojigridview.js';
 import { EmojiCategoriesView } from './emojicategoriesview.js';
 import { EmojiSearchView } from './emojisearchview.js';
 import { EmojiToneView } from './emojitoneview.js';

@@ -7,7 +7,7 @@
  * @module engine/view/attributeelement
  */
 
-import Element, { type ElementAttributes } from './element.js';
+import { Element, type ElementAttributes } from './element.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { type DocumentFragment } from './documentfragment.js';

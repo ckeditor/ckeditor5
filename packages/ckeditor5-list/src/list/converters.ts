@@ -47,7 +47,7 @@ import {
 	isListItemView
 } from './utils/view.js';
 
-import ListWalker, { SiblingListBlocksIterator } from './utils/listwalker.js';
+import { ListWalker, SiblingListBlocksIterator } from './utils/listwalker.js';
 import { findAndAddListHeadToMap } from './utils/postfixers.js';
 
 import type {

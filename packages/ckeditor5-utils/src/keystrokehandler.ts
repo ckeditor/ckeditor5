@@ -7,7 +7,7 @@
  * @module utils/keystrokehandler
  */
 
-import DomEmitterMixin, { type DomEmitter } from './dom/emittermixin.js';
+import { DomEmitterMixin, type DomEmitter } from './dom/emittermixin.js';
 import type { Emitter } from './emittermixin.js';
 import { getCode, parseKeystroke, type KeystrokeInfo } from './keyboard.js';
 import type { PriorityString } from './priorities.js';

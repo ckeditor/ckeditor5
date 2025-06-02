@@ -7,7 +7,7 @@
  * @module engine/view/downcastwriter
  */
 
-import Position, { type PositionOffset } from './position.js';
+import { Position, type PositionOffset } from './position.js';
 import { Range } from './range.js';
 import Selection, {
 	type PlaceOrOffset,

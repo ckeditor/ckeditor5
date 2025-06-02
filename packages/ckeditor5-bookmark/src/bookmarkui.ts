@@ -30,7 +30,7 @@ import type { PositionOptions } from 'ckeditor5/src/utils.js';
 import type { DeleteCommand } from 'ckeditor5/src/typing.js';
 import { isWidget, WidgetToolbarRepository } from 'ckeditor5/src/widget.js';
 
-import BookmarkFormView, { type BookmarkFormViewCancelEvent, type BookmarkFormValidatorCallback } from './ui/bookmarkformview.js';
+import { BookmarkFormView, type BookmarkFormViewCancelEvent, type BookmarkFormValidatorCallback } from './ui/bookmarkformview.js';
 import { type UpdateBookmarkCommand } from './updatebookmarkcommand.js';
 import { type InsertBookmarkCommand } from './insertbookmarkcommand.js';
 

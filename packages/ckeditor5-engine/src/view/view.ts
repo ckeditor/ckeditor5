@@ -7,13 +7,14 @@
  * @module engine/view/view
  */
 
-import Document, { type ViewDocumentLayoutChangedEvent } from './document.js';
+import { Document, type ViewDocumentLayoutChangedEvent } from './document.js';
 import { DowncastWriter } from './downcastwriter.js';
 import { Renderer } from './renderer.js';
 import { DomConverter } from './domconverter.js';
-import Position, { type PositionOffset } from './position.js';
+import { Position, type PositionOffset } from './position.js';
 import { Range } from './range.js';
-import Selection, {
+import {
+	Selection,
 	type PlaceOrOffset,
 	type Selectable,
 	type SelectionOptions
@@ -28,9 +29,9 @@ import { type Item } from './item.js';
 
 import { KeyObserver } from './observer/keyobserver.js';
 import { FakeSelectionObserver } from './observer/fakeselectionobserver.js';
-import MutationObserver, { type ViewDocumentMutationsEvent } from './observer/mutationobserver.js';
+import { MutationObserver, type ViewDocumentMutationsEvent } from './observer/mutationobserver.js';
 import { SelectionObserver } from './observer/selectionobserver.js';
-import FocusObserver, { type ViewDocumentBlurEvent } from './observer/focusobserver.js';
+import { FocusObserver, type ViewDocumentBlurEvent } from './observer/focusobserver.js';
 import { CompositionObserver } from './observer/compositionobserver.js';
 import { InputObserver } from './observer/inputobserver.js';
 import { ArrowKeysObserver } from './observer/arrowkeysobserver.js';

@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import type { Element } from 'ckeditor5/src/engine.js';
 
-import MentionEditing, { _toMentionAttribute } from './mentionediting.js';
+import { MentionEditing, _toMentionAttribute } from './mentionediting.js';
 import { MentionUI } from './mentionui.js';
 
 import '../theme/mention.css';

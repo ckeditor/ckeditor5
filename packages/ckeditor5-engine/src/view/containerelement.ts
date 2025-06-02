@@ -7,7 +7,7 @@
  * @module engine/view/containerelement
  */
 
-import Element, { type ElementAttributes } from './element.js';
+import { Element, type ElementAttributes } from './element.js';
 import { type Document } from './document.js';
 import { type Node } from './node.js';
 

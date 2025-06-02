@@ -12,7 +12,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 import type { DocumentFragment, Model, Element } from '@ckeditor/ckeditor5-engine';
 
 import { ClipboardObserver } from './clipboardobserver.js';
-import ClipboardPipeline, { type ClipboardContentInsertionEvent } from './clipboardpipeline.js';
+import { ClipboardPipeline, type ClipboardContentInsertionEvent } from './clipboardpipeline.js';
 
 /**
  * The plugin detects the user's intention to paste plain text.

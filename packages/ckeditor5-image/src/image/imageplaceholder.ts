@@ -15,7 +15,7 @@ import type {
 } from 'ckeditor5/src/engine.js';
 
 import { ImageUtils } from '../imageutils.js';
-import ImageLoadObserver, { type ImageLoadedEvent } from './imageloadobserver.js';
+import { ImageLoadObserver, type ImageLoadedEvent } from './imageloadobserver.js';
 
 import '../../theme/imageplaceholder.css';
 

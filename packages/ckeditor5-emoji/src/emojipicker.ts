@@ -15,8 +15,8 @@ import { IconEmoji } from 'ckeditor5/src/icons.js';
 
 import { EmojiCommand } from './emojicommand.js';
 import { EmojiRepository } from './emojirepository.js';
-import EmojiPickerView, { type EmojiPickerViewUpdateEvent } from './ui/emojipickerview.js';
-import EmojiPickerFormView, { type EmojiPickerFormViewCancelEvent } from './ui/emojipickerformview.js';
+import { EmojiPickerView, type EmojiPickerViewUpdateEvent } from './ui/emojipickerview.js';
+import { EmojiPickerFormView, type EmojiPickerFormViewCancelEvent } from './ui/emojipickerformview.js';
 import { type EmojiGridViewExecuteEvent } from './ui/emojigridview.js';
 import type { SkinToneId } from './emojiconfig.js';
 

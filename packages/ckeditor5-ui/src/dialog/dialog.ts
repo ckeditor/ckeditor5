@@ -9,7 +9,7 @@
 
 import { type View } from '../view.js';
 import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
-import DialogView, { type DialogViewCloseEvent, DialogViewPosition } from './dialogview.js';
+import { DialogView, type DialogViewCloseEvent, DialogViewPosition } from './dialogview.js';
 import type { DialogActionButtonDefinition } from './dialogactionsview.js';
 import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
 import type { KeystrokeHandlerOptions } from '@ckeditor/ckeditor5-utils';

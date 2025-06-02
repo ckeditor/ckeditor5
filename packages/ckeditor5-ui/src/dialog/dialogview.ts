@@ -24,13 +24,13 @@ import { View } from '../view.js';
 import { FormHeaderView } from '../formheader/formheaderview.js';
 import { ButtonView } from '../button/buttonview.js';
 import { type ButtonExecuteEvent } from '../button/button.js';
-import FocusCycler, { isViewWithFocusCycler,
+import { FocusCycler, isViewWithFocusCycler,
 	type FocusableView,
 	isFocusable
 }
 	from '../focuscycler.js';
-import DraggableViewMixin, { type DraggableView, type DraggableViewDragEvent } from '../bindings/draggableviewmixin.js';
-import DialogActionsView, { type DialogActionButtonDefinition } from './dialogactionsview.js';
+import { DraggableViewMixin, type DraggableView, type DraggableViewDragEvent } from '../bindings/draggableviewmixin.js';
+import { DialogActionsView, type DialogActionButtonDefinition } from './dialogactionsview.js';
 import { DialogContentView } from './dialogcontentview.js';
 import { type EditorUI } from '../editorui/editorui.js';
 

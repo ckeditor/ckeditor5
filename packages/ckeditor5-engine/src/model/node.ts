@@ -45,7 +45,7 @@ import { compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
  * In case of {@link module:engine/model/element~Element element node}, adding and removing children also counts as changing a node and
  * follows same rules.
  */
-export default abstract class Node extends TypeCheckable {
+export abstract class Node extends TypeCheckable {
 	/**
 	 * Parent of this node. It could be {@link module:engine/model/element~Element}
 	 * or {@link module:engine/model/documentfragment~DocumentFragment}.

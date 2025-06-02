@@ -9,7 +9,7 @@
 
 import { throttle, cloneDeepWith, isElement, type DebouncedFunction } from 'es-toolkit/compat';
 import { areConnectedThroughProperties } from './utils/areconnectedthroughproperties.js';
-import Watchdog, { type WatchdogConfig } from './watchdog.js';
+import { Watchdog, type WatchdogConfig } from './watchdog.js';
 import type { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import type { Node, Text, Element, Writer } from '@ckeditor/ckeditor5-engine';
 import type { Editor, EditorConfig, Context, EditorReadyEvent } from '@ckeditor/ckeditor5-core';

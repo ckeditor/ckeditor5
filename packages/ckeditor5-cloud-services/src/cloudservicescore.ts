@@ -9,7 +9,7 @@
 
 import { ContextPlugin } from 'ckeditor5/src/core.js';
 import type { TokenUrl } from './cloudservicesconfig.js';
-import Token, { type InitializedToken, type TokenOptions } from './token/token.js';
+import { Token, type InitializedToken, type TokenOptions } from './token/token.js';
 import { UploadGateway } from './uploadgateway/uploadgateway.js';
 
 /**

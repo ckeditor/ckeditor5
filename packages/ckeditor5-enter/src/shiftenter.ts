@@ -8,7 +8,7 @@
  */
 
 import { ShiftEnterCommand } from './shiftentercommand.js';
-import EnterObserver, { type ViewDocumentEnterEvent } from './enterobserver.js';
+import { EnterObserver, type ViewDocumentEnterEvent } from './enterobserver.js';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 /**

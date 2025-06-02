@@ -14,7 +14,7 @@ import { global } from './global.js';
  *
  * @param name Attribute name.
  */
-export default function isValidAttributeName( name: string ): boolean {
+export function isValidAttributeName( name: string ): boolean {
 	try {
 		global.document.createAttribute( name );
 	} catch {

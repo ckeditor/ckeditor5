@@ -47,7 +47,7 @@ import { CKEditorError, first } from '@ckeditor/ckeditor5-utils';
  * would return the model to the state before the insertion. If no changes were preformed by `insertObject()`, returns a range collapsed
  * at the insertion position.
  */
-export default function insertObject(
+export function insertObject(
 	model: Model,
 	object: Element,
 	selectable?: Selection | DocumentSelection | null,

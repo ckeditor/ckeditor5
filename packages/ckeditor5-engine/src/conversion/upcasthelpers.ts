@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Matcher, { type ClassPatterns, type MatcherPattern, type PropertyPatterns } from '../view/matcher.js';
+import { Matcher, type ClassPatterns, type MatcherPattern, type PropertyPatterns } from '../view/matcher.js';
 import { ConversionHelpers } from './conversionhelpers.js';
 
 import type { UpcastDispatcher, UpcastElementEvent, UpcastConversionApi, UpcastConversionData } from './upcastdispatcher.js';

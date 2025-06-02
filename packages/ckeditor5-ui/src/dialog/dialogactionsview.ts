@@ -16,7 +16,7 @@ import type { Button, ButtonExecuteEvent } from '../button/button.js';
 import { ButtonView } from '../button/buttonview.js';
 import { View } from '../view.js';
 import { ViewCollection } from '../viewcollection.js';
-import FocusCycler, { type FocusableView } from '../focuscycler.js';
+import { FocusCycler, type FocusableView } from '../focuscycler.js';
 
 import '../../theme/components/dialog/dialogactions.css';
 

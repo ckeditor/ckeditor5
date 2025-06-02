@@ -68,7 +68,7 @@ import {
 	getViewElementNameForListType
 } from './utils/view.js';
 
-import ListWalker, { ListBlocksIterable } from './utils/listwalker.js';
+import { ListWalker, ListBlocksIterable } from './utils/listwalker.js';
 
 import {
 	ClipboardPipeline,

@@ -16,7 +16,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { ViewElement, Element, UpcastElementEvent } from '@ckeditor/ckeditor5-engine';
 import { AutoImage, ImageInsert, ImageResize, type ImageUtils } from '@ckeditor/ckeditor5-image';
-import ImageLoadObserver, { type ImageLoadedEvent } from '@ckeditor/ckeditor5-image/src/image/imageloadobserver.js';
+import { ImageLoadObserver, type ImageLoadedEvent } from '@ckeditor/ckeditor5-image/src/image/imageloadobserver.js';
 
 declare global {
 	interface Window {

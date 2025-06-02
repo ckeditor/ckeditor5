@@ -92,7 +92,7 @@ export type TestCallback = ( text: string ) => {
  * } );
  * ```
  */
-export default function inlineAutoformatEditing(
+export function inlineAutoformatEditing(
 	editor: Editor,
 	plugin: Autoformat,
 	testRegexpOrCallback: RegExp | TestCallback,

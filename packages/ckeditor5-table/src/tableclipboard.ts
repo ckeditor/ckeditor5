@@ -35,7 +35,7 @@ import type {
 } from 'ckeditor5/src/engine.js';
 
 import { TableSelection } from './tableselection.js';
-import TableWalker, { type TableSlot } from './tablewalker.js';
+import { TableWalker, type TableSlot } from './tablewalker.js';
 import { TableUtils } from './tableutils.js';
 import {
 	cropTableToDimensions,

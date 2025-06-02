@@ -7,7 +7,7 @@
  * @module engine/view/emptyelement
  */
 
-import Element, { type ElementAttributes } from './element.js';
+import { Element, type ElementAttributes } from './element.js';
 import { Node } from './node.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 

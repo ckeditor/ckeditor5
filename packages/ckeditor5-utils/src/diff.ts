@@ -30,7 +30,7 @@ import { fastDiff } from './fastdiff.js';
  * @param cmp Optional function used to compare array values, by default === is used.
  * @returns Array of changes.
  */
-export default function diff<T>(
+export function diff<T>(
 	a: ArrayLike<T>,
 	b: ArrayLike<T>,
 	cmp?: ( a: T, b: T ) => boolean

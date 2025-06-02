@@ -8,7 +8,7 @@
  */
 
 import { ContextualBalloon } from '../../panel/balloon/contextualballoon.js';
-import ToolbarView, { type ToolbarViewGroupedItemsUpdateEvent } from '../toolbarview.js';
+import { ToolbarView, type ToolbarViewGroupedItemsUpdateEvent } from '../toolbarview.js';
 import { BalloonPanelView } from '../../panel/balloon/balloonpanelview.js';
 import { normalizeToolbarConfig } from '../normalizetoolbarconfig.js';
 

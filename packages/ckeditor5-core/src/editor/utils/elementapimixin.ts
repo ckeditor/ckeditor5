@@ -19,7 +19,7 @@ import { type Editor } from '../editor.js';
 /**
  * Implementation of the {@link module:core/editor/utils/elementapimixin~ElementApi}.
  */
-export default function ElementApiMixin<Base extends Constructor<Editor>>( base: Base ): Mixed<Base, ElementApi> {
+export function ElementApiMixin<Base extends Constructor<Editor>>( base: Base ): Mixed<Base, ElementApi> {
 	abstract class Mixin extends base implements ElementApi {
 		public sourceElement: HTMLElement | undefined;
 

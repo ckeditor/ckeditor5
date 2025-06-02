@@ -21,7 +21,7 @@ import { type Selection } from './selection.js';
 import { type Text } from './text.js';
 import { type TextProxy } from './textproxy.js';
 
-export default abstract class TypeCheckable {
+export abstract class TypeCheckable {
 	/**
 	 * Checks whether the object is of type {@link module:engine/model/node~Node} or its subclass.
 	 *

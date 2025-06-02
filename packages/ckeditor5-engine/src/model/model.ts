@@ -7,12 +7,12 @@
  * @module engine/model/model
  */
 
-import Batch, { type BatchType } from './batch.js';
+import { Batch, type BatchType } from './batch.js';
 import { Document } from './document.js';
 import { MarkerCollection } from './markercollection.js';
-import ModelPosition, { type PositionOffset, type PositionStickiness } from './position.js';
+import { ModelPosition, type PositionOffset, type PositionStickiness } from './position.js';
 import { ModelRange } from './range.js';
-import ModelSelection, { type PlaceOrOffset, type Selectable } from './selection.js';
+import { ModelSelection, type PlaceOrOffset, type Selectable } from './selection.js';
 import { OperationFactory } from './operation/operationfactory.js';
 import { DocumentSelection } from './documentselection.js';
 import { Schema } from './schema.js';

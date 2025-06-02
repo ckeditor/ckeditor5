@@ -8,7 +8,7 @@
  */
 
 import { global } from './global.js';
-import Rect, { type RectSource } from './rect.js';
+import { Rect, type RectSource } from './rect.js';
 import { getPositionedAncestor } from './getpositionedancestor.js';
 import { isFunction } from 'es-toolkit/compat';
 

@@ -8,7 +8,7 @@
  */
 
 import { ViewCollection } from './viewcollection.js';
-import Template, { type BindChain, type TemplateDefinition } from './template.js';
+import { Template, type BindChain, type TemplateDefinition } from './template.js';
 
 import {
 	CKEditorError,

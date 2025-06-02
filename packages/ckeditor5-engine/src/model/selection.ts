@@ -9,7 +9,7 @@
 
 import { TypeCheckable } from './typecheckable.js';
 import { Node } from './node.js';
-import Position, { type PositionOffset } from './position.js';
+import { Position, type PositionOffset } from './position.js';
 import { Range } from './range.js';
 
 import { type DocumentFragment } from './documentfragment.js';

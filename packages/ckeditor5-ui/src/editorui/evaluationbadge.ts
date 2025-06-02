@@ -11,7 +11,7 @@ import type { Editor } from '@ckeditor/ckeditor5-core';
 import { parseBase64EncodedObject, type Locale } from '@ckeditor/ckeditor5-utils';
 
 import { View } from '../view.js';
-import Badge, { type BadgeConfig } from '../badge/badge.js';
+import { Badge, type BadgeConfig } from '../badge/badge.js';
 
 /**
  * A helper that enables the "evaluation badge" feature in the editor at the bottom of the editable element

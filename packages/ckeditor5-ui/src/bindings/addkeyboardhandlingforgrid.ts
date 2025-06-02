@@ -22,7 +22,7 @@ import { type ViewCollection } from '../viewcollection.js';
  * the number (e.g. for responsive grids).
  * @param options.uiLanguageDirection String of ui language direction.
  */
-export default function addKeyboardHandlingForGrid(
+export function addKeyboardHandlingForGrid(
 	{ keystrokeHandler, focusTracker, gridItems, numberOfColumns, uiLanguageDirection }: {
 		keystrokeHandler: KeystrokeHandler;
 		focusTracker: FocusTracker;

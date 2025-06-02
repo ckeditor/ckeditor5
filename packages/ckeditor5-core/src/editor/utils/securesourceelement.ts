@@ -20,7 +20,7 @@ import type { Editor, EditorDestroyEvent } from '../editor.js';
  * @param editor Editor instance.
  * @param sourceElement Element to bind with the editor instance.
  */
-export default function secureSourceElement( editor: Editor, sourceElement: HTMLElement & { ckeditorInstance?: Editor } ): void {
+export function secureSourceElement( editor: Editor, sourceElement: HTMLElement & { ckeditorInstance?: Editor } ): void {
 	if ( sourceElement.ckeditorInstance ) {
 		/**
 		 * A DOM element used to create the editor (e.g.

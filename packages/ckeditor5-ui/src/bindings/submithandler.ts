@@ -46,7 +46,7 @@ import { type View } from '../view.js';
  * @param options Configuration options.
  * @param options.view The view which DOM `submit` events should be handled.
  */
-export default function submitHandler( { view }: { view: View } ): void {
+export function submitHandler( { view }: { view: View } ): void {
 	view.listenTo( view.element!, 'submit', ( evt, domEvt ) => {
 		domEvt.preventDefault();
 		view.fire<SubmitHandlerEvent>( 'submit' );

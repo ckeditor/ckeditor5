@@ -16,7 +16,7 @@ import type { Selectable } from '../selection.js';
 /**
  * Abstract base operation class.
  */
-export default abstract class Operation {
+export abstract class Operation {
 	/**
 	 * {@link module:engine/model/document~Document#version} on which operation can be applied. If you try to
 	 * {@link module:engine/model/model~Model#applyOperation apply} operation with different base version than the

@@ -15,7 +15,8 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import { UpcastHelpers } from './upcasthelpers.js';
-import DowncastHelpers, {
+import {
+	DowncastHelpers,
 	type AttributeCreatorFunction,
 	type AttributeDescriptor
 } from './downcasthelpers.js';

@@ -24,7 +24,7 @@ import { type UIElement } from './uielement.js';
  * @module engine/view/typecheckable
  */
 
-export default abstract class TypeCheckable {
+export abstract class TypeCheckable {
 	/**
 	 * Checks whether this object is of type {@link module:engine/view/node~Node} or its subclass.
 	 *

@@ -7,7 +7,7 @@
  * @module engine/model/liveposition
  */
 
-import Position, { type PositionOffset, type PositionStickiness } from './position.js';
+import { Position, type PositionOffset, type PositionStickiness } from './position.js';
 
 import type { ModelApplyOperationEvent } from './model.js';
 import { type DocumentFragment } from './documentfragment.js';

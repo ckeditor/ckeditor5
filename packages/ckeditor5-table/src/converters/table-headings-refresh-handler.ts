@@ -23,7 +23,7 @@ import { TableWalker } from '../tablewalker.js';
  *
  * When table headings attribute changes, all the cells/rows are marked to re-render to change between `<td>` and `<th>`.
  */
-export default function tableHeadingsRefreshHandler( model: Model, editing: EditingController ): void {
+export function tableHeadingsRefreshHandler( model: Model, editing: EditingController ): void {
 	const differ = model.document.differ;
 
 	for ( const change of differ.getChanges() ) {

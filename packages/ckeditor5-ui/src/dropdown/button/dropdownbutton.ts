@@ -13,7 +13,7 @@ import { type ViewCollection } from '../../viewcollection.js';
 /**
  * The dropdown button interface.
  */
-export default interface DropdownButton extends Button {
+export interface DropdownButton extends Button {
 	children: ViewCollection;
 }
 

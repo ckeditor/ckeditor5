@@ -33,7 +33,7 @@ import { type Writer } from '../writer.js';
  * @param model The model in context of which the selection modification should be performed.
  * @param selection The selection of which content will be returned.
  */
-export default function getSelectedContent(
+export function getSelectedContent(
 	model: Model,
 	selection: Selection | DocumentSelection
 ): DocumentFragment {

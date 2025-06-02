@@ -26,7 +26,7 @@ import type { DocumentSelectionChangeRangeEvent } from '@ckeditor/ckeditor5-engi
 
 import { BlockButtonView } from './blockbuttonview.js';
 import { BalloonPanelView } from '../../panel/balloon/balloonpanelview.js';
-import ToolbarView, { NESTED_TOOLBAR_ICONS } from '../toolbarview.js';
+import { ToolbarView, NESTED_TOOLBAR_ICONS } from '../toolbarview.js';
 import { clickOutsideHandler } from '../../bindings/clickoutsidehandler.js';
 import { normalizeToolbarConfig } from '../normalizetoolbarconfig.js';
 

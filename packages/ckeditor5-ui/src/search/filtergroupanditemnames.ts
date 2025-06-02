@@ -18,7 +18,7 @@ import { type ListSeparatorView } from '../list/listseparatorview.js';
 /**
  * A filter function that returns matching item and group names in the list view.
  */
-export default function filterGroupAndItemNames(
+export function filterGroupAndItemNames(
 	regExp: RegExp | null,
 	items: ViewCollection<ListItemGroupView | ListItemView | ListSeparatorView>
 ): {

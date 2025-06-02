@@ -10,7 +10,7 @@
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import type { PositionOffset, ViewElement, SlotFilter } from 'ckeditor5/src/engine.js';
 
-import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable.js';
+import { upcastTable, ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable.js';
 import { convertParagraphInTableCell, downcastCell, downcastRow, downcastTable } from './converters/downcast.js';
 
 import { InsertTableCommand } from './commands/inserttablecommand.js';

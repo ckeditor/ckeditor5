@@ -8,7 +8,7 @@
  */
 
 import { TypeCheckable } from './typecheckable.js';
-import TreeWalker, { type TreeWalkerOptions, type TreeWalkerValue } from './treewalker.js';
+import { TreeWalker, type TreeWalkerOptions, type TreeWalkerValue } from './treewalker.js';
 
 import { type Document } from './document.js';
 import { type DocumentFragment } from './documentfragment.js';

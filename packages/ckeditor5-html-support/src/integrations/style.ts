@@ -15,7 +15,7 @@ import {
 	viewToModelBlockAttributeConverter,
 	viewToModelObjectConverter
 } from '../converters.js';
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
+import { DataFilter, type DataFilterRegisterEvent } from '../datafilter.js';
 import type { DataSchemaBlockElementDefinition } from '../dataschema.js';
 
 /**

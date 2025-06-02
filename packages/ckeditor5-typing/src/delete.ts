@@ -11,7 +11,7 @@ import { BubblingEventInfo, DomEventData, type ViewDocumentKeyDownEvent } from '
 import { Plugin } from '@ckeditor/ckeditor5-core';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import { DeleteCommand } from './deletecommand.js';
-import DeleteObserver, { type DeleteEventData, type ViewDocumentDeleteEvent } from './deleteobserver.js';
+import { DeleteObserver, type DeleteEventData, type ViewDocumentDeleteEvent } from './deleteobserver.js';
 
 /**
  * The delete and backspace feature. Handles keys such as <kbd>Delete</kbd> and <kbd>Backspace</kbd>, other

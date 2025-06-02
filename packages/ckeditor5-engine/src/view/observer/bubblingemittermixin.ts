@@ -22,7 +22,7 @@ import {
 	type Mixed
 } from '@ckeditor/ckeditor5-utils';
 
-import BubblingEventInfo, { type EventPhase } from './bubblingeventinfo.js';
+import { BubblingEventInfo, type EventPhase } from './bubblingeventinfo.js';
 import { type Document } from '../document.js';
 import { type Node } from '../node.js';
 import { type Range } from '../range.js';
@@ -47,7 +47,7 @@ const contextsSymbol = Symbol( 'bubbling contexts' );
  * }
  * ```
  */
-export default function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: Base ): Mixed<Base, BubblingEmitter> {
+export function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: Base ): Mixed<Base, BubblingEmitter> {
 	abstract class Mixin extends base implements BubblingEmitter {
 		public abstract get selection(): DocumentSelection;
 

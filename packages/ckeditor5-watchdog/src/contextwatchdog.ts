@@ -7,8 +7,8 @@
  * @module watchdog/contextwatchdog
  */
 
-import Watchdog, { type WatchdogConfig, type WatchdogState } from './watchdog.js';
-import EditorWatchdog, { type EditorCreatorFunction } from './editorwatchdog.js';
+import { Watchdog, type WatchdogConfig, type WatchdogState } from './watchdog.js';
+import { EditorWatchdog, type EditorCreatorFunction } from './editorwatchdog.js';
 import { areConnectedThroughProperties } from './utils/areconnectedthroughproperties.js';
 import { getSubNodes } from './utils/getsubnodes.js';
 import type { ArrayOrItem, CKEditorError } from '@ckeditor/ckeditor5-utils';

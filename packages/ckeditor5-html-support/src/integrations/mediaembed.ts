@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
+import { DataFilter, type DataFilterRegisterEvent } from '../datafilter.js';
 import { DataSchema } from '../dataschema.js';
 import { updateViewAttributes, type GHSViewAttributes, getHtmlAttributeName } from '../utils.js';
 import type {

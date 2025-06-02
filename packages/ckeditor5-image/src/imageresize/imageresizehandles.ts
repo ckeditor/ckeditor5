@@ -12,7 +12,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { WidgetResize } from 'ckeditor5/src/widget.js';
 import { ImageUtils } from '../imageutils.js';
 
-import ImageLoadObserver, { type ImageLoadedEvent } from '../image/imageloadobserver.js';
+import { ImageLoadObserver, type ImageLoadedEvent } from '../image/imageloadobserver.js';
 import { type ResizeImageCommand } from './resizeimagecommand.js';
 
 const RESIZABLE_IMAGES_CSS_SELECTOR =

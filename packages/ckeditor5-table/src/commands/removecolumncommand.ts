@@ -14,7 +14,7 @@ import type {
 	Selection
 } from 'ckeditor5/src/engine.js';
 
-import TableWalker, { type TableSlot } from '../tablewalker.js';
+import { TableWalker, type TableSlot } from '../tablewalker.js';
 import { type TableUtils } from '../tableutils.js';
 
 /**

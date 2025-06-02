@@ -19,7 +19,7 @@ import type {
 	Writer
 } from 'ckeditor5/src/engine.js';
 
-import TableWalker, { type TableWalkerOptions } from './tablewalker.js';
+import { TableWalker, type TableWalkerOptions } from './tablewalker.js';
 import { createEmptyTableCell, updateNumericAttribute } from './utils/common.js';
 import { removeEmptyColumns, removeEmptyRows } from './utils/structure.js';
 import { getTableColumnElements } from './tablecolumnresize/utils.js';

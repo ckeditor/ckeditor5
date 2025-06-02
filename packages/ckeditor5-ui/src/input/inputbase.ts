@@ -18,7 +18,7 @@ import {
 /**
  * The base input view class.
  */
-export default abstract class InputBase<TElement extends HTMLInputElement | HTMLTextAreaElement = HTMLInputElement> extends View<TElement> {
+export abstract class InputBase<TElement extends HTMLInputElement | HTMLTextAreaElement = HTMLInputElement> extends View<TElement> {
 	/**
 	 * Stores information about the editor UI focus and propagates it so various plugins and components
 	 * are unified as a focus group.

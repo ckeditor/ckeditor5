@@ -38,7 +38,7 @@ import type { ViewElement } from '@ckeditor/ckeditor5-engine';
  * @param tagName The tagName of a view item.
  * @param className The class name to apply in the view.
  */
-export default function inlineHighlight(
+export function inlineHighlight(
 	editor: Editor,
 	attributeName: string,
 	tagName: string,

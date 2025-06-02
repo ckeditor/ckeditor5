@@ -14,7 +14,7 @@ import type {
 	Element
 } from 'ckeditor5/src/engine.js';
 
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
+import { DataFilter, type DataFilterRegisterEvent } from '../datafilter.js';
 import { type GHSViewAttributes, updateViewAttributes } from '../utils.js';
 import { getDescendantElement } from './integrationutils.js';
 import { viewToModelBlockAttributeConverter } from '../converters.js';

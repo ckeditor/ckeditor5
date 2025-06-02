@@ -20,7 +20,7 @@ import { type ToolbarView } from '../toolbar/toolbarview.js';
 /**
  * The editor UI view class. Base class for the editor main views.
  */
-export default abstract class EditorUIView extends View {
+export abstract class EditorUIView extends View {
 	/**
 	 * Collection of the child views, detached from the DOM
 	 * structure of the editor, like panels, icons etc.

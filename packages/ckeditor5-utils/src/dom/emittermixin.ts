@@ -48,7 +48,7 @@ const defaultEmitterClass = /* #__PURE__ */ DomEmitterMixin( /* #__PURE__ */ Emi
  *
  * @label EXTENDS
  */
-export default function DomEmitterMixin<Base extends Constructor<Emitter>>( base: Base ): Mixed<Base, DomEmitter>;
+export function DomEmitterMixin<Base extends Constructor<Emitter>>( base: Base ): Mixed<Base, DomEmitter>;
 
 /**
  * Mixin that injects the DOM events API into its host. It provides the API
@@ -72,12 +72,12 @@ export default function DomEmitterMixin<Base extends Constructor<Emitter>>( base
  *
  * @label NO_ARGUMENTS
  */
-export default function DomEmitterMixin(): {
+export function DomEmitterMixin(): {
 	new (): DomEmitter;
 	prototype: DomEmitter;
 };
 
-export default function DomEmitterMixin( base?: Constructor<Emitter> ): unknown {
+export function DomEmitterMixin( base?: Constructor<Emitter> ): unknown {
 	if ( !base ) {
 		return defaultEmitterClass;
 	}

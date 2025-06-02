@@ -13,7 +13,7 @@ import { env } from '../env.js';
 /**
  * Returns the visual viewport offsets to adjust elements with `position: fixed` style.
  */
-export default function getVisualViewportOffset(): { left: number; top: number } {
+export function getVisualViewportOffset(): { left: number; top: number } {
 	const visualViewport = global.window.visualViewport;
 
 	if ( !visualViewport || !( env.isiOS || env.isSafari ) ) {

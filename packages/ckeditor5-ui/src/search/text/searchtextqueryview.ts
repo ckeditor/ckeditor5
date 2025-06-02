@@ -9,7 +9,7 @@
 import { IconCancel, IconLoupe } from '@ckeditor/ckeditor5-icons';
 import { ButtonView } from '../../button/buttonview.js';
 import { IconView } from '../../icon/iconview.js';
-import LabeledFieldView, { type LabeledFieldViewCreator } from '../../labeledfield/labeledfieldview.js';
+import { LabeledFieldView, type LabeledFieldViewCreator } from '../../labeledfield/labeledfieldview.js';
 import { createLabeledInputText } from '../../labeledfield/utils.js';
 import { type InputBase } from '../../input/inputbase.js';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
