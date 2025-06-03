@@ -4,7 +4,7 @@
  */
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
 import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 

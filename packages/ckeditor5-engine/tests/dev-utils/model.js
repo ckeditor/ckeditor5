@@ -4,13 +4,13 @@
  */
 
 import { stringify, parse, getData, setData } from '../../src/dev-utils/model.js';
-import Model from '../../src/model/model.js';
-import DocumentFragment from '../../src/model/documentfragment.js';
-import Element from '../../src/model/element.js';
-import Text from '../../src/model/text.js';
-import Range from '../../src/model/range.js';
-import Position from '../../src/model/position.js';
-import count from '@ckeditor/ckeditor5-utils/src/count.js';
+import { Model } from '../../src/model/model.js';
+import { DocumentFragment } from '../../src/model/documentfragment.js';
+import { Element } from '../../src/model/element.js';
+import { Text } from '../../src/model/text.js';
+import { Range } from '../../src/model/range.js';
+import { Position } from '../../src/model/position.js';
+import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 
 describe( 'model test utils', () => {
 	let model, document, root, selection;

@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Range from '../../../src/model/range.js';
-import Position from '../../../src/model/position.js';
-import TreeWalker from '../../../src/model/treewalker.js';
-import Text from '../../../src/model/text.js';
-import TextProxy from '../../../src/model/textproxy.js';
+import { Range } from '../../../src/model/range.js';
+import { Position } from '../../../src/model/position.js';
+import { TreeWalker } from '../../../src/model/treewalker.js';
+import { Text } from '../../../src/model/text.js';
+import { TextProxy } from '../../../src/model/textproxy.js';
 
 /**
  * Returns tree structure as a simplified string. Elements are uppercase and characters are lowercase.

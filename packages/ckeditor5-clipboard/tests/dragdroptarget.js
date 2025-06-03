@@ -7,8 +7,8 @@ import { DragDrop } from '../src/dragdrop.js';
 import { DragDropTarget } from '../src/dragdroptarget.js';
 import { PastePlainText } from '../src/pasteplaintext.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Table } from '@ckeditor/ckeditor5-table/src/table.js';

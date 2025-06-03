@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import KeyObserver from '../../../src/view/observer/keyobserver.js';
-import View from '../../../src/view/view.js';
+import { KeyObserver } from '../../../src/view/observer/keyobserver.js';
+import { View } from '../../../src/view/view.js';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 

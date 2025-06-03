@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import RawElement from '../../src/view/rawelement.js';
-import Element from '../../src/view/element.js';
-import Document from '../../src/view/document.js';
+import { RawElement } from '../../src/view/rawelement.js';
+import { Element } from '../../src/view/element.js';
+import { Document } from '../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 

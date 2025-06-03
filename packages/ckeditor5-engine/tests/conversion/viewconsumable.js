@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ViewDocument from '../../src/view/document.js';
-import ViewElement from '../../src/view/element.js';
-import ViewText from '../../src/view/text.js';
-import ViewDocumentFragment from '../../src/view/documentfragment.js';
-import ViewConsumable from '../../src/conversion/viewconsumable.js';
+import { ViewDocument } from '../../src/view/document.js';
+import { ViewElement } from '../../src/view/element.js';
+import { ViewText } from '../../src/view/text.js';
+import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
+import { ViewConsumable } from '../../src/conversion/viewconsumable.js';
 import { addBorderRules } from '../../src/view/styles/border.js';
 import { addMarginRules } from '../../src/view/styles/margin.js';
 import { addPaddingRules } from '../../src/view/styles/padding.js';

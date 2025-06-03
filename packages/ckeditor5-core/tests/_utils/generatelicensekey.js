@@ -8,7 +8,7 @@ import { releaseDate, crc32 } from '@ckeditor/ckeditor5-utils';
 /**
  * Generates a license key for testing purposes.
  */
-export default function generateKey( options = {} ) {
+export function generateKey( options = {} ) {
 	const {
 		isExpired = false,
 		jtiExist = true,

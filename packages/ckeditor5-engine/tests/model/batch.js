@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Batch from '../../src/model/batch.js';
-import Operation from '../../src/model/operation/operation.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Batch } from '../../src/model/batch.js';
+import { Operation } from '../../src/model/operation/operation.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Batch', () => {
 	describe( 'constructor', () => {

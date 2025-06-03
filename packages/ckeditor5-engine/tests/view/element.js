@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import count from '@ckeditor/ckeditor5-utils/src/count.js';
-import Node from '../../src/view/node.js';
-import Element from '../../src/view/element.js';
-import Text from '../../src/view/text.js';
-import TextProxy from '../../src/view/textproxy.js';
-import Document from '../../src/view/document.js';
+import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
+import { Node } from '../../src/view/node.js';
+import { Element } from '../../src/view/element.js';
+import { Text } from '../../src/view/text.js';
+import { TextProxy } from '../../src/view/textproxy.js';
+import { Document } from '../../src/view/document.js';
 import { addBorderRules } from '../../src/view/styles/border.js';
 import { addMarginRules } from '../../src/view/styles/margin.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
-import TokenList from '../../src/view/tokenlist.js';
+import { TokenList } from '../../src/view/tokenlist.js';
 import { StylesMap } from '@ckeditor/ckeditor5-engine';
 
 describe( 'Element', () => {

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import global from '../../src/dom/global.js';
+import { global } from '../../src/dom/global.js';
 
 /**
  * A helper class that makes it possible to visualize {@link module:utils/dom/rect~Rect rect objects}.

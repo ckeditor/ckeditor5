@@ -89,6 +89,8 @@ export class RootElement extends Element {
 	// @if CK_DEBUG_ENGINE // }
 }
 
+export { RootElement as ModelRootElement } from './rootelement.js';
+
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
 RootElement.prototype.is = function( type: string, name?: string ): boolean {

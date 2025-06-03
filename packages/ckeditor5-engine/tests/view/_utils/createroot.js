@@ -13,7 +13,7 @@ import { RootEditableElement } from '../../../src/view/rooteditableelement.js';
  * @param {String} rootName Root name.
  * @returns {module:engine/view/rooteditableelement~RootEditableElement} Root element.
  */
-export default function createRoot( doc, name = 'div', rootName = 'main' ) {
+export function createViewRoot( doc, name = 'div', rootName = 'main' ) {
 	const root = new RootEditableElement( doc, name );
 
 	root.rootName = rootName;

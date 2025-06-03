@@ -6,11 +6,11 @@
 /**
  * General test utils for CKEditor.
  */
-const utils = {
+export const testUtils = {
 	sinon,
 
 	/**
-	 * Creates Sinon sandbox in {@link utils#sinon} and plugs `afterEach()` callback which
+	 * Creates Sinon sandbox in {@link testUtils#sinon} and plugs `afterEach()` callback which
 	 * restores all spies and stubs created in this sandbox.
 	 *
 	 * See https://github.com/ckeditor/ckeditor5-design/issues/72 and http://sinonjs.org/docs/#sinon-sandbox
@@ -36,7 +36,7 @@ const utils = {
 	createSinonSandbox() {
 		// eslint-disable-next-line mocha/no-top-level-hooks
 		afterEach( () => {
-			utils.sinon.restore();
+			testUtils.sinon.restore();
 		} );
 	},
 
@@ -103,5 +103,3 @@ const utils = {
 		return isValid;
 	}
 };
-
-export default utils;

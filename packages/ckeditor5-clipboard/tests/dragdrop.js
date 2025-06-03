@@ -9,8 +9,8 @@ import { DragDropTarget } from '../src/dragdroptarget.js';
 import { PastePlainText } from '../src/pasteplaintext.js';
 import { DragDropBlockToolbar } from '../src/dragdropblocktoolbar.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
 import { WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository.js';

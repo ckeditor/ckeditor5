@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Locale from '../src/locale.js';
+import { Locale } from '../src/locale.js';
 import {
 	add as addTranslations,
 	_clear as clearTranslations

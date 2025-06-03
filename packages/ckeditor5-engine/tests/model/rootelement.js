@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../src/model/model.js';
-import Element from '../../src/model/element.js';
-import RootElement from '../../src/model/rootelement.js';
-import count from '@ckeditor/ckeditor5-utils/src/count.js';
+import { Model } from '../../src/model/model.js';
+import { Element } from '../../src/model/element.js';
+import { RootElement } from '../../src/model/rootelement.js';
+import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 
 describe( 'RootElement', () => {
 	describe( 'constructor()', () => {

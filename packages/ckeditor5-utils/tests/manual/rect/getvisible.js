@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Rect from '../../../src/dom/rect.js';
+import { Rect } from '../../../src/dom/rect.js';
 import RectDrawer, { diagonalStylesBlack } from '../../_utils/rectdrawer.js';
 
 window.addEventListener( 'scroll', drawVisibleRects, true );

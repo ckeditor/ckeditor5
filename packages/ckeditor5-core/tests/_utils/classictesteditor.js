@@ -19,7 +19,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
  * @memberOf tests.core._utils
  * @extends core.editor.Editor
  */
-export default class ClassicTestEditor extends ElementApiMixin( Editor ) {
+export class ClassicTestEditor extends ElementApiMixin( Editor ) {
 	/**
 	 * @inheritDoc
 	 */

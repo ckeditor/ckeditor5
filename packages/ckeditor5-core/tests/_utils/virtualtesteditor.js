@@ -13,7 +13,7 @@ import { Editor } from '../../src/editor/editor.js';
  *
  * @memberOf tests.core._utils
  */
-export default class VirtualTestEditor extends Editor {
+export class VirtualTestEditor extends Editor {
 	constructor( config ) {
 		super( config );
 
