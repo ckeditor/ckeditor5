@@ -10,7 +10,7 @@ import { stringify as stringifyView, getData as getViewData } from '@ckeditor/ck
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import MentionEditing, { _toMentionAttribute } from '../src/mentionediting.js';
+import { MentionEditing, _toMentionAttribute } from '../src/mentionediting.js';
 import { MentionCommand } from '../src/mentioncommand.js';
 
 describe( 'MentionEditing', () => {

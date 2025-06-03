@@ -15,7 +15,7 @@ import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
 import { ContextualBalloon } from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
 import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 
-import MentionUI, { createRegExp } from '../src/mentionui.js';
+import { MentionUI, createRegExp } from '../src/mentionui.js';
 import { MentionEditing } from '../src/mentionediting.js';
 import { MentionsView } from '../src/ui/mentionsview.js';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
