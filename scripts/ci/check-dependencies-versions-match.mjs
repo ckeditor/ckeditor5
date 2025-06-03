@@ -41,7 +41,7 @@ isCKEditor5PackageFactory().then( isCkeditor5Package => {
 	checkVersionMatch( {
 		cwd: CKEDITOR5_ROOT_PATH,
 		fix: shouldFix,
-		isCkeditor5Package,
+		devDependenciesFilter: isCkeditor5Package,
 		pkgJsonPatterns,
 		versionExceptions
 	} );
