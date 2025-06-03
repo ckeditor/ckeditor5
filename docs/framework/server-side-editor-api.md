@@ -43,7 +43,7 @@ For information about setting up and using the endpoint itself, see the {TODO: l
 
 ### Getting editor data
 
-The most basic operation you can perform is getting the editor's data. Using the server-side editor API gives you control over the data format and allows you to process it before returning:
+The most basic action you can perform is getting the editor's data:
 
 ```js
 // Get the editor data.
@@ -132,9 +132,9 @@ editor.model.change( writer => {
 
 This approach is particularly useful when you need to update many links at once or fix broken links across your content.
 
-To learn more about working with the editor model, see the {@link framework/architecture/editing-engine Editing engine guide}.
+To learn more about working with the editor engine, see the {@link framework/architecture/editing-engine Editing engine} guide.
 
-## Working with Track Changes
+## Working with track changes
 
 {@link features/track-changes Track changes} helps you manage content suggestions effectively, for tasks like automating content review, and implementing AI-powered suggestions.
 
@@ -197,14 +197,14 @@ This approach shines in several real-world scenarios:
 
 ### Working with suggestions
 
-You can use the track changes data plugin to get the document data with all suggestions either accepted or rejected:
+You can use the {@link module:track-changes/trackchangesdata~TrackChangesData track changes data plugin} to get the document data with all suggestions either accepted or rejected:
 
 ```js
 // Get the track changes data plugin.
 const trackChangesData = editor.plugins.get( 'TrackChangesData' );
 
 // Get the document data with all suggestions rejected.
-// You can also use trackChangesData.getDataWithAcceptedSuggestions() to get data with all suggestions accepted.
+// You can also use `trackChangesData.getDataWithAcceptedSuggestions()` to get data with all suggestions accepted.
 const data = trackChangesData.getDataWithDiscardedSuggestions();
 
 return data;
@@ -219,7 +219,7 @@ While the previous example could be used to get the data, you may want to perman
 editor.execute( 'acceptAllSuggestions' );
 ```
 
-This is particularly useful for document finalization or in applications where the document is split into multiple CKEditor instances but appears as one document to the user. In such cases, you might want to offer a button to accept all suggestions across all document parts.
+This approach is especially helpful when finalizing documents or when working with applications where a document is split into multiple CKEditor instances but appears as one document to the user. In such cases, you might want to offer a button to accept all suggestions across all document parts.
 
 For more granular control, you can also manage individual suggestions:
 
@@ -230,13 +230,13 @@ const trackChangesEditing = editor.plugins.get( 'TrackChangesEditing' );
 // Get a specific suggestion by its ID.
 const suggestion = trackChangesEditing.getSuggestion( 'suggestion-id' );
 
-// Accept or discard the suggestion.
+// Accept the suggestion.
 suggestion.accept();
-// or
-suggestion.discard();
+// Or discard it.
+// suggestion.discard();
 ```
 
-This is especially useful when you want to display and manage suggestions outside of the editor, for example in a separate application view where users can see all comments and suggestions and resolve them without going into the editor.
+It allows to display and manage suggestions outside of the editor, for example in a separate application view where users can see all comments and suggestions and resolve them without going into the editor.
 
 ### Attribute modifications
 
@@ -291,11 +291,11 @@ for ( const thread of threads ) {
 
 This code is particularly useful when you need to clean up a document before finalizing it. You might use it to automatically resolve old discussions, prepare documents for publication, or maintain a clean comment history in your content management system.
 
-## Working with Revision History
+## Working with revision history
 
 Use {@link features/revision-history Revision history} feature API to build more functional integration between your application and the document revisions data.
 
-### Basic revision management
+### Saving revisions
 
 You can use Revision History API to save a new revision directly from your application back-end:
 
@@ -331,8 +331,6 @@ This is useful if you need particular revision data for further processing. It w
 
 ## Custom plugins
 
-Server-side editor API capabilities could be extended by custom plugins. This approach is particularly useful when you need to implement complex logic or maintain reusable functionality across multiple server-side operations.
+Server-side editor API capabilities could be extended by creating custom plugins. They provide a way to implement complex logic and maintain reusable functionality across multiple server-side operations. Through the editor instance, you can access their API in your server-side scripts, making your code more organized and maintainable. This approach is especially recommended for complex operations that would be cumbersome to implement directly in the server-side script.
 
-When using custom plugins, you can access their API through the editor instance in your server-side scripts, making your code more organized and maintainable. This approach is especially recommended for complex operations that would be cumbersome to implement directly in the server-side script.
-
-For more information about creating custom plugins, see the {@link framework/architecture/plugins Plugins architecture guide} and the {@link tutorials/creating-simple-plugin-timestamp Creating a basic plugin} tutorial.
+For more information about creating custom plugins, see the {@link framework/architecture/plugins Plugins architecture} guide and the {@link tutorials/creating-simple-plugin-timestamp Creating a basic plugin} tutorial.
