@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { longtext } from './longtext.txt';
+import longtext from './longtext.txt';
 
 /**
  * Returns text of a given length.
