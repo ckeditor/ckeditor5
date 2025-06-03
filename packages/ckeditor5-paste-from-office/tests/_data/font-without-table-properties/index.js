@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { font } from './font/input.html';
-import { fontModel } from './font/model.html';
+import font from './font/input.html';
+import fontModel from './font/model.html';
 
 export const fixtures = {
 	input: {

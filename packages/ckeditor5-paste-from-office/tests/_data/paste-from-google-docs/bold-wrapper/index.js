@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { simpleText } from './simple-text/input.html';
-import { simpleTextWindows } from './simple-text-windows/input.html';
+import simpleText from './simple-text/input.html';
+import simpleTextWindows from './simple-text-windows/input.html';
 
-import { simpleTextNormalized } from './simple-text/normalized.html';
-import { simpleTextWindowsNormalized } from './simple-text-windows/normalized.html';
+import simpleTextNormalized from './simple-text/normalized.html';
+import simpleTextWindowsNormalized from './simple-text-windows/normalized.html';
 
-import { simpleTextModel } from './simple-text/model.html';
-import { simpleTextWindowsModel } from './simple-text-windows/model.html';
+import simpleTextModel from './simple-text/model.html';
+import simpleTextWindowsModel from './simple-text-windows/model.html';
 
 export const fixtures = {
 	input: {
@@ -27,11 +27,11 @@ export const fixtures = {
 	}
 };
 
-import { simpleTextFirefox } from './simple-text/input.firefox.html';
-import { simpleTextWindowsFirefox } from './simple-text-windows/input.firefox.html';
+import simpleTextFirefox from './simple-text/input.firefox.html';
+import simpleTextWindowsFirefox from './simple-text-windows/input.firefox.html';
 
-import { simpleTextNormalizedFirefox } from './simple-text/normalized.firefox.html';
-import { simpleTextWindowsNormalizedFirefox } from './simple-text-windows/normalized.firefox.html';
+import simpleTextNormalizedFirefox from './simple-text/normalized.firefox.html';
+import simpleTextWindowsNormalizedFirefox from './simple-text-windows/normalized.firefox.html';
 
 export const browserFixtures = {
 	firefox: {

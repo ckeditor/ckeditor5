@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { tableCellProperties } from './tablecellproperties/input.html';
-import { tableCellPropertiesModel } from './tablecellproperties/model.html';
+import tableCellProperties from './tablecellproperties/input.html';
+import tableCellPropertiesModel from './tablecellproperties/model.html';
 
 export const fixtures = {
 	input: {

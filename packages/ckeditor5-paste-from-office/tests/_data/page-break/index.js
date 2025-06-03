@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { pageBreak } from './page-break/input.html';
-import { pageBreakModel } from './page-break/model.html';
+import pageBreak from './page-break/input.html';
+import pageBreakModel from './page-break/model.html';
 
 export const fixtures = {
 	input: {
