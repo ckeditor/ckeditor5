@@ -4,7 +4,7 @@
  */
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { Model } from '@ckeditor/ckeditor5-ui/src/model.js';
+import { ViewModel } from '@ckeditor/ckeditor5-ui/src/model.js';
 import { SplitButtonView } from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
 
 import { IconImageUrl } from '@ckeditor/ckeditor5-icons';
@@ -308,7 +308,7 @@ describe( 'ImageInsertViaUrlUI', () => {
 					plugins: [ Image, ImageInsertViaUrl ]
 				} );
 
-				const observable = new Model( { isEnabled: true } );
+				const observable = new ViewModel( { isEnabled: true } );
 
 				insertImageUI.registerIntegration( {
 					name: 'foo',

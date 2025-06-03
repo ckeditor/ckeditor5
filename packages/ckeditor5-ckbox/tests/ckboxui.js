@@ -14,7 +14,7 @@ import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservi
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { CloudServicesCoreMock } from './_utils/cloudservicescoremock.js';
 import { ImageInsertUI } from '@ckeditor/ckeditor5-image/src/imageinsert/imageinsertui.js';
-import { Model } from '@ckeditor/ckeditor5-ui/src/model.js';
+import { ViewModel } from '@ckeditor/ckeditor5-ui/src/model.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { IconImageAssetManager, IconBrowseFiles } from 'ckeditor5/src/icons.js';
 
@@ -265,7 +265,7 @@ describe( 'CKBoxUI', () => {
 
 	function mockAnotherIntegration() {
 		const insertImageUI = editor.plugins.get( 'ImageInsertUI' );
-		const observable = new Model( { isEnabled: true } );
+		const observable = new ViewModel( { isEnabled: true } );
 
 		insertImageUI.registerIntegration( {
 			name: 'url',

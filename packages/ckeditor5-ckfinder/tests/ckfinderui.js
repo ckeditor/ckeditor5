@@ -15,7 +15,7 @@ import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui/src/menubar/menubarmenulistitembuttonview.js';
 
 import { CKFinder } from '../src/ckfinder.js';
-import { Model } from '@ckeditor/ckeditor5-ui/src/model.js';
+import { ViewModel } from '@ckeditor/ckeditor5-ui/src/model.js';
 import { CKFinderUI } from '../src/ckfinderui.js';
 
 describe( 'CKFinderUI', () => {
@@ -204,7 +204,7 @@ describe( 'CKFinderUI', () => {
 
 	function mockAnotherIntegration() {
 		const insertImageUI = editor.plugins.get( 'ImageInsertUI' );
-		const observable = new Model( { isEnabled: true } );
+		const observable = new ViewModel( { isEnabled: true } );
 
 		insertImageUI.registerIntegration( {
 			name: 'url',

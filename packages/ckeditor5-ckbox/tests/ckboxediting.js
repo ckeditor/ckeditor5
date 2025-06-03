@@ -22,7 +22,7 @@ import { CloudServicesCoreMock } from './_utils/cloudservicescoremock.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { CKBoxEditing } from '../src/ckboxediting.js';
-import { CKBoxImageEditing } from '../src/ckboximageedit/ckboximageeditediting.js';
+import { CKBoxImageEditEditing } from '../src/ckboximageedit/ckboximageeditediting.js';
 import { CKBoxCommand } from '../src/ckboxcommand.js';
 import { CKBoxUploadAdapter } from '../src/ckboxuploadadapter.js';
 import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
@@ -1975,7 +1975,7 @@ function createTestEditor( config = {}, loadCKBoxFirst = false ) {
 		ImageUploadProgress,
 		CloudServices,
 		CKBoxUploadAdapter,
-		CKBoxImageEditing
+		CKBoxImageEditEditing
 	];
 
 	if ( loadCKBoxFirst ) {

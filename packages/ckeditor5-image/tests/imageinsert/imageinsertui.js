@@ -5,7 +5,7 @@
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { Model } from '@ckeditor/ckeditor5-ui/src/model.js';
+import { ViewModel } from '@ckeditor/ckeditor5-ui/src/model.js';
 import { DropdownView } from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
@@ -138,7 +138,7 @@ describe( 'ImageInsertUI', () => {
 		} );
 
 		it( 'should store the integration definition', () => {
-			const observable = new Model( { isEnabled: true } );
+			const observable = new ViewModel( { isEnabled: true } );
 			const buttonViewCreator = () => {};
 			const formViewCreator = () => {};
 			const menuBarButtonViewCreator = () => {};
@@ -163,7 +163,7 @@ describe( 'ImageInsertUI', () => {
 		} );
 
 		it( 'should store the integration definition (with optional data)', () => {
-			const observable = new Model( { isEnabled: true } );
+			const observable = new ViewModel( { isEnabled: true } );
 			const buttonViewCreator = () => {};
 			const formViewCreator = () => {};
 			const menuBarButtonViewCreator = () => {};
@@ -189,7 +189,7 @@ describe( 'ImageInsertUI', () => {
 		} );
 
 		it( 'should warn if multiple integrations with the same name are registered', () => {
-			const observable = new Model( { isEnabled: true } );
+			const observable = new ViewModel( { isEnabled: true } );
 			const buttonViewCreator = () => {};
 			const formViewCreator = () => {};
 			const menuBarButtonViewCreator = () => {};
@@ -456,7 +456,7 @@ describe( 'ImageInsertUI', () => {
 		} );
 
 		function registerUrlIntegration( observableAsFunc ) {
-			observableUrl = new Model( { isEnabled: true } );
+			observableUrl = new ViewModel( { isEnabled: true } );
 
 			insertImageUI.registerIntegration( {
 				name: 'url',
@@ -487,7 +487,7 @@ describe( 'ImageInsertUI', () => {
 		}
 
 		function registerUploadIntegration( observableAsFunc ) {
-			observableUpload = new Model( { isEnabled: true } );
+			observableUpload = new ViewModel( { isEnabled: true } );
 
 			insertImageUI.registerIntegration( {
 				name: 'upload',

@@ -7,7 +7,7 @@ import { IconBold, IconItalic, IconCheck, IconCancel } from 'ckeditor5/src/icons
 import { testUtils } from '@ckeditor/ckeditor5-ui/tests/_utils/utils.js';
 
 import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
-import { Model } from '@ckeditor/ckeditor5-ui/src/model.js';
+import { ViewModel } from '@ckeditor/ckeditor5-ui/src/model.js';
 import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
 import { Locale } from '@ckeditor/ckeditor5-utils/src/locale.js';
 
@@ -295,7 +295,7 @@ function renderDropdown() {
 
 	collection.add( {
 		type: 'switchbutton',
-		model: new Model( {
+		model: new ViewModel( {
 			label: 'A switchable list item',
 			withText: true
 		} )
@@ -303,7 +303,7 @@ function renderDropdown() {
 
 	collection.add( {
 		type: 'switchbutton',
-		model: new Model( {
+		model: new ViewModel( {
 			label: 'On with an icon',
 			withText: true,
 			isOn: true,
@@ -313,7 +313,7 @@ function renderDropdown() {
 
 	collection.add( {
 		type: 'button',
-		model: new Model( {
+		model: new ViewModel( {
 			label: 'Icon and key',
 			withText: true,
 			icon: IconBold,
@@ -324,7 +324,7 @@ function renderDropdown() {
 
 	collection.add( {
 		type: 'button',
-		model: new Model( {
+		model: new ViewModel( {
 			label: 'On with a keystroke',
 			withText: true,
 			isOn: true,
@@ -336,7 +336,7 @@ function renderDropdown() {
 
 	collection.add( {
 		type: 'switchbutton',
-		model: new Model( {
+		model: new ViewModel( {
 			label: 'Disabled',
 			withText: true,
 			isEnabled: false
@@ -348,7 +348,7 @@ function renderDropdown() {
 	[ 'Arial', 'Tahoma', 'Georgia' ].forEach( font => {
 		collection.add( {
 			type: 'button',
-			model: new Model( {
+			model: new ViewModel( {
 				label: `${ font } (style attr)`,
 				style: `font-family: ${ font }`,
 				withText: true
@@ -360,7 +360,7 @@ function renderDropdown() {
 
 	collection.add( {
 		type: 'button',
-		model: new Model( {
+		model: new ViewModel( {
 			label: 'Bold',
 			withText: true,
 			icon: IconBold
@@ -369,7 +369,7 @@ function renderDropdown() {
 
 	collection.add( {
 		type: 'button',
-		model: new Model( {
+		model: new ViewModel( {
 			label: 'This item is on',
 			withText: true,
 			icon: IconBold,
@@ -379,7 +379,7 @@ function renderDropdown() {
 
 	collection.add( {
 		type: 'button',
-		model: new Model( {
+		model: new ViewModel( {
 			label: 'Disabled',
 			withText: true,
 			icon: IconBold,

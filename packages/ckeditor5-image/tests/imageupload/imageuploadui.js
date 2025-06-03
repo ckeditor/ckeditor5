@@ -15,7 +15,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Notification } from '@ckeditor/ckeditor5-ui/src/notification/notification.js';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import { Model } from '@ckeditor/ckeditor5-ui/src/model.js';
+import { ViewModel } from '@ckeditor/ckeditor5-ui/src/model.js';
 import { IconImageUpload } from 'ckeditor5/src/icons.js';
 
 import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
@@ -214,7 +214,7 @@ describe( 'ImageUploadUI', () => {
 
 	function mockAnotherIntegration() {
 		const insertImageUI = editor.plugins.get( 'ImageInsertUI' );
-		const observable = new Model( { isEnabled: true } );
+		const observable = new ViewModel( { isEnabled: true } );
 
 		insertImageUI.registerIntegration( {
 			name: 'assetManager',
