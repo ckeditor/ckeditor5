@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import config from '../../_utils/performance-config.js';
-import dataSet from '../../_data/data-sets/mixed.js';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { config } from '../../_utils/performance-config.js';
+import { dataSet } from '../../_data/data-sets/mixed.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
 const initialData = dataSet();
 const finalConfig = { initialData, ...config };

@@ -11,7 +11,7 @@ import { LinkImageEditing } from '@ckeditor/ckeditor5-link/src/linkimageediting.
 import { PictureEditing } from '@ckeditor/ckeditor5-image/src/pictureediting.js';
 import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
 import { LinkImage } from '@ckeditor/ckeditor5-link/src/linkimage.js';
-import { AutoSave } from '@ckeditor/ckeditor5-autosave/src/autosave.js';
+import { Autosave } from '@ckeditor/ckeditor5-autosave/src/autosave.js';
 import { TOKEN_URL } from '../_utils/ckbox-config.js';
 import { CKBox } from '../../src/ckbox.js';
 import { CKBoxImageEdit } from '../../src/ckboximageedit.js';
@@ -20,7 +20,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			ArticlePluginSet, PictureEditing, ImageUpload, LinkImageEditing,
-			ImageInsert, CloudServices, CKBox, LinkImage, CKBoxImageEdit, AutoSave
+			ImageInsert, CloudServices, CKBox, LinkImage, CKBoxImageEdit, Autosave
 		],
 		toolbar: [
 			'heading',
