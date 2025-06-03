@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { MarkdownDataProcessor } from '../../src/gfmdataprocessor.js';
+import { GFMDataProcessor } from '../../src/gfmdataprocessor.js';
 import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
 /**
- * Tests MarkdownDataProcessor.
+ * Tests GFMDataProcessor.
  *
  * @param {String} markdown Markdown to be processed to view.
  * @param {String} viewString Expected view structure.
@@ -22,7 +22,7 @@ import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.j
 export function testDataProcessor( markdown, viewString, normalizedMarkdown, options ) {
 	const viewDocument = new ViewDocument( new StylesProcessor() );
 
-	const dataProcessor = new MarkdownDataProcessor( viewDocument );
+	const dataProcessor = new GFMDataProcessor( viewDocument );
 
 	if ( options && options.setup ) {
 		options.setup( dataProcessor );
