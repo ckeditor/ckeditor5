@@ -77,9 +77,6 @@ If you plan to use it withing CKEditor&nbsp;5, refer to the {@link features/ckbo
 ## Next steps
 
 * If you already use collaboration features without Real-time Collaboration you can refer to our dedicated guide about [migration of data between asynchronous and RTC editors](https://ckeditor.com/docs/cs/latest/guides/collaboration/migrating-to-rtc.html).
-
 * If you need to save your documents in portable file formats, check out the {@link features/export-pdf Export to PDF} or {@link features/export-word Export to Word} feature guides.
-
 * If you need to import your documents from the `.docx` format, learn more about the {@link features/import-word Import from Word} feature.
-
 * If you are interested in the CKBox asset manager, check the [CKBox quick start](https://ckeditor.com/docs/ckbox/latest/guides/quick-start.html) guide for a short instruction on how to start using CKBox.
