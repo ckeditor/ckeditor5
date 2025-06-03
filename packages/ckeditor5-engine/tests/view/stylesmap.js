@@ -212,6 +212,10 @@ describe( 'StylesMap', () => {
 	} );
 
 	describe( 'remove()', () => {
+		beforeEach( () => {
+			addBorderRules( stylesProcessor );
+		} );
+
 		it( 'should do nothing if property is not set', () => {
 			stylesMap.remove( 'color' );
 
@@ -252,6 +256,68 @@ describe( 'StylesMap', () => {
 			stylesMap.remove( 'text-align' );
 
 			expect( stylesMap.toString() ).to.equal( '' );
+		} );
+
+		it( 'should remove related rules by parent rule', () => {
+			stylesMap.set( 'border-left-color', 'red' );
+			stylesMap.set( 'border-left-style', 'solid' );
+			stylesMap.set( 'border-left-width', '2px' );
+
+			// Additional styles to check that removing works correctly.
+			stylesMap.set( 'margin', '10px' );
+			stylesMap.set( 'color', 'blue' );
+			stylesMap.set( 'border-top-color', 'orange' );
+			stylesMap.set( 'border-right', '5px dashed purple' );
+
+			expect( stylesMap.toString() ).to.equal(
+				'border-left:2px solid red;' +
+				'border-right:5px dashed purple;' +
+				'border-top-color:orange;' +
+				'color:blue;' +
+				'margin:10px;'
+			);
+
+			stylesMap.remove( 'border-left' );
+
+			expect( stylesMap.toString() ).to.equal(
+				'border-right:5px dashed purple;' +
+				'border-top-color:orange;' +
+				'color:blue;' +
+				'margin:10px;'
+			);
+		} );
+
+		it( 'should remove multiple css attributes by parent css attribute', () => {
+			stylesMap.set( 'border', 'orange' );
+			stylesMap.set( 'border-right-color', 'purple' );
+			stylesMap.set( 'border-left-color', 'red' );
+			stylesMap.set( 'border-left-style', 'solid' );
+			stylesMap.set( 'border-left-width', '2px' );
+
+			// Additional styles to check that removing works correctly.
+			stylesMap.set( 'margin', '10px' );
+			stylesMap.set( 'color', 'blue' );
+			stylesMap.set( 'border-top-color', 'orange' );
+			stylesMap.set( 'border-right', '5px dashed purple' );
+
+			expect( stylesMap.toString() ).to.equal(
+				'border-bottom-color:orange;' +
+				'border-left:2px solid red;' +
+				'border-right:5px dashed purple;' +
+				'border-top-color:orange;' +
+				'color:blue;' +
+				'margin:10px;'
+			);
+
+			stylesMap.remove( 'border-left' );
+
+			expect( stylesMap.toString() ).to.equal(
+				'border-bottom-color:orange;' +
+				'border-right:5px dashed purple;' +
+				'border-top-color:orange;' +
+				'color:blue;' +
+				'margin:10px;'
+			);
 		} );
 	} );
 
