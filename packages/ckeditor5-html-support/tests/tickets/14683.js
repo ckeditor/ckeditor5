@@ -6,7 +6,7 @@
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
-import { Style } from '@ckeditor/ckeditor5-style/src/styleediting.js';
+import { StyleEditing } from '@ckeditor/ckeditor5-style/src/styleediting.js';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 
@@ -18,7 +18,7 @@ describe( 'bug #14683', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Paragraph, LinkEditing, GeneralHtmlSupport, Style ],
+			plugins: [ Paragraph, LinkEditing, GeneralHtmlSupport, StyleEditing ],
 			style: {
 				definitions: [
 					{
