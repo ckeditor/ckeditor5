@@ -139,7 +139,7 @@ In the view layer, we will have the `<abbr>` HTML element, with the title attrib
 {@img assets/img/abbreviation-part1-1.png Screenshot of a the inspector showing the view layer.}
 
 In the model, inline elements such as `<abbr>`, are represented as attributes not as separate elements. In order for our plugin to work, we will need to make sure that we can add abbreviation attribute to the text node.
-{@img assets/img/abbreviation-part1-2.png Screenshot of a the inspector showing the model layer.}
+{@img assets/img/abbreviation-part1-2.png Screenshot of the inspector showing the model layer.}
 
 ### Defining the schema
 
