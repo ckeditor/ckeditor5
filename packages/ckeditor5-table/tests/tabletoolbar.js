@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ClassicTestEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import { TableToolbar } from '../src/tabletoolbar.js';
 import { Table } from '../src/table.js';
 import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
@@ -37,7 +37,7 @@ describe( 'TableToolbar', () => {
 			editorElement = global.document.createElement( 'div' );
 			global.document.body.appendChild( editorElement );
 
-			return ClassicTestEditor
+			return ClassicEditor
 				.create( editorElement, {
 					plugins: [ Paragraph, Image, ImageStyle, ImageToolbar, Table, TableToolbar, FakeButton, ClipboardPipeline ],
 					image: {
@@ -71,7 +71,7 @@ describe( 'TableToolbar', () => {
 			const editorElement = global.document.createElement( 'div' );
 			global.document.body.appendChild( editorElement );
 
-			return ClassicTestEditor.create( editorElement, {
+			return ClassicEditor.create( editorElement, {
 				plugins: [ TableToolbar, ClipboardPipeline ]
 			} )
 				.then( editor => {
@@ -263,7 +263,7 @@ describe( 'TableToolbar', () => {
 			element = document.createElement( 'div' );
 			document.body.appendChild( element );
 
-			return ClassicTestEditor.create( element, {
+			return ClassicEditor.create( element, {
 				plugins: [ Paragraph, Table, TableToolbar, FakeButton, ClipboardPipeline ],
 				table: {
 					tableToolbar: [ 'fake_button' ]
@@ -287,7 +287,7 @@ describe( 'TableToolbar', () => {
 				const editorElement = global.document.createElement( 'div' );
 				global.document.body.appendChild( editorElement );
 
-				return ClassicTestEditor.create( editorElement, {
+				return ClassicEditor.create( editorElement, {
 					plugins: [ TableToolbar ]
 				} )
 					.then( editor => {

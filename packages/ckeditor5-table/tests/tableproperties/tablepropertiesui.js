@@ -19,7 +19,7 @@ import { Table } from '../../src/table.js';
 import { TableLayout } from '../../src/tablelayout.js';
 import { TablePropertiesEditing } from '../../src/tableproperties/tablepropertiesediting.js';
 import { TablePropertiesUI } from '../../src/tableproperties/tablepropertiesui.js';
-import { TablePropertiesUIView } from '../../src/tableproperties/ui/tablepropertiesview.js';
+import { TablePropertiesView } from '../../src/tableproperties/ui/tablepropertiesview.js';
 import { defaultColors } from '../../src/utils/ui/table-properties.js';
 
 describe( 'table properties', () => {
@@ -104,7 +104,7 @@ describe( 'table properties', () => {
 
 				it( 'should be created on first show', () => {
 					tablePropertiesUI._showView();
-					expect( tablePropertiesUI.view ).to.be.instanceOf( TablePropertiesUIView );
+					expect( tablePropertiesUI.view ).to.be.instanceOf( TablePropertiesView );
 				} );
 
 				it( 'should be rendered', () => {

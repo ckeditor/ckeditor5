@@ -18,7 +18,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { Editor } from '@ckeditor/ckeditor5-core';
 import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ClassicTestEditor, { ClassicTestEditorUI } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicTestEditor, ClassicTestEditorUI } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 class MyEditorUI extends EditorUI {
 	constructor( editor ) {

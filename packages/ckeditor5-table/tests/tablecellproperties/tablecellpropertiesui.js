@@ -20,7 +20,7 @@ import { TableLayout } from '../../src/tablelayout.js';
 import { TableCellPropertiesEditing } from '../../src/tablecellproperties/tablecellpropertiesediting.js';
 import { TableCellWidthEditing } from '../../src/tablecellwidth/tablecellwidthediting.js';
 import { TableCellPropertiesUI } from '../../src/tablecellproperties/tablecellpropertiesui.js';
-import { TableCellPropertiesUIView } from '../../src/tablecellproperties/ui/tablecellpropertiesview.js';
+import { TableCellPropertiesView } from '../../src/tablecellproperties/ui/tablecellpropertiesview.js';
 import { defaultColors } from '../../src/utils/ui/table-properties.js';
 import { modelTable } from '../_utils/utils.js';
 
@@ -105,7 +105,7 @@ describe( 'table cell properties', () => {
 
 				it( 'should be created on first show', () => {
 					tableCellPropertiesUI._showView();
-					expect( tableCellPropertiesUI.view ).to.be.instanceOf( TableCellPropertiesUIView );
+					expect( tableCellPropertiesUI.view ).to.be.instanceOf( TableCellPropertiesView );
 				} );
 
 				it( 'should be rendered', () => {
