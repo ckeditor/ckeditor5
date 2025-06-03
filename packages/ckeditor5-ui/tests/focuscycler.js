@@ -5,7 +5,7 @@
 
 import { ViewCollection } from '../src/viewcollection.js';
 import { View } from '../src/view.js';
-import FocusCycler, { isViewWithFocusCycler } from '../src/focuscycler.js';
+import { FocusCycler, isViewWithFocusCycler } from '../src/focuscycler.js';
 import { KeystrokeHandler } from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';

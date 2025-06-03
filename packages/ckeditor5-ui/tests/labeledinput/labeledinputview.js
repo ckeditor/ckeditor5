@@ -5,7 +5,7 @@
 
 import { View } from '../../src/view.js';
 import { LabeledInputView } from '../../src/labeledinput/labeledinputview.js';
-import { InputView } from '../../src/inputtext/inputtextview.js';
+import { InputTextView } from '../../src/inputtext/inputtextview.js';
 import { LabelView } from '../../src/label/labelview.js';
 
 describe( 'LabeledInputView', () => {
@@ -14,7 +14,7 @@ describe( 'LabeledInputView', () => {
 	let view;
 
 	beforeEach( () => {
-		view = new LabeledInputView( locale, InputView );
+		view = new LabeledInputView( locale, InputTextView );
 
 		view.render();
 	} );
@@ -33,7 +33,7 @@ describe( 'LabeledInputView', () => {
 		} );
 
 		it( 'should create view#inputView', () => {
-			expect( view.inputView ).to.instanceOf( InputView );
+			expect( view.inputView ).to.instanceOf( InputTextView );
 		} );
 
 		it( 'should create view#labelView', () => {

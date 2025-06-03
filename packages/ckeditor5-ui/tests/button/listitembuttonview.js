@@ -4,7 +4,7 @@
  */
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ListItemButtonView, { CheckIconHolderView } from '../../src/button/listitembuttonview.js';
+import { ListItemButtonView, CheckIconHolderView } from '../../src/button/listitembuttonview.js';
 import { ButtonView } from '../../src/button/buttonview.js';
 
 describe( 'ListItemButtonView', () => {

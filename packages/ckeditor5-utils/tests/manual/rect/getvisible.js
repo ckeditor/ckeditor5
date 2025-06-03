@@ -4,7 +4,7 @@
  */
 
 import { Rect } from '../../../src/dom/rect.js';
-import RectDrawer, { diagonalStylesBlack } from '../../_utils/rectdrawer.js';
+import { RectDrawer, diagonalStylesBlack } from '../../_utils/rectdrawer.js';
 
 window.addEventListener( 'scroll', drawVisibleRects, true );
 window.addEventListener( 'resize', drawVisibleRects );

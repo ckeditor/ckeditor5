@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import EmitterMixin, { _getEmitterListenedTo, _getEmitterId, _setEmitterId } from '../src/emittermixin.js';
+import { EmitterMixin, _getEmitterListenedTo, _getEmitterId, _setEmitterId } from '../src/emittermixin.js';
 import { EventInfo } from '../src/eventinfo.js';
 import { expectToThrowCKEditorError } from './_utils/utils.js';
 import { CKEditorError } from '../src/ckeditorerror.js';
