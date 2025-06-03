@@ -4,16 +4,17 @@
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import DocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position.js';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range.js';
-import Undo from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+
+import { DocumentFragment } from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
+import { Position } from '@ckeditor/ckeditor5-engine/src/model/position.js';
+import { Range } from '@ckeditor/ckeditor5-engine/src/model/range.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { parse, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import Clipboard from '../src/clipboard.js';
-import ClipboardMarkersUtils from '../src/clipboardmarkersutils.js';
+import { Clipboard } from '../src/clipboard.js';
+import { ClipboardMarkersUtils } from '../src/clipboardmarkersutils.js';
 
 describe( 'Clipboard Markers Utils', () => {
 	let editor, model, modelRoot, element, viewDocument, clipboardMarkersUtils, getUniqueMarkerNameStub;
@@ -967,7 +968,7 @@ describe( 'Clipboard Markers Utils', () => {
 
 	async function createEditor() {
 		editor = await ClassicTestEditor.create( element, {
-			plugins: [ Undo, Paragraph, Clipboard ]
+			plugins: [ UndoEditing, Paragraph, Clipboard ]
 		} );
 
 		model = editor.model;

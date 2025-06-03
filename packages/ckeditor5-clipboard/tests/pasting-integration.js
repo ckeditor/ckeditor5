@@ -4,12 +4,13 @@
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Clipboard from '../src/clipboard.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import Link from '@ckeditor/ckeditor5-link/src/link.js';
+
+import { Clipboard } from '../src/clipboard.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import { Link } from '@ckeditor/ckeditor5-link/src/link.js';
 
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 

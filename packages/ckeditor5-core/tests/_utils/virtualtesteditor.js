@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Editor from '../../src/editor/editor.js';
+import { Editor } from '../../src/editor/editor.js';
 
 /**
  * A simple editor implementation useful for testing the engine part of the features.

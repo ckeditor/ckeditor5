@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Clipboard from '../src/clipboard.js';
-import ClipboardMarkersUtils from '../src/clipboardmarkersutils.js';
-import ClipboardPipeline from '../src/clipboardpipeline.js';
-import DragDrop from '../src/dragdrop.js';
-import PastePlainText from '../src/pasteplaintext.js';
+import { Clipboard } from '../src/clipboard.js';
+import { ClipboardMarkersUtils } from '../src/clipboardmarkersutils.js';
+import { ClipboardPipeline } from '../src/clipboardpipeline.js';
+import { DragDrop } from '../src/dragdrop.js';
+import { PastePlainText } from '../src/pasteplaintext.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { global } from '@ckeditor/ckeditor5-utils';
 
