@@ -136,11 +136,11 @@ To learn more about working with the editor engine, see the {@link framework/arc
 
 ## Working with track changes
 
-{@link features/track-changes Track changes} helps you manage content suggestions effectively, for tasks like automating content review, and implementing AI-powered suggestions.
+You can leverage {@link features/track-changes Track changes} feature API to manage existing content suggestions, retrieve final document data with all suggestions accepted, or implement automated or AI-powered content reviews.
 
 ### Using commands
 
-You can leverage {@link features/track-changes Track changes} feature API to manage existing content suggestions, retrieve final document data with all suggestions accepted, or implement automated or AI-powered content reviews.
+Track changes is integrated with most editor commands. If you wish to change the document using commands and track these changes, all you need to do is turn on track changes mode.
 
 Let's start with a basic text replacement:
 
