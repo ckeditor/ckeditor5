@@ -6,7 +6,7 @@
 import { ColorUI } from './../../src/ui/colorui.js';
 import { FontColorCommand } from './../../src/fontcolor/fontcolorcommand.js';
 
-export default class TestColorPlugin extends ColorUI {
+export class TestColorPlugin extends ColorUI {
 	constructor( editor ) {
 		super( editor, {
 			commandName: 'testColorCommand',

@@ -5,7 +5,7 @@
 
 import { Token } from '../../src/token/token.js';
 
-export default class TokenMock extends Token {
+export class TokenMock extends Token {
 	/**
 	 * Overrides request and set the next token
 	 *

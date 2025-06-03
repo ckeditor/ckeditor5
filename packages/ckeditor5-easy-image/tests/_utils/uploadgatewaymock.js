@@ -5,7 +5,7 @@
 
 import { EmitterMixin } from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
 
-export default class UploadGatewayMock {
+export class UploadGatewayMock {
 	constructor( token, uploadUrl ) {
 		UploadGatewayMock.lastToken = token;
 		UploadGatewayMock.lastUploadUrl = uploadUrl;

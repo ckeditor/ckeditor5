@@ -13,7 +13,7 @@ import { longtext } from './longtext.txt';
  * @param {Boolean} reversed Whether given text should be reversed.
  * @returns {String} Text of a given length.
  */
-export default function getLongText( length, fromStart = true, reversed = false ) {
+export function getLongText( length, fromStart = true, reversed = false ) {
 	const baseText = longtext.repeat( Math.ceil( length / longtext.length ) );
 	const text = fromStart ? baseText.substring( 0, length ) : baseText.substring( longtext.length - length );
 	return reversed ? text.split( '' ).reverse().join( '' ) : text;

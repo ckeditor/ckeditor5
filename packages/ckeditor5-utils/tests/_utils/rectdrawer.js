@@ -8,7 +8,7 @@ import { global } from '../../src/dom/global.js';
 /**
  * A helper class that makes it possible to visualize {@link module:utils/dom/rect~Rect rect objects}.
  */
-export default class RectDrawer {
+export class RectDrawer {
 	/**
 	 * Draws a rect object on the screen.
 	 *
