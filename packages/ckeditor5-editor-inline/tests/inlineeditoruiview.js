@@ -9,7 +9,7 @@ import { ToolbarView } from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
 import { BalloonPanelView } from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview.js';
 import { InlineEditableUIView } from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
 import { Locale } from '@ckeditor/ckeditor5-utils/src/locale.js';
-import { createRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
+import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 import { Rect } from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
 import { toUnit } from '@ckeditor/ckeditor5-utils/src/dom/tounit.js';
 import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
@@ -29,7 +29,7 @@ describe( 'InlineEditorUIView', () => {
 	beforeEach( () => {
 		locale = new Locale();
 		editingView = new EditingView();
-		editingViewRoot = createRoot( editingView.document );
+		editingViewRoot = createViewRoot( editingView.document );
 		view = new InlineEditorUIView( locale, editingView );
 		view.editable.name = editingViewRoot.rootName;
 
@@ -118,7 +118,7 @@ describe( 'InlineEditorUIView', () => {
 
 			it( 'creates an editing root with the configured aria-label (string format)', () => {
 				const editingView = new EditingView();
-				const editingViewRoot = createRoot( editingView.document );
+				const editingViewRoot = createViewRoot( editingView.document );
 				const view = new InlineEditorUIView( locale, editingView, undefined, {
 					label: 'Foo'
 				} );
@@ -132,7 +132,7 @@ describe( 'InlineEditorUIView', () => {
 
 			it( 'creates an editing root with the configured aria-label (object format)', () => {
 				const editingView = new EditingView();
-				const editingViewRoot = createRoot( editingView.document );
+				const editingViewRoot = createViewRoot( editingView.document );
 				const view = new InlineEditorUIView( locale, editingView, undefined, {
 					label: {
 						main: 'Foo'
@@ -198,7 +198,7 @@ describe( 'InlineEditorUIView', () => {
 				it( 'should set and update toolbar max-width according to the width of the editable element', () => {
 					const locale = new Locale();
 					const editingView = new EditingView();
-					const editingViewRoot = createRoot( editingView.document );
+					const editingViewRoot = createViewRoot( editingView.document );
 					const view = new InlineEditorUIView( locale, editingView, null, {
 						shouldToolbarGroupWhenFull: true
 					} );

@@ -9,7 +9,7 @@ import { StickyPanelView } from '@ckeditor/ckeditor5-ui/src/panel/sticky/stickyp
 import { ToolbarView } from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
 import { MenuBarView } from '@ckeditor/ckeditor5-ui/src/menubar/menubarview.js';
 import { Locale } from '@ckeditor/ckeditor5-utils/src/locale.js';
-import { createRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
+import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
@@ -21,7 +21,7 @@ describe( 'ClassicEditorUIView', () => {
 	beforeEach( () => {
 		locale = new Locale();
 		editingView = new EditingView();
-		editingViewRoot = createRoot( editingView.document );
+		editingViewRoot = createViewRoot( editingView.document );
 		view = new ClassicEditorUIView( locale, editingView );
 		view.editable.name = editingViewRoot.rootName;
 		view.render();
@@ -67,7 +67,7 @@ describe( 'ClassicEditorUIView', () => {
 				it( 'should be controlled via options.shouldToolbarGroupWhenFull', () => {
 					const locale = new Locale();
 					const editingView = new EditingView();
-					const editingViewRoot = createRoot( editingView.document );
+					const editingViewRoot = createViewRoot( editingView.document );
 					const view = new ClassicEditorUIView( locale, editingView, {
 						shouldToolbarGroupWhenFull: true
 					} );
@@ -89,7 +89,7 @@ describe( 'ClassicEditorUIView', () => {
 
 			it( 'creates an editing root with the configured aria-label (string format)', () => {
 				const editingView = new EditingView();
-				const editingViewRoot = createRoot( editingView.document );
+				const editingViewRoot = createViewRoot( editingView.document );
 				const view = new ClassicEditorUIView( locale, editingView, {
 					label: 'Foo'
 				} );
@@ -103,7 +103,7 @@ describe( 'ClassicEditorUIView', () => {
 
 			it( 'creates an editing root with the configured aria-label (object format)', () => {
 				const editingView = new EditingView();
-				const editingViewRoot = createRoot( editingView.document );
+				const editingViewRoot = createViewRoot( editingView.document );
 				const view = new ClassicEditorUIView( locale, editingView, {
 					label: {
 						main: 'Foo'
@@ -133,7 +133,7 @@ describe( 'ClassicEditorUIView', () => {
 		beforeEach( () => {
 			locale = new Locale();
 			editingView = new EditingView();
-			editingViewRoot = createRoot( editingView.document );
+			editingViewRoot = createViewRoot( editingView.document );
 			view = new ClassicEditorUIView( locale, editingView, { useMenuBar: true } );
 			view.editable.name = editingViewRoot.rootName;
 			view.render();
