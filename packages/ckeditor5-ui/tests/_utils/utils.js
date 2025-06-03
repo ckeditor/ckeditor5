@@ -8,7 +8,7 @@ import { View } from '../../src/view.js';
 /**
  * Test utils for CKEditor UI.
  */
-export const utils = {
+export const testUtils = {
 	/**
 	 * Returns a view for a given region/DOM selector pairs, which {@link module:ui/view~View#element}
 	 * is `document.body`. It is useful for manual tests which engage various UI components and/or

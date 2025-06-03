@@ -8,7 +8,7 @@ import {
 	convertColor,
 	registerCustomElement
 } from './../../src/colorpicker/utils.js';
-import { parse } from 'color-parse';
+import parse from 'color-parse';
 
 describe( 'utils', () => {
 	describe( 'convertToHex()', () => {
