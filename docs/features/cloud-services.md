@@ -5,11 +5,12 @@ meta-description: Cloud platform with document conversion, editing features and 
 menu-title: Overview
 modified_at: 2025-05-20
 order: 10
+badges: [ premium ]
 ---
 
 # Cloud Services Overview
 
-The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration services. These can connect to CKEditor&nbsp;5 using dedicated plugins. Additionally, each service has a REST API for synchronizing the data, utilizing, configuring, and managing features.
+The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration services. Each service has a REST API for managing comments, storing document revisions, handling the users, synchronizing the data, utilizing, configuring, and managing features. These can be used standalone with the aid of {@link features/cloud-services-rest-api RESTful APIs and hooks} or can be called from inside CKEditor&nbsp;5 through dedicated plugins.
 
 The platform primarily focuses on providing a backend for the CKEditor&nbsp;5 features, although some features can also be used directly through REST APIs.
 
@@ -27,7 +28,7 @@ The CKEditor Ecosystem offers a collection of plugins that can be integrated wit
 
 ### CKEditor&nbsp;5 Real-time collaboration features
 
-{@link features/real-time-collaboration CKEditor&nbsp;5 Real-time collaboration features} let you customize any CKEditor&nbsp;5 build to include real-time collaborative editing, commenting, and track changes features and tailor them to your needs.
+{@link features/real-time-collaboration CKEditor&nbsp;5 Real-time collaboration features} let you customize any CKEditor&nbsp;5 integration to include real-time collaborative editing, commenting, and track changes features and tailor them to your needs.
 
 Real-time collaboration consists of four features delivered as separate plugins that can be used with any CKEditor&nbsp;5 build:
 
@@ -49,13 +50,13 @@ CKEditor Cloud Services offers a fast and highly scalable service enabling the u
 
 ### Export to PDF
 
-The Export to PDF converter provides an API for converting HTML documents to PDF files. The service generates a file and returns it to the user so they can save it in the `.pdf` format on their disk. This allows you to easily turn your content into the portable final PDF format file collection. Available both [as a service endpoint](https://ckeditor.com/docs/cs/latest/guides/export-to-pdf/overview.html) (a premium feature) and {@link features/export-pdf as a plugin} (needs to be added to the editor build separately).
+The Export to PDF converter provides an API for converting HTML documents to PDF files. The service generates a file and returns it to the user so they can save it in the `.pdf` format on their disk. This allows you to easily turn your content into the portable final PDF format file collection. Available both [as a service endpoint](https://ckeditor.com/docs/cs/latest/guides/export-to-pdf/overview.html) (a premium feature) and {@link features/export-pdf as a plugin} (needs to be added to the editor separately).
 
 {@img assets/img/export-to-pdf-sample.png 700 Export to PDF feature in the CKEditor&nbsp;5 WYSIWYG editor toolbar.}
 
 ### Export to Word
 
-The Export to Word converter provides an API for converting HTML documents to Microsoft Word `.docx` files. The service generates a Word file and returns it to the user so they can save it in the `.docx` format on their disk. This allows you to easily export your content to the Microsoft Word format. Available both [as a service endpoint](https://ckeditor.com/docs/cs/latest/guides/export-to-word/overview.html) (a premium feature) and {@link features/export-word as a plugin} (needs to be added to the editor build separately).
+The Export to Word converter provides an API for converting HTML documents to Microsoft Word `.docx` files. The service generates a Word file and returns it to the user so they can save it in the `.docx` format on their disk. This allows you to easily export your content to the Microsoft Word format. Available both [as a service endpoint](https://ckeditor.com/docs/cs/latest/guides/export-to-word/overview.html) (a premium feature) and {@link features/export-word as a plugin} (needs to be added to the editor separately).
 
 {@img assets/img/export-to-word-sample.png 700 Export to Word feature in the CKEditor&nbsp;5 WYSIWYG editor toolbar.}
 

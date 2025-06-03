@@ -1,9 +1,11 @@
 ---
 category: cloud-services
 meta-title: Cloud Services REST API | CKEditor 5 Documentation
+meta-description: Available RESTful APIs of the Cloud Services platfrom.
 menu-title: REST API
 modified_at: 2025-05-20
 order: 20
+badges: [ premium ]
 ---
 
 # Cloud Services RESTful APIs
@@ -27,3 +29,11 @@ An example of using another API method is getting the content of the document fr
 <info-box warning>
 When using REST APIs, data can be removed or modified via DELETE or PUT/PATCH methods. These operations cannot be reversed.
 </info-box>
+
+## Webhooks
+
+Webhooks resemble a notification mechanism that can be used to build integrations with CKEditor Cloud Services. CKEditor Cloud Services sends an HTTP POST request to a configured URL when specified events are triggered.
+
+Webhooks can be used for data synchronization between CKEditor Cloud Services and another system or to build a notifications system. For example, thanks to webhooks, the system might notify the users via email about changes made in the document.
+
+To learn more about CKEditor Environment webhooks, refer to the [Webhooks guide](https://ckeditor.com/docs/cs/latest/developer-resources/webhooks/overview.html) in the Cloud Services documentation.
