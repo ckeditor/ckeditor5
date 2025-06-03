@@ -3,10 +3,7 @@
 	"slug": "ckeditor5",
 	"reportIssueWidget": {
 		"enabled": true,
-		"issueUrl": "https://github.com/ckeditor/ckeditor5/issues/new?labels=squad%3Accx%2Ctype%3Adocs&template=7-docs-issue-community.yml",
-		"skipPages": [
-			"**/index.html"
-		]
+		"issueUrl": "https://github.com/ckeditor/ckeditor5/issues/new?labels=squad%3Accx%2Ctype%3Adocs&template=7-docs-issue-community.yml"
 	},
 	"permalinkDisableDomains": [
 		"ckeditor5.github.io",
