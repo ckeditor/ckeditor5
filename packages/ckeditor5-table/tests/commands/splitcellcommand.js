@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import TableEditing from '../../src/tableediting.js';
-import TableSelection from '../../src/tableselection.js';
+import { TableEditing } from '../../src/tableediting.js';
+import { TableSelection } from '../../src/tableselection.js';
 import { modelTable } from '../_utils/utils.js';
 
-import SplitCellCommand from '../../src/commands/splitcellcommand.js';
+import { SplitCellCommand } from '../../src/commands/splitcellcommand.js';
 
 describe( 'SplitCellCommand', () => {
 	let editor, model, command;

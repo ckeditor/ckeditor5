@@ -4,11 +4,11 @@
  */
 
 import { SearchInfoView, ViewCollection } from 'ckeditor5/src/ui.js';
-import EmojiCategoriesView from '../../src/ui/emojicategoriesview.js';
-import EmojiGridView from '../../src/ui/emojigridview.js';
-import EmojiPickerView from '../../src/ui/emojipickerview.js';
-import EmojiSearchView from '../../src/ui/emojisearchview.js';
-import EmojiToneView from '../../src/ui/emojitoneview.js';
+import { EmojiCategoriesView } from '../../src/ui/emojicategoriesview.js';
+import { EmojiGridView } from '../../src/ui/emojigridview.js';
+import { EmojiPickerView } from '../../src/ui/emojipickerview.js';
+import { EmojiSearchView } from '../../src/ui/emojisearchview.js';
+import { EmojiToneView } from '../../src/ui/emojitoneview.js';
 
 describe( 'EmojiPickerView', () => {
 	let emojiPickerView, locale, emojiCategories, skinTones, emojiBySearchQuery;

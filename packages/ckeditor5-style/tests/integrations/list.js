@@ -3,18 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import ImageBlock from '@ckeditor/ckeditor5-image/src/imageblock.js';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import List from '@ckeditor/ckeditor5-list/src/list.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ListStyleSupport from '../../src/integrations/list.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ImageBlock } from '@ckeditor/ckeditor5-image/src/imageblock.js';
+import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import { List } from '@ckeditor/ckeditor5-list/src/list.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ListStyleSupport } from '../../src/integrations/list.js';
 
-import Style from '../../src/style.js';
+import { Style } from '../../src/style.js';
 
 describe( 'ListStyleSupport', () => {
 	let editor, editorElement, command, model, doc, root;

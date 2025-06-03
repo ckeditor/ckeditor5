@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ResizerState from '../../src/widgetresize/resizerstate.js';
+import { ResizerState } from '../../src/widgetresize/resizerstate.js';
 
 describe( 'ResizerState', () => {
 	describe( 'constructor', () => {

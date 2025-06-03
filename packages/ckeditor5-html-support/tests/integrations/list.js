@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
+import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ListEditing } from '@ckeditor/ckeditor5-list/src/list/listediting.js';
+import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import stubUid from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 
 import { getModelDataWithAttributes } from '../_utils/utils.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import ListElementSupport from '../../src/integrations/list.js';
+import { ListElementSupport } from '../../src/integrations/list.js';
 
 describe( 'ListElementSupport', () => {
 	let editor, model, editorElement, dataFilter, dataSchema;

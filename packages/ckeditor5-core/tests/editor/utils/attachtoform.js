@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import attachToForm from '../../../src/editor/utils/attachtoform.js';
-import ElementApiMixin from '../../../src/editor/utils/elementapimixin.js';
-import Editor from '../../../src/editor/editor.js';
+import { attachToForm } from '../../../src/editor/utils/attachtoform.js';
+import { ElementApiMixin } from '../../../src/editor/utils/elementapimixin.js';
+import { Editor } from '../../../src/editor/editor.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'attachToForm()', () => {

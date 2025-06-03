@@ -9,12 +9,12 @@ import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Mention } from '@ckeditor/ckeditor5-mention';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import EmojiMention from '../src/emojimention.js';
-import EmojiPicker from '../src/emojipicker.js';
-import EmojiRepository from '../src/emojirepository.js';
+import { EmojiMention } from '../src/emojimention.js';
+import { EmojiPicker } from '../src/emojipicker.js';
+import { EmojiRepository } from '../src/emojirepository.js';
 
 function mockEmojiRepositoryValues( editor ) {
 	const repository = editor.plugins.get( 'EmojiRepository' );

@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import DecoupledEditorUIView from '../src/decouplededitoruiview.js';
-import EditingView from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
-import MenuBarView from '@ckeditor/ckeditor5-ui/src/menubar/menubarview.js';
-import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
-import createRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
+import { DecoupledEditorUIView } from '../src/decouplededitoruiview.js';
+import { EditingView } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { ToolbarView } from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
+import { MenuBarView } from '@ckeditor/ckeditor5-ui/src/menubar/menubarview.js';
+import { InlineEditableUIView } from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
+import { Locale } from '@ckeditor/ckeditor5-utils/src/locale.js';
+import { createRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'DecoupledEditorUIView', () => {
 	let locale, view, editingView, editingViewRoot;

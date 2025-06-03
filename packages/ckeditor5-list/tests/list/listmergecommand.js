@@ -4,12 +4,12 @@
  */
 
 import { modelList } from './_utils/utils.js';
-import ListMergeCommand from '../../src/list/listmergecommand.js';
+import { ListMergeCommand } from '../../src/list/listmergecommand.js';
 
-import Editor from '@ckeditor/ckeditor5-core/src/editor/editor.js';
-import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { Editor } from '@ckeditor/ckeditor5-core/src/editor/editor.js';
+import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'ListMergeCommand', () => {

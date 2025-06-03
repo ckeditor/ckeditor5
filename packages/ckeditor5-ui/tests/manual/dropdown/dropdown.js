@@ -4,14 +4,14 @@
  */
 
 import { IconAlignLeft, IconAlignCenter, IconAlignRight } from '@ckeditor/ckeditor5-icons';
-import Model from '../../../src/model.js';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
+import { Model } from '../../../src/model.js';
+import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
 
-import testUtils from '../../_utils/utils.js';
-import ButtonView from '../../../src/button/buttonview.js';
-import SplitButtonView from '../../../src/dropdown/button/splitbuttonview.js';
+import { testUtils } from '../../_utils/utils.js';
+import { ButtonView } from '../../../src/button/buttonview.js';
+import { SplitButtonView } from '../../../src/dropdown/button/splitbuttonview.js';
 
-import BodyCollection from '../../../src/editorui/bodycollection.js';
+import { BodyCollection } from '../../../src/editorui/bodycollection.js';
 
 import {
 	createDropdown,

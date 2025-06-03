@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Emoji from '../src/emoji.js';
-import EmojiPicker from '../src/emojipicker.js';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Mention from '@ckeditor/ckeditor5-mention/src/mention.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Emoji } from '../src/emoji.js';
+import { EmojiPicker } from '../src/emojipicker.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Mention } from '@ckeditor/ckeditor5-mention/src/mention.js';
 
-import database from './fixtures/database.json';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { database } from './fixtures/database.json';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Emoji integration', () => {
 	let editor, element, emojiPicker;

@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../../src/model.js';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
-import testUtils from '../../_utils/utils.js';
+import { Model } from '../../../src/model.js';
+import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
+import { testUtils } from '../../_utils/utils.js';
 import { createDropdown, addListToDropdown } from '../../../src/dropdown/utils.js';
 
 const ui = testUtils.createTestUIView( {

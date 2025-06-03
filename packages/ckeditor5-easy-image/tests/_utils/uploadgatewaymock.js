@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
+import { EmitterMixin } from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
 
 export default class UploadGatewayMock {
 	constructor( token, uploadUrl ) {

@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import ImageInline from '../../src/image/imageinlineediting.js';
-import ImageBlockEditing from '../../src/image/imageblockediting.js';
-import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting.js';
+import { ImageInline } from '../../src/image/imageinlineediting.js';
+import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
+import { ImageCaptionEditing } from '../../src/imagecaption/imagecaptionediting.js';
 
 describe( 'ImageTypeCommand', () => {
 	let editor, blockCommand, inlineCommand, model, root;

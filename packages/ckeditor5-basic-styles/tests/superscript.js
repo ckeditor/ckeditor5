@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Superscript from '../src/superscript.js';
-import SuperEditing from '../src/superscript/superscriptediting.js';
-import SuperUI from '../src/superscript/superscriptui.js';
+import { Superscript } from '../src/superscript.js';
+import { SuperEditing } from '../src/superscript/superscriptediting.js';
+import { SuperUI } from '../src/superscript/superscriptui.js';
 
 describe( 'Superscript', () => {
 	it( 'should require SuperEditing and SuperUI', () => {

@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import ListItemButtonView, { CheckIconHolderView } from '../../src/button/listitembuttonview.js';
-import ButtonView from '../../src/button/buttonview.js';
+import { ButtonView } from '../../src/button/buttonview.js';
 
 describe( 'ListItemButtonView', () => {
 	let locale, view;

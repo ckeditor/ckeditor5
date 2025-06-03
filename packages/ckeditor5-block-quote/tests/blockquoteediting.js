@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import BlockQuoteEditing from '../src/blockquoteediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { BlockQuoteEditing } from '../src/blockquoteediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ListEditing } from '@ckeditor/ckeditor5-list/src/list/listediting.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import BlockQuoteCommand from '../src/blockquotecommand.js';
+import { BlockQuoteCommand } from '../src/blockquotecommand.js';
 
 describe( 'BlockQuoteEditing', () => {
 	let editor, model;

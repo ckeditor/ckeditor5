@@ -5,18 +5,18 @@
 
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { FocusTracker, global, keyCodes, Locale } from '@ckeditor/ckeditor5-utils';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import Model from '../../src/model.js';
+import { Model } from '../../src/model.js';
 
-import ButtonView from '../../src/button/buttonview.js';
-import SwitchButtonView from '../../src/button/switchbuttonview.js';
-import DropdownView from '../../src/dropdown/dropdownview.js';
-import DropdownPanelView from '../../src/dropdown/dropdownpanelview.js';
-import SplitButtonView from '../../src/dropdown/button/splitbuttonview.js';
-import View from '../../src/view.js';
-import ToolbarView from '../../src/toolbar/toolbarview.js';
+import { ButtonView } from '../../src/button/buttonview.js';
+import { SwitchButtonView } from '../../src/button/switchbuttonview.js';
+import { DropdownView } from '../../src/dropdown/dropdownview.js';
+import { DropdownPanelView } from '../../src/dropdown/dropdownpanelview.js';
+import { SplitButtonView } from '../../src/dropdown/button/splitbuttonview.js';
+import { View } from '../../src/view.js';
+import { ToolbarView } from '../../src/toolbar/toolbarview.js';
 import {
 	createDropdown,
 	addToolbarToDropdown,
@@ -24,10 +24,10 @@ import {
 	focusChildOnDropdownOpen,
 	addMenuToDropdown
 } from '../../src/dropdown/utils.js';
-import ListItemView from '../../src/list/listitemview.js';
-import ListSeparatorView from '../../src/list/listseparatorview.js';
-import ListView from '../../src/list/listview.js';
-import ViewCollection from '../../src/viewcollection.js';
+import { ListItemView } from '../../src/list/listitemview.js';
+import { ListSeparatorView } from '../../src/list/listseparatorview.js';
+import { ListView } from '../../src/list/listview.js';
+import { ViewCollection } from '../../src/viewcollection.js';
 import { BodyCollection, DropdownMenuRootListView, ListItemGroupView } from '../../src/index.js';
 
 describe( 'utils', () => {

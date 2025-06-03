@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Model from '@ckeditor/ckeditor5-ui/src/model.js';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Model } from '@ckeditor/ckeditor5-ui/src/model.js';
+import { SplitButtonView } from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
 
 import { IconImageUrl } from '@ckeditor/ckeditor5-icons';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
-import Image from '../../src/image.js';
-import ImageInsertViaUrlUI from '../../src/imageinsert/imageinsertviaurlui.js';
+import { Image } from '../../src/image.js';
+import { ImageInsertViaUrlUI } from '../../src/imageinsert/imageinsertviaurlui.js';
 import { ImageInsertViaUrl } from '../../src/index.js';
 
 describe( 'ImageInsertViaUrlUI', () => {

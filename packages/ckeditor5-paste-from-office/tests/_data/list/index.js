@@ -4,59 +4,59 @@
  */
 
 // Default.
-import simple from './simple/input.word2016.html';
-import styled from './styled/input.word2016.html';
-import multiple from './multiple/input.word2016.html';
-import multipleCombined from './multiple-combined/input.word2016.html';
-import manyOneItem from './many-one-item/input.word2016.html';
-import heading1 from './heading1/input.word2016.html';
-import heading3Styled from './heading3-styled/input.word2016.html';
-import heading7 from './heading7/input.word2016.html';
-import resumeTemplate from './resume-template/input.word2016.html';
-import nested from './nested/input.word2016.html';
-import nestedMixed from './nested-mixed/input.word2016.html';
-import nestedMultiple from './nested-multiple/input.word2016.html';
-import nestedMixedId from './nested-mixed-id/input.word2016.html';
-import styledAnchor from './styled-anchor/input.word2016.html';
-import multiBlock from './multi-block/input.word.html';
-import mixedElements from './mixed-elements/input.word.html';
-import multiBlockBlockAfter from './multi-block-block-after/input.word.html';
+import { simple } from './simple/input.word2016.html';
+import { styled } from './styled/input.word2016.html';
+import { multiple } from './multiple/input.word2016.html';
+import { multipleCombined } from './multiple-combined/input.word2016.html';
+import { manyOneItem } from './many-one-item/input.word2016.html';
+import { heading1 } from './heading1/input.word2016.html';
+import { heading3Styled } from './heading3-styled/input.word2016.html';
+import { heading7 } from './heading7/input.word2016.html';
+import { resumeTemplate } from './resume-template/input.word2016.html';
+import { nested } from './nested/input.word2016.html';
+import { nestedMixed } from './nested-mixed/input.word2016.html';
+import { nestedMultiple } from './nested-multiple/input.word2016.html';
+import { nestedMixedId } from './nested-mixed-id/input.word2016.html';
+import { styledAnchor } from './styled-anchor/input.word2016.html';
+import { multiBlock } from './multi-block/input.word.html';
+import { mixedElements } from './mixed-elements/input.word.html';
+import { multiBlockBlockAfter } from './multi-block-block-after/input.word.html';
 
-import simpleNormalized from './simple/normalized.word2016.html';
-import styledNormalized from './styled/normalized.word2016.html';
-import multipleNormalized from './multiple/normalized.word2016.html';
-import multipleCombinedNormalized from './multiple-combined/normalized.word2016.html';
-import manyOneItemNormalized from './many-one-item/normalized.word2016.html';
-import heading1Normalized from './heading1/normalized.word2016.html';
-import heading3StyledNormalized from './heading3-styled/normalized.word2016.html';
-import heading7Normalized from './heading7/normalized.word2016.html';
-import resumeTemplateNormalized from './resume-template/normalized.word2016.html';
-import nestedNormalized from './nested/normalized.word2016.html';
-import nestedMixedNormalized from './nested-mixed/normalized.word2016.html';
-import nestedMultipleNormalized from './nested-multiple/normalized.word2016.html';
-import nestedMixedIdNormalized from './nested-mixed-id/normalized.word2016.html';
-import styledAnchorNormalized from './styled-anchor/normalized.word2016.html';
-import multiBlockNormalized from './multi-block/normalized.word.html';
-import mixedElementsNormalized from './mixed-elements/normalized.word.html';
-import multiBlockBlockAfterNormalized from './multi-block-block-after/normalized.word.html';
+import { simpleNormalized } from './simple/normalized.word2016.html';
+import { styledNormalized } from './styled/normalized.word2016.html';
+import { multipleNormalized } from './multiple/normalized.word2016.html';
+import { multipleCombinedNormalized } from './multiple-combined/normalized.word2016.html';
+import { manyOneItemNormalized } from './many-one-item/normalized.word2016.html';
+import { heading1Normalized } from './heading1/normalized.word2016.html';
+import { heading3StyledNormalized } from './heading3-styled/normalized.word2016.html';
+import { heading7Normalized } from './heading7/normalized.word2016.html';
+import { resumeTemplateNormalized } from './resume-template/normalized.word2016.html';
+import { nestedNormalized } from './nested/normalized.word2016.html';
+import { nestedMixedNormalized } from './nested-mixed/normalized.word2016.html';
+import { nestedMultipleNormalized } from './nested-multiple/normalized.word2016.html';
+import { nestedMixedIdNormalized } from './nested-mixed-id/normalized.word2016.html';
+import { styledAnchorNormalized } from './styled-anchor/normalized.word2016.html';
+import { multiBlockNormalized } from './multi-block/normalized.word.html';
+import { mixedElementsNormalized } from './mixed-elements/normalized.word.html';
+import { multiBlockBlockAfterNormalized } from './multi-block-block-after/normalized.word.html';
 
-import simpleModel from './simple/model.word2016.html';
-import styledModel from './styled/model.word2016.html';
-import multipleModel from './multiple/model.word2016.html';
-import multipleCombinedModel from './multiple-combined/model.word2016.html';
-import manyOneItemModel from './many-one-item/model.word2016.html';
-import heading1Model from './heading1/model.word2016.html';
-import heading3StyledModel from './heading3-styled/model.word2016.html';
-import heading7Model from './heading7/model.word2016.html';
-import resumeTemplateModel from './resume-template/model.word2016.html';
-import nestedModel from './nested/model.word2016.html';
-import nestedMixedModel from './nested-mixed/model.word2016.html';
-import nestedMultipleModel from './nested-multiple/model.word2016.html';
-import nestedMixedIdModel from './nested-mixed-id/model.word2016.html';
-import styledAnchorModel from './styled-anchor/model.word2016.html';
-import multiBlockModel from './multi-block/model.word.html';
-import mixedElementsModel from './mixed-elements/model.word.html';
-import multiBlockBlockAfterModel from './multi-block-block-after/model.word.html';
+import { simpleModel } from './simple/model.word2016.html';
+import { styledModel } from './styled/model.word2016.html';
+import { multipleModel } from './multiple/model.word2016.html';
+import { multipleCombinedModel } from './multiple-combined/model.word2016.html';
+import { manyOneItemModel } from './many-one-item/model.word2016.html';
+import { heading1Model } from './heading1/model.word2016.html';
+import { heading3StyledModel } from './heading3-styled/model.word2016.html';
+import { heading7Model } from './heading7/model.word2016.html';
+import { resumeTemplateModel } from './resume-template/model.word2016.html';
+import { nestedModel } from './nested/model.word2016.html';
+import { nestedMixedModel } from './nested-mixed/model.word2016.html';
+import { nestedMultipleModel } from './nested-multiple/model.word2016.html';
+import { nestedMixedIdModel } from './nested-mixed-id/model.word2016.html';
+import { styledAnchorModel } from './styled-anchor/model.word2016.html';
+import { multiBlockModel } from './multi-block/model.word.html';
+import { mixedElementsModel } from './mixed-elements/model.word.html';
+import { multiBlockBlockAfterModel } from './multi-block-block-after/model.word.html';
 
 export const fixtures = {
 	input: {
@@ -119,36 +119,36 @@ export const fixtures = {
 };
 
 // Safari.
-import simpleSafari from './simple/input.safari.word2016.html';
-import styledSafari from './styled/input.safari.word2016.html';
-import multipleSafari from './multiple/input.safari.word2016.html';
-import multipleCombinedSafari from './multiple-combined/input.safari.word2016.html';
-import manyOneItemSafari from './many-one-item/input.safari.word2016.html';
-import heading1Safari from './heading1/input.safari.word2016.html';
-import heading3StyledSafari from './heading3-styled/input.safari.word2016.html';
-import heading7Safari from './heading7/input.safari.word2016.html';
-import resumeTemplateSafari from './resume-template/input.safari.word2016.html';
-import nestedSafari from './nested/input.safari.word2016.html';
-import nestedMixedSafari from './nested-mixed/input.safari.word2016.html';
-import nestedMultipleSafari from './nested-multiple/input.safari.word2016.html';
-import nestedMixedIdSafari from './nested-mixed-id/input.safari.word2016.html';
-import styledAnchorSafari from './styled-anchor/input.safari.word2016.html';
+import { simpleSafari } from './simple/input.safari.word2016.html';
+import { styledSafari } from './styled/input.safari.word2016.html';
+import { multipleSafari } from './multiple/input.safari.word2016.html';
+import { multipleCombinedSafari } from './multiple-combined/input.safari.word2016.html';
+import { manyOneItemSafari } from './many-one-item/input.safari.word2016.html';
+import { heading1Safari } from './heading1/input.safari.word2016.html';
+import { heading3StyledSafari } from './heading3-styled/input.safari.word2016.html';
+import { heading7Safari } from './heading7/input.safari.word2016.html';
+import { resumeTemplateSafari } from './resume-template/input.safari.word2016.html';
+import { nestedSafari } from './nested/input.safari.word2016.html';
+import { nestedMixedSafari } from './nested-mixed/input.safari.word2016.html';
+import { nestedMultipleSafari } from './nested-multiple/input.safari.word2016.html';
+import { nestedMixedIdSafari } from './nested-mixed-id/input.safari.word2016.html';
+import { styledAnchorSafari } from './styled-anchor/input.safari.word2016.html';
 
-import simpleNormalizedSafari from './simple/normalized.safari.word2016.html';
-import styledNormalizedSafari from './styled/normalized.safari.word2016.html';
-import multipleNormalizedSafari from './multiple/normalized.safari.word2016.html';
-import multipleCombinedNormalizedSafari from './multiple-combined/normalized.safari.word2016.html';
-import manyOneItemNormalizedSafari from './many-one-item/normalized.safari.word2016.html';
-import heading1NormalizedSafari from './heading1/normalized.safari.word2016.html';
-import heading3StyledNormalizedSafari from './heading3-styled/normalized.safari.word2016.html';
-import heading7NormalizedSafari from './heading7/normalized.safari.word2016.html';
-import resumeTemplateNormalizedSafari from './resume-template/normalized.safari.word2016.html';
-import nestedMultipleNormalizedSafari from './nested-multiple/normalized.safari.word2016.html';
-import nestedMixedIdNormalizedSafari from './nested-mixed-id/normalized.safari.word2016.html';
-import styledAnchorNormalizedSafari from './styled-anchor/normalized.safari.word2016.html';
+import { simpleNormalizedSafari } from './simple/normalized.safari.word2016.html';
+import { styledNormalizedSafari } from './styled/normalized.safari.word2016.html';
+import { multipleNormalizedSafari } from './multiple/normalized.safari.word2016.html';
+import { multipleCombinedNormalizedSafari } from './multiple-combined/normalized.safari.word2016.html';
+import { manyOneItemNormalizedSafari } from './many-one-item/normalized.safari.word2016.html';
+import { heading1NormalizedSafari } from './heading1/normalized.safari.word2016.html';
+import { heading3StyledNormalizedSafari } from './heading3-styled/normalized.safari.word2016.html';
+import { heading7NormalizedSafari } from './heading7/normalized.safari.word2016.html';
+import { resumeTemplateNormalizedSafari } from './resume-template/normalized.safari.word2016.html';
+import { nestedMultipleNormalizedSafari } from './nested-multiple/normalized.safari.word2016.html';
+import { nestedMixedIdNormalizedSafari } from './nested-mixed-id/normalized.safari.word2016.html';
+import { styledAnchorNormalizedSafari } from './styled-anchor/normalized.safari.word2016.html';
 
-import styledSafariModel from './styled/model.safari.word2016.html';
-import resumeTemplateSafariModel from './resume-template/model.safari.word2016.html';
+import { styledSafariModel } from './styled/model.safari.word2016.html';
+import { resumeTemplateSafariModel } from './resume-template/model.safari.word2016.html';
 
 export const browserFixtures = {
 	safari: {

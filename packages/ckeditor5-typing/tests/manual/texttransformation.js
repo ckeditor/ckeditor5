@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import TextTransformation from '../../src/texttransformation.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { TextTransformation } from '../../src/texttransformation.js';
 
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {

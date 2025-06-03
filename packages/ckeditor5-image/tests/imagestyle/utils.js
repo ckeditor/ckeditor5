@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import utils from '../../src/imagestyle/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { utils } from '../../src/imagestyle/utils.js';
 
 describe( 'ImageStyle utils', () => {
 	const { getDefaultStylesConfiguration, DEFAULT_OPTIONS, DEFAULT_ICONS } = utils;

@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Markdown from '../src/markdown.js';
-import GFMDataProcessor from '../src/gfmdataprocessor.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Markdown } from '../src/markdown.js';
+import { GFMDataProcessor } from '../src/gfmdataprocessor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 describe( 'Markdown', () => {
 	it( 'has proper name', () => {

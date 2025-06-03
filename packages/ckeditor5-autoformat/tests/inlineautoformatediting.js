@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Autoformat from '../src/autoformat.js';
-import inlineAutoformatEditing from '../src/inlineautoformatediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { Autoformat } from '../src/autoformat.js';
+import { inlineAutoformatEditing } from '../src/inlineautoformatediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'inlineAutoformatEditing', () => {
 	let editor, model, doc, plugin, formatSpy;

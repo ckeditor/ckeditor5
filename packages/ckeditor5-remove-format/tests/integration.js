@@ -3,17 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import RemoveFormat from '../src/removeformat.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
-import Image from '@ckeditor/ckeditor5-image/src/image.js';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize.js';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import Link from '@ckeditor/ckeditor5-link/src/link.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
+import { RemoveFormat } from '../src/removeformat.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
+import { ImageResize } from '@ckeditor/ckeditor5-image/src/imageresize.js';
+import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
+import { Link } from '@ckeditor/ckeditor5-link/src/link.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { Underline } from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import {
 	getData as getModelData,
 	setData as setModelData

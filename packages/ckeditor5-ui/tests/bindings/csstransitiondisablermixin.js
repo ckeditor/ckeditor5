@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import CssTransitionDisablerMixin from '../../src/bindings/csstransitiondisablermixin.js';
-import View from '../../src/view.js';
+import { CssTransitionDisablerMixin } from '../../src/bindings/csstransitiondisablermixin.js';
+import { View } from '../../src/view.js';
 
 describe( 'cssTransitionDisablerMixin()', () => {
 	let view;

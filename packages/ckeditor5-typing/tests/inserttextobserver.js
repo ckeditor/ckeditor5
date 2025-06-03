@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import InsertTextObserver from '../src/inserttextobserver.js';
+import { InsertTextObserver } from '../src/inserttextobserver.js';
 import { fireBeforeInputDomEvent, fireCompositionEndDomEvent } from './_utils/utils.js';
 
-import View from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { View } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { setData as viewSetData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 
 describe( 'InsertTextObserver', () => {
 	let view, viewDocument, insertTextEventSpy;

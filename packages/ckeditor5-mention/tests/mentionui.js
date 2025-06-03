@@ -3,21 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
+import { ContextualBalloon } from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 
 import MentionUI, { createRegExp } from '../src/mentionui.js';
-import MentionEditing from '../src/mentionediting.js';
-import MentionsView from '../src/ui/mentionsview.js';
+import { MentionEditing } from '../src/mentionediting.js';
+import { MentionsView } from '../src/ui/mentionsview.js';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'MentionUI', () => {

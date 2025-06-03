@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Token from '../../src/token/token.js';
+import { Token } from '../../src/token/token.js';
 
 export default class TokenMock extends Token {
 	/**

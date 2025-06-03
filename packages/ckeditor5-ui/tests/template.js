@@ -4,13 +4,13 @@
  */
 
 import { default as Template, TemplateToBinding, TemplateIfBinding } from '../src/template.js';
-import View from '../src/view.js';
-import ViewCollection from '../src/viewcollection.js';
-import Model from '../src/model.js';
+import { View } from '../src/view.js';
+import { ViewCollection } from '../src/viewcollection.js';
+import { Model } from '../src/model.js';
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
-import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin.js';
-import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
+import { EmitterMixin } from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
+import { DomEmitterMixin } from '@ckeditor/ckeditor5-utils/src/dom/emittermixin.js';
+import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 

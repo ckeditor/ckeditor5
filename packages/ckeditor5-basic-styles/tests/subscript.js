@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Subscript from '../src/subscript.js';
-import SubEditing from '../src/subscript/subscriptediting.js';
-import SubUI from '../src/subscript/subscriptui.js';
+import { Subscript } from '../src/subscript.js';
+import { SubEditing } from '../src/subscript/subscriptediting.js';
+import { SubUI } from '../src/subscript/subscriptui.js';
 
 describe( 'Subscript', () => {
 	it( 'should require SubEditing and SubUI', () => {

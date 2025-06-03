@@ -4,9 +4,9 @@
  */
 
 import { testDataProcessor } from '../_utils/utils.js';
-import MarkdownDataProcessor from '../../src/gfmdataprocessor.js';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
-import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import { MarkdownDataProcessor } from '../../src/gfmdataprocessor.js';
+import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
+import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
 describe( 'GFMDataProcessor', () => {

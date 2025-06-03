@@ -7,7 +7,7 @@ import { IconCancel } from '@ckeditor/ckeditor5-icons';
 import { FocusTracker, KeystrokeHandler, Locale, global, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { ButtonView, FormHeaderView, View, ViewCollection } from '../../src/index.js';
 import DialogView, { DialogViewPosition } from '../../src/dialog/dialogview.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'DialogView', () => {
 	let view, fakeDomRootElement;

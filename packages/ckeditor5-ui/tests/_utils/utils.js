@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import View from '../../src/view.js';
+import { View } from '../../src/view.js';
 
 /**
  * Test utils for CKEditor UI.

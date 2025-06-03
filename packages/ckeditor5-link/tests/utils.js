@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document.js';
-import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
-import AttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement.js';
-import ContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement.js';
-import Text from '@ckeditor/ckeditor5-engine/src/view/text.js';
-import Schema from '@ckeditor/ckeditor5-engine/src/model/schema.js';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import { ViewDowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
+import { AttributeElement } from '@ckeditor/ckeditor5-engine/src/view/attributeelement.js';
+import { ContainerElement } from '@ckeditor/ckeditor5-engine/src/view/containerelement.js';
+import { Text } from '@ckeditor/ckeditor5-engine/src/view/text.js';
+import { Schema } from '@ckeditor/ckeditor5-engine/src/model/schema.js';
+import { ModelElement } from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import {

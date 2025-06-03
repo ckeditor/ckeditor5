@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import LinkPreviewButtonView from '../../src/ui/linkpreviewbuttonview.js';
+import { LinkPreviewButtonView } from '../../src/ui/linkpreviewbuttonview.js';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'LinkPreviewButtonView', () => {
 	let view;

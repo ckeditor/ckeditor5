@@ -17,7 +17,7 @@ export const testUtils = {
 	 *
 	 * Usage:
 	 *
-	 *		import testUtils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+	 *		import { testUtils } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 	 *
 	 *		describe( 'MyClass', () => {
 	 *			// Create Sinon sandbox inside top-level describe block:

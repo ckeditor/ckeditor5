@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import LegacyListPropertiesEditing from '../../src/legacylistproperties/legacylistpropertiesediting.js';
-import LegacyTodoListEditing from '../../src/legacytodolist/legacytodolistediting.js';
-import LegacyListStyleCommand from '../../src/legacylistproperties/legacyliststylecommand.js';
-import LegacyListReversedCommand from '../../src/legacylistproperties/legacylistreversedcommand.js';
-import LegacyListStartCommand from '../../src/legacylistproperties/legacyliststartcommand.js';
+import { LegacyListPropertiesEditing } from '../../src/legacylistproperties/legacylistpropertiesediting.js';
+import { LegacyTodoListEditing } from '../../src/legacytodolist/legacytodolistediting.js';
+import { LegacyListStyleCommand } from '../../src/legacylistproperties/legacyliststylecommand.js';
+import { LegacyListReversedCommand } from '../../src/legacylistproperties/legacylistreversedcommand.js';
+import { LegacyListStartCommand } from '../../src/legacylistproperties/legacyliststartcommand.js';
 
 describe( 'LegacyListPropertiesEditing', () => {
 	let editor, model, view;

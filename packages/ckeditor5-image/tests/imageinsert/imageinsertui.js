@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import Model from '@ckeditor/ckeditor5-ui/src/model.js';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import { Model } from '@ckeditor/ckeditor5-ui/src/model.js';
+import { DropdownView } from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { SplitButtonView } from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview.js';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import Image from '../../src/image.js';
-import ImageInsertUI from '../../src/imageinsert/imageinsertui.js';
-import ImageInsertFormView from '../../src/imageinsert/ui/imageinsertformview.js';
+import { Image } from '../../src/image.js';
+import { ImageInsertUI } from '../../src/imageinsert/imageinsertui.js';
+import { ImageInsertFormView } from '../../src/imageinsert/ui/imageinsertformview.js';
 import { MenuBarMenuListItemButtonView, MenuBarMenuView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'ImageInsertUI', () => {

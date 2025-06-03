@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import schemaDefinitions from '../src/schemadefinitions.js';
+import { schemaDefinitions } from '../src/schemadefinitions.js';
 
 describe( 'schemadefinitions', () => {
 	it( 'should be an object', () => {

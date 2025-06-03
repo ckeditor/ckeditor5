@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Document from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import { Document } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 import { stringify, parse } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import MarkdownDataProcessor from '../../../src/gfmdataprocessor.js';
+import { MarkdownDataProcessor } from '../../../src/gfmdataprocessor.js';
 
 const markdownTextArea = document.getElementById( 'markdown' );
 const viewTextArea = document.getElementById( 'view' );
