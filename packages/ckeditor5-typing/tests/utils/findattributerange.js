@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import findAttributeRange, { findAttributeRangeBound } from '../../src/utils/findattributerange.js';
+import { findAttributeRange, findAttributeRangeBound } from '../../src/utils/findattributerange.js';
 import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
 import { Range } from '@ckeditor/ckeditor5-engine/src/model/range.js';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
