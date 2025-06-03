@@ -10,7 +10,7 @@ import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Mention } from '@ckeditor/ckeditor5-mention/src/mention.js';
 
-import { database } from './fixtures/database.json';
+import database from './fixtures/database.json';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Emoji integration', () => {
