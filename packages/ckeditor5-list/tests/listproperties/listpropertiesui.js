@@ -17,7 +17,7 @@ import {
 	IconListStyleUpperLatin,
 	IconListStyleUpperRoman
 } from 'ckeditor5/src/icons.js';
-import { ListProperties } from '../../src/legacylistproperties.js';
+import { LegacyListProperties } from '../../src/legacylistproperties.js';
 import { ListPropertiesUI } from '../../src/listproperties/listpropertiesui.js';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -37,7 +37,7 @@ describe( 'ListPropertiesUI', () => {
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
-			plugins: [ Paragraph, BlockQuote, ListProperties, UndoEditing ],
+			plugins: [ Paragraph, BlockQuote, LegacyListProperties, UndoEditing ],
 			list: {
 				properties: {
 					styles: true,
@@ -1850,7 +1850,7 @@ describe( 'ListPropertiesUI', () => {
 		document.body.appendChild( editorElement );
 
 		const editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ ListProperties ],
+			plugins: [ LegacyListProperties ],
 			list: {
 				properties: listPropertiesConfig
 			}
