@@ -13,25 +13,25 @@ Server-Side Editor API allows for deep and complex integration of your applicati
 
 While CKEditor 5 provides a rich client-side editing experience, there are many scenarios where server-side content processing is essential:
 
-* **Security**: Process sensitive content in a controlled environment without exposing it to client-side manipulation
-* **Performance**: Handle large-scale content operations without impacting the user's browser
-* **Consistency**: Ensure uniform content changes across multiple documents
-* **Integration**: Connect with other server-side systems and databases directly
-* **Automation**: Run content processing tasks as part of your server workflows
-* **Scalability**: Process multiple documents simultaneously without client-side limitations
+* **Security**: Process sensitive content in a controlled environment without exposing it to client-side manipulation.
+* **Performance**: Handle large-scale content operations without impacting the user's browser.
+* **Consistency**: Ensure uniform content changes across multiple documents.
+* **Integration**: Connect with other server-side systems and databases directly.
+* **Automation**: Run content processing tasks as part of your server workflows.
+* **Scalability**: Process multiple documents simultaneously without client-side limitations.
 
 ## Common use cases
 
-* **Bulk content updates**: Make consistent changes across your entire content base, ideal for updating document templates or standardizing terminology
-* **Content migration**: Restructure and update references across multiple documents, perfect for website redesigns or content reorganization
-* **Shared content blocks**: Automatically update reusable content (like headers, footers, or common sections) across all documents that use it
-* **Dynamic content**: Periodically update values like stock prices or other real-time data in your documents
-* **Automated review systems**: Build systems that automatically review and suggest content changes, like grammar checks or style improvements
-* **AI-powered editing**: Make automated suggestions while users are actively editing, helping improve content quality
-* **Automated revision control**: Track and manage document versions automatically, perfect for maintaining content history and audit trails
-* **Automated publishing**: Prepare and process content for publication, including formatting, metadata updates, and resolving comments
-* **Custom integration**: Connect the editor with your existing systems and workflows, such as CMS or document management systems
-* **Automatic checkpoints**: Create automatic checkpoints in your document
+* **Bulk content updates**: Make consistent changes across your entire content base, ideal for updating document templates or standardizing terminology.
+* **Content migration**: Restructure and update references across multiple documents, perfect for website redesigns or content reorganization.
+* **Shared content blocks**: Automatically update reusable content (like headers, footers, or common sections) across all documents that use it.
+* **Dynamic content**: Periodically update values like stock prices or other real-time data in your documents.
+* **Automated review systems**: Build systems that automatically review and suggest content changes, like grammar checks or style improvements.
+* **AI-powered editing**: Make automated suggestions while users are actively editing, helping improve content quality.
+* **Automated revision control**: Track and manage document versions automatically, perfect for maintaining content history and audit trails.
+* **Automated publishing**: Prepare and process content for publication, including formatting, metadata updates, and resolving comments.
+* **Custom integration**: Connect the editor with your existing systems and workflows, such as CMS or document management systems.
+* **Automatic checkpoints**: Create automatic checkpoints in your document.
 
 ## Getting started with server-side editor API
 
