@@ -1,7 +1,7 @@
 ---
 menu-title: Default integration
 meta-title: Using CKEditor 5 with React rich text editor componentfrom npm | CKEditor 5 Documentation
-meta-description: Install, integrate and configure CKEditor 5 using the default React component with npm.
+meta-description: Install, integrate, and configure CKEditor 5 using the default React component with npm.
 category: react-npm
 order: 10
 ---
