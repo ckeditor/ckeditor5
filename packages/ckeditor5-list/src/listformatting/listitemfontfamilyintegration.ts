@@ -41,10 +41,8 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public afterInit(): void {
+	public init(): void {
 		const editor = this.editor;
-		const model = editor.model;
-		const listEditing: ListEditing = editor.plugins.get( 'ListEditing' );
 		const ListFormatting: ListFormatting = editor.plugins.get( 'ListFormatting' );
 
 		if ( !editor.plugins.has( 'FontFamilyEditing' ) ) {
@@ -52,6 +50,19 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 		}
 
 		ListFormatting._addFormatting( 'listItemFontFamily', 'fontFamily' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public afterInit(): void {
+		const editor = this.editor;
+		const model = editor.model;
+		const listEditing: ListEditing = editor.plugins.get( 'ListEditing' );
+
+		if ( !editor.plugins.has( 'FontFamilyEditing' ) ) {
+			return;
+		}
 
 		model.schema.extend( '$listItem', { allowAttributes: 'listItemFontFamily' } );
 		model.schema.setAttributeProperties( 'listItemFontFamily', {
