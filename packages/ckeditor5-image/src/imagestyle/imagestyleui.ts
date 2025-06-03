@@ -11,7 +11,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView, createDropdown, addToolbarToDropdown, SplitButtonView } from 'ckeditor5/src/ui.js';
 import { isObject, identity } from 'es-toolkit/compat';
 import { ImageStyleEditing } from './imagestyleediting.js';
-import { getDefaultDropdownDefinitions, warnInvalidStyle } from './utils.js';
+import { utils } from './utils.js';
 import type { ImageStyleDropdownDefinition, ImageStyleOptionDefinition } from '../imageconfig.js';
 import { type ImageStyleCommand } from './imagestylecommand.js';
 
@@ -96,7 +96,7 @@ export class ImageStyleUI extends Plugin {
 		const definedDropdowns = translateStyles(
 			[
 				...toolbarConfig.filter( isObject ) as Array<ImageStyleDropdownDefinition>,
-				...getDefaultDropdownDefinitions( plugins )
+				...utils.getDefaultDropdownDefinitions( plugins )
 			],
 			this.localizedDefaultStylesTitles
 		);
@@ -129,7 +129,7 @@ export class ImageStyleUI extends Plugin {
 				} );
 
 			if ( items.length !== buttonViews.length ) {
-				warnInvalidStyle( { dropdown: dropdownConfig } );
+				utils.warnInvalidStyle( { dropdown: dropdownConfig } );
 			}
 
 			const dropdownView = createDropdown( locale, SplitButtonView );

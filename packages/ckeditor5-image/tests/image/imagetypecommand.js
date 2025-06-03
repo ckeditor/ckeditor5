@@ -7,7 +7,7 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import { ImageInline } from '../../src/image/imageinlineediting.js';
+import { ImageInlineEditing } from '../../src/image/imageinlineediting.js';
 import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
 import { ImageCaptionEditing } from '../../src/imagecaption/imagecaptionediting.js';
 
@@ -17,7 +17,7 @@ describe( 'ImageTypeCommand', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageBlockEditing, ImageInline, ImageCaptionEditing, Paragraph ]
+				plugins: [ ImageBlockEditing, ImageInlineEditing, ImageCaptionEditing, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

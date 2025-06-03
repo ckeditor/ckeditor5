@@ -14,7 +14,7 @@ import { ImageStyleEditing } from '../../src/imagestyle/imagestyleediting.js';
 import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
 import { ImageInlineEditing } from '../../src/image/imageinlineediting.js';
 import { ImageStyleCommand } from '../../src/imagestyle/imagestylecommand.js';
-import { imageStyleUtils } from '../../src/imagestyle/utils.js';
+import { utils } from '../../src/imagestyle/utils.js';
 import { ImageEditing } from '../../src/image/imageediting.js';
 import { ImageResizeEditing } from '../../src/imageresize/imageresizeediting.js';
 import { ImageUtils } from '../../src/imageutils.js';
@@ -170,7 +170,7 @@ describe( 'ImageStyleEditing', () => {
 		} );
 
 		it( 'should call the normalizedStyles with the proper arguments', async () => {
-			const normalizationSpy = testUtils.sinon.spy( imageStyleUtils, 'normalizeStyles' );
+			const normalizationSpy = testUtils.sinon.spy( utils, 'normalizeStyles' );
 
 			const editor = await ModelTestEditor.create( {
 				plugins: [ ImageBlockEditing, ImageStyleEditing ]
@@ -191,7 +191,7 @@ describe( 'ImageStyleEditing', () => {
 				modelElements: [ 'imageBlock' ]
 			} ];
 
-			testUtils.sinon.stub( imageStyleUtils, 'normalizeStyles' ).callsFake( () => customStyles );
+			testUtils.sinon.stub( utils, 'normalizeStyles' ).callsFake( () => customStyles );
 
 			const editor = await ModelTestEditor.create( {
 				plugins: [ ImageBlockEditing, ImageStyleEditing ]

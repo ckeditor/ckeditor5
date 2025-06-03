@@ -361,7 +361,7 @@ function warnInvalidStyle( info: object ): void {
 	logWarning( 'image-style-configuration-definition-invalid', info );
 }
 
-export {
+export const utils = {
 	normalizeStyles,
 	getDefaultStylesConfiguration,
 	getDefaultDropdownDefinitions,
