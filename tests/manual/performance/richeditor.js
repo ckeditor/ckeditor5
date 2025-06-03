@@ -7,7 +7,7 @@ import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classicedi
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 
 import { Alignment } from '@ckeditor/ckeditor5-alignment/src/alignment.js';
-import { AutoFormat } from '@ckeditor/ckeditor5-autoformat/src/autoformat.js';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat/src/autoformat.js';
 import { Autosave } from '@ckeditor/ckeditor5-autosave/src/autosave.js';
 import { Strikethrough } from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
 import { Subscript } from '@ckeditor/ckeditor5-basic-styles/src/subscript.js';
@@ -53,7 +53,7 @@ ClassicEditor
 		plugins: [
 			ArticlePluginSet,
 			Alignment,
-			AutoFormat,
+			Autoformat,
 			Autosave,
 			Strikethrough,
 			Subscript,

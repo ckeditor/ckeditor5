@@ -12,7 +12,7 @@ import paragraphs from './paragraphs.js';
 import tableHuge from './table-huge.js';
 import wiki from './wiki.js';
 
-export default {
+export const allDataSets = {
 	formattingLongP,
 	ghs,
 	inlineStyles,

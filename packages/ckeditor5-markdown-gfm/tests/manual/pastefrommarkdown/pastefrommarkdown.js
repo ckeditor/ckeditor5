@@ -13,7 +13,7 @@ import { Code } from '@ckeditor/ckeditor5-basic-styles/src/code.js';
 import { List } from '@ckeditor/ckeditor5-list/src/list.js';
 import { ListProperties } from '@ckeditor/ckeditor5-list/src/listproperties.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { AutoFormat } from '@ckeditor/ckeditor5-autoformat/src/autoformat.js';
+import { Autoformat } from '@ckeditor/ckeditor5-autoformat/src/autoformat.js';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
@@ -40,7 +40,7 @@ ClassicEditor
 			PasteFromMarkdownExperimental,
 			Markdown,
 			Essentials,
-			AutoFormat,
+			Autoformat,
 			BlockQuote,
 			Bold,
 			Heading,

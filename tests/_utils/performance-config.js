@@ -50,7 +50,7 @@ import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support/src/general
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
-export default {
+export const config = {
 	plugins: [
 		ArticlePluginSet, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
 		FindAndReplace, FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,

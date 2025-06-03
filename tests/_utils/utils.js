@@ -10,7 +10,7 @@ import { FontBackgroundColor } from '@ckeditor/ckeditor5-font/src/fontbackground
 import { FontFamily } from '@ckeditor/ckeditor5-font/src/fontfamily.js';
 import { FontSize } from '@ckeditor/ckeditor5-font/src/fontsize.js';
 import { Underline } from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
-import { StrikeThrough } from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
+import { Strikethrough } from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
 
 import smallFixture from '../_data/small.html';
 import mediumFixture from '../_data/medium.html';
@@ -76,7 +76,7 @@ export function getPerformanceData() {
  */
 export function createPerformanceEditor( domElement ) {
 	const config = {
-		plugins: [ ArticlePluginSet, FontColor, FontBackgroundColor, FontFamily, FontSize, Underline, StrikeThrough ],
+		plugins: [ ArticlePluginSet, FontColor, FontBackgroundColor, FontFamily, FontSize, Underline, Strikethrough ],
 		toolbar: [
 			'heading',
 			'|',
