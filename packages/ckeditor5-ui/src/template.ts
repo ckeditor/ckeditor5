@@ -646,7 +646,7 @@ export class Template extends /* #__PURE__ */ EmitterMixin() {
 	 * }
 	 * ```
 	 *
-	 * or values bound to {@link module:ui/model~Model} properties:
+	 * or values bound to {@link module:ui/model~ViewModel} properties:
 	 *
 	 * ```ts
 	 * attributes: {
