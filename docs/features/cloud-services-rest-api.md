@@ -1,6 +1,6 @@
 ---
 category: cloud-services
-meta-title: Cloud Services REST API | CKEditor 5 Documentation
+meta-title: Cloud Services REST API & Webhooks | CKEditor 5 Documentation
 meta-description: Available RESTful APIs of the Cloud Services platfrom.
 menu-title: REST API
 modified_at: 2025-05-20
