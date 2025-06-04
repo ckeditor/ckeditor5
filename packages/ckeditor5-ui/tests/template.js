@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals HTMLElement, Event, document */
-
 import { default as Template, TemplateToBinding, TemplateIfBinding } from '../src/template.js';
 import View from '../src/view.js';
 import ViewCollection from '../src/viewcollection.js';

@@ -336,13 +336,13 @@ export default class HtmlEmbedEditing extends Plugin {
 			state,
 			props
 		}: {
-				domDocument: Document;
-				state: State;
-				props: {
-					isDisabled: boolean;
-					placeholder: string;
-				};
-			} ): HTMLTextAreaElement {
+			domDocument: Document;
+			state: State;
+			props: {
+				isDisabled: boolean;
+				placeholder: string;
+			};
+		} ): HTMLTextAreaElement {
 			const domTextarea = createElement( domDocument, 'textarea', {
 				placeholder: props.placeholder,
 				class: 'ck ck-reset ck-input ck-input-text raw-html-embed__source'

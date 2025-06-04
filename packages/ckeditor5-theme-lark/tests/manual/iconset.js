@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import * as icons from 'ckeditor5/src/icons.js';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';

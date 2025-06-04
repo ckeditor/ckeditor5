@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, console */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';

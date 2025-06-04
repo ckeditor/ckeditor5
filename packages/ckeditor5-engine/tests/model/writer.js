@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global console */
-
 import Model from '../../src/model/model.js';
 import Writer from '../../src/model/writer.js';
 import Batch from '../../src/model/batch.js';

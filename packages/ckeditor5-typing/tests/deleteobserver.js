@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import DeleteObserver from '../src/deleteobserver.js';
 
 import View from '@ckeditor/ckeditor5-engine/src/view/view.js';

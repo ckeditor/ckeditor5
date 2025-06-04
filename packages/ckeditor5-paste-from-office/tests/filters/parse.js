@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals CSSStyleSheet */
-
 import DocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment.js';
 
 import { parseHtml } from '../../src/filters/parse.js';

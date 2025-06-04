@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, document, console */
-
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import ImageInsert from '../../src/imageinsert.js';
 import AutoImage from '../../src/autoimage.js';
@@ -70,7 +68,7 @@ ClassicEditor
 			toolbar: [ 'imageStyle:inline', 'imageStyle:wrapText', '|', 'imageTextAlternative' ]
 		},
 		ckfinder: {
-			// eslint-disable-next-line max-len
+			// eslint-disable-next-line @stylistic/max-len
 			uploadUrl: 'https://ckeditor.com/apps/ckfinder/3.5.0/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
 		}
 	} )

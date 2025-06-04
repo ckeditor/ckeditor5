@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global HTMLElement, setTimeout, document */
-
 import WordCount from '../src/wordcount.js';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';

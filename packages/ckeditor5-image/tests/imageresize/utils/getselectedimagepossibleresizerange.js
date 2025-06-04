@@ -13,8 +13,6 @@ import Image from '../../../src/image.js';
 import ImageStyle from '../../../src/imagestyle.js';
 import { getSelectedImagePossibleResizeRange } from '../../../src/imageresize/utils/getselectedimagepossibleresizerange.js';
 
-/* eslint-disable no-undef */
-
 describe( 'getSelectedImagePossibleResizeRange', () => {
 	let editor, model, editorElement;
 

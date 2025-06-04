@@ -11,8 +11,6 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 
 import PastePlainText from '../src/pasteplaintext.js';
 
-/* global document */
-
 // https://github.com/ckeditor/ckeditor5/issues/1006
 describe( 'PastePlainText', () => {
 	let editor, model, viewDocument;

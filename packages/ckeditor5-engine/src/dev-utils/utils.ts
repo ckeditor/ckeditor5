@@ -11,8 +11,6 @@
  * @module engine/dev-utils/utils
  */
 
-/* globals console */
-
 // @if CK_DEBUG_TYPING // const { debounce } = require( 'es-toolkit/compat' );
 
 /**

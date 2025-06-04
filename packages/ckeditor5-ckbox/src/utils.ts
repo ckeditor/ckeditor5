@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global atob */
-
 /**
  * @module ckbox/utils
  */
@@ -110,7 +108,7 @@ export function blurHashToDataUrl( hash?: string ): string | undefined {
 		ctx.putImageData( imageData, 0, 0 );
 
 		return canvas.toDataURL();
-	} catch ( e ) {
+	} catch {
 		return undefined;
 	}
 }

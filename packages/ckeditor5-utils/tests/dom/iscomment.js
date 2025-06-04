@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import isComment from '../../src/dom/iscomment.js';
 
 describe( 'isComment()', () => {

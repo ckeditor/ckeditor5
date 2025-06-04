@@ -319,7 +319,7 @@ describe( 'Border styles normalization', () => {
 			);
 		} );
 
-		it( 'should output merged "border-style" property and the rest for particular borders', () => {
+		it( 'should output merged "border-color" property and the rest for particular borders', () => {
 			styles.setTo(
 				'border-top: 1px solid #aaa;' +
 				'border-right:2px dotted #aaa;' +

@@ -85,7 +85,7 @@ export default class Accessibility {
 				keystroke: [ [ 'arrowup' ], [ 'arrowright' ], [ 'arrowdown' ], [ 'arrowleft' ] ]
 			},
 			{
-				// eslint-disable-next-line max-len
+				// eslint-disable-next-line @stylistic/max-len
 				label: t( 'Execute the currently focused button. Executing buttons that interact with the editor content moves the focus back to the content.' ),
 				keystroke: [ [ 'Enter' ], [ 'Space' ] ]
 			}
