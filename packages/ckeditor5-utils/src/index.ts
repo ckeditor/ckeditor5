@@ -67,10 +67,26 @@ export { default as isVisible } from './dom/isvisible.js';
 export { getOptimalPosition, type Options as PositionOptions, type PositioningFunction, type DomPoint } from './dom/position.js';
 export { default as remove } from './dom/remove.js';
 export { default as getVisualViewportOffset } from './dom/getvisualviewportoffset.js';
-export * from './dom/scroll.js';
 
-export * from './keyboard.js';
-export * from './language.js';
+export {
+	scrollAncestorsToShowTarget,
+	scrollViewportToShowTarget
+} from './dom/scroll.js';
+
+export {
+	type ArrowKeyCodeDirection,
+	type KeystrokeInfo,
+	keyCodes,
+	getCode,
+	parseKeystroke,
+	getEnvKeystrokeText,
+	isArrowKeyCode,
+	getLocalizedArrowKeyCodeDirection,
+	isForwardArrowKeyCode
+} from './keyboard.js';
+
+export { type LanguageDirection, getLanguageDirection } from './language.js';
+
 export { default as Locale, type LocaleTranslate, type Translations } from './locale.js';
 export {
 	default as Collection,
@@ -97,6 +113,13 @@ export { default as crc32, type CRCData } from './crc32.js';
 export { default as collectStylesheets } from './collectstylesheets.js';
 export { default as formatHtml } from './formathtml.js';
 
-export * from './unicode.js';
+export {
+	isCombiningMark,
+	isHighSurrogateHalf,
+	isLowSurrogateHalf,
+	isInsideSurrogatePair,
+	isInsideCombinedSymbol,
+	isInsideEmojiSequence
+} from './unicode.js';
 
 export { default as version, releaseDate } from './version.js';

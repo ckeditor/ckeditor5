@@ -29,7 +29,14 @@ export { default as FileDialogButtonView, FileDialogListItemButtonView } from '.
 
 export { default as CollapsibleView } from './collapsible/collapsibleview.js';
 
-export * from './colorgrid/utils.js';
+export {
+	type ColorOption,
+	type NormalizedColorOption,
+	getLocalizedColorOptions,
+	normalizeColorOptions,
+	normalizeSingleColorDefinition
+} from './colorgrid/utils.js';
+
 export { default as ColorGridView, type ColorDefinition } from './colorgrid/colorgridview.js';
 export { default as ColorTileView } from './colorgrid/colortileview.js';
 
@@ -54,9 +61,26 @@ export { default as DropdownView } from './dropdown/dropdownview.js';
 export { default as DropdownPanelView } from './dropdown/dropdownpanelview.js';
 export { default as DropdownButtonView } from './dropdown/button/dropdownbuttonview.js';
 export { default as SplitButtonView } from './dropdown/button/splitbuttonview.js';
-export * from './dropdown/utils.js';
 
-export * from './dropdown/menu/utils.js';
+export {
+	type ListDropdownItemDefinition,
+	type ListDropdownSeparatorDefinition,
+	type ListDropdownButtonDefinition,
+	type ListDropdownGroupDefinition,
+	createDropdown,
+	addMenuToDropdown,
+	addToolbarToDropdown,
+	addListToDropdown,
+	focusChildOnDropdownOpen
+} from './dropdown/utils.js';
+
+export {
+	type DropdownNestedMenuDefinition,
+	type DropdownMenuButtonDefinition,
+	type DropdownMenuDefinition,
+	DropdownMenuPanelPositioningFunctions
+} from './dropdown/menu/utils.js';
+
 export { default as DropdownMenuNestedMenuView } from './dropdown/menu/dropdownmenunestedmenuview.js';
 export { default as DropdownMenuRootListView } from './dropdown/menu/dropdownmenurootlistview.js';
 export { default as DropdownMenuListView } from './dropdown/menu/dropdownmenulistview.js';
@@ -92,7 +116,13 @@ export { default as IframeView } from './iframe/iframeview.js';
 export { default as LabelView } from './label/labelview.js';
 
 export { type LabeledFieldViewCreator, default as LabeledFieldView } from './labeledfield/labeledfieldview.js';
-export * from './labeledfield/utils.js';
+
+export {
+	createLabeledInputNumber,
+	createLabeledInputText,
+	createLabeledTextarea,
+	createLabeledDropdown
+} from './labeledfield/utils.js';
 
 export { default as ListItemGroupView } from './list/listitemgroupview.js';
 export { default as ListItemView } from './list/listitemview.js';
