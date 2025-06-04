@@ -25,7 +25,7 @@
   "main": "src/index.ts",
   "dependencies": {
     "@ckeditor/ckeditor5-utils": "45.1.0",
-    "es-toolkit": "1.32.0"
+    "es-toolkit": "1.38.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "45.1.0",
