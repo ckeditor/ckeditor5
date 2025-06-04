@@ -1120,7 +1120,7 @@ function appendStyleValue( stylesObject: Styles, nameOrPath: string, valueOrObje
 }
 
 /**
- * TODO
+ * Modifies the `styles` deeply nested object by removing properties defined in `toRemove`.
  */
 function removeStyles( styles: Styles, toRemove: Styles ) {
 	for ( const key of Object.keys( toRemove ) ) {
