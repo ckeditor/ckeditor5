@@ -48,6 +48,7 @@ describe( 'TableCellWidthEditing', () => {
 	describe( 'cell width', () => {
 		it( 'should set proper schema rules', () => {
 			expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellWidth' ) ).to.be.true;
+			expect( model.schema.getAttributeProperties( 'tableCellWidth' ).isFormatting ).to.be.true;
 		} );
 
 		describe( 'upcast conversion', () => {

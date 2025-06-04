@@ -125,6 +125,10 @@ describe( 'TableColumnResizeEditing', () => {
 		expect( editor.commands.get( 'resizeColumnWidths' ) ).to.be.instanceOf( TableWidthsCommand );
 	} );
 
+	it( 'registers schema attributes as formatting', () => {
+		expect( editor.model.schema.getAttributeProperties( 'columnWidth' ).isFormatting ).to.be.true;
+	} );
+
 	describe( 'conversion', () => {
 		describe( 'upcast', () => {
 			it( 'the table width style set on <figure> element to tableWidth attribute correctly', () => {

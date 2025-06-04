@@ -96,6 +96,9 @@ describe( 'table properties', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBorderColor' ) ).to.be.true;
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBorderStyle' ) ).to.be.true;
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBorderWidth' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableBorderColor' ).isFormatting ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableBorderStyle' ).isFormatting ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableBorderWidth' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -884,6 +887,7 @@ describe( 'table properties', () => {
 		describe( 'background color', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBackgroundColor' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableBackgroundColor' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1024,6 +1028,7 @@ describe( 'table properties', () => {
 		describe( 'tableWidth', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableWidth' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableWidth' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1200,6 +1205,7 @@ describe( 'table properties', () => {
 		describe( 'tableHeight', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableHeight' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableHeight' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1376,6 +1382,7 @@ describe( 'table properties', () => {
 		describe( 'tableAlignment', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableAlignment' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableAlignment' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
