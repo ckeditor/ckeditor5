@@ -1964,6 +1964,14 @@ Customize your editor even further. Use components and helpers from our UI libra
 				helping accelerate development work.
 			</td>
 		</tr>
+		<tr id="custom-components" class="subfeature background-gray">
+			<td>
+				{@link features/custom-components Custom Widgets & Components}
+			</td>
+			<td>
+				Build custom interactive components using CKEditor 5's widget system. Create block widgets, inline elements, external data integrations, and framework components (React, Vue, Angular) that seamlessly integrate with the editor's content model and UI.
+			</td>
+		</tr>
 		<tr id="ckeditor5-inspector" class="subfeature background-gray">
 			<td>
 				<span>
