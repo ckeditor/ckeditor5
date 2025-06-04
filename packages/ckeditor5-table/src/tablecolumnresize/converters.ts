@@ -72,3 +72,14 @@ export function downcastTableResizedClass(): ( dispatcher: DowncastDispatcher ) 
 		}
 	}, { priority: 'low' } );
 }
+
+/**
+ * Returns a upcast helper that removes the `ck-table-resized` class from the table element.
+ */
+export function upcastTableResizedClass(): ( dispatcher: UpcastDispatcher ) => void {
+	return ( dispatcher: UpcastDispatcher ): void => {
+		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
+			conversionApi.consumable.consume( data.viewItem, { classes: 'ck-table-resized' } );
+		} );
+	};
+}

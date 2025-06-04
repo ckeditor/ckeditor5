@@ -38,7 +38,7 @@ import TableWalker from '../tablewalker.js';
 
 import TableWidthsCommand from './tablewidthscommand.js';
 
-import { downcastTableResizedClass, upcastColgroupElement } from './converters.js';
+import { downcastTableResizedClass, upcastColgroupElement, upcastTableResizedClass } from './converters.js';
 
 import {
 	clamp,
@@ -425,9 +425,11 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		conversion.elementToElement( { model: 'tableColumnGroup', view: 'colgroup' } );
 		conversion.elementToElement( { model: 'tableColumn', view: 'col' } );
-		conversion.for( 'downcast' ).add( downcastTableResizedClass() );
-		conversion.for( 'upcast' ).add( upcastColgroupElement( this._tableUtilsPlugin ) );
 
+		conversion.for( 'downcast' ).add( downcastTableResizedClass() );
+
+		conversion.for( 'upcast' ).add( upcastTableResizedClass() );
+		conversion.for( 'upcast' ).add( upcastColgroupElement( this._tableUtilsPlugin ) );
 		conversion.for( 'upcast' ).attributeToAttribute( {
 			view: {
 				name: 'col',
