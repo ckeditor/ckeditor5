@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
-
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { Enter } from '@ckeditor/ckeditor5-enter';
 import { Typing } from '@ckeditor/ckeditor5-typing';
@@ -18,8 +16,8 @@ import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
 
-import List from '../../src/documentlist.js';
-import TodoList from '../../src/tododocumentlist.js';
+import List from '../../src/list.js';
+import TodoList from '../../src/todolist.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

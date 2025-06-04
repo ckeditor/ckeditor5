@@ -3,11 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
+import { fileURLToPath } from 'url';
 import fs from 'fs/promises';
 import path from 'path';
-import module from 'module';
 import mkdirp from 'mkdirp';
 import webpack from 'webpack';
 import { styles, loaders } from '@ckeditor/ckeditor5-dev-utils';
@@ -16,8 +14,6 @@ import { getLastFromChangelog } from '@ckeditor/ckeditor5-dev-release-tools';
 import { getCkeditor5Plugins, normalizePath, addTypeScriptLoader } from './utils.mjs';
 import postCssContentStylesPlugin from './list-content-styles-plugin.mjs';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
-
-const require = module.createRequire( import.meta.url );
 
 const DESTINATION_DIRECTORY = path.join( CKEDITOR5_ROOT_PATH, 'build', 'content-styles' );
 const OUTPUT_FILE_PATH = path.join( DESTINATION_DIRECTORY, 'content-styles.css' );
@@ -164,7 +160,7 @@ export default function buildContentStyles() {
 function getWebpackConfig() {
 	const postCssConfig = styles.getPostCssConfig( {
 		themeImporter: {
-			themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+			themePath: fileURLToPath( import.meta.resolve( '@ckeditor/ckeditor5-theme-lark' ) )
 		},
 		minify: false
 	} );

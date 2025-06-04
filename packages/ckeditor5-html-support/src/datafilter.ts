@@ -730,7 +730,7 @@ export default class DataFilter extends Plugin {
 		const conversion = editor.conversion;
 		const attributeKey = definition.model;
 
-		// This element is stored in the model as an attribute on a block element, for example DocumentLists.
+		// This element is stored in the model as an attribute on a block element, for example Lists.
 		if ( definition.appliesToBlock ) {
 			return;
 		}
@@ -882,10 +882,10 @@ function matchAndConsumeAttributes(
 	matcher: Matcher,
 	consumable: ViewConsumable
 ): {
-	attributes: Array<string>;
-	classes: Array<string>;
-	styles: Array<string>;
-} {
+		attributes: Array<string>;
+		classes: Array<string>;
+		styles: Array<string>;
+	} {
 	const matches = matcher.matchAll( viewElement ) || [];
 	const stylesProcessor = viewElement.document.stylesProcessor;
 

@@ -332,7 +332,6 @@ export default class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 			key: string;
 			value: unknown |
 				( ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => unknown );
-			name?: string;
 		};
 		converterPriority?: PriorityString;
 	} ): this {
@@ -1072,7 +1071,7 @@ function prepareToAttributeConverter(
 			config.model.value( data.viewItem, conversionApi, data ) : config.model.value;
 
 		// Do not convert if attribute building function returned falsy value.
-		if ( modelValue === null ) {
+		if ( modelValue === null || modelValue === undefined ) {
 			return;
 		}
 

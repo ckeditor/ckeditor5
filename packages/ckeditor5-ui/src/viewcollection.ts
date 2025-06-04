@@ -105,7 +105,7 @@ export default class ViewCollection<TView extends View = View> extends Collectio
 	 * {@link #remove removing} views in the collection synchronizes their
 	 * {@link module:ui/view~View#element elements} in the parent element.
 	 *
-	 * @param element A new parent element.
+	 * @param elementOrDocFragment A new parent element or document fragment.
 	 */
 	public setParent( elementOrDocFragment: DocumentFragment | HTMLElement ): void {
 		this._parentElement = elementOrDocFragment;

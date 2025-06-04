@@ -7,8 +7,6 @@
  * @module utils/locale
  */
 
-/* globals console */
-
 import toArray, { type ArrayOrItem } from './toarray.js';
 import { _translate, _unifyTranslations, type Message } from './translation-service.js';
 import { getLanguageDirection, type LanguageDirection } from './language.js';
@@ -112,7 +110,7 @@ export default class Locale {
 	 * @param options.contentLanguage The editor content language code in the
 	 * [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format. If not specified, the same as `options.language`.
 	 * See {@link #contentLanguage}.
-	 * @param translations Translations passed as a editor config parameter.
+	 * @param options.translations Translations passed as a editor config parameter.
 	 */
 	constructor(
 		{
@@ -131,30 +129,6 @@ export default class Locale {
 		this.contentLanguageDirection = getLanguageDirection( this.contentLanguage );
 		this.translations = _unifyTranslations( translations );
 		this.t = ( message, values ) => this._t( message, values );
-	}
-
-	/**
-	 * The editor UI language code in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
-	 *
-	 * **Note**: This property was deprecated. Please use {@link #uiLanguage} and {@link #contentLanguage}
-	 * properties instead.
-	 *
-	 * @deprecated
-	 */
-	public get language(): string {
-		/**
-		 * The {@link module:utils/locale~Locale#language `Locale#language`} property was deprecated and will
-		 * be removed in the near future. Please use the {@link module:utils/locale~Locale#uiLanguage `Locale#uiLanguage`} and
-		 * {@link module:utils/locale~Locale#contentLanguage `Locale#contentLanguage`} properties instead.
-		 *
-		 * @error locale-deprecated-language-property
-		 */
-		console.warn(
-			'locale-deprecated-language-property: ' +
-			'The Locale#language property has been deprecated and will be removed in the near future. ' +
-			'Please use #uiLanguage and #contentLanguage properties instead.' );
-
-		return this.uiLanguage;
 	}
 
 	/**

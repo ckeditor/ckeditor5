@@ -60,6 +60,10 @@ export function prepareTest( model, input ) {
  * @returns {Object}
  */
 export function setupTestHelpers( editor ) {
+	// Remove downcast strategy for listItemId to avoid having to take it into account in all tests.
+	editor.plugins.get( 'ListEditing' )._downcastStrategies.splice( editor.plugins.get( 'ListEditing' )._downcastStrategies.findIndex(
+		strategy => strategy.attributeName === 'listItemId' ), 1 );
+
 	const model = editor.model;
 	const modelRoot = model.document.getRoot();
 	const view = editor.editing.view;
@@ -203,7 +207,7 @@ export function setupTestHelpers( editor ) {
 		data( input, modelData, output = input ) {
 			editor.setData( input );
 
-			expect( editor.getData(), 'output data' ).to.equalMarkup( output );
+			expect( editor.getData( { skipListItemIds: true } ), 'output data' ).to.equalMarkup( output );
 			expect( getModelData( model, { withoutSelection: true } ), 'model data' ).to.equalMarkup( modelData );
 		}
 	};
@@ -380,6 +384,7 @@ function stringifyElement( content, listAttributes = {} ) {
 	let selectionBefore = '';
 	let selectionAfter = '';
 
+	/* eslint-disable @stylistic/no-multi-spaces */
 	const regexp = new RegExp(
 		'^(?<selectionBefore>[\\[\\]])?' +													// [<element
 			'(?:' +
@@ -391,6 +396,7 @@ function stringifyElement( content, listAttributes = {} ) {
 			')' +
 		'(?<selectionAfter>[\\[\\]])?$'														// </element>] or <element/>]
 	);
+	/* eslint-enable @stylistic/no-multi-spaces */
 
 	const match = content.match( regexp );
 

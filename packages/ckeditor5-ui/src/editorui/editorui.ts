@@ -7,8 +7,6 @@
  * @module ui/editorui/editorui
  */
 
-/* globals console */
-
 import ComponentFactory from '../componentfactory.js';
 import TooltipManager from '../tooltipmanager.js';
 import PoweredBy from './poweredby.js';
@@ -21,12 +19,19 @@ import type { default as View, UIViewRenderEvent } from '../view.js';
 
 import {
 	ObservableMixin,
+	DomEmitterMixin,
+	global,
 	isVisible,
 	FocusTracker,
-	type EventInfo, type CollectionAddEvent, type CollectionRemoveEvent
+	getVisualViewportOffset,
+	type EventInfo,
+	type CollectionAddEvent,
+	type CollectionRemoveEvent,
+	type ObservableSetEvent,
+	type DomEmitter
 } from '@ckeditor/ckeditor5-utils';
 
-import type { Editor } from '@ckeditor/ckeditor5-core';
+import type { Editor, ViewportOffsetConfig } from '@ckeditor/ckeditor5-core';
 import type { ViewDocumentLayoutChangedEvent, ViewScrollToTheSelectionEvent } from '@ckeditor/ckeditor5-engine';
 import type {
 	default as MenuBarView,
@@ -101,7 +106,8 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 * 	top: 50,
 	 * 	right: 50,
 	 * 	bottom: 50,
-	 * 	left: 50
+	 * 	left: 50,
+	 * 	visualTop: 50
 	 * }
 	 * ```
 	 *
@@ -118,12 +124,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	 *
 	 * @observable
 	 */
-	public declare viewportOffset: {
-		left?: number;
-		right?: number;
-		top?: number;
-		bottom?: number;
-	};
+	public declare viewportOffset: ViewportOffset;
 
 	/**
 	 * Stores all editable elements used by the editor instance.
@@ -146,6 +147,11 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 	private _lastFocusedForeignElement: HTMLElement | null = null;
 
 	/**
+	 * The DOM emitter instance used for visual viewport watching.
+	 */
+	private _domEmitter?: DomEmitter;
+
+	/**
 	 * Creates an instance of the editor UI class.
 	 *
 	 * @param editor The editor instance.
@@ -163,7 +169,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		this.evaluationBadge = new EvaluationBadge( editor );
 		this.ariaLiveAnnouncer = new AriaLiveAnnouncer( editor );
 
-		this.set( 'viewportOffset', this._readViewportOffsetFromConfig() );
+		this._initViewportOffset( this._readViewportOffsetFromConfig() );
 
 		this.once<EditorUIReadyEvent>( 'ready', () => {
 			this._bindBodyCollectionWithFocusTracker();
@@ -176,6 +182,7 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		this.listenTo<ViewScrollToTheSelectionEvent>( editingView, 'scrollToTheSelection', this._handleScrollToTheSelection.bind( this ) );
 
 		this._initFocusTracking();
+		this._initVisualViewportSupport();
 	}
 
 	/**
@@ -223,6 +230,10 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 
 		this._editableElementsMap = new Map();
 		this._focusableToolbarDefinitions = [];
+
+		if ( this._domEmitter ) {
+			this._domEmitter.stopListening();
+		}
 	}
 
 	/**
@@ -369,29 +380,6 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 		config: MenuBarConfigAddedItem | MenuBarConfigAddedGroup | MenuBarConfigAddedMenu
 	): void {
 		this._extraMenuBarElements.push( config );
-	}
-
-	/**
-	 * Stores all editable elements used by the editor instance.
-	 *
-	 * @deprecated
-	 */
-	protected get _editableElements(): unknown {
-		/**
-		 * The {@link module:ui/editorui/editorui~EditorUI#_editableElements `EditorUI#_editableElements`} property has been
-		 * deprecated and will be removed in the near future. Please use
-		 * {@link module:ui/editorui/editorui~EditorUI#setEditableElement `setEditableElement()`} and
-		 * {@link module:ui/editorui/editorui~EditorUI#getEditableElement `getEditableElement()`} methods instead.
-		 *
-		 * @error editor-ui-deprecated-editable-elements
-		 * @param editorUI Editor UI instance the deprecated property belongs to.
-		 */
-		console.warn(
-			'editor-ui-deprecated-editable-elements: ' +
-			'The EditorUI#_editableElements property has been deprecated and will be removed in the near future.',
-			{ editorUI: this } );
-
-		return this._editableElementsMap;
 	}
 
 	/**
@@ -697,6 +685,60 @@ export default abstract class EditorUI extends /* #__PURE__ */ ObservableMixin()
 			this.focusTracker.remove( view.element! );
 		} );
 	}
+
+	/**
+	 * Set initial viewport offset and setup visualTop augmentation.
+	 */
+	private _initViewportOffset( viewportOffsetConfig: ViewportOffsetConfig ) {
+		// Augment the viewport offset set from outside the editor with the visualTop property.
+		this.on<ObservableSetEvent<ViewportOffset>>( 'set:viewportOffset', ( evt, name, value ) => {
+			const visualTop = this._getVisualViewportTopOffset( value );
+
+			// Update only if there is a change in a value, so we do not trigger
+			// listeners to the viewportOffset observable.
+			if ( value.visualTop !== visualTop ) {
+				evt.return = { ...value, visualTop };
+			}
+		} );
+
+		// Set the initial value after augmenting the setter.
+		this.set( 'viewportOffset', viewportOffsetConfig );
+	}
+
+	/**
+	 * Listen to visual viewport changes and update the viewportOffset with the visualTop property
+	 * according to the visible part of it (visual viewport).
+	 */
+	private _initVisualViewportSupport() {
+		if ( !global.window.visualViewport ) {
+			return;
+		}
+
+		const updateViewport = () => {
+			const visualTop = this._getVisualViewportTopOffset( this.viewportOffset );
+
+			// Update only if there is a change in a value, so we do not trigger
+			// listeners to the viewportOffset observable.
+			if ( this.viewportOffset.visualTop !== visualTop ) {
+				this.viewportOffset = { ...this.viewportOffset, visualTop };
+			}
+		};
+
+		// Listen to the changes in the visual viewport to adjust the visualTop of viewport offset.
+		this._domEmitter = new ( DomEmitterMixin() )();
+		this._domEmitter.listenTo( global.window.visualViewport, 'scroll', updateViewport );
+		this._domEmitter.listenTo( global.window.visualViewport, 'resize', updateViewport );
+	}
+
+	/**
+	 * Calculate the viewport top offset according to the visible part of it (visual viewport).
+	 */
+	private _getVisualViewportTopOffset( viewportOffset: { top?: number } ): number {
+		const visualViewportOffsetTop = getVisualViewportOffset().top;
+		const viewportTopOffset = viewportOffset.top || 0;
+
+		return visualViewportOffsetTop > viewportTopOffset ? 0 : viewportTopOffset - visualViewportOffsetTop;
+	}
 }
 
 /**
@@ -765,6 +807,16 @@ export interface FocusableToolbarOptions {
 	 * <kbd>Esc</kbd> keystroke but before the focus goes back to the {@link ~EditorUI#setEditableElement editable element}.
 	 */
 	afterBlur?: () => void;
+}
+
+export interface ViewportOffset extends ViewportOffsetConfig {
+
+	/**
+	 * The top offset of the visual viewport.
+	 *
+	 * This value is calculated based on the visual viewport position.
+	 */
+	visualTop?: number;
 }
 
 /**

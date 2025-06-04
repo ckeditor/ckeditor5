@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import ListEditing from '../../../src/list/listediting.js';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
@@ -80,7 +78,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<p data-foo-start-before="bar">A<foo-end name="bar"></foo-end></p>' +
 					'</li>' +
 				'</ul>'
@@ -106,7 +104,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<p data-foo-start-before="bar"><foo-end name="bar"></foo-end>&nbsp;</p>' +
 					'</li>' +
 				'</ul>'
@@ -127,7 +125,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<p data-foo-end-after="bar" data-foo-start-before="bar">A</p>' +
 					'</li>' +
 				'</ul>'
@@ -148,7 +146,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<foo-start name="bar"></foo-start>A<foo-end name="bar"></foo-end>' +
 					'</li>' +
 				'</ul>'
@@ -171,7 +169,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<foo-start name="bar"></foo-start><foo-end name="bar"></foo-end>&nbsp;' +
 					'</li>' +
 				'</ul>'
@@ -204,7 +202,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<p data-foo-start-before="bar">A<foo-end name="bar"></foo-end></p>' +
 						'<p>B</p>' +
 					'</li>' +
@@ -229,7 +227,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<p data-foo-start-before="bar">A</p>' +
 						'<p>B<foo-end name="bar"></foo-end></p>' +
 					'</li>' +
@@ -259,7 +257,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<p data-foo-start-before="bar">&nbsp;</p>' +
 						'<p><foo-end name="bar"></foo-end>&nbsp;</p>' +
 					'</li>' +
@@ -281,7 +279,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<p data-foo-start-before="bar">A</p>' +
 						'<p data-foo-end-after="bar">B</p>' +
 					'</li>' +
@@ -306,7 +304,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<p>A<foo-start name="bar"></foo-start></p>' +
 						'<p><foo-end name="bar"></foo-end>B</p>' +
 					'</li>' +
@@ -336,7 +334,7 @@ describe( 'ListEditing integrations: markers', () => {
 
 			expect( data ).to.equal(
 				'<ul>' +
-					'<li>' +
+					'<li data-list-item-id="a">' +
 						'<p><foo-start name="bar"></foo-start>&nbsp;</p>' +
 						'<p><foo-end name="bar"></foo-end>&nbsp;</p>' +
 					'</li>' +

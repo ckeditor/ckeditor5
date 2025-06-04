@@ -2,7 +2,7 @@
 category: features-file-management
 menu-title: CKBox
 meta-title: CKBox file manager | CKEditor 5 Documentation
-meta-description: Learn all about using the CKBox file manager and service with CKEditor 5
+meta-description: Learn all about using the CKBox asset manager and service with CKEditor 5.
 modified_at: 2022-06-20
 order: 10
 badges: [ premium ]
@@ -13,7 +13,7 @@ badges: [ premium ]
 CKBox is a dedicated asset manager supporting file and image upload. The CKBox feature lets you easily upload various files and insert images and links to other files into your content. It also offers image conversion and optimization capabilities and provides a {@link features/images-responsive responsive images mechanism} for CKEditor&nbsp;5.
 
 <info-box>
-	Unlock this feature with a CKEditor Paid Plan. [Sign up for a free trial](https://portal.ckeditor.com/checkout?plan=free), or [select the Plan](https://ckeditor.com/pricing/) that provides access to all the premium features you need.
+	Unlock this feature with selected CKEditor Plans. [Sign up for a free trial](https://portal.ckeditor.com/checkout?plan=free), or [select the Plan](https://ckeditor.com/pricing/) that provides access to all the premium features you need.
 </info-box>
 
 ## How CKBox enhances CKEditor&nbsp;5

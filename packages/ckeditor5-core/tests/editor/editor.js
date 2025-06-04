@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, window, setTimeout */
-
 import Editor from '../../src/editor/editor.js';
 import Context from '../../src/context.js';
 import Plugin from '../../src/plugin.js';
@@ -799,7 +797,6 @@ describe( 'Editor', () => {
 					this.isEnabled = true;
 				}
 				execute() {
-					// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 					throw new CKEditorError( 'foo', editor );
 				}
 			}
@@ -1410,7 +1407,6 @@ describe( 'Editor', () => {
 		let editor;
 
 		beforeEach( () => {
-			// eslint-disable-next-line new-cap
 			class CustomEditor extends Editor {}
 
 			editor = new CustomEditor();

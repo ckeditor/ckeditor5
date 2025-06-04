@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals setTimeout, document */
-
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
 
 import EditingController from '../../src/controller/editingcontroller.js';
@@ -79,7 +77,7 @@ describe( 'EditingController', () => {
 		let model, modelRoot, viewRoot, domRoot, editing, listener;
 
 		beforeEach( () => {
-			listener = Object.create( EmitterMixin );
+			listener = new ( EmitterMixin() )();
 
 			model = new Model();
 			modelRoot = model.document.createRoot();

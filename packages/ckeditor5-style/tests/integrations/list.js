@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
@@ -343,7 +341,7 @@ describe( 'ListStyleSupport', () => {
 			command.refresh();
 			command.execute( { styleName: 'OL style' } );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 				'<p>foo</p>' +
 				'<ol class="ol-styled">' +
 					'<li>' +
@@ -393,7 +391,7 @@ describe( 'ListStyleSupport', () => {
 			command.refresh();
 			command.execute( { styleName: 'OL style' } );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 				'<p>foo</p>' +
 				'<ol>' +
 					'<li>' +
@@ -434,7 +432,7 @@ describe( 'ListStyleSupport', () => {
 			command.refresh();
 			command.execute( { styleName: 'UL style' } );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 				'<p>foo</p>' +
 				'<ol>' +
 					'<li>' +
@@ -484,7 +482,7 @@ describe( 'ListStyleSupport', () => {
 			command.refresh();
 			command.execute( { styleName: 'LI style' } );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 				'<p>foo</p>' +
 				'<ol>' +
 					'<li class="li-styled">' +
@@ -523,7 +521,7 @@ describe( 'ListStyleSupport', () => {
 			command.refresh();
 			command.execute( { styleName: 'LI style' } );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 				'<p>foo</p>' +
 				'<ol>' +
 					'<li class="li-styled">' +
@@ -568,7 +566,7 @@ describe( 'ListStyleSupport', () => {
 			command.refresh();
 			command.execute( { styleName: 'OL style' } );
 
-			expect( editor.getData() ).to.equal(
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 				'<p>foo</p>' +
 				'<ol class="ol-styled">' +
 					'<li>' +
@@ -636,7 +634,7 @@ describe( 'ListStyleSupport', () => {
 		expect( command.enabledStyles ).to.have.members( [ 'LI style', 'OL style', 'P style' ] );
 		expect( command.value ).to.have.members( [ 'OL style' ] );
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 			'<ol class="ol-styled">' +
 				'<li>' +
 					'<p>1</p>' +
@@ -658,7 +656,7 @@ describe( 'ListStyleSupport', () => {
 		expect( command.enabledStyles ).to.have.members( [ 'LI style', 'OL style', 'P style' ] );
 		expect( command.value ).to.be.empty;
 
-		expect( editor.getData() ).to.equal(
+		expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 			'<ol>' +
 				'<li>' +
 					'<p>1</p>' +

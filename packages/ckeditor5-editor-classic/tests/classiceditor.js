@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, Event, console */
-
 import ClassicEditor from '../src/classiceditor.js';
 import ClassicEditorUI from '../src/classiceditorui.js';
 import ClassicEditorUIView from '../src/classiceditoruiview.js';

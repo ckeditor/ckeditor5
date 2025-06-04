@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document,Event */
-
 import { IconEraser, IconCheck, IconCancel } from '@ckeditor/ckeditor5-icons';
 import ColorSelectorView from './../../src/colorselector/colorselectorview.js';
 import ColorTileView from '../../src/colorgrid/colortileview.js';

@@ -182,10 +182,16 @@ To set it up:
 1. [Sign in to the Customer Portal](https://portal.ckeditor.com/).
 2. Visit the _License keys_ tab.
 3. Click _Manage_ action for your production key.
+
+{@img assets/img/license_host_management.png 700 License key listing.}
+
 4. Add up to five approved domains. Available patterns:
 	* Domain or IP address: specify exact domains (for example: `example.com`) or IP addresses (`192.168.0.0`).
 	* Wildcard in domain: use `*` for subdomains (`*.example.com` allows `api.example.com` and `www.example.com`).
 	* Wildcard in IP address: use `*` for segments (`192.168.*.*` allows `192.168.0.0` to `192.168.255.255`).
+
+{@img assets/img/license_host_management_modal.png 700 Adding approved hosts.}
+
 5. Save the changes.
 6. Replace the license key in your editor with the new one created so that it starts working.
 

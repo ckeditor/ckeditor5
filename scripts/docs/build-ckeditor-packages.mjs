@@ -5,14 +5,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 import url from 'url';
+import { parseArgs } from 'util';
 import upath from 'upath';
 import fs from 'fs-extra';
 import { CKEDITOR5_ROOT_PATH, CKEDITOR5_COMMERCIAL_PATH } from '../constants.mjs';
 import generateCKEditor5DocsBuild from './generate-ckeditor5-docs-build.mjs';
-import parseArguments from '../docs/parse-arguments.mjs';
 
 buildCKEditorPackages()
 	.catch( () => {
@@ -20,9 +18,22 @@ buildCKEditorPackages()
 	} );
 
 async function buildCKEditorPackages() {
-	const options = parseArguments( process.argv.slice( 2 ) );
-
 	console.log( 'Started building `ckeditor5`.' );
+
+	const { values } = parseArgs( {
+		args: process.argv.slice( 2 ),
+		strict: true,
+		options: {
+			'skip-commercial': {
+				type: 'boolean',
+				default: false
+			},
+			'skip-obfuscation': {
+				type: 'boolean',
+				default: false
+			}
+		}
+	} );
 
 	const basePath = upath.join( CKEDITOR5_ROOT_PATH, 'build', 'docs-assets' );
 
@@ -34,7 +45,7 @@ async function buildCKEditorPackages() {
 
 	console.log( 'Finished building `ckeditor5`.' );
 
-	if ( options.skipCommercial ) {
+	if ( values[ 'skip-commercial' ] ) {
 		console.log( 'Skipping `ckeditor5-premium-features`.' );
 	} else if ( await fs.pathExists( CKEDITOR5_COMMERCIAL_PATH ) ) {
 		console.log( 'Started building `ckeditor5-premium-features`.' );
@@ -43,7 +54,10 @@ async function buildCKEditorPackages() {
 		const { href } = url.pathToFileURL( scriptPath );
 		const { default: generateCKEditor5PremiumFeaturesDocsBuild } = await import( href );
 
-		await generateCKEditor5PremiumFeaturesDocsBuild( output( 'ckeditor5-premium-features/ckeditor5-premium-features.js' ) );
+		await generateCKEditor5PremiumFeaturesDocsBuild(
+			output( 'ckeditor5-premium-features/ckeditor5-premium-features.js' ),
+			values[ 'skip-obfuscation' ]
+		);
 
 		console.log( 'Finished building `ckeditor5-premium-features`.' );
 	}

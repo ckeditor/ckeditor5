@@ -1,12 +1,12 @@
 ---
 menu-title: Angular
-meta-title: Angular rich text editor component (npm) | CKEditor 5 Documentation
-meta-description: Install, integrate and configure CKEditor 5 using the Angular component with npm.
+meta-title: Using CKEditor 5 with Angular rich text editor component from npm | CKEditor 5 Documentation
+meta-description: Install, integrate, and configure CKEditor 5 using the Angular component with npm.
 category: self-hosted
 order: 30
 ---
 
-# Angular rich text editor component (npm)
+# Integrating CKEditor&nbsp;5 with Angular from npm
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-angular" target="_blank" rel="noopener">
@@ -636,7 +636,11 @@ These frameworks offer better support for testing CKEditor&nbsp;5 and provide a 
 If this is not possible and you still want to use Jest, you can mock some of the required APIs. Below is an example of how to mock some of the APIs used by CKEditor&nbsp;5:
 
 ```javascript
+import { TextEncoder } from 'util';
+
 beforeAll( () => {
+	window.TextEncoder = TextEncoder;
+
 	window.scrollTo = jest.fn();
 
 	window.ResizeObserver = class ResizeObserver {
@@ -756,3 +760,9 @@ All available Angular versions are [listed on npm](https://www.npmjs.com/package
 ## Contributing and reporting issues
 
 The source code of the CKEditor&nbsp;5 rich text editor component for Angular is available on GitHub in [https://github.com/ckeditor/ckeditor5-angular](https://github.com/ckeditor/ckeditor5-angular).
+
+## Next steps
+
+* See how to manipulate the editor's data in the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
+* Refer to further guides in the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
+* Check the {@link features/index features category} to learn more about individual features.

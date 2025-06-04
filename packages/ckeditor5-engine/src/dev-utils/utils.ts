@@ -11,8 +11,6 @@
  * @module engine/dev-utils/utils
  */
 
-/* globals console */
-
 // @if CK_DEBUG_TYPING // const { debounce } = require( 'es-toolkit/compat' );
 
 /**
@@ -129,6 +127,7 @@ export function logDocument( document: any, version: any ): void {
 // @if CK_DEBUG_TYPING // 		editor.editing.view.domConverter,
 // @if CK_DEBUG_TYPING // 		...editor.editing.view._observers.values(),
 // @if CK_DEBUG_TYPING // 		editor.plugins.get( 'Input' ),
+// @if CK_DEBUG_TYPING // 		editor.plugins.get( 'Input' )._typingQueue,
 // @if CK_DEBUG_TYPING // 		editor.plugins.get( 'WidgetTypeAround' ),
 // @if CK_DEBUG_TYPING // 		editor.commands.get( 'delete' ),
 // @if CK_DEBUG_TYPING // 		editor.commands.get( 'deleteForward' )

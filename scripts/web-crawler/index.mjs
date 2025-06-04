@@ -5,8 +5,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 import minimist from 'minimist';
 import { DEFAULT_CONCURRENCY, runCrawler, toArray, isUrlValid } from '@ckeditor/ckeditor5-dev-web-crawler';
 
@@ -25,7 +23,7 @@ runCrawler( options );
  * to not exclude anything.
  * @returns {Number} options.concurrency Number of concurrent pages (browser tabs) to be used during crawling. By default all
  * links are opened one by one, sequentially (concurrency is 1).
- * @returns {Boolean} options.quit Terminates the scan as soon as an error is found. False (off) by default.
+ * @returns {Boolean} options.silent Whether to display status in real-time or only the result at the end of the process.
  */
 function parseArguments( args ) {
 	const config = {
@@ -39,20 +37,18 @@ function parseArguments( args ) {
 		boolean: [
 			'docs',
 			'manual',
-			'spinner',
-			'quit'
+			'silent'
 		],
 
 		alias: {
 			u: 'url',
 			d: 'depth',
 			e: 'exclusions',
-			c: 'concurrency',
-			q: 'quit'
+			c: 'concurrency'
 		},
 
 		default: {
-			spinner: true
+			silent: false
 		}
 	};
 
@@ -99,7 +95,6 @@ function parseArguments( args ) {
 		depth: options.depth ? Number( options.depth ) : Infinity,
 		exclusions: options.exclusions ? toArray( options.exclusions ).filter( exclusion => exclusion.length > 0 ) : [],
 		concurrency: options.concurrency ? Number( options.concurrency ) : 1,
-		quit: Boolean( options.quit ),
-		noSpinner: !options.spinner
+		silent: options.silent
 	};
 }

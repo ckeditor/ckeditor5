@@ -65,7 +65,7 @@ export default class CommandCollection implements Iterable<[ string, Command ]> 
 			 * Command does not exist.
 			 *
 			 * @error commandcollection-command-not-found
-			 * @param commandName Name of the command.
+			 * @param {string} commandName Name of the command.
 			 */
 			throw new CKEditorError( 'commandcollection-command-not-found', this, { commandName } );
 		}

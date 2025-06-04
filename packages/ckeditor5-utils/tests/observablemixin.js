@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-disable new-cap */
-
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { assertBinding, expectToThrowCKEditorError } from '../tests/_utils/utils.js';
 import ObservableMixin from '../src/observablemixin.js';
@@ -1162,7 +1160,7 @@ describe( 'Observable', () => {
 
 			expect( foo.method ).to.not.equal( originalMethod );
 
-			foo.stopListening( Object.create( ObservableMixin ) );
+			foo.stopListening( new ( ObservableMixin() )() );
 
 			expect( foo.method ).to.not.equal( originalMethod );
 		} );

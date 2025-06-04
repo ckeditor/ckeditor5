@@ -110,6 +110,8 @@ export default class TableCellPropertiesEditing extends Plugin {
 		enableProperty( schema, conversion, {
 			modelAttribute: 'tableCellHeight',
 			styleName: 'height',
+			attributeName: 'height',
+			attributeType: 'length',
 			defaultValue: defaultTableCellProperties.height
 		} );
 		editor.commands.add( 'tableCellHeight', new TableCellHeightCommand( editor, defaultTableCellProperties.height ) );
@@ -127,6 +129,8 @@ export default class TableCellPropertiesEditing extends Plugin {
 		enableProperty( schema, conversion, {
 			modelAttribute: 'tableCellBackgroundColor',
 			styleName: 'background-color',
+			attributeName: 'bgcolor',
+			attributeType: 'color',
 			defaultValue: defaultTableCellProperties.backgroundColor
 		} );
 		editor.commands.add(
@@ -213,7 +217,12 @@ function enableHorizontalAlignmentProperty( schema: Schema, conversion: Conversi
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, 'left', data );
 					const align = viewElement.getStyle( 'text-align' );
 
-					return align === localDefaultValue ? null : align;
+					if ( align !== localDefaultValue ) {
+						return align;
+					}
+
+					// Consume the style even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { styles: 'text-align' } );
 				}
 			}
 		} )
@@ -231,7 +240,12 @@ function enableHorizontalAlignmentProperty( schema: Schema, conversion: Conversi
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, 'left', data );
 					const align = viewElement.getAttribute( 'align' );
 
-					return align === localDefaultValue ? null : align;
+					if ( align !== localDefaultValue ) {
+						return align;
+					}
+
+					// Consume the style even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { attributes: 'align' } );
 				}
 			}
 		} );
@@ -276,7 +290,12 @@ function enableVerticalAlignmentProperty( schema: Schema, conversion: Conversion
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, 'middle', data );
 					const align = viewElement.getStyle( 'vertical-align' );
 
-					return align === localDefaultValue ? null : align;
+					if ( align !== localDefaultValue ) {
+						return align;
+					}
+
+					// Consume the style even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { styles: 'vertical-align' } );
 				}
 			}
 		} )
@@ -294,7 +313,12 @@ function enableVerticalAlignmentProperty( schema: Schema, conversion: Conversion
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, 'middle', data );
 					const valign = viewElement.getAttribute( 'valign' );
 
-					return valign === localDefaultValue ? null : valign;
+					if ( valign !== localDefaultValue ) {
+						return valign;
+					}
+
+					// Consume the attribute even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { attributes: 'valign' } );
 				}
 			}
 		} );

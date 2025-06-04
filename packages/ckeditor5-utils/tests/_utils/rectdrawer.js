@@ -30,7 +30,7 @@ export default class RectDrawer {
 	 * @param {Object} [userStyles] An optional object with custom styles for the rect.
 	 * @param {String} [name] The optional name of the rect.
 	 */
-	static draw( rect, userStyles = {}, name ) {
+	static draw( rect, userStyles = {}, name, options = {} ) {
 		if ( !RectDrawer._stylesElement ) {
 			RectDrawer._injectStyles();
 		}
@@ -38,7 +38,7 @@ export default class RectDrawer {
 		const element = global.document.createElement( 'div' );
 
 		// Make it work when the browser viewport is zoomed in (mainly on mobiles).
-		const { offsetLeft, offsetTop } = global.window.visualViewport;
+		const { offsetLeft, offsetTop } = options.visualViewportOrigin ? { offsetLeft: 0, offsetTop: 0 } : global.window.visualViewport;
 
 		const rectGeometryStyles = {
 			top: `${ rect.top + offsetTop }px`,
@@ -99,7 +99,7 @@ export default class RectDrawer {
 	}
 }
 
-// eslint-disable-next-line max-len
+// eslint-disable-next-line @stylistic/max-len
 const sharedDiagonalBackgroundSvg = 'url("data:image/svg+xml;utf8,<svg width=\x27100\x27 height=\x27100\x27 fill=\x27none\x27 xmlns=\x27http://www.w3.org/2000/svg\x27><path d=\x27M0 0L100 100\x27 stroke=\x27black\x27 stroke-width=\x271\x27 vector-effect=\x27non-scaling-stroke\x27/><path d=\x27M100 0L-4.37114e-06 100\x27 stroke=\x27black\x27 stroke-width=\x271\x27 vector-effect=\x27non-scaling-stroke\x27/></svg>")';
 const sharedDiagonalStyles = {
 	backgroundRepeat: 'no-repeat',

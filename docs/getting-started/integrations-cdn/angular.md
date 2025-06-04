@@ -1,12 +1,12 @@
 ---
 menu-title: Angular
-meta-title: Angular rich text editor component with CDN | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with Angular from CDN | CKEditor 5 Documentation
 meta-description: Install, integrate, and configure CKEditor 5 using the Angular component with CDN.
 category: cloud
 order: 30
 ---
 
-# Angular rich text editor component (CDN)
+# Integrating CKEditor&nbsp;5 with Angular from CDN
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-angular" target="_blank" rel="noopener">
@@ -693,3 +693,9 @@ All available Angular versions are [listed on npm](https://www.npmjs.com/package
 ## Contributing and reporting issues
 
 The source code of the CKEditor&nbsp;5 rich text editor component for Angular is available on GitHub in [https://github.com/ckeditor/ckeditor5-angular](https://github.com/ckeditor/ckeditor5-angular).
+
+## Next steps
+
+* See how to manipulate the editor's data in the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
+* Refer to further guides in the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
+* Check the {@link features/index features category} to learn more about individual features.

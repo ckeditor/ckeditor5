@@ -526,6 +526,19 @@ export default class MultiRootEditor extends Editor {
 	 * Loads a root that has previously been declared in {@link module:core/editor/editorconfig~EditorConfig#lazyRoots `lazyRoots`}
 	 * configuration option.
 	 *
+	 * **Important! Lazy roots loading is an experimental feature, and may become deprecated. Be advised of the following
+	 * known limitations:**
+	 *
+	 * * **Real-time collaboration integrations that use
+	 * [uploaded editor bundles](https://ckeditor.com/docs/cs/latest/guides/collaboration/editor-bundle.html) are not supported. Using
+	 * lazy roots will lead to unexpected behavior and data loss.**
+	 * * **Revision history feature will read and process the whole document on editor initialization, possibly defeating the purpose
+	 * of using the lazy roots loading. Additionally, when the document is loaded for the first time, all roots need to be loaded,
+	 * to make sure that the initial revision data includes all roots. Otherwise, you may experience data loss.**
+	 * * **Multiple features, that require full document data to be loaded, will produce incorrect or confusing results if not all
+	 * roots are loaded. These include: bookmarks, find and replace, word count, pagination, document exports, document outline,
+	 * and table of contents.**
+	 *
 	 * Only roots specified in the editor config can be loaded. A root cannot be loaded multiple times. A root cannot be unloaded and
 	 * loading a root cannot be reverted using the undo feature.
 	 *
@@ -924,7 +937,6 @@ export default class MultiRootEditor extends Editor {
 			const root = this.model.document.getRoot( rootName );
 
 			if ( !root || !root.isAttached() ) {
-				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 				throw new CKEditorError( 'multi-root-editor-root-initial-data-mismatch', null );
 			}
 		}

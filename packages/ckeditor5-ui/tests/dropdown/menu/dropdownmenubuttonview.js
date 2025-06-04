@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global Event */
-
 import { IconDropdownArrow } from '@ckeditor/ckeditor5-icons';
 import { createMockLocale } from './_utils/dropdowntreemock.js';
 

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import { parse, stringify, getData, setData } from '../../src/dev-utils/view.js';
 import ViewDocument from '../../src/view/document.js';
 import DocumentFragment from '../../src/view/documentfragment.js';
@@ -444,6 +442,30 @@ describe( 'view test utils', () => {
 			const p = new ContainerElement( viewDocument, 'p', null, span );
 			expect( stringify( p, null, { showType: true, renderRawElements: true } ) )
 				.to.equal( '<container:p><raw:span><b>foo</b></raw:span></container:p>' );
+		} );
+
+		it( 'should not return `data-list-item-id` on <li> element by default (skipListItemIds=true)', () => {
+			const li = new ContainerElement( viewDocument, 'li', { 'data-list-item-id': 'foo' } );
+			const ol = new ContainerElement( viewDocument, 'ol', null, li );
+
+			expect( stringify( ol, null, { showType: true, skipListItemIds: true } ) )
+				.to.equal( '<container:ol><container:li></container:li></container:ol>' );
+		} );
+
+		it( 'should not return `data-list-item-id` on <li> element when set (skipListItemIds=true)', () => {
+			const li = new ContainerElement( viewDocument, 'li', { 'data-list-item-id': 'foo' } );
+			const ol = new ContainerElement( viewDocument, 'ol', null, li );
+
+			expect( stringify( ol, null, { showType: true, skipListItemIds: true } ) )
+				.to.equal( '<container:ol><container:li></container:li></container:ol>' );
+		} );
+
+		it( 'should return `data-list-item-id` on <li> element (skipListItemIds=true)', () => {
+			const li = new ContainerElement( viewDocument, 'li', { 'data-list-item-id': 'foo' } );
+			const ol = new ContainerElement( viewDocument, 'ol', null, li );
+
+			expect( stringify( ol, null, { showType: true, skipListItemIds: false } ) )
+				.to.equal( '<container:ol><container:li data-list-item-id="foo"></container:li></container:ol>' );
 		} );
 
 		it( 'should sort classes in specified element', () => {

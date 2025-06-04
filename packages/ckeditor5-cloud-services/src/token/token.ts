@@ -7,8 +7,6 @@
  * @module cloud-services/token/token
  */
 
-/* globals XMLHttpRequest, setTimeout, clearTimeout, atob */
-
 import { ObservableMixin, CKEditorError, logWarning } from 'ckeditor5/src/utils.js';
 import type { TokenUrl } from '../cloudservicesconfig.js';
 
@@ -149,7 +147,7 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 				 * {@link module:cloud-services/token/token~Token#destroy destruction}.
 				 *
 				 * @error token-refresh-failed
-				 * @param autoRefresh Whether the token will keep auto refreshing.
+				 * @param {boolean} autoRefresh Whether the token will keep auto refreshing.
 				 */
 				logWarning( 'token-refresh-failed', { autoRefresh } );
 
@@ -233,7 +231,7 @@ export default class Token extends /* #__PURE__ */ ObservableMixin() {
 			const tokenRefreshTimeoutTime = Math.floor( ( ( tokenExpireTime * 1000 ) - Date.now() ) / 2 );
 
 			return tokenRefreshTimeoutTime;
-		} catch ( err ) {
+		} catch {
 			return DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME;
 		}
 	}

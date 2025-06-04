@@ -1,13 +1,13 @@
 ---
 menu-title: Multi-root integration
-meta-title: React rich text editor multi-root hook with CDN | CKEditor 5 Documentation
-meta-description: Install, integrate and configure CKEditor 5 using the React multi-root hook with CDN.
+meta-title: Using CKEditor 5 with React multi-root hook from CDN | CKEditor 5 Documentation
+meta-description: Install, integrate, and configure CKEditor 5 using the React multi-root hook with CDN.
 category: react-cdn
 order: 20
 modified_at: 2024-04-25
 ---
 
-# React rich text multi-root editor hook with CDN
+# Integrating CKEditor&nbsp;5 with React multi-root editor hook from CDN
 
 <p>
 	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-react" target="_blank" rel="noopener">
@@ -156,3 +156,9 @@ By default, the two-way data binding is enabled. It means that every change done
 ## Contributing and reporting issues
 
 The source code of rich text editor component for React is available on GitHub in [https://github.com/ckeditor/ckeditor5-react](https://github.com/ckeditor/ckeditor5-react).
+
+## Next steps
+
+* See how to manipulate the editor's data in the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
+* Refer to further guides in the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
+* Check the {@link features/index features category} to learn more about individual features.

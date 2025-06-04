@@ -11,8 +11,6 @@ import { getModelDataWithAttributes } from '../_utils/utils.js';
 import { range } from 'es-toolkit/compat';
 import MediaEmbedElementSupport from '../../src/integrations/mediaembed.js';
 
-/* global document */
-
 describe( 'MediaEmbedElementSupport', () => {
 	describe( 'MediaEmbed feature is available', () => {
 		let editor, model, editorElement, dataFilter;

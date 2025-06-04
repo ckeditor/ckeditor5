@@ -10,8 +10,6 @@
 // Usage:
 // 	yarn run check-theme-lark-imports
 
-/* eslint-env node */
-
 import chalk from 'chalk';
 import upath from 'upath';
 import fs from 'fs';

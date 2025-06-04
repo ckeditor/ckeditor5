@@ -1,13 +1,13 @@
 ---
 menu-title: Nuxt
-meta-title: Integration with Nuxt using CDN | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with Nuxt from CDN | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with the Nuxt framework using CDN.
 category: cloud
 order: 50
 modified_at: 2025-03-13
 ---
 
-# Integrate CKEditor 5 with Nuxt using CDN
+# Integrating CKEditor&nbsp;5 with Nuxt from CDN
 
 [Nuxt](https://nuxt.com/) is a Vue.js meta-framework for creating full-stack web applications. It offers everything you would expect from a modern framework, including various rendering modes, file-based routing, automatic code splitting, a large ecosystem of plugins and hosting integrations, and more.
 
@@ -96,3 +96,9 @@ Notice that the `<Editor>` component is wrapped in a `<ClientOnly>` component. I
 You can run your project now using the `npm run dev` command to see your application in the browser.
 
 In the example above, we only used basic features of the `<ckeditor>` component. To learn more about additional features and configuration options, refer to the {@link getting-started/integrations/vuejs-v3 Vue.js integration guide}.
+
+## Next steps
+
+* See how to manipulate the editor's data in the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
+* Refer to further guides in the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
+* Check the {@link features/index features category} to learn more about individual features.

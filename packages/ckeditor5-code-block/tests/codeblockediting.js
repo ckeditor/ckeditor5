@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import CodeBlockEditing from '../src/codeblockediting.js';
 import CodeBlockCommand from '../src/codeblockcommand.js';
 import IndentCodeBlockCommand from '../src/indentcodeblockcommand.js';
@@ -95,6 +93,7 @@ describe( 'CodeBlockEditing', () => {
 						{ language: 'cpp', label: 'C++' },
 						{ language: 'css', label: 'CSS' },
 						{ language: 'diff', label: 'Diff' },
+						{ language: 'go', label: 'Go' },
 						{ language: 'html', label: 'HTML' },
 						{ language: 'java', label: 'Java' },
 						{ language: 'javascript', label: 'JavaScript' },

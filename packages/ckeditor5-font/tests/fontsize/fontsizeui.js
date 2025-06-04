@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import { IconFontSize } from 'ckeditor5/src/icons.js';
 import FontSizeEditing from '../../src/fontsize/fontsizeediting.js';
 import FontSizeUI from '../../src/fontsize/fontsizeui.js';

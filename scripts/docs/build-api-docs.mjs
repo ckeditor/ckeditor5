@@ -5,8 +5,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 import path from 'path';
 import { build } from '@ckeditor/ckeditor5-dev-docs';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
@@ -24,7 +22,10 @@ async function buildApiDocs() {
 		outputPath: path.join( CKEDITOR5_ROOT_PATH, 'docs', 'api', 'output.json' ),
 		readmePath: 'README.md',
 		validateOnly: process.argv.includes( '--validate-only' ),
-		strict: process.argv.includes( '--strict' ),
+		validatorOptions: {
+			strict: process.argv.includes( '--strict' )
+		},
+		verbose: process.argv.includes( '--verbose' ),
 		tsconfig: path.join( CKEDITOR5_ROOT_PATH, 'tsconfig.typedoc.json' ),
 		sourceFiles: [
 			// CKEditor 5 sources.

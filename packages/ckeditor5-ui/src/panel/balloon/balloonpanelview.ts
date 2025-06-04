@@ -22,7 +22,7 @@ import {
 	type ObservableChangeEvent,
 	type DomPoint,
 	type PositionOptions,
-	type Rect,
+	Rect,
 	type PositioningFunction
 } from '@ckeditor/ckeditor5-utils';
 
@@ -736,21 +736,33 @@ export default class BalloonPanelView extends View {
 
 			// ------- Sticky
 
-			viewportStickyNorth: ( targetRect, balloonRect, viewportRect, limiterRect ) => {
-				const boundaryRect = limiterRect || viewportRect;
+			viewportStickyNorth: ( targetRect, balloonRect, viewportRect ) => {
+				// Get the intersection of the viewport and the document body.
+				const boundaryRect = new Rect( global.document.body ).getIntersection( viewportRect.getVisible()! );
 
-				if ( !targetRect.getIntersection( boundaryRect ) ) {
+				if ( !boundaryRect ) {
 					return null;
 				}
 
-				// Engage when the target top and bottom edges are close or off the boundary.
-				// By close, it means there's not enough space for the balloon arrow (offset).
-				if ( boundaryRect.height - targetRect.height > stickyVerticalOffset ) {
+				// Get the visible intersection of the boundary and the document body.
+				const visibleBoundaryRect = boundaryRect.getVisible()!;
+
+				// Check if the target is in the boundary.
+				if ( !targetRect.getIntersection( visibleBoundaryRect ) ) {
+					return null;
+				}
+
+				// Checks if there is enough space to put the balloon on the top or bottom of the target.
+				// If not, makes the balloon sticky.
+				if ( !(
+					visibleBoundaryRect.top - targetRect.top - stickyVerticalOffset < balloonRect.height &&
+					visibleBoundaryRect.bottom - targetRect.bottom < balloonRect.height
+				) ) {
 					return null;
 				}
 
 				return {
-					top: boundaryRect.top + stickyVerticalOffset,
+					top: visibleBoundaryRect.top + stickyVerticalOffset,
 					left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
 					name: 'arrowless',
 					config: {

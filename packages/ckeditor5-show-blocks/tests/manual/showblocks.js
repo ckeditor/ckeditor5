@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, document, console */
-
 import ShowBlocks from '../../src/showblocks.js';
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
@@ -35,7 +33,7 @@ import {
 } from '@ckeditor/ckeditor5-image';
 import { Indent, IndentBlock } from '@ckeditor/ckeditor5-indent';
 import { AutoLink, Link, LinkImage } from '@ckeditor/ckeditor5-link';
-import { DocumentList, DocumentListProperties } from '@ckeditor/ckeditor5-list';
+import { List, ListProperties } from '@ckeditor/ckeditor5-list';
 import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed';
 import { Mention } from '@ckeditor/ckeditor5-mention';
 import { PageBreak } from '@ckeditor/ckeditor5-page-break';
@@ -55,12 +53,12 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			Autoformat, BlockQuote, Bold, Heading, Image, ImageCaption,
-			ImageStyle, ImageToolbar, Indent, Italic, Link, DocumentList, MediaEmbed,
+			ImageStyle, ImageToolbar, Indent, Italic, Link, List, MediaEmbed,
 			Paragraph, Table, TableToolbar, Alignment, AutoImage, AutoLink,
 			CloudServices, Code, CodeBlock, Essentials, EasyImage,
 			FindAndReplace, Font, Highlight, HorizontalLine,
 			HtmlEmbed, GeneralHtmlSupport, ImageInsert, ImageResize, ImageUpload, IndentBlock,
-			LinkImage, DocumentListProperties, Mention, PageBreak, PasteFromOffice,
+			LinkImage, ListProperties, Mention, PageBreak, PasteFromOffice,
 			PictureEditing, RemoveFormat, SourceEditing, SpecialCharacters,
 			SpecialCharactersEssentials, Strikethrough, Subscript, Superscript,
 			TableCaption, TableCellProperties, TableColumnResize,

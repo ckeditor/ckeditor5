@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document, CKEditorInspector */
-
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Autoformat } from '@ckeditor/ckeditor5-autoformat';
@@ -14,7 +12,7 @@ import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Image, ImageCaption, ImageStyle, ImageToolbar } from '@ckeditor/ckeditor5-image';
 import { Indent } from '@ckeditor/ckeditor5-indent';
 import { Link } from '@ckeditor/ckeditor5-link';
-import { DocumentList, DocumentListProperties } from '@ckeditor/ckeditor5-list';
+import { List, ListProperties } from '@ckeditor/ckeditor5-list';
 import { Paragraph, ParagraphButtonUI } from '@ckeditor/ckeditor5-paragraph';
 import { Table, TableToolbar } from '@ckeditor/ckeditor5-table';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
@@ -57,7 +55,6 @@ import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
 import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor.js';
-import List from '@ckeditor/ckeditor5-list/src/list.js';
 import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui.js';
 import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar.js';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
@@ -70,9 +67,9 @@ ClassicEditor
 	.create( document.querySelector( '#editor-classic' ), {
 		plugins: [
 			Essentials, Autoformat, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, Italic, Link,
-			DocumentList, Paragraph, Table, TableToolbar, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
+			List, Paragraph, Table, TableToolbar, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
 			FindAndReplace, FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
-			CodeBlock, DocumentListProperties, TableProperties, TableCellProperties, TableCaption, TableColumnResize,
+			CodeBlock, ListProperties, TableProperties, TableCellProperties, TableCaption, TableColumnResize,
 			EasyImage, ImageResize, ImageInsert, LinkImage, AutoImage, HtmlEmbed,
 			AutoLink, Mention, TextTransformation, Alignment, IndentBlock, PageBreak, HorizontalLine,
 			CloudServices, TextPartLanguage, SourceEditing, Style, GeneralHtmlSupport, DragDrop

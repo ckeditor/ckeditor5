@@ -171,7 +171,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 				expect( command.isEnabled ).to.be.true;
 			} );
 
-			it( 'should be false if all of the selected blocks can not be converted to a list', () => {
+			it( 'should be false if all of the selected blocks cannot be converted to a list', () => {
 				model.schema.register( 'block', { inheritAllFrom: '$blockObject' } );
 				editor.conversion.elementToElement( { model: 'block', view: 'div' } );
 
@@ -509,6 +509,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					} );
 
 					it( 'should strip the list attributes from the selected items and decrease indent of nested list', () => {
+						/* eslint-disable @stylistic/no-multi-spaces */
 						setData( model, modelList( [
 							'0',
 							'* 1',
@@ -526,6 +527,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 							'  * 13',
 							'    * 14'
 						] ) );
+						/* eslint-enable @stylistic/no-multi-spaces */
 
 						command.execute();
 
@@ -1035,6 +1037,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					} );
 
 					it( 'should strip the list attributes from the selected items and decrease indent of nested list', () => {
+						/* eslint-disable @stylistic/no-multi-spaces */
 						setData( model, modelList( [
 							'0',
 							'# 1',
@@ -1052,6 +1055,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 							'  # 13',
 							'    # 14'
 						] ) );
+						/* eslint-enable @stylistic/no-multi-spaces */
 
 						command.execute();
 

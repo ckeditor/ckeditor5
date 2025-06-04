@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals Event */
-
 /**
  * Fires the `beforeinput` DOM event on the editor's editing root DOM
  * element with given data.
@@ -17,7 +15,7 @@
  * @param {Array.<DOMRange>} [ evtData.ranges ]
  */
 export function fireBeforeInputDomEvent( domRoot, evtData ) {
-	const { inputType, data, dataTransfer, ranges } = evtData;
+	const { inputType, data, dataTransfer, ranges, isComposing } = evtData;
 
 	const event = new Event( 'beforeinput' );
 
@@ -25,7 +23,8 @@ export function fireBeforeInputDomEvent( domRoot, evtData ) {
 		data,
 		dataTransfer,
 		inputType,
-		getTargetRanges: () => ranges || []
+		getTargetRanges: () => ranges || [],
+		isComposing
 	} );
 
 	domRoot.dispatchEvent( event );

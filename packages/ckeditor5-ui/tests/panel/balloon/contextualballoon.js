@@ -15,8 +15,6 @@ import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/c
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
-/* global document, Event */
-
 describe( 'ContextualBalloon', () => {
 	let editor, editorElement, balloon, viewA, viewB, viewC, viewD;
 
@@ -245,7 +243,8 @@ describe( 'ContextualBalloon', () => {
 				limiter: balloon.positionLimiter,
 				target: 'fake',
 				viewportOffsetConfig: {
-					top: 0
+					top: 0,
+					visualTop: 0
 				}
 			} );
 		} );
@@ -269,7 +268,21 @@ describe( 'ContextualBalloon', () => {
 				}
 			} );
 
-			expect( balloon.getPositionOptions().viewportOffsetConfig ).to.be.equal( editor.ui.viewportOffset );
+			expect( balloon.getPositionOptions().viewportOffsetConfig ).to.deep.equal( editor.ui.viewportOffset );
+		} );
+
+		it( 'should re-map viewportOffsetConfig so visualTop is used instead of top', () => {
+			sinon.stub( editor.ui.viewportOffset, 'top' ).get( () => 70 );
+			sinon.stub( editor.ui.viewportOffset, 'visualTop' ).get( () => 40 );
+
+			balloon.add( {
+				view: viewA,
+				position: {
+					target: 'blank'
+				}
+			} );
+
+			expect( balloon.getPositionOptions().viewportOffsetConfig.top ).to.equal( 40 );
 		} );
 	} );
 

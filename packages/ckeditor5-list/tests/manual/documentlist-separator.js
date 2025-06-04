@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
-
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment.js';
 import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage.js';
@@ -38,8 +36,8 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
-import List from '../../src/documentlist.js';
-import ListProperties from '../../src/documentlistproperties.js';
+import List from '../../src/list.js';
+import ListProperties from '../../src/listproperties.js';
 import AdjacentListsSupport from '../../src/list/adjacentlistssupport.js';
 
 ClassicEditor

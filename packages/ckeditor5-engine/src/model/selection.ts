@@ -728,8 +728,8 @@ export default class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 				 * Trying to add a range that intersects with another range in the selection.
 				 *
 				 * @error model-selection-range-intersects
-				 * @param addedRange Range that was added to the selection.
-				 * @param intersectingRange Range in the selection that intersects with `addedRange`.
+				 * @param {module:engine/model/range~Range} addedRange Range that was added to the selection.
+				 * @param {module:engine/model/range~Range} intersectingRange Range in the selection that intersects with `addedRange`.
 				 */
 				throw new CKEditorError(
 					'model-selection-range-intersects',

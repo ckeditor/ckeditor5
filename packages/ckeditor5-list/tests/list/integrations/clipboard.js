@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import ListEditing from '../../../src/list/listediting.js';
 import { isListItemBlock } from '../../../src/list/utils/model.js';
 import { modelList } from '../_utils/utils.js';
@@ -90,7 +88,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 			);
 
 			const modelFragment = model.getSelectedContent( model.document.selection );
-			const viewFragment = editor.data.toView( modelFragment );
+			const viewFragment = editor.data.toView( modelFragment, { skipListItemIds: true } );
 			const data = editor.data.htmlProcessor.toData( viewFragment );
 
 			expect( data ).to.equal(
@@ -116,7 +114,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 			);
 
 			const modelFragment = model.getSelectedContent( model.document.selection );
-			const viewFragment = editor.data.toView( modelFragment );
+			const viewFragment = editor.data.toView( modelFragment, { skipListItemIds: true } );
 			const data = editor.data.htmlProcessor.toData( viewFragment );
 
 			expect( data ).to.equal(

@@ -350,6 +350,9 @@ export default class TableSelection extends Plugin {
 		const viewRanges = selectedCells.map( tableCell => view.createRangeOn( mapper.toViewElement( tableCell )! ) );
 
 		data.selection = view.createSelection( viewRanges );
+
+		// Do not let the browser handle it itself. We must modify the model and then apply changes to the view and DOM.
+		data.preventDefault();
 	}
 
 	/**

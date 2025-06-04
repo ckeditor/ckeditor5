@@ -1,12 +1,12 @@
 ---
 category: cloud
-meta-title: Using CKEditor 5 with Laravel and CDN | CKEditor 5 Documentation
+meta-title: Using CKEditor 5 with Laravel from CDN | CKEditor 5 Documentation
 meta-description: Integrate CKEditor 5 with Laravel using CDN.
 order: 80
 menu-title: Laravel
 ---
 
-# Using CKEditor&nbsp;5 with Laravel and CDN
+# Integrating CKEditor&nbsp;5 with Laravel from CDN
 
 As a pure JavaScript/TypeScript library, CKEditor&nbsp;5 will work inside any environment that supports such components. While we do not offer official integrations for any non-JavaScript frameworks, you can include a custom configuration of CKEditor&nbsp;5 in a non-JS framework of your choice, for example, the PHP-based [Laravel](https://laravel.com/).
 
@@ -162,3 +162,9 @@ Now, we need to put our script in the previous template. We need to put the scri
 ```
 
 Finally, in the root directory of your Laravel project, run `php artisan serve` to see the editor in action.
+
+## Next steps
+
+* See how to manipulate the editor's data in the {@link getting-started/setup/getting-and-setting-data Getting and setting data} guide.
+* Refer to further guides in the {@link getting-started/setup/configuration setup section} to see how to customize your editor further.
+* Check the {@link features/index features category} to learn more about individual features.

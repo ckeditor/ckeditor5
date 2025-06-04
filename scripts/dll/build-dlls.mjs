@@ -5,19 +5,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
-import chalk from 'chalk';
-import childProcess from 'child_process';
-import fs from 'fs';
-import minimist from 'minimist';
 import path from 'path';
-import module from 'module';
+import childProcess from 'child_process';
+import chalk from 'chalk';
+import fs from 'fs-extra';
+import minimist from 'minimist';
 import { CKEDITOR5_ROOT_PATH } from '../constants.mjs';
 
 const COLLABORATION_DLL_PACKAGE_NAME = 'ckeditor5-collaboration';
 
-const require = module.createRequire( import.meta.url );
 const argv = minimist( process.argv.slice( 2 ), {
 	string: [
 		'base-dll-config',
@@ -121,7 +117,7 @@ function hasDLLBuildScript( name ) {
 		return false;
 	}
 
-	const scripts = require( packageJsonPath ).scripts;
+	const { scripts } = fs.readJsonSync( packageJsonPath );
 
 	return Boolean( scripts && scripts[ 'dll:build' ] );
 }

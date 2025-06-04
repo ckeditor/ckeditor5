@@ -3,53 +3,91 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
-import minimist from 'minimist';
+import { parseArgs, styleText } from 'util';
 import replaceKebabCaseWithCamelCase from '../utils/replacekebabcasewithcamelcase.mjs';
 
 /**
- * @param {Array.<String>} args An array containing modifiers for the executed command.
+ * @param {Array<string>} args An array containing modifiers for the executed command.
  * @return {DocumentationOptions}
  */
 export default function parseArguments( args ) {
-	const options = minimist( args, {
-		boolean: [
-			'skip-api',
-			'skip-snippets',
-			'skip-validation',
-			'skip-guides',
-			'skip-ckeditor5',
-			'skip-commercial',
-			'production',
-			'watch',
-			'verbose'
-		],
-		string: [
-			'snippets',
-			'guides'
-		],
-		default: {
-			'skip-api': false,
-			'skip-snippets': false,
-			'skip-validation': false,
-			'skip-guides': false,
-			'skip-ckeditor5': false,
-			'skip-commercial': false,
-			production: false,
-			watch: false,
-			verbose: false,
-			snippets: [],
-			guides: []
+	const { values } = parseArgs( {
+		args,
+		strict: true,
+		options: {
+			'skip-api': {
+				type: 'boolean',
+				default: false
+			},
+			'skip-snippets': {
+				type: 'boolean',
+				default: false
+			},
+			'skip-validation': {
+				type: 'boolean',
+				default: false
+			},
+			'skip-guides': {
+				type: 'boolean',
+				default: false
+			},
+			'skip-ckeditor5': {
+				type: 'boolean',
+				default: false
+			},
+			'skip-commercial': {
+				type: 'boolean',
+				default: false
+			},
+			dev: {
+				type: 'boolean',
+				default: false
+			},
+			production: {
+				type: 'boolean',
+				default: false
+			},
+			strict: {
+				type: 'boolean',
+				default: false
+			},
+			watch: {
+				type: 'boolean',
+				default: false
+			},
+			verbose: {
+				type: 'boolean',
+				default: false
+			},
+			snippets: {
+				type: 'string',
+				default: ''
+			},
+			guides: {
+				type: 'string',
+				default: ''
+			}
 		}
 	} );
 
-	splitOptionsToArray( options, [
+	if ( values.dev && values.production ) {
+		throw new Error( 'The --dev and --production flags are mutually exclusive.' );
+	} else {
+		// Ensure that both `dev` and `production` options are set, even if only one is passed.
+		values.production ||= !values.dev;
+		values.dev ||= !values.production;
+	}
+
+	if ( values.dev ) {
+		warnAboutUsingDevEnvironment();
+	}
+
+	splitOptionsToArray( values, [
 		'snippets',
 		'guides'
 	] );
 
-	replaceKebabCaseWithCamelCase( options, [
+	replaceKebabCaseWithCamelCase( values, [
 		'skip-api',
 		'skip-snippets',
 		'skip-validation',
@@ -58,14 +96,15 @@ export default function parseArguments( args ) {
 		'skip-commercial'
 	] );
 
-	return options;
+	return values;
 }
 
 /**
  * Splits by a comma (`,`) all values specified under keys to array.
  *
  * @param {Object} options
- * @param {Array.<String>} keys Kebab-case keys in `options` object.
+ * @param {Array<string>} keys Kebab-case keys in `options` object.
+ * @returns {void}
  */
 function splitOptionsToArray( options, keys ) {
 	for ( const key of keys ) {
@@ -76,32 +115,34 @@ function splitOptionsToArray( options, keys ) {
 }
 
 /**
+ * Logs a warning about not sharing the documentation built with the `--dev` flag.
+ */
+function warnAboutUsingDevEnvironment() {
+	const warning = styleText(
+		'bgRed',
+		'The "--dev" flag prevents the code from being optimized or obfuscated. Please do not share it with anyone!'
+	);
+
+	console.log( `\n${ warning }\n` );
+}
+
+/**
  * @typedef {Object} DocumentationOptions
- *
- * @param {Boolean} [skipApi=false] Whether to skip preparing API pages.
- *
- * @param {Boolean} [skipSnippets=false] Whether to skip generating snippets.
- *
- * @param {Boolean} [skipValidation=false] Whether to skip validating URLs in the generated documentation.
- *
- * @param {Boolean} [skipGuides=false] Whether to skip processing guides.
- *
- * @param {Boolean} [skipCkeditor5=false] Whether to skip preparing CKEditor 5 assets (import map sources).
- *
- * @param {Boolean} [skipCommercial=false] Whether to skip preparing the CKEditor 5 commercial assets (import map sources).
- *
- * @param {Boolean} [production=false] Whether the documentation is being built on the production environment. It means that all files
+ * @param {boolean} [skipApi=false] Whether to skip preparing API pages.
+ * @param {boolean} [skipSnippets=false] Whether to skip generating snippets.
+ * @param {boolean} [skipValidation=false] Whether to skip validating URLs in the generated documentation.
+ * @param {boolean} [skipGuides=false] Whether to skip processing guides.
+ * @param {boolean} [skipCkeditor5=false] Whether to skip preparing CKEditor 5 assets (import map sources).
+ * @param {boolean} [skipCommercial=false] Whether to skip preparing the CKEditor 5 commercial assets (import map sources).
+ * @param {boolean} [dev=false] Whether the documentation is being built on the dev environment. This will skip some time consuming
+ * code optimizations and obfuscation.
+ * @param {boolean} [production=false] Whether the documentation is being built on the production environment. It means that all files
  * will be minified. Increases the time needed for processing all files.
- *
- * @param {Boolean} [watch=false] Whether to watch source files.
- *
- * @param {Boolean} [verbose=false] Whether to print additional logs.
- *
- * @param {Boolean} [ts=false] Whether to build API docs for TypeScript source code.
- *
- * @param {Array.<String>} [snippets=[]] An array containing the names of snippets that the snippet adapter should process.
+ * @param {boolean} [watch=false] Whether to watch source files.
+ * @param {boolean} [verbose=false] Whether to print additional logs.
+ * @param {boolean} [ts=false] Whether to build API docs for TypeScript source code.
+ * @param {Array<string>} [snippets=[]] An array containing the names of snippets that the snippet adapter should process.
  * An empty array means that the filtering mechanism is disabled.
- *
- * @param {Array.<String>} [guides=[]] An array containing the names of guides that should be processed by Umberto.
+ * @param {Array<string>} [guides=[]] An array containing the names of guides that should be processed by Umberto.
  * An empty array means that the filtering mechanism is disabled.
  */

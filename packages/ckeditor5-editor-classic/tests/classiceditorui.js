@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, document, Event, console */
-
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
@@ -17,6 +15,7 @@ import { Image, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { isElement } from 'es-toolkit/compat';
@@ -121,6 +120,34 @@ describe( 'ClassicEditorUI', () => {
 
 						return editor.destroy();
 					} );
+			} );
+
+			it( 'updates the view.stickyPanel#viewportTopOffset to the visible part of viewport top offset (iOS + visual viewport)', () => {
+				ui.viewportOffset = { top: 70 };
+
+				let offsetTop = 0;
+				sinon.stub( env, 'isiOS' ).get( () => true );
+				sinon.stub( window.visualViewport, 'offsetTop' ).get( () => offsetTop );
+
+				offsetTop = 0;
+				window.visualViewport.dispatchEvent( new Event( 'scroll' ) );
+
+				expect( ui.view.stickyPanel.viewportTopOffset ).to.equal( 70 );
+
+				offsetTop = 10;
+				window.visualViewport.dispatchEvent( new Event( 'scroll' ) );
+
+				expect( ui.view.stickyPanel.viewportTopOffset ).to.equal( 60 );
+
+				offsetTop = 50;
+				window.visualViewport.dispatchEvent( new Event( 'scroll' ) );
+
+				expect( ui.view.stickyPanel.viewportTopOffset ).to.equal( 20 );
+
+				offsetTop = 80;
+				window.visualViewport.dispatchEvent( new Event( 'scroll' ) );
+
+				expect( ui.view.stickyPanel.viewportTopOffset ).to.equal( 0 );
 			} );
 		} );
 
@@ -335,9 +362,7 @@ describe( 'ClassicEditorUI', () => {
 				} );
 
 				expect( pinSpy ).to.be.calledOnce;
-				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig ).to.be.deep.equal( {
-					top: 50
-				} );
+				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig.top ).to.equal( 50 );
 			} );
 
 			it( 'should summarize ui viewportOffset and sticky panel height in the viewportOffset option', () => {
@@ -362,9 +387,7 @@ describe( 'ClassicEditorUI', () => {
 				} );
 
 				expect( pinSpy ).to.be.calledOnce;
-				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig ).to.be.deep.equal( {
-					top: 150
-				} );
+				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig.top ).to.equal( 150 );
 
 				// Handle change of viewport offset.
 				editorWithUi.ui.viewportOffset = {
@@ -372,9 +395,7 @@ describe( 'ClassicEditorUI', () => {
 				};
 
 				expect( pinSpy ).to.be.calledTwice;
-				expect( pinSpy.getCall( 1 ).args[ 0 ].viewportOffsetConfig ).to.be.deep.equal( {
-					top: 250
-				} );
+				expect( pinSpy.getCall( 1 ).args[ 0 ].viewportOffsetConfig.top ).to.equal( 250 );
 			} );
 
 			it( 'should set proper viewportOffsetConfig top offset when sticky panel is not visible', () => {
@@ -396,9 +417,7 @@ describe( 'ClassicEditorUI', () => {
 				} );
 
 				expect( pinSpy ).to.be.calledOnce;
-				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig ).to.be.deep.equal( {
-					top: 0
-				} );
+				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig.top ).to.equal( 0 );
 			} );
 
 			it( 'should update viewportOffsetConfig top offset when sticky panel becomes visible', () => {
@@ -420,15 +439,11 @@ describe( 'ClassicEditorUI', () => {
 				} );
 
 				expect( pinSpy ).to.be.calledOnce;
-				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig ).to.be.deep.equal( {
-					top: 0
-				} );
+				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig.top ).to.equal( 0 );
 
 				editorWithUi.ui.view.stickyPanel.isSticky = true;
 
-				expect( pinSpy.getCall( 1 ).args[ 0 ].viewportOffsetConfig ).to.be.deep.equal( {
-					top: 50
-				} );
+				expect( pinSpy.getCall( 1 ).args[ 0 ].viewportOffsetConfig.top ).to.equal( 50 );
 			} );
 
 			it( 'should not update viewportOffsetConfig top offset when sticky panel becomes visible', () => {
@@ -461,9 +476,7 @@ describe( 'ClassicEditorUI', () => {
 				} );
 
 				expect( pinSpy ).to.be.calledOnce;
-				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig ).to.be.deep.equal( {
-					top: 0
-				} );
+				expect( pinSpy.getCall( 0 ).args[ 0 ].viewportOffsetConfig.top ).to.equal( 0 );
 
 				targetElement.remove();
 				limiterElement.remove();

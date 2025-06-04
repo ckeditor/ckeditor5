@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals globalThis, localStorage */
-
 import { global, env } from '@ckeditor/ckeditor5-utils';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { BalloonToolbar, BlockToolbar } from '@ckeditor/ckeditor5-ui';

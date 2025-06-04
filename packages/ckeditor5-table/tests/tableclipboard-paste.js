@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
@@ -1303,14 +1301,14 @@ describe( 'table clipboard', () => {
 						[ '30', '31', '32', '33' ]
 					] ) );
 
-					/* eslint-disable no-multi-spaces */
+					/* eslint-disable @stylistic/no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 0, 0, 0, 0 ],
 						[ 0, 1,    0 ],
 						[ 0, 1, 1, 0 ],
 						[ 0, 0, 0, 0 ]
 					] );
-					/* eslint-enable no-multi-spaces */
+					/* eslint-enable @stylistic/no-multi-spaces */
 				} );
 
 				it( 'handles pasting table that has many cells with various colspan', () => {
@@ -1333,14 +1331,14 @@ describe( 'table clipboard', () => {
 						[ { colspan: 2, contents: 'da' }, 'dc', '33' ]
 					] ) );
 
-					/* eslint-disable no-multi-spaces */
+					/* eslint-disable @stylistic/no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 1, 1,    0 ],
 						[ 1,       0 ],
 						[ 1, 1, 1, 0 ],
 						[ 1,    1, 0 ]
 					] );
-					/* eslint-enable no-multi-spaces */
+					/* eslint-enable @stylistic/no-multi-spaces */
 				} );
 
 				it( 'handles pasting table that has cell with rowspan', () => {
@@ -1361,14 +1359,14 @@ describe( 'table clipboard', () => {
 						[ '30', '31', '32', '33' ]
 					] ) );
 
-					/* eslint-disable no-multi-spaces */
+					/* eslint-disable @stylistic/no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 0, 0, 0, 0 ],
 						[ 0, 1, 1, 0 ],
 						[ 0,    1, 0 ],
 						[ 0, 0, 0, 0 ]
 					] );
-					/* eslint-enable no-multi-spaces */
+					/* eslint-enable @stylistic/no-multi-spaces */
 				} );
 
 				it( 'handles pasting table that has many cells with various rowspan', () => {
@@ -1390,14 +1388,14 @@ describe( 'table clipboard', () => {
 						[ '30', '31', '32', '33' ]
 					] ) );
 
-					/* eslint-disable no-multi-spaces */
+					/* eslint-disable @stylistic/no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 1, 1, 1, 1 ],
 						[ 1,       1 ],
 						[       1, 1 ],
 						[ 0, 0, 0, 0 ]
 					] );
-					/* eslint-enable no-multi-spaces */
+					/* eslint-enable @stylistic/no-multi-spaces */
 				} );
 
 				it( 'handles pasting multi-spanned table', () => {
@@ -1449,7 +1447,7 @@ describe( 'table clipboard', () => {
 						[ '40', '41', '42', '43', '44', '45' ]
 					] ) );
 
-					/* eslint-disable no-multi-spaces */
+					/* eslint-disable @stylistic/no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 1,    1, 1, 1, 0 ],
 						[ 1, 1,          0 ],
@@ -1457,7 +1455,7 @@ describe( 'table clipboard', () => {
 						[    1, 1, 1,    0 ],
 						[ 0, 0, 0, 0, 0, 0 ]
 					] );
-					/* eslint-enable no-multi-spaces */
+					/* eslint-enable @stylistic/no-multi-spaces */
 				} );
 			} );
 
@@ -1488,14 +1486,14 @@ describe( 'table clipboard', () => {
 						[ '30', '31', { colspan: 2, contents: '31' } ]
 					] ) );
 
-					/* eslint-disable no-multi-spaces */
+					/* eslint-disable @stylistic/no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 1, 1, 1, 0 ],
 						[ 1, 1, 1, 0 ],
 						[ 1, 1, 1, 0 ],
 						[ 0, 0, 0    ]
 					] );
-					/* eslint-enable no-multi-spaces */
+					/* eslint-enable @stylistic/no-multi-spaces */
 				} );
 
 				it( 'handles pasting simple table over a table with rowspans (no rowspan exceeds selection)', () => {
@@ -1636,7 +1634,7 @@ describe( 'table clipboard', () => {
 						[ '40', '41', '42', '43', '44' ]
 					] ) );
 
-					/* eslint-disable no-multi-spaces */
+					/* eslint-disable @stylistic/no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 0, 0, 0, 0, 0 ],
 						[ 0, 0, 1, 1, 0 ],
@@ -1644,7 +1642,7 @@ describe( 'table clipboard', () => {
 						[ 0,    1, 1, 0 ],
 						[ 0, 0, 0, 0, 0 ]
 					] );
-					/* eslint-enable no-multi-spaces */
+					/* eslint-enable @stylistic/no-multi-spaces */
 				} );
 
 				it( 'handles pasting simple table over a table with rowspans (rowspan before selection)', () => {
@@ -1690,14 +1688,14 @@ describe( 'table clipboard', () => {
 						[ '30', '31', '32', '33', '34', '35' ]
 					] ) );
 
-					/* eslint-disable no-multi-spaces */
+					/* eslint-disable @stylistic/no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 0, 0, 0, 0, 0, 0 ],
 						[ 0,    0, 1, 1, 0 ],
 						[ 0,       1, 1, 0 ],
 						[ 0, 0, 0, 0, 0, 0 ]
 					] );
-					/* eslint-enable no-multi-spaces */
+					/* eslint-enable @stylistic/no-multi-spaces */
 				} );
 
 				it( 'handles pasting table that has cell with colspan (last row in selection is spanned)', () => {
@@ -1898,14 +1896,14 @@ describe( 'table clipboard', () => {
 						[ '30', '31', { colspan: 2, contents: '31' } ]
 					] ) );
 
-					/* eslint-disable no-multi-spaces */
+					/* eslint-disable @stylistic/no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 1, 1,    0 ],
 						[ 1,       0 ],
 						[ 1, 1, 1, 0 ],
 						[ 0, 0, 0    ]
 					] );
-					/* eslint-enable no-multi-spaces */
+					/* eslint-enable @stylistic/no-multi-spaces */
 				} );
 
 				it( 'handles pasting rowspanned table over table with rowspans (no rowspan exceeds selection)', () => {
@@ -1934,14 +1932,14 @@ describe( 'table clipboard', () => {
 						[ '30', '31', '32', '33' ]
 					] ) );
 
-					/* eslint-disable no-multi-spaces */
+					/* eslint-disable @stylistic/no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 1, 1, 1, 1 ],
 						[ 1,       1 ],
 						[       1, 1 ],
 						[ 0, 0, 0, 0 ]
 					] );
-					/* eslint-enable no-multi-spaces */
+					/* eslint-enable @stylistic/no-multi-spaces */
 				} );
 
 				it( 'handles pasting multi-spanned table over table with multi-spans (no span exceeds selection)', () => {
@@ -2009,7 +2007,7 @@ describe( 'table clipboard', () => {
 						[ '40', '41', '42', '43', '44', '45' ]
 					] ) );
 
-					/* eslint-disable no-multi-spaces */
+					/* eslint-disable @stylistic/no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 1,    1, 1, 1, 0 ],
 						[ 1, 1,          0 ],
@@ -2017,7 +2015,7 @@ describe( 'table clipboard', () => {
 						[    1, 1, 1,    0 ],
 						[ 0, 0, 0, 0, 0, 0 ]
 					] );
-					/* eslint-enable no-multi-spaces */
+					/* eslint-enable @stylistic/no-multi-spaces */
 				} );
 
 				it( 'handles pasting table that has cell with colspan (last row in selection is spanned)', () => {
@@ -2063,14 +2061,14 @@ describe( 'table clipboard', () => {
 						[ '30', '31', '32', '33' ]
 					] ) );
 
-					/* eslint-disable no-multi-spaces */
+					/* eslint-disable @stylistic/no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 1, 1, 1, 0 ],
 						[ 1,    1, 0 ],
 						[       1, 0 ],
 						[ 0, 0, 0, 0 ]
 					] );
-					/* eslint-enable no-multi-spaces */
+					/* eslint-enable @stylistic/no-multi-spaces */
 				} );
 
 				it( 'handles pasting table that has cell with colspan (last column in selection is spanned)', () => {
@@ -2116,14 +2114,14 @@ describe( 'table clipboard', () => {
 						[ '30', '31', '32', '33' ]
 					] ) );
 
-					/* eslint-disable no-multi-spaces */
+					/* eslint-disable @stylistic/no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 1, 1, 1, 0 ],
 						[ 1,    1, 0 ],
 						[       1, 0 ],
 						[ 0, 0, 0, 0 ]
 					] );
-					/* eslint-enable no-multi-spaces */
+					/* eslint-enable @stylistic/no-multi-spaces */
 				} );
 			} );
 
@@ -2741,14 +2739,14 @@ describe( 'table clipboard', () => {
 						[ '30', '31', '32', '33' ]
 					] ) );
 
-					/* eslint-disable no-multi-spaces */
+					/* eslint-disable @stylistic/no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 0, 0, 0, 0 ],
 						[ 0, 1,    0 ],
 						[ 0, 1, 1, 0 ],
 						[ 0, 0, 0, 0 ]
 					] );
-					/* eslint-enable no-multi-spaces */
+					/* eslint-enable @stylistic/no-multi-spaces */
 				} );
 
 				it( 'handles pasting table that has many cells with various colspan', () => {
@@ -2771,14 +2769,14 @@ describe( 'table clipboard', () => {
 						[ { colspan: 2, contents: 'da' }, 'dc', '33' ]
 					] ) );
 
-					/* eslint-disable no-multi-spaces */
+					/* eslint-disable @stylistic/no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 1, 1,    0 ],
 						[ 1,       0 ],
 						[ 1, 1, 1, 0 ],
 						[ 1,    1, 0 ]
 					] );
-					/* eslint-enable no-multi-spaces */
+					/* eslint-enable @stylistic/no-multi-spaces */
 				} );
 
 				it( 'handles pasting table that has cell with rowspan', () => {
@@ -2800,14 +2798,14 @@ describe( 'table clipboard', () => {
 						[ '30', '31', '32', '33' ]
 					] ) );
 
-					/* eslint-disable no-multi-spaces */
+					/* eslint-disable @stylistic/no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 0, 0, 0, 0 ],
 						[ 0, 1, 1, 0 ],
 						[ 0,    1, 0 ],
 						[ 0, 0, 0, 0 ]
 					] );
-					/* eslint-enable no-multi-spaces */
+					/* eslint-enable @stylistic/no-multi-spaces */
 				} );
 
 				it( 'handles pasting table that has many cells with various rowspan', () => {
@@ -2830,14 +2828,14 @@ describe( 'table clipboard', () => {
 						[ '30', '31', '32', '33' ]
 					] ) );
 
-					/* eslint-disable no-multi-spaces */
+					/* eslint-disable @stylistic/no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 1, 1, 1, 1 ],
 						[ 1,       1 ],
 						[       1, 1 ],
 						[ 0, 0, 0, 0 ]
 					] );
-					/* eslint-enable no-multi-spaces */
+					/* eslint-enable @stylistic/no-multi-spaces */
 				} );
 
 				it( 'handles pasting multi-spanned table', () => {
@@ -2889,7 +2887,7 @@ describe( 'table clipboard', () => {
 						[ '40', '41', '42', '43', '44', '45' ]
 					] ) );
 
-					/* eslint-disable no-multi-spaces */
+					/* eslint-disable @stylistic/no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 0, 0, 0, 0, 0, 0 ],
 						[ 0, 1,    1, 0, 0 ],
@@ -2897,7 +2895,7 @@ describe( 'table clipboard', () => {
 						[ 0, 1,       0, 0 ],
 						[ 0, 0, 0, 0, 0, 0 ]
 					] );
-					/* eslint-enable no-multi-spaces */
+					/* eslint-enable @stylistic/no-multi-spaces */
 				} );
 			} );
 		} );
@@ -3252,14 +3250,14 @@ describe( 'table clipboard', () => {
 					[ '30', '31', '32', '33' ]
 				] ) );
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 1, 1, 0, 0 ],
 					[ 1, 1, 0, 0 ],
 					[ 1,    0, 0 ],
 					[ 0, 0, 0, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 			} );
 
 			it( 'should trim pasted cells\' height if they exceeds table height established by the last row', () => {
@@ -3299,14 +3297,14 @@ describe( 'table clipboard', () => {
 					[ '30', '31', '32', '33' ]
 				] ) );
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 1, 1, 1, 0 ],
 					[ 1, 1,    0 ],
 					[ 0, 0, 0, 0 ],
 					[ 0, 0, 0, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 			} );
 
 			it( 'should trim pasted cells\' height and width if they exceeds table height and width', () => {
@@ -3344,14 +3342,12 @@ describe( 'table clipboard', () => {
 					[ '30', '31', '32', '33' ]
 				] ) );
 
-				/* eslint-disable no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 1, 1, 0, 0 ],
 					[ 1, 1, 0, 0 ],
 					[ 0, 0, 0, 0 ],
 					[ 0, 0, 0, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
 			} );
 
 			it(
@@ -3440,14 +3436,12 @@ describe( 'table clipboard', () => {
 						[ '30', '31', '32', '33' ]
 					] ) );
 
-					/* eslint-disable no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 1, 1, 0, 0 ],
 						[ 1, 1, 0, 0 ],
 						[ 0, 0, 0, 0 ],
 						[ 0, 0, 0, 0 ]
 					] );
-					/* eslint-enable no-multi-spaces */
 				}
 			);
 
@@ -3491,14 +3485,12 @@ describe( 'table clipboard', () => {
 						[ '30', '31', '32', '33' ]
 					] ) );
 
-					/* eslint-disable no-multi-spaces */
 					assertSelectedCells( model, [
 						[ 1, 1, 0, 0 ],
 						[ 1, 1, 0, 0 ],
 						[ 0, 0, 0, 0 ],
 						[ 0, 0, 0, 0 ]
 					] );
-					/* eslint-enable no-multi-spaces */
 				}
 			);
 		} );
@@ -3562,7 +3554,7 @@ describe( 'table clipboard', () => {
 
 				assertSelectionRangesSorted();
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 1,       1, 0, 0 ],
 					[          1, 0, 0 ],
@@ -3571,7 +3563,7 @@ describe( 'table clipboard', () => {
 					[ 0, 0, 0, 0, 0, 0 ],
 					[ 0, 0, 0, 0, 0, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 			} );
 
 			it( 'should split cells that overlap from headings', () => {
@@ -3621,7 +3613,7 @@ describe( 'table clipboard', () => {
 
 				assertSelectionRangesSorted();
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0, 0 ],
 					[ 0, 1,    1, 1, 0 ],
@@ -3630,7 +3622,7 @@ describe( 'table clipboard', () => {
 					[ 0, 1, 1, 1, 1, 0 ],
 					[ 0, 0, 0, 0, 0, 0 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 			} );
 
 			it( 'should split cells that overlap from heading rows', () => {
@@ -3680,7 +3672,7 @@ describe( 'table clipboard', () => {
 
 				assertSelectionRangesSorted();
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0, 0, 0 ],
 					[ 0, 0, 0, 0, 0, 0, 0 ],
@@ -3689,7 +3681,7 @@ describe( 'table clipboard', () => {
 					[ 0, 0, 0,          1 ],
 					[ 0, 0, 0, 1, 1, 1, 1 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 			} );
 
 			it( 'should split cells that overlap from heading columns', () => {
@@ -3742,7 +3734,7 @@ describe( 'table clipboard', () => {
 
 				assertSelectionRangesSorted();
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 0, 0, 0, 0, 0, 0 ],
 					[ 0, 0, 0, 0, 0, 0 ],
@@ -3752,7 +3744,7 @@ describe( 'table clipboard', () => {
 					[ 0, 0,          1 ],
 					[ 0, 0, 1, 1, 1, 1 ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 			} );
 
 			it( 'should split cells that overlap from headings (repeated pasted table)', () => {
@@ -3804,7 +3796,7 @@ describe( 'table clipboard', () => {
 
 				assertSelectionRangesSorted();
 
-				/* eslint-disable no-multi-spaces */
+				/* eslint-disable @stylistic/no-multi-spaces */
 				assertSelectedCells( model, [
 					[ 1, 1, 1, 1    ],
 					[ 1, 1, 1, 1    ],
@@ -3812,7 +3804,7 @@ describe( 'table clipboard', () => {
 					[ 1, 1, 1, 1    ],
 					[       1       ]
 				] );
-				/* eslint-enable no-multi-spaces */
+				/* eslint-enable @stylistic/no-multi-spaces */
 			} );
 
 			function assertSelectionRangesSorted() {

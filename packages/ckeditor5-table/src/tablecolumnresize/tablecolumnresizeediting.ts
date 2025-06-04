@@ -396,9 +396,16 @@ export default class TableColumnResizeEditing extends Plugin {
 				}
 			},
 			model: {
-				name: 'table',
 				key: 'tableWidth',
-				value: ( viewElement: ViewElement ) => viewElement.getStyle( 'width' )
+				value: ( viewElement: ViewElement ) => {
+					const parent = viewElement.parent!;
+
+					if ( parent.is( 'element', 'figure' ) ) {
+						return;
+					}
+
+					return viewElement.getStyle( 'width' );
+				}
 			}
 		} );
 

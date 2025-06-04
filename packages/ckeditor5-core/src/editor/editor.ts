@@ -49,6 +49,9 @@ import type { EditorConfig } from './editorconfig.js';
 declare global {
 	// eslint-disable-next-line no-var
 	var CKEDITOR_GLOBAL_LICENSE_KEY: string | undefined;
+
+	// eslint-disable-next-line no-var
+	var CKEDITOR_WARNING_SUPPRESSIONS: Record<string, boolean>;
 }
 
 /**
@@ -544,11 +547,13 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 
 			if ( [ 'development', 'evaluation', 'trial' ].includes( licensePayload.licenseType ) ) {
 				const { licenseType } = licensePayload;
-				const sessionStarted = sessionStorage.getItem( 'ckeditor5-development-session-started' );
 
-				if ( !sessionStarted ) {
+				window.CKEDITOR_WARNING_SUPPRESSIONS = window.CKEDITOR_WARNING_SUPPRESSIONS || {};
+
+				if ( !window.CKEDITOR_WARNING_SUPPRESSIONS[ licenseType ] ) {
 					warnAboutNonProductionLicenseKey( licenseType );
-					sessionStorage.setItem( 'ckeditor5-development-session-started', 'true' );
+
+					window.CKEDITOR_WARNING_SUPPRESSIONS[ licenseType ] = true;
 				}
 			}
 
@@ -593,7 +598,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 						 * Please ensure that your setup does not block requests to the validation endpoint.
 						 *
 						 * @error license-key-validation-endpoint-not-reachable
-						 * @param {String} url The URL that was attempted to be reached for validation.
+						 * @param {string} url The URL that was attempted to be reached for validation.
 						 */
 						logError( 'license-key-validation-endpoint-not-reachable', { url: licensePayload.usageEndpoint } );
 					} );
@@ -702,6 +707,7 @@ export default abstract class Editor extends /* #__PURE__ */ ObservableMixin() {
 			 * The lock ID is missing or it is not a string or symbol.
 			 *
 			 * @error editor-read-only-lock-id-invalid
+			 * @param {never} lockId Lock ID.
 			 */
 			throw new CKEditorError( 'editor-read-only-lock-id-invalid', null, { lockId } );
 		}
@@ -1103,6 +1109,7 @@ function collectUsageData( editor: Editor ): EditorUsageData {
 			 * Make sure that you are not setting the same path multiple times.
 			 *
 			 * @error editor-usage-data-path-already-set
+			 * @param {string} path The path that was already set.
 			 */
 			throw new CKEditorError( 'editor-usage-data-path-already-set', { path } );
 		}

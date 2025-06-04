@@ -255,7 +255,8 @@ export default class HtmlComment extends Plugin {
 	 *
 	 * By default, it includes comments at the range boundaries.
 	 *
-	 * @param range
+	 * @param range The range to search for HTML comments.
+	 * @param options Additional options.
 	 * @param options.skipBoundaries When set to `true` the range boundaries will be skipped.
 	 * @returns HTML comment IDs
 	 */

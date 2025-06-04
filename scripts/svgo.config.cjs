@@ -5,8 +5,6 @@
 
 const svgoViewBoxPlugin = require( './utils/svgoviewboxplugin.cjs' );
 
-/* eslint-env node */
-
 module.exports = {
 	name: 'preset-default',
 	plugins: [

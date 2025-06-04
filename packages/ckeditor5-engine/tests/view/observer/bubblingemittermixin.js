@@ -276,7 +276,6 @@ describe( 'BubblingEmitterMixin', () => {
 
 		it( 'should rethrow the CKEditorError error', () => {
 			viewDocument.on( 'test', () => {
-				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 				throw new CKEditorError( 'foo', null );
 			} );
 

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, Event */
-
 import clickOutsideHandler from '../../src/bindings/clickoutsidehandler.js';
 
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin.js';
@@ -43,7 +41,7 @@ describe( 'clickOutsideHandler', () => {
 	describe( 'listenerOptions', () => {
 		it( 'should forward listenerOptions parameter', () => {
 			const listenerOptions = { passive: true };
-			const emitter = Object.create( DomEmitterMixin );
+			const emitter = new ( DomEmitterMixin() )();
 
 			const listenToSpy = sinon.spy( emitter, 'listenTo' );
 
@@ -59,7 +57,7 @@ describe( 'clickOutsideHandler', () => {
 		} );
 
 		it( 'should not forward listenerOptions parameter if not provided', () => {
-			const emitter = Object.create( DomEmitterMixin );
+			const emitter = new ( DomEmitterMixin() )();
 
 			const listenToSpy = sinon.spy( emitter, 'listenTo' );
 
@@ -77,7 +75,7 @@ describe( 'clickOutsideHandler', () => {
 	describe( 'static list of context elements', () => {
 		beforeEach( () => {
 			clickOutsideHandler( {
-				emitter: Object.create( DomEmitterMixin ),
+				emitter: new ( DomEmitterMixin() )(),
 				activator,
 				contextElements: [ contextElement1, contextElement2, shadowContextElement1, shadowContextElement2 ],
 				callback: actionSpy
@@ -176,7 +174,7 @@ describe( 'clickOutsideHandler', () => {
 			activator.returns( true );
 
 			clickOutsideHandler( {
-				emitter: Object.create( DomEmitterMixin ),
+				emitter: new ( DomEmitterMixin() )(),
 				activator,
 				contextElements: [ contextElement1 ],
 				callback: spy
@@ -193,7 +191,7 @@ describe( 'clickOutsideHandler', () => {
 			activator.returns( false );
 
 			clickOutsideHandler( {
-				emitter: Object.create( DomEmitterMixin ),
+				emitter: new ( DomEmitterMixin() )(),
 				activator,
 				contextElements: [ contextElement1 ],
 				callback: spy
@@ -264,7 +262,7 @@ describe( 'clickOutsideHandler', () => {
 			);
 
 			clickOutsideHandler( {
-				emitter: Object.create( DomEmitterMixin ),
+				emitter: new ( DomEmitterMixin() )(),
 				activator,
 				contextElements: contextElementsCallback,
 				callback: actionSpy
@@ -364,7 +362,7 @@ describe( 'clickOutsideHandler', () => {
 			activator.returns( true );
 
 			clickOutsideHandler( {
-				emitter: Object.create( DomEmitterMixin ),
+				emitter: new ( DomEmitterMixin() )(),
 				activator,
 				contextElements: [ contextElement1 ],
 				callback: spy
@@ -381,7 +379,7 @@ describe( 'clickOutsideHandler', () => {
 			activator.returns( false );
 
 			clickOutsideHandler( {
-				emitter: Object.create( DomEmitterMixin ),
+				emitter: new ( DomEmitterMixin() )(),
 				activator,
 				contextElements: [ contextElement1 ],
 				callback: spy

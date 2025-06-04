@@ -131,9 +131,7 @@ describe( 'AbstractHandler', () => {
 					<div class="ck ck-fullscreen__toolbar" data-ck-fullscreen="toolbar"></div>
 				</div>
 				<div class="ck ck-fullscreen__editable-wrapper">
-					<div class="ck ck-fullscreen__sidebar ck-fullscreen__left-sidebar" data-ck-fullscreen="left-sidebar">
-						<div class="ck ck-fullscreen__left-sidebar--sticky" data-ck-fullscreen="left-sidebar-sticky"></div>
-					</div>
+					<div class="ck ck-fullscreen__sidebar ck-fullscreen__left-sidebar" data-ck-fullscreen="left-sidebar"></div>
 					<div class="ck ck-fullscreen__editable" data-ck-fullscreen="editable">
 						<div class="ck ck-fullscreen__pagination-view" data-ck-fullscreen="pagination-view"></div>
 					</div>
@@ -182,8 +180,8 @@ describe( 'AbstractHandler', () => {
 	} );
 
 	describe( '#enable()', () => {
-		it( 'should execute the #_defaultOnEnter method', () => {
-			const spy = sinon.spy( abstractHandler, '_defaultOnEnter' );
+		it( 'should execute the #defaultOnEnter method', () => {
+			const spy = sinon.spy( abstractHandler, 'defaultOnEnter' );
 
 			abstractHandler.enable();
 
@@ -349,7 +347,7 @@ describe( 'AbstractHandler', () => {
 			// In test runner scroll is not reset to 0 when fullscreen is enabled, unlike for real browsers, so we need to set it manually.
 			global.document.body.parentElement.scrollTo( { left: 0, top: 0, behavior: 'instant' } );
 
-			expect( editor.commands.get( 'toggleFullscreen' )._fullscreenHandler._savedAncestorsScrollPositions.size ).to.equal( 3 );
+			expect( editor.commands.get( 'toggleFullscreen' ).fullscreenHandler._savedAncestorsScrollPositions.size ).to.equal( 3 );
 
 			editor.execute( 'toggleFullscreen' );
 

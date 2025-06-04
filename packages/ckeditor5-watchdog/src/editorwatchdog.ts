@@ -7,8 +7,6 @@
  * @module watchdog/editorwatchdog
  */
 
-/* globals console */
-
 import { throttle, cloneDeepWith, isElement, type DebouncedFunction } from 'es-toolkit/compat';
 import areConnectedThroughProperties from './utils/areconnectedthroughproperties.js';
 import Watchdog, { type WatchdogConfig } from './watchdog.js';

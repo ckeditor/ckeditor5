@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, Event, console */
-
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 
 import InlineEditorUI from '../src/inlineeditorui.js';
@@ -16,6 +14,7 @@ import { Image, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
+import env from '@ckeditor/ckeditor5-utils/src/env.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { isElement } from 'es-toolkit/compat';
@@ -123,6 +122,34 @@ describe( 'InlineEditorUI', () => {
 
 						return editor.destroy();
 					} );
+			} );
+
+			it( 'updates the view#viewportTopOffset to the visible part of viewport top offset (iOS + visual viewport)', () => {
+				ui.viewportOffset = { top: 70 };
+
+				let offsetTop = 0;
+				sinon.stub( env, 'isiOS' ).get( () => true );
+				sinon.stub( window.visualViewport, 'offsetTop' ).get( () => offsetTop );
+
+				offsetTop = 0;
+				window.visualViewport.dispatchEvent( new Event( 'scroll' ) );
+
+				expect( ui.view.viewportTopOffset ).to.equal( 70 );
+
+				offsetTop = 10;
+				window.visualViewport.dispatchEvent( new Event( 'scroll' ) );
+
+				expect( ui.view.viewportTopOffset ).to.equal( 60 );
+
+				offsetTop = 50;
+				window.visualViewport.dispatchEvent( new Event( 'scroll' ) );
+
+				expect( ui.view.viewportTopOffset ).to.equal( 20 );
+
+				offsetTop = 80;
+				window.visualViewport.dispatchEvent( new Event( 'scroll' ) );
+
+				expect( ui.view.viewportTopOffset ).to.equal( 0 );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-editor-inline/issues/4

@@ -7,8 +7,6 @@
  * @module engine/dev-utils/view
  */
 
-/* globals document */
-
 /**
  * Collection of methods for manipulating the {@link module:engine/view/view view} for testing purposes.
  */
@@ -54,6 +52,7 @@ const domConverterStub: DomConverter = {
 /**
  * Writes the content of the {@link module:engine/view/document~Document document} to an HTML-like string.
  *
+ * @param view The view to stringify.
  * @param options.withoutSelection Whether to write the selection. When set to `true`, the selection will
  * not be included in the returned string.
  * @param options.rootName The name of the root from which the data should be stringified. If not provided,
@@ -62,8 +61,6 @@ const domConverterStub: DomConverter = {
  * instead of `<p>`, `<attribute:b>` instead of `<b>` and `<empty:img>` instead of `<img>`).
  * @param options.showPriority When set to `true`, the attribute element's priority will be printed
  * (`<span view-priority="12">`, `<b view-priority="10">`).
- * @param options.showAttributeElementId When set to `true`, the attribute element's ID will be printed
- * (`<span id="marker:foo">`).
  * @param options.renderUIElements When set to `true`, the inner content of each
  * {@link module:engine/view/uielement~UIElement} will be printed.
  * @param options.renderRawElements When set to `true`, the inner content of each
@@ -83,6 +80,7 @@ export function getData(
 		renderUIElements?: boolean;
 		renderRawElements?: boolean;
 		domConverter?: DomConverter;
+		skipListItemIds?: boolean;
 	} = {}
 ): string {
 	if ( !( view instanceof View ) ) {
@@ -99,7 +97,8 @@ export function getData(
 		renderUIElements: options.renderUIElements,
 		renderRawElements: options.renderRawElements,
 		ignoreRoot: true,
-		domConverter: options.domConverter
+		domConverter: options.domConverter,
+		skipListItemIds: options.skipListItemIds
 	};
 
 	return withoutSelection ?
@@ -301,6 +300,7 @@ export function stringify(
 		renderUIElements?: boolean;
 		renderRawElements?: boolean;
 		domConverter?: DomConverter;
+		skipListItemIds?: boolean;
 	} = {}
 ): string {
 	let selection;
@@ -403,7 +403,6 @@ export function stringify(
  * this node will be used as the root for all parsed nodes.
  * @param options.sameSelectionCharacters When set to `false`, the selection inside the text should be marked using
  * `{` and `}` and the selection outside the ext using `[` and `]`. When set to `true`, both should be marked with `[` and `]` only.
- * @param options.stylesProcessor Styles processor.
  * @returns Returns the parsed view node or an object with two fields: `view` and `selection` when selection ranges were included in the
  * data to parse.
  */
@@ -703,6 +702,7 @@ class ViewStringify {
 	public renderUIElements: boolean;
 	public renderRawElements: boolean;
 	public domConverter: DomConverter;
+	public skipListItemIds: boolean;
 
 	/**
 	 * Creates a view stringify instance.
@@ -723,6 +723,8 @@ class ViewStringify {
 	 * instance, it lets the conversion go through exactly the same flow the editing view is going through,
 	 * i.e. with view data filtering. Otherwise the simple stub is used.
 	 * {@link module:engine/view/rawelement~RawElement} will be printed.
+	 * @param options.skipListItemIds When set to `true`, `<li>` elements will not have `listItemId` attribute. By default it's hidden
+	 * because it's randomly generated and hard to verify properly, while bringing little value.
 	 */
 	constructor(
 		root: ViewNode | ViewDocumentFragment,
@@ -736,6 +738,7 @@ class ViewStringify {
 			renderUIElements?: boolean;
 			renderRawElements?: boolean;
 			domConverter?: DomConverter;
+			skipListItemIds?: boolean;
 		}
 	) {
 		this.root = root;
@@ -754,6 +757,7 @@ class ViewStringify {
 		this.renderUIElements = !!options.renderUIElements;
 		this.renderRawElements = !!options.renderRawElements;
 		this.domConverter = options.domConverter || domConverterStub;
+		this.skipListItemIds = options.skipListItemIds !== undefined ? !!options.skipListItemIds : true;
 	}
 
 	/**
@@ -766,6 +770,10 @@ class ViewStringify {
 		this._walkView( this.root, chunk => {
 			result += chunk;
 		} );
+
+		if ( this.skipListItemIds ) {
+			result = result.replaceAll( / data-list-item-id="[^"]+"/g, '' );
+		}
 
 		return result;
 	}

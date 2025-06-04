@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
@@ -257,7 +255,7 @@ describe( 'EmptyBlock', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 					'<ul>' +
 						'<li>foo</li>' +
 						'<li>&nbsp;</li>' +

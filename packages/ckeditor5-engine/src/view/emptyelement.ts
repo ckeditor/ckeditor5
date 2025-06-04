@@ -31,7 +31,7 @@ export default class EmptyElement extends Element {
 	 * @internal
 	 * @param document The document instance to which this element belongs.
 	 * @param name Node name.
-	 * @param attrs Collection of attributes.
+	 * @param attributes Collection of attributes.
 	 * @param children A list of nodes to be inserted into created element.
 	 */
 	constructor(

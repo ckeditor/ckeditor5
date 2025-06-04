@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
@@ -173,10 +171,10 @@ describe( 'CodeBlock - integration', () => {
 		} );
 	} );
 
-	describe( 'with DocumentListEditing', () => {
+	describe( 'with ListEditing', () => {
 		let editor, model;
 
-		describe( 'when DocumentListEditing is loaded', () => {
+		describe( 'when ListEditing is loaded', () => {
 			beforeEach( async () => {
 				editor = await ClassicTestEditor
 					.create( '', {
@@ -225,7 +223,7 @@ describe( 'CodeBlock - integration', () => {
 			} );
 		} );
 
-		describe( 'when DocumentListEditing is not loaded', () => {
+		describe( 'when ListEditing is not loaded', () => {
 			beforeEach( async () => {
 				editor = await ClassicTestEditor
 					.create( '', {

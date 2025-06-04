@@ -25,11 +25,11 @@ export type {
 	LanguageConfig,
 	ToolbarConfig,
 	ToolbarConfigItem,
-	UiConfig
+	UiConfig,
+	ViewportOffsetConfig
 } from './editor/editorconfig.js';
 
 export { default as attachToForm } from './editor/utils/attachtoform.js';
-export { default as DataApiMixin, type DataApi } from './editor/utils/dataapimixin.js';
 export { default as ElementApiMixin, type ElementApi } from './editor/utils/elementapimixin.js';
 export { default as secureSourceElement } from './editor/utils/securesourceelement.js';
 

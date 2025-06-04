@@ -353,7 +353,10 @@ export default class ContextualBalloon extends Plugin {
 
 			// Don't modify the original options object.
 			position = Object.assign( {}, position, {
-				viewportOffsetConfig: this.editor.ui.viewportOffset
+				viewportOffsetConfig: {
+					...this.editor.ui.viewportOffset,
+					top: this.editor.ui.viewportOffset.visualTop
+				}
 			} );
 		}
 

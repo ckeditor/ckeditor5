@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
-
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment.js';
 import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage.js';
@@ -40,7 +38,7 @@ import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
-import List from '../../src/documentlist.js';
+import List from '../../src/list.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

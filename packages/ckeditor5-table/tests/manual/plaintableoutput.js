@@ -3,13 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, document, window */
-
-import { formatHtml } from '@ckeditor/ckeditor5-source-editing/src/utils/formathtml.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import { formatHtml } from 'ckeditor5/src/utils.js';
 import Table from '../../src/table.js';
 import TableToolbar from '../../src/tabletoolbar.js';
 import TableSelection from '../../src/tableselection.js';

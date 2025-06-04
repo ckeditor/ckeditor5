@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global DOMParser */
-
 /**
  * @module widget/widgettypearound/widgettypearound
  */
@@ -196,8 +194,6 @@ export default class WidgetTypeAround extends Plugin {
 	 * @param event The name of the event.
 	 * @param callback The function to be called on event.
 	 * @param options Additional options.
-	 * @param options.priority The priority of this event callback. The higher the priority value the sooner
-	 * the callback will be fired. Events having the same priority are called in the order they were added.
 	 */
 	private _listenToIfEnabled<TEvent extends BaseEvent>(
 		emitter: Emitter,
@@ -695,7 +691,7 @@ export default class WidgetTypeAround extends Plugin {
 			// Note: The priority must precede the default Input plugin compositionstart handler (to call it before delete content).
 			this._listenToIfEnabled<ViewDocumentCompositionStartEvent>( viewDocument, 'compositionstart', () => {
 				this._insertParagraphAccordingToFakeCaretPosition();
-			}, { priority: 'high' } );
+			}, { priority: 'highest' } );
 		}
 	}
 

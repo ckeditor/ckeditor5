@@ -3,7 +3,7 @@ category: update-guides
 meta-title: Update to version 45.x | CKEditor 5 Documentation
 menu-title: Update to v45.x
 order: 79
-modified_at: 2025-04-07
+modified_at: 2025-05-08
 ---
 
 # Update to CKEditor&nbsp;5 v45.x
@@ -14,9 +14,48 @@ modified_at: 2025-04-07
 	You may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
+## Update to CKEditor&nbsp;5 v45.2.0
+
+Released on June 4, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v45.2.0))
+
+Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v45.2.0.
+
+* We fixed the copy-paste scenario in the read-only mode.
+* Tables pasted from Office, especially with borderless layouts, should preserve styling in the editor similar to the ones in the source file.
+* Improved the adoption of the fullscreen feature on smaller screens and includes subtle visual tweaks.
+
+### Minor breaking changes in this release
+
+* **[source-editing](https://www.npmjs.com/package/@ckeditor/ckeditor5-source-editing)**: The `formatHtml()` helper function is extracted to the `@ckeditor/ckeditor5-utils` package. See [#18480](https://github.com/ckeditor/ckeditor5/issues/18480).
+
+## Update to CKEditor&nbsp;5 v45.1.0
+
+Released on May 14, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v45.1.0))
+
+Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v45.1.0.
+
+### Typing Improvements
+
+The typing behavior has been improved for plain text typing. This adjustment allows the web browser to handle text insertion before the editor processes it, enhancing typing reliability across various scenarios, especially on Safari and iOS devices. Issues related to track changes, autocorrect, automatic text replacement, and other input methods have been addressed.
+
+### Track Changes Enhancements
+
+A new method to start a "tracking session" has been introduced, preventing automatic merging of adjacent suggestions. This allows for more precise control over individual changes, catering to workflows that require selective acceptance of edits.
+
+### Miscellaneous improvements
+
+* Sticky toolbars and balloons are now better aligned with the visual viewport on iOS and Safari, ensuring correct positioning when zooming.
+* The fullscreen plugin has been improved to maintain scroll position when exiting fullscreen, avoiding unexpected jumps on smooth-scrolling pages. Layout consistency has been refined by adjusting margins and editable width. Errors related to the Content minimap plugin in fullscreen mode have also been resolved.
+* Introduced a fix which ensures that the `data-author-id` and `data-suggestion` attributes are preserved in non-block suggestions when retrieving data with `showSuggestionHighlights: true`.
+* We improved the algorithm for images detection in the Paste from Office feature, in scenarios of mixed local and online images from Microsoft Word. Paste no longer causes some images not to appear.
+
+### Minor breaking changes in this release
+
+The default behavior of the `beforeinput` DOM events is no longer prevented in plain text typing scenarios. Now, the engine waits for DOM mutations and applies changes to the model afterward. This should not affect most integrations however, it may affect custom modifications to text insertion into the editor.
+
 ## Update to CKEditor&nbsp;5 v45.0.0
 
-Released on April 7, 2024. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v45.0.0))
+Released on April 7, 2025. ([See full release notes](https://github.com/ckeditor/ckeditor5/releases/tag/v45.0.0))
 
 Below are the most important changes that require your attention when upgrading to CKEditor&nbsp;5 v45.0.0.
 
@@ -173,7 +212,7 @@ We are continuing to strengthen the new installation methods while phasing out o
 	To achieve a proper solution for icons replacement for the npm builds, we needed to introduce a breaking change. If you used our icons for any purposes, make sure to update their paths.
 </info-box>
 
-### ⚠️ Deprecations in old installation methods: stage 1 completed
+### Deprecations in old installation methods: stage 1 completed
 
 We are progressing with deprecation according to [our sunset plan](https://github.com/ckeditor/ckeditor5/issues/17779). From this release, predefined builds’ packages, such as `@ckeditor/ckeditor-build-classic`, are now officially deprecated.
 

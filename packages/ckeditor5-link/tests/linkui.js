@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, window, Event */
-
 import { IconBookmarkMedium, IconBookmarkSmall, IconLink } from 'ckeditor5/src/icons.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
@@ -2516,7 +2514,7 @@ describe( 'LinkUI', () => {
 				expect( formView.displayedTextInputView.isEnabled ).to.be.false;
 			} );
 
-			it( 'should disable displayed text field if it can not be modified as a plain text', () => {
+			it( 'should disable displayed text field if it cannot be modified as a plain text', () => {
 				linkUIFeature.selectedLinkableText = undefined;
 				expect( formView.displayedTextInputView.isEnabled ).to.be.false;
 

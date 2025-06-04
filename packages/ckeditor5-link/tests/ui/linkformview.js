@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals Event, document */
-
 import LinkFormView from '../../src/ui/linkformview.js';
 import LinkButtonView from '../../src/ui/linkbuttonview.js';
 import { ListView, View, FocusCycler, ViewCollection } from '@ckeditor/ckeditor5-ui';

@@ -11,6 +11,8 @@ import TableCellWidthCommand from '../../src/tablecellwidth/commands/tablecellwi
 
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { assertTableCellStyle } from '../_utils/utils.js';
+import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting.js';
+import TableEditing from '../../src/tableediting.js';
 
 describe( 'TableCellWidthEditing', () => {
 	let editor, model;
@@ -49,8 +51,15 @@ describe( 'TableCellWidthEditing', () => {
 		} );
 
 		describe( 'upcast conversion', () => {
-			it( 'should upcast width attribute on table cell', () => {
+			it( 'should upcast width style on table cell', () => {
 				editor.setData( '<table><tr><td style="width:20px">foo</td></tr></table>' );
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				expect( tableCell.getAttribute( 'tableCellWidth' ) ).to.equal( '20px' );
+			} );
+
+			it( 'should upcast width style on table cell even if it has width attribute set', () => {
+				editor.setData( '<table><tr><td width="50" style="width:20px">foo</td></tr></table>' );
 				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
 				expect( tableCell.getAttribute( 'tableCellWidth' ) ).to.equal( '20px' );
@@ -77,6 +86,58 @@ describe( 'TableCellWidthEditing', () => {
 
 				expect( tableCell00.getAttribute( 'tableCellWidth' ) ).to.equal( '94px' );
 				expect( tableCell01.getAttribute( 'tableCellWidth' ) ).to.equal( '291px' );
+			} );
+
+			it( 'should consume width style even if it is default', async () => {
+				const editor = await VirtualTestEditor.create( {
+					plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
+					table: {
+						tableCellProperties: {
+							defaultProperties: {
+								width: '123px'
+							}
+						}
+					}
+				} );
+				const model = editor.model;
+
+				// But it should consume it, so GHS won't store it.
+				editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:td', ( evt, data, conversionApi ) => {
+					expect( conversionApi.consumable.test( data.viewItem, { styles: 'width' } ) ).to.be.false;
+				}, { priority: 'lowest' } ) );
+
+				editor.setData( '<table><tr><td style="width:123px">foo</td></tr></table>' );
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				expect( tableCell.hasAttribute( 'tableCellWidth' ) ).to.be.false;
+
+				await editor.destroy();
+			} );
+
+			it( 'should consume width attribute even if it is default', async () => {
+				const editor = await VirtualTestEditor.create( {
+					plugins: [ TableCellPropertiesEditing, Paragraph, TableEditing ],
+					table: {
+						tableCellProperties: {
+							defaultProperties: {
+								width: '123px'
+							}
+						}
+					}
+				} );
+				const model = editor.model;
+
+				// But it should consume it, so GHS won't store it.
+				editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:td', ( evt, data, conversionApi ) => {
+					expect( conversionApi.consumable.test( data.viewItem, { attributes: 'width' } ) ).to.be.false;
+				}, { priority: 'lowest' } ) );
+
+				editor.setData( '<table><tr><td width="123">foo</td></tr></table>' );
+				const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
+
+				expect( tableCell.hasAttribute( 'tableCellWidth' ) ).to.be.false;
+
+				await editor.destroy();
 			} );
 		} );
 

@@ -18,7 +18,7 @@ import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver.js'
  * * Block filler is an element which fill block elements, like `<p>`. CKEditor uses `<br>` as a block filler during the editing,
  * as browsers do natively. So instead of an empty `<p>` there will be `<p><br></p>`. The advantage of block filler is that
  * it is transparent for the selection, so when the caret is before the `<br>` and user presses right arrow he will be
- * moved to the next paragraph, not after the `<br>`. The disadvantage is that it breaks a block, so it can not be used
+ * moved to the next paragraph, not after the `<br>`. The disadvantage is that it breaks a block, so it cannot be used
  * in the middle of a line of text. The {@link module:engine/view/filler~BR_FILLER `<br>` filler} can be replaced with any other
  * character in the data output, for instance {@link module:engine/view/filler~NBSP_FILLER non-breaking space} or
  * {@link module:engine/view/filler~MARKED_NBSP_FILLER marked non-breaking space}.
