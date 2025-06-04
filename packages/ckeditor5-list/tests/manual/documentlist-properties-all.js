@@ -36,8 +36,8 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
-import List from '../../src/documentlist.js';
-import ListProperties from '../../src/documentlistproperties.js';
+import List from '../../src/list.js';
+import ListProperties from '../../src/listproperties.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

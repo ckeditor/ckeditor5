@@ -171,10 +171,10 @@ describe( 'CodeBlock - integration', () => {
 		} );
 	} );
 
-	describe( 'with DocumentListEditing', () => {
+	describe( 'with ListEditing', () => {
 		let editor, model;
 
-		describe( 'when DocumentListEditing is loaded', () => {
+		describe( 'when ListEditing is loaded', () => {
 			beforeEach( async () => {
 				editor = await ClassicTestEditor
 					.create( '', {
@@ -223,7 +223,7 @@ describe( 'CodeBlock - integration', () => {
 			} );
 		} );
 
-		describe( 'when DocumentListEditing is not loaded', () => {
+		describe( 'when ListEditing is not loaded', () => {
 			beforeEach( async () => {
 				editor = await ClassicTestEditor
 					.create( '', {

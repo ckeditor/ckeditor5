@@ -58,20 +58,24 @@ export default function CssTransitionDisablerMixin<Base extends Constructor<View
 		}
 
 		protected initializeCssTransitionDisablerMixin(): void {
-			this.extendTemplate( {
-				attributes: {
-					class: [
-						this.bindTemplate.if( '_isCssTransitionsDisabled', 'ck-transitions-disabled' )
-					]
-				}
-			} );
+			if ( this.template ) {
+				this.extendTemplate( {
+					attributes: {
+						class: [
+							this.bindTemplate.if( '_isCssTransitionsDisabled', 'ck-transitions-disabled' )
+						]
+					}
+				} );
+			}
 		}
 	}
 
 	return Mixin as any;
 }
 
-export type ViewWithCssTransitionDisabler = View & {
-	disableCssTransitions(): void;
-	enableCssTransitions(): void;
+export declare class ViewWithCssTransitionDisabler extends View {
+	public disableCssTransitions(): void;
+	public enableCssTransitions(): void;
+
+	protected initializeCssTransitionDisablerMixin(): void;
 };

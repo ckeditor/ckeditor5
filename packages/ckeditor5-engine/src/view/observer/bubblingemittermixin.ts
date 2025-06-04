@@ -158,15 +158,6 @@ export default function BubblingEmitterMixin<Base extends Constructor<Emitter>>(
 	return Mixin as any;
 }
 
-// Backward compatibility with `mix`.
-{
-	const mixin = ( BubblingEmitterMixin as any )( Object );
-
-	[ 'fire', '_addEventListener', '_removeEventListener' ].forEach( key => {
-		( BubblingEmitterMixin as any )[ key ] = mixin.prototype[ key ];
-	} );
-}
-
 /**
  * Update the event info bubbling fields.
  *

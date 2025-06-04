@@ -142,7 +142,6 @@ getData._stringify = stringify;
  * @param options.selectionAttributes A list of attributes which will be passed to the selection.
  * @param options.lastRangeBackward If set to `true`, the last range will be added as backward.
  * @param options.batchType Batch type used for inserting elements. See {@link module:engine/model/batch~Batch#constructor}.
- * See {@link module:engine/model/batch~Batch#type}.
  */
 export function setData(
 	model: Model,

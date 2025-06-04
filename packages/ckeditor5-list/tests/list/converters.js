@@ -494,7 +494,7 @@ describe( 'ListEditing - converters', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 					'<ul>' +
 						'<li><p style="text-align:right;">a</p></li>' +
 						'<li>b</li>' +
@@ -535,7 +535,7 @@ describe( 'ListEditing - converters', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 					'<ul>' +
 						'<li>&nbsp;</li>' +
 						'<li>b</li>' +
@@ -571,7 +571,7 @@ describe( 'ListEditing - converters', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 					'<p style="text-align:right;">a</p>' +
 					'<ul>' +
 						'<li>b</li>' +
@@ -604,7 +604,7 @@ describe( 'ListEditing - converters', () => {
 						'<ul><li><div>foo</div></li></ul>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 						'<ul><li><div>foo</div></li></ul>'
 					);
 				} );
