@@ -61,4 +61,35 @@ describe( 'cssTransitionDisablerMixin()', () => {
 			expect( view.element.classList.contains( 'ck-transitions-disabled' ) ).to.be.false;
 		} );
 	} );
+
+	it( 'should allow late initialization', () => {
+		const LateInitView = CssTransitionDisablerMixin( View );
+
+		view.destroy();
+
+		expect( () => new LateInitView() ).to.not.throw();
+
+		view = new LateInitView();
+
+		view.setTemplate( {
+			tag: 'div'
+		} );
+
+		view.initializeCssTransitionDisablerMixin();
+
+		view.render();
+
+		expect( view._isCssTransitionsDisabled ).to.be.false;
+		expect( view.element.classList.contains( 'ck-transitions-disabled' ) ).to.be.false;
+
+		view.disableCssTransitions();
+
+		expect( view._isCssTransitionsDisabled ).to.be.true;
+		expect( view.element.classList.contains( 'ck-transitions-disabled' ) ).to.be.true;
+
+		view.enableCssTransitions();
+
+		expect( view._isCssTransitionsDisabled ).to.be.false;
+		expect( view.element.classList.contains( 'ck-transitions-disabled' ) ).to.be.false;
+	} );
 } );
