@@ -8,7 +8,7 @@ order: 20
 badges: [ premium ]
 ---
 
-# RES API and Webhooks
+# REST API and Webhooks
 
 ## Cloud Services RESTful APIs
 
