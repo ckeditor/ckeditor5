@@ -28,7 +28,7 @@
     "@ckeditor/ckeditor5-ui": "45.2.0",
     "@ckeditor/ckeditor5-utils": "45.2.0",
     "@ckeditor/ckeditor5-watchdog": "45.2.0",
-    "es-toolkit": "1.32.0"
+    "es-toolkit": "1.38.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-autoformat": "45.2.0",
