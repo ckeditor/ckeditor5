@@ -1,7 +1,7 @@
 ---
 category: cloud-services
 meta-title: Cloud Services | CKEditor 5 Documentation
-meta-description: Cloud platform with document conversion, editing features and real-time collaboration services.
+meta-description: Cloud platform with document conversion, editing features and real-time collaboration services that extend the capabilities of CKEditor 5.
 menu-title: Overview
 modified_at: 2025-05-20
 order: 10
