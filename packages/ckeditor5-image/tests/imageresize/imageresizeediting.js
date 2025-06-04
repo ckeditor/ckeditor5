@@ -557,6 +557,14 @@ describe( 'ImageResizeEditing', () => {
 			expect( newEditor.model.schema.checkAttribute( [ '$root', 'imageInline' ], 'resizedHeight' ) ).to.be.true;
 			await newEditor.destroy();
 		} );
+
+		it( 'sets isFormatting property for resizedWidth', () => {
+			expect( editor.model.schema.getAttributeProperties( 'resizedWidth' ).isFormatting ).to.be.true;
+		} );
+
+		it( 'sets isFormatting property for resizedHeigh', () => {
+			expect( editor.model.schema.getAttributeProperties( 'resizedHeight' ).isFormatting ).to.be.true;
+		} );
 	} );
 
 	describe( 'command', () => {

@@ -142,6 +142,7 @@ describe( 'ImageStyleEditing', () => {
 
 				expect( editor.model.schema.checkAttribute( 'imageBlock', 'imageStyle' ) ).to.be.true;
 				expect( editor.model.schema.checkAttribute( 'imageInline', 'imageStyle' ) ).to.be.false;
+				expect( editor.model.schema.getAttributeProperties( 'imageStyle' ).isFormatting ).to.be.true;
 
 				await editor.destroy();
 			} );
@@ -153,6 +154,7 @@ describe( 'ImageStyleEditing', () => {
 
 				expect( editor.model.schema.checkAttribute( 'imageInline', 'imageStyle' ) ).to.be.true;
 				expect( editor.model.schema.checkAttribute( 'imageBlock', 'imageStyle' ) ).to.be.false;
+				expect( editor.model.schema.getAttributeProperties( 'imageStyle' ).isFormatting ).to.be.true;
 
 				await editor.destroy();
 			} );
@@ -164,6 +166,7 @@ describe( 'ImageStyleEditing', () => {
 
 				expect( editor.model.schema.checkAttribute( 'imageInline', 'imageStyle' ) ).to.be.true;
 				expect( editor.model.schema.checkAttribute( 'imageBlock', 'imageStyle' ) ).to.be.true;
+				expect( editor.model.schema.getAttributeProperties( 'imageStyle' ).isFormatting ).to.be.true;
 
 				await editor.destroy();
 			} );

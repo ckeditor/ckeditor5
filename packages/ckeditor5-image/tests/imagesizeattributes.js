@@ -67,6 +67,14 @@ describe( 'ImageSizeAttributes', () => {
 			expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'width' ) ).to.be.true;
 			expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'height' ) ).to.be.true;
 		} );
+
+		it( 'does not set isFormatting property for width attribute', () => {
+			expect( editor.model.schema.getAttributeProperties( 'width' ).isFormatting ).to.be.undefined;
+		} );
+
+		it( 'does not set isFormatting property for heigh attribute', () => {
+			expect( editor.model.schema.getAttributeProperties( 'height' ).isFormatting ).to.be.undefined;
+		} );
 	} );
 
 	describe( 'conversion', () => {
