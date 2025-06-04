@@ -6,7 +6,7 @@
 import { isVisible, parseKeystroke, wait } from '@ckeditor/ckeditor5-utils';
 import { View, type ViewCollection } from '../../src/index.js';
 import type { FocusableView, FocusCyclerActions, ViewWithFocusCycler } from '../../src/focuscycler.js';
-import { sinon } from 'sinon';
+import sinon from 'sinon';
 
 /**
  * Automates testing of focus cycling in a view with a focus cycler. It runs a test per each configured action.
@@ -127,7 +127,7 @@ export function testFocusCycling( {
 				await wait( 10 );
 
 				if ( event ) {
-					sinon.assert.calledOnce( event.preventsinon.SinonSpy );
+					sinon.assert.calledOnce( event.preventDefault as sinon.SinonSpy );
 					sinon.assert.calledOnce( event.stopPropagation as sinon.SinonSpy );
 				}
 
