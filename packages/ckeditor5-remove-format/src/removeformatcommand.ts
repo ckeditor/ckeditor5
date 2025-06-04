@@ -25,11 +25,11 @@ export default class RemoveFormatCommand extends Command {
 	declare public value: boolean;
 
 	/**
-	 * TODO
+	 * List of all registered custom attribute handlers.
 	 */
 	private _customAttributesHandlers: Array<{
-		isFormatting: IsFormatting;
-		removeFormatting: RemoveFormatting;
+		isFormatting: IsFormattingCallback;
+		removeFormatting: RemoveFormattingCallback;
 	}> = [];
 
 	/**
@@ -68,9 +68,9 @@ export default class RemoveFormatCommand extends Command {
 	}
 
 	/**
-	 * TODO
+	 * Registers a custom attribute handler that will be used to determine if an attribute is formatting and how to remove it.
 	 */
-	public registerCustomAttribute( isFormatting: IsFormatting, removeFormatting: RemoveFormatting ): void {
+	public registerCustomAttribute( isFormatting: IsFormattingCallback, removeFormatting: RemoveFormattingCallback ): void {
 		this._customAttributesHandlers.push( {
 			isFormatting,
 			removeFormatting
@@ -78,7 +78,7 @@ export default class RemoveFormatCommand extends Command {
 	}
 
 	/**
-	 * TODO
+	 * Helper method that removes a formatting attribute from an item either using custom callbacks or writer remove attribute.
 	 */
 	private _removeFormatting( attributeName: string, item: Item, itemRange: Range, writer: Writer ) {
 		let customHandled = false;
@@ -154,11 +154,11 @@ export default class RemoveFormatCommand extends Command {
 }
 
 /**
- * TODO
+ * Callback that checks if an attribute is a formatting attribute.
  */
-export type IsFormatting = ( attributeName: string, item: Item | DocumentSelection ) => boolean;
+export type IsFormattingCallback = ( attributeName: string, item: Item | DocumentSelection ) => boolean;
 
 /**
- * TODO
+ * Callback that removes formatting from an item.
  */
-export type RemoveFormatting = ( attributeName: string, range: Range, writer: Writer ) => void;
+export type RemoveFormattingCallback = ( attributeName: string, range: Range, writer: Writer ) => void;

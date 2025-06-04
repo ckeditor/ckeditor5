@@ -13,8 +13,8 @@ export { default as RemoveFormatUI } from './removeformatui.js';
 
 export type {
 	default as RemoveFormatCommand,
-	IsFormatting,
-	RemoveFormatting
+	IsFormattingCallback,
+	RemoveFormattingCallback
 } from './removeformatcommand.js';
 
 import './augmentation.js';
