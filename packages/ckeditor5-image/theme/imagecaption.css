@@ -15,8 +15,7 @@
 .ck-content .image > figcaption {
 	display: table-caption;
 	caption-side: bottom;
-	word-break: normal;
-	overflow-wrap: anywhere;
+	word-break: break-word;
 	color: var(--ck-color-image-caption-text);
 	background-color: var(--ck-color-image-caption-background);
 	padding: .6em;
