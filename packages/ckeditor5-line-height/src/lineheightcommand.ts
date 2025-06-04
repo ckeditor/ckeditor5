@@ -9,6 +9,8 @@
 
 import { Command } from 'ckeditor5/src/core.js';
 import { LINE_HEIGHT } from './lineheightconfig.js';
+import { first } from 'ckeditor5/src/utils.js';
+import type { Element } from 'ckeditor5/src/engine.js';
 
 /**
  * The line height command. It is used by the {@link module:line-height/lineheightediting~LineHeightEditing}
@@ -21,22 +23,10 @@ export default class LineHeightCommand extends Command {
 	public override refresh(): void {
 		const model = this.editor.model;
 		const document = model.document;
-		const blocks = Array.from( document.selection.getSelectedBlocks() );
+		const firstBlock = first( document.selection.getSelectedBlocks() )!;
 
-		// Get the value of the line height first block.
-		const valueOfFirstBlock = blocks[ 0 ].getAttribute( LINE_HEIGHT );
-
-		// Set value to the value of the first block if all blocks have the same line height.
-		this.value = blocks.every(
-			block => block.hasAttribute( LINE_HEIGHT ) && block.getAttribute( LINE_HEIGHT ) === valueOfFirstBlock
-		) ? valueOfFirstBlock : undefined;
-
-		if ( !blocks.length ) {
-			this.isEnabled = false;
-			return;
-		}
-
-		this.isEnabled = true;
+		this.isEnabled = Boolean( firstBlock ) && this._canBeAligned( firstBlock );
+		this.value = this.isEnabled && firstBlock.getAttribute( LINE_HEIGHT );
 	}
 
 	/**
@@ -64,5 +54,12 @@ export default class LineHeightCommand extends Command {
 				}
 			}
 		} );
+	}
+
+	/**
+	 * Checks whether a block can have the `lineHeight` attribute set.
+	 */
+	private _canBeAligned( block: Element ) {
+		return this.editor.model.schema.checkAttribute( block, LINE_HEIGHT );
 	}
 }
