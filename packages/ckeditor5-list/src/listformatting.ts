@@ -308,6 +308,8 @@ export default class ListFormatting extends Plugin {
 				writer.setAttribute( attributeKey, attributeValue, listItem );
 			}
 		}
+
+		// TODO: add a flag if was changed
 	}
 
 	/**
@@ -326,6 +328,8 @@ export default class ListFormatting extends Plugin {
 				writer.removeAttribute( attributeKey, listItem );
 			}
 		}
+
+		// TODO: add a flag if was changed
 	}
 
 	/**
@@ -362,16 +366,16 @@ export default class ListFormatting extends Plugin {
 	 */
 	private _hasSingleListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ): string | false | undefined {
 		let hasListItemConsistentFormat = false;
-		let prevFormatAttribute;
+		let firstFormatAttribute;
 
 		for ( const child of listItem.getChildren() ) {
 			if ( model.schema.checkAttribute( child, attributeKey ) ) {
 				const formatAttribute = child.getAttribute( attributeKey ) as string;
 
 				// First child.
-				if ( !prevFormatAttribute ) {
+				if ( !firstFormatAttribute ) {
 					if ( formatAttribute ) {
-						prevFormatAttribute = formatAttribute;
+						firstFormatAttribute = formatAttribute;
 						hasListItemConsistentFormat = true;
 						continue;
 					} else {
@@ -381,14 +385,14 @@ export default class ListFormatting extends Plugin {
 				}
 
 				// Second and next children.
-				if ( formatAttribute !== prevFormatAttribute ) {
+				if ( formatAttribute !== firstFormatAttribute ) {
 					hasListItemConsistentFormat = false;
 					break;
 				}
 			}
 		}
 
-		return hasListItemConsistentFormat && prevFormatAttribute;
+		return hasListItemConsistentFormat && firstFormatAttribute;
 	}
 
 	/**
