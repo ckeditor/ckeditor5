@@ -252,20 +252,21 @@ export default class StylesMap implements ElementAttributeValue {
 	 * @param names Style name or an array of names.
 	 */
 	public remove( names: ArrayOrItem<string> ): void {
+		const normalizedStylesToRemove = {};
+
 		for ( const name of toArray( names ) ) {
 			const value = this.getAsString( name );
 
-			if ( value === undefined ) {
-				continue;
+			if ( value !== undefined ) {
+				this._styleProcessor.toNormalizedForm( name, value, normalizedStylesToRemove );
 			}
+		}
+
+		if ( Object.keys( normalizedStylesToRemove ).length ) {
+			removeStyles( this._styles, normalizedStylesToRemove );
 
 			this._cachedStyleNames = null;
 			this._cachedExpandedStyleNames = null;
-
-			const normalizedStylesToRemove = {};
-
-			this._styleProcessor.toNormalizedForm( name, value, normalizedStylesToRemove );
-			removeStyles( this._styles, normalizedStylesToRemove );
 		}
 	}
 

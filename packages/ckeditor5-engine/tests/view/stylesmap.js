@@ -319,6 +319,81 @@ describe( 'StylesMap', () => {
 				'margin:10px;'
 			);
 		} );
+
+		it( 'should remove multiple shorthand styles in a single batch', () => {
+			stylesMap.set( 'border', '4px dashed blue' );
+			stylesMap.set( 'border-left-color', 'red' );
+			stylesMap.set( 'border-left-style', 'solid' );
+			stylesMap.set( 'border-left-width', '2px' );
+
+			expect( stylesMap.toString() ).to.equal(
+				'border-bottom:4px dashed blue;' +
+				'border-left:2px solid red;' +
+				'border-right:4px dashed blue;' +
+				'border-top:4px dashed blue;'
+			);
+
+			stylesMap.remove( [ 'border-left', 'border-bottom' ] );
+
+			expect( stylesMap.toString() ).to.equal(
+				'border-right:4px dashed blue;' +
+				'border-top:4px dashed blue;'
+			);
+		} );
+
+		it( 'should remove all border styles for shorthand border remove', () => {
+			stylesMap.set( 'border-color', 'red' );
+			stylesMap.set( 'border-style', 'solid' );
+			stylesMap.set( 'border-width', '2px' );
+
+			expect( stylesMap.toString() ).to.equal(
+				'border:2px solid red;'
+			);
+
+			// This is possible to shorten to a single border property...
+			expect( stylesMap.getStyleNames() ).to.deep.equal( [
+				'border'
+			] );
+
+			// ... so it will be removed.
+			stylesMap.remove( 'border' );
+
+			expect( stylesMap.toString() ).to.equal(
+				''
+			);
+		} );
+
+		it( 'should not remove all border styles for shorthand border remove', () => {
+			stylesMap.set( 'border', '4px dashed blue' );
+			stylesMap.set( 'border-left-color', 'red' );
+			stylesMap.set( 'border-left-style', 'solid' );
+			stylesMap.set( 'border-left-width', '2px' );
+
+			expect( stylesMap.toString() ).to.equal(
+				'border-bottom:4px dashed blue;' +
+				'border-left:2px solid red;' +
+				'border-right:4px dashed blue;' +
+				'border-top:4px dashed blue;'
+			);
+
+			// This is not possible to shorten to a single border property...
+			expect( stylesMap.getStyleNames() ).to.deep.equal( [
+				'border-top',
+				'border-right',
+				'border-bottom',
+				'border-left'
+			] );
+
+			// ... so it won't be removed.
+			stylesMap.remove( 'border' );
+
+			expect( stylesMap.toString() ).to.equal(
+				'border-bottom:4px dashed blue;' +
+				'border-left:2px solid red;' +
+				'border-right:4px dashed blue;' +
+				'border-top:4px dashed blue;'
+			);
+		} );
 	} );
 
 	describe( 'getStyleNames()', () => {
