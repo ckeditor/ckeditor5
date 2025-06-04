@@ -2,7 +2,7 @@
 category: features-file-management
 menu-title: CKFinder
 meta-title: CKFinder file manager | CKEditor 5 Documentation
-meta-description: Learn all about using the CKFinder file manager and service with CKEditor 5
+meta-description: Learn all about using the CKFinder file manager and service with CKEditor 5.
 order: 20
 badges: [ premium ]
 ---
