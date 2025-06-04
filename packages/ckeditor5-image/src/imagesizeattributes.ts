@@ -50,12 +50,14 @@ export default class ImageSizeAttributes extends Plugin {
 	 * Registers the `width` and `height` attributes for inline and block images.
 	 */
 	private _registerSchema(): void {
+		const schema = this.editor.model.schema;
+
 		if ( this.editor.plugins.has( 'ImageBlockEditing' ) ) {
-			this.editor.model.schema.extend( 'imageBlock', { allowAttributes: [ 'width', 'height' ] } );
+			schema.extend( 'imageBlock', { allowAttributes: [ 'width', 'height' ] } );
 		}
 
 		if ( this.editor.plugins.has( 'ImageInlineEditing' ) ) {
-			this.editor.model.schema.extend( 'imageInline', { allowAttributes: [ 'width', 'height' ] } );
+			schema.extend( 'imageInline', { allowAttributes: [ 'width', 'height' ] } );
 		}
 	}
 
@@ -191,4 +193,3 @@ export default class ImageSizeAttributes extends Plugin {
 		}
 	}
 }
-

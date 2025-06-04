@@ -102,12 +102,18 @@ export default class ImageResizeEditing extends Plugin {
 	}
 
 	private _registerSchema(): void {
+		const schema = this.editor.model.schema;
+
 		if ( this.editor.plugins.has( 'ImageBlockEditing' ) ) {
-			this.editor.model.schema.extend( 'imageBlock', { allowAttributes: [ 'resizedWidth', 'resizedHeight' ] } );
+			schema.extend( 'imageBlock', { allowAttributes: [ 'resizedWidth', 'resizedHeight' ] } );
+			schema.setAttributeProperties( 'resizedWidth', { isFormatting: true } );
+			schema.setAttributeProperties( 'resizedHeight', { isFormatting: true } );
 		}
 
 		if ( this.editor.plugins.has( 'ImageInlineEditing' ) ) {
-			this.editor.model.schema.extend( 'imageInline', { allowAttributes: [ 'resizedWidth', 'resizedHeight' ] } );
+			schema.extend( 'imageInline', { allowAttributes: [ 'resizedWidth', 'resizedHeight' ] } );
+			schema.setAttributeProperties( 'resizedWidth', { isFormatting: true } );
+			schema.setAttributeProperties( 'resizedHeight', { isFormatting: true } );
 		}
 	}
 

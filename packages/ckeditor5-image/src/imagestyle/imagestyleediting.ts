@@ -98,6 +98,7 @@ export default class ImageStyleEditing extends Plugin {
 		// We could call it 'style' but https://github.com/ckeditor/ckeditor5-engine/issues/559.
 		if ( isBlockPluginLoaded ) {
 			schema.extend( 'imageBlock', { allowAttributes: 'imageStyle' } );
+			schema.setAttributeProperties( 'imageStyle', { isFormatting: true } );
 
 			// Converter for figure element from view to model.
 			editor.data.upcastDispatcher.on<UpcastElementEvent>( 'element:figure', viewToModelConverter, { priority: 'low' } );
@@ -105,6 +106,7 @@ export default class ImageStyleEditing extends Plugin {
 
 		if ( isInlinePluginLoaded ) {
 			schema.extend( 'imageInline', { allowAttributes: 'imageStyle' } );
+			schema.setAttributeProperties( 'imageStyle', { isFormatting: true } );
 
 			// Converter for the img element from view to model.
 			editor.data.upcastDispatcher.on( 'element:img', viewToModelConverter, { priority: 'low' } );
