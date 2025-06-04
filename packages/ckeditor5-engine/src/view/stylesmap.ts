@@ -255,10 +255,19 @@ export default class StylesMap implements ElementAttributeValue {
 		const normalizedStylesToRemove = {};
 
 		for ( const name of toArray( names ) ) {
-			const value = this.getAsString( name );
+			// First, try the easy path, when the path reflects normalized styles structure.
+			const path = toPath( name );
+			const pathValue = get( this._styles, path );
 
-			if ( value !== undefined ) {
-				this._styleProcessor.toNormalizedForm( name, value, normalizedStylesToRemove );
+			if ( pathValue ) {
+				appendStyleValue( normalizedStylesToRemove, path, pathValue );
+			} else {
+				// Easy path did not work, so try to get the value from the styles map.
+				const value = this.getAsString( name );
+
+				if ( value !== undefined ) {
+					this._styleProcessor.toNormalizedForm( name, value, normalizedStylesToRemove );
+				}
 			}
 		}
 
