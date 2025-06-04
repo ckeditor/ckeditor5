@@ -136,6 +136,7 @@
     "eslint-config-ckeditor5": "^10.0.0",
     "eslint-formatter-stylish": "^8.40.0",
     "eslint-plugin-ckeditor5-rules": "^10.0.0",
+    "eslint-plugin-import": "^2.31.0",
     "estree-walker": "^3.0.3",
     "fs-extra": "^11.0.0",
     "glob": "^10.0.0",
