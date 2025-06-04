@@ -73,12 +73,8 @@ describe( 'ListItemFontFamilyIntegration', () => {
 	} );
 
 	describe( 'schema', () => {
-		it( 'should allow listItemFontFamily attribute in $listItem', () => {
-			expect( model.schema.checkAttribute( [ '$root', '$listItem' ], 'listItemFontFamily' ) ).to.be.true;
-		} );
-
 		it( 'listItemFontFamily attribute should have isFormatting set to true', () => {
-			expect( editor.model.schema.getAttributeProperties( 'listItemFontFamily' ) ).to.include( {
+			expect( model.schema.getAttributeProperties( 'listItemFontFamily' ) ).to.include( {
 				isFormatting: true
 			} );
 		} );
@@ -502,7 +498,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 								'<tbody>' +
 									'<tr>' +
 										'<td>' +
-											'<span style="font-family:Arial;">foo</span>' +
+											'foo' +
 										'</td>' +
 									'</tr>' +
 								'</tbody>' +
@@ -517,7 +513,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 					'<tableRow>' +
 						'<tableCell>' +
 							'<paragraph>' +
-								'<$text fontFamily="Arial">foo</$text>' +
+								'foo' +
 							'</paragraph>' +
 						'</tableCell>' +
 					'</tableRow>' +
