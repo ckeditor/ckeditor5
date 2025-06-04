@@ -110,6 +110,47 @@ describe( 'ListItemFontFamilyIntegration', () => {
 			);
 		} );
 
+		it( 'should downcast listItemFontFamily attribute as style in nested list', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
+					'<$text fontFamily="Arial">foo</$text>' +
+				'</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listItemFontFamily="Arial">' +
+					'<$text fontFamily="Arial">foo</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li style="font-family:Arial">' +
+						'<span class="ck-list-bogus-paragraph">' +
+							'<span style="font-family:Arial">foo</span>' +
+						'</span>' +
+						'<ul>' +
+							'<li style="font-family:Arial">' +
+								'<span class="ck-list-bogus-paragraph">' +
+									'<span style="font-family:Arial">foo</span>' +
+								'</span>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ul>' +
+					'<li style="font-family:Arial;">' +
+						'<span style="font-family:Arial;">foo</span>' +
+						'<ul>' +
+							'<li style="font-family:Arial;">' +
+								'<span style="font-family:Arial;">foo</span>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+
 		it( 'should downcast listItemFontFamily attribute as style in <li> in multi-block', () => {
 			setModelData( model,
 				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
