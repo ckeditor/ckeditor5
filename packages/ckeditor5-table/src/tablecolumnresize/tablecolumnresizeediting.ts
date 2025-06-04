@@ -251,20 +251,24 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * Registers new attributes for a table model element.
 	 */
 	private _extendSchema() {
-		this.editor.model.schema.extend( 'table', {
+		const schema = this.editor.model.schema;
+
+		schema.extend( 'table', {
 			allowAttributes: [ 'tableWidth' ]
 		} );
 
-		this.editor.model.schema.register( 'tableColumnGroup', {
+		schema.register( 'tableColumnGroup', {
 			allowIn: 'table',
 			isLimit: true
 		} );
 
-		this.editor.model.schema.register( 'tableColumn', {
+		schema.register( 'tableColumn', {
 			allowIn: 'tableColumnGroup',
 			allowAttributes: [ 'columnWidth', 'colSpan' ],
 			isLimit: true
 		} );
+
+		schema.setAttributeProperties( 'columnWidth', { isFormatting: true } );
 	}
 
 	/**
