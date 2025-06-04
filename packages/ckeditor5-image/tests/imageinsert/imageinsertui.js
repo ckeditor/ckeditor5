@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, console */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import Model from '@ckeditor/ckeditor5-ui/src/model.js';

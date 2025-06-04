@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console, window, document */
-
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment.js';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
@@ -244,7 +242,7 @@ ClassicEditor
 		document.getElementById( 'print-data-action' ).addEventListener( 'click', () => {
 			const iframeElement = document.getElementById( 'print-data-container' );
 
-			/* eslint-disable max-len */
+			/* eslint-disable @stylistic/max-len */
 			iframeElement.srcdoc = '<html>' +
 				'<head>' +
 					`<title>${ document.title }</title>` +
@@ -258,7 +256,7 @@ ClassicEditor
 					'</script>' +
 				'</body>' +
 			'</html>';
-			/* eslint-enable max-len */
+			/* eslint-enable @stylistic/max-len */
 		} );
 
 		const button = document.getElementById( 'read-only' );

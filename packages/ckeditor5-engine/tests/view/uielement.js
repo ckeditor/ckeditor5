@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, HTMLElement */
-
 import UIElement from '../../src/view/uielement.js';
 import Element from '../../src/view/element.js';
 import Document from '../../src/view/document.js';

@@ -19,7 +19,7 @@ export default function parseBase64EncodedObject( encoded: string ): Record<stri
 		const decoded = atob( encoded.replace( /-/g, '+' ).replace( /_/g, '/' ) );
 
 		return JSON.parse( decoded );
-	} catch ( e ) {
+	} catch {
 		return null;
 	}
 }

@@ -509,6 +509,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					} );
 
 					it( 'should strip the list attributes from the selected items and decrease indent of nested list', () => {
+						/* eslint-disable @stylistic/no-multi-spaces */
 						setData( model, modelList( [
 							'0',
 							'* 1',
@@ -526,6 +527,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 							'  * 13',
 							'    * 14'
 						] ) );
+						/* eslint-enable @stylistic/no-multi-spaces */
 
 						command.execute();
 
@@ -1035,6 +1037,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 					} );
 
 					it( 'should strip the list attributes from the selected items and decrease indent of nested list', () => {
+						/* eslint-disable @stylistic/no-multi-spaces */
 						setData( model, modelList( [
 							'0',
 							'# 1',
@@ -1052,6 +1055,7 @@ describe( 'ListCommand (multiBlock=false)', () => {
 							'  # 13',
 							'    # 14'
 						] ) );
+						/* eslint-enable @stylistic/no-multi-spaces */
 
 						command.execute();
 

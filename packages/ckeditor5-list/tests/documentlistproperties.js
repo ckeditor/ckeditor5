@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global console */
-
 import DocumentListProperties from '../src/documentlistproperties.js';
 import ListProperties from '../src/listproperties.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';

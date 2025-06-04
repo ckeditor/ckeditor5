@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 import { tools } from '@ckeditor/ckeditor5-dev-utils';
 
 export default async function buildTsAndDllForCKEditor5Root() {

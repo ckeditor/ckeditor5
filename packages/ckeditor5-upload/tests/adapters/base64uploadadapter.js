@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, setTimeout */
-
 import Base64UploadAdapter from '../../src/adapters/base64uploadadapter.js';
 import FileRepository from '../../src/filerepository.js';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';

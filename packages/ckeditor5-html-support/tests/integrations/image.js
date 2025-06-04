@@ -17,8 +17,6 @@ import { getModelDataWithAttributes } from '../_utils/utils.js';
 import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 import ImageElementSupport from '../../src/integrations/image.js';
 
-/* global document */
-
 describe( 'ImageElementSupport', () => {
 	let editor, model, editorElement, dataFilter;
 
@@ -1437,7 +1435,7 @@ describe( 'ImageElementSupport', () => {
 				styles: 'background'
 			} ] );
 
-			/* eslint-disable max-len */
+			/* eslint-disable @stylistic/max-len */
 			editor.setData(
 				'<figure class="image allow disallow invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
 					'<img src="/assets/sample.png" class="allow disallow invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
@@ -1470,7 +1468,7 @@ describe( 'ImageElementSupport', () => {
 					'<figcaption class="allow" style="color:red;" data-allow="allow">A caption</figcaption>' +
 				'</figure>'
 			);
-			/* eslint-enable max-len */
+			/* eslint-enable @stylistic/max-len */
 		} );
 
 		it( 'should create a marker before GHS converts attributes', () => {

@@ -7,8 +7,6 @@
  * @module engine/view/observer/focusobserver
  */
 
-/* globals setTimeout, clearTimeout */
-
 import DomEventObserver from './domeventobserver.js';
 import type DomEventData from './domeventdata.js';
 import type View from '../view.js';

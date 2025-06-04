@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global window */
-
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';

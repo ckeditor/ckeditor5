@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global window, document */
-
 import { scrollViewportToShowTarget } from '../../../src/dom/scroll.js';
 
 document.getElementById( 'scroll' ).addEventListener( 'click', () => {

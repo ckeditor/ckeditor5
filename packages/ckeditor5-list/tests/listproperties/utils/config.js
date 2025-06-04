@@ -79,7 +79,7 @@ describe( 'ListProperties - utils - config', () => {
 			} );
 		} );
 
-		it( 'should output `numbered` list type and disabled `useAttribute`', () => {
+		it( 'should output `numbered` list type and disabled `useAttribute` (nested objects)', () => {
 			const config = {
 				styles: {
 					listTypes: 'numbered'
@@ -126,7 +126,7 @@ describe( 'ListProperties - utils - config', () => {
 			} );
 		} );
 
-		it( 'should output `numbered` list type and disabled `useAttribute`', () => {
+		it( 'should output `numbered` list type and disabled `useAttribute` (string value)', () => {
 			const config = {
 				styles: 'numbered'
 			};
@@ -141,7 +141,7 @@ describe( 'ListProperties - utils - config', () => {
 			} );
 		} );
 
-		it( 'should output `bulleted` list type and disabled `useAttribute`', () => {
+		it( 'should output `bulleted` list type and disabled `useAttribute` (string value)', () => {
 			const config = {
 				styles: 'bulleted'
 			};
@@ -156,7 +156,7 @@ describe( 'ListProperties - utils - config', () => {
 			} );
 		} );
 
-		it( 'should output all list types and enabled `useAttribute`', () => {
+		it( 'should output all list types and enabled `useAttribute` (empty config)', () => {
 			const config = {
 				styles: {
 					useAttribute: true
@@ -203,7 +203,7 @@ describe( 'ListProperties - utils - config', () => {
 			} );
 		} );
 
-		it( 'should output `bulleted` list type and disabled `useAttribute`', () => {
+		it( 'should output `bulleted` list type and disabled `useAttribute` (array values)', () => {
 			const config = {
 				styles: [ 'bulleted' ]
 			};
@@ -218,7 +218,7 @@ describe( 'ListProperties - utils - config', () => {
 			} );
 		} );
 
-		it( 'should output `numbered` list type and disabled `useAttribute`', () => {
+		it( 'should output `numbered` list type and disabled `useAttribute` (array value)', () => {
 			const config = {
 				styles: [ 'numbered' ]
 			};

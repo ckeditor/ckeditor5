@@ -1764,6 +1764,7 @@ describe( 'List - utils - model', () => {
 
 	describe( 'outdentFollowingItems()', () => {
 		it( 'should outdent all items and keep nesting structure where possible', () => {
+			/* eslint-disable @stylistic/no-multi-spaces */
 			const input = modelList( [
 				'0',
 				'* 1',
@@ -1781,6 +1782,7 @@ describe( 'List - utils - model', () => {
 				'  * 13',
 				'    * 14'
 			] );
+			/* eslint-enable @stylistic/no-multi-spaces */
 
 			const fragment = parseModel( input, schema );
 			let changedBlocks;

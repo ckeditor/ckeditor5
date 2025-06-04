@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import DowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text.js';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element.js';

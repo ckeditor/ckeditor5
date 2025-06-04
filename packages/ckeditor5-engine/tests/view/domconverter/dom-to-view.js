@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import ViewElement from '../../../src/view/element.js';
 import ViewUIElement from '../../../src/view/uielement.js';
 import ViewDocument from '../../../src/view/document.js';

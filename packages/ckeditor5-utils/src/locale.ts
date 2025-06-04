@@ -7,8 +7,6 @@
  * @module utils/locale
  */
 
-/* globals console */
-
 import toArray, { type ArrayOrItem } from './toarray.js';
 import { _translate, _unifyTranslations, type Message } from './translation-service.js';
 import { getLanguageDirection, type LanguageDirection } from './language.js';

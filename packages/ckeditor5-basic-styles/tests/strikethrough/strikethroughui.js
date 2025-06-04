@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import StrikethroughEditing from '../../src/strikethrough/strikethroughediting.js';
 import StrikethroughUI from '../../src/strikethrough/strikethroughui.js';

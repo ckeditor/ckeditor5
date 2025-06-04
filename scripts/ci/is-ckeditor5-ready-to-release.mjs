@@ -5,8 +5,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 import { execSync } from 'child_process';
 import * as releaseTools from '@ckeditor/ckeditor5-dev-release-tools';
 import semver from 'semver';
