@@ -211,7 +211,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 					'<tableRow>' +
 						'<tableCell>' +
 							'<paragraph>' +
-								'<$text fontFamily="Arial">foo</$text>' +
+								'foo' +
 							'</paragraph>' +
 						'</tableCell>' +
 					'</tableRow>' +
@@ -229,7 +229,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 										'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true" ' +
 											'tabindex="-1">' +
 											'<span class="ck-table-bogus-paragraph">' +
-												'<span style="font-family:Arial">foo</span>' +
+												'foo' +
 											'</span>' +
 										'</td>' +
 									'</tr>' +
@@ -248,7 +248,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 								'<tbody>' +
 									'<tr>' +
 										'<td>' +
-											'<span style="font-family:Arial;">foo</span>' +
+											'foo' +
 										'</td>' +
 									'</tr>' +
 								'</tbody>' +
