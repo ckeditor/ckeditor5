@@ -387,7 +387,9 @@
 		"getting-started/installation/react/react.html": "getting-started/installation/self-hosted/react/react-default-npm.html",
 		"getting-started/installation/react/react-multiroot.html": "getting-started/installation/self-hosted/react/react-multiroot-npm.html",
 		"examples/framework/content-placeholder.html": "features/merge-fields.html",
-		"features/source-editing.html": "features/source-editing/source-editing.html"
+		"features/source-editing.html": "features/source-editing/source-editing.html",
+		"examples/framework/data-from-external-source.html": "framework/tutorials/widgets/data-from-external-source.html",
+		"examples/framework/using-react-in-a-widget.html": "framework/tutorials/widgets/using-react-in-a-widget.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter.mjs",
