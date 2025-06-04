@@ -87,6 +87,8 @@ export function enableProperty(
 		allowAttributes: [ modelAttribute ]
 	} );
 
+	schema.setAttributeProperties( modelAttribute, { isFormatting: true } );
+
 	upcastStyleToAttribute( conversion, { viewElement: /^(td|th)$/, ...options } );
 	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', ...options } );
 }

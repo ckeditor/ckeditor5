@@ -171,6 +171,10 @@ function enableBorderProperties( schema: Schema, conversion: Conversion, default
 		allowAttributes: Object.values( modelAttributes )
 	} );
 
+	for ( const modelAttribute of Object.values( modelAttributes ) ) {
+		schema.setAttributeProperties( modelAttribute, { isFormatting: true } );
+	}
+
 	upcastBorderStyles( conversion, 'td', modelAttributes, defaultBorder );
 	upcastBorderStyles( conversion, 'th', modelAttributes, defaultBorder );
 	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', modelAttribute: modelAttributes.style, styleName: 'border-style' } );
@@ -187,6 +191,8 @@ function enableHorizontalAlignmentProperty( schema: Schema, conversion: Conversi
 	schema.extend( 'tableCell', {
 		allowAttributes: [ 'tableCellHorizontalAlignment' ]
 	} );
+
+	schema.setAttributeProperties( 'tableCellHorizontalAlignment', { isFormatting: true } );
 
 	conversion.for( 'downcast' )
 		.attributeToAttribute( {
@@ -256,6 +262,8 @@ function enableVerticalAlignmentProperty( schema: Schema, conversion: Conversion
 	schema.extend( 'tableCell', {
 		allowAttributes: [ 'tableCellVerticalAlignment' ]
 	} );
+
+	schema.setAttributeProperties( 'tableCellVerticalAlignment', { isFormatting: true } );
 
 	conversion.for( 'downcast' )
 		.attributeToAttribute( {
