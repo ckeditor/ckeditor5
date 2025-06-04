@@ -211,7 +211,7 @@ npm run translations:synchronize
 
 ### `translations:validate`
 
-Peforms only validation steps described in [`translations:synchronize`](#translationssynchronize) script without modifying any files. It only checks the correctness of the context file against the `t()` function calls.
+Performs only validation steps described in [`translations:synchronize`](#translationssynchronize) script without modifying any files. It only checks the correctness of the context file against the `t()` function calls.
 
 Examples:
 
