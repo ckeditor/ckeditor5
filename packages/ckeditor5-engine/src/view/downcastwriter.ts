@@ -340,7 +340,7 @@ export class DowncastWriter {
 		childrenOrOptions: Node | Iterable<Node> | { renderUnsafeAttributes?: Array<string> } = {},
 		options: { renderUnsafeAttributes?: Array<string> } = {}
 	): ContainerElement {
-		let children = null;
+		let children: Node | Iterable<Node> | undefined = undefined;
 
 		if ( isPlainObject( childrenOrOptions ) ) {
 			options = childrenOrOptions as { renderUnsafeAttributes?: Array<string> };
@@ -348,8 +348,7 @@ export class DowncastWriter {
 			children = childrenOrOptions;
 		}
 
-		const containerElement = new ContainerElement( this.document, name, attributes, children as Node | Iterable<Node> );
-
+		const containerElement = new ContainerElement( this.document, name, attributes, children );
 		if ( options.renderUnsafeAttributes ) {
 			containerElement._unsafeAttributesToRender.push( ...options.renderUnsafeAttributes );
 		}
