@@ -168,18 +168,18 @@ export default class ViewCollection<TView extends View = View> extends Collectio
 		}
 
 		return {
-			to: dest => {
+			to: ( dest, nameOrFunction ) => {
 				// Activate delegating on existing views in this collection.
 				for ( const view of this ) {
 					for ( const evtName of events ) {
-						view.delegate( evtName ).to( dest );
+						view.delegate( evtName ).to( dest, nameOrFunction );
 					}
 				}
 
 				// Activate delegating on future views in this collection.
 				this.on<CollectionAddEvent<View>>( 'add', ( evt, view ) => {
 					for ( const evtName of events ) {
-						view.delegate( evtName ).to( dest );
+						view.delegate( evtName ).to( dest, nameOrFunction );
 					}
 				} );
 
