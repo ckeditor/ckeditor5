@@ -38,20 +38,12 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	public afterInit(): void {
-		const editor = this.editor;
-		const model = editor.model;
-		const listEditing: ListEditing = editor.plugins.get( 'ListEditing' );
+	public init(): void {
+		const listEditing = this.editor.plugins.get( ListEditing );
 
-		if ( !editor.plugins.has( 'FontFamilyEditing' ) ) {
-			return;
-		}
-
-		model.schema.extend( '$listItem', { allowAttributes: 'listItemFontFamily' } );
-		model.schema.setAttributeProperties( 'listItemFontFamily', {
-			isFormatting: true
-		} );
-
+		// Register the downcast strategy in init() so that the attribute name is registered  before the list editing
+		// registers its converters.
+		// This ensures that the attribute is recognized by downcast strategies and bogus paragraphs are handled correctly.
 		listEditing.registerDowncastStrategy( {
 			scope: 'item',
 			attributeName: 'listItemFontFamily',
@@ -63,6 +55,23 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 					writer.removeStyle( 'font-family', viewElement );
 				}
 			}
+		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public afterInit(): void {
+		const editor = this.editor;
+		const model = editor.model;
+
+		if ( !editor.plugins.has( 'FontFamilyEditing' ) ) {
+			return;
+		}
+
+		model.schema.extend( '$listItem', { allowAttributes: 'listItemFontFamily' } );
+		model.schema.setAttributeProperties( 'listItemFontFamily', {
+			isFormatting: true
 		} );
 	}
 }

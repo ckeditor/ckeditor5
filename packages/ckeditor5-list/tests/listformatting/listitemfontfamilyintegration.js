@@ -90,9 +90,9 @@ describe( 'ListItemFontFamilyIntegration', () => {
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
 					'<li style="font-family:Arial">' +
-						'<p>' +
+						'<span class="ck-list-bogus-paragraph">' +
 							'<span style="font-family:Arial">foo</span>' +
-						'</p>' +
+						'</span>' +
 					'</li>' +
 				'</ul>'
 			);
@@ -100,9 +100,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
 					'<li style="font-family:Arial;">' +
-						'<p>' +
-							'<span style="font-family:Arial;">foo</span>' +
-						'</p>' +
+						'<span style="font-family:Arial;">foo</span>' +
 					'</li>' +
 				'</ul>'
 			);
@@ -271,9 +269,9 @@ describe( 'ListItemFontFamilyIntegration', () => {
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 				'<ul>' +
 					'<li>' +
-						'<p>' +
+						'<span class="ck-list-bogus-paragraph">' +
 							'<span style="font-family:Arial">foo</span>' +
-						'</p>' +
+						'</span>' +
 					'</li>' +
 				'</ul>'
 			);
@@ -281,9 +279,7 @@ describe( 'ListItemFontFamilyIntegration', () => {
 			expect( editor.getData() ).to.equalMarkup(
 				'<ul>' +
 					'<li>' +
-						'<p>' +
-							'<span style="font-family:Arial;">foo</span>' +
-						'</p>' +
+						'<span style="font-family:Arial;">foo</span>' +
 					'</li>' +
 				'</ul>'
 			);
