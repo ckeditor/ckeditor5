@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import TableColumnResizeEditing from '../../src/tablecolumnresize/tablecolumnresizeediting.js';
 import TableColumnResize from '../../src/tablecolumnresize.js';
 import TableCaption from '../../src/tablecaption.js';
@@ -183,6 +181,42 @@ describe( 'TableColumnResizeEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<table tableWidth="100%">' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>11</paragraph>' +
+							'</tableCell>' +
+							'<tableCell>' +
+								'<paragraph>12</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+						'<tableColumnGroup>' +
+							'<tableColumn columnWidth="50%"></tableColumn>' +
+							'<tableColumn columnWidth="50%"></tableColumn>' +
+						'</tableColumnGroup>' +
+					'</table>'
+				);
+			} );
+
+			it( 'the table width style set on <figure> element and on <table> should be convert to tableWidth attribute correctly', () => {
+				editor.setData(
+					`<figure class="table" style="width: 200px">
+						<table style="width:100px">
+							<colgroup>
+								<col style="width:50%;">
+								<col style="width:50%;">
+							</colgroup>
+							<tbody>
+								<tr>
+									<td>11</td>
+									<td>12</td>
+								</tr>
+							</tbody>
+						</table>
+					</figure>`
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<table tableWidth="200px">' +
 						'<tableRow>' +
 							'<tableCell>' +
 								'<paragraph>11</paragraph>' +
@@ -1142,7 +1176,7 @@ describe( 'TableColumnResizeEditing', () => {
 	} );
 
 	describe( 'while resizing', () => {
-		it( 'cancels resizing if resizing is not allowed during mousemove', () => {
+		it( 'cancels resizing if resizing is not allowed during mousemove (plugin does not allow)', () => {
 			setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '11', '12' ]
@@ -1163,7 +1197,7 @@ describe( 'TableColumnResizeEditing', () => {
 			expect( getTableColumnsWidths( model.document.getRoot().getChild( 0 ) ) ).to.deep.equal( [ '20%', '25%', '55%' ] );
 		} );
 
-		it( 'cancels resizing if resizing is not allowed during mousemove', () => {
+		it( 'cancels resizing if resizing is not allowed during mousemove (readonly mode)', () => {
 			setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '11', '12' ]

@@ -394,7 +394,7 @@ export default class View extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	public getObserver<T extends ObserverConstructor>( ObserverConstructor: T ):
-		T extends AlwaysRegisteredObservers ? InstanceType<T> : InstanceType<T> | undefined;
+	T extends AlwaysRegisteredObservers ? InstanceType<T> : InstanceType<T> | undefined;
 
 	/**
 	 * Returns observer of the given type or `undefined` if such observer has not been added yet.

@@ -9,8 +9,6 @@
 
 import type { CallbackOptions, DomEmitter } from '@ckeditor/ckeditor5-utils';
 
-/* global document */
-
 /**
  * Handles clicking **outside** of a specified set of elements, then fires an action.
  *

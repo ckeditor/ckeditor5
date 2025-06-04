@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, console */
-
 import InlineEditor from '../src/inlineeditor.js';
 import InlineEditorUI from '../src/inlineeditorui.js';
 import InlineEditorUIView from '../src/inlineeditoruiview.js';

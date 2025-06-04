@@ -937,7 +937,6 @@ export default class MultiRootEditor extends Editor {
 			const root = this.model.document.getRoot( rootName );
 
 			if ( !root || !root.isAttached() ) {
-				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 				throw new CKEditorError( 'multi-root-editor-root-initial-data-mismatch', null );
 			}
 		}

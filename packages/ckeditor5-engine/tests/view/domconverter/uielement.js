@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals HTMLElement */
-
 import ViewUIElement from '../../../src/view/uielement.js';
 import ViewContainer from '../../../src/view/containerelement.js';
 import DomConverter from '../../../src/view/domconverter.js';

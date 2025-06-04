@@ -4,7 +4,7 @@
  */
 
 /**
- * @module source-editing/utils/formathtml
+ * @module utils/formathtml
  */
 
 /**
@@ -18,7 +18,7 @@
  *
  * @param input An HTML string to format.
  */
-export function formatHtml( input: string ): string {
+export default function formatHtml( input: string ): string {
 	// A list of block-like elements around which the new lines should be inserted, and within which
 	// the indentation of their children should be increased.
 	// The list is partially based on https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements that contains
@@ -26,7 +26,7 @@ export function formatHtml( input: string ): string {
 	// A void element is an element that cannot have any child - https://html.spec.whatwg.org/multipage/syntax.html#void-elements.
 	// Note that <pre> element is not listed on this list to avoid breaking whitespace formatting.
 	// Note that <br> element is not listed and handled separately so no additional white spaces are injected.
-	const elementsToFormat: Array<ElementToFormat> = [
+	const elementsToFormat: Array<FormattedElementDefinition> = [
 		{ name: 'address', isVoid: false },
 		{ name: 'article', isVoid: false },
 		{ name: 'aside', isVoid: false },
@@ -82,9 +82,13 @@ export function formatHtml( input: string ): string {
 	let isPreformattedLine: ReturnType<typeof isPreformattedBlockLine> = false;
 
 	return lines
-		.filter( line => line.length )
 		.map( line => {
 			isPreformattedLine = isPreformattedBlockLine( line, isPreformattedLine );
+
+			// Ignore empty lines outside a <pre> block.
+			if ( !line.length && !isPreformattedLine ) {
+				return '';
+			}
 
 			if ( isNonVoidOpeningTag( line, elementsToFormat ) ) {
 				return indentLine( line, indentCount++ );
@@ -95,12 +99,13 @@ export function formatHtml( input: string ): string {
 			}
 
 			if ( isPreformattedLine === 'middle' || isPreformattedLine === 'last' ) {
-				return line;
+				return indentLine( line, 0 );
 			}
 
 			return indentLine( line, indentCount );
 		} )
-		.join( '\n' );
+		.join( '' )
+		.trimEnd();
 }
 
 /**
@@ -109,7 +114,7 @@ export function formatHtml( input: string ): string {
  * @param line String to check.
  * @param elementsToFormat Elements to be formatted.
  */
-function isNonVoidOpeningTag( line: string, elementsToFormat: Array<ElementToFormat> ): boolean {
+function isNonVoidOpeningTag( line: string, elementsToFormat: Array<FormattedElementDefinition> ): boolean {
 	return elementsToFormat.some( element => {
 		if ( element.isVoid ) {
 			return false;
@@ -129,7 +134,7 @@ function isNonVoidOpeningTag( line: string, elementsToFormat: Array<ElementToFor
  * @param line String to check.
  * @param elementsToFormat Elements to be formatted.
  */
-function isClosingTag( line: string, elementsToFormat: Array<ElementToFormat> ): boolean {
+function isClosingTag( line: string, elementsToFormat: Array<FormattedElementDefinition> ): boolean {
 	return elementsToFormat.some( element => {
 		return new RegExp( `</${ element.name }>` ).test( line );
 	} );
@@ -144,7 +149,7 @@ function isClosingTag( line: string, elementsToFormat: Array<ElementToFormat> ):
  */
 function indentLine( line: string, indentCount: number, indentChar: string = '    ' ): string {
 	// More about Math.max() here in https://github.com/ckeditor/ckeditor5/issues/10698.
-	return `${ indentChar.repeat( Math.max( 0, indentCount ) ) }${ line }`;
+	return `${ indentChar.repeat( Math.max( 0, indentCount ) ) }${ line }\n`;
 }
 
 /**
@@ -154,11 +159,18 @@ function indentLine( line: string, indentCount: number, indentChar: string = '  
  * @param isPreviousLinePreFormatted Information on whether the previous line was preformatted (and how).
  */
 function isPreformattedBlockLine( line: string, isPreviousLinePreFormatted: 'first' | 'last' | 'middle' | false ) {
-	if ( new RegExp( '<pre( .*?)?>' ).test( line ) ) {
+	const isPreOpen = /<pre( .*?)?>/.test( line );
+	const isPreClose = /<\/pre>/.test( line );
+
+	if ( isPreOpen && isPreClose ) {
+		// If both an opening and closing a <pre> tag, no special treatment needed.
+		return false;
+	} else if ( isPreOpen ) {
 		return 'first';
-	} else if ( new RegExp( '</pre>' ).test( line ) ) {
+	} else if ( isPreClose ) {
 		return 'last';
 	} else if ( isPreviousLinePreFormatted === 'first' || isPreviousLinePreFormatted === 'middle' ) {
+		// This line is just after a 'first' or 'middle' line of a multi-line pre-block.
 		return 'middle';
 	} else {
 		return false;
@@ -168,7 +180,7 @@ function isPreformattedBlockLine( line: string, isPreviousLinePreFormatted: 'fir
 /**
  * Element to be formatted.
  */
-interface ElementToFormat {
+interface FormattedElementDefinition {
 
 	/**
 	 *  Element name.

@@ -10,8 +10,6 @@ import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
 import HeadingElementSupport from '../../src/integrations/heading.js';
 
-/* global document */
-
 describe( 'HeadingElementSupport', () => {
 	let editor, editorElement, model, doc, dataSchema, dataFilter, htmlSupport;
 

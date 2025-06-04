@@ -437,7 +437,7 @@
 		}
 	},
 	"og": {
-		"description": "Learn how to install, integrate and configure CKEditor 5 and how to work with CKEditor 5 Framework, customize it, create your own plugins and custom editors, change the UI or even bring your own UI to the editor. API reference and examples included."
+		"description": "Learn to install and configure CKEditor 5. Work with the CKEditor 5 Framework, customize it, create plugins, and custom editors. Includes API reference."
 	},
 	"groups": [
 		{

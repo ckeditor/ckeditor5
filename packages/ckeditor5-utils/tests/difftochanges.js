@@ -7,6 +7,8 @@ import diff from '../src/diff.js';
 import diffToChanges from '../src/difftochanges.js';
 
 describe( 'diffToChanges', () => {
+	/* eslint-disable @stylistic/no-multi-spaces */
+
 	describe( 'equal patterns', () => {
 		testDiff( 0,		'',				'' );
 		testDiff( 0,		'abc',			'abc' );
@@ -44,6 +46,8 @@ describe( 'diffToChanges', () => {
 		testDiff( 4,		'abcdef',		'xybzc' );
 		testDiff( 5,		'abcdef',		'bdxfy' );
 	} );
+
+	/* eslint-enable @stylistic/no-multi-spaces */
 
 	it( 'works with arrays', () => {
 		const input = Array.from( 'abc' );

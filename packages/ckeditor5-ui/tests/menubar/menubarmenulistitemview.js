@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global Event */
-
 import { Locale } from '@ckeditor/ckeditor5-utils';
 import {
 	ListItemView,

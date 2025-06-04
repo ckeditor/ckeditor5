@@ -3,7 +3,7 @@ category: tutorials
 order: 0
 menu-title: Overview
 meta-title: CKEditor 5 Tutorials | CKEditor 5 Documentation
-meta-description: Take a crash course to install and configure your copy of CKEditor 5 or deep-dive into the internal works of the editor ecosystem to create new features, adapt and tailor the system to you needs!
+meta-description: Install and configure your copy of CKEditor 5, deep-dive into the ecosystem’s internal works, create new features, and tailor the system to your needs!
 ---
 
 # Tutorials

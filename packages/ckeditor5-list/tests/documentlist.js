@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global console */
-
 import DocumentList from '../src/documentlist.js';
 import List from '../src/list.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
