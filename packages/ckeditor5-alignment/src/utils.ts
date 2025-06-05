@@ -17,12 +17,15 @@ import type { AlignmentFormat, SupportedOption } from './alignmentconfig.js';
  * * `'right'`,
  * * `'center'`,
  * * `'justify'`
+ *
+ * @internal
  */
 export const supportedOptions: ReadonlyArray<SupportedOption> = [ 'left', 'right', 'center', 'justify' ];
 
 /**
  * Checks whether the passed option is supported by {@link module:alignment/alignmentediting~AlignmentEditing}.
  *
+ * @internal
  * @param option The option value to check.
  */
 export function isSupported( option: string ): boolean {
@@ -33,6 +36,7 @@ export function isSupported( option: string ): boolean {
  * Checks whether alignment is the default one considering the direction
  * of the editor content.
  *
+ * @internal
  * @param alignment The name of the alignment to check.
  * @param locale The {@link module:core/editor/editor~Editor#locale} instance.
  */
@@ -49,6 +53,7 @@ export function isDefault( alignment: string, locale: Locale ): boolean {
 /**
  * Brings the configuration to the common form, an array of objects.
  *
+ * @internal
  * @param configuredOptions Alignment plugin configuration.
  * @returns Normalized object holding the configuration.
  */
