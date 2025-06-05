@@ -30,6 +30,7 @@
     "@ckeditor/ckeditor5-image": "45.2.0",
     "@ckeditor/ckeditor5-link": "45.2.0",
     "@ckeditor/ckeditor5-paragraph": "45.2.0",
+    "@ckeditor/ckeditor5-select-all": "45.2.0",
     "@ckeditor/ckeditor5-theme-lark": "45.2.0",
     "@ckeditor/ckeditor5-typing": "45.2.0",
     "@ckeditor/ckeditor5-undo": "45.2.0",
