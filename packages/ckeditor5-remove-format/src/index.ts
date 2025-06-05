@@ -12,8 +12,8 @@ export { RemoveFormatEditing } from './removeformatediting.js';
 export { RemoveFormatUI } from './removeformatui.js';
 export {
 	RemoveFormatCommand,
-	IsFormattingCallback,
-	RemoveFormattingCallback
+	type IsFormattingCallback,
+	type RemoveFormattingCallback
 } from './removeformatcommand.js';
 
 import './augmentation.js';
