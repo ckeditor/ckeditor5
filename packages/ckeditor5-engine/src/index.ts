@@ -54,6 +54,14 @@ export type {
 	MarkerElementCreatorFunction,
 	SlotFilter
 } from './conversion/downcasthelpers.js';
+
+export type {
+	ElementCreatorFunction as UpcastElementCreatorFunction,
+	AttributeCreatorFunction as UpcastAttributeCreatorFunction,
+	MarkerFromElementCreatorFunction as UpcastMarkerFromElementCreatorFunction,
+	MarkerFromAttributeCreatorFunction as UpcastMarkerFromAttributeCreatorFunction
+} from './conversion/upcasthelpers.js';
+
 export type {
 	Mapper,
 	MapperModelToViewPositionEvent,
@@ -271,3 +279,88 @@ export {
 	insertUIElement as _downcastInsertUIElement,
 	ConsumerFunction as _DowncastConsumerFunction
 } from './conversion/downcasthelpers.js';
+
+// Internals
+export { MapperCache as _MapperCache } from './conversion/mapper.js';
+export {
+	convertToModelFragment as _upcastConvertToModelFragment,
+	convertText as _upcastConvertText,
+	convertSelectionChange as _upcastConvertSelectionChange
+} from './conversion/upcasthelpers.js';
+
+export {
+	ViewElementConsumables as _ViewElementConversionConsumables,
+	normalizeConsumables as _normalizeConversionConsumables
+} from './conversion/viewconsumable.js';
+
+export { BasicHtmlWriter as _DataProcessorBasicHtmlWriter } from './dataprocessor/basichtmlwriter.js';
+export { OperationReplayer as _OperationReplayer } from './dev-utils/operationreplayer.js';
+export {
+	convertMapToTags as _convertMapToTags,
+	convertMapToStringifiedObject as _convertMapToStringifiedObject,
+	dumpTrees as _dumpTrees,
+	initDocumentDumping as _initDocumentDumping,
+	logDocument as _logDocument
+} from './dev-utils/utils.js';
+
+export type { DifferSnapshot as _DifferSnapshot } from './model/differ.js';
+export type {
+	BeforeChangesEvent as _ModelBeforeChangesEvent,
+	AfterChangesEvent as _ModelAfterChangesEvent
+} from './model/model.js';
+
+export { DetachOperation as _DetachOperation } from './model/operation/detachoperation.js';
+export {
+	transform as _operationTransform,
+	type TransformationContext as _OperationTransformationContext
+} from './model/operation/transform.js';
+
+export {
+	_insert as _operationInsert,
+	_remove as _operationRemove,
+	_move as _operationMove,
+	_setAttribute as _operationSetAttribute,
+	_normalizeNodes as _operationNormalizeNodes
+} from './model/operation/utils.js';
+
+export {
+	getTextNodeAtPosition as _getModelTextNodeAtPosition,
+	getNodeAfterPosition as _getModelNodeAfterPosition,
+	getNodeBeforePosition as _getModelNodeBeforePosition
+} from './model/position.js';
+
+export {
+	autoParagraphEmptyRoots as _autoParagraphEmptyModelRoots,
+	isParagraphable as _isParagraphableModelNode,
+	wrapInParagraph as _wrapInParagraphModelNode
+} from './model/utils/autoparagraphing.js';
+
+export { deleteContent as _deleteModelContent } from './model/utils/deletecontent.js';
+export { getSelectedContent as _getSelectedModelContent } from './model/utils/getselectedcontent.js';
+export { insertContent as _insertModelContent } from './model/utils/insertcontent.js';
+export { insertObject as _insertModelObject } from './model/utils/insertobject.js';
+export { modifySelection as _modifyModelSelection } from './model/utils/modifyselection.js';
+
+export {
+	injectSelectionPostFixer as _injectModelSelectionPostFixer,
+	tryFixingRange as _tryFixingModelRange,
+	mergeIntersectingRanges as _mergeIntersectingModelRanges
+} from './model/utils/selection-post-fixer.js';
+
+export {
+	NBSP_FILLER as _VIEW_NBSP_FILLER,
+	MARKED_NBSP_FILLER as _VIEW_MARKED_NBSP_FILLER,
+	BR_FILLER as _VIEW_BR_FILLER,
+	INLINE_FILLER_LENGTH as _VIEW_INLINE_FILLER_LENGTH,
+	INLINE_FILLER as _VIEW_INLINE_FILLER,
+	startsWithFiller as _startsWithViewFiller,
+	isInlineFiller as _isInlineViewFiller,
+	getDataWithoutFiller as _getDataWithoutViewFiller,
+	injectQuirksHandling as _injectViewQuirksHandling
+} from './view/filler.js';
+
+export {
+	isPatternMatched as _isViewPatternMatched,
+	type NormalizedPropertyPattern as _ViewNormalizedPropertyPattern
+} from './view/matcher.js';
+export { injectUiElementHandling as _injectUiViewElementHandling } from './view/uielement.js';

@@ -54,6 +54,7 @@ const wordBoundaryCharacters = ' ,.?!:;"-()';
  * @param options.direction The direction in which the selection should be modified. Default 'forward'.
  * @param options.unit The unit by which selection should be modified. Default 'character'.
  * @param options.treatEmojiAsSingleUnit Whether multi-characer emoji sequences should be handled as single unit.
+ * @internal
  */
 export function modifySelection(
 	model: Model,

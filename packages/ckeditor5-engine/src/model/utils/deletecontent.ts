@@ -73,6 +73,8 @@ import { type Writer } from '../writer.js';
  *
  * However, in some cases, it is expected to remove content exactly as selected in the selection, without any fixing. In these cases,
  * this flag can be set to `true`, which will prevent fixing the selection.
+ *
+ * @internal
  */
 export function deleteContent(
 	model: Model,
