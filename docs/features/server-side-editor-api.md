@@ -1,19 +1,21 @@
 ---
 category: cloud-services
-order: 300
-meta-title: Server-side Editor API | CKEditor 5 Documentation
+order: 30
+meta-title: Cloud Services Server-side Editor API | CKEditor 5 Documentation
+meta-description: Learn how to use server-side API to manage content and collaboration data easily without running the editor.
 modified_at: 2025-06-05
+badges: [ premium ]
 ---
 
 # Server-side editor API
 
 Server-side Editor API enables deep and complex integration of your application with all document data, enabling you to manipulate content and manage collaborative data such as suggestions, comments, and revision history, and much more, directly from your server-side code.
 
-The remote script REST API endpoint allows you to execute any JavaScript code that uses the CKEditor 5 API, that could be executed by a browser, but without a need to open the editor by a human user. Instead, the script is executed on the Cloud Services server.
+The remote script REST API endpoint allows you to execute any JavaScript code that uses the CKEditor&nbsp;5 API, that could be executed by a browser, but without a need to open the editor by a human user. Instead, the script is executed on the Cloud Services server.
 
 ## Why use server-side editor API?
 
-While CKEditor 5 provides a rich client-side editing experience, there are many scenarios where server-side content processing is essential:
+While CKEditor&nbsp;5 provides a rich client-side editing experience, there are many scenarios where server-side content processing is essential:
 
 * **Automation**: Run content processing tasks as part of your server workflows.
 * **Scalability**: Process multiple documents simultaneously without client-side limitations.
@@ -60,8 +62,8 @@ const wordCount = editor.plugins.get( 'WordCount' ).getWords();
 
 // Return both the content and metadata.
 return {
-    content: data,
-    wordCount: wordCount
+	content: data,
+	wordCount: wordCount
 };
 ```
 
@@ -71,16 +73,16 @@ This approach allows you to not only retrieve the document content but also proc
 
 Commands provide a high-level API to interact with the editor and change the document content. Most editor features provide a command that you can use to trigger some action on the editor.
 
-Here's a simple example. Imagine you need to fix a typo in a company name that is spread across multiple documents. Instead of forcing the user to do it manually, you can do it with one line of code:
+Here is a simple example. Imagine you need to fix a typo in a company name that is spread across multiple documents. Instead of forcing the user to do it manually, you can do it with a single line of code:
 
 ```js
 // Replace all instances of "Cksource" with "CKSource" in the document.
 editor.execute( 'replaceAll', 'CKSource', 'Cksource' );
 ```
 
-This one line will find all instances of "Cksource" in your document and change them to "CKSource". This is perfect for making bulk updates in multiple documents. Simply, execute this call for every document you would like to change.
+This command will find all instances of "Cksource" in your documents and change them to "CKSource". This is perfect for making bulk updates in multiple documents. Simply, execute this call for every document you would like to change.
 
-To learn more about commands architecture, visit the [Commands documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/core-editor-architecture.html#commands).
+To learn more about the commands architecture, visit the [Commands documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/architecture/core-editor-architecture.html#commands) guide.
 
 ### Insert HTML content
 
@@ -103,7 +105,7 @@ editor.model.insertContent( model, insertPosition );
 
 ### Using editor model API
 
-If you cannot find a command that would perform a specific action on the document, you can use the editor API to apply precise changes. This approach offers the biggest flexibility and should cover any need you have, although it requires a better understanding of CKEditor internals.
+If you cannot find a command that would perform a specific action on the document, you can use the editor API to apply precise changes. This approach offers the greatest flexibility and should cover any needs you may have. It requires, however, a better understanding of CKEditor internals.
 
 For example, consider a scenario where you need to update all links in your document from `/docs/` to `/documents/`. This is a common task when moving content between environments or updating your site structure.
 
@@ -114,15 +116,15 @@ const range = editor.model.createRangeIn( root );
 const items = Array.from( range.getItems() );
 
 editor.model.change( writer => {
-    for ( const item of items ) {
-        let href = item.getAttribute( 'linkHref' );
+	for ( const item of items ) {
+		let href = item.getAttribute( 'linkHref' );
 
-        if ( item.is( 'textProxy' ) && href ) {
-            // Update the link URL.
-            href = href.replace( '/docs/', '/documents/' );
-            writer.setAttribute( 'linkHref', href, item );
-        }
-    }
+		if ( item.is( 'textProxy' ) && href ) {
+			// Update the link URL.
+			href = href.replace( '/docs/', '/documents/' );
+			writer.setAttribute( 'linkHref', href, item );
+		}
+	}
 } );
 ```
 
@@ -132,7 +134,7 @@ To learn more about working with the editor engine, see the {@link framework/arc
 
 ## Working with track changes
 
-You can leverage {@link features/track-changes Track changes} feature API to manage existing content suggestions, retrieve final document data with all suggestions accepted, or implement automated or AI-powered content reviews.
+You can leverage the {@link features/track-changes track changes} feature API to manage existing content suggestions, retrieve final document data with all suggestions accepted, or implement automated or AI-powered content reviews.
 
 ### Using commands
 
@@ -152,7 +154,7 @@ The `trackChanges` command ensures that all changes made by other commands are m
 
 ### Content changes
 
-Now, let's look at how to suggest content removal:
+Now, let's see how to suggest content removal:
 
 ```js
 // Enable track changes to mark our edits as suggestions.
@@ -167,7 +169,7 @@ const deleteSelection = editor.model.createSelection( deleteRange );
 editor.model.deleteContent( deleteSelection );
 ```
 
-This functionality is essential when building e.g. automated content review systems. You might use it to precisely mark any content that should be removed. All content inside `deleteSelection` will become a deletion suggestion.
+This functionality is essential when building, for example, automated content review systems. You might use it to precisely mark any content that should be removed. All content inside `deleteSelection` will become a deletion suggestion.
 
 You can also suggest adding new content:
 
@@ -185,7 +187,7 @@ const insertPosition = editor.model.createPositionAt( firstElement, 0 );
 editor.model.insertContent( modelFragment, insertPosition );
 ```
 
-The `insertContent()` method can be used in following scenarios:
+The `insertContent()` method can be used in the following scenarios:
 
 * Automated suggestions based on external data.
 * Creating templates that need review before finalization.
@@ -207,7 +209,7 @@ const data = trackChangesData.getDataWithDiscardedSuggestions();
 return data;
 ```
 
-This is particularly useful when you need to process the "original" or the "final" document data, i.e. as if pending suggestions were discarded or accepted.
+This is particularly useful when processing the "original" or the "final" document data. This happens when you need to check if pending suggestions were discarded or accepted.
 
 While the previous example could be used to get the data, you may also want to permanently accept or discard suggestions. You can do this for all suggestions at once using the following command:
 
@@ -217,7 +219,7 @@ While the previous example could be used to get the data, you may also want to p
 editor.execute( 'acceptAllSuggestions' );
 ```
 
-This command is especially helpful when finalizing documents or when working with applications where a document is split into multiple CKEditor document instances but is treated as one unit in the application. In such cases, you might want to e.g. offer a button to accept all suggestions across all document parts.
+This command is especially helpful when finalizing documents or when working with applications where a document is split into multiple CKEditor document instances but is treated as one unit in the application. In such cases, you might, for example, want to offer a button to accept all suggestions across all document parts.
 
 For more granular control, you can also manage individual suggestions:
 
@@ -238,7 +240,7 @@ It allows to display and manage suggestions outside of the editor, for example i
 
 ### Attribute modifications
 
-If you wish to create attributes suggestions using the editor model API, you need to specifically tell track changes features to record these changes. Let's look how to correctly make a suggestion to update links URLs:
+If you wish to create attributes suggestions using the editor model API, you need to specifically tell the track changes features to record these changes. Let's look at how to correctly make a suggestion to update links URLs:
 
 ```js
 // Get the track changes editing plugin for direct access to suggestion recording.
@@ -251,27 +253,27 @@ const items = Array.from( range.getItems() );
 
 // Process each item in the document.
 for ( const item of items ) {
-    editor.model.change( writer => {
-        // Use _recordAttributeChanges to ensure the change is properly recorded as a suggestion.
-        tcEditing._recordAttributeChanges( () => {
-            let href = item.getAttribute( 'linkHref' );
+	editor.model.change( writer => {
+		// Use _recordAttributeChanges to ensure the change is properly recorded as a suggestion.
+		tcEditing._recordAttributeChanges( () => {
+			let href = item.getAttribute( 'linkHref' );
 
-            // Only process text proxies (parts of text nodes) that have a `linkHref` attribute.
-            if ( item.is( 'textProxy' ) && href ) {
-                // Update the link URL, for example changing '/docs/' to '/documents/'.
-                href = href.replace( '/docs/', '/documents/' );
+			// Only process text proxies (parts of text nodes) that have a `linkHref` attribute.
+			if ( item.is( 'textProxy' ) && href ) {
+				// Update the link URL, for example changing '/docs/' to '/documents/'.
+				href = href.replace( '/docs/', '/documents/' );
 
-                // Set the new attribute value, which will be recorded as a suggestion.
-                writer.setAttribute( 'linkHref', href, item );
-            }
-        } );
-    } );
+				// Set the new attribute value, which will be recorded as a suggestion.
+				writer.setAttribute( 'linkHref', href, item );
+			}
+		} );
+	} );
 }
 ```
 
 ## Resolving comments
 
-{@link features/comments Comments} feature allows your users to have discussions on certain parts of your documents. You can use Comments feature API to implement interactions with comments with no need to open the editor itself.
+The {@link features/comments comments} feature allows your users to have discussions on certain parts of your documents. You can use the comments feature API to implement interactions with comments with no need to open the editor itself.
 
 For example, here's how to resolve all comment threads in a given document:
 
@@ -281,9 +283,9 @@ const threads = editor.plugins.get( 'CommentsRepository' ).getCommentThreads();
 
 // Resolve all open comment threads.
 for ( const thread of threads ) {
-    if ( !thread.isResolved ) {
-        thread.resolve();
-    }
+	if ( !thread.isResolved ) {
+		thread.resolve();
+	}
 }
 ```
 
@@ -291,11 +293,11 @@ This code is particularly useful when you need to clean up a document before fin
 
 ## Working with revision history
 
-Use {@link features/revision-history Revision history} feature API to build more functional integration between your application and the document revisions data.
+Use the {@link features/revision-history revision history} feature API to build more functional integration between your application and the document revisions data.
 
 ### Saving revisions
 
-You can use Revision history API to save a new revision directly from your application back-end:
+You can use Revision history API to save a new revision directly from your application backend:
 
 ```js
 // Save the current state as a new revision.
@@ -325,7 +327,7 @@ const attributes = await revisionTracker.getRevisionRootsAttributes( revision );
 return { documentData, attributes };
 ```
 
-This is useful if you need particular revision data for further processing. It will allow you build custom back-end features based on revisions, like previewing revisions data outside of editor, exporting a particular revision to PDF, or integrating revisions data with external systems.
+This is useful if you need particular revision data for further processing. It will allow you build custom backend features based on revisions, like previewing revisions data outside of editor, exporting a particular revision to PDF, or integrating revisions data with external systems.
 
 ## Custom plugins
 
