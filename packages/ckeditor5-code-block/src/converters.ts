@@ -37,6 +37,7 @@ import { getPropertyAssociation } from './utils.js';
  * @param useLabels When `true`, the `<pre>` element will get a `data-language` attribute with a
  * human–readable label of the language. Used only in the editing.
  * @returns Returns a conversion callback.
+ * @internal
  */
 export function modelToViewCodeBlockInsertion(
 	model: Model,
@@ -109,6 +110,7 @@ export function modelToViewCodeBlockInsertion(
  * ```
  *
  * @returns Returns a conversion callback.
+ * @internal
  */
 export function modelToDataViewSoftBreakInsertion( model: Model ): GetCallback<DowncastInsertEvent> {
 	return ( evt, data, conversionApi ) => {
@@ -145,6 +147,7 @@ export function modelToDataViewSoftBreakInsertion( model: Model ): GetCallback<D
  *
  * @param languageDefs The normalized language configuration passed to the feature.
  * @returns Returns a conversion callback.
+ * @internal
  */
 export function dataViewToModelCodeBlockInsertion(
 	editingView: EditingView,
@@ -237,6 +240,7 @@ export function dataViewToModelCodeBlockInsertion(
  * ```
  *
  * @returns {Function} Returns a conversion callback.
+ * @internal
  */
 export function dataViewToModelTextNewlinesInsertion(): GetCallback<UpcastTextEvent> {
 	return ( evt, data, { consumable, writer } ) => {
@@ -310,6 +314,7 @@ export function dataViewToModelTextNewlinesInsertion(): GetCallback<UpcastTextEv
  * ```
  *
  * @returns Returns a conversion callback.
+ * @internal
  */
 export function dataViewToModelOrphanNodeConsumer(): GetCallback<UpcastElementEvent> {
 	return ( evt, data, { consumable } ) => {
