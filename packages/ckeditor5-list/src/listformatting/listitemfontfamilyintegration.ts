@@ -44,12 +44,29 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 		const ListFormatting: ListFormatting = editor.plugins.get( 'ListFormatting' );
+		const listEditing = editor.plugins.get( ListEditing );
 
 		if ( !editor.plugins.has( 'FontFamilyEditing' ) ) {
 			return;
 		}
 
 		ListFormatting._addFormatting( 'listItemFontFamily', 'fontFamily' );
+
+		// Register the downcast strategy in init() so that the attribute name is registered  before the list editing
+		// registers its converters.
+		// This ensures that the attribute is recognized by downcast strategies and bogus paragraphs are handled correctly.
+		listEditing.registerDowncastStrategy( {
+			scope: 'item',
+			attributeName: 'listItemFontFamily',
+
+			setAttributeOnDowncast( writer, value, viewElement ) {
+				if ( value ) {
+					writer.setStyle( 'font-family', value as string, viewElement );
+				} else {
+					writer.removeStyle( 'font-family', viewElement );
+				}
+			}
+		} );
 	}
 
 	/**
@@ -58,7 +75,6 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 	public afterInit(): void {
 		const editor = this.editor;
 		const model = editor.model;
-		const listEditing: ListEditing = editor.plugins.get( 'ListEditing' );
 
 		if ( !editor.plugins.has( 'FontFamilyEditing' ) ) {
 			return;
@@ -76,19 +92,6 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 				return false;
 			}
 		}, 'listItemFontFamily' );
-
-		listEditing.registerDowncastStrategy( {
-			scope: 'item',
-			attributeName: 'listItemFontFamily',
-
-			setAttributeOnDowncast( writer, value, viewElement ) {
-				if ( value ) {
-					writer.setStyle( 'font-family', value as string, viewElement );
-				} else {
-					writer.removeStyle( 'font-family', viewElement );
-				}
-			}
-		} );
 
 		editor.conversion.for( 'upcast' ).attributeToAttribute( {
 			model: {
