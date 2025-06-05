@@ -10,6 +10,6 @@
 export { SelectAll } from './selectall.js';
 export { SelectAllEditing } from './selectallediting.js';
 export { SelectAllUI } from './selectallui.js';
-export type { SelectAllCommand } from './selectallcommand.js';
+export { SelectAllCommand } from './selectallcommand.js';
 
 import './augmentation.js';

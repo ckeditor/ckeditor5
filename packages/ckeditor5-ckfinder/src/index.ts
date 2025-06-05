@@ -10,7 +10,7 @@
 export { CKFinder } from './ckfinder.js';
 export { CKFinderEditing } from './ckfinderediting.js';
 export { CKFinderUI } from './ckfinderui.js';
+export { CKFinderCommand } from './ckfindercommand.js';
 export type { CKFinderConfig } from './ckfinderconfig.js';
-export type { CKFinderCommand } from './ckfindercommand.js';
 
 import './augmentation.js';

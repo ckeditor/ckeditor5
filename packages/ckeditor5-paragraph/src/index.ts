@@ -9,7 +9,7 @@
 
 export { Paragraph } from './paragraph.js';
 export { ParagraphButtonUI } from './paragraphbuttonui.js';
-export type { ParagraphCommand } from './paragraphcommand.js';
-export type { InsertParagraphCommand } from './insertparagraphcommand.js';
+export { ParagraphCommand } from './paragraphcommand.js';
+export { InsertParagraphCommand } from './insertparagraphcommand.js';
 
 import './augmentation.js';

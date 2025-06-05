@@ -10,7 +10,7 @@
 export { Enter } from './enter.js';
 export { ShiftEnter } from './shiftenter.js';
 export type { ViewDocumentEnterEvent } from './enterobserver.js';
-export type { EnterCommand, EnterCommandAfterExecuteEvent } from './entercommand.js';
-export type { ShiftEnterCommand } from './shiftentercommand.js';
+export { EnterCommand, type EnterCommandAfterExecuteEvent } from './entercommand.js';
+export { ShiftEnterCommand } from './shiftentercommand.js';
 
 import './augmentation.js';

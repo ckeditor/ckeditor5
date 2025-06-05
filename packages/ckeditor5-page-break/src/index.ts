@@ -10,7 +10,6 @@
 export { PageBreak } from './pagebreak.js';
 export { PageBreakEditing } from './pagebreakediting.js';
 export { PageBreakUI } from './pagebreakui.js';
-
-export type { PageBreakCommand } from './pagebreakcommand.js';
+export { PageBreakCommand } from './pagebreakcommand.js';
 
 import './augmentation.js';
