@@ -28,4 +28,15 @@ export {
 	getFileExtension as _getCKBoxFileExtension
 } from './utils.js';
 
+export {
+	CKBoxAssetDefinition as _CKBoxAssetDefinition,
+	CKBoxAssetImageDefinition as _CKBoxAssetImageDefinition,
+	CKBoxAssetLinkDefinition as _CKBoxAssetLinkDefinition,
+	CKBoxAssetImageAttributesDefinition as _CKBoxAssetImageAttributesDefinition,
+	CKBoxAssetLinkAttributesDefinition as _CKBoxAssetLinkAttributesDefinition
+} from './ckboxconfig.js';
+
+export { createEditabilityChecker as _createCKBoxEditabilityChecker } from './ckboximageedit/utils.js';
+export { prepareImageAssetAttributes as _prepareCKBoxImageAssetAttributes } from './ckboxcommand.js';
+
 import './augmentation.js';
