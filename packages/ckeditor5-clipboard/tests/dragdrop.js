@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals window, document, console, Event */
-
 import ClipboardPipeline from '../src/clipboardpipeline.js';
 import DragDrop from '../src/dragdrop.js';
 import DragDropTarget from '../src/dragdroptarget.js';

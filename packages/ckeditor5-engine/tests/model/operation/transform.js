@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console */
-
 import { transform, transformSets } from '../../../src/model/operation/transform.js';
 
 import Model from '../../../src/model/model.js';

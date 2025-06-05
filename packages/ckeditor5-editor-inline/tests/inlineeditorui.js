@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document, window, Event, console */
-
 import View from '@ckeditor/ckeditor5-ui/src/view.js';
 
 import InlineEditorUI from '../src/inlineeditorui.js';

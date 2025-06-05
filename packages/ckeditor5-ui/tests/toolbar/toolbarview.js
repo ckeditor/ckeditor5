@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document, Event, console */
-
 import ToolbarView from '../../src/toolbar/toolbarview.js';
 import ToolbarSeparatorView from '../../src/toolbar/toolbarseparatorview.js';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';

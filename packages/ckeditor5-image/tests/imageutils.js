@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global console, setTimeout */
-
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document.js';

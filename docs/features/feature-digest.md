@@ -2,7 +2,7 @@
 category: features
 menu-title: Feature digest
 meta-title: Feature digest | CKEditor 5 Documentation
-meta-description: CKEditor 5 offers over 150 features, from basic editing capabilities like bold or italics to full-blown real-time collaboration - this page collects them all.
+meta-description: CKEditor 5 offers over 150 features, from basic editing capabilities like bold or italics to full-blown real-time collaboration - this page lists them all.
 modified_at: 2024-11-20
 order: -998
 ---

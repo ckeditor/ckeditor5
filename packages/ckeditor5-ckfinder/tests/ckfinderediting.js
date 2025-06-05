@@ -87,7 +87,7 @@ describe( 'CKFinderEditing', () => {
 			} );
 
 			await editor.destroy();
-		} catch ( e ) {
+		} catch {
 			expect.fail( 'Error should not be thrown.' );
 		}
 	} );
@@ -99,7 +99,7 @@ describe( 'CKFinderEditing', () => {
 			} );
 
 			await editor.destroy();
-		} catch ( e ) {
+		} catch {
 			expect.fail( 'Error should not be thrown.' );
 		}
 	} );

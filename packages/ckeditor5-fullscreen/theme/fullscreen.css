@@ -74,10 +74,23 @@ Fullscreen layout:
 /* If the fullscreen container is not directly in the body, we need to make sure it's positioned absolutely. */
 :not(body> .ck-fullscreen__main-wrapper).ck-fullscreen__main-wrapper {
 	position: absolute;
+
+	& .ck-fullscreen__top-wrapper {
+		border-top: 1px solid var(--ck-color-base-border);
+		border-left: 1px solid var(--ck-color-base-border);
+		border-right: 1px solid var(--ck-color-base-border);
+		border-radius: var(--ck-border-radius) 0;
+	}
 }
 
 .ck-fullscreen__menu-bar .ck.ck-menu-bar {
 	border: none;
+}
+
+.ck.ck-fullscreen__toolbar .ck-toolbar {
+	border-left: 0;
+	border-right: 0;
+	border-radius: 0;
 }
 
 .ck-fullscreen__main-wrapper .ck-fullscreen__editable-wrapper {
@@ -87,17 +100,6 @@ Fullscreen layout:
 	justify-content: flex-start;
 	overflow: auto;
 	max-height: 100%;
-}
-
-.ck-fullscreen__sidebar {
-	width: 300px;
-	margin-top: var(--ck-fullscreen-editor-top-margin);
-	margin-left: 10px;
-	flex-shrink: 0;
-}
-
-.ck-fullscreen__sidebar[data-ck-fullscreen="right-sidebar"] {
-	margin-right: auto;
 }
 
 .ck-fullscreen__main-wrapper .ck-fullscreen__editable {
@@ -114,11 +116,14 @@ Fullscreen layout:
 
 .ck-fullscreen__main-wrapper .ck-fullscreen__editable .ck.ck-editor__editable:not(.ck-editor__nested-editable) {
 	box-sizing: border-box;
-	width: calc(210mm + 2px); /* Make sure the border is taken into account. */
-	max-width: calc(210mm + 2px); /* Make sure the border is taken into account. */
+	/* Make sure the border is taken into account. */
+	width: calc(210mm + 2px);
+	/* Make sure the border is taken into account. */
+	max-width: calc(210mm + 2px);
 	min-height: 297mm;
 	height: fit-content;
-	margin: 0; /* Reset margins that may be present on editable. We add them in other places. */
+	/* Reset margins that may be present on editable. We add them in other places. */
+	margin: 0;
 	padding: 20mm 12mm;
 	border: 1px var(--ck-color-base-border) solid;
 	background: hsl(0, 0%, 100%);
@@ -127,6 +132,12 @@ Fullscreen layout:
 
 .ck-fullscreen__main-wrapper .ck-fullscreen__editable .ck-source-editing-area {
 	width: calc(210mm + 2px);
+}
+
+.ck-fullscreen__sidebar {
+	width: 300px;
+	margin-top: var(--ck-fullscreen-editor-top-margin);
+	margin-left: 10px;
 }
 
 .ck-fullscreen__left-sidebar {
@@ -141,14 +152,17 @@ Fullscreen layout:
 	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
+
+	> :first-child {
+		/* Set minimal width if there is any item in the sidebar. */
+		min-width: 300px;
+		/* We have to use padding-top instead of margin-top because margin is scrollable. */
+		padding-top: var(--ck-fullscreen-editor-top-margin);
+	}
 }
 
 .ck-fullscreen__left-sidebar .ck.ck-presence-list--collapsed {
 	--ck-user-avatar-size: 32px;
-}
-
-.ck-fullscreen__left-sidebar> :first-child {
-	padding-top: var(--ck-fullscreen-editor-top-margin);
 }
 
 .ck-fullscreen__left-sidebar .ck-user {
@@ -162,10 +176,15 @@ Fullscreen layout:
 .ck-fullscreen__left-sidebar-item {
 	padding: var(--ck-spacing-medium);
 	margin-bottom: var(--ck-spacing-medium);
-}
 
-.ck-fullscreen__left-sidebar-item:last-child {
-	margin-bottom: 0;
+	/* First header should not have top padding. */
+	&:first-child {
+		padding-top: 0;
+	}
+
+	&:last-child {
+		margin-bottom: 0;
+	}
 }
 
 .ck-fullscreen__left-sidebar-header {
@@ -182,7 +201,7 @@ Fullscreen layout:
 	position: sticky;
 	top: 0;
 
-	&> :first-child {
+	& > :first-child {
 		padding-top: 0;
 	}
 }
@@ -204,4 +223,14 @@ Fullscreen layout:
 .ck-fullscreen__document-outline-wrapper {
 	padding-top: 0;
 	overflow-y: auto;
+}
+
+.ck-fullscreen__sidebar.ck-fullscreen__right-sidebar {
+	margin-top: var(--ck-fullscreen-editor-top-margin);
+	margin-right: auto;
+
+	&> :first-child {
+		/* Set minimal width if there is any item in the sidebar. */
+		min-width: 300px;
+	}
 }

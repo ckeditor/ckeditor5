@@ -5,8 +5,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* eslint-env node */
-
 import { fileURLToPath } from 'url';
 import fs from 'fs-extra';
 import upath from 'upath';
@@ -167,7 +165,7 @@ function isIconMissing( iconPath ) {
 		);
 
 		return false;
-	} catch ( err ) {
+	} catch {
 		return true;
 	}
 }

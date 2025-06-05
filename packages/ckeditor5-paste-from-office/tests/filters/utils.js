@@ -20,23 +20,23 @@ describe( 'PasteFromOffice - filters - utils', () => {
 		} );
 
 		it( 'should convert 39.6pt to px', () => {
-			expect( convertCssLengthToPx( '39.6pt' ) ).to.equal( '52.8px' );
+			expect( convertCssLengthToPx( '39.6pt' ) ).to.equal( '53px' );
 		} );
 
 		it( 'should convert 5cm to px', () => {
-			expect( convertCssLengthToPx( '5cm' ) ).to.equal( '188.98px' );
+			expect( convertCssLengthToPx( '5cm' ) ).to.equal( '189px' );
 		} );
 
 		it( 'should convert 2.5cm to px', () => {
-			expect( convertCssLengthToPx( '2.5cm' ) ).to.equal( '94.49px' );
+			expect( convertCssLengthToPx( '2.5cm' ) ).to.equal( '94px' );
 		} );
 
 		it( 'should convert 50mm to px', () => {
-			expect( convertCssLengthToPx( '50mm' ) ).to.equal( '188.98px' );
+			expect( convertCssLengthToPx( '50mm' ) ).to.equal( '189px' );
 		} );
 
 		it( 'should convert 25mm to px', () => {
-			expect( convertCssLengthToPx( '25mm' ) ).to.equal( '94.49px' );
+			expect( convertCssLengthToPx( '25mm' ) ).to.equal( '94px' );
 		} );
 
 		it( 'should convert 2in to px', () => {
@@ -87,11 +87,12 @@ describe( 'PasteFromOffice - filters - utils', () => {
 			expect( toPx( 123 ) ).to.equal( '123px' );
 		} );
 
-		it( 'should round to 2 decimal places', () => {
-			expect( toPx( 1 / 2 ) ).to.equal( '0.5px' );
-			expect( toPx( 1 / 3 ) ).to.equal( '0.33px' );
-			expect( toPx( 1 / 4 ) ).to.equal( '0.25px' );
-			expect( toPx( 1 / 6 ) ).to.equal( '0.17px' );
+		it( 'should round to whole px', () => {
+			expect( toPx( 1 / 2 ) ).to.equal( '1px' );
+			expect( toPx( 1 / 3 ) ).to.equal( '0px' );
+			expect( toPx( 5 / 4 ) ).to.equal( '1px' );
+			expect( toPx( 5 / 6 ) ).to.equal( '1px' );
+			expect( toPx( 3.4 ) ).to.equal( '3px' );
 		} );
 	} );
 } );

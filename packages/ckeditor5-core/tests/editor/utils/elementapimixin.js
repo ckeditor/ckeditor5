@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import ElementApiMixin from '../../../src/editor/utils/elementapimixin.js';
 import Editor from '../../../src/editor/editor.js';
 import testUtils from '../../_utils/utils.js';
@@ -14,7 +12,6 @@ describe( 'ElementApiMixin', () => {
 	let editor;
 
 	beforeEach( () => {
-		// eslint-disable-next-line new-cap
 		class CustomEditor extends ElementApiMixin( Editor ) {
 		}
 

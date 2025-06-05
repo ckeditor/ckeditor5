@@ -1,7 +1,7 @@
 ---
 menu-title: Vue.js 2.x
 meta-title: Using CKEdiotr 5 with Vue.js 2.x from CDN | CKEditor 5 Documentation
-meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 2.x component with CDN.
+meta-description: Install, integrate, and configure CKEditor 5 using the Vue.js 2.x component with CDN.
 category: cloud
 order: 60
 ---

@@ -7,8 +7,6 @@
  * @module ui/editorui/bodycollection
  */
 
-/* globals document */
-
 import Template from '../template.js';
 import ViewCollection from '../viewcollection.js';
 import type View from '../view.js';

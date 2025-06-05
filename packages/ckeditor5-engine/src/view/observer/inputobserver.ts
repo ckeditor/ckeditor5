@@ -11,7 +11,7 @@ import DomEventObserver from './domeventobserver.js';
 import type DomEventData from './domeventdata.js';
 import type ViewRange from '../range.js';
 import DataTransfer from '../datatransfer.js';
-import { env } from '@ckeditor/ckeditor5-utils';
+import { env, isText, indexOf } from '@ckeditor/ckeditor5-utils';
 import { INLINE_FILLER_LENGTH, startsWithFiller } from '../filler.js';
 
 // @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
@@ -105,7 +105,8 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 				if ( viewStart && startsWithFiller( domRange.startContainer ) && domRange.startOffset < INLINE_FILLER_LENGTH ) {
 					// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
 					// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'InputObserver',
-					// @if CK_DEBUG_TYPING // 		'Target range starts in an inline filler - adjusting it',
+					// @if CK_DEBUG_TYPING // 		'%cTarget range starts in an inline filler - adjusting it',
+					// @if CK_DEBUG_TYPING // 		'font-style: italic'
 					// @if CK_DEBUG_TYPING // 	) );
 					// @if CK_DEBUG_TYPING // }
 
@@ -126,6 +127,17 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 
 						return false;
 					}, { direction: 'backward', singleCharacters: true } );
+				}
+
+				// Check if there is no an inline filler just after the target range.
+				if ( isFollowedByInlineFiller( domRange.endContainer, domRange.endOffset ) ) {
+					// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
+					// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'InputObserver',
+					// @if CK_DEBUG_TYPING // 		'%cTarget range ends just before an inline filler - prevent default behavior',
+					// @if CK_DEBUG_TYPING // 		'font-style: italic'
+					// @if CK_DEBUG_TYPING // 	) );
+					// @if CK_DEBUG_TYPING // }
+					domEvent.preventDefault();
 				}
 
 				if ( viewStart ) {
@@ -186,6 +198,9 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 
 			let partTargetRanges = targetRanges;
 
+			// Handle all parts on our side as we rely on paragraph inserting and synchronously updated view selection.
+			domEvent.preventDefault();
+
 			for ( let i = 0; i < parts.length; i++ ) {
 				const dataPart = parts[ i ];
 
@@ -233,6 +248,33 @@ export default class InputObserver extends DomEventObserver<'beforeinput'> {
 		// @if CK_DEBUG_TYPING // 	console.groupEnd();
 		// @if CK_DEBUG_TYPING // }
 	}
+}
+
+/**
+ * Returns `true` if there is an inline filler just after the position in DOM.
+ * It walks up the DOM tree if the offset is at the end of the node.
+ */
+function isFollowedByInlineFiller( node: Node, offset: number ): boolean {
+	while ( node.parentNode ) {
+		if ( isText( node ) ) {
+			if ( offset != node.data.length ) {
+				return false;
+			}
+		} else {
+			if ( offset != node.childNodes.length ) {
+				return false;
+			}
+		}
+
+		offset = indexOf( node ) + 1;
+		node = node.parentNode;
+
+		if ( offset < node.childNodes.length && startsWithFiller( node.childNodes[ offset ] ) ) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 /**

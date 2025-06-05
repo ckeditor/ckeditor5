@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import InsertTextObserver from '../src/inserttextobserver.js';
 import { fireBeforeInputDomEvent, fireCompositionEndDomEvent } from './_utils/utils.js';
 

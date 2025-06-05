@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals console:false, window, document */
-
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';

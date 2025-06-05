@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import { ButtonView, FormHeaderView } from '@ckeditor/ckeditor5-ui';
 import { IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';

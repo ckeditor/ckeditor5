@@ -12,7 +12,6 @@
 	& th.ck-editor__editable_selected {
 		position: relative;
 		caret-color: transparent;
-		outline: unset;
 		box-shadow: unset;
 
 		/* https://github.com/ckeditor/ckeditor5/issues/6446 */

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* globals document */
-
 import SpecialCharactersView from '../../src/ui/specialcharactersview.js';
 import CharacterGridView from '../../src/ui/charactergridview.js';
 import CharacterInfoView from '../../src/ui/characterinfoview.js';

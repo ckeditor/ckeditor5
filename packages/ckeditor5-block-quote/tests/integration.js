@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-/* global document */
-
 import BlockQuote from '../src/blockquote.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Image from '@ckeditor/ckeditor5-image/src/image.js';
