@@ -207,7 +207,7 @@ export function modifyGhsAttribute(
 }
 
 /**
- * TODO
+ * Strips the `styles`, and `classes` keys from the GHS attribute value on the given item.
  *
  * @internal
  */
@@ -215,12 +215,8 @@ export function removeFormatting( ghsAttributeName: string, itemRange: Range, wr
 	for ( const item of itemRange.getItems( { shallow: true } ) ) {
 		const value = item.getAttribute( ghsAttributeName ) as Record<string, any>;
 
-		if ( !value ) {
-			continue;
-		}
-
 		// Copy only attributes to the new attribute value.
-		if ( value.attributes && Object.keys( value.attributes ).length ) {
+		if ( value && value.attributes && Object.keys( value.attributes ).length ) {
 			// But reset the GHS attribute only when there is anything more than just attributes.
 			if ( Object.keys( value ).length > 1 ) {
 				writer.setAttribute( ghsAttributeName, { attributes: value.attributes }, item );
