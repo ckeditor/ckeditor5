@@ -8,6 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
+import { type ViewElement } from 'ckeditor5/src/engine.js';
+
 import ListEditing from '../list/listediting.js';
 
 /**
@@ -77,6 +79,29 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 		model.schema.extend( '$listItem', { allowAttributes: 'listItemFontFamily' } );
 		model.schema.setAttributeProperties( 'listItemFontFamily', {
 			isFormatting: true
+		} );
+
+		model.schema.addAttributeCheck( context => {
+			const item = context.last;
+
+			if ( !item.getAttribute( 'listItemId' ) ) {
+				return false;
+			}
+		}, 'listItemFontFamily' );
+
+		editor.conversion.for( 'upcast' ).attributeToAttribute( {
+			model: {
+				key: 'listItemFontFamily',
+				value: ( viewElement: ViewElement ) => {
+					return viewElement.getStyle( 'font-family' );
+				}
+			},
+			view: {
+				name: 'li',
+				styles: {
+					'font-family': /.*/
+				}
+			}
 		} );
 	}
 }

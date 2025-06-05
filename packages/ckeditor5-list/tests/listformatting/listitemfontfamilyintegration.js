@@ -10,8 +10,9 @@ import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
 import FontFamilyEditing from '@ckeditor/ckeditor5-font/src/fontfamily/fontfamilyediting.js';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import stubUid from '../list/_utils/uid.js';
@@ -73,13 +74,42 @@ describe( 'ListItemFontFamilyIntegration', () => {
 
 	describe( 'schema', () => {
 		it( 'should allow listItemFontFamily attribute in $listItem', () => {
-			expect( model.schema.checkAttribute( [ '$root', '$listItem' ], 'listItemFontFamily' ) ).to.be.true;
+			model.schema.register( 'myElement', {
+				inheritAllFrom: '$block',
+				allowAttributesOf: '$listItem'
+			} );
+
+			const modelElement = new ModelElement( 'myElement', { listItemId: 'a' } );
+
+			expect( model.schema.checkAttribute( [ '$root', modelElement ], 'listItemFontFamily' ) ).to.be.true;
 		} );
 
 		it( 'listItemFontFamily attribute should have isFormatting set to true', () => {
-			expect( editor.model.schema.getAttributeProperties( 'listItemFontFamily' ) ).to.include( {
+			expect( model.schema.getAttributeProperties( 'listItemFontFamily' ) ).to.include( {
 				isFormatting: true
 			} );
+		} );
+
+		it( 'should set proper schema rules', () => {
+			const listItemParagraph = new ModelElement( 'paragraph', { listItemId: 'a' } );
+			const listItemBlockQuote = new ModelElement( 'blockQuote', { listItemId: 'a' } );
+			const listItemHeading = new ModelElement( 'heading1', { listItemId: 'a' } );
+			const listItemTable = new ModelElement( 'table', { listItemId: 'a' } );
+
+			const paragraph = new ModelElement( 'paragraph' );
+			const blockQuote = new ModelElement( 'blockQuote' );
+			const heading = new ModelElement( 'heading1' );
+			const table = new ModelElement( 'table' );
+
+			expect( model.schema.checkAttribute( [ '$root', listItemParagraph ], 'listItemFontFamily' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', listItemBlockQuote ], 'listItemFontFamily' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', listItemHeading ], 'listItemFontFamily' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', listItemTable ], 'listItemFontFamily' ) ).to.be.true;
+
+			expect( model.schema.checkAttribute( [ '$root', paragraph ], 'listItemFontFamily' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', blockQuote ], 'listItemFontFamily' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', heading ], 'listItemFontFamily' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', table ], 'listItemFontFamily' ) ).to.be.false;
 		} );
 	} );
 
@@ -327,6 +357,178 @@ describe( 'ListItemFontFamilyIntegration', () => {
 						'<span style="font-family:Arial;">foo</span>' +
 					'</li>' +
 				'</ul>'
+			);
+		} );
+	} );
+
+	describe( 'upcast', () => {
+		it( 'should upcast style in <li> to listItemFontFamily attribute (unordered list)', () => {
+			editor.setData(
+				'<ul>' +
+					'<li style="font-family:Arial;">' +
+						'<span style="font-family:Arial;">foo</span>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
+					'<$text fontFamily="Arial">foo</$text>' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'should upcast style in <li> to listItemFontFamily attribute (ordered list)', () => {
+			editor.setData(
+				'<ol>' +
+					'<li style="font-family:Arial;">' +
+						'<span style="font-family:Arial;">foo</span>' +
+					'</li>' +
+				'</ol>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="numbered">' +
+					'<$text fontFamily="Arial">foo</$text>' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'should only upcast style set in <li> (not <ul> and not <p>)', () => {
+			editor.setData(
+				'<ul style="font-family:Tahoma;">' +
+					'<li style="font-family:Arial;">' +
+						'<p style="font-family:Verdana;">' +
+							'<span style="font-family:Arial;">foo</span>' +
+						'</p>' +
+					'</li>' +
+				'</ul>' +
+				'<p style="font-family:Helvetica;">baz</p>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
+					'<$text fontFamily="Arial">foo</$text>' +
+				'</paragraph>' +
+				'<paragraph>baz</paragraph>'
+			);
+		} );
+
+		it( 'should upcast style in <li> to listItemFontFamily attribute (nested list)', () => {
+			editor.setData(
+				'<ul>' +
+					'<li style="font-family:Arial;">' +
+						'<span style="font-family:Arial;">foo</span>' +
+						'<ul>' +
+							'<li style="font-family:Arial;">' +
+								'<span style="font-family:Arial;">bar</span>' +
+							'</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a01" listType="bulleted">' +
+					'<$text fontFamily="Arial">foo</$text>' +
+				'</paragraph>' +
+				'<paragraph listIndent="1" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
+					'<$text fontFamily="Arial">bar</$text>' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'should upcast style in <li> to listItemFontFamily attribute in multi-block', () => {
+			editor.setData(
+				'<ul>' +
+					'<li style="font-family:Arial;">' +
+						'<p>' +
+							'<span style="font-family:Arial;">foo</span>' +
+						'</p>' +
+						'<p>' +
+							'<span style="font-family:Arial;">bar</span>' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
+					'<$text fontFamily="Arial">foo</$text>' +
+				'</paragraph>' +
+				'<paragraph listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
+					'<$text fontFamily="Arial">bar</$text>' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'should upcast style in <li> to listItemFontFamily attribute for blockquote', () => {
+			editor.setData(
+				'<ul>' +
+					'<li style="font-family:Arial;">' +
+						'<blockquote>' +
+							'<span style="font-family:Arial;">foo</span>' +
+						'</blockquote>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<blockQuote listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
+					'<paragraph>' +
+						'<$text fontFamily="Arial">foo</$text>' +
+					'</paragraph>' +
+				'</blockQuote>'
+			);
+		} );
+
+		it( 'should upcast style in <li> to listItemFontFamily attribute for heading', () => {
+			editor.setData(
+				'<ul>' +
+					'<li style="font-family:Arial;">' +
+						'<h2>' +
+							'<span style="font-family:Arial;">foo</span>' +
+						'</h2>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<heading1 listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
+					'<$text fontFamily="Arial">foo</$text>' +
+				'</heading1>'
+			);
+		} );
+
+		it( 'should upcast style in <li> to listItemFontFamily attribute for table', () => {
+			editor.setData(
+				'<ul>' +
+					'<li style="font-family:Arial;">' +
+						'<figure class="table">' +
+							'<table>' +
+								'<tbody>' +
+									'<tr>' +
+										'<td>' +
+											'foo' +
+										'</td>' +
+									'</tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+				'<table listIndent="0" listItemFontFamily="Arial" listItemId="a00" listType="bulleted">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>' +
+								'foo' +
+							'</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
 			);
 		} );
 	} );
