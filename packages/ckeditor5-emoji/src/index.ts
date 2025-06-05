@@ -16,4 +16,6 @@ export { EmojiCommand } from './emojicommand.js';
 
 export type { EmojiConfig } from './emojiconfig.js';
 
+export { isEmojiSupported as _isEmojiSupported } from './utils/isemojisupported.js';
+
 import './augmentation.js';
