@@ -11,6 +11,19 @@ export { Widget } from './widget.js';
 export { WidgetToolbarRepository } from './widgettoolbarrepository.js';
 export { WidgetResize } from './widgetresize.js';
 export { WidgetTypeAround } from './widgettypearound/widgettypearound.js';
-export * from './utils.js';
+export {
+	WIDGET_CLASS_NAME,
+	WIDGET_SELECTED_CLASS_NAME,
+	isWidget,
+	toWidget,
+	setHighlightHandling,
+	setLabel,
+	getLabel,
+	toWidgetEditable,
+	findOptimalInsertionRange,
+	viewToModelPositionOutsideModelElement,
+	calculateResizeHostAncestorWidth,
+	calculateResizeHostPercentageWidth
+} from './utils.js';
 
 import './augmentation.js';

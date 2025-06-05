@@ -29,7 +29,14 @@ export { FileDialogButtonView, FileDialogListItemButtonView } from './button/fil
 
 export { CollapsibleView } from './collapsible/collapsibleview.js';
 
-export * from './colorgrid/utils.js';
+export {
+	type ColorOption,
+	type NormalizedColorOption,
+	getLocalizedColorOptions,
+	normalizeColorOptions,
+	normalizeSingleColorDefinition
+} from './colorgrid/utils.js';
+
 export { ColorGridView, type ColorDefinition } from './colorgrid/colorgridview.js';
 export { ColorTileView } from './colorgrid/colortileview.js';
 
@@ -54,9 +61,26 @@ export { DropdownView } from './dropdown/dropdownview.js';
 export { DropdownPanelView } from './dropdown/dropdownpanelview.js';
 export { DropdownButtonView } from './dropdown/button/dropdownbuttonview.js';
 export { SplitButtonView } from './dropdown/button/splitbuttonview.js';
-export * from './dropdown/utils.js';
 
-export * from './dropdown/menu/utils.js';
+export {
+	type ListDropdownItemDefinition,
+	type ListDropdownSeparatorDefinition,
+	type ListDropdownButtonDefinition,
+	type ListDropdownGroupDefinition,
+	createDropdown,
+	addMenuToDropdown,
+	addToolbarToDropdown,
+	addListToDropdown,
+	focusChildOnDropdownOpen
+} from './dropdown/utils.js';
+
+export {
+	type DropdownNestedMenuDefinition,
+	type DropdownMenuButtonDefinition,
+	type DropdownMenuDefinition,
+	DropdownMenuPanelPositioningFunctions
+} from './dropdown/menu/utils.js';
+
 export { DropdownMenuNestedMenuView } from './dropdown/menu/dropdownmenunestedmenuview.js';
 export { DropdownMenuRootListView } from './dropdown/menu/dropdownmenurootlistview.js';
 export { DropdownMenuListView } from './dropdown/menu/dropdownmenulistview.js';
@@ -92,7 +116,13 @@ export { IframeView } from './iframe/iframeview.js';
 export { LabelView } from './label/labelview.js';
 
 export { type LabeledFieldViewCreator, LabeledFieldView } from './labeledfield/labeledfieldview.js';
-export * from './labeledfield/utils.js';
+
+export {
+	createLabeledInputNumber,
+	createLabeledInputText,
+	createLabeledTextarea,
+	createLabeledDropdown
+} from './labeledfield/utils.js';
 
 export { ListItemGroupView } from './list/listitemgroupview.js';
 export { ListItemView } from './list/listitemview.js';

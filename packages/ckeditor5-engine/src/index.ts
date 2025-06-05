@@ -7,7 +7,14 @@
  * @module engine
  */
 
-export * from './view/placeholder.js';
+export {
+	type PlaceholderableElement,
+	disablePlaceholder,
+	enablePlaceholder,
+	hidePlaceholder,
+	needsPlaceholder,
+	showPlaceholder
+} from './view/placeholder.js';
 
 // Controller.
 export { EditingController } from './controller/editingcontroller.js';
@@ -115,7 +122,11 @@ export type { TypeCheckable } from './model/typecheckable.js';
 export type { Writer } from './model/writer.js';
 
 // Model utils.
-export * from './model/utils/autoparagraphing.js';
+export {
+	autoParagraphEmptyRoots,
+	isParagraphable,
+	wrapInParagraph
+} from './model/utils/autoparagraphing.js';
 
 // Model Events.
 export type { DocumentChangeEvent } from './model/document.js';
@@ -211,11 +222,25 @@ export type { ViewRenderEvent, ViewScrollToTheSelectionEvent } from './view/view
 
 // View / Styles.
 export { StylesMap, StylesProcessor, type BoxSides } from './view/stylesmap.js';
-export * from './view/styles/background.js';
-export * from './view/styles/border.js';
-export * from './view/styles/margin.js';
-export * from './view/styles/padding.js';
-export * from './view/styles/utils.js';
+export { addBackgroundRules } from './view/styles/background.js';
+export { addBorderRules } from './view/styles/border.js';
+export { addMarginRules } from './view/styles/margin.js';
+export { addPaddingRules } from './view/styles/padding.js';
+export {
+	isColor,
+	isLineStyle,
+	isLength,
+	isPercentage,
+	isRepeat,
+	isPosition,
+	isAttachment,
+	isURL,
+	getBoxSidesValues,
+	getBoxSidesValueReducer,
+	getBoxSidesShorthandValue,
+	getPositionShorthandNormalizer,
+	getShorthandValues
+} from './view/styles/utils.js';
 
 // Development / testing utils.
 export {
