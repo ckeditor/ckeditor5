@@ -7,7 +7,9 @@
  * @module markdown-gfm/markdown2html/markdown2html
  */
 
-import { marked } from 'marked';
+import { marked, type MarkedOptions } from 'marked';
+import { mangle } from 'marked-mangle';
+import { markedXhtml } from 'marked-xhtml';
 
 /**
  * This is a helper class used by the {@link module:markdown-gfm/markdown Markdown feature} to convert Markdown to HTML.
@@ -16,14 +18,15 @@ export class MarkdownToHtml {
 	private _parser: typeof marked;
 
 	private _options = {
+		async: false,
 		gfm: true,
-		breaks: true,
-		tables: true,
-		xhtml: true,
-		headerIds: false
-	};
+		breaks: true
+	} satisfies MarkedOptions;
 
 	constructor() {
+		marked.use( mangle() );
+		marked.use( markedXhtml() );
+
 		// Overrides.
 		marked.use( {
 			tokenizer: {
