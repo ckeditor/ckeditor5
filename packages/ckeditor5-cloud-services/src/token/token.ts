@@ -57,8 +57,9 @@ export class Token extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param tokenUrlOrRefreshToken Endpoint address to download the token or a callback that provides the token. If the
 	 * value is a function it has to match the {@link module:cloud-services/token/token~Token#refreshToken} interface.
+	 * @param options Token options.
 	 */
-	constructor( tokenUrlOrRefreshToken: TokenUrl, options: TokenOptions = {} ) {
+	constructor( tokenUrlOrRefreshToken: TokenUrl, options: TokenOptions ) {
 		super();
 
 		if ( !tokenUrlOrRefreshToken ) {
@@ -85,7 +86,7 @@ export class Token extends /* #__PURE__ */ ObservableMixin() {
 			this._refresh = () => defaultRefreshToken( tokenUrlOrRefreshToken );
 		}
 
-		this._options = { ...DEFAULT_OPTIONS, ...options };
+		this._options = { ...options };
 	}
 
 	/**
@@ -241,8 +242,9 @@ export class Token extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param tokenUrlOrRefreshToken Endpoint address to download the token or a callback that provides the token. If the
 	 * value is a function it has to match the {@link module:cloud-services/token/token~Token#refreshToken} interface.
+	 * @param options Token options. If not provided, default options will be used.
 	 */
-	public static create( tokenUrlOrRefreshToken: TokenUrl, options: TokenOptions = {} ): Promise<InitializedToken> {
+	public static create( tokenUrlOrRefreshToken: TokenUrl, options: TokenOptions = DEFAULT_OPTIONS ): Promise<InitializedToken> {
 		const token = new Token( tokenUrlOrRefreshToken, options );
 
 		return token.init();
@@ -265,11 +267,9 @@ export interface TokenOptions {
 	initValue?: string;
 
 	/**
-	 * Specifies whether to start the refresh automatically.
-	 *
-	 * @default true
+	 * Specifies whether the token should be automatically refreshed when it expires.
 	 */
-	autoRefresh?: boolean;
+	autoRefresh: boolean;
 }
 
 /**

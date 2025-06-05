@@ -131,4 +131,25 @@ export interface CloudServicesConfig {
 	 * the new bundle (build + configuration) from the old ones.
 	 */
 	bundleVersion?: string;
+
+	/**
+	 * Specifies whether the token should be automatically refreshed when it expires.
+	 *
+	 * When set to `false`, the token will not be automatically refreshed, and you will need to handle token refresh manually.
+	 *
+	 * ```ts
+	 * ClassicEditor
+	 * 	.create( document.querySelector( '#editor' ), {
+	 * 		cloudServices: {
+	 * 			tokenUrl: 'https://example.com/cs-token-endpoint',
+	 * 			autoRefresh: false // Disable automatic token refresh
+	 * 		}
+	 * 	} )
+	 * 	.then( ... )
+	 * 	.catch( ... );
+	 * ```
+	 *
+	 * @default true
+	 */
+	autoRefresh?: boolean;
 }
