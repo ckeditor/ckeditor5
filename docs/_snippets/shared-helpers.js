@@ -24,22 +24,10 @@
  *			editor
  *		} );
  *
- *		// Specifying options of tippy.js, e.g. to customize the placement of the balloon.
- *		// See https://atomiks.github.io/tippyjs/v6/all-props/ for all options.
- *		attachTourBalloon( {
- *			target: findToolbarItem( editor.ui.view.toolbar, 5 ),
- *			text: 'Tour text to help users discover the feature.',
- *			editor,
- *			tippyOptions: {
- *				placement: 'bottom-start'
- *			}
- *		} );
- *
  * @param {Object} options Balloon options.
  * @param {HTMLElement} options.target A DOM node the balloon will point to.
  * @param {String} options.text The description to be shown in the tooltip.
  * @param {module:core/editor/editor~Editor} options.editor The editor instance.
- * @param {Object} [options.tippyOptions] Additional [configuration of tippy.js](https://atomiks.github.io/tippyjs/v6/all-props/).
  */
 export function attachTourBalloon( { target, text, editor, tippyOptions } ) {
 	if ( !target ) {
@@ -54,30 +42,26 @@ export function attachTourBalloon( { target, text, editor, tippyOptions } ) {
 		return;
 	}
 
-	const content = `
-		<div class="tippy-content__message">${ text }</div>
-		<button class="ck ck-button tippy-content__close-button ck-off" title="Close"></button>
-	`;
-
-	const options = Object.assign( {}, {
-		placement: 'bottom',
-		trigger: 'manual',
-		hideOnClick: false,
-		allowHTML: true,
-		maxWidth: 280,
-		showOnCreate: true,
-		interactive: true,
-		theme: 'light-border',
-		zIndex: 1,
-		appendTo: () => document.body
-	}, tippyOptions );
-
-	const tooltip = window.umberto.createTooltip( target, content, options );
+	const tooltip = window.umberto.Tooltip.create( {
+		text,
+		trigger: target,
+		mode: 'click',
+		variant: 'dark',
+		icon: 'bulb',
+		disableOnMobile: false,
+		showCloseButton: true,
+		showAfterMount: true,
+		hideOnOutsideClick: false,
+		destroyOnHide: true,
+		...tippyOptions?.placement && {
+			position: tippyOptions.placement
+		}
+	} );
 
 	for ( const root of editor.editing.view.document.roots ) {
 		root.once( 'change:isFocused', ( evt, name, isFocused ) => {
 			if ( isFocused ) {
-				tooltip.hide();
+				tooltip.destroy();
 			}
 		} );
 	}
@@ -126,6 +110,24 @@ export function getViewportTopOffsetConfig() {
 	const documentElement = document.documentElement;
 
 	return parseInt( window.getComputedStyle( documentElement ).getPropertyValue( '--ck-snippet-viewport-top-offset' ) );
+}
+
+/**
+ * Function that sets the `editor.ui.viewportOffset.top` dynamically based on the media query.
+ * The media query breakpoint is set to `960px` and the value is taken from the `--ck-snippet-viewport-top-offset` CSS variable.
+ *
+ * @private
+ * @param {module:core/editor/editor~Editor} editor
+ */
+export function setViewportTopOffsetDynamically( editor ) {
+	const mediaQueryList = window.matchMedia( '(max-width: 960px)' );
+	const documentElement = document.documentElement;
+
+	mediaQueryList.onchange = () => {
+		const value = parseInt( window.getComputedStyle( documentElement ).getPropertyValue( '--ck-snippet-viewport-top-offset' ) );
+
+		editor.ui.viewportOffset.top = value;
+	};
 }
 
 /**

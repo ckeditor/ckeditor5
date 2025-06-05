@@ -4,7 +4,7 @@ menu-title: Word and character count
 meta-title: Word and character count | CKEditor 5 Documentation
 ---
 
-{@snippet features/build-word-count-source}
+{@snippet features/build-word-count-source empty}
 
 # Word count and character count
 
@@ -15,6 +15,8 @@ The word count feature lets you track the number of words and characters in the 
 Add or remove some content and see how the counter below the editor changes in real time.
 
 {@snippet features/word-count}
+
+<div id="demo-word-count" class="word-count"></div>
 
 <info-box info>
 	This demo presents a limited set of features. Visit the {@link examples/builds/full-featured-editor feature-rich editor example} to see more in action.
@@ -46,8 +48,8 @@ ClassicEditor
 
 ## Installation
 
-<info-box info>
-	⚠️ **New import paths**
+<info-box warning>
+	**New import paths**
 
 	Starting with {@link updating/update-to-42 version 42.0.0}, we changed the format of import paths. This guide uses the new, shorter format. Refer to the {@link getting-started/legacy-getting-started/legacy-imports Packages in the legacy setup} guide if you use an older version of CKEditor&nbsp;5.
 </info-box>

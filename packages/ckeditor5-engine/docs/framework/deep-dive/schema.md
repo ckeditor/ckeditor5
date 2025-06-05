@@ -659,12 +659,12 @@ Relations between generic items (which one can be used where) can be visualized 
 
 ```xml
 <$root>
-	<$block>                <!-- example: <paragraph>, <heading1> -->
+	<$block>				<!-- example: <paragraph>, <heading1> -->
 		<$text/>
-		<$inlineObject/>    <!-- example: <imageInline> -->
+		<$inlineObject/>	<!-- example: <imageInline> -->
 	</$block>
-	<$blockObject/>         <!-- example: <imageBlock>, <table> -->
-	<$container>            <!-- example: <blockQuote> -->
+	<$blockObject/>			<!-- example: <imageBlock>, <table> -->
+	<$container>			<!-- example: <blockQuote> -->
 		<$container/>
 		<$block/>
 		<$blockObject/>
@@ -676,27 +676,27 @@ The above rules will be met for instance by such a model content:
 
 ```xml
 <$root>
-	<heading1>            <!-- inheritAllFrom: $block -->
-		<$text/>          <!-- allowIn: $block -->
+	<heading1>				<!-- inheritAllFrom: $block -->
+		<$text/>			<!-- allowIn: $block -->
 	</heading1>
-	<paragraph>           <!-- inheritAllFrom: $block -->
-		<$text/>          <!-- allowIn: $block -->
-		<softBreak/>      <!-- allowWhere: $text -->
-		<$text/>          <!-- allowIn: $block -->
-		<imageInline/>    <!-- inheritAllFrom: $inlineObject -->
+	<paragraph>				<!-- inheritAllFrom: $block -->
+		<$text/>			<!-- allowIn: $block -->
+		<softBreak/>		<!-- allowWhere: $text -->
+		<$text/>			<!-- allowIn: $block -->
+		<imageInline/>		<!-- inheritAllFrom: $inlineObject -->
 	</paragraph>
-	<imageBlock>          <!-- inheritAllFrom: $blockObject -->
-		<caption>         <!-- allowIn: imageBlock, allowContentOf: $block -->
-			<$text/>      <!-- allowIn: $block -->
+	<imageBlock>			<!-- inheritAllFrom: $blockObject -->
+		<caption>			<!-- allowIn: imageBlock, allowContentOf: $block -->
+			<$text/>		<!-- allowIn: $block -->
 		</caption>
 	</imageBlock>
-	<blockQuote>                    <!-- inheritAllFrom: $container -->
-		<paragraph/>                <!-- inheritAllFrom: $block -->
-		<table>                     <!-- inheritAllFrom: $blockObject -->
-			<tableRow>              <!-- allowIn: table -->
-				<tableCell>         <!-- allowIn: tableRow, allowContentOf: $container -->
-					<paragraph>     <!-- inheritAllFrom: $block -->
-						<$text/>    <!-- allowIn: $block -->
+	<blockQuote>					<!-- inheritAllFrom: $container -->
+		<paragraph/>				<!-- inheritAllFrom: $block -->
+		<table>						<!-- inheritAllFrom: $blockObject -->
+			<tableRow>				<!-- allowIn: table -->
+				<tableCell>			<!-- allowIn: tableRow, allowContentOf: $container -->
+					<paragraph>		<!-- inheritAllFrom: $block -->
+						<$text/>	<!-- allowIn: $block -->
 					</paragraph>
 				</tableCell>
 			</tableRow>
@@ -708,28 +708,28 @@ The above rules will be met for instance by such a model content:
 Which, in turn, has these [semantics](#defining-additional-semantics):
 
 ```xml
-<$root>                   <!-- isLimit: true -->
-	<heading1>            <!-- isBlock: true -->
-		<$text/>          <!-- isInline: true, isContent: true -->
+<$root>						<!-- isLimit: true -->
+	<heading1>				<!-- isBlock: true -->
+		<$text/>			<!-- isInline: true, isContent: true -->
 	</heading1>
-	<paragraph>           <!-- isBlock: true -->
-		<$text/>          <!-- isInline: true, isContent: true -->
-		<softBreak/>      <!-- isInline: true -->
-		<$text/>          <!-- isInline: true, isContent: true -->
-		<imageInline/>    <!-- isInline: true, isObject: true -->
+	<paragraph>				<!-- isBlock: true -->
+		<$text/>			<!-- isInline: true, isContent: true -->
+		<softBreak/>		<!-- isInline: true -->
+		<$text/>			<!-- isInline: true, isContent: true -->
+		<imageInline/>		<!-- isInline: true, isObject: true -->
 	</paragraph>
-	<imageBlock>          <!-- isBlock: true, isObject: true -->
-		<caption>         <!-- isLimit: true -->
-			<$text/>      <!-- isInline: true, isContent: true -->
+	<imageBlock>			<!-- isBlock: true, isObject: true -->
+		<caption>			<!-- isLimit: true -->
+			<$text/>		<!-- isInline: true, isContent: true -->
 		</caption>
 	</imageBlock>
 	<blockQuote>
-		<paragraph/>                <!-- isBlock: true -->
-		<table>                     <!-- isBlock: true, isObject: true -->
-			<tableRow>              <!-- isLimit: true -->
-				<tableCell>         <!-- isLimit: true -->
-					<paragraph>     <!-- isBlock: true -->
-						<$text/>    <!-- isInline: true, isContent: true -->
+		<paragraph/>				<!-- isBlock: true -->
+		<table>						<!-- isBlock: true, isObject: true -->
+			<tableRow>				<!-- isLimit: true -->
+				<tableCell>			<!-- isLimit: true -->
+					<paragraph>		<!-- isBlock: true -->
+						<$text/>	<!-- isInline: true, isContent: true -->
 					</paragraph>
 				</tableCell>
 			</tableRow>

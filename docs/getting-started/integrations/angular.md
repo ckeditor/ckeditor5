@@ -8,12 +8,6 @@ order: 30
 
 # Integrating CKEditor&nbsp;5 with Angular from npm
 
-<p>
-	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-angular" target="_blank" rel="noopener">
-		<img src="https://badge.fury.io/js/%40ckeditor%2Fckeditor5-angular.svg" alt="npm version" loading="lazy">
-	</a>
-</p>
-
 Angular is a TypeScript-based, open-source, single-page web application framework. The CKEditor 5 component for Angular supports integrating different editor types.
 
 {@snippet getting-started/use-builder}

@@ -13,6 +13,9 @@
 
 	/* Match the look of the diagrams */
 	border-radius: 5px;
+
+	/* Override main styles. */
+	box-shadow: none !important;
 }
 
 .ck-inspector.ck-mini-inspector .ck-inspector-code {
@@ -23,7 +26,7 @@
 	--ck-inspector-code-font-family: Monaco, Menlo, Consolas, "Roboto Mono", "Courier New", "Ubuntu Mono", monospace;
 }
 
-.ck-inspector .ck-inspector-tree {
+.ck-inspector.ck-mini-inspector .ck-inspector-tree {
 	overflow: hidden;
 }
 

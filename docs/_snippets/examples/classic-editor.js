@@ -6,7 +6,8 @@
 import {
 	CS_CONFIG,
 	ClassicEditor,
-	getViewportTopOffsetConfig
+	getViewportTopOffsetConfig,
+	setViewportTopOffsetDynamically
 } from '@snippets/index.js';
 
 ClassicEditor
@@ -29,6 +30,8 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		setViewportTopOffsetDynamically( editor );
 	} )
 	.catch( err => {
 		console.error( err );
