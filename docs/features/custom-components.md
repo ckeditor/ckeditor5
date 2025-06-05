@@ -50,7 +50,7 @@ Developers can build widgets that connect to external APIs and data sources to d
 * API integrations for CRM data and system notifications,
 * Analytics displays with traffic and conversion metrics.
 
-## React (and other frameworks) components in widgets : modern UI integrations
+## React (and other frameworks) components in widgets: modern UI integrations
 
 Developers can integrate components from popular UI frameworks like React, Vue, Angular, and others into CKEditor&nbsp;5, enabling reuse of existing component libraries and business logic. The editor below presents integration between React library and a block widget from the CKEditor ecosystem. You can {@link tutorials/widgets/using-react-in-a-widget learn how to build widgets with React} in our framework section.
 
