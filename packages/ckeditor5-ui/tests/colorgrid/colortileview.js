@@ -4,11 +4,11 @@
  */
 
 import { IconColorTileCheck } from '@ckeditor/ckeditor5-icons';
-import ColorTileView from '../../src/colorgrid/colortileview.js';
-import ButtonView from '../../src/button/buttonview.js';
+import { ColorTileView } from '../../src/colorgrid/colortileview.js';
+import { ButtonView } from '../../src/button/buttonview.js';
 import { env } from '@ckeditor/ckeditor5-utils';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'ColorTileView', () => {
 	let colorTile;

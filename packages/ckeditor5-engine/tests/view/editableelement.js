@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import createDocumentMock from '../../tests/view/_utils/createdocumentmock.js';
+import { createViewDocumentMock } from '../../tests/view/_utils/createdocumentmock.js';
 
-import EditableElement from '../../src/view/editableelement.js';
-import Range from '../../src/view/range.js';
-import Document from '../../src/view/document.js';
+import { EditableElement } from '../../src/view/editableelement.js';
+import { Range } from '../../src/view/range.js';
+import { Document } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'EditableElement', () => {
@@ -56,7 +56,7 @@ describe( 'EditableElement', () => {
 		let docMock, viewMain, viewHeader;
 
 		beforeEach( () => {
-			docMock = createDocumentMock();
+			docMock = createViewDocumentMock();
 
 			viewMain = new EditableElement( docMock, 'div' );
 
@@ -120,7 +120,7 @@ describe( 'EditableElement', () => {
 		let docMock;
 
 		beforeEach( () => {
-			docMock = createDocumentMock();
+			docMock = createViewDocumentMock();
 		} );
 
 		it( 'should be observable', () => {
@@ -156,7 +156,7 @@ describe( 'EditableElement', () => {
 		let element, docMock;
 
 		beforeEach( () => {
-			docMock = createDocumentMock();
+			docMock = createViewDocumentMock();
 			element = new EditableElement( docMock, 'div' );
 		} );
 

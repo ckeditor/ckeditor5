@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
-import Image from '@ckeditor/ckeditor5-image/src/image.js';
-import Link from '@ckeditor/ckeditor5-link/src/link.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
+import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
+import { Link } from '@ckeditor/ckeditor5-link/src/link.js';
 
-import CKFinder from '../src/ckfinder.js';
-import CKFinderUI from '../src/ckfinderui.js';
-import CKFinderEditing from '../src/ckfinderediting.js';
+import { CKFinder } from '../src/ckfinder.js';
+import { CKFinderUI } from '../src/ckfinderui.js';
+import { CKFinderEditing } from '../src/ckfinderediting.js';
 
 describe( 'CKFinder', () => {
 	let editorElement, editor;

@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Config from '../src/config.js';
-import areConnectedThroughProperties from '../src/areconnectedthroughproperties.js';
+import { Config } from '../src/config.js';
+import { areConnectedThroughProperties } from '../src/areconnectedthroughproperties.js';
 
 describe( 'Config', () => {
 	let config;

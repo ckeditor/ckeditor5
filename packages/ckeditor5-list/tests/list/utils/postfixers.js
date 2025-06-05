@@ -11,11 +11,11 @@ import {
 import {
 	SiblingListBlocksIterator
 } from '../../../src/list/utils/listwalker.js';
-import stubUid from '../_utils/uid.js';
+import { stubUid } from '../_utils/uid.js';
 import { modelList } from '../_utils/utils.js';
 
-import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { stringify as stringifyModel, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'List - utils - postfixers', () => {

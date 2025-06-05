@@ -11,18 +11,18 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
 import type { RemoveFormatCommand } from '@ckeditor/ckeditor5-remove-format';
 
-import DataFilter from './datafilter.js';
-import CodeBlockElementSupport from './integrations/codeblock.js';
-import DualContentModelElementSupport from './integrations/dualcontent.js';
-import HeadingElementSupport from './integrations/heading.js';
-import ImageElementSupport from './integrations/image.js';
-import MediaEmbedElementSupport from './integrations/mediaembed.js';
-import ScriptElementSupport from './integrations/script.js';
-import TableElementSupport from './integrations/table.js';
-import StyleElementSupport from './integrations/style.js';
-import ListElementSupport from './integrations/list.js';
-import HorizontalLineElementSupport from './integrations/horizontalline.js';
-import CustomElementSupport from './integrations/customelement.js';
+import { DataFilter } from './datafilter.js';
+import { CodeBlockElementSupport } from './integrations/codeblock.js';
+import { DualContentModelElementSupport } from './integrations/dualcontent.js';
+import { HeadingElementSupport } from './integrations/heading.js';
+import { ImageElementSupport } from './integrations/image.js';
+import { MediaEmbedElementSupport } from './integrations/mediaembed.js';
+import { ScriptElementSupport } from './integrations/script.js';
+import { TableElementSupport } from './integrations/table.js';
+import { StyleElementSupport } from './integrations/style.js';
+import { ListElementSupport } from './integrations/list.js';
+import { HorizontalLineElementSupport } from './integrations/horizontalline.js';
+import { CustomElementSupport } from './integrations/customelement.js';
 import type { DataSchemaInlineElementDefinition } from './dataschema.js';
 import type { DocumentSelection, Item, Model, Range, Selectable } from 'ckeditor5/src/engine.js';
 import { getHtmlAttributeName, modifyGhsAttribute, removeFormatting } from './utils.js';
@@ -35,7 +35,7 @@ import type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig.js';
  * This is a "glue" plugin which initializes the {@link module:html-support/datafilter~DataFilter data filter} configuration
  * and features integration with the General HTML Support.
  */
-export default class GeneralHtmlSupport extends Plugin {
+export class GeneralHtmlSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

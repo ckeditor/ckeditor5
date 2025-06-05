@@ -7,14 +7,14 @@
  * @module engine/model/operation/mergeoperation
  */
 
-import Operation from './operation.js';
-import SplitOperation from './splitoperation.js';
-import Position from '../position.js';
-import Range from '../range.js';
+import { Operation } from './operation.js';
+import { SplitOperation } from './splitoperation.js';
+import { Position } from '../position.js';
+import { Range } from '../range.js';
 import { _move } from './utils.js';
 
-import type Document from '../document.js';
-import type Element from '../element.js';
+import { type Document } from '../document.js';
+import { type Element } from '../element.js';
 import type { Selectable } from '../selection.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
@@ -27,7 +27,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  *
  * The merged element is moved to the graveyard at {@link ~MergeOperation#graveyardPosition}.
  */
-export default class MergeOperation extends Operation {
+export class MergeOperation extends Operation {
 	/**
 	 * Position inside the merged element. All nodes from that element after that position will be moved to {@link #targetPosition}.
 	 */

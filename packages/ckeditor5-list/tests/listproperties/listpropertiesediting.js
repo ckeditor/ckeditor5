@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import ListPropertiesEditing from '../../src/listproperties/listpropertiesediting.js';
+import { ListPropertiesEditing } from '../../src/listproperties/listpropertiesediting.js';
 import { modelList } from '../list/_utils/utils.js';
-import stubUid from '../list/_utils/uid.js';
+import { stubUid } from '../list/_utils/uid.js';
 
 describe( 'ListPropertiesEditing', () => {
 	let editor, model;
@@ -295,7 +295,7 @@ describe( 'ListPropertiesEditing', () => {
 						* Foo {style:default}
 					` ) );
 
-					expect( editor.getData() ).to.equal( '<ul><li>Foo</li></ul>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ul><li>Foo</li></ul>' );
 				} );
 
 				it( 'should downcast to `list-style-type` style (bulleted, circle)', () => {
@@ -303,7 +303,9 @@ describe( 'ListPropertiesEditing', () => {
 						* Foo {style:circle}
 					` ) );
 
-					expect( editor.getData() ).to.equal( '<ul style="list-style-type:circle;"><li>Foo</li></ul>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
+						'<ul style="list-style-type:circle;"><li>Foo</li></ul>'
+					);
 				} );
 
 				it( 'should downcast to `list-style-type` style (numbered, default)', () => {
@@ -311,7 +313,7 @@ describe( 'ListPropertiesEditing', () => {
 						# Foo {style:default}
 					` ) );
 
-					expect( editor.getData() ).to.equal( '<ol><li>Foo</li></ol>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ol><li>Foo</li></ol>' );
 				} );
 
 				it( 'should downcast to `list-style-type` style (numbered, decimal)', () => {
@@ -319,7 +321,9 @@ describe( 'ListPropertiesEditing', () => {
 						# Foo {style:decimal}
 					` ) );
 
-					expect( editor.getData() ).to.equal( '<ol style="list-style-type:decimal;"><li>Foo</li></ol>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
+						'<ol style="list-style-type:decimal;"><li>Foo</li></ol>'
+					);
 				} );
 			} );
 		} );
@@ -542,7 +546,7 @@ describe( 'ListPropertiesEditing', () => {
 						* Foo {style:default}
 					` ) );
 
-					expect( editor.getData() ).to.equal( '<ul><li>Foo</li></ul>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ul><li>Foo</li></ul>' );
 				} );
 
 				it( 'should downcast to `type` attribute (bulleted, circle)', () => {
@@ -550,7 +554,7 @@ describe( 'ListPropertiesEditing', () => {
 						* Foo {style:circle}
 					` ) );
 
-					expect( editor.getData() ).to.equal( '<ul type="circle"><li>Foo</li></ul>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ul type="circle"><li>Foo</li></ul>' );
 				} );
 
 				it( 'should downcast to `type` attribute (numbered, default)', () => {
@@ -558,7 +562,7 @@ describe( 'ListPropertiesEditing', () => {
 						# Foo {style:default}
 					` ) );
 
-					expect( editor.getData() ).to.equal( '<ol><li>Foo</li></ol>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ol><li>Foo</li></ol>' );
 				} );
 
 				it( 'should downcast to `type` attribute (numbered, decimal)', () => {
@@ -566,7 +570,7 @@ describe( 'ListPropertiesEditing', () => {
 						# Foo {style:decimal}
 					` ) );
 
-					expect( editor.getData() ).to.equal( '<ol type="1"><li>Foo</li></ol>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ol type="1"><li>Foo</li></ol>' );
 				} );
 
 				it( 'should downcast to `type` attribute (numbered, decimal-leading-zero)', () => {
@@ -574,7 +578,7 @@ describe( 'ListPropertiesEditing', () => {
 						# Foo {style:decimal-leading-zero}
 					` ) );
 
-					expect( editor.getData() ).to.equal( '<ol><li>Foo</li></ol>' );
+					expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ol><li>Foo</li></ol>' );
 				} );
 			} );
 		} );

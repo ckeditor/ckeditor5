@@ -19,20 +19,20 @@ import {
 	type KeystrokeHandlerOptions
 } from '@ckeditor/ckeditor5-utils';
 import { IconCancel } from '@ckeditor/ckeditor5-icons';
-import ViewCollection from '../viewcollection.js';
-import View from '../view.js';
-import FormHeaderView from '../formheader/formheaderview.js';
-import ButtonView from '../button/buttonview.js';
+import { ViewCollection } from '../viewcollection.js';
+import { View } from '../view.js';
+import { FormHeaderView } from '../formheader/formheaderview.js';
+import { ButtonView } from '../button/buttonview.js';
 import { type ButtonExecuteEvent } from '../button/button.js';
-import FocusCycler, { isViewWithFocusCycler,
+import { FocusCycler, isViewWithFocusCycler,
 	type FocusableView,
 	isFocusable
 }
 	from '../focuscycler.js';
-import DraggableViewMixin, { type DraggableView, type DraggableViewDragEvent } from '../bindings/draggableviewmixin.js';
-import DialogActionsView, { type DialogActionButtonDefinition } from './dialogactionsview.js';
-import DialogContentView from './dialogcontentview.js';
-import type EditorUI from '../editorui/editorui.js';
+import { DraggableViewMixin, type DraggableView, type DraggableViewDragEvent } from '../bindings/draggableviewmixin.js';
+import { DialogActionsView, type DialogActionButtonDefinition } from './dialogactionsview.js';
+import { DialogContentView } from './dialogcontentview.js';
+import { type EditorUI } from '../editorui/editorui.js';
 
 import '../../theme/components/dialog/dialog.css';
 // @if CK_DEBUG_DIALOG // const RectDrawer = require( '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer' ).default;
@@ -67,7 +67,7 @@ const toPx = /* #__PURE__ */ toUnit( 'px' );
 /**
  * A dialog view class.
  */
-export default class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) implements DraggableView {
+export class DialogView extends /* #__PURE__ */ DraggableViewMixin( View ) implements DraggableView {
 	/**
 	 * A collection of the child views inside of the dialog.
 	 * A dialog can have 3 optional parts: header, content, and actions.

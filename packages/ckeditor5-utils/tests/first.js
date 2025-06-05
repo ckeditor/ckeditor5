@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import first from '../src/first.js';
+import { first } from '../src/first.js';
 
 describe( 'utils', () => {
 	describe( 'first', () => {

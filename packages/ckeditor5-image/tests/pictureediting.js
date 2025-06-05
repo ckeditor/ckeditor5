@@ -3,26 +3,26 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting.js';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ItalicEditing } from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { LinkImageEditing } from '@ckeditor/ckeditor5-link/src/linkimageediting.js';
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { NativeFileReaderMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks.js';
 
-import ImageInlineEditing from '../src/image/imageinlineediting.js';
-import ImageBlockEditing from '../src/image/imageblockediting.js';
-import PictureEditing from '../src/pictureediting.js';
-import ImageEditing from '../src/image/imageediting.js';
-import ImageUtils from '../src/imageutils.js';
-import ImageResizeEditing from '../src/imageresize/imageresizeediting.js';
-import ImageCaptionEditing from '../src/imagecaption/imagecaptionediting.js';
-import ImageUploadEditing from '../src/imageupload/imageuploadediting.js';
+import { ImageInlineEditing } from '../src/image/imageinlineediting.js';
+import { ImageBlockEditing } from '../src/image/imageblockediting.js';
+import { PictureEditing } from '../src/pictureediting.js';
+import { ImageEditing } from '../src/image/imageediting.js';
+import { ImageUtils } from '../src/imageutils.js';
+import { ImageResizeEditing } from '../src/imageresize/imageresizeediting.js';
+import { ImageCaptionEditing } from '../src/imagecaption/imagecaptionediting.js';
+import { ImageUploadEditing } from '../src/imageupload/imageuploadediting.js';
 
 describe( 'PictureEditing', () => {
 	let editor, model, modelDocument, view, imageUtils;

@@ -5,18 +5,18 @@
 
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { FocusTracker, global, keyCodes, Locale } from '@ckeditor/ckeditor5-utils';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import Model from '../../src/model.js';
+import { ViewModel } from '../../src/model.js';
 
-import ButtonView from '../../src/button/buttonview.js';
-import SwitchButtonView from '../../src/button/switchbuttonview.js';
-import DropdownView from '../../src/dropdown/dropdownview.js';
-import DropdownPanelView from '../../src/dropdown/dropdownpanelview.js';
-import SplitButtonView from '../../src/dropdown/button/splitbuttonview.js';
-import View from '../../src/view.js';
-import ToolbarView from '../../src/toolbar/toolbarview.js';
+import { ButtonView } from '../../src/button/buttonview.js';
+import { SwitchButtonView } from '../../src/button/switchbuttonview.js';
+import { DropdownView } from '../../src/dropdown/dropdownview.js';
+import { DropdownPanelView } from '../../src/dropdown/dropdownpanelview.js';
+import { SplitButtonView } from '../../src/dropdown/button/splitbuttonview.js';
+import { View } from '../../src/view.js';
+import { ToolbarView } from '../../src/toolbar/toolbarview.js';
 import {
 	createDropdown,
 	addToolbarToDropdown,
@@ -24,10 +24,10 @@ import {
 	focusChildOnDropdownOpen,
 	addMenuToDropdown
 } from '../../src/dropdown/utils.js';
-import ListItemView from '../../src/list/listitemview.js';
-import ListSeparatorView from '../../src/list/listseparatorview.js';
-import ListView from '../../src/list/listview.js';
-import ViewCollection from '../../src/viewcollection.js';
+import { ListItemView } from '../../src/list/listitemview.js';
+import { ListSeparatorView } from '../../src/list/listseparatorview.js';
+import { ListView } from '../../src/list/listview.js';
+import { ViewCollection } from '../../src/viewcollection.js';
 import { BodyCollection, DropdownMenuRootListView, ListItemGroupView } from '../../src/index.js';
 
 describe( 'utils', () => {
@@ -254,7 +254,7 @@ describe( 'utils', () => {
 
 					items.add( {
 						type: 'switchbutton',
-						model: new Model( {
+						model: new ViewModel( {
 							label: 'foo'
 						} )
 					} );
@@ -832,12 +832,12 @@ describe( 'utils', () => {
 
 				definitions.add( {
 					type: 'button',
-					model: new Model( { label: 'a' } )
+					model: new ViewModel( { label: 'a' } )
 				} );
 
 				definitions.add( {
 					type: 'button',
-					model: new Model( { label: 'b' } )
+					model: new ViewModel( { label: 'b' } )
 				} );
 
 				addListToDropdown( dropdownView, definitions );
@@ -931,12 +931,12 @@ describe( 'utils', () => {
 				it( 'is populated using item definitions', () => {
 					definitions.add( {
 						type: 'button',
-						model: new Model( { label: 'a', labelStyle: 'b' } )
+						model: new ViewModel( { label: 'a', labelStyle: 'b' } )
 					} );
 
 					definitions.add( {
 						type: 'button',
-						model: new Model( { label: 'c', labelStyle: 'd' } )
+						model: new ViewModel( { label: 'c', labelStyle: 'd' } )
 					} );
 
 					expect( listItems ).to.have.length( 2 );
@@ -956,15 +956,15 @@ describe( 'utils', () => {
 					definitions.addMany( [
 						{
 							type: 'button',
-							model: new Model( { label: 'a', role: 'menuitemcheckbox' } )
+							model: new ViewModel( { label: 'a', role: 'menuitemcheckbox' } )
 						},
 						{
 							type: 'button',
-							model: new Model( { label: 'b', role: 'menuitemradio' } )
+							model: new ViewModel( { label: 'b', role: 'menuitemradio' } )
 						},
 						{
 							type: 'button',
-							model: new Model( { label: 'c', role: 'menuitem' } )
+							model: new ViewModel( { label: 'c', role: 'menuitem' } )
 						}
 					] );
 
@@ -977,15 +977,15 @@ describe( 'utils', () => {
 					definitions.addMany( [
 						{
 							type: 'button',
-							model: new Model( { label: 'a', role: 'menuitemcheckbox' } )
+							model: new ViewModel( { label: 'a', role: 'menuitemcheckbox' } )
 						},
 						{
 							type: 'button',
-							model: new Model( { label: 'b', role: 'menuitemradio' } )
+							model: new ViewModel( { label: 'b', role: 'menuitemradio' } )
 						},
 						{
 							type: 'button',
-							model: new Model( { label: 'c', role: 'menuitem' } )
+							model: new ViewModel( { label: 'c', role: 'menuitem' } )
 						}
 					] );
 
@@ -998,15 +998,15 @@ describe( 'utils', () => {
 					definitions.addMany( [
 						{
 							type: 'button',
-							model: new Model( { label: 'a', role: 'menuitem' } )
+							model: new ViewModel( { label: 'a', role: 'menuitem' } )
 						},
 						{
 							type: 'button',
-							model: new Model( { label: 'b', role: 'menuitem' } )
+							model: new ViewModel( { label: 'b', role: 'menuitem' } )
 						},
 						{
 							type: 'button',
-							model: new Model( { label: 'c', role: 'menuitemradio' } )
+							model: new ViewModel( { label: 'c', role: 'menuitemradio' } )
 						}
 					] );
 
@@ -1019,15 +1019,15 @@ describe( 'utils', () => {
 					definitions.addMany( [
 						{
 							type: 'button',
-							model: new Model( { label: 'a', role: 'menuitem' } )
+							model: new ViewModel( { label: 'a', role: 'menuitem' } )
 						},
 						{
 							type: 'button',
-							model: new Model( { label: 'b', role: 'menuitem' } )
+							model: new ViewModel( { label: 'b', role: 'menuitem' } )
 						},
 						{
 							type: 'button',
-							model: new Model( { label: 'c', role: 'menuitemradio' } )
+							model: new ViewModel( { label: 'c', role: 'menuitemradio' } )
 						}
 					] );
 
@@ -1046,11 +1046,11 @@ describe( 'utils', () => {
 					definitions.addMany( [
 						{
 							type: 'button',
-							model: new Model( { label: 'a', role: 'menuitem' } )
+							model: new ViewModel( { label: 'a', role: 'menuitem' } )
 						},
 						{
 							type: 'button',
-							model: new Model( { label: 'b', role: 'menuitem' } )
+							model: new ViewModel( { label: 'b', role: 'menuitem' } )
 						}
 					] );
 
@@ -1062,7 +1062,7 @@ describe( 'utils', () => {
 				it( 'binds all button properties', () => {
 					const def = {
 						type: 'button',
-						model: new Model( { label: 'a', labelStyle: 'b', foo: 'bar', baz: 'qux' } )
+						model: new ViewModel( { label: 'a', labelStyle: 'b', foo: 'bar', baz: 'qux' } )
 					};
 
 					definitions.add( def );
@@ -1092,7 +1092,7 @@ describe( 'utils', () => {
 				it( 'delegates ButtonView#execute to the ListItemView', done => {
 					definitions.add( {
 						type: 'button',
-						model: new Model( { label: 'a', labelStyle: 'b' } )
+						model: new ViewModel( { label: 'a', labelStyle: 'b' } )
 					} );
 
 					const listItem = listItems.first;
@@ -1113,7 +1113,7 @@ describe( 'utils', () => {
 				it( 'is populated using item definitions', () => {
 					definitions.add( {
 						type: 'switchbutton',
-						model: new Model( { label: 'a', labelStyle: 'b' } )
+						model: new ViewModel( { label: 'a', labelStyle: 'b' } )
 					} );
 
 					expect( listItems ).to.have.length( 1 );
@@ -1128,7 +1128,7 @@ describe( 'utils', () => {
 				it( 'binds all button properties', () => {
 					const def = {
 						type: 'switchbutton',
-						model: new Model( { label: 'a', labelStyle: 'b', foo: 'bar', baz: 'qux' } )
+						model: new ViewModel( { label: 'a', labelStyle: 'b', foo: 'bar', baz: 'qux' } )
 					};
 
 					definitions.add( def );
@@ -1145,7 +1145,7 @@ describe( 'utils', () => {
 				it( 'delegates SwitchButtonView#execute to the ListItemView', done => {
 					definitions.add( {
 						type: 'switchbutton',
-						model: new Model( { label: 'a', labelStyle: 'b' } )
+						model: new ViewModel( { label: 'a', labelStyle: 'b' } )
 					} );
 
 					const listItem = listItems.first;
@@ -1177,7 +1177,7 @@ describe( 'utils', () => {
 					definitionsWithGroups = [
 						{
 							type: 'button',
-							model: new Model( { label: 'a', labelStyle: 'x' } )
+							model: new ViewModel( { label: 'a', labelStyle: 'x' } )
 						},
 						{
 							type: 'group',
@@ -1185,11 +1185,11 @@ describe( 'utils', () => {
 							items: new Collection( [
 								{
 									type: 'button',
-									model: new Model( { label: 'b.a', labelStyle: 'y' } )
+									model: new ViewModel( { label: 'b.a', labelStyle: 'y' } )
 								},
 								{
 									type: 'button',
-									model: new Model( { label: 'b.b', labelStyle: 'z' } )
+									model: new ViewModel( { label: 'b.b', labelStyle: 'z' } )
 								}
 							] )
 						}
@@ -1263,11 +1263,11 @@ describe( 'utils', () => {
 				definitions.addMany( [
 					{
 						type: 'button',
-						model: new Model( { label: 'a', isOn: true } )
+						model: new ViewModel( { label: 'a', isOn: true } )
 					},
 					{
 						type: 'button',
-						model: new Model( { label: 'b' } )
+						model: new ViewModel( { label: 'b' } )
 					}
 				] );
 
@@ -1283,11 +1283,11 @@ describe( 'utils', () => {
 				definitions.addMany( [
 					{
 						type: 'button',
-						model: new Model( { label: 'a' } )
+						model: new ViewModel( { label: 'a' } )
 					},
 					{
 						type: 'button',
-						model: new Model( { label: 'b', isOn: true } )
+						model: new ViewModel( { label: 'b', isOn: true } )
 					}
 				] );
 
@@ -1303,14 +1303,14 @@ describe( 'utils', () => {
 				definitions.addMany( [
 					{
 						type: 'button',
-						model: new Model( { label: 'a' } )
+						model: new ViewModel( { label: 'a' } )
 					},
 					{
 						type: 'separator'
 					},
 					{
 						type: 'button',
-						model: new Model( { label: 'b', isOn: true } )
+						model: new ViewModel( { label: 'b', isOn: true } )
 					}
 				] );
 
@@ -1326,15 +1326,15 @@ describe( 'utils', () => {
 				definitions.addMany( [
 					{
 						type: 'button',
-						model: new Model( { label: 'a' } )
+						model: new ViewModel( { label: 'a' } )
 					},
 					{
 						type: 'button',
-						model: new Model( { label: 'b', isOn: true } )
+						model: new ViewModel( { label: 'b', isOn: true } )
 					},
 					{
 						type: 'button',
-						model: new Model( { label: 'c', isOn: true } )
+						model: new ViewModel( { label: 'c', isOn: true } )
 					}
 				] );
 
@@ -1350,11 +1350,11 @@ describe( 'utils', () => {
 				definitions.addMany( [
 					{
 						type: 'button',
-						model: new Model( { label: 'a' } )
+						model: new ViewModel( { label: 'a' } )
 					},
 					{
 						type: 'button',
-						model: new Model( { label: 'b', isOn: true } )
+						model: new ViewModel( { label: 'b', isOn: true } )
 					}
 				] );
 

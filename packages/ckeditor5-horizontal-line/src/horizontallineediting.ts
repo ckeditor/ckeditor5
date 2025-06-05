@@ -11,14 +11,14 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { toWidget } from 'ckeditor5/src/widget.js';
 import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
 
-import HorizontalLineCommand from './horizontallinecommand.js';
+import { HorizontalLineCommand } from './horizontallinecommand.js';
 
 import '../theme/horizontalline.css';
 
 /**
  * The horizontal line editing feature.
  */
-export default class HorizontalLineEditing extends Plugin {
+export class HorizontalLineEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

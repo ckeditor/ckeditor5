@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import XmlDataProcessor from '../../src/dataprocessor/xmldataprocessor.js';
-import BasicHtmlWriter from '../../src/dataprocessor/basichtmlwriter.js';
-import DomConverter from '../../src/view/domconverter.js';
-import xssTemplates from '../../tests/dataprocessor/_utils/xsstemplates.js';
-import ViewDocumentFragment from '../../src/view/documentfragment.js';
-import ViewDocument from '../../src/view/document.js';
+import { XmlDataProcessor } from '../../src/dataprocessor/xmldataprocessor.js';
+import { BasicHtmlWriter } from '../../src/dataprocessor/basichtmlwriter.js';
+import { DomConverter } from '../../src/view/domconverter.js';
+import { xssTemplates } from '../../tests/dataprocessor/_utils/xsstemplates.js';
+import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { stringify, parse } from '../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 

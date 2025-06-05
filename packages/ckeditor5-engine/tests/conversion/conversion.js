@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Conversion from '../../src/conversion/conversion.js';
+import { Conversion } from '../../src/conversion/conversion.js';
 
-import UpcastDispatcher from '../../src/conversion/upcastdispatcher.js';
+import { UpcastDispatcher } from '../../src/conversion/upcastdispatcher.js';
 
-import UpcastHelpers, { convertText, convertToModelFragment } from '../../src/conversion/upcasthelpers.js';
-import DowncastHelpers from '../../src/conversion/downcasthelpers.js';
+import { UpcastHelpers, convertText, convertToModelFragment } from '../../src/conversion/upcasthelpers.js';
+import { DowncastHelpers } from '../../src/conversion/downcasthelpers.js';
 
-import EditingController from '../../src/controller/editingcontroller.js';
+import { EditingController } from '../../src/controller/editingcontroller.js';
 
-import Model from '../../src/model/model.js';
+import { Model } from '../../src/model/model.js';
 
 import { parse as viewParse, stringify as viewStringify } from '../../src/dev-utils/view.js';
 import { stringify as modelStringify } from '../../src/dev-utils/model.js';
-import ConversionHelpers from '../../src/conversion/conversionhelpers.js';
+import { ConversionHelpers } from '../../src/conversion/conversionhelpers.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 

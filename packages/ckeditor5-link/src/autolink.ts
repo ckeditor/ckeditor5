@@ -14,7 +14,7 @@ import { Delete, TextWatcher, getLastTextLine, findAttributeRange, type TextWatc
 import type { EnterCommand, ShiftEnterCommand } from 'ckeditor5/src/enter.js';
 
 import { addLinkProtocolIfApplicable, linkHasProtocol } from './utils.js';
-import LinkEditing from './linkediting.js';
+import { LinkEditing } from './linkediting.js';
 
 const MIN_LINK_LENGTH_WITH_SPACE_AT_END = 4; // Ie: "t.co " (length 5).
 
@@ -73,7 +73,7 @@ const URL_GROUP_IN_MATCH = 2;
 /**
  * The autolink plugin.
  */
-export default class AutoLink extends Plugin {
+export class AutoLink extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

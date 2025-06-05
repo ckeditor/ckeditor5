@@ -7,18 +7,18 @@
  * @module engine/model/document
  */
 
-import Differ from './differ.js';
-import DocumentSelection from './documentselection.js';
-import History from './history.js';
-import RootElement from './rootelement.js';
+import { Differ } from './differ.js';
+import { DocumentSelection } from './documentselection.js';
+import { History } from './history.js';
+import { RootElement } from './rootelement.js';
 
 import type { SelectionChangeEvent } from './selection.js';
-import type { default as Model, ModelApplyOperationEvent } from './model.js';
+import type { Model, ModelApplyOperationEvent } from './model.js';
 import type { MarkerCollectionUpdateEvent, MarkerChangeEvent } from './markercollection.js';
-import type Batch from './batch.js';
-import type Position from './position.js';
-import type Range from './range.js';
-import type Writer from './writer.js';
+import { type Batch } from './batch.js';
+import { type Position } from './position.js';
+import { type Range } from './range.js';
+import { type Writer } from './writer.js';
 
 import {
 	CKEditorError,
@@ -50,7 +50,7 @@ const graveyardName = '$graveyard';
  * However, the document may contain multiple roots – e.g. when the editor has multiple editable areas
  * (e.g. a title and a body of a message).
  */
-export default class Document extends /* #__PURE__ */ EmitterMixin() {
+export class Document extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * The {@link module:engine/model/model~Model model} that the document is a part of.
 	 */

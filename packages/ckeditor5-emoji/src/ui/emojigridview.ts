@@ -17,7 +17,7 @@ import '../../theme/emojigrid.css';
 /**
  * A grid of emoji tiles. It allows browsing emojis and selecting them to be inserted into the content.
  */
-export default class EmojiGridView extends View<HTMLDivElement> implements FilteredView {
+export class EmojiGridView extends View<HTMLDivElement> implements FilteredView {
 	/**
 	 * Defines the active category name.
 	 *

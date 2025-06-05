@@ -7,9 +7,9 @@
  * @module engine/view/observer/arrowkeysobserver
  */
 
-import Observer from './observer.js';
-import BubblingEventInfo from './bubblingeventinfo.js';
-import type View from '../view.js';
+import { Observer } from './observer.js';
+import { BubblingEventInfo } from './bubblingeventinfo.js';
+import { type View } from '../view.js';
 import type { KeyEventData, ViewDocumentKeyDownEvent } from './keyobserver.js';
 import type { BubblingEvent } from './bubblingemittermixin.js';
 
@@ -20,7 +20,7 @@ import { isArrowKeyCode } from '@ckeditor/ckeditor5-utils';
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  */
-export default class ArrowKeysObserver extends Observer {
+export class ArrowKeysObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */

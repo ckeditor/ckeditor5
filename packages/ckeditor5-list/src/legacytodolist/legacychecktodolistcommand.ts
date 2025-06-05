@@ -18,7 +18,7 @@ const attributeKey = 'todoListChecked';
  * The command is registered by the {@link module:list/legacytodolist/legacytodolistediting~LegacyTodoListEditing} as
  * the `checkTodoList` editor command and it is also available via aliased `todoListCheck` name.
  */
-export default class LegacyCheckTodoListCommand extends Command {
+export class LegacyCheckTodoListCommand extends Command {
 	/**
 	 * A list of to-do list items selected by the {@link module:engine/model/selection~Selection}.
 	 *

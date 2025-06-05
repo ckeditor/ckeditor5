@@ -23,7 +23,7 @@ const NON_PREVIEWABLE_ELEMENT_NAMES = [
 	'rt', 'summary', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr'
 ];
 
-export default class StyleUtils extends Plugin {
+export class StyleUtils extends Plugin {
 	private _htmlSupport!: GeneralHtmlSupport;
 
 	/**

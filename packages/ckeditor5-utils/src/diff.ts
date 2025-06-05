@@ -7,7 +7,7 @@
  * @module utils/diff
  */
 
-import fastDiff from './fastdiff.js';
+import { fastDiff } from './fastdiff.js';
 
 // The following code is based on the "O(NP) Sequence Comparison Algorithm"
 // by Sun Wu, Udi Manber, Gene Myers, Webb Miller.
@@ -30,7 +30,7 @@ import fastDiff from './fastdiff.js';
  * @param cmp Optional function used to compare array values, by default === is used.
  * @returns Array of changes.
  */
-export default function diff<T>(
+export function diff<T>(
 	a: ArrayLike<T>,
 	b: ArrayLike<T>,
 	cmp?: ( a: T, b: T ) => boolean

@@ -27,7 +27,7 @@ import type { Element, Position, Writer } from '@ckeditor/ckeditor5-engine';
  *
  * **Note**: This command moves the selection to the inserted paragraph.
  */
-export default class InsertParagraphCommand extends Command {
+export class InsertParagraphCommand extends Command {
 	public constructor( editor: Editor ) {
 		super( editor );
 

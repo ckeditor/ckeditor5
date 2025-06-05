@@ -22,7 +22,7 @@ import {
  *
  * It is used by the {@link module:list/list~List list feature}.
  */
-export default class ListSplitCommand extends Command {
+export class ListSplitCommand extends Command {
 	/**
 	 * Whether list item should be split before or after the selected block.
 	 */

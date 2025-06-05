@@ -9,10 +9,10 @@
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type { default as Element, NormalizedConsumables } from '../view/element.js';
-import type Node from '../view/node.js';
-import type Text from '../view/text.js';
-import type DocumentFragment from '../view/documentfragment.js';
+import type { Element, NormalizedConsumables } from '../view/element.js';
+import { type Node } from '../view/node.js';
+import { type Text } from '../view/text.js';
+import { type DocumentFragment } from '../view/documentfragment.js';
 import type { Match } from '../view/matcher.js';
 
 /**
@@ -40,7 +40,7 @@ import type { Match } from '../view/matcher.js';
  * viewConsumable.revert( docFragment ); // Revert already consumed document fragment.
  * ```
  */
-export default class ViewConsumable {
+export class ViewConsumable {
 	/**
 	 * Map of consumable elements. If {@link module:engine/view/element~Element element} is used as a key,
 	 * {@link module:engine/conversion/viewconsumable~ViewElementConsumables ViewElementConsumables} instance is stored as value.

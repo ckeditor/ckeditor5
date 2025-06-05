@@ -44,7 +44,7 @@ import {
 } from './converters.js';
 
 import {
-	default as DataSchema,
+	DataSchema,
 	type DataSchemaBlockElementDefinition,
 	type DataSchemaDefinition,
 	type DataSchemaInlineElementDefinition
@@ -91,7 +91,7 @@ import '../theme/datafilter.css';
  * To apply the information about allowed and disallowed attributes in custom integration plugin,
  * use the {@link module:html-support/datafilter~DataFilter#processViewAttributes `processViewAttributes()`} method.
  */
-export default class DataFilter extends Plugin {
+export class DataFilter extends Plugin {
 	/**
 	 * An instance of the {@link module:html-support/dataschema~DataSchema}.
 	 */
@@ -730,7 +730,7 @@ export default class DataFilter extends Plugin {
 		const conversion = editor.conversion;
 		const attributeKey = definition.model;
 
-		// This element is stored in the model as an attribute on a block element, for example DocumentLists.
+		// This element is stored in the model as an attribute on a block element, for example Lists.
 		if ( definition.appliesToBlock ) {
 			return;
 		}

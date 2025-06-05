@@ -32,7 +32,7 @@ import {
 	type DomEmitter
 } from '@ckeditor/ckeditor5-utils';
 
-import LineView from './lineview.js';
+import { LineView } from './lineview.js';
 
 import { throttle } from 'es-toolkit/compat';
 
@@ -41,7 +41,7 @@ import { throttle } from 'es-toolkit/compat';
  *
  * @internal
  */
-export default class DragDropTarget extends Plugin {
+export class DragDropTarget extends Plugin {
 	/**
 	 * A delayed callback removing the drop marker.
 	 *

@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Range from '../../src/view/range.js';
-import Position from '../../src/view/position.js';
-import Element from '../../src/view/element.js';
-import DocumentFragment from '../../src/view/documentfragment.js';
-import Text from '../../src/view/text.js';
-import TextProxy from '../../src/view/textproxy.js';
-import TreeWalker from '../../src/view/treewalker.js';
-import Document from '../../src/view/document.js';
+import { Range } from '../../src/view/range.js';
+import { Position } from '../../src/view/position.js';
+import { Element } from '../../src/view/element.js';
+import { DocumentFragment } from '../../src/view/documentfragment.js';
+import { Text } from '../../src/view/text.js';
+import { TextProxy } from '../../src/view/textproxy.js';
+import { TreeWalker } from '../../src/view/treewalker.js';
+import { Document } from '../../src/view/document.js';
 import { parse, stringify } from '../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 

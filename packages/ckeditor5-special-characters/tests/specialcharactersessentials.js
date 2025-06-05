@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import SpecialCharactersEssentials from '../src/specialcharactersessentials.js';
+import { SpecialCharactersEssentials } from '../src/specialcharactersessentials.js';
 
-import SpecialCharactersCurrency from '../src/specialcharacterscurrency.js';
-import SpecialCharactersText from '../src/specialcharacterstext.js';
-import SpecialCharactersMathematical from '../src/specialcharactersmathematical.js';
-import SpecialCharactersArrows from '../src/specialcharactersarrows.js';
-import SpecialCharactersLatin from '../src/specialcharacterslatin.js';
+import { SpecialCharactersCurrency } from '../src/specialcharacterscurrency.js';
+import { SpecialCharactersText } from '../src/specialcharacterstext.js';
+import { SpecialCharactersMathematical } from '../src/specialcharactersmathematical.js';
+import { SpecialCharactersArrows } from '../src/specialcharactersarrows.js';
+import { SpecialCharactersLatin } from '../src/specialcharacterslatin.js';
 
 describe( 'SpecialCharactersEssentials', () => {
 	it( 'includes other required plugins', () => {

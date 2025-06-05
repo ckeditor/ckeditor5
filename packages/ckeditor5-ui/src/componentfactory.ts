@@ -10,7 +10,7 @@
 import { CKEditorError, type Locale } from '@ckeditor/ckeditor5-utils';
 import type { Editor } from '@ckeditor/ckeditor5-core';
 
-import type View from './view.js';
+import { type View } from './view.js';
 
 /**
  * A helper class implementing the UI component ({@link module:ui/view~View view}) factory.
@@ -36,7 +36,7 @@ import type View from './view.js';
  * The {@link module:core/editor/editor~Editor#locale editor locale} is passed to the factory
  * function when {@link module:ui/componentfactory~ComponentFactory#create} is called.
  */
-export default class ComponentFactory {
+export class ComponentFactory {
 	/**
 	 * The editor instance that the factory belongs to.
 	 */

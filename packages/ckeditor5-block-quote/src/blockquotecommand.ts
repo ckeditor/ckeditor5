@@ -16,7 +16,7 @@ import type { DocumentFragment, Element, Position, Range, Schema, Writer } from 
  *
  * @extends module:core/command~Command
  */
-export default class BlockQuoteCommand extends Command {
+export class BlockQuoteCommand extends Command {
 	/**
 	 * Whether the selection starts in a block quote.
 	 *

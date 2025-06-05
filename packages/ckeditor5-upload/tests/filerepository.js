@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions.js';
-import FileRepository from '../src/filerepository.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { PendingActions } from '@ckeditor/ckeditor5-core/src/pendingactions.js';
+import { FileRepository } from '../src/filerepository.js';
 
-import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
+import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
 import { createNativeFileMock, UploadAdapterMock, NativeFileReaderMock } from './_utils/mocks.js';
-import FileReader from '../src/filereader.js';
+import { FileReader } from '../src/filereader.js';
 
 describe( 'FileRepository', () => {
 	let editor, fileRepository, adapterMock;

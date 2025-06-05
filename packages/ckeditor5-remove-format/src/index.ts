@@ -7,12 +7,11 @@
  * @module remove-format
  */
 
-export { default as RemoveFormat } from './removeformat.js';
-export { default as RemoveFormatEditing } from './removeformatediting.js';
-export { default as RemoveFormatUI } from './removeformatui.js';
-
-export type {
-	default as RemoveFormatCommand,
+export { RemoveFormat } from './removeformat.js';
+export { RemoveFormatEditing } from './removeformatediting.js';
+export { RemoveFormatUI } from './removeformatui.js';
+export {
+	RemoveFormatCommand,
 	IsFormattingCallback,
 	RemoveFormattingCallback
 } from './removeformatcommand.js';

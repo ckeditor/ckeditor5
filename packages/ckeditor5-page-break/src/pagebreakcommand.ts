@@ -20,7 +20,7 @@ import type { DocumentSelection, Element, Model, Schema } from 'ckeditor5/src/en
  *
  *		editor.execute( 'pageBreak' );
  */
-export default class PageBreakCommand extends Command {
+export class PageBreakCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

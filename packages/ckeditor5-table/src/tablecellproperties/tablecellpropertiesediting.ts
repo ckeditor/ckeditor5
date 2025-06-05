@@ -20,16 +20,16 @@ import {
 } from 'ckeditor5/src/engine.js';
 
 import { downcastAttributeToStyle, getDefaultValueAdjusted, upcastBorderStyles } from '../converters/tableproperties.js';
-import TableEditing from './../tableediting.js';
-import TableCellWidthEditing from '../tablecellwidth/tablecellwidthediting.js';
-import TableCellPaddingCommand from './commands/tablecellpaddingcommand.js';
-import TableCellHeightCommand from './commands/tablecellheightcommand.js';
-import TableCellBackgroundColorCommand from './commands/tablecellbackgroundcolorcommand.js';
-import TableCellVerticalAlignmentCommand from './commands/tablecellverticalalignmentcommand.js';
-import TableCellHorizontalAlignmentCommand from './commands/tablecellhorizontalalignmentcommand.js';
-import TableCellBorderStyleCommand from './commands/tablecellborderstylecommand.js';
-import TableCellBorderColorCommand from './commands/tablecellbordercolorcommand.js';
-import TableCellBorderWidthCommand from './commands/tablecellborderwidthcommand.js';
+import { TableEditing } from './../tableediting.js';
+import { TableCellWidthEditing } from '../tablecellwidth/tablecellwidthediting.js';
+import { TableCellPaddingCommand } from './commands/tablecellpaddingcommand.js';
+import { TableCellHeightCommand } from './commands/tablecellheightcommand.js';
+import { TableCellBackgroundColorCommand } from './commands/tablecellbackgroundcolorcommand.js';
+import { TableCellVerticalAlignmentCommand } from './commands/tablecellverticalalignmentcommand.js';
+import { TableCellHorizontalAlignmentCommand } from './commands/tablecellhorizontalalignmentcommand.js';
+import { TableCellBorderStyleCommand } from './commands/tablecellborderstylecommand.js';
+import { TableCellBorderColorCommand } from './commands/tablecellbordercolorcommand.js';
+import { TableCellBorderWidthCommand } from './commands/tablecellborderwidthcommand.js';
 import { getNormalizedDefaultCellProperties } from '../utils/table-properties.js';
 import { enableProperty } from '../utils/common.js';
 
@@ -55,7 +55,7 @@ const ALIGN_VALUES_REG_EXP = /^(left|center|right|justify)$/;
  * - horizontal and vertical alignment: the `'tableCellHorizontalAlignment'` and `'tableCellVerticalAlignment'` commands
  * - width and height: the `'tableCellWidth'` and `'tableCellHeight'` commands
  */
-export default class TableCellPropertiesEditing extends Plugin {
+export class TableCellPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -220,13 +220,15 @@ function enableHorizontalAlignmentProperty( schema: Schema, conversion: Conversi
 			model: {
 				key: 'tableCellHorizontalAlignment',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					// Consume the style even if not applied to the element so it won't be processed by other converters.
-					conversionApi.consumable.consume( viewElement, { styles: 'text-align' } );
-
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, 'left', data );
 					const align = viewElement.getStyle( 'text-align' );
 
-					return align === localDefaultValue ? null : align;
+					if ( align !== localDefaultValue ) {
+						return align;
+					}
+
+					// Consume the style even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { styles: 'text-align' } );
 				}
 			}
 		} )
@@ -241,13 +243,15 @@ function enableHorizontalAlignmentProperty( schema: Schema, conversion: Conversi
 			model: {
 				key: 'tableCellHorizontalAlignment',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					// Consume the attribute even if not applied to the element so it won't be processed by other converters.
-					conversionApi.consumable.consume( viewElement, { attributes: 'align' } );
-
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, 'left', data );
 					const align = viewElement.getAttribute( 'align' );
 
-					return align === localDefaultValue ? null : align;
+					if ( align !== localDefaultValue ) {
+						return align;
+					}
+
+					// Consume the style even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { attributes: 'align' } );
 				}
 			}
 		} );
@@ -291,13 +295,15 @@ function enableVerticalAlignmentProperty( schema: Schema, conversion: Conversion
 			model: {
 				key: 'tableCellVerticalAlignment',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					// Consume the style even if not applied to the element so it won't be processed by other converters.
-					conversionApi.consumable.consume( viewElement, { styles: 'vertical-align' } );
-
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, 'middle', data );
 					const align = viewElement.getStyle( 'vertical-align' );
 
-					return align === localDefaultValue ? null : align;
+					if ( align !== localDefaultValue ) {
+						return align;
+					}
+
+					// Consume the style even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { styles: 'vertical-align' } );
 				}
 			}
 		} )
@@ -312,13 +318,15 @@ function enableVerticalAlignmentProperty( schema: Schema, conversion: Conversion
 			model: {
 				key: 'tableCellVerticalAlignment',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					// Consume the attribute even if not applied to the element so it won't be processed by other converters.
-					conversionApi.consumable.consume( viewElement, { attributes: 'valign' } );
-
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, 'middle', data );
 					const valign = viewElement.getAttribute( 'valign' );
 
-					return valign === localDefaultValue ? null : valign;
+					if ( valign !== localDefaultValue ) {
+						return valign;
+					}
+
+					// Consume the attribute even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { attributes: 'valign' } );
 				}
 			}
 		} );

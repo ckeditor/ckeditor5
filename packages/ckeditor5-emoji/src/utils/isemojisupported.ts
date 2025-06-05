@@ -10,7 +10,7 @@
 /**
  * Checks if the two pixels parts are the same using canvas.
  */
-export default function isEmojiSupported( unicode: string ): boolean {
+export function isEmojiSupported( unicode: string ): boolean {
 	const ctx = getCanvas();
 
 	/* istanbul ignore next -- @preserve */

@@ -39,7 +39,7 @@ export type ColorInputViewOptions = {
  *
  * @internal
  */
-export default class ColorInputView extends View implements FocusableView {
+export class ColorInputView extends View implements FocusableView {
 	/**
 	 * The value of the input.
 	 *

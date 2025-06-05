@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Underline from '../src/underline.js';
-import UnderlineEditing from '../src/underline/underlineediting.js';
-import UnderlineUI from '../src/underline/underlineui.js';
+import { Underline } from '../src/underline.js';
+import { UnderlineEditing } from '../src/underline/underlineediting.js';
+import { UnderlineUI } from '../src/underline/underlineui.js';
 
 describe( 'Underline', () => {
 	it( 'should require UnderlineEditing and UnderlineUI', () => {

@@ -4,7 +4,7 @@
  */
 
 // Creates 30 paragraphs, each with a 1000 of text nodes, half of the text nodes is wrapped in a span with inline styles.
-export default function makeData() {
+export function makeData() {
 	let initialData = '';
 
 	for ( let i = 0; i < 30; i++ ) {

@@ -329,7 +329,7 @@ You can execute the command using the {@link module:core/editor/editor~Editor#ex
 ```js
 // Applies the style to the selected content.
 // Executing the command again will remove the style from the selected content.
-editor.execute( 'style', 'Article category' );
+editor.execute( 'style', { styleName: 'Article category' } );
 ```
 
 <info-box>

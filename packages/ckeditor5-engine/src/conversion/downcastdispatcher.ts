@@ -7,24 +7,24 @@
  * @module engine/conversion/downcastdispatcher
  */
 
-import Consumable from './modelconsumable.js';
-import Range from '../model/range.js';
+import { ModelConsumable } from './modelconsumable.js';
+import { Range } from '../model/range.js';
 
 import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
-import type { default as Differ, DiffItem } from '../model/differ.js';
-import type { default as MarkerCollection, Marker } from '../model/markercollection.js';
+import type { Differ, DiffItem } from '../model/differ.js';
+import type { MarkerCollection, Marker } from '../model/markercollection.js';
 import type { TreeWalkerValue } from '../model/treewalker.js';
-import type DocumentSelection from '../model/documentselection.js';
-import type DowncastWriter from '../view/downcastwriter.js';
-import type RootElement from '../model/rootelement.js';
-import type Element from '../model/element.js';
-import type Item from '../model/item.js';
-import type Mapper from './mapper.js';
-import type Position from '../model/position.js';
-import type Schema from '../model/schema.js';
-import type Selection from '../model/selection.js';
-import type ViewElement from '../view/element.js';
+import { type DocumentSelection } from '../model/documentselection.js';
+import { type DowncastWriter } from '../view/downcastwriter.js';
+import { type RootElement } from '../model/rootelement.js';
+import { type Element } from '../model/element.js';
+import { type Item } from '../model/item.js';
+import { type Mapper } from './mapper.js';
+import { type Position } from '../model/position.js';
+import { type Schema } from '../model/schema.js';
+import { type Selection } from '../model/selection.js';
+import { type ViewElement } from '../view/element.js';
 
 /**
  * The downcast dispatcher is a central point of downcasting (conversion from the model to the view), which is a process of reacting
@@ -117,7 +117,7 @@ import type ViewElement from '../view/element.js';
  * } );
  * ```
  */
-export default class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
+export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * A template for an interface passed by the dispatcher to the event callbacks.
 	 *
@@ -516,9 +516,9 @@ export default class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 * @returns The values to consume.
 	 */
 	private _addConsumablesForInsert(
-		consumable: Consumable,
+		consumable: ModelConsumable,
 		walkerValues: Iterable<TreeWalkerValue>
-	): Consumable {
+	): ModelConsumable {
 		for ( const value of walkerValues ) {
 			const item = value.item;
 
@@ -544,10 +544,10 @@ export default class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 * @returns The values to consume.
 	 */
 	private _addConsumablesForRange(
-		consumable: Consumable,
+		consumable: ModelConsumable,
 		range: Range,
 		type: string
-	): Consumable {
+	): ModelConsumable {
 		for ( const item of range.getItems() ) {
 			consumable.add( item, type );
 		}
@@ -564,10 +564,10 @@ export default class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 * @returns The values to consume.
 	 */
 	private _addConsumablesForSelection(
-		consumable: Consumable,
+		consumable: ModelConsumable,
 		selection: Selection | DocumentSelection,
 		markers: Iterable<Marker>
-	): Consumable {
+	): ModelConsumable {
 		consumable.add( selection, 'selection' );
 
 		for ( const marker of markers ) {
@@ -653,7 +653,7 @@ export default class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	): DowncastConversionApi {
 		const conversionApi: DowncastConversionApi = {
 			...this._conversionApi,
-			consumable: new Consumable(),
+			consumable: new ModelConsumable(),
 			writer,
 			options,
 			convertItem: item => this._convertInsert( Range._createOn( item ), conversionApi ),
@@ -934,7 +934,7 @@ export interface DowncastConversionApi {
 	 * converted, an appropriate consumable value should be {@link module:engine/conversion/modelconsumable~ModelConsumable#consume
 	 * consumed}.
 	 */
-	consumable: Consumable;
+	consumable: ModelConsumable;
 
 	/**
 	 * The {@link module:engine/conversion/mapper~Mapper} instance.

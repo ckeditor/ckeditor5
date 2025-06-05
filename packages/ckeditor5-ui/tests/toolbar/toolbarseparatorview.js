@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ToolbarSeparatorView from '../../src/toolbar/toolbarseparatorview.js';
+import { ToolbarSeparatorView } from '../../src/toolbar/toolbarseparatorview.js';
 
 describe( 'ToolbarSeparatorView', () => {
 	let view;

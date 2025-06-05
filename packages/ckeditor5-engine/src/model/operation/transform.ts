@@ -7,22 +7,22 @@
  * @module engine/model/operation/transform
  */
 
-import InsertOperation from './insertoperation.js';
-import AttributeOperation from './attributeoperation.js';
-import RenameOperation from './renameoperation.js';
-import MarkerOperation from './markeroperation.js';
-import MoveOperation from './moveoperation.js';
-import RootAttributeOperation from './rootattributeoperation.js';
-import RootOperation from './rootoperation.js';
-import MergeOperation from './mergeoperation.js';
-import SplitOperation from './splitoperation.js';
-import NoOperation from './nooperation.js';
-import Range from '../range.js';
-import Position from '../position.js';
+import { InsertOperation } from './insertoperation.js';
+import { AttributeOperation } from './attributeoperation.js';
+import { RenameOperation } from './renameoperation.js';
+import { MarkerOperation } from './markeroperation.js';
+import { MoveOperation } from './moveoperation.js';
+import { RootAttributeOperation } from './rootattributeoperation.js';
+import { RootOperation } from './rootoperation.js';
+import { MergeOperation } from './mergeoperation.js';
+import { SplitOperation } from './splitoperation.js';
+import { NoOperation } from './nooperation.js';
+import { Range } from '../range.js';
+import { Position } from '../position.js';
 
-import type Operation from './operation.js';
-import type Document from '../document.js';
-import type History from '../history.js';
+import { type Operation } from './operation.js';
+import { type Document } from '../document.js';
+import { type History } from '../history.js';
 
 import { compareArrays } from '@ckeditor/ckeditor5-utils';
 

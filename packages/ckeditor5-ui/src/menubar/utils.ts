@@ -7,10 +7,10 @@
  * @module ui/menubar/utils
  */
 
-import MenuBarMenuListItemView from './menubarmenulistitemview.js';
-import type MenuBarMenuView from './menubarmenuview.js';
+import { MenuBarMenuListItemView } from './menubarmenulistitemview.js';
+import { type MenuBarMenuView } from './menubarmenuview.js';
 import type {
-	default as MenuBarView,
+	MenuBarView,
 	MenuBarConfig,
 	MenuBarMenuMouseEnterEvent,
 	MenuBarMenuChangeIsOpenEvent,
@@ -24,9 +24,9 @@ import type {
 	NormalizedMenuBarConfigObject,
 	MenuBarConfigAddedItem
 } from './menubarview.js';
-import clickOutsideHandler from '../bindings/clickoutsidehandler.js';
+import { clickOutsideHandler } from '../bindings/clickoutsidehandler.js';
 import type { ButtonExecuteEvent } from '../button/button.js';
-import type ComponentFactory from '../componentfactory.js';
+import { type ComponentFactory } from '../componentfactory.js';
 import type { FocusableView } from '../focuscycler.js';
 import {
 	logWarning,

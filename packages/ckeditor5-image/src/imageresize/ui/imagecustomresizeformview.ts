@@ -35,7 +35,7 @@ import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
 /**
  * The ImageCustomResizeFormView class.
  */
-export default class ImageCustomResizeFormView extends View {
+export class ImageCustomResizeFormView extends View {
 	/**
 	 * Tracks information about the DOM focus in the form.
 	 */

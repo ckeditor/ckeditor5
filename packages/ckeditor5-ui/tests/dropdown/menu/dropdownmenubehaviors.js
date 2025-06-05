@@ -4,9 +4,9 @@
  */
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import DropdownMenuRootListView from '../../../src/dropdown/menu/dropdownmenurootlistview.js';
+import { DropdownMenuRootListView } from '../../../src/dropdown/menu/dropdownmenurootlistview.js';
 import { createMockMenuDefinition } from './_utils/dropdowntreemock.js';
 
 describe( 'Menu Behaviors', () => {

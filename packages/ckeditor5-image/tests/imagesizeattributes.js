@@ -3,18 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import ReplaceImageSourceCommand from '../src/image/replaceimagesourcecommand.js';
-import ImageBlockEditing from '../src/image/imageblockediting.js';
-import ImageInlineEditing from '../src/image/imageinlineediting.js';
-import ImageSizeAttributes from '../src/imagesizeattributes.js';
-import ImageResizeEditing from '../src/imageresize/imageresizeediting.js';
-import PictureEditing from '../src/pictureediting.js';
-import ImageUtils from '../src/imageutils.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ReplaceImageSourceCommand } from '../src/image/replaceimagesourcecommand.js';
+import { ImageBlockEditing } from '../src/image/imageblockediting.js';
+import { ImageInlineEditing } from '../src/image/imageinlineediting.js';
+import { ImageSizeAttributes } from '../src/imagesizeattributes.js';
+import { ImageResizeEditing } from '../src/imageresize/imageresizeediting.js';
+import { PictureEditing } from '../src/pictureediting.js';
+import { ImageUtils } from '../src/imageutils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';

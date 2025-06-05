@@ -9,7 +9,7 @@
 
 import { ContextPlugin } from 'ckeditor5/src/core.js';
 import { CKEditorError } from 'ckeditor5/src/utils.js';
-import CloudServicesCore from './cloudservicescore.js';
+import { CloudServicesCore } from './cloudservicescore.js';
 import type { CloudServicesConfig, TokenUrl } from './cloudservicesconfig.js';
 import type { InitializedToken } from './token/token.js';
 
@@ -19,7 +19,7 @@ import type { InitializedToken } from './token/token.js';
  * It initializes the token provider based on
  * the {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig `config.cloudService`}.
  */
-export default class CloudServices extends ContextPlugin implements CloudServicesConfig {
+export class CloudServices extends ContextPlugin implements CloudServicesConfig {
 	/**
 	 * The authentication token URL for CKEditor Cloud Services or a callback to the token value promise. See the
 	 * {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig#tokenUrl} for more details.

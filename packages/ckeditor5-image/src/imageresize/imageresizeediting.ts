@@ -9,8 +9,8 @@
 
 import type { ViewElement } from 'ckeditor5/src/engine.js';
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
-import ImageUtils from '../imageutils.js';
-import ResizeImageCommand from './resizeimagecommand.js';
+import { ImageUtils } from '../imageutils.js';
+import { ResizeImageCommand } from './resizeimagecommand.js';
 import { widthAndHeightStylesAreBothSet } from '../image/utils.js';
 
 /**
@@ -19,7 +19,7 @@ import { widthAndHeightStylesAreBothSet } from '../image/utils.js';
  * It adds the ability to resize each image using handles or manually by
  * {@link module:image/imageresize/imageresizebuttons~ImageResizeButtons} buttons.
  */
-export default class ImageResizeEditing extends Plugin {
+export class ImageResizeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

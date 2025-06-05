@@ -14,10 +14,11 @@ import {
 	type GetCallback
 } from '@ckeditor/ckeditor5-utils';
 
-import RootEditableElement from '../view/rooteditableelement.js';
-import View from '../view/view.js';
-import Mapper from '../conversion/mapper.js';
-import DowncastDispatcher, {
+import { RootEditableElement } from '../view/rooteditableelement.js';
+import { View } from '../view/view.js';
+import { Mapper } from '../conversion/mapper.js';
+import {
+	DowncastDispatcher,
 	type DowncastInsertEvent,
 	type DowncastRemoveEvent,
 	type DowncastSelectionEvent,
@@ -36,11 +37,11 @@ import { convertSelectionChange } from '../conversion/upcasthelpers.js';
 
 import { tryFixingRange } from '../model/utils/selection-post-fixer.js';
 
-import type { default as Model, AfterChangesEvent, BeforeChangesEvent } from '../model/model.js';
-import type ModelItem from '../model/item.js';
-import type ModelText from '../model/text.js';
-import type ModelTextProxy from '../model/textproxy.js';
-import type Schema from '../model/schema.js';
+import type { Model, AfterChangesEvent, BeforeChangesEvent } from '../model/model.js';
+import { type ModelItem } from '../model/item.js';
+import { type ModelText } from '../model/text.js';
+import { type ModelTextProxy } from '../model/textproxy.js';
+import { type Schema } from '../model/schema.js';
 import type { DocumentChangeEvent } from '../model/document.js';
 import type { Marker } from '../model/markercollection.js';
 import type { StylesProcessor } from '../view/stylesmap.js';
@@ -54,7 +55,7 @@ import type { ViewDocumentInputEvent } from '../view/observer/inputobserver.js';
  * including selection handling. It also creates the {@link ~EditingController#view view} which builds a
  * browser-independent virtualization over the DOM elements. The editing controller also attaches default converters.
  */
-export default class EditingController extends /* #__PURE__ */ ObservableMixin() {
+export class EditingController extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Editor model.
 	 */

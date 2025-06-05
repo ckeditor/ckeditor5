@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import isIterable from '../src/isiterable.js';
+import { isIterable } from '../src/isiterable.js';
 
 describe( 'utils', () => {
 	describe( 'isIterable', () => {

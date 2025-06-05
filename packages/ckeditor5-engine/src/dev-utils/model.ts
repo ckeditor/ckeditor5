@@ -11,21 +11,21 @@
  * Collection of methods for manipulating the {@link module:engine/model/model model} for testing purposes.
  */
 
-import RootElement from '../model/rootelement.js';
-import Model from '../model/model.js';
-import ModelRange from '../model/range.js';
-import ModelPosition from '../model/position.js';
-import ModelSelection from '../model/selection.js';
-import ModelDocumentFragment from '../model/documentfragment.js';
-import DocumentSelection from '../model/documentselection.js';
+import { RootElement } from '../model/rootelement.js';
+import { Model } from '../model/model.js';
+import { ModelRange } from '../model/range.js';
+import { ModelPosition } from '../model/position.js';
+import { ModelSelection } from '../model/selection.js';
+import { ModelDocumentFragment } from '../model/documentfragment.js';
+import { DocumentSelection } from '../model/documentselection.js';
 
-import View from '../view/view.js';
-import ViewContainerElement from '../view/containerelement.js';
-import ViewRootEditableElement from '../view/rooteditableelement.js';
+import { View } from '../view/view.js';
+import { ViewContainerElement } from '../view/containerelement.js';
+import { ViewRootEditableElement } from '../view/rooteditableelement.js';
 
 import { parse as viewParse, stringify as viewStringify } from '../../src/dev-utils/view.js';
 
-import Mapper from '../conversion/mapper.js';
+import { Mapper } from '../conversion/mapper.js';
 import {
 	convertCollapsedSelection,
 	convertRangeSelection,
@@ -38,32 +38,34 @@ import {
 
 import { StylesProcessor } from '../view/stylesmap.js';
 
-import DowncastDispatcher, {
+import {
+	DowncastDispatcher,
 	type DowncastAddMarkerEvent,
 	type DowncastAttributeEvent,
 	type DowncastInsertEvent,
 	type DowncastSelectionEvent
 } from '../conversion/downcastdispatcher.js';
-import UpcastDispatcher, {
+import {
+	UpcastDispatcher,
 	type UpcastDocumentFragmentEvent,
 	type UpcastElementEvent,
 	type UpcastTextEvent,
 	type UpcastConversionApi,
 	type UpcastConversionData
 } from '../conversion/upcastdispatcher.js';
-import type ViewDocumentSelection from '../view/documentselection.js';
+import { type ViewDocumentSelection } from '../view/documentselection.js';
 import type { BatchType } from '../model/batch.js';
-import type MarkerCollection from '../model/markercollection.js';
-import type ModelText from '../model/text.js';
-import type ModelTextProxy from '../model/textproxy.js';
-import type DowncastWriter from '../view/downcastwriter.js';
-import type { default as Schema, SchemaContextDefinition } from '../model/schema.js';
+import { type MarkerCollection } from '../model/markercollection.js';
+import { type ModelText } from '../model/text.js';
+import { type ModelTextProxy } from '../model/textproxy.js';
+import { type DowncastWriter } from '../view/downcastwriter.js';
+import type { Schema, SchemaContextDefinition } from '../model/schema.js';
 import type { ViewDocumentFragment, ViewElement } from '../index.js';
-import type ViewNode from '../view/node.js';
-import type ViewText from '../view/text.js';
-import type Writer from '../model/writer.js';
-import type ModelNode from '../model/node.js';
-import type ModelElement from '../model/element.js';
+import { type ViewNode } from '../view/node.js';
+import { type ViewText } from '../view/text.js';
+import { type Writer } from '../model/writer.js';
+import { type ModelNode } from '../model/node.js';
+import { type ModelElement } from '../model/element.js';
 
 import { toMap, type EventInfo } from '@ckeditor/ckeditor5-utils';
 
@@ -142,7 +144,6 @@ getData._stringify = stringify;
  * @param options.selectionAttributes A list of attributes which will be passed to the selection.
  * @param options.lastRangeBackward If set to `true`, the last range will be added as backward.
  * @param options.batchType Batch type used for inserting elements. See {@link module:engine/model/batch~Batch#constructor}.
- * See {@link module:engine/model/batch~Batch#type}.
  */
 export function setData(
 	model: Model,

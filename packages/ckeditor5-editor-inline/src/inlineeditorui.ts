@@ -20,14 +20,14 @@ import {
 
 import { enablePlaceholder } from 'ckeditor5/src/engine.js';
 
-import type InlineEditorUIView from './inlineeditoruiview.js';
+import { type InlineEditorUIView } from './inlineeditoruiview.js';
 
 /**
  * The inline editor UI class.
  *
  * @extends module:ui/editorui/editorui~EditorUI
  */
-export default class InlineEditorUI extends EditorUI {
+export class InlineEditorUI extends EditorUI {
 	/**
 	 * The main (top–most) view of the editor UI.
 	 */

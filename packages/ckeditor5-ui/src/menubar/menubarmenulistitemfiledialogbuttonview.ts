@@ -17,7 +17,7 @@ import '../../theme/components/menubar/menubarmenulistitembutton.css';
  *
  * This component provides a button that opens the native file selection dialog.
  */
-export default class MenuBarMenuListItemFileDialogButtonView extends FileDialogListItemButtonView {
+export class MenuBarMenuListItemFileDialogButtonView extends FileDialogListItemButtonView {
 	/**
 	 * Creates an instance of the menu bar list button view.
 	 *

@@ -4,16 +4,16 @@
  */
 
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import Image from '../../src/image.js';
-import ImageResizeEditing from '../../src/imageresize/imageresizeediting.js';
-import ResizeImageCommand from '../../src/imageresize/resizeimagecommand.js';
-import ImageStyle from '../../src/imagestyle.js';
-import ImageBlockEditing from '../../src/image/imageblockediting.js';
-import ImageInlineEditing from '../../src/image/imageinlineediting.js';
+import { Image } from '../../src/image.js';
+import { ImageResizeEditing } from '../../src/imageresize/imageresizeediting.js';
+import { ResizeImageCommand } from '../../src/imageresize/resizeimagecommand.js';
+import { ImageStyle } from '../../src/imagestyle.js';
+import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
+import { ImageInlineEditing } from '../../src/image/imageinlineediting.js';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';

@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Image from '../../src/image.js';
-import ImageTextAlternativeEditing from '../../src/imagetextalternative/imagetextalternativeediting.js';
-import ImageTextAlternativeUI from '../../src/imagetextalternative/imagetextalternativeui.js';
-import ImageCaption from '../../src/imagecaption.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import View from '@ckeditor/ckeditor5-ui/src/view.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Image } from '../../src/image.js';
+import { ImageTextAlternativeEditing } from '../../src/imagetextalternative/imagetextalternativeediting.js';
+import { ImageTextAlternativeUI } from '../../src/imagetextalternative/imagetextalternativeui.js';
+import { ImageCaption } from '../../src/imagecaption.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 

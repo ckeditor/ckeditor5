@@ -18,9 +18,9 @@ import type {
 	Writer
 } from 'ckeditor5/src/engine.js';
 
-import InsertTableLayoutCommand from './../commands/inserttablelayoutcommand.js';
-import TableColumnResize from '../tablecolumnresize.js';
-import TableTypeCommand from './commands/tabletypecommand.js';
+import { InsertTableLayoutCommand } from './../commands/inserttablelayoutcommand.js';
+import { TableColumnResize } from '../tablecolumnresize.js';
+import { TableTypeCommand } from './commands/tabletypecommand.js';
 import { createEmptyTableCell } from '../utils/common.js';
 import type { TableType } from '../tableconfig.js';
 
@@ -31,7 +31,7 @@ const TABLE_TYPES: Array<TableType> = [ 'content', 'layout' ];
 /**
  * The table layout editing plugin.
  */
-export default class TableLayoutEditing extends Plugin {
+export class TableLayoutEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

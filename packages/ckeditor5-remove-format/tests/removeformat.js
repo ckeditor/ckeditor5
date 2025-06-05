@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import RemoveFormat from '../src/removeformat.js';
-import RemoveFormatEditing from '../src/removeformatediting.js';
-import RemoveFormatUI from '../src/removeformatui.js';
+import { RemoveFormat } from '../src/removeformat.js';
+import { RemoveFormatEditing } from '../src/removeformatediting.js';
+import { RemoveFormatUI } from '../src/removeformatui.js';
 
 describe( 'RemoveFormat', () => {
 	it( 'should require RemoveFormatEditing', () => {

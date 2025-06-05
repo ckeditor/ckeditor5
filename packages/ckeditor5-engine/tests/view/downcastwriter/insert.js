@@ -3,17 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import DowncastWriter from '../../../src/view/downcastwriter.js';
-import ContainerElement from '../../../src/view/containerelement.js';
-import Element from '../../../src/view/element.js';
-import EmptyElement from '../../../src/view/emptyelement.js';
-import UIElement from '../../../src/view/uielement.js';
-import RawElement from '../../../src/view/rawelement.js';
-import Position from '../../../src/view/position.js';
+import { DowncastWriter } from '../../../src/view/downcastwriter.js';
+import { ContainerElement } from '../../../src/view/containerelement.js';
+import { Element } from '../../../src/view/element.js';
+import { EmptyElement } from '../../../src/view/emptyelement.js';
+import { UIElement } from '../../../src/view/uielement.js';
+import { RawElement } from '../../../src/view/rawelement.js';
+import { Position } from '../../../src/view/position.js';
 
 import { stringify, parse } from '../../../src/dev-utils/view.js';
-import AttributeElement from '../../../src/view/attributeelement.js';
-import Document from '../../../src/view/document.js';
+import { AttributeElement } from '../../../src/view/attributeelement.js';
+import { Document } from '../../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 

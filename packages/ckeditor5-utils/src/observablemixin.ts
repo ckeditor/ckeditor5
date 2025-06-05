@@ -9,8 +9,8 @@
  * @module utils/observablemixin
  */
 
-import EmitterMixin, { type Emitter } from './emittermixin.js';
-import CKEditorError from './ckeditorerror.js';
+import { EmitterMixin, type Emitter } from './emittermixin.js';
+import { CKEditorError } from './ckeditorerror.js';
 import type { Constructor, Mixed } from './mix.js';
 
 import { isObject } from 'es-toolkit/compat';
@@ -45,7 +45,7 @@ const defaultObservableClass = /* #__PURE__ */ ObservableMixin( /* #__PURE__ */ 
  *
  * @label EXTENDS
  */
-export default function ObservableMixin<Base extends Constructor<Emitter>>( base: Base ): Mixed<Base, Observable>;
+export function ObservableMixin<Base extends Constructor<Emitter>>( base: Base ): Mixed<Base, Observable>;
 
 /**
  * A mixin that injects the "observable properties" and data binding functionality described in the
@@ -66,12 +66,12 @@ export default function ObservableMixin<Base extends Constructor<Emitter>>( base
  *
  * @label NO_ARGUMENTS
  */
-export default function ObservableMixin(): {
+export function ObservableMixin(): {
 	new (): Observable;
 	prototype: Observable;
 };
 
-export default function ObservableMixin( base?: Constructor<Emitter> ): unknown {
+export function ObservableMixin( base?: Constructor<Emitter> ): unknown {
 	if ( !base ) {
 		return defaultObservableClass;
 	}
@@ -324,16 +324,6 @@ export default function ObservableMixin( base?: Constructor<Emitter> ): unknown 
 
 	return Mixin;
 }
-
-// Backward compatibility with `mix`
-( [
-	'set', 'bind', 'unbind', 'decorate',
-	'on', 'once', 'off', 'listenTo',
-	'stopListening', 'fire', 'delegate', 'stopDelegating',
-	'_addEventListener', '_removeEventListener'
-] ).forEach( key => {
-	( ObservableMixin as any )[ key ] = ( defaultObservableClass.prototype as any )[ key ];
-} );
 
 interface Binding {
 

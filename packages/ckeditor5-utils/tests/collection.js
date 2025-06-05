@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import Collection from '../src/collection.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Collection } from '../src/collection.js';
 import { expectToThrowCKEditorError } from '../tests/_utils/utils.js';
 
 function getItem( id, idProperty ) {
