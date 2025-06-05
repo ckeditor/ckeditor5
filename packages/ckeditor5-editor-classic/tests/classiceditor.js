@@ -3,24 +3,24 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '../src/classiceditor.js';
-import ClassicEditorUI from '../src/classiceditorui.js';
-import ClassicEditorUIView from '../src/classiceditoruiview.js';
+import { ClassicEditor } from '../src/classiceditor.js';
+import { ClassicEditorUI } from '../src/classiceditorui.js';
+import { ClassicEditorUIView } from '../src/classiceditoruiview.js';
 
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
+import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
 
-import Context from '@ckeditor/ckeditor5-core/src/context.js';
-import EditorWatchdog from '@ckeditor/ckeditor5-watchdog/src/editorwatchdog.js';
-import ContextWatchdog from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog.js';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { Context } from '@ckeditor/ckeditor5-core/src/context.js';
+import { EditorWatchdog } from '@ckeditor/ckeditor5-watchdog/src/editorwatchdog.js';
+import { ContextWatchdog } from '@ckeditor/ckeditor5-watchdog/src/contextwatchdog.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { RootElement } from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { describeMemoryUsage, testMemoryUsage } from '@ckeditor/ckeditor5-core/tests/_utils/memory.js';
 
 describe( 'ClassicEditor', () => {

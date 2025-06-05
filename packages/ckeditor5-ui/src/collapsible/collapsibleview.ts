@@ -8,9 +8,9 @@
  */
 
 import { IconDropdownArrow } from '@ckeditor/ckeditor5-icons';
-import View from '../view.js';
-import ButtonView from '../button/buttonview.js';
-import type ViewCollection from '../viewcollection.js';
+import { View } from '../view.js';
+import { ButtonView } from '../button/buttonview.js';
+import { type ViewCollection } from '../viewcollection.js';
 import type { FocusableView } from '../focuscycler.js';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
@@ -22,7 +22,7 @@ import '../../theme/components/collapsible/collapsible.css';
  *
  * @internal
  */
-export default class CollapsibleView extends View {
+export class CollapsibleView extends View {
 	/**
 	 * `true` when the container with {@link #children} is collapsed. `false` otherwise.
 	 *

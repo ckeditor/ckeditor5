@@ -10,10 +10,10 @@
 import type { Element, Writer } from 'ckeditor5/src/engine.js';
 import { Command } from 'ckeditor5/src/core.js';
 
-import ImageBlockEditing from '../image/imageblockediting.js';
-import type ImageCaptionUtils from './imagecaptionutils.js';
-import type ImageUtils from '../imageutils.js';
-import type ImageCaptionEditing from './imagecaptionediting.js';
+import { ImageBlockEditing } from '../image/imageblockediting.js';
+import { type ImageCaptionUtils } from './imagecaptionutils.js';
+import { type ImageUtils } from '../imageutils.js';
+import { type ImageCaptionEditing } from './imagecaptionediting.js';
 
 /**
  * The toggle image caption command.
@@ -40,7 +40,7 @@ import type ImageCaptionEditing from './imagecaptionediting.js';
  * editor.execute( 'toggleImageCaption', { focusCaptionOnShow: true } );
  * ```
  */
-export default class ToggleImageCaptionCommand extends Command {
+export class ToggleImageCaptionCommand extends Command {
 	declare public value: boolean;
 
 	/**

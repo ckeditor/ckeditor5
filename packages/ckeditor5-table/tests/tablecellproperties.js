@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import TableEditing from '../src/tableediting.js';
-import TableCellProperties from '../src/tablecellproperties.js';
-import TableCellPropertiesEditing from '../src/tablecellproperties/tablecellpropertiesediting.js';
-import TableCellPropertiesUI from '../src/tablecellproperties/tablecellpropertiesui.js';
+import { TableEditing } from '../src/tableediting.js';
+import { TableCellProperties } from '../src/tablecellproperties.js';
+import { TableCellPropertiesEditing } from '../src/tablecellproperties/tablecellpropertiesediting.js';
+import { TableCellPropertiesUI } from '../src/tablecellproperties/tablecellpropertiesui.js';
 
 describe( 'table cell properties', () => {
 	let editor, editorElement;

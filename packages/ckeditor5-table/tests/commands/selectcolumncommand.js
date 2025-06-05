@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import TableEditing from '../../src/tableediting.js';
-import TableSelection from '../../src/tableselection.js';
+import { TableEditing } from '../../src/tableediting.js';
+import { TableSelection } from '../../src/tableselection.js';
 import { assertSelectedCells, modelTable } from '../_utils/utils.js';
 
-import SelectColumnCommand from '../../src/commands/selectcolumncommand.js';
+import { SelectColumnCommand } from '../../src/commands/selectcolumncommand.js';
 
 describe( 'SelectColumnCommand', () => {
 	let editor, model, modelRoot, command, tableSelection;

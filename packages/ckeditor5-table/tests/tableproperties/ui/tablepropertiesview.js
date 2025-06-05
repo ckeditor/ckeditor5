@@ -3,18 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import TablePropertiesView from '../../../src/tableproperties/ui/tablepropertiesview.js';
-import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview.js';
+import { TablePropertiesView } from '../../../src/tableproperties/ui/tablepropertiesview.js';
+import { LabeledFieldView } from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview.js';
-import ColorInputView from '../../../src/ui/colorinputview.js';
+import { KeystrokeHandler } from '@ckeditor/ckeditor5-utils/src/keystrokehandler.js';
+import { FocusTracker } from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import { FocusCycler } from '@ckeditor/ckeditor5-ui/src/focuscycler.js';
+import { ViewCollection } from '@ckeditor/ckeditor5-ui/src/viewcollection.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ToolbarView } from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { InputTextView } from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview.js';
+import { ColorInputView } from '../../../src/ui/colorinputview.js';
 
 const VIEW_OPTIONS = {
 	borderColors: [

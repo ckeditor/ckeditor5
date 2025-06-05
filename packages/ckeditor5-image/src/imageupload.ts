@@ -8,9 +8,9 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import ImageUploadUI from './imageupload/imageuploadui.js';
-import ImageUploadProgress from './imageupload/imageuploadprogress.js';
-import ImageUploadEditing from './imageupload/imageuploadediting.js';
+import { ImageUploadUI } from './imageupload/imageuploadui.js';
+import { ImageUploadProgress } from './imageupload/imageuploadprogress.js';
+import { ImageUploadEditing } from './imageupload/imageuploadediting.js';
 
 /**
  * The image upload plugin.
@@ -23,7 +23,7 @@ import ImageUploadEditing from './imageupload/imageuploadediting.js';
  * * {@link module:image/imageupload/imageuploadui~ImageUploadUI},
  * * {@link module:image/imageupload/imageuploadprogress~ImageUploadProgress}.
  */
-export default class ImageUpload extends Plugin {
+export class ImageUpload extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

@@ -4,19 +4,19 @@
  */
 
 import { IconFindReplace } from 'ckeditor5/src/icons.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { DropdownView } from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import MenuBarMenuListItemButtonView from '@ckeditor/ckeditor5-ui/src/menubar/menubarmenulistitembuttonview.js';
-import DialogView from '@ckeditor/ckeditor5-ui/src/dialog/dialogview.js';
-import FindAndReplaceUI from '../src/findandreplaceui.js';
-import FindAndReplace from '../src/findandreplace.js';
-import FindAndReplaceFormView from '../src/ui/findandreplaceformview.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui/src/menubar/menubarmenulistitembuttonview.js';
+import { DialogView } from '@ckeditor/ckeditor5-ui/src/dialog/dialogview.js';
+import { FindAndReplaceUI } from '../src/findandreplaceui.js';
+import { FindAndReplace } from '../src/findandreplace.js';
+import { FindAndReplaceFormView } from '../src/ui/findandreplaceformview.js';
 
 describe( 'FindAndReplaceUI', () => {
 	let editorElement, editor, dropdown, findCommand, form, plugin;

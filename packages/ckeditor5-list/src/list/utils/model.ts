@@ -19,7 +19,7 @@ import type {
 
 import { uid, toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
 
-import ListWalker, { type ListWalkerOptions, SiblingListBlocksIterator } from './listwalker.js';
+import { ListWalker, type ListWalkerOptions, SiblingListBlocksIterator } from './listwalker.js';
 import { type ListType } from '../listediting.js';
 
 /**

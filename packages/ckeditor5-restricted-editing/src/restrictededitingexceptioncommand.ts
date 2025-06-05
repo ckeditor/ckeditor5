@@ -13,7 +13,7 @@ import type { TreeWalkerValue } from 'ckeditor5/src/engine.js';
 /**
  * The command that toggles exceptions from the restricted editing on text.
  */
-export default class RestrictedEditingExceptionCommand extends Command {
+export class RestrictedEditingExceptionCommand extends Command {
 	/**
 	 * A flag indicating whether the command is active
 	 *

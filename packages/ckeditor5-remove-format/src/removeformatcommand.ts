@@ -21,7 +21,7 @@ import { first } from 'ckeditor5/src/utils.js';
  * editor.execute( 'removeFormat' );
  * ```
  */
-export default class RemoveFormatCommand extends Command {
+export class RemoveFormatCommand extends Command {
 	declare public value: boolean;
 
 	/**

@@ -4,9 +4,9 @@
  */
 
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import LegacyListPropertiesEditing from '../../src/legacylistproperties/legacylistpropertiesediting.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { LegacyListPropertiesEditing } from '../../src/legacylistproperties/legacylistpropertiesediting.js';
 
 describe( 'LegacyListStartCommand', () => {
 	let editor, model, listStartCommand;

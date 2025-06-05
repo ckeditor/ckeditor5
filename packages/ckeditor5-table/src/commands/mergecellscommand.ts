@@ -13,7 +13,7 @@ import type {
 } from 'ckeditor5/src/engine.js';
 
 import { Command } from 'ckeditor5/src/core.js';
-import TableUtils from '../tableutils.js';
+import { TableUtils } from '../tableutils.js';
 import { updateNumericAttribute } from '../utils/common.js';
 import { removeEmptyRowsColumns } from '../utils/structure.js';
 
@@ -28,7 +28,7 @@ import { removeEmptyRowsColumns } from '../utils/structure.js';
  * editor.execute( 'mergeTableCells' );
  * ```
  */
-export default class MergeCellsCommand extends Command {
+export class MergeCellsCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import TextProxy from '../../src/view/textproxy.js';
-import Text from '../../src/view/text.js';
-import ContainerElement from '../../src/view/containerelement.js';
-import DocumentFragment from '../../src/view/documentfragment.js';
-import RootEditableElement from '../../src/view/rooteditableelement.js';
+import { TextProxy } from '../../src/view/textproxy.js';
+import { Text } from '../../src/view/text.js';
+import { ContainerElement } from '../../src/view/containerelement.js';
+import { DocumentFragment } from '../../src/view/documentfragment.js';
+import { RootEditableElement } from '../../src/view/rooteditableelement.js';
 
-import createDocumentMock from '../../tests/view/_utils/createdocumentmock.js';
+import { createViewDocumentMock } from '../../tests/view/_utils/createdocumentmock.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import Document from '../../src/view/document.js';
+import { Document } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'TextProxy', () => {
@@ -112,7 +112,7 @@ describe( 'TextProxy', () => {
 
 	describe( 'getRoot', () => {
 		it( 'should return root element', () => {
-			const docMock = createDocumentMock();
+			const docMock = createViewDocumentMock();
 			const root = new RootEditableElement( docMock, 'div' );
 
 			wrapper.parent = root;

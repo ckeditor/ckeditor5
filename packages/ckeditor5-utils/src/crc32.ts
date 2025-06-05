@@ -46,7 +46,7 @@ function makeCrcTable(): Array<number> {
  *
  * @returns The CRC-32 checksum, returned as a hexadecimal string.
  */
-export default function crc32( inputData: CRCData ): string {
+export function crc32( inputData: CRCData ): string {
 	const dataArray = Array.isArray( inputData ) ? inputData : [ inputData ];
 	const crcTable: Array<number> = makeCrcTable();
 	let crc: number = 0 ^ ( -1 );

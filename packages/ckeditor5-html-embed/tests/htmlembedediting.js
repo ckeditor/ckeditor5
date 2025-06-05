@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import HtmlEmbedEditing from '../src/htmlembedediting.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import HtmlEmbedCommand from '../src/htmlembedcommand.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { HtmlEmbedEditing } from '../src/htmlembedediting.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { HtmlEmbedCommand } from '../src/htmlembedcommand.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils.js';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'HtmlEmbedEditing', () => {

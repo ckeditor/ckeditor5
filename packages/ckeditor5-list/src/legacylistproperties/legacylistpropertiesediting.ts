@@ -23,10 +23,10 @@ import type {
 	Writer
 } from 'ckeditor5/src/engine.js';
 
-import LegacyListEditing from '../legacylist/legacylistediting.js';
-import LegacyListStyleCommand from './legacyliststylecommand.js';
-import LegacyListReversedCommand from './legacylistreversedcommand.js';
-import LegacyListStartCommand from './legacyliststartcommand.js';
+import { LegacyListEditing } from '../legacylist/legacylistediting.js';
+import { LegacyListStyleCommand } from './legacyliststylecommand.js';
+import { LegacyListReversedCommand } from './legacylistreversedcommand.js';
+import { LegacyListStartCommand } from './legacyliststartcommand.js';
 import { getSiblingListItem, getSiblingNodes } from '../legacylist/legacyutils.js';
 import type { ListPropertiesConfig } from '../listconfig.js';
 import { normalizeListStyle } from '../listproperties/utils/style.js';
@@ -42,7 +42,7 @@ const DEFAULT_LIST_TYPE = 'default';
  * It registers the `'listStyle'`, `'listReversed'` and `'listStart'` commands if they are enabled in the configuration.
  * Read more in {@link module:list/listconfig~ListPropertiesConfig}.
  */
-export default class LegacyListPropertiesEditing extends Plugin {
+export class LegacyListPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

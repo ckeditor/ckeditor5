@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import BlockQuote from '../src/blockquote.js';
-import BlockQuoteEditing from '../src/blockquoteediting.js';
-import BlockQuoteUI from '../src/blockquoteui.js';
+import { BlockQuote } from '../src/blockquote.js';
+import { BlockQuoteEditing } from '../src/blockquoteediting.js';
+import { BlockQuoteUI } from '../src/blockquoteui.js';
 
 describe( 'BlockQuote', () => {
 	it( 'requires BlockQuoteEditing and BlockQuoteUI', () => {

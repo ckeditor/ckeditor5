@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import SpecialCharacters from '../src/specialcharacters.js';
-import SpecialCharactersCurrency from '../src/specialcharacterscurrency.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { SpecialCharacters } from '../src/specialcharacters.js';
+import { SpecialCharactersCurrency } from '../src/specialcharacterscurrency.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'SpecialCharactersCurrency', () => {
 	testUtils.createSinonSandbox();

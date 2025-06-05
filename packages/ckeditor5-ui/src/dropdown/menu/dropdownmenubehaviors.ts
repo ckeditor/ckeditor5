@@ -8,13 +8,13 @@
  */
 
 import type { BaseEvent, ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
-import type DropdownMenuNestedMenuView from './dropdownmenunestedmenuview.js';
+import { type DropdownMenuNestedMenuView } from './dropdownmenunestedmenuview.js';
 import type { FocusableView } from '../../focuscycler.js';
 
 import type { ButtonExecuteEvent } from '../../button/button.js';
-import type DropdownMenuRootListView from './dropdownmenurootlistview.js';
+import { type DropdownMenuRootListView } from './dropdownmenurootlistview.js';
 
-import DropdownMenuListItemView from './dropdownmenulistitemview.js';
+import { DropdownMenuListItemView } from './dropdownmenulistitemview.js';
 
 export const DropdownRootMenuBehaviors = {
 	/**

@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement.js';
-import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
+import { ViewContainerElement } from '@ckeditor/ckeditor5-engine/src/view/containerelement.js';
+import { ViewDowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-import LegacyListEditing from '../../src/legacylist/legacylistediting.js';
-import LegacyListPropertiesEditing from '../../src/legacylistproperties/legacylistpropertiesediting.js';
+import { LegacyListEditing } from '../../src/legacylist/legacylistediting.js';
+import { LegacyListPropertiesEditing } from '../../src/legacylistproperties/legacylistpropertiesediting.js';
 
 import {
 	createViewListItemElement,
@@ -18,8 +18,8 @@ import {
 	getSiblingNodes
 } from '../../src/legacylist/legacyutils.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
 
 describe( 'legacy utils', () => {
 	let writer;

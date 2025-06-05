@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ColorInputView from '../../src/ui/colorinputview.js';
-import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview.js';
-import ColorGridView from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview.js';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
+import { ColorInputView } from '../../src/ui/colorinputview.js';
+import { InputTextView } from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview.js';
+import { ColorGridView } from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview.js';
+import { DropdownView } from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
 import { ButtonView, FocusCycler, ViewCollection } from '@ckeditor/ckeditor5-ui';
 import { FocusTracker, KeystrokeHandler, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { global } from 'ckeditor5/src/utils.js';

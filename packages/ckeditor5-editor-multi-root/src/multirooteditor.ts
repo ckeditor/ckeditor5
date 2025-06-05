@@ -23,8 +23,8 @@ import {
 	type DecoratedMethodEvent
 } from 'ckeditor5/src/utils.js';
 
-import MultiRootEditorUI from './multirooteditorui.js';
-import MultiRootEditorUIView from './multirooteditoruiview.js';
+import { MultiRootEditorUI } from './multirooteditorui.js';
+import { MultiRootEditorUIView } from './multirooteditoruiview.js';
 
 import { isElement as _isElement } from 'es-toolkit/compat';
 import {
@@ -48,7 +48,7 @@ import {
  *
  * Note that you will need to attach the editor toolbar to your web page manually, in a desired place, after the editor is initialized.
  */
-export default class MultiRootEditor extends Editor {
+export class MultiRootEditor extends Editor {
 	/**
 	 * @inheritDoc
 	 */

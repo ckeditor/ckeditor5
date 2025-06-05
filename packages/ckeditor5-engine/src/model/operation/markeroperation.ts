@@ -7,14 +7,14 @@
  * @module engine/model/operation/markeroperation
  */
 
-import Operation from './operation.js';
-import Range from '../range.js';
+import { Operation } from './operation.js';
+import { Range } from '../range.js';
 
-import type Document from '../document.js';
-import type MarkerCollection from '../markercollection.js';
+import { type Document } from '../document.js';
+import { type MarkerCollection } from '../markercollection.js';
 import type { Selectable } from '../selection.js';
 
-export default class MarkerOperation extends Operation {
+export class MarkerOperation extends Operation {
 	/**
 	 * Marker name.
 	 *

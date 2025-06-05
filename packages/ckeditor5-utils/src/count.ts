@@ -17,7 +17,7 @@
  * @param iterable Any iterable.
  * @returns Number of items returned by that iterable.
  */
-export default function count( iterable: Iterable<unknown> ): number {
+export function count( iterable: Iterable<unknown> ): number {
 	let count = 0;
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars

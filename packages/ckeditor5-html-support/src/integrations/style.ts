@@ -15,13 +15,13 @@ import {
 	viewToModelBlockAttributeConverter,
 	viewToModelObjectConverter
 } from '../converters.js';
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
+import { DataFilter, type DataFilterRegisterEvent } from '../datafilter.js';
 import type { DataSchemaBlockElementDefinition } from '../dataschema.js';
 
 /**
  * Provides the General HTML Support for `style` elements.
  */
-export default class StyleElementSupport extends Plugin {
+export class StyleElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

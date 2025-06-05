@@ -23,9 +23,9 @@ import {
 } from 'ckeditor5/src/engine.js';
 import { toMap } from 'ckeditor5/src/utils.js';
 
-import LinkEditing from './linkediting.js';
-import type ManualDecorator from './utils/manualdecorator.js';
-import type LinkCommand from './linkcommand.js';
+import { LinkEditing } from './linkediting.js';
+import { type ManualDecorator } from './utils/manualdecorator.js';
+import { type LinkCommand } from './linkcommand.js';
 
 import type { ImageUtils } from '@ckeditor/ckeditor5-image';
 
@@ -35,7 +35,7 @@ import type { ImageUtils } from '@ckeditor/ckeditor5-image';
  * It accepts the `linkHref="url"` attribute in the model for the {@link module:image/image~Image `<imageBlock>`} element
  * which allows linking images.
  */
-export default class LinkImageEditing extends Plugin {
+export class LinkImageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

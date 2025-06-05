@@ -17,16 +17,16 @@ import {
 	upcastImageFigure
 } from './converters.js';
 
-import ImageEditing from './imageediting.js';
-import ImageSizeAttributes from '../imagesizeattributes.js';
-import ImageTypeCommand from './imagetypecommand.js';
-import ImageUtils from '../imageutils.js';
+import { ImageEditing } from './imageediting.js';
+import { ImageSizeAttributes } from '../imagesizeattributes.js';
+import { ImageTypeCommand } from './imagetypecommand.js';
+import { ImageUtils } from '../imageutils.js';
 import {
 	getImgViewElementMatcher,
 	createBlockImageViewElement,
 	determineImageTypeForInsertionAtSelection
 } from './utils.js';
-import ImagePlaceholder from './imageplaceholder.js';
+import { ImagePlaceholder } from './imageplaceholder.js';
 
 /**
  * The image block plugin.
@@ -38,7 +38,7 @@ import ImagePlaceholder from './imageplaceholder.js';
  * * {@link module:image/image/imagetypecommand~ImageTypeCommand `'imageTypeBlock'`} command that converts inline images into
  * block images.
  */
-export default class ImageBlockEditing extends Plugin {
+export class ImageBlockEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

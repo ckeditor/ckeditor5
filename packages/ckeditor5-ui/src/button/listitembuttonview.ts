@@ -8,21 +8,21 @@
  */
 
 import type { ObservableChangeEvent, Locale } from '@ckeditor/ckeditor5-utils';
-import type ButtonLabel from './buttonlabel.js';
-import type ViewCollection from '../viewcollection.js';
+import { type ButtonLabel } from './buttonlabel.js';
+import { type ViewCollection } from '../viewcollection.js';
 
 import { IconCheck } from '@ckeditor/ckeditor5-icons';
-import ButtonView from './buttonview.js';
-import ButtonLabelView from './buttonlabelview.js';
-import IconView from '../icon/iconview.js';
-import View from '../view.js';
+import { ButtonView } from './buttonview.js';
+import { ButtonLabelView } from './buttonlabelview.js';
+import { IconView } from '../icon/iconview.js';
+import { View } from '../view.js';
 
 import '../../theme/components/button/listitembutton.css';
 
 /**
  * Button that is used as dropdown list item entry.
  */
-export default class ListItemButtonView extends ButtonView {
+export class ListItemButtonView extends ButtonView {
 	/**
 	 * Indicates whether the button view has reserved space for a check holder.
 	 *

@@ -7,15 +7,15 @@
  * @module engine/model/operation/moveoperation
  */
 
-import Operation from './operation.js';
-import Position from '../position.js';
-import Range from '../range.js';
+import { Operation } from './operation.js';
+import { Position } from '../position.js';
+import { Range } from '../range.js';
 import { _move } from './utils.js';
 import type { Selectable } from '../selection.js';
 
 import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
-import type Document from '../document.js';
+import { type Document } from '../document.js';
 
 // @if CK_DEBUG_ENGINE // const ModelRange = require( '../range' ).default;
 
@@ -23,7 +23,7 @@ import type Document from '../document.js';
  * Operation to move a range of {@link module:engine/model/item~Item model items}
  * to given {@link module:engine/model/position~Position target position}.
  */
-export default class MoveOperation extends Operation {
+export class MoveOperation extends Operation {
 	/**
 	 * Position before the first {@link module:engine/model/item~Item model item} to move.
 	 */

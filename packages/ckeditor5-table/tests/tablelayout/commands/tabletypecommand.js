@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import TableEditing from '../../../src/tableediting.js';
-import TableCaptionEditing from '../../../src/tablecaption/tablecaptionediting.js';
-import TableLayoutEditing from '../../../src/tablelayout/tablelayoutediting.js';
-import TableTypeCommand from '../../../src/tablelayout/commands/tabletypecommand.js';
+import { TableEditing } from '../../../src/tableediting.js';
+import { TableCaptionEditing } from '../../../src/tablecaption/tablecaptionediting.js';
+import { TableLayoutEditing } from '../../../src/tablelayout/tablelayoutediting.js';
+import { TableTypeCommand } from '../../../src/tablelayout/commands/tabletypecommand.js';
 
 import { modelTable } from '../../_utils/utils.js';
 

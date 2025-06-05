@@ -7,13 +7,13 @@
  * @module media-embed
  */
 
-export { default as MediaEmbed } from './mediaembed.js';
-export { default as MediaEmbedEditing } from './mediaembedediting.js';
-export { default as MediaEmbedUI } from './mediaembedui.js';
-export { default as AutoMediaEmbed } from './automediaembed.js';
-export { default as MediaEmbedToolbar } from './mediaembedtoolbar.js';
+export { MediaEmbed } from './mediaembed.js';
+export { MediaEmbedEditing } from './mediaembedediting.js';
+export { MediaEmbedUI } from './mediaembedui.js';
+export { AutoMediaEmbed } from './automediaembed.js';
+export { MediaEmbedToolbar } from './mediaembedtoolbar.js';
 
 export type { MediaEmbedConfig } from './mediaembedconfig.js';
-export type { default as MediaEmbedCommand } from './mediaembedcommand.js';
+export type { MediaEmbedCommand } from './mediaembedcommand.js';
 
 import './augmentation.js';

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Link } from '@ckeditor/ckeditor5-link';
@@ -15,11 +15,11 @@ import { WidgetToolbarRepository } from '@ckeditor/ckeditor5-widget';
 import { indexOf, isRange, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import BookmarkFormView from '../src/ui/bookmarkformview.js';
-import BookmarkEditing from '../src/bookmarkediting.js';
-import BookmarkUI from '../src/bookmarkui.js';
+import { BookmarkFormView } from '../src/ui/bookmarkformview.js';
+import { BookmarkEditing } from '../src/bookmarkediting.js';
+import { BookmarkUI } from '../src/bookmarkui.js';
 
 describe( 'BookmarkUI', () => {
 	let editor, element, button, balloon, bookmarkUIFeature, formView, widgetToolbarRepository, toolbarView;

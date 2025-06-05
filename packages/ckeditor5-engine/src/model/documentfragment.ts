@@ -7,15 +7,15 @@
  * @module engine/model/documentfragment
  */
 
-import TypeCheckable from './typecheckable.js';
-import Element from './element.js';
-import NodeList from './nodelist.js';
-import Text from './text.js';
-import TextProxy from './textproxy.js';
+import { TypeCheckable } from './typecheckable.js';
+import { Element } from './element.js';
+import { NodeList } from './nodelist.js';
+import { Text } from './text.js';
+import { TextProxy } from './textproxy.js';
 
-import type Item from './item.js';
-import type Node from './node.js';
-import type Range from './range.js';
+import { type Item } from './item.js';
+import { type Node } from './node.js';
+import { type Range } from './range.js';
 
 import { isIterable } from '@ckeditor/ckeditor5-utils';
 
@@ -29,7 +29,7 @@ import { isIterable } from '@ckeditor/ckeditor5-utils';
  * will be set to the {@link module:engine/model/model~Model#markers model markers} by a
  * {@link module:engine/model/writer~Writer#insert} function.
  */
-export default class DocumentFragment extends TypeCheckable implements Iterable<Node> {
+export class DocumentFragment extends TypeCheckable implements Iterable<Node> {
 	/**
 	 * DocumentFragment static markers map. This is a list of names and {@link module:engine/model/range~Range ranges}
 	 * which will be set as Markers to {@link module:engine/model/model~Model#markers model markers collection}
@@ -404,6 +404,8 @@ export default class DocumentFragment extends TypeCheckable implements Iterable<
 DocumentFragment.prototype.is = function( type: string ): boolean {
 	return type === 'documentFragment' || type === 'model:documentFragment';
 };
+
+export { DocumentFragment as ModelDocumentFragment };
 
 /**
  * Converts strings to Text and non-iterables to arrays.

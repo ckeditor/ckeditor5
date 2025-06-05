@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { AccessibilityHelp, ButtonView, MenuBarMenuListItemButtonView } from '../../../src/index.js';
 import { env, global, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
-import AccessibilityHelpContentView from '../../../src/editorui/accessibilityhelp/accessibilityhelpcontentview.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { AccessibilityHelpContentView } from '../../../src/editorui/accessibilityhelp/accessibilityhelpcontentview.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 
 describe( 'AccessibilityHelp', () => {
