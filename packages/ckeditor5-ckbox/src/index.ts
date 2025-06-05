@@ -18,4 +18,14 @@ export type { CKBoxCommand } from './ckboxcommand.js';
 export type { CKBoxImageEditCommand } from './ckboximageedit/ckboximageeditcommand.js';
 export type { CKBoxConfig } from './ckboxconfig.js';
 
+export {
+	getImageUrls as _getCKBoxImageUrls,
+	getWorkspaceId as _getCKBoxWorkspaceId,
+	blurHashToDataUrl as _ckboxBlurHashToDataUrl,
+	sendHttpRequest as _sendCKBoxHttpRequest,
+	convertMimeTypeToExtension as _convertCKBoxMimeTypeToExtension,
+	getContentTypeOfUrl as _getCKBoxContentTypeOfUrl,
+	getFileExtension as _getCKBoxFileExtension
+} from './utils.js';
+
 import './augmentation.js';
