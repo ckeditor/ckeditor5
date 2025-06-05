@@ -13,6 +13,7 @@
  *
  * @param data The HTML data to normalize.
  * @returns Normalized HTML.
+ * @internal
  */
 export function normalizeClipboardData( data: string ): string {
 	return data
