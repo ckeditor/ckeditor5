@@ -1966,7 +1966,7 @@ Customize your editor even further. Use components and helpers from our UI libra
 		</tr>
 		<tr id="custom-components" class="subfeature background-gray">
 			<td>
-				{@link features/custom-components Custom Widgets & Components}
+				{@link features/custom-components Custom Widgets and Components}
 			</td>
 			<td>
 				Build custom interactive components using CKEditor 5's widget system. Create block widgets, inline elements, external data integrations, and framework components (React, Vue, Angular) that seamlessly integrate with the editor's content model and UI.

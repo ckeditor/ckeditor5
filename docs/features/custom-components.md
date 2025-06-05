@@ -1,7 +1,7 @@
 ---
 category: features
-menu-title: Custom widgets & components
-meta_description: Learn to build custom widgets and components in CKEditor 5 including block widgets, inline elements, external data integration, React components, and complex UI features.
+menu-title: Custom widgets and components
+meta_description: Learn to build custom widgets and components in CKEditor 5 such as block widgets, inline elements, external data integration, React components and more.
 modified_at: 2025-06-02
 ---
 
@@ -72,14 +72,14 @@ Developers can build sophisticated features that go beyond simple content widget
 
 CKEditor&nbsp;5's architecture provides a comprehensive framework for building complex features that integrate content handling with sophisticated user interfaces:
 
-**{@link framework/architecture/editing-engine#schema Schema system}** - Defines content structure, validation rules, and element relationships to ensure data integrity and feature compatibility.
+**{@link framework/architecture/editing-engine#schema Schema system}** &ndash; Defines content structure, validation rules, and element relationships to ensure data integrity and feature compatibility.
 
-**{@link framework/architecture/editing-engine#conversion Conversion pipeline}** - Transforms data between the model, editing view, and data view, enabling seamless integration with external formats and real-time collaboration.
+**{@link framework/architecture/editing-engine#conversion Conversion pipeline}** &ndash; Transforms data between the model, editing view, and data view, enabling seamless integration with external formats and real-time collaboration.
 
-**{@link framework/architecture/core-editor-architecture#commands Command architecture}** - Implements user actions, business logic, and state management with built-in undo/redo support and collaboration-ready operation handling.
+**{@link framework/architecture/core-editor-architecture#commands Command architecture}** &ndash; Implements user actions, business logic, and state management with built-in undo/redo support and collaboration-ready operation handling.
 
-**{@link framework/architecture/ui-library UI integration}** - Supports toolbar buttons, {@link framework/architecture/ui-library#view-collections-and-the-ui-tree contextual balloons}, dropdowns, and custom panel elements with automatic {@link framework/deep-dive/focus-tracking focus management} and accessibility features.
+**{@link framework/architecture/ui-library UI integration}** &ndash; Supports toolbar buttons, {@link framework/architecture/ui-library#view-collections-and-the-ui-tree contextual balloons}, dropdowns, and custom panel elements with automatic {@link framework/deep-dive/focus-tracking focus management} and accessibility features.
 
-**{@link framework/deep-dive/event-system Event system}** - Provides a robust foundation for inter-component communication, user interaction handling, and plugin coordination through observable patterns.
+**{@link framework/deep-dive/event-system Event system}** &ndash; Provides a robust foundation for inter-component communication, user interaction handling, and plugin coordination through observable patterns.
 
-**{@link framework/architecture/core-editor-architecture#plugins Plugin architecture}** - Enables modular feature development with dependency management, lifecycle hooks, and seamless integration with existing editor functionality.
+**{@link framework/architecture/core-editor-architecture#plugins Plugin architecture}** &ndash; Enables modular feature development with dependency management, lifecycle hooks, and seamless integration with existing editor functionality.
