@@ -521,4 +521,55 @@ describe( 'ListItemFontFamilyIntegration', () => {
 			);
 		} );
 	} );
+
+	describe( 'when FontFamilyEditing is not loaded', () => {
+		let editor, model, view;
+
+		beforeEach( async () => {
+			editor = await VirtualTestEditor.create( {
+				plugins: [
+					ListItemFontFamilyIntegration,
+					Paragraph
+				],
+				fontFamily: {
+					supportAllValues: true
+				}
+			} );
+
+			model = editor.model;
+			view = editor.editing.view;
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		it( 'should not downcast listItemFontFamily attribute as style in <li>', () => {
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listItemFontFamily="Arial">' +
+					'<$text fontFamily="Arial">foo</$text>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li>' +
+						'<p>' +
+							'foo' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( editor.getData() ).to.equalMarkup(
+				'<ul>' +
+					'<li>' +
+						'<p>' +
+							'foo' +
+						'</p>' +
+					'</li>' +
+				'</ul>'
+			);
+		} );
+	} );
 } );

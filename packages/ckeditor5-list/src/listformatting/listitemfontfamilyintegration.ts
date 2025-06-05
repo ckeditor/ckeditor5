@@ -41,7 +41,12 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 	 * @inheritDoc
 	 */
 	public init(): void {
-		const listEditing = this.editor.plugins.get( ListEditing );
+		const editor = this.editor;
+		const listEditing = editor.plugins.get( ListEditing );
+
+		if ( !editor.plugins.has( 'FontFamilyEditing' ) ) {
+			return;
+		}
 
 		// Register the downcast strategy in init() so that the attribute name is registered  before the list editing
 		// registers its converters.
