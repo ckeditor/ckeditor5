@@ -22,15 +22,12 @@ Advanced HTML Editing provides general HTML support, offering detailed control o
 		Full page HTML
 	</ck:card-title>
 	<ck:card-description>
-		Edit entire HTML documents, including metadata, beyond visible content.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Thanks to the full page HTML feature, you can use CKEditor 5 to edit entire HTML pages (from `<html>` to `</html>`), including the page metadata. While the General HTML Support feature focuses on elements inside the content (the document's `<body>`), this feature enables markup invisible to the end user.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/full-page-html.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -38,15 +35,12 @@ Advanced HTML Editing provides general HTML support, offering detailed control o
 		General HTML Support (GHS)
 	</ck:card-title>
 	<ck:card-description>
-		Enable unsupported HTML elements, attributes, and styles in the editor.
-	</ck:card-description>
-	<ck:card-learn-more>
 		With the General HTML Support (GHS) feature, developers can enable HTML features that are not supported by any other dedicated CKEditor 5 plugins. GHS lets you add elements, attributes, classes, and styles to the source. It also ensures this markup stays in the editor window and the output.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/general-html-support.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -54,15 +48,12 @@ Advanced HTML Editing provides general HTML support, offering detailed control o
 		HTML comment
 	</ck:card-title>
 	<ck:card-description>
-		Keep HTML comments in your document without displaying them to users.
-	</ck:card-description>
-	<ck:card-learn-more>
 		By default, the editor filters out all HTML comments on initialization. The HTML comment feature lets developers keep HTML comments in the document without displaying them to the user.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/html-comments.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -70,15 +61,12 @@ Advanced HTML Editing provides general HTML support, offering detailed control o
 		HTML embed
 	</ck:card-title>
 	<ck:card-description>
-		Embed custom HTML snippets directly into your content.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The HTML embed feature lets you embed any HTML snippet in your content. The feature is meant for more advanced users who want to directly interact with HTML fragments.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/html-embed.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -86,15 +74,12 @@ Advanced HTML Editing provides general HTML support, offering detailed control o
 		Show blocks
 	</ck:card-title>
 	<ck:card-description>
-		Visualize and outline all block-level elements in your content.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The show blocks feature allows the content creators to visualize all block-level elements (except for widgets). It surrounds them with an outline and displays their element name in the top-left corner of the box.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/show-blocks.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -102,15 +87,12 @@ Advanced HTML Editing provides general HTML support, offering detailed control o
 		Source code editing
 	</ck:card-title>
 	<ck:card-description>
-		View and edit the source code of your document.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The source editing feature lets you view and edit the source of your document.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/source-editing.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -118,15 +100,12 @@ Advanced HTML Editing provides general HTML support, offering detailed control o
 		Enhanced source code editing
 	</ck:card-title>
 	<ck:card-description>
-		View and edit the source code of your document even more.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Enhanced source code editing allows for viewing and editing the source code of the document in a handy modal window (compatible with all editor types) with syntax highlighting, autocompletion and more.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/enhanced-source-editing.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 ### Block formatting
@@ -138,15 +117,12 @@ Block Formatting allows for the organization and emphasis of content through the
 		Block quote
 	</ck:card-title>
 	<ck:card-description>
-		Add visually distinct block quotes to emphasize key excerpts.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The block quote feature lets you easily include block quotations or pull quotes in your content. It is also an attractive way to draw the readers' attention to selected parts of the text.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/block-quote.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -154,15 +130,12 @@ Block Formatting allows for the organization and emphasis of content through the
 		Headings/paragraph
 	</ck:card-title>
 	<ck:card-description>
-		Structure content with headings for better readability and hierarchy.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The heading feature helps you structure your document by adding headings to parts of the text. They make your content easier to scan by both readers and search engines.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/headings.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -170,15 +143,12 @@ Block Formatting allows for the organization and emphasis of content through the
 		Horizontal line
 	</ck:card-title>
 	<ck:card-description>
-		Insert horizontal lines to divide content or indicate topic changes.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The horizontal line feature lets you visually divide your content into sections by inserting horizontal lines (also known as horizontal rules). It is an easy way to organize the content or indicate a change of topic.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/horizontal-line.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -186,15 +156,12 @@ Block Formatting allows for the organization and emphasis of content through the
 		Block indentation
 	</ck:card-title>
 	<ck:card-description>
-		Adjust text block indentation for better content structure.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The block indentation feature lets you set indentation for text blocks such as paragraphs, headings, or lists. This way you can visually distinguish parts of your content.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/indent.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 ### Bookmarks
@@ -238,15 +205,12 @@ The font feature lets you change font family, size, and color (including backgro
 		Font background color
 	</ck:card-title>
 	<ck:card-description>
-		Highlight text with a colored background for emphasis.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Effortlessly make the words stand out even more with a colored background.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/font.html#configuring-the-font-color-and-font-background-color-features'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -254,15 +218,12 @@ The font feature lets you change font family, size, and color (including backgro
 		Font color
 	</ck:card-title>
 	<ck:card-description>
-		Apply custom colors to text for improved readability or style.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Effortlessly make the letters stand out with their own color.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/font.html#configuring-the-font-color-and-font-background-color-features'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -270,15 +231,12 @@ The font feature lets you change font family, size, and color (including backgro
 		Font family
 	</ck:card-title>
 	<ck:card-description>
-		Choose suitable font families for your content needs.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Choose from a predefined set of fonts, depending on the type of content and its destination - print, screen, etc.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/font.html#configuring-the-font-family-feature'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -286,15 +244,12 @@ The font feature lets you change font family, size, and color (including backgro
 		Font size
 	</ck:card-title>
 	<ck:card-description>
-		Adjust font size for better readability and emphasis.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Easily control the size of the letters.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/font.html#configuring-the-font-size-feature'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 ### Image
@@ -306,15 +261,12 @@ The image feature allows adding images of various kinds to the rich content insi
 		Image alt text
 	</ck:card-title>
 	<ck:card-description>
-		Add alt text to images for accessibility and SEO improvements.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Add description text, AKA alternative text, for images. Alt text improves accessibility by telling screen readers and search engines what the image depicts.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/images-text-alternative.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -322,15 +274,12 @@ The image feature allows adding images of various kinds to the rich content insi
 		Image captions
 	</ck:card-title>
 	<ck:card-description>
-		Add captions below images to provide context.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Add optional captions for images, which are shown below the picture.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/images-captions.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -338,15 +287,12 @@ The image feature allows adding images of various kinds to the rich content insi
 		Image insert via URL
 	</ck:card-title>
 	<ck:card-description>
-		Insert images directly using their URLs.
-	</ck:card-description>
-	<ck:card-learn-more>
 		You can insert images by uploading them directly from your disk, but you can also configure CKEditor 5 to let you insert images using URLs. This way, you can save time by adding images that are already online.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/images-inserting.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -354,15 +300,12 @@ The image feature allows adding images of various kinds to the rich content insi
 		Image linking
 	</ck:card-title>
 	<ck:card-description>
-		Turn images into clickable links for interactive content.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The LinkImage plugin lets you use images as links.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/images-linking.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -370,15 +313,12 @@ The image feature allows adding images of various kinds to the rich content insi
 		Image resize
 	</ck:card-title>
 	<ck:card-description>
-		Easily resize images for better content fit.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The image resize feature lets you change the width of images in your content. It is implemented by the ImageResize plugin.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/images-resizing.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -386,15 +326,12 @@ The image feature allows adding images of various kinds to the rich content insi
 		Image styles
 	</ck:card-title>
 	<ck:card-description>
-		Apply custom styles and alignments to images.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The image styles feature lets you adjust the appearance of images. It works by applying CSS classes to images or changing their type from inline to block or vice versa.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/images-styles.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -402,15 +339,12 @@ The image feature allows adding images of various kinds to the rich content insi
 		Image upload
 	</ck:card-title>
 	<ck:card-description>
-		Upload images directly from your device to the editor.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Inserting images into content created with CKEditor 5 is quite a common task. In a properly configured rich-text editor, there are several ways for the end user to insert images.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/image-upload.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -418,15 +352,12 @@ The image feature allows adding images of various kinds to the rich content insi
 		Responsive images
 	</ck:card-title>
 	<ck:card-description>
-		Automatically optimize images for different screen sizes.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The ability to have responsive images in the rich-text editor content is a great modern feature provided by the CKBox asset manager. With a single image upload, several optimized versions of that image are created, each for a different size of the display. The CKBox feature produces a `<picture>` element with a set of optimized images. The browser will automatically load the image with the dimensions most suitable for the presented page resolution, which makes the image load much faster and saves bandwidth.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/images-responsive.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 ### Links
@@ -446,15 +377,12 @@ Lists allow the creation and management of various list types, including to-do l
 		List indentation
 	</ck:card-title>
 	<ck:card-description>
-		Control list item indentation for nested lists.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Besides controlling text block indentation, the indent and outdent buttons allow for indenting list items (nesting them).
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/lists-editing.html#indenting-lists'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -462,15 +390,12 @@ Lists allow the creation and management of various list types, including to-do l
 		List start index
 	</ck:card-title>
 	<ck:card-description>
-		Set custom start numbers for ordered lists.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The list start index feature allows the user to choose the starting point of an ordered list. By default, this would be 1 (or A, or I – see the list styles section). Sometimes, you may want to start a list with some other digit or letter, though.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/lists.html#list-start-index'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -478,15 +403,12 @@ Lists allow the creation and management of various list types, including to-do l
 		List styles
 	</ck:card-title>
 	<ck:card-description>
-		Customize list markers for unique styles.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The list style feature introduces more styles for the list item markers. When enabled, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/lists.html#list-styles'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -494,15 +416,12 @@ Lists allow the creation and management of various list types, including to-do l
 		Multi-level lists
 	</ck:card-title>
 	<ck:card-description>
-		Create hierarchical multi-level lists with numbering.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Multi-level lists with the legal style numbering feature allows for easy creation and modification of numbered lists with counters (1, 1.1, 1.1.1). These are crucial for clear referencing and hierarchical organization in complex documents. The feature offers full compatibility with Microsoft Word.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/multi-level-lists.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -510,15 +429,12 @@ Lists allow the creation and management of various list types, including to-do l
 		Nested lists
 	</ck:card-title>
 	<ck:card-description>
-		Easily create nested lists for complex content.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Besides controlling text block indentation, the indent and outdent buttons allow for indenting list items (nesting them).
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/lists-editing.html#indenting-lists'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -526,15 +442,12 @@ Lists allow the creation and management of various list types, including to-do l
 		Ordered lists
 	</ck:card-title>
 	<ck:card-description>
-		Add structured ordered lists with flexible formatting options.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The list feature lets you create ordered (numbered) lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation. You can also easily control the list markers type.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/lists.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -542,15 +455,12 @@ Lists allow the creation and management of various list types, including to-do l
 		Reversed list
 	</ck:card-title>
 	<ck:card-description>
-		Reverse list numbering for countdowns or steps.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The reversed list feature lets the user reverse the numbering order of a list, changing it from ascending to descending. This is useful in countdowns and things-to-do lists that need to reproduce steps in a reversed order (for example, in disassembly instructions).
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/lists.html#reversed-list'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -558,15 +468,12 @@ Lists allow the creation and management of various list types, including to-do l
 		To-do lists
 	</ck:card-title>
 	<ck:card-description>
-		Create interactive to-do lists with checkboxes.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The to-do list feature lets you create a list of interactive checkboxes with labels. It supports all features of bulleted and numbered lists, so you can nest a to-do list together with any combination of other lists.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/todo-lists.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -574,15 +481,12 @@ Lists allow the creation and management of various list types, including to-do l
 		Unordered lists
 	</ck:card-title>
 	<ck:card-description>
-		Add unordered lists with customizable markers.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The list feature lets you create unordered (bulleted) lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation. You can also easily control the list markers' shape.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/lists.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 ### Mermaid
@@ -618,15 +522,12 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 		Columns resizing
 	</ck:card-title>
 	<ck:card-description>
-		Resize table columns for precise layout control.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The TableColumnResize plugin lets you resize tables and individual table columns. It gives you complete control over column width.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/tables-resize.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -634,15 +535,12 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 		Insert/delete columns & rows
 	</ck:card-title>
 	<ck:card-description>
-		Easily add or remove table rows and columns.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The basic table features allow users to insert tables into content, add or remove columns and rows and merge or split cells.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/tables.html#table-contextual-toolbar'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -650,15 +548,12 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 		Merge & split cells
 	</ck:card-title>
 	<ck:card-description>
-		Merge or split table cells as needed.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The basic table features allow users to insert tables into content, add or remove columns and rows, and merge or split cells.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/tables.html#table-contextual-toolbar'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -666,15 +561,12 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 		Nesting
 	</ck:card-title>
 	<ck:card-description>
-		Nest tables within other tables for complex layouts.
-	</ck:card-description>
-	<ck:card-learn-more>
 		CKEditor 5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can be formatted just like a regular one.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/tables.html#nesting-tables'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -682,15 +574,12 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 		Styling tables & cells
 	</ck:card-title>
 	<ck:card-description>
-		Apply custom styles to tables and individual cells.
-	</ck:card-description>
-	<ck:card-learn-more>
 		CKEditor 5 comes with some additional tools that help you change the look of tables and table cells. You can control border color and style, background color, padding, or text alignment.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/tables-styling.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -698,15 +587,12 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 		Table headers
 	</ck:card-title>
 	<ck:card-description>
-		Set default table headers for better structure.
-	</ck:card-description>
-	<ck:card-learn-more>
 		To make every inserted table have n number of rows and columns as table headers by default, set an optional table configuration property defaultHeadings.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/tables.html#default-table-headers'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -714,15 +600,12 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 		Table selection
 	</ck:card-title>
 	<ck:card-description>
-		Select and format specific table areas easily.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The TableSelection plugin introduces support for the custom selection system for tables that lets you:• Select an arbitrary rectangular table fragment – a few cells from different rows, a column (or a few of them) or a row (or multiple rows).• Apply formatting or add a link to all selected cells at once. The table selection plugin is loaded automatically by the Table plugin.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/tables.html#table-selection'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -730,15 +613,12 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 		Table caption
 	</ck:card-title>
 	<ck:card-description>
-		Add captions to tables to improve accessibility.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The TableCaption plugin lets you add captions to your tables. Table captions also improve accessibility as they are recognized by screen readers.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/tables-caption.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -746,15 +626,12 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 		Layout tables
 	</ck:card-title>
 	<ck:card-description>
-		Structure web page content spatially rather than for presenting tabular data.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The TableLayout plugin is used to structure web page content spatially rather than for presenting tabular data. It lets integrators create multi-column designs and precise positioning of elements on a page.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/tables-caption.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 ### Text alignment
@@ -775,15 +652,12 @@ CKEditor 5 provides developers with text editing and formatting features such as
 		Bold
 	</ck:card-title>
 	<ck:card-description>
-		Make text bold for emphasis.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Making the letters look like the good time were never gone.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/basic-styles.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -791,15 +665,12 @@ CKEditor 5 provides developers with text editing and formatting features such as
 		Code
 	</ck:card-title>
 	<ck:card-description>
-		Insert inline code snippets for technical content.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Snippet look like a terminal from the 1990s movie.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/basic-styles.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -807,15 +678,12 @@ CKEditor 5 provides developers with text editing and formatting features such as
 		Highlight
 	</ck:card-title>
 	<ck:card-description>
-		Highlight text with color for emphasis.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Highlight makes important content stand out, either with font color or background fill.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/highlight.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -823,15 +691,12 @@ CKEditor 5 provides developers with text editing and formatting features such as
 		Italic
 	</ck:card-title>
 	<ck:card-description>
-		Italicize text for subtle emphasis.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Making the letters look like seashore pines.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/basic-styles.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -839,15 +704,12 @@ CKEditor 5 provides developers with text editing and formatting features such as
 		Strikethrough
 	</ck:card-title>
 	<ck:card-description>
-		Strike through text to indicate removal.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Never mind, will not need it anymore.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/basic-styles.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -855,15 +717,12 @@ CKEditor 5 provides developers with text editing and formatting features such as
 		Styles
 	</ck:card-title>
 	<ck:card-description>
-		Apply predefined styles to block and inline elements.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The styles feature lets you easily apply predefined styles available for block and inline content.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/style.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -871,15 +730,12 @@ CKEditor 5 provides developers with text editing and formatting features such as
 		Subscript
 	</ck:card-title>
 	<ck:card-description>
-		Add subscript text for chemical formulas or footnotes.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Fine print at the bottom, like atom numbers.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/basic-styles.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -887,15 +743,12 @@ CKEditor 5 provides developers with text editing and formatting features such as
 		Superscript
 	</ck:card-title>
 	<ck:card-description>
-		Add superscript text for exponents or references.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Fine print on top, like references in a book.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/basic-styles.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -903,15 +756,12 @@ CKEditor 5 provides developers with text editing and formatting features such as
 		Underline
 	</ck:card-title>
 	<ck:card-description>
-		Underline text to highlight importance.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Stuff looks important, yo. Or like a link, too.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/basic-styles.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 ### Undo/redo
@@ -935,15 +785,12 @@ Asynchronous Collaboration in CKEditor 5 is designed for teams using a turn-base
 		Local data storage
 	</ck:card-title>
 	<ck:card-description>
-		Store collaborative data on local client servers for security and control.
-	</ck:card-description>
-	<ck:card-learn-more>
 		In asynchronous collaboration, data is maintained on the client's servers.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/collaboration.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 ### Comments
@@ -955,15 +802,12 @@ Users can add side notes to marked fragments of the document, including text and
 		Comments archive
 	</ck:card-title>
 	<ck:card-description>
-		Archive resolved comments for streamlined feedback management and future reference.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Comments threads can be either deleted or resolved. The latter provides a way to archive comments that are no longer relevant, reducing clutter and making it easier to focus on the most important feedback. Users can access the comments archive from the toolbar and use it to view and restore archived comments if necessary. It helps to simplify the feedback management process.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/comments.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -971,15 +815,12 @@ Users can add side notes to marked fragments of the document, including text and
 		Comments outside editor
 	</ck:card-title>
 	<ck:card-description>
-		Extend comment functionality to non-editor fields for enhanced application integration.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The comments feature API, together with Context, lets you create deeper integrations with your application. One such integration is enabling comments on non-editor form fields.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/comments-outside-editor.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -987,15 +828,12 @@ Users can add side notes to marked fragments of the document, including text and
 		Sidebar modes
 	</ck:card-title>
 	<ck:card-description>
-		Choose between wide, narrow, or inline UIs to display annotations and comments.
-	</ck:card-description>
-	<ck:card-learn-more>
 		There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs or even create your UI for annotations.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/annotations-display-mode.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 ### Mentions
@@ -1015,15 +853,12 @@ Real-Time Collaboration in CKEditor 5 is designed for users who are writing, rev
 		Co-authoring
 	</ck:card-title>
 	<ck:card-description>
-		Edit and create content simultaneously with multiple users in real time.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Multiple user real-time editing and content creation feature.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/users-in-real-time-collaboration.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1031,15 +866,12 @@ Real-Time Collaboration in CKEditor 5 is designed for users who are writing, rev
 		On-premises
 	</ck:card-title>
 	<ck:card-description>
-		Deploy real-time collaboration on your infrastructure for full control and privacy.
-	</ck:card-description>
-	<ck:card-learn-more>
 		On-premises real-time collaboration version to deploy to client's own infrastructure, includes a private cloud.
 
 		<ck:button-link size='sm' variant='secondary' href='@cs'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1047,15 +879,12 @@ Real-Time Collaboration in CKEditor 5 is designed for users who are writing, rev
 		SaaS
 	</ck:card-title>
 	<ck:card-description>
-		Access real-time collaboration as a cloud service managed by CKSource.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Real-time collaboration provided as a service by CKSource.
 
 		<ck:button-link size='sm' variant='secondary' href='@cs'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 ### Revision history
@@ -1095,15 +924,12 @@ CKEditor 5 may be your universal starting point for generating content in severa
 		Export to PDF
 	</ck:card-title>
 	<ck:card-description>
-		Convert in-editor content to a PDF with customizable options.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Create a PDF from in-editor content seamlessly. Customize headers and footers, include page breaks, embed images, and choose from various fonts.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/export-pdf.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1111,15 +937,12 @@ CKEditor 5 may be your universal starting point for generating content in severa
 		Export to Word
 	</ck:card-title>
 	<ck:card-description>
-		Export editor content to Word while preserving formatting and comments.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Instantly convert content from the editor to a Word document with a single click, maintaining its appearance and formatting. The final document includes suggestions, comments, page breaks, and embedded images.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/export-word.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1127,15 +950,12 @@ CKEditor 5 may be your universal starting point for generating content in severa
 		Import from Word
 	</ck:card-title>
 	<ck:card-description>
-		Convert Word documents to HTML while keeping styling and annotations.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Effortlessly transform Word documents into clean HTML within CKEditor 5 while retaining the original styling, as well as comments and change tracking annotations.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/import-word.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 ### Export with inline styles
@@ -1199,15 +1019,12 @@ CKEditor 5 Page Utilities enables users to dictate the structuring and print for
 		Content minimap
 	</ck:card-title>
 	<ck:card-description>
-		Provides an overview of content for quick navigation.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Offers a concise, birds-eye view of the document's content, allowing for quick navigation and content management.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/minimap.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1215,15 +1032,12 @@ CKEditor 5 Page Utilities enables users to dictate the structuring and print for
 		Document title
 	</ck:card-title>
 	<ck:card-description>
-		Set and edit the document title for accuracy and relevance.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Allows users to set and modify the document's title within the editing interface, ensuring accurate reflection of the contents.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/title.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1231,15 +1045,12 @@ CKEditor 5 Page Utilities enables users to dictate the structuring and print for
 		Page break
 	</ck:card-title>
 	<ck:card-description>
-		Insert manual page breaks for precise layout control.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Facilitates the insertion of manual breaks within the document, enabling the definition of page endings and beginnings for optimal layout and print clarity.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/page-break.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 ### Pagination
@@ -1279,15 +1090,12 @@ Automate your workflow with CKEditor 5 automation tools, regardless of whether y
 		Autoformatting
 	</ck:card-title>
 	<ck:card-description>
-		Quickly format content using Markdown-like shortcuts.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Use Autoformatting to get Markdown-like shortcodes for quick formatting without needing to navigate through toolbar buttons or dropdown menus. This feature caters to the most common formatting needs.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/autoformat.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1295,15 +1103,12 @@ Automate your workflow with CKEditor 5 automation tools, regardless of whether y
 		Autolink
 	</ck:card-title>
 	<ck:card-description>
-		Automatically convert URLs and emails into clickable links.
-	</ck:card-description>
-	<ck:card-learn-more>
 		With Autolink, typing or pasting URLs and email addresses automatically transforms them into clickable links. This functionality is enabled by default, ensuring that links are always ready to use.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/link.html#autolink-feature'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1311,15 +1116,12 @@ Automate your workflow with CKEditor 5 automation tools, regardless of whether y
 		Automatic text transformations
 	</ck:card-title>
 	<ck:card-description>
-		Automatically expand abbreviations or autocorrect text based on predefined rules.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The Automatic Text Transformation autocorrects or transforms predefined text fragments into their designated forms. It comes with a range of popular text transformations pre-configured, and accepts customization by adding or removing autocorrect entries. It is commonly used to automate the expansion of abbreviations or short phrases into their full forms.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/text-transformation.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1327,15 +1129,12 @@ Automate your workflow with CKEditor 5 automation tools, regardless of whether y
 		Autosave
 	</ck:card-title>
 	<ck:card-description>
-		Automatically save changes for uninterrupted workflow.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The Autosave feature guarantees that your work is never lost. It automatically saves changes - for instance, when content is modified. This could involve sending the latest version of the document to the server, providing peace of mind through continuous backup.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/autosave.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 ### Case change
@@ -1479,15 +1278,12 @@ The editor's user interface is dependent on the editor types. The editor provide
 		Balloon block editor
 	</ck:card-title>
 	<ck:card-description>
-		Balloon editor with a block toolbar for advanced block-level editing.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Balloon block is essentially the balloon editor with an extra block toolbar, which can be accessed using the button attached to the editable content area and following the selection in the document. The toolbar gives access to additional block–level editing features.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1495,15 +1291,12 @@ The editor's user interface is dependent on the editor types. The editor provide
 		Balloon editor
 	</ck:card-title>
 	<ck:card-description>
-		Inline editor with a toolbar that appears next to the text selection.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Balloon editor is similar to inline editor. The difference between them is that the toolbar appears in a balloon next to the selection (when the selection is not empty).
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1511,15 +1304,12 @@ The editor's user interface is dependent on the editor types. The editor provide
 		Classic editor
 	</ck:card-title>
 	<ck:card-description>
-		Traditional editor with a fixed toolbar and editing area.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Classic editor is what most users traditionally learned to associate with a rich-text editor – a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/getting-started/setup/editor-types#classic-editor'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1527,15 +1317,12 @@ The editor's user interface is dependent on the editor types. The editor provide
 		Decoupled editor
 	</ck:card-title>
 	<ck:card-description>
-		Editor designed for creating documents like Google Docs or Microsoft Word.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The document editor focuses on a rich-text editing experience similar to large editing packages such as Google Docs or Microsoft Word. It works best for creating documents, which are usually later printed or exported to PDF files.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/getting-started/setup/editor-types#decoupled-editor-document'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1543,15 +1330,12 @@ The editor's user interface is dependent on the editor types. The editor provide
 		Inline editor
 	</ck:card-title>
 	<ck:card-description>
-		Floating toolbar editor for editing content directly on the web page.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The inline editor comes with a floating toolbar that becomes visible when the editor is focused (for example, by clicking it). A common scenario for using the inline editor is offering users the possibility to edit content (such as headings and other small areas) in its real location on a web page instead of doing it in a separate administration section.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/getting-started/setup/editor-types#inline-editor'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1559,15 +1343,12 @@ The editor's user interface is dependent on the editor types. The editor provide
 		Multi-root editor
 	</ck:card-title>
 	<ck:card-description>
-		Editor with multiple connected editable areas sharing the same configuration.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The multi-root editor is an editor type that features multiple, separate editable areas. The main difference between using a multi-root editor and using multiple separate editors is the fact that in a multi-root editor, the editors are "connected." All editable areas of the same editor instance share the same configuration, toolbar, undo stack, and produce one document.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/getting-started/setup/editor-types#multi-root-editor'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 ### Email editing
@@ -1579,15 +1360,12 @@ CKEditor 5 provides a wide variety of tools and functions for editing almost any
 		Email configuration helper
 	</ck:card-title>
 	<ck:card-description>
-		Configure the editor for email editing.
-	</ck:card-description>
-	<ck:card-learn-more>
 		While configuring an email editor looks like a demanding task, the email configuration helper plugin is the best way to start and make this experience more manageable.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/email-editing/email-configuration-helper.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 ### Professionally translated language packs
@@ -1607,15 +1385,12 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 		Balloon toolbar
 	</ck:card-title>
 	<ck:card-description>
-		A floating toolbar that appears when content is selected.
-	</ck:card-description>
-	<ck:card-learn-more>
 		A ballon toolbar is a special instance of the main toolbar, available in the balloon and balloon block editor types. Instead of being fixed to the editing area, it pops up when the user selects some content and provides an editing toolset.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/getting-started/setup/toolbar#balloon-toolbar'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1623,15 +1398,12 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 		Block toolbar
 	</ck:card-title>
 	<ck:card-description>
-		A configurable toolbar on the left side of the editor.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The block toolbar provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (for example in certain layouts, like balloon block editor).
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/getting-started/setup/toolbar#block-toolbar'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1639,15 +1411,12 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 		Classic toolbar
 	</ck:card-title>
 	<ck:card-description>
-		A standard toolbar with buttons and dropdowns for editing.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The toolbar is the most basic user interface element of CKEditor 5 that gives you convenient access to all its features. It has buttons and dropdowns that you can use to format, manage, insert, and change elements of your content.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/getting-started/setup/toolbar#main-editor-toolbar'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1655,15 +1424,12 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 		Collapsible toolbar
 	</ck:card-title>
 	<ck:card-description>
-		A toolbar that collapses to save space.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Collapsible toolbar for UI space efficiency.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/getting-started/setup/toolbar#extended-toolbar-configuration-format'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1671,15 +1437,12 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 		Image contextual toolbar
 	</ck:card-title>
 	<ck:card-description>
-		A toolbar for image-specific tools appearing upon selection.
-	</ck:card-description>
-	<ck:card-learn-more>
-		The <code>{@link module:image/imagetoolbar~ImageToolbar}</code> plugin introduces a contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options, such as the <code>{@link features/images-text-alternative text alternative}</code> button, the <code>{@link features/images-captions image caption}</code> button, and <code>{@link features/images-styles image styles}</code> buttons. The toolbar can also host the image editing button introduced by the <code>{@link features/ckbox CKBox asset manager}</code>. Shown below is an example contextual toolbar with an extended set of buttons.
+		The {@link module:image/imagetoolbar~ImageToolbar} plugin introduces a contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options, such as the {@link features/images-text-alternative text alternative} button, the {@link features/images-captions image caption} button, and {@link features/images-styles image styles} buttons. The toolbar can also host the image editing button introduced by the {@link features/ckbox CKBox asset manager}. Shown below is an example contextual toolbar with an extended set of buttons.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/images-overview#image-contextual-toolbar'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1687,15 +1450,12 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 		Menu bar
 	</ck:card-title>
 	<ck:card-description>
-		A familiar menu interface for accessing all editor features.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The menu bar is a user interface component that gives you access to all features provided by the editor, organized in menus and categories. This familiar experience, popular in large editing desktop and online packages, improves the usability of the editor. As the menu bar gathers all the editor features, the toolbar can be simple and tidy, providing only the most essential and commonly used features. This is especially welcome in heavily-featured editor integrations. For your convenience, the menu bar provides a default preset structure based on the plugins loaded in the editor. However, you can arrange it to suit your needs, remove unnecessary items, or add menu items related to your custom features.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/getting-started/setup/menubar'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1703,15 +1463,12 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 		Multiline toolbar
 	</ck:card-title>
 	<ck:card-description>
-		A toolbar that spans multiple lines for better tool visibility.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Multiline toolbar for easy access to all functions.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/getting-started/setup/toolbar#multiline-wrapping-toolbar'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1719,15 +1476,12 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 		Nesting toolbars in dropdowns
 	</ck:card-title>
 	<ck:card-description>
-		Group toolbar items into dropdowns to save space.
-	</ck:card-description>
-	<ck:card-learn-more>
 		Nested toolbars for space efficiency and task-oriented access.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/getting-started/setup/toolbar#grouping-toolbar-items-in-dropdowns-nested-toolbars'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1735,15 +1489,12 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 		Wide sidebar
 	</ck:card-title>
 	<ck:card-description>
-		A wide sidebar for comments and suggestions.
-	</ck:card-description>
-	<ck:card-learn-more>
 		There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs, or even create your own UI for annotations.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/annotations-display-mode#wide-sidebar'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1751,15 +1502,12 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 		Table contextual toolbar
 	</ck:card-title>
 	<ck:card-description>
-		A toolbar for table-related tools appearing on selection.
-	</ck:card-description>
-	<ck:card-learn-more>
-		The <code>{@link module:table/tabletoolbar~TableToolbar}</code> plugin introduces a contextual toolbar for the table. The toolbar appears when a table or a cell is selected and contains various table-related buttons. These would typically include adding or removing columns and rows and merging or splitting cells. If these features are configured, the toolbar will also contain buttons for captions and table and cell properties.
+		The {@link module:table/tabletoolbar~TableToolbar} plugin introduces a contextual toolbar for the table. The toolbar appears when a table or a cell is selected and contains various table-related buttons. These would typically include adding or removing columns and rows and merging or splitting cells. If these features are configured, the toolbar will also contain buttons for captions and table and cell properties.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/features/tables#table-contextual-toolbar'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 ### Watchdog
@@ -1835,15 +1583,12 @@ Select from numerous toolbar styles and over 100 plugins to tailor an editor tha
 		CKEditor 5 inspector
 	</ck:card-title>
 	<ck:card-description>
-		A debugging tool for exploring editor internals.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The official CKEditor 5 inspector provides a set of rich debugging tools for editor internals like model, view, and commands.
 
 		<ck:button-link size='sm' variant='secondary' href='/ckeditor5/latest/framework/development-tools/inspector.html'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 <ck:card>
@@ -1851,15 +1596,12 @@ Select from numerous toolbar styles and over 100 plugins to tailor an editor tha
 		Cloud Services REST API
 	</ck:card-title>
 	<ck:card-description>
-		Cloud backend services with REST API support for collaboration.
-	</ck:card-description>
-	<ck:card-learn-more>
 		The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration services. The platform primarily focuses on providing a backend for the CKEditor 5 features, although some features can also be used directly through REST APIs.
 
 		<ck:button-link size='sm' variant='secondary' href='@cs'>
 			Feature page
 		</ck:button-link>
-	</ck:card-learn-more>
+	</ck:card-description>
 </ck:card>
 
 ### Themes
