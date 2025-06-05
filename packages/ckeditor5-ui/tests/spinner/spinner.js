@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import SpinnerView from '../../src/spinner/spinnerview.js';
+import { SpinnerView } from '../../src/spinner/spinnerview.js';
 
 describe( 'SpinnerView', () => {
 	let view;

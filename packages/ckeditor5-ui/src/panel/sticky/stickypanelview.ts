@@ -7,10 +7,10 @@
  * @module ui/panel/sticky/stickypanelview
  */
 
-import View from '../../view.js';
-import Template from '../../template.js';
+import { View } from '../../view.js';
+import { Template } from '../../template.js';
 
-import type ViewCollection from '../../viewcollection.js';
+import { type ViewCollection } from '../../viewcollection.js';
 
 import {
 	type Locale,
@@ -33,7 +33,7 @@ const toPx = /* #__PURE__ */ toUnit( 'px' );
 /**
  * The sticky panel view class.
  */
-export default class StickyPanelView extends View {
+export class StickyPanelView extends View {
 	/**
 	 * Collection of the child views which creates balloon panel contents.
 	 */

@@ -10,11 +10,11 @@ import {
 	createLabeledTextarea
 } from '../../src/labeledfield/utils.js';
 
-import LabeledFieldView from '../../src/labeledfield/labeledfieldview.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import InputTextView from '../../src/inputtext/inputtextview.js';
-import InputNumberView from '../../src/inputnumber/inputnumberview.js';
-import DropdownView from '../../src/dropdown/dropdownview.js';
+import { LabeledFieldView } from '../../src/labeledfield/labeledfieldview.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { InputTextView } from '../../src/inputtext/inputtextview.js';
+import { InputNumberView } from '../../src/inputnumber/inputnumberview.js';
+import { DropdownView } from '../../src/dropdown/dropdownview.js';
 import { TextareaView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'LabeledFieldView utils', () => {

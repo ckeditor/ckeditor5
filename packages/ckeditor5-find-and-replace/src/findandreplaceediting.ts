@@ -16,13 +16,13 @@ import {
 	type ObservableChangeEvent
 } from 'ckeditor5/src/utils.js';
 
-import FindCommand, { type FindAttributes } from './findcommand.js';
-import ReplaceCommand from './replacecommand.js';
-import ReplaceAllCommand from './replaceallcommand.js';
-import FindNextCommand from './findnextcommand.js';
-import FindPreviousCommand from './findpreviouscommand.js';
-import FindAndReplaceState, { type FindCallback } from './findandreplacestate.js';
-import FindAndReplaceUtils from './findandreplaceutils.js';
+import { FindCommand, type FindAttributes } from './findcommand.js';
+import { ReplaceCommand } from './replacecommand.js';
+import { ReplaceAllCommand } from './replaceallcommand.js';
+import { FindNextCommand } from './findnextcommand.js';
+import { FindPreviousCommand } from './findpreviouscommand.js';
+import { FindAndReplaceState, type FindCallback } from './findandreplacestate.js';
+import { FindAndReplaceUtils } from './findandreplaceutils.js';
 import type { ResultType } from './findandreplace.js';
 
 import { debounce } from 'es-toolkit/compat';
@@ -34,7 +34,7 @@ const HIGHLIGHT_CLASS = 'ck-find-result_selected';
 /**
  * Implements the editing part for find and replace plugin. For example conversion, commands etc.
  */
-export default class FindAndReplaceEditing extends Plugin {
+export class FindAndReplaceEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

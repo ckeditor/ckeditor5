@@ -3,30 +3,30 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import View from '../../src/view/view.js';
-import ViewElement from '../../src/view/element.js';
-import ViewEditableElement from '../../src/view/editableelement.js';
-import ViewContainerElement from '../../src/view/containerelement.js';
-import ViewAttributeElement from '../../src/view/attributeelement.js';
-import ViewRawElement from '../../src/view/rawelement.js';
-import ViewUIElement from '../../src/view/uielement.js';
-import ViewText from '../../src/view/text.js';
-import ViewRange from '../../src/view/range.js';
-import ViewPosition from '../../src/view/position.js';
-import DocumentSelection from '../../src/view/documentselection.js';
-import DomConverter from '../../src/view/domconverter.js';
-import Renderer from '../../src/view/renderer.js';
-import DocumentFragment from '../../src/view/documentfragment.js';
-import ViewDocument from '../../src/view/document.js';
-import DowncastWriter from '../../src/view/downcastwriter.js';
+import { View } from '../../src/view/view.js';
+import { ViewElement } from '../../src/view/element.js';
+import { ViewEditableElement } from '../../src/view/editableelement.js';
+import { ViewContainerElement } from '../../src/view/containerelement.js';
+import { ViewAttributeElement } from '../../src/view/attributeelement.js';
+import { ViewRawElement } from '../../src/view/rawelement.js';
+import { ViewUIElement } from '../../src/view/uielement.js';
+import { ViewText } from '../../src/view/text.js';
+import { ViewRange } from '../../src/view/range.js';
+import { ViewPosition } from '../../src/view/position.js';
+import { DocumentSelection } from '../../src/view/documentselection.js';
+import { DomConverter } from '../../src/view/domconverter.js';
+import { Renderer } from '../../src/view/renderer.js';
+import { DocumentFragment } from '../../src/view/documentfragment.js';
+import { ViewDocument } from '../../src/view/document.js';
+import { DowncastWriter } from '../../src/view/downcastwriter.js';
 
 import { parse, stringify, setData as setViewData, getData as getViewData } from '../../src/dev-utils/view.js';
 import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH } from '../../src/view/filler.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import createViewRoot from './_utils/createroot.js';
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
-import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { createViewRoot } from './_utils/createroot.js';
+import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 

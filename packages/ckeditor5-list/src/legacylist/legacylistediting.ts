@@ -7,9 +7,9 @@
  * @module list/legacylist/legacylistediting
  */
 
-import LegacyListCommand from './legacylistcommand.js';
-import LegacyIndentCommand from './legacyindentcommand.js';
-import LegacyListUtils from './legacylistutils.js';
+import { LegacyListCommand } from './legacylistcommand.js';
+import { LegacyIndentCommand } from './legacyindentcommand.js';
+import { LegacyListUtils } from './legacylistutils.js';
 
 import { Plugin, type MultiCommand } from 'ckeditor5/src/core.js';
 
@@ -53,7 +53,7 @@ import '../../theme/list.css';
  *
  * It registers the `'numberedList'`, `'bulletedList'`, `'indentList'` and `'outdentList'` commands.
  */
-export default class LegacyListEditing extends Plugin {
+export class LegacyListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

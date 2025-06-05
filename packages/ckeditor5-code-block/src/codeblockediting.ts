@@ -24,9 +24,9 @@ import {
 } from 'ckeditor5/src/engine.js';
 import { ClipboardPipeline, type ClipboardContentInsertionEvent } from 'ckeditor5/src/clipboard.js';
 
-import CodeBlockCommand from './codeblockcommand.js';
-import IndentCodeBlockCommand from './indentcodeblockcommand.js';
-import OutdentCodeBlockCommand from './outdentcodeblockcommand.js';
+import { CodeBlockCommand } from './codeblockcommand.js';
+import { IndentCodeBlockCommand } from './indentcodeblockcommand.js';
+import { OutdentCodeBlockCommand } from './outdentcodeblockcommand.js';
 import {
 	getNormalizedAndLocalizedLanguageDefinitions,
 	getLeadingWhiteSpaces,
@@ -49,7 +49,7 @@ const DEFAULT_ELEMENT = 'paragraph';
  *
  * Introduces the `'codeBlock'` command and the `'codeBlock'` model element.
  */
-export default class CodeBlockEditing extends Plugin {
+export class CodeBlockEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

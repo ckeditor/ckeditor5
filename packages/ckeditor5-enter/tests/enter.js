@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Enter from '../src/enter.js';
-import EnterCommand from '../src/entercommand.js';
-import EnterObserver from '../src/enterobserver.js';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Enter } from '../src/enter.js';
+import { EnterCommand } from '../src/entercommand.js';
+import { EnterObserver } from '../src/enterobserver.js';
+import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 
 describe( 'Enter feature', () => {
 	let element, editor, viewDocument;

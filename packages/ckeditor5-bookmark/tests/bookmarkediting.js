@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import BookmarkEditing from '../src/bookmarkediting.js';
-import InsertBookmarkCommand from '../src/insertbookmarkcommand.js';
-import UpdateBookmarkCommand from '../src/updatebookmarkcommand.js';
+import { BookmarkEditing } from '../src/bookmarkediting.js';
+import { InsertBookmarkCommand } from '../src/insertbookmarkcommand.js';
+import { UpdateBookmarkCommand } from '../src/updatebookmarkcommand.js';
 
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
@@ -18,7 +18,7 @@ import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { Element } from '@ckeditor/ckeditor5-engine';
 import {
@@ -31,7 +31,7 @@ import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget';
 
 describe( 'BookmarkEditing', () => {
 	// eslint-disable-next-line @stylistic/max-len
-	const domUIElement = '<span class="ck-bookmark__icon"><svg class="ck ck-icon ck-reset_all-excluded" viewBox="0 0 14 16" aria-hidden="true"><path class="ck-icon__fill" d="M2 14.436V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v12.436a.5.5 0 0 1-.819.385l-3.862-3.2a.5.5 0 0 0-.638 0l-3.862 3.2A.5.5 0 0 1 2 14.436Z"></path></svg></span>';
+	const domUIElement = '<span class="ck-bookmark__icon"><svg class="ck ck-icon ck-reset_all-excluded" viewBox="0 0 14 16" aria-hidden="true"><path d="M2 14.436V2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v12.436a.5.5 0 0 1-.819.385l-3.862-3.2a.5.5 0 0 0-.638 0l-3.862 3.2A.5.5 0 0 1 2 14.436" class="ck-icon__fill"></path></svg></span>';
 
 	let editor, element, model, view, converter;
 

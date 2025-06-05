@@ -13,10 +13,10 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { Typing } from 'ckeditor5/src/typing.js';
 import { IconEmoji } from 'ckeditor5/src/icons.js';
 
-import EmojiCommand from './emojicommand.js';
-import EmojiRepository from './emojirepository.js';
-import EmojiPickerView, { type EmojiPickerViewUpdateEvent } from './ui/emojipickerview.js';
-import EmojiPickerFormView, { type EmojiPickerFormViewCancelEvent } from './ui/emojipickerformview.js';
+import { EmojiCommand } from './emojicommand.js';
+import { EmojiRepository } from './emojirepository.js';
+import { EmojiPickerView, type EmojiPickerViewUpdateEvent } from './ui/emojipickerview.js';
+import { EmojiPickerFormView, type EmojiPickerFormViewCancelEvent } from './ui/emojipickerformview.js';
 import { type EmojiGridViewExecuteEvent } from './ui/emojigridview.js';
 import type { SkinToneId } from './emojiconfig.js';
 
@@ -29,7 +29,7 @@ const VISUAL_SELECTION_MARKER_NAME = 'emoji-picker';
  *
  * Introduces the `'emoji'` dropdown.
  */
-export default class EmojiPicker extends Plugin {
+export class EmojiPicker extends Plugin {
 	/**
 	 * The actions view displayed inside the balloon.
 	 */

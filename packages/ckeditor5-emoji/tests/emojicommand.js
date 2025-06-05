@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import EmojiCommand from '../src/emojicommand.js';
+import { EmojiCommand } from '../src/emojicommand.js';
 
 class EmojiPickerFakePlugin {
 	static get pluginName() {

@@ -23,7 +23,7 @@
     "@ckeditor/ckeditor5-utils": "45.2.0",
     "ckeditor5": "45.2.0",
     "blurhash": "2.0.5",
-    "es-toolkit": "1.32.0"
+    "es-toolkit": "1.38.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-autosave": "45.2.0",

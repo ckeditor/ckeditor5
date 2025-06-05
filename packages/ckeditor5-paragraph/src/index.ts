@@ -7,9 +7,9 @@
  * @module paragraph
  */
 
-export { default as Paragraph } from './paragraph.js';
-export { default as ParagraphButtonUI } from './paragraphbuttonui.js';
-export type { default as ParagraphCommand } from './paragraphcommand.js';
-export type { default as InsertParagraphCommand } from './insertparagraphcommand.js';
+export { Paragraph } from './paragraph.js';
+export { ParagraphButtonUI } from './paragraphbuttonui.js';
+export type { ParagraphCommand } from './paragraphcommand.js';
+export type { InsertParagraphCommand } from './insertparagraphcommand.js';
 
 import './augmentation.js';

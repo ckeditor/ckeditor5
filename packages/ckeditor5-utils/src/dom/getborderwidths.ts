@@ -14,7 +14,7 @@
  * @returns An object containing `top`, `left`, `right` and `bottom` properties
  * with numerical values of the `border-[top,left,right,bottom]-width` CSS styles.
  */
-export default function getBorderWidths( element: HTMLElement ): BorderWidths {
+export function getBorderWidths( element: HTMLElement ): BorderWidths {
 	// Call getComputedStyle on the window the element document belongs to.
 	const style = element.ownerDocument.defaultView!.getComputedStyle( element );
 

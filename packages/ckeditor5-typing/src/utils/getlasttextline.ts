@@ -36,7 +36,7 @@ import type { Model, Range } from '@ckeditor/ckeditor5-engine';
  * <paragraph>Foo<softBreak></softBreak>bar<softBreak></softBreak>baz<paragraph>
  * ```
  */
-export default function getLastTextLine( range: Range, model: Model ): LastTextLineData {
+export function getLastTextLine( range: Range, model: Model ): LastTextLineData {
 	let start = range.start;
 
 	const text = Array.from( range.getWalker( { ignoreElementEnd: false } ) ).reduce( ( rangeText, { item } ) => {

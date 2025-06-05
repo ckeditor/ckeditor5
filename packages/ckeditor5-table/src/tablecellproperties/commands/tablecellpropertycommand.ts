@@ -9,7 +9,7 @@
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import type { Element, Batch } from 'ckeditor5/src/engine.js';
-import type TableUtils from '../../tableutils.js';
+import { type TableUtils } from '../../tableutils.js';
 import { getSelectionAffectedTable } from '../../utils/common.js';
 
 /**
@@ -17,7 +17,7 @@ import { getSelectionAffectedTable } from '../../utils/common.js';
  *
  * The command is a base command for other table cell property commands.
  */
-export default class TableCellPropertyCommand extends Command {
+export class TableCellPropertyCommand extends Command {
 	/**
 	 * The attribute that will be set by the command.
 	 */

@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import RemoveFormatCommand from '../src/removeformatcommand.js';
-import Command from '@ckeditor/ckeditor5-core/src/command.js';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { RemoveFormatCommand } from '../src/removeformatcommand.js';
+import { Command } from '@ckeditor/ckeditor5-core/src/command.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import {
 	getData,
 	setData

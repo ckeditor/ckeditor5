@@ -23,7 +23,7 @@ const listElements = [ 'ol', 'ul' ];
  * @param viewItem View item to convert.
  * @returns Plain text representation of `viewItem`.
  */
-export default function viewToPlainText(
+export function viewToPlainText(
 	converter: DomConverter,
 	viewItem: ViewItem | ViewDocumentFragment
 ): string {

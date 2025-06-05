@@ -4,7 +4,7 @@
  */
 
 import { DomConverter, StylesProcessor, ViewDocument, DowncastWriter } from '@ckeditor/ckeditor5-engine';
-import viewToPlainText from '../../src/utils/viewtoplaintext.js';
+import { viewToPlainText } from '../../src/utils/viewtoplaintext.js';
 
 import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 

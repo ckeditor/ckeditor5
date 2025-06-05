@@ -7,7 +7,7 @@
  * @module utils/legacyerrors
  */
 
-import CKEditorError from './ckeditorerror.js';
+import { CKEditorError } from './ckeditorerror.js';
 
 if ( false ) {
 	/**

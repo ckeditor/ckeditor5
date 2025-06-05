@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import DomEventData from '../../../src/view/observer/domeventdata.js';
-import View from '../../../src/view/view.js';
+import { DomEventData } from '../../../src/view/observer/domeventdata.js';
+import { View } from '../../../src/view/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'DomEventData', () => {

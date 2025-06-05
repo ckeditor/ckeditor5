@@ -9,8 +9,8 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import HeadingEditing from './headingediting.js';
-import HeadingUI from './headingui.js';
+import { HeadingEditing } from './headingediting.js';
+import { HeadingUI } from './headingui.js';
 
 import '../theme/heading.css';
 
@@ -25,7 +25,7 @@ import '../theme/heading.css';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class Heading extends Plugin {
+export class Heading extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

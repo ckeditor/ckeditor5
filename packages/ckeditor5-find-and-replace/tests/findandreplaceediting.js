@@ -3,21 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import FindAndReplaceEditing from '../src/findandreplaceediting.js';
+import { FindAndReplaceEditing } from '../src/findandreplaceediting.js';
 
-import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget/src/index.js';
 
-import FindAndReplace from '../src/findandreplace.js';
+import { FindAndReplace } from '../src/findandreplace.js';
 
-import FindCommand from '../src/findcommand.js';
-import ReplaceCommand from '../src/replacecommand.js';
-import ReplaceAllCommand from '../src/replaceallcommand.js';
+import { FindCommand } from '../src/findcommand.js';
+import { ReplaceCommand } from '../src/replacecommand.js';
+import { ReplaceAllCommand } from '../src/replaceallcommand.js';
 
 describe( 'FindAndReplaceEditing', () => {
 	const FOO_BAR_PARAGRAPH = '<p>Foo bar baz</p>';

@@ -26,14 +26,14 @@ import type { CKBoxRawAssetDefinition, CKBoxRawAssetDataDefinition } from '../ck
 
 import type { ImageUtils } from '@ckeditor/ckeditor5-image';
 import { createEditabilityChecker } from './utils.js';
-import CKBoxUtils from '../ckboxutils.js';
+import { CKBoxUtils } from '../ckboxutils.js';
 
 /**
  * The CKBox edit image command.
  *
  * Opens the CKBox dialog for editing the image.
  */
-export default class CKBoxImageEditCommand extends Command {
+export class CKBoxImageEditCommand extends Command {
 	/**
 	 * Flag indicating whether the command is active, i.e. dialog is open.
 	 */

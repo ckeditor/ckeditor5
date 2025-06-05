@@ -18,7 +18,7 @@ import {
 /**
  * A set of helpers related to document lists.
  */
-export default class ListPropertiesUtils extends Plugin {
+export class ListPropertiesUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

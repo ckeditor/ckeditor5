@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import Typing from '../src/typing.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { Typing } from '../src/typing.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';

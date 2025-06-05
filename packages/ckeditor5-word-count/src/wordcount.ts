@@ -47,7 +47,7 @@ import { throttle, isElement } from 'es-toolkit/compat';
  * // Words: 1, Characters: 5
  * ```
  */
-export default class WordCount extends Plugin {
+export class WordCount extends Plugin {
 	/**
 	 * The number of characters in the editor.
 	 *

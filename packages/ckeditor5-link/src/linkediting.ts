@@ -30,9 +30,9 @@ import {
 } from 'ckeditor5/src/clipboard.js';
 import { keyCodes, env } from 'ckeditor5/src/utils.js';
 
-import LinkCommand from './linkcommand.js';
-import UnlinkCommand from './unlinkcommand.js';
-import ManualDecorator from './utils/manualdecorator.js';
+import { LinkCommand } from './linkcommand.js';
+import { UnlinkCommand } from './unlinkcommand.js';
+import { ManualDecorator } from './utils/manualdecorator.js';
 import {
 	createLinkElement,
 	ensureSafeUrl,
@@ -57,7 +57,7 @@ const EXTERNAL_LINKS_REGEXP = /^(https?:)?\/\//;
  * It introduces the `linkHref="url"` attribute in the model which renders to the view as a `<a href="url">` element
  * as well as `'link'` and `'unlink'` commands.
  */
-export default class LinkEditing extends Plugin {
+export class LinkEditing extends Plugin {
 	/**
 	 * A list of functions that handles opening links. If any of them returns `true`, the link is considered to be opened.
 	 */

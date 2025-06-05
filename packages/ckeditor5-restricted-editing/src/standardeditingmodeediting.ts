@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import RestrictedEditingExceptionCommand from './restrictededitingexceptioncommand.js';
+import { RestrictedEditingExceptionCommand } from './restrictededitingexceptioncommand.js';
 
 /**
  * The standard editing mode editing feature.
@@ -18,7 +18,7 @@ import RestrictedEditingExceptionCommand from './restrictededitingexceptioncomma
  * a `<span>` element with the `restricted-editing-exception` CSS class.
  * * It registers the `'restrictedEditingException'` command.
  */
-export default class StandardEditingModeEditing extends Plugin {
+export class StandardEditingModeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

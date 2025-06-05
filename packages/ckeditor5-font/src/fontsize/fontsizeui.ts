@@ -26,12 +26,12 @@ import { FONT_SIZE } from '../utils.js';
 
 import '../../theme/fontsize.css';
 import type { FontSizeOption } from '../fontconfig.js';
-import type FontSizeCommand from './fontsizecommand.js';
+import { type FontSizeCommand } from './fontsizecommand.js';
 
 /**
  * The font size UI plugin. It introduces the `'fontSize'` dropdown.
  */
-export default class FontSizeUI extends Plugin {
+export class FontSizeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import View from '../../../src/view/view.js';
+import { View } from '../../../src/view/view.js';
 import { INLINE_FILLER_LENGTH, isInlineFiller, startsWithFiller } from '../../../src/view/filler.js';
 
-import createViewRoot from '../_utils/createroot.js';
+import { createViewRoot } from '../_utils/createroot.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
 
 import { parse, setData } from '../../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';

@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import View from '../../../src/view/view.js';
-import MutationObserver from '../../../src/view/observer/mutationobserver.js';
-import UIElement from '../../../src/view/uielement.js';
-import RawElement from '../../../src/view/rawelement.js';
-import createViewRoot from '../_utils/createroot.js';
+import { View } from '../../../src/view/view.js';
+import { MutationObserver } from '../../../src/view/observer/mutationobserver.js';
+import { UIElement } from '../../../src/view/uielement.js';
+import { RawElement } from '../../../src/view/rawelement.js';
+import { createViewRoot } from '../_utils/createroot.js';
 import { parse } from '../../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'MutationObserver', () => {
 	let view, domRoot, viewDocument, viewRoot, mutationObserver, domWrapper, spyRenderedMarkToSync, spyForceRender, mutationsEventData;

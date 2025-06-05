@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin.js';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
-import TwoStepCaretMovement from '../src/twostepcaretmovement.js';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { DomEmitterMixin } from '@ckeditor/ckeditor5-utils/src/dom/emittermixin.js';
+import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
+import { TwoStepCaretMovement } from '../src/twostepcaretmovement.js';
+import { Position } from '@ckeditor/ckeditor5-engine/src/model/position.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { getData as getModelData, setData as setModelData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray.js';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities.js';
+import { toArray } from '@ckeditor/ckeditor5-utils/src/toarray.js';
+import { priorities } from '@ckeditor/ckeditor5-utils/src/priorities.js';
 
-import Input from '../src/input.js';
-import Delete from '../src/delete.js';
+import { Input } from '../src/input.js';
+import { Delete } from '../src/delete.js';
 
 describe( 'TwoStepCaretMovement', () => {
 	let editor, model, emitter, selection, view, plugin;

@@ -7,23 +7,23 @@
  * @module engine/model/operation/insertoperation
  */
 
-import Operation from './operation.js';
-import Position from '../position.js';
-import NodeList from '../nodelist.js';
-import MoveOperation from './moveoperation.js';
+import { Operation } from './operation.js';
+import { Position } from '../position.js';
+import { NodeList } from '../nodelist.js';
+import { MoveOperation } from './moveoperation.js';
 import { _insert, _normalizeNodes, type NodeSet } from './utils.js';
-import Text from '../text.js';
-import Element from '../element.js';
+import { Text } from '../text.js';
+import { Element } from '../element.js';
 import type { Selectable } from '../selection.js';
 
-import type Document from '../document.js';
+import { type Document } from '../document.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Operation to insert one or more nodes at given position in the model.
  */
-export default class InsertOperation extends Operation {
+export class InsertOperation extends Operation {
 	/**
 	 * Position of insertion.
 	 *

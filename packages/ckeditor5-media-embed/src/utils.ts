@@ -19,7 +19,7 @@ import type {
 	DocumentSelection
 } from 'ckeditor5/src/engine.js';
 import { isWidget, toWidget } from 'ckeditor5/src/widget.js';
-import type MediaRegistry from './mediaregistry.js';
+import { type MediaRegistry } from './mediaregistry.js';
 
 /**
  * Converts a given {@link module:engine/view/element~Element} to a media embed widget:

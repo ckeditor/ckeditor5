@@ -19,7 +19,7 @@ import {
 } from 'ckeditor5/src/ui.js';
 import type { Batch } from 'ckeditor5/src/engine.js';
 
-import TableCellPropertiesView from './ui/tablecellpropertiesview.js';
+import { TableCellPropertiesView } from './ui/tablecellpropertiesview.js';
 import {
 	colorFieldValidator,
 	getLocalizedColorErrorText,
@@ -38,7 +38,7 @@ import {
 } from '../utils/table-properties.js';
 import type { GetCallback, ObservableChangeEvent } from 'ckeditor5/src/utils.js';
 
-import type TableCellBorderStyleCommand from './commands/tablecellborderstylecommand.js';
+import { type TableCellBorderStyleCommand } from './commands/tablecellborderstylecommand.js';
 
 const ERROR_TEXT_TIMEOUT = 500;
 
@@ -61,7 +61,7 @@ const propertyToCommandMap = {
  *
  * It uses the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon plugin}.
  */
-export default class TableCellPropertiesUI extends Plugin {
+export class TableCellPropertiesUI extends Plugin {
 	/**
 	 * The default table cell properties.
 	 */

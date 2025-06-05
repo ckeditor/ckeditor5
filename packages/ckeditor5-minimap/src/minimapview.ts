@@ -10,8 +10,8 @@
 import { View } from 'ckeditor5/src/ui.js';
 import { Rect, type Locale } from 'ckeditor5/src/utils.js';
 
-import MinimapIframeView from './minimapiframeview.js';
-import MinimapPositionTrackerView from './minimappositiontrackerview.js';
+import { MinimapIframeView } from './minimapiframeview.js';
+import { MinimapPositionTrackerView } from './minimappositiontrackerview.js';
 
 export type MinimapViewOptions = {
 	domRootClone: HTMLElement;
@@ -27,7 +27,7 @@ export type MinimapViewOptions = {
  *
  * @internal
  */
-export default class MinimapView extends View {
+export class MinimapView extends View {
 	/**
 	 * An instance of the tracker view displayed over the minimap.
 	 */

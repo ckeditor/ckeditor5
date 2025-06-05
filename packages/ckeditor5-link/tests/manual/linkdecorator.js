@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import LinkImage from '../../src/linkimage.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { LinkImage } from '../../src/linkimage.js';
 
 // Just to have nicely styles switchbutton;
 import '@ckeditor/ckeditor5-theme-lark/theme/ckeditor5-ui/components/list/list.css';

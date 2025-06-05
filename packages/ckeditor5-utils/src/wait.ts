@@ -13,7 +13,7 @@
  * @param timeout The time in milliseconds to wait.
  * @param options.signal A signal to abort the waiting.
  */
-export default function wait( timeout: number, options: { signal?: AbortSignal } = {} ): Promise<void> {
+export function wait( timeout: number, options: { signal?: AbortSignal } = {} ): Promise<void> {
 	return new Promise( ( resolve, reject ) => {
 		const signal = options.signal || ( new AbortController() ).signal;
 

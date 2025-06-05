@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import toMap from '../src/tomap.js';
-import count from '../src/count.js';
+import { toMap } from '../src/tomap.js';
+import { count } from '../src/count.js';
 
 describe( 'utils', () => {
 	describe( 'toMap', () => {

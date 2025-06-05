@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
-import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver.js';
-import View from '../../../src/view/view.js';
-import DomEventData from '../../../src/view/observer/domeventdata.js';
-import createViewRoot from '../_utils/createroot.js';
+import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { FakeSelectionObserver } from '../../../src/view/observer/fakeselectionobserver.js';
+import { View } from '../../../src/view/view.js';
+import { DomEventData } from '../../../src/view/observer/domeventdata.js';
+import { createViewRoot } from '../_utils/createroot.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { setData, stringify } from '../../../src/dev-utils/view.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'FakeSelectionObserver', () => {

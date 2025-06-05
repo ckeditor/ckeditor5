@@ -24,7 +24,7 @@ import { getSelectedMediaModelWidget, insertMedia } from './utils.js';
  * editor.execute( 'mediaEmbed', 'http://url.to.the/media' );
  * ```
  */
-export default class MediaEmbedCommand extends Command {
+export class MediaEmbedCommand extends Command {
 	/**
 	 * Media url.
 	 */

@@ -15,12 +15,12 @@ import {
 	type PositioningFunction,
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
-import MenuBarMenuButtonView from './menubarmenubuttonview.js';
+import { MenuBarMenuButtonView } from './menubarmenubuttonview.js';
 import { MenuBarMenuBehaviors, MenuBarMenuViewPanelPositioningFunctions } from './utils.js';
 import type { FocusableView } from '../focuscycler.js';
-import View from '../view.js';
+import { View } from '../view.js';
 import {
-	default as MenuBarMenuPanelView,
+	MenuBarMenuPanelView,
 	type MenuBarMenuPanelPosition
 } from './menubarmenupanelview.js';
 
@@ -30,7 +30,7 @@ import '../../theme/components/menubar/menubarmenu.css';
  * A menu view for the {@link module:ui/menubar/menubarview~MenuBarView}. Menus are building blocks of the menu bar,
  * they host other sub-menus and menu items (buttons) that users can interact with.
  */
-export default class MenuBarMenuView extends View implements FocusableView {
+export class MenuBarMenuView extends View implements FocusableView {
 	/**
 	 * Button of the menu view.
 	 */

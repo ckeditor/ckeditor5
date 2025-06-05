@@ -20,7 +20,7 @@ import {
 /**
  * The code block indentation decrease command plugin.
  */
-export default class OutdentCodeBlockCommand extends Command {
+export class OutdentCodeBlockCommand extends Command {
 	/**
 	 * A sequence of characters removed from the line when the command is executed.
 	 */

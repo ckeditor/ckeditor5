@@ -20,7 +20,7 @@
  * @param obj Object to transform.
  * @returns Map created from object.
  */
-export default function objectToMap<T>( obj: { readonly [ key: string ]: T } | null | undefined ): Map<string, T> {
+export function objectToMap<T>( obj: { readonly [ key: string ]: T } | null | undefined ): Map<string, T> {
 	const map = new Map<string, T>();
 
 	for ( const key in obj ) {

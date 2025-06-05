@@ -18,7 +18,7 @@
  *
  * @param input An HTML string to format.
  */
-export default function formatHtml( input: string ): string {
+export function formatHtml( input: string ): string {
 	// A list of block-like elements around which the new lines should be inserted, and within which
 	// the indentation of their children should be increased.
 	// The list is partially based on https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements that contains

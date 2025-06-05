@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap.js';
+import { StylesMap, StylesProcessor } from '../../../src/view/stylesmap.js';
 import { addMarginRules } from '../../../src/view/styles/margin.js';
 
 describe( 'Margin styles normalizer', () => {

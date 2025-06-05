@@ -7,7 +7,7 @@
  * @module editor-multi-root
  */
 
-export { default as MultiRootEditor } from './multirooteditor.js';
+export { MultiRootEditor } from './multirooteditor.js';
 
 export type {
 	RootAttributes,

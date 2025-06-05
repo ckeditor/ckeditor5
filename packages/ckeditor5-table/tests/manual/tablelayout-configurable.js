@@ -5,20 +5,20 @@
 
 /* eslint-disable @stylistic/max-len */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
 import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line';
-import Table from '../../src/table.js';
-import TableToolbar from '../../src/tabletoolbar.js';
-import TableSelection from '../../src/tableselection.js';
-import TableClipboard from '../../src/tableclipboard.js';
-import TableProperties from '../../src/tableproperties.js';
-import TableCellProperties from '../../src/tablecellproperties.js';
-import TableColumnResize from '../../src/tablecolumnresize.js';
-import TableCaption from '../../src/tablecaption.js';
-import PlainTableOutput from '../../src/plaintableoutput.js';
-import TableLayout from '../../src/tablelayout.js';
+import { Table } from '../../src/table.js';
+import { TableToolbar } from '../../src/tabletoolbar.js';
+import { TableSelection } from '../../src/tableselection.js';
+import { TableClipboard } from '../../src/tableclipboard.js';
+import { TableProperties } from '../../src/tableproperties.js';
+import { TableCellProperties } from '../../src/tablecellproperties.js';
+import { TableColumnResize } from '../../src/tablecolumnresize.js';
+import { TableCaption } from '../../src/tablecaption.js';
+import { PlainTableOutput } from '../../src/plaintableoutput.js';
+import { TableLayout } from '../../src/tablelayout.js';
 
 const initialHTML = `<h2>Source structure: &lt;table&gt;</h2>
 	<hr>

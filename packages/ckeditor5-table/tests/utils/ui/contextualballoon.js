@@ -3,17 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Table from '../../../src/table.js';
-import TableCellProperties from '../../../src/tablecellproperties.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import View from '@ckeditor/ckeditor5-ui/src/view.js';
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Table } from '../../../src/table.js';
+import { TableCellProperties } from '../../../src/tablecellproperties.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
+import { BalloonPanelView } from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview.js';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { modelTable } from '../../_utils/utils.js';
 import { getBalloonCellPositionData, repositionContextualBalloon } from '../../../src/utils/ui/contextualballoon.js';
 

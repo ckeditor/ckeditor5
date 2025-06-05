@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import HighlightStack from '../src/highlightstack.js';
+import { HighlightStack } from '../src/highlightstack.js';
 
 describe( 'HighlightStack', () => {
 	let stack;

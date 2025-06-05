@@ -4,8 +4,8 @@
  */
 
 import { global } from '@ckeditor/ckeditor5-utils';
-import TextareaView from '../../src/textarea/textareaview.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { TextareaView } from '../../src/textarea/textareaview.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'TextareaView', () => {

@@ -17,7 +17,7 @@ const ITALIC = 'italic';
 /**
  * The italic UI feature. It introduces the Italic button.
  */
-export default class ItalicUI extends Plugin {
+export class ItalicUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

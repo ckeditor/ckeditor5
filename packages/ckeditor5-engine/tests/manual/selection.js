@@ -4,18 +4,18 @@
  */
 
 import { getData } from '../../src/dev-utils/model.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
 
 import './selection.css';
 import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils.js';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
+import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
 
 class SelectionTest extends Plugin {
 	init() {

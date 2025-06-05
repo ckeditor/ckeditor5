@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed.js';
-import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { MediaEmbed } from '@ckeditor/ckeditor5-media-embed/src/mediaembed.js';
+import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
 import { range } from 'es-toolkit/compat';
-import MediaEmbedElementSupport from '../../src/integrations/mediaembed.js';
+import { MediaEmbedElementSupport } from '../../src/integrations/mediaembed.js';
 
 describe( 'MediaEmbedElementSupport', () => {
 	describe( 'MediaEmbed feature is available', () => {

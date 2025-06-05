@@ -31,12 +31,12 @@ import type {
 	ViewNode
 } from 'ckeditor5/src/engine.js';
 
-import MouseEventsObserver from '../../src/tablemouse/mouseeventsobserver.js';
-import TableEditing from '../tableediting.js';
-import TableUtils from '../tableutils.js';
-import TableWalker from '../tablewalker.js';
+import { MouseEventsObserver } from '../../src/tablemouse/mouseeventsobserver.js';
+import { TableEditing } from '../tableediting.js';
+import { TableUtils } from '../tableutils.js';
+import { TableWalker } from '../tablewalker.js';
 
-import TableWidthsCommand from './tablewidthscommand.js';
+import { TableWidthsCommand } from './tablewidthscommand.js';
 
 import { downcastTableResizedClass, upcastColgroupElement } from './converters.js';
 
@@ -59,7 +59,7 @@ import {
 } from './utils.js';
 
 import { COLUMN_MIN_WIDTH_IN_PIXELS, COLUMN_RESIZE_DISTANCE_THRESHOLD } from './constants.js';
-import type TableColumnResize from '../tablecolumnresize.js';
+import { type TableColumnResize } from '../tablecolumnresize.js';
 
 const toPx = /* #__PURE__ */ toUnit( 'px' );
 
@@ -90,7 +90,7 @@ type ResizingData = {
 /**
  * The table column resize editing plugin.
  */
-export default class TableColumnResizeEditing extends Plugin {
+export class TableColumnResizeEditing extends Plugin {
 	/**
 	 * A flag indicating if the column resizing is in progress.
 	 */

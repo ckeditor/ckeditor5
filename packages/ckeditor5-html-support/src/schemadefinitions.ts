@@ -51,7 +51,7 @@ import type { DataSchemaBlockElementDefinition, DataSchemaInlineElementDefinitio
 //
 // When adding elements to this list, update the feature guide listing, too.
 
-export default {
+export const defaultConfig = {
 	block: [
 		// Existing features.
 		{

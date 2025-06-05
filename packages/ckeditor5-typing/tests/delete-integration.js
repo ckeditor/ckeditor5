@@ -3,17 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Typing from '../src/typing.js';
-import DeleteCommand from '../src/deletecommand.js';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
-import LegacyList from '@ckeditor/ckeditor5-list/src/legacylist.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Image from '@ckeditor/ckeditor5-image/src/image.js';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { Typing } from '../src/typing.js';
+import { DeleteCommand } from '../src/deletecommand.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { LegacyList } from '@ckeditor/ckeditor5-list/src/legacylist.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
+import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'Delete integration', () => {

@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
+import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
 import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import Document from '@ckeditor/ckeditor5-engine/src/view/document.js';
-import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Document } from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import { UpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import {
 	transformListItemLikeElementsIntoLists,

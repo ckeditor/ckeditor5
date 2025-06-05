@@ -12,14 +12,14 @@ import { findAttributeRange } from 'ckeditor5/src/typing.js';
 import { Collection, diff, first, toMap } from 'ckeditor5/src/utils.js';
 import { LivePosition, type Range, type Item } from 'ckeditor5/src/engine.js';
 
-import AutomaticDecorators from './utils/automaticdecorators.js';
+import { AutomaticDecorators } from './utils/automaticdecorators.js';
 import { extractTextFromLinkRange, isLinkableElement } from './utils.js';
-import type ManualDecorator from './utils/manualdecorator.js';
+import { type ManualDecorator } from './utils/manualdecorator.js';
 
 /**
  * The link command. It is used by the {@link module:link/link~Link link feature}.
  */
-export default class LinkCommand extends Command {
+export class LinkCommand extends Command {
 	/**
 	 * The value of the `'linkHref'` attribute if the start of the selection is located in a node with this attribute.
 	 *

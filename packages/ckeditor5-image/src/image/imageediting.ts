@@ -8,10 +8,10 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import ImageLoadObserver from './imageloadobserver.js';
-import InsertImageCommand from './insertimagecommand.js';
-import ReplaceImageSourceCommand from './replaceimagesourcecommand.js';
-import ImageUtils from '../imageutils.js';
+import { ImageLoadObserver } from './imageloadobserver.js';
+import { InsertImageCommand } from './insertimagecommand.js';
+import { ReplaceImageSourceCommand } from './replaceimagesourcecommand.js';
+import { ImageUtils } from '../imageutils.js';
 
 /**
  * The image engine plugin. This module loads common code shared between
@@ -20,7 +20,7 @@ import ImageUtils from '../imageutils.js';
  *
  * This plugin registers the {@link module:image/image/insertimagecommand~InsertImageCommand 'insertImage'} command.
  */
-export default class ImageEditing extends Plugin {
+export class ImageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

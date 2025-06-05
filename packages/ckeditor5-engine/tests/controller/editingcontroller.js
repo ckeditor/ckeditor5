@@ -3,28 +3,28 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
+import { EmitterMixin } from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
 
-import EditingController from '../../src/controller/editingcontroller.js';
+import { EditingController } from '../../src/controller/editingcontroller.js';
 
-import View from '../../src/view/view.js';
+import { View } from '../../src/view/view.js';
 
-import Mapper from '../../src/conversion/mapper.js';
-import DowncastDispatcher from '../../src/conversion/downcastdispatcher.js';
+import { Mapper } from '../../src/conversion/mapper.js';
+import { DowncastDispatcher } from '../../src/conversion/downcastdispatcher.js';
 
-import DowncastHelpers from '../../src/conversion/downcasthelpers.js';
-import Model from '../../src/model/model.js';
-import ModelPosition from '../../src/model/position.js';
-import ModelRange from '../../src/model/range.js';
-import ModelDocumentFragment from '../../src/model/documentfragment.js';
+import { DowncastHelpers } from '../../src/conversion/downcasthelpers.js';
+import { Model } from '../../src/model/model.js';
+import { ModelPosition } from '../../src/model/position.js';
+import { ModelRange } from '../../src/model/range.js';
+import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 
 import { getData as getModelData, setData as setModelData, parse } from '../../src/dev-utils/model.js';
 import { getData as getViewData } from '../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Typing } from '@ckeditor/ckeditor5-typing';
 import { Enter } from '@ckeditor/ckeditor5-enter';
 
