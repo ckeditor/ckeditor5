@@ -4,12 +4,10 @@
  */
 
 import path from 'path';
+import husky from 'husky';
 import fs from 'fs-extra';
 import { execSync } from 'child_process';
 import { CKEDITOR5_ROOT_PATH } from './constants.mjs';
-
-// CKEditor 5.
-const { default: husky } = await import( 'husky' );
 
 husky();
 
