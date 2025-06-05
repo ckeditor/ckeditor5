@@ -256,3 +256,18 @@ export {
 	parse as _parseView,
 	stringify as _stringifyView
 } from './dev-utils/view.js';
+
+export {
+	insertText as _downcastInsertText,
+	insertAttributesAndChildren as _downcastInsertAttributesAndChildren,
+	remove as _downcastRemove,
+	createViewElementFromHighlightDescriptor as _downcastCreateViewElementFromHighlightDescriptor,
+	convertRangeSelection as _downcastConvertRangeSelection,
+	convertCollapsedSelection as _downcastConvertCollapsedSelection,
+	cleanSelection as _downcastCleanSelection,
+	wrap as _downcastWrap,
+	insertElement as _downcastInsertElement,
+	insertStructure as _downcastInsertStructure,
+	insertUIElement as _downcastInsertUIElement,
+	ConsumerFunction as _DowncastConsumerFunction
+} from './conversion/downcasthelpers.js';
