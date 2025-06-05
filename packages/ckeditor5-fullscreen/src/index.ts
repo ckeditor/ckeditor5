@@ -11,8 +11,8 @@ export { Fullscreen } from './fullscreen.js';
 export { FullscreenEditing } from './fullscreenediting.js';
 export { FullscreenUI } from './fullscreenui.js';
 export { AbstractEditorHandler } from './handlers/abstracteditorhandler.js';
+export { FullscreenCommand } from './fullscreencommand.js';
 
 export type { FullscreenConfig } from './fullscreenconfig.js';
-export type { FullscreenCommand } from './fullscreencommand.js';
 
 import './augmentation.js';

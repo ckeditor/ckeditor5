@@ -10,7 +10,7 @@
 export { Alignment } from './alignment.js';
 export { AlignmentEditing } from './alignmentediting.js';
 export { AlignmentUI } from './alignmentui.js';
-export type { AlignmentCommand } from './alignmentcommand.js';
+export { AlignmentCommand } from './alignmentcommand.js';
 export type { AlignmentConfig } from './alignmentconfig.js';
 
 import './augmentation.js';

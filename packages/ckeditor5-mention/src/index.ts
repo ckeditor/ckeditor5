@@ -13,8 +13,8 @@ export { MentionUI } from './mentionui.js';
 export { MentionsView } from './ui/mentionsview.js';
 export { MentionListItemView } from './ui/mentionlistitemview.js';
 export { DomWrapperView } from './ui/domwrapperview.js';
+export { MentionCommand } from './mentioncommand.js';
 
 export type { MentionConfig, MentionFeed, ItemRenderer, MentionFeedObjectItem } from './mentionconfig.js';
-export type { MentionCommand } from './mentioncommand.js';
 
 import './augmentation.js';

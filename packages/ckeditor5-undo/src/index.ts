@@ -10,7 +10,7 @@
 export { Undo } from './undo.js';
 export { UndoEditing } from './undoediting.js';
 export { UndoUI } from './undoui.js';
-export type { UndoCommand } from './undocommand.js';
-export type { RedoCommand } from './redocommand.js';
+export { UndoCommand } from './undocommand.js';
+export { RedoCommand } from './redocommand.js';
 
 import './augmentation.js';

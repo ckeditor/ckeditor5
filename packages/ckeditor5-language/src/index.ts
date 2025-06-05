@@ -10,8 +10,8 @@
 export { TextPartLanguage } from './textpartlanguage.js';
 export { TextPartLanguageEditing } from './textpartlanguageediting.js';
 export { TextPartLanguageUI } from './textpartlanguageui.js';
+export { TextPartLanguageCommand } from './textpartlanguagecommand.js';
 
 export type { TextPartLanguageOption } from './textpartlanguageconfig.js';
-export type { TextPartLanguageCommand } from './textpartlanguagecommand.js';
 
 import './augmentation.js';

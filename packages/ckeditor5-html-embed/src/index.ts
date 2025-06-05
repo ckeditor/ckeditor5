@@ -10,7 +10,7 @@
 export { HtmlEmbed } from './htmlembed.js';
 export { HtmlEmbedEditing } from './htmlembedediting.js';
 export { HtmlEmbedUI } from './htmlembedui.js';
-export type { HtmlEmbedCommand } from './htmlembedcommand.js';
+export { HtmlEmbedCommand } from './htmlembedcommand.js';
 export type { HtmlEmbedConfig } from './htmlembedconfig.js';
 
 import './augmentation.js';

@@ -20,10 +20,10 @@ export { FontFamilyEditing } from './fontfamily/fontfamilyediting.js';
 export { FontFamilyUI } from './fontfamily/fontfamilyui.js';
 export { FontSizeEditing } from './fontsize/fontsizeediting.js';
 export { FontSizeUI } from './fontsize/fontsizeui.js';
-export type { FontBackgroundColorCommand } from './fontbackgroundcolor/fontbackgroundcolorcommand.js';
-export type { FontColorCommand } from './fontcolor/fontcolorcommand.js';
-export type { FontFamilyCommand } from './fontfamily/fontfamilycommand.js';
-export type { FontSizeCommand } from './fontsize/fontsizecommand.js';
+export { FontBackgroundColorCommand } from './fontbackgroundcolor/fontbackgroundcolorcommand.js';
+export { FontColorCommand } from './fontcolor/fontcolorcommand.js';
+export { FontFamilyCommand } from './fontfamily/fontfamilycommand.js';
+export { FontSizeCommand } from './fontsize/fontsizecommand.js';
 
 export type {
 	FONT_BACKGROUND_COLOR,

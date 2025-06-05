@@ -10,9 +10,9 @@
 export { CodeBlock } from './codeblock.js';
 export { CodeBlockEditing } from './codeblockediting.js';
 export { CodeBlockUI } from './codeblockui.js';
-export type { CodeBlockCommand } from './codeblockcommand.js';
-export type { IndentCodeBlockCommand } from './indentcodeblockcommand.js';
-export type { OutdentCodeBlockCommand } from './outdentcodeblockcommand.js';
+export { CodeBlockCommand } from './codeblockcommand.js';
+export { IndentCodeBlockCommand } from './indentcodeblockcommand.js';
+export { OutdentCodeBlockCommand } from './outdentcodeblockcommand.js';
 export type { CodeBlockConfig } from './codeblockconfig.js';
 
 import './augmentation.js';

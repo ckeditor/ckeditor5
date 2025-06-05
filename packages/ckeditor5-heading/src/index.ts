@@ -12,8 +12,8 @@ export type { HeadingOption, HeadingElementOption } from './headingconfig.js';
 export { HeadingEditing } from './headingediting.js';
 export { HeadingUI } from './headingui.js';
 export { HeadingButtonsUI } from './headingbuttonsui.js';
+export { HeadingCommand } from './headingcommand.js';
 export { Title, type TitleConfig } from './title.js';
 export type { HeadingConfig } from './headingconfig.js';
-export type { HeadingCommand } from './headingcommand.js';
 
 import './augmentation.js';
