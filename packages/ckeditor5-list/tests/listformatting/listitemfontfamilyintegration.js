@@ -73,6 +73,17 @@ describe( 'ListItemFontFamilyIntegration', () => {
 	} );
 
 	describe( 'schema', () => {
+		it( 'should allow listItemFontFamily attribute in $listItem', () => {
+			model.schema.register( 'myElement', {
+				inheritAllFrom: '$block',
+				allowAttributesOf: '$listItem'
+			} );
+
+			const modelElement = new ModelElement( 'myElement', { listItemId: 'a' } );
+
+			expect( model.schema.checkAttribute( [ '$root', modelElement ], 'listItemFontFamily' ) ).to.be.true;
+		} );
+
 		it( 'listItemFontFamily attribute should have isFormatting set to true', () => {
 			expect( model.schema.getAttributeProperties( 'listItemFontFamily' ) ).to.include( {
 				isFormatting: true
