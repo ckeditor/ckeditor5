@@ -69,6 +69,8 @@ export class RemoveFormatCommand extends Command {
 
 	/**
 	 * Registers a custom attribute handler that will be used to determine if an attribute is formatting and how to remove it.
+	 *
+	 * @internal
 	 */
 	public registerCustomAttribute( isFormatting: IsFormattingCallback, removeFormatting: RemoveFormattingCallback ): void {
 		this._customAttributesHandlers.push( {
@@ -155,10 +157,14 @@ export class RemoveFormatCommand extends Command {
 
 /**
  * Callback that checks if an attribute is a formatting attribute.
+ *
+ * @internal
  */
 export type IsFormattingCallback = ( attributeName: string, item: Item | DocumentSelection ) => boolean;
 
 /**
  * Callback that removes formatting from an item.
+ *
+ * @internal
  */
 export type RemoveFormattingCallback = ( attributeName: string, range: Range, writer: Writer ) => void;
