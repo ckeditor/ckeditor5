@@ -17,6 +17,7 @@ import { List, ListProperties } from '@ckeditor/ckeditor5-list';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { stubUid } from '@ckeditor/ckeditor5-list/tests/list/_utils/uid.js';
 
 describe( 'GeneralHtmlSupport', () => {
 	let editor, element, dataSchema, generalHtmlSupport;
@@ -403,6 +404,8 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 	} );
 
 	it( 'should remove styles and classes from list', () => {
+		stubUid();
+
 		editor.setData(
 			'<ol id="test" data-foo="bar" class="abc" style="background: red">' +
 				'<li id="test1" data-bar="foo" class="123" style="background: yellow">foo</li>' +
@@ -411,7 +414,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 
 		expect( editor.getData(), 'initial data' ).to.equal(
 			'<ol class="abc" style="background-color:red;" id="test" data-foo="bar">' +
-				'<li class="123" style="background-color:yellow;" id="test1" data-bar="foo">foo</li>' +
+				'<li class="123" style="background-color:yellow;" id="test1" data-bar="foo" data-list-item-id="a00">foo</li>' +
 			'</ol>'
 		);
 
@@ -420,7 +423,7 @@ describe( 'GeneralHtmlSupport - RemoveFormatCommand integration', () => {
 
 		expect( editor.getData(), 'data pipeline' ).to.equal(
 			'<ol id="test" data-foo="bar">' +
-				'<li id="test1" data-bar="foo">foo</li>' +
+				'<li id="test1" data-bar="foo" data-list-item-id="a00">foo</li>' +
 			'</ol>'
 		);
 		expect( getViewData( editingView, { withoutSelection: true } ), 'editing view' ).to.equal(
