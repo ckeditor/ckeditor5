@@ -109,7 +109,7 @@
     "@ckeditor/ckeditor5-inspector": "^4.0.0",
     "@ckeditor/ckeditor5-list-multi-level": "45.2.0",
     "@ckeditor/ckeditor5-merge-fields": "45.2.0",
-    "@ckeditor/ckeditor5-mermaid": "ckeditor/ckeditor5-mermaid#v0.0.3",
+    "@ckeditor/ckeditor5-mermaid": "ckeditor/ckeditor5-mermaid#v0.0.4",
     "@ckeditor/ckeditor5-pagination": "45.2.0",
     "@ckeditor/ckeditor5-paste-from-office-enhanced": "45.2.0",
     "@ckeditor/ckeditor5-react": "^9.5.0",
