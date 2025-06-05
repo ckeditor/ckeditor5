@@ -10,6 +10,10 @@
 export { RemoveFormat } from './removeformat.js';
 export { RemoveFormatEditing } from './removeformatediting.js';
 export { RemoveFormatUI } from './removeformatui.js';
-export { RemoveFormatCommand } from './removeformatcommand.js';
+export {
+	RemoveFormatCommand,
+	type IsFormattingCallback,
+	type RemoveFormattingCallback
+} from './removeformatcommand.js';
 
 import './augmentation.js';

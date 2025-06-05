@@ -95,6 +95,9 @@ describe( 'table cell properties', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellBorderColor' ) ).to.be.true;
 				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellBorderStyle' ) ).to.be.true;
 				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellBorderWidth' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableCellBorderColor' ).isFormatting ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableCellBorderStyle' ).isFormatting ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableCellBorderWidth' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -603,6 +606,7 @@ describe( 'table cell properties', () => {
 		describe( 'background color', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellBackgroundColor' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableCellBackgroundColor' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -760,6 +764,7 @@ describe( 'table cell properties', () => {
 		describe( 'horizontal alignment', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellHorizontalAlignment' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableCellHorizontalAlignment' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1102,6 +1107,7 @@ describe( 'table cell properties', () => {
 		describe( 'vertical alignment', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellVerticalAlignment' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableCellVerticalAlignment' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1256,6 +1262,7 @@ describe( 'table cell properties', () => {
 		describe( 'padding', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellPadding' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableCellPadding' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1349,6 +1356,7 @@ describe( 'table cell properties', () => {
 		describe( 'cell height', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellHeight' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableCellHeight' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
