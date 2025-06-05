@@ -463,7 +463,7 @@ class Position {
 	// ...
 
 	get offset() {
-		return this.path[ this.path.length &ndash; 1 ];
+		return this.path[ this.path.length - 1 ];
 	}
 }
 ```
