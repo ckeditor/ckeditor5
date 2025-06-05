@@ -58,9 +58,7 @@ describe( 'ListFormatting', () => {
 					'<paragraph listIndent="0" listItemId="a">[]</paragraph>'
 				);
 
-				model.change( writer => {
-					writer.setSelectionAttribute( 'inlineFormat', 'foo' );
-				} );
+				setSelectionAttribute( model, 'inlineFormat', 'foo' );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" selection:inlineFormat="foo">' +
@@ -73,9 +71,7 @@ describe( 'ListFormatting', () => {
 					'<paragraph>[]</paragraph>'
 				);
 
-				model.change( writer => {
-					writer.setSelectionAttribute( 'inlineFormat', 'foo' );
-				} );
+				setSelectionAttribute( model, 'inlineFormat', 'foo' );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph selection:inlineFormat="foo"></paragraph>'
@@ -87,18 +83,14 @@ describe( 'ListFormatting', () => {
 					'<paragraph listIndent="0" listItemId="a">[]</paragraph>'
 				);
 
-				model.change( writer => {
-					writer.setSelectionAttribute( 'inlineFormat', 'foo' );
-				} );
+				setSelectionAttribute( model, 'inlineFormat', 'foo' );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" selection:inlineFormat="foo">' +
 					'</paragraph>'
 				);
 
-				model.change( writer => {
-					writer.setSelectionAttribute( 'inlineFormat', 'bar' );
-				} );
+				setSelectionAttribute( model, 'inlineFormat', 'bar' );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemFormat="bar" listItemId="a" selection:inlineFormat="bar">' +
@@ -111,18 +103,14 @@ describe( 'ListFormatting', () => {
 					'<paragraph listIndent="0" listItemId="a">[]</paragraph>'
 				);
 
-				model.change( writer => {
-					writer.setSelectionAttribute( 'inlineFormat', 'foo' );
-				} );
+				setSelectionAttribute( model, 'inlineFormat', 'foo' );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a" selection:inlineFormat="foo">' +
 					'</paragraph>'
 				);
 
-				model.change( writer => {
-					writer.removeSelectionAttribute( 'inlineFormat' );
-				} );
+				removeSelectionAttribute( model, 'inlineFormat' );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a"></paragraph>'
@@ -136,9 +124,7 @@ describe( 'ListFormatting', () => {
 					'<paragraph listIndent="0" listItemId="a">[<$text>foo</$text>]</paragraph>'
 				);
 
-				model.change( writer => {
-					writer.setAttribute( 'inlineFormat', 'foo', docSelection.getFirstRange() );
-				} );
+				setAttribute( model, 'inlineFormat', 'foo', docSelection.getFirstRange() );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a">' +
@@ -152,9 +138,7 @@ describe( 'ListFormatting', () => {
 					'<paragraph listIndent="0" listItemId="a"><$text>[fo]o</$text></paragraph>'
 				);
 
-				model.change( writer => {
-					writer.setAttribute( 'inlineFormat', 'foo', docSelection.getFirstRange() );
-				} );
+				setAttribute( model, 'inlineFormat', 'foo', docSelection.getFirstRange() );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a">' +
@@ -169,9 +153,7 @@ describe( 'ListFormatting', () => {
 					'<paragraph>[<$text>foo</$text>]</paragraph>'
 				);
 
-				model.change( writer => {
-					writer.setAttribute( 'inlineFormat', 'foo', docSelection.getFirstRange() );
-				} );
+				setAttribute( model, 'inlineFormat', 'foo', docSelection.getFirstRange() );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph><$text inlineFormat="foo">foo</$text></paragraph>'
@@ -185,9 +167,7 @@ describe( 'ListFormatting', () => {
 					'</paragraph>'
 				);
 
-				model.change( writer => {
-					writer.setAttribute( 'inlineFormat', 'bar', docSelection.getFirstRange() );
-				} );
+				setAttribute( model, 'inlineFormat', 'bar', docSelection.getFirstRange() );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemFormat="bar" listItemId="a">' +
@@ -203,9 +183,7 @@ describe( 'ListFormatting', () => {
 					'</paragraph>'
 				);
 
-				model.change( writer => {
-					writer.setAttribute( 'inlineFormat', 'bar', docSelection.getFirstRange() );
-				} );
+				setAttribute( model, 'inlineFormat', 'bar', docSelection.getFirstRange() );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a">' +
@@ -222,9 +200,7 @@ describe( 'ListFormatting', () => {
 					'</paragraph>'
 				);
 
-				model.change( writer => {
-					writer.removeAttribute( 'inlineFormat', docSelection.getFirstRange() );
-				} );
+				removeAttribute( model, 'inlineFormat', docSelection.getFirstRange() );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a">' +
@@ -240,10 +216,7 @@ describe( 'ListFormatting', () => {
 					'<paragraph listIndent="0" listItemId="a">[]</paragraph>'
 				);
 
-				model.change( writer => {
-					const textNode = writer.createText( 'foo', { inlineFormat: 'foo' } );
-					writer.insert( textNode, docSelection.getFirstPosition() );
-				} );
+				insertText( model, 'foo', { inlineFormat: 'foo' }, docSelection.getFirstPosition() );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a">' +
@@ -257,10 +230,7 @@ describe( 'ListFormatting', () => {
 					'<paragraph>[]</paragraph>'
 				);
 
-				model.change( writer => {
-					const textNode = writer.createText( 'foo', { inlineFormat: 'foo' } );
-					writer.insert( textNode, docSelection.getFirstPosition() );
-				} );
+				insertText( model, 'foo', { inlineFormat: 'foo' }, docSelection.getFirstPosition() );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph><$text inlineFormat="foo">foo</$text></paragraph>'
@@ -272,15 +242,12 @@ describe( 'ListFormatting', () => {
 					'<paragraph listIndent="0" listItemId="a"><$text>foo[]</$text></paragraph>'
 				);
 
-				model.change( writer => {
-					const textNode = writer.createText( 'bar', { inlineFormat: 'foo' } );
-					writer.insert( textNode, docSelection.getFirstPosition() );
-				} );
+				insertText( model, 'bar', { inlineFormat: 'bar' }, docSelection.getFirstPosition() );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a">' +
 						'foo' +
-						'<$text inlineFormat="foo">bar</$text>' +
+						'<$text inlineFormat="bar">bar</$text>' +
 					'</paragraph>'
 				);
 			} );
@@ -292,10 +259,7 @@ describe( 'ListFormatting', () => {
 					'</paragraph>'
 				);
 
-				model.change( writer => {
-					const textNode = writer.createText( 'bar', { inlineFormat: 'foo' } );
-					writer.insert( textNode, docSelection.getFirstPosition() );
-				} );
+				insertText( model, 'bar', { inlineFormat: 'foo' }, docSelection.getFirstPosition() );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a">' +
@@ -311,10 +275,7 @@ describe( 'ListFormatting', () => {
 					'</paragraph>'
 				);
 
-				model.change( writer => {
-					const textNode = writer.createText( 'bar', { inlineFormat: 'bar' } );
-					writer.insert( textNode, docSelection.getFirstPosition() );
-				} );
+				insertText( model, 'bar', { inlineFormat: 'bar' }, docSelection.getFirstPosition() );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a">' +
@@ -374,6 +335,10 @@ describe( 'ListFormatting', () => {
 				);
 			} );
 		} );
+
+		describe( 'inserting a list item', () => {
+			//
+		} );
 	} );
 
 	class MyPlugin extends Plugin {
@@ -394,5 +359,36 @@ describe( 'ListFormatting', () => {
 				}
 			}, 'listItemFormat' );
 		}
+	}
+
+	function setSelectionAttribute( model, attributeName, value ) {
+		model.change( writer => {
+			writer.setSelectionAttribute( attributeName, value );
+		} );
+	}
+
+	function removeSelectionAttribute( model, attributeName ) {
+		model.change( writer => {
+			writer.removeSelectionAttribute( attributeName );
+		} );
+	}
+
+	function setAttribute( model, attributeName, value, range ) {
+		model.change( writer => {
+			writer.setAttribute( attributeName, value, range );
+		} );
+	}
+
+	function removeAttribute( model, attributeName, range ) {
+		model.change( writer => {
+			writer.removeAttribute( attributeName, range );
+		} );
+	}
+
+	function insertText( model, text, attributes, position ) {
+		model.change( writer => {
+			const textNode = writer.createText( text, attributes );
+			writer.insert( textNode, position );
+		} );
 	}
 } );
