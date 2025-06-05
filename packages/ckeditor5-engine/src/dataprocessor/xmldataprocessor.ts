@@ -7,13 +7,13 @@
  * @module engine/dataprocessor/xmldataprocessor
  */
 
-import BasicHtmlWriter from './basichtmlwriter.js';
-import DomConverter from '../view/domconverter.js';
+import { BasicHtmlWriter } from './basichtmlwriter.js';
+import { DomConverter } from '../view/domconverter.js';
 
-import type DataProcessor from './dataprocessor.js';
-import type HtmlWriter from './htmlwriter.js';
-import type ViewDocument from '../view/document.js';
-import type ViewDocumentFragment from '../view/documentfragment.js';
+import { type DataProcessor } from './dataprocessor.js';
+import { type HtmlWriter } from './htmlwriter.js';
+import { type ViewDocument } from '../view/document.js';
+import { type ViewDocumentFragment } from '../view/documentfragment.js';
 import type { MatcherPattern } from '../view/matcher.js';
 
 /**
@@ -22,7 +22,7 @@ import type { MatcherPattern } from '../view/matcher.js';
  * This class is needed because unlike HTML, XML allows to use any tag with any value.
  * For example, `<link>Text</link>` is a valid XML but invalid HTML.
  */
-export default class XmlDataProcessor implements DataProcessor {
+export class XmlDataProcessor implements DataProcessor {
 	/**
 	 * A list of namespaces allowed to use in the XML input.
 	 *

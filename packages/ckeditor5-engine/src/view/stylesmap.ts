@@ -15,7 +15,7 @@ import { isPatternMatched } from './matcher.js';
 /**
  * Styles map. Allows handling (adding, removing, retrieving) a set of style rules (usually, of an element).
  */
-export default class StylesMap implements ElementAttributeValue {
+export class StylesMap implements ElementAttributeValue {
 	/**
 	 * Keeps an internal representation of styles map. Normalized styles are kept as object tree to allow unified modification and
 	 * value access model using lodash's get, set, unset, etc methods.

@@ -16,7 +16,7 @@ const BASE64_HEADER_REG_EXP = /^data:(\S*?);base64,/;
 /**
  * FileUploader class used to upload single file.
  */
-export default class FileUploader extends /* #__PURE__ */ EmitterMixin() {
+export class FileUploader extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * A file that is being uploaded.
 	 */

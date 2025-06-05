@@ -9,9 +9,9 @@
 
 import { env, global, uid } from '@ckeditor/ckeditor5-utils';
 
-import type Editor from '../editor.js';
+import { type Editor } from '../editor.js';
 import type { ToolbarConfig, ToolbarConfigItem } from '../editorconfig.js';
-import type PluginCollection from '../../plugincollection.js';
+import { type PluginCollection } from '../../plugincollection.js';
 
 /**
  * This part of the code is not executed in open-source implementations using a GPL key.

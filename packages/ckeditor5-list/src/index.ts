@@ -8,51 +8,51 @@
  */
 
 // List.
-export { default as List } from './list.js';
-export { default as ListEditing, type ListEditingPostFixerEvent, type ListType } from './list/listediting.js';
-export { default as ListUtils } from './list/listutils.js';
-export { default as ListUI } from './list/listui.js';
-export { default as ListIndentCommand } from './list/listindentcommand.js';
-export { default as ListCommand } from './list/listcommand.js';
-export type { default as ListMergeCommand } from './list/listmergecommand.js';
-export type { default as ListSplitCommand } from './list/listsplitcommand.js';
+export { List } from './list.js';
+export { ListEditing, type ListEditingPostFixerEvent, type ListType } from './list/listediting.js';
+export { ListUtils } from './list/listutils.js';
+export { ListUI } from './list/listui.js';
+export { ListIndentCommand } from './list/listindentcommand.js';
+export { ListCommand } from './list/listcommand.js';
+export type { ListMergeCommand } from './list/listmergecommand.js';
+export type { ListSplitCommand } from './list/listsplitcommand.js';
 
 // ListProperties.
-export { default as ListProperties } from './listproperties.js';
-export { default as ListPropertiesEditing } from './listproperties/listpropertiesediting.js';
-export { default as ListPropertiesUtils } from './listproperties/listpropertiesutils.js';
-export { default as ListPropertiesUI } from './listproperties/listpropertiesui.js';
-export type { default as ListReversedCommand } from './listproperties/listreversedcommand.js';
-export type { default as ListStartCommand } from './listproperties/liststartcommand.js';
-export type { default as ListStyleCommand } from './listproperties/liststylecommand.js';
+export { ListProperties } from './listproperties.js';
+export { ListPropertiesEditing } from './listproperties/listpropertiesediting.js';
+export { ListPropertiesUtils } from './listproperties/listpropertiesutils.js';
+export { ListPropertiesUI } from './listproperties/listpropertiesui.js';
+export type { ListReversedCommand } from './listproperties/listreversedcommand.js';
+export type { ListStartCommand } from './listproperties/liststartcommand.js';
+export type { ListStyleCommand } from './listproperties/liststylecommand.js';
 
 // TodoList/
-export { default as TodoList } from './todolist.js';
-export { default as TodoListUI } from './todolist/todolistui.js';
-export { default as TodoListEditing } from './todolist/todolistediting.js';
-export type { default as CheckTodoListCommand } from './todolist/checktodolistcommand.js';
+export { TodoList } from './todolist.js';
+export { TodoListUI } from './todolist/todolistui.js';
+export { TodoListEditing } from './todolist/todolistediting.js';
+export type { CheckTodoListCommand } from './todolist/checktodolistcommand.js';
 
 // LegacyList.
-export { default as LegacyList } from './legacylist.js';
-export { default as LegacyListEditing } from './legacylist/legacylistediting.js';
-export { default as LegacyListUtils } from './legacylist/legacylistutils.js';
-export { default as LegacyIndentCommand } from './legacylist/legacyindentcommand.js';
-export type { default as LegacyListCommand } from './legacylist/legacylistcommand.js';
+export { LegacyList } from './legacylist.js';
+export { LegacyListEditing } from './legacylist/legacylistediting.js';
+export { LegacyListUtils } from './legacylist/legacylistutils.js';
+export { LegacyIndentCommand } from './legacylist/legacyindentcommand.js';
+export type { LegacyListCommand } from './legacylist/legacylistcommand.js';
 
 // LegacyListProperties.
-export { default as LegacyListProperties } from './legacylistproperties.js';
-export { default as LegacyListPropertiesEditing } from './legacylistproperties/legacylistpropertiesediting.js';
-export type { default as LegacyListReversedCommand } from './legacylistproperties/legacylistreversedcommand.js';
-export type { default as LegacyListStartCommand } from './legacylistproperties/legacyliststartcommand.js';
-export type { default as LegacyListStyleCommand } from './legacylistproperties/legacyliststylecommand.js';
+export { LegacyListProperties } from './legacylistproperties.js';
+export { LegacyListPropertiesEditing } from './legacylistproperties/legacylistpropertiesediting.js';
+export type { LegacyListReversedCommand } from './legacylistproperties/legacylistreversedcommand.js';
+export type { LegacyListStartCommand } from './legacylistproperties/legacyliststartcommand.js';
+export type { LegacyListStyleCommand } from './legacylistproperties/legacyliststylecommand.js';
 
 // LegacyTodoList.
-export { default as LegacyTodoList } from './legacytodolist.js';
-export { default as LegacyTodoListEditing } from './legacytodolist/legacytodolistediting.js';
-export type { default as LegacyCheckTodoListCommand } from './legacytodolist/legacychecktodolistcommand.js';
+export { LegacyTodoList } from './legacytodolist.js';
+export { LegacyTodoListEditing } from './legacytodolist/legacytodolistediting.js';
+export type { LegacyCheckTodoListCommand } from './legacytodolist/legacychecktodolistcommand.js';
 
 // Other.
 export type { ListConfig, ListPropertiesConfig } from './listconfig.js';
-export { default as AdjacentListsSupport } from './list/adjacentlistssupport.js';
+export { AdjacentListsSupport } from './list/adjacentlistssupport.js';
 
 import './augmentation.js';

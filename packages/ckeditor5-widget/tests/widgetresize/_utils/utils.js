@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import WidgetResize from '../../../src/widgetresize.js';
+import { WidgetResize } from '../../../src/widgetresize.js';
 
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
+import { Rect } from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
 
 export const resizerMouseSimulator = {
 	down( editor, domTarget, options = {} ) {

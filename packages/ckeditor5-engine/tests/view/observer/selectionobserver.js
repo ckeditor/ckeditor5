@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import ViewRange from '../../../src/view/range.js';
-import DocumentSelection from '../../../src/view/documentselection.js';
-import ViewSelection from '../../../src/view/selection.js';
-import View from '../../../src/view/view.js';
-import SelectionObserver from '../../../src/view/observer/selectionobserver.js';
-import FocusObserver from '../../../src/view/observer/focusobserver.js';
-import MutationObserver from '../../../src/view/observer/mutationobserver.js';
-import createViewRoot from '../_utils/createroot.js';
+import { ViewRange } from '../../../src/view/range.js';
+import { DocumentSelection } from '../../../src/view/documentselection.js';
+import { ViewSelection } from '../../../src/view/selection.js';
+import { View } from '../../../src/view/view.js';
+import { SelectionObserver } from '../../../src/view/observer/selectionobserver.js';
+import { FocusObserver } from '../../../src/view/observer/focusobserver.js';
+import { MutationObserver } from '../../../src/view/observer/mutationobserver.js';
+import { createViewRoot } from '../_utils/createroot.js';
 import { parse } from '../../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 import { priorities } from '@ckeditor/ckeditor5-utils';
 
 describe( 'SelectionObserver', () => {

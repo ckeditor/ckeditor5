@@ -16,9 +16,9 @@ import {
 	ViewCollection,
 	createLabeledInputNumber
 } from '../../../src/index.js';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
+import { Locale } from '@ckeditor/ckeditor5-utils/src/locale.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'SearchTextView', () => {
 	let view, filteredView;

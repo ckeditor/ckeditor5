@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
-import DocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
+import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { DocumentFragment } from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
 import {
 	getData as getModelData,
 	parse as parseModel,
 	stringify as stringifyModel
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import ListWalker from '../../../src/list/utils/listwalker.js';
+import { ListWalker } from '../../../src/list/utils/listwalker.js';
 
 /**
  * Sets the editor model according to the specified input string.

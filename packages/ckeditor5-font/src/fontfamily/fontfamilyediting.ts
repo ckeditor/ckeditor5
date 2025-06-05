@@ -10,7 +10,7 @@
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
 import type { ViewElement } from 'ckeditor5/src/engine.js';
 
-import FontFamilyCommand from './fontfamilycommand.js';
+import { FontFamilyCommand } from './fontfamilycommand.js';
 import { normalizeOptions } from './utils.js';
 import { buildDefinition, FONT_FAMILY } from '../utils.js';
 
@@ -22,7 +22,7 @@ import { buildDefinition, FONT_FAMILY } from '../utils.js';
  * in the {@link module:engine/view/view view} as an inline `<span>` element (`<span style="font-family: Arial">`),
  * depending on the {@link module:font/fontconfig~FontFamilyConfig configuration}.
  */
-export default class FontFamilyEditing extends Plugin {
+export class FontFamilyEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

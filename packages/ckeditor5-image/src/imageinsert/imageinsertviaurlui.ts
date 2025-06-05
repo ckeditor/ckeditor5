@@ -11,8 +11,8 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView, Dialog, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 import { IconImageUrl } from 'ckeditor5/src/icons.js';
 
-import ImageInsertUI from './imageinsertui.js';
-import ImageInsertUrlView from './ui/imageinserturlview.js';
+import { ImageInsertUI } from './imageinsertui.js';
+import { ImageInsertUrlView } from './ui/imageinserturlview.js';
 
 /**
  * The image insert via URL plugin (UI part).
@@ -25,7 +25,7 @@ import ImageInsertUrlView from './ui/imageinserturlview.js';
  * It also integrates with the `insertImage` toolbar component and `menuBar:insertImage` menu component, which are default components
  * through which inserting image via URL is available.
  */
-export default class ImageInsertViaUrlUI extends Plugin {
+export class ImageInsertViaUrlUI extends Plugin {
 	private _imageInsertUI!: ImageInsertUI;
 	private _formView?: ImageInsertUrlView;
 

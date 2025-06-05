@@ -30,7 +30,7 @@ import {
 	getHtmlAttributeName,
 	type GHSViewAttributes
 } from './utils.js';
-import type DataFilter from './datafilter.js';
+import { type DataFilter } from './datafilter.js';
 import type { DataSchemaBlockElementDefinition, DataSchemaDefinition, DataSchemaInlineElementDefinition } from './dataschema.js';
 
 /**

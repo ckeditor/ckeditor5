@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import DomEventObserver from '../../../src/view/observer/domeventobserver.js';
-import Observer from '../../../src/view/observer/observer.js';
-import View from '../../../src/view/view.js';
-import UIElement from '../../../src/view/uielement.js';
-import createViewRoot from '../_utils/createroot.js';
+import { DomEventObserver } from '../../../src/view/observer/domeventobserver.js';
+import { Observer } from '../../../src/view/observer/observer.js';
+import { View } from '../../../src/view/view.js';
+import { UIElement } from '../../../src/view/uielement.js';
+import { createViewRoot } from '../_utils/createroot.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 class ClickObserver extends DomEventObserver {

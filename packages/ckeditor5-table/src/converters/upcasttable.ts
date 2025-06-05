@@ -71,7 +71,7 @@ export function upcastTableFigure() {
  *
  * @returns Conversion helper.
  */
-export default function upcastTable() {
+export function upcastTable() {
 	return ( dispatcher: UpcastDispatcher ): void => {
 		dispatcher.on<UpcastElementEvent>( 'element:table', ( evt, data, conversionApi ) => {
 			const viewTable = data.viewItem;

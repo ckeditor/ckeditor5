@@ -22,7 +22,7 @@ import { findOptimalInsertionRange } from 'ckeditor5/src/widget.js';
  * editor.execute( 'horizontalLine' );
  * ```
  */
-export default class HorizontalLineCommand extends Command {
+export class HorizontalLineCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

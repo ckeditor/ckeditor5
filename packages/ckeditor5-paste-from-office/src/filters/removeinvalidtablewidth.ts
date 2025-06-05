@@ -14,7 +14,7 @@ import type { UpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engine.js
  *
  * @param documentFragment element `data.content` obtained from clipboard
  */
-export default function removeInvalidTableWidth( documentFragment: ViewDocumentFragment, writer: UpcastWriter ): void {
+export function removeInvalidTableWidth( documentFragment: ViewDocumentFragment, writer: UpcastWriter ): void {
 	for ( const child of documentFragment.getChildren() ) {
 		if ( child.is( 'element', 'table' ) && child.getStyle( 'width' ) === '0px' ) {
 			writer.removeStyle( 'width', child );

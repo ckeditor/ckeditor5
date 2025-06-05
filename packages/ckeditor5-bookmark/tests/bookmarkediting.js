@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import BookmarkEditing from '../src/bookmarkediting.js';
-import InsertBookmarkCommand from '../src/insertbookmarkcommand.js';
-import UpdateBookmarkCommand from '../src/updatebookmarkcommand.js';
+import { BookmarkEditing } from '../src/bookmarkediting.js';
+import { InsertBookmarkCommand } from '../src/insertbookmarkcommand.js';
+import { UpdateBookmarkCommand } from '../src/updatebookmarkcommand.js';
 
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Heading } from '@ckeditor/ckeditor5-heading';
@@ -18,7 +18,7 @@ import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import { CodeBlock } from '@ckeditor/ckeditor5-code-block';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { Element } from '@ckeditor/ckeditor5-engine';
 import {

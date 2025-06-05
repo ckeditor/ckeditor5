@@ -10,7 +10,7 @@
 /**
  * Traverses both structures to find out whether there is a reference that is shared between both structures.
  */
-export default function areConnectedThroughProperties( obj1: object, obj2: object ): boolean {
+export function areConnectedThroughProperties( obj1: object, obj2: object ): boolean {
 	if ( obj1 === obj2 && isObject( obj1 ) ) {
 		return true;
 	}

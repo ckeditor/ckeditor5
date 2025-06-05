@@ -40,7 +40,7 @@ import '../../theme/linkform.css';
 /**
  * The link form view.
  */
-export default class LinkFormView extends View {
+export class LinkFormView extends View {
 	/**
 	 * Tracks information about DOM focus in the form.
 	 */

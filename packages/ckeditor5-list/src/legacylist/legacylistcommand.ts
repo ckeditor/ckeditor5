@@ -16,7 +16,7 @@ import { type ListType } from '../list/listediting.js';
 /**
  * The list command. It is used by the {@link module:list/legacylist~LegacyList legacy list feature}.
  */
-export default class LegacyListCommand extends Command {
+export class LegacyListCommand extends Command {
 	/**
 	 * The type of the list created by the command.
 	 */

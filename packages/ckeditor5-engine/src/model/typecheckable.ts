@@ -8,20 +8,20 @@
  */
 
 import type { Marker } from './markercollection.js';
-import type DocumentFragment from './documentfragment.js';
-import type DocumentSelection from './documentselection.js';
-import type Element from './element.js';
-import type LivePosition from './liveposition.js';
-import type LiveRange from './liverange.js';
-import type Node from './node.js';
-import type Position from './position.js';
-import type Range from './range.js';
-import type RootElement from './rootelement.js';
-import type Selection from './selection.js';
-import type Text from './text.js';
-import type TextProxy from './textproxy.js';
+import { type DocumentFragment } from './documentfragment.js';
+import { type DocumentSelection } from './documentselection.js';
+import { type Element } from './element.js';
+import { type LivePosition } from './liveposition.js';
+import { type LiveRange } from './liverange.js';
+import { type Node } from './node.js';
+import { type Position } from './position.js';
+import { type Range } from './range.js';
+import { type RootElement } from './rootelement.js';
+import { type Selection } from './selection.js';
+import { type Text } from './text.js';
+import { type TextProxy } from './textproxy.js';
 
-export default abstract class TypeCheckable {
+export abstract class TypeCheckable {
 	/**
 	 * Checks whether the object is of type {@link module:engine/model/node~Node} or its subclass.
 	 *

@@ -18,16 +18,17 @@ import type {
 	ViewElement
 } from 'ckeditor5/src/engine.js';
 
-import ListEditing, {
+import {
+	ListEditing,
 	type ListType,
 	type ListEditingCheckAttributesEvent,
 	type ListEditingPostFixerEvent,
 	type ListItemAttributesMap
 } from '../list/listediting.js';
 
-import ListStartCommand from './liststartcommand.js';
-import ListStyleCommand from './liststylecommand.js';
-import ListReversedCommand from './listreversedcommand.js';
+import { ListStartCommand } from './liststartcommand.js';
+import { ListStyleCommand } from './liststylecommand.js';
+import { ListReversedCommand } from './listreversedcommand.js';
 import { listPropertiesUpcastConverter } from './converters.js';
 import {
 	getAllSupportedStyleTypes,
@@ -36,7 +37,7 @@ import {
 	getTypeAttributeFromListStyleType,
 	normalizeListStyle
 } from './utils/style.js';
-import ListPropertiesUtils from './listpropertiesutils.js';
+import { ListPropertiesUtils } from './listpropertiesutils.js';
 import {
 	isNumberedListType
 } from '../list/utils/model.js';
@@ -53,7 +54,7 @@ const DEFAULT_LIST_TYPE = 'default';
  * It registers the `'listStyle'`, `'listReversed'` and `'listStart'` commands if they are enabled in the configuration.
  * Read more in {@link module:list/listconfig~ListPropertiesConfig}.
  */
-export default class ListPropertiesEditing extends Plugin {
+export class ListPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

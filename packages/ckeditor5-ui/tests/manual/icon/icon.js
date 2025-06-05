@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import IconView from '../../../src/icon/iconview.js';
-import testUtils from '../../_utils/utils.js';
+import { IconView } from '../../../src/icon/iconview.js';
+import { testUtils } from '../../_utils/utils.js';
 
 const icon = `<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
 	<path d="M2 14.994C2 16.102 2.895 17 3.994 17h12.012A2 2 0 0 0 18 14.994V5.006A2.001 2.001 0 0 0

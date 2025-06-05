@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import ClassicEditor from '../src/classiceditor.js';
-import ClassicEditorUI from '../src/classiceditorui.js';
-import EditorUI from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ClassicEditorUIView from '../src/classiceditoruiview.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { ClassicEditor } from '../src/classiceditor.js';
+import { ClassicEditorUI } from '../src/classiceditorui.js';
+import { EditorUI } from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ClassicEditorUIView } from '../src/classiceditoruiview.js';
 import { Image, ImageCaption, ImageToolbar } from '@ckeditor/ckeditor5-image';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { assertBinding } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { isElement } from 'es-toolkit/compat';
 import { ContextualBalloon, Dialog, DialogViewPosition } from '@ckeditor/ckeditor5-ui';

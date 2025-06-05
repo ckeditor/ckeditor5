@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import FileUploader from '../../src/uploadgateway/fileuploader.js';
-import UploadGateway from '../../src/uploadgateway/uploadgateway.js';
-import Token from '../../src/token/token.js';
+import { FileUploader } from '../../src/uploadgateway/fileuploader.js';
+import { UploadGateway } from '../../src/uploadgateway/uploadgateway.js';
+import { Token } from '../../src/token/token.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'UploadGateway', () => {

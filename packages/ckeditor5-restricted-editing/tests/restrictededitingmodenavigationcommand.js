@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import RestrictedEditingModeNavigationCommand from '../src/restrictededitingmodenavigationcommand.js';
+import { RestrictedEditingModeNavigationCommand } from '../src/restrictededitingmodenavigationcommand.js';
 
 describe( 'RestrictedEditingModeNavigationCommand', () => {
 	let editor, forwardCommand, backwardCommand, model;

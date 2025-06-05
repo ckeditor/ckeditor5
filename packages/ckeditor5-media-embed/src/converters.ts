@@ -9,7 +9,7 @@
 
 import type { GetCallback } from 'ckeditor5/src/utils.js';
 import type { DowncastAttributeEvent, DowncastDispatcher, Element, ViewElement } from 'ckeditor5/src/engine.js';
-import type MediaRegistry from './mediaregistry.js';
+import { type MediaRegistry } from './mediaregistry.js';
 import type { MediaOptions } from './utils.js';
 
 /**

@@ -7,7 +7,7 @@
  * @module engine/view/node
  */
 
-import TypeCheckable from './typecheckable.js';
+import { TypeCheckable } from './typecheckable.js';
 
 import {
 	CKEditorError,
@@ -17,9 +17,9 @@ import {
 
 import { clone } from 'es-toolkit/compat';
 
-import type { default as Document, ChangeType } from './document.js';
-import type DocumentFragment from './documentfragment.js';
-import type Element from './element.js';
+import type { Document, ChangeType } from './document.js';
+import { type DocumentFragment } from './documentfragment.js';
+import { type Element } from './element.js';
 
 /**
  * Abstract view node class.
@@ -28,7 +28,7 @@ import type Element from './element.js';
  * Use the {@link module:engine/view/downcastwriter~DowncastWriter} or {@link module:engine/view/upcastwriter~UpcastWriter}
  * to create new instances of view nodes.
  */
-export default abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
+export abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
 	 * The document instance to which this node belongs.
 	 */
@@ -303,6 +303,8 @@ export default abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeChe
 Node.prototype.is = function( type: string ): boolean {
 	return type === 'node' || type === 'view:node';
 };
+
+export { Node as ViewNode };
 
 /**
  * Fired when list of {@link module:engine/view/element~Element elements} children, attributes or text changes.

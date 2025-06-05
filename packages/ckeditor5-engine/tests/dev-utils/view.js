@@ -4,21 +4,21 @@
  */
 
 import { parse, stringify, getData, setData } from '../../src/dev-utils/view.js';
-import ViewDocument from '../../src/view/document.js';
-import DocumentFragment from '../../src/view/documentfragment.js';
-import Position from '../../src/view/position.js';
-import Element from '../../src/view/element.js';
-import AttributeElement from '../../src/view/attributeelement.js';
-import ContainerElement from '../../src/view/containerelement.js';
-import EmptyElement from '../../src/view/emptyelement.js';
-import UIElement from '../../src/view/uielement.js';
-import RawElement from '../../src/view/rawelement.js';
-import Text from '../../src/view/text.js';
-import DocumentSelection from '../../src/view/documentselection.js';
-import Range from '../../src/view/range.js';
-import View from '../../src/view/view.js';
-import XmlDataProcessor from '../../src/dataprocessor/xmldataprocessor.js';
-import createViewRoot from '../view/_utils/createroot.js';
+import { ViewDocument } from '../../src/view/document.js';
+import { DocumentFragment } from '../../src/view/documentfragment.js';
+import { Position } from '../../src/view/position.js';
+import { Element } from '../../src/view/element.js';
+import { AttributeElement } from '../../src/view/attributeelement.js';
+import { ContainerElement } from '../../src/view/containerelement.js';
+import { EmptyElement } from '../../src/view/emptyelement.js';
+import { UIElement } from '../../src/view/uielement.js';
+import { RawElement } from '../../src/view/rawelement.js';
+import { Text } from '../../src/view/text.js';
+import { DocumentSelection } from '../../src/view/documentselection.js';
+import { Range } from '../../src/view/range.js';
+import { View } from '../../src/view/view.js';
+import { XmlDataProcessor } from '../../src/dataprocessor/xmldataprocessor.js';
+import { createViewRoot } from '../view/_utils/createroot.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'view test utils', () => {

@@ -9,7 +9,7 @@
 
 import type { Constructor, Mixed } from '@ckeditor/ckeditor5-utils';
 
-import type View from '../view.js';
+import { type View } from '../view.js';
 
 /**
  * A mixin that brings the possibility to temporarily disable CSS transitions using
@@ -37,7 +37,7 @@ import type View from '../view.js';
  *
  * @param view View instance that should get this functionality.
  */
-export default function CssTransitionDisablerMixin<Base extends Constructor<View>>( view: Base ): Mixed<Base, ViewWithCssTransitionDisabler>
+export function CssTransitionDisablerMixin<Base extends Constructor<View>>( view: Base ): Mixed<Base, ViewWithCssTransitionDisabler>
 {
 	abstract class Mixin extends view {
 		declare public _isCssTransitionsDisabled: boolean;
@@ -58,13 +58,15 @@ export default function CssTransitionDisablerMixin<Base extends Constructor<View
 		}
 
 		protected initializeCssTransitionDisablerMixin(): void {
-			this.extendTemplate( {
-				attributes: {
-					class: [
-						this.bindTemplate.if( '_isCssTransitionsDisabled', 'ck-transitions-disabled' )
-					]
-				}
-			} );
+			if ( this.template ) {
+				this.extendTemplate( {
+					attributes: {
+						class: [
+							this.bindTemplate.if( '_isCssTransitionsDisabled', 'ck-transitions-disabled' )
+						]
+					}
+				} );
+			}
 		}
 	}
 

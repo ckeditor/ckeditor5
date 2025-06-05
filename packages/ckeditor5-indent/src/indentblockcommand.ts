@@ -32,7 +32,7 @@ import type { IndentBehavior } from './indentcommandbehavior/indentbehavior.js';
  * editor.execute( 'outdentBlock' );
  * ```
  */
-export default class IndentBlockCommand extends Command {
+export class IndentBlockCommand extends Command {
 	/**
 	 * The command's indentation behavior.
 	 */

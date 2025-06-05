@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { assertTableCellStyle, modelTable, viewTable } from '../../_utils/utils.js';
-import TableCellWidthEditing from '../../../src/tablecellwidth/tablecellwidthediting.js';
-import TableCellWidthCommand from '../../../src/tablecellwidth/commands/tablecellwidthcommand.js';
+import { TableCellWidthEditing } from '../../../src/tablecellwidth/tablecellwidthediting.js';
+import { TableCellWidthCommand } from '../../../src/tablecellwidth/commands/tablecellwidthcommand.js';
 
 describe( 'table cell width property commands', () => {
 	describe( 'TableCellWidthCommand: empty default value', () => {

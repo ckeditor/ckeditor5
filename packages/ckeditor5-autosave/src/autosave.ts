@@ -50,7 +50,7 @@ import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
  *
  * Read more about this feature in the {@glink features/autosave Autosave} feature guide.
  */
-export default class Autosave extends Plugin {
+export class Autosave extends Plugin {
 	/**
 	 * The adapter is an object with a `save()` method. That method will be called whenever
 	 * the data changes. It might be called some time after the change,

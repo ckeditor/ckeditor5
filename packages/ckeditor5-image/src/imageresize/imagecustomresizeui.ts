@@ -18,7 +18,8 @@ import {
 import { getBalloonPositionData } from '../image/ui/utils.js';
 import { getSelectedImageWidthInUnits } from './utils/getselectedimagewidthinunits.js';
 
-import ImageCustomResizeFormView, {
+import {
+	ImageCustomResizeFormView,
 	type ImageCustomResizeFormValidatorCallback,
 	type ImageCustomResizeFormViewCancelEvent,
 	type ImageCustomResizeFormViewSubmitEvent
@@ -30,7 +31,7 @@ import { getSelectedImagePossibleResizeRange } from './utils/getselectedimagepos
  *
  * The plugin uses the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon}.
  */
-export default class ImageCustomResizeUI extends Plugin {
+export class ImageCustomResizeUI extends Plugin {
 	/**
 	 * The contextual balloon plugin instance.
 	 */

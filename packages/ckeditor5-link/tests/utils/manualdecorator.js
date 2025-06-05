@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ManualDecorator from '../../src/utils/manualdecorator.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ManualDecorator } from '../../src/utils/manualdecorator.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Manual Decorator', () => {
 	let manualDecorator;

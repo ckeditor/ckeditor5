@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import View from '../../src/view.js';
-import LabeledFieldView from '../../src/labeledfield/labeledfieldview.js';
-import LabelView from '../../src/label/labelview.js';
-import ViewCollection from '../../src/viewcollection.js';
+import { View } from '../../src/view.js';
+import { LabeledFieldView } from '../../src/labeledfield/labeledfieldview.js';
+import { LabelView } from '../../src/label/labelview.js';
+import { ViewCollection } from '../../src/viewcollection.js';
 
 describe( 'LabeledFieldView', () => {
 	const locale = {};

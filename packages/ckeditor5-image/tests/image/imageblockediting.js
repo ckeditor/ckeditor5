@@ -3,23 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import DataTransfer from '@ckeditor/ckeditor5-engine/src/view/datatransfer.js';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { DataTransfer } from '@ckeditor/ckeditor5-engine/src/view/datatransfer.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import ImageInlineEditing from '../../src/image/imageinlineediting.js';
-import ImageBlockEditing from '../../src/image/imageblockediting.js';
-import ImageTypeCommand from '../../src/image/imagetypecommand.js';
-import InsertImageCommand from '../../src/image/insertimagecommand.js';
-import ImageCaption from '../../src/imagecaption.js';
-import ImageLoadObserver from '../../src/image/imageloadobserver.js';
+import { ImageInlineEditing } from '../../src/image/imageinlineediting.js';
+import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
+import { ImageTypeCommand } from '../../src/image/imagetypecommand.js';
+import { InsertImageCommand } from '../../src/image/insertimagecommand.js';
+import { ImageCaption } from '../../src/imagecaption.js';
+import { ImageLoadObserver } from '../../src/image/imageloadobserver.js';
 
 describe( 'ImageBlockEditing', () => {
 	let editor, model, doc, view, viewDocument;

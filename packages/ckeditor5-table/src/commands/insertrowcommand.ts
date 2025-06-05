@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type TableUtils from '../tableutils.js';
+import { type TableUtils } from '../tableutils.js';
 
 /**
  * The insert row command.
@@ -28,7 +28,7 @@ import type TableUtils from '../tableutils.js';
  * editor.execute( 'insertTableRowAbove' );
  * ```
  */
-export default class InsertRowCommand extends Command {
+export class InsertRowCommand extends Command {
 	/**
 	 * The order of insertion relative to the row in which the caret is located.
 	 */

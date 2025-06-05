@@ -4,7 +4,7 @@
  */
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import TableWalker from '../../src/tablewalker.js';
+import { TableWalker } from '../../src/tablewalker.js';
 
 const WIDGET_TABLE_CELL_CLASS = 'ck-editor__editable ck-editor__nested-editable';
 

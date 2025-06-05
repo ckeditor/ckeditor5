@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../../src/model/model.js';
-import Position from '../../../src/model/position.js';
-import Range from '../../../src/model/range.js';
-import Selection from '../../../src/model/selection.js';
-import Element from '../../../src/model/element.js';
-import deleteContent from '../../../src/model/utils/deletecontent.js';
+import { Model } from '../../../src/model/model.js';
+import { Position } from '../../../src/model/position.js';
+import { Range } from '../../../src/model/range.js';
+import { Selection } from '../../../src/model/selection.js';
+import { Element } from '../../../src/model/element.js';
+import { deleteContent } from '../../../src/model/utils/deletecontent.js';
 import { setData, getData } from '../../../src/dev-utils/model.js';
 import { stringify } from '../../../src/dev-utils/view.js';
 

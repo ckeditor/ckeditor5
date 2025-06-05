@@ -30,7 +30,7 @@ const toPx = /* #__PURE__ */ toUnit( 'px' );
 /**
  * Inline editor UI view. Uses an nline editable and a floating toolbar.
  */
-export default class InlineEditorUIView extends EditorUIView {
+export class InlineEditorUIView extends EditorUIView {
 	/**
 	 * A floating toolbar view instance.
 	 */

@@ -5,4 +5,4 @@
 
 // Importing View to make sure resets are imported and injected
 // eslint-disable-next-line no-unused-vars
-import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import { View } from '@ckeditor/ckeditor5-ui/src/view.js';

@@ -22,17 +22,18 @@ import type {
 	DocumentSelection
 } from '@ckeditor/ckeditor5-engine';
 
-import ClipboardObserver, {
+import {
+	ClipboardObserver,
 	type ClipboardEventData,
 	type ViewDocumentCopyEvent,
 	type ViewDocumentCutEvent,
 	type ViewDocumentClipboardInputEvent
 } from './clipboardobserver.js';
 
-import plainTextToHtml from './utils/plaintexttohtml.js';
-import normalizeClipboardHtml from './utils/normalizeclipboarddata.js';
-import viewToPlainText from './utils/viewtoplaintext.js';
-import ClipboardMarkersUtils from './clipboardmarkersutils.js';
+import { plainTextToHtml } from './utils/plaintexttohtml.js';
+import { normalizeClipboardData } from './utils/normalizeclipboarddata.js';
+import { viewToPlainText } from './utils/viewtoplaintext.js';
+import { ClipboardMarkersUtils } from './clipboardmarkersutils.js';
 
 // Input pipeline events overview:
 //
@@ -140,7 +141,7 @@ import ClipboardMarkersUtils from './clipboardmarkersutils.js';
  *
  * Read more about the clipboard integration in the {@glink framework/deep-dive/clipboard clipboard deep-dive} guide.
  */
-export default class ClipboardPipeline extends Plugin {
+export class ClipboardPipeline extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -227,7 +228,7 @@ export default class ClipboardPipeline extends Plugin {
 				let contentData = '';
 
 				if ( dataTransfer.getData( 'text/html' ) ) {
-					contentData = normalizeClipboardHtml( dataTransfer.getData( 'text/html' ) );
+					contentData = normalizeClipboardData( dataTransfer.getData( 'text/html' ) );
 				} else if ( dataTransfer.getData( 'text/plain' ) ) {
 					contentData = plainTextToHtml( dataTransfer.getData( 'text/plain' ) );
 				}

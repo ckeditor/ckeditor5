@@ -6,7 +6,7 @@
 // Creates multiple, nested lists, for a total of 3000 list items. Text in lists is simple, short, non-formatted text.
 // This tests editor performance when huge lists are in the content.
 // Below data creates 100 pages when copy-pasted to Google Docs (default page settings).
-export default function makeData() {
+export function makeData() {
 	let initialData = '';
 
 	// Create 25 top-level lists, each with ~90 nested items total, on multiple levels.

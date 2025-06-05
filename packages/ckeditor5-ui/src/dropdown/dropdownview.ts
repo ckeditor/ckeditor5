@@ -7,14 +7,14 @@
  * @module ui/dropdown/dropdownview
  */
 
-import View from '../view.js';
+import { View } from '../view.js';
 
-import type { default as DropdownButton, DropdownButtonOpenEvent } from './button/dropdownbutton.js';
-import type { default as DropdownPanelView, PanelPosition } from './dropdownpanelview.js';
+import type { DropdownButton, DropdownButtonOpenEvent } from './button/dropdownbutton.js';
+import type { DropdownPanelView, PanelPosition } from './dropdownpanelview.js';
 import type { FocusableView } from '../focuscycler.js';
-import type ListView from '../list/listview.js';
-import type ToolbarView from '../toolbar/toolbarview.js';
-import type DropdownMenuRootListView from './menu/dropdownmenurootlistview.js';
+import { type ListView } from '../list/listview.js';
+import { type ToolbarView } from '../toolbar/toolbarview.js';
+import { type DropdownMenuRootListView } from './menu/dropdownmenurootlistview.js';
 
 import {
 	KeystrokeHandler,
@@ -79,7 +79,7 @@ import '../../theme/components/dropdown/dropdown.css';
  * (which should close it) and support for arrow keys inside the panel. Therefore, unless you really know what
  * you do and you really need to do it, it is recommended to use the {@link module:ui/dropdown/utils~createDropdown} helper.
  */
-export default class DropdownView extends View<HTMLDivElement> {
+export class DropdownView extends View<HTMLDivElement> {
 	/**
 	 * Button of the dropdown view. Clicking the button opens the {@link #panelView}.
 	 */

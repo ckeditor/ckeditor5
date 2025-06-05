@@ -3,21 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ViewElement from '../../../src/view/element.js';
-import ViewUIElement from '../../../src/view/uielement.js';
-import ViewDocument from '../../../src/view/document.js';
-import ViewDocumentSelection from '../../../src/view/documentselection.js';
-import ViewSelection from '../../../src/view/selection.js';
-import DomConverter from '../../../src/view/domconverter.js';
-import ViewDocumentFragment from '../../../src/view/documentfragment.js';
+import { ViewElement } from '../../../src/view/element.js';
+import { ViewUIElement } from '../../../src/view/uielement.js';
+import { ViewDocument } from '../../../src/view/document.js';
+import { ViewDocumentSelection } from '../../../src/view/documentselection.js';
+import { ViewSelection } from '../../../src/view/selection.js';
+import { DomConverter } from '../../../src/view/domconverter.js';
+import { ViewDocumentFragment } from '../../../src/view/documentfragment.js';
 import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER } from '../../../src/view/filler.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 import { parse, stringify } from '../../../src/dev-utils/view.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import count from '@ckeditor/ckeditor5-utils/src/count.js';
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
+import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 
 describe( 'DomConverter', () => {
 	let converter, viewDocument;

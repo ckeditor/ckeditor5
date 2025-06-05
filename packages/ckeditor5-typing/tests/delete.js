@@ -3,22 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Delete from '../src/delete.js';
-import Typing from '../src/typing.js';
-import Widget from '@ckeditor/ckeditor5-widget/src/widget.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import TodoList from '@ckeditor/ckeditor5-list/src/todolist.js';
-import List from '@ckeditor/ckeditor5-list/src/list.js';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Delete } from '../src/delete.js';
+import { Typing } from '../src/typing.js';
+import { Widget } from '@ckeditor/ckeditor5-widget/src/widget.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { TodoList } from '@ckeditor/ckeditor5-list/src/todolist.js';
+import { List } from '@ckeditor/ckeditor5-list/src/list.js';
+import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
 import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
-import Batch from '@ckeditor/ckeditor5-engine/src/model/batch.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
+import { Batch } from '@ckeditor/ckeditor5-engine/src/model/batch.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { fireBeforeInputDomEvent } from './_utils/utils.js';
 

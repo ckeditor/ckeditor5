@@ -26,8 +26,8 @@ import { ClipboardPipeline, type ViewDocumentClipboardInputEvent } from 'ckedito
 import { FileRepository, type UploadResponse, type FileLoader } from 'ckeditor5/src/upload.js';
 import { env } from 'ckeditor5/src/utils.js';
 
-import ImageUtils from '../imageutils.js';
-import UploadImageCommand from './uploadimagecommand.js';
+import { ImageUtils } from '../imageutils.js';
+import { UploadImageCommand } from './uploadimagecommand.js';
 import { fetchLocalImage, isLocalImage } from '../../src/imageupload/utils.js';
 import { createImageTypeRegExp } from './utils.js';
 
@@ -38,7 +38,7 @@ import { createImageTypeRegExp } from './utils.js';
  * When an image is uploaded, it fires the {@link ~ImageUploadEditing#event:uploadComplete `uploadComplete`} event
  * that allows adding custom attributes to the {@link module:engine/model/element~Element image element}.
  */
-export default class ImageUploadEditing extends Plugin {
+export class ImageUploadEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

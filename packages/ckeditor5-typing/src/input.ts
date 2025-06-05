@@ -10,8 +10,8 @@
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 import { env } from '@ckeditor/ckeditor5-utils';
 
-import InsertTextCommand, { type InsertTextCommandOptions } from './inserttextcommand.js';
-import InsertTextObserver, { type ViewDocumentInsertTextEvent } from './inserttextobserver.js';
+import { InsertTextCommand, type InsertTextCommandOptions } from './inserttextcommand.js';
+import { InsertTextObserver, type ViewDocumentInsertTextEvent } from './inserttextobserver.js';
 
 import {
 	LiveRange,
@@ -36,7 +36,7 @@ import { debounce } from 'es-toolkit/compat';
 /**
  * Handles text input coming from the keyboard or other input methods.
  */
-export default class Input extends Plugin {
+export class Input extends Plugin {
 	/**
 	 * The queue of `insertText` command executions that are waiting for the DOM to get updated after beforeinput event.
 	 */

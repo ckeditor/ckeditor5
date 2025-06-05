@@ -10,8 +10,8 @@
  */
 
 import type { Translations } from './locale.js';
-import CKEditorError from './ckeditorerror.js';
-import global from './dom/global.js';
+import { CKEditorError } from './ckeditorerror.js';
+import { global } from './dom/global.js';
 import { merge } from 'es-toolkit/compat';
 import { type ArrayOrItem } from './toarray.js';
 
@@ -79,7 +79,7 @@ if ( !global.window.CKEDITOR_TRANSLATIONS ) {
  * 	}
  * ```
  *
- * If you cannot import this function from this module (e.g. because you use a CKEditor 5 build), you can
+ * If you cannot import { this function } from this module (e.g. because you use a CKEditor 5 build), you can
  * still add translations by extending the global `window.CKEDITOR_TRANSLATIONS` object by using a function like
  * the one below:
  *

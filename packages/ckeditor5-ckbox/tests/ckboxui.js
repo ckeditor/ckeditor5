@@ -3,23 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
-import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting.js';
-import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting.js';
-import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress.js';
-import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
-import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import CloudServicesCoreMock from './_utils/cloudservicescoremock.js';
-import ImageInsertUI from '@ckeditor/ckeditor5-image/src/imageinsert/imageinsertui.js';
-import Model from '@ckeditor/ckeditor5-ui/src/model.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import { PictureEditing } from '@ckeditor/ckeditor5-image/src/pictureediting.js';
+import { ImageUploadEditing } from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting.js';
+import { ImageUploadProgress } from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress.js';
+import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
+import { ImageInlineEditing } from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { CloudServicesCoreMock } from './_utils/cloudservicescoremock.js';
+import { ImageInsertUI } from '@ckeditor/ckeditor5-image/src/imageinsert/imageinsertui.js';
+import { ViewModel } from '@ckeditor/ckeditor5-ui/src/model.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { IconImageAssetManager, IconBrowseFiles } from 'ckeditor5/src/icons.js';
 
-import CKBoxUI from '../src/ckboxui.js';
-import CKBoxEditing from '../src/ckboxediting.js';
+import { CKBoxUI } from '../src/ckboxui.js';
+import { CKBoxEditing } from '../src/ckboxediting.js';
 import { MenuBarMenuListItemButtonView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'CKBoxUI', () => {
@@ -265,7 +265,7 @@ describe( 'CKBoxUI', () => {
 
 	function mockAnotherIntegration() {
 		const insertImageUI = editor.plugins.get( 'ImageInsertUI' );
-		const observable = new Model( { isEnabled: true } );
+		const observable = new ViewModel( { isEnabled: true } );
 
 		insertImageUI.registerIntegration( {
 			name: 'url',

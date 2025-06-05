@@ -7,8 +7,8 @@
  * @module engine/view/observer/mouseobserver
  */
 
-import DomEventObserver from './domeventobserver.js';
-import type DomEventData from './domeventdata.js';
+import { DomEventObserver } from './domeventobserver.js';
+import { type DomEventData } from './domeventdata.js';
 
 /**
  * Mouse events observer.
@@ -16,7 +16,7 @@ import type DomEventData from './domeventdata.js';
  * Note that this observer is not available by default. To make it available it needs to be added to
  * {@link module:engine/view/view~View} by {@link module:engine/view/view~View#addObserver} method.
  */
-export default class MouseObserver extends DomEventObserver<'mousedown' | 'mouseup' | 'mouseover' | 'mouseout'> {
+export class MouseObserver extends DomEventObserver<'mousedown' | 'mouseup' | 'mouseover' | 'mouseout'> {
 	/**
 	 * @inheritDoc
 	 */

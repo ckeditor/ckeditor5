@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import FocusTracker from '../src/focustracker.js';
-import global from '../src/dom/global.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { FocusTracker } from '../src/focustracker.js';
+import { global } from '../src/dom/global.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from './_utils/utils.js';
 import { View } from '@ckeditor/ckeditor5-ui';
 

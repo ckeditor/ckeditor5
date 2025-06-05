@@ -9,7 +9,7 @@
 
 import { Command } from 'ckeditor5/src/core.js';
 import type { Element } from 'ckeditor5/src/engine.js';
-import type TableUtils from '../tableutils.js';
+import { type TableUtils } from '../tableutils.js';
 
 import { updateNumericAttribute } from '../utils/common.js';
 import { getVerticallyOverlappingCells, splitHorizontally } from '../utils/structure.js';
@@ -28,7 +28,7 @@ import { getVerticallyOverlappingCells, splitHorizontally } from '../utils/struc
  * **Note:** All preceding rows will also become headers. If the current row is already a header, executing this command
  * will make it a regular row back again (including the following rows).
  */
-export default class SetHeaderRowCommand extends Command {
+export class SetHeaderRowCommand extends Command {
 	/**
 	 * Flag indicating whether the command is active. The command is active when the
 	 * {@link module:engine/model/selection~Selection} is in a header row.

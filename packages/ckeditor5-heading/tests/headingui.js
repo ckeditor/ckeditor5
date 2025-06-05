@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Heading from '../src/heading.js';
-import HeadingEditing from '../src/headingediting.js';
-import HeadingUI from '../src/headingui.js';
-import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Heading } from '../src/heading.js';
+import { HeadingEditing } from '../src/headingediting.js';
+import { HeadingUI } from '../src/headingui.js';
+import { DropdownView } from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview.js';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { MenuBarMenuListItemView, MenuBarMenuView } from '@ckeditor/ckeditor5-ui';
 

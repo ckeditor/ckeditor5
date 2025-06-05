@@ -7,13 +7,13 @@
  * @module ui/dropdown/button/dropdownbutton
  */
 
-import type Button from '../../button/button.js';
-import type ViewCollection from '../../viewcollection.js';
+import { type Button } from '../../button/button.js';
+import { type ViewCollection } from '../../viewcollection.js';
 
 /**
  * The dropdown button interface.
  */
-export default interface DropdownButton extends Button {
+export interface DropdownButton extends Button {
 	children: ViewCollection;
 }
 

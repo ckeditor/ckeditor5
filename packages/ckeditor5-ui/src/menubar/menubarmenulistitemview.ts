@@ -8,8 +8,8 @@
  */
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-import ListItemView from '../list/listitemview.js';
-import type MenuBarMenuView from './menubarmenuview.js';
+import { ListItemView } from '../list/listitemview.js';
+import { type MenuBarMenuView } from './menubarmenuview.js';
 
 import '../../theme/components/menubar/menubarmenulistitem.css';
 
@@ -19,7 +19,7 @@ import '../../theme/components/menubar/menubarmenulistitem.css';
  * Populate this item with a {@link module:ui/menubar/menubarmenulistitembuttonview~MenuBarMenuListItemButtonView} instance
  * or a {@link module:ui/menubar/menubarmenuview~MenuBarMenuView} instance to create a sub-menu.
  */
-export default class MenuBarMenuListItemView extends ListItemView {
+export class MenuBarMenuListItemView extends ListItemView {
 	/**
 	 * Creates an instance of the list item view.
 	 *

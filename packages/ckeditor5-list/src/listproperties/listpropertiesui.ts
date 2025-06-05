@@ -32,14 +32,14 @@ import {
 
 import type { Locale } from 'ckeditor5/src/utils.js';
 
-import ListPropertiesView from './ui/listpropertiesview.js';
+import { ListPropertiesView } from './ui/listpropertiesview.js';
 
-import type LegacyListStyleCommand from '../legacylistproperties/legacyliststylecommand.js';
-import type ListStyleCommand from '../listproperties/liststylecommand.js';
-import type LegacyListStartCommand from '../legacylistproperties/legacyliststartcommand.js';
-import type ListStartCommand from '../listproperties/liststartcommand.js';
-import type LegacyListReversedCommand from '../legacylistproperties/legacylistreversedcommand.js';
-import type ListReversedCommand from '../listproperties/listreversedcommand.js';
+import { type LegacyListStyleCommand } from '../legacylistproperties/legacyliststylecommand.js';
+import { type ListStyleCommand } from '../listproperties/liststylecommand.js';
+import { type LegacyListStartCommand } from '../legacylistproperties/legacyliststartcommand.js';
+import { type ListStartCommand } from '../listproperties/liststartcommand.js';
+import { type LegacyListReversedCommand } from '../legacylistproperties/legacylistreversedcommand.js';
+import { type ListReversedCommand } from '../listproperties/listreversedcommand.js';
 
 import { getNormalizedConfig, type NormalizedListPropertiesConfig } from './utils/config.js';
 import { type ListPropertiesStyleListType } from '../listconfig.js';
@@ -53,7 +53,7 @@ import '../../theme/liststyles.css';
  * **Note**: Buttons introduced by this plugin override implementations from the {@link module:list/list/listui~ListUI}
  * (because they share the same names).
  */
-export default class ListPropertiesUI extends Plugin {
+export class ListPropertiesUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

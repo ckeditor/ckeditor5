@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { ImageUpload } from '@ckeditor/ckeditor5-image/src/imageupload.js';
 
-import CKFinder from '../../src/ckfinder.js';
+import { CKFinder } from '../../src/ckfinder.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import ItalicEditing from './italic/italicediting.js';
-import ItalicUI from './italic/italicui.js';
+import { ItalicEditing } from './italic/italicediting.js';
+import { ItalicUI } from './italic/italicui.js';
 
 /**
  * The italic feature.
@@ -20,7 +20,7 @@ import ItalicUI from './italic/italicui.js';
  * This is a "glue" plugin which loads the {@link module:basic-styles/italic/italicediting~ItalicEditing} and
  * {@link module:basic-styles/italic/italicui~ItalicUI} plugins.
  */
-export default class Italic extends Plugin {
+export class Italic extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

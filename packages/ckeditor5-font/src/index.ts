@@ -7,23 +7,23 @@
  * @module font
  */
 
-export { default as Font } from './font.js';
-export { default as FontBackgroundColor } from './fontbackgroundcolor.js';
-export { default as FontColor } from './fontcolor.js';
-export { default as FontFamily } from './fontfamily.js';
-export { default as FontSize } from './fontsize.js';
-export { default as FontBackgroundColorEditing } from './fontbackgroundcolor/fontbackgroundcolorediting.js';
-export { default as FontBackgroundColorUI } from './fontbackgroundcolor/fontbackgroundcolorui.js';
-export { default as FontColorEditing } from './fontcolor/fontcolorediting.js';
-export { default as FontColorUI } from './fontcolor/fontcolorui.js';
-export { default as FontFamilyEditing } from './fontfamily/fontfamilyediting.js';
-export { default as FontFamilyUI } from './fontfamily/fontfamilyui.js';
-export { default as FontSizeEditing } from './fontsize/fontsizeediting.js';
-export { default as FontSizeUI } from './fontsize/fontsizeui.js';
-export type { default as FontBackgroundColorCommand } from './fontbackgroundcolor/fontbackgroundcolorcommand.js';
-export type { default as FontColorCommand } from './fontcolor/fontcolorcommand.js';
-export type { default as FontFamilyCommand } from './fontfamily/fontfamilycommand.js';
-export type { default as FontSizeCommand } from './fontsize/fontsizecommand.js';
+export { Font } from './font.js';
+export { FontBackgroundColor } from './fontbackgroundcolor.js';
+export { FontColor } from './fontcolor.js';
+export { FontFamily } from './fontfamily.js';
+export { FontSize } from './fontsize.js';
+export { FontBackgroundColorEditing } from './fontbackgroundcolor/fontbackgroundcolorediting.js';
+export { FontBackgroundColorUI } from './fontbackgroundcolor/fontbackgroundcolorui.js';
+export { FontColorEditing } from './fontcolor/fontcolorediting.js';
+export { FontColorUI } from './fontcolor/fontcolorui.js';
+export { FontFamilyEditing } from './fontfamily/fontfamilyediting.js';
+export { FontFamilyUI } from './fontfamily/fontfamilyui.js';
+export { FontSizeEditing } from './fontsize/fontsizeediting.js';
+export { FontSizeUI } from './fontsize/fontsizeui.js';
+export type { FontBackgroundColorCommand } from './fontbackgroundcolor/fontbackgroundcolorcommand.js';
+export type { FontColorCommand } from './fontcolor/fontcolorcommand.js';
+export type { FontFamilyCommand } from './fontfamily/fontfamilycommand.js';
+export type { FontSizeCommand } from './fontsize/fontsizecommand.js';
 
 export type {
 	FONT_BACKGROUND_COLOR,

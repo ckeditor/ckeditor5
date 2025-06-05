@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Editor from '@ckeditor/ckeditor5-core/src/editor/editor.js';
-import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Editor } from '@ckeditor/ckeditor5-core/src/editor/editor.js';
+import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import ListCommand from '../../src/list/listcommand.js';
-import ListStyleCommand from '../../src/listproperties/liststylecommand.js';
-import stubUid from '../list/_utils/uid.js';
+import { ListCommand } from '../../src/list/listcommand.js';
+import { ListStyleCommand } from '../../src/listproperties/liststylecommand.js';
+import { stubUid } from '../list/_utils/uid.js';
 import { modelList } from '../list/_utils/utils.js';
 
 describe( 'ListStyleCommand', () => {

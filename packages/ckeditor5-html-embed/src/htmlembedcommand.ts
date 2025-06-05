@@ -34,7 +34,7 @@ import { findOptimalInsertionRange } from 'ckeditor5/src/widget.js';
  * editor.execute( 'htmlEmbed', '<b>New content of an existing embed.</b>' );
  * ```
  */
-export default class HtmlEmbedCommand extends Command {
+export class HtmlEmbedCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

@@ -7,8 +7,8 @@
  * @module ui/panel/balloon/balloonpanelview
  */
 
-import View from '../../view.js';
-import type ViewCollection from '../../viewcollection.js';
+import { View } from '../../view.js';
+import { type ViewCollection } from '../../viewcollection.js';
 
 import {
 	getOptimalPosition,
@@ -87,7 +87,7 @@ const POSITION_OFF_SCREEN: DomPoint = {
  * } );
  * ```
  */
-export default class BalloonPanelView extends View {
+export class BalloonPanelView extends View {
 	/**
 	 * A collection of the child views that creates the balloon panel contents.
 	 */

@@ -19,7 +19,7 @@ const TOKEN_FAILED_REFRESH_TIMEOUT_TIME = 5000; // 5 seconds
  * The value of the token is retrieved from the specified URL and refreshed every 1 hour by default.
  * If the token retrieval fails, the token will automatically retry in 5 seconds intervals.
  */
-export default class Token extends /* #__PURE__ */ ObservableMixin() {
+export class Token extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Value of the token.
 	 * The value of the token is undefined if `initValue` is not provided or `init` method was not called.
