@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Element from '@ckeditor/ckeditor5-engine/src/model/element.js';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import Table from '../../src/table.js';
+import { Element } from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { Table } from '../../src/table.js';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { modelTable } from '../_utils/utils.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import TableColumnResize from '../../src/tablecolumnresize.js';
+import { TableColumnResize } from '../../src/tablecolumnresize.js';
 import {
 	getColumnEdgesIndexes,
 	getChangedResizedTables,

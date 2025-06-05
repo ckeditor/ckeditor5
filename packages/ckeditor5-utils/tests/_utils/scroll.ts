@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import isRange from '../../src/dom/isrange.js';
-import global from '../../src/dom/global.js';
+import { isRange } from '../../src/dom/isrange.js';
+import { global } from '../../src/dom/global.js';
 
 declare global {
 	interface Window {

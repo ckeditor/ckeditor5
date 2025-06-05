@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import ShiftEnter from '../src/shiftenter.js';
-import ShiftEnterCommand from '../src/shiftentercommand.js';
-import EnterObserver from '../src/enterobserver.js';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ShiftEnter } from '../src/shiftenter.js';
+import { ShiftEnterCommand } from '../src/shiftentercommand.js';
+import { EnterObserver } from '../src/enterobserver.js';
+import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 
 describe( 'ShiftEnter feature', () => {
 	let element, editor, viewDocument;

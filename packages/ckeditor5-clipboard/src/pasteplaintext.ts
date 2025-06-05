@@ -11,15 +11,15 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import type { DocumentFragment, Model, Element } from '@ckeditor/ckeditor5-engine';
 
-import ClipboardObserver from './clipboardobserver.js';
-import ClipboardPipeline, { type ClipboardContentInsertionEvent } from './clipboardpipeline.js';
+import { ClipboardObserver } from './clipboardobserver.js';
+import { ClipboardPipeline, type ClipboardContentInsertionEvent } from './clipboardpipeline.js';
 
 /**
  * The plugin detects the user's intention to paste plain text.
  *
  * For example, it detects the <kbd>Ctrl/Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> keystroke.
  */
-export default class PastePlainText extends Plugin {
+export class PastePlainText extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

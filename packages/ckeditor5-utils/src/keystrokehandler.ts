@@ -7,7 +7,7 @@
  * @module utils/keystrokehandler
  */
 
-import DomEmitterMixin, { type DomEmitter } from './dom/emittermixin.js';
+import { DomEmitterMixin, type DomEmitter } from './dom/emittermixin.js';
 import type { Emitter } from './emittermixin.js';
 import { getCode, parseKeystroke, type KeystrokeInfo } from './keyboard.js';
 import type { PriorityString } from './priorities.js';
@@ -47,7 +47,7 @@ import type { PriorityString } from './priorities.js';
  * That keystroke handler will listen to `keydown` events fired in this view's main element.
  *
  */
-export default class KeystrokeHandler {
+export class KeystrokeHandler {
 	/**
 	 * Listener used to listen to events for easier keystroke handler destruction.
 	 */

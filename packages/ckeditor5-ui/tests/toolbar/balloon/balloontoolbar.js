@@ -3,35 +3,35 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import EditorUI from '../../../src/editorui/editorui.js';
-import BalloonToolbar from '../../../src/toolbar/balloon/balloontoolbar.js';
-import ContextualBalloon from '../../../src/panel/balloon/contextualballoon.js';
-import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview.js';
-import ToolbarView from '../../../src/toolbar/toolbarview.js';
-import ButtonView from '../../../src/button/buttonview.js';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker.js';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { EditorUI } from '../../../src/editorui/editorui.js';
+import { BalloonToolbar } from '../../../src/toolbar/balloon/balloontoolbar.js';
+import { ContextualBalloon } from '../../../src/panel/balloon/contextualballoon.js';
+import { BalloonPanelView } from '../../../src/panel/balloon/balloonpanelview.js';
+import { ToolbarView } from '../../../src/toolbar/toolbarview.js';
+import { ButtonView } from '../../../src/button/buttonview.js';
+import { FocusTracker } from '@ckeditor/ckeditor5-utils/src/focustracker.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import { Underline } from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { HorizontalLine } from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
+import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { ResizeObserver } from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { stringify as viewStringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
-import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit.js';
+import { Rect } from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
+import { toUnit } from '@ckeditor/ckeditor5-utils/src/dom/tounit.js';
 
 const toPx = toUnit( 'px' );
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'BalloonToolbar', () => {
 	let editor, model, selection, editingView, balloonToolbar, balloon, editorElement;

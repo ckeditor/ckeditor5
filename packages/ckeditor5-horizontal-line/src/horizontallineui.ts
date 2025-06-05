@@ -11,12 +11,12 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { IconHorizontalLine } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 
-import type HorizontalLineCommand from './horizontallinecommand.js';
+import { type HorizontalLineCommand } from './horizontallinecommand.js';
 
 /**
  * The horizontal line UI plugin.
  */
-export default class HorizontalLineUI extends Plugin {
+export class HorizontalLineUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

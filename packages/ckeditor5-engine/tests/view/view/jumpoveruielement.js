@@ -3,17 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import View from '../../../src/view/view.js';
-import UIElement from '../../../src/view/uielement.js';
-import ViewContainerElement from '../../../src/view/containerelement.js';
-import ViewAttribtueElement from '../../../src/view/attributeelement.js';
-import ViewText from '../../../src/view/text.js';
-import ViewRange from '../../../src/view/range.js';
+import { View } from '../../../src/view/view.js';
+import { UIElement } from '../../../src/view/uielement.js';
+import { ViewContainerElement } from '../../../src/view/containerelement.js';
+import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
+import { ViewText } from '../../../src/view/text.js';
+import { ViewRange } from '../../../src/view/range.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
-import createViewRoot from '../_utils/createroot.js';
+import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { createViewRoot } from '../_utils/createroot.js';
 import { setData as setViewData } from '../../../src/dev-utils/view.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'View', () => {
@@ -187,7 +187,7 @@ describe( 'View', () => {
 
 			it( 'jump over ui element if selection is in attribute element - case 1', () => {
 				// <container:p><attribute:b>foo{}</attribute:b><ui:span>xxx</ui:span>bar</container:p>
-				const b = new ViewAttribtueElement( viewDocument, 'b', null, foo );
+				const b = new ViewAttributeElement( viewDocument, 'b', null, foo );
 				const p = new ViewContainerElement( viewDocument, 'p', null, [ b, ui, bar ] );
 				viewRoot._appendChild( p );
 
@@ -208,7 +208,7 @@ describe( 'View', () => {
 
 			it( 'jump over ui element if selection is in attribute element - case 2', () => {
 				// <container:p><attribute:b>foo[]</attribute:b><ui:span>xxx</ui:span>bar</container:p>
-				const b = new ViewAttribtueElement( viewDocument, 'b', null, foo );
+				const b = new ViewAttributeElement( viewDocument, 'b', null, foo );
 				const p = new ViewContainerElement( viewDocument, 'p', null, [ b, ui, bar ] );
 				viewRoot._appendChild( p );
 
@@ -237,8 +237,8 @@ describe( 'View', () => {
 				// 		</ui:span>
 				// 		bar
 				// </container:p>
-				const b = new ViewAttribtueElement( viewDocument, 'b', null, foo );
-				const i = new ViewAttribtueElement( viewDocument, 'i', null, b );
+				const b = new ViewAttributeElement( viewDocument, 'b', null, foo );
+				const i = new ViewAttributeElement( viewDocument, 'i', null, b );
 				const p = new ViewContainerElement( viewDocument, 'p', null, [ i, ui, bar ] );
 
 				viewRoot._appendChild( p );
@@ -267,8 +267,8 @@ describe( 'View', () => {
 				// 		<attribute:b></attribute:b>
 				// 		bar
 				// </container:p>
-				const b1 = new ViewAttribtueElement( viewDocument, 'b' );
-				const b2 = new ViewAttribtueElement( viewDocument, 'b' );
+				const b1 = new ViewAttributeElement( viewDocument, 'b' );
+				const b2 = new ViewAttributeElement( viewDocument, 'b' );
 				const p = new ViewContainerElement( viewDocument, 'p', null, [ foo, b1, ui, ui2, b2, bar ] );
 
 				viewRoot._appendChild( p );
@@ -298,8 +298,8 @@ describe( 'View', () => {
 				// 		bar
 				// </container:p>
 
-				const b1 = new ViewAttribtueElement( viewDocument, 'b' );
-				const b2 = new ViewAttribtueElement( viewDocument, 'b' );
+				const b1 = new ViewAttributeElement( viewDocument, 'b' );
+				const b2 = new ViewAttributeElement( viewDocument, 'b' );
 				const p = new ViewContainerElement( viewDocument, 'p', null, [ foo, b1, ui, ui2, b2, bar ] );
 
 				viewRoot._appendChild( p );
@@ -406,8 +406,8 @@ describe( 'View', () => {
 				// 		<ui:span>xxx</ui:span>
 				// 		bar
 				// </container:p>
-				const b = new ViewAttribtueElement( viewDocument, 'b', null, foo );
-				const i = new ViewAttribtueElement( viewDocument, 'i', null, b );
+				const b = new ViewAttributeElement( viewDocument, 'b', null, foo );
+				const i = new ViewAttributeElement( viewDocument, 'i', null, b );
 				const p = new ViewContainerElement( viewDocument, 'p', null, [ i, ui, bar ] );
 				viewRoot._appendChild( p );
 
@@ -435,8 +435,8 @@ describe( 'View', () => {
 				// 		<attribute:b></attribute:b>
 				// 		bar
 				// </container:p>
-				const b1 = new ViewAttribtueElement( viewDocument, 'b' );
-				const b2 = new ViewAttribtueElement( viewDocument, 'b' );
+				const b1 = new ViewAttributeElement( viewDocument, 'b' );
+				const b2 = new ViewAttributeElement( viewDocument, 'b' );
 				const p = new ViewContainerElement( viewDocument, 'p', null, [ foo, b1, ui, ui2, b2, bar ] );
 				viewRoot._appendChild( p );
 

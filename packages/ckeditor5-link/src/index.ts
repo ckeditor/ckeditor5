@@ -7,16 +7,16 @@
  * @module link
  */
 
-export { default as Link } from './link.js';
-export { default as LinkEditing } from './linkediting.js';
-export { default as LinkUI, type LinksProviderListItem, type LinksProvider, type LinksProviderDetailedItem } from './linkui.js';
-export { default as LinkImage } from './linkimage.js';
-export { default as LinkImageEditing } from './linkimageediting.js';
-export { default as LinkImageUI } from './linkimageui.js';
-export { default as AutoLink } from './autolink.js';
-export { default as LinkFormView } from './ui/linkformview.js';
-export { default as LinkCommand } from './linkcommand.js';
-export { default as UnlinkCommand } from './unlinkcommand.js';
+export { Link } from './link.js';
+export { LinkEditing } from './linkediting.js';
+export { LinkUI, type LinksProviderListItem, type LinksProvider, type LinksProviderDetailedItem } from './linkui.js';
+export { LinkImage } from './linkimage.js';
+export { LinkImageEditing } from './linkimageediting.js';
+export { LinkImageUI } from './linkimageui.js';
+export { AutoLink } from './autolink.js';
+export { LinkFormView } from './ui/linkformview.js';
+export { LinkCommand } from './linkcommand.js';
+export { UnlinkCommand } from './unlinkcommand.js';
 
 export {
 	addLinkProtocolIfApplicable,

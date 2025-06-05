@@ -7,8 +7,8 @@
  * @module engine/view/renderer
  */
 
-import ViewText from './text.js';
-import ViewPosition from './position.js';
+import { ViewText } from './text.js';
+import { ViewPosition } from './position.js';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller } from './filler.js';
 
 import {
@@ -28,10 +28,10 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import type { ChangeType } from './document.js';
-import type DocumentSelection from './documentselection.js';
-import type DomConverter from './domconverter.js';
-import type ViewElement from './element.js';
-import type ViewNode from './node.js';
+import { type DocumentSelection } from './documentselection.js';
+import { type DomConverter } from './domconverter.js';
+import { type ViewElement } from './element.js';
+import { type ViewNode } from './node.js';
 
 // @if CK_DEBUG_TYPING // const { _buildLogMessage } = require( '../dev-utils/utils.js' );
 
@@ -56,7 +56,7 @@ type DomSelection = globalThis.Selection;
  * Renderer uses {@link module:engine/view/domconverter~DomConverter} to transform view nodes and positions
  * to and from the DOM.
  */
-export default class Renderer extends /* #__PURE__ */ ObservableMixin() {
+export class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Set of DOM Documents instances.
 	 */

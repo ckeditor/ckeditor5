@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
+import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
 import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { parseHtml } from '../../src/filters/parse.js';

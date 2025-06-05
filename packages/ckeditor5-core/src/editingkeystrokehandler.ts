@@ -9,7 +9,7 @@
 
 import { KeystrokeHandler, type PriorityString } from '@ckeditor/ckeditor5-utils';
 
-import type Editor from './editor/editor.js';
+import { type Editor } from './editor/editor.js';
 
 /**
  * A keystroke handler for editor editing. Its instance is available
@@ -24,7 +24,7 @@ import type Editor from './editor/editor.js';
  * editor.keystrokes.set( 'Ctrl+Y', 'redo' );
  * ```
  */
-export default class EditingKeystrokeHandler extends KeystrokeHandler {
+export class EditingKeystrokeHandler extends KeystrokeHandler {
 	/**
 	 * The editor instance.
 	 */

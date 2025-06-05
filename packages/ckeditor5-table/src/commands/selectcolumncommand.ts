@@ -9,9 +9,9 @@
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import type { Range } from 'ckeditor5/src/engine.js';
-import type TableUtils from '../tableutils.js';
+import { type TableUtils } from '../tableutils.js';
 
-import TableWalker from '../tablewalker.js';
+import { TableWalker } from '../tablewalker.js';
 
 /**
  * The select column command.
@@ -24,7 +24,7 @@ import TableWalker from '../tablewalker.js';
  * editor.execute( 'selectTableColumn' );
  * ```
  */
-export default class SelectColumnCommand extends Command {
+export class SelectColumnCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

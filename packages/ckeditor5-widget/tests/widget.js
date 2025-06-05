@@ -3,25 +3,25 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Widget from '../src/widget.js';
-import WidgetTypeAround from '../src/widgettypearound/widgettypearound.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import Delete from '@ckeditor/ckeditor5-typing/src/delete.js';
-import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Widget } from '../src/widget.js';
+import { WidgetTypeAround } from '../src/widgettypearound/widgettypearound.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { Delete } from '@ckeditor/ckeditor5-typing/src/delete.js';
+import { MouseObserver } from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver.js';
 import { toWidget } from '../src/utils.js';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { getCode, keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
-import View from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import RootEditableElement from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement.js';
-import EditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement.js';
+import { toArray } from '@ckeditor/ckeditor5-utils/src/toarray.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
+import { View } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { RootEditableElement } from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement.js';
+import { EditableElement } from '@ckeditor/ckeditor5-engine/src/view/editableelement.js';
 
 describe( 'Widget', () => {
 	let element, editor, model, view, viewDocument;

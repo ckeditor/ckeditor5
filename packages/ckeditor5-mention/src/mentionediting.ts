@@ -23,7 +23,7 @@ import type {
 } from 'ckeditor5/src/engine.js';
 import { uid } from 'ckeditor5/src/utils.js';
 
-import MentionCommand from './mentioncommand.js';
+import { MentionCommand } from './mentioncommand.js';
 import type { MentionAttribute } from './mention.js';
 
 /**
@@ -33,7 +33,7 @@ import type { MentionAttribute } from './mention.js';
  * attribute in the {@link module:engine/model/model~Model model} which renders in the {@link module:engine/view/view view}
  * as a `<span class="mention" data-mention="@mention">`.
  */
-export default class MentionEditing extends Plugin {
+export class MentionEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

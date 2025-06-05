@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../../src/model/model.js';
-import Text from '../../../src/model/text.js';
-import Element from '../../../src/model/element.js';
-import AttributeOperation from '../../../src/model/operation/attributeoperation.js';
-import Position from '../../../src/model/position.js';
-import Range from '../../../src/model/range.js';
+import { Model } from '../../../src/model/model.js';
+import { Text } from '../../../src/model/text.js';
+import { Element } from '../../../src/model/element.js';
+import { AttributeOperation } from '../../../src/model/operation/attributeoperation.js';
+import { Position } from '../../../src/model/position.js';
+import { Range } from '../../../src/model/range.js';
 
-import count from '@ckeditor/ckeditor5-utils/src/count.js';
+import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'AttributeOperation', () => {

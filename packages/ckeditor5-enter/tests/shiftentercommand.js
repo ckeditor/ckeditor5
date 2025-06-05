@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import InsertOperation from '@ckeditor/ckeditor5-engine/src/model/operation/insertoperation.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { InsertOperation } from '@ckeditor/ckeditor5-engine/src/model/operation/insertoperation.js';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import ShiftEnter from '../src/shiftenter.js';
+import { ShiftEnter } from '../src/shiftenter.js';
 
 describe( 'ShiftEnterCommand', () => {
 	let editor, model, doc, schema, command;

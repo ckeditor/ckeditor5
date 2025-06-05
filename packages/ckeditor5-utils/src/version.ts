@@ -7,11 +7,9 @@
  * @module utils/version
  */
 
-import CKEditorError from './ckeditorerror.js';
+import { CKEditorError } from './ckeditorerror.js';
 
-const version = '45.2.0';
-
-export default version;
+export const version = '45.2.0';
 
 // The second argument is not a month. It is `monthIndex` and starts from `0`.
 export const releaseDate = new Date( 2025, 5, 4 );
@@ -81,8 +79,8 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * <summary>New installation methods and optimized builds</summary>
 	 *
 	 * If you use the {@glink updating/nim-migration/migration-to-new-installation-methods new installation methods},
-	 * you should only import code from the `ckeditor5` and `ckeditor5-premium-features` packages.
-	 * Do not import code from the `@ckeditor/ckeditor5-<NAME>` packages unless you follow
+	 * you should only import { code } from the `ckeditor5` and `ckeditor5-premium-features` packages.
+	 * Do not import { code } from the `@ckeditor/ckeditor5-<NAME>` packages unless you follow
 	 * the {@glink getting-started/setup/optimizing-build-size Optimizing build size} guide and the imports from
 	 * the `@ckeditor/ckeditor5-<NAME>` packages end with `/dist/index.js`.
 	 *
@@ -93,7 +91,7 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * ```js
 	 * import { ClassicEditor, Highlight } from 'ckeditor5'; // ✅
 	 * import { Highlight } from '@ckeditor/ckeditor5-highlight/dist/index.js'; // ✅
-	 * import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight.js'; // ❌
+	 * import { Highlight } from '@ckeditor/ckeditor5-highlight/src/highlight.js'; // ❌
 	 * import { Highlight } from '@ckeditor/ckeditor5-highlight'; // ❌
 	 * import '@ckeditor/ckeditor5-highlight/build/highlight.js'; // ❌
 	 * ```
@@ -113,11 +111,11 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * Examples of valid and invalid import paths:
 	 *
 	 * ```js
-	 * import ClassicEditor from '@ckeditor/ckeditor5-build-classic'; // ✅
+	 * import { ClassicEditor } from '@ckeditor/ckeditor5-build-classic'; // ✅
 	 * import { Highlight } from 'ckeditor5'; // ❌
 	 * import { Highlight } from '@ckeditor/ckeditor5-highlight/dist/index.js'; // ❌
 	 * import { Highlight } from '@ckeditor/ckeditor5-highlight'; // ❌
-	 * import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight'; // ❌
+	 * import { Highlight } from '@ckeditor/ckeditor5-highlight/src/highlight'; // ❌
 	 * import '@ckeditor/ckeditor5-highlight/build/highlight'; // ❌
 	 * ```
 	 *
@@ -130,18 +128,18 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * <summary>(Legacy) Default imports and `src` imports</summary>
 	 *
 	 * If you use the {@glink getting-started/legacy/installation-methods/quick-start-other legacy customized installation}
-	 * method, you should only import code from the `@ckeditor/ckeditor5-<NAME>` packages. While you can import code from
+	 * method, you should only import { code from the `@ckeditor/ckeditor5-<NAME>` packages. While you can import code } from
 	 * the `@ckeditor/ckeditor5-<NAME>/src/*` files, it is not recommended as it can make migration to the new installation
 	 * methods more difficult.
 	 *
-	 * If you use this installation method, you should not import code from the `ckeditor5` or `ckeditor5-premium-features` packages.
+	 * If you use this installation method, you should not import { code } from the `ckeditor5` or `ckeditor5-premium-features` packages.
 	 *
 	 * Examples of valid and invalid import paths:
 	 *
 	 * ```js
 	 * import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic'; // ✅
 	 * import { Highlight } from '@ckeditor/ckeditor5-highlight'; // ✅
-	 * import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight.js'; // ✅ (not recommended)
+	 * import { Highlight } from '@ckeditor/ckeditor5-highlight/src/highlight.js'; // ✅ (not recommended)
 	 * import { Highlight } from 'ckeditor5'; // ❌
 	 * import { Highlight } from '@ckeditor/ckeditor5-highlight/dist/index.js'; // ❌
 	 * import '@ckeditor/ckeditor5-highlight/build/highlight'; // ❌
@@ -163,7 +161,7 @@ if ( globalThis.CKEDITOR_VERSION ) {
 	 * import { Highlight } from 'ckeditor5'; // ❌
 	 * import { Highlight } from '@ckeditor/ckeditor5-highlight/dist/index.js'; // ❌
 	 * import { Highlight } from '@ckeditor/ckeditor5-highlight'; // ❌
-	 * import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight.js'; // ❌
+	 * import { Highlight } from '@ckeditor/ckeditor5-highlight/src/highlight.js'; // ❌
 	 * ```
 	 * </details>
 	 *

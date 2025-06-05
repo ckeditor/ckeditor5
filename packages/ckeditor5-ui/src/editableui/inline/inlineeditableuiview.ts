@@ -7,7 +7,7 @@
  * @module ui/editableui/inline/inlineeditableuiview
  */
 
-import EditableUIView from '../editableuiview.js';
+import { EditableUIView } from '../editableuiview.js';
 
 import type { EditingView } from '@ckeditor/ckeditor5-engine';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
@@ -15,7 +15,7 @@ import type { Locale } from '@ckeditor/ckeditor5-utils';
 /**
  * The inline editable UI class implementing an inline {@link module:ui/editableui/editableuiview~EditableUIView}.
  */
-export default class InlineEditableUIView extends EditableUIView {
+export class InlineEditableUIView extends EditableUIView {
 	/**
 	 * The cached options object passed to the constructor.
 	 */

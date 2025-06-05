@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import AttributeCommand from '../src/attributecommand.js';
+import { AttributeCommand } from '../src/attributecommand.js';
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 

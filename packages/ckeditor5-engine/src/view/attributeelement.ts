@@ -7,12 +7,12 @@
  * @module engine/view/attributeelement
  */
 
-import Element, { type ElementAttributes } from './element.js';
+import { Element, type ElementAttributes } from './element.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type DocumentFragment from './documentfragment.js';
-import type Document from './document.js';
-import type Node from './node.js';
+import { type DocumentFragment } from './documentfragment.js';
+import { type Document } from './document.js';
+import { type Node } from './node.js';
 
 // Default attribute priority.
 const DEFAULT_PRIORITY = 10;
@@ -28,7 +28,7 @@ const DEFAULT_PRIORITY = 10;
  * To create a new attribute element instance use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement `DowncastWriter#createAttributeElement()`} method.
  */
-export default class AttributeElement extends Element {
+export class AttributeElement extends Element {
 	public static readonly DEFAULT_PRIORITY: number = DEFAULT_PRIORITY;
 
 	/**
@@ -215,6 +215,8 @@ AttributeElement.prototype.is = function( type: string, name?: string ): boolean
 		);
 	}
 };
+
+export { AttributeElement as ViewAttributeElement };
 
 /**
  * Returns block {@link module:engine/view/filler~Filler filler} offset or `null` if block filler is not needed.

@@ -7,10 +7,10 @@
  * @module widget
  */
 
-export { default as Widget } from './widget.js';
-export { default as WidgetToolbarRepository } from './widgettoolbarrepository.js';
-export { default as WidgetResize } from './widgetresize.js';
-export { default as WidgetTypeAround } from './widgettypearound/widgettypearound.js';
+export { Widget } from './widget.js';
+export { WidgetToolbarRepository } from './widgettoolbarrepository.js';
+export { WidgetResize } from './widgetresize.js';
+export { WidgetTypeAround } from './widgettypearound/widgettypearound.js';
 export {
 	WIDGET_CLASS_NAME,
 	WIDGET_SELECTED_CLASS_NAME,

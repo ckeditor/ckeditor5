@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import HighlightEditing from './../src/highlightediting.js';
-import HighlightCommand from './../src/highlightcommand.js';
+import { HighlightEditing } from './../src/highlightediting.js';
+import { HighlightCommand } from './../src/highlightcommand.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'HighlightEditing', () => {

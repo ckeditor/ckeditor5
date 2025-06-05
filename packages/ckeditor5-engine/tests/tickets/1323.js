@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import EditingController from '../../src/controller/editingcontroller.js';
+import { EditingController } from '../../src/controller/editingcontroller.js';
 
-import Model from '../../src/model/model.js';
-import ModelText from '../../src/model/text.js';
+import { Model } from '../../src/model/model.js';
+import { ModelText } from '../../src/model/text.js';
 
-import MarkerOperation from '../../src/model/operation/markeroperation.js';
+import { MarkerOperation } from '../../src/model/operation/markeroperation.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'Bug ckeditor5-engine@1323', () => {

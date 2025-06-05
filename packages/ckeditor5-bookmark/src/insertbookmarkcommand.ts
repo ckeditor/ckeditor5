@@ -31,7 +31,7 @@ import { isBookmarkIdValid } from './utils.js';
  * editor.execute( 'insertBookmark', { bookmarkId: 'foo_bar' } );
  * ```
  */
-export default class InsertBookmarkCommand extends Command {
+export class InsertBookmarkCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

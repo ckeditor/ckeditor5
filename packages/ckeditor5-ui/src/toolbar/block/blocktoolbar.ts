@@ -24,13 +24,13 @@ import {
 
 import type { DocumentSelectionChangeRangeEvent } from '@ckeditor/ckeditor5-engine';
 
-import BlockButtonView from './blockbuttonview.js';
-import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';
-import ToolbarView, { NESTED_TOOLBAR_ICONS } from '../toolbarview.js';
-import clickOutsideHandler from '../../bindings/clickoutsidehandler.js';
-import normalizeToolbarConfig from '../normalizetoolbarconfig.js';
+import { BlockButtonView } from './blockbuttonview.js';
+import { BalloonPanelView } from '../../panel/balloon/balloonpanelview.js';
+import { ToolbarView, NESTED_TOOLBAR_ICONS } from '../toolbarview.js';
+import { clickOutsideHandler } from '../../bindings/clickoutsidehandler.js';
+import { normalizeToolbarConfig } from '../normalizetoolbarconfig.js';
 
-import type ButtonView from '../../button/buttonview.js';
+import { type ButtonView } from '../../button/buttonview.js';
 import type { ButtonExecuteEvent } from '../../button/button.js';
 import type { EditorUIReadyEvent, EditorUIUpdateEvent } from '../../editorui/editorui.js';
 
@@ -83,7 +83,7 @@ const toPx = /* #__PURE__ */ toUnit( 'px' );
  * }
  * ```
  */
-export default class BlockToolbar extends Plugin {
+export class BlockToolbar extends Plugin {
 	/**
 	 * The toolbar view.
 	 */

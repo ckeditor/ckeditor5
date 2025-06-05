@@ -7,15 +7,15 @@
  * @module engine/model/operation/rootoperation
  */
 
-import Operation from './operation.js';
+import { Operation } from './operation.js';
 
-import type Document from '../document.js';
+import { type Document } from '../document.js';
 import type { Selectable } from '../selection.js';
 
 /**
  * Operation that creates (or attaches) or detaches a root element.
  */
-export default class RootOperation extends Operation {
+export class RootOperation extends Operation {
 	/**
 	 * Root name to create or detach.
 	 */

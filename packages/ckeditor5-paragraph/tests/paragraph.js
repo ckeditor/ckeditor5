@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Paragraph from '../src/paragraph.js';
-import ParagraphCommand from '../src/paragraphcommand.js';
-import InsertParagraphCommand from '../src/insertparagraphcommand.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '../src/paragraph.js';
+import { ParagraphCommand } from '../src/paragraphcommand.js';
+import { InsertParagraphCommand } from '../src/insertparagraphcommand.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import {
 	getData as getModelData,
 	setData as setModelData,
@@ -14,8 +14,8 @@ import {
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
-import ModelText from '@ckeditor/ckeditor5-engine/src/model/text.js';
+import { ModelDocumentFragment } from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
+import { ModelText } from '@ckeditor/ckeditor5-engine/src/model/text.js';
 
 describe( 'Paragraph feature', () => {
 	let model, editor, doc, root;

@@ -16,12 +16,12 @@ import {
 	type RootElement
 } from 'ckeditor5/src/engine.js';
 
-import HtmlPageDataProcessor from './htmlpagedataprocessor.js';
+import { HtmlPageDataProcessor } from './htmlpagedataprocessor.js';
 
 /**
  * The full page editing feature. It preserves the whole HTML page in the editor data.
  */
-export default class FullPage extends Plugin {
+export class FullPage extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

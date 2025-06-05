@@ -18,7 +18,7 @@ import {
 	type UpcastConversionData
 } from 'ckeditor5/src/engine.js';
 
-import TableEditing from '../tableediting.js';
+import { TableEditing } from '../tableediting.js';
 import {
 	downcastAttributeToStyle,
 	downcastTableAttribute,
@@ -26,13 +26,13 @@ import {
 	upcastBorderStyles,
 	upcastStyleToAttribute
 } from '../converters/tableproperties.js';
-import TableBackgroundColorCommand from './commands/tablebackgroundcolorcommand.js';
-import TableBorderColorCommand from './commands/tablebordercolorcommand.js';
-import TableBorderStyleCommand from './commands/tableborderstylecommand.js';
-import TableBorderWidthCommand from './commands/tableborderwidthcommand.js';
-import TableWidthCommand from './commands/tablewidthcommand.js';
-import TableHeightCommand from './commands/tableheightcommand.js';
-import TableAlignmentCommand from './commands/tablealignmentcommand.js';
+import { TableBackgroundColorCommand } from './commands/tablebackgroundcolorcommand.js';
+import { TableBorderColorCommand } from './commands/tablebordercolorcommand.js';
+import { TableBorderStyleCommand } from './commands/tableborderstylecommand.js';
+import { TableBorderWidthCommand } from './commands/tableborderwidthcommand.js';
+import { TableWidthCommand } from './commands/tablewidthcommand.js';
+import { TableHeightCommand } from './commands/tableheightcommand.js';
+import { TableAlignmentCommand } from './commands/tablealignmentcommand.js';
 import { getNormalizedDefaultTableProperties } from '../utils/table-properties.js';
 
 const ALIGN_VALUES_REG_EXP = /^(left|center|right)$/;
@@ -55,7 +55,7 @@ const FLOAT_VALUES_REG_EXP = /^(left|none|right)$/;
  * - horizontal alignment: `'tableAlignment'`
  * - width & height: `'tableWidth'` & `'tableHeight'`
  */
-export default class TablePropertiesEditing extends Plugin {
+export class TablePropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

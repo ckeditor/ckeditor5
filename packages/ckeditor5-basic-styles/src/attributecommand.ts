@@ -19,7 +19,7 @@ import { Command, type Editor } from 'ckeditor5/src/core.js';
  * The command checks the {@link module:engine/model/model~Model#schema} to decide if it can be enabled
  * for the current selection and to which nodes the attribute can be applied.
  */
-export default class AttributeCommand extends Command {
+export class AttributeCommand extends Command {
 	/**
 	 * Flag indicating whether the command is active. The command is active when the
 	 * {@link module:engine/model/selection~Selection#hasAttribute selection has the attribute} which means that:

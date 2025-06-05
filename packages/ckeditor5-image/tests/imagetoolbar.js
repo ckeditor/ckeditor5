@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage.js';
-import ImageToolbar from '../src/imagetoolbar.js';
-import ImageCaption from '../src/imagecaption.js';
-import Image from '../src/image.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import View from '@ckeditor/ckeditor5-ui/src/view.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { LinkImage } from '@ckeditor/ckeditor5-link/src/linkimage.js';
+import { ImageToolbar } from '../src/imagetoolbar.js';
+import { ImageCaption } from '../src/imagecaption.js';
+import { Image } from '../src/image.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ImageStyle from '../src/imagestyle.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ImageStyle } from '../src/imagestyle.js';
 
 describe( 'ImageToolbar', () => {
 	let editor, model, doc, toolbar, balloon, widgetToolbarRepository, editorElement;

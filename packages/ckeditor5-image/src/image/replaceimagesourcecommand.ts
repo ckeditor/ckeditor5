@@ -4,7 +4,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type ImageUtils from '../imageutils.js';
+import { type ImageUtils } from '../imageutils.js';
 import type { Writer, Element } from 'ckeditor5/src/engine.js';
 
 /**
@@ -20,7 +20,7 @@ import type { Writer, Element } from 'ckeditor5/src/engine.js';
  * editor.execute( 'replaceImageSource', { source: 'http://url.to.the/image' } );
  * ```
  */
-export default class ReplaceImageSourceCommand extends Command {
+export class ReplaceImageSourceCommand extends Command {
 	declare public value: string | null;
 
 	constructor( editor: Editor ) {

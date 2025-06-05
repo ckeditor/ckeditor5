@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type Node from '../node.js';
-import type Position from '../position.js';
-import type Schema from '../schema.js';
-import type Writer from '../writer.js';
+import { type Node } from '../node.js';
+import { type Position } from '../position.js';
+import { type Schema } from '../schema.js';
+import { type Writer } from '../writer.js';
 
 /**
  * @module engine/model/utils/autoparagraphing

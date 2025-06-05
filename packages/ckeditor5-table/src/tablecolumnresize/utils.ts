@@ -10,7 +10,7 @@
 import type { Editor } from 'ckeditor5/src/core.js';
 import type { Element, Model, ViewElement, ViewNode, Writer } from 'ckeditor5/src/engine.js';
 import { global } from 'ckeditor5/src/utils.js';
-import type TableUtils from '../tableutils.js';
+import { type TableUtils } from '../tableutils.js';
 import {
 	COLUMN_WIDTH_PRECISION,
 	COLUMN_MIN_WIDTH_AS_PERCENTAGE,

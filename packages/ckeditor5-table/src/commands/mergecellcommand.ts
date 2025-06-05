@@ -14,12 +14,12 @@ import type {
 } from 'ckeditor5/src/engine.js';
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import TableWalker from '../tablewalker.js';
+import { TableWalker } from '../tablewalker.js';
 import { isHeadingColumnCell } from '../utils/common.js';
 import { removeEmptyRowsColumns } from '../utils/structure.js';
 import type { ArrowKeyCodeDirection } from 'ckeditor5/src/utils.js';
 
-import type TableUtils from '../tableutils.js';
+import { type TableUtils } from '../tableutils.js';
 
 /**
  * The merge cell command.
@@ -39,7 +39,7 @@ import type TableUtils from '../tableutils.js';
  * (for `'mergeTableCellRight'` and `'mergeTableCellLeft'`) or [`colspan`](https://www.w3.org/TR/html50/tabular-data.html#attr-tdth-colspan)
  * (for `'mergeTableCellUp'` and `'mergeTableCellDown'`), the command will be disabled.
  */
-export default class MergeCellCommand extends Command {
+export class MergeCellCommand extends Command {
 	/**
 	 * The direction that indicates which cell will be merged with the currently selected one.
 	 */

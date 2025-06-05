@@ -92,6 +92,6 @@ export interface ElementObjectDefinition {
  * };
  * ```
  */
-type ElementDefinition = string | ElementObjectDefinition;
+export type ElementDefinition = string | ElementObjectDefinition;
 
-export default ElementDefinition;
+export { ElementDefinition as ViewElementDefinition };

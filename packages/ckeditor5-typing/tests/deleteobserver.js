@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import DeleteObserver from '../src/deleteobserver.js';
+import { DeleteObserver } from '../src/deleteobserver.js';
 
-import View from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { View } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { fireBeforeInputDomEvent } from './_utils/utils.js';
 import { setData as viewSetData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';

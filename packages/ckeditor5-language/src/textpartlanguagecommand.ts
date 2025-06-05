@@ -14,7 +14,7 @@ import { stringifyLanguageAttribute } from './utils.js';
 /**
  * The text part language command plugin.
  */
-export default class TextPartLanguageCommand extends Command {
+export class TextPartLanguageCommand extends Command {
 	/**
 	 * If the selection starts in a language attribute, the value is set to
 	 * the value of that language in the following format:

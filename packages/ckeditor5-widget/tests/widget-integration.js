@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
-import Image from '@ckeditor/ckeditor5-image/src/image.js';
-import Widget from '../src/widget.js';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
+import { Widget } from '../src/widget.js';
+import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 
 import { toWidget } from '../src/utils.js';
 import {
@@ -18,8 +18,8 @@ import {
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Widget - integration', () => {
 	let editor, model, view, viewDocument, editorElement;

@@ -13,14 +13,15 @@ import type { TableUtils } from '@ckeditor/ckeditor5-table';
 
 import type { DataFilter } from '@ckeditor/ckeditor5-html-support';
 
-import StyleUtils, {
+import {
+	StyleUtils,
 	type BlockStyleDefinition,
 	type StyleUtilsGetAffectedBlocksEvent,
 	type StyleUtilsIsEnabledForBlockEvent,
 	type StyleUtilsConfigureGHSDataFilterEvent
 } from '../styleutils.js';
 
-export default class TableStyleSupport extends Plugin {
+export class TableStyleSupport extends Plugin {
 	private _tableUtils!: TableUtils;
 	private _styleUtils!: StyleUtils;
 

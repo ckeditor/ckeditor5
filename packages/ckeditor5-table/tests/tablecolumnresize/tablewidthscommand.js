@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 
-import TableColumnResize from '../../src/tablecolumnresize.js';
-import Table from '../../src/table.js';
+import { TableColumnResize } from '../../src/tablecolumnresize.js';
+import { Table } from '../../src/table.js';
 import { modelTable } from '../_utils/utils.js';
 
 describe( 'TableWidthsCommand', () => {

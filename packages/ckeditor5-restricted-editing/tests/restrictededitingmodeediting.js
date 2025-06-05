@@ -3,31 +3,31 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import StrikethroughEditing from '@ckeditor/ckeditor5-basic-styles/src/strikethrough/strikethroughediting.js';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
-import InsertImageCommand from '@ckeditor/ckeditor5-image/src/image/insertimagecommand.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { StrikethroughEditing } from '@ckeditor/ckeditor5-basic-styles/src/strikethrough/strikethroughediting.js';
+import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { ImageInlineEditing } from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
+import { InsertImageCommand } from '@ckeditor/ckeditor5-image/src/image/insertimagecommand.js';
 
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import Table from '@ckeditor/ckeditor5-table/src/table.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import RestrictedEditingModeEditing from './../src/restrictededitingmodeediting.js';
-import RestrictedEditingModeNavigationCommand from '../src/restrictededitingmodenavigationcommand.js';
-import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting.js';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import Command from '@ckeditor/ckeditor5-core/src/command.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { RestrictedEditingModeEditing } from './../src/restrictededitingmodeediting.js';
+import { RestrictedEditingModeNavigationCommand } from '../src/restrictededitingmodenavigationcommand.js';
+import { ItalicEditing } from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting.js';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import { Command } from '@ckeditor/ckeditor5-core/src/command.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 
 describe( 'RestrictedEditingModeEditing', () => {
 	let editor, model;

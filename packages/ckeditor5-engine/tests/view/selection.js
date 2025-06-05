@@ -3,18 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Selection from '../../src/view/selection.js';
-import DocumentSelection from '../../src/view/documentselection.js';
-import Range from '../../src/view/range.js';
-import Document from '../../src/view/document.js';
-import Element from '../../src/view/element.js';
-import Text from '../../src/view/text.js';
-import Position from '../../src/view/position.js';
+import { Selection } from '../../src/view/selection.js';
+import { DocumentSelection } from '../../src/view/documentselection.js';
+import { Range } from '../../src/view/range.js';
+import { Document } from '../../src/view/document.js';
+import { Element } from '../../src/view/element.js';
+import { Text } from '../../src/view/text.js';
+import { Position } from '../../src/view/position.js';
 
-import count from '@ckeditor/ckeditor5-utils/src/count.js';
-import createViewRoot from './_utils/createroot.js';
+import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
+import { createViewRoot } from './_utils/createroot.js';
 import { parse } from '../../src/dev-utils/view.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 

@@ -3,23 +3,24 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import EditingController from '../../src/controller/editingcontroller.js';
-import DataController from '../../src/controller/datacontroller.js';
+import { EditingController } from '../../src/controller/editingcontroller.js';
+import { DataController } from '../../src/controller/datacontroller.js';
 
-import Model from '../../src/model/model.js';
-import ModelElement from '../../src/model/element.js';
-import ModelText from '../../src/model/text.js';
+import { Model } from '../../src/model/model.js';
+import { ModelElement } from '../../src/model/element.js';
+import { ModelText } from '../../src/model/text.js';
 
-import ViewElement from '../../src/view/element.js';
-import ViewAttributeElement from '../../src/view/attributeelement.js';
-import ViewContainerElement from '../../src/view/containerelement.js';
-import ViewUIElement from '../../src/view/uielement.js';
-import ViewText from '../../src/view/text.js';
-import ViewDocument from '../../src/view/document.js';
+import { ViewElement } from '../../src/view/element.js';
+import { ViewAttributeElement } from '../../src/view/attributeelement.js';
+import { ViewContainerElement } from '../../src/view/containerelement.js';
+import { ViewUIElement } from '../../src/view/uielement.js';
+import { ViewText } from '../../src/view/text.js';
+import { ViewDocument } from '../../src/view/document.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import DowncastHelpers, {
+import {
+	DowncastHelpers,
 	cleanSelection,
 	convertCollapsedSelection,
 	convertRangeSelection,
@@ -28,15 +29,15 @@ import DowncastHelpers, {
 	insertText
 } from '../../src/conversion/downcasthelpers.js';
 
-import Mapper from '../../src/conversion/mapper.js';
-import DowncastDispatcher from '../../src/conversion/downcastdispatcher.js';
+import { Mapper } from '../../src/conversion/mapper.js';
+import { DowncastDispatcher } from '../../src/conversion/downcastdispatcher.js';
 import { stringify as stringifyView } from '../../src/dev-utils/view.js';
-import View from '../../src/view/view.js';
-import createViewRoot from '../view/_utils/createroot.js';
+import { View } from '../../src/view/view.js';
+import { createViewRoot } from '../view/_utils/createroot.js';
 import { setData as setModelData } from '../../src/dev-utils/model.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
-import DowncastWriter from '../../src/view/downcastwriter.js';
+import { DowncastWriter } from '../../src/view/downcastwriter.js';
 
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils.js';
 

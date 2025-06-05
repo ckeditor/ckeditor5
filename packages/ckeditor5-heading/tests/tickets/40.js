@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import HeadingEditing from '../../src/headingediting.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { HeadingEditing } from '../../src/headingediting.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'Bug ckeditor5-heading#40', () => {

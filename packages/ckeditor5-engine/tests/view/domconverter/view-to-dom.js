@@ -3,27 +3,27 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ViewText from '../../../src/view/text.js';
-import ViewElement from '../../../src/view/element.js';
-import ViewUIElement from '../../../src/view/uielement.js';
-import ViewPosition from '../../../src/view/position.js';
-import ViewContainerElement from '../../../src/view/containerelement.js';
-import ViewAttributeElement from '../../../src/view/attributeelement.js';
-import ViewEmptyElement from '../../../src/view/emptyelement.js';
-import DomConverter from '../../../src/view/domconverter.js';
-import ViewDocumentFragment from '../../../src/view/documentfragment.js';
-import ViewDocument from '../../../src/view/document.js';
-import DowncastWriter from '../../../src/view/downcastwriter.js';
+import { ViewText } from '../../../src/view/text.js';
+import { ViewElement } from '../../../src/view/element.js';
+import { ViewUIElement } from '../../../src/view/uielement.js';
+import { ViewPosition } from '../../../src/view/position.js';
+import { ViewContainerElement } from '../../../src/view/containerelement.js';
+import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
+import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
+import { DomConverter } from '../../../src/view/domconverter.js';
+import { ViewDocumentFragment } from '../../../src/view/documentfragment.js';
+import { ViewDocument } from '../../../src/view/document.js';
+import { DowncastWriter } from '../../../src/view/downcastwriter.js';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, BR_FILLER, NBSP_FILLER, MARKED_NBSP_FILLER } from '../../../src/view/filler.js';
 
 import { parse, getData as getViewData } from '../../../src/dev-utils/view.js';
 import { setData as setModelData } from '../../../src/dev-utils/model.js';
 
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 

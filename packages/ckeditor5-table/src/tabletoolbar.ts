@@ -20,7 +20,7 @@ import { getSelectedTableWidget, getTableWidgetAncestor } from './utils/ui/widge
  * Table content toolbar shows up when the selection is inside the content of a table. It creates its component based on the
  * {@link module:table/tableconfig~TableConfig#contentToolbar `table.contentToolbar` configuration option}.
  */
-export default class TableToolbar extends Plugin {
+export class TableToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import ImageBlock from './imageblock.js';
-import ImageInline from './imageinline.js';
+import { ImageBlock } from './imageblock.js';
+import { ImageInline } from './imageinline.js';
 
 import '../theme/image.css';
 
@@ -26,7 +26,7 @@ import '../theme/image.css';
  * Usually, it is used in conjunction with other plugins from this package. See the {@glink api/image package page}
  * for more information.
  */
-export default class Image extends Plugin {
+export class Image extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

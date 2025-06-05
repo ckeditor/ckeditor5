@@ -14,7 +14,7 @@ import { ReplaceCommandBase } from './replacecommandbase.js';
 /**
  * The replace command. It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.
  */
-export default class ReplaceCommand extends ReplaceCommandBase {
+export class ReplaceCommand extends ReplaceCommandBase {
 	/**
 	 * Replace a given find result by a string or a callback.
 	 *

@@ -9,9 +9,9 @@
 
 import { View, FocusCycler, type ViewCollection, type FocusableView } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
-import type CharacterGridView from './charactergridview.js';
-import type CharacterInfoView from './characterinfoview.js';
-import type SpecialCharactersCategoriesView from './specialcharacterscategoriesview.js';
+import { type CharacterGridView } from './charactergridview.js';
+import { type CharacterInfoView } from './characterinfoview.js';
+import { type SpecialCharactersCategoriesView } from './specialcharacterscategoriesview.js';
 
 /**
  * A view that glues pieces of the special characters dropdown panel together:
@@ -20,7 +20,7 @@ import type SpecialCharactersCategoriesView from './specialcharacterscategoriesv
  * * the grid view (displays characters as a grid),
  * * and the info view (displays detailed info about a specific character).
  */
-export default class SpecialCharactersView extends View<HTMLDivElement> {
+export class SpecialCharactersView extends View<HTMLDivElement> {
 	/**
 	 * A collection of the focusable children of the view.
 	 */

@@ -9,13 +9,13 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import type { DowncastDispatcher, DowncastAttributeEvent, ViewElement, Element } from 'ckeditor5/src/engine.js';
-import ImageUtils from './imageutils.js';
+import { ImageUtils } from './imageutils.js';
 import { widthAndHeightStylesAreBothSet, getSizeValueIfInPx } from './image/utils.js';
 
 /**
  * This plugin enables `width` and `height` attributes in inline and block image elements.
  */
-export default class ImageSizeAttributes extends Plugin {
+export class ImageSizeAttributes extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

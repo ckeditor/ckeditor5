@@ -22,7 +22,7 @@ import { DomEventObserver, type DomEventData } from 'ckeditor5/src/engine.js';
  *
  * The observer is registered by the {@link module:table/tableselection~TableSelection} plugin.
  */
-export default class MouseEventsObserver extends DomEventObserver<'mousemove' | 'mouseleave'> {
+export class MouseEventsObserver extends DomEventObserver<'mousemove' | 'mouseleave'> {
 	public readonly domEventType = [
 		'mousemove', 'mouseleave'
 	] as const;

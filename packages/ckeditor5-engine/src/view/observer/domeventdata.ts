@@ -9,9 +9,9 @@
 
 import { extend } from 'es-toolkit/compat';
 
-import type Document from '../document.js';
-import type Element from '../element.js';
-import type View from '../view.js';
+import { type Document } from '../document.js';
+import { type Element } from '../element.js';
+import { type View } from '../view.js';
 
 /**
  * Information about a DOM event in context of the {@link module:engine/view/document~Document}.
@@ -20,7 +20,7 @@ import type View from '../view.js';
  *
  * @typeParam TEvent The type of DOM Event that this class represents.
  */
-export default class DomEventData<TEvent extends Event = Event> {
+export class DomEventData<TEvent extends Event = Event> {
 	/**
 	 * Instance of the view controller.
 	 */

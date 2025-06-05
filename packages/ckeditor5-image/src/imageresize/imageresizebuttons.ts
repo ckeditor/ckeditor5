@@ -25,9 +25,9 @@ import {
 	IconObjectSizeSmall
 } from 'ckeditor5/src/icons.js';
 
-import ImageResizeEditing from './imageresizeediting.js';
+import { ImageResizeEditing } from './imageresizeediting.js';
 
-import type ResizeImageCommand from './resizeimagecommand.js';
+import { type ResizeImageCommand } from './resizeimagecommand.js';
 import type { ImageResizeOption } from '../imageconfig.js';
 
 const RESIZE_ICONS = /* #__PURE__ */ ( () => ( {
@@ -43,7 +43,7 @@ const RESIZE_ICONS = /* #__PURE__ */ ( () => ( {
  *
  * It adds a possibility to resize images using the toolbar dropdown or individual buttons, depending on the plugin configuration.
  */
-export default class ImageResizeButtons extends Plugin {
+export class ImageResizeButtons extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

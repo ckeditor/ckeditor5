@@ -15,8 +15,8 @@ import {
 	type PositionOptions
 } from '@ckeditor/ckeditor5-utils';
 
-import type View from '../view.js';
-import BalloonPanelView from '../panel/balloon/balloonpanelview.js';
+import { type View } from '../view.js';
+import { BalloonPanelView } from '../panel/balloon/balloonpanelview.js';
 
 import { throttle } from 'es-toolkit/compat';
 
@@ -31,7 +31,7 @@ const NARROW_ROOT_WIDTH_THRESHOLD = 350;
  *
  * @private
  */
-export default abstract class Badge extends /* #__PURE__ */ DomEmitterMixin() {
+export abstract class Badge extends /* #__PURE__ */ DomEmitterMixin() {
 	/**
 	 * Editor instance the helper was created for.
 	 */

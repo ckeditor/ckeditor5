@@ -5,29 +5,29 @@
 
 import { global } from '@ckeditor/ckeditor5-utils';
 import { Command } from 'ckeditor5/src/core.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Heading } from '@ckeditor/ckeditor5-heading';
 import { Essentials } from '@ckeditor/ckeditor5-essentials';
 import { Image } from '@ckeditor/ckeditor5-image';
-import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions.js';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting.js';
-import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting.js';
-import ImageUploadEditing from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting.js';
-import ImageUploadProgress from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress.js';
+import { PendingActions } from '@ckeditor/ckeditor5-core/src/pendingactions.js';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { LinkEditing } from '@ckeditor/ckeditor5-link/src/linkediting.js';
+import { PictureEditing } from '@ckeditor/ckeditor5-image/src/pictureediting.js';
+import { ImageUploadEditing } from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadediting.js';
+import { ImageUploadProgress } from '@ckeditor/ckeditor5-image/src/imageupload/imageuploadprogress.js';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { Notification } from 'ckeditor5/src/ui.js';
-import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
+import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
 import * as _ from 'es-toolkit/compat';
-import CloudServicesCoreMock from '../_utils/cloudservicescoremock.js';
-import CKBoxEditing from '../../src/ckboxediting.js';
-import CKBoxImageEditEditing from '../../src/ckboximageedit/ckboximageeditediting.js';
+import { CloudServicesCoreMock } from '../_utils/cloudservicescoremock.js';
+import { CKBoxEditing } from '../../src/ckboxediting.js';
+import { CKBoxImageEditEditing } from '../../src/ckboximageedit/ckboximageeditediting.js';
 
 import { blurHashToDataUrl } from '../../src/utils.js';
-import CKBoxUtils from '../../src/ckboxutils.js';
+import { CKBoxUtils } from '../../src/ckboxutils.js';
 
 const CKBOX_API_URL = 'https://upload.example.com';
 

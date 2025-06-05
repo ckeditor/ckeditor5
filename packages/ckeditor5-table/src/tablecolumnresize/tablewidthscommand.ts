@@ -15,7 +15,7 @@ import { normalizeColumnWidths } from './utils.js';
  * Command used by the {@link module:table/tablecolumnresize~TableColumnResize Table column resize feature} that
  * updates the width of the whole table as well as its individual columns.
  */
-export default class TableWidthsCommand extends Command {
+export class TableWidthsCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

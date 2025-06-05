@@ -24,7 +24,7 @@ export interface TablePropertyCommandExecuteOptions {
  *
  * This command is a base command for other table property commands.
  */
-export default class TablePropertyCommand extends Command {
+export class TablePropertyCommand extends Command {
 	/**
 	 * The attribute that will be set by the command.
 	 */

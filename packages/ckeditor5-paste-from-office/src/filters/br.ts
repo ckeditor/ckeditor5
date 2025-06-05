@@ -21,7 +21,7 @@ import {
  *
  * @param documentFragment The view structure to be transformed.
  */
-export default function transformBlockBrsToParagraphs(
+export function transformBlockBrsToParagraphs(
 	documentFragment: ViewDocumentFragment,
 	writer: UpcastWriter
 ): void {

@@ -21,14 +21,14 @@ import {
 } from 'ckeditor5/src/ui.js';
 import { Collection, type LanguageDirection } from 'ckeditor5/src/utils.js';
 import { stringifyLanguageAttribute } from './utils.js';
-import type TextPartLanguageCommand from './textpartlanguagecommand.js';
+import { type TextPartLanguageCommand } from './textpartlanguagecommand.js';
 
 /**
  * The text part language UI plugin.
  *
  * It introduces the `'language'` dropdown.
  */
-export default class TextPartLanguageUI extends Plugin {
+export class TextPartLanguageUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

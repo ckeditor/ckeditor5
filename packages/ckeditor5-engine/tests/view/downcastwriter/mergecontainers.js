@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import DowncastWriter from '../../../src/view/downcastwriter.js';
+import { DowncastWriter } from '../../../src/view/downcastwriter.js';
 import { stringify, parse } from '../../../src/dev-utils/view.js';
 
-import Document from '../../../src/view/document.js';
+import { Document } from '../../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 

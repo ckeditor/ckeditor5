@@ -13,7 +13,7 @@ import { HtmlDataProcessor, UpcastWriter, type ViewDocumentFragment } from 'cked
  * The full page HTML data processor class.
  * This data processor implementation uses HTML as input and output data.
  */
-export default class HtmlPageDataProcessor extends HtmlDataProcessor {
+export class HtmlPageDataProcessor extends HtmlDataProcessor {
 	/**
 	 * @inheritDoc
 	 */

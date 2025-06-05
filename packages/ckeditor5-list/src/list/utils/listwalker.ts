@@ -15,7 +15,7 @@ import type { Element, Node } from 'ckeditor5/src/engine.js';
 /**
  * Document list blocks iterator.
  */
-export default class ListWalker {
+export class ListWalker {
 	/**
 	 * The start list item block element.
 	 */

@@ -7,10 +7,10 @@
  * @module remove-format
  */
 
-export { default as RemoveFormat } from './removeformat.js';
-export { default as RemoveFormatEditing } from './removeformatediting.js';
-export { default as RemoveFormatUI } from './removeformatui.js';
+export { RemoveFormat } from './removeformat.js';
+export { RemoveFormatEditing } from './removeformatediting.js';
+export { RemoveFormatUI } from './removeformatui.js';
 
-export type { default as RemoveFormatCommand } from './removeformatcommand.js';
+export type { RemoveFormatCommand } from './removeformatcommand.js';
 
 import './augmentation.js';

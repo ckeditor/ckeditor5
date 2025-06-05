@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../../src/model/model.js';
-import DocumentFragment from '../../../src/model/documentfragment.js';
-import getSelectedContent from '../../../src/model/utils/getselectedcontent.js';
+import { Model } from '../../../src/model/model.js';
+import { DocumentFragment } from '../../../src/model/documentfragment.js';
+import { getSelectedContent } from '../../../src/model/utils/getselectedcontent.js';
 import { setData, stringify } from '../../../src/dev-utils/model.js';
 
 describe( 'DataController utils', () => {

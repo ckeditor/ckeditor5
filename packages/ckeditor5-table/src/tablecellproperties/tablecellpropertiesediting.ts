@@ -20,16 +20,16 @@ import {
 } from 'ckeditor5/src/engine.js';
 
 import { downcastAttributeToStyle, getDefaultValueAdjusted, upcastBorderStyles } from '../converters/tableproperties.js';
-import TableEditing from './../tableediting.js';
-import TableCellWidthEditing from '../tablecellwidth/tablecellwidthediting.js';
-import TableCellPaddingCommand from './commands/tablecellpaddingcommand.js';
-import TableCellHeightCommand from './commands/tablecellheightcommand.js';
-import TableCellBackgroundColorCommand from './commands/tablecellbackgroundcolorcommand.js';
-import TableCellVerticalAlignmentCommand from './commands/tablecellverticalalignmentcommand.js';
-import TableCellHorizontalAlignmentCommand from './commands/tablecellhorizontalalignmentcommand.js';
-import TableCellBorderStyleCommand from './commands/tablecellborderstylecommand.js';
-import TableCellBorderColorCommand from './commands/tablecellbordercolorcommand.js';
-import TableCellBorderWidthCommand from './commands/tablecellborderwidthcommand.js';
+import { TableEditing } from './../tableediting.js';
+import { TableCellWidthEditing } from '../tablecellwidth/tablecellwidthediting.js';
+import { TableCellPaddingCommand } from './commands/tablecellpaddingcommand.js';
+import { TableCellHeightCommand } from './commands/tablecellheightcommand.js';
+import { TableCellBackgroundColorCommand } from './commands/tablecellbackgroundcolorcommand.js';
+import { TableCellVerticalAlignmentCommand } from './commands/tablecellverticalalignmentcommand.js';
+import { TableCellHorizontalAlignmentCommand } from './commands/tablecellhorizontalalignmentcommand.js';
+import { TableCellBorderStyleCommand } from './commands/tablecellborderstylecommand.js';
+import { TableCellBorderColorCommand } from './commands/tablecellbordercolorcommand.js';
+import { TableCellBorderWidthCommand } from './commands/tablecellborderwidthcommand.js';
 import { getNormalizedDefaultCellProperties } from '../utils/table-properties.js';
 import { enableProperty } from '../utils/common.js';
 
@@ -55,7 +55,7 @@ const ALIGN_VALUES_REG_EXP = /^(left|center|right|justify)$/;
  * - horizontal and vertical alignment: the `'tableCellHorizontalAlignment'` and `'tableCellVerticalAlignment'` commands
  * - width and height: the `'tableCellWidth'` and `'tableCellHeight'` commands
  */
-export default class TableCellPropertiesEditing extends Plugin {
+export class TableCellPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

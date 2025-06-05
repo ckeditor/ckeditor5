@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { ImageUpload } from '@ckeditor/ckeditor5-image/src/imageupload.js';
+import { EasyImage } from '@ckeditor/ckeditor5-easy-image/src/easyimage.js';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
-import SpecialCharacters from '../../src/specialcharacters.js';
-import SpecialCharactersEssentials from '../../src/specialcharactersessentials.js';
+import { SpecialCharacters } from '../../src/specialcharacters.js';
+import { SpecialCharactersEssentials } from '../../src/specialcharactersessentials.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

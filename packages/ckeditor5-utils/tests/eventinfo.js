@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import EventInfo from '../src/eventinfo.js';
+import { EventInfo } from '../src/eventinfo.js';
 
 describe( 'EventInfo', () => {
 	it( 'should be created properly', () => {
