@@ -19,6 +19,8 @@ const googleSheetsMatch = /<google-sheets-html-origin/i;
 
 /**
  * Normalizer for the content pasted from Google Sheets.
+ *
+ * @internal
  */
 export class GoogleSheetsNormalizer implements Normalizer {
 	public readonly document: ViewDocument;
