@@ -14,8 +14,8 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
 // In order to mock the `Token` class, we create a new class that extend the `CloudServicesCore` plugin
 // and override the `#createToken()` method which creates an instance of the `Token` class.
 class CloudServicesCoreMock extends CloudServicesCore {
-	createToken( tokenUrlOrRefreshToken ) {
-		return new TokenMock( tokenUrlOrRefreshToken );
+	createToken( tokenUrlOrRefreshToken, options ) {
+		return new TokenMock( tokenUrlOrRefreshToken, options );
 	}
 }
 
@@ -310,6 +310,71 @@ describe( 'CloudServices', () => {
 			} catch {
 				expect.fail( 'Error should not be thrown.' );
 			}
+		} );
+	} );
+
+	describe( 'autoRefresh', () => {
+		let context;
+
+		afterEach( async () => {
+			await context.destroy();
+			context = null;
+		} );
+
+		it( 'should use default value (`true`) when not provided', async () => {
+			context = await Context.create( {
+				plugins: [ CloudServices ],
+				substitutePlugins: [ CloudServicesCoreMock ],
+				cloudServices: {
+					tokenUrl: 'http://example.com'
+				}
+			} );
+
+			expect( context.plugins.get( 'CloudServices' ).autoRefresh ).to.be.true;
+		} );
+
+		it( 'should use provided value from config', async () => {
+			context = await Context.create( {
+				plugins: [ CloudServices ],
+				substitutePlugins: [ CloudServicesCoreMock ],
+				cloudServices: {
+					tokenUrl: 'http://example.com',
+					autoRefresh: false
+				}
+			} );
+
+			expect( context.plugins.get( 'CloudServices' ).autoRefresh ).to.be.false;
+		} );
+
+		it( 'should pass autoRefresh to token when registering new token URL', async () => {
+			context = await Context.create( {
+				plugins: [ CloudServices ],
+				substitutePlugins: [ CloudServicesCoreMock ],
+				cloudServices: {
+					tokenUrl: 'http://example.com',
+					autoRefresh: false
+				}
+			} );
+
+			const cloudServices = context.plugins.get( 'CloudServices' );
+			const token = await cloudServices.registerTokenUrl( 'http://example.com/new' );
+
+			expect( token._options.autoRefresh ).to.be.false;
+		} );
+
+		it( 'should pass autoRefresh to token during initialization', async () => {
+			context = await Context.create( {
+				plugins: [ CloudServices ],
+				substitutePlugins: [ CloudServicesCoreMock ],
+				cloudServices: {
+					tokenUrl: 'http://example.com',
+					autoRefresh: false
+				}
+			} );
+
+			const cloudServices = context.plugins.get( 'CloudServices' );
+
+			expect( cloudServices.token._options.autoRefresh ).to.be.false;
 		} );
 	} );
 } );
