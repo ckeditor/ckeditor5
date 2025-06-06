@@ -27,4 +27,28 @@ export type { StyleElementSupport } from './integrations/style.js';
 export type { TableElementSupport } from './integrations/table.js';
 export type { HorizontalLineElementSupport } from './integrations/horizontalline.js';
 
+export {
+	viewToModelObjectConverter as _viewToModelObjectHtmlSupportContentConverter,
+	toObjectWidgetConverter as _toHtmlSupportObjectWidgetConverter,
+	createObjectView as _createHtmlSupportObjectView,
+	viewToAttributeInlineConverter as _viewToHtmlSupportAttributeInlineConverter,
+	emptyInlineModelElementToViewConverter as _emptyHtmlSupportInlineModelElementToViewConverter,
+	attributeToViewInlineConverter as _attributeToHtmlSupportInlineConverter,
+	viewToModelBlockAttributeConverter as _viewToModelBlockAttributeHtmlSupportConverter,
+	modelToViewBlockAttributeConverter as _modelToViewBlockAttributeHtmlSupportConverter
+} from './converters.js';
+
+export { getDescendantElement as _getHtmlSupportDescendantElement } from './integrations/integrationutils.js';
+export { defaultConfig as _HTML_SUPPORT_SCHEMA_DEFINITIONS } from './schemadefinitions.js';
+
+export {
+	updateViewAttributes as _updateHtmlSupportViewAttributes,
+	setViewAttributes as _setHtmlSupportViewAttributes,
+	removeViewAttributes as _removeHtmlSupportViewAttributes,
+	mergeViewElementAttributes as _mergeHtmlSupportViewElementAttributes,
+	modifyGhsAttribute as _modifyHtmlSupportGhsAttribute,
+	toPascalCase as _toHtmlSupportPascalCase,
+	getHtmlAttributeName as _getHtmlSupportAttributeName
+} from './utils.js';
+
 import './augmentation.js';
