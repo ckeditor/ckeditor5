@@ -20,7 +20,7 @@ describe( 'GFMDataProcessor', () => {
 				'</ul>',
 
 				// After converting back list will be normalized to *.
-				'*   this is a list item indented with tabs'
+				'* this is a list item indented with tabs'
 			);
 		} );
 
@@ -37,7 +37,7 @@ describe( 'GFMDataProcessor', () => {
 				'</ul>',
 
 				// After converting back list will be normalized to *.
-				'*   this is a list item indented with spaces'
+				'* this is a list item indented with spaces'
 			);
 		} );
 
@@ -58,11 +58,11 @@ describe( 'GFMDataProcessor', () => {
 			testDataProcessor(
 				'		this code block is indented by two tabs',
 
-				'<pre><code>    this code block is indented by two tabs</code></pre>',
+				'<pre><code>	this code block is indented by two tabs</code></pre>',
 
 				// After converting back code block will be normalized to ``` representation.
 				'```\n' +
-				'    this code block is indented by two tabs\n' +
+				'	this code block is indented by two tabs\n' +
 				'```'
 			);
 		} );
@@ -72,12 +72,12 @@ describe( 'GFMDataProcessor', () => {
 				'	+	list item\n' +
 				'	next line',
 
-				'<pre><code>+    list item\n' +
+				'<pre><code>+	list item\n' +
 				'next line</code></pre>',
 
 				// After converting back code block will be normalized to ``` representation.
 				'```\n' +
-				'+    list item\n' +
+				'+	list item\n' +
 				'next line\n' +
 				'```'
 			);

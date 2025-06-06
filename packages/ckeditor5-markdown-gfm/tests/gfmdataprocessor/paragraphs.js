@@ -80,7 +80,7 @@ describe( 'GFMDataProcessor', () => {
 
 				'single line\n' +
 				'\n' +
-				'*   item'
+				'* item'
 			);
 		} );
 	} );
