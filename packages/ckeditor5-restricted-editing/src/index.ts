@@ -18,4 +18,17 @@ export { StandardEditingModeUI } from './standardeditingmodeui.js';
 
 export type { RestrictedEditingConfig } from './restrictededitingconfig.js';
 
+export {
+	setupExceptionHighlighting as _setupRestrictedEditingExceptionHighlighting,
+	resurrectCollapsedMarkerPostFixer as _resurrectRestrictedEditingCollapsedMarkerPostFixer,
+	extendMarkerOnTypingPostFixer as _extendRestrictedEditingMarkerOnTypingPostFixer,
+	upcastHighlightToMarker as _upcastRestrictedEditingHighlightToMarker
+} from './restrictededitingmode/converters.js';
+
+export {
+	getMarkerAtPosition as _getRestrictedEditingMarkerAtPosition,
+	isPositionInRangeBoundaries as _isRestrictedEditingPositionInRangeBoundaries,
+	isSelectionInMarker as _isRestrictedEditingSelectionInMarker
+} from './restrictededitingmode/utils.js';
+
 import './augmentation.js';

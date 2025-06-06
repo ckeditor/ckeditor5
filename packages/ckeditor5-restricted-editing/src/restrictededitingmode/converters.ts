@@ -34,6 +34,8 @@ const HIGHLIGHT_CLASS = 'restricted-editing-exception_selected';
  * * The class is added in the view post-fixer, after other changes in the model tree are converted to the view.
  *
  * This way, adding and removing the highlight does not interfere with conversion.
+ *
+ * @internal
  */
 export function setupExceptionHighlighting( editor: Editor ): void {
 	const view = editor.editing.view;
@@ -79,6 +81,8 @@ export function setupExceptionHighlighting( editor: Editor ): void {
 
 /**
  * A post-fixer that prevents removing a collapsed marker from the document.
+ *
+ * @internal
  */
 export function resurrectCollapsedMarkerPostFixer( editor: Editor ): ModelPostFixer {
 	// This post-fixer shouldn't be necessary after https://github.com/ckeditor/ckeditor5/issues/5778.
@@ -101,6 +105,8 @@ export function resurrectCollapsedMarkerPostFixer( editor: Editor ): ModelPostFi
 
 /**
  * A post-fixer that extends a marker when the user types on its boundaries.
+ *
+ * @internal
  */
 export function extendMarkerOnTypingPostFixer( editor: Editor ): ModelPostFixer {
 	// This post-fixer shouldn't be necessary after https://github.com/ckeditor/ckeditor5/issues/5778.
@@ -123,6 +129,7 @@ export function extendMarkerOnTypingPostFixer( editor: Editor ): ModelPostFixer 
  * A view highlight-to-marker conversion helper.
  *
  * @param config Conversion configuration.
+ * @internal
  */
 export function upcastHighlightToMarker( config: { view: MatcherPattern; model: () => string } ) {
 	return ( dispatcher: UpcastDispatcher ): void => dispatcher.on( 'element:span', ( evt, data, conversionApi ) => {
