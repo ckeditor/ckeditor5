@@ -10,7 +10,7 @@
 import { unified } from 'unified';
 import rehypeParse from 'rehype-dom-parse';
 import rehypeRemark from 'rehype-remark';
-import remarkGfm from 'remark-gfm';
+import remarkGfm from 'remark-gfm-no-autolink';
 import remarkStringify from 'remark-stringify';
 import { visit } from 'unist-util-visit';
 
