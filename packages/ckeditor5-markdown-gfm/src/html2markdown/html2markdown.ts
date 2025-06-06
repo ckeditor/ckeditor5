@@ -9,21 +9,21 @@
 
 import { unified } from 'unified';
 import rehypeParse from 'rehype-dom-parse';
-import rehypeRemark from 'rehype-remark';
+import rehypeRemark, { type Options } from 'rehype-remark';
 import remarkGfm from 'remark-gfm-no-autolink';
 import remarkStringify from 'remark-stringify';
-import { visit } from 'unist-util-visit';
+import { toHtml } from 'hast-util-to-html';
 
 export class HtmlToMarkdown {
 	private _processor: any;
-	private _keepRawTags = new Set<string>();
+	private _keepRawTags: Array<string> = [];
 
 	constructor() {
 		this._buildProcessor();
 	}
 
 	public keep( tagName: string ): void {
-		this._keepRawTags.add( tagName.toLowerCase() );
+		this._keepRawTags.push( tagName.toLowerCase() );
 		this._buildProcessor();
 	}
 
@@ -34,24 +34,28 @@ export class HtmlToMarkdown {
 			.trim();
 	}
 
-	private _buildProcessor() {
-		const rehypeKeep = () => {
-			return ( tree: any ) => {
-				visit( tree, 'element', ( node: any ) => {
-					if ( this._keepRawTags.has( node.tagName ) ) {
-						node.data = node.data || {};
-						node.data.hName = node.tagName;
-						node.data.hProperties = node.properties;
-						node.data.hChildren = node.children;
-					}
-				} );
-			};
-		};
+	public getRawTagsHandlers(): Options['handlers'] {
+		return this._keepRawTags.reduce( ( handlers: any, tagName: any ) => {
+			handlers[ tagName ] = ( state: any, node: any ) => {
+				const result = {
+					type: 'html',
+					value: toHtml( node, { allowDangerousHtml: true } )
+				};
 
+				state.patch( node, result );
+				return result;
+			};
+
+			return handlers;
+		}, {} as Options['handlers'] );
+	}
+
+	private _buildProcessor() {
 		this._processor = unified()
 			.use( rehypeParse )
-			.use( rehypeKeep )
-			.use( rehypeRemark )
+			.use( rehypeRemark, {
+				handlers: this.getRawTagsHandlers()
+			} )
 			.use( remarkGfm, { singleTilde: false } )
 			.use( remarkStringify, {
 				emphasis: '_',
