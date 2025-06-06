@@ -7,12 +7,16 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
+import stubUid from './list/_utils/uid.js';
 import ListFormatting from '../src/listformatting.js';
 import ListItemFontFamilyIntegration from '../src/listformatting/listitemfontfamilyintegration.js';
 
 describe( 'ListFormatting', () => {
 	let editor, model, docSelection;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
@@ -23,6 +27,8 @@ describe( 'ListFormatting', () => {
 		docSelection = model.document.selection;
 
 		model.schema.extend( '$text', { allowAttributes: 'inlineFormat' } );
+
+		stubUid();
 	} );
 
 	afterEach( async () => {
@@ -336,8 +342,151 @@ describe( 'ListFormatting', () => {
 			} );
 		} );
 
-		describe( 'inserting a list item', () => {
-			//
+		describe( 'list structure modifications', () => {
+			it( 'it should add attribute to li after splitting list item with consistent formatting', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a">' +
+						'<$text inlineFormat="foo">foo[]bar</$text>' +
+					'</paragraph>'
+				);
+
+				editor.execute( 'enter' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a"><$text inlineFormat="foo">foo</$text></paragraph>' +
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a00"><$text inlineFormat="foo">bar</$text></paragraph>'
+				);
+			} );
+
+			it( 'should add attributes after splitting inconsistent formatting if both have consistent formatting afterwards', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a">' +
+						'<$text inlineFormat="foo">foo[]</$text>' +
+						'<$text inlineFormat="bar">bar</$text>' +
+					'</paragraph>'
+				);
+
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.be.undefined;
+
+				editor.execute( 'enter' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a"><$text inlineFormat="foo">foo</$text></paragraph>' +
+					'<paragraph listIndent="0" listItemFormat="bar" listItemId="a00"><$text inlineFormat="bar">bar</$text></paragraph>'
+				);
+			} );
+
+			it( 'should add attribute if after deleting part of list, updated list item has consistent formatting', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a">' +
+						'<$text inlineFormat="foo">foo</$text>' +
+						'<$text inlineFormat="bar">[bar</$text>' +
+					'</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b">' +
+						'<$text inlineFormat="foo">x]yz</$text>' +
+					'</paragraph>'
+				);
+
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.be.undefined;
+
+				editor.execute( 'delete' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a"><$text inlineFormat="foo">fooyz</$text></paragraph>'
+				);
+			} );
+
+			it( 'should remove attribute if after deleting part of list, updated list item has inconsistent formatting', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a">' +
+						'<$text inlineFormat="foo">fo[o</$text>' +
+					'</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b">' +
+						'<$text inlineFormat="foo">xyz</$text>' +
+						'<$text inlineFormat="bar">b]ar</$text>' +
+					'</paragraph>'
+				);
+
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.equal( 'foo' );
+
+				editor.execute( 'delete' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a">' +
+						'<$text inlineFormat="foo">fo</$text>' +
+						'<$text inlineFormat="bar">ar</$text>' +
+					'</paragraph>'
+				);
+			} );
+		} );
+
+		describe( 'multi-block modifications', () => {
+			it( 'should remove attributes when new multi-block item has different formatting', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a">' +
+						'<$text inlineFormat="foo">foo</$text>' +
+					'</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b">' +
+						'<$text inlineFormat="bar">[]bar</$text>' +
+					'</paragraph>'
+				);
+
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.equal( 'foo' );
+				expect( model.document.getRoot().getChild( 1 ).getAttribute( 'listItemFormat' ) ).to.equal( 'bar' );
+
+				editor.execute( 'mergeListItemBackward' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a"><$text inlineFormat="foo">foo</$text></paragraph>' +
+					'<paragraph listIndent="0" listItemId="a"><$text inlineFormat="bar">bar</$text></paragraph>'
+				);
+			} );
+		} );
+
+		describe( 'changing block item into list item', () => {
+			it( 'should set attribute in li when changing a formatted paragraph into li', () => {
+				setModelData( model,
+					'<paragraph>[<$text inlineFormat="foo">foo</$text>]</paragraph>'
+				);
+
+				editor.execute( 'bulletedList' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a00" listType="bulleted">' +
+						'<$text inlineFormat="foo">foo</$text>' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should not set attribute in li when changing a partly formatted paragraph into li', () => {
+				setModelData( model,
+					'<paragraph>[<$text inlineFormat="foo">foo</$text>bar]</paragraph>'
+				);
+
+				editor.execute( 'bulletedList' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">' +
+						'<$text inlineFormat="foo">foo</$text>' +
+						'bar' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should add attribute if li is empty but has selection formatting', () => {
+				setModelData( model,
+					'<paragraph>[]</paragraph>'
+				);
+
+				setSelectionAttribute( model, 'inlineFormat', 'foo' );
+
+				editor.execute( 'bulletedList' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a00" listType="bulleted" selection:inlineFormat="foo">' +
+					'</paragraph>'
+				);
+			} );
 		} );
 	} );
 
