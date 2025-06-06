@@ -26,6 +26,11 @@ import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils
 
 import '../../theme/colorinput.css';
 
+/**
+ * The options for the color input view.
+ *
+ * @internal
+ */
 export type ColorInputViewOptions = {
 	colorDefinitions: Array<ColorDefinition>;
 	columns: number;

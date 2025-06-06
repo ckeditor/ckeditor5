@@ -24,6 +24,8 @@ import { first } from 'ckeditor5/src/utils.js';
  * ```xml
  * <table></table>
  * ```
+ *
+ * @internal
  */
 export function upcastTableFigure() {
 	return ( dispatcher: UpcastDispatcher ): void => {
@@ -70,6 +72,7 @@ export function upcastTableFigure() {
  * This conversion helper converts the table element as well as table rows.
  *
  * @returns Conversion helper.
+ * @internal
  */
 export function upcastTable() {
 	return ( dispatcher: UpcastDispatcher ): void => {
@@ -131,6 +134,7 @@ export function upcastTable() {
  * *Note:* Only the first empty rows are removed because they have no meaning and it solves the issue
  * of an improper table with all empty rows.
  *
+ * @internal
  * @returns Conversion helper.
  */
 export function skipEmptyTableRow() {
@@ -146,6 +150,7 @@ export function skipEmptyTableRow() {
 /**
  * A converter that ensures an empty paragraph is inserted in a table cell if no other content was converted.
  *
+ * @internal
  * @returns Conversion helper.
  */
 export function ensureParagraphInTableCell( elementName: string ) {
