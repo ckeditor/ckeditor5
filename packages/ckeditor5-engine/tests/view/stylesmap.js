@@ -212,6 +212,10 @@ describe( 'StylesMap', () => {
 	} );
 
 	describe( 'remove()', () => {
+		beforeEach( () => {
+			addBorderRules( stylesProcessor );
+		} );
+
 		it( 'should do nothing if property is not set', () => {
 			stylesMap.remove( 'color' );
 
@@ -252,6 +256,146 @@ describe( 'StylesMap', () => {
 			stylesMap.remove( 'text-align' );
 
 			expect( stylesMap.toString() ).to.equal( '' );
+		} );
+
+		it( 'should remove related rules by parent rule', () => {
+			stylesMap.set( 'border-left-color', 'red' );
+			stylesMap.set( 'border-left-style', 'solid' );
+			stylesMap.set( 'border-left-width', '2px' );
+
+			// Additional styles to check that removing works correctly.
+			stylesMap.set( 'margin', '10px' );
+			stylesMap.set( 'color', 'blue' );
+			stylesMap.set( 'border-top-color', 'orange' );
+			stylesMap.set( 'border-right', '5px dashed purple' );
+
+			expect( stylesMap.toString() ).to.equal(
+				'border-left:2px solid red;' +
+				'border-right:5px dashed purple;' +
+				'border-top-color:orange;' +
+				'color:blue;' +
+				'margin:10px;'
+			);
+
+			stylesMap.remove( 'border-left' );
+
+			expect( stylesMap.toString() ).to.equal(
+				'border-right:5px dashed purple;' +
+				'border-top-color:orange;' +
+				'color:blue;' +
+				'margin:10px;'
+			);
+		} );
+
+		it( 'should remove multiple css attributes by parent css attribute', () => {
+			stylesMap.set( 'border', 'orange' );
+			stylesMap.set( 'border-right-color', 'purple' );
+			stylesMap.set( 'border-left-color', 'red' );
+			stylesMap.set( 'border-left-style', 'solid' );
+			stylesMap.set( 'border-left-width', '2px' );
+
+			// Additional styles to check that removing works correctly.
+			stylesMap.set( 'margin', '10px' );
+			stylesMap.set( 'color', 'blue' );
+			stylesMap.set( 'border-top-color', 'orange' );
+			stylesMap.set( 'border-right', '5px dashed purple' );
+
+			expect( stylesMap.toString() ).to.equal(
+				'border-bottom-color:orange;' +
+				'border-left:2px solid red;' +
+				'border-right:5px dashed purple;' +
+				'border-top-color:orange;' +
+				'color:blue;' +
+				'margin:10px;'
+			);
+
+			stylesMap.remove( 'border-left' );
+
+			expect( stylesMap.toString() ).to.equal(
+				'border-bottom-color:orange;' +
+				'border-right:5px dashed purple;' +
+				'border-top-color:orange;' +
+				'color:blue;' +
+				'margin:10px;'
+			);
+		} );
+
+		it( 'should remove multiple shorthand styles in a single batch', () => {
+			stylesMap.set( 'border', '4px dashed blue' );
+			stylesMap.set( 'border-left-color', 'red' );
+			stylesMap.set( 'border-left-style', 'solid' );
+			stylesMap.set( 'border-left-width', '2px' );
+
+			expect( stylesMap.toString() ).to.equal(
+				'border-bottom:4px dashed blue;' +
+				'border-left:2px solid red;' +
+				'border-right:4px dashed blue;' +
+				'border-top:4px dashed blue;'
+			);
+
+			stylesMap.remove( [ 'border-left', 'border-bottom' ] );
+
+			expect( stylesMap.toString() ).to.equal(
+				'border-right:4px dashed blue;' +
+				'border-top:4px dashed blue;'
+			);
+		} );
+
+		it( 'should remove all border styles for shorthand border remove', () => {
+			stylesMap.set( 'border-color', 'red' );
+			stylesMap.set( 'border-style', 'solid' );
+			stylesMap.set( 'border-width', '2px' );
+			stylesMap.set( 'color', 'blue' );
+
+			expect( stylesMap.toString() ).to.equal(
+				'border:2px solid red;' +
+				'color:blue;'
+			);
+
+			// This is possible to shorten to a single border property...
+			expect( stylesMap.getStyleNames() ).to.deep.equal( [
+				'border',
+				'color'
+			] );
+
+			// ... so it will be removed.
+			stylesMap.remove( 'border' );
+
+			expect( stylesMap.toString() ).to.equal(
+				'color:blue;'
+			);
+		} );
+
+		it( 'should remove all border styles for shorthand border remove even if single reduced form is not possible', () => {
+			stylesMap.set( 'border', '4px dashed blue' );
+			stylesMap.set( 'border-left-color', 'red' );
+			stylesMap.set( 'border-left-style', 'solid' );
+			stylesMap.set( 'border-left-width', '2px' );
+			stylesMap.set( 'color', 'blue' );
+
+			expect( stylesMap.toString() ).to.equal(
+				'border-bottom:4px dashed blue;' +
+				'border-left:2px solid red;' +
+				'border-right:4px dashed blue;' +
+				'border-top:4px dashed blue;' +
+				'color:blue;'
+			);
+
+			// This is not possible to shorten to a single border property...
+			expect( stylesMap.getStyleNames() ).to.deep.equal( [
+				'border-top',
+				'border-right',
+				'border-bottom',
+				'border-left',
+				'color'
+			] );
+
+			// ... so it won't be removed.
+			stylesMap.remove( 'border' );
+
+			expect( stylesMap.toString() ).to.equal(
+				'color:blue;'
+			);
 		} );
 	} );
 

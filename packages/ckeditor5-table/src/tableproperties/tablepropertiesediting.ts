@@ -160,6 +160,10 @@ function enableBorderProperties( schema: Schema, conversion: Conversion, default
 		allowAttributes: Object.values( modelAttributes )
 	} );
 
+	for ( const modelAttribute of Object.values( modelAttributes ) ) {
+		schema.setAttributeProperties( modelAttribute, { isFormatting: true } );
+	}
+
 	upcastBorderStyles( conversion, 'table', modelAttributes, defaultBorder );
 
 	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.color, styleName: 'border-color' } );
@@ -176,6 +180,8 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 	schema.extend( 'table', {
 		allowAttributes: [ 'tableAlignment' ]
 	} );
+
+	schema.setAttributeProperties( 'tableAlignment', { isFormatting: true } );
 
 	conversion.for( 'downcast' )
 		.attributeToAttribute( {
@@ -324,6 +330,9 @@ function enableProperty(
 	schema.extend( 'table', {
 		allowAttributes: [ modelAttribute ]
 	} );
+
+	schema.setAttributeProperties( modelAttribute, { isFormatting: true } );
+
 	upcastStyleToAttribute( conversion, { viewElement: 'table', ...options } );
 	downcastTableAttribute( conversion, options );
 }
@@ -347,6 +356,8 @@ function enableTableToFigureProperty(
 	schema.extend( 'table', {
 		allowAttributes: [ modelAttribute ]
 	} );
+
+	schema.setAttributeProperties( modelAttribute, { isFormatting: true } );
 
 	upcastStyleToAttribute( conversion, { viewElement: /^(table|figure)$/, ...options } );
 	downcastAttributeToStyle( conversion, { modelElement: 'table', ...options } );

@@ -10,6 +10,6 @@
 export { BlockQuote } from './blockquote.js';
 export { BlockQuoteEditing } from './blockquoteediting.js';
 export { BlockQuoteUI } from './blockquoteui.js';
-export type { BlockQuoteCommand } from './blockquotecommand.js';
+export { BlockQuoteCommand } from './blockquotecommand.js';
 
 import './augmentation.js';

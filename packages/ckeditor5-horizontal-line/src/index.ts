@@ -10,6 +10,6 @@
 export { HorizontalLine } from './horizontalline.js';
 export { HorizontalLineEditing } from './horizontallineediting.js';
 export { HorizontalLineUI } from './horizontallineui.js';
-export type { HorizontalLineCommand } from './horizontallinecommand.js';
+export { HorizontalLineCommand } from './horizontallinecommand.js';
 
 import './augmentation.js';

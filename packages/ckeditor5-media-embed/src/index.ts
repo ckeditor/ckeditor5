@@ -12,8 +12,8 @@ export { MediaEmbedEditing } from './mediaembedediting.js';
 export { MediaEmbedUI } from './mediaembedui.js';
 export { AutoMediaEmbed } from './automediaembed.js';
 export { MediaEmbedToolbar } from './mediaembedtoolbar.js';
+export { MediaEmbedCommand } from './mediaembedcommand.js';
 
 export type { MediaEmbedConfig } from './mediaembedconfig.js';
-export type { MediaEmbedCommand } from './mediaembedcommand.js';
 
 import './augmentation.js';

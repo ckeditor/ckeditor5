@@ -13,9 +13,9 @@ export { CKBoxUI } from './ckboxui.js';
 export { CKBoxImageEditEditing } from './ckboximageedit/ckboximageeditediting.js';
 export { CKBoxImageEditUI } from './ckboximageedit/ckboximageeditui.js';
 export { CKBoxImageEdit } from './ckboximageedit.js';
+export { CKBoxCommand } from './ckboxcommand.js';
+export { CKBoxImageEditCommand } from './ckboximageedit/ckboximageeditcommand.js';
 
-export type { CKBoxCommand } from './ckboxcommand.js';
-export type { CKBoxImageEditCommand } from './ckboximageedit/ckboximageeditcommand.js';
 export type { CKBoxConfig } from './ckboxconfig.js';
 
 export {

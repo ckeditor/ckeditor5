@@ -10,7 +10,7 @@
 export { Highlight } from './highlight.js';
 export { HighlightEditing } from './highlightediting.js';
 export { HighlightUI } from './highlightui.js';
-export type { HighlightCommand } from './highlightcommand.js';
+export { HighlightCommand } from './highlightcommand.js';
 export type { HighlightOption, HighlightConfig } from './highlightconfig.js';
 
 import './augmentation.js';

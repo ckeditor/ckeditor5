@@ -44,13 +44,13 @@ export { createImageTypeRegExp } from './imageupload/utils.js';
 
 export type { ImageConfig } from './imageconfig.js';
 export type { ImageLoadedEvent } from './image/imageloadobserver.js';
-export type { ImageTypeCommand } from './image/imagetypecommand.js';
-export type { InsertImageCommand } from './image/insertimagecommand.js';
-export type { ReplaceImageSourceCommand } from './image/replaceimagesourcecommand.js';
-export type { ToggleImageCaptionCommand } from './imagecaption/toggleimagecaptioncommand.js';
-export type { ResizeImageCommand } from './imageresize/resizeimagecommand.js';
-export type { ImageStyleCommand } from './imagestyle/imagestylecommand.js';
-export type { ImageTextAlternativeCommand } from './imagetextalternative/imagetextalternativecommand.js';
-export type { UploadImageCommand } from './imageupload/uploadimagecommand.js';
+export { ImageTypeCommand } from './image/imagetypecommand.js';
+export { InsertImageCommand } from './image/insertimagecommand.js';
+export { ReplaceImageSourceCommand } from './image/replaceimagesourcecommand.js';
+export { ToggleImageCaptionCommand } from './imagecaption/toggleimagecaptioncommand.js';
+export { ResizeImageCommand } from './imageresize/resizeimagecommand.js';
+export { ImageStyleCommand } from './imagestyle/imagestylecommand.js';
+export { ImageTextAlternativeCommand } from './imagetextalternative/imagetextalternativecommand.js';
+export { UploadImageCommand } from './imageupload/uploadimagecommand.js';
 
 import './augmentation.js';

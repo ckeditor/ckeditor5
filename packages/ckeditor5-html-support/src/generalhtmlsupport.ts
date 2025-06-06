@@ -9,6 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
+import type { RemoveFormatCommand } from '@ckeditor/ckeditor5-remove-format';
 
 import { DataFilter } from './datafilter.js';
 import { CodeBlockElementSupport } from './integrations/codeblock.js';
@@ -24,7 +25,7 @@ import { HorizontalLineElementSupport } from './integrations/horizontalline.js';
 import { CustomElementSupport } from './integrations/customelement.js';
 import type { DataSchemaInlineElementDefinition } from './dataschema.js';
 import type { DocumentSelection, Item, Model, Range, Selectable } from 'ckeditor5/src/engine.js';
-import { getHtmlAttributeName, modifyGhsAttribute } from './utils.js';
+import { getHtmlAttributeName, modifyGhsAttribute, removeFormatting } from './utils.js';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig.js';
 
@@ -83,6 +84,18 @@ export class GeneralHtmlSupport extends Plugin {
 		// Load the filtering configuration.
 		dataFilter.loadAllowedConfig( editor.config.get( 'htmlSupport.allow' ) || [] );
 		dataFilter.loadDisallowedConfig( editor.config.get( 'htmlSupport.disallow' ) || [] );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public afterInit(): void {
+		const removeFormatCommand: RemoveFormatCommand | undefined = this.editor.commands.get( 'removeFormat' );
+
+		removeFormatCommand?.registerCustomAttribute(
+			attributeName => attributeName.startsWith( 'html' ) && attributeName.endsWith( 'Attributes' ),
+			removeFormatting
+		);
 	}
 
 	/**

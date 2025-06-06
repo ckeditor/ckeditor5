@@ -11,8 +11,8 @@ export { Indent } from './indent.js';
 export { IndentEditing } from './indentediting.js';
 export { IndentUI } from './indentui.js';
 export { IndentBlock } from './indentblock.js';
+export { IndentBlockCommand } from './indentblockcommand.js';
 
 export type { IndentBlockConfig } from './indentconfig.js';
-export type { IndentBlockCommand } from './indentblockcommand.js';
 
 import './augmentation.js';

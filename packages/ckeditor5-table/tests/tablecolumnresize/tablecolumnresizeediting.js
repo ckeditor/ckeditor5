@@ -125,6 +125,10 @@ describe( 'TableColumnResizeEditing', () => {
 		expect( editor.commands.get( 'resizeColumnWidths' ) ).to.be.instanceOf( TableWidthsCommand );
 	} );
 
+	it( 'registers schema attributes as formatting', () => {
+		expect( editor.model.schema.getAttributeProperties( 'columnWidth' ).isFormatting ).to.be.true;
+	} );
+
 	describe( 'conversion', () => {
 		describe( 'upcast', () => {
 			it( 'the table width style set on <figure> element to tableWidth attribute correctly', () => {
@@ -749,6 +753,17 @@ describe( 'TableColumnResizeEditing', () => {
 						'</table>'
 					);
 				} );
+			} );
+
+			it( 'should consume ck-table-resized class during table conversion', () => {
+				const upcastSpy = sinon.spy( ( evt, data, conversionApi ) => {
+					expect( conversionApi.consumable.test( data.viewItem, { classes: 'ck-table-resized' } ) ).to.be.false;
+				} );
+
+				editor.data.upcastDispatcher.on( 'element:table', upcastSpy, { priority: 'lowest' } );
+				editor.setData( '<figure class="table"><table class="ck-table-resized">xyz</table></figure>' );
+
+				expect( upcastSpy ).to.be.called;
 			} );
 		} );
 
