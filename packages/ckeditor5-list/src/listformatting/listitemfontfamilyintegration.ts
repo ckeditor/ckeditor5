@@ -50,7 +50,7 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 			return;
 		}
 
-		ListFormatting._addFormatting( 'listItemFontFamily', 'fontFamily' );
+		ListFormatting.registerFormatAttribute( 'listItemFontFamily', 'fontFamily' );
 
 		// Register the downcast strategy in init() so that the attribute name is registered  before the list editing
 		// registers its converters.

@@ -396,11 +396,14 @@ export default class ListFormatting extends Plugin {
 	}
 
 	/**
-	 * Adds a formatting to the list of loaded formattings.
+	 * Registers an integration between a default attribute (e.g., `fontFamily`) and a new attribute
+	 * intended specifically for list item elements (e.g., `listItemFontFamily`).
 	 *
-	 * @internal
+	 * These attributes are later used by the postfixer logic to determine whether to add the new attribute
+	 * to the list item element, based on whether there is a consistent default formatting attribute
+	 * applied within its content.
 	 */
-	public _addFormatting( listItemFormatAttribute: string, formatAttribute: string ): void {
+	public registerFormatAttribute( listItemFormatAttribute: string, formatAttribute: string ): void {
 		if ( !this._loadedFormattings[ listItemFormatAttribute ] ) {
 			this._loadedFormattings[ listItemFormatAttribute ] = formatAttribute;
 		}
