@@ -52,9 +52,9 @@ describe( 'GFMDataProcessor', () => {
 			testDataProcessor(
 				'> A list within a blockquote:\n' +
 				'>\n' +
-				'> *   asterisk 1\n' +
-				'> *   asterisk 2\n' +
-				'> *   asterisk 3',
+				'> * asterisk 1\n' +
+				'> * asterisk 2\n' +
+				'> * asterisk 3',
 
 				// GitHub is rendering as:
 				// <blockquote>

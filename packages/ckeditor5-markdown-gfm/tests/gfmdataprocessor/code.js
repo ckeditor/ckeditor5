@@ -236,12 +236,7 @@ describe( 'GFMDataProcessor', () => {
 				// GitHub is rendering as special html with syntax highlighting.
 				// We will need to handle this separately by some feature.
 
-				'<pre><code class="language-js"></code></pre>',
-
-				// When converting back, empty code blocks will be removed.
-				// This might be an issue when switching from source to editor
-				// but changing this cannot be done in to-markdown converters.
-				''
+				'<pre><code class="language-js"></code></pre>'
 			);
 		} );
 
@@ -256,10 +251,8 @@ describe( 'GFMDataProcessor', () => {
 
 				'<pre><code class="language-js"></code></pre>',
 
-				// When converting back, empty code blocks will be removed.
-				// This might be an issue when switching from source to editor
-				// but changing this cannot be done in to-markdown converters.
-				''
+				'```js\n' +
+				'```'
 			);
 		} );
 

@@ -35,9 +35,9 @@ describe( 'GFMDataProcessor', () => {
 
 				// After converting back it will be normalized.
 				'| Heading 1 | Heading 2 |\n' +
-				'| --- | --- |\n' +
-				'| Cell 1 | Cell 2 |\n' +
-				'| Cell 3 | Cell 4 |'
+				'| --------- | --------- |\n' +
+				'| Cell 1    | Cell 2    |\n' +
+				'| Cell 3    | Cell 4    |'
 			);
 		} );
 
@@ -75,9 +75,9 @@ describe( 'GFMDataProcessor', () => {
 
 				// After converting back it will be normalized.
 				'| Header 1 | Header 2 | Header 3 | Header 4 |\n' +
-				'| :-: | --: | :-- | --- |\n' +
-				'| Cell 1 | Cell 2 | Cell 3 | Cell 4 |\n' +
-				'| Cell 5 | Cell 6 | Cell 7 | Cell 8 |'
+				'| :------: | -------: | :------- | -------- |\n' +
+				'|  Cell 1  |   Cell 2 | Cell 3   | Cell 4   |\n' +
+				'|  Cell 5  |   Cell 6 | Cell 7   | Cell 8   |'
 			);
 		} );
 
@@ -109,9 +109,9 @@ describe( 'GFMDataProcessor', () => {
 
 				// After converting back it will be normalized.
 				'| Header 1 | Header 2 |\n' +
-				'| --- | --- |\n' +
-				'| Cell 1 | Cell 2 |\n' +
-				'| Cell 3 | Cell 4 |'
+				'| -------- | -------- |\n' +
+				'| Cell 1   | Cell 2   |\n' +
+				'| Cell 3   | Cell 4   |'
 			);
 		} );
 
@@ -150,7 +150,7 @@ describe( 'GFMDataProcessor', () => {
 
 				// After converting back it will be normalized.
 				'| Header 1 | Header 2 | Header 3 | Header 4 |\n' +
-				'| :-- | :-: | --: | --- |\n' +
+				'| :------- | :------: | -------: | -------- |\n' +
 				'| _Cell 1_ | **Cell 2** | ~Cell 3~ | Cell 4 |'
 			);
 		} );

@@ -57,7 +57,7 @@ export class GFMDataProcessor implements DataProcessor {
 	 * @param element The element name to be kept.
 	 */
 	public keepHtml( element: keyof HTMLElementTagNameMap ): void {
-		this._html2markdown.keep( [ element ] );
+		this._html2markdown.keep( element );
 	}
 
 	/**
