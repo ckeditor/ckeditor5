@@ -18,7 +18,7 @@ Core editing capability provides tools to create, edit, and style content. Here 
 Advanced HTML Editing provides general HTML support, offering detailed control over permissible HTML elements, attributes, and styles. It further allows HTML Source Code Editing, handling HTML elements, HTML comments, and editing of the full page content, including meta tags.
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/full-page-html.html' level='4'>
+	<ck:card-title level='4'>
 		Full page HTML
 	</ck:card-title>
 	<ck:card-description>
@@ -31,7 +31,7 @@ Advanced HTML Editing provides general HTML support, offering detailed control o
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/general-html-support.html' level='4'>
+	<ck:card-title level='4'>
 		General HTML Support (GHS)
 	</ck:card-title>
 	<ck:card-description>
@@ -44,7 +44,7 @@ Advanced HTML Editing provides general HTML support, offering detailed control o
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/html-comments.html' level='4'>
+	<ck:card-title level='4'>
 		HTML comment
 	</ck:card-title>
 	<ck:card-description>
@@ -57,7 +57,7 @@ Advanced HTML Editing provides general HTML support, offering detailed control o
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/html-embed.html' level='4'>
+	<ck:card-title level='4'>
 		HTML embed
 	</ck:card-title>
 	<ck:card-description>
@@ -70,7 +70,7 @@ Advanced HTML Editing provides general HTML support, offering detailed control o
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/show-blocks.html' level='4'>
+	<ck:card-title level='4'>
 		Show blocks
 	</ck:card-title>
 	<ck:card-description>
@@ -83,7 +83,7 @@ Advanced HTML Editing provides general HTML support, offering detailed control o
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/source-editing.html' level='4'>
+	<ck:card-title level='4'>
 		Source code editing
 	</ck:card-title>
 	<ck:card-description>
@@ -96,7 +96,7 @@ Advanced HTML Editing provides general HTML support, offering detailed control o
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/enhanced-source-editing.html' level='4'>
+	<ck:card-title level='4'>
 		Enhanced source code editing
 	</ck:card-title>
 	<ck:card-description>
@@ -113,7 +113,7 @@ Advanced HTML Editing provides general HTML support, offering detailed control o
 Block Formatting allows for the organization and emphasis of content through the use of Headings, Style Headings, Block Quotes, and Horizontal Lines. Users can select from different levels of headings to outline sections and subsections, apply various styles to these headings for visual hierarchy, insert horizontal lines to delineate sections, and use block quotes to highlight excerpts or important passages.
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/block-quote.html' level='4'>
+	<ck:card-title level='4'>
 		Block quote
 	</ck:card-title>
 	<ck:card-description>
@@ -126,7 +126,7 @@ Block Formatting allows for the organization and emphasis of content through the
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/headings.html' level='4'>
+	<ck:card-title level='4'>
 		Headings/paragraph
 	</ck:card-title>
 	<ck:card-description>
@@ -139,7 +139,7 @@ Block Formatting allows for the organization and emphasis of content through the
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/horizontal-line.html' level='4'>
+	<ck:card-title level='4'>
 		Horizontal line
 	</ck:card-title>
 	<ck:card-description>
@@ -152,7 +152,7 @@ Block Formatting allows for the organization and emphasis of content through the
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/indent.html' level='4'>
+	<ck:card-title level='4'>
 		Block indentation
 	</ck:card-title>
 	<ck:card-description>
@@ -201,7 +201,7 @@ Rearrange elements within a document, including moving text blocks, images, or o
 The font feature lets you change font family, size, and color (including background color). All of these options are configurable.
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/font.html#configuring-the-font-color-and-font-background-color-features' level='4'>
+	<ck:card-title level='4'>
 		Font background color
 	</ck:card-title>
 	<ck:card-description>
@@ -214,7 +214,7 @@ The font feature lets you change font family, size, and color (including backgro
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/font.html#configuring-the-font-color-and-font-background-color-features' level='4'>
+	<ck:card-title level='4'>
 		Font color
 	</ck:card-title>
 	<ck:card-description>
@@ -227,7 +227,7 @@ The font feature lets you change font family, size, and color (including backgro
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/font.html#configuring-the-font-family-feature' level='4'>
+	<ck:card-title level='4'>
 		Font family
 	</ck:card-title>
 	<ck:card-description>
@@ -240,7 +240,7 @@ The font feature lets you change font family, size, and color (including backgro
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/font.html#configuring-the-font-size-feature' level='4'>
+	<ck:card-title level='4'>
 		Font size
 	</ck:card-title>
 	<ck:card-description>
@@ -257,7 +257,7 @@ The font feature lets you change font family, size, and color (including backgro
 The image feature allows adding images of various kinds to the rich content inside the editor. A large set of subfeatures lets the users fully control this process. Upload or paste images, insert via URL, use responsive images, resize images, add captions, set different image styles, and link images.
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/images-text-alternative.html' level='4'>
+	<ck:card-title level='4'>
 		Image alt text
 	</ck:card-title>
 	<ck:card-description>
@@ -270,7 +270,7 @@ The image feature allows adding images of various kinds to the rich content insi
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/images-captions.html' level='4'>
+	<ck:card-title level='4'>
 		Image captions
 	</ck:card-title>
 	<ck:card-description>
@@ -283,7 +283,7 @@ The image feature allows adding images of various kinds to the rich content insi
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/images-inserting.html' level='4'>
+	<ck:card-title level='4'>
 		Image insert via URL
 	</ck:card-title>
 	<ck:card-description>
@@ -296,7 +296,7 @@ The image feature allows adding images of various kinds to the rich content insi
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/images-linking.html' level='4'>
+	<ck:card-title level='4'>
 		Image linking
 	</ck:card-title>
 	<ck:card-description>
@@ -309,7 +309,7 @@ The image feature allows adding images of various kinds to the rich content insi
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/images-resizing.html' level='4'>
+	<ck:card-title level='4'>
 		Image resize
 	</ck:card-title>
 	<ck:card-description>
@@ -322,7 +322,7 @@ The image feature allows adding images of various kinds to the rich content insi
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/images-styles.html' level='4'>
+	<ck:card-title level='4'>
 		Image styles
 	</ck:card-title>
 	<ck:card-description>
@@ -335,7 +335,7 @@ The image feature allows adding images of various kinds to the rich content insi
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/image-upload.html' level='4'>
+	<ck:card-title level='4'>
 		Image upload
 	</ck:card-title>
 	<ck:card-description>
@@ -348,7 +348,7 @@ The image feature allows adding images of various kinds to the rich content insi
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/images-responsive.html' level='4'>
+	<ck:card-title level='4'>
 		Responsive images
 	</ck:card-title>
 	<ck:card-description>
@@ -373,7 +373,7 @@ Facilitates the addition of hyperlinks to text, automatically converting typed o
 Lists allow the creation and management of various list types, including to-do lists, bulleted and numbered lists, with additional customization options such as list styles, setting the start number for lists, creating reversed lists, adjusting list indentation, and crafting nested lists.
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/lists.html' level='4'>
+	<ck:card-title level='4'>
 		List indentation
 	</ck:card-title>
 	<ck:card-description>
@@ -386,7 +386,7 @@ Lists allow the creation and management of various list types, including to-do l
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/lists.html#list-start-index' level='4'>
+	<ck:card-title level='4'>
 		List start index
 	</ck:card-title>
 	<ck:card-description>
@@ -399,7 +399,7 @@ Lists allow the creation and management of various list types, including to-do l
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/lists.html#list-styles' level='4'>
+	<ck:card-title level='4'>
 		List styles
 	</ck:card-title>
 	<ck:card-description>
@@ -412,7 +412,7 @@ Lists allow the creation and management of various list types, including to-do l
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/multi-level-lists.html' level='4'>
+	<ck:card-title level='4'>
 		Multi-level lists
 	</ck:card-title>
 	<ck:card-description>
@@ -425,7 +425,7 @@ Lists allow the creation and management of various list types, including to-do l
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/lists-editing.html#indenting-lists' level='4'>
+	<ck:card-title level='4'>
 		Nested lists
 	</ck:card-title>
 	<ck:card-description>
@@ -438,7 +438,7 @@ Lists allow the creation and management of various list types, including to-do l
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/lists.html' level='4'>
+	<ck:card-title level='4'>
 		Ordered lists
 	</ck:card-title>
 	<ck:card-description>
@@ -451,7 +451,7 @@ Lists allow the creation and management of various list types, including to-do l
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/lists.html#reversed-list' level='4'>
+	<ck:card-title level='4'>
 		Reversed list
 	</ck:card-title>
 	<ck:card-description>
@@ -464,7 +464,7 @@ Lists allow the creation and management of various list types, including to-do l
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/todo-lists.html' level='4'>
+	<ck:card-title level='4'>
 		To-do lists
 	</ck:card-title>
 	<ck:card-description>
@@ -477,7 +477,7 @@ Lists allow the creation and management of various list types, including to-do l
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/lists.html' level='4'>
+	<ck:card-title level='4'>
 		Unordered lists
 	</ck:card-title>
 	<ck:card-description>
@@ -518,7 +518,7 @@ Enables the selection of all content within the editor with a single command or 
 CKEditor 5 provides robust support for tables, with the ability to merge and split cells, resize columns, style tables and individual cells, insert and delete columns and rows, as well as create nested tables for complex data presentation.
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/tables-resize.html' level='4'>
+	<ck:card-title level='4'>
 		Columns resizing
 	</ck:card-title>
 	<ck:card-description>
@@ -531,7 +531,7 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/tables.html#table-contextual-toolbar' level='4'>
+	<ck:card-title level='4'>
 		Insert/delete columns & rows
 	</ck:card-title>
 	<ck:card-description>
@@ -544,7 +544,7 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/tables.html#table-contextual-toolbar' level='4'>
+	<ck:card-title level='4'>
 		Merge & split cells
 	</ck:card-title>
 	<ck:card-description>
@@ -557,7 +557,7 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/tables.html#nesting-tables' level='4'>
+	<ck:card-title level='4'>
 		Nesting
 	</ck:card-title>
 	<ck:card-description>
@@ -570,7 +570,7 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/tables-styling.html' level='4'>
+	<ck:card-title level='4'>
 		Styling tables & cells
 	</ck:card-title>
 	<ck:card-description>
@@ -583,7 +583,7 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/tables.html#default-table-headers' level='4'>
+	<ck:card-title level='4'>
 		Table headers
 	</ck:card-title>
 	<ck:card-description>
@@ -596,7 +596,7 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/tables.html#table-selection' level='4'>
+	<ck:card-title level='4'>
 		Table selection
 	</ck:card-title>
 	<ck:card-description>
@@ -609,7 +609,7 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/tables-caption.html' level='4'>
+	<ck:card-title level='4'>
 		Table caption
 	</ck:card-title>
 	<ck:card-description>
@@ -622,7 +622,7 @@ CKEditor 5 provides robust support for tables, with the ability to merge and spl
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/tables/layout-tables.html' level='4'>
+	<ck:card-title level='4'>
 		Layout tables
 	</ck:card-title>
 	<ck:card-description>
@@ -648,7 +648,7 @@ Allows the adjustment of text alignment to the left, right, center, or justify a
 CKEditor 5 provides developers with text editing and formatting features such as Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Inline Code, Highlight, and Font Styles. These features allow users to style and present their content as needed. This ensures users can style their text to improve readability, match branding guidelines, or highlight important content sections.
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/basic-styles.html' level='4'>
+	<ck:card-title level='4'>
 		Bold
 	</ck:card-title>
 	<ck:card-description>
@@ -661,7 +661,7 @@ CKEditor 5 provides developers with text editing and formatting features such as
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/basic-styles.html' level='4'>
+	<ck:card-title level='4'>
 		Code
 	</ck:card-title>
 	<ck:card-description>
@@ -674,7 +674,7 @@ CKEditor 5 provides developers with text editing and formatting features such as
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/highlight.html' level='4'>
+	<ck:card-title level='4'>
 		Highlight
 	</ck:card-title>
 	<ck:card-description>
@@ -687,7 +687,7 @@ CKEditor 5 provides developers with text editing and formatting features such as
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/basic-styles.html' level='4'>
+	<ck:card-title level='4'>
 		Italic
 	</ck:card-title>
 	<ck:card-description>
@@ -700,7 +700,7 @@ CKEditor 5 provides developers with text editing and formatting features such as
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/basic-styles.html' level='4'>
+	<ck:card-title level='4'>
 		Strikethrough
 	</ck:card-title>
 	<ck:card-description>
@@ -713,7 +713,7 @@ CKEditor 5 provides developers with text editing and formatting features such as
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/style.html' level='4'>
+	<ck:card-title level='4'>
 		Styles
 	</ck:card-title>
 	<ck:card-description>
@@ -726,7 +726,7 @@ CKEditor 5 provides developers with text editing and formatting features such as
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/basic-styles.html' level='4'>
+	<ck:card-title level='4'>
 		Subscript
 	</ck:card-title>
 	<ck:card-description>
@@ -739,7 +739,7 @@ CKEditor 5 provides developers with text editing and formatting features such as
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/basic-styles.html' level='4'>
+	<ck:card-title level='4'>
 		Superscript
 	</ck:card-title>
 	<ck:card-description>
@@ -752,7 +752,7 @@ CKEditor 5 provides developers with text editing and formatting features such as
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/basic-styles.html' level='4'>
+	<ck:card-title level='4'>
 		Underline
 	</ck:card-title>
 	<ck:card-description>
@@ -781,7 +781,7 @@ Collaborate with others - real-time or asynchronously. Comment, co-author, and m
 Asynchronous Collaboration in CKEditor 5 is designed for teams using a turn-based approach to collaboratively write, review, and discuss content within the application. It integrates Track Changes, Comments, and Revision History features to facilitate collaboration.
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/collaboration.html' level='4'>
+	<ck:card-title level='4'>
 		Local data storage
 	</ck:card-title>
 	<ck:card-description>
@@ -798,7 +798,7 @@ Asynchronous Collaboration in CKEditor 5 is designed for teams using a turn-base
 Users can add side notes to marked fragments of the document, including text and block elements such as images. It also allows the users to discuss in threads and remove comments when they finish the discussion.
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/comments.html' level='4'>
+	<ck:card-title level='4'>
 		Comments archive
 	</ck:card-title>
 	<ck:card-description>
@@ -811,7 +811,7 @@ Users can add side notes to marked fragments of the document, including text and
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/comments-outside-editor.html' level='4'>
+	<ck:card-title level='4'>
 		Comments outside editor
 	</ck:card-title>
 	<ck:card-description>
@@ -824,7 +824,7 @@ Users can add side notes to marked fragments of the document, including text and
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/annotations-display-mode.html' level='4'>
+	<ck:card-title level='4'>
 		Sidebar modes
 	</ck:card-title>
 	<ck:card-description>
@@ -849,7 +849,7 @@ The mention feature supports smart autocompletion triggered by user input. Typin
 Real-Time Collaboration in CKEditor 5 is designed for users who are writing, reviewing, and commenting on content simultaneously. It also automatically solves all conflicts if users make changes at the same time.
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/users-in-real-time-collaboration.html' level='4'>
+	<ck:card-title level='4'>
 		Co-authoring
 	</ck:card-title>
 	<ck:card-description>
@@ -862,7 +862,7 @@ Real-Time Collaboration in CKEditor 5 is designed for users who are writing, rev
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='@cs' level='4'>
+	<ck:card-title level='4'>
 		On-premises
 	</ck:card-title>
 	<ck:card-description>
@@ -875,7 +875,7 @@ Real-Time Collaboration in CKEditor 5 is designed for users who are writing, rev
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='@cs' level='4'>
+	<ck:card-title level='4'>
 		SaaS
 	</ck:card-title>
 	<ck:card-description>
@@ -920,7 +920,7 @@ Collaborate also regarding different formats. With content conversions, you can 
 CKEditor 5 may be your universal starting point for generating content in several recognizable formats.
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/export-pdf.html' level='4'>
+	<ck:card-title level='4'>
 		Export to PDF
 	</ck:card-title>
 	<ck:card-description>
@@ -933,7 +933,7 @@ CKEditor 5 may be your universal starting point for generating content in severa
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/export-word.html' level='4'>
+	<ck:card-title level='4'>
 		Export to Word
 	</ck:card-title>
 	<ck:card-description>
@@ -946,7 +946,7 @@ CKEditor 5 may be your universal starting point for generating content in severa
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/import-word.html' level='4'>
+	<ck:card-title level='4'>
 		Import from Word
 	</ck:card-title>
 	<ck:card-description>
@@ -1015,7 +1015,7 @@ The Document Outline feature automatically detects and lists document headings i
 CKEditor 5 Page Utilities enables users to dictate the structuring and print formatting of their documents effectively.
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/minimap.html' level='4'>
+	<ck:card-title level='4'>
 		Content minimap
 	</ck:card-title>
 	<ck:card-description>
@@ -1028,7 +1028,7 @@ CKEditor 5 Page Utilities enables users to dictate the structuring and print for
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/title.html' level='4'>
+	<ck:card-title level='4'>
 		Document title
 	</ck:card-title>
 	<ck:card-description>
@@ -1041,7 +1041,7 @@ CKEditor 5 Page Utilities enables users to dictate the structuring and print for
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/page-break.html' level='4'>
+	<ck:card-title level='4'>
 		Page break
 	</ck:card-title>
 	<ck:card-description>
@@ -1086,7 +1086,7 @@ The AI Assistant feature enhances editing efficiency and creativity with artific
 Automate your workflow with CKEditor 5 automation tools, regardless of whether you write, link, or save!
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/autoformat.html' level='4'>
+	<ck:card-title level='4'>
 		Autoformatting
 	</ck:card-title>
 	<ck:card-description>
@@ -1099,7 +1099,7 @@ Automate your workflow with CKEditor 5 automation tools, regardless of whether y
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/link.html#autolink-feature' level='4'>
+	<ck:card-title level='4'>
 		Autolink
 	</ck:card-title>
 	<ck:card-description>
@@ -1112,7 +1112,7 @@ Automate your workflow with CKEditor 5 automation tools, regardless of whether y
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/text-transformation.html' level='4'>
+	<ck:card-title level='4'>
 		Automatic text transformations
 	</ck:card-title>
 	<ck:card-description>
@@ -1125,7 +1125,7 @@ Automate your workflow with CKEditor 5 automation tools, regardless of whether y
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/autosave.html' level='4'>
+	<ck:card-title level='4'>
 		Autosave
 	</ck:card-title>
 	<ck:card-description>
@@ -1274,7 +1274,7 @@ You can prompt the user to input content by displaying a configurable placeholde
 The editor's user interface is dependent on the editor types. The editor provides functionality through specialized features accessible via a configurable toolbar or keyboard shortcuts. Some of these features are only available with certain editor types.
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor' level='4'>
+	<ck:card-title level='4'>
 		Balloon block editor
 	</ck:card-title>
 	<ck:card-description>
@@ -1287,7 +1287,7 @@ The editor's user interface is dependent on the editor types. The editor provide
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor' level='4'>
+	<ck:card-title level='4'>
 		Balloon editor
 	</ck:card-title>
 	<ck:card-description>
@@ -1300,7 +1300,7 @@ The editor's user interface is dependent on the editor types. The editor provide
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/getting-started/setup/editor-types#classic-editor' level='4'>
+	<ck:card-title level='4'>
 		Classic editor
 	</ck:card-title>
 	<ck:card-description>
@@ -1313,7 +1313,7 @@ The editor's user interface is dependent on the editor types. The editor provide
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/getting-started/setup/editor-types#decoupled-editor-document' level='4'>
+	<ck:card-title level='4'>
 		Decoupled editor
 	</ck:card-title>
 	<ck:card-description>
@@ -1326,7 +1326,7 @@ The editor's user interface is dependent on the editor types. The editor provide
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/getting-started/setup/editor-types#inline-editor' level='4'>
+	<ck:card-title level='4'>
 		Inline editor
 	</ck:card-title>
 	<ck:card-description>
@@ -1339,7 +1339,7 @@ The editor's user interface is dependent on the editor types. The editor provide
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/getting-started/setup/editor-types#multi-root-editor' level='4'>
+	<ck:card-title level='4'>
 		Multi-root editor
 	</ck:card-title>
 	<ck:card-description>
@@ -1356,7 +1356,7 @@ The editor's user interface is dependent on the editor types. The editor provide
 CKEditor 5 provides a wide variety of tools and functions for editing almost any kind of content. This includes a wide array of tools and solutions to make email editing easier and more compatible with various email clients.
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/email-editing/email-configuration-helper.html' level='4'>
+	<ck:card-title level='4'>
 		Email configuration helper
 	</ck:card-title>
 	<ck:card-description>
@@ -1381,7 +1381,7 @@ CKEditor 5 provides 38 professionally translated language options, along with ad
 The Toolbar Configuration feature provides different toolbar interfaces for editing content. The default toolbar includes dropdown menus and buttons for various editing functions. The Balloon Toolbar appears when text is selected, showing relevant tools. The Block Toolbar is accessed by clicking a button on the left-hand side of the editor, providing tools for the active block of content. Additionally, the Multiline Toolbar option allows for the expansion of the standard toolbar over multiple lines to display more tools simultaneously.
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/getting-started/setup/toolbar#balloon-toolbar' level='4'>
+	<ck:card-title level='4'>
 		Balloon toolbar
 	</ck:card-title>
 	<ck:card-description>
@@ -1394,7 +1394,7 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/getting-started/setup/toolbar#block-toolbar' level='4'>
+	<ck:card-title level='4'>
 		Block toolbar
 	</ck:card-title>
 	<ck:card-description>
@@ -1407,7 +1407,7 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/getting-started/setup/toolbar#main-editor-toolbar' level='4'>
+	<ck:card-title level='4'>
 		Classic toolbar
 	</ck:card-title>
 	<ck:card-description>
@@ -1420,7 +1420,7 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/getting-started/setup/toolbar#extended-toolbar-configuration-format' level='4'>
+	<ck:card-title level='4'>
 		Collapsible toolbar
 	</ck:card-title>
 	<ck:card-description>
@@ -1433,7 +1433,7 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/images-overview#image-contextual-toolbar' level='4'>
+	<ck:card-title level='4'>
 		Image contextual toolbar
 	</ck:card-title>
 	<ck:card-description>
@@ -1446,7 +1446,7 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/getting-started/setup/menubar' level='4'>
+	<ck:card-title level='4'>
 		Menu bar
 	</ck:card-title>
 	<ck:card-description>
@@ -1459,7 +1459,7 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/getting-started/setup/toolbar#multiline-wrapping-toolbar' level='4'>
+	<ck:card-title level='4'>
 		Multiline toolbar
 	</ck:card-title>
 	<ck:card-description>
@@ -1472,7 +1472,7 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/getting-started/setup/toolbar#grouping-toolbar-items-in-dropdowns-nested-toolbars' level='4'>
+	<ck:card-title level='4'>
 		Nesting toolbars in dropdowns
 	</ck:card-title>
 	<ck:card-description>
@@ -1485,7 +1485,7 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/annotations-display-mode#wide-sidebar' level='4'>
+	<ck:card-title level='4'>
 		Wide sidebar
 	</ck:card-title>
 	<ck:card-description>
@@ -1498,7 +1498,7 @@ The Toolbar Configuration feature provides different toolbar interfaces for edit
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/features/tables#table-contextual-toolbar' level='4'>
+	<ck:card-title level='4'>
 		Table contextual toolbar
 	</ck:card-title>
 	<ck:card-description>
@@ -1579,7 +1579,7 @@ Customize your editor even further. Use components and helpers from our UI libra
 Select from numerous toolbar styles and over 100 plugins to tailor an editor that perfectly fits your requirements, all without needing any development expertise. For those looking to go further, the CKEditor API enables the creation of custom plugins or modification of the editor's functionality. To assist the development process, dedicated resources such as a package generator and the CKEditor 5 Inspector - a comprehensive suite of debugging tools - are provided, helping accelerate development work.
 
 <ck:card>
-	<ck:card-title href='/ckeditor5/latest/framework/development-tools/inspector.html' level='4'>
+	<ck:card-title level='4'>
 		CKEditor 5 inspector
 	</ck:card-title>
 	<ck:card-description>
@@ -1592,7 +1592,7 @@ Select from numerous toolbar styles and over 100 plugins to tailor an editor tha
 </ck:card>
 
 <ck:card>
-	<ck:card-title href='@cs' level='4'>
+	<ck:card-title level='4'>
 		Cloud Services REST API
 	</ck:card-title>
 	<ck:card-description>
