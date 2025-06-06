@@ -15,6 +15,8 @@ import '../../theme/characterinfo.css';
 /**
  * The view displaying detailed information about a special character glyph, e.g. upon
  * hovering it with a mouse.
+ *
+ * @internal
  */
 export class CharacterInfoView extends View<HTMLDivElement> {
 	/**
