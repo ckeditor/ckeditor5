@@ -228,6 +228,16 @@ export class Token extends /* #__PURE__ */ ObservableMixin() {
 				return DEFAULT_TOKEN_REFRESH_TIMEOUT_TIME;
 			}
 
+			// Check if the token expire time exceeds 32-bit integer range
+			// It could happen if the token expire time is provided in milliseconds instead of seconds.
+			if ( tokenExpireTime > 2147483647 ) {
+				console.warn(
+					'Token expiration time exceeds 32-bit integer range. This might cause unpredictable token refresh timing. ' +
+					'Token expiration time should always be provided in seconds.',
+					{ tokenExpireTime }
+				);
+			}
+
 			const tokenRefreshTimeoutTime = Math.floor( ( ( tokenExpireTime * 1000 ) - Date.now() ) / 2 );
 
 			return tokenRefreshTimeoutTime;

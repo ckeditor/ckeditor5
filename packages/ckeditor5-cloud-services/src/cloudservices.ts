@@ -54,7 +54,7 @@ export class CloudServices extends ContextPlugin implements CloudServicesConfig 
 	 *
 	 * When set to `false`, the token will not be automatically refreshed, and you will need to handle token refresh manually.
 	 */
-	public autoRefresh: boolean = true;
+	public readonly autoRefresh: boolean = true;
 
 	/**
 	 * Other plugins use this token for the authorization process. It handles token requesting and refreshing.
