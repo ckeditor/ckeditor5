@@ -456,6 +456,11 @@ interface Props {
 	onCancelClick(): void;
 }
 
+/**
+ * The API exposed on each raw HTML embed widget so other features can control a particular widget.
+ *
+ * @internal
+ */
 export interface RawHtmlApi {
 	makeEditable(): void;
 	save( newValue: string ): void;
