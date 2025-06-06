@@ -7,14 +7,6 @@ import { Token } from '../../src/token/token.js';
 
 export class TokenMock extends Token {
 	/**
-	 * @param {String|Function} tokenUrlOrRefreshToken
-	 * @param {Object} [options]
-	 */
-	constructor( tokenUrlOrRefreshToken, options = { autoRefresh: true } ) {
-		super( tokenUrlOrRefreshToken, options );
-	}
-
-	/**
 	 * Overrides request and set the next token
 	 *
 	 * @returns {Promise.<Token>}

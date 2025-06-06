@@ -51,8 +51,6 @@ export class CloudServices extends ContextPlugin implements CloudServicesConfig 
 
 	/**
 	 * Specifies whether the token should be automatically refreshed when it expires.
-	 *
-	 * When set to `false`, the token will not be automatically refreshed, and you will need to handle token refresh manually.
 	 */
 	public readonly autoRefresh: boolean = true;
 
