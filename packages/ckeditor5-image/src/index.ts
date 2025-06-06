@@ -103,6 +103,7 @@ export {
 } from './imagestyle/converters.js';
 
 export {
+	utils as _ImageStyleUtils,
 	DEFAULT_OPTIONS as _IMAGE_DEFAULT_OPTIONS,
 	DEFAULT_ICONS as _IMAGE_DEFAULT_ICONS,
 	DEFAULT_DROPDOWN_DEFINITIONS as _IMAGE_DEFAULT_DROPDOWN_DEFINITIONS
