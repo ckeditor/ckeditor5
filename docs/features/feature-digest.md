@@ -17,152 +17,156 @@ Core editing capability provides tools to create, edit, and style content. Here 
 
 Advanced HTML Editing provides general HTML support, offering detailed control over permissible HTML elements, attributes, and styles. It further allows HTML Source Code Editing, handling HTML elements, HTML comments, and editing of the full page content, including meta tags.
 
-<ck:card>
-	<ck:card-title level='4'>
-		Full page HTML
-	</ck:card-title>
-	<ck:card-description>
-		Thanks to the full page HTML feature, you can use CKEditor 5 to edit entire HTML pages (from `<html>` to `</html>`), including the page metadata. While the General HTML Support feature focuses on elements inside the content (the document's `<body>`), this feature enables markup invisible to the end user.
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4'>
+			Full page HTML
+		</ck:card-title>
+		<ck:card-description>
+			Thanks to the full page HTML feature, you can use CKEditor 5 to edit entire HTML pages (from `<html>` to `</html>`), including the page metadata. While the General HTML Support feature focuses on elements inside the content (the document's `<body>`), this feature enables markup invisible to the end user.
 
-		<ck:button-link size='sm' variant='secondary' href='features/full-page-html'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/full-page-html'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		General HTML Support (GHS)
-	</ck:card-title>
-	<ck:card-description>
-		With the General HTML Support (GHS) feature, developers can enable HTML features that are not supported by any other dedicated CKEditor 5 plugins. GHS lets you add elements, attributes, classes, and styles to the source. It also ensures this markup stays in the editor window and the output.
+	<ck:card>
+		<ck:card-title level='4'>
+			General HTML Support (GHS)
+		</ck:card-title>
+		<ck:card-description>
+			With the General HTML Support (GHS) feature, developers can enable HTML features that are not supported by any other dedicated CKEditor 5 plugins. GHS lets you add elements, attributes, classes, and styles to the source. It also ensures this markup stays in the editor window and the output.
 
-		<ck:button-link size='sm' variant='secondary' href='features/general-html-support'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/general-html-support'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		HTML comment
-	</ck:card-title>
-	<ck:card-description>
-		By default, the editor filters out all HTML comments on initialization. The HTML comment feature lets developers keep HTML comments in the document without displaying them to the user.
+	<ck:card>
+		<ck:card-title level='4'>
+			HTML comment
+		</ck:card-title>
+		<ck:card-description>
+			By default, the editor filters out all HTML comments on initialization. The HTML comment feature lets developers keep HTML comments in the document without displaying them to the user.
 
-		<ck:button-link size='sm' variant='secondary' href='features/html-comments'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/html-comments'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		HTML embed
-	</ck:card-title>
-	<ck:card-description>
-		The HTML embed feature lets you embed any HTML snippet in your content. The feature is meant for more advanced users who want to directly interact with HTML fragments.
+	<ck:card>
+		<ck:card-title level='4'>
+			HTML embed
+		</ck:card-title>
+		<ck:card-description>
+			The HTML embed feature lets you embed any HTML snippet in your content. The feature is meant for more advanced users who want to directly interact with HTML fragments.
 
-		<ck:button-link size='sm' variant='secondary' href='features/html-embed'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/html-embed'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Show blocks
-	</ck:card-title>
-	<ck:card-description>
-		The show blocks feature allows the content creators to visualize all block-level elements (except for widgets). It surrounds them with an outline and displays their element name in the top-left corner of the box.
+	<ck:card>
+		<ck:card-title level='4'>
+			Show blocks
+		</ck:card-title>
+		<ck:card-description>
+			The show blocks feature allows the content creators to visualize all block-level elements (except for widgets). It surrounds them with an outline and displays their element name in the top-left corner of the box.
 
-		<ck:button-link size='sm' variant='secondary' href='features/show-blocks'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/show-blocks'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Source code editing
-	</ck:card-title>
-	<ck:card-description>
-		The source editing feature lets you view and edit the source of your document.
+	<ck:card>
+		<ck:card-title level='4'>
+			Source code editing
+		</ck:card-title>
+		<ck:card-description>
+			The source editing feature lets you view and edit the source of your document.
 
-		<ck:button-link size='sm' variant='secondary' href='features/source-editing'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/source-editing'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Enhanced source code editing
-	</ck:card-title>
-	<ck:card-description>
-		Enhanced source code editing allows for viewing and editing the source code of the document in a handy modal window (compatible with all editor types) with syntax highlighting, autocompletion and more.
+	<ck:card>
+		<ck:card-title level='4'>
+			Enhanced source code editing
+		</ck:card-title>
+		<ck:card-description>
+			Enhanced source code editing allows for viewing and editing the source code of the document in a handy modal window (compatible with all editor types) with syntax highlighting, autocompletion and more.
 
-		<ck:button-link size='sm' variant='secondary' href='features/enhanced-source-editing'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/enhanced-source-editing'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
+</ck:columns>
 
 ### Block formatting
 
 Block Formatting allows for the organization and emphasis of content through the use of Headings, Style Headings, Block Quotes, and Horizontal Lines. Users can select from different levels of headings to outline sections and subsections, apply various styles to these headings for visual hierarchy, insert horizontal lines to delineate sections, and use block quotes to highlight excerpts or important passages.
 
-<ck:card>
-	<ck:card-title level='4'>
-		Block quote
-	</ck:card-title>
-	<ck:card-description>
-		The block quote feature lets you easily include block quotations or pull quotes in your content. It is also an attractive way to draw the readers' attention to selected parts of the text.
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4'>
+			Block quote
+		</ck:card-title>
+		<ck:card-description>
+			The block quote feature lets you easily include block quotations or pull quotes in your content. It is also an attractive way to draw the readers' attention to selected parts of the text.
 
-		<ck:button-link size='sm' variant='secondary' href='features/block-quote'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/block-quote'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Headings/paragraph
-	</ck:card-title>
-	<ck:card-description>
-		The heading feature helps you structure your document by adding headings to parts of the text. They make your content easier to scan by both readers and search engines.
+	<ck:card>
+		<ck:card-title level='4'>
+			Headings/paragraph
+		</ck:card-title>
+		<ck:card-description>
+			The heading feature helps you structure your document by adding headings to parts of the text. They make your content easier to scan by both readers and search engines.
 
-		<ck:button-link size='sm' variant='secondary' href='features/headings'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/headings'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Horizontal line
-	</ck:card-title>
-	<ck:card-description>
-		The horizontal line feature lets you visually divide your content into sections by inserting horizontal lines (also known as horizontal rules). It is an easy way to organize the content or indicate a change of topic.
+	<ck:card>
+		<ck:card-title level='4'>
+			Horizontal line
+		</ck:card-title>
+		<ck:card-description>
+			The horizontal line feature lets you visually divide your content into sections by inserting horizontal lines (also known as horizontal rules). It is an easy way to organize the content or indicate a change of topic.
 
-		<ck:button-link size='sm' variant='secondary' href='features/horizontal-line'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/horizontal-line'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Block indentation
-	</ck:card-title>
-	<ck:card-description>
-		The block indentation feature lets you set indentation for text blocks such as paragraphs, headings, or lists. This way you can visually distinguish parts of your content.
+	<ck:card>
+		<ck:card-title level='4'>
+			Block indentation
+		</ck:card-title>
+		<ck:card-description>
+			The block indentation feature lets you set indentation for text blocks such as paragraphs, headings, or lists. This way you can visually distinguish parts of your content.
 
-		<ck:button-link size='sm' variant='secondary' href='features/indent'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/indent'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
+</ck:columns>
 
 ### Bookmarks
 
@@ -200,165 +204,169 @@ Rearrange elements within a document, including moving text blocks, images, or o
 
 The font feature lets you change font family, size, and color (including background color). All of these options are configurable.
 
-<ck:card>
-	<ck:card-title level='4'>
-		Font background color
-	</ck:card-title>
-	<ck:card-description>
-		Effortlessly make the words stand out even more with a colored background.
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4'>
+			Font background color
+		</ck:card-title>
+		<ck:card-description>
+			Effortlessly make the words stand out even more with a colored background.
 
-		<ck:button-link size='sm' variant='secondary' href='features/font#configuring-the-font-color-and-font-background-color-features'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/font#configuring-the-font-color-and-font-background-color-features'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Font color
-	</ck:card-title>
-	<ck:card-description>
-		Effortlessly make the letters stand out with their own color.
+	<ck:card>
+		<ck:card-title level='4'>
+			Font color
+		</ck:card-title>
+		<ck:card-description>
+			Effortlessly make the letters stand out with their own color.
 
-		<ck:button-link size='sm' variant='secondary' href='features/font#configuring-the-font-color-and-font-background-color-features'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/font#configuring-the-font-color-and-font-background-color-features'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Font family
-	</ck:card-title>
-	<ck:card-description>
-		Choose from a predefined set of fonts, depending on the type of content and its destination - print, screen, etc.
+	<ck:card>
+		<ck:card-title level='4'>
+			Font family
+		</ck:card-title>
+		<ck:card-description>
+			Choose from a predefined set of fonts, depending on the type of content and its destination - print, screen, etc.
 
-		<ck:button-link size='sm' variant='secondary' href='features/font#configuring-the-font-family-feature'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/font#configuring-the-font-family-feature'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Font size
-	</ck:card-title>
-	<ck:card-description>
-		Easily control the size of the letters.
+	<ck:card>
+		<ck:card-title level='4'>
+			Font size
+		</ck:card-title>
+		<ck:card-description>
+			Easily control the size of the letters.
 
-		<ck:button-link size='sm' variant='secondary' href='features/font#configuring-the-font-size-feature'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/font#configuring-the-font-size-feature'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
+</ck:columns>
 
 ### Image
 
 The image feature allows adding images of various kinds to the rich content inside the editor. A large set of subfeatures lets the users fully control this process. Upload or paste images, insert via URL, use responsive images, resize images, add captions, set different image styles, and link images.
 
-<ck:card>
-	<ck:card-title level='4'>
-		Image alt text
-	</ck:card-title>
-	<ck:card-description>
-		Add description text, AKA alternative text, for images. Alt text improves accessibility by telling screen readers and search engines what the image depicts.
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4'>
+			Image alt text
+		</ck:card-title>
+		<ck:card-description>
+			Add description text, AKA alternative text, for images. Alt text improves accessibility by telling screen readers and search engines what the image depicts.
 
-		<ck:button-link size='sm' variant='secondary' href='features/images-text-alternative'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/images-text-alternative'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Image captions
-	</ck:card-title>
-	<ck:card-description>
-		Add optional captions for images, which are shown below the picture.
+	<ck:card>
+		<ck:card-title level='4'>
+			Image captions
+		</ck:card-title>
+		<ck:card-description>
+			Add optional captions for images, which are shown below the picture.
 
-		<ck:button-link size='sm' variant='secondary' href='features/images-captions'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/images-captions'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Image insert via URL
-	</ck:card-title>
-	<ck:card-description>
-		You can insert images by uploading them directly from your disk, but you can also configure CKEditor 5 to let you insert images using URLs. This way, you can save time by adding images that are already online.
+	<ck:card>
+		<ck:card-title level='4'>
+			Image insert via URL
+		</ck:card-title>
+		<ck:card-description>
+			You can insert images by uploading them directly from your disk, but you can also configure CKEditor 5 to let you insert images using URLs. This way, you can save time by adding images that are already online.
 
-		<ck:button-link size='sm' variant='secondary' href='features/images-inserting'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/images-inserting'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Image linking
-	</ck:card-title>
-	<ck:card-description>
-		The LinkImage plugin lets you use images as links.
+	<ck:card>
+		<ck:card-title level='4'>
+			Image linking
+		</ck:card-title>
+		<ck:card-description>
+			The LinkImage plugin lets you use images as links.
 
-		<ck:button-link size='sm' variant='secondary' href='features/images-linking'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/images-linking'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Image resize
-	</ck:card-title>
-	<ck:card-description>
-		The image resize feature lets you change the width of images in your content. It is implemented by the ImageResize plugin.
+	<ck:card>
+		<ck:card-title level='4'>
+			Image resize
+		</ck:card-title>
+		<ck:card-description>
+			The image resize feature lets you change the width of images in your content. It is implemented by the ImageResize plugin.
 
-		<ck:button-link size='sm' variant='secondary' href='features/images-resizing'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/images-resizing'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Image styles
-	</ck:card-title>
-	<ck:card-description>
-		The image styles feature lets you adjust the appearance of images. It works by applying CSS classes to images or changing their type from inline to block or vice versa.
+	<ck:card>
+		<ck:card-title level='4'>
+			Image styles
+		</ck:card-title>
+		<ck:card-description>
+			The image styles feature lets you adjust the appearance of images. It works by applying CSS classes to images or changing their type from inline to block or vice versa.
 
-		<ck:button-link size='sm' variant='secondary' href='features/images-styles'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/images-styles'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Image upload
-	</ck:card-title>
-	<ck:card-description>
-		Inserting images into content created with CKEditor 5 is quite a common task. In a properly configured rich-text editor, there are several ways for the end user to insert images.
+	<ck:card>
+		<ck:card-title level='4'>
+			Image upload
+		</ck:card-title>
+		<ck:card-description>
+			Inserting images into content created with CKEditor 5 is quite a common task. In a properly configured rich-text editor, there are several ways for the end user to insert images.
 
-		<ck:button-link size='sm' variant='secondary' href='features/image-upload'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/image-upload'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Responsive images
-	</ck:card-title>
-	<ck:card-description>
-		The ability to have responsive images in the rich-text editor content is a great modern feature provided by the CKBox asset manager. With a single image upload, several optimized versions of that image are created, each for a different size of the display. The CKBox feature produces a `<picture>` element with a set of optimized images. The browser will automatically load the image with the dimensions most suitable for the presented page resolution, which makes the image load much faster and saves bandwidth.
+	<ck:card>
+		<ck:card-title level='4'>
+			Responsive images
+		</ck:card-title>
+		<ck:card-description>
+			The ability to have responsive images in the rich-text editor content is a great modern feature provided by the CKBox asset manager. With a single image upload, several optimized versions of that image are created, each for a different size of the display. The CKBox feature produces a `<picture>` element with a set of optimized images. The browser will automatically load the image with the dimensions most suitable for the presented page resolution, which makes the image load much faster and saves bandwidth.
 
-		<ck:button-link size='sm' variant='secondary' href='features/images-responsive'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/images-responsive'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
+</ck:columns>
 
 ### Links
 
@@ -372,122 +380,124 @@ Facilitates the addition of hyperlinks to text, automatically converting typed o
 
 Lists allow the creation and management of various list types, including to-do lists, bulleted and numbered lists, with additional customization options such as list styles, setting the start number for lists, creating reversed lists, adjusting list indentation, and crafting nested lists.
 
-<ck:card>
-	<ck:card-title level='4'>
-		List indentation
-	</ck:card-title>
-	<ck:card-description>
-		Besides controlling text block indentation, the indent and outdent buttons allow for indenting list items (nesting them).
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4'>
+			List indentation
+		</ck:card-title>
+		<ck:card-description>
+			Besides controlling text block indentation, the indent and outdent buttons allow for indenting list items (nesting them).
 
-		<ck:button-link size='sm' variant='secondary' href='features/lists-editing#indenting-lists'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/lists-editing#indenting-lists'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		List start index
-	</ck:card-title>
-	<ck:card-description>
-		The list start index feature allows the user to choose the starting point of an ordered list. By default, this would be 1 (or A, or I – see the list styles section). Sometimes, you may want to start a list with some other digit or letter, though.
+	<ck:card>
+		<ck:card-title level='4'>
+			List start index
+		</ck:card-title>
+		<ck:card-description>
+			The list start index feature allows the user to choose the starting point of an ordered list. By default, this would be 1 (or A, or I – see the list styles section). Sometimes, you may want to start a list with some other digit or letter, though.
 
-		<ck:button-link size='sm' variant='secondary' href='features/lists#list-start-index'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/lists#list-start-index'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		List styles
-	</ck:card-title>
-	<ck:card-description>
-		The list style feature introduces more styles for the list item markers. When enabled, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown.
+	<ck:card>
+		<ck:card-title level='4'>
+			List styles
+		</ck:card-title>
+		<ck:card-description>
+			The list style feature introduces more styles for the list item markers. When enabled, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown.
 
-		<ck:button-link size='sm' variant='secondary' href='features/lists#list-styles'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/lists#list-styles'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Multi-level lists
-	</ck:card-title>
-	<ck:card-description>
-		Multi-level lists with the legal style numbering feature allows for easy creation and modification of numbered lists with counters (1, 1.1, 1.1.1). These are crucial for clear referencing and hierarchical organization in complex documents. The feature offers full compatibility with Microsoft Word.
+	<ck:card>
+		<ck:card-title level='4'>
+			Multi-level lists
+		</ck:card-title>
+		<ck:card-description>
+			Multi-level lists with the legal style numbering feature allows for easy creation and modification of numbered lists with counters (1, 1.1, 1.1.1). These are crucial for clear referencing and hierarchical organization in complex documents. The feature offers full compatibility with Microsoft Word.
 
-		<ck:button-link size='sm' variant='secondary' href='features/multi-level-lists'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/multi-level-lists'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Nested lists
-	</ck:card-title>
-	<ck:card-description>
-		Besides controlling text block indentation, the indent and outdent buttons allow for indenting list items (nesting them).
+	<ck:card>
+		<ck:card-title level='4'>
+			Nested lists
+		</ck:card-title>
+		<ck:card-description>
+			Besides controlling text block indentation, the indent and outdent buttons allow for indenting list items (nesting them).
 
-		<ck:button-link size='sm' variant='secondary' href='features/lists-editing#indenting-lists'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/lists-editing#indenting-lists'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Ordered lists
-	</ck:card-title>
-	<ck:card-description>
-		The list feature lets you create ordered (numbered) lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation. You can also easily control the list markers type.
+	<ck:card>
+		<ck:card-title level='4'>
+			Ordered lists
+		</ck:card-title>
+		<ck:card-description>
+			The list feature lets you create ordered (numbered) lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation. You can also easily control the list markers type.
 
-		<ck:button-link size='sm' variant='secondary' href='features/lists'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/lists'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Reversed list
-	</ck:card-title>
-	<ck:card-description>
-		The reversed list feature lets the user reverse the numbering order of a list, changing it from ascending to descending. This is useful in countdowns and things-to-do lists that need to reproduce steps in a reversed order (for example, in disassembly instructions).
+	<ck:card>
+		<ck:card-title level='4'>
+			Reversed list
+		</ck:card-title>
+		<ck:card-description>
+			The reversed list feature lets the user reverse the numbering order of a list, changing it from ascending to descending. This is useful in countdowns and things-to-do lists that need to reproduce steps in a reversed order (for example, in disassembly instructions).
 
-		<ck:button-link size='sm' variant='secondary' href='features/lists#reversed-list'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/lists#reversed-list'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		To-do lists
-	</ck:card-title>
-	<ck:card-description>
-		The to-do list feature lets you create a list of interactive checkboxes with labels. It supports all features of bulleted and numbered lists, so you can nest a to-do list together with any combination of other lists.
+	<ck:card>
+		<ck:card-title level='4'>
+			To-do lists
+		</ck:card-title>
+		<ck:card-description>
+			The to-do list feature lets you create a list of interactive checkboxes with labels. It supports all features of bulleted and numbered lists, so you can nest a to-do list together with any combination of other lists.
 
-		<ck:button-link size='sm' variant='secondary' href='features/todo-lists'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/todo-lists'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Unordered lists
-	</ck:card-title>
-	<ck:card-description>
-		The list feature lets you create unordered (bulleted) lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation. You can also easily control the list markers' shape.
+	<ck:card>
+		<ck:card-title level='4'>
+			Unordered lists
+		</ck:card-title>
+		<ck:card-description>
+			The list feature lets you create unordered (bulleted) lists. The unique thing about them is that you can put any content inside each list item (including block elements like paragraphs and tables), retaining the continuity of numbering and indentation. You can also easily control the list markers' shape.
 
-		<ck:button-link size='sm' variant='secondary' href='features/lists'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/lists'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
+</ck:columns>
 
 ### Mermaid
 
@@ -517,122 +527,124 @@ Enables the selection of all content within the editor with a single command or 
 
 CKEditor 5 provides robust support for tables, with the ability to merge and split cells, resize columns, style tables and individual cells, insert and delete columns and rows, as well as create nested tables for complex data presentation.
 
-<ck:card>
-	<ck:card-title level='4'>
-		Columns resizing
-	</ck:card-title>
-	<ck:card-description>
-		The TableColumnResize plugin lets you resize tables and individual table columns. It gives you complete control over column width.
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4'>
+			Columns resizing
+		</ck:card-title>
+		<ck:card-description>
+			The TableColumnResize plugin lets you resize tables and individual table columns. It gives you complete control over column width.
 
-		<ck:button-link size='sm' variant='secondary' href='features/tables-resize'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/tables-resize'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Insert/delete columns & rows
-	</ck:card-title>
-	<ck:card-description>
-		The basic table features allow users to insert tables into content, add or remove columns and rows and merge or split cells.
+	<ck:card>
+		<ck:card-title level='4'>
+			Insert/delete columns & rows
+		</ck:card-title>
+		<ck:card-description>
+			The basic table features allow users to insert tables into content, add or remove columns and rows and merge or split cells.
 
-		<ck:button-link size='sm' variant='secondary' href='features/tables#table-contextual-toolbar'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/tables#table-contextual-toolbar'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Merge & split cells
-	</ck:card-title>
-	<ck:card-description>
-		The basic table features allow users to insert tables into content, add or remove columns and rows, and merge or split cells.
+	<ck:card>
+		<ck:card-title level='4'>
+			Merge & split cells
+		</ck:card-title>
+		<ck:card-description>
+			The basic table features allow users to insert tables into content, add or remove columns and rows, and merge or split cells.
 
-		<ck:button-link size='sm' variant='secondary' href='features/tables#table-contextual-toolbar'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/tables#table-contextual-toolbar'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Nesting
-	</ck:card-title>
-	<ck:card-description>
-		CKEditor 5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can be formatted just like a regular one.
+	<ck:card>
+		<ck:card-title level='4'>
+			Nesting
+		</ck:card-title>
+		<ck:card-description>
+			CKEditor 5 allows nesting tables inside other table's cells. This may be used for creating advanced charts or layouts based on tables. The nested table can be formatted just like a regular one.
 
-		<ck:button-link size='sm' variant='secondary' href='features/tables#nesting-tables'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/tables#nesting-tables'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Styling tables & cells
-	</ck:card-title>
-	<ck:card-description>
-		CKEditor 5 comes with some additional tools that help you change the look of tables and table cells. You can control border color and style, background color, padding, or text alignment.
+	<ck:card>
+		<ck:card-title level='4'>
+			Styling tables & cells
+		</ck:card-title>
+		<ck:card-description>
+			CKEditor 5 comes with some additional tools that help you change the look of tables and table cells. You can control border color and style, background color, padding, or text alignment.
 
-		<ck:button-link size='sm' variant='secondary' href='features/tables-styling'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/tables-styling'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Table headers
-	</ck:card-title>
-	<ck:card-description>
-		To make every inserted table have n number of rows and columns as table headers by default, set an optional table configuration property defaultHeadings.
+	<ck:card>
+		<ck:card-title level='4'>
+			Table headers
+		</ck:card-title>
+		<ck:card-description>
+			To make every inserted table have n number of rows and columns as table headers by default, set an optional table configuration property defaultHeadings.
 
-		<ck:button-link size='sm' variant='secondary' href='features/tables#default-table-headers'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/tables#default-table-headers'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Table selection
-	</ck:card-title>
-	<ck:card-description>
-		The TableSelection plugin introduces support for the custom selection system for tables that lets you:• Select an arbitrary rectangular table fragment – a few cells from different rows, a column (or a few of them) or a row (or multiple rows).• Apply formatting or add a link to all selected cells at once. The table selection plugin is loaded automatically by the Table plugin.
+	<ck:card>
+		<ck:card-title level='4'>
+			Table selection
+		</ck:card-title>
+		<ck:card-description>
+			The TableSelection plugin introduces support for the custom selection system for tables that lets you:• Select an arbitrary rectangular table fragment – a few cells from different rows, a column (or a few of them) or a row (or multiple rows).• Apply formatting or add a link to all selected cells at once. The table selection plugin is loaded automatically by the Table plugin.
 
-		<ck:button-link size='sm' variant='secondary' href='features/tables#table-selection'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/tables#table-selection'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Table caption
-	</ck:card-title>
-	<ck:card-description>
-		The TableCaption plugin lets you add captions to your tables. Table captions also improve accessibility as they are recognized by screen readers.
+	<ck:card>
+		<ck:card-title level='4'>
+			Table caption
+		</ck:card-title>
+		<ck:card-description>
+			The TableCaption plugin lets you add captions to your tables. Table captions also improve accessibility as they are recognized by screen readers.
 
-		<ck:button-link size='sm' variant='secondary' href='features/tables-caption'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/tables-caption'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Layout tables
-	</ck:card-title>
-	<ck:card-description>
-		The TableLayout plugin is used to structure web page content spatially rather than for presenting tabular data. It lets integrators create multi-column designs and precise positioning of elements on a page.
+	<ck:card>
+		<ck:card-title level='4'>
+			Layout tables
+		</ck:card-title>
+		<ck:card-description>
+			The TableLayout plugin is used to structure web page content spatially rather than for presenting tabular data. It lets integrators create multi-column designs and precise positioning of elements on a page.
 
-		<ck:button-link size='sm' variant='secondary' href='features/tables-caption'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/tables-caption'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
+</ck:columns>
 
 ### Text alignment
 
@@ -647,122 +659,124 @@ Allows the adjustment of text alignment to the left, right, center, or justify a
 
 CKEditor 5 provides developers with text editing and formatting features such as Bold, Italic, Underline, Strikethrough, Subscript, Superscript, Inline Code, Highlight, and Font Styles. These features allow users to style and present their content as needed. This ensures users can style their text to improve readability, match branding guidelines, or highlight important content sections.
 
-<ck:card>
-	<ck:card-title level='4'>
-		Bold
-	</ck:card-title>
-	<ck:card-description>
-		Making the letters look like the good time were never gone.
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4'>
+			Bold
+		</ck:card-title>
+		<ck:card-description>
+			Making the letters look like the good time were never gone.
 
-		<ck:button-link size='sm' variant='secondary' href='features/basic-styles'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/basic-styles'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Code
-	</ck:card-title>
-	<ck:card-description>
-		Snippet look like a terminal from the 1990s movie.
+	<ck:card>
+		<ck:card-title level='4'>
+			Code
+		</ck:card-title>
+		<ck:card-description>
+			Snippet look like a terminal from the 1990s movie.
 
-		<ck:button-link size='sm' variant='secondary' href='features/basic-styles'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/basic-styles'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Highlight
-	</ck:card-title>
-	<ck:card-description>
-		Highlight makes important content stand out, either with font color or background fill.
+	<ck:card>
+		<ck:card-title level='4'>
+			Highlight
+		</ck:card-title>
+		<ck:card-description>
+			Highlight makes important content stand out, either with font color or background fill.
 
-		<ck:button-link size='sm' variant='secondary' href='features/highlight'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/highlight'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Italic
-	</ck:card-title>
-	<ck:card-description>
-		Making the letters look like seashore pines.
+	<ck:card>
+		<ck:card-title level='4'>
+			Italic
+		</ck:card-title>
+		<ck:card-description>
+			Making the letters look like seashore pines.
 
-		<ck:button-link size='sm' variant='secondary' href='features/basic-styles'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/basic-styles'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Strikethrough
-	</ck:card-title>
-	<ck:card-description>
-		Never mind, will not need it anymore.
+	<ck:card>
+		<ck:card-title level='4'>
+			Strikethrough
+		</ck:card-title>
+		<ck:card-description>
+			Never mind, will not need it anymore.
 
-		<ck:button-link size='sm' variant='secondary' href='features/basic-styles'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/basic-styles'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Styles
-	</ck:card-title>
-	<ck:card-description>
-		The styles feature lets you easily apply predefined styles available for block and inline content.
+	<ck:card>
+		<ck:card-title level='4'>
+			Styles
+		</ck:card-title>
+		<ck:card-description>
+			The styles feature lets you easily apply predefined styles available for block and inline content.
 
-		<ck:button-link size='sm' variant='secondary' href='features/style'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/style'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Subscript
-	</ck:card-title>
-	<ck:card-description>
-		Fine print at the bottom, like atom numbers.
+	<ck:card>
+		<ck:card-title level='4'>
+			Subscript
+		</ck:card-title>
+		<ck:card-description>
+			Fine print at the bottom, like atom numbers.
 
-		<ck:button-link size='sm' variant='secondary' href='features/basic-styles'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/basic-styles'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Superscript
-	</ck:card-title>
-	<ck:card-description>
-		Fine print on top, like references in a book.
+	<ck:card>
+		<ck:card-title level='4'>
+			Superscript
+		</ck:card-title>
+		<ck:card-description>
+			Fine print on top, like references in a book.
 
-		<ck:button-link size='sm' variant='secondary' href='features/basic-styles'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/basic-styles'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Underline
-	</ck:card-title>
-	<ck:card-description>
-		Stuff looks important, yo. Or like a link, too.
+	<ck:card>
+		<ck:card-title level='4'>
+			Underline
+		</ck:card-title>
+		<ck:card-description>
+			Stuff looks important, yo. Or like a link, too.
 
-		<ck:button-link size='sm' variant='secondary' href='features/basic-styles'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/basic-styles'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
+</ck:columns>
 
 ### Undo/redo
 
@@ -797,44 +811,46 @@ Asynchronous Collaboration in CKEditor 5 is designed for teams using a turn-base
 
 Users can add side notes to marked fragments of the document, including text and block elements such as images. It also allows the users to discuss in threads and remove comments when they finish the discussion.
 
-<ck:card>
-	<ck:card-title level='4'>
-		Comments archive
-	</ck:card-title>
-	<ck:card-description>
-		Comments threads can be either deleted or resolved. The latter provides a way to archive comments that are no longer relevant, reducing clutter and making it easier to focus on the most important feedback. Users can access the comments archive from the toolbar and use it to view and restore archived comments if necessary. It helps to simplify the feedback management process.
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4'>
+			Comments archive
+		</ck:card-title>
+		<ck:card-description>
+			Comments threads can be either deleted or resolved. The latter provides a way to archive comments that are no longer relevant, reducing clutter and making it easier to focus on the most important feedback. Users can access the comments archive from the toolbar and use it to view and restore archived comments if necessary. It helps to simplify the feedback management process.
 
-		<ck:button-link size='sm' variant='secondary' href='features/comments'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/comments'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Comments outside editor
-	</ck:card-title>
-	<ck:card-description>
-		The comments feature API, together with Context, lets you create deeper integrations with your application. One such integration is enabling comments on non-editor form fields.
+	<ck:card>
+		<ck:card-title level='4'>
+			Comments outside editor
+		</ck:card-title>
+		<ck:card-description>
+			The comments feature API, together with Context, lets you create deeper integrations with your application. One such integration is enabling comments on non-editor form fields.
 
-		<ck:button-link size='sm' variant='secondary' href='features/comments-outside-editor'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/comments-outside-editor'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Sidebar modes
-	</ck:card-title>
-	<ck:card-description>
-		There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs or even create your UI for annotations.
+	<ck:card>
+		<ck:card-title level='4'>
+			Sidebar modes
+		</ck:card-title>
+		<ck:card-description>
+			There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs or even create your UI for annotations.
 
-		<ck:button-link size='sm' variant='secondary' href='features/annotations-display-mode'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/annotations-display-mode'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
+</ck:columns>
 
 ### Mentions
 
@@ -848,44 +864,46 @@ The mention feature supports smart autocompletion triggered by user input. Typin
 
 Real-Time Collaboration in CKEditor 5 is designed for users who are writing, reviewing, and commenting on content simultaneously. It also automatically solves all conflicts if users make changes at the same time.
 
-<ck:card>
-	<ck:card-title level='4'>
-		Co-authoring
-	</ck:card-title>
-	<ck:card-description>
-		Multiple user real-time editing and content creation feature.
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4'>
+			Co-authoring
+		</ck:card-title>
+		<ck:card-description>
+			Multiple user real-time editing and content creation feature.
 
-		<ck:button-link size='sm' variant='secondary' href='features/users-in-real-time-collaboration'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/users-in-real-time-collaboration'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		On-premises
-	</ck:card-title>
-	<ck:card-description>
-		On-premises real-time collaboration version to deploy to client's own infrastructure, includes a private cloud.
+	<ck:card>
+		<ck:card-title level='4'>
+			On-premises
+		</ck:card-title>
+		<ck:card-description>
+			On-premises real-time collaboration version to deploy to client's own infrastructure, includes a private cloud.
 
-		<ck:button-link size='sm' variant='secondary' href='@cs'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='@cs'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		SaaS
-	</ck:card-title>
-	<ck:card-description>
-		Real-time collaboration provided as a service by CKSource.
+	<ck:card>
+		<ck:card-title level='4'>
+			SaaS
+		</ck:card-title>
+		<ck:card-description>
+			Real-time collaboration provided as a service by CKSource.
 
-		<ck:button-link size='sm' variant='secondary' href='@cs'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='@cs'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
+</ck:columns>
 
 ### Revision history
 
@@ -919,44 +937,46 @@ Collaborate also regarding different formats. With content conversions, you can 
 
 CKEditor 5 may be your universal starting point for generating content in several recognizable formats.
 
-<ck:card>
-	<ck:card-title level='4'>
-		Export to PDF
-	</ck:card-title>
-	<ck:card-description>
-		Create a PDF from in-editor content seamlessly. Customize headers and footers, include page breaks, embed images, and choose from various fonts.
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4'>
+			Export to PDF
+		</ck:card-title>
+		<ck:card-description>
+			Create a PDF from in-editor content seamlessly. Customize headers and footers, include page breaks, embed images, and choose from various fonts.
 
-		<ck:button-link size='sm' variant='secondary' href='features/export-pdf'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/export-pdf'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Export to Word
-	</ck:card-title>
-	<ck:card-description>
-		Instantly convert content from the editor to a Word document with a single click, maintaining its appearance and formatting. The final document includes suggestions, comments, page breaks, and embedded images.
+	<ck:card>
+		<ck:card-title level='4'>
+			Export to Word
+		</ck:card-title>
+		<ck:card-description>
+			Instantly convert content from the editor to a Word document with a single click, maintaining its appearance and formatting. The final document includes suggestions, comments, page breaks, and embedded images.
 
-		<ck:button-link size='sm' variant='secondary' href='features/export-word'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/export-word'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Import from Word
-	</ck:card-title>
-	<ck:card-description>
-		Effortlessly transform Word documents into clean HTML within CKEditor 5 while retaining the original styling, as well as comments and change tracking annotations.
+	<ck:card>
+		<ck:card-title level='4'>
+			Import from Word
+		</ck:card-title>
+		<ck:card-description>
+			Effortlessly transform Word documents into clean HTML within CKEditor 5 while retaining the original styling, as well as comments and change tracking annotations.
 
-		<ck:button-link size='sm' variant='secondary' href='features/import-word'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/import-word'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
+</ck:columns>
 
 ### Export with inline styles
 
@@ -1014,44 +1034,46 @@ The Document Outline feature automatically detects and lists document headings i
 
 CKEditor 5 Page Utilities enables users to dictate the structuring and print formatting of their documents effectively.
 
-<ck:card>
-	<ck:card-title level='4'>
-		Content minimap
-	</ck:card-title>
-	<ck:card-description>
-		Offers a concise, birds-eye view of the document's content, allowing for quick navigation and content management.
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4'>
+			Content minimap
+		</ck:card-title>
+		<ck:card-description>
+			Offers a concise, birds-eye view of the document's content, allowing for quick navigation and content management.
 
-		<ck:button-link size='sm' variant='secondary' href='features/minimap'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/minimap'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Document title
-	</ck:card-title>
-	<ck:card-description>
-		Allows users to set and modify the document's title within the editing interface, ensuring accurate reflection of the contents.
+	<ck:card>
+		<ck:card-title level='4'>
+			Document title
+		</ck:card-title>
+		<ck:card-description>
+			Allows users to set and modify the document's title within the editing interface, ensuring accurate reflection of the contents.
 
-		<ck:button-link size='sm' variant='secondary' href='features/title'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/title'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Page break
-	</ck:card-title>
-	<ck:card-description>
-		Facilitates the insertion of manual breaks within the document, enabling the definition of page endings and beginnings for optimal layout and print clarity.
+	<ck:card>
+		<ck:card-title level='4'>
+			Page break
+		</ck:card-title>
+		<ck:card-description>
+			Facilitates the insertion of manual breaks within the document, enabling the definition of page endings and beginnings for optimal layout and print clarity.
 
-		<ck:button-link size='sm' variant='secondary' href='features/page-break'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/page-break'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
+</ck:columns>
 
 ### Pagination
 
@@ -1085,57 +1107,59 @@ The AI Assistant feature enhances editing efficiency and creativity with artific
 
 Automate your workflow with CKEditor 5 automation tools, regardless of whether you write, link, or save!
 
-<ck:card>
-	<ck:card-title level='4'>
-		Autoformatting
-	</ck:card-title>
-	<ck:card-description>
-		Use Autoformatting to get Markdown-like shortcodes for quick formatting without needing to navigate through toolbar buttons or dropdown menus. This feature caters to the most common formatting needs.
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4'>
+			Autoformatting
+		</ck:card-title>
+		<ck:card-description>
+			Use Autoformatting to get Markdown-like shortcodes for quick formatting without needing to navigate through toolbar buttons or dropdown menus. This feature caters to the most common formatting needs.
 
-		<ck:button-link size='sm' variant='secondary' href='features/autoformat'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/autoformat'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Autolink
-	</ck:card-title>
-	<ck:card-description>
-		With Autolink, typing or pasting URLs and email addresses automatically transforms them into clickable links. This functionality is enabled by default, ensuring that links are always ready to use.
+	<ck:card>
+		<ck:card-title level='4'>
+			Autolink
+		</ck:card-title>
+		<ck:card-description>
+			With Autolink, typing or pasting URLs and email addresses automatically transforms them into clickable links. This functionality is enabled by default, ensuring that links are always ready to use.
 
-		<ck:button-link size='sm' variant='secondary' href='features/link#autolink-feature'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/link#autolink-feature'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Automatic text transformations
-	</ck:card-title>
-	<ck:card-description>
-		The Automatic Text Transformation autocorrects or transforms predefined text fragments into their designated forms. It comes with a range of popular text transformations pre-configured, and accepts customization by adding or removing autocorrect entries. It is commonly used to automate the expansion of abbreviations or short phrases into their full forms.
+	<ck:card>
+		<ck:card-title level='4'>
+			Automatic text transformations
+		</ck:card-title>
+		<ck:card-description>
+			The Automatic Text Transformation autocorrects or transforms predefined text fragments into their designated forms. It comes with a range of popular text transformations pre-configured, and accepts customization by adding or removing autocorrect entries. It is commonly used to automate the expansion of abbreviations or short phrases into their full forms.
 
-		<ck:button-link size='sm' variant='secondary' href='features/text-transformation'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/text-transformation'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Autosave
-	</ck:card-title>
-	<ck:card-description>
-		The Autosave feature guarantees that your work is never lost. It automatically saves changes - for instance, when content is modified. This could involve sending the latest version of the document to the server, providing peace of mind through continuous backup.
+	<ck:card>
+		<ck:card-title level='4'>
+			Autosave
+		</ck:card-title>
+		<ck:card-description>
+			The Autosave feature guarantees that your work is never lost. It automatically saves changes - for instance, when content is modified. This could involve sending the latest version of the document to the server, providing peace of mind through continuous backup.
 
-		<ck:button-link size='sm' variant='secondary' href='features/autosave'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/autosave'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
+</ck:columns>
 
 ### Case change
 
@@ -1273,83 +1297,85 @@ You can prompt the user to input content by displaying a configurable placeholde
 
 The editor's user interface is dependent on the editor types. The editor provides functionality through specialized features accessible via a configurable toolbar or keyboard shortcuts. Some of these features are only available with certain editor types.
 
-<ck:card>
-	<ck:card-title level='4'>
-		Balloon block editor
-	</ck:card-title>
-	<ck:card-description>
-		Balloon block is essentially the balloon editor with an extra block toolbar, which can be accessed using the button attached to the editable content area and following the selection in the document. The toolbar gives access to additional block–level editing features.
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4'>
+			Balloon block editor
+		</ck:card-title>
+		<ck:card-description>
+			Balloon block is essentially the balloon editor with an extra block toolbar, which can be accessed using the button attached to the editable content area and following the selection in the document. The toolbar gives access to additional block–level editing features.
 
-		<ck:button-link size='sm' variant='secondary' href='getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Balloon editor
-	</ck:card-title>
-	<ck:card-description>
-		Balloon editor is similar to inline editor. The difference between them is that the toolbar appears in a balloon next to the selection (when the selection is not empty).
+	<ck:card>
+		<ck:card-title level='4'>
+			Balloon editor
+		</ck:card-title>
+		<ck:card-description>
+			Balloon editor is similar to inline editor. The difference between them is that the toolbar appears in a balloon next to the selection (when the selection is not empty).
 
-		<ck:button-link size='sm' variant='secondary' href='getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='getting-started/setup/editor-types#balloon-editor-and-balloon-block-editor'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Classic editor
-	</ck:card-title>
-	<ck:card-description>
-		Classic editor is what most users traditionally learned to associate with a rich-text editor – a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
+	<ck:card>
+		<ck:card-title level='4'>
+			Classic editor
+		</ck:card-title>
+		<ck:card-description>
+			Classic editor is what most users traditionally learned to associate with a rich-text editor – a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
 
-		<ck:button-link size='sm' variant='secondary' href='getting-started/setup/editor-types#classic-editor'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='getting-started/setup/editor-types#classic-editor'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Decoupled editor
-	</ck:card-title>
-	<ck:card-description>
-		The document editor focuses on a rich-text editing experience similar to large editing packages such as Google Docs or Microsoft Word. It works best for creating documents, which are usually later printed or exported to PDF files.
+	<ck:card>
+		<ck:card-title level='4'>
+			Decoupled editor
+		</ck:card-title>
+		<ck:card-description>
+			The document editor focuses on a rich-text editing experience similar to large editing packages such as Google Docs or Microsoft Word. It works best for creating documents, which are usually later printed or exported to PDF files.
 
-		<ck:button-link size='sm' variant='secondary' href='getting-started/setup/editor-types#decoupled-editor-document'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='getting-started/setup/editor-types#decoupled-editor-document'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Inline editor
-	</ck:card-title>
-	<ck:card-description>
-		The inline editor comes with a floating toolbar that becomes visible when the editor is focused (for example, by clicking it). A common scenario for using the inline editor is offering users the possibility to edit content (such as headings and other small areas) in its real location on a web page instead of doing it in a separate administration section.
+	<ck:card>
+		<ck:card-title level='4'>
+			Inline editor
+		</ck:card-title>
+		<ck:card-description>
+			The inline editor comes with a floating toolbar that becomes visible when the editor is focused (for example, by clicking it). A common scenario for using the inline editor is offering users the possibility to edit content (such as headings and other small areas) in its real location on a web page instead of doing it in a separate administration section.
 
-		<ck:button-link size='sm' variant='secondary' href='getting-started/setup/editor-types#inline-editor'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='getting-started/setup/editor-types#inline-editor'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Multi-root editor
-	</ck:card-title>
-	<ck:card-description>
-		The multi-root editor is an editor type that features multiple, separate editable areas. The main difference between using a multi-root editor and using multiple separate editors is the fact that in a multi-root editor, the editors are "connected." All editable areas of the same editor instance share the same configuration, toolbar, undo stack, and produce one document.
+	<ck:card>
+		<ck:card-title level='4'>
+			Multi-root editor
+		</ck:card-title>
+		<ck:card-description>
+			The multi-root editor is an editor type that features multiple, separate editable areas. The main difference between using a multi-root editor and using multiple separate editors is the fact that in a multi-root editor, the editors are "connected." All editable areas of the same editor instance share the same configuration, toolbar, undo stack, and produce one document.
 
-		<ck:button-link size='sm' variant='secondary' href='getting-started/setup/editor-types#multi-root-editor'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='getting-started/setup/editor-types#multi-root-editor'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
+</ck:columns>
 
 ### Email editing
 
@@ -1380,135 +1406,137 @@ CKEditor 5 provides 38 professionally translated language options, along with ad
 
 The Toolbar Configuration feature provides different toolbar interfaces for editing content. The default toolbar includes dropdown menus and buttons for various editing functions. The Balloon Toolbar appears when text is selected, showing relevant tools. The Block Toolbar is accessed by clicking a button on the left-hand side of the editor, providing tools for the active block of content. Additionally, the Multiline Toolbar option allows for the expansion of the standard toolbar over multiple lines to display more tools simultaneously.
 
-<ck:card>
-	<ck:card-title level='4'>
-		Balloon toolbar
-	</ck:card-title>
-	<ck:card-description>
-		A ballon toolbar is a special instance of the main toolbar, available in the balloon and balloon block editor types. Instead of being fixed to the editing area, it pops up when the user selects some content and provides an editing toolset.
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4'>
+			Balloon toolbar
+		</ck:card-title>
+		<ck:card-description>
+			A ballon toolbar is a special instance of the main toolbar, available in the balloon and balloon block editor types. Instead of being fixed to the editing area, it pops up when the user selects some content and provides an editing toolset.
 
-		<ck:button-link size='sm' variant='secondary' href='getting-started/setup/toolbar#balloon-toolbar'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='getting-started/setup/toolbar#balloon-toolbar'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Block toolbar
-	</ck:card-title>
-	<ck:card-description>
-		The block toolbar provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (for example in certain layouts, like balloon block editor).
+	<ck:card>
+		<ck:card-title level='4'>
+			Block toolbar
+		</ck:card-title>
+		<ck:card-description>
+			The block toolbar provides an additional configurable toolbar on the left-hand side of the content area, useful when the main toolbar is not accessible (for example in certain layouts, like balloon block editor).
 
-		<ck:button-link size='sm' variant='secondary' href='getting-started/setup/toolbar#block-toolbar'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='getting-started/setup/toolbar#block-toolbar'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Classic toolbar
-	</ck:card-title>
-	<ck:card-description>
-		The toolbar is the most basic user interface element of CKEditor 5 that gives you convenient access to all its features. It has buttons and dropdowns that you can use to format, manage, insert, and change elements of your content.
+	<ck:card>
+		<ck:card-title level='4'>
+			Classic toolbar
+		</ck:card-title>
+		<ck:card-description>
+			The toolbar is the most basic user interface element of CKEditor 5 that gives you convenient access to all its features. It has buttons and dropdowns that you can use to format, manage, insert, and change elements of your content.
 
-		<ck:button-link size='sm' variant='secondary' href='getting-started/setup/toolbar#main-editor-toolbar'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='getting-started/setup/toolbar#main-editor-toolbar'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Collapsible toolbar
-	</ck:card-title>
-	<ck:card-description>
-		Collapsible toolbar for UI space efficiency.
+	<ck:card>
+		<ck:card-title level='4'>
+			Collapsible toolbar
+		</ck:card-title>
+		<ck:card-description>
+			Collapsible toolbar for UI space efficiency.
 
-		<ck:button-link size='sm' variant='secondary' href='getting-started/setup/toolbar#extended-toolbar-configuration-format'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='getting-started/setup/toolbar#extended-toolbar-configuration-format'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Image contextual toolbar
-	</ck:card-title>
-	<ck:card-description>
-		The {@link module:image/imagetoolbar~ImageToolbar} plugin introduces a contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options, such as the {@link features/images-text-alternative text alternative} button, the {@link features/images-captions image caption} button, and {@link features/images-styles image styles} buttons. The toolbar can also host the image editing button introduced by the {@link features/ckbox CKBox asset manager}. Shown below is an example contextual toolbar with an extended set of buttons.
+	<ck:card>
+		<ck:card-title level='4'>
+			Image contextual toolbar
+		</ck:card-title>
+		<ck:card-description>
+			The {@link module:image/imagetoolbar~ImageToolbar} plugin introduces a contextual toolbar for images. The toolbar appears when an image is selected and can be configured to contain any buttons you want. Usually, these will be image-related options, such as the {@link features/images-text-alternative text alternative} button, the {@link features/images-captions image caption} button, and {@link features/images-styles image styles} buttons. The toolbar can also host the image editing button introduced by the {@link features/ckbox CKBox asset manager}. Shown below is an example contextual toolbar with an extended set of buttons.
 
-		<ck:button-link size='sm' variant='secondary' href='features/images-overview#image-contextual-toolbar'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/images-overview#image-contextual-toolbar'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Menu bar
-	</ck:card-title>
-	<ck:card-description>
-		The menu bar is a user interface component that gives you access to all features provided by the editor, organized in menus and categories. This familiar experience, popular in large editing desktop and online packages, improves the usability of the editor. As the menu bar gathers all the editor features, the toolbar can be simple and tidy, providing only the most essential and commonly used features. This is especially welcome in heavily-featured editor integrations. For your convenience, the menu bar provides a default preset structure based on the plugins loaded in the editor. However, you can arrange it to suit your needs, remove unnecessary items, or add menu items related to your custom features.
+	<ck:card>
+		<ck:card-title level='4'>
+			Menu bar
+		</ck:card-title>
+		<ck:card-description>
+			The menu bar is a user interface component that gives you access to all features provided by the editor, organized in menus and categories. This familiar experience, popular in large editing desktop and online packages, improves the usability of the editor. As the menu bar gathers all the editor features, the toolbar can be simple and tidy, providing only the most essential and commonly used features. This is especially welcome in heavily-featured editor integrations. For your convenience, the menu bar provides a default preset structure based on the plugins loaded in the editor. However, you can arrange it to suit your needs, remove unnecessary items, or add menu items related to your custom features.
 
-		<ck:button-link size='sm' variant='secondary' href='getting-started/setup/menubar'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='getting-started/setup/menubar'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Multiline toolbar
-	</ck:card-title>
-	<ck:card-description>
-		Multiline toolbar for easy access to all functions.
+	<ck:card>
+		<ck:card-title level='4'>
+			Multiline toolbar
+		</ck:card-title>
+		<ck:card-description>
+			Multiline toolbar for easy access to all functions.
 
-		<ck:button-link size='sm' variant='secondary' href='getting-started/setup/toolbar#multiline-wrapping-toolbar'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='getting-started/setup/toolbar#multiline-wrapping-toolbar'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Nesting toolbars in dropdowns
-	</ck:card-title>
-	<ck:card-description>
-		Nested toolbars for space efficiency and task-oriented access.
+	<ck:card>
+		<ck:card-title level='4'>
+			Nesting toolbars in dropdowns
+		</ck:card-title>
+		<ck:card-description>
+			Nested toolbars for space efficiency and task-oriented access.
 
-		<ck:button-link size='sm' variant='secondary' href='getting-started/setup/toolbar#grouping-toolbar-items-in-dropdowns-nested-toolbars'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='getting-started/setup/toolbar#grouping-toolbar-items-in-dropdowns-nested-toolbars'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Wide sidebar
-	</ck:card-title>
-	<ck:card-description>
-		There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs, or even create your own UI for annotations.
+	<ck:card>
+		<ck:card-title level='4'>
+			Wide sidebar
+		</ck:card-title>
+		<ck:card-description>
+			There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs, or even create your own UI for annotations.
 
-		<ck:button-link size='sm' variant='secondary' href='features/annotations-display-mode#wide-sidebar'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/annotations-display-mode#wide-sidebar'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Table contextual toolbar
-	</ck:card-title>
-	<ck:card-description>
-		The {@link module:table/tabletoolbar~TableToolbar} plugin introduces a contextual toolbar for the table. The toolbar appears when a table or a cell is selected and contains various table-related buttons. These would typically include adding or removing columns and rows and merging or splitting cells. If these features are configured, the toolbar will also contain buttons for captions and table and cell properties.
+	<ck:card>
+		<ck:card-title level='4'>
+			Table contextual toolbar
+		</ck:card-title>
+		<ck:card-description>
+			The {@link module:table/tabletoolbar~TableToolbar} plugin introduces a contextual toolbar for the table. The toolbar appears when a table or a cell is selected and contains various table-related buttons. These would typically include adding or removing columns and rows and merging or splitting cells. If these features are configured, the toolbar will also contain buttons for captions and table and cell properties.
 
-		<ck:button-link size='sm' variant='secondary' href='features/tables#table-contextual-toolbar'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='features/tables#table-contextual-toolbar'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
+</ck:columns>
 
 ### Watchdog
 
@@ -1578,31 +1606,33 @@ Customize your editor even further. Use components and helpers from our UI libra
 
 Select from numerous toolbar styles and over 100 plugins to tailor an editor that perfectly fits your requirements, all without needing any development expertise. For those looking to go further, the CKEditor API enables the creation of custom plugins or modification of the editor's functionality. To assist the development process, dedicated resources such as a package generator and the CKEditor 5 Inspector - a comprehensive suite of debugging tools - are provided, helping accelerate development work.
 
-<ck:card>
-	<ck:card-title level='4'>
-		CKEditor 5 inspector
-	</ck:card-title>
-	<ck:card-description>
-		The official CKEditor 5 inspector provides a set of rich debugging tools for editor internals like model, view, and commands.
+<ck:columns>
+	<ck:card>
+		<ck:card-title level='4'>
+			CKEditor 5 inspector
+		</ck:card-title>
+		<ck:card-description>
+			The official CKEditor 5 inspector provides a set of rich debugging tools for editor internals like model, view, and commands.
 
-		<ck:button-link size='sm' variant='secondary' href='framework/development-tools/inspector'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='framework/development-tools/inspector'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
 
-<ck:card>
-	<ck:card-title level='4'>
-		Cloud Services REST API
-	</ck:card-title>
-	<ck:card-description>
-		The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration services. The platform primarily focuses on providing a backend for the CKEditor 5 features, although some features can also be used directly through REST APIs.
+	<ck:card>
+		<ck:card-title level='4'>
+			Cloud Services REST API
+		</ck:card-title>
+		<ck:card-description>
+			The CKEditor Cloud Services is a cloud platform that provides editing and real-time collaboration services. The platform primarily focuses on providing a backend for the CKEditor 5 features, although some features can also be used directly through REST APIs.
 
-		<ck:button-link size='sm' variant='secondary' href='@cs'>
-			Feature page
-		</ck:button-link>
-	</ck:card-description>
-</ck:card>
+			<ck:button-link size='sm' variant='secondary' href='@cs'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
+</ck:columns>
 
 ### Themes
 
