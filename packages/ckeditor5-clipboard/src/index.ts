@@ -42,12 +42,6 @@ export {
 	type ViewDocumentCutEvent
 } from './clipboardobserver.js';
 
-export {
-	ClipboardMarkersUtils as _ClipboardMarkersUtils,
-	ClipboardMarkerRestrictedAction as _ClipboardMarkerRestrictedAction,
-	ClipboardMarkerConfiguration as _ClipboardMarkerConfiguration
-} from './clipboardmarkersutils.js';
-
 export { DragDrop as _ClipboardDragDrop } from './dragdrop.js';
 export { DragDropBlockToolbar as _ClipboardDragDropBlockToolbar } from './dragdropblocktoolbar.js';
 export { DragDropTarget as _ClipboardDragDropTarget } from './dragdroptarget.js';
