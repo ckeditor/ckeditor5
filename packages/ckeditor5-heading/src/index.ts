@@ -16,4 +16,6 @@ export { HeadingCommand } from './headingcommand.js';
 export { Title, type TitleConfig } from './title.js';
 export type { HeadingConfig } from './headingconfig.js';
 
+export { getLocalizedOptions as _getLocalizedHeadingOptions } from './utils.js';
+
 import './augmentation.js';
