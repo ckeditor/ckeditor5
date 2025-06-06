@@ -108,13 +108,13 @@ export { DocumentFragment } from './model/documentfragment.js';
 export { History } from './model/history.js';
 export { Text } from './model/text.js';
 export { TextProxy } from './model/textproxy.js';
-export type { Document, ModelPostFixer } from './model/document.js';
-export type { Marker } from './model/markercollection.js';
-export type { Batch } from './model/batch.js';
-export type { Differ, DiffItem, DiffItemAttribute, DiffItemInsert, DiffItemRemove } from './model/differ.js';
+export { Document, ModelPostFixer } from './model/document.js';
+export { Marker } from './model/markercollection.js';
+export { Batch } from './model/batch.js';
+export { Differ, type DiffItem, type DiffItemAttribute, type DiffItemInsert, type DiffItemRemove } from './model/differ.js';
 export type { Item } from './model/item.js';
-export type { Node, NodeAttributes } from './model/node.js';
-export type { RootElement } from './model/rootelement.js';
+export { Node, type NodeAttributes } from './model/node.js';
+export { RootElement } from './model/rootelement.js';
 export {
 	SchemaContext,
 	type Schema,
@@ -125,9 +125,9 @@ export {
 	type SchemaCompiledItemDefinition,
 	type SchemaContextDefinition
 } from './model/schema.js';
-export type { Selection, Selectable } from './model/selection.js';
-export type { TypeCheckable } from './model/typecheckable.js';
-export type { Writer } from './model/writer.js';
+export { Selection, type Selectable } from './model/selection.js';
+export { TypeCheckable } from './model/typecheckable.js';
+export { Writer } from './model/writer.js';
 
 // Model utils.
 export {
@@ -168,13 +168,13 @@ export { ViewUIElement } from './view/uielement.js';
 export { ViewDocumentFragment } from './view/documentfragment.js';
 export { ViewTreeWalker, type TreeWalkerValue as ViewTreeWalkerValue } from './view/treewalker.js';
 export type { ViewElementDefinition, ElementObjectDefinition } from './view/elementdefinition.js';
-export type { ViewDocumentSelection } from './view/documentselection.js';
+export { ViewDocumentSelection } from './view/documentselection.js';
 export { AttributeElement } from './view/attributeelement.js';
 export type { ViewItem } from './view/item.js';
-export type { ViewNode } from './view/node.js';
-export type { ViewPosition, PositionOffset as ViewPositionOffset } from './view/position.js';
-export type { ViewRange } from './view/range.js';
-export type { ViewSelection, ViewSelectionChangeEvent, Selectable as ViewSelectable } from './view/selection.js';
+export { ViewNode } from './view/node.js';
+export { ViewPosition, type PositionOffset as ViewPositionOffset } from './view/position.js';
+export { ViewRange } from './view/range.js';
+export { ViewSelection, type ViewSelectionChangeEvent, type Selectable as ViewSelectable } from './view/selection.js';
 export type { ViewTypeCheckable } from './view/typecheckable.js';
 
 export { getFillerOffset } from './view/containerelement.js';
@@ -363,4 +363,5 @@ export {
 	isPatternMatched as _isViewPatternMatched,
 	type NormalizedPropertyPattern as _ViewNormalizedPropertyPattern
 } from './view/matcher.js';
+
 export { injectUiElementHandling as _injectUiViewElementHandling } from './view/uielement.js';
