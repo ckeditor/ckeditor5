@@ -120,7 +120,7 @@ export { listPropertiesUpcastConverter as _listPropertiesUpcastConverter } from 
 export type { AttributeStrategy as _AttributeStrategy } from './listproperties/listpropertiesediting.js';
 export {
 	ListPropertiesView as _ListPropertiesView,
-	StylesView as _ListPropertiesStylesView
+	type StylesView as _ListPropertiesStylesView
 } from './listproperties/ui/listpropertiesview.js';
 
 export { getNormalizedConfig as _getNormalizedListConfig } from './listproperties/utils/config.js';

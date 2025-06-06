@@ -108,7 +108,7 @@ export { DocumentFragment } from './model/documentfragment.js';
 export { History } from './model/history.js';
 export { Text } from './model/text.js';
 export { TextProxy } from './model/textproxy.js';
-export { Document, ModelPostFixer } from './model/document.js';
+export { Document, type ModelPostFixer } from './model/document.js';
 export { Marker } from './model/markercollection.js';
 export { Batch } from './model/batch.js';
 export { Differ, type DiffItem, type DiffItemAttribute, type DiffItemInsert, type DiffItemRemove } from './model/differ.js';
@@ -277,7 +277,7 @@ export {
 	insertElement as _downcastInsertElement,
 	insertStructure as _downcastInsertStructure,
 	insertUIElement as _downcastInsertUIElement,
-	ConsumerFunction as _DowncastConsumerFunction
+	type ConsumerFunction as _DowncastConsumerFunction
 } from './conversion/downcasthelpers.js';
 
 // Internals
