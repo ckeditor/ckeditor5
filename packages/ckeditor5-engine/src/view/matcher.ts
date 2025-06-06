@@ -763,6 +763,9 @@ export type AttributePatterns = PropertyPatterns;
 export type StylePatterns = PropertyPatterns;
 export type ClassPatterns = PropertyPatterns<never>;
 
+/**
+ * @internal
+ */
 export type NormalizedPropertyPattern = [
 	true | string | RegExp,
 	true | string | RegExp,

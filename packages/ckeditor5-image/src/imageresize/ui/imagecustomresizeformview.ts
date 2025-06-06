@@ -34,6 +34,8 @@ import '@ckeditor/ckeditor5-ui/theme/components/form/form.css';
 
 /**
  * The ImageCustomResizeFormView class.
+ *
+ * @internal
  */
 export class ImageCustomResizeFormView extends View {
 	/**
@@ -345,6 +347,8 @@ export class ImageCustomResizeFormView extends View {
  *
  * 	* If `undefined` is returned, it is assumed that the form value is correct and there is no error.
  * 	* If string is returned, it is assumed that the form value is incorrect and the returned string is displayed in the error label
+ *
+ * @internal
  */
 export type ImageCustomResizeFormValidatorCallback = ( form: ImageCustomResizeFormView ) => string | undefined;
 

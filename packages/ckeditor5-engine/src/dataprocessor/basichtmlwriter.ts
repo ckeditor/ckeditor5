@@ -13,6 +13,8 @@ import { global } from '@ckeditor/ckeditor5-utils';
 /**
  * Basic HTML writer. It uses the native `innerHTML` property for basic conversion
  * from a document fragment to an HTML string.
+ *
+ * @internal
  */
 export class BasicHtmlWriter implements HtmlWriter {
 	/**

@@ -96,6 +96,7 @@ function noUpdateTransformation( a: Operation ): Array<Operation> {
  * @param b Operation to transform by.
  * @param context Transformation context for this transformation.
  * @returns Transformation result.
+ * @internal
  */
 export function transform( a: Operation, b: Operation, context: TransformationContext = {} ): Array<Operation> {
 	const transformationFunction = getTransformation( a.constructor, b.constructor );
@@ -682,8 +683,9 @@ class ContextFactory {
 /**
  * Holds additional contextual information about a transformed pair of operations (`a` and `b`). Those information
  * can be used for better conflict resolving.
+ *
+ * @internal
  */
-
 export type TransformationContext = {
 
 	/**

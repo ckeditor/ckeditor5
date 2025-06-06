@@ -31,6 +31,8 @@ import { first, type LocaleTranslate } from 'ckeditor5/src/utils.js';
  * configuration is defined because the editor does not exist yet.
  * * To make sure each definition has a CSS class associated with it even if not specified
  * in the original configuration.
+ *
+ * @internal
  */
 export function getNormalizedAndLocalizedLanguageDefinitions( editor: Editor ): Array<CodeBlockLanguageDefinition> {
 	const t = editor.t;
@@ -86,6 +88,8 @@ export function getNormalizedAndLocalizedLanguageDefinitions( editor: Editor ): 
  * 	'javascript': 'JavaScript'
  * }
  * ```
+ *
+ * @internal
  */
 export function getPropertyAssociation(
 	languageDefs: Array<CodeBlockLanguageDefinition>,
@@ -111,6 +115,8 @@ export function getPropertyAssociation(
 /**
  * For a given model text node, it returns white spaces that precede other characters in that node.
  * This corresponds to the indentation part of the code block line.
+ *
+ * @internal
  */
 export function getLeadingWhiteSpaces( textNode: Text ): string {
 	return textNode.data.match( /^(\s*)/ )![ 0 ];
@@ -138,6 +144,7 @@ export function getLeadingWhiteSpaces( textNode: Text ): string {
  * ```
  *
  * @param text The raw code text to be converted.
+ * @internal
  */
 export function rawSnippetTextToViewDocumentFragment( writer: UpcastWriter, text: string ): ViewDocumentFragment {
 	const fragment = writer.createDocumentFragment();
@@ -194,6 +201,8 @@ export function rawSnippetTextToViewDocumentFragment( writer: UpcastWriter, text
  * the writer inserts or removes elements at the same time.
  *
  * **Note:** The position is located after the leading white spaces in the text node.
+ *
+ * @internal
  */
 export function getIndentOutdentPositions( model: Model ): Array<Position> {
 	const selection = model.document.selection;
@@ -244,6 +253,8 @@ export function getIndentOutdentPositions( model: Model ): Array<Position> {
 
 /**
  * Checks if any of the blocks within the model selection is a code block.
+ *
+ * @internal
  */
 export function isModelSelectionInCodeBlock( selection: DocumentSelection ): boolean {
 	const firstBlock = first( selection.getSelectedBlocks() );
@@ -257,6 +268,7 @@ export function isModelSelectionInCodeBlock( selection: DocumentSelection ): boo
  * @param schema Model's schema.
  * @param element The element to be checked.
  * @returns Check result.
+ * @internal
  */
 export function canBeCodeBlock( schema: Schema, element: Element ): boolean {
 	if ( element.is( 'rootElement' ) || schema.isLimit( element ) ) {
@@ -268,6 +280,8 @@ export function canBeCodeBlock( schema: Schema, element: Element ): boolean {
 
 /**
  * Get the translated message read by the screen reader when you enter or exit an element with your cursor.
+ *
+ * @internal
  */
 export function getCodeBlockAriaAnnouncement(
 	t: LocaleTranslate,
@@ -327,6 +341,8 @@ export function getCodeBlockAriaAnnouncement(
  * <codeBlock>foo<softBreak />bar<element />^</codeBlock>  ->   <codeBlock>foo<softBreak />[bar]<element /></codeBlock>
  * <codeBlock>foo<softBreak /><element />ba^r</codeBlock>  ->   null
  * ```
+ *
+ * @internal
  */
 export function getTextNodeAtLineStart( position: Position, model: Model ): Text | null {
 	// First, move position before a text node, if it is inside a text node.

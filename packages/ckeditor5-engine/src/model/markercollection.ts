@@ -511,7 +511,7 @@ Marker.prototype.is = function( type: string ): boolean {
 	return type === 'marker' || type === 'model:marker';
 };
 
-export type { Marker };
+export { Marker };
 
 /**
  * Fired whenever {@link ~Marker#_liveRange marker range} is changed due to changes on {@link module:engine/model/document~Document}.

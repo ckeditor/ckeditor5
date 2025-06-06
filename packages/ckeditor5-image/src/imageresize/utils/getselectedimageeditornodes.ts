@@ -14,6 +14,7 @@ import type { Editor } from 'ckeditor5/src/core.js';
  * Finds model, view and DOM element for selected image element. Returns `null` if there is no image selected.
  *
  * @param editor Editor instance.
+ * @internal
  */
 export function getSelectedImageEditorNodes( editor: Editor ): ImageEditorNodes | null {
 	const { editing } = editor;

@@ -14,6 +14,7 @@ import type { FontFamilyOption } from '../fontconfig.js';
  * to the {@link module:font/fontconfig~FontFamilyOption} format.
  *
  * @param configuredOptions An array of options taken from the configuration.
+ * @internal
  */
 export function normalizeOptions( configuredOptions: Array<string | FontFamilyOption> ): Array<FontFamilyOption> {
 	// Convert options to objects.

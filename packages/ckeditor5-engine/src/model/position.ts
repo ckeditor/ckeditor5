@@ -1096,6 +1096,7 @@ export type PositionStickiness = 'toNone' | 'toNext' | 'toPrevious';
  *
  * @param position
  * @param positionParent The parent of the given position.
+ * @internal
  */
 export function getTextNodeAtPosition( position: Position, positionParent: Element | DocumentFragment ): Text | null {
 	const node = positionParent.getChildAtOffset( position.offset );
@@ -1129,6 +1130,7 @@ export function getTextNodeAtPosition( position: Position, positionParent: Eleme
  * @param position Position to check.
  * @param positionParent The parent of the given position.
  * @param textNode Text node at the given position.
+ * @internal
  */
 export function getNodeAfterPosition(
 	position: Position,
@@ -1155,6 +1157,7 @@ export function getNodeAfterPosition(
  * @param position Position to check.
  * @param positionParent The parent of the given position.
  * @param textNode Text node at the given position.
+ * @internal
  */
 export function getNodeBeforePosition(
 	position: Position,

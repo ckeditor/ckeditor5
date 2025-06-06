@@ -15,4 +15,8 @@ export { IndentBlockCommand } from './indentblockcommand.js';
 
 export type { IndentBlockConfig } from './indentconfig.js';
 
+export type { IndentBehavior } from './indentcommandbehavior/indentbehavior.js';
+export { IndentUsingClasses as _IndentUsingClasses } from './indentcommandbehavior/indentusingclasses.js';
+export { IndentUsingOffset as _IndentUsingOffset } from './indentcommandbehavior/indentusingoffset.js';
+
 import './augmentation.js';

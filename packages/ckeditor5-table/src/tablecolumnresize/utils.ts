@@ -23,6 +23,7 @@ import {
  *
  * Most notably if an entire table is removed it will not be included in returned set.
  *
+ * @internal
  * @param model The model to collect the affected elements from.
  * @returns A set of table model elements.
  */
@@ -88,6 +89,7 @@ export function getChangedResizedTables( model: Model ): Set<Element> {
 /**
  * Calculates the percentage of the minimum column width given in pixels for a given table.
  *
+ * @internal
  * @param modelTable A table model element.
  * @param editor The editor instance.
  * @returns The minimal column width in percentage.
@@ -99,6 +101,7 @@ export function getColumnMinWidthAsPercentage( modelTable: Element, editor: Edit
 /**
  * Calculates the table width in pixels.
  *
+ * @internal
  * @param modelTable A table model element.
  * @param editor The editor instance.
  * @returns The width of the table in pixels.
@@ -130,6 +133,7 @@ function getChildrenViewElement( modelTable: Element, elementName: string, edito
 /**
  * Returns the computed width (in pixels) of the DOM element without padding and borders.
  *
+ * @internal
  * @param domElement A DOM element.
  * @returns The width of the DOM element in pixels.
  */
@@ -153,6 +157,7 @@ export function getElementWidthInPixels( domElement: HTMLElement ): number {
  * Returns the column indexes on the left and right edges of a cell. They differ if the cell spans
  * across multiple columns.
  *
+ * @internal
  * @param cell A table cell model element.
  * @param tableUtils The Table Utils plugin instance.
  * @returns An object containing the indexes of the left and right edges of the cell.
@@ -170,6 +175,7 @@ export function getColumnEdgesIndexes( cell: Element, tableUtils: TableUtils ): 
 /**
  * Rounds the provided value to a fixed-point number with defined number of digits after the decimal point.
  *
+ * @internal
  * @param value A number to be rounded.
  * @returns The rounded number.
  */
@@ -184,6 +190,7 @@ export function toPrecision( value: number | string ): number {
  * Clamps the number within the inclusive lower (min) and upper (max) bounds. Returned number is rounded using the
  * {@link ~toPrecision `toPrecision()`} function.
  *
+ * @internal
  * @param number A number to be clamped.
  * @param min A lower bound.
  * @param max An upper bound.
@@ -204,6 +211,7 @@ export function clamp( number: number, min: number, max: number ): number {
 /**
  * Creates an array with defined length and fills all elements with defined value.
  *
+ * @internal
  * @param length The length of the array.
  * @param value The value to fill the array with.
  * @returns An array with defined length and filled with defined value.
@@ -215,6 +223,7 @@ export function createFilledArray<T>( length: number, value: T ): Array<T> {
 /**
  * Sums all array values that can be parsed to a float.
  *
+ * @internal
  * @param array An array of numbers.
  * @returns The sum of all array values.
  */
@@ -230,6 +239,7 @@ export function sumArray( array: Array<number | string> ): number {
  * changed proportionally so that they all sum back to 100%. If there are columns without specified width, the amount remaining
  * after assigning the known widths will be distributed equally between them.
  *
+ * @internal
  * @param columnWidths An array of column widths.
  * @returns An array of column widths guaranteed to sum up to 100%.
  */
@@ -304,6 +314,7 @@ function calculateMissingColumnWidths( columnWidths: Array<number | string> ): A
  *  * left and red padding,
  *  * border width.
  *
+ * @internal
  * @param domCell A DOM cell element.
  * @returns Width in pixels without `px` at the end.
  */
@@ -325,6 +336,7 @@ export function getDomCellOuterWidth( domCell: HTMLElement ): number {
 /**
  * Updates column elements to match columns widths.
  *
+ * @internal
  * @param columns
  * @param tableColumnGroup
  * @param normalizedWidths

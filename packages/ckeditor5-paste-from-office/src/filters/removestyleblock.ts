@@ -13,6 +13,7 @@ import type { UpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engine.js
  * Removes `<style>` block added by Google Sheets to a copied content.
  *
  * @param documentFragment element `data.content` obtained from clipboard
+ * @internal
  */
 export function removeStyleBlock( documentFragment: ViewDocumentFragment, writer: UpcastWriter ): void {
 	for ( const child of Array.from( documentFragment.getChildren() ) ) {

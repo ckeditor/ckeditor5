@@ -14,6 +14,8 @@ import { type Operation } from '../model/operation/operation.js';
 
 /**
  * Operation replayer is a development tool created for easy replaying of operations on the document from stringified operations.
+ *
+ * @internal
  */
 export class OperationReplayer {
 	private _model: Model;

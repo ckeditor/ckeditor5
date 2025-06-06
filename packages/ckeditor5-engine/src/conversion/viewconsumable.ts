@@ -327,6 +327,8 @@ export interface Consumables {
 /**
  * This is a private helper-class for {@link module:engine/conversion/viewconsumable~ViewConsumable}.
  * It represents and manipulates consumable parts of a single {@link module:engine/view/element~Element}.
+ *
+ * @internal
  */
 export class ViewElementConsumables {
 	public readonly element: Element;
@@ -604,6 +606,8 @@ export class ViewElementConsumables {
 /**
  * Normalizes a {@link module:engine/conversion/viewconsumable~Consumables} or {@link module:engine/view/matcher~Match}
  * to a {@link module:engine/view/element~NormalizedConsumables}.
+ *
+ * @internal
  */
 export function normalizeConsumables( consumables: Consumables | Match ): NormalizedConsumables {
 	const attributes: Array<[string, string?]> = [];

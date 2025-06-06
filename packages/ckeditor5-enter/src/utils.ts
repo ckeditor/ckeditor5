@@ -17,6 +17,7 @@ import type { Schema } from '@ckeditor/ckeditor5-engine';
  *
  * @param schema Model's schema.
  * @param allAttributes Attributes to filter.
+ * @internal
  */
 export function* getCopyOnEnterAttributes(
 	schema: Schema,

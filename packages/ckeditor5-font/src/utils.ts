@@ -40,6 +40,8 @@ export const FONT_BACKGROUND_COLOR = 'fontBackgroundColor';
 
 /**
  * Builds a proper converter definition out of input data.
+ *
+ * @internal
  */
 export function buildDefinition(
 	modelAttributeKey: string,
@@ -78,6 +80,8 @@ export type FontConverterDefinition = {
  * responsible for upcasting data to the model.
  *
  * **Note**: The `styleAttr` parameter should be either `'color'` or `'background-color'`.
+ *
+ * @internal
  */
 export function renderUpcastAttribute( styleAttr: string ) {
 	return ( viewElement: ViewElement ): string => normalizeColorCode( viewElement.getStyle( styleAttr )! );
@@ -89,6 +93,8 @@ export function renderUpcastAttribute( styleAttr: string ) {
  * responsible for downcasting a color attribute to a `<span>` element.
  *
  * **Note**: The `styleAttr` parameter should be either `'color'` or `'background-color'`.
+ *
+ * @internal
  */
 export function renderDowncastElement( styleAttr: string ) {
 	return ( modelAttributeValue: string, { writer }: DowncastConversionApi ): ViewAttributeElement =>
@@ -111,6 +117,7 @@ export function renderDowncastElement( styleAttr: string ) {
  * @param options.documentColorsCount The number of document colors inside the dropdown.
  * @param options.colorPickerViewConfig Configuration of the color picker view.
  * @returns The new color selector view.
+ * @internal
  */
 export function addColorSelectorToDropdown(
 	{

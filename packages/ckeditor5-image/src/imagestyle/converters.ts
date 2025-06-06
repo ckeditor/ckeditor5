@@ -16,6 +16,7 @@ import type { ImageStyleOptionDefinition } from '../imageconfig.js';
  *
  * @param styles An array containing available image style options.
  * @returns A model-to-view attribute converter.
+ * @internal
  */
 export function modelToViewStyleAttribute( styles: Array<ImageStyleOptionDefinition> ): GetCallback<DowncastAttributeEvent> {
 	return ( evt, data, conversionApi ) => {
@@ -45,6 +46,7 @@ export function modelToViewStyleAttribute( styles: Array<ImageStyleOptionDefinit
  *
  * @param styles Image style options for which the converter is created.
  * @returns A view-to-model converter.
+ * @internal
  */
 export function viewToModelStyleAttribute( styles: Array<ImageStyleOptionDefinition> ): GetCallback<UpcastElementEvent> {
 	// Convert only non–default styles.

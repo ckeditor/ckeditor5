@@ -369,6 +369,8 @@ export function listItemDowncastConverter(
 
 /**
  * The 'remove' downcast converter for custom markers.
+ *
+ * @internal
  */
 export function listItemDowncastRemoveConverter( schema: Schema ): GetCallback<DowncastRemoveEvent> {
 	return ( evt, data, conversionApi ) => {
@@ -451,6 +453,8 @@ export function findMappedViewElement( element: Element, mapper: Mapper, model: 
 
 /**
  * The model to view custom position mapping for cases when marker is injected at the beginning of a block.
+ *
+ * @internal
  */
 export function createModelToViewPositionMapper(
 	strategies: Array<DowncastStrategy>,

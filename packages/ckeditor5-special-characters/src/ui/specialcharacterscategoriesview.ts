@@ -21,6 +21,8 @@ import {
 /**
  * A class representing the navigation part of the special characters UI. It is responsible
  * for describing the feature and allowing the user to select a particular character group.
+ *
+ * @internal
  */
 export class SpecialCharactersCategoriesView extends View {
 	/**

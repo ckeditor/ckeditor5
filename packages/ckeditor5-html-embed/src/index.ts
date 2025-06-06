@@ -13,4 +13,6 @@ export { HtmlEmbedUI } from './htmlembedui.js';
 export { HtmlEmbedCommand } from './htmlembedcommand.js';
 export type { HtmlEmbedConfig } from './htmlembedconfig.js';
 
+export { RawHtmlApi as _RawHtmlEmbedApi } from './htmlembedediting.js';
+
 import './augmentation.js';

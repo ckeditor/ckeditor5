@@ -18,4 +18,6 @@ export { ReplaceCommand } from './replacecommand.js';
 export { ReplaceAllCommand } from './replaceallcommand.js';
 export type { FindAndReplaceConfig } from './findandreplaceconfig.js';
 
+export { sortSearchResultsByMarkerPositions as _sortFindResultsByMarkerPositions } from './findandreplacestate.js';
+
 import './augmentation.js';

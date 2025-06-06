@@ -155,6 +155,7 @@ export { UIElement as ViewUIElement };
  * Without this handler, it would be impossible to "jump over" UI element using right arrow key.
  *
  * @param view View controller to which the quirks handling will be injected.
+ * @internal
  */
 export function injectUiElementHandling( view: View ): void {
 	view.document.on<ViewDocumentArrowKeyEvent>( 'arrowKey', ( evt, data ) =>

@@ -30,6 +30,7 @@ const BALLOON_POSITIONS = /* #__PURE__ */ ( () => [
  * {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon} instance
  * with respect to the table in the editor content, if one is selected.
  *
+ * @internal
  * @param editor The editor instance.
  * @param target Either "cell" or "table". Determines the target the balloon will be attached to.
  */

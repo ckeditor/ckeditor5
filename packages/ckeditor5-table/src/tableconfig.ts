@@ -23,6 +23,8 @@ import type { ColorOption, ColorPickerConfig } from 'ckeditor5/src/ui.js';
  * ```
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @internal
  */
 export interface TableConfig {
 

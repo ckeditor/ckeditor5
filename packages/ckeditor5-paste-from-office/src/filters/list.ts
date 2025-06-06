@@ -34,6 +34,7 @@ import {
  *
  * @param documentFragment The view structure to be transformed.
  * @param stylesString Styles from which list-like elements styling will be extracted.
+ * @internal
  */
 export function transformListItemLikeElementsIntoLists(
 	documentFragment: ViewDocumentFragment,
@@ -180,6 +181,8 @@ export function transformListItemLikeElementsIntoLists(
 
 /**
  * Removes paragraph wrapping content inside a list item.
+ *
+ * @internal
  */
 export function unwrapParagraphInListItem(
 	documentFragment: ViewDocumentFragment,
@@ -203,7 +206,8 @@ export function unwrapParagraphInListItem(
  * Finds all list-like elements in a given document fragment.
  *
  * @param documentFragment Document fragment in which to look for list-like nodes.
- * @returns Array of found list-like items. Each item is an object containing:
+ * @returns Array of found list-like items. Each item is an object containing
+ * @internal
  */
 function findAllItemLikeElements(
 	documentFragment: ViewDocumentFragment,

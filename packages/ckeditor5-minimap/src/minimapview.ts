@@ -13,6 +13,11 @@ import { Rect, type Locale } from 'ckeditor5/src/utils.js';
 import { MinimapIframeView } from './minimapiframeview.js';
 import { MinimapPositionTrackerView } from './minimappositiontrackerview.js';
 
+/**
+ * Options for the minimap view.
+ *
+ * @internal
+ */
 export type MinimapViewOptions = {
 	domRootClone: HTMLElement;
 	pageStyles: Array<string | { href: string }>;

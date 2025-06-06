@@ -27,6 +27,8 @@ import {
 /**
  * Returns a upcast helper that ensures the number of `<tableColumn>` elements corresponds to the actual number of columns in the table,
  * because the input data might have too few or too many <col> elements.
+ *
+ * @internal
  */
 export function upcastColgroupElement( tableUtilsPlugin: TableUtils ): ( dispatcher: UpcastDispatcher ) => void {
 	return dispatcher => dispatcher.on<UpcastElementEvent>( 'element:colgroup', ( evt, data, conversionApi ) => {
@@ -52,6 +54,8 @@ export function upcastColgroupElement( tableUtilsPlugin: TableUtils ): ( dispatc
 
 /**
  * Returns downcast helper for adding `ck-table-resized` class if there is a `<tableColumnGroup>` element inside the table.
+ *
+ * @internal
  */
 export function downcastTableResizedClass(): ( dispatcher: DowncastDispatcher ) => void {
 	return dispatcher => dispatcher.on<DowncastInsertEvent>( 'insert:table', ( evt, data, conversionApi ) => {
@@ -75,6 +79,8 @@ export function downcastTableResizedClass(): ( dispatcher: DowncastDispatcher ) 
 
 /**
  * Returns a upcast helper that removes the `ck-table-resized` class from the table element.
+ *
+ * @internal
  */
 export function upcastTableResizedClass(): ( dispatcher: UpcastDispatcher ) => void {
 	return ( dispatcher: UpcastDispatcher ): void => {

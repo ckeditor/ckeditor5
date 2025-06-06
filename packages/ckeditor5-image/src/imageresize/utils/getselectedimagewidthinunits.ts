@@ -25,6 +25,7 @@ import { getSelectedImageEditorNodes } from './getselectedimageeditornodes.js';
  * @param editor Editor instance.
  * @param targetUnit Unit in which dimension will be returned.
  * @returns Parsed image width after resize (with unit).
+ * @internal
  */
 export function getSelectedImageWidthInUnits( editor: Editor, targetUnit: string ): DimensionWithUnit | null {
 	const imageNodes = getSelectedImageEditorNodes( editor );

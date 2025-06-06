@@ -17,4 +17,10 @@ export { MentionCommand } from './mentioncommand.js';
 
 export type { MentionConfig, MentionFeed, ItemRenderer, MentionFeedObjectItem } from './mentionconfig.js';
 
+export { createRegExp as _createMentionMarkerRegExp } from './mentionui.js';
+export {
+	_addMentionAttributes as _addMentionAttributes,
+	_toMentionAttribute as _toMentionAttribute
+} from './mentionediting.js';
+
 import './augmentation.js';

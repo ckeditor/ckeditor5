@@ -31,6 +31,8 @@ import type { Model, Writer, Element, DiffItemInsert, DiffItemRemove } from 'cke
  *   </tableRow>
  * </table>
  * ```
+ *
+ * @internal
  */
 export function injectTableCellParagraphPostFixer( model: Model ): void {
 	model.document.registerPostFixer( writer => tableCellContentsPostFixer( writer, model ) );

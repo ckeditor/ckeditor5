@@ -14,6 +14,8 @@ import type { DocumentSelection, Marker, Position, Range } from 'ckeditor5/src/e
  * Returns a single "restricted-editing-exception" marker at a given position. Contrary to
  * {@link module:engine/model/markercollection~MarkerCollection#getMarkersAtPosition}, it returnd a marker also when the postion is
  * equal to one of the marker's start or end positions.
+ *
+ * @internal
  */
 export function getMarkerAtPosition( editor: Editor, position: Position ): Marker | undefined {
 	for ( const marker of editor.model.markers ) {
@@ -29,6 +31,8 @@ export function getMarkerAtPosition( editor: Editor, position: Position ): Marke
 
 /**
  * Checks if the position is fully contained in the range. Positions equal to range start or end are considered "in".
+ *
+ * @internal
  */
 export function isPositionInRangeBoundaries( range: Range, position: Position ): boolean {
 	return (
@@ -47,6 +51,8 @@ export function isPositionInRangeBoundaries( range: Range, position: Position ):
  * <marker>f[oo</marker> ba]r -> false
  * <marker>foo</marker> []bar -> false
  * ```
+ *
+ * @internal
  */
 export function isSelectionInMarker( selection: DocumentSelection, marker?: Marker ): boolean {
 	if ( !marker ) {

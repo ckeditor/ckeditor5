@@ -14,4 +14,9 @@ export { TextPartLanguageCommand } from './textpartlanguagecommand.js';
 
 export type { TextPartLanguageOption } from './textpartlanguageconfig.js';
 
+export {
+	stringifyLanguageAttribute as _stringifyLanguageAttribute,
+	parseLanguageAttribute as _parseLanguageAttribute
+} from './utils.js';
+
 import './augmentation.js';

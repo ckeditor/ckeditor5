@@ -138,6 +138,8 @@ export function determineImageTypeForInsertionAtSelection(
 
 /**
  * Returns parsed value of the size, but only if it contains unit: px.
+ *
+ * @internal
  */
 export function getSizeValueIfInPx( size: string | undefined ): number | null {
 	if ( size && size.endsWith( 'px' ) ) {
@@ -153,6 +155,8 @@ export function getSizeValueIfInPx( size: string | undefined ): number | null {
  * If both image styles: width & height are set, they will override the image width & height attributes in the
  * browser. In this case, the image looks the same as if these styles were applied to attributes instead of styles.
  * That's why we can upcast these styles to width & height attributes instead of resizedWidth and resizedHeight.
+ *
+ * @internal
  */
 export function widthAndHeightStylesAreBothSet( viewElement: ViewElement ): boolean {
 	const widthStyle = getSizeValueIfInPx( viewElement.getStyle( 'width' ) );

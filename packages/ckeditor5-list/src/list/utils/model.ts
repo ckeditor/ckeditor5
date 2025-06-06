@@ -566,6 +566,7 @@ export function getSelectedBlockObject( model: Model ): Element | null {
  *
  * @param block A block to be tested.
  * @param schema The schema of the document.
+ * @internal
  */
 export function canBecomeSimpleListItem( block: Element, schema: Schema ): boolean {
 	return schema.checkChild( block.parent as Element, 'listItem' ) && schema.checkChild( block, '$text' ) && !schema.isObject( block );
@@ -573,6 +574,8 @@ export function canBecomeSimpleListItem( block: Element, schema: Schema ): boole
 
 /**
  * Returns true if listType is of type `numbered` or `customNumbered`.
+ *
+ * @internal
  */
 export function isNumberedListType( listType: ListType ): boolean {
 	return listType == 'numbered' || listType == 'customNumbered';

@@ -13,4 +13,6 @@ export type { ViewDocumentEnterEvent } from './enterobserver.js';
 export { EnterCommand, type EnterCommandAfterExecuteEvent } from './entercommand.js';
 export { ShiftEnterCommand } from './shiftentercommand.js';
 
+export { getCopyOnEnterAttributes as _getCopyOnEnterAttributes } from './utils.js';
+
 import './augmentation.js';

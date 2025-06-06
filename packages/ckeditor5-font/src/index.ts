@@ -39,4 +39,14 @@ export type {
 	FontSizeConfig
 } from './fontconfig.js';
 
+export { normalizeOptions as _normalizeFontFamilyOptions } from './fontfamily/utils.js';
+export { normalizeOptions as _normalizeFontSizeOptions } from './fontsize/utils.js';
+export {
+	buildDefinition as _buildFontDefinition,
+	FontConverterDefinition as _FontConverterDefinition,
+	renderUpcastAttribute as _renderFontColorUpcastAttribute,
+	renderDowncastElement as _renderFontDowncastElement,
+	addColorSelectorToDropdown as _addFontColorSelectorToDropdown
+} from './utils.js';
+
 import './augmentation.js';

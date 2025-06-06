@@ -19,6 +19,8 @@ import '../../theme/stylepanel.css';
 /**
  * A class representing a panel with available content styles. It renders styles in button grids, grouped
  * in categories.
+ *
+ * @internal
  */
 export class StylePanelView extends View<HTMLDivElement> {
 	/**

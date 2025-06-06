@@ -17,4 +17,9 @@ export { SpecialCharactersCurrency } from './specialcharacterscurrency.js';
 
 export type { SpecialCharactersConfig } from './specialcharactersconfig.js';
 
+export { CharacterGridView as _SpecialCharactersGridView } from './ui/charactergridview.js';
+export { CharacterInfoView as _SpecialCharactersInfoView } from './ui/characterinfoview.js';
+export { SpecialCharactersCategoriesView as _SpecialCharactersCategoriesView } from './ui/specialcharacterscategoriesview.js';
+export { SpecialCharactersView as _SpecialCharactersView } from './ui/specialcharactersview.js';
+
 import './augmentation.js';

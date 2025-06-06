@@ -14,6 +14,8 @@ import {
 
 /**
  * Transforms `<a>` elements which are bookmarks by moving their children after the element.
+ *
+ * @internal
  */
 export function transformBookmarks(
 	documentFragment: ViewDocumentFragment,

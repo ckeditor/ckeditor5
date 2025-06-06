@@ -1562,6 +1562,8 @@ function _changesInGraveyardFilter( entry: DiffItem ) {
 
 /**
  * A snapshot is representing state of a given element before the first change was applied on that element.
+ *
+ * @internal
  */
 export interface DifferSnapshot {
 

@@ -830,6 +830,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
  * ```
  *
  * @returns Insert text event converter.
+ * @internal
  */
 export function insertText() {
 	return (
@@ -853,6 +854,7 @@ export function insertText() {
  * Function factory that creates a default downcast converter for triggering attributes and children conversion.
  *
  * @returns The converter.
+ * @internal
  */
 export function insertAttributesAndChildren() {
 	return (
@@ -878,6 +880,7 @@ export function insertAttributesAndChildren() {
  * ```
  *
  * @returns Remove event converter.
+ * @internal
  */
 export function remove() {
 	return (
@@ -908,6 +911,8 @@ export function remove() {
  * Creates a `<span>` {@link module:engine/view/attributeelement~AttributeElement view attribute element} from the information
  * provided by the {@link module:engine/conversion/downcasthelpers~HighlightDescriptor highlight descriptor} object. If the priority
  * is not provided in the descriptor, the default priority will be used.
+ *
+ * @internal
  */
 export function createViewElementFromHighlightDescriptor( writer: DowncastWriter, descriptor: HighlightDescriptor ): ViewAttributeElement {
 	const viewElement = writer.createAttributeElement( 'span', descriptor.attributes );
@@ -935,6 +940,7 @@ export function createViewElementFromHighlightDescriptor( writer: DowncastWriter
  * ```
  *
  * @returns Selection converter.
+ * @internal
  */
 export function convertRangeSelection() {
 	return (
@@ -987,6 +993,7 @@ export function convertRangeSelection() {
  * by merging attributes.
  *
  * @returns Selection converter.
+ * @internal
  */
 export function convertCollapsedSelection() {
 	return (
@@ -1040,6 +1047,7 @@ export function convertCollapsedSelection() {
  * which does the opposite by breaking attributes in the selection position.
  *
  * @returns Selection converter.
+ * @internal
  */
 export function cleanSelection() {
 	return (
@@ -2971,6 +2979,7 @@ export type MarkerDataCreatorFunction = (
  *
  * @callback module:engine/conversion/downcasthelpers~ConsumerFunction
  *
+ * @internal
  * @param element The model element to be converted to the view structure.
  * @param consumable The `ModelConsumable` same as in
  * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi#consumable `DowncastConversionApi.consumable`}.

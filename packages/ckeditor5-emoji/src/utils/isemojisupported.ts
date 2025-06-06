@@ -9,6 +9,8 @@
 
 /**
  * Checks if the two pixels parts are the same using canvas.
+ *
+ * @internal
  */
 export function isEmojiSupported( unicode: string ): boolean {
 	const ctx = getCanvas();

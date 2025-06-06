@@ -15,6 +15,7 @@ import { type FontSizeOption } from '../fontconfig.js';
  * to the {@link module:font/fontconfig~FontSizeOption} format.
  *
  * @param configuredOptions An array of options taken from the configuration.
+ * @internal
  */
 export function normalizeOptions( configuredOptions: Array<string | number | FontSizeOption> ): Array<FontSizeOption> {
 	// Convert options to objects.

@@ -25,6 +25,8 @@ import '../../theme/charactergrid.css';
 /**
  * A grid of character tiles. It allows browsing special characters and selecting the character to
  * be inserted into the content.
+ *
+ * @internal
  */
 export class CharacterGridView extends View<HTMLDivElement> {
 	/**
