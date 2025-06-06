@@ -24,7 +24,8 @@ describe( 'GFMDataProcessor', () => {
 		it( 'should not autolink inside list', () => {
 			testDataProcessor(
 				'*   http://example.com/',
-				'<ul><li>http://example.com/</li></ul>'
+				'<ul><li>http://example.com/</li></ul>',
+				'* http://example.com/'
 			);
 		} );
 
