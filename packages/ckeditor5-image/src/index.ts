@@ -53,4 +53,70 @@ export { ImageStyleCommand } from './imagestyle/imagestylecommand.js';
 export { ImageTextAlternativeCommand } from './imagetextalternative/imagetextalternativecommand.js';
 export { UploadImageCommand } from './imageupload/uploadimagecommand.js';
 
+export {
+	upcastImageFigure as _upcastImageFigure,
+	upcastPicture as _upcastImagePicture,
+	downcastSrcsetAttribute as _downcastImageSrcsetAttribute,
+	downcastSourcesAttribute as _downcastImageSourcesAttribute,
+	downcastImageAttribute as _downcastImageAttribute
+} from './image/converters.js';
+
+export {
+	repositionContextualBalloon as _repositionImageContextualBalloon,
+	getBalloonPositionData as _getImageBalloonPositionData
+} from './image/ui/utils.js';
+
+export {
+	createInlineImageViewElement as _createInlineImageViewElement,
+	createBlockImageViewElement as _createBlockImageViewElement,
+	getImgViewElementMatcher as _getImageViewElementMatcher,
+	determineImageTypeForInsertionAtSelection as _determineImageTypeForInsertionAtSelection,
+	getSizeValueIfInPx as _getImageSizeValueIfInPx,
+	widthAndHeightStylesAreBothSet as _checkIfImageWidthAndHeightStylesAreBothSet
+} from './image/utils.js';
+
+export { ImageInsertFormView as _ImageInsertFormView } from './imageinsert/ui/imageinsertformview.js';
+export { ImageInsertUrlView as _ImageInsertUrlView } from './imageinsert/ui/imageinserturlview.js';
+
+export { ImageCustomResizeFormView as _ImageCustomResizeFormView } from './imageresize/ui/imagecustomresizeformview.js';
+export type {
+	ImageCustomResizeFormValidatorCallback as _ImageCustomResizeFormValidatorCallback
+} from './imageresize/ui/imagecustomresizeformview.js';
+
+export type { PossibleResizeImageRange as _PossibleResizeImageRange } from './imageresize/utils/getselectedimagepossibleresizerange.js';
+export { getSelectedImageEditorNodes as _getSelectedImageEditorNodes } from './imageresize/utils/getselectedimageeditornodes.js';
+export {
+	getSelectedImagePossibleResizeRange as _getSelectedImagePossibleResizeRange
+} from './imageresize/utils/getselectedimagepossibleresizerange.js';
+
+export { getSelectedImageWidthInUnits as _getSelectedImageWidthInUnits } from './imageresize/utils/getselectedimagewidthinunits.js';
+
+export {
+	tryParseDimensionWithUnit as _tryParseImageDimensionWithUnit,
+	tryCastDimensionsToUnit as _tryCastImageDimensionsToUnit
+} from './imageresize/utils/tryparsedimensionwithunit.js';
+export type { DimensionWithUnit as _ImageDimensionWithUnit } from './imageresize/utils/tryparsedimensionwithunit.js';
+
+export {
+	modelToViewStyleAttribute as _modelToViewImageStyleAttribute,
+	viewToModelStyleAttribute as _viewToModelImageStyleAttribute
+} from './imagestyle/converters.js';
+
+export {
+	DEFAULT_OPTIONS as _IMAGE_DEFAULT_OPTIONS,
+	DEFAULT_ICONS as _IMAGE_DEFAULT_ICONS,
+	DEFAULT_DROPDOWN_DEFINITIONS as _IMAGE_DEFAULT_DROPDOWN_DEFINITIONS
+} from './imagestyle/utils.js';
+
+export { TextAlternativeFormView as _ImageTextAlternativeFormView } from './imagetextalternative/ui/textalternativeformview.js';
+export type {
+	TextAlternativeFormViewSubmitEvent as _ImageTextAlternativeFormViewSubmitEvent,
+	TextAlternativeFormViewCancelEvent as _ImageTextAlternativeFormViewCancelEvent
+} from './imagetextalternative/ui/textalternativeformview.js';
+
+export {
+	fetchLocalImage as _fetchLocalImage,
+	isLocalImage as _isLocalImage
+} from './imageupload/utils.js';
+
 import './augmentation.js';
