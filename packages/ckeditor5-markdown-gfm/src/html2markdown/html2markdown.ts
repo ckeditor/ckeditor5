@@ -9,10 +9,12 @@
 
 import { unified } from 'unified';
 import rehypeParse from 'rehype-dom-parse';
-import rehypeRemark, { type Options } from 'rehype-remark';
+import rehypeRemark from 'rehype-remark';
 import remarkGfm from 'remark-gfm-no-autolink';
 import remarkStringify from 'remark-stringify';
 import { toHtml } from 'hast-util-to-html';
+import type { Handle as MarkdownHandle } from 'mdast-util-to-markdown';
+import type { Handle as MdastHandle } from 'hast-util-to-mdast';
 
 export class HtmlToMarkdown {
 	private _processor: any;
@@ -34,7 +36,7 @@ export class HtmlToMarkdown {
 			.trim();
 	}
 
-	public getRawTagsHandlers(): Options['handlers'] {
+	public getRawTagsHandlers(): Record<string, MdastHandle> {
 		return this._keepRawTags.reduce( ( handlers: any, tagName: any ) => {
 			handlers[ tagName ] = ( state: any, node: any ) => {
 				const result = {
@@ -47,7 +49,27 @@ export class HtmlToMarkdown {
 			};
 
 			return handlers;
-		}, {} as Options['handlers'] );
+		}, {} as Record<string, MdastHandle> );
+	}
+
+	public getNodeHandlers(): MarkdownHandle {
+		const urlPattern = [
+			String.raw`\b(?:(?:https?|ftp):\/\/|www\.)`,
+			String.raw`(?![-_])(?:[-_a-z0-9\u00a1-\uffff]{1,63}\.)+(?:[a-z\u00a1-\uffff]{2,63})`,
+			String.raw`(?:[^\s<>]*)`
+		].join( '' );
+
+		const urlOrTextRegex = new RegExp( `(${ urlPattern })|([\\s\\S]+?)(?=(?:${ urlPattern })|$)`, 'gi' );
+
+		return (
+			node: { type: 'text'; value: string },
+			_: any,
+			state: any
+		): string => {
+			return node.value.replaceAll( urlOrTextRegex, ( match, urlChunk, textChunk ) => {
+				return urlChunk || state.safe( textChunk, { before: '', after: '' } );
+			} );
+		};
 	}
 
 	private _buildProcessor() {
@@ -56,10 +78,13 @@ export class HtmlToMarkdown {
 			.use( rehypeRemark, {
 				handlers: this.getRawTagsHandlers()
 			} )
-			.use( remarkGfm, { singleTilde: false } )
+			.use( remarkGfm, { singleTilde: true } )
 			.use( remarkStringify, {
 				emphasis: '_',
-				rule: '-'
+				rule: '-',
+				handlers: {
+					text: this.getNodeHandlers()
+				}
 			} );
 	}
 }

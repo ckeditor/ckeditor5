@@ -23,7 +23,7 @@ export class MarkdownToHtml {
 	constructor() {
 		this._processor = unified()
 			.use( remarkParse )
-			.use( remarkGfm, { singleTilde: false } )
+			.use( remarkGfm, { singleTilde: true } )
 			.use( remarkRehype, { allowDangerousHtml: true } )
 			.use( rehypeRaw )
 			.use( rehypeStringify );
