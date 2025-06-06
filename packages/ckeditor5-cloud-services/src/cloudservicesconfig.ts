@@ -142,7 +142,9 @@ export interface CloudServicesConfig {
 	 * 	.create( document.querySelector( '#editor' ), {
 	 * 		cloudServices: {
 	 * 			tokenUrl: 'https://example.com/cs-token-endpoint',
-	 * 			autoRefresh: false // Disable automatic token refresh
+	 * 			// Disable automatic token refresh.
+	 * 			autoRefresh: false,
+	 * 			...
 	 * 		}
 	 * 	} )
 	 * 	.then( ... )
