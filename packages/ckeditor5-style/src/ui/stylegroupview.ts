@@ -19,6 +19,8 @@ import '../../theme/stylegroup.css';
  * A class representing a group of styles (e.g. "block" or "inline").
  *
  * Renders a {@link module:style/ui/stylegridview~StyleGridView style grid} and a label.
+ *
+ * @internal
  */
 export class StyleGroupView extends View<HTMLDivElement> {
 	/**
