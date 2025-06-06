@@ -16,4 +16,17 @@ export { MediaEmbedCommand } from './mediaembedcommand.js';
 
 export type { MediaEmbedConfig } from './mediaembedconfig.js';
 
+export {
+	toMediaWidget as _toMediaWidget,
+	getSelectedMediaViewWidget as _getSelectedMediaViewWidget,
+	isMediaWidget as _isMediaWidget,
+	createMediaFigureElement as _createMediaFigureElement,
+	getSelectedMediaModelWidget as _getSelectedMediaModelWidget,
+	insertMedia as _insertMedia,
+	type MediaOptions
+} from './utils.js';
+
+export type { MediaEmbedProvider } from './mediaembedconfig.js';
+export { MediaRegistry } from './mediaregistry.js';
+
 import './augmentation.js';
