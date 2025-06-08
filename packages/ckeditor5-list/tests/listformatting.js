@@ -20,13 +20,13 @@ describe( 'ListFormatting', () => {
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
-			plugins: [ ListFormatting, Paragraph, MyPlugin ]
+			plugins: [ ListFormatting, Paragraph, MyPlugin, MyPlugin2 ]
 		} );
 
 		model = editor.model;
 		docSelection = model.document.selection;
 
-		model.schema.extend( '$text', { allowAttributes: 'inlineFormat' } );
+		model.schema.extend( '$text', { allowAttributes: [ 'inlineFormat', 'inlineFormat2' ] } );
 
 		stubUid();
 	} );
@@ -533,6 +533,84 @@ describe( 'ListFormatting', () => {
 				);
 			} );
 		} );
+
+		describe( 'when 2 formattings registerd', () => {
+			it( 'should set both attributes in empty li when adding formatting', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a">[]</paragraph>'
+				);
+
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.be.undefined;
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat2' ) ).to.be.undefined;
+
+				setSelectionAttribute( model, 'inlineFormat', 'foo' );
+				setSelectionAttribute( model, 'inlineFormat2', 'bar' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemFormat="foo" listItemFormat2="bar" ' +
+						'listItemId="a" selection:inlineFormat="foo" selection:inlineFormat2="bar">' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should update only one attribute when changing one formatting', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a">' +
+						'[<$text inlineFormat="foo" inlineFormat2="bar">foo</$text>]' +
+					'</paragraph>'
+				);
+
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.equal( 'foo' );
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat2' ) ).to.equal( 'bar' );
+
+				setAttribute( model, 'inlineFormat', 'baz', docSelection.getFirstRange() );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemFormat="baz" listItemFormat2="bar" listItemId="a">' +
+						'<$text inlineFormat="baz" inlineFormat2="bar">foo</$text>' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should remove only one attribute when removing one formatting', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a">' +
+						'[<$text inlineFormat="foo" inlineFormat2="bar">foo</$text>]' +
+					'</paragraph>'
+				);
+
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.equal( 'foo' );
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat2' ) ).to.equal( 'bar' );
+
+				removeAttribute( model, 'inlineFormat', docSelection.getFirstRange() );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemFormat2="bar" listItemId="a">' +
+						'<$text inlineFormat2="bar">foo</$text>' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should remove only one attribute when changing part of the content with the second formatting', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a">' +
+						'<$text inlineFormat="foo" inlineFormat2="bar">[fo]o</$text>' +
+					'</paragraph>'
+				);
+
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.equal( 'foo' );
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat2' ) ).to.equal( 'bar' );
+
+				setAttribute( model, 'inlineFormat2', 'baz', docSelection.getFirstRange() );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a">' +
+						'<$text inlineFormat="foo" inlineFormat2="baz">fo</$text>' +
+						'<$text inlineFormat="foo" inlineFormat2="bar">o</$text>' +
+					'</paragraph>'
+				);
+			} );
+		} );
 	} );
 
 	class MyPlugin extends Plugin {
@@ -552,6 +630,26 @@ describe( 'ListFormatting', () => {
 					return false;
 				}
 			}, 'listItemFormat' );
+		}
+	}
+
+	class MyPlugin2 extends Plugin {
+		init() {
+			const ListFormatting = this.editor.plugins.get( 'ListFormatting' );
+
+			ListFormatting.registerFormatAttribute( 'listItemFormat2', 'inlineFormat2' );
+		}
+
+		afterInit() {
+			const model = this.editor.model;
+
+			model.schema.extend( '$listItem', { allowAttributes: 'listItemFormat2' } );
+			model.schema.addAttributeCheck( context => {
+				const item = context.last;
+				if ( !item.getAttribute( 'listItemId' ) ) {
+					return false;
+				}
+			}, 'listItemFormat2' );
 		}
 	}
 
