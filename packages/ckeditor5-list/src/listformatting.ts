@@ -67,22 +67,14 @@ export default class ListFormatting extends Plugin {
 	 * @inheritDoc
 	 */
 	public afterInit(): void {
-		for ( const listItemFormatAttribute in this._loadedFormattings ) {
-			this._registerPostfixerForListItemFormatting(
-				listItemFormatAttribute,
-				this._loadedFormattings[ listItemFormatAttribute ]
-			);
-		}
+		this._registerPostfixerForListItemFormatting();
 	}
 
 	/**
 	 * Registers a postfixer that ensures that the list item formatting attribute is consistent with the formatting
 	 * applied to the content of the list item.
 	 */
-	private _registerPostfixerForListItemFormatting(
-		listItemFormatAttributeName: string,
-		formatAttributeName: string
-	): void {
+	private _registerPostfixerForListItemFormatting(): void {
 		const model = this.editor.model;
 
 		model.document.registerPostFixer( writer => {
@@ -125,50 +117,52 @@ export default class ListFormatting extends Plugin {
 			}
 
 			for ( const listItem of modifiedListItems ) {
-				const format = getListItemConsistentFormat( model, listItem, formatAttributeName );
+				for ( const listItemFormatAttributeName in this._loadedFormattings ) {
+					const formatAttributeName = this._loadedFormattings[ listItemFormatAttributeName ];
+					const format = getListItemConsistentFormat( model, listItem, formatAttributeName );
 
-				if ( !format ) {
-					continue;
-				}
+					if ( !format ) {
+						continue;
+					}
 
-				if ( format.isConsistent ) {
-					if ( format.value ) {
-						if ( listItem.getAttribute( listItemFormatAttributeName ) !== format.value ) {
-							returnValue = addFormattingToListItem(
-								writer,
-								listItem,
-								listItemFormatAttributeName,
-								format.value
-							);
-						}
-					} else {
-						// TODO: tables etc.
-						// First try to get format from selection.
-						const selectionFormat = listItem.getAttribute( `selection:${ formatAttributeName }` ) as string;
-
-						if ( selectionFormat ) {
-							if ( listItem.getAttribute( listItemFormatAttributeName ) !== selectionFormat ) {
+					if ( format.isConsistent ) {
+						if ( format.value ) {
+							if ( listItem.getAttribute( listItemFormatAttributeName ) !== format.value ) {
 								returnValue = addFormattingToListItem(
 									writer,
 									listItem,
 									listItemFormatAttributeName,
-									selectionFormat
+									format.value
 								);
 							}
-						} else if ( listItem.hasAttribute( listItemFormatAttributeName ) ) {
-							returnValue = removeFormattingFromListItem(
-								writer,
-								listItem,
-								listItemFormatAttributeName
-							);
+						} else {
+							// TODO: tables etc.
+							const selectionFormat = listItem.getAttribute( `selection:${ formatAttributeName }` ) as string;
+
+							if ( selectionFormat ) {
+								if ( listItem.getAttribute( listItemFormatAttributeName ) !== selectionFormat ) {
+									returnValue = addFormattingToListItem(
+										writer,
+										listItem,
+										listItemFormatAttributeName,
+										selectionFormat
+									);
+								}
+							} else if ( listItem.hasAttribute( listItemFormatAttributeName ) ) {
+								returnValue = removeFormattingFromListItem(
+									writer,
+									listItem,
+									listItemFormatAttributeName
+								);
+							}
 						}
+					} else if ( listItem.hasAttribute( listItemFormatAttributeName ) ) {
+						returnValue = removeFormattingFromListItem(
+							writer,
+							listItem,
+							listItemFormatAttributeName
+						);
 					}
-				} else if ( listItem.hasAttribute( listItemFormatAttributeName ) ) {
-					returnValue = removeFormattingFromListItem(
-						writer,
-						listItem,
-						listItemFormatAttributeName
-					);
 				}
 			}
 
