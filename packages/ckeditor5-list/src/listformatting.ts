@@ -83,207 +83,103 @@ export default class ListFormatting extends Plugin {
 
 		model.document.registerPostFixer( writer => {
 			const changes = model.document.differ.getChanges();
+			const modifiedListItems = new Set<Element>();
 			let returnValue = false;
 
+			// for ( const entry of changes ) {
+			// 	if ( entry.type == 'attribute' && entry.attributeKey == `selection:${ formatAttributeName }` ) {
+			// 		addIfListItem( modifiedListItems, entry.range.start.nodeAfter );
+			// 	}
+
+			// 	else if ( entry.type == 'attribute' && entry.attributeKey == formatAttributeName ) {
+			// 		addIfListItem( modifiedListItems, entry.range.start.parent );
+			// 	}
+
+			// 	else if (
+			// 		entry.type == 'attribute' &&
+			// 		entry.attributeKey == 'listItemId'
+			// 	) {
+			// 		addIfListItem( modifiedListItems, entry.range.start.nodeAfter );
+			// 	}
+
+			// 	else if ( ( entry.type == 'insert' || entry.type == 'remove' ) && entry.name == '$text' ) {
+			// 		addIfListItem( modifiedListItems, entry.position.parent );
+			// 	}
+
+			// 	else if ( entry.type == 'insert' ) {
+			// 		addIfListItem( modifiedListItems, entry.position.nodeAfter );
+			// 	}
+
+			// 	else if ( entry.type == 'remove' ) {
+			// 		addIfListItem( modifiedListItems, entry.position.parent );
+			// 	}
+			// }
+
 			for ( const entry of changes ) {
-				// Changing format in empty list item (autoformat).
-				if ( entry.type == 'attribute' && entry.attributeKey == `selection:${ formatAttributeName }` ) {
-					const listItem = entry.range.start.nodeAfter;
-
-					if ( !isListItemBlock( listItem ) ) {
-						continue;
-					}
-
-					const formatAttribute = entry.attributeNewValue as string | null;
-					const listItemFormatAttribute = listItem.getAttribute( listItemFormatAttributeName );
-
-					if ( !listItem.isEmpty ) {
-						continue;
-					}
-
-					if ( formatAttribute ) {
-						if ( listItemFormatAttribute !== formatAttribute ) {
-							this._addFormattingToListItem( writer, listItem, listItemFormatAttributeName, formatAttribute );
-							returnValue = true;
-						}
-					} else if ( listItemFormatAttribute ) {
-						this._removeFormattingFromListItem( writer, listItem, listItemFormatAttributeName );
-						returnValue = true;
+				if (
+					entry.type == 'attribute' &&
+					entry.range &&
+					entry.range.start
+				) {
+					if ( entry.range.start.nodeAfter && entry.range.start.nodeAfter.is( 'element' ) ) {
+						addIfListItem( modifiedListItems, entry.range.start.nodeAfter );
+					} else if ( entry.range.start.parent ) {
+						addIfListItem( modifiedListItems, entry.range.start.parent );
 					}
 				}
+				else if (
+					( entry.type == 'insert' || entry.type == 'remove' ) &&
+					entry.position
+				) {
+					let isElement = false;
 
-				// Changing format on text inside a list item.
-				if ( entry.type == 'attribute' && entry.attributeKey == formatAttributeName ) {
-					const listItem = entry.range.start.parent;
-
-					if ( !isListItemBlock( listItem ) ) {
-						continue;
+					if ( entry.position.nodeAfter && entry.position.nodeAfter.is( 'element' ) ) {
+						addIfListItem( modifiedListItems, entry.position.nodeAfter );
+						isElement = true;
 					}
 
-					const formatAttribute = entry.attributeNewValue as string | null;
-					const listItemFormatAttribute = listItem.getAttribute( listItemFormatAttributeName );
+					if ( entry.position.nodeBefore && entry.position.nodeBefore.is( 'element' ) ) {
+						addIfListItem( modifiedListItems, entry.position.nodeBefore );
+						isElement = true;
+					}
 
-					if ( formatAttribute ) {
-						if ( this._getListItemConsistentFormat( model, listItem, formatAttributeName ) ) {
-							if ( listItemFormatAttribute !== formatAttribute ) {
-								this._addFormattingToListItem( writer, listItem, listItemFormatAttributeName, formatAttribute );
+					if ( !isElement && entry.position.parent ) {
+						addIfListItem( modifiedListItems, entry.position.parent );
+					}
+				}
+			}
+
+			for ( const listItem of modifiedListItems ) {
+				const format = this._getListItemConsistentFormat( model, listItem, formatAttributeName );
+
+				if ( !format ) {
+					continue;
+				}
+
+				if ( format.isConsistent ) {
+					if ( format.value ) {
+						if ( listItem.getAttribute( listItemFormatAttributeName ) !== format.value ) {
+							this._addFormattingToListItem( writer, listItem, listItemFormatAttributeName, format.value );
+							returnValue = true;
+						}
+					} else {
+						// TODO: tables etc.
+						// First try to get format from selection.
+						const selectionFormat = listItem.getAttribute( `selection:${ formatAttributeName }` ) as string;
+
+						if ( selectionFormat ) {
+							if ( listItem.getAttribute( listItemFormatAttributeName ) !== selectionFormat ) {
+								this._addFormattingToListItem( writer, listItem, listItemFormatAttributeName, selectionFormat );
 								returnValue = true;
 							}
-						} else if ( listItemFormatAttribute ) {
-							this._removeFormattingFromListItem( writer, listItem, listItemFormatAttributeName );
-							returnValue = true;
-						}
-					} else if ( listItemFormatAttribute ) {
-						this._removeFormattingFromListItem( writer, listItem, listItemFormatAttributeName );
-						returnValue = true;
-					}
-
-					continue;
-				}
-
-				// Inserting a text node to a list item.
-				if ( entry.type == 'insert' && entry.name == '$text' ) {
-					const listItem = entry.position.parent;
-
-					if ( !isListItemBlock( listItem ) ) {
-						continue;
-					}
-
-					const formatAttribute = this._getListItemConsistentFormat( model, listItem, formatAttributeName );
-					const listItemFormatAttribute = listItem.getAttribute( listItemFormatAttributeName );
-
-					if ( formatAttribute ) {
-						if ( listItemFormatAttribute != formatAttribute ) {
-							this._addFormattingToListItem( writer, listItem, listItemFormatAttributeName, formatAttribute );
-							returnValue = true;
-						} else {
-							continue;
-						}
-					} else {
-						if ( listItem.hasAttribute( listItemFormatAttributeName ) ) {
+						} else if ( listItem.hasAttribute( listItemFormatAttributeName ) ) {
 							this._removeFormattingFromListItem( writer, listItem, listItemFormatAttributeName );
 							returnValue = true;
 						}
 					}
-
-					continue;
-				}
-
-				// Removing a text node from a list item.
-				if ( entry.type == 'remove' && entry.name == '$text' ) {
-					const listItem = entry.position.parent;
-
-					if ( !isListItemBlock( listItem ) ) {
-						continue;
-					}
-
-					const formatAttribute = this._getListItemConsistentFormat( model, listItem, formatAttributeName );
-					const listItemFormatAttribute = listItem.getAttribute( listItemFormatAttributeName );
-
-					if ( formatAttribute ) {
-						if ( listItemFormatAttribute != formatAttribute ) {
-							this._addFormattingToListItem( writer, listItem, listItemFormatAttributeName, formatAttribute );
-							returnValue = true;
-						} else {
-							continue;
-						}
-					} else {
-						if ( listItemFormatAttribute ) {
-							this._removeFormattingFromListItem( writer, listItem, listItemFormatAttributeName );
-							returnValue = true;
-						}
-					}
-
-					continue;
-				}
-
-				// Inserting a list item.
-				if ( entry.type == 'insert' ) {
-					const listItem = entry.position.nodeAfter;
-
-					if ( !isListItemBlock( listItem ) ) {
-						continue;
-					}
-
-					const formatAttribute = this._getListItemConsistentFormat( model, listItem, formatAttributeName );
-
-					if ( formatAttribute && !listItem.getAttribute( listItemFormatAttributeName ) ) {
-						this._addFormattingToListItem( writer, listItem, listItemFormatAttributeName, formatAttribute );
-						returnValue = true;
-					}
-
-					continue;
-				}
-
-				// Removing a list item.
-				if ( entry.type == 'remove' ) {
-					const listItem = entry.position.parent;
-
-					if ( !isListItemBlock( listItem ) ) {
-						continue;
-					}
-
-					const formatAttribute = this._getListItemConsistentFormat( model, listItem, formatAttributeName );
-					const listItemFormatAttribute = listItem.getAttribute( listItemFormatAttributeName );
-
-					if ( !formatAttribute && listItemFormatAttribute ) {
-						this._removeFormattingFromListItem( writer, listItem, listItemFormatAttributeName );
-						returnValue = true;
-					}
-				}
-
-				// Changing an element into a list item.
-				if (
-					entry.type == 'attribute' &&
-					entry.attributeKey == 'listItemId' &&
-					entry.attributeOldValue == null
-				) {
-					const listItem = entry.range.start.nodeAfter;
-
-					if ( !isListItemBlock( listItem ) ) {
-						continue;
-					}
-
-					let formatAttribute;
-
-					// If an element is empty, take the format from the selection.
-					if ( listItem.isEmpty ) {
-						formatAttribute = listItem.getAttribute( `selection:${ formatAttributeName }` ) as string;
-					} else {
-						formatAttribute = this._getListItemConsistentFormat( model, listItem, formatAttributeName );
-					}
-
-					if ( formatAttribute && !listItem.getAttribute( listItemFormatAttributeName ) ) {
-						this._addFormattingToListItem( writer, listItem, listItemFormatAttributeName, formatAttribute );
-						returnValue = true;
-					}
-
-					continue;
-				}
-
-				// Changing a list item into a multi-block element.
-				if (
-					entry.type == 'attribute' &&
-					entry.attributeKey == 'listItemId' &&
-					entry.attributeNewValue != null &&
-					entry.attributeOldValue != null
-				) {
-					const listItem = entry.range.start.nodeAfter;
-
-					if ( !isListItemBlock( listItem ) ) {
-						continue;
-					}
-
-					const formatAttribute = this._getListItemConsistentFormat( model, listItem, formatAttributeName );
-					const listItemFormatAttribute = listItem.getAttribute( listItemFormatAttributeName );
-
-					if ( listItemFormatAttribute ) {
-						if ( listItemFormatAttribute != formatAttribute ) {
-							this._removeFormattingFromListItem( writer, listItem, listItemFormatAttributeName );
-							returnValue = true;
-						}
-					}
-					continue;
+				} else if ( listItem.hasAttribute( listItemFormatAttributeName ) ) {
+					this._removeFormattingFromListItem( writer, listItem, listItemFormatAttributeName );
+					returnValue = true;
 				}
 			}
 
@@ -335,26 +231,37 @@ export default class ListFormatting extends Plugin {
 	/**
 	 * TODO
 	 */
-	private _getListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ): string | false | undefined {
+	private _getListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ): ListItemFormatting | undefined {
 		// In case of multi-block, check if all blocks have the same format.
 		const affectedListItems = getAllListItemBlocks( listItem );
-		let format;
+		let format: ListItemFormatting | undefined;
 
 		for ( const listItem of affectedListItems ) {
 			// First block.
-			if ( !format ) {
-				format = this._hasSingleListItemConsistentFormat( model, listItem, attributeKey );
+			if ( format === undefined ) {
+				format = this._getSingleListItemConsistentFormat( model, listItem, attributeKey );
 
-				if ( !format ) {
-					return false;
+				if ( !format.isConsistent ) {
+					return format;
 				}
 
 				continue;
 			}
 
 			// Next blocks.
-			if ( format !== this._hasSingleListItemConsistentFormat( model, listItem, attributeKey ) ) {
-				return false;
+			const nextBlockFormat = this._getSingleListItemConsistentFormat( model, listItem, attributeKey );
+
+			if ( !nextBlockFormat.isConsistent ) {
+				format.isConsistent = false;
+				break;
+			}
+
+			if (
+				nextBlockFormat.isConsistent &&
+				nextBlockFormat.value !== format.value
+			) {
+				format.isConsistent = false;
+				break;
 			}
 		}
 
@@ -364,35 +271,43 @@ export default class ListFormatting extends Plugin {
 	/**
 	 * TODO
 	 */
-	private _hasSingleListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ): string | false | undefined {
-		let hasListItemConsistentFormat = false;
-		let firstFormatAttribute;
+	private _getSingleListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ): ListItemFormatting {
+		let isConsistent = true;
+		let value;
+
+		// TODO: check other elements like e.g. table.
+
+		if ( listItem.isEmpty ) {
+			// Check if format is set on the selection.
+			const selectionFormat = listItem.getAttribute( `selection:${ attributeKey }` ) as string;
+			value = selectionFormat ? selectionFormat : value;
+
+			return {
+				isConsistent,
+				value
+			};
+		}
 
 		for ( const child of listItem.getChildren() ) {
 			if ( model.schema.checkAttribute( child, attributeKey ) ) {
 				const formatAttribute = child.getAttribute( attributeKey ) as string;
 
-				// First child.
-				if ( !firstFormatAttribute ) {
-					if ( formatAttribute ) {
-						firstFormatAttribute = formatAttribute;
-						hasListItemConsistentFormat = true;
-						continue;
-					} else {
-						hasListItemConsistentFormat = false;
-						break;
-					}
-				}
-
-				// Second and next children.
-				if ( formatAttribute !== firstFormatAttribute ) {
-					hasListItemConsistentFormat = false;
+				if ( formatAttribute === undefined ) {
+					isConsistent = false;
+					break;
+				} else if ( value === undefined ) { // First item
+					value = formatAttribute;
+				} else if ( value !== formatAttribute ) { // Second and next items
+					isConsistent = false;
 					break;
 				}
 			}
 		}
 
-		return hasListItemConsistentFormat && firstFormatAttribute;
+		return {
+			isConsistent,
+			value
+		};
 	}
 
 	/**
@@ -409,3 +324,14 @@ export default class ListFormatting extends Plugin {
 		}
 	}
 }
+
+function addIfListItem( modifiedListItems: Set<Element>, item: any ): void {
+	if ( item && item.is( 'element' ) && isListItemBlock( item ) ) {
+		modifiedListItems.add( item );
+	}
+}
+
+type ListItemFormatting = {
+	isConsistent: boolean;
+	value?: string;
+};

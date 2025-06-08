@@ -441,6 +441,51 @@ describe( 'ListFormatting', () => {
 					'<paragraph listIndent="0" listItemId="a"><$text inlineFormat="bar">bar</$text></paragraph>'
 				);
 			} );
+
+			it( 'should remove attributes when multi-block item has no formatting', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a">' +
+						'<$text inlineFormat="foo">foo</$text>' +
+					'</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b">' +
+						'[]bar' +
+					'</paragraph>'
+				);
+
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.equal( 'foo' );
+				expect( model.document.getRoot().getChild( 1 ).getAttribute( 'listItemFormat' ) ).to.be.undefined;
+
+				editor.execute( 'mergeListItemBackward' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a">' +
+						'<$text inlineFormat="foo">foo</$text>' +
+					'</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a">' +
+						'bar' +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should add attribute when empty multi-block item with different selection formatting is removed', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a">' +
+						'<$text inlineFormat="foo">foo</$text>' +
+					'</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="a"></paragraph>]'
+				);
+
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.be.undefined;
+				expect( model.document.getRoot().getChild( 1 ).getAttribute( 'listItemFormat' ) ).to.be.undefined;
+
+				editor.execute( 'delete' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a">' +
+						'<$text inlineFormat="foo">foo</$text>' +
+					'</paragraph>'
+				);
+			} );
 		} );
 
 		describe( 'changing block item into list item', () => {
@@ -494,7 +539,7 @@ describe( 'ListFormatting', () => {
 		init() {
 			const ListFormatting = this.editor.plugins.get( 'ListFormatting' );
 
-			ListFormatting._addFormatting( 'listItemFormat', 'inlineFormat' );
+			ListFormatting.registerFormatAttribute( 'listItemFormat', 'inlineFormat' );
 		}
 
 		afterInit() {
