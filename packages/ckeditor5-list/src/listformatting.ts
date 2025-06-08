@@ -10,7 +10,6 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 
 import ListItemFontFamilyIntegration from './listformatting/listitemfontfamilyintegration.js';
-// import ListEditing from '../src/list/listediting.js';
 import type {
 	Element,
 	Model,
@@ -25,7 +24,11 @@ import {
 import '../theme/listformatting.css';
 
 /**
- * The list formatting plugin. It enables integration with formatting plugins to style the list marker.
+ * The list formatting plugin.
+ *
+ * It enables integration with formatting plugins to style the list marker.
+ * The list marker is styled based on the consistent formatting applied to the content of the list item.
+ *
  * The list of supported formatting plugins includes:
  * * Font color.
  * * Font size.
@@ -73,7 +76,8 @@ export default class ListFormatting extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Registers a postfixer that ensures that the list item formatting attribute is consistent with the formatting
+	 * applied to the content of the list item.
 	 */
 	private _registerPostfixerForListItemFormatting(
 		listItemFormatAttributeName: string,
@@ -85,35 +89,6 @@ export default class ListFormatting extends Plugin {
 			const changes = model.document.differ.getChanges();
 			const modifiedListItems = new Set<Element>();
 			let returnValue = false;
-
-			// for ( const entry of changes ) {
-			// 	if ( entry.type == 'attribute' && entry.attributeKey == `selection:${ formatAttributeName }` ) {
-			// 		addIfListItem( modifiedListItems, entry.range.start.nodeAfter );
-			// 	}
-
-			// 	else if ( entry.type == 'attribute' && entry.attributeKey == formatAttributeName ) {
-			// 		addIfListItem( modifiedListItems, entry.range.start.parent );
-			// 	}
-
-			// 	else if (
-			// 		entry.type == 'attribute' &&
-			// 		entry.attributeKey == 'listItemId'
-			// 	) {
-			// 		addIfListItem( modifiedListItems, entry.range.start.nodeAfter );
-			// 	}
-
-			// 	else if ( ( entry.type == 'insert' || entry.type == 'remove' ) && entry.name == '$text' ) {
-			// 		addIfListItem( modifiedListItems, entry.position.parent );
-			// 	}
-
-			// 	else if ( entry.type == 'insert' ) {
-			// 		addIfListItem( modifiedListItems, entry.position.nodeAfter );
-			// 	}
-
-			// 	else if ( entry.type == 'remove' ) {
-			// 		addIfListItem( modifiedListItems, entry.position.parent );
-			// 	}
-			// }
 
 			for ( const entry of changes ) {
 				if (
@@ -150,7 +125,7 @@ export default class ListFormatting extends Plugin {
 			}
 
 			for ( const listItem of modifiedListItems ) {
-				const format = this._getListItemConsistentFormat( model, listItem, formatAttributeName );
+				const format = getListItemConsistentFormat( model, listItem, formatAttributeName );
 
 				if ( !format ) {
 					continue;
@@ -159,8 +134,12 @@ export default class ListFormatting extends Plugin {
 				if ( format.isConsistent ) {
 					if ( format.value ) {
 						if ( listItem.getAttribute( listItemFormatAttributeName ) !== format.value ) {
-							this._addFormattingToListItem( writer, listItem, listItemFormatAttributeName, format.value );
-							returnValue = true;
+							returnValue = addFormattingToListItem(
+								writer,
+								listItem,
+								listItemFormatAttributeName,
+								format.value
+							);
 						}
 					} else {
 						// TODO: tables etc.
@@ -169,145 +148,32 @@ export default class ListFormatting extends Plugin {
 
 						if ( selectionFormat ) {
 							if ( listItem.getAttribute( listItemFormatAttributeName ) !== selectionFormat ) {
-								this._addFormattingToListItem( writer, listItem, listItemFormatAttributeName, selectionFormat );
-								returnValue = true;
+								returnValue = addFormattingToListItem(
+									writer,
+									listItem,
+									listItemFormatAttributeName,
+									selectionFormat
+								);
 							}
 						} else if ( listItem.hasAttribute( listItemFormatAttributeName ) ) {
-							this._removeFormattingFromListItem( writer, listItem, listItemFormatAttributeName );
-							returnValue = true;
+							returnValue = removeFormattingFromListItem(
+								writer,
+								listItem,
+								listItemFormatAttributeName
+							);
 						}
 					}
 				} else if ( listItem.hasAttribute( listItemFormatAttributeName ) ) {
-					this._removeFormattingFromListItem( writer, listItem, listItemFormatAttributeName );
-					returnValue = true;
+					returnValue = removeFormattingFromListItem(
+						writer,
+						listItem,
+						listItemFormatAttributeName
+					);
 				}
 			}
 
 			return returnValue;
 		} );
-	}
-
-	/**
-	 * TODO
-	 */
-	private _addFormattingToListItem(
-		writer: Writer,
-		listItem: Element,
-		attributeKey: string,
-		attributeValue: string
-	): void {
-		// Multi-block items should have consistent formatting.
-		const affectedListItems = getAllListItemBlocks( listItem );
-
-		for ( const listItem of affectedListItems ) {
-			if ( !listItem.hasAttribute( attributeKey ) || listItem.getAttribute( attributeKey ) !== attributeValue ) {
-				writer.setAttribute( attributeKey, attributeValue, listItem );
-			}
-		}
-
-		// TODO: add a flag if was changed
-	}
-
-	/**
-	 * TODO
-	 */
-	private _removeFormattingFromListItem(
-		writer: Writer,
-		listItem: Element,
-		attributeKey: string
-	): void {
-		// Multi-block items should have consistent formatting.
-		const affectedListItems = getAllListItemBlocks( listItem );
-
-		for ( const listItem of affectedListItems ) {
-			if ( listItem.hasAttribute( attributeKey ) ) {
-				writer.removeAttribute( attributeKey, listItem );
-			}
-		}
-
-		// TODO: add a flag if was changed
-	}
-
-	/**
-	 * TODO
-	 */
-	private _getListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ): ListItemFormatting | undefined {
-		// In case of multi-block, check if all blocks have the same format.
-		const affectedListItems = getAllListItemBlocks( listItem );
-		let format: ListItemFormatting | undefined;
-
-		for ( const listItem of affectedListItems ) {
-			// First block.
-			if ( format === undefined ) {
-				format = this._getSingleListItemConsistentFormat( model, listItem, attributeKey );
-
-				if ( !format.isConsistent ) {
-					return format;
-				}
-
-				continue;
-			}
-
-			// Next blocks.
-			const nextBlockFormat = this._getSingleListItemConsistentFormat( model, listItem, attributeKey );
-
-			if ( !nextBlockFormat.isConsistent ) {
-				format.isConsistent = false;
-				break;
-			}
-
-			if (
-				nextBlockFormat.isConsistent &&
-				nextBlockFormat.value !== format.value
-			) {
-				format.isConsistent = false;
-				break;
-			}
-		}
-
-		return format;
-	}
-
-	/**
-	 * TODO
-	 */
-	private _getSingleListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ): ListItemFormatting {
-		let isConsistent = true;
-		let value;
-
-		// TODO: check other elements like e.g. table.
-
-		if ( listItem.isEmpty ) {
-			// Check if format is set on the selection.
-			const selectionFormat = listItem.getAttribute( `selection:${ attributeKey }` ) as string;
-			value = selectionFormat ? selectionFormat : value;
-
-			return {
-				isConsistent,
-				value
-			};
-		}
-
-		for ( const child of listItem.getChildren() ) {
-			if ( model.schema.checkAttribute( child, attributeKey ) ) {
-				const formatAttribute = child.getAttribute( attributeKey ) as string;
-
-				if ( formatAttribute === undefined ) {
-					isConsistent = false;
-					break;
-				} else if ( value === undefined ) { // First item
-					value = formatAttribute;
-				} else if ( value !== formatAttribute ) { // Second and next items
-					isConsistent = false;
-					break;
-				}
-			}
-		}
-
-		return {
-			isConsistent,
-			value
-		};
 	}
 
 	/**
@@ -325,10 +191,141 @@ export default class ListFormatting extends Plugin {
 	}
 }
 
+/**
+ * Adds the list item element to the set of modified list items if it is a list item block.
+ */
 function addIfListItem( modifiedListItems: Set<Element>, item: any ): void {
 	if ( item && item.is( 'element' ) && isListItemBlock( item ) ) {
 		modifiedListItems.add( item );
 	}
+}
+
+/**
+ * Returns the consistent format of the list item element.
+ * It checks consistency also for multi-block list items.
+ * If the list item is empty, it checks the selection format.
+ */
+function getListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ): ListItemFormatting | undefined {
+	// In case of multi-block, check if all blocks have the same format.
+	const affectedListItems = getAllListItemBlocks( listItem );
+	let format: ListItemFormatting | undefined;
+
+	for ( const listItem of affectedListItems ) {
+		// First block.
+		if ( format === undefined ) {
+			format = getSingleListItemConsistentFormat( model, listItem, attributeKey );
+
+			if ( !format.isConsistent ) {
+				return format;
+			}
+
+			continue;
+		}
+
+		// Next blocks.
+		const nextBlockFormat = getSingleListItemConsistentFormat( model, listItem, attributeKey );
+
+		if ( !nextBlockFormat.isConsistent ) {
+			format.isConsistent = false;
+			break;
+		}
+
+		if (
+			nextBlockFormat.isConsistent &&
+			nextBlockFormat.value !== format.value
+		) {
+			format.isConsistent = false;
+			break;
+		}
+	}
+
+	return format;
+}
+
+/**
+ * Returns the consistent format of a single list item element.
+ */
+function getSingleListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ): ListItemFormatting {
+	let isConsistent = true;
+	let value;
+
+	// TODO: check other elements like e.g. table.
+
+	if ( listItem.isEmpty ) {
+		const selectionFormat = listItem.getAttribute( `selection:${ attributeKey }` ) as string;
+		value = selectionFormat ? selectionFormat : value;
+
+		return {
+			isConsistent,
+			value
+		};
+	}
+
+	for ( const child of listItem.getChildren() ) {
+		if ( model.schema.checkAttribute( child, attributeKey ) ) {
+			const formatAttribute = child.getAttribute( attributeKey ) as string;
+
+			if ( formatAttribute === undefined ) {
+				isConsistent = false;
+				break;
+			} else if ( value === undefined ) { // First item
+				value = formatAttribute;
+			} else if ( value !== formatAttribute ) { // Second and next items
+				isConsistent = false;
+				break;
+			}
+		}
+	}
+
+	return {
+		isConsistent,
+		value
+	};
+}
+
+/**
+ * Adds the specified formatting attribute to the list item element.
+ */
+function addFormattingToListItem(
+	writer: Writer,
+	listItem: Element,
+	attributeKey: string,
+	attributeValue: string
+): boolean {
+	// Multi-block items should have consistent formatting.
+	const affectedListItems = getAllListItemBlocks( listItem );
+	let wasChanged = false;
+
+	for ( const listItem of affectedListItems ) {
+		if ( !listItem.hasAttribute( attributeKey ) || listItem.getAttribute( attributeKey ) !== attributeValue ) {
+			writer.setAttribute( attributeKey, attributeValue, listItem );
+			wasChanged = true;
+		}
+	}
+
+	return wasChanged;
+}
+
+/**
+ * Removes the specified formatting attribute from the list item element.
+ */
+function removeFormattingFromListItem(
+	writer: Writer,
+	listItem: Element,
+	attributeKey: string
+): boolean {
+	// Multi-block items should have consistent formatting.
+	const affectedListItems = getAllListItemBlocks( listItem );
+	let wasChanged = false;
+
+	for ( const listItem of affectedListItems ) {
+		if ( listItem.hasAttribute( attributeKey ) ) {
+			writer.removeAttribute( attributeKey, listItem );
+			wasChanged = true;
+		}
+	}
+
+	return wasChanged;
 }
 
 type ListItemFormatting = {
