@@ -37,12 +37,17 @@ const pkgJsonPatterns = [
 	'external/ckeditor5-commercial/package.json'
 ];
 
-isCKEditor5PackageFactory().then( isCkeditor5Package => {
-	checkVersionMatch( {
-		cwd: CKEDITOR5_ROOT_PATH,
-		fix: shouldFix,
-		devDependenciesFilter: isCkeditor5Package,
-		pkgJsonPatterns,
-		versionExceptions
+const options = {
+	cwd: CKEDITOR5_ROOT_PATH,
+	fix: shouldFix,
+	devDependenciesFilter: await isCKEditor5PackageFactory(),
+	pkgJsonPatterns,
+	versionExceptions
+};
+
+checkVersionMatch( options )
+	.catch( err => {
+		console.error( err );
+
+		process.exit( 1 );
 	} );
-} );
