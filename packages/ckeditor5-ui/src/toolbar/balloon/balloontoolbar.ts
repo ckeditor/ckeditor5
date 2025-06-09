@@ -316,11 +316,11 @@ export class BalloonToolbar extends Plugin {
 	private _getBalloonPositionData() {
 		const editor = this.editor;
 		const view = editor.editing.view;
-		const mapper = editor.editing.mapper;
-		const modelSelection = editor.model.document.selection;
+		const viewDocument = view.document;
+		const viewSelection = viewDocument.selection;
 
 		// Get direction of the selection.
-		const isBackward = modelSelection.isBackward;
+		const isBackward = viewDocument.selection.isBackward;
 
 		return {
 			// Because the target for BalloonPanelView is a Rect (not DOMRange), it's geometry will stay fixed
@@ -328,12 +328,8 @@ export class BalloonToolbar extends Plugin {
 			// computed and hence, the target is defined as a function instead of a static value.
 			// https://github.com/ckeditor/ckeditor5-ui/issues/195
 			target: () => {
-				// As this callback is triggered on model selection change, we cannot assume
-				// that the view selection is already updated so we must use the model selection.
-				// See: https://github.com/ckeditor/ckeditor5/issues/18648.
-				const modelRange = isBackward ? modelSelection.getFirstRange() : modelSelection.getLastRange();
-				const range = mapper.toViewRange( modelRange! );
-				const rangeRects = Rect.getDomRangeRects( view.domConverter.viewRangeToDom( range ) );
+				const range = isBackward ? viewSelection.getFirstRange() : viewSelection.getLastRange();
+				const rangeRects = Rect.getDomRangeRects( view.domConverter.viewRangeToDom( range! ) );
 
 				// Select the proper range rect depending on the direction of the selection.
 				if ( isBackward ) {
