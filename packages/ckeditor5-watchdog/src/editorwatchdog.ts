@@ -587,6 +587,9 @@ class EditorWatchdogInitPlugin {
 	}
 }
 
+/**
+ * @internal
+ */
 export type EditorData = {
 	roots: Record<string, {
 		content: string;
