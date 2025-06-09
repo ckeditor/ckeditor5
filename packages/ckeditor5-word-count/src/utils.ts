@@ -12,6 +12,7 @@ import type { Element, Item } from 'ckeditor5/src/engine.js';
 /**
  * Returns a plain text representation of an element and its children.
  *
+ * @internal
  * @returns Plain text representing the model's data.
  */
 export function modelElementToPlainText( item: Item ): string {
