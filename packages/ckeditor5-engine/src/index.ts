@@ -316,11 +316,11 @@ export {
 } from './model/operation/transform.js';
 
 export {
-	_insert as _operationInsert,
-	_remove as _operationRemove,
-	_move as _operationMove,
-	_setAttribute as _operationSetAttribute,
-	_normalizeNodes as _operationNormalizeNodes
+	_insert as _insertIntoModelNodeList,
+	_remove as _removeFromModelNodeList,
+	_move as _moveInModelNodeList,
+	_setAttribute as _setAttributeInModelNodeList,
+	_normalizeNodes as _normalizeInModelNodeList
 } from './model/operation/utils.js';
 
 export {
@@ -332,7 +332,7 @@ export {
 export {
 	autoParagraphEmptyRoots as _autoParagraphEmptyModelRoots,
 	isParagraphable as _isParagraphableModelNode,
-	wrapInParagraph as _wrapInParagraphModelNode
+	wrapInParagraph as _wrapInModelParagraph
 } from './model/utils/autoparagraphing.js';
 
 export { deleteContent as _deleteModelContent } from './model/utils/deletecontent.js';
@@ -361,7 +361,7 @@ export {
 
 export {
 	isPatternMatched as _isViewPatternMatched,
-	type NormalizedPropertyPattern as _ViewNormalizedPropertyPattern
+	type NormalizedPropertyPattern as _NormalizedViewPropertyPattern
 } from './view/matcher.js';
 
-export { injectUiElementHandling as _injectUiViewElementHandling } from './view/uielement.js';
+export { injectUiElementHandling as _injectViewUIElementHandling } from './view/uielement.js';
