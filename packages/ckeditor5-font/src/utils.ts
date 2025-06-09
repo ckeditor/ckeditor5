@@ -68,6 +68,9 @@ export function buildDefinition(
 	return definition;
 }
 
+/**
+ * @internal
+ */
 export type FontConverterDefinition = {
 	model: { key: string; values: Array<string> };
 	view: Record<string, ViewElementDefinition>;

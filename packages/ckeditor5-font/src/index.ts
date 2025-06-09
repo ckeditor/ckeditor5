@@ -25,12 +25,17 @@ export { FontColorCommand } from './fontcolor/fontcolorcommand.js';
 export { FontFamilyCommand } from './fontfamily/fontfamilycommand.js';
 export { FontSizeCommand } from './fontsize/fontsizecommand.js';
 
-export type {
-	FONT_BACKGROUND_COLOR,
-	FONT_COLOR,
-	FONT_FAMILY,
-	FONT_SIZE,
-	ColorSelectorDropdownView
+export {
+	buildDefinition as _buildFontDefinition,
+	renderUpcastAttribute as _renderFontColorUpcastAttribute,
+	renderDowncastElement as _renderFontDowncastElement,
+	addColorSelectorToDropdown as _addFontColorSelectorToDropdown,
+	type FontConverterDefinition as _FontConverterDefinition,
+	type FONT_BACKGROUND_COLOR,
+	type FONT_COLOR,
+	type FONT_FAMILY,
+	type FONT_SIZE,
+	type ColorSelectorDropdownView
 } from './utils.js';
 
 export type {
@@ -41,12 +46,5 @@ export type {
 
 export { normalizeOptions as _normalizeFontFamilyOptions } from './fontfamily/utils.js';
 export { normalizeOptions as _normalizeFontSizeOptions } from './fontsize/utils.js';
-export {
-	buildDefinition as _buildFontDefinition,
-	FontConverterDefinition as _FontConverterDefinition,
-	renderUpcastAttribute as _renderFontColorUpcastAttribute,
-	renderDowncastElement as _renderFontDowncastElement,
-	addColorSelectorToDropdown as _addFontColorSelectorToDropdown
-} from './utils.js';
 
 import './augmentation.js';
