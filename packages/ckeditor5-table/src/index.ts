@@ -126,7 +126,7 @@ export {
 	getTableColumnsWidths as _getTableColumnsWidths,
 	translateColSpanAttribute as _translateTableColspanAttribute
 } from './tablecolumnresize/utils.js';
-export { MouseEventsObserver as _MouseEventsObserver } from './tablemouse/mouseeventsobserver.js';
+export { MouseEventsObserver as _TableMouseEventsObserver } from './tablemouse/mouseeventsobserver.js';
 export type { ColorInputViewOptions as _TableColorInputViewOptions } from './ui/colorinputview.js';
 export { ColorInputView as _TableColorInputView } from './ui/colorinputview.js';
 export { InsertTableView as _InsertTableView } from './ui/inserttableview.js';
