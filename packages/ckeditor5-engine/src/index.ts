@@ -266,6 +266,14 @@ export {
 } from './dev-utils/view.js';
 
 export {
+	convertMapToTags as _convertMapToTags,
+	convertMapToStringifiedObject as _convertMapToStringifiedObject,
+	dumpTrees as _dumpTrees,
+	initDocumentDumping as _initDocumentDumping,
+	logDocument as _logDocument
+} from './dev-utils/utils.js';
+
+export {
 	insertText as _downcastInsertText,
 	insertAttributesAndChildren as _downcastInsertAttributesAndChildren,
 	remove as _downcastRemove,
@@ -295,13 +303,6 @@ export {
 
 export { BasicHtmlWriter as _DataProcessorBasicHtmlWriter } from './dataprocessor/basichtmlwriter.js';
 export { OperationReplayer as _OperationReplayer } from './dev-utils/operationreplayer.js';
-export {
-	convertMapToTags as _convertMapToTags,
-	convertMapToStringifiedObject as _convertMapToStringifiedObject,
-	dumpTrees as _dumpTrees,
-	initDocumentDumping as _initDocumentDumping,
-	logDocument as _logDocument
-} from './dev-utils/utils.js';
 
 export type { DifferSnapshot as _DifferSnapshot } from './model/differ.js';
 export type {
