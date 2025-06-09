@@ -29,10 +29,10 @@ export {
 export { SizeView as _WidgetSizeView } from './widgetresize/sizeview.js';
 export {
 	TYPE_AROUND_SELECTION_ATTRIBUTE as _WIDGET_TYPE_AROUND_SELECTION_ATTRIBUTE,
-	getClosestTypeAroundDomButton as _getClosestTypeAroundWidgetDomButton,
-	getTypeAroundButtonPosition as _getTypeAroundWidgetButtonPosition,
+	getClosestTypeAroundDomButton as _getClosestWidgetTypeAroundDomButton,
+	getTypeAroundButtonPosition as _getWidgetTypeAroundButtonPosition,
 	getClosestWidgetViewElement as _getClosestWidgetViewElement,
-	getTypeAroundFakeCaretPosition as _getTypeAroundWidgetFakeCaretPosition
+	getTypeAroundFakeCaretPosition as _getWidgetTypeAroundFakeCaretPosition
 } from './widgettypearound/utils.js';
 
 import './augmentation.js';
