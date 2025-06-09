@@ -42,7 +42,7 @@ export type {
 
 export {
 	listItemUpcastConverter as _listItemUpcastConverter,
-	reconvertItemsOnDataChange as _reconvertItemsOnDataChange,
+	reconvertItemsOnDataChange as _reconvertListItemsOnDataChange,
 	listItemDowncastConverter as _listItemDowncastConverter,
 	listItemDowncastRemoveConverter as _listItemDowncastRemoveConverter,
 	bogusParagraphCreator as _listItemBogusParagraphCreator,
