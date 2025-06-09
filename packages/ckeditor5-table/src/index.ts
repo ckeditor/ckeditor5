@@ -94,8 +94,8 @@ export {
 } from './converters/upcasttable.js';
 export {
 	isTable as _isTableModelElement,
-	getCaptionFromTableModelElement as _getCaptionFromTableModelElement,
-	getCaptionFromModelSelection as _getCaptionFromTableModelSelection,
+	getCaptionFromTableModelElement as _getTableCaptionFromModelElement,
+	getCaptionFromModelSelection as _getTableCaptionFromModelSelection,
 	matchTableCaptionViewElement as _matchTableCaptionViewElement
 } from './tablecaption/utils.js';
 export {
