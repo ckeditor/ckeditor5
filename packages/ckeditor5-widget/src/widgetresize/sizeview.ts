@@ -13,6 +13,8 @@ import { type ResizeState } from './resizerstate.js';
 
 /**
  * A view displaying the proposed new element size during the resizing.
+ *
+ * @internal
  */
 export class SizeView extends View {
 	/**
