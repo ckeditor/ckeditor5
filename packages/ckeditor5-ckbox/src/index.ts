@@ -28,7 +28,7 @@ export {
 	getFileExtension as _getCKBoxFileExtension
 } from './utils.js';
 
-export {
+export type {
 	CKBoxAssetDefinition as _CKBoxAssetDefinition,
 	CKBoxAssetImageDefinition as _CKBoxAssetImageDefinition,
 	CKBoxAssetLinkDefinition as _CKBoxAssetLinkDefinition,
