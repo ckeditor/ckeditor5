@@ -7,7 +7,7 @@
  * @module minimap
  */
 
-export { default as Minimap } from './minimap.js';
+export { Minimap } from './minimap.js';
 
 export type { MinimapConfig } from './minimapconfig.js';
 

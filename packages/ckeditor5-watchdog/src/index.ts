@@ -7,8 +7,8 @@
  * @module watchdog
  */
 
-export { default as ContextWatchdog } from './contextwatchdog.js';
-export { default as EditorWatchdog, type EditorCreatorFunction } from './editorwatchdog.js';
-export { default as Watchdog, type WatchdogConfig } from './watchdog.js';
+export { ContextWatchdog } from './contextwatchdog.js';
+export { EditorWatchdog, type EditorCreatorFunction } from './editorwatchdog.js';
+export { Watchdog, type WatchdogConfig } from './watchdog.js';
 
 import './augmentation.js';

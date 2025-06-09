@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import InsertTextCommand from '../src/inserttextcommand.js';
-import ChangeBuffer from '../src/utils/changebuffer.js';
-import Input from '../src/input.js';
+import { InsertTextCommand } from '../src/inserttextcommand.js';
+import { ChangeBuffer } from '../src/utils/changebuffer.js';
+import { Input } from '../src/input.js';
 
 describe( 'InsertTextCommand', () => {
 	let editor, model, doc, buffer, inputCommand;

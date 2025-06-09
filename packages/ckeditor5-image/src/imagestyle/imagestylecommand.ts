@@ -10,7 +10,7 @@
 import type { Element } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import type { ImageStyleOptionDefinition } from '../imageconfig.js';
-import type ImageUtils from '../imageutils.js';
+import { type ImageUtils } from '../imageutils.js';
 
 /**
  * The image style command. It is used to apply {@link module:image/imageconfig~ImageStyleConfig#options image style option}
@@ -19,7 +19,7 @@ import type ImageUtils from '../imageutils.js';
  * **Note**: Executing this command may change the image model element if the desired style requires an image of a different
  * type. See {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand#execute} to learn more.
  */
-export default class ImageStyleCommand extends Command {
+export class ImageStyleCommand extends Command {
 	/**
 	 * An object containing names of default style options for the inline and block images.
 	 * If there is no default style option for the given image type in the configuration,

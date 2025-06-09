@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import UndoEditing from './undoediting.js';
-import UndoUI from './undoui.js';
+import { UndoEditing } from './undoediting.js';
+import { UndoUI } from './undoui.js';
 
 /**
  * The undo feature.
@@ -108,7 +108,7 @@ import UndoUI from './undoui.js';
  * [ operation C3rr]
  * ```
  */
-export default class Undo extends Plugin {
+export class Undo extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

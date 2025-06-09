@@ -19,14 +19,14 @@ import {
 
 import type { BlockToolbar } from '@ckeditor/ckeditor5-ui';
 
-import ClipboardObserver from './clipboardobserver.js';
+import { ClipboardObserver } from './clipboardobserver.js';
 
 /**
  * Integration of a block Drag and Drop support with the block toolbar.
  *
  * @internal
  */
-export default class DragDropBlockToolbar extends Plugin {
+export class DragDropBlockToolbar extends Plugin {
 	/**
 	 * Whether current dragging is started by block toolbar button dragging.
 	 */

@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import SubscriptEditing from './subscript/subscriptediting.js';
-import SubscriptUI from './subscript/subscriptui.js';
+import { SubscriptEditing } from './subscript/subscriptediting.js';
+import { SubscriptUI } from './subscript/subscriptui.js';
 
 /**
  * The subscript feature.
@@ -17,7 +17,7 @@ import SubscriptUI from './subscript/subscriptui.js';
  * It loads the {@link module:basic-styles/subscript/subscriptediting~SubscriptEditing} and
  * {@link module:basic-styles/subscript/subscriptui~SubscriptUI} plugins.
  */
-export default class Subscript extends Plugin {
+export class Subscript extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

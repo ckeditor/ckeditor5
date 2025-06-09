@@ -9,7 +9,7 @@
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type { default as Editor, EditorDestroyEvent } from '../editor.js';
+import type { Editor, EditorDestroyEvent } from '../editor.js';
 
 /**
  * Marks the source element on which the editor was initialized. This prevents other editor instances from using this element.
@@ -20,7 +20,7 @@ import type { default as Editor, EditorDestroyEvent } from '../editor.js';
  * @param editor Editor instance.
  * @param sourceElement Element to bind with the editor instance.
  */
-export default function secureSourceElement( editor: Editor, sourceElement: HTMLElement & { ckeditorInstance?: Editor } ): void {
+export function secureSourceElement( editor: Editor, sourceElement: HTMLElement & { ckeditorInstance?: Editor } ): void {
 	if ( sourceElement.ckeditorInstance ) {
 		/**
 		 * A DOM element used to create the editor (e.g.

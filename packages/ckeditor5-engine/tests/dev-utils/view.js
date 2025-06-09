@@ -4,21 +4,21 @@
  */
 
 import { parse, stringify, getData, setData } from '../../src/dev-utils/view.js';
-import ViewDocument from '../../src/view/document.js';
-import DocumentFragment from '../../src/view/documentfragment.js';
-import Position from '../../src/view/position.js';
-import Element from '../../src/view/element.js';
-import AttributeElement from '../../src/view/attributeelement.js';
-import ContainerElement from '../../src/view/containerelement.js';
-import EmptyElement from '../../src/view/emptyelement.js';
-import UIElement from '../../src/view/uielement.js';
-import RawElement from '../../src/view/rawelement.js';
-import Text from '../../src/view/text.js';
-import DocumentSelection from '../../src/view/documentselection.js';
-import Range from '../../src/view/range.js';
-import View from '../../src/view/view.js';
-import XmlDataProcessor from '../../src/dataprocessor/xmldataprocessor.js';
-import createViewRoot from '../view/_utils/createroot.js';
+import { ViewDocument } from '../../src/view/document.js';
+import { DocumentFragment } from '../../src/view/documentfragment.js';
+import { Position } from '../../src/view/position.js';
+import { Element } from '../../src/view/element.js';
+import { AttributeElement } from '../../src/view/attributeelement.js';
+import { ContainerElement } from '../../src/view/containerelement.js';
+import { EmptyElement } from '../../src/view/emptyelement.js';
+import { UIElement } from '../../src/view/uielement.js';
+import { RawElement } from '../../src/view/rawelement.js';
+import { Text } from '../../src/view/text.js';
+import { DocumentSelection } from '../../src/view/documentselection.js';
+import { Range } from '../../src/view/range.js';
+import { View } from '../../src/view/view.js';
+import { XmlDataProcessor } from '../../src/dataprocessor/xmldataprocessor.js';
+import { createViewRoot } from '../view/_utils/createroot.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'view test utils', () => {
@@ -442,6 +442,30 @@ describe( 'view test utils', () => {
 			const p = new ContainerElement( viewDocument, 'p', null, span );
 			expect( stringify( p, null, { showType: true, renderRawElements: true } ) )
 				.to.equal( '<container:p><raw:span><b>foo</b></raw:span></container:p>' );
+		} );
+
+		it( 'should not return `data-list-item-id` on <li> element by default (skipListItemIds=true)', () => {
+			const li = new ContainerElement( viewDocument, 'li', { 'data-list-item-id': 'foo' } );
+			const ol = new ContainerElement( viewDocument, 'ol', null, li );
+
+			expect( stringify( ol, null, { showType: true, skipListItemIds: true } ) )
+				.to.equal( '<container:ol><container:li></container:li></container:ol>' );
+		} );
+
+		it( 'should not return `data-list-item-id` on <li> element when set (skipListItemIds=true)', () => {
+			const li = new ContainerElement( viewDocument, 'li', { 'data-list-item-id': 'foo' } );
+			const ol = new ContainerElement( viewDocument, 'ol', null, li );
+
+			expect( stringify( ol, null, { showType: true, skipListItemIds: true } ) )
+				.to.equal( '<container:ol><container:li></container:li></container:ol>' );
+		} );
+
+		it( 'should return `data-list-item-id` on <li> element (skipListItemIds=true)', () => {
+			const li = new ContainerElement( viewDocument, 'li', { 'data-list-item-id': 'foo' } );
+			const ol = new ContainerElement( viewDocument, 'ol', null, li );
+
+			expect( stringify( ol, null, { showType: true, skipListItemIds: false } ) )
+				.to.equal( '<container:ol><container:li data-list-item-id="foo"></container:li></container:ol>' );
 		} );
 
 		it( 'should sort classes in specified element', () => {

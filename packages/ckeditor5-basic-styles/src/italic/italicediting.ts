@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import AttributeCommand from '../attributecommand.js';
+import { AttributeCommand } from '../attributecommand.js';
 
 const ITALIC = 'italic';
 
@@ -18,7 +18,7 @@ const ITALIC = 'italic';
  * It registers the `'italic'` command, the <kbd>Ctrl+I</kbd> keystroke and introduces the `italic` attribute in the model
  * which renders to the view as an `<i>` element.
  */
-export default class ItalicEditing extends Plugin {
+export class ItalicEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

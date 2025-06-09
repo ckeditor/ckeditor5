@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Image from '@ckeditor/ckeditor5-image/src/image.js';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import Link from '@ckeditor/ckeditor5-link/src/link.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
+import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
+import { Link } from '@ckeditor/ckeditor5-link/src/link.js';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import LinkStyleSupport from '../../src/integrations/link.js';
+import { LinkStyleSupport } from '../../src/integrations/link.js';
 
-import Style from '../../src/style.js';
+import { Style } from '../../src/style.js';
 
 describe( 'LinkStyleSupport', () => {
 	let editor, editorElement, command, model;

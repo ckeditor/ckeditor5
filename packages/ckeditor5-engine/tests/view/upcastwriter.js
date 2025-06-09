@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import DocumentFragment from '../../src/view/documentfragment.js';
-import Element from '../../src/view/element.js';
-import Text from '../../src/view/text.js';
-import UpcastWriter from '../../src/view/upcastwriter.js';
-import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor.js';
-import ViewPosition from '../../src/view/position.js';
-import ViewRange from '../../src/view/range.js';
-import ViewSelection from '../../src/view/selection.js';
-import Document from '../../src/view/document.js';
+import { DocumentFragment } from '../../src/view/documentfragment.js';
+import { Element } from '../../src/view/element.js';
+import { Text } from '../../src/view/text.js';
+import { UpcastWriter } from '../../src/view/upcastwriter.js';
+import { HtmlDataProcessor } from '../../src/dataprocessor/htmldataprocessor.js';
+import { ViewPosition } from '../../src/view/position.js';
+import { ViewRange } from '../../src/view/range.js';
+import { ViewSelection } from '../../src/view/selection.js';
+import { Document } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'UpcastWriter', () => {

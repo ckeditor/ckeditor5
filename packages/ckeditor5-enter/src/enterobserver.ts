@@ -27,7 +27,7 @@ const ENTER_EVENT_TYPES: Record<string, { isSoft: boolean }> = {
 /**
  * Enter observer introduces the {@link module:engine/view/document~Document#event:enter `Document#enter`} event.
  */
-export default class EnterObserver extends Observer {
+export class EnterObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */

@@ -19,7 +19,7 @@ import type {
 import type { Editor } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
 
-import type ImageUtils from '../imageutils.js';
+import { type ImageUtils } from '../imageutils.js';
 
 /**
  * Creates a view element representing the inline image.

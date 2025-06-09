@@ -4,14 +4,14 @@
  */
 
 import { global } from '@ckeditor/ckeditor5-utils';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import UnlinkCommand from '../src/unlinkcommand.js';
-import LinkEditing from '../src/linkediting.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { UnlinkCommand } from '../src/unlinkcommand.js';
+import { LinkEditing } from '../src/linkediting.js';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import LinkImageEditing from '../src/linkimageediting.js';
-import Image from '@ckeditor/ckeditor5-image/src/image.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { LinkImageEditing } from '../src/linkimageediting.js';
+import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 describe( 'UnlinkCommand', () => {
 	let editor, model, document, command;

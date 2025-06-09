@@ -7,8 +7,8 @@
  * @module list/legacytodolist
  */
 
-import LegacyTodoListEditing from './legacytodolist/legacytodolistediting.js';
-import TodoListUI from './todolist/todolistui.js';
+import { LegacyTodoListEditing } from './legacytodolist/legacytodolistediting.js';
+import { TodoListUI } from './todolist/todolistui.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 import '../theme/todolist.css';
 
@@ -18,7 +18,7 @@ import '../theme/todolist.css';
  * This is a "glue" plugin that loads the {@link module:list/legacytodolist/legacytodolistediting~LegacyTodoListEditing legacy to-do list
  * editing feature} and the {@link module:list/todolist/todolistui~TodoListUI to-do list UI feature}.
  */
-export default class LegacyTodoList extends Plugin {
+export class LegacyTodoList extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

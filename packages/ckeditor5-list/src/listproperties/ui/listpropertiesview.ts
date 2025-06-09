@@ -39,7 +39,7 @@ import '../../../theme/listproperties.css';
  *
  * @internal
  */
-export default class ListPropertiesView extends View {
+export class ListPropertiesView extends View {
 	/**
 	 * @inheritDoc
 	 */

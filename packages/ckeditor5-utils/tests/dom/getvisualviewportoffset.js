@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import getVisualViewportOffset from '../../src/dom/getvisualviewportoffset.js';
-import env from '../../src/env.js';
+import { getVisualViewportOffset } from '../../src/dom/getvisualviewportoffset.js';
+import { env } from '../../src/env.js';
 
 describe( 'getVisualViewportOffset()', () => {
 	afterEach( () => {

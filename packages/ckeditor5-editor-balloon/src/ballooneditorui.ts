@@ -18,12 +18,12 @@ import {
 
 import { enablePlaceholder } from 'ckeditor5/src/engine.js';
 
-import type BalloonEditorUIView from './ballooneditoruiview.js';
+import { type BalloonEditorUIView } from './ballooneditoruiview.js';
 
 /**
  * The balloon editor UI class.
  */
-export default class BalloonEditorUI extends EditorUI {
+export class BalloonEditorUI extends EditorUI {
 	/**
 	 * The main (top–most) view of the editor UI.
 	 */

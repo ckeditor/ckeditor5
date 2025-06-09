@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import MergeCellsCommand from '../../src/commands/mergecellscommand.js';
+import { MergeCellsCommand } from '../../src/commands/mergecellscommand.js';
 import { modelTable } from '../_utils/utils.js';
-import TableSelection from '../../src/tableselection.js';
-import TableEditing from '../../src/tableediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { TableSelection } from '../../src/tableselection.js';
+import { TableEditing } from '../../src/tableediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
 describe( 'MergeCellsCommand', () => {
 	let editor, model, command, root, tableSelection;

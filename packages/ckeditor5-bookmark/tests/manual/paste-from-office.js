@@ -18,7 +18,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { Table } from '@ckeditor/ckeditor5-table';
 import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office';
 
-import Bookmark from '../../src/bookmark.js';
+import { Bookmark } from '../../src/bookmark.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 

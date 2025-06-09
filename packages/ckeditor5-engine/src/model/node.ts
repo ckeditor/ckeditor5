@@ -9,11 +9,11 @@
  * @module engine/model/node
  */
 
-import TypeCheckable from './typecheckable.js';
+import { TypeCheckable } from './typecheckable.js';
 
-import type Document from './document.js';
-import type DocumentFragment from './documentfragment.js';
-import type Element from './element.js';
+import { type Document } from './document.js';
+import { type DocumentFragment } from './documentfragment.js';
+import { type Element } from './element.js';
 
 import { compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
 
@@ -45,7 +45,7 @@ import { compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
  * In case of {@link module:engine/model/element~Element element node}, adding and removing children also counts as changing a node and
  * follows same rules.
  */
-export default abstract class Node extends TypeCheckable {
+export abstract class Node extends TypeCheckable {
 	/**
 	 * Parent of this node. It could be {@link module:engine/model/element~Element}
 	 * or {@link module:engine/model/documentfragment~DocumentFragment}.
@@ -437,6 +437,8 @@ export default abstract class Node extends TypeCheckable {
 Node.prototype.is = function( type: string ): boolean {
 	return type === 'node' || type === 'model:node';
 };
+
+export { Node as ModelNode };
 
 /**
  * Node's attributes. See {@link module:utils/tomap~toMap} for a list of accepted values.

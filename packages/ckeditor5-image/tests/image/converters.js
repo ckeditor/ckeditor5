@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ImageEditing from '../../src/image/imageediting.js';
+import { ImageEditing } from '../../src/image/imageediting.js';
 import {
 	upcastImageFigure,
 	downcastImageAttribute
@@ -12,11 +12,11 @@ import {
 	createBlockImageViewElement,
 	createInlineImageViewElement
 } from '../../src/image/utils.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Image converters', () => {
 	let editor, model, document, viewDocument;

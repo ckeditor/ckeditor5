@@ -18,7 +18,7 @@ import {
 	type UpcastConversionData
 } from 'ckeditor5/src/engine.js';
 
-import TableEditing from '../tableediting.js';
+import { TableEditing } from '../tableediting.js';
 import {
 	downcastAttributeToStyle,
 	downcastTableAttribute,
@@ -26,13 +26,13 @@ import {
 	upcastBorderStyles,
 	upcastStyleToAttribute
 } from '../converters/tableproperties.js';
-import TableBackgroundColorCommand from './commands/tablebackgroundcolorcommand.js';
-import TableBorderColorCommand from './commands/tablebordercolorcommand.js';
-import TableBorderStyleCommand from './commands/tableborderstylecommand.js';
-import TableBorderWidthCommand from './commands/tableborderwidthcommand.js';
-import TableWidthCommand from './commands/tablewidthcommand.js';
-import TableHeightCommand from './commands/tableheightcommand.js';
-import TableAlignmentCommand from './commands/tablealignmentcommand.js';
+import { TableBackgroundColorCommand } from './commands/tablebackgroundcolorcommand.js';
+import { TableBorderColorCommand } from './commands/tablebordercolorcommand.js';
+import { TableBorderStyleCommand } from './commands/tableborderstylecommand.js';
+import { TableBorderWidthCommand } from './commands/tableborderwidthcommand.js';
+import { TableWidthCommand } from './commands/tablewidthcommand.js';
+import { TableHeightCommand } from './commands/tableheightcommand.js';
+import { TableAlignmentCommand } from './commands/tablealignmentcommand.js';
 import { getNormalizedDefaultTableProperties } from '../utils/table-properties.js';
 
 const ALIGN_VALUES_REG_EXP = /^(left|center|right)$/;
@@ -55,7 +55,7 @@ const FLOAT_VALUES_REG_EXP = /^(left|none|right)$/;
  * - horizontal alignment: `'tableAlignment'`
  * - width & height: `'tableWidth'` & `'tableHeight'`
  */
-export default class TablePropertiesEditing extends Plugin {
+export class TablePropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -160,6 +160,10 @@ function enableBorderProperties( schema: Schema, conversion: Conversion, default
 		allowAttributes: Object.values( modelAttributes )
 	} );
 
+	for ( const modelAttribute of Object.values( modelAttributes ) ) {
+		schema.setAttributeProperties( modelAttribute, { isFormatting: true } );
+	}
+
 	upcastBorderStyles( conversion, 'table', modelAttributes, defaultBorder );
 
 	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.color, styleName: 'border-color' } );
@@ -176,6 +180,8 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 	schema.extend( 'table', {
 		allowAttributes: [ 'tableAlignment' ]
 	} );
+
+	schema.setAttributeProperties( 'tableAlignment', { isFormatting: true } );
 
 	conversion.for( 'downcast' )
 		.attributeToAttribute( {
@@ -227,8 +233,10 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 			model: {
 				key: 'tableAlignment',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					// Consume the style even if not applied to the element so it won't be processed by other converters.
-					conversionApi.consumable.consume( viewElement, { styles: 'float' } );
+					// Ignore other figure elements.
+					if ( viewElement.name == 'figure' && !viewElement.hasClass( 'table' ) ) {
+						return;
+					}
 
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
 					let align = viewElement.getStyle( 'float' );
@@ -238,7 +246,12 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 						align = 'center';
 					}
 
-					return align === localDefaultValue ? null : align;
+					if ( align !== localDefaultValue ) {
+						return align;
+					}
+
+					// Consume the style even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { styles: 'float' } );
 				}
 			}
 		} )
@@ -254,13 +267,20 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 			model: {
 				key: 'tableAlignment',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					// Consume the styles even if not applied to the element so it won't be processed by other converters.
-					conversionApi.consumable.consume( viewElement, { styles: [ 'margin-left', 'margin-right' ] } );
+					// Ignore other figure elements.
+					if ( viewElement.name == 'figure' && !viewElement.hasClass( 'table' ) ) {
+						return;
+					}
 
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
 					const align = 'center';
 
-					return align === localDefaultValue ? null : align;
+					if ( align !== localDefaultValue ) {
+						return align;
+					}
+
+					// Consume the styles even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { styles: [ 'margin-left', 'margin-right' ] } );
 				}
 			}
 		} )
@@ -275,13 +295,15 @@ function enableAlignmentProperty( schema: Schema, conversion: Conversion, defaul
 			model: {
 				key: 'tableAlignment',
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					// Consume the attribute even if not applied to the element so it won't be processed by other converters.
-					conversionApi.consumable.consume( viewElement, { attributes: 'align' } );
-
 					const localDefaultValue = getDefaultValueAdjusted( defaultValue, '', data );
 					const align = viewElement.getAttribute( 'align' );
 
-					return align === localDefaultValue ? null : align;
+					if ( align !== localDefaultValue ) {
+						return align;
+					}
+
+					// Consume the attribute even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { attributes: 'align' } );
 				}
 			}
 		} );
@@ -308,6 +330,9 @@ function enableProperty(
 	schema.extend( 'table', {
 		allowAttributes: [ modelAttribute ]
 	} );
+
+	schema.setAttributeProperties( modelAttribute, { isFormatting: true } );
+
 	upcastStyleToAttribute( conversion, { viewElement: 'table', ...options } );
 	downcastTableAttribute( conversion, options );
 }
@@ -332,11 +357,8 @@ function enableTableToFigureProperty(
 		allowAttributes: [ modelAttribute ]
 	} );
 
-	upcastStyleToAttribute( conversion, {
-		viewElement: /^(table|figure)$/,
-		shouldUpcast: ( element: ViewElement ) => !( element.name == 'table' && element.parent!.name == 'figure' ),
-		...options
-	} );
+	schema.setAttributeProperties( modelAttribute, { isFormatting: true } );
 
+	upcastStyleToAttribute( conversion, { viewElement: /^(table|figure)$/, ...options } );
 	downcastAttributeToStyle( conversion, { modelElement: 'table', ...options } );
 }

@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { ListEditing } from '@ckeditor/ckeditor5-list/src/list/listediting.js';
 
-import IndentEditing from '../src/indentediting.js';
-import IndentBlock from '../src/indentblock.js';
-import IndentBlockCommand from '../src/indentblockcommand.js';
+import { IndentEditing } from '../src/indentediting.js';
+import { IndentBlock } from '../src/indentblock.js';
+import { IndentBlockCommand } from '../src/indentblockcommand.js';
 
 describe( 'IndentBlock', () => {
 	let editor, model, doc;
@@ -188,7 +188,7 @@ describe( 'IndentBlock', () => {
 						const paragraph = doc.getRoot().getChild( 0 );
 
 						expect( paragraph.hasAttribute( 'blockIndent' ) ).to.be.false;
-						expect( editor.getData() ).to.equal( '<ul><li>foo</li></ul>' );
+						expect( editor.getData( { skipListItemIds: true } ) ).to.equal( '<ul><li>foo</li></ul>' );
 					} );
 				} );
 			} );

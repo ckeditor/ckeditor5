@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Font from '../src/font.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Font } from '../src/font.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { getData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
 
 describe( 'Integration test Font', () => {
 	let element, editor, model;

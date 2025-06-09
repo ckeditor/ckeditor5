@@ -24,7 +24,7 @@ import type { Element, Schema } from '@ckeditor/ckeditor5-engine';
  * (e.g. a caption of an image), the new selection will contain its entire content. Successive executions of this command
  * will expand the selection to encompass more and more content up to the entire editable root of the editor.
  */
-export default class SelectAllCommand extends Command {
+export class SelectAllCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

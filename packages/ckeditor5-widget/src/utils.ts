@@ -34,7 +34,7 @@ import {
 
 import { IconView } from '@ckeditor/ckeditor5-ui';
 
-import HighlightStack, { type HighlightStackChangeEvent } from './highlightstack.js';
+import { HighlightStack, type HighlightStackChangeEvent } from './highlightstack.js';
 import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils.js';
 
 /**

@@ -13,7 +13,7 @@ import { type Batch, type Writer } from 'ckeditor5/src/engine.js';
 /**
  * The base font command.
  */
-export default abstract class FontCommand extends Command {
+export abstract class FontCommand extends Command {
 	/**
 	 * When set, it reflects the {@link #attributeKey} value of the selection.
 	 *

@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Paragraph from '../src/paragraph.js';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '../src/paragraph.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import {
 	getData as getModelData,
 	setData as setModelData

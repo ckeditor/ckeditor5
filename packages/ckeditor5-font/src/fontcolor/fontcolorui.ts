@@ -8,14 +8,14 @@
  */
 
 import { IconFontColor } from 'ckeditor5/src/icons.js';
-import ColorUI from '../ui/colorui.js';
+import { ColorUI } from '../ui/colorui.js';
 import { FONT_COLOR } from '../utils.js';
 import type { Editor } from 'ckeditor5/src/core.js';
 
 /**
  * The font color UI plugin. It introduces the `'fontColor'` dropdown.
  */
-export default class FontColorUI extends ColorUI {
+export class FontColorUI extends ColorUI {
 	/**
 	 * @inheritDoc
 	 */

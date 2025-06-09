@@ -3,23 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import { ImageInlineEditing } from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import ListEditing from '../../src/list/listediting.js';
+import { ListEditing } from '../../src/list/listediting.js';
 import { setupTestHelpers } from '../list/_utils/utils.js';
 
-import stubUid from '../list/_utils/uid.js';
+import { stubUid } from '../list/_utils/uid.js';
 
 describe( 'ListEditing - conversion - custom list marker - changes', () => {
 	let editor, model, test, modelRoot;

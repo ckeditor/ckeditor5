@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import { WidgetToolbarRepository } from 'ckeditor5/src/widget.js';
 
-import ImageUtils from './imageutils.js';
+import { ImageUtils } from './imageutils.js';
 import type { ImageStyleDropdownDefinition } from './imageconfig.js';
 
 import { isObject } from 'es-toolkit/compat';
@@ -26,7 +26,7 @@ import { isObject } from 'es-toolkit/compat';
  *
  * The toolbar uses the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon}.
  */
-export default class ImageToolbar extends Plugin {
+export class ImageToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

@@ -22,7 +22,7 @@ import {
  * A class representing the navigation part of the special characters UI. It is responsible
  * for describing the feature and allowing the user to select a particular character group.
  */
-export default class SpecialCharactersCategoriesView extends View {
+export class SpecialCharactersCategoriesView extends View {
 	/**
 	 * Currently selected special characters group's name.
 	 */

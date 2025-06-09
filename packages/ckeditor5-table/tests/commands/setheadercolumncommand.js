@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import TableSelection from '../../src/tableselection.js';
-import TableEditing from '../../src/tableediting.js';
+import { TableSelection } from '../../src/tableselection.js';
+import { TableEditing } from '../../src/tableediting.js';
 import { TableLayoutEditing } from '../../src/index.js';
 import { assertSelectedCells, modelTable } from '../_utils/utils.js';
 
-import SetHeaderColumnCommand from '../../src/commands/setheadercolumncommand.js';
+import { SetHeaderColumnCommand } from '../../src/commands/setheadercolumncommand.js';
 
 describe( 'SetHeaderColumnCommand', () => {
 	let editor, model, command;

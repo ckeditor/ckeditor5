@@ -3,23 +3,23 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../src/model/model.js';
-import ModelRange from '../../src/model/range.js';
-import ViewRange from '../../src/view/range.js';
-import DataController from '../../src/controller/datacontroller.js';
-import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor.js';
+import { Model } from '../../src/model/model.js';
+import { ModelRange } from '../../src/model/range.js';
+import { ViewRange } from '../../src/view/range.js';
+import { DataController } from '../../src/controller/datacontroller.js';
+import { HtmlDataProcessor } from '../../src/dataprocessor/htmldataprocessor.js';
 
-import ModelDocumentFragment from '../../src/model/documentfragment.js';
-import ViewDocumentFragment from '../../src/view/documentfragment.js';
-import ViewDocument from '../../src/view/document.js';
+import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
+import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
+import { ViewDocument } from '../../src/view/document.js';
 
 import { getData, setData, stringify, parse as parseModel } from '../../src/dev-utils/model.js';
 import { parse as parseView, stringify as stringifyView } from '../../src/dev-utils/view.js';
 
-import count from '@ckeditor/ckeditor5-utils/src/count.js';
+import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 
-import UpcastHelpers from '../../src/conversion/upcasthelpers.js';
-import DowncastHelpers from '../../src/conversion/downcasthelpers.js';
+import { UpcastHelpers } from '../../src/conversion/upcasthelpers.js';
+import { DowncastHelpers } from '../../src/conversion/downcasthelpers.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 

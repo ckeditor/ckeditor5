@@ -32,7 +32,7 @@ import type { IndentBehavior } from './indentcommandbehavior/indentbehavior.js';
  * editor.execute( 'outdentBlock' );
  * ```
  */
-export default class IndentBlockCommand extends Command {
+export class IndentBlockCommand extends Command {
 	/**
 	 * The command's indentation behavior.
 	 */
@@ -121,8 +121,8 @@ export default class IndentBlockCommand extends Command {
 			return true;
 		}
 
-		const documentListUtils: ListUtils = editor.plugins.get( 'ListUtils' );
+		const listUtils: ListUtils = editor.plugins.get( 'ListUtils' );
 
-		return !documentListUtils.isListItemBlock( element );
+		return !listUtils.isListItemBlock( element );
 	}
 }

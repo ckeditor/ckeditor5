@@ -10,7 +10,7 @@
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { addBackgroundRules } from 'ckeditor5/src/engine.js';
 
-import FontBackgroundColorCommand from './fontbackgroundcolorcommand.js';
+import { FontBackgroundColorCommand } from './fontbackgroundcolorcommand.js';
 import { FONT_BACKGROUND_COLOR, renderDowncastElement, renderUpcastAttribute } from '../utils.js';
 
 /**
@@ -21,7 +21,7 @@ import { FONT_BACKGROUND_COLOR, renderDowncastElement, renderUpcastAttribute } f
  * in the {@link module:engine/view/view view} as a `<span>` element (`<span style="background-color: ...">`),
  * depending on the {@link module:font/fontconfig~FontColorConfig configuration}.
  */
-export default class FontBackgroundColorEditing extends Plugin {
+export class FontBackgroundColorEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

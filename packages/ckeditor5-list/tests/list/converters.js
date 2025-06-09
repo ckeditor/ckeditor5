@@ -3,25 +3,25 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ListEditing from '../../src/list/listediting.js';
+import { ListEditing } from '../../src/list/listediting.js';
 
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range.js';
+import { ModelRange } from '@ckeditor/ckeditor5-engine/src/model/range.js';
 
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting.js';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { IndentEditing } from '@ckeditor/ckeditor5-indent/src/indentediting.js';
+import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import stubUid from './_utils/uid.js';
+import { stubUid } from './_utils/uid.js';
 
 describe( 'ListEditing - converters', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot;
@@ -494,7 +494,7 @@ describe( 'ListEditing - converters', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 					'<ul>' +
 						'<li><p style="text-align:right;">a</p></li>' +
 						'<li>b</li>' +
@@ -535,7 +535,7 @@ describe( 'ListEditing - converters', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 					'<ul>' +
 						'<li>&nbsp;</li>' +
 						'<li>b</li>' +
@@ -571,7 +571,7 @@ describe( 'ListEditing - converters', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 					'<p style="text-align:right;">a</p>' +
 					'<ul>' +
 						'<li>b</li>' +
@@ -604,7 +604,7 @@ describe( 'ListEditing - converters', () => {
 						'<ul><li><div>foo</div></li></ul>'
 					);
 
-					expect( editor.getData() ).to.equal(
+					expect( editor.getData( { skipListItemIds: true } ) ).to.equal(
 						'<ul><li><div>foo</div></li></ul>'
 					);
 				} );

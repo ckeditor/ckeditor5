@@ -8,8 +8,8 @@
  */
 
 import { throttle, cloneDeepWith, isElement, type DebouncedFunction } from 'es-toolkit/compat';
-import areConnectedThroughProperties from './utils/areconnectedthroughproperties.js';
-import Watchdog, { type WatchdogConfig } from './watchdog.js';
+import { areConnectedThroughProperties } from './utils/areconnectedthroughproperties.js';
+import { Watchdog, type WatchdogConfig } from './watchdog.js';
 import type { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import type { Node, Text, Element, Writer } from '@ckeditor/ckeditor5-engine';
 import type { Editor, EditorConfig, Context, EditorReadyEvent } from '@ckeditor/ckeditor5-core';
@@ -21,7 +21,7 @@ import type { RootAttributes } from '@ckeditor/ckeditor5-editor-multi-root';
  * See the {@glink features/watchdog Watchdog feature guide} to learn the rationale behind it and
  * how to use it.
  */
-export default class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
+export class EditorWatchdog<TEditor extends Editor = Editor> extends Watchdog {
 	/**
 	 * The current editor instance.
 	 */

@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ImageLoadObserver from '../../src/image/imageloadobserver.js';
-import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer.js';
-import View from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
+import { ImageLoadObserver } from '../../src/image/imageloadobserver.js';
+import { Observer } from '@ckeditor/ckeditor5-engine/src/view/observer/observer.js';
+import { View } from '@ckeditor/ckeditor5-engine/src/view/view.js';
+import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 

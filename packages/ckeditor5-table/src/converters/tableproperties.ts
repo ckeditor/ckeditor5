@@ -31,7 +31,6 @@ export function upcastStyleToAttribute(
 		viewElement: string | RegExp;
 		defaultValue: string;
 		reduceBoxSides?: boolean;
-		shouldUpcast?: ( viewElement: ViewElement ) => boolean;
 	}
 ): void {
 	const {
@@ -41,8 +40,7 @@ export function upcastStyleToAttribute(
 		attributeType,
 		viewElement,
 		defaultValue,
-		reduceBoxSides = false,
-		shouldUpcast = () => true
+		reduceBoxSides = false
 	} = options;
 
 	conversion.for( 'upcast' ).attributeToAttribute( {
@@ -55,10 +53,11 @@ export function upcastStyleToAttribute(
 		model: {
 			key: modelAttribute,
 			value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-				// Consume the style even if not applied to the element so it won't be processed by other converters.
-				conversionApi.consumable.consume( viewElement, { styles: styleName } );
-
-				if ( !shouldUpcast( viewElement ) ) {
+				// Ignore table elements inside figures and figures without the table class.
+				if (
+					viewElement.name == 'table' && viewElement.parent!.name == 'figure' ||
+					viewElement.name == 'figure' && !viewElement.hasClass( 'table' )
+				) {
 					return;
 				}
 
@@ -67,7 +66,12 @@ export function upcastStyleToAttribute(
 				const normalized = viewElement.getNormalizedStyle( styleName ) as Record<Side, string>;
 				const value = reduceBoxSides ? reduceBoxSidesValue( normalized ) : normalized;
 
-				return localDefaultValue === value ? null : value;
+				if ( localDefaultValue !== value ) {
+					return value;
+				}
+
+				// Consume the style even if not applied to the element so it won't be processed by other converters.
+				conversionApi.consumable.consume( viewElement, { styles: styleName } );
 			}
 		}
 	} );
@@ -83,9 +87,6 @@ export function upcastStyleToAttribute(
 			model: {
 				key: modelAttribute,
 				value: ( viewElement: ViewElement, conversionApi: UpcastConversionApi, data: UpcastConversionData<ViewElement> ) => {
-					// Consume the attribute even if not applied to the element so it won't be processed by other converters.
-					conversionApi.consumable.consume( viewElement, { attributes: attributeName } );
-
 					// Convert attributes of table and table cell elements, ignore figure.
 					// Do not convert attribute if related style is set as it has a higher priority.
 					// Do not convert attribute if the element is a table inside a figure with the related style set.
@@ -104,7 +105,12 @@ export function upcastStyleToAttribute(
 						value += 'px';
 					}
 
-					return localDefaultValue === value ? null : value;
+					if ( localDefaultValue !== value ) {
+						return value;
+					}
+
+					// Consume the attribute even if not applied to the element so it won't be processed by other converters.
+					conversionApi.consumable.consume( viewElement, { attributes: attributeName } );
 				}
 			}
 		} );

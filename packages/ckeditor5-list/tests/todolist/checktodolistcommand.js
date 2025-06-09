@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import TodoListEditing from '../../src/todolist/todolistediting.js';
-import CheckTodoListCommand from '../../src/todolist/checktodolistcommand.js';
+import { TodoListEditing } from '../../src/todolist/todolistediting.js';
+import { CheckTodoListCommand } from '../../src/todolist/checktodolistcommand.js';
 
 describe( 'CheckTodoListCommand', () => {
 	let editor, model, command;

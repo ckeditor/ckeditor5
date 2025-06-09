@@ -23,7 +23,7 @@ import {
 	type CollectionChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import FileReader from './filereader.js';
+import { FileReader } from './filereader.js';
 
 /**
  * File repository plugin. A central point for managing file upload.
@@ -37,7 +37,7 @@ import FileReader from './filereader.js';
  * Then, you can use {@link module:upload/filerepository~FileRepository#createLoader `createLoader()`} and the returned
  * {@link module:upload/filerepository~FileLoader} instance to load and upload files.
  */
-export default class FileRepository extends Plugin {
+export class FileRepository extends Plugin {
 	/**
 	 * Collection of loaders associated with this repository.
 	 */

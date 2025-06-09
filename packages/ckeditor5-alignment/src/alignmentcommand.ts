@@ -19,7 +19,7 @@ const ALIGNMENT = 'alignment';
 /**
  * The alignment command plugin.
  */
-export default class AlignmentCommand extends Command {
+export class AlignmentCommand extends Command {
 	/**
 	 * A value of the current block's alignment.
 	 *

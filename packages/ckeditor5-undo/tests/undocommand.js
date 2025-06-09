@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
-import Batch from '@ckeditor/ckeditor5-engine/src/model/batch.js';
-import UndoCommand from '../src/undocommand.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { Batch } from '@ckeditor/ckeditor5-engine/src/model/batch.js';
+import { UndoCommand } from '../src/undocommand.js';
 import { itemAt, getText } from '@ckeditor/ckeditor5-engine/tests/model/_utils/utils.js';
-import toArray from '@ckeditor/ckeditor5-utils/src/toarray.js';
+import { toArray } from '@ckeditor/ckeditor5-utils/src/toarray.js';
 
 describe( 'UndoCommand', () => {
 	let editor, model, doc, root, undo;

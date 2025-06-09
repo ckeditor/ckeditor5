@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import TableEditing from '../src/tableediting.js';
-import TableSelection from '../src/tableselection.js';
-import TableMouse from '../src/tablemouse.js';
+import { TableEditing } from '../src/tableediting.js';
+import { TableSelection } from '../src/tableselection.js';
+import { TableMouse } from '../src/tablemouse.js';
 import { assertSelectedCells, modelTable } from './_utils/utils.js';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
 
 describe( 'TableMouse', () => {
 	let editorElement, editor, model, tableMouse, modelRoot, view, viewDocument;

@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { default as Template, TemplateToBinding, TemplateIfBinding } from '../src/template.js';
-import View from '../src/view.js';
-import ViewCollection from '../src/viewcollection.js';
-import Model from '../src/model.js';
+import { Template, TemplateToBinding, TemplateIfBinding } from '../src/template.js';
+import { View } from '../src/view.js';
+import { ViewCollection } from '../src/viewcollection.js';
+import { ViewModel } from '../src/model.js';
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
-import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin.js';
-import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
+import { EmitterMixin } from '@ckeditor/ckeditor5-utils/src/emittermixin.js';
+import { DomEmitterMixin } from '@ckeditor/ckeditor5-utils/src/dom/emittermixin.js';
+import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -33,7 +33,7 @@ describe( 'Template', () => {
 		} );
 
 		it( 'accepts and normalizes the definition', () => {
-			const bind = Template.bind( new Model( {} ), Object.create( DomEmitterMixin ) );
+			const bind = Template.bind( new ViewModel( {} ), new ( DomEmitterMixin() )() );
 			const childNode = document.createElement( 'div' );
 			const childTemplate = new Template( {
 				tag: 'b'
@@ -260,12 +260,12 @@ describe( 'Template', () => {
 				let observable, emitter, bind;
 
 				beforeEach( () => {
-					observable = new Model( {
+					observable = new ViewModel( {
 						width: '10px',
 						backgroundColor: 'yellow'
 					} );
 
-					emitter = Object.create( EmitterMixin );
+					emitter = new ( EmitterMixin() )();
 					bind = Template.bind( observable, emitter );
 				} );
 
@@ -656,11 +656,11 @@ describe( 'Template', () => {
 
 		describe( 'bindings', () => {
 			it( 'activates model bindings – root', () => {
-				const observable = new Model( {
+				const observable = new ViewModel( {
 					foo: 'bar'
 				} );
 
-				const emitter = Object.create( EmitterMixin );
+				const emitter = new ( EmitterMixin() )();
 				const bind = Template.bind( observable, emitter );
 				const el = new Template( {
 					tag: 'div',
@@ -676,11 +676,11 @@ describe( 'Template', () => {
 			} );
 
 			it( 'activates model bindings – children', () => {
-				const observable = new Model( {
+				const observable = new ViewModel( {
 					foo: 'bar'
 				} );
 
-				const emitter = Object.create( EmitterMixin );
+				const emitter = new ( EmitterMixin() )();
 				const bind = Template.bind( observable, emitter );
 				const el = new Template( {
 					tag: 'div',
@@ -715,12 +715,12 @@ describe( 'Template', () => {
 
 			text = document.createTextNode( '' );
 
-			observable = new Model( {
+			observable = new ViewModel( {
 				foo: 'bar',
 				baz: 'qux'
 			} );
 
-			domEmitter = Object.create( DomEmitterMixin );
+			domEmitter = new ( DomEmitterMixin() )();
 			bind = Template.bind( observable, domEmitter );
 		} );
 
@@ -831,7 +831,7 @@ describe( 'Template', () => {
 
 			describe( 'style', () => {
 				beforeEach( () => {
-					observable = new Model( {
+					observable = new ViewModel( {
 						width: '10px',
 						backgroundColor: 'yellow'
 					} );
@@ -1103,12 +1103,12 @@ describe( 'Template', () => {
 		beforeEach( () => {
 			el = getElement( { tag: 'div' } );
 
-			observable = new Model( {
+			observable = new ViewModel( {
 				foo: 'bar',
 				baz: 'qux'
 			} );
 
-			domEmitter = Object.create( DomEmitterMixin );
+			domEmitter = new ( DomEmitterMixin() )();
 			bind = Template.bind( observable, domEmitter );
 		} );
 
@@ -1335,7 +1335,7 @@ describe( 'Template', () => {
 
 			describe( 'style', () => {
 				beforeEach( () => {
-					observable = new Model( {
+					observable = new ViewModel( {
 						overflow: 'visible'
 					} );
 
@@ -1579,12 +1579,12 @@ describe( 'Template', () => {
 			let observable, domEmitter, bind;
 
 			beforeEach( () => {
-				observable = new Model( {
+				observable = new ViewModel( {
 					foo: 'bar',
 					baz: 'qux'
 				} );
 
-				domEmitter = Object.create( DomEmitterMixin );
+				domEmitter = new ( DomEmitterMixin() )();
 				bind = Template.bind( observable, domEmitter );
 			} );
 
@@ -1796,12 +1796,12 @@ describe( 'Template', () => {
 			let observable, emitter, bind;
 
 			beforeEach( () => {
-				observable = new Model( {
+				observable = new ViewModel( {
 					foo: 'bar',
 					baz: 'qux'
 				} );
 
-				emitter = Object.create( EmitterMixin );
+				emitter = new ( EmitterMixin() )();
 				bind = Template.bind( observable, emitter );
 			} );
 
@@ -2298,12 +2298,12 @@ describe( 'Template', () => {
 		let observable, emitter, bind;
 
 		beforeEach( () => {
-			observable = new Model( {
+			observable = new ViewModel( {
 				foo: 'bar',
 				baz: 'qux'
 			} );
 
-			emitter = Object.create( DomEmitterMixin );
+			emitter = new ( DomEmitterMixin() )();
 			bind = Template.bind( observable, emitter );
 		} );
 

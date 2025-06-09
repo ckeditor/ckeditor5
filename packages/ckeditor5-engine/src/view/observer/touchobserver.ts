@@ -7,8 +7,8 @@
  * @module engine/view/observer/touchobserver
  */
 
-import DomEventObserver from './domeventobserver.js';
-import type DomEventData from './domeventdata.js';
+import { DomEventObserver } from './domeventobserver.js';
+import { type DomEventData } from './domeventdata.js';
 
 /**
  * Touch events observer.
@@ -16,7 +16,7 @@ import type DomEventData from './domeventdata.js';
  * Note that this observer is not available by default. To make it available it needs to be added to
  * {@link module:engine/view/view~View} by {@link module:engine/view/view~View#addObserver} method.
  */
-export default class TouchObserver extends DomEventObserver<'touchstart' | 'touchend' | 'touchmove'> {
+export class TouchObserver extends DomEventObserver<'touchstart' | 'touchend' | 'touchmove'> {
 	/**
 	 * @inheritDoc
 	 */

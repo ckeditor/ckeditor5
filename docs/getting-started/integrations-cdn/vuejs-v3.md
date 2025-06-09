@@ -1,7 +1,7 @@
 ---
 menu-title: Vue.js 3+
 meta-title: Using CKEditor 5 with Vue.js 3+ from CDN | CKEditor 5 Documentation
-meta-description: Install, integrate and configure CKEditor 5 using the Vue.js 3+ component with CDN.
+meta-description: Install, integrate, and configure CKEditor 5 using the Vue.js 3+ component with CDN.
 category: cloud
 order: 70
 ---

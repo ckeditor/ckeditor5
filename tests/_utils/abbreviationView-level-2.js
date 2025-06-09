@@ -12,7 +12,7 @@ import {
 } from '@ckeditor/ckeditor5-ui';
 import { IconCheck, IconCancel } from '@ckeditor/ckeditor5-icons';
 
-export default class FormView extends View {
+export class FormView extends View {
 	constructor( locale ) {
 		super( locale );
 

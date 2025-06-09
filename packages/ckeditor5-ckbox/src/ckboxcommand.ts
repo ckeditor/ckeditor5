@@ -42,7 +42,7 @@ const ASSET_INSERTION_WAIT_TIMEOUT = 1000;
  * - To insert links to other files it uses the {@link module:link/linkcommand~LinkCommand 'link'} command from the
  * {@link module:link/link~Link Link feature}.
  */
-export default class CKBoxCommand extends Command {
+export class CKBoxCommand extends Command {
 	declare public value: boolean;
 
 	/**

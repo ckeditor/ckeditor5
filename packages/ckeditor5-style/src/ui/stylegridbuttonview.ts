@@ -15,7 +15,7 @@ import type { NormalizedStyleDefinition } from '../styleutils.js';
 /**
  * A class representing an individual button (style) in the grid. Renders a rich preview of the style.
  */
-export default class StyleGridButtonView extends ButtonView {
+export class StyleGridButtonView extends ButtonView {
 	/**
 	 * Definition of the style the button will apply when executed.
 	 */

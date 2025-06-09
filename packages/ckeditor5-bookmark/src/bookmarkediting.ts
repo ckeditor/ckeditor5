@@ -24,15 +24,15 @@ import type {
 	UpcastConversionApi
 } from 'ckeditor5/src/engine.js';
 
-import InsertBookmarkCommand from './insertbookmarkcommand.js';
-import UpdateBookmarkCommand from './updatebookmarkcommand.js';
+import { InsertBookmarkCommand } from './insertbookmarkcommand.js';
+import { UpdateBookmarkCommand } from './updatebookmarkcommand.js';
 
 import '../theme/bookmark.css';
 
 /**
  * The bookmark editing plugin.
  */
-export default class BookmarkEditing extends Plugin {
+export class BookmarkEditing extends Plugin {
 	/**
 	 * A collection of bookmarks elements in the document.
 	 */

@@ -9,9 +9,9 @@
 
 import type { Element, Node, Writer } from 'ckeditor5/src/engine.js';
 
-import { default as TableWalker, type TableSlot } from '../tablewalker.js';
+import { TableWalker, type TableSlot } from '../tablewalker.js';
 import { createEmptyTableCell, updateNumericAttribute } from './common.js';
-import type TableUtils from '../tableutils.js';
+import { type TableUtils } from '../tableutils.js';
 
 type CellAttributes = {
 	rowspan?: number;

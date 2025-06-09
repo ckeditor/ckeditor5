@@ -8,7 +8,7 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core.js';
-import FontCommand from '../fontcommand.js';
+import { FontCommand } from '../fontcommand.js';
 import { FONT_FAMILY } from '../utils.js';
 
 /**
@@ -21,7 +21,7 @@ import { FONT_FAMILY } from '../utils.js';
  *
  * **Note**: Executing the command without the value removes the attribute from the model.
  */
-export default class FontFamilyCommand extends FontCommand {
+export class FontFamilyCommand extends FontCommand {
 	/**
 	 * @inheritDoc
 	 */

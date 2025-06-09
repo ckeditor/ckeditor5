@@ -3,20 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ImageBlockEditing, ImageResizeEditing } from '@ckeditor/ckeditor5-image';
 
-import TableEditing from '../../src/tableediting.js';
-import TableLayoutEditing from '../../src/tablelayout/tablelayoutediting.js';
-import TablePropertiesEditing from '../../src/tableproperties/tablepropertiesediting.js';
+import { TableEditing } from '../../src/tableediting.js';
+import { TableLayoutEditing } from '../../src/tablelayout/tablelayoutediting.js';
+import { TablePropertiesEditing } from '../../src/tableproperties/tablepropertiesediting.js';
 
-import TableBorderColorCommand from '../../src/tableproperties/commands/tablebordercolorcommand.js';
-import TableBorderStyleCommand from '../../src/tableproperties/commands/tableborderstylecommand.js';
-import TableBorderWidthCommand from '../../src/tableproperties/commands/tableborderwidthcommand.js';
-import TableAlignmentCommand from '../../src/tableproperties/commands/tablealignmentcommand.js';
-import TableWidthCommand from '../../src/tableproperties/commands/tablewidthcommand.js';
-import TableHeightCommand from '../../src/tableproperties/commands/tableheightcommand.js';
-import TableBackgroundColorCommand from '../../src/tableproperties/commands/tablebackgroundcolorcommand.js';
+import { TableBorderColorCommand } from '../../src/tableproperties/commands/tablebordercolorcommand.js';
+import { TableBorderStyleCommand } from '../../src/tableproperties/commands/tableborderstylecommand.js';
+import { TableBorderWidthCommand } from '../../src/tableproperties/commands/tableborderwidthcommand.js';
+import { TableAlignmentCommand } from '../../src/tableproperties/commands/tablealignmentcommand.js';
+import { TableWidthCommand } from '../../src/tableproperties/commands/tablewidthcommand.js';
+import { TableHeightCommand } from '../../src/tableproperties/commands/tableheightcommand.js';
+import { TableBackgroundColorCommand } from '../../src/tableproperties/commands/tablebackgroundcolorcommand.js';
 
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { assertTableStyle, assertTRBLAttribute } from '../_utils/utils.js';
@@ -96,6 +97,9 @@ describe( 'table properties', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBorderColor' ) ).to.be.true;
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBorderStyle' ) ).to.be.true;
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBorderWidth' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableBorderColor' ).isFormatting ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableBorderStyle' ).isFormatting ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableBorderWidth' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -884,6 +888,7 @@ describe( 'table properties', () => {
 		describe( 'background color', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBackgroundColor' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableBackgroundColor' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1024,6 +1029,7 @@ describe( 'table properties', () => {
 		describe( 'tableWidth', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableWidth' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableWidth' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1142,6 +1148,28 @@ describe( 'table properties', () => {
 
 					await editor.destroy();
 				} );
+
+				it( 'should not consume width style from other figure elements', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing, ImageBlockEditing, ImageResizeEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									width: '50%'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					editor.setData( '<figure class="image" style="width:50%"><img src="/assets/sample.png" alt="alt text"></figure>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<imageBlock alt="alt text" resizedWidth="50%" src="/assets/sample.png"></imageBlock>'
+					);
+
+					await editor.destroy();
+				} );
 			} );
 
 			describe( 'downcast conversion', () => {
@@ -1200,6 +1228,7 @@ describe( 'table properties', () => {
 		describe( 'tableHeight', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableHeight' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableHeight' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1318,6 +1347,28 @@ describe( 'table properties', () => {
 
 					await editor.destroy();
 				} );
+
+				it( 'should not consume height style from other figure elements', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing, ImageBlockEditing, ImageResizeEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									height: '50%'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					editor.setData( '<figure class="image" style="height:50%"><img src="/assets/sample.png" alt="alt text"></figure>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<imageBlock alt="alt text" resizedHeight="50%" src="/assets/sample.png"></imageBlock>'
+					);
+
+					await editor.destroy();
+				} );
 			} );
 
 			describe( 'downcast conversion', () => {
@@ -1376,6 +1427,7 @@ describe( 'table properties', () => {
 		describe( 'tableAlignment', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableAlignment' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableAlignment' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1493,6 +1545,65 @@ describe( 'table properties', () => {
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
 					expect( table.hasAttribute( 'tableAlignment' ) ).to.be.false;
+
+					await editor.destroy();
+				} );
+
+				it( 'should not consume alignmnent float style from other figure elements', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing, ImageBlockEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									alignment: 'right'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// Make sure that float style is not consumed from other figure elements.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'float' } ) ).to.be.true;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData( '<figure class="image" style="float:right"><img src="/assets/sample.png" alt="alt text"></figure>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>'
+					);
+
+					await editor.destroy();
+				} );
+
+				it( 'should not consume alignment margins style from other figure elements', async () => {
+					const editor = await VirtualTestEditor.create( {
+						plugins: [ TablePropertiesEditing, Paragraph, TableEditing, ImageBlockEditing ],
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									alignment: 'center'
+								}
+							}
+						}
+					} );
+					const model = editor.model;
+
+					// Make sure that float style is not consumed from other figure elements.
+					editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-left' } ) ).to.be.true;
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'margin-right' } ) ).to.be.true;
+					}, { priority: 'lowest' } ) );
+
+					editor.setData(
+						'<figure class="image" style="margin-left:auto;margin-right:auto;">' +
+							'<img src="/assets/sample.png" alt="alt text">' +
+						'</figure>'
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>'
+					);
 
 					await editor.destroy();
 				} );

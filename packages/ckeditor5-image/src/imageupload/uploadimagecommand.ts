@@ -8,7 +8,7 @@ import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
 import type { Position } from 'ckeditor5/src/engine.js';
 
-import type ImageUtils from '../imageutils.js';
+import { type ImageUtils } from '../imageutils.js';
 
 /**
  * @module image/imageupload/uploadimagecommand
@@ -45,7 +45,7 @@ import type ImageUtils from '../imageutils.js';
  * } );
  * ```
  */
-export default class UploadImageCommand extends Command {
+export class UploadImageCommand extends Command {
 	/**
 	 * The command property: `false` if there is no permission on image upload, otherwise `true`.
 	 *

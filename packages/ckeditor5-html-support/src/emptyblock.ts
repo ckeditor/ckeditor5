@@ -51,7 +51,7 @@ const EMPTY_BLOCK_MODEL_ATTRIBUTE = 'htmlEmptyBlock';
  * <td>&nbsp;</td>
  * ```
  */
-export default class EmptyBlock extends Plugin {
+export class EmptyBlock extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ListEditing from '../../../src/list/listediting.js';
-import stubUid from '../_utils/uid.js';
+import { ListEditing } from '../../../src/list/listediting.js';
+import { stubUid } from '../_utils/uid.js';
 import { modelList } from '../_utils/utils.js';
 
-import Image from '@ckeditor/ckeditor5-image/src/image.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from 'ckeditor5/src/paragraph.js';
 import {
 	getData as getModelData,
