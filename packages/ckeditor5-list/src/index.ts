@@ -117,7 +117,7 @@ export { ListStyleCommand } from './listproperties/liststylecommand.js';
 
 // Internal exports for 'listproperties' submodule
 export { listPropertiesUpcastConverter as _listPropertiesUpcastConverter } from './listproperties/converters.js';
-export type { AttributeStrategy as _AttributeStrategy } from './listproperties/listpropertiesediting.js';
+export type { AttributeStrategy as _ListAttributeConversionStrategy } from './listproperties/listpropertiesediting.js';
 export {
 	ListPropertiesView as _ListPropertiesView,
 	type StylesView as _ListPropertiesStylesView
@@ -126,7 +126,7 @@ export {
 export { getNormalizedConfig as _getNormalizedListConfig } from './listproperties/utils/config.js';
 export type { NormalizedListPropertiesConfig as _NormalizedListPropertiesConfig } from './listproperties/utils/config.js';
 export {
-	getAllSupportedStyleTypes as _getAllSupportedStyleTypes,
+	getAllSupportedStyleTypes as _getAllSupportedListStyleTypes,
 	getListTypeFromListStyleType as _getListTypeFromListStyleType,
 	getListStyleTypeFromTypeAttribute as _getListStyleTypeFromTypeAttribute,
 	getTypeAttributeFromListStyleType as _getTypeAttributeFromListStyleType,
