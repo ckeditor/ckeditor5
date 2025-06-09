@@ -133,7 +133,7 @@ export { InsertTableView as _InsertTableView } from './ui/inserttableview.js';
 export {
 	updateNumericAttribute as _updateTableNumericAttribute,
 	createEmptyTableCell as _createEmptyTableCell,
-	isHeadingColumnCell as _isHeadingColumnCell,
+	isHeadingColumnCell as _isTableHeadingColumnCell,
 	enableProperty as _enableTableCellProperty,
 	getSelectionAffectedTable as _getSelectionAffectedTable
 } from './utils/common.js';
