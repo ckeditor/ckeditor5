@@ -27,8 +27,8 @@ export { FontSizeCommand } from './fontsize/fontsizecommand.js';
 
 export {
 	buildDefinition as _buildFontDefinition,
-	renderUpcastAttribute as _renderFontColorUpcastAttribute,
-	renderDowncastElement as _renderFontDowncastElement,
+	renderUpcastAttribute as _renderUpcastFontColorAttribute,
+	renderDowncastElement as _renderDowncastFontElement,
 	addColorSelectorToDropdown as _addFontColorSelectorToDropdown,
 	type FontConverterDefinition as _FontConverterDefinition,
 	type FONT_BACKGROUND_COLOR,
