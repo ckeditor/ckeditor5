@@ -121,10 +121,6 @@ export default class ListFormatting extends Plugin {
 					const formatAttributeName = this._loadedFormattings[ listItemFormatAttributeName ];
 					const format = getListItemConsistentFormat( model, listItem, formatAttributeName );
 
-					if ( !format ) {
-						continue;
-					}
-
 					if ( format.isConsistent ) {
 						if ( format.value ) {
 							if ( listItem.getAttribute( listItemFormatAttributeName ) !== format.value ) {
@@ -136,19 +132,7 @@ export default class ListFormatting extends Plugin {
 								);
 							}
 						} else {
-							// TODO: tables etc.
-							const selectionFormat = listItem.getAttribute( `selection:${ formatAttributeName }` ) as string;
-
-							if ( selectionFormat ) {
-								if ( listItem.getAttribute( listItemFormatAttributeName ) !== selectionFormat ) {
-									returnValue = addFormattingToListItem(
-										writer,
-										listItem,
-										listItemFormatAttributeName,
-										selectionFormat
-									);
-								}
-							} else if ( listItem.hasAttribute( listItemFormatAttributeName ) ) {
+							if ( listItem.hasAttribute( listItemFormatAttributeName ) ) {
 								returnValue = removeFormattingFromListItem(
 									writer,
 									listItem,
@@ -199,7 +183,7 @@ function addIfListItem( modifiedListItems: Set<Element>, item: any ): void {
  * It checks consistency also for multi-block list items.
  * If the list item is empty, it checks the selection format.
  */
-function getListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ): ListItemFormatting | undefined {
+function getListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ): ListItemFormatting {
 	// In case of multi-block, check if all blocks have the same format.
 	const affectedListItems = getAllListItemBlocks( listItem );
 	let format: ListItemFormatting | undefined;
@@ -233,7 +217,7 @@ function getListItemConsistentFormat( model: Model, listItem: Element, attribute
 		}
 	}
 
-	return format;
+	return format!;
 }
 
 /**
@@ -242,8 +226,6 @@ function getListItemConsistentFormat( model: Model, listItem: Element, attribute
 function getSingleListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ): ListItemFormatting {
 	let isConsistent = true;
 	let value;
-
-	// TODO: check other elements like e.g. table.
 
 	if ( listItem.isEmpty ) {
 		const selectionFormat = listItem.getAttribute( `selection:${ attributeKey }` ) as string;
