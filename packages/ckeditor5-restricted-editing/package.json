@@ -24,7 +24,7 @@
     "@ckeditor/ckeditor5-block-quote": "45.2.0",
     "@ckeditor/ckeditor5-clipboard": "45.2.0",
     "@ckeditor/ckeditor5-cloud-services": "45.2.0",
-    "@ckeditor/ckeditor5-dev-utils": "^49.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^50.0.0",
     "@ckeditor/ckeditor5-easy-image": "45.2.0",
     "@ckeditor/ckeditor5-editor-classic": "45.2.0",
     "@ckeditor/ckeditor5-image": "45.2.0",
