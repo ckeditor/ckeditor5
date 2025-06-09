@@ -7,7 +7,21 @@
  * @module utils/index
  */
 
-export { env } from './env.js';
+export {
+	env,
+	getUserAgent as _getUserAgent,
+	isMac as _isMac,
+	isWindows as _isWindows,
+	isGecko as _isGecko,
+	isSafari as _isSafari,
+	isiOS as _isiOS,
+	isAndroid as _isAndroid,
+	isBlink as _isBlink,
+	isRegExpUnicodePropertySupported as _isRegExpUnicodePropertySupported,
+	isMediaForcedColors as _isMediaForcedColors,
+	isMotionReduced as _isMotionReduced
+} from './env.js';
+
 export { diff, type DiffResult } from './diff.js';
 export { fastDiff } from './fastdiff.js';
 export { diffToChanges } from './difftochanges.js';
@@ -15,6 +29,9 @@ export { diffToChanges } from './difftochanges.js';
 export type { Constructor, Mixed } from './mix.js';
 
 export {
+	_getEmitterListenedTo,
+	_setEmitterId,
+	_getEmitterId,
 	EmitterMixin,
 	type Emitter,
 	type BaseEvent,
@@ -98,7 +115,13 @@ export { FocusTracker, type ViewWithFocusTracker, isViewWithFocusTracker } from 
 export { KeystrokeHandler, type KeystrokeHandlerOptions } from './keystrokehandler.js';
 export { toArray, type ArrayOrItem, type ReadonlyArrayOrItem } from './toarray.js';
 export { toMap } from './tomap.js';
-export { add } from './translation-service.js';
+export {
+	add,
+	_translate,
+	_clear as _clearTranslations,
+	_unifyTranslations
+} from './translation-service.js';
+
 export { priorities, type PriorityString } from './priorities.js';
 export { retry, exponentialDelay } from './retry.js';
 export { insertToPriorityArray } from './inserttopriorityarray.js';
