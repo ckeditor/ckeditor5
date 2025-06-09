@@ -134,7 +134,7 @@ export { Notification } from './notification/notification.js';
 
 export {
 	UIModel,
-	UIModel as ViewModel
+	UIModel as ViewModel // TODO: Remove after WProofReader has been adjusted.
 } from './model.js';
 
 export { BalloonPanelView } from './panel/balloon/balloonpanelview.js';
