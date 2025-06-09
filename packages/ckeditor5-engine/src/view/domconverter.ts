@@ -649,6 +649,12 @@ export default class DomConverter {
 				offset += INLINE_FILLER_LENGTH;
 			}
 
+			// In case someone uses outdated view position, but DOM text node was already changed while typing.
+			// See: https://github.com/ckeditor/ckeditor5/issues/18648.
+			if ( offset > domParent.data.length ) {
+				offset = domParent.data.length;
+			}
+
 			return { parent: domParent, offset };
 		} else {
 			// viewParent is instance of ViewElement.
