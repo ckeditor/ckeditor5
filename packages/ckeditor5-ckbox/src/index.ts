@@ -23,7 +23,7 @@ export {
 	getWorkspaceId as _getCKBoxWorkspaceId,
 	blurHashToDataUrl as _ckboxBlurHashToDataUrl,
 	sendHttpRequest as _sendCKBoxHttpRequest,
-	convertMimeTypeToExtension as _convertCKBoxMimeTypeToExtension,
+	convertMimeTypeToExtension as _ckBoxConvertMimeTypeToExtension,
 	getContentTypeOfUrl as _getCKBoxContentTypeOfUrl,
 	getFileExtension as _getCKBoxFileExtension
 } from './utils.js';
