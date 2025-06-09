@@ -16,6 +16,8 @@ export { MediaEmbedCommand } from './mediaembedcommand.js';
 
 export type { MediaEmbedConfig } from './mediaembedconfig.js';
 
+export { modelToViewUrlAttributeConverter as _modelToViewUrlAttributeMediaConverter } from './converters.js';
+export { MediaFormView as _MediaFormView } from './ui/mediaformview.js';
 export {
 	toMediaWidget as _toMediaWidget,
 	getSelectedMediaViewWidget as _getSelectedMediaViewWidget,
