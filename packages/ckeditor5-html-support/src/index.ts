@@ -28,12 +28,12 @@ export type { TableElementSupport } from './integrations/table.js';
 export type { HorizontalLineElementSupport } from './integrations/horizontalline.js';
 
 export {
-	viewToModelObjectConverter as _viewToModelObjectHtmlSupportContentConverter,
-	toObjectWidgetConverter as _toHtmlSupportObjectWidgetConverter,
-	createObjectView as _createHtmlSupportObjectView,
-	viewToAttributeInlineConverter as _viewToHtmlSupportAttributeInlineConverter,
-	emptyInlineModelElementToViewConverter as _emptyHtmlSupportInlineModelElementToViewConverter,
-	attributeToViewInlineConverter as _attributeToHtmlSupportInlineConverter,
+	viewToModelObjectConverter as _viewToModelObjectContentHtmlSupportConverter,
+	toObjectWidgetConverter as _toObjectWidgetHtmlSupportConverter,
+	createObjectView as _createObjectHtmlSupportView,
+	viewToAttributeInlineConverter as _viewToAttributeInlineHtmlSupportConverter,
+	emptyInlineModelElementToViewConverter as _emptyInlineModelElementToViewHtmlSupportConverter,
+	attributeToViewInlineConverter as _attributeToInlineHtmlSupportConverter,
 	viewToModelBlockAttributeConverter as _viewToModelBlockAttributeHtmlSupportConverter,
 	modelToViewBlockAttributeConverter as _modelToViewBlockAttributeHtmlSupportConverter
 } from './converters.js';
