@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { toArray } from 'ckeditor5/src/utils.js';
-import defaultConfig from './schemadefinitions.js';
+import { defaultConfig } from './schemadefinitions.js';
 import { mergeWith } from 'es-toolkit/compat';
 import type { AttributeProperties, SchemaItemDefinition } from 'ckeditor5/src/engine.js';
 
@@ -45,7 +45,7 @@ import type { AttributeProperties, SchemaItemDefinition } from 'ckeditor5/src/en
  * } );
  * ```
  */
-export default class DataSchema extends Plugin {
+export class DataSchema extends Plugin {
 	/**
 	 * A map of registered data schema definitions.
 	 */

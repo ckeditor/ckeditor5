@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import getRangeFromMouseEvent from '../../src/dom/getrangefrommouseevent.js';
+import { getRangeFromMouseEvent } from '../../src/dom/getrangefrommouseevent.js';
 
 describe( 'getRangeFromMouseEvent()', () => {
 	it( 'should use Document#caretRangeFromPoint method to obtain range on Webkit & Blink', () => {

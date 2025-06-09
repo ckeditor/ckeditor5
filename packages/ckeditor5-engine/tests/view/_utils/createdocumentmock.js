@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin.js';
-import DocumentSelection from '../../../src/view/documentselection.js';
+import { ObservableMixin } from '@ckeditor/ckeditor5-utils/src/observablemixin.js';
+import { DocumentSelection } from '../../../src/view/documentselection.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 /**
@@ -12,7 +12,7 @@ import { StylesProcessor } from '../../../src/view/stylesmap.js';
  *
  * @returns {utils.ObservableMixin} Document mock
  */
-export default function createDocumentMock() {
+export function createViewDocumentMock() {
 	const doc = new ( ObservableMixin() )();
 	doc.set( 'isFocused', false );
 	doc.set( 'isReadOnly', false );

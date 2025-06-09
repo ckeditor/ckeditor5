@@ -25,7 +25,7 @@ import '../../theme/emojitone.css';
 /**
  * A view responsible for selecting a skin tone for an emoji.
  */
-export default class EmojiToneView extends View {
+export class EmojiToneView extends View {
 	/**
 	 * Active skin tone.
 	 *

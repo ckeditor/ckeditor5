@@ -12,7 +12,7 @@
  *
  * @param node Node to remove.
  */
-export default function remove( node: Node ): void {
+export function remove( node: Node ): void {
 	const parent = node.parentNode;
 
 	if ( parent ) {

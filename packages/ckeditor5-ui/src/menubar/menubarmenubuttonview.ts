@@ -8,8 +8,8 @@
  */
 
 import { IconDropdownArrow } from '@ckeditor/ckeditor5-icons';
-import IconView from '../icon/iconview.js';
-import ListItemButtonView from '../button/listitembuttonview.js';
+import { IconView } from '../icon/iconview.js';
+import { ListItemButtonView } from '../button/listitembuttonview.js';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 import '../../theme/components/menubar/menubarmenubutton.css';
@@ -18,7 +18,7 @@ import '../../theme/components/menubar/menubarmenubutton.css';
  * A menu {@link module:ui/menubar/menubarmenuview~MenuBarMenuView#buttonView} class. Buttons like this one
  * open both top-level bar menus as well as sub-menus.
  */
-export default class MenuBarMenuButtonView extends ListItemButtonView {
+export class MenuBarMenuButtonView extends ListItemButtonView {
 	/**
 	 * An icon that displays an arrow to indicate a direction of the menu.
 	 */

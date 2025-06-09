@@ -9,7 +9,7 @@
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import type { ResultType } from './findandreplace.js';
-import type FindAndReplaceState from './findandreplacestate.js';
+import { type FindAndReplaceState } from './findandreplacestate.js';
 
 export abstract class ReplaceCommandBase extends Command {
 	/**

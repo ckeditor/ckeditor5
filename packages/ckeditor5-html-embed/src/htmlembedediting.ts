@@ -14,14 +14,14 @@ import { logWarning, createElement } from 'ckeditor5/src/utils.js';
 import { IconCancel, IconCheck, IconPencil } from 'ckeditor5/src/icons.js';
 
 import type { HtmlEmbedConfig } from './htmlembedconfig.js';
-import HtmlEmbedCommand from './htmlembedcommand.js';
+import { HtmlEmbedCommand } from './htmlembedcommand.js';
 
 import '../theme/htmlembed.css';
 
 /**
  * The HTML embed editing feature.
  */
-export default class HtmlEmbedEditing extends Plugin {
+export class HtmlEmbedEditing extends Plugin {
 	/**
 	 * Keeps references to {@link module:ui/button/buttonview~ButtonView edit, save, and cancel} button instances created for
 	 * each widget so they can be destroyed if they are no longer in DOM after the editing view was re-rendered.

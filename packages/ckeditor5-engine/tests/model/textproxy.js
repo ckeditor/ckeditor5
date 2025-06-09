@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Element from '../../src/model/element.js';
-import Text from '../../src/model/text.js';
-import TextProxy from '../../src/model/textproxy.js';
-import Model from '../../src/model/model.js';
+import { Element } from '../../src/model/element.js';
+import { Text } from '../../src/model/text.js';
+import { TextProxy } from '../../src/model/textproxy.js';
+import { Model } from '../../src/model/model.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 

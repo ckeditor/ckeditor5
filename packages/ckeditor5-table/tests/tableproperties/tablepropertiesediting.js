@@ -3,21 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { ImageBlockEditing, ImageResizeEditing } from '@ckeditor/ckeditor5-image';
 
-import TableEditing from '../../src/tableediting.js';
-import TableLayoutEditing from '../../src/tablelayout/tablelayoutediting.js';
-import TablePropertiesEditing from '../../src/tableproperties/tablepropertiesediting.js';
+import { TableEditing } from '../../src/tableediting.js';
+import { TableLayoutEditing } from '../../src/tablelayout/tablelayoutediting.js';
+import { TablePropertiesEditing } from '../../src/tableproperties/tablepropertiesediting.js';
 
-import TableBorderColorCommand from '../../src/tableproperties/commands/tablebordercolorcommand.js';
-import TableBorderStyleCommand from '../../src/tableproperties/commands/tableborderstylecommand.js';
-import TableBorderWidthCommand from '../../src/tableproperties/commands/tableborderwidthcommand.js';
-import TableAlignmentCommand from '../../src/tableproperties/commands/tablealignmentcommand.js';
-import TableWidthCommand from '../../src/tableproperties/commands/tablewidthcommand.js';
-import TableHeightCommand from '../../src/tableproperties/commands/tableheightcommand.js';
-import TableBackgroundColorCommand from '../../src/tableproperties/commands/tablebackgroundcolorcommand.js';
+import { TableBorderColorCommand } from '../../src/tableproperties/commands/tablebordercolorcommand.js';
+import { TableBorderStyleCommand } from '../../src/tableproperties/commands/tableborderstylecommand.js';
+import { TableBorderWidthCommand } from '../../src/tableproperties/commands/tableborderwidthcommand.js';
+import { TableAlignmentCommand } from '../../src/tableproperties/commands/tablealignmentcommand.js';
+import { TableWidthCommand } from '../../src/tableproperties/commands/tablewidthcommand.js';
+import { TableHeightCommand } from '../../src/tableproperties/commands/tableheightcommand.js';
+import { TableBackgroundColorCommand } from '../../src/tableproperties/commands/tablebackgroundcolorcommand.js';
 
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { assertTableStyle, assertTRBLAttribute } from '../_utils/utils.js';
@@ -97,6 +97,9 @@ describe( 'table properties', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBorderColor' ) ).to.be.true;
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBorderStyle' ) ).to.be.true;
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBorderWidth' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableBorderColor' ).isFormatting ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableBorderStyle' ).isFormatting ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableBorderWidth' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -885,6 +888,7 @@ describe( 'table properties', () => {
 		describe( 'background color', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBackgroundColor' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableBackgroundColor' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1025,6 +1029,7 @@ describe( 'table properties', () => {
 		describe( 'tableWidth', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableWidth' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableWidth' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1223,6 +1228,7 @@ describe( 'table properties', () => {
 		describe( 'tableHeight', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableHeight' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableHeight' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1421,6 +1427,7 @@ describe( 'table properties', () => {
 		describe( 'tableAlignment', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableAlignment' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableAlignment' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {

@@ -7,10 +7,10 @@
  * @module engine/view/observer/inputobserver
  */
 
-import DomEventObserver from './domeventobserver.js';
-import type DomEventData from './domeventdata.js';
-import type ViewRange from '../range.js';
-import DataTransfer from '../datatransfer.js';
+import { DomEventObserver } from './domeventobserver.js';
+import { type DomEventData } from './domeventdata.js';
+import { type ViewRange } from '../range.js';
+import { DataTransfer } from '../datatransfer.js';
 import { env, isText, indexOf } from '@ckeditor/ckeditor5-utils';
 import { INLINE_FILLER_LENGTH, startsWithFiller } from '../filler.js';
 
@@ -22,7 +22,7 @@ import { INLINE_FILLER_LENGTH, startsWithFiller } from '../filler.js';
  * **Note**: This observer is attached by {@link module:engine/view/view~View} and available by default in all
  * editor instances.
  */
-export default class InputObserver extends DomEventObserver<'beforeinput'> {
+export class InputObserver extends DomEventObserver<'beforeinput'> {
 	/**
 	 * @inheritDoc
 	 */

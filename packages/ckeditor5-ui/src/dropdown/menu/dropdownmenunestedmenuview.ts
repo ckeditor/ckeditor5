@@ -17,22 +17,22 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import type { FocusableView } from '../../focuscycler.js';
-import type BodyCollection from '../../editorui/bodycollection.js';
+import { type BodyCollection } from '../../editorui/bodycollection.js';
 
-import DropdownMenuButtonView from './dropdownmenubuttonview.js';
-import DropdownMenuListView from './dropdownmenulistview.js';
+import { DropdownMenuButtonView } from './dropdownmenubuttonview.js';
+import { DropdownMenuListView } from './dropdownmenulistview.js';
 import { DropdownMenuPanelPositioningFunctions } from './utils.js';
 import { DropdownMenuBehaviors } from './dropdownmenubehaviors.js';
 
-import View from '../../view.js';
-import DropdownMenuNestedMenuPanelView, { type DropdownMenuNestedMenuPanelPosition } from './dropdownmenunestedmenupanelview.js';
+import { View } from '../../view.js';
+import { DropdownMenuNestedMenuPanelView, type DropdownMenuNestedMenuPanelPosition } from './dropdownmenunestedmenupanelview.js';
 
 import '../../../theme/components/dropdown/menu/dropdownmenu.css';
 
 /**
  * Represents a nested menu view.
  */
-export default class DropdownMenuNestedMenuView extends View implements FocusableView {
+export class DropdownMenuNestedMenuView extends View implements FocusableView {
 	/**
 	 * An array of delegated events for the dropdown menu definition controller.
 	 * These events are delegated to the dropdown menu element.

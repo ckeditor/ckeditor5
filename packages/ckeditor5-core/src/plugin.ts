@@ -11,12 +11,12 @@
 
 import { ObservableMixin, type ObservableSetEvent, type EventInfo } from '@ckeditor/ckeditor5-utils';
 
-import type Editor from './editor/editor.js';
+import { type Editor } from './editor/editor.js';
 
 /**
  * The base class for CKEditor plugin classes.
  */
-export default class Plugin extends /* #__PURE__ */ ObservableMixin() implements PluginInterface {
+export class Plugin extends /* #__PURE__ */ ObservableMixin() implements PluginInterface {
 	/**
 	 * The editor instance.
 	 *
@@ -290,9 +290,9 @@ export interface PluginStaticMembers<TContext = Editor> {
 	 * To keep the plugin class definition tight it is recommended to define this property as a static getter:
 	 *
 	 * ```ts
-	 * import Image from './image.js';
+	 * import { Image } from './image.js';
 	 *
-	 * export default class ImageCaption {
+	 * export class ImageCaption {
 	 * 	static get requires() {
 	 * 		return [ Image ];
 	 * 	}
@@ -311,7 +311,7 @@ export interface PluginStaticMembers<TContext = Editor> {
 	 * To keep the plugin class definition tight, it is recommended to define this property as a static getter:
 	 *
 	 * ```ts
-	 * export default class ImageCaption {
+	 * export class ImageCaption {
 	 * 	static get pluginName() {
 	 * 		return 'ImageCaption';
 	 * 	}

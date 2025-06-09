@@ -9,8 +9,8 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import TablePropertiesEditing from './tableproperties/tablepropertiesediting.js';
-import TablePropertiesUI from './tableproperties/tablepropertiesui.js';
+import { TablePropertiesEditing } from './tableproperties/tablepropertiesediting.js';
+import { TablePropertiesUI } from './tableproperties/tablepropertiesui.js';
 
 /**
  * The table properties feature. Enables support for setting properties of tables (size, border, background, etc.).
@@ -22,7 +22,7 @@ import TablePropertiesUI from './tableproperties/tablepropertiesui.js';
  * {@link module:table/tableproperties/tablepropertiesediting~TablePropertiesEditing table properties editing feature} and
  * the {@link module:table/tableproperties/tablepropertiesui~TablePropertiesUI table properties UI feature}.
  */
-export default class TableProperties extends Plugin {
+export class TableProperties extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

@@ -7,7 +7,7 @@
  * @module engine/view/stylesmap
  */
 
-import { get, isObject, merge, set, unset } from 'es-toolkit/compat';
+import { get, isObject, merge, set } from 'es-toolkit/compat';
 import type { ElementAttributeValue } from './element.js';
 import { type ArrayOrItem, toArray } from '@ckeditor/ckeditor5-utils';
 import { isPatternMatched } from './matcher.js';
@@ -15,7 +15,7 @@ import { isPatternMatched } from './matcher.js';
 /**
  * Styles map. Allows handling (adding, removing, retrieving) a set of style rules (usually, of an element).
  */
-export default class StylesMap implements ElementAttributeValue {
+export class StylesMap implements ElementAttributeValue {
 	/**
 	 * Keeps an internal representation of styles map. Normalized styles are kept as object tree to allow unified modification and
 	 * value access model using lodash's get, set, unset, etc methods.
@@ -252,16 +252,30 @@ export default class StylesMap implements ElementAttributeValue {
 	 * @param names Style name or an array of names.
 	 */
 	public remove( names: ArrayOrItem<string> ): void {
+		const normalizedStylesToRemove = {};
+
 		for ( const name of toArray( names ) ) {
+			// First, try the easy path, when the path reflects normalized styles structure.
+			const path = toPath( name );
+			const pathValue = get( this._styles, path );
+
+			if ( pathValue ) {
+				appendStyleValue( normalizedStylesToRemove, path, pathValue );
+			} else {
+				// Easy path did not work, so try to get the value from the styles map.
+				const value = this.getAsString( name );
+
+				if ( value !== undefined ) {
+					this._styleProcessor.toNormalizedForm( name, value, normalizedStylesToRemove );
+				}
+			}
+		}
+
+		if ( Object.keys( normalizedStylesToRemove ).length ) {
+			removeStyles( this._styles, normalizedStylesToRemove );
+
 			this._cachedStyleNames = null;
 			this._cachedExpandedStyleNames = null;
-
-			const path = toPath( name );
-
-			unset( this._styles, path );
-			delete this._styles[ name ];
-
-			this._cleanEmptyObjectsOnPath( path );
 		}
 	}
 
@@ -617,32 +631,6 @@ export default class StylesMap implements ElementAttributeValue {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Removes empty objects upon removing an entry from internal object.
-	 */
-	private _cleanEmptyObjectsOnPath( path: string ): void {
-		const pathParts = path.split( '.' );
-		const isChildPath = pathParts.length > 1;
-
-		if ( !isChildPath ) {
-			return;
-		}
-
-		const parentPath = pathParts.splice( 0, pathParts.length - 1 ).join( '.' );
-
-		const parentObject = get( this._styles, parentPath );
-
-		if ( !parentObject ) {
-			return;
-		}
-
-		const isParentEmpty = !Object.keys( parentObject ).length;
-
-		if ( isParentEmpty ) {
-			this.remove( parentPath );
-		}
 	}
 }
 
@@ -1129,6 +1117,28 @@ function appendStyleValue( stylesObject: Styles, nameOrPath: string, valueOrObje
 	}
 
 	set( stylesObject, nameOrPath, valueToSet );
+}
+
+/**
+ * Modifies the `styles` deeply nested object by removing properties defined in `toRemove`.
+ */
+function removeStyles( styles: Styles, toRemove: Styles ) {
+	for ( const key of Object.keys( toRemove ) ) {
+		if (
+			styles[ key ] !== null &&
+			!Array.isArray( styles[ key ] ) &&
+			typeof styles[ key ] == 'object' &&
+			typeof toRemove[ key ] == 'object'
+		) {
+			removeStyles( styles[ key ] as Styles, toRemove[ key ] as Styles );
+
+			if ( !Object.keys( styles[ key ] ).length ) {
+				delete styles[ key ];
+			}
+		} else {
+			delete styles[ key ];
+		}
+	}
 }
 
 /**

@@ -14,7 +14,7 @@ import type {
 	Element
 } from 'ckeditor5/src/engine.js';
 
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
+import { DataFilter, type DataFilterRegisterEvent } from '../datafilter.js';
 import { type GHSViewAttributes, updateViewAttributes } from '../utils.js';
 import { getDescendantElement } from './integrationutils.js';
 import { viewToModelBlockAttributeConverter } from '../converters.js';
@@ -22,7 +22,7 @@ import { viewToModelBlockAttributeConverter } from '../converters.js';
 /**
  * Provides the General HTML Support integration with the {@link module:horizontal-line/horizontalline~HorizontalLine} feature.
  */
-export default class HorizontalLineElementSupport extends Plugin {
+export class HorizontalLineElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

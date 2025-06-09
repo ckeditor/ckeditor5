@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import EmojiSearchView from '../../src/ui/emojisearchview.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { EmojiSearchView } from '../../src/ui/emojisearchview.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { SearchInfoView } from '@ckeditor/ckeditor5-ui';
-import EmojiGridView from '../../src/ui/emojigridview.js';
+import { EmojiGridView } from '../../src/ui/emojigridview.js';
 
 describe( 'EmojiSearchView', () => {
 	let locale, emojiSearchView, emojiCategories;

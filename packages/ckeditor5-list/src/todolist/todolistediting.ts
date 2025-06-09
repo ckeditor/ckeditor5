@@ -33,13 +33,14 @@ import {
 import { Plugin } from 'ckeditor5/src/core.js';
 
 import { getAllListItemBlocks, isFirstBlockOfListItem, isListItemBlock } from '../list/utils/model.js';
-import ListEditing, {
+import {
+	ListEditing,
 	type ListEditingCheckElementEvent,
 	type ListEditingPostFixerEvent
 } from '../list/listediting.js';
-import ListCommand from '../list/listcommand.js';
-import CheckTodoListCommand from './checktodolistcommand.js';
-import TodoCheckboxChangeObserver, { type ViewDocumentTodoCheckboxChangeEvent } from './todocheckboxchangeobserver.js';
+import { ListCommand } from '../list/listcommand.js';
+import { CheckTodoListCommand } from './checktodolistcommand.js';
+import { TodoCheckboxChangeObserver, type ViewDocumentTodoCheckboxChangeEvent } from './todocheckboxchangeobserver.js';
 
 const ITEM_TOGGLE_KEYSTROKE = /* #__PURE__ */ parseKeystroke( 'Ctrl+Enter' );
 
@@ -52,7 +53,7 @@ const ITEM_TOGGLE_KEYSTROKE = /* #__PURE__ */ parseKeystroke( 'Ctrl+Enter' );
  * - `'todoList'`,
  * - `'checkTodoList'`,
  */
-export default class TodoListEditing extends Plugin {
+export class TodoListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

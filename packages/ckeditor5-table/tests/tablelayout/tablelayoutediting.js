@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import TableLayoutEditing from '../../src/tablelayout/tablelayoutediting.js';
-import Table from '../../src/table.js';
-import TableCaption from '../../src/tablecaption.js';
-import TableColumnResize from '../../src/tablecolumnresize.js';
-import PlainTableOutput from '../../src/plaintableoutput.js';
-import TableEditing from '../../src/tableediting.js';
+import { TableLayoutEditing } from '../../src/tablelayout/tablelayoutediting.js';
+import { Table } from '../../src/table.js';
+import { TableCaption } from '../../src/tablecaption.js';
+import { TableColumnResize } from '../../src/tablecolumnresize.js';
+import { PlainTableOutput } from '../../src/plaintableoutput.js';
+import { TableEditing } from '../../src/tableediting.js';
 
 describe( 'TableLayoutEditing', () => {
 	let editor, model, view, editorElement, insertTableCommand;

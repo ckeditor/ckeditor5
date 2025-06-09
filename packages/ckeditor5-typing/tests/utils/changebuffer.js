@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ChangeBuffer from '../../src/utils/changebuffer.js';
-import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
-import Batch from '@ckeditor/ckeditor5-engine/src/model/batch.js';
+import { ChangeBuffer } from '../../src/utils/changebuffer.js';
+import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { Batch } from '@ckeditor/ckeditor5-engine/src/model/batch.js';
 
 describe( 'ChangeBuffer', () => {
 	const CHANGE_LIMIT = 3;

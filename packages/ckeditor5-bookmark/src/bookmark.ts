@@ -9,15 +9,15 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { Widget } from 'ckeditor5/src/widget.js';
-import BookmarkUI from './bookmarkui.js';
-import BookmarkEditing from './bookmarkediting.js';
+import { BookmarkUI } from './bookmarkui.js';
+import { BookmarkEditing } from './bookmarkediting.js';
 
 /**
  * The bookmark feature.
  *
  * For a detailed overview, check the {@glink features/bookmarks Bookmarks} feature guide.
  */
-export default class Bookmark extends Plugin {
+export class Bookmark extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

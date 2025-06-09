@@ -11,7 +11,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { Enter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter.js';
 import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing.js';
 
-import BlockQuoteCommand from './blockquotecommand.js';
+import { BlockQuoteCommand } from './blockquotecommand.js';
 
 /**
  * The block quote editing.
@@ -20,7 +20,7 @@ import BlockQuoteCommand from './blockquotecommand.js';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class BlockQuoteEditing extends Plugin {
+export class BlockQuoteEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

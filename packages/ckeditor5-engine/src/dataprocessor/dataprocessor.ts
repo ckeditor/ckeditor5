@@ -7,7 +7,7 @@
  * @module engine/dataprocessor/dataprocessor
  */
 
-import type ViewDocumentFragment from '../view/documentfragment.js';
+import { type ViewDocumentFragment } from '../view/documentfragment.js';
 import type { MatcherPattern } from '../view/matcher.js';
 
 /**
@@ -23,7 +23,7 @@ import type { MatcherPattern } from '../view/matcher.js';
  * And please do remember – using Markdown [does not automatically make your
  * application/website secure](https://github.com/ckeditor/ckeditor5-markdown-gfm/issues/16#issuecomment-375752994).
  */
-export default interface DataProcessor {
+export interface DataProcessor {
 
 	/**
 	 * Converts a {@link module:engine/view/documentfragment~DocumentFragment document fragment} to data.

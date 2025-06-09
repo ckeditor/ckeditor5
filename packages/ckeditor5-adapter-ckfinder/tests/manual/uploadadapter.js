@@ -3,22 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
-import Image from '@ckeditor/ckeditor5-image/src/image.js';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar.js';
-import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import List from '@ckeditor/ckeditor5-list/src/list.js';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
-import CKFinderUploadAdapter from '../../src/uploadadapter.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
+import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
+import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { ImageToolbar } from '@ckeditor/ckeditor5-image/src/imagetoolbar.js';
+import { ImageStyle } from '@ckeditor/ckeditor5-image/src/imagestyle.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
+import { List } from '@ckeditor/ckeditor5-list/src/list.js';
+import { ImageUpload } from '@ckeditor/ckeditor5-image/src/imageupload.js';
+import { CKFinderUploadAdapter } from '../../src/uploadadapter.js';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

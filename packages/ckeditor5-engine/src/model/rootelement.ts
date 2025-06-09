@@ -7,14 +7,14 @@
  * @module engine/model/rootelement
  */
 
-import Element from './element.js';
+import { Element } from './element.js';
 
-import type Document from './document.js';
+import { type Document } from './document.js';
 
 /**
  * Type of {@link module:engine/model/element~Element} that is a root of a model tree.
  */
-export default class RootElement extends Element {
+export class RootElement extends Element {
 	/**
 	 * Unique root name used to identify this root element by {@link module:engine/model/document~Document}.
 	 */
@@ -88,6 +88,8 @@ export default class RootElement extends Element {
 	// @if CK_DEBUG_ENGINE // 	console.log( 'ModelRootElement: ' + this );
 	// @if CK_DEBUG_ENGINE // }
 }
+
+export { RootElement as ModelRootElement } from './rootelement.js';
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.

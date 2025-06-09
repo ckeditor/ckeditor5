@@ -22,7 +22,7 @@ import type { Position, Model, Range } from '@ckeditor/ckeditor5-engine';
  * @param model The model instance.
  * @returns The link range.
  */
-export default function findAttributeRange(
+export function findAttributeRange(
 	position: Position,
 	attributeName: string,
 	value: unknown,

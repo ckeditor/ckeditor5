@@ -10,7 +10,7 @@
 /**
  * Checks if the object is a native DOM Window.
  */
-export default function isWindow( obj: unknown ): obj is Window {
+export function isWindow( obj: unknown ): obj is Window {
 	const stringifiedObject = Object.prototype.toString.apply( obj );
 
 	// Returns `true` for the `window` object in browser environments.

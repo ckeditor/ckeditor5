@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import utils from '../../src/imagestyle/utils.js';
+import { DEFAULT_OPTIONS } from '../../src/imagestyle/utils.js';
 
 describe( 'ImageStyleCommand', () => {
 	const {
@@ -15,7 +15,7 @@ describe( 'ImageStyleCommand', () => {
 		alignLeft: anyImage,
 		inline: onlyInline,
 		alignCenter: onlyBlock
-	} = utils.DEFAULT_OPTIONS;
+	} = DEFAULT_OPTIONS;
 
 	let editor, model, command, editorElement;
 

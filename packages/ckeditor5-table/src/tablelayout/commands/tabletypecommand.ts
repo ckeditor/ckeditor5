@@ -24,7 +24,7 @@ import type { TableType } from '../../tableconfig.js';
  * editor.execute( 'tableType', 'layout' );
  * ```
  */
-export default class TableTypeCommand extends Command {
+export class TableTypeCommand extends Command {
 	/**
 	 * The table type of selected table.
 	 *

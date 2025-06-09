@@ -13,7 +13,7 @@
  * @param node Node which index is tested.
  * @returns Index of the node in the parent element. Returns 0 if node has no parent.
  */
-export default function indexOf( node: Node ): number {
+export function indexOf( node: Node ): number {
 	let index = 0;
 
 	while ( node.previousSibling ) {

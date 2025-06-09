@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ViewElement from '../../../src/view/element.js';
-import ViewDocumentSelection from '../../../src/view/documentselection.js';
-import DomConverter from '../../../src/view/domconverter.js';
-import ViewDocumentFragment from '../../../src/view/documentfragment.js';
-import ViewDocument from '../../../src/view/document.js';
+import { ViewElement } from '../../../src/view/element.js';
+import { ViewDocumentSelection } from '../../../src/view/documentselection.js';
+import { DomConverter } from '../../../src/view/domconverter.js';
+import { ViewDocumentFragment } from '../../../src/view/documentfragment.js';
+import { ViewDocument } from '../../../src/view/document.js';
 import { INLINE_FILLER } from '../../../src/view/filler.js';
 
 import { parse } from '../../../src/dev-utils/view.js';
 
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'DomConverter', () => {

@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import PageBreakEditing from '../src/pagebreakediting.js';
-import PageBreakCommand from '../src/pagebreakcommand.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { PageBreakEditing } from '../src/pagebreakediting.js';
+import { PageBreakCommand } from '../src/pagebreakcommand.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { isWidget } from '@ckeditor/ckeditor5-widget/src/utils.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'PageBreakEditing', () => {
 	let editor, model, view, viewDocument;
@@ -238,6 +238,34 @@ describe( 'PageBreakEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<pageBreak></pageBreak><section><$text foo="true">Foo</$text></section>' );
+			} );
+
+			it( 'should consume page-break and page-break-after styles', () => {
+				const upcastCheck = sinon.spy( ( evt, data, conversionApi ) => {
+					const testMatch = match => conversionApi.consumable.test( data.viewItem, match );
+
+					expect( testMatch( { classes: [ 'page-break' ] } ) ).to.be.false;
+					expect( testMatch( { styles: [ 'page-break-after' ] } ) ).to.be.false;
+				} );
+
+				editor.data.upcastDispatcher.on( 'element:div', upcastCheck, { priority: 'lowest' } );
+
+				editor.setData( '<div class="page-break" style="page-break-after:always;"></div>' );
+				expect( upcastCheck ).to.be.calledOnce;
+			} );
+
+			it( 'should consume page-break and page-break-before styles', () => {
+				const upcastCheck = sinon.spy( ( evt, data, conversionApi ) => {
+					const testMatch = match => conversionApi.consumable.test( data.viewItem, match );
+
+					expect( testMatch( { classes: [ 'page-break' ] } ) ).to.be.false;
+					expect( testMatch( { styles: [ 'page-break-before' ] } ) ).to.be.false;
+				} );
+
+				editor.data.upcastDispatcher.on( 'element:div', upcastCheck, { priority: 'lowest' } );
+
+				editor.setData( '<div class="page-break" style="page-break-before:always;"></div>' );
+				expect( upcastCheck ).to.be.calledOnce;
 			} );
 		} );
 	} );

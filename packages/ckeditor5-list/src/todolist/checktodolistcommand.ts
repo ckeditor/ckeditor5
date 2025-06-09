@@ -17,7 +17,7 @@ import { getAllListItemBlocks } from '../list/utils/model.js';
  * The command is registered by the {@link module:list/todolist/todolistediting~TodoListEditing} as
  * the `checkTodoList` editor command.
  */
-export default class CheckTodoListCommand extends Command {
+export class CheckTodoListCommand extends Command {
 	/**
 	 * A list of to-do list items selected by the {@link module:engine/model/selection~Selection}.
 	 *

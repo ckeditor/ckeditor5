@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../../src/model/model.js';
+import { Model } from '../../../src/model/model.js';
 
 import { stringify, getData as getModelData, setData as setModelData } from '../../../src/dev-utils/model.js';
 import { injectSelectionPostFixer, mergeIntersectingRanges } from '../../../src/model/utils/selection-post-fixer.js';

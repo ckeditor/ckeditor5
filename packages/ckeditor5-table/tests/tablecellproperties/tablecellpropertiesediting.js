@@ -3,21 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import TableEditing from '../../src/tableediting.js';
-import TableLayoutEditing from '../../src/tablelayout/tablelayoutediting.js';
-import TableCellPropertiesEditing from '../../src/tablecellproperties/tablecellpropertiesediting.js';
+import { TableEditing } from '../../src/tableediting.js';
+import { TableLayoutEditing } from '../../src/tablelayout/tablelayoutediting.js';
+import { TableCellPropertiesEditing } from '../../src/tablecellproperties/tablecellpropertiesediting.js';
 
-import TableCellBorderColorCommand from '../../src/tablecellproperties/commands/tablecellbordercolorcommand.js';
-import TableCellBorderStyleCommand from '../../src/tablecellproperties/commands/tablecellborderstylecommand.js';
-import TableCellBorderWidthCommand from '../../src/tablecellproperties/commands/tablecellborderwidthcommand.js';
-import TableCellHorizontalAlignmentCommand from '../../src/tablecellproperties/commands/tablecellhorizontalalignmentcommand.js';
-import TableCellHeightCommand from '../../src/tablecellproperties/commands/tablecellheightcommand.js';
-import TableCellVerticalAlignmentCommand from '../../src/tablecellproperties/commands/tablecellverticalalignmentcommand.js';
-import TableCellPaddingCommand from '../../src/tablecellproperties/commands/tablecellpaddingcommand.js';
-import TableCellBackgroundColorCommand from '../../src/tablecellproperties/commands/tablecellbackgroundcolorcommand.js';
+import { TableCellBorderColorCommand } from '../../src/tablecellproperties/commands/tablecellbordercolorcommand.js';
+import { TableCellBorderStyleCommand } from '../../src/tablecellproperties/commands/tablecellborderstylecommand.js';
+import { TableCellBorderWidthCommand } from '../../src/tablecellproperties/commands/tablecellborderwidthcommand.js';
+import { TableCellHorizontalAlignmentCommand } from '../../src/tablecellproperties/commands/tablecellhorizontalalignmentcommand.js';
+import { TableCellHeightCommand } from '../../src/tablecellproperties/commands/tablecellheightcommand.js';
+import { TableCellVerticalAlignmentCommand } from '../../src/tablecellproperties/commands/tablecellverticalalignmentcommand.js';
+import { TableCellPaddingCommand } from '../../src/tablecellproperties/commands/tablecellpaddingcommand.js';
+import { TableCellBackgroundColorCommand } from '../../src/tablecellproperties/commands/tablecellbackgroundcolorcommand.js';
 
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { assertTableCellStyle, assertTRBLAttribute } from '../_utils/utils.js';
@@ -95,6 +95,9 @@ describe( 'table cell properties', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellBorderColor' ) ).to.be.true;
 				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellBorderStyle' ) ).to.be.true;
 				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellBorderWidth' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableCellBorderColor' ).isFormatting ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableCellBorderStyle' ).isFormatting ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableCellBorderWidth' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -603,6 +606,7 @@ describe( 'table cell properties', () => {
 		describe( 'background color', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellBackgroundColor' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableCellBackgroundColor' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -760,6 +764,7 @@ describe( 'table cell properties', () => {
 		describe( 'horizontal alignment', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellHorizontalAlignment' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableCellHorizontalAlignment' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1102,6 +1107,7 @@ describe( 'table cell properties', () => {
 		describe( 'vertical alignment', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellVerticalAlignment' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableCellVerticalAlignment' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1256,6 +1262,7 @@ describe( 'table cell properties', () => {
 		describe( 'padding', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellPadding' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableCellPadding' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1349,6 +1356,7 @@ describe( 'table cell properties', () => {
 		describe( 'cell height', () => {
 			it( 'should set proper schema rules', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellHeight' ) ).to.be.true;
+				expect( model.schema.getAttributeProperties( 'tableCellHeight' ).isFormatting ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {

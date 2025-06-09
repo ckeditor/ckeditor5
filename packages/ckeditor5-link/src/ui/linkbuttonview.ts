@@ -14,7 +14,7 @@ import type { Locale } from 'ckeditor5/src/utils.js';
 /**
  * Represents a view for a dropdown menu button.
  */
-export default class LinkButtonView extends ButtonView {
+export class LinkButtonView extends ButtonView {
 	/**
 	 * An icon that displays an arrow to indicate a direction of the menu.
 	 */

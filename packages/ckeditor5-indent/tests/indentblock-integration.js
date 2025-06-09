@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
 
-import IndentEditing from '../src/indentediting.js';
-import IndentBlock from '../src/indentblock.js';
+import { IndentEditing } from '../src/indentediting.js';
+import { IndentBlock } from '../src/indentblock.js';
 
 describe( 'IndentBlock - integration', () => {
 	let editor, doc;

@@ -152,7 +152,7 @@ import type { ViewDocumentDeleteEvent } from './deleteobserver.js';
  * ```
  *
  */
-export default class TwoStepCaretMovement extends Plugin {
+export class TwoStepCaretMovement extends Plugin {
 	/**
 	 * A set of attributes to handle.
 	 */

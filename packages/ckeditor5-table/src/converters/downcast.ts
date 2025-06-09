@@ -10,8 +10,8 @@
 import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget.js';
 import type { Node, ViewElement, Element, DowncastWriter, ElementCreatorFunction } from 'ckeditor5/src/engine.js';
 
-import TableWalker from './../tablewalker.js';
-import type TableUtils from '../tableutils.js';
+import { TableWalker } from './../tablewalker.js';
+import { type TableUtils } from '../tableutils.js';
 import type { AdditionalSlot } from '../tableediting.js';
 
 /**

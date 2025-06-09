@@ -8,14 +8,14 @@
  */
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-import ListItemButtonView from '../button/listitembuttonview.js';
+import { ListItemButtonView } from '../button/listitembuttonview.js';
 
 import '../../theme/components/menubar/menubarmenulistitembutton.css';
 
 /**
  * A menu bar list button view. Buttons like this one execute user actions.
  */
-export default class MenuBarMenuListItemButtonView extends ListItemButtonView {
+export class MenuBarMenuListItemButtonView extends ListItemButtonView {
 	/**
 	 * Creates an instance of the menu bar list button view.
 	 *

@@ -9,8 +9,8 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import TableEditing from './../tableediting.js';
-import TableCellWidthCommand from './commands/tablecellwidthcommand.js';
+import { TableEditing } from './../tableediting.js';
+import { TableCellWidthCommand } from './commands/tablecellwidthcommand.js';
 import { getNormalizedDefaultCellProperties } from '../utils/table-properties.js';
 import { enableProperty } from '../utils/common.js';
 
@@ -20,7 +20,7 @@ import { enableProperty } from '../utils/common.js';
  * Introduces `tableCellWidth` table cell model attribute alongside with its converters
  * and a command.
  */
-export default class TableCellWidthEditing extends Plugin {
+export class TableCellWidthEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

@@ -4,11 +4,11 @@
  */
 
 import { IconBold } from '@ckeditor/ckeditor5-icons';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
-import ButtonView from '../../../../src/button/buttonview.js';
+import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
+import { ButtonView } from '../../../../src/button/buttonview.js';
 
 function customButtonView( editor ) {
 	editor.ui.componentFactory.add( 'customButtonView', locale => {

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import StylesMap, { StylesProcessor } from '../../../src/view/stylesmap.js';
+import { StylesMap, StylesProcessor } from '../../../src/view/stylesmap.js';
 import { addBackgroundRules } from '../../../src/view/styles/background.js';
 
 describe( 'Background styles normalization', () => {

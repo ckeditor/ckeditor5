@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import StyleElementSupport from '../../src/integrations/style.js';
+import { StyleElementSupport } from '../../src/integrations/style.js';
 
 describe( 'StyleElementSupport', () => {
 	const STYLE = 'div { color: red; }';

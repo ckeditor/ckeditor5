@@ -21,12 +21,12 @@ import {
 	updateViewAttributes,
 	type GHSViewAttributes
 } from '../utils.js';
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
+import { DataFilter, type DataFilterRegisterEvent } from '../datafilter.js';
 
 /**
  * Provides the General HTML Support integration with {@link module:code-block/codeblock~CodeBlock Code Block} feature.
  */
-export default class CodeBlockElementSupport extends Plugin {
+export class CodeBlockElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

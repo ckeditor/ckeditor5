@@ -9,14 +9,14 @@
 
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 
-import ChangeBuffer from './utils/changebuffer.js';
+import { ChangeBuffer } from './utils/changebuffer.js';
 
 import type { DocumentSelection, Range, Selection } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The insert text command. Used by the {@link module:typing/input~Input input feature} to handle typing.
  */
-export default class InsertTextCommand extends Command {
+export class InsertTextCommand extends Command {
 	/**
 	 * Typing's change buffer used to group subsequent changes into batches.
 	 */

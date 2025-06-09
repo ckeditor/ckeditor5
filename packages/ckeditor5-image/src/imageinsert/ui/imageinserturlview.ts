@@ -21,7 +21,7 @@ import { KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
  *
  * See {@link module:image/imageinsert/imageinsertviaurlui~ImageInsertViaUrlUI}.
  */
-export default class ImageInsertUrlView extends View {
+export class ImageInsertUrlView extends View {
 	/**
 	 * The URL input field view.
 	 */

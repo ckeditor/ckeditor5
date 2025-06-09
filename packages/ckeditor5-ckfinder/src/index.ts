@@ -7,10 +7,10 @@
  * @module ckfinder
  */
 
-export { default as CKFinder } from './ckfinder.js';
-export { default as CKFinderEditing } from './ckfinderediting.js';
-export { default as CKFinderUI } from './ckfinderui.js';
+export { CKFinder } from './ckfinder.js';
+export { CKFinderEditing } from './ckfinderediting.js';
+export { CKFinderUI } from './ckfinderui.js';
+export { CKFinderCommand } from './ckfindercommand.js';
 export type { CKFinderConfig } from './ckfinderconfig.js';
-export type { default as CKFinderCommand } from './ckfindercommand.js';
 
 import './augmentation.js';

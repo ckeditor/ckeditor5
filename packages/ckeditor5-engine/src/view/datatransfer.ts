@@ -12,7 +12,7 @@ type DomDataTransfer = globalThis.DataTransfer;
 /**
  * A facade over the native [`DataTransfer`](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer) object.
  */
-export default class DataTransfer {
+export class DataTransfer {
 	/**
 	 * The array of files created from the native `DataTransfer#files` or `DataTransfer#items`.
 	 */

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
 import { parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { modelList, stringifyList } from '../_utils/utils.js';
 

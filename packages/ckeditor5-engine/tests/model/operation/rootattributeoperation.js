@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../../src/model/model.js';
-import DocumentFragment from '../../../src/model/documentfragment.js';
-import Element from '../../../src/model/element.js';
-import RootAttributeOperation from '../../../src/model/operation/rootattributeoperation.js';
+import { Model } from '../../../src/model/model.js';
+import { DocumentFragment } from '../../../src/model/documentfragment.js';
+import { Element } from '../../../src/model/element.js';
+import { RootAttributeOperation } from '../../../src/model/operation/rootattributeoperation.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'RootAttributeOperation', () => {

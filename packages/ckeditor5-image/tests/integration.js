@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import Image from '../src/image.js';
-import ImageToolbar from '../src/imagetoolbar.js';
-import View from '@ckeditor/ckeditor5-ui/src/view.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ImageTextAlternative from '../src/imagetextalternative.js';
+import { BalloonToolbar } from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { Image } from '../src/image.js';
+import { ImageToolbar } from '../src/imagetoolbar.js';
+import { View } from '@ckeditor/ckeditor5-ui/src/view.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ImageTextAlternative } from '../src/imagetextalternative.js';
 
 describe( 'ImageToolbar integration', () => {
 	describe( 'with the BalloonToolbar', () => {

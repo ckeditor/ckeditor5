@@ -7,15 +7,15 @@
  * @module engine/view/observer/mutationobserver
  */
 
-import Observer from './observer.js';
+import { Observer } from './observer.js';
 import { startsWithFiller } from '../filler.js';
 import { isEqualWith } from 'es-toolkit/compat';
 
-import type DomConverter from '../domconverter.js';
-import type View from '../view.js';
-import type ViewElement from '../element.js';
-import type ViewNode from '../node.js';
-import type ViewText from '../text.js';
+import { type DomConverter } from '../domconverter.js';
+import { type View } from '../view.js';
+import { type ViewElement } from '../element.js';
+import { type ViewNode } from '../node.js';
+import { type ViewText } from '../text.js';
 import type { ChangeType } from '../document.js';
 
 // @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
@@ -31,7 +31,7 @@ import type { ChangeType } from '../document.js';
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  */
-export default class MutationObserver extends Observer {
+export class MutationObserver extends Observer {
 	/**
 	 * Reference to the {@link module:engine/view/view~View#domConverter}.
 	 */

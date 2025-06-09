@@ -3,22 +3,22 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import SuperEditing from '../../src/superscript/superscriptediting.js';
+import { SuperscriptEditing } from '../../src/superscript/superscriptediting.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import AttributeCommand from '../../src/attributecommand.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { AttributeCommand } from '../../src/attributecommand.js';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-describe( 'SuperEditing', () => {
+describe( 'SuperscriptEditing', () => {
 	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, SuperEditing ]
+				plugins: [ Paragraph, SuperscriptEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -31,19 +31,19 @@ describe( 'SuperEditing', () => {
 	} );
 
 	it( 'should have pluginName', () => {
-		expect( SuperEditing.pluginName ).to.equal( 'SuperscriptEditing' );
+		expect( SuperscriptEditing.pluginName ).to.equal( 'SuperscriptEditing' );
 	} );
 
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {
-		expect( SuperEditing.isOfficialPlugin ).to.be.true;
+		expect( SuperscriptEditing.isOfficialPlugin ).to.be.true;
 	} );
 
 	it( 'should have `isPremiumPlugin` static flag set to `false`', () => {
-		expect( SuperEditing.isPremiumPlugin ).to.be.false;
+		expect( SuperscriptEditing.isPremiumPlugin ).to.be.false;
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( SuperEditing ) ).to.be.instanceOf( SuperEditing );
+		expect( editor.plugins.get( SuperscriptEditing ) ).to.be.instanceOf( SuperscriptEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {

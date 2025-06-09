@@ -7,14 +7,14 @@
  * @module ui/inputtext/inputtextview
  */
 
-import InputView from '../input/inputview.js';
+import { InputView } from '../input/inputview.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The text input view class.
  */
-export default class InputTextView extends InputView {
+export class InputTextView extends InputView {
 	/**
 	 * @inheritDoc
 	 */

@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import CompositionObserver from '../../../src/view/observer/compositionobserver.js';
-import View from '../../../src/view/view.js';
+import { CompositionObserver } from '../../../src/view/observer/compositionobserver.js';
+import { View } from '../../../src/view/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'CompositionObserver', () => {
