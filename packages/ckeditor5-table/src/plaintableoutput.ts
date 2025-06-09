@@ -10,7 +10,7 @@
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import type { DowncastWriter, Element, Node, ViewContainerElement, UpcastElementEvent } from 'ckeditor5/src/engine.js';
 
-import Table from './table.js';
+import { Table } from './table.js';
 
 /**
  * The plain table output feature.
@@ -18,7 +18,7 @@ import Table from './table.js';
  * This feature strips the `<figure>` tag from the table data. This is because this tag is not supported
  * by most popular email clients and removing it ensures compatibility.
  */
-export default class PlainTableOutput extends Plugin {
+export class PlainTableOutput extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

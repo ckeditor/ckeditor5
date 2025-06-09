@@ -7,14 +7,14 @@
  * @module ui/spinner/spinnerview
  */
 
-import View from '../view.js';
+import { View } from '../view.js';
 
 import '../../theme/components/spinner/spinner.css';
 
 /**
  * The spinner view class.
  */
-export default class SpinnerView extends View {
+export class SpinnerView extends View {
 	/**
 	 * Controls whether the spinner is visible.
 	 *

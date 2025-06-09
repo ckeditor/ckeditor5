@@ -9,7 +9,7 @@
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import type { Range, Element } from 'ckeditor5/src/engine.js';
-import type TableUtils from '../tableutils.js';
+import { type TableUtils } from '../tableutils.js';
 
 /**
  * The select row command.
@@ -22,7 +22,7 @@ import type TableUtils from '../tableutils.js';
  * editor.execute( 'selectTableRow' );
  * ```
  */
-export default class SelectRowCommand extends Command {
+export class SelectRowCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

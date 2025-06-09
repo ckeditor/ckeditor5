@@ -8,15 +8,15 @@
  */
 
 import { EventInfo } from '@ckeditor/ckeditor5-utils';
-import type Document from '../document.js';
-import type Node from '../node.js';
-import type Range from '../range.js';
+import { type Document } from '../document.js';
+import { type Node } from '../node.js';
+import { type Range } from '../range.js';
 
 /**
  * The event object passed to bubbling event callbacks. It is used to provide information about the event as well as a tool to
  * manipulate it.
  */
-export default class BubblingEventInfo<TName extends string = string, TReturn = unknown> extends EventInfo<TName, TReturn> {
+export class BubblingEventInfo<TName extends string = string, TReturn = unknown> extends EventInfo<TName, TReturn> {
 	/**
 	 * The view range that the bubbling should start from.
 	 */

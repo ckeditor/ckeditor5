@@ -24,7 +24,7 @@ import {
 } from 'ckeditor5/src/ui.js';
 
 import type { HighlightOption } from './highlightconfig.js';
-import type HighlightCommand from './highlightcommand.js';
+import { type HighlightCommand } from './highlightcommand.js';
 
 import './../theme/highlight.css';
 
@@ -46,7 +46,7 @@ import './../theme/highlight.css';
  * See the {@link module:highlight/highlightconfig~HighlightConfig#options configuration} to learn more
  * about the defaults.
  */
-export default class HighlightUI extends Plugin {
+export class HighlightUI extends Plugin {
 	/**
 	 * Returns the localized option titles provided by the plugin.
 	 *

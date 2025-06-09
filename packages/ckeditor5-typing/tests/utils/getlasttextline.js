@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import getText from '../../src/utils/getlasttextline.js';
+import { getLastTextLine } from '../../src/utils/getlasttextline.js';
 
 describe( 'utils', () => {
 	let model, doc, root;
@@ -20,7 +20,7 @@ describe( 'utils', () => {
 		model.schema.extend( '$text', { allowAttributes: [ 'bold', 'italic' ] } );
 	} );
 
-	describe( 'getText()', () => {
+	describe( 'getLastTextLine()', () => {
 		it( 'should return all text from passed range', () => {
 			setModelData( model, '<paragraph>foobar[]baz</paragraph>' );
 
@@ -89,7 +89,7 @@ describe( 'utils', () => {
 	} );
 
 	function testOutput( range1, expectedText, startPath, endPath ) {
-		const { text, range } = getText( range1, model );
+		const { text, range } = getLastTextLine( range1, model );
 
 		expect( text ).to.equal( expectedText );
 		expect( range.start.path ).to.deep.equal( startPath );

@@ -19,7 +19,7 @@ import type {
 /**
  * Enter command used by the {@link module:enter/enter~Enter Enter feature} to handle the <kbd>Enter</kbd> keystroke.
  */
-export default class EnterCommand extends Command {
+export class EnterCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

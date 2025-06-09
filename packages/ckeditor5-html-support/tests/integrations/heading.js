@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 import { getModelDataWithAttributes } from '../_utils/utils.js';
-import HeadingElementSupport from '../../src/integrations/heading.js';
+import { HeadingElementSupport } from '../../src/integrations/heading.js';
 
 describe( 'HeadingElementSupport', () => {
 	let editor, editorElement, model, doc, dataSchema, dataFilter, htmlSupport;

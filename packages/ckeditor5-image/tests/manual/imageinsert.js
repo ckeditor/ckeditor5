@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import CKFinderUploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
-import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage.js';
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder.js';
-import ImageInsert from '../../src/imageinsert.js';
-import AutoImage from '../../src/autoimage.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { CKFinderUploadAdapter } from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter.js';
+import { LinkImage } from '@ckeditor/ckeditor5-link/src/linkimage.js';
+import { CKFinder } from '@ckeditor/ckeditor5-ckfinder/src/ckfinder.js';
+import { ImageInsert } from '../../src/imageinsert.js';
+import { AutoImage } from '../../src/autoimage.js';
 
 async function createEditor( elementId, imageType ) {
 	const editor = await ClassicEditor.create( document.querySelector( '#' + elementId ), {

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import BasicHtmlWriter from '../../src/dataprocessor/basichtmlwriter.js';
+import { BasicHtmlWriter } from '../../src/dataprocessor/basichtmlwriter.js';
 
 describe( 'BasicHtmlWriter', () => {
 	const basicHtmlWriter = new BasicHtmlWriter();

@@ -10,8 +10,8 @@
 import type { DomConverter } from '@ckeditor/ckeditor5-engine';
 import type { Editor } from '@ckeditor/ckeditor5-core';
 import type { Locale } from '@ckeditor/ckeditor5-utils';
-import type ViewCollection from './viewcollection.js';
-import View from './view.js';
+import { type ViewCollection } from './viewcollection.js';
+import { View } from './view.js';
 
 import '../theme/components/arialiveannouncer/arialiveannouncer.css';
 
@@ -42,7 +42,7 @@ export const AriaLiveAnnouncerPoliteness = {
  * editor.ui.ariaLiveAnnouncer.announce( 'Text of an announcement.' );
  * ```
  */
-export default class AriaLiveAnnouncer {
+export class AriaLiveAnnouncer {
 	/**
 	 * The editor instance.
 	 */

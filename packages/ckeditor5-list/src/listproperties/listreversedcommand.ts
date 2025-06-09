@@ -19,7 +19,7 @@ import {
  * letting the user to choose the order of an ordered list.
  * It is used by the {@link module:list/listproperties~ListProperties list properties feature}.
  */
-export default class ListReversedCommand extends Command {
+export class ListReversedCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

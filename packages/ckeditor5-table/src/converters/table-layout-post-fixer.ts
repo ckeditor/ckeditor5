@@ -15,7 +15,7 @@ import type {
 	DiffItemAttribute
 } from 'ckeditor5/src/engine.js';
 
-import TableWalker from './../tablewalker.js';
+import { TableWalker } from './../tablewalker.js';
 import { createEmptyTableCell, updateNumericAttribute } from '../utils/common.js';
 
 /**
@@ -235,7 +235,7 @@ import { createEmptyTableCell, updateNumericAttribute } from '../utils/common.js
  * </table>
  * ```
  */
-export default function injectTableLayoutPostFixer( model: Model ): void {
+export function injectTableLayoutPostFixer( model: Model ): void {
 	model.document.registerPostFixer( writer => tableLayoutPostFixer( writer, model ) );
 }
 

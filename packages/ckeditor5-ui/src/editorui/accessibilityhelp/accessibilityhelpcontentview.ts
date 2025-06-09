@@ -14,8 +14,8 @@ import {
 	type Locale
 } from '@ckeditor/ckeditor5-utils';
 
-import View from '../../view.js';
-import LabelView from '../../label/labelview.js';
+import { View } from '../../view.js';
+import { LabelView } from '../../label/labelview.js';
 import type {
 	KeystrokeInfoCategoryDefinition,
 	KeystrokeInfoDefinition,
@@ -26,7 +26,7 @@ import type {
 /**
  * The view displaying keystrokes in the Accessibility help dialog.
  */
-export default class AccessibilityHelpContentView extends View<HTMLDivElement> {
+export class AccessibilityHelpContentView extends View<HTMLDivElement> {
 	/**
 	 * @inheritDoc
 	 */

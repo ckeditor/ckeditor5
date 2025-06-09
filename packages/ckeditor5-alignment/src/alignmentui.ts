@@ -23,7 +23,7 @@ import type { Locale } from 'ckeditor5/src/utils.js';
 
 import { isSupported, normalizeAlignmentOptions } from './utils.js';
 import type { AlignmentFormat, SupportedOption } from './alignmentconfig.js';
-import type AlignmentCommand from './alignmentcommand.js';
+import { type AlignmentCommand } from './alignmentcommand.js';
 
 const iconsMap = /* #__PURE__ */ ( () => new Map( [
 	[ 'left', IconAlignLeft ],
@@ -38,7 +38,7 @@ const iconsMap = /* #__PURE__ */ ( () => new Map( [
  * It introduces the `'alignment:left'`, `'alignment:right'`, `'alignment:center'` and `'alignment:justify'` buttons
  * and the `'alignment'` dropdown.
  */
-export default class AlignmentUI extends Plugin {
+export class AlignmentUI extends Plugin {
 	/**
 	 * Returns the localized option titles provided by the plugin.
 	 *

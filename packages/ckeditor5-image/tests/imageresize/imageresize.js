@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ImageResize from '../../src/imageresize.js';
-import ImageResizeButtons from '../../src/imageresize/imageresizebuttons.js';
-import ImageResizeEditing from '../../src/imageresize/imageresizeediting.js';
-import ImageResizeHandles from '../../src/imageresize/imageresizehandles.js';
-import ImageCustomResizeUI from '../../src/imageresize/imagecustomresizeui.js';
+import { ImageResize } from '../../src/imageresize.js';
+import { ImageResizeButtons } from '../../src/imageresize/imageresizebuttons.js';
+import { ImageResizeEditing } from '../../src/imageresize/imageresizeediting.js';
+import { ImageResizeHandles } from '../../src/imageresize/imageresizehandles.js';
+import { ImageCustomResizeUI } from '../../src/imageresize/imagecustomresizeui.js';
 
 describe( 'ImageResize', () => {
 	it( 'should require "ImageResizeEditing", "ImageResizeHandles", "ImageCustomResizeUI", and "ImageResizeButtons"', () => {

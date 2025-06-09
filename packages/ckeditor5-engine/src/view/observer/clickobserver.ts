@@ -7,8 +7,8 @@
  * @module engine/view/observer/clickobserver
  */
 
-import DomEventObserver from './domeventobserver.js';
-import type DomEventData from './domeventdata.js';
+import { DomEventObserver } from './domeventobserver.js';
+import { type DomEventData } from './domeventdata.js';
 import type { BubblingEvent } from './bubblingemittermixin.js';
 
 /**
@@ -17,7 +17,7 @@ import type { BubblingEvent } from './bubblingemittermixin.js';
  * Note that this observer is not available by default. To make it available it needs to be added to
  * {@link module:engine/view/view~View view controller} by a {@link module:engine/view/view~View#addObserver} method.
  */
-export default class ClickObserver extends DomEventObserver<'click'> {
+export class ClickObserver extends DomEventObserver<'click'> {
 	/**
 	 * @inheritDoc
 	 */

@@ -32,7 +32,7 @@ const IMAGE_WIDGETS_CLASSES_MATCH_REGEXP = /^(image|image-inline)$/;
 /**
  * A set of helpers related to images.
  */
-export default class ImageUtils extends Plugin {
+export class ImageUtils extends Plugin {
 	/**
 	 * DOM Emitter.
 	 */

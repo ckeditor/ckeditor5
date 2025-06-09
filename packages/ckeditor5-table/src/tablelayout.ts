@@ -8,18 +8,18 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import TableLayoutUI from './tablelayout/tablelayoutui.js';
+import { TableLayoutUI } from './tablelayout/tablelayoutui.js';
 
-import TableLayoutEditing from './tablelayout/tablelayoutediting.js';
-import PlainTableOutput from './plaintableoutput.js';
-import TableColumnResize from './tablecolumnresize.js';
+import { TableLayoutEditing } from './tablelayout/tablelayoutediting.js';
+import { PlainTableOutput } from './plaintableoutput.js';
+import { TableColumnResize } from './tablecolumnresize.js';
 
 /**
  * The table plugin.
  *
  * For a detailed overview, check the {@glink features/tables/layout-tables Layout table feature documentation}.
  */
-export default class TableLayout extends Plugin {
+export class TableLayout extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

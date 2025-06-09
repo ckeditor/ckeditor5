@@ -7,13 +7,13 @@
  * @module special-characters
  */
 
-export { default as SpecialCharacters } from './specialcharacters.js';
-export { default as SpecialCharactersArrows } from './specialcharactersarrows.js';
-export { default as SpecialCharactersText } from './specialcharacterstext.js';
-export { default as SpecialCharactersMathematical } from './specialcharactersmathematical.js';
-export { default as SpecialCharactersLatin } from './specialcharacterslatin.js';
-export { default as SpecialCharactersEssentials } from './specialcharactersessentials.js';
-export { default as SpecialCharactersCurrency } from './specialcharacterscurrency.js';
+export { SpecialCharacters } from './specialcharacters.js';
+export { SpecialCharactersArrows } from './specialcharactersarrows.js';
+export { SpecialCharactersText } from './specialcharacterstext.js';
+export { SpecialCharactersMathematical } from './specialcharactersmathematical.js';
+export { SpecialCharactersLatin } from './specialcharacterslatin.js';
+export { SpecialCharactersEssentials } from './specialcharactersessentials.js';
+export { SpecialCharactersCurrency } from './specialcharacterscurrency.js';
 
 export type { SpecialCharactersConfig } from './specialcharactersconfig.js';
 

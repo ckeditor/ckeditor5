@@ -7,9 +7,9 @@
  * @module engine/view/observer/focusobserver
  */
 
-import DomEventObserver from './domeventobserver.js';
-import type DomEventData from './domeventdata.js';
-import type View from '../view.js';
+import { DomEventObserver } from './domeventobserver.js';
+import { type DomEventData } from './domeventdata.js';
+import { type View } from '../view.js';
 import type { ViewDocumentInputEvent } from './inputobserver.js';
 
 // @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
@@ -22,7 +22,7 @@ import type { ViewDocumentInputEvent } from './inputobserver.js';
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  */
-export default class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
+export class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 	/**
 	 * Identifier of the timeout currently used by focus listener to delay rendering execution.
 	 */

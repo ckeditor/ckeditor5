@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ListWalker from '../../../src/list/utils/listwalker.js';
+import { ListWalker } from '../../../src/list/utils/listwalker.js';
 import { modelList } from '../_utils/utils.js';
 
-import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
 import { parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'List - utils - ListWalker', () => {

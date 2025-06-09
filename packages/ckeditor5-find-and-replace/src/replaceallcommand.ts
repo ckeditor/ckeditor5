@@ -9,13 +9,13 @@
 
 import { Collection } from 'ckeditor5/src/utils.js';
 import type { ResultType } from './findandreplace.js';
-import type FindAndReplaceUtils from './findandreplaceutils.js';
+import { type FindAndReplaceUtils } from './findandreplaceutils.js';
 import { ReplaceCommandBase } from './replacecommandbase.js';
 
 /**
  * The replace all command. It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.
  */
-export default class ReplaceAllCommand extends ReplaceCommandBase {
+export class ReplaceAllCommand extends ReplaceCommandBase {
 	/**
 	 * Replaces all the occurrences of `textToReplace` with a given `newText` string.
 	 *

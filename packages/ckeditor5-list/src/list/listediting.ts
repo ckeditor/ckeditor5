@@ -33,11 +33,11 @@ import { Delete, type ViewDocumentDeleteEvent } from 'ckeditor5/src/typing.js';
 import { Enter, type EnterCommand, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter.js';
 import { CKEditorError, type GetCallback } from 'ckeditor5/src/utils.js';
 
-import ListIndentCommand from './listindentcommand.js';
-import ListCommand from './listcommand.js';
-import ListMergeCommand from './listmergecommand.js';
-import ListSplitCommand from './listsplitcommand.js';
-import ListUtils from './listutils.js';
+import { ListIndentCommand } from './listindentcommand.js';
+import { ListCommand } from './listcommand.js';
+import { ListMergeCommand } from './listmergecommand.js';
+import { ListSplitCommand } from './listsplitcommand.js';
+import { ListUtils } from './listutils.js';
 
 import {
 	bogusParagraphCreator,
@@ -68,7 +68,7 @@ import {
 	getViewElementNameForListType
 } from './utils/view.js';
 
-import ListWalker, { ListBlocksIterable } from './utils/listwalker.js';
+import { ListWalker, ListBlocksIterable } from './utils/listwalker.js';
 
 import {
 	ClipboardPipeline,
@@ -97,7 +97,7 @@ export interface ListItemAttributesMap {
 /**
  * The editing part of the document-list feature. It handles creating, editing and removing lists and list items.
  */
-export default class ListEditing extends Plugin {
+export class ListEditing extends Plugin {
 	/**
 	 * The list of registered downcast strategies.
 	 */
@@ -193,6 +193,7 @@ export default class ListEditing extends Plugin {
 		this._setupTabIntegration();
 		this._setupClipboardIntegration();
 		this._setupAccessibilityIntegration();
+		this._setupListItemIdConversionStrategy();
 	}
 
 	/**
@@ -642,6 +643,24 @@ export default class ListEditing extends Plugin {
 			]
 		} );
 	}
+
+	/**
+	 * Convert `listItemId` attribute to `data-list-item-id` attribute on the view element in both downcast pipelines.
+	 */
+	private _setupListItemIdConversionStrategy() {
+		this.registerDowncastStrategy( {
+			scope: 'item',
+			attributeName: 'listItemId',
+
+			setAttributeOnDowncast( writer, attributeValue, viewElement, options ) {
+				if ( options && ( options.skipListItemIds || options.isClipboardPipeline ) ) {
+					return;
+				}
+
+				writer.setAttribute( 'data-list-item-id', attributeValue, viewElement );
+			}
+		} );
+	}
 }
 
 /**
@@ -662,7 +681,7 @@ export interface AttributeDowncastStrategy {
 	/**
 	 * Sets the property on the view element.
 	 */
-	setAttributeOnDowncast( writer: DowncastWriter, value: unknown, element: ViewElement ): void;
+	setAttributeOnDowncast( writer: DowncastWriter, value: unknown, element: ViewElement, options?: Record<string, unknown> ): void;
 }
 
 /**

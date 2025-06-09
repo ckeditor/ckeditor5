@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import areConnectedThroughProperties from '../../src/utils/areconnectedthroughproperties.js';
-import Editor from '@ckeditor/ckeditor5-core/src/editor/editor.js';
+import { areConnectedThroughProperties } from '../../src/utils/areconnectedthroughproperties.js';
+import { Editor } from '@ckeditor/ckeditor5-core/src/editor/editor.js';
 
 describe( 'areConnectedThroughProperties()', () => {
 	it( 'should return `false` if one of the value is primitive #1', () => {

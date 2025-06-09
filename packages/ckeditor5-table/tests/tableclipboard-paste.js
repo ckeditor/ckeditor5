@@ -3,26 +3,26 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
-import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting.js';
-import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
-import LegacyListEditing from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
-import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Input from '@ckeditor/ckeditor5-typing/src/input.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
+import { HorizontalLineEditing } from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting.js';
+import { ImageCaptionEditing } from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
+import { LegacyListEditing } from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
+import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Input } from '@ckeditor/ckeditor5-typing/src/input.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { assertSelectedCells, formatAttributes, modelTable, viewTable } from './_utils/utils.js';
 import { Range } from '@ckeditor/ckeditor5-engine';
-import TableEditing from '../src/tableediting.js';
-import TableCellPropertiesEditing from '../src/tablecellproperties/tablecellpropertiesediting.js';
-import TableCellWidthEditing from '../src/tablecellwidth/tablecellwidthediting.js';
-import TableWalker from '../src/tablewalker.js';
+import { TableEditing } from '../src/tableediting.js';
+import { TableCellPropertiesEditing } from '../src/tablecellproperties/tablecellpropertiesediting.js';
+import { TableCellWidthEditing } from '../src/tablecellwidth/tablecellwidthediting.js';
+import { TableWalker } from '../src/tablewalker.js';
 
-import TableClipboard from '../src/tableclipboard.js';
-import TableColumnResize from '../src/tablecolumnresize.js';
+import { TableClipboard } from '../src/tableclipboard.js';
+import { TableColumnResize } from '../src/tablecolumnresize.js';
 
 describe( 'table clipboard', () => {
 	let editor, model, modelRoot, tableSelection, viewDocument, element, clipboardMarkersUtils, getUniqueMarkerNameStub;

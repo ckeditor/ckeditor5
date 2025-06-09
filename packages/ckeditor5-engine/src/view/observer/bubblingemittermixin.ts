@@ -22,12 +22,12 @@ import {
 	type Mixed
 } from '@ckeditor/ckeditor5-utils';
 
-import BubblingEventInfo, { type EventPhase } from './bubblingeventinfo.js';
-import type Document from '../document.js';
-import type Node from '../node.js';
-import type Range from '../range.js';
-import type Element from '../element.js';
-import type DocumentSelection from '../documentselection.js';
+import { BubblingEventInfo, type EventPhase } from './bubblingeventinfo.js';
+import { type Document } from '../document.js';
+import { type Node } from '../node.js';
+import { type Range } from '../range.js';
+import { type Element } from '../element.js';
+import { type DocumentSelection } from '../documentselection.js';
 
 const contextsSymbol = Symbol( 'bubbling contexts' );
 
@@ -47,7 +47,7 @@ const contextsSymbol = Symbol( 'bubbling contexts' );
  * }
  * ```
  */
-export default function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: Base ): Mixed<Base, BubblingEmitter> {
+export function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: Base ): Mixed<Base, BubblingEmitter> {
 	abstract class Mixin extends base implements BubblingEmitter {
 		public abstract get selection(): DocumentSelection;
 
@@ -156,15 +156,6 @@ export default function BubblingEmitterMixin<Base extends Constructor<Emitter>>(
 	}
 
 	return Mixin as any;
-}
-
-// Backward compatibility with `mix`.
-{
-	const mixin = ( BubblingEmitterMixin as any )( Object );
-
-	[ 'fire', '_addEventListener', '_removeEventListener' ].forEach( key => {
-		( BubblingEmitterMixin as any )[ key ] = mixin.prototype[ key ];
-	} );
 }
 
 /**

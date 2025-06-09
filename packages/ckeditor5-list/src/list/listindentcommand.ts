@@ -21,12 +21,12 @@ import {
 	splitListItemBefore,
 	type ListElement
 } from './utils/model.js';
-import ListWalker from './utils/listwalker.js';
+import { ListWalker } from './utils/listwalker.js';
 
 /**
  * The document list indent command. It is used by the {@link module:list/list~List list feature}.
  */
-export default class ListIndentCommand extends Command {
+export class ListIndentCommand extends Command {
 	/**
 	 * Determines by how much the command will change the list item's indent attribute.
 	 */

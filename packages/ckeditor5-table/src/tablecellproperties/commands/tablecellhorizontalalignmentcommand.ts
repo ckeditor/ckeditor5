@@ -9,7 +9,7 @@
 
 import type { Editor } from 'ckeditor5/src/core.js';
 
-import TableCellPropertyCommand from './tablecellpropertycommand.js';
+import { TableCellPropertyCommand } from './tablecellpropertycommand.js';
 
 /**
  * The table cell horizontal alignment command.
@@ -25,7 +25,7 @@ import TableCellPropertyCommand from './tablecellpropertycommand.js';
  * } );
  * ```
  */
-export default class TableCellHorizontalAlignmentCommand extends TableCellPropertyCommand {
+export class TableCellHorizontalAlignmentCommand extends TableCellPropertyCommand {
 	/**
 	 * Creates a new `TableCellHorizontalAlignmentCommand` instance.
 	 *

@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Node from '../../src/view/node.js';
-import Text from '../../src/view/text.js';
-import Document from '../../src/view/document.js';
+import { Node } from '../../src/view/node.js';
+import { Text } from '../../src/view/text.js';
+import { Document } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'Text', () => {

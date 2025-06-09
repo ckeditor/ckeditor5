@@ -21,7 +21,7 @@ import {
 /**
  * Base class for the undo feature commands: {@link module:undo/undocommand~UndoCommand} and {@link module:undo/redocommand~RedoCommand}.
  */
-export default abstract class BaseCommand extends Command {
+export abstract class BaseCommand extends Command {
 	/**
 	 * Stack of items stored by the command. These are pairs of:
 	 *

@@ -28,7 +28,7 @@ import type { ListWalkerOptions } from './utils/listwalker.js';
 /**
  * The list command. It is used by the {@link module:list/list~List list feature}.
  */
-export default class ListCommand extends Command {
+export class ListCommand extends Command {
 	/**
 	 * The type of the list created by the command.
 	 */

@@ -10,7 +10,7 @@
 import type { Element } from 'ckeditor5/src/engine.js';
 import type { Editor } from 'ckeditor5/src/core.js';
 
-import TableCellPropertyCommand from './tablecellpropertycommand.js';
+import { TableCellPropertyCommand } from './tablecellpropertycommand.js';
 import { getSingleValue } from '../../utils/table-properties.js';
 
 /**
@@ -27,7 +27,7 @@ import { getSingleValue } from '../../utils/table-properties.js';
  * } );
  * ```
  */
-export default class TableCellBorderColorCommand extends TableCellPropertyCommand {
+export class TableCellBorderColorCommand extends TableCellPropertyCommand {
 	/**
 	 * Creates a new `TableCellBorderColorCommand` instance.
 	 *

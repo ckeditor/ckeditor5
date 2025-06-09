@@ -16,16 +16,16 @@ import {
 	downcastSrcsetAttribute
 } from './converters.js';
 
-import ImageEditing from './imageediting.js';
-import ImageSizeAttributes from '../imagesizeattributes.js';
-import ImageTypeCommand from './imagetypecommand.js';
-import ImageUtils from '../imageutils.js';
+import { ImageEditing } from './imageediting.js';
+import { ImageSizeAttributes } from '../imagesizeattributes.js';
+import { ImageTypeCommand } from './imagetypecommand.js';
+import { ImageUtils } from '../imageutils.js';
 import {
 	getImgViewElementMatcher,
 	createInlineImageViewElement,
 	determineImageTypeForInsertionAtSelection
 } from './utils.js';
-import ImagePlaceholder from './imageplaceholder.js';
+import { ImagePlaceholder } from './imageplaceholder.js';
 
 /**
  * The image inline plugin.
@@ -37,7 +37,7 @@ import ImagePlaceholder from './imageplaceholder.js';
  * * {@link module:image/image/imagetypecommand~ImageTypeCommand `'imageTypeInline'`} command that converts block images into
  * inline images.
  */
-export default class ImageInlineEditing extends Plugin {
+export class ImageInlineEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

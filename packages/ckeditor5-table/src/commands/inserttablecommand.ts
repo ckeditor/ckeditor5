@@ -15,7 +15,7 @@ import type {
 	Selection,
 	Element
 } from 'ckeditor5/src/engine.js';
-import type TableUtils from '../tableutils.js';
+import { type TableUtils } from '../tableutils.js';
 
 /**
  * The insert table command.
@@ -28,7 +28,7 @@ import type TableUtils from '../tableutils.js';
  * editor.execute( 'insertTable', { rows: 20, columns: 5 } );
  * ```
  */
-export default class InsertTableCommand extends Command {
+export class InsertTableCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

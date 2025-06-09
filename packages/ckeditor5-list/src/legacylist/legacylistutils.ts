@@ -19,7 +19,7 @@ import {
 /**
  * A set of helpers related to legacy lists.
  */
-export default class LegacyListUtils extends Plugin {
+export class LegacyListUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

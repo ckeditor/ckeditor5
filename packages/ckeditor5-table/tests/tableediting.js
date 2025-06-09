@@ -3,25 +3,25 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
+import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
 
-import TableEditing from '../src/tableediting.js';
+import { TableEditing } from '../src/tableediting.js';
 import { modelTable } from './_utils/utils.js';
-import InsertRowCommand from '../src/commands/insertrowcommand.js';
-import InsertTableCommand from '../src/commands/inserttablecommand.js';
-import InsertColumnCommand from '../src/commands/insertcolumncommand.js';
-import RemoveRowCommand from '../src/commands/removerowcommand.js';
-import RemoveColumnCommand from '../src/commands/removecolumncommand.js';
-import SelectRowCommand from '../src/commands/selectrowcommand.js';
-import SelectColumnCommand from '../src/commands/selectcolumncommand.js';
-import SplitCellCommand from '../src/commands/splitcellcommand.js';
-import MergeCellCommand from '../src/commands/mergecellcommand.js';
-import SetHeaderRowCommand from '../src/commands/setheaderrowcommand.js';
-import SetHeaderColumnCommand from '../src/commands/setheadercolumncommand.js';
-import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting.js';
+import { InsertRowCommand } from '../src/commands/insertrowcommand.js';
+import { InsertTableCommand } from '../src/commands/inserttablecommand.js';
+import { InsertColumnCommand } from '../src/commands/insertcolumncommand.js';
+import { RemoveRowCommand } from '../src/commands/removerowcommand.js';
+import { RemoveColumnCommand } from '../src/commands/removecolumncommand.js';
+import { SelectRowCommand } from '../src/commands/selectrowcommand.js';
+import { SelectColumnCommand } from '../src/commands/selectcolumncommand.js';
+import { SplitCellCommand } from '../src/commands/splitcellcommand.js';
+import { MergeCellCommand } from '../src/commands/mergecellcommand.js';
+import { SetHeaderRowCommand } from '../src/commands/setheaderrowcommand.js';
+import { SetHeaderColumnCommand } from '../src/commands/setheadercolumncommand.js';
+import { MediaEmbedEditing } from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting.js';
 
 describe( 'TableEditing', () => {
 	let editor, model;

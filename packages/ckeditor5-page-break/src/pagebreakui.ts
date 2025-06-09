@@ -14,7 +14,7 @@ import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 /**
  * The page break UI plugin.
  */
-export default class PageBreakUI extends Plugin {
+export class PageBreakUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

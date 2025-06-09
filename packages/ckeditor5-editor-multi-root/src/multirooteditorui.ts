@@ -19,12 +19,12 @@ import {
 
 import { enablePlaceholder } from 'ckeditor5/src/engine.js';
 
-import type MultiRootEditorUIView from './multirooteditoruiview.js';
+import { type MultiRootEditorUIView } from './multirooteditoruiview.js';
 
 /**
  * The multi-root editor UI class.
  */
-export default class MultiRootEditorUI extends EditorUI {
+export class MultiRootEditorUI extends EditorUI {
 	/**
 	 * The main (top–most) view of the editor UI.
 	 */

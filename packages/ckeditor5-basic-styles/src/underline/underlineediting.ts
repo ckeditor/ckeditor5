@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import AttributeCommand from '../attributecommand.js';
+import { AttributeCommand } from '../attributecommand.js';
 
 const UNDERLINE = 'underline';
 
@@ -18,7 +18,7 @@ const UNDERLINE = 'underline';
  * It registers the `'underline'` command, the <kbd>Ctrl+U</kbd> keystroke
  * and introduces the `underline` attribute in the model which renders to the view as an `<u>` element.
  */
-export default class UnderlineEditing extends Plugin {
+export class UnderlineEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

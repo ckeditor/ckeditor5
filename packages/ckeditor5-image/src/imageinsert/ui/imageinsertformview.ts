@@ -24,7 +24,7 @@ import '../../../theme/imageinsert.css';
  *
  * See {@link module:image/imageinsert/imageinsertui~ImageInsertUI}.
  */
-export default class ImageInsertFormView extends View {
+export class ImageInsertFormView extends View {
 	/**
 	 * Tracks information about DOM focus in the form.
 	 */

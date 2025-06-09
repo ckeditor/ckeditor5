@@ -25,7 +25,7 @@ import { Collection } from 'ckeditor5/src/utils.js';
  * It introduces the `'restrictedEditing'` dropdown that offers tools to navigate between exceptions across
  * the document.
  */
-export default class RestrictedEditingModeUI extends Plugin {
+export class RestrictedEditingModeUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

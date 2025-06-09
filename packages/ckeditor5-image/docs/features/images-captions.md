@@ -2,7 +2,7 @@
 category: features-images
 menu-title: Image captions
 meta-title: Image captions | CKEditor 5 Documentation
-meta-description: Utilizing image captions to enhance your rich content.
+meta-description: Learn how to utilize image captions to enhance your rich content.
 order: 30
 ---
 

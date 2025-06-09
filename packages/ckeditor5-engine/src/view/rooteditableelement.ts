@@ -7,9 +7,9 @@
  * @module engine/view/rooteditableelement
  */
 
-import EditableElement from './editableelement.js';
+import { EditableElement } from './editableelement.js';
 
-import type Document from './document.js';
+import { type Document } from './document.js';
 
 const rootNameSymbol = Symbol( 'rootName' );
 
@@ -18,7 +18,7 @@ const rootNameSymbol = Symbol( 'rootName' );
  * but in both cases it is called "an editable". Roots can contain other {@link module:engine/view/editableelement~EditableElement
  * editable elements} making them "nested editables".
  */
-export default class RootEditableElement extends EditableElement {
+export class RootEditableElement extends EditableElement {
 	/**
 	 * Creates root editable element.
 	 *
@@ -82,3 +82,5 @@ RootEditableElement.prototype.is = function( type: string, name?: string ): bool
 		);
 	}
 };
+
+export { RootEditableElement as ViewRootEditableElement };

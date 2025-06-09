@@ -48,4 +48,4 @@ try {
 	globalVar = { window: {} as any, document: {} as any };
 }
 
-export default globalVar;
+export { globalVar as global };

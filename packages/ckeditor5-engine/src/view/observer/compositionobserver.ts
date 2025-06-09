@@ -7,9 +7,9 @@
  * @module engine/view/observer/compositionobserver
  */
 
-import DomEventObserver from './domeventobserver.js';
-import type View from '../view.js';
-import type DomEventData from './domeventdata.js';
+import { DomEventObserver } from './domeventobserver.js';
+import { type View } from '../view.js';
+import { type DomEventData } from './domeventdata.js';
 
 // @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
 
@@ -20,7 +20,7 @@ import type DomEventData from './domeventdata.js';
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  */
-export default class CompositionObserver extends DomEventObserver<'compositionstart' | 'compositionupdate' | 'compositionend'> {
+export class CompositionObserver extends DomEventObserver<'compositionstart' | 'compositionupdate' | 'compositionend'> {
 	/**
 	 * @inheritDoc
 	 */

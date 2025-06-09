@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import compareArrays from '../src/comparearrays.js';
+import { compareArrays } from '../src/comparearrays.js';
 
 describe( 'utils', () => {
 	describe( 'compareArrays', () => {

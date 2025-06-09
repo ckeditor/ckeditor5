@@ -8,7 +8,7 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core.js';
-import FontCommand from '../fontcommand.js';
+import { FontCommand } from '../fontcommand.js';
 import { FONT_COLOR } from '../utils.js';
 
 /**
@@ -21,7 +21,7 @@ import { FONT_COLOR } from '../utils.js';
  *
  * **Note**: Executing the command with the `null` value removes the attribute from the model.
  */
-export default class FontColorCommand extends FontCommand {
+export class FontColorCommand extends FontCommand {
 	/**
 	 * @inheritDoc
 	 */

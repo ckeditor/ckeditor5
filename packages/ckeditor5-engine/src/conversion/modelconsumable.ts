@@ -7,14 +7,14 @@
  * @module engine/conversion/modelconsumable
  */
 
-import TextProxy from '../model/textproxy.js';
+import { TextProxy } from '../model/textproxy.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type Item from '../model/item.js';
-import type Selection from '../model/selection.js';
-import type DocumentSelection from '../model/documentselection.js';
-import type Range from '../model/range.js';
+import { type Item } from '../model/item.js';
+import { type Selection } from '../model/selection.js';
+import { type DocumentSelection } from '../model/documentselection.js';
+import { type Range } from '../model/range.js';
 
 /**
  * Manages a list of consumable values for the {@link module:engine/model/item~Item model items}.
@@ -96,7 +96,7 @@ import type Range from '../model/range.js';
  * } );
  * ```
  */
-export default class ModelConsumable {
+export class ModelConsumable {
 	/**
 	 * Contains list of consumable values.
 	 */

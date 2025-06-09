@@ -27,8 +27,8 @@ import {
 	type FONT_BACKGROUND_COLOR,
 	type FONT_COLOR
 } from '../utils.js';
-import type FontColorCommand from '../fontcolor/fontcolorcommand.js';
-import type FontBackgroundColorCommand from '../fontbackgroundcolor/fontbackgroundcolorcommand.js';
+import { type FontColorCommand } from '../fontcolor/fontcolorcommand.js';
+import { type FontBackgroundColorCommand } from '../fontbackgroundcolor/fontbackgroundcolorcommand.js';
 import type { FontColorConfig } from '../fontconfig.js';
 
 /**
@@ -37,7 +37,7 @@ import type { FontColorConfig } from '../fontconfig.js';
  * It is used to create the `'fontBackgroundColor'` and `'fontColor'` dropdowns, each hosting
  * a {@link module:ui/colorselector/colorselectorview~ColorSelectorView}.
  */
-export default class ColorUI extends Plugin {
+export class ColorUI extends Plugin {
 	/**
 	 * The name of the command which will be executed when a color tile is clicked.
 	 */

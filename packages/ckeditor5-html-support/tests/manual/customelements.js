@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { SourceEditing } from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
 
-import GeneralHtmlSupport from '../../src/generalhtmlsupport.js';
+import { GeneralHtmlSupport } from '../../src/generalhtmlsupport.js';
 
 /**
  * Client custom plugin extending HTML support for compatibility.

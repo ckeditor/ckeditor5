@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { default as ContainerElement, getFillerOffset } from '../../src/view/containerelement.js';
-import Element from '../../src/view/element.js';
-import Document from '../../src/view/document.js';
+import { ContainerElement, getFillerOffset } from '../../src/view/containerelement.js';
+import { Element } from '../../src/view/element.js';
+import { Document } from '../../src/view/document.js';
 import { parse } from '../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 

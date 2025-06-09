@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { canBeCodeBlock, getTextNodeAtLineStart } from '../src/utils.js';

@@ -40,7 +40,7 @@ export const DOCUMENTATION_URL = 'https://ckeditor.com/docs/ckeditor5/latest/sup
  * } );
  * ```
  */
-export default class CKEditorError extends Error {
+export class CKEditorError extends Error {
 	/**
 	 * A context of the error by which the Watchdog is able to determine which editor crashed.
 	 */

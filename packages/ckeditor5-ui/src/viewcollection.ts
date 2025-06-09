@@ -15,7 +15,7 @@ import {
 	type EmitterMixinDelegateChain
 } from '@ckeditor/ckeditor5-utils';
 
-import type View from './view.js';
+import { type View } from './view.js';
 
 /**
  * Collects {@link module:ui/view~View} instances.
@@ -57,7 +57,7 @@ import type View from './view.js';
  * **Note**: A view collection can be used directly in the {@link module:ui/template~TemplateDefinition definition}
  * of a {@link module:ui/template~Template template}.
  */
-export default class ViewCollection<TView extends View = View> extends Collection<TView> {
+export class ViewCollection<TView extends View = View> extends Collection<TView> {
 	public declare id?: string;
 
 	/**

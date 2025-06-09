@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import MarkerCollection from '../../src/model/markercollection.js';
-import Position from '../../src/model/position.js';
-import Range from '../../src/model/range.js';
-import LiveRange from '../../src/model/liverange.js';
-import Text from '../../src/model/text.js';
-import Model from '../../src/model/model.js';
+import { MarkerCollection } from '../../src/model/markercollection.js';
+import { Position } from '../../src/model/position.js';
+import { Range } from '../../src/model/range.js';
+import { LiveRange } from '../../src/model/liverange.js';
+import { Text } from '../../src/model/text.js';
+import { Model } from '../../src/model/model.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'MarkerCollection', () => {

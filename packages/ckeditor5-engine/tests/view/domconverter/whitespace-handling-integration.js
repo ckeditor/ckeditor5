@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ImageInlineEditing } from '@ckeditor/ckeditor5-image/src/image/imageinlineediting.js';
+import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
+import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
 
 import { getData } from '../../../src/dev-utils/model.js';
 import { getFillerOffset } from '../../../src/index.js';

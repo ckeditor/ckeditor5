@@ -1,7 +1,7 @@
 ---
 menu-title: Vue.js 3+
 meta-title: Vue.js CKEditor 5 - migrate integration from npm to CDN | CKEditor 5 Documentation
-meta-description: Migrate Vue 3+ CKEditor 5 integration from npm to CDN in a few simple steps. Learn how to install Vue 3+ CKEditor 5 integration in your project using the CDN.
+meta-description: Migrate Vue 3+ CKEditor 5 integration from npm to CDN in a few simple steps. Learn how to install the integration in your project using the CDN.
 category: migrations
 order: 40
 ---

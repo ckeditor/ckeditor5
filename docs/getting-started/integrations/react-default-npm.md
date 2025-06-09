@@ -1,7 +1,7 @@
 ---
 menu-title: Default integration
 meta-title: Using CKEditor 5 with React rich text editor componentfrom npm | CKEditor 5 Documentation
-meta-description: Install, integrate and configure CKEditor 5 using the default React component with npm.
+meta-description: Install, integrate, and configure CKEditor 5 using the default React component with npm.
 category: react-npm
 order: 10
 ---
@@ -163,7 +163,7 @@ The `CKEditorContext` component supports the following properties:
   * `{Boolean} willContextRestart` &ndash; When `true`, it means that the context component will restart itself.
 
 <info-box>
-	An example build that exposes both context and classic editor can be found in the [CKEditor&nbsp;5 collaboration sample](https://github.com/ckeditor/ckeditor5-collaboration-samples/blob/master/real-time-collaboration-comments-outside-of-editor-for-react).
+	An example build that exposes both context and classic editor can be found in the [CKEditor&nbsp;5 collaboration sample](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-comments-outside-of-editor).
 </info-box>
 
 ## How to?

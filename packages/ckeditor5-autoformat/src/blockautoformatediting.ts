@@ -14,7 +14,7 @@ import {
 
 import { first } from 'ckeditor5/src/utils.js';
 
-import type Autoformat from './autoformat.js';
+import { type Autoformat } from './autoformat.js';
 
 import type { Delete } from 'ckeditor5/src/typing.js';
 
@@ -67,7 +67,7 @@ import type { Delete } from 'ckeditor5/src/typing.js';
  * In case of providing the callback, it receives the following parameter:
  * * match RegExp.exec() result of matching the pattern to inserted text.
  */
-export default function blockAutoformatEditing(
+export function blockAutoformatEditing(
 	editor: Editor,
 	plugin: Autoformat,
 	pattern: RegExp,

@@ -32,7 +32,7 @@ import '../../theme/linkproperties.css';
  *
  * See {@link module:link/ui/linkpropertiesview~LinkPropertiesView}.
  */
-export default class LinkPropertiesView extends View {
+export class LinkPropertiesView extends View {
 	/**
 	 * Tracks information about DOM focus in the form.
 	 */

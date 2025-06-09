@@ -21,10 +21,10 @@ import {
 } from 'ckeditor5/src/ui.js';
 import { Collection, type ObservableChangeEvent, type Locale } from 'ckeditor5/src/utils.js';
 
-import InsertTableView from './ui/inserttableview.js';
+import { InsertTableView } from './ui/inserttableview.js';
 
-import type InsertTableCommand from './commands/inserttablecommand.js';
-import type MergeCellsCommand from './commands/mergecellscommand.js';
+import { type InsertTableCommand } from './commands/inserttablecommand.js';
+import { type MergeCellsCommand } from './commands/mergecellscommand.js';
 
 /**
  * The table UI plugin. It introduces:
@@ -37,7 +37,7 @@ import type MergeCellsCommand from './commands/mergecellscommand.js';
  *
  * The `'tableColumn'`, `'tableRow'` and `'mergeTableCells'` dropdowns work best with {@link module:table/tabletoolbar~TableToolbar}.
  */
-export default class TableUI extends Plugin {
+export class TableUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

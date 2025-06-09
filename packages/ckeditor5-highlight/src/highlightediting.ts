@@ -9,7 +9,7 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
-import HighlightCommand from './highlightcommand.js';
+import { HighlightCommand } from './highlightcommand.js';
 import type { HighlightOption } from './highlightconfig.js';
 
 /**
@@ -18,7 +18,7 @@ import type { HighlightOption } from './highlightconfig.js';
  * as a `<mark>` element with a `class` attribute (`<mark class="marker-green">...</mark>`) depending
  * on the {@link module:highlight/highlightconfig~HighlightConfig configuration}.
  */
-export default class HighlightEditing extends Plugin {
+export class HighlightEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

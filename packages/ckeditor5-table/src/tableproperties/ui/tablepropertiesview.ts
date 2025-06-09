@@ -43,7 +43,7 @@ import {
 	getLabeledColorInputCreator
 } from '../../utils/ui/table-properties.js';
 
-import type ColorInputView from '../../ui/colorinputview.js';
+import { type ColorInputView } from '../../ui/colorinputview.js';
 import type { TablePropertiesOptions } from '../../tableconfig.js';
 
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
@@ -84,7 +84,7 @@ export interface TablePropertiesViewOptions {
  * The class representing a table properties form, allowing users to customize
  * certain style aspects of a table, for instance, border, background color, alignment, etc..
  */
-export default class TablePropertiesView extends View {
+export class TablePropertiesView extends View {
 	/**
 	 * The value of the border style.
 	 *

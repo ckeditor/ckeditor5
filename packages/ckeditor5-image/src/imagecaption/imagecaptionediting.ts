@@ -12,9 +12,9 @@ import { Element, enablePlaceholder, type DocumentChangeEvent, type DiffItemAttr
 import { toWidgetEditable } from 'ckeditor5/src/widget.js';
 import type { GetCallback } from 'ckeditor5/src/utils.js';
 
-import ToggleImageCaptionCommand from './toggleimagecaptioncommand.js';
-import ImageUtils from '../imageutils.js';
-import ImageCaptionUtils from './imagecaptionutils.js';
+import { ToggleImageCaptionCommand } from './toggleimagecaptioncommand.js';
+import { ImageUtils } from '../imageutils.js';
+import { ImageCaptionUtils } from './imagecaptionutils.js';
 
 /**
  * The image caption engine plugin. It is responsible for:
@@ -23,7 +23,7 @@ import ImageCaptionUtils from './imagecaptionutils.js';
  * * registering converters for the caption model attribute,
  * * registering the {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand `toggleImageCaption`} command.
  */
-export default class ImageCaptionEditing extends Plugin {
+export class ImageCaptionEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

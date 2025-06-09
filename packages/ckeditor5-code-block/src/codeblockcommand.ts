@@ -16,7 +16,7 @@ import { getNormalizedAndLocalizedLanguageDefinitions, canBeCodeBlock } from './
 /**
  * The code block command plugin.
  */
-export default class CodeBlockCommand extends Command {
+export class CodeBlockCommand extends Command {
 	/**
 	 * Contains the last used language.
 	 */

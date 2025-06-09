@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import insertAt from '../../src/dom/insertat.js';
+import { insertAt } from '../../src/dom/insertat.js';
 
 describe( 'insertAt', () => {
 	it( 'should insert at given position', () => {

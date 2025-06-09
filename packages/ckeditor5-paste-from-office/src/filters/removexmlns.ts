@@ -14,7 +14,7 @@ import type { UpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engine.js
  *
  * @param documentFragment element `data.content` obtained from clipboard
  */
-export default function removeXmlns( documentFragment: ViewDocumentFragment, writer: UpcastWriter ): void {
+export function removeXmlns( documentFragment: ViewDocumentFragment, writer: UpcastWriter ): void {
 	for ( const child of documentFragment.getChildren() ) {
 		if ( child.is( 'element', 'table' ) && child.hasAttribute( 'xmlns' ) ) {
 			writer.removeAttribute( 'xmlns', child );

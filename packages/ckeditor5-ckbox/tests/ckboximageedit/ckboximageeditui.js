@@ -4,19 +4,19 @@
  */
 
 import { global } from '@ckeditor/ckeditor5-utils';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { CloudServices } from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
 import { LinkEditing } from '@ckeditor/ckeditor5-link';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Image, ImageUploadEditing, ImageUploadProgress, PictureEditing } from '@ckeditor/ckeditor5-image';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { ButtonView } from '@ckeditor/ckeditor5-ui';
-import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
-import CloudServicesCoreMock from '../_utils/cloudservicescoremock.js';
+import { TokenMock } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock.js';
+import { CloudServicesCoreMock } from '../_utils/cloudservicescoremock.js';
 
-import CKBoxImageEditEditing from '../../src/ckboximageedit/ckboximageeditediting.js';
-import CKBoxImageEditUI from '../../src/ckboximageedit/ckboximageeditui.js';
+import { CKBoxImageEditEditing } from '../../src/ckboximageedit/ckboximageeditediting.js';
+import { CKBoxImageEditUI } from '../../src/ckboximageedit/ckboximageeditui.js';
 
 describe( 'CKBoxImageEditUI', () => {
 	testUtils.createSinonSandbox();

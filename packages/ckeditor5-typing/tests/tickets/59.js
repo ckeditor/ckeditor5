@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import Typing from '../../src/typing.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { Typing } from '../../src/typing.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'Bug ckeditor5-typing#59', () => {

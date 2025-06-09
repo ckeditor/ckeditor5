@@ -15,7 +15,7 @@ import type { Element, Schema } from 'ckeditor5/src/engine.js';
 /**
  * The heading command. It is used by the {@link module:heading/heading~Heading heading feature} to apply headings.
  */
-export default class HeadingCommand extends Command {
+export class HeadingCommand extends Command {
 	/**
 	 * If the selection starts in a heading (which {@link #modelElements is supported by this command})
 	 * the value is set to the name of that heading model element.

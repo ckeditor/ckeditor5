@@ -7,14 +7,14 @@
  * @module engine/view/textproxy
  */
 
-import TypeCheckable from './typecheckable.js';
+import { TypeCheckable } from './typecheckable.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type Document from './document.js';
-import type DocumentFragment from './documentfragment.js';
-import type Element from './element.js';
-import type Node from './node.js';
-import type Text from './text.js';
+import { type Document } from './document.js';
+import { type DocumentFragment } from './documentfragment.js';
+import { type Element } from './element.js';
+import { type Node } from './node.js';
+import { type Text } from './text.js';
 
 /**
  * TextProxy is a wrapper for substring of {@link module:engine/view/text~Text}. Instance of this class is created by
@@ -36,7 +36,7 @@ import type Text from './text.js';
  * `TextProxy` instances are created by {@link module:engine/view/treewalker~TreeWalker view tree walker}. You should not need to create
  * an instance of this class by your own.
  */
-export default class TextProxy extends TypeCheckable {
+export class TextProxy extends TypeCheckable {
 	/**
 	 * Reference to the {@link module:engine/view/text~Text} element which TextProxy is a substring.
 	 */
@@ -173,3 +173,5 @@ TextProxy.prototype.is = function( type: string ): boolean {
 		// This are legacy values kept for backward compatibility.
 		type === 'textProxy' || type === 'view:textProxy';
 };
+
+export { TextProxy as ViewTextProxy };

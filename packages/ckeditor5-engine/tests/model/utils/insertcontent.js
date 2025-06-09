@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../../src/model/model.js';
-import insertContent from '../../../src/model/utils/insertcontent.js';
-import DocumentFragment from '../../../src/model/documentfragment.js';
-import Text from '../../../src/model/text.js';
-import Element from '../../../src/model/element.js';
-import Position from '../../../src/model/position.js';
+import { Model } from '../../../src/model/model.js';
+import { insertContent } from '../../../src/model/utils/insertcontent.js';
+import { DocumentFragment } from '../../../src/model/documentfragment.js';
+import { Text } from '../../../src/model/text.js';
+import { Element } from '../../../src/model/element.js';
+import { Position } from '../../../src/model/position.js';
 
 import { setData, getData, parse, stringify } from '../../../src/dev-utils/model.js';
-import Range from '../../../src/model/range.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Range } from '../../../src/model/range.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'DataController utils', () => {
 	let model, doc, root;

@@ -7,16 +7,16 @@
  * @module engine/view/observer/selectionobserver
  */
 
-import Observer from './observer.js';
-import MutationObserver from './mutationobserver.js';
-import FocusObserver from './focusobserver.js';
+import { Observer } from './observer.js';
+import { MutationObserver } from './mutationobserver.js';
+import { FocusObserver } from './focusobserver.js';
 import { env, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
 
-import type View from '../view.js';
-import type DocumentSelection from '../documentselection.js';
-import type DomConverter from '../domconverter.js';
-import type Selection from '../selection.js';
+import { type View } from '../view.js';
+import { type DocumentSelection } from '../documentselection.js';
+import { type DomConverter } from '../domconverter.js';
+import { type Selection } from '../selection.js';
 import type { ViewDocumentCompositionStartEvent } from './compositionobserver.js';
 
 // @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
@@ -33,7 +33,7 @@ type DomSelection = globalThis.Selection;
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  */
-export default class SelectionObserver extends Observer {
+export class SelectionObserver extends Observer {
 	/**
 	 * Instance of the mutation observer. Selection observer calls
 	 * {@link module:engine/view/observer/mutationobserver~MutationObserver#flush} to ensure that the mutations will be handled

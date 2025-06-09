@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
-import removeStyleBlock from '../../src/filters/removestyleblock.js';
-import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
-import Document from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
+import { removeStyleBlock } from '../../src/filters/removestyleblock.js';
+import { UpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
+import { Document } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
 describe( 'PasteFromOffice - filters', () => {
