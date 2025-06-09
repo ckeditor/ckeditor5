@@ -167,4 +167,28 @@ export { MenuBarMenuListItemButtonView } from './menubar/menubarmenulistitembutt
 export { MenuBarMenuListItemFileDialogButtonView } from './menubar/menubarmenulistitemfiledialogbuttonview.js';
 export { normalizeMenuBarConfig, DefaultMenuBarItems } from './menubar/utils.js';
 
+// Internals
+export { preventDefault as _preventUiViewDefault } from './bindings/preventdefault.js';
+export { CheckIconHolderView as _CheckIconHolderView } from './button/listitembuttonview.js';
+export { CollapsibleView as _CollapsibleView } from './collapsible/collapsibleview.js';
+export { tryParseHexColor as _tryNormalizeHexColor } from './colorpicker/colorpickerview.js';
+export { convertColor as _convertColor } from './colorpicker/utils.js';
+export { convertToHex as _convertColorToHex } from './colorpicker/utils.js';
+export { registerCustomElement as _registerCustomElement } from './colorpicker/utils.js';
+export { DropdownRootMenuBehaviors as _DropdownRootMenuBehaviors } from './dropdown/menu/dropdownmenubehaviors.js';
+export { DropdownMenuBehaviors as _DropdownMenuBehaviors } from './dropdown/menu/dropdownmenubehaviors.js';
+export { MenuBarBehaviors as _MenuBarBehaviors } from './menubar/utils.js';
+export { MenuBarMenuBehaviors as _MenuBarMenuBehaviors } from './menubar/utils.js';
+export { MenuBarMenuViewPanelPositioningFunctions as _MenuBarMenuViewPanelPositioningFunctions } from './menubar/utils.js';
+export { processMenuBarConfig as _processMenuBarConfig } from './menubar/utils.js';
+export { RotatorView as _ContextualBalloonRotatorView } from './panel/balloon/contextualballoon.js';
+export { SearchInfoView as _SearchInfoView } from './search/searchinfoview.js';
+export { SearchTextQueryView as _SearchTextQueryView } from './search/text/searchtextqueryview.js';
+export { TemplateBinding as _TemplateBinding } from './template.js';
+export { TemplateToBinding as _TemplateToBinding } from './template.js';
+export { TemplateIfBinding as _TemplateIfBinding } from './template.js';
+export { type RenderData as _TemplateRenderData } from './template.js';
+export { NESTED_TOOLBAR_ICONS } from './toolbar/toolbarview.js';
+export { type ToolbarBehavior as _ToolbarBehavior } from './toolbar/toolbarview.js';
+
 import './augmentation.js';

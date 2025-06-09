@@ -597,6 +597,7 @@ type Stack = Map<View, ViewConfiguration>;
  * Rotator view is a helper class for the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon ContextualBalloon}.
  * It is used for displaying the last view from the current stack and providing navigation buttons for switching stacks.
  * See the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon ContextualBalloon} documentation to learn more.
+ * @internal
  */
 export class RotatorView extends View {
 	/**

@@ -2012,6 +2012,7 @@ export interface BindChain<TObservable> {
 
 /**
  * The {@link module:ui/template~Template#_renderNode} configuration.
+ * @internal
  */
 export interface RenderData {
 
