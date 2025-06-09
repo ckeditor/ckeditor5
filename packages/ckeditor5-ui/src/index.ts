@@ -132,7 +132,11 @@ export { filterGroupAndItemNames } from './search/filtergroupanditemnames.js';
 
 export { Notification } from './notification/notification.js';
 
-export { UIModel } from './model.js';
+export {
+	UIModel,
+	UIModel as ViewModel
+} from './model.js';
+
 export { BalloonPanelView } from './panel/balloon/balloonpanelview.js';
 export { ContextualBalloon, type ContextualBalloonGetPositionOptionsEvent } from './panel/balloon/contextualballoon.js';
 export { StickyPanelView } from './panel/sticky/stickypanelview.js';
