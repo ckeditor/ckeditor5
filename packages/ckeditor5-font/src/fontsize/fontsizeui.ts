@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import { IconFontSize } from 'ckeditor5/src/icons.js';
 import {
-	ViewModel,
+	UIModel,
 	createDropdown,
 	addListToDropdown,
 	type ListDropdownButtonDefinition,
@@ -181,7 +181,7 @@ function _prepareListOptions( options: Array<FontSizeOption>, command: FontSizeC
 	for ( const option of options ) {
 		const def = {
 			type: 'button' as const,
-			model: new ViewModel( {
+			model: new UIModel( {
 				commandName: FONT_SIZE,
 				commandParam: option.model,
 				label: option.title,

@@ -344,7 +344,7 @@ import {
     Collection,
     createDropdown,
     Locale,
-    ViewModel
+    UIModel
 } from 'ckeditor5';
 
 const locale = new Locale();
@@ -352,14 +352,14 @@ const locale = new Locale();
 const collection = new Collection();
 collection.add( {
 	type: 'button',
-	model: new ViewModel( {
+	model: new UIModel( {
 		label: 'Button',
 		withText: true
 	} )
 } );
 collection.add( {
 	type: 'switchbutton',
-	model: new ViewModel( {
+	model: new UIModel( {
 		label: 'Switch button',
 		withText: true
 	} )

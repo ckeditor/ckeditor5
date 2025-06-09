@@ -9,7 +9,7 @@
 
 import {
 	ButtonView,
-	ViewModel,
+	UIModel,
 	type ColorOption,
 	type LabeledFieldView,
 	type ListDropdownItemDefinition,
@@ -132,7 +132,7 @@ export function getBorderStyleDefinitions(
 	for ( const style in styleLabels ) {
 		const definition: ListDropdownItemDefinition = {
 			type: 'button',
-			model: new ViewModel( {
+			model: new UIModel( {
 				_borderStyleValue: style,
 				label: styleLabels[ style ],
 				role: 'menuitemradio',

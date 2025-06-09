@@ -9,7 +9,7 @@
 
 import { Plugin, type Command } from 'ckeditor5/src/core.js';
 import {
-	ViewModel,
+	UIModel,
 	createDropdown,
 	addListToDropdown,
 	type ButtonExecuteEvent,
@@ -66,7 +66,7 @@ export class HeadingUI extends Plugin {
 			for ( const option of options ) {
 				const def: ListDropdownItemDefinition = {
 					type: 'button',
-					model: new ViewModel( {
+					model: new UIModel( {
 						label: option.title,
 						class: option.class,
 						role: 'menuitemradio',

@@ -399,7 +399,7 @@ The {@link module:ui/list/listview~ListView} can be added to a dropdown using th
 
 <code-switcher>
 ```js
-import { ViewModel, addListToDropdown, createDropdown, Collection } from 'ckeditor5';
+import { UIModel, addListToDropdown, createDropdown, Collection } from 'ckeditor5';
 
 // The default dropdown.
 const dropdownView = createDropdown( locale );
@@ -409,7 +409,7 @@ const items = new Collection();
 
 items.add( {
 	type: 'button',
-	model: new ViewModel( {
+	model: new UIModel( {
 		withText: true,
 		label: 'Foo'
 	} )
@@ -417,7 +417,7 @@ items.add( {
 
 items.add( {
 	type: 'button',
-	model: new ViewModel( {
+	model: new UIModel( {
 		withText: true,
 		label: 'Bar'
 	} )

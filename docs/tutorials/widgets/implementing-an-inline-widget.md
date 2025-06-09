@@ -11,7 +11,7 @@ In this tutorial, you will learn how to implement an inline widget. You will bui
 <info-box warning>
 	**We have an official implementation of this feature!**
 
-	While this tutorial was created for learning purposes, it only offers a basic, simplified solution. We have an official implementation of this mechanism, called the {@link features/merge-fields merge fields} feature. It is much more robust than the solution presented here, and offers many configuration options. 
+	While this tutorial was created for learning purposes, it only offers a basic, simplified solution. We have an official implementation of this mechanism, called the {@link features/merge-fields merge fields} feature. It is much more robust than the solution presented here, and offers many configuration options.
 </info-box>
 
 First, you will use widget utilities and conversion to define the behavior of this feature. Later on, you will use dropdown utilities to create a dropdown that will allow for inserting new placeholders. You will also learn how to use the editor configuration to define allowed placeholder names.
@@ -444,7 +444,7 @@ In this tutorial, you will create a dropdown with a list of available placeholde
 
 import {
 	Plugin,
-	ViewModel,
+	UIModel,
 	addListToDropdown,
 	createDropdown,
 	Collection
@@ -493,7 +493,7 @@ function getDropdownItemsDefinitions( placeholderNames ) {
 	for ( const name of placeholderNames ) {
 		const definition = {
 			type: 'button',
-			model: new ViewModel( {
+			model: new UIModel( {
 				commandParam: name,
 				label: name,
 				withText: true

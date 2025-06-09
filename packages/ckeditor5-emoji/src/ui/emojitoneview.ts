@@ -11,7 +11,7 @@ import {
 	createDropdown,
 	addListToDropdown,
 	View,
-	ViewModel,
+	UIModel,
 	type ButtonExecuteEvent,
 	type DropdownView,
 	type ListDropdownItemDefinition
@@ -61,7 +61,7 @@ export class EmojiToneView extends View {
 		for ( const { id, icon, tooltip } of this._skinTones ) {
 			const def: ListDropdownItemDefinition = {
 				type: 'button',
-				model: new ViewModel( {
+				model: new UIModel( {
 					value: id,
 					label: icon,
 					ariaLabel: tooltip,
