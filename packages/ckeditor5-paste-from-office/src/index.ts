@@ -22,10 +22,10 @@ export {
 	transformListItemLikeElementsIntoLists as _transformPasteOfficeListItemLikeElementsIntoLists,
 	unwrapParagraphInListItem as _unwrapPasteOfficeParagraphInListItem
 } from './filters/list.js';
-export { removeBoldWrapper as _removeOfficeBoldWrapper } from './filters/removeboldwrapper.js';
-export { removeGoogleSheetsTag as _removePastedGoogleOfficeSheetsTag } from './filters/removegooglesheetstag.js';
+export { removeBoldWrapper as _removePasteOfficeBoldWrapper } from './filters/removeboldwrapper.js';
+export { removeGoogleSheetsTag as _removePasteGoogleOfficeSheetsTag } from './filters/removegooglesheetstag.js';
 export { removeInvalidTableWidth as _removePasteOfficeInvalidTableWidths } from './filters/removeinvalidtablewidth.js';
-export { removeMSAttributes as _removePastedMSOfficeAttributes } from './filters/removemsattributes.js';
+export { removeMSAttributes as _removePasteMSOfficeAttributes } from './filters/removemsattributes.js';
 export { removeStyleBlock as _removePasteOfficeStyleBlock } from './filters/removestyleblock.js';
 export { removeXmlns as _removePasteOfficeXmlnsAttributes } from './filters/removexmlns.js';
 export {
