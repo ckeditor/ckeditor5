@@ -1698,6 +1698,6 @@ Upload images to your server using the XMLHttpRequest API with a minimal editor 
 
 Upload, store, transform, optimize, and deliver images, videos, and documents with this cloud-based file handler. Upload media from local storage, web cameras, cloud services, and social networks with automated media optimization through a CDN for responsive image delivery. Popular features include adaptive image quality, automated image format conversion, progressive JPEG, and options for preview, resize, stretch, crop, content-aware crop, and setting fill color.
 
-<ck:button-link size='sm' variant='secondary' href='https://uploadcare.com/'>
+<ck:button-link size='sm' variant='secondary' href='https://uploadcare.com/' target='_blank'>
 	Feature page
 </ck:button-link>
