@@ -175,7 +175,7 @@ export {
 	lineWidthFieldValidator as _lineWidthTableFieldValidator,
 	getBorderStyleDefinitions as _getTableOrCellBorderStyleDefinitions,
 	fillToolbar as _fillTableOrCellToolbar,
-	defaultColors as _DEFAULT_TABLE_COLORS,
+	defaultColors as _TABLE_DEFAULT_COLORS,
 	getLabeledColorInputCreator as _getLabeledTableColorInputCreator
 } from './utils/ui/table-properties.js';
 export {
