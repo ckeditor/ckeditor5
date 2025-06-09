@@ -17,7 +17,7 @@ The remote script REST API endpoint allows you to execute any JavaScript code th
 
 While CKEditor&nbsp;5 provides a rich client-side editing experience, there are many scenarios where server-side content processing is essential:
 
-* **Automation**: Run content processing tasks as part of your server workflows.
+* **Automation**: Run content processing tasks as part of your back-end workflows.
 * **Scalability**: Process multiple documents simultaneously without client-side limitations.
 * **Security**: Process sensitive content in a controlled environment without exposing it to client-side manipulation.
 * **Performance**: Handle large-scale content operations without impacting the user's browser.
@@ -26,6 +26,7 @@ While CKEditor&nbsp;5 provides a rich client-side editing experience, there are 
 
 ## Common use cases
 
+* **Deep integration**: Build custom features that can manage document content and related document data straight from your application UI, without a need to open the editor.
 * **Content migration**: Restructure and update references across multiple documents, perfect for website redesigns or content reorganization.
 * **Shared content blocks**: Automatically update reusable content (like headers, footers, or common sections) across all documents that use it.
 * **Automated review systems**: Build systems that automatically review and suggest content changes, like grammar checks or style improvements.
@@ -128,7 +129,7 @@ editor.model.change( writer => {
 } );
 ```
 
-This approach is particularly useful when you need to update many links at once or fix broken links across your content.
+This approach is particularly when you have to modify the document data in a very specific way, and the generic, high-level API cannot cover it.
 
 To learn more about working with the editor engine, see the {@link framework/architecture/editing-engine Editing engine} guide.
 
@@ -140,7 +141,7 @@ You can leverage the {@link features/track-changes track changes} feature API to
 
 Track changes is integrated with most editor commands. If you wish to change the document using commands and track these changes, all you need to do is turn on track changes mode.
 
-Let's start with a basic text replacement:
+Below is an example that shows a basic text replacement:
 
 ```js
 // Enable track changes to mark our edits as suggestions.
@@ -154,7 +155,7 @@ The `trackChanges` command ensures that all changes made by other commands are m
 
 ### Content changes
 
-Now, let's see how to suggest content removal:
+Now, let's see how to suggest deleting a specified part of the document:
 
 ```js
 // Enable track changes to mark our edits as suggestions.
@@ -196,7 +197,7 @@ The `insertContent()` method can be used in the following scenarios:
 
 ### Working with suggestions
 
-You can use the {@link module:track-changes/trackchangesdata~TrackChangesData track changes data plugin} to get the document data with all suggestions either accepted or rejected:
+You can use the {@link module:track-changes/trackchangesdata~TrackChangesData track changes data plugin} to get the document data with all suggestions either accepted or discarded:
 
 ```js
 // Get the track changes data plugin.
@@ -209,7 +210,7 @@ const data = trackChangesData.getDataWithDiscardedSuggestions();
 return data;
 ```
 
-This is particularly useful when processing the "original" or the "final" document data. This happens when you need to check if pending suggestions were discarded or accepted.
+This is particularly useful when you need to show or process the "original" or the "final" document data.
 
 While the previous example could be used to get the data, you may also want to permanently accept or discard suggestions. You can do this for all suggestions at once using the following command:
 
@@ -244,7 +245,7 @@ If you wish to create attributes suggestions using the editor model API, you nee
 
 ```js
 // Get the track changes editing plugin for direct access to suggestion recording.
-const tcEditing = editor.plugins.get( 'TrackChangesEditing' );
+const trackChangesEditing = editor.plugins.get( 'TrackChangesEditing' );
 
 // Get the root element and create a range that covers all content.
 const root = editor.model.document.getRoot();
@@ -255,7 +256,7 @@ const items = Array.from( range.getItems() );
 for ( const item of items ) {
 	editor.model.change( writer => {
 		// Use _recordAttributeChanges to ensure the change is properly recorded as a suggestion.
-		tcEditing._recordAttributeChanges( () => {
+		trackChangesEditing._recordAttributeChanges( () => {
 			let href = item.getAttribute( 'linkHref' );
 
 			// Only process text proxies (parts of text nodes) that have a `linkHref` attribute.
@@ -289,7 +290,7 @@ for ( const thread of threads ) {
 }
 ```
 
-This code is particularly useful when you need to clean up a document before finalizing it. You might use it to automatically resolve old discussions, prepare documents for publication, or maintain a clean comment history in your content management system.
+This code is particularly useful when you need to clean up a document. You might use it to automatically resolve old discussions, prepare documents for publication, or maintain a clean comment history in your content management system.
 
 ## Working with revision history
 
@@ -310,7 +311,7 @@ Revision history API can help you build an automated mechanism that will automat
 
 ### Working with revision data
 
-For more advanced scenarios, you might need to work with different revisions of your document:
+In more complex scenarios, you might have a need to work with content coming from various revisions of your document:
 
 ```js
 // Get the revision management tools.
