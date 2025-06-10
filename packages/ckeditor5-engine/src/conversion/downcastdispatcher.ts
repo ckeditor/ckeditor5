@@ -592,7 +592,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 */
 	private _testAndFire<TType extends 'insert' | 'attribute'>(
 		type: TType | `${ TType }:${ string }`,
-		data: EventMap[ TType ],
+		data: DowncastDispatcherEventMap[ TType ],
 		conversionApi: DowncastConversionApi
 	): void {
 		const eventName = getEventName( type, data );
@@ -622,7 +622,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 		item: Item,
 		conversionApi: DowncastConversionApi
 	): void {
-		const data: EventMap[ 'attribute' ] = {
+		const data: DowncastDispatcherEventMap[ 'attribute' ] = {
 			item,
 			range: Range._createOn( item )
 		} as any;
@@ -693,7 +693,7 @@ export type DowncastReduceChangesEventData = {
 	changes: Iterable<DiffItem | DiffItemReinsert>;
 };
 
-type EventMap<TItem = Item> = {
+export type DowncastDispatcherEventMap<TItem = Item> = {
 	insert: {
 		item: TItem;
 		range: Range;
@@ -728,9 +728,9 @@ type EventMap<TItem = Item> = {
 	};
 };
 
-export type DowncastEvent<TName extends keyof EventMap<TItem>, TItem = Item> = {
+export type DowncastEvent<TName extends keyof DowncastDispatcherEventMap<TItem>, TItem = Item> = {
 	name: TName | `${ TName }:${ string }`;
-	args: [ data: EventMap<TItem>[ TName ], conversionApi: DowncastConversionApi ];
+	args: [ data: DowncastDispatcherEventMap<TItem>[ TName ], conversionApi: DowncastConversionApi ];
 };
 
 /**
