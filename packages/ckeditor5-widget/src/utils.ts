@@ -17,9 +17,9 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import {
-	type AddHighlightCallback,
+	type DowncastAddHighlightCallback,
 	type DowncastHighlightDescriptor,
-	type RemoveHighlightCallback,
+	type DowncastRemoveHighlightCallback,
 	type MapperViewToModelPositionEvent,
 	type DocumentSelection,
 	type DowncastWriter,
@@ -202,8 +202,8 @@ export function setHighlightHandling(
 		}
 	} );
 
-	const addHighlightCallback: AddHighlightCallback = ( element, descriptor, writer ) => stack.add( descriptor, writer );
-	const removeHighlightCallback: RemoveHighlightCallback = ( element, id, writer ) => stack.remove( id, writer );
+	const addHighlightCallback: DowncastAddHighlightCallback = ( element, descriptor, writer ) => stack.add( descriptor, writer );
+	const removeHighlightCallback: DowncastRemoveHighlightCallback = ( element, id, writer ) => stack.remove( id, writer );
 
 	writer.setCustomProperty( 'addHighlight', addHighlightCallback, element );
 	writer.setCustomProperty( 'removeHighlight', removeHighlightCallback, element );

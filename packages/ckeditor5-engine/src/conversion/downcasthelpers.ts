@@ -617,7 +617,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 	 */
 	public markerToElement( config: {
 		model: string;
-		view: ElementDefinition | MarkerElementCreatorFunction;
+		view: ElementDefinition | DowncastMarkerElementCreatorFunction;
 		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( downcastMarkerToElement( config ) );
@@ -811,7 +811,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 	 */
 	public markerToData( config: {
 		model: string;
-		view?: MarkerDataCreatorFunction;
+		view?: DowncastMarkerDataCreatorFunction;
 		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( downcastMarkerToData( config ) );
@@ -1291,7 +1291,7 @@ export function insertStructure( elementCreator: DowncastStructureCreatorFunctio
  * @param elementCreator A view UI element or a function returning the view element that will be inserted.
  * @returns Insert element event converter.
  */
-export function insertUIElement( elementCreator: MarkerElementCreatorFunction ) {
+export function insertUIElement( elementCreator: DowncastMarkerElementCreatorFunction ) {
 	return (
 		evt: EventInfo,
 		data: {
@@ -1387,7 +1387,7 @@ function removeUIElement() {
  *
  * @returns Add marker converter.
  */
-function insertMarkerData( viewCreator: MarkerDataCreatorFunction ) {
+function insertMarkerData( viewCreator: DowncastMarkerDataCreatorFunction ) {
 	return (
 		evt: EventInfo,
 		data: {
@@ -1509,7 +1509,7 @@ function insertMarkerAsElement(
  *
  * @returns Remove marker converter.
  */
-function removeMarkerData( viewCreator: MarkerDataCreatorFunction ) {
+function removeMarkerData( viewCreator: DowncastMarkerDataCreatorFunction ) {
 	return (
 		evt: EventInfo,
 		data: { markerName: string },
@@ -1826,7 +1826,7 @@ function highlightElement( highlightDescriptor: DowncastHighlightDescriptor | Do
 				conversionApi.consumable.consume( value.item, evt.name );
 			}
 
-			const addHighlightCallback = viewElement.getCustomProperty( 'addHighlight' ) as AddHighlightCallback;
+			const addHighlightCallback = viewElement.getCustomProperty( 'addHighlight' ) as DowncastAddHighlightCallback;
 
 			addHighlightCallback( viewElement, descriptor, conversionApi.writer );
 
@@ -1893,7 +1893,7 @@ function removeHighlight( highlightDescriptor: DowncastHighlightDescriptor | Dow
 				conversionApi.writer.unwrap( conversionApi.writer.createRangeOn( element ), viewHighlightElement );
 			} else {
 				// if element.is( 'containerElement' ).
-				const removeHighlightCallback = element.getCustomProperty( 'removeHighlight' ) as RemoveHighlightCallback;
+				const removeHighlightCallback = element.getCustomProperty( 'removeHighlight' ) as DowncastRemoveHighlightCallback;
 
 				removeHighlightCallback( element, descriptor.id!, conversionApi.writer );
 			}
@@ -2165,7 +2165,7 @@ function downcastAttributeToAttribute( config: {
  */
 function downcastMarkerToElement( config: {
 	model: string;
-	view: ElementDefinition | MarkerElementCreatorFunction;
+	view: ElementDefinition | DowncastMarkerElementCreatorFunction;
 	converterPriority?: PriorityString;
 } ) {
 	const view = normalizeToElementConfig( config.view, 'ui' );
@@ -2193,7 +2193,7 @@ function downcastMarkerToElement( config: {
  */
 function downcastMarkerToData( config: {
 	model: string;
-	view?: MarkerDataCreatorFunction;
+	view?: DowncastMarkerDataCreatorFunction;
 	converterPriority?: PriorityString;
 } ) {
 	config = cloneDeep( config );
@@ -2949,7 +2949,7 @@ export type DowncastAttributeDescriptor = {
 	value: string;
 };
 
-export type MarkerElementCreatorFunction = (
+export type DowncastMarkerElementCreatorFunction = (
 	data: {
 		markerRange: ModelRange;
 		markerName: string;
@@ -2966,19 +2966,19 @@ export type DowncastHighlightDescriptorCreatorFunction = (
 	conversionApi: DowncastConversionApi
 ) => DowncastHighlightDescriptor | null;
 
-export type AddHighlightCallback = (
+export type DowncastAddHighlightCallback = (
 	viewElement: ViewElement,
 	descriptor: DowncastHighlightDescriptor,
 	writer: DowncastWriter
 ) => void;
 
-export type RemoveHighlightCallback = (
+export type DowncastRemoveHighlightCallback = (
 	viewElement: ViewElement,
 	id: string,
 	writer: DowncastWriter
 ) => void;
 
-export type MarkerDataCreatorFunction = (
+export type DowncastMarkerDataCreatorFunction = (
 	markerName: string,
 	conversionApi: DowncastConversionApi
 ) => { name: string; group: string } | null;
