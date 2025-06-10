@@ -70,7 +70,7 @@ const domConverterStub: DomConverter = {
  * i.e. with view data filtering. Otherwise the simple stub is used.
  * @returns The stringified data.
  */
-export function getData(
+export function _getViewData(
 	view: View,
 	options: {
 		withoutSelection?: boolean;
@@ -102,21 +102,21 @@ export function getData(
 	};
 
 	return withoutSelection ?
-		getData._stringify( root, null, stringifyOptions ) :
-		getData._stringify( root, document.selection, stringifyOptions );
+		_getViewData._stringify( root, null, stringifyOptions ) :
+		_getViewData._stringify( root, document.selection, stringifyOptions );
 }
 
 // Set stringify as getData private method - needed for testing/spying.
-getData._stringify = stringify;
+_getViewData._stringify = _stringifyView;
 
 /**
  * Sets the content of a view {@link module:engine/view/document~Document document} provided as an HTML-like string.
  *
  * @param data An HTML-like string to write into the document.
- * @param options.rootName The root name where parsed data will be stored. If not provided,
+ * @param options.rootName The root name where _parseViewd data will be stored. If not provided,
  * the default `main` name will be used.
  */
-export function setData(
+export function _setViewData(
 	view: View,
 	data: string,
 	options: { rootName?: string } = {}
@@ -130,7 +130,7 @@ export function setData(
 	const root = document.getRoot( rootName )!;
 
 	view.change( writer => {
-		const result: any = setData._parse( data, { rootElement: root } );
+		const result: any = _setViewData.__parseView( data, { rootElement: root } );
 
 		if ( result.view && result.selection ) {
 			writer.setSelection( result.selection );
@@ -138,8 +138,8 @@ export function setData(
 	} );
 }
 
-// Set parse as setData private method - needed for testing/spying.
-setData._parse = parse;
+// Set _parseView as _setViewData private method - needed for testing/spying.
+_setViewData.__parseView = _parseView;
 
 /**
  * Converts view elements to HTML-like string representation.
@@ -288,7 +288,7 @@ setData._parse = parse;
  * i.e. with view data filtering. Otherwise the simple stub is used.
  * @returns An HTML-like string representing the view.
  */
-export function stringify(
+export function _stringifyView(
 	node: ViewNode | ViewDocumentFragment,
 	selectionOrPositionOrRange: DocumentSelection | Position | Range | null = null,
 	options: {
@@ -324,45 +324,45 @@ export function stringify(
  * A simple string will be converted to a {@link module:engine/view/text~Text text} node:
  *
  * ```ts
- * parse( 'foobar' ); // Returns an instance of text.
+ * _parseView( 'foobar' ); // Returns an instance of text.
  * ```
  *
- * {@link module:engine/view/element~Element Elements} will be parsed with attributes as children:
+ * {@link module:engine/view/element~Element Elements} will be _parseViewd with attributes as children:
  *
  * ```ts
- * parse( '<b name="baz">foobar</b>' ); // Returns an instance of element with the `baz` attribute and a text child node.
+ * _parseView( '<b name="baz">foobar</b>' ); // Returns an instance of element with the `baz` attribute and a text child node.
  * ```
  *
  * Multiple nodes provided on root level will be converted to a
  * {@link module:engine/view/documentfragment~DocumentFragment document fragment}:
  *
  * ```ts
- * parse( '<b>foo</b><i>bar</i>' ); // Returns a document fragment with two child elements.
+ * _parseView( '<b>foo</b><i>bar</i>' ); // Returns a document fragment with two child elements.
  * ```
  *
- * The method can parse multiple {@link module:engine/view/range~Range ranges} provided in string data and return a
+ * The method can _parseView multiple {@link module:engine/view/range~Range ranges} provided in string data and return a
  * {@link module:engine/view/documentselection~DocumentSelection selection} instance containing these ranges. Ranges placed inside
  * {@link module:engine/view/text~Text text} nodes should be marked using `{` and `}` brackets:
  *
  * ```ts
- * const { text, selection } = parse( 'f{ooba}r' );
+ * const { text, selection } = _parseView( 'f{ooba}r' );
  * ```
  *
  * Ranges placed outside text nodes should be marked using `[` and `]` brackets:
  *
  * ```ts
- * const { root, selection } = parse( '<p>[<b>foobar</b>]</p>' );
+ * const { root, selection } = _parseView( '<p>[<b>foobar</b>]</p>' );
  * ```
  *
  * ** Note: **
  * It is possible to unify selection markers to `[` and `]` for both (inside and outside text)
- * by setting `sameSelectionCharacters=true` option. It is mainly used when the view parse option is used by model utilities.
+ * by setting `sameSelectionCharacters=true` option. It is mainly used when the view _parseView option is used by model utilities.
  *
  * Sometimes there is a need for defining the order of ranges inside the created selection. This can be achieved by providing
  * the range order array as an additional parameter:
  *
  * ```ts
- * const { root, selection } = parse( '{fo}ob{ar}{ba}z', { order: [ 2, 3, 1 ] } );
+ * const { root, selection } = _parseView( '{fo}ob{ar}{ba}z', { order: [ 2, 3, 1 ] } );
  * ```
  *
  * In the example above, the first range (`{fo}`) will be added to the selection as the second one, the second range (`{ar}`) will be
@@ -374,20 +374,20 @@ export function stringify(
  * represented by the `start` position), use the `lastRangeBackward` flag:
  *
  * ```ts
- * const { root, selection } = parse( `{foo}bar{baz}`, { lastRangeBackward: true } );
+ * const { root, selection } = _parseView( `{foo}bar{baz}`, { lastRangeBackward: true } );
  * ```
  *
  * Some more examples and edge cases:
  *
  * ```ts
  * // Returns an empty document fragment.
- * parse( '' );
+ * _parseView( '' );
  *
  * // Returns an empty document fragment and a collapsed selection.
- * const { root, selection } = parse( '[]' );
+ * const { root, selection } = _parseView( '[]' );
  *
  * // Returns an element and a selection that is placed inside the document fragment containing that element.
- * const { root, selection } = parse( '[<a></a>]' );
+ * const { root, selection } = _parseView( '[<a></a>]' );
  * ```
  *
  * @param data An HTML-like string to be parsed.
@@ -406,7 +406,7 @@ export function stringify(
  * @returns Returns the parsed view node or an object with two fields: `view` and `selection` when selection ranges were included in the
  * data to parse.
  */
-export function parse(
+export function _parseView(
 	data: string,
 	options: {
 		order?: Array<number>;
@@ -449,7 +449,7 @@ export function parse(
 	}
 
 	// Parse ranges included in view text nodes.
-	const ranges = rangeParser.parse( view, options.order );
+	const ranges = rangeParser._parseView( view, options.order );
 
 	// If only one element is returned inside DocumentFragment - return that element.
 	if ( view.is( 'documentFragment' ) && view.childCount === 1 ) {
@@ -503,7 +503,7 @@ class RangeParser {
 	 * as the first.
 	 * @returns An array with ranges found.
 	 */
-	public parse( node: ViewNode | ViewDocumentFragment, order: Array<number> ): Array<Range> {
+	public _parseView( node: ViewNode | ViewDocumentFragment, order: Array<number> ): Array<Range> {
 		this._positions = [];
 
 		// Remove all range brackets from view nodes and save their positions.

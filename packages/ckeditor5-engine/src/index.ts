@@ -282,17 +282,17 @@ export {
 
 // Development / testing utils.
 export {
-	getData as _getModelData,
-	setData as _setModelData,
-	parse as _parseModel,
-	stringify as _stringifyModel
+	_getModelData,
+	_setModelData,
+	_parseModel,
+	_stringifyModel
 } from './dev-utils/model.js';
 
 export {
-	getData as _getViewData,
-	setData as _setViewData,
-	parse as _parseView,
-	stringify as _stringifyView
+	_getViewData,
+	_setViewData,
+	_parseView,
+	_stringifyView
 } from './dev-utils/view.js';
 
 export {

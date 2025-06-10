@@ -23,7 +23,7 @@ import { View } from '../view/view.js';
 import { ViewContainerElement } from '../view/containerelement.js';
 import { ViewRootEditableElement } from '../view/rooteditableelement.js';
 
-import { parse as viewParse, stringify as viewStringify } from '../../src/dev-utils/view.js';
+import { _parseView, _stringifyView } from '../../src/dev-utils/view.js';
 
 import { Mapper } from '../conversion/mapper.js';
 import {
@@ -94,7 +94,7 @@ import { isPlainObject } from 'es-toolkit/compat';
  * @param options.convertMarkers Whether to include markers in the returned string.
  * @returns The stringified data.
  */
-export function getData(
+export function _getModelData(
 	model: Model,
 	options: {
 		withoutSelection?: boolean;
@@ -109,7 +109,7 @@ export function getData(
 	const rootName = options.rootName || 'main';
 	const root = model.document.getRoot( rootName )!;
 
-	return getData._stringify(
+	return _getModelData._stringify(
 		root,
 		options.withoutSelection ? null : model.document.selection,
 		options.convertMarkers ? model.markers : null
@@ -117,7 +117,7 @@ export function getData(
 }
 
 // Set stringify as getData private method - needed for testing/spying.
-getData._stringify = stringify;
+_getModelData._stringify = _stringifyModel;
 
 /**
  * Sets the content of a model {@link module:engine/model/document~Document document} provided as an HTML-like string.
@@ -145,7 +145,7 @@ getData._stringify = stringify;
  * @param options.lastRangeBackward If set to `true`, the last range will be added as backward.
  * @param options.batchType Batch type used for inserting elements. See {@link module:engine/model/batch~Batch#constructor}.
  */
-export function setData(
+export function _setModelData(
 	model: Model,
 	data: string,
 	options: {
@@ -165,7 +165,7 @@ export function setData(
 	const modelRoot = model.document.getRoot( options.rootName || 'main' )!;
 
 	// Parse data string to model.
-	const parsedResult = setData._parse( data, model.schema, {
+	const parsedResult = _setModelData._parse( data, model.schema, {
 		lastRangeBackward: options.lastRangeBackward,
 		selectionAttributes: options.selectionAttributes,
 		context: [ modelRoot.name ],
@@ -216,7 +216,7 @@ export function setData(
 }
 
 // Set parse as setData private method - needed for testing/spying.
-setData._parse = parse;
+_setModelData._parse = _parseModel;
 
 /**
  * Converts model nodes to HTML-like string representation.
@@ -234,7 +234,7 @@ setData._parse = parse;
  * @param markers Markers to include.
  * @returns An HTML-like string representing the model.
  */
-export function stringify(
+export function _stringifyModel(
 	node: ModelNode | ModelDocumentFragment,
 	selectionOrPositionOrRange: ModelSelection | DocumentSelection | ModelPosition | ModelRange | null = null,
 	markers: MarkerCollection | null = null
@@ -336,7 +336,7 @@ export function stringify(
 	}
 
 	// Parse view to data string.
-	let data = viewStringify( viewRoot, viewDocument.selection, { sameSelectionCharacters: true } );
+	let data = _stringifyView( viewRoot, viewDocument.selection, { sameSelectionCharacters: true } );
 
 	// Removing unnecessary <div> and </div> added because `viewRoot` was also stringified alongside input data.
 	data = data.substr( 5, data.length - 11 );
@@ -365,7 +365,7 @@ export function stringify(
  * @returns Returns the parsed model node or an object with two fields: `model` and `selection`,
  * when selection ranges were included in the data to parse.
  */
-export function parse(
+export function _parseModel(
 	data: string,
 	schema: Schema,
 	options: {
@@ -384,7 +384,7 @@ export function parse(
 	data = data.replace( new RegExp( '\\$text', 'g' ), 'model-text-with-attributes' );
 
 	// Parse data to view using view utils.
-	const parsedResult = viewParse( data, {
+	const parsedResult = _parseView( data, {
 		sameSelectionCharacters: true,
 		lastRangeBackward: !!options.lastRangeBackward,
 		inlineObjectElements: options.inlineObjectElements
