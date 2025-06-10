@@ -240,7 +240,16 @@ function getSingleListItemConsistentFormat( model: Model, listItem: Element, att
 		};
 	}
 
-	for ( const child of listItem.getChildren() ) {
+	if ( model.schema.isLimit( listItem ) ) {
+		return {
+			isConsistent,
+			value
+		};
+	}
+
+	const range = model.createRangeIn( listItem );
+
+	for ( const child of range.getItems() ) {
 		if ( model.schema.checkAttribute( child, attributeKey ) ) {
 			const formatAttribute = child.getAttribute( attributeKey ) as string;
 

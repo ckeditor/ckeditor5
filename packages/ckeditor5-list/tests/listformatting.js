@@ -35,6 +35,13 @@ describe( 'ListFormatting', () => {
 
 		editor.conversion.elementToElement( { model: 'limitElement', view: 'limitElement' } );
 
+		model.schema.register( 'innerBlock', {
+			inheritAllFrom: '$block',
+			allowIn: 'paragraph'
+		} );
+
+		editor.conversion.elementToElement( { model: 'innerBlock', view: 'innerBlock' } );
+
 		stubUid();
 	} );
 
@@ -356,6 +363,24 @@ describe( 'ListFormatting', () => {
 				);
 
 				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.equal( 'foo' );
+			} );
+
+			it( 'should check all nested items and add attribute when checking if the list item is formatted consistently', () => {
+				setModelData( model,
+					'<paragraph listIndent="0" listItemId="a">' +
+						'<innerBlock listIndent="0" listItemId="b">' +
+							'<$text inlineFormat="foo">foo</$text>' +
+						'</innerBlock>' +
+					'</paragraph>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemFormat="foo" listItemId="a">' +
+						'<innerBlock listIndent="0" listItemId="b">' +
+							'<$text inlineFormat="foo">foo</$text>' +
+						'</innerBlock>' +
+					'</paragraph>'
+				);
 			} );
 		} );
 
