@@ -422,7 +422,7 @@ Lists allow the creation and management of various list types, including to-do l
 
 	<ck:card>
 		<ck:card-title level='4' heading-id='multi-level-lists'>
-			Multi-level lists
+			Multi-level lists <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
 			Multi-level lists with the legal style numbering feature allows for easy creation and modification of numbered lists with counters (1, 1.1, 1.1.1). These are crucial for clear referencing and hierarchical organization in complex documents. The feature offers full compatibility with Microsoft Word.
@@ -499,7 +499,7 @@ Lists allow the creation and management of various list types, including to-do l
 	</ck:card>
 </ck:columns>
 
-### Mermaid
+### Mermaid <ck:badge variant='experiment' />
 
 You can create flowcharts and diagrams in CKEditor 5 thanks to the experimental integration with the Mermaid library. Mermaid uses a Markdown-inspired syntax to create and dynamically modify flowcharts, Gantt diagrams, pie or quadrant charts, graphs, mindmaps, and more.
 
@@ -790,13 +790,13 @@ Backtrack or repeat actions for editing purposes.
 
 Collaborate with others - real-time or asynchronously. Comment, co-author, and mention team members in your documents. With collaboration features review process should be a breeze.
 
-### Asynchronous collaboration
+### Asynchronous collaboration <ck:badge variant='premium' />
 
 Asynchronous Collaboration in CKEditor 5 is designed for teams using a turn-based approach to collaboratively write, review, and discuss content within the application. It integrates Track Changes, Comments, and Revision History features to facilitate collaboration.
 
 <ck:card>
 	<ck:card-title level='4' heading-id='local-data-storage'>
-		Local data storage
+		Local data storage <ck:badge variant='premium' />
 	</ck:card-title>
 	<ck:card-description>
 		In asynchronous collaboration, data is maintained on the client's servers.
@@ -807,14 +807,14 @@ Asynchronous Collaboration in CKEditor 5 is designed for teams using a turn-base
 	</ck:card-description>
 </ck:card>
 
-### Comments
+### Comments <ck:badge variant='premium' />
 
 Users can add side notes to marked fragments of the document, including text and block elements such as images. It also allows the users to discuss in threads and remove comments when they finish the discussion.
 
 <ck:columns>
 	<ck:card>
 		<ck:card-title level='4' heading-id='comments-archive'>
-			Comments archive
+			Comments archive <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
 			Comments threads can be either deleted or resolved. The latter provides a way to archive comments that are no longer relevant, reducing clutter and making it easier to focus on the most important feedback. Users can access the comments archive from the toolbar and use it to view and restore archived comments if necessary. It helps to simplify the feedback management process.
@@ -827,7 +827,7 @@ Users can add side notes to marked fragments of the document, including text and
 
 	<ck:card>
 		<ck:card-title level='4' heading-id='comments-outside-editor'>
-			Comments outside editor
+			Comments outside editor <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
 			The comments feature API, together with Context, lets you create deeper integrations with your application. One such integration is enabling comments on non-editor form fields.
@@ -840,7 +840,7 @@ Users can add side notes to marked fragments of the document, including text and
 
 	<ck:card>
 		<ck:card-title level='4' heading-id='sidebar-modes'>
-			Sidebar modes
+			Sidebar modes <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
 			There are three built-in UIs to display comment threads and suggestion annotations: the wide sidebar, the narrow sidebar, and inline balloons. You can also display them together in more advanced scenarios where various annotation sources (comments, suggestions) are connected to different UIs or even create your UI for annotations.
@@ -860,14 +860,14 @@ The mention feature supports smart autocompletion triggered by user input. Typin
 	Feature page
 </ck:button-link>
 
-### Real-time collaboration
+### Real-time collaboration <ck:badge variant='premium' />
 
 Real-Time Collaboration in CKEditor 5 is designed for users who are writing, reviewing, and commenting on content simultaneously. It also automatically solves all conflicts if users make changes at the same time.
 
 <ck:columns>
 	<ck:card>
 		<ck:card-title level='4' heading-id='co-authoring'>
-			Co-authoring
+			Co-authoring <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
 			Multiple user real-time editing and content creation feature.
@@ -880,7 +880,7 @@ Real-Time Collaboration in CKEditor 5 is designed for users who are writing, rev
 
 	<ck:card>
 		<ck:card-title level='4' heading-id='on-premises'>
-			On-premises
+			On-premises <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
 			On-premises real-time collaboration version to deploy to client's own infrastructure, includes a private cloud.
@@ -893,7 +893,7 @@ Real-Time Collaboration in CKEditor 5 is designed for users who are writing, rev
 
 	<ck:card>
 		<ck:card-title level='4' heading-id='saas'>
-			SaaS
+			SaaS <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
 			Real-time collaboration provided as a service by CKSource.
@@ -905,7 +905,7 @@ Real-Time Collaboration in CKEditor 5 is designed for users who are writing, rev
 	</ck:card>
 </ck:columns>
 
-### Revision history
+### Revision history <ck:badge variant='premium' />
 
 The revision history feature is a document versioning tool. It allows CKEditor 5 users to create and view the chronological revision history of their content. These versions are listed in the side panel. The preview mode allows for easy viewing of content development between revisions. You can rename, compare, and restore older revisions on the go.
 
@@ -913,7 +913,7 @@ The revision history feature is a document versioning tool. It allows CKEditor 5
 	Feature page
 </ck:button-link>
 
-### Track changes
+### Track changes <ck:badge variant='premium' />
 
 The track changes feature brings automatic suggestion marking for the document as you change it. When editing the document, the user can switch to the track changes mode. All their changes will then create suggestions that they can accept or discard.
 
@@ -921,7 +921,7 @@ The track changes feature brings automatic suggestion marking for the document a
 	Feature page
 </ck:button-link>
 
-### Users list and permissions
+### Users list and permissions <ck:badge variant='premium' />
 
 The Users plugin and related plugins let you manage user data and permissions. This is essential when many users are working on the same document.
 
@@ -933,14 +933,14 @@ The Users plugin and related plugins let you manage user data and permissions. T
 
 Collaborate also regarding different formats. With content conversions, you can integrate content across commonly used business formats. You can also enrich your content with media embeds.
 
-### Content generation
+### Content generation <ck:badge variant='premium' />
 
 CKEditor 5 may be your universal starting point for generating content in several recognizable formats.
 
 <ck:columns>
 	<ck:card>
 		<ck:card-title level='4' heading-id='export-to-pdf'>
-			Export to PDF
+			Export to PDF <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
 			Create a PDF from in-editor content seamlessly. Customize headers and footers, include page breaks, embed images, and choose from various fonts.
@@ -953,7 +953,7 @@ CKEditor 5 may be your universal starting point for generating content in severa
 
 	<ck:card>
 		<ck:card-title level='4' heading-id='export-to-word'>
-			Export to Word
+			Export to Word <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
 			Instantly convert content from the editor to a Word document with a single click, maintaining its appearance and formatting. The final document includes suggestions, comments, page breaks, and embedded images.
@@ -966,7 +966,7 @@ CKEditor 5 may be your universal starting point for generating content in severa
 
 	<ck:card>
 		<ck:card-title level='4' heading-id='import-from-word'>
-			Import from Word
+			Import from Word <ck:badge variant='premium' />
 		</ck:card-title>
 		<ck:card-description>
 			Effortlessly transform Word documents into clean HTML within CKEditor 5 while retaining the original styling, as well as comments and change tracking annotations.
@@ -978,7 +978,7 @@ CKEditor 5 may be your universal starting point for generating content in severa
 	</ck:card>
 </ck:columns>
 
-### Export with inline styles
+### Export with inline styles <ck:badge variant='premium' />
 
 The ExportInlineStyles plugin applies the styles defined by CSS style sheets directly on HTML elements.
 
@@ -1002,7 +1002,7 @@ Use the insert media button in the toolbar to embed media. Pasting a media URL d
 	Feature page
 </ck:button-link>
 
-### Paste Markdown
+### Paste Markdown <ck:badge variant='experiment' />
 
 The paste Markdown feature lets users paste Markdown-formatted content straight into the editor. It will be then converted into rich text on the fly.
 
@@ -1022,7 +1022,7 @@ Turn your content into parsable XML files for automation and cross-platform inte
 
 Format, organize, and navigate your documents easily with page management features. Create a table of contents, insert page breaks, and manage pagination.
 
-### Document outline
+### Document outline <ck:badge variant='premium' />
 
 The Document Outline feature automatically detects and lists document headings in a sidebar, enabling faster navigation through large documents. Headings are organized in a structured list, so users can click and jump to different sections quickly. This feature also allows for customization of the outline's location within the user interface, catering to different user preferences for workspace layout.
 
@@ -1075,7 +1075,7 @@ CKEditor 5 Page Utilities enables users to dictate the structuring and print for
 	</ck:card>
 </ck:columns>
 
-### Pagination
+### Pagination <ck:badge variant='premium' />
 
 The Pagination feature visually indicates where pages begin and end within a document. This feature is designed to assist users in preparing their documents for printing or export to various document formats, ensuring that the transition between pages is seamless and accurately reflected in the final output. Users may adjust content distribution across pages as they like, ensuring well-organized documents with presented content, whether in digital form or print. By providing a clear view of how text and elements will appear page-by-page, Pagination aids in the creation of professional and polished documents.
 
@@ -1083,7 +1083,7 @@ The Pagination feature visually indicates where pages begin and end within a doc
 	Feature page
 </ck:button-link>
 
-### Table of contents
+### Table of contents <ck:badge variant='premium' />
 
 The Table of Contents feature is a dynamic tool for organizing documents. It allows for the insertion of a linked table of contents that automatically updates in real time as the document's content changes. This means changes made to headings or structured sections within the document are reflected immediately in the table of contents, accurately representing the document structure.
 
@@ -1095,7 +1095,7 @@ The Table of Contents feature is a dynamic tool for organizing documents. It all
 
 Speed up the content creation process with dedicated productivity utilities. Autoformat your content as you write (or paste from other editors) or even delegate some tasks to an AI Assistant.
 
-### AI Assistant
+### AI Assistant <ck:badge variant='premium' />
 
 The AI Assistant feature enhances editing efficiency and creativity with artificial intelligence capabilities. It allows users to generate new content and process data through custom queries or utilize a set of predefined commands that are also customizable. The feature supports integration with multiple AI API providers: OpenAI, Azure OpenAI, and Amazon Bedrock. You can also integrate it with custom models.
 
@@ -1161,7 +1161,7 @@ Automate your workflow with CKEditor 5 automation tools, regardless of whether y
 	</ck:card>
 </ck:columns>
 
-### Case change
+### Case change <ck:badge variant='premium' />
 
 The Case Change feature simplifies adjusting text cases within a document. With just a single click, users can shift text between UPPERCASE, lowercase, and Title Case options. The case transformation can be applied to various text blocks (paragraph, heading, or list item) by placing the cursor within the block. Alternatively, users can select a specific fragment of text they wish to modify. This feature enhances the editing workflow by removing the need for manual case adjustments.
 
@@ -1185,7 +1185,7 @@ The Find and Replace feature in CKEditor 5's Productivity tools allows you to se
 	Feature page
 </ck:button-link>
 
-### Format painter
+### Format painter <ck:badge variant='premium' />
 
 The Format Painter feature lets users clone formatting from one section and apply it to others within a document. This tool speeds up maintaining style consistency across the document. Once initiated, Format Painter can continue to apply the copied formatting to multiple sections consecutively. This "continuous painting" ensures a uniform style is achieved quickly without the need to repeatedly select the formatting options for each new section.
 
@@ -1209,7 +1209,7 @@ CKEditor 5 supports various keyboard shortcuts that boost productivity and provi
 	Feature page
 </ck:button-link>
 
-### MathType
+### MathType <ck:badge variant='premium' />
 
 Math Equations allows you to add properly formatted mathematical notation and chemical formulas to your documents. This feature supports the inclusion of math equations, which can be handwritten on a tablet and automatically converted into well-formed digital text. It also offers simple numbering of equations and the ability to customize with various fonts and colors, enhancing readability and presentation in your content.
 
@@ -1217,7 +1217,7 @@ Math Equations allows you to add properly formatted mathematical notation and ch
 	Feature page
 </ck:button-link>
 
-### Merge fields
+### Merge fields <ck:badge variant='premium' />
 
 Merge Fields allows the inclusion of placeholders in your content, facilitating the creation of document templates, especially useful for email templates and document automation. These placeholders can later be replaced with dynamic values by the customer's application, enabling tasks like mass email distribution or generation of personalized documents.
 
@@ -1241,7 +1241,7 @@ Paste from Office features let you paste content from Microsoft Word and Microso
 	Feature page
 </ck:button-link>
 
-### Enhanced paste from Office
+### Enhanced paste from Office <ck:badge variant='premium' />
 
 The Enhanced Paste from Word/Excel feature accurately retains formatting and structure when content is pasted from Microsoft Word documents into the editor. This includes preserving text styles, lists, tables, and layouts. The feature facilitates the transfer of documents from Word to CKEditor 5 without compromising on formatting.
 
@@ -1257,7 +1257,7 @@ The Paste as Plain Text feature strips formatting from the pasted text. This fea
 	Feature page
 </ck:button-link>
 
-### Slash commands
+### Slash commands <ck:badge variant='premium' />
 
 The Slash Commands feature lets users insert block elements and apply styles using just the keyboard. By pressing the / key, a panel with suggested commands appears, enabling quick and mouse-free actions. Users can filter through these commands by typing additional phrases after the /, making it easier to find specific commands. Additionally, the option to customize personal commands is available, allowing for a tailored editing experience.
 
@@ -1273,7 +1273,7 @@ The Special Characters feature lets you insert a variety of unique symbols and c
 	Feature page
 </ck:button-link>
 
-### Templates
+### Templates <ck:badge variant='premium' />
 
 The Templates feature enables the insertion of predefined content structures into documents, ranging from small content pieces, like formatted tables, to complete document frameworks, like formal letter templates. Templates accelerate the document creation process while ensuring adherence to the company's content and document policies.
 
@@ -1383,7 +1383,7 @@ CKEditor 5 provides a wide variety of tools and functions for editing almost any
 
 <ck:card>
 	<ck:card-title level='4' heading-id='email-configuration-helper'>
-		Email configuration helper
+		Email configuration helper <ck:badge variant='premium' />
 	</ck:card-title>
 	<ck:card-description>
 		While configuring an email editor looks like a demanding task, the email configuration helper plugin is the best way to start and make this experience more manageable.
@@ -1590,7 +1590,7 @@ The Word and Character Count feature provides a real-time tracking tool for moni
 	Feature page
 </ck:button-link>
 
-### WProofreader
+### WProofreader <ck:badge variant='premium' />
 
 The Spelling and Grammar Checker is a proofreading tool that supports over 80 languages and dialects. It checks spelling and grammar in real time and through a separate dialog. Features include spelling autocorrect, text autocomplete, and suggestions that appear on hover. Users can create custom dictionaries for specific terms related to their brand or company. The tool is compliant with WCAG 2.1 and Section 508 accessibility standards. It also detects sentence-level errors and offers context-based correction suggestions.
 
@@ -1662,7 +1662,7 @@ Convert inserted images into Base64-encoded strings in the editor output. Images
 	Feature page
 </ck:button-link>
 
-### CKBox
+### CKBox <ck:badge variant='premium' />
 
 Securely upload, store, edit, and utilize your images and files in CKEditor 5. Simplify media discovery in your uploads with the media browser alongside an intuitive Image Editor for image adjustments. Designed to facilitate organization, CKBox enables integrations, maintains permissions, and uses Workspaces to categorize files according to the user, document, or customer. It guarantees fast loading and optimal display of your images across devices through an efficient CDN. Deployable on-premises or as cloud SaaS.
 
@@ -1670,7 +1670,7 @@ Securely upload, store, edit, and utilize your images and files in CKEditor 5. S
 	Feature page
 </ck:button-link>
 
-### CKFinder
+### CKFinder <ck:badge variant='premium' />
 
 The CKFinder feature lets you insert images and links to files into your content. CKFinder is a powerful file manager with various image editing and image upload options.
 
@@ -1694,7 +1694,7 @@ Upload images to your server using the XMLHttpRequest API with a minimal editor 
 	Feature page
 </ck:button-link>
 
-### Uploadcare
+### Uploadcare <ck:badge variant='premium' />
 
 Upload, store, transform, optimize, and deliver images, videos, and documents with this cloud-based file handler. Upload media from local storage, web cameras, cloud services, and social networks with automated media optimization through a CDN for responsive image delivery. Popular features include adaptive image quality, automated image format conversion, progressive JPEG, and options for preview, resize, stretch, crop, content-aware crop, and setting fill color.
 
