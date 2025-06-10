@@ -15,7 +15,7 @@ import type {
 	DowncastDispatcher,
 	DowncastWriter,
 	Element,
-	ElementCreatorFunction,
+	DowncastElementCreatorFunction,
 	UpcastConversionApi,
 	UpcastDispatcher,
 	UpcastElementEvent,
@@ -59,7 +59,7 @@ export function viewToModelObjectConverter( { model: modelName }: DataSchemaDefi
 export function toObjectWidgetConverter(
 	editor: Editor,
 	{ view: viewName, isInline }: DataSchemaInlineElementDefinition
-): ElementCreatorFunction {
+): DowncastElementCreatorFunction {
 	const t = editor.t;
 
 	return ( modelElement: Element, { writer }: DowncastConversionApi ) => {
@@ -179,7 +179,7 @@ export function viewToAttributeInlineConverter(
 export function emptyInlineModelElementToViewConverter(
 	{ model: attributeKey, view: viewName }: DataSchemaInlineElementDefinition,
 	asWidget?: boolean
-): ElementCreatorFunction {
+): DowncastElementCreatorFunction {
 	return ( item, { writer, consumable } ) => {
 		if ( !item.hasAttribute( attributeKey ) ) {
 			return null;

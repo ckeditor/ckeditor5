@@ -12,7 +12,7 @@ import {
 	type DowncastWriter,
 	type EditingController,
 	type Element,
-	type ElementCreatorFunction,
+	type DowncastElementCreatorFunction,
 	type Mapper,
 	type Model,
 	type ModelConsumable,
@@ -415,7 +415,7 @@ export function listItemDowncastRemoveConverter( schema: Schema ): GetCallback<D
 export function bogusParagraphCreator(
 	attributeNames: Array<string>,
 	{ dataPipeline }: { dataPipeline?: boolean } = {}
-): ElementCreatorFunction {
+): DowncastElementCreatorFunction {
 	return ( modelElement, { writer } ) => {
 		// Convert only if a bogus paragraph should be used.
 		if ( !shouldUseBogusParagraph( modelElement, attributeNames ) ) {

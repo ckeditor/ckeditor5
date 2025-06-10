@@ -8,7 +8,7 @@
  */
 
 import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget.js';
-import type { Node, ViewElement, Element, DowncastWriter, ElementCreatorFunction } from 'ckeditor5/src/engine.js';
+import type { Node, ViewElement, Element, DowncastWriter, DowncastElementCreatorFunction } from 'ckeditor5/src/engine.js';
 
 import { TableWalker } from './../tablewalker.js';
 import { type TableUtils } from '../tableutils.js';
@@ -19,7 +19,7 @@ import type { AdditionalSlot } from '../tableediting.js';
  *
  * @internal
  */
-export function downcastTable( tableUtils: TableUtils, options: DowncastTableOptions ): ElementCreatorFunction {
+export function downcastTable( tableUtils: TableUtils, options: DowncastTableOptions ): DowncastElementCreatorFunction {
 	return ( table, { writer } ) => {
 		const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 		const tableElement = writer.createContainerElement( 'table', null, [] );
@@ -79,7 +79,7 @@ export function downcastTable( tableUtils: TableUtils, options: DowncastTableOpt
  * @internal
  * @returns Element creator.
  */
-export function downcastRow(): ElementCreatorFunction {
+export function downcastRow(): DowncastElementCreatorFunction {
 	return ( tableRow, { writer } ) => {
 		return tableRow.isEmpty ?
 			writer.createEmptyElement( 'tr' ) :
@@ -97,7 +97,7 @@ export function downcastRow(): ElementCreatorFunction {
  * @param options.asWidget If set to `true`, the downcast conversion will produce a widget.
  * @returns Element creator.
  */
-export function downcastCell( options: { asWidget?: boolean } = {} ): ElementCreatorFunction {
+export function downcastCell( options: { asWidget?: boolean } = {} ): DowncastElementCreatorFunction {
 	return ( tableCell, { writer } ) => {
 		const tableRow = tableCell.parent as Element;
 		const table = tableRow.parent as Element;
@@ -139,7 +139,7 @@ export function downcastCell( options: { asWidget?: boolean } = {} ): ElementCre
  * @param options.asWidget If set to `true`, the downcast conversion will produce a widget.
  * @returns Element creator.
  */
-export function convertParagraphInTableCell( options: { asWidget?: boolean } = {} ): ElementCreatorFunction {
+export function convertParagraphInTableCell( options: { asWidget?: boolean } = {} ): DowncastElementCreatorFunction {
 	return ( modelElement, { writer } ) => {
 		if ( !modelElement.parent!.is( 'element', 'tableCell' ) ) {
 			return null;
