@@ -91,6 +91,8 @@ export type { Consumables, ViewConsumable } from './conversion/viewconsumable.js
 
 // DataProcessor.
 export type { DataProcessor } from './dataprocessor/dataprocessor.js';
+export type { DataProcessorHtmlWriter } from './dataprocessor/htmlwriter.js';
+
 export { HtmlDataProcessor } from './dataprocessor/htmldataprocessor.js';
 export { XmlDataProcessor } from './dataprocessor/xmldataprocessor.js';
 

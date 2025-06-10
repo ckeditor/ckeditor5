@@ -11,7 +11,7 @@ import { BasicHtmlWriter } from './basichtmlwriter.js';
 import { DomConverter } from '../view/domconverter.js';
 
 import { type DataProcessor } from './dataprocessor.js';
-import { type HtmlWriter } from './htmlwriter.js';
+import { type DataProcessorHtmlWriter } from './htmlwriter.js';
 import { type ViewDocument } from '../view/document.js';
 import { type ViewDocumentFragment } from '../view/documentfragment.js';
 import type { MatcherPattern } from '../view/matcher.js';
@@ -34,7 +34,7 @@ export class HtmlDataProcessor implements DataProcessor {
 	/**
 	 * A basic HTML writer instance used to convert DOM elements to an HTML string.
 	 */
-	public htmlWriter: HtmlWriter;
+	public htmlWriter: DataProcessorHtmlWriter;
 
 	public skipComments: boolean = true;
 
