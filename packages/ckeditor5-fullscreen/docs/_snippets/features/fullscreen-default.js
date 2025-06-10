@@ -11,9 +11,9 @@ import {
 } from '@snippets/index.js';
 
 import { handleDocIdInUrl } from './_utils/document-id-in-url.js';
-import buildUserTokenUrl from './_utils/buildusertokenurl.js';
-import generateComments from './_utils/generatecomments.js';
-import generateSuggestions from './_utils/generatesuggestions.js';
+import { buildUserTokenUrl } from './_utils/buildusertokenurl.js';
+import { generateComments } from './_utils/generatecomments.js';
+import { generateSuggestions } from './_utils/generatesuggestions.js';
 import { randomUserFromAPI } from './_utils/randomuser.js';
 
 import { FullscreenEditor } from './fullscreen-build.js';

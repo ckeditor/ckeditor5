@@ -5,10 +5,10 @@
 
 import { IconAlignLeft, IconAlignRight } from 'ckeditor5/src/icons.js';
 
-import AlignmentEditing from '../src/alignmentediting.js';
-import AlignmentUI from '../src/alignmentui.js';
+import { AlignmentEditing } from '../src/alignmentediting.js';
+import { AlignmentUI } from '../src/alignmentui.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 describe( 'Alignment UI', () => {
 	let editor, command, element, button;

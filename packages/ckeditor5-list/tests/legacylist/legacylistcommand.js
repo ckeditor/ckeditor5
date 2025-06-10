@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Editor from '@ckeditor/ckeditor5-core/src/editor/editor.js';
-import Model from '@ckeditor/ckeditor5-engine/src/model/model.js';
-import LegacyListCommand from '../../src/legacylist/legacylistcommand.js';
+import { Editor } from '@ckeditor/ckeditor5-core/src/editor/editor.js';
+import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
+import { LegacyListCommand } from '../../src/legacylist/legacylistcommand.js';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'LegacyListCommand', () => {

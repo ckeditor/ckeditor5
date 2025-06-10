@@ -12,10 +12,10 @@ import { convertColor, convertToHex, registerCustomElement, type ColorPickerView
 import type { HexColor } from '@ckeditor/ckeditor5-core';
 import { type Locale, global, env } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
-import View from '../view.js';
-import type InputTextView from '../inputtext/inputtextview.js';
-import type ViewCollection from '../viewcollection.js';
-import LabeledFieldView from '../labeledfield/labeledfieldview.js';
+import { View } from '../view.js';
+import { type InputTextView } from '../inputtext/inputtextview.js';
+import { type ViewCollection } from '../viewcollection.js';
+import { LabeledFieldView } from '../labeledfield/labeledfieldview.js';
 import { createLabeledInputText } from '../labeledfield/utils.js';
 
 // Custom export due to https://github.com/ckeditor/ckeditor5/issues/15698.
@@ -33,7 +33,7 @@ const waitingTime = 150;
 /**
  * A class which represents a color picker with an input field for defining custom colors.
  */
-export default class ColorPickerView extends View {
+export class ColorPickerView extends View {
 	/**
 	 * Element with saturation and hue sliders.
 	 */

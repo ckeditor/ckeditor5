@@ -11,24 +11,24 @@
  * Collection of methods for manipulating the {@link module:engine/view/view view} for testing purposes.
  */
 
-import View from '../view/view.js';
-import ViewDocument from '../view/document.js';
-import ViewDocumentFragment from '../view/documentfragment.js';
-import XmlDataProcessor from '../dataprocessor/xmldataprocessor.js';
-import ViewElement from '../view/element.js';
-import DocumentSelection from '../view/documentselection.js';
-import Range from '../view/range.js';
-import Position from '../view/position.js';
-import AttributeElement from '../view/attributeelement.js';
-import ContainerElement from '../view/containerelement.js';
-import EmptyElement from '../view/emptyelement.js';
-import UIElement from '../view/uielement.js';
-import RawElement from '../view/rawelement.js';
+import { View } from '../view/view.js';
+import { ViewDocument } from '../view/document.js';
+import { ViewDocumentFragment } from '../view/documentfragment.js';
+import { XmlDataProcessor } from '../dataprocessor/xmldataprocessor.js';
+import { ViewElement } from '../view/element.js';
+import { DocumentSelection } from '../view/documentselection.js';
+import { Range } from '../view/range.js';
+import { Position } from '../view/position.js';
+import { AttributeElement } from '../view/attributeelement.js';
+import { ContainerElement } from '../view/containerelement.js';
+import { EmptyElement } from '../view/emptyelement.js';
+import { UIElement } from '../view/uielement.js';
+import { RawElement } from '../view/rawelement.js';
 import { StylesProcessor } from '../view/stylesmap.js';
 
-import type ViewNode from '../view/node.js';
-import type ViewText from '../view/text.js';
-import type DomConverter from '../view/domconverter.js';
+import { type ViewNode } from '../view/node.js';
+import { type ViewText } from '../view/text.js';
+import { type DomConverter } from '../view/domconverter.js';
 
 const ELEMENT_RANGE_START_TOKEN = '[';
 const ELEMENT_RANGE_END_TOKEN = ']';
@@ -80,6 +80,7 @@ export function getData(
 		renderUIElements?: boolean;
 		renderRawElements?: boolean;
 		domConverter?: DomConverter;
+		skipListItemIds?: boolean;
 	} = {}
 ): string {
 	if ( !( view instanceof View ) ) {
@@ -96,7 +97,8 @@ export function getData(
 		renderUIElements: options.renderUIElements,
 		renderRawElements: options.renderRawElements,
 		ignoreRoot: true,
-		domConverter: options.domConverter
+		domConverter: options.domConverter,
+		skipListItemIds: options.skipListItemIds
 	};
 
 	return withoutSelection ?
@@ -298,6 +300,7 @@ export function stringify(
 		renderUIElements?: boolean;
 		renderRawElements?: boolean;
 		domConverter?: DomConverter;
+		skipListItemIds?: boolean;
 	} = {}
 ): string {
 	let selection;
@@ -699,6 +702,7 @@ class ViewStringify {
 	public renderUIElements: boolean;
 	public renderRawElements: boolean;
 	public domConverter: DomConverter;
+	public skipListItemIds: boolean;
 
 	/**
 	 * Creates a view stringify instance.
@@ -719,6 +723,8 @@ class ViewStringify {
 	 * instance, it lets the conversion go through exactly the same flow the editing view is going through,
 	 * i.e. with view data filtering. Otherwise the simple stub is used.
 	 * {@link module:engine/view/rawelement~RawElement} will be printed.
+	 * @param options.skipListItemIds When set to `true`, `<li>` elements will not have `listItemId` attribute. By default it's hidden
+	 * because it's randomly generated and hard to verify properly, while bringing little value.
 	 */
 	constructor(
 		root: ViewNode | ViewDocumentFragment,
@@ -732,6 +738,7 @@ class ViewStringify {
 			renderUIElements?: boolean;
 			renderRawElements?: boolean;
 			domConverter?: DomConverter;
+			skipListItemIds?: boolean;
 		}
 	) {
 		this.root = root;
@@ -750,6 +757,7 @@ class ViewStringify {
 		this.renderUIElements = !!options.renderUIElements;
 		this.renderRawElements = !!options.renderRawElements;
 		this.domConverter = options.domConverter || domConverterStub;
+		this.skipListItemIds = options.skipListItemIds !== undefined ? !!options.skipListItemIds : true;
 	}
 
 	/**
@@ -762,6 +770,10 @@ class ViewStringify {
 		this._walkView( this.root, chunk => {
 			result += chunk;
 		} );
+
+		if ( this.skipListItemIds ) {
+			result = result.replaceAll( / data-list-item-id="[^"]+"/g, '' );
+		}
 
 		return result;
 	}

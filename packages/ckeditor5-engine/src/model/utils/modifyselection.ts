@@ -7,16 +7,16 @@
  * @module engine/model/utils/modifyselection
  */
 
-import DocumentSelection from '../documentselection.js';
-import Position from '../position.js';
-import Range from '../range.js';
-import TreeWalker, { type TreeWalkerValue } from '../treewalker.js';
+import { DocumentSelection } from '../documentselection.js';
+import { Position } from '../position.js';
+import { Range } from '../range.js';
+import { TreeWalker, type TreeWalkerValue } from '../treewalker.js';
 
-import type Model from '../model.js';
-import type Schema from '../schema.js';
-import type Selection from '../selection.js';
-import type Text from '../text.js';
-import type Node from '../node.js';
+import { type Model } from '../model.js';
+import { type Schema } from '../schema.js';
+import { type Selection } from '../selection.js';
+import { type Text } from '../text.js';
+import { type Node } from '../node.js';
 
 import { isInsideSurrogatePair, isInsideCombinedSymbol, isInsideEmojiSequence } from '@ckeditor/ckeditor5-utils';
 
@@ -55,7 +55,7 @@ const wordBoundaryCharacters = ' ,.?!:;"-()';
  * @param options.unit The unit by which selection should be modified. Default 'character'.
  * @param options.treatEmojiAsSingleUnit Whether multi-characer emoji sequences should be handled as single unit.
  */
-export default function modifySelection(
+export function modifySelection(
 	model: Model,
 	selection: Selection | DocumentSelection,
 	options: {

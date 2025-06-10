@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import Table from '../src/table.js';
-import PlainTableOutput from '../src/plaintableoutput.js';
+import { Table } from '../src/table.js';
+import { PlainTableOutput } from '../src/plaintableoutput.js';
 import { modelTable } from './_utils/utils.js';
-import TableCaption from '../src/tablecaption.js';
-import TableProperties from '../src/tableproperties.js';
+import { TableCaption } from '../src/tablecaption.js';
+import { TableProperties } from '../src/tableproperties.js';
 
 describe( 'PlainTableOutput', () => {
 	let editor, editorElement, model;

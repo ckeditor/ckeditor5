@@ -35,7 +35,7 @@ import type { EventInfo } from '@ckeditor/ckeditor5-utils';
  * buffer.input( insertedCharacters.length );
  * ```
  */
-export default class ChangeBuffer {
+export class ChangeBuffer {
 	/**
 	 * The model instance.
 	 */

@@ -25,7 +25,7 @@ import { IconCodeBlock } from 'ckeditor5/src/icons.js';
 import { getNormalizedAndLocalizedLanguageDefinitions } from './utils.js';
 
 import type { CodeBlockLanguageDefinition } from './codeblockconfig.js';
-import type CodeBlockCommand from './codeblockcommand.js';
+import { type CodeBlockCommand } from './codeblockcommand.js';
 
 import '../theme/codeblock.css';
 
@@ -34,7 +34,7 @@ import '../theme/codeblock.css';
  *
  * Introduces the `'codeBlock'` dropdown.
  */
-export default class CodeBlockUI extends Plugin {
+export class CodeBlockUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

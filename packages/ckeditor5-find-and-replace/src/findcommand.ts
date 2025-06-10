@@ -10,14 +10,14 @@
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import type { Collection } from 'ckeditor5/src/utils.js';
 
-import type { default as FindAndReplaceState, FindCallback } from './findandreplacestate.js';
+import type { FindAndReplaceState, FindCallback } from './findandreplacestate.js';
 import type { ResultType } from './findandreplace.js';
-import type FindAndReplaceUtils from './findandreplaceutils.js';
+import { type FindAndReplaceUtils } from './findandreplaceutils.js';
 
 /**
  * The find command. It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.
  */
-export default class FindCommand extends Command {
+export class FindCommand extends Command {
 	/**
 	 * The find and replace state object used for command operations.
 	 */

@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../../src/model/model.js';
-import modifySelection from '../../../src/model/utils/modifyselection.js';
+import { Model } from '../../../src/model/model.js';
+import { modifySelection } from '../../../src/model/utils/modifyselection.js';
 import { setData, stringify } from '../../../src/dev-utils/model.js';
 
 describe( 'DataController utils', () => {

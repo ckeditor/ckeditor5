@@ -144,6 +144,7 @@ export { default as IconSettings } from '../theme/icons/settings.svg';
 export { default as IconShowBlocks } from '../theme/icons/show-blocks.svg';
 export { default as IconSource } from '../theme/icons/source.svg';
 export { default as IconSpecialCharacters } from '../theme/icons/special-characters.svg';
+export { default as IconStop } from '../theme/icons/stop.svg';
 export { default as IconStrikethrough } from '../theme/icons/strikethrough.svg';
 export { default as IconSubmit } from '../theme/icons/submit.svg';
 export { default as IconSubscript } from '../theme/icons/subscript.svg';

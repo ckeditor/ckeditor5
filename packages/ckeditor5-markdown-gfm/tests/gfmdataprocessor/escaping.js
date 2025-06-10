@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import MarkdownDataProcessor from '../../src/gfmdataprocessor.js';
+import { GFMDataProcessor } from '../../src/gfmdataprocessor.js';
 import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { testDataProcessor } from '../../tests/_utils/utils.js';
-import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
 const testCases = {
@@ -33,7 +33,7 @@ describe( 'GFMDataProcessor', () => {
 
 			beforeEach( () => {
 				const viewDocument = new ViewDocument( new StylesProcessor() );
-				dataProcessor = new MarkdownDataProcessor( viewDocument );
+				dataProcessor = new GFMDataProcessor( viewDocument );
 			} );
 
 			for ( const key in testCases ) {

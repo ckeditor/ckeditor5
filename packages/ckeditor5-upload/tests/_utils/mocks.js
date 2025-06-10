@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
 
 /**
  * Returns object that mocks native File object.

@@ -18,9 +18,9 @@ import type {
 
 import type { ImageUtils } from '@ckeditor/ckeditor5-image';
 
-import LinkUI from './linkui.js';
-import LinkEditing from './linkediting.js';
-import type LinkCommand from './linkcommand.js';
+import { LinkUI } from './linkui.js';
+import { LinkEditing } from './linkediting.js';
+import { type LinkCommand } from './linkcommand.js';
 
 import { LINK_KEYSTROKE } from './utils.js';
 
@@ -30,7 +30,7 @@ import { LINK_KEYSTROKE } from './utils.js';
  * This plugin provides the `'linkImage'` button that can be displayed in the {@link module:image/imagetoolbar~ImageToolbar}.
  * It can be used to wrap images in links.
  */
-export default class LinkImageUI extends Plugin {
+export class LinkImageUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

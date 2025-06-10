@@ -7,18 +7,18 @@
  * @module engine/model/schema
  */
 
-import Element from './element.js';
-import Position from './position.js';
-import Range from './range.js';
-import Text from './text.js';
-import TreeWalker from './treewalker.js';
+import { Element } from './element.js';
+import { Position } from './position.js';
+import { Range } from './range.js';
+import { Text } from './text.js';
+import { TreeWalker } from './treewalker.js';
 
-import type DocumentFragment from './documentfragment.js';
-import type DocumentSelection from './documentselection.js';
-import type Item from './item.js';
-import type Node from './node.js';
-import type Selection from './selection.js';
-import type Writer from './writer.js';
+import { type DocumentFragment } from './documentfragment.js';
+import { type DocumentSelection } from './documentselection.js';
+import { type Item } from './item.js';
+import { type Node } from './node.js';
+import { type Selection } from './selection.js';
+import { type Writer } from './writer.js';
 
 import { CKEditorError, first, ObservableMixin } from '@ckeditor/ckeditor5-utils';
 
@@ -35,7 +35,7 @@ import { CKEditorError, first, ObservableMixin } from '@ckeditor/ckeditor5-utils
  * {@glink framework/architecture/editing-engine Introduction to the Editing engine architecture} guide.
  * * The {@glink framework/deep-dive/schema Schema deep-dive} guide.
  */
-export default class Schema extends /* #__PURE__ */ ObservableMixin() {
+export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	private readonly _sourceDefinitions: Record<string, Array<SchemaItemDefinition>> = {};
 
 	/**

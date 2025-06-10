@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Position from '../../src/view/position.js';
-import Node from '../../src/view/node.js';
-import Element from '../../src/view/element.js';
-import DocumentFragment from '../../src/view/documentfragment.js';
-import EditableElement from '../../src/view/editableelement.js';
-import Document from '../../src/view/document.js';
-import Text from '../../src/view/text.js';
-import TextProxy from '../../src/view/textproxy.js';
+import { Position } from '../../src/view/position.js';
+import { Node } from '../../src/view/node.js';
+import { Element } from '../../src/view/element.js';
+import { DocumentFragment } from '../../src/view/documentfragment.js';
+import { EditableElement } from '../../src/view/editableelement.js';
+import { Document } from '../../src/view/document.js';
+import { Text } from '../../src/view/text.js';
+import { TextProxy } from '../../src/view/textproxy.js';
 
 import { parse, stringify } from '../../src/dev-utils/view.js';
-import TreeWalker from '../../src/view/treewalker.js';
-import createViewRoot from './_utils/createroot.js';
-import AttributeElement from '../../src/view/attributeelement.js';
-import ContainerElement from '../../src/view/containerelement.js';
+import { TreeWalker } from '../../src/view/treewalker.js';
+import { createViewRoot } from './_utils/createroot.js';
+import { AttributeElement } from '../../src/view/attributeelement.js';
+import { ContainerElement } from '../../src/view/containerelement.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 

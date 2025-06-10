@@ -3,31 +3,31 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ListEditing from '../../src/list/listediting.js';
+import { ListEditing } from '../../src/list/listediting.js';
 
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting.js';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { IndentEditing } from '@ckeditor/ckeditor5-indent/src/indentediting.js';
+import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
-import LegacyListEditing from '../../src/legacylist/legacylistediting.js';
-import ListIndentCommand from '../../src/list/listindentcommand.js';
-import ListSplitCommand from '../../src/list/listsplitcommand.js';
-import ListCommand from '../../src/list/listcommand.js';
+import { LegacyListEditing } from '../../src/legacylist/legacylistediting.js';
+import { ListIndentCommand } from '../../src/list/listindentcommand.js';
+import { ListSplitCommand } from '../../src/list/listsplitcommand.js';
+import { ListCommand } from '../../src/list/listcommand.js';
 import { isFirstBlockOfListItem } from '../../src/list/utils/model.js';
 
-import stubUid from './_utils/uid.js';
+import { stubUid } from './_utils/uid.js';
 import { modelList, prepareTest } from './_utils/utils.js';
 
 describe( 'ListEditing', () => {
@@ -863,7 +863,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equalMarkup(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 					'<ul>' +
 						'<li><input type="checkbox" value="123" disabled="disabled">foo</li>' +
 						'<li><input type="checkbox" value="321" disabled="disabled">bar</li>' +
@@ -887,7 +887,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equalMarkup(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 					'<ul>' +
 						'<li>' +
 							'<input type="checkbox" value="123" disabled="disabled">' +
@@ -960,7 +960,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equalMarkup(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 					'<ul>' +
 						'<li>' +
 							'<label class="label">' +
@@ -996,7 +996,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equalMarkup(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 					'<ul>' +
 						'<li>' +
 							'<label class="label">' +
@@ -1025,7 +1025,7 @@ describe( 'ListEditing - registerDowncastStrategy()', () => {
 					'</ul>'
 				);
 
-				expect( editor.getData() ).to.equalMarkup(
+				expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup(
 					'<ul>' +
 						'<li>' +
 							'<label class="label">' +

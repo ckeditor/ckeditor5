@@ -3,24 +3,24 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../src/model/model.js';
-import Writer from '../../src/model/writer.js';
-import Batch from '../../src/model/batch.js';
-import InsertOperation from '../../src/model/operation/insertoperation.js';
+import { Model } from '../../src/model/model.js';
+import { Writer } from '../../src/model/writer.js';
+import { Batch } from '../../src/model/batch.js';
+import { InsertOperation } from '../../src/model/operation/insertoperation.js';
 
-import DocumentFragment from '../../src/model/documentfragment.js';
-import Element from '../../src/model/element.js';
-import Text from '../../src/model/text.js';
-import Position from '../../src/model/position.js';
-import Range from '../../src/model/range.js';
+import { DocumentFragment } from '../../src/model/documentfragment.js';
+import { Element } from '../../src/model/element.js';
+import { Text } from '../../src/model/text.js';
+import { Position } from '../../src/model/position.js';
+import { Range } from '../../src/model/range.js';
 
-import count from '@ckeditor/ckeditor5-utils/src/count.js';
+import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 
 import { getNodesAndText } from '../../tests/model/_utils/utils.js';
-import DocumentSelection from '../../src/model/documentselection.js';
+import { DocumentSelection } from '../../src/model/documentselection.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Writer', () => {
 	let model, doc, batch;

@@ -8,17 +8,17 @@
 */
 
 import { FocusTracker, KeystrokeHandler, type Locale } from '@ckeditor/ckeditor5-utils';
-import View from '../../view.js';
-import { default as SearchTextQueryView, type SearchTextQueryViewConfig } from './searchtextqueryview.js';
-import SearchInfoView from '../searchinfoview.js';
-import SearchResultsView from '../searchresultsview.js';
-import FocusCycler, { type FocusableView } from '../../focuscycler.js';
+import { View } from '../../view.js';
+import { SearchTextQueryView, type SearchTextQueryViewConfig } from './searchtextqueryview.js';
+import { SearchInfoView } from '../searchinfoview.js';
+import { SearchResultsView } from '../searchresultsview.js';
+import { FocusCycler, type FocusableView } from '../../focuscycler.js';
 import { escapeRegExp } from 'es-toolkit/compat';
 
-import type FilteredView from '../filteredview.js';
-import type ViewCollection from '../../viewcollection.js';
-import type InputBase from '../../input/inputbase.js';
-import type InputTextView from '../../inputtext/inputtextview.js';
+import { type FilteredView } from '../filteredview.js';
+import { type ViewCollection } from '../../viewcollection.js';
+import { type InputBase } from '../../input/inputbase.js';
+import { type InputTextView } from '../../inputtext/inputtextview.js';
 
 import '../../../theme/components/search/search.css';
 
@@ -40,7 +40,7 @@ import '../../../theme/components/search/search.css';
  * document.body.append( view.element );
  * ```
  */
-export default class SearchTextView<
+export class SearchTextView<
 	TQueryFieldView extends InputBase<HTMLInputElement | HTMLTextAreaElement> = InputTextView
 > extends View {
 	/**

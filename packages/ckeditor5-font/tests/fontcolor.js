@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import FontColor from './../src/fontcolor.js';
-import FontColorEditing from './../src/fontcolor/fontcolorediting.js';
-import FontColorUI from '../src/fontcolor/fontcolorui.js';
+import { FontColor } from './../src/fontcolor.js';
+import { FontColorEditing } from './../src/fontcolor/fontcolorediting.js';
+import { FontColorUI } from '../src/fontcolor/fontcolorui.js';
 
 describe( 'FontColor', () => {
 	it( 'requires FontColorEditing and FontColorUI', () => {

@@ -7,13 +7,13 @@
  * @module engine/model/operation/renameoperation
  */
 
-import Operation from './operation.js';
-import Element from '../element.js';
-import Position from '../position.js';
+import { Operation } from './operation.js';
+import { Element } from '../element.js';
+import { Position } from '../position.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type Document from '../document.js';
+import { type Document } from '../document.js';
 import type { Selectable } from '../selection.js';
 
 /**
@@ -21,7 +21,7 @@ import type { Selectable } from '../selection.js';
  *
  * Using this class you can change element's name.
  */
-export default class RenameOperation extends Operation {
+export class RenameOperation extends Operation {
 	/**
 	 * Position before an element to change.
 	 */

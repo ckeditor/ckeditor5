@@ -17,9 +17,9 @@ import {
 	ButtonView
 } from '@ckeditor/ckeditor5-ui';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import LinkProviderItemsView from '../../src/ui/linkprovideritemsview.js';
+import { LinkProviderItemsView } from '../../src/ui/linkprovideritemsview.js';
 
 const mockLocale = { t: val => val };
 

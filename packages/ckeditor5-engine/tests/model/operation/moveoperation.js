@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../../src/model/model.js';
-import MoveOperation from '../../../src/model/operation/moveoperation.js';
-import Position from '../../../src/model/position.js';
-import Element from '../../../src/model/element.js';
-import Text from '../../../src/model/text.js';
+import { Model } from '../../../src/model/model.js';
+import { MoveOperation } from '../../../src/model/operation/moveoperation.js';
+import { Position } from '../../../src/model/position.js';
+import { Element } from '../../../src/model/element.js';
+import { Text } from '../../../src/model/text.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 

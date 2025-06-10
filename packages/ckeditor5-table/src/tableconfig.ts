@@ -27,7 +27,7 @@ import type { ColorOption, ColorPickerConfig } from 'ckeditor5/src/ui.js';
 export interface TableConfig {
 
 	/**
-	 * Number of rows and columns to render by default as table heading when inserting new tables.
+	 * Number of rows and columns to render by table heading when inserting new tables.
 	 *
 	 * You can configure it like this:
 	 *

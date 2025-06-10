@@ -10,7 +10,7 @@ import { ListItemUid } from '../../../src/list/utils/model.js';
  *
  * @param {Number} [start=0xa00] The uid start number.
  */
-export default function stubUid( start = 0xa00 ) {
+export function stubUid( start = 0xa00 ) {
 	const seq = sequence( start );
 
 	sinon.stub( ListItemUid, 'next' ).callsFake( () => seq.next().value );

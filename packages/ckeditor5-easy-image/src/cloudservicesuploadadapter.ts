@@ -19,7 +19,7 @@ import type { CloudServicesCore, CloudServices, UploadGateway, FileUploader } fr
  * After enabling this adapter you need to configure the CKEditor Cloud Services integration through
  * {@link module:cloud-services/cloudservicesconfig~CloudServicesConfig `config.cloudServices`}.
  */
-export default class CloudServicesUploadAdapter extends Plugin {
+export class CloudServicesUploadAdapter extends Plugin {
 	private _uploadGateway?: UploadGateway;
 
 	/**

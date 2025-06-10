@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import NodeList from '../../src/model/nodelist.js';
-import Element from '../../src/model/element.js';
-import Text from '../../src/model/text.js';
+import { NodeList } from '../../src/model/nodelist.js';
+import { Element } from '../../src/model/element.js';
+import { Text } from '../../src/model/text.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 

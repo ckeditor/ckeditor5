@@ -7,11 +7,11 @@
  * @module ui/panel/balloon/contextualballoon
  */
 
-import BalloonPanelView from './balloonpanelview.js';
-import View from '../../view.js';
-import ButtonView from '../../button/buttonview.js';
+import { BalloonPanelView } from './balloonpanelview.js';
+import { View } from '../../view.js';
+import { ButtonView } from '../../button/buttonview.js';
 import type { ButtonExecuteEvent } from '../../button/button.js';
-import type ViewCollection from '../../viewcollection.js';
+import { type ViewCollection } from '../../viewcollection.js';
 
 import { Plugin, type Editor } from '@ckeditor/ckeditor5-core';
 import {
@@ -65,7 +65,7 @@ const toPx = /* #__PURE__ */ toUnit( 'px' );
  * view you want to display. If there is more than one panel stack to be displayed, the rotator view will add a
  * navigation bar. If there is only one stack, the rotator view is transparent (it does not add any UI elements).
  */
-export default class ContextualBalloon extends Plugin {
+export class ContextualBalloon extends Plugin {
 	/**
 	 * The {@link module:utils/dom/position~Options#limiter position limiter}
 	 * for the {@link #view balloon}, used when no `limiter` has been passed into {@link #add}

@@ -24,9 +24,9 @@ import { logError, type DecoratedMethodEvent } from 'ckeditor5/src/utils.js';
 
 import type { CKBoxAssetDefinition } from './ckboxconfig.js';
 
-import CKBoxCommand from './ckboxcommand.js';
-import CKBoxUploadAdapter from './ckboxuploadadapter.js';
-import CKBoxUtils from './ckboxutils.js';
+import { CKBoxCommand } from './ckboxcommand.js';
+import { CKBoxUploadAdapter } from './ckboxuploadadapter.js';
+import { CKBoxUtils } from './ckboxutils.js';
 
 import type { ReplaceImageSourceCommand } from '@ckeditor/ckeditor5-image';
 import { sendHttpRequest } from './utils.js';
@@ -37,7 +37,7 @@ const COMMAND_FORCE_DISABLE_ID = 'NoPermission';
  * The CKBox editing feature. It introduces the {@link module:ckbox/ckboxcommand~CKBoxCommand CKBox command} and
  * {@link module:ckbox/ckboxuploadadapter~CKBoxUploadAdapter CKBox upload adapter}.
  */
-export default class CKBoxEditing extends Plugin {
+export class CKBoxEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

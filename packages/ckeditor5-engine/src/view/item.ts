@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import type Node from './node.js';
-import type TextProxy from './textproxy.js';
+import { type Node } from './node.js';
+import { type TextProxy } from './textproxy.js';
 
 /**
  * @module engine/view/item
@@ -13,6 +13,6 @@ import type TextProxy from './textproxy.js';
 /**
  * Item is a {@link module:engine/view/node~Node Node} or {@link module:engine/view/textproxy~TextProxy TextProxy}.
  */
-type Item = Node | TextProxy;
+export type Item = Node | TextProxy;
 
-export default Item;
+export { Item as ViewItem };

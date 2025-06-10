@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import TableCaption from '../../src/tablecaption.js';
+import { TableCaption } from '../../src/tablecaption.js';
 
 describe( 'TableCaption', () => {
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {

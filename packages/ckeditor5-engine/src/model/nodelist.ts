@@ -7,7 +7,7 @@
  * @module engine/model/nodelist
  */
 
-import Node from './node.js';
+import { Node } from './node.js';
 
 import { CKEditorError, spliceArray } from '@ckeditor/ckeditor5-utils';
 
@@ -16,7 +16,7 @@ import { CKEditorError, spliceArray } from '@ckeditor/ckeditor5-utils';
  * in classes like {@link module:engine/model/element~Element Element}
  * or {@link module:engine/model/documentfragment~DocumentFragment DocumentFragment}.
  */
-export default class NodeList implements Iterable<Node> {
+export class NodeList implements Iterable<Node> {
 	/**
 	 * Nodes contained in this node list.
 	 */

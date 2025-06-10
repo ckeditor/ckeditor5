@@ -14,7 +14,7 @@ import {
 import { FocusTracker, KeystrokeHandler } from '@ckeditor/ckeditor5-utils';
 import { IconCheck, IconCancel } from '@ckeditor/ckeditor5-icons';
 
-export default class FormView extends View {
+export class FormView extends View {
 	constructor( locale ) {
 		super( locale );
 

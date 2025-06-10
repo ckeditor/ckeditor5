@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 
 import { List, ListProperties, AdjacentListsSupport } from '../../src/index.js';
 
-import stubUid from './_utils/uid.js';
+import { stubUid } from './_utils/uid.js';
 
 describe( 'AdjacentListsSupport', () => {
 	let editorElement, editor, model, view;
@@ -225,7 +225,7 @@ describe( 'AdjacentListsSupport', () => {
 
 			editor.setData( data );
 
-			expect( editor.getData() ).to.equalMarkup( data );
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup( data );
 		} );
 
 		it( 'doesn\'t insert anything between two "ol" lists in output data', () => {
@@ -239,7 +239,7 @@ describe( 'AdjacentListsSupport', () => {
 
 			editor.setData( data );
 
-			expect( editor.getData() ).to.equalMarkup( data );
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup( data );
 		} );
 
 		it( 'doesn\'t insert anything between two different lists in output data', () => {
@@ -253,7 +253,7 @@ describe( 'AdjacentListsSupport', () => {
 
 			editor.setData( data );
 
-			expect( editor.getData() ).to.equalMarkup( data );
+			expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup( data );
 		} );
 	} );
 } );

@@ -29,7 +29,7 @@ import type {
  *
  * @param editing The editing controller.
  */
-export default function verticalNavigationHandler(
+export function verticalNavigationHandler(
 	editing: EditingController
 ): GetCallback<ViewDocumentArrowKeyEvent> {
 	const model = editing.model;

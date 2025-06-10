@@ -15,7 +15,7 @@ import type { Schema, Selection, DocumentSelection, Element } from '@ckeditor/ck
 /**
  * The paragraph command.
  */
-export default class ParagraphCommand extends Command {
+export class ParagraphCommand extends Command {
 	public constructor( editor: Editor ) {
 		super( editor );
 

@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import SimpleUploadAdapter from '../../src/adapters/simpleuploadadapter.js';
-import FileRepository from '../../src/filerepository.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { SimpleUploadAdapter } from '../../src/adapters/simpleuploadadapter.js';
+import { FileRepository } from '../../src/filerepository.js';
 import { createNativeFileMock } from '../_utils/mocks.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'SimpleUploadAdapter', () => {
 	let editor, editorElement, sinonXHR, consoleWarnStub, fileRepository;

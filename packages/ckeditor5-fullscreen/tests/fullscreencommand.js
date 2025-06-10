@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 import { InlineEditor } from '@ckeditor/ckeditor5-editor-inline';
@@ -13,10 +13,10 @@ import { BalloonEditor } from '@ckeditor/ckeditor5-editor-balloon';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 import { removeEditorBodyOrphans } from '@ckeditor/ckeditor5-core/tests/_utils/cleanup.js';
 
-import FullscreenCommand from '../src/fullscreencommand.js';
-import ClassicEditorHandler from '../src/handlers/classiceditorhandler.js';
-import DecoupledEditorHandler from '../src/handlers/decouplededitorhandler.js';
-import AbstractEditorHandler from '../src/handlers/abstracteditorhandler.js';
+import { FullscreenCommand } from '../src/fullscreencommand.js';
+import { ClassicEditorHandler } from '../src/handlers/classiceditorhandler.js';
+import { DecoupledEditorHandler } from '../src/handlers/decouplededitorhandler.js';
+import { AbstractEditorHandler } from '../src/handlers/abstracteditorhandler.js';
 
 const basicConfig = {
 	plugins: [

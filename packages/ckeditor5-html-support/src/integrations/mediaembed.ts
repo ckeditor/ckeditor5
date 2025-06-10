@@ -9,8 +9,8 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import DataFilter, { type DataFilterRegisterEvent } from '../datafilter.js';
-import DataSchema from '../dataschema.js';
+import { DataFilter, type DataFilterRegisterEvent } from '../datafilter.js';
+import { DataSchema } from '../dataschema.js';
 import { updateViewAttributes, type GHSViewAttributes, getHtmlAttributeName } from '../utils.js';
 import type {
 	DowncastAttributeEvent,
@@ -25,7 +25,7 @@ import { getDescendantElement } from './integrationutils.js';
 /**
  * Provides the General HTML Support integration with {@link module:media-embed/mediaembed~MediaEmbed Media Embed} feature.
  */
-export default class MediaEmbedElementSupport extends Plugin {
+export class MediaEmbedElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

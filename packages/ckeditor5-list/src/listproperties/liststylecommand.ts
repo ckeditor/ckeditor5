@@ -20,7 +20,7 @@ import { getListTypeFromListStyleType } from './utils/style.js';
  * letting the user choose styles for the list item markers.
  * It is used by the {@link module:list/listproperties~ListProperties list properties feature}.
  */
-export default class ListStyleCommand extends Command {
+export class ListStyleCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

@@ -7,12 +7,12 @@
  * @module ui/button/filedialogbuttonview
  */
 
-import View from '../view.js';
-import ButtonView from './buttonview.js';
+import { View } from '../view.js';
+import { ButtonView } from './buttonview.js';
 import type { ButtonExecuteEvent } from './button.js';
 
 import type { Constructor, Locale, Mixed } from '@ckeditor/ckeditor5-utils';
-import ListItemButtonView from './listitembuttonview.js';
+import { ListItemButtonView } from './listitembuttonview.js';
 
 /**
  * The file dialog button view.
@@ -38,7 +38,7 @@ import ListItemButtonView from './listitembuttonview.js';
  * } );
  * ```
  */
-export default class FileDialogButtonView extends /* #__PURE__ */ FileDialogViewMixin( ButtonView ) {}
+export class FileDialogButtonView extends /* #__PURE__ */ FileDialogViewMixin( ButtonView ) {}
 
 /**
  * The file dialog button view used in a lists.
@@ -79,13 +79,6 @@ export class FileDialogListItemButtonView extends /* #__PURE__ */ FileDialogView
 function FileDialogViewMixin<Base extends Constructor<ButtonView>>( view: Base ): Mixed<Base, FileDialogButtonViewBase> {
 	abstract class FileDialogView extends view implements FileDialogButtonViewBase {
 		/**
-		 * The button view of the component.
-		 *
-		 * @deprecated
-		 */
-		public buttonView: ButtonView;
-
-		/**
 		 * A hidden `<input>` view used to execute file dialog.
 		 */
 		private _fileInputView: FileInputView;
@@ -112,9 +105,6 @@ function FileDialogViewMixin<Base extends Constructor<ButtonView>>( view: Base )
 		 */
 		constructor( ...args: Array<any> ) {
 			super( ...args );
-
-			// For backward compatibility.
-			this.buttonView = this;
 
 			this._fileInputView = new FileInputView( this.locale );
 			this._fileInputView.bind( 'acceptedType' ).to( this );
@@ -150,13 +140,6 @@ function FileDialogViewMixin<Base extends Constructor<ButtonView>>( view: Base )
  * Represents the base view for a file dialog button component.
  */
 type FileDialogButtonViewBase = View & {
-
-	/**
-	 * The button view of the component.
-	 *
-	 * @deprecated
-	 */
-	buttonView: ButtonView;
 
 	/**
 	 * Accepted file types. Can be provided in form of file extensions, media type or one of:

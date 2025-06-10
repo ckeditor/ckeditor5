@@ -14,9 +14,9 @@ import { Delete } from 'ckeditor5/src/typing.js';
 import { Undo, type UndoCommand } from 'ckeditor5/src/undo.js';
 import { global } from 'ckeditor5/src/utils.js';
 
-import MediaEmbedEditing from './mediaembedediting.js';
+import { MediaEmbedEditing } from './mediaembedediting.js';
 import { insertMedia } from './utils.js';
-import type MediaEmbedCommand from './mediaembedcommand.js';
+import { type MediaEmbedCommand } from './mediaembedcommand.js';
 
 const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w-]+\.[\w-.~:/?#[\]@!$&'()*+,;=%]+$/;
 
@@ -24,7 +24,7 @@ const URL_REGEXP = /^(?:http(s)?:\/\/)?[\w-]+\.[\w-.~:/?#[\]@!$&'()*+,;=%]+$/;
  * The auto-media embed plugin. It recognizes media links in the pasted content and embeds
  * them shortly after they are injected into the document.
  */
-export default class AutoMediaEmbed extends Plugin {
+export class AutoMediaEmbed extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

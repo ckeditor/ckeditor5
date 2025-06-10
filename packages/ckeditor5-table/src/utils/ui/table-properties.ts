@@ -22,10 +22,10 @@ import {
 import { Collection, type LocaleTranslate } from 'ckeditor5/src/utils.js';
 import { isColor, isLength, isPercentage } from 'ckeditor5/src/engine.js';
 
-import type TableCellPropertiesView from '../../tablecellproperties/ui/tablecellpropertiesview.js';
-import type TablePropertiesView from '../../tableproperties/ui/tablepropertiesview.js';
+import { type TableCellPropertiesView } from '../../tablecellproperties/ui/tablecellpropertiesview.js';
+import { type TablePropertiesView } from '../../tableproperties/ui/tablepropertiesview.js';
 
-import ColorInputView from '../../ui/colorinputview.js';
+import { ColorInputView } from '../../ui/colorinputview.js';
 
 const isEmpty = ( val: string ) => val === '';
 

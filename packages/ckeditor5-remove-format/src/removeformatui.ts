@@ -11,7 +11,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { IconRemoveFormat } from 'ckeditor5/src/icons.js';
 import { ButtonView, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
 
-import type RemoveFormatCommand from './removeformatcommand.js';
+import { type RemoveFormatCommand } from './removeformatcommand.js';
 
 const REMOVE_FORMAT = 'removeFormat';
 
@@ -19,7 +19,7 @@ const REMOVE_FORMAT = 'removeFormat';
  * The remove format UI plugin. It registers the `'removeFormat'` button which can be
  * used in the toolbar.
  */
-export default class RemoveFormatUI extends Plugin {
+export class RemoveFormatUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

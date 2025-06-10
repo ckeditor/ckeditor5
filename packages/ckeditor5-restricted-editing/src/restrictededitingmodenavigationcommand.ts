@@ -13,7 +13,7 @@ import { Command, type Editor } from 'ckeditor5/src/core.js';
 /**
  * The command that allows navigation across the exceptions in the edited document.
  */
-export default class RestrictedEditingModeNavigationCommand extends Command {
+export class RestrictedEditingModeNavigationCommand extends Command {
 	/**
 	 * The direction of the command.
 	 */

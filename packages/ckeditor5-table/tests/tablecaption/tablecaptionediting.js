@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
 
-import TableCaptionEditing from '../../src/tablecaption/tablecaptionediting.js';
-import TableEditing from '../../src/tableediting.js';
+import { TableCaptionEditing } from '../../src/tablecaption/tablecaptionediting.js';
+import { TableEditing } from '../../src/tableediting.js';
 
 describe( 'TableCaptionEditing', () => {
 	let editor, model, view;

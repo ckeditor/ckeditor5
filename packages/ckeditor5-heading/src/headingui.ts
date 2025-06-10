@@ -23,14 +23,14 @@ import { Collection } from 'ckeditor5/src/utils.js';
 import type { ParagraphCommand } from 'ckeditor5/src/paragraph.js';
 
 import { getLocalizedOptions } from './utils.js';
-import type HeadingCommand from './headingcommand.js';
+import { type HeadingCommand } from './headingcommand.js';
 
 import '../theme/heading.css';
 
 /**
  * The headings UI feature. It introduces the `headings` dropdown.
  */
-export default class HeadingUI extends Plugin {
+export class HeadingUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

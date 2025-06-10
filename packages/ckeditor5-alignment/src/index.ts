@@ -7,10 +7,10 @@
  * @module alignment
  */
 
-export { default as Alignment } from './alignment.js';
-export { default as AlignmentEditing } from './alignmentediting.js';
-export { default as AlignmentUI } from './alignmentui.js';
-export type { default as AlignmentCommand } from './alignmentcommand.js';
+export { Alignment } from './alignment.js';
+export { AlignmentEditing } from './alignmentediting.js';
+export { AlignmentUI } from './alignmentui.js';
+export { AlignmentCommand } from './alignmentcommand.js';
 export type { AlignmentConfig } from './alignmentconfig.js';
 
 import './augmentation.js';

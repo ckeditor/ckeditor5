@@ -15,7 +15,7 @@ import { DomEventObserver, type DomEventData } from 'ckeditor5/src/engine.js';
  * Note that this observer is not available by default. To make it available it needs to be added to
  * {@link module:engine/view/view~View} by {@link module:engine/view/view~View#addObserver} method.
  */
-export default class TodoCheckboxChangeObserver extends DomEventObserver<'change'> {
+export class TodoCheckboxChangeObserver extends DomEventObserver<'change'> {
 	/**
 	 * @inheritDoc
 	 */

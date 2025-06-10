@@ -8,12 +8,12 @@
  */
 
 import { Command } from 'ckeditor5/src/core.js';
-import type EmojiPicker from './emojipicker.js';
+import { type EmojiPicker } from './emojipicker.js';
 
 /**
  * Command that shows the emoji user interface.
  */
-export default class EmojiCommand extends Command {
+export class EmojiCommand extends Command {
 	/**
 	 * Updates the command's {@link #isEnabled} based on the current selection.
 	 */

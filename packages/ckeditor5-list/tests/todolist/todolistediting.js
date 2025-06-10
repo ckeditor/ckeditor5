@@ -3,30 +3,30 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting.js';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
-import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { ModelElement } from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { env } from '@ckeditor/ckeditor5-utils';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import TodoListEditing from '../../src/todolist/todolistediting.js';
-import ListEditing from '../../src/list/listediting.js';
-import ListCommand from '../../src/list/listcommand.js';
-import CheckTodoListCommand from '../../src/todolist/checktodolistcommand.js';
-import TodoCheckboxChangeObserver from '../../src/todolist/todocheckboxchangeobserver.js';
-import ListPropertiesEditing from '../../src/listproperties/listpropertiesediting.js';
+import { TodoListEditing } from '../../src/todolist/todolistediting.js';
+import { ListEditing } from '../../src/list/listediting.js';
+import { ListCommand } from '../../src/list/listcommand.js';
+import { CheckTodoListCommand } from '../../src/todolist/checktodolistcommand.js';
+import { TodoCheckboxChangeObserver } from '../../src/todolist/todocheckboxchangeobserver.js';
+import { ListPropertiesEditing } from '../../src/listproperties/listpropertiesediting.js';
 
-import stubUid from '../list/_utils/uid.js';
+import { stubUid } from '../list/_utils/uid.js';
 
 describe( 'TodoListEditing', () => {
 	let editor, model, view, editorElement, modelRoot;
@@ -44,6 +44,10 @@ describe( 'TodoListEditing', () => {
 		view = editor.editing.view;
 
 		stubUid();
+
+		// Remove downcast strategy for listItemId to avoid having to take it into account in all tests.
+		editor.plugins.get( 'ListEditing' )._downcastStrategies.splice( editor.plugins.get( 'ListEditing' )._downcastStrategies.findIndex(
+			strategy => strategy.attributeName === 'listItemId' ), 1 );
 	} );
 
 	afterEach( async () => {
@@ -1373,7 +1377,7 @@ describe( 'TodoListEditing', () => {
 
 	function testData( input, output ) {
 		setModelData( model, input );
-		expect( editor.getData() ).to.equalMarkup( output );
+		expect( editor.getData( { skipListItemIds: true } ) ).to.equalMarkup( output );
 	}
 
 	function testPostfixer( input, output ) {

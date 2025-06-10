@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import HtmlPageDataProcessor from '../src/htmlpagedataprocessor.js';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
+import { HtmlPageDataProcessor } from '../src/htmlpagedataprocessor.js';
+import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
 import { StylesProcessor, ViewDocument, ViewDocumentFragment } from '@ckeditor/ckeditor5-engine';
 import { stringify, parse } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
