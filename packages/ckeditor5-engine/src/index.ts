@@ -133,6 +133,7 @@ export {
 	type DifferItemInsert,
 	type DifferItemRemove,
 	type DifferItemAction,
+	type DifferItemReinsert,
 	type DifferItemRoot
 } from './model/differ.js';
 export type { Item } from './model/item.js';
