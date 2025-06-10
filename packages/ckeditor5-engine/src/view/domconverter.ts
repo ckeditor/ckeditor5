@@ -2031,7 +2031,7 @@ function isGeckoRestrictedDomSelection( domSelection: DomSelection ): boolean {
  * * `markedNbsp` &ndash; For the `&nbsp;` block fillers wrapped in `<span>` elements: `<span data-cke-filler="true">&nbsp;</span>`
  * used in the data.
  */
-type BlockFillerMode = 'br' | 'nbsp' | 'markedNbsp';
+export type BlockFillerMode = 'br' | 'nbsp' | 'markedNbsp';
 
 /**
  * While rendering the editor content, the {@link module:engine/view/domconverter~DomConverter} detected a `<script>` element that may
