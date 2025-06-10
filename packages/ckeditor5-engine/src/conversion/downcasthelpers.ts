@@ -627,7 +627,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 	 * Model marker to highlight conversion helper.
 	 *
 	 * This conversion results in creating a highlight on view nodes. For this kind of conversion,
-	 * the {@link module:engine/conversion/downcasthelpers~HighlightDescriptor} should be provided.
+	 * the {@link module:engine/conversion/downcasthelpers~DowncastHighlightDescriptor} should be provided.
 	 *
 	 * For text nodes, a `<span>` {@link module:engine/view/attributeelement~AttributeElement} is created and it wraps all text nodes
 	 * in the converted marker range. For example, a model marker set like this: `<paragraph>F[oo b]ar</paragraph>` becomes
@@ -668,7 +668,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 	 * If a function is passed as the `config.view` parameter, it will be used to generate the highlight descriptor. The function
 	 * receives the `data` object and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
 	 * as the parameters and should return a
-	 * {@link module:engine/conversion/downcasthelpers~HighlightDescriptor highlight descriptor}.
+	 * {@link module:engine/conversion/downcasthelpers~DowncastHighlightDescriptor highlight descriptor}.
 	 * The `data` object properties are passed from {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}.
 	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
@@ -683,7 +683,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 	 */
 	public markerToHighlight( config: {
 		model: string;
-		view: HighlightDescriptor | HighlightDescriptorCreatorFunction;
+		view: DowncastHighlightDescriptor | DowncastHighlightDescriptorCreatorFunction;
 		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( downcastMarkerToHighlight( config ) );
@@ -908,12 +908,15 @@ export function remove() {
 
 /**
  * Creates a `<span>` {@link module:engine/view/attributeelement~AttributeElement view attribute element} from the information
- * provided by the {@link module:engine/conversion/downcasthelpers~HighlightDescriptor highlight descriptor} object. If the priority
+ * provided by the {@link module:engine/conversion/downcasthelpers~DowncastHighlightDescriptor highlight descriptor} object. If the priority
  * is not provided in the descriptor, the default priority will be used.
  *
  * @internal
  */
-export function createViewElementFromHighlightDescriptor( writer: DowncastWriter, descriptor: HighlightDescriptor ): ViewAttributeElement {
+export function createViewElementFromDowncastHighlightDescriptor(
+	writer: DowncastWriter,
+	descriptor: DowncastHighlightDescriptor
+): ViewAttributeElement {
 	const viewElement = writer.createAttributeElement( 'span', descriptor.attributes );
 
 	if ( descriptor.classes ) {
@@ -1703,7 +1706,7 @@ function changeAttribute( attributeCreator: DowncastAttributeCreatorFunction ) {
 /**
  * Function factory that creates a converter which converts the text inside marker's range. The converter wraps the text with
  * {@link module:engine/view/attributeelement~AttributeElement} created from the provided descriptor.
- * See {link module:engine/conversion/downcasthelpers~createViewElementFromHighlightDescriptor}.
+ * See {link module:engine/conversion/downcasthelpers~createViewElementFromDowncastHighlightDescriptor}.
  *
  * It can also be used to convert the selection that is inside a marker. In that case, an empty attribute element will be
  * created and the selection will be put inside it.
@@ -1715,7 +1718,7 @@ function changeAttribute( attributeCreator: DowncastAttributeCreatorFunction ) {
  * This converter binds the created {@link module:engine/view/attributeelement~AttributeElement attribute elemens} with the marker name
  * using the {@link module:engine/conversion/mapper~Mapper#bindElementToMarker} method.
  */
-function highlightText( highlightDescriptor: HighlightDescriptor | HighlightDescriptorCreatorFunction ) {
+function highlightText( highlightDescriptor: DowncastHighlightDescriptor | DowncastHighlightDescriptorCreatorFunction ) {
 	return (
 		evt: EventInfo,
 		data: {
@@ -1745,7 +1748,7 @@ function highlightText( highlightDescriptor: HighlightDescriptor | HighlightDesc
 		}
 
 		const viewWriter = conversionApi.writer;
-		const viewElement = createViewElementFromHighlightDescriptor( viewWriter, descriptor );
+		const viewElement = createViewElementFromDowncastHighlightDescriptor( viewWriter, descriptor );
 		const viewSelection = viewWriter.document.selection;
 
 		if ( data.item instanceof ModelSelection || data.item instanceof ModelDocumentSelection ) {
@@ -1784,7 +1787,7 @@ function highlightText( highlightDescriptor: HighlightDescriptor | HighlightDesc
  * This converter binds altered {@link module:engine/view/containerelement~ContainerElement container elements} with the marker name using
  * the {@link module:engine/conversion/mapper~Mapper#bindElementToMarker} method.
  */
-function highlightElement( highlightDescriptor: HighlightDescriptor | HighlightDescriptorCreatorFunction ) {
+function highlightElement( highlightDescriptor: DowncastHighlightDescriptor | DowncastHighlightDescriptorCreatorFunction ) {
 	return (
 		evt: EventInfo,
 		data: {
@@ -1838,7 +1841,7 @@ function highlightElement( highlightDescriptor: HighlightDescriptor | HighlightD
  * Both text nodes and elements are handled by this converter but they are handled a bit differently.
  *
  * Text nodes are unwrapped using the {@link module:engine/view/attributeelement~AttributeElement attribute element} created from the
- * provided highlight descriptor. See {link module:engine/conversion/downcasthelpers~HighlightDescriptor}.
+ * provided highlight descriptor. See {link module:engine/conversion/downcasthelpers~DowncastHighlightDescriptor}.
  *
  * For elements, the converter checks if an element has the `removeHighlight` function stored as a
  * {@link module:engine/view/element~Element#_setCustomProperty custom property}. If so, it uses it to remove the highlight.
@@ -1853,7 +1856,7 @@ function highlightElement( highlightDescriptor: HighlightDescriptor | HighlightD
  *
  * This converter unbinds elements from the marker name.
  */
-function removeHighlight( highlightDescriptor: HighlightDescriptor | HighlightDescriptorCreatorFunction ) {
+function removeHighlight( highlightDescriptor: DowncastHighlightDescriptor | DowncastHighlightDescriptorCreatorFunction ) {
 	return (
 		evt: EventInfo,
 		data: {
@@ -1874,7 +1877,7 @@ function removeHighlight( highlightDescriptor: HighlightDescriptor | HighlightDe
 		}
 
 		// View element that will be used to unwrap `AttributeElement`s.
-		const viewHighlightElement = createViewElementFromHighlightDescriptor( conversionApi.writer, descriptor );
+		const viewHighlightElement = createViewElementFromDowncastHighlightDescriptor( conversionApi.writer, descriptor );
 
 		// Get all elements bound with given marker name.
 		const elements = conversionApi.mapper.markerNameToElements( data.markerName );
@@ -2234,7 +2237,7 @@ function downcastMarkerToData( config: {
  */
 function downcastMarkerToHighlight( config: {
 	model: string;
-	view: HighlightDescriptor | HighlightDescriptorCreatorFunction;
+	view: DowncastHighlightDescriptor | DowncastHighlightDescriptorCreatorFunction;
 	converterPriority?: PriorityString;
 } ) {
 	return ( dispatcher: DowncastDispatcher ) => {
@@ -2409,13 +2412,13 @@ function normalizeToAttributeConfig( view: any ): DowncastAttributeCreatorFuncti
  * Helper function for `highlight`. Prepares the actual descriptor object using value passed to the converter.
  */
 function prepareDescriptor(
-	highlightDescriptor: HighlightDescriptor | HighlightDescriptorCreatorFunction,
+	highlightDescriptor: DowncastHighlightDescriptor | DowncastHighlightDescriptorCreatorFunction,
 	data: {
 		markerName: string;
 		markerRange: ModelRange;
 	},
 	conversionApi: DowncastConversionApi
-): HighlightDescriptor | null {
+): DowncastHighlightDescriptor | null {
 	// If passed descriptor is a creator function, call it. If not, just use passed value.
 	const descriptor = typeof highlightDescriptor == 'function' ?
 		highlightDescriptor( data, conversionApi ) :
@@ -2771,12 +2774,12 @@ function defaultConsumer(
  * Additionally, each {@link module:engine/view/containerelement~ContainerElement container element} can handle displaying the highlight
  * separately by providing the `addHighlight` and `removeHighlight` custom properties. In this case:
  *
- *  * The `HighlightDescriptor` object is passed to the `addHighlight` function upon conversion and should be used to apply the highlight to
- *  the element.
+ *  * The `DowncastHighlightDescriptor` object is passed to the `addHighlight` function upon conversion and
+ *  should be used to apply the highlight to the element.
  *  * The descriptor `id` is passed to the `removeHighlight` function upon conversion and should be used to remove the highlight with the
  *  given ID from the element.
  */
-export interface HighlightDescriptor {
+export interface DowncastHighlightDescriptor {
 
 	/**
 	 * A CSS class or an array of classes to set. If the descriptor is used to
@@ -2955,17 +2958,17 @@ export type MarkerElementCreatorFunction = (
 	conversionApi: DowncastConversionApi
 ) => UIElement | null;
 
-export type HighlightDescriptorCreatorFunction = (
+export type DowncastHighlightDescriptorCreatorFunction = (
 	data: {
 		markerRange: ModelRange;
 		markerName: string;
 	},
 	conversionApi: DowncastConversionApi
-) => HighlightDescriptor | null;
+) => DowncastHighlightDescriptor | null;
 
 export type AddHighlightCallback = (
 	viewElement: ViewElement,
-	descriptor: HighlightDescriptor,
+	descriptor: DowncastHighlightDescriptor,
 	writer: DowncastWriter
 ) => void;
 
