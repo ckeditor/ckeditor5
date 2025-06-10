@@ -2579,7 +2579,7 @@ function createConsumer( model: NormalizedModelElementConfig ): ConsumerFunction
  * @returns Function exposed by the writer as `createSlot()`.
  */
 function createSlotFactory( element: ModelElement, slotsMap: Map<ViewElement, Array<ModelNode>>, conversionApi: DowncastConversionApi ) {
-	return ( writer: DowncastWriter, modeOrFilter: 'children' | SlotFilter ) => {
+	return ( writer: DowncastWriter, modeOrFilter: 'children' | DowncastSlotFilter ) => {
 		const slot = writer.createContainerElement( '$slot' );
 
 		let children: Array<ModelNode> | null = null;
@@ -2816,7 +2816,7 @@ export interface DowncastHighlightDescriptor {
  * {@link module:engine/view/downcastwriter~DowncastWriter#createSlot "slot"} while executing the
  * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure `elementToStructure()`} converter.
  *
- * @callback module:engine/conversion/downcasthelpers~SlotFilter
+ * @callback module:engine/conversion/downcasthelpers~DowncastSlotFilter
  *
  * @param node A model node.
  * @returns Whether the provided model node should be downcasted into this slot.
@@ -2825,7 +2825,7 @@ export interface DowncastHighlightDescriptor {
  * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
  * @see module:engine/conversion/downcasthelpers~insertStructure
  */
-export type SlotFilter = ( node: ModelNode ) => boolean;
+export type DowncastSlotFilter = ( node: ModelNode ) => boolean;
 
 /**
  * A view element creator function that takes the model element and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi
