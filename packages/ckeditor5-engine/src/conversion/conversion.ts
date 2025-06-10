@@ -717,7 +717,7 @@ function* _getUpcastDefinition( model: unknown, view: unknown, upcastAlso?: unkn
 	}
 }
 
-type ConversionType<T extends string> = T extends `${ string }Downcast`
+export type ConversionType<T extends string> = T extends `${ string }Downcast`
 	? DowncastHelpers
 	: T extends `${ string }Upcast`
 		? UpcastHelpers
