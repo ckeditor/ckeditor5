@@ -651,7 +651,9 @@ export class DomConverter {
 
 			// In case someone uses outdated view position, but DOM text node was already changed while typing.
 			// See: https://github.com/ckeditor/ckeditor5/issues/18648.
-			if ( offset > domParent.data.length ) {
+			// Note that when checking Renderer#_isSelectionInInlineFiller() this might be other element
+			// than a text node as it is triggered before applying view changes to the DOM.
+			if ( domParent.data && offset > domParent.data.length ) {
 				offset = domParent.data.length;
 			}
 
