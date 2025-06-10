@@ -24,7 +24,7 @@ import { UpcastHelpers, convertToModelFragment, convertText, convertSelectionCha
 import { _getModelData, _setModelData, _stringifyModel } from '../../src/dev-utils/model.js';
 import { View } from '../../src/view/view.js';
 import { createViewRoot } from '../view/_utils/createroot.js';
-import { setData as viewSetData, parse as viewParse } from '../../src/dev-utils/view.js';
+import { _setViewData, _parseView } from '../../src/dev-utils/view.js';
 import { Mapper } from '../../src/conversion/mapper.js';
 import { ViewSelection } from '../../src/view/selection.js';
 import { ViewRange } from '../../src/view/range.js';
@@ -464,7 +464,7 @@ describe( 'UpcastHelpers', () => {
 			} );
 
 			it( 'should not overwrite attributes if nested elements have the same attribute but different values', () => {
-				const viewElement = viewParse( '<span style="font-size:9px"><span style="font-size:11px">Bar</span></span>' );
+				const viewElement = _parseView( '<span style="font-size:9px"><span style="font-size:11px">Bar</span></span>' );
 
 				expectResult(
 					viewElement,
@@ -473,7 +473,7 @@ describe( 'UpcastHelpers', () => {
 			} );
 
 			it( 'should convert text before the nested duplicated attribute with the most outer value', () => {
-				const viewElement = viewParse( '<span style="font-size:9px">Foo<span style="font-size:11px">Bar</span></span>' );
+				const viewElement = _parseView( '<span style="font-size:9px">Foo<span style="font-size:11px">Bar</span></span>' );
 
 				expectResult(
 					viewElement,
@@ -482,7 +482,7 @@ describe( 'UpcastHelpers', () => {
 			} );
 
 			it( 'should convert text after the nested duplicated attribute with the most outer values', () => {
-				const viewElement = viewParse( '<span style="font-size:9px"><span style="font-size:11px">Bar</span>Bom</span>' );
+				const viewElement = _parseView( '<span style="font-size:9px"><span style="font-size:11px">Bar</span>Bom</span>' );
 
 				expectResult(
 					viewElement,
@@ -491,7 +491,7 @@ describe( 'UpcastHelpers', () => {
 			} );
 
 			it( 'should convert texts before and after the nested duplicated attribute with the most outer value', () => {
-				const viewElement = viewParse( '<span style="font-size:9px">Foo<span style="font-size:11px">Bar</span>Bom</span>' );
+				const viewElement = _parseView( '<span style="font-size:9px">Foo<span style="font-size:11px">Bar</span>Bom</span>' );
 
 				expectResult(
 					viewElement,
@@ -500,7 +500,7 @@ describe( 'UpcastHelpers', () => {
 			} );
 
 			it( 'should work with multiple duplicated attributes', () => {
-				const viewElement = viewParse(
+				const viewElement = _parseView(
 					'<span style="font-size:9px;color: #0000ff"><span style="font-size:11px;color: #ff0000">Bar</span></span>'
 				);
 
@@ -511,7 +511,7 @@ describe( 'UpcastHelpers', () => {
 			} );
 
 			it( 'should convert non-duplicated attributes from the most outer element', () => {
-				const viewElement = viewParse(
+				const viewElement = _parseView(
 					'<span style="font-size:9px;color: #0000ff"><span style="font-size:11px;">Bar</span></span>'
 				);
 
@@ -532,7 +532,7 @@ describe( 'UpcastHelpers', () => {
 					expect( wasConsumed, `span[fontSize=${ viewItem.getStyle( 'font-size' ) }]` ).to.equal( false );
 				}, { priority: 'lowest' } );
 
-				const viewElement = viewParse(
+				const viewElement = _parseView(
 					'<span style="font-size:9px;"><span style="font-size:11px;">Bar</span></span>'
 				);
 
@@ -876,7 +876,7 @@ describe( 'UpcastHelpers', () => {
 				allowAttributes: [ 'foo' ]
 			} );
 
-			const viewElement = viewParse(
+			const viewElement = _parseView(
 				'<div foo="foo-value">abc</div>' +
 				'<p foo="foo-value">def</p>'
 			);
@@ -911,7 +911,7 @@ describe( 'UpcastHelpers', () => {
 					} );
 				} );
 
-				const viewElement = viewParse( '<span style="text-align:center;">Foo.</span>' );
+				const viewElement = _parseView( '<span style="text-align:center;">Foo.</span>' );
 
 				expectResult(
 					viewElement,
@@ -1039,7 +1039,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.dataToMarker( { view: 'search' } );
 
 			expectResult(
-				viewParse( '<p>Fo<search-start></search-start>ob<search-end></search-end>ar</p>' ),
+				_parseView( '<p>Fo<search-start></search-start>ob<search-end></search-end>ar</p>' ),
 				'<paragraph>Foobar</paragraph>',
 				{ name: 'search', start: [ 0, 2 ], end: [ 0, 4 ] }
 			);
@@ -1049,7 +1049,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.dataToMarker( { view: 'group' } );
 
 			expectResult(
-				viewParse( '<p>Fo<group-start name="foo:bar:baz"></group-start>ob<group-end name="foo:bar:baz"></group-end>ar</p>' ),
+				_parseView( '<p>Fo<group-start name="foo:bar:baz"></group-start>ob<group-end name="foo:bar:baz"></group-end>ar</p>' ),
 				'<paragraph>Foobar</paragraph>',
 				{ name: 'group:foo:bar:baz', start: [ 0, 2 ], end: [ 0, 4 ] }
 			);
@@ -1059,7 +1059,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.dataToMarker( { view: 'search' } );
 
 			expectResult(
-				viewParse( '<p>Foo<search-start></search-start><search-end></search-end>bar</p>' ),
+				_parseView( '<p>Foo<search-start></search-start><search-end></search-end>bar</p>' ),
 				'<paragraph>Foobar</paragraph>',
 				{ name: 'search', start: [ 0, 3 ], end: [ 0, 3 ] }
 			);
@@ -1069,7 +1069,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.dataToMarker( { view: 'group' } );
 
 			expectResult(
-				viewParse(
+				_parseView(
 					'<p>' +
 						'Foo' +
 						'<group-start name="abc"></group-start><group-end name="abc"></group-end>' +
@@ -1089,7 +1089,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.dataToMarker( { view: 'search' } );
 
 			expectResult(
-				viewParse( '<p data-search-start-before="">Foo</p><p data-search-end-after="">Bar</p>' ),
+				_parseView( '<p data-search-start-before="">Foo</p><p data-search-end-after="">Bar</p>' ),
 				'<paragraph>Foo</paragraph><paragraph>Bar</paragraph>',
 				{ name: 'search', start: [ 0 ], end: [ 2 ] }
 			);
@@ -1099,7 +1099,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.dataToMarker( { view: 'group' } );
 
 			expectResult(
-				viewParse( '<p data-group-start-before="foo:bar:baz">Foo</p><p data-group-end-after="foo:bar:baz">Bar</p>' ),
+				_parseView( '<p data-group-start-before="foo:bar:baz">Foo</p><p data-group-end-after="foo:bar:baz">Bar</p>' ),
 				'<paragraph>Foo</paragraph><paragraph>Bar</paragraph>',
 				{ name: 'group:foo:bar:baz', start: [ 0 ], end: [ 2 ] }
 			);
@@ -1109,7 +1109,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.dataToMarker( { view: 'group' } );
 
 			expectResult(
-				viewParse( '<p data-group-end-after="foo:bar:baz" data-group-start-before="foo:bar:baz">Foobar</p>' ),
+				_parseView( '<p data-group-end-after="foo:bar:baz" data-group-start-before="foo:bar:baz">Foobar</p>' ),
 				'<paragraph>Foobar</paragraph>',
 				{ name: 'group:foo:bar:baz', start: [ 0 ], end: [ 1 ] }
 			);
@@ -1119,7 +1119,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.dataToMarker( { view: 'group' } );
 
 			expectResult(
-				viewParse( '<p data-group-end-before="foo:bar:baz" data-group-start-before="foo:bar:baz">Foobar</p>' ),
+				_parseView( '<p data-group-end-before="foo:bar:baz" data-group-start-before="foo:bar:baz">Foobar</p>' ),
 				'<paragraph>Foobar</paragraph>',
 				{ name: 'group:foo:bar:baz', start: [ 0 ], end: [ 0 ] }
 			);
@@ -1129,7 +1129,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.dataToMarker( { view: 'group' } );
 
 			expectResult(
-				viewParse( '<p data-group-end-after="foo:bar:baz" data-group-start-after="foo:bar:baz">Foobar</p>' ),
+				_parseView( '<p data-group-end-after="foo:bar:baz" data-group-start-after="foo:bar:baz">Foobar</p>' ),
 				'<paragraph>Foobar</paragraph>',
 				{ name: 'group:foo:bar:baz', start: [ 1 ], end: [ 1 ] }
 			);
@@ -1139,7 +1139,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.dataToMarker( { view: 'group' } );
 
 			expectResult(
-				viewParse(
+				_parseView(
 					'<p data-group-start-before="abc:xyz,foo:bar">Foo</p>' +
 					'<p>Ba<group-end name="abc:xyz"></group-end><group-end name="foo:bar"></group-end>r</p>'
 				),
@@ -1155,7 +1155,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.dataToMarker( { view: 'group' } );
 
 			expectResult(
-				viewParse(
+				_parseView(
 					'<p>F<group-start name="abc:xyz"></group-start><group-start name="foo:bar"></group-start>oo</p>' +
 					'<p data-group-end-after="abc:xyz,foo:bar">Bar</p>'
 				),
@@ -1179,7 +1179,7 @@ describe( 'UpcastHelpers', () => {
 			} );
 
 			expectResult(
-				viewParse(
+				_parseView(
 					'<p data-g-start-before="abc_xyz,foo_bar">Foo</p>' +
 					'<p>Ba<g-end name="abc_xyz"></g-end><g-end name="foo_bar"></g-end>r</p>'
 				),
@@ -1196,7 +1196,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.dataToMarker( { view: 'group', model: name => 'g:' + name, converterPriority: 'high' } );
 
 			expectResult(
-				viewParse( '<p>Foo<group-start name="foo"></group-start><group-end name="foo"></group-end>bar</p>' ),
+				_parseView( '<p>Foo<group-start name="foo"></group-start><group-end name="foo"></group-end>bar</p>' ),
 				'<paragraph>Foobar</paragraph>',
 				{ name: 'g:foo', start: [ 0, 3 ], end: [ 0, 3 ] }
 			);
@@ -1206,7 +1206,7 @@ describe( 'UpcastHelpers', () => {
 			upcastHelpers.dataToMarker( { view: 'group' } );
 
 			expectResult(
-				viewParse( '<div data-group-end-after="foo" data-group-start-before="foo"><p>Foo</p></div>' ),
+				_parseView( '<div data-group-end-after="foo" data-group-start-before="foo"><p>Foo</p></div>' ),
 				'<paragraph>Foo</paragraph>',
 				{ name: 'group:foo', start: [ 0 ], end: [ 1 ] }
 			);
@@ -1222,7 +1222,7 @@ describe( 'UpcastHelpers', () => {
 			} );
 
 			expectResult(
-				viewParse( '<div data-group-end-after="foo" data-group-start-before="foo"><p>Foo</p></div>' ),
+				_parseView( '<div data-group-end-after="foo" data-group-start-before="foo"><p>Foo</p></div>' ),
 				'<paragraph>Foo</paragraph>',
 				[]
 			);
@@ -1463,7 +1463,7 @@ describe( 'upcast-converters', () => {
 			viewDocument = view.document;
 			viewRoot = createViewRoot( viewDocument, 'div', 'main' );
 
-			viewSetData( view, '<p>foo</p><p>bar</p>' );
+			_setViewData( view, '<p>foo</p><p>bar</p>' );
 
 			mapper = new Mapper();
 			mapper.bindElements( modelRoot, viewRoot );
@@ -1490,7 +1490,7 @@ describe( 'upcast-converters', () => {
 
 		it( 'should support unicode', () => {
 			_setModelData( model, '<paragraph>நிலைக்கு</paragraph>' );
-			viewSetData( view, '<p>நிலைக்கு</p>' );
+			_setViewData( view, '<p>நிலைக்கு</p>' );
 
 			// Re-bind elements that were just re-set.
 			mapper.bindElements( modelRoot.getChild( 0 ), viewRoot.getChild( 0 ) );
