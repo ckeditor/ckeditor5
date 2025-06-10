@@ -5,7 +5,7 @@
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { setData as setModelData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { TableEditing } from '../../src/tableediting.js';
 import { modelTable } from '../_utils/utils.js';
@@ -77,7 +77,7 @@ describe( 'table utils', () => {
 
 		describe( 'getSelectionAffectedTable', () => {
 			it( 'should return null if table is not present', () => {
-				setModelData( model, '<paragraph>Foo[]</paragraph>' );
+				_setModelData( model, '<paragraph>Foo[]</paragraph>' );
 				const selection = new Selection( model.createPositionFromPath( modelRoot, [ 0 ] ) );
 
 				const tableElement = getSelectionAffectedTable( selection );
@@ -86,7 +86,7 @@ describe( 'table utils', () => {
 			} );
 
 			it( 'should return table if present higher in the model tree', () => {
-				setModelData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ]
 				] ) );
@@ -98,7 +98,7 @@ describe( 'table utils', () => {
 			} );
 
 			it( 'should return table if selected', () => {
-				setModelData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01' ],
 					[ '10', '11' ]
 				] ) );
@@ -114,7 +114,7 @@ describe( 'table utils', () => {
 					[ 'a', 'b' ],
 					[ 'c', 'd' ]
 				] );
-				setModelData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ innerTable, '01' ],
 					[ '10', '11' ]
 				] ) );

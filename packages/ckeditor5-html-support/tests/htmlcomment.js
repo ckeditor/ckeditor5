@@ -5,7 +5,7 @@
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { HtmlComment } from '../src/htmlcomment.js';
 import { Range } from '@ckeditor/ckeditor5-engine/src/model/range.js';
 
@@ -130,7 +130,7 @@ describe( 'HtmlComment', () => {
 		it( 'should not create a dedicated model element for a comment node', () => {
 			editor.setData( '<p><!-- comment 1 -->Foo<!-- comment 2 --></p>' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>Foo</paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph>Foo</paragraph>' );
 		} );
 	} );
 

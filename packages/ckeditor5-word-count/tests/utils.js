@@ -8,7 +8,7 @@ import { modelElementToPlainText } from '../src/utils.js';
 import { Element } from '@ckeditor/ckeditor5-engine/src/model/element.js';
 import { Text } from '@ckeditor/ckeditor5-engine/src/model/text.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
@@ -54,7 +54,7 @@ describe( 'utils', () => {
 			} );
 
 			it( 'extracts plain text from blockqoutes', () => {
-				setModelData( model, '<blockQuote>' +
+				_setModelData( model, '<blockQuote>' +
 						'<paragraph>Hello</paragraph>' +
 						'<listItem listIndent="0" listType="numbered">world</listItem>' +
 						'<listItem listIndent="0" listType="numbered">foo</listItem>' +
@@ -65,7 +65,7 @@ describe( 'utils', () => {
 			} );
 
 			it( 'extracts plain text from tables', () => {
-				setModelData( model, '<table>' +
+				_setModelData( model, '<table>' +
 						'<tableRow>' +
 							'<tableCell>' +
 								'<paragraph>Foo</paragraph>' +
@@ -88,19 +88,19 @@ describe( 'utils', () => {
 			} );
 
 			it( 'extracts plain text with soft break', () => {
-				setModelData( model, '<paragraph>Foo<softBreak></softBreak>bar</paragraph>' );
+				_setModelData( model, '<paragraph>Foo<softBreak></softBreak>bar</paragraph>' );
 
 				expect( modelElementToPlainText( model.document.getRoot() ) ).to.equal( 'Foo\nbar' );
 			} );
 
 			it( 'extracts plain text with inline styles', () => {
-				setModelData( model, '<paragraph>F<$text bold="true">oo</$text><$text href="url">Ba</$text>r</paragraph>' );
+				_setModelData( model, '<paragraph>F<$text bold="true">oo</$text><$text href="url">Ba</$text>r</paragraph>' );
 
 				expect( modelElementToPlainText( model.document.getRoot() ) ).to.equal( 'FooBar' );
 			} );
 
 			it( 'extracts plain text from mixed structure', () => {
-				setModelData( model, '<paragraph>' +
+				_setModelData( model, '<paragraph>' +
 						'<$text bold="true">111</$text><$text href="url" bold="true">222</$text>333' +
 					'</paragraph><blockQuote>' +
 						'<paragraph>444<softBreak></softBreak>555</paragraph>' +

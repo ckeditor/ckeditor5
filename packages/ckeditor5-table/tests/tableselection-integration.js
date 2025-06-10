@@ -14,7 +14,7 @@ import { TableEditing } from '../src/tableediting.js';
 import { TableSelection } from '../src/tableselection.js';
 import { TableClipboard } from '../src/tableclipboard.js';
 
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { assertSelectedCells, modelTable } from './_utils/utils.js';
 import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
@@ -50,7 +50,7 @@ describe( 'TableSelection - integration', () => {
 			} );
 			viewDocument.fire( 'delete', domEventData );
 
-			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '', '', '13' ],
 				[ '', '[]', '23' ],
 				[ '31', '32', '33' ]
@@ -72,7 +72,7 @@ describe( 'TableSelection - integration', () => {
 			} );
 			viewDocument.fire( 'delete', domEventData );
 
-			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '[]', '', '13' ],
 				[ '', '', '23' ],
 				[ '31', '32', '33' ]
@@ -80,7 +80,7 @@ describe( 'TableSelection - integration', () => {
 		} );
 
 		it( 'should not interfere with default key handler if no table selection', () => {
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '11[]', '12', '13' ],
 				[ '21', '22', '23' ],
 				[ '31', '32', '33' ]
@@ -95,7 +95,7 @@ describe( 'TableSelection - integration', () => {
 			} );
 			viewDocument.fire( 'delete', domEventData );
 
-			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '1[]', '12', '13' ],
 				[ '21', '22', '23' ],
 				[ '31', '32', '33' ]
@@ -131,7 +131,7 @@ describe( 'TableSelection - integration', () => {
 
 			viewDocument.fire( 'insertText', eventData );
 
-			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '', '', '13' ],
 				[ '', 'x[]', '23' ],
 				[ '31', '32', '33' ]
@@ -159,7 +159,7 @@ describe( 'TableSelection - integration', () => {
 			// Do not wait for the browser to change DOM.
 			editor.plugins.get( 'Input' )._typingQueue.flush();
 
-			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ 'x[]11', '12', '13' ],
 				[ '21', '22', '23' ],
 				[ '31', '32', '33' ]
@@ -187,7 +187,7 @@ describe( 'TableSelection - integration', () => {
 				stop: sinon.spy()
 			} );
 
-			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ 'foo[]', '', '13' ],
 				[ '', '', '23' ],
 				[ '31', '32', '33' ]
@@ -203,7 +203,7 @@ describe( 'TableSelection - integration', () => {
 			editor.execute( 'horizontalLine' );
 
 			expect(
-				getModelData( model ) ).to.equalMarkup(
+				_getModelData( model ) ).to.equalMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><horizontalLine></horizontalLine><paragraph>[]</paragraph></tableCell>' +
@@ -242,7 +242,7 @@ describe( 'TableSelection - integration', () => {
 			} );
 
 			expect(
-				getModelData( model ) ).to.equalMarkup(
+				_getModelData( model ) ).to.equalMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell><paragraph>11</paragraph></tableCell>' +
@@ -265,7 +265,7 @@ describe( 'TableSelection - integration', () => {
 		} );
 
 		it( 'works with merge cells command', () => {
-			setModelData( editor.model, modelTable( [
+			_setModelData( editor.model, modelTable( [
 				[ '00', '01' ],
 				[ '10', '11' ]
 			] ) );
@@ -277,14 +277,14 @@ describe( 'TableSelection - integration', () => {
 
 			editor.execute( 'mergeTableCells' );
 
-			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ { colspan: 2, contents: '<paragraph>[00</paragraph><paragraph>01]</paragraph>' } ],
 				[ '10', '11' ]
 			] ) );
 
 			editor.execute( 'undo' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', '01' ],
 				[ '10', '11' ]
 			] ) );
@@ -309,7 +309,7 @@ describe( 'TableSelection - integration', () => {
 		viewDocument = editor.editing.view.document;
 		tableSelection = editor.plugins.get( TableSelection );
 
-		setModelData( model, modelTable( [
+		_setModelData( model, modelTable( [
 			[ '[]11', '12', '13' ],
 			[ '21', '22', '23' ],
 			[ '31', '32', '33' ]

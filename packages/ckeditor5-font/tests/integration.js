@@ -6,7 +6,7 @@
 import { Font } from '../src/font.js';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { getData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { getData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
 
 describe( 'Integration test Font', () => {
@@ -37,7 +37,7 @@ describe( 'Integration test Font', () => {
 
 	describe( 'in-between font plugin features', () => {
 		it( 'should render one span element for all types of font features', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>' +
 					'<$text fontColor="#123456" fontBackgroundColor="rgb(10,20,30)" fontSize="big" ' +
 						'fontFamily="Arial, Helvetica, sans-serif">foo</$text>' +
@@ -76,7 +76,7 @@ describe( 'Integration test Font', () => {
 				.then( editor => {
 					const model = editor.model;
 
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>' +
 							'<$text fontColor="#123456" fontBackgroundColor="rgb(10,20,30)" ' +
 								'fontSize="48px" fontFamily="docs-Roboto"' +
@@ -148,7 +148,7 @@ describe( 'Integration test Font', () => {
 
 	describe( 'between font plugin and other', () => {
 		it( 'should render elements wrapped in proper order', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>' +
 					'<$text bold="true" linkHref="foo" fontColor="red" fontSize="big">foo</$text>' +
 				'</paragraph>'
@@ -186,7 +186,7 @@ describe( 'Integration test Font', () => {
 				.then( editor => {
 					const model = editor.model;
 
-					setModelData( model,
+					_setModelData( model,
 						'<paragraph>' +
 							'<$text bold="true" linkHref="foo" fontColor="red" fontSize="18px">foo</$text>' +
 						'</paragraph>'
@@ -212,7 +212,7 @@ describe( 'Integration test Font', () => {
 
 	describe( 'color picker feature', () => {
 		it( 'should set colors in model in hsl format by default', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>' +
 					'<$text>[foo]</$text>' +
 				'</paragraph>'
@@ -246,7 +246,7 @@ describe( 'Integration test Font', () => {
 				}
 			} );
 
-			setModelData( editor.model,
+			_setModelData( editor.model,
 				'<paragraph>' +
 					'<$text>[foo]</$text>' +
 				'</paragraph>'
@@ -270,7 +270,7 @@ describe( 'Integration test Font', () => {
 		} );
 
 		it( 'should properly discard changes', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>' +
 					'[<$text fontColor="hsl(50, 10%, 23%)">foo</$text><$text fontColor="hsl(150, 50%, 13%)">foo</$text>]' +
 				'</paragraph>'
@@ -290,7 +290,7 @@ describe( 'Integration test Font', () => {
 		} );
 
 		it( 'should undo all changes done in a batch with a single step', () => {
-			setModelData( model, '<paragraph>[foo]</paragraph>' );
+			_setModelData( model, '<paragraph>[foo]</paragraph>' );
 
 			const dropdown = editor.ui.componentFactory.create( 'fontColor' );
 

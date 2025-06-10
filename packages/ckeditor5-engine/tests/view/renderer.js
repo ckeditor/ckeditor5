@@ -20,7 +20,7 @@ import { DocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { DowncastWriter } from '../../src/view/downcastwriter.js';
 
-import { parse, stringify, setData as setViewData, getData as getViewData } from '../../src/dev-utils/view.js';
+import { parse, stringify, setData as setViewData, _getViewData } from '../../src/dev-utils/view.js';
 import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH } from '../../src/view/filler.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { createViewRoot } from './_utils/createroot.js';
@@ -4347,7 +4347,7 @@ describe( 'Renderer', () => {
 				view.forceRender();
 
 				expect( window.spy.calledOnce ).to.be.false;
-				expect( getViewData( view ) ).to.equal( '<script>spy()</script>' );
+				expect( _getViewData( view ) ).to.equal( '<script>spy()</script>' );
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<span data-ck-unsafe-element="script">spy()</span>' );
 
 				delete window.spy;
@@ -4365,7 +4365,7 @@ describe( 'Renderer', () => {
 				view.forceRender();
 
 				expect( window.spy.calledOnce ).to.be.false;
-				expect( getViewData( view ) ).to.equal( '<style>.foo { color: red; }</style>' );
+				expect( _getViewData( view ) ).to.equal( '<style>.foo { color: red; }</style>' );
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<span data-ck-unsafe-element="style">.foo { color: red; }</span>' );
 
 				delete window.spy;
@@ -4380,7 +4380,7 @@ describe( 'Renderer', () => {
 
 				view.forceRender();
 
-				expect( getViewData( view ) ).to.equal( '<p onclick="test">foo</p>' );
+				expect( _getViewData( view ) ).to.equal( '<p onclick="test">foo</p>' );
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p data-ck-unsafe-attribute-onclick="test">foo</p>' );
 			} );
 
@@ -4399,7 +4399,7 @@ describe( 'Renderer', () => {
 
 				view.forceRender();
 
-				expect( getViewData( view ) ).to.equal( '<p onclick="foo" onkeydown="bar">baz</p>' );
+				expect( _getViewData( view ) ).to.equal( '<p onclick="foo" onkeydown="bar">baz</p>' );
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal(
 					'<p data-ck-unsafe-attribute-onkeydown="bar" onclick="foo">baz</p>'
 				);
@@ -4420,7 +4420,7 @@ describe( 'Renderer', () => {
 
 				view.forceRender();
 
-				expect( getViewData( view ) ).to.equal( '<span onclick="foo" onkeydown="bar">baz</span>' );
+				expect( _getViewData( view ) ).to.equal( '<span onclick="foo" onkeydown="bar">baz</span>' );
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal(
 					'<span data-ck-unsafe-attribute-onkeydown="bar" onclick="foo">baz</span>'
 				);
@@ -4441,7 +4441,7 @@ describe( 'Renderer', () => {
 
 				view.forceRender();
 
-				expect( getViewData( view ) ).to.equal( '<p onclick="foo">bar</p>' );
+				expect( _getViewData( view ) ).to.equal( '<p onclick="foo">bar</p>' );
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p data-ck-unsafe-attribute-onclick="foo">bar</p>' );
 			} );
 
@@ -4460,7 +4460,7 @@ describe( 'Renderer', () => {
 
 				view.forceRender();
 
-				expect( getViewData( view ) ).to.equal( '<script>bar</script>' );
+				expect( _getViewData( view ) ).to.equal( '<script>bar</script>' );
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal(
 					'<span data-ck-unsafe-element="script">bar</span>'
 				);
@@ -4516,7 +4516,7 @@ describe( 'Renderer', () => {
 				writer.unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( viewDocument, 'italic' ) );
 			} );
 
-			expect( getViewData( view ) ).to.equal( '<p>[<strong>foo</strong>]</p>' );
+			expect( _getViewData( view ) ).to.equal( '<p>[<strong>foo</strong>]</p>' );
 
 			// Re-render changes in view to DOM.
 			view.forceRender();
@@ -4543,7 +4543,7 @@ describe( 'Renderer', () => {
 			} );
 
 			viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 )._data = 'bar';
-			expect( getViewData( view ) ).to.equal( '<p>[<strong>bar</strong>]</p>' );
+			expect( _getViewData( view ) ).to.equal( '<p>[<strong>bar</strong>]</p>' );
 
 			// Re-render changes in view to DOM.
 			view.forceRender();
@@ -4569,7 +4569,7 @@ describe( 'Renderer', () => {
 				writer.insert( ViewPosition._createAfter( textNode ), new ViewAttributeElement( viewDocument, 'img' ) );
 			} );
 
-			expect( getViewData( view ) ).to.equal( '<p>foobar<img></img></p>' );
+			expect( _getViewData( view ) ).to.equal( '<p>foobar<img></img></p>' );
 
 			// Re-render changes in view to DOM.
 			view.forceRender();
@@ -4595,7 +4595,7 @@ describe( 'Renderer', () => {
 				writer.insert( ViewPosition._createBefore( textNode ), new ViewAttributeElement( viewDocument, 'img' ) );
 			} );
 
-			expect( getViewData( view ) ).to.equal( '<p><img></img>foobar</p>' );
+			expect( _getViewData( view ) ).to.equal( '<p><img></img>foobar</p>' );
 
 			// Re-render changes in view to DOM.
 			view.forceRender();
@@ -4622,7 +4622,7 @@ describe( 'Renderer', () => {
 				);
 			} );
 
-			expect( getViewData( view ) ).to.equal( '<p>foobar<strong>abc123</strong>456</p>' );
+			expect( _getViewData( view ) ).to.equal( '<p>foobar<strong>abc123</strong>456</p>' );
 
 			// Re-render changes in view to DOM.
 			view.forceRender();
@@ -4659,7 +4659,7 @@ describe( 'Renderer', () => {
 				);
 			} );
 
-			expect( getViewData( view ) ).to.equal( '<p><strong>abc</strong>bar<strong>xyz123</strong>456</p>' );
+			expect( _getViewData( view ) ).to.equal( '<p><strong>abc</strong>bar<strong>xyz123</strong>456</p>' );
 
 			// Re-render changes in view to DOM.
 			view.forceRender();
@@ -4708,7 +4708,7 @@ describe( 'Renderer', () => {
 				);
 			} );
 
-			expect( getViewData( view ) ).to.equal( '<p><em>abc</em>bar<strong>xyz123</strong>456</p>' );
+			expect( _getViewData( view ) ).to.equal( '<p><em>abc</em>bar<strong>xyz123</strong>456</p>' );
 
 			// Re-render changes in view to DOM.
 			view.forceRender();
@@ -4753,7 +4753,7 @@ describe( 'Renderer', () => {
 				writer.insert( new ViewPosition( container, 2 ), firstElement );
 			} );
 
-			expect( getViewData( view ) ).to.equal( '<p><i></i><span></span><b></b></p>' );
+			expect( _getViewData( view ) ).to.equal( '<p><i></i><span></span><b></b></p>' );
 
 			// Re-render changes in view to DOM.
 			view.forceRender();

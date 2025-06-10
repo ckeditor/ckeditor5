@@ -17,8 +17,8 @@ import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
 import { Paragraph } from 'ckeditor5/src/paragraph.js';
 import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils.js';
 import {
-	getData as getModelData,
-	setData as setModelData
+	_getModelData,
+	_setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { DomEventData } from '@ckeditor/ckeditor5-engine';
 
@@ -1206,7 +1206,7 @@ describe( 'ListEditing integrations: tab key', () => {
 		describe( 'tab + shift keys handling', () => {
 			it( 'should outdent code block', () => {
 				const customSetModelData = () => {
-					setModelData(
+					_setModelData(
 						model,
 						modelList( [
 							'* <codeBlock language="language-plaintext">[]foo</codeBlock>'
@@ -1256,7 +1256,7 @@ describe( 'ListEditing integrations: tab key', () => {
 
 			it( 'should outdent list items if a selection starts before code block and ends at a code block', () => {
 				const customSetModelData = () => {
-					setModelData(
+					_setModelData(
 						model,
 						modelList( [
 							'* foo',
@@ -1290,7 +1290,7 @@ describe( 'ListEditing integrations: tab key', () => {
 
 			it( 'should outdent a code block if a selection starts at a code block and ends after it', () => {
 				const customSetModelData = () => {
-					setModelData(
+					_setModelData(
 						model,
 						modelList( [
 							'* foo',
@@ -1612,12 +1612,12 @@ describe( 'ListEditing integrations: tab key', () => {
 		if ( customSetModelData ) {
 			customSetModelData();
 		} else {
-			setModelData( model, modelList( input ) );
+			_setModelData( model, modelList( input ) );
 		}
 
 		view.document.fire( eventInfo, domEventData );
 
-		expect( getModelData( model ) ).to.equalMarkup( modelList( expected ) );
+		expect( _getModelData( model ) ).to.equalMarkup( modelList( expected ) );
 
 		if ( typeof eventStopped === 'object' ) {
 			expect( domEventData.domEvent.stopPropagation.called ).to.equal( eventStopped.stopPropagation, 'stopPropagation() call' );

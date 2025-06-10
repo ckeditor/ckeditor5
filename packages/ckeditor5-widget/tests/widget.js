@@ -13,8 +13,8 @@ import { Delete } from '@ckeditor/ckeditor5-typing/src/delete.js';
 import { MouseObserver } from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver.js';
 import { toWidget } from '../src/utils.js';
 import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { getCode, keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { toArray } from '@ckeditor/ckeditor5-utils/src/toarray.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -196,7 +196,7 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should not focus anything when there is no editable ancestor on mousedown', () => {
-		setModelData( model, '<paragraph>Hello</paragraph>' );
+		_setModelData( model, '<paragraph>Hello</paragraph>' );
 
 		const paragraphView = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = new DomEventData( view, {
@@ -220,7 +220,7 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should not crash if the click target is not inside nested editable', () => {
-		setModelData( model, '<widget><nested>Hello</nested></widget>' );
+		_setModelData( model, '<widget><nested>Hello</nested></widget>' );
 
 		const nestedView = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 
@@ -247,7 +247,7 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should not focus anything when the range start element is not present', () => {
-		setModelData( model, '<paragraph>Hello</paragraph>' );
+		_setModelData( model, '<paragraph>Hello</paragraph>' );
 
 		const paragraphView = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = new DomEventData( view, {
@@ -275,7 +275,7 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should use `createRange` fallback if extracting range from mouse event is not possible', () => {
-		setModelData( model, '<editable><widget></widget></editable>' );
+		_setModelData( model, '<editable><widget></widget></editable>' );
 
 		const editableView = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = new DomEventData( view, {
@@ -302,7 +302,7 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should not crash and not focus anything if event target is null', () => {
-		setModelData( model, '<editable><widget></widget></editable>' );
+		_setModelData( model, '<editable><widget></widget></editable>' );
 
 		const editableView = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = new DomEventData( view, {
@@ -327,7 +327,7 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should not focus anything when it\'s not possible to extract range from mouse event', () => {
-		setModelData( model, '<widget><nested></nested></widget>' );
+		_setModelData( model, '<widget><nested></nested></widget>' );
 
 		const widgetView = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 		const target = view.domConverter.mapViewToDom( widgetView );
@@ -370,7 +370,7 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should not focus anything when the range start element is text node', () => {
-		setModelData( model, '<paragraph>Hello</paragraph>' );
+		_setModelData( model, '<paragraph>Hello</paragraph>' );
 
 		const paragraphView = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = new DomEventData( view, {
@@ -400,7 +400,7 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should not focus anything if there is no widget ancestor of element found in click point', () => {
-		setModelData( model, '<paragraph>Hello</paragraph>' );
+		_setModelData( model, '<paragraph>Hello</paragraph>' );
 
 		const paragraphView = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = new DomEventData( view, {
@@ -428,7 +428,7 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should not lookup for widget ancestor of element found in click point if it\'s widget', () => {
-		setModelData( model, '<paragraph>Hello</paragraph><widget>ABC</widget>' );
+		_setModelData( model, '<paragraph>Hello</paragraph><widget>ABC</widget>' );
 
 		const paragraphView = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = new DomEventData( view, {
@@ -456,7 +456,7 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should focus widget if clicked node that is at the end and parent contenteditable is selected', () => {
-		setModelData( model, '<editable><inline-widget></inline-widget></editable>' );
+		_setModelData( model, '<editable><inline-widget></inline-widget></editable>' );
 
 		const parentView = viewDocument.getRoot().getChild( 0 );
 		const widgetView = parentView.getChild( 0 );
@@ -488,7 +488,7 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should focus widget if clicked node that is at the start and parent contenteditable is selected', () => {
-		setModelData( model, '<editable><inline-widget></inline-widget></editable>' );
+		_setModelData( model, '<editable><inline-widget></inline-widget></editable>' );
 
 		const parentView = viewDocument.getRoot().getChild( 0 );
 		const widgetView = parentView.getChild( 0 );
@@ -520,7 +520,7 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should create selection over clicked widget', () => {
-		setModelData( model, '[]<widget></widget>' );
+		_setModelData( model, '[]<widget></widget>' );
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = new DomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewDiv ),
@@ -529,13 +529,13 @@ describe( 'Widget', () => {
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		expect( getModelData( model ) ).to.equal( '[<widget></widget>]' );
+		expect( _getModelData( model ) ).to.equal( '[<widget></widget>]' );
 	} );
 
 	it( 'should create selection over clicked widget (Android)', () => {
 		env.isAndroid = true;
 
-		setModelData( model, '[]<widget></widget>' );
+		_setModelData( model, '[]<widget></widget>' );
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = new DomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewDiv ),
@@ -545,13 +545,13 @@ describe( 'Widget', () => {
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
 		sinon.assert.calledOnce( domEventDataMock.domEvent.preventDefault );
-		expect( getModelData( model ) ).to.equal( '[<widget></widget>]' );
+		expect( _getModelData( model ) ).to.equal( '[<widget></widget>]' );
 
 		env.isAndroid = false;
 	} );
 
 	it( 'should create selection when clicked in nested element', () => {
-		setModelData( model, '[]<widget></widget>' );
+		_setModelData( model, '[]<widget></widget>' );
 		const viewDiv = viewDocument.getRoot().getChild( 0 );
 		const viewB = viewDiv.getChild( 0 );
 		const domEventDataMock = new DomEventData( view, {
@@ -561,11 +561,11 @@ describe( 'Widget', () => {
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		expect( getModelData( model ) ).to.equal( '[<widget></widget>]' );
+		expect( _getModelData( model ) ).to.equal( '[<widget></widget>]' );
 	} );
 
 	it( 'should do nothing if clicked in non-widget element', () => {
-		setModelData( model, '<paragraph>[]foo bar</paragraph><widget></widget>' );
+		_setModelData( model, '<paragraph>[]foo bar</paragraph><widget></widget>' );
 		const viewP = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = new DomEventData( view, {
 			target: view.domConverter.mapViewToDom( viewP ),
@@ -575,12 +575,12 @@ describe( 'Widget', () => {
 		view.focus();
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
-		expect( getModelData( model ) ).to.equal( '<paragraph>[]foo bar</paragraph><widget></widget>' );
+		expect( _getModelData( model ) ).to.equal( '<paragraph>[]foo bar</paragraph><widget></widget>' );
 		sinon.assert.notCalled( domEventDataMock.domEvent.preventDefault );
 	} );
 
 	it( 'should not focus editable if already is focused', () => {
-		setModelData( model, '<widget></widget>' );
+		_setModelData( model, '<widget></widget>' );
 		const widget = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = new DomEventData( view, {
 			target: view.domConverter.mapViewToDom( widget ),
@@ -592,13 +592,13 @@ describe( 'Widget', () => {
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
 		sinon.assert.notCalled( focusSpy );
-		expect( getModelData( model ) ).to.equal( '[<widget></widget>]' );
+		expect( _getModelData( model ) ).to.equal( '[<widget></widget>]' );
 	} );
 
 	it( 'should apply fake view selection if model selection is on widget element', () => {
-		setModelData( model, '[<widget>foo bar</widget>]' );
+		_setModelData( model, '[<widget>foo bar</widget>]' );
 
-		expect( getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).to.equal(
 			'[<div class="ck-widget ck-widget_selected" ' +
 			'contenteditable="false">' +
 				'foo bar' +
@@ -610,9 +610,9 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should apply fake view selection when an inline widget is surrounded by an attribute element', () => {
-		setModelData( model, '<paragraph>foo [<inline-widget attr="foo"></inline-widget>] bar</paragraph>' );
+		_setModelData( model, '<paragraph>foo [<inline-widget attr="foo"></inline-widget>] bar</paragraph>' );
 
-		expect( getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).to.equal(
 			'<p>foo ' +
 				'<attr value="foo">' +
 					'[<span class="ck-widget ck-widget_selected" contenteditable="false"></span>]' +
@@ -624,9 +624,9 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should apply fake view selection when an inline widget is surrounded by a couple of nested attribute elements', () => {
-		setModelData( model, '<paragraph>foo [<inline-widget attr="foo" bttr="bar"></inline-widget>] bar</paragraph>' );
+		_setModelData( model, '<paragraph>foo [<inline-widget attr="foo" bttr="bar"></inline-widget>] bar</paragraph>' );
 
-		expect( getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).to.equal(
 			'<p>foo ' +
 				'<attr value="foo">' +
 					'<bttr value="bar">' +
@@ -640,7 +640,7 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should apply fake view selection when the model selection surrounds the inline widget and an UI element', () => {
-		setModelData( model, '<paragraph>[]<inline-widget></inline-widget></paragraph>' );
+		_setModelData( model, '<paragraph>[]<inline-widget></inline-widget></paragraph>' );
 
 		editor.conversion.for( 'editingDowncast' ).markerToElement( {
 			model: 'testMarker',
@@ -656,7 +656,7 @@ describe( 'Widget', () => {
 			writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
 		} );
 
-		expect( getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).to.equal(
 			'<p>' +
 				'<span class="ui"></span>' +
 				'[<span class="ck-widget ck-widget_selected" contenteditable="false"></span>]' +
@@ -686,10 +686,10 @@ describe( 'Widget', () => {
 			}, { priority: 'high' } )
 		);
 
-		setModelData( model, '<paragraph>foo[<inline-widget></inline-widget>]bar</paragraph>' );
+		_setModelData( model, '<paragraph>foo[<inline-widget></inline-widget>]bar</paragraph>' );
 
 		expect( spy.calledOnce ).to.be.true;
-		expect( getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).to.equal(
 			'<p>' +
 				'foo' +
 				'<span class="ck-widget" contenteditable="false"></span>' +
@@ -699,9 +699,9 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should not apply fake view selection when an inline widget and some other content is surrounded by an attribute element', () => {
-		setModelData( model, '<paragraph>foo [<inline-widget attr="foo"></inline-widget><$text attr="foo">bar]</$text></paragraph>' );
+		_setModelData( model, '<paragraph>foo [<inline-widget attr="foo"></inline-widget><$text attr="foo">bar]</$text></paragraph>' );
 
-		expect( getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).to.equal(
 			'<p>foo ' +
 				'{<attr value="foo">' +
 					'<span class="ck-widget ck-widget_selected" contenteditable="false"></span>bar' +
@@ -713,9 +713,9 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should not apply fake view selection when a non-widget element is surrounded by an attribute element', () => {
-		setModelData( model, '<paragraph>foo [<inline attr="foo"></inline>] bar</paragraph>' );
+		_setModelData( model, '<paragraph>foo [<inline attr="foo"></inline>] bar</paragraph>' );
 
-		expect( getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).to.equal(
 			'<p>foo ' +
 				'{<attr value="foo">' +
 					'<figure></figure>' +
@@ -728,7 +728,7 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should use element\'s label to set fake selection if one is provided', () => {
-		setModelData( model, '[<widget>foo bar</widget>]' );
+		_setModelData( model, '[<widget>foo bar</widget>]' );
 
 		expect( viewDocument.selection.fakeSelectionLabel ).to.equal(
 			'element label. Press Enter to type after or press Shift + Enter to type before the widget'
@@ -736,10 +736,10 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should add selected class when other content is selected with widget', () => {
-		setModelData( model, '[<paragraph>foo</paragraph><widget></widget><widget></widget>]' );
+		_setModelData( model, '[<paragraph>foo</paragraph><widget></widget><widget></widget>]' );
 
 		expect( viewDocument.selection.isFake ).to.be.false;
-		expect( getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).to.equal(
 			'<p>{foo</p>' +
 			'<div class="ck-widget ck-widget_selected" contenteditable="false">' +
 				'<b></b>' +
@@ -754,15 +754,15 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'fake selection should be empty if widget is not selected', () => {
-		setModelData( model, '<paragraph>foo</paragraph><widget>foo bar</widget>' );
+		_setModelData( model, '<paragraph>foo</paragraph><widget>foo bar</widget>' );
 
 		expect( viewDocument.selection.fakeSelectionLabel ).to.equal( '' );
 	} );
 
 	it( 'should toggle selected class', () => {
-		setModelData( model, '<paragraph>foo</paragraph>[<widget>foo</widget>]' );
+		_setModelData( model, '<paragraph>foo</paragraph>[<widget>foo</widget>]' );
 
-		expect( getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).to.equal(
 			'<p>foo</p>' +
 			'[<div class="ck-widget ck-widget_selected" contenteditable="false">' +
 				'foo' +
@@ -775,7 +775,7 @@ describe( 'Widget', () => {
 			writer.setSelection( null );
 		} );
 
-		expect( getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).to.equal(
 			'<p>{}foo</p>' +
 			'<div class="ck-widget" contenteditable="false">' +
 				'foo' +
@@ -786,9 +786,9 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should do nothing when selection is placed in other editable', () => {
-		setModelData( model, '<widget><editable>foo bar</editable></widget><editable>[baz]</editable>' );
+		_setModelData( model, '<widget><editable>foo bar</editable></widget><editable>[baz]</editable>' );
 
-		expect( getViewData( view ) ).to.equal(
+		expect( _getViewData( view ) ).to.equal(
 			'<div class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">foo bar</figcaption>' +
 				'<b></b>' +
@@ -800,7 +800,7 @@ describe( 'Widget', () => {
 
 	describe( 'triple click', () => {
 		it( 'should set selection on entire paragraph', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>f[o]o</paragraph>' +
 				'<paragraph>foo bar</paragraph>'
 			);
@@ -818,14 +818,14 @@ describe( 'Widget', () => {
 
 			sinon.assert.called( preventDefault );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
 				'<paragraph>[foo bar]</paragraph>'
 			);
 		} );
 
 		it( 'should set selection on entire paragraph with attributes in text', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>f[o]o</paragraph>' +
 				'<paragraph>foo <$text attr="true">bar</$text></paragraph>'
 			);
@@ -844,14 +844,14 @@ describe( 'Widget', () => {
 
 			sinon.assert.called( preventDefault );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
 				'<paragraph>[foo <$text attr="true">bar</$text>]</paragraph>'
 			);
 		} );
 
 		it( 'should extend selection to include start of next text block', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>f[o]o</paragraph>' +
 				'<paragraph>foo bar</paragraph>' +
 				'<paragraph>baz</paragraph>'
@@ -870,7 +870,7 @@ describe( 'Widget', () => {
 
 			sinon.assert.called( preventDefault );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
 				'<paragraph>[foo bar</paragraph>' +
 				'<paragraph>]baz</paragraph>'
@@ -878,7 +878,7 @@ describe( 'Widget', () => {
 		} );
 
 		it( 'should not extend selection to include following block widget', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>f[o]o</paragraph>' +
 				'<paragraph>foo bar</paragraph>' +
 				'<widget><nested>foo bar</nested></widget>'
@@ -897,7 +897,7 @@ describe( 'Widget', () => {
 
 			sinon.assert.called( preventDefault );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
 				'<paragraph>[foo bar]</paragraph>' +
 				'<widget><nested>foo bar</nested></widget>'
@@ -905,7 +905,7 @@ describe( 'Widget', () => {
 		} );
 
 		it( 'should extend selection to include start of next text block in block quote', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>f[o]o</paragraph>' +
 				'<paragraph>foo bar</paragraph>' +
 				'<blockQuote><paragraph>foo bar</paragraph></blockQuote>'
@@ -924,7 +924,7 @@ describe( 'Widget', () => {
 
 			sinon.assert.called( preventDefault );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
 				'<paragraph>[foo bar</paragraph>' +
 				'<blockQuote><paragraph>]foo bar</paragraph></blockQuote>'
@@ -932,7 +932,7 @@ describe( 'Widget', () => {
 		} );
 
 		it( 'should extend selection starting in block quote', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>f[o]o</paragraph>' +
 				'<blockQuote><paragraph>foo bar</paragraph></blockQuote>' +
 				'<paragraph>foo bar</paragraph>'
@@ -953,7 +953,7 @@ describe( 'Widget', () => {
 
 			sinon.assert.called( preventDefault );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
 				'<blockQuote><paragraph>[foo bar</paragraph></blockQuote>' +
 				'<paragraph>]foo bar</paragraph>'
@@ -961,7 +961,7 @@ describe( 'Widget', () => {
 		} );
 
 		it( 'should set selection on entire parqgraph with inline inside', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>f[o]o</paragraph>' +
 				'<paragraph>foo<inline></inline>bar</paragraph>'
 			);
@@ -980,14 +980,14 @@ describe( 'Widget', () => {
 
 			sinon.assert.called( preventDefault );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
 				'<paragraph>[foo<inline></inline>bar]</paragraph>'
 			);
 		} );
 
 		it( 'should extend selection with inline in paragraph', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>f[o]o</paragraph>' +
 				'<paragraph>foo<inline></inline>bar</paragraph>' +
 				'<paragraph>foo</paragraph>'
@@ -1007,7 +1007,7 @@ describe( 'Widget', () => {
 
 			sinon.assert.called( preventDefault );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
 				'<paragraph>[foo<inline></inline>bar</paragraph>' +
 				'<paragraph>]foo</paragraph>'
@@ -1015,7 +1015,7 @@ describe( 'Widget', () => {
 		} );
 
 		it( 'should extend selection with inline in paragraph (when inline widget clicked)', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>f[o]o</paragraph>' +
 				'<paragraph>foo<inline></inline>bar</paragraph>' +
 				'<paragraph>foo</paragraph>'
@@ -1036,7 +1036,7 @@ describe( 'Widget', () => {
 
 			sinon.assert.called( preventDefault );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
 				'<paragraph>[foo<inline></inline>bar</paragraph>' +
 				'<paragraph>]foo</paragraph>'
@@ -1044,7 +1044,7 @@ describe( 'Widget', () => {
 		} );
 
 		it( 'should not extend selection inside widget', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>f[o]o</paragraph>' +
 				'<widget><nested>foo bar</nested></widget>' +
 				'<paragraph>foo bar</paragraph>'
@@ -1064,7 +1064,7 @@ describe( 'Widget', () => {
 
 			sinon.assert.called( preventDefault );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
 				'<widget><nested>[foo bar]</nested></widget>' +
 				'<paragraph>foo bar</paragraph>'
@@ -1072,7 +1072,7 @@ describe( 'Widget', () => {
 		} );
 
 		it( 'should not extend selection outside limit element', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>f[o]o</paragraph>' +
 				'<widget>foo</widget>' +
 				'<paragraph>foo bar</paragraph>'
@@ -1091,7 +1091,7 @@ describe( 'Widget', () => {
 
 			sinon.assert.called( preventDefault );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
 				'<widget>[foo]</widget>' +
 				'<paragraph>foo bar</paragraph>'
@@ -1285,14 +1285,14 @@ describe( 'Widget', () => {
 					keyCode: keyCodes.arrowright,
 					preventDefault: sinon.spy()
 				};
-				setModelData( model, '<paragraph>foo</paragraph>[<widget></widget>]' );
+				_setModelData( model, '<paragraph>foo</paragraph>[<widget></widget>]' );
 				viewDocument.on( 'keydown', keydownHandler );
 
 				// Note: The first step is handled by the WidgetTypeAround plugin.
 				viewDocument.fire( 'keydown', domEventDataMock );
 				viewDocument.fire( 'keydown', domEventDataMock );
 
-				expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<widget></widget>]' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<widget></widget>]' );
 				sinon.assert.called( domEventDataMock.preventDefault );
 				sinon.assert.notCalled( keydownHandler );
 			} );
@@ -1303,14 +1303,14 @@ describe( 'Widget', () => {
 					keyCode: keyCodes.arrowleft,
 					preventDefault: sinon.spy()
 				};
-				setModelData( model, '[<widget></widget>]<paragraph>foo</paragraph>' );
+				_setModelData( model, '[<widget></widget>]<paragraph>foo</paragraph>' );
 				viewDocument.on( 'keydown', keydownHandler );
 
 				// Note: The first step is handled by the WidgetTypeAround plugin.
 				viewDocument.fire( 'keydown', domEventDataMock );
 				viewDocument.fire( 'keydown', domEventDataMock );
 
-				expect( getModelData( model ) ).to.equal( '[<widget></widget>]<paragraph>foo</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '[<widget></widget>]<paragraph>foo</paragraph>' );
 				sinon.assert.called( domEventDataMock.preventDefault );
 				sinon.assert.notCalled( keydownHandler );
 			} );
@@ -1788,7 +1788,7 @@ describe( 'Widget', () => {
 					};
 				} );
 
-				setModelData( model, data );
+				_setModelData( model, data );
 
 				for ( const action of actions ) {
 					viewDocument.fire( 'keydown', new DomEventData(
@@ -1802,10 +1802,10 @@ describe( 'Widget', () => {
 					) );
 				}
 
-				expect( getModelData( model ) ).to.equal( expected );
+				expect( _getModelData( model ) ).to.equal( expected );
 
 				if ( expectedView ) {
-					expect( getViewData( view ) ).to.equal( expectedView );
+					expect( _getViewData( view ) ).to.equal( expectedView );
 				}
 
 				if ( stubCalls ) {
@@ -1818,7 +1818,7 @@ describe( 'Widget', () => {
 	describe( 'delete integration', () => {
 		function test( name, input, direction, expected ) {
 			it( name, () => {
-				setModelData( model, input );
+				_setModelData( model, input );
 				const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
 
 				viewDocument.fire( 'delete', new DomEventData( viewDocument, {
@@ -1830,7 +1830,7 @@ describe( 'Widget', () => {
 					inputType: direction == 'backward' ? 'deleteContentBackward' : 'deleteContentForward'
 				} ) );
 
-				expect( getModelData( model ) ).to.equal( expected );
+				expect( _getModelData( model ) ).to.equal( expected );
 				scrollStub.restore();
 			} );
 		}
@@ -2025,7 +2025,7 @@ describe( 'Widget', () => {
 		);
 
 		it( 'should prevent default behaviour and stop event propagation', () => {
-			setModelData( model, '<paragraph>foo[]</paragraph><widget></widget>' );
+			_setModelData( model, '<paragraph>foo[]</paragraph><widget></widget>' );
 			const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
 			const deleteSpy = sinon.spy();
 			const preventDefaultSpy = sinon.spy();
@@ -2176,7 +2176,7 @@ describe( 'Widget', () => {
 
 		it( 'does nothing when editor when read only mode is enabled (delete)', () => {
 			const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'<imageBlock></imageBlock>' +
 				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
@@ -2195,7 +2195,7 @@ describe( 'Widget', () => {
 				sequence: 0
 			} ) );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
 				'<imageBlock></imageBlock>' +
 				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
@@ -2206,7 +2206,7 @@ describe( 'Widget', () => {
 
 		it( 'does nothing when editor when read only mode is enabled (delete forward)', () => {
 			const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
-			setModelData( model,
+			_setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'<imageBlock></imageBlock>' +
 				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
@@ -2225,7 +2225,7 @@ describe( 'Widget', () => {
 				sequence: 0
 			} ) );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
 				'<imageBlock></imageBlock>' +
 				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
@@ -2289,7 +2289,7 @@ describe( 'Widget', () => {
 		} );
 
 		it( 'should select a widget on mouse click', () => {
-			setModelData( model, '<paragraph>bar</paragraph><widget></widget><paragraph>foo[]</paragraph>' );
+			_setModelData( model, '<paragraph>bar</paragraph><widget></widget><paragraph>foo[]</paragraph>' );
 
 			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
 
@@ -2300,11 +2300,11 @@ describe( 'Widget', () => {
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>bar</paragraph>[<widget></widget>]<paragraph>foo</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>bar</paragraph>[<widget></widget>]<paragraph>foo</paragraph>' );
 		} );
 
 		it( 'should select the most top-outer widget if widgets are nested', () => {
-			setModelData( model, '<widget><widget></widget><widget></widget></widget>' );
+			_setModelData( model, '<widget><widget></widget><widget></widget></widget>' );
 
 			// The top-outer widget.
 			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 0 );
@@ -2316,7 +2316,7 @@ describe( 'Widget', () => {
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
-			expect( getViewData( view ) ).to.equal(
+			expect( _getViewData( view ) ).to.equal(
 				'[<div class="' +
 					'ck-widget ' +
 					'ck-widget_selected ck-widget_with-selection-handle" contenteditable="false"' +
@@ -2339,7 +2339,7 @@ describe( 'Widget', () => {
 		} );
 
 		it( 'should select a proper widget if they are nested and multiplied', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<widget></widget>' +
 				'<widget>' +
 					'<widget></widget>' +
@@ -2357,7 +2357,7 @@ describe( 'Widget', () => {
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
-			expect( getViewData( view ) ).to.equal(
+			expect( _getViewData( view ) ).to.equal(
 				'<div class="ck-widget ck-widget_with-selection-handle" ' +
 				'contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
@@ -2391,7 +2391,7 @@ describe( 'Widget', () => {
 		} );
 
 		it( 'works fine with a widget that contains more children', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<widget>' +
 					'<nested>foo bar</nested>' +
 					'<widget></widget>' +
@@ -2407,7 +2407,7 @@ describe( 'Widget', () => {
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
-			expect( getViewData( view ) ).to.equal(
+			expect( _getViewData( view ) ).to.equal(
 				'[<div class="' +
 					'ck-widget ' +
 					'ck-widget_selected ck-widget_with-selection-handle" contenteditable="false"' +
@@ -2424,7 +2424,7 @@ describe( 'Widget', () => {
 		} );
 
 		it( 'should select a proper widget for more complex structures', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<widget>' +
 					'<widget></widget>' +
 					'<widget>' +
@@ -2442,7 +2442,7 @@ describe( 'Widget', () => {
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
-			expect( getViewData( view ) ).to.equal(
+			expect( _getViewData( view ) ).to.equal(
 				'<div class="' +
 					'ck-widget ' +
 					'ck-widget_with-selection-handle" contenteditable="false"' +
@@ -2474,7 +2474,7 @@ describe( 'Widget', () => {
 		it( 'should select widget in editable', () => {
 			model.schema.extend( 'widget', { allowIn: 'nested' } );
 
-			setModelData( model, '[]<widget><nested><widget></widget></nested></widget>' );
+			_setModelData( model, '[]<widget><nested><widget></widget></nested></widget>' );
 
 			const widgetInEditable = viewDocument.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 );
 
@@ -2485,7 +2485,7 @@ describe( 'Widget', () => {
 
 			viewDocument.fire( 'mousedown', domEventDataMock );
 
-			expect( getViewData( view ) ).to.equal(
+			expect( _getViewData( view ) ).to.equal(
 				'<div class="' +
 					'ck-widget ' +
 					'ck-widget_with-selection-handle" contenteditable="false"' +
@@ -2506,7 +2506,7 @@ describe( 'Widget', () => {
 		} );
 
 		it( 'should show the selection handle only for selected widget if widgets are nested', () => {
-			setModelData( model, '<widget><widget></widget><widget></widget></widget>' );
+			_setModelData( model, '<widget><widget></widget><widget></widget></widget>' );
 
 			// The top-outer widget.
 			const viewWidgetSelectionHandle = viewDocument.getRoot().getChild( 0 );

@@ -11,7 +11,7 @@ import { Position } from '@ckeditor/ckeditor5-engine/src/model/position.js';
 import { Range } from '@ckeditor/ckeditor5-engine/src/model/range.js';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { parse, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _parseModel, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { Clipboard } from '../src/clipboard.js';
 import { ClipboardMarkersUtils } from '../src/clipboardmarkersutils.js';
@@ -52,7 +52,7 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 
 		it( 'should copy and paste marker that is inside selection', () => {
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', '' ) +
 					wrapWithTag( 'paragraph', 'Foo Bar Test' ) +
@@ -89,7 +89,7 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 
 		it( 'should copy and paste marker that is outside selection', () => {
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', 'Start' ) +
 					wrapWithTag( 'paragraph', 'Foo Bar Test' ) +
@@ -128,7 +128,7 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 
 		it( 'should copy and paste marker that starts before selection', () => {
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', 'Hello World' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -166,7 +166,7 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 
 		it( 'should copy and paste marker that starts after selection', () => {
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', 'Hello World' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -204,7 +204,7 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 
 		it( 'copy and paste markers does not affect position of markers that are after selection', () => {
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', 'Hello World Hello World' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -248,7 +248,7 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 
 		it( 'copy and paste fake marker that is inside another fake marker aligned to right', () => {
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', 'Fake Marker' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -289,7 +289,7 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 
 		it( 'copy and paste fake marker that is inside another fake marker aligned to left', () => {
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', 'Fake Marker' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -330,7 +330,7 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 
 		it( 'copy and paste fake marker that is inside another larger fake marker', () => {
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', 'Fake Marker' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -373,7 +373,7 @@ describe( 'Clipboard Markers Utils', () => {
 
 	describe( 'Restrictions', () => {
 		it( 'should not be possible to copy and paste with restrictions', () => {
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', 'Start' ) +
 					wrapWithTag( 'paragraph', 'Foo Bar Test' ) +
@@ -408,7 +408,7 @@ describe( 'Clipboard Markers Utils', () => {
 				duplicateOnPaste: true
 			} );
 
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', '[He]llo World' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -438,7 +438,7 @@ describe( 'Clipboard Markers Utils', () => {
 		it( 'should not be possible to copy partially selected markers if `copyPartiallySelected` is set to `false`', () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: 'all', copyPartiallySelected: false } );
 
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', '[He]llo World' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -474,7 +474,7 @@ describe( 'Clipboard Markers Utils', () => {
 				copyPartiallySelected: true
 			} );
 
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', '[Hello World]' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -517,7 +517,7 @@ describe( 'Clipboard Markers Utils', () => {
 				copyPartiallySelected: true
 			} );
 
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', '[He]llo World' ) + wrapWithTag( 'paragraph', '' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -561,7 +561,7 @@ describe( 'Clipboard Markers Utils', () => {
 				copyPartiallySelected: true
 			} );
 
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', '[He]llo World' ) + wrapWithTag( 'paragraph', '' ) + wrapWithTag( 'paragraph', '' )
 			);
@@ -679,7 +679,7 @@ describe( 'Clipboard Markers Utils', () => {
 
 		it( 'should be possible to force markers copy', () => {
 			clipboardMarkersUtils._forceMarkersCopy( 'comment', () => {
-				setModelData(
+				_setModelData(
 					model,
 					wrapWithTag( 'paragraph', 'Start' ) +
 						wrapWithTag( 'paragraph', 'Foo Bar Test' ) +
@@ -720,7 +720,7 @@ describe( 'Clipboard Markers Utils', () => {
 
 		it( 'should be possible to force markers copy #2 - unregistered marker', () => {
 			clipboardMarkersUtils._forceMarkersCopy( 'new', () => {
-				setModelData(
+				_setModelData(
 					model,
 					wrapWithTag( 'paragraph', 'Start' ) +
 					wrapWithTag( 'paragraph', 'Foo Bar Test' ) +
@@ -779,7 +779,7 @@ describe( 'Clipboard Markers Utils', () => {
 				copyPartiallySelected: true
 			} );
 
-			setModelData(
+			_setModelData(
 				model,
 				wrapWithTag( 'paragraph', '[Hello World]' )
 			);
@@ -1000,7 +1000,7 @@ describe( 'Clipboard Markers Utils', () => {
 	}
 
 	function createFragment( content ) {
-		let parsedContent = parse( content, model.schema, {
+		let parsedContent = _parseModel( content, model.schema, {
 			context: [ '$clipboardHolder' ]
 		} );
 

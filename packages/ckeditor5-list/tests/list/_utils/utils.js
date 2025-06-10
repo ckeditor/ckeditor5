@@ -6,11 +6,11 @@
 import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
 import { DocumentFragment } from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
 import {
-	getData as getModelData,
+	_getModelData,
 	parse as parseModel,
-	stringify as stringifyModel
+	_stringifyModel
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { ListWalker } from '../../../src/list/utils/listwalker.js';
 
 /**
@@ -72,28 +72,28 @@ export function setupTestHelpers( editor ) {
 		test( input, output, actionCallback, testUndo ) {
 			const callbackSelection = prepareTest( model, input );
 
-			const modelBefore = getModelData( model );
-			const viewBefore = getViewData( view, { withoutSelection: true } );
+			const modelBefore = _getModelData( model );
+			const viewBefore = _getViewData( view, { withoutSelection: true } );
 
 			test.reconvertSpy = sinon.spy( editor.editing, 'reconvertItem' );
 			actionCallback( callbackSelection );
 			test.reconvertSpy.restore();
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( output );
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( output );
 
 			if ( testUndo ) {
-				const modelAfter = getModelData( model );
-				const viewAfter = getViewData( view, { withoutSelection: true } );
+				const modelAfter = _getModelData( model );
+				const viewAfter = _getViewData( view, { withoutSelection: true } );
 
 				editor.execute( 'undo' );
 
-				expect( getModelData( model ), 'after undo' ).to.equalMarkup( modelBefore );
-				expect( getViewData( view, { withoutSelection: true } ), 'after undo' ).to.equalMarkup( viewBefore );
+				expect( _getModelData( model ), 'after undo' ).to.equalMarkup( modelBefore );
+				expect( _getViewData( view, { withoutSelection: true } ), 'after undo' ).to.equalMarkup( viewBefore );
 
 				editor.execute( 'redo' );
 
-				expect( getModelData( model ), 'after redo' ).to.equalMarkup( modelAfter );
-				expect( getViewData( view, { withoutSelection: true } ), 'after redo' ).to.equalMarkup( viewAfter );
+				expect( _getModelData( model ), 'after redo' ).to.equalMarkup( modelAfter );
+				expect( _getViewData( view, { withoutSelection: true } ), 'after redo' ).to.equalMarkup( viewAfter );
 			}
 		},
 
@@ -208,7 +208,7 @@ export function setupTestHelpers( editor ) {
 			editor.setData( input );
 
 			expect( editor.getData( { skipListItemIds: true } ), 'output data' ).to.equalMarkup( output );
-			expect( getModelData( model, { withoutSelection: true } ), 'model data' ).to.equalMarkup( modelData );
+			expect( _getModelData( model, { withoutSelection: true } ), 'model data' ).to.equalMarkup( modelData );
 		}
 	};
 
@@ -375,7 +375,7 @@ function stringifyNode( node, writer ) {
 		writer.append( contentNode, fragment );
 	}
 
-	return stringifyModel( fragment );
+	return _stringifyModel( fragment );
 }
 
 function stringifyElement( content, listAttributes = {} ) {

@@ -14,8 +14,8 @@ import {
 } from '../../src/image/utils.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Image converters', () => {
@@ -75,7 +75,7 @@ describe( 'Image converters', () => {
 
 	describe( 'upcastImageFigure', () => {
 		function expectModel( data ) {
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( data );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( data );
 		}
 
 		let schema, imgConverterCalled;
@@ -260,7 +260,7 @@ describe( 'Image converters', () => {
 
 	describe( 'downcastImageAttribute', () => {
 		it( 'should convert adding attribute to image', () => {
-			setModelData( model, '<imageBlock src=""></imageBlock>' );
+			_setModelData( model, '<imageBlock src=""></imageBlock>' );
 
 			const image = document.getRoot().getChild( 0 );
 
@@ -268,46 +268,46 @@ describe( 'Image converters', () => {
 				writer.setAttribute( 'alt', 'foo bar', image );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 				'<figure class="ck-widget image" contenteditable="false"><img alt="foo bar" src=""></img></figure>'
 			);
 		} );
 
 		it( 'should convert an empty "src" attribute from image even if removed', () => {
-			setModelData( model, '<imageBlock src="" alt="foo bar"></imageBlock>' );
+			_setModelData( model, '<imageBlock src="" alt="foo bar"></imageBlock>' );
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
 				writer.removeAttribute( 'src', image );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 				'<figure class="ck-widget image" contenteditable="false"><img alt="foo bar" src=""></img></figure>'
 			);
 		} );
 
 		it( 'should convert an empty "alt" attribute from image even if removed', () => {
-			setModelData( model, '<imageBlock src="" alt="foo bar"></imageBlock>' );
+			_setModelData( model, '<imageBlock src="" alt="foo bar"></imageBlock>' );
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
 				writer.removeAttribute( 'alt', image );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 				'<figure class="ck-widget image" contenteditable="false"><img alt="" src=""></img></figure>'
 			);
 		} );
 
 		it( 'should convert change of attribute image', () => {
-			setModelData( model, '<imageBlock src="" alt="foo bar"></imageBlock>' );
+			_setModelData( model, '<imageBlock src="" alt="foo bar"></imageBlock>' );
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
 				writer.setAttribute( 'alt', 'baz quix', image );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 				'<figure class="ck-widget image" contenteditable="false"><img alt="baz quix" src=""></img></figure>'
 			);
 		} );
@@ -317,9 +317,9 @@ describe( 'Image converters', () => {
 				conversionApi.consumable.consume( data.item, 'attribute:alt' );
 			}, { priority: 'high' } );
 
-			setModelData( model, '<imageBlock src="" alt="foo bar"></imageBlock>' );
+			_setModelData( model, '<imageBlock src="" alt="foo bar"></imageBlock>' );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 				'<figure class="ck-widget image" contenteditable="false"><img src=""></img></figure>'
 			);
 		} );
@@ -330,14 +330,14 @@ describe( 'Image converters', () => {
 			} );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'foo', view: 'foo' } );
 
-			setModelData( model, '<imageBlock src=""><foo></foo></imageBlock>' );
+			_setModelData( model, '<imageBlock src=""><foo></foo></imageBlock>' );
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
 				writer.setAttribute( 'alt', 'foo bar', image );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+			expect( _getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 				'<figure class="ck-widget image" contenteditable="false"><img alt="foo bar" src=""></img><foo></foo></figure>'
 			);
 		} );

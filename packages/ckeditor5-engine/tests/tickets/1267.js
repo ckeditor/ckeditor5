@@ -8,7 +8,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import { Position } from '../../src/model/position.js';
 import { Range } from '../../src/model/range.js';
-import { setData as setModelData, getData as getModelData } from '../../src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '../../src/dev-utils/model.js';
 
 describe( 'Bug ckeditor5-engine#1267', () => {
 	let element, editor, model;
@@ -32,7 +32,7 @@ describe( 'Bug ckeditor5-engine#1267', () => {
 	} );
 
 	it( 'selection should not retain attributes after external change removal', () => {
-		setModelData( model,
+		_setModelData( model,
 			'<paragraph>foo bar baz</paragraph>' +
 			'<paragraph>foo <$text bold="true">bar{}</$text> baz</paragraph>'
 		);
@@ -42,11 +42,11 @@ describe( 'Bug ckeditor5-engine#1267', () => {
 			writer.remove( Range._createFromPositionAndShift( new Position( model.document.getRoot(), [ 1 ] ), 1 ) );
 		} );
 
-		expect( getModelData( model ) ).to.equal( '<paragraph>foo bar baz[]</paragraph>' );
+		expect( _getModelData( model ) ).to.equal( '<paragraph>foo bar baz[]</paragraph>' );
 	} );
 
 	it( 'selection should retain attributes set manually', () => {
-		setModelData( model,
+		_setModelData( model,
 			'<paragraph>foo bar baz</paragraph>' +
 			'<paragraph>foo bar baz</paragraph>' +
 			'<paragraph>[]</paragraph>'
@@ -54,7 +54,7 @@ describe( 'Bug ckeditor5-engine#1267', () => {
 
 		// Execute bold command when selection is inside empty paragraph.
 		editor.execute( 'bold' );
-		expect( getModelData( model ) ).to.equal(
+		expect( _getModelData( model ) ).to.equal(
 			'<paragraph>foo bar baz</paragraph>' +
 			'<paragraph>foo bar baz</paragraph>' +
 			'<paragraph selection:bold="true"><$text bold="true">[]</$text></paragraph>'
@@ -66,7 +66,7 @@ describe( 'Bug ckeditor5-engine#1267', () => {
 		} );
 
 		// Selection attributes set by command should stay as they were.
-		expect( getModelData( model ) ).to.equal(
+		expect( _getModelData( model ) ).to.equal(
 			'<paragraph>foo bar baz</paragraph>' +
 			'<paragraph selection:bold="true"><$text bold="true">[]</$text></paragraph>' );
 	} );

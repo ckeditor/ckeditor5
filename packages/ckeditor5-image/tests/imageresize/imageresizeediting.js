@@ -16,7 +16,7 @@ import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
 import { ImageInlineEditing } from '../../src/image/imageinlineediting.js';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils.js';
 import { IMAGE_SRC_FIXTURE } from './_utils/utils.js';
@@ -221,7 +221,7 @@ describe( 'ImageResizeEditing', () => {
 				it( 'downcasts 100px height correctly', () => {
 					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="100px"></imageBlock>` );
 
-					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 						'<figure class="ck-widget ck-widget_selected image" contenteditable="false" style="height:100px">' +
 							`<img src="${ IMAGE_SRC_FIXTURE }"></img>` +
 							'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
@@ -232,7 +232,7 @@ describe( 'ImageResizeEditing', () => {
 				it( 'downcasts 50% height correctly', () => {
 					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
 
-					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 						'<figure class="ck-widget ck-widget_selected image" contenteditable="false" style="height:50%">' +
 							`<img src="${ IMAGE_SRC_FIXTURE }"></img>` +
 							'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
@@ -249,7 +249,7 @@ describe( 'ImageResizeEditing', () => {
 						writer.removeAttribute( 'resizedHeight', imageModel );
 					} );
 
-					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 						'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
 							`<img src="${ IMAGE_SRC_FIXTURE }"></img>` +
 							'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
@@ -265,7 +265,7 @@ describe( 'ImageResizeEditing', () => {
 					);
 					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
 
-					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 						'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
 							`<img src="${ IMAGE_SRC_FIXTURE }"></img>` +
 							'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
@@ -448,7 +448,7 @@ describe( 'ImageResizeEditing', () => {
 						`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedHeight="100px"></imageInline></paragraph>`
 					);
 
-					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 						'<p><span class="ck-widget image-inline" contenteditable="false">' +
 							`<img src="${ IMAGE_SRC_FIXTURE }" style="height:100px"></img>` +
 						'</span></p>'
@@ -460,7 +460,7 @@ describe( 'ImageResizeEditing', () => {
 						`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageInline></paragraph>`
 					);
 
-					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 						'<p><span class="ck-widget image-inline" contenteditable="false">' +
 							`<img src="${ IMAGE_SRC_FIXTURE }" style="height:50%"></img>` +
 						'</span></p>'
@@ -478,7 +478,7 @@ describe( 'ImageResizeEditing', () => {
 						writer.removeAttribute( 'resizedHeight', imageModel );
 					} );
 
-					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 						'<p><span class="ck-widget image-inline" contenteditable="false">' +
 							`<img src="${ IMAGE_SRC_FIXTURE }"></img>` +
 						'</span></p>'
@@ -495,7 +495,7 @@ describe( 'ImageResizeEditing', () => {
 						`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageInline></paragraph>`
 					);
 
-					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 						'<p><span class="ck-widget image-inline" contenteditable="false">' +
 							`<img src="${ IMAGE_SRC_FIXTURE }"></img>` +
 						'</span></p>'

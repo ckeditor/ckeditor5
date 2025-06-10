@@ -11,7 +11,7 @@ import { TwoStepCaretMovement } from '../src/twostepcaretmovement.js';
 import { Position } from '@ckeditor/ckeditor5-engine/src/model/position.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { getData as getModelData, setData as setModelData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { toArray } from '@ckeditor/ckeditor5-utils/src/toarray.js';
 import { priorities } from '@ckeditor/ckeditor5-utils/src/priorities.js';
 
@@ -816,99 +816,99 @@ describe( 'TwoStepCaretMovement', () => {
 	// https://github.com/ckeditor/ckeditor5/issues/1016
 	describe( 'mouse click a the edge of tow-step node', () => {
 		it( 'should insert content after the two-step node', () => {
-			setModelData( model, '<paragraph><$text a="1">foo[]</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text a="1">foo[]</$text></paragraph>' );
 
 			editor.editing.view.document.fire( 'mousedown' );
 			editor.editing.view.document.fire( 'selectionChange', {
 				newSelection: view.document.selection
 			} );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph><$text a="1">foo</$text>[]</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph><$text a="1">foo</$text>[]</paragraph>' );
 
 			model.change( writer => {
 				model.insertContent( writer.createText( 'bar', selection.getAttributes() ), selection.getFirstPosition() );
 			} );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph><$text a="1">foo</$text>bar[]</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph><$text a="1">foo</$text>bar[]</paragraph>' );
 		} );
 
 		it( 'should insert content after the two-step node (with following text)', () => {
-			setModelData( model, '<paragraph><$text a="1">foo[]</$text><$text b="2">123</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text a="1">foo[]</$text><$text b="2">123</$text></paragraph>' );
 
 			editor.editing.view.document.fire( 'mousedown' );
 			editor.editing.view.document.fire( 'selectionChange', {
 				newSelection: view.document.selection
 			} );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph><$text a="1">foo</$text><$text b="2">[]123</$text></paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph><$text a="1">foo</$text><$text b="2">[]123</$text></paragraph>' );
 
 			model.change( writer => {
 				model.insertContent( writer.createText( 'bar', selection.getAttributes() ), selection.getFirstPosition() );
 			} );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph><$text a="1">foo</$text><$text b="2">bar[]123</$text></paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph><$text a="1">foo</$text><$text b="2">bar[]123</$text></paragraph>' );
 		} );
 
 		it( 'should insert content before the two-step node', () => {
-			setModelData( model, '<paragraph><$text a="1">[]foo</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text a="1">[]foo</$text></paragraph>' );
 
 			editor.editing.view.document.fire( 'mousedown' );
 			editor.editing.view.document.fire( 'selectionChange', {
 				newSelection: view.document.selection
 			} );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>[]<$text a="1">foo</$text></paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[]<$text a="1">foo</$text></paragraph>' );
 
 			model.change( writer => {
 				model.insertContent( writer.createText( 'bar', selection.getAttributes() ), selection.getFirstPosition() );
 			} );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>bar[]<$text a="1">foo</$text></paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>bar[]<$text a="1">foo</$text></paragraph>' );
 		} );
 
 		it( 'should insert content before the two-step node (with preceding text)', () => {
-			setModelData( model, '<paragraph><$text b="2">123</$text><$text a="1">[]foo</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text b="2">123</$text><$text a="1">[]foo</$text></paragraph>' );
 
 			editor.editing.view.document.fire( 'mousedown' );
 			editor.editing.view.document.fire( 'selectionChange', {
 				newSelection: view.document.selection
 			} );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph><$text b="2">123[]</$text><$text a="1">foo</$text></paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph><$text b="2">123[]</$text><$text a="1">foo</$text></paragraph>' );
 
 			model.change( writer => {
 				model.insertContent( writer.createText( 'bar', selection.getAttributes() ), selection.getFirstPosition() );
 			} );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph><$text b="2">123bar[]</$text><$text a="1">foo</$text></paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph><$text b="2">123bar[]</$text><$text a="1">foo</$text></paragraph>' );
 		} );
 
 		it( 'should insert content to the two-step node if clicked inside it', () => {
-			setModelData( model, '<paragraph><$text a="1">f[]oo</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text a="1">f[]oo</$text></paragraph>' );
 
 			editor.editing.view.document.fire( 'mousedown' );
 			editor.editing.view.document.fire( 'selectionChange', {
 				newSelection: view.document.selection
 			} );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph><$text a="1">f[]oo</$text></paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph><$text a="1">f[]oo</$text></paragraph>' );
 
 			model.change( writer => {
 				model.insertContent( writer.createText( 'bar', selection.getAttributes() ), selection.getFirstPosition() );
 			} );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph><$text a="1">fbar[]oo</$text></paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph><$text a="1">fbar[]oo</$text></paragraph>' );
 		} );
 
 		it( 'should insert content between two two-step nodes (selection at the end of the first node)', () => {
-			setModelData( model, '<paragraph><$text a="1">foo[]</$text><$text a="2">bar</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text a="1">foo[]</$text><$text a="2">bar</$text></paragraph>' );
 
 			editor.editing.view.document.fire( 'mousedown' );
 			editor.editing.view.document.fire( 'selectionChange', {
 				newSelection: view.document.selection
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph><$text a="1">foo</$text>[]<$text a="2">bar</$text></paragraph>'
 			);
 
@@ -916,20 +916,20 @@ describe( 'TwoStepCaretMovement', () => {
 				model.insertContent( writer.createText( '123', selection.getAttributes() ), selection.getFirstPosition() );
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph><$text a="1">foo</$text>123[]<$text a="2">bar</$text></paragraph>'
 			);
 		} );
 
 		it( 'should insert content between two two-step nodes (selection at the beginning of the second node)', () => {
-			setModelData( model, '<paragraph><$text a="1">foo</$text><$text a="2">[]bar</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text a="1">foo</$text><$text a="2">[]bar</$text></paragraph>' );
 
 			editor.editing.view.document.fire( 'mousedown' );
 			editor.editing.view.document.fire( 'selectionChange', {
 				newSelection: view.document.selection
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph><$text a="1">foo</$text>[]<$text a="2">bar</$text></paragraph>'
 			);
 
@@ -937,46 +937,46 @@ describe( 'TwoStepCaretMovement', () => {
 				model.insertContent( writer.createText( '123', selection.getAttributes() ), selection.getFirstPosition() );
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph><$text a="1">foo</$text>123[]<$text a="2">bar</$text></paragraph>'
 			);
 		} );
 
 		it( 'should do nothing if the text was not clicked', () => {
-			setModelData( model, '<paragraph><$text a="1">foo[]</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text a="1">foo[]</$text></paragraph>' );
 
 			editor.editing.view.document.fire( 'selectionChange', {
 				newSelection: view.document.selection
 			} );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph><$text a="1">foo[]</$text></paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph><$text a="1">foo[]</$text></paragraph>' );
 		} );
 
 		it( 'should do nothing if the selection is not collapsed after the click', () => {
-			setModelData( model, '<paragraph>[<$text a="1">foo</$text>]</paragraph>' );
+			_setModelData( model, '<paragraph>[<$text a="1">foo</$text>]</paragraph>' );
 
 			editor.editing.view.document.fire( 'mousedown' );
 			editor.editing.view.document.fire( 'selectionChange', {
 				newSelection: view.document.selection
 			} );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>[<$text a="1">foo</$text>]</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[<$text a="1">foo</$text>]</paragraph>' );
 		} );
 
 		it( 'should do nothing if the text is not a two-step node', () => {
-			setModelData( model, '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
 
 			editor.editing.view.document.fire( 'mousedown' );
 			editor.editing.view.document.fire( 'selectionChange', {
 				newSelection: view.document.selection
 			} );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph><$text bold="true">foo[]</$text></paragraph>' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/17171
 		it( 'should handle use touchstart event to determine behavior if mousedown is fired after selectionchange on iOS', () => {
-			setModelData( model, '<paragraph><$text a="1">foo[]</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text a="1">foo[]</$text></paragraph>' );
 
 			editor.editing.view.document.fire( 'touchstart' );
 			editor.editing.view.document.fire( 'selectionChange', {
@@ -986,13 +986,13 @@ describe( 'TwoStepCaretMovement', () => {
 			// on safari the mousedown event is called after selectionchange, so we can simulate it here
 			editor.editing.view.document.fire( 'mousedown' );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph><$text a="1">foo</$text>[]</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph><$text a="1">foo</$text>[]</paragraph>' );
 
 			model.change( writer => {
 				model.insertContent( writer.createText( 'bar', selection.getAttributes() ), selection.getFirstPosition() );
 			} );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph><$text a="1">foo</$text>bar[]</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph><$text a="1">foo</$text>bar[]</paragraph>' );
 		} );
 	} );
 
@@ -1003,25 +1003,25 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 
 		it( 'should remove two-step attributes when pasting two-step content', () => {
-			setModelData( model, '<paragraph>foo[]</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 			model.change( writer => {
 				model.insertContent( writer.createText( 'INSERTED', { a: 'abc' } ) );
 			} );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>foo<$text a="abc">INSERTED</$text>[]</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo<$text a="abc">INSERTED</$text>[]</paragraph>' );
 
 			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.be.empty;
 		} );
 
 		it( 'should not remove two-step attributes when pasting a non-two-step content', () => {
-			setModelData( model, '<paragraph><$text a="abc">foo[]</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text a="abc">foo[]</$text></paragraph>' );
 
 			model.change( writer => {
 				model.insertContent( writer.createText( 'INSERTED', { bold: 'true' } ) );
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>' +
 					'<$text a="abc">foo</$text>' +
 					'<$text bold="true">INSERTED[]</$text>' +
@@ -1032,18 +1032,18 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 
 		it( 'should not remove two-step attributes when pasting in the middle of a two-step with the same value', () => {
-			setModelData( model, '<paragraph><$text a="abc">fo[]o</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text a="abc">fo[]o</$text></paragraph>' );
 
 			model.change( writer => {
 				model.insertContent( writer.createText( 'INSERTED', { a: 'abc' } ) );
 			} );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph><$text a="abc">foINSERTED[]o</$text></paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph><$text a="abc">foINSERTED[]o</$text></paragraph>' );
 			expect( model.document.selection ).to.have.attribute( 'a' );
 		} );
 
 		it( 'should not remove two-step attributes from the selection when pasting before a two-step with overridden gravity', () => {
-			setModelData( model, '<paragraph>foo[]<$text a="abc">bar</$text></paragraph>' );
+			_setModelData( model, '<paragraph>foo[]<$text a="abc">bar</$text></paragraph>' );
 
 			view.document.fire( 'keydown', {
 				keyCode: keyCodes.arrowright,
@@ -1057,7 +1057,7 @@ describe( 'TwoStepCaretMovement', () => {
 				model.insertContent( writer.createText( 'INSERTED', { bold: true } ) );
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>' +
 					'foo' +
 					'<$text bold="true">INSERTED</$text>[]' +
@@ -1070,13 +1070,13 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 
 		it( 'should remove two-step attributes when pasting a two-step into another two-step (different value)', () => {
-			setModelData( model, '<paragraph><$text a="abc">f[]oo</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text a="abc">f[]oo</$text></paragraph>' );
 
 			model.change( writer => {
 				model.insertContent( writer.createText( 'INSERTED', { a: 'def' } ) );
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>' +
 					'<$text a="abc">f</$text>' +
 					'<$text a="def">INSERTED</$text>[]' +
@@ -1088,7 +1088,7 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 
 		it( 'should not remove two-step attributes when pasting before another two-step (different value)', () => {
-			setModelData( model, '<paragraph>[]<$text a="abc">foo</$text></paragraph>' );
+			_setModelData( model, '<paragraph>[]<$text a="abc">foo</$text></paragraph>' );
 
 			expect( model.document.selection ).to.have.property( 'isGravityOverridden', false );
 
@@ -1096,7 +1096,7 @@ describe( 'TwoStepCaretMovement', () => {
 				model.insertContent( writer.createText( 'INSERTED', { a: 'def' } ) );
 			} );
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>' +
 					'<$text a="def">INSERTED</$text>[]' +
 					'<$text a="abc">foo</$text>' +
@@ -1114,7 +1114,7 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 
 		it( 'should not preserve the two-step attribute when deleting content after the two-step content', () => {
-			setModelData( model, '<paragraph>Foo <$text a="url">Bar</$text> []</paragraph>' );
+			_setModelData( model, '<paragraph>Foo <$text a="url">Bar</$text> []</paragraph>' );
 
 			expect( model.document.selection.hasAttribute( 'a' ), 'initial state' ).to.equal( false );
 
@@ -1135,11 +1135,11 @@ describe( 'TwoStepCaretMovement', () => {
 			} ) );
 
 			expect( model.document.selection.hasAttribute( 'a' ), 'removing a character in the link' ).to.equal( false );
-			expect( getModelData( model ) ).to.equal( '<paragraph>Foo <$text a="url">Ba</$text>[]</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>Foo <$text a="url">Ba</$text>[]</paragraph>' );
 		} );
 
 		it( 'should not preserve the two-step attribute when deleting content at the beginning of the two-step content', () => {
-			setModelData( model, '<paragraph><$text a="url">B[]ar</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text a="url">B[]ar</$text></paragraph>' );
 
 			expect( model.document.selection.hasAttribute( 'a' ), 'initial state' ).to.equal( true );
 
@@ -1152,11 +1152,11 @@ describe( 'TwoStepCaretMovement', () => {
 
 			expect( model.document.selection.hasAttribute( 'a' ), 'removing first character' ).to.equal( false );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>[]<$text a="url">ar</$text></paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[]<$text a="url">ar</$text></paragraph>' );
 		} );
 
 		it( 'should not preserve the two-step attribute when deleting content before another two-step content', () => {
-			setModelData( model, '<paragraph><$text a="1">Bar</$text><$text a="2">B[]ar</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text a="1">Bar</$text><$text a="2">B[]ar</$text></paragraph>' );
 
 			expect( model.document.selection.hasAttribute( 'a' ), 'initial state' ).to.equal( true );
 
@@ -1169,7 +1169,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 			expect( model.document.selection.hasAttribute( 'a' ), 'removing first character' ).to.equal( false );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph><$text a="1">Bar</$text>[]<$text a="2">ar</$text></paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph><$text a="1">Bar</$text>[]<$text a="2">ar</$text></paragraph>' );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
 				preventDefault: () => {}
@@ -1180,11 +1180,11 @@ describe( 'TwoStepCaretMovement', () => {
 
 			expect( model.document.selection.hasAttribute( 'a' ) ).to.equal( false );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph><$text a="1">Ba</$text>[]<$text a="2">ar</$text></paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph><$text a="1">Ba</$text>[]<$text a="2">ar</$text></paragraph>' );
 		} );
 
 		it( 'should preserve the two-step attribute when deleting content and the selection is at the end of the two-step content', () => {
-			setModelData( model, '<paragraph>Foo <$text a="url">Bar []</$text></paragraph>' );
+			_setModelData( model, '<paragraph>Foo <$text a="url">Bar []</$text></paragraph>' );
 
 			expect( model.document.selection.hasAttribute( 'a' ), 'initial state' ).to.equal( true );
 
@@ -1205,11 +1205,11 @@ describe( 'TwoStepCaretMovement', () => {
 			} ) );
 
 			expect( model.document.selection.hasAttribute( 'a' ), 'removing a character in the link' ).to.equal( true );
-			expect( getModelData( model ) ).to.equal( '<paragraph>Foo <$text a="url">Ba[]</$text></paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>Foo <$text a="url">Ba[]</$text></paragraph>' );
 		} );
 
 		it( 'should preserve the two-step attribute when deleting content while the selection is inside the two-step content', () => {
-			setModelData( model, '<paragraph>Foo <$text a="url">A long URLLs[] description</$text></paragraph>' );
+			_setModelData( model, '<paragraph>Foo <$text a="url">A long URLLs[] description</$text></paragraph>' );
 
 			expect( model.document.selection.hasAttribute( 'a' ), 'initial state' ).to.equal( true );
 
@@ -1230,12 +1230,12 @@ describe( 'TwoStepCaretMovement', () => {
 			} ) );
 
 			expect( model.document.selection.hasAttribute( 'a' ), 'removing a character in the link' ).to.equal( true );
-			expect( getModelData( model ) ).to.equal( '<paragraph>Foo <$text a="url">A long URL[] description</$text></paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>Foo <$text a="url">A long URL[] description</$text></paragraph>' );
 		} );
 
 		it( 'should do nothing if there is no two-step attribute', () => {
 			model.schema.extend( '$text', { allowAttributes: 'bold' } );
-			setModelData( model, '<paragraph>Foo <$text bold="true">Bolded.</$text> []Bar</paragraph>' );
+			_setModelData( model, '<paragraph>Foo <$text bold="true">Bolded.</$text> []Bar</paragraph>' );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
 				preventDefault: () => {}
@@ -1251,11 +1251,11 @@ describe( 'TwoStepCaretMovement', () => {
 				selectionToRemove: view.document.selection
 			} ) );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>Foo <$text bold="true">Bolded[]</$text>Bar</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>Foo <$text bold="true">Bolded[]</$text>Bar</paragraph>' );
 		} );
 
 		it( 'should preserve the two-step attribute when deleting content using "Delete" key', () => {
-			setModelData( model, '<paragraph>Foo <$text a="url">Bar</$text>[ ]</paragraph>' );
+			_setModelData( model, '<paragraph>Foo <$text a="url">Bar</$text>[ ]</paragraph>' );
 
 			expect( model.document.selection.hasAttribute( 'a' ), 'initial state' ).to.equal( false );
 
@@ -1266,7 +1266,7 @@ describe( 'TwoStepCaretMovement', () => {
 				selectionToRemove: view.document.selection
 			} ) );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>Foo <$text a="url">Bar[]</$text></paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>Foo <$text a="url">Bar[]</$text></paragraph>' );
 
 			expect( model.document.selection.hasAttribute( 'a' ), 'removing space after the link' ).to.equal( true );
 		} );

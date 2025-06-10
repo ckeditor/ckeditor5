@@ -5,7 +5,7 @@
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { RemoveRowCommand } from '../../src/commands/removerowcommand.js';
 import { TableSelection } from '../../src/tableselection.js';
@@ -287,7 +287,7 @@ describe( 'RemoveRowCommand', () => {
 				], { headingRows: 1 } ) );
 
 				// The editing view should also be properly downcasted.
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+				expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
 					[ '00', '01' ],
 					[ '40', '41' ]
 				], { headingRows: 1, asWidget: true } ) );

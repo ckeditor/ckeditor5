@@ -15,7 +15,7 @@ import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domev
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { parse as parseView, getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _parseView, _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { MentionEditing } from '../src/mentionediting.js';
@@ -66,12 +66,12 @@ describe( 'Mention feature - integration', () => {
 			} );
 
 			expect( editor.getData() ).to.equal( '<p>foo @Jaohn bar</p>' );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo @Jaohn bar</p>' );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo @Jaohn bar</p>' );
 
 			editor.execute( 'undo' );
 
 			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 		} );
 
@@ -91,12 +91,12 @@ describe( 'Mention feature - integration', () => {
 			} );
 
 			expect( editor.getData() ).to.equal( '<p>foo @Jhn bar</p>' );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo @Jhn bar</p>' );
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo @Jhn bar</p>' );
 
 			editor.execute( 'undo' );
 
 			expect( editor.getData() ).to.equal( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p>foo <span class="mention" data-mention="@John">@John</span> bar</p>' );
 		} );
 
@@ -160,20 +160,20 @@ describe( 'Mention feature - integration', () => {
 
 			expect( editor.getData() )
 				.to.equal( expectedData );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( expectedData );
 
 			editor.execute( 'undo' );
 
 			expect( editor.getData() ).to.equal( initialData );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( initialData );
 
 			editor.execute( 'redo' );
 
 			expect( editor.getData() )
 				.to.equal( expectedData );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( expectedData );
 		}
 	} );
@@ -201,7 +201,7 @@ describe( 'Mention feature - integration', () => {
 			} );
 
 			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<blockquote><p>xxx<span class="mention" data-mention="@John">@Joh</span></p></blockquote>' )
+				content: _parseView( '<blockquote><p>xxx<span class="mention" data-mention="@John">@Joh</span></p></blockquote>' )
 			} );
 
 			const expectedData = '<p>foo</p>' +
@@ -210,7 +210,7 @@ describe( 'Mention feature - integration', () => {
 
 			expect( editor.getData() )
 				.to.equal( expectedData );
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+			expect( _getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( expectedData );
 		} );
 	} );

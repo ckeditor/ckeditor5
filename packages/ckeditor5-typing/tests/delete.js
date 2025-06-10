@@ -14,7 +14,7 @@ import { List } from '@ckeditor/ckeditor5-list/src/list.js';
 import { Heading } from '@ckeditor/ckeditor5-heading/src/heading.js';
 import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget';
 import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
 import { Batch } from '@ckeditor/ckeditor5-engine/src/model/batch.js';
 import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
@@ -134,15 +134,15 @@ describe( 'Delete feature', () => {
 
 	// See https://github.com/ckeditor/ckeditor5/issues/17383.
 	it( 'handles the backspace key in a nested editable', () => {
-		setModelData( model, '<widget><nested>fo[]</nested></widget>' );
+		_setModelData( model, '<widget><nested>fo[]</nested></widget>' );
 
 		expect( clickBackspace( editor ).preventedKeyDown ).to.be.false;
 
-		expect( getModelData( model ) ).to.equal( '<widget><nested>f[]</nested></widget>' );
+		expect( _getModelData( model ) ).to.equal( '<widget><nested>f[]</nested></widget>' );
 
 		expect( clickBackspace( editor ).preventedKeyDown ).to.be.false;
 
-		expect( getModelData( model ) ).to.equal( '<widget><nested>[]</nested></widget>' );
+		expect( _getModelData( model ) ).to.equal( '<widget><nested>[]</nested></widget>' );
 	} );
 
 	it( 'passes options.selection parameter to delete command if selection to remove was specified and unit is "selection"', () => {
@@ -216,31 +216,31 @@ describe( 'Delete feature', () => {
 	// https://github.com/ckeditor/ckeditor5/issues/18356
 	describe( 'prevent backspace at the beginning of editables', () => {
 		it( 'handles the backspace key in an empty nested editable', () => {
-			setModelData( model, '<widget><nested>[]</nested></widget>' );
+			_setModelData( model, '<widget><nested>[]</nested></widget>' );
 
 			expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
 
-			expect( getModelData( model ) ).to.equal( '<widget><nested><paragraph>[]</paragraph></nested></widget>' );
+			expect( _getModelData( model ) ).to.equal( '<widget><nested><paragraph>[]</paragraph></nested></widget>' );
 		} );
 
 		it( 'handles the backspace key + meta key in a nested editable', () => {
-			setModelData( model, '<widget><nested>[]</nested></widget>' );
+			_setModelData( model, '<widget><nested>[]</nested></widget>' );
 
 			expect( clickBackspace( editor, true ).preventedKeyDown ).to.be.true;
 
-			expect( getModelData( model ) ).to.equal( '<widget><nested><paragraph>[]</paragraph></nested></widget>' );
+			expect( _getModelData( model ) ).to.equal( '<widget><nested><paragraph>[]</paragraph></nested></widget>' );
 		} );
 
 		it( 'handles backspace on list items (root editable)', () => {
-			setModelData( model, '<paragraph listIndent="0" listItemId="e5f06169" listType="todo">[]</paragraph>' );
+			_setModelData( model, '<paragraph listIndent="0" listItemId="e5f06169" listType="todo">[]</paragraph>' );
 
 			expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'handles backspace on list items (nested root-like editable)', () => {
-			setModelData(
+			_setModelData(
 				model,
 				'<widget>' +
 					'<nested-description>' +
@@ -251,7 +251,7 @@ describe( 'Delete feature', () => {
 
 			expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<widget>' +
 					'<nested-description>' +
 						'<paragraph>[]</paragraph>' +
@@ -261,15 +261,15 @@ describe( 'Delete feature', () => {
 		} );
 
 		it( 'handles backspace on empty headings (root editable)', () => {
-			setModelData( model, '<heading1>[]</heading1>' );
+			_setModelData( model, '<heading1>[]</heading1>' );
 
 			expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'handles backspace on empty headings (nested root-like editable)', () => {
-			setModelData(
+			_setModelData(
 				model,
 				'<widget>' +
 					'<nested-description>' +
@@ -280,7 +280,7 @@ describe( 'Delete feature', () => {
 
 			expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
 
-			expect( getModelData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<widget>' +
 					'<nested-description>' +
 						'<paragraph>[]</paragraph>' +
@@ -300,11 +300,11 @@ describe( 'Delete feature', () => {
 				view: ( modelItem, { writer } ) => writer.createContainerElement( 'div' )
 			} );
 
-			setModelData( model, '<emptyLimitContainer>[]</emptyLimitContainer>' );
+			_setModelData( model, '<emptyLimitContainer>[]</emptyLimitContainer>' );
 
 			expect( clickBackspace( editor ).preventedKeyDown ).to.be.true;
 
-			expect( getModelData( model ) ).to.equal( '<emptyLimitContainer>[]</emptyLimitContainer>' );
+			expect( _getModelData( model ) ).to.equal( '<emptyLimitContainer>[]</emptyLimitContainer>' );
 		} );
 	} );
 } );

@@ -14,7 +14,7 @@ import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewDocument } from '../../src/view/document.js';
 
 import { getData, setData, stringify, parse as parseModel } from '../../src/dev-utils/model.js';
-import { parse as parseView, stringify as stringifyView } from '../../src/dev-utils/view.js';
+import { _parseView, _stringifyView } from '../../src/dev-utils/view.js';
 
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 
@@ -156,7 +156,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should be decorated', () => {
-			const viewElement = parseView( '<p>foo</p>' );
+			const viewElement = _parseView( '<p>foo</p>' );
 			const spy = sinon.spy();
 
 			data.on( 'toModel', spy );
@@ -166,7 +166,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should convert content of an element #1', () => {
-			const viewElement = parseView( '<p>foo</p>' );
+			const viewElement = _parseView( '<p>foo</p>' );
 			const output = data.toModel( viewElement );
 
 			expect( output ).to.instanceof( ModelDocumentFragment );
@@ -174,7 +174,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should convert content of an element #2', () => {
-			const viewFragment = parseView( '<p>foo</p><p>bar</p>' );
+			const viewFragment = _parseView( '<p>foo</p><p>bar</p>' );
 			const output = data.toModel( viewFragment );
 
 			expect( output ).to.be.instanceOf( ModelDocumentFragment );
@@ -186,7 +186,7 @@ describe( 'DataController', () => {
 
 			schema.register( 'inlineRoot', { allowChildren: '$text' } );
 
-			const viewFragment = new ViewDocumentFragment( viewDocument, [ parseView( 'foo' ) ] );
+			const viewFragment = new ViewDocumentFragment( viewDocument, [ _parseView( 'foo' ) ] );
 
 			// Model fragment in root (note that it is auto-paragraphed because $text is not allowed directly in $root).
 			expect( stringify( data.toModel( viewFragment ) ) ).to.equal( '<paragraph>foo</paragraph>' );
@@ -722,7 +722,7 @@ describe( 'DataController', () => {
 			const viewDocumentFragment = data.toView( modelElement );
 			const viewElement = viewDocumentFragment.getChild( 0 );
 
-			expect( stringifyView( viewElement ) ).to.equal( '<p><span class="a">foobar</span></p>' );
+			expect( _stringifyView( viewElement ) ).to.equal( '<p><span class="a">foobar</span></p>' );
 		} );
 
 		it( 'should correctly convert document markers #2', () => {
@@ -747,7 +747,7 @@ describe( 'DataController', () => {
 
 			const viewDocumentFragment = data.toView( modelP1 );
 
-			expect( stringifyView( viewDocumentFragment ) ).to.equal( 'f<span class="a">oo</span>' );
+			expect( _stringifyView( viewDocumentFragment ) ).to.equal( 'f<span class="a">oo</span>' );
 		} );
 
 		it( 'adjacent markers do not overlap regardless of creation order', () => {
@@ -772,7 +772,7 @@ describe( 'DataController', () => {
 			} );
 
 			const viewDocumentFragment1 = data.toView( modelP );
-			expect( stringifyView( viewDocumentFragment1 ) ).to.equal(
+			expect( _stringifyView( viewDocumentFragment1 ) ).to.equal(
 				'<marker-start name="a"></marker-start>foo<marker-end name="a"></marker-end>' +
 				'<marker-start name="b"></marker-start>bar<marker-end name="b"></marker-end>'
 			);
@@ -786,7 +786,7 @@ describe( 'DataController', () => {
 			} );
 
 			const viewDocumentFragment2 = data.toView( modelP );
-			expect( stringifyView( viewDocumentFragment2 ) ).to.equal(
+			expect( _stringifyView( viewDocumentFragment2 ) ).to.equal(
 				'<marker-start name="a"></marker-start>foo<marker-end name="a"></marker-end>' +
 				'<marker-start name="b"></marker-start>bar<marker-end name="b"></marker-end>'
 			);
@@ -827,7 +827,7 @@ describe( 'DataController', () => {
 				}
 			} );
 
-			const result = stringifyView( data.toView( modelP ) );
+			const result = _stringifyView( data.toView( modelP ) );
 
 			model.change( writer => {
 				for ( const name of Object.keys( markerRanges ) ) {
@@ -840,7 +840,7 @@ describe( 'DataController', () => {
 			} );
 
 			const viewDocumentFragment2 = data.toView( modelP );
-			expect( stringifyView( viewDocumentFragment2 ) ).to.equal( result );
+			expect( _stringifyView( viewDocumentFragment2 ) ).to.equal( result );
 		} );
 
 		it( 'should convert a document fragment and its markers', () => {
@@ -859,7 +859,7 @@ describe( 'DataController', () => {
 			expect( viewDocumentFragment ).to.be.instanceOf( ViewDocumentFragment );
 			expect( viewDocumentFragment ).to.have.property( 'childCount', 2 );
 
-			expect( stringifyView( viewDocumentFragment ) ).to.equal(
+			expect( _stringifyView( viewDocumentFragment ) ).to.equal(
 				'<p>f<foo-start name="bar"></foo-start>oo</p><p>ba<foo-end name="bar"></foo-end>r</p>'
 			);
 		} );
@@ -886,7 +886,7 @@ describe( 'DataController', () => {
 
 			const viewElement = data.toView( modelParagraph );
 
-			expect( stringifyView( viewElement ) ).to.equal(
+			expect( _stringifyView( viewElement ) ).to.equal(
 				'<marker:a-start></marker:a-start><marker:a-end></marker:a-end>' +
 				'foo' +
 				'<marker:b-start></marker:b-start><marker:b-end></marker:b-end>'
@@ -915,7 +915,7 @@ describe( 'DataController', () => {
 
 			const viewElement = data.toView( modelElement );
 
-			expect( stringifyView( viewElement ) ).to.equal(
+			expect( _stringifyView( viewElement ) ).to.equal(
 				'<div><div><div><p>' +
 				'<marker:a-start></marker:a-start><marker:a-end></marker:a-end>' +
 				'foo' +
@@ -949,10 +949,10 @@ describe( 'DataController', () => {
 			const viewElementP2 = data.toView( modelP2 );
 
 			// The `marker:b` should not be present as it belongs to other element.
-			expect( stringifyView( viewElementP1 ) ).to.equal( '<marker:a-start></marker:a-start><marker:a-end></marker:a-end>foo' );
+			expect( _stringifyView( viewElementP1 ) ).to.equal( '<marker:a-start></marker:a-start><marker:a-end></marker:a-end>foo' );
 
 			// The `marker:a` should not be present as it belongs to other element.
-			expect( stringifyView( viewElementP2 ) ).to.equal( '<marker:b-start></marker:b-start><marker:b-end></marker:b-end>bar' );
+			expect( _stringifyView( viewElementP2 ) ).to.equal( '<marker:b-start></marker:b-start><marker:b-end></marker:b-end>bar' );
 		} );
 
 		it( 'should keep view-model mapping', () => {

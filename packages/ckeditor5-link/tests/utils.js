@@ -13,7 +13,7 @@ import { Schema } from '@ckeditor/ckeditor5-engine/src/model/schema.js';
 import { ModelElement } from '@ckeditor/ckeditor5-engine/src/model/element.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import {
 	createLinkElement,
@@ -397,7 +397,7 @@ describe( 'utils', () => {
 		} );
 
 		it( 'should extract text from range', () => {
-			setModelData( editor.model, '<paragraph>foo[bar]baz</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo[bar]baz</paragraph>' );
 
 			const text = extractTextFromLinkRange( editor.model.document.selection.getFirstRange() );
 
@@ -405,7 +405,7 @@ describe( 'utils', () => {
 		} );
 
 		it( 'should extract text from range even when split into multiple text nodes with different style', () => {
-			setModelData( editor.model,
+			_setModelData( editor.model,
 				'<paragraph>' +
 					'abc[fo' +
 					'<$text bold="true">ob</$text>' +
@@ -421,7 +421,7 @@ describe( 'utils', () => {
 		} );
 
 		it( 'should return undefined if range includes an inline object', () => {
-			setModelData( editor.model, '<paragraph>foo[ba<inlineWidget></inlineWidget>r]baz</paragraph>' );
+			_setModelData( editor.model, '<paragraph>foo[ba<inlineWidget></inlineWidget>r]baz</paragraph>' );
 
 			const text = extractTextFromLinkRange( editor.model.document.selection.getFirstRange() );
 
@@ -429,7 +429,7 @@ describe( 'utils', () => {
 		} );
 
 		it( 'should return undefined if range is on an inline object', () => {
-			setModelData( editor.model, '<paragraph>fooba[<inlineWidget></inlineWidget>]rbaz</paragraph>' );
+			_setModelData( editor.model, '<paragraph>fooba[<inlineWidget></inlineWidget>]rbaz</paragraph>' );
 
 			const text = extractTextFromLinkRange( editor.model.document.selection.getFirstRange() );
 
@@ -437,7 +437,7 @@ describe( 'utils', () => {
 		} );
 
 		it( 'should return undefined if range is spanning multiple blocks', () => {
-			setModelData( editor.model, '<paragraph>f[oo</paragraph><paragraph>ba]z</paragraph>' );
+			_setModelData( editor.model, '<paragraph>f[oo</paragraph><paragraph>ba]z</paragraph>' );
 
 			const text = extractTextFromLinkRange( editor.model.document.selection.getFirstRange() );
 

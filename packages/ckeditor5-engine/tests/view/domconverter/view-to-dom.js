@@ -16,8 +16,8 @@ import { ViewDocument } from '../../../src/view/document.js';
 import { DowncastWriter } from '../../../src/view/downcastwriter.js';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, BR_FILLER, NBSP_FILLER, MARKED_NBSP_FILLER } from '../../../src/view/filler.js';
 
-import { parse, getData as getViewData } from '../../../src/dev-utils/view.js';
-import { setData as setModelData } from '../../../src/dev-utils/model.js';
+import { parse, _getViewData } from '../../../src/dev-utils/view.js';
+import { _setModelData } from '../../../src/dev-utils/model.js';
 
 import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -597,9 +597,9 @@ describe( 'DomConverter', () => {
 				} );
 
 				it( 'script included in SVG encoded as base64 should not be executed when set on src attribute of img element', () => {
-					setModelData( editor.model, `<paragraph><fakeImg src='${ svgBase64 }'></fakeImg></paragraph>` );
+					_setModelData( editor.model, `<paragraph><fakeImg src='${ svgBase64 }'></fakeImg></paragraph>` );
 
-					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 						'<p>' +
 							`<img src="${ svgBase64 }" srcset="${ svgBase64 }"></img>` +
 						'</p>'
@@ -608,9 +608,9 @@ describe( 'DomConverter', () => {
 				} );
 
 				it( 'script included in encoded SVG should not be executed when set on src attribute of img element', () => {
-					setModelData( editor.model, `<paragraph><fakeImg src='${ svgEncoded }'></fakeImg></paragraph>` );
+					_setModelData( editor.model, `<paragraph><fakeImg src='${ svgEncoded }'></fakeImg></paragraph>` );
 
-					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 						'<p>' +
 							`<img src="${ svgEncoded }" srcset="${ svgEncoded }"></img>` +
 						'</p>'
@@ -620,11 +620,11 @@ describe( 'DomConverter', () => {
 
 				it( 'script included in SVG encoded as base64 should not be executed when set on srcset attribute of source element',
 					() => {
-						setModelData( editor.model,
+						_setModelData( editor.model,
 							`<paragraph><fakePicture srcset='${ svgBase64 }' media="(min-width: 10px)"></fakePicture></paragraph>`
 						);
 
-						expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 							'<p>' +
 								'<picture>' +
 									`<source media="(min-width: 10px)" srcset="${ svgBase64 }"></source>` +
@@ -638,11 +638,11 @@ describe( 'DomConverter', () => {
 
 				it( 'script included in encoded SVG should not be executed when set on srcset attribute of source element',
 					() => {
-						setModelData( editor.model,
+						_setModelData( editor.model,
 							`<paragraph><fakePicture srcset='${ svgEncoded }' media="(min-width: 10px)"></fakePicture></paragraph>`
 						);
 
-						expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 							'<p>' +
 								'<picture>' +
 									`<source media="(min-width: 10px)" srcset="${ svgEncoded }"></source>` +

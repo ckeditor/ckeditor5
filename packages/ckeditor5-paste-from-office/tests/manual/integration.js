@@ -25,7 +25,7 @@ import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
 import { PasteFromOffice } from '../../src/pastefromoffice.js';
 
-import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
@@ -99,9 +99,9 @@ ClassicEditor
 
 		clipboard.on( 'inputTransformation', ( evt, data ) => {
 			console.log( '----- clipboardInput -----' );
-			console.log( 'stringify( data.dataTransfer )\n', stringifyView( data.content ) );
+			console.log( 'stringify( data.dataTransfer )\n', _stringifyView( data.content ) );
 
-			dataDiv.innerText = stringifyView( data.content );
+			dataDiv.innerText = _stringifyView( data.content );
 		} );
 	} )
 	.catch( err => {

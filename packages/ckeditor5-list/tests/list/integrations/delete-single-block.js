@@ -13,8 +13,8 @@ import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import {
-	getData as getModelData,
-	setData as setModelData
+	_getModelData,
+	_setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { DomEventData } from '@ckeditor/ckeditor5-engine';
 
@@ -2686,11 +2686,11 @@ describe( 'ListEditing (multiBlock=false) integrations: backspace & delete', () 
 	// @param {Object.<String,Number>} executedCommands Numbers of command executions.
 	// @param {Array.<Number>} changedBlocks Indexes of changed blocks.
 	function runTest( { input, expected, eventStopped, executedCommands = {}, changedBlocks = [] } ) {
-		setModelData( model, modelList( input ) );
+		_setModelData( model, modelList( input ) );
 
 		view.document.fire( eventInfo, domEventData );
 
-		expect( getModelData( model ) ).to.equalMarkup( modelList( expected ) );
+		expect( _getModelData( model ) ).to.equalMarkup( modelList( expected ) );
 
 		if ( typeof eventStopped === 'object' ) {
 			expect( domEventData.domEvent.preventDefault.called ).to.equal( eventStopped.preventDefault, 'preventDefault() call' );

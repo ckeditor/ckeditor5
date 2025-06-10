@@ -17,8 +17,8 @@ import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment/src/alignmentedi
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { getData as getModelData, setData as setModelData, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _getModelData, _setModelData, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { ListIndentCommand } from '../../src/list/listindentcommand.js';
 import { ListSplitCommand } from '../../src/list/listsplitcommand.js';
@@ -150,7 +150,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 					} );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( output );
 			}
 
 			it( 'should make sure that all list items have a unique IDs (insert after)', () => {
@@ -208,7 +208,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 					writer.rename( selection.getFirstPosition().nodeAfter, 'paragraph' );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
 			} );
 		} );
 
@@ -245,7 +245,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 					writer.removeAttribute( 'listType', element );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
 			} );
 
 			it( 'add list attributes', () => {
@@ -277,7 +277,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 					writer.setAttribute( 'listIndent', 2, element.nextSibling );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
 			} );
 		} );
 	} );
@@ -293,7 +293,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<listItem listIndent="0" listItemId="a00" listType="bulleted">foo</listItem>' +
 				'<listItem listIndent="0" listItemId="a01" listType="bulleted">bar</listItem>'
 			);
@@ -313,7 +313,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<listItem listIndent="0" listItemId="a01" listType="bulleted"></listItem>' +
 				'<listItem listIndent="1" listItemId="a00" listType="bulleted">foo</listItem>' +
 				'<listItem listIndent="1" listItemId="a02" listType="bulleted">bar</listItem>'
@@ -336,7 +336,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<listItem listIndent="0" listItemId="a01" listType="bulleted">foo</listItem>' +
 				'<listItem listIndent="1" listItemId="a00" listType="bulleted">a</listItem>' +
 				'<listItem listIndent="1" listItemId="a02" listType="bulleted">b</listItem>' +
@@ -353,7 +353,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<listItem listIndent="0" listItemId="c" listType="bulleted">foo</listItem>'
 			);
 		} );
@@ -386,7 +386,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 				'</ul>'
 			);
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<listItem listIndent="0" listItemId="c" listType="bulleted">foo</listItem>'
 			);
 		} );
@@ -394,11 +394,11 @@ describe( 'ListEditing (multiBlock=false)', () => {
 
 	describe( 'downcast - editing', () => {
 		it( 'should use bogus paragraph', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">foo</listItem>'
 			);
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 				'<ul>' +
 					'<li><span class="ck-list-bogus-paragraph">foo</span></li>' +
 				'</ul>'
@@ -406,11 +406,11 @@ describe( 'ListEditing (multiBlock=false)', () => {
 		} );
 
 		it( 'should use paragraph if there are any non-list attributes on the block', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listItemId="a" listType="bulleted" alignment="center">foo</listItem>'
 			);
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 				'<ul>' +
 					'<li><p style="text-align:center">foo</p></li>' +
 				'</ul>'
@@ -418,13 +418,13 @@ describe( 'ListEditing (multiBlock=false)', () => {
 		} );
 
 		it( 'should refresh item after adding non-list attribute', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listItemId="a" listType="bulleted">foo</listItem>'
 			);
 
 			editor.execute( 'alignment', { value: 'center' } );
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 				'<ul>' +
 					'<li><p style="text-align:center">foo</p></li>' +
 				'</ul>'
@@ -432,13 +432,13 @@ describe( 'ListEditing (multiBlock=false)', () => {
 		} );
 
 		it( 'should refresh item after removing non-list attribute', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listItemId="a" listType="bulleted" alignment="center">foo</listItem>'
 			);
 
 			editor.execute( 'alignment', { value: 'left' } );
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 				'<ul>' +
 					'<li><span class="ck-list-bogus-paragraph">foo</span></li>' +
 				'</ul>'
@@ -446,13 +446,13 @@ describe( 'ListEditing (multiBlock=false)', () => {
 		} );
 
 		it( 'should add `data-list-item-id` attribute', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listItemId="a" listType="bulleted" alignment="center">foo</listItem>'
 			);
 
 			editor.execute( 'alignment', { value: 'left' } );
 
-			expect( getViewData( view, { withoutSelection: true, skipListItemIds: false } ) ).to.equalMarkup(
+			expect( _getViewData( view, { withoutSelection: true, skipListItemIds: false } ) ).to.equalMarkup(
 				'<ul>' +
 					'<li data-list-item-id="a"><span class="ck-list-bogus-paragraph">foo</span></li>' +
 				'</ul>'
@@ -462,7 +462,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 
 	describe( 'downcast - data', () => {
 		it( 'should add `data-list-item-id` attribute', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listItemId="a" listType="bulleted" alignment="center">foo</listItem>'
 			);
 
@@ -476,7 +476,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 		} );
 
 		it( 'should not add `data-list-item-id` attribute if `skipListItemIds` flag was used', () => {
-			setModelData( model,
+			_setModelData( model,
 				'<listItem listIndent="0" listItemId="a" listType="bulleted" alignment="center">foo</listItem>'
 			);
 

@@ -10,8 +10,8 @@ import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
 import { normalizeClipboardData } from '@ckeditor/ckeditor5-clipboard/src/utils/normalizeclipboarddata.js';
 import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
-import { setData, stringify as stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { setData, _stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
@@ -222,7 +222,7 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip, only ) {
 			sinon.stub( editorModel, 'insertContent' ).callsFake( ( content, selection ) => {
 				// Save model string representation now as it may change after `insertContent()` function call
 				// so accessing it later may not work as it may have emptied/changed structure.
-				data.actual = stringifyModel( content );
+				data.actual = _stringifyModel( content );
 				insertContent.call( editorModel, content, selection );
 			} );
 		} );
@@ -289,7 +289,7 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip, only ) {
 function expectNormalized( actualView, expectedHtml ) {
 	// We are ok with both spaces and non-breaking spaces in the actual content.
 	// Replace `&nbsp;` with regular spaces to align with expected content.
-	const actualNormalized = stringifyView( actualView ).replace( /\u00A0/g, ' ' );
+	const actualNormalized = _stringifyView( actualView ).replace( /\u00A0/g, ' ' );
 	const expectedNormalized = normalizeHtml( inlineData( expectedHtml ), { skipComments: true } );
 
 	compareContentWithBase64Images( actualNormalized, expectedNormalized );

@@ -5,7 +5,7 @@
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { TableEditing } from '../src/tableediting.js';
 import { TableSelection } from '../src/tableselection.js';
@@ -54,7 +54,7 @@ describe( 'TableMouse', () => {
 			viewDocument = view.document;
 			tableMouse = editor.plugins.get( TableMouse );
 
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '11[]', '12', '13' ],
 				[ '21', '22', '23' ],
 				[ '31', '32', '33' ]
@@ -133,7 +133,7 @@ describe( 'TableMouse', () => {
 		it( 'should abort if clicked a cell that belongs to another table', () => {
 			const preventDefault = sinon.spy();
 
-			setModelData( model, [
+			_setModelData( model, [
 				modelTable( [
 					[ '1.11[]', '1.12' ],
 					[ '1.21', '1.22' ]
@@ -267,7 +267,7 @@ describe( 'TableMouse', () => {
 			viewDocument = view.document;
 			tableMouse = editor.plugins.get( TableMouse );
 
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '11[]', '12', '13' ],
 				[ '21', '22', '23' ],
 				[ '31', '32', '33' ]
@@ -402,7 +402,7 @@ describe( 'TableMouse', () => {
 		} );
 
 		it( 'should do nothing if ended dragging inside another table', () => {
-			setModelData( model, [
+			_setModelData( model, [
 				modelTable( [
 					[ '1.11[]', '1.12' ],
 					[ '1.21', '1.22' ]

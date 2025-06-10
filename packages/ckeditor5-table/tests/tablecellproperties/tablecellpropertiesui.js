@@ -6,7 +6,7 @@
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { getData as getModelData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
 import { Batch } from '@ckeditor/ckeditor5-engine/src/model/batch.js';
@@ -225,7 +225,7 @@ describe( 'table cell properties', () => {
 					tableCellPropertiesView.borderStyle = 'dotted';
 					tableCellPropertiesView.backgroundColor = 'red';
 
-					expect( getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).to.equal(
 						'<table>' +
 							'<tableRow>' +
 								'<tableCell tableCellBackgroundColor="red" tableCellBorderStyle="dotted">' +
@@ -238,7 +238,7 @@ describe( 'table cell properties', () => {
 
 					tableCellPropertiesView.fire( 'cancel' );
 
-					expect( getModelData( editor.model ) ).to.equal(
+					expect( _getModelData( editor.model ) ).to.equal(
 						'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +

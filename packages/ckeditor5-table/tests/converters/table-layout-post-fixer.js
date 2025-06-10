@@ -5,7 +5,7 @@
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { getData as getModelData, parse, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, parse, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { TableEditing } from '../../src/tableediting.js';
 import { modelTable } from './../_utils/utils.js';
@@ -43,7 +43,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', '', '' ],
 				[ '10', '11', '12' ],
 				[ '20', '21', '' ]
@@ -62,7 +62,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', { rowspan: 2, contents: '10' }, '', '' ],
 				[ '10', { colspan: 2, contents: '12' } ],
 				[ '20', '21', '', '' ]
@@ -81,7 +81,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ { colspan: 6, contents: '00' } ],
 				[ { rowspan: 2, contents: '10' }, '11', { colspan: 3, contents: '12' }, '' ],
 				[ '21', '22', '', '', '' ]
@@ -101,7 +101,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '' ],
 				[ '20', '21', '22' ]
 			] ) );
@@ -119,7 +119,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ { rowspan: 2, contents: '00' }, { rowspan: 2, contents: '01' }, '02' ],
 				[ '12' ],
 				[ '20', '21', '22' ]
@@ -138,7 +138,7 @@ describe( 'Table layout post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ { rowspan: 2, contents: '10' }, { rowspan: 2, contents: '11' }, '12' ],
 				[ '22' ]
@@ -181,11 +181,11 @@ describe( 'Table layout post-fixer', () => {
 
 			const expectedTables = expectedTableA + expectedTableB + expectedTableC;
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedTables );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedTables );
 		} );
 
 		it( 'should not crash on table remove', () => {
-			setModelData( model, modelTable( [
+			_setModelData( model, modelTable( [
 				[ '11', '12' ]
 			] ) );
 
@@ -195,7 +195,7 @@ describe( 'Table layout post-fixer', () => {
 				} );
 			} ).to.not.throw();
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
 		} );
 	} );
 
@@ -389,21 +389,21 @@ describe( 'Table layout post-fixer', () => {
 		} );
 
 		function _testExternal( initialData, localCallback, externalCallback, modelAfter, modelAfterUndo ) {
-			setModelData( model, initialData );
+			_setModelData( model, initialData );
 
 			model.change( localCallback );
 
 			model.enqueueChange( { isUndoable: false }, externalCallback );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelAfter );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelAfter );
 
 			editor.execute( 'undo' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelAfterUndo );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelAfterUndo );
 
 			editor.execute( 'redo' );
 
-			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelAfter );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelAfter );
 		}
 
 		function _removeColumn( writer, columnIndex, rows ) {

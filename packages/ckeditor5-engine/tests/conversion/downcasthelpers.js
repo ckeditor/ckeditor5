@@ -31,10 +31,10 @@ import {
 
 import { Mapper } from '../../src/conversion/mapper.js';
 import { DowncastDispatcher } from '../../src/conversion/downcastdispatcher.js';
-import { stringify as stringifyView } from '../../src/dev-utils/view.js';
+import { _stringifyView } from '../../src/dev-utils/view.js';
 import { View } from '../../src/view/view.js';
 import { createViewRoot } from '../view/_utils/createroot.js';
-import { setData as setModelData } from '../../src/dev-utils/model.js';
+import { _setModelData } from '../../src/dev-utils/model.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 import { DowncastWriter } from '../../src/view/downcastwriter.js';
@@ -180,13 +180,13 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert element insert', () => {
-				setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
+				_setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
 
 				expectResult( '<div class="simple"></div>' );
 			} );
 
 			it( 'should not reconvert on adding a child', () => {
-				setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
 				const spy = sinon.spy();
 
@@ -238,7 +238,7 @@ describe( 'DowncastHelpers', () => {
 					consumable = conversionApi.consumable;
 				}, { priority: 'low' } );
 
-				setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
+				_setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
 
 				expectResult( '<div style="display:block"></div>' );
 
@@ -268,7 +268,7 @@ describe( 'DowncastHelpers', () => {
 					consumable = conversionApi.consumable;
 				}, { priority: 'low' } );
 
-				setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
+				_setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
 
 				expectResult( '<div style="display:block"></div>' );
 
@@ -308,7 +308,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on attribute set', () => {
-				setModelData( model, '<simpleBlock></simpleBlock>' );
+				_setModelData( model, '<simpleBlock></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
 					expect( data ).to.have.property( 'reconversion' ).to.be.true;
@@ -327,7 +327,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on attribute change', () => {
-				setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
+				_setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
 					expect( data ).to.have.property( 'reconversion' ).to.be.true;
@@ -347,7 +347,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on attribute remove', () => {
-				setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
+				_setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
 					expect( data ).to.have.property( 'reconversion' ).to.be.true;
@@ -361,7 +361,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on one attribute add and other remove', () => {
-				setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
+				_setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
 					expect( data ).to.have.property( 'reconversion' ).to.be.true;
@@ -379,7 +379,7 @@ describe( 'DowncastHelpers', () => {
 				model.schema.register( 'paragraph', { inheritAllFrom: '$block', allowIn: 'simpleBlock' } );
 				downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
-				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
 					expect( data ).to.have.property( 'reconversion' ).to.be.true;
@@ -404,7 +404,7 @@ describe( 'DowncastHelpers', () => {
 				model.schema.register( 'paragraph', { inheritAllFrom: '$block', allowIn: 'simpleBlock' } );
 				downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
-				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
 
 				const [ viewBefore, paraBefore, textBefore ] = getNodes();
 
@@ -443,7 +443,7 @@ describe( 'DowncastHelpers', () => {
 					view: { classes: 'foo' }
 				} );
 
-				setModelData( model, '<simpleBlock></simpleBlock>' );
+				_setModelData( model, '<simpleBlock></simpleBlock>' );
 
 				const modelElement = modelRoot.getChild( 0 );
 				const [ viewBefore ] = getNodes();
@@ -470,7 +470,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should not reconvert if non watched attribute has changed', () => {
-				setModelData( model, '<simpleBlock></simpleBlock>' );
+				_setModelData( model, '<simpleBlock></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
 					expect( data ).to.not.have.property( 'reconversion' );
@@ -500,7 +500,7 @@ describe( 'DowncastHelpers', () => {
 					view: 'p'
 				} );
 
-				setModelData( model, '<simpleBlock></simpleBlock>' );
+				_setModelData( model, '<simpleBlock></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
 					expect( data ).to.have.property( 'reconversion' ).to.be.true;
@@ -566,7 +566,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on adding a child (at the beginning)', () => {
-				setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
 				const spy = sinon.spy();
 
@@ -596,7 +596,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on adding a child (in the middle)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<simpleBlock>' +
 						'<paragraph>foo</paragraph>' +
 						'<paragraph>bar</paragraph>' +
@@ -635,7 +635,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on adding a child (at the end)', () => {
-				setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
 				const spy = sinon.spy();
 
@@ -668,7 +668,7 @@ describe( 'DowncastHelpers', () => {
 				model.schema.extend( 'simpleBlock', { allowAttributes: 'someOther' } );
 				downcastHelpers.attributeToAttribute( { model: 'someOther', view: 'data-other' } );
 
-				setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
 				const spy = sinon.spy();
 
@@ -702,7 +702,7 @@ describe( 'DowncastHelpers', () => {
 				model.schema.extend( 'simpleBlock', { allowAttributes: 'someOther' } );
 				downcastHelpers.attributeToAttribute( { model: 'someOther', view: 'data-other' } );
 
-				setModelData( model, '<paragraph></paragraph><simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<paragraph></paragraph><simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
 				const spy = sinon.spy();
 
@@ -734,7 +734,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should reconvert before content modifications (some deeply nested node added)', () => {
-				setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
 				const spy = sinon.spy();
 
@@ -765,7 +765,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should reconvert before content modifications (some deeply nested node removed)', () => {
-				setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
 				const spy = sinon.spy();
 
@@ -795,7 +795,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should reconvert before content modifications (with element added before)', () => {
-				setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
 				const spy = sinon.spy();
 
@@ -826,7 +826,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on removing a child', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<simpleBlock><paragraph>foo</paragraph><paragraph>bar</paragraph></simpleBlock>' );
 
 				const spy = sinon.spy();
@@ -869,7 +869,7 @@ describe( 'DowncastHelpers', () => {
 					}
 				} );
 
-				setModelData( model,
+				_setModelData( model,
 					'<simpleBlock><paragraph>foo</paragraph></simpleBlock>' +
 					'<simpleBlock2><paragraph>bar</paragraph></simpleBlock2>'
 				);
@@ -935,7 +935,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should not reuse child view element if marked by Differ#_refreshItem()', () => {
-				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
 
 				const [ viewBefore, paraBefore, textBefore ] = getNodes();
 
@@ -972,7 +972,7 @@ describe( 'DowncastHelpers', () => {
 					loggedEvents.push( log );
 				}, { priority: 'highest' } );
 
-				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
 
 				expectResult( '<div style="display:block"><p>foo</p></div>' );
 
@@ -1148,7 +1148,7 @@ describe( 'DowncastHelpers', () => {
 					consumable = conversionApi.consumable;
 				}, { priority: 'low' } );
 
-				setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
+				_setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
 
 				expectResult( '<div style="display:block"></div>' );
 
@@ -1178,7 +1178,7 @@ describe( 'DowncastHelpers', () => {
 					consumable = conversionApi.consumable;
 				}, { priority: 'low' } );
 
-				setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
+				_setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
 
 				expectResult( '<div style="display:block"></div>' );
 
@@ -1218,7 +1218,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on attribute set', () => {
-				setModelData( model, '<simpleBlock></simpleBlock>' );
+				_setModelData( model, '<simpleBlock></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
 					expect( data ).to.have.property( 'reconversion' ).to.be.true;
@@ -1237,7 +1237,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on attribute change', () => {
-				setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
+				_setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
 					expect( data ).to.have.property( 'reconversion' ).to.be.true;
@@ -1257,7 +1257,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on attribute remove', () => {
-				setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
+				_setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
 					expect( data ).to.have.property( 'reconversion' ).to.be.true;
@@ -1271,7 +1271,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on one attribute add and other remove', () => {
-				setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
+				_setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
 					expect( data ).to.have.property( 'reconversion' ).to.be.true;
@@ -1306,7 +1306,7 @@ describe( 'DowncastHelpers', () => {
 					view: { classes: 'foo' }
 				} );
 
-				setModelData( model, '<simpleBlock></simpleBlock>' );
+				_setModelData( model, '<simpleBlock></simpleBlock>' );
 
 				const modelElement = modelRoot.getChild( 0 );
 				const [ viewBefore ] = getNodes();
@@ -1333,7 +1333,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should not reconvert if non watched attribute has changed', () => {
-				setModelData( model, '<simpleBlock></simpleBlock>' );
+				_setModelData( model, '<simpleBlock></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
 					expect( data ).to.not.have.property( 'reconversion' );
@@ -1403,7 +1403,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on attribute set', () => {
-				setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
 					expect( data ).to.have.property( 'reconversion' ).to.be.true;
@@ -1425,7 +1425,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on attribute change', () => {
-				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
 					expect( data ).to.have.property( 'reconversion' ).to.be.true;
@@ -1447,7 +1447,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on attribute remove', () => {
-				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
 					expect( data ).to.have.property( 'reconversion' ).to.be.true;
@@ -1461,7 +1461,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on one attribute add and other remove', () => {
-				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
 					expect( data ).to.have.property( 'reconversion' ).to.be.true;
@@ -1476,7 +1476,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should not reconvert if non watched attribute has changed', () => {
-				setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
 				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
 					expect( data ).to.not.have.property( 'reconversion' );
@@ -1498,7 +1498,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should not reuse child view element if marked by Differ#_refreshItem()', () => {
-				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
 
 				const [ viewBefore, paraBefore, textBefore ] = getNodes();
 
@@ -1564,7 +1564,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on adding a child (at the beginning)', () => {
-				setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
 				const spy = sinon.spy();
 
@@ -1594,7 +1594,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on adding a child (in the middle)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<simpleBlock>' +
 						'<paragraph>foo</paragraph>' +
 						'<paragraph>bar</paragraph>' +
@@ -1633,7 +1633,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on adding a child (at the end)', () => {
-				setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
 				const spy = sinon.spy();
 
@@ -1666,7 +1666,7 @@ describe( 'DowncastHelpers', () => {
 				model.schema.extend( 'simpleBlock', { allowAttributes: 'someOther' } );
 				downcastHelpers.attributeToAttribute( { model: 'someOther', view: 'data-other' } );
 
-				setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
 				const spy = sinon.spy();
 
@@ -1700,7 +1700,7 @@ describe( 'DowncastHelpers', () => {
 				model.schema.extend( 'simpleBlock', { allowAttributes: 'someOther' } );
 				downcastHelpers.attributeToAttribute( { model: 'someOther', view: 'data-other' } );
 
-				setModelData( model, '<paragraph></paragraph><simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<paragraph></paragraph><simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
 				const spy = sinon.spy();
 
@@ -1732,7 +1732,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should reconvert before content modifications (some deeply nested node added)', () => {
-				setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
 				const spy = sinon.spy();
 
@@ -1763,7 +1763,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should reconvert before content modifications (some deeply nested node removed)', () => {
-				setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
 				const spy = sinon.spy();
 
@@ -1793,7 +1793,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should reconvert before content modifications (with element added before)', () => {
-				setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
 
 				const spy = sinon.spy();
 
@@ -1824,7 +1824,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on removing a child', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<simpleBlock><paragraph>foo</paragraph><paragraph>bar</paragraph></simpleBlock>' );
 
 				const spy = sinon.spy();
@@ -1871,7 +1871,7 @@ describe( 'DowncastHelpers', () => {
 					}
 				} );
 
-				setModelData( model,
+				_setModelData( model,
 					'<simpleBlock><paragraph>foo</paragraph></simpleBlock>' +
 					'<simpleBlock2><paragraph>bar</paragraph></simpleBlock2>'
 				);
@@ -1937,7 +1937,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should not reuse child view element if marked by Differ#_refreshItem()', () => {
-				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+				_setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
 
 				const [ viewBefore, paraBefore, textBefore ] = getNodes();
 
@@ -2008,7 +2008,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on attribute set', () => {
-				setModelData( model, '<complex></complex>' );
+				_setModelData( model, '<complex></complex>' );
 
 				const spy = sinon.spy();
 
@@ -2032,7 +2032,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on attribute change', () => {
-				setModelData( model, '<complex toStyle="display:block"></complex>' );
+				_setModelData( model, '<complex toStyle="display:block"></complex>' );
 
 				const spy = sinon.spy();
 
@@ -2050,7 +2050,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on attribute remove', () => {
-				setModelData( model, '<complex toStyle="display:block"></complex>' );
+				_setModelData( model, '<complex toStyle="display:block"></complex>' );
 
 				const spy = sinon.spy();
 
@@ -2068,7 +2068,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on one attribute add and other remove', () => {
-				setModelData( model, '<complex toStyle="display:block"></complex>' );
+				_setModelData( model, '<complex toStyle="display:block"></complex>' );
 
 				const spy = sinon.spy();
 
@@ -2087,7 +2087,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on adding a child (at the beginning)', () => {
-				setModelData( model, '<complex toClass="true"><paragraph>foo</paragraph></complex>' );
+				_setModelData( model, '<complex toClass="true"><paragraph>foo</paragraph></complex>' );
 
 				const spy = sinon.spy();
 
@@ -2118,7 +2118,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on adding a child (in the middle)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<complex toClass="true">' +
 						'<paragraph>foo</paragraph>' +
 						'<paragraph>bar</paragraph>' +
@@ -2158,7 +2158,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on adding a child (at the end)', () => {
-				setModelData( model, '<complex toClass="true"><paragraph>foo</paragraph></complex>' );
+				_setModelData( model, '<complex toClass="true"><paragraph>foo</paragraph></complex>' );
 
 				const spy = sinon.spy();
 
@@ -2189,7 +2189,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on removing a child', () => {
-				setModelData( model, '<complex toClass="true"><paragraph>foo</paragraph><paragraph>bar</paragraph></complex>' );
+				_setModelData( model, '<complex toClass="true"><paragraph>foo</paragraph><paragraph>bar</paragraph></complex>' );
 
 				const spy = sinon.spy();
 
@@ -2216,7 +2216,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should not reconvert if non watched attribute has changed', () => {
-				setModelData( model, '<complex></complex>' );
+				_setModelData( model, '<complex></complex>' );
 
 				const spy = sinon.spy();
 
@@ -2258,7 +2258,7 @@ describe( 'DowncastHelpers', () => {
 					loggedEvents.push( log );
 				}, { priority: 'highest' } );
 
-				setModelData( model, '<complex toClass="true"><paragraph>foo</paragraph><paragraph>bar</paragraph></complex>' );
+				_setModelData( model, '<complex toClass="true"><paragraph>foo</paragraph><paragraph>bar</paragraph></complex>' );
 
 				expectResult( '<div class="complex-outer"><div class="is-classy"><p>foo</p><p>bar</p></div></div>' );
 
@@ -2327,7 +2327,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on adding a child (at the beginning)', () => {
-				setModelData( model, '<complex><paragraph>foo</paragraph></complex>' );
+				_setModelData( model, '<complex><paragraph>foo</paragraph></complex>' );
 
 				const spy = sinon.spy();
 
@@ -2364,7 +2364,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on adding a child (in the middle)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<complex>' +
 						'<paragraph>foo</paragraph>' +
 						'<paragraph>bar</paragraph>' +
@@ -2416,7 +2416,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on adding a child (at the end)', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<complex>' +
 						'<paragraph>foo</paragraph>' +
 						'<paragraph>bar</paragraph>' +
@@ -2468,7 +2468,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			it( 'should convert on removing a child', () => {
-				setModelData( model,
+				_setModelData( model,
 					'<complex>' +
 						'<paragraph>foo</paragraph>' +
 						'<paragraph>bar</paragraph>' +
@@ -3654,7 +3654,7 @@ describe( 'DowncastHelpers', () => {
 		it( 'default conversion, inside text, non-collapsed, no name', () => {
 			downcastHelpers.markerToData( { model: 'search' } );
 
-			setModelData( model, '<paragraph>Fo[ob]ar</paragraph>' );
+			_setModelData( model, '<paragraph>Fo[ob]ar</paragraph>' );
 
 			model.change( writer => {
 				writer.addMarker( 'search', { range: model.document.selection.getFirstRange(), usingOperation: false } );
@@ -3672,7 +3672,7 @@ describe( 'DowncastHelpers', () => {
 		it( 'default conversion, inside text, non-collapsed, name', () => {
 			downcastHelpers.markerToData( { model: 'group' } );
 
-			setModelData( model, '<paragraph>Fo[ob]ar</paragraph>' );
+			_setModelData( model, '<paragraph>Fo[ob]ar</paragraph>' );
 
 			model.change( writer => {
 				writer.addMarker( 'group:foo:bar:baz', { range: model.document.selection.getFirstRange(), usingOperation: false } );
@@ -3690,7 +3690,7 @@ describe( 'DowncastHelpers', () => {
 		it( 'default conversion, inside text, collapsed, no name', () => {
 			downcastHelpers.markerToData( { model: 'search' } );
 
-			setModelData( model, '<paragraph>Foo[]bar</paragraph>' );
+			_setModelData( model, '<paragraph>Foo[]bar</paragraph>' );
 
 			model.change( writer => {
 				writer.addMarker( 'search', { range: model.document.selection.getFirstRange(), usingOperation: false } );
@@ -3708,7 +3708,7 @@ describe( 'DowncastHelpers', () => {
 		it( 'default conversion, inside text, collapsed, multiple markers, no name', () => {
 			downcastHelpers.markerToData( { model: 'group' } );
 
-			setModelData( model, '<paragraph>Foo[]bar</paragraph>' );
+			_setModelData( model, '<paragraph>Foo[]bar</paragraph>' );
 
 			model.change( writer => {
 				writer.addMarker( 'group:foo', { range: model.document.selection.getFirstRange(), usingOperation: false } );
@@ -3735,7 +3735,7 @@ describe( 'DowncastHelpers', () => {
 		it( 'default conversion, on two elements, no name', () => {
 			downcastHelpers.markerToData( { model: 'search' } );
 
-			setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+			_setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 
 			model.change( writer => {
 				const range = writer.createRangeIn( root );
@@ -3754,7 +3754,7 @@ describe( 'DowncastHelpers', () => {
 		it( 'default conversion, on two elements, name', () => {
 			downcastHelpers.markerToData( { model: 'group' } );
 
-			setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+			_setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 
 			model.change( writer => {
 				const range = writer.createRangeIn( root );
@@ -3773,7 +3773,7 @@ describe( 'DowncastHelpers', () => {
 		it( 'default conversion, on one element, name', () => {
 			downcastHelpers.markerToData( { model: 'group' } );
 
-			setModelData( model, '<paragraph>Foobar</paragraph>' );
+			_setModelData( model, '<paragraph>Foobar</paragraph>' );
 
 			model.change( writer => {
 				const range = writer.createRangeIn( root );
@@ -3792,7 +3792,7 @@ describe( 'DowncastHelpers', () => {
 		it( 'default conversion, collapsed before element, name', () => {
 			downcastHelpers.markerToData( { model: 'group' } );
 
-			setModelData( model, '<paragraph>Foobar</paragraph>' );
+			_setModelData( model, '<paragraph>Foobar</paragraph>' );
 
 			model.change( writer => {
 				// Collapsed before <paragraph>.
@@ -3815,7 +3815,7 @@ describe( 'DowncastHelpers', () => {
 		it( 'default conversion, collapsed after element, name', () => {
 			downcastHelpers.markerToData( { model: 'group' } );
 
-			setModelData( model, '<paragraph>Foobar</paragraph>' );
+			_setModelData( model, '<paragraph>Foobar</paragraph>' );
 
 			model.change( writer => {
 				// Collapsed before <paragraph>.
@@ -3838,7 +3838,7 @@ describe( 'DowncastHelpers', () => {
 		it( 'default conversion, mixed, multiple markers, name', () => {
 			downcastHelpers.markerToData( { model: 'group' } );
 
-			setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+			_setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 
 			model.change( writer => {
 				const range = writer.createRange(
@@ -3866,7 +3866,7 @@ describe( 'DowncastHelpers', () => {
 		it( 'default conversion, mixed #2, multiple markers, name', () => {
 			downcastHelpers.markerToData( { model: 'group' } );
 
-			setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+			_setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 
 			model.change( writer => {
 				const range = writer.createRange(
@@ -3894,7 +3894,7 @@ describe( 'DowncastHelpers', () => {
 		it( 'default conversion, mixed #3, multiple markers, name', () => {
 			downcastHelpers.markerToData( { model: 'group' } );
 
-			setModelData( model, '<paragraph>Foo</paragraph>' );
+			_setModelData( model, '<paragraph>Foo</paragraph>' );
 
 			model.change( writer => {
 				const range = writer.createRange(
@@ -3923,7 +3923,7 @@ describe( 'DowncastHelpers', () => {
 		it( 'default conversion, mixed #4, multiple markers, name', () => {
 			downcastHelpers.markerToData( { model: 'group' } );
 
-			setModelData( model, '<paragraph>Foo</paragraph>' );
+			_setModelData( model, '<paragraph>Foo</paragraph>' );
 
 			model.change( writer => {
 				const range = writer.createRange(
@@ -4023,7 +4023,7 @@ describe( 'DowncastHelpers', () => {
 				}
 			} );
 
-			setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+			_setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 
 			model.change( writer => {
 				const range = writer.createRange(
@@ -4066,7 +4066,7 @@ describe( 'DowncastHelpers', () => {
 				}
 			} );
 
-			setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
+			_setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 
 			model.change( writer => {
 				const range = writer.createRange(
@@ -4107,7 +4107,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			// <paragraph> added so it can store selection, otherwise it throws.
-			setModelData( model, '<paragraph></paragraph><customElement></customElement>' );
+			_setModelData( model, '<paragraph></paragraph><customElement></customElement>' );
 
 			model.change( writer => {
 				const range = writer.createRangeOn( root.getChild( 1 ) );
@@ -4142,7 +4142,7 @@ describe( 'DowncastHelpers', () => {
 				converterPriority: 'high'
 			} );
 
-			setModelData( model, '<paragraph>F[ooba]r</paragraph>' );
+			_setModelData( model, '<paragraph>F[ooba]r</paragraph>' );
 
 			model.change( writer => {
 				writer.addMarker( 'group:foo', { range: model.document.selection.getFirstRange(), usingOperation: false } );
@@ -4170,7 +4170,7 @@ describe( 'DowncastHelpers', () => {
 				}, { priority: 'high' } );
 			} );
 
-			setModelData( model, '<paragraph>Foo[]bar</paragraph>' );
+			_setModelData( model, '<paragraph>Foo[]bar</paragraph>' );
 
 			model.change( writer => {
 				writer.addMarker( 'group:foo', { range: model.document.selection.getFirstRange(), usingOperation: false } );
@@ -4191,7 +4191,7 @@ describe( 'DowncastHelpers', () => {
 				view: () => false
 			} );
 
-			setModelData( model, '<paragraph>F[ooba]r</paragraph>' );
+			_setModelData( model, '<paragraph>F[ooba]r</paragraph>' );
 
 			model.change( writer => {
 				writer.addMarker( 'group:foo', { range: model.document.selection.getFirstRange(), usingOperation: false } );
@@ -4656,7 +4656,7 @@ describe( 'DowncastHelpers', () => {
 	} );
 
 	function expectResult( string ) {
-		expect( stringifyView( viewRoot, null, { ignoreRoot: true } ) ).to.equal( string );
+		expect( _stringifyView( viewRoot, null, { ignoreRoot: true } ) ).to.equal( string );
 	}
 
 	function getViewAttributes( modelElement ) {
@@ -5192,7 +5192,7 @@ describe( 'downcast selection converters', () => {
 			} );
 
 			it( 'in attribute and marker', () => {
-				setModelData( model, 'fo<$text bold="true">ob</$text>ar' );
+				_setModelData( model, 'fo<$text bold="true">ob</$text>ar' );
 
 				model.change( writer => {
 					const range = writer.createRange( writer.createPositionAt( modelRoot, 1 ), writer.createPositionAt( modelRoot, 5 ) );
@@ -5212,13 +5212,13 @@ describe( 'downcast selection converters', () => {
 				} );
 
 				// Stringify view and check if it is same as expected.
-				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) ).to.equal(
+				expect( _stringifyView( viewRoot, viewSelection, { showType: false } ) ).to.equal(
 					'<div>f<span class="marker">o<strong>o{}b</strong>a</span>r</div>'
 				);
 			} );
 
 			it( 'in attribute and marker - no attribute', () => {
-				setModelData( model, 'fo<$text bold="true">ob</$text>ar' );
+				_setModelData( model, 'fo<$text bold="true">ob</$text>ar' );
 
 				model.change( writer => {
 					const range = writer.createRange( writer.createPositionAt( modelRoot, 1 ), writer.createPositionAt( modelRoot, 5 ) );
@@ -5239,7 +5239,7 @@ describe( 'downcast selection converters', () => {
 				} );
 
 				// Stringify view and check if it is same as expected.
-				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
+				expect( _stringifyView( viewRoot, viewSelection, { showType: false } ) )
 					.to.equal( '<div>f<span class="marker">o<strong>o</strong>[]<strong>b</strong>a</span>r</div>' );
 			} );
 
@@ -5249,7 +5249,7 @@ describe( 'downcast selection converters', () => {
 					view: data => ( { classes: data.markerName } )
 				} );
 
-				setModelData( model, 'foobar' );
+				_setModelData( model, 'foobar' );
 
 				model.change( writer => {
 					const range = writer.createRange( writer.createPositionAt( modelRoot, 1 ), writer.createPositionAt( modelRoot, 5 ) );
@@ -5269,7 +5269,7 @@ describe( 'downcast selection converters', () => {
 				} );
 
 				// Stringify view and check if it is same as expected.
-				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
+				expect( _stringifyView( viewRoot, viewSelection, { showType: false } ) )
 					.to.equal( '<div>f<span class="marker2">oo{}ba</span>r</div>' );
 			} );
 
@@ -5279,7 +5279,7 @@ describe( 'downcast selection converters', () => {
 					view: () => null
 				} );
 
-				setModelData( model, 'foobar' );
+				_setModelData( model, 'foobar' );
 
 				model.change( writer => {
 					const range = writer.createRange( writer.createPositionAt( modelRoot, 1 ), writer.createPositionAt( modelRoot, 5 ) );
@@ -5299,13 +5299,13 @@ describe( 'downcast selection converters', () => {
 				} );
 
 				// Stringify view and check if it is same as expected.
-				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
+				expect( _stringifyView( viewRoot, viewSelection, { showType: false } ) )
 					.to.equal( '<div>foo{}bar</div>' );
 			} );
 
 			// #1072 - if the container has only ui elements, collapsed selection attribute should be rendered after those ui elements.
 			it( 'selection with attribute before ui element - no non-ui children', () => {
-				setModelData( model, '' );
+				_setModelData( model, '' );
 
 				// Add two ui elements to view.
 				viewRoot._appendChild( [
@@ -5324,13 +5324,13 @@ describe( 'downcast selection converters', () => {
 				} );
 
 				// Stringify view and check if it is same as expected.
-				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
+				expect( _stringifyView( viewRoot, viewSelection, { showType: false } ) )
 					.to.equal( '<div><span></span><span></span><strong>[]</strong></div>' );
 			} );
 
 			// #1072.
 			it( 'selection with attribute before ui element - has non-ui children #1', () => {
-				setModelData( model, 'x' );
+				_setModelData( model, 'x' );
 
 				model.change( writer => {
 					writer.setSelection( writer.createRange( writer.createPositionFromPath( modelRoot, [ 1 ] ) ) );
@@ -5349,13 +5349,13 @@ describe( 'downcast selection converters', () => {
 				} );
 
 				// Stringify view and check if it is same as expected.
-				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
+				expect( _stringifyView( viewRoot, viewSelection, { showType: false } ) )
 					.to.equal( '<div>x<strong>[]</strong><span></span></div>' );
 			} );
 
 			// #1072.
 			it( 'selection with attribute before ui element - has non-ui children #2', () => {
-				setModelData( model, '<$text bold="true">x</$text>y' );
+				_setModelData( model, '<$text bold="true">x</$text>y' );
 
 				model.change( writer => {
 					writer.setSelection( writer.createRange( writer.createPositionFromPath( modelRoot, [ 1 ] ) ) );
@@ -5373,7 +5373,7 @@ describe( 'downcast selection converters', () => {
 				} );
 
 				// Stringify view and check if it is same as expected.
-				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
+				expect( _stringifyView( viewRoot, viewSelection, { showType: false } ) )
 					.to.equal( '<div><strong>x{}</strong><span></span>y</div>' );
 			} );
 
@@ -5455,7 +5455,7 @@ describe( 'downcast selection converters', () => {
 
 				expect( viewSelection.rangeCount ).to.equal( 1 );
 
-				const viewString = stringifyView( viewRoot, viewSelection, { showType: false } );
+				const viewString = _stringifyView( viewRoot, viewSelection, { showType: false } );
 				expect( viewString ).to.equal( '<div>f{}oobar</div>' );
 			} );
 
@@ -5499,7 +5499,7 @@ describe( 'downcast selection converters', () => {
 				expect( spy.calledOnce ).to.be.true;
 				expect( viewSelection.rangeCount ).to.equal( 1 );
 
-				const viewString = stringifyView( viewRoot, viewSelection, { showType: false } );
+				const viewString = _stringifyView( viewRoot, viewSelection, { showType: false } );
 				expect( viewString ).to.equal( '<div>f{}oobar</div>' );
 			} );
 
@@ -5525,7 +5525,7 @@ describe( 'downcast selection converters', () => {
 
 				expect( viewSelection.rangeCount ).to.equal( 1 );
 
-				const viewString = stringifyView( viewRoot, viewSelection, { showType: false } );
+				const viewString = _stringifyView( viewRoot, viewSelection, { showType: false } );
 				expect( viewString ).to.equal( '<div>f{}oobar</div>' );
 			} );
 
@@ -5615,7 +5615,7 @@ describe( 'downcast selection converters', () => {
 	// that are offsets or paths of selection positions in root element.
 	function testSelection( selectionPaths, modelInput, expectedView, selectionAttributes = {} ) {
 		// Parse passed `modelInput` string and set it as current model.
-		setModelData( model, modelInput );
+		_setModelData( model, modelInput );
 
 		// Manually set selection ranges using passed `selectionPaths`.
 		const startPath = typeof selectionPaths[ 0 ] == 'number' ? [ selectionPaths[ 0 ] ] : selectionPaths[ 0 ];
@@ -5650,7 +5650,7 @@ describe( 'downcast selection converters', () => {
 		} );
 
 		// Stringify view and check if it is same as expected.
-		expect( stringifyView( viewRoot, viewSelection, { showType: false } ) ).to.equal( '<div>' + expectedView + '</div>' );
+		expect( _stringifyView( viewRoot, viewSelection, { showType: false } ) ).to.equal( '<div>' + expectedView + '</div>' );
 	}
 } );
 

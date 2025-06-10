@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 /**
  * Writes the content of a model {@link module:engine/model/document~Document document} to an HTML-like string with
@@ -35,7 +35,7 @@ import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 export function getModelDataWithAttributes( model, options = {} ) {
 	// Simplify GHS attributes as they are not very readable at this point due to object structure.
 	let counter = 1;
-	const data = getModelData( model, options ).replace( /(html.*?)="{.*?}"/g, ( fullMatch, attributeName ) => {
+	const data = _getModelData( model, options ).replace( /(html.*?)="{.*?}"/g, ( fullMatch, attributeName ) => {
 		return `${ attributeName }="(${ counter++ })"`;
 	} );
 
