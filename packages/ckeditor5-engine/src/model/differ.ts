@@ -108,7 +108,7 @@ export class Differ {
 	 *
 	 * The keys are the names of the roots while value represents the changes.
 	 */
-	private readonly _changedRoots: Map<string, DiffItemRoot> = new Map();
+	private readonly _changedRoots: Map<string, DifferItemRoot> = new Map();
 
 	/**
 	 * Stores the number of changes that were processed. Used to order the changes chronologically. It is important
@@ -123,7 +123,7 @@ export class Differ {
 	 *
 	 * This property stores those changes that did not take place in graveyard root.
 	 */
-	private _cachedChanges: Array<DiffItem> | null = null;
+	private _cachedChanges: Array<DifferItem> | null = null;
 
 	/**
 	 * For efficiency purposes, `Differ` stores the change set returned by the differ after the {@link #getChanges} call.
@@ -132,7 +132,7 @@ export class Differ {
 	 *
 	 * This property stores all changes evaluated by `Differ`, including those that took place in the graveyard.
 	 */
-	private _cachedChangesWithGraveyard: Array<DiffItem> | null = null;
+	private _cachedChangesWithGraveyard: Array<DifferItem> | null = null;
 
 	/**
 	 * Set of model items that were marked to get refreshed in {@link #_refreshItem}.
@@ -481,7 +481,7 @@ export class Differ {
 	 * Calculates the diff between the old model tree state (the state before the first buffered operations since the last {@link #reset}
 	 * call) and the new model tree state (actual one). It should be called after all buffered operations are executed.
 	 *
-	 * The diff set is returned as an array of {@link module:engine/model/differ~DiffItem diff items}, each describing a change done
+	 * The diff set is returned as an array of {@link module:engine/model/differ~DifferItem diff items}, each describing a change done
 	 * on the model. The items are sorted by the position on which the change happened. If a position
 	 * {@link module:engine/model/position~Position#isBefore is before} another one, it will be on an earlier index in the diff set.
 	 *
@@ -495,7 +495,7 @@ export class Differ {
 	 * in the graveyard root will be returned. By default, changes in the graveyard root are not returned.
 	 * @returns Diff between the old and the new model tree state.
 	 */
-	public getChanges( options: { includeChangesInGraveyard?: boolean } = {} ): Array<DiffItem> {
+	public getChanges( options: { includeChangesInGraveyard?: boolean } = {} ): Array<DifferItem> {
 		// If there are cached changes, just return them instead of calculating changes again.
 		if ( this._cachedChanges ) {
 			if ( options.includeChangesInGraveyard ) {
@@ -506,7 +506,7 @@ export class Differ {
 		}
 
 		// Will contain returned results.
-		let diffSet: Array<DiffItem & DiffItemInternal> = [];
+		let diffSet: Array<DifferItem & DifferItemInternal> = [];
 
 		// Check all changed elements/roots.
 		for ( const element of this._changesInElement.keys() ) {
@@ -673,7 +673,7 @@ export class Differ {
 	 *
 	 * @returns Diff between the old and the new roots state.
 	 */
-	public getChangedRoots(): Array<DiffItemRoot> {
+	public getChangedRoots(): Array<DifferItemRoot> {
 		return Array.from( this._changedRoots.values() ).map( diffItem => {
 			const entry = { ...diffItem };
 
@@ -811,7 +811,7 @@ export class Differ {
 	 * Buffers a root attribute change.
 	 */
 	private _bufferRootAttributeChange( rootName: string, key: string, oldValue: unknown, newValue: unknown ): void {
-		const diffItem: DiffItemRoot = this._changedRoots.get( rootName ) || { name: rootName };
+		const diffItem: DifferItemRoot = this._changedRoots.get( rootName ) || { name: rootName };
 		const attrs: Record<string, { oldValue: unknown; newValue: unknown }> = diffItem.attributes || {};
 
 		if ( attrs[ key ] ) {
@@ -1239,8 +1239,8 @@ export class Differ {
 		action: DifferItemAction,
 		elementSnapshot: DifferSnapshot,
 		elementSnapshotBefore?: DifferSnapshot
-	): DiffItemInsert & DiffItemInternal {
-		const diffItem: DiffItemInsert & DiffItemInternal = {
+	): DifferItemInsert & DifferItemInternal {
+		const diffItem: DifferItemInsert & DifferItemInternal = {
 			type: 'insert',
 			position: Position._createAt( parent, offset ),
 			name: elementSnapshot.name,
@@ -1274,7 +1274,7 @@ export class Differ {
 		offset: number,
 		action: DifferItemAction,
 		elementSnapshot: DifferSnapshot
-	): DiffItemRemove & DiffItemInternal {
+	): DifferItemRemove & DifferItemInternal {
 		return {
 			type: 'remove',
 			action,
@@ -1298,9 +1298,9 @@ export class Differ {
 		range: Range,
 		oldAttributes: Map<string, unknown>,
 		newAttributes: Map<string, unknown>
-	): Array<DiffItemAttribute & DiffItemInternal> {
+	): Array<DifferItemAttribute & DifferItemInternal> {
 		// Results holder.
-		const diffs: Array<DiffItemAttribute & DiffItemInternal> = [];
+		const diffs: Array<DifferItemAttribute & DifferItemInternal> = [];
 
 		// Clone new attributes as we will be performing changes on this object.
 		newAttributes = new Map( newAttributes );
@@ -1553,7 +1553,7 @@ function _generateDiffInstructionsFromChanges( oldChildrenLength: number, change
 /**
  * Filter callback for `Array.filter` that filters out change entries that are in graveyard.
  */
-function _changesInGraveyardFilter( entry: DiffItem ) {
+function _changesInGraveyardFilter( entry: DifferItem ) {
 	const posInGy = 'position' in entry && entry.position!.root.rootName == '$graveyard';
 	const rangeInGy = 'range' in entry && entry.range.root.rootName == '$graveyard';
 
@@ -1588,16 +1588,16 @@ export interface DifferSnapshot {
  *
  * Could be one of:
  *
- * * {@link module:engine/model/differ~DiffItemInsert `DiffItemInsert`},
- * * {@link module:engine/model/differ~DiffItemRemove `DiffItemRemove`},
- * * {@link module:engine/model/differ~DiffItemAttribute `DiffItemAttribute`}.
+ * * {@link module:engine/model/differ~DifferItemInsert `DifferItemInsert`},
+ * * {@link module:engine/model/differ~DifferItemRemove `DifferItemRemove`},
+ * * {@link module:engine/model/differ~DifferItemAttribute `DifferItemAttribute`}.
  */
-export type DiffItem = DiffItemInsert | DiffItemRemove | DiffItemAttribute;
+export type DifferItem = DifferItemInsert | DifferItemRemove | DifferItemAttribute;
 
 /**
  * A single diff item for inserted nodes.
  */
-export interface DiffItemInsert {
+export interface DifferItemInsert {
 
 	/**
 	 * The type of diff item.
@@ -1657,9 +1657,35 @@ export interface DiffItemInsert {
 }
 
 /**
+ * A single diff item for re-inserted nodes.
+ */
+export interface DifferItemReinsert {
+
+	/**
+	 * The type of diff item.
+	 */
+	type: 'reinsert';
+
+	/**
+	 * The name of the re-inserted elements or `'$text'` for a text node.
+	 */
+	name: string;
+
+	/**
+	 * The position where the node was reinserted.
+	 */
+	position: Position;
+
+	/**
+	 * The length of a re-inserted text node. For elements, it is always 1 as each re-inserted element is counted as a one.
+	 */
+	length: number;
+}
+
+/**
  * A single diff item for removed nodes.
  */
-export interface DiffItemRemove {
+export interface DifferItemRemove {
 
 	/**
 	 * The type of diff item.
@@ -1699,7 +1725,7 @@ export interface DiffItemRemove {
 /**
  * A single diff item for attribute change.
  */
-export interface DiffItemAttribute {
+export interface DifferItemAttribute {
 
 	/**
 	 * The type of diff item.
@@ -1730,7 +1756,7 @@ export interface DiffItemAttribute {
 /**
  * A single diff item for a changed root.
  */
-export interface DiffItemRoot {
+export interface DifferItemRoot {
 
 	/**
 	 * Name of the changed root.
@@ -1754,7 +1780,7 @@ export interface DiffItemRoot {
 	attributes?: Record<string, { oldValue: unknown; newValue: unknown }>;
 }
 
-interface DiffItemInternal {
+interface DifferItemInternal {
 	changeCount?: number;
 	position?: Position;
 	length?: number;

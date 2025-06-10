@@ -128,11 +128,12 @@ export { Marker } from './model/markercollection.js';
 export { Batch, type BatchType } from './model/batch.js';
 export {
 	Differ,
-	type DiffItem,
-	type DiffItemAttribute,
-	type DiffItemInsert,
-	type DiffItemRemove,
-	type DifferItemAction
+	type DifferItem,
+	type DifferItemAttribute,
+	type DifferItemInsert,
+	type DifferItemRemove,
+	type DifferItemAction,
+	type DifferItemRoot
 } from './model/differ.js';
 export type { Item } from './model/item.js';
 export { Node, type NodeAttributes } from './model/node.js';

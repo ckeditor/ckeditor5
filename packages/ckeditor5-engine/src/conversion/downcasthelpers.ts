@@ -20,7 +20,6 @@ import { ConversionHelpers } from './conversionhelpers.js';
 
 import type {
 	DowncastDispatcher,
-	DiffItemReinsert,
 	DowncastConversionApi,
 	DowncastInsertEvent,
 	DowncastAddMarkerEvent,
@@ -29,7 +28,7 @@ import type {
 	DowncastRemoveMarkerEvent
 } from './downcastdispatcher.js';
 import { type ModelConsumable } from './modelconsumable.js';
-import type { DiffItem } from '../model/differ.js';
+import type { DifferItem, DifferItemReinsert } from '../model/differ.js';
 import { type ModelNode } from '../model/node.js';
 import { type ModelItem } from '../model/item.js';
 import { type ModelTextProxy } from '../model/textproxy.js';
@@ -2441,7 +2440,7 @@ function prepareDescriptor(
  * @param model.children Whether the child list change should trigger reconversion.
  */
 function createChangeReducerCallback( model: NormalizedModelElementConfig ) {
-	return ( node: ModelNode, change: DiffItem | DiffItemReinsert ): boolean => {
+	return ( node: ModelNode, change: DifferItem | DifferItemReinsert ): boolean => {
 		if ( !node.is( 'element', model.name ) ) {
 			return false;
 		}
@@ -2474,9 +2473,9 @@ function createChangeReducer( model: NormalizedModelElementConfig ) {
 
 	return (
 		evt: unknown,
-		data: { changes: Iterable<DiffItem | DiffItemReinsert>; reconvertedElements?: Set<ModelNode> }
+		data: { changes: Iterable<DifferItem | DifferItemReinsert>; reconvertedElements?: Set<ModelNode> }
 	) => {
-		const reducedChanges: Array<DiffItem | DiffItemReinsert> = [];
+		const reducedChanges: Array<DifferItem | DifferItemReinsert> = [];
 
 		if ( !data.reconvertedElements ) {
 			data.reconvertedElements = new Set();

@@ -12,7 +12,7 @@ import { Range } from '../model/range.js';
 
 import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
-import type { Differ, DiffItem } from '../model/differ.js';
+import type { Differ, DifferItem, DifferItemReinsert } from '../model/differ.js';
 import type { MarkerCollection, Marker } from '../model/markercollection.js';
 import type { TreeWalkerValue } from '../model/treewalker.js';
 import { type DocumentSelection } from '../model/documentselection.js';
@@ -493,14 +493,14 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * Fires the reduction of changes buffered in the {@link module:engine/model/differ~Differ `Differ`}.
 	 *
-	 * Features can replace selected {@link module:engine/model/differ~DiffItem `DiffItem`}s with `reinsert` entries to trigger
+	 * Features can replace selected {@link module:engine/model/differ~DifferItem `DifferItem`}s with `reinsert` entries to trigger
 	 * reconversion. The {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
 	 * `DowncastHelpers.elementToStructure()`} is using this event to trigger reconversion.
 	 *
 	 * @fires reduceChanges
 	 */
-	private _reduceChanges( changes: Iterable<DiffItem> ): Iterable<DiffItem | DiffItemReinsert> {
-		const data: { changes: Iterable<DiffItem | DiffItemReinsert> } = { changes };
+	private _reduceChanges( changes: Iterable<DifferItem> ): Iterable<DifferItem | DifferItemReinsert> {
+		const data: { changes: Iterable<DifferItem | DifferItemReinsert> } = { changes };
 
 		this.fire<DowncastReduceChangesEvent>( 'reduceChanges', data );
 
@@ -672,7 +672,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
  * Fired to enable reducing (transforming) changes buffered in the {@link module:engine/model/differ~Differ `Differ`} before
  * {@link ~DowncastDispatcher#convertChanges `convertChanges()`} will fire any conversion events.
  *
- * For instance, a feature can replace selected {@link module:engine/model/differ~DiffItem `DiffItem`}s with a `reinsert` entry
+ * For instance, a feature can replace selected {@link module:engine/model/differ~DifferItem `DifferItem`}s with a `reinsert` entry
  * to trigger reconversion of an element when e.g. its attribute has changes.
  * The {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
 	 * `DowncastHelpers.elementToStructure()`} helper is using this event to trigger reconversion of an element when the element,
@@ -690,7 +690,7 @@ export type DowncastReduceChangesEventData = {
 	/**
 	 * A buffered changes to get reduced.
 	 */
-	changes: Iterable<DiffItem | DiffItemReinsert>;
+	changes: Iterable<DifferItem | DifferItemReinsert>;
 };
 
 export type DowncastDispatcherEventMap<TItem = Item> = {
@@ -871,13 +871,6 @@ export type DowncastAddMarkerEvent = DowncastEvent<'addMarker'>;
  * to be used by callback, passed in `DowncastDispatcher` constructor.
  */
 export type DowncastRemoveMarkerEvent = DowncastEvent<'removeMarker'>;
-
-export interface DiffItemReinsert {
-	type: 'reinsert';
-	name: string;
-	position: Position;
-	length: number;
-}
 
 /**
  * Helper function, checks whether change of `marker` at `modelPosition` should be converted. Marker changes are not

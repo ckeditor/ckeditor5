@@ -11,8 +11,8 @@ import type {
 	Element,
 	Model,
 	Writer,
-	DiffItem,
-	DiffItemAttribute
+	DifferItem,
+	DifferItemAttribute
 } from 'ckeditor5/src/engine.js';
 
 import { TableWalker } from './../tablewalker.js';
@@ -416,7 +416,7 @@ function getChildrenLengths( table: Element ) {
 /**
  * Checks if the differ entry for an attribute change is one of the table's attributes.
  */
-function isTableAttributeEntry( entry: DiffItem ): entry is DiffItemAttribute {
+function isTableAttributeEntry( entry: DifferItem ): entry is DifferItemAttribute {
 	if ( entry.type !== 'attribute' ) {
 		return false;
 	}

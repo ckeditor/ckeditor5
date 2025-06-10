@@ -7,7 +7,7 @@
  * @module table/converters/table-cell-paragraph-post-fixer
  */
 
-import type { Model, Writer, Element, DiffItemInsert, DiffItemRemove } from 'ckeditor5/src/engine.js';
+import type { Model, Writer, Element, DifferItemInsert, DifferItemRemove } from 'ckeditor5/src/engine.js';
 
 /**
  * Injects a table cell post-fixer into the model which inserts a `paragraph` element into empty table cells.
@@ -129,7 +129,7 @@ function fixTableCellContent( tableCell: Element, writer: Writer ) {
  * - Removing content from the table cell (i.e. `tableCell` can be left empty).
  * - Adding a text node directly into a table cell.
  */
-function checkTableCellChange( entry: DiffItemInsert | DiffItemRemove ) {
+function checkTableCellChange( entry: DifferItemInsert | DifferItemRemove ) {
 	if ( !entry.position.parent.is( 'element', 'tableCell' ) ) {
 		return false;
 	}

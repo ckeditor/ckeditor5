@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type { DiffItem, DiffItemAttribute, Element, Node } from 'ckeditor5/src/engine.js';
+import type { DifferItem, DifferItemAttribute, Element, Node } from 'ckeditor5/src/engine.js';
 import {
 	scrollViewportToShowTarget,
 	type Collection,
@@ -216,7 +216,7 @@ export class FindAndReplaceEditing extends Plugin {
 		const model = this.editor.model;
 		const { results } = this.state!;
 
-		const changes = model.document.differ.getChanges() as Array<Exclude<DiffItem, DiffItemAttribute>>;
+		const changes = model.document.differ.getChanges() as Array<Exclude<DifferItem, DifferItemAttribute>>;
 		const changedMarkers = model.document.differ.getChangedMarkers();
 
 		// Get nodes in which changes happened to re-run a search callback on them.

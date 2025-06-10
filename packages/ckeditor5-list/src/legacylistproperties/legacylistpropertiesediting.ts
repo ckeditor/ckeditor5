@@ -10,7 +10,7 @@
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
 import type {
-	DiffItem,
+	DifferItem,
 	DowncastAttributeEvent,
 	DowncastDispatcher,
 	DowncastWriter,
@@ -819,7 +819,7 @@ function restoreDefaultListStyle( editor: Editor ) {
  *
  * @param changes The changes list returned by the differ.
  */
-function getChangedListItems( changes: Array<DiffItem> ) {
+function getChangedListItems( changes: Array<DifferItem> ) {
 	const items: Array<Element> = [];
 
 	for ( const change of changes ) {
@@ -833,7 +833,7 @@ function getChangedListItems( changes: Array<DiffItem> ) {
 	return items;
 }
 
-function getItemFromChange( change: DiffItem ) {
+function getItemFromChange( change: DifferItem ) {
 	if ( change.type === 'attribute' ) {
 		return change.range.start.nodeAfter;
 	}
