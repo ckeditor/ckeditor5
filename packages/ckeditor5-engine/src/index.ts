@@ -46,7 +46,6 @@ export type {
 	DowncastEvent,
 	DowncastCleanSelectionEvent
 } from './conversion/downcastdispatcher.js';
-export { DowncastHelpers } from './conversion/downcasthelpers.js';
 export type {
 	UpcastDispatcher,
 	UpcastConversionApi,
@@ -58,14 +57,17 @@ export type {
 	UpcastDocumentFragmentEvent
 } from './conversion/upcastdispatcher.js';
 export { UpcastHelpers } from './conversion/upcasthelpers.js';
-export type {
-	AddHighlightCallback,
-	AttributeDescriptor,
-	ElementCreatorFunction,
-	HighlightDescriptor,
-	RemoveHighlightCallback,
-	MarkerElementCreatorFunction,
-	SlotFilter
+export {
+	DowncastHelpers,
+	type DowncastStructureCreatorFunction,
+	type DowncastAttributeElementCreatorFunction,
+	type DowncastElementCreatorFunction,
+	type AddHighlightCallback,
+	type AttributeDescriptor,
+	type HighlightDescriptor,
+	type RemoveHighlightCallback,
+	type MarkerElementCreatorFunction,
+	type SlotFilter
 } from './conversion/downcasthelpers.js';
 
 export type {
@@ -297,6 +299,7 @@ export {
 	logDocument as _logDocument
 } from './dev-utils/utils.js';
 
+// Internals
 export {
 	insertText as _downcastInsertText,
 	insertAttributesAndChildren as _downcastInsertAttributesAndChildren,
@@ -312,7 +315,6 @@ export {
 	type ConsumerFunction as _DowncastConsumerFunction
 } from './conversion/downcasthelpers.js';
 
-// Internals
 export { MapperCache as _MapperCache } from './conversion/mapper.js';
 export {
 	convertToModelFragment as _upcastConvertToModelFragment,

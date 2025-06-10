@@ -17,7 +17,7 @@ import {
 import { UpcastHelpers } from './upcasthelpers.js';
 import {
 	DowncastHelpers,
-	type AttributeCreatorFunction,
+	type DowncastAttributeCreatorFunction,
 	type AttributeDescriptor
 } from './downcasthelpers.js';
 
@@ -632,7 +632,7 @@ export class Conversion {
 				name?: string;
 			};
 			view: string | ( AttributeDescriptor & { name?: string } );
-			upcastAlso?: ArrayOrItem<string | ( AttributeDescriptor & { name?: string } ) | AttributeCreatorFunction>;
+			upcastAlso?: ArrayOrItem<string | ( AttributeDescriptor & { name?: string } ) | DowncastAttributeCreatorFunction>;
 			converterPriority?: PriorityString;
 		} | {
 			model: {
@@ -641,7 +641,7 @@ export class Conversion {
 				values: Array<TValues>;
 			};
 			view: Record<TValues, ( AttributeDescriptor & { name?: string } )>;
-			upcastAlso?: Record<TValues, ( AttributeDescriptor & { name?: string } ) | AttributeCreatorFunction>;
+			upcastAlso?: Record<TValues, ( AttributeDescriptor & { name?: string } ) | DowncastAttributeCreatorFunction>;
 			converterPriority?: PriorityString;
 		} ): void {
 		// Set up downcast converter.

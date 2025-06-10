@@ -213,7 +213,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 			attributes?: string | Array<string>;
 			children?: boolean;
 		};
-		view: ElementDefinition | ElementCreatorFunction;
+		view: ElementDefinition | DowncastElementCreatorFunction;
 		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( downcastElementToElement( config ) );
@@ -333,7 +333,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 			name: string;
 			attributes?: string | Array<string>;
 		};
-		view: StructureCreatorFunction;
+		view: DowncastStructureCreatorFunction;
 		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( downcastElementToStructure( config ) );
@@ -431,7 +431,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 				key: string;
 				name?: string;
 			};
-			view: ElementDefinition | AttributeElementCreatorFunction;
+			view: ElementDefinition | DowncastAttributeElementCreatorFunction;
 			converterPriority?: PriorityString;
 		} | {
 			model: {
@@ -439,7 +439,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 				name?: string;
 				values: Array<TValues>;
 			};
-			view: Record<TValues, ElementDefinition | AttributeElementCreatorFunction>;
+			view: Record<TValues, ElementDefinition | DowncastAttributeElementCreatorFunction>;
 			converterPriority?: PriorityString;
 		}
 	): this {
@@ -533,7 +533,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 				key: string;
 				name?: string;
 			};
-			view: string | AttributeDescriptor | AttributeCreatorFunction;
+			view: string | AttributeDescriptor | DowncastAttributeCreatorFunction;
 			converterPriority?: PriorityString;
 		} | {
 			model: {
@@ -541,7 +541,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 				name?: string;
 				values?: Array<TValues>;
 			};
-			view: Record<TValues, AttributeDescriptor | AttributeCreatorFunction>;
+			view: Record<TValues, AttributeDescriptor | DowncastAttributeCreatorFunction>;
 			converterPriority?: PriorityString;
 		}
 	): this {
@@ -1106,7 +1106,7 @@ export function cleanSelection() {
  * @param elementCreator Function returning a view element that will be used for wrapping.
  * @returns Set/change attribute converter.
  */
-export function wrap( elementCreator: AttributeElementCreatorFunction ) {
+export function wrap( elementCreator: DowncastAttributeElementCreatorFunction ) {
 	return (
 		evt: EventInfo,
 		data: {
@@ -1186,7 +1186,7 @@ export function wrap( elementCreator: AttributeElementCreatorFunction ) {
  * By default this function just consume passed item insertion.
  * @returns Insert element event converter.
  */
-export function insertElement( elementCreator: ElementCreatorFunction, consumer: ConsumerFunction = defaultConsumer ) {
+export function insertElement( elementCreator: DowncastElementCreatorFunction, consumer: ConsumerFunction = defaultConsumer ) {
 	return (
 		evt: unknown,
 		data: { item: ModelElement; range: ModelRange; reconversion?: boolean },
@@ -1232,7 +1232,7 @@ export function insertElement( elementCreator: ElementCreatorFunction, consumer:
  * that were used by the element creator.
  * @returns Insert element event converter.
 */
-export function insertStructure( elementCreator: StructureCreatorFunction, consumer: ConsumerFunction ) {
+export function insertStructure( elementCreator: DowncastStructureCreatorFunction, consumer: ConsumerFunction ) {
 	return (
 		evt: unknown,
 		data: { item: ModelElement; range: ModelRange; reconversion?: boolean },
@@ -1590,7 +1590,7 @@ function removeMarkerData( viewCreator: MarkerDataCreatorFunction ) {
  * The function is passed the model attribute value as the first parameter and additional data about the change as the second parameter.
  * @returns Set/change attribute converter.
  */
-function changeAttribute( attributeCreator: AttributeCreatorFunction ) {
+function changeAttribute( attributeCreator: DowncastAttributeCreatorFunction ) {
 	return (
 		evt: EventInfo,
 		data: {
@@ -1919,7 +1919,7 @@ function downcastElementToElement( config: {
 		attributes?: string | Array<string>;
 		children?: boolean;
 	};
-	view: ElementDefinition | ElementCreatorFunction;
+	view: ElementDefinition | DowncastElementCreatorFunction;
 	converterPriority?: PriorityString;
 } ) {
 	const model = normalizeModelElementConfig( config.model );
@@ -1958,7 +1958,7 @@ function downcastElementToStructure(
 			name: string;
 			attributes?: string | Array<string>;
 		};
-		view: StructureCreatorFunction;
+		view: DowncastStructureCreatorFunction;
 		converterPriority?: PriorityString;
 	}
 ) {
@@ -2047,7 +2047,10 @@ function downcastAttributeToElement( config: {
 		name?: string;
 		values?: Array<string>;
 	};
-	view: ElementDefinition | AttributeElementCreatorFunction | Record<string, ElementDefinition | AttributeElementCreatorFunction>;
+	view:
+		| ElementDefinition
+		| DowncastAttributeElementCreatorFunction
+		| Record<string, ElementDefinition | DowncastAttributeElementCreatorFunction>;
 	converterPriority?: PriorityString;
 } ) {
 	config = cloneDeep( config );
@@ -2072,7 +2075,7 @@ function downcastAttributeToElement( config: {
 		config.view = normalizeToElementConfig( config.view as any, 'attribute' );
 	}
 
-	const elementCreator = getFromAttributeCreator<AttributeElementCreatorFunction>( config );
+	const elementCreator = getFromAttributeCreator<DowncastAttributeElementCreatorFunction>( config );
 
 	return ( dispatcher: DowncastDispatcher ) => {
 		dispatcher.on<DowncastAttributeEvent>(
@@ -2106,7 +2109,11 @@ function downcastAttributeToAttribute( config: {
 		name?: string;
 		values?: Array<string>;
 	};
-	view: string | AttributeDescriptor | AttributeCreatorFunction | Record<string, AttributeDescriptor | AttributeCreatorFunction>;
+	view:
+		| string
+		| AttributeDescriptor
+		| DowncastAttributeCreatorFunction
+		| Record<string, AttributeDescriptor | DowncastAttributeCreatorFunction>;
 	converterPriority?: PriorityString;
 } ) {
 	config = cloneDeep( config );
@@ -2131,7 +2138,7 @@ function downcastAttributeToAttribute( config: {
 		config.view = normalizeToAttributeConfig( config.view );
 	}
 
-	const elementCreator = getFromAttributeCreator<AttributeCreatorFunction>( config );
+	const elementCreator = getFromAttributeCreator<DowncastAttributeCreatorFunction>( config );
 
 	return ( dispatcher: DowncastDispatcher ) => {
 		dispatcher.on<DowncastAttributeEvent<ModelElement>>(
@@ -2358,7 +2365,7 @@ function createViewElementFromDefinition(
 	return element;
 }
 
-function getFromAttributeCreator<T extends AttributeElementCreatorFunction | AttributeCreatorFunction>( config: any ): T {
+function getFromAttributeCreator<T extends DowncastAttributeElementCreatorFunction | DowncastAttributeCreatorFunction>( config: any ): T {
 	if ( config.model.values ) {
 		return ( ( modelAttributeValue: any, conversionApi: DowncastConversionApi, data: any ) => {
 			const view = config.view[ modelAttributeValue ];
@@ -2380,7 +2387,7 @@ function getFromAttributeCreator<T extends AttributeElementCreatorFunction | Att
  *
  * @param view View configuration.
  */
-function normalizeToAttributeConfig( view: any ): AttributeCreatorFunction {
+function normalizeToAttributeConfig( view: any ): DowncastAttributeCreatorFunction {
 	if ( typeof view == 'string' ) {
 		return modelAttributeValue => ( { key: view, value: modelAttributeValue as string } );
 	} else if ( typeof view == 'object' ) {
@@ -2821,7 +2828,7 @@ export type SlotFilter = ( node: ModelNode ) => boolean;
  * A view element creator function that takes the model element and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi
  * downcast conversion API} as parameters and returns a view container element.
  *
- * @callback module:engine/conversion/downcasthelpers~ElementCreatorFunction
+ * @callback module:engine/conversion/downcasthelpers~DowncastElementCreatorFunction
  *
  * @param element The model element to be converted to the view structure.
  * @param conversionApi The conversion interface.
@@ -2834,7 +2841,7 @@ export type SlotFilter = ( node: ModelNode ) => boolean;
  * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement
  * @see module:engine/conversion/downcasthelpers~insertElement
  */
-export type ElementCreatorFunction = (
+export type DowncastElementCreatorFunction = (
 	element: ModelElement,
 	conversionApi: DowncastConversionApi,
 	data: {
@@ -2847,7 +2854,7 @@ export type ElementCreatorFunction = (
  * A function that takes the model element and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast
  * conversion API} as parameters and returns a view container element with slots for model child nodes to be converted into.
  *
- * @callback module:engine/conversion/downcasthelpers~StructureCreatorFunction
+ * @callback module:engine/conversion/downcasthelpers~DowncastStructureCreatorFunction
  *
  * @param element The model element to be converted to the view structure.
  * @param conversionApi The conversion interface.
@@ -2860,14 +2867,14 @@ export type ElementCreatorFunction = (
  * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
  * @see module:engine/conversion/downcasthelpers~insertStructure
  */
-export type StructureCreatorFunction = ElementCreatorFunction;
+export type DowncastStructureCreatorFunction = DowncastElementCreatorFunction;
 
 /**
  * A view element creator function that takes the model attribute value and
  * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API} as parameters and returns a view
  * attribute element.
  *
- * @callback module:engine/conversion/downcasthelpers~AttributeElementCreatorFunction
+ * @callback module:engine/conversion/downcasthelpers~DowncastAttributeElementCreatorFunction
  *
  * @param attributeValue The model attribute value to be converted to the view attribute element.
  * @param conversionApi The conversion interface.
@@ -2883,7 +2890,7 @@ export type StructureCreatorFunction = ElementCreatorFunction;
  * @see module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement
  * @see module:engine/conversion/downcasthelpers~wrap
  */
-export type AttributeElementCreatorFunction = (
+export type DowncastAttributeElementCreatorFunction = (
 	attributeValue: any,
 	conversionApi: DowncastConversionApi,
 	data: {
@@ -2900,7 +2907,7 @@ export type AttributeElementCreatorFunction = (
  * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
  * as parameters.
  *
- * @callback module:engine/conversion/downcasthelpers~AttributeCreatorFunction
+ * @callback module:engine/conversion/downcasthelpers~DowncastAttributeCreatorFunction
  *
  * @param attributeValue The model attribute value to be converted to the view attribute element.
  * @param conversionApi The conversion interface.
@@ -2916,7 +2923,7 @@ export type AttributeElementCreatorFunction = (
  *
  * @see module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToAttribute
  */
-export type AttributeCreatorFunction = (
+export type DowncastAttributeCreatorFunction = (
 	attributeValue: unknown,
 	conversionApi: DowncastConversionApi,
 	data: {
