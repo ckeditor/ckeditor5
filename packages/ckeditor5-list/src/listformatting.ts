@@ -132,7 +132,10 @@ export default class ListFormatting extends Plugin {
 								);
 							}
 						} else {
-							if ( listItem.hasAttribute( listItemFormatAttributeName ) ) {
+							if (
+								listItem.hasAttribute( listItemFormatAttributeName ) &&
+								!model.schema.isLimit( listItem ) // Do not remove formatting from limit elements (e.g. tables).
+							) {
 								returnValue = removeFormattingFromListItem(
 									writer,
 									listItem,

@@ -28,6 +28,13 @@ describe( 'ListFormatting', () => {
 
 		model.schema.extend( '$text', { allowAttributes: [ 'inlineFormat', 'inlineFormat2' ] } );
 
+		model.schema.register( 'limitElement', {
+			inheritAllFrom: '$blockObject',
+			allowAttributes: [ 'listItemId', 'listIndent', 'listItemFormat' ]
+		} );
+
+		editor.conversion.elementToElement( { model: 'limitElement', view: 'limitElement' } );
+
 		stubUid();
 	} );
 
@@ -339,6 +346,16 @@ describe( 'ListFormatting', () => {
 						'<$text inlineFormat="bar">bar</$text>' +
 					'</paragraph>'
 				);
+			} );
+		} );
+
+		describe( 'other blocks handling (tables etc.)', () => {
+			it( 'should not remove attribute form the limit elements (like table)', () => {
+				setModelData( model,
+					'<limitElement listIndent="0" listItemId="a" listItemFormat="foo"></limitElement>'
+				);
+
+				expect( model.document.getRoot().getChild( 0 ).getAttribute( 'listItemFormat' ) ).to.equal( 'foo' );
 			} );
 		} );
 
