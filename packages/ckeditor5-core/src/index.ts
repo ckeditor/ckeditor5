@@ -42,4 +42,10 @@ export type {
 	KeystrokeInfoDefinition as KeystrokeInfoDefinition
 } from './accessibility.js';
 
+export { DEFAULT_GROUP_ID as _DEFAULT_ACCESSIBILITY_GROUP_ID } from './accessibility.js';
+export {
+	getEditorUsageData as _getEditorUsageData,
+	type EditorUsageData as _EditorUsageData
+} from './editor/utils/editorusagedata.js';
+
 import './augmentation.js';

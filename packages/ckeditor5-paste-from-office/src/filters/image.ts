@@ -21,6 +21,7 @@ import {
  *
  * @param documentFragment Document fragment on which transform images.
  * @param rtfData The RTF data from which images representation will be used.
+ * @internal
  */
 export function replaceImagesSourceWithBase64( documentFragment: ViewDocumentFragment, rtfData: string ): void {
 	if ( !documentFragment.childCount ) {

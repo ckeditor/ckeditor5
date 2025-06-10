@@ -11,4 +11,10 @@ export { ContextWatchdog } from './contextwatchdog.js';
 export { EditorWatchdog, type EditorCreatorFunction } from './editorwatchdog.js';
 export { Watchdog, type WatchdogConfig } from './watchdog.js';
 
+export type {
+	EventMap,
+	EventArgs,
+	EventCallback
+} from './watchdog.js';
+
 import './augmentation.js';

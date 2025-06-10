@@ -22,6 +22,8 @@ import { TableWalker } from '../tablewalker.js';
  * Table heading rows and heading columns are represented in the model by a `headingRows` and `headingColumns` attributes.
  *
  * When table headings attribute changes, all the cells/rows are marked to re-render to change between `<td>` and `<th>`.
+ *
+ * @internal
  */
 export function tableHeadingsRefreshHandler( model: Model, editing: EditingController ): void {
 	const differ = model.document.differ;

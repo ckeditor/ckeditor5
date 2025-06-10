@@ -15,4 +15,9 @@ export { StyleCommand } from './stylecommand.js';
 
 export type { StyleConfig, StyleDefinition } from './styleconfig.js';
 
+export { StyleGridButtonView as _StyleGridButtonView } from './ui/stylegridbuttonview.js';
+export { StyleGridView as _StyleGridView } from './ui/stylegridview.js';
+export { StyleGroupView as _StyleGroupView } from './ui/stylegroupview.js';
+export { StylePanelView as _StylePanelView } from './ui/stylepanelview.js';
+
 import './augmentation.js';

@@ -51,6 +51,9 @@ import { isObject } from 'es-toolkit/compat';
 
 import '../../theme/components/toolbar/toolbar.css';
 
+/**
+ * @internal
+ */
 export const NESTED_TOOLBAR_ICONS: Record<string, string | undefined> = /* #__PURE__ */ ( () => ( {
 	alignLeft: IconAlignLeft,
 	bold: IconBold,
@@ -1171,6 +1174,7 @@ export interface ToolbarOptions {
  * {@link module:ui/toolbar/toolbarview~ToolbarView#element} template or
  * {@link module:ui/toolbar/toolbarview~ToolbarView#render rendering}. They can be enabled
  * conditionally, e.g. depending on the configuration of the toolbar.
+ * @internal
  */
 export interface ToolbarBehavior {
 

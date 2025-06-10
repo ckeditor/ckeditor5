@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ViewModel } from '../src/model.js';
+import { UIModel } from '../src/model.js';
 
 let Car, car;
 
-describe( 'ViewModel', () => {
+describe( 'UIModel', () => {
 	beforeEach( () => {
-		Car = class extends ViewModel {};
+		Car = class extends UIModel {};
 
 		car = new Car( {
 			color: 'red',

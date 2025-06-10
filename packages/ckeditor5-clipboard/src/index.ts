@@ -42,4 +42,11 @@ export {
 	type ViewDocumentCutEvent
 } from './clipboardobserver.js';
 
+export { DragDrop as _DragDrop } from './dragdrop.js';
+export { DragDropBlockToolbar as _DragDropBlockToolbar } from './dragdropblocktoolbar.js';
+export { DragDropTarget as _DragDropTarget } from './dragdroptarget.js';
+export { LineView as _ClipboardLineView } from './lineview.js';
+
+export { normalizeClipboardData as _normalizeClipboardData } from './utils/normalizeclipboarddata.js';
+
 import './augmentation.js';

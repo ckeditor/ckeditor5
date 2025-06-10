@@ -458,6 +458,7 @@ export type ColorPickerColorSelectedEvent = {
  * @param color Unsafe color string.
  * @returns Null if provided color is not hex value.
  * @export
+ * @internal
  */
 export function tryParseHexColor<S extends string>( color: S | null | undefined ): HexColor<S> | null {
 	if ( !color ) {

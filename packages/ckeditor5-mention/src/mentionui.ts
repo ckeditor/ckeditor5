@@ -708,6 +708,8 @@ function getLastValidMarkerInText(
  * Creates a RegExp pattern for the marker.
  *
  * Function has to be exported to achieve 100% code coverage.
+ *
+ * @internal
  */
 export function createRegExp( marker: string, minimumCharacters: number ): RegExp {
 	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;

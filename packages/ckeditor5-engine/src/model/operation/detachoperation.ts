@@ -21,6 +21,8 @@ import type { Selectable } from '../selection.js';
 /**
  * Operation to permanently remove node from detached root.
  * Note this operation is only a local operation and won't be send to the other clients.
+ *
+ * @internal
  */
 export class DetachOperation extends Operation {
 	/**

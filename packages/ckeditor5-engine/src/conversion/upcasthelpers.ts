@@ -491,6 +491,8 @@ export class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
  * @returns Universal converter for view {@link module:engine/view/documentfragment~DocumentFragment fragments} and
  * {@link module:engine/view/element~Element elements} that returns
  * {@link module:engine/model/documentfragment~DocumentFragment model fragment} with children of converted view item.
+ *
+ * @internal
  */
 export function convertToModelFragment() {
 	return (
@@ -512,6 +514,7 @@ export function convertToModelFragment() {
  * Function factory, creates a converter that converts {@link module:engine/view/text~Text} to {@link module:engine/model/text~Text}.
  *
  * @returns {@link module:engine/view/text~Text View text} converter.
+ * @internal
  */
 export function convertText() {
 	return (
@@ -568,6 +571,7 @@ export function convertText() {
  * @param model Data model.
  * @param mapper Conversion mapper.
  * @returns {@link module:engine/view/document~Document#event:selectionChange} callback function.
+ * @internal
  */
 export function convertSelectionChange( model: Model, mapper: Mapper ) {
 	return (

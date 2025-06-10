@@ -54,6 +54,14 @@ export type {
 	MarkerElementCreatorFunction,
 	SlotFilter
 } from './conversion/downcasthelpers.js';
+
+export type {
+	ElementCreatorFunction as UpcastElementCreatorFunction,
+	AttributeCreatorFunction as UpcastAttributeCreatorFunction,
+	MarkerFromElementCreatorFunction as UpcastMarkerFromElementCreatorFunction,
+	MarkerFromAttributeCreatorFunction as UpcastMarkerFromAttributeCreatorFunction
+} from './conversion/upcasthelpers.js';
+
 export type {
 	Mapper,
 	MapperModelToViewPositionEvent,
@@ -100,13 +108,13 @@ export { DocumentFragment } from './model/documentfragment.js';
 export { History } from './model/history.js';
 export { Text } from './model/text.js';
 export { TextProxy } from './model/textproxy.js';
-export type { Document, ModelPostFixer } from './model/document.js';
-export type { Marker } from './model/markercollection.js';
-export type { Batch } from './model/batch.js';
-export type { Differ, DiffItem, DiffItemAttribute, DiffItemInsert, DiffItemRemove } from './model/differ.js';
+export { Document, type ModelPostFixer } from './model/document.js';
+export { Marker } from './model/markercollection.js';
+export { Batch } from './model/batch.js';
+export { Differ, type DiffItem, type DiffItemAttribute, type DiffItemInsert, type DiffItemRemove } from './model/differ.js';
 export type { Item } from './model/item.js';
-export type { Node, NodeAttributes } from './model/node.js';
-export type { RootElement } from './model/rootelement.js';
+export { Node, type NodeAttributes } from './model/node.js';
+export { RootElement } from './model/rootelement.js';
 export {
 	SchemaContext,
 	type Schema,
@@ -117,9 +125,9 @@ export {
 	type SchemaCompiledItemDefinition,
 	type SchemaContextDefinition
 } from './model/schema.js';
-export type { Selection, Selectable } from './model/selection.js';
-export type { TypeCheckable } from './model/typecheckable.js';
-export type { Writer } from './model/writer.js';
+export { Selection, type Selectable } from './model/selection.js';
+export { TypeCheckable } from './model/typecheckable.js';
+export { Writer } from './model/writer.js';
 
 // Model utils.
 export {
@@ -160,13 +168,13 @@ export { ViewUIElement } from './view/uielement.js';
 export { ViewDocumentFragment } from './view/documentfragment.js';
 export { ViewTreeWalker, type TreeWalkerValue as ViewTreeWalkerValue } from './view/treewalker.js';
 export type { ViewElementDefinition, ElementObjectDefinition } from './view/elementdefinition.js';
-export type { ViewDocumentSelection } from './view/documentselection.js';
+export { ViewDocumentSelection } from './view/documentselection.js';
 export { AttributeElement } from './view/attributeelement.js';
 export type { ViewItem } from './view/item.js';
-export type { ViewNode } from './view/node.js';
-export type { ViewPosition, PositionOffset as ViewPositionOffset } from './view/position.js';
-export type { ViewRange } from './view/range.js';
-export type { ViewSelection, ViewSelectionChangeEvent, Selectable as ViewSelectable } from './view/selection.js';
+export { ViewNode } from './view/node.js';
+export { ViewPosition, type PositionOffset as ViewPositionOffset } from './view/position.js';
+export { ViewRange } from './view/range.js';
+export { ViewSelection, type ViewSelectionChangeEvent, type Selectable as ViewSelectable } from './view/selection.js';
 export type { ViewTypeCheckable } from './view/typecheckable.js';
 
 export { getFillerOffset } from './view/containerelement.js';
@@ -256,3 +264,105 @@ export {
 	parse as _parseView,
 	stringify as _stringifyView
 } from './dev-utils/view.js';
+
+export {
+	convertMapToTags as _convertMapToTags,
+	convertMapToStringifiedObject as _convertMapToStringifiedObject,
+	dumpTrees as _dumpTrees,
+	initDocumentDumping as _initDocumentDumping,
+	logDocument as _logDocument
+} from './dev-utils/utils.js';
+
+export {
+	insertText as _downcastInsertText,
+	insertAttributesAndChildren as _downcastInsertAttributesAndChildren,
+	remove as _downcastRemove,
+	createViewElementFromHighlightDescriptor as _downcastCreateViewElementFromHighlightDescriptor,
+	convertRangeSelection as _downcastConvertRangeSelection,
+	convertCollapsedSelection as _downcastConvertCollapsedSelection,
+	cleanSelection as _downcastCleanSelection,
+	wrap as _downcastWrap,
+	insertElement as _downcastInsertElement,
+	insertStructure as _downcastInsertStructure,
+	insertUIElement as _downcastInsertUIElement,
+	type ConsumerFunction as _DowncastConsumerFunction
+} from './conversion/downcasthelpers.js';
+
+// Internals
+export { MapperCache as _MapperCache } from './conversion/mapper.js';
+export {
+	convertToModelFragment as _upcastConvertToModelFragment,
+	convertText as _upcastConvertText,
+	convertSelectionChange as _upcastConvertSelectionChange
+} from './conversion/upcasthelpers.js';
+
+export {
+	ViewElementConsumables as _ViewElementConversionConsumables,
+	normalizeConsumables as _normalizeConversionConsumables
+} from './conversion/viewconsumable.js';
+
+export { BasicHtmlWriter as _DataProcessorBasicHtmlWriter } from './dataprocessor/basichtmlwriter.js';
+export { OperationReplayer as _OperationReplayer } from './dev-utils/operationreplayer.js';
+
+export type { DifferSnapshot as _DifferSnapshot } from './model/differ.js';
+export type {
+	BeforeChangesEvent as _ModelBeforeChangesEvent,
+	AfterChangesEvent as _ModelAfterChangesEvent
+} from './model/model.js';
+
+export { DetachOperation as _DetachOperation } from './model/operation/detachoperation.js';
+export {
+	transform as _operationTransform,
+	type TransformationContext as _OperationTransformationContext
+} from './model/operation/transform.js';
+
+export {
+	_insert as _insertIntoModelNodeList,
+	_remove as _removeFromModelNodeList,
+	_move as _moveInModelNodeList,
+	_setAttribute as _setAttributeInModelNodeList,
+	_normalizeNodes as _normalizeInModelNodeList
+} from './model/operation/utils.js';
+
+export {
+	getTextNodeAtPosition as _getModelTextNodeAtPosition,
+	getNodeAfterPosition as _getModelNodeAfterPosition,
+	getNodeBeforePosition as _getModelNodeBeforePosition
+} from './model/position.js';
+
+export {
+	autoParagraphEmptyRoots as _autoParagraphEmptyModelRoots,
+	isParagraphable as _isParagraphableModelNode,
+	wrapInParagraph as _wrapInModelParagraph
+} from './model/utils/autoparagraphing.js';
+
+export { deleteContent as _deleteModelContent } from './model/utils/deletecontent.js';
+export { getSelectedContent as _getSelectedModelContent } from './model/utils/getselectedcontent.js';
+export { insertContent as _insertModelContent } from './model/utils/insertcontent.js';
+export { insertObject as _insertModelObject } from './model/utils/insertobject.js';
+export { modifySelection as _modifyModelSelection } from './model/utils/modifyselection.js';
+
+export {
+	injectSelectionPostFixer as _injectModelSelectionPostFixer,
+	tryFixingRange as _tryFixingModelRange,
+	mergeIntersectingRanges as _mergeIntersectingModelRanges
+} from './model/utils/selection-post-fixer.js';
+
+export {
+	NBSP_FILLER as _VIEW_NBSP_FILLER,
+	MARKED_NBSP_FILLER as _VIEW_MARKED_NBSP_FILLER,
+	BR_FILLER as _VIEW_BR_FILLER,
+	INLINE_FILLER_LENGTH as _VIEW_INLINE_FILLER_LENGTH,
+	INLINE_FILLER as _VIEW_INLINE_FILLER,
+	startsWithFiller as _startsWithViewFiller,
+	isInlineFiller as _isInlineViewFiller,
+	getDataWithoutFiller as _getDataWithoutViewFiller,
+	injectQuirksHandling as _injectViewQuirksHandling
+} from './view/filler.js';
+
+export {
+	isPatternMatched as _isViewPatternMatched,
+	type NormalizedPropertyPattern as _NormalizedViewPropertyPattern
+} from './view/matcher.js';
+
+export { injectUiElementHandling as _injectViewUIElementHandling } from './view/uielement.js';

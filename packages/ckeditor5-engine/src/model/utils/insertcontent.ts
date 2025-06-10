@@ -54,6 +54,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  * @returns Range which contains all the performed changes. This is a range that, if removed,
  * would return the model to the state before the insertion. If no changes were preformed by `insertContent`, returns a range collapsed
  * at the insertion position.
+ * @internal
  */
 export function insertContent(
 	model: Model,

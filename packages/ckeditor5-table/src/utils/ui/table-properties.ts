@@ -9,7 +9,7 @@
 
 import {
 	ButtonView,
-	ViewModel,
+	UIModel,
 	type ColorOption,
 	type LabeledFieldView,
 	type ListDropdownItemDefinition,
@@ -34,6 +34,7 @@ const isEmpty = ( val: string ) => val === '';
  * labels. Used by {@link module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView}
  * and {@link module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView}.
  *
+ * @internal
  * @param t The "t" function provided by the editor that is used to localize strings.
  */
 export function getBorderStyleLabels( t: LocaleTranslate ): Record<string, string> {
@@ -54,6 +55,7 @@ export function getBorderStyleLabels( t: LocaleTranslate ): Record<string, strin
  * Returns a localized error string that can be displayed next to color (background, border)
  * fields that have an invalid value.
  *
+ * @internal
  * @param t The "t" function provided by the editor that is used to localize strings.
  */
 export function getLocalizedColorErrorText( t: LocaleTranslate ): string {
@@ -64,6 +66,7 @@ export function getLocalizedColorErrorText( t: LocaleTranslate ): string {
  * Returns a localized error string that can be displayed next to length (padding, border width)
  * fields that have an invalid value.
  *
+ * @internal
  * @param t The "t" function provided by the editor that is used to localize strings.
  */
 export function getLocalizedLengthErrorText( t: LocaleTranslate ): string {
@@ -75,6 +78,8 @@ export function getLocalizedLengthErrorText( t: LocaleTranslate ): string {
  * Otherwise, `false` is returned.
  *
  * See {@link module:engine/view/styles/utils~isColor}.
+ *
+ * @internal
  */
 export function colorFieldValidator( value: string ): boolean {
 	value = value.trim().toLowerCase();
@@ -88,6 +93,8 @@ export function colorFieldValidator( value: string ): boolean {
  *
  * See {@link module:engine/view/styles/utils~isLength}.
  * See {@link module:engine/view/styles/utils~isPercentage}.
+ *
+ * @internal
  */
 export function lengthFieldValidator( value: string ): boolean {
 	value = value.trim();
@@ -100,6 +107,8 @@ export function lengthFieldValidator( value: string ): boolean {
  * Otherwise, `false` is returned.
  *
  * See {@link module:engine/view/styles/utils~isLength}.
+ *
+ * @internal
  */
 export function lineWidthFieldValidator( value: string ): boolean {
 	value = value.trim();
@@ -110,6 +119,7 @@ export function lineWidthFieldValidator( value: string ): boolean {
 /**
  * Generates item definitions for a UI dropdown that allows changing the border style of a table or a table cell.
  *
+ * @internal
  * @param defaultStyle The default border.
  */
 export function getBorderStyleDefinitions(
@@ -122,7 +132,7 @@ export function getBorderStyleDefinitions(
 	for ( const style in styleLabels ) {
 		const definition: ListDropdownItemDefinition = {
 			type: 'button',
-			model: new ViewModel( {
+			model: new UIModel( {
 				_borderStyleValue: style,
 				label: styleLabels[ style ],
 				role: 'menuitemradio',
@@ -157,6 +167,7 @@ export function getBorderStyleDefinitions(
  * * have some icons,
  * * set a certain UI view property value upon execution.
  *
+ * @internal
  * @param options Configuration options
  * @param options.view The view that has the observable property.
  * @param options.icons Object with button icons.
@@ -290,6 +301,8 @@ export function fillToolbar<TView extends View, TPropertyName extends keyof TVie
  *   }
  * ];
  * ```
+ *
+ * @internal
  */
 export const defaultColors: Array<ColorOption> = [
 	{

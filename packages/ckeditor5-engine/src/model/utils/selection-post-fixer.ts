@@ -67,6 +67,8 @@ import { type Element } from '../element.js';
  *
  * **Note** If the selection contains multiple ranges, the method returns a minimal set of ranges that are not intersecting after expanding
  * them to select `isLimit=true` elements.
+ *
+ * @internal
  */
 export function injectSelectionPostFixer( model: Model ): void {
 	model.document.registerPostFixer( writer => selectionPostFixer( writer, model ) );
@@ -117,6 +119,7 @@ function selectionPostFixer( writer: Writer, model: Model ): boolean {
  * **Note:** This helper is used by the selection post-fixer and to fix the `beforeinput` target ranges.
  *
  * @returns Returns fixed range or null if range is valid.
+ * @internal
  */
 export function tryFixingRange( range: Range, schema: Schema ): Range | null {
 	if ( range.isCollapsed ) {
@@ -274,6 +277,7 @@ function checkSelectionOnNonLimitElements( start: Position, end: Position, schem
  *
  * @param ranges Ranges to merge.
  * @returns Array of unique and non-intersecting ranges.
+ * @internal
  */
 export function mergeIntersectingRanges( ranges: Array<Range> ): Array<Range> {
 	const rangesToMerge = [ ...ranges ];

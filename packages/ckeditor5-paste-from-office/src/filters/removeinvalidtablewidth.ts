@@ -13,6 +13,7 @@ import type { UpcastWriter, ViewDocumentFragment } from 'ckeditor5/src/engine.js
  * Removes the `width:0px` style from table pasted from Google Sheets.
  *
  * @param documentFragment element `data.content` obtained from clipboard
+ * @internal
  */
 export function removeInvalidTableWidth( documentFragment: ViewDocumentFragment, writer: UpcastWriter ): void {
 	for ( const child of documentFragment.getChildren() ) {

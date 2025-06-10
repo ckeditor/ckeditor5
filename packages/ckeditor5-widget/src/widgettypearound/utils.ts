@@ -21,6 +21,8 @@ import type {
 /**
  * The name of the type around model selection attribute responsible for
  * displaying a fake caret next to a selected widget.
+ *
+ * @internal
  */
 export const TYPE_AROUND_SELECTION_ATTRIBUTE = 'widget-type-around';
 
@@ -33,6 +35,8 @@ export function isTypeAroundWidget( viewElement: ViewElement | undefined, modelE
 
 /**
  * For the passed HTML element, this helper finds the closest widget type around button ancestor.
+ *
+ * @internal
  */
 export function getClosestTypeAroundDomButton( domElement: HTMLElement ): HTMLElement | null {
 	return domElement.closest( '.ck-widget__type-around__button' );
@@ -43,6 +47,7 @@ export function getClosestTypeAroundDomButton( domElement: HTMLElement ): HTMLEl
  * the paragraph would be inserted into the content if, for instance, the button was
  * clicked by the user.
  *
+ * @internal
  * @returns The position of the button.
  */
 export function getTypeAroundButtonPosition( domElement: HTMLElement ): 'before' | 'after' {
@@ -51,6 +56,8 @@ export function getTypeAroundButtonPosition( domElement: HTMLElement ): 'before'
 
 /**
  * For the passed HTML element, this helper returns the closest view widget ancestor.
+ *
+ * @internal
  */
 export function getClosestWidgetViewElement( domElement: HTMLElement, domConverter: DomConverter ): ViewElement {
 	const widgetDomElement = domElement.closest( '.ck-widget' );
@@ -63,6 +70,7 @@ export function getClosestWidgetViewElement( domElement: HTMLElement, domConvert
  *
  * **Note**: If the fake caret is not currently displayed, `null` is returned.
  *
+ * @internal
  * @returns The position of the fake caret or `null` when none is present.
  */
 export function getTypeAroundFakeCaretPosition( selection: Selection | DocumentSelection ): 'before' | 'after' | null {

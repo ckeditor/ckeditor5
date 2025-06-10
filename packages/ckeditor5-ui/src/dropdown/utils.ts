@@ -23,7 +23,7 @@ import { clickOutsideHandler } from '../bindings/clickoutsidehandler.js';
 
 import type { View } from '../view.js';
 import type { ButtonExecuteEvent } from '../button/button.js';
-import { type ViewModel } from '../model.js';
+import { type UIModel } from '../model.js';
 import { type DropdownButton } from './button/dropdownbutton.js';
 import { type ButtonView } from '../button/buttonview.js';
 import type { FocusableView } from '../focuscycler.js';
@@ -838,7 +838,7 @@ export type ListDropdownButtonDefinition = {
 	/**
 	 * Model of the item. Its properties fuel the newly created list item (or its children, depending on the `type`).
 	 */
-	model: ViewModel;
+	model: UIModel;
 };
 
 /**

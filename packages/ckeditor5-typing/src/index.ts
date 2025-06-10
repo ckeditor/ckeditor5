@@ -23,6 +23,8 @@ export { getLastTextLine, type LastTextLineData } from './utils/getlasttextline.
 export { InsertTextCommand, type InsertTextCommandExecuteEvent } from './inserttextcommand.js';
 export { DeleteCommand } from './deletecommand.js';
 
+export { DeleteObserver as _DeleteObserver } from './deleteobserver.js';
+
 export type { TypingConfig } from './typingconfig.js';
 export type { ViewDocumentDeleteEvent } from './deleteobserver.js';
 export type { ViewDocumentInsertTextEvent, InsertTextEventData } from './inserttextobserver.js';

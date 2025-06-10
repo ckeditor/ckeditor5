@@ -18,6 +18,8 @@ const googleDocsMatch = /id=("|')docs-internal-guid-[-0-9a-f]+("|')/i;
 
 /**
  * Normalizer for the content pasted from Google Docs.
+ *
+ * @internal
  */
 export class GoogleDocsNormalizer implements Normalizer {
 	public readonly document: ViewDocument;

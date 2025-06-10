@@ -24,6 +24,8 @@ import { isSingleParagraphWithoutAttributes } from './downcast.js';
  *
  * When table cell content changes, for example a second `paragraph` element is added, we need to ensure that the first `paragraph` is
  * re-rendered so it changes from `<span>` to `<p>`. The easiest way to do it is to re-render the entire table cell.
+ *
+ * @internal
  */
 export function tableCellRefreshHandler( model: Model, editing: EditingController ): void {
 	const differ = model.document.differ;
