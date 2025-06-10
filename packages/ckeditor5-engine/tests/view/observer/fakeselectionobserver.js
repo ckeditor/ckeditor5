@@ -9,7 +9,7 @@ import { View } from '../../../src/view/view.js';
 import { DomEventData } from '../../../src/view/observer/domeventdata.js';
 import { createViewRoot } from '../_utils/createroot.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { setData, stringify } from '../../../src/dev-utils/view.js';
+import { _setViewData, _stringifyView } from '../../../src/dev-utils/view.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
@@ -187,11 +187,11 @@ describe( 'FakeSelectionObserver', () => {
 	function checkSelectionChange( initialData, keyCode, output ) {
 		return new Promise( resolve => {
 			viewDocument.once( 'selectionChange', ( eventInfo, data ) => {
-				expect( stringify( root.getChild( 0 ), data.newSelection, { showType: true } ) ).to.equal( output );
+				expect( _stringifyView( root.getChild( 0 ), data.newSelection, { showType: true } ) ).to.equal( output );
 				resolve();
 			} );
 
-			setData( view, initialData );
+			_setViewData( view, initialData );
 			changeFakeSelectionPressing( keyCode );
 		} );
 	}

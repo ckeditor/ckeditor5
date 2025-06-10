@@ -4,7 +4,7 @@
  */
 
 import { GFMDataProcessor } from '../../src/gfmdataprocessor.js';
-import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
@@ -29,7 +29,7 @@ export function testDataProcessor( markdown, viewString, normalizedMarkdown, opt
 	}
 	const viewFragment = dataProcessor.toView( markdown );
 
-	const html = cleanHtml( stringify( viewFragment ) );
+	const html = cleanHtml( _stringifyView( viewFragment ) );
 
 	// Check if view has correct data.
 	expect( html ).to.equal( viewString );

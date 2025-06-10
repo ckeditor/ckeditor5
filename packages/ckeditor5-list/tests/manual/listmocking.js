@@ -16,7 +16,7 @@ import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
 import { TableToolbar } from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils.js';
 import {
-	parse as parseModel,
+	_parseModel,
 	_setModelData,
 	_getModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -153,7 +153,7 @@ const setAsciiListFromModel = () => {
 	const editorModelString = document.getElementById( 'data-input' ).value;
 	const cleanedEditorModelString = editorModelString.replace( /^[^']*'|'[^']*$|\n|\r/gm, '' );
 
-	const editorModel = parseModel( cleanedEditorModelString, window.editor.model.schema );
+	const editorModel = _parseModel( cleanedEditorModelString, window.editor.model.schema );
 	const asciiListCodeSnippet = createAsciiListCodeSnippet( stringifyList( editorModel ) );
 
 	document.getElementById( 'data-output' ).innerText = asciiListCodeSnippet;
@@ -189,7 +189,7 @@ const processEditorModel = () => {
 
 	if ( dataType === 'ascii' ) {
 		const stringifiedEditorModel = _getModelData( window.editor.model, { withoutSelection: true } );
-		const editorModel = parseModel( stringifiedEditorModel, window.editor.model.schema );
+		const editorModel = _parseModel( stringifiedEditorModel, window.editor.model.schema );
 
 		document.getElementById( 'data-input' ).value = createAsciiListCodeSnippet( stringifyList( editorModel ) );
 	}

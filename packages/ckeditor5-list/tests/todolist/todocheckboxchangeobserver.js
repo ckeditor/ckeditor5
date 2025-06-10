@@ -6,7 +6,7 @@
 import { View } from '@ckeditor/ckeditor5-engine/src/view/view.js';
 import { DomEventObserver } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventobserver.js';
 import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _setViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { TodoCheckboxChangeObserver } from '../../src/todolist/todocheckboxchangeobserver.js';
 
@@ -39,7 +39,7 @@ describe( 'TodoCheckboxChangeObserver', () => {
 
 		viewDocument.on( 'todoCheckboxChange', spy );
 
-		setData( view,
+		_setViewData( view,
 			'<span class="todo-list__label">' +
 				'<span contenteditable="false">' +
 					'<input tabindex="-1" type="checkbox"></input>' +
@@ -59,7 +59,7 @@ describe( 'TodoCheckboxChangeObserver', () => {
 
 		viewDocument.on( 'todoCheckboxChange', spy );
 
-		setData( view,
+		_setViewData( view,
 			'<span class="todo-list__label">' +
 				'<span contenteditable="false">' +
 					'<input tabindex="-1"></input>' +
@@ -77,7 +77,7 @@ describe( 'TodoCheckboxChangeObserver', () => {
 
 		viewDocument.on( 'todoCheckboxChange', spy );
 
-		setData( view,
+		_setViewData( view,
 			'<span>' +
 				'<span contenteditable="false">' +
 					'<input tabindex="-1" type="checkbox"></input>' +
@@ -95,7 +95,7 @@ describe( 'TodoCheckboxChangeObserver', () => {
 
 		viewDocument.on( 'todoCheckboxChange', spy );
 
-		setData( view,
+		_setViewData( view,
 			'<span>' +
 				'<span contenteditable="false">' +
 					'<input tabindex="-1" type="checkbox"></input>' +

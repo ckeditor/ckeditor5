@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { parse, stringify, getData, setData } from '../../src/dev-utils/view.js';
+import { _parseView, _stringifyView, _getViewData, _setViewData } from '../../src/dev-utils/view.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { DocumentFragment } from '../../src/view/documentfragment.js';
 import { Position } from '../../src/view/position.js';
@@ -22,15 +22,15 @@ import { createViewRoot } from '../view/_utils/createroot.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'view test utils', () => {
-	describe( 'getData, setData', () => {
+	describe( '_getViewData, _setViewData', () => {
 		afterEach( () => {
 			sinon.restore();
 		} );
 
-		describe( 'getData', () => {
+		describe( '_getViewData', () => {
 			it( 'should use stringify method', () => {
 				const element = document.createElement( 'div' );
-				const stringifySpy = sinon.spy( getData, '_stringify' );
+				const stringifySpy = sinon.spy( _getViewData, '_stringify' );
 				const view = new View( new StylesProcessor() );
 				const viewDocument = view.document;
 				const options = {
@@ -42,7 +42,7 @@ describe( 'view test utils', () => {
 				const root = createAttachedRoot( viewDocument, element );
 				root._appendChild( new Element( viewDocument, 'p' ) );
 
-				expect( getData( view, options ) ).to.equal( '<p></p>' );
+				expect( _getViewData( view, options ) ).to.equal( '<p></p>' );
 				sinon.assert.calledOnce( stringifySpy );
 				expect( stringifySpy.firstCall.args[ 0 ] ).to.equal( root );
 				expect( stringifySpy.firstCall.args[ 1 ] ).to.equal( null );
@@ -57,7 +57,7 @@ describe( 'view test utils', () => {
 
 			it( 'should use stringify method with selection', () => {
 				const element = document.createElement( 'div' );
-				const stringifySpy = sinon.spy( getData, '_stringify' );
+				const stringifySpy = sinon.spy( _getViewData, '_stringify' );
 				const view = new View( new StylesProcessor() );
 				const viewDocument = view.document;
 				const options = { showType: false, showPriority: false };
@@ -68,7 +68,7 @@ describe( 'view test utils', () => {
 					writer.setSelection( Range._createFromParentsAndOffsets( root, 0, root, 1 ) );
 				} );
 
-				expect( getData( view, options ) ).to.equal( '[<p></p>]' );
+				expect( _getViewData( view, options ) ).to.equal( '[<p></p>]' );
 				sinon.assert.calledOnce( stringifySpy );
 				expect( stringifySpy.firstCall.args[ 0 ] ).to.equal( root );
 				expect( stringifySpy.firstCall.args[ 1 ] ).to.equal( viewDocument.selection );
@@ -82,22 +82,22 @@ describe( 'view test utils', () => {
 
 			it( 'should throw an error when passing invalid document', () => {
 				expect( () => {
-					getData( { invalid: 'view' } );
+					_getViewData( { invalid: 'view' } );
 				} ).to.throw( TypeError, 'View needs to be an instance of module:engine/view/view~View.' );
 			} );
 		} );
 
-		describe( 'setData', () => {
+		describe( '_setViewData', () => {
 			it( 'should use parse method', () => {
 				const view = new View( new StylesProcessor() );
 				const viewDocument = view.document;
 				const data = 'foobar<b>baz</b>';
-				const parseSpy = sinon.spy( setData, '_parse' );
+				const parseSpy = sinon.spy( _setViewData, '_parse' );
 
 				createAttachedRoot( viewDocument, document.createElement( 'div' ) );
-				setData( view, data );
+				_setViewData( view, data );
 
-				expect( getData( view ) ).to.equal( 'foobar<b>baz</b>' );
+				expect( _getViewData( view ) ).to.equal( 'foobar<b>baz</b>' );
 				sinon.assert.calledOnce( parseSpy );
 				const args = parseSpy.firstCall.args;
 				expect( args[ 0 ] ).to.equal( data );
@@ -111,12 +111,12 @@ describe( 'view test utils', () => {
 				const view = new View( new StylesProcessor() );
 				const viewDocument = view.document;
 				const data = '[<b>baz</b>]';
-				const parseSpy = sinon.spy( setData, '_parse' );
+				const parseSpy = sinon.spy( _setViewData, '_parse' );
 
 				createAttachedRoot( viewDocument, document.createElement( 'div' ) );
-				setData( view, data );
+				_setViewData( view, data );
 
-				expect( getData( view ) ).to.equal( '[<b>baz</b>]' );
+				expect( _getViewData( view ) ).to.equal( '[<b>baz</b>]' );
 				const args = parseSpy.firstCall.args;
 				expect( args[ 0 ] ).to.equal( data );
 				expect( args[ 1 ] ).to.be.an( 'object' );
@@ -127,7 +127,7 @@ describe( 'view test utils', () => {
 
 			it( 'should throw an error when passing invalid document', () => {
 				expect( () => {
-					setData( { invalid: 'view' } );
+					_setViewData( { invalid: 'view' } );
 				} ).to.throw( TypeError, 'View needs to be an instance of module:engine/view/view~View.' );
 			} );
 		} );
@@ -142,7 +142,7 @@ describe( 'view test utils', () => {
 
 		it( 'should write text', () => {
 			const text = new Text( viewDocument, 'foobar' );
-			expect( stringify( text ) ).to.equal( 'foobar' );
+			expect( _stringifyView( text ) ).to.equal( 'foobar' );
 		} );
 
 		it( 'should write elements and texts', () => {
@@ -150,7 +150,7 @@ describe( 'view test utils', () => {
 			const b = new Element( viewDocument, 'b', null, text );
 			const p = new Element( viewDocument, 'p', null, b );
 
-			expect( stringify( p ) ).to.equal( '<p><b>foobar</b></p>' );
+			expect( _stringifyView( p ) ).to.equal( '<p><b>foobar</b></p>' );
 		} );
 
 		it( 'should write elements with attributes (attributes in alphabetical order)', () => {
@@ -164,7 +164,7 @@ describe( 'view test utils', () => {
 				class: 'short wide'
 			}, b );
 
-			expect( stringify( p ) ).to.equal( '<p bar="taz" baz="qux" class="short wide"><b foo="bar">foobar</b></p>' );
+			expect( _stringifyView( p ) ).to.equal( '<p bar="taz" baz="qux" class="short wide"><b foo="bar">foobar</b></p>' );
 		} );
 
 		it( 'should write elements with attributes which values include double quotes', () => {
@@ -173,7 +173,7 @@ describe( 'view test utils', () => {
 				style: 'font-family: Calibri, "Times New Roman", sans-serif'
 			}, text );
 
-			expect( stringify( p ) ).to.equal( '<p style="font-family:Calibri, &quot;Times New Roman&quot;, sans-serif">foobar</p>' );
+			expect( _stringifyView( p ) ).to.equal( '<p style="font-family:Calibri, &quot;Times New Roman&quot;, sans-serif">foobar</p>' );
 		} );
 
 		it( 'should write selection ranges inside elements', () => {
@@ -184,7 +184,7 @@ describe( 'view test utils', () => {
 			const p = new Element( viewDocument, 'p', null, [ b1, b2 ] );
 			const range = Range._createFromParentsAndOffsets( p, 1, p, 2 );
 			const selection = new DocumentSelection( [ range ] );
-			expect( stringify( p, selection ) ).to.equal( '<p><b>foobar</b>[<b>bazqux</b>]</p>' );
+			expect( _stringifyView( p, selection ) ).to.equal( '<p><b>foobar</b>[<b>bazqux</b>]</p>' );
 		} );
 
 		it( 'should support unicode', () => {
@@ -194,7 +194,7 @@ describe( 'view test utils', () => {
 			const range = Range._createFromParentsAndOffsets( p, 0, text, 4 );
 			const selection = new DocumentSelection( [ range ] );
 
-			expect( stringify( p, selection ) ).to.equal( '<p>[<b>நிலை}க்கு</b></p>' );
+			expect( _stringifyView( p, selection ) ).to.equal( '<p>[<b>நிலை}க்கு</b></p>' );
 		} );
 
 		it( 'should write collapsed selection ranges inside elements', () => {
@@ -202,7 +202,7 @@ describe( 'view test utils', () => {
 			const p = new Element( viewDocument, 'p', null, text );
 			const range = Range._createFromParentsAndOffsets( p, 0, p, 0 );
 			const selection = new DocumentSelection( [ range ] );
-			expect( stringify( p, selection ) ).to.equal( '<p>[]foobar</p>' );
+			expect( _stringifyView( p, selection ) ).to.equal( '<p>[]foobar</p>' );
 		} );
 
 		it( 'should write selection ranges inside text', () => {
@@ -213,7 +213,7 @@ describe( 'view test utils', () => {
 			const p = new Element( viewDocument, 'p', null, [ b1, b2 ] );
 			const range = Range._createFromParentsAndOffsets( text1, 1, text1, 5 );
 			const selection = new DocumentSelection( [ range ] );
-			expect( stringify( p, selection ) ).to.equal( '<p><b>f{ooba}r</b><b>bazqux</b></p>' );
+			expect( _stringifyView( p, selection ) ).to.equal( '<p><b>f{ooba}r</b><b>bazqux</b></p>' );
 		} );
 
 		it( 'should write selection ranges inside text represented by `[` and `]` characters', () => {
@@ -224,7 +224,7 @@ describe( 'view test utils', () => {
 			const p = new Element( viewDocument, 'p', null, [ b1, b2 ] );
 			const range = Range._createFromParentsAndOffsets( text1, 1, text1, 5 );
 			const selection = new DocumentSelection( [ range ] );
-			expect( stringify( p, selection, { sameSelectionCharacters: true } ) )
+			expect( _stringifyView( p, selection, { sameSelectionCharacters: true } ) )
 				.to.equal( '<p><b>f[ooba]r</b><b>bazqux</b></p>' );
 		} );
 
@@ -233,7 +233,7 @@ describe( 'view test utils', () => {
 			const p = new Element( viewDocument, 'p', null, text );
 			const range = Range._createFromParentsAndOffsets( text, 0, text, 0 );
 			const selection = new DocumentSelection( [ range ] );
-			expect( stringify( p, selection ) ).to.equal( '<p>{}foobar</p>' );
+			expect( _stringifyView( p, selection ) ).to.equal( '<p>{}foobar</p>' );
 		} );
 
 		it( 'should write ranges that start inside text end ends between elements', () => {
@@ -244,7 +244,7 @@ describe( 'view test utils', () => {
 			const p = new Element( viewDocument, 'p', null, [ b1, b2 ] );
 			const range = Range._createFromParentsAndOffsets( p, 0, text2, 5 );
 			const selection = new DocumentSelection( [ range ] );
-			expect( stringify( p, selection ) ).to.equal( '<p>[<b>foobar</b><b>bazqu}x</b></p>' );
+			expect( _stringifyView( p, selection ) ).to.equal( '<p>[<b>foobar</b><b>bazqu}x</b></p>' );
 		} );
 
 		it( 'should write elements types as namespaces when needed', () => {
@@ -252,13 +252,13 @@ describe( 'view test utils', () => {
 			const b = new AttributeElement( viewDocument, 'b', null, text );
 			const p = new ContainerElement( viewDocument, 'p', null, b );
 
-			expect( stringify( p, null, { showType: true } ) )
+			expect( _stringifyView( p, null, { showType: true } ) )
 				.to.equal( '<container:p><attribute:b>foobar</attribute:b></container:p>' );
 		} );
 
 		it( 'should not write element type when type is not specified', () => {
 			const p = new Element( viewDocument, 'p' );
-			expect( stringify( p, null, { showType: true } ) ).to.equal( '<p></p>' );
+			expect( _stringifyView( p, null, { showType: true } ) ).to.equal( '<p></p>' );
 		} );
 
 		it( 'should write elements priorities when needed', () => {
@@ -266,7 +266,7 @@ describe( 'view test utils', () => {
 			const b = new AttributeElement( viewDocument, 'b', null, text );
 			const p = new ContainerElement( viewDocument, 'p', null, b );
 
-			expect( stringify( p, null, { showPriority: true } ) )
+			expect( _stringifyView( p, null, { showPriority: true } ) )
 				.to.equal( '<p><b view-priority="10">foobar</b></p>' );
 		} );
 
@@ -276,7 +276,7 @@ describe( 'view test utils', () => {
 			span._id = 'foo';
 			const p = new ContainerElement( viewDocument, 'p', null, span );
 
-			expect( stringify( p, null, { showAttributeElementId: true } ) )
+			expect( _stringifyView( p, null, { showAttributeElementId: true } ) )
 				.to.equal( '<p><span view-id="foo">foobar</span></p>' );
 		} );
 
@@ -286,7 +286,7 @@ describe( 'view test utils', () => {
 			const b1 = new Element( viewDocument, 'b', null, text1 );
 			const b2 = new Element( viewDocument, 'b', null, text2 );
 			const fragment = new DocumentFragment( viewDocument, [ b1, b2 ] );
-			expect( stringify( fragment, null ) ).to.equal( '<b>foobar</b><b>bazqux</b>' );
+			expect( _stringifyView( fragment, null ) ).to.equal( '<b>foobar</b><b>bazqux</b>' );
 		} );
 
 		it( 'should not write ranges outside elements - end position outside element', () => {
@@ -295,7 +295,7 @@ describe( 'view test utils', () => {
 			const p = new Element( viewDocument, 'p', null, b );
 			const range = Range._createFromParentsAndOffsets( p, 0, p, 5 );
 
-			expect( stringify( p, range ) ).to.equal( '<p>[<b>foobar</b></p>' );
+			expect( _stringifyView( p, range ) ).to.equal( '<p>[<b>foobar</b></p>' );
 		} );
 
 		it( 'should not write ranges outside elements - start position outside element', () => {
@@ -304,7 +304,7 @@ describe( 'view test utils', () => {
 			const p = new Element( viewDocument, 'p', null, b );
 			const range = Range._createFromParentsAndOffsets( p, -1, p, 1 );
 
-			expect( stringify( p, range ) ).to.equal( '<p><b>foobar</b>]</p>' );
+			expect( _stringifyView( p, range ) ).to.equal( '<p><b>foobar</b>]</p>' );
 		} );
 
 		it( 'should not write ranges outside elements - end position outside text', () => {
@@ -313,7 +313,7 @@ describe( 'view test utils', () => {
 			const p = new Element( viewDocument, 'p', null, b );
 			const range = Range._createFromParentsAndOffsets( text, 0, text, 7 );
 
-			expect( stringify( p, range ) ).to.equal( '<p><b>{foobar</b></p>' );
+			expect( _stringifyView( p, range ) ).to.equal( '<p><b>{foobar</b></p>' );
 		} );
 
 		it( 'should not write ranges outside elements - start position outside text', () => {
@@ -322,7 +322,7 @@ describe( 'view test utils', () => {
 			const p = new Element( viewDocument, 'p', null, b );
 			const range = Range._createFromParentsAndOffsets( text, -1, text, 2 );
 
-			expect( stringify( p, range ) ).to.equal( '<p><b>fo}obar</b></p>' );
+			expect( _stringifyView( p, range ) ).to.equal( '<p><b>fo}obar</b></p>' );
 		} );
 
 		it( 'should write multiple ranges from selection #1', () => {
@@ -335,7 +335,7 @@ describe( 'view test utils', () => {
 			const range2 = Range._createFromParentsAndOffsets( p, 1, p, 1 );
 			const selection = new DocumentSelection( [ range2, range1 ] );
 
-			expect( stringify( p, selection ) ).to.equal( '<p>[<b>foobar</b>][]<b>bazqux</b></p>' );
+			expect( _stringifyView( p, selection ) ).to.equal( '<p>[<b>foobar</b>][]<b>bazqux</b></p>' );
 		} );
 
 		it( 'should write multiple ranges from selection #2', () => {
@@ -349,34 +349,34 @@ describe( 'view test utils', () => {
 			const range4 = Range._createFromParentsAndOffsets( p, 1, p, 1 );
 			const selection = new DocumentSelection( [ range1, range2, range3, range4 ] );
 
-			expect( stringify( p, selection ) ).to.equal( '<p>[<b>foobar</b>][]{baz}{q}ux</p>' );
+			expect( _stringifyView( p, selection ) ).to.equal( '<p>[<b>foobar</b>][]{baz}{q}ux</p>' );
 		} );
 
 		it( 'should use Position instance instead of Selection', () => {
 			const text = new Text( viewDocument, 'foobar' );
 			const position = new Position( text, 3 );
-			const string = stringify( text, position );
+			const string = _stringifyView( text, position );
 			expect( string ).to.equal( 'foo{}bar' );
 		} );
 
 		it( 'should use Range instance instead of Selection', () => {
 			const text = new Text( viewDocument, 'foobar' );
 			const range = Range._createFromParentsAndOffsets( text, 3, text, 4 );
-			const string = stringify( text, range );
+			const string = _stringifyView( text, range );
 			expect( string ).to.equal( 'foo{b}ar' );
 		} );
 
 		it( 'should stringify EmptyElement', () => {
 			const img = new EmptyElement( viewDocument, 'img' );
 			const p = new ContainerElement( viewDocument, 'p', null, img );
-			expect( stringify( p, null, { showType: true } ) )
+			expect( _stringifyView( p, null, { showType: true } ) )
 				.to.equal( '<container:p><empty:img></empty:img></container:p>' );
 		} );
 
 		it( 'should stringify UIElement', () => {
 			const span = new UIElement( viewDocument, 'span' );
 			const p = new ContainerElement( viewDocument, 'p', null, span );
-			expect( stringify( p, null, { showType: true } ) )
+			expect( _stringifyView( p, null, { showType: true } ) )
 				.to.equal( '<container:p><ui:span></ui:span></container:p>' );
 		} );
 
@@ -392,7 +392,7 @@ describe( 'view test utils', () => {
 			};
 
 			const p = new ContainerElement( viewDocument, 'p', null, span );
-			expect( stringify( p, null, { showType: true } ) )
+			expect( _stringifyView( p, null, { showType: true } ) )
 				.to.equal( '<container:p><ui:span></ui:span></container:p>' );
 		} );
 
@@ -408,7 +408,7 @@ describe( 'view test utils', () => {
 			};
 
 			const p = new ContainerElement( viewDocument, 'p', null, span );
-			expect( stringify( p, null, { showType: true, renderUIElements: true } ) )
+			expect( _stringifyView( p, null, { showType: true, renderUIElements: true } ) )
 				.to.equal( '<container:p><ui:span><b>foo</b></ui:span></container:p>' );
 		} );
 
@@ -416,7 +416,7 @@ describe( 'view test utils', () => {
 			const span = new RawElement( viewDocument, 'span' );
 			const p = new ContainerElement( viewDocument, 'p', null, span );
 
-			expect( stringify( p, null, { showType: true } ) )
+			expect( _stringifyView( p, null, { showType: true } ) )
 				.to.equal( '<container:p><raw:span></raw:span></container:p>' );
 		} );
 
@@ -428,7 +428,7 @@ describe( 'view test utils', () => {
 			};
 
 			const p = new ContainerElement( viewDocument, 'p', null, span );
-			expect( stringify( p, null, { showType: true } ) )
+			expect( _stringifyView( p, null, { showType: true } ) )
 				.to.equal( '<container:p><raw:span></raw:span></container:p>' );
 		} );
 
@@ -440,7 +440,7 @@ describe( 'view test utils', () => {
 			};
 
 			const p = new ContainerElement( viewDocument, 'p', null, span );
-			expect( stringify( p, null, { showType: true, renderRawElements: true } ) )
+			expect( _stringifyView( p, null, { showType: true, renderRawElements: true } ) )
 				.to.equal( '<container:p><raw:span><b>foo</b></raw:span></container:p>' );
 		} );
 
@@ -448,7 +448,7 @@ describe( 'view test utils', () => {
 			const li = new ContainerElement( viewDocument, 'li', { 'data-list-item-id': 'foo' } );
 			const ol = new ContainerElement( viewDocument, 'ol', null, li );
 
-			expect( stringify( ol, null, { showType: true, skipListItemIds: true } ) )
+			expect( _stringifyView( ol, null, { showType: true, skipListItemIds: true } ) )
 				.to.equal( '<container:ol><container:li></container:li></container:ol>' );
 		} );
 
@@ -456,7 +456,7 @@ describe( 'view test utils', () => {
 			const li = new ContainerElement( viewDocument, 'li', { 'data-list-item-id': 'foo' } );
 			const ol = new ContainerElement( viewDocument, 'ol', null, li );
 
-			expect( stringify( ol, null, { showType: true, skipListItemIds: true } ) )
+			expect( _stringifyView( ol, null, { showType: true, skipListItemIds: true } ) )
 				.to.equal( '<container:ol><container:li></container:li></container:ol>' );
 		} );
 
@@ -464,7 +464,7 @@ describe( 'view test utils', () => {
 			const li = new ContainerElement( viewDocument, 'li', { 'data-list-item-id': 'foo' } );
 			const ol = new ContainerElement( viewDocument, 'ol', null, li );
 
-			expect( stringify( ol, null, { showType: true, skipListItemIds: false } ) )
+			expect( _stringifyView( ol, null, { showType: true, skipListItemIds: false } ) )
 				.to.equal( '<container:ol><container:li data-list-item-id="foo"></container:li></container:ol>' );
 		} );
 
@@ -474,7 +474,7 @@ describe( 'view test utils', () => {
 				class: 'zz xx aa'
 			}, text );
 
-			expect( stringify( b ) ).to.equal( '<b class="aa xx zz">foobar</b>' );
+			expect( _stringifyView( b ) ).to.equal( '<b class="aa xx zz">foobar</b>' );
 		} );
 
 		it( 'should sort styles in specified element', () => {
@@ -483,7 +483,7 @@ describe( 'view test utils', () => {
 				style: 'text-decoration: underline; font-weight: bold'
 			}, text );
 
-			expect( stringify( i ) ).to.equal( '<i style="font-weight:bold;text-decoration:underline">foobar</i>' );
+			expect( _stringifyView( i ) ).to.equal( '<i style="font-weight:bold;text-decoration:underline">foobar</i>' );
 		} );
 	} );
 
@@ -495,14 +495,14 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should return empty DocumentFragment for empty string', () => {
-			const fragment = parse( '' );
+			const fragment = _parseView( '' );
 
 			expect( fragment ).to.be.instanceOf( DocumentFragment );
 			expect( fragment.childCount ).to.equal( 0 );
 		} );
 
 		it( 'should return empty DocumentFragment and Selection for string containing range only', () => {
-			const { view, selection } = parse( '[]' );
+			const { view, selection } = _parseView( '[]' );
 
 			expect( view ).to.be.instanceOf( DocumentFragment );
 			expect( selection.rangeCount ).to.equal( 1 );
@@ -510,7 +510,7 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should return Element if range is around single element', () => {
-			const { view, selection } = parse( '[<b>foobar</b>]' );
+			const { view, selection } = _parseView( '[<b>foobar</b>]' );
 			const parent = view.parent;
 
 			expect( view ).to.be.instanceOf( Element );
@@ -520,7 +520,7 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should create DocumentFragment when multiple elements on root', () => {
-			const view = parse( '<b></b><i></i>' );
+			const view = _parseView( '<b></b><i></i>' );
 			expect( view ).to.be.instanceOf( DocumentFragment );
 			expect( view.childCount ).to.equal( 2 );
 			expect( view.getChild( 0 ).isSimilar( new Element( viewDocument, 'b' ) ) ).to.be.true;
@@ -528,19 +528,19 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should parse text', () => {
-			const text = parse( 'foobar' );
+			const text = _parseView( 'foobar' );
 			expect( text ).to.be.instanceOf( Text );
 			expect( text.data ).to.equal( 'foobar' );
 		} );
 
 		it( 'should parse text with spaces', () => {
-			const text = parse( 'foo bar' );
+			const text = _parseView( 'foo bar' );
 			expect( text ).to.be.instanceOf( Text );
 			expect( text.data ).to.equal( 'foo bar' );
 		} );
 
 		it( 'should parse elements and texts', () => {
-			const view = parse( '<b>foobar</b>' );
+			const view = _parseView( '<b>foobar</b>' );
 			const element = new Element( viewDocument, 'b' );
 
 			expect( view ).to.be.instanceof( Element );
@@ -552,7 +552,7 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should parse element attributes', () => {
-			const view = parse( '<b name="foo" title="bar" class="foo bar" style="color:red;"></b>' );
+			const view = _parseView( '<b name="foo" title="bar" class="foo bar" style="color:red;"></b>' );
 			const element = new Element( viewDocument, 'b', { name: 'foo', title: 'bar', class: 'foo bar', style: 'color:red;' } );
 
 			expect( view ).to.be.instanceof( Element );
@@ -561,9 +561,9 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should parse element type', () => {
-			const view1 = parse( '<attribute:b></attribute:b>' );
+			const view1 = _parseView( '<attribute:b></attribute:b>' );
 			const attribute = new AttributeElement( viewDocument, 'b' );
-			const view2 = parse( '<container:p></container:p>' );
+			const view2 = _parseView( '<container:p></container:p>' );
 			const container = new ContainerElement( viewDocument, 'p' );
 
 			expect( view1 ).to.be.instanceof( AttributeElement );
@@ -573,10 +573,10 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should parse element priority', () => {
-			const parsed1 = parse( '<b view-priority="12"></b>' );
+			const parsed1 = _parseView( '<b view-priority="12"></b>' );
 			const attribute1 = new AttributeElement( viewDocument, 'b' );
 			attribute1._priority = 12;
-			const parsed2 = parse( '<attribute:b view-priority="44"></attribute:b>' );
+			const parsed2 = _parseView( '<attribute:b view-priority="44"></attribute:b>' );
 			const attribute2 = new AttributeElement( viewDocument, 'b' );
 			attribute2._priority = 44;
 
@@ -586,22 +586,22 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should parse attribute element id', () => {
-			const parsed1 = parse( '<attribute:span view-id="foo"></attribute:span>' );
+			const parsed1 = _parseView( '<attribute:span view-id="foo"></attribute:span>' );
 			expect( parsed1.id ).to.equal( 'foo' );
 
-			const parsed2 = parse( '<container:div view-id="bar"></container:div>' );
+			const parsed2 = _parseView( '<container:div view-id="bar"></container:div>' );
 			expect( parsed2.id ).to.be.undefined;
 		} );
 
 		it( 'should correctly parse whitespaces around custom inline object elements', () => {
-			const parsed = parse( '<p>Foo <inlineObj></inlineObj> bar</p>', { inlineObjectElements: [ 'inlineObj' ] } );
+			const parsed = _parseView( '<p>Foo <inlineObj></inlineObj> bar</p>', { inlineObjectElements: [ 'inlineObj' ] } );
 
 			expect( parsed.getChild( 0 ).data ).to.equal( 'Foo ' );
 			expect( parsed.getChild( 2 ).data ).to.equal( ' bar' );
 		} );
 
 		it( 'should paste nested elements and texts', () => {
-			const parsed = parse( '<container:p>foo<b view-priority="12">bar<i view-priority="25">qux</i></b></container:p>' );
+			const parsed = _parseView( '<container:p>foo<b view-priority="12">bar<i view-priority="25">qux</i></b></container:p>' );
 			expect( parsed.isSimilar( new ContainerElement( viewDocument, 'p' ) ) ).to.be.true;
 			expect( parsed.childCount ).to.equal( 2 );
 			expect( parsed.getChild( 0 ) ).to.be.instanceof( Text ).and.have.property( 'data' ).that.equal( 'foo' );
@@ -617,7 +617,7 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should parse selection range inside text', () => {
-			const { view, selection } = parse( 'f{oo}b{}ar' );
+			const { view, selection } = _parseView( 'f{oo}b{}ar' );
 			expect( view ).to.be.instanceof( Text );
 			expect( view.data ).to.equal( 'foobar' );
 			expect( selection.rangeCount ).to.equal( 2 );
@@ -628,7 +628,7 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should parse selection range between elements', () => {
-			const { view, selection } = parse( '<p>[<b>foobar]</b>[]</p>' );
+			const { view, selection } = _parseView( '<p>[<b>foobar]</b>[]</p>' );
 			expect( view ).to.be.instanceof( Element );
 			expect( view.childCount ).to.equal( 1 );
 			const b = view.getChild( 0 );
@@ -645,7 +645,7 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should support unicode', () => {
-			const { view, selection } = parse( '<p>[<b>நிலை}க்கு</b></p>' );
+			const { view, selection } = _parseView( '<p>[<b>நிலை}க்கு</b></p>' );
 
 			expect( view ).to.be.instanceof( Element );
 			expect( view.name ).to.equal( 'p' );
@@ -668,7 +668,7 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should parse ranges #1', () => {
-			const { view, selection } = parse( '<container:p>foo{bar]</container:p>' );
+			const { view, selection } = _parseView( '<container:p>foo{bar]</container:p>' );
 			expect( view.isSimilar( new ContainerElement( viewDocument, 'p' ) ) ).to.be.true;
 			expect( view.childCount ).to.equal( 1 );
 			const text = view.getChild( 0 );
@@ -679,7 +679,7 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should parse ranges #2', () => {
-			const { view, selection } = parse( '<attribute:b>[foob}ar<i>{baz</i>]</attribute:b>' );
+			const { view, selection } = _parseView( '<attribute:b>[foob}ar<i>{baz</i>]</attribute:b>' );
 			expect( view.isSimilar( new AttributeElement( viewDocument, 'b' ) ) ).to.be.true;
 			expect( view.childCount ).to.equal( 2 );
 			const text1 = view.getChild( 0 );
@@ -698,7 +698,7 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should use ranges order when provided', () => {
-			const { view, selection } = parse( '{f}oo{b}arb{a}z', { order: [ 3, 1, 2 ] } );
+			const { view, selection } = _parseView( '{f}oo{b}arb{a}z', { order: [ 3, 1, 2 ] } );
 			expect( selection.rangeCount ).to.equal( 3 );
 			const ranges = [ ...selection.getRanges() ];
 			expect( ranges[ 0 ].isEqual( Range._createFromParentsAndOffsets( view, 3, view, 4 ) ) ).to.be.true;
@@ -709,7 +709,7 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should set last range backward if needed', () => {
-			const { view, selection } = parse( '{f}oo{b}arb{a}z', { order: [ 3, 1, 2 ], lastRangeBackward: true } );
+			const { view, selection } = _parseView( '{f}oo{b}arb{a}z', { order: [ 3, 1, 2 ], lastRangeBackward: true } );
 			expect( selection.rangeCount ).to.equal( 3 );
 			const ranges = [ ...selection.getRanges() ];
 			expect( ranges[ 0 ].isEqual( Range._createFromParentsAndOffsets( view, 3, view, 4 ) ) ).to.be.true;
@@ -721,43 +721,43 @@ describe( 'view test utils', () => {
 
 		it( 'should throw when ranges order does not include all ranges', () => {
 			expect( () => {
-				parse( '{}foobar{}', { order: [ 1 ] } );
+				_parseView( '{}foobar{}', { order: [ 1 ] } );
 			} ).to.throw( Error );
 		} );
 
 		it( 'should throw when ranges order is invalid', () => {
 			expect( () => {
-				parse( '{}foobar{}', { order: [ 1, 4 ] } );
+				_parseView( '{}foobar{}', { order: [ 1, 4 ] } );
 			} ).to.throw( Error );
 		} );
 
 		it( 'should throw when element range delimiter is inside text node', () => {
 			expect( () => {
-				parse( 'foo[bar' );
+				_parseView( 'foo[bar' );
 			} ).to.throw( Error );
 		} );
 
 		it( 'should throw when text range delimiter is inside empty text node', () => {
 			expect( () => {
-				parse( '<b>foo</b>}' );
+				_parseView( '<b>foo</b>}' );
 			} ).to.throw( Error );
 		} );
 
 		it( 'should throw when end of range is found before start', () => {
 			expect( () => {
-				parse( 'fo}obar' );
+				_parseView( 'fo}obar' );
 			} ).to.throw( Error );
 		} );
 
 		it( 'should throw when intersecting ranges found', () => {
 			expect( () => {
-				parse( '[fo{o}bar]' );
+				_parseView( '[fo{o}bar]' );
 			} ).to.throw( Error );
 		} );
 
 		it( 'should throw when opened ranges are left', () => {
 			expect( () => {
-				parse( 'fo{obar' );
+				_parseView( 'fo{obar' );
 			} ).to.throw( Error );
 		} );
 
@@ -765,7 +765,7 @@ describe( 'view test utils', () => {
 			sinon.stub( XmlDataProcessor.prototype, 'toView' ).returns( new ContainerElement( viewDocument, 'invalidType:b' ) );
 
 			expect( () => {
-				parse( 'sth' );
+				_parseView( 'sth' );
 			} ).to.throw( Error, 'Parse error - cannot parse element\'s name: invalidType:b.' );
 
 			XmlDataProcessor.prototype.toView.restore();
@@ -773,51 +773,51 @@ describe( 'view test utils', () => {
 
 		it( 'should use provided root element #1', () => {
 			const root = new Element( viewDocument, 'p' );
-			const data = parse( '<span>text</span>', { rootElement: root } );
+			const data = _parseView( '<span>text</span>', { rootElement: root } );
 
-			expect( stringify( data ) ).to.equal( '<p><span>text</span></p>' );
+			expect( _stringifyView( data ) ).to.equal( '<p><span>text</span></p>' );
 		} );
 
 		it( 'should use provided root element #2', () => {
 			const root = new Element( viewDocument, 'p' );
-			const data = parse( '<span>text</span><b>test</b>', { rootElement: root } );
+			const data = _parseView( '<span>text</span><b>test</b>', { rootElement: root } );
 
-			expect( stringify( data ) ).to.equal( '<p><span>text</span><b>test</b></p>' );
+			expect( _stringifyView( data ) ).to.equal( '<p><span>text</span><b>test</b></p>' );
 		} );
 
 		it( 'should parse an EmptyElement', () => {
-			const parsed = parse( '<empty:img></empty:img>' );
+			const parsed = _parseView( '<empty:img></empty:img>' );
 
 			expect( parsed ).to.be.instanceof( EmptyElement );
 		} );
 
 		it( 'should parse a UIElement', () => {
-			const parsed = parse( '<ui:span></ui:span>' );
+			const parsed = _parseView( '<ui:span></ui:span>' );
 
 			expect( parsed ).to.be.instanceof( UIElement );
 		} );
 
 		it( 'should parse a RawElement', () => {
-			const parsed = parse( '<raw:span></raw:span>' );
+			const parsed = _parseView( '<raw:span></raw:span>' );
 
 			expect( parsed ).to.be.instanceof( RawElement );
 		} );
 
 		it( 'should throw an error if EmptyElement is not empty', () => {
 			expect( () => {
-				parse( '<empty:img>foo bar</empty:img>' );
+				_parseView( '<empty:img>foo bar</empty:img>' );
 			} ).to.throw( Error, 'Parse error - cannot parse inside EmptyElement.' );
 		} );
 
 		it( 'should throw an error if a UIElement is not empty', () => {
 			expect( () => {
-				parse( '<ui:span>foo bar</ui:span>' );
+				_parseView( '<ui:span>foo bar</ui:span>' );
 			} ).to.throw( Error, 'Parse error - cannot parse inside UIElement.' );
 		} );
 
 		it( 'should throw an error if a RawElement is not empty', () => {
 			expect( () => {
-				parse( '<raw:span>foo bar</raw:span>' );
+				_parseView( '<raw:span>foo bar</raw:span>' );
 			} ).to.throw( Error, 'Parse error - cannot parse inside RawElement.' );
 		} );
 	} );

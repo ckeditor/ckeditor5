@@ -4,7 +4,7 @@
  */
 
 import { View } from '../../../src/view/view.js';
-import { setData } from '../../../src/dev-utils/view.js';
+import { _setViewData } from '../../../src/dev-utils/view.js';
 import { createViewRoot } from '../../view/_utils/createroot.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
@@ -18,7 +18,7 @@ iframe.addEventListener( 'load', () => {
 
 	view.attachDomRoot( iframe.contentWindow.document.getElementById( 'editor' ) );
 
-	setData( view,
+	_setViewData( view,
 		'<container:p>foo</container:p>' +
 		'<container:p>bar</container:p>'
 	);

@@ -16,7 +16,7 @@ import { modelList } from '../_utils/utils.js';
 
 import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { _stringifyModel, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _stringifyModel, _parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'List - utils - postfixers', () => {
 	let model, schema;
@@ -40,7 +40,7 @@ describe( 'List - utils - postfixers', () => {
 				'* b'
 			] );
 
-			const fragment = parseModel( input, schema );
+			const fragment = _parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 1 );
 			const itemToListHead = new Set();
 			const visited = new Set();
@@ -60,7 +60,7 @@ describe( 'List - utils - postfixers', () => {
 				'* b'
 			] );
 
-			const fragment = parseModel( input, schema );
+			const fragment = _parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 2 );
 			const itemToListHead = new Set();
 			const visited = new Set();
@@ -80,7 +80,7 @@ describe( 'List - utils - postfixers', () => {
 				'* b'
 			] );
 
-			const fragment = parseModel( input, schema );
+			const fragment = _parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 3 );
 			const itemToListHead = new Set();
 			const visited = new Set();
@@ -101,7 +101,7 @@ describe( 'List - utils - postfixers', () => {
 				'* c'
 			] );
 
-			const fragment = parseModel( input, schema );
+			const fragment = _parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 3 );
 			const itemToListHead = new Set();
 			const visited = new Set();
@@ -124,7 +124,7 @@ describe( 'List - utils - postfixers', () => {
 				'* c'
 			] );
 
-			const fragment = parseModel( input, schema );
+			const fragment = _parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 4 );
 			const itemToListHead = new Set();
 			const visited = new Set();
@@ -147,7 +147,7 @@ describe( 'List - utils - postfixers', () => {
 				'* c'
 			] );
 
-			const fragment = parseModel( input, schema );
+			const fragment = _parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 4 );
 			const itemToListHead = new Set();
 			const visited = new Set();
@@ -169,7 +169,7 @@ describe( 'List - utils - postfixers', () => {
 				'* c'
 			] );
 
-			const fragment = parseModel( input, schema );
+			const fragment = _parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 5 );
 			const itemToListHead = new Set();
 			const visited = new Set();
@@ -192,7 +192,7 @@ describe( 'List - utils - postfixers', () => {
 				'* d'
 			] );
 
-			const fragment = parseModel( input, schema );
+			const fragment = _parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 3 );
 			const itemToListHead = new Set();
 			const visited = new Set();
@@ -212,7 +212,7 @@ describe( 'List - utils - postfixers', () => {
 				'  * a'
 			] );
 
-			const fragment = parseModel( input, schema );
+			const fragment = _parseModel( input, schema );
 
 			model.change( writer => {
 				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 1 ) ), writer );
@@ -231,7 +231,7 @@ describe( 'List - utils - postfixers', () => {
 				'        * c'
 			] );
 
-			const fragment = parseModel( input, schema );
+			const fragment = _parseModel( input, schema );
 
 			model.change( writer => {
 				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), writer );
@@ -251,7 +251,7 @@ describe( 'List - utils - postfixers', () => {
 				'  * c'
 			] );
 
-			const fragment = parseModel( input, schema );
+			const fragment = _parseModel( input, schema );
 
 			model.change( writer => {
 				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), writer );
@@ -271,7 +271,7 @@ describe( 'List - utils - postfixers', () => {
 				'                    * c'
 			] );
 
-			const fragment = parseModel( input, schema );
+			const fragment = _parseModel( input, schema );
 
 			model.change( writer => {
 				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), writer );
@@ -292,7 +292,7 @@ describe( 'List - utils - postfixers', () => {
 				'                              * d'
 			] );
 
-			const fragment = parseModel( input, schema );
+			const fragment = _parseModel( input, schema );
 
 			model.change( writer => {
 				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), writer );
@@ -317,7 +317,7 @@ describe( 'List - utils - postfixers', () => {
 				'                    * g'
 			] );
 
-			const fragment = parseModel( input, schema );
+			const fragment = _parseModel( input, schema );
 
 			model.change( writer => {
 				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), writer );
@@ -344,7 +344,7 @@ describe( 'List - utils - postfixers', () => {
 				'# j'
 			] );
 
-			const fragment = parseModel( input, schema );
+			const fragment = _parseModel( input, schema );
 
 			model.change( writer => {
 				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 0 ) ), writer );
@@ -370,7 +370,7 @@ describe( 'List - utils - postfixers', () => {
 					] ) +
 				'</blockQuote>';
 
-			const fragment = parseModel( input, schema );
+			const fragment = _parseModel( input, schema );
 
 			model.change( writer => {
 				fixListIndents( new SiblingListBlocksIterator( fragment.getChild( 1 ).getChild( 0 ) ), writer );
@@ -395,7 +395,7 @@ describe( 'List - utils - postfixers', () => {
 				'  * 1'
 			] );
 
-			const fragment = parseModel( input, model.schema );
+			const fragment = _parseModel( input, model.schema );
 			const seenIds = new Set();
 
 			stubUid();
@@ -417,7 +417,7 @@ describe( 'List - utils - postfixers', () => {
 				'  2'
 			] );
 
-			const fragment = parseModel( input, model.schema );
+			const fragment = _parseModel( input, model.schema );
 			const seenIds = new Set();
 
 			stubUid();
@@ -440,7 +440,7 @@ describe( 'List - utils - postfixers', () => {
 				'    2'
 			] );
 
-			const fragment = parseModel( input, model.schema );
+			const fragment = _parseModel( input, model.schema );
 			const seenIds = new Set();
 
 			stubUid();
@@ -463,7 +463,7 @@ describe( 'List - utils - postfixers', () => {
 				'* 2 {id:a}'
 			], { ignoreIdConflicts: true } );
 
-			const fragment = parseModel( input, model.schema );
+			const fragment = _parseModel( input, model.schema );
 			const seenIds = new Set();
 
 			stubUid();
@@ -486,7 +486,7 @@ describe( 'List - utils - postfixers', () => {
 				'# 2 {id:a}'
 			], { ignoreIdConflicts: true } );
 
-			const fragment = parseModel( input, model.schema );
+			const fragment = _parseModel( input, model.schema );
 			const seenIds = new Set();
 
 			stubUid();
@@ -510,7 +510,7 @@ describe( 'List - utils - postfixers', () => {
 				'# 3 {id:a}'
 			], { ignoreIdConflicts: true } );
 
-			const fragment = parseModel( input, model.schema );
+			const fragment = _parseModel( input, model.schema );
 			const seenIds = new Set();
 
 			stubUid();
@@ -539,7 +539,7 @@ describe( 'List - utils - postfixers', () => {
 				'  7'
 			], { ignoreIdConflicts: true } );
 
-			const fragment = parseModel( input, model.schema );
+			const fragment = _parseModel( input, model.schema );
 			const seenIds = new Set();
 
 			stubUid();
@@ -567,7 +567,7 @@ describe( 'List - utils - postfixers', () => {
 				'  2'
 			] );
 
-			const fragment = parseModel( input, model.schema );
+			const fragment = _parseModel( input, model.schema );
 			const seenIds = new Set();
 
 			stubUid();

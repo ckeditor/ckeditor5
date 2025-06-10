@@ -5,7 +5,7 @@
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { _getModelData, parse, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _parseModel, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { TableEditing } from '../../src/tableediting.js';
 import { TableCaptionEditing } from '../../src/tablecaption/tablecaptionediting.js';
@@ -45,7 +45,7 @@ describe( 'Table caption post-fixer', () => {
 					'<caption>caption 0</caption>' +
 					'<caption>caption 1</caption>' +
 				'</table>';
-			const parsed = parse( modelTable, model.schema );
+			const parsed = _parseModel( modelTable, model.schema );
 
 			model.change( writer => {
 				writer.remove( writer.createRangeIn( root ) );
@@ -90,7 +90,7 @@ describe( 'Table caption post-fixer', () => {
 					'</tableRow>' +
 					'<caption>caption 2</caption>' +
 				'</table>';
-			const parsed = parse( modelTable, model.schema );
+			const parsed = _parseModel( modelTable, model.schema );
 
 			model.change( writer => {
 				writer.remove( writer.createRangeIn( root ) );
@@ -143,7 +143,7 @@ describe( 'Table caption post-fixer', () => {
 					'</tableRow>' +
 					'<caption>caption 2</caption>' +
 				'</table>';
-			const parsed = parse( modelTable, model.schema );
+			const parsed = _parseModel( modelTable, model.schema );
 
 			model.change( writer => {
 				writer.remove( writer.createRangeIn( root ) );
@@ -198,7 +198,7 @@ describe( 'Table caption post-fixer', () => {
 						'</tableCell>' +
 					'</tableRow>' +
 				'</table>';
-			const parsed = parse( modelTable, model.schema );
+			const parsed = _parseModel( modelTable, model.schema );
 
 			model.change( writer => {
 				writer.remove( writer.createRangeIn( root ) );

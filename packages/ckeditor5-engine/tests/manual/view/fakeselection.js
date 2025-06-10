@@ -7,7 +7,7 @@ import { View } from '../../../src/view/view.js';
 import { DomEventObserver } from '../../../src/view/observer/domeventobserver.js';
 import { ViewRange } from '../../../src/view/range.js';
 import { createViewRoot } from '../../view/_utils/createroot.js';
-import { setData } from '../../../src/dev-utils/view.js';
+import { _setViewData } from '../../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 const view = new View( new StylesProcessor() );
@@ -74,7 +74,7 @@ viewDocument.on( 'blur', () => {
 	console.log( 'The document was blurred.' );
 } );
 
-setData( view, '<container:p>{}foo<strong contenteditable="false">bar</strong>baz</container:p>' );
+_setViewData( view, '<container:p>{}foo<strong contenteditable="false">bar</strong>baz</container:p>' );
 const viewP = viewRoot.getChild( 0 );
 viewStrong = viewP.getChild( 1 );
 

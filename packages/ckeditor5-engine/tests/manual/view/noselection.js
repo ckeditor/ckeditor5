@@ -4,7 +4,7 @@
  */
 
 import { View } from '../../../src/view/view.js';
-import { setData } from '../../../src/dev-utils/view.js';
+import { _setViewData } from '../../../src/dev-utils/view.js';
 import { createViewRoot } from '../../view/_utils/createroot.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
@@ -19,6 +19,6 @@ viewDocument.on( 'selectionChange', () => {
 	view.forceRender();
 } );
 
-setData( view,
+_setViewData( view,
 	'<container:p>foo</container:p>' +
 	'<container:p>bar</container:p>' );

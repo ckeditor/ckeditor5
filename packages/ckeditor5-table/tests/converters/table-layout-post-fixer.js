@@ -5,7 +5,7 @@
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { _getModelData, parse, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _parseModel, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { TableEditing } from '../../src/tableediting.js';
 import { modelTable } from './../_utils/utils.js';
@@ -32,7 +32,7 @@ describe( 'Table layout post-fixer', () => {
 
 	describe( 'on insert table', () => {
 		it( 'should add missing columns to tableRows that are shorter then the longest table row', () => {
-			const parsed = parse( modelTable( [
+			const parsed = _parseModel( modelTable( [
 				[ '00' ],
 				[ '10', '11', '12' ],
 				[ '20', '21' ]
@@ -51,7 +51,7 @@ describe( 'Table layout post-fixer', () => {
 		} );
 
 		it( 'should add missing columns to tableRows that are shorter then the longest table row (complex 1)', () => {
-			const parsed = parse( modelTable( [
+			const parsed = _parseModel( modelTable( [
 				[ '00', { rowspan: 2, contents: '10' } ],
 				[ '10', { colspan: 2, contents: '12' } ],
 				[ '20', '21' ]
@@ -70,7 +70,7 @@ describe( 'Table layout post-fixer', () => {
 		} );
 
 		it( 'should add missing columns to tableRows that are shorter then the longest table row (complex 2)', () => {
-			const parsed = parse( modelTable( [
+			const parsed = _parseModel( modelTable( [
 				[ { colspan: 6, contents: '00' } ],
 				[ { rowspan: 2, contents: '10' }, '11', { colspan: 3, contents: '12' } ],
 				[ '21', '22' ]
@@ -89,7 +89,7 @@ describe( 'Table layout post-fixer', () => {
 		} );
 
 		it( 'should remove empty rows', () => {
-			const parsed = parse( modelTable( [
+			const parsed = _parseModel( modelTable( [
 				[ '00', '01' ],
 				[ ],
 				[ '20', '21', '22' ],
@@ -108,7 +108,7 @@ describe( 'Table layout post-fixer', () => {
 		} );
 
 		it( 'should fix the wrong rowspan attribute of a table cell inside the header', () => {
-			const parsed = parse( modelTable( [
+			const parsed = _parseModel( modelTable( [
 				[ { rowspan: 2, contents: '00' }, { rowspan: 3, contents: '01' }, '02' ],
 				[ { rowspan: 8, contents: '12' } ],
 				[ '20', '21', '22' ]
@@ -127,7 +127,7 @@ describe( 'Table layout post-fixer', () => {
 		} );
 
 		it( 'should fix the wrong rowspan attribute of a table cell inside the body', () => {
-			const parsed = parse( modelTable( [
+			const parsed = _parseModel( modelTable( [
 				[ '00', '01', '02' ],
 				[ { rowspan: 2, contents: '10' }, { rowspan: 3, contents: '11' }, '12' ],
 				[ { rowspan: 8, contents: '22' } ]
@@ -159,7 +159,7 @@ describe( 'Table layout post-fixer', () => {
 				[ 'yy', 'yy' ]
 			] );
 
-			const parsed = parse( tableA + tableB + tableC, model.schema );
+			const parsed = _parseModel( tableA + tableB + tableC, model.schema );
 
 			model.change( writer => {
 				writer.remove( writer.createRangeIn( root ) );
@@ -427,7 +427,7 @@ describe( 'Table layout post-fixer', () => {
 		function _insertRow( writer, rowIndex, rowData ) {
 			const table = root.getChild( 0 );
 
-			const parsedTable = parse(
+			const parsedTable = _parseModel(
 				modelTable( [ rowData ] ),
 				model.schema
 			);

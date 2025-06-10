@@ -4,7 +4,7 @@
  */
 
 import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
-import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 
@@ -20,5 +20,5 @@ export function normalizeHtml( html, options = {} ) {
 	const domFragment = processor._toDom( html );
 	const viewFragment = processor.domConverter.domToView( domFragment, options );
 
-	return stringify( viewFragment );
+	return _stringifyView( viewFragment );
 }

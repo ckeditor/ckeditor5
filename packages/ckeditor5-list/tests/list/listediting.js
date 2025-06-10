@@ -18,7 +18,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core/src/plugin.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { _getModelData, parse as parseModel, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _parseModel, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { LegacyListEditing } from '../../src/legacylist/legacylistediting.js';
@@ -223,7 +223,7 @@ describe( 'ListEditing', () => {
 
 				model.change( () => {
 					model.change( writer => {
-						writer.insert( parseModel( inserted, model.schema ), selection.getFirstPosition() );
+						writer.insert( _parseModel( inserted, model.schema ), selection.getFirstPosition() );
 					} );
 				} );
 
@@ -357,8 +357,8 @@ describe( 'ListEditing', () => {
 				const item2 = '<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>';
 
 				model.change( writer => {
-					writer.append( parseModel( item1, model.schema ), modelRoot );
-					writer.append( parseModel( item2, model.schema ), modelRoot );
+					writer.append( _parseModel( item1, model.schema ), modelRoot );
+					writer.append( _parseModel( item2, model.schema ), modelRoot );
 				} );
 
 				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( output );
@@ -384,7 +384,7 @@ describe( 'ListEditing', () => {
 				const item = '<paragraph>x</paragraph><paragraph>x</paragraph>';
 
 				model.change( writer => {
-					writer.insert( parseModel( item, model.schema ), modelRoot, 1 );
+					writer.insert( _parseModel( item, model.schema ), modelRoot, 1 );
 				} );
 
 				expect( _getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( output );

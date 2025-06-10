@@ -16,7 +16,7 @@ import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import {
-	parse as parseModel,
+	_parseModel,
 	_getModelData,
 	_setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -546,7 +546,7 @@ describe( 'BlockQuote integration', () => {
 		it( 'does not merge the paragraph with list item', () => {
 			_setModelData( model, '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
 
-			const df = parseModel(
+			const df = _parseModel(
 				'<blockQuote><paragraph>xxx</paragraph></blockQuote><heading1>yyy</heading1>',
 				model.schema
 			);

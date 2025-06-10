@@ -5,7 +5,7 @@
 
 import { View } from '../../../src/view/view.js';
 import { createViewRoot } from '../../view/_utils/createroot.js';
-import { setData } from '../../../src/dev-utils/view.js';
+import { _setViewData } from '../../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 const view = new View( new StylesProcessor() );
@@ -18,7 +18,7 @@ viewDocument.on( 'selectionChange', ( evt, data ) => {
 	view.change( writer => writer.setSelection( data.newSelection ) );
 } );
 
-setData( view,
+_setViewData( view,
 	'<container:p>foo</container:p>' +
 	'<container:p>bar</container:p>'
 );

@@ -7,7 +7,7 @@ import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
 import { DocumentFragment } from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
 import {
 	_getModelData,
-	parse as parseModel,
+	_parseModel,
 	_stringifyModel
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
@@ -24,7 +24,7 @@ export function prepareTest( model, input ) {
 	const modelRoot = model.document.getRoot( 'main' );
 
 	// Parse data string to model.
-	const parsedResult = parseModel( input, model.schema, { context: [ modelRoot.name ] } );
+	const parsedResult = _parseModel( input, model.schema, { context: [ modelRoot.name ] } );
 
 	// Retrieve DocumentFragment and Selection from parsed model.
 	const modelDocumentFragment = parsedResult.model;
@@ -107,7 +107,7 @@ export function setupTestHelpers( editor ) {
 
 			const actionCallback = selection => {
 				model.change( writer => {
-					writer.insert( parseModel( item, model.schema ), selection.getFirstPosition() );
+					writer.insert( _parseModel( item, model.schema ), selection.getFirstPosition() );
 				} );
 			};
 

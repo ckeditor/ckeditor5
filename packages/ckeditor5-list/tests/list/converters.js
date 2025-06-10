@@ -19,7 +19,7 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { _getModelData, parse as parseModel, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _parseModel, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { stubUid } from './_utils/uid.js';
 
@@ -590,7 +590,7 @@ describe( 'ListEditing - converters', () => {
 							converterPriority: 'highest'
 						} );
 
-					const input = parseModel(
+					const input = _parseModel(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>',
 						model.schema
 					);

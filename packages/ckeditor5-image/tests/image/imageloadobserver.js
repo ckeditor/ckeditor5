@@ -7,7 +7,7 @@ import { ImageLoadObserver } from '../../src/image/imageloadobserver.js';
 import { Observer } from '@ckeditor/ckeditor5-engine/src/view/observer/observer.js';
 import { View } from '@ckeditor/ckeditor5-engine/src/view/view.js';
 import { createViewRoot } from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _setViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
 describe( 'ImageLoadObserver', () => {
@@ -36,7 +36,7 @@ describe( 'ImageLoadObserver', () => {
 
 		viewDocument.on( 'imageLoaded', spy );
 
-		setData( view, '<img src="/assets/sample.png" />' );
+		_setViewData( view, '<img src="/assets/sample.png" />' );
 
 		sinon.assert.notCalled( spy );
 
@@ -78,13 +78,13 @@ describe( 'ImageLoadObserver', () => {
 
 		viewDocument.on( 'imageLoaded', spy );
 
-		setData( view, '<img src="/assets/sample.png" />' );
+		_setViewData( view, '<img src="/assets/sample.png" />' );
 
 		sinon.assert.notCalled( spy );
 
 		const img = domRoot.querySelector( 'img' );
 
-		setData( view, '' );
+		_setViewData( view, '' );
 
 		img.dispatchEvent( new Event( 'load' ) );
 
@@ -96,7 +96,7 @@ describe( 'ImageLoadObserver', () => {
 
 		viewDocument.on( 'imageLoaded', spy );
 
-		setData( view, '<p>foo</p>' );
+		_setViewData( view, '<p>foo</p>' );
 
 		sinon.assert.notCalled( spy );
 
@@ -112,7 +112,7 @@ describe( 'ImageLoadObserver', () => {
 
 		viewDocument.on( 'imageLoaded', spy );
 
-		setData( view, '<img src="/assets/sample.png" data-cke-ignore-events="true" />' );
+		_setViewData( view, '<img src="/assets/sample.png" data-cke-ignore-events="true" />' );
 
 		domRoot.querySelector( 'img' ).dispatchEvent( new Event( 'load' ) );
 
@@ -124,7 +124,7 @@ describe( 'ImageLoadObserver', () => {
 
 		viewDocument.on( 'imageLoaded', spy );
 
-		setData( view, '<div data-cke-ignore-events="true"><p><img src="/assets/sample.png" /></p></div>' );
+		_setViewData( view, '<div data-cke-ignore-events="true"><p><img src="/assets/sample.png" /></p></div>' );
 
 		domRoot.querySelector( 'img' ).dispatchEvent( new Event( 'load' ) );
 
@@ -132,7 +132,7 @@ describe( 'ImageLoadObserver', () => {
 	} );
 
 	it( 'should do nothing with an image when changes are in the other parent', () => {
-		setData(
+		_setViewData(
 			view,
 			'<container:p><attribute:b>foo</attribute:b></container:p><container:div><img src="/assets/sample.png" /></container:div>'
 		);
@@ -175,7 +175,7 @@ describe( 'ImageLoadObserver', () => {
 
 		viewDocument.on( 'imageLoaded', spy );
 
-		setData( view, '<img src="/assets/sample.png" />' );
+		_setViewData( view, '<img src="/assets/sample.png" />' );
 
 		observer.stopObserving( domRoot );
 
@@ -189,7 +189,7 @@ describe( 'ImageLoadObserver', () => {
 
 		viewDocument.on( 'imageLoaded', spy );
 
-		setData( view, '<img src="/assets/sample.png" />' );
+		_setViewData( view, '<img src="/assets/sample.png" />' );
 
 		observer.destroy();
 

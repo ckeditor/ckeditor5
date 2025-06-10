@@ -17,7 +17,7 @@ import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment/src/alignmentedi
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { _getModelData, _setModelData, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData, _parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { ListIndentCommand } from '../../src/list/listindentcommand.js';
@@ -146,7 +146,7 @@ describe( 'ListEditing (multiBlock=false)', () => {
 
 				model.change( () => {
 					model.change( writer => {
-						writer.insert( parseModel( inserted, model.schema ), selection.getFirstPosition() );
+						writer.insert( _parseModel( inserted, model.schema ), selection.getFirstPosition() );
 					} );
 				} );
 

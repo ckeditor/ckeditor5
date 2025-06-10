@@ -13,7 +13,7 @@ import {
 import { createViewRoot } from './_utils/createroot.js';
 import { View } from '../../src/view/view.js';
 import { ViewRange } from '../../src/view/range.js';
-import { setData } from '../../src/dev-utils/view.js';
+import { _setViewData } from '../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'placeholder', () => {
@@ -28,7 +28,7 @@ describe( 'placeholder', () => {
 
 	describe( 'enablePlaceholder', () => {
 		it( 'should attach proper CSS class and data attribute', () => {
-			setData( view, '<div></div><div>{another div}</div>' );
+			_setViewData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			element.placeholder = 'foo bar baz';
@@ -42,7 +42,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should attach proper CSS class and data attribute (isDirectHost=false)', () => {
-			setData( view, '<p></p>' );
+			_setViewData( view, '<p></p>' );
 			viewDocument.isFocused = false;
 
 			viewRoot.placeholder = 'foo bar baz';
@@ -57,7 +57,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'if element has children set only data attribute', () => {
-			setData( view, '<div>first div</div><div>{another div}</div>' );
+			_setViewData( view, '<div>first div</div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			element.placeholder = 'foo bar baz';
@@ -71,7 +71,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'if element has only ui elements, set CSS class and data attribute', () => {
-			setData( view, '<div><ui:span></ui:span><ui:span></ui:span></div><div>{another div}</div>' );
+			_setViewData( view, '<div><ui:span></ui:span><ui:span></ui:span></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			element.placeholder = 'foo bar baz';
@@ -85,7 +85,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'if element has selection inside set only data attribute', () => {
-			setData( view, '<div>[]</div><div>another div</div>' );
+			_setViewData( view, '<div>[]</div><div>another div</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			element.placeholder = 'foo bar baz';
@@ -99,7 +99,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'if element has selection inside but document is blurred should contain placeholder CSS class', () => {
-			setData( view, '<div>[]</div><div>another div</div>' );
+			_setViewData( view, '<div>[]</div><div>another div</div>' );
 			const element = viewRoot.getChild( 0 );
 			viewDocument.isFocused = false;
 
@@ -116,7 +116,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should remove CSS class if selection is moved inside', () => {
-			setData( view, '<div></div><div>{another div}</div>' );
+			_setViewData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			element.placeholder = 'foo bar baz';
@@ -136,7 +136,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should change placeholder settings when called twice', () => {
-			setData( view, '<div></div><div>{another div}</div>' );
+			_setViewData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			element.placeholder = 'foo bar baz';
@@ -156,7 +156,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should not throw when element is no longer in document', () => {
-			setData( view, '<div></div><div>{another div}</div>' );
+			_setViewData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			element.placeholder = 'foo bar baz';
@@ -164,20 +164,20 @@ describe( 'placeholder', () => {
 				view,
 				element
 			} );
-			setData( view, '<p>paragraph</p>' );
+			_setViewData( view, '<p>paragraph</p>' );
 
 			view.forceRender();
 		} );
 
 		it( 'should allow to add placeholder to elements from different documents', () => {
-			setData( view, '<div></div><div>{another div}</div>' );
+			_setViewData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			const secondView = new View( new StylesProcessor() );
 			const secondDocument = secondView.document;
 			secondDocument.isFocused = true;
 			const secondRoot = createViewRoot( secondDocument );
-			setData( secondView, '<div></div><div>{another div}</div>' );
+			_setViewData( secondView, '<div></div><div>{another div}</div>' );
 			const secondElement = secondRoot.getChild( 0 );
 
 			element.placeholder = 'first placeholder';
@@ -215,7 +215,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should update placeholder before rendering', () => {
-			setData( view, '<div></div><div>{another div}</div>' );
+			_setViewData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			element.placeholder = 'foo bar baz';
@@ -237,7 +237,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should not set class when multiple children (isDirectHost=false)', () => {
-			setData( view, '<p></p><p></p>' );
+			_setViewData( view, '<p></p><p></p>' );
 			viewDocument.isFocused = false;
 
 			viewRoot.placeholder = 'foo bar baz';
@@ -253,7 +253,7 @@ describe( 'placeholder', () => {
 
 		// https://github.com/ckeditor/ckeditor5/issues/9009
 		it( 'should not set class when multiple children and some other element has content (isDirectHost=false)', () => {
-			setData( view, '<p></p><p>foobar</p>' );
+			_setViewData( view, '<p></p><p>foobar</p>' );
 			viewDocument.isFocused = false;
 
 			viewRoot.placeholder = 'foo bar baz';
@@ -269,7 +269,7 @@ describe( 'placeholder', () => {
 
 		// https://github.com/ckeditor/ckeditor5/issues/9046
 		it( 'should set attribute for the direct placeholder even if there is also indirect one (isDirectHost=false)', () => {
-			setData( view, '<p></p>' );
+			_setViewData( view, '<p></p>' );
 			viewDocument.isFocused = false;
 
 			viewRoot.placeholder = 'foo';
@@ -294,7 +294,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should not trigger infinite post-fixers loop (isDirectHost=false)', () => {
-			setData( view, '<p></p>' );
+			_setViewData( view, '<p></p>' );
 			viewDocument.isFocused = false;
 
 			viewRoot.placeholder = 'foo bar baz';
@@ -311,7 +311,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should not set class when there is no children (isDirectHost=false)', () => {
-			setData( view, '<p></p><p>foobar</p>' );
+			_setViewData( view, '<p></p><p>foobar</p>' );
 			viewDocument.isFocused = false;
 
 			viewRoot.getChild( 0 ).placeholder = 'foo bar baz';
@@ -327,7 +327,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should not set attributes/class when first child is not element (isDirectHost=false)', () => {
-			setData( view, '<ui:span></ui:span>' );
+			_setViewData( view, '<ui:span></ui:span>' );
 			viewDocument.isFocused = false;
 
 			viewRoot.placeholder = 'foo bar baz';
@@ -342,7 +342,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should not set attributes/class when first child is an AttributeElement (isDirectHost=false)', () => {
-			setData( view, '<attribute:ul><attribute:li>foo</attribute:li></attribute:ul>' );
+			_setViewData( view, '<attribute:ul><attribute:li>foo</attribute:li></attribute:ul>' );
 			viewDocument.isFocused = false;
 
 			viewRoot.placeholder = 'foo bar baz';
@@ -357,7 +357,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should keep the placeholder visible when the host element is focused (keepOnFocus = true)', () => {
-			setData( view, '<div></div><div>{another div}</div>' );
+			_setViewData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			element.placeholder = 'foo bar baz';
@@ -383,7 +383,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should hide the placeholder when the host element is focused (keepOnFocus = false)', () => {
-			setData( view, '<div></div><div>{another div}</div>' );
+			_setViewData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			element.placeholder = 'foo bar baz';
@@ -409,7 +409,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should hide the placeholder when there is a composition in progress in the host element (keepOnFocus = true)', () => {
-			setData( view, '<div>[]</div>' );
+			_setViewData( view, '<div>[]</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			element.placeholder = 'foo bar baz';
@@ -439,7 +439,7 @@ describe( 'placeholder', () => {
 
 	describe( 'disablePlaceholder', () => {
 		it( 'should remove placeholder from element', () => {
-			setData( view, '<div></div><div>{another div}</div>' );
+			_setViewData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			element.placeholder = 'foo bar baz';
@@ -458,7 +458,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should not blow up when called on element without placeholder', () => {
-			setData( view, '<div></div><div>{another div}</div>' );
+			_setViewData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
 			disablePlaceholder( view, element );
@@ -468,7 +468,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should remove placeholder from element (isDirectHost=false)', () => {
-			setData( view, '<p></p>' );
+			_setViewData( view, '<p></p>' );
 			viewDocument.isFocused = false;
 
 			viewRoot.placeholder = 'foo bar baz';
@@ -490,7 +490,7 @@ describe( 'placeholder', () => {
 
 	describe( 'showPlaceholder', () => {
 		it( 'should add the ck-placholder class if an element does not have it', () => {
-			setData( view, '<div></div>' );
+			_setViewData( view, '<div></div>' );
 			const element = viewRoot.getChild( 0 );
 
 			const result = view.change( writer => showPlaceholder( writer, element ) );
@@ -500,7 +500,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should do nothing if an element already has the ck-placeholder class', () => {
-			setData( view, '<div class="ck-placeholder"></div>' );
+			_setViewData( view, '<div class="ck-placeholder"></div>' );
 			const element = viewRoot.getChild( 0 );
 			let spy;
 
@@ -518,7 +518,7 @@ describe( 'placeholder', () => {
 
 	describe( 'hidePlaceholder', () => {
 		it( 'should remove the ck-placholder class if an element has it', () => {
-			setData( view, '<div class="ck-placeholder"></div>' );
+			_setViewData( view, '<div class="ck-placeholder"></div>' );
 			const element = viewRoot.getChild( 0 );
 
 			const result = view.change( writer => hidePlaceholder( writer, element ) );
@@ -528,7 +528,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should do nothing if an element has no ck-placeholder class', () => {
-			setData( view, '<div></div>' );
+			_setViewData( view, '<div></div>' );
 			const element = viewRoot.getChild( 0 );
 			let spy;
 
@@ -546,7 +546,7 @@ describe( 'placeholder', () => {
 
 	describe( 'needsPlaceholder', () => {
 		it( 'should return false if element was removed from the document', () => {
-			setData( view, '<p></p>' );
+			_setViewData( view, '<p></p>' );
 			viewDocument.isFocused = false;
 
 			const element = viewRoot.getChild( 0 );
@@ -561,7 +561,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should return true if element is empty and document is blurred', () => {
-			setData( view, '<p></p>' );
+			_setViewData( view, '<p></p>' );
 			viewDocument.isFocused = false;
 
 			const element = viewRoot.getChild( 0 );
@@ -570,7 +570,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should return false if element has content other than UI elements', () => {
-			setData( view, '<p>{moo}<ui:span></ui:span></p>' );
+			_setViewData( view, '<p>{moo}<ui:span></ui:span></p>' );
 			viewDocument.isFocused = true;
 
 			const element = viewRoot.getChild( 0 );
@@ -579,7 +579,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should return true if element hosts UI elements only and document is blurred', () => {
-			setData( view, '<p><ui:span></ui:span></p>' );
+			_setViewData( view, '<p><ui:span></ui:span></p>' );
 			viewDocument.isFocused = false;
 
 			const element = viewRoot.getChild( 0 );
@@ -588,7 +588,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should return true when document is focused but selection anchored somewhere else', () => {
-			setData( view, '<p></p><p>{moo}</p>' );
+			_setViewData( view, '<p></p><p>{moo}</p>' );
 			viewDocument.isFocused = true;
 
 			const element = viewRoot.getChild( 0 );
@@ -597,7 +597,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should return true if we want to keep placeholder when element is focused', () => {
-			setData( view, '<p><ui:span></ui:span></p>' );
+			_setViewData( view, '<p><ui:span></ui:span></p>' );
 			viewDocument.isFocused = true;
 
 			const element = viewRoot.getChild( 0 );
@@ -606,7 +606,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should return false if we want to keep placeholder when element is focused and document is in composition mode', () => {
-			setData( view, '<p>[]</p>' );
+			_setViewData( view, '<p>[]</p>' );
 			viewDocument.isFocused = true;
 			viewDocument.isComposing = true;
 
@@ -616,7 +616,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should update placeholder when property in editing root is changed', () => {
-			setData( view, '<div></div><div>{another div}</div>' );
+			_setViewData( view, '<div></div><div>{another div}</div>' );
 
 			enablePlaceholder( {
 				view,
@@ -628,7 +628,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should update placeholder when property in editing root is changed (isDirectHost=false)', () => {
-			setData( view, '<div></div><div>{another div}</div>' );
+			_setViewData( view, '<div></div><div>{another div}</div>' );
 
 			enablePlaceholder( {
 				view,
@@ -643,7 +643,7 @@ describe( 'placeholder', () => {
 		it( 'should through warning once if "text" is used as argument', () => {
 			sinon.stub( console, 'warn' );
 
-			setData( view, '<div></div><div>{another div}</div>' );
+			_setViewData( view, '<div></div><div>{another div}</div>' );
 
 			enablePlaceholder( {
 				view,
@@ -664,7 +664,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should set placeholder using "text" argument', () => {
-			setData( view, '<div></div><div>{another div}</div>' );
+			_setViewData( view, '<div></div><div>{another div}</div>' );
 
 			enablePlaceholder( {
 				view,
@@ -676,7 +676,7 @@ describe( 'placeholder', () => {
 		} );
 
 		it( 'should prefer element\'s placeholder value over text parameter', () => {
-			setData( view, '<div></div><div>{another div}</div>' );
+			_setViewData( view, '<div></div><div>{another div}</div>' );
 
 			enablePlaceholder( {
 				view,

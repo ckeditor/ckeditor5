@@ -18,7 +18,7 @@ import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquot
 import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { _getModelData, parse as parseModel, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _parseModel, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { _getViewData, _parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 import { IndentEditing } from '@ckeditor/ckeditor5-indent/src/indentediting.js';
 
@@ -2640,8 +2640,8 @@ describe( 'LegacyListEditing', () => {
 						const item2 = '<listItem listIndent="1" listType="bulleted">d</listItem>';
 
 						model.change( writer => {
-							writer.append( parseModel( item1, model.schema ), modelRoot );
-							writer.append( parseModel( item2, model.schema ), modelRoot );
+							writer.append( _parseModel( item1, model.schema ), modelRoot );
+							writer.append( _parseModel( item2, model.schema ), modelRoot );
 						} );
 					}
 				);
@@ -3714,7 +3714,7 @@ describe( 'LegacyListEditing', () => {
 						_setModelData( model, input );
 
 						model.change( writer => {
-							writer.insert( parseModel( inserted, model.schema ), modelDoc.selection.getFirstPosition() );
+							writer.insert( _parseModel( inserted, model.schema ), modelDoc.selection.getFirstPosition() );
 						} );
 					} );
 
@@ -3837,8 +3837,8 @@ describe( 'LegacyListEditing', () => {
 				const item2 = '<listItem listIndent="1" listType="bulleted">d</listItem>';
 
 				model.change( writer => {
-					writer.append( parseModel( item1, model.schema ), modelRoot );
-					writer.append( parseModel( item2, model.schema ), modelRoot );
+					writer.append( _parseModel( item1, model.schema ), modelRoot );
+					writer.append( _parseModel( item2, model.schema ), modelRoot );
 				} );
 
 				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( output );
@@ -4083,7 +4083,7 @@ describe( 'LegacyListEditing', () => {
 			);
 
 			editor.model.insertContent(
-				parseModel(
+				_parseModel(
 					'<listItem listType="bulleted" listIndent="0">X</listItem>' +
 					'<listItem listType="bulleted" listIndent="1">Y</listItem>',
 					model.schema
@@ -4106,7 +4106,7 @@ describe( 'LegacyListEditing', () => {
 			);
 
 			model.insertContent(
-				parseModel(
+				_parseModel(
 					'<listItem listType="bulleted" listIndent="0">X</listItem>' +
 					'<listItem listType="bulleted" listIndent="1">Y</listItem>',
 					model.schema
@@ -4843,7 +4843,7 @@ describe( 'LegacyListEditing', () => {
 
 		const actionCallback = selection => {
 			model.change( writer => {
-				writer.insert( parseModel( item, model.schema ), selection.getFirstPosition() );
+				writer.insert( _parseModel( item, model.schema ), selection.getFirstPosition() );
 			} );
 		};
 
@@ -4963,7 +4963,7 @@ describe( 'LegacyListEditing', () => {
 			const modelRoot = model.document.getRoot( 'main' );
 
 			// Parse data string to model.
-			const parsedResult = parseModel( input, model.schema, { context: [ modelRoot.name ] } );
+			const parsedResult = _parseModel( input, model.schema, { context: [ modelRoot.name ] } );
 
 			// Retrieve DocumentFragment and Selection from parsed model.
 			const modelDocumentFragment = parsedResult.model;

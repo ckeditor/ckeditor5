@@ -8,7 +8,7 @@ import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { FocusObserver } from '../../../src/view/observer/focusobserver.js';
 import { View } from '../../../src/view/view.js';
 import { createViewRoot } from '../_utils/createroot.js';
-import { setData } from '../../../src/dev-utils/view.js';
+import { _setViewData } from '../../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'FocusObserver', () => {
@@ -316,7 +316,7 @@ describe( 'FocusObserver', () => {
 			const selectionChangeSpy = sinon.spy();
 			const renderSpy = sinon.spy();
 
-			setData( view, '<div contenteditable="true">foo bar</div>' );
+			_setViewData( view, '<div contenteditable="true">foo bar</div>' );
 			view.forceRender();
 
 			viewDocument.on( 'selectionChange', selectionChangeSpy );
@@ -338,7 +338,7 @@ describe( 'FocusObserver', () => {
 			const selectionChangeSpy = sinon.spy();
 			const renderSpy = sinon.spy();
 
-			setData( view, '<div contenteditable="true">foo bar</div>' );
+			_setViewData( view, '<div contenteditable="true">foo bar</div>' );
 			view.forceRender();
 			const domEditable = domRoot.childNodes[ 0 ];
 

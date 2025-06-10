@@ -13,7 +13,7 @@ import { CodeBlockEditing } from '@ckeditor/ckeditor5-code-block';
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
-import { parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { ListEditing } from '../../src/list/listediting.js';
@@ -2711,8 +2711,8 @@ describe( 'ListEditing - conversion - custom list marker - changes', () => {
 
 						model.change( writer => {
 							writer.setAttribute( 'listType', 'bulleted', modelRoot.getChild( 0 ) );
-							writer.append( parseModel( item1, model.schema ), modelRoot );
-							writer.append( parseModel( item2, model.schema ), modelRoot );
+							writer.append( _parseModel( item1, model.schema ), modelRoot );
+							writer.append( _parseModel( item2, model.schema ), modelRoot );
 						} );
 					}
 				);
@@ -2738,8 +2738,8 @@ describe( 'ListEditing - conversion - custom list marker - changes', () => {
 
 						model.change( writer => {
 							writer.setAttribute( 'listType', 'numbered', modelRoot.getChild( 0 ) );
-							writer.append( parseModel( item1, model.schema ), modelRoot );
-							writer.append( parseModel( item2, model.schema ), modelRoot );
+							writer.append( _parseModel( item1, model.schema ), modelRoot );
+							writer.append( _parseModel( item2, model.schema ), modelRoot );
 						} );
 					}
 				);

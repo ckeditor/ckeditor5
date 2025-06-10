@@ -23,7 +23,7 @@ import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import {
 	_getModelData,
-	parse as parseModel,
+	_parseModel,
 	_stringifyModel,
 	_setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -352,7 +352,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 			);
 
 			editor.model.insertContent(
-				parseModel(
+				_parseModel(
 					'<paragraph listType="bulleted" listItemId="x" listIndent="0">X</paragraph>' +
 					'<paragraph listType="bulleted" listItemId="y" listIndent="1">Y</paragraph>',
 					model.schema
@@ -375,7 +375,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 			);
 
 			model.insertContent(
-				parseModel(
+				_parseModel(
 					'<paragraph listType="bulleted" listItemId="x" listIndent="0">X</paragraph>' +
 					'<paragraph listType="bulleted" listItemId="y" listIndent="1">Y</paragraph>',
 					model.schema

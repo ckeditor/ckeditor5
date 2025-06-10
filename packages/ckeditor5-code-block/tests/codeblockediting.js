@@ -22,7 +22,7 @@ import { DragDrop } from '@ckeditor/ckeditor5-clipboard/src/dragdrop.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { _getModelData, _setModelData, stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData, _stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
@@ -1774,13 +1774,13 @@ describe( 'CodeBlockEditing', () => {
 			it( 'should not engage when there is nothing selected', () => {
 				_setModelData( model, '<codeBlock language="css">fo[]o<softBreak></softBreak>bar</codeBlock>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal( '' );
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal( '' );
 			} );
 
 			it( 'should wrap a partial multi-line selection into a code block (#1)', () => {
 				_setModelData( model, '<codeBlock language="css">fo[o<softBreak></softBreak>b]ar</codeBlock>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal(
 					'<codeBlock language="css">o<softBreak></softBreak>b</codeBlock>'
 				);
 			} );
@@ -1788,7 +1788,7 @@ describe( 'CodeBlockEditing', () => {
 			it( 'should wrap a partial multi-line selection into a code block (#2)', () => {
 				_setModelData( model, '<codeBlock language="css">fo[o<softBreak></softBreak>]bar</codeBlock>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal(
 					'<codeBlock language="css">o<softBreak></softBreak></codeBlock>'
 				);
 			} );
@@ -1796,7 +1796,7 @@ describe( 'CodeBlockEditing', () => {
 			it( 'should wrap a partial multi-line selection into a code block (#3)', () => {
 				_setModelData( model, '<codeBlock language="css">[foo<softBreak></softBreak>bar]</codeBlock>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal(
 					'<codeBlock language="css">foo<softBreak></softBreak>bar</codeBlock>'
 				);
 			} );
@@ -1804,7 +1804,7 @@ describe( 'CodeBlockEditing', () => {
 			it( 'should wrap a complete single-line selection into a code block', () => {
 				_setModelData( model, '<codeBlock language="css">[foo]</codeBlock>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal(
 					'<codeBlock language="css">foo</codeBlock>'
 				);
 			} );
@@ -1816,7 +1816,7 @@ describe( 'CodeBlockEditing', () => {
 
 				_setModelData( model, '<codeBlock language="css">[fo]o<softBreak></softBreak>bar</codeBlock>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal(
 					'<$text code="true">fo</$text>'
 				);
 			} );
@@ -1828,7 +1828,7 @@ describe( 'CodeBlockEditing', () => {
 
 				_setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak>b[a]r</codeBlock>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal(
 					'<$text code="true">a</$text>'
 				);
 			} );
@@ -1836,14 +1836,14 @@ describe( 'CodeBlockEditing', () => {
 			it( 'should now wrap a partial single-line selection into an inline code when the attribute is disallowed', () => {
 				_setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak>b[a]r</codeBlock>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal( 'a' );
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal( 'a' );
 			} );
 
 			it( 'should preserve a code block in a cross-selection (#1)', () => {
 				_setModelData( model,
 					'<paragraph>[x</paragraph><codeBlock language="css">fo]o<softBreak></softBreak>bar</codeBlock>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal(
 					'<paragraph>x</paragraph><codeBlock language="css">fo</codeBlock>'
 				);
 			} );
@@ -1852,7 +1852,7 @@ describe( 'CodeBlockEditing', () => {
 				_setModelData( model,
 					'<paragraph>[x</paragraph><codeBlock language="css">foo<softBreak></softBreak>b]ar</codeBlock>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal(
 					'<paragraph>x</paragraph><codeBlock language="css">foo<softBreak></softBreak>b</codeBlock>'
 				);
 			} );
@@ -1861,7 +1861,7 @@ describe( 'CodeBlockEditing', () => {
 				_setModelData( model,
 					'<codeBlock language="css">foo<softBreak></softBreak>b[ar</codeBlock><paragraph>x]</paragraph>' );
 
-				expect( stringify( model.getSelectedContent( model.document.selection ) ) ).to.equal(
+				expect( _stringifyModel( model.getSelectedContent( model.document.selection ) ) ).to.equal(
 					'<codeBlock language="css">ar</codeBlock><paragraph>x</paragraph>'
 				);
 			} );
