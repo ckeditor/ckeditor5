@@ -27,9 +27,10 @@ export {
 } from './controller/datacontroller.js';
 
 // Conversion.
-export { Conversion } from './conversion/conversion.js';
+export { Conversion, type ConversionType } from './conversion/conversion.js';
 export type {
 	DowncastDispatcher,
+	DowncastDispatcherEventMap,
 	DowncastAddMarkerEvent,
 	DowncastAttributeEvent,
 	DowncastConversionApi,
@@ -152,7 +153,7 @@ export type { SelectionChangeRangeEvent } from './model/selection.js';
 
 // View.
 export { DataTransfer } from './view/datatransfer.js';
-export { DomConverter } from './view/domconverter.js';
+export { DomConverter, type BlockFillerMode } from './view/domconverter.js';
 export { Renderer } from './view/renderer.js';
 export { EditingView } from './view/view.js';
 export { ViewDocument } from './view/document.js';
