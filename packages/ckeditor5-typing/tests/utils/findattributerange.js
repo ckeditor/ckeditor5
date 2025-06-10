@@ -6,7 +6,7 @@
 import { findAttributeRange, findAttributeRangeBound } from '../../src/utils/findattributerange.js';
 import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
 import { Range } from '@ckeditor/ckeditor5-engine/src/model/range.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { Position } from '@ckeditor/ckeditor5-engine';
 
 describe( 'findAttributeRange', () => {
@@ -21,7 +21,7 @@ describe( 'findAttributeRange', () => {
 	} );
 
 	it( 'should find link range searching from the center of the link #1', () => {
-		setData( model, '<$text linkHref="url">foobar</$text>' );
+		_setModelData( model, '<$text linkHref="url">foobar</$text>' );
 
 		const startPosition = model.createPositionAt( root, [ 3 ] );
 		const result = findAttributeRange( startPosition, 'linkHref', 'url', model );
@@ -31,7 +31,7 @@ describe( 'findAttributeRange', () => {
 	} );
 
 	it( 'should find link range searching from the center of the link #2', () => {
-		setData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
+		_setModelData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
 
 		const startPosition = model.createPositionAt( root, [ 7 ] );
 		const result = findAttributeRange( startPosition, 'linkHref', 'url', model );
@@ -41,7 +41,7 @@ describe( 'findAttributeRange', () => {
 	} );
 
 	it( 'should find link range searching from the beginning of the link #1', () => {
-		setData( model, '<$text linkHref="url">foobar</$text>' );
+		_setModelData( model, '<$text linkHref="url">foobar</$text>' );
 
 		const startPosition = model.createPositionAt( root, [ 0 ] );
 		const result = findAttributeRange( startPosition, 'linkHref', 'url', model );
@@ -51,7 +51,7 @@ describe( 'findAttributeRange', () => {
 	} );
 
 	it( 'should find link range searching from the beginning of the link #2', () => {
-		setData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
+		_setModelData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
 
 		const startPosition = model.createPositionAt( root, [ 4 ] );
 		const result = findAttributeRange( startPosition, 'linkHref', 'url', model );
@@ -61,7 +61,7 @@ describe( 'findAttributeRange', () => {
 	} );
 
 	it( 'should find link range searching from the end of the link #1', () => {
-		setData( model, '<$text linkHref="url">foobar</$text>' );
+		_setModelData( model, '<$text linkHref="url">foobar</$text>' );
 
 		const startPosition = model.createPositionAt( root, [ 6 ] );
 		const result = findAttributeRange( startPosition, 'linkHref', 'url', model );
@@ -71,7 +71,7 @@ describe( 'findAttributeRange', () => {
 	} );
 
 	it( 'should find link range searching from the end of the link #2', () => {
-		setData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
+		_setModelData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
 
 		const startPosition = model.createPositionAt( root, [ 10 ] );
 		const result = findAttributeRange( startPosition, 'linkHref', 'url', model );
@@ -81,7 +81,9 @@ describe( 'findAttributeRange', () => {
 	} );
 
 	it( 'should find link range when link stick to other link searching from the center of the link', () => {
-		setData( model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>' );
+		_setModelData(
+			model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>'
+		);
 
 		const startPosition = model.createPositionAt( root, [ 6 ] );
 		const result = findAttributeRange( startPosition, 'linkHref', 'url', model );
@@ -91,7 +93,9 @@ describe( 'findAttributeRange', () => {
 	} );
 
 	it( 'should find link range when link stick to other link searching from the beginning of the link', () => {
-		setData( model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>' );
+		_setModelData(
+			model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>'
+		);
 
 		const startPosition = model.createPositionAt( root, [ 3 ] );
 		const result = findAttributeRange( startPosition, 'linkHref', 'url', model );
@@ -101,7 +105,9 @@ describe( 'findAttributeRange', () => {
 	} );
 
 	it( 'should find link range when link stick to other link searching from the end of the link', () => {
-		setData( model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>' );
+		_setModelData(
+			model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>'
+		);
 
 		const startPosition = model.createPositionAt( root, [ 9 ] );
 		const result = findAttributeRange( startPosition, 'linkHref', 'url', model );
@@ -111,7 +117,7 @@ describe( 'findAttributeRange', () => {
 	} );
 
 	it( 'should find link range only inside current parent', () => {
-		setData(
+		_setModelData(
 			model,
 			'<p><$text linkHref="url">foobar</$text></p>' +
 			'<p><$text linkHref="url">foobar</$text></p>' +
@@ -142,7 +148,7 @@ describe( 'findAttributeRangeBound', () => {
 	} );
 
 	it( 'should find link start searching from the center of the link', () => {
-		setData( model, '<$text linkHref="url">foobar</$text>' );
+		_setModelData( model, '<$text linkHref="url">foobar</$text>' );
 
 		const startPosition = model.createPositionAt( root, [ 3 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', true, model );
@@ -152,7 +158,7 @@ describe( 'findAttributeRangeBound', () => {
 	} );
 
 	it( 'should find link end searching from the center of the link', () => {
-		setData( model, '<$text linkHref="url">foobar</$text>' );
+		_setModelData( model, '<$text linkHref="url">foobar</$text>' );
 
 		const startPosition = model.createPositionAt( root, [ 3 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', false, model );
@@ -162,7 +168,7 @@ describe( 'findAttributeRangeBound', () => {
 	} );
 
 	it( 'should find link start searching from the center of the link (link surrounded by text)', () => {
-		setData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
+		_setModelData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
 
 		const startPosition = model.createPositionAt( root, [ 7 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', true, model );
@@ -172,7 +178,7 @@ describe( 'findAttributeRangeBound', () => {
 	} );
 
 	it( 'should find link end searching from the center of the link (link surrounded by text)', () => {
-		setData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
+		_setModelData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
 
 		const startPosition = model.createPositionAt( root, [ 7 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', false, model );
@@ -182,7 +188,7 @@ describe( 'findAttributeRangeBound', () => {
 	} );
 
 	it( 'should find link start searching from the beginning of the link', () => {
-		setData( model, '<$text linkHref="url">foobar</$text>' );
+		_setModelData( model, '<$text linkHref="url">foobar</$text>' );
 
 		const startPosition = model.createPositionAt( root, [ 0 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', true, model );
@@ -192,7 +198,7 @@ describe( 'findAttributeRangeBound', () => {
 	} );
 
 	it( 'should find link end searching from the beginning of the link', () => {
-		setData( model, '<$text linkHref="url">foobar</$text>' );
+		_setModelData( model, '<$text linkHref="url">foobar</$text>' );
 
 		const startPosition = model.createPositionAt( root, [ 0 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', false, model );
@@ -202,7 +208,7 @@ describe( 'findAttributeRangeBound', () => {
 	} );
 
 	it( 'should find link start searching from the beginning of the link (link surrounded by text)', () => {
-		setData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
+		_setModelData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
 
 		const startPosition = model.createPositionAt( root, [ 4 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', true, model );
@@ -212,7 +218,7 @@ describe( 'findAttributeRangeBound', () => {
 	} );
 
 	it( 'should find link end searching from the beginning of the link (link surrounded by text)', () => {
-		setData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
+		_setModelData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
 
 		const startPosition = model.createPositionAt( root, [ 4 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', false, model );
@@ -222,7 +228,7 @@ describe( 'findAttributeRangeBound', () => {
 	} );
 
 	it( 'should find link start searching from the end of the link', () => {
-		setData( model, '<$text linkHref="url">foobar</$text>' );
+		_setModelData( model, '<$text linkHref="url">foobar</$text>' );
 
 		const startPosition = model.createPositionAt( root, [ 6 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', true, model );
@@ -232,7 +238,7 @@ describe( 'findAttributeRangeBound', () => {
 	} );
 
 	it( 'should find link end searching from the end of the link', () => {
-		setData( model, '<$text linkHref="url">foobar</$text>' );
+		_setModelData( model, '<$text linkHref="url">foobar</$text>' );
 
 		const startPosition = model.createPositionAt( root, [ 6 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', false, model );
@@ -242,7 +248,7 @@ describe( 'findAttributeRangeBound', () => {
 	} );
 
 	it( 'should find link start searching from the end of the link (link surrounded by text)', () => {
-		setData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
+		_setModelData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
 
 		const startPosition = model.createPositionAt( root, [ 10 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', true, model );
@@ -252,7 +258,7 @@ describe( 'findAttributeRangeBound', () => {
 	} );
 
 	it( 'should find link end searching from the end of the link (link surrounded by text)', () => {
-		setData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
+		_setModelData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
 
 		const startPosition = model.createPositionAt( root, [ 10 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', false, model );
@@ -262,7 +268,9 @@ describe( 'findAttributeRangeBound', () => {
 	} );
 
 	it( 'should find link start when link stick to other link searching from the center of the link', () => {
-		setData( model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>' );
+		_setModelData(
+			model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>'
+		);
 
 		const startPosition = model.createPositionAt( root, [ 6 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', true, model );
@@ -272,7 +280,9 @@ describe( 'findAttributeRangeBound', () => {
 	} );
 
 	it( 'should find link end when link stick to other link searching from the center of the link', () => {
-		setData( model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>' );
+		_setModelData(
+			model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>'
+		);
 
 		const startPosition = model.createPositionAt( root, [ 6 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', false, model );
@@ -282,7 +292,9 @@ describe( 'findAttributeRangeBound', () => {
 	} );
 
 	it( 'should find link start when link stick to other link searching from the beginning of the link', () => {
-		setData( model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>' );
+		_setModelData(
+			model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>'
+		);
 
 		const startPosition = model.createPositionAt( root, [ 3 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', true, model );
@@ -292,7 +304,9 @@ describe( 'findAttributeRangeBound', () => {
 	} );
 
 	it( 'should find link end when link stick to other link searching from the beginning of the link', () => {
-		setData( model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>' );
+		_setModelData(
+			model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>'
+		);
 
 		const startPosition = model.createPositionAt( root, [ 3 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', false, model );
@@ -302,7 +316,9 @@ describe( 'findAttributeRangeBound', () => {
 	} );
 
 	it( 'should find link start when link stick to other link searching from the end of the link', () => {
-		setData( model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>' );
+		_setModelData(
+			model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>'
+		);
 
 		const startPosition = model.createPositionAt( root, [ 9 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', true, model );
@@ -312,7 +328,9 @@ describe( 'findAttributeRangeBound', () => {
 	} );
 
 	it( 'should find link end when link stick to other link searching from the end of the link', () => {
-		setData( model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>' );
+		_setModelData(
+			model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>'
+		);
 
 		const startPosition = model.createPositionAt( root, [ 9 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', false, model );
@@ -322,7 +340,7 @@ describe( 'findAttributeRangeBound', () => {
 	} );
 
 	it( 'should find link start only inside current parent', () => {
-		setData(
+		_setModelData(
 			model,
 			'<p><$text linkHref="url">foobar</$text></p>' +
 			'<p><$text linkHref="url">foobar</$text></p>' +
@@ -337,7 +355,7 @@ describe( 'findAttributeRangeBound', () => {
 	} );
 
 	it( 'should find link end only inside current parent', () => {
-		setData(
+		_setModelData(
 			model,
 			'<p><$text linkHref="url">foobar</$text></p>' +
 			'<p><$text linkHref="url">foobar</$text></p>' +

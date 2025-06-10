@@ -10,7 +10,7 @@ import { ModelTestEditor } from '../../tests/_utils/modeltesteditor.js';
 import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
 import { RootElement } from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
 
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { testUtils } from '../../tests/_utils/utils.js';
 
@@ -72,7 +72,7 @@ describe( 'ModelTestEditor', () => {
 
 			editor.setData( 'foo' );
 
-			expect( getData( editor.model, { rootName: 'main', withoutSelection: true } ) ).to.equal( 'foo' );
+			expect( _getModelData( editor.model, { rootName: 'main', withoutSelection: true } ) ).to.equal( 'foo' );
 		} );
 	} );
 
@@ -93,7 +93,7 @@ describe( 'ModelTestEditor', () => {
 		} );
 
 		it( 'should set data of the first root', () => {
-			setData( editor.model, 'foo' );
+			_setModelData( editor.model, 'foo' );
 
 			expect( editor.getData() ).to.equal( 'foo' );
 		} );

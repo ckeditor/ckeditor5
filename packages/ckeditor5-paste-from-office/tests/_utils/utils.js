@@ -10,7 +10,7 @@ import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
 import { normalizeClipboardData } from '@ckeditor/ckeditor5-clipboard/src/utils/normalizeclipboarddata.js';
 import { normalizeHtml } from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml.js';
-import { setData, _stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
@@ -212,7 +212,7 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip, only ) {
 		} );
 
 		beforeEach( () => {
-			setData( editor.model, '<paragraph>[]</paragraph>' );
+			_setModelData( editor.model, '<paragraph>[]</paragraph>' );
 
 			const editorModel = editor.model;
 			const insertContent = editorModel.insertContent;

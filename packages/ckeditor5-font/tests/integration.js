@@ -6,7 +6,7 @@
 import { Font } from '../src/font.js';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import { getData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
 
 describe( 'Integration test Font', () => {
@@ -126,7 +126,7 @@ describe( 'Integration test Font', () => {
 						'</td></tr></table>'
 					);
 
-					expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
+					expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal(
 						'<table>' +
 							'<tableRow>' +
 								'<tableCell>' +
@@ -230,7 +230,7 @@ describe( 'Integration test Font', () => {
 
 			dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.picker.dispatchEvent( event );
 
-			expect( getData( model ) ).to.equal( '<paragraph>[<$text fontColor="hsl(150, 50%, 13%)">foo</$text>]</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[<$text fontColor="hsl(150, 50%, 13%)">foo</$text>]</paragraph>' );
 		} );
 
 		it( 'should set colors in model in configured format', async () => {
@@ -264,7 +264,7 @@ describe( 'Integration test Font', () => {
 
 			dropdown.colorSelectorView.colorPickerFragmentView.colorPickerView.picker.dispatchEvent( event );
 
-			expect( getData( editor.model ) ).to.equal( '<paragraph>[<$text fontColor="lab(18% -17 7)">foo</$text>]</paragraph>' );
+			expect( _getModelData( editor.model ) ).to.equal( '<paragraph>[<$text fontColor="lab(18% -17 7)">foo</$text>]</paragraph>' );
 
 			await editor.destroy();
 		} );
@@ -284,7 +284,7 @@ describe( 'Integration test Font', () => {
 
 			dropdown.colorSelectorView.colorPickerFragmentView.cancelButtonView.fire( 'execute' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>' +
+			expect( _getModelData( model ) ).to.equal( '<paragraph>' +
 			'[<$text fontColor="hsl(50, 10%, 23%)">foo</$text><$text fontColor="hsl(150, 50%, 13%)">foo</$text>]' +
 			'</paragraph>' );
 		} );
@@ -304,7 +304,7 @@ describe( 'Integration test Font', () => {
 
 			editor.commands.get( 'undo' ).execute();
 
-			expect( getData( model ) ).to.equal( '<paragraph>[foo]</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[foo]</paragraph>' );
 		} );
 	} );
 } );

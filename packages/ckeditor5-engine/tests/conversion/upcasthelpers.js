@@ -21,7 +21,7 @@ import { ModelPosition } from '../../src/model/position.js';
 
 import { UpcastHelpers, convertToModelFragment, convertText, convertSelectionChange } from '../../src/conversion/upcasthelpers.js';
 
-import { getData as modelGetData, setData as modelSetData, stringify } from '../../src/dev-utils/model.js';
+import { _getModelData, _setModelData, _stringifyModel } from '../../src/dev-utils/model.js';
 import { View } from '../../src/view/view.js';
 import { createViewRoot } from '../view/_utils/createroot.js';
 import { setData as viewSetData, parse as viewParse } from '../../src/dev-utils/view.js';
@@ -1251,7 +1251,7 @@ describe( 'UpcastHelpers', () => {
 			}
 		}
 
-		expect( stringify( conversionResult ) ).to.equal( modelString );
+		expect( _stringifyModel( conversionResult ) ).to.equal( modelString );
 	}
 } );
 
@@ -1457,7 +1457,7 @@ describe( 'upcast-converters', () => {
 			modelRoot = model.document.createRoot();
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			modelSetData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+			model.setData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
 			view = new View( new StylesProcessor() );
 			viewDocument = view.document;
@@ -1484,12 +1484,12 @@ describe( 'upcast-converters', () => {
 
 			convertSelection( null, { newSelection: viewSelection } );
 
-			expect( modelGetData( model ) ).to.equals( '<paragraph>f[]oo</paragraph><paragraph>bar</paragraph>' );
-			expect( modelGetData( model ) ).to.equal( '<paragraph>f[]oo</paragraph><paragraph>bar</paragraph>' );
+			expect( _getModelData( model ) ).to.equals( '<paragraph>f[]oo</paragraph><paragraph>bar</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>f[]oo</paragraph><paragraph>bar</paragraph>' );
 		} );
 
 		it( 'should support unicode', () => {
-			modelSetData( model, '<paragraph>நிலைக்கு</paragraph>' );
+			_setModelData( model, '<paragraph>நிலைக்கு</paragraph>' );
 			viewSetData( view, '<p>நிலைக்கு</p>' );
 
 			// Re-bind elements that were just re-set.
@@ -1501,7 +1501,7 @@ describe( 'upcast-converters', () => {
 
 			convertSelection( null, { newSelection: viewSelection } );
 
-			expect( modelGetData( model ) ).to.equal( '<paragraph>நி[லைக்]கு</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>நி[லைக்]கு</paragraph>' );
 		} );
 
 		it( 'should convert multi ranges selection', () => {
@@ -1514,7 +1514,7 @@ describe( 'upcast-converters', () => {
 
 			convertSelection( null, { newSelection: viewSelection } );
 
-			expect( modelGetData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<paragraph>f[o]o</paragraph><paragraph>b[a]r</paragraph>' );
 
 			const ranges = Array.from( model.document.selection.getRanges() );
@@ -1541,7 +1541,7 @@ describe( 'upcast-converters', () => {
 
 			convertSelection( null, { newSelection: viewSelection } );
 
-			expect( modelGetData( model ) ).to.equal( '<paragraph>f[o]o</paragraph><paragraph>b[a]r</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>f[o]o</paragraph><paragraph>b[a]r</paragraph>' );
 			expect( model.document.selection.isBackward ).to.true;
 		} );
 

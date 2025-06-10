@@ -23,7 +23,7 @@ import { ResizeObserver } from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver
 import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { stringify as viewStringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { Rect } from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
@@ -172,7 +172,7 @@ describe( 'BalloonToolbar', () => {
 		const clock = testUtils.sinon.useFakeTimers();
 		const spy = testUtils.sinon.spy();
 
-		setData( model, '<paragraph>[bar]</paragraph>' );
+		_setModelData( model, '<paragraph>[bar]</paragraph>' );
 		balloonToolbar.on( '_selectionChangeDebounced', spy );
 
 		selection.fire( 'change:range', {} );
@@ -293,7 +293,7 @@ describe( 'BalloonToolbar', () => {
 		} );
 
 		it( 'should add #toolbarView to the #_balloon and attach the #_balloon to the selection for the forward selection', () => {
-			setData( model, '<paragraph>b[a]r</paragraph>' );
+			_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
 			const defaultPositions = BalloonPanelView.defaultPositions;
 
@@ -324,7 +324,7 @@ describe( 'BalloonToolbar', () => {
 
 		// https://github.com/ckeditor/ckeditor5-ui/issues/385
 		it( 'should attach the #_balloon to the last range in a case of multi-range forward selection', () => {
-			setData( model, '<paragraph>b[ar]</paragraph><paragraph>[bi]z</paragraph>' );
+			_setModelData( model, '<paragraph>b[ar]</paragraph><paragraph>[bi]z</paragraph>' );
 
 			balloonToolbar.show();
 
@@ -349,14 +349,14 @@ describe( 'BalloonToolbar', () => {
 				{ width: 0 }
 			] );
 
-			setData( model, '<paragraph>b[a]r</paragraph>' );
+			_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
 			balloonToolbar.show();
 			expect( balloonAddSpy.firstCall.args[ 0 ].position.target() ).to.deep.equal( forwardSelectionRect );
 		} );
 
 		it( 'should add #toolbarView to the #_balloon and attach the #_balloon to the selection for the backward selection', () => {
-			setData( model, '<paragraph>b[a]r</paragraph>', { lastRangeBackward: true } );
+			_setModelData( model, '<paragraph>b[a]r</paragraph>', { lastRangeBackward: true } );
 
 			const defaultPositions = BalloonPanelView.defaultPositions;
 
@@ -387,7 +387,7 @@ describe( 'BalloonToolbar', () => {
 
 		// https://github.com/ckeditor/ckeditor5-ui/issues/385
 		it( 'should attach the #_balloon to the first range in a case of multi-range backward selection', () => {
-			setData( model, '<paragraph>b[ar]</paragraph><paragraph>[bi]z</paragraph>', { lastRangeBackward: true } );
+			_setModelData( model, '<paragraph>b[ar]</paragraph><paragraph>[bi]z</paragraph>', { lastRangeBackward: true } );
 
 			balloonToolbar.show();
 
@@ -402,7 +402,7 @@ describe( 'BalloonToolbar', () => {
 		} );
 
 		it( 'should update balloon position on ui#update event when #toolbarView is already added to the #_balloon', () => {
-			setData( model, '<paragraph>b[a]r</paragraph>' );
+			_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
 			const spy = sinon.spy( balloon, 'updatePosition' );
 
@@ -416,7 +416,7 @@ describe( 'BalloonToolbar', () => {
 		} );
 
 		it( 'should update the balloon position whenever #toolbarView fires the #groupedItemsUpdate (it changed its geometry)', () => {
-			setData( model, '<paragraph>b[a]r</paragraph>' );
+			_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
 			const spy = sinon.spy( balloon, 'updatePosition' );
 
@@ -428,7 +428,7 @@ describe( 'BalloonToolbar', () => {
 		} );
 
 		it( 'should not add #toolbarView to the #_balloon more than once', () => {
-			setData( model, '<paragraph>b[a]r</paragraph>' );
+			_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
 			balloonToolbar.show();
 			balloonToolbar.show();
@@ -436,14 +436,14 @@ describe( 'BalloonToolbar', () => {
 		} );
 
 		it( 'should not add the #toolbarView to the #_balloon when the selection is collapsed', () => {
-			setData( model, '<paragraph>b[]ar</paragraph>' );
+			_setModelData( model, '<paragraph>b[]ar</paragraph>' );
 
 			balloonToolbar.show();
 			sinon.assert.notCalled( balloonAddSpy );
 		} );
 
 		it( 'should display the toolbar for a focused selection when called with an argument', () => {
-			setData( model, '<paragraph>b[]ar</paragraph>' );
+			_setModelData( model, '<paragraph>b[]ar</paragraph>' );
 
 			balloonToolbar.show( true );
 			sinon.assert.calledOnce( balloonAddSpy );
@@ -451,7 +451,7 @@ describe( 'BalloonToolbar', () => {
 
 		// https://github.com/ckeditor/ckeditor5/issues/6443
 		it( 'should not add the #toolbarView to the #_balloon when the selection contains more than one fully contained object', () => {
-			setData( model, '[<horizontalLine></horizontalLine>]<paragraph>foo</paragraph>[<horizontalLine></horizontalLine>]' );
+			_setModelData( model, '[<horizontalLine></horizontalLine>]<paragraph>foo</paragraph>[<horizontalLine></horizontalLine>]' );
 
 			balloonToolbar.show();
 			sinon.assert.notCalled( balloonAddSpy );
@@ -460,7 +460,7 @@ describe( 'BalloonToolbar', () => {
 		// https://github.com/ckeditor/ckeditor5/issues/6432
 		it( 'should not add the #toolbarView to the #_balloon when the selection contains more than one fully contained selectable', () => {
 			// This is for multi cell selection in tables.
-			setData( model, '<table>' +
+			_setModelData( model, '<table>' +
 				'<tableRow>' +
 					'[<tableCell><paragraph>foo</paragraph></tableCell>]' +
 					'[<tableCell><paragraph>bar</paragraph></tableCell>]' +
@@ -475,7 +475,7 @@ describe( 'BalloonToolbar', () => {
 			Array.from( balloonToolbar.toolbarView.items ).forEach( item => {
 				item.isEnabled = false;
 			} );
-			setData( model, '<paragraph>b[a]r</paragraph>' );
+			_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
 			balloonToolbar.show();
 			sinon.assert.notCalled( balloonAddSpy );
@@ -488,7 +488,7 @@ describe( 'BalloonToolbar', () => {
 
 			delete balloonToolbar.toolbarView.items.get( 0 ).isEnabled;
 
-			setData( model, '<paragraph>b[a]r</paragraph>' );
+			_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
 			balloonToolbar.show();
 			sinon.assert.calledOnce( balloonAddSpy );
@@ -497,7 +497,7 @@ describe( 'BalloonToolbar', () => {
 		it( 'should set the toolbar max-width to 90% of the editable width', () => {
 			const viewElement = editor.ui.view.editable.element;
 
-			setData( model, '<paragraph>b[ar]</paragraph>' );
+			_setModelData( model, '<paragraph>b[ar]</paragraph>' );
 
 			expect( global.document.body.contains( viewElement ) ).to.be.true;
 			viewElement.style.width = '400px';
@@ -538,7 +538,7 @@ describe( 'BalloonToolbar', () => {
 			} );
 
 			it( 'should attach the balloon farther away', () => {
-				setData( model, '<paragraph>b[a]r</paragraph>' );
+				_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
 				balloonToolbar.show();
 
@@ -568,7 +568,7 @@ describe( 'BalloonToolbar', () => {
 			} );
 
 			it( 'should change the distance depending on the scale of the visual viewport', () => {
-				setData( model, '<paragraph>b[a]r</paragraph>' );
+				_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
 				balloonToolbar.show();
 
@@ -609,7 +609,7 @@ describe( 'BalloonToolbar', () => {
 		} );
 
 		it( 'should remove #toolbarView from the #_balloon', () => {
-			setData( model, '<paragraph>b[a]r</paragraph>' );
+			_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
 			balloonToolbar.show();
 
@@ -618,7 +618,7 @@ describe( 'BalloonToolbar', () => {
 		} );
 
 		it( 'should stop update balloon position on ui#update event', () => {
-			setData( model, '<paragraph>b[a]r</paragraph>' );
+			_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
 			const spy = sinon.spy( balloon, 'updatePosition' );
 
@@ -675,7 +675,7 @@ describe( 'BalloonToolbar', () => {
 		let showPanelSpy, hidePanelSpy;
 
 		beforeEach( () => {
-			setData( model, '<paragraph>[bar]</paragraph>' );
+			_setModelData( model, '<paragraph>[bar]</paragraph>' );
 
 			showPanelSpy = sinon.spy( balloonToolbar, 'show' );
 			hidePanelSpy = sinon.spy( balloonToolbar, 'hide' );
@@ -792,7 +792,7 @@ describe( 'BalloonToolbar', () => {
 			const spy = sinon.spy();
 
 			balloonToolbar.on( 'show', spy );
-			setData( model, '<paragraph>b[a]r</paragraph>' );
+			_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
 			balloonToolbar.show();
 			sinon.assert.calledOnce( spy );
@@ -801,7 +801,7 @@ describe( 'BalloonToolbar', () => {
 		it( 'should not show the panel when `show` event is stopped', () => {
 			const balloonAddSpy = sinon.spy( balloon, 'add' );
 
-			setData( model, '<paragraph>b[a]r</paragraph>' );
+			_setModelData( model, '<paragraph>b[a]r</paragraph>' );
 
 			balloonToolbar.on( 'show', evt => evt.stop(), { priority: 'high' } );
 

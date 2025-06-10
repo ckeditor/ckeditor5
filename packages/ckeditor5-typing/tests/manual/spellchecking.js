@@ -9,10 +9,10 @@ import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import { Italic } from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
 import { Essentials } from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 window.setInterval( function() {
-	console.log( getData( window.editor.model ) );
+	console.log( _getModelData( window.editor.model ) );
 }, 3000 );
 
 ClassicEditor.create( document.querySelector( '#editor' ), {

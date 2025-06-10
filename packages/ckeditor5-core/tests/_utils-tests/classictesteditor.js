@@ -16,7 +16,7 @@ import { InlineEditableUIView } from '@ckeditor/ckeditor5-ui/src/editableui/inli
 
 import { RootElement } from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
 
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { testUtils } from '../../tests/_utils/utils.js';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { removeEditorBodyOrphans } from '../_utils/cleanup.js';
@@ -125,7 +125,7 @@ describe( 'ClassicTestEditor', () => {
 
 			return ClassicTestEditor.create( editorElement, { plugins: [ PluginTextInRoot ] } )
 				.then( editor => {
-					expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( 'foo' );
+					expect( _getModelData( editor.model, { withoutSelection: true } ) ).to.equal( 'foo' );
 
 					return editor.destroy();
 				} );

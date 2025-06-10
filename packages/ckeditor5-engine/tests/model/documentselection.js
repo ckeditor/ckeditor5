@@ -17,7 +17,7 @@ import { AttributeOperation } from '../../src/model/operation/attributeoperation
 import { SplitOperation } from '../../src/model/operation/splitoperation.js';
 import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
-import { setData, getData } from '../../src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '../../src/dev-utils/model.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'DocumentSelection', () => {
@@ -1024,14 +1024,14 @@ describe( 'DocumentSelection', () => {
 		it( 'should refresh attributes – integration test for #630', () => {
 			model.schema.extend( '$text', { allowIn: '$root' } );
 
-			setData( model, 'f<$text italic="true">[o</$text><$text bold="true">ob]a</$text>r' );
+			_setModelData( model, 'f<$text italic="true">[o</$text><$text bold="true">ob]a</$text>r' );
 
 			selection._setTo( [ Range._createFromPositionAndShift( selection.getLastRange().end, 0 ) ] );
 
 			expect( selection.getAttribute( 'bold' ) ).to.equal( true );
 			expect( selection.hasAttribute( 'italic' ) ).to.equal( false );
 
-			expect( getData( model ) )
+			expect( _getModelData( model ) )
 				.to.equal( 'f<$text italic="true">o</$text><$text bold="true">ob[]a</$text>r' );
 		} );
 	} );
@@ -1216,37 +1216,39 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'ignores attributes inside an object if selection contains that object', () => {
-				setData( model, '<p>[<imageBlock><$text bold="true">Caption for the image.</$text></imageBlock>]</p>' );
+				_setModelData( model, '<p>[<imageBlock><$text bold="true">Caption for the image.</$text></imageBlock>]</p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
 			it( 'ignores attributes inside an object if selection contains that object (deeper structure)', () => {
-				setData( model, '<p>[<imageBlock><caption><$text bold="true">Caption for the image.</$text></caption></imageBlock>]</p>' );
+				_setModelData( model,
+					'<p>[<imageBlock><caption><$text bold="true">Caption for the image.</$text></caption></imageBlock>]</p>'
+				);
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
 			it( 'ignores attributes inside an object if selection contains that object (block level)', () => {
-				setData( model, '<p>foo</p>[<imageBlock><$text bold="true">Caption for the image.</$text></imageBlock>]<p>foo</p>' );
+				_setModelData( model, '<p>foo</p>[<imageBlock><$text bold="true">Caption for the image.</$text></imageBlock>]<p>foo</p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
 			it( 'reads attributes from text even if the selection contains an object', () => {
-				setData( model, '<p>x<$text bold="true">[bar</$text><imageBlock></imageBlock>foo]</p>' );
+				_setModelData( model, '<p>x<$text bold="true">[bar</$text><imageBlock></imageBlock>foo]</p>' );
 
 				expect( selection.getAttribute( 'bold' ) ).to.equal( true );
 			} );
 
 			it( 'reads attributes when the entire selection inside an object', () => {
-				setData( model, '<p><imageBlock><caption><$text bold="true">[bar]</$text></caption></imageBlock></p>' );
+				_setModelData( model, '<p><imageBlock><caption><$text bold="true">[bar]</$text></caption></imageBlock></p>' );
 
 				expect( selection.getAttribute( 'bold' ) ).to.equal( true );
 			} );
 
 			it( 'stops reading attributes if selection starts with an object', () => {
-				setData( model, '<p>[<imageBlock></imageBlock><$text bold="true">bar]</$text></p>' );
+				_setModelData( model, '<p>[<imageBlock></imageBlock><$text bold="true">bar]</$text></p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
@@ -1415,13 +1417,13 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'should not inherit attributes from a node before an inline element', () => {
-				setData( model, '<p><$text bold="true">Foo Bar.</$text><softBreak></softBreak>[]</p>' );
+				_setModelData( model, '<p><$text bold="true">Foo Bar.</$text><softBreak></softBreak>[]</p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
 			it( 'should not inherit attributes from a node after an inline element (override gravity)', () => {
-				setData( model, '<p>[]<softBreak></softBreak><$text bold="true">Foo Bar.</$text></p>' );
+				_setModelData( model, '<p>[]<softBreak></softBreak><$text bold="true">Foo Bar.</$text></p>' );
 
 				const overrideGravityUid = selection._overrideGravity();
 
@@ -1441,13 +1443,13 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'inherits attributes from a node before', () => {
-				setData( model, '<p><$text bold="true">Foo Bar.</$text><imageInline bold="true"></imageInline>[]</p>' );
+				_setModelData( model, '<p><$text bold="true">Foo Bar.</$text><imageInline bold="true"></imageInline>[]</p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( true );
 			} );
 
 			it( 'inherits attributes from a node after with override gravity', () => {
-				setData( model, '<p><$text>Foo Bar.</$text>[]<imageInline bold="true"></imageInline></p>' );
+				_setModelData( model, '<p><$text>Foo Bar.</$text>[]<imageInline bold="true"></imageInline></p>' );
 
 				const overrideGravityUid = selection._overrideGravity();
 
@@ -1457,21 +1459,21 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'inherits attributes from <imageInline>, even without any text before it', () => {
-				setData( model, '<p><imageInline bold="true"></imageInline>[]</p>' );
+				_setModelData( model, '<p><imageInline bold="true"></imageInline>[]</p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( true );
 			} );
 
 			it( 'ignores attributes from a node before (copyFromObject === false)', () => {
 				model.schema.setAttributeProperties( 'bold', { copyFromObject: false } );
-				setData( model, '<p><$text bold="true">Foo Bar.</$text><imageInline bold="true"></imageInline>[]</p>' );
+				_setModelData( model, '<p><$text bold="true">Foo Bar.</$text><imageInline bold="true"></imageInline>[]</p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
 			it( 'ignores attributes from a node after with override gravity (copyFromObject === false)', () => {
 				model.schema.setAttributeProperties( 'bold', { copyFromObject: false } );
-				setData( model, '<p><$text>Foo Bar.</$text>[]<imageInline bold="true"></imageInline></p>' );
+				_setModelData( model, '<p><$text>Foo Bar.</$text>[]<imageInline bold="true"></imageInline></p>' );
 
 				const overrideGravityUid = selection._overrideGravity();
 
@@ -1482,13 +1484,13 @@ describe( 'DocumentSelection', () => {
 
 			it( 'ignores attributes from <imageInline>, even without any text before it (copyFromObject === false)', () => {
 				model.schema.setAttributeProperties( 'bold', { copyFromObject: false } );
-				setData( model, '<p><imageInline bold="true"></imageInline>[]</p>' );
+				_setModelData( model, '<p><imageInline bold="true"></imageInline>[]</p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
 
 			it( 'inherits attributes from a selected node (only those allowed on text)', () => {
-				setData( model, '<p>foo[<imageInline bold="true" src="123"></imageInline>]bar</p>' );
+				_setModelData( model, '<p>foo[<imageInline bold="true" src="123"></imageInline>]bar</p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( true );
 				expect( selection.hasAttribute( 'src' ) ).to.equal( false );
@@ -1496,7 +1498,7 @@ describe( 'DocumentSelection', () => {
 
 			it( 'ignores attributes from a selected node with copyFromObject flag == false', () => {
 				model.schema.setAttributeProperties( 'bold', { copyFromObject: false } );
-				setData( model, '<p>foo[<imageInline bold="true"></imageInline>]bar</p>' );
+				_setModelData( model, '<p>foo[<imageInline bold="true"></imageInline>]bar</p>' );
 
 				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
 			} );
@@ -1528,7 +1530,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should not inherit attributes from node before the caret', () => {
-			setData( model, '<$text bold="true" italic="true">foo[]</$text>' );
+			_setModelData( model, '<$text bold="true" italic="true">foo[]</$text>' );
 
 			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'bold', 'italic' ] );
 
@@ -1538,7 +1540,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should inherit attributes from node after the caret', () => {
-			setData( model, '<$text>foo[]</$text><$text bold="true" italic="true">bar</$text>' );
+			_setModelData( model, '<$text>foo[]</$text><$text bold="true" italic="true">bar</$text>' );
 
 			expect( Array.from( selection.getAttributeKeys() ) ).to.length( 0 );
 
@@ -1548,7 +1550,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should not retain attributes that are set explicitly', () => {
-			setData( model, '<$text italic="true">foo[]</$text>' );
+			_setModelData( model, '<$text italic="true">foo[]</$text>' );
 
 			selection._setAttribute( 'bold', true );
 
@@ -1560,7 +1562,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should retain overridden until selection will not change range by a direct change', () => {
-			setData( model, '<$text bold="true" italic="true">foo[]</$text><$text italic="true">bar</$text>' );
+			_setModelData( model, '<$text bold="true" italic="true">foo[]</$text><$text italic="true">bar</$text>' );
 
 			selection._overrideGravity();
 
@@ -1604,7 +1606,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should revert default gravity when is overridden', () => {
-			setData( model, '<$text bold="true" italic="true">foo[]</$text>' );
+			_setModelData( model, '<$text bold="true" italic="true">foo[]</$text>' );
 
 			const overrideUid = selection._overrideGravity();
 
@@ -1618,7 +1620,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should be called the same number of times as gravity is overridden to restore it', () => {
-			setData( model, '<$text bold="true" italic="true">foo[]</$text>' );
+			_setModelData( model, '<$text bold="true" italic="true">foo[]</$text>' );
 
 			const overrideUidA = selection._overrideGravity();
 			const overrideUidB = selection._overrideGravity();

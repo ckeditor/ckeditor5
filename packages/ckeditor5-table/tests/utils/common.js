@@ -5,7 +5,7 @@
 
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { _setModelData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { TableEditing } from '../../src/tableediting.js';
 import { modelTable } from '../_utils/utils.js';
@@ -35,7 +35,7 @@ describe( 'table utils', () => {
 	describe( 'common', () => {
 		describe( 'isHeadingColumnCell()', () => {
 			it( 'should return "true" for a heading column cell', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01', '02', '03' ]
 				], { headingColumns: 2 } ) );
 
@@ -45,7 +45,7 @@ describe( 'table utils', () => {
 			} );
 
 			it( 'should return "true" for a heading column cell with colspan', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ { colspan: 2, contents: '00' }, '01', '02', '03' ]
 				], { headingColumns: 2 } ) );
 
@@ -55,7 +55,7 @@ describe( 'table utils', () => {
 			} );
 
 			it( 'should return "false" for a regular column cell', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', '01', '02', '03' ]
 				], { headingColumns: 2 } ) );
 
@@ -65,7 +65,7 @@ describe( 'table utils', () => {
 			} );
 
 			it( 'should return "false" for a regular column cell with colspan', () => {
-				setData( model, modelTable( [
+				_setModelData( model, modelTable( [
 					[ '00', { colspan: 2, contents: '01' }, '02', '03' ]
 				], { headingColumns: 1 } ) );
 

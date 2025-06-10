@@ -12,7 +12,7 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'DeleteCommand', () => {
 	let editor, model, doc;
@@ -71,22 +71,22 @@ describe( 'DeleteCommand', () => {
 
 	describe( 'execute()', () => {
 		it( 'uses enqueueChange', () => {
-			setData( model, '<paragraph>foo[]bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			model.enqueueChange( () => {
 				editor.execute( 'delete' );
 
 				// We expect that command is executed in enqueue changes block. Since we are already in
 				// an enqueued block, the command execution will be postponed. Hence, no changes.
-				expect( getData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 			} );
 
 			// After all enqueued changes are done, the command execution is reflected.
-			expect( getData( model ) ).to.equal( '<paragraph>fo[]bar</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>fo[]bar</paragraph>' );
 		} );
 
 		it( 'locks buffer when executing', () => {
-			setData( model, '<paragraph>foo[]bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			const buffer = editor.commands.get( 'delete' )._buffer;
 			const lockSpy = testUtils.sinon.spy( buffer, 'lock' );
@@ -99,74 +99,74 @@ describe( 'DeleteCommand', () => {
 		} );
 
 		it( 'should not execute when selection is in non-editable place', () => {
-			setData( model, '<paragraph>foo[]bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			model.document.isReadOnly = true;
 
 			editor.execute( 'delete' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 		} );
 
 		it( 'deletes previous character when selection is collapsed', () => {
-			setData( model, '<paragraph>foo[]bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			editor.execute( 'delete' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>fo[]bar</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>fo[]bar</paragraph>' );
 		} );
 
 		it( 'deletes previous multi-character emoji when selection is collapsed', () => {
-			setData( model, '<paragraph>foo\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}[]bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}[]bar</paragraph>' );
 
 			editor.execute( 'delete' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 		} );
 
 		it( 'deletes only one of previous multi-character emojis', () => {
-			setData( model, '<paragraph>foo\u{1F469}\u{1F3FB}\u{200D}\u{1F9B2}\u{1F1E7}\u{1F1EA}[]bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo\u{1F469}\u{1F3FB}\u{200D}\u{1F9B2}\u{1F1E7}\u{1F1EA}[]bar</paragraph>' );
 
 			editor.execute( 'delete' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>foo\u{1F469}\u{1F3FB}\u{200D}\u{1F9B2}[]bar</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo\u{1F469}\u{1F3FB}\u{200D}\u{1F9B2}[]bar</paragraph>' );
 		} );
 
 		it( 'deletes selection contents', () => {
-			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
+			_setModelData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
 			editor.execute( 'delete' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
 		} );
 
 		it( 'deletes contents of selection passed in options', () => {
-			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
+			_setModelData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
 			const selection = model.createSelection( model.createRangeIn( model.document.getRoot() ) );
 
 			editor.execute( 'delete', { selection } );
 
-			expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'merges elements', () => {
-			setData( model, '<paragraph>foo</paragraph><paragraph>[]bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo</paragraph><paragraph>[]bar</paragraph>' );
 
 			editor.execute( 'delete' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 		} );
 
 		it( 'does not try to delete when selection is at the boundary', () => {
 			const spy = sinon.spy();
 
 			editor.model.on( 'deleteContent', spy );
-			setData( model, '<paragraph>[]foo</paragraph>' );
+			_setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 			editor.execute( 'delete' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>[]foo</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[]foo</paragraph>' );
 			expect( spy.callCount ).to.equal( 0 );
 		} );
 
@@ -174,7 +174,7 @@ describe( 'DeleteCommand', () => {
 			const spy = sinon.spy();
 
 			editor.model.on( 'modifySelection', spy );
-			setData( model, '<paragraph>foo[]bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			editor.commands.get( 'delete' ).direction = 'forward';
 
@@ -192,7 +192,7 @@ describe( 'DeleteCommand', () => {
 			const spy = sinon.spy();
 
 			editor.model.on( 'deleteContent', spy );
-			setData( model, '<paragraph>foo[]bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			editor.execute( 'delete' );
 
@@ -206,7 +206,7 @@ describe( 'DeleteCommand', () => {
 			const spy = sinon.spy();
 
 			editor.model.on( 'deleteContent', spy );
-			setData( model, '<paragraph>[foobar]</paragraph>' );
+			_setModelData( model, '<paragraph>[foobar]</paragraph>' );
 
 			editor.execute( 'delete' );
 
@@ -222,7 +222,7 @@ describe( 'DeleteCommand', () => {
 			editor.commands.add( 'deleteForward', forwardCommand );
 
 			editor.model.on( 'deleteContent', spy );
-			setData( model, '<paragraph>foo[]bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			editor.execute( 'delete' );
 
@@ -240,11 +240,11 @@ describe( 'DeleteCommand', () => {
 		} );
 
 		it( 'leaves an empty paragraph after removing the whole content from editor', () => {
-			setData( model, '<heading1>[Header 1</heading1><paragraph>Some text.]</paragraph>' );
+			_setModelData( model, '<heading1>[Header 1</heading1><paragraph>Some text.]</paragraph>' );
 
 			editor.execute( 'delete' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'leaves an empty paragraph after removing the whole content inside limit element', () => {
@@ -254,7 +254,7 @@ describe( 'DeleteCommand', () => {
 				isLimit: true
 			} );
 
-			setData( model,
+			_setModelData( model,
 				'<heading1>Foo</heading1>' +
 					'<section>' +
 						'<heading1>[Header 1</heading1>' +
@@ -265,7 +265,7 @@ describe( 'DeleteCommand', () => {
 
 			editor.execute( 'delete' );
 
-			expect( getData( model ) ).to.equal(
+			expect( _getModelData( model ) ).to.equal(
 				'<heading1>Foo</heading1>' +
 				'<section>' +
 					'<paragraph>[]</paragraph>' +
@@ -285,11 +285,11 @@ describe( 'DeleteCommand', () => {
 			model.schema.extend( 'blockQuote', { allowIn: 'section' } );
 			model.schema.extend( 'paragraph', { allowIn: 'blockQuote' } );
 
-			setData( model, '<section><blockQuote><paragraph>[]</paragraph></blockQuote></section>' );
+			_setModelData( model, '<section><blockQuote><paragraph>[]</paragraph></blockQuote></section>' );
 
 			editor.execute( 'delete' );
 
-			expect( getData( model ) ).to.equal( '<section><paragraph>[]</paragraph></section>' );
+			expect( _getModelData( model ) ).to.equal( '<section><paragraph>[]</paragraph></section>' );
 		} );
 
 		it( 'leaves an empty paragraph after removing the whole content when root element was not added as Schema limit', () => {
@@ -299,33 +299,33 @@ describe( 'DeleteCommand', () => {
 
 			expect( model.schema.isLimit( '$root' ) ).to.be.false;
 
-			setData( model, '<heading1>[]</heading1>' );
+			_setModelData( model, '<heading1>[]</heading1>' );
 
 			editor.execute( 'delete' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'replaces an empty element with paragraph', () => {
-			setData( model, '<heading1>[]</heading1>' );
+			_setModelData( model, '<heading1>[]</heading1>' );
 
 			editor.execute( 'delete' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'does not replace an element when Backspace or Delete key is held', () => {
-			setData( model, '<heading1>Bar[]</heading1>' );
+			_setModelData( model, '<heading1>Bar[]</heading1>' );
 
 			for ( let sequence = 1; sequence < 10; ++sequence ) {
 				editor.execute( 'delete', { sequence } );
 			}
 
-			expect( getData( model ) ).to.equal( '<heading1>[]</heading1>' );
+			expect( _getModelData( model ) ).to.equal( '<heading1>[]</heading1>' );
 		} );
 
 		it( 'does not replace with paragraph in another paragraph already occurs in limit element', () => {
-			setData( model, '<paragraph>[]</paragraph>' );
+			_setModelData( model, '<paragraph>[]</paragraph>' );
 
 			const element = doc.getRoot().getNodeByPath( [ 0 ] );
 
@@ -341,41 +341,41 @@ describe( 'DeleteCommand', () => {
 				}
 			} );
 
-			setData( model, '<heading1>[]</heading1>' );
+			_setModelData( model, '<heading1>[]</heading1>' );
 
 			editor.execute( 'delete' );
 
-			expect( getData( model ) ).to.equal( '<heading1>[]</heading1>' );
+			expect( _getModelData( model ) ).to.equal( '<heading1>[]</heading1>' );
 		} );
 
 		describe( 'with the empty first block', () => {
 			it( 'replaces the first empty block with paragraph', () => {
-				setData( model, '<heading1>[]</heading1><paragraph>foo</paragraph>' );
+				_setModelData( model, '<heading1>[]</heading1><paragraph>foo</paragraph>' );
 
 				editor.execute( 'delete' );
 
-				expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
 			} );
 
 			it( 'does not replace an element when Backspace key is held', () => {
-				setData( model, '<heading1>foo[]</heading1><paragraph>bar</paragraph>' );
+				_setModelData( model, '<heading1>foo[]</heading1><paragraph>bar</paragraph>' );
 
 				for ( let sequence = 1; sequence < 10; ++sequence ) {
 					editor.execute( 'delete', { sequence } );
 				}
 
-				expect( getData( model ) ).to.equal( '<heading1>[]</heading1><paragraph>bar</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<heading1>[]</heading1><paragraph>bar</paragraph>' );
 			} );
 
 			it( 'does not replace with paragraph in another paragraph already occurs in limit element', () => {
-				setData( model, '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
+				_setModelData( model, '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
 
 				const element = doc.getRoot().getNodeByPath( [ 0 ] );
 
 				editor.execute( 'delete' );
 
 				expect( element ).is.equal( doc.getRoot().getNodeByPath( [ 0 ] ) );
-				expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
 			} );
 
 			it( 'does not replace an element if a paragraph is not allowed in current position', () => {
@@ -385,19 +385,19 @@ describe( 'DeleteCommand', () => {
 					}
 				} );
 
-				setData( model, '<heading1>[]</heading1><heading1>foo</heading1>' );
+				_setModelData( model, '<heading1>[]</heading1><heading1>foo</heading1>' );
 
 				editor.execute( 'delete' );
 
-				expect( getData( model ) ).to.equal( '<heading1>[]</heading1><heading1>foo</heading1>' );
+				expect( _getModelData( model ) ).to.equal( '<heading1>[]</heading1><heading1>foo</heading1>' );
 			} );
 
 			it( 'does not replace an element if it\'s not empty', () => {
-				setData( model, '<heading1>[]foo</heading1><paragraph>bar</paragraph>' );
+				_setModelData( model, '<heading1>[]foo</heading1><paragraph>bar</paragraph>' );
 
 				editor.execute( 'delete' );
 
-				expect( getData( model ) ).to.equal( '<heading1>[]foo</heading1><paragraph>bar</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<heading1>[]foo</heading1><paragraph>bar</paragraph>' );
 			} );
 
 			it( 'does not replace an element if it\'s wrapped with some other element', () => {
@@ -406,11 +406,11 @@ describe( 'DeleteCommand', () => {
 					allowContentOf: '$root'
 				} );
 
-				setData( model, '<blockQuote><heading1>[]</heading1></blockQuote><paragraph>bar</paragraph>' );
+				_setModelData( model, '<blockQuote><heading1>[]</heading1></blockQuote><paragraph>bar</paragraph>' );
 
 				editor.execute( 'delete' );
 
-				expect( getData( model ) ).to.equal( '<blockQuote><heading1>[]</heading1></blockQuote><paragraph>bar</paragraph>' );
+				expect( _getModelData( model ) ).to.equal( '<blockQuote><heading1>[]</heading1></blockQuote><paragraph>bar</paragraph>' );
 			} );
 		} );
 	} );

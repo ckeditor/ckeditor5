@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { stringify, parse, getData, setData } from '../../src/dev-utils/model.js';
+import { _stringifyModel, _parseModel, _getModelData, _setModelData } from '../../src/dev-utils/model.js';
 import { Model } from '../../src/model/model.js';
 import { DocumentFragment } from '../../src/model/documentfragment.js';
 import { Element } from '../../src/model/element.js';
@@ -55,49 +55,49 @@ describe( 'model test utils', () => {
 
 	describe( 'getData', () => {
 		it( 'should use stringify method', () => {
-			const stringifySpy = sinon.spy( getData, '_stringify' );
+			const stringifySpy = sinon.spy( _getModelData, '_stringify' );
 			root._appendChild( new Element( 'b', null, new Text( 'btext' ) ) );
 
-			expect( getData( model, { withoutSelection: true } ) ).to.equal( '<b>btext</b>' );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<b>btext</b>' );
 			sinon.assert.calledOnce( stringifySpy );
 			sinon.assert.calledWithExactly( stringifySpy, root, null, null );
 		} );
 
 		it( 'should use stringify method with selection', () => {
-			const stringifySpy = sinon.spy( getData, '_stringify' );
+			const stringifySpy = sinon.spy( _getModelData, '_stringify' );
 			root._appendChild( new Element( 'b', null, new Text( 'btext' ) ) );
 			model.change( writer => {
 				writer.setSelection( new Range( Position._createAt( root, 0 ), Position._createAt( root, 1 ) ) );
 			} );
-			expect( getData( model ) ).to.equal( '[<b>btext</b>]' );
+			expect( _getModelData( model ) ).to.equal( '[<b>btext</b>]' );
 			sinon.assert.calledOnce( stringifySpy );
 			sinon.assert.calledWithExactly( stringifySpy, root, document.selection, null );
 		} );
 
 		it( 'should throw an error when passing invalid document', () => {
 			expect( () => {
-				getData( { invalid: 'document' } );
+				_getModelData( { invalid: 'document' } );
 			} ).to.throw( TypeError, 'Model needs to be an instance of module:engine/model/model~Model.' );
 		} );
 
 		describe( 'markers', () => {
 			it( 'should stringify collapsed marker', () => {
-				setData( model, '<paragraph>bar</paragraph>' );
+				_setModelData( model, '<paragraph>bar</paragraph>' );
 
 				model.markers._set( 'foo', new Range( Position._createAt( document.getRoot(), 0 ) ) );
 
-				expect( getData( model, { convertMarkers: true, withoutSelection: true } ) )
+				expect( _getModelData( model, { convertMarkers: true, withoutSelection: true } ) )
 					.to.equal( '<foo:start></foo:start><paragraph>bar</paragraph>' );
 			} );
 
 			it( 'should stringify non-collapsed marker', () => {
-				setData( model, '<paragraph>bar</paragraph>' );
+				_setModelData( model, '<paragraph>bar</paragraph>' );
 
 				const markerRange = new Range( Position._createAt( document.getRoot(), 0 ), Position._createAt( document.getRoot(), 1 ) );
 
 				model.markers._set( 'foo', markerRange );
 
-				expect( getData( model, { convertMarkers: true, withoutSelection: true } ) )
+				expect( _getModelData( model, { convertMarkers: true, withoutSelection: true } ) )
 					.to.equal( '<foo:start></foo:start><paragraph>bar</paragraph><foo:end></foo:end>' );
 			} );
 		} );
@@ -105,26 +105,26 @@ describe( 'model test utils', () => {
 
 	describe( 'setData', () => {
 		it( 'should use parse method', () => {
-			const parseSpy = sinon.spy( setData, '_parse' );
+			const parseSpy = sinon.spy( _setModelData, '_parse' );
 			const options = {};
 			const data = '<b>btext</b>text';
 
-			setData( model, data, options );
+			_setModelData( model, data, options );
 
-			expect( getData( model, { withoutSelection: true } ) ).to.equal( data );
+			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( data );
 			sinon.assert.calledOnce( parseSpy );
 			const args = parseSpy.firstCall.args;
 			expect( args[ 0 ] ).to.equal( data );
 		} );
 
 		it( 'should use parse method with selection', () => {
-			const parseSpy = sinon.spy( setData, '_parse' );
+			const parseSpy = sinon.spy( _setModelData, '_parse' );
 			const options = {};
 			const data = '[<b>btext</b>]';
 
-			setData( model, data, options );
+			_setModelData( model, data, options );
 
-			expect( getData( model ) ).to.equal( data );
+			expect( _getModelData( model ) ).to.equal( data );
 			sinon.assert.calledOnce( parseSpy );
 			const args = parseSpy.firstCall.args;
 			expect( args[ 0 ] ).to.equal( data );
@@ -133,7 +133,7 @@ describe( 'model test utils', () => {
 		it( 'should use model#enqueueChange method if the batchType option was provided', () => {
 			const changeSpy = sinon.spy( model, 'enqueueChange' );
 			const batchType = { isUndoable: true };
-			setData( model, 'text', { batchType } );
+			_setModelData( model, 'text', { batchType } );
 
 			sinon.assert.calledTwice( changeSpy );
 			sinon.assert.calledWith( changeSpy, batchType );
@@ -141,7 +141,7 @@ describe( 'model test utils', () => {
 
 		it( 'should use model#change method if no batchType option was provided', () => {
 			const changeSpy = sinon.spy( model, 'change' );
-			setData( model, 'text', {} );
+			_setModelData( model, 'text', {} );
 
 			sinon.assert.calledOnce( changeSpy );
 		} );
@@ -187,20 +187,20 @@ describe( 'model test utils', () => {
 		} );
 
 		it( 'should insert backward selection', () => {
-			setData( model, '<b>[foo bar</b>]', { lastRangeBackward: true } );
+			_setModelData( model, '<b>[foo bar</b>]', { lastRangeBackward: true } );
 
-			expect( getData( model ) ).to.equal( '<b>[foo bar</b>]' );
+			expect( _getModelData( model ) ).to.equal( '<b>[foo bar</b>]' );
 			expect( document.selection.isBackward ).to.true;
 		} );
 
 		it( 'should throw an error when passing invalid document', () => {
 			expect( () => {
-				setData( { invalid: 'document' } );
+				_setModelData( { invalid: 'document' } );
 			} ).to.throw( TypeError, 'Model needs to be an instance of module:engine/model/model~Model.' );
 		} );
 
 		it( 'should set attributes to the selection', () => {
-			setData( model, '<b>[foo bar]</b>', { selectionAttributes: { foo: 'bar' } } );
+			_setModelData( model, '<b>[foo bar]</b>', { selectionAttributes: { foo: 'bar' } } );
 
 			expect( document.selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
 		} );
@@ -212,15 +212,15 @@ describe( 'model test utils', () => {
 			model.schema.register( 'textOnly', { allowChildren: '$text' } );
 			model.document.createRoot( 'textOnly', 'textOnly' );
 
-			setData( model, 'a[b]c', { rootName: 'textOnly' } );
-			expect( getData( model, { rootName: 'textOnly' } ) ).to.equal( 'a[b]c' );
+			_setModelData( model, 'a[b]c', { rootName: 'textOnly' } );
+			expect( _getModelData( model, { rootName: 'textOnly' } ) ).to.equal( 'a[b]c' );
 		} );
 
 		function testUtils( data, expected ) {
 			expected = expected || data;
 
-			setData( model, data );
-			expect( getData( model ) ).to.equal( expected );
+			_setModelData( model, data );
+			expect( _getModelData( model ) ).to.equal( expected );
 		}
 	} );
 
@@ -228,7 +228,7 @@ describe( 'model test utils', () => {
 		it( 'should stringify text', () => {
 			const text = new Text( 'text', { underline: true, bold: true } );
 
-			expect( stringify( text ) ).to.equal( '<$text bold="true" underline="true">text</$text>' );
+			expect( _stringifyModel( text ) ).to.equal( '<$text bold="true" underline="true">text</$text>' );
 		} );
 
 		it( 'should stringify element', () => {
@@ -237,7 +237,7 @@ describe( 'model test utils', () => {
 				new Text( 'atext' )
 			] );
 
-			expect( stringify( element ) ).to.equal( '<a><b>btext</b>atext</a>' );
+			expect( _stringifyModel( element ) ).to.equal( '<a><b>btext</b>atext</a>' );
 		} );
 
 		it( 'should stringify document fragment', () => {
@@ -246,7 +246,7 @@ describe( 'model test utils', () => {
 				new Text( 'atext' )
 			] );
 
-			expect( stringify( fragment ) ).to.equal( '<b>btext</b>atext' );
+			expect( _stringifyModel( fragment ) ).to.equal( '<b>btext</b>atext' );
 		} );
 
 		it( 'writes elements and texts', () => {
@@ -260,7 +260,7 @@ describe( 'model test utils', () => {
 				new Element( 'd' )
 			] );
 
-			expect( stringify( root ) ).to.equal(
+			expect( _stringifyModel( root ) ).to.equal(
 				'<a>atext</a><b><c1></c1>ctext<c2></c2></b><d></d>'
 			);
 		} );
@@ -274,7 +274,7 @@ describe( 'model test utils', () => {
 
 			// Note: attributes are written in a very simplistic way, because they are not to be parsed. They are just
 			// to be compared in the tests with some patterns.
-			expect( stringify( root ) ).to.equal(
+			expect( _stringifyModel( root ) ).to.equal(
 				'<a bar="1" car="false" foo="true"><b barFoo="{"x":1,"y":2}" fooBar="x y"></b></a>'
 			);
 		} );
@@ -289,7 +289,7 @@ describe( 'model test utils', () => {
 				] )
 			] );
 
-			expect( stringify( root ) ).to.equal(
+			expect( _stringifyModel( root ) ).to.equal(
 				'<$text bold="true">foo</$text>bar<$text bold="true" italic="true">bom</$text>' +
 				'<a><$text bold="true" underline="true">pom</$text></a>'
 			);
@@ -298,7 +298,7 @@ describe( 'model test utils', () => {
 		it( 'writes unicode text', () => {
 			root._appendChild( new Text( 'நிலைக்கு' ) );
 
-			expect( stringify( root ) ).to.equal( 'நிலைக்கு' );
+			expect( _stringifyModel( root ) ).to.equal( 'நிலைக்கு' );
 		} );
 
 		describe( 'selection', () => {
@@ -322,7 +322,7 @@ describe( 'model test utils', () => {
 					writer.setSelection( root, 0 );
 				} );
 
-				expect( stringify( root, selection ) ).to.equal(
+				expect( _stringifyModel( root, selection ) ).to.equal(
 					'[]'
 				);
 			} );
@@ -332,7 +332,7 @@ describe( 'model test utils', () => {
 					writer.setSelection( root, 0 );
 				} );
 
-				expect( stringify( root, selection ) ).to.equal(
+				expect( _stringifyModel( root, selection ) ).to.equal(
 					'[]<a></a>foo<$text bold="true">bar</$text><b></b>'
 				);
 			} );
@@ -342,7 +342,7 @@ describe( 'model test utils', () => {
 					writer.setSelection( root, 3 );
 				} );
 
-				expect( stringify( root, selection ) ).to.equal(
+				expect( _stringifyModel( root, selection ) ).to.equal(
 					'<a></a>fo[]o<$text bold="true">bar</$text><b></b>'
 				);
 			} );
@@ -352,7 +352,7 @@ describe( 'model test utils', () => {
 					writer.setSelection( elA, 'after' );
 				} );
 
-				expect( stringify( root, selection ) ).to.equal(
+				expect( _stringifyModel( root, selection ) ).to.equal(
 					'<a></a>[]foo<$text bold="true">bar</$text><b></b>'
 				);
 			} );
@@ -362,7 +362,7 @@ describe( 'model test utils', () => {
 					writer.setSelection( elB, 'before' );
 				} );
 
-				expect( stringify( root, selection ) ).to.equal(
+				expect( _stringifyModel( root, selection ) ).to.equal(
 					'<a></a>foo<$text bold="true">bar[]</$text><b></b>'
 				);
 			} );
@@ -375,7 +375,7 @@ describe( 'model test utils', () => {
 					writer.removeSelectionAttribute( model.document.selection.getAttributeKeys() );
 				} );
 
-				expect( stringify( root, selection ) ).to.equal(
+				expect( _stringifyModel( root, selection ) ).to.equal(
 					'<a></a>foo<$text bold="true">bar</$text><b></b>[]'
 				);
 			} );
@@ -385,7 +385,7 @@ describe( 'model test utils', () => {
 					writer.setSelection( root, 5 );
 				} );
 
-				expect( stringify( root, selection ) ).to.equal(
+				expect( _stringifyModel( root, selection ) ).to.equal(
 					'<a></a>foo<$text bold="true">b[]ar</$text><b></b>'
 				);
 			} );
@@ -395,7 +395,7 @@ describe( 'model test utils', () => {
 					writer.setSelection( new Range( Position._createAt( root, 0 ), Position._createAt( root, 4 ) ) );
 				} );
 
-				expect( stringify( root, selection ) ).to.equal(
+				expect( _stringifyModel( root, selection ) ).to.equal(
 					'[<a></a>foo]<$text bold="true">bar</$text><b></b>'
 				);
 			} );
@@ -405,7 +405,7 @@ describe( 'model test utils', () => {
 					writer.setSelection( new Range( Position._createAt( root, 2 ), Position._createAt( root, 3 ) ) );
 				} );
 
-				expect( stringify( root, selection ) ).to.equal(
+				expect( _stringifyModel( root, selection ) ).to.equal(
 					'<a></a>f[o]o<$text bold="true">bar</$text><b></b>'
 				);
 			} );
@@ -415,7 +415,7 @@ describe( 'model test utils', () => {
 					writer.setSelection( new Range( Position._createAt( elA, 0 ), Position._createAt( elB, 0 ) ) );
 				} );
 
-				expect( stringify( root, selection ) ).to.equal(
+				expect( _stringifyModel( root, selection ) ).to.equal(
 					'<a>[</a>foo<$text bold="true">bar</$text><b>]</b>'
 				);
 			} );
@@ -425,7 +425,7 @@ describe( 'model test utils', () => {
 					writer.setSelection( new Range( Position._createAt( elA, 0 ), Position._createAt( elB, 0 ) ), { backward: true } );
 				} );
 
-				expect( stringify( root, selection ) ).to.equal(
+				expect( _stringifyModel( root, selection ) ).to.equal(
 					'<a>[</a>foo<$text bold="true">bar</$text><b>]</b>'
 				);
 			} );
@@ -438,13 +438,13 @@ describe( 'model test utils', () => {
 					writer.setSelection( new Range( Position._createAt( root, 2 ), Position._createAt( root, 6 ) ) );
 				} );
 
-				expect( stringify( root, selection ) ).to.equal( 'நி[லைக்]கு' );
+				expect( _stringifyModel( root, selection ) ).to.equal( 'நி[லைக்]கு' );
 			} );
 
 			it( 'uses range and coverts it to selection', () => {
 				const range = new Range( Position._createAt( elA, 0 ), Position._createAt( elB, 0 ) );
 
-				expect( stringify( root, range ) ).to.equal(
+				expect( _stringifyModel( root, range ) ).to.equal(
 					'<a>[</a>foo<$text bold="true">bar</$text><b>]</b>'
 				);
 			} );
@@ -452,7 +452,7 @@ describe( 'model test utils', () => {
 			it( 'uses position and converts it to collapsed selection', () => {
 				const position = new Position( root, [ 0 ] );
 
-				expect( stringify( root, position ) ).to.equal(
+				expect( _stringifyModel( root, position ) ).to.equal(
 					'[]<a></a>foo<$text bold="true">bar</$text><b></b>'
 				);
 			} );
@@ -557,7 +557,7 @@ describe( 'model test utils', () => {
 				inheritAllFrom: '$inlineObject'
 			} );
 
-			const parsed = parse(
+			const parsed = _parseModel(
 				'<paragraph>Foo <inlineObj></inlineObj> bar</paragraph>',
 				model.schema,
 				{ inlineObjectElements: [ 'inlineObj' ] }
@@ -569,13 +569,13 @@ describe( 'model test utils', () => {
 
 		it( 'throws when invalid XML', () => {
 			expect( () => {
-				parse( '<a><b></a></b>', model.schema );
+				_parseModel( '<a><b></a></b>', model.schema );
 			} ).to.throw( Error, /Parse error/ );
 		} );
 
 		it( 'throws when try to set element not registered in schema', () => {
 			expect( () => {
-				parse( '<xyz></xyz>', model.schema );
+				_parseModel( '<xyz></xyz>', model.schema );
 			} ).to.throw( Error, 'Element \'xyz\' was not allowed in given position.' );
 		} );
 
@@ -583,7 +583,7 @@ describe( 'model test utils', () => {
 			const model = new Model();
 
 			expect( () => {
-				parse( 'text', model.schema );
+				_parseModel( 'text', model.schema );
 			} ).to.throw( Error, 'Text was not allowed in given position.' );
 		} );
 
@@ -592,7 +592,7 @@ describe( 'model test utils', () => {
 			model.schema.register( 'foo', { allowChildren: '$text' } );
 
 			expect( () => {
-				parse( 'text', model.schema, { context: [ 'foo' ] } );
+				_parseModel( 'text', model.schema, { context: [ 'foo' ] } );
 			} ).to.not.throw();
 		} );
 
@@ -627,14 +627,14 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'sets selection attributes', () => {
-				const result = parse( 'foo[]bar', model.schema, {
+				const result = _parseModel( 'foo[]bar', model.schema, {
 					selectionAttributes: {
 						bold: true,
 						italic: true
 					}
 				} );
 
-				expect( stringify( result.model, result.selection ) ).to.equal( 'foo<$text bold="true" italic="true">[]</$text>bar' );
+				expect( _stringifyModel( result.model, result.selection ) ).to.equal( 'foo<$text bold="true" italic="true">[]</$text>bar' );
 			} );
 
 			test( 'sets collapsed selection between text and text with attributes', {
@@ -650,22 +650,22 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'sets selection with attribute containing an element', () => {
-				const result = parse( 'x[<a></a>]', model.schema, {
+				const result = _parseModel( 'x[<a></a>]', model.schema, {
 					selectionAttributes: {
 						bold: true
 					}
 				} );
 
-				expect( stringify( result.model, result.selection ) ).to.equal( 'x[<a></a>]' );
+				expect( _stringifyModel( result.model, result.selection ) ).to.equal( 'x[<a></a>]' );
 				expect( result.selection.getAttribute( 'bold' ) ).to.be.true;
 			} );
 
 			it( 'sets a backward selection containing an element', () => {
-				const result = parse( 'x[<a></a>]', model.schema, {
+				const result = _parseModel( 'x[<a></a>]', model.schema, {
 					lastRangeBackward: true
 				} );
 
-				expect( stringify( result.model, result.selection ) ).to.equal( 'x[<a></a>]' );
+				expect( _stringifyModel( result.model, result.selection ) ).to.equal( 'x[<a></a>]' );
 				expect( result.selection.isBackward ).to.true;
 			} );
 
@@ -674,23 +674,23 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'sets selection within a text with different attributes', () => {
-				const result = parse( '<$text bold="true">fo[o</$text>ba]r', model.schema, {
+				const result = _parseModel( '<$text bold="true">fo[o</$text>ba]r', model.schema, {
 					selectionAttributes: { bold: true }
 				} );
 
-				expect( stringify( result.model, result.selection ) ).to.equal( '<$text bold="true">fo[o</$text>ba]r' );
+				expect( _stringifyModel( result.model, result.selection ) ).to.equal( '<$text bold="true">fo[o</$text>ba]r' );
 				expect( result.selection.getAttribute( 'bold' ) ).to.true;
 			} );
 
 			it( 'throws when missing selection start', () => {
 				expect( () => {
-					parse( 'foo]', model.schema );
+					_parseModel( 'foo]', model.schema );
 				} ).to.throw( Error, /^Parse error/ );
 			} );
 
 			it( 'throws when missing selection end', () => {
 				expect( () => {
-					parse( '[foo', model.schema );
+					_parseModel( '[foo', model.schema );
 				} ).to.throw( Error, /^Parse error/ );
 			} );
 		} );
@@ -699,7 +699,7 @@ describe( 'model test utils', () => {
 			it( title, () => {
 				const output = options.output || options.data;
 
-				const data = parse( options.data, model.schema );
+				const data = _parseModel( options.data, model.schema );
 				let converted, selection;
 
 				if ( data.selection && data.model ) {
@@ -709,7 +709,7 @@ describe( 'model test utils', () => {
 					converted = data;
 				}
 
-				expect( stringify( converted, selection ) ).to.equal( output );
+				expect( _stringifyModel( converted, selection ) ).to.equal( output );
 
 				if ( options.check ) {
 					options.check( converted, selection );

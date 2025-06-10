@@ -15,7 +15,7 @@ import { ImageStyle } from '../../src/imagestyle.js';
 import { ImageBlockEditing } from '../../src/image/imageblockediting.js';
 import { ImageInlineEditing } from '../../src/image/imageinlineediting.js';
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { focusEditor } from '@ckeditor/ckeditor5-widget/tests/widgetresize/_utils/utils.js';
@@ -129,21 +129,21 @@ describe( 'ImageResizeEditing', () => {
 			} );
 
 			it( 'downcasts 100px width correctly', () => {
-				setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="100px"></imageBlock>` );
+				_setModelData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="100px"></imageBlock>` );
 
 				expect( editor.getData() )
 					.to.equal( `<figure class="image image_resized" style="width:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 			} );
 
 			it( 'downcasts 50% width correctly', () => {
-				setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageBlock>` );
+				_setModelData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageBlock>` );
 
 				expect( editor.getData() )
 					.to.equal( `<figure class="image image_resized" style="width:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 			} );
 
 			it( 'removes style and extra class when no longer resized', () => {
-				setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageBlock>` );
+				_setModelData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageBlock>` );
 
 				const imageModel = editor.model.document.getRoot().getChild( 0 );
 
@@ -161,7 +161,7 @@ describe( 'ImageResizeEditing', () => {
 						conversionApi.consumable.consume( data.item, 'attribute:resizedWidth:imageBlock' );
 					}, { priority: 'high' } )
 				);
-				setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageBlock>` );
+				_setModelData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageBlock>` );
 
 				expect( editor.getData() )
 					.to.equal( `<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
@@ -191,14 +191,14 @@ describe( 'ImageResizeEditing', () => {
 
 			describe( 'data downcast', () => {
 				it( 'downcasts 100px height correctly', () => {
-					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="100px"></imageBlock>` );
+					_setModelData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="100px"></imageBlock>` );
 
 					expect( editor.getData() )
 						.to.equal( `<figure class="image" style="height:100px;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
 				} );
 
 				it( 'downcasts 50% height correctly', () => {
-					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
+					_setModelData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
 
 					expect( editor.getData() )
 						.to.equal( `<figure class="image" style="height:50%;"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
@@ -210,7 +210,7 @@ describe( 'ImageResizeEditing', () => {
 							conversionApi.consumable.consume( data.item, 'attribute:resizedHeight:imageBlock' );
 						}, { priority: 'high' } )
 					);
-					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
+					_setModelData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
 
 					expect( editor.getData() )
 						.to.equal( `<figure class="image"><img src="${ IMAGE_SRC_FIXTURE }"></figure>` );
@@ -219,7 +219,7 @@ describe( 'ImageResizeEditing', () => {
 
 			describe( 'editing downcast', () => {
 				it( 'downcasts 100px height correctly', () => {
-					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="100px"></imageBlock>` );
+					_setModelData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="100px"></imageBlock>` );
 
 					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 						'<figure class="ck-widget ck-widget_selected image" contenteditable="false" style="height:100px">' +
@@ -230,7 +230,7 @@ describe( 'ImageResizeEditing', () => {
 				} );
 
 				it( 'downcasts 50% height correctly', () => {
-					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
+					_setModelData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
 
 					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 						'<figure class="ck-widget ck-widget_selected image" contenteditable="false" style="height:50%">' +
@@ -241,7 +241,7 @@ describe( 'ImageResizeEditing', () => {
 				} );
 
 				it( 'removes `height` style in view if `resizedHeight` is removed from model', () => {
-					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
+					_setModelData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
 
 					const imageModel = editor.model.document.getRoot().getChild( 0 );
 
@@ -263,7 +263,7 @@ describe( 'ImageResizeEditing', () => {
 							conversionApi.consumable.consume( data.item, 'attribute:resizedHeight:imageBlock' );
 						}, { priority: 'high' } )
 					);
-					setData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
+					_setModelData( editor.model, `<imageBlock src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageBlock>` );
 
 					expect( _getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
 						'<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
@@ -327,7 +327,7 @@ describe( 'ImageResizeEditing', () => {
 			} );
 
 			it( 'downcasts 100px resizedWidth correctly', () => {
-				setData( editor.model,
+				_setModelData( editor.model,
 					`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedWidth="100px"></imageInline></paragraph>`
 				);
 
@@ -338,7 +338,7 @@ describe( 'ImageResizeEditing', () => {
 			} );
 
 			it( 'downcasts 50% resizedWidth correctly', () => {
-				setData( editor.model,
+				_setModelData( editor.model,
 					`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageInline></paragraph>`
 				);
 
@@ -347,7 +347,7 @@ describe( 'ImageResizeEditing', () => {
 			} );
 
 			it( 'removes style and extra class when no longer resized', () => {
-				setData( editor.model,
+				_setModelData( editor.model,
 					`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageInline></paragraph>`
 				);
 
@@ -367,7 +367,7 @@ describe( 'ImageResizeEditing', () => {
 						conversionApi.consumable.consume( data.item, 'attribute:resizedWidth:imageInline' );
 					}, { priority: 'high' } )
 				);
-				setData( editor.model,
+				_setModelData( editor.model,
 					`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedWidth="50%"></imageInline></paragraph>`
 				);
 
@@ -408,7 +408,7 @@ describe( 'ImageResizeEditing', () => {
 
 			describe( 'data downcast', () => {
 				it( 'downcasts 100px resizedHeight correctly', () => {
-					setData( editor.model,
+					_setModelData( editor.model,
 						`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedHeight="100px"></imageInline></paragraph>`
 					);
 
@@ -419,7 +419,7 @@ describe( 'ImageResizeEditing', () => {
 				} );
 
 				it( 'downcasts 50% resizedHeight correctly', () => {
-					setData( editor.model,
+					_setModelData( editor.model,
 						`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageInline></paragraph>`
 					);
 
@@ -433,7 +433,7 @@ describe( 'ImageResizeEditing', () => {
 							conversionApi.consumable.consume( data.item, 'attribute:resizedHeight:imageInline' );
 						}, { priority: 'high' } )
 					);
-					setData(
+					_setModelData(
 						editor.model, `<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageInline></paragraph>`
 					);
 
@@ -444,7 +444,7 @@ describe( 'ImageResizeEditing', () => {
 
 			describe( 'editing downcast', () => {
 				it( 'downcasts 100px resizedHeight correctly', () => {
-					setData( editor.model,
+					_setModelData( editor.model,
 						`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedHeight="100px"></imageInline></paragraph>`
 					);
 
@@ -456,7 +456,7 @@ describe( 'ImageResizeEditing', () => {
 				} );
 
 				it( 'downcasts 50% resizedHeight correctly', () => {
-					setData( editor.model,
+					_setModelData( editor.model,
 						`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageInline></paragraph>`
 					);
 
@@ -468,7 +468,7 @@ describe( 'ImageResizeEditing', () => {
 				} );
 
 				it( 'removes `height` style in view if `resizedHeight` is removed from model', () => {
-					setData( editor.model,
+					_setModelData( editor.model,
 						`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedHeight="100px"></imageInline></paragraph>`
 					);
 
@@ -491,7 +491,7 @@ describe( 'ImageResizeEditing', () => {
 							conversionApi.consumable.consume( data.item, 'attribute:resizedHeight:imageInline' );
 						}, { priority: 'high' } )
 					);
-					setData( editor.model,
+					_setModelData( editor.model,
 						`<paragraph><imageInline src="${ IMAGE_SRC_FIXTURE }" resizedHeight="50%"></imageInline></paragraph>`
 					);
 

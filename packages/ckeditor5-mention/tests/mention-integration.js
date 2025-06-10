@@ -16,7 +16,7 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _parseView, _getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { MentionEditing } from '../src/mentionediting.js';
 import { Mention } from '../src/mention.js';
@@ -242,7 +242,7 @@ describe( 'Mention feature - integration', () => {
 		it( 'should work with table toolbar', () => {
 			editor.ui.focusTracker.isFocused = true;
 
-			setData( model, '<table><tableRow><tableCell><paragraph>foo []</paragraph></tableCell></tableRow></table>' );
+			_setModelData( model, '<table><tableRow><tableCell><paragraph>foo []</paragraph></tableCell></tableRow></table>' );
 
 			const balloon = editor.plugins.get( 'ContextualBalloon' );
 			const panelView = balloon.view;
@@ -294,7 +294,7 @@ describe( 'Mention feature - integration', () => {
 		it( 'should work with link toolbar', () => {
 			editor.ui.focusTracker.isFocused = true;
 
-			setData( model, '<paragraph>[]</paragraph>' );
+			_setModelData( model, '<paragraph>[]</paragraph>' );
 
 			const balloon = editor.plugins.get( 'ContextualBalloon' );
 			const panelView = balloon.view;

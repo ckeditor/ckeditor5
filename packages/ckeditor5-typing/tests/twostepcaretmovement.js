@@ -11,7 +11,7 @@ import { TwoStepCaretMovement } from '../src/twostepcaretmovement.js';
 import { Position } from '@ckeditor/ckeditor5-engine/src/model/position.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
-import { _getModelData, _setModelData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { toArray } from '@ckeditor/ckeditor5-utils/src/toarray.js';
 import { priorities } from '@ckeditor/ckeditor5-utils/src/priorities.js';
 
@@ -74,7 +74,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 	describe( 'moving right', () => {
 		it( 'should do nothing for unrelated attribute (at the beginning)', () => {
-			setData( model, '[]<$text c="true">foo</$text>' );
+			_setModelData( model, '[]<$text c="true">foo</$text>' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: 0 },
@@ -84,7 +84,7 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 
 		it( 'should do nothing for unrelated attribute (at the end)', () => {
-			setData( model, '<$text c="true">foo[]</$text>' );
+			_setModelData( model, '<$text c="true">foo[]</$text>' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
@@ -94,7 +94,7 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 
 		it( 'should "enter" the text with attribute in two steps', () => {
-			setData( model, '<$text c="true">foo[]</$text><$text a="true" b="true">bar</$text>' );
+			_setModelData( model, '<$text c="true">foo[]</$text><$text a="true" b="true">bar</$text>' );
 
 			testTwoStepCaretMovement( [
 				// Gravity is not overridden, caret is at the beginning of the text but is "outside" of the text.
@@ -109,7 +109,7 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 
 		it( 'should "leave" the text with attribute in two steps', () => {
-			setData( model, '<$text a="true" b="true">bar[]</$text><$text c="true">foo</$text>' );
+			_setModelData( model, '<$text a="true" b="true">bar[]</$text><$text c="true">foo</$text>' );
 
 			testTwoStepCaretMovement( [
 				// Gravity is not overridden, caret is at the end of the text but is "inside" of the text.
@@ -123,7 +123,7 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 
 		it( 'should use two-steps movement when between nodes with the same attribute but different value', () => {
-			setData( model, '<$text a="1">bar[]</$text><$text a="2">foo</$text>' );
+			_setModelData( model, '<$text a="1">bar[]</$text><$text a="2">foo</$text>' );
 
 			expect( selection ).to.have.attribute( 'a', 1 );
 			testTwoStepCaretMovement( [
@@ -145,7 +145,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 		// https://github.com/ckeditor/ckeditor5/issues/937
 		it( 'should not require two-steps between unrelated attributes inside the initial attribute', () => {
-			setData( model, '<$text a="1">fo[]o</$text><$text a="1" b="2">bar</$text><$text a="1">baz</$text>' );
+			_setModelData( model, '<$text a="1">fo[]o</$text><$text a="1" b="2">bar</$text><$text a="1">baz</$text>' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
@@ -164,7 +164,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 		// https://github.com/ckeditor/ckeditor5-engine/issues/1301
 		it( 'should handle passing through the only character in the block', () => {
-			setData( model, '<$text a="1">[]x</$text>' );
+			_setModelData( model, '<$text a="1">[]x</$text>' );
 
 			testTwoStepCaretMovement( [
 				// <$text a="1">[]x</$text>
@@ -183,7 +183,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 		// https://github.com/ckeditor/ckeditor5-engine/issues/1301
 		it( 'should handle passing through the only character in the block (no attribute in the initial selection)', () => {
-			setData( model, '[]<$text a="1">x</$text>' );
+			_setModelData( model, '[]<$text a="1">x</$text>' );
 
 			model.change( writer => writer.removeSelectionAttribute( 'a' ) );
 
@@ -202,7 +202,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 		// https://github.com/ckeditor/ckeditor5-engine/issues/1301
 		it( 'should handle passing through the only-child with an attribute (multiple characters)', () => {
-			setData( model, '[]<$text a="1">xyz</$text>' );
+			_setModelData( model, '[]<$text a="1">xyz</$text>' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
@@ -225,7 +225,7 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 
 		it( 'should handle leaving an attribute followed by another block', () => {
-			setData( model, '<paragraph><$text a="1">foo[]</$text></paragraph><paragraph><$text b="1">bar</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text a="1">foo[]</$text></paragraph><paragraph><$text b="1">bar</$text></paragraph>' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
@@ -242,7 +242,7 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 
 		it( 'should copy attributes from an inline object if are allowed on text', () => {
-			setData( model, '<paragraph>fo[]o<inlineObject a="1" b="2" src="3"></inlineObject></paragraph>' );
+			_setModelData( model, '<paragraph>fo[]o<inlineObject a="1" b="2" src="3"></inlineObject></paragraph>' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: [ 0, 2 ] },
@@ -255,7 +255,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 		it( 'should copy attributes from an inline object if are allowed on text and not disabled by copyFromObject', () => {
 			model.schema.setAttributeProperties( 'c', { copyFromObject: false } );
-			setData( model, '<paragraph>fo[]o<inlineObject a="1" b="2" c="3"></inlineObject></paragraph>' );
+			_setModelData( model, '<paragraph>fo[]o<inlineObject a="1" b="2" c="3"></inlineObject></paragraph>' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: [ 0, 2 ] },
@@ -269,7 +269,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 	describe( 'moving left', () => {
 		it( 'should "enter" the text with attribute in two steps', () => {
-			setData( model, '<$text>foo</$text><$text a="true" b="true">bar</$text><$text c="true">b[]iz</$text>' );
+			_setModelData( model, '<$text>foo</$text><$text a="true" b="true">bar</$text><$text c="true">b[]iz</$text>' );
 
 			testTwoStepCaretMovement( [
 				// Gravity is not overridden, caret is a one character after the and of the text.
@@ -285,7 +285,7 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 
 		it( 'should "leave" the text with attribute in two steps', () => {
-			setData( model, '<$text c="true">foo</$text><$text a="true" b="true">b[]ar</$text>' );
+			_setModelData( model, '<$text c="true">foo</$text><$text a="true" b="true">b[]ar</$text>' );
 
 			testTwoStepCaretMovement( [
 				// Gravity is not overridden, caret is a one character after the beginning of the text.
@@ -301,7 +301,7 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 
 		it( 'should do nothing for unrelated attribute (at the beginning)', () => {
-			setData( model, '<$text c="true">[]foo</$text>' );
+			_setModelData( model, '<$text c="true">[]foo</$text>' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
@@ -313,7 +313,7 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 
 		it( 'should do nothing for unrelated attribute (at the end)', () => {
-			setData( model, '<$text c="true">foo</$text>[]' );
+			_setModelData( model, '<$text c="true">foo</$text>[]' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
@@ -325,7 +325,7 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 
 		it( 'should do nothing when caret is at the beginning of block element', () => {
-			setData( model, '[]foo', { lastRangeBackward: true } );
+			_setModelData( model, '[]foo', { lastRangeBackward: true } );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
@@ -335,7 +335,7 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 
 		it( 'should require two-steps movement when caret goes between text node with the same attribute but different value', () => {
-			setData( model, '<$text a="2">foo</$text><$text a="1">b[]ar</$text>' );
+			_setModelData( model, '<$text a="2">foo</$text><$text a="1">b[]ar</$text>' );
 
 			expect( selection ).to.have.attribute( 'a', 1 );
 			testTwoStepCaretMovement( [
@@ -360,7 +360,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 		// https://github.com/ckeditor/ckeditor5/issues/937
 		it( 'should not require two-steps between unrelated attributes inside the initial attribute', () => {
-			setData( model, '<$text a="1">foo</$text><$text a="1" b="2">bar</$text><$text a="1">b[]az</$text>' );
+			_setModelData( model, '<$text a="1">foo</$text><$text a="1" b="2">bar</$text><$text a="1">b[]az</$text>' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
@@ -377,7 +377,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 		// https://github.com/ckeditor/ckeditor5-engine/issues/1301
 		it( 'should handle passing through the only-child with an attribute (single character)', () => {
-			setData( model, '<$text a="1">x</$text>[]' );
+			_setModelData( model, '<$text a="1">x</$text>[]' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: 1 },
@@ -395,7 +395,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 		// https://github.com/ckeditor/ckeditor5-engine/issues/1301
 		it( 'should handle passing through the only character in the block (no attribute in the initial selection)', () => {
-			setData( model, '<$text a="1">x</$text>[]' );
+			_setModelData( model, '<$text a="1">x</$text>[]' );
 
 			model.change( writer => writer.removeSelectionAttribute( 'a' ) );
 
@@ -414,7 +414,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 		// https://github.com/ckeditor/ckeditor5-engine/issues/1301
 		it( 'should handle passing through the only-child with an attribute (single character, text before)', () => {
-			setData( model, 'abc<$text a="1">x</$text>[]' );
+			_setModelData( model, 'abc<$text a="1">x</$text>[]' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
@@ -432,7 +432,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 		// https://github.com/ckeditor/ckeditor5-engine/issues/1301
 		it( 'should handle passing through the only-child with an attribute (multiple characters)', () => {
-			setData( model, '<$text a="1">xyz</$text>[]' );
+			_setModelData( model, '<$text a="1">xyz</$text>[]' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
@@ -455,7 +455,7 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 
 		it( 'should handle leaving an attribute preceded by another block', () => {
-			setData( model, '<paragraph><$text b="1">foo</$text></paragraph><paragraph><$text a="1">[]bar</$text></paragraph>' );
+			_setModelData( model, '<paragraph><$text b="1">foo</$text></paragraph><paragraph><$text a="1">[]bar</$text></paragraph>' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: [ 1, 0 ] },
@@ -467,7 +467,7 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 
 		it( 'should copy attributes from an inline object if are allowed on text', () => {
-			setData( model, '<paragraph><inlineObject a="1" b="2" src="3"></inlineObject>f[]oo</paragraph>' );
+			_setModelData( model, '<paragraph><inlineObject a="1" b="2" src="3"></inlineObject>f[]oo</paragraph>' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: [ 0, 2 ] },
@@ -480,7 +480,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 		it( 'should copy attributes from an inline object if are allowed on text and not disabled by copyFromObject', () => {
 			model.schema.setAttributeProperties( 'c', { copyFromObject: false } );
-			setData( model, '<paragraph><inlineObject a="1" b="2" c="3"></inlineObject>f[]oo</paragraph>' );
+			_setModelData( model, '<paragraph><inlineObject a="1" b="2" c="3"></inlineObject>f[]oo</paragraph>' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: [ 0, 2 ] },
@@ -494,7 +494,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 	describe( 'moving and typing around the attribute', () => {
 		it( 'should handle typing after the attribute', () => {
-			setData( model, '<$text a="1">x[]</$text>' );
+			_setModelData( model, '<$text a="1">x[]</$text>' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: 1 },
@@ -520,7 +520,7 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 
 		it( 'should handle typing before the attribute', () => {
-			setData( model, '<$text a="1">[]x</$text>' );
+			_setModelData( model, '<$text a="1">[]x</$text>' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
@@ -545,7 +545,7 @@ describe( 'TwoStepCaretMovement', () => {
 		// https://github.com/ckeditor/ckeditor5-engine/issues/1346
 		// https://github.com/ckeditor/ckeditor5/issues/946
 		it( 'should correctly re-renter the attribute', () => {
-			setData( model, 'fo[]o <$text a="1">bar</$text>' );
+			_setModelData( model, 'fo[]o <$text a="1">bar</$text>' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
@@ -578,7 +578,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 		// https://github.com/ckeditor/ckeditor5/issues/922
 		it( 'should not lose the new attribute when typing (after)', () => {
-			setData( model, '<$text a="1">x[]</$text>' );
+			_setModelData( model, '<$text a="1">x[]</$text>' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
@@ -606,7 +606,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 		// https://github.com/ckeditor/ckeditor5/issues/922
 		it( 'should not lose the new attribute when typing (before)', () => {
-			setData( model, '<$text a="1">[]x</$text>' );
+			_setModelData( model, '<$text a="1">[]x</$text>' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
@@ -639,7 +639,7 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 
 		it( 'should work with the two-step caret movement (moving right)', () => {
-			setData( model, 'fo[]o<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>qux' );
+			_setModelData( model, 'fo[]o<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>qux' );
 
 			testTwoStepCaretMovement( [
 				// fo[]o<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>qux
@@ -681,7 +681,7 @@ describe( 'TwoStepCaretMovement', () => {
 		} );
 
 		it( 'should work with the two-step caret movement (moving left)', () => {
-			setData( model, 'foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>q[]ux' );
+			_setModelData( model, 'foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>q[]ux' );
 
 			testTwoStepCaretMovement( [
 				// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>q[]ux
@@ -724,7 +724,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 		describe( 'when two elements ends at the same position', () => {
 			it( 'moving the caret in should take 2 steps', () => {
-				setData( model, 'foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text>q[]ux' );
+				_setModelData( model, 'foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text>q[]ux' );
 
 				testTwoStepCaretMovement( [
 					// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text>q[]ux
@@ -742,7 +742,7 @@ describe( 'TwoStepCaretMovement', () => {
 			} );
 
 			it( 'moving the caret out should take 2 steps', () => {
-				setData( model, 'foo<$text a="true">foo</$text><$text a="true" c="true">ba[]r</$text>qux' );
+				_setModelData( model, 'foo<$text a="true">foo</$text><$text a="true" c="true">ba[]r</$text>qux' );
 
 				testTwoStepCaretMovement( [
 					// foo<$text a="true">foo</$text><$text a="true" c="true">ba[]r</$text>qux
@@ -762,7 +762,7 @@ describe( 'TwoStepCaretMovement', () => {
 
 		describe( 'when two elements starts at the same position', () => {
 			it( 'moving the caret in should take 2 steps', () => {
-				setData( model, 'fo[]o<$text a="true" c="true">bar</$text><$text a="true">baz</$text>qux' );
+				_setModelData( model, 'fo[]o<$text a="true" c="true">bar</$text><$text a="true">baz</$text>qux' );
 
 				testTwoStepCaretMovement( [
 					// fo[]o<$text a="true" c="true">bar</$text><$text a="true">baz</$text>qux
@@ -780,7 +780,7 @@ describe( 'TwoStepCaretMovement', () => {
 			} );
 
 			it( 'moving the caret out should take 2 steps', () => {
-				setData( model, 'foo<$text a="true" c="true">b[]ar</$text><$text a="true">baz</$text>qux' );
+				_setModelData( model, 'foo<$text a="true" c="true">b[]ar</$text><$text a="true">baz</$text>qux' );
 
 				testTwoStepCaretMovement( [
 					// foo<$text a="true" c="true">b[]ar</$text><$text a="true">baz</$text>qux
@@ -801,13 +801,13 @@ describe( 'TwoStepCaretMovement', () => {
 
 	describe( 'mouse', () => {
 		it( 'should not override gravity when selection is placed at the beginning of text', () => {
-			setData( model, '<$text a="true">[]foo</$text>' );
+			_setModelData( model, '<$text a="true">[]foo</$text>' );
 
 			expect( selection ).to.have.property( 'isGravityOverridden', false );
 		} );
 
 		it( 'should not override gravity when selection is placed at the end of text', () => {
-			setData( model, '<$text a="true">foo[]</$text>' );
+			_setModelData( model, '<$text a="true">foo[]</$text>' );
 
 			expect( selection ).to.have.property( 'isGravityOverridden', false );
 		} );
@@ -1278,7 +1278,7 @@ describe( 'TwoStepCaretMovement', () => {
 		const highPrioritySpy = sinon.spy().named( 'highPrioritySpy' );
 		const normalPrioritySpy = sinon.spy().named( 'normalPrioritySpy' );
 
-		setData( model, '<$text c="true">foo[]</$text><$text a="true" b="true">bar</$text>' );
+		_setModelData( model, '<$text c="true">foo[]</$text><$text a="true" b="true">bar</$text>' );
 
 		emitter.listenTo( view.document, 'arrowKey', highestPlusPrioritySpy, { context: '$text', priority: priorities.highest + 1 } );
 		emitter.listenTo( view.document, 'arrowKey', highestPrioritySpy, { context: '$text', priority: 'highest' } );
@@ -1299,7 +1299,7 @@ describe( 'TwoStepCaretMovement', () => {
 	} );
 
 	it( 'should do nothing when key other then arrow left and right is pressed', () => {
-		setData( model, '<$text a="true">foo[]</$text>' );
+		_setModelData( model, '<$text a="true">foo[]</$text>' );
 
 		expect( () => {
 			fireKeyDownEvent( { keyCode: keyCodes.arrowup } );
@@ -1307,7 +1307,7 @@ describe( 'TwoStepCaretMovement', () => {
 	} );
 
 	it( 'should do nothing for non-collapsed selection', () => {
-		setData( model, '<$text c="true">fo[o]</$text><$text a="true" b="true">bar</$text>' );
+		_setModelData( model, '<$text c="true">fo[o]</$text><$text a="true" b="true">bar</$text>' );
 
 		fireKeyDownEvent( { keyCode: keyCodes.arrowright } );
 
@@ -1315,7 +1315,7 @@ describe( 'TwoStepCaretMovement', () => {
 	} );
 
 	it( 'should do nothing when shift key is pressed', () => {
-		setData( model, '<$text c="true">foo</$text><$text a="true" b="true">b[]ar</$text>' );
+		_setModelData( model, '<$text c="true">foo</$text><$text a="true" b="true">b[]ar</$text>' );
 
 		fireKeyDownEvent( {
 			keyCode: keyCodes.arrowleft,
@@ -1326,7 +1326,7 @@ describe( 'TwoStepCaretMovement', () => {
 	} );
 
 	it( 'should do nothing when alt key is pressed', () => {
-		setData( model, '<$text c="true">foo</$text><$text a="true" b="true">b[]ar</$text>' );
+		_setModelData( model, '<$text c="true">foo</$text><$text a="true" b="true">b[]ar</$text>' );
 
 		fireKeyDownEvent( {
 			keyCode: keyCodes.arrowleft,
@@ -1337,7 +1337,7 @@ describe( 'TwoStepCaretMovement', () => {
 	} );
 
 	it( 'should do nothing when ctrl key is pressed', () => {
-		setData( model, '<$text c="true">foo</$text><$text a="true" b="true">b[]ar</$text>' );
+		_setModelData( model, '<$text c="true">foo</$text><$text a="true" b="true">b[]ar</$text>' );
 
 		fireKeyDownEvent( {
 			keyCode: keyCodes.arrowleft,
@@ -1348,7 +1348,7 @@ describe( 'TwoStepCaretMovement', () => {
 	} );
 
 	it( 'should do nothing when the not a direct selection change but at the attribute boundary', () => {
-		setData( model, '<$text a="true">foo[]</$text>bar' );
+		_setModelData( model, '<$text a="true">foo[]</$text>bar' );
 
 		testTwoStepCaretMovement( [
 			{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0 },
@@ -1397,7 +1397,7 @@ describe( 'TwoStepCaretMovement', () => {
 					return newEditor;
 				} )
 				.then( newEditor => {
-					setData( model, '<$text>לזה[]</$text><$text a="true">שיוצג</$text>' );
+					_setModelData( model, '<$text>לזה[]</$text><$text a="true">שיוצג</$text>' );
 
 					testTwoStepCaretMovement( [
 						{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: 3 },
@@ -1408,7 +1408,7 @@ describe( 'TwoStepCaretMovement', () => {
 					preventDefaultSpy.resetHistory();
 					evtStopSpy.resetHistory();
 
-					setData( model, '<$text>לזה</$text><$text a="true">ש[]יוצג</$text>' );
+					_setModelData( model, '<$text>לזה</$text><$text a="true">ש[]יוצג</$text>' );
 
 					testTwoStepCaretMovement( [
 						{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStop: 0, caretPosition: 4 },

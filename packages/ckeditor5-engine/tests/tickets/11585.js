@@ -9,7 +9,7 @@ import { Text } from '../../src/model/text.js';
 import { Position } from '../../src/model/position.js';
 import { LiveRange } from '../../src/model/liverange.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { setData } from '../../src/dev-utils/model.js';
+import { _setModelData } from '../../src/dev-utils/model.js';
 
 import { stringifyBlocks } from '../model/_utils/utils.js';
 
@@ -63,37 +63,37 @@ describe( '#11585', () => {
 	} );
 
 	it( 'does not return the first block if none of its contents is selected', () => {
-		setData( model, '<p>a[</p><p>b</p><p>c]</p>' );
+		_setModelData( model, '<p>a[</p><p>b</p><p>c]</p>' );
 
 		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#b', 'p#c' ] );
 	} );
 
 	it( 'returns the first block if at least one of its child nodes is selected', () => {
-		setData( model, '<p>a[<imageBlock></imageBlock></p><p>b</p><p>c]</p>' );
+		_setModelData( model, '<p>a[<imageBlock></imageBlock></p><p>b</p><p>c]</p>' );
 
 		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b', 'p#c' ] );
 	} );
 
 	it( 'returns the block if it has a collapsed selection at the beginning', () => {
-		setData( model, '<p>[]a</p><p>b</p>' );
+		_setModelData( model, '<p>[]a</p><p>b</p>' );
 
 		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a' ] );
 	} );
 
 	it( 'returns the block if it has a collapsed selection at the end', () => {
-		setData( model, '<p>a[]</p><p>b</p>' );
+		_setModelData( model, '<p>a[]</p><p>b</p>' );
 
 		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a' ] );
 	} );
 
 	it( 'does not return first and last blocks if no content is selected', () => {
-		setData( model, '<p>a[</p><p>]b</p>' );
+		_setModelData( model, '<p>a[</p><p>]b</p>' );
 
 		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [] );
 	} );
 
 	it( 'returns the first and last blocks if no content is selected but both blocks are empty', () => {
-		setData( model, '<p>[</p><p>]</p>' );
+		_setModelData( model, '<p>[</p><p>]</p>' );
 
 		expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p', 'p' ] );
 	} );

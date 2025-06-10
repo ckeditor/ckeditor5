@@ -14,7 +14,7 @@ import { TextProxy } from '../../src/model/textproxy.js';
 import { Position } from '../../src/model/position.js';
 import { Range } from '../../src/model/range.js';
 
-import { getData, setData, stringify, parse } from '../../src/dev-utils/model.js';
+import { _getModelData, _setModelData, _stringifyModel, _parseModel } from '../../src/dev-utils/model.js';
 
 import { AttributeOperation } from '../../src/model/operation/attributeoperation.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -1193,7 +1193,7 @@ describe( 'Schema', () => {
 			} );
 			expect( schema.isLimit( '$root' ) ).to.be.false;
 
-			setData( model, '<div><section><article><paragraph>foo[]bar</paragraph></article></section></div>' );
+			_setModelData( model, '<div><section><article><paragraph>foo[]bar</paragraph></article></section></div>' );
 			expect( schema.getLimitElement( doc.selection ) ).to.equal( root );
 		} );
 
@@ -1201,7 +1201,7 @@ describe( 'Schema', () => {
 			schema.extend( 'article', { isLimit: true } );
 			schema.extend( 'section', { isLimit: true } );
 
-			setData( model, '<div><section><article><paragraph>foo[]bar</paragraph></article></section></div>' );
+			_setModelData( model, '<div><section><article><paragraph>foo[]bar</paragraph></article></section></div>' );
 
 			const article = root.getNodeByPath( [ 0, 0, 0 ] );
 
@@ -1213,7 +1213,7 @@ describe( 'Schema', () => {
 			schema.extend( 'section', { isLimit: true } );
 
 			model.enqueueChange( { isUndoable: false }, () => {
-				setData( model, '<div><section><article>[foo</article><article>bar]</article></section></div>' );
+				_setModelData( model, '<div><section><article>[foo</article><article>bar]</article></section></div>' );
 
 				const section = root.getNodeByPath( [ 0, 0 ] );
 
@@ -1226,7 +1226,7 @@ describe( 'Schema', () => {
 			schema.extend( 'widget', { isLimit: true } );
 			schema.extend( 'div', { isLimit: true } );
 
-			setData(
+			_setModelData(
 				model,
 				'<div>' +
 				'<section>' +
@@ -1247,7 +1247,7 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'works fine with multi-range selections even if limit elements are not defined', () => {
-			setData(
+			_setModelData(
 				model,
 				'<div>' +
 				'<section>' +
@@ -1263,7 +1263,7 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'works fine with multi-range selections if the first range has the root element as a limit element', () => {
-			setData(
+			_setModelData(
 				model,
 				'<imageBlock>' +
 				'<caption>[Foo</caption>' +
@@ -1279,7 +1279,7 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'works fine with multi-range selections if the last range has the root element as a limit element', () => {
-			setData(
+			_setModelData(
 				model,
 				'<paragraph>Paragraph item 1</paragraph>' +
 				'<paragraph>Paragraph [item 2]</paragraph>' +
@@ -1299,7 +1299,7 @@ describe( 'Schema', () => {
 			schema.extend( 'section', { isLimit: true } );
 
 			const data = '<div><section><article><paragraph>foobar</paragraph></article></section></div>';
-			const parsedModel = parse( data, model.schema, { context: [ root.name ] } );
+			const parsedModel = _parseModel( data, model.schema, { context: [ root.name ] } );
 
 			model.change( writer => {
 				writer.insert( parsedModel, root );
@@ -1315,7 +1315,7 @@ describe( 'Schema', () => {
 			schema.extend( 'section', { isLimit: true } );
 
 			const data = '<div><section><article><paragraph>foobar</paragraph></article></section></div>';
-			const parsedModel = parse( data, model.schema, { context: [ root.name ] } );
+			const parsedModel = _parseModel( data, model.schema, { context: [ root.name ] } );
 
 			model.change( writer => {
 				writer.insert( parsedModel, root );
@@ -1373,20 +1373,20 @@ describe( 'Schema', () => {
 
 		describe( 'when selection is collapsed', () => {
 			it( 'should return true if characters with the attribute can be placed at caret position', () => {
-				setData( model, '<p>f[]oo</p>' );
+				_setModelData( model, '<p>f[]oo</p>' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.true;
 			} );
 
 			it( 'should return false if characters with the attribute cannot be placed at caret position', () => {
-				setData( model, '<h1>[]</h1>' );
+				_setModelData( model, '<h1>[]</h1>' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.false;
 
-				setData( model, '[]' );
+				_setModelData( model, '[]' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.false;
 			} );
 
 			it( 'should check attributes of the selection (selection inside the $text[bold])', () => {
-				setData( model, '<p><$text bold="true">f[]oo</$text></p>' );
+				_setModelData( model, '<p><$text bold="true">f[]oo</$text></p>' );
 
 				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.false;
 
@@ -1398,7 +1398,7 @@ describe( 'Schema', () => {
 			} );
 
 			it( 'should check attributes of the selection (attribute set manually on selection)', () => {
-				setData( model, '<p>foo[]bar</p>' );
+				_setModelData( model, '<p>foo[]bar</p>' );
 
 				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.true;
 
@@ -1420,7 +1420,7 @@ describe( 'Schema', () => {
 					done();
 				}, { priority: 'highest' } );
 
-				setData( model, '<p>foo[]bar</p>' );
+				_setModelData( model, '<p>foo[]bar</p>' );
 
 				model.change( writer => {
 					writer.setSelectionAttribute( 'bold', true );
@@ -1434,44 +1434,44 @@ describe( 'Schema', () => {
 		describe( 'when selection is not collapsed', () => {
 			it( 'should return true if there is at least one node in selection that can have the attribute', () => {
 				// Simple selection on a few characters.
-				setData( model, '<p>[foo]</p>' );
+				_setModelData( model, '<p>[foo]</p>' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.true;
 
 				// Selection spans over characters but also include nodes that can't have attribute.
-				setData( model, '<p>fo[o<img />b]ar</p>' );
+				_setModelData( model, '<p>fo[o<img />b]ar</p>' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.true;
 
 				// Selection on whole root content. Characters in P can have an attribute so it's valid.
-				setData( model, '[<p>foo<img />bar</p><h1></h1>]' );
+				_setModelData( model, '[<p>foo<img />bar</p><h1></h1>]' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.true;
 
 				// Selection on empty P. P can have the attribute.
-				setData( model, '[<p></p>]' );
+				_setModelData( model, '[<p></p>]' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.true;
 			} );
 
 			it( 'should return false if there are no nodes in selection that can have the attribute', () => {
 				// Selection on DIV which can't have bold text.
-				setData( model, '[<h1></h1>]' );
+				_setModelData( model, '[<h1></h1>]' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.false;
 
 				// Selection on two images which can't be bold.
-				setData( model, '<p>foo[<img /><img />]bar</p>' );
+				_setModelData( model, '<p>foo[<img /><img />]bar</p>' );
 				expect( schema.checkAttributeInSelection( doc.selection, attribute ) ).to.be.false;
 			} );
 
 			it( 'should return true when checking element with required attribute', () => {
-				setData( model, '[<figure name="figure"></figure>]' );
+				_setModelData( model, '[<figure name="figure"></figure>]' );
 				expect( schema.checkAttributeInSelection( doc.selection, 'title' ) ).to.be.true;
 			} );
 
 			it( 'should return true when checking element when attribute is already present', () => {
-				setData( model, '[<figure name="figure" title="title"></figure>]' );
+				_setModelData( model, '[<figure name="figure" title="title"></figure>]' );
 				expect( schema.checkAttributeInSelection( doc.selection, 'title' ) ).to.be.true;
 			} );
 
 			it( 'should check attributes of text', () => {
-				setData( model, '<p><$text bold="true">f[o]o</$text></p>' );
+				_setModelData( model, '<p><$text bold="true">f[o]o</$text></p>' );
 				expect( schema.checkAttributeInSelection( doc.selection, 'italic' ) ).to.be.false;
 			} );
 		} );
@@ -1494,12 +1494,12 @@ describe( 'Schema', () => {
 		} );
 
 		function testValidRangesForAttribute( input, attribute, output ) {
-			setData( model, input );
+			_setModelData( model, input );
 
 			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
 			const sel = model.createSelection( validRanges );
 
-			expect( stringify( root, sel ) ).to.equal( output );
+			expect( _stringifyModel( root, sel ) ).to.equal( output );
 		}
 
 		it( 'should return a range with p for an attribute allowed only on p', () => {
@@ -1548,7 +1548,7 @@ describe( 'Schema', () => {
 			schema.extend( '$text', { allowAttributes: 'foo' } );
 			schema.extend( 'img', { allowAttributes: 'foo' } );
 
-			setData( model, '[<p>foo<img></img>bar</p>]' );
+			_setModelData( model, '[<p>foo<img></img>bar</p>]' );
 
 			const validRanges = Array.from( schema.getValidRanges( doc.selection.getRanges(), 'foo' ) );
 
@@ -1912,7 +1912,7 @@ describe( 'Schema', () => {
 				let range;
 
 				model.enqueueChange( { isUndoable: false }, () => {
-					setData( model, data );
+					_setModelData( model, data );
 					range = schema.getNearestSelectionRange( selection.anchor, direction );
 				} );
 
@@ -1922,7 +1922,7 @@ describe( 'Schema', () => {
 					model.change( writer => {
 						writer.setSelection( range );
 					} );
-					expect( getData( model ) ).to.equal( expected );
+					expect( _getModelData( model ) ).to.equal( expected );
 				}
 			} );
 		}
@@ -2049,7 +2049,7 @@ describe( 'Schema', () => {
 				expect( writer.batch.operations[ 0 ] ).to.instanceof( AttributeOperation );
 				expect( writer.batch.operations[ 1 ] ).to.instanceof( AttributeOperation );
 
-				expect( getData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<$text a="1">foo</$text><imageBlock b="1"></imageBlock>' );
 			} );
 		} );
@@ -2064,7 +2064,7 @@ describe( 'Schema', () => {
 			model.change( writer => {
 				schema.removeDisallowedAttributes( [ div ], writer );
 
-				expect( getData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<div a="1"></div>' );
 			} );
 		} );
@@ -2109,7 +2109,7 @@ describe( 'Schema', () => {
 			model.change( writer => {
 				schema.removeDisallowedAttributes( root.getChildren(), writer );
 
-				expect( getData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal(
 						'<div>' +
 							'<paragraph a="1">' +
@@ -2135,7 +2135,7 @@ describe( 'Schema', () => {
 			model.change( writer => {
 				schema.removeDisallowedAttributes( root.getChildren(), writer );
 
-				expect( getData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<div a="1"><$text b="1">foo</$text></div>' );
 			} );
 		} );
@@ -2151,7 +2151,7 @@ describe( 'Schema', () => {
 			model.change( writer => {
 				schema.removeDisallowedAttributes( [ div ], writer );
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal( '<div>abc</div>' );
+				expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<div>abc</div>' );
 			} );
 		} );
 
@@ -2166,7 +2166,7 @@ describe( 'Schema', () => {
 			model.change( writer => {
 				schema.removeDisallowedAttributes( [ bar ], writer );
 
-				expect( getData( model, { withoutSelection: true } ) )
+				expect( _getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<div><$text a="1">foo</$text>bar<$text a="1">biz</$text></div>' );
 			} );
 		} );

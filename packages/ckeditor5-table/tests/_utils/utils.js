@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { TableWalker } from '../../src/tablewalker.js';
 
 const WIDGET_TABLE_CELL_CLASS = 'ck-editor__editable ck-editor__nested-editable';
@@ -72,7 +72,7 @@ export function modelTable( tableData, attributes = {} ) {
  * @param {String} cellContent
  */
 export function setTableCellWithObjectAttributes( model, attributes, cellContent ) {
-	setData( model, modelTable( [ [ { contents: cellContent } ] ] ) );
+	_setModelData( model, modelTable( [ [ { contents: cellContent } ] ] ) );
 
 	const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
@@ -103,7 +103,7 @@ export function setTableCellWithObjectAttributes( model, attributes, cellContent
  * @param {String} cellContent
  */
 export function setTableWithObjectAttributes( model, attributes, cellContent ) {
-	setData( model, modelTable( [ [ { contents: cellContent } ] ] ) );
+	_setModelData( model, modelTable( [ [ { contents: cellContent } ] ] ) );
 
 	const table = model.document.getRoot().getChild( 0 );
 

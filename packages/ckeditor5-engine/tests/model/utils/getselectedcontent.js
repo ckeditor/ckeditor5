@@ -6,7 +6,7 @@
 import { Model } from '../../../src/model/model.js';
 import { DocumentFragment } from '../../../src/model/documentfragment.js';
 import { getSelectedContent } from '../../../src/model/utils/getselectedcontent.js';
-import { setData, stringify } from '../../../src/dev-utils/model.js';
+import { _setModelData, stringify } from '../../../src/dev-utils/model.js';
 
 describe( 'DataController utils', () => {
 	let model, doc;
@@ -18,7 +18,7 @@ describe( 'DataController utils', () => {
 			doc.createRoot();
 
 			model.schema.extend( '$text', { allowIn: '$root' } );
-			setData( model, 'x[abc]x' );
+			_setModelData( model, 'x[abc]x' );
 
 			const version = model.document.version;
 			getSelectedContent( model, doc.selection );
@@ -42,7 +42,7 @@ describe( 'DataController utils', () => {
 			} );
 
 			it( 'returns empty fragment for no selection', () => {
-				setData( model, 'abc' );
+				_setModelData( model, 'abc' );
 
 				const frag = getSelectedContent( model, doc.selection );
 
@@ -51,7 +51,7 @@ describe( 'DataController utils', () => {
 			} );
 
 			it( 'returns empty fragment for empty selection', () => {
-				setData( model, 'a[]bc' );
+				_setModelData( model, 'a[]bc' );
 
 				const frag = getSelectedContent( model, doc.selection );
 
@@ -60,7 +60,7 @@ describe( 'DataController utils', () => {
 			} );
 
 			it( 'gets one character', () => {
-				setData( model, 'a[b]c' );
+				_setModelData( model, 'a[b]c' );
 
 				const frag = getSelectedContent( model, doc.selection );
 				const content = stringify( frag );
@@ -70,49 +70,49 @@ describe( 'DataController utils', () => {
 			} );
 
 			it( 'gets full text', () => {
-				setData( model, '[abc]' );
+				_setModelData( model, '[abc]' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( 'abc' );
 			} );
 
 			it( 'gets text with an attribute', () => {
-				setData( model, 'xxx<$text bold="true">a[b]c</$text>' );
+				_setModelData( model, 'xxx<$text bold="true">a[b]c</$text>' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<$text bold="true">b</$text>' );
 			} );
 
 			it( 'gets text with attributes', () => {
-				setData( model, 'x<$text bold="true">a[b</$text><$text italic="true">c]d</$text>x' );
+				_setModelData( model, 'x<$text bold="true">a[b</$text><$text italic="true">c]d</$text>x' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<$text bold="true">b</$text><$text italic="true">c</$text>' );
 			} );
 
 			it( 'gets text with and without attribute', () => {
-				setData( model, '<$text bold="true">a[b</$text>c]d' );
+				_setModelData( model, '<$text bold="true">a[b</$text>c]d' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<$text bold="true">b</$text>c' );
 			} );
 
 			it( 'gets text and element', () => {
-				setData( model, '[ab<imageBlock></imageBlock>c]' );
+				_setModelData( model, '[ab<imageBlock></imageBlock>c]' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( 'ab<imageBlock></imageBlock>c' );
 			} );
 
 			it( 'gets one element', () => {
-				setData( model, 'a[<imageBlock></imageBlock>]b' );
+				_setModelData( model, 'a[<imageBlock></imageBlock>]b' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<imageBlock></imageBlock>' );
 			} );
 
 			it( 'gets multiple elements', () => {
-				setData( model, '[<imageBlock></imageBlock><imageBlock></imageBlock>]' );
+				_setModelData( model, '[<imageBlock></imageBlock><imageBlock></imageBlock>]' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<imageBlock></imageBlock><imageBlock></imageBlock>' );
@@ -142,63 +142,65 @@ describe( 'DataController utils', () => {
 			} );
 
 			it( 'gets one character', () => {
-				setData( model, '<paragraph>a[b]c</paragraph>' );
+				_setModelData( model, '<paragraph>a[b]c</paragraph>' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( 'b' );
 			} );
 
 			it( 'gets entire paragraph content', () => {
-				setData( model, '<paragraph>[a<imageBlock></imageBlock>b]</paragraph>' );
+				_setModelData( model, '<paragraph>[a<imageBlock></imageBlock>b]</paragraph>' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( 'a<imageBlock></imageBlock>b' );
 			} );
 
 			it( 'gets two blocks - partial, partial', () => {
-				setData( model, '<heading1>a[bc</heading1><paragraph>de]f</paragraph>' );
+				_setModelData( model, '<heading1>a[bc</heading1><paragraph>de]f</paragraph>' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<heading1>bc</heading1><paragraph>de</paragraph>' );
 			} );
 
 			it( 'gets two blocks - full, partial', () => {
-				setData( model, '<heading1>[abc</heading1><paragraph>de]f</paragraph>' );
+				_setModelData( model, '<heading1>[abc</heading1><paragraph>de]f</paragraph>' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<heading1>abc</heading1><paragraph>de</paragraph>' );
 			} );
 
 			it( 'gets two blocks - full, partial 2', () => {
-				setData( model, '<heading1>[abc</heading1><paragraph>de<imageBlock></imageBlock>]f</paragraph>' );
+				_setModelData( model, '<heading1>[abc</heading1><paragraph>de<imageBlock></imageBlock>]f</paragraph>' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<heading1>abc</heading1><paragraph>de<imageBlock></imageBlock></paragraph>' );
 			} );
 
 			it( 'gets two blocks - full, partial 3', () => {
-				setData( model, '<heading1>x</heading1><heading1>[abc</heading1><paragraph><imageBlock></imageBlock>de]f</paragraph>' );
+				_setModelData( model,
+					'<heading1>x</heading1><heading1>[abc</heading1><paragraph><imageBlock></imageBlock>de]f</paragraph>'
+				);
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<heading1>abc</heading1><paragraph><imageBlock></imageBlock>de</paragraph>' );
 			} );
 
 			it( 'gets two blocks - full, partial 4', () => {
-				setData( model, '<heading1>[abc</heading1><paragraph>de]f<imageBlock></imageBlock></paragraph>' );
+				_setModelData( model, '<heading1>[abc</heading1><paragraph>de]f<imageBlock></imageBlock></paragraph>' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<heading1>abc</heading1><paragraph>de</paragraph>' );
 			} );
 
 			it( 'gets two blocks - partial, full', () => {
-				setData( model, '<heading1>a[bc</heading1><paragraph>def]</paragraph>' );
+				_setModelData( model, '<heading1>a[bc</heading1><paragraph>def]</paragraph>' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<heading1>bc</heading1><paragraph>def</paragraph>' );
 			} );
 
 			it( 'gets two blocks - partial, full 2', () => {
-				setData( model, '<heading1>a[<imageBlock></imageBlock>bc</heading1><paragraph>def]</paragraph>' );
+				_setModelData( model, '<heading1>a[<imageBlock></imageBlock>bc</heading1><paragraph>def]</paragraph>' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<heading1><imageBlock></imageBlock>bc</heading1><paragraph>def</paragraph>' );
@@ -206,7 +208,7 @@ describe( 'DataController utils', () => {
 
 			// See https://github.com/ckeditor/ckeditor5-engine/issues/652#issuecomment-261358484
 			it( 'gets two blocks - empty, full', () => {
-				setData( model, '<heading1>abc[</heading1><paragraph>def]</paragraph>' );
+				_setModelData( model, '<heading1>abc[</heading1><paragraph>def]</paragraph>' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<paragraph>def</paragraph>' );
@@ -214,28 +216,30 @@ describe( 'DataController utils', () => {
 
 			// See https://github.com/ckeditor/ckeditor5-engine/issues/652#issuecomment-261358484
 			it( 'gets two blocks - partial, empty', () => {
-				setData( model, '<heading1>a[bc</heading1><paragraph>]def</paragraph>' );
+				_setModelData( model, '<heading1>a[bc</heading1><paragraph>]def</paragraph>' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<heading1>bc</heading1>' );
 			} );
 
 			it( 'gets three blocks', () => {
-				setData( model, '<heading1>a[bc</heading1><paragraph>x</paragraph><paragraph>de]f</paragraph>' );
+				_setModelData( model, '<heading1>a[bc</heading1><paragraph>x</paragraph><paragraph>de]f</paragraph>' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<heading1>bc</heading1><paragraph>x</paragraph><paragraph>de</paragraph>' );
 			} );
 
 			it( 'gets block image', () => {
-				setData( model, '<paragraph>a</paragraph>[<blockImage><caption>Foo</caption></blockImage>]<paragraph>b</paragraph>' );
+				_setModelData( model, '<paragraph>a</paragraph>[<blockImage><caption>Foo</caption></blockImage>]<paragraph>b</paragraph>' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<blockImage><caption>Foo</caption></blockImage>' );
 			} );
 
 			it( 'gets two blocks', () => {
-				setData( model, '<paragraph>a</paragraph>[<blockImage></blockImage><blockImage></blockImage>]<paragraph>b</paragraph>' );
+				_setModelData( model,
+					'<paragraph>a</paragraph>[<blockImage></blockImage><blockImage></blockImage>]<paragraph>b</paragraph>'
+				);
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<blockImage></blockImage><blockImage></blockImage>' );
@@ -243,7 +247,7 @@ describe( 'DataController utils', () => {
 
 			// Purely related to the current implementation.
 			it( 'gets content when multiple text items needs to be removed from the right excess', () => {
-				setData( model, '<paragraph>a[b</paragraph><paragraph>c]d<$text bold="true">e</$text>f</paragraph>' );
+				_setModelData( model, '<paragraph>a[b</paragraph><paragraph>c]d<$text bold="true">e</$text>f</paragraph>' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content )
@@ -252,7 +256,7 @@ describe( 'DataController utils', () => {
 
 			// Purely related to the current implementation.
 			it( 'gets content when multiple text items needs to be removed from the left excess', () => {
-				setData( model, '<paragraph>a<$text bold="true">b</$text>c[d</paragraph><paragraph>e]f</paragraph>' );
+				_setModelData( model, '<paragraph>a<$text bold="true">b</$text>c[d</paragraph><paragraph>e]f</paragraph>' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content )
@@ -277,28 +281,28 @@ describe( 'DataController utils', () => {
 			} );
 
 			it( 'gets content when ends are equally deeply nested', () => {
-				setData( model, '<heading1>x</heading1><quote><paragraph>a[bc</paragraph><paragraph>de]f</paragraph></quote>' );
+				_setModelData( model, '<heading1>x</heading1><quote><paragraph>a[bc</paragraph><paragraph>de]f</paragraph></quote>' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<paragraph>bc</paragraph><paragraph>de</paragraph>' );
 			} );
 
 			it( 'gets content when left end nested deeper', () => {
-				setData( model, '<quote><paragraph>a[bc</paragraph></quote><paragraph>de]f</paragraph>' );
+				_setModelData( model, '<quote><paragraph>a[bc</paragraph></quote><paragraph>de]f</paragraph>' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<quote><paragraph>bc</paragraph></quote><paragraph>de</paragraph>' );
 			} );
 
 			it( 'gets content when left end nested deeper 2', () => {
-				setData( model, '<quote><paragraph>a[bc</paragraph><heading1>x</heading1></quote><paragraph>de]f</paragraph>' );
+				_setModelData( model, '<quote><paragraph>a[bc</paragraph><heading1>x</heading1></quote><paragraph>de]f</paragraph>' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<quote><paragraph>bc</paragraph><heading1>x</heading1></quote><paragraph>de</paragraph>' );
 			} );
 
 			it( 'gets content when left end nested deeper 3', () => {
-				setData( model, '<quote><heading1>x</heading1><paragraph>a[bc</paragraph></quote><paragraph>de]f</paragraph>' );
+				_setModelData( model, '<quote><heading1>x</heading1><paragraph>a[bc</paragraph></quote><paragraph>de]f</paragraph>' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<quote><paragraph>bc</paragraph></quote><paragraph>de</paragraph>' );
@@ -306,21 +310,23 @@ describe( 'DataController utils', () => {
 
 			// See https://github.com/ckeditor/ckeditor5-engine/issues/652#issuecomment-261358484
 			it( 'gets content when left end nested deeper 4', () => {
-				setData( model, '<quote><heading1>x[</heading1><paragraph>abc</paragraph></quote><paragraph>de]f</paragraph>' );
+				_setModelData( model, '<quote><heading1>x[</heading1><paragraph>abc</paragraph></quote><paragraph>de]f</paragraph>' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<quote><paragraph>abc</paragraph></quote><paragraph>de</paragraph>' );
 			} );
 
 			it( 'gets content when right end nested deeper', () => {
-				setData( model, '<paragraph>a[bc</paragraph><quote><paragraph>de]f</paragraph></quote>' );
+				_setModelData( model, '<paragraph>a[bc</paragraph><quote><paragraph>de]f</paragraph></quote>' );
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content ).to.equal( '<paragraph>bc</paragraph><quote><paragraph>de</paragraph></quote>' );
 			} );
 
 			it( 'gets content when both ends nested deeper than the middle element', () => {
-				setData( model, '<quote><heading1>a[bc</heading1></quote><heading1>x</heading1><quote><heading1>de]f</heading1></quote>' );
+				_setModelData( model,
+					'<quote><heading1>a[bc</heading1></quote><heading1>x</heading1><quote><heading1>de]f</heading1></quote>'
+				);
 
 				const content = stringify( getSelectedContent( model, doc.selection ) );
 				expect( content )
@@ -332,7 +338,7 @@ describe( 'DataController utils', () => {
 				model.schema.extend( '$text', { allowIn: '$root' } );
 				model.schema.extend( '$text', { allowIn: 'quote' } );
 
-				setData( model,
+				_setModelData( model,
 					'foo' +
 					'<quote>' +
 						'<paragraph>' +

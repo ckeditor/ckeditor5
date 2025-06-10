@@ -11,7 +11,7 @@ import { TextProxy } from '../../../src/model/textproxy.js';
 import { Position } from '../../../src/model/position.js';
 import { Range } from '../../../src/model/range.js';
 import * as utils from '../../../src/model/operation/utils.js';
-import { getData } from '../../../src/dev-utils/model.js';
+import { _getModelData } from '../../../src/dev-utils/model.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 let model, doc, root;
@@ -207,5 +207,5 @@ describe( 'normalizeNodes', () => {
 } );
 
 function expectData( html ) {
-	expect( getData( model, { withoutSelection: true } ) ).to.equal( html );
+	expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( html );
 }
