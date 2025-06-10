@@ -18,7 +18,7 @@ import { UpcastHelpers } from './upcasthelpers.js';
 import {
 	DowncastHelpers,
 	type DowncastAttributeCreatorFunction,
-	type AttributeDescriptor
+	type DowncastAttributeDescriptor
 } from './downcasthelpers.js';
 
 import { type DowncastDispatcher } from './downcastdispatcher.js';
@@ -631,8 +631,8 @@ export class Conversion {
 				key: string;
 				name?: string;
 			};
-			view: string | ( AttributeDescriptor & { name?: string } );
-			upcastAlso?: ArrayOrItem<string | ( AttributeDescriptor & { name?: string } ) | DowncastAttributeCreatorFunction>;
+			view: string | ( DowncastAttributeDescriptor & { name?: string } );
+			upcastAlso?: ArrayOrItem<string | ( DowncastAttributeDescriptor & { name?: string } ) | DowncastAttributeCreatorFunction>;
 			converterPriority?: PriorityString;
 		} | {
 			model: {
@@ -640,8 +640,8 @@ export class Conversion {
 				name?: string;
 				values: Array<TValues>;
 			};
-			view: Record<TValues, ( AttributeDescriptor & { name?: string } )>;
-			upcastAlso?: Record<TValues, ( AttributeDescriptor & { name?: string } ) | DowncastAttributeCreatorFunction>;
+			view: Record<TValues, ( DowncastAttributeDescriptor & { name?: string } )>;
+			upcastAlso?: Record<TValues, ( DowncastAttributeDescriptor & { name?: string } ) | DowncastAttributeCreatorFunction>;
 			converterPriority?: PriorityString;
 		} ): void {
 		// Set up downcast converter.

@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor, type MultiCommand } from 'ckeditor5/src/core.js';
-import { addMarginRules, type AttributeDescriptor, type ViewElement } from 'ckeditor5/src/engine.js';
+import { addMarginRules, type DowncastAttributeDescriptor, type ViewElement } from 'ckeditor5/src/engine.js';
 
 import { IndentBlockCommand } from './indentblockcommand.js';
 import { IndentUsingOffset } from './indentcommandbehavior/indentusingoffset.js';
@@ -160,7 +160,7 @@ export class IndentBlock extends Plugin {
 	private _setupConversionUsingClasses( classes: Array<string> ) {
 		const definition: {
 			model: { key: string; values: Array<string> };
-			view: Record<string, AttributeDescriptor>;
+			view: Record<string, DowncastAttributeDescriptor>;
 		} = {
 			model: {
 				key: 'blockIndent',

@@ -533,7 +533,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 				key: string;
 				name?: string;
 			};
-			view: string | AttributeDescriptor | DowncastAttributeCreatorFunction;
+			view: string | DowncastAttributeDescriptor | DowncastAttributeCreatorFunction;
 			converterPriority?: PriorityString;
 		} | {
 			model: {
@@ -541,7 +541,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 				name?: string;
 				values?: Array<TValues>;
 			};
-			view: Record<TValues, AttributeDescriptor | DowncastAttributeCreatorFunction>;
+			view: Record<TValues, DowncastAttributeDescriptor | DowncastAttributeCreatorFunction>;
 			converterPriority?: PriorityString;
 		}
 	): this {
@@ -2114,9 +2114,9 @@ function downcastAttributeToAttribute( config: {
 	};
 	view:
 		| string
-		| AttributeDescriptor
+		| DowncastAttributeDescriptor
 		| DowncastAttributeCreatorFunction
-		| Record<string, AttributeDescriptor | DowncastAttributeCreatorFunction>;
+		| Record<string, DowncastAttributeDescriptor | DowncastAttributeCreatorFunction>;
 	converterPriority?: PriorityString;
 } ) {
 	config = cloneDeep( config );
@@ -2936,9 +2936,9 @@ export type DowncastAttributeCreatorFunction = (
 		attributeOldValue: unknown;
 		attributeNewValue: unknown;
 	}
-) => AttributeDescriptor | null;
+) => DowncastAttributeDescriptor | null;
 
-export type AttributeDescriptor = {
+export type DowncastAttributeDescriptor = {
 	key: 'class';
 	value: string | Array<string>;
 } | {

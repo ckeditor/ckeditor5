@@ -64,8 +64,8 @@ export {
 	type DowncastElementCreatorFunction,
 	type DowncastHighlightDescriptor,
 	type DowncastSlotFilter,
+	type DowncastAttributeDescriptor,
 	type AddHighlightCallback,
-	type AttributeDescriptor,
 	type RemoveHighlightCallback,
 	type MarkerElementCreatorFunction
 } from './conversion/downcasthelpers.js';
