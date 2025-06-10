@@ -66,18 +66,13 @@ module.exports = function createHtmlOutputMarkup() {
 					return plugin.htmlOutput
 						.map( ( htmlOutput, htmlOutputIndex ) => {
 							const pluginNameCell = htmlOutputIndex === 0 ?
-								`<td class="plugin" ${ pluginNameRowspan }>${ plugin.pluginNameMarkup }</td>` :
+								`<td class="b-table__cell" ${ pluginNameRowspan }>${ plugin.pluginNameMarkup }</td>` :
 								'';
-
-							const classNames = [
-								'html-output',
-								htmlOutput.isAlternative ? '' : 'html-output-default'
-							].filter( className => !!className ).join( ' ' );
 
 							return (
 								'<tr>' +
 									pluginNameCell +
-									`<td class="${ classNames }">${ htmlOutput.markup }</td>` +
+									`<td class="b-table__cell">${ htmlOutput.markup }</td>` +
 								'</tr>'
 							);
 						} )
@@ -93,19 +88,20 @@ module.exports = function createHtmlOutputMarkup() {
 			} = packageMetadata.package;
 
 			const sourceFileLink = !isExternalPackage && !isThirdPartyPackage ?
-				`<a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/${ packageName }/ckeditor5-metadata.json">` +
+				`<a class="b-link" target="_blank" rel="noopener" 
+					href="https://github.com/ckeditor/ckeditor5/blob/master/packages/${ packageName }/ckeditor5-metadata.json">` +
 					sourceFileMarkup +
 				'</a>' :
 				sourceFileMarkup;
 
 			return (
-				`<h3 id="${ packageName }"><code>${ packageName }</code></h3>` +
+				`<h3 id="${ packageName }" class="b-heading"><code class="b-inline-code">${ packageName }</code></h3>` +
 				`<p>Source file: ${ sourceFileLink }</p>` +
-				'<table class="features-html-output">' +
-					'<thead>' +
+				'<table class="b-table">' +
+					'<thead class="b-table__header">' +
 						'<tr>' +
-							'<th class="plugin">Plugin</th>' +
-							'<th class="html-output">HTML output</th>' +
+							'<th class="b-table__cell">Plugin</th>' +
+							'<th class="b-table__cell">HTML output</th>' +
 						'</tr>' +
 					'</thead>' +
 					'<tbody>' +
@@ -194,7 +190,7 @@ function parseFile( file ) {
 
 	const sourceFileMarkup = isThirdPartyPackage ?
 		createSourceFileMarkupForThirdPartyPackage( file.path ) :
-		`<code>@ckeditor/${ packageName }/ckeditor5-metadata.json</code>`;
+		`<code class="b-inline-code">@ckeditor/${ packageName }/ckeditor5-metadata.json</code>`;
 
 	const packageData = {
 		packageName,
@@ -223,7 +219,7 @@ function createSourceFileMarkupForThirdPartyPackage( filePath ) {
 	const match = filePath.match( /node_modules\/(.*)/ );
 
 	return match ?
-		`<code>${ match[ 1 ] }</code>` :
+		`<code class="b-inline-code">${ match[ 1 ] }</code>` :
 		'<i>not published yet</i>';
 }
 
@@ -242,11 +238,11 @@ function createHtmlOutputMarkupForPackage( packageData, plugins = [] ) {
 				createApiLink( packageData, plugin )
 			];
 
-			let pluginNameMarkup = `<p><b>${ plugin.name }</b></p>`;
+			let pluginNameMarkup = `<p class="b-paragraph"><b>${ plugin.name }</b></p>`;
 
 			for ( const link of links ) {
 				if ( link ) {
-					pluginNameMarkup += `<p>${ link }</p>`;
+					pluginNameMarkup += `<p class="b-paragraph">${ link }</p>`;
 				}
 			}
 
@@ -255,7 +251,7 @@ function createHtmlOutputMarkupForPackage( packageData, plugins = [] ) {
 					{
 						// This value dictates whether or not the "None" output is considered to be default.
 						isAlternative: true,
-						markup: '<p>None.</p>'
+						markup: '<p class="b-paragraph">None.</p>'
 					}
 				];
 
@@ -292,9 +288,7 @@ function createFeatureLink( packageData, plugin ) {
 
 	const skipLinkValidation = packageData.isExternalPackage ? 'data-skip-validation' : '';
 
-	const docImg = '<img src="%BASE_PATH%/assets/img/document.svg" alt="Book" class="output-overview-table-icon">';
-
-	return `<a href="${ link }" ${ skipLinkValidation } alt="${ plugin.name }">${ docImg } Feature guide</a>`;
+	return `<a class="b-link" href="${ link }" ${ skipLinkValidation } alt="${ plugin.name }">Feature guide</a>`;
 }
 
 /**
@@ -319,9 +313,7 @@ function createApiLink( packageData, plugin ) {
 
 	const skipLinkValidation = packageData.isExternalPackage ? 'data-skip-validation' : '';
 
-	const cogImg = '<img src="%BASE_PATH%/assets/img/cog.svg" alt="Cog" class="output-overview-table-icon">';
-
-	return `<a href="${ link }" ${ skipLinkValidation } alt="${ plugin.className }">${ cogImg } API documentation</a>`;
+	return `<a class="b-link" href="${ link }" ${ skipLinkValidation } alt="${ plugin.className }">API documentation</a>`;
 }
 
 /**
@@ -345,7 +337,7 @@ function createHtmlOutputMarkupForPlugin( htmlOutput ) {
 		return (
 			output +
 			separators.prefix +
-			`<strong>class</strong>="${ parsedClasses }"` +
+			`class="${ parsedClasses }"` +
 			separators.suffix
 		);
 	};
@@ -362,7 +354,7 @@ function createHtmlOutputMarkupForPlugin( htmlOutput ) {
 		return (
 			output +
 			separators.prefix +
-			`<strong>style</strong>="${ parsedStyles }"` +
+			`style="${ parsedStyles }"` +
 			separators.suffix
 		);
 	};
@@ -373,7 +365,6 @@ function createHtmlOutputMarkupForPlugin( htmlOutput ) {
 		}
 
 		const parsedAttributes = toArray( attributes )
-			.map( wrapBy( { prefix: '<strong>', suffix: '</strong>' } ) )
 			.map( wrapBy( { suffix: '="*"' } ) )
 			.map( wrapBy( { prefix: separators.prefix, suffix: separators.suffix } ) )
 			.join( '' );
@@ -396,32 +387,32 @@ function createHtmlOutputMarkupForPlugin( htmlOutput ) {
 
 			const elements = entry.elements ?
 				toArray( entry.elements )
-					.map( wrapBy( { prefix: '<strong>', suffix: '</strong>' } ) )
 					.map( wrapBy( { suffix: separators.suffix } ) )
 					.map( appendClasses( entry.classes, separators ) )
 					.map( appendStyles( entry.styles, separators ) )
 					.map( appendAttributes( entry.attributes, separators ) )
 					.map( wrapBy( { prefix: '&lt;', suffix: '&gt;' } ) )
-					.map( wrapBy( { prefix: '<code>', suffix: '</code>' } ) )
+					.map( wrapBy( { prefix: '<code class="b-inline-code">', suffix: '</code>' } ) )
 					.join( '' ) :
 				'';
 
 			const others = entry.implements ?
-				`<p>HTML element may contain classes, styles or attributes, that are created by other plugins, which alter the ${
-					toArray( entry.implements )
-						.map( wrapBy( { prefix: '&lt;', suffix: '&gt;' } ) )
-						.map( wrapBy( { prefix: '<code>', suffix: '</code>' } ) )
-						.join( ', ' )
-				} element.</p>` :
+				`<p class="b-paragraph">
+					HTML element may contain classes, styles or attributes, that are created by other plugins, which alter the ${
+						toArray( entry.implements )
+							.map( wrapBy( { prefix: '&lt;', suffix: '&gt;' } ) )
+							.map( wrapBy( { prefix: '<code class="b-inline-code">', suffix: '</code>' } ) )
+							.join( ', ' )
+					} element.</p>` :
 				'';
 
 			const comment = entry._comment ?
-				`<p>${
+				`<p class="b-paragraph">${
 					entry._comment
 						.replace( '<', '&lt;' )
 						.replace( '>', '&gt;' )
-						.replace( /`(.*?)`/g, '<code>$1</code>' )
-						.replace( /\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>' )
+						.replace( /`(.*?)`/g, '<code class="b-inline-code">$1</code>' )
+						.replace( /\[(.*?)\]\((.*?)\)/g, '<a class="b-link" href="$2" target="_blank" rel="noopener">$1</a>' )
 				}</p>` :
 				'';
 
