@@ -17,7 +17,7 @@ The remote script REST API endpoint allows you to execute any JavaScript code th
 
 While CKEditor&nbsp;5 provides a rich client-side editing experience, there are many scenarios where server-side content processing is essential:
 
-* **Automation**: Run content processing tasks as part of your back-end workflows.
+* **Automation**: Run content processing tasks as part of your backend workflows.
 * **Scalability**: Process multiple documents simultaneously without client-side limitations.
 * **Security**: Process sensitive content in a controlled environment without exposing it to client-side manipulation.
 * **Performance**: Handle large-scale content operations without impacting the user's browser.
@@ -129,7 +129,7 @@ editor.model.change( writer => {
 } );
 ```
 
-This approach is particularly when you have to modify the document data in a very specific way, and the generic, high-level API cannot cover it.
+This approach is particularly useful when you have to modify the document data in some specific way, and the generic, high-level API cannot cover it.
 
 To learn more about working with the editor engine, see the {@link framework/architecture/editing-engine Editing engine} guide.
 
