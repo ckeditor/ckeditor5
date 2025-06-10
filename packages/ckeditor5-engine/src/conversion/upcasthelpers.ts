@@ -91,7 +91,7 @@ export class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 */
 	public elementToElement( config: {
 		view: MatcherPattern;
-		model: string | ElementCreatorFunction;
+		model: string | UpcastElementCreatorFunction;
 		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( upcastElementToElement( config ) );
@@ -391,7 +391,7 @@ export class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 */
 	public elementToMarker( config: {
 		view: MatcherPattern;
-		model: string | MarkerFromElementCreatorFunction;
+		model: string | UpcastMarkerFromElementCreatorFunction;
 		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( upcastElementToMarker( config ) );
@@ -470,7 +470,7 @@ export class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 */
 	public dataToMarker( config: {
 		view: string;
-		model?: MarkerFromAttributeCreatorFunction;
+		model?: UpcastMarkerFromAttributeCreatorFunction;
 		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( upcastDataToMarker( config ) );
@@ -611,7 +611,7 @@ export function convertSelectionChange( model: Model, mapper: Mapper ) {
  */
 function upcastElementToElement( config: {
 	view: MatcherPattern;
-	model: string | ElementCreatorFunction;
+	model: string | UpcastElementCreatorFunction;
 	converterPriority?: PriorityString;
 } ) {
 	config = cloneDeep( config );
@@ -643,7 +643,7 @@ function upcastElementToAttribute( config: {
 	view: MatcherPattern;
 	model: string | {
 		key: string;
-		value?: unknown | AttributeCreatorFunction;
+		value?: unknown | UpcastAttributeCreatorFunction;
 	};
 	converterPriority?: PriorityString;
 } ) {
@@ -725,7 +725,7 @@ function upcastAttributeToAttribute( config: {
  */
 function upcastElementToMarker( config: {
 	view: MatcherPattern;
-	model: string | MarkerFromElementCreatorFunction;
+	model: string | UpcastMarkerFromElementCreatorFunction;
 	converterPriority?: PriorityString;
 } ) {
 	const model = normalizeElementToMarkerModelConfig( config.model );
@@ -742,7 +742,7 @@ function upcastElementToMarker( config: {
  */
 function upcastDataToMarker( config: {
 	view: string;
-	model?: MarkerFromAttributeCreatorFunction;
+	model?: UpcastMarkerFromAttributeCreatorFunction;
 	converterPriority?: PriorityString;
 } ) {
 	config = cloneDeep( config );
@@ -809,7 +809,7 @@ function upcastDataToMarker( config: {
  */
 function upcastAttributeToMarker( config: {
 	view: string;
-	model: MarkerFromAttributeCreatorFunction;
+	model: UpcastMarkerFromAttributeCreatorFunction;
 } ) {
 	return (
 		evt: EventInfo,
@@ -899,7 +899,7 @@ function getViewElementNameFromConfig( viewConfig: any ): string | null {
  */
 function prepareToElementConverter( config: {
 	view: MatcherPattern;
-	model: string | ElementCreatorFunction;
+	model: string | UpcastElementCreatorFunction;
 } ) {
 	const matcher = new Matcher( config.view );
 
@@ -948,7 +948,7 @@ function prepareToElementConverter( config: {
  * @param conversionApi The upcast conversion API.
  */
 function getModelElement(
-	model: string | ElementCreatorFunction,
+	model: string | UpcastElementCreatorFunction,
 	input: ViewElement,
 	conversionApi: UpcastConversionApi
 ): ModelElement | null {
@@ -1031,7 +1031,7 @@ function prepareToAttributeConverter(
 		view: MatcherPattern;
 		model: {
 			key: string;
-			value: AttributeCreatorFunction | unknown;
+			value: UpcastAttributeCreatorFunction | unknown;
 		};
 	},
 	shallow: boolean
@@ -1172,7 +1172,7 @@ function setAttributeOn(
  * Helper function for upcasting-to-marker conversion. Takes the config in a format requested by `upcastElementToMarker()`
  * function and converts it to a format that is supported by `upcastElementToElement()` function.
  */
-function normalizeElementToMarkerModelConfig( model: string | MarkerFromElementCreatorFunction ): ElementCreatorFunction {
+function normalizeElementToMarkerModelConfig( model: string | UpcastMarkerFromElementCreatorFunction ): UpcastElementCreatorFunction {
 	return ( viewElement, conversionApi ) => {
 		const markerName = typeof model == 'string' ? model : model( viewElement, conversionApi );
 
@@ -1187,11 +1187,11 @@ function normalizeElementToMarkerModelConfig( model: string | MarkerFromElementC
 function normalizeDataToMarkerConfig(
 	config: {
 		view: string;
-		model: MarkerFromAttributeCreatorFunction;
+		model: UpcastMarkerFromAttributeCreatorFunction;
 	},
 	type: string
 ) {
-	const elementCreatorFunction: ElementCreatorFunction = ( viewElement, conversionApi ) => {
+	const elementCreatorFunction: UpcastElementCreatorFunction = ( viewElement, conversionApi ) => {
 		const viewName = viewElement.getAttribute( 'name' )!;
 		const markerName = config.model( viewName, conversionApi );
 
@@ -1205,22 +1205,22 @@ function normalizeDataToMarkerConfig(
 	};
 }
 
-export type ElementCreatorFunction = (
+export type UpcastElementCreatorFunction = (
 	viewElement: ViewElement,
 	conversionApi: UpcastConversionApi
 ) => ModelElement | null;
 
-export type AttributeCreatorFunction = (
+export type UpcastAttributeCreatorFunction = (
 	modelElement: ModelElement,
 	conversionApi: UpcastConversionApi
 ) => unknown;
 
-export type MarkerFromElementCreatorFunction = (
+export type UpcastMarkerFromElementCreatorFunction = (
 	viewElement: ViewElement,
 	conversionApi: UpcastConversionApi
 ) => string;
 
-export type MarkerFromAttributeCreatorFunction = (
+export type UpcastMarkerFromAttributeCreatorFunction = (
 	attributeValue: string,
 	conversionApi: UpcastConversionApi
 ) => string;

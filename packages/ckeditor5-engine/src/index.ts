@@ -23,11 +23,14 @@ export {
 	type DataControllerInitEvent,
 	type DataControllerSetEvent,
 	type DataControllerToModelEvent,
-	type DataControllerToViewEvent
+	type DataControllerToViewEvent,
+	type DataControllerReadyEvent,
+	type DataControllerGetEvent
 } from './controller/datacontroller.js';
 
 // Conversion.
 export { Conversion, type ConversionType } from './conversion/conversion.js';
+export { ConversionHelpers } from './conversion/conversionhelpers.js';
 export type {
 	DowncastDispatcher,
 	DowncastDispatcherEventMap,
@@ -37,15 +40,24 @@ export type {
 	DowncastInsertEvent,
 	DowncastRemoveEvent,
 	DowncastRemoveMarkerEvent,
-	DowncastSelectionEvent
+	DowncastSelectionEvent,
+	DowncastReduceChangesEvent,
+	DowncastReduceChangesEventData,
+	DowncastEvent,
+	DowncastCleanSelectionEvent
 } from './conversion/downcastdispatcher.js';
+export { DowncastHelpers } from './conversion/downcasthelpers.js';
 export type {
 	UpcastDispatcher,
 	UpcastConversionApi,
 	UpcastConversionData,
 	UpcastElementEvent,
-	UpcastTextEvent
+	UpcastTextEvent,
+	UpcastViewCleanupEvent,
+	UpcastEvent,
+	UpcastDocumentFragmentEvent
 } from './conversion/upcastdispatcher.js';
+export { UpcastHelpers } from './conversion/upcasthelpers.js';
 export type {
 	AddHighlightCallback,
 	AttributeDescriptor,
@@ -57,16 +69,18 @@ export type {
 } from './conversion/downcasthelpers.js';
 
 export type {
-	ElementCreatorFunction as UpcastElementCreatorFunction,
-	AttributeCreatorFunction as UpcastAttributeCreatorFunction,
-	MarkerFromElementCreatorFunction as UpcastMarkerFromElementCreatorFunction,
-	MarkerFromAttributeCreatorFunction as UpcastMarkerFromAttributeCreatorFunction
+	UpcastElementCreatorFunction,
+	UpcastAttributeCreatorFunction,
+	UpcastMarkerFromElementCreatorFunction,
+	UpcastMarkerFromAttributeCreatorFunction
 } from './conversion/upcasthelpers.js';
 
 export type {
 	Mapper,
 	MapperModelToViewPositionEvent,
-	MapperViewToModelPositionEvent
+	MapperViewToModelPositionEvent,
+	MapperModelToViewPositionEventData,
+	MapperViewToModelPositionEventData
 } from './conversion/mapper.js';
 export type { ModelConsumable } from './conversion/modelconsumable.js';
 export type { Consumables, ViewConsumable } from './conversion/viewconsumable.js';
@@ -111,8 +125,15 @@ export { Text } from './model/text.js';
 export { TextProxy } from './model/textproxy.js';
 export { Document, type ModelPostFixer } from './model/document.js';
 export { Marker } from './model/markercollection.js';
-export { Batch } from './model/batch.js';
-export { Differ, type DiffItem, type DiffItemAttribute, type DiffItemInsert, type DiffItemRemove } from './model/differ.js';
+export { Batch, type BatchType } from './model/batch.js';
+export {
+	Differ,
+	type DiffItem,
+	type DiffItemAttribute,
+	type DiffItemInsert,
+	type DiffItemRemove,
+	type DifferItemAction
+} from './model/differ.js';
 export type { Item } from './model/item.js';
 export { Node, type NodeAttributes } from './model/node.js';
 export { RootElement } from './model/rootelement.js';
