@@ -18,7 +18,7 @@ import {
 
 import {
 	type AddHighlightCallback,
-	type HighlightDescriptor,
+	type DowncastHighlightDescriptor,
 	type RemoveHighlightCallback,
 	type MapperViewToModelPositionEvent,
 	type DocumentSelection,
@@ -152,7 +152,7 @@ export function toWidget(
  * Default handler for adding a highlight on a widget.
  * It adds CSS class and attributes basing on the given highlight descriptor.
  */
-function addHighlight( element: ViewElement, descriptor: HighlightDescriptor, writer: DowncastWriter ) {
+function addHighlight( element: ViewElement, descriptor: DowncastHighlightDescriptor, writer: DowncastWriter ) {
 	if ( descriptor.classes ) {
 		writer.addClass( toArray( descriptor.classes ), element );
 	}
@@ -168,7 +168,7 @@ function addHighlight( element: ViewElement, descriptor: HighlightDescriptor, wr
  * Default handler for removing a highlight from a widget.
  * It removes CSS class and attributes basing on the given highlight descriptor.
  */
-function removeHighlight( element: ViewElement, descriptor: HighlightDescriptor, writer: DowncastWriter ) {
+function removeHighlight( element: ViewElement, descriptor: DowncastHighlightDescriptor, writer: DowncastWriter ) {
 	if ( descriptor.classes ) {
 		writer.removeClass( toArray( descriptor.classes ), element );
 	}
@@ -187,8 +187,8 @@ function removeHighlight( element: ViewElement, descriptor: HighlightDescriptor,
 export function setHighlightHandling(
 	element: ViewElement,
 	writer: DowncastWriter,
-	add: ( element: ViewElement, descriptor: HighlightDescriptor, writer: DowncastWriter ) => void = addHighlight,
-	remove: ( element: ViewElement, descriptor: HighlightDescriptor, writer: DowncastWriter ) => void = removeHighlight
+	add: ( element: ViewElement, descriptor: DowncastHighlightDescriptor, writer: DowncastWriter ) => void = addHighlight,
+	remove: ( element: ViewElement, descriptor: DowncastHighlightDescriptor, writer: DowncastWriter ) => void = removeHighlight
 ): void {
 	const stack = new HighlightStack();
 
