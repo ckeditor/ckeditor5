@@ -102,6 +102,7 @@
     "@ckeditor/ckeditor5-dev-web-crawler": "^50.0.0",
     "@ckeditor/ckeditor5-document-outline": "45.2.0",
     "@ckeditor/ckeditor5-email": "45.2.0",
+    "@ckeditor/ckeditor5-line-height": "0.0.1",
     "@ckeditor/ckeditor5-export-inline-styles": "45.2.0",
     "@ckeditor/ckeditor5-export-pdf": "45.2.0",
     "@ckeditor/ckeditor5-export-word": "45.2.0",
