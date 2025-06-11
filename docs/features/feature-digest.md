@@ -13,44 +13,37 @@ CKEditor 5 offers over 150 various features, from basic editing capabilities lik
 
 Core editing capability provides tools to create, edit, and style content. Here are essentials that every writer needs in their tool belt, like bold or italics. There is also something for coders - advanced HTML editing capabilities where you can directly edit HTML elements.
 
-<ck:card>
-	<ck:card-title heading-id='advanced-html-editing'>
-		Advanced HTML Editing
-	</ck:card-title>
-	<ck:card-description>
-		Advanced HTML Editing provides general HTML support, offering detailed control over permissible HTML elements, attributes, and styles. It further allows HTML Source Code Editing, handling HTML elements, HTML comments, and editing of the full page content, including meta tags.
-	</ck:card-description>
+### Advanced HTML Editing
 
-	<ck:columns>
-		<ck:card>
-			<ck:card-title level='4' heading-id='full-page-html'>
-				Full page HTML
-			</ck:card-title>
-			<ck:card-description>
-				Thanks to the full page HTML feature, you can use CKEditor 5 to edit entire HTML pages (from `<html>` to `</html>`), including the page metadata. While the General HTML Support feature focuses on elements inside the content (the document's `<body>`), this feature enables markup invisible to the end user.
-
-				<ck:button-link size='sm' variant='secondary' href='{@link features/full-page-html}'>
-					Feature page
-				</ck:button-link>
-			</ck:card-description>
-		</ck:card>
-
-		<ck:card>
-			<ck:card-title level='4' heading-id='general-html-support'>
-				General HTML Support (GHS)
-			</ck:card-title>
-			<ck:card-description>
-				With the General HTML Support (GHS) feature, developers can enable HTML features that are not supported by any other dedicated CKEditor 5 plugins. GHS lets you add elements, attributes, classes, and styles to the source. It also ensures this markup stays in the editor window and the output.
-
-				<ck:button-link size='sm' variant='secondary' href='{@link features/general-html-support}'>
-					Feature page
-				</ck:button-link>
-			</ck:card-description>
-		</ck:card>
-	</ck:columns>
-</ck:card>
+Advanced HTML Editing provides general HTML support, offering detailed control over permissible HTML elements, attributes, and styles. It further allows HTML Source Code Editing, handling HTML elements, HTML comments, and editing of the full page content, including meta tags.
 
 <ck:columns>
+	<ck:card>
+		<ck:card-title level='4' heading-id='full-page-html'>
+			Full page HTML
+		</ck:card-title>
+		<ck:card-description>
+			Thanks to the full page HTML feature, you can use CKEditor 5 to edit entire HTML pages (from `<html>` to `</html>`), including the page metadata. While the General HTML Support feature focuses on elements inside the content (the document's `<body>`), this feature enables markup invisible to the end user.
+
+			<ck:button-link size='sm' variant='secondary' href='{@link features/full-page-html}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
+
+	<ck:card>
+		<ck:card-title level='4' heading-id='general-html-support'>
+			General HTML Support (GHS)
+		</ck:card-title>
+		<ck:card-description>
+			With the General HTML Support (GHS) feature, developers can enable HTML features that are not supported by any other dedicated CKEditor 5 plugins. GHS lets you add elements, attributes, classes, and styles to the source. It also ensures this markup stays in the editor window and the output.
+
+			<ck:button-link size='sm' variant='secondary' href='{@link features/general-html-support}'>
+				Feature page
+			</ck:button-link>
+		</ck:card-description>
+	</ck:card>
+
 	<ck:card>
 		<ck:card-title level='4' heading-id='full-page-html'>
 			Full page HTML
