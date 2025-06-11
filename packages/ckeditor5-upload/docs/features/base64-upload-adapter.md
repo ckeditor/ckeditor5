@@ -2,7 +2,7 @@
 category: features-image-upload
 menu-title: Base64 upload adapter
 meta-title: Base64 upload adapter | CKEditor 5 Documentation
-meta-description: Upload images as Base64 in CKEditor 5 to embed them directly in the content without using a server or external storage.
+meta-description: Upload images as Base64 in CKEditor 5 to embed them directly in the content, omitting a server or external storage.
 order: 50
 ---
 
