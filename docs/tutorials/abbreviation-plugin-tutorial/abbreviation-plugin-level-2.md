@@ -3,6 +3,7 @@ category: abbreviation-plugin
 menu-title: Getting user input with a custom UI
 order: 25
 meta-title: Creating an advanced plugin tutorial pt. 2 | CKEditor 5 Documentation
+meta-description: Build a basic abbreviation plugin in CKEditor 5 to insert and manage abbreviations with accessible tooltips in your content, part 2.
 modified_at: 2022-07-15
 ---
 
