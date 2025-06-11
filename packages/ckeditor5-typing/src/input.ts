@@ -14,7 +14,7 @@ import { InsertTextCommand, type InsertTextCommandOptions } from './inserttextco
 import { InsertTextObserver, type ViewDocumentInsertTextEvent } from './inserttextobserver.js';
 
 import {
-	LiveRange,
+	ModelLiveRange,
 	type Model,
 	type Mapper,
 	type ModelElement,
@@ -391,7 +391,7 @@ class TypingQueue {
 			commandLiveData.selectionRanges = [];
 
 			for ( const range of commandData.selection.getRanges() ) {
-				commandLiveData.selectionRanges.push( LiveRange.fromRange( range ) );
+				commandLiveData.selectionRanges.push( ModelLiveRange.fromRange( range ) );
 
 				// Keep reference to the model element for later mutation checks.
 				this._affectedElements.add( range.start.parent as ModelElement );
@@ -545,7 +545,7 @@ function deleteSelectionContent( model: Model, insertTextCommand: InsertTextComm
 /**
  * Detaches a LiveRange and returns the static range from it.
  */
-function detachLiveRange( liveRange: LiveRange ): Range | null {
+function detachLiveRange( liveRange: ModelLiveRange ): Range | null {
 	const range = liveRange.toRange();
 
 	liveRange.detach();
@@ -575,5 +575,5 @@ function findMappedViewAncestor( viewNode: ViewNode, mapper: Mapper ): ViewEleme
  */
 type InsertTextCommandLiveOptions = {
 	text?: string;
-	selectionRanges?: Array<LiveRange>;
+	selectionRanges?: Array<ModelLiveRange>;
 };

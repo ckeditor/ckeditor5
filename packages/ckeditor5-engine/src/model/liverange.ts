@@ -21,14 +21,15 @@ import { type Position } from './position.js';
 import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 /**
- * `LiveRange` is a type of {@link module:engine/model/range~Range Range}
+ * `ModelLiveRange` is a type of {@link module:engine/model/range~Range Range}
  * that updates itself as {@link module:engine/model/document~ModelDocument document}
  * is changed through operations. It may be used as a bookmark.
  *
- * **Note:** Be very careful when dealing with `LiveRange`. Each `LiveRange` instance bind events that might
- * have to be unbound. Use {@link module:engine/model/liverange~LiveRange#detach detach} whenever you don't need `LiveRange` anymore.
+ * **Note:** Be very careful when dealing with `ModelLiveRange`. Each `ModelLiveRange` instance bind events that might
+ * have to be unbound. Use {@link module:engine/model/liverange~ModelLiveRange#detach detach} whenever you don't need
+ * `ModelLiveRange` anymore.
  */
-export class LiveRange extends /* #__PURE__ */ EmitterMixin( Range ) {
+export class ModelLiveRange extends /* #__PURE__ */ EmitterMixin( Range ) {
 	/**
 	 * Creates a live range.
 	 *
@@ -41,7 +42,7 @@ export class LiveRange extends /* #__PURE__ */ EmitterMixin( Range ) {
 	}
 
 	/**
-	 * Unbinds all events previously bound by `LiveRange`. Use it whenever you don't need `LiveRange` instance
+	 * Unbinds all events previously bound by `ModelLiveRange`. Use it whenever you don't need `ModelLiveRange` instance
 	 * anymore (i.e. when leaving scope in which it was declared or before re-assigning variable that was
 	 * referring to it).
 	 */
@@ -57,10 +58,10 @@ export class LiveRange extends /* #__PURE__ */ EmitterMixin( Range ) {
 	}
 
 	/**
-	 * Creates a `LiveRange` instance that is equal to the given range.
+	 * Creates a `ModelLiveRange` instance that is equal to the given range.
 	 */
-	public static fromRange( range: Range ): LiveRange {
-		return new LiveRange( range.start, range.end );
+	public static fromRange( range: Range ): ModelLiveRange {
+		return new ModelLiveRange( range.start, range.end );
 	}
 
 	/**
@@ -68,33 +69,33 @@ export class LiveRange extends /* #__PURE__ */ EmitterMixin( Range ) {
 	 * @internal
 	 */
 
-	declare public static readonly _createIn: ( element: ModelElement | ModelDocumentFragment ) => LiveRange;
+	declare public static readonly _createIn: ( element: ModelElement | ModelDocumentFragment ) => ModelLiveRange;
 
 	/**
 	 * @see module:engine/model/range~Range._createOn
 	 * @internal
 	 */
 
-	declare public static readonly _createOn: ( element: ModelItem | ModelDocumentFragment ) => LiveRange;
+	declare public static readonly _createOn: ( element: ModelItem | ModelDocumentFragment ) => ModelLiveRange;
 
 	/**
 	 * @see module:engine/model/range~Range._createFromPositionAndShift
 	 * @internal
 	 */
 
-	declare public static readonly _createFromPositionAndShift: ( position: Position, shift: number ) => LiveRange;
+	declare public static readonly _createFromPositionAndShift: ( position: Position, shift: number ) => ModelLiveRange;
 }
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-LiveRange.prototype.is = function( type: string ): boolean {
+ModelLiveRange.prototype.is = function( type: string ): boolean {
 	return type === 'liveRange' || type === 'model:liveRange' ||
 		// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
 		type == 'range' || type === 'model:range';
 };
 
 /**
- * Fired when `LiveRange` instance boundaries have changed due to changes in the
+ * Fired when `ModelLiveRange` instance boundaries have changed due to changes in the
  * {@link module:engine/model/document~ModelDocument document}.
  *
  * @eventName ~LiveRange#change:range
@@ -110,7 +111,8 @@ export type LiveRangeChangeRangeEvent = {
 };
 
 /**
- * Fired when `LiveRange` instance boundaries have not changed after a change in {@link module:engine/model/document~ModelDocument document}
+ * Fired when `ModelLiveRange` instance boundaries have not changed after
+ * a change in {@link module:engine/model/document~ModelDocument document}
  * but the change took place inside the range, effectively changing its content.
  *
  * @eventName ~LiveRange#change:content
@@ -118,7 +120,7 @@ export type LiveRangeChangeRangeEvent = {
  * change range.
  * @param data Object with additional information about the change.
  * @param data.deletionPosition Due to the nature of this event, this property is always set to `null`. It is passed
- * for compatibility with the {@link module:engine/model/liverange~LiveRange#event:change:range} event.
+ * for compatibility with the {@link module:engine/model/liverange~ModelLiveRange#event:change:range} event.
  */
 export type LiveRangeChangeContentEvent = {
 	name: 'change' | 'change:content';
@@ -134,10 +136,10 @@ export type LiveRangeChangeEvent = {
 };
 
 /**
- * Binds this `LiveRange` to the {@link module:engine/model/document~ModelDocument document}
+ * Binds this `ModelLiveRange` to the {@link module:engine/model/document~ModelDocument document}
  * that owns this range's {@link module:engine/model/range~Range#root root}.
  */
-function bindWithDocument( this: LiveRange ) {
+function bindWithDocument( this: ModelLiveRange ) {
 	this.listenTo<ModelApplyOperationEvent>(
 		this.root.document!.model,
 		'applyOperation',
@@ -157,7 +159,7 @@ function bindWithDocument( this: LiveRange ) {
 /**
  * Updates this range accordingly to the updates applied to the model. Bases on change events.
  */
-function transform( this: LiveRange, operation: Operation ) {
+function transform( this: ModelLiveRange, operation: Operation ) {
 	// Transform the range by the operation. Join the result ranges if needed.
 	const ranges = this.getTransformedByOperation( operation );
 	const result = Range._createFromRanges( ranges );

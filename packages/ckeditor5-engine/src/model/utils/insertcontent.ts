@@ -10,7 +10,7 @@
 import { ModelDocumentSelection } from '../documentselection.js';
 import { ModelElement } from '../element.js';
 import { ModelLivePosition } from '../liveposition.js';
-import { LiveRange } from '../liverange.js';
+import { ModelLiveRange } from '../liverange.js';
 import { Position } from '../position.js';
 import { Range } from '../range.js';
 
@@ -137,7 +137,7 @@ export function insertContent(
 			// After insertion was done, the selection was set but the model contains fake <$marker> elements.
 			// These <$marker> elements will be now removed. Because of that, we will need to fix the selection.
 			// We will create a live range that will automatically be update as <$marker> elements are removed.
-			const selectionLiveRange = newRange ? LiveRange.fromRange( newRange ) : null;
+			const selectionLiveRange = newRange ? ModelLiveRange.fromRange( newRange ) : null;
 
 			// Marker name -> [ start position, end position ].
 			const markersData: Record<string, Array<Position>> = {};

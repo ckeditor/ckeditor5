@@ -10,7 +10,7 @@
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import {
-	LiveRange,
+	ModelLiveRange,
 	MouseObserver,
 	type DataTransfer,
 	type ModelElement,
@@ -151,7 +151,7 @@ export class DragDrop extends Plugin {
 	/**
 	 * The live range over the original content that is being dragged.
 	 */
-	private _draggedRange!: LiveRange | null;
+	private _draggedRange!: ModelLiveRange | null;
 
 	/**
 	 * The UID of current dragging that is used to verify if the drop started in the same editor as the drag start.
@@ -612,7 +612,7 @@ export class DragDrop extends Plugin {
 		if ( draggableWidget ) {
 			const modelElement = editor.editing.mapper.toModelElement( draggableWidget )!;
 
-			this._draggedRange = LiveRange.fromRange( model.createRangeOn( modelElement ) );
+			this._draggedRange = ModelLiveRange.fromRange( model.createRangeOn( modelElement ) );
 			this._blockMode = model.schema.isBlock( modelElement );
 
 			// Disable toolbars so they won't obscure the drop area.
@@ -634,7 +634,7 @@ export class DragDrop extends Plugin {
 		const draggedRange = selection.getFirstRange()!;
 
 		if ( blocks.length == 0 ) {
-			this._draggedRange = LiveRange.fromRange( draggedRange );
+			this._draggedRange = ModelLiveRange.fromRange( draggedRange );
 
 			return;
 		}
@@ -642,14 +642,14 @@ export class DragDrop extends Plugin {
 		const blockRange = getRangeIncludingFullySelectedParents( model, blocks );
 
 		if ( blocks.length > 1 ) {
-			this._draggedRange = LiveRange.fromRange( blockRange );
+			this._draggedRange = ModelLiveRange.fromRange( blockRange );
 			this._blockMode = true;
 			// TODO block mode for dragging from outside editor? or inline? or both?
 		} else if ( blocks.length == 1 ) {
 			const touchesBlockEdges = draggedRange.start.isTouching( blockRange.start ) &&
 					draggedRange.end.isTouching( blockRange.end );
 
-			this._draggedRange = LiveRange.fromRange( touchesBlockEdges ? blockRange : draggedRange );
+			this._draggedRange = ModelLiveRange.fromRange( touchesBlockEdges ? blockRange : draggedRange );
 			this._blockMode = touchesBlockEdges;
 		}
 

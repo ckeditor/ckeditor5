@@ -8,7 +8,7 @@
  */
 
 import { type Editor, Plugin } from 'ckeditor5/src/core.js';
-import { LiveRange, ModelLivePosition } from 'ckeditor5/src/engine.js';
+import { ModelLiveRange, ModelLivePosition } from 'ckeditor5/src/engine.js';
 import { Clipboard, type ClipboardPipeline } from 'ckeditor5/src/clipboard.js';
 import { Delete } from 'ckeditor5/src/typing.js';
 import { Undo, type UndoCommand } from 'ckeditor5/src/undo.js';
@@ -119,7 +119,7 @@ export class AutoMediaEmbed extends Plugin {
 		const editor = this.editor;
 		const mediaRegistry = editor.plugins.get( MediaEmbedEditing ).registry;
 		// TODO: Use marker instead of LiveRange & LivePositions.
-		const urlRange = new LiveRange( leftPosition, rightPosition );
+		const urlRange = new ModelLiveRange( leftPosition, rightPosition );
 		const walker = urlRange.getWalker( { ignoreElementEnd: true } );
 
 		let url = '';

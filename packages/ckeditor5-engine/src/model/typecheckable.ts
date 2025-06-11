@@ -12,7 +12,7 @@ import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelDocumentSelection } from './documentselection.js';
 import { type ModelElement } from './element.js';
 import { type ModelLivePosition } from './liveposition.js';
-import { type LiveRange } from './liverange.js';
+import { type ModelLiveRange } from './liverange.js';
 import { type Node } from './node.js';
 import { type Position } from './position.js';
 import { type Range } from './range.js';
@@ -171,10 +171,10 @@ export abstract class TypeCheckable {
 	 *
 	 * @label RANGE
 	 */
-	public is( type: 'range' | 'model:range' ): this is Range | LiveRange;
+	public is( type: 'range' | 'model:range' ): this is Range | ModelLiveRange;
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/model/liverange~LiveRange}.
+	 * Checks whether the object is of type {@link module:engine/model/liverange~ModelLiveRange}.
 	 *
 	 * ```ts
 	 * liveRange.is( 'range' ); // -> true
@@ -188,7 +188,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label LIVE_RANGE
 	 */
-	public is( type: 'liveRange' | 'model:liveRange' ): this is LiveRange;
+	public is( type: 'liveRange' | 'model:liveRange' ): this is ModelLiveRange;
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/model/documentfragment~ModelDocumentFragment}.

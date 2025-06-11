@@ -6,7 +6,7 @@
 import type { Command, Editor } from 'ckeditor5/src/core.js';
 
 import {
-	LiveRange,
+	ModelLiveRange,
 	type ModelDocumentChangeEvent,
 	type ModelItem,
 	type Text
@@ -152,7 +152,7 @@ export function blockAutoformatEditing(
 			// Matched range.
 			const start = writer.createPositionAt( blockToFormat, 0 );
 			const end = writer.createPositionAt( blockToFormat, match[ 0 ].length );
-			const range = new LiveRange( start, end );
+			const range = new ModelLiveRange( start, end );
 
 			const wasChanged = callback( { match } );
 

@@ -8,7 +8,7 @@
  */
 
 import { TypeCheckable } from './typecheckable.js';
-import { LiveRange } from './liverange.js';
+import { ModelLiveRange } from './liverange.js';
 import {
 	Selection,
 	type SelectionChangeAttributeEvent,
@@ -54,7 +54,7 @@ const storePrefix = 'selection:';
  * * ranges added to this selection updates automatically when the document changes,
  * * attributes of `ModelDocumentSelection` are updated automatically according to selection ranges.
  *
- * Since `ModelDocumentSelection` uses {@link module:engine/model/liverange~LiveRange live ranges}
+ * Since `ModelDocumentSelection` uses {@link module:engine/model/liverange~ModelLiveRange live ranges}
  * and is updated when {@link module:engine/model/document~ModelDocument document}
  * changes, it cannot be set on {@link module:engine/model/node~Node nodes}
  * that are inside {@link module:engine/model/documentfragment~DocumentFragment document fragment}.
@@ -593,7 +593,7 @@ class LiveSelection extends Selection {
 	 *
 	 * @internal
 	 */
-	public declare _ranges: Array<LiveRange>;
+	public declare _ranges: Array<ModelLiveRange>;
 
 	/**
 	 * Keeps mapping of attribute name to priority with which the attribute got modified (added/changed/removed)
@@ -850,10 +850,10 @@ class LiveSelection extends Selection {
 
 	/**
 	 * Prepares given range to be added to selection. Checks if it is correct,
-	 * converts it to {@link module:engine/model/liverange~LiveRange LiveRange}
+	 * converts it to {@link module:engine/model/liverange~ModelLiveRange LiveRange}
 	 * and sets listeners listening to the range's change event.
 	 */
-	private _prepareRange( range: Range ): LiveRange | undefined {
+	private _prepareRange( range: Range ): ModelLiveRange | undefined {
 		this._checkRange( range );
 
 		if ( range.root == this._document.graveyard ) {
@@ -862,7 +862,7 @@ class LiveSelection extends Selection {
 			return;
 		}
 
-		const liveRange = LiveRange.fromRange( range );
+		const liveRange = ModelLiveRange.fromRange( range );
 
 		// If selection range is moved to the graveyard remove it from the selection object.
 		// Also, save some data that can be used to restore selection later, on `Model#applyOperation` event.

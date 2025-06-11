@@ -16,7 +16,7 @@ import {
 	type Node,
 	type ModelElement,
 	type Range,
-	type LiveRange,
+	type ModelLiveRange,
 	type ViewElement,
 	type ViewRange,
 	type DowncastWriter,
@@ -132,7 +132,7 @@ export class DragDropTarget extends Plugin {
 		clientX: number,
 		clientY: number,
 		blockMode: boolean,
-		draggedRange: LiveRange | null
+		draggedRange: ModelLiveRange | null
 	): void {
 		this.removeDropMarkerDelayed.cancel();
 
@@ -170,7 +170,7 @@ export class DragDropTarget extends Plugin {
 		clientX: number,
 		clientY: number,
 		blockMode: boolean,
-		draggedRange: LiveRange | null
+		draggedRange: ModelLiveRange | null
 	): Range | null {
 		const targetRange = findDropTargetRange(
 			this.editor,
@@ -376,7 +376,7 @@ function findDropTargetRange(
 	clientX: number,
 	clientY: number,
 	blockMode: boolean,
-	draggedRange: LiveRange | null
+	draggedRange: ModelLiveRange | null
 ): Range | null {
 	const model = editor.model;
 	const mapper = editor.editing.mapper;

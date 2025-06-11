@@ -9,7 +9,7 @@
 
 import { TypeCheckable } from './typecheckable.js';
 import {
-	LiveRange,
+	ModelLiveRange,
 	type LiveRangeChangeContentEvent,
 	type LiveRangeChangeRangeEvent,
 	type LiveRangeChangeEvent
@@ -116,7 +116,7 @@ export class MarkerCollection extends /* #__PURE__ */ EmitterMixin() implements 
 			let hasChanged = false;
 
 			if ( !oldRange.isEqual( range ) ) {
-				oldMarker._attachLiveRange( LiveRange.fromRange( range ) );
+				oldMarker._attachLiveRange( ModelLiveRange.fromRange( range ) );
 				hasChanged = true;
 			}
 
@@ -137,7 +137,7 @@ export class MarkerCollection extends /* #__PURE__ */ EmitterMixin() implements 
 			return oldMarker;
 		}
 
-		const liveRange = LiveRange.fromRange( range );
+		const liveRange = ModelLiveRange.fromRange( range );
 		const marker = new Marker( markerName, liveRange, managedUsingOperations, affectsData );
 
 		this._markers.set( markerName, marker );
@@ -300,7 +300,7 @@ export interface MarkerData {
  * Markers are built from a name and a range.
  *
  * Range of the marker is updated automatically when document changes, using
- * {@link module:engine/model/liverange~LiveRange live range} mechanism.
+ * {@link module:engine/model/liverange~ModelLiveRange live range} mechanism.
  *
  * Name is used to group and identify markers. Names have to be unique, but markers can be grouped by
  * using common prefixes, separated with `:`, for example: `user:john` or `search:3`. That's useful in term of creating
@@ -372,7 +372,7 @@ class Marker extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
 	 * Range marked by the marker.
 	 */
-	private _liveRange: LiveRange | null;
+	private _liveRange: ModelLiveRange | null;
 
 	/**
 	 * Creates a marker instance.
@@ -384,7 +384,7 @@ class Marker extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 */
 	constructor(
 		name: string,
-		liveRange: LiveRange,
+		liveRange: ModelLiveRange,
 		managedUsingOperations: boolean,
 		affectsData: boolean
 	) {
@@ -457,7 +457,7 @@ class Marker extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * Returns a range that represents the current state of the marker.
 	 *
 	 * Keep in mind that returned value is a {@link module:engine/model/range~Range Range}, not a
-	 * {@link module:engine/model/liverange~LiveRange LiveRange}. This means that it is up-to-date and relevant only
+	 * {@link module:engine/model/liverange~ModelLiveRange LiveRange}. This means that it is up-to-date and relevant only
 	 * until next model document change. Do not store values returned by this method. Instead, store {@link ~Marker#name}
 	 * and get `Marker` instance from {@link module:engine/model/markercollection~MarkerCollection MarkerCollection} every
 	 * time there is a need to read marker properties. This will guarantee that the marker has not been removed and
@@ -478,7 +478,7 @@ class Marker extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * @param liveRange Live range to attach
 	 * @returns Attached live range.
 	 */
-	public _attachLiveRange( liveRange: LiveRange ): LiveRange {
+	public _attachLiveRange( liveRange: ModelLiveRange ): ModelLiveRange {
 		if ( this._liveRange ) {
 			this._detachLiveRange();
 		}
@@ -515,26 +515,26 @@ export { Marker };
 
 /**
  * Fired whenever {@link ~Marker#_liveRange marker range} is changed due to changes on {@link module:engine/model/document~ModelDocument}.
- * This is a delegated {@link module:engine/model/liverange~LiveRange#event:change:range LiveRange change:range event}.
+ * This is a delegated {@link module:engine/model/liverange~ModelLiveRange#event:change:range LiveRange change:range event}.
  *
  * When marker is removed from {@link module:engine/model/markercollection~MarkerCollection MarkerCollection},
  * all event listeners listening to it should be removed. It is best to do it on
  * {@link module:engine/model/markercollection~MarkerCollection#event:update MarkerCollection update event}.
  *
- * @see module:engine/model/liverange~LiveRange#event:change:range
+ * @see module:engine/model/liverange~ModelLiveRange#event:change:range
  * @eventName ~Marker#change:range
  */
 export type MarkerChangeRangeEvent = LiveRangeChangeRangeEvent;
 
 /**
  * Fired whenever change on {@link module:engine/model/document~ModelDocument} is done inside {@link ~Marker#_liveRange marker range}.
- * This is a delegated {@link module:engine/model/liverange~LiveRange#event:change:content LiveRange change:content event}.
+ * This is a delegated {@link module:engine/model/liverange~ModelLiveRange#event:change:content LiveRange change:content event}.
  *
  * When marker is removed from {@link module:engine/model/markercollection~MarkerCollection MarkerCollection},
  * all event listeners listening to it should be removed. It is best to do it on
  * {@link module:engine/model/markercollection~MarkerCollection#event:update MarkerCollection update event}.
  *
- * @see module:engine/model/liverange~LiveRange#event:change:content
+ * @see module:engine/model/liverange~ModelLiveRange#event:change:content
  * @eventName ~Marker#change:content
  */
 export type MarkerCollectionChangeContentEvent = LiveRangeChangeContentEvent;

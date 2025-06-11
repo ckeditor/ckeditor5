@@ -9,7 +9,7 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { Clipboard, type ClipboardPipeline } from 'ckeditor5/src/clipboard.js';
-import { ModelLivePosition, LiveRange } from 'ckeditor5/src/engine.js';
+import { ModelLivePosition, ModelLiveRange } from 'ckeditor5/src/engine.js';
 import { Undo } from 'ckeditor5/src/undo.js';
 import { Delete } from 'ckeditor5/src/typing.js';
 import { global } from 'ckeditor5/src/utils.js';
@@ -120,7 +120,7 @@ export class AutoImage extends Plugin {
 	private _embedImageBetweenPositions( leftPosition: ModelLivePosition, rightPosition: ModelLivePosition ): void {
 		const editor = this.editor;
 		// TODO: Use a marker instead of LiveRange & LivePositions.
-		const urlRange = new LiveRange( leftPosition, rightPosition );
+		const urlRange = new ModelLiveRange( leftPosition, rightPosition );
 		const walker = urlRange.getWalker( { ignoreElementEnd: true } );
 		const selectionAttributes = Object.fromEntries( editor.model.document.selection.getAttributes() );
 		const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
