@@ -7,7 +7,7 @@ import { transform, transformSets } from '../../../src/model/operation/transform
 
 import { Model } from '../../../src/model/model.js';
 import { RootElement } from '../../../src/model/rootelement.js';
-import { Node } from '../../../src/model/node.js';
+import { ModelNode } from '../../../src/model/node.js';
 import { Position } from '../../../src/model/position.js';
 import { Range } from '../../../src/model/range.js';
 
@@ -27,8 +27,8 @@ describe( 'transform', () => {
 		doc = model.document;
 		root = doc.createRoot();
 
-		nodeA = new Node();
-		nodeB = new Node();
+		nodeA = new ModelNode();
+		nodeB = new ModelNode();
 	} );
 
 	afterEach( () => {
@@ -63,8 +63,8 @@ describe( 'transform', () => {
 		// Catches the 'Error during operation transformation!' warning in the CK_DEBUG mode.
 		sinon.stub( console, 'warn' );
 
-		const nodeA = new Node();
-		const nodeB = new Node();
+		const nodeA = new ModelNode();
+		const nodeB = new ModelNode();
 
 		const position = new Position( root, [ 0 ] );
 
@@ -89,8 +89,8 @@ describe( 'transform', () => {
 		let nodeC, nodeD, position;
 
 		beforeEach( () => {
-			nodeC = new Node();
-			nodeD = new Node();
+			nodeC = new ModelNode();
+			nodeD = new ModelNode();
 
 			position = new Position( root, [ 0, 2, 2 ] );
 
@@ -2579,7 +2579,7 @@ describe( 'transformSets', () => {
 		doc = model.document;
 		root = doc.createRoot();
 
-		node = new Node();
+		node = new ModelNode();
 	} );
 
 	it( 'originalOperations should correctly link transformed operations with original operations #1', () => {

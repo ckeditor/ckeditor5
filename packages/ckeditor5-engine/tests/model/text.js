@@ -4,14 +4,14 @@
  */
 
 import { Text } from '../../src/model/text.js';
-import { Node } from '../../src/model/node.js';
+import { ModelNode } from '../../src/model/node.js';
 
 describe( 'Text', () => {
 	describe( 'constructor()', () => {
 		it( 'should create text node without attributes', () => {
 			const text = new Text( 'bar', { bold: true } );
 
-			expect( text ).to.be.instanceof( Node );
+			expect( text ).to.be.instanceof( ModelNode );
 			expect( text ).to.have.property( 'data' ).that.equals( 'bar' );
 			expect( Array.from( text.getAttributes() ) ).to.deep.equal( [ [ 'bold', true ] ] );
 		} );

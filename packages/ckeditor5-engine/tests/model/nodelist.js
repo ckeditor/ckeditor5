@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { NodeList } from '../../src/model/nodelist.js';
+import { ModelNodeList } from '../../src/model/nodelist.js';
 import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 
@@ -16,12 +16,12 @@ describe( 'NodeList', () => {
 		p = new ModelElement( 'p' );
 		foo = new Text( 'foo' );
 		img = new ModelElement( 'imageBlock' );
-		nodes = new NodeList( [ p, foo, img ] );
+		nodes = new ModelNodeList( [ p, foo, img ] );
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should create empty node list', () => {
-			expect( new NodeList().length ).to.equal( 0 );
+			expect( new ModelNodeList().length ).to.equal( 0 );
 		} );
 
 		it( 'should create node list with passed nodes', () => {
@@ -287,7 +287,7 @@ describe( 'NodeList', () => {
 
 	describe( 'toJSON', () => {
 		it( 'should serialize empty node list', () => {
-			expect( ( new NodeList() ).toJSON() ).to.deep.equal( [] );
+			expect( ( new ModelNodeList() ).toJSON() ).to.deep.equal( [] );
 		} );
 
 		it( 'should serialize node list with nodes', () => {

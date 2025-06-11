@@ -13,7 +13,7 @@ import { Model } from '../../../src/model/model.js';
 import { Range } from '../../../src/model/range.js';
 import { ModelElement } from '../../../src/model/element.js';
 import { Text } from '../../../src/model/text.js';
-import { Node } from '../../../src/model/node.js';
+import { ModelNode } from '../../../src/model/node.js';
 import { TextProxy } from '../../../src/model/textproxy.js';
 
 describe( 'getNodesAndText', () => {
@@ -76,7 +76,7 @@ describe( 'getText', () => {
 				new Text( ' bbb' )
 			] ),
 			new Text( 'ccc' ),
-			new Node( { attr: 'value' } ),
+			new ModelNode( { attr: 'value' } ),
 			new ModelElement( 'p', null, [
 				new Text( 'ddd' )
 			] )

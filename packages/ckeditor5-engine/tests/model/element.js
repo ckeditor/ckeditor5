@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Node } from '../../src/model/node.js';
+import { ModelNode } from '../../src/model/node.js';
 import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { TextProxy } from '../../src/model/textproxy.js';
@@ -15,7 +15,7 @@ describe( 'Element', () => {
 		it( 'should create empty element', () => {
 			const element = new ModelElement( 'elem' );
 
-			expect( element ).to.be.an.instanceof( Node );
+			expect( element ).to.be.an.instanceof( ModelNode );
 			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
 
 			expect( count( element.getAttributes() ) ).to.equal( 0 );

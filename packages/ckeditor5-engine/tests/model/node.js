@@ -5,7 +5,7 @@
 
 import { Model } from '../../src/model/model.js';
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
-import { Node } from '../../src/model/node.js';
+import { ModelNode } from '../../src/model/node.js';
 import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { RootElement } from '../../src/model/rootelement.js';
@@ -20,7 +20,7 @@ describe( 'Node', () => {
 	beforeEach( () => {
 		const model = new Model();
 
-		node = new Node();
+		node = new ModelNode();
 
 		one = new ModelElement( 'one' );
 		two = new ModelElement( 'two', null, [ new Text( 'ba' ), new ModelElement( 'img' ), new Text( 'r' ) ] );
@@ -84,7 +84,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should initialize attribute list with passed attributes', () => {
-			const foo = new Node( { foo: true, bar: false } );
+			const foo = new ModelNode( { foo: true, bar: false } );
 
 			expect( count( foo.getAttributes() ) ).to.equal( 2 );
 			expect( foo.getAttribute( 'foo' ) ).to.equal( true );
@@ -94,13 +94,13 @@ describe( 'Node', () => {
 
 	describe( 'index', () => {
 		it( 'should return null if not set', () => {
-			const a = new Node();
+			const a = new ModelNode();
 
 			expect( a.index ).to.equal( null );
 		} );
 
 		it( 'should return _index value', () => {
-			const a = new Node();
+			const a = new ModelNode();
 
 			a._index = 2;
 
@@ -110,7 +110,7 @@ describe( 'Node', () => {
 
 	describe( '_clone()', () => {
 		it( 'should return a copy of cloned node', () => {
-			const node = new Node( { foo: 'bar' } );
+			const node = new ModelNode( { foo: 'bar' } );
 			const copy = node._clone();
 
 			expect( copy ).not.to.equal( node );
@@ -152,13 +152,13 @@ describe( 'Node', () => {
 
 	describe( 'startOffset', () => {
 		it( 'should return null after node is created', () => {
-			const a = new Node();
+			const a = new ModelNode();
 
 			expect( a.startOffset ).to.equal( null );
 		} );
 
 		it( 'should return _startOffset value', () => {
-			const a = new Node();
+			const a = new ModelNode();
 			a._startOffset = 7;
 
 			expect( a.startOffset ).to.equal( 7 );
@@ -167,13 +167,13 @@ describe( 'Node', () => {
 
 	describe( 'endOffset', () => {
 		it( 'should return null if start offset is null', () => {
-			const a = new Node();
+			const a = new ModelNode();
 
 			expect( a.endOffset ).to.equal( null );
 		} );
 
 		it( 'should return offset at which the node ends', () => {
-			class MyNode extends Node {
+			class MyNode extends ModelNode {
 				get offsetSize() {
 					return 5;
 				}
@@ -426,7 +426,7 @@ describe( 'Node', () => {
 	} );
 
 	describe( 'attributes interface', () => {
-		const node = new Node( { foo: 'bar' } );
+		const node = new ModelNode( { foo: 'bar' } );
 
 		describe( 'hasAttribute', () => {
 			it( 'should return true if element contains attribute with given key', () => {

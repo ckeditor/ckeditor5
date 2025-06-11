@@ -4,7 +4,7 @@
  */
 
 import { Model } from '../../../src/model/model.js';
-import { NodeList } from '../../../src/model/nodelist.js';
+import { ModelNodeList } from '../../../src/model/nodelist.js';
 import { ModelElement } from '../../../src/model/element.js';
 import { InsertOperation } from '../../../src/model/operation/insertoperation.js';
 import { MoveOperation } from '../../../src/model/operation/moveoperation.js';
@@ -246,7 +246,7 @@ describe( 'InsertOperation', () => {
 			expect( serialized ).to.deep.equal( {
 				__className: 'InsertOperation',
 				baseVersion: 0,
-				nodes: ( new NodeList( [ new Text( 'x' ) ] ) ).toJSON(),
+				nodes: ( new ModelNodeList( [ new Text( 'x' ) ] ) ).toJSON(),
 				position: position.toJSON(),
 				shouldReceiveAttributes: true
 			} );
