@@ -149,17 +149,17 @@ function transform( this: ModelLivePosition, operation: Operation ) {
 		( this as any ).path = result.path;
 		( this as any ).root = result.root;
 
-		this.fire<LivePositionChangeEvent>( 'change', oldPosition );
+		this.fire<ModelLivePositionChangeEvent>( 'change', oldPosition );
 	}
 }
 
 /**
  * Fired when `ModelLivePosition` instance is changed due to changes on {@link module:engine/model/document~ModelDocument}.
  *
- * @eventName ~LivePosition#change
+ * @eventName ~ModelLivePositionChangeEvent#change
  * @param oldPosition Position equal to this live position before it got changed.
  */
-export type LivePositionChangeEvent = {
+export type ModelLivePositionChangeEvent = {
 	name: 'change';
 	args: [ oldPosition: Position ];
 };

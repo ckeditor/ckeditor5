@@ -120,7 +120,7 @@ export {
 } from './model/documentselection.js';
 export { Range } from './model/range.js';
 export { LiveRange, type LiveRangeChangeRangeEvent } from './model/liverange.js';
-export { ModelLivePosition } from './model/liveposition.js';
+export { ModelLivePosition, type ModelLivePositionChangeEvent } from './model/liveposition.js';
 export { Model } from './model/model.js';
 export { TreeWalker, type TreeWalkerValue } from './model/treewalker.js';
 export { ModelElement } from './model/element.js';
