@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Table from '@ckeditor/ckeditor5-table/src/table.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import ImageCustomResizeUI from '../../src/imageresize/imagecustomresizeui.js';
-import ImageResizeButtons from '../../src/imageresize/imageresizebuttons.js';
-import Image from '../../src/image.js';
-import ImageStyle from '../../src/imagestyle.js';
+import { ImageCustomResizeUI } from '../../src/imageresize/imagecustomresizeui.js';
+import { ImageResizeButtons } from '../../src/imageresize/imageresizebuttons.js';
+import { Image } from '../../src/image.js';
+import { ImageStyle } from '../../src/imagestyle.js';
 
 import { IMAGE_SRC_FIXTURE } from './_utils/utils.js';
 

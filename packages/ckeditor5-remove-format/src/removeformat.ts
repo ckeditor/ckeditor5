@@ -9,8 +9,8 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import RemoveFormatUI from './removeformatui.js';
-import RemoveFormatEditing from './removeformatediting.js';
+import { RemoveFormatUI } from './removeformatui.js';
+import { RemoveFormatEditing } from './removeformatediting.js';
 
 /**
  * The remove format plugin.
@@ -20,7 +20,7 @@ import RemoveFormatEditing from './removeformatediting.js';
  *
  * For a detailed overview, check out the {@glink features/remove-format remove format} feature documentation.
  */
-export default class RemoveFormat extends Plugin {
+export class RemoveFormat extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

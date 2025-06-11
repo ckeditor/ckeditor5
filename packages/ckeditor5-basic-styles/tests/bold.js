@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Bold from '../src/bold.js';
-import BoldEditing from '../src/bold/boldediting.js';
-import BoldUI from '../src/bold/boldui.js';
+import { Bold } from '../src/bold.js';
+import { BoldEditing } from '../src/bold/boldediting.js';
+import { BoldUI } from '../src/bold/boldui.js';
 
 describe( 'Bold', () => {
 	it( 'should require BoldEditing and BoldUI', () => {

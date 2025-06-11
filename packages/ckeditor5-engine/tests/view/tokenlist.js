@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import TokenList from '../../src/view/tokenlist.js';
+import { TokenList } from '../../src/view/tokenlist.js';
 
 describe( 'TokenList', () => {
 	let tokenList;

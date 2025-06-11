@@ -25,12 +25,12 @@ import { normalizeFontFamilies, normalizeOptions } from './utils.js';
 import { FONT_FAMILY } from '../utils.js';
 
 import type { FontFamilyOption } from '../fontconfig.js';
-import type FontFamilyCommand from './fontfamilycommand.js';
+import { type FontFamilyCommand } from './fontfamilycommand.js';
 
 /**
  * The font family UI plugin. It introduces the `'fontFamily'` dropdown.
  */
-export default class FontFamilyUI extends Plugin {
+export class FontFamilyUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

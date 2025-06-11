@@ -9,8 +9,8 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import RestrictedEditingModeEditing from './restrictededitingmodeediting.js';
-import RestrictedEditingModeUI from './restrictededitingmodeui.js';
+import { RestrictedEditingModeEditing } from './restrictededitingmodeediting.js';
+import { RestrictedEditingModeUI } from './restrictededitingmodeui.js';
 
 import '../theme/restrictedediting.css';
 
@@ -22,7 +22,7 @@ import '../theme/restrictedediting.css';
  * * The {@link module:restricted-editing/restrictededitingmodeediting~RestrictedEditingModeEditing restricted mode editing feature}.
  * * The {@link module:restricted-editing/restrictededitingmodeui~RestrictedEditingModeUI restricted mode UI feature}.
  */
-export default class RestrictedEditingMode extends Plugin {
+export class RestrictedEditingMode extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../../src/model/model.js';
-import Element from '../../../src/model/element.js';
-import RenameOperation from '../../../src/model/operation/renameoperation.js';
-import Position from '../../../src/model/position.js';
+import { Model } from '../../../src/model/model.js';
+import { Element } from '../../../src/model/element.js';
+import { RenameOperation } from '../../../src/model/operation/renameoperation.js';
+import { Position } from '../../../src/model/position.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 

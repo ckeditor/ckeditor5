@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import CodeBlockEditing from '../src/codeblockediting.js';
-import CodeBlockCommand from '../src/codeblockcommand.js';
+import { CodeBlockEditing } from '../src/codeblockediting.js';
+import { CodeBlockCommand } from '../src/codeblockcommand.js';
 
-import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
+import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { BlockQuoteEditing } from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting.js';
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'CodeBlockCommand', () => {

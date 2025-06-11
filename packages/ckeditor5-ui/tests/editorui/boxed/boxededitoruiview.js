@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import BoxedEditorUIView from '../../../src/editorui/boxed/boxededitoruiview.js';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale.js';
-import ViewCollection from '../../../src/viewcollection.js';
+import { BoxedEditorUIView } from '../../../src/editorui/boxed/boxededitoruiview.js';
+import { Locale } from '@ckeditor/ckeditor5-utils/src/locale.js';
+import { ViewCollection } from '../../../src/viewcollection.js';
 
 describe( 'BoxedEditorUIView', () => {
 	let view, element;

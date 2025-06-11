@@ -24,7 +24,7 @@ import type { CallbackOptions, DomEmitter } from '@ckeditor/ckeditor5-utils';
  * @param options.callback An action executed by the handler.
  * @param options.listenerOptions Additional options for the listener (like priority).
  */
-export default function clickOutsideHandler(
+export function clickOutsideHandler(
 	{ emitter, activator, callback, contextElements, listenerOptions }: {
 		emitter: DomEmitter;
 		activator: () => boolean;

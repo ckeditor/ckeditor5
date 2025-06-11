@@ -10,14 +10,14 @@
 import { ListView } from 'ckeditor5/src/ui.js';
 import { Rect, type Locale } from 'ckeditor5/src/utils.js';
 
-import type MentionListItemView from './mentionlistitemview.js';
+import { type MentionListItemView } from './mentionlistitemview.js';
 
 import '../../theme/mentionui.css';
 
 /**
  * The mention ui view.
  */
-export default class MentionsView extends ListView {
+export class MentionsView extends ListView {
 	public selected: MentionListItemView | undefined;
 
 	public position: string | undefined;

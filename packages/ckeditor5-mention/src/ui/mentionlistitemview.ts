@@ -11,9 +11,9 @@ import { ListItemView } from 'ckeditor5/src/ui.js';
 
 import type { MentionFeedItem } from '../mentionconfig.js';
 
-import type DomWrapperView from './domwrapperview.js';
+import { type DomWrapperView } from './domwrapperview.js';
 
-export default class MentionListItemView extends ListItemView {
+export class MentionListItemView extends ListItemView {
 	public item!: MentionFeedItem;
 
 	public marker!: string;

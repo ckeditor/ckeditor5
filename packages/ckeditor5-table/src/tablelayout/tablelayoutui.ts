@@ -24,10 +24,10 @@ import {
 	type ObservableChangeEvent
 } from 'ckeditor5/src/utils.js';
 
-import InsertTableView from '../ui/inserttableview.js';
+import { InsertTableView } from '../ui/inserttableview.js';
 
-import type InsertTableLayoutCommand from '../commands/inserttablelayoutcommand.js';
-import type { default as TableTypeCommand } from './commands/tabletypecommand.js';
+import { type InsertTableLayoutCommand } from '../commands/inserttablelayoutcommand.js';
+import type { TableTypeCommand } from './commands/tabletypecommand.js';
 import type { TableType } from '../tableconfig.js';
 
 /**
@@ -36,7 +36,7 @@ import type { TableType } from '../tableconfig.js';
  * * The `'insertTableLayout'` dropdown,
  * * The `'menuBar:insertTableLayout'` menu bar menu.
  */
-export default class TableLayoutUI extends Plugin {
+export class TableLayoutUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

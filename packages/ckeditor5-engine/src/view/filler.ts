@@ -4,8 +4,8 @@
  */
 
 import { keyCodes, isText, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils';
-import type View from './view.js';
-import type DomEventData from './observer/domeventdata.js';
+import { type View } from './view.js';
+import { type DomEventData } from './observer/domeventdata.js';
 import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver.js';
 
 /**

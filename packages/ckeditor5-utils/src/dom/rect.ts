@@ -7,12 +7,12 @@
  * @module utils/dom/rect
  */
 
-import isRange from './isrange.js';
-import isWindow from './iswindow.js';
-import getBorderWidths from './getborderwidths.js';
-import isText from './istext.js';
-import getPositionedAncestor from './getpositionedancestor.js';
-import global from './global.js';
+import { isRange } from './isrange.js';
+import { isWindow } from './iswindow.js';
+import { getBorderWidths } from './getborderwidths.js';
+import { isText } from './istext.js';
+import { getPositionedAncestor } from './getpositionedancestor.js';
+import { global } from './global.js';
 
 const rectProperties: Array<keyof RectLike> = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
 
@@ -21,7 +21,7 @@ const rectProperties: Array<keyof RectLike> = [ 'top', 'right', 'bottom', 'left'
  * the native `object.getBoundingClientRect()` method. Provides a set of methods
  * to manipulate the rect and compare it against other rect instances.
  */
-export default class Rect {
+export class Rect {
 	/**
 	 * The "top" value of the rect.
 	 *

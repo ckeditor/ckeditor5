@@ -7,29 +7,30 @@
  * @module engine/view/downcastwriter
  */
 
-import Position, { type PositionOffset } from './position.js';
-import Range from './range.js';
-import Selection, {
+import { Position, type PositionOffset } from './position.js';
+import { Range } from './range.js';
+import {
+	Selection,
 	type PlaceOrOffset,
 	type Selectable,
 	type SelectionOptions
 } from './selection.js';
-import ContainerElement from './containerelement.js';
-import AttributeElement from './attributeelement.js';
-import EmptyElement from './emptyelement.js';
-import UIElement from './uielement.js';
-import RawElement from './rawelement.js';
+import { ContainerElement } from './containerelement.js';
+import { AttributeElement } from './attributeelement.js';
+import { EmptyElement } from './emptyelement.js';
+import { UIElement } from './uielement.js';
+import { RawElement } from './rawelement.js';
 import { CKEditorError, isIterable, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
-import DocumentFragment from './documentfragment.js';
-import Text from './text.js';
-import EditableElement from './editableelement.js';
+import { DocumentFragment } from './documentfragment.js';
+import { Text } from './text.js';
+import { EditableElement } from './editableelement.js';
 import { isPlainObject } from 'es-toolkit/compat';
 
-import type Document from './document.js';
-import type Node from './node.js';
-import type { default as Element, ElementAttributes } from './element.js';
-import type DomConverter from './domconverter.js';
-import type Item from './item.js';
+import { type Document } from './document.js';
+import { type Node } from './node.js';
+import type { Element, ElementAttributes } from './element.js';
+import { type DomConverter } from './domconverter.js';
+import { type Item } from './item.js';
 import type { SlotFilter } from '../conversion/downcasthelpers.js';
 
 type DomDocument = globalThis.Document;
@@ -50,7 +51,7 @@ type DomElement = globalThis.HTMLElement;
  * Read more about changing the view in the {@glink framework/architecture/editing-engine#changing-the-view Changing the view}
  * section of the {@glink framework/architecture/editing-engine Editing engine architecture} guide.
  */
-export default class DowncastWriter {
+export class DowncastWriter {
 	/**
 	 * The view document instance in which this writer operates.
 	 */
@@ -2046,6 +2047,8 @@ export default class DowncastWriter {
 		// If other parts of code have reference to this element, they will be able to get references to other elements from the group.
 	}
 }
+
+export { DowncastWriter as ViewDowncastWriter };
 
 // Helper function for `view.writer.wrap`. Checks if given element has any children that are not ui elements.
 function _hasNonUiChildren( parent: Element ): boolean {

@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../src/model/model.js';
-import DocumentFragment from '../../src/model/documentfragment.js';
-import Node from '../../src/model/node.js';
-import Element from '../../src/model/element.js';
-import Text from '../../src/model/text.js';
-import RootElement from '../../src/model/rootelement.js';
-import count from '@ckeditor/ckeditor5-utils/src/count.js';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { Model } from '../../src/model/model.js';
+import { DocumentFragment } from '../../src/model/documentfragment.js';
+import { Node } from '../../src/model/node.js';
+import { Element } from '../../src/model/element.js';
+import { Text } from '../../src/model/text.js';
+import { RootElement } from '../../src/model/rootelement.js';
+import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 
 describe( 'Node', () => {
 	let doc, root, node,

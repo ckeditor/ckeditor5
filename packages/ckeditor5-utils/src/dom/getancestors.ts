@@ -16,7 +16,7 @@
  * @param node DOM node.
  * @returns Array of given `node` parents.
  */
-export default function getAncestors( node: Node ): Array<Node> {
+export function getAncestors( node: Node ): Array<Node> {
 	const nodes: Array<Node> = [];
 	let currentNode: Node | null = node;
 

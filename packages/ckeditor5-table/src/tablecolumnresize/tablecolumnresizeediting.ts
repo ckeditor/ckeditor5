@@ -31,14 +31,14 @@ import type {
 	ViewNode
 } from 'ckeditor5/src/engine.js';
 
-import MouseEventsObserver from '../../src/tablemouse/mouseeventsobserver.js';
-import TableEditing from '../tableediting.js';
-import TableUtils from '../tableutils.js';
-import TableWalker from '../tablewalker.js';
+import { MouseEventsObserver } from '../../src/tablemouse/mouseeventsobserver.js';
+import { TableEditing } from '../tableediting.js';
+import { TableUtils } from '../tableutils.js';
+import { TableWalker } from '../tablewalker.js';
 
-import TableWidthsCommand from './tablewidthscommand.js';
+import { TableWidthsCommand } from './tablewidthscommand.js';
 
-import { downcastTableResizedClass, upcastColgroupElement } from './converters.js';
+import { downcastTableResizedClass, upcastColgroupElement, upcastTableResizedClass } from './converters.js';
 
 import {
 	clamp,
@@ -59,7 +59,7 @@ import {
 } from './utils.js';
 
 import { COLUMN_MIN_WIDTH_IN_PIXELS, COLUMN_RESIZE_DISTANCE_THRESHOLD } from './constants.js';
-import type TableColumnResize from '../tablecolumnresize.js';
+import { type TableColumnResize } from '../tablecolumnresize.js';
 
 const toPx = /* #__PURE__ */ toUnit( 'px' );
 
@@ -90,7 +90,7 @@ type ResizingData = {
 /**
  * The table column resize editing plugin.
  */
-export default class TableColumnResizeEditing extends Plugin {
+export class TableColumnResizeEditing extends Plugin {
 	/**
 	 * A flag indicating if the column resizing is in progress.
 	 */
@@ -251,20 +251,24 @@ export default class TableColumnResizeEditing extends Plugin {
 	 * Registers new attributes for a table model element.
 	 */
 	private _extendSchema() {
-		this.editor.model.schema.extend( 'table', {
+		const schema = this.editor.model.schema;
+
+		schema.extend( 'table', {
 			allowAttributes: [ 'tableWidth' ]
 		} );
 
-		this.editor.model.schema.register( 'tableColumnGroup', {
+		schema.register( 'tableColumnGroup', {
 			allowIn: 'table',
 			isLimit: true
 		} );
 
-		this.editor.model.schema.register( 'tableColumn', {
+		schema.register( 'tableColumn', {
 			allowIn: 'tableColumnGroup',
 			allowAttributes: [ 'columnWidth', 'colSpan' ],
 			isLimit: true
 		} );
+
+		schema.setAttributeProperties( 'columnWidth', { isFormatting: true } );
 	}
 
 	/**
@@ -425,9 +429,11 @@ export default class TableColumnResizeEditing extends Plugin {
 
 		conversion.elementToElement( { model: 'tableColumnGroup', view: 'colgroup' } );
 		conversion.elementToElement( { model: 'tableColumn', view: 'col' } );
-		conversion.for( 'downcast' ).add( downcastTableResizedClass() );
-		conversion.for( 'upcast' ).add( upcastColgroupElement( this._tableUtilsPlugin ) );
 
+		conversion.for( 'downcast' ).add( downcastTableResizedClass() );
+
+		conversion.for( 'upcast' ).add( upcastTableResizedClass() );
+		conversion.for( 'upcast' ).add( upcastColgroupElement( this._tableUtilsPlugin ) );
 		conversion.for( 'upcast' ).attributeToAttribute( {
 			view: {
 				name: 'col',

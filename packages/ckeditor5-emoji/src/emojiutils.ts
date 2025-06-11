@@ -6,7 +6,7 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import type { EmojiCdnResource, EmojiEntry } from './emojirepository.js';
 import type { SkinToneId } from './emojiconfig.js';
-import isEmojiSupported from './utils/isemojisupported.js';
+import { isEmojiSupported } from './utils/isemojisupported.js';
 
 /**
  * @module emoji/emojiutils
@@ -47,7 +47,7 @@ const BASELINE_EMOJI_WIDTH = 24;
 /**
  * The Emoji utilities plugin.
  */
-export default class EmojiUtils extends Plugin {
+export class EmojiUtils extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

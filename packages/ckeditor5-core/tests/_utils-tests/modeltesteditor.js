@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Editor from '../../src/editor/editor.js';
-import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller.js';
-import ModelTestEditor from '../../tests/_utils/modeltesteditor.js';
+import { Editor } from '../../src/editor/editor.js';
+import { EditingController } from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller.js';
+import { ModelTestEditor } from '../../tests/_utils/modeltesteditor.js';
 
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
-import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
+import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
+import { RootElement } from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
 
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import testUtils from '../../tests/_utils/utils.js';
+import { testUtils } from '../../tests/_utils/utils.js';
 
 describe( 'ModelTestEditor', () => {
 	testUtils.createSinonSandbox();

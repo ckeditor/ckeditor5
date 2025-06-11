@@ -5,9 +5,9 @@
 
 import { Client, expectClients, syncClients, clearBuffer } from './utils.js';
 
-import DocumentFragment from '../../../../src/model/documentfragment.js';
-import Element from '../../../../src/model/element.js';
-import Text from '../../../../src/model/text.js';
+import { DocumentFragment } from '../../../../src/model/documentfragment.js';
+import { Element } from '../../../../src/model/element.js';
+import { Text } from '../../../../src/model/text.js';
 
 describe( 'transform', () => {
 	describe( 'undo', () => {

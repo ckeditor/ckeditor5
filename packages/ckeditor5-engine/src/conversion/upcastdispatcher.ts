@@ -7,21 +7,21 @@
  * @module engine/conversion/upcastdispatcher
  */
 
-import ViewConsumable from './viewconsumable.js';
-import ModelRange from '../model/range.js';
-import ModelPosition from '../model/position.js';
-import type ModelElement from '../model/element.js';
-import type ModelNode from '../model/node.js';
-import type ViewElement from '../view/element.js';
-import type ViewText from '../view/text.js';
-import type ViewDocumentFragment from '../view/documentfragment.js';
-import type ModelDocumentFragment from '../model/documentfragment.js';
-import type { default as Schema, SchemaContextDefinition } from '../model/schema.js';
+import { ViewConsumable } from './viewconsumable.js';
+import { ModelRange } from '../model/range.js';
+import { ModelPosition } from '../model/position.js';
+import { type ModelElement } from '../model/element.js';
+import { type ModelNode } from '../model/node.js';
+import { type ViewElement } from '../view/element.js';
+import { type ViewText } from '../view/text.js';
+import { type ViewDocumentFragment } from '../view/documentfragment.js';
+import { type ModelDocumentFragment } from '../model/documentfragment.js';
+import type { Schema, SchemaContextDefinition } from '../model/schema.js';
 import { SchemaContext } from '../model/schema.js'; // eslint-disable-line no-duplicate-imports
-import type ModelWriter from '../model/writer.js';
+import { type ModelWriter } from '../model/writer.js';
 import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphing.js';
 
-import type ViewItem from '../view/item.js';
+import { type ViewItem } from '../view/item.js';
 
 import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
@@ -121,7 +121,7 @@ import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
  * @fires text
  * @fires documentFragment
  */
-export default class UpcastDispatcher extends /* #__PURE__ */ EmitterMixin() {
+export class UpcastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * An interface passed by the dispatcher to the event callbacks.
 	 */

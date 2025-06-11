@@ -34,9 +34,9 @@ import {
 	type GetCallback
 } from 'ckeditor5/src/utils.js';
 
-import LegacyListCommand from '../legacylist/legacylistcommand.js';
-import LegacyListEditing from '../legacylist/legacylistediting.js';
-import LegacyCheckTodoListCommand from './legacychecktodolistcommand.js';
+import { LegacyListCommand } from '../legacylist/legacylistcommand.js';
+import { LegacyListEditing } from '../legacylist/legacylistediting.js';
+import { LegacyCheckTodoListCommand } from './legacychecktodolistcommand.js';
 import {
 	dataModelViewInsertion,
 	dataViewModelCheckmarkInsertion,
@@ -58,7 +58,7 @@ const ITEM_TOGGLE_KEYSTROKE = /* #__PURE__ */ parseKeystroke( 'Ctrl+Enter' );
  * - `'checkTodoList'`,
  * - `'todoListCheck'` as an alias for `checkTodoList` command.
  */
-export default class LegacyTodoListEditing extends Plugin {
+export class LegacyTodoListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

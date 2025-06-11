@@ -7,7 +7,7 @@
  * @module watchdog/utils/getsubnodes
  */
 
-export default function getSubNodes( head: unknown, excludedProperties = new Set() ): Set<unknown> {
+export function getSubNodes( head: unknown, excludedProperties = new Set() ): Set<unknown> {
 	const nodes = [ head ];
 
 	// @if CK_DEBUG_WATCHDOG // const prevNodeMap = new Map();

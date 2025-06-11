@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import isValidAttributeName from '../../src/dom/isvalidattributename.js';
+import { isValidAttributeName } from '../../src/dom/isvalidattributename.js';
 
 describe( 'isValidAttributeName', () => {
 	const validTestCases = [

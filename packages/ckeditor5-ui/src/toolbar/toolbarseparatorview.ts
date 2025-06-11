@@ -7,14 +7,14 @@
  * @module ui/toolbar/toolbarseparatorview
  */
 
-import View from '../view.js';
+import { View } from '../view.js';
 
 import type { Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The toolbar separator view class.
  */
-export default class ToolbarSeparatorView extends View {
+export class ToolbarSeparatorView extends View {
 	/**
 	 * @inheritDoc
 	 */

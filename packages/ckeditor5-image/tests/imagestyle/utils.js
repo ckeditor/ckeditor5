@@ -3,11 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import utils from '../../src/imagestyle/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import {
+	utils,
+	DEFAULT_DROPDOWN_DEFINITIONS,
+	DEFAULT_OPTIONS,
+	DEFAULT_ICONS
+} from '../../src/imagestyle/utils.js';
 
 describe( 'ImageStyle utils', () => {
-	const { getDefaultStylesConfiguration, DEFAULT_OPTIONS, DEFAULT_ICONS } = utils;
 	const allStyles = Object.values( DEFAULT_OPTIONS );
 	const allStyleNames = Object.keys( DEFAULT_OPTIONS );
 
@@ -71,7 +75,7 @@ describe( 'ImageStyle utils', () => {
 
 	describe( 'getDefaultStylesConfiguration()', () => {
 		it( 'should return the proper config if both image editing plugins are loaded', async () => {
-			const config = getDefaultStylesConfiguration( true, true );
+			const config = utils.getDefaultStylesConfiguration( true, true );
 
 			expect( config ).to.deep.equal( {
 				options: [
@@ -83,7 +87,7 @@ describe( 'ImageStyle utils', () => {
 		} );
 
 		it( 'should return the proper config if only the inline image editing plugin is loaded', () => {
-			const config = getDefaultStylesConfiguration( false, true );
+			const config = utils.getDefaultStylesConfiguration( false, true );
 
 			expect( config ).to.deep.equal( {
 				options: [ 'inline', 'alignLeft', 'alignRight' ]
@@ -91,7 +95,7 @@ describe( 'ImageStyle utils', () => {
 		} );
 
 		it( 'should return the proper config if only the block image editing plugin is loaded', () => {
-			const config = getDefaultStylesConfiguration( true, false );
+			const config = utils.getDefaultStylesConfiguration( true, false );
 
 			expect( config ).to.deep.equal( {
 				options: [ 'block', 'side' ]
@@ -99,14 +103,14 @@ describe( 'ImageStyle utils', () => {
 		} );
 
 		it( 'should return an empty object if neither image editing plugins are loaded', () => {
-			const config = getDefaultStylesConfiguration( false, false );
+			const config = utils.getDefaultStylesConfiguration( false, false );
 
 			expect( config ).to.deep.equal( {} );
 		} );
 	} );
 
 	describe( 'normalizeImageStyles()', () => {
-		function normalizeStyles(
+		function _normalizeStyles(
 			options = allStyles,
 			isBlockPluginLoaded = true,
 			isInlinePluginLoaded = true
@@ -128,7 +132,7 @@ describe( 'ImageStyle utils', () => {
 			describe( 'set as a string in the editor config', () => {
 				it( 'should return the proper default style if #name matches', () => {
 					for ( const style in DEFAULT_OPTIONS ) {
-						const normalizedStyles = normalizeStyles( [ style ] );
+						const normalizedStyles = _normalizeStyles( [ style ] );
 
 						expect( normalizedStyles[ 0 ] ).to.not.equal( DEFAULT_OPTIONS[ style ] );
 						expect( normalizedStyles ).to.deep.equal( [ DEFAULT_OPTIONS[ style ] ] );
@@ -138,7 +142,7 @@ describe( 'ImageStyle utils', () => {
 				} );
 
 				it( 'should warn and omit the style if the #name not found in default styles', () => {
-					expect( normalizeStyles( [ 'foo' ] ) ).to.deep.equal( [] );
+					expect( _normalizeStyles( [ 'foo' ] ) ).to.deep.equal( [] );
 
 					sinon.assert.calledOnce( console.warn );
 					sinon.assert.calledWithExactly( console.warn,
@@ -153,7 +157,7 @@ describe( 'ImageStyle utils', () => {
 				it( 'should pass through if #name not found in the default styles', () => {
 					const style = { name: 'foo', modelElements: [ 'imageBlock' ] };
 
-					expect( normalizeStyles( [ style ] ) ).to.deep.equal( [ style ] );
+					expect( _normalizeStyles( [ style ] ) ).to.deep.equal( [ style ] );
 
 					sinon.assert.notCalled( console.warn );
 				} );
@@ -162,7 +166,7 @@ describe( 'ImageStyle utils', () => {
 					for ( const icon in DEFAULT_ICONS ) {
 						const style = { name: 'custom', modelElements: [ 'imageBlock' ], icon };
 
-						expect( normalizeStyles( [ style ] ) ).to.deep.equal( [ { ...style, icon: DEFAULT_ICONS[ icon ] } ] );
+						expect( _normalizeStyles( [ style ] ) ).to.deep.equal( [ { ...style, icon: DEFAULT_ICONS[ icon ] } ] );
 					}
 
 					sinon.assert.notCalled( console.warn );
@@ -171,7 +175,7 @@ describe( 'ImageStyle utils', () => {
 				it( 'should pass the icon if is not a string', () => {
 					const style = { name: 'custom', modelElements: [ 'imageBlock' ], icon: {} };
 
-					expect( normalizeStyles( [ style ] ) ).to.deep.equal( [ style ] );
+					expect( _normalizeStyles( [ style ] ) ).to.deep.equal( [ style ] );
 
 					sinon.assert.notCalled( console.warn );
 				} );
@@ -179,7 +183,7 @@ describe( 'ImageStyle utils', () => {
 				it( 'should warn and filter out the style which has no modelElements defined', () => {
 					const style = { name: 'foo' };
 
-					expect( normalizeStyles( [ style ] ) ).to.deep.equal( [] );
+					expect( _normalizeStyles( [ style ] ) ).to.deep.equal( [] );
 
 					sinon.assert.calledOnce( console.warn );
 					sinon.assert.calledWithExactly( console.warn,
@@ -192,7 +196,7 @@ describe( 'ImageStyle utils', () => {
 				it( 'should warn and filter out the style which has modelElements defined as an empty array', () => {
 					const style = { name: 'foo', modelElements: [] };
 
-					expect( normalizeStyles( [ style ] ) ).to.deep.equal( [] );
+					expect( _normalizeStyles( [ style ] ) ).to.deep.equal( [] );
 
 					sinon.assert.calledOnce( console.warn );
 					sinon.assert.calledWithExactly( console.warn,
@@ -206,7 +210,7 @@ describe( 'ImageStyle utils', () => {
 					const style = { name: 'foo', modelElements: [ 'imageBlock' ] };
 
 					// ImageBlockEditing plugin is not loaded
-					expect( normalizeStyles( [ style ], false, true ) ).to.deep.equal( [] );
+					expect( _normalizeStyles( [ style ], false, true ) ).to.deep.equal( [] );
 
 					sinon.assert.calledOnce( console.warn );
 					sinon.assert.calledWithExactly( console.warn,
@@ -227,7 +231,7 @@ describe( 'ImageStyle utils', () => {
 						customProp: 'customProp'
 					};
 
-					const normalizedStyles = normalizeStyles( [ style ] );
+					const normalizedStyles = _normalizeStyles( [ style ] );
 
 					expect( normalizedStyles[ 0 ] ).to.not.equal( DEFAULT_OPTIONS.alignLeft );
 					expect( normalizedStyles ).to.deep.equal( [ { ...style, icon: DEFAULT_ICONS.inline } ] );
@@ -239,7 +243,7 @@ describe( 'ImageStyle utils', () => {
 
 		describe( 'getDefaultDropdownDefinitions', () => {
 			it( 'should return default drop-downs list if both image editing plugins are loaded', () => {
-				expect( utils.getDefaultDropdownDefinitions( { has: () => true } ) ).to.deep.equal( utils.DEFAULT_DROPDOWN_DEFINITIONS );
+				expect( utils.getDefaultDropdownDefinitions( { has: () => true } ) ).to.deep.equal( DEFAULT_DROPDOWN_DEFINITIONS );
 			} );
 
 			it( 'should return an empty array if only `ImageBlockEditing` plugin is loaded', () => {
@@ -253,7 +257,7 @@ describe( 'ImageStyle utils', () => {
 			} );
 
 			it( 'should always return a new instance of the drop-downs list', () => {
-				expect( utils.getDefaultDropdownDefinitions( { has: () => true } ) ).to.not.equal( utils.DEFAULT_DROPDOWN_DEFINITIONS );
+				expect( utils.getDefaultDropdownDefinitions( { has: () => true } ) ).to.not.equal( DEFAULT_DROPDOWN_DEFINITIONS );
 			} );
 		} );
 	} );

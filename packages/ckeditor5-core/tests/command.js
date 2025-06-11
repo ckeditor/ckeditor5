@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Command from '../src/command.js';
-import ModelTestEditor from './_utils/modeltesteditor.js';
+import { Command } from '../src/command.js';
+import { ModelTestEditor } from './_utils/modeltesteditor.js';
 
 describe( 'Command', () => {
 	let editor, command;

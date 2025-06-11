@@ -4,11 +4,11 @@
  */
 
 import { IconHeading2 } from 'ckeditor5/src/icons.js';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import HeadingEditing from '../src/headingediting.js';
-import HeadingButtonsUI from '../src/headingbuttonsui.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { HeadingEditing } from '../src/headingediting.js';
+import { HeadingButtonsUI } from '../src/headingbuttonsui.js';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
+import { ButtonView } from '@ckeditor/ckeditor5-ui/src/button/buttonview.js';
 import { getLocalizedOptions } from '../src/utils.js';
 
 describe( 'HeadingButtonUI', () => {

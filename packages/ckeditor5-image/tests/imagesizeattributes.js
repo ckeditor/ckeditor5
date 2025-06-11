@@ -3,18 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
-import ReplaceImageSourceCommand from '../src/image/replaceimagesourcecommand.js';
-import ImageBlockEditing from '../src/image/imageblockediting.js';
-import ImageInlineEditing from '../src/image/imageinlineediting.js';
-import ImageSizeAttributes from '../src/imagesizeattributes.js';
-import ImageResizeEditing from '../src/imageresize/imageresizeediting.js';
-import PictureEditing from '../src/pictureediting.js';
-import ImageUtils from '../src/imageutils.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ReplaceImageSourceCommand } from '../src/image/replaceimagesourcecommand.js';
+import { ImageBlockEditing } from '../src/image/imageblockediting.js';
+import { ImageInlineEditing } from '../src/image/imageinlineediting.js';
+import { ImageSizeAttributes } from '../src/imagesizeattributes.js';
+import { ImageResizeEditing } from '../src/imageresize/imageresizeediting.js';
+import { PictureEditing } from '../src/pictureediting.js';
+import { ImageUtils } from '../src/imageutils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
@@ -66,6 +66,14 @@ describe( 'ImageSizeAttributes', () => {
 		it( 'should allow the "width" and "height" attributes on the imageInline element', () => {
 			expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'width' ) ).to.be.true;
 			expect( model.schema.checkAttribute( [ '$root', 'imageInline' ], 'height' ) ).to.be.true;
+		} );
+
+		it( 'does not set isFormatting property for width attribute', () => {
+			expect( editor.model.schema.getAttributeProperties( 'width' ).isFormatting ).to.be.undefined;
+		} );
+
+		it( 'does not set isFormatting property for heigh attribute', () => {
+			expect( editor.model.schema.getAttributeProperties( 'height' ).isFormatting ).to.be.undefined;
 		} );
 	} );
 

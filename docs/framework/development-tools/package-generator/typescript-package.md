@@ -220,7 +220,7 @@ npm run translations:synchronize
 
 ### `translations:validate`
 
-Peforms only validation steps described in [`translations:synchronize`](#translationssynchronize) script without modifying any files. It only checks the correctness of the context file against the `t()` function calls.
+Performs only validation steps described in [`translations:synchronize`](#translationssynchronize) script without modifying any files. It only checks the correctness of the context file against the `t()` function calls.
 
 Examples:
 
@@ -254,7 +254,7 @@ These scripts compile TypeScript and remove the compiled files. They are used in
 
 ## How to change ESLint configuration
 
-To change the ESLint configuration, edit the [.eslintrc.js](https://github.com/ckeditor/ckeditor5-package-generator/blob/master/.eslintrc.js) file. It is also a good idea to check out the [ESLint documentation](https://eslint.org/docs/rules/).
+To change the ESLint configuration, edit the [.eslintrc.js](https://github.com/ckeditor/ckeditor5-package-generator/blob/master/eslint.config.js) file. It is also a good idea to check out the [ESLint documentation](https://eslint.org/docs/rules/).
 
 ### Why are the predefined ESLint rules recommended
 

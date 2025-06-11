@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import CodeEditing from './code/codeediting.js';
-import CodeUI from './code/codeui.js';
+import { CodeEditing } from './code/codeediting.js';
+import { CodeUI } from './code/codeui.js';
 
 import '../theme/code.css';
 
@@ -22,7 +22,7 @@ import '../theme/code.css';
  * This is a "glue" plugin which loads the {@link module:basic-styles/code/codeediting~CodeEditing code editing feature}
  * and {@link module:basic-styles/code/codeui~CodeUI code UI feature}.
  */
-export default class Code extends Plugin {
+export class Code extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

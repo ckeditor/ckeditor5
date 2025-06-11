@@ -12,8 +12,8 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { Typing } from 'ckeditor5/src/typing.js';
 import type { MentionFeed, MentionFeedObjectItem, ItemRenderer } from '@ckeditor/ckeditor5-mention';
 
-import EmojiRepository from './emojirepository.js';
-import type EmojiPicker from './emojipicker.js';
+import { EmojiRepository } from './emojirepository.js';
+import { type EmojiPicker } from './emojipicker.js';
 import type { SkinToneId } from './emojiconfig.js';
 
 const EMOJI_MENTION_MARKER = ':';
@@ -25,7 +25,7 @@ const EMOJI_HINT_OPTION_ID = ':__EMOJI_HINT:';
  *
  * Introduces the autocomplete of emojis while typing.
  */
-export default class EmojiMention extends Plugin {
+export class EmojiMention extends Plugin {
 	/**
 	 * An instance of the {@link module:emoji/emojipicker~EmojiPicker} plugin if it is loaded in the editor.
 	 */

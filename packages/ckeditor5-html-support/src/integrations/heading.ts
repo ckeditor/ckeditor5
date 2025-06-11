@@ -11,12 +11,12 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import type { HeadingOption } from '@ckeditor/ckeditor5-heading';
 import { Enter } from 'ckeditor5/src/enter.js';
 
-import DataSchema from '../dataschema.js';
+import { DataSchema } from '../dataschema.js';
 
 /**
  * Provides the General HTML Support integration with {@link module:heading/heading~Heading Heading} feature.
  */
-export default class HeadingElementSupport extends Plugin {
+export class HeadingElementSupport extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

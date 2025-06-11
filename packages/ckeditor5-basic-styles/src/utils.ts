@@ -8,7 +8,7 @@
  */
 
 import type { Editor, Plugin } from 'ckeditor5/src/core.js';
-import type AttributeCommand from './attributecommand.js';
+import { type AttributeCommand } from './attributecommand.js';
 import { MenuBarMenuListItemButtonView, type ButtonView } from 'ckeditor5/src/ui.js';
 
 /**

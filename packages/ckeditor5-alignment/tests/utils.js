@@ -4,7 +4,7 @@
  */
 
 import { CKEditorError } from 'ckeditor5/src/utils.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { isDefault, isSupported, supportedOptions, normalizeAlignmentOptions } from '../src/utils.js';
 
 describe( 'utils', () => {

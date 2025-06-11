@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import DomEmitterMixin from '../../src/dom/emittermixin.js';
-import EmitterMixin from '../../src/emittermixin.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { DomEmitterMixin } from '../../src/dom/emittermixin.js';
+import { EmitterMixin } from '../../src/emittermixin.js';
 
 describe( 'DomEmitterMixin', () => {
 	const Emitter = EmitterMixin();

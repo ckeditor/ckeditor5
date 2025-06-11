@@ -3,24 +3,24 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import CodeBlockEditing from '../src/codeblockediting.js';
-import CodeBlockCommand from '../src/codeblockcommand.js';
-import IndentCodeBlockCommand from '../src/indentcodeblockcommand.js';
-import OutdentCodeBlockCommand from '../src/outdentcodeblockcommand.js';
+import { CodeBlockEditing } from '../src/codeblockediting.js';
+import { CodeBlockCommand } from '../src/codeblockcommand.js';
+import { IndentCodeBlockCommand } from '../src/indentcodeblockcommand.js';
+import { OutdentCodeBlockCommand } from '../src/outdentcodeblockcommand.js';
 
-import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
-import CodeEditing from '@ckeditor/ckeditor5-basic-styles/src/code/codeediting.js';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter.js';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo.js';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
-import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting.js';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
-import DragDrop from '@ckeditor/ckeditor5-clipboard/src/dragdrop.js';
+import { AlignmentEditing } from '@ckeditor/ckeditor5-alignment/src/alignmentediting.js';
+import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
+import { CodeEditing } from '@ckeditor/ckeditor5-basic-styles/src/code/codeediting.js';
+import { Enter } from '@ckeditor/ckeditor5-enter/src/enter.js';
+import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
+import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { IndentEditing } from '@ckeditor/ckeditor5-indent/src/indentediting.js';
+import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
+import { DragDrop } from '@ckeditor/ckeditor5-clipboard/src/dragdrop.js';
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { getData as getModelData, setData as setModelData, stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
@@ -1488,6 +1488,17 @@ describe( 'CodeBlockEditing', () => {
 				'<codeBlock language="plaintext">Hello World!Nested-boldNested codeNested-span</codeBlock>' +
 				'<paragraph>bar</paragraph>'
 			);
+		} );
+
+		it( 'should consume language class during upcast', () => {
+			const upcastCheck = sinon.spy( ( evt, data, conversionApi ) => {
+				expect( conversionApi.consumable.test( data.viewItem, { classes: [ 'language-plaintext' ] } ) ).to.be.false;
+			} );
+
+			editor.data.upcastDispatcher.on( 'element:code', upcastCheck, { priority: 'lowest' } );
+			editor.setData( '<pre><code class="language-plaintext">baz</code></pre>' );
+
+			expect( upcastCheck ).to.be.calledOnce;
 		} );
 
 		describe( 'config.codeBlock.languages', () => {

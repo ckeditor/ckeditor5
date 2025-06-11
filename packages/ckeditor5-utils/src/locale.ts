@@ -7,14 +7,14 @@
  * @module utils/locale
  */
 
-import toArray, { type ArrayOrItem } from './toarray.js';
+import { toArray, type ArrayOrItem } from './toarray.js';
 import { _translate, _unifyTranslations, type Message } from './translation-service.js';
 import { getLanguageDirection, type LanguageDirection } from './language.js';
 
 /**
  * Represents the localization services.
  */
-export default class Locale {
+export class Locale {
 	/**
 	 * The editor UI language code in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
 	 *

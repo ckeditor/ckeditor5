@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import LegacyTodoListEditing from '../../src/legacytodolist/legacytodolistediting.js';
-import LegacyCheckTodoListCommand from '../../src/legacytodolist/legacychecktodolistcommand.js';
+import { LegacyTodoListEditing } from '../../src/legacytodolist/legacytodolistediting.js';
+import { LegacyCheckTodoListCommand } from '../../src/legacytodolist/legacychecktodolistcommand.js';
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 
 describe( 'LegacyCheckTodoListCommand', () => {
 	let editor, model, command;

@@ -28,7 +28,7 @@ import {
  *
  * @internal
  */
-export default class ClipboardMarkersUtils extends Plugin {
+export class ClipboardMarkersUtils extends Plugin {
 	/**
 	 * Map of marker names that can be copied.
 	 *

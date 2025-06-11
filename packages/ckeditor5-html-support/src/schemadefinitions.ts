@@ -51,7 +51,7 @@ import type { DataSchemaBlockElementDefinition, DataSchemaInlineElementDefinitio
 //
 // When adding elements to this list, update the feature guide listing, too.
 
-export default {
+export const defaultConfig = {
 	block: [
 		// Existing features.
 		{
@@ -698,7 +698,10 @@ export default {
 			model: 'htmlA',
 			view: 'a',
 			priority: 5,
-			coupledAttribute: 'linkHref'
+			coupledAttribute: 'linkHref',
+			attributeProperties: {
+				isFormatting: true
+			}
 		},
 		{
 			model: 'htmlStrong',

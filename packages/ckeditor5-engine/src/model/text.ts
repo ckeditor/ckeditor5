@@ -7,7 +7,7 @@
  * @module engine/model/text
  */
 
-import Node, { type NodeAttributes } from './node.js';
+import { Node, type NodeAttributes } from './node.js';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToStringifiedObject } = require( '../dev-utils/utils' );
 
@@ -22,7 +22,7 @@ import Node, { type NodeAttributes } from './node.js';
  * this behavior, keeping references to `Text` is not recommended. Instead, consider creating
  * {@link module:engine/model/liveposition~LivePosition live position} placed before the text node.
  */
-export default class Text extends Node {
+export class Text extends Node {
 	/**
 	 * Text data contained in this text node.
 	 *
@@ -114,3 +114,5 @@ Text.prototype.is = function( type: string ): boolean {
 		// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
 		type === 'node' || type === 'model:node';
 };
+
+export { Text as ModelText };

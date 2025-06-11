@@ -3,18 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
+import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { toWidget, Widget } from '@ckeditor/ckeditor5-widget';
 import { insertAt } from '@ckeditor/ckeditor5-utils';
 
-import Input from '../src/input.js';
-import InsertTextCommand from '../src/inserttextcommand.js';
+import { Input } from '../src/input.js';
+import { InsertTextCommand } from '../src/inserttextcommand.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import env from '@ckeditor/ckeditor5-utils/src/env.js';
+import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 
 describe( 'Input', () => {
 	testUtils.createSinonSandbox();

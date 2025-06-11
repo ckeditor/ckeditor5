@@ -17,7 +17,7 @@ import { Observer } from 'ckeditor5/src/engine.js';
  *
  * **Note:** This event is not fired for images that has been added to the document and rendered as `complete` (already loaded).
  */
-export default class ImageLoadObserver extends Observer {
+export class ImageLoadObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */

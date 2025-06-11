@@ -61,7 +61,7 @@ export interface TableWalkerOptions {
  * The table iterator class. It allows to iterate over table cells. For each cell the iterator yields
  * {@link module:table/tablewalker~TableSlot} with proper table cell attributes.
  */
-export default class TableWalker implements IterableIterator<TableSlot> {
+export class TableWalker implements IterableIterator<TableSlot> {
 	/**
 	 * The walker's table element.
 	 *

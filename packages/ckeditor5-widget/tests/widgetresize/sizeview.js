@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import SizeView from '../../src/widgetresize/sizeview.js';
-import ResizerState from '../../src/widgetresize/resizerstate.js';
+import { SizeView } from '../../src/widgetresize/sizeview.js';
+import { ResizeState } from '../../src/widgetresize/resizerstate.js';
 
 describe( 'SizeView', () => {
 	let sizeView, state;
 
 	beforeEach( () => {
 		sizeView = new SizeView();
-		state = new ResizerState();
+		state = new ResizeState();
 
 		sizeView._bindToState( {}, state );
 		sizeView.render();

@@ -25,7 +25,7 @@ import type { Notification } from 'ckeditor5/src/ui.js';
  * - To insert links to files the {@link module:link/linkcommand~LinkCommand 'link'} command
  * from the {@link module:link/link~Link Link feature}.
  */
-export default class CKFinderCommand extends Command {
+export class CKFinderCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

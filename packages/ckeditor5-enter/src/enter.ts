@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
-import EnterCommand from './entercommand.js';
-import EnterObserver, { type ViewDocumentEnterEvent } from './enterobserver.js';
+import { EnterCommand } from './entercommand.js';
+import { EnterObserver, type ViewDocumentEnterEvent } from './enterobserver.js';
 
 /**
  * This plugin handles the <kbd>Enter</kbd> keystroke (hard line break) in the editor.
@@ -18,7 +18,7 @@ import EnterObserver, { type ViewDocumentEnterEvent } from './enterobserver.js';
  *
  * For more information about this feature see the {@glink api/enter package page}.
  */
-export default class Enter extends Plugin {
+export class Enter extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

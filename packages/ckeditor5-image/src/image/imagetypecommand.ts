@@ -9,12 +9,12 @@
 
 import type { Element } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type ImageUtils from '../imageutils.js';
+import { type ImageUtils } from '../imageutils.js';
 
 /**
  * The image type command. It changes the type of a selected image, depending on the configuration.
  */
-export default class ImageTypeCommand extends Command {
+export class ImageTypeCommand extends Command {
 	/**
 	 * Model element name the command converts to.
 	 */

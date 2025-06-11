@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Alignment from '../src/alignment.js';
-import AlignmentEditing from '../src/alignmentediting.js';
-import AlignmentUI from '../src/alignmentui.js';
+import { Alignment } from '../src/alignment.js';
+import { AlignmentEditing } from '../src/alignmentediting.js';
+import { AlignmentUI } from '../src/alignmentui.js';
 
 describe( 'Alignment', () => {
 	it( 'requires AlignmentEditing and AlignmentUI', () => {

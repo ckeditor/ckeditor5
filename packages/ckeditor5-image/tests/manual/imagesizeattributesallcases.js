@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import Indent from '@ckeditor/ckeditor5-indent/src/indent.js';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code.js';
-import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock.js';
-import ImageResize from '../../src/imageresize.js';
-import ImageSizeAttributes from '../../src/imagesizeattributes.js';
-import PictureEditing from '../../src/pictureediting.js';
-import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice.js';
+import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
+import { Indent } from '@ckeditor/ckeditor5-indent/src/indent.js';
+import { Code } from '@ckeditor/ckeditor5-basic-styles/src/code.js';
+import { IndentBlock } from '@ckeditor/ckeditor5-indent/src/indentblock.js';
+import { ImageResize } from '../../src/imageresize.js';
+import { ImageSizeAttributes } from '../../src/imagesizeattributes.js';
+import { PictureEditing } from '../../src/pictureediting.js';
+import { PasteFromOffice } from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice.js';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 const commonConfig = getConfig();

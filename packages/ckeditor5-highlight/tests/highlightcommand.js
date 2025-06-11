@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import HighlightCommand from './../src/highlightcommand.js';
+import { HighlightCommand } from './../src/highlightcommand.js';
 
-import Command from '@ckeditor/ckeditor5-core/src/command.js';
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
+import { Command } from '@ckeditor/ckeditor5-core/src/command.js';
+import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'HighlightCommand', () => {

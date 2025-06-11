@@ -9,14 +9,14 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import { ButtonView } from 'ckeditor5/src/ui.js';
 import { IconCaption } from 'ckeditor5/src/icons.js';
-import type ToggleTableCaptionCommand from './toggletablecaptioncommand.js';
+import { type ToggleTableCaptionCommand } from './toggletablecaptioncommand.js';
 
 import { getCaptionFromModelSelection } from './utils.js';
 
 /**
   * The table caption UI plugin. It introduces the `'toggleTableCaption'` UI button.
   */
-export default class TableCaptionUI extends Plugin {
+export class TableCaptionUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

@@ -7,25 +7,25 @@
  * @module engine/model/treewalker
  */
 
-import type Element from './element.js';
+import { type Element } from './element.js';
 import {
-	default as Position,
+	Position,
 	getTextNodeAtPosition,
 	getNodeAfterPosition,
 	getNodeBeforePosition
 } from './position.js';
-import TextProxy from './textproxy.js';
+import { TextProxy } from './textproxy.js';
 
-import type DocumentFragment from './documentfragment.js';
-import type Item from './item.js';
-import type Range from './range.js';
+import { type DocumentFragment } from './documentfragment.js';
+import { type Item } from './item.js';
+import { type Range } from './range.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Position iterator class. It allows to iterate forward and backward over the document.
  */
-export default class TreeWalker implements Iterable<TreeWalkerValue> {
+export class TreeWalker implements Iterable<TreeWalkerValue> {
 	/**
 	 * Walking direction. Defaults `'forward'`.
 	 */

@@ -8,7 +8,7 @@
  */
 
 import { ObservableMixin, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
-import getLastTextLine from './utils/getlasttextline.js';
+import { getLastTextLine } from './utils/getlasttextline.js';
 
 import type {
 	Batch,
@@ -25,7 +25,7 @@ import type {
  * {@link module:typing/textwatcher~TextWatcher#event:matched:selection `matched:selection`} and
  * {@link module:typing/textwatcher~TextWatcher#event:unmatched `unmatched`} events on typing or selection changes.
  */
-export default class TextWatcher extends /* #__PURE__ */ ObservableMixin() {
+export class TextWatcher extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * The editor's model.
 	 */

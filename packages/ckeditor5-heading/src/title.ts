@@ -39,7 +39,7 @@ const titleLikeElements = new Set( [ 'paragraph', 'heading1', 'heading2', 'headi
  *
  * It splits the document into `Title` and `Body` sections.
  */
-export default class Title extends Plugin {
+export class Title extends Plugin {
 	/**
 	 * A reference to an empty paragraph in the body
 	 * created when there is no element in the body for the placeholder purposes.

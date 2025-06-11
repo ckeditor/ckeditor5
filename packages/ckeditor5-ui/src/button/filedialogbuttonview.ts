@@ -7,12 +7,12 @@
  * @module ui/button/filedialogbuttonview
  */
 
-import View from '../view.js';
-import ButtonView from './buttonview.js';
+import { View } from '../view.js';
+import { ButtonView } from './buttonview.js';
 import type { ButtonExecuteEvent } from './button.js';
 
 import type { Constructor, Locale, Mixed } from '@ckeditor/ckeditor5-utils';
-import ListItemButtonView from './listitembuttonview.js';
+import { ListItemButtonView } from './listitembuttonview.js';
 
 /**
  * The file dialog button view.
@@ -38,7 +38,7 @@ import ListItemButtonView from './listitembuttonview.js';
  * } );
  * ```
  */
-export default class FileDialogButtonView extends /* #__PURE__ */ FileDialogViewMixin( ButtonView ) {}
+export class FileDialogButtonView extends /* #__PURE__ */ FileDialogViewMixin( ButtonView ) {}
 
 /**
  * The file dialog button view used in a lists.
