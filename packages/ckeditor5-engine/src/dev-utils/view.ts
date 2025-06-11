@@ -130,7 +130,7 @@ export function _setViewData(
 	const root = document.getRoot( rootName )!;
 
 	view.change( writer => {
-		const result: any = _setViewData.__parseView( data, { rootElement: root } );
+		const result: any = _setViewData._parse( data, { rootElement: root } );
 
 		if ( result.view && result.selection ) {
 			writer.setSelection( result.selection );
@@ -139,7 +139,7 @@ export function _setViewData(
 }
 
 // Set _parseView as _setViewData private method - needed for testing/spying.
-_setViewData.__parseView = _parseView;
+_setViewData._parse = _parseView;
 
 /**
  * Converts view elements to HTML-like string representation.

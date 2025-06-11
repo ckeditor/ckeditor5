@@ -221,7 +221,7 @@ describe( 'AutoLink', () => {
 
 		function createDataTransfer( data ) {
 			return {
-				_getModelData( type ) {
+				getData( type ) {
 					return data[ type ];
 				}
 			};

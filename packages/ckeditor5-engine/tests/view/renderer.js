@@ -6178,7 +6178,7 @@ describe( 'Renderer', () => {
 	function getMutationStats( mutationList ) {
 		return mutationList.map( mutation => {
 			if ( mutation.type == 'characterData' ) {
-				return `updated text: ${ JSON._stringifyView( mutation.oldValue ) } to ${ JSON._stringifyView( mutation.target.data ) }`;
+				return `updated text: ${ JSON.stringify( mutation.oldValue ) } to ${ JSON.stringify( mutation.target.data ) }`;
 			} else {
 				return `added: ${ _stringifyViewNodeList( mutation.addedNodes ) },` +
 						` removed: ${ _stringifyViewNodeList( mutation.removedNodes ) }`;
@@ -6189,7 +6189,7 @@ describe( 'Renderer', () => {
 			if ( node.nodeType == 1 ) {
 				return `<${ node.nodeName.toLowerCase() }>`;
 			} else if ( node.nodeType == 3 ) {
-				return `text: ${ JSON._stringifyView( node.data ) }`;
+				return `text: ${ JSON.stringify( node.data ) }`;
 			} else {
 				return 'node';
 			}
