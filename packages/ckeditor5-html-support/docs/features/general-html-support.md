@@ -3,6 +3,7 @@ category: features-html
 order: 20
 modified_at: 2021-10-25
 meta-title: General HTML Support | CKEditor 5 Documentation
+meta-description: Enable General HTML Support in CKEditor 5 to freely use custom HTML elements and attributes for advanced content editing and flexibility.
 ---
 
 # General HTML Support

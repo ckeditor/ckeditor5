@@ -1,6 +1,7 @@
 ---
 menu-title: Lists editing behavior
 meta-title: Lists editing behavior | CKEditor 5 Documentation
+meta-description: Easily edit and customize lists in CKEditor 5 with intuitive tools for nesting, reordering, and formatting list items.
 category: features-lists
 order: 40
 modified_at: 2024-04-01
