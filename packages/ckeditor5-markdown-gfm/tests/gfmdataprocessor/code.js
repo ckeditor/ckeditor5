@@ -317,7 +317,10 @@ describe( 'GFMDataProcessor', () => {
 
 				'<pre><code class="language-raw"></code></pre>',
 
-				'',
+				[
+					'```raw',
+					'```'
+				].join( '\n' ),
 
 				{
 					setup( processor ) {

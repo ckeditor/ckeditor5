@@ -253,7 +253,7 @@ describe( 'GFMDataProcessor', () => {
 
 				'<p>[this][]</p>',
 
-				'\\[this\\]\\[\\]'
+				'\\[this]\\[]'
 			);
 		} );
 
@@ -263,7 +263,7 @@ describe( 'GFMDataProcessor', () => {
 
 				'<p>[this]</p>',
 
-				'\\[this\\]'
+				'\\[this]'
 			);
 		} );
 
@@ -274,7 +274,7 @@ describe( 'GFMDataProcessor', () => {
 
 				'<p>[a reference inside <a href="foo">this</a>]</p>',
 
-				'\\[a reference inside [this](foo)\\]'
+				'\\[a reference inside [this](foo)]'
 			);
 		} );
 
@@ -285,7 +285,7 @@ describe( 'GFMDataProcessor', () => {
 
 				'<p>[a reference inside <a href="foo">this</a>]</p>',
 
-				'\\[a reference inside [this](foo)\\]'
+				'\\[a reference inside [this](foo)]'
 			);
 		} );
 
@@ -307,7 +307,7 @@ describe( 'GFMDataProcessor', () => {
 
 				'<p>Suppress [this] and [this].</p>',
 
-				'Suppress \\[this\\] and \\[this\\].'
+				'Suppress \\[this] and \\[this].'
 			);
 		} );
 

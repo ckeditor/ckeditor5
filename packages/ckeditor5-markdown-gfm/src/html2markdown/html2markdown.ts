@@ -10,6 +10,7 @@
 import { unified } from 'unified';
 import rehypeParse from 'rehype-dom-parse';
 import rehypeRemark from 'rehype-remark';
+import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm-no-autolink';
 import remarkStringify from 'remark-stringify';
 import { toHtml } from 'hast-util-to-html';
@@ -36,7 +37,7 @@ export class HtmlToMarkdown {
 			.trim();
 	}
 
-	public getRawTagsHandlers(): Record<string, MdastHandle> {
+	private getRawTagsHandlers(): Record<string, MdastHandle> {
 		return this._keepRawTags.reduce( ( handlers: any, tagName: any ) => {
 			handlers[ tagName ] = ( state: any, node: any ) => {
 				const result = {
@@ -52,7 +53,7 @@ export class HtmlToMarkdown {
 		}, {} as Record<string, MdastHandle> );
 	}
 
-	public getNodeHandlers(): MarkdownHandle {
+	private getLinkHandler(): MarkdownHandle {
 		const urlPattern = [
 			String.raw`\b(?:(?:https?|ftp):\/\/|www\.)`,
 			String.raw`(?![-_])(?:[-_a-z0-9\u00a1-\uffff]{1,63}\.)+(?:[a-z\u00a1-\uffff]{2,63})`,
@@ -67,23 +68,39 @@ export class HtmlToMarkdown {
 			state: any
 		): string => {
 			return node.value.replaceAll( urlOrTextRegex, ( match, urlChunk, textChunk ) => {
-				return urlChunk || state.safe( textChunk, { before: '', after: '' } );
+				if ( urlChunk ) {
+					return urlChunk;
+				}
+
+				return state
+					.safe( textChunk, { before: '', after: '' } )
+					.replaceAll( /(?<!\\)</g, '\\<' );
 			} );
 		};
 	}
 
 	private _buildProcessor() {
 		this._processor = unified()
+			// Parse HTML to an abstract syntax tree (AST).
 			.use( rehypeParse )
+			// Turns HTML syntax tree to markdown syntax tree.
 			.use( rehypeRemark, {
 				handlers: this.getRawTagsHandlers()
 			} )
-			.use( remarkGfm, { singleTilde: true } )
+			// Adds support for GitHub Flavored Markdown (GFM).
+			.use( remarkGfm, {
+				singleTilde: true
+			} )
+			// Replaces line breaks with `<br>` tags.
+			.use( remarkBreaks )
+			// Serializes HTML syntax tree.
 			.use( remarkStringify, {
+				resourceLink: true,
 				emphasis: '_',
 				rule: '-',
 				handlers: {
-					text: this.getNodeHandlers()
+					break: () => '\n',
+					text: this.getLinkHandler()
 				}
 			} );
 	}

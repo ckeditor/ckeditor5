@@ -12,6 +12,7 @@ import remarkGfm from 'remark-gfm-no-autolink';
 import rehypeRaw from 'rehype-raw';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
+import remarkBreaks from 'remark-breaks';
 import rehypeStringify from 'rehype-dom-stringify';
 
 /**
@@ -22,10 +23,17 @@ export class MarkdownToHtml {
 
 	constructor() {
 		this._processor = unified()
+			// Parses Markdown to an abstract syntax tree (AST).
 			.use( remarkParse )
+			// Adds support for GitHub Flavored Markdown (GFM).
 			.use( remarkGfm, { singleTilde: true } )
+			// Replaces line breaks with `<br>` tags.
+			.use( remarkBreaks )
+			// Turns markdown syntax tree to HTML syntax tree, ignoring embedded HTML.
 			.use( remarkRehype, { allowDangerousHtml: true } )
+			// Handles embedded HTML.
 			.use( rehypeRaw )
+			// Serializes HTML syntax tree
 			.use( rehypeStringify );
 	}
 
@@ -33,6 +41,6 @@ export class MarkdownToHtml {
 		return this._processor
 			.processSync( markdown )
 			.toString()
-			.replaceAll( /\n<\/code>/g, '</code>' );
+			.replaceAll( '\n</code>', '</code>' );
 	}
 }

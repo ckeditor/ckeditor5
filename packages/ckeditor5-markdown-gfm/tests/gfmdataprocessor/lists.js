@@ -348,7 +348,7 @@ describe( 'GFMDataProcessor', () => {
 				// After converting back list items will be unified.
 				'* test\n' +
 				'\n' +
-				'* test\n' +
+				'- test\n' +
 				'\n' +
 				'* test'
 			);
