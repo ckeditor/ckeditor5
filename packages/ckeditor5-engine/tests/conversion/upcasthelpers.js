@@ -1457,7 +1457,7 @@ describe( 'upcast-converters', () => {
 			modelRoot = model.document.createRoot();
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			model.setData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+			_setModelData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
 			view = new View( new StylesProcessor() );
 			viewDocument = view.document;
