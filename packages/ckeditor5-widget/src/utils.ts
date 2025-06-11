@@ -34,7 +34,7 @@ import {
 
 import { IconView } from '@ckeditor/ckeditor5-ui';
 
-import { HighlightStack, type HighlightStackChangeEvent } from './highlightstack.js';
+import { WidgetHighlightStack, type HighlightStackChangeEvent } from './highlightstack.js';
 import { getTypeAroundFakeCaretPosition } from './widgettypearound/utils.js';
 
 /**
@@ -181,7 +181,7 @@ function removeHighlight( element: ViewElement, descriptor: HighlightDescriptor,
 }
 
 /**
- * Sets highlight handling methods. Uses {@link module:widget/highlightstack~HighlightStack} to
+ * Sets highlight handling methods. Uses {@link module:widget/highlightstack~WidgetHighlightStack} to
  * properly determine which highlight descriptor should be used at given time.
  */
 export function setHighlightHandling(
@@ -190,7 +190,7 @@ export function setHighlightHandling(
 	add: ( element: ViewElement, descriptor: HighlightDescriptor, writer: DowncastWriter ) => void = addHighlight,
 	remove: ( element: ViewElement, descriptor: HighlightDescriptor, writer: DowncastWriter ) => void = removeHighlight
 ): void {
-	const stack = new HighlightStack();
+	const stack = new WidgetHighlightStack();
 
 	stack.on<HighlightStackChangeEvent>( 'change:top', ( evt, data ) => {
 		if ( data.oldDescriptor ) {

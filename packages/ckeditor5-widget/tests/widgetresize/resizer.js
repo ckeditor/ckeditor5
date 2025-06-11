@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Resizer } from '../../src/widgetresize/resizer.js';
+import { WidgetResizer } from '../../src/widgetresize/resizer.js';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
@@ -317,7 +317,7 @@ describe( 'Resizer', () => {
 	function createResizer( customOptions ) {
 		setModelData( editor.model, '<resizable></resizable>' );
 
-		return new Resizer( Object.assign( {
+		return new WidgetResizer( Object.assign( {
 			modelElement: editor.model.document.getRoot().getChild( 0 ),
 			viewElement: editor.editing.view.document.getRoot().getChild( 0 ),
 			editor
