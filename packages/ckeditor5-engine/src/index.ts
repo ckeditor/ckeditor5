@@ -142,7 +142,7 @@ export {
 	type DifferItemReinsert,
 	type DifferItemRoot
 } from './model/differ.js';
-export type { Item } from './model/item.js';
+export type { ModelItem } from './model/item.js';
 export { Node, type NodeAttributes } from './model/node.js';
 export { RootElement } from './model/rootelement.js';
 export {

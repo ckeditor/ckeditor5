@@ -11,7 +11,7 @@ import { Position, type PositionOffset, type PositionStickiness } from './positi
 
 import type { ModelApplyOperationEvent } from './model.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
-import { type Item } from './item.js';
+import { type ModelItem } from './item.js';
 import { type Operation } from './operation/operation.js';
 import { type RootElement } from './rootelement.js';
 
@@ -83,20 +83,26 @@ export class LivePosition extends /* #__PURE__ */ EmitterMixin( Position ) {
 	 * @internal
 	 * @see module:engine/model/position~Position._createAfter
 	 */
-	declare public static readonly _createAfter: ( item: Item | ModelDocumentFragment, stickiness?: PositionStickiness ) => LivePosition;
+	declare public static readonly _createAfter: (
+		item: ModelItem | ModelDocumentFragment,
+		stickiness?: PositionStickiness
+	) => LivePosition;
 
 	/**
 	 * @internal
 	 * @see module:engine/model/position~Position._createBefore
 	 */
-	declare public static readonly _createBefore: ( item: Item | ModelDocumentFragment, stickiness?: PositionStickiness ) => LivePosition;
+	declare public static readonly _createBefore: (
+		item: ModelItem | ModelDocumentFragment,
+		stickiness?: PositionStickiness
+	) => LivePosition;
 
 	/**
 	 * @internal
 	 * @see module:engine/model/position~Position._createAt
 	 */
 	declare public static readonly _createAt: (
-		itemOrPosition: Item | Position | ModelDocumentFragment,
+		itemOrPosition: ModelItem | Position | ModelDocumentFragment,
 		offset?: PositionOffset,
 		stickiness?: PositionStickiness
 	) => LivePosition;

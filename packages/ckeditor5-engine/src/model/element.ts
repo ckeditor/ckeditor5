@@ -12,7 +12,7 @@ import { NodeList } from './nodelist.js';
 import { Text } from './text.js';
 import { TextProxy } from './textproxy.js';
 
-import { type Item } from './item.js';
+import { type ModelItem } from './item.js';
 
 import { isIterable } from '@ckeditor/ckeditor5-utils';
 
@@ -49,7 +49,7 @@ export class ModelElement extends Node {
 	constructor(
 		name: string,
 		attrs?: NodeAttributes,
-		children?: string | Item | Iterable<string | Item>
+		children?: string | ModelItem | Iterable<string | ModelItem>
 	) {
 		super( attrs );
 
@@ -236,7 +236,7 @@ export class ModelElement extends Node {
 	 * @internal
 	 * @param nodes Nodes to be inserted.
 	 */
-	public _appendChild( nodes: string | Item | Iterable<string | Item> ): void {
+	public _appendChild( nodes: string | ModelItem | Iterable<string | ModelItem> ): void {
 		this._insertChild( this.childCount, nodes );
 	}
 
@@ -249,7 +249,7 @@ export class ModelElement extends Node {
 	 * @param index Index at which nodes should be inserted.
 	 * @param items Items to be inserted.
 	 */
-	public _insertChild( index: number, items: string | Item | Iterable<string | Item> ): void {
+	public _insertChild( index: number, items: string | ModelItem | Iterable<string | ModelItem> ): void {
 		const nodes = normalize( items );
 
 		for ( const node of nodes ) {
@@ -407,7 +407,7 @@ ModelElement.prototype.is = function( type: string, name?: string ): boolean {
 /**
  * Converts strings to Text and non-iterables to arrays.
  */
-function normalize( nodes: string | Item | Iterable<string | Item> ): Array<Node> {
+function normalize( nodes: string | ModelItem | Iterable<string | ModelItem> ): Array<Node> {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
 		return [ new Text( nodes ) ];

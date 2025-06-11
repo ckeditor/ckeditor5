@@ -7,7 +7,7 @@
  * @module remove-format/removeformatcommand
  */
 
-import type { ModelDocumentSelection, Item, Schema, Range, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, ModelItem, Schema, Range, Writer } from 'ckeditor5/src/engine.js';
 import { Command } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
 
@@ -82,7 +82,7 @@ export class RemoveFormatCommand extends Command {
 	/**
 	 * Helper method that removes a formatting attribute from an item either using custom callbacks or writer remove attribute.
 	 */
-	private _removeFormatting( attributeName: string, item: Item, itemRange: Range, writer: Writer ) {
+	private _removeFormatting( attributeName: string, item: ModelItem, itemRange: Range, writer: Writer ) {
 		let customHandled = false;
 
 		for ( const { isFormatting, removeFormatting } of this._customAttributesHandlers ) {
@@ -104,7 +104,7 @@ export class RemoveFormatCommand extends Command {
 	 * @param schema The schema describing the item.
 	 */
 	private* _getFormattingItems( selection: ModelDocumentSelection, schema: Schema ) {
-		const itemHasRemovableFormatting = ( item: Item | ModelDocumentSelection ) => {
+		const itemHasRemovableFormatting = ( item: ModelItem | ModelDocumentSelection ) => {
 			return !!first( this._getFormattingAttributes( item, schema ) );
 		};
 
@@ -138,7 +138,7 @@ export class RemoveFormatCommand extends Command {
 	 * @param schema The schema describing the item.
 	 * @returns The names of formatting attributes found in a given item.
 	 */
-	private* _getFormattingAttributes( item: Item | ModelDocumentSelection, schema: Schema ) {
+	private* _getFormattingAttributes( item: ModelItem | ModelDocumentSelection, schema: Schema ) {
 		for ( const [ attributeName ] of item.getAttributes() ) {
 			for ( const { isFormatting } of this._customAttributesHandlers ) {
 				if ( isFormatting( attributeName, item ) ) {
@@ -160,7 +160,7 @@ export class RemoveFormatCommand extends Command {
  *
  * @internal
  */
-export type IsFormattingCallback = ( attributeName: string, item: Item | ModelDocumentSelection ) => boolean;
+export type IsFormattingCallback = ( attributeName: string, item: ModelItem | ModelDocumentSelection ) => boolean;
 
 /**
  * Callback that removes formatting from an item.

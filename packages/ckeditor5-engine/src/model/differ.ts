@@ -15,7 +15,7 @@ import { type AttributeOperation } from './operation/attributeoperation.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelElement } from './element.js';
 import { type InsertOperation } from './operation/insertoperation.js';
-import { type Item } from './item.js';
+import { type ModelItem } from './item.js';
 import { type MergeOperation } from './operation/mergeoperation.js';
 import { type MoveOperation } from './operation/moveoperation.js';
 import { type Node } from './node.js';
@@ -137,7 +137,7 @@ export class Differ {
 	/**
 	 * Set of model items that were marked to get refreshed in {@link #_refreshItem}.
 	 */
-	private _refreshedItems: Set<Item> = new Set();
+	private _refreshedItems: Set<ModelItem> = new Set();
 
 	/**
 	 * Creates a `Differ` instance.
@@ -695,7 +695,7 @@ export class Differ {
 	/**
 	 * Returns a set of model items that were marked to get refreshed.
 	 */
-	public getRefreshedItems(): Set<Item> {
+	public getRefreshedItems(): Set<ModelItem> {
 		return new Set( this._refreshedItems );
 	}
 
@@ -720,7 +720,7 @@ export class Differ {
 	 * @internal
 	 * @param item Item to refresh.
 	 */
-	public _refreshItem( item: Item ): void {
+	public _refreshItem( item: ModelItem ): void {
 		if ( this._isInInsertedElement( item.parent! ) ) {
 			return;
 		}
@@ -877,7 +877,7 @@ export class Differ {
 	/**
 	 * Saves and handles an attribute change.
 	 */
-	private _markAttribute( item: Item ): void {
+	private _markAttribute( item: ModelItem ): void {
 		if ( item.root.is( 'rootElement' ) && !item.root._isLoaded ) {
 			return;
 		}
@@ -920,7 +920,7 @@ export class Differ {
 	 * This method does simple validation (it sets the state only for model elements, not for text proxy nodes). It also follows state
 	 * setting rules, that is, `'refresh'` cannot overwrite `'rename'`, and `'rename'` cannot overwrite `'move'`.
 	 */
-	private _setElementState( node: Item, state: 'refresh' | 'rename' | 'move' ) {
+	private _setElementState( node: ModelItem, state: 'refresh' | 'rename' | 'move' ) {
 		if ( !node.is( 'element' ) ) {
 			return;
 		}

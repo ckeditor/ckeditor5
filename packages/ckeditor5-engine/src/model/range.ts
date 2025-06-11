@@ -15,7 +15,7 @@ import { type ModelDocument } from './document.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelElement } from './element.js';
 import { type InsertOperation } from './operation/insertoperation.js';
-import { type Item } from './item.js';
+import { type ModelItem } from './item.js';
 import { type MergeOperation } from './operation/mergeoperation.js';
 import { type MoveOperation } from './operation/moveoperation.js';
 import { type Operation } from './operation/operation.js';
@@ -137,7 +137,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	/**
 	 * Checks whether given {@link module:engine/model/item~Item} is inside this range.
 	 */
-	public containsItem( item: Item ): boolean {
+	public containsItem( item: ModelItem ): boolean {
 		const pos = Position._createBefore( item );
 
 		return this.containsPosition( pos ) || this.start.isEqual( pos );
@@ -436,7 +436,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 *
 	 * @param options Object with configuration options. See {@link module:engine/model/treewalker~TreeWalker}.
 	 */
-	public* getItems( options: TreeWalkerOptions = {} ): IterableIterator<Item> {
+	public* getItems( options: TreeWalkerOptions = {} ): IterableIterator<ModelItem> {
 		options.boundaries = this;
 		options.ignoreElementEnd = true;
 
@@ -923,7 +923,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 *
 	 * @internal
 	 */
-	public static _createOn( item: Item ): Range {
+	public static _createOn( item: ModelItem ): Range {
 		return this._createFromPositionAndShift( Position._createBefore( item ), item.offsetSize );
 	}
 

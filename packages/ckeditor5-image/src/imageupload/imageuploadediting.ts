@@ -12,7 +12,7 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import {
 	UpcastWriter,
 	type ModelElement,
-	type Item,
+	type ModelItem,
 	type Writer,
 	type DataTransfer,
 	type ViewElement,
@@ -578,7 +578,7 @@ export function isHtmlIncluded( dataTransfer: DataTransfer ): boolean {
 	return Array.from( dataTransfer.types ).includes( 'text/html' ) && dataTransfer.getData( 'text/html' ) !== '';
 }
 
-function getImagesFromChangeItem( editor: Editor, item: Item ): Array<Item> {
+function getImagesFromChangeItem( editor: Editor, item: ModelItem ): Array<ModelItem> {
 	const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 	return Array.from( editor.model.createRangeOn( item ) )

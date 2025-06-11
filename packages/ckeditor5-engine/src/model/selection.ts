@@ -15,7 +15,7 @@ import { Range } from './range.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelDocumentSelection } from './documentselection.js';
 import { type ModelElement } from './element.js';
-import { type Item } from './item.js';
+import { type ModelItem } from './item.js';
 
 import { CKEditorError, EmitterMixin, isIterable } from '@ckeditor/ckeditor5-utils';
 
@@ -475,7 +475,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * @fires change:range
 	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~Item model item}.
 	 */
-	public setFocus( itemOrPosition: Item | Position, offset?: PositionOffset ): void {
+	public setFocus( itemOrPosition: ModelItem | Position, offset?: PositionOffset ): void {
 		if ( this.anchor === null ) {
 			/**
 			 * Cannot set selection focus if there are no ranges in selection.

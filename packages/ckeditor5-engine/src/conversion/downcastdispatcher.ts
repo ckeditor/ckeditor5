@@ -19,7 +19,7 @@ import { type ModelDocumentSelection } from '../model/documentselection.js';
 import { type DowncastWriter } from '../view/downcastwriter.js';
 import { type RootElement } from '../model/rootelement.js';
 import { type ModelElement } from '../model/element.js';
-import { type Item } from '../model/item.js';
+import { type ModelItem } from '../model/item.js';
 import { type Mapper } from './mapper.js';
 import { type Position } from '../model/position.js';
 import { type Schema } from '../model/schema.js';
@@ -619,7 +619,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 * @param conversionApi The conversion API object.
 	 */
 	private _testAndFireAddAttributes(
-		item: Item,
+		item: ModelItem,
 		conversionApi: DowncastConversionApi
 	): void {
 		const data: DowncastDispatcherEventMap[ 'attribute' ] = {
@@ -648,7 +648,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 */
 	private _createConversionApi(
 		writer: DowncastWriter,
-		refreshedItems: Set<Item> = new Set(),
+		refreshedItems: Set<ModelItem> = new Set(),
 		options: DowncastConversionApi[ 'options' ] = {}
 	): DowncastConversionApi {
 		const conversionApi: DowncastConversionApi = {
@@ -693,7 +693,7 @@ export type DowncastReduceChangesEventData = {
 	changes: Iterable<DifferItem | DifferItemReinsert>;
 };
 
-export type DowncastDispatcherEventMap<TItem = Item> = {
+export type DowncastDispatcherEventMap<TItem = ModelItem> = {
 	insert: {
 		item: TItem;
 		range: Range;
@@ -717,7 +717,7 @@ export type DowncastDispatcherEventMap<TItem = Item> = {
 		selection: Selection | ModelDocumentSelection;
 	};
 	addMarker: {
-		item?: Item | Selection | ModelDocumentSelection;
+		item?: ModelItem | Selection | ModelDocumentSelection;
 		range?: Range;
 		markerRange: Range;
 		markerName: string;
@@ -728,7 +728,7 @@ export type DowncastDispatcherEventMap<TItem = Item> = {
 	};
 };
 
-export type DowncastEvent<TName extends keyof DowncastDispatcherEventMap<TItem>, TItem = Item> = {
+export type DowncastEvent<TName extends keyof DowncastDispatcherEventMap<TItem>, TItem = ModelItem> = {
 	name: TName | `${ TName }:${ string }`;
 	args: [ data: DowncastDispatcherEventMap<TItem>[ TName ], conversionApi: DowncastConversionApi ];
 };
@@ -749,7 +749,7 @@ export type DowncastEvent<TName extends keyof DowncastDispatcherEventMap<TItem>,
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
  * to be used by callback, passed in the `DowncastDispatcher` constructor.
  */
-export type DowncastInsertEvent<TItem extends Item = Item> = DowncastEvent<'insert', TItem>;
+export type DowncastInsertEvent<TItem extends ModelItem = ModelItem> = DowncastEvent<'insert', TItem>;
 
 /**
  * Fired for removed nodes.
@@ -794,7 +794,7 @@ export type DowncastRemoveEvent = DowncastEvent<'remove'>;
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
  * to be used by callback, passed in `DowncastDispatcher` constructor.
  */
-export type DowncastAttributeEvent<TItem = Item | Selection | ModelDocumentSelection> = DowncastEvent<'attribute', TItem>;
+export type DowncastAttributeEvent<TItem = ModelItem | Selection | ModelDocumentSelection> = DowncastEvent<'attribute', TItem>;
 
 /**
  * Fired for {@link module:engine/model/selection~Selection selection} changes.
@@ -897,7 +897,7 @@ function shouldMarkerChangeBeConverted(
 	return !hasCustomHandling;
 }
 
-function getEventName<TType extends string>( type: TType, data: { item: Item | Selection | ModelDocumentSelection } ) {
+function getEventName<TType extends string>( type: TType, data: { item: ModelItem | Selection | ModelDocumentSelection } ) {
 	const name = data.item.is( 'element' ) ? data.item.name : '$text';
 
 	return `${ type }:${ name }` as const;
@@ -956,7 +956,7 @@ export interface DowncastConversionApi {
 	 *
 	 * @param item The model item to trigger nested insert conversion on.
 	 */
-	convertItem( item: Item ): void;
+	convertItem( item: ModelItem ): void;
 
 	/**
 	 * Triggers conversion of children of a specified element.
@@ -970,6 +970,6 @@ export interface DowncastConversionApi {
 	 *
 	 * @param item The model item to trigger attribute conversion on.
 	 */
-	convertAttributes( item: Item ): void;
+	convertAttributes( item: ModelItem ): void;
 	canReuseView( element: ViewElement ): boolean;
 }

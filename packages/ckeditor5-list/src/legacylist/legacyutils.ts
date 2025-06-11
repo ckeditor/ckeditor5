@@ -13,7 +13,7 @@ import {
 	type DowncastConversionApi,
 	type DowncastWriter,
 	type ModelElement,
-	type Item,
+	type ModelItem,
 	type Model,
 	type Position,
 	type ViewContainerElement,
@@ -44,7 +44,7 @@ export function createViewListItemElement( writer: DowncastWriter ): ViewContain
  * @param conversionApi Conversion interface.
  * @returns View list element.
  */
-export function generateLiInUl( modelItem: Item, conversionApi: DowncastConversionApi ): ViewContainerElement {
+export function generateLiInUl( modelItem: ModelItem, conversionApi: DowncastConversionApi ): ViewContainerElement {
 	const mapper = conversionApi.mapper;
 	const viewWriter = conversionApi.writer;
 	const listType = modelItem.getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
@@ -240,7 +240,7 @@ export function positionAfterUiElements( viewPosition: ViewPosition ): ViewPosit
  * @param options.direction Walking direction.
  */
 export function getSiblingListItem(
-	modelItem: Item | null,
+	modelItem: ModelItem | null,
 	options: {
 		sameIndent?: boolean;
 		smallerIndent?: boolean;

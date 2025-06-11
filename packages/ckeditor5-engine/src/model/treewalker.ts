@@ -17,7 +17,7 @@ import {
 import { TextProxy } from './textproxy.js';
 
 import { type ModelDocumentFragment } from './documentfragment.js';
-import { type Item } from './item.js';
+import { type ModelItem } from './item.js';
 import { type Range } from './range.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
@@ -378,7 +378,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 
 function formatReturnValue(
 	type: TreeWalkerValueType,
-	item: Item,
+	item: ModelItem,
 	previousPosition: Position,
 	nextPosition: Position,
 	length?: number
@@ -411,7 +411,7 @@ export interface TreeWalkerValue {
 	/**
 	 * Item between old and new positions of {@link module:engine/model/treewalker~TreeWalker}.
 	 */
-	item: Item;
+	item: ModelItem;
 
 	/**
 	 * Previous position of the iterator.

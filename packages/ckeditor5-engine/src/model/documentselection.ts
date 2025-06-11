@@ -22,7 +22,7 @@ import type { Model, ModelApplyOperationEvent } from './model.js';
 import type { Marker, MarkerCollectionUpdateEvent } from './markercollection.js';
 import { type Batch } from './batch.js';
 import { type ModelElement } from './element.js';
-import { type Item } from './item.js';
+import { type ModelItem } from './item.js';
 import type { Position, PositionOffset } from './position.js';
 import { type Range } from './range.js';
 import { type Schema } from './schema.js';
@@ -376,7 +376,7 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCh
 	 * @param offset Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/model/item~Item model item}.
 	 */
-	public _setFocus( itemOrPosition: Item | Position, offset?: PositionOffset ): void {
+	public _setFocus( itemOrPosition: ModelItem | Position, offset?: PositionOffset ): void {
 		this._selection.setFocus( itemOrPosition, offset );
 	}
 
@@ -744,7 +744,7 @@ class LiveSelection extends Selection {
 		this.updateMarkers();
 	}
 
-	public override setFocus( itemOrPosition: Item | Position, offset?: PositionOffset ): void {
+	public override setFocus( itemOrPosition: ModelItem | Position, offset?: PositionOffset ): void {
 		super.setFocus( itemOrPosition, offset );
 		this._updateAttributes( true );
 		this.updateMarkers();
@@ -1223,7 +1223,7 @@ class LiveSelection extends Selection {
  * It checks if the passed model item is a text node (or text proxy) and, if so, returns it's attributes.
  * If not, it checks if item is an inline object and does the same. Otherwise it returns `null`.
  */
-function getTextAttributes( node: Item | null, schema: Schema ): Iterable<[string, unknown]> | null {
+function getTextAttributes( node: ModelItem | null, schema: Schema ): Iterable<[string, unknown]> | null {
 	if ( !node ) {
 		return null;
 	}

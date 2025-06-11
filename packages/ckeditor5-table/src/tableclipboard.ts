@@ -26,7 +26,7 @@ import type {
 	ModelDocumentSelection,
 	DomEventData,
 	ModelElement,
-	Item,
+	ModelItem,
 	Model,
 	ModelInsertContentEvent,
 	Position,
@@ -177,7 +177,7 @@ export class TableClipboard extends Plugin {
 	 */
 	private _onInsertContent(
 		evt: EventInfo,
-		content: ModelDocumentFragment | Item,
+		content: ModelDocumentFragment | ModelItem,
 		selectable: Selection | ModelDocumentSelection | undefined
 	) {
 		if ( selectable && !selectable.is( 'documentSelection' ) ) {
@@ -404,7 +404,7 @@ export class TableClipboard extends Plugin {
 	 * @param content The content to insert.
 	 * @param model The editor model.
 	 */
-	public getTableIfOnlyTableInContent( content: ModelDocumentFragment | Item, model: Model ): ModelElement | null {
+	public getTableIfOnlyTableInContent( content: ModelDocumentFragment | ModelItem, model: Model ): ModelElement | null {
 		if ( !content.is( 'documentFragment' ) && !content.is( 'element' ) ) {
 			return null;
 		}

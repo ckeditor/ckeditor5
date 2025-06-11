@@ -13,7 +13,7 @@ import { NodeList } from './nodelist.js';
 import { Text } from './text.js';
 import { TextProxy } from './textproxy.js';
 
-import { type Item } from './item.js';
+import { type ModelItem } from './item.js';
 import { type Node } from './node.js';
 import { type Range } from './range.js';
 
@@ -295,7 +295,7 @@ export class ModelDocumentFragment extends TypeCheckable implements Iterable<Nod
 	 * @internal
 	 * @param items Items to be inserted.
 	 */
-	public _appendChild( items: string | Item | Iterable<string | Item> ): void {
+	public _appendChild( items: string | ModelItem | Iterable<string | ModelItem> ): void {
 		this._insertChild( this.childCount, items );
 	}
 
@@ -307,7 +307,7 @@ export class ModelDocumentFragment extends TypeCheckable implements Iterable<Nod
 	 * @param index Index at which nodes should be inserted.
 	 * @param items Items to be inserted.
 	 */
-	public _insertChild( index: number, items: string | Item | Iterable<string | Item> ): void {
+	public _insertChild( index: number, items: string | ModelItem | Iterable<string | ModelItem> ): void {
 		const nodes = normalize( items );
 
 		for ( const node of nodes ) {
@@ -408,7 +408,7 @@ ModelDocumentFragment.prototype.is = function( type: string ): boolean {
 /**
  * Converts strings to Text and non-iterables to arrays.
  */
-function normalize( nodes: string | Item | Iterable<string | Item> ): Array<Node> {
+function normalize( nodes: string | ModelItem | Iterable<string | ModelItem> ): Array<Node> {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
 		return [ new Text( nodes ) ];

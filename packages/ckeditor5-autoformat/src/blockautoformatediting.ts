@@ -8,7 +8,7 @@ import type { Command, Editor } from 'ckeditor5/src/core.js';
 import {
 	LiveRange,
 	type ModelDocumentChangeEvent,
-	type Item,
+	type ModelItem,
 	type Text
 } from 'ckeditor5/src/engine.js';
 
@@ -166,7 +166,7 @@ export function blockAutoformatEditing(
 				// If the block is empty and the document selection has been moved when
 				// applying formatting (e.g. is now in newly created block).
 				if ( blockToFormat.isEmpty && !blockRange.isEqual( selectionRange ) && !blockRange.containsRange( selectionRange, true ) ) {
-					writer.remove( blockToFormat as Item );
+					writer.remove( blockToFormat as ModelItem );
 				}
 			}
 			range.detach();

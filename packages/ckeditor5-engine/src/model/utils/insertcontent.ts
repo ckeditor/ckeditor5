@@ -15,7 +15,7 @@ import { Position } from '../position.js';
 import { Range } from '../range.js';
 
 import { type ModelDocumentFragment } from '../documentfragment.js';
-import { type Item } from '../item.js';
+import { type ModelItem } from '../item.js';
 import { type Model } from '../model.js';
 import { type Schema } from '../schema.js';
 import { type Writer } from '../writer.js';
@@ -58,7 +58,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  */
 export function insertContent(
 	model: Model,
-	content: Item | ModelDocumentFragment,
+	content: ModelItem | ModelDocumentFragment,
 	selectable?: Selection | ModelDocumentSelection
 ): Range {
 	return model.change( writer => {

@@ -19,7 +19,7 @@ import type {
 	Position,
 	Schema,
 	DowncastAttributeEvent,
-	Item
+	ModelItem
 } from 'ckeditor5/src/engine.js';
 import { uid } from 'ckeditor5/src/utils.js';
 
@@ -286,7 +286,7 @@ function extendAttributeOnMentionPostFixer( writer: Writer, doc: ModelDocument )
  * Checks if a node has a correct mention attribute if present.
  * Returns `true` if the node is text and has a mention attribute whose text does not match the expected mention text.
  */
-function isBrokenMentionNode( node: Item | null ): boolean {
+function isBrokenMentionNode( node: ModelItem | null ): boolean {
 	if ( !node || !( node.is( '$text' ) || node.is( '$textProxy' ) ) || !node.hasAttribute( 'mention' ) ) {
 		return false;
 	}
@@ -302,7 +302,7 @@ function isBrokenMentionNode( node: Item | null ): boolean {
 /**
  * Fixes a mention on a text node if it needs a fix.
  */
-function checkAndFix( textNode: Item | null, writer: Writer ): boolean {
+function checkAndFix( textNode: ModelItem | null, writer: Writer ): boolean {
 	if ( isBrokenMentionNode( textNode ) ) {
 		writer.removeAttribute( 'mention', textNode! );
 

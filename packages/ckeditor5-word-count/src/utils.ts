@@ -7,7 +7,7 @@
  * @module word-count/utils
  */
 
-import type { ModelElement, Item } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelItem } from 'ckeditor5/src/engine.js';
 
 /**
  * Returns a plain text representation of an element and its children.
@@ -15,7 +15,7 @@ import type { ModelElement, Item } from 'ckeditor5/src/engine.js';
  * @internal
  * @returns Plain text representing the model's data.
  */
-export function modelElementToPlainText( item: Item ): string {
+export function modelElementToPlainText( item: ModelItem ): string {
 	if ( item.is( '$text' ) || item.is( '$textProxy' ) ) {
 		return item.data;
 	}

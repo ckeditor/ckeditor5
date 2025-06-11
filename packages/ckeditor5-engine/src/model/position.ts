@@ -14,7 +14,7 @@ import { type ModelDocument } from './document.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelElement } from './element.js';
 import { type InsertOperation } from './operation/insertoperation.js';
-import { type Item } from './item.js';
+import { type ModelItem } from './item.js';
 import { type MergeOperation } from './operation/mergeoperation.js';
 import { type MoveOperation } from './operation/moveoperation.js';
 import { type Node } from './node.js';
@@ -893,7 +893,7 @@ export class Position extends TypeCheckable {
 	 * @param stickiness Position stickiness. Used only when the first parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	public static _createAt(
-		itemOrPosition: Item | Position | ModelDocumentFragment,
+		itemOrPosition: ModelItem | Position | ModelDocumentFragment,
 		offset?: PositionOffset,
 		stickiness: PositionStickiness = 'toNone'
 	): Position {
@@ -945,7 +945,7 @@ export class Position extends TypeCheckable {
 	 * @param item Item after which the position should be placed.
 	 * @param stickiness Position stickiness.
 	 */
-	public static _createAfter( item: Item | ModelDocumentFragment, stickiness?: PositionStickiness ): Position {
+	public static _createAfter( item: ModelItem | ModelDocumentFragment, stickiness?: PositionStickiness ): Position {
 		if ( !item.parent ) {
 			/**
 			 * You cannot make a position after a root element.
@@ -970,7 +970,7 @@ export class Position extends TypeCheckable {
 	 * @param item Item before which the position should be placed.
 	 * @param stickiness Position stickiness.
 	 */
-	public static _createBefore( item: Item | ModelDocumentFragment, stickiness?: PositionStickiness ): Position {
+	public static _createBefore( item: ModelItem | ModelDocumentFragment, stickiness?: PositionStickiness ): Position {
 		if ( !item.parent ) {
 			/**
 			 * You cannot make a position before a root element.

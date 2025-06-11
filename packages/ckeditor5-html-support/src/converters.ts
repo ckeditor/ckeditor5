@@ -20,7 +20,7 @@ import type {
 	UpcastDispatcher,
 	UpcastElementEvent,
 	ViewElement,
-	Item
+	ModelItem
 } from 'ckeditor5/src/engine.js';
 import { toWidget } from 'ckeditor5/src/widget.js';
 import {
@@ -159,7 +159,7 @@ export function viewToAttributeInlineConverter(
 		}, { priority: 'low' } );
 	};
 
-	function setAttributeOnItem( node: Item, viewAttributes: GHSViewAttributes, conversionApi: UpcastConversionApi ): void {
+	function setAttributeOnItem( node: ModelItem, viewAttributes: GHSViewAttributes, conversionApi: UpcastConversionApi ): void {
 		if ( conversionApi.schema.checkAttribute( node, attributeKey ) ) {
 			// Node's children are converted recursively, so node can already include model attribute.
 			// We want to extend it, not replace.

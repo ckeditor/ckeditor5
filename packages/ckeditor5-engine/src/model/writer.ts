@@ -29,7 +29,7 @@ import { Text } from './text.js';
 import type { Marker } from './markercollection.js';
 import type { Selection, PlaceOrOffset, Selectable } from './selection.js';
 import { type Batch } from './batch.js';
-import { type Item } from './item.js';
+import { type ModelItem } from './item.js';
 import { type Model } from './model.js';
 import type { Node, NodeAttributes } from './node.js';
 
@@ -187,8 +187,8 @@ export class Writer {
 	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	public insert(
-		item: Item | ModelDocumentFragment,
-		itemOrPosition: Item | ModelDocumentFragment | Position,
+		item: ModelItem | ModelDocumentFragment,
+		itemOrPosition: ModelItem | ModelDocumentFragment | Position,
 		offset: PositionOffset = 0
 	): void {
 		this._assertWriterUsedCorrectly();
@@ -292,7 +292,7 @@ export class Writer {
 	 */
 	public insertText(
 		text: string,
-		itemOrPosition?: Item | Position,
+		itemOrPosition?: ModelItem | Position,
 		offset?: PositionOffset
 	): void;
 
@@ -325,7 +325,7 @@ export class Writer {
 	public insertText(
 		text: string,
 		attributes?: NodeAttributes,
-		itemOrPosition?: Item | Position,
+		itemOrPosition?: ModelItem | Position,
 		offset?: PositionOffset
 	): void;
 
@@ -369,7 +369,7 @@ export class Writer {
 	 */
 	public insertElement(
 		name: string,
-		itemOrPosition: Item | ModelDocumentFragment | Position,
+		itemOrPosition: ModelItem | ModelDocumentFragment | Position,
 		offset?: PositionOffset
 	): void;
 
@@ -402,7 +402,7 @@ export class Writer {
 	public insertElement(
 		name: string,
 		attributes: NodeAttributes,
-		itemOrPosition: Item | ModelDocumentFragment | Position,
+		itemOrPosition: ModelItem | ModelDocumentFragment | Position,
 		offset?: PositionOffset
 	): void;
 
@@ -434,7 +434,7 @@ export class Writer {
 	 *
 	 * @param item Item or document fragment to insert.
 	 */
-	public append( item: Item | ModelDocumentFragment, parent: ModelElement | ModelDocumentFragment ): void {
+	public append( item: ModelItem | ModelDocumentFragment, parent: ModelElement | ModelDocumentFragment ): void {
 		this.insert( item, parent, 'end' );
 	}
 
@@ -534,7 +534,7 @@ export class Writer {
 	 * @param value Attribute new value.
 	 * @param itemOrRange Model item or range on which the attribute will be set.
 	 */
-	public setAttribute( key: string, value: unknown, itemOrRange: Item | Range ): void {
+	public setAttribute( key: string, value: unknown, itemOrRange: ModelItem | Range ): void {
 		this._assertWriterUsedCorrectly();
 
 		if ( itemOrRange instanceof Range ) {
@@ -564,7 +564,7 @@ export class Writer {
 	 */
 	public setAttributes(
 		attributes: NodeAttributes,
-		itemOrRange: Item | Range
+		itemOrRange: ModelItem | Range
 	): void {
 		for ( const [ key, val ] of toMap( attributes ) ) {
 			this.setAttribute( key, val, itemOrRange );
@@ -578,7 +578,7 @@ export class Writer {
 	 * @param key Attribute key.
 	 * @param itemOrRange Model item or range from which the attribute will be removed.
 	 */
-	public removeAttribute( key: string, itemOrRange: Item | Range ): void {
+	public removeAttribute( key: string, itemOrRange: ModelItem | Range ): void {
 		this._assertWriterUsedCorrectly();
 
 		if ( itemOrRange instanceof Range ) {
@@ -597,10 +597,10 @@ export class Writer {
 	 *
 	 * @param itemOrRange Model item or range from which all attributes will be removed.
 	 */
-	public clearAttributes( itemOrRange: Item | Range ): void {
+	public clearAttributes( itemOrRange: ModelItem | Range ): void {
 		this._assertWriterUsedCorrectly();
 
-		const removeAttributesFromItem = ( item: Item ) => {
+		const removeAttributesFromItem = ( item: ModelItem ) => {
 			for ( const attribute of item.getAttributeKeys() ) {
 				this.removeAttribute( attribute, item );
 			}
@@ -646,7 +646,7 @@ export class Writer {
 	 */
 	public move(
 		range: Range,
-		itemOrPosition: Item | Position,
+		itemOrPosition: ModelItem | Position,
 		offset?: PositionOffset
 	): void {
 		this._assertWriterUsedCorrectly();
@@ -701,7 +701,7 @@ export class Writer {
 	 *
 	 * @param itemOrRange Model item or range to remove.
 	 */
-	public remove( itemOrRange: Item | Range ): void {
+	public remove( itemOrRange: ModelItem | Range ): void {
 		this._assertWriterUsedCorrectly();
 
 		const rangeToRemove = itemOrRange instanceof Range ? itemOrRange : Range._createOn( itemOrRange );
@@ -778,7 +778,7 @@ export class Writer {
 	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	public createPositionAt(
-		itemOrPosition: Item | Position | ModelDocumentFragment,
+		itemOrPosition: ModelItem | Position | ModelDocumentFragment,
 		offset?: PositionOffset
 	): Position {
 		return this.model.createPositionAt( itemOrPosition, offset );
@@ -789,7 +789,7 @@ export class Writer {
 	 *
 	 * @param item Item after which the position should be placed.
 	 */
-	public createPositionAfter( item: Item ): Position {
+	public createPositionAfter( item: ModelItem ): Position {
 		return this.model.createPositionAfter( item );
 	}
 
@@ -798,7 +798,7 @@ export class Writer {
 	 *
 	 * @param item Item after which the position should be placed.
 	 */
-	public createPositionBefore( item: Item ): Position {
+	public createPositionBefore( item: ModelItem ): Position {
 		return this.model.createPositionBefore( item );
 	}
 
@@ -826,7 +826,7 @@ export class Writer {
 	 *
 	 * @param element Element which is a parent for the range.
 	 */
-	public createRangeOn( element: Item ): Range {
+	public createRangeOn( element: ModelItem ): Range {
 		return this.model.createRangeOn( element );
 	}
 
@@ -1509,7 +1509,7 @@ export class Writer {
 	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	public setSelectionFocus(
-		itemOrPosition: Item | Position,
+		itemOrPosition: ModelItem | Position,
 		offset?: PositionOffset
 	): void {
 		this._assertWriterUsedCorrectly();
@@ -1815,7 +1815,7 @@ function setAttributeOnRange( writer: Writer, key: string, value: unknown, range
 /**
  * Sets given attribute to the given node. When attribute value is null then attribute will be removed.
  */
-function setAttributeOnItem( writer: Writer, key: string, value: unknown, item: Item ) {
+function setAttributeOnItem( writer: Writer, key: string, value: unknown, item: ModelItem ) {
 	const model = writer.model;
 	const doc = model.document;
 	const previousValue = item.getAttribute( key );

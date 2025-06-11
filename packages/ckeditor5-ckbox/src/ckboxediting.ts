@@ -14,7 +14,7 @@ import {
 	type DowncastAttributeEvent,
 	type DowncastWriter,
 	type ModelElement,
-	type Item,
+	type ModelItem,
 	type Node,
 	type UpcastElementEvent,
 	type ViewElement,
@@ -424,7 +424,7 @@ function injectSelectionPostFixer( selection: ModelDocumentSelection ) {
  * For any model element, zero, one or more than one asset can be found (e.g. a linked image may be associated with the link asset and the
  * image asset).
  */
-function findAssetsForItem( item: Item, assets: Set<CKBoxAssetDefinition> ) {
+function findAssetsForItem( item: ModelItem, assets: Set<CKBoxAssetDefinition> ) {
 	const isImageElement = item.is( 'element', 'imageInline' ) || item.is( 'element', 'imageBlock' );
 	const isLinkElement = item.hasAttribute( 'linkHref' );
 

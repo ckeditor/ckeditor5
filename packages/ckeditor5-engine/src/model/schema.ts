@@ -15,7 +15,7 @@ import { TreeWalker } from './treewalker.js';
 
 import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelDocumentSelection } from './documentselection.js';
-import { type Item } from './item.js';
+import { type ModelItem } from './item.js';
 import { type Node } from './node.js';
 import { type Selection } from './selection.js';
 import { type Writer } from './writer.js';
@@ -199,7 +199,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * Use specific methods (such as {@link #checkChild `checkChild()`} or {@link #isLimit `isLimit()`})
 	 * in other cases.
 	 */
-	public getDefinition( item: string | Item | ModelDocumentFragment | SchemaContextItem ): SchemaCompiledItemDefinition | undefined {
+	public getDefinition( item: string | ModelItem | ModelDocumentFragment | SchemaContextItem ): SchemaCompiledItemDefinition | undefined {
 		let itemName: string;
 
 		if ( typeof item == 'string' ) {
@@ -224,7 +224,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * schema.isRegistered( 'foo' ); // -> false
 	 * ```
 	 */
-	public isRegistered( item: string | Item | ModelDocumentFragment | SchemaContextItem ): boolean {
+	public isRegistered( item: string | ModelItem | ModelDocumentFragment | SchemaContextItem ): boolean {
 		return !!this.getDefinition( item );
 	}
 
@@ -243,7 +243,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * See the {@glink framework/deep-dive/schema#block-elements Block elements} section of
 	 * the {@glink framework/deep-dive/schema Schema deep-dive} guide for more details.
 	 */
-	public isBlock( item: string | Item | ModelDocumentFragment | SchemaContextItem ): boolean {
+	public isBlock( item: string | ModelItem | ModelDocumentFragment | SchemaContextItem ): boolean {
 		const def = this.getDefinition( item );
 
 		return !!( def && def.isBlock );
@@ -268,7 +268,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * See the {@glink framework/deep-dive/schema#limit-elements Limit elements} section of
 	 * the {@glink framework/deep-dive/schema Schema deep-dive} guide for more details.
 	 */
-	public isLimit( item: string | Item | ModelDocumentFragment | SchemaContextItem ): boolean {
+	public isLimit( item: string | ModelItem | ModelDocumentFragment | SchemaContextItem ): boolean {
 		const def = this.getDefinition( item );
 
 		if ( !def ) {
@@ -297,7 +297,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * See the {@glink framework/deep-dive/schema#object-elements Object elements} section of
 	 * the {@glink framework/deep-dive/schema Schema deep-dive} guide for more details.
 	 */
-	public isObject( item: string | Item | ModelDocumentFragment | SchemaContextItem ): boolean {
+	public isObject( item: string | ModelItem | ModelDocumentFragment | SchemaContextItem ): boolean {
 		const def = this.getDefinition( item );
 
 		if ( !def ) {
@@ -324,7 +324,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * See the {@glink framework/deep-dive/schema#inline-elements Inline elements} section of
 	 * the {@glink framework/deep-dive/schema Schema deep-dive} guide for more details.
 	 */
-	public isInline( item: string | Item | ModelDocumentFragment | SchemaContextItem ): boolean {
+	public isInline( item: string | ModelItem | ModelDocumentFragment | SchemaContextItem ): boolean {
 		const def = this.getDefinition( item );
 
 		return !!( def && def.isInline );
@@ -347,7 +347,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * See the {@glink framework/deep-dive/schema#selectable-elements Selectable elements section} of
 	 * the {@glink framework/deep-dive/schema Schema deep-dive} guide for more details.
 	 */
-	public isSelectable( item: string | Item | ModelDocumentFragment | SchemaContextItem ): boolean {
+	public isSelectable( item: string | ModelItem | ModelDocumentFragment | SchemaContextItem ): boolean {
 		const def = this.getDefinition( item );
 
 		if ( !def ) {
@@ -374,7 +374,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * See the {@glink framework/deep-dive/schema#content-elements Content elements section} of
 	 * the {@glink framework/deep-dive/schema Schema deep-dive} guide for more details.
 	 */
-	public isContent( item: string | Item | ModelDocumentFragment | SchemaContextItem ): boolean {
+	public isContent( item: string | ModelItem | ModelDocumentFragment | SchemaContextItem ): boolean {
 		const def = this.getDefinition( item );
 
 		if ( !def ) {
@@ -1789,7 +1789,7 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
 			return context;
 		}
 
-		let items: Array<string | Item | ModelDocumentFragment>;
+		let items: Array<string | ModelItem | ModelDocumentFragment>;
 
 		if ( typeof context == 'string' ) {
 			items = [ context ];
@@ -2002,7 +2002,7 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
  * schema.checkChild( [ ...positionInParagraph.getAncestors(), '$text' ], 'bold' );
  * ```
  */
-export type SchemaContextDefinition = Item | Position | SchemaContext | string | Array<string | Item>;
+export type SchemaContextDefinition = ModelItem | Position | SchemaContext | string | Array<string | ModelItem>;
 
 /**
  * An item of the {@link module:engine/model/schema~SchemaContext schema context}.
@@ -2388,7 +2388,7 @@ function resolveInheritAll( sourceItemRules: Array<SchemaItemDefinition>, itemRu
 	}
 }
 
-function mapContextItem( ctxItem: string | Item | ModelDocumentFragment ): SchemaContextItem {
+function mapContextItem( ctxItem: string | ModelItem | ModelDocumentFragment ): SchemaContextItem {
 	if ( typeof ctxItem == 'string' || ctxItem.is( 'documentFragment' ) ) {
 		return {
 			name: typeof ctxItem == 'string' ? ctxItem : '$documentFragment',

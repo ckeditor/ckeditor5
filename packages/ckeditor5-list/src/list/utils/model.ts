@@ -13,7 +13,7 @@ import type {
 	Model,
 	Node,
 	Writer,
-	Item,
+	ModelItem,
 	Schema
 } from 'ckeditor5/src/engine.js';
 
@@ -56,7 +56,7 @@ export interface ListElement extends ModelElement {
  *
  * @internal
  */
-export function isListItemBlock( node: Item | ModelDocumentFragment | null ): node is ListElement {
+export function isListItemBlock( node: ModelItem | ModelDocumentFragment | null ): node is ListElement {
 	return !!node && node.is( 'element' ) && node.hasAttribute( 'listItemId' );
 }
 

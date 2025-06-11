@@ -11,7 +11,7 @@ import type {
 	DowncastAttributeEvent,
 	DowncastInsertEvent,
 	ModelElement,
-	Item,
+	ModelItem,
 	MapperModelToViewPositionEvent,
 	Model,
 	ModelApplyOperationEvent,
@@ -165,7 +165,7 @@ export class LegacyTodoListEditing extends Plugin {
 		}, { priority: 'high' } );
 
 		// Remove `todoListChecked` attribute when a host element is no longer a to-do list item.
-		const listItemsToFix = new Set<Item>();
+		const listItemsToFix = new Set<ModelItem>();
 
 		this.listenTo<ModelApplyOperationEvent>( model, 'applyOperation', ( evt, args ) => {
 			const operation = args[ 0 ] as RenameOperation | AttributeOperation;

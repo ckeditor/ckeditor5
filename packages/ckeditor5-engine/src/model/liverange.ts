@@ -12,7 +12,7 @@ import { Range } from './range.js';
 import type { ModelApplyOperationEvent } from './model.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelElement } from './element.js';
-import { type Item } from './item.js';
+import { type ModelItem } from './item.js';
 import { type MergeOperation } from './operation/mergeoperation.js';
 import { type MoveOperation } from './operation/moveoperation.js';
 import { type Operation } from './operation/operation.js';
@@ -75,7 +75,7 @@ export class LiveRange extends /* #__PURE__ */ EmitterMixin( Range ) {
 	 * @internal
 	 */
 
-	declare public static readonly _createOn: ( element: Item | ModelDocumentFragment ) => LiveRange;
+	declare public static readonly _createOn: ( element: ModelItem | ModelDocumentFragment ) => LiveRange;
 
 	/**
 	 * @see module:engine/model/range~Range._createFromPositionAndShift

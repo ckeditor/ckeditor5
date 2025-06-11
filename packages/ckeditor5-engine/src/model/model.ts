@@ -28,7 +28,7 @@ import { insertObject } from './utils/insertobject.js';
 import { modifySelection } from './utils/modifyselection.js';
 
 import { type ModelDocumentFragment } from './documentfragment.js';
-import { type Item } from './item.js';
+import { type ModelItem } from './item.js';
 import { type ModelElement } from './element.js';
 import { type Operation } from './operation/operation.js';
 
@@ -530,7 +530,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * at the insertion position.
 	 */
 	public insertContent(
-		content: Item | ModelDocumentFragment,
+		content: ModelItem | ModelDocumentFragment,
 		selectable?: Selectable,
 		placeOrOffset?: PlaceOrOffset,
 		...rest: Array<unknown>
@@ -890,7 +890,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	public createPositionAt(
-		itemOrPosition: Item | ModelPosition | ModelDocumentFragment,
+		itemOrPosition: ModelItem | ModelPosition | ModelDocumentFragment,
 		offset?: PositionOffset
 	): ModelPosition {
 		return ModelPosition._createAt( itemOrPosition, offset );
@@ -904,7 +904,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param item Item after which the position should be placed.
 	 */
-	public createPositionAfter( item: Item ): ModelPosition {
+	public createPositionAfter( item: ModelItem ): ModelPosition {
 		return ModelPosition._createAfter( item );
 	}
 
@@ -916,7 +916,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param item Item before which the position should be placed.
 	 */
-	public createPositionBefore( item: Item ): ModelPosition {
+	public createPositionBefore( item: ModelItem ): ModelPosition {
 		return ModelPosition._createBefore( item );
 	}
 
@@ -972,7 +972,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param item
 	 */
-	public createRangeOn( item: Item ): ModelRange {
+	public createRangeOn( item: ModelItem ): ModelRange {
 		return ModelRange._createOn( item );
 	}
 
@@ -1214,7 +1214,7 @@ export type ModelApplyOperationEvent = DecoratedMethodEvent<Model, 'applyOperati
 export type ModelInsertContentEvent = {
 	name: 'insertContent';
 	args: [ [
-		content: Item | ModelDocumentFragment,
+		content: ModelItem | ModelDocumentFragment,
 		selectable?: ModelSelection | ModelDocumentSelection,
 		...rest: Array<unknown>
 	] ];

@@ -13,7 +13,7 @@ import type {
 	Consumables,
 	DowncastWriter,
 	ModelElement,
-	Item,
+	ModelItem,
 	UpcastElementEvent,
 	ViewElement
 } from 'ckeditor5/src/engine.js';
@@ -243,7 +243,7 @@ export interface AttributeStrategy {
 	/**
 	 * Verifies whether the strategy is applicable for the specified model element.
 	 */
-	appliesToListItem( element: Item ): boolean;
+	appliesToListItem( element: ModelItem ): boolean;
 
 	/**
 	 * Verifies whether the model attribute value is valid.

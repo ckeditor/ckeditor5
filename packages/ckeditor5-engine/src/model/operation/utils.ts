@@ -14,7 +14,7 @@ import { TextProxy } from '../textproxy.js';
 
 import { type ModelDocumentFragment } from '../documentfragment.js';
 import { type ModelElement } from '../element.js';
-import { type Item } from '../item.js';
+import { type ModelItem } from '../item.js';
 import { type NodeList } from '../nodelist.js';
 import { type Position } from '../position.js';
 
@@ -280,4 +280,12 @@ function _haveSameAttributes( nodeA: Node, nodeB: Node ): boolean | undefined {
  * a flat array of {@link module:engine/model/node~Node nodes}. Consecutive text nodes (or items normalized to text nodes) will be
  * merged if they have same attributes.
  */
-export type NodeSet = Item | string | NodeList | ModelDocumentFragment | Iterable<Item | string | NodeList | ModelDocumentFragment>;
+export type NodeSet =
+	| ModelItem
+	| string
+	| NodeList
+	| ModelDocumentFragment
+	| Iterable<ModelItem
+	| string
+	| NodeList
+	| ModelDocumentFragment>;

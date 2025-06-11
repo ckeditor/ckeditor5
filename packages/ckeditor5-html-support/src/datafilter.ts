@@ -19,7 +19,7 @@ import {
 	type MatcherObjectPattern,
 	type ModelDocumentSelectionChangeAttributeEvent,
 	type ModelElement,
-	type Item
+	type ModelItem
 } from 'ckeditor5/src/engine.js';
 
 import {
@@ -762,7 +762,7 @@ export class DataFilter extends Plugin {
 			} );
 
 			// Helper function to check if an element has any HTML attributes.
-			const hasHtmlAttributes = ( element: ModelElement | Item ): boolean =>
+			const hasHtmlAttributes = ( element: ModelElement | ModelItem ): boolean =>
 				Array
 					.from( element.getAttributeKeys() )
 					.some( key => key.startsWith( 'html' ) );
