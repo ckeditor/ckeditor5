@@ -322,7 +322,7 @@ export function syncClients() {
 			} );
 
 			const remoteOperations = remoteOperationsJson.map( json => {
-				const parsedJson = JSON._parseModel( json );
+				const parsedJson = JSON.parse( json );
 				const operation = OperationFactory.fromJSON( parsedJson, localClient.document );
 
 				if ( parsedJson.wasUndone ) {
