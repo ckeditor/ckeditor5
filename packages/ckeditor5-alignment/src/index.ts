@@ -11,7 +11,7 @@ export { Alignment } from './alignment.js';
 export { AlignmentEditing } from './alignmentediting.js';
 export { AlignmentUI } from './alignmentui.js';
 export { AlignmentCommand } from './alignmentcommand.js';
-export type { AlignmentConfig } from './alignmentconfig.js';
+export type { AlignmentConfig, AlignmentFormat, AlignmentSupportedOption } from './alignmentconfig.js';
 
 export {
 	supportedOptions as _ALIGNMENT_SUPPORTED_OPTIONS,

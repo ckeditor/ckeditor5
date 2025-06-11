@@ -22,7 +22,7 @@ import { IconAlignCenter, IconAlignJustify, IconAlignLeft, IconAlignRight } from
 import type { Locale } from 'ckeditor5/src/utils.js';
 
 import { isSupported, normalizeAlignmentOptions } from './utils.js';
-import type { AlignmentFormat, SupportedOption } from './alignmentconfig.js';
+import type { AlignmentFormat, AlignmentSupportedOption } from './alignmentconfig.js';
 import { type AlignmentCommand } from './alignmentcommand.js';
 
 const iconsMap = /* #__PURE__ */ ( () => new Map( [
@@ -52,7 +52,7 @@ export class AlignmentUI extends Plugin {
 	 *
 	 * @readonly
 	 */
-	public get localizedOptionTitles(): Record<SupportedOption, string> {
+	public get localizedOptionTitles(): Record<AlignmentSupportedOption, string> {
 		const t = this.editor.t;
 
 		return {
@@ -98,7 +98,7 @@ export class AlignmentUI extends Plugin {
 	 *
 	 * @param option The name of the alignment option for which the button is added.
 	 */
-	private _addButton( option: SupportedOption ): void {
+	private _addButton( option: AlignmentSupportedOption ): void {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( `alignment:${ option }`, locale => this._createButton( locale, option ) );
@@ -113,7 +113,7 @@ export class AlignmentUI extends Plugin {
 	 */
 	private _createButton(
 		locale: Locale,
-		option: SupportedOption,
+		option: AlignmentSupportedOption,
 		buttonAttrs: Partial<Button> = {}
 	): ButtonView {
 		const editor = this.editor;
