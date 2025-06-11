@@ -14,7 +14,7 @@ import {
 	type EditingKeystrokeCallback
 } from 'ckeditor5/src/core.js';
 import type {
-	DocumentSelection,
+	ModelDocumentSelection,
 	Marker,
 	DowncastAddMarkerEvent,
 	ModelDeleteContentEvent,
@@ -450,7 +450,7 @@ function getSelectAllHandler( editor: Editor ): EditingKeystrokeCallback {
  * - is on marker start - "delete" - to prevent removing content before marker
  * - is on marker end - "deleteForward" - to prevent removing content after marker
  */
-function isDeleteCommandOnMarkerBoundaries( commandName: string, selection: DocumentSelection, markerRange: Range ) {
+function isDeleteCommandOnMarkerBoundaries( commandName: string, selection: ModelDocumentSelection, markerRange: Range ) {
 	if ( commandName == 'delete' && markerRange.start.isEqual( selection.focus! ) ) {
 		return true;
 	}

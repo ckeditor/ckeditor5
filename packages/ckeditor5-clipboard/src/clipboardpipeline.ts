@@ -19,7 +19,7 @@ import type {
 	ViewDocumentFragment,
 	ViewRange,
 	Selection,
-	DocumentSelection
+	ModelDocumentSelection
 } from '@ckeditor/ckeditor5-engine';
 
 import {
@@ -183,7 +183,7 @@ export class ClipboardPipeline extends Plugin {
 	 */
 	public _fireOutputTransformationEvent(
 		dataTransfer: DataTransfer,
-		selection: Selection | DocumentSelection,
+		selection: Selection | ModelDocumentSelection,
 		method: 'copy' | 'cut' | 'dragstart'
 	): void {
 		const clipboardMarkersUtils: ClipboardMarkersUtils = this.editor.plugins.get( 'ClipboardMarkersUtils' );

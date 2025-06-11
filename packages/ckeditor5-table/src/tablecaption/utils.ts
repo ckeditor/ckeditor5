@@ -9,7 +9,7 @@
 
 import type {
 	DocumentFragment,
-	DocumentSelection,
+	ModelDocumentSelection,
 	Element,
 	ViewElement
 } from 'ckeditor5/src/engine.js';
@@ -48,7 +48,7 @@ export function getCaptionFromTableModelElement( tableModelElement: Element ): E
  * @param selection The selection checked for caption presence.
  * @internal
  */
-export function getCaptionFromModelSelection( selection: DocumentSelection ): Element | null {
+export function getCaptionFromModelSelection( selection: ModelDocumentSelection ): Element | null {
 	const tableElement = getSelectionAffectedTable( selection );
 
 	if ( !tableElement ) {

@@ -10,7 +10,7 @@
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import {
 	Range,
-	type DocumentSelection,
+	type ModelDocumentSelection,
 	type DowncastAttributeEvent,
 	type DowncastWriter,
 	type Element,
@@ -402,7 +402,7 @@ function syncDataIdPostFixer( editor: Editor ) {
 /**
  * A post-fixer that removes the `ckboxLinkId` from the selection if it does not represent a link anymore.
  */
-function injectSelectionPostFixer( selection: DocumentSelection ) {
+function injectSelectionPostFixer( selection: ModelDocumentSelection ) {
 	return ( writer: Writer ) => {
 		const shouldRemoveLinkIdAttribute = !selection.hasAttribute( 'linkHref' ) && selection.hasAttribute( 'ckboxLinkId' );
 

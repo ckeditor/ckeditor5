@@ -1673,7 +1673,7 @@ describe( 'LinkEditing', () => {
 			expect( LinkEditing.requires.includes( Input ) ).to.equal( true );
 		} );
 
-		describe( 'insertText with specific selection (not DocumentSelection, beforeinput)', () => {
+		describe( 'insertText with specific selection (not ModelDocumentSelection, beforeinput)', () => {
 			it( 'should preserve selection attributes when the entire link is selected', () => {
 				_setModelData( model,
 					'<paragraph>This is [<$text linkHref="foo">Foo</$text>] from <$text linkHref="bar">Bar</$text>.</paragraph>'

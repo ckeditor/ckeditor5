@@ -7,7 +7,7 @@
  * @module media-embed/mediaembedcommand
  */
 
-import type { DocumentSelection, Element, Model, Selection } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, Element, Model, Selection } from 'ckeditor5/src/engine.js';
 import { Command } from 'ckeditor5/src/core.js';
 import { findOptimalInsertionRange } from 'ckeditor5/src/widget.js';
 
@@ -70,7 +70,7 @@ export class MediaEmbedCommand extends Command {
 /**
  * Checks if the media embed is allowed in the parent.
  */
-function isAllowedInParent( selection: Selection | DocumentSelection, model: Model ): boolean {
+function isAllowedInParent( selection: Selection | ModelDocumentSelection, model: Model ): boolean {
 	const insertionRange = findOptimalInsertionRange( selection, model );
 	let parent = insertionRange.start.parent as Element;
 
@@ -85,7 +85,7 @@ function isAllowedInParent( selection: Selection | DocumentSelection, model: Mod
 /**
  * Checks if the media object is selected.
  */
-function isMediaSelected( selection: Selection | DocumentSelection ): boolean {
+function isMediaSelected( selection: Selection | ModelDocumentSelection ): boolean {
 	const element = selection.getSelectedElement();
 	return !!element && element.name === 'media';
 }

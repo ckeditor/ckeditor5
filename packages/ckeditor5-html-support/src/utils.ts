@@ -8,7 +8,7 @@
  */
 
 import type {
-	DocumentSelection,
+	ModelDocumentSelection,
 	DowncastWriter,
 	Item,
 	Range,
@@ -132,7 +132,7 @@ type ModifyGhsStylesCallback = ( t: Map<string, string> ) => void;
  */
 export function modifyGhsAttribute(
 	writer: Writer,
-	item: Item | DocumentSelection,
+	item: Item | ModelDocumentSelection,
 	ghsAttributeName: string,
 	subject: 'attributes',
 	callback: ModifyGhsAttributesCallback
@@ -146,7 +146,7 @@ export function modifyGhsAttribute(
  */
 export function modifyGhsAttribute(
 	writer: Writer,
-	item: Item | DocumentSelection,
+	item: Item | ModelDocumentSelection,
 	ghsAttributeName: string,
 	subject: 'classes',
 	callback: ModifyGhsClassesCallback
@@ -158,7 +158,7 @@ export function modifyGhsAttribute(
  */
 export function modifyGhsAttribute(
 	writer: Writer,
-	item: Item | DocumentSelection,
+	item: Item | ModelDocumentSelection,
 	ghsAttributeName: string,
 	subject: 'styles',
 	callback: ModifyGhsStylesCallback
@@ -166,7 +166,7 @@ export function modifyGhsAttribute(
 
 export function modifyGhsAttribute(
 	writer: Writer,
-	item: Item | DocumentSelection,
+	item: Item | ModelDocumentSelection,
 	ghsAttributeName: string,
 	subject: 'attributes' | 'styles' | 'classes',
 	callback: ModifyGhsClassesCallback | ModifyGhsAttributesCallback | ModifyGhsStylesCallback

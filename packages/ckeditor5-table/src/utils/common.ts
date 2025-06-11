@@ -14,7 +14,7 @@ import type {
 	Position,
 	Schema,
 	Writer,
-	DocumentSelection
+	ModelDocumentSelection
 } from 'ckeditor5/src/engine.js';
 
 import { downcastAttributeToStyle, upcastStyleToAttribute } from '../converters/tableproperties.js';
@@ -103,7 +103,7 @@ export function enableProperty(
  *
  * @internal
  */
-export function getSelectionAffectedTable( selection: DocumentSelection ): Element {
+export function getSelectionAffectedTable( selection: ModelDocumentSelection ): Element {
 	const selectedElement = selection.getSelectedElement();
 
 	// Is the command triggered from the `tableToolbar`?

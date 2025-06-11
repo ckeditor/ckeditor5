@@ -8,7 +8,7 @@
  */
 
 import type {
-	DocumentSelection,
+	ModelDocumentSelection,
 	Selection,
 	Position,
 	Schema,
@@ -104,7 +104,7 @@ export class InsertBookmarkCommand extends Command {
 	 * Returns the position where the bookmark can be inserted. And if it is not possible to insert a bookmark,
 	 * check if it is possible to insert a paragraph.
 	 */
-	private _getPositionToInsertBookmark( selection: Selection | DocumentSelection ): Position | null {
+	private _getPositionToInsertBookmark( selection: Selection | ModelDocumentSelection ): Position | null {
 		const model = this.editor.model;
 		const schema = model.schema;
 

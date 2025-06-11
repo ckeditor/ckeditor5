@@ -7,7 +7,7 @@
  * @module engine/model/utils/modifyselection
  */
 
-import { DocumentSelection } from '../documentselection.js';
+import { ModelDocumentSelection } from '../documentselection.js';
 import { Position } from '../position.js';
 import { Range } from '../range.js';
 import { TreeWalker, type TreeWalkerValue } from '../treewalker.js';
@@ -58,7 +58,7 @@ const wordBoundaryCharacters = ' ,.?!:;"-()';
  */
 export function modifySelection(
 	model: Model,
-	selection: Selection | DocumentSelection,
+	selection: Selection | ModelDocumentSelection,
 	options: {
 		direction?: 'forward' | 'backward';
 		unit?: 'character' | 'codePoint' | 'word';
@@ -90,7 +90,7 @@ export function modifySelection(
 		const position = tryExtendingTo( data, next.value );
 
 		if ( position ) {
-			if ( selection instanceof DocumentSelection ) {
+			if ( selection instanceof ModelDocumentSelection ) {
 				model.change( writer => {
 					writer.setSelectionFocus( position );
 				} );

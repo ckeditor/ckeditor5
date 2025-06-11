@@ -23,7 +23,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 
 import type {
 	DocumentFragment,
-	DocumentSelection,
+	ModelDocumentSelection,
 	DomEventData,
 	Element,
 	Item,
@@ -175,7 +175,11 @@ export class TableClipboard extends Plugin {
 	 * @param selectable The selection into which the content should be inserted.
 	 * If not provided the current model document selection will be used.
 	 */
-	private _onInsertContent( evt: EventInfo, content: DocumentFragment | Item, selectable: Selection | DocumentSelection | undefined ) {
+	private _onInsertContent(
+		evt: EventInfo,
+		content: DocumentFragment | Item,
+		selectable: Selection | ModelDocumentSelection | undefined
+	) {
 		if ( selectable && !selectable.is( 'documentSelection' ) ) {
 			return;
 		}

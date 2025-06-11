@@ -21,7 +21,7 @@ import {
 
 import type {
 	BubblingEventInfo,
-	DocumentSelection,
+	ModelDocumentSelection,
 	DomEventData,
 	Element,
 	Selection,
@@ -311,7 +311,7 @@ export class TableKeyboard extends Plugin {
 	 * @param tableCell The current table cell element.
 	 * @param isForward The expected navigation direction.
 	 */
-	private _isSelectionAtCellEdge( selection: Selection | DocumentSelection, tableCell: Element, isForward: boolean ) {
+	private _isSelectionAtCellEdge( selection: Selection | ModelDocumentSelection, tableCell: Element, isForward: boolean ) {
 		const model = this.editor.model;
 		const schema = this.editor.model.schema;
 

@@ -15,7 +15,7 @@ import type {
 	Model,
 	Range,
 	DocumentChangeEvent,
-	DocumentSelectionChangeEvent
+	ModelDocumentSelectionChangeEvent
 } from '@ckeditor/ckeditor5-engine';
 
 /**
@@ -103,7 +103,7 @@ export class TextWatcher extends /* #__PURE__ */ ObservableMixin() {
 		const model = this.model;
 		const document = model.document;
 
-		this.listenTo<DocumentSelectionChangeEvent>( document.selection, 'change:range', ( evt, { directChange } ) => {
+		this.listenTo<ModelDocumentSelectionChangeEvent>( document.selection, 'change:range', ( evt, { directChange } ) => {
 			// Indirect changes (i.e. when the user types or external changes are applied) are handled in the document's change event.
 			if ( !directChange ) {
 				return;

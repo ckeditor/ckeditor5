@@ -22,7 +22,7 @@ import {
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import type { DocumentSelectionChangeRangeEvent } from '@ckeditor/ckeditor5-engine';
+import type { ModelDocumentSelectionChangeRangeEvent } from '@ckeditor/ckeditor5-engine';
 
 import { BlockButtonView } from './blockbuttonview.js';
 import { BalloonPanelView } from '../../panel/balloon/balloonpanelview.js';
@@ -168,7 +168,7 @@ export class BlockToolbar extends Plugin {
 		}
 
 		// Hides panel on a direct selection change.
-		this.listenTo<DocumentSelectionChangeRangeEvent>( editor.model.document.selection, 'change:range', ( evt, data ) => {
+		this.listenTo<ModelDocumentSelectionChangeRangeEvent>( editor.model.document.selection, 'change:range', ( evt, data ) => {
 			if ( data.directChange ) {
 				this._hidePanel();
 			}

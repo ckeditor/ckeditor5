@@ -11,7 +11,7 @@ import type {
 	Model,
 	Batch,
 	DocumentChangeEvent,
-	DocumentSelectionChangeEvent
+	ModelDocumentSelectionChangeEvent
 } from '@ckeditor/ckeditor5-engine';
 
 import type { EventInfo } from '@ckeditor/ckeditor5-utils';
@@ -101,8 +101,8 @@ export class ChangeBuffer {
 
 		this.model.document.on<DocumentChangeEvent>( 'change', this._changeCallback );
 
-		this.model.document.selection.on<DocumentSelectionChangeEvent>( 'change:range', this._selectionChangeCallback );
-		this.model.document.selection.on<DocumentSelectionChangeEvent>( 'change:attribute', this._selectionChangeCallback );
+		this.model.document.selection.on<ModelDocumentSelectionChangeEvent>( 'change:range', this._selectionChangeCallback );
+		this.model.document.selection.on<ModelDocumentSelectionChangeEvent>( 'change:attribute', this._selectionChangeCallback );
 	}
 
 	/**

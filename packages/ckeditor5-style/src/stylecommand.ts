@@ -7,7 +7,7 @@
  * @module style/stylecommand
  */
 
-import type { DocumentSelection, Element } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, Element } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { logWarning, first } from 'ckeditor5/src/utils.js';
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
@@ -278,7 +278,7 @@ function isBlockStyleDefinition( definition: NormalizedStyleDefinition ): defini
  * @param selection Current document's selection.
  * @returns Selected blocks if there are any, first selected element otherwise.
  */
-function getBlocksFromSelection( selection: DocumentSelection ) {
+function getBlocksFromSelection( selection: ModelDocumentSelection ) {
 	const blocks = Array.from( selection.getSelectedBlocks() );
 	if ( blocks.length ) {
 		return blocks;

@@ -9,7 +9,7 @@
 
 import type { Marker } from './markercollection.js';
 import { type DocumentFragment } from './documentfragment.js';
-import { type DocumentSelection } from './documentselection.js';
+import { type ModelDocumentSelection } from './documentselection.js';
 import { type Element } from './element.js';
 import { type LivePosition } from './liveposition.js';
 import { type LiveRange } from './liverange.js';
@@ -220,7 +220,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label SELECTION
 	 */
-	public is( type: 'selection' | 'model:selection' ): this is Selection | DocumentSelection;
+	public is( type: 'selection' | 'model:selection' ): this is Selection | ModelDocumentSelection;
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/model/documentselection~DocumentSelection}.
@@ -238,7 +238,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label DOCUMENT_SELECTION
 	 */
-	public is( type: 'documentSelection' | 'model:documentSelection' ): this is DocumentSelection;
+	public is( type: 'documentSelection' | 'model:documentSelection' ): this is ModelDocumentSelection;
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/model/markercollection~Marker}.

@@ -21,7 +21,7 @@ import {
 	type DowncastHighlightDescriptor,
 	type DowncastRemoveHighlightCallback,
 	type MapperViewToModelPositionEvent,
-	type DocumentSelection,
+	type ModelDocumentSelection,
 	type DowncastWriter,
 	type Model,
 	type Range,
@@ -337,7 +337,7 @@ export function toWidgetEditable(
  * @returns The optimal range.
  */
 export function findOptimalInsertionRange(
-	selection: Selection | DocumentSelection,
+	selection: Selection | ModelDocumentSelection,
 	model: Model
 ): Range {
 	const selectedElement = selection.getSelectedElement();

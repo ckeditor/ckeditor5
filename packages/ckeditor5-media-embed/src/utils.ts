@@ -16,7 +16,7 @@ import type {
 	DowncastWriter,
 	ViewDocumentSelection,
 	ViewElement,
-	DocumentSelection
+	ModelDocumentSelection
 } from 'ckeditor5/src/engine.js';
 import { isWidget, toWidget } from 'ckeditor5/src/widget.js';
 import { type MediaRegistry } from './mediaregistry.js';
@@ -96,7 +96,7 @@ export function createMediaFigureElement(
  *
  * @internal
  */
-export function getSelectedMediaModelWidget( selection: Selection | DocumentSelection ): Element | null {
+export function getSelectedMediaModelWidget( selection: Selection | ModelDocumentSelection ): Element | null {
 	const selectedElement = selection.getSelectedElement();
 
 	if ( selectedElement && selectedElement.is( 'element', 'media' ) ) {

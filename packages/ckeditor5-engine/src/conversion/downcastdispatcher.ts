@@ -15,7 +15,7 @@ import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 import type { Differ, DifferItem, DifferItemReinsert } from '../model/differ.js';
 import type { MarkerCollection, Marker } from '../model/markercollection.js';
 import type { TreeWalkerValue } from '../model/treewalker.js';
-import { type DocumentSelection } from '../model/documentselection.js';
+import { type ModelDocumentSelection } from '../model/documentselection.js';
 import { type DowncastWriter } from '../view/downcastwriter.js';
 import { type RootElement } from '../model/rootelement.js';
 import { type Element } from '../model/element.js';
@@ -250,7 +250,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 * @param writer View writer that should be used to modify the view document.
 	 */
 	public convertSelection(
-		selection: Selection | DocumentSelection,
+		selection: Selection | ModelDocumentSelection,
 		markers: MarkerCollection,
 		writer: DowncastWriter
 	): void {
@@ -565,7 +565,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 */
 	private _addConsumablesForSelection(
 		consumable: ModelConsumable,
-		selection: Selection | DocumentSelection,
+		selection: Selection | ModelDocumentSelection,
 		markers: Iterable<Marker>
 	): ModelConsumable {
 		consumable.add( selection, 'selection' );
@@ -711,13 +711,13 @@ export type DowncastDispatcherEventMap<TItem = Item> = {
 		attributeNewValue: unknown;
 	};
 	cleanSelection: {
-		selection: Selection | DocumentSelection;
+		selection: Selection | ModelDocumentSelection;
 	};
 	selection: {
-		selection: Selection | DocumentSelection;
+		selection: Selection | ModelDocumentSelection;
 	};
 	addMarker: {
-		item?: Item | Selection | DocumentSelection;
+		item?: Item | Selection | ModelDocumentSelection;
 		range?: Range;
 		markerRange: Range;
 		markerName: string;
@@ -794,7 +794,7 @@ export type DowncastRemoveEvent = DowncastEvent<'remove'>;
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
  * to be used by callback, passed in `DowncastDispatcher` constructor.
  */
-export type DowncastAttributeEvent<TItem = Item | Selection | DocumentSelection> = DowncastEvent<'attribute', TItem>;
+export type DowncastAttributeEvent<TItem = Item | Selection | ModelDocumentSelection> = DowncastEvent<'attribute', TItem>;
 
 /**
  * Fired for {@link module:engine/model/selection~Selection selection} changes.
@@ -897,7 +897,7 @@ function shouldMarkerChangeBeConverted(
 	return !hasCustomHandling;
 }
 
-function getEventName<TType extends string>( type: TType, data: { item: Item | Selection | DocumentSelection } ) {
+function getEventName<TType extends string>( type: TType, data: { item: Item | Selection | ModelDocumentSelection } ) {
 	const name = data.item.is( 'element' ) ? data.item.name : '$text';
 
 	return `${ type }:${ name }` as const;

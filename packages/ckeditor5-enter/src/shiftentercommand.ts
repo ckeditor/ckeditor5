@@ -11,7 +11,7 @@ import { Command } from '@ckeditor/ckeditor5-core';
 import { getCopyOnEnterAttributes } from './utils.js';
 
 import type {
-	DocumentSelection,
+	ModelDocumentSelection,
 	Model,
 	Position,
 	Schema,
@@ -61,7 +61,7 @@ export type ShiftEnterCommandAfterExecuteEvent = {
 /**
  * Checks whether the ShiftEnter command should be enabled in the specified selection.
  */
-function isEnabled( schema: Schema, selection: DocumentSelection ): boolean {
+function isEnabled( schema: Schema, selection: ModelDocumentSelection ): boolean {
 	// At this moment it is okay to support single range selections only.
 	// But in the future we may need to change that.
 	if ( selection.rangeCount > 1 ) {
@@ -90,7 +90,7 @@ function isEnabled( schema: Schema, selection: DocumentSelection ): boolean {
 /**
  * Creates a break in the way that the <kbd>Shift</kbd>+<kbd>Enter</kbd> keystroke is expected to work.
  */
-function softBreakAction( model: Model, writer: Writer, selection: DocumentSelection ): void {
+function softBreakAction( model: Model, writer: Writer, selection: ModelDocumentSelection ): void {
 	const isSelectionEmpty = selection.isCollapsed;
 	const range = selection.getFirstRange()!;
 	const startElement = range.start.parent as Element;

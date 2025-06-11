@@ -10,7 +10,7 @@
 import type { Editor } from 'ckeditor5/src/core.js';
 import type { CodeBlockLanguageDefinition } from './codeblockconfig.js';
 import type {
-	DocumentSelection,
+	ModelDocumentSelection,
 	Element,
 	Model,
 	Position,
@@ -256,7 +256,7 @@ export function getIndentOutdentPositions( model: Model ): Array<Position> {
  *
  * @internal
  */
-export function isModelSelectionInCodeBlock( selection: DocumentSelection ): boolean {
+export function isModelSelectionInCodeBlock( selection: ModelDocumentSelection ): boolean {
 	const firstBlock = first( selection.getSelectedBlocks() );
 
 	return !!firstBlock && firstBlock.is( 'element', 'codeBlock' );

@@ -10,7 +10,7 @@
 import { CKEditorError } from 'ckeditor5/src/utils.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 import type {
-	DocumentSelection,
+	ModelDocumentSelection,
 	Element,
 	Node,
 	Position,
@@ -870,7 +870,7 @@ export class TableUtils extends Plugin {
 	 * To obtain the cells selected from the inside, use
 	 * {@link #getTableCellsContainingSelection}.
 	 */
-	public getSelectedTableCells( selection: Selection | DocumentSelection ): Array<Element> {
+	public getSelectedTableCells( selection: Selection | ModelDocumentSelection ): Array<Element> {
 		const cells = [];
 
 		for ( const range of this.sortRanges( selection.getRanges() ) ) {
@@ -891,7 +891,7 @@ export class TableUtils extends Plugin {
 	 * To obtain the cells selected from the outside, use
 	 * {@link #getSelectedTableCells}.
 	 */
-	public getTableCellsContainingSelection( selection: Selection | DocumentSelection ): Array<Element> {
+	public getTableCellsContainingSelection( selection: Selection | ModelDocumentSelection ): Array<Element> {
 		const cells = [];
 
 		for ( const range of selection.getRanges() ) {
@@ -913,7 +913,7 @@ export class TableUtils extends Plugin {
 	 * Combines {@link #getTableCellsContainingSelection} and
 	 * {@link #getSelectedTableCells}.
 	 */
-	public getSelectionAffectedTableCells( selection: Selection | DocumentSelection ): Array<Element> {
+	public getSelectionAffectedTableCells( selection: Selection | ModelDocumentSelection ): Array<Element> {
 		const selectedCells = this.getSelectedTableCells( selection );
 
 		if ( selectedCells.length ) {

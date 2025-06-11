@@ -14,7 +14,7 @@ import { ModelPosition, type PositionOffset, type PositionStickiness } from './p
 import { ModelRange } from './range.js';
 import { ModelSelection, type PlaceOrOffset, type Selectable } from './selection.js';
 import { OperationFactory } from './operation/operationfactory.js';
-import { DocumentSelection } from './documentselection.js';
+import { ModelDocumentSelection } from './documentselection.js';
 import { Schema } from './schema.js';
 import { Writer } from './writer.js';
 import { Node } from './node.js';
@@ -689,7 +689,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * the <kbd>Shift</kbd>+<kbd>Backspace</kbd> keystroke.
 	 */
 	public deleteContent(
-		selection: ModelSelection | DocumentSelection,
+		selection: ModelSelection | ModelDocumentSelection,
 		options?: {
 			leaveUnmerged?: boolean;
 			doNotResetEntireContent?: boolean;
@@ -730,7 +730,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * @param options.treatEmojiAsSingleUnit Whether multi-characer emoji sequences should be handled as single unit.
 	 */
 	public modifySelection(
-		selection: ModelSelection | DocumentSelection,
+		selection: ModelSelection | ModelDocumentSelection,
 		options?: {
 			direction?: 'forward' | 'backward';
 			unit?: 'character' | 'codePoint' | 'word';
@@ -767,7 +767,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * @fires getSelectedContent
 	 * @param selection The selection of which content will be returned.
 	 */
-	public getSelectedContent( selection: ModelSelection | DocumentSelection ): ModelDocumentFragment {
+	public getSelectedContent( selection: ModelSelection | ModelDocumentSelection ): ModelDocumentFragment {
 		return getSelectedContent( this, selection );
 	}
 
@@ -1126,17 +1126,17 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 }
 
 /**
- * Normalizes a selectable to a Selection or DocumentSelection.
+ * Normalizes a selectable to a Selection or ModelDocumentSelection.
  */
 function normalizeSelectable(
 	selectable?: Selectable,
 	placeOrOffset?: PlaceOrOffset | null
-): ModelSelection | DocumentSelection | undefined {
+): ModelSelection | ModelDocumentSelection | undefined {
 	if ( !selectable ) {
 		return;
 	}
 
-	if ( selectable instanceof ModelSelection || selectable instanceof DocumentSelection ) {
+	if ( selectable instanceof ModelSelection || selectable instanceof ModelDocumentSelection ) {
 		return selectable;
 	}
 
@@ -1215,7 +1215,7 @@ export type ModelInsertContentEvent = {
 	name: 'insertContent';
 	args: [ [
 		content: Item | ModelDocumentFragment,
-		selectable?: ModelSelection | DocumentSelection,
+		selectable?: ModelSelection | ModelDocumentSelection,
 		...rest: Array<unknown>
 	] ];
 	return: ModelRange;
@@ -1237,7 +1237,7 @@ export type ModelInsertObjectEvent = {
 	name: 'insertObject';
 	args: [ [
 		element: ModelElement,
-		selectable?: ModelSelection | DocumentSelection | null,
+		selectable?: ModelSelection | ModelDocumentSelection | null,
 		options?: {
 			findOptimalPosition?: 'auto' | 'before' | 'after';
 			setSelection?: 'on' | 'after';
@@ -1295,7 +1295,7 @@ export type ModelGetSelectedContentEvent = DecoratedMethodEvent<Model, 'getSelec
 export type ModelCanEditAtEvent = {
 	name: 'canEditAt';
 	args: [ [
-		selectable?: ModelSelection | DocumentSelection
+		selectable?: ModelSelection | ModelDocumentSelection
 	] ];
 	return: boolean;
 };

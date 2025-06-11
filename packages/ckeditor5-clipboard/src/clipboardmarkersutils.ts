@@ -16,7 +16,7 @@ import {
 	type DocumentFragment,
 	type Position,
 	type Element,
-	type DocumentSelection,
+	type ModelDocumentSelection,
 	type Selection,
 	type Writer,
 	type Marker
@@ -80,7 +80,7 @@ export class ClipboardMarkersUtils extends Plugin {
 	 */
 	public _copySelectedFragmentWithMarkers(
 		action: ClipboardMarkerRestrictedAction,
-		selection: Selection | DocumentSelection,
+		selection: Selection | ModelDocumentSelection,
 		getCopiedFragment: ( writer: Writer ) => DocumentFragment = writer =>
 			writer.model.getSelectedContent( writer.model.document.selection )
 	): DocumentFragment {
@@ -293,7 +293,7 @@ export class ClipboardMarkersUtils extends Plugin {
 	 */
 	private _insertFakeMarkersIntoSelection(
 		writer: Writer,
-		selection: Selection | DocumentSelection,
+		selection: Selection | ModelDocumentSelection,
 		action: ClipboardMarkerRestrictedAction
 	): Record<string, Array<Element>> {
 		const copyableMarkers = this._getCopyableMarkersFromSelection( writer, selection, action );
@@ -313,7 +313,7 @@ export class ClipboardMarkersUtils extends Plugin {
 	 */
 	private _getCopyableMarkersFromSelection(
 		writer: Writer,
-		selection: Selection | DocumentSelection,
+		selection: Selection | ModelDocumentSelection,
 		action: ClipboardMarkerRestrictedAction | null
 	): Array<CopyableMarker> {
 		const selectionRanges = Array.from( selection.getRanges()! );

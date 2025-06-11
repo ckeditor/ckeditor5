@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { DocumentSelection, Element, Node, Selection } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, Element, Node, Selection } from 'ckeditor5/src/engine.js';
 
 import {
 	getNestedListBlocks,
@@ -87,7 +87,7 @@ export class ListMergeCommand extends Command {
 			}
 
 			if ( shouldMergeOnBlocksContentLevel ) {
-				let sel: Selection | DocumentSelection = selection;
+				let sel: Selection | ModelDocumentSelection = selection;
 
 				if ( selection.isCollapsed ) {
 					sel = writer.createSelection( writer.createRange(
@@ -183,7 +183,7 @@ export class ListMergeCommand extends Command {
 	 * {@link module:engine/model/model~Model#deleteContent} to remove the inline content within the selection.
 	 */
 	private _getMergeSubjectElements(
-		selection: Selection | DocumentSelection,
+		selection: Selection | ModelDocumentSelection,
 		shouldMergeOnBlocksContentLevel: boolean
 	) {
 		const model = this.editor.model;

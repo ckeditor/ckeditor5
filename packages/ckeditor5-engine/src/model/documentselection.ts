@@ -38,32 +38,32 @@ import {
 const storePrefix = 'selection:';
 
 /**
- * `DocumentSelection` is a special selection which is used as the
+ * `ModelDocumentSelection` is a special selection which is used as the
  * {@link module:engine/model/document~Document#selection document's selection}.
- * There can be only one instance of `DocumentSelection` per document.
+ * There can be only one instance of `ModelDocumentSelection` per document.
  *
  * Document selection can only be changed by using the {@link module:engine/model/writer~Writer} instance
  * inside the {@link module:engine/model/model~Model#change `change()`} block, as it provides a secure way to modify model.
  *
- * `DocumentSelection` is automatically updated upon changes in the {@link module:engine/model/document~Document document}
+ * `ModelDocumentSelection` is automatically updated upon changes in the {@link module:engine/model/document~Document document}
  * to always contain valid ranges. Its attributes are inherited from the text unless set explicitly.
  *
- * Differences between {@link module:engine/model/selection~Selection} and `DocumentSelection` are:
- * * there is always a range in `DocumentSelection` - even if no ranges were added there is a "default range"
+ * Differences between {@link module:engine/model/selection~Selection} and `ModelDocumentSelection` are:
+ * * there is always a range in `ModelDocumentSelection` - even if no ranges were added there is a "default range"
  * present in the selection,
  * * ranges added to this selection updates automatically when the document changes,
- * * attributes of `DocumentSelection` are updated automatically according to selection ranges.
+ * * attributes of `ModelDocumentSelection` are updated automatically according to selection ranges.
  *
- * Since `DocumentSelection` uses {@link module:engine/model/liverange~LiveRange live ranges}
+ * Since `ModelDocumentSelection` uses {@link module:engine/model/liverange~LiveRange live ranges}
  * and is updated when {@link module:engine/model/document~Document document}
  * changes, it cannot be set on {@link module:engine/model/node~Node nodes}
  * that are inside {@link module:engine/model/documentfragment~DocumentFragment document fragment}.
  * If you need to represent a selection in document fragment,
  * use {@link module:engine/model/selection~Selection Selection class} instead.
  */
-export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
+export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
-	 * Selection used internally by that class (`DocumentSelection` is a proxy to that selection).
+	 * Selection used internally by that class (`ModelDocumentSelection` is a proxy to that selection).
 	 */
 	private _selection: LiveSelection;
 
@@ -154,7 +154,7 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	 * A collection of selection {@link module:engine/model/markercollection~Marker markers}.
 	 * Marker is a selection marker when selection range is inside the marker range.
 	 *
-	 * **Note**: Only markers from {@link ~DocumentSelection#observeMarkers observed markers groups} are collected.
+	 * **Note**: Only markers from {@link ~ModelDocumentSelection#observeMarkers observed markers groups} are collected.
 	 */
 	public get markers(): Collection<Marker> {
 		return this._selection.markers;
@@ -354,7 +354,7 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 
 	/**
 	 * Registers a marker group prefix or a marker name to be collected in the
-	 * {@link ~DocumentSelection#markers selection markers collection}.
+	 * {@link ~ModelDocumentSelection#markers selection markers collection}.
 	 *
 	 * See also {@link module:engine/model/markercollection~MarkerCollection#getMarkersGroup `MarkerCollection#getMarkersGroup()`}.
 	 *
@@ -365,7 +365,7 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	}
 
 	/**
-	 * Moves {@link module:engine/model/documentselection~DocumentSelection#focus} to the specified location.
+	 * Moves {@link module:engine/model/documentselection~ModelDocumentSelection#focus} to the specified location.
 	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelectionFocus} method.
 	 *
 	 * The location can be specified in the same form as
@@ -447,10 +447,10 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	}
 
 	/**
-	 * Restores the {@link ~DocumentSelection#_overrideGravity overridden gravity}.
+	 * Restores the {@link ~ModelDocumentSelection#_overrideGravity overridden gravity}.
 	 *
 	 * Restoring the gravity is only possible using the unique identifier returned by
-	 * {@link ~DocumentSelection#_overrideGravity}. Note that the gravity remains overridden as long as won't be restored
+	 * {@link ~ModelDocumentSelection#_overrideGravity}. Note that the gravity remains overridden as long as won't be restored
 	 * the same number of times it was overridden.
 	 *
 	 * @see module:engine/model/writer~Writer#restoreSelectionGravity
@@ -484,55 +484,53 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-DocumentSelection.prototype.is = function( type: string ): boolean {
+ModelDocumentSelection.prototype.is = function( type: string ): boolean {
 	return type === 'selection' ||
 		type == 'model:selection' ||
 		type == 'documentSelection' ||
 		type == 'model:documentSelection';
 };
 
-export { DocumentSelection as ModelDocumentSelection };
-
 /**
  * Fired when selection range(s) changed.
  *
- * @eventName ~DocumentSelection#change:range
+ * @eventName ~ModelDocumentSelection#change:range
  * @param directChange In case of {@link module:engine/model/selection~Selection} class it is always set
  * to `true` which indicates that the selection change was caused by a direct use of selection's API.
- * The {@link module:engine/model/documentselection~DocumentSelection}, however, may change because its position
+ * The {@link module:engine/model/documentselection~ModelDocumentSelection}, however, may change because its position
  * was directly changed through the {@link module:engine/model/writer~Writer writer} or because its position was
  * changed because the structure of the model has been changed (which means an indirect change).
  * The indirect change does not occur in case of normal (detached) selections because they are "static" (as "not live")
  * which mean that they are not updated once the document changes.
  */
-export type DocumentSelectionChangeRangeEvent = SelectionChangeRangeEvent;
+export type ModelDocumentSelectionChangeRangeEvent = SelectionChangeRangeEvent;
 
 /**
  * Fired when selection attribute changed.
  *
- * @eventName ~DocumentSelection#change:attribute
+ * @eventName ~ModelDocumentSelection#change:attribute
  * @param directChange In case of {@link module:engine/model/selection~Selection} class it is always set
  * to `true` which indicates that the selection change was caused by a direct use of selection's API.
- * The {@link module:engine/model/documentselection~DocumentSelection}, however, may change because its attributes
+ * The {@link module:engine/model/documentselection~ModelDocumentSelection}, however, may change because its attributes
  * were directly changed through the {@link module:engine/model/writer~Writer writer} or because its position was
  * changed in the model and its attributes were refreshed (which means an indirect change).
  * The indirect change does not occur in case of normal (detached) selections because they are "static" (as "not live")
  * which mean that they are not updated once the document changes.
  * @param attributeKeys Array containing keys of attributes that changed.
 */
-export type DocumentSelectionChangeAttributeEvent = SelectionChangeAttributeEvent;
+export type ModelDocumentSelectionChangeAttributeEvent = SelectionChangeAttributeEvent;
 
 /**
  * Fired when selection marker(s) changed.
  *
- * @eventName ~DocumentSelection#change:marker
+ * @eventName ~ModelDocumentSelection#change:marker
  * @param directChange This is always set to `false` in case of `change:marker` event as there is no possibility
- * to change markers directly through {@link module:engine/model/documentselection~DocumentSelection} API.
- * See also {@link module:engine/model/documentselection~DocumentSelection#event:change:range} and
- * {@link module:engine/model/documentselection~DocumentSelection#event:change:attribute}.
+ * to change markers directly through {@link module:engine/model/documentselection~ModelDocumentSelection} API.
+ * See also {@link module:engine/model/documentselection~ModelDocumentSelection#event:change:range} and
+ * {@link module:engine/model/documentselection~ModelDocumentSelection#event:change:attribute}.
  * @param oldMarkers Markers in which the selection was before the change.
  */
-export type DocumentSelectionChangeMarkerEvent = {
+export type ModelDocumentSelectionChangeMarkerEvent = {
 	name: 'change:marker';
 	args: [ {
 		directChange: boolean;
@@ -543,15 +541,15 @@ export type DocumentSelectionChangeMarkerEvent = {
 /**
  * Fired when selection range(s), attribute(s) or marker(s) changed.
  *
- * @eventName ~DocumentSelection#change
+ * @eventName ~ModelDocumentSelection#change
  * @param directChange This is always set to `false` in case of `change:marker` event as there is no possibility
- * to change markers directly through {@link module:engine/model/documentselection~DocumentSelection} API.
- * See also {@link module:engine/model/documentselection~DocumentSelection#event:change:range} and
- * {@link module:engine/model/documentselection~DocumentSelection#event:change:attribute}.
+ * to change markers directly through {@link module:engine/model/documentselection~ModelDocumentSelection} API.
+ * See also {@link module:engine/model/documentselection~ModelDocumentSelection#event:change:range} and
+ * {@link module:engine/model/documentselection~ModelDocumentSelection#event:change:attribute}.
  * @param attributeKeys Array containing keys of attributes that changed.
  * @param oldMarkers Markers in which the selection was before the change.
  */
-export type DocumentSelectionChangeEvent = {
+export type ModelDocumentSelectionChangeEvent = {
 	name: 'change' | 'change:attribute' | 'change:marker' | 'change:range';
 	args: [ {
 		directChange: boolean;
@@ -561,9 +559,10 @@ export type DocumentSelectionChangeEvent = {
 };
 
 /**
- * `LiveSelection` is used internally by {@link module:engine/model/documentselection~DocumentSelection} and shouldn't be used directly.
+ * `LiveSelection` is used internally by {@link module:engine/model/documentselection~ModelDocumentSelection}
+ * and shouldn't be used directly.
  *
- * LiveSelection` is automatically updated upon changes in the {@link module:engine/model/document~Document document}
+ * `LiveSelection` is automatically updated upon changes in the {@link module:engine/model/document~Document document}
  * to always contain valid ranges. Its attributes are inherited from the text unless set explicitly.
  *
  * Differences between {@link module:engine/model/selection~Selection} and `LiveSelection` are:
@@ -657,12 +656,12 @@ class LiveSelection extends Selection {
 
 			if ( this._hasChangedRange ) {
 				this._hasChangedRange = false;
-				this.fire<DocumentSelectionChangeRangeEvent>( 'change:range', { directChange: false } );
+				this.fire<ModelDocumentSelectionChangeRangeEvent>( 'change:range', { directChange: false } );
 			}
 		}, { priority: 'lowest' } );
 
 		// Ensure selection is correct and up to date after each range change.
-		this.on<DocumentSelectionChangeRangeEvent>( 'change:range', () => {
+		this.on<ModelDocumentSelectionChangeRangeEvent>( 'change:range', () => {
 			this._validateSelectionRanges( this.getRanges() );
 		} );
 
@@ -755,7 +754,7 @@ class LiveSelection extends Selection {
 		if ( this._setAttribute( key, value ) ) {
 			// Fire event with exact data.
 			const attributeKeys = [ key ];
-			this.fire<DocumentSelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys, directChange: true } );
+			this.fire<ModelDocumentSelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys, directChange: true } );
 		}
 	}
 
@@ -763,7 +762,7 @@ class LiveSelection extends Selection {
 		if ( this._removeAttribute( key ) ) {
 			// Fire event with exact data.
 			const attributeKeys = [ key ];
-			this.fire<DocumentSelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys, directChange: true } );
+			this.fire<ModelDocumentSelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys, directChange: true } );
 		}
 	}
 
@@ -789,7 +788,7 @@ class LiveSelection extends Selection {
 			 *
 			 * @error document-selection-gravity-wrong-restore
 			 * @param {string} uid The unique identifier returned by
-			 * {@link module:engine/model/documentselection~DocumentSelection#_overrideGravity}.
+			 * {@link module:engine/model/documentselection~ModelDocumentSelection#_overrideGravity}.
 			 */
 			throw new CKEditorError(
 				'document-selection-gravity-wrong-restore',
@@ -834,7 +833,7 @@ class LiveSelection extends Selection {
 		for ( const range of ranges ) {
 			if ( !this._document._validateSelectionRange( range ) ) {
 				/**
-				 * Range from {@link module:engine/model/documentselection~DocumentSelection document selection}
+				 * Range from {@link module:engine/model/documentselection~ModelDocumentSelection document selection}
 				 * starts or ends at incorrect position.
 				 *
 				 * @error document-selection-wrong-position
@@ -925,7 +924,7 @@ class LiveSelection extends Selection {
 		}
 
 		if ( changed ) {
-			this.fire<DocumentSelectionChangeMarkerEvent>( 'change:marker', { oldMarkers, directChange: false } );
+			this.fire<ModelDocumentSelectionChangeMarkerEvent>( 'change:marker', { oldMarkers, directChange: false } );
 		}
 	}
 
@@ -969,7 +968,7 @@ class LiveSelection extends Selection {
 		}
 
 		if ( changed ) {
-			this.fire<DocumentSelectionChangeMarkerEvent>( 'change:marker', { oldMarkers, directChange: false } );
+			this.fire<ModelDocumentSelectionChangeMarkerEvent>( 'change:marker', { oldMarkers, directChange: false } );
 		}
 	}
 
@@ -1016,7 +1015,7 @@ class LiveSelection extends Selection {
 
 		// Fire event with exact data (fire only if anything changed).
 		if ( changed.length > 0 ) {
-			this.fire<DocumentSelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys: changed, directChange: false } );
+			this.fire<ModelDocumentSelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys: changed, directChange: false } );
 		}
 	}
 

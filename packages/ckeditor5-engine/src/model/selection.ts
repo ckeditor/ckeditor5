@@ -13,7 +13,7 @@ import { Position, type PositionOffset } from './position.js';
 import { Range } from './range.js';
 
 import { type DocumentFragment } from './documentfragment.js';
-import { type DocumentSelection } from './documentselection.js';
+import { type ModelDocumentSelection } from './documentselection.js';
 import { type Element } from './element.js';
 import { type Item } from './item.js';
 
@@ -189,7 +189,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * @param otherSelection Selection to compare with.
 	 * @returns `true` if selections are equal, `false` otherwise.
 	 */
-	public isEqual( otherSelection: Selection | DocumentSelection ): boolean {
+	public isEqual( otherSelection: Selection | ModelDocumentSelection ): boolean {
 		if ( this.rangeCount != otherSelection.rangeCount ) {
 			return false;
 		} else if ( this.rangeCount === 0 ) {
@@ -316,7 +316,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 *
 	 * // Sets selection to the given document selection.
 	 * // Note: It doesn't copy selection attributes.
-	 * const documentSelection = new DocumentSelection( doc );
+	 * const documentSelection = new ModelDocumentSelection( doc );
 	 * selection.setTo( documentSelection );
 	 *
 	 * // Sets collapsed selection at the given position.
@@ -369,9 +369,9 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 		} else if ( selectable instanceof Selection ) {
 			this._setRanges( selectable.getRanges(), selectable.isBackward );
 		} else if ( selectable && typeof ( selectable as any ).getRanges == 'function' ) {
-			// We assume that the selectable is a DocumentSelection.
+			// We assume that the selectable is a ModelDocumentSelection.
 			// It can't be imported here, because it would lead to circular imports.
-			this._setRanges( ( selectable as DocumentSelection ).getRanges(), ( selectable as DocumentSelection ).isBackward );
+			this._setRanges( ( selectable as ModelDocumentSelection ).getRanges(), ( selectable as ModelDocumentSelection ).isBackward );
 		} else if ( selectable instanceof Range ) {
 			this._setRanges( [ selectable ], !!options && !!options.backward );
 		} else if ( selectable instanceof Position ) {
@@ -983,7 +983,7 @@ function findAncestorBlock( node: Node | DocumentFragment ) {
  *
  * See also {@link module:engine/model/selection~Selection#setTo}.
  */
-export type Selectable = Selection | DocumentSelection | Position | Range | Node | Iterable<Range> | null;
+export type Selectable = Selection | ModelDocumentSelection | Position | Range | Node | Iterable<Range> | null;
 
 /**
  * The place or offset of the selection.

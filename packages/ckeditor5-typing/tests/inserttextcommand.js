@@ -432,7 +432,7 @@ describe( 'InsertTextCommand', () => {
 		} );
 
 		describe( 'applies document selection attributes', () => {
-			it( 'insert using the DocumentSelection as insertText target', () => {
+			it( 'insert using the ModelDocumentSelection as insertText target', () => {
 				_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 				model.change( writer => {
@@ -465,7 +465,7 @@ describe( 'InsertTextCommand', () => {
 				expect( _getModelData( model ) ).to.equal( '<paragraph><$text bold="true">bar[]</$text>foo</paragraph>' );
 			} );
 
-			it( 'replace using the DocumentSelection as insertText target', () => {
+			it( 'replace using the ModelDocumentSelection as insertText target', () => {
 				_setModelData( model, '<paragraph>foo<$text bold="true">[bar]</$text></paragraph>' );
 
 				editor.execute( 'insertText', {

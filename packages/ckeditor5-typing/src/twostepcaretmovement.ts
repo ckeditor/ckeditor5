@@ -14,8 +14,8 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils';
 import {
 	MouseObserver,
 	TouchObserver,
-	type DocumentSelection,
-	type DocumentSelectionChangeRangeEvent,
+	type ModelDocumentSelection,
+	type ModelDocumentSelectionChangeRangeEvent,
 	type DomEventData,
 	type Model,
 	type Position,
@@ -245,7 +245,7 @@ export class TwoStepCaretMovement extends Plugin {
 		}, { context: '$text', priority: 'highest' } );
 
 		// The automatic gravity restoration logic.
-		this.listenTo<DocumentSelectionChangeRangeEvent>( modelSelection, 'change:range', ( evt, data ) => {
+		this.listenTo<ModelDocumentSelectionChangeRangeEvent>( modelSelection, 'change:range', ( evt, data ) => {
 			// Skipping the automatic restoration is needed if the selection should change
 			// but the gravity must remain overridden afterwards. See the #handleBackwardMovement
 			// to learn more.
@@ -696,7 +696,7 @@ export class TwoStepCaretMovement extends Plugin {
 /**
  * Checks whether the selection has any of given attributes.
  */
-function hasAnyAttribute( selection: DocumentSelection, attributes: Set<string> ): boolean {
+function hasAnyAttribute( selection: ModelDocumentSelection, attributes: Set<string> ): boolean {
 	for ( const observedAttribute of attributes ) {
 		if ( selection.hasAttribute( observedAttribute ) ) {
 			return true;

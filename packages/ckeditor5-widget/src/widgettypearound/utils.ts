@@ -10,7 +10,7 @@
 import { isWidget } from '../utils.js';
 
 import type {
-	DocumentSelection,
+	ModelDocumentSelection,
 	DomConverter,
 	Element,
 	Schema,
@@ -73,6 +73,6 @@ export function getClosestWidgetViewElement( domElement: HTMLElement, domConvert
  * @internal
  * @returns The position of the fake caret or `null` when none is present.
  */
-export function getTypeAroundFakeCaretPosition( selection: Selection | DocumentSelection ): 'before' | 'after' | null {
+export function getTypeAroundFakeCaretPosition( selection: Selection | ModelDocumentSelection ): 'before' | 'after' | null {
 	return selection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) as any;
 }

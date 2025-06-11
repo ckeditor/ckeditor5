@@ -17,7 +17,7 @@ import {
 	type ViewElement,
 	type ViewConsumable,
 	type MatcherObjectPattern,
-	type DocumentSelectionChangeAttributeEvent,
+	type ModelDocumentSelectionChangeAttributeEvent,
 	type Element,
 	type Item
 } from 'ckeditor5/src/engine.js';
@@ -485,7 +485,7 @@ export class DataFilter extends Plugin {
 			return changed;
 		} );
 
-		this.listenTo<DocumentSelectionChangeAttributeEvent>( selection, 'change:attribute', ( evt, { attributeKeys } ) => {
+		this.listenTo<ModelDocumentSelectionChangeAttributeEvent>( selection, 'change:attribute', ( evt, { attributeKeys } ) => {
 			const removeAttributes = new Set<string>();
 			const coupledAttributes = this._getCoupledAttributesMap();
 

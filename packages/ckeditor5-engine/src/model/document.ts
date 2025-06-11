@@ -8,7 +8,7 @@
  */
 
 import { Differ } from './differ.js';
-import { DocumentSelection } from './documentselection.js';
+import { ModelDocumentSelection } from './documentselection.js';
 import { History } from './history.js';
 import { RootElement } from './rootelement.js';
 
@@ -64,7 +64,7 @@ export class Document extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * The selection in this document.
 	 */
-	public readonly selection: DocumentSelection;
+	public readonly selection: ModelDocumentSelection;
 
 	/**
 	 * A list of roots that are owned and managed by this document. Use {@link #createRoot}, {@link #getRoot} and
@@ -105,7 +105,7 @@ export class Document extends /* #__PURE__ */ EmitterMixin() {
 
 		this.model = model;
 		this.history = new History();
-		this.selection = new DocumentSelection( this );
+		this.selection = new ModelDocumentSelection( this );
 		this.roots = new Collection( { idProperty: 'rootName' } );
 		this.differ = new Differ( model.markers );
 		this.isReadOnly = false;

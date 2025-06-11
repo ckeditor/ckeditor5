@@ -9,7 +9,7 @@
 
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import { count } from '@ckeditor/ckeditor5-utils';
-import type { DocumentSelection, Element, Selection, Writer } from '@ckeditor/ckeditor5-engine';
+import type { ModelDocumentSelection, Element, Selection, Writer } from '@ckeditor/ckeditor5-engine';
 
 import { ChangeBuffer } from './utils/changebuffer.js';
 
@@ -68,7 +68,7 @@ export class DeleteCommand extends Command {
 	public override execute( options: {
 		unit?: 'character' | 'codePoint' | 'word';
 		sequence?: number;
-		selection?: Selection | DocumentSelection;
+		selection?: Selection | ModelDocumentSelection;
 	} = {} ): void {
 		const model = this.editor.model;
 		const doc = model.document;

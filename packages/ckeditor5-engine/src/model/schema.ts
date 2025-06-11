@@ -14,7 +14,7 @@ import { Text } from './text.js';
 import { TreeWalker } from './treewalker.js';
 
 import { type DocumentFragment } from './documentfragment.js';
-import { type DocumentSelection } from './documentselection.js';
+import { type ModelDocumentSelection } from './documentselection.js';
 import { type Item } from './item.js';
 import { type Node } from './node.js';
 import { type Selection } from './selection.js';
@@ -732,7 +732,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param selectionOrRangeOrPosition The selection/range/position to check.
 	 * @returns The lowest limit element containing the entire `selectionOrRangeOrPosition`.
 	 */
-	public getLimitElement( selectionOrRangeOrPosition: Selection | DocumentSelection | Range | Position ): Element {
+	public getLimitElement( selectionOrRangeOrPosition: Selection | ModelDocumentSelection | Range | Position ): Element {
 		let element: Element;
 
 		if ( selectionOrRangeOrPosition instanceof Position ) {
@@ -776,7 +776,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param selection Selection which will be checked.
 	 * @param attribute The name of the attribute to check.
 	 */
-	public checkAttributeInSelection( selection: Selection | DocumentSelection, attribute: string ): boolean {
+	public checkAttributeInSelection( selection: Selection | ModelDocumentSelection, attribute: string ): boolean {
 		if ( selection.isCollapsed ) {
 			const firstPosition = selection.getFirstPosition()!;
 			const context = [
@@ -1194,7 +1194,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * @returns The optimal range.
 	 */
 	public findOptimalInsertionRange(
-		selection: Selection | DocumentSelection,
+		selection: Selection | ModelDocumentSelection,
 		place?: 'auto' | 'before' | 'after'
 	): Range {
 		const selectedElement = selection.getSelectedElement();

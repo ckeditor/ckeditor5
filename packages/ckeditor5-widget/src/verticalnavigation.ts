@@ -14,7 +14,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import type {
-	DocumentSelection,
+	ModelDocumentSelection,
 	EditingController,
 	Model,
 	Position,
@@ -108,7 +108,7 @@ export function verticalNavigationHandler(
  * @param selection The current selection.
  * @param isForward The expected navigation direction.
  */
-function findTextRangeFromSelection( editing: EditingController, selection: Selection | DocumentSelection, isForward: boolean ) {
+function findTextRangeFromSelection( editing: EditingController, selection: Selection | ModelDocumentSelection, isForward: boolean ) {
 	const model = editing.model;
 
 	if ( isForward ) {
@@ -251,6 +251,6 @@ function isSingleLineRange( editing: EditingController, modelRange: Range, isFor
 	return true;
 }
 
-function selectionWillShrink( selection: DocumentSelection, isForward: boolean ) {
+function selectionWillShrink( selection: ModelDocumentSelection, isForward: boolean ) {
 	return !selection.isCollapsed && selection.isBackward == isForward;
 }

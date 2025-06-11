@@ -10,7 +10,7 @@ import { Text } from '../../src/model/text.js';
 import { Range } from '../../src/model/range.js';
 import { Position } from '../../src/model/position.js';
 import { LiveRange } from '../../src/model/liverange.js';
-import { DocumentSelection } from '../../src/model/documentselection.js';
+import { ModelDocumentSelection } from '../../src/model/documentselection.js';
 import { InsertOperation } from '../../src/model/operation/insertoperation.js';
 import { MoveOperation } from '../../src/model/operation/moveoperation.js';
 import { AttributeOperation } from '../../src/model/operation/attributeoperation.js';
@@ -23,8 +23,8 @@ import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_uti
 describe( 'DocumentSelection', () => {
 	let model, doc, root, selection, liveRange, range;
 
-	const fooStoreAttrKey = DocumentSelection._getStoreAttributeKey( 'foo' );
-	const abcStoreAttrKey = DocumentSelection._getStoreAttributeKey( 'abc' );
+	const fooStoreAttrKey = ModelDocumentSelection._getStoreAttributeKey( 'foo' );
+	const abcStoreAttrKey = ModelDocumentSelection._getStoreAttributeKey( 'abc' );
 
 	beforeEach( () => {
 		model = new Model();
@@ -1037,12 +1037,12 @@ describe( 'DocumentSelection', () => {
 	} );
 
 	describe( '_isStoreAttributeKey', () => {
-		it( 'should return true if given key is a key of an attribute stored in element by DocumentSelection', () => {
-			expect( DocumentSelection._isStoreAttributeKey( fooStoreAttrKey ) ).to.be.true;
+		it( 'should return true if given key is a key of an attribute stored in element by ModelDocumentSelection', () => {
+			expect( ModelDocumentSelection._isStoreAttributeKey( fooStoreAttrKey ) ).to.be.true;
 		} );
 
-		it( 'should return false if given key is not a key of an attribute stored in element by DocumentSelection', () => {
-			expect( DocumentSelection._isStoreAttributeKey( 'foo' ) ).to.be.false;
+		it( 'should return false if given key is not a key of an attribute stored in element by ModelDocumentSelection', () => {
+			expect( ModelDocumentSelection._isStoreAttributeKey( 'foo' ) ).to.be.false;
 		} );
 	} );
 
@@ -1746,7 +1746,7 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	// DocumentSelection uses LiveRanges so here are only simple test to see if integration is
+	// ModelDocumentSelection uses LiveRanges so here are only simple test to see if integration is
 	// working well, without getting into complicated corner cases.
 	describe( 'after applying an operation should get updated and fire events', () => {
 		let spyRange;

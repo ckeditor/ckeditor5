@@ -17,7 +17,7 @@ import { ModelRange } from '../model/range.js';
 import { ModelPosition } from '../model/position.js';
 import { ModelSelection } from '../model/selection.js';
 import { ModelDocumentFragment } from '../model/documentfragment.js';
-import { DocumentSelection } from '../model/documentselection.js';
+import { ModelDocumentSelection } from '../model/documentselection.js';
 
 import { View } from '../view/view.js';
 import { ViewContainerElement } from '../view/containerelement.js';
@@ -236,12 +236,12 @@ _setModelData._parse = _parseModel;
  */
 export function _stringifyModel(
 	node: ModelNode | ModelDocumentFragment,
-	selectionOrPositionOrRange: ModelSelection | DocumentSelection | ModelPosition | ModelRange | null = null,
+	selectionOrPositionOrRange: ModelSelection | ModelDocumentSelection | ModelPosition | ModelRange | null = null,
 	markers: MarkerCollection | null = null
 ): string {
 	const model = new Model();
 	const mapper = new Mapper();
-	let selection: ModelSelection | DocumentSelection | null = null;
+	let selection: ModelSelection | ModelDocumentSelection | null = null;
 	let range: ModelRange;
 
 	// Create a range witch wraps passed node.
@@ -263,7 +263,7 @@ export function _stringifyModel(
 	// Get selection from passed selection or position or range if at least one is specified.
 	if ( selectionOrPositionOrRange instanceof ModelSelection ) {
 		selection = selectionOrPositionOrRange;
-	} else if ( selectionOrPositionOrRange instanceof DocumentSelection ) {
+	} else if ( selectionOrPositionOrRange instanceof ModelDocumentSelection ) {
 		selection = selectionOrPositionOrRange;
 	} else if ( selectionOrPositionOrRange instanceof ModelRange ) {
 		selection = new ModelSelection( selectionOrPositionOrRange );
@@ -291,7 +291,7 @@ export function _stringifyModel(
 	downcastDispatcher.on<DowncastInsertEvent<ModelText | ModelTextProxy>>( 'insert:$text', insertText() );
 	downcastDispatcher.on<DowncastInsertEvent<ModelElement>>( 'insert', insertAttributesAndChildren(), { priority: 'lowest' } );
 	downcastDispatcher.on<DowncastAttributeEvent>( 'attribute', ( evt, data, conversionApi ) => {
-		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection || data.item.is( '$textProxy' ) ) {
+		if ( data.item instanceof ModelSelection || data.item instanceof ModelDocumentSelection || data.item.is( '$textProxy' ) ) {
 			const converter = wrap( ( modelAttributeValue, { writer } ) => {
 				return writer.createAttributeElement(
 					'model-text-with-attributes',

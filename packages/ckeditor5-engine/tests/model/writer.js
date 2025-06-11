@@ -17,7 +17,7 @@ import { Range } from '../../src/model/range.js';
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 
 import { getNodesAndText } from '../../tests/model/_utils/utils.js';
-import { DocumentSelection } from '../../src/model/documentselection.js';
+import { ModelDocumentSelection } from '../../src/model/documentselection.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -2769,10 +2769,10 @@ describe( 'Writer', () => {
 			] );
 		} );
 
-		it( 'should use DocumentSelection#_setTo method', () => {
+		it( 'should use ModelDocumentSelection#_setTo method', () => {
 			const firstParagraph = root.getNodeByPath( [ 1 ] );
 
-			const setToSpy = sinon.spy( DocumentSelection.prototype, '_setTo' );
+			const setToSpy = sinon.spy( ModelDocumentSelection.prototype, '_setTo' );
 			setSelection( firstParagraph, 0 );
 
 			expect( setToSpy.calledOnce ).to.be.true;
@@ -2806,10 +2806,10 @@ describe( 'Writer', () => {
 			] );
 		} );
 
-		it( 'should use DocumentSelection#_setFocus method', () => {
+		it( 'should use ModelDocumentSelection#_setFocus method', () => {
 			const firstParagraph = root.getNodeByPath( [ 1 ] );
 
-			const setFocusSpy = sinon.spy( DocumentSelection.prototype, '_setFocus' );
+			const setFocusSpy = sinon.spy( ModelDocumentSelection.prototype, '_setFocus' );
 			setSelectionFocus( firstParagraph, 0 );
 
 			expect( setFocusSpy.calledOnce ).to.be.true;
@@ -2827,7 +2827,7 @@ describe( 'Writer', () => {
 	} );
 
 	describe( 'setSelectionAttribute()', () => {
-		const fooStoreAttrKey = DocumentSelection._getStoreAttributeKey( 'foo' );
+		const fooStoreAttrKey = ModelDocumentSelection._getStoreAttributeKey( 'foo' );
 		let root, rangeInEmptyP, emptyP;
 
 		beforeEach( () => {
@@ -2872,7 +2872,7 @@ describe( 'Writer', () => {
 	} );
 
 	describe( 'removeSelectionAttribute()', () => {
-		const fooStoreAttrKey = DocumentSelection._getStoreAttributeKey( 'foo' );
+		const fooStoreAttrKey = ModelDocumentSelection._getStoreAttributeKey( 'foo' );
 		let root, rangeInEmptyP, emptyP;
 
 		beforeEach( () => {
@@ -2926,8 +2926,8 @@ describe( 'Writer', () => {
 	} );
 
 	describe( 'overrideSelectionGravity()', () => {
-		it( 'should use DocumentSelection#_overrideGravity', () => {
-			const overrideGravitySpy = sinon.spy( DocumentSelection.prototype, '_overrideGravity' );
+		it( 'should use ModelDocumentSelection#_overrideGravity', () => {
+			const overrideGravitySpy = sinon.spy( ModelDocumentSelection.prototype, '_overrideGravity' );
 
 			overrideSelectionGravity();
 
@@ -2965,9 +2965,9 @@ describe( 'Writer', () => {
 	} );
 
 	describe( 'restoreSelectionGravity()', () => {
-		it( 'should use DocumentSelection#_restoreGravity', () => {
+		it( 'should use ModelDocumentSelection#_restoreGravity', () => {
 			const overrideUid = overrideSelectionGravity();
-			const restoreGravitySpy = sinon.spy( DocumentSelection.prototype, '_restoreGravity' );
+			const restoreGravitySpy = sinon.spy( ModelDocumentSelection.prototype, '_restoreGravity' );
 
 			restoreSelectionGravity( overrideUid );
 

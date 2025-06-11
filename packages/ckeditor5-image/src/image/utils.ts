@@ -8,7 +8,7 @@
  */
 
 import type {
-	DocumentSelection,
+	ModelDocumentSelection,
 	MatcherPattern,
 	Schema,
 	Selection,
@@ -117,7 +117,7 @@ export function getImgViewElementMatcher( editor: Editor, matchImageType: 'image
  */
 export function determineImageTypeForInsertionAtSelection(
 	schema: Schema,
-	selection: Selection | DocumentSelection
+	selection: Selection | ModelDocumentSelection
 ): 'imageBlock' | 'imageInline' {
 	const firstBlock = first( selection.getSelectedBlocks() );
 

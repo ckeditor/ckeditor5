@@ -24,7 +24,7 @@ import { ListElementSupport } from './integrations/list.js';
 import { HorizontalLineElementSupport } from './integrations/horizontalline.js';
 import { CustomElementSupport } from './integrations/customelement.js';
 import type { DataSchemaInlineElementDefinition } from './dataschema.js';
-import type { DocumentSelection, Item, Model, Range, Selectable } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, Item, Model, Range, Selectable } from 'ckeditor5/src/engine.js';
 import { getHtmlAttributeName, modifyGhsAttribute, removeFormatting } from './utils.js';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig.js';
@@ -261,7 +261,7 @@ function* getItemsToUpdateGhsAttribute(
 	model: Model,
 	selectable: Selectable,
 	ghsAttributeName: string
-): IterableIterator<Item | DocumentSelection> {
+): IterableIterator<Item | ModelDocumentSelection> {
 	if ( !selectable ) {
 		return;
 	}

@@ -7,7 +7,7 @@
  * @module remove-format/removeformatcommand
  */
 
-import type { DocumentSelection, Item, Schema, Range, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, Item, Schema, Range, Writer } from 'ckeditor5/src/engine.js';
 import { Command } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
 
@@ -103,8 +103,8 @@ export class RemoveFormatCommand extends Command {
 	 *
 	 * @param schema The schema describing the item.
 	 */
-	private* _getFormattingItems( selection: DocumentSelection, schema: Schema ) {
-		const itemHasRemovableFormatting = ( item: Item | DocumentSelection ) => {
+	private* _getFormattingItems( selection: ModelDocumentSelection, schema: Schema ) {
+		const itemHasRemovableFormatting = ( item: Item | ModelDocumentSelection ) => {
 			return !!first( this._getFormattingAttributes( item, schema ) );
 		};
 
@@ -138,7 +138,7 @@ export class RemoveFormatCommand extends Command {
 	 * @param schema The schema describing the item.
 	 * @returns The names of formatting attributes found in a given item.
 	 */
-	private* _getFormattingAttributes( item: Item | DocumentSelection, schema: Schema ) {
+	private* _getFormattingAttributes( item: Item | ModelDocumentSelection, schema: Schema ) {
 		for ( const [ attributeName ] of item.getAttributes() ) {
 			for ( const { isFormatting } of this._customAttributesHandlers ) {
 				if ( isFormatting( attributeName, item ) ) {
@@ -160,7 +160,7 @@ export class RemoveFormatCommand extends Command {
  *
  * @internal
  */
-export type IsFormattingCallback = ( attributeName: string, item: Item | DocumentSelection ) => boolean;
+export type IsFormattingCallback = ( attributeName: string, item: Item | ModelDocumentSelection ) => boolean;
 
 /**
  * Callback that removes formatting from an item.

@@ -113,10 +113,10 @@ export { transformSets } from './model/operation/transform.js';
 
 // Model.
 export {
-	DocumentSelection,
-	type DocumentSelectionChangeRangeEvent,
-	type DocumentSelectionChangeMarkerEvent,
-	type DocumentSelectionChangeAttributeEvent
+	ModelDocumentSelection,
+	type ModelDocumentSelectionChangeRangeEvent,
+	type ModelDocumentSelectionChangeMarkerEvent,
+	type ModelDocumentSelectionChangeAttributeEvent
 } from './model/documentselection.js';
 export { Range } from './model/range.js';
 export { LiveRange, type LiveRangeChangeRangeEvent } from './model/liverange.js';
@@ -168,7 +168,7 @@ export {
 
 // Model Events.
 export type { DocumentChangeEvent } from './model/document.js';
-export type { DocumentSelectionChangeEvent } from './model/documentselection.js';
+export type { ModelDocumentSelectionChangeEvent } from './model/documentselection.js';
 export type {
 	ModelApplyOperationEvent,
 	ModelDeleteContentEvent,

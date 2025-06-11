@@ -7,7 +7,7 @@
  * @module engine/model/utils/deletecontent
  */
 
-import { DocumentSelection } from '../documentselection.js';
+import { ModelDocumentSelection } from '../documentselection.js';
 import { LivePosition } from '../liveposition.js';
 import { Range } from '../range.js';
 
@@ -78,7 +78,7 @@ import { type Writer } from '../writer.js';
  */
 export function deleteContent(
 	model: Model,
-	selection: Selection | DocumentSelection,
+	selection: Selection | ModelDocumentSelection,
 	options: {
 		leaveUnmerged?: boolean;
 		doNotResetEntireContent?: boolean;
@@ -571,7 +571,7 @@ function isCrossingLimitElement( leftPos: Position, rightPos: Position, schema: 
 function insertParagraph(
 	writer: Writer,
 	position: Position,
-	selection: Selection | DocumentSelection,
+	selection: Selection | ModelDocumentSelection,
 	attributes = {}
 ) {
 	const paragraph = writer.createElement( 'paragraph' );
@@ -583,7 +583,7 @@ function insertParagraph(
 	collapseSelectionAt( writer, selection, writer.createPositionAt( paragraph, 0 ) );
 }
 
-function replaceEntireContentWithParagraph( writer: Writer, selection: Selection | DocumentSelection ) {
+function replaceEntireContentWithParagraph( writer: Writer, selection: Selection | ModelDocumentSelection ) {
 	const limitElement = writer.model.schema.getLimitElement( selection );
 
 	writer.remove( writer.createRangeIn( limitElement ) );
@@ -596,7 +596,7 @@ function replaceEntireContentWithParagraph( writer: Writer, selection: Selection
  * * selection contains at least two elements,
  * * whether the paragraph is allowed in schema in the common ancestor.
  */
-function shouldEntireContentBeReplacedWithParagraph( schema: Schema, selection: Selection | DocumentSelection ) {
+function shouldEntireContentBeReplacedWithParagraph( schema: Schema, selection: Selection | ModelDocumentSelection ) {
 	const limitElement = schema.getLimitElement( selection );
 
 	if ( !selection.containsEntireContent( limitElement ) ) {
@@ -618,10 +618,10 @@ function shouldEntireContentBeReplacedWithParagraph( schema: Schema, selection: 
  */
 function collapseSelectionAt(
 	writer: Writer,
-	selection: Selection | DocumentSelection,
+	selection: Selection | ModelDocumentSelection,
 	positionOrRange: Position | Range
 ) {
-	if ( selection instanceof DocumentSelection ) {
+	if ( selection instanceof ModelDocumentSelection ) {
 		writer.setSelection( positionOrRange );
 	} else {
 		selection.setTo( positionOrRange );

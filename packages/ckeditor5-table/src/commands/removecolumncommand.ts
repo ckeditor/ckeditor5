@@ -9,7 +9,7 @@
 
 import { Command } from 'ckeditor5/src/core.js';
 import type {
-	DocumentSelection,
+	ModelDocumentSelection,
 	Element,
 	Selection
 } from 'ckeditor5/src/engine.js';
@@ -130,7 +130,7 @@ function getCellToFocus(
 /**
  * Returns helper object returning the first and the last cell contained in given selection, based on DOM order.
  */
-function getBoundaryCells( selection: Selection | DocumentSelection, tableUtils: TableUtils ) {
+function getBoundaryCells( selection: Selection | ModelDocumentSelection, tableUtils: TableUtils ) {
 	const referenceCells = tableUtils.getSelectionAffectedTableCells( selection );
 	const firstCell = referenceCells[ 0 ];
 	const lastCell = referenceCells.pop()!;

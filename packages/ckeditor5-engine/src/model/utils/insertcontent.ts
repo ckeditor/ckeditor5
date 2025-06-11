@@ -7,7 +7,7 @@
  * @module engine/model/utils/insertcontent
  */
 
-import { DocumentSelection } from '../documentselection.js';
+import { ModelDocumentSelection } from '../documentselection.js';
 import { Element } from '../element.js';
 import { LivePosition } from '../liveposition.js';
 import { LiveRange } from '../liverange.js';
@@ -59,10 +59,10 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 export function insertContent(
 	model: Model,
 	content: Item | DocumentFragment,
-	selectable?: Selection | DocumentSelection
+	selectable?: Selection | ModelDocumentSelection
 ): Range {
 	return model.change( writer => {
-		const selection: Selection | DocumentSelection = selectable ? selectable : model.document.selection;
+		const selection: Selection | ModelDocumentSelection = selectable ? selectable : model.document.selection;
 
 		if ( !selection.isCollapsed ) {
 			model.deleteContent( selection, { doNotAutoparagraph: true } );
@@ -205,7 +205,7 @@ export function insertContent(
 
 		/* istanbul ignore else -- @preserve */
 		if ( newRange ) {
-			if ( selection instanceof DocumentSelection ) {
+			if ( selection instanceof ModelDocumentSelection ) {
 				writer.setSelection( newRange );
 			} else {
 				selection.setTo( newRange );

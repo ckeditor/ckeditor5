@@ -17,7 +17,7 @@ import type {
 	ViewElement,
 	ViewDocumentKeyDownEvent,
 	ViewDocumentClickEvent,
-	DocumentSelectionChangeAttributeEvent
+	ModelDocumentSelectionChangeAttributeEvent
 } from 'ckeditor5/src/engine.js';
 import {
 	Input,
@@ -151,7 +151,7 @@ export class LinkEditing extends Plugin {
 		// Handle link following by CTRL+click or ALT+ENTER
 		this._enableLinkOpen();
 
-		// Clears the DocumentSelection decorator attributes if the selection is no longer in a link (for example while using 2-SCM).
+		// Clears the ModelDocumentSelection decorator attributes if the selection is no longer in a link (for example while using 2-SCM).
 		this._enableSelectionAttributesFixer();
 
 		// Handle adding default protocol to pasted links.
@@ -329,7 +329,7 @@ export class LinkEditing extends Plugin {
 	}
 
 	/**
-	 * Watches the DocumentSelection attribute changes and removes link decorator attributes when the linkHref attribute is removed.
+	 * Watches the ModelDocumentSelection attribute changes and removes link decorator attributes when the linkHref attribute is removed.
 	 *
 	 * This is to ensure that there is no left-over link decorator attributes on the document selection that is no longer in a link.
 	 */
@@ -338,7 +338,7 @@ export class LinkEditing extends Plugin {
 		const model = editor.model;
 		const selection = model.document.selection;
 
-		this.listenTo<DocumentSelectionChangeAttributeEvent>( selection, 'change:attribute', ( evt, { attributeKeys } ) => {
+		this.listenTo<ModelDocumentSelectionChangeAttributeEvent>( selection, 'change:attribute', ( evt, { attributeKeys } ) => {
 			if ( !attributeKeys.includes( 'linkHref' ) || selection.hasAttribute( 'linkHref' ) ) {
 				return;
 			}

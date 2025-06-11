@@ -19,7 +19,7 @@ import { RootOperation } from './operation/rootoperation.js';
 import { SplitOperation } from './operation/splitoperation.js';
 
 import { DocumentFragment } from './documentfragment.js';
-import { DocumentSelection } from './documentselection.js';
+import { ModelDocumentSelection } from './documentselection.js';
 import { Element } from './element.js';
 import { Position, type PositionOffset, type PositionStickiness } from './position.js';
 import { Range } from './range.js';
@@ -1642,7 +1642,7 @@ export class Writer {
 
 		// Store attribute in parent element if the selection is collapsed in an empty node.
 		if ( selection.isCollapsed && selection.anchor!.parent.isEmpty ) {
-			const storeKey = DocumentSelection._getStoreAttributeKey( key );
+			const storeKey = ModelDocumentSelection._getStoreAttributeKey( key );
 
 			this.setAttribute( storeKey, value, selection.anchor!.parent as any );
 		}
@@ -1658,7 +1658,7 @@ export class Writer {
 
 		// Remove stored attribute from parent element if the selection is collapsed in an empty node.
 		if ( selection.isCollapsed && selection.anchor!.parent.isEmpty ) {
-			const storeKey = DocumentSelection._getStoreAttributeKey( key );
+			const storeKey = ModelDocumentSelection._getStoreAttributeKey( key );
 
 			this.removeAttribute( storeKey, selection.anchor!.parent as any );
 		}

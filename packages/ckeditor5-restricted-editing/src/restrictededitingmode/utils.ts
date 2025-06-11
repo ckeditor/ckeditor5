@@ -4,7 +4,7 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core.js';
-import type { DocumentSelection, Marker, Position, Range } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, Marker, Position, Range } from 'ckeditor5/src/engine.js';
 
 /**
  * @module restricted-editing/restrictededitingmode/utils
@@ -54,7 +54,7 @@ export function isPositionInRangeBoundaries( range: Range, position: Position ):
  *
  * @internal
  */
-export function isSelectionInMarker( selection: DocumentSelection, marker?: Marker ): boolean {
+export function isSelectionInMarker( selection: ModelDocumentSelection, marker?: Marker ): boolean {
 	if ( !marker ) {
 		return false;
 	}
