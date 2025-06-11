@@ -3,6 +3,7 @@ category: crash-course
 order: 20
 menu-title: Plugins
 meta-title: CKEditor 5 crash course - Plugins | CKEditor 5 Documentation
+meta-description: Learn how to create custom plugins in CKEditor 5 with this crash course, covering the basics of extending editor functionality step by step.
 modified_at: 2023-08-16
 ---
 
