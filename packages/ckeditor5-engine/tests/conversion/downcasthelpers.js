@@ -24,7 +24,7 @@ import {
 	cleanSelection,
 	convertCollapsedSelection,
 	convertRangeSelection,
-	createViewElementFromHighlightDescriptor,
+	createViewElementFromDowncastHighlightDescriptor,
 	insertAttributesAndChildren,
 	insertText
 } from '../../src/conversion/downcasthelpers.js';
@@ -4929,7 +4929,7 @@ describe( 'downcast converters', () => {
 		} );
 	} );
 
-	describe( 'createViewElementFromHighlightDescriptor()', () => {
+	describe( 'createViewElementFromDowncastHighlightDescriptor()', () => {
 		let viewWriter;
 
 		beforeEach( () => {
@@ -4942,7 +4942,7 @@ describe( 'downcast converters', () => {
 				attributes: { one: '1', two: '2' },
 				priority: 7
 			};
-			const element = createViewElementFromHighlightDescriptor( viewWriter, descriptor );
+			const element = createViewElementFromDowncastHighlightDescriptor( viewWriter, descriptor );
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'span' );
@@ -4960,7 +4960,7 @@ describe( 'downcast converters', () => {
 				attributes: { one: '1', two: '2' },
 				priority: 7
 			};
-			const element = createViewElementFromHighlightDescriptor( viewWriter, descriptor );
+			const element = createViewElementFromDowncastHighlightDescriptor( viewWriter, descriptor );
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'span' );
@@ -4978,7 +4978,7 @@ describe( 'downcast converters', () => {
 				attributes: { one: '1', two: '2' },
 				priority: 7
 			};
-			const element = createViewElementFromHighlightDescriptor( viewWriter, descriptor );
+			const element = createViewElementFromDowncastHighlightDescriptor( viewWriter, descriptor );
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'span' );
@@ -4994,7 +4994,7 @@ describe( 'downcast converters', () => {
 				classes: 'foo-class',
 				attributes: { one: '1', two: '2' }
 			};
-			const element = createViewElementFromHighlightDescriptor( viewWriter, descriptor );
+			const element = createViewElementFromDowncastHighlightDescriptor( viewWriter, descriptor );
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'span' );
@@ -5011,7 +5011,7 @@ describe( 'downcast converters', () => {
 				classes: 'foo-class',
 				priority: 7
 			};
-			const element = createViewElementFromHighlightDescriptor( viewWriter, descriptor );
+			const element = createViewElementFromDowncastHighlightDescriptor( viewWriter, descriptor );
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'span' );
@@ -5023,7 +5023,7 @@ describe( 'downcast converters', () => {
 			const descriptor = {
 				priority: 0
 			};
-			const element = createViewElementFromHighlightDescriptor( viewWriter, descriptor );
+			const element = createViewElementFromDowncastHighlightDescriptor( viewWriter, descriptor );
 
 			expect( element.priority ).to.equal( 0 );
 		} );

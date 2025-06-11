@@ -6,7 +6,7 @@
 import { AttributeElement } from '../../src/view/attributeelement.js';
 import { Element } from '../../src/view/element.js';
 import { Document } from '../../src/view/document.js';
-import { parse } from '../../src/dev-utils/view.js';
+import { _parseView } from '../../src/dev-utils/view.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
@@ -152,14 +152,14 @@ describe( 'AttributeElement', () => {
 
 	describe( 'getFillerOffset', () => {
 		it( 'should return position 0 if it is the only element in the container', () => {
-			const { selection } = parse( '<container:p><attribute:b>[]</attribute:b></container:p>' );
+			const { selection } = _parseView( '<container:p><attribute:b>[]</attribute:b></container:p>' );
 			const attribute = selection.getFirstPosition().parent;
 
 			expect( attribute.getFillerOffset() ).to.equals( 0 );
 		} );
 
 		it( 'should return position 0 if it is the only nested element in the container', () => {
-			const { selection } = parse(
+			const { selection } = _parseView(
 				'<container:p><attribute:b><attribute:i>[]</attribute:i></attribute:b></container:p>' );
 			const attribute = selection.getFirstPosition().parent;
 
@@ -167,26 +167,26 @@ describe( 'AttributeElement', () => {
 		} );
 
 		it( 'should return null if element contains another element', () => {
-			const attribute = parse( '<attribute:b><attribute:i></attribute:i></attribute:b>' );
+			const attribute = _parseView( '<attribute:b><attribute:i></attribute:i></attribute:b>' );
 
 			expect( attribute.getFillerOffset() ).to.be.null;
 		} );
 
 		it( 'should return null if element contains text', () => {
-			const attribute = parse( '<attribute:b>text</attribute:b>' );
+			const attribute = _parseView( '<attribute:b>text</attribute:b>' );
 
 			expect( attribute.getFillerOffset() ).to.be.null;
 		} );
 
 		it( 'should return null if container element contains text', () => {
-			const { selection } = parse( '<container:p><attribute:b>[]</attribute:b>foo</container:p>' );
+			const { selection } = _parseView( '<container:p><attribute:b>[]</attribute:b>foo</container:p>' );
 			const attribute = selection.getFirstPosition().parent;
 
 			expect( attribute.getFillerOffset() ).to.be.null;
 		} );
 
 		it( 'should return null if it is the parent contains text', () => {
-			const { selection } = parse(
+			const { selection } = _parseView(
 				'<container:p><attribute:b><attribute:i>[]</attribute:i>foo</attribute:b></container:p>' );
 			const attribute = selection.getFirstPosition().parent;
 
@@ -194,7 +194,7 @@ describe( 'AttributeElement', () => {
 		} );
 
 		it( 'should return null if there is no parent container element', () => {
-			const { selection } = parse( '<attribute:b><attribute:i>[]</attribute:i>foo</attribute:b>' );
+			const { selection } = _parseView( '<attribute:b><attribute:i>[]</attribute:i>foo</attribute:b>' );
 			const attribute = selection.getFirstPosition().parent;
 
 			expect( attribute.getFillerOffset() ).to.be.null;
@@ -207,7 +207,7 @@ describe( 'AttributeElement', () => {
 		} );
 
 		it( 'should return offset after all children if it is the only nested element in the container and has UIElement inside', () => {
-			const { selection } = parse(
+			const { selection } = _parseView(
 				'<container:p><attribute:b><attribute:i>[]<ui:span></ui:span></attribute:i></attribute:b></container:p>'
 			);
 			const attribute = selection.getFirstPosition().parent;
@@ -216,7 +216,7 @@ describe( 'AttributeElement', () => {
 		} );
 
 		it( 'should return offset after all children if there is no parent container element and has UIElement inside', () => {
-			const { selection } = parse( '<attribute:b>[]<ui:span></ui:span><ui:span></ui:span></attribute:b>' );
+			const { selection } = _parseView( '<attribute:b>[]<ui:span></ui:span><ui:span></ui:span></attribute:b>' );
 			const attribute = selection.getFirstPosition().parent;
 
 			expect( attribute.getFillerOffset() ).to.equal( 2 );

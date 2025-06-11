@@ -16,7 +16,7 @@ import { ViewDocument } from '../../../src/view/document.js';
 import { DowncastWriter } from '../../../src/view/downcastwriter.js';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, BR_FILLER, NBSP_FILLER, MARKED_NBSP_FILLER } from '../../../src/view/filler.js';
 
-import { parse, _getViewData } from '../../../src/dev-utils/view.js';
+import { _parseView, _getViewData } from '../../../src/dev-utils/view.js';
 import { _setModelData } from '../../../src/dev-utils/model.js';
 
 import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
@@ -1107,7 +1107,7 @@ describe( 'DomConverter', () => {
 
 	describe( 'viewChildrenToDom()', () => {
 		it( 'should convert children', () => {
-			const viewP = parse( '<container:p>foo<attribute:b>bar</attribute:b></container:p>' );
+			const viewP = _parseView( '<container:p>foo<attribute:b>bar</attribute:b></container:p>' );
 
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP ) );
 
@@ -1118,7 +1118,7 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should add filler', () => {
-			const viewP = parse( '<container:p></container:p>' );
+			const viewP = _parseView( '<container:p></container:p>' );
 
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP ) );
 
@@ -1127,7 +1127,7 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should add filler according to fillerPositionOffset', () => {
-			const viewP = parse( '<container:p>foo</container:p>' );
+			const viewP = _parseView( '<container:p>foo</container:p>' );
 			viewP.getFillerOffset = () => 0;
 
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP ) );
@@ -1140,7 +1140,7 @@ describe( 'DomConverter', () => {
 		it( 'should add proper filler type - br', () => {
 			converter.blockFillerMode = 'br';
 
-			const viewP = parse( '<container:p></container:p>' );
+			const viewP = _parseView( '<container:p></container:p>' );
 
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP ) );
 			const filler = domChildren[ 0 ];
@@ -1151,7 +1151,7 @@ describe( 'DomConverter', () => {
 		it( 'should add proper filler type - nbsp', () => {
 			converter.blockFillerMode = 'nbsp';
 
-			const viewP = parse( '<container:p></container:p>' );
+			const viewP = _parseView( '<container:p></container:p>' );
 
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP ) );
 			const filler = domChildren[ 0 ];
@@ -1162,7 +1162,7 @@ describe( 'DomConverter', () => {
 		it( 'should add proper filler type - markedNbsp', () => {
 			converter.blockFillerMode = 'markedNbsp';
 
-			const viewP = parse( '<container:p></container:p>' );
+			const viewP = _parseView( '<container:p></container:p>' );
 
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP ) );
 			const filler = domChildren[ 0 ];
@@ -1171,7 +1171,7 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should pass options', () => {
-			const viewP = parse( '<container:p>foo<attribute:b>bar</attribute:b></container:p>' );
+			const viewP = _parseView( '<container:p>foo<attribute:b>bar</attribute:b></container:p>' );
 
 			const domChildren = Array.from( converter.viewChildrenToDom( viewP, { withChildren: false } ) );
 
@@ -1188,7 +1188,7 @@ describe( 'DomConverter', () => {
 
 				const warnStub = testUtils.sinon.stub( console, 'warn' );
 
-				const viewList = parse(
+				const viewList = _parseView(
 					'<container:div>' +
 						'<attribute:ul>' +
 							'<attribute:li>' +
@@ -1258,7 +1258,7 @@ describe( 'DomConverter', () => {
 
 				const warnStub = testUtils.sinon.stub( console, 'warn' );
 
-				const viewList = parse(
+				const viewList = _parseView(
 					'<container:div>' +
 						'<attribute:ul>' +
 							'<attribute:li>' +
@@ -1318,7 +1318,7 @@ describe( 'DomConverter', () => {
 
 				const warnStub = testUtils.sinon.stub( console, 'warn' );
 
-				const viewList = parse(
+				const viewList = _parseView(
 					'<container:div>' +
 						'<attribute:ul>' +
 							'<attribute:li>' +
@@ -1380,7 +1380,7 @@ describe( 'DomConverter', () => {
 		it( 'should convert the position in the text', () => {
 			const domFoo = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', null, domFoo );
-			const { view: viewP, selection } = parse( '<container:p>fo{}o</container:p>' );
+			const { view: viewP, selection } = _parseView( '<container:p>fo{}o</container:p>' );
 
 			converter.bindElements( domP, viewP );
 
@@ -1394,7 +1394,7 @@ describe( 'DomConverter', () => {
 		it( 'should support unicode', () => {
 			const domText = document.createTextNode( 'நிலைக்கு' );
 			const domP = createElement( document, 'p', null, domText );
-			const { view: viewP, selection } = parse( '<container:p>நிலை{}க்கு</container:p>' );
+			const { view: viewP, selection } = _parseView( '<container:p>நிலை{}க்கு</container:p>' );
 
 			converter.bindElements( domP, viewP );
 
@@ -1407,7 +1407,7 @@ describe( 'DomConverter', () => {
 
 		it( 'should convert the position in the empty element', () => {
 			const domP = createElement( document, 'p' );
-			const { view: viewP, selection } = parse( '<container:p>[]</container:p>' );
+			const { view: viewP, selection } = _parseView( '<container:p>[]</container:p>' );
 
 			converter.bindElements( domP, viewP );
 
@@ -1421,7 +1421,7 @@ describe( 'DomConverter', () => {
 		it( 'should convert the position in the non-empty element', () => {
 			const domB = createElement( document, 'b', null, 'foo' );
 			const domP = createElement( document, 'p', null, domB );
-			const { view: viewP, selection } = parse( '<container:p><attribute:b>foo</attribute:b>[]</container:p>' );
+			const { view: viewP, selection } = _parseView( '<container:p><attribute:b>foo</attribute:b>[]</container:p>' );
 
 			converter.bindElements( domP, viewP );
 			converter.bindElements( domB, viewP.getChild( 0 ) );
@@ -1435,7 +1435,7 @@ describe( 'DomConverter', () => {
 
 		it( 'should convert the position after text', () => {
 			const domP = createElement( document, 'p', null, 'foo' );
-			const { view: viewP, selection } = parse( '<container:p>foo[]</container:p>' );
+			const { view: viewP, selection } = _parseView( '<container:p>foo[]</container:p>' );
 
 			converter.bindElements( domP, viewP );
 
@@ -1448,7 +1448,7 @@ describe( 'DomConverter', () => {
 
 		it( 'should convert the position before text', () => {
 			const domP = createElement( document, 'p', null, 'foo' );
-			const { view: viewP, selection } = parse( '<container:p>[]foo</container:p>' );
+			const { view: viewP, selection } = _parseView( '<container:p>[]foo</container:p>' );
 
 			converter.bindElements( domP, viewP );
 
@@ -1462,7 +1462,7 @@ describe( 'DomConverter', () => {
 		it( 'should update offset if DOM text node starts with inline filler', () => {
 			const domFoo = document.createTextNode( INLINE_FILLER + 'foo' );
 			const domP = createElement( document, 'p', null, domFoo );
-			const { view: viewP, selection } = parse( '<container:p>fo{}o</container:p>' );
+			const { view: viewP, selection } = _parseView( '<container:p>fo{}o</container:p>' );
 
 			converter.bindElements( domP, viewP );
 
@@ -1476,7 +1476,7 @@ describe( 'DomConverter', () => {
 		it( 'should move the position to the text node if the position is where inline filler is', () => {
 			const domFiller = document.createTextNode( INLINE_FILLER );
 			const domP = createElement( document, 'p', null, domFiller );
-			const { view: viewP, selection } = parse( '<container:p>[]</container:p>' );
+			const { view: viewP, selection } = _parseView( '<container:p>[]</container:p>' );
 
 			converter.bindElements( domP, viewP );
 
@@ -1489,7 +1489,7 @@ describe( 'DomConverter', () => {
 
 		it( 'should return null if view position is after a view element that has not been rendered to DOM', () => {
 			const domP = createElement( document, 'p', null );
-			const { view: viewP, selection } = parse( '<container:p><attribute:b>foo</attribute:b>[]</container:p>' );
+			const { view: viewP, selection } = _parseView( '<container:p><attribute:b>foo</attribute:b>[]</container:p>' );
 
 			converter.bindElements( domP, viewP );
 
@@ -1520,7 +1520,7 @@ describe( 'DomConverter', () => {
 		it( 'should convert view range to DOM range', () => {
 			const domFoo = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', null, domFoo );
-			const { view: viewP, selection } = parse( '<container:p>fo{o]</container:p>' );
+			const { view: viewP, selection } = _parseView( '<container:p>fo{o]</container:p>' );
 
 			converter.bindElements( domP, viewP );
 

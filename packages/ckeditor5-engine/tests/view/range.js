@@ -11,11 +11,11 @@ import { Text } from '../../src/view/text.js';
 import { TextProxy } from '../../src/view/textproxy.js';
 import { TreeWalker } from '../../src/view/treewalker.js';
 import { Document } from '../../src/view/document.js';
-import { parse, stringify } from '../../src/dev-utils/view.js';
+import { _parseView, _stringifyView } from '../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 function getRange( view, options = {} ) {
-	const { selection } = parse( view, options );
+	const { selection } = _parseView( view, options );
 
 	return selection.getFirstRange();
 }
@@ -164,12 +164,12 @@ describe( 'Range', () => {
 				.replace( /<span><\/span>/g, '<ui:span></ui:span>' );
 
 			const viewFrag = new DocumentFragment();
-			const { view, selection } = parse( data, { rootElement: viewFrag } );
+			const { view, selection } = _parseView( data, { rootElement: viewFrag } );
 			const range = selection.getFirstRange();
 
 			const enlargedRange = range.getEnlarged();
 
-			return stringify( view, enlargedRange );
+			return _stringifyView( view, enlargedRange );
 		}
 	} );
 
@@ -245,12 +245,12 @@ describe( 'Range', () => {
 				.replace( /<span><\/span>/g, '<ui:span></ui:span>' );
 
 			const viewFrag = new DocumentFragment();
-			const { view, selection } = parse( data, { rootElement: viewFrag } );
+			const { view, selection } = _parseView( data, { rootElement: viewFrag } );
 			const range = selection.getFirstRange();
 
 			const trimmedRange = range.getTrimmed();
 
-			return stringify( view, trimmedRange );
+			return _stringifyView( view, trimmedRange );
 		}
 	} );
 
@@ -775,7 +775,7 @@ describe( 'Range', () => {
 
 	describe( 'getContainedElement()', () => {
 		it( 'should return an element when it is fully contained by the range', () => {
-			const { selection, view } = parse( 'foo [<b>bar</b>] baz' );
+			const { selection, view } = _parseView( 'foo [<b>bar</b>] baz' );
 			const range = selection.getFirstRange();
 			const element = view.getChild( 1 );
 
@@ -783,7 +783,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return selected element if the range is anchored at the end/at the beginning of a text node', () => {
-			const { selection, view } = parse( 'foo {<b>bar</b>} baz' );
+			const { selection, view } = _parseView( 'foo {<b>bar</b>} baz' );
 			const range = selection.getFirstRange();
 			const element = view.getChild( 1 );
 
@@ -791,28 +791,28 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return "null" if the selection is collapsed', () => {
-			const { selection } = parse( 'foo []<b>bar</b> baz' );
+			const { selection } = _parseView( 'foo []<b>bar</b> baz' );
 			const range = selection.getFirstRange();
 
 			expect( range.getContainedElement() ).to.be.null;
 		} );
 
 		it( 'should return "null" if it contains 2+ elements', () => {
-			const { selection } = parse( 'foo [<b>bar</b><i>qux</i>] baz' );
+			const { selection } = _parseView( 'foo [<b>bar</b><i>qux</i>] baz' );
 			const range = selection.getFirstRange();
 
 			expect( range.getContainedElement() ).to.be.null;
 		} );
 
 		it( 'should return "null" if the range spans over more than a single element', () => {
-			const { selection } = parse( 'foo [<b>bar</b> ba}z' );
+			const { selection } = _parseView( 'foo [<b>bar</b> ba}z' );
 			const range = selection.getFirstRange();
 
 			expect( range.getContainedElement() ).to.be.null;
 		} );
 
 		it( 'should return "null" if the range spans over a single text node', () => {
-			const { selection } = parse( 'foo <b>{bar}</b> baz' );
+			const { selection } = _parseView( 'foo <b>{bar}</b> baz' );
 			const range = selection.getFirstRange();
 
 			expect( range.getContainedElement() ).to.be.null;

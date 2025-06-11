@@ -5,7 +5,7 @@
 
 import { Document } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
-import { stringify, parse } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _stringifyView, _parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { GFMDataProcessor } from '../../../src/gfmdataprocessor.js';
 
@@ -22,11 +22,11 @@ convertToView();
 function convertToView() {
 	const markdown = markdownTextArea.value;
 
-	viewTextArea.value = stringify( dataProcessor.toView( markdown ) );
+	viewTextArea.value = _stringifyView( dataProcessor.toView( markdown ) );
 }
 
 function convertToMarkdown() {
 	const viewText = viewTextArea.value;
 
-	markdownTextArea.value = dataProcessor.toData( parse( viewText ) );
+	markdownTextArea.value = dataProcessor.toData( _parseView( viewText ) );
 }

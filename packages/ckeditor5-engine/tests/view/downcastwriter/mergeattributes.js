@@ -7,7 +7,7 @@ import { DowncastWriter } from '../../../src/view/downcastwriter.js';
 import { ContainerElement } from '../../../src/view/containerelement.js';
 import { Text } from '../../../src/view/text.js';
 import { Position } from '../../../src/view/position.js';
-import { stringify, parse } from '../../../src/dev-utils/view.js';
+import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { Document } from '../../../src/view/document.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
@@ -15,15 +15,15 @@ describe( 'DowncastWriter', () => {
 	describe( 'mergeAttributes', () => {
 		let writer, document;
 
-		// Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
+		// Executes test using `_parseView` and `_stringifyView` utils functions. Uses range delimiters `[]{}` to create and
 		// test merge position.
 		//
 		// @param {String} input
 		// @param {String} expected
 		function testMerge( input, expected ) {
-			const { view, selection } = parse( input );
+			const { view, selection } = _parseView( input );
 			const newPosition = writer.mergeAttributes( selection.getFirstPosition() );
-			expect( stringify( view, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
+			expect( _stringifyView( view, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
 		}
 
 		before( () => {
@@ -71,7 +71,7 @@ describe( 'DowncastWriter', () => {
 			const position = new Position( p, 1 );
 
 			const newPosition = writer.mergeAttributes( position );
-			expect( stringify( p, newPosition ) ).to.equal( '<p>foo{}bar</p>' );
+			expect( _stringifyView( p, newPosition ) ).to.equal( '<p>foo{}bar</p>' );
 		} );
 
 		it( 'should merge when placed between similar attribute nodes', () => {

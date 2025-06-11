@@ -13,7 +13,7 @@ import { SelectionObserver } from '../../../src/view/observer/selectionobserver.
 import { FocusObserver } from '../../../src/view/observer/focusobserver.js';
 import { MutationObserver } from '../../../src/view/observer/mutationobserver.js';
 import { createViewRoot } from '../_utils/createroot.js';
-import { parse } from '../../../src/dev-utils/view.js';
+import { _parseView } from '../../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 import { priorities } from '@ckeditor/ckeditor5-utils';
@@ -39,7 +39,7 @@ describe( 'SelectionObserver', () => {
 		viewRoot = viewDocument.getRoot();
 
 		view.change( writer => {
-			viewRoot._appendChild( parse(
+			viewRoot._appendChild( _parseView(
 				'<container:p>xxx<ui:span></ui:span></container:p>' +
 				'<container:p>yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy</container:p>' ) );
 

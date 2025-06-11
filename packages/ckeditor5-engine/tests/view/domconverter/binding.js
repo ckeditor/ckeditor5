@@ -10,7 +10,7 @@ import { ViewDocumentFragment } from '../../../src/view/documentfragment.js';
 import { ViewDocument } from '../../../src/view/document.js';
 import { INLINE_FILLER } from '../../../src/view/filler.js';
 
-import { parse } from '../../../src/dev-utils/view.js';
+import { _parseView } from '../../../src/dev-utils/view.js';
 
 import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
@@ -148,7 +148,7 @@ describe( 'DomConverter', () => {
 			const domText = document.createTextNode( 'x' );
 			const domP = createElement( document, 'p', null, [ domB, domText, domI ] );
 
-			const viewP = parse( '<p><b></b><i></i></p>' );
+			const viewP = _parseView( '<p><b></b><i></i></p>' );
 			const viewB = viewP.getChild( 0 );
 			const viewI = viewP.getChild( 1 );
 
@@ -163,7 +163,7 @@ describe( 'DomConverter', () => {
 			const domText = document.createTextNode( 'x' );
 			const domP = createElement( document, 'p', null, domText );
 
-			const viewP = parse( '<p></p>' );
+			const viewP = _parseView( '<p></p>' );
 
 			converter.bindElements( domP, viewP );
 

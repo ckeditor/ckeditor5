@@ -5,7 +5,7 @@
 
 import { DowncastWriter } from '../../../src/view/downcastwriter.js';
 import { Range } from '../../../src/view/range.js';
-import { stringify, parse } from '../../../src/dev-utils/view.js';
+import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { ContainerElement } from '../../../src/view/containerelement.js';
 import { AttributeElement } from '../../../src/view/attributeelement.js';
 import { EmptyElement } from '../../../src/view/emptyelement.js';
@@ -20,17 +20,17 @@ describe( 'DowncastWriter', () => {
 	describe( 'clear()', () => {
 		let writer, document;
 
-		// Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create ranges.
+		// Executes test using `_parseView` and `_stringifyView` utils functions. Uses range delimiters `[]{}` to create ranges.
 		//
 		// @param {Object} elementToRemove
 		// @param {String} input
 		// @param {String} expectedResult
 		function testDowncast( elementToRemove, input, expectedResult ) {
-			const { view, selection } = parse( input );
+			const { view, selection } = _parseView( input );
 
 			writer.clear( selection.getFirstRange(), elementToRemove );
 
-			expect( stringify( view, null, { showType: true } ) ).to.equal( expectedResult );
+			expect( _stringifyView( view, null, { showType: true } ) ).to.equal( expectedResult );
 		}
 
 		beforeEach( () => {

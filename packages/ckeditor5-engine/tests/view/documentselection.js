@@ -12,7 +12,7 @@ import { Text } from '../../src/view/text.js';
 import { Position } from '../../src/view/position.js';
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 import { createViewRoot } from './_utils/createroot.js';
-import { parse } from '../../src/dev-utils/view.js';
+import { _parseView } from '../../src/dev-utils/view.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
@@ -655,7 +655,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should return true if all ranges trimmed from both selections are equal', () => {
-			const view = parse(
+			const view = _parseView(
 				'<container:p><attribute:span></attribute:span></container:p>' +
 				'<container:p><attribute:span>xx</attribute:span></container:p>'
 			);
@@ -683,7 +683,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should return true if all ranges trimmed from both selections are equal - DocumentSelection and Selection', () => {
-			const view = parse(
+			const view = _parseView(
 				'<container:p><attribute:span></attribute:span></container:p>' +
 				'<container:p><attribute:span>xx</attribute:span></container:p>'
 			);
@@ -1090,14 +1090,14 @@ describe( 'DocumentSelection', () => {
 
 	describe( 'getSelectedElement()', () => {
 		it( 'should return selected element', () => {
-			const { selection: documentSelection, view } = parse( 'foo [<b>bar</b>] baz' );
+			const { selection: documentSelection, view } = _parseView( 'foo [<b>bar</b>] baz' );
 			const b = view.getChild( 1 );
 
 			expect( documentSelection.getSelectedElement() ).to.equal( b );
 		} );
 
 		it( 'should return null if there is more than one range', () => {
-			const { selection: documentSelection } = parse( 'foo [<b>bar</b>] [<i>baz</i>]' );
+			const { selection: documentSelection } = _parseView( 'foo [<b>bar</b>] [<i>baz</i>]' );
 
 			expect( documentSelection.getSelectedElement() ).to.be.null;
 		} );
@@ -1107,13 +1107,13 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should return null if selection is not over single element #1', () => {
-			const { selection: documentSelection } = parse( 'foo [<b>bar</b> ba}z' );
+			const { selection: documentSelection } = _parseView( 'foo [<b>bar</b> ba}z' );
 
 			expect( documentSelection.getSelectedElement() ).to.be.null;
 		} );
 
 		it( 'should return null if selection is not over single element #2', () => {
-			const { selection: documentSelection } = parse( 'foo <b>{bar}</b> baz' );
+			const { selection: documentSelection } = _parseView( 'foo <b>{bar}</b> baz' );
 
 			expect( documentSelection.getSelectedElement() ).to.be.null;
 		} );

@@ -8,7 +8,7 @@ import { MutationObserver } from '../../../src/view/observer/mutationobserver.js
 import { UIElement } from '../../../src/view/uielement.js';
 import { RawElement } from '../../../src/view/rawelement.js';
 import { createViewRoot } from '../_utils/createroot.js';
-import { parse } from '../../../src/dev-utils/view.js';
+import { _parseView } from '../../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
@@ -31,7 +31,7 @@ describe( 'MutationObserver', () => {
 
 		( { viewRoot, domRoot } = setupRoot( 'main' ) );
 
-		viewRoot._appendChild( parse( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
+		viewRoot._appendChild( _parseView( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
 		view.forceRender();
 
 		spyRenderedMarkToSync = sinon.spy( view._renderer, 'markToSync' );
@@ -116,7 +116,7 @@ describe( 'MutationObserver', () => {
 
 	it( 'should handle unbold', () => {
 		viewRoot._removeChildren( 0, viewRoot.childCount );
-		viewRoot._appendChild( parse( '<container:p><attribute:b>foo</attribute:b></container:p>' ) );
+		viewRoot._appendChild( _parseView( '<container:p><attribute:b>foo</attribute:b></container:p>' ) );
 		view.forceRender();
 
 		const domP = domRoot.childNodes[ 0 ];
@@ -195,7 +195,7 @@ describe( 'MutationObserver', () => {
 		const { domRoot: domAdditionalRoot, viewRoot: viewAdditionalRoot } = setupRoot( 'additional' );
 
 		viewAdditionalRoot._appendChild(
-			parse( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
+			_parseView( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
 
 		// Render additional root (first editor has been rendered in the beforeEach function).
 		view.forceRender();
@@ -227,7 +227,7 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should handle children mutation if the mutation occurred in the inline filler', () => {
-		const { view: viewContainer, selection } = parse(
+		const { view: viewContainer, selection } = _parseView(
 			'<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>'
 		);
 
@@ -254,7 +254,7 @@ describe( 'MutationObserver', () => {
 
 	// https://github.com/ckeditor/ckeditor5/issues/692 Scenario 1.
 	it( 'should handle space after inline filler at the end of container', () => {
-		const { view: viewContainer, selection } = parse(
+		const { view: viewContainer, selection } = _parseView(
 			'<container:p>foo<attribute:b>[]</attribute:b></container:p>'
 		);
 
@@ -284,7 +284,7 @@ describe( 'MutationObserver', () => {
 
 	// https://github.com/ckeditor/ckeditor5/issues/692 Scenario 3.
 	it( 'should handle space after inline filler at the end of container (typing after bold)', () => {
-		const { view: viewContainer, selection } = parse(
+		const { view: viewContainer, selection } = _parseView(
 			'<container:p>foo<attribute:b>bar</attribute:b>[]</container:p>'
 		);
 
@@ -314,7 +314,7 @@ describe( 'MutationObserver', () => {
 
 	// https://github.com/ckeditor/ckeditor5/issues/692 Scenario 2.
 	it( 'should handle space after inline filler at the beginning of container', () => {
-		const { view: viewContainer, selection } = parse(
+		const { view: viewContainer, selection } = _parseView(
 			'<container:p><attribute:b>[]</attribute:b>foo</container:p>'
 		);
 
@@ -343,7 +343,7 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should ignore mutation with bogus br inserted on the end of the empty paragraph', () => {
-		viewRoot._appendChild( parse( '<container:p></container:p>' ) );
+		viewRoot._appendChild( _parseView( '<container:p></container:p>' ) );
 
 		view.forceRender();
 		spyRenderedMarkToSync.resetHistory();
@@ -359,7 +359,7 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should ignore mutation with bogus br inserted on the end of the paragraph with text', () => {
-		viewRoot._appendChild( parse( '<container:p>foo</container:p>' ) );
+		viewRoot._appendChild( _parseView( '<container:p>foo</container:p>' ) );
 
 		view.forceRender();
 		spyRenderedMarkToSync.resetHistory();
@@ -375,7 +375,7 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should ignore mutation with bogus br inserted on the end of the paragraph while processing text mutations', () => {
-		viewRoot._appendChild( parse( '<container:p>abc</container:p>' ) );
+		viewRoot._appendChild( _parseView( '<container:p>abc</container:p>' ) );
 
 		view.forceRender();
 		spyRenderedMarkToSync.resetHistory();
@@ -397,7 +397,7 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should ignore child mutations which resulted in no changes – when element contains elements', () => {
-		viewRoot._appendChild( parse( '<container:p><container:x></container:x></container:p>' ) );
+		viewRoot._appendChild( _parseView( '<container:p><container:x></container:x></container:p>' ) );
 
 		view.forceRender();
 		spyRenderedMarkToSync.resetHistory();
@@ -440,7 +440,7 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should not ignore mutation with br inserted not on the end of the paragraph', () => {
-		viewRoot._appendChild( parse( '<container:p>abc</container:p>' ) );
+		viewRoot._appendChild( _parseView( '<container:p>abc</container:p>' ) );
 
 		view.forceRender();
 		spyRenderedMarkToSync.resetHistory();
@@ -461,7 +461,7 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should not ignore mutation inserting element different than br on the end of the empty paragraph', () => {
-		viewRoot._appendChild( parse( '<container:p></container:p>' ) );
+		viewRoot._appendChild( _parseView( '<container:p></container:p>' ) );
 
 		view.forceRender();
 		spyRenderedMarkToSync.resetHistory();
@@ -482,7 +482,7 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should not ignore mutation inserting element different than br on the end of the paragraph with text', () => {
-		viewRoot._appendChild( parse( '<container:p>foo</container:p>' ) );
+		viewRoot._appendChild( _parseView( '<container:p>foo</container:p>' ) );
 
 		view.forceRender();
 		spyRenderedMarkToSync.resetHistory();

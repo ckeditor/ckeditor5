@@ -4,7 +4,7 @@
  */
 
 import { DowncastWriter } from '../../../src/view/downcastwriter.js';
-import { parse } from '../../../src/dev-utils/view.js';
+import { _parseView } from '../../../src/dev-utils/view.js';
 import { Document } from '../../../src/view/document.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
@@ -17,7 +17,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		beforeEach( () => {
-			root = parse( '<container:div><container:foo foo="1">xxx</container:foo></container:div>' );
+			root = _parseView( '<container:div><container:foo foo="1">xxx</container:foo></container:div>' );
 
 			foo = root.getChild( 0 );
 		} );

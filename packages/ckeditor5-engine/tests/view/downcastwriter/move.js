@@ -4,7 +4,7 @@
  */
 
 import { DowncastWriter } from '../../../src/view/downcastwriter.js';
-import { stringify, parse } from '../../../src/dev-utils/view.js';
+import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { ContainerElement } from '../../../src/view/containerelement.js';
 import { AttributeElement } from '../../../src/view/attributeelement.js';
 import { RootEditableElement } from '../../../src/view/rooteditableelement.js';
@@ -23,20 +23,20 @@ describe( 'DowncastWriter', () => {
 	describe( 'move()', () => {
 		let writer, document;
 
-		// Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
+		// Executes test using `_parseView` and `_stringifyView` utils functions. Uses range delimiters `[]{}` to create and
 		// test ranges.
 		//
 		// @param {String} input
 		// @param {String} expectedResult
 		// @param {String} expectedRemoved
 		function testMove( source, destination, sourceAfterMove, destinationAfterMove ) {
-			const { view: srcView, selection: srcSelection } = parse( source );
-			const { view: dstView, selection: dstSelection } = parse( destination );
+			const { view: srcView, selection: srcSelection } = _parseView( source );
+			const { view: dstView, selection: dstSelection } = _parseView( destination );
 
 			const newRange = writer.move( srcSelection.getFirstRange(), dstSelection.getFirstPosition() );
 
-			expect( stringify( dstView, newRange, { showType: true, showPriority: true } ) ).to.equal( destinationAfterMove );
-			expect( stringify( srcView, null, { showType: true, showPriority: true } ) ).to.equal( sourceAfterMove );
+			expect( _stringifyView( dstView, newRange, { showType: true, showPriority: true } ) ).to.equal( destinationAfterMove );
+			expect( _stringifyView( srcView, null, { showType: true, showPriority: true } ) ).to.equal( sourceAfterMove );
 		}
 
 		before( () => {
@@ -120,23 +120,25 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should correctly move text nodes inside same parent', () => {
-			const { view, selection } = parse( '<container:p>[<attribute:b>a</attribute:b>]b<attribute:b>c</attribute:b></container:p>' );
+			const { view, selection } = _parseView(
+				'<container:p>[<attribute:b>a</attribute:b>]b<attribute:b>c</attribute:b></container:p>'
+			);
 
 			const newRange = writer.move( selection.getFirstRange(), Position._createAt( view, 2 ) );
 
 			const expectedView = '<container:p>b[<attribute:b>a}c</attribute:b></container:p>';
-			expect( stringify( view, newRange, { showType: true } ) ).to.equal( expectedView );
+			expect( _stringifyView( view, newRange, { showType: true } ) ).to.equal( expectedView );
 		} );
 
 		it( 'should correctly move text nodes inside same container', () => {
-			const { view, selection } = parse(
+			const { view, selection } = _parseView(
 				'<container:p><attribute:b>a{b</attribute:b>xx<attribute:b>c}d</attribute:b>yy</container:p>'
 			);
 
 			const viewText = view.getChild( 3 );
 			const newRange = writer.move( selection.getFirstRange(), Position._createAt( viewText, 1 ) );
 
-			expect( stringify( view, newRange, { showType: true } ) ).to.equal(
+			expect( _stringifyView( view, newRange, { showType: true } ) ).to.equal(
 				'<container:p><attribute:b>ad</attribute:b>y[<attribute:b>b</attribute:b>xx<attribute:b>c</attribute:b>]y</container:p>'
 			);
 		} );

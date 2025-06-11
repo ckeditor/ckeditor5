@@ -13,7 +13,7 @@ import { Position } from '../../src/view/position.js';
 
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 import { createViewRoot } from './_utils/createroot.js';
-import { parse } from '../../src/dev-utils/view.js';
+import { _parseView } from '../../src/dev-utils/view.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
@@ -565,7 +565,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return true if all ranges trimmed from both selections are equal', () => {
-			const view = parse(
+			const view = _parseView(
 				'<container:p><attribute:span></attribute:span></container:p>' +
 				'<container:p><attribute:span>xx</attribute:span></container:p>'
 			);
@@ -965,7 +965,7 @@ describe( 'Selection', () => {
 
 	describe( 'getSelectedElement()', () => {
 		it( 'should return selected element', () => {
-			const { selection: docSelection, view } = parse( 'foo [<b>bar</b>] baz' );
+			const { selection: docSelection, view } = _parseView( 'foo [<b>bar</b>] baz' );
 			const b = view.getChild( 1 );
 			const selection = new Selection( docSelection );
 
@@ -973,7 +973,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return selected element if the selection is anchored at the end/at the beginning of a text node', () => {
-			const { selection: docSelection, view } = parse( 'foo {<b>bar</b>} baz' );
+			const { selection: docSelection, view } = _parseView( 'foo {<b>bar</b>} baz' );
 			const b = view.getChild( 1 );
 			const selection = new Selection( docSelection );
 
@@ -981,7 +981,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return null if there is more than one range', () => {
-			const { selection: docSelection } = parse( 'foo [<b>bar</b>] [<i>baz</i>]' );
+			const { selection: docSelection } = _parseView( 'foo [<b>bar</b>] [<i>baz</i>]' );
 			const selection = new Selection( docSelection );
 
 			expect( selection.getSelectedElement() ).to.be.null;
@@ -992,14 +992,14 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return null if selection is not over single element #1', () => {
-			const { selection: docSelection } = parse( 'foo [<b>bar</b> ba}z' );
+			const { selection: docSelection } = _parseView( 'foo [<b>bar</b> ba}z' );
 			const selection = new Selection( docSelection );
 
 			expect( selection.getSelectedElement() ).to.be.null;
 		} );
 
 		it( 'should return null if selection is not over single element #2', () => {
-			const { selection: docSelection } = parse( 'foo <b>{bar}</b> baz' );
+			const { selection: docSelection } = _parseView( 'foo <b>{bar}</b> baz' );
 			const selection = new Selection( docSelection );
 
 			expect( selection.getSelectedElement() ).to.be.null;

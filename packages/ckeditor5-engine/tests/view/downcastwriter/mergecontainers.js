@@ -4,7 +4,7 @@
  */
 
 import { DowncastWriter } from '../../../src/view/downcastwriter.js';
-import { stringify, parse } from '../../../src/dev-utils/view.js';
+import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 
 import { Document } from '../../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -14,16 +14,16 @@ describe( 'DowncastWriter', () => {
 	describe( 'mergeContainers()', () => {
 		let writer;
 
-		// Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
+		// Executes test using `_parseView` and `_stringifyView` utils functions. Uses range delimiters `[]{}` to create and
 		// test break position.
 		//
 		// @param {String} input
 		// @param {String} expected
 		function testMerge( input, expected ) {
-			const { view, selection } = parse( input );
+			const { view, selection } = _parseView( input );
 
 			const newPosition = writer.mergeContainers( selection.getFirstPosition() );
-			expect( stringify( view.root, newPosition, { showType: true, showPriority: false } ) ).to.equal( expected );
+			expect( _stringifyView( view.root, newPosition, { showType: true, showPriority: false } ) ).to.equal( expected );
 		}
 
 		before( () => {
@@ -58,7 +58,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if there is no element before position', () => {
-			const { selection } = parse( '[]<container:div>foobar</container:div>' );
+			const { selection } = _parseView( '[]<container:div>foobar</container:div>' );
 
 			expectToThrowCKEditorError( () => {
 				writer.mergeContainers( selection.getFirstPosition() );
@@ -66,7 +66,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if there is no element after position', () => {
-			const { selection } = parse( '<container:div>foobar</container:div>[]' );
+			const { selection } = _parseView( '<container:div>foobar</container:div>[]' );
 
 			expectToThrowCKEditorError( () => {
 				writer.mergeContainers( selection.getFirstPosition() );
@@ -74,7 +74,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if element before position is not a container element', () => {
-			const { selection } = parse( '<attribute:u>foo</attribute:u>[]<container:div>bar</container:div>' );
+			const { selection } = _parseView( '<attribute:u>foo</attribute:u>[]<container:div>bar</container:div>' );
 
 			expectToThrowCKEditorError( () => {
 				writer.mergeContainers( selection.getFirstPosition() );
@@ -82,7 +82,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if element after position is not a container element', () => {
-			const { selection } = parse( '<container:div>foo</container:div>[]<attribute:u>bar</attribute:u>' );
+			const { selection } = _parseView( '<container:div>foo</container:div>[]<attribute:u>bar</attribute:u>' );
 
 			expectToThrowCKEditorError( () => {
 				writer.mergeContainers( selection.getFirstPosition() );

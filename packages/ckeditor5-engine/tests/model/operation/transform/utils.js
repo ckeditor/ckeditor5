@@ -15,7 +15,7 @@ import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.j
 import { TableEditing } from '@ckeditor/ckeditor5-table';
 import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imageblockediting.js';
 
-import { getData, parse } from '../../../../src/dev-utils/model.js';
+import { _getModelData, _parseModel } from '../../../../src/dev-utils/model.js';
 import { transformSets } from '../../../../src/model/operation/transform.js';
 import { Position } from '../../../../src/model/position.js';
 import { Range } from '../../../../src/model/range.js';
@@ -56,7 +56,7 @@ export class Client {
 		const modelRoot = model.document.getRoot();
 
 		// Parse data string to model.
-		const parsedResult = parse( initModelString, model.schema, { context: [ modelRoot.name ] } );
+		const parsedResult = _parseModel( initModelString, model.schema, { context: [ modelRoot.name ] } );
 
 		// Retrieve DocumentFragment and Selection from parsed model.
 		const modelDocumentFragment = parsedResult.model;
@@ -99,7 +99,7 @@ export class Client {
 	}
 
 	insert( itemString, path ) {
-		const item = parse( itemString, this.editor.model.schema );
+		const item = _parseModel( itemString, this.editor.model.schema );
 		const position = this._getPosition( path, 'start' );
 
 		this._processAction( 'insert', item, position );
@@ -215,7 +215,7 @@ export class Client {
 	}
 
 	getModelString() {
-		return getData( this.editor.model, { withoutSelection: true, convertMarkers: true } );
+		return _getModelData( this.editor.model, { withoutSelection: true, convertMarkers: true } );
 	}
 
 	destroy() {
@@ -322,7 +322,7 @@ export function syncClients() {
 			} );
 
 			const remoteOperations = remoteOperationsJson.map( json => {
-				const parsedJson = JSON.parse( json );
+				const parsedJson = JSON._parseModel( json );
 				const operation = OperationFactory.fromJSON( parsedJson, localClient.document );
 
 				if ( parsedJson.wasUndone ) {

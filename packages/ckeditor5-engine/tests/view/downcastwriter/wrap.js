@@ -16,7 +16,7 @@ import { Position } from '../../../src/view/position.js';
 import { Range } from '../../../src/view/range.js';
 import { Text } from '../../../src/view/text.js';
 
-import { stringify, parse } from '../../../src/dev-utils/view.js';
+import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { createViewRoot } from '../_utils/createroot.js';
 import { Document } from '../../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -40,10 +40,10 @@ describe( 'DowncastWriter', () => {
 			 * @param {String} expected
 			 */
 			function testWrap( input, wrapAttribute, expected ) {
-				const { view, selection } = parse( input );
-				const newRange = writer.wrap( selection.getFirstRange(), parse( wrapAttribute ) );
+				const { view, selection } = _parseView( input );
+				const newRange = writer.wrap( selection.getFirstRange(), _parseView( wrapAttribute ) );
 
-				expect( stringify( view.root, newRange, { showType: true, showPriority: true, showAttributeElementId: true } ) )
+				expect( _stringifyView( view.root, newRange, { showType: true, showPriority: true, showAttributeElementId: true } ) )
 					.to.equal( expected );
 			}
 
@@ -449,7 +449,9 @@ describe( 'DowncastWriter', () => {
 				const range = Range._createFromParentsAndOffsets( container, 0, container, 3 );
 				const newRange = writer.wrap( range, wrapAttribute );
 
-				expect( stringify( container, newRange, { showType: true, showPriority: true, showAttributeElementId: true } ) ).to.equal(
+				expect(
+					_stringifyView( container, newRange, { showType: true, showPriority: true, showAttributeElementId: true } )
+				).to.equal(
 					'<container:p>' +
 						'[<attribute:b view-priority="10">foo<container:span>baz</container:span>bar</attribute:b>]' +
 					'</container:p>'
@@ -572,15 +574,15 @@ describe( 'DowncastWriter', () => {
 			 * @param {String} expected
 			 */
 			function testWrap( input, wrapAttribute, expected ) {
-				const { view, selection } = parse( input, { rootElement: viewRoot } );
+				const { view, selection } = _parseView( input, { rootElement: viewRoot } );
 				viewDocument.selection._setTo( selection );
 
-				const newPosition = writer.wrap( selection.getFirstRange(), parse( wrapAttribute ) );
+				const newPosition = writer.wrap( selection.getFirstRange(), _parseView( wrapAttribute ) );
 
 				// Moving parsed elements to a document fragment so the view root is not shown in `stringify`.
 				const viewChildren = new DocumentFragment( viewDocument, view.getChildren() );
 
-				expect( stringify( viewChildren, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
+				expect( _stringifyView( viewChildren, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
 			}
 
 			it( 'should throw error when element is not instance of AttributeElement', () => {

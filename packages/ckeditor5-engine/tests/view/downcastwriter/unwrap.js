@@ -14,7 +14,7 @@ import { Position } from '../../../src/view/position.js';
 import { Range } from '../../../src/view/range.js';
 import { Text } from '../../../src/view/text.js';
 
-import { stringify, parse } from '../../../src/dev-utils/view.js';
+import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { Document } from '../../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
@@ -29,10 +29,10 @@ describe( 'DowncastWriter', () => {
 		// @param {String} unwrapAttribute
 		// @param {String} expected
 		function testUnwrap( input, unwrapAttribute, expected ) {
-			const { view, selection } = parse( input );
+			const { view, selection } = _parseView( input );
 
-			const newRange = writer.unwrap( selection.getFirstRange(), parse( unwrapAttribute ) );
-			expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
+			const newRange = writer.unwrap( selection.getFirstRange(), _parseView( unwrapAttribute ) );
+			expect( _stringifyView( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
 		}
 
 		beforeEach( () => {
@@ -490,7 +490,7 @@ describe( 'DowncastWriter', () => {
 			writer.insert( writer.createPositionAt( container, 0 ), attribute );
 			writer.unwrap( Range._createOn( attribute ), unwrapper );
 
-			expect( stringify( container, null, { showType: false, showPriority: false } ) ).to.equal( '<div></div>' );
+			expect( _stringifyView( container, null, { showType: false, showPriority: false } ) ).to.equal( '<div></div>' );
 		} );
 
 		it( 'should always unwrap whole element if both elements have same id', () => {
@@ -501,7 +501,7 @@ describe( 'DowncastWriter', () => {
 			writer.insert( writer.createPositionAt( container, 0 ), attribute );
 			writer.unwrap( writer.createRangeOn( attribute ), unwrapper );
 
-			expect( stringify( container, null, { showType: false, showPriority: false } ) ).to.equal( '<div></div>' );
+			expect( _stringifyView( container, null, { showType: false, showPriority: false } ) ).to.equal( '<div></div>' );
 		} );
 
 		// Below are tests for elements with different ids.
@@ -515,7 +515,7 @@ describe( 'DowncastWriter', () => {
 			writer.insert( writer.createPositionAt( container, 0 ), attribute );
 			writer.unwrap( writer.createRangeOn( attribute ), unwrapper );
 
-			const view = stringify( container, null, { showType: false, showPriority: false } );
+			const view = _stringifyView( container, null, { showType: false, showPriority: false } );
 			expect( view ).to.equal( '<div><span bar="bar" foo="foo"></span></div>' );
 		} );
 
@@ -527,7 +527,7 @@ describe( 'DowncastWriter', () => {
 			writer.insert( writer.createPositionAt( container, 0 ), attribute );
 			writer.unwrap( writer.createRangeOn( attribute ), unwrapper );
 
-			const view = stringify( container, null, { showType: false, showPriority: false } );
+			const view = _stringifyView( container, null, { showType: false, showPriority: false } );
 			expect( view ).to.equal( '<div><span bar="bar" foo="foo"></span></div>' );
 		} );
 
@@ -539,7 +539,7 @@ describe( 'DowncastWriter', () => {
 			writer.insert( writer.createPositionAt( container, 0 ), attribute );
 			writer.unwrap( writer.createRangeOn( attribute ), unwrapper );
 
-			const view = stringify( container, null, { showType: false, showPriority: false } );
+			const view = _stringifyView( container, null, { showType: false, showPriority: false } );
 			expect( view ).to.equal( '<div><span bar="bar" foo="foo"></span></div>' );
 		} );
 	} );

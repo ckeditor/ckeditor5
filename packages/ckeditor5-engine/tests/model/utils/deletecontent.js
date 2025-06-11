@@ -10,7 +10,7 @@ import { Selection } from '../../../src/model/selection.js';
 import { Element } from '../../../src/model/element.js';
 import { deleteContent } from '../../../src/model/utils/deletecontent.js';
 import { _setModelData, _getModelData } from '../../../src/dev-utils/model.js';
-import { stringify } from '../../../src/dev-utils/view.js';
+import { _stringifyView } from '../../../src/dev-utils/view.js';
 
 describe( 'DataController utils', () => {
 	let model, doc;
@@ -880,7 +880,7 @@ describe( 'DataController utils', () => {
 				expect( _getModelData( model, { rootName: 'bodyRoot' } ) )
 					.to.equal( '<paragraph>[x]</paragraph><paragraph></paragraph><paragraph>z</paragraph>' );
 
-				expect( stringify( root, selection ) )
+				expect( _stringifyView( root, selection ) )
 					.to.equal( '<$root><paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph></$root>' );
 			} );
 

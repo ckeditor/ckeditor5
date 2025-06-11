@@ -12,7 +12,7 @@ import { Document } from '../../src/view/document.js';
 import { Text } from '../../src/view/text.js';
 import { TextProxy } from '../../src/view/textproxy.js';
 
-import { parse, stringify } from '../../src/dev-utils/view.js';
+import { _parseView, _stringifyView } from '../../src/dev-utils/view.js';
 import { TreeWalker } from '../../src/view/treewalker.js';
 import { createViewRoot } from './_utils/createroot.js';
 import { AttributeElement } from '../../src/view/attributeelement.js';
@@ -137,21 +137,21 @@ describe( 'Position', () => {
 
 	describe( 'getLastMatchingPosition', () => {
 		it( 'should skip forward', () => {
-			const { view, selection } = parse( '<p><b>{}foo</b></p>' );
+			const { view, selection } = _parseView( '<p><b>{}foo</b></p>' );
 			let position = selection.getFirstPosition();
 
 			position = position.getLastMatchingPosition( value => value.type == 'text' );
 
-			expect( stringify( view, position ) ).to.equal( '<p><b>foo[]</b></p>' );
+			expect( _stringifyView( view, position ) ).to.equal( '<p><b>foo[]</b></p>' );
 		} );
 
 		it( 'should skip backward', () => {
-			const { view, selection } = parse( '<p><b>foo{}</b></p>' );
+			const { view, selection } = _parseView( '<p><b>foo{}</b></p>' );
 			let position = selection.getFirstPosition();
 
 			position = position.getLastMatchingPosition( value => value.type == 'text', { direction: 'backward' } );
 
-			expect( stringify( view, position ) ).to.equal( '<p><b>[]foo</b></p>' );
+			expect( _stringifyView( view, position ) ).to.equal( '<p><b>[]foo</b></p>' );
 		} );
 	} );
 
@@ -483,7 +483,7 @@ describe( 'Position', () => {
 
 		describe( '_createBefore()', () => {
 			it( 'should throw error if one try to create positions before root', () => {
-				const paragraph = parse( '<p></p>' );
+				const paragraph = _parseView( '<p></p>' );
 
 				expectToThrowCKEditorError( () => {
 					Position._createBefore( paragraph );
@@ -491,7 +491,7 @@ describe( 'Position', () => {
 			} );
 
 			it( 'should create positions before `Node`', () => {
-				const { selection } = parse( '<p>[]<b></b></p>' );
+				const { selection } = _parseView( '<p>[]<b></b></p>' );
 				const position = selection.getFirstPosition();
 				const nodeAfter = position.nodeAfter;
 
@@ -510,7 +510,7 @@ describe( 'Position', () => {
 
 		describe( '_createAfter()', () => {
 			it( 'should throw error if one try to create positions after root', () => {
-				const paragraph = parse( '<p></p>' );
+				const paragraph = _parseView( '<p></p>' );
 
 				expectToThrowCKEditorError( () => {
 					Position._createAfter( paragraph );
@@ -518,7 +518,7 @@ describe( 'Position', () => {
 			} );
 
 			it( 'should create positions after `Node`', () => {
-				const { selection } = parse( '<p><b></b>[]</p>' );
+				const { selection } = _parseView( '<p><b></b>[]</p>' );
 				const position = selection.getFirstPosition();
 				const nodeBefore = position.nodeBefore;
 

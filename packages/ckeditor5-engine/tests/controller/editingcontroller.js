@@ -18,7 +18,7 @@ import { ModelPosition } from '../../src/model/position.js';
 import { ModelRange } from '../../src/model/range.js';
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 
-import { _getModelData, _setModelData, parse } from '../../src/dev-utils/model.js';
+import { _getModelData, _setModelData, _parseModel } from '../../src/dev-utils/model.js';
 import { _getViewData } from '../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
@@ -110,7 +110,7 @@ describe( 'EditingController', () => {
 
 			viewRoot._removeChildren( 0, viewRoot.childCount );
 
-			const modelData = new ModelDocumentFragment( parse(
+			const modelData = new ModelDocumentFragment( _parseModel(
 				'<paragraph>foo</paragraph>' +
 				'<paragraph></paragraph>' +
 				'<paragraph>bar</paragraph>',
@@ -491,7 +491,7 @@ describe( 'EditingController', () => {
 			editing.destroy();
 
 			model.change( writer => {
-				const modelData = parse( '<paragraph>foo</paragraph>', model.schema ).getChild( 0 );
+				const modelData = _parseModel( '<paragraph>foo</paragraph>', model.schema ).getChild( 0 );
 
 				writer.insert( modelData, model.document.getRoot() );
 			} );

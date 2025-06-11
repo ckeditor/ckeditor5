@@ -10,7 +10,7 @@ import { Text } from '../../../src/model/text.js';
 import { Element } from '../../../src/model/element.js';
 import { Position } from '../../../src/model/position.js';
 
-import { _setModelData, _getModelData, _parseModel, stringify } from '../../../src/dev-utils/model.js';
+import { _setModelData, _getModelData, _parseModel, _stringifyModel } from '../../../src/dev-utils/model.js';
 import { Range } from '../../../src/model/range.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
@@ -46,7 +46,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertContent( model, writer.createText( 'x' ), selection );
 
 				expect( _getModelData( model ) ).to.equal( 'a[]bxc' );
-				expect( stringify( root, affectedRange ) ).to.equal( 'ab[x]c' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( 'ab[x]c' );
 			} );
 		} );
 
@@ -77,7 +77,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertContent( model, writer.createText( 'x' ), model.document.selection );
 
 				expect( _getModelData( model ) ).to.equal( 'ax[]bc' );
-				expect( stringify( root, affectedRange ) ).to.equal( 'a[x]bc' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( 'a[x]bc' );
 			} );
 		} );
 
@@ -89,7 +89,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertContent( model, writer.createText( 'x' ) );
 
 				expect( _getModelData( model ) ).to.equal( 'ax[]bc' );
-				expect( stringify( root, affectedRange ) ).to.equal( 'a[x]bc' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( 'a[x]bc' );
 			} );
 		} );
 
@@ -164,7 +164,7 @@ describe( 'DataController utils', () => {
 				'<paragraph>ghi</paragraph>' +
 				'<paragraph>jkl[]oo</paragraph>'
 			);
-			expect( stringify( root, affectedRange ) ).to.equal(
+			expect( _stringifyModel( root, affectedRange ) ).to.equal(
 				'<paragraph>f[abc</paragraph>' +
 				'<paragraph>def</paragraph>' +
 				'<paragraph>ghi</paragraph>' +
@@ -225,7 +225,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( 'xyz' );
 
 				expect( _getModelData( model ) ).to.equal( 'fxyz[]oo' );
-				expect( stringify( root, affectedRange ) ).to.equal( 'f[xyz]oo' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( 'f[xyz]oo' );
 			} );
 
 			it( 'inserts one text node (at the end)', () => {
@@ -233,7 +233,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( 'xyz' );
 
 				expect( _getModelData( model ) ).to.equal( 'fooxyz[]' );
-				expect( stringify( root, affectedRange ) ).to.equal( 'foo[xyz]' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( 'foo[xyz]' );
 			} );
 
 			it( 'inserts one text node with attribute', () => {
@@ -241,7 +241,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( '<$text bold="true">xyz</$text>' );
 
 				expect( _getModelData( model ) ).to.equal( 'f<$text bold="true">xyz[]</$text>oo' );
-				expect( stringify( root, affectedRange ) ).to.equal( 'f[<$text bold="true">xyz</$text>]oo' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( 'f[<$text bold="true">xyz</$text>]oo' );
 
 				expect( doc.selection.getAttribute( 'bold' ) ).to.be.true;
 			} );
@@ -253,7 +253,7 @@ describe( 'DataController utils', () => {
 				expect( _getModelData( model ) )
 					.to.equal( '<$text bold="true">f</$text><$text italic="true">xyz[]</$text><$text bold="true">oo</$text>' );
 
-				expect( stringify( root, affectedRange ) )
+				expect( _stringifyModel( root, affectedRange ) )
 					.to.equal( '<$text bold="true">f</$text>[<$text italic="true">xyz</$text>]<$text bold="true">oo</$text>' );
 
 				expect( doc.selection.getAttribute( 'italic' ) ).to.be.true;
@@ -265,7 +265,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( '<$text bold="true">xyz</$text>' );
 
 				expect( _getModelData( model ) ).to.equal( '<$text bold="true">fxyz[]oo</$text>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<$text bold="true">f[xyz]oo</$text>' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<$text bold="true">f[xyz]oo</$text>' );
 
 				expect( doc.selection.getAttribute( 'bold' ) ).to.be.true;
 			} );
@@ -275,7 +275,9 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( 'xyz' );
 
 				expect( _getModelData( model ) ).to.equal( '<$text bold="true">f</$text>xyz[]<$text bold="true">oo</$text>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<$text bold="true">f</$text>[xyz]<$text bold="true">oo</$text>' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					'<$text bold="true">f</$text>[xyz]<$text bold="true">oo</$text>'
+				);
 
 				expect( doc.selection.hasAttribute( 'bold' ) ).to.be.false;
 			} );
@@ -285,7 +287,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( '<imageBlock></imageBlock>' );
 
 				expect( _getModelData( model ) ).to.equal( 'f<imageBlock></imageBlock>[]oo' );
-				expect( stringify( root, affectedRange ) ).to.equal( 'f[<imageBlock></imageBlock>]oo' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( 'f[<imageBlock></imageBlock>]oo' );
 			} );
 
 			it( 'inserts a text and an element', () => {
@@ -293,7 +295,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( 'xyz<imageBlock></imageBlock>' );
 
 				expect( _getModelData( model ) ).to.equal( 'fxyz<imageBlock></imageBlock>[]oo' );
-				expect( stringify( root, affectedRange ) ).to.equal( 'f[xyz<imageBlock></imageBlock>]oo' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( 'f[xyz<imageBlock></imageBlock>]oo' );
 			} );
 
 			it( 'strips a disallowed element', () => {
@@ -301,7 +303,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( '<disallowedElement>xyz</disallowedElement>' );
 
 				expect( _getModelData( model ) ).to.equal( 'fxyz[]oo' );
-				expect( stringify( root, affectedRange ) ).to.equal( 'f[xyz]oo' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( 'f[xyz]oo' );
 			} );
 
 			it( 'deletes selection before inserting the content', () => {
@@ -309,7 +311,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( 'x' );
 
 				expect( _getModelData( model ) ).to.equal( 'fx[]oo' );
-				expect( stringify( root, affectedRange ) ).to.equal( 'f[x]oo' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( 'f[x]oo' );
 			} );
 
 			describe( 'spaces handling', () => {
@@ -379,7 +381,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( 'xyz' );
 
 				expect( _getModelData( model ) ).to.equal( '<paragraph>fxyz[]oo</paragraph>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>f[xyz]oo</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[xyz]oo</paragraph>' );
 			} );
 
 			it( 'inserts one text node to fully selected paragraph', () => {
@@ -387,7 +389,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( 'xyz' );
 
 				expect( _getModelData( model ) ).to.equal( '<paragraph>xyz[]</paragraph>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>[xyz]</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>[xyz]</paragraph>' );
 			} );
 
 			it( 'inserts one text node to fully selected paragraphs (from outside)', () => {
@@ -395,7 +397,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( 'xyz' );
 
 				expect( _getModelData( model ) ).to.equal( '<paragraph>xyz[]</paragraph>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>[xyz]</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>[xyz]</paragraph>' );
 			} );
 
 			it( 'merges two blocks before inserting content (p+p)', () => {
@@ -403,7 +405,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( 'xyz' );
 
 				expect( _getModelData( model ) ).to.equal( '<paragraph>foxyz[]ar</paragraph>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>fo[xyz]ar</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>fo[xyz]ar</paragraph>' );
 			} );
 
 			it( 'inserts inline widget and text', () => {
@@ -411,7 +413,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( 'xyz<inlineWidget></inlineWidget>' );
 
 				expect( _getModelData( model ) ).to.equal( '<paragraph>fxyz<inlineWidget></inlineWidget>[]oo</paragraph>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>f[xyz<inlineWidget></inlineWidget>]oo</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[xyz<inlineWidget></inlineWidget>]oo</paragraph>' );
 			} );
 
 			// Note: In CKEditor 4 the blocks are not merged, but to KISS we're merging here
@@ -421,7 +423,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( 'xyz' );
 
 				expect( _getModelData( model ) ).to.equal( '<heading1>foxyz[]ar</heading1>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<heading1>fo[xyz]ar</heading1>' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<heading1>fo[xyz]ar</heading1>' );
 			} );
 
 			it( 'should split and auto-paragraph if needed', () => {
@@ -441,7 +443,7 @@ describe( 'DataController utils', () => {
 					'<paragraph>abc</paragraph>' +
 					'<widgetContainer>[<blockWidget></blockWidget>]</widgetContainer>'
 				);
-				expect( stringify( root, affectedRange ) ).to.equal(
+				expect( _stringifyModel( root, affectedRange ) ).to.equal(
 					'<widgetContainer><blockWidget></blockWidget>[</widgetContainer>' +
 					'<paragraph>abc</paragraph>' +
 					'<widgetContainer>]<blockWidget></blockWidget></widgetContainer>'
@@ -491,7 +493,7 @@ describe( 'DataController utils', () => {
 						'</outerContainer>' +
 					'</blockContainer>'
 				);
-				expect( stringify( root, affectedRange ) ).to.equal(
+				expect( _stringifyModel( root, affectedRange ) ).to.equal(
 					'<blockContainer>' +
 						'<outerContainer>' +
 							'<widgetContainer>' +
@@ -525,7 +527,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertContent( model, content );
 
 				expect( _getModelData( model ) ).to.equal( '<heading1>bar[]</heading1>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '[<heading1>bar</heading1>]' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( '[<heading1>bar</heading1>]' );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5/issues/9794
@@ -548,7 +550,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertContent( model, content );
 
 				expect( _getModelData( model ) ).to.equal( '<limit>[]</limit>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<limit>[]</limit>' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<limit>[]</limit>' );
 			} );
 
 			describe( 'block to block handling', () => {
@@ -557,7 +559,7 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( '<paragraph>xyz</paragraph>' );
 
 					expect( _getModelData( model ) ).to.equal( '<paragraph>fxyz[]oo</paragraph>' );
-					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>f[xyz]oo</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[xyz]oo</paragraph>' );
 				} );
 
 				it( 'inserts one paragraph (at the end)', () => {
@@ -565,7 +567,7 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( '<paragraph>xyz</paragraph>' );
 
 					expect( _getModelData( model ) ).to.equal( '<paragraph>fooxyz[]</paragraph>' );
-					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>foo[xyz]</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>foo[xyz]</paragraph>' );
 				} );
 
 				it( 'inserts one paragraph into an empty paragraph', () => {
@@ -575,7 +577,7 @@ describe( 'DataController utils', () => {
 					expect( _getModelData( model ) ).to.equal( '<paragraph>xyz[]</paragraph>' );
 
 					// The empty paragraph gets removed and the new element is inserted instead.
-					expect( stringify( root, affectedRange ) ).to.equal( '[<paragraph>xyz</paragraph>]' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal( '[<paragraph>xyz</paragraph>]' );
 				} );
 
 				it( 'inserts one empty paragraph', () => {
@@ -585,7 +587,7 @@ describe( 'DataController utils', () => {
 					expect( _getModelData( model ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
 
 					// Nothing is inserted so the `affectedRange` is collapsed at insertion position.
-					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
 				} );
 
 				it( 'inserts one block into a fully selected content', () => {
@@ -593,7 +595,7 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( '<heading2>xyz</heading2>' );
 
 					expect( _getModelData( model ) ).to.equal( '<heading2>xyz[]</heading2>' );
-					expect( stringify( root, affectedRange ) ).to.equal( '[<heading2>xyz</heading2>]' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal( '[<heading2>xyz</heading2>]' );
 				} );
 
 				it( 'inserts one heading', () => {
@@ -601,7 +603,7 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( '<heading1>xyz</heading1>' );
 
 					expect( _getModelData( model ) ).to.equal( '<paragraph>fxyz[]oo</paragraph>' );
-					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>f[xyz]oo</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[xyz]oo</paragraph>' );
 				} );
 
 				it( 'inserts two headings', () => {
@@ -609,7 +611,7 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( '<heading1>xxx</heading1><heading1>yyy</heading1>' );
 
 					expect( _getModelData( model ) ).to.equal( '<paragraph>fxxx</paragraph><heading1>yyy[]oo</heading1>' );
-					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>f[xxx</paragraph><heading1>yyy]oo</heading1>' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[xxx</paragraph><heading1>yyy]oo</heading1>' );
 				} );
 
 				it( 'inserts one object', () => {
@@ -619,7 +621,7 @@ describe( 'DataController utils', () => {
 					expect( _getModelData( model ) )
 						.to.equal( '<paragraph>f</paragraph>[<blockWidget></blockWidget>]<paragraph>oo</paragraph>' );
 
-					expect( stringify( root, affectedRange ) )
+					expect( _stringifyModel( root, affectedRange ) )
 						.to.equal( '<paragraph>f[</paragraph><blockWidget></blockWidget><paragraph>]oo</paragraph>' );
 				} );
 
@@ -628,7 +630,7 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( '<blockWidget></blockWidget>' );
 
 					expect( _getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
-					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
 				} );
 
 				it( 'inserts one object (at the beginning)', () => {
@@ -636,7 +638,7 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( '<blockWidget></blockWidget>' );
 
 					expect( _getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
-					expect( stringify( root, affectedRange ) ).to.equal( '[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal( '[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
 				} );
 
 				it( 'inserts one list item', () => {
@@ -644,7 +646,7 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( '<listItem listIndent="0" listType="bulleted">xyz</listItem>' );
 
 					expect( _getModelData( model ) ).to.equal( '<paragraph>fxyz[]oo</paragraph>' );
-					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>f[xyz]oo</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[xyz]oo</paragraph>' );
 				} );
 
 				it( 'inserts list item to empty element', () => {
@@ -652,7 +654,9 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( '<listItem listIndent="0" listType="bulleted">xyz</listItem>' );
 
 					expect( _getModelData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">xyz[]</listItem>' );
-					expect( stringify( root, affectedRange ) ).to.equal( '[<listItem listIndent="0" listType="bulleted">xyz</listItem>]' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						'[<listItem listIndent="0" listType="bulleted">xyz</listItem>]'
+					);
 				} );
 
 				it( 'inserts three list items at the end of paragraph', () => {
@@ -669,7 +673,7 @@ describe( 'DataController utils', () => {
 						'<listItem listIndent="0" listType="bulleted">zzz[]</listItem>'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'<paragraph>foo[xxx</paragraph>' +
 						'<listItem listIndent="0" listType="bulleted">yyy</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">zzz</listItem>]'
@@ -690,7 +694,7 @@ describe( 'DataController utils', () => {
 						'<paragraph>b</paragraph>'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'<paragraph>a</paragraph>' +
 						'[<listItem listIndent="0" listType="bulleted">xxx</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">yyy</listItem>]' +
@@ -716,7 +720,7 @@ describe( 'DataController utils', () => {
 						'<heading1>yyy[]o</heading1>'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'<listItem>fo[</listItem>' +
 						'<blockQuote>' +
 							'<paragraph>xxx</paragraph>' +
@@ -743,7 +747,7 @@ describe( 'DataController utils', () => {
 						'<listItem>[]o</listItem>'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'<listItem>fo[yyy</listItem>' +
 						'<blockQuote>' +
 							'<paragraph>xxx</paragraph>' +
@@ -770,7 +774,7 @@ describe( 'DataController utils', () => {
 						'<listItem>[]o</listItem>'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'<listItem>fo[</listItem>' +
 						'<blockQuote>' +
 							'<paragraph>xxx</paragraph>' +
@@ -797,7 +801,7 @@ describe( 'DataController utils', () => {
 						'<paragraph>yyy[]</paragraph>'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'[<blockQuote>' +
 							'<paragraph>xxx</paragraph>' +
 						'</blockQuote>' +
@@ -812,7 +816,9 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( 'xxx<paragraph>yyy</paragraph>' );
 
 					expect( _getModelData( model ) ).to.equal( '<paragraph>fxxx</paragraph><paragraph>yyy[]oo</paragraph>' );
-					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>f[xxx</paragraph><paragraph>yyy]oo</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						'<paragraph>f[xxx</paragraph><paragraph>yyy]oo</paragraph>'
+					);
 				} );
 
 				it( 'inserts text + inlineWidget + text + paragraph', () => {
@@ -823,7 +829,7 @@ describe( 'DataController utils', () => {
 						'<paragraph>fxxx<inlineWidget></inlineWidget>yyy</paragraph><paragraph>zzz[]oo</paragraph>'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'<paragraph>f[xxx<inlineWidget></inlineWidget>yyy</paragraph><paragraph>zzz]oo</paragraph>'
 					);
 				} );
@@ -833,7 +839,9 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( 'xxx<paragraph>yyy</paragraph>' );
 
 					expect( _getModelData( model ) ).to.equal( '<paragraph>xxx</paragraph><paragraph>yyy[]foo</paragraph>' );
-					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>[xxx</paragraph><paragraph>yyy]foo</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						'<paragraph>[xxx</paragraph><paragraph>yyy]foo</paragraph>'
+					);
 				} );
 
 				it( 'inserts text + paragraph (at the end)', () => {
@@ -841,7 +849,9 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( 'xxx<paragraph>yyy</paragraph>' );
 
 					expect( _getModelData( model ) ).to.equal( '<paragraph>fooxxx</paragraph><paragraph>yyy[]</paragraph>' );
-					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>foo[xxx</paragraph><paragraph>yyy</paragraph>]' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						'<paragraph>foo[xxx</paragraph><paragraph>yyy</paragraph>]'
+					);
 				} );
 
 				it( 'inserts paragraph + text', () => {
@@ -849,7 +859,9 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( '<paragraph>yyy</paragraph>xxx' );
 
 					expect( _getModelData( model ) ).to.equal( '<paragraph>fyyy</paragraph><paragraph>xxx[]oo</paragraph>' );
-					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>f[yyy</paragraph><paragraph>xxx]oo</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						'<paragraph>f[yyy</paragraph><paragraph>xxx]oo</paragraph>'
+					);
 				} );
 
 				it( 'inserts paragraph + text + inlineWidget + text', () => {
@@ -858,7 +870,7 @@ describe( 'DataController utils', () => {
 
 					expect( _getModelData( model ) )
 						.to.equal( '<paragraph>fyyy</paragraph><paragraph>xxx<inlineWidget></inlineWidget>zzz[]oo</paragraph>' );
-					expect( stringify( root, affectedRange ) )
+					expect( _stringifyModel( root, affectedRange ) )
 						.to.equal( '<paragraph>f[yyy</paragraph><paragraph>xxx<inlineWidget></inlineWidget>zzz]oo</paragraph>' );
 				} );
 
@@ -870,7 +882,7 @@ describe( 'DataController utils', () => {
 						'<paragraph>fyyy</paragraph><paragraph>xxx</paragraph><paragraph>zzz[]oo</paragraph>'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'<paragraph>f[yyy</paragraph><paragraph>xxx</paragraph><paragraph>zzz]oo</paragraph>'
 					);
 				} );
@@ -880,7 +892,9 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( '<paragraph>yyy</paragraph>xxx' );
 
 					expect( _getModelData( model ) ).to.equal( '<paragraph>yyy</paragraph><paragraph>xxx[]foo</paragraph>' );
-					expect( stringify( root, affectedRange ) ).to.equal( '[<paragraph>yyy</paragraph><paragraph>xxx]foo</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						'[<paragraph>yyy</paragraph><paragraph>xxx]foo</paragraph>'
+					);
 				} );
 
 				it( 'inserts paragraph + text (at the end)', () => {
@@ -888,7 +902,9 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( '<paragraph>yyy</paragraph>xxx' );
 
 					expect( _getModelData( model ) ).to.equal( '<paragraph>fooyyy</paragraph><paragraph>xxx[]</paragraph>' );
-					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>foo[yyy</paragraph><paragraph>xxx</paragraph>]' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						'<paragraph>foo[yyy</paragraph><paragraph>xxx</paragraph>]'
+					);
 				} );
 
 				it( 'inserts text + heading', () => {
@@ -896,7 +912,7 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( 'xxx<heading1>yyy</heading1>' );
 
 					expect( _getModelData( model ) ).to.equal( '<paragraph>fxxx</paragraph><heading1>yyy[]oo</heading1>' );
-					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>f[xxx</paragraph><heading1>yyy]oo</heading1>' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[xxx</paragraph><heading1>yyy]oo</heading1>' );
 				} );
 
 				it( 'inserts paragraph + object', () => {
@@ -907,7 +923,7 @@ describe( 'DataController utils', () => {
 						'<paragraph>fxxx</paragraph>[<blockWidget></blockWidget>]<paragraph>oo</paragraph>'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'<paragraph>f[xxx</paragraph><blockWidget></blockWidget><paragraph>]oo</paragraph>'
 					);
 				} );
@@ -920,7 +936,7 @@ describe( 'DataController utils', () => {
 						'<paragraph>f</paragraph><blockWidget></blockWidget><paragraph>xxx[]oo</paragraph>'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'<paragraph>f[</paragraph><blockWidget></blockWidget><paragraph>xxx]oo</paragraph>'
 					);
 				} );
@@ -933,7 +949,7 @@ describe( 'DataController utils', () => {
 						'<paragraph>f</paragraph><blockWidget></blockWidget><paragraph>xxx[]oo</paragraph>'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'<paragraph>f[</paragraph><blockWidget></blockWidget><paragraph>xxx]oo</paragraph>'
 					);
 				} );
@@ -946,7 +962,7 @@ describe( 'DataController utils', () => {
 						'<blockWidget></blockWidget><paragraph>xxx[]foo</paragraph>'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'[<blockWidget></blockWidget><paragraph>xxx]foo</paragraph>'
 					);
 				} );
@@ -959,7 +975,7 @@ describe( 'DataController utils', () => {
 						'<paragraph>foo</paragraph><blockWidget></blockWidget><paragraph>xxx[]</paragraph>'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'<paragraph>foo</paragraph>[<blockWidget></blockWidget><paragraph>xxx</paragraph>]'
 					);
 				} );
@@ -973,7 +989,7 @@ describe( 'DataController utils', () => {
 						'<paragraph>foo</paragraph><blockWidget></blockWidget><paragraph>foo</paragraph>[<blockWidget></blockWidget>]'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'<paragraph>foo</paragraph>[<blockWidget></blockWidget><paragraph>foo</paragraph><blockWidget></blockWidget>]'
 					);
 				} );
@@ -986,7 +1002,7 @@ describe( 'DataController utils', () => {
 						'<paragraph>fooxxx</paragraph>[<blockWidget></blockWidget>]'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'<paragraph>foo[xxx</paragraph><blockWidget></blockWidget>]'
 					);
 				} );
@@ -1001,7 +1017,7 @@ describe( 'DataController utils', () => {
 						'<paragraph>foo</paragraph><paragraph>xxx[]</paragraph><paragraph>bar</paragraph>'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'<paragraph>foo</paragraph>[<paragraph>xxx</paragraph>]<paragraph>bar</paragraph>'
 					);
 				} );
@@ -1013,7 +1029,7 @@ describe( 'DataController utils', () => {
 					expect( _getModelData( model ) )
 						.to.equal( '<paragraph>foo</paragraph><paragraph>xxx[]</paragraph><paragraph>bar</paragraph>' );
 
-					expect( stringify( root, affectedRange ) )
+					expect( _stringifyModel( root, affectedRange ) )
 						.to.equal( '<paragraph>foo</paragraph>[<paragraph>xxx</paragraph>]<paragraph>bar</paragraph>' );
 				} );
 
@@ -1025,7 +1041,7 @@ describe( 'DataController utils', () => {
 						'<paragraph>foo</paragraph><paragraph>yyy</paragraph><paragraph>xxx[]</paragraph><paragraph>bar</paragraph>'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'<paragraph>foo</paragraph>[<paragraph>yyy</paragraph><paragraph>xxx</paragraph>]<paragraph>bar</paragraph>'
 					);
 				} );
@@ -1038,7 +1054,7 @@ describe( 'DataController utils', () => {
 						'<paragraph>foo</paragraph><heading1>xxx</heading1><paragraph>yyy[]</paragraph><paragraph>bar</paragraph>'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'<paragraph>foo</paragraph>[<heading1>xxx</heading1><paragraph>yyy</paragraph>]<paragraph>bar</paragraph>'
 					);
 				} );
@@ -1052,7 +1068,7 @@ describe( 'DataController utils', () => {
 						'<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>'
 					);
 				} );
@@ -1065,7 +1081,7 @@ describe( 'DataController utils', () => {
 						'<paragraph>foo</paragraph><paragraph><inlineWidget></inlineWidget>[]</paragraph><paragraph>bar</paragraph>'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'<paragraph>foo</paragraph>[<paragraph><inlineWidget></inlineWidget></paragraph>]<paragraph>bar</paragraph>'
 					);
 				} );
@@ -1080,7 +1096,7 @@ describe( 'DataController utils', () => {
 						'<paragraph>bar</paragraph>'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'<paragraph>foo</paragraph>' +
 						'[<paragraph><$text foo="a">yyy</$text><$text foo="b">xxx</$text></paragraph>]' +
 						'<paragraph>bar</paragraph>'
@@ -1094,7 +1110,7 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( 'xxx' );
 
 					expect( _getModelData( model ) ).to.equal( '<paragraph>fooxxx[]bar</paragraph>' );
-					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>foo[xxx]bar</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>foo[xxx]bar</paragraph>' );
 				} );
 
 				it( 'inserts paragraph', () => {
@@ -1102,7 +1118,7 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( '<paragraph>xxx</paragraph>' );
 
 					expect( _getModelData( model ) ).to.equal( '<paragraph>fooxxx[]bar</paragraph>' );
-					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>foo[xxx]bar</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>foo[xxx]bar</paragraph>' );
 				} );
 
 				it( 'inserts text + paragraph', () => {
@@ -1110,7 +1126,9 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( 'yyy<paragraph>xxx</paragraph>' );
 
 					expect( _getModelData( model ) ).to.equal( '<paragraph>fooyyy</paragraph><paragraph>xxx[]bar</paragraph>' );
-					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>foo[yyy</paragraph><paragraph>xxx]bar</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						'<paragraph>foo[yyy</paragraph><paragraph>xxx]bar</paragraph>'
+					);
 				} );
 
 				it( 'inserts two blocks', () => {
@@ -1118,7 +1136,9 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( '<heading1>xxx</heading1><paragraph>yyy</paragraph>' );
 
 					expect( _getModelData( model ) ).to.equal( '<paragraph>fooxxx</paragraph><paragraph>yyy[]bar</paragraph>' );
-					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>foo[xxx</paragraph><paragraph>yyy]bar</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						'<paragraph>foo[xxx</paragraph><paragraph>yyy]bar</paragraph>'
+					);
 				} );
 
 				it( 'inserts inline object', () => {
@@ -1126,7 +1146,9 @@ describe( 'DataController utils', () => {
 					const affectedRange = insertHelper( '<inlineWidget></inlineWidget>' );
 
 					expect( _getModelData( model ) ).to.equal( '<paragraph>foo<inlineWidget></inlineWidget>[]bar</paragraph>' );
-					expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>' );
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
+						'<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>'
+					);
 				} );
 
 				it( 'inserts block object', () => {
@@ -1137,7 +1159,7 @@ describe( 'DataController utils', () => {
 						'<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>'
 					);
 
-					expect( stringify( root, affectedRange ) ).to.equal(
+					expect( _stringifyModel( root, affectedRange ) ).to.equal(
 						'<paragraph>foo[</paragraph><blockWidget></blockWidget><paragraph>]bar</paragraph>'
 					);
 				} );
@@ -1152,7 +1174,7 @@ describe( 'DataController utils', () => {
 						expect( _getModelData( model ) ).to.equal(
 							'<paragraph>12aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc[]34</paragraph>'
 						);
-						expect( stringify( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).to.equal(
 							'<paragraph>12[aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc]34</paragraph>'
 						);
 					} );
@@ -1164,7 +1186,7 @@ describe( 'DataController utils', () => {
 						expect( _getModelData( model ) ).to.equal(
 							'<paragraph>1234aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc[]</paragraph>'
 						);
-						expect( stringify( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).to.equal(
 							'<paragraph>1234[aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc</paragraph>]'
 						);
 					} );
@@ -1176,7 +1198,7 @@ describe( 'DataController utils', () => {
 						expect( _getModelData( model ) ).to.equal(
 							'<paragraph>aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc[]1234</paragraph>'
 						);
-						expect( stringify( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).to.equal(
 							'<paragraph>[aaa</paragraph><paragraph>bbb</paragraph><paragraph>ccc]1234</paragraph>'
 						);
 					} );
@@ -1194,7 +1216,7 @@ describe( 'DataController utils', () => {
 							'<paragraph>bbb</paragraph>' +
 							'<paragraph><inlineWidget></inlineWidget>[]34</paragraph>'
 						);
-						expect( stringify( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).to.equal(
 							'<paragraph>12[<inlineWidget></inlineWidget></paragraph>' +
 							'<paragraph>bbb</paragraph>' +
 							'<paragraph><inlineWidget></inlineWidget>]34</paragraph>'
@@ -1212,7 +1234,7 @@ describe( 'DataController utils', () => {
 							'<paragraph>bbb</paragraph>' +
 							'<paragraph><inlineWidget></inlineWidget>[]</paragraph>'
 						);
-						expect( stringify( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).to.equal(
 							'<paragraph>1234[<inlineWidget></inlineWidget></paragraph>' +
 							'<paragraph>bbb</paragraph>' +
 							'<paragraph><inlineWidget></inlineWidget></paragraph>]'
@@ -1230,7 +1252,7 @@ describe( 'DataController utils', () => {
 							'<paragraph>bbb</paragraph>' +
 							'<paragraph><inlineWidget></inlineWidget>[]1234</paragraph>'
 						);
-						expect( stringify( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).to.equal(
 							'<paragraph>[<inlineWidget></inlineWidget></paragraph>' +
 							'<paragraph>bbb</paragraph>' +
 							'<paragraph><inlineWidget></inlineWidget>]1234</paragraph>'
@@ -1244,7 +1266,7 @@ describe( 'DataController utils', () => {
 						expect( _getModelData( model ) ).to.equal(
 							'<paragraph>12<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>[]34</paragraph>'
 						);
-						expect( stringify( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).to.equal(
 							'<paragraph>12[<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>]34</paragraph>'
 						);
 					} );
@@ -1256,7 +1278,7 @@ describe( 'DataController utils', () => {
 						expect( _getModelData( model ) ).to.equal(
 							'<paragraph>1234<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>[]</paragraph>'
 						);
-						expect( stringify( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).to.equal(
 							'<paragraph>1234[<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>]</paragraph>'
 						);
 					} );
@@ -1268,7 +1290,7 @@ describe( 'DataController utils', () => {
 						expect( _getModelData( model ) ).to.equal(
 							'<paragraph><inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>[]1234</paragraph>'
 						);
-						expect( stringify( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).to.equal(
 							'<paragraph>[<inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget>]1234</paragraph>'
 						);
 					} );
@@ -1282,7 +1304,7 @@ describe( 'DataController utils', () => {
 							'<paragraph><inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget></paragraph>' +
 							'<paragraph>34</paragraph>'
 						);
-						expect( stringify( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).to.equal(
 							'<paragraph>12</paragraph>' +
 							'[<paragraph><inlineWidget></inlineWidget>bbb<inlineWidget></inlineWidget></paragraph>]' +
 							'<paragraph>34</paragraph>'
@@ -1302,7 +1324,7 @@ describe( 'DataController utils', () => {
 							'[<blockWidget></blockWidget>]' +
 							'<paragraph>34</paragraph>'
 						);
-						expect( stringify( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).to.equal(
 							'<paragraph>12[</paragraph>' +
 							'<blockWidget></blockWidget>' +
 							'<paragraph>bbb</paragraph>' +
@@ -1321,7 +1343,7 @@ describe( 'DataController utils', () => {
 							'<paragraph>bbb</paragraph>' +
 							'[<blockWidget></blockWidget>]'
 						);
-						expect( stringify( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).to.equal(
 							'<paragraph>1234</paragraph>' +
 							'[<blockWidget></blockWidget>' +
 							'<paragraph>bbb</paragraph>' +
@@ -1339,7 +1361,7 @@ describe( 'DataController utils', () => {
 							'[<blockWidget></blockWidget>]' +
 							'<paragraph>1234</paragraph>'
 						);
-						expect( stringify( root, affectedRange ) ).to.equal(
+						expect( _stringifyModel( root, affectedRange ) ).to.equal(
 							'[<blockWidget></blockWidget>' +
 							'<paragraph>bbb</paragraph>' +
 							'<blockWidget></blockWidget>]' +
@@ -1410,7 +1432,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( '<table><td>xxx</td><td>yyy</td></table>' );
 
 				expect( _getModelData( model ) ).to.equal( '<paragraph>fxxxyyy[]oo</paragraph>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>f[xxxyyy]oo</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[xxxyyy]oo</paragraph>' );
 			} );
 
 			it( 'filters out disallowed elements and leaves out the paragraphs', () => {
@@ -1422,7 +1444,7 @@ describe( 'DataController utils', () => {
 				expect( _getModelData( model ) )
 					.to.equal( '<paragraph>fxxx</paragraph><paragraph>yyy</paragraph><paragraph>zzz[]oo</paragraph>' );
 
-				expect( stringify( root, affectedRange ) )
+				expect( _stringifyModel( root, affectedRange ) )
 					.to.equal( '<paragraph>f[xxx</paragraph><paragraph>yyy</paragraph><paragraph>zzz]oo</paragraph>' );
 			} );
 
@@ -1431,7 +1453,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( '<disallowedWidget>xxx</disallowedWidget>' );
 
 				expect( _getModelData( model ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
 			} );
 
 			it( 'filters out disallowed attributes when inserting text', () => {
@@ -1439,7 +1461,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( 'x<$text a="1" b="1">x</$text>xy<$text a="1">y</$text>y' );
 
 				expect( _getModelData( model ) ).to.equal( '<paragraph>fx<$text b="1">x</$text>xyyy[]oo</paragraph>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>f[x<$text b="1">x</$text>xyyy]oo</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[x<$text b="1">x</$text>xyyy]oo</paragraph>' );
 			} );
 
 			it( 'filters out disallowed attributes when inserting nested elements', () => {
@@ -1449,7 +1471,7 @@ describe( 'DataController utils', () => {
 				expect( _getModelData( model ) )
 					.to.equal( '<element><table><td>f<$text b="1">o</$text>o</td></table>[]</element>' );
 
-				expect( stringify( root, affectedRange ) )
+				expect( _stringifyModel( root, affectedRange ) )
 					.to.equal( '<element>[<table><td>f<$text b="1">o</$text>o</td></table>]</element>' );
 			} );
 
@@ -1460,7 +1482,7 @@ describe( 'DataController utils', () => {
 				);
 
 				expect( _getModelData( model ) ).to.equal( '<paragraph>fx<$text b="1">x</$text>xyyy[]oo</paragraph>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>f[x<$text b="1">x</$text>xyyy]oo</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[x<$text b="1">x</$text>xyyy]oo</paragraph>' );
 			} );
 
 			it( 'filters out disallowed attributes when merging #1', () => {
@@ -1468,7 +1490,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( '<paragraph>x<$text a="1" b="1">x</$text>x</paragraph>' );
 
 				expect( _getModelData( model ) ).to.equal( '<paragraph>x<$text b="1">x</$text>x[]foo</paragraph>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>[x<$text b="1">x</$text>x]foo</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>[x<$text b="1">x</$text>x]foo</paragraph>' );
 			} );
 
 			it( 'filters out disallowed attributes when merging #2', () => {
@@ -1476,7 +1498,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( '<paragraph>x<$text a="1" b="1">x</$text>x</paragraph>' );
 
 				expect( _getModelData( model ) ).to.equal( '<paragraph>fx<$text b="1">x</$text>x[]oo</paragraph>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>f[x<$text b="1">x</$text>x]oo</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>f[x<$text b="1">x</$text>x]oo</paragraph>' );
 			} );
 
 			it( 'filters out disallowed attributes when merging #3', () => {
@@ -1484,7 +1506,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( '<paragraph>x<$text a="1" b="1">x</$text>x</paragraph>' );
 
 				expect( _getModelData( model ) ).to.equal( '<paragraph>foox<$text b="1">x</$text>x[]</paragraph>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<paragraph>foo[x<$text b="1">x</$text>x]</paragraph>' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<paragraph>foo[x<$text b="1">x</$text>x]</paragraph>' );
 			} );
 
 			it( 'filters out disallowed attributes from nested nodes when merging', () => {
@@ -1494,7 +1516,7 @@ describe( 'DataController utils', () => {
 				expect( _getModelData( model ) )
 					.to.equal( '<paragraph>fx<element>b<$text b="1">a</$text>r</element>x[]oo</paragraph>' );
 
-				expect( stringify( root, affectedRange ) )
+				expect( _stringifyModel( root, affectedRange ) )
 					.to.equal( '<paragraph>f[x<element>b<$text b="1">a</$text>r</element>x]oo</paragraph>' );
 			} );
 
@@ -1505,7 +1527,7 @@ describe( 'DataController utils', () => {
 				expect( _getModelData( model ) )
 					.to.equal( '<paragraph>fxxx</paragraph><paragraph><$text b="1">yyy[]</$text>oo</paragraph>' );
 
-				expect( stringify( root, affectedRange ) )
+				expect( _stringifyModel( root, affectedRange ) )
 					.to.equal( '<paragraph>f[xxx</paragraph><paragraph><$text b="1">yyy</$text>]oo</paragraph>' );
 			} );
 		} );
@@ -3145,7 +3167,7 @@ describe( 'DataController utils', () => {
 			const affectedRange = insertHelper( '<limit></limit>' );
 
 			expect( _getModelData( model ) ).to.equal( '<limit>[]</limit>' );
-			expect( stringify( root, affectedRange ) ).to.equal( '[<limit></limit>]' );
+			expect( _stringifyModel( root, affectedRange ) ).to.equal( '[<limit></limit>]' );
 		} );
 
 		it( 'should insert text into limit element', () => {
@@ -3153,7 +3175,7 @@ describe( 'DataController utils', () => {
 			const affectedRange = insertHelper( 'foo bar' );
 
 			expect( _getModelData( model ) ).to.equal( '<limit>foo bar[]</limit>' );
-			expect( stringify( root, affectedRange ) ).to.equal( '<limit>[foo bar]</limit>' );
+			expect( _stringifyModel( root, affectedRange ) ).to.equal( '<limit>[foo bar]</limit>' );
 		} );
 
 		it( 'should insert text into limit element when selection spans over many limit elements', () => {
@@ -3165,7 +3187,7 @@ describe( 'DataController utils', () => {
 			} );
 
 			expect( _getModelData( model ) ).to.equal( '<limit>foobaz[]</limit><limit>bar</limit>' );
-			expect( stringify( root, affectedRange ) ).to.equal( '<limit>foo[baz]</limit><limit>bar</limit>' );
+			expect( _stringifyModel( root, affectedRange ) ).to.equal( '<limit>foo[baz]</limit><limit>bar</limit>' );
 		} );
 
 		it( 'should not insert disallowed elements inside limit elements', () => {
@@ -3173,7 +3195,7 @@ describe( 'DataController utils', () => {
 			const affectedRange = insertHelper( '<disallowedElement></disallowedElement>' );
 
 			expect( _getModelData( model ) ).to.equal( '<limit>[]</limit>' );
-			expect( stringify( root, affectedRange ) ).to.equal( '<limit>[]</limit>' );
+			expect( _stringifyModel( root, affectedRange ) ).to.equal( '<limit>[]</limit>' );
 		} );
 
 		it( 'should not leave the limit element when inserting at the end', () => {
@@ -3181,7 +3203,7 @@ describe( 'DataController utils', () => {
 			const affectedRange = insertHelper( '<paragraph>a</paragraph><paragraph>b</paragraph>' );
 
 			expect( _getModelData( model ) ).to.equal( '<limit>fooab[]</limit>' );
-			expect( stringify( root, affectedRange ) ).to.equal( '<limit>foo[ab]</limit>' );
+			expect( _stringifyModel( root, affectedRange ) ).to.equal( '<limit>foo[ab]</limit>' );
 		} );
 
 		it( 'should not leave the limit element when inserting at the beginning', () => {
@@ -3189,7 +3211,7 @@ describe( 'DataController utils', () => {
 			const affectedRange = insertHelper( '<paragraph>a</paragraph><paragraph>b</paragraph>' );
 
 			expect( _getModelData( model ) ).to.equal( '<limit>ab[]foo</limit>' );
-			expect( stringify( root, affectedRange ) ).to.equal( '<limit>[ab]foo</limit>' );
+			expect( _stringifyModel( root, affectedRange ) ).to.equal( '<limit>[ab]foo</limit>' );
 		} );
 
 		describe( 'when allowed element is above limit element in document tree', () => {
@@ -3216,7 +3238,7 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( '<wrapper><limit><paragraph>foo</paragraph></limit></wrapper>' );
 
 				expect( _getModelData( model ) ).to.equal( '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal( '<wrapper><limit><paragraph>[]</paragraph></limit></wrapper>' );
 			} );
 
 			it( 'should correctly paste allowed nodes', () => {
@@ -3225,7 +3247,9 @@ describe( 'DataController utils', () => {
 				const affectedRange = insertHelper( '<paragraph>foo</paragraph>' );
 
 				expect( _getModelData( model ) ).to.equal( '<wrapper><limit><paragraph>foo</paragraph>[]</limit></wrapper>' );
-				expect( stringify( root, affectedRange ) ).to.equal( '<wrapper><limit>[<paragraph>foo</paragraph>]</limit></wrapper>' );
+				expect( _stringifyModel( root, affectedRange ) ).to.equal(
+					'<wrapper><limit>[<paragraph>foo</paragraph>]</limit></wrapper>'
+				);
 			} );
 		} );
 	} );

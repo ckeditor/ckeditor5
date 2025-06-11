@@ -24,7 +24,7 @@ import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 
 import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { stringify as viewStringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
+import { _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { Rect } from '@ckeditor/ckeditor5-utils/src/dom/rect.js';
 import { toUnit } from '@ckeditor/ckeditor5-utils/src/dom/tounit.js';
@@ -334,7 +334,7 @@ describe( 'BalloonToolbar', () => {
 
 			const targetViewRange = editingView.domConverter.viewRangeToDom.lastCall.args[ 0 ];
 
-			expect( viewStringify( targetViewRange.root, targetViewRange, { ignoreRoot: true } ) ).to.equal( '<p>bar</p><p>{bi}z</p>' );
+			expect( _stringifyView( targetViewRange.root, targetViewRange, { ignoreRoot: true } ) ).to.equal( '<p>bar</p><p>{bi}z</p>' );
 			expect( targetRect ).to.deep.equal( forwardSelectionRect );
 		} );
 
@@ -397,7 +397,7 @@ describe( 'BalloonToolbar', () => {
 
 			const targetViewRange = editingView.domConverter.viewRangeToDom.lastCall.args[ 0 ];
 
-			expect( viewStringify( targetViewRange.root, targetViewRange, { ignoreRoot: true } ) ).to.equal( '<p>b{ar}</p><p>biz</p>' );
+			expect( _stringifyView( targetViewRange.root, targetViewRange, { ignoreRoot: true } ) ).to.equal( '<p>b{ar}</p><p>biz</p>' );
 			expect( targetRect ).to.deep.equal( backwardSelectionRect );
 		} );
 

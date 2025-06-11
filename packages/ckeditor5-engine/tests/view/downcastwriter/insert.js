@@ -11,7 +11,7 @@ import { UIElement } from '../../../src/view/uielement.js';
 import { RawElement } from '../../../src/view/rawelement.js';
 import { Position } from '../../../src/view/position.js';
 
-import { stringify, parse } from '../../../src/dev-utils/view.js';
+import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { AttributeElement } from '../../../src/view/attributeelement.js';
 import { Document } from '../../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -21,18 +21,18 @@ describe( 'DowncastWriter', () => {
 	describe( 'insert()', () => {
 		let writer, document;
 
-		// Executes test using `parse` and `stringify` utils functions.
+		// Executes test using `_parseView` and `_stringifyView` utils functions.
 		//
 		// @param {String} input
 		// @param {Array.<String>} nodesToInsert
 		// @param {String} expected
 		function testInsert( input, nodesToInsert, expected ) {
-			nodesToInsert = nodesToInsert.map( node => parse( node ) );
-			const { view, selection } = parse( input );
+			nodesToInsert = nodesToInsert.map( node => _parseView( node ) );
+			const { view, selection } = _parseView( input );
 
 			const newRange = writer.insert( selection.getFirstPosition(), nodesToInsert );
 
-			expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
+			expect( _stringifyView( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
 		}
 
 		beforeEach( () => {
@@ -176,14 +176,14 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should not break attribute on inline ContainerElement insertion and wrapped with an attribute', () => {
-			const { view, selection } = parse(
+			const { view, selection } = _parseView(
 				'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>'
 			);
 
 			const element = new ContainerElement( document, 'span', {}, 'baz' );
 			const newRange = writer.insert( selection.getFirstPosition(), element );
 
-			expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal(
+			expect( _stringifyView( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal(
 				'<container:p>' +
 					'<attribute:b view-priority="1">foo</attribute:b>' +
 					'[<container:span>baz</container:span>]' +
@@ -196,7 +196,7 @@ describe( 'DowncastWriter', () => {
 
 			const finalRange = writer.wrap( newRange, attribute );
 
-			expect( stringify( view.root, finalRange, { showType: true, showPriority: true } ) ).to.equal(
+			expect( _stringifyView( view.root, finalRange, { showType: true, showPriority: true } ) ).to.equal(
 				'<container:p><attribute:b view-priority="1">foo[<container:span>baz</container:span>]bar</attribute:b></container:p>'
 			);
 		} );

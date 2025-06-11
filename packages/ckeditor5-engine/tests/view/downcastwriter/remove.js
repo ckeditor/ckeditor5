@@ -7,7 +7,7 @@ import { DowncastWriter } from '../../../src/view/downcastwriter.js';
 import { ContainerElement } from '../../../src/view/containerelement.js';
 import { Range } from '../../../src/view/range.js';
 import { DocumentFragment } from '../../../src/view/documentfragment.js';
-import { stringify, parse } from '../../../src/dev-utils/view.js';
+import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { AttributeElement } from '../../../src/view/attributeelement.js';
 import { EmptyElement } from '../../../src/view/emptyelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
@@ -21,7 +21,7 @@ describe( 'DowncastWriter', () => {
 	describe( 'remove()', () => {
 		let writer, document;
 
-		// Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
+		// Executes test using `_parseView` and `_stringifyView` utils functions. Uses range delimiters `[]{}` to create and
 		// test ranges.
 		//
 		// @param {String} input
@@ -29,14 +29,14 @@ describe( 'DowncastWriter', () => {
 		// @param {String} expectedRemoved
 		// @param {Boolean} asItem
 		function testRemove( input, expectedResult, expectedRemoved, asItem = false ) {
-			const { view, selection } = parse( input );
+			const { view, selection } = _parseView( input );
 
 			const range = selection.getFirstRange();
 			const rangeOrItem = asItem ? Array.from( range.getItems() )[ 0 ] : range;
 			const removed = writer.remove( rangeOrItem );
 
-			expect( stringify( view, asItem ? null : range, { showType: true, showPriority: true } ) ).to.equal( expectedResult );
-			expect( stringify( removed, null, { showType: true, showPriority: true } ) ).to.equal( expectedRemoved );
+			expect( _stringifyView( view, asItem ? null : range, { showType: true, showPriority: true } ) ).to.equal( expectedResult );
+			expect( _stringifyView( removed, null, { showType: true, showPriority: true } ) ).to.equal( expectedRemoved );
 		}
 
 		beforeEach( () => {

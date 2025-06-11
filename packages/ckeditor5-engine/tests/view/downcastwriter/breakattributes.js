@@ -5,7 +5,7 @@
 
 import { DowncastWriter } from '../../../src/view/downcastwriter.js';
 import { Document } from '../../../src/view/document.js';
-import { stringify, parse } from '../../../src/dev-utils/view.js';
+import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { ContainerElement } from '../../../src/view/containerelement.js';
 import { AttributeElement } from '../../../src/view/attributeelement.js';
 import { EmptyElement } from '../../../src/view/emptyelement.js';
@@ -28,17 +28,17 @@ describe( 'DowncastWriter', () => {
 
 		describe( 'break position', () => {
 			/**
-			 * Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
+			 * Executes test using `_parseView` and `_stringifyView` utils functions. Uses range delimiters `[]{}` to create and
 			 * test break position.
 			 *
 			 * @param {String} input
 			 * @param {String} expected
 			 */
 			function testBreakAttributes( input, expected ) {
-				const { view, selection } = parse( input );
+				const { view, selection } = _parseView( input );
 
 				const newPosition = writer.breakAttributes( selection.getFirstPosition() );
-				expect( stringify( view.root, newPosition, {
+				expect( _stringifyView( view.root, newPosition, {
 					showType: true,
 					showPriority: true
 				} ) ).to.equal( expected );
@@ -141,16 +141,16 @@ describe( 'DowncastWriter', () => {
 
 		describe( 'break range', () => {
 			/**
-			 * Executes test using `parse` and `stringify` utils functions.
+			 * Executes test using `_parseView` and `_stringifyView` utils functions.
 			 *
 			 * @param {String} input
 			 * @param {String} expected
 			 */
 			function testBreak( input, expected ) {
-				const { view, selection } = parse( input );
+				const { view, selection } = _parseView( input );
 
 				const newRange = writer.breakAttributes( selection.getFirstRange() );
-				expect( stringify( view.root, newRange, { showType: true } ) ).to.equal( expected );
+				expect( _stringifyView( view.root, newRange, { showType: true } ) ).to.equal( expected );
 			}
 
 			it( 'should throw when range placed in two containers', () => {
