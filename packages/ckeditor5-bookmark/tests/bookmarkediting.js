@@ -20,7 +20,7 @@ import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 
-import { Element } from '@ckeditor/ckeditor5-engine';
+import { ModelElement } from '@ckeditor/ckeditor5-engine';
 import {
 	_setModelData,
 	_getModelData,
@@ -1137,7 +1137,7 @@ describe( 'BookmarkEditing', () => {
 				'</p>'
 			);
 
-			expect( bookmarkEditing.getElementForBookmarkId( 'foo' ) ).is.instanceof( Element );
+			expect( bookmarkEditing.getElementForBookmarkId( 'foo' ) ).is.instanceof( ModelElement );
 			expect( bookmarkEditing.getElementForBookmarkId( 'foo' ).getAttribute( 'bookmarkId' ) ).is.equal( 'foo' );
 		} );
 

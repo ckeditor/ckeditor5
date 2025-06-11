@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Element } from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import { ModelElement } from '@ckeditor/ckeditor5-engine/src/model/element.js';
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import { ClipboardPipeline } from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline.js';
 import { Table } from '../../src/table.js';
@@ -63,7 +63,7 @@ describe( 'TableColumnResize utils', () => {
 		it( 'should do nothing if there is no table affected while inserting', () => {
 			model.change( writer => {
 				writer.insert(
-					new Element( 'paragraph' ),
+					new ModelElement( 'paragraph' ),
 					root.getNodeByPath( [ 2, 0, 0 ] )
 				);
 
@@ -140,7 +140,7 @@ describe( 'TableColumnResize utils', () => {
 				const firstTable = root.getChild( 0 );
 
 				writer.insert(
-					new Element( 'tableRow', {}, createTableCells( 3 ) ),
+					new ModelElement( 'tableRow', {}, createTableCells( 3 ) ),
 					firstTable
 				);
 
@@ -156,7 +156,7 @@ describe( 'TableColumnResize utils', () => {
 				const firstTable = root.getChild( 0 );
 
 				writer.insert(
-					new Element( 'tableRow', {}, createTableCells( 3 ) ),
+					new ModelElement( 'tableRow', {}, createTableCells( 3 ) ),
 					firstTable,
 					2
 				);
@@ -730,7 +730,7 @@ describe( 'TableColumnResize utils', () => {
 } );
 
 function createTable( rows, cols ) {
-	return new Element( 'table', {}, [
+	return new ModelElement( 'table', {}, [
 		...createTableRows( rows, cols ),
 		createColGroupRow( cols )
 	] );
@@ -740,15 +740,15 @@ function createColGroupRow( cols ) {
 	const colWidth = `${ 100 / cols }%`;
 	const columns = new Array( cols )
 		.fill( colWidth )
-		.map( columnWidth => new Element( 'tableColumn', { columnWidth } ) );
+		.map( columnWidth => new ModelElement( 'tableColumn', { columnWidth } ) );
 
-	return new Element( 'tableColumnGroup', {}, columns );
+	return new ModelElement( 'tableColumnGroup', {}, columns );
 }
 
 function createTableRows( rows, cols ) {
-	return [ ...Array( rows ) ].map( () => new Element( 'tableRow', {}, createTableCells( cols ) ) );
+	return [ ...Array( rows ) ].map( () => new ModelElement( 'tableRow', {}, createTableCells( cols ) ) );
 }
 
 function createTableCells( cols ) {
-	return [ ...Array( cols ) ].map( () => new Element( 'tableCell' ) );
+	return [ ...Array( cols ) ].map( () => new ModelElement( 'tableCell' ) );
 }
