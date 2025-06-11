@@ -13,7 +13,7 @@ export { CodeBlockUI } from './codeblockui.js';
 export { CodeBlockCommand } from './codeblockcommand.js';
 export { IndentCodeBlockCommand } from './indentcodeblockcommand.js';
 export { OutdentCodeBlockCommand } from './outdentcodeblockcommand.js';
-export type { CodeBlockConfig } from './codeblockconfig.js';
+export type { CodeBlockConfig, CodeBlockLanguageDefinition } from './codeblockconfig.js';
 
 export {
 	modelToViewCodeBlockInsertion as _modelToViewCodeBlockInsertion,
