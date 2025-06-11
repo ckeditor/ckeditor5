@@ -5,7 +5,7 @@
 
 import { View } from '../../../src/view/view.js';
 import { createViewRoot } from '../../view/_utils/createroot.js';
-import { setData } from '../../../src/dev-utils/view.js';
+import { _setViewData } from '../../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 const view = new View( new StylesProcessor() );
@@ -13,7 +13,7 @@ const viewDocument = view.document;
 createViewRoot( viewDocument );
 view.attachDomRoot( document.getElementById( 'editor' ) );
 
-setData(
+_setViewData(
 	view,
 	'<container:p><attribute:strong>foo</attribute:strong>[]<attribute:strong>bar</attribute:strong></container:p>'
 );
