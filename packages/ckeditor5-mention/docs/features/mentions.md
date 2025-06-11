@@ -2,6 +2,7 @@
 category: features
 menu-title: Mentions
 meta-title: Mentions| CKEditor 5 Documentation
+meta-description: Use the mentions feature in CKEditor 5 to tag users or items with @, enabling collaboration and dynamic content referencing.
 modified_at: 2021-10-20
 ---
 

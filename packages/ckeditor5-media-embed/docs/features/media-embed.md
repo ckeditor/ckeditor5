@@ -2,6 +2,7 @@
 category: features
 menu-title: Media embed
 meta-title: Media embed | CKEditor 5 Documentation
+media-description: Embed rich media content like videos and social media posts in CKEditor 5 to enhance engagement and interactivity in your documents.
 modified_at: 2021-10-08
 ---
 
