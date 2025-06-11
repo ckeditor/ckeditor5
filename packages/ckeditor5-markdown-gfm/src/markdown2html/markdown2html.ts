@@ -7,13 +7,14 @@
  * @module markdown-gfm/markdown2html/markdown2html
  */
 
-import { unified } from 'unified';
+import { unified, type Plugin } from 'unified';
 import remarkGfm from 'remark-gfm-no-autolink';
 import rehypeRaw from 'rehype-raw';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import remarkBreaks from 'remark-breaks';
 import rehypeStringify from 'rehype-dom-stringify';
+import { visit } from 'unist-util-visit';
 
 /**
  * This is a helper class used by the {@link module:markdown-gfm/markdown Markdown feature} to convert Markdown to HTML.
@@ -33,6 +34,8 @@ export class MarkdownToHtml {
 			.use( remarkRehype, { allowDangerousHtml: true } )
 			// Handles embedded HTML.
 			.use( rehypeRaw )
+			// Removes classes from list elements.
+			.use( this.deleteClassesFromToDoLists )
 			// Serializes HTML syntax tree
 			.use( rehypeStringify );
 	}
@@ -42,5 +45,18 @@ export class MarkdownToHtml {
 			.processSync( markdown )
 			.toString()
 			.replaceAll( '\n</code>', '</code>' );
+	}
+
+	/**
+	 * Removes default classes added to `<ul>`, `<ol>`, and `<li>` elements.
+	 */
+	private deleteClassesFromToDoLists(): ReturnType<Plugin> {
+		return function( tree ) {
+			visit( tree, 'element', ( node: any ) => {
+				if ( node.tagName === 'ul' || node.tagName === 'ol' || node.tagName === 'li' ) {
+					delete node.properties.className;
+				}
+			} );
+		};
 	}
 }

@@ -358,18 +358,18 @@ describe( 'GFMDataProcessor', () => {
 	describe( 'todo lists', () => {
 		it( 'should process todo lists', () => {
 			testDataProcessor(
-				'*   [ ] Item 1\n' +
-				'*   [x] Item 2',
+				'* [ ] Item 1\n' +
+				'* [x] Item 2',
 
 				'<ul>' +
-					'<li><input disabled="" type="checkbox"></input>Item 1</li>' +
-					'<li><input checked="" disabled="" type="checkbox"></input>Item 2</li>' +
-				'</ul>' );
+					'<li><input disabled="" type="checkbox"></input> Item 1</li>' +
+					'<li><input checked="" disabled="" type="checkbox"></input> Item 2</li>' +
+				'</ul>'
+			);
 		} );
 
 		it( 'should process the HTML produced by the todo list feature', () => {
 			const viewDocument = new ViewDocument( new StylesProcessor() );
-
 			const htmlDataProcessor = new HtmlDataProcessor( viewDocument );
 			const mdDataProcessor = new GFMDataProcessor( viewDocument );
 

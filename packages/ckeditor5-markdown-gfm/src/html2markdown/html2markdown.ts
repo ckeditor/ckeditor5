@@ -7,12 +7,13 @@
  * @module markdown-gfm/html2markdown/html2markdown
  */
 
-import { unified } from 'unified';
+import { unified, type Plugin } from 'unified';
 import rehypeParse from 'rehype-dom-parse';
 import rehypeRemark from 'rehype-remark';
 import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm-no-autolink';
 import remarkStringify from 'remark-stringify';
+import { visit } from 'unist-util-visit';
 import { toHtml } from 'hast-util-to-html';
 import type { Handle as MarkdownHandle } from 'mdast-util-to-markdown';
 import type { Handle as MdastHandle } from 'hast-util-to-mdast';
@@ -79,10 +80,26 @@ export class HtmlToMarkdown {
 		};
 	}
 
+	/**
+	 * Removes `<label>` element from TODO lists, so that `<input>` and `text` are direct children of `<li>`.
+	 */
+	private removeLabelFromCheckboxes(): ReturnType<Plugin> {
+		return function( tree ) {
+			visit( tree, 'element', ( node: any, index: number, parent: any ) => {
+				if ( node.tagName === 'label' && parent.tagName === 'li' ) {
+					parent.children[ index ] = node.children[ 0 ];
+					parent.children.splice( index + 1, 1, ...node.children );
+				}
+			} );
+		};
+	}
+
 	private _buildProcessor() {
 		this._processor = unified()
 			// Parse HTML to an abstract syntax tree (AST).
 			.use( rehypeParse )
+			// Removes `<label>` element from TODO lists.
+			.use( this.removeLabelFromCheckboxes )
 			// Turns HTML syntax tree to markdown syntax tree.
 			.use( rehypeRemark, {
 				handlers: this.getRawTagsHandlers()
