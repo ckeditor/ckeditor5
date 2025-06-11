@@ -2,6 +2,7 @@
 category: features
 menu-title: Emoji
 meta-title: Emoji | CKEditor 5 Documentation
+meta-description: Insert and manage emojis in CKEditor 5 with to enhance content expression and user engagement.
 modified_at: 2025-01-21
 ---
 
