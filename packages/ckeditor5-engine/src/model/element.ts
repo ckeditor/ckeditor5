@@ -7,7 +7,7 @@
  * @module engine/model/element
  */
 
-import { ModelNode, type NodeAttributes } from './node.js';
+import { ModelNode, type ModelNodeAttributes } from './node.js';
 import { NodeList } from './nodelist.js';
 import { Text } from './text.js';
 import { TextProxy } from './textproxy.js';
@@ -48,7 +48,7 @@ export class ModelElement extends ModelNode {
 	 */
 	constructor(
 		name: string,
-		attrs?: NodeAttributes,
+		attrs?: ModelNodeAttributes,
 		children?: string | ModelItem | Iterable<string | ModelItem>
 	) {
 		super( attrs );

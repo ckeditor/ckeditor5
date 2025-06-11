@@ -31,7 +31,7 @@ import type { Selection, PlaceOrOffset, Selectable } from './selection.js';
 import { type Batch } from './batch.js';
 import { type ModelItem } from './item.js';
 import { type Model } from './model.js';
-import type { ModelNode, NodeAttributes } from './node.js';
+import type { ModelNode, ModelNodeAttributes } from './node.js';
 
 import { CKEditorError, logWarning, toMap } from '@ckeditor/ckeditor5-utils';
 
@@ -96,7 +96,7 @@ export class Writer {
 	 */
 	public createText(
 		data: string,
-		attributes?: NodeAttributes
+		attributes?: ModelNodeAttributes
 	): Text {
 		return new Text( data, attributes );
 	}
@@ -115,7 +115,7 @@ export class Writer {
 	 */
 	public createElement(
 		name: string,
-		attributes?: NodeAttributes
+		attributes?: ModelNodeAttributes
 	): ModelElement {
 		return new ModelElement( name, attributes );
 	}
@@ -324,7 +324,7 @@ export class Writer {
 	 */
 	public insertText(
 		text: string,
-		attributes?: NodeAttributes,
+		attributes?: ModelNodeAttributes,
 		itemOrPosition?: ModelItem | Position,
 		offset?: PositionOffset
 	): void;
@@ -401,7 +401,7 @@ export class Writer {
 	 */
 	public insertElement(
 		name: string,
-		attributes: NodeAttributes,
+		attributes: ModelNodeAttributes,
 		itemOrPosition: ModelItem | ModelDocumentFragment | Position,
 		offset?: PositionOffset
 	): void;
@@ -466,13 +466,13 @@ export class Writer {
 	 */
 	public appendText(
 		text: string,
-		attributes: NodeAttributes,
+		attributes: ModelNodeAttributes,
 		parent: ModelElement | ModelDocumentFragment
 	): void;
 
 	public appendText(
 		text: string,
-		attributes: NodeAttributes | ModelElement | ModelDocumentFragment,
+		attributes: ModelNodeAttributes | ModelElement | ModelDocumentFragment,
 		parent?: ModelElement | ModelDocumentFragment
 	): void {
 		if ( attributes instanceof ModelDocumentFragment || attributes instanceof ModelElement ) {
@@ -510,13 +510,13 @@ export class Writer {
 	 */
 	public appendElement(
 		name: string,
-		attributes: NodeAttributes,
+		attributes: ModelNodeAttributes,
 		parent: ModelElement | ModelDocumentFragment
 	): void;
 
 	public appendElement(
 		name: string,
-		attributes: NodeAttributes | ModelElement | ModelDocumentFragment,
+		attributes: ModelNodeAttributes | ModelElement | ModelDocumentFragment,
 		parent?: ModelElement | ModelDocumentFragment
 	): void {
 		if ( attributes instanceof ModelDocumentFragment || attributes instanceof ModelElement ) {
@@ -563,7 +563,7 @@ export class Writer {
 	 * @param itemOrRange Model item or range on which the attributes will be set.
 	 */
 	public setAttributes(
-		attributes: NodeAttributes,
+		attributes: ModelNodeAttributes,
 		itemOrRange: ModelItem | Range
 	): void {
 		for ( const [ key, val ] of toMap( attributes ) ) {
@@ -1548,10 +1548,10 @@ export class Writer {
 	 * @label OBJECT
 	 * @param objectOrIterable Object / iterable of key => value attribute pairs.
 	 */
-	public setSelectionAttribute( objectOrIterable: NodeAttributes ): void;
+	public setSelectionAttribute( objectOrIterable: ModelNodeAttributes ): void;
 
 	public setSelectionAttribute(
-		keyOrObjectOrIterable: string | NodeAttributes,
+		keyOrObjectOrIterable: string | ModelNodeAttributes,
 		value?: unknown
 	): void {
 		this._assertWriterUsedCorrectly();

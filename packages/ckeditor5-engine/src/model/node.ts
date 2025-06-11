@@ -84,7 +84,7 @@ export abstract class ModelNode extends TypeCheckable {
 	 *
 	 * @param attrs Node's attributes. See {@link module:utils/tomap~toMap} for a list of accepted values.
 	 */
-	constructor( attrs?: NodeAttributes ) {
+	constructor( attrs?: ModelNodeAttributes ) {
 		super();
 
 		this._attrs = toMap( attrs! );
@@ -405,7 +405,7 @@ export abstract class ModelNode extends TypeCheckable {
 	 * @internal
 	 * @param attrs Attributes to set. See {@link module:utils/tomap~toMap} for a list of accepted values.
 	 */
-	public _setAttributesTo( attrs: NodeAttributes ): void {
+	public _setAttributesTo( attrs: ModelNodeAttributes ): void {
 		this._attrs = toMap( attrs );
 	}
 
@@ -441,4 +441,4 @@ ModelNode.prototype.is = function( type: string ): boolean {
 /**
  * Node's attributes. See {@link module:utils/tomap~toMap} for a list of accepted values.
  */
-export type NodeAttributes = Record<string, unknown> | Iterable<[ string, unknown ]>;
+export type ModelNodeAttributes = Record<string, unknown> | Iterable<[ string, unknown ]>;

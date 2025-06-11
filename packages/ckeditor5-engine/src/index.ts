@@ -156,7 +156,7 @@ export {
 	type DifferItemRoot
 } from './model/differ.js';
 export type { ModelItem } from './model/item.js';
-export { ModelNode, type NodeAttributes } from './model/node.js';
+export { ModelNode, type ModelNodeAttributes } from './model/node.js';
 export { RootElement } from './model/rootelement.js';
 export {
 	SchemaContext,

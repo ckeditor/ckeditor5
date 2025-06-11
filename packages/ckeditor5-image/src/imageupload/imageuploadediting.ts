@@ -16,7 +16,7 @@ import {
 	type Writer,
 	type DataTransfer,
 	type ViewElement,
-	type NodeAttributes,
+	type ModelNodeAttributes,
 	type DowncastAttributeEvent,
 	type UpcastElementEvent
 } from 'ckeditor5/src/engine.js';
@@ -521,7 +521,7 @@ export class ImageUploadEditing extends Plugin {
 			.join( ', ' );
 
 		if ( srcsetAttribute != '' ) {
-			const attributes: NodeAttributes = {
+			const attributes: ModelNodeAttributes = {
 				srcset: srcsetAttribute
 			};
 

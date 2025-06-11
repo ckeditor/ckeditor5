@@ -7,7 +7,7 @@
  * @module engine/model/text
  */
 
-import { ModelNode, type NodeAttributes } from './node.js';
+import { ModelNode, type ModelNodeAttributes } from './node.js';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToStringifiedObject } = require( '../dev-utils/utils' );
 
@@ -41,7 +41,7 @@ export class Text extends ModelNode {
 	 * @param data Node's text.
 	 * @param attrs Node's attributes. See {@link module:utils/tomap~toMap} for a list of accepted values.
 	 */
-	constructor( data?: string, attrs?: NodeAttributes ) {
+	constructor( data?: string, attrs?: ModelNodeAttributes ) {
 		super( attrs );
 		this._data = data || '';
 	}
