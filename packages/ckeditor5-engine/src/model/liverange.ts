@@ -129,8 +129,10 @@ export type ModelLiveRangeChangeContentEvent = {
 
 /**
  * Describes `change:range` or `change:content` event.
+ *
+ * @eventName ~ModelLiveRange#change
  */
-export type LiveRangeChangeEvent = {
+export type ModelLiveRangeChangeEvent = {
 	name: 'change' | 'change:range' | 'change:content';
 	args: [ range: Range, data: { deletionPosition: Position | null } ];
 };

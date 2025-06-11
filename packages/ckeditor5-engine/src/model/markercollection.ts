@@ -12,7 +12,7 @@ import {
 	ModelLiveRange,
 	type ModelLiveRangeChangeContentEvent,
 	type ModelLiveRangeChangeRangeEvent,
-	type LiveRangeChangeEvent
+	type ModelLiveRangeChangeEvent
 } from './liverange.js';
 
 import { type Position } from './position.js';
@@ -542,7 +542,7 @@ export type MarkerCollectionChangeContentEvent = ModelLiveRangeChangeContentEven
 /**
  * Describes `change:range` or `change:content` event.
  */
-export type MarkerChangeEvent = LiveRangeChangeEvent;
+export type MarkerChangeEvent = ModelLiveRangeChangeEvent;
 
 /**
  * Fired whenever marker is added, updated or removed from `MarkerCollection`.

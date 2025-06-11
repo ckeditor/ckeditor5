@@ -122,7 +122,8 @@ export { Range } from './model/range.js';
 export {
 	ModelLiveRange,
 	type ModelLiveRangeChangeRangeEvent,
-	type ModelLiveRangeChangeContentEvent
+	type ModelLiveRangeChangeContentEvent,
+	type ModelLiveRangeChangeEvent
 } from './model/liverange.js';
 export { ModelLivePosition, type ModelLivePositionChangeEvent } from './model/liveposition.js';
 export { Model } from './model/model.js';
