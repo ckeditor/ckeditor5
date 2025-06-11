@@ -2,6 +2,7 @@
 category: features
 menu-title: Word and character count
 meta-title: Word and character count | CKEditor 5 Documentation
+meta-description: Track word and character counts in CKEditor 5 with the Word Count feature to monitor content length and meet writing requirements.
 ---
 
 {@snippet features/build-word-count-source}

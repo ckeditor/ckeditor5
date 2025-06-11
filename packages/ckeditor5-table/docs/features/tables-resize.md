@@ -1,6 +1,7 @@
 ---
 menu-title: Table column resizing
 meta-title: Table column resizing | CKEditor 5 Documentation
+meta-description: Resize table columns and rows in CKEditor 5 to adjust layout and improve data presentation with flexible, user-friendly controls.
 category: tables
 order: 30
 modified_at: 2022-05-19
