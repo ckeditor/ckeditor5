@@ -135,7 +135,15 @@ export { ModelDocument, type ModelPostFixer } from './model/document.js';
 export { History } from './model/history.js';
 export { Text } from './model/text.js';
 export { TextProxy } from './model/textproxy.js';
-export { Marker } from './model/markercollection.js';
+export {
+	MarkerCollection,
+	Marker,
+	type MarkerData,
+	type MarkerChangeRangeEvent,
+	type MarkerCollectionChangeContentEvent,
+	type MarkerChangeEvent,
+	type MarkerCollectionUpdateEvent
+} from './model/markercollection.js';
 export { Batch, type BatchType } from './model/batch.js';
 export {
 	Differ,
