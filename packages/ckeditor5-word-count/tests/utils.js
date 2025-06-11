@@ -5,7 +5,7 @@
 
 import { modelElementToPlainText } from '../src/utils.js';
 
-import { Element } from '@ckeditor/ckeditor5-engine/src/model/element.js';
+import { ModelElement } from '@ckeditor/ckeditor5-engine/src/model/element.js';
 import { Text } from '@ckeditor/ckeditor5-engine/src/model/text.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -25,10 +25,10 @@ describe( 'utils', () => {
 			const text2 = new Text( 'Bar', { bold: true } );
 			const text3 = new Text( 'Baz', { bold: true, underline: true } );
 
-			const innerElement1 = new Element( 'paragraph', null, [ text1 ] );
-			const innerElement2 = new Element( 'paragraph', null, [ text2, text3 ] );
+			const innerElement1 = new ModelElement( 'paragraph', null, [ text1 ] );
+			const innerElement2 = new ModelElement( 'paragraph', null, [ text2, text3 ] );
 
-			const mainElement = new Element( 'container', null, [ innerElement1, innerElement2 ] );
+			const mainElement = new ModelElement( 'container', null, [ innerElement1, innerElement2 ] );
 
 			expect( modelElementToPlainText( mainElement ) ).to.equal( 'Foo\nBarBaz' );
 		} );
