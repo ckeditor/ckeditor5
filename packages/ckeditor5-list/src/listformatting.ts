@@ -83,35 +83,34 @@ export default class ListFormatting extends Plugin {
 			let returnValue = false;
 
 			for ( const entry of changes ) {
-				if (
-					entry.type == 'attribute' &&
-					entry.range &&
-					entry.range.start
-				) {
-					if ( entry.range.start.nodeAfter && entry.range.start.nodeAfter.is( 'element' ) ) {
-						addIfListItem( modifiedListItems, entry.range.start.nodeAfter );
-					} else if ( entry.range.start.parent ) {
-						addIfListItem( modifiedListItems, entry.range.start.parent );
+				if ( entry.type === 'attribute' ) {
+					if (
+						entry.attributeKey == 'listItemId' ||
+						Object.values( this._loadedFormattings ).some( key =>
+							entry.attributeKey === key ||
+							entry.attributeKey === `selection:${ key }`
+						)
+					) {
+						if ( isListItemBlock( entry.range.start.nodeAfter ) ) {
+							modifiedListItems.add( entry.range.start.nodeAfter );
+						} else {
+							if ( isListItemBlock( entry.range.start.parent ) ) {
+								modifiedListItems.add( entry.range.start.parent );
+							}
+						}
 					}
 				}
-				else if (
-					( entry.type == 'insert' || entry.type == 'remove' ) &&
-					entry.position
-				) {
-					let isElement = false;
-
-					if ( entry.position.nodeAfter && entry.position.nodeAfter.is( 'element' ) ) {
-						addIfListItem( modifiedListItems, entry.position.nodeAfter );
-						isElement = true;
+				else {
+					if ( isListItemBlock( entry.position.nodeAfter ) ) {
+						modifiedListItems.add( entry.position.nodeAfter );
 					}
 
-					if ( entry.position.nodeBefore && entry.position.nodeBefore.is( 'element' ) ) {
-						addIfListItem( modifiedListItems, entry.position.nodeBefore );
-						isElement = true;
+					if ( isListItemBlock( entry.position.nodeBefore ) ) {
+						modifiedListItems.add( entry.position.nodeBefore );
 					}
 
-					if ( !isElement && entry.position.parent ) {
-						addIfListItem( modifiedListItems, entry.position.parent );
+					if ( isListItemBlock( entry.position.parent ) ) {
+						modifiedListItems.add( entry.position.parent );
 					}
 				}
 			}
@@ -124,7 +123,7 @@ export default class ListFormatting extends Plugin {
 					if ( format.isConsistent ) {
 						if ( format.value ) {
 							if ( listItem.getAttribute( listItemFormatAttributeName ) !== format.value ) {
-								returnValue = addFormattingToListItem(
+								returnValue = returnValue || addFormattingToListItem(
 									writer,
 									listItem,
 									listItemFormatAttributeName,
@@ -136,7 +135,7 @@ export default class ListFormatting extends Plugin {
 								listItem.hasAttribute( listItemFormatAttributeName ) &&
 								!model.schema.isLimit( listItem ) // Do not remove formatting from limit elements (e.g. tables).
 							) {
-								returnValue = removeFormattingFromListItem(
+								returnValue = returnValue || removeFormattingFromListItem(
 									writer,
 									listItem,
 									listItemFormatAttributeName
@@ -144,7 +143,7 @@ export default class ListFormatting extends Plugin {
 							}
 						}
 					} else if ( listItem.hasAttribute( listItemFormatAttributeName ) ) {
-						returnValue = removeFormattingFromListItem(
+						returnValue = returnValue || removeFormattingFromListItem(
 							writer,
 							listItem,
 							listItemFormatAttributeName
@@ -166,18 +165,7 @@ export default class ListFormatting extends Plugin {
 	 * applied within its content.
 	 */
 	public registerFormatAttribute( listItemFormatAttribute: string, formatAttribute: string ): void {
-		if ( !this._loadedFormattings[ listItemFormatAttribute ] ) {
-			this._loadedFormattings[ listItemFormatAttribute ] = formatAttribute;
-		}
-	}
-}
-
-/**
- * Adds the list item element to the set of modified list items if it is a list item block.
- */
-function addIfListItem( modifiedListItems: Set<Element>, item: any ): void {
-	if ( item && item.is( 'element' ) && isListItemBlock( item ) ) {
-		modifiedListItems.add( item );
+		this._loadedFormattings[ listItemFormatAttribute ] = formatAttribute;
 	}
 }
 
@@ -186,15 +174,17 @@ function addIfListItem( modifiedListItems: Set<Element>, item: any ): void {
  * It checks consistency also for multi-block list items.
  * If the list item is empty, it checks the selection format.
  */
-function getListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ): ListItemFormatting {
+function getListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ) {
 	// In case of multi-block, check if all blocks have the same format.
-	const affectedListItems = getAllListItemBlocks( listItem );
-	let format: ListItemFormatting | undefined;
+	const listItemBlocks = getAllListItemBlocks( listItem );
+	let format;
 
-	for ( const listItem of affectedListItems ) {
-		// First block.
-		if ( format === undefined ) {
-			format = getSingleListItemConsistentFormat( model, listItem, attributeKey );
+	for ( let i = 0; i < listItemBlocks.length; i++ ) {
+		const listItemBlock = listItemBlocks[ i ];
+		const blockFormat = getSingleListItemConsistentFormat( model, listItemBlock, attributeKey );
+
+		if ( i == 0 ) {
+			format = blockFormat;
 
 			if ( !format.isConsistent ) {
 				return format;
@@ -203,20 +193,21 @@ function getListItemConsistentFormat( model: Model, listItem: Element, attribute
 			continue;
 		}
 
-		// Next blocks.
-		const nextBlockFormat = getSingleListItemConsistentFormat( model, listItem, attributeKey );
-
-		if ( !nextBlockFormat.isConsistent ) {
-			format.isConsistent = false;
-			break;
+		if ( !blockFormat.isConsistent ) {
+			return {
+				isConsistent: false,
+				value: undefined
+			};
 		}
 
 		if (
-			nextBlockFormat.isConsistent &&
-			nextBlockFormat.value !== format.value
+			blockFormat.isConsistent &&
+			blockFormat.value !== format!.value
 		) {
-			format.isConsistent = false;
-			break;
+			return {
+				isConsistent: false,
+				value: undefined
+			};
 		}
 	}
 
@@ -226,23 +217,22 @@ function getListItemConsistentFormat( model: Model, listItem: Element, attribute
 /**
  * Returns the consistent format of a single list item element.
  */
-function getSingleListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ): ListItemFormatting {
-	let isConsistent = true;
+function getSingleListItemConsistentFormat( model: Model, listItem: Element, attributeKey: string ) {
 	let value;
 
 	if ( listItem.isEmpty ) {
 		const selectionFormat = listItem.getAttribute( `selection:${ attributeKey }` ) as string;
-		value = selectionFormat ? selectionFormat : value;
+		value = selectionFormat || value;
 
 		return {
-			isConsistent,
+			isConsistent: true,
 			value
 		};
 	}
 
 	if ( model.schema.isLimit( listItem ) ) {
 		return {
-			isConsistent,
+			isConsistent: true,
 			value
 		};
 	}
@@ -254,19 +244,23 @@ function getSingleListItemConsistentFormat( model: Model, listItem: Element, att
 			const formatAttribute = child.getAttribute( attributeKey ) as string;
 
 			if ( formatAttribute === undefined ) {
-				isConsistent = false;
-				break;
+				return {
+					isConsistent: false,
+					value: undefined
+				};
 			} else if ( value === undefined ) { // First item
 				value = formatAttribute;
 			} else if ( value !== formatAttribute ) { // Second and next items
-				isConsistent = false;
-				break;
+				return {
+					isConsistent: false,
+					value: undefined
+				};
 			}
 		}
 	}
 
 	return {
-		isConsistent,
+		isConsistent: true,
 		value
 	};
 }
@@ -281,10 +275,10 @@ function addFormattingToListItem(
 	attributeValue: string
 ): boolean {
 	// Multi-block items should have consistent formatting.
-	const affectedListItems = getAllListItemBlocks( listItem );
+	const listItemBlocks = getAllListItemBlocks( listItem );
 	let wasChanged = false;
 
-	for ( const listItem of affectedListItems ) {
+	for ( const listItem of listItemBlocks ) {
 		if ( !listItem.hasAttribute( attributeKey ) || listItem.getAttribute( attributeKey ) !== attributeValue ) {
 			writer.setAttribute( attributeKey, attributeValue, listItem );
 			wasChanged = true;
@@ -303,10 +297,10 @@ function removeFormattingFromListItem(
 	attributeKey: string
 ): boolean {
 	// Multi-block items should have consistent formatting.
-	const affectedListItems = getAllListItemBlocks( listItem );
+	const listItemBlocks = getAllListItemBlocks( listItem );
 	let wasChanged = false;
 
-	for ( const listItem of affectedListItems ) {
+	for ( const listItem of listItemBlocks ) {
 		if ( listItem.hasAttribute( attributeKey ) ) {
 			writer.removeAttribute( attributeKey, listItem );
 			wasChanged = true;
@@ -315,8 +309,3 @@ function removeFormattingFromListItem(
 
 	return wasChanged;
 }
-
-type ListItemFormatting = {
-	isConsistent: boolean;
-	value?: string;
-};
