@@ -18,7 +18,7 @@ import { BlockQuote } from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import { Image, ImageCaption } from '@ckeditor/ckeditor5-image';
 
-import { LiveRange } from '@ckeditor/ckeditor5-engine';
+import { ModelLiveRange } from '@ckeditor/ckeditor5-engine';
 
 import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
@@ -542,7 +542,7 @@ describe( 'Drag and Drop target', () => {
 				clientX,
 				clientY,
 				false,
-				LiveRange.fromRange( model.document.selection.getFirstRange() )
+				ModelLiveRange.fromRange( model.document.selection.getFirstRange() )
 			);
 
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
@@ -681,7 +681,7 @@ describe( 'Drag and Drop target', () => {
 				clientX,
 				clientY,
 				false,
-				LiveRange.fromRange( model.createRangeOn( root.getChild( 0 ) ) )
+				ModelLiveRange.fromRange( model.createRangeOn( root.getChild( 0 ) ) )
 			);
 
 			expect( model.markers.get( 'drop-target' ) ).to.be.null;
@@ -709,7 +709,7 @@ describe( 'Drag and Drop target', () => {
 				x,
 				y + ( height * 0.6 ),
 				false,
-				LiveRange.fromRange( model.createRangeOn( inlineImageElement ) )
+				ModelLiveRange.fromRange( model.createRangeOn( inlineImageElement ) )
 			);
 
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
@@ -735,7 +735,7 @@ describe( 'Drag and Drop target', () => {
 				x,
 				y + ( height * 0.6 ),
 				false,
-				LiveRange.fromRange( model.createRangeOn( paragraphElement ) )
+				ModelLiveRange.fromRange( model.createRangeOn( paragraphElement ) )
 			);
 
 			expect( model.markers.get( 'drop-target' ).getRange().start.isEqual(
@@ -765,7 +765,7 @@ describe( 'Drag and Drop target', () => {
 				blockImageDomRect.x,
 				blockImageDomRect.y + ( blockImageDomRect.height * 0.6 ),
 				false,
-				LiveRange.fromRange( model.createRangeOn( tableElement ) )
+				ModelLiveRange.fromRange( model.createRangeOn( tableElement ) )
 			);
 
 			// Marker should be places after the `<imageBlock>` element.
@@ -785,7 +785,7 @@ describe( 'Drag and Drop target', () => {
 				captionDomRect.x,
 				captionDomRect.y,
 				false,
-				LiveRange.fromRange( model.createRangeOn( tableElement ) )
+				ModelLiveRange.fromRange( model.createRangeOn( tableElement ) )
 			);
 
 			// Marker should be places after the `<imageBlock>` element.
@@ -816,7 +816,7 @@ describe( 'Drag and Drop target', () => {
 				clientX,
 				clientY,
 				false,
-				LiveRange.fromRange( model.createRangeOn( modelElement ) )
+				ModelLiveRange.fromRange( model.createRangeOn( modelElement ) )
 			);
 
 			expect( model.markers.get( 'drop-target' ) ).to.not.be.undefined;
@@ -846,7 +846,7 @@ describe( 'Drag and Drop target', () => {
 				blockImageDomRect.x,
 				blockImageDomRect.y + ( blockImageDomRect.height * 0.6 ),
 				false,
-				LiveRange.fromRange( model.createRangeOn( inlineImageElement ) )
+				ModelLiveRange.fromRange( model.createRangeOn( inlineImageElement ) )
 			);
 
 			// Marker should be places after the `<imageBlock>` element.
@@ -866,7 +866,7 @@ describe( 'Drag and Drop target', () => {
 				captionDomRect.x,
 				captionDomRect.y + ( captionDomRect.height * 0.6 ),
 				false,
-				LiveRange.fromRange( model.createRangeOn( inlineImageElement ) )
+				ModelLiveRange.fromRange( model.createRangeOn( inlineImageElement ) )
 			);
 
 			// Marker should be placed after the `<imageBlock>`, because `<imageInline>` can't be dropped inside the `<caption>`.

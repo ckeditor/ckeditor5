@@ -543,7 +543,7 @@ function deleteSelectionContent( model: Model, insertTextCommand: InsertTextComm
 }
 
 /**
- * Detaches a LiveRange and returns the static range from it.
+ * Detaches a ModelLiveRange and returns the static range from it.
  */
 function detachLiveRange( liveRange: ModelLiveRange ): Range | null {
 	const range = liveRange.toRange();
@@ -571,7 +571,7 @@ function findMappedViewAncestor( viewNode: ViewNode, mapper: Mapper ): ViewEleme
 }
 
 /**
- * The insertText command data stored as LiveRange-s.
+ * The insertText command data stored as ModelLiveRange-s.
  */
 type InsertTextCommandLiveOptions = {
 	text?: string;

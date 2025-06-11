@@ -457,7 +457,7 @@ class Marker extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * Returns a range that represents the current state of the marker.
 	 *
 	 * Keep in mind that returned value is a {@link module:engine/model/range~Range Range}, not a
-	 * {@link module:engine/model/liverange~ModelLiveRange LiveRange}. This means that it is up-to-date and relevant only
+	 * {@link module:engine/model/liverange~ModelLiveRange ModelLiveRange}. This means that it is up-to-date and relevant only
 	 * until next model document change. Do not store values returned by this method. Instead, store {@link ~Marker#name}
 	 * and get `Marker` instance from {@link module:engine/model/markercollection~MarkerCollection MarkerCollection} every
 	 * time there is a need to read marker properties. This will guarantee that the marker has not been removed and
@@ -515,7 +515,7 @@ export { Marker };
 
 /**
  * Fired whenever {@link ~Marker#_liveRange marker range} is changed due to changes on {@link module:engine/model/document~ModelDocument}.
- * This is a delegated {@link module:engine/model/liverange~ModelLiveRange#event:change:range LiveRange change:range event}.
+ * This is a delegated {@link module:engine/model/liverange~ModelLiveRange#event:change:range ModelLiveRange change:range event}.
  *
  * When marker is removed from {@link module:engine/model/markercollection~MarkerCollection MarkerCollection},
  * all event listeners listening to it should be removed. It is best to do it on
@@ -528,7 +528,7 @@ export type MarkerChangeRangeEvent = ModelLiveRangeChangeRangeEvent;
 
 /**
  * Fired whenever change on {@link module:engine/model/document~ModelDocument} is done inside {@link ~Marker#_liveRange marker range}.
- * This is a delegated {@link module:engine/model/liverange~ModelLiveRange#event:change:content LiveRange change:content event}.
+ * This is a delegated {@link module:engine/model/liverange~ModelLiveRange#event:change:content ModelLiveRange change:content event}.
  *
  * When marker is removed from {@link module:engine/model/markercollection~MarkerCollection MarkerCollection},
  * all event listeners listening to it should be removed. It is best to do it on

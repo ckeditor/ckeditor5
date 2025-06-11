@@ -6,7 +6,7 @@
 import { MarkerCollection } from '../../src/model/markercollection.js';
 import { Position } from '../../src/model/position.js';
 import { Range } from '../../src/model/range.js';
-import { LiveRange } from '../../src/model/liverange.js';
+import { ModelLiveRange } from '../../src/model/liverange.js';
 import { Text } from '../../src/model/text.js';
 import { Model } from '../../src/model/model.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -414,7 +414,7 @@ describe( 'Marker', () => {
 		const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
 		const marker = model.markers._set( 'name', range );
 		const oldLiveRange = marker._liveRange;
-		const newLiveRange = new LiveRange( Position._createAt( root, 0 ), Position._createAt( root, 1 ) );
+		const newLiveRange = new ModelLiveRange( Position._createAt( root, 0 ), Position._createAt( root, 1 ) );
 
 		const eventRange = sinon.spy();
 		const eventContent = sinon.spy();

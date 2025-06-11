@@ -628,7 +628,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 		} );
 	} );
 
-	it( 'should detach LiveRange', async () => {
+	it( 'should detach ModelLiveRange', async () => {
 		const editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ Typing, Paragraph, Link, Image, ImageCaption, Table, MediaEmbed, AutoMediaEmbed ]
 		} );

@@ -9,7 +9,7 @@ import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { Range } from '../../src/model/range.js';
 import { Position } from '../../src/model/position.js';
-import { LiveRange } from '../../src/model/liverange.js';
+import { ModelLiveRange } from '../../src/model/liverange.js';
 import { ModelDocumentSelection } from '../../src/model/documentselection.js';
 import { InsertOperation } from '../../src/model/operation/insertoperation.js';
 import { MoveOperation } from '../../src/model/operation/moveoperation.js';
@@ -50,7 +50,7 @@ describe( 'DocumentSelection', () => {
 			isObject: true
 		} );
 
-		liveRange = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
+		liveRange = new ModelLiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 		range = new Range( new Position( root, [ 2 ] ), new Position( root, [ 2, 2 ] ) );
 	} );
 
@@ -904,7 +904,7 @@ describe( 'DocumentSelection', () => {
 		it( 'detaches all existing ranges', () => {
 			selection._setTo( [ range, liveRange ] );
 
-			const spy = sinon.spy( LiveRange.prototype, 'detach' );
+			const spy = sinon.spy( ModelLiveRange.prototype, 'detach' );
 			selection._setTo( root, 0 );
 
 			expect( spy.calledTwice ).to.be.true;
@@ -926,7 +926,7 @@ describe( 'DocumentSelection', () => {
 			const startPos = Position._createAt( root, 1 );
 			const endPos = Position._createAt( root, 2 );
 			const newEndPos = Position._createAt( root, 4 );
-			const spy = sinon.spy( LiveRange.prototype, 'detach' );
+			const spy = sinon.spy( ModelLiveRange.prototype, 'detach' );
 
 			selection._setTo( new Range( startPos, endPos ) );
 
@@ -1746,7 +1746,7 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	// ModelDocumentSelection uses LiveRanges so here are only simple test to see if integration is
+	// ModelDocumentSelection uses ModelLiveRanges so here are only simple test to see if integration is
 	// working well, without getting into complicated corner cases.
 	describe( 'after applying an operation should get updated and fire events', () => {
 		let spyRange;

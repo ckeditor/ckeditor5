@@ -118,7 +118,7 @@ export class AutoMediaEmbed extends Plugin {
 	private _embedMediaBetweenPositions( leftPosition: ModelLivePosition, rightPosition: ModelLivePosition ): void {
 		const editor = this.editor;
 		const mediaRegistry = editor.plugins.get( MediaEmbedEditing ).registry;
-		// TODO: Use marker instead of LiveRange & LivePositions.
+		// TODO: Use marker instead of ModelLiveRange & LivePositions.
 		const urlRange = new ModelLiveRange( leftPosition, rightPosition );
 		const walker = urlRange.getWalker( { ignoreElementEnd: true } );
 

@@ -7,7 +7,7 @@ import { Model } from '../../src/model/model.js';
 import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { Position } from '../../src/model/position.js';
-import { LiveRange } from '../../src/model/liverange.js';
+import { ModelLiveRange } from '../../src/model/liverange.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setModelData } from '../../src/dev-utils/model.js';
 
@@ -32,7 +32,7 @@ describe( '#11585', () => {
 			new ModelElement( 'p', [], new Text( 'foobar' ) )
 		] );
 
-		liveRange = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
+		liveRange = new ModelLiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 
 		model.schema.register( 'p', { inheritAllFrom: '$block' } );
 		model.schema.register( 'h', { inheritAllFrom: '$block' } );

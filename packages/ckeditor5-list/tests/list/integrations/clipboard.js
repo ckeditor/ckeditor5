@@ -33,7 +33,7 @@ import {
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import {
-	LiveRange
+	ModelLiveRange
 } from '@ckeditor/ckeditor5-engine';
 
 import { stubUid } from '../_utils/uid.js';
@@ -856,7 +856,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 			const startPosition = model.createPositionBefore( firstElement );
 			const endPosition = model.createPositionAfter( lastElement );
 			const blockRange = model.createRange( startPosition, endPosition );
-			const draggedRange = LiveRange.fromRange( blockRange );
+			const draggedRange = ModelLiveRange.fromRange( blockRange );
 
 			const dataTransferMock = createDataTransfer();
 			const draggedSelection = model.createSelection( draggedRange.toRange() );
@@ -887,7 +887,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 			const startPosition = model.createPositionBefore( firstElement );
 			const endPosition = model.createPositionAfter( lastElement );
 			const blockRange = model.createRange( startPosition, endPosition );
-			const draggedRange = LiveRange.fromRange( blockRange );
+			const draggedRange = ModelLiveRange.fromRange( blockRange );
 
 			const dataTransferMock = createDataTransfer();
 			const draggedSelection = model.createSelection( draggedRange.toRange() );
@@ -917,7 +917,7 @@ describe( 'ListEditing integrations: clipboard copy & paste', () => {
 			const startPosition = model.createPositionBefore( firstElement );
 			const endPosition = model.createPositionAfter( lastElement );
 			const blockRange = model.createRange( startPosition, endPosition );
-			const draggedRange = LiveRange.fromRange( blockRange );
+			const draggedRange = ModelLiveRange.fromRange( blockRange );
 
 			const dataTransferMock = createDataTransfer();
 			const draggedSelection = model.createSelection( draggedRange.toRange() );

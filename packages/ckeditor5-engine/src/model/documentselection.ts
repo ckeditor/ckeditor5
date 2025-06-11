@@ -850,7 +850,7 @@ class LiveSelection extends Selection {
 
 	/**
 	 * Prepares given range to be added to selection. Checks if it is correct,
-	 * converts it to {@link module:engine/model/liverange~ModelLiveRange LiveRange}
+	 * converts it to {@link module:engine/model/liverange~ModelLiveRange ModelLiveRange}
 	 * and sets listeners listening to the range's change event.
 	 */
 	private _prepareRange( range: Range ): ModelLiveRange | undefined {

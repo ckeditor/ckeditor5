@@ -6,7 +6,7 @@
 import { Model } from '../../src/model/model.js';
 import { ModelElement } from '../../src/model/element.js';
 import { Position } from '../../src/model/position.js';
-import { LiveRange } from '../../src/model/liverange.js';
+import { ModelLiveRange } from '../../src/model/liverange.js';
 import { Range } from '../../src/model/range.js';
 import { Text } from '../../src/model/text.js';
 import { MoveOperation } from '../../src/model/operation/moveoperation.js';
@@ -39,48 +39,48 @@ describe( 'LiveRange', () => {
 	} );
 
 	it( 'should be an instance of Range', () => {
-		const live = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
+		const live = new ModelLiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 		live.detach();
 
 		expect( live ).to.be.instanceof( Range );
 	} );
 
 	it( 'should listen to the model applyOperation event', () => {
-		sinon.spy( LiveRange.prototype, 'listenTo' );
+		sinon.spy( ModelLiveRange.prototype, 'listenTo' );
 
-		const live = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
+		const live = new ModelLiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 		live.detach();
 
 		expect( live.listenTo.calledWith( model, 'applyOperation' ) ).to.be.true;
 
-		LiveRange.prototype.listenTo.restore();
+		ModelLiveRange.prototype.listenTo.restore();
 	} );
 
 	it( 'should stop listening when detached', () => {
-		sinon.spy( LiveRange.prototype, 'stopListening' );
+		sinon.spy( ModelLiveRange.prototype, 'stopListening' );
 
-		const live = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
+		const live = new ModelLiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 		live.detach();
 
 		expect( live.stopListening.called ).to.be.true;
 
-		LiveRange.prototype.stopListening.restore();
+		ModelLiveRange.prototype.stopListening.restore();
 	} );
 
-	it( '_createIn should return LiveRange', () => {
-		const range = LiveRange._createIn( p );
-		expect( range ).to.be.instanceof( LiveRange );
+	it( '_createIn should return ModelLiveRange', () => {
+		const range = ModelLiveRange._createIn( p );
+		expect( range ).to.be.instanceof( ModelLiveRange );
 		range.detach();
 	} );
 
-	it( '_createFromPositionAndShift should return LiveRange', () => {
-		const range = LiveRange._createFromPositionAndShift( new Position( root, [ 0, 1 ] ), 4 );
-		expect( range ).to.be.instanceof( LiveRange );
+	it( '_createFromPositionAndShift should return ModelLiveRange', () => {
+		const range = ModelLiveRange._createFromPositionAndShift( new Position( root, [ 0, 1 ] ), 4 );
+		expect( range ).to.be.instanceof( ModelLiveRange );
 		range.detach();
 	} );
 
 	it( 'should fire change:range event with when its boundaries are changed', () => {
-		const live = new LiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
+		const live = new ModelLiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
 		const copy = live.toRange();
 
 		const spy = sinon.spy();
@@ -105,7 +105,7 @@ describe( 'LiveRange', () => {
 	} );
 
 	it( 'should fire change:content event when content inside the range has changed', () => {
-		const live = new LiveRange( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 3 ] ) );
+		const live = new ModelLiveRange( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 3 ] ) );
 
 		const spy = sinon.spy();
 		live.on( 'change:content', spy );
@@ -129,7 +129,7 @@ describe( 'LiveRange', () => {
 	} );
 
 	it( 'should pass deletion position if range was removed (remove)', () => {
-		const live = new LiveRange( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 4 ] ) );
+		const live = new ModelLiveRange( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 4 ] ) );
 
 		const spy = sinon.spy();
 		live.on( 'change:range', spy );
@@ -148,7 +148,7 @@ describe( 'LiveRange', () => {
 	// In that case a live range inside the merged element will be merged into an element which is in graveyard.
 	// Because it may happen only in OT, in the test below we will generate operations by hand.
 	it( 'should pass deletion position if range was removed (merge)', () => {
-		const live = new LiveRange( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 1 ] ) );
+		const live = new ModelLiveRange( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 1 ] ) );
 
 		const spy = sinon.spy();
 		live.on( 'change:range', spy );
@@ -187,7 +187,7 @@ describe( 'LiveRange', () => {
 		let live;
 
 		beforeEach( () => {
-			live = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
+			live = new ModelLiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 			live.detach();
 		} );
 
@@ -210,7 +210,7 @@ describe( 'LiveRange', () => {
 		let live, spy;
 
 		beforeEach( () => {
-			live = new LiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
+			live = new ModelLiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
 
 			spy = sinon.spy();
 			live.on( 'change:range', spy );
@@ -498,7 +498,7 @@ describe( 'LiveRange', () => {
 			it( 'is inside the wrapped range', () => {
 				_setModelData( model, '<p>x</p><p>[a]</p><p>x</p>' );
 
-				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
+				live = new ModelLiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
 				model.change( writer => {
 					// [<p>a</p>]
@@ -511,7 +511,7 @@ describe( 'LiveRange', () => {
 			it( 'its start is intersecting with the wrapped range', () => {
 				_setModelData( model, '<p>a[b</p><p>x</p><p>c]d</p>' );
 
-				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
+				live = new ModelLiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
 				model.change( writer => {
 					// [<p>ab</p>]
@@ -525,7 +525,7 @@ describe( 'LiveRange', () => {
 			it( 'its end is intersecting with the wrapped range', () => {
 				_setModelData( model, '<p>a[b</p><p>x</p><p>c]d</p>' );
 
-				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
+				live = new ModelLiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
 				model.change( writer => {
 					// [<p>cd</p>]
@@ -538,7 +538,7 @@ describe( 'LiveRange', () => {
 			it( 'its start is intersecting with the wrapped range (multilpe elements)', () => {
 				_setModelData( model, '<p>a[b</p><p>x</p><p>c]d</p>' );
 
-				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
+				live = new ModelLiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
 				model.change( writer => {
 					// [<p>ab</p><p>x</p>]
@@ -552,7 +552,7 @@ describe( 'LiveRange', () => {
 			it( 'its end is intersecting with the wrapped range (multiple elements)', () => {
 				_setModelData( model, '<p>a[b</p><p>x</p><p>c]d</p>' );
 
-				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
+				live = new ModelLiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
 				model.change( writer => {
 					// [<p>x</p><p>cd</p>]
@@ -565,7 +565,7 @@ describe( 'LiveRange', () => {
 			it( 'contains element to wrap', () => {
 				_setModelData( model, '<p>a[b</p><p>x</p><p>c]d</p>' );
 
-				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
+				live = new ModelLiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
 				model.change( writer => {
 					// [<p>x</p>]
@@ -596,7 +596,7 @@ describe( 'LiveRange', () => {
 			it( 'is inside the wrapper to remove', () => {
 				_setModelData( model, '<p>x</p><w><p>[a]</p></w><p>x</p>' );
 
-				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
+				live = new ModelLiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
 				model.change( writer => {
 					writer.unwrap( root.getChild( 1 ) );
@@ -608,7 +608,7 @@ describe( 'LiveRange', () => {
 			it( 'its start is intersecting with the wrapper to remove', () => {
 				_setModelData( model, '<w><p>a[b</p></w><p>c]d</p>' );
 
-				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
+				live = new ModelLiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
 				model.change( writer => {
 					writer.unwrap( root.getChild( 0 ) );
@@ -620,7 +620,7 @@ describe( 'LiveRange', () => {
 			it( 'its end is intersecting with the wrapper to remove', () => {
 				_setModelData( model, '<p>a[b</p><w><p>c]d</p></w>' );
 
-				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
+				live = new ModelLiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
 				model.change( writer => {
 					writer.unwrap( root.getChild( 1 ) );
@@ -633,7 +633,7 @@ describe( 'LiveRange', () => {
 			it( 'its start is intersecting with the wrapper to remove (multiple elements)', () => {
 				_setModelData( model, '<w><p>a[b</p><p>x</p></w><p>c]d</p>' );
 
-				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
+				live = new ModelLiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
 				model.change( writer => {
 					writer.unwrap( root.getChild( 0 ) );
@@ -645,7 +645,7 @@ describe( 'LiveRange', () => {
 			it( 'its end is intersecting with the wrapper to remove (multiple elements)', () => {
 				_setModelData( model, '<p>a[b</p><w><p>x</p><p>c]d</p></w>' );
 
-				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
+				live = new ModelLiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
 				model.change( writer => {
 					writer.unwrap( root.getChild( 1 ) );
@@ -658,7 +658,7 @@ describe( 'LiveRange', () => {
 			it( 'contains wrapped element', () => {
 				_setModelData( model, '<p>a[b</p><w><p>x</p></w><p>c]d</p>' );
 
-				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
+				live = new ModelLiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
 				model.change( writer => {
 					writer.unwrap( root.getChild( 1 ) );
@@ -673,7 +673,7 @@ describe( 'LiveRange', () => {
 		let spy, live, clone;
 
 		beforeEach( () => {
-			live = new LiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
+			live = new ModelLiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
 			clone = live.toRange();
 
 			spy = sinon.spy();
@@ -758,7 +758,7 @@ describe( 'LiveRange', () => {
 
 		beforeEach( () => {
 			otherRoot = doc.createRoot( '$root', 'otherRoot' );
-			live = new LiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
+			live = new ModelLiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
 			clone = live.toRange();
 
 			spy = sinon.spy();

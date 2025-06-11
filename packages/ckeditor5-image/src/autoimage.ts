@@ -119,7 +119,7 @@ export class AutoImage extends Plugin {
 	 */
 	private _embedImageBetweenPositions( leftPosition: ModelLivePosition, rightPosition: ModelLivePosition ): void {
 		const editor = this.editor;
-		// TODO: Use a marker instead of LiveRange & LivePositions.
+		// TODO: Use a marker instead of ModelLiveRange & LivePositions.
 		const urlRange = new ModelLiveRange( leftPosition, rightPosition );
 		const walker = urlRange.getWalker( { ignoreElementEnd: true } );
 		const selectionAttributes = Object.fromEntries( editor.model.document.selection.getAttributes() );

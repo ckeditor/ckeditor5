@@ -958,7 +958,7 @@ export class Writer {
 
 		// We need to cache elements that will be created as a result of the first split because
 		// we need to create a range from the end of the first split element to the beginning of the
-		// first copy element. This should be handled by LiveRange but it doesn't work on detached nodes.
+		// first copy element. This should be handled by ModelLiveRange but it doesn't work on detached nodes.
 		let firstSplitElement: ModelElement | ModelDocumentFragment | undefined;
 		let firstCopyElement: ModelNode | null | undefined;
 
