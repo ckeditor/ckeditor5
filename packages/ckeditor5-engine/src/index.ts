@@ -137,7 +137,7 @@ export { Text } from './model/text.js';
 export { TextProxy } from './model/textproxy.js';
 export {
 	MarkerCollection,
-	Marker,
+	type Marker,
 	type MarkerData,
 	type MarkerChangeRangeEvent,
 	type MarkerCollectionChangeContentEvent,
