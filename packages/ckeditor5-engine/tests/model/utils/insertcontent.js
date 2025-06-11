@@ -7,7 +7,7 @@ import { Model } from '../../../src/model/model.js';
 import { insertContent } from '../../../src/model/utils/insertcontent.js';
 import { ModelDocumentFragment } from '../../../src/model/documentfragment.js';
 import { Text } from '../../../src/model/text.js';
-import { Element } from '../../../src/model/element.js';
+import { ModelElement } from '../../../src/model/element.js';
 import { Position } from '../../../src/model/position.js';
 
 import { _setModelData, _getModelData, _parseModel, _stringifyModel } from '../../../src/dev-utils/model.js';
@@ -114,7 +114,7 @@ describe( 'DataController utils', () => {
 		} );
 
 		it( 'should save the reference to the original object', () => {
-			const content = new Element( 'imageBlock' );
+			const content = new ModelElement( 'imageBlock' );
 
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			model.schema.register( 'imageBlock', {
@@ -519,7 +519,7 @@ describe( 'DataController utils', () => {
 				} );
 
 				const content = new ModelDocumentFragment( [
-					new Element( 'heading1', [], [ new Text( 'bar' ) ] ),
+					new ModelElement( 'heading1', [], [ new Text( 'bar' ) ] ),
 					new Text( 'biz' )
 				] );
 
@@ -543,7 +543,7 @@ describe( 'DataController utils', () => {
 					allowIn: 'limit'
 				} );
 
-				const content = new ModelDocumentFragment( [ new Element( 'inlineWidget' ) ] );
+				const content = new ModelDocumentFragment( [ new ModelElement( 'inlineWidget' ) ] );
 
 				_setModelData( model, '<limit>[]</limit>' );
 

@@ -5,7 +5,7 @@
 
 import { Model } from '../../src/model/model.js';
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
-import { Element } from '../../src/model/element.js';
+import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { Position } from '../../src/model/position.js';
 import { LivePosition } from '../../src/model/liveposition.js';
@@ -22,10 +22,10 @@ describe( 'LivePosition', () =>
 		doc = model.document;
 		root = doc.createRoot();
 
-		li1 = new Element( 'li', [], new Text( 'abcdef' ) );
-		li2 = new Element( 'li', [], new Text( 'foobar' ) );
-		ul = new Element( 'ul', [], [ li1, li2 ] );
-		p = new Element( 'p', [], new Text( 'qwerty' ) );
+		li1 = new ModelElement( 'li', [], new Text( 'abcdef' ) );
+		li2 = new ModelElement( 'li', [], new Text( 'foobar' ) );
+		ul = new ModelElement( 'ul', [], [ li1, li2 ] );
+		p = new ModelElement( 'p', [], new Text( 'qwerty' ) );
 
 		root._insertChild( 0, [ p, ul ] );
 	} );
@@ -159,7 +159,7 @@ describe( 'LivePosition', () =>
 
 			it( 'is before a node from the live position path', () => {
 				model.change( writer => {
-					writer.insert( new Element( 'paragraph' ), new Position( root, [ 1, 0 ] ) );
+					writer.insert( new ModelElement( 'paragraph' ), new Position( root, [ 1, 0 ] ) );
 				} );
 
 				expect( live.path ).to.deep.equal( [ 1, 2, 3 ] );

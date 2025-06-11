@@ -8,7 +8,7 @@ import { DetachOperation } from '../../../src/model/operation/detachoperation.js
 
 import { Position } from '../../../src/model/position.js';
 import { ModelDocumentFragment } from '../../../src/model/documentfragment.js';
-import { Element } from '../../../src/model/element.js';
+import { ModelElement } from '../../../src/model/element.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'DetachOperation', () => {
@@ -17,7 +17,7 @@ describe( 'DetachOperation', () => {
 	beforeEach( () => {
 		model = new Model();
 		doc = model.document;
-		element = new Element( 'element' );
+		element = new ModelElement( 'element' );
 		docFrag = new ModelDocumentFragment( [ element ] );
 	} );
 
@@ -43,7 +43,7 @@ describe( 'DetachOperation', () => {
 	describe( '_validate()', () => {
 		it( 'should throw when is executed on element from document', () => {
 			const root = doc.createRoot();
-			const element = new Element( 'element' );
+			const element = new ModelElement( 'element' );
 
 			root._appendChild( [ element ] );
 

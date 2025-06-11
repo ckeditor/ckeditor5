@@ -5,7 +5,7 @@
 
 import { Range } from '../../src/model/range.js';
 import { Position } from '../../src/model/position.js';
-import { Element } from '../../src/model/element.js';
+import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { Model } from '../../src/model/model.js';
 import { TreeWalker } from '../../src/model/treewalker.js';
@@ -172,7 +172,7 @@ describe( 'Range', () => {
 		//  |- p
 		//     |- foz
 		beforeEach( () => {
-			p = new Element( 'p', [], new Text( 'foz' ) );
+			p = new ModelElement( 'p', [], new Text( 'foz' ) );
 
 			root._insertChild( 0, [ p ] );
 		} );
@@ -324,8 +324,8 @@ describe( 'Range', () => {
 			const x = new Text( 'x' );
 			const y = new Text( 'y' );
 
-			const e1 = new Element( 'e1' );
-			const e2 = new Element( 'e2' );
+			const e1 = new ModelElement( 'e1' );
+			const e2 = new ModelElement( 'e2' );
 
 			e1._insertChild( 0, [ a, b ] );
 			e2._insertChild( 0, [ x, y ] );
@@ -446,10 +446,10 @@ describe( 'Range', () => {
 		let a, b, c, d, xxx;
 
 		beforeEach( () => {
-			a = new Element( 'a' );
-			b = new Element( 'b' );
-			c = new Element( 'c' );
-			d = new Element( 'd' );
+			a = new ModelElement( 'a' );
+			b = new ModelElement( 'b' );
+			c = new ModelElement( 'c' );
+			d = new ModelElement( 'd' );
 
 			xxx = new Text( 'xxx' );
 			b._appendChild( xxx );
@@ -1536,21 +1536,21 @@ describe( 'Range', () => {
 
 	function mapNodesToNames( nodes ) {
 		return nodes.map( node => {
-			return ( node instanceof Element ) ? 'E:' + node.name : 'T:' + node.data;
+			return ( node instanceof ModelElement ) ? 'E:' + node.name : 'T:' + node.data;
 		} );
 	}
 
 	function prepareRichRoot() {
 		root._insertChild( 0, [
-			new Element( 'div', [], [
-				new Element( 'h', [], new Text( 'first' ) ),
-				new Element( 'p', [], new Text( 'lorem ipsum' ) )
+			new ModelElement( 'div', [], [
+				new ModelElement( 'h', [], new Text( 'first' ) ),
+				new ModelElement( 'p', [], new Text( 'lorem ipsum' ) )
 			] ),
-			new Element( 'p', [], new Text( 'foo' ) ),
-			new Element( 'p', [], new Text( 'bar' ) ),
-			new Element( 'div', [], [
-				new Element( 'h', [], new Text( 'second' ) ),
-				new Element( 'p', [], new Text( 'lorem' ) )
+			new ModelElement( 'p', [], new Text( 'foo' ) ),
+			new ModelElement( 'p', [], new Text( 'bar' ) ),
+			new ModelElement( 'div', [], [
+				new ModelElement( 'h', [], new Text( 'second' ) ),
+				new ModelElement( 'p', [], new Text( 'lorem' ) )
 			] )
 		] );
 	}

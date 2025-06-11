@@ -5,7 +5,7 @@
 
 import { Model } from '../../src/model/model.js';
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
-import { Element } from '../../src/model/element.js';
+import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { TreeWalker } from '../../src/model/treewalker.js';
 import { Position } from '../../src/model/position.js';
@@ -35,11 +35,11 @@ describe( 'TreeWalker', () => {
 
 		ba = new Text( 'ba', { bold: true } );
 		r = new Text( 'r' );
-		img2 = new Element( 'img2' );
+		img2 = new ModelElement( 'img2' );
 		x = new Text( 'x' );
 
-		paragraph = new Element( 'p', [], [ ba, r, img2, x ] );
-		img1 = new Element( 'img1' );
+		paragraph = new ModelElement( 'p', [], [ ba, r, img2, x ] );
+		img1 = new ModelElement( 'img1' );
 
 		root._insertChild( 0, [ img1, paragraph ] );
 
@@ -437,8 +437,8 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( '`shallow` only iterates elements in the range that ends inside some element (forward)', () => {
-			const p2 = new Element( 'p' );
-			const p3 = new Element( 'p' );
+			const p2 = new ModelElement( 'p' );
+			const p3 = new ModelElement( 'p' );
 
 			root._insertChild( 2, [ p2, p3 ] );
 
@@ -458,8 +458,8 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( '`shallow` only iterates elements in the range ends deep inside some element (forward)', () => {
-			const p2 = new Element( 'p' );
-			const p3 = new Element( 'p' );
+			const p2 = new ModelElement( 'p' );
+			const p3 = new ModelElement( 'p' );
 
 			root._insertChild( 2, [ p2, p3 ] );
 
@@ -625,7 +625,7 @@ describe( 'TreeWalker', () => {
 	it( 'should iterate over document fragment', () => {
 		const foo = new Text( 'foo' );
 		const bar = new Text( 'bar' );
-		const p = new Element( 'p', null, [ foo, bar ] );
+		const p = new ModelElement( 'p', null, [ foo, bar ] );
 		const docFrag = new ModelDocumentFragment( [ p ] );
 
 		const iterator = new TreeWalker( {

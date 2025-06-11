@@ -7,7 +7,7 @@ import { Model } from '../../../src/model/model.js';
 import { MergeOperation } from '../../../src/model/operation/mergeoperation.js';
 import { SplitOperation } from '../../../src/model/operation/splitoperation.js';
 import { Position } from '../../../src/model/position.js';
-import { Element } from '../../../src/model/element.js';
+import { ModelElement } from '../../../src/model/element.js';
 import { Text } from '../../../src/model/text.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -42,8 +42,8 @@ describe( 'MergeOperation', () => {
 	} );
 
 	it( 'should merge two nodes together', () => {
-		const p1 = new Element( 'p1', null, new Text( 'Foo' ) );
-		const p2 = new Element( 'p2', null, new Text( 'bar' ) );
+		const p1 = new ModelElement( 'p1', null, new Text( 'Foo' ) );
+		const p2 = new ModelElement( 'p2', null, new Text( 'bar' ) );
 
 		root._insertChild( 0, [ p1, p2 ] );
 
@@ -80,8 +80,8 @@ describe( 'MergeOperation', () => {
 	} );
 
 	it( 'should undo merge by applying reverse operation', () => {
-		const p1 = new Element( 'p1', null, new Text( 'Foo' ) );
-		const p2 = new Element( 'p2', null, new Text( 'bar' ) );
+		const p1 = new ModelElement( 'p1', null, new Text( 'Foo' ) );
+		const p2 = new ModelElement( 'p2', null, new Text( 'bar' ) );
 
 		root._insertChild( 0, [ p1, p2 ] );
 
@@ -106,8 +106,8 @@ describe( 'MergeOperation', () => {
 
 	describe( '_validate()', () => {
 		it( 'should throw an error if source position is invalid', () => {
-			const p1 = new Element( 'p1', null, new Text( 'Foo' ) );
-			const p2 = new Element( 'p2', null, new Text( 'bar' ) );
+			const p1 = new ModelElement( 'p1', null, new Text( 'Foo' ) );
+			const p2 = new ModelElement( 'p2', null, new Text( 'bar' ) );
 
 			root._insertChild( 0, [ p1, p2 ] );
 
@@ -123,8 +123,8 @@ describe( 'MergeOperation', () => {
 		} );
 
 		it( 'should throw an error if source position is in root', () => {
-			const p1 = new Element( 'p1', null, new Text( 'Foo' ) );
-			const p2 = new Element( 'p2', null, new Text( 'bar' ) );
+			const p1 = new ModelElement( 'p1', null, new Text( 'Foo' ) );
+			const p2 = new ModelElement( 'p2', null, new Text( 'bar' ) );
 
 			root._insertChild( 0, [ p1, p2 ] );
 
@@ -140,8 +140,8 @@ describe( 'MergeOperation', () => {
 		} );
 
 		it( 'should throw an error if target position is in root', () => {
-			const p1 = new Element( 'p1', null, new Text( 'Foo' ) );
-			const p2 = new Element( 'p2', null, new Text( 'bar' ) );
+			const p1 = new ModelElement( 'p1', null, new Text( 'Foo' ) );
+			const p2 = new ModelElement( 'p2', null, new Text( 'bar' ) );
 
 			root._insertChild( 0, [ p1, p2 ] );
 
@@ -157,8 +157,8 @@ describe( 'MergeOperation', () => {
 		} );
 
 		it( 'should throw an error if target position is invalid', () => {
-			const p1 = new Element( 'p1', null, new Text( 'Foo' ) );
-			const p2 = new Element( 'p2', null, new Text( 'bar' ) );
+			const p1 = new ModelElement( 'p1', null, new Text( 'Foo' ) );
+			const p2 = new ModelElement( 'p2', null, new Text( 'bar' ) );
 
 			root._insertChild( 0, [ p1, p2 ] );
 
@@ -174,8 +174,8 @@ describe( 'MergeOperation', () => {
 		} );
 
 		it( 'should throw an error if number of nodes to move is invalid', () => {
-			const p1 = new Element( 'p1', null, new Text( 'Foo' ) );
-			const p2 = new Element( 'p2', null, new Text( 'bar' ) );
+			const p1 = new ModelElement( 'p1', null, new Text( 'Foo' ) );
+			const p2 = new ModelElement( 'p2', null, new Text( 'bar' ) );
 
 			root._insertChild( 0, [ p1, p2 ] );
 

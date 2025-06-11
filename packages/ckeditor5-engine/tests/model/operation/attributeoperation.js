@@ -5,7 +5,7 @@
 
 import { Model } from '../../../src/model/model.js';
 import { Text } from '../../../src/model/text.js';
-import { Element } from '../../../src/model/element.js';
+import { ModelElement } from '../../../src/model/element.js';
 import { AttributeOperation } from '../../../src/model/operation/attributeoperation.js';
 import { Position } from '../../../src/model/position.js';
 import { Range } from '../../../src/model/range.js';
@@ -250,8 +250,8 @@ describe( 'AttributeOperation', () => {
 
 		it( 'should throw for a non-flat range', () => {
 			root._insertChild( 0, [
-				new Element( 'paragraph', null, new Text( 'Foo' ) ),
-				new Element( 'paragraph', null, new Text( 'Bar' ) )
+				new ModelElement( 'paragraph', null, new Text( 'Foo' ) ),
+				new ModelElement( 'paragraph', null, new Text( 'Bar' ) )
 			] );
 
 			expectToThrowCKEditorError( () => {

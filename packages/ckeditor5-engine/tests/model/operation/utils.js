@@ -5,7 +5,7 @@
 
 import { Model } from '../../../src/model/model.js';
 import { ModelDocumentFragment } from '../../../src/model/documentfragment.js';
-import { Element } from '../../../src/model/element.js';
+import { ModelElement } from '../../../src/model/element.js';
 import { Text } from '../../../src/model/text.js';
 import { TextProxy } from '../../../src/model/textproxy.js';
 import { Position } from '../../../src/model/position.js';
@@ -31,20 +31,20 @@ describe( 'Operation utils', () => {
 		root._appendChild( [
 			new Text( 'foo' ),
 			new Text( 'bar', { bold: true } ),
-			new Element( 'imageBlock', { src: 'img.jpg' } ),
+			new ModelElement( 'imageBlock', { src: 'img.jpg' } ),
 			new Text( 'xyz' )
 		] );
 	} );
 
 	describe( 'insert', () => {
 		it( 'should insert nodes between nodes', () => {
-			utils._insert( Position._createAt( root, 3 ), [ 'xxx', new Element( 'p' ) ] );
+			utils._insert( Position._createAt( root, 3 ), [ 'xxx', new ModelElement( 'p' ) ] );
 
 			expectData( 'fooxxx<p></p><$text bold="true">bar</$text><imageBlock src="img.jpg"></imageBlock>xyz' );
 		} );
 
 		it( 'should split text node if nodes at inserted at offset inside text node', () => {
-			utils._insert( Position._createAt( root, 5 ), new Element( 'p' ) );
+			utils._insert( Position._createAt( root, 5 ), new ModelElement( 'p' ) );
 
 			expectData( 'foo<$text bold="true">ba</$text><p></p><$text bold="true">r</$text><imageBlock src="img.jpg"></imageBlock>xyz' );
 		} );
@@ -137,7 +137,7 @@ describe( 'Operation utils', () => {
 
 describe( 'normalizeNodes', () => {
 	it( 'should change single object into an array', () => {
-		const p = new Element( 'p' );
+		const p = new ModelElement( 'p' );
 
 		expect( utils._normalizeNodes( p ) ).to.deep.equal( [ p ] );
 	} );
@@ -160,7 +160,7 @@ describe( 'normalizeNodes', () => {
 	} );
 
 	it( 'should not change elements', () => {
-		const p = new Element( 'p' );
+		const p = new ModelElement( 'p' );
 
 		expect( utils._normalizeNodes( p )[ 0 ] ).to.equal( p );
 	} );
@@ -171,7 +171,7 @@ describe( 'normalizeNodes', () => {
 
 	it( 'should accept arrays', () => {
 		const text = new Text( 'foo', { bold: true } );
-		const image = new Element( 'imageBlock' );
+		const image = new ModelElement( 'imageBlock' );
 		const nodes = [ 'abc', text, image, 1, 'xyz' ];
 
 		const normalized = utils._normalizeNodes( nodes );
@@ -192,7 +192,7 @@ describe( 'normalizeNodes', () => {
 	it( 'should replace document fragment by the list of it\'s children', () => {
 		const nodes = [
 			new Text( 'foo', { bold: true } ),
-			new ModelDocumentFragment( [ new Text( 'bar', { bold: true } ), new Element( 'imageBlock' ) ] ),
+			new ModelDocumentFragment( [ new Text( 'bar', { bold: true } ), new ModelElement( 'imageBlock' ) ] ),
 			'xyz'
 		];
 

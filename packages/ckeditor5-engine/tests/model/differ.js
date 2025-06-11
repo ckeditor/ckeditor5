@@ -4,7 +4,7 @@
  */
 
 import { Model } from '../../src/model/model.js';
-import { Element } from '../../src/model/element.js';
+import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { Position } from '../../src/model/position.js';
 import { Range } from '../../src/model/range.js';
@@ -28,10 +28,10 @@ describe( 'Differ', () => {
 		root = doc.createRoot();
 
 		root._appendChild( [
-			new Element( 'paragraph', null, [
+			new ModelElement( 'paragraph', null, [
 				new Text( 'foo' )
 			] ),
-			new Element( 'paragraph', null, [
+			new ModelElement( 'paragraph', null, [
 				new Text( 'bar' )
 			] )
 		] );
@@ -40,7 +40,7 @@ describe( 'Differ', () => {
 	describe( 'insert', () => {
 		it( 'an element', () => {
 			const position = new Position( root, [ 1 ] );
-			const element = new Element( 'imageBlock' );
+			const element = new ModelElement( 'imageBlock' );
 
 			model.change( () => {
 				insert( element, position );
@@ -53,7 +53,7 @@ describe( 'Differ', () => {
 
 		it( 'a non-empty element with attributes', () => {
 			const position = new Position( root, [ 1 ] );
-			const element = new Element( 'imageBlock', { src: 'foo.jpg' }, new Element( 'caption', null, new Text( 'bar' ) ) );
+			const element = new ModelElement( 'imageBlock', { src: 'foo.jpg' }, new ModelElement( 'caption', null, new Text( 'bar' ) ) );
 
 			model.change( () => {
 				insert( element, position );
@@ -68,8 +68,8 @@ describe( 'Differ', () => {
 
 		it( 'multiple elements', () => {
 			const position = new Position( root, [ 1 ] );
-			const image = new Element( 'imageBlock' );
-			const paragraph = new Element( 'paragraph' );
+			const image = new ModelElement( 'imageBlock' );
+			const paragraph = new ModelElement( 'paragraph' );
 
 			model.change( () => {
 				insert( [ image, paragraph ], position );
@@ -135,13 +135,13 @@ describe( 'Differ', () => {
 
 		// Combined.
 		it( 'node in a new element', () => {
-			const image = new Element( 'imageBlock' );
+			const image = new ModelElement( 'imageBlock' );
 			const position = new Position( root, [ 1 ] );
 
 			model.change( () => {
 				insert( image, position );
 
-				const caption = new Element( 'caption' );
+				const caption = new ModelElement( 'caption' );
 				insert( caption, Position._createAt( image, 0 ) );
 
 				insert( new Text( 'foo' ), Position._createAt( caption, 0 ) );
@@ -295,7 +295,7 @@ describe( 'Differ', () => {
 			const position = new Position( root, [ 0 ] );
 
 			model.change( () => {
-				insert( new Element( 'imageBlock' ), position );
+				insert( new ModelElement( 'imageBlock' ), position );
 
 				expectChanges( [] );
 			} );
@@ -716,7 +716,7 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'reinsert removed element', () => {
-			doc.graveyard._appendChild( new Element( 'listItem' ) );
+			doc.graveyard._appendChild( new ModelElement( 'listItem' ) );
 
 			const sourcePosition = new Position( doc.graveyard, [ 0 ] );
 			const targetPosition = new Position( root, [ 2 ] );
@@ -748,8 +748,8 @@ describe( 'Differ', () => {
 
 			// Add two more elements to the root, now there are 4 paragraphs.
 			root._appendChild( [
-				new Element( 'paragraph' ),
-				new Element( 'paragraph' )
+				new ModelElement( 'paragraph' ),
+				new ModelElement( 'paragraph' )
 			] );
 
 			model.change( () => {
@@ -847,7 +847,7 @@ describe( 'Differ', () => {
 		it( 'inside a new element', () => {
 			// Since the rename is inside a new element, it should not be listed on changes list.
 			model.change( () => {
-				insert( new Element( 'blockQuote', null, new Element( 'paragraph' ) ), new Position( root, [ 2 ] ) );
+				insert( new ModelElement( 'blockQuote', null, new ModelElement( 'paragraph' ) ), new Position( root, [ 2 ] ) );
 				rename( root.getChild( 2 ).getChild( 0 ), 'listItem' );
 
 				expectChanges( [
@@ -941,7 +941,7 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'inserted element is renamed', () => {
-			const element = new Element( 'paragraph' );
+			const element = new ModelElement( 'paragraph' );
 			const position = new Position( root, [ 0 ] );
 
 			model.change( () => {
@@ -1408,7 +1408,7 @@ describe( 'Differ', () => {
 			const position = new Position( root, [ 0 ] );
 
 			model.change( () => {
-				const p = new Element( 'paragraph', null, new Text( 'xxx' ) );
+				const p = new ModelElement( 'paragraph', null, new Text( 'xxx' ) );
 				insert( p, position );
 
 				const range = new Range( Position._createAt( p, 1 ), Position._createAt( p, 2 ) );
@@ -1781,7 +1781,7 @@ describe( 'Differ', () => {
 
 		it( 'split a new element', () => {
 			model.change( () => {
-				const element = new Element( 'paragraph', null, new Text( 'Ab' ) );
+				const element = new ModelElement( 'paragraph', null, new Text( 'Ab' ) );
 
 				insert( element, new Position( root, [ 0 ] ) );
 				split( new Position( root, [ 0, 1 ] ) );
@@ -1795,7 +1795,7 @@ describe( 'Differ', () => {
 
 		it( 'split an element inside a new element', () => {
 			model.change( () => {
-				const blockQuote = new Element( 'blockQuote', null, new Element( 'paragraph', null, new Text( 'Ab' ) ) );
+				const blockQuote = new ModelElement( 'blockQuote', null, new ModelElement( 'paragraph', null, new Text( 'Ab' ) ) );
 
 				insert( blockQuote, new Position( root, [ 0 ] ) );
 				split( new Position( root, [ 0, 0, 1 ] ) );
@@ -1807,11 +1807,11 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'split an element with renamed element after split position', () => {
-			const elA = new Element( 'paragraph', null, new Text( 'A' ) );
-			const elB = new Element( 'paragraph', null, new Text( 'B' ) );
+			const elA = new ModelElement( 'paragraph', null, new Text( 'A' ) );
+			const elB = new ModelElement( 'paragraph', null, new Text( 'B' ) );
 
 			model.change( () => {
-				insert( new Element( 'blockQuote', null, [ elA, elB ] ), new Position( root, [ 0 ] ) );
+				insert( new ModelElement( 'blockQuote', null, [ elA, elB ] ), new Position( root, [ 0 ] ) );
 			} );
 
 			model.change( () => {
@@ -1880,7 +1880,7 @@ describe( 'Differ', () => {
 
 		it( 'merge a new element', () => {
 			model.change( () => {
-				insert( new Element( 'paragraph', null, new Text( 'Ab' ) ), new Position( root, [ 1 ] ) );
+				insert( new ModelElement( 'paragraph', null, new Text( 'Ab' ) ), new Position( root, [ 1 ] ) );
 				merge( new Position( root, [ 1, 0 ] ), new Position( root, [ 0, 3 ] ) );
 
 				expectChanges( [
@@ -1891,7 +1891,7 @@ describe( 'Differ', () => {
 
 		it( 'merge into a new element', () => {
 			model.change( () => {
-				const newP = new Element( 'paragraph', null, new Text( 'Ab' ) );
+				const newP = new ModelElement( 'paragraph', null, new Text( 'Ab' ) );
 
 				insert( newP, new Position( root, [ 0 ] ) );
 				merge( new Position( root, [ 1, 0 ] ), new Position( root, [ 0, 2 ] ) );
@@ -1905,9 +1905,9 @@ describe( 'Differ', () => {
 
 		it( 'merge elements inside a new element', () => {
 			model.change( () => {
-				const blockQuote = new Element( 'blockQuote', null, [
-					new Element( 'paragraph', null, new Text( 'Ab' ) ),
-					new Element( 'paragraph', null, new Text( 'Xyz' ) )
+				const blockQuote = new ModelElement( 'blockQuote', null, [
+					new ModelElement( 'paragraph', null, new Text( 'Ab' ) ),
+					new ModelElement( 'paragraph', null, new Text( 'Xyz' ) )
 				] );
 
 				insert( blockQuote, new Position( root, [ 0 ] ) );
@@ -1921,12 +1921,12 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'merge element with renamed item inside', () => {
-			const elA = new Element( 'paragraph', null, new Text( 'A' ) );
-			const elB = new Element( 'paragraph', null, new Text( 'B' ) );
+			const elA = new ModelElement( 'paragraph', null, new Text( 'A' ) );
+			const elB = new ModelElement( 'paragraph', null, new Text( 'B' ) );
 
 			model.change( () => {
-				insert( new Element( 'blockQuote', null, [ elA ] ), new Position( root, [ 0 ] ) );
-				insert( new Element( 'blockQuote', null, [ elB ] ), new Position( root, [ 1 ] ) );
+				insert( new ModelElement( 'blockQuote', null, [ elA ] ), new Position( root, [ 0 ] ) );
+				insert( new ModelElement( 'blockQuote', null, [ elB ] ), new Position( root, [ 1 ] ) );
 			} );
 
 			// Model is:
@@ -1954,12 +1954,12 @@ describe( 'Differ', () => {
 
 		it( 'merge element with refreshed item inside', () => {
 			// This is the same case as above but refresh is used instead of rename.
-			const elA = new Element( 'paragraph', null, new Text( 'A' ) );
-			const elB = new Element( 'paragraph', null, new Text( 'B' ) );
+			const elA = new ModelElement( 'paragraph', null, new Text( 'A' ) );
+			const elB = new ModelElement( 'paragraph', null, new Text( 'B' ) );
 
 			model.change( () => {
-				insert( new Element( 'blockQuote', null, [ elA ] ), new Position( root, [ 0 ] ) );
-				insert( new Element( 'blockQuote', null, [ elB ] ), new Position( root, [ 1 ] ) );
+				insert( new ModelElement( 'blockQuote', null, [ elA ] ), new Position( root, [ 0 ] ) );
+				insert( new ModelElement( 'blockQuote', null, [ elB ] ), new Position( root, [ 1 ] ) );
 			} );
 
 			// Model is:
@@ -2824,14 +2824,14 @@ describe( 'Differ', () => {
 			// it appeared that `blockQuote` looks like it is removed because it had the same path as the already removed `<imageBlock>`.
 			// In a result, removing `paragraph` was discarded.
 			// The mistake was that the checking for removing was done at incorrect moment.
-			const imageBlock = new Element( 'imageBlock' );
-			const paragraph = new Element( 'paragraph', null, new Text( 'text' ) );
+			const imageBlock = new ModelElement( 'imageBlock' );
+			const paragraph = new ModelElement( 'paragraph', null, new Text( 'text' ) );
 
 			root._removeChildren( 0, root.childCount );
 			root._appendChild( [
-				new Element( 'paragraph', null, new Text( 'foo' ) ),
+				new ModelElement( 'paragraph', null, new Text( 'foo' ) ),
 				imageBlock,
-				new Element( 'blockQuote', null, paragraph )
+				new ModelElement( 'blockQuote', null, paragraph )
 			] );
 
 			model.change( () => {
@@ -2856,12 +2856,12 @@ describe( 'Differ', () => {
 		// finally we insert some content into a new element. Since we are inserting into a new element, the
 		// inserted children should not be shown on changes list.
 		it( 'proper filtering of changes in inserted elements', () => {
-			const imageBlock = new Element( 'imageBlock' );
+			const imageBlock = new ModelElement( 'imageBlock' );
 
 			root._removeChildren( 0, root.childCount );
 			root._appendChild( imageBlock );
 
-			const blockQuote = new Element( 'blockQuote', null, new Element( 'paragraph' ) );
+			const blockQuote = new ModelElement( 'blockQuote', null, new ModelElement( 'paragraph' ) );
 
 			model.change( () => {
 				// Insert `blockQuote` with `paragraph` after `image`.
@@ -2882,14 +2882,14 @@ describe( 'Differ', () => {
 		// the new element. This way we mess up with offsets and insert content into a new element in one operation.
 		// Since we are inserting into a new element, the insertion of moved element should not be shown on changes list.
 		it( 'proper filtering of changes in inserted elements #2', () => {
-			const imageBlock = new Element( 'imageBlock' );
+			const imageBlock = new ModelElement( 'imageBlock' );
 
 			root._removeChildren( 0, root.childCount );
 			root._appendChild( imageBlock );
 
 			model.change( () => {
 				// Insert `div` after `image`.
-				const div = new Element( 'div' );
+				const div = new ModelElement( 'div' );
 				insert( div, new Position( root, [ 1 ] ) );
 				// Move `image` to the new `div`.
 				move( new Position( root, [ 0 ] ), 1, new Position( root, [ 1, 0 ] ) );
@@ -2903,7 +2903,7 @@ describe( 'Differ', () => {
 
 		// #1392.
 		it( 'remove is correctly transformed by multiple affecting changes', () => {
-			root._appendChild( new Element( 'paragraph', null, new Text( 'xyz' ) ) );
+			root._appendChild( new ModelElement( 'paragraph', null, new Text( 'xyz' ) ) );
 			model.change( writer => {
 				rename( root.getChild( 1 ), 'heading' );
 				rename( root.getChild( 2 ), 'heading' );
@@ -3125,7 +3125,7 @@ describe( 'Differ', () => {
 		it( 'inside a new element', () => {
 			// Since the refreshed element is inside a new element, it should not be listed on changes list.
 			model.change( () => {
-				const blockQuote = new Element( 'blockQuote', null, new Element( 'paragraph' ) );
+				const blockQuote = new ModelElement( 'blockQuote', null, new ModelElement( 'paragraph' ) );
 
 				insert( blockQuote, new Position( root, [ 2 ] ) );
 
@@ -3174,7 +3174,7 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'inserted element is refreshed', () => {
-			const element = new Element( 'paragraph' );
+			const element = new ModelElement( 'paragraph' );
 			const position = new Position( root, [ 0 ] );
 
 			model.change( () => {

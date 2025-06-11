@@ -6,7 +6,7 @@
 import { Model } from '../../../src/model/model.js';
 import { MoveOperation } from '../../../src/model/operation/moveoperation.js';
 import { Position } from '../../../src/model/position.js';
-import { Element } from '../../../src/model/element.js';
+import { ModelElement } from '../../../src/model/element.js';
 import { Text } from '../../../src/model/text.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -36,8 +36,8 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should move from one node to another', () => {
-		const p1 = new Element( 'p1', [], new Element( 'x' ) );
-		const p2 = new Element( 'p2' );
+		const p1 = new ModelElement( 'p1', [], new ModelElement( 'x' ) );
+		const p2 = new ModelElement( 'p2' );
 
 		root._insertChild( 0, [ p1, p2 ] );
 
@@ -114,8 +114,8 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should undo move node by applying reverse operation', () => {
-		const p1 = new Element( 'p1', [], new Element( 'x' ) );
-		const p2 = new Element( 'p2' );
+		const p1 = new ModelElement( 'p1', [], new ModelElement( 'x' ) );
+		const p2 = new ModelElement( 'p2' );
 
 		root._insertChild( 0, [ p1, p2 ] );
 
@@ -158,7 +158,7 @@ describe( 'MoveOperation', () => {
 		} );
 
 		it( 'should throw an error if target or source parent-element specified by position does not exist', () => {
-			const p = new Element( 'p' );
+			const p = new ModelElement( 'p' );
 			p._insertChild( 0, new Text( 'foo' ) );
 			root._insertChild( 0, [ new Text( 'ab' ), p ] );
 
@@ -188,7 +188,7 @@ describe( 'MoveOperation', () => {
 		} );
 
 		it( 'should throw an error if operation tries to move a range into a sub-tree of a node that is in that range', () => {
-			const p = new Element( 'p', [], [ new Element( 'p' ) ] );
+			const p = new ModelElement( 'p', [], [ new ModelElement( 'p' ) ] );
 			root._insertChild( 0, [ new Text( 'ab' ), p, new Text( 'xy' ) ] );
 
 			const operation = new MoveOperation(
@@ -202,7 +202,7 @@ describe( 'MoveOperation', () => {
 		} );
 
 		it( 'should not throw an error if operation move a range into a sibling', () => {
-			const p = new Element( 'p' );
+			const p = new ModelElement( 'p' );
 			root._insertChild( 0, [ new Text( 'ab' ), p, new Text( 'xy' ) ] );
 
 			const operation = new MoveOperation(
@@ -216,7 +216,7 @@ describe( 'MoveOperation', () => {
 		} );
 
 		it( 'should not throw when operation paths looks like incorrect but move is between different roots', () => {
-			const p = new Element( 'p' );
+			const p = new ModelElement( 'p' );
 			root._insertChild( 0, [ new Text( 'a' ), p, new Text( 'b' ) ] );
 			doc.graveyard._insertChild( 0, new Text( 'abc' ) );
 

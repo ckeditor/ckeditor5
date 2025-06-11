@@ -5,7 +5,7 @@
 
 import { Model } from '../../../src/model/model.js';
 import { insertObject } from '../../../src/model/utils/insertobject.js';
-import { Element } from '../../../src/model/element.js';
+import { ModelElement } from '../../../src/model/element.js';
 import { Text } from '../../../src/model/text.js';
 import { _setModelData, _getModelData } from '../../../src/dev-utils/model.js';
 
@@ -50,7 +50,7 @@ describe( 'insertObject()', () => {
 
 	describe( 'handled element types', () => {
 		it( 'should not throw an incorrect type of element to insert error if element is an object', () => {
-			const widget = new Element( 'blockWidget', [], [] );
+			const widget = new ModelElement( 'blockWidget', [], [] );
 
 			expect( () => {
 				insertObject( model, widget );
@@ -58,7 +58,7 @@ describe( 'insertObject()', () => {
 		} );
 
 		it( 'should throw an error if element is not an object', () => {
-			const paragraph = new Element( 'paragraph', [], [ new Text( 'bar' ) ] );
+			const paragraph = new ModelElement( 'paragraph', [], [ new Text( 'bar' ) ] );
 
 			expectToThrowCKEditorError( () => insertObject( model, paragraph ), 'insertobject-element-not-an-object' );
 		} );
@@ -67,7 +67,7 @@ describe( 'insertObject()', () => {
 	describe( 'insertion selection', () => {
 		describe( 'with findOptimalPosition', () => {
 			it( 'should call insert content with selection from optimal insertion range when no selection was passed (before)', () => {
-				const widget = new Element( 'blockWidget', [], [] );
+				const widget = new ModelElement( 'blockWidget', [], [] );
 
 				_setModelData( model, '[<blockWidget></blockWidget>]' );
 
@@ -80,7 +80,7 @@ describe( 'insertObject()', () => {
 			} );
 
 			it( 'should call insert content with selection from optimal insertion range when no selection was passed (after)', () => {
-				const widget = new Element( 'blockWidget', [], [] );
+				const widget = new ModelElement( 'blockWidget', [], [] );
 
 				_setModelData( model, '[<blockWidget></blockWidget>]' );
 
@@ -93,7 +93,7 @@ describe( 'insertObject()', () => {
 			} );
 
 			it( 'should call insert content with selection from optimal insertion range when no selection was passed (auto)', () => {
-				const widget = new Element( 'blockWidget', [], [] );
+				const widget = new ModelElement( 'blockWidget', [], [] );
 
 				_setModelData( model, '[<blockWidget></blockWidget>]' );
 
@@ -108,7 +108,7 @@ describe( 'insertObject()', () => {
 
 		describe( 'without findOptimalPosition', () => {
 			it( 'should call insert content with model selection if called with no selectable', () => {
-				const widget = new Element( 'blockWidget', [], [] );
+				const widget = new ModelElement( 'blockWidget', [], [] );
 
 				insertObject( model, widget );
 
@@ -118,7 +118,7 @@ describe( 'insertObject()', () => {
 			} );
 
 			it( 'should call insert content with selection it was called with', () => {
-				const widget = new Element( 'blockWidget', [], [] );
+				const widget = new ModelElement( 'blockWidget', [], [] );
 
 				_setModelData( model, '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 
@@ -136,7 +136,7 @@ describe( 'insertObject()', () => {
 
 	describe( 'autoparagraphing of inserted object', () => {
 		it( 'should autoparagraph an element if it is not allowed in given position', () => {
-			const widget = new Element( 'inlineWidget', [], [] );
+			const widget = new ModelElement( 'inlineWidget', [], [] );
 
 			insertObject( model, widget );
 
@@ -175,7 +175,7 @@ describe( 'insertObject()', () => {
 		} );
 
 		it( 'should copy attributes on the inserted block object when inserting it in place of another', () => {
-			const widget = new Element( 'blockWidget', [], [] );
+			const widget = new ModelElement( 'blockWidget', [], [] );
 
 			_setModelData( model, '[<anotherBlockWidget a="true" b="true"></anotherBlockWidget>]' );
 
@@ -193,7 +193,7 @@ describe( 'insertObject()', () => {
 				allowAttributes: 'c'
 			} );
 
-			const widget = new Element( 'blockWidget', [], [] );
+			const widget = new ModelElement( 'blockWidget', [], [] );
 
 			_setModelData( model, '[<anotherBlockWidget a="true" c="true"></anotherBlockWidget>]' );
 
@@ -211,7 +211,7 @@ describe( 'insertObject()', () => {
 				allowAttributes: 'c'
 			} );
 
-			const widget = new Element( 'blockWidget', [], [] );
+			const widget = new ModelElement( 'blockWidget', [], [] );
 
 			_setModelData( model, '[<anotherBlockWidget a="true" c="true"></anotherBlockWidget>]' );
 
@@ -225,7 +225,7 @@ describe( 'insertObject()', () => {
 				allowIn: '$root'
 			} );
 
-			const widget = new Element( 'inlineWidget', [], [] );
+			const widget = new ModelElement( 'inlineWidget', [], [] );
 
 			_setModelData( model, '[<anotherBlockWidget a="true" b="true"></anotherBlockWidget>]' );
 
@@ -235,7 +235,7 @@ describe( 'insertObject()', () => {
 		} );
 
 		it( 'should copy attributes on paragraph if inline object was autoparagraphed', () => {
-			const widget = new Element( 'inlineWidget', [], [] );
+			const widget = new ModelElement( 'inlineWidget', [], [] );
 
 			_setModelData( model, '[<anotherBlockWidget a="true" b="true"></anotherBlockWidget>]' );
 
@@ -251,7 +251,7 @@ describe( 'insertObject()', () => {
 
 	describe( 'setting selection after insertion', () => {
 		it( 'should create paragraph after inserted block object and set selection inside', () => {
-			const widget = new Element( 'blockWidget', [], [] );
+			const widget = new ModelElement( 'blockWidget', [], [] );
 
 			insertObject( model, widget, undefined, { setSelection: 'after' } );
 
@@ -262,7 +262,7 @@ describe( 'insertObject()', () => {
 		} );
 
 		it( 'should set selection in a paragraph following inserted block object', () => {
-			const widget = new Element( 'blockWidget', [], [] );
+			const widget = new ModelElement( 'blockWidget', [], [] );
 
 			_setModelData( model, '[]<paragraph>Foo</paragraph>' );
 
@@ -275,7 +275,7 @@ describe( 'insertObject()', () => {
 		} );
 
 		it( 'should set selection after inserted inline object', () => {
-			const widget = new Element( 'inlineWidget', [], [] );
+			const widget = new ModelElement( 'inlineWidget', [], [] );
 
 			insertObject( model, widget, undefined, { setSelection: 'after' } );
 
@@ -287,7 +287,7 @@ describe( 'insertObject()', () => {
 		} );
 
 		it( 'should set selection after inserted inline object when inserted in the middle of some text', () => {
-			const widget = new Element( 'inlineWidget', [], [] );
+			const widget = new ModelElement( 'inlineWidget', [], [] );
 
 			_setModelData( model, '<paragraph>Fo[]o</paragraph>' );
 
@@ -301,7 +301,7 @@ describe( 'insertObject()', () => {
 		} );
 
 		it( 'should set selection on inserted block object', () => {
-			const widget = new Element( 'blockWidget', [], [] );
+			const widget = new ModelElement( 'blockWidget', [], [] );
 
 			insertObject( model, widget, undefined, { setSelection: 'on' } );
 
@@ -317,7 +317,7 @@ describe( 'insertObject()', () => {
 				allowChildren: 'blockWidget'
 			} );
 
-			const widget = new Element( 'blockWidget', [], [] );
+			const widget = new ModelElement( 'blockWidget', [], [] );
 
 			_setModelData( model, '<nonParagraph>[]</nonParagraph>' );
 
@@ -329,7 +329,7 @@ describe( 'insertObject()', () => {
 		} );
 
 		it( 'should set selection on inserted inline object', () => {
-			const widget = new Element( 'inlineWidget', [], [] );
+			const widget = new ModelElement( 'inlineWidget', [], [] );
 
 			insertObject( model, widget, undefined, { setSelection: 'on' } );
 
@@ -341,7 +341,7 @@ describe( 'insertObject()', () => {
 		} );
 
 		it( 'should throw an error if unhandled position was passed', () => {
-			const widget = new Element( 'inlineWidget', [], [] );
+			const widget = new ModelElement( 'inlineWidget', [], [] );
 
 			expectToThrowCKEditorError(
 				() => insertObject( model, widget, undefined, { setSelection: 'above' } ),
@@ -358,7 +358,7 @@ describe( 'insertObject()', () => {
 				isObject: true
 			} );
 
-			const widget = new Element( 'disallowedBlockWidget', [], [] );
+			const widget = new ModelElement( 'disallowedBlockWidget', [], [] );
 
 			const affectedRange = insertObject( model, widget );
 
@@ -367,7 +367,7 @@ describe( 'insertObject()', () => {
 		} );
 
 		it( 'should return affected range when inserting block object', () => {
-			const widget = new Element( 'blockWidget', [], [] );
+			const widget = new ModelElement( 'blockWidget', [], [] );
 
 			const affectedRange = insertObject( model, widget );
 
@@ -381,7 +381,7 @@ describe( 'insertObject()', () => {
 		it( 'should replace selected block widget', () => {
 			_setModelData( model, '[<blockWidget></blockWidget>]' );
 
-			const widget = new Element( 'inlineWidget', [], [] );
+			const widget = new ModelElement( 'inlineWidget', [], [] );
 
 			insertObject( model, widget );
 
@@ -399,7 +399,7 @@ describe( 'insertObject()', () => {
 				'</paragraph>'
 			);
 
-			const widget = new Element( 'blockWidget', [], [] );
+			const widget = new ModelElement( 'blockWidget', [], [] );
 
 			insertObject( model, widget );
 
@@ -414,7 +414,7 @@ describe( 'insertObject()', () => {
 				'<paragraph>Fo]o</paragraph>'
 			);
 
-			const widget = new Element( 'blockWidget', [], [] );
+			const widget = new ModelElement( 'blockWidget', [], [] );
 
 			insertObject( model, widget );
 
@@ -433,7 +433,7 @@ describe( 'insertObject()', () => {
 				'<paragraph>Fo]o</paragraph>'
 			);
 
-			const widget = new Element( 'inlineWidget', [], [] );
+			const widget = new ModelElement( 'inlineWidget', [], [] );
 
 			insertObject( model, widget );
 
@@ -450,7 +450,7 @@ describe( 'insertObject()', () => {
 				'<paragraph>F<inlineWidget></inlineWidget>o]o</paragraph>'
 			);
 
-			const widget = new Element( 'blockWidget', [], [] );
+			const widget = new ModelElement( 'blockWidget', [], [] );
 
 			insertObject( model, widget );
 
@@ -476,7 +476,7 @@ describe( 'insertObject()', () => {
 
 			testUtils.sinon.stub( console, 'warn' );
 
-			const widget = new Element( 'anotherBlockWidget', [], [] );
+			const widget = new ModelElement( 'anotherBlockWidget', [], [] );
 
 			model.insertObject( widget );
 
@@ -487,7 +487,7 @@ describe( 'insertObject()', () => {
 		} );
 
 		it( 'should insert an object in an empty document', () => {
-			const widget = new Element( 'blockWidget', [], [] );
+			const widget = new ModelElement( 'blockWidget', [], [] );
 
 			model.insertObject( widget );
 
@@ -498,7 +498,7 @@ describe( 'insertObject()', () => {
 		} );
 
 		it( 'should wrap an inline object in a paragraph', () => {
-			const widget = new Element( 'inlineWidget', [], [] );
+			const widget = new ModelElement( 'inlineWidget', [], [] );
 
 			model.insertObject( widget );
 
@@ -520,7 +520,7 @@ describe( 'insertObject()', () => {
 		} );
 
 		it( 'should insert an object in place of a block', () => {
-			const widget = new Element( 'blockWidget', [], [] );
+			const widget = new ModelElement( 'blockWidget', [], [] );
 
 			_setModelData( model, '[<block>Foo</block>]' );
 
@@ -533,7 +533,7 @@ describe( 'insertObject()', () => {
 		} );
 
 		it( 'should insert an object in given range', () => {
-			const widget = new Element( 'blockWidget', [], [] );
+			const widget = new ModelElement( 'blockWidget', [], [] );
 
 			_setModelData( model,
 				'[<block>Foo</block>]' +

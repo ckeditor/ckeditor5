@@ -4,7 +4,7 @@
  */
 
 import { NodeList } from '../../src/model/nodelist.js';
-import { Element } from '../../src/model/element.js';
+import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -13,9 +13,9 @@ describe( 'NodeList', () => {
 	let nodes, p, foo, img;
 
 	beforeEach( () => {
-		p = new Element( 'p' );
+		p = new ModelElement( 'p' );
 		foo = new Text( 'foo' );
-		img = new Element( 'imageBlock' );
+		img = new ModelElement( 'imageBlock' );
 		nodes = new NodeList( [ p, foo, img ] );
 	} );
 
@@ -74,7 +74,7 @@ describe( 'NodeList', () => {
 		} );
 
 		it( 'should return null if node is not in the node list', () => {
-			expect( nodes.getNodeIndex( new Element( 'p' ) ) ).to.be.null;
+			expect( nodes.getNodeIndex( new ModelElement( 'p' ) ) ).to.be.null;
 		} );
 	} );
 
@@ -86,7 +86,7 @@ describe( 'NodeList', () => {
 		} );
 
 		it( 'should return null if node is not in the node list', () => {
-			expect( nodes.getNodeStartOffset( new Element( 'p' ) ) ).to.be.null;
+			expect( nodes.getNodeStartOffset( new ModelElement( 'p' ) ) ).to.be.null;
 		} );
 	} );
 
@@ -138,7 +138,7 @@ describe( 'NodeList', () => {
 
 	describe( '_insertNodes', () => {
 		it( 'should insert nodes at given index and refresh its nodes index and startOffset values', () => {
-			const newImg = new Element( 'imageBlock' );
+			const newImg = new ModelElement( 'imageBlock' );
 			const bar = new Text( 'bar', { bold: true } );
 			const xyz = new Text( 'xyz' );
 

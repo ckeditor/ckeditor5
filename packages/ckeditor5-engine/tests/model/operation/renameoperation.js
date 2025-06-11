@@ -4,7 +4,7 @@
  */
 
 import { Model } from '../../../src/model/model.js';
-import { Element } from '../../../src/model/element.js';
+import { ModelElement } from '../../../src/model/element.js';
 import { RenameOperation } from '../../../src/model/operation/renameoperation.js';
 import { Position } from '../../../src/model/position.js';
 
@@ -21,7 +21,7 @@ describe( 'RenameOperation', () => {
 		doc = model.document;
 		root = doc.createRoot();
 
-		element = new Element( oldName );
+		element = new ModelElement( oldName );
 		root._appendChild( element );
 
 		position = Position._createBefore( element );

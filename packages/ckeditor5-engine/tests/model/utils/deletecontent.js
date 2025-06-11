@@ -7,7 +7,7 @@ import { Model } from '../../../src/model/model.js';
 import { Position } from '../../../src/model/position.js';
 import { Range } from '../../../src/model/range.js';
 import { Selection } from '../../../src/model/selection.js';
-import { Element } from '../../../src/model/element.js';
+import { ModelElement } from '../../../src/model/element.js';
 import { deleteContent } from '../../../src/model/utils/deletecontent.js';
 import { _setModelData, _getModelData } from '../../../src/dev-utils/model.js';
 import { _stringifyView } from '../../../src/dev-utils/view.js';
@@ -36,7 +36,7 @@ describe( 'DataController utils', () => {
 
 			const gy = model.document.graveyard;
 
-			gy._appendChild( new Element( 'paragraph' ) );
+			gy._appendChild( new ModelElement( 'paragraph' ) );
 
 			const baseVersion = model.document.baseVersion;
 

@@ -5,7 +5,7 @@
 
 import { Model } from '../../src/model/model.js';
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
-import { Element } from '../../src/model/element.js';
+import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { TextProxy } from '../../src/model/textproxy.js';
 import {
@@ -52,7 +52,7 @@ describe( 'Position', () => {
 
 		foz = new Text( 'foz' );
 
-		li1 = new Element( 'li', [], foz );
+		li1 = new ModelElement( 'li', [], foz );
 
 		f = new TextProxy( foz, 0, 1 );
 		o = new TextProxy( foz, 1, 1 );
@@ -60,15 +60,15 @@ describe( 'Position', () => {
 
 		bar = new Text( 'bar' );
 
-		li2 = new Element( 'li', [], bar );
+		li2 = new ModelElement( 'li', [], bar );
 
 		b = new TextProxy( bar, 0, 1 );
 		a = new TextProxy( bar, 1, 1 );
 		r = new TextProxy( bar, 2, 1 );
 
-		ul = new Element( 'ul', [], [ li1, li2 ] );
+		ul = new ModelElement( 'ul', [], [ li1, li2 ] );
 
-		p = new Element( 'p' );
+		p = new ModelElement( 'p' );
 
 		root._insertChild( 0, [ p, ul ] );
 	} );
@@ -89,7 +89,7 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should accept detached Element as a root', () => {
-			const el = new Element( 'p' );
+			const el = new ModelElement( 'p' );
 			const pos = new Position( el, [ 0 ] );
 
 			expect( pos ).to.have.property( 'root', el );
@@ -104,7 +104,7 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should normalize Element from a detached branch as a root', () => {
-			const rootEl = new Element( 'p', null, [ new Element( 'a' ) ] );
+			const rootEl = new ModelElement( 'p', null, [ new ModelElement( 'a' ) ] );
 			const elA = rootEl.getChild( 0 );
 			const pos = new Position( elA, [ 0 ] );
 
@@ -854,7 +854,7 @@ describe( 'Position', () => {
 			it( 'should use _getTransformedByInsertion', () => {
 				sinon.spy( pos, '_getTransformedByInsertion' );
 
-				const op = new InsertOperation( new Position( root, [ 1 ] ), [ new Element( 'paragraph' ) ], 1 );
+				const op = new InsertOperation( new Position( root, [ 1 ] ), [ new ModelElement( 'paragraph' ) ], 1 );
 				pos.getTransformedByOperation( op );
 
 				expect( pos._getTransformedByInsertion.calledWithExactly( op.position, op.howMany ) ).to.be.true;
@@ -1301,7 +1301,7 @@ describe( 'Position', () => {
 			const doc = model.document;
 			const root = doc.createRoot();
 
-			const p = new Element( 'p', null, 'foobar' );
+			const p = new ModelElement( 'p', null, 'foobar' );
 
 			root._appendChild( p );
 
@@ -1330,7 +1330,7 @@ describe( 'Position', () => {
 			const doc = model.document;
 			const root = doc.createRoot();
 
-			const p = new Element( 'p', null, new Element( 'a' ) );
+			const p = new ModelElement( 'p', null, new ModelElement( 'a' ) );
 
 			root._appendChild( p );
 

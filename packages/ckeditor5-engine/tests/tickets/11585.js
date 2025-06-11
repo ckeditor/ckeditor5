@@ -4,7 +4,7 @@
  */
 
 import { Model } from '../../src/model/model.js';
-import { Element } from '../../src/model/element.js';
+import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { Position } from '../../src/model/position.js';
 import { LiveRange } from '../../src/model/liverange.js';
@@ -23,13 +23,13 @@ describe( '#11585', () => {
 		doc = model.document;
 		root = doc.createRoot();
 		root._appendChild( [
-			new Element( 'p' ),
-			new Element( 'p' ),
-			new Element( 'p', [], new Text( 'foobar' ) ),
-			new Element( 'p' ),
-			new Element( 'p' ),
-			new Element( 'p' ),
-			new Element( 'p', [], new Text( 'foobar' ) )
+			new ModelElement( 'p' ),
+			new ModelElement( 'p' ),
+			new ModelElement( 'p', [], new Text( 'foobar' ) ),
+			new ModelElement( 'p' ),
+			new ModelElement( 'p' ),
+			new ModelElement( 'p' ),
+			new ModelElement( 'p', [], new Text( 'foobar' ) )
 		] );
 
 		liveRange = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );

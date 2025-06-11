@@ -4,7 +4,7 @@
  */
 
 import { Model } from '../../src/model/model.js';
-import { Element } from '../../src/model/element.js';
+import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { Range } from '../../src/model/range.js';
 import { Position } from '../../src/model/position.js';
@@ -28,13 +28,13 @@ describe( 'Selection', () => {
 		doc = model.document;
 		root = doc.createRoot();
 		root._appendChild( [
-			new Element( 'p' ),
-			new Element( 'p' ),
-			new Element( 'p', [], new Text( 'foobar' ) ),
-			new Element( 'p' ),
-			new Element( 'p' ),
-			new Element( 'p' ),
-			new Element( 'p', [], new Text( 'foobar' ) )
+			new ModelElement( 'p' ),
+			new ModelElement( 'p' ),
+			new ModelElement( 'p', [], new Text( 'foobar' ) ),
+			new ModelElement( 'p' ),
+			new ModelElement( 'p' ),
+			new ModelElement( 'p' ),
+			new ModelElement( 'p', [], new Text( 'foobar' ) )
 		] );
 		selection = new Selection();
 
@@ -319,7 +319,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should allow setting selection inside an element', () => {
-			const element = new Element( 'p', null, [ new Text( 'foo' ), new Text( 'bar' ) ] );
+			const element = new ModelElement( 'p', null, [ new Text( 'foo' ), new Text( 'bar' ) ] );
 
 			selection.setTo( element, 'in' );
 
@@ -335,7 +335,7 @@ describe( 'Selection', () => {
 			const textNode1 = new Text( 'foo' );
 			const textNode2 = new Text( 'bar' );
 			const textNode3 = new Text( 'baz' );
-			const element = new Element( 'p', null, [ textNode1, textNode2, textNode3 ] );
+			const element = new ModelElement( 'p', null, [ textNode1, textNode2, textNode3 ] );
 
 			selection.setTo( textNode2, 'on' );
 
@@ -351,7 +351,7 @@ describe( 'Selection', () => {
 			const textNode1 = new Text( 'foo' );
 			const textNode2 = new Text( 'bar' );
 			const textNode3 = new Text( 'baz' );
-			const element = new Element( 'p', null, [ textNode1, textNode2, textNode3 ] );
+			const element = new ModelElement( 'p', null, [ textNode1, textNode2, textNode3 ] );
 
 			selection.setTo( textNode2, 'on', { backward: true } );
 
@@ -1140,8 +1140,8 @@ describe( 'Selection', () => {
 
 		beforeEach( () => {
 			root._insertChild( 0, [
-				new Element( 'p', [], new Text( 'foobar' ) ),
-				new Element( 'p', [], [] )
+				new ModelElement( 'p', [], new Text( 'foobar' ) ),
+				new ModelElement( 'p', [], [] )
 			] );
 
 			rangeInFullP = new Range( new Position( root, [ 0, 4 ] ), new Position( root, [ 0, 4 ] ) );

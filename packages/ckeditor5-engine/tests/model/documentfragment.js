@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Element } from '../../src/model/element.js';
+import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { TextProxy } from '../../src/model/textproxy.js';
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
@@ -19,7 +19,7 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should create document fragment with children', () => {
-			const frag = new ModelDocumentFragment( [ new Text( 'xx' ), new Element( 'p' ), new Text( 'yy' ) ] );
+			const frag = new ModelDocumentFragment( [ new Text( 'xx' ), new ModelElement( 'p' ), new Text( 'yy' ) ] );
 
 			expect( frag.childCount ).to.equal( 3 );
 			expect( frag.maxOffset ).to.equal( 5 );
@@ -55,7 +55,7 @@ describe( 'DocumentFragment', () => {
 	describe( 'iterator', () => {
 		it( 'should iterate over document fragment\'s children', () => {
 			const xx = new Text( 'xx' );
-			const p = new Element( 'p' );
+			const p = new ModelElement( 'p' );
 			const yy = new Text( 'yy' );
 			const frag = new ModelDocumentFragment( [ xx, p, yy ] );
 
@@ -65,7 +65,7 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'getPath', () => {
 		it( 'should return empty array', () => {
-			const frag = new ModelDocumentFragment( [ new Text( 'x' ), new Element( 'p' ), new Text( 'y' ) ] );
+			const frag = new ModelDocumentFragment( [ new Text( 'x' ), new ModelElement( 'p' ), new Text( 'y' ) ] );
 
 			expect( frag.getPath() ).to.deep.equal( [] );
 		} );
@@ -119,7 +119,7 @@ describe( 'DocumentFragment', () => {
 		let frag;
 
 		beforeEach( () => {
-			frag = new Element( 'elem', [], [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+			frag = new ModelElement( 'elem', [], [ new ModelElement( 'p' ), new Text( 'bar' ), new ModelElement( 'h' ) ] );
 		} );
 
 		it( 'should return index of a node that occupies given offset in this element', () => {
@@ -165,7 +165,7 @@ describe( 'DocumentFragment', () => {
 			expect( frag.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'abc' );
 
 			frag._removeChildren( 0, 1 );
-			frag._insertChild( 0, [ new Element( 'p' ), 'abc' ] );
+			frag._insertChild( 0, [ new ModelElement( 'p' ), 'abc' ] );
 
 			expect( frag.childCount ).to.equal( 2 );
 			expect( frag.maxOffset ).to.equal( 4 );
@@ -202,7 +202,7 @@ describe( 'DocumentFragment', () => {
 
 	describe( '_removeChildren', () => {
 		it( 'should remove children from the element and return them as an array', () => {
-			const frag = new ModelDocumentFragment( [ new Text( 'foobar' ), new Element( 'imageBlock' ) ] );
+			const frag = new ModelDocumentFragment( [ new Text( 'foobar' ), new ModelElement( 'imageBlock' ) ] );
 			const removed = frag._removeChildren( 1, 1 );
 
 			expect( frag.childCount ).to.equal( 1 );
@@ -215,7 +215,7 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should remove one child when second parameter is not specified', () => {
-			const frag = new ModelDocumentFragment( [ new Text( 'foo' ), new Element( 'imageBlock' ) ] );
+			const frag = new ModelDocumentFragment( [ new Text( 'foo' ), new ModelElement( 'imageBlock' ) ] );
 			const removed = frag._removeChildren( 0 );
 
 			expect( frag.childCount ).to.equal( 1 );
@@ -250,7 +250,7 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'getChildIndex', () => {
 		it( 'should return child index', () => {
-			const frag = new ModelDocumentFragment( [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+			const frag = new ModelDocumentFragment( [ new ModelElement( 'p' ), new Text( 'bar' ), new ModelElement( 'h' ) ] );
 			const p = frag.getChild( 0 );
 			const textBAR = frag.getChild( 1 );
 			const h = frag.getChild( 2 );
@@ -263,7 +263,7 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'getChildStartOffset', () => {
 		it( 'should return child start offset', () => {
-			const frag = new ModelDocumentFragment( [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+			const frag = new ModelDocumentFragment( [ new ModelElement( 'p' ), new Text( 'bar' ), new ModelElement( 'h' ) ] );
 
 			const p = frag.getChild( 0 );
 			const textBAR = frag.getChild( 1 );
@@ -275,9 +275,9 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should return null if node is not a child of that document fragment', () => {
-			const frag = new ModelDocumentFragment( [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+			const frag = new ModelDocumentFragment( [ new ModelElement( 'p' ), new Text( 'bar' ), new ModelElement( 'h' ) ] );
 
-			const p = new Element( 'p' );
+			const p = new ModelElement( 'p' );
 
 			expect( frag.getChildStartOffset( p ) ).to.equal( null );
 		} );
@@ -285,7 +285,7 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'getChildAtOffset', () => {
 		it( 'should return child at given offset', () => {
-			const frag = new ModelDocumentFragment( [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+			const frag = new ModelDocumentFragment( [ new ModelElement( 'p' ), new Text( 'bar' ), new ModelElement( 'h' ) ] );
 
 			const p = frag.getChild( 0 );
 			const textBAR = frag.getChild( 1 );
@@ -299,7 +299,7 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should return null for incorrect offset', () => {
-			const frag = new ModelDocumentFragment( [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+			const frag = new ModelDocumentFragment( [ new ModelElement( 'p' ), new Text( 'bar' ), new ModelElement( 'h' ) ] );
 
 			expect( frag.getChildAtOffset( -1 ) ).to.be.null;
 			expect( frag.getChildAtOffset( 5 ) ).to.be.null;
@@ -330,10 +330,10 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should serialize document fragment with children', () => {
-			const img = new Element( 'img' );
-			const one = new Element( 'one' );
-			const two = new Element( 'two', null, [ new Text( 'ba' ), img, new Text( 'r' ) ] );
-			const three = new Element( 'three' );
+			const img = new ModelElement( 'img' );
+			const one = new ModelElement( 'one' );
+			const two = new ModelElement( 'two', null, [ new Text( 'ba' ), img, new Text( 'r' ) ] );
+			const three = new ModelElement( 'three' );
 
 			const frag = new ModelDocumentFragment( [ one, two, three ] );
 
@@ -363,7 +363,7 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should create element with children', () => {
-			const p = new Element( 'p' );
+			const p = new ModelElement( 'p' );
 			const foo = new Text( 'foo' );
 			const frag = new ModelDocumentFragment( [ p, foo ] );
 
@@ -389,9 +389,9 @@ describe( 'DocumentFragment', () => {
 
 		it( 'should return a descendant of this node', () => {
 			const foo = new Text( 'foo' );
-			const image = new Element( 'imageBlock' );
-			const element = new Element( 'elem', [], [
-				new Element( 'elem', [], [
+			const image = new ModelElement( 'imageBlock' );
+			const element = new ModelElement( 'elem', [], [
+				new ModelElement( 'elem', [], [
 					foo,
 					image
 				] )
@@ -410,10 +410,10 @@ describe( 'DocumentFragment', () => {
 			const bar = new Text( 'bar' );
 			const foo = new Text( 'foo' );
 			const bom = new Text( 'bom' );
-			const bold = new Element( 'b', [], [
+			const bold = new ModelElement( 'b', [], [
 				bar
 			] );
-			const paragraph = new Element( 'paragraph', [], [
+			const paragraph = new ModelElement( 'paragraph', [], [
 				foo,
 				bold,
 				bom

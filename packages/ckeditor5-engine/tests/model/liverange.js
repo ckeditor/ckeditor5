@@ -4,7 +4,7 @@
  */
 
 import { Model } from '../../src/model/model.js';
-import { Element } from '../../src/model/element.js';
+import { ModelElement } from '../../src/model/element.js';
 import { Position } from '../../src/model/position.js';
 import { LiveRange } from '../../src/model/liverange.js';
 import { Range } from '../../src/model/range.js';
@@ -22,18 +22,18 @@ describe( 'LiveRange', () => {
 		root = doc.createRoot();
 
 		const lis = [
-			new Element( 'li', [], new Text( 'aaaaaaaaaa' ) ),
-			new Element( 'li', [], new Text( 'bbbbbbbbbb' ) ),
-			new Element( 'li', [], new Text( 'cccccccccc' ) ),
-			new Element( 'li', [], new Text( 'dddddddddd' ) ),
-			new Element( 'li', [], new Text( 'eeeeeeeeee' ) ),
-			new Element( 'li', [], new Text( 'ffffffffff' ) ),
-			new Element( 'li', [], new Text( 'gggggggggg' ) ),
-			new Element( 'li', [], new Text( 'hhhhhhhhhh' ) )
+			new ModelElement( 'li', [], new Text( 'aaaaaaaaaa' ) ),
+			new ModelElement( 'li', [], new Text( 'bbbbbbbbbb' ) ),
+			new ModelElement( 'li', [], new Text( 'cccccccccc' ) ),
+			new ModelElement( 'li', [], new Text( 'dddddddddd' ) ),
+			new ModelElement( 'li', [], new Text( 'eeeeeeeeee' ) ),
+			new ModelElement( 'li', [], new Text( 'ffffffffff' ) ),
+			new ModelElement( 'li', [], new Text( 'gggggggggg' ) ),
+			new ModelElement( 'li', [], new Text( 'hhhhhhhhhh' ) )
 		];
 
-		ul = new Element( 'ul', [], lis );
-		p = new Element( 'p', [], new Text( 'qwertyuiop' ) );
+		ul = new ModelElement( 'ul', [], lis );
+		p = new ModelElement( 'p', [], new Text( 'qwertyuiop' ) );
 
 		root._insertChild( 0, [ ul, p, new Text( 'xyzxyz' ) ] );
 	} );
@@ -243,7 +243,7 @@ describe( 'LiveRange', () => {
 
 			it( 'is at a position before a node from range start path', () => {
 				model.change( writer => {
-					writer.insert( new Element( 'li' ), new Position( root, [ 0, 0 ] ) );
+					writer.insert( new ModelElement( 'li' ), new Position( root, [ 0, 0 ] ) );
 				} );
 
 				expect( live.start.path ).to.deep.equal( [ 0, 2, 4 ] );
@@ -253,7 +253,7 @@ describe( 'LiveRange', () => {
 
 			it( 'is at a position before a node from range end path', () => {
 				model.change( writer => {
-					writer.insert( new Element( 'li' ), new Position( root, [ 0, 2 ] ) );
+					writer.insert( new ModelElement( 'li' ), new Position( root, [ 0, 2 ] ) );
 				} );
 
 				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
@@ -781,7 +781,7 @@ describe( 'LiveRange', () => {
 
 			it( 'is to a position after a node from range end path', () => {
 				model.change( writer => {
-					writer.insert( new Element( 'li' ), new Position( root, [ 3 ] ) );
+					writer.insert( new ModelElement( 'li' ), new Position( root, [ 3 ] ) );
 				} );
 
 				expect( live.isEqual( clone ) ).to.be.true;
@@ -790,7 +790,7 @@ describe( 'LiveRange', () => {
 
 			it( 'is in different root', () => {
 				model.change( writer => {
-					writer.insert( new Element( 'li' ), new Position( otherRoot, [ 0 ] ) );
+					writer.insert( new ModelElement( 'li' ), new Position( otherRoot, [ 0 ] ) );
 				} );
 
 				expect( live.isEqual( clone ) ).to.be.true;

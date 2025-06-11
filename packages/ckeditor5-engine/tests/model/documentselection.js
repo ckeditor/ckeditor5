@@ -5,7 +5,7 @@
 
 import { Model } from '../../src/model/model.js';
 import { Batch } from '../../src/model/batch.js';
-import { Element } from '../../src/model/element.js';
+import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { Range } from '../../src/model/range.js';
 import { Position } from '../../src/model/position.js';
@@ -31,13 +31,13 @@ describe( 'DocumentSelection', () => {
 		doc = model.document;
 		root = doc.createRoot();
 		root._appendChild( [
-			new Element( 'p' ),
-			new Element( 'p' ),
-			new Element( 'p', [], new Text( 'foobar' ) ),
-			new Element( 'p' ),
-			new Element( 'p' ),
-			new Element( 'p' ),
-			new Element( 'p', [], new Text( 'foobar' ) )
+			new ModelElement( 'p' ),
+			new ModelElement( 'p' ),
+			new ModelElement( 'p', [], new Text( 'foobar' ) ),
+			new ModelElement( 'p' ),
+			new ModelElement( 'p' ),
+			new ModelElement( 'p' ),
+			new ModelElement( 'p', [], new Text( 'foobar' ) )
 		] );
 		selection = doc.selection;
 		model.schema.register( 'p', { inheritAllFrom: '$block' } );
@@ -91,8 +91,8 @@ describe( 'DocumentSelection', () => {
 			doc = model.document;
 			root = doc.createRoot();
 			root._insertChild( 0, [
-				new Element( 'img' ),
-				new Element( 'p', [], new Text( 'foobar' ) )
+				new ModelElement( 'img' ),
+				new ModelElement( 'p', [], new Text( 'foobar' ) )
 			] );
 			model.schema.register( 'img' );
 			model.schema.register( 'p', { inheritAllFrom: '$block' } );
@@ -114,7 +114,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should be false for the default range (object selection) ', () => {
-			root._insertChild( 0, new Element( 'widget' ) );
+			root._insertChild( 0, new ModelElement( 'widget' ) );
 
 			expect( selection.isCollapsed ).to.be.false;
 		} );
@@ -134,7 +134,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should equal the default range\'s start (object selection)', () => {
-			root._insertChild( 0, new Element( 'widget' ) );
+			root._insertChild( 0, new ModelElement( 'widget' ) );
 
 			const expectedPos = new Position( root, [ 0 ] );
 
@@ -156,7 +156,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should equal the default range\'s end (object selection)', () => {
-			root._insertChild( 0, new Element( 'widget' ) );
+			root._insertChild( 0, new ModelElement( 'widget' ) );
 
 			const expectedPos = new Position( root, [ 1 ] );
 
@@ -441,7 +441,7 @@ describe( 'DocumentSelection', () => {
 		it( 'should add marker of selected widget', () => {
 			selection.observeMarkers( 'marker' );
 
-			root._insertChild( 0, new Element( 'widget' ) );
+			root._insertChild( 0, new ModelElement( 'widget' ) );
 
 			model.change( writer => {
 				writer.setSelection( writer.createRange(
@@ -1052,8 +1052,8 @@ describe( 'DocumentSelection', () => {
 		beforeEach( () => {
 			root._removeChildren( 0, root.childCount );
 			root._appendChild( [
-				new Element( 'p', [], new Text( 'foobar' ) ),
-				new Element( 'p', [], [] )
+				new ModelElement( 'p', [], new Text( 'foobar' ) ),
+				new ModelElement( 'p', [], [] )
 			] );
 
 			fullP = root.getChild( 0 );
@@ -1112,15 +1112,15 @@ describe( 'DocumentSelection', () => {
 		describe( 'are updated on a direct range change', () => {
 			beforeEach( () => {
 				root._insertChild( 0, [
-					new Element( 'p', { p: true } ),
+					new ModelElement( 'p', { p: true } ),
 					new Text( 'a', { a: true } ),
-					new Element( 'p', { p: true } ),
+					new ModelElement( 'p', { p: true } ),
 					new Text( 'b', { b: true } ),
 					new Text( 'c', { c: true } ),
-					new Element( 'p', [], [
+					new ModelElement( 'p', [], [
 						new Text( 'd', { d: true } )
 					] ),
-					new Element( 'p', { p: true } ),
+					new ModelElement( 'p', { p: true } ),
 					new Text( 'e', { e: true } )
 				] );
 			} );
@@ -1327,7 +1327,7 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'are removed when containing element is merged with a non-empty element', () => {
-				const emptyP2 = new Element( 'p', null, 'x' );
+				const emptyP2 = new ModelElement( 'p', null, 'x' );
 				root._appendChild( emptyP2 );
 
 				emptyP._setAttribute( fooStoreAttrKey, 'bar' );
@@ -1370,7 +1370,7 @@ describe( 'DocumentSelection', () => {
 			} );
 
 			it( 'are not removed or merged when containing element is merged with another empty element', () => {
-				const emptyP2 = new Element( 'p', null );
+				const emptyP2 = new ModelElement( 'p', null );
 				root._appendChild( emptyP2 );
 
 				emptyP._setAttribute( fooStoreAttrKey, 'bar' );
@@ -1754,8 +1754,8 @@ describe( 'DocumentSelection', () => {
 		beforeEach( () => {
 			root._removeChildren( 0, root.childCount );
 			root._insertChild( 0, [
-				new Element( 'p', [], new Text( 'abcdef' ) ),
-				new Element( 'p', [], new Text( 'foobar' ) ),
+				new ModelElement( 'p', [], new Text( 'abcdef' ) ),
+				new ModelElement( 'p', [], new Text( 'foobar' ) ),
 				new Text( 'xyz' )
 			] );
 
@@ -2064,7 +2064,7 @@ describe( 'DocumentSelection', () => {
 				model.applyOperation(
 					new InsertOperation(
 						new Position( root, [ 0 ] ),
-						new Element( 'p' ),
+						new ModelElement( 'p' ),
 						doc.version
 					)
 				);
@@ -2106,7 +2106,9 @@ describe( 'DocumentSelection', () => {
 
 				root._removeChildren( 0, root.childCount );
 				root._insertChild( 0, [
-					new Element( 'outer', [], [ new Element( 'inner' ), new Element( 'inner' ), new Element( 'inner' ) ] )
+					new ModelElement( 'outer', [], [
+						new ModelElement( 'inner' ), new ModelElement( 'inner' ), new ModelElement( 'inner' )
+					] )
 				] );
 
 				const ranges = [
@@ -2156,8 +2158,8 @@ describe( 'DocumentSelection', () => {
 		it( '`DocumentSelection#change:range` event should be fire once even if selection contains multi-ranges', () => {
 			root._removeChildren( 0, root.childCount );
 			root._insertChild( 0, [
-				new Element( 'p', [], new Text( 'abcdef' ) ),
-				new Element( 'p', [], new Text( 'foobar' ) ),
+				new ModelElement( 'p', [], new Text( 'abcdef' ) ),
+				new ModelElement( 'p', [], new Text( 'foobar' ) ),
 				new Text( 'xyz #2' )
 			] );
 

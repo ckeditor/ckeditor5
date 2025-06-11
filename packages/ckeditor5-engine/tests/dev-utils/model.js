@@ -6,7 +6,7 @@
 import { _stringifyModel, _parseModel, _getModelData, _setModelData } from '../../src/dev-utils/model.js';
 import { Model } from '../../src/model/model.js';
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
-import { Element } from '../../src/model/element.js';
+import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { Range } from '../../src/model/range.js';
 import { Position } from '../../src/model/position.js';
@@ -56,7 +56,7 @@ describe( 'model test utils', () => {
 	describe( 'getData', () => {
 		it( 'should use stringify method', () => {
 			const stringifySpy = sinon.spy( _getModelData, '_stringify' );
-			root._appendChild( new Element( 'b', null, new Text( 'btext' ) ) );
+			root._appendChild( new ModelElement( 'b', null, new Text( 'btext' ) ) );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<b>btext</b>' );
 			sinon.assert.calledOnce( stringifySpy );
@@ -65,7 +65,7 @@ describe( 'model test utils', () => {
 
 		it( 'should use stringify method with selection', () => {
 			const stringifySpy = sinon.spy( _getModelData, '_stringify' );
-			root._appendChild( new Element( 'b', null, new Text( 'btext' ) ) );
+			root._appendChild( new ModelElement( 'b', null, new Text( 'btext' ) ) );
 			model.change( writer => {
 				writer.setSelection( new Range( Position._createAt( root, 0 ), Position._createAt( root, 1 ) ) );
 			} );
@@ -232,8 +232,8 @@ describe( 'model test utils', () => {
 		} );
 
 		it( 'should stringify element', () => {
-			const element = new Element( 'a', null, [
-				new Element( 'b', null, new Text( 'btext' ) ),
+			const element = new ModelElement( 'a', null, [
+				new ModelElement( 'b', null, new Text( 'btext' ) ),
 				new Text( 'atext' )
 			] );
 
@@ -242,7 +242,7 @@ describe( 'model test utils', () => {
 
 		it( 'should stringify document fragment', () => {
 			const fragment = new ModelDocumentFragment( [
-				new Element( 'b', null, new Text( 'btext' ) ),
+				new ModelElement( 'b', null, new Text( 'btext' ) ),
 				new Text( 'atext' )
 			] );
 
@@ -251,13 +251,13 @@ describe( 'model test utils', () => {
 
 		it( 'writes elements and texts', () => {
 			root._appendChild( [
-				new Element( 'a', null, new Text( 'atext' ) ),
-				new Element( 'b', null, [
-					new Element( 'c1' ),
+				new ModelElement( 'a', null, new Text( 'atext' ) ),
+				new ModelElement( 'b', null, [
+					new ModelElement( 'c1' ),
 					new Text( 'ctext' ),
-					new Element( 'c2' )
+					new ModelElement( 'c2' )
 				] ),
-				new Element( 'd' )
+				new ModelElement( 'd' )
 			] );
 
 			expect( _stringifyModel( root ) ).to.equal(
@@ -267,8 +267,8 @@ describe( 'model test utils', () => {
 
 		it( 'writes element attributes', () => {
 			root._appendChild(
-				new Element( 'a', { foo: true, bar: 1, car: false }, [
-					new Element( 'b', { fooBar: 'x y', barFoo: { x: 1, y: 2 } } )
+				new ModelElement( 'a', { foo: true, bar: 1, car: false }, [
+					new ModelElement( 'b', { fooBar: 'x y', barFoo: { x: 1, y: 2 } } )
 				] )
 			);
 
@@ -284,7 +284,7 @@ describe( 'model test utils', () => {
 				new Text( 'foo', { bold: true } ),
 				new Text( 'bar' ),
 				new Text( 'bom', { bold: true, italic: true } ),
-				new Element( 'a', null, [
+				new ModelElement( 'a', null, [
 					new Text( 'pom', { underline: true, bold: true } )
 				] )
 			] );
@@ -305,8 +305,8 @@ describe( 'model test utils', () => {
 			let elA, elB;
 
 			beforeEach( () => {
-				elA = new Element( 'a' );
-				elB = new Element( 'b' );
+				elA = new ModelElement( 'a' );
+				elB = new ModelElement( 'b' );
 
 				root._appendChild( [
 					elA,
@@ -475,7 +475,7 @@ describe( 'model test utils', () => {
 			data: '[<a></a>]',
 			check( el, selection ) {
 				const fragment = el.parent;
-				expect( el ).to.be.instanceOf( Element );
+				expect( el ).to.be.instanceOf( ModelElement );
 				expect( fragment ).to.be.instanceOf( ModelDocumentFragment );
 				expect( selection.rangeCount ).to.equal( 1 );
 
@@ -541,7 +541,7 @@ describe( 'model test utils', () => {
 		test( 'returns single parsed element', {
 			data: '<paragraph></paragraph>',
 			check( p ) {
-				expect( p instanceof Element ).to.be.true;
+				expect( p instanceof ModelElement ).to.be.true;
 			}
 		} );
 

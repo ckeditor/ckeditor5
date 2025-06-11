@@ -6,7 +6,7 @@
 import { Client, expectClients, syncClients, clearBuffer } from './utils.js';
 
 import { ModelDocumentFragment } from '../../../../src/model/documentfragment.js';
-import { Element } from '../../../../src/model/element.js';
+import { ModelElement } from '../../../../src/model/element.js';
 import { Text } from '../../../../src/model/text.js';
 
 describe( 'transform', () => {
@@ -682,7 +682,7 @@ describe( 'transform', () => {
 			expectClients( '<heading1>FooFoobarbar</heading1>' );
 
 			function getPastedContent() {
-				return new Element( 'heading1', null, new Text( 'Foobar' ) );
+				return new ModelElement( 'heading1', null, new Text( 'Foobar' ) );
 			}
 		} );
 
@@ -717,8 +717,8 @@ describe( 'transform', () => {
 			function pasteContent() {
 				john.editor.model.insertContent(
 					new ModelDocumentFragment( [
-						new Element( 'heading1', null, new Text( 'Foo' ) ),
-						new Element( 'paragraph', null, new Text( 'Bar' ) )
+						new ModelElement( 'heading1', null, new Text( 'Foo' ) ),
+						new ModelElement( 'paragraph', null, new Text( 'Bar' ) )
 					] )
 				);
 			}
@@ -731,8 +731,8 @@ describe( 'transform', () => {
 
 			john.editor.model.insertContent(
 				new ModelDocumentFragment( [
-					new Element( 'paragraph', null, new Text( 'Foo' ) ),
-					new Element( 'paragraph', null, new Text( 'Bar' ) )
+					new ModelElement( 'paragraph', null, new Text( 'Foo' ) ),
+					new ModelElement( 'paragraph', null, new Text( 'Bar' ) )
 				] )
 			);
 

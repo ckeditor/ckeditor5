@@ -8,7 +8,7 @@ import { Schema, SchemaContext } from '../../src/model/schema.js';
 import { Model } from '../../src/model/model.js';
 
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
-import { Element } from '../../src/model/element.js';
+import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { TextProxy } from '../../src/model/textproxy.js';
 import { Position } from '../../src/model/position.js';
@@ -25,11 +25,11 @@ describe( 'Schema', () => {
 	beforeEach( () => {
 		schema = new Schema();
 
-		root1 = new Element( '$root', null, [
-			new Element( 'paragraph', null, 'foo' ),
-			new Element( 'paragraph', { align: 'right' }, 'bar' ),
-			new Element( 'blockQuote', null, [
-				new Element( 'paragraph', null, 'foo' )
+		root1 = new ModelElement( '$root', null, [
+			new ModelElement( 'paragraph', null, 'foo' ),
+			new ModelElement( 'paragraph', { align: 'right' }, 'bar' ),
+			new ModelElement( 'blockQuote', null, [
+				new ModelElement( 'paragraph', null, 'foo' )
 			] )
 		] );
 		r1p1 = root1.getChild( 0 );
@@ -37,7 +37,7 @@ describe( 'Schema', () => {
 		r1bQ = root1.getChild( 2 );
 		r1bQp = r1bQ.getChild( 0 );
 
-		root2 = new Element( '$root2' );
+		root2 = new ModelElement( '$root2' );
 	} );
 
 	describe( 'register()', () => {
@@ -309,7 +309,7 @@ describe( 'Schema', () => {
 				isBlock: true
 			} );
 
-			expect( schema.getDefinition( new Element( 'foo' ) ).isBlock ).to.be.true;
+			expect( schema.getDefinition( new ModelElement( 'foo' ) ).isBlock ).to.be.true;
 		} );
 
 		it( 'returns a definition based on a text node', () => {
@@ -981,32 +981,32 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'returns false if a block cannot be merged with other block (disallowed element is the first child)', () => {
-			const paragraph = new Element( 'paragraph', null, [
+			const paragraph = new ModelElement( 'paragraph', null, [
 				new Text( 'xyz' )
 			] );
-			const blockQuote = new Element( 'blockQuote', null, [ paragraph ] );
-			const listItem = new Element( 'listItem' );
+			const blockQuote = new ModelElement( 'blockQuote', null, [ paragraph ] );
+			const listItem = new ModelElement( 'listItem' );
 
 			expect( schema.checkMerge( listItem, blockQuote ) ).to.be.false;
 		} );
 
 		it( 'returns false if a block cannot be merged with other block (disallowed element is not the first child)', () => {
-			const paragraph = new Element( 'paragraph', null, [
+			const paragraph = new ModelElement( 'paragraph', null, [
 				new Text( 'foo' )
 			] );
-			const blockQuote = new Element( 'blockQuote', null, [
+			const blockQuote = new ModelElement( 'blockQuote', null, [
 				new Text( 'bar', { bold: true } ),
 				new Text( 'xyz' ),
 				paragraph
 			] );
-			const listItem = new Element( 'listItem' );
+			const listItem = new ModelElement( 'listItem' );
 
 			expect( schema.checkMerge( listItem, blockQuote ) ).to.be.false;
 		} );
 
 		it( 'returns true if a block can be merged with other block', () => {
-			const listItem = new Element( 'listItem' );
-			const listItemToMerge = new Element( 'listItem', null, [
+			const listItem = new ModelElement( 'listItem' );
+			const listItemToMerge = new ModelElement( 'listItem', null, [
 				new Text( 'xyz' )
 			] );
 
@@ -1014,15 +1014,15 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'return true if two elements between the position can be merged', () => {
-			const listItem = new Element( 'listItem', null, [
+			const listItem = new ModelElement( 'listItem', null, [
 				new Text( 'foo' )
 			] );
-			const listItemToMerge = new Element( 'listItem', null, [
+			const listItemToMerge = new ModelElement( 'listItem', null, [
 				new Text( 'bar' )
 			] );
 
 			// eslint-disable-next-line no-new
-			new Element( '$root', null, [
+			new ModelElement( '$root', null, [
 				listItem, listItemToMerge
 			] );
 			const position = Position._createAfter( listItem );
@@ -1031,40 +1031,40 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'return false if elements on the left is a block object', () => {
-			const left = new Element( 'blockObject' );
-			const right = new Element( 'paragraph' );
+			const left = new ModelElement( 'blockObject' );
+			const right = new ModelElement( 'paragraph' );
 
 			expect( schema.checkMerge( left, right ) ).to.be.false;
 		} );
 
 		it( 'return false if elements on the right is a block object', () => {
-			const left = new Element( 'paragraph' );
-			const right = new Element( 'blockObject' );
+			const left = new ModelElement( 'paragraph' );
+			const right = new ModelElement( 'blockObject' );
 
 			expect( schema.checkMerge( left, right ) ).to.be.false;
 		} );
 
 		it( 'return false if both elements are block objects', () => {
-			const left = new Element( 'blockObject' );
-			const right = new Element( 'blockObject' );
+			const left = new ModelElement( 'blockObject' );
+			const right = new ModelElement( 'blockObject' );
 
 			expect( schema.checkMerge( left, right ) ).to.be.false;
 		} );
 
 		it( 'return false if both elements are inline objects', () => {
-			const left = new Element( 'inlineObject' );
-			const right = new Element( 'inlineObject' );
+			const left = new ModelElement( 'inlineObject' );
+			const right = new ModelElement( 'inlineObject' );
 
 			expect( schema.checkMerge( left, right ) ).to.be.false;
 		} );
 
 		it( 'throws an error if there is no element before the position', () => {
-			const listItem = new Element( 'listItem', null, [
+			const listItem = new ModelElement( 'listItem', null, [
 				new Text( 'foo' )
 			] );
 
 			// eslint-disable-next-line no-new
-			new Element( '$root', null, [
+			new ModelElement( '$root', null, [
 				listItem
 			] );
 
@@ -1076,12 +1076,12 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'throws an error if the node before the position is not the element', () => {
-			const listItem = new Element( 'listItem', null, [
+			const listItem = new ModelElement( 'listItem', null, [
 				new Text( 'foo' )
 			] );
 
 			// eslint-disable-next-line no-new
-			new Element( '$root', null, [
+			new ModelElement( '$root', null, [
 				new Text( 'bar' ),
 				listItem
 			] );
@@ -1094,12 +1094,12 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'throws an error if there is no element after the position', () => {
-			const listItem = new Element( 'listItem', null, [
+			const listItem = new ModelElement( 'listItem', null, [
 				new Text( 'foo' )
 			] );
 
 			// eslint-disable-next-line no-new
-			new Element( '$root', null, [
+			new ModelElement( '$root', null, [
 				listItem
 			] );
 
@@ -1111,12 +1111,12 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'throws an error if the node after the position is not the element', () => {
-			const listItem = new Element( 'listItem', null, [
+			const listItem = new ModelElement( 'listItem', null, [
 				new Text( 'foo' )
 			] );
 
 			// eslint-disable-next-line no-new
-			new Element( '$root', null, [
+			new ModelElement( '$root', null, [
 				listItem,
 				new Text( 'bar' )
 			] );
@@ -1132,13 +1132,13 @@ describe( 'Schema', () => {
 		// in the first place. However, the check is focused on the elementToMerge's children so let's make sure
 		// that only them counts.
 		it( 'returns true if element to merge contains a valid content but base element contains disallowed elements', () => {
-			const listItem = new Element( 'listItem', null, [
+			const listItem = new ModelElement( 'listItem', null, [
 				new Text( 'foo' ),
-				new Element( 'paragraph', null, [
+				new ModelElement( 'paragraph', null, [
 					new Text( 'bar' )
 				] )
 			] );
-			const listItemToMerge = new Element( 'listItem', null, [
+			const listItemToMerge = new ModelElement( 'listItem', null, [
 				new Text( 'xyz' )
 			] );
 
@@ -1943,7 +1943,7 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'should return position ancestor that allows to insert given node to it', () => {
-			const node = new Element( 'paragraph' );
+			const node = new ModelElement( 'paragraph' );
 
 			const allowedParent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), node );
 
@@ -1971,7 +1971,7 @@ describe( 'Schema', () => {
 			schema.register( 'div', {
 				allowIn: '$root'
 			} );
-			const node = new Element( 'div' );
+			const node = new ModelElement( 'div' );
 
 			const parent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), node );
 
@@ -1985,7 +1985,7 @@ describe( 'Schema', () => {
 			schema.register( 'div', {
 				allowIn: '$root'
 			} );
-			const node = new Element( 'div' );
+			const node = new ModelElement( 'div' );
 
 			const parent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), node );
 
@@ -1993,7 +1993,7 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'should return null when there is no allowed ancestor for given position', () => {
-			const node = new Element( 'section' );
+			const node = new ModelElement( 'section' );
 
 			const parent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), node );
 
@@ -2035,7 +2035,7 @@ describe( 'Schema', () => {
 			schema.extend( 'imageBlock', { allowAttributes: 'b' } );
 
 			const text = new Text( 'foo', { a: 1, b: 1 } );
-			const image = new Element( 'imageBlock', { a: 1, b: 1 } );
+			const image = new ModelElement( 'imageBlock', { a: 1, b: 1 } );
 
 			root._appendChild( [ text, image ] );
 
@@ -2057,7 +2057,7 @@ describe( 'Schema', () => {
 		it( 'should filter out disallowed attributes from empty element', () => {
 			schema.extend( 'div', { allowAttributes: 'a' } );
 
-			const div = new Element( 'div', { a: 1, b: 1 } );
+			const div = new ModelElement( 'div', { a: 1, b: 1 } );
 
 			root._appendChild( [ div ] );
 
@@ -2099,10 +2099,10 @@ describe( 'Schema', () => {
 
 			const foo = new Text( 'foo', { a: 1, b: 1 } );
 			const bar = new Text( 'bar', { a: 1, b: 1 } );
-			const imageInDiv = new Element( 'imageBlock', { a: 1, b: 1 } );
-			const imageInParagraph = new Element( 'imageBlock', { a: 1, b: 1 } );
-			const paragraph = new Element( 'paragraph', { a: 1, b: 1 }, [ foo, imageInParagraph ] );
-			const div = new Element( 'div', [], [ paragraph, bar, imageInDiv ] );
+			const imageInDiv = new ModelElement( 'imageBlock', { a: 1, b: 1 } );
+			const imageInParagraph = new ModelElement( 'imageBlock', { a: 1, b: 1 } );
+			const paragraph = new ModelElement( 'paragraph', { a: 1, b: 1 }, [ foo, imageInParagraph ] );
+			const div = new ModelElement( 'div', [], [ paragraph, bar, imageInDiv ] );
 
 			root._appendChild( [ div ] );
 
@@ -2128,7 +2128,7 @@ describe( 'Schema', () => {
 			schema.extend( '$text', { allowAttributes: 'b' } );
 
 			const foo = new Text( 'foo', { a: 1, b: 1 } );
-			const div = new Element( 'div', { a: 1, b: 1 }, [ foo ] );
+			const div = new ModelElement( 'div', { a: 1, b: 1 }, [ foo ] );
 
 			root._appendChild( [ div ] );
 
@@ -2144,7 +2144,7 @@ describe( 'Schema', () => {
 			const a = new Text( 'a', { a: 1, b: 1 } );
 			const b = new Text( 'b', { b: 1 } );
 			const c = new Text( 'c', { a: 1, b: 1 } );
-			const div = new Element( 'div', [], [ a, b, c ] );
+			const div = new ModelElement( 'div', [], [ a, b, c ] );
 
 			root._appendChild( [ div ] );
 
@@ -2159,7 +2159,7 @@ describe( 'Schema', () => {
 			const foo = new Text( 'foo', { a: 1 } );
 			const bar = new Text( 'bar', { a: 1, b: 1 } );
 			const biz = new Text( 'biz', { a: 1 } );
-			const div = new Element( 'div', [], [ foo, bar, biz ] );
+			const div = new ModelElement( 'div', [], [ foo, bar, biz ] );
 
 			root._appendChild( [ div ] );
 
@@ -2375,10 +2375,10 @@ describe( 'Schema', () => {
 					allowIn: [ '$root', 'div' ]
 				} );
 
-				const div = new Element( 'div' );
+				const div = new ModelElement( 'div' );
 				root1._appendChild( div );
 
-				const div2 = new Element( 'div' );
+				const div2 = new ModelElement( 'div' );
 
 				expect( schema.checkChild( div, div2 ) ).to.be.true;
 			} );
@@ -2389,7 +2389,7 @@ describe( 'Schema', () => {
 					allowIn: [ '$root', 'div' ]
 				} );
 
-				const div = new Element( 'div' );
+				const div = new ModelElement( 'div' );
 				root1._appendChild( div );
 
 				expect( schema.checkChild( div, div ) ).to.be.true;
@@ -2576,8 +2576,8 @@ describe( 'Schema', () => {
 					allowContentOf: [ '$root', '$root2' ]
 				} );
 
-				const root3 = new Element( '$root3' );
-				const heading1 = new Element( 'heading1' );
+				const root3 = new ModelElement( '$root3' );
+				const heading1 = new ModelElement( 'heading1' );
 
 				expect( schema.checkChild( root3, r1p1 ), 'paragraph' ).to.be.true;
 				expect( schema.checkChild( root3, heading1 ), 'heading1' ).to.be.true;
@@ -2673,7 +2673,7 @@ describe( 'Schema', () => {
 				schema.register( 'c', { allowContentOf: 'b' } );
 				schema.register( 'd', { allowContentOf: 'c' } );
 
-				const d = new Element( 'd' );
+				const d = new ModelElement( 'd' );
 
 				expect( schema.checkChild( d, 'a' ) ).to.be.true;
 			} );
@@ -2766,13 +2766,13 @@ describe( 'Schema', () => {
 
 				schema.register( 'blockQuote' );
 
-				const paragraph = new Element( 'paragraph' );
+				const paragraph = new ModelElement( 'paragraph' );
 				root1._appendChild( paragraph );
 
-				const div = new Element( 'div' );
+				const div = new ModelElement( 'div' );
 				paragraph._appendChild( div );
 
-				const blockQuote = new Element( 'blockQuote' );
+				const blockQuote = new ModelElement( 'blockQuote' );
 				div._appendChild( blockQuote );
 
 				expect( schema.checkChild( root1, paragraph ) ).to.be.true;
@@ -3106,7 +3106,7 @@ describe( 'Schema', () => {
 					disallowChildren: [ 'not-existing-elem' ]
 				} );
 
-				const notExisting = new Element( 'not-existing-elem' );
+				const notExisting = new ModelElement( 'not-existing-elem' );
 				r1p1._appendChild( notExisting );
 
 				expect( schema.checkChild( root1, r1p1 ) ).to.be.true;
@@ -3121,8 +3121,8 @@ describe( 'Schema', () => {
 					disallowIn: [ 'not-existing-elem' ]
 				} );
 
-				const notExisting = new Element( 'not-existing-elem' );
-				const p = new Element( 'paragraph' );
+				const notExisting = new ModelElement( 'not-existing-elem' );
+				const p = new ModelElement( 'paragraph' );
 				root1._appendChild( notExisting );
 
 				expect( schema.checkChild( root1, r1p1 ) ).to.be.true;
@@ -3323,9 +3323,9 @@ describe( 'Schema', () => {
 					allowAttributesOf: 'paragraph'
 				} );
 
-				const baseElem = new Element( 'baseElement' );
-				const p = new Element( 'paragraph' );
-				const pD = new Element( 'paragraphDescendant' );
+				const baseElem = new ModelElement( 'baseElement' );
+				const p = new ModelElement( 'paragraph' );
+				const pD = new ModelElement( 'paragraphDescendant' );
 
 				expect( schema.checkAttribute( baseElem, 'alignment' ) ).to.be.true;
 				expect( schema.checkAttribute( baseElem, 'indent' ) ).to.be.true;
@@ -3368,9 +3368,9 @@ describe( 'Schema', () => {
 					allowAttributes: [ 'indent', 'listStart' ]
 				} );
 
-				const baseElem = new Element( 'baseElement' );
-				const p = new Element( 'paragraph' );
-				const pD = new Element( 'paragraphDescendant' );
+				const baseElem = new ModelElement( 'baseElement' );
+				const p = new ModelElement( 'paragraph' );
+				const pD = new ModelElement( 'paragraphDescendant' );
 
 				expect( schema.checkAttribute( baseElem, 'indent' ) ).to.be.false;
 				expect( schema.checkAttribute( p, 'listStart' ) ).to.be.false;
@@ -3390,7 +3390,7 @@ describe( 'Schema', () => {
 			} );
 
 			it( 'does not break when trying to check registered child in a context which contains non-registered elements', () => {
-				const foo404 = new Element( 'foo404' );
+				const foo404 = new ModelElement( 'foo404' );
 
 				root1._appendChild( foo404 );
 
@@ -3661,20 +3661,20 @@ describe( 'Schema', () => {
 			// 	definitionsCopy.splice( r, 1 )[ 0 ]();
 			// }
 
-			root1 = new Element( '$root', null, [
-				new Element( 'paragraph', null, 'foo' ),
-				new Element( 'paragraph', { alignment: 'right' }, 'bar' ),
-				new Element( 'listItem', { listType: 'x', listIndent: 0 }, 'foo' ),
-				new Element( 'heading1', null, 'foo' ),
-				new Element( 'blockQuote', null, [
-					new Element( 'paragraph', null, 'foo' ),
-					new Element( 'listItem', { listType: 'x', listIndent: 0 }, 'foo' ),
-					new Element( 'imageBlock', null, [
-						new Element( 'caption', null, 'foo' )
+			root1 = new ModelElement( '$root', null, [
+				new ModelElement( 'paragraph', null, 'foo' ),
+				new ModelElement( 'paragraph', { alignment: 'right' }, 'bar' ),
+				new ModelElement( 'listItem', { listType: 'x', listIndent: 0 }, 'foo' ),
+				new ModelElement( 'heading1', null, 'foo' ),
+				new ModelElement( 'blockQuote', null, [
+					new ModelElement( 'paragraph', null, 'foo' ),
+					new ModelElement( 'listItem', { listType: 'x', listIndent: 0 }, 'foo' ),
+					new ModelElement( 'imageBlock', null, [
+						new ModelElement( 'caption', null, 'foo' )
 					] )
 				] ),
-				new Element( 'imageBlock', null, [
-					new Element( 'caption', null, 'foo' )
+				new ModelElement( 'imageBlock', null, [
+					new ModelElement( 'caption', null, 'foo' )
 				] )
 			] );
 			r1p1 = root1.getChild( 0 );
@@ -3764,7 +3764,7 @@ describe( 'Schema', () => {
 		it( 'rejects $root>paragraph>paragraph>$text', () => {
 			// Edge case because p>p should not exist in the first place.
 			// But it's good to know that it blocks also this.
-			const p = new Element( 'p' );
+			const p = new ModelElement( 'p' );
 			r1p1._appendChild( p );
 
 			expect( schema.checkChild( p, '$text' ) ).to.be.false;
@@ -3949,9 +3949,9 @@ describe( 'SchemaContext', () => {
 	let root;
 
 	beforeEach( () => {
-		root = new Element( '$root', null, [
-			new Element( 'blockQuote', { foo: 1 }, [
-				new Element( 'paragraph', { align: 'left' }, [
+		root = new ModelElement( '$root', null, [
+			new ModelElement( 'blockQuote', { foo: 1 }, [
+				new ModelElement( 'paragraph', { align: 'left' }, [
 					new Text( 'foo', { bold: true, italic: true } )
 				] )
 			] )
@@ -4078,7 +4078,7 @@ describe( 'SchemaContext', () => {
 		} );
 
 		it( 'creates context in ModelDocumentFragment - element', () => {
-			const p = new Element( 'paragraph' );
+			const p = new ModelElement( 'paragraph' );
 			const docFrag = new ModelDocumentFragment();
 			docFrag._appendChild( p );
 
@@ -4089,7 +4089,7 @@ describe( 'SchemaContext', () => {
 		} );
 
 		it( 'creates context in ModelDocumentFragment - position', () => {
-			const p = new Element( 'paragraph' );
+			const p = new ModelElement( 'paragraph' );
 			const docFrag = new ModelDocumentFragment( p );
 			const pos = Position._createAt( docFrag.getChild( 0 ), 0 );
 			const ctx = new SchemaContext( pos );
@@ -4166,7 +4166,7 @@ describe( 'SchemaContext', () => {
 
 		it( 'creates new SchemaContext instance with new item - #element', () => {
 			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
-			const parent = new Element( 'parent', null, new Element( 'd' ) );
+			const parent = new ModelElement( 'parent', null, new ModelElement( 'd' ) );
 
 			const newCtx = ctx.push( parent.getChild( 0 ) );
 

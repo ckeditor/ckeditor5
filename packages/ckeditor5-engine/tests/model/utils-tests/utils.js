@@ -11,7 +11,7 @@ import {
 } from '../../../tests/model/_utils/utils.js';
 import { Model } from '../../../src/model/model.js';
 import { Range } from '../../../src/model/range.js';
-import { Element } from '../../../src/model/element.js';
+import { ModelElement } from '../../../src/model/element.js';
 import { Text } from '../../../src/model/text.js';
 import { Node } from '../../../src/model/node.js';
 import { TextProxy } from '../../../src/model/textproxy.js';
@@ -25,8 +25,8 @@ describe( 'getNodesAndText', () => {
 		doc = model.document;
 		root = doc.createRoot();
 
-		div = new Element( 'div', [], new Text( 'foobar' ) );
-		p = new Element( 'p', [], new Text( 'abcxyz' ) );
+		div = new ModelElement( 'div', [], new Text( 'foobar' ) );
+		p = new ModelElement( 'p', [], new Text( 'abcxyz' ) );
 
 		root._insertChild( 0, [ div, p ] );
 	} );
@@ -41,10 +41,10 @@ describe( 'itemAt', () => {
 
 	beforeEach( () => {
 		foo = new Text( 'foo' );
-		img = new Element( 'imageBlock' );
+		img = new ModelElement( 'imageBlock' );
 		bar = new Text( 'bar' );
 
-		element = new Element( 'p', null, [ foo, img, bar ] );
+		element = new ModelElement( 'p', null, [ foo, img, bar ] );
 	} );
 
 	it( 'should return element if it starts at given offset', () => {
@@ -70,14 +70,14 @@ describe( 'itemAt', () => {
 
 describe( 'getText', () => {
 	it( 'should deeply visit each child of given element and concat text data of all visited text nodes', () => {
-		const div = new Element( 'div', null, [
-			new Element( 'p', null, [
+		const div = new ModelElement( 'div', null, [
+			new ModelElement( 'p', null, [
 				new Text( 'aaa', { bold: true } ),
 				new Text( ' bbb' )
 			] ),
 			new Text( 'ccc' ),
 			new Node( { attr: 'value' } ),
-			new Element( 'p', null, [
+			new ModelElement( 'p', null, [
 				new Text( 'ddd' )
 			] )
 		] );
@@ -88,8 +88,8 @@ describe( 'getText', () => {
 
 describe( 'createRangeOnElementOnly', () => {
 	it( 'should create a range that contains only the given element', () => {
-		const parent = new Element( 'parent' );
-		const element = new Element( 'elem' );
+		const parent = new ModelElement( 'parent' );
+		const element = new ModelElement( 'elem' );
 		parent._appendChild( element );
 
 		const range = createRangeOnElementOnly( element );

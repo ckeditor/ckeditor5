@@ -9,7 +9,7 @@ import { Batch } from '../../src/model/batch.js';
 import { InsertOperation } from '../../src/model/operation/insertoperation.js';
 
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
-import { Element } from '../../src/model/element.js';
+import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { Position } from '../../src/model/position.js';
 import { Range } from '../../src/model/range.js';
@@ -70,7 +70,7 @@ describe( 'Writer', () => {
 		it( 'should create element', () => {
 			const element = createElement( 'foo' );
 
-			expect( element ).to.instanceof( Element );
+			expect( element ).to.instanceof( ModelElement );
 			expect( element.name ).to.equal( 'foo' );
 			expect( Array.from( element.getAttributes() ) ).to.length( 0 );
 		} );
@@ -468,7 +468,7 @@ describe( 'Writer', () => {
 
 			expect( parent.childCount ).to.equal( 2 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Text );
-			expect( parent.getChild( 1 ) ).to.instanceof( Element );
+			expect( parent.getChild( 1 ) ).to.instanceof( ModelElement );
 		} );
 
 		it( 'should create and insert text node at the end of given element', () => {
@@ -478,7 +478,7 @@ describe( 'Writer', () => {
 			insertText( 'foo', parent, 'end' );
 
 			expect( parent.childCount ).to.equal( 2 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Element );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
 			expect( parent.getChild( 1 ) ).to.instanceof( Text );
 		} );
 
@@ -491,9 +491,9 @@ describe( 'Writer', () => {
 			insertText( 'foo', parent, 1 );
 
 			expect( parent.childCount ).to.equal( 3 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Element );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
 			expect( parent.getChild( 1 ) ).to.instanceof( Text );
-			expect( parent.getChild( 2 ) ).to.instanceof( Element );
+			expect( parent.getChild( 2 ) ).to.instanceof( ModelElement );
 		} );
 
 		it( 'should create and insert text node before the given node', () => {
@@ -507,9 +507,9 @@ describe( 'Writer', () => {
 			insertText( 'foo', child2, 'before' );
 
 			expect( parent.childCount ).to.equal( 3 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Element );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
 			expect( parent.getChild( 1 ) ).to.instanceof( Text );
-			expect( parent.getChild( 2 ) ).to.instanceof( Element );
+			expect( parent.getChild( 2 ) ).to.instanceof( ModelElement );
 		} );
 
 		it( 'should create and insert text node after the given node', () => {
@@ -523,9 +523,9 @@ describe( 'Writer', () => {
 			insertText( 'foo', child1, 'after' );
 
 			expect( parent.childCount ).to.equal( 3 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Element );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
 			expect( parent.getChild( 1 ) ).to.instanceof( Text );
-			expect( parent.getChild( 2 ) ).to.instanceof( Element );
+			expect( parent.getChild( 2 ) ).to.instanceof( ModelElement );
 		} );
 
 		it( 'should create proper operation', () => {
@@ -558,7 +558,7 @@ describe( 'Writer', () => {
 			insertElement( 'foo', { bar: 'biz' }, new Position( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Element );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
 			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'bar', 'biz' ] ] );
 		} );
@@ -568,7 +568,7 @@ describe( 'Writer', () => {
 			insertElement( 'foo', null, new Position( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Element );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
 			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
 		} );
@@ -578,7 +578,7 @@ describe( 'Writer', () => {
 			insertElement( 'foo', new Position( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Element );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
 			expect( parent.getChild( 0 ).name ).to.equal( 'foo' );
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
 		} );
@@ -1479,8 +1479,8 @@ describe( 'Writer', () => {
 		beforeEach( () => {
 			root = doc.createRoot();
 
-			p1 = new Element( 'p', { key1: 'value1' }, new Text( 'foo' ) );
-			p2 = new Element( 'p', { key2: 'value2' }, new Text( 'bar' ) );
+			p1 = new ModelElement( 'p', { key1: 'value1' }, new Text( 'foo' ) );
+			p2 = new ModelElement( 'p', { key2: 'value2' }, new Text( 'bar' ) );
 
 			root._insertChild( 0, [ p1, p2 ] );
 		} );
@@ -1498,8 +1498,8 @@ describe( 'Writer', () => {
 
 		it( 'should correctly merge in document fragment', () => {
 			const docFrag = new ModelDocumentFragment( [
-				new Element( 'p', null, 'foo' ),
-				new Element( 'p', null, 'bar' )
+				new ModelElement( 'p', null, 'foo' ),
+				new ModelElement( 'p', null, 'bar' )
 			] );
 
 			merge( new Position( docFrag, [ 1 ] ) );
@@ -1601,11 +1601,11 @@ describe( 'Writer', () => {
 		beforeEach( () => {
 			root = doc.createRoot();
 
-			div = new Element( 'div', [], new Text( 'foobar' ) );
-			p = new Element( 'p', [], new Text( 'abcxyz' ) );
+			div = new ModelElement( 'div', [], new Text( 'foobar' ) );
+			p = new ModelElement( 'p', [], new Text( 'abcxyz' ) );
 
-			div._insertChild( 0, [ new Element( 'p', [], new Text( 'gggg' ) ) ] );
-			div._insertChild( 2, [ new Element( 'p', [], new Text( 'hhhh' ) ) ] );
+			div._insertChild( 0, [ new ModelElement( 'p', [], new Text( 'gggg' ) ) ] );
+			div._insertChild( 2, [ new ModelElement( 'p', [], new Text( 'hhhh' ) ) ] );
 
 			root._insertChild( 0, [ div, p ] );
 
@@ -1877,7 +1877,7 @@ describe( 'Writer', () => {
 	describe( 'rename()', () => {
 		it( 'should rename given element', () => {
 			const root = doc.createRoot();
-			const p = new Element( 'p', null, new Text( 'abc' ) );
+			const p = new ModelElement( 'p', null, new Text( 'abc' ) );
 
 			root._appendChild( p );
 
@@ -1889,7 +1889,7 @@ describe( 'Writer', () => {
 
 		it( 'should rename in document fragment', () => {
 			const docFrag = new ModelDocumentFragment();
-			const p = new Element( 'p' );
+			const p = new ModelElement( 'p' );
 
 			docFrag._appendChild( p );
 
@@ -1907,7 +1907,7 @@ describe( 'Writer', () => {
 
 		it( 'should throw when trying to use detached writer', () => {
 			const writer = new Writer( model, batch );
-			const p = new Element( 'p', null, new Text( 'abc' ) );
+			const p = new ModelElement( 'p', null, new Text( 'abc' ) );
 
 			expectToThrowCKEditorError( () => {
 				writer.rename( p, 'h' );
@@ -1921,7 +1921,7 @@ describe( 'Writer', () => {
 		beforeEach( () => {
 			root = doc.createRoot();
 
-			p = new Element( 'p', { key: 'value' }, new Text( 'foobar' ) );
+			p = new ModelElement( 'p', { key: 'value' }, new Text( 'foobar' ) );
 
 			root._insertChild( 0, p );
 		} );
@@ -1946,7 +1946,7 @@ describe( 'Writer', () => {
 
 		it( 'should split inside document fragment', () => {
 			const docFrag = new ModelDocumentFragment();
-			docFrag._appendChild( new Element( 'p', null, new Text( 'foobar' ) ) );
+			docFrag._appendChild( new ModelElement( 'p', null, new Text( 'foobar' ) ) );
 
 			split( new Position( docFrag, [ 0, 3 ] ) );
 
@@ -2001,8 +2001,8 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should split elements to limitElement', () => {
-			const div = new Element( 'div', null, p );
-			const section = new Element( 'section', null, div );
+			const div = new ModelElement( 'div', null, p );
+			const section = new ModelElement( 'section', null, div );
 
 			root._insertChild( 0, section );
 
@@ -2025,8 +2025,8 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when limitElement is not a position ancestor', () => {
-			const div = new Element( 'div', null, p );
-			const section = new Element( 'section', null, div );
+			const div = new ModelElement( 'div', null, p );
+			const section = new ModelElement( 'section', null, div );
 
 			root._insertChild( 0, div );
 			root._insertChild( 1, section );
@@ -2057,7 +2057,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should wrap flat range with given element', () => {
-			const p = new Element( 'p' );
+			const p = new ModelElement( 'p' );
 			wrap( range, p );
 
 			expect( root.maxOffset ).to.equal( 5 );
@@ -2088,7 +2088,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw if range to wrap is not flat', () => {
-			root._insertChild( 1, [ new Element( 'p', [], new Text( 'xyz' ) ) ] );
+			root._insertChild( 1, [ new ModelElement( 'p', [], new Text( 'xyz' ) ) ] );
 			const notFlatRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 6, 2 ] ) );
 
 			expectToThrowCKEditorError( () => {
@@ -2097,7 +2097,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw if element to wrap with has children #1', () => {
-			const p = new Element( 'p', [], new Text( 'a' ) );
+			const p = new ModelElement( 'p', [], new Text( 'a' ) );
 
 			expectToThrowCKEditorError( () => {
 				wrap( range, p );
@@ -2105,7 +2105,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw if element to wrap with has children #2', () => {
-			const p = new Element( 'p' );
+			const p = new ModelElement( 'p' );
 			root._insertChild( 0, p );
 
 			expectToThrowCKEditorError( () => {
@@ -2128,7 +2128,7 @@ describe( 'Writer', () => {
 		beforeEach( () => {
 			root = doc.createRoot();
 
-			p = new Element( 'p', [], new Text( 'xyz' ) );
+			p = new ModelElement( 'p', [], new Text( 'xyz' ) );
 			root._insertChild( 0, [ new Text( 'a' ), p, new Text( 'b' ) ] );
 		} );
 
@@ -2140,7 +2140,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should unwrap inside document fragment', () => {
-			const docFrag = new ModelDocumentFragment( new Element( 'p', null, new Text( 'foo' ) ) );
+			const docFrag = new ModelDocumentFragment( new ModelElement( 'p', null, new Text( 'foo' ) ) );
 
 			unwrap( docFrag.getChild( 0 ) );
 
@@ -2149,7 +2149,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw if element to unwrap has no parent', () => {
-			const element = new Element( 'p' );
+			const element = new ModelElement( 'p' );
 
 			expectToThrowCKEditorError( () => {
 				unwrap( element );
@@ -2763,9 +2763,9 @@ describe( 'Writer', () => {
 
 			root = doc.createRoot();
 			root._appendChild( [
-				new Element( 'p' ),
-				new Element( 'p' ),
-				new Element( 'p', [], new Text( 'foo' ) )
+				new ModelElement( 'p' ),
+				new ModelElement( 'p' ),
+				new ModelElement( 'p', [], new Text( 'foo' ) )
 			] );
 		} );
 
@@ -2800,9 +2800,9 @@ describe( 'Writer', () => {
 
 			root = doc.createRoot();
 			root._appendChild( [
-				new Element( 'p' ),
-				new Element( 'p' ),
-				new Element( 'p', [], new Text( 'foo' ) )
+				new ModelElement( 'p' ),
+				new ModelElement( 'p' ),
+				new ModelElement( 'p', [], new Text( 'foo' ) )
 			] );
 		} );
 
@@ -2836,9 +2836,9 @@ describe( 'Writer', () => {
 
 			root = doc.createRoot();
 			root._appendChild( [
-				new Element( 'p', [], [] ),
-				new Element( 'p' ),
-				new Element( 'p', [], new Text( 'foo' ) )
+				new ModelElement( 'p', [], [] ),
+				new ModelElement( 'p' ),
+				new ModelElement( 'p', [], new Text( 'foo' ) )
 			] );
 
 			rangeInEmptyP = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 0 ] ) );
@@ -2881,9 +2881,9 @@ describe( 'Writer', () => {
 
 			root = doc.createRoot();
 			root._appendChild( [
-				new Element( 'p', [], [] ),
-				new Element( 'p' ),
-				new Element( 'p', [], new Text( 'foo' ) )
+				new ModelElement( 'p', [], [] ),
+				new ModelElement( 'p' ),
+				new ModelElement( 'p', [], new Text( 'foo' ) )
 			] );
 
 			rangeInEmptyP = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 0 ] ) );

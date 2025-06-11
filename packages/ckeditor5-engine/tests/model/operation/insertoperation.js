@@ -5,7 +5,7 @@
 
 import { Model } from '../../../src/model/model.js';
 import { NodeList } from '../../../src/model/nodelist.js';
-import { Element } from '../../../src/model/element.js';
+import { ModelElement } from '../../../src/model/element.js';
 import { InsertOperation } from '../../../src/model/operation/insertoperation.js';
 import { MoveOperation } from '../../../src/model/operation/moveoperation.js';
 import { Position } from '../../../src/model/position.js';
@@ -62,7 +62,7 @@ describe( 'InsertOperation', () => {
 		model.applyOperation(
 			new InsertOperation(
 				new Position( root, [ 0 ] ),
-				new Element( 'p' ),
+				new ModelElement( 'p' ),
 				doc.version
 			)
 		);
@@ -76,7 +76,7 @@ describe( 'InsertOperation', () => {
 		model.applyOperation(
 			new InsertOperation(
 				new Position( root, [ 0 ] ),
-				[ 'bar', new Element( 'p' ), 'foo' ],
+				[ 'bar', new ModelElement( 'p' ), 'foo' ],
 				doc.version
 			)
 		);
@@ -181,8 +181,8 @@ describe( 'InsertOperation', () => {
 
 	it( 'should create operation with the same parameters when cloned', () => {
 		const position = new Position( root, [ 0 ] );
-		const nodeA = new Element( 'a' );
-		const nodeB = new Element( 'b' );
+		const nodeA = new ModelElement( 'a' );
+		const nodeB = new ModelElement( 'b' );
 		const nodes = [ nodeA, nodeB ];
 		const baseVersion = doc.version;
 
@@ -207,7 +207,7 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should save copies of inserted nodes after it is executed', () => {
-		const element = new Element( 'p', { key: 'value' } );
+		const element = new ModelElement( 'p', { key: 'value' } );
 
 		const op = new InsertOperation( new Position( root, [ 0 ] ), element, doc.version );
 		model.applyOperation( op );
@@ -228,7 +228,7 @@ describe( 'InsertOperation', () => {
 
 	describe( '_validate()', () => {
 		it( 'should throw an error if target position does not exist', () => {
-			const element = new Element( 'p' );
+			const element = new ModelElement( 'p' );
 			const op = new InsertOperation( new Position( root, [ 4 ] ), element, doc.version );
 
 			expectToThrowCKEditorError( () => op._validate(), /insert-operation-position-invalid/, model );
@@ -258,7 +258,7 @@ describe( 'InsertOperation', () => {
 			const position = new Position( root, [ 0 ] );
 			const op = new InsertOperation(
 				position,
-				[ new Text( 'x' ), new Element( 'p', [], new Text( 'foo' ) ), 'y' ],
+				[ new Text( 'x' ), new ModelElement( 'p', [], new Text( 'foo' ) ), 'y' ],
 				doc.version
 			);
 

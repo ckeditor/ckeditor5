@@ -4,7 +4,7 @@
  */
 
 import { Model } from '../../src/model/model.js';
-import { Element } from '../../src/model/element.js';
+import { ModelElement } from '../../src/model/element.js';
 import { RootElement } from '../../src/model/rootelement.js';
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 
@@ -15,7 +15,7 @@ describe( 'RootElement', () => {
 			const doc = model.document;
 			const root = new RootElement( doc );
 
-			expect( root ).to.be.an.instanceof( Element );
+			expect( root ).to.be.an.instanceof( ModelElement );
 			expect( root.isAttached() ).to.be.true;
 			expect( root ).to.have.property( 'document' ).that.equals( doc );
 			expect( count( root.getAttributes() ) ).to.equal( 0 );

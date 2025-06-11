@@ -7,7 +7,7 @@ import { Model } from '../../../src/model/model.js';
 import { SplitOperation } from '../../../src/model/operation/splitoperation.js';
 import { MergeOperation } from '../../../src/model/operation/mergeoperation.js';
 import { Position } from '../../../src/model/position.js';
-import { Element } from '../../../src/model/element.js';
+import { ModelElement } from '../../../src/model/element.js';
 import { Text } from '../../../src/model/text.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -61,7 +61,7 @@ describe( 'SplitOperation', () => {
 	} );
 
 	it( 'should split an element', () => {
-		const p1 = new Element( 'p1', null, new Text( 'Foobar' ) );
+		const p1 = new ModelElement( 'p1', null, new Text( 'Foobar' ) );
 
 		root._insertChild( 0, [ p1 ] );
 
@@ -83,8 +83,8 @@ describe( 'SplitOperation', () => {
 	} );
 
 	it( 'should split an element using graveyard element', () => {
-		const p1 = new Element( 'p1', null, new Text( 'Foobar' ) );
-		const p2 = new Element( 'p2' );
+		const p1 = new ModelElement( 'p1', null, new Text( 'Foobar' ) );
+		const p2 = new ModelElement( 'p2' );
 
 		root._insertChild( 0, [ p1 ] );
 		gy._insertChild( 0, [ p2 ] );
@@ -124,7 +124,7 @@ describe( 'SplitOperation', () => {
 	} );
 
 	it( 'should undo split by applying reverse operation', () => {
-		const p1 = new Element( 'p1', null, new Text( 'Foobar' ) );
+		const p1 = new ModelElement( 'p1', null, new Text( 'Foobar' ) );
 
 		root._insertChild( 0, [ p1 ] );
 
@@ -144,7 +144,7 @@ describe( 'SplitOperation', () => {
 
 	describe( '_validate()', () => {
 		it( 'should throw an error if split position is invalid', () => {
-			const p1 = new Element( 'p1', null, new Text( 'Foobar' ) );
+			const p1 = new ModelElement( 'p1', null, new Text( 'Foobar' ) );
 
 			root._insertChild( 0, [ p1 ] );
 
@@ -157,7 +157,7 @@ describe( 'SplitOperation', () => {
 		} );
 
 		it( 'should throw an error if split position is in root', () => {
-			const p1 = new Element( 'p1', null, new Text( 'Foobar' ) );
+			const p1 = new ModelElement( 'p1', null, new Text( 'Foobar' ) );
 
 			root._insertChild( 0, [ p1 ] );
 
@@ -171,7 +171,7 @@ describe( 'SplitOperation', () => {
 		} );
 
 		it( 'should throw an error if number of nodes to move is invalid', () => {
-			const p1 = new Element( 'p1', null, new Text( 'Foobar' ) );
+			const p1 = new ModelElement( 'p1', null, new Text( 'Foobar' ) );
 
 			root._insertChild( 0, [ p1 ] );
 
@@ -184,7 +184,7 @@ describe( 'SplitOperation', () => {
 		} );
 
 		it( 'should throw an error if graveyard position is invalid', () => {
-			const p1 = new Element( 'p1', null, new Text( 'Foobar' ) );
+			const p1 = new ModelElement( 'p1', null, new Text( 'Foobar' ) );
 
 			root._insertChild( 0, [ p1 ] );
 
