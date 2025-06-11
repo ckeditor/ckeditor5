@@ -3,6 +3,7 @@ category: features-html
 order: 50
 modified_at: 2023-05-15
 meta-title: Full page HTML | CKEditor 5 Documentation
+meta-description: Edit full-page HTML documents in CKEditor 5, including html, head and body tags, for complete control over the page structure.
 ---
 
 # Full page HTML

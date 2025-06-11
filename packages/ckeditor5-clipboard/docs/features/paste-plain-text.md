@@ -1,6 +1,7 @@
 ---
 menu-title: Paste plain text
 meta-title: Paste plain text | CKEditor 5 Documentation
+meta-description: Force plain text pasting in CKEditor 5 to remove formatting from copied content, ensuring clean and consistent text input.
 category: features-pasting
 order: 30
 ---
