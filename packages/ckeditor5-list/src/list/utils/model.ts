@@ -9,7 +9,7 @@
 
 import type {
 	ModelDocumentFragment,
-	Element,
+	ModelElement,
 	Model,
 	Node,
 	Writer,
@@ -40,11 +40,11 @@ export class ListItemUid {
 }
 
 /**
- * An {@link module:engine/model/element~Element} that is known to be a list element.
+ * An {@link module:engine/model/element~ModelElement} that is known to be a list element.
  *
  * @internal
  */
-export interface ListElement extends Element {
+export interface ListElement extends ModelElement {
 	getAttribute( key: 'listItemId' ): string;
 	getAttribute( key: 'listIndent' ): number;
 	getAttribute( key: 'listType' ): ListType;
@@ -118,7 +118,7 @@ export function getListItemBlocks(
  *
  * @internal
  */
-export function getNestedListBlocks( listItem: Element ): Array<ListElement> {
+export function getNestedListBlocks( listItem: ModelElement ): Array<ListElement> {
 	return Array.from( new ListWalker( listItem, {
 		direction: 'forward',
 		higherIndent: true
@@ -132,7 +132,7 @@ export function getNestedListBlocks( listItem: Element ): Array<ListElement> {
  * @param listItem Starting list item element.
  * @param options Additional list walker options to modify the range of returned list items.
  */
-export function getListItems( listItem: Element, options?: ListWalkerOptions ): Array<ListElement> {
+export function getListItems( listItem: ModelElement, options?: ListWalkerOptions ): Array<ListElement> {
 	const backwardBlocks = new ListWalker( listItem, {
 		sameIndent: true,
 		sameAttributes: 'listType',
@@ -177,7 +177,7 @@ export function isFirstBlockOfListItem( listBlock: Node ): boolean {
  *
  * @internal
  */
-export function isLastBlockOfListItem( listBlock: Element ): boolean {
+export function isLastBlockOfListItem( listBlock: ModelElement ): boolean {
 	const nextSibling = ListWalker.first( listBlock, {
 		direction: 'forward',
 		sameIndent: true,
@@ -199,7 +199,7 @@ export function isLastBlockOfListItem( listBlock: Element ): boolean {
  * @param options.withNested Whether should include nested list items.
  */
 export function expandListBlocksToCompleteItems(
-	blocks: ArrayOrItem<Element>,
+	blocks: ArrayOrItem<ModelElement>,
 	options: { withNested?: boolean } = {}
 ): Array<ListElement> {
 	blocks = toArray( blocks );
@@ -222,7 +222,7 @@ export function expandListBlocksToCompleteItems(
  * @internal
  * @param blocks The list of selected blocks.
  */
-export function expandListBlocksToCompleteList( blocks: ArrayOrItem<Element> ): Array<ListElement> {
+export function expandListBlocksToCompleteList( blocks: ArrayOrItem<ModelElement> ): Array<ListElement> {
 	blocks = toArray( blocks );
 
 	const allBlocks = new Set<ListElement>();
@@ -245,7 +245,7 @@ export function expandListBlocksToCompleteList( blocks: ArrayOrItem<Element> ): 
  * @returns The array of updated blocks.
  */
 export function splitListItemBefore(
-	listBlock: Element,
+	listBlock: ModelElement,
 	writer: Writer
 ): Array<ListElement> {
 	const blocks = getListItemBlocks( listBlock, { direction: 'forward' } );
@@ -269,7 +269,7 @@ export function splitListItemBefore(
  */
 export function mergeListItemBefore(
 	listBlock: Node,
-	parentBlock: Element,
+	parentBlock: ModelElement,
 	writer: Writer
 ): Array<ListElement> {
 	const attributes: Record<string, unknown> = {};
@@ -393,9 +393,9 @@ export function outdentBlocksWithMerge(
  * @returns Array of altered blocks.
  */
 export function removeListAttributes(
-	blocks: ArrayOrItem<Element>,
+	blocks: ArrayOrItem<ModelElement>,
 	writer: Writer
-): Array<Element> {
+): Array<ModelElement> {
 	blocks = toArray( blocks );
 
 	// Convert simple list items to plain paragraphs.
@@ -446,7 +446,7 @@ export function isSingleListItem( blocks: Array<Node> ): boolean {
  * @param writer The model writer.
  * @returns Array of altered blocks.
  */
-export function outdentFollowingItems( lastBlock: Element, writer: Writer ): Array<ListElement> {
+export function outdentFollowingItems( lastBlock: ModelElement, writer: Writer ): Array<ListElement> {
 	const changedBlocks = [];
 
 	// Start from the model item that is just after the last turned-off item.
@@ -531,7 +531,7 @@ export function outdentFollowingItems( lastBlock: Element, writer: Writer ): Arr
  *
  * @internal
  */
-export function sortBlocks<T extends Element>( blocks: Iterable<T> ): Array<T> {
+export function sortBlocks<T extends ModelElement>( blocks: Iterable<T> ): Array<T> {
 	return Array.from( blocks )
 		.filter( block => block.root.rootName !== '$graveyard' )
 		.sort( ( a, b ) => a.index! - b.index! );
@@ -545,7 +545,7 @@ export function sortBlocks<T extends Element>( blocks: Iterable<T> ): Array<T> {
  * @param model The instance of editor model.
  * @returns Selected block object or `null`.
  */
-export function getSelectedBlockObject( model: Model ): Element | null {
+export function getSelectedBlockObject( model: Model ): ModelElement | null {
 	const selectedElement = model.document.selection.getSelectedElement();
 
 	if ( !selectedElement ) {
@@ -568,8 +568,10 @@ export function getSelectedBlockObject( model: Model ): Element | null {
  * @param schema The schema of the document.
  * @internal
  */
-export function canBecomeSimpleListItem( block: Element, schema: Schema ): boolean {
-	return schema.checkChild( block.parent as Element, 'listItem' ) && schema.checkChild( block, '$text' ) && !schema.isObject( block );
+export function canBecomeSimpleListItem( block: ModelElement, schema: Schema ): boolean {
+	return schema.checkChild( block.parent as ModelElement, 'listItem' ) &&
+		schema.checkChild( block, '$text' ) &&
+		!schema.isObject( block );
 }
 
 /**

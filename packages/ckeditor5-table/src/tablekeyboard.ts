@@ -23,7 +23,7 @@ import type {
 	BubblingEventInfo,
 	ModelDocumentSelection,
 	DomEventData,
-	Element,
+	ModelElement,
 	Selection,
 	ViewDocumentArrowKeyEvent,
 	ViewDocumentTabEvent
@@ -128,7 +128,7 @@ export class TableKeyboard extends Plugin {
 		bubblingEventInfo.stop();
 
 		editor.model.change( writer => {
-			writer.setSelection( writer.createRangeIn( ( selectedElement.getChild( 0 ) as Element ).getChild( 0 ) as Element ) );
+			writer.setSelection( writer.createRangeIn( ( selectedElement.getChild( 0 ) as ModelElement ).getChild( 0 ) as ModelElement ) );
 		} );
 	}
 
@@ -144,7 +144,7 @@ export class TableKeyboard extends Plugin {
 		const selection = editor.model.document.selection;
 		const isForward = !domEventData.shiftKey;
 
-		let tableCell: Element | null = tableUtils.getTableCellsContainingSelection( selection )[ 0 ];
+		let tableCell: ModelElement | null = tableUtils.getTableCellsContainingSelection( selection )[ 0 ];
 
 		if ( !tableCell ) {
 			tableCell = tableSelection.getFocusCell();
@@ -158,8 +158,8 @@ export class TableKeyboard extends Plugin {
 		domEventData.stopPropagation();
 		bubblingEventInfo.stop();
 
-		const tableRow = tableCell.parent as Element;
-		const table = tableRow.parent as Element;
+		const tableRow = tableCell.parent as ModelElement;
+		const table = tableRow.parent as ModelElement;
 
 		const currentRowIndex = table.getChildIndex( tableRow )!;
 		const currentCellIndex = tableRow.getChildIndex( tableCell )!;
@@ -192,23 +192,23 @@ export class TableKeyboard extends Plugin {
 			}
 		}
 
-		let cellToFocus: Element;
+		let cellToFocus: ModelElement;
 
 		// Move to the first cell in the next row.
 		if ( isForward && isLastCellInRow ) {
-			const nextRow = table.getChild( currentRowIndex + 1 ) as Element;
+			const nextRow = table.getChild( currentRowIndex + 1 ) as ModelElement;
 
-			cellToFocus = nextRow.getChild( 0 ) as Element;
+			cellToFocus = nextRow.getChild( 0 ) as ModelElement;
 		}
 		// Move to the last cell in the previous row.
 		else if ( !isForward && isFirstCellInRow ) {
-			const previousRow = table.getChild( currentRowIndex - 1 ) as Element;
+			const previousRow = table.getChild( currentRowIndex - 1 ) as ModelElement;
 
-			cellToFocus = previousRow.getChild( previousRow.childCount - 1 ) as Element;
+			cellToFocus = previousRow.getChild( previousRow.childCount - 1 ) as ModelElement;
 		}
 		// Move to the next/previous cell.
 		else {
-			cellToFocus = tableRow.getChild( currentCellIndex + ( isForward ? 1 : -1 ) ) as Element;
+			cellToFocus = tableRow.getChild( currentCellIndex + ( isForward ? 1 : -1 ) ) as ModelElement;
 		}
 
 		editor.model.change( writer => {
@@ -311,7 +311,7 @@ export class TableKeyboard extends Plugin {
 	 * @param tableCell The current table cell element.
 	 * @param isForward The expected navigation direction.
 	 */
-	private _isSelectionAtCellEdge( selection: Selection | ModelDocumentSelection, tableCell: Element, isForward: boolean ) {
+	private _isSelectionAtCellEdge( selection: Selection | ModelDocumentSelection, tableCell: ModelElement, isForward: boolean ) {
 		const model = this.editor.model;
 		const schema = this.editor.model.schema;
 
@@ -340,7 +340,7 @@ export class TableKeyboard extends Plugin {
 	 * @param direction Direction in which selection should move.
 	 * @param expandSelection If the current selection should be expanded. Default value is false.
 	 */
-	protected _navigateFromCellInDirection( focusCell: Element, direction: ArrowKeyCodeDirection, expandSelection = false ): void {
+	protected _navigateFromCellInDirection( focusCell: ModelElement, direction: ArrowKeyCodeDirection, expandSelection = false ): void {
 		const model = this.editor.model;
 
 		const table = focusCell.findAncestor( 'table' )!;

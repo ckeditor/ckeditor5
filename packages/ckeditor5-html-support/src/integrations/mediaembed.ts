@@ -15,7 +15,7 @@ import { updateViewAttributes, type GHSViewAttributes, getHtmlAttributeName } fr
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
-	Element,
+	ModelElement,
 	UpcastDispatcher,
 	UpcastElementEvent,
 	ViewElement } from 'ckeditor5/src/engine.js';
@@ -150,7 +150,7 @@ function modelToViewMediaAttributeConverter( mediaElementName: string ) {
 				}
 
 				const { attributeOldValue, attributeNewValue } = data;
-				const containerElement = conversionApi.mapper.toViewElement( data.item as Element );
+				const containerElement = conversionApi.mapper.toViewElement( data.item as ModelElement );
 				const viewElement = getDescendantElement( conversionApi.writer, containerElement!, elementName );
 
 				updateViewAttributes(

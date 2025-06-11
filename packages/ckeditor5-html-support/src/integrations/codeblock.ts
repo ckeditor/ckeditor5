@@ -10,7 +10,7 @@
 import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
-	Element,
+	ModelElement,
 	UpcastDispatcher,
 	UpcastElementEvent,
 	ViewElement
@@ -125,7 +125,7 @@ function modelToViewCodeBlockAttributeConverter() {
 			}
 
 			const { attributeOldValue, attributeNewValue } = data;
-			const viewCodeElement = conversionApi.mapper.toViewElement( data.item as Element )!;
+			const viewCodeElement = conversionApi.mapper.toViewElement( data.item as ModelElement )!;
 			const viewPreElement = viewCodeElement.parent as ViewElement;
 
 			updateViewAttributes(
@@ -142,7 +142,7 @@ function modelToViewCodeBlockAttributeConverter() {
 			}
 
 			const { attributeOldValue, attributeNewValue } = data;
-			const viewCodeElement = conversionApi.mapper.toViewElement( data.item as Element );
+			const viewCodeElement = conversionApi.mapper.toViewElement( data.item as ModelElement );
 
 			updateViewAttributes(
 				conversionApi.writer,

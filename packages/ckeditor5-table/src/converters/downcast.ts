@@ -8,7 +8,7 @@
  */
 
 import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget.js';
-import type { Node, ViewElement, Element, DowncastWriter, DowncastElementCreatorFunction } from 'ckeditor5/src/engine.js';
+import type { Node, ViewElement, ModelElement, DowncastWriter, DowncastElementCreatorFunction } from 'ckeditor5/src/engine.js';
 
 import { TableWalker } from './../tablewalker.js';
 import { type TableUtils } from '../tableutils.js';
@@ -99,8 +99,8 @@ export function downcastRow(): DowncastElementCreatorFunction {
  */
 export function downcastCell( options: { asWidget?: boolean } = {} ): DowncastElementCreatorFunction {
 	return ( tableCell, { writer } ) => {
-		const tableRow = tableCell.parent as Element;
-		const table = tableRow.parent as Element;
+		const tableRow = tableCell.parent as ModelElement;
+		const table = tableRow.parent as ModelElement;
 		const rowIndex = table.getChildIndex( tableRow )!;
 
 		const tableWalker = new TableWalker( table, { row: rowIndex } );
@@ -172,7 +172,7 @@ export function convertParagraphInTableCell( options: { asWidget?: boolean } = {
  *
  * @internal
  */
-export function isSingleParagraphWithoutAttributes( modelElement: Element ): boolean {
+export function isSingleParagraphWithoutAttributes( modelElement: ModelElement ): boolean {
 	const tableCell = modelElement.parent!;
 
 	const isSingleParagraph = tableCell.childCount == 1;

@@ -7,7 +7,7 @@
  * @module table/tablecellproperties/commands/tablecellbordercolorcommand
  */
 
-import type { Element } from 'ckeditor5/src/engine.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
 import type { Editor } from 'ckeditor5/src/core.js';
 
 import { TableCellPropertyCommand } from './tablecellpropertycommand.js';
@@ -41,7 +41,7 @@ export class TableCellBorderColorCommand extends TableCellPropertyCommand {
 	/**
 	 * @inheritDoc
 	 */
-	protected override _getAttribute( tableCell: Element ): unknown {
+	protected override _getAttribute( tableCell: ModelElement ): unknown {
 		if ( !tableCell ) {
 			return;
 		}

@@ -192,7 +192,7 @@ export class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	}
 
 	/**
-	 * Unbinds the given {@link module:engine/model/element~Element model element} from the map.
+	 * Unbinds the given {@link module:engine/model/element~ModelElement model element} from the map.
 	 *
 	 * **Note:** the model-to-view binding will be removed, if it existed. However, the corresponding view-to-model binding
 	 * will be removed only if the view element is still bound to the passed `modelElement`.

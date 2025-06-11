@@ -11,7 +11,7 @@ import type {
 	DowncastAttributeEvent,
 	DowncastInsertEvent,
 	DowncastWriter,
-	Element,
+	ModelElement,
 	MapperModelToViewPositionEvent,
 	Model,
 	UpcastElementEvent,
@@ -38,8 +38,8 @@ import { generateLiInUl, injectViewList, positionAfterUiElements, findNestedList
  */
 export function modelViewInsertion(
 	model: Model,
-	onCheckboxChecked: ( element: Element ) => void
-): GetCallback<DowncastInsertEvent<Element>> {
+	onCheckboxChecked: ( element: ModelElement ) => void
+): GetCallback<DowncastInsertEvent<ModelElement>> {
 	return ( evt, data, conversionApi ) => {
 		const consumable = conversionApi.consumable;
 
@@ -88,7 +88,7 @@ export function modelViewInsertion(
  * @param model Model instance.
  * @returns Returns a conversion callback.
  */
-export function dataModelViewInsertion( model: Model ): GetCallback<DowncastInsertEvent<Element>> {
+export function dataModelViewInsertion( model: Model ): GetCallback<DowncastInsertEvent<ModelElement>> {
 	return ( evt, data, conversionApi ) => {
 		const consumable = conversionApi.consumable;
 
@@ -193,9 +193,9 @@ export const dataViewModelCheckmarkInsertion: GetCallback<UpcastElementEvent> = 
  * @returns Returns a conversion callback.
  */
 export function modelViewChangeType(
-	onCheckedChange: ( element: Element ) => void,
+	onCheckedChange: ( element: ModelElement ) => void,
 	view: EditingView
-): GetCallback<DowncastAttributeEvent<Element>> {
+): GetCallback<DowncastAttributeEvent<ModelElement>> {
 	return ( evt, data, conversionApi ) => {
 		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
@@ -248,8 +248,8 @@ export function modelViewChangeType(
  * @returns Returns a conversion callback.
  */
 export function modelViewChangeChecked(
-	onCheckedChange: ( element: Element ) => void
-): GetCallback<DowncastAttributeEvent<Element>> {
+	onCheckedChange: ( element: ModelElement ) => void
+): GetCallback<DowncastAttributeEvent<ModelElement>> {
 	return ( evt, data, conversionApi ) => {
 		// Do not convert `todoListChecked` attribute when to-do list item has changed to other list item.
 		// This attribute will be removed by the model post fixer.
@@ -302,10 +302,10 @@ export function mapModelToViewPosition( view: EditingView ): GetCallback<MapperM
  * Creates a checkbox UI element.
  */
 function createCheckmarkElement(
-	modelItem: Element,
+	modelItem: ModelElement,
 	viewWriter: DowncastWriter,
 	isChecked: boolean,
-	onChange: ( element: Element ) => void
+	onChange: ( element: ModelElement ) => void
 ) {
 	const uiElement = viewWriter.createUIElement(
 		'label',

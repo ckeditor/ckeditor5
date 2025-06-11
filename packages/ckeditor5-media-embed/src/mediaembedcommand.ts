@@ -7,7 +7,7 @@
  * @module media-embed/mediaembedcommand
  */
 
-import type { ModelDocumentSelection, Element, Model, Selection } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, ModelElement, Model, Selection } from 'ckeditor5/src/engine.js';
 import { Command } from 'ckeditor5/src/core.js';
 import { findOptimalInsertionRange } from 'ckeditor5/src/widget.js';
 
@@ -72,11 +72,11 @@ export class MediaEmbedCommand extends Command {
  */
 function isAllowedInParent( selection: Selection | ModelDocumentSelection, model: Model ): boolean {
 	const insertionRange = findOptimalInsertionRange( selection, model );
-	let parent = insertionRange.start.parent as Element;
+	let parent = insertionRange.start.parent as ModelElement;
 
 	// The model.insertContent() will remove empty parent (unless it is a $root or a limit).
 	if ( parent.isEmpty && !model.schema.isLimit( parent ) ) {
-		parent = parent.parent as Element;
+		parent = parent.parent as ModelElement;
 	}
 
 	return model.schema.checkChild( parent, 'media' );

@@ -17,7 +17,7 @@ import {
 	LiveRange,
 	type Model,
 	type Mapper,
-	type Element,
+	type ModelElement,
 	type Range,
 	type ViewNode,
 	type ViewElement,
@@ -351,7 +351,7 @@ class TypingQueue {
 	/**
 	 * A set of model elements. The typing happened in those elements. It's used for mutations check.
 	 */
-	private _affectedElements = new Set<Element>();
+	private _affectedElements = new Set<ModelElement>();
 
 	/**
 	 * @inheritDoc
@@ -394,7 +394,7 @@ class TypingQueue {
 				commandLiveData.selectionRanges.push( LiveRange.fromRange( range ) );
 
 				// Keep reference to the model element for later mutation checks.
-				this._affectedElements.add( range.start.parent as Element );
+				this._affectedElements.add( range.start.parent as ModelElement );
 			}
 		}
 
@@ -495,7 +495,7 @@ class TypingQueue {
 	/**
 	 * Returns `true` if the given model element is related to recent typing.
 	 */
-	public isElementAffected( element: Element ): boolean {
+	public isElementAffected( element: ModelElement ): boolean {
 		return this._affectedElements.has( element );
 	}
 
@@ -509,7 +509,7 @@ class TypingQueue {
 	/**
 	 * Returns an array of typing-related elements and clears the internal list.
 	 */
-	public flushAffectedElements(): Array<Element> {
+	public flushAffectedElements(): Array<ModelElement> {
 		const result = Array.from( this._affectedElements );
 
 		this._affectedElements.clear();

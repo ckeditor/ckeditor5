@@ -26,7 +26,7 @@ Let's now talk about each layer separately.
 
 ## Model
 
-The model is implemented by a DOM-like tree structure of {@link module:engine/model/element~Element elements} and {@link module:engine/model/text~Text text nodes}. Unlike in the actual DOM, in the model, both elements and text nodes can have attributes.
+The model is implemented by a DOM-like tree structure of {@link module:engine/model/element~ModelElement elements} and {@link module:engine/model/text~Text text nodes}. Unlike in the actual DOM, in the model, both elements and text nodes can have attributes.
 
 Like in the DOM, the model structure is contained within a {@link module:engine/model/document~ModelDocument document} that contains {@link module:engine/model/document~ModelDocument#roots root elements} (the model, as well as the view, may have multiple roots). The document also holds its {@link module:engine/model/documentselection~DocumentSelection selection} and the {@link module:engine/model/history~History history of its changes}.
 

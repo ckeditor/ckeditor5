@@ -13,7 +13,7 @@ import { Text } from '../text.js';
 import { TextProxy } from '../textproxy.js';
 
 import { type ModelDocumentFragment } from '../documentfragment.js';
-import { type Element } from '../element.js';
+import { type ModelElement } from '../element.js';
 import { type Item } from '../item.js';
 import { type NodeList } from '../nodelist.js';
 import { type Position } from '../position.js';
@@ -204,7 +204,7 @@ export function _normalizeNodes( nodes: NodeSet ): Array<Node> {
  * @param element Parent element of nodes to merge.
  * @param index Index between nodes to merge.
  */
-function _mergeNodesAtIndex( element: Element | ModelDocumentFragment, index: number ) {
+function _mergeNodesAtIndex( element: ModelElement | ModelDocumentFragment, index: number ) {
 	const nodeBefore = element.getChild( index - 1 );
 	const nodeAfter = element.getChild( index );
 

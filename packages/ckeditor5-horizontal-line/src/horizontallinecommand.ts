@@ -7,7 +7,7 @@
  * @module horizontal-line/horizontallinecommand
  */
 
-import type { ModelDocumentSelection, Element, Model, Schema, Selection } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, ModelElement, Model, Schema, Selection } from 'ckeditor5/src/engine.js';
 import { Command } from 'ckeditor5/src/core.js';
 import { findOptimalInsertionRange } from 'ckeditor5/src/widget.js';
 
@@ -67,13 +67,13 @@ function isHorizontalLineAllowedInParent( selection: Selection | ModelDocumentSe
  *
  * @param model Model instance.
  */
-function getInsertHorizontalLineParent( selection: Selection | ModelDocumentSelection, model: Model ): Element {
+function getInsertHorizontalLineParent( selection: Selection | ModelDocumentSelection, model: Model ): ModelElement {
 	const insertionRange = findOptimalInsertionRange( selection, model );
 	const parent = insertionRange.start.parent;
 
 	if ( parent.isEmpty && !parent.is( 'element', '$root' ) ) {
-		return parent.parent! as Element;
+		return parent.parent! as ModelElement;
 	}
 
-	return parent as Element;
+	return parent as ModelElement;
 }

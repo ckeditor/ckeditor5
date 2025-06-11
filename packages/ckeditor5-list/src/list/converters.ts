@@ -11,7 +11,7 @@ import {
 	type DowncastAttributeEvent,
 	type DowncastWriter,
 	type EditingController,
-	type Element,
+	type ModelElement,
 	type DowncastElementCreatorFunction,
 	type Mapper,
 	type Model,
@@ -72,7 +72,7 @@ export function listItemUpcastConverter(): GetCallback<UpcastElementEvent> {
 		}
 
 		const items = Array.from( data.modelRange.getItems( { shallow: true } ) )
-			.filter( ( item ): item is Element => schema.checkAttribute( item, 'listItemId' ) );
+			.filter( ( item ): item is ModelElement => schema.checkAttribute( item, 'listItemId' ) );
 
 		if ( !items.length ) {
 			return;
@@ -142,7 +142,7 @@ export function reconvertItemsOnDataChange(
 		const itemsToRefresh = [];
 		const itemToListHead = new Set<ListElement>();
 		const changedItems = new Set<Node>();
-		const visited = new Set<Element>();
+		const visited = new Set<ModelElement>();
 
 		for ( const entry of changes ) {
 			if ( entry.type == 'insert' && entry.name != '$text' ) {
@@ -170,7 +170,7 @@ export function reconvertItemsOnDataChange(
 						findAndAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead, visited );
 
 						// Check if paragraph should be converted from bogus to plain paragraph.
-						if ( doesItemBlockRequiresRefresh( item as Element ) ) {
+						if ( doesItemBlockRequiresRefresh( item as ModelElement ) ) {
 							itemsToRefresh.push( item );
 						}
 					} else {
@@ -238,7 +238,7 @@ export function reconvertItemsOnDataChange(
 		return itemsToRefresh;
 	}
 
-	function doesItemBlockRequiresRefresh( item: Element, blocks?: Array<Node> ) {
+	function doesItemBlockRequiresRefresh( item: ModelElement, blocks?: Array<Node> ) {
 		const viewElement = editing.mapper.toViewElement( item );
 
 		if ( !viewElement ) {
@@ -270,7 +270,7 @@ export function reconvertItemsOnDataChange(
 	}
 
 	function doesItemWrappingRequiresRefresh(
-		item: Element,
+		item: ModelElement,
 		stack: Array<ListItemAttributesMap>,
 		changedItems: Set<Node>
 	) {
@@ -444,7 +444,7 @@ export function bogusParagraphCreator(
  * @param mapper The mapper instance.
  * @param model The model.
  */
-export function findMappedViewElement( element: Element, mapper: Mapper, model: Model ): ViewElement | null {
+export function findMappedViewElement( element: ModelElement, mapper: Mapper, model: Model ): ViewElement | null {
 	const modelRange = model.createRangeOn( element );
 	const viewRange = mapper.toViewRange( modelRange ).getTrimmed();
 
@@ -543,7 +543,7 @@ function removeCustomMarkerElements( viewElement: ViewElement, viewWriter: Downc
  * Inserts a custom marker elements and wraps first block of a list item if marker requires it.
  */
 function insertCustomMarkerElements(
-	listItem: Element,
+	listItem: ModelElement,
 	viewElement: ViewElement,
 	strategies: Array<DowncastStrategy>,
 	writer: DowncastWriter,

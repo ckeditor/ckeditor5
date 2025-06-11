@@ -13,7 +13,7 @@ import { TypeCheckable } from './typecheckable.js';
 
 import { type ModelDocument } from './document.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
-import { type Element } from './element.js';
+import { type ModelElement } from './element.js';
 
 import { compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
 
@@ -26,7 +26,7 @@ import { compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
  * However, it is **very important** that nodes already attached to model tree should be only changed through
  * {@link module:engine/model/writer~Writer Writer API}.
  *
- * Changes done by `Node` methods, like {@link module:engine/model/element~Element#_insertChild _insertChild} or
+ * Changes done by `Node` methods, like {@link module:engine/model/element~ModelElement#_insertChild _insertChild} or
  * {@link module:engine/model/node~Node#_setAttribute _setAttribute}
  * do not generate {@link module:engine/model/operation/operation~Operation operations}
  * which are essential for correct editor work if you modify nodes in {@link module:engine/model/document~ModelDocument document} root.
@@ -42,16 +42,16 @@ import { compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
  * Be aware that using {@link module:engine/model/writer~Writer#remove remove from Batch API} does not allow to use `Node` API because
  * the information about `Node` is still kept in model document.
  *
- * In case of {@link module:engine/model/element~Element element node}, adding and removing children also counts as changing a node and
+ * In case of {@link module:engine/model/element~ModelElement element node}, adding and removing children also counts as changing a node and
  * follows same rules.
  */
 export abstract class Node extends TypeCheckable {
 	/**
-	 * Parent of this node. It could be {@link module:engine/model/element~Element}
+	 * Parent of this node. It could be {@link module:engine/model/element~ModelElement}
 	 * or {@link module:engine/model/documentfragment~DocumentFragment}.
 	 * Equals to `null` if the node has no parent.
 	 */
-	public readonly parent: Element | ModelDocumentFragment | null = null;
+	public readonly parent: ModelElement | ModelDocumentFragment | null = null;
 
 	/**
 	 * Unique root name used to identify this root element by {@link module:engine/model/document~ModelDocument}.
@@ -189,9 +189,9 @@ export abstract class Node extends TypeCheckable {
 	 * ```ts
 	 * const abc = new Text( 'abc' );
 	 * const foo = new Text( 'foo' );
-	 * const h1 = new Element( 'h1', null, new Text( 'header' ) );
-	 * const p = new Element( 'p', null, [ abc, foo ] );
-	 * const div = new Element( 'div', null, [ h1, p ] );
+	 * const h1 = new ModelElement( 'h1', null, new Text( 'header' ) );
+	 * const p = new ModelElement( 'p', null, [ abc, foo ] );
+	 * const div = new ModelElement( 'div', null, [ h1, p ] );
 	 * foo.getPath(); // Returns [ 1, 3 ]. `foo` is in `p` which is in `div`. `p` starts at offset 1, while `foo` at 3.
 	 * h1.getPath(); // Returns [ 0 ].
 	 * div.getPath(); // Returns [].
@@ -232,7 +232,7 @@ export abstract class Node extends TypeCheckable {
 	}
 
 	/**
-	 * Returns a {@link module:engine/model/element~Element} or {@link module:engine/model/documentfragment~DocumentFragment}
+	 * Returns a {@link module:engine/model/element~ModelElement} or {@link module:engine/model/documentfragment~DocumentFragment}
 	 * which is a common ancestor of both nodes.
 	 *
 	 * @param node The second node.
@@ -240,7 +240,7 @@ export abstract class Node extends TypeCheckable {
 	 * @param options.includeSelf When set to `true` both nodes will be considered "ancestors" too.
 	 * Which means that if e.g. node A is inside B, then their common ancestor will be B.
 	 */
-	public getCommonAncestor( node: Node, options: { includeSelf?: boolean } = {} ): Element | ModelDocumentFragment | null {
+	public getCommonAncestor( node: Node, options: { includeSelf?: boolean } = {} ): ModelElement | ModelDocumentFragment | null {
 		const ancestorsA = this.getAncestors( options );
 		const ancestorsB = node.getAncestors( options );
 
@@ -250,7 +250,7 @@ export abstract class Node extends TypeCheckable {
 			i++;
 		}
 
-		return i === 0 ? null : ancestorsA[ i - 1 ] as ( Element | ModelDocumentFragment );
+		return i === 0 ? null : ancestorsA[ i - 1 ] as ( ModelElement | ModelDocumentFragment );
 	}
 
 	/**

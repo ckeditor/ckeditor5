@@ -10,7 +10,7 @@
 import { first, toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
 import { isListItemBlock, type ListElement } from './model.js';
 
-import type { Element, Node } from 'ckeditor5/src/engine.js';
+import type { ModelElement, Node } from 'ckeditor5/src/engine.js';
 
 /**
  * Document list blocks iterator.
@@ -266,12 +266,12 @@ export class SiblingListBlocksIterator implements IterableIterator<ListIteratorV
  * @internal
  */
 export class ListBlocksIterable {
-	private _listHead: Element;
+	private _listHead: ModelElement;
 
 	/**
 	 * @param listHead The head element of a list.
 	 */
-	constructor( listHead: Element ) {
+	constructor( listHead: ModelElement ) {
 		this._listHead = listHead;
 	}
 

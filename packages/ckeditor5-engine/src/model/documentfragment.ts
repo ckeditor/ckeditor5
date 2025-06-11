@@ -8,7 +8,7 @@
  */
 
 import { TypeCheckable } from './typecheckable.js';
-import { Element } from './element.js';
+import { ModelElement } from './element.js';
 import { NodeList } from './nodelist.js';
 import { Text } from './text.js';
 import { TextProxy } from './textproxy.js';
@@ -219,7 +219,7 @@ export class ModelDocumentFragment extends TypeCheckable implements Iterable<Nod
 		let node: Node | ModelDocumentFragment = this;
 
 		for ( const offset of relativePath ) {
-			node = ( node as Element | ModelDocumentFragment ).getChildAtOffset( offset )!;
+			node = ( node as ModelElement | ModelDocumentFragment ).getChildAtOffset( offset )!;
 		}
 
 		return node;
@@ -279,7 +279,7 @@ export class ModelDocumentFragment extends TypeCheckable implements Iterable<Nod
 		for ( const child of json ) {
 			if ( child.name ) {
 				// If child has name property, it is an Element.
-				children.push( Element.fromJSON( child ) );
+				children.push( ModelElement.fromJSON( child ) );
 			} else {
 				// Otherwise, it is a Text node.
 				children.push( Text.fromJSON( child ) );

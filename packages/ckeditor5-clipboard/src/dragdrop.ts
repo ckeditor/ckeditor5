@@ -13,7 +13,7 @@ import {
 	LiveRange,
 	MouseObserver,
 	type DataTransfer,
-	type Element,
+	type ModelElement,
 	type Model,
 	type Range,
 	type Position,
@@ -163,7 +163,7 @@ export class DragDrop extends Plugin {
 	/**
 	 * The reference to the model element that currently has a `draggable` attribute set (it is set while dragging).
 	 */
-	private _draggableElement!: Element | null;
+	private _draggableElement!: ModelElement | null;
 
 	/**
 	 * A delayed callback removing draggable attributes.
@@ -582,7 +582,7 @@ export class DragDrop extends Plugin {
 				model.deleteContent( selection, { doNotAutoparagraph: true } );
 
 				// Check result selection if it does not require auto-paragraphing of empty container.
-				const selectionParent = selection.getFirstPosition()!.parent as Element;
+				const selectionParent = selection.getFirstPosition()!.parent as ModelElement;
 
 				if (
 					selectionParent.isEmpty &&
@@ -626,7 +626,7 @@ export class DragDrop extends Plugin {
 		}
 
 		// If this was not a widget we should check if we need to drag some text content.
-		if ( selection.isCollapsed && !( selection.getFirstPosition()!.parent as Element ).isEmpty ) {
+		if ( selection.isCollapsed && !( selection.getFirstPosition()!.parent as ModelElement ).isEmpty ) {
 			return;
 		}
 
@@ -770,7 +770,7 @@ function findDraggableWidget( target: ViewElement ): ViewElement | null {
  * Because all elements inside the `blockQuote` are selected, the range is extended to include the `blockQuote` too.
  * If only first and second paragraphs would be selected, the range would not include it.
  */
-function getRangeIncludingFullySelectedParents( model: Model, elements: Array<Element> ): Range {
+function getRangeIncludingFullySelectedParents( model: Model, elements: Array<ModelElement> ): Range {
 	const firstElement = elements[ 0 ];
 	const lastElement = elements[ elements.length - 1 ];
 	const parent = firstElement.getCommonAncestor( lastElement );

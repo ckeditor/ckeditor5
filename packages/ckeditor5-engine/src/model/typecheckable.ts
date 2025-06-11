@@ -10,7 +10,7 @@
 import type { Marker } from './markercollection.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelDocumentSelection } from './documentselection.js';
-import { type Element } from './element.js';
+import { type ModelElement } from './element.js';
 import { type LivePosition } from './liveposition.js';
 import { type LiveRange } from './liverange.js';
 import { type Node } from './node.js';
@@ -53,10 +53,10 @@ export abstract class TypeCheckable {
 	 *
 	 * @label NODE
 	 */
-	public is( type: 'node' | 'model:node' ): this is Node | Element | Text | RootElement;
+	public is( type: 'node' | 'model:node' ): this is Node | ModelElement | Text | RootElement;
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/model/element~Element} or its subclass.
+	 * Checks whether the object is of type {@link module:engine/model/element~ModelElement} or its subclass.
 	 *
 	 * ```ts
 	 * element.is( 'element' ); // -> true
@@ -69,7 +69,7 @@ export abstract class TypeCheckable {
 	 * ```
 	 *
 	 * Assuming that the object being checked is an element, you can also check its
-	 * {@link module:engine/model/element~Element#name name}:
+	 * {@link module:engine/model/element~ModelElement#name name}:
 	 *
 	 * ```ts
 	 * element.is( 'element', 'imageBlock' ); // -> true if this is an <imageBlock> element
@@ -78,7 +78,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label ELEMENT
 	 */
-	public is( type: 'element' | 'model:element' ): this is Element | RootElement;
+	public is( type: 'element' | 'model:element' ): this is ModelElement | RootElement;
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/model/rootelement~RootElement}.
@@ -96,7 +96,7 @@ export abstract class TypeCheckable {
 	 * ```
 	 *
 	 * Assuming that the object being checked is an element, you can also check its
-	 * {@link module:engine/model/element~Element#name name}:
+	 * {@link module:engine/model/element~ModelElement#name name}:
 	 *
 	 * ```ts
 	 * rootElement.is( 'rootElement', '$root' ); // -> same as above
@@ -274,7 +274,7 @@ export abstract class TypeCheckable {
 	public is( type: '$textProxy' | 'model:$textProxy' ): this is TextProxy;
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/model/element~Element} or its subclass and has the specified `name`.
+	 * Checks whether the object is of type {@link module:engine/model/element~ModelElement} or its subclass and has the specified `name`.
 	 *
 	 * ```ts
 	 * element.is( 'element', 'imageBlock' ); // -> true if this is an <imageBlock> element
@@ -283,7 +283,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label ELEMENT_NAME
 	 */
-	public is<N extends string>( type: 'element' | 'model:element', name: N ): this is ( Element | RootElement ) & { name: N };
+	public is<N extends string>( type: 'element' | 'model:element', name: N ): this is ( ModelElement | RootElement ) & { name: N };
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/model/rootelement~RootElement} and has the specified `name`.

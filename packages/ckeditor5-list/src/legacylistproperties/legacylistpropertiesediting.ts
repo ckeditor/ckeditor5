@@ -14,7 +14,7 @@ import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
 	DowncastWriter,
-	Element,
+	ModelElement,
 	ModelDeleteContentEvent,
 	Node,
 	UpcastDispatcher,
@@ -167,7 +167,7 @@ export class LegacyListPropertiesEditing extends Plugin {
 		// First the outer-most`listItem` in the first list reference.
 		// If found, the lists should be merged and this `listItem` provides the attributes
 		// and it is also a starting point when searching for items in the second list.
-		let firstMostOuterItem: Element | null;
+		let firstMostOuterItem: ModelElement | null;
 
 		// Check whether the removed content is between two lists.
 		this.listenTo<ModelDeleteContentEvent>( model, 'deleteContent', ( evt, [ selection ] ) => {
@@ -407,7 +407,7 @@ function downcastListItemAttributes( attributeStrategies: Array<AttributeStrateg
 		for ( const strategy of attributeStrategies ) {
 			dispatcher.on<DowncastAttributeEvent>( `attribute:${ strategy.attributeName }:listItem`, ( evt, data, conversionApi ) => {
 				const viewWriter = conversionApi.writer;
-				const currentElement = data.item as Element;
+				const currentElement = data.item as ModelElement;
 
 				const previousElement = getSiblingListItem( currentElement.previousSibling, {
 					sameIndent: true,
@@ -429,7 +429,7 @@ function downcastListItemAttributes( attributeStrategies: Array<AttributeStrateg
 	/**
 	 * Checks whether specified list items belong to the same list.
 	 */
-	function areRepresentingSameList( listItem1: Element, listItem2: Element | null ) {
+	function areRepresentingSameList( listItem1: ModelElement, listItem2: ModelElement | null ) {
 		return listItem2 &&
 			listItem1.getAttribute( 'listType' ) === listItem2.getAttribute( 'listType' ) &&
 			listItem1.getAttribute( 'listIndent' ) === listItem2.getAttribute( 'listIndent' ) &&
@@ -452,7 +452,7 @@ function downcastListItemAttributes( attributeStrategies: Array<AttributeStrateg
  * ■ List item 3.
  */
 function fixListAfterIndentListCommand( editor: Editor, attributeStrategies: Array<AttributeStrategy> ) {
-	return ( evt: unknown, changedItems: Array<Element> ) => {
+	return ( evt: unknown, changedItems: Array<ModelElement> ) => {
 		const root = changedItems[ 0 ];
 		const rootIndent = root.getAttribute( 'listIndent' ) as number;
 
@@ -466,7 +466,7 @@ function fixListAfterIndentListCommand( editor: Editor, attributeStrategies: Arr
 		// ■ List item 4.
 		//
 		// List items: `2` and `3` should be adjusted.
-		let previousSibling: Element | null = null;
+		let previousSibling: ModelElement | null = null;
 
 		if ( root.previousSibling!.getAttribute( 'listIndent' ) as number + 1 !== rootIndent ) {
 			previousSibling = getSiblingListItem( root.previousSibling, {
@@ -505,7 +505,7 @@ function fixListAfterIndentListCommand( editor: Editor, attributeStrategies: Arr
  * ■ List item 3.
  */
 function fixListAfterOutdentListCommand( editor: Editor, attributeStrategies: Array<AttributeStrategy> ) {
-	return ( evt: unknown, changedItems: Array<Element> ) => {
+	return ( evt: unknown, changedItems: Array<ModelElement> ) => {
 		changedItems = changedItems.reverse().filter( item => item.is( 'element', 'listItem' ) );
 
 		if ( !changedItems.length ) {
@@ -716,7 +716,7 @@ function fixListAttributesOnListItemElements( editor: Editor, attributeStrategie
  * The attribute should be copied if the inserted element does not have defined it and
  * the value for the element is other than default in the base element.
  */
-function shouldInheritListType( baseItem: Node | null, itemToChange: Element, attributeStrategy: AttributeStrategy ) {
+function shouldInheritListType( baseItem: Node | null, itemToChange: ModelElement, attributeStrategy: AttributeStrategy ) {
 	if ( !baseItem ) {
 		return false;
 	}
@@ -745,7 +745,7 @@ function shouldInheritListType( baseItem: Node | null, itemToChange: Element, at
  * The attribute should be copied if there's a mismatch of styles of the pasted list into a nested list.
  * Top-level lists are not normalized as we allow side-by-side list of different types.
  */
-function shouldInheritListTypeFromPreviousItem( previousItem: Node | null, itemToChange: Element, attributeName: string ) {
+function shouldInheritListTypeFromPreviousItem( previousItem: Node | null, itemToChange: ModelElement, attributeName: string ) {
 	if ( !previousItem || !previousItem.is( 'element', 'listItem' ) ) {
 		return false;
 	}
@@ -802,7 +802,7 @@ function removeListItemAttributesFromTodoList( editor: Editor ) {
  * Restores the `listStyle` attribute after changing the list type.
  */
 function restoreDefaultListStyle( editor: Editor ) {
-	return ( evt: unknown, changedItems: Array<Element> ) => {
+	return ( evt: unknown, changedItems: Array<ModelElement> ) => {
 		changedItems = changedItems.filter( item => item.is( 'element', 'listItem' ) );
 
 		editor.model.change( writer => {
@@ -820,7 +820,7 @@ function restoreDefaultListStyle( editor: Editor ) {
  * @param changes The changes list returned by the differ.
  */
 function getChangedListItems( changes: Array<DifferItem> ) {
-	const items: Array<Element> = [];
+	const items: Array<ModelElement> = [];
 
 	for ( const change of changes ) {
 		const item = getItemFromChange( change );

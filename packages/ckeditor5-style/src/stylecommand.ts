@@ -7,7 +7,7 @@
  * @module style/stylecommand
  */
 
-import type { ModelDocumentSelection, Element } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, ModelElement } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { logWarning, first } from 'ckeditor5/src/utils.js';
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
@@ -98,7 +98,7 @@ export class StyleCommand extends Command {
 		const firstBlock = first( selection.getSelectedBlocks() ) || selection.getFirstPosition()!.parent;
 
 		if ( firstBlock ) {
-			const ancestorBlocks = firstBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<Element>;
+			const ancestorBlocks = firstBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<ModelElement>;
 
 			for ( const block of ancestorBlocks ) {
 				if ( block.is( 'rootElement' ) ) {
@@ -216,13 +216,13 @@ export class StyleCommand extends Command {
 	 * Returns a set of elements that should be affected by the block-style change.
 	 */
 	private _findAffectedBlocks(
-		selectedBlocks: Iterable<Element>,
+		selectedBlocks: Iterable<ModelElement>,
 		definition: BlockStyleDefinition
-	): Set<Element> {
-		const blocks = new Set<Element>();
+	): Set<ModelElement> {
+		const blocks = new Set<ModelElement>();
 
 		for ( const selectedBlock of selectedBlocks ) {
-			const ancestorBlocks = selectedBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<Element>;
+			const ancestorBlocks = selectedBlock.getAncestors( { includeSelf: true, parentFirst: true } ) as Array<ModelElement>;
 
 			for ( const block of ancestorBlocks ) {
 				if ( block.is( 'rootElement' ) ) {
@@ -283,5 +283,5 @@ function getBlocksFromSelection( selection: ModelDocumentSelection ) {
 	if ( blocks.length ) {
 		return blocks;
 	}
-	return [ selection.getFirstPosition()!.parent as Element ];
+	return [ selection.getFirstPosition()!.parent as ModelElement ];
 }

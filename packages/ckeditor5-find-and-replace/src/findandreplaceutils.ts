@@ -7,7 +7,7 @@
  * @module find-and-replace/findandreplaceutils
  */
 
-import type { Element, Item, Marker, Model, Range } from 'ckeditor5/src/engine.js';
+import type { ModelElement, Item, Marker, Model, Range } from 'ckeditor5/src/engine.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 import { Collection, uid } from 'ckeditor5/src/utils.js';
 import { escapeRegExp } from 'es-toolkit/compat';
@@ -76,7 +76,7 @@ export class FindAndReplaceUtils extends Plugin {
 					if ( model.schema.checkChild( item, '$text' ) ) {
 						let foundItems = findCallback( {
 							item,
-							text: this.rangeToText( model.createRangeIn( item as Element ) )
+							text: this.rangeToText( model.createRangeIn( item as ModelElement ) )
 						} );
 
 						if ( !foundItems ) {

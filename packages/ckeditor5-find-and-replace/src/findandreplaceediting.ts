@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type { DifferItem, DifferItemAttribute, Element, Node } from 'ckeditor5/src/engine.js';
+import type { DifferItem, DifferItemAttribute, ModelElement, Node } from 'ckeditor5/src/engine.js';
 import {
 	scrollViewportToShowTarget,
 	type Collection,
@@ -226,7 +226,7 @@ export class FindAndReplaceEditing extends Plugin {
 			}
 
 			if ( change.name === '$text' || ( change.position.nodeAfter && model.schema.isInline( change.position.nodeAfter ) ) ) {
-				changedNodes.add( change.position.parent as Element );
+				changedNodes.add( change.position.parent as ModelElement );
 
 				[ ...model.markers.getMarkersAtPosition( change.position ) ].forEach( markerAtChange => {
 					removedMarkers.add( markerAtChange.name );
@@ -245,7 +245,7 @@ export class FindAndReplaceEditing extends Plugin {
 
 		// Get markers from the updated nodes and remove all (search will be re-run on these nodes).
 		changedNodes.forEach( node => {
-			const markersInNode = [ ...model.markers.getMarkersIntersectingRange( model.createRangeIn( node as Element ) ) ];
+			const markersInNode = [ ...model.markers.getMarkersIntersectingRange( model.createRangeIn( node as ModelElement ) ) ];
 
 			markersInNode.forEach( marker => removedMarkers.add( marker.name ) );
 		} );

@@ -8,7 +8,7 @@
  */
 
 import { ModelDocumentSelection } from '../documentselection.js';
-import { Element } from '../element.js';
+import { ModelElement } from '../element.js';
 import { LivePosition } from '../liveposition.js';
 import { LiveRange } from '../liverange.js';
 import { Position } from '../position.js';
@@ -284,7 +284,7 @@ class Insertion {
 	/**
 	 * The reference to the last auto paragraph node.
 	 */
-	private _lastAutoParagraph: Element | null = null;
+	private _lastAutoParagraph: ModelElement | null = null;
 
 	/**
 	 * The array of nodes that should be cleaned of not allowed attributes.
@@ -551,7 +551,7 @@ class Insertion {
 	private _mergeOnLeft(): void {
 		const node = this._firstNode;
 
-		if ( !( node instanceof Element ) ) {
+		if ( !( node instanceof ModelElement ) ) {
 			return;
 		}
 
@@ -629,7 +629,7 @@ class Insertion {
 	private _mergeOnRight(): void {
 		const node = this._lastNode;
 
-		if ( !( node instanceof Element ) ) {
+		if ( !( node instanceof ModelElement ) ) {
 			return;
 		}
 
@@ -709,10 +709,10 @@ class Insertion {
 	 *
 	 * @param node The node which could potentially be merged.
 	 */
-	private _canMergeLeft( node: Element ): boolean {
+	private _canMergeLeft( node: ModelElement ): boolean {
 		const previousSibling = node.previousSibling;
 
-		return ( previousSibling instanceof Element ) &&
+		return ( previousSibling instanceof ModelElement ) &&
 			this.canMergeWith.has( previousSibling ) &&
 			this.model.schema.checkMerge( previousSibling, node );
 	}
@@ -722,10 +722,10 @@ class Insertion {
 	 *
 	 * @param node The node which could potentially be merged.
 	 */
-	private _canMergeRight( node: Element ): boolean {
+	private _canMergeRight( node: ModelElement ): boolean {
 		const nextSibling = node.nextSibling;
 
-		return ( nextSibling instanceof Element ) &&
+		return ( nextSibling instanceof ModelElement ) &&
 			this.canMergeWith.has( nextSibling ) &&
 			this.model.schema.checkMerge( node, nextSibling );
 	}
@@ -767,7 +767,7 @@ class Insertion {
 			if ( this.position.isAtStart ) {
 				// If insertion position is at the beginning of the parent, move it out instead of splitting.
 				// <p>^Foo</p> -> ^<p>Foo</p>
-				const parent: Element = this.position.parent as Element;
+				const parent: ModelElement = this.position.parent as ModelElement;
 
 				this.position = this.writer.createPositionBefore( parent );
 
@@ -786,9 +786,9 @@ class Insertion {
 			} else if ( this.position.isAtEnd ) {
 				// If insertion position is at the end of the parent, move it out instead of splitting.
 				// <p>Foo^</p> -> <p>Foo</p>^
-				this.position = this.writer.createPositionAfter( this.position.parent as Element );
+				this.position = this.writer.createPositionAfter( this.position.parent as ModelElement );
 			} else {
-				const tempPos = this.writer.createPositionAfter( this.position.parent as Element );
+				const tempPos = this.writer.createPositionAfter( this.position.parent as ModelElement );
 
 				this._setAffectedBoundaries( this.position );
 				this.writer.split( this.position );
@@ -817,7 +817,7 @@ class Insertion {
 	 * @param contextElement The element in which context the node should be checked.
 	 * @param childNode The node to check.
 	 */
-	private _getAllowedIn( contextElement: Element, childNode: Node ): Element | null {
+	private _getAllowedIn( contextElement: ModelElement, childNode: Node ): ModelElement | null {
 		// Check if a node can be inserted in the given context...
 		if ( this.schema.checkChild( contextElement, childNode ) ) {
 			return contextElement;

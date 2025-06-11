@@ -773,7 +773,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 
 	/**
 	 * Checks whether the given {@link module:engine/model/range~Range range} or
-	 * {@link module:engine/model/element~Element element} has any meaningful content.
+	 * {@link module:engine/model/element~ModelElement element} has any meaningful content.
 	 *
 	 * Meaningful content is:
 	 *
@@ -988,7 +988,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * const paragraph = writer.createElement( 'paragraph' );
 	 * const selection = writer.createSelection( paragraph, offset );
 	 *
-	 * // Creates a range inside an {@link module:engine/model/element~Element element} which starts before the
+	 * // Creates a range inside an {@link module:engine/model/element~ModelElement element} which starts before the
 	 * // first child of that element and ends after the last child of that element.
 	 * const selection = writer.createSelection( paragraph, 'in' );
 	 *

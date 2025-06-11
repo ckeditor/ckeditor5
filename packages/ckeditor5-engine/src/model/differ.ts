@@ -13,7 +13,7 @@ import { Range } from './range.js';
 import type { MarkerCollection, MarkerData } from './markercollection.js';
 import { type AttributeOperation } from './operation/attributeoperation.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
-import { type Element } from './element.js';
+import { type ModelElement } from './element.js';
 import { type InsertOperation } from './operation/insertoperation.js';
 import { type Item } from './item.js';
 import { type MergeOperation } from './operation/mergeoperation.js';
@@ -52,7 +52,7 @@ export class Differ {
 	 * The keys of the map are references to the model elements.
 	 * The values of the map are arrays with changes that were done on this element.
 	 */
-	private readonly _changesInElement: Map<Element | ModelDocumentFragment, Array<ChangeItem>> = new Map();
+	private readonly _changesInElement: Map<ModelElement | ModelDocumentFragment, Array<ChangeItem>> = new Map();
 
 	/**
 	 * Stores a snapshot for these model nodes that might have changed.
@@ -71,7 +71,7 @@ export class Differ {
 	 *
 	 * See also {@link ~DifferSnapshot}.
 	 */
-	private readonly _elementChildrenSnapshots: Map<Element | ModelDocumentFragment, Array<DifferSnapshot>> = new Map();
+	private readonly _elementChildrenSnapshots: Map<ModelElement | ModelDocumentFragment, Array<DifferSnapshot>> = new Map();
 
 	/**
 	 * Keeps the state for a given element, describing how the element was changed so far. It is used to evaluate the `action` property
@@ -89,7 +89,7 @@ export class Differ {
 	 * Only already existing elements are registered in `_elementState`. If a new element was inserted as a result of a buffered operation,
 	 * it is not be registered in `_elementState`.
 	 */
-	private readonly _elementState: Map<Element, 'rename' | 'refresh' | 'move'> = new Map();
+	private readonly _elementState: Map<ModelElement, 'rename' | 'refresh' | 'move'> = new Map();
 
 	/**
 	 * A map that stores all changed markers.
@@ -285,7 +285,7 @@ export class Differ {
 			}
 			case 'merge': {
 				// Mark that the merged element was removed.
-				const mergedElement = operation.sourcePosition.parent as Element;
+				const mergedElement = operation.sourcePosition.parent as ModelElement;
 
 				if ( !this._isInInsertedElement( mergedElement.parent! ) ) {
 					this._markRemove( mergedElement.parent!, mergedElement.startOffset!, 1 );
@@ -849,7 +849,7 @@ export class Differ {
 	/**
 	 * Saves and handles an insert change.
 	 */
-	private _markInsert( parent: Element | ModelDocumentFragment, offset: number, howMany: number ) {
+	private _markInsert( parent: ModelElement | ModelDocumentFragment, offset: number, howMany: number ) {
 		if ( parent.root.is( 'rootElement' ) && !parent.root._isLoaded ) {
 			return;
 		}
@@ -862,7 +862,7 @@ export class Differ {
 	/**
 	 * Saves and handles a remove change.
 	 */
-	private _markRemove( parent: Element | ModelDocumentFragment, offset: number, howMany: number ) {
+	private _markRemove( parent: ModelElement | ModelDocumentFragment, offset: number, howMany: number ) {
 		if ( parent.root.is( 'rootElement' ) && !parent.root._isLoaded ) {
 			return;
 		}
@@ -884,13 +884,13 @@ export class Differ {
 
 		const changeItem = { type: 'attribute', offset: item.startOffset!, howMany: item.offsetSize, count: this._changeCount++ } as const;
 
-		this._markChange( item.parent as Element, changeItem );
+		this._markChange( item.parent as ModelElement, changeItem );
 	}
 
 	/**
 	 * Saves and handles a model change.
 	 */
-	private _markChange( parent: Element | ModelDocumentFragment, changeItem: ChangeItem ): void {
+	private _markChange( parent: ModelElement | ModelDocumentFragment, changeItem: ChangeItem ): void {
 		// First, make a snapshot of the parent and its children (it will be made only if it was not made before).
 		this._makeSnapshots( parent );
 
@@ -968,7 +968,7 @@ export class Differ {
 	/**
 	 * Gets an array of changes that have already been saved for a given element.
 	 */
-	private _getChangesForElement( element: Element | ModelDocumentFragment ): Array<ChangeItem> {
+	private _getChangesForElement( element: ModelElement | ModelDocumentFragment ): Array<ChangeItem> {
 		let changes: Array<ChangeItem>;
 
 		if ( this._changesInElement.has( element ) ) {
@@ -985,7 +985,7 @@ export class Differ {
 	/**
 	 * Creates and saves a snapshot for all children of the given element.
 	 */
-	private _makeSnapshots( element: Element | ModelDocumentFragment ): void {
+	private _makeSnapshots( element: ModelElement | ModelDocumentFragment ): void {
 		if ( this._elementChildrenSnapshots.has( element ) ) {
 			return;
 		}
@@ -1234,7 +1234,7 @@ export class Differ {
 	 * @returns The diff item.
 	 */
 	private _getInsertDiff(
-		parent: Element | ModelDocumentFragment,
+		parent: ModelElement | ModelDocumentFragment,
 		offset: number,
 		action: DifferItemAction,
 		elementSnapshot: DifferSnapshot,
@@ -1270,7 +1270,7 @@ export class Differ {
 	 * @returns The diff item.
 	 */
 	private _getRemoveDiff(
-		parent: Element | ModelDocumentFragment,
+		parent: ModelElement | ModelDocumentFragment,
 		offset: number,
 		action: DifferItemAction,
 		elementSnapshot: DifferSnapshot
@@ -1350,7 +1350,7 @@ export class Differ {
 	/**
 	 * Checks whether given element or any of its parents is an element that is buffered as an inserted element.
 	 */
-	private _isInInsertedElement( element: Element | ModelDocumentFragment ): boolean {
+	private _isInInsertedElement( element: ModelElement | ModelDocumentFragment ): boolean {
 		const parent = element.parent;
 
 		if ( !parent ) {
@@ -1375,7 +1375,7 @@ export class Differ {
 	 * Removes deeply all buffered changes that are registered in elements from range specified by `parent`, `offset`
 	 * and `howMany`.
 	 */
-	private _removeAllNestedChanges( parent: Element | ModelDocumentFragment, offset: number, howMany: number ) {
+	private _removeAllNestedChanges( parent: ModelElement | ModelDocumentFragment, offset: number, howMany: number ) {
 		const range = new Range( Position._createAt( parent, offset ), Position._createAt( parent, offset + howMany ) );
 
 		for ( const item of range.getItems( { shallow: true } ) ) {
@@ -1409,10 +1409,10 @@ interface ChangeItem {
 /**
  * Returns a snapshot for the specified child node. Text node snapshots have the `name` property set to `$text`.
  */
-function _getSingleNodeSnapshot( node: Node | Element ): DifferSnapshot {
+function _getSingleNodeSnapshot( node: Node | ModelElement ): DifferSnapshot {
 	return	{
 		node,
-		name: node.is( '$text' ) ? '$text' : ( node as Element ).name,
+		name: node.is( '$text' ) ? '$text' : ( node as ModelElement ).name,
 		attributes: new Map( node.getAttributes() )
 	};
 }

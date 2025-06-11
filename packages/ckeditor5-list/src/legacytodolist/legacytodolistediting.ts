@@ -10,7 +10,7 @@
 import type {
 	DowncastAttributeEvent,
 	DowncastInsertEvent,
-	Element,
+	ModelElement,
 	Item,
 	MapperModelToViewPositionEvent,
 	Model,
@@ -111,7 +111,7 @@ export class LegacyTodoListEditing extends Plugin {
 		editor.commands.add( 'todoListCheck', checkTodoListCommand );
 
 		// Define converters.
-		data.downcastDispatcher.on<DowncastInsertEvent<Element>>(
+		data.downcastDispatcher.on<DowncastInsertEvent<ModelElement>>(
 			'insert:listItem',
 			dataModelViewInsertion( model ),
 			{ priority: 'high' }
@@ -122,16 +122,16 @@ export class LegacyTodoListEditing extends Plugin {
 			{ priority: 'high' }
 		);
 
-		editing.downcastDispatcher.on<DowncastInsertEvent<Element>>(
+		editing.downcastDispatcher.on<DowncastInsertEvent<ModelElement>>(
 			'insert:listItem',
 			modelViewInsertion( model, listItem => this._handleCheckmarkChange( listItem ) ),
 			{ priority: 'high' }
 		);
-		editing.downcastDispatcher.on<DowncastAttributeEvent<Element>>(
+		editing.downcastDispatcher.on<DowncastAttributeEvent<ModelElement>>(
 			'attribute:listType:listItem',
 			modelViewChangeType( listItem => this._handleCheckmarkChange( listItem ), editing.view )
 		);
-		editing.downcastDispatcher.on<DowncastAttributeEvent<Element>>(
+		editing.downcastDispatcher.on<DowncastAttributeEvent<ModelElement>>(
 			'attribute:todoListChecked:listItem',
 			modelViewChangeChecked( listItem => this._handleCheckmarkChange( listItem ) )
 		);
@@ -209,7 +209,7 @@ export class LegacyTodoListEditing extends Plugin {
 	 * is not a clear solution. We need to design an API for using commands beyond the selection range.
 	 * See https://github.com/ckeditor/ckeditor5/issues/1954.
 	 */
-	private _handleCheckmarkChange( listItem: Element ) {
+	private _handleCheckmarkChange( listItem: ModelElement ) {
 		const editor = this.editor;
 		const model = editor.model;
 		const previousSelectionRanges = Array.from( model.document.selection.getRanges() );
@@ -229,7 +229,7 @@ export class LegacyTodoListEditing extends Plugin {
 	 */
 	private _initAriaAnnouncements( ) {
 		const { model, ui, t } = this.editor;
-		let lastFocusedCodeBlock: Element | ModelDocumentFragment | null = null;
+		let lastFocusedCodeBlock: ModelElement | ModelDocumentFragment | null = null;
 
 		if ( !ui ) {
 			return;
@@ -293,6 +293,6 @@ function jumpOverCheckmarkOnSideArrowKeyPress( model: Model, locale: Locale ): G
 /**
  * Returns true if the given element is a list item model element of a to-do list.
  */
-function isLegacyTodoListItemElement( element: Element | ModelDocumentFragment | null ): boolean {
+function isLegacyTodoListItemElement( element: ModelElement | ModelDocumentFragment | null ): boolean {
 	return !!element && element.is( 'element', 'listItem' ) && element.getAttribute( 'listType' ) === 'todo';
 }

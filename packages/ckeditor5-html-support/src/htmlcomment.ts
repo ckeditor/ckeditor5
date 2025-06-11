@@ -7,7 +7,7 @@
  * @module html-support/htmlcomment
  */
 
-import type { Marker, Position, Range, Element } from 'ckeditor5/src/engine.js';
+import type { Marker, Position, Range, ModelElement } from 'ckeditor5/src/engine.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 import { uid } from 'ckeditor5/src/utils.js';
 
@@ -102,7 +102,7 @@ export class HtmlComment extends Plugin {
 				if ( oldRange ) {
 					// The comment marker was moved from one root to another (most probably to the graveyard).
 					// Remove the related attribute from the previous root.
-					const oldRoot = oldRange.root as Element;
+					const oldRoot = oldRange.root as ModelElement;
 
 					if ( oldRoot.hasAttribute( marker.name ) ) {
 						writer.removeAttribute( marker.name, oldRoot );
@@ -112,7 +112,7 @@ export class HtmlComment extends Plugin {
 				}
 
 				if ( newRange ) {
-					const newRoot = newRange.root as Element;
+					const newRoot = newRange.root as ModelElement;
 
 					if ( newRoot.rootName == '$graveyard' ) {
 						// Comment marker was moved to the graveyard -- remove it entirely.

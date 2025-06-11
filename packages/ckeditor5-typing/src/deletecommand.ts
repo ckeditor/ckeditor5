@@ -9,7 +9,7 @@
 
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import { count } from '@ckeditor/ckeditor5-utils';
-import type { ModelDocumentSelection, Element, Selection, Writer } from '@ckeditor/ckeditor5-engine';
+import type { ModelDocumentSelection, ModelElement, Selection, Writer } from '@ckeditor/ckeditor5-engine';
 
 import { ChangeBuffer } from './utils/changebuffer.js';
 
@@ -240,7 +240,7 @@ export class DeleteCommand extends Command {
 
 		const position = selection.getFirstPosition()!;
 		const limitElement = model.schema.getLimitElement( position );
-		const limitElementFirstChild = limitElement.getChild( 0 ) as Element;
+		const limitElementFirstChild = limitElement.getChild( 0 ) as ModelElement;
 
 		// Only elements that are direct children of the limit element can be replaced.
 		// Unwrapping from a block quote should be handled in a dedicated feature.

@@ -10,7 +10,7 @@
 import type {
 	DowncastDispatcher,
 	DowncastInsertEvent,
-	Element,
+	ModelElement,
 	UpcastDispatcher,
 	UpcastElementEvent,
 	ViewElement
@@ -60,7 +60,7 @@ export function upcastColgroupElement( tableUtilsPlugin: TableUtils ): ( dispatc
 export function downcastTableResizedClass(): ( dispatcher: DowncastDispatcher ) => void {
 	return dispatcher => dispatcher.on<DowncastInsertEvent>( 'insert:table', ( evt, data, conversionApi ) => {
 		const viewWriter = conversionApi.writer;
-		const modelTable = data.item as Element;
+		const modelTable = data.item as ModelElement;
 		const viewElement: ViewElement = conversionApi.mapper.toViewElement( modelTable )!;
 
 		const viewTable = viewElement.is( 'element', 'table' ) ?

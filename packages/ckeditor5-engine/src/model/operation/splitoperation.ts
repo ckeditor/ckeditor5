@@ -19,7 +19,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import type { Selectable } from '../selection.js';
 
 /**
- * Operation to split {@link module:engine/model/element~Element an element} at given
+ * Operation to split {@link module:engine/model/element~ModelElement an element} at given
  * {@link module:engine/model/operation/splitoperation~SplitOperation#splitPosition split position} into two elements,
  * both containing a part of the element's original content.
  */

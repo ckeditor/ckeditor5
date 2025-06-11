@@ -12,7 +12,7 @@ import {
 	getFillerOffset,
 	type DowncastConversionApi,
 	type DowncastWriter,
-	type Element,
+	type ModelElement,
 	type Item,
 	type Model,
 	type Position,
@@ -71,7 +71,7 @@ export function generateLiInUl( modelItem: Item, conversionApi: DowncastConversi
  * @param model The model instance.
  */
 export function injectViewList(
-	modelItem: Element,
+	modelItem: ModelElement,
 	injectedItem: ViewContainerElement,
 	conversionApi: DowncastConversionApi,
 	model: Model
@@ -91,7 +91,7 @@ export function injectViewList(
 		smallerIndent: true,
 		listIndent: modelItem.getAttribute( 'listIndent' ) as number
 	} );
-	const prevItem = modelItem.previousSibling as Element | null;
+	const prevItem = modelItem.previousSibling as ModelElement | null;
 
 	if ( refItem && refItem.getAttribute( 'listIndent' ) == modelItem.getAttribute( 'listIndent' ) ) {
 		// There is a list item with the same indent - we found the same-level sibling.
@@ -247,7 +247,7 @@ export function getSiblingListItem(
 		listIndent?: number;
 		direction?: 'forward' | 'backward';
 	}
-): Element | null {
+): ModelElement | null {
 	const sameIndent = !!options.sameIndent;
 	const smallerIndent = !!options.smallerIndent;
 	const indent = options.listIndent;
@@ -294,9 +294,9 @@ export function findNestedList( viewElement: ViewElement ): ViewElement | null {
  * @param position Starting position.
  * @param direction Walking direction.
  */
-export function getSiblingNodes( position: Position, direction: 'forward' | 'backward' ): Array<Element> {
-	const items: Array<Element> = [];
-	const listItem = position.parent as Element;
+export function getSiblingNodes( position: Position, direction: 'forward' | 'backward' ): Array<ModelElement> {
+	const items: Array<ModelElement> = [];
+	const listItem = position.parent as ModelElement;
 	const walkerOptions = {
 		ignoreElementEnd: false,
 		startPosition: position,
@@ -385,7 +385,7 @@ export function getSiblingNodes( position: Position, direction: 'forward' | 'bac
  *
  * @internal
  */
-export function getSelectedListItems( model: Model ): Array<Element> {
+export function getSelectedListItems( model: Model ): Array<ModelElement> {
 	const document = model.document;
 
 	// For all selected blocks find all list items that are being selected

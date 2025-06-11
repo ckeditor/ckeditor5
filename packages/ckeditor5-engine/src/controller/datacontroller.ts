@@ -236,7 +236,7 @@ export class DataController extends /* #__PURE__ */ EmitterMixin() {
 	}
 
 	/**
-	 * Returns the content of the given {@link module:engine/model/element~Element model's element} or
+	 * Returns the content of the given {@link module:engine/model/element~ModelElement model's element} or
 	 * {@link module:engine/model/documentfragment~DocumentFragment model document fragment} converted by the downcast converters
 	 * attached to the {@link #downcastDispatcher} and formatted by the {@link #processor data processor}.
 	 *
@@ -256,7 +256,7 @@ export class DataController extends /* #__PURE__ */ EmitterMixin() {
 	}
 
 	/**
-	 * Returns the content of the given {@link module:engine/model/element~Element model element} or
+	 * Returns the content of the given {@link module:engine/model/element~ModelElement model element} or
 	 * {@link module:engine/model/documentfragment~DocumentFragment model document fragment} converted by the downcast
 	 * converters attached to {@link #downcastDispatcher} into a
 	 * {@link module:engine/view/documentfragment~DocumentFragment view document fragment}.

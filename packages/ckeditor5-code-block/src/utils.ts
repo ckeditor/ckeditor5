@@ -11,7 +11,7 @@ import type { Editor } from 'ckeditor5/src/core.js';
 import type { CodeBlockLanguageDefinition } from './codeblockconfig.js';
 import type {
 	ModelDocumentSelection,
-	Element,
+	ModelElement,
 	Model,
 	Position,
 	Schema,
@@ -263,19 +263,19 @@ export function isModelSelectionInCodeBlock( selection: ModelDocumentSelection )
 }
 
 /**
- * Checks if an {@link module:engine/model/element~Element Element} can become a code block.
+ * Checks if an {@link module:engine/model/element~ModelElement Element} can become a code block.
  *
  * @param schema Model's schema.
  * @param element The element to be checked.
  * @returns Check result.
  * @internal
  */
-export function canBeCodeBlock( schema: Schema, element: Element ): boolean {
+export function canBeCodeBlock( schema: Schema, element: ModelElement ): boolean {
 	if ( element.is( 'rootElement' ) || schema.isLimit( element ) ) {
 		return false;
 	}
 
-	return schema.checkChild( element.parent as Element, 'codeBlock' );
+	return schema.checkChild( element.parent as ModelElement, 'codeBlock' );
 }
 
 /**
@@ -286,7 +286,7 @@ export function canBeCodeBlock( schema: Schema, element: Element ): boolean {
 export function getCodeBlockAriaAnnouncement(
 	t: LocaleTranslate,
 	languageDefs: Array<CodeBlockLanguageDefinition>,
-	element: Element,
+	element: ModelElement,
 	direction: 'enter' | 'leave'
 ): string {
 	const languagesToLabels = getPropertyAssociation( languageDefs, 'language', 'label' );

@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import type {
-	Element,
+	ModelElement,
 	Text,
 	Writer,
 	ModelDocument,
@@ -68,7 +68,7 @@ export class MentionEditing extends Plugin {
 			},
 			model: {
 				key: 'mention',
-				value: ( viewElement: Element ) => _toMentionAttribute( viewElement )
+				value: ( viewElement: ModelElement ) => _toMentionAttribute( viewElement )
 			}
 		} );
 
@@ -106,7 +106,7 @@ export function _addMentionAttributes(
  * @internal
  */
 export function _toMentionAttribute(
-	viewElementOrMention: Element,
+	viewElementOrMention: ModelElement,
 	data?: Record<string, unknown>
 ): MentionAttribute | undefined {
 	const dataMention = viewElementOrMention.getAttribute( 'data-mention' ) as string;
@@ -234,7 +234,7 @@ function removePartialMentionPostFixer( writer: Writer, doc: ModelDocument, sche
 
 		// Checks text nodes in inserted elements (might occur when splitting a paragraph or pasting content inside text with mention).
 		if ( change.name != '$text' && change.type == 'insert' ) {
-			const insertedNode = position.nodeAfter as Element;
+			const insertedNode = position.nodeAfter as ModelElement;
 
 			for ( const item of writer.createRangeIn( insertedNode! ).getItems() ) {
 				wasChanged = checkAndFix( item, writer ) || wasChanged;

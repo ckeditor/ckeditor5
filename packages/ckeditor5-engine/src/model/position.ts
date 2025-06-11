@@ -12,7 +12,7 @@ import { TreeWalker, type TreeWalkerOptions, type TreeWalkerValue } from './tree
 
 import { type ModelDocument } from './document.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
-import { type Element } from './element.js';
+import { type ModelElement } from './element.js';
 import { type InsertOperation } from './operation/insertoperation.js';
 import { type Item } from './item.js';
 import { type MergeOperation } from './operation/mergeoperation.js';
@@ -55,7 +55,7 @@ export class Position extends TypeCheckable {
 	/**
 	 * Root of the position path.
 	 */
-	public readonly root: Element | ModelDocumentFragment;
+	public readonly root: ModelElement | ModelDocumentFragment;
 
 	/**
 	 * Position of the node in the tree. **Path contains offsets, not indexes.**
@@ -103,7 +103,7 @@ export class Position extends TypeCheckable {
 	 * @param stickiness Position stickiness. See {@link module:engine/model/position~PositionStickiness}.
 	 */
 	constructor(
-		root: Element | ModelDocumentFragment,
+		root: ModelElement | ModelDocumentFragment,
 		path: ReadonlyArray<number>,
 		stickiness: PositionStickiness = 'toNone'
 	) {
@@ -173,7 +173,7 @@ export class Position extends TypeCheckable {
 	 *
 	 * Also it is a good idea to cache `parent` property if it is used frequently in an algorithm (i.e. in a long loop).
 	 */
-	public get parent(): Element | ModelDocumentFragment {
+	public get parent(): ModelElement | ModelDocumentFragment {
 		let parent: any = this.root;
 
 		for ( let i = 0; i < this.path.length - 1; i++ ) {
@@ -357,7 +357,7 @@ export class Position extends TypeCheckable {
 	 *
 	 * @returns Array with ancestors.
 	 */
-	public getAncestors(): Array<Element | ModelDocumentFragment> {
+	public getAncestors(): Array<ModelElement | ModelDocumentFragment> {
 		const parent = this.parent;
 
 		if ( parent.is( 'documentFragment' ) ) {
@@ -372,7 +372,7 @@ export class Position extends TypeCheckable {
 	 *
 	 * @param parentName The name of the parent element to find.
 	 */
-	public findAncestor( parentName: string ): Element | null {
+	public findAncestor( parentName: string ): ModelElement | null {
 		const parent = this.parent;
 
 		if ( parent.is( 'element' ) ) {
@@ -405,12 +405,12 @@ export class Position extends TypeCheckable {
 	}
 
 	/**
-	 * Returns an {@link module:engine/model/element~Element} or {@link module:engine/model/documentfragment~DocumentFragment}
+	 * Returns an {@link module:engine/model/element~ModelElement} or {@link module:engine/model/documentfragment~DocumentFragment}
 	 * which is a common ancestor of both positions. The {@link #root roots} of these two positions must be identical.
 	 *
 	 * @param position The second position.
 	 */
-	public getCommonAncestor( position: Position ): Element | ModelDocumentFragment | null {
+	public getCommonAncestor( position: Position ): ModelElement | ModelDocumentFragment | null {
 		const ancestorsA = this.getAncestors();
 		const ancestorsB = position.getAncestors();
 
@@ -1098,7 +1098,7 @@ export type PositionStickiness = 'toNone' | 'toNext' | 'toPrevious';
  * @param positionParent The parent of the given position.
  * @internal
  */
-export function getTextNodeAtPosition( position: Position, positionParent: Element | ModelDocumentFragment ): Text | null {
+export function getTextNodeAtPosition( position: Position, positionParent: ModelElement | ModelDocumentFragment ): Text | null {
 	const node = positionParent.getChildAtOffset( position.offset );
 
 	if ( node && node.is( '$text' ) && node.startOffset! < position.offset ) {
@@ -1134,7 +1134,7 @@ export function getTextNodeAtPosition( position: Position, positionParent: Eleme
  */
 export function getNodeAfterPosition(
 	position: Position,
-	positionParent: Element | ModelDocumentFragment,
+	positionParent: ModelElement | ModelDocumentFragment,
 	textNode: Text | null
 ): Node | null {
 	if ( textNode !== null ) {
@@ -1161,7 +1161,7 @@ export function getNodeAfterPosition(
  */
 export function getNodeBeforePosition(
 	position: Position,
-	positionParent: Element | ModelDocumentFragment,
+	positionParent: ModelElement | ModelDocumentFragment,
 	textNode: Text | null
 ): Node | null {
 	if ( textNode !== null ) {

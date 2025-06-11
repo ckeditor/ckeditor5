@@ -14,13 +14,13 @@ import { Range } from '../range.js';
 import { _move } from './utils.js';
 
 import { type ModelDocument } from '../document.js';
-import { type Element } from '../element.js';
+import { type ModelElement } from '../element.js';
 import type { Selectable } from '../selection.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 /**
- * Operation to merge two {@link module:engine/model/element~Element elements}.
+ * Operation to merge two {@link module:engine/model/element~ModelElement elements}.
  *
  * The merged element is the parent of {@link ~MergeOperation#sourcePosition} and it is merged into the parent of
  * {@link ~MergeOperation#targetPosition}. All nodes from the merged element are moved to {@link ~MergeOperation#targetPosition}.
@@ -109,7 +109,7 @@ export class MergeOperation extends Operation {
 	 * @inheritDoc
 	 */
 	public get affectedSelectable(): Selectable {
-		const mergedElement = this.sourcePosition.parent as Element;
+		const mergedElement = this.sourcePosition.parent as ModelElement;
 
 		return [
 			Range._createOn( mergedElement ),
@@ -180,7 +180,7 @@ export class MergeOperation extends Operation {
 	 * @internal
 	 */
 	public _execute(): void {
-		const mergedElement = this.sourcePosition.parent as Element;
+		const mergedElement = this.sourcePosition.parent as ModelElement;
 		const sourceRange = Range._createIn( mergedElement );
 
 		_move( sourceRange, this.targetPosition );

@@ -21,7 +21,7 @@ import {
 } from 'ckeditor5/src/ui.js';
 import { IconBookmark, IconRemove, IconBookmarkMedium, IconBookmarkSmall, IconPencil } from 'ckeditor5/src/icons.js';
 import {
-	type Element,
+	type ModelElement,
 	type ViewDocumentSelection,
 	type ViewElement
 } from 'ckeditor5/src/engine.js';
@@ -659,7 +659,7 @@ export class BookmarkUI extends Plugin {
 	 * the {@link module:engine/view/document~Document editing view's} selection or `null`
 	 * if there is none.
 	 */
-	private _getSelectedBookmarkElement(): Element | null {
+	private _getSelectedBookmarkElement(): ModelElement | null {
 		const selection = this.editor.model.document.selection;
 		const element = selection.getSelectedElement();
 

@@ -17,7 +17,7 @@ import type {
 	DowncastAttributeEvent,
 	ModelDocumentChangeEvent,
 	DowncastWriter,
-	Element,
+	ModelElement,
 	Model,
 	ModelInsertContentEvent,
 	UpcastElementEvent,
@@ -614,7 +614,7 @@ export class ListEditing extends Plugin {
 					const isSingleListItemSelected = isSingleListItem( allChildren );
 
 					if ( isSingleListItemSelected ) {
-						removeListAttributes( allChildren as Array<Element>, writer );
+						removeListAttributes( allChildren as Array<ModelElement>, writer );
 					}
 				}
 			} );
@@ -704,7 +704,7 @@ export interface ItemMarkerDowncastStrategy {
 	 */
 	createElement(
 		writer: DowncastWriter,
-		modelElement: Element,
+		modelElement: ModelElement,
 		{ dataPipeline }: { dataPipeline?: boolean }
 	): ViewElement | null;
 
@@ -713,7 +713,7 @@ export interface ItemMarkerDowncastStrategy {
 	 */
 	createWrapperElement?(
 		writer: DowncastWriter,
-		modelElement: Element,
+		modelElement: ModelElement,
 		{ dataPipeline }: { dataPipeline?: boolean }
 	): ViewAttributeElement;
 
@@ -721,13 +721,13 @@ export interface ItemMarkerDowncastStrategy {
 	 * Should return true if the given list block can be wrapped with the wrapper created by `createWrapperElement()`
 	 * or only the marker element should be wrapped.
 	 */
-	canWrapElement?( modelElement: Element ): boolean;
+	canWrapElement?( modelElement: ModelElement ): boolean;
 
 	/**
 	 * Should return true if the custom marker can be injected into a given list block.
 	 * Otherwise, custom marker view element is always injected before the block element.
 	 */
-	canInjectMarkerIntoElement?( modelElement: Element ): boolean;
+	canInjectMarkerIntoElement?( modelElement: ModelElement ): boolean;
 }
 
 /**
@@ -774,7 +774,7 @@ function modelChangePostFixer(
 	listEditing: ListEditing
 ) {
 	const changes = model.document.differ.getChanges();
-	const visited = new Set<Element>();
+	const visited = new Set<ModelElement>();
 	const itemToListHead = new Set<ListElement>();
 	const multiBlock = listEditing.editor.config.get( 'list.multiBlock' );
 
@@ -803,7 +803,7 @@ function modelChangePostFixer(
 			}
 
 			// Check if there is no nested list.
-			for ( const { item: innerItem, previousPosition } of model.createRangeIn( item as Element ) ) {
+			for ( const { item: innerItem, previousPosition } of model.createRangeIn( item as ModelElement ) ) {
 				if ( isListItemBlock( innerItem ) ) {
 					findAndAddListHeadToMap( previousPosition, itemToListHead, visited );
 				}
@@ -918,7 +918,7 @@ function createModelIndentPasteFixer( model: Model ): GetCallback<ModelInsertCon
 					 *
 					 * See https://github.com/ckeditor/ckeditor5/issues/13826.
 					 */
-					writer.rename( item as Element, 'listItem' );
+					writer.rename( item as ModelElement, 'listItem' );
 				}
 
 				writer.setAttributes( {
@@ -955,11 +955,11 @@ function shouldMergeOnBlocksContentLevel( model: Model, direction: 'backward' | 
 		return false;
 	}
 
-	if ( ( previousSibling as Element ).isEmpty ) {
+	if ( ( previousSibling as ModelElement ).isEmpty ) {
 		return true;
 	}
 
-	return isSingleListItem( [ positionParent as Element, previousSibling ] );
+	return isSingleListItem( [ positionParent as ModelElement, previousSibling ] );
 }
 
 /**
@@ -979,7 +979,7 @@ export type ListEditingPostFixerEvent = {
 	name: 'postFixer';
 	args: [ {
 		listNodes: ListBlocksIterable;
-		listHead: Element;
+		listHead: ModelElement;
 		writer: Writer;
 		seenIds: Set<string>;
 	} ];
@@ -1019,7 +1019,7 @@ export type ListEditingCheckElementEvent = {
 	name: 'checkElement';
 	args: [ {
 		viewElement: ViewElement;
-		modelElement: Element;
+		modelElement: ModelElement;
 	} ];
 	return: boolean;
 };

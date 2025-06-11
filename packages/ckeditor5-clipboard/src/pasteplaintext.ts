@@ -9,7 +9,7 @@
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import type { ModelDocumentFragment, Model, Element } from '@ckeditor/ckeditor5-engine';
+import type { ModelDocumentFragment, Model, ModelElement } from '@ckeditor/ckeditor5-engine';
 
 import { ClipboardObserver } from './clipboardobserver.js';
 import { ClipboardPipeline, type ClipboardContentInsertionEvent } from './clipboardpipeline.js';
@@ -105,7 +105,7 @@ function isUnformattedInlineContent( documentFragment: ModelDocumentFragment, mo
 
 		if ( child.is( 'element' ) && model.schema.isBlock( child ) && !model.schema.isObject( child ) && !model.schema.isLimit( child ) ) {
 			// Scenario 2. as described above.
-			range = model.createRangeIn( child as Element );
+			range = model.createRangeIn( child as ModelElement );
 		}
 	}
 

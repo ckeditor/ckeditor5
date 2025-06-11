@@ -517,7 +517,7 @@ export class Conversion {
 	/**
 	 * Sets up converters between the model and the view that convert a model attribute to a view attribute (and vice versa). For example,
 	 * `<imageBlock src='foo.jpg'></imageBlock>` is converted to `<img src='foo.jpg'></img>` (the same attribute key and value).
-	 * This type of converters is intended to be used with {@link module:engine/model/element~Element model element} nodes.
+	 * This type of converters is intended to be used with {@link module:engine/model/element~ModelElement model element} nodes.
 	 * To convert the text attributes,
 	 * the {@link module:engine/conversion/conversion~Conversion#attributeToElement `attributeToElement converter`}should be set up.
 	 *

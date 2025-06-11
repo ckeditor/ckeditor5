@@ -13,7 +13,7 @@ import {
 	type ModelDocumentSelection,
 	type DowncastAttributeEvent,
 	type DowncastWriter,
-	type Element,
+	type ModelElement,
 	type Item,
 	type Node,
 	type UpcastElementEvent,
@@ -189,7 +189,7 @@ export class CKBoxEditing extends Plugin {
 		// Convert `ckboxLinkId` => `data-ckbox-resource-id`.
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
 			// Due to custom converters for linked block images, handle the `ckboxLinkId` attribute manually.
-			dispatcher.on<DowncastAttributeEvent<Element>>( 'attribute:ckboxLinkId:imageBlock', ( evt, data, conversionApi ) => {
+			dispatcher.on<DowncastAttributeEvent<ModelElement>>( 'attribute:ckboxLinkId:imageBlock', ( evt, data, conversionApi ) => {
 				const { writer, mapper, consumable } = conversionApi;
 
 				if ( !consumable.consume( data.item, evt.name ) ) {
@@ -285,7 +285,7 @@ export class CKBoxEditing extends Plugin {
 					// Otherwise, just set the `ckboxLinkId` for the model element.
 					const modelElement = data.modelCursor.nodeBefore || data.modelCursor.parent;
 
-					writer.setAttribute( 'ckboxLinkId', attributeValue, modelElement as Element );
+					writer.setAttribute( 'ckboxLinkId', attributeValue, modelElement as ModelElement );
 				}
 			}, { priority: 'low' } );
 		} );

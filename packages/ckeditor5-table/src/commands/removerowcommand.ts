@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core.js';
-import type { Element, Node } from 'ckeditor5/src/engine.js';
+import type { ModelElement, Node } from 'ckeditor5/src/engine.js';
 import { type TableUtils } from '../tableutils.js';
 
 /**
@@ -82,9 +82,9 @@ export class RemoveRowCommand extends Command {
  * - If the row was not the last one, the cell to focus will be in the row that followed it (before removal).
  * - If the row was the last one, the cell to focus will be in the row that preceded it (before removal).
  */
-function getCellToFocus( table: Element, removedRowIndex: number, columnToFocus: number, tableRowCount: number ): Node {
+function getCellToFocus( table: ModelElement, removedRowIndex: number, columnToFocus: number, tableRowCount: number ): Node {
 	// Don't go beyond last row's index.
-	const row = table.getChild( Math.min( removedRowIndex, tableRowCount - 1 ) ) as Element;
+	const row = table.getChild( Math.min( removedRowIndex, tableRowCount - 1 ) ) as ModelElement;
 
 	// Default to first table cell.
 	let cellToFocus = row.getChild( 0 )!;

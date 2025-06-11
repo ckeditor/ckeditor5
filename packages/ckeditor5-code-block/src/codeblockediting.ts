@@ -19,7 +19,7 @@ import {
 	type DowncastInsertEvent,
 	type UpcastElementEvent,
 	type UpcastTextEvent,
-	type Element,
+	type ModelElement,
 	type SelectionChangeRangeEvent
 } from 'ckeditor5/src/engine.js';
 import { ClipboardPipeline, type ClipboardContentInsertionEvent } from 'ckeditor5/src/clipboard.js';
@@ -316,7 +316,7 @@ export class CodeBlockEditing extends Plugin {
 		const { model, ui, t } = this.editor;
 		const languageDefs = getNormalizedAndLocalizedLanguageDefinitions( this.editor );
 
-		let lastFocusedCodeBlock: Element | null = null;
+		let lastFocusedCodeBlock: ModelElement | null = null;
 
 		model.document.selection.on<SelectionChangeRangeEvent>( 'change:range', () => {
 			const focusParent = model.document.selection.focus!.parent;
@@ -418,7 +418,7 @@ function leaveBlockStartOnEnter( editor: Editor, isSoftEnter: boolean ): boolean
 		editor.execute( 'enter' );
 
 		// The cloned block exists now before the original code block.
-		const newBlock = modelDoc.selection.anchor!.parent.previousSibling! as Element;
+		const newBlock = modelDoc.selection.anchor!.parent.previousSibling! as ModelElement;
 
 		// Make the cloned <codeBlock> a regular <paragraph> (with clean attributes, so no language).
 		writer.rename( newBlock, DEFAULT_ELEMENT );
@@ -541,7 +541,7 @@ function leaveBlockEndOnEnter( editor: Editor, isSoftEnter: boolean ): boolean {
 		// "Clone" the <codeBlock> in the standard way.
 		editor.execute( 'enter' );
 
-		const newBlock = modelDoc.selection.anchor!.parent as Element;
+		const newBlock = modelDoc.selection.anchor!.parent as ModelElement;
 
 		// Make the cloned <codeBlock> a regular <paragraph> (with clean attributes, so no language).
 		writer.rename( newBlock, DEFAULT_ELEMENT );

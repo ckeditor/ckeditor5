@@ -7,7 +7,7 @@
  * @module engine/model/schema
  */
 
-import { Element } from './element.js';
+import { ModelElement } from './element.js';
 import { Position } from './position.js';
 import { Range } from './range.js';
 import { Text } from './text.js';
@@ -461,7 +461,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	public checkMerge( position: Position ): boolean;
-	public checkMerge( baseElement: Element, elementToMerge: Element ): boolean;
+	public checkMerge( baseElement: ModelElement, elementToMerge: ModelElement ): boolean;
 
 	/**
 	 * Checks whether the given element (`elementToMerge`) can be merged with the specified base element (`positionOrBaseElement`).
@@ -478,12 +478,12 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param positionOrBaseElement The position or base element to which the `elementToMerge` will be merged.
 	 * @param elementToMerge The element to merge. Required if `positionOrBaseElement` is an element.
 	 */
-	public checkMerge( positionOrBaseElement: Position | Element, elementToMerge?: Element ): boolean {
+	public checkMerge( positionOrBaseElement: Position | ModelElement, elementToMerge?: ModelElement ): boolean {
 		if ( positionOrBaseElement instanceof Position ) {
 			const nodeBefore = positionOrBaseElement.nodeBefore;
 			const nodeAfter = positionOrBaseElement.nodeAfter;
 
-			if ( !( nodeBefore instanceof Element ) ) {
+			if ( !( nodeBefore instanceof ModelElement ) ) {
 				/**
 				 * The node before the merge position must be an element.
 				 *
@@ -495,7 +495,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 				);
 			}
 
-			if ( !( nodeAfter instanceof Element ) ) {
+			if ( !( nodeAfter instanceof ModelElement ) ) {
 				/**
 				 * The node after the merge position must be an element.
 				 *
@@ -732,11 +732,11 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param selectionOrRangeOrPosition The selection/range/position to check.
 	 * @returns The lowest limit element containing the entire `selectionOrRangeOrPosition`.
 	 */
-	public getLimitElement( selectionOrRangeOrPosition: Selection | ModelDocumentSelection | Range | Position ): Element {
-		let element: Element;
+	public getLimitElement( selectionOrRangeOrPosition: Selection | ModelDocumentSelection | Range | Position ): ModelElement {
+		let element: ModelElement;
 
 		if ( selectionOrRangeOrPosition instanceof Position ) {
-			element = selectionOrRangeOrPosition.parent as Element;
+			element = selectionOrRangeOrPosition.parent as ModelElement;
 		} else {
 			const ranges = selectionOrRangeOrPosition instanceof Range ?
 				[ selectionOrRangeOrPosition ] :
@@ -744,20 +744,20 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 
 			// Find the common ancestor for all selection's ranges.
 			element = ranges
-				.reduce<Element | null>( ( element, range ) => {
-					const rangeCommonAncestor = range.getCommonAncestor() as ( Element | null );
+				.reduce<ModelElement | null>( ( element, range ) => {
+					const rangeCommonAncestor = range.getCommonAncestor() as ( ModelElement | null );
 
 					if ( !element ) {
 						return rangeCommonAncestor;
 					}
 
-					return element.getCommonAncestor( rangeCommonAncestor as Element, { includeSelf: true } ) as Element;
+					return element.getCommonAncestor( rangeCommonAncestor as ModelElement, { includeSelf: true } ) as ModelElement;
 				}, null )!;
 		}
 
 		while ( !this.isLimit( element ) ) {
 			if ( element.parent ) {
-				element = element.parent as Element;
+				element = element.parent as ModelElement;
 			} else {
 				break;
 			}
@@ -780,7 +780,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 		if ( selection.isCollapsed ) {
 			const firstPosition = selection.getFirstPosition()!;
 			const context = [
-				...firstPosition.getAncestors() as Array<Element>,
+				...firstPosition.getAncestors() as Array<ModelElement>,
 				new Text( '', selection.getAttributes() )
 			];
 
@@ -854,8 +854,8 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 		let backwardWalker, forwardWalker;
 
 		// Never leave a limit element.
-		const limitElement = ( position.getAncestors() as Array<Element> ).reverse().find( item => this.isLimit( item ) ) ||
-			position.root as Element;
+		const limitElement = ( position.getAncestors() as Array<ModelElement> ).reverse().find( item => this.isLimit( item ) ) ||
+			position.root as ModelElement;
 
 		if ( direction == 'both' || direction == 'backward' ) {
 			backwardWalker = new TreeWalker( {
@@ -898,8 +898,8 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param node The node for which an allowed parent should be found or its name.
 	 * @returns Allowed parent or null if nothing was found.
 	 */
-	public findAllowedParent( position: Position, node: Node | string ): Element | null {
-		let parent = position.parent as ( Element | null );
+	public findAllowedParent( position: Position, node: Node | string ): ModelElement | null {
+		let parent = position.parent as ( ModelElement | null );
 
 		while ( parent ) {
 			if ( this.checkChild( parent, node ) ) {
@@ -911,7 +911,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 				return null;
 			}
 
-			parent = parent.parent as ( Element | null );
+			parent = parent.parent as ( ModelElement | null );
 		}
 
 		return null;
@@ -954,7 +954,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 			// is at start of an element. Using positions prevent from omitting merged nodes
 			// see https://github.com/ckeditor/ckeditor5-engine/issues/1789.
 			else {
-				const rangeInNode = Range._createIn( node as Element );
+				const rangeInNode = Range._createIn( node as ModelElement );
 				const positionsInRange = rangeInNode.getPositions();
 
 				for ( const position of positionsInRange ) {

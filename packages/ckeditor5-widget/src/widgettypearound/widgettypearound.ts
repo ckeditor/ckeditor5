@@ -40,7 +40,7 @@ import type {
 	DowncastInsertEvent,
 	DowncastSelectionEvent,
 	DowncastWriter,
-	Element,
+	ModelElement,
 	Schema,
 	SelectionChangeRangeEvent,
 	ViewDocumentArrowKeyEvent,
@@ -92,7 +92,7 @@ export class WidgetTypeAround extends Plugin {
 	 * on either side of it. It is later used to remove CSS classes associated with the fake caret
 	 * when the widget no longer needs it.
 	 */
-	private _currentFakeCaretModelElement: Element | null = null;
+	private _currentFakeCaretModelElement: ModelElement | null = null;
 
 	/**
 	 * @inheritDoc
@@ -171,7 +171,7 @@ export class WidgetTypeAround extends Plugin {
 	 * @param widgetModelElement The model widget element next to which a paragraph is inserted.
 	 * @param position The position where the paragraph is inserted. Either `'before'` or `'after'` the widget.
 	 */
-	private _insertParagraph( widgetModelElement: Element, position: 'before' | 'after' ) {
+	private _insertParagraph( widgetModelElement: ModelElement, position: 'before' | 'after' ) {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
@@ -259,7 +259,7 @@ export class WidgetTypeAround extends Plugin {
 			after: t( 'Insert paragraph after block' )
 		};
 
-		editor.editing.downcastDispatcher.on<DowncastInsertEvent<Element>>( 'insert', ( evt, data, conversionApi ) => {
+		editor.editing.downcastDispatcher.on<DowncastInsertEvent<ModelElement>>( 'insert', ( evt, data, conversionApi ) => {
 			const viewElement = conversionApi.mapper.toViewElement( data.item );
 
 			if ( !viewElement ) {
@@ -764,7 +764,7 @@ export class WidgetTypeAround extends Plugin {
 						// next to a widget that should be removed. "delete" and "deleteForward" commands cannot get rid of it
 						// so calling Model#deleteContent here manually.
 						else {
-							const deepestEmptyRangeAncestor = getDeepestEmptyElementAncestor( schema, range.start.parent as Element );
+							const deepestEmptyRangeAncestor = getDeepestEmptyElementAncestor( schema, range.start.parent as ModelElement );
 
 							model.deleteContent( model.createSelection( deepestEmptyRangeAncestor, 'on' ), {
 								doNotAutoparagraph: true
@@ -950,7 +950,7 @@ function injectFakeCaret( wrapperDomElement: HTMLElement ) {
  *
  * it returns `<bar>`.
  */
-function getDeepestEmptyElementAncestor( schema: Schema, element: Element ) {
+function getDeepestEmptyElementAncestor( schema: Schema, element: ModelElement ) {
 	let deepestEmptyAncestor = element;
 
 	for ( const ancestor of element.getAncestors( { parentFirst: true } ) ) {
@@ -958,7 +958,7 @@ function getDeepestEmptyElementAncestor( schema: Schema, element: Element ) {
 			break;
 		}
 
-		deepestEmptyAncestor = ancestor as Element;
+		deepestEmptyAncestor = ancestor as ModelElement;
 	}
 
 	return deepestEmptyAncestor;

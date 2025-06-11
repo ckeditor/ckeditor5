@@ -12,7 +12,7 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import type {
 	Consumables,
 	DowncastWriter,
-	Element,
+	ModelElement,
 	Item,
 	UpcastElementEvent,
 	ViewElement
@@ -248,7 +248,7 @@ export interface AttributeStrategy {
 	/**
 	 * Verifies whether the model attribute value is valid.
 	 */
-	hasValidAttribute( element: Element ): boolean;
+	hasValidAttribute( element: ModelElement ): boolean;
 
 	/**
 	 * Sets the property on the view element.

@@ -5,7 +5,7 @@
 
 import { type ModelDocumentFragment } from '../documentfragment.js';
 import { type ModelDocumentSelection } from '../documentselection.js';
-import { type Element } from '../element.js';
+import { type ModelElement } from '../element.js';
 import { type Model } from '../model.js';
 import { type Range } from '../range.js';
 import { type Selection } from '../selection.js';
@@ -82,7 +82,7 @@ export function getSelectedContent(
 			if ( item.is( '$textProxy' ) ) {
 				writer.appendText( item.data, item.getAttributes(), frag );
 			} else {
-				writer.append( writer.cloneElement( item as Element, true ), frag );
+				writer.append( writer.cloneElement( item as ModelElement, true ), frag );
 			}
 		}
 
@@ -119,7 +119,7 @@ export function getSelectedContent(
 // After https://github.com/ckeditor/ckeditor5-engine/issues/690 is fixed,
 // this function will, most likely, be able to rewritten using getMinimalFlatRanges().
 function removeRangeContent( range: Range, writer: Writer ) {
-	const parentsToCheck: Array<Element | ModelDocumentFragment> = [];
+	const parentsToCheck: Array<ModelElement | ModelDocumentFragment> = [];
 
 	Array.from( range.getItems( { direction: 'backward' } ) )
 		// We should better store ranges because text proxies will lose integrity

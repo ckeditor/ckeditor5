@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { Element } from 'ckeditor5/src/engine.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
 
 const attributeKey = 'todoListChecked';
 
@@ -32,7 +32,7 @@ export class LegacyCheckTodoListCommand extends Command {
 	 *
 	 * @internal
 	 */
-	public _selectedElements: Array<Element>;
+	public _selectedElements: Array<ModelElement>;
 
 	/**
 	 * @inheritDoc
@@ -66,14 +66,14 @@ export class LegacyCheckTodoListCommand extends Command {
 		const schema = model.schema;
 
 		const selectionRange = model.document.selection.getFirstRange()!;
-		const startElement = selectionRange.start.parent as Element;
-		const elements: Array<Element> = [];
+		const startElement = selectionRange.start.parent as ModelElement;
+		const elements: Array<ModelElement> = [];
 
 		if ( schema.checkAttribute( startElement, attributeKey ) ) {
 			elements.push( startElement );
 		}
 
-		for ( const item of selectionRange.getItems() as Iterable<Element> ) {
+		for ( const item of selectionRange.getItems() as Iterable<ModelElement> ) {
 			if ( schema.checkAttribute( item, attributeKey ) && !elements.includes( item ) ) {
 				elements.push( item );
 			}

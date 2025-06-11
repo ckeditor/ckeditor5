@@ -8,7 +8,7 @@
  */
 
 import { type Editor, Plugin, type CommandExecuteEvent } from 'ckeditor5/src/core.js';
-import { Element, enablePlaceholder, type ModelDocumentChangeEvent, type DifferItemAttribute } from 'ckeditor5/src/engine.js';
+import { ModelElement, enablePlaceholder, type ModelDocumentChangeEvent, type DifferItemAttribute } from 'ckeditor5/src/engine.js';
 import { toWidgetEditable } from 'ckeditor5/src/widget.js';
 import type { GetCallback } from 'ckeditor5/src/utils.js';
 
@@ -51,7 +51,7 @@ export class ImageCaptionEditing extends Plugin {
 	 *
 	 * To learn more about this system, see {@link #_saveCaption}.
 	 */
-	private _savedCaptionsMap: WeakMap<Element, unknown>;
+	private _savedCaptionsMap: WeakMap<ModelElement, unknown>;
 
 	/**
 	 * @inheritDoc
@@ -110,7 +110,7 @@ export class ImageCaptionEditing extends Plugin {
 		editor.conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'caption',
 			view: ( modelElement, { writer } ) => {
-				if ( !imageUtils.isBlockImage( modelElement.parent as Element ) ) {
+				if ( !imageUtils.isBlockImage( modelElement.parent as ModelElement ) ) {
 					return null;
 				}
 
@@ -122,7 +122,7 @@ export class ImageCaptionEditing extends Plugin {
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'caption',
 			view: ( modelElement, { writer } ) => {
-				if ( !imageUtils.isBlockImage( modelElement.parent as Element ) ) {
+				if ( !imageUtils.isBlockImage( modelElement.parent as ModelElement ) ) {
 					return null;
 				}
 
@@ -136,7 +136,7 @@ export class ImageCaptionEditing extends Plugin {
 					keepOnFocus: true
 				} );
 
-				const imageAlt = ( modelElement.parent as Element ).getAttribute( 'alt' ) as string;
+				const imageAlt = ( modelElement.parent as ModelElement ).getAttribute( 'alt' ) as string;
 				const label = imageAlt ? t( 'Caption for image: %0', [ imageAlt ] ) : t( 'Caption for the image' );
 
 				return toWidgetEditable( figcaptionElement, writer, { label } );
@@ -162,7 +162,7 @@ export class ImageCaptionEditing extends Plugin {
 				return;
 			}
 
-			const { oldElement, newElement } = evt.return as { oldElement: Element; newElement: Element };
+			const { oldElement, newElement } = evt.return as { oldElement: ModelElement; newElement: ModelElement };
 
 			/* istanbul ignore if: paranoid check -- @preserve */
 			if ( !oldElement ) {
@@ -209,7 +209,7 @@ export class ImageCaptionEditing extends Plugin {
 	}
 
 	/**
-	 * Returns the saved {@link module:engine/model/element~Element#toJSON JSONified} caption
+	 * Returns the saved {@link module:engine/model/element~ModelElement#toJSON JSONified} caption
 	 * of an image model element.
 	 *
 	 * See {@link #_saveCaption}.
@@ -218,14 +218,14 @@ export class ImageCaptionEditing extends Plugin {
 	 * @param imageModelElement The model element the caption should be returned for.
 	 * @returns The model caption element or `null` if there is none.
 	 */
-	public _getSavedCaption( imageModelElement: Element ): Element | null {
+	public _getSavedCaption( imageModelElement: ModelElement ): ModelElement | null {
 		const jsonObject = this._savedCaptionsMap.get( imageModelElement );
 
-		return jsonObject ? Element.fromJSON( jsonObject ) : null;
+		return jsonObject ? ModelElement.fromJSON( jsonObject ) : null;
 	}
 
 	/**
-	 * Saves a {@link module:engine/model/element~Element#toJSON JSONified} caption for
+	 * Saves a {@link module:engine/model/element~ModelElement#toJSON JSONified} caption for
 	 * an image element to allow restoring it in the future.
 	 *
 	 * A caption is saved every time it gets hidden and/or the type of an image changes. The
@@ -242,7 +242,7 @@ export class ImageCaptionEditing extends Plugin {
 	 * @param imageModelElement The model element the caption is saved for.
 	 * @param caption The caption model element to be saved.
 	 */
-	public _saveCaption( imageModelElement: Element, caption: Element ): void {
+	public _saveCaption( imageModelElement: ModelElement, caption: ModelElement ): void {
 		this._savedCaptionsMap.set( imageModelElement, caption.toJSON() );
 	}
 
@@ -264,7 +264,7 @@ export class ImageCaptionEditing extends Plugin {
 					continue;
 				}
 
-				const image = change.range.start.nodeAfter as Element;
+				const image = change.range.start.nodeAfter as ModelElement;
 
 				if ( imageUtils.isBlockImage( image ) ) {
 					const caption = imageCaptionUtils.getCaptionFromImageModelElement( image );

@@ -15,7 +15,7 @@ import {
 	type DomEventData,
 	type DowncastSelectionEvent,
 	type DowncastWriter,
-	type Element,
+	type ModelElement,
 	type Node,
 	type ViewDocumentArrowKeyEvent,
 	type ViewDocumentMouseDownEvent,
@@ -504,7 +504,7 @@ export class Widget extends Plugin {
 					const nodeToRemove = previousNode;
 					previousNode = nodeToRemove.parent!;
 
-					writer.remove( nodeToRemove as Element );
+					writer.remove( nodeToRemove as ModelElement );
 				}
 
 				this._setSelectionOverElement( objectElement );
@@ -526,14 +526,14 @@ export class Widget extends Plugin {
 	}
 
 	/**
-	 * Checks if {@link module:engine/model/element~Element element} placed next to the current
+	 * Checks if {@link module:engine/model/element~ModelElement element} placed next to the current
 	 * {@link module:engine/model/selection~Selection model selection} exists and is marked in
 	 * {@link module:engine/model/schema~Schema schema} as `object`.
 	 *
 	 * @internal
 	 * @param forward Direction of checking.
 	 */
-	public _getObjectElementNextToSelection( forward: boolean ): Element | null {
+	public _getObjectElementNextToSelection( forward: boolean ): ModelElement | null {
 		const model = this.editor.model;
 		const schema = model.schema;
 		const modelSelection = model.document.selection;
@@ -551,7 +551,7 @@ export class Widget extends Plugin {
 		const objectElement = forward ? probe.focus!.nodeBefore : probe.focus!.nodeAfter;
 
 		if ( !!objectElement && schema.isObject( objectElement ) ) {
-			return objectElement as Element;
+			return objectElement as ModelElement;
 		}
 
 		return null;
@@ -722,10 +722,10 @@ function isChild( element: ViewElement, parent: ViewElement | null ) {
 /**
  * Returns nearest text block ancestor.
  */
-function findTextBlockAncestor( modelElement: Element, schema: Schema ): Element | null {
+function findTextBlockAncestor( modelElement: ModelElement, schema: Schema ): ModelElement | null {
 	for ( const element of modelElement.getAncestors( { includeSelf: true, parentFirst: true } ) ) {
-		if ( schema.checkChild( element as Element, '$text' ) ) {
-			return element as Element;
+		if ( schema.checkChild( element as ModelElement, '$text' ) ) {
+			return element as ModelElement;
 		}
 
 		// Do not go beyond nested editable.
@@ -740,7 +740,7 @@ function findTextBlockAncestor( modelElement: Element, schema: Schema ): Element
 /**
  * Returns next text block where could put selection.
  */
-function findNextTextBlock( position: Position, schema: Schema ): Element | null {
+function findNextTextBlock( position: Position, schema: Schema ): ModelElement | null {
 	const treeWalker = new TreeWalker( { startPosition: position } );
 
 	for ( const { item } of treeWalker ) {

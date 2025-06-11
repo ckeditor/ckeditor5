@@ -15,7 +15,7 @@ import {
 	Range,
 	type ModelDocumentFragment,
 	type Position,
-	type Element,
+	type ModelElement,
 	type ModelDocumentSelection,
 	type Selection,
 	type Writer,
@@ -149,8 +149,8 @@ export class ClipboardMarkersUtils extends Plugin {
 	 */
 	public _pasteMarkersIntoTransformedElement(
 		markers: Record<string, Range> | Map<string, Range>,
-		getPastedDocumentElement: ( writer: Writer ) => Element
-	): Element {
+		getPastedDocumentElement: ( writer: Writer ) => ModelElement
+	): ModelElement {
 		const pasteMarkers = this._getPasteMarkersFromRangeMap( markers );
 
 		return this.editor.model.change( writer => {
@@ -295,7 +295,7 @@ export class ClipboardMarkersUtils extends Plugin {
 		writer: Writer,
 		selection: Selection | ModelDocumentSelection,
 		action: ClipboardMarkerRestrictedAction
-	): Record<string, Array<Element>> {
+	): Record<string, Array<ModelElement>> {
 		const copyableMarkers = this._getCopyableMarkersFromSelection( writer, selection, action );
 
 		return this._insertFakeMarkersElements( writer, copyableMarkers );
@@ -423,8 +423,8 @@ export class ClipboardMarkersUtils extends Plugin {
 	 * @param writer An instance of the model writer.
 	 * @param markers Array of markers that will be inserted.
 	 */
-	private _insertFakeMarkersElements( writer: Writer, markers: Array<CopyableMarker> ): Record<string, Array<Element>> {
-		const mappedMarkers: Record<string, Array<Element>> = {};
+	private _insertFakeMarkersElements( writer: Writer, markers: Array<CopyableMarker> ): Record<string, Array<ModelElement>> {
+		const mappedMarkers: Record<string, Array<ModelElement>> = {};
 		const sortedMarkers = markers
 			.flatMap( marker => {
 				const { start, end } = marker.range;
@@ -467,7 +467,7 @@ export class ClipboardMarkersUtils extends Plugin {
 	 * @param writer An instance of the model writer.
 	 * @param rootElement The element to be checked.
 	 */
-	private _removeFakeMarkersInsideElement( writer: Writer, rootElement: Element | ModelDocumentFragment ): Record<string, Range> {
+	private _removeFakeMarkersInsideElement( writer: Writer, rootElement: ModelElement | ModelDocumentFragment ): Record<string, Range> {
 		const fakeMarkersElements = this._getAllFakeMarkersFromElement( writer, rootElement );
 		const fakeMarkersRanges = fakeMarkersElements.reduce<Record<string, FakeMarkerRangeConstruct>>( ( acc, fakeMarker ) => {
 			const position = fakeMarker.markerElement && writer.createPositionBefore( fakeMarker.markerElement );
@@ -534,7 +534,7 @@ export class ClipboardMarkersUtils extends Plugin {
 	 * @param writer An instance of the model writer.
 	 * @param rootElement The element to be checked.
 	 */
-	private _getAllFakeMarkersFromElement( writer: Writer, rootElement: Element | ModelDocumentFragment ): Array<FakeMarker> {
+	private _getAllFakeMarkersFromElement( writer: Writer, rootElement: ModelElement | ModelDocumentFragment ): Array<FakeMarker> {
 		const foundFakeMarkers = Array
 			.from( writer.createRangeIn( rootElement ) )
 			.flatMap( ( { item } ): Array<FakeMarker> => {
@@ -666,7 +666,7 @@ export type ClipboardMarkerConfiguration = {
 type FakeMarker = {
 	type: 'start' | 'end';
 	name: string;
-	markerElement: Element | null;
+	markerElement: ModelElement | null;
 };
 
 /**

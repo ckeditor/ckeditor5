@@ -11,7 +11,7 @@ import type { ClipboardContentInsertionEvent, ClipboardPipeline } from 'ckeditor
 import { Plugin } from 'ckeditor5/src/core.js';
 import type {
 	UpcastElementEvent,
-	Element,
+	ModelElement,
 	Schema,
 	DowncastDispatcher,
 	UpcastDispatcher,
@@ -128,7 +128,7 @@ export class EmptyBlock extends Plugin {
  */
 function createEmptyBlockDowncastConverter() {
 	return ( dispatcher: DowncastDispatcher ) => {
-		dispatcher.on<DowncastAttributeEvent<Element>>( `attribute:${ EMPTY_BLOCK_MODEL_ATTRIBUTE }`, ( evt, data, conversionApi ) => {
+		dispatcher.on<DowncastAttributeEvent<ModelElement>>( `attribute:${ EMPTY_BLOCK_MODEL_ATTRIBUTE }`, ( evt, data, conversionApi ) => {
 			const { mapper, consumable } = conversionApi;
 			const { item } = data;
 
@@ -136,7 +136,7 @@ function createEmptyBlockDowncastConverter() {
 				return;
 			}
 
-			const viewElement = mapper.toViewElement( item as Element );
+			const viewElement = mapper.toViewElement( item as ModelElement );
 
 			if ( viewElement && data.attributeNewValue ) {
 				viewElement.getFillerOffset = () => null;
@@ -159,7 +159,7 @@ function createEmptyBlockUpcastConverter( schema: Schema ) {
 			}
 
 			// Handle element itself.
-			const modelElement = modelRange && modelRange.start.nodeAfter as Element;
+			const modelElement = modelRange && modelRange.start.nodeAfter as ModelElement;
 
 			if ( !modelElement || !schema.checkAttribute( modelElement, EMPTY_BLOCK_MODEL_ATTRIBUTE ) ) {
 				return;

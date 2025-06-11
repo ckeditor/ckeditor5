@@ -16,7 +16,7 @@ import {
 	needsPlaceholder,
 	showPlaceholder,
 	type DowncastInsertEvent,
-	type Element,
+	type ModelElement,
 	type MapperModelToViewPositionEvent,
 	type Model,
 	type RootElement,
@@ -44,7 +44,7 @@ export class Title extends Plugin {
 	 * A reference to an empty paragraph in the body
 	 * created when there is no element in the body for the placeholder purposes.
 	 */
-	private _bodyPlaceholder = new Map<string, Element>();
+	private _bodyPlaceholder = new Map<string, ModelElement>();
 
 	/**
 	 * @inheritDoc
@@ -147,7 +147,7 @@ export class Title extends Plugin {
 	public getTitle( options: Record<string, unknown> = {} ): string {
 		const rootName = options.rootName ? options.rootName as string : undefined;
 		const titleElement = this._getTitleElement( rootName );
-		const titleContentElement = titleElement!.getChild( 0 ) as Element;
+		const titleContentElement = titleElement!.getChild( 0 ) as ModelElement;
 
 		return this.editor.data.stringify( titleContentElement, options );
 	}
@@ -204,10 +204,10 @@ export class Title extends Plugin {
 	/**
 	 * Returns the `title` element when it is in the document. Returns `undefined` otherwise.
 	 */
-	private _getTitleElement( rootName?: string ): Element | undefined {
+	private _getTitleElement( rootName?: string ): ModelElement | undefined {
 		const root = this.editor.model.document.getRoot( rootName )!;
 
-		for ( const child of root.getChildren() as IterableIterator<Element> ) {
+		for ( const child of root.getChildren() as IterableIterator<ModelElement> ) {
 			if ( isTitle( child ) ) {
 				return child;
 			}
@@ -230,7 +230,7 @@ export class Title extends Plugin {
 				continue;
 			}
 
-			const titleChildren = Array.from( title.getChildren() ) as Array<Element>;
+			const titleChildren = Array.from( title.getChildren() ) as Array<ModelElement>;
 
 			// Skip first child because it is an allowed element.
 			titleChildren.shift();
@@ -255,9 +255,9 @@ export class Title extends Plugin {
 		const model = this.editor.model;
 
 		for ( const modelRoot of this.editor.model.document.getRoots() ) {
-			const titleElements = Array.from( modelRoot.getChildren() as IterableIterator<Element> ).filter( isTitle );
+			const titleElements = Array.from( modelRoot.getChildren() as IterableIterator<ModelElement> ).filter( isTitle );
 			const firstTitleElement = titleElements[ 0 ];
-			const firstRootChild = modelRoot.getChild( 0 ) as Element;
+			const firstRootChild = modelRoot.getChild( 0 ) as ModelElement;
 
 			// When title element is at the beginning of the document then try to fix additional title elements (if there are any).
 			if ( firstRootChild.is( 'element', 'title' ) ) {
@@ -359,7 +359,7 @@ export class Title extends Plugin {
 			t( 'Type or paste your content here.' );
 
 		// Attach placeholder to the view title element.
-		editor.editing.downcastDispatcher.on<DowncastInsertEvent<Element>>( 'insert:title-content', ( evt, data, conversionApi ) => {
+		editor.editing.downcastDispatcher.on<DowncastInsertEvent<ModelElement>>( 'insert:title-content', ( evt, data, conversionApi ) => {
 			const element: PlaceholderableElement = conversionApi.mapper.toViewElement( data.item )!;
 
 			element.placeholder = titlePlaceholder;
@@ -453,7 +453,7 @@ export class Title extends Plugin {
 				const selectionPosition = selection.getFirstPosition()!;
 				const root = editor.model.document.getRoot( selectionPosition.root.rootName! )!;
 
-				const title = root.getChild( 0 ) as Element;
+				const title = root.getChild( 0 ) as ModelElement;
 				const body = root.getChild( 1 );
 
 				if ( selectedElement === body && selectionPosition.isAtStart ) {
@@ -514,7 +514,7 @@ function mapModelPositionToView( editingView: EditingView ): GetCallback<MapperM
 			return;
 		}
 
-		const modelTitleElement = positionParent.parent as Element;
+		const modelTitleElement = positionParent.parent as ModelElement;
 		const viewElement = data.mapper.toViewElement( modelTitleElement )!;
 
 		data.viewPosition = editingView.createPositionAt( viewElement, 0 );
@@ -525,14 +525,14 @@ function mapModelPositionToView( editingView: EditingView ): GetCallback<MapperM
 /**
  * @returns Returns true when given element is a title. Returns false otherwise.
  */
-function isTitle( element: Element ) {
+function isTitle( element: ModelElement ) {
 	return element.is( 'element', 'title' );
 }
 
 /**
  * Changes the given element to the title element.
  */
-function changeElementToTitle( element: Element, writer: Writer, model: Model ) {
+function changeElementToTitle( element: ModelElement, writer: Writer, model: Model ) {
 	const title = writer.createElement( 'title' );
 
 	writer.insert( title, element, 'before' );
@@ -546,7 +546,7 @@ function changeElementToTitle( element: Element, writer: Writer, model: Model ) 
  *
  * @returns Returns true when there was any change. Returns false otherwise.
  */
-function fixAdditionalTitleElements( titleElements: Array<Element>, writer: Writer, model: Model ) {
+function fixAdditionalTitleElements( titleElements: Array<ModelElement>, writer: Writer, model: Model ) {
 	let hasChanged = false;
 
 	for ( const title of titleElements ) {
@@ -563,8 +563,8 @@ function fixAdditionalTitleElements( titleElements: Array<Element>, writer: Writ
 /**
  * Changes given title element to a paragraph or removes it when it is empty.
  */
-function fixTitleElement( title: Element, writer: Writer, model: Model ) {
-	const child = title.getChild( 0 ) as Element;
+function fixTitleElement( title: ModelElement, writer: Writer, model: Model ) {
+	const child = title.getChild( 0 ) as ModelElement;
 
 	// Empty title should be removed.
 	// It is created as a result of pasting to the title element.
@@ -584,7 +584,7 @@ function fixTitleElement( title: Element, writer: Writer, model: Model ) {
  * Returns true when the last paragraph in the document was created only for the placeholder
  * purpose and it's not needed anymore. Returns false otherwise.
  */
-function shouldRemoveLastParagraph( placeholder: Element, root: RootElement ) {
+function shouldRemoveLastParagraph( placeholder: ModelElement, root: RootElement ) {
 	if ( !placeholder || !placeholder.is( 'element', 'paragraph' ) || placeholder.childCount ) {
 		return false;
 	}

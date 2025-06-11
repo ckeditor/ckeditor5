@@ -8,7 +8,7 @@
  */
 
 import type {
-	Element,
+	ModelElement,
 	Model,
 	Writer,
 	DifferItem,
@@ -253,10 +253,10 @@ function tableLayoutPostFixer( writer: Writer, model: Model ) {
 	const analyzedTables = new Set();
 
 	for ( const entry of changes ) {
-		let table: Element | null = null;
+		let table: ModelElement | null = null;
 
 		if ( entry.type == 'insert' && entry.name == 'table' ) {
-			table = entry.position.nodeAfter as Element;
+			table = entry.position.nodeAfter as ModelElement;
 		}
 
 		// Fix table on adding/removing table cells and rows.
@@ -288,7 +288,7 @@ function tableLayoutPostFixer( writer: Writer, model: Model ) {
  *
  * @returns Returns `true` if the table was fixed.
  */
-function fixTableCellsRowspan( table: Element, writer: Writer ) {
+function fixTableCellsRowspan( table: ModelElement, writer: Writer ) {
 	let wasFixed = false;
 
 	const cellsToTrim = findCellsToTrim( table );
@@ -311,7 +311,7 @@ function fixTableCellsRowspan( table: Element, writer: Writer ) {
  *
  * @returns Returns `true` if the table was fixed.
  */
-function fixTableRowsSizes( table: Element, writer: Writer ) {
+function fixTableRowsSizes( table: ModelElement, writer: Writer ) {
 	let wasFixed = false;
 
 	const childrenLengths = getChildrenLengths( table );
@@ -370,7 +370,7 @@ function fixTableRowsSizes( table: Element, writer: Writer ) {
  * Searches for table cells that extend beyond the table section to which they belong to. It will return an array of objects
  * that stores table cells to be trimmed and the correct value of the `rowspan` attribute to set.
  */
-function findCellsToTrim( table: Element ) {
+function findCellsToTrim( table: ModelElement ) {
 	const headingRows = parseInt( table.getAttribute( 'headingRows' ) as string || '0' );
 	const maxRows = Array.from( table.getChildren() )
 		.reduce( ( count, row ) => row.is( 'element', 'tableRow' ) ? count + 1 : count, 0 );
@@ -402,7 +402,7 @@ function findCellsToTrim( table: Element ) {
 /**
  * Returns an array with lengths of rows assigned to the corresponding row index.
  */
-function getChildrenLengths( table: Element ) {
+function getChildrenLengths( table: ModelElement ) {
 	// TableWalker will not provide items for the empty rows, we need to pre-fill this array.
 	const lengths = new Array( table.childCount ).fill( 0 );
 

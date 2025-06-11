@@ -7,7 +7,7 @@
  * @module list/legacylist/legacylistcommand
  */
 
-import type { Element, Node, Schema } from 'ckeditor5/src/engine.js';
+import type { ModelElement, Node, Schema } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 
 import { first } from 'ckeditor5/src/utils.js';
@@ -74,7 +74,7 @@ export class LegacyListCommand extends Command {
 			// To be sure that model is all the time in a good state, we first fix items below turned-off item.
 			if ( turnOff ) {
 				// Start from the model item that is just after the last turned-off item.
-				let next = blocks[ blocks.length - 1 ].nextSibling as Element;
+				let next = blocks[ blocks.length - 1 ].nextSibling as ModelElement;
 				let currentIndent = Number.POSITIVE_INFINITY;
 				let changes = [];
 
@@ -147,7 +147,7 @@ export class LegacyListCommand extends Command {
 					changes.push( { element: next, listIndent: newIndent } );
 
 					// Find next item.
-					next = next.nextSibling as Element;
+					next = next.nextSibling as ModelElement;
 				}
 
 				changes = changes.reverse();
@@ -325,6 +325,6 @@ function _fixType(
  * @param block A block to be tested.
  * @param schema The schema of the document.
  */
-function checkCanBecomeListItem( block: Element, schema: Schema ) {
+function checkCanBecomeListItem( block: ModelElement, schema: Schema ) {
 	return schema.checkChild( block.parent as any, 'listItem' ) && !schema.isObject( block );
 }

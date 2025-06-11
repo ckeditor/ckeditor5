@@ -7,7 +7,7 @@
  * @module image/imagecaption/toggleimagecaptioncommand
  */
 
-import type { Element, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelElement, Writer } from 'ckeditor5/src/engine.js';
 import { Command } from 'ckeditor5/src/core.js';
 
 import { ImageBlockEditing } from '../image/imageblockediting.js';
@@ -152,13 +152,13 @@ export class ToggleImageCaptionCommand extends Command {
 		const imageCaptionEditing: ImageCaptionEditing = editor.plugins.get( 'ImageCaptionEditing' );
 		const imageCaptionUtils: ImageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
 		let selectedImage = selection.getSelectedElement()!;
-		let captionElement: Element;
+		let captionElement: ModelElement;
 
 		if ( selectedImage ) {
 			captionElement = imageCaptionUtils.getCaptionFromImageModelElement( selectedImage )!;
 		} else {
 			captionElement = imageCaptionUtils.getCaptionFromModelSelection( selection )!;
-			selectedImage = captionElement!.parent as Element;
+			selectedImage = captionElement!.parent as ModelElement;
 		}
 
 		// Store the caption content so it can be restored quickly if the user changes their mind even if they toggle image<->imageInline.

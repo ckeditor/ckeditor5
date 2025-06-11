@@ -20,7 +20,7 @@ import { SplitOperation } from './operation/splitoperation.js';
 
 import { ModelDocumentFragment } from './documentfragment.js';
 import { ModelDocumentSelection } from './documentselection.js';
-import { Element } from './element.js';
+import { ModelElement } from './element.js';
 import { Position, type PositionOffset, type PositionStickiness } from './position.js';
 import { Range } from './range.js';
 import { RootElement } from './rootelement.js';
@@ -102,7 +102,7 @@ export class Writer {
 	}
 
 	/**
-	 * Creates a new {@link module:engine/model/element~Element element}.
+	 * Creates a new {@link module:engine/model/element~ModelElement element}.
 	 *
 	 * ```ts
 	 * writer.createElement( 'paragraph' );
@@ -116,8 +116,8 @@ export class Writer {
 	public createElement(
 		name: string,
 		attributes?: NodeAttributes
-	): Element {
-		return new Element( name, attributes );
+	): ModelElement {
+		return new ModelElement( name, attributes );
 	}
 
 	/**
@@ -137,7 +137,7 @@ export class Writer {
 	 * @param deep If set to `true` clones element and all its children recursively. When set to `false`,
 	 * element will be cloned without any child.
 	 */
-	public cloneElement( element: Element, deep: boolean = true ): Element {
+	public cloneElement( element: ModelElement, deep: boolean = true ): ModelElement {
 		return element._clone( deep );
 	}
 
@@ -335,7 +335,7 @@ export class Writer {
 		itemOrPosition?: any, // Too complicated when not using `any`.
 		offset?: any // Too complicated when not using `any`.
 	): void {
-		if ( attributes instanceof ModelDocumentFragment || attributes instanceof Element || attributes instanceof Position ) {
+		if ( attributes instanceof ModelDocumentFragment || attributes instanceof ModelElement || attributes instanceof Position ) {
 			this.insert( this.createText( text ), attributes, itemOrPosition );
 		} else {
 			this.insert( this.createText( text, attributes ), itemOrPosition, offset );
@@ -412,7 +412,7 @@ export class Writer {
 		itemOrPositionOrOffset?: any, // Too complicated when not using `any`.
 		offset?: any // Too complicated when not using `any`.
 	): void {
-		if ( attributes instanceof ModelDocumentFragment || attributes instanceof Element || attributes instanceof Position ) {
+		if ( attributes instanceof ModelDocumentFragment || attributes instanceof ModelElement || attributes instanceof Position ) {
 			this.insert( this.createElement( name ), attributes, itemOrPositionOrOffset );
 		} else {
 			this.insert( this.createElement( name, attributes ), itemOrPositionOrOffset, offset );
@@ -434,7 +434,7 @@ export class Writer {
 	 *
 	 * @param item Item or document fragment to insert.
 	 */
-	public append( item: Item | ModelDocumentFragment, parent: Element | ModelDocumentFragment ): void {
+	public append( item: Item | ModelDocumentFragment, parent: ModelElement | ModelDocumentFragment ): void {
 		this.insert( item, parent, 'end' );
 	}
 
@@ -450,7 +450,7 @@ export class Writer {
 	 */
 	public appendText(
 		text: string,
-		parent: Element | ModelDocumentFragment
+		parent: ModelElement | ModelDocumentFragment
 	): void;
 
 	/**
@@ -467,15 +467,15 @@ export class Writer {
 	public appendText(
 		text: string,
 		attributes: NodeAttributes,
-		parent: Element | ModelDocumentFragment
+		parent: ModelElement | ModelDocumentFragment
 	): void;
 
 	public appendText(
 		text: string,
-		attributes: NodeAttributes | Element | ModelDocumentFragment,
-		parent?: Element | ModelDocumentFragment
+		attributes: NodeAttributes | ModelElement | ModelDocumentFragment,
+		parent?: ModelElement | ModelDocumentFragment
 	): void {
-		if ( attributes instanceof ModelDocumentFragment || attributes instanceof Element ) {
+		if ( attributes instanceof ModelDocumentFragment || attributes instanceof ModelElement ) {
 			this.insert( this.createText( text ), attributes, 'end' );
 		} else {
 			this.insert( this.createText( text, attributes ), parent!, 'end' );
@@ -494,7 +494,7 @@ export class Writer {
 	 */
 	public appendElement(
 		name: string,
-		parent: Element | ModelDocumentFragment
+		parent: ModelElement | ModelDocumentFragment
 	): void;
 
 	/**
@@ -511,15 +511,15 @@ export class Writer {
 	public appendElement(
 		name: string,
 		attributes: NodeAttributes,
-		parent: Element | ModelDocumentFragment
+		parent: ModelElement | ModelDocumentFragment
 	): void;
 
 	public appendElement(
 		name: string,
-		attributes: NodeAttributes | Element | ModelDocumentFragment,
-		parent?: Element | ModelDocumentFragment
+		attributes: NodeAttributes | ModelElement | ModelDocumentFragment,
+		parent?: ModelElement | ModelDocumentFragment
 	): void {
-		if ( attributes instanceof ModelDocumentFragment || attributes instanceof Element ) {
+		if ( attributes instanceof ModelDocumentFragment || attributes instanceof ModelElement ) {
 			this.insert( this.createElement( name ), attributes, 'end' );
 		} else {
 			this.insert( this.createElement( name, attributes ), parent!, 'end' );
@@ -732,7 +732,7 @@ export class Writer {
 		// If part of the marker is removed, create additional marker operation for undo purposes.
 		this._addOperationForAffectedMarkers( 'merge', position );
 
-		if ( !( nodeBefore instanceof Element ) ) {
+		if ( !( nodeBefore instanceof ModelElement ) ) {
 			/**
 			 * Node before merge position must be an element.
 			 *
@@ -741,7 +741,7 @@ export class Writer {
 			throw new CKEditorError( 'writer-merge-no-element-before', this );
 		}
 
-		if ( !( nodeAfter instanceof Element ) ) {
+		if ( !( nodeAfter instanceof ModelElement ) ) {
 			/**
 			 * Node after merge position must be an element.
 			 *
@@ -765,7 +765,7 @@ export class Writer {
 	 * @param stickiness Position stickiness. See {@link module:engine/model/position~PositionStickiness}.
 	 */
 	public createPositionFromPath(
-		root: Element | ModelDocumentFragment,
+		root: ModelElement | ModelDocumentFragment,
 		path: ReadonlyArray<number>,
 		stickiness?: PositionStickiness
 	): Position {
@@ -817,7 +817,7 @@ export class Writer {
 	 *
 	 * @param element Element which is a parent for the range.
 	 */
-	public createRangeIn( element: Element | ModelDocumentFragment ): Range {
+	public createRangeIn( element: ModelElement | ModelDocumentFragment ): Range {
 		return this.model.createRangeIn( element );
 	}
 
@@ -893,10 +893,10 @@ export class Writer {
 	 * @param element The element to rename.
 	 * @param newName New element name.
 	 */
-	public rename( element: Element | ModelDocumentFragment, newName: string ): void {
+	public rename( element: ModelElement | ModelDocumentFragment, newName: string ): void {
 		this._assertWriterUsedCorrectly();
 
-		if ( !( element instanceof Element ) ) {
+		if ( !( element instanceof ModelElement ) ) {
 			/**
 			 * Trying to rename an object which is not an instance of Element.
 			 *
@@ -959,7 +959,7 @@ export class Writer {
 		// We need to cache elements that will be created as a result of the first split because
 		// we need to create a range from the end of the first split element to the beginning of the
 		// first copy element. This should be handled by LiveRange but it doesn't work on detached nodes.
-		let firstSplitElement: Element | ModelDocumentFragment | undefined;
+		let firstSplitElement: ModelElement | ModelDocumentFragment | undefined;
 		let firstCopyElement: Node | null | undefined;
 
 		do {
@@ -997,7 +997,7 @@ export class Writer {
 	 * @param range Range to wrap.
 	 * @param elementOrString Element or name of element to wrap the range with.
 	 */
-	public wrap( range: Range, elementOrString: Element | string ): void {
+	public wrap( range: Range, elementOrString: ModelElement | string ): void {
 		this._assertWriterUsedCorrectly();
 
 		if ( !range.isFlat ) {
@@ -1009,7 +1009,7 @@ export class Writer {
 			throw new CKEditorError( 'writer-wrap-range-not-flat', this );
 		}
 
-		const element = elementOrString instanceof Element ? elementOrString : new Element( elementOrString );
+		const element = elementOrString instanceof ModelElement ? elementOrString : new ModelElement( elementOrString );
 
 		if ( element.childCount > 0 ) {
 			/**
@@ -1043,7 +1043,7 @@ export class Writer {
 	 *
 	 * @param element Element to unwrap.
 	 */
-	public unwrap( element: Element ): void {
+	public unwrap( element: ModelElement ): void {
 		this._assertWriterUsedCorrectly();
 
 		if ( element.parent === null ) {
@@ -1421,7 +1421,7 @@ export class Writer {
 	 * writer.setSelection( paragraph, offset );
 	 * ```
 	 *
-	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
+	 * Creates a range inside an {@link module:engine/model/element~ModelElement element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
 	 * ```ts

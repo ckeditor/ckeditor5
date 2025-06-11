@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { Element } from 'ckeditor5/src/engine.js';
+import type { ModelElement } from 'ckeditor5/src/engine.js';
 import { getAllListItemBlocks } from '../list/utils/model.js';
 
 /**
@@ -74,7 +74,7 @@ export class CheckTodoListCommand extends Command {
 	/**
 	 * Returns a value for the command.
 	 */
-	private _getValue( selectedElements: Array<Element> ): boolean {
+	private _getValue( selectedElements: Array<ModelElement> ): boolean {
 		return selectedElements.every( element => element.getAttribute( 'todoListChecked' ) );
 	}
 
@@ -86,14 +86,14 @@ export class CheckTodoListCommand extends Command {
 		const schema = model.schema;
 
 		const selectionRange = model.document.selection.getFirstRange()!;
-		const startElement = selectionRange.start.parent as Element;
-		const elements: Array<Element> = [];
+		const startElement = selectionRange.start.parent as ModelElement;
+		const elements: Array<ModelElement> = [];
 
 		if ( schema.checkAttribute( startElement, 'todoListChecked' ) ) {
 			elements.push( ...getAllListItemBlocks( startElement ) );
 		}
 
-		for ( const item of selectionRange.getItems( { shallow: true } ) as Iterable<Element> ) {
+		for ( const item of selectionRange.getItems( { shallow: true } ) as Iterable<ModelElement> ) {
 			if ( schema.checkAttribute( item, 'todoListChecked' ) && !elements.includes( item ) ) {
 				elements.push( ...getAllListItemBlocks( item ) );
 			}

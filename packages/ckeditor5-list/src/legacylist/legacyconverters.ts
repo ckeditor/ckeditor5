@@ -13,7 +13,7 @@ import {
 	type DowncastConversionApi,
 	type DowncastInsertEvent,
 	type DowncastRemoveEvent,
-	type Element,
+	type ModelElement,
 	type MapperModelToViewPositionEvent,
 	type MapperViewToModelPositionEvent,
 	type Model,
@@ -50,7 +50,7 @@ import {
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
  * @param model Model instance.
  */
-export function modelViewInsertion( model: Model ): GetCallback<DowncastInsertEvent<Element>> {
+export function modelViewInsertion( model: Model ): GetCallback<DowncastInsertEvent<ModelElement>> {
 	return ( evt, data, conversionApi ) => {
 		const consumable = conversionApi.consumable;
 
@@ -135,7 +135,7 @@ export function modelViewRemove( model: Model ): GetCallback<DowncastRemoveEvent
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  */
-export const modelViewChangeType: GetCallback<DowncastAttributeEvent<Element>> = ( evt, data, conversionApi ) => {
+export const modelViewChangeType: GetCallback<DowncastAttributeEvent<ModelElement>> = ( evt, data, conversionApi ) => {
 	if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
 		return;
 	}
@@ -161,7 +161,7 @@ export const modelViewChangeType: GetCallback<DowncastAttributeEvent<Element>> =
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  */
-export const modelViewMergeAfterChangeType: GetCallback<DowncastAttributeEvent<Element>> = ( evt, data, conversionApi ) => {
+export const modelViewMergeAfterChangeType: GetCallback<DowncastAttributeEvent<ModelElement>> = ( evt, data, conversionApi ) => {
 	conversionApi.consumable.consume( data.item, evt.name );
 
 	const viewItem = conversionApi.mapper.toViewElement( data.item )!;
@@ -180,7 +180,7 @@ export const modelViewMergeAfterChangeType: GetCallback<DowncastAttributeEvent<E
  * @param model Model instance.
  * @returns Returns a conversion callback.
  */
-export function modelViewChangeIndent( model: Model ): GetCallback<DowncastAttributeEvent<Element>> {
+export function modelViewChangeIndent( model: Model ): GetCallback<DowncastAttributeEvent<ModelElement>> {
 	return ( evt, data, conversionApi ) => {
 		if ( !conversionApi.consumable.consume( data.item, 'attribute:listIndent' ) ) {
 			return;
@@ -247,7 +247,7 @@ export function modelViewChangeIndent( model: Model ): GetCallback<DowncastAttri
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
  */
-export const modelViewSplitOnInsert: GetCallback<DowncastInsertEvent<Element>> = ( evt, data, conversionApi ) => {
+export const modelViewSplitOnInsert: GetCallback<DowncastInsertEvent<ModelElement>> = ( evt, data, conversionApi ) => {
 	if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
 		return;
 	}
@@ -598,7 +598,7 @@ export function viewToModelPosition( model: Model ): GetCallback<MapperViewToMod
  */
 export function modelChangePostFixer( model: Model, writer: Writer ): boolean {
 	const changes = model.document.differ.getChanges();
-	const itemToListHead = new Map<Element, Element>();
+	const itemToListHead = new Map<ModelElement, ModelElement>();
 
 	let applied = false;
 
@@ -608,7 +608,7 @@ export function modelChangePostFixer( model: Model, writer: Writer ): boolean {
 		} else if ( entry.type == 'insert' && entry.name != 'listItem' ) {
 			if ( entry.name != '$text' ) {
 				// In case of renamed element.
-				const item = entry.position.nodeAfter as Element;
+				const item = entry.position.nodeAfter as ModelElement;
 
 				if ( item.hasAttribute( 'listIndent' ) ) {
 					writer.removeAttribute( 'listIndent', item );
@@ -845,7 +845,7 @@ export const modelIndentPasteFixer: GetCallback<ModelInsertContentEvent> = funct
  * @returns Position on which next elements should be inserted after children conversion.
  */
 function viewToModelListItemChildrenConverter(
-	listItemModel: Element,
+	listItemModel: ModelElement,
 	viewChildren: Iterable<ViewNode>,
 	conversionApi: UpcastConversionApi
 ) {

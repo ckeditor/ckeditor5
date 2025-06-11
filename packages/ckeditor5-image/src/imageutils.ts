@@ -8,7 +8,7 @@
  */
 
 import type {
-	Element,
+	ModelElement,
 	ViewElement,
 	ViewNode,
 	ModelDocumentSelection,
@@ -55,7 +55,7 @@ export class ImageUtils extends Plugin {
 	/**
 	 * Checks if the provided model element is an `image` or `imageInline`.
 	 */
-	public isImage( modelElement?: Element | null ): modelElement is Element & { name: 'imageInline' | 'imageBlock' } {
+	public isImage( modelElement?: ModelElement | null ): modelElement is ModelElement & { name: 'imageInline' | 'imageBlock' } {
 		return this.isInlineImage( modelElement ) || this.isBlockImage( modelElement );
 	}
 
@@ -107,7 +107,7 @@ export class ImageUtils extends Plugin {
 		selectable: Selection | Position | null = null,
 		imageType: ( 'imageBlock' | 'imageInline' | null ) = null,
 		options: { setImageSizes?: boolean } = {}
-	): Element | null {
+	): ModelElement | null {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
@@ -158,7 +158,7 @@ export class ImageUtils extends Plugin {
 	 * The `src` attribute may not be available if the user is using an upload adapter. In such a case,
 	 * this method is called again after the upload process is complete and the `src` attribute is available.
 	 */
-	public setImageNaturalSizeAttributes( imageElement: Element ): void {
+	public setImageNaturalSizeAttributes( imageElement: ModelElement ): void {
 		const src = imageElement.getAttribute( 'src' ) as string;
 
 		if ( !src ) {
@@ -221,7 +221,7 @@ export class ImageUtils extends Plugin {
 	/**
 	 * Returns a image model element if one is selected or is among the selection's ancestors.
 	 */
-	public getClosestSelectedImageElement( selection: Selection | ModelDocumentSelection ): Element | null {
+	public getClosestSelectedImageElement( selection: Selection | ModelDocumentSelection ): ModelElement | null {
 		const selectedElement = selection.getSelectedElement();
 
 		return this.isImage( selectedElement ) ? selectedElement : selection.getFirstPosition()!.findAncestor( 'imageBlock' );
@@ -278,14 +278,14 @@ export class ImageUtils extends Plugin {
 	/**
 	 * Checks if the provided model element is an `image`.
 	 */
-	public isBlockImage( modelElement?: Element | null ): boolean {
+	public isBlockImage( modelElement?: ModelElement | null ): boolean {
 		return !!modelElement && modelElement.is( 'element', 'imageBlock' );
 	}
 
 	/**
 	 * Checks if the provided model element is an `imageInline`.
 	 */
-	public isInlineImage( modelElement?: Element | null ): boolean {
+	public isInlineImage( modelElement?: ModelElement | null ): boolean {
 		return !!modelElement && modelElement.is( 'element', 'imageInline' );
 	}
 
@@ -327,7 +327,7 @@ function isImageAllowedInParent( editor: Editor, selection: Selection | ModelDoc
 	if ( imageType == 'imageBlock' ) {
 		const parent = getInsertImageParent( selection, editor.model );
 
-		if ( editor.model.schema.checkChild( parent as Element, 'imageBlock' ) ) {
+		if ( editor.model.schema.checkChild( parent as ModelElement, 'imageBlock' ) ) {
 			return true;
 		}
 	} else if ( editor.model.schema.checkChild( selection.focus!, 'imageInline' ) ) {
@@ -347,7 +347,7 @@ function isNotInsideImage( selection: ModelDocumentSelection ): boolean {
 /**
  * Returns a node that will be used to insert image with `model.insertContent`.
  */
-function getInsertImageParent( selection: Selection | ModelDocumentSelection, model: Model ): Element | ModelDocumentFragment {
+function getInsertImageParent( selection: Selection | ModelDocumentSelection, model: Model ): ModelElement | ModelDocumentFragment {
 	const insertionRange = findOptimalInsertionRange( selection, model );
 	const parent = insertionRange.start.parent;
 

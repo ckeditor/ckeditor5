@@ -25,7 +25,7 @@ import {
 	MouseObserver,
 	type ModelDocumentChangeEvent,
 	type DomEventData,
-	type Element,
+	type ModelElement,
 	type ViewContainerElement,
 	type ViewDocumentMouseDownEvent,
 	type ViewSelectionChangeEvent
@@ -300,7 +300,7 @@ export interface ResizerOptions {
 	 */
 	editor: Editor;
 
-	modelElement: Element;
+	modelElement: ModelElement;
 
 	/**
 	 * A view of an element to be resized. Typically it's the main widget's view instance.

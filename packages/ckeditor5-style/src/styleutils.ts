@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import type { Element, MatcherObjectPattern, ModelDocumentSelection, Selectable } from 'ckeditor5/src/engine.js';
+import type { ModelElement, MatcherObjectPattern, ModelDocumentSelection, Selectable } from 'ckeditor5/src/engine.js';
 import type { DecoratedMethodEvent } from 'ckeditor5/src/utils.js';
 import type { TemplateDefinition } from 'ckeditor5/src/ui.js';
 
@@ -147,7 +147,7 @@ export class StyleUtils extends Plugin {
 	 *
 	 * @internal
 	 */
-	public isStyleEnabledForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
+	public isStyleEnabledForBlock( definition: BlockStyleDefinition, block: ModelElement ): boolean {
 		const model = this.editor.model;
 		const attributeName = this._htmlSupport.getGhsAttributeNameForElement( definition.element );
 
@@ -163,7 +163,7 @@ export class StyleUtils extends Plugin {
 	 *
 	 * @internal
 	 */
-	public isStyleActiveForBlock( definition: BlockStyleDefinition, block: Element ): boolean {
+	public isStyleActiveForBlock( definition: BlockStyleDefinition, block: ModelElement ): boolean {
 		const attributeName = this._htmlSupport.getGhsAttributeNameForElement( definition.element );
 		const ghsAttributeValue = block.getAttribute( attributeName );
 
@@ -175,7 +175,7 @@ export class StyleUtils extends Plugin {
 	 *
 	 * @internal
 	 */
-	public getAffectedBlocks( definition: BlockStyleDefinition, block: Element ): Array<Element> | null {
+	public getAffectedBlocks( definition: BlockStyleDefinition, block: ModelElement ): Array<ModelElement> | null {
 		if ( definition.modelElements.includes( block.name ) ) {
 			return [ block ];
 		}

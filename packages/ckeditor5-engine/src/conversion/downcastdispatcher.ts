@@ -18,7 +18,7 @@ import type { TreeWalkerValue } from '../model/treewalker.js';
 import { type ModelDocumentSelection } from '../model/documentselection.js';
 import { type DowncastWriter } from '../view/downcastwriter.js';
 import { type RootElement } from '../model/rootelement.js';
-import { type Element } from '../model/element.js';
+import { type ModelElement } from '../model/element.js';
 import { type Item } from '../model/item.js';
 import { type Mapper } from './mapper.js';
 import { type Position } from '../model/position.js';
@@ -738,7 +738,7 @@ export type DowncastEvent<TName extends keyof DowncastDispatcherEventMap<TItem>,
  *
  * `insert` is a namespace for a class of events. Names of actually called events follow this pattern:
  * `insert:name`. `name` is either `'$text'`, when {@link module:engine/model/text~Text a text node} has been inserted,
- * or {@link module:engine/model/element~Element#name name} of inserted element.
+ * or {@link module:engine/model/element~ModelElement#name name} of inserted element.
  *
  * This way, the listeners can either listen to a general `insert` event or specific event (for example `insert:paragraph`).
  *
@@ -756,7 +756,7 @@ export type DowncastInsertEvent<TItem extends Item = Item> = DowncastEvent<'inse
  *
  * `remove` is a namespace for a class of events. Names of actually called events follow this pattern:
  * `remove:name`. `name` is either `'$text'`, when a {@link module:engine/model/text~Text a text node} has been removed,
- * or the {@link module:engine/model/element~Element#name name} of removed element.
+ * or the {@link module:engine/model/element~ModelElement#name name} of removed element.
  *
  * This way, listeners can either listen to a general `remove` event or specific event (for example `remove:paragraph`).
  *
@@ -779,7 +779,7 @@ export type DowncastRemoveEvent = DowncastEvent<'remove'>;
  * `attribute` is a namespace for a class of events. Names of actually called events follow this pattern:
  * `attribute:attributeKey:name`. `attributeKey` is the key of added/changed/removed attribute.
  * `name` is either `'$text'` if change was on {@link module:engine/model/text~Text a text node},
- * or the {@link module:engine/model/element~Element#name name} of element which attribute has changed.
+ * or the {@link module:engine/model/element~ModelElement#name name} of element which attribute has changed.
  *
  * This way listeners can either listen to a general `attribute:bold` event or specific event (for example `attribute:src:imageBlock`).
  *
@@ -886,7 +886,7 @@ function shouldMarkerChangeBeConverted(
 	ancestors.shift(); // Remove root element. It cannot be passed to `model.Range#containsItem`.
 	ancestors.reverse();
 
-	const hasCustomHandling = ( ancestors as Array<Element> ).some( element => {
+	const hasCustomHandling = ( ancestors as Array<ModelElement> ).some( element => {
 		if ( range.containsItem( element ) ) {
 			const viewElement = mapper.toViewElement( element )!;
 
@@ -963,7 +963,7 @@ export interface DowncastConversionApi {
 	 *
 	 * @param element The model element to trigger children insert conversion on.
 	 */
-	convertChildren( element: Element ): void;
+	convertChildren( element: ModelElement ): void;
 
 	/**
 	 * Triggers conversion of attributes of a specified item.

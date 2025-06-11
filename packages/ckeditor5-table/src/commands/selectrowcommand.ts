@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { Range, Element } from 'ckeditor5/src/engine.js';
+import type { Range, ModelElement } from 'ckeditor5/src/engine.js';
 import { type TableUtils } from '../tableutils.js';
 
 /**
@@ -56,7 +56,7 @@ export class SelectRowCommand extends Command {
 		const rangesToSelect: Array<Range> = [];
 
 		for ( let rowIndex = rowIndexes.first; rowIndex <= rowIndexes.last; rowIndex++ ) {
-			for ( const cell of ( table.getChild( rowIndex ) as Element ).getChildren() ) {
+			for ( const cell of ( table.getChild( rowIndex ) as ModelElement ).getChildren() ) {
 				rangesToSelect.push( model.createRangeOn( cell ) );
 			}
 		}

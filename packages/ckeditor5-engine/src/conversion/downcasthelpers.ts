@@ -1644,7 +1644,7 @@ function changeAttribute( attributeCreator: DowncastAttributeCreatorFunction ) {
 			 * } );
 			 * ```
 			 *
-			 * In such cases, to convert the same attribute for both {@link module:engine/model/element~Element}
+			 * In such cases, to convert the same attribute for both {@link module:engine/model/element~ModelElement}
 			 * and {@link module:engine/model/textproxy~TextProxy `Text`} nodes, text specific
 			 * {@link module:engine/conversion/conversion~Conversion#attributeToElement `Attribute to Element converter`}
 			 * with higher {@link module:utils/priorities~PriorityString priority} must also be defined:
@@ -1975,7 +1975,7 @@ function downcastElementToStructure(
 	return ( dispatcher: DowncastDispatcher ) => {
 		if ( dispatcher._conversionApi.schema.checkChild( model.name, '$text' ) ) {
 			/**
-			 * This error occurs when a {@link module:engine/model/element~Element model element} is downcasted
+			 * This error occurs when a {@link module:engine/model/element~ModelElement model element} is downcasted
 			 * via {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} helper but the element was
 			 * allowed to host `$text` by the {@link module:engine/model/schema~Schema model schema}.
 			 *
@@ -2620,7 +2620,7 @@ function validateSlotsChildren(
 		 * Filters provided to `writer.createSlot()` overlap (at least two filters accept the same child element).
 		 *
 		 * @error conversion-slot-filter-overlap
-		 * @param {module:engine/model/element~Element} element The element of which children would not be properly
+		 * @param {module:engine/model/element~ModelElement} element The element of which children would not be properly
 		 * allocated to multiple slots.
 		 */
 		throw new CKEditorError( 'conversion-slot-filter-overlap', conversionApi.dispatcher, { element } );
@@ -2632,7 +2632,7 @@ function validateSlotsChildren(
 		 * the children elements would not be assigned to any of the slots).
 		 *
 		 * @error conversion-slot-filter-incomplete
-		 * @param {module:engine/model/element~Element} element The element of which children would not be properly
+		 * @param {module:engine/model/element~ModelElement} element The element of which children would not be properly
 		 * allocated to multiple slots.
 		 */
 		throw new CKEditorError( 'conversion-slot-filter-incomplete', conversionApi.dispatcher, { element } );

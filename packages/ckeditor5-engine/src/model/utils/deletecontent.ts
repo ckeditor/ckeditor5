@@ -12,7 +12,7 @@ import { LivePosition } from '../liveposition.js';
 import { Range } from '../range.js';
 
 import { type ModelDocumentFragment } from '../documentfragment.js';
-import { type Element } from '../element.js';
+import { type ModelElement } from '../element.js';
 import { type Model } from '../model.js';
 import { type Position } from '../position.js';
 import { type Schema } from '../schema.js';
@@ -225,7 +225,7 @@ function getLivePositionsForSelectedBlocks( range: Range ): [ startPosition: Liv
  * Finds the lowest element in position's ancestors which is a block.
  * Returns null if a limit element is encountered before reaching a block element.
  */
-function getParentBlock( position: Position ): Element | null | undefined {
+function getParentBlock( position: Position ): ModelElement | null | undefined {
 	const element = position.parent;
 	const schema = element.root.document!.model.schema;
 	const ancestors = element.getAncestors( { parentFirst: true, includeSelf: true } );
@@ -236,7 +236,7 @@ function getParentBlock( position: Position ): Element | null | undefined {
 		}
 
 		if ( schema.isBlock( element ) ) {
-			return element as Element;
+			return element as ModelElement;
 		}
 	}
 }
@@ -323,10 +323,10 @@ function mergeBranchesLeft(
 	writer: Writer,
 	startPosition: Position,
 	endPosition: Position,
-	commonAncestor: Element | ModelDocumentFragment | null
+	commonAncestor: ModelElement | ModelDocumentFragment | null
 ) {
-	const startElement = startPosition.parent as Element;
-	const endElement = endPosition.parent as Element;
+	const startElement = startPosition.parent as ModelElement;
+	const endElement = endPosition.parent as ModelElement;
 
 	// Merging reached the common ancestor element, stop here.
 	if ( startElement == commonAncestor || endElement == commonAncestor ) {
@@ -374,7 +374,7 @@ function mergeBranchesLeft(
 	//     </blockBlock>                     ->
 	//
 	while ( endPosition.parent.isEmpty ) {
-		const parentToRemove = endPosition.parent as Element;
+		const parentToRemove = endPosition.parent as ModelElement;
 
 		endPosition = writer.createPositionBefore( parentToRemove );
 
@@ -414,10 +414,10 @@ function mergeBranchesRight(
 	writer: Writer,
 	startPosition: Position,
 	endPosition: Position,
-	commonAncestor: Element | ModelDocumentFragment | null
+	commonAncestor: ModelElement | ModelDocumentFragment | null
 ) {
-	const startElement = startPosition.parent as Element;
-	const endElement = endPosition.parent as Element;
+	const startElement = startPosition.parent as ModelElement;
+	const endElement = endPosition.parent as ModelElement;
 
 	// Merging reached the common ancestor element, stop here.
 	if ( startElement == commonAncestor || endElement == commonAncestor ) {
@@ -451,7 +451,7 @@ function mergeBranchesRight(
 	//     </blockBlock>                                            ->  </blockBlock>
 	//
 	while ( startPosition.parent.isEmpty ) {
-		const parentToRemove = startPosition.parent as Element;
+		const parentToRemove = startPosition.parent as ModelElement;
 
 		startPosition = writer.createPositionBefore( parentToRemove );
 

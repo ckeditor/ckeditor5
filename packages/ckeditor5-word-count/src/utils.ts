@@ -7,7 +7,7 @@
  * @module word-count/utils
  */
 
-import type { Element, Item } from 'ckeditor5/src/engine.js';
+import type { ModelElement, Item } from 'ckeditor5/src/engine.js';
 
 /**
  * Returns a plain text representation of an element and its children.
@@ -20,7 +20,7 @@ export function modelElementToPlainText( item: Item ): string {
 		return item.data;
 	}
 
-	const element = item as Element;
+	const element = item as ModelElement;
 	let text = '';
 	let prev = null;
 

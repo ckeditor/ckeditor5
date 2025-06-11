@@ -436,7 +436,7 @@ function getClassToSet( attributes ) {
  * Returns ascii-art visualization of the table.
  *
  * @param {module:engine/model/model~Model} model The editor model.
- * @param {module:engine/model/element~Element} table The table model element.
+ * @param {module:engine/model/element~ModelElement} table The table model element.
  * @returns {String}
  */
 export function createTableAsciiArt( model, table ) {
@@ -505,7 +505,7 @@ export function createTableAsciiArt( model, table ) {
  * Generates input data for `modelTable` helper method.
  *
  * @param {module:engine/model/model~Model} model The editor model.
- * @param {module:engine/model/element~Element} table The table model element.
+ * @param {module:engine/model/element~ModelElement} table The table model element.
  * @returns {Array.<Array.<String|Object>>}
  */
 export function prepareModelTableInput( model, table ) {

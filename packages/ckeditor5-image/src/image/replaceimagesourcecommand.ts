@@ -5,7 +5,7 @@
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { type ImageUtils } from '../imageutils.js';
-import type { Writer, Element } from 'ckeditor5/src/engine.js';
+import type { Writer, ModelElement } from 'ckeditor5/src/engine.js';
 
 /**
  * @module image/image/replaceimagesourcecommand
@@ -75,7 +75,7 @@ export class ReplaceImageSourceCommand extends Command {
 	 * } );
 	 * ```
 	 */
-	public cleanupImage( writer: Writer, image: Element ): void {
+	public cleanupImage( writer: Writer, image: ModelElement ): void {
 		writer.removeAttribute( 'srcset', image );
 		writer.removeAttribute( 'sizes', image );
 

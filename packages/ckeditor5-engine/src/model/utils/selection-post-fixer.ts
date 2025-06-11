@@ -15,7 +15,7 @@ import { type Model } from '../model.js';
 import { type Node } from '../node.js';
 import { type Schema } from '../schema.js';
 import { type Writer } from '../writer.js';
-import { type Element } from '../element.js';
+import { type ModelElement } from '../element.js';
 
 /**
  * Injects selection post-fixer to the model.
@@ -147,7 +147,7 @@ function tryFixingCollapsedRange( range: Range, schema: Schema ) {
 	// In the first case, there is no need to fix the selection range.
 	// In the second, let's go up to the outer selectable element
 	if ( !nearestSelectionRange ) {
-		const ancestorObject = originalPosition.getAncestors().reverse().find( ( item ): item is Element => schema.isObject( item ) );
+		const ancestorObject = originalPosition.getAncestors().reverse().find( ( item ): item is ModelElement => schema.isObject( item ) );
 
 		if ( ancestorObject ) {
 			return Range._createOn( ancestorObject );

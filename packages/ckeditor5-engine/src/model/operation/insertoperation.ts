@@ -13,7 +13,7 @@ import { NodeList } from '../nodelist.js';
 import { MoveOperation } from './moveoperation.js';
 import { _insert, _normalizeNodes, type NodeSet } from './utils.js';
 import { Text } from '../text.js';
-import { Element } from '../element.js';
+import { ModelElement } from '../element.js';
 import type { Selectable } from '../selection.js';
 
 import { type ModelDocument } from '../document.js';
@@ -171,7 +171,7 @@ export class InsertOperation extends Operation {
 		for ( const child of json.nodes ) {
 			if ( child.name ) {
 				// If child has name property, it is an Element.
-				children.push( Element.fromJSON( child ) );
+				children.push( ModelElement.fromJSON( child ) );
 			} else {
 				// Otherwise, it is a Text node.
 				children.push( Text.fromJSON( child ) );

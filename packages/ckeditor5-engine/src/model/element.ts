@@ -19,12 +19,12 @@ import { isIterable } from '@ckeditor/ckeditor5-utils';
 // @if CK_DEBUG_ENGINE // const { stringifyMap, convertMapToStringifiedObject, convertMapToTags } = require( '../dev-utils/utils' );
 
 /**
- * Model element. Type of {@link module:engine/model/node~Node node} that has a {@link module:engine/model/element~Element#name name} and
- * {@link module:engine/model/element~Element#getChildren child nodes}.
+ * Model element. Type of {@link module:engine/model/node~Node node} that has a {@link module:engine/model/element~ModelElement#name name}
+ * and {@link module:engine/model/element~ModelElement#getChildren child nodes}.
  *
  * **Important**: see {@link module:engine/model/node~Node} to read about restrictions using `Element` and `Node` API.
  */
-export class Element extends Node {
+export class ModelElement extends Node {
 	/**
 	 * Element name.
 	 */
@@ -132,7 +132,7 @@ export class Element extends Node {
 
 	/**
 	 * Returns index of a node that occupies given offset. If given offset is too low, returns `0`. If given offset is
-	 * too high, returns {@link module:engine/model/element~Element#getChildIndex index after last child}.
+	 * too high, returns {@link module:engine/model/element~ModelElement#getChildIndex index after last child}.
 	 *
 	 * ```ts
 	 * const textNode = new Text( 'foo' );
@@ -167,7 +167,7 @@ export class Element extends Node {
 		let node: Node = this;
 
 		for ( const offset of relativePath ) {
-			node = ( node as Element ).getChildAtOffset( offset )!;
+			node = ( node as ModelElement ).getChildAtOffset( offset )!;
 		}
 
 		return node;
@@ -180,7 +180,7 @@ export class Element extends Node {
 	 * @param options Options object.
 	 * @param options.includeSelf When set to `true` this node will be also included while searching.
 	 */
-	public findAncestor( parentName: string, options: { includeSelf?: boolean } = {} ): Element | null {
+	public findAncestor( parentName: string, options: { includeSelf?: boolean } = {} ): ModelElement | null {
 		let parent = options.includeSelf ? this : this.parent;
 
 		while ( parent ) {
@@ -223,14 +223,14 @@ export class Element extends Node {
 	 * @param deep If set to `true` clones element and all its children recursively. When set to `false`,
 	 * element will be cloned without any child.
 	 */
-	public override _clone( deep = false ): Element {
+	public override _clone( deep = false ): ModelElement {
 		const children = deep ? cloneNodes( this._children ) : undefined;
 
-		return new Element( this.name, this.getAttributes(), children );
+		return new ModelElement( this.name, this.getAttributes(), children );
 	}
 
 	/**
-	 * {@link module:engine/model/element~Element#_insertChild Inserts} one or more nodes at the end of this element.
+	 * {@link module:engine/model/element~ModelElement#_insertChild Inserts} one or more nodes at the end of this element.
 	 *
 	 * @see module:engine/model/writer~Writer#append
 	 * @internal
@@ -310,7 +310,7 @@ export class Element extends Node {
 	 * @param json Plain object to be converted to `Element`.
 	 * @returns `Element` instance created using given plain object.
 	 */
-	public static fromJSON( json: any ): Element {
+	public static fromJSON( json: any ): ModelElement {
 		let children: Array<Node> | undefined;
 
 		if ( json.children ) {
@@ -319,7 +319,7 @@ export class Element extends Node {
 			for ( const child of json.children ) {
 				if ( child.name ) {
 					// If child has name property, it is an Element.
-					children.push( Element.fromJSON( child ) );
+					children.push( ModelElement.fromJSON( child ) );
 				} else {
 					// Otherwise, it is a Text node.
 					children.push( Text.fromJSON( child ) );
@@ -327,7 +327,7 @@ export class Element extends Node {
 			}
 		}
 
-		return new Element( json.name, json.attributes, children );
+		return new ModelElement( json.name, json.attributes, children );
 	}
 
 	// @if CK_DEBUG_ENGINE // public override toString(): string {
@@ -394,7 +394,7 @@ export class Element extends Node {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-Element.prototype.is = function( type: string, name?: string ): boolean {
+ModelElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'element' || type === 'model:element' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
@@ -403,8 +403,6 @@ Element.prototype.is = function( type: string, name?: string ): boolean {
 
 	return name === this.name && ( type === 'element' || type === 'model:element' );
 };
-
-export { Element as ModelElement };
 
 /**
  * Converts strings to Text and non-iterables to arrays.

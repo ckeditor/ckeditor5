@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
-import type { Element, Position, Writer } from '@ckeditor/ckeditor5-engine';
+import type { ModelElement, Position, Writer } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The insert paragraph command. It inserts a new paragraph at a specific
@@ -95,7 +95,7 @@ export class InsertParagraphCommand extends Command {
 			return null;
 		}
 
-		const positionParent = position.parent as Element;
+		const positionParent = position.parent as ModelElement;
 		const isTextAllowed = model.schema.checkChild( positionParent, '$text' );
 
 		// At empty $block or at the end of $block.

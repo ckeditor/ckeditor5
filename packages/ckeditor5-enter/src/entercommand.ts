@@ -11,7 +11,7 @@ import { Command } from '@ckeditor/ckeditor5-core';
 import { getCopyOnEnterAttributes } from './utils.js';
 
 import type {
-	Element,
+	ModelElement,
 	Position,
 	Writer
 } from '@ckeditor/ckeditor5-engine';
@@ -58,8 +58,8 @@ export class EnterCommand extends Command {
 		const schema = model.schema;
 		const isSelectionEmpty = selection.isCollapsed;
 		const range = selection.getFirstRange()!;
-		const startElement = range.start.parent as Element;
-		const endElement = range.end.parent as Element;
+		const startElement = range.start.parent as ModelElement;
+		const endElement = range.end.parent as ModelElement;
 
 		// Don't touch the roots and other limit elements.
 		if ( schema.isLimit( startElement ) || schema.isLimit( endElement ) ) {

@@ -13,7 +13,7 @@ import { TreeWalker, type TreeWalkerOptions, type TreeWalkerValue } from './tree
 
 import { type ModelDocument } from './document.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
-import { type Element } from './element.js';
+import { type ModelElement } from './element.js';
 import { type InsertOperation } from './operation/insertoperation.js';
 import { type Item } from './item.js';
 import { type MergeOperation } from './operation/mergeoperation.js';
@@ -68,7 +68,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 * them together with additional information like length or {@link module:engine/model/position~Position positions},
 	 * grouped as {@link module:engine/model/treewalker~TreeWalkerValue}.
 	 * It iterates over all {@link module:engine/model/textproxy~TextProxy text contents} that are inside the range
-	 * and all the {@link module:engine/model/element~Element}s that are entered into when iterating over this range.
+	 * and all the {@link module:engine/model/element~ModelElement}s that are entered into when iterating over this range.
 	 *
 	 * This iterator uses {@link module:engine/model/treewalker~TreeWalker} with `boundaries` set to this range
 	 * and `ignoreElementEnd` option set to `true`.
@@ -99,7 +99,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	/**
 	 * Range root element.
 	 */
-	public get root(): Element | ModelDocumentFragment {
+	public get root(): ModelElement | ModelDocumentFragment {
 		return this.start.root;
 	}
 
@@ -356,7 +356,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 * ( [ 3, 0, 0 ], [ 3, 0, 2 ] ) = "se"
 	 * ```
 	 *
-	 * **Note:** if an {@link module:engine/model/element~Element element} is not wholly contained in this range, it won't be returned
+	 * **Note:** if an {@link module:engine/model/element~ModelElement element} is not wholly contained in this range, it won't be returned
 	 * in any of the returned flat ranges. See in the example how `H` elements at the beginning and at the end of the range
 	 * were omitted. Only their parts that were wholly in the range were returned.
 	 *
@@ -537,19 +537,19 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	}
 
 	/**
-	 * Returns an {@link module:engine/model/element~Element} or {@link module:engine/model/documentfragment~DocumentFragment}
+	 * Returns an {@link module:engine/model/element~ModelElement} or {@link module:engine/model/documentfragment~DocumentFragment}
 	 * which is a common ancestor of the range's both ends (in which the entire range is contained).
 	 */
-	public getCommonAncestor(): Element | ModelDocumentFragment | null {
+	public getCommonAncestor(): ModelElement | ModelDocumentFragment | null {
 		return this.start.getCommonAncestor( this.end );
 	}
 
 	/**
-	 * Returns an {@link module:engine/model/element~Element Element} contained by the range.
+	 * Returns an {@link module:engine/model/element~ModelElement Element} contained by the range.
 	 * The element will be returned when it is the **only** node within the range and **fully–contained**
 	 * at the same time.
 	 */
-	public getContainedElement(): Element | null {
+	public getContainedElement(): ModelElement | null {
 		if ( this.isCollapsed ) {
 			return null;
 		}
@@ -908,13 +908,13 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	}
 
 	/**
-	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
+	 * Creates a range inside an {@link module:engine/model/element~ModelElement element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
 	 * @internal
 	 * @param element Element which is a parent for the range.
 	 */
-	public static _createIn( element: Element | ModelDocumentFragment ): Range {
+	public static _createIn( element: ModelElement | ModelDocumentFragment ): Range {
 		return new this( Position._createAt( element, 0 ), Position._createAt( element, element.maxOffset ) );
 	}
 

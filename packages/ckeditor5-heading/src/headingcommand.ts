@@ -10,7 +10,7 @@
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
 
-import type { Element, Schema } from 'ckeditor5/src/engine.js';
+import type { ModelElement, Schema } from 'ckeditor5/src/engine.js';
 
 /**
  * The heading command. It is used by the {@link module:heading/heading~Heading heading feature} to apply headings.
@@ -89,6 +89,6 @@ export class HeadingCommand extends Command {
  * @param heading Command element name in the model.
  * @param schema The schema of the document.
  */
-function checkCanBecomeHeading( block: Element, heading: string, schema: Schema ) {
-	return schema.checkChild( block.parent as Element, heading ) && !schema.isObject( block );
+function checkCanBecomeHeading( block: ModelElement, heading: string, schema: Schema ) {
+	return schema.checkChild( block.parent as ModelElement, heading ) && !schema.isObject( block );
 }

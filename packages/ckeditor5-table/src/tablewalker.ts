@@ -6,12 +6,12 @@
 /**
  * @module table/tablewalker
  */
-import type { Element, Position } from 'ckeditor5/src/engine.js';
+import type { ModelElement, Position } from 'ckeditor5/src/engine.js';
 
 // @if CK_DEBUG // const CKEditorError = require( '@ckeditor/ckeditor5-utils/src/ckeditorerror' ).default;
 
 interface CellData {
-	cell: Element;
+	cell: ModelElement;
 	row: number;
 	column: number;
 }
@@ -67,7 +67,7 @@ export class TableWalker implements IterableIterator<TableSlot> {
 	 *
 	 * @internal
 	 */
-	public readonly _table: Element;
+	public readonly _table: ModelElement;
 
 	/**
 	 * A row index from which this iterator will start.
@@ -219,7 +219,7 @@ export class TableWalker implements IterableIterator<TableSlot> {
 	 * @param options.endColumn A column index at which this iterator should end. Can't be used together with `column`.
 	 * @param options.includeAllSlots Also return values for spanned cells. Default value is "false".
 	 */
-	constructor( table: Element, options: TableWalkerOptions = {} ) {
+	constructor( table: ModelElement, options: TableWalkerOptions = {} ) {
 		this._table = table;
 		this._startRow = options.row !== undefined ? options.row : options.startRow || 0;
 		this._endRow = options.row !== undefined ? options.row : options.endRow;
@@ -279,7 +279,7 @@ export class TableWalker implements IterableIterator<TableSlot> {
 				outValue = this._formatOutValue( spanData.cell, spanData.row, spanData.column );
 			}
 		} else {
-			const cell = row.getChild( this._cellIndex ) as Element;
+			const cell = row.getChild( this._cellIndex ) as ModelElement;
 
 			if ( !cell ) {
 				// If there are no more cells left in row advance to the next row.
@@ -358,7 +358,7 @@ export class TableWalker implements IterableIterator<TableSlot> {
 	 * @param anchorRow The row index of a cell anchor slot.
 	 * @param anchorColumn The column index of a cell anchor slot.
 	 */
-	private _formatOutValue( cell: Element, anchorRow = this._row, anchorColumn = this._column ): IteratorYieldResult<TableSlot> {
+	private _formatOutValue( cell: ModelElement, anchorRow = this._row, anchorColumn = this._column ): IteratorYieldResult<TableSlot> {
 		return {
 			done: false,
 			value: new TableSlot( this, cell, anchorRow, anchorColumn )
@@ -400,7 +400,7 @@ export class TableWalker implements IterableIterator<TableSlot> {
 	 * @param rowspan Cell height.
 	 * @param colspan Cell width.
 	 */
-	private _recordSpans( cell: Element, rowspan: number, colspan: number ) {
+	private _recordSpans( cell: ModelElement, rowspan: number, colspan: number ) {
 		const data = {
 			cell,
 			row: this._row,
@@ -484,7 +484,7 @@ export class TableWalker implements IterableIterator<TableSlot> {
 	 * Returns a number of columns in a row taking `colspan` into consideration.
 	 */
 	private _getRowLength( rowIndex: number ): number {
-		const row = this._table.getChild( rowIndex ) as Element;
+		const row = this._table.getChild( rowIndex ) as ModelElement;
 
 		return [ ...row.getChildren() ].reduce( ( cols, row ) => {
 			return cols + parseInt( row.getAttribute( 'colspan' ) as string || '1' );
@@ -499,7 +499,7 @@ class TableSlot {
 	/**
 	 * The current table cell.
 	 */
-	public readonly cell: Element;
+	public readonly cell: ModelElement;
 
 	/**
 	 * The row index of a table slot.
@@ -534,7 +534,7 @@ class TableSlot {
 	/**
 	 * The table element.
 	 */
-	private readonly _table: Element;
+	private readonly _table: ModelElement;
 
 	/**
 	 * Creates an instance of the table walker value.
@@ -544,7 +544,7 @@ class TableSlot {
 	 * @param anchorRow The row index of a cell anchor slot.
 	 * @param anchorColumn The column index of a cell anchor slot.
 	 */
-	constructor( tableWalker: TableWalker, cell: Element, anchorRow: number, anchorColumn: number ) {
+	constructor( tableWalker: TableWalker, cell: ModelElement, anchorRow: number, anchorColumn: number ) {
 		this.cell = cell;
 		this.row = tableWalker._row;
 		this.column = tableWalker._column;
@@ -594,7 +594,7 @@ class TableSlot {
 	public getPositionBefore(): Position {
 		const model = this._table.root.document!.model;
 
-		return model.createPositionAt( this._table.getChild( this.row ) as Element, this._cellIndex );
+		return model.createPositionAt( this._table.getChild( this.row ) as ModelElement, this._cellIndex );
 	}
 }
 

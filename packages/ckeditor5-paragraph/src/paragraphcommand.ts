@@ -10,7 +10,7 @@
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import { first } from '@ckeditor/ckeditor5-utils';
 
-import type { Schema, Selection, ModelDocumentSelection, Element } from '@ckeditor/ckeditor5-engine';
+import type { Schema, Selection, ModelDocumentSelection, ModelElement } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The paragraph command.
@@ -83,6 +83,6 @@ export class ParagraphCommand extends Command {
  * @param block A block to be tested.
  * @param schema The schema of the document.
  */
-function checkCanBecomeParagraph( block: Element, schema: Schema ): boolean {
-	return schema.checkChild( block.parent as Element, 'paragraph' ) && !schema.isObject( block );
+function checkCanBecomeParagraph( block: ModelElement, schema: Schema ): boolean {
+	return schema.checkChild( block.parent as ModelElement, 'paragraph' ) && !schema.isObject( block );
 }

@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { ModelDocumentSelection, Element, Node, Selection } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, ModelElement, Node, Selection } from 'ckeditor5/src/engine.js';
 
 import {
 	getNestedListBlocks,
@@ -66,7 +66,7 @@ export class ListMergeCommand extends Command {
 	): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
-		const changedBlocks: Array<Element> = [];
+		const changedBlocks: Array<ModelElement> = [];
 
 		model.change( writer => {
 			const { firstElement, lastElement } = this._getMergeSubjectElements( selection, shouldMergeOnBlocksContentLevel );
@@ -106,7 +106,7 @@ export class ListMergeCommand extends Command {
 				// Check if the element after it was in the same list item and adjust it if needed.
 				const nextSibling = lastElementAfterDelete.nextSibling;
 
-				changedBlocks.push( lastElementAfterDelete as Element );
+				changedBlocks.push( lastElementAfterDelete as ModelElement );
 
 				if ( nextSibling && nextSibling !== lastElement && nextSibling.getAttribute( 'listItemId' ) == lastElementId ) {
 					changedBlocks.push( ...mergeListItemBefore( nextSibling, lastElementAfterDelete, writer ) );
@@ -124,7 +124,7 @@ export class ListMergeCommand extends Command {
 	 *
 	 * @param changedBlocks The changed list elements.
 	 */
-	private _fireAfterExecute( changedBlocks: Array<Element> ) {
+	private _fireAfterExecute( changedBlocks: Array<ModelElement> ) {
 		this.fire<ListMergeCommandAfterExecuteEvent>( 'afterExecute', sortBlocks( new Set( changedBlocks ) ) );
 	}
 
@@ -238,5 +238,5 @@ export class ListMergeCommand extends Command {
  */
 export type ListMergeCommandAfterExecuteEvent = {
 	name: 'afterExecute';
-	args: [ changedBlocks: Array<Element> ];
+	args: [ changedBlocks: Array<ModelElement> ];
 };

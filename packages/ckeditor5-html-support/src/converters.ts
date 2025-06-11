@@ -14,7 +14,7 @@ import type {
 	DowncastConversionApi,
 	DowncastDispatcher,
 	DowncastWriter,
-	Element,
+	ModelElement,
 	DowncastElementCreatorFunction,
 	UpcastConversionApi,
 	UpcastDispatcher,
@@ -42,7 +42,7 @@ import type { DataSchemaBlockElementDefinition, DataSchemaDefinition, DataSchema
  * @internal
 */
 export function viewToModelObjectConverter( { model: modelName }: DataSchemaDefinition ) {
-	return ( viewElement: ViewElement, conversionApi: UpcastConversionApi ): Element => {
+	return ( viewElement: ViewElement, conversionApi: UpcastConversionApi ): ModelElement => {
 		// Let's keep element HTML and its attributes, so we can rebuild element in downcast conversions.
 		return conversionApi.writer.createElement( modelName, {
 			htmlContent: viewElement.getCustomProperty( '$rawContent' )
@@ -62,7 +62,7 @@ export function toObjectWidgetConverter(
 ): DowncastElementCreatorFunction {
 	const t = editor.t;
 
-	return ( modelElement: Element, { writer }: DowncastConversionApi ) => {
+	return ( modelElement: ModelElement, { writer }: DowncastConversionApi ) => {
 		const widgetLabel = t( 'HTML object' );
 
 		const viewElement = createObjectView( viewName!, modelElement, writer );
@@ -93,7 +93,7 @@ export function toObjectWidgetConverter(
 *
 * @internal
 */
-export function createObjectView( viewName: string, modelElement: Element, writer: DowncastWriter ): ViewElement {
+export function createObjectView( viewName: string, modelElement: ModelElement, writer: DowncastWriter ): ViewElement {
 	return writer.createRawElement( viewName, null, ( domElement, domConverter ) => {
 		domConverter.setContentOf( domElement, modelElement.getAttribute( 'htmlContent' ) as string );
 	} );
@@ -270,7 +270,7 @@ export function modelToViewBlockAttributeConverter( { view: viewName, model: mod
 
 				const { attributeOldValue, attributeNewValue } = data;
 				const viewWriter = conversionApi.writer;
-				const viewElement = conversionApi.mapper.toViewElement( data.item as Element )!;
+				const viewElement = conversionApi.mapper.toViewElement( data.item as ModelElement )!;
 
 				updateViewAttributes(
 					viewWriter,

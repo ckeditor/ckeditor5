@@ -8,7 +8,7 @@
  */
 
 import { Operation } from './operation.js';
-import { Element } from '../element.js';
+import { ModelElement } from '../element.js';
 import { Position } from '../position.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
@@ -94,7 +94,7 @@ export class RenameOperation extends Operation {
 	public override _validate(): void {
 		const element = this.position.nodeAfter;
 
-		if ( !( element instanceof Element ) ) {
+		if ( !( element instanceof ModelElement ) ) {
 			/**
 			 * Given position is invalid or node after it is not instance of Element.
 			 *

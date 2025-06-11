@@ -14,7 +14,7 @@ import { Range } from './range.js';
 
 import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelDocumentSelection } from './documentselection.js';
-import { type Element } from './element.js';
+import { type ModelElement } from './element.js';
 import { type Item } from './item.js';
 
 import { CKEditorError, EmitterMixin, isIterable } from '@ckeditor/ckeditor5-utils';
@@ -74,7 +74,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * const paragraph = writer.createElement( 'paragraph' );
 	 * const selection = writer.createSelection( paragraph, offset );
 	 *
-	 * // Creates a range inside an {@link module:engine/model/element~Element element} which starts before the
+	 * // Creates a range inside an {@link module:engine/model/element~ModelElement element} which starts before the
 	 * // first child of that element and ends after the last child of that element.
 	 * const selection = writer.createSelection( paragraph, 'in' );
 	 *
@@ -327,7 +327,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * selection.setTo( paragraph, offset );
 	 * ```
 	 *
-	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
+	 * Creates a range inside an {@link module:engine/model/element~ModelElement element} which starts before the first child of
  	 * that element and ends after the last child of that element.
 	 *
 	 * ```ts
@@ -381,7 +381,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 			let range;
 
 			if ( placeOrOffset == 'in' ) {
-				range = Range._createIn( selectable as Element );
+				range = Range._createIn( selectable as ModelElement );
 			} else if ( placeOrOffset == 'on' ) {
 				range = Range._createOn( selectable );
 			} else if ( placeOrOffset !== undefined ) {
@@ -581,11 +581,11 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	}
 
 	/**
-	 * Returns the selected element. {@link module:engine/model/element~Element Element} is considered as selected if there is only
+	 * Returns the selected element. {@link module:engine/model/element~ModelElement Element} is considered as selected if there is only
 	 * one range in the selection, and that range contains exactly one element.
 	 * Returns `null` if there is no selected element.
 	 */
-	public getSelectedElement(): Element | null {
+	public getSelectedElement(): ModelElement | null {
 		if ( this.rangeCount !== 1 ) {
 			return null;
 		}
@@ -656,7 +656,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * <paragraph>]c</paragraph> // This block will not be returned
 	 * ```
 	 */
-	public* getSelectedBlocks(): IterableIterator<Element> {
+	public* getSelectedBlocks(): IterableIterator<ModelElement> {
 		const visited = new WeakSet<Node | ModelDocumentFragment>();
 
 		for ( const range of this.getRanges() ) {
@@ -673,7 +673,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 				const block = value.item;
 
 				if ( value.type == 'elementEnd' && isUnvisitedTopBlock( block as any, visited, range ) ) {
-					yield block as Element;
+					yield block as ModelElement;
 				}
 				// If element is block, we can skip its children and jump to the end of it.
 				else if (
@@ -701,7 +701,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * By default, this method will check whether the entire content of the selection's current root is selected.
 	 * Useful to check if e.g. the user has just pressed <kbd>Ctrl</kbd> + <kbd>A</kbd>.
 	 */
-	public containsEntireContent( element: Element = this.anchor!.root as Element ): boolean {
+	public containsEntireContent( element: ModelElement = this.anchor!.root as ModelElement ): boolean {
 		const limitStartPosition = Position._createAt( element, 0 );
 		const limitEndPosition = Position._createAt( element, 'end' );
 
@@ -846,7 +846,7 @@ function isUnvisitedBlock( element: Node | ModelDocumentFragment, visited: WeakS
 /**
  * Checks if the given element is a $block was not previously visited and is a top block in a range.
  */
-function isUnvisitedTopBlock( element: Element, visited: WeakSet<Node | ModelDocumentFragment>, range: Range ) {
+function isUnvisitedTopBlock( element: ModelElement, visited: WeakSet<Node | ModelDocumentFragment>, range: Range ) {
 	return isUnvisitedBlock( element, visited ) && isTopBlockInRange( element, range );
 }
 
@@ -863,7 +863,7 @@ function getParentBlock( position: Position, visited: WeakSet<Node | ModelDocume
 
 	let hasParentLimit = false;
 
-	const block = ancestors.find( ( element ): element is Element => {
+	const block = ancestors.find( ( element ): element is ModelElement => {
 		// Stop searching after first parent node that is limit element.
 		if ( hasParentLimit ) {
 			return false;
@@ -913,7 +913,7 @@ function isTopBlockInRange( block: Node, range: Range ) {
  * <paragraph>a[]</paragraph> // This block will be returned
  * ```
  */
-function isStartBlockSelected( startBlock: Element | undefined, range: Range ): boolean {
+function isStartBlockSelected( startBlock: ModelElement | undefined, range: Range ): boolean {
 	if ( !startBlock ) {
 		return false;
 	}
@@ -945,7 +945,7 @@ function isStartBlockSelected( startBlock: Element | undefined, range: Range ): 
  * <paragraph>[]a</paragraph> // this block will be returned
  * ```
  */
-function isEndBlockSelected( endBlock: Element | undefined, range: Range ): boolean {
+function isEndBlockSelected( endBlock: ModelElement | undefined, range: Range ): boolean {
 	if ( !endBlock ) {
 		return false;
 	}
@@ -971,7 +971,7 @@ function findAncestorBlock( node: Node | ModelDocumentFragment ) {
 
 	while ( parent ) {
 		if ( schema.isBlock( parent ) ) {
-			return parent as Element;
+			return parent as ModelElement;
 		}
 
 		parent = parent.parent;

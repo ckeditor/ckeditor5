@@ -10,7 +10,7 @@
 import { Command } from 'ckeditor5/src/core.js';
 import type {
 	ModelDocumentSelection,
-	Element,
+	ModelElement,
 	Selection
 } from 'ckeditor5/src/engine.js';
 
@@ -55,7 +55,7 @@ export class RemoveColumnCommand extends Command {
 	public override execute(): void {
 		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
 		const [ firstCell, lastCell ] = getBoundaryCells( this.editor.model.document.selection, tableUtils );
-		const table = firstCell.parent!.parent as Element;
+		const table = firstCell.parent!.parent as ModelElement;
 
 		// Cache the table before removing or updating colspans.
 		const tableMap = [ ...new TableWalker( table ) ];
@@ -87,8 +87,8 @@ export class RemoveColumnCommand extends Command {
  */
 function getCellToFocus(
 	tableMap: Array<TableSlot>,
-	firstCell: Element,
-	lastCell: Element,
+	firstCell: ModelElement,
+	lastCell: ModelElement,
 	removedColumnIndexes: {
 		first: number;
 		last: number;

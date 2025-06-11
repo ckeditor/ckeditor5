@@ -123,7 +123,7 @@ export { LiveRange, type LiveRangeChangeRangeEvent } from './model/liverange.js'
 export { LivePosition } from './model/liveposition.js';
 export { Model } from './model/model.js';
 export { TreeWalker, type TreeWalkerValue } from './model/treewalker.js';
-export { Element } from './model/element.js';
+export { ModelElement } from './model/element.js';
 export { Position, type PositionOffset } from './model/position.js';
 export { ModelDocumentFragment } from './model/documentfragment.js';
 export { ModelDocument, type ModelPostFixer } from './model/document.js';

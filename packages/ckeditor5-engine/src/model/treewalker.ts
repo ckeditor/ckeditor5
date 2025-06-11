@@ -7,7 +7,7 @@
  * @module engine/model/treewalker
  */
 
-import { type Element } from './element.js';
+import { type ModelElement } from './element.js';
 import {
 	Position,
 	getTextNodeAtPosition,
@@ -55,7 +55,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 
 	/**
 	 * Flag indicating whether iterator should ignore `elementEnd` tags. If the option is true walker will not
-	 * return a parent node of the start position. If this option is `true` each {@link module:engine/model/element~Element} will
+	 * return a parent node of the start position. If this option is `true` each {@link module:engine/model/element~ModelElement} will
 	 * be returned once, while if the option is `false` they might be returned twice:
 	 * for `'elementStart'` and `'elementEnd'`.
 	 */
@@ -72,17 +72,17 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 	/**
 	 * Start boundary cached for optimization purposes.
 	 */
-	private _boundaryStartParent: Element | ModelDocumentFragment | null;
+	private _boundaryStartParent: ModelElement | ModelDocumentFragment | null;
 
 	/**
 	 * End boundary cached for optimization purposes.
 	 */
-	private _boundaryEndParent: Element | ModelDocumentFragment | null;
+	private _boundaryEndParent: ModelElement | ModelDocumentFragment | null;
 
 	/**
 	 * Parent of the most recently visited node. Cached for optimization purposes.
 	 */
-	private _visitedParent: Element | ModelDocumentFragment;
+	private _visitedParent: ModelElement | ModelDocumentFragment;
 
 	/**
 	 * Creates a range iterator. All parameters are optional, but you have to specify either `boundaries` or `startPosition`.
@@ -296,7 +296,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 			return this._next();
 		}
 
-		return formatReturnValue( 'elementEnd', parent as Element, previousPosition, position );
+		return formatReturnValue( 'elementEnd', parent as ModelElement, previousPosition, position );
 	}
 
 	/**
@@ -372,7 +372,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 		this._position = position;
 		this._visitedParent = parent.parent!;
 
-		return formatReturnValue( 'elementStart', parent as Element, previousPosition, position, 1 );
+		return formatReturnValue( 'elementStart', parent as ModelElement, previousPosition, position, 1 );
 	}
 }
 
@@ -482,7 +482,7 @@ export interface TreeWalkerOptions {
 	/**
 	 * Flag indicating whether iterator should ignore `elementEnd` tags.
 	 * If the option is true walker will not return a parent node of start position. If this option is `true`
-	 * each {@link module:engine/model/element~Element} will be returned once, while if the option is `false` they might be returned
+	 * each {@link module:engine/model/element~ModelElement} will be returned once, while if the option is `false` they might be returned
 	 * twice: for `'elementStart'` and `'elementEnd'`.
 	 */
 	ignoreElementEnd?: boolean;

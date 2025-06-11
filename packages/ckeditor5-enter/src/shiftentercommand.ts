@@ -15,7 +15,7 @@ import type {
 	Model,
 	Position,
 	Schema,
-	Element,
+	ModelElement,
 	Writer
 } from '@ckeditor/ckeditor5-engine';
 
@@ -76,8 +76,8 @@ function isEnabled( schema: Schema, selection: ModelDocumentSelection ): boolean
 	}
 
 	const range = selection.getFirstRange()!;
-	const startElement = range.start.parent as Element;
-	const endElement = range.end.parent as Element;
+	const startElement = range.start.parent as ModelElement;
+	const endElement = range.end.parent as ModelElement;
 
 	// Do not modify the content if selection is cross-limit elements.
 	if ( ( isInsideLimitElement( startElement, schema ) || isInsideLimitElement( endElement, schema ) ) && startElement !== endElement ) {
@@ -93,8 +93,8 @@ function isEnabled( schema: Schema, selection: ModelDocumentSelection ): boolean
 function softBreakAction( model: Model, writer: Writer, selection: ModelDocumentSelection ): void {
 	const isSelectionEmpty = selection.isCollapsed;
 	const range = selection.getFirstRange()!;
-	const startElement = range.start.parent as Element;
-	const endElement = range.end.parent as Element;
+	const startElement = range.start.parent as ModelElement;
+	const endElement = range.end.parent as ModelElement;
 	const isContainedWithinOneElement = ( startElement == endElement );
 
 	if ( isSelectionEmpty ) {
@@ -148,11 +148,11 @@ function insertBreak( model: Model, writer: Writer, position: Position ): void {
  *   - `<$root><p>Text.</p></$root> => false`
  *   - `<$root><limitElement><p>Text</p></limitElement></$root> => true`
  */
-function isInsideLimitElement( element: Element, schema: Schema ): boolean {
+function isInsideLimitElement( element: ModelElement, schema: Schema ): boolean {
 	// `$root` is a limit element but in this case is an invalid element.
 	if ( element.is( 'rootElement' ) ) {
 		return false;
 	}
 
-	return schema.isLimit( element ) || isInsideLimitElement( element.parent as Element, schema );
+	return schema.isLimit( element ) || isInsideLimitElement( element.parent as ModelElement, schema );
 }

@@ -26,7 +26,7 @@ import type {
 	DomEventData,
 	DowncastInsertEvent,
 	DowncastWriter,
-	Element,
+	ModelElement,
 	ViewElement,
 	ViewNode
 } from 'ckeditor5/src/engine.js';
@@ -72,7 +72,7 @@ type ResizingData = {
 	};
 	elements: {
 		viewResizer: ViewElement;
-		modelTable: Element;
+		modelTable: ModelElement;
 		viewFigure: ViewElement;
 		viewColgroup: ViewElement;
 		viewLeftColumn: ViewElement;
@@ -223,7 +223,7 @@ export class TableColumnResizeEditing extends Plugin {
 	 * @param element A 'table' or 'tableColumnGroup' element.
 	 * @returns A 'tableColumnGroup' element.
 	 */
-	public getColumnGroupElement( element: Element ): Element | undefined {
+	public getColumnGroupElement( element: ModelElement ): ModelElement | undefined {
 		return getColumnGroupElement( element );
 	}
 
@@ -233,7 +233,7 @@ export class TableColumnResizeEditing extends Plugin {
 	 * @param element A 'table' or 'tableColumnGroup' element.
 	 * @returns An array of 'tableColumn' elements.
 	 */
-	public getTableColumnElements( element: Element ): Array<Element> {
+	public getTableColumnElements( element: ModelElement ): Array<ModelElement> {
 		return getTableColumnElements( element );
 	}
 
@@ -243,7 +243,7 @@ export class TableColumnResizeEditing extends Plugin {
 	 * @param element A 'table' or 'tableColumnGroup' element.
 	 * @returns An array of table column widths.
 	 */
-	public getTableColumnsWidths( element: Element ): Array<string> {
+	public getTableColumnsWidths( element: ModelElement ): Array<string> {
 		return getTableColumnsWidths( element );
 	}
 
@@ -314,7 +314,7 @@ export class TableColumnResizeEditing extends Plugin {
 		 * @param columnWidths Note: this array **may be modified** by the function.
 		 * @param table Table to be checked.
 		 */
-		function adjustColumnWidths( columnWidths: Array<string>, table: Element, plugin: TableColumnResizeEditing ): Array<string> {
+		function adjustColumnWidths( columnWidths: Array<string>, table: ModelElement, plugin: TableColumnResizeEditing ): Array<string> {
 			const newTableColumnsCount = plugin._tableUtilsPlugin.getColumns( table );
 			const columnsCountDelta = newTableColumnsCount - columnWidths.length;
 
@@ -325,7 +325,7 @@ export class TableColumnResizeEditing extends Plugin {
 			const widths: Array<number> = columnWidths.map( width => Number( width.replace( '%', '' ) ) );
 
 			// Collect all cells that are affected by the change.
-			const cellSet = getAffectedCells( plugin.editor.model.document.differ, table ) as Set<Element>;
+			const cellSet = getAffectedCells( plugin.editor.model.document.differ, table ) as Set<ModelElement>;
 
 			for ( const cell of cellSet ) {
 				const currentColumnsDelta = newTableColumnsCount - widths.length;
@@ -359,20 +359,20 @@ export class TableColumnResizeEditing extends Plugin {
 		/**
 		 * Returns a set of cells that have been changed in a given table.
 		 */
-		function getAffectedCells( differ: Differ, table: Element ): Set<Element> {
-			const cellSet = new Set<Element>();
+		function getAffectedCells( differ: Differ, table: ModelElement ): Set<ModelElement> {
+			const cellSet = new Set<ModelElement>();
 
 			for ( const change of differ.getChanges() ) {
 				if (
 					change.type == 'insert' &&
 					change.position.nodeAfter &&
-					( change.position.nodeAfter as Element ).name == 'tableCell' &&
+					( change.position.nodeAfter as ModelElement ).name == 'tableCell' &&
 					change.position.nodeAfter.getAncestors().includes( table )
 				) {
-					cellSet.add( change.position.nodeAfter as Element );
+					cellSet.add( change.position.nodeAfter as ModelElement );
 				} else if ( change.type == 'remove' ) {
 					// If the first cell was removed, use the node after the change position instead.
-					const referenceNode = ( change.position.nodeBefore || change.position.nodeAfter ) as Element;
+					const referenceNode = ( change.position.nodeBefore || change.position.nodeAfter ) as ModelElement;
 
 					if ( referenceNode.name == 'tableCell' && referenceNode.getAncestors().includes( table ) ) {
 						cellSet.add( referenceNode );
@@ -653,7 +653,7 @@ export class TableColumnResizeEditing extends Plugin {
 		 * @param editor The editor instance.
 		 * @returns Columns' widths expressed in pixels (without unit).
 		 */
-		function _calculateDomColumnWidths( modelTable: Element, tableUtilsPlugin: TableUtils, editor: Editor ) {
+		function _calculateDomColumnWidths( modelTable: ModelElement, tableUtilsPlugin: TableUtils, editor: Editor ) {
 			const columnWidthsInPx = Array( tableUtilsPlugin.getColumns( modelTable ) );
 			const tableWalker = new TableWalker( modelTable );
 
@@ -967,7 +967,7 @@ export class TableColumnResizeEditing extends Plugin {
 	 */
 	private _registerResizerInserter() {
 		this.editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
-			dispatcher.on<DowncastInsertEvent<Element>>( 'insert:tableCell', ( evt, data, conversionApi ) => {
+			dispatcher.on<DowncastInsertEvent<ModelElement>>( 'insert:tableCell', ( evt, data, conversionApi ) => {
 				const modelElement = data.item;
 				const viewElement = conversionApi.mapper.toViewElement( modelElement );
 				const viewWriter = conversionApi.writer;

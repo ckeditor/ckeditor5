@@ -13,7 +13,7 @@ import type {
 	ModelDocumentSelection,
 	Schema,
 	Selection,
-	Element
+	ModelElement
 } from 'ckeditor5/src/engine.js';
 
 import { type TableUtils } from '../tableutils.js';
@@ -89,5 +89,5 @@ function isAllowedInParent( selection: Selection | ModelDocumentSelection, schem
 	const positionParent = selection.getFirstPosition()!.parent;
 	const validParent = positionParent === positionParent.root ? positionParent : positionParent.parent;
 
-	return schema.checkChild( validParent as Element, 'table' );
+	return schema.checkChild( validParent as ModelElement, 'table' );
 }

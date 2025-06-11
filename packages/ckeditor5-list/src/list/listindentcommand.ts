@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { ModelDocumentSelection, Element } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, ModelElement } from 'ckeditor5/src/engine.js';
 
 import {
 	expandListBlocksToCompleteItems,
@@ -109,7 +109,7 @@ export class ListIndentCommand extends Command {
 	 *
 	 * @param changedBlocks The changed list elements.
 	 */
-	private _fireAfterExecute( changedBlocks: Array<Element> ) {
+	private _fireAfterExecute( changedBlocks: Array<ModelElement> ) {
 		this.fire<ListIndentCommandAfterExecuteEvent>( 'afterExecute', sortBlocks( new Set( changedBlocks ) ) );
 	}
 
@@ -181,5 +181,5 @@ function getSelectedListBlocks( selection: ModelDocumentSelection ) {
  */
 export type ListIndentCommandAfterExecuteEvent = {
 	name: 'afterExecute';
-	args: [ changedBlocks: Array<Element> ];
+	args: [ changedBlocks: Array<ModelElement> ];
 };

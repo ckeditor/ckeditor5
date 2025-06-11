@@ -17,7 +17,7 @@ import type {
 	ViewUIElement,
 	DowncastWriter,
 	ViewElement,
-	Element,
+	ModelElement,
 	ModelDocumentChangeEvent,
 	UpcastElementEvent,
 	UpcastConversionData,
@@ -36,7 +36,7 @@ export class BookmarkEditing extends Plugin {
 	/**
 	 * A collection of bookmarks elements in the document.
 	 */
-	private _bookmarkElements = new Map<Element, string>();
+	private _bookmarkElements = new Map<ModelElement, string>();
 
 	/**
 	 * @inheritDoc
@@ -83,7 +83,7 @@ export class BookmarkEditing extends Plugin {
 	/**
 	 * Returns the model element for the given bookmark ID if it exists.
 	 */
-	public getElementForBookmarkId( bookmarkId: string ): Element | null {
+	public getElementForBookmarkId( bookmarkId: string ): ModelElement | null {
 		for ( const [ element, id ] of this._bookmarkElements ) {
 			if ( id == bookmarkId ) {
 				return element;

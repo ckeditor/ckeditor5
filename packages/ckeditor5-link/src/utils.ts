@@ -9,7 +9,7 @@
 
 import type {
 	DowncastConversionApi,
-	Element,
+	ModelElement,
 	Schema,
 	ViewAttributeElement,
 	ViewNode,
@@ -151,7 +151,7 @@ export function normalizeDecorators( decorators?: Record<string, LinkDecoratorDe
 /**
  * Returns `true` if the specified `element` can be linked (the element allows the `linkHref` attribute).
  */
-export function isLinkableElement( element: Element | null, schema: Schema ): element is Element {
+export function isLinkableElement( element: ModelElement | null, schema: Schema ): element is ModelElement {
 	if ( !element ) {
 		return false;
 	}

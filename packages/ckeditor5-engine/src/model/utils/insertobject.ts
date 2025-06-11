@@ -10,7 +10,7 @@
 import { type ModelDocumentSelection } from '../documentselection.js';
 import { type Selection } from '../selection.js';
 
-import { type Element } from '../element.js';
+import { type ModelElement } from '../element.js';
 import { type Model } from '../model.js';
 import { type Range } from '../range.js';
 import { type Writer } from '../writer.js';
@@ -49,7 +49,7 @@ import { CKEditorError, first } from '@ckeditor/ckeditor5-utils';
  */
 export function insertObject(
 	model: Model,
-	object: Element,
+	object: ModelElement,
 	selectable?: Selection | ModelDocumentSelection | null,
 	options: {
 		findOptimalPosition?: 'auto' | 'before' | 'after';
@@ -140,7 +140,7 @@ export function insertObject(
  */
 function updateSelection(
 	writer: Writer,
-	contextElement: Element,
+	contextElement: ModelElement,
 	place: 'after' | 'on',
 	paragraphAttributes: Record<string, unknown>
 ) {

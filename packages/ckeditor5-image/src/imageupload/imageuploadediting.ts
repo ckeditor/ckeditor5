@@ -11,7 +11,7 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
 import {
 	UpcastWriter,
-	type Element,
+	type ModelElement,
 	type Item,
 	type Writer,
 	type DataTransfer,
@@ -36,7 +36,7 @@ import { createImageTypeRegExp } from './utils.js';
  * and the `imageUpload` command as an aliased name.
  *
  * When an image is uploaded, it fires the {@link ~ImageUploadEditing#event:uploadComplete `uploadComplete`} event
- * that allows adding custom attributes to the {@link module:engine/model/element~Element image element}.
+ * that allows adding custom attributes to the {@link module:engine/model/element~ModelElement image element}.
  */
 export class ImageUploadEditing extends Plugin {
 	/**
@@ -66,7 +66,7 @@ export class ImageUploadEditing extends Plugin {
 	 * element (reference) and resolve the upload for the correct model element (instead of the one that landed in the `$graveyard`
 	 * after image type changed).
 	 */
-	private readonly _uploadImageElements: Map<string, Set<Element>>;
+	private readonly _uploadImageElements: Map<string, Set<ModelElement>>;
 
 	/**
 	 * An internal mapping of {@link module:upload/filerepository~FileLoader#id file loader UIDs} and
@@ -265,7 +265,7 @@ export class ImageUploadEditing extends Plugin {
 
 									this.fire<ImageUploadCompleteEvent>( 'uploadComplete', {
 										data: this._uploadedImages.get( uploadId )!,
-										imageElement: imageElement as Element
+										imageElement: imageElement as ModelElement
 									} );
 								} );
 
@@ -304,9 +304,9 @@ export class ImageUploadEditing extends Plugin {
 							// change for the same upload if one image was replaced by another (e.g. image type was changed),
 							// so this may also replace an existing mapping.
 							if ( !this._uploadImageElements.has( uploadId ) ) {
-								this._uploadImageElements.set( uploadId, new Set( [ imageElement as Element ] ) );
+								this._uploadImageElements.set( uploadId, new Set( [ imageElement as ModelElement ] ) );
 							} else {
-								this._uploadImageElements.get( uploadId )!.add( imageElement as Element );
+								this._uploadImageElements.get( uploadId )!.add( imageElement as ModelElement );
 							}
 
 							if ( loader.status == 'idle' ) {
@@ -498,7 +498,7 @@ export class ImageUploadEditing extends Plugin {
 	 * @param data Data object from which `srcset` will be created.
 	 * @param image The image element on which the `srcset` attribute will be set.
 	 */
-	protected _parseAndSetSrcsetAttributeOnImage( data: Record<string, unknown>, image: Element, writer: Writer ): void {
+	protected _parseAndSetSrcsetAttributeOnImage( data: Record<string, unknown>, image: ModelElement, writer: Writer ): void {
 		// Srcset attribute for responsive images support.
 		let maxWidth = 0;
 
@@ -559,7 +559,7 @@ export class ImageUploadEditing extends Plugin {
 					return null;
 				}
 
-				const viewElement = conversionApi.mapper.toViewElement( data.item as Element )!;
+				const viewElement = conversionApi.mapper.toViewElement( data.item as ModelElement )!;
 				const img = imageUtils.findViewImgElement( viewElement );
 
 				if ( img ) {
@@ -582,13 +582,13 @@ function getImagesFromChangeItem( editor: Editor, item: Item ): Array<Item> {
 	const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 
 	return Array.from( editor.model.createRangeOn( item ) )
-		.filter( value => imageUtils.isImage( value.item as Element ) )
+		.filter( value => imageUtils.isImage( value.item as ModelElement ) )
 		.map( value => value.item );
 }
 
 /**
  * An event fired when an image is uploaded. You can hook into this event to provide
- * custom attributes to the {@link module:engine/model/element~Element image element} based on the data from
+ * custom attributes to the {@link module:engine/model/element~ModelElement image element} based on the data from
  * the server.
  *
  * ```ts
@@ -628,7 +628,7 @@ export type ImageUploadCompleteData = {
 	data: UploadResponse;
 
 	/**
-	 * The model {@link module:engine/model/element~Element image element} that can be customized.
+	 * The model {@link module:engine/model/element~ModelElement image element} that can be customized.
 	 */
-	imageElement: Element;
+	imageElement: ModelElement;
 };

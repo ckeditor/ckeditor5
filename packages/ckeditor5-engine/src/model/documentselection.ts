@@ -21,7 +21,7 @@ import type { ModelDocumentChangeEvent, ModelDocument } from './document.js';
 import type { Model, ModelApplyOperationEvent } from './model.js';
 import type { Marker, MarkerCollectionUpdateEvent } from './markercollection.js';
 import { type Batch } from './batch.js';
-import { type Element } from './element.js';
+import { type ModelElement } from './element.js';
 import { type Item } from './item.js';
 import type { Position, PositionOffset } from './position.js';
 import { type Range } from './range.js';
@@ -275,16 +275,16 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCh
 	 * <paragraph>]c</paragraph> // this block will not be returned
 	 * ```
 	 */
-	public getSelectedBlocks(): IterableIterator<Element> {
+	public getSelectedBlocks(): IterableIterator<ModelElement> {
 		return this._selection.getSelectedBlocks();
 	}
 
 	/**
-	 * Returns the selected element. {@link module:engine/model/element~Element Element} is considered as selected if there is only
+	 * Returns the selected element. {@link module:engine/model/element~ModelElement Element} is considered as selected if there is only
 	 * one range in the selection, and that range contains exactly one element.
 	 * Returns `null` if there is no selected element.
 	 */
-	public getSelectedElement(): Element | null {
+	public getSelectedElement(): ModelElement | null {
 		return this._selection.getSelectedElement();
 	}
 
@@ -296,7 +296,7 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCh
 	 * By default, this method will check whether the entire content of the selection's current root is selected.
 	 * Useful to check if e.g. the user has just pressed <kbd>Ctrl</kbd> + <kbd>A</kbd>.
 	 */
-	public containsEntireContent( element: Element ): boolean {
+	public containsEntireContent( element: ModelElement ): boolean {
 		return this._selection.containsEntireContent( element );
 	}
 
@@ -1107,7 +1107,7 @@ class LiveSelection extends Selection {
 	 * Returns an iterable that iterates through all selection attributes stored in current selection's parent.
 	 */
 	public* getStoredAttributes(): IterableIterator<[ string, unknown ]> {
-		const selectionParent = this.getFirstPosition()!.parent as Element;
+		const selectionParent = this.getFirstPosition()!.parent as ModelElement;
 
 		if ( this.isCollapsed && selectionParent.isEmpty ) {
 			for ( const key of selectionParent.getAttributeKeys() ) {
@@ -1267,7 +1267,7 @@ function clearAttributesStoredInElement( model: Model, batch: Batch ) {
 			continue;
 		}
 
-		const changeParent = entry.position.parent as Element;
+		const changeParent = entry.position.parent as ModelElement;
 		const isNoLongerEmpty = entry.length === changeParent.maxOffset;
 
 		if ( isNoLongerEmpty ) {

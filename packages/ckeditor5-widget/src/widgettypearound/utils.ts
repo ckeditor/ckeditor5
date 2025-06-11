@@ -12,7 +12,7 @@ import { isWidget } from '../utils.js';
 import type {
 	ModelDocumentSelection,
 	DomConverter,
-	Element,
+	ModelElement,
 	Schema,
 	Selection,
 	ViewElement
@@ -29,7 +29,7 @@ export const TYPE_AROUND_SELECTION_ATTRIBUTE = 'widget-type-around';
 /**
  * Checks if an element is a widget that qualifies to get the widget type around UI.
  */
-export function isTypeAroundWidget( viewElement: ViewElement | undefined, modelElement: Element, schema: Schema ): boolean {
+export function isTypeAroundWidget( viewElement: ViewElement | undefined, modelElement: ModelElement, schema: Schema ): boolean {
 	return !!viewElement && isWidget( viewElement ) && !schema.isInline( modelElement );
 }
 

@@ -9,7 +9,7 @@
 
 import type {
 	Conversion,
-	Element,
+	ModelElement,
 	Item,
 	Position,
 	Schema,
@@ -46,7 +46,7 @@ export function updateNumericAttribute( key: string, value: unknown, item: Item,
  * @param attributes The element attributes.
  * @returns Created table cell.
  */
-export function createEmptyTableCell( writer: Writer, insertPosition: Position, attributes: Record<string, unknown> = {} ): Element {
+export function createEmptyTableCell( writer: Writer, insertPosition: Position, attributes: Record<string, unknown> = {} ): ModelElement {
 	const tableCell = writer.createElement( 'tableCell', attributes );
 
 	writer.insertElement( 'paragraph', tableCell );
@@ -60,8 +60,8 @@ export function createEmptyTableCell( writer: Writer, insertPosition: Position, 
  *
  * @internal
  */
-export function isHeadingColumnCell( tableUtils: TableUtils, tableCell: Element ): boolean {
-	const table = tableCell.parent!.parent as Element;
+export function isHeadingColumnCell( tableUtils: TableUtils, tableCell: ModelElement ): boolean {
+	const table = tableCell.parent!.parent as ModelElement;
 	const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) as string || '0' );
 	const { column } = tableUtils.getCellLocation( tableCell );
 
@@ -103,7 +103,7 @@ export function enableProperty(
  *
  * @internal
  */
-export function getSelectionAffectedTable( selection: ModelDocumentSelection ): Element {
+export function getSelectionAffectedTable( selection: ModelDocumentSelection ): ModelElement {
 	const selectedElement = selection.getSelectedElement();
 
 	// Is the command triggered from the `tableToolbar`?

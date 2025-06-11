@@ -21,7 +21,7 @@ import type {
 	ViewContainerElement,
 	ViewUIElement,
 	DowncastAttributeEvent,
-	Element
+	ModelElement
 } from 'ckeditor5/src/engine.js';
 import { type ImageUtils } from '../imageutils.js';
 
@@ -90,7 +90,7 @@ export class ImageUploadProgress extends Plugin {
 	 */
 	private uploadStatusChange: GetCallback<DowncastAttributeEvent> = ( evt, data, conversionApi ) => {
 		const editor = this.editor;
-		const modelImage = data.item as Element;
+		const modelImage = data.item as ModelElement;
 		const uploadId = modelImage.getAttribute( 'uploadId' ) as string | number;
 
 		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {

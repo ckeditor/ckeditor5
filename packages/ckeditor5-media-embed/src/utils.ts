@@ -9,7 +9,7 @@
 
 import type {
 	ViewContainerElement,
-	Element,
+	ModelElement,
 	Model,
 	Selectable,
 	Selection,
@@ -96,7 +96,7 @@ export function createMediaFigureElement(
  *
  * @internal
  */
-export function getSelectedMediaModelWidget( selection: Selection | ModelDocumentSelection ): Element | null {
+export function getSelectedMediaModelWidget( selection: Selection | ModelDocumentSelection ): ModelElement | null {
 	const selectedElement = selection.getSelectedElement();
 
 	if ( selectedElement && selectedElement.is( 'element', 'media' ) ) {
