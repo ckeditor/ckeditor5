@@ -9,6 +9,6 @@
 
 export { Autoformat } from './autoformat.js';
 export { blockAutoformatEditing } from './blockautoformatediting.js';
-export { inlineAutoformatEditing } from './inlineautoformatediting.js';
+export { inlineAutoformatEditing, type AutoformatTestCallback } from './inlineautoformatediting.js';
 
 import './augmentation.js';
