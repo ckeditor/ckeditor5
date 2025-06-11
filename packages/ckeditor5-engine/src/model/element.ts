@@ -8,7 +8,7 @@
  */
 
 import { ModelNode, type ModelNodeAttributes } from './node.js';
-import { NodeList } from './nodelist.js';
+import { ModelNodeList } from './nodelist.js';
 import { Text } from './text.js';
 import { TextProxy } from './textproxy.js';
 
@@ -33,7 +33,7 @@ export class ModelElement extends ModelNode {
 	/**
 	 * List of children nodes.
 	 */
-	private readonly _children: NodeList = new NodeList();
+	private readonly _children: ModelNodeList = new ModelNodeList();
 
 	/**
 	 * Creates a model element.
@@ -432,7 +432,7 @@ function normalize( nodes: string | ModelItem | Iterable<string | ModelItem> ): 
 	return normalizedNodes;
 }
 
-function cloneNodes( nodes: NodeList ): Array<ModelNode> {
+function cloneNodes( nodes: ModelNodeList ): Array<ModelNode> {
 	const clonedNodes: Array<ModelNode> = [];
 
 	for ( const node of nodes ) {

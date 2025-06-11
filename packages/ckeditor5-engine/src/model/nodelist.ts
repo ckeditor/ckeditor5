@@ -16,7 +16,7 @@ import { CKEditorError, spliceArray } from '@ckeditor/ckeditor5-utils';
  * in classes like {@link module:engine/model/element~ModelElement Element}
  * or {@link module:engine/model/documentfragment~DocumentFragment ModelDocumentFragment}.
  */
-export class NodeList implements Iterable<ModelNode> {
+export class ModelNodeList implements Iterable<ModelNode> {
 	/**
 	 * Nodes contained in this node list.
 	 */
@@ -142,7 +142,7 @@ export class NodeList implements Iterable<ModelNode> {
 			 *
 			 * @error model-nodelist-offset-out-of-bounds
 			 * @param {number} offset The offset value.
-			 * @param {module:engine/model/nodelist~NodeList} nodeList Stringified node list.
+			 * @param {module:engine/model/nodelist~ModelNodeList} nodeList Stringified node list.
 			 */
 			throw new CKEditorError( 'model-nodelist-offset-out-of-bounds',
 				this,
@@ -274,7 +274,7 @@ export class NodeList implements Iterable<ModelNode> {
 }
 
 /**
- * Creates an array of nodes in the format as in {@link module:engine/model/nodelist~NodeList#_offsetToNode}, i.e. one node will
+ * Creates an array of nodes in the format as in {@link module:engine/model/nodelist~ModelNodeList#_offsetToNode}, i.e. one node will
  * occupy multiple items if its offset size is greater than one.
  */
 function makeOffsetsArray( nodes: Array<ModelNode> ): Array<ModelNode> {

@@ -157,6 +157,7 @@ export {
 } from './model/differ.js';
 export type { ModelItem } from './model/item.js';
 export { ModelNode, type ModelNodeAttributes } from './model/node.js';
+export { ModelNodeList } from './model/nodelist.js';
 export { RootElement } from './model/rootelement.js';
 export {
 	SchemaContext,

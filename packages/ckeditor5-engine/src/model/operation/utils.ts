@@ -15,7 +15,7 @@ import { TextProxy } from '../textproxy.js';
 import { type ModelDocumentFragment } from '../documentfragment.js';
 import { type ModelElement } from '../element.js';
 import { type ModelItem } from '../item.js';
-import { type NodeList } from '../nodelist.js';
+import { type ModelNodeList } from '../nodelist.js';
 import { type Position } from '../position.js';
 
 import { CKEditorError, isIterable } from '@ckeditor/ckeditor5-utils';
@@ -272,7 +272,7 @@ function _haveSameAttributes( nodeA: ModelNode, nodeB: ModelNode ): boolean | un
  * Non-arrays are normalized as follows:
  * * {@link module:engine/model/node~ModelNode Node} is left as is,
  * * {@link module:engine/model/textproxy~TextProxy TextProxy} and `string` are normalized to {@link module:engine/model/text~Text Text},
- * * {@link module:engine/model/nodelist~NodeList NodeList} is normalized to an array containing all nodes that are in that node list,
+ * * {@link module:engine/model/nodelist~ModelNodeList NodeList} is normalized to an array containing all nodes that are in that node list,
  * * {@link module:engine/model/documentfragment~DocumentFragment ModelDocumentFragment} is normalized to an array containing all of it's
  * * children.
  *
@@ -283,9 +283,9 @@ function _haveSameAttributes( nodeA: ModelNode, nodeB: ModelNode ): boolean | un
 export type NodeSet =
 	| ModelItem
 	| string
-	| NodeList
+	| ModelNodeList
 	| ModelDocumentFragment
 	| Iterable<ModelItem
 	| string
-	| NodeList
+	| ModelNodeList
 	| ModelDocumentFragment>;

@@ -9,7 +9,7 @@
 
 import { TypeCheckable } from './typecheckable.js';
 import { ModelElement } from './element.js';
-import { NodeList } from './nodelist.js';
+import { ModelNodeList } from './nodelist.js';
 import { Text } from './text.js';
 import { TextProxy } from './textproxy.js';
 
@@ -50,7 +50,7 @@ export class ModelDocumentFragment extends TypeCheckable implements Iterable<Mod
 	/**
 	 * List of nodes contained inside the document fragment.
 	 */
-	private readonly _children: NodeList = new NodeList();
+	private readonly _children: ModelNodeList = new ModelNodeList();
 
 	/**
 	 * Creates an empty `ModelDocumentFragment`.

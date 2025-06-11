@@ -9,7 +9,7 @@
 
 import { Operation } from './operation.js';
 import { Position } from '../position.js';
-import { NodeList } from '../nodelist.js';
+import { ModelNodeList } from '../nodelist.js';
 import { MoveOperation } from './moveoperation.js';
 import { _insert, _normalizeNodes, type NodeSet } from './utils.js';
 import { Text } from '../text.js';
@@ -36,7 +36,7 @@ export class InsertOperation extends Operation {
 	 *
 	 * @readonly
 	 */
-	public nodes: NodeList;
+	public nodes: ModelNodeList;
 
 	/**
 	 * Flag deciding how the operation should be transformed. If set to `true`, nodes might get additional attributes
@@ -58,7 +58,7 @@ export class InsertOperation extends Operation {
 
 		this.position = position.clone();
 		this.position.stickiness = 'toNone';
-		this.nodes = new NodeList( _normalizeNodes( nodes ) );
+		this.nodes = new ModelNodeList( _normalizeNodes( nodes ) );
 		this.shouldReceiveAttributes = false;
 	}
 
@@ -87,7 +87,7 @@ export class InsertOperation extends Operation {
 	 * Creates and returns an operation that has the same parameters as this operation.
 	 */
 	public clone(): InsertOperation {
-		const nodes = new NodeList( [ ...this.nodes ].map( node => node._clone( true ) ) );
+		const nodes = new ModelNodeList( [ ...this.nodes ].map( node => node._clone( true ) ) );
 		const insert = new InsertOperation( this.position, nodes, this.baseVersion );
 
 		insert.shouldReceiveAttributes = this.shouldReceiveAttributes;
@@ -135,7 +135,7 @@ export class InsertOperation extends Operation {
 		// to the operation, not modified. For example, text nodes can get merged or cropped while Elements can
 		// get children. It is important that InsertOperation has the copy of original nodes in intact state.
 		const originalNodes = this.nodes;
-		this.nodes = new NodeList( [ ...originalNodes ].map( node => node._clone( true ) ) );
+		this.nodes = new ModelNodeList( [ ...originalNodes ].map( node => node._clone( true ) ) );
 
 		_insert( this.position, originalNodes );
 	}
