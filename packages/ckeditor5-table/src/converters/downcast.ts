@@ -8,7 +8,7 @@
  */
 
 import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget.js';
-import type { Node, ViewElement, ModelElement, DowncastWriter, DowncastElementCreatorFunction } from 'ckeditor5/src/engine.js';
+import type { ModelNode, ViewElement, ModelElement, DowncastWriter, DowncastElementCreatorFunction } from 'ckeditor5/src/engine.js';
 
 import { TableWalker } from './../tablewalker.js';
 import { type TableUtils } from '../tableutils.js';
@@ -197,7 +197,7 @@ function toTableWidget( viewElement: ViewElement, writer: DowncastWriter ): View
 /**
  * Checks if an element has any attributes set.
  */
-function hasAnyAttribute( element: Node ): boolean {
+function hasAnyAttribute( element: ModelNode ): boolean {
 	for ( const attributeKey of element.getAttributeKeys() ) {
 		// Ignore selection attributes stored on block elements.
 		if ( attributeKey.startsWith( 'selection:' ) || attributeKey == 'htmlEmptyBlock' ) {

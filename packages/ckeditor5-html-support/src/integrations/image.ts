@@ -12,7 +12,7 @@ import type {
 	DowncastAttributeEvent,
 	DowncastDispatcher,
 	ModelElement,
-	Node,
+	ModelNode,
 	UpcastDispatcher
 } from 'ckeditor5/src/engine.js';
 import type { ImageUtils } from '@ckeditor/ckeditor5-image';
@@ -146,7 +146,7 @@ function viewToModelLinkImageAttributeConverter( dataFilter: DataFilter, editor:
 				return;
 			}
 
-			const modelImage: Node | null = data.modelCursor.parent as Node;
+			const modelImage: ModelNode | null = data.modelCursor.parent as ModelNode;
 
 			if ( !modelImage.is( 'element', 'imageBlock' ) ) {
 				return;

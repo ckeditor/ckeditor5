@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import type { DowncastWriter, ModelElement, Node, ViewContainerElement, UpcastElementEvent } from 'ckeditor5/src/engine.js';
+import type { DowncastWriter, ModelElement, ModelNode, ViewContainerElement, UpcastElementEvent } from 'ckeditor5/src/engine.js';
 
 import { Table } from './table.js';
 
@@ -93,17 +93,17 @@ function downcastTableElement( table: ModelElement, { writer }: { writer: Downca
 	const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 
 	// Table head rows slot.
-	const headRowsSlot = writer.createSlot( ( element: Node ) =>
+	const headRowsSlot = writer.createSlot( ( element: ModelNode ) =>
 		element.is( 'element', 'tableRow' ) && element.index! < headingRows
 	);
 
 	// Table body rows slot.
-	const bodyRowsSlot = writer.createSlot( ( element: Node ) =>
+	const bodyRowsSlot = writer.createSlot( ( element: ModelNode ) =>
 		element.is( 'element', 'tableRow' ) && element.index! >= headingRows
 	);
 
 	// Table children slot.
-	const childrenSlot = writer.createSlot( ( element: Node ) => !element.is( 'element', 'tableRow' ) );
+	const childrenSlot = writer.createSlot( ( element: ModelNode ) => !element.is( 'element', 'tableRow' ) );
 
 	// Table <thead> element with all the heading rows.
 	const theadElement = writer.createContainerElement( 'thead', null, headRowsSlot );

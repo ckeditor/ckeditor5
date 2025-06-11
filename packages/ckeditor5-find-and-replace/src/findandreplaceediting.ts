@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type { DifferItem, DifferItemAttribute, ModelElement, Node } from 'ckeditor5/src/engine.js';
+import type { DifferItem, DifferItemAttribute, ModelElement, ModelNode } from 'ckeditor5/src/engine.js';
 import {
 	scrollViewportToShowTarget,
 	type Collection,
@@ -211,7 +211,7 @@ export class FindAndReplaceEditing extends Plugin {
 	 * Reacts to document changes in order to update search list.
 	 */
 	private _onDocumentChange = () => {
-		const changedNodes = new Set<Node>();
+		const changedNodes = new Set<ModelNode>();
 		const removedMarkers = new Set<string>();
 		const model = this.editor.model;
 		const { results } = this.state!;

@@ -7,7 +7,7 @@
  * @module table/converters/table-caption-post-fixer
  */
 
-import type { Model, Writer, ModelElement, Node } from 'ckeditor5/src/engine.js';
+import type { Model, Writer, ModelElement, ModelNode } from 'ckeditor5/src/engine.js';
 
 /**
  * Injects a table caption post-fixer into the model.
@@ -43,7 +43,7 @@ function tableCaptionPostFixer( writer: Writer, model: Model ) {
 		if ( positionParent.is( 'element', 'table' ) || entry.name == 'table' ) {
 			const table = ( entry.name == 'table' ? entry.position.nodeAfter : positionParent ) as ModelElement;
 			const captionsToMerge = Array.from( table.getChildren() )
-				.filter( ( child: Node ): child is ModelElement => child.is( 'element', 'caption' ) );
+				.filter( ( child: ModelNode ): child is ModelElement => child.is( 'element', 'caption' ) );
 			const firstCaption = captionsToMerge.shift();
 
 			if ( !firstCaption ) {

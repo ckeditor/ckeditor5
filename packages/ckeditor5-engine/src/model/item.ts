@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { type Node } from './node.js';
+import { type ModelNode } from './node.js';
 import { type TextProxy } from './textproxy.js';
 
 /**
@@ -11,6 +11,6 @@ import { type TextProxy } from './textproxy.js';
  */
 
 /**
- * Item is a {@link module:engine/model/node~Node} or {@link module:engine/model/textproxy~TextProxy}.
+ * Item is a {@link module:engine/model/node~ModelNode} or {@link module:engine/model/textproxy~TextProxy}.
  */
-export type ModelItem = Node | TextProxy;
+export type ModelItem = ModelNode | TextProxy;

@@ -14,7 +14,7 @@ import { Text } from './text.js';
 import { TextProxy } from './textproxy.js';
 
 import { type ModelItem } from './item.js';
-import { type Node } from './node.js';
+import { type ModelNode } from './node.js';
 import { type Range } from './range.js';
 
 import { isIterable } from '@ckeditor/ckeditor5-utils';
@@ -29,7 +29,7 @@ import { isIterable } from '@ckeditor/ckeditor5-utils';
  * will be set to the {@link module:engine/model/model~Model#markers model markers} by a
  * {@link module:engine/model/writer~Writer#insert} function.
  */
-export class ModelDocumentFragment extends TypeCheckable implements Iterable<Node> {
+export class ModelDocumentFragment extends TypeCheckable implements Iterable<ModelNode> {
 	/**
 	 * ModelDocumentFragment static markers map. This is a list of names and {@link module:engine/model/range~Range ranges}
 	 * which will be set as Markers to {@link module:engine/model/model~Model#markers model markers collection}
@@ -61,7 +61,7 @@ export class ModelDocumentFragment extends TypeCheckable implements Iterable<Nod
 	 * @internal
 	 * @param children Nodes to be contained inside the `ModelDocumentFragment`.
 	 */
-	constructor( children?: Node | Iterable<Node> ) {
+	constructor( children?: ModelNode | Iterable<ModelNode> ) {
 		super();
 
 		if ( children ) {
@@ -72,7 +72,7 @@ export class ModelDocumentFragment extends TypeCheckable implements Iterable<Nod
 	/**
 	 * Returns an iterator that iterates over all nodes contained inside this document fragment.
 	 */
-	public [ Symbol.iterator ](): IterableIterator<Node> {
+	public [ Symbol.iterator ](): IterableIterator<ModelNode> {
 		return this.getChildren();
 	}
 
@@ -84,7 +84,7 @@ export class ModelDocumentFragment extends TypeCheckable implements Iterable<Nod
 	}
 
 	/**
-	 * Sum of {@link module:engine/model/node~Node#offsetSize offset sizes} of all of this document fragment's children.
+	 * Sum of {@link module:engine/model/node~ModelNode#offsetSize offset sizes} of all of this document fragment's children.
 	 */
 	public get maxOffset(): number {
 		return this._children.maxOffset;
@@ -152,7 +152,7 @@ export class ModelDocumentFragment extends TypeCheckable implements Iterable<Nod
 	 * @param index Index in this document fragment.
 	 * @returns Child node.
 	 */
-	public getChild( index: number ): Node | null {
+	public getChild( index: number ): ModelNode | null {
 		return this._children.getNode( index );
 	}
 
@@ -162,14 +162,14 @@ export class ModelDocumentFragment extends TypeCheckable implements Iterable<Nod
 	 * @param offset Offset in this document fragment.
 	 * @returns Child node.
 	 */
-	public getChildAtOffset( offset: number ): Node | null {
+	public getChildAtOffset( offset: number ): ModelNode | null {
 		return this._children.getNodeAtOffset( offset );
 	}
 
 	/**
 	 * Returns an iterator that iterates over all of this document fragment's children.
 	 */
-	public getChildren(): IterableIterator<Node> {
+	public getChildren(): IterableIterator<ModelNode> {
 		return this._children[ Symbol.iterator ]();
 	}
 
@@ -179,19 +179,19 @@ export class ModelDocumentFragment extends TypeCheckable implements Iterable<Nod
 	 * @param node Child node to look for.
 	 * @returns Child node's index.
 	 */
-	public getChildIndex( node: Node ): number | null {
+	public getChildIndex( node: ModelNode ): number | null {
 		return this._children.getNodeIndex( node );
 	}
 
 	/**
 	 * Returns the starting offset of given child. Starting offset is equal to the sum of
-	 * {@link module:engine/model/node~Node#offsetSize offset sizes} of all node's siblings that are before it. Returns `null` if
+	 * {@link module:engine/model/node~ModelNode#offsetSize offset sizes} of all node's siblings that are before it. Returns `null` if
 	 * given node is not a child of this document fragment.
 	 *
 	 * @param node Child node to look for.
 	 * @returns Child node's starting offset.
 	 */
-	public getChildStartOffset( node: Node ): number | null {
+	public getChildStartOffset( node: ModelNode ): number | null {
 		return this._children.getNodeStartOffset( node );
 	}
 
@@ -214,9 +214,9 @@ export class ModelDocumentFragment extends TypeCheckable implements Iterable<Nod
 	 *
 	 * @param relativePath Path of the node to find, relative to this element.
 	 */
-	public getNodeByPath( relativePath: Array<number> ): Node | ModelDocumentFragment {
+	public getNodeByPath( relativePath: Array<number> ): ModelNode | ModelDocumentFragment {
 		// eslint-disable-next-line @typescript-eslint/no-this-alias, consistent-this
-		let node: Node | ModelDocumentFragment = this;
+		let node: ModelNode | ModelDocumentFragment = this;
 
 		for ( const offset of relativePath ) {
 			node = ( node as ModelElement | ModelDocumentFragment ).getChildAtOffset( offset )!;
@@ -300,7 +300,7 @@ export class ModelDocumentFragment extends TypeCheckable implements Iterable<Nod
 	}
 
 	/**
-	 * Inserts one or more nodes at the given index and sets {@link module:engine/model/node~Node#parent parent} of these nodes
+	 * Inserts one or more nodes at the given index and sets {@link module:engine/model/node~ModelNode#parent parent} of these nodes
 	 * to this document fragment.
 	 *
 	 * @internal
@@ -324,14 +324,14 @@ export class ModelDocumentFragment extends TypeCheckable implements Iterable<Nod
 
 	/**
 	 * Removes one or more nodes starting at the given index
-	 * and sets {@link module:engine/model/node~Node#parent parent} of these nodes to `null`.
+	 * and sets {@link module:engine/model/node~ModelNode#parent parent} of these nodes to `null`.
 	 *
 	 * @internal
 	 * @param index Index of the first node to remove.
 	 * @param howMany Number of nodes to remove.
 	 * @returns Array containing removed nodes.
 	 */
-	public _removeChildren( index: number, howMany: number = 1 ): Array<Node> {
+	public _removeChildren( index: number, howMany: number = 1 ): Array<ModelNode> {
 		const nodes = this._children._removeNodes( index, howMany );
 
 		for ( const node of nodes ) {
@@ -343,7 +343,7 @@ export class ModelDocumentFragment extends TypeCheckable implements Iterable<Nod
 
 	/**
 	 * Removes children nodes provided as an array and sets
-	 * the {@link module:engine/model/node~Node#parent parent} of these nodes to `null`.
+	 * the {@link module:engine/model/node~ModelNode#parent parent} of these nodes to `null`.
 	 *
 	 * These nodes do not need to be direct siblings.
 	 *
@@ -352,7 +352,7 @@ export class ModelDocumentFragment extends TypeCheckable implements Iterable<Nod
 	 * @internal
 	 * @param nodes Array of nodes.
 	 */
-	public _removeChildrenArray( nodes: Array<Node> ): void {
+	public _removeChildrenArray( nodes: Array<ModelNode> ): void {
 		this._children._removeNodesArray( nodes );
 
 		for ( const node of nodes ) {
@@ -408,7 +408,7 @@ ModelDocumentFragment.prototype.is = function( type: string ): boolean {
 /**
  * Converts strings to Text and non-iterables to arrays.
  */
-function normalize( nodes: string | ModelItem | Iterable<string | ModelItem> ): Array<Node> {
+function normalize( nodes: string | ModelItem | Iterable<string | ModelItem> ): Array<ModelNode> {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
 		return [ new Text( nodes ) ];

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { type Node } from '../node.js';
+import { type ModelNode } from '../node.js';
 import { type Position } from '../position.js';
 import { type Schema } from '../schema.js';
 import { type Writer } from '../writer.js';
@@ -49,7 +49,7 @@ export function autoParagraphEmptyRoots( writer: Writer ): boolean {
  */
 export function isParagraphable(
 	position: Position,
-	nodeOrType: Node | string,
+	nodeOrType: ModelNode | string,
 	schema: Schema
 ): boolean {
 	const context = schema.createContext( position );

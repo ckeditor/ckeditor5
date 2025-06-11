@@ -7,7 +7,7 @@
  * @module list/legacylist/legacylistcommand
  */
 
-import type { ModelElement, Node, Schema } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelNode, Schema } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 
 import { first } from 'ckeditor5/src/utils.js';
@@ -277,7 +277,7 @@ export class LegacyListCommand extends Command {
  * @param lowestIndent Lowest indent among selected blocks.
  */
 function _fixType(
-	blocks: Array<Node>,
+	blocks: Array<ModelNode>,
 	isBackward: boolean,
 	lowestIndent: number
 ) {

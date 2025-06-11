@@ -16,7 +16,7 @@ import { type Model } from '../model.js';
 import { type Schema } from '../schema.js';
 import { type Selection } from '../selection.js';
 import { type Text } from '../text.js';
-import { type Node } from '../node.js';
+import { type ModelNode } from '../node.js';
 
 import { isInsideSurrogatePair, isInsideCombinedSymbol, isInsideEmojiSequence } from '@ckeditor/ckeditor5-utils';
 
@@ -192,7 +192,7 @@ function getCorrectPosition(
  * or should be extended further.
  */
 function getCorrectWordBreakPosition( walker: TreeWalker, isForward: boolean ): Position {
-	let textNode: Node | null = walker.position.textNode;
+	let textNode: ModelNode | null = walker.position.textNode;
 
 	if ( !textNode ) {
 		textNode = isForward ? walker.position.nodeAfter : walker.position.nodeBefore;

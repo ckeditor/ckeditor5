@@ -8,7 +8,7 @@
  */
 
 import { TypeCheckable } from './typecheckable.js';
-import { Node } from './node.js';
+import { ModelNode } from './node.js';
 import { Position, type PositionOffset } from './position.js';
 import { Range } from './range.js';
 
@@ -95,12 +95,12 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	constructor(
 		...args: [] |
 		[
-			selectable: Node,
+			selectable: ModelNode,
 			placeOrOffset: PlaceOrOffset,
 			options?: { backward?: boolean }
 		] |
 		[
-			selectable?: Exclude<Selectable, Node>,
+			selectable?: Exclude<Selectable, ModelNode>,
 			options?: { backward?: boolean }
 		]
 	) {
@@ -349,11 +349,11 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 */
 	public setTo(
 		...args: [
-			selectable: Node,
+			selectable: ModelNode,
 			placeOrOffset: PlaceOrOffset,
 			options?: { backward?: boolean }
 		] | [
-			selectable?: Exclude<Selectable, Node>,
+			selectable?: Exclude<Selectable, ModelNode>,
 			options?: { backward?: boolean }
 		]
 	): void {
@@ -376,7 +376,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 			this._setRanges( [ selectable ], !!options && !!options.backward );
 		} else if ( selectable instanceof Position ) {
 			this._setRanges( [ new Range( selectable ) ] );
-		} else if ( selectable instanceof Node ) {
+		} else if ( selectable instanceof ModelNode ) {
 			const backward = !!options && !!options.backward;
 			let range;
 
@@ -657,7 +657,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * ```
 	 */
 	public* getSelectedBlocks(): IterableIterator<ModelElement> {
-		const visited = new WeakSet<Node | ModelDocumentFragment>();
+		const visited = new WeakSet<ModelNode | ModelDocumentFragment>();
 
 		for ( const range of this.getRanges() ) {
 			// Get start block of range in case of a collapsed range.
@@ -833,7 +833,7 @@ export type SelectionChangeAttributeEvent = {
  * Checks whether the given element extends $block in the schema and has a parent (is not a root).
  * Marks it as already visited.
  */
-function isUnvisitedBlock( element: Node | ModelDocumentFragment, visited: WeakSet<Node | ModelDocumentFragment> ) {
+function isUnvisitedBlock( element: ModelNode | ModelDocumentFragment, visited: WeakSet<ModelNode | ModelDocumentFragment> ) {
 	if ( visited.has( element ) ) {
 		return false;
 	}
@@ -846,7 +846,7 @@ function isUnvisitedBlock( element: Node | ModelDocumentFragment, visited: WeakS
 /**
  * Checks if the given element is a $block was not previously visited and is a top block in a range.
  */
-function isUnvisitedTopBlock( element: ModelElement, visited: WeakSet<Node | ModelDocumentFragment>, range: Range ) {
+function isUnvisitedTopBlock( element: ModelElement, visited: WeakSet<ModelNode | ModelDocumentFragment>, range: Range ) {
 	return isUnvisitedBlock( element, visited ) && isTopBlockInRange( element, range );
 }
 
@@ -855,7 +855,7 @@ function isUnvisitedTopBlock( element: ModelElement, visited: WeakSet<Node | Mod
  * It will search until first ancestor that is a limit element.
  * Marks all ancestors as already visited to not include any of them later on.
  */
-function getParentBlock( position: Position, visited: WeakSet<Node | ModelDocumentFragment> ) {
+function getParentBlock( position: Position, visited: WeakSet<ModelNode | ModelDocumentFragment> ) {
 	const element = position.parent;
 	const schema = element.root.document!.model.schema;
 
@@ -884,7 +884,7 @@ function getParentBlock( position: Position, visited: WeakSet<Node | ModelDocume
 /**
  * Checks if the blocks is not nested in other block inside a range.
  */
-function isTopBlockInRange( block: Node, range: Range ) {
+function isTopBlockInRange( block: ModelNode, range: Range ) {
 	const parentBlock = findAncestorBlock( block );
 
 	if ( !parentBlock ) {
@@ -964,7 +964,7 @@ function isEndBlockSelected( endBlock: ModelElement | undefined, range: Range ):
 /**
  * Returns first ancestor block of a node.
  */
-function findAncestorBlock( node: Node | ModelDocumentFragment ) {
+function findAncestorBlock( node: ModelNode | ModelDocumentFragment ) {
 	const schema = node.root.document!.model.schema;
 
 	let parent = node.parent;
@@ -983,7 +983,7 @@ function findAncestorBlock( node: Node | ModelDocumentFragment ) {
  *
  * See also {@link module:engine/model/selection~Selection#setTo}.
  */
-export type Selectable = Selection | ModelDocumentSelection | Position | Range | Node | Iterable<Range> | null;
+export type Selectable = Selection | ModelDocumentSelection | Position | Range | ModelNode | Iterable<Range> | null;
 
 /**
  * The place or offset of the selection.

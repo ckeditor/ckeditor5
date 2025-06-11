@@ -17,7 +17,7 @@ import { type InsertOperation } from './operation/insertoperation.js';
 import { type ModelItem } from './item.js';
 import { type MergeOperation } from './operation/mergeoperation.js';
 import { type MoveOperation } from './operation/moveoperation.js';
-import { type Node } from './node.js';
+import { type ModelNode } from './node.js';
 import { type Operation } from './operation/operation.js';
 import { type SplitOperation } from './operation/splitoperation.js';
 import { type Text } from './text.js';
@@ -60,9 +60,9 @@ export class Position extends TypeCheckable {
 	/**
 	 * Position of the node in the tree. **Path contains offsets, not indexes.**
 	 *
-	 * Position can be placed before, after or in a {@link module:engine/model/node~Node node} if that node has
-	 * {@link module:engine/model/node~Node#offsetSize} greater than `1`. Items in position path are
-	 * {@link module:engine/model/node~Node#startOffset starting offsets} of position ancestors, starting from direct root children,
+	 * Position can be placed before, after or in a {@link module:engine/model/node~ModelNode node} if that node has
+	 * {@link module:engine/model/node~ModelNode#offsetSize} greater than `1`. Items in position path are
+	 * {@link module:engine/model/node~ModelNode#startOffset starting offsets} of position ancestors, starting from direct root children,
 	 * down to the position offset in it's parent.
 	 *
 	 * ```
@@ -208,7 +208,7 @@ export class Position extends TypeCheckable {
 
 	/**
 	 * Position {@link module:engine/model/position~Position#offset offset} converted to an index in position's parent node. It is
-	 * equal to the {@link module:engine/model/node~Node#index index} of a node after this position. If position is placed
+	 * equal to the {@link module:engine/model/node~ModelNode#index index} of a node after this position. If position is placed
 	 * in text node, position index is equal to the index of that text node.
 	 */
 	public get index(): number {
@@ -226,7 +226,7 @@ export class Position extends TypeCheckable {
 	/**
 	 * Node directly after this position. Returns `null` if this position is at the end of its parent, or if it is in a text node.
 	 */
-	public get nodeAfter(): Node | null {
+	public get nodeAfter(): ModelNode | null {
 		// Cache the parent and reuse for performance reasons. See #6579 and #6582.
 		const parent = this.parent;
 
@@ -236,7 +236,7 @@ export class Position extends TypeCheckable {
 	/**
 	 * Node directly before this position. Returns `null` if this position is at the start of its parent, or if it is in a text node.
 	 */
-	public get nodeBefore(): Node | null {
+	public get nodeBefore(): ModelNode | null {
 		// Cache the parent and reuse for performance reasons. See #6579 and #6582.
 		const parent = this.parent;
 
@@ -1137,7 +1137,7 @@ export function getNodeAfterPosition(
 	position: Position,
 	positionParent: ModelElement | ModelDocumentFragment,
 	textNode: Text | null
-): Node | null {
+): ModelNode | null {
 	if ( textNode !== null ) {
 		return null;
 	}
@@ -1164,7 +1164,7 @@ export function getNodeBeforePosition(
 	position: Position,
 	positionParent: ModelElement | ModelDocumentFragment,
 	textNode: Text | null
-): Node | null {
+): ModelNode | null {
 	if ( textNode !== null ) {
 		return null;
 	}

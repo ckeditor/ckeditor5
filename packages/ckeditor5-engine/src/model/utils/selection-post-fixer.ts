@@ -12,7 +12,7 @@ import { Range } from '../range.js';
 
 import { type ModelDocumentFragment } from '../documentfragment.js';
 import { type Model } from '../model.js';
-import { type Node } from '../node.js';
+import { type ModelNode } from '../node.js';
 import { type Schema } from '../schema.js';
 import { type Writer } from '../writer.js';
 import { type ModelElement } from '../element.js';
@@ -248,9 +248,9 @@ function tryFixingNonCollapsedRage( range: Range, schema: Schema ) {
 /**
  * Finds the outer-most ancestor.
  */
-function findOutermostLimitAncestor( startingNode: Node, schema: Schema ): Node {
+function findOutermostLimitAncestor( startingNode: ModelNode, schema: Schema ): ModelNode {
 	let isLimitNode = startingNode;
-	let parent: Node | ModelDocumentFragment = isLimitNode;
+	let parent: ModelNode | ModelDocumentFragment = isLimitNode;
 
 	// Find outer most isLimit block as such blocks might be nested (ie. in tables).
 	while ( schema.isLimit( parent ) && parent.parent ) {
@@ -315,6 +315,6 @@ export function mergeIntersectingRanges( ranges: Array<Range> ): Array<Range> {
 /**
  * Checks if node exists and if it's a selectable.
  */
-function isSelectable( node: Node, schema: Schema ) {
+function isSelectable( node: ModelNode, schema: Schema ) {
 	return node && schema.isSelectable( node );
 }

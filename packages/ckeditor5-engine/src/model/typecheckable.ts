@@ -13,7 +13,7 @@ import { type ModelDocumentSelection } from './documentselection.js';
 import { type ModelElement } from './element.js';
 import { type ModelLivePosition } from './liveposition.js';
 import { type ModelLiveRange } from './liverange.js';
-import { type Node } from './node.js';
+import { type ModelNode } from './node.js';
 import { type Position } from './position.js';
 import { type Range } from './range.js';
 import { type RootElement } from './rootelement.js';
@@ -23,10 +23,10 @@ import { type TextProxy } from './textproxy.js';
 
 export abstract class TypeCheckable {
 	/**
-	 * Checks whether the object is of type {@link module:engine/model/node~Node} or its subclass.
+	 * Checks whether the object is of type {@link module:engine/model/node~ModelNode} or its subclass.
 	 *
 	 * This method is useful when processing model objects that are of unknown type. For example, a function
-	 * may return a {@link module:engine/model/documentfragment~ModelDocumentFragment} or a {@link module:engine/model/node~Node}
+	 * may return a {@link module:engine/model/documentfragment~ModelDocumentFragment} or a {@link module:engine/model/node~ModelNode}
 	 * that can be either a text node or an element. This method can be used to check what kind of object is returned.
 	 *
 	 * ```ts
@@ -53,7 +53,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label NODE
 	 */
-	public is( type: 'node' | 'model:node' ): this is Node | ModelElement | Text | RootElement;
+	public is( type: 'node' | 'model:node' ): this is ModelNode | ModelElement | Text | RootElement;
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/model/element~ModelElement} or its subclass.

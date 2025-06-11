@@ -12,7 +12,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import type {
 	ModelDocumentSelection,
 	ModelElement,
-	Node,
+	ModelNode,
 	Position,
 	Range,
 	Selection,
@@ -88,7 +88,7 @@ export class TableUtils extends Plugin {
 		const tableRow = tableCell.parent!;
 		const table = tableRow.parent as ModelElement;
 
-		const rowIndex = table.getChildIndex( tableRow as Node );
+		const rowIndex = table.getChildIndex( tableRow as ModelNode );
 
 		const tableWalker = new TableWalker( table, { row: rowIndex } );
 
@@ -695,7 +695,7 @@ export class TableUtils extends Plugin {
 	public splitCellHorizontally( tableCell: ModelElement, numberOfCells = 2 ): void {
 		const model = this.editor.model;
 
-		const tableRow = tableCell.parent as Node;
+		const tableRow = tableCell.parent as ModelNode;
 		const table = tableRow.parent! as ModelElement;
 		const splitCellRow = table.getChildIndex( tableRow )!;
 

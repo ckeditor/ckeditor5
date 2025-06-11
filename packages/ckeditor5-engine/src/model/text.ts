@@ -7,14 +7,15 @@
  * @module engine/model/text
  */
 
-import { Node, type NodeAttributes } from './node.js';
+import { ModelNode, type NodeAttributes } from './node.js';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToStringifiedObject } = require( '../dev-utils/utils' );
 
 /**
- * Model text node. Type of {@link module:engine/model/node~Node node} that contains {@link module:engine/model/text~Text#data text data}.
+ * Model text node. Type of {@link module:engine/model/node~ModelNode node} that
+ * contains {@link module:engine/model/text~Text#data text data}.
  *
- * **Important:** see {@link module:engine/model/node~Node} to read about restrictions using `Text` and `Node` API.
+ * **Important:** see {@link module:engine/model/node~ModelNode} to read about restrictions using `Text` and `Node` API.
  *
  * **Note:** keep in mind that `Text` instances might indirectly got removed from model tree when model is changed.
  * This happens when {@link module:engine/model/writer~Writer model writer} is used to change model and the text node is merged with
@@ -22,7 +23,7 @@ import { Node, type NodeAttributes } from './node.js';
  * this behavior, keeping references to `Text` is not recommended. Instead, consider creating
  * {@link module:engine/model/liveposition~ModelLivePosition live position} placed before the text node.
  */
-export class Text extends Node {
+export class Text extends ModelNode {
 	/**
 	 * Text data contained in this text node.
 	 *

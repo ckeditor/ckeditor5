@@ -7,20 +7,20 @@
  * @module engine/model/nodelist
  */
 
-import { Node } from './node.js';
+import { ModelNode } from './node.js';
 
 import { CKEditorError, spliceArray } from '@ckeditor/ckeditor5-utils';
 
 /**
- * Provides an interface to operate on a list of {@link module:engine/model/node~Node nodes}. `NodeList` is used internally
+ * Provides an interface to operate on a list of {@link module:engine/model/node~ModelNode nodes}. `NodeList` is used internally
  * in classes like {@link module:engine/model/element~ModelElement Element}
  * or {@link module:engine/model/documentfragment~DocumentFragment ModelDocumentFragment}.
  */
-export class NodeList implements Iterable<Node> {
+export class NodeList implements Iterable<ModelNode> {
 	/**
 	 * Nodes contained in this node list.
 	 */
-	private _nodes: Array<Node> = [];
+	private _nodes: Array<ModelNode> = [];
 
 	/**
 	 * This array maps numbers (offsets) to node that is placed at that offset.
@@ -29,7 +29,7 @@ export class NodeList implements Iterable<Node> {
 	 *
 	 * This array is needed to quickly retrieve a node that is placed at given offset.
 	 */
-	private _offsetToNode: Array<Node> = [];
+	private _offsetToNode: Array<ModelNode> = [];
 
 	/**
 	 * Creates a node list.
@@ -37,7 +37,7 @@ export class NodeList implements Iterable<Node> {
 	 * @internal
 	 * @param nodes Nodes contained in this node list.
 	 */
-	constructor( nodes?: Iterable<Node> ) {
+	constructor( nodes?: Iterable<ModelNode> ) {
 		if ( nodes ) {
 			this._insertNodes( 0, nodes );
 		}
@@ -48,7 +48,7 @@ export class NodeList implements Iterable<Node> {
 	 *
 	 * Iterates over all nodes contained inside this node list.
 	 */
-	public [ Symbol.iterator ](): IterableIterator<Node> {
+	public [ Symbol.iterator ](): IterableIterator<ModelNode> {
 		return this._nodes[ Symbol.iterator ]();
 	}
 
@@ -60,7 +60,7 @@ export class NodeList implements Iterable<Node> {
 	}
 
 	/**
-	 * Sum of {@link module:engine/model/node~Node#offsetSize offset sizes} of all nodes contained inside this node list.
+	 * Sum of {@link module:engine/model/node~ModelNode#offsetSize offset sizes} of all nodes contained inside this node list.
 	 */
 	public get maxOffset(): number {
 		return this._offsetToNode.length;
@@ -69,32 +69,32 @@ export class NodeList implements Iterable<Node> {
 	/**
 	 * Gets the node at the given index. Returns `null` if incorrect index was passed.
 	 */
-	public getNode( index: number ): Node | null {
+	public getNode( index: number ): ModelNode | null {
 		return this._nodes[ index ] || null;
 	}
 
 	/**
 	 * Gets the node at the given offset. Returns `null` if incorrect offset was passed.
 	 */
-	public getNodeAtOffset( offset: number ): Node | null {
+	public getNodeAtOffset( offset: number ): ModelNode | null {
 		return this._offsetToNode[ offset ] || null;
 	}
 
 	/**
 	 * Returns an index of the given node or `null` if given node does not have a parent.
 	 *
-	 * This is an alias to {@link module:engine/model/node~Node#index}.
+	 * This is an alias to {@link module:engine/model/node~ModelNode#index}.
 	 */
-	public getNodeIndex( node: Node ): number | null {
+	public getNodeIndex( node: ModelNode ): number | null {
 		return node.index;
 	}
 
 	/**
 	 * Returns the offset at which given node is placed in its parent or `null` if given node does not have a parent.
 	 *
-	 * This is an alias to {@link module:engine/model/node~Node#startOffset}.
+	 * This is an alias to {@link module:engine/model/node~ModelNode#startOffset}.
 	 */
-	public getNodeStartOffset( node: Node ): number | null {
+	public getNodeStartOffset( node: ModelNode ): number | null {
 		return node.startOffset;
 	}
 
@@ -163,12 +163,12 @@ export class NodeList implements Iterable<Node> {
 	 * @param index Index at which nodes should be inserted.
 	 * @param nodes Nodes to be inserted.
 	 */
-	public _insertNodes( index: number, nodes: Iterable<Node> ): void {
-		const nodesArray: Array<Node> = [];
+	public _insertNodes( index: number, nodes: Iterable<ModelNode> ): void {
+		const nodesArray: Array<ModelNode> = [];
 
 		// Validation.
 		for ( const node of nodes ) {
-			if ( !( node instanceof Node ) ) {
+			if ( !( node instanceof ModelNode ) ) {
 				/**
 				 * Trying to insert an object which is not a Node instance.
 				 *
@@ -203,7 +203,7 @@ export class NodeList implements Iterable<Node> {
 	 * @param howMany Number of nodes to remove.
 	 * @returns Array containing removed nodes.
 	 */
-	public _removeNodes( indexStart: number, howMany: number = 1 ): Array<Node> {
+	public _removeNodes( indexStart: number, howMany: number = 1 ): Array<ModelNode> {
 		if ( howMany == 0 ) {
 			return [];
 		}
@@ -239,7 +239,7 @@ export class NodeList implements Iterable<Node> {
 	 * @internal
 	 * @param nodes Array of nodes.
 	 */
-	public _removeNodesArray( nodes: Array<Node> ): void {
+	public _removeNodesArray( nodes: Array<ModelNode> ): void {
 		if ( nodes.length == 0 ) {
 			return;
 		}
@@ -277,7 +277,7 @@ export class NodeList implements Iterable<Node> {
  * Creates an array of nodes in the format as in {@link module:engine/model/nodelist~NodeList#_offsetToNode}, i.e. one node will
  * occupy multiple items if its offset size is greater than one.
  */
-function makeOffsetsArray( nodes: Array<Node> ): Array<Node> {
+function makeOffsetsArray( nodes: Array<ModelNode> ): Array<ModelNode> {
 	const offsets = [];
 	let index = 0;
 

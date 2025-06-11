@@ -16,7 +16,7 @@ import type {
 	DowncastWriter,
 	ModelElement,
 	ModelDeleteContentEvent,
-	Node,
+	ModelNode,
 	UpcastDispatcher,
 	UpcastElementEvent,
 	ViewElement,
@@ -275,7 +275,7 @@ interface AttributeStrategy {
 	attributeName: string;
 	defaultValue: unknown;
 	addCommand: ( editor: Editor ) => void;
-	appliesToListItem: ( element: Node ) => boolean;
+	appliesToListItem: ( element: ModelNode ) => boolean;
 	setAttributeOnDowncast: ( writer: DowncastWriter, value: any, element: ViewElement ) => void;
 	getAttributeOnUpcast: ( element: ViewElement ) => unknown;
 }
@@ -514,7 +514,7 @@ function fixListAfterOutdentListCommand( editor: Editor, attributeStrategies: Ar
 
 		const indent = changedItems[ 0 ].getAttribute( 'listIndent' );
 		const listType = changedItems[ 0 ].getAttribute( 'listType' );
-		let listItem: Node | null = changedItems[ 0 ].previousSibling!;
+		let listItem: ModelNode | null = changedItems[ 0 ].previousSibling!;
 
 		// ■ List item 1.
 		//     ○ List item 2.
@@ -716,7 +716,7 @@ function fixListAttributesOnListItemElements( editor: Editor, attributeStrategie
  * The attribute should be copied if the inserted element does not have defined it and
  * the value for the element is other than default in the base element.
  */
-function shouldInheritListType( baseItem: Node | null, itemToChange: ModelElement, attributeStrategy: AttributeStrategy ) {
+function shouldInheritListType( baseItem: ModelNode | null, itemToChange: ModelElement, attributeStrategy: AttributeStrategy ) {
 	if ( !baseItem ) {
 		return false;
 	}
@@ -745,7 +745,7 @@ function shouldInheritListType( baseItem: Node | null, itemToChange: ModelElemen
  * The attribute should be copied if there's a mismatch of styles of the pasted list into a nested list.
  * Top-level lists are not normalized as we allow side-by-side list of different types.
  */
-function shouldInheritListTypeFromPreviousItem( previousItem: Node | null, itemToChange: ModelElement, attributeName: string ) {
+function shouldInheritListTypeFromPreviousItem( previousItem: ModelNode | null, itemToChange: ModelElement, attributeName: string ) {
 	if ( !previousItem || !previousItem.is( 'element', 'listItem' ) ) {
 		return false;
 	}

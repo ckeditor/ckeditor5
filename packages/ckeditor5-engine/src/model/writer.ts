@@ -31,7 +31,7 @@ import type { Selection, PlaceOrOffset, Selectable } from './selection.js';
 import { type Batch } from './batch.js';
 import { type ModelItem } from './item.js';
 import { type Model } from './model.js';
-import type { Node, NodeAttributes } from './node.js';
+import type { ModelNode, NodeAttributes } from './node.js';
 
 import { CKEditorError, logWarning, toMap } from '@ckeditor/ckeditor5-utils';
 
@@ -835,14 +835,14 @@ export class Writer {
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): Selection;
+	public createSelection( selectable: ModelNode, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): Selection;
 
 	/**
 	 * Shortcut for {@link module:engine/model/model~Model#createSelection:SELECTABLE `Model#createSelection()`}.
 	 *
 	 * @label SELECTABLE
 	 */
-	public createSelection( selectable?: Exclude<Selectable, Node>, options?: { backward?: boolean } ): Selection;
+	public createSelection( selectable?: Exclude<Selectable, ModelNode>, options?: { backward?: boolean } ): Selection;
 
 	public createSelection( ...args: [ any?, any?, any? ] ): Selection {
 		return this.model.createSelection( ...args );
@@ -928,7 +928,7 @@ export class Writer {
 	 * * `position` - Position between split elements.
 	 * * `range` - Range that stars from the end of the first split element and ends at the beginning of the first copy element.
 	 */
-	public split( position: Position, limitElement?: Node | ModelDocumentFragment ): { position: Position; range: Range } {
+	public split( position: Position, limitElement?: ModelNode | ModelDocumentFragment ): { position: Position; range: Range } {
 		this._assertWriterUsedCorrectly();
 
 		let splitElement = position.parent;
@@ -960,7 +960,7 @@ export class Writer {
 		// we need to create a range from the end of the first split element to the beginning of the
 		// first copy element. This should be handled by LiveRange but it doesn't work on detached nodes.
 		let firstSplitElement: ModelElement | ModelDocumentFragment | undefined;
-		let firstCopyElement: Node | null | undefined;
+		let firstCopyElement: ModelNode | null | undefined;
 
 		do {
 			const version = splitElement.root.document ? splitElement.root.document.version : null;
@@ -1447,7 +1447,7 @@ export class Writer {
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public setSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): void;
+	public setSelection( selectable: ModelNode, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): void;
 
 	/**
 	 * Sets the document's selection (ranges and direction) to the specified location based on the given
@@ -1491,7 +1491,7 @@ export class Writer {
 	 *
 	 * @label SELECTABLE
 	 */
-	public setSelection( selectable: Exclude<Selectable, Node>, options?: { backward?: boolean } ): void;
+	public setSelection( selectable: Exclude<Selectable, ModelNode>, options?: { backward?: boolean } ): void;
 
 	public setSelection( ...args: Parameters<Selection[ 'setTo' ]> ): void {
 		this._assertWriterUsedCorrectly();
@@ -1895,7 +1895,7 @@ function applyRemoveOperation( position: Position, howMany: number, batch: Batch
  * collaboration may track changes on the document but ignore changes on detached fragments and should not get
  * unexpected `move` operation.
  */
-function isSameTree( rootA: Node | ModelDocumentFragment, rootB: Node | ModelDocumentFragment ): boolean {
+function isSameTree( rootA: ModelNode | ModelDocumentFragment, rootB: ModelNode | ModelDocumentFragment ): boolean {
 	// If it is the same root this is the same tree.
 	if ( rootA === rootB ) {
 		return true;

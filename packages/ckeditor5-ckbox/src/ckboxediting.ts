@@ -15,7 +15,7 @@ import {
 	type DowncastWriter,
 	type ModelElement,
 	type ModelItem,
-	type Node,
+	type ModelNode,
 	type UpcastElementEvent,
 	type ViewElement,
 	type Writer
@@ -454,7 +454,7 @@ function createLinkElement( writer: DowncastWriter, id: string ) {
 /**
  * Checks if the model element may have the `ckboxLinkId` attribute.
  */
-function shouldUpcastAttributeForNode( node: Node ) {
+function shouldUpcastAttributeForNode( node: ModelNode ) {
 	if ( node.is( '$text' ) ) {
 		return true;
 	}

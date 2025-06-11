@@ -11,7 +11,7 @@ import type {
 	ModelDocumentFragment,
 	ModelElement,
 	Model,
-	Node,
+	ModelNode,
 	Writer,
 	ModelItem,
 	Schema
@@ -71,7 +71,7 @@ export function isListItemBlock( node: ModelItem | ModelDocumentFragment | null 
  * in the result.
  */
 export function getAllListItemBlocks(
-	listItem: Node,
+	listItem: ModelNode,
 	options: {
 		higherIndent?: boolean;
 	} = {}
@@ -95,7 +95,7 @@ export function getAllListItemBlocks(
  * @param options.higherIndent Whether blocks with a higher indent level than the start block should be included in the result.
  */
 export function getListItemBlocks(
-	listItem: Node,
+	listItem: ModelNode,
 	options: {
 		direction?: 'forward' | 'backward';
 		higherIndent?: boolean;
@@ -159,7 +159,7 @@ export function getListItems( listItem: ModelElement, options?: ListWalkerOption
  * @internal
  * @param listBlock The list block element.
  */
-export function isFirstBlockOfListItem( listBlock: Node ): boolean {
+export function isFirstBlockOfListItem( listBlock: ModelNode ): boolean {
 	const previousSibling = ListWalker.first( listBlock, {
 		sameIndent: true,
 		sameAttributes: 'listItemId'
@@ -268,7 +268,7 @@ export function splitListItemBefore(
  * @returns The array of updated blocks.
  */
 export function mergeListItemBefore(
-	listBlock: Node,
+	listBlock: ModelNode,
 	parentBlock: ModelElement,
 	writer: Writer
 ): Array<ListElement> {
@@ -423,7 +423,7 @@ export function removeListAttributes(
  * @internal
  * @param blocks The list block elements.
  */
-export function isSingleListItem( blocks: Array<Node> ): boolean {
+export function isSingleListItem( blocks: Array<ModelNode> ): boolean {
 	if ( !blocks.length ) {
 		return false;
 	}

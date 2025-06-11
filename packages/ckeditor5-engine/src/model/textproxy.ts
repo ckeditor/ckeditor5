@@ -10,7 +10,7 @@
 import { TypeCheckable } from './typecheckable.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelElement } from './element.js';
-import { type Node } from './node.js';
+import { type ModelNode } from './node.js';
 import { type Text } from './text.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
@@ -32,7 +32,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  * **Note:** Some `TextProxy` instances may represent whole text node, not just a part of it.
  * See {@link module:engine/model/textproxy~TextProxy#isPartial}.
  *
- * **Note:** `TextProxy` is not an instance of {@link module:engine/model/node~Node node}. Keep this in mind when using it as a
+ * **Note:** `TextProxy` is not an instance of {@link module:engine/model/node~ModelNode node}. Keep this in mind when using it as a
  * parameter of methods.
  *
  * **Note:** `TextProxy` is a readonly interface. If you want to perform changes on model data represented by a `TextProxy`
@@ -101,7 +101,7 @@ export class TextProxy extends TypeCheckable {
 	/**
 	 * Offset at which this text proxy starts in it's parent.
 	 *
-	 * @see module:engine/model/node~Node#startOffset
+	 * @see module:engine/model/node~ModelNode#startOffset
 	 */
 	public get startOffset(): number | null {
 		return this.textNode.startOffset !== null ? this.textNode.startOffset + this.offsetInText : null;
@@ -110,7 +110,7 @@ export class TextProxy extends TypeCheckable {
 	/**
 	 * Offset size of this text proxy. Equal to the number of characters represented by the text proxy.
 	 *
-	 * @see module:engine/model/node~Node#offsetSize
+	 * @see module:engine/model/node~ModelNode#offsetSize
 	 */
 	public get offsetSize(): number {
 		return this.data.length;
@@ -119,7 +119,7 @@ export class TextProxy extends TypeCheckable {
 	/**
 	 * Offset at which this text proxy ends in it's parent.
 	 *
-	 * @see module:engine/model/node~Node#endOffset
+	 * @see module:engine/model/node~ModelNode#endOffset
 	 */
 	public get endOffset(): number | null {
 		return this.startOffset !== null ? this.startOffset + this.offsetSize : null;
@@ -147,14 +147,14 @@ export class TextProxy extends TypeCheckable {
 	/**
 	 * Root of this text proxy, which is same as root of text node represented by this text proxy.
 	 */
-	public get root(): Node | ModelDocumentFragment {
+	public get root(): ModelNode | ModelDocumentFragment {
 		return this.textNode.root;
 	}
 
 	/**
 	 * Gets path to this text proxy.
 	 *
-	 * @see module:engine/model/node~Node#getPath
+	 * @see module:engine/model/node~ModelNode#getPath
 	 */
 	public getPath(): Array<number> {
 		const path = this.textNode.getPath();

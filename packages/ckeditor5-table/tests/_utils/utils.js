@@ -180,7 +180,7 @@ export function viewTable( tableData, attributes = {} ) {
 /**
  * An assertion helper for top-right-bottom-left attribute object.
  *
- * @param {module:engine/model/node~Node} element
+ * @param {module:engine/model/node~ModelNode} element
  * @param {String} key Attribute key
  * @param {String} top Top value. Pass `null` to omit the value in the attributes object.
  * @param {String} [right=top] Right value - defaults to top if not provided.

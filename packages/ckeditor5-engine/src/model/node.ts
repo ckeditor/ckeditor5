@@ -27,7 +27,7 @@ import { compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
  * {@link module:engine/model/writer~Writer Writer API}.
  *
  * Changes done by `Node` methods, like {@link module:engine/model/element~ModelElement#_insertChild _insertChild} or
- * {@link module:engine/model/node~Node#_setAttribute _setAttribute}
+ * {@link module:engine/model/node~ModelNode#_setAttribute _setAttribute}
  * do not generate {@link module:engine/model/operation/operation~Operation operations}
  * which are essential for correct editor work if you modify nodes in {@link module:engine/model/document~ModelDocument document} root.
  *
@@ -45,7 +45,7 @@ import { compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
  * In case of {@link module:engine/model/element~ModelElement element node}, adding and removing children also counts as changing a node and
  * follows same rules.
  */
-export abstract class Node extends TypeCheckable {
+export abstract class ModelNode extends TypeCheckable {
 	/**
 	 * Parent of this node. It could be {@link module:engine/model/element~ModelElement}
 	 * or {@link module:engine/model/documentfragment~DocumentFragment}.
@@ -126,7 +126,7 @@ export abstract class Node extends TypeCheckable {
 
 	/**
 	 * Offset at which this node ends in its parent. It is equal to the sum of this node's
-	 * {@link module:engine/model/node~Node#startOffset start offset} and {@link #offsetSize offset size}.
+	 * {@link module:engine/model/node~ModelNode#startOffset start offset} and {@link #offsetSize offset size}.
 	 * Equals to `null` if the node has no parent.
 	 */
 	public get endOffset(): number | null {
@@ -140,7 +140,7 @@ export abstract class Node extends TypeCheckable {
 	/**
 	 * Node's next sibling or `null` if the node is a last child of it's parent or if the node has no parent.
 	 */
-	public get nextSibling(): Node | null {
+	public get nextSibling(): ModelNode | null {
 		const index = this.index;
 
 		return ( index !== null && this.parent!.getChild( index + 1 ) ) || null;
@@ -149,7 +149,7 @@ export abstract class Node extends TypeCheckable {
 	/**
 	 * Node's previous sibling or `null` if the node is a first child of it's parent or if the node has no parent.
 	 */
-	public get previousSibling(): Node | null {
+	public get previousSibling(): ModelNode | null {
 		const index = this.index;
 
 		return ( index !== null && this.parent!.getChild( index - 1 ) ) || null;
@@ -159,9 +159,9 @@ export abstract class Node extends TypeCheckable {
 	 * The top-most ancestor of the node. If node has no parent it is the root itself. If the node is a part
 	 * of {@link module:engine/model/documentfragment~DocumentFragment}, it's `root` is equal to that `DocumentFragment`.
 	 */
-	public get root(): Node | ModelDocumentFragment {
+	public get root(): ModelNode | ModelDocumentFragment {
 		// eslint-disable-next-line @typescript-eslint/no-this-alias, consistent-this
-		let root: Node | ModelDocumentFragment = this;
+		let root: ModelNode | ModelDocumentFragment = this;
 
 		while ( root.parent ) {
 			root = root.parent;
@@ -183,7 +183,7 @@ export abstract class Node extends TypeCheckable {
 
 	/**
 	 * Gets path to the node. The path is an array containing starting offsets of consecutive ancestors of this node,
-	 * beginning from {@link module:engine/model/node~Node#root root}, down to this node's starting offset. The path can be used to
+	 * beginning from {@link module:engine/model/node~ModelNode#root root}, down to this node's starting offset. The path can be used to
 	 * create {@link module:engine/model/position~Position Position} instance.
 	 *
 	 * ```ts
@@ -200,7 +200,7 @@ export abstract class Node extends TypeCheckable {
 	public getPath(): Array<number> {
 		const path = [];
 		// eslint-disable-next-line @typescript-eslint/no-this-alias, consistent-this
-		let node: Node | ModelDocumentFragment = this;
+		let node: ModelNode | ModelDocumentFragment = this;
 
 		while ( node.parent ) {
 			path.unshift( node.startOffset! );
@@ -219,8 +219,8 @@ export abstract class Node extends TypeCheckable {
 	 * otherwise root element will be the first item in the array.
 	 * @returns Array with ancestors.
 	 */
-	public getAncestors( options: { includeSelf?: boolean; parentFirst?: boolean } = {} ): Array<Node | ModelDocumentFragment> {
-		const ancestors: Array<Node | ModelDocumentFragment> = [];
+	public getAncestors( options: { includeSelf?: boolean; parentFirst?: boolean } = {} ): Array<ModelNode | ModelDocumentFragment> {
+		const ancestors: Array<ModelNode | ModelDocumentFragment> = [];
 		let parent = options.includeSelf ? this : this.parent;
 
 		while ( parent ) {
@@ -240,7 +240,7 @@ export abstract class Node extends TypeCheckable {
 	 * @param options.includeSelf When set to `true` both nodes will be considered "ancestors" too.
 	 * Which means that if e.g. node A is inside B, then their common ancestor will be B.
 	 */
-	public getCommonAncestor( node: Node, options: { includeSelf?: boolean } = {} ): ModelElement | ModelDocumentFragment | null {
+	public getCommonAncestor( node: ModelNode, options: { includeSelf?: boolean } = {} ): ModelElement | ModelDocumentFragment | null {
 		const ancestorsA = this.getAncestors( options );
 		const ancestorsB = node.getAncestors( options );
 
@@ -259,7 +259,7 @@ export abstract class Node extends TypeCheckable {
 	 *
 	 * @param node Node to compare with.
 	 */
-	public isBefore( node: Node ): boolean {
+	public isBefore( node: ModelNode ): boolean {
 		// Given node is not before this node if they are same.
 		if ( this == node ) {
 			return false;
@@ -293,7 +293,7 @@ export abstract class Node extends TypeCheckable {
 	 *
 	 * @param node Node to compare with.
 	 */
-	public isAfter( node: Node ): boolean {
+	public isAfter( node: ModelNode ): boolean {
 		// Given node is not before this node if they are same.
 		if ( this == node ) {
 			return false;
@@ -372,7 +372,7 @@ export abstract class Node extends TypeCheckable {
 	 * @internal
 	 * @returns Node with same attributes as this node.
 	 */
-	public _clone( _deep?: boolean ): Node {
+	public _clone( _deep?: boolean ): ModelNode {
 		return new ( this.constructor as any )( this._attrs );
 	}
 
@@ -434,11 +434,9 @@ export abstract class Node extends TypeCheckable {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-Node.prototype.is = function( type: string ): boolean {
+ModelNode.prototype.is = function( type: string ): boolean {
 	return type === 'node' || type === 'model:node';
 };
-
-export { Node as ModelNode };
 
 /**
  * Node's attributes. See {@link module:utils/tomap~toMap} for a list of accepted values.

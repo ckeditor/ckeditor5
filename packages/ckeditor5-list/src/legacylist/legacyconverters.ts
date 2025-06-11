@@ -18,7 +18,7 @@ import {
 	type MapperViewToModelPositionEvent,
 	type Model,
 	type ModelInsertContentEvent,
-	type Node,
+	type ModelNode,
 	type Position,
 	type UpcastConversionApi,
 	type UpcastElementEvent,
@@ -697,7 +697,7 @@ export function modelChangePostFixer( model: Model, writer: Writer ): boolean {
 		}
 	}
 
-	function _fixListIndents( item: Node | null ) {
+	function _fixListIndents( item: ModelNode | null ) {
 		let maxIndent = 0;
 		let fixBy = null;
 
@@ -730,7 +730,7 @@ export function modelChangePostFixer( model: Model, writer: Writer ): boolean {
 		}
 	}
 
-	function _fixListTypes( item: Node | null ) {
+	function _fixListTypes( item: ModelNode | null ) {
 		let typesStack: Array<string> = [];
 		let prev = null;
 

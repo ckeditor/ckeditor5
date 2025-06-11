@@ -14,7 +14,7 @@ import {
 import {
 	Matcher,
 	type UpcastElementEvent,
-	type Node,
+	type ModelNode,
 	type ModelElement,
 	type DowncastAttributeEvent,
 	type ViewElement,
@@ -165,7 +165,7 @@ function upcastLink( editor: Editor ): ( dispatcher: UpcastDispatcher ) => void 
 
 			// A full definition of the image feature.
 			// figure > a > img: parent of the view link element is an image element (figure).
-			let modelElement: Node | null = data.modelCursor.parent as Node;
+			let modelElement: ModelNode | null = data.modelCursor.parent as ModelNode;
 
 			if ( !modelElement.is( 'element', 'imageBlock' ) ) {
 				// a > img: parent of the view link is not the image (figure) element. We need to convert it manually.
@@ -177,7 +177,7 @@ function upcastLink( editor: Editor ): ( dispatcher: UpcastDispatcher ) => void 
 				// Continue conversion where image conversion ends.
 				data.modelCursor = conversionResult.modelCursor;
 
-				modelElement = data.modelCursor.nodeBefore as Node;
+				modelElement = data.modelCursor.nodeBefore as ModelNode;
 			}
 
 			if ( modelElement && modelElement.is( 'element', 'imageBlock' ) ) {

@@ -17,7 +17,7 @@ import { OperationFactory } from './operation/operationfactory.js';
 import { ModelDocumentSelection } from './documentselection.js';
 import { Schema } from './schema.js';
 import { Writer } from './writer.js';
-import { Node } from './node.js';
+import { ModelNode } from './node.js';
 
 import { autoParagraphEmptyRoots } from './utils/autoparagraphing.js';
 import { injectSelectionPostFixer } from './utils/selection-post-fixer.js';
@@ -1006,7 +1006,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): ModelSelection;
+	public createSelection( selectable: ModelNode, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): ModelSelection;
 
 	/**
 	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
@@ -1051,7 +1051,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @label SELECTABLE
 	 */
-	public createSelection( selectable?: Exclude<Selectable, Node>, options?: { backward?: boolean } ): ModelSelection;
+	public createSelection( selectable?: Exclude<Selectable, ModelNode>, options?: { backward?: boolean } ): ModelSelection;
 
 	public createSelection( ...args: ConstructorParameters<typeof ModelSelection> ): ModelSelection {
 		return new ModelSelection( ...args );
@@ -1140,7 +1140,7 @@ function normalizeSelectable(
 		return selectable;
 	}
 
-	if ( selectable instanceof Node ) {
+	if ( selectable instanceof ModelNode ) {
 		if ( placeOrOffset || placeOrOffset === 0 ) {
 			return new ModelSelection( selectable, placeOrOffset );
 		} else if ( selectable.is( 'rootElement' ) ) {

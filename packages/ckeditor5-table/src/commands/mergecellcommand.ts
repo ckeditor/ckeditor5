@@ -9,7 +9,7 @@
 
 import type {
 	ModelElement,
-	Node,
+	ModelNode,
 	Writer
 } from 'ckeditor5/src/engine.js';
 
@@ -53,7 +53,7 @@ export class MergeCellCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
-	public declare value: Node | undefined;
+	public declare value: ModelNode | undefined;
 
 	/**
 	 * Creates a new `MergeCellCommand` instance.
@@ -126,7 +126,7 @@ export class MergeCellCommand extends Command {
 	/**
 	 * Returns a cell that can be merged with the current cell depending on the command's direction.
 	 */
-	private _getMergeableCell(): Node | undefined {
+	private _getMergeableCell(): ModelNode | undefined {
 		const model = this.editor.model;
 		const doc = model.document;
 		const tableUtils: TableUtils = this.editor.plugins.get( 'TableUtils' );
@@ -198,7 +198,7 @@ function getHorizontalCell( tableCell: ModelElement, direction: ArrowKeyCodeDire
 /**
  * Returns the cell that can be merged vertically.
  */
-function getVerticalCell( tableCell: ModelElement, direction: ArrowKeyCodeDirection, tableUtils: TableUtils ): Node | null {
+function getVerticalCell( tableCell: ModelElement, direction: ArrowKeyCodeDirection, tableUtils: TableUtils ): ModelNode | null {
 	const tableRow = tableCell.parent as ModelElement;
 	const table = tableRow.parent as ModelElement;
 

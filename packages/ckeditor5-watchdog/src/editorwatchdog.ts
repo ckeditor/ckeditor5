@@ -11,7 +11,7 @@ import { throttle, cloneDeepWith, isElement, type DebouncedFunction } from 'es-t
 import { areConnectedThroughProperties } from './utils/areconnectedthroughproperties.js';
 import { Watchdog, type WatchdogConfig } from './watchdog.js';
 import type { CKEditorError } from '@ckeditor/ckeditor5-utils';
-import type { Node, Text, ModelElement, Writer } from '@ckeditor/ckeditor5-engine';
+import type { ModelNode, Text, ModelElement, Writer } from '@ckeditor/ckeditor5-engine';
 import type { Editor, EditorConfig, Context, EditorReadyEvent } from '@ckeditor/ckeditor5-core';
 import type { RootAttributes } from '@ckeditor/ckeditor5-editor-multi-root';
 
@@ -516,7 +516,7 @@ class EditorWatchdogInitPlugin {
 		const editor = this.editor!;
 
 		Object.entries( this._data!.roots ).forEach( ( [ rootName, { content, attributes } ] ) => {
-			const parsedNodes: Array<Node | ModelElement> = JSON.parse( content );
+			const parsedNodes: Array<ModelNode | ModelElement> = JSON.parse( content );
 			const parsedAttributes: Array<[ string, unknown ]> = JSON.parse( attributes );
 
 			const rootElement = editor.model.document.getRoot( rootName )!;

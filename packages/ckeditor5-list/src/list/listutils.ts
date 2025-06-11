@@ -7,7 +7,7 @@
  * @module list/list/listutils
  */
 
-import type { ModelElement, Node } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelNode } from 'ckeditor5/src/engine.js';
 import type { ArrayOrItem } from 'ckeditor5/src/utils.js';
 
 import { Plugin } from 'ckeditor5/src/core.js';
@@ -62,7 +62,7 @@ export class ListUtils extends Plugin {
 	 *
 	 * @param node A model node.
 	 */
-	public isListItemBlock( node: Node | null ): node is ListElement {
+	public isListItemBlock( node: ModelNode | null ): node is ListElement {
 		return isListItemBlock( node );
 	}
 

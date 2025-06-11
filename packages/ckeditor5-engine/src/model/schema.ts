@@ -16,7 +16,7 @@ import { TreeWalker } from './treewalker.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelDocumentSelection } from './documentselection.js';
 import { type ModelItem } from './item.js';
-import { type Node } from './node.js';
+import { type ModelNode } from './node.js';
 import { type Selection } from './selection.js';
 import { type Writer } from './writer.js';
 
@@ -412,7 +412,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param context The context in which the child will be checked.
 	 * @param def The child to check.
 	 */
-	public checkChild( context: SchemaContextDefinition, def: string | Node | ModelDocumentFragment ): boolean {
+	public checkChild( context: SchemaContextDefinition, def: string | ModelNode | ModelDocumentFragment ): boolean {
 		// Note: `context` and `def` are already normalized here to `SchemaContext` and `SchemaCompiledItemDefinition`.
 		if ( !def ) {
 			return false;
@@ -898,7 +898,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param node The node for which an allowed parent should be found or its name.
 	 * @returns Allowed parent or null if nothing was found.
 	 */
-	public findAllowedParent( position: Position, node: Node | string ): ModelElement | null {
+	public findAllowedParent( position: Position, node: ModelNode | string ): ModelElement | null {
 		let parent = position.parent as ( ModelElement | null );
 
 		while ( parent ) {
@@ -925,7 +925,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param writer An instance of the model writer.
 	 */
 	public setAllowedAttributes(
-		node: Node,
+		node: ModelNode,
 		attributes: Record<string, unknown>,
 		writer: Writer
 	): void {
@@ -943,7 +943,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param nodes Nodes that will be filtered.
 	 */
-	public removeDisallowedAttributes( nodes: Iterable<Node>, writer: Writer ): void {
+	public removeDisallowedAttributes( nodes: Iterable<ModelNode>, writer: Writer ): void {
 		for ( const node of nodes ) {
 			// When node is a `Text` it has no children, so just filter it out.
 			if ( node.is( '$text' ) ) {
@@ -976,7 +976,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * return attributes which given property's value is equal to this parameter.
 	 * @returns Object with attributes' names as key and attributes' values as value.
 	 */
-	public getAttributesWithProperty( node: Node, propertyName: string, propertyValue: unknown ): Record<string, unknown> {
+	public getAttributesWithProperty( node: ModelNode, propertyName: string, propertyValue: unknown ): Record<string, unknown> {
 		const attributes: Record<string, unknown> = {};
 
 		for ( const [ attributeName, attributeValue ] of node.getAttributes() ) {
@@ -1847,13 +1847,13 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
 	 * const newContext = context.push( 'barElement' ); // [ '$root', 'barElement' ]
 	 * ```
 	 *
-	 * **Note** {@link module:engine/model/node~Node} that is already in the model tree will be added as the only item
+	 * **Note** {@link module:engine/model/node~ModelNode} that is already in the model tree will be added as the only item
 	 * (without ancestors).
 	 *
 	 * @param item An item that will be added to the current context.
 	 * @returns A new schema context instance with an additional item.
 	 */
-	public push( item: string | Node ): SchemaContext {
+	public push( item: string | ModelNode ): SchemaContext {
 		const ctx = new SchemaContext( [ item ] );
 
 		ctx._items = [ ...this._items, ...ctx._items ];
@@ -2013,7 +2013,7 @@ export type SchemaContextDefinition = ModelItem | Position | SchemaContext | str
  * * `* getAttributeKeys()` – a generator of keys of item attributes,
  * * `getAttribute( keyName )` – a method to get attribute values.
  *
- * The context item interface is a highly simplified version of {@link module:engine/model/node~Node} and its role
+ * The context item interface is a highly simplified version of {@link module:engine/model/node~ModelNode} and its role
  * is to expose only the information which schema checks are able to provide (which is the name of the node and
  * node's attributes).
  *
@@ -2467,7 +2467,7 @@ function* convertToMinimalFlatRanges( ranges: Iterable<Range> ): Iterable<Range>
 	}
 }
 
-function removeDisallowedAttributeFromNode( schema: Schema, node: Node, writer: Writer ) {
+function removeDisallowedAttributeFromNode( schema: Schema, node: ModelNode, writer: Writer ) {
 	for ( const attribute of node.getAttributeKeys() ) {
 		if ( !schema.checkAttribute( node, attribute ) ) {
 			writer.removeAttribute( attribute, node );

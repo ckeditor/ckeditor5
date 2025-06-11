@@ -18,7 +18,7 @@ import { type InsertOperation } from './operation/insertoperation.js';
 import { type ModelItem } from './item.js';
 import { type MergeOperation } from './operation/mergeoperation.js';
 import { type MoveOperation } from './operation/moveoperation.js';
-import { type Node } from './node.js';
+import { type ModelNode } from './node.js';
 import { type RootElement } from './rootelement.js';
 import { type Operation } from './operation/operation.js';
 import { type RenameOperation } from './operation/renameoperation.js';
@@ -61,7 +61,7 @@ export class Differ {
 	 *
 	 * See also {@link ~DifferSnapshot}.
 	 */
-	private readonly _elementsSnapshots: Map<Node, DifferSnapshot> = new Map();
+	private readonly _elementsSnapshots: Map<ModelNode, DifferSnapshot> = new Map();
 
 	/**
 	 * For each element or document fragment inside which there was a change, it stores a snapshot of the child nodes list (an array
@@ -945,7 +945,7 @@ export class Differ {
 	 * * if state was recorded, and it was `'move'` (default action), the method returns `diffItemType`,
 	 * * finally, if state was `'refresh'` or `'rename'`, the method returns the state value.
 	 */
-	private _getDiffActionForNode( node: Node, diffItemType: 'insert' | 'remove' ): DifferItemAction {
+	private _getDiffActionForNode( node: ModelNode, diffItemType: 'insert' | 'remove' ): DifferItemAction {
 		if ( !node.is( 'element' ) ) {
 			// Text node.
 			return diffItemType;
@@ -1409,7 +1409,7 @@ interface ChangeItem {
 /**
  * Returns a snapshot for the specified child node. Text node snapshots have the `name` property set to `$text`.
  */
-function _getSingleNodeSnapshot( node: Node | ModelElement ): DifferSnapshot {
+function _getSingleNodeSnapshot( node: ModelNode | ModelElement ): DifferSnapshot {
 	return	{
 		node,
 		name: node.is( '$text' ) ? '$text' : ( node as ModelElement ).name,
@@ -1421,7 +1421,7 @@ function _getSingleNodeSnapshot( node: Node | ModelElement ): DifferSnapshot {
  * Returns an array that is a copy of passed child list with the exception that text nodes are split to one or more
  * objects, each representing one character and attributes set on that character.
  */
-function _getChildrenSnapshots( children: Iterable<Node> ): Array<DifferSnapshot> {
+function _getChildrenSnapshots( children: Iterable<ModelNode> ): Array<DifferSnapshot> {
 	const snapshots: Array<DifferSnapshot> = [];
 
 	for ( const child of children ) {
@@ -1570,7 +1570,7 @@ export interface DifferSnapshot {
 	/**
 	 * Node for which was snapshot was made.
 	 */
-	node: Node;
+	node: ModelNode;
 
 	/**
 	 * Name of the element at the time when the snapshot was made. For text node snapshots, it is set to `'$text'`.

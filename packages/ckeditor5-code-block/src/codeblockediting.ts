@@ -13,7 +13,7 @@ import { ShiftEnter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter.js'
 import {
 	UpcastWriter,
 	type Range,
-	type Node,
+	type ModelNode,
 	type ModelGetSelectedContentEvent,
 	type ViewDocumentTabEvent,
 	type DowncastInsertEvent,
@@ -554,10 +554,10 @@ function leaveBlockEndOnEnter( editor: Editor, isSoftEnter: boolean ): boolean {
 	return true;
 }
 
-function isEmptyishTextNode( node: Node | null ) {
+function isEmptyishTextNode( node: ModelNode | null ) {
 	return node && node.is( '$text' ) && !node.data.match( /\S/ );
 }
 
-function isSoftBreakNode( node: Node | null ) {
+function isSoftBreakNode( node: ModelNode | null ) {
 	return node && node.is( 'element', 'softBreak' );
 }

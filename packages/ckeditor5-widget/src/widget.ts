@@ -16,7 +16,7 @@ import {
 	type DowncastSelectionEvent,
 	type DowncastWriter,
 	type ModelElement,
-	type Node,
+	type ModelNode,
 	type ViewDocumentArrowKeyEvent,
 	type ViewDocumentMouseDownEvent,
 	type ViewElement,
@@ -519,7 +519,7 @@ export class Widget extends Plugin {
 	 *
 	 * @internal
 	 */
-	public _setSelectionOverElement( element: Node ): void {
+	public _setSelectionOverElement( element: ModelNode ): void {
 		this.editor.model.change( writer => {
 			writer.setSelection( writer.createRangeOn( element ) );
 		} );

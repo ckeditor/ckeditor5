@@ -7,7 +7,7 @@
  * @module engine/model/operation/utils
  */
 
-import { Node } from '../node.js';
+import { ModelNode } from '../node.js';
 import { Range } from '../range.js';
 import { Text } from '../text.js';
 import { TextProxy } from '../textproxy.js';
@@ -56,7 +56,7 @@ export function _insert( position: Position, nodes: NodeSet ): Range {
  * @internal
  * @param range Range containing nodes to remove.
  */
-export function _remove( this: any, range: Range ): Array<Node> {
+export function _remove( this: any, range: Range ): Array<ModelNode> {
 	if ( !range.isFlat ) {
 		/**
 		 * Trying to remove a range which starts and ends in different element.
@@ -150,22 +150,22 @@ export function _setAttribute( range: Range, key: string, value: unknown ): void
 }
 
 /**
- * Normalizes given object or an array of objects to an array of {@link module:engine/model/node~Node nodes}. See
+ * Normalizes given object or an array of objects to an array of {@link module:engine/model/node~ModelNode nodes}. See
  * {@link ~NodeSet NodeSet} for details on how normalization is performed.
  *
  * @internal
  * @param nodes Objects to normalize.
  * @returns Normalized nodes.
  */
-export function _normalizeNodes( nodes: NodeSet ): Array<Node> {
-	const normalized: Array<Node> = [];
+export function _normalizeNodes( nodes: NodeSet ): Array<ModelNode> {
+	const normalized: Array<ModelNode> = [];
 
 	function convert( nodes: NodeSet ) {
 		if ( typeof nodes == 'string' ) {
 			normalized.push( new Text( nodes ) );
 		} else if ( nodes instanceof TextProxy ) {
 			normalized.push( new Text( nodes.data, nodes.getAttributes() ) );
-		} else if ( nodes instanceof Node ) {
+		} else if ( nodes instanceof ModelNode ) {
 			normalized.push( nodes );
 		} else if ( isIterable( nodes ) ) {
 			for ( const node of nodes ) {
@@ -251,7 +251,7 @@ function _splitNodeAtPosition( position: Position ): void {
  * @param nodeB Node to check.
  * @returns `true` if nodes have same attributes, `false` otherwise.
  */
-function _haveSameAttributes( nodeA: Node, nodeB: Node ): boolean | undefined {
+function _haveSameAttributes( nodeA: ModelNode, nodeB: ModelNode ): boolean | undefined {
 	const iteratorA = nodeA.getAttributes();
 	const iteratorB = nodeB.getAttributes();
 
@@ -267,17 +267,17 @@ function _haveSameAttributes( nodeA: Node, nodeB: Node ): boolean | undefined {
 }
 
 /**
- * Value that can be normalized to an array of {@link module:engine/model/node~Node nodes}.
+ * Value that can be normalized to an array of {@link module:engine/model/node~ModelNode nodes}.
  *
  * Non-arrays are normalized as follows:
- * * {@link module:engine/model/node~Node Node} is left as is,
+ * * {@link module:engine/model/node~ModelNode Node} is left as is,
  * * {@link module:engine/model/textproxy~TextProxy TextProxy} and `string` are normalized to {@link module:engine/model/text~Text Text},
  * * {@link module:engine/model/nodelist~NodeList NodeList} is normalized to an array containing all nodes that are in that node list,
  * * {@link module:engine/model/documentfragment~DocumentFragment ModelDocumentFragment} is normalized to an array containing all of it's
  * * children.
  *
  * Arrays are processed item by item like non-array values and flattened to one array. Normalization always results in
- * a flat array of {@link module:engine/model/node~Node nodes}. Consecutive text nodes (or items normalized to text nodes) will be
+ * a flat array of {@link module:engine/model/node~ModelNode nodes}. Consecutive text nodes (or items normalized to text nodes) will be
  * merged if they have same attributes.
  */
 export type NodeSet =

@@ -19,7 +19,7 @@ import { type ModelItem } from '../item.js';
 import { type Model } from '../model.js';
 import { type Schema } from '../schema.js';
 import { type Writer } from '../writer.js';
-import { type Node } from '../node.js';
+import { type ModelNode } from '../node.js';
 import { type Selection } from '../selection.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
@@ -254,7 +254,7 @@ class Insertion {
 	 * 						so both its pieces will be added to this set)
 	 * ```
 	 */
-	public readonly canMergeWith: Set<Node | ModelDocumentFragment | null>;
+	public readonly canMergeWith: Set<ModelNode | ModelDocumentFragment | null>;
 
 	/**
 	 * Schema of the model.
@@ -274,12 +274,12 @@ class Insertion {
 	/**
 	 * The reference to the first inserted node.
 	 */
-	private _firstNode: Node | null = null;
+	private _firstNode: ModelNode | null = null;
 
 	/**
 	 * The reference to the last inserted node.
 	 */
-	private _lastNode: Node | null = null;
+	private _lastNode: ModelNode | null = null;
 
 	/**
 	 * The reference to the last auto paragraph node.
@@ -289,7 +289,7 @@ class Insertion {
 	/**
 	 * The array of nodes that should be cleaned of not allowed attributes.
 	 */
-	private _filterAttributesOf: Array<Node> = [];
+	private _filterAttributesOf: Array<ModelNode> = [];
 
 	/**
 	 * Beginning of the affected range. See {@link module:engine/model/utils/insertcontent~Insertion#getAffectedRange}.
@@ -301,7 +301,7 @@ class Insertion {
 	 */
 	private _affectedEnd: ModelLivePosition | null = null;
 
-	private _nodeToSelect: Node | null = null;
+	private _nodeToSelect: ModelNode | null = null;
 
 	constructor( model: Model, writer: Writer, position: Position ) {
 		this.model = model;
@@ -319,7 +319,7 @@ class Insertion {
 	 *
 	 * @param nodes Nodes to insert.
 	 */
-	public handleNodes( nodes: Iterable<Node> ): void {
+	public handleNodes( nodes: Iterable<ModelNode> ): void {
 		for ( const node of Array.from( nodes ) ) {
 			this._handleNode( node );
 		}
@@ -346,7 +346,7 @@ class Insertion {
 	 *
 	 * @param node The last auto paragraphing node.
 	 */
-	private _updateLastNodeFromAutoParagraph( node: Node ): void {
+	private _updateLastNodeFromAutoParagraph( node: ModelNode ): void {
 		const positionAfterLastNode = this.writer.createPositionAfter( this._lastNode! );
 		const positionAfterNode = this.writer.createPositionAfter( node );
 
@@ -407,7 +407,7 @@ class Insertion {
 	/**
 	 * Handles insertion of a single node.
 	 */
-	private _handleNode( node: Node ): void {
+	private _handleNode( node: ModelNode ): void {
 		// Split the position.parent's branch up to a point where the node can be inserted.
 		// If it isn't allowed in the whole branch, then of course don't split anything.
 		if ( !this._checkAndSplitToAllowedPosition( node ) ) {
@@ -469,7 +469,7 @@ class Insertion {
 	/**
 	 * @param node The disallowed node which needs to be handled.
 	 */
-	private _handleDisallowedNode( node: Node ): void {
+	private _handleDisallowedNode( node: ModelNode ): void {
 		// If the node is an element, try inserting its children (strip the parent).
 		if ( node.is( 'element' ) ) {
 			this.handleNodes( node.getChildren() );
@@ -481,7 +481,7 @@ class Insertion {
 	 *
 	 * @param node The node to insert.
 	 */
-	private _appendToFragment( node: Node ): void {
+	private _appendToFragment( node: ModelNode ): void {
 		/* istanbul ignore if -- @preserve */
 		if ( !this.schema.checkChild( this.position, node ) ) {
 			// Algorithm's correctness check. We should never end up here but it's good to know that we did.
@@ -491,7 +491,7 @@ class Insertion {
 			 * Given node cannot be inserted on the given position.
 			 *
 			 * @error insertcontent-wrong-position
-			 * @param {module:engine/model/node~Node} node Node to insert.
+			 * @param {module:engine/model/node~ModelNode} node Node to insert.
 			 * @param {module:engine/model/position~Position} position Position to insert the node at.
 			 */
 			throw new CKEditorError(
@@ -751,7 +751,7 @@ class Insertion {
 	 * @returns Whether an allowed position was found.
 	 * `false` is returned if the node isn't allowed at any position up in the tree, `true` if was.
 	 */
-	private _checkAndSplitToAllowedPosition( node: Node ): boolean {
+	private _checkAndSplitToAllowedPosition( node: ModelNode ): boolean {
 		const allowedIn = this._getAllowedIn( this.position.parent as any, node );
 
 		if ( !allowedIn ) {
@@ -817,7 +817,7 @@ class Insertion {
 	 * @param contextElement The element in which context the node should be checked.
 	 * @param childNode The node to check.
 	 */
-	private _getAllowedIn( contextElement: ModelElement, childNode: Node ): ModelElement | null {
+	private _getAllowedIn( contextElement: ModelElement, childNode: ModelNode ): ModelElement | null {
 		// Check if a node can be inserted in the given context...
 		if ( this.schema.checkChild( contextElement, childNode ) ) {
 			return contextElement;

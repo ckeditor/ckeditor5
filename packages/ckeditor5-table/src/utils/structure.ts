@@ -7,7 +7,7 @@
  * @module table/utils/structure
  */
 
-import type { ModelElement, Node, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelNode, Writer } from 'ckeditor5/src/engine.js';
 
 import { TableWalker, type TableSlot } from '../tablewalker.js';
 import { createEmptyTableCell, updateNumericAttribute } from './common.js';
@@ -160,7 +160,7 @@ export function getVerticallyOverlappingCells( table: ModelElement, overlapRow: 
  * @returns Created table cell, if any were created.
  */
 export function splitHorizontally( tableCell: ModelElement, splitRow: number, writer: Writer ): ModelElement | null {
-	const tableRow = tableCell.parent as Node;
+	const tableRow = tableCell.parent as ModelNode;
 	const table = tableRow.parent as ModelElement;
 	const rowIndex = tableRow.index!;
 

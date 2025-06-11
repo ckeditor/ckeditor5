@@ -16,7 +16,7 @@ import {
 	type Mapper,
 	type Model,
 	type ModelConsumable,
-	type Node,
+	type ModelNode,
 	type UpcastElementEvent,
 	type ViewDocumentFragment,
 	type ViewElement,
@@ -141,7 +141,7 @@ export function reconvertItemsOnDataChange(
 		const changes = model.document.differ.getChanges();
 		const itemsToRefresh = [];
 		const itemToListHead = new Set<ListElement>();
-		const changedItems = new Set<Node>();
+		const changedItems = new Set<ModelNode>();
 		const visited = new Set<ModelElement>();
 
 		for ( const entry of changes ) {
@@ -195,7 +195,7 @@ export function reconvertItemsOnDataChange(
 		}
 	};
 
-	function collectListItemsToRefresh( listHead: ListElement, changedItems: Set<Node> ) {
+	function collectListItemsToRefresh( listHead: ListElement, changedItems: Set<ModelNode> ) {
 		const itemsToRefresh = [];
 		const visited = new Set();
 		const stack: Array<ListItemAttributesMap> = [];
@@ -238,7 +238,7 @@ export function reconvertItemsOnDataChange(
 		return itemsToRefresh;
 	}
 
-	function doesItemBlockRequiresRefresh( item: ModelElement, blocks?: Array<Node> ) {
+	function doesItemBlockRequiresRefresh( item: ModelElement, blocks?: Array<ModelNode> ) {
 		const viewElement = editing.mapper.toViewElement( item );
 
 		if ( !viewElement ) {
@@ -272,7 +272,7 @@ export function reconvertItemsOnDataChange(
 	function doesItemWrappingRequiresRefresh(
 		item: ModelElement,
 		stack: Array<ListItemAttributesMap>,
-		changedItems: Set<Node>
+		changedItems: Set<ModelNode>
 	) {
 		// Items directly affected by some "change" don't need a refresh, they will be converted by their own changes.
 		if ( changedItems.has( item ) ) {
@@ -676,7 +676,7 @@ function wrapListItemBlock(
 
 // Returns the function that is responsible for consuming attributes that are set on the model node.
 function createAttributesConsumer( attributeNames: Array<string> ) {
-	return ( node: Node, consumable: ModelConsumable ) => {
+	return ( node: ModelNode, consumable: ModelConsumable ) => {
 		const events = [];
 
 		// Collect all set attributes that are triggering conversion.
@@ -698,9 +698,9 @@ function createAttributesConsumer( attributeNames: Array<string> ) {
 
 // Whether the given item should be rendered as a bogus paragraph.
 function shouldUseBogusParagraph(
-	item: Node,
+	item: ModelNode,
 	attributeNames: Array<string>,
-	blocks: Array<Node> = getAllListItemBlocks( item )
+	blocks: Array<ModelNode> = getAllListItemBlocks( item )
 ) {
 	if ( !isListItemBlock( item ) ) {
 		return false;

@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { ModelDocumentSelection, ModelElement, Node, Selection } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, ModelElement, ModelNode, Selection } from 'ckeditor5/src/engine.js';
 
 import {
 	getNestedListBlocks,
@@ -191,7 +191,7 @@ export class ListMergeCommand extends Command {
 		let firstElement, lastElement;
 
 		if ( selection.isCollapsed || selectedBlockObject ) {
-			const positionParent = selectedBlockObject || selection.getFirstPosition()!.parent as Node;
+			const positionParent = selectedBlockObject || selection.getFirstPosition()!.parent as ModelNode;
 			const isFirstBlock = isFirstBlockOfListItem( positionParent );
 
 			if ( this._direction == 'backward' ) {
