@@ -13,7 +13,7 @@ import { Position } from '../position.js';
 import { Range } from '../range.js';
 import { _move } from './utils.js';
 
-import { type Document } from '../document.js';
+import { type ModelDocument } from '../document.js';
 import { type Element } from '../element.js';
 import type { Selectable } from '../selection.js';
 
@@ -56,7 +56,7 @@ export class MergeOperation extends Operation {
 	 * @param howMany Summary offset size of nodes which will be moved from the merged element to the new parent.
 	 * @param targetPosition Position which the nodes from the merged elements will be moved to.
 	 * @param graveyardPosition Position in graveyard to which the merged element will be moved.
-	 * @param baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * @param baseVersion Document {@link module:engine/model/document~ModelDocument#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor(
@@ -213,7 +213,7 @@ export class MergeOperation extends Operation {
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.
 	 */
-	public static override fromJSON( json: any, document: Document ): MergeOperation {
+	public static override fromJSON( json: any, document: ModelDocument ): MergeOperation {
 		const sourcePosition = Position.fromJSON( json.sourcePosition, document );
 		const targetPosition = Position.fromJSON( json.targetPosition, document );
 		const graveyardPosition = Position.fromJSON( json.graveyardPosition, document );

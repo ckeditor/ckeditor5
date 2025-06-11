@@ -39,7 +39,7 @@ export type TestCallback = ( text: string ) => {
  * Enables autoformatting mechanism for a given {@link module:core/editor/editor~Editor}.
  *
  * It formats the matched text by applying the given model attribute or by running the provided formatting callback.
- * On every {@link module:engine/model/document~Document#event:change:data data change} in the model document
+ * On every {@link module:engine/model/document~ModelDocument#event:change:data data change} in the model document
  * the autoformatting engine checks the text on the left of the selection
  * and executes the provided action if the text matches given criteria (regular expression or callback).
  *

@@ -10,7 +10,7 @@
 import { Position, type PositionOffset, type PositionStickiness } from './position.js';
 
 import type { ModelApplyOperationEvent } from './model.js';
-import { type DocumentFragment } from './documentfragment.js';
+import { type ModelDocumentFragment } from './documentfragment.js';
 import { type Item } from './item.js';
 import { type Operation } from './operation/operation.js';
 import { type RootElement } from './rootelement.js';
@@ -19,7 +19,7 @@ import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 /**
  * `LivePosition` is a type of {@link module:engine/model/position~Position Position}
- * that updates itself as {@link module:engine/model/document~Document document}
+ * that updates itself as {@link module:engine/model/document~ModelDocument document}
  * is changed through operations. It may be used as a bookmark.
  *
  * **Note:** Contrary to {@link module:engine/model/position~Position}, `LivePosition` works only in roots that are
@@ -83,20 +83,20 @@ export class LivePosition extends /* #__PURE__ */ EmitterMixin( Position ) {
 	 * @internal
 	 * @see module:engine/model/position~Position._createAfter
 	 */
-	declare public static readonly _createAfter: ( item: Item | DocumentFragment, stickiness?: PositionStickiness ) => LivePosition;
+	declare public static readonly _createAfter: ( item: Item | ModelDocumentFragment, stickiness?: PositionStickiness ) => LivePosition;
 
 	/**
 	 * @internal
 	 * @see module:engine/model/position~Position._createBefore
 	 */
-	declare public static readonly _createBefore: ( item: Item | DocumentFragment, stickiness?: PositionStickiness ) => LivePosition;
+	declare public static readonly _createBefore: ( item: Item | ModelDocumentFragment, stickiness?: PositionStickiness ) => LivePosition;
 
 	/**
 	 * @internal
 	 * @see module:engine/model/position~Position._createAt
 	 */
 	declare public static readonly _createAt: (
-		itemOrPosition: Item | Position | DocumentFragment,
+		itemOrPosition: Item | Position | ModelDocumentFragment,
 		offset?: PositionOffset,
 		stickiness?: PositionStickiness
 	) => LivePosition;
@@ -111,7 +111,7 @@ LivePosition.prototype.is = function( type: string ): boolean {
 };
 
 /**
- * Binds this `LivePosition` to the {@link module:engine/model/document~Document document} that owns
+ * Binds this `LivePosition` to the {@link module:engine/model/document~ModelDocument document} that owns
  * this position's {@link module:engine/model/position~Position#root root}.
  */
 function bindWithDocument( this: LivePosition ) {
@@ -148,7 +148,7 @@ function transform( this: LivePosition, operation: Operation ) {
 }
 
 /**
- * Fired when `LivePosition` instance is changed due to changes on {@link module:engine/model/document~Document}.
+ * Fired when `LivePosition` instance is changed due to changes on {@link module:engine/model/document~ModelDocument}.
  *
  * @eventName ~LivePosition#change
  * @param oldPosition Position equal to this live position before it got changed.

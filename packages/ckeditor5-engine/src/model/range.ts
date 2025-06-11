@@ -11,8 +11,8 @@ import { TypeCheckable } from './typecheckable.js';
 import { Position } from './position.js';
 import { TreeWalker, type TreeWalkerOptions, type TreeWalkerValue } from './treewalker.js';
 
-import { type Document } from './document.js';
-import { type DocumentFragment } from './documentfragment.js';
+import { type ModelDocument } from './document.js';
+import { type ModelDocumentFragment } from './documentfragment.js';
 import { type Element } from './element.js';
 import { type InsertOperation } from './operation/insertoperation.js';
 import { type Item } from './item.js';
@@ -99,7 +99,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	/**
 	 * Range root element.
 	 */
-	public get root(): Element | DocumentFragment {
+	public get root(): Element | ModelDocumentFragment {
 		return this.start.root;
 	}
 
@@ -540,7 +540,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 * Returns an {@link module:engine/model/element~Element} or {@link module:engine/model/documentfragment~DocumentFragment}
 	 * which is a common ancestor of the range's both ends (in which the entire range is contained).
 	 */
-	public getCommonAncestor(): Element | DocumentFragment | null {
+	public getCommonAncestor(): Element | ModelDocumentFragment | null {
 		return this.start.getCommonAncestor( this.end );
 	}
 
@@ -914,7 +914,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 * @internal
 	 * @param element Element which is a parent for the range.
 	 */
-	public static _createIn( element: Element | DocumentFragment ): Range {
+	public static _createIn( element: Element | ModelDocumentFragment ): Range {
 		return new this( Position._createAt( element, 0 ), Position._createAt( element, element.maxOffset ) );
 	}
 
@@ -1011,7 +1011,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 * @param doc Document object that will be range owner.
 	 * @returns `Range` instance created using given plain object.
 	 */
-	public static fromJSON( json: any, doc: Document ): Range {
+	public static fromJSON( json: any, doc: ModelDocument ): Range {
 		return new this( Position.fromJSON( json.start, doc ), Position.fromJSON( json.end, doc ) );
 	}
 

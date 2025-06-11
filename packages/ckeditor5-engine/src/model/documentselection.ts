@@ -17,7 +17,7 @@ import {
 import { Text } from './text.js';
 import { TextProxy } from './textproxy.js';
 
-import type { Document, DocumentChangeEvent } from './document.js';
+import type { ModelDocumentChangeEvent, ModelDocument } from './document.js';
 import type { Model, ModelApplyOperationEvent } from './model.js';
 import type { Marker, MarkerCollectionUpdateEvent } from './markercollection.js';
 import { type Batch } from './batch.js';
@@ -39,13 +39,13 @@ const storePrefix = 'selection:';
 
 /**
  * `ModelDocumentSelection` is a special selection which is used as the
- * {@link module:engine/model/document~Document#selection document's selection}.
+ * {@link module:engine/model/document~ModelDocument#selection document's selection}.
  * There can be only one instance of `ModelDocumentSelection` per document.
  *
  * Document selection can only be changed by using the {@link module:engine/model/writer~Writer} instance
  * inside the {@link module:engine/model/model~Model#change `change()`} block, as it provides a secure way to modify model.
  *
- * `ModelDocumentSelection` is automatically updated upon changes in the {@link module:engine/model/document~Document document}
+ * `ModelDocumentSelection` is automatically updated upon changes in the {@link module:engine/model/document~ModelDocument document}
  * to always contain valid ranges. Its attributes are inherited from the text unless set explicitly.
  *
  * Differences between {@link module:engine/model/selection~Selection} and `ModelDocumentSelection` are:
@@ -55,7 +55,7 @@ const storePrefix = 'selection:';
  * * attributes of `ModelDocumentSelection` are updated automatically according to selection ranges.
  *
  * Since `ModelDocumentSelection` uses {@link module:engine/model/liverange~LiveRange live ranges}
- * and is updated when {@link module:engine/model/document~Document document}
+ * and is updated when {@link module:engine/model/document~ModelDocument document}
  * changes, it cannot be set on {@link module:engine/model/node~Node nodes}
  * that are inside {@link module:engine/model/documentfragment~DocumentFragment document fragment}.
  * If you need to represent a selection in document fragment,
@@ -68,11 +68,11 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCh
 	private _selection: LiveSelection;
 
 	/**
-	 * Creates an empty live selection for given {@link module:engine/model/document~Document}.
+	 * Creates an empty live selection for given {@link module:engine/model/document~ModelDocument}.
 	 *
 	 * @param doc Document which owns this selection.
 	 */
-	constructor( doc: Document ) {
+	constructor( doc: ModelDocument ) {
 		super();
 
 		this._selection = new LiveSelection( doc );
@@ -124,7 +124,7 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCh
 
 	/**
 	 * Describes whether `Documentselection` has own range(s) set, or if it is defaulted to
-	 * {@link module:engine/model/document~Document#_getDefaultRange document's default range}.
+	 * {@link module:engine/model/document~ModelDocument#_getDefaultRange document's default range}.
 	 */
 	public get hasOwnRange(): boolean {
 		return this._selection.hasOwnRange;
@@ -562,7 +562,7 @@ export type ModelDocumentSelectionChangeEvent = {
  * `LiveSelection` is used internally by {@link module:engine/model/documentselection~ModelDocumentSelection}
  * and shouldn't be used directly.
  *
- * `LiveSelection` is automatically updated upon changes in the {@link module:engine/model/document~Document document}
+ * `LiveSelection` is automatically updated upon changes in the {@link module:engine/model/document~ModelDocument document}
  * to always contain valid ranges. Its attributes are inherited from the text unless set explicitly.
  *
  * Differences between {@link module:engine/model/selection~Selection} and `LiveSelection` are:
@@ -586,7 +586,7 @@ class LiveSelection extends Selection {
 	/**
 	 * Document which owns this selection.
 	 */
-	private _document: Document;
+	private _document: ModelDocument;
 
 	/**
 	 * Stores selection ranges.
@@ -628,11 +628,11 @@ class LiveSelection extends Selection {
 	private _observedMarkers: Set<string> = new Set();
 
 	/**
-	 * Creates an empty live selection for given {@link module:engine/model/document~Document}.
+	 * Creates an empty live selection for given {@link module:engine/model/document~ModelDocument}.
 	 *
 	 * @param doc Document which owns this selection.
 	 */
-	constructor( doc: Document ) {
+	constructor( doc: ModelDocument ) {
 		super();
 
 		this._model = doc.model;
@@ -672,7 +672,7 @@ class LiveSelection extends Selection {
 		} );
 
 		// Ensure selection is up to date after each change block.
-		this.listenTo<DocumentChangeEvent>( this._document, 'change', ( evt, batch ) => {
+		this.listenTo<ModelDocumentChangeEvent>( this._document, 'change', ( evt, batch ) => {
 			clearAttributesStoredInElement( this._model, batch );
 		} );
 	}
@@ -697,7 +697,7 @@ class LiveSelection extends Selection {
 
 	/**
 	 * Describes whether `LiveSelection` has own range(s) set, or if it is defaulted to
-	 * {@link module:engine/model/document~Document#_getDefaultRange document's default range}.
+	 * {@link module:engine/model/document~ModelDocument#_getDefaultRange document's default range}.
 	 */
 	public get hasOwnRange(): boolean {
 		return this._ranges.length > 0;
@@ -973,7 +973,7 @@ class LiveSelection extends Selection {
 	}
 
 	/**
-	 * Updates this selection attributes according to its ranges and the {@link module:engine/model/document~Document model document}.
+	 * Updates this selection attributes according to its ranges and the {@link module:engine/model/document~ModelDocument model document}.
 	 */
 	public _updateAttributes( clearAll: boolean ): void {
 		const newAttributes = toMap( this._getSurroundingAttributes() );

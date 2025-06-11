@@ -12,7 +12,7 @@ import { Node } from './node.js';
 import { Position, type PositionOffset } from './position.js';
 import { Range } from './range.js';
 
-import { type DocumentFragment } from './documentfragment.js';
+import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelDocumentSelection } from './documentselection.js';
 import { type Element } from './element.js';
 import { type Item } from './item.js';
@@ -657,7 +657,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * ```
 	 */
 	public* getSelectedBlocks(): IterableIterator<Element> {
-		const visited = new WeakSet<Node | DocumentFragment>();
+		const visited = new WeakSet<Node | ModelDocumentFragment>();
 
 		for ( const range of this.getRanges() ) {
 			// Get start block of range in case of a collapsed range.
@@ -833,7 +833,7 @@ export type SelectionChangeAttributeEvent = {
  * Checks whether the given element extends $block in the schema and has a parent (is not a root).
  * Marks it as already visited.
  */
-function isUnvisitedBlock( element: Node | DocumentFragment, visited: WeakSet<Node | DocumentFragment> ) {
+function isUnvisitedBlock( element: Node | ModelDocumentFragment, visited: WeakSet<Node | ModelDocumentFragment> ) {
 	if ( visited.has( element ) ) {
 		return false;
 	}
@@ -846,7 +846,7 @@ function isUnvisitedBlock( element: Node | DocumentFragment, visited: WeakSet<No
 /**
  * Checks if the given element is a $block was not previously visited and is a top block in a range.
  */
-function isUnvisitedTopBlock( element: Element, visited: WeakSet<Node | DocumentFragment>, range: Range ) {
+function isUnvisitedTopBlock( element: Element, visited: WeakSet<Node | ModelDocumentFragment>, range: Range ) {
 	return isUnvisitedBlock( element, visited ) && isTopBlockInRange( element, range );
 }
 
@@ -855,7 +855,7 @@ function isUnvisitedTopBlock( element: Element, visited: WeakSet<Node | Document
  * It will search until first ancestor that is a limit element.
  * Marks all ancestors as already visited to not include any of them later on.
  */
-function getParentBlock( position: Position, visited: WeakSet<Node | DocumentFragment> ) {
+function getParentBlock( position: Position, visited: WeakSet<Node | ModelDocumentFragment> ) {
 	const element = position.parent;
 	const schema = element.root.document!.model.schema;
 
@@ -964,7 +964,7 @@ function isEndBlockSelected( endBlock: Element | undefined, range: Range ): bool
 /**
  * Returns first ancestor block of a node.
  */
-function findAncestorBlock( node: Node | DocumentFragment ) {
+function findAncestorBlock( node: Node | ModelDocumentFragment ) {
 	const schema = node.root.document!.model.schema;
 
 	let parent = node.parent;

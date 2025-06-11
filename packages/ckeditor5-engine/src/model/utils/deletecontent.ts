@@ -11,7 +11,7 @@ import { ModelDocumentSelection } from '../documentselection.js';
 import { LivePosition } from '../liveposition.js';
 import { Range } from '../range.js';
 
-import { type DocumentFragment } from '../documentfragment.js';
+import { type ModelDocumentFragment } from '../documentfragment.js';
 import { type Element } from '../element.js';
 import { type Model } from '../model.js';
 import { type Position } from '../position.js';
@@ -323,7 +323,7 @@ function mergeBranchesLeft(
 	writer: Writer,
 	startPosition: Position,
 	endPosition: Position,
-	commonAncestor: Element | DocumentFragment | null
+	commonAncestor: Element | ModelDocumentFragment | null
 ) {
 	const startElement = startPosition.parent as Element;
 	const endElement = endPosition.parent as Element;
@@ -414,7 +414,7 @@ function mergeBranchesRight(
 	writer: Writer,
 	startPosition: Position,
 	endPosition: Position,
-	commonAncestor: Element | DocumentFragment | null
+	commonAncestor: Element | ModelDocumentFragment | null
 ) {
 	const startElement = startPosition.parent as Element;
 	const endElement = endPosition.parent as Element;

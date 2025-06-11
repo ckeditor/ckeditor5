@@ -18,7 +18,7 @@ import { RootAttributeOperation } from './operation/rootattributeoperation.js';
 import { RootOperation } from './operation/rootoperation.js';
 import { SplitOperation } from './operation/splitoperation.js';
 
-import { DocumentFragment } from './documentfragment.js';
+import { ModelDocumentFragment } from './documentfragment.js';
 import { ModelDocumentSelection } from './documentselection.js';
 import { Element } from './element.js';
 import { Position, type PositionOffset, type PositionStickiness } from './position.js';
@@ -125,8 +125,8 @@ export class Writer {
 	 *
 	 * @returns Created document fragment.
 	 */
-	public createDocumentFragment(): DocumentFragment {
-		return new DocumentFragment();
+	public createDocumentFragment(): ModelDocumentFragment {
+		return new ModelDocumentFragment();
 	}
 
 	/**
@@ -187,8 +187,8 @@ export class Writer {
 	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	public insert(
-		item: Item | DocumentFragment,
-		itemOrPosition: Item | DocumentFragment | Position,
+		item: Item | ModelDocumentFragment,
+		itemOrPosition: Item | ModelDocumentFragment | Position,
 		offset: PositionOffset = 0
 	): void {
 		this._assertWriterUsedCorrectly();
@@ -231,7 +231,7 @@ export class Writer {
 
 		const version = position.root.document ? position.root.document.version : null;
 
-		const children = item instanceof DocumentFragment ?
+		const children = item instanceof ModelDocumentFragment ?
 			item._removeChildren( 0, item.childCount ) :
 			item;
 
@@ -244,10 +244,10 @@ export class Writer {
 		this.batch.addOperation( insert );
 		this.model.applyOperation( insert );
 
-		// When element is a DocumentFragment we need to move its markers to Document#markers.
-		if ( item instanceof DocumentFragment ) {
+		// When element is a ModelDocumentFragment we need to move its markers to Document#markers.
+		if ( item instanceof ModelDocumentFragment ) {
 			for ( const [ markerName, markerRange ] of item.markers ) {
-				// We need to migrate marker range from DocumentFragment to Document.
+				// We need to migrate marker range from ModelDocumentFragment to Document.
 				const rangeRootPosition = Position._createAt( markerRange.root, 0 );
 				const range = new Range(
 					markerRange.start._getCombined( rangeRootPosition, position ),
@@ -335,7 +335,7 @@ export class Writer {
 		itemOrPosition?: any, // Too complicated when not using `any`.
 		offset?: any // Too complicated when not using `any`.
 	): void {
-		if ( attributes instanceof DocumentFragment || attributes instanceof Element || attributes instanceof Position ) {
+		if ( attributes instanceof ModelDocumentFragment || attributes instanceof Element || attributes instanceof Position ) {
 			this.insert( this.createText( text ), attributes, itemOrPosition );
 		} else {
 			this.insert( this.createText( text, attributes ), itemOrPosition, offset );
@@ -369,7 +369,7 @@ export class Writer {
 	 */
 	public insertElement(
 		name: string,
-		itemOrPosition: Item | DocumentFragment | Position,
+		itemOrPosition: Item | ModelDocumentFragment | Position,
 		offset?: PositionOffset
 	): void;
 
@@ -402,7 +402,7 @@ export class Writer {
 	public insertElement(
 		name: string,
 		attributes: NodeAttributes,
-		itemOrPosition: Item | DocumentFragment | Position,
+		itemOrPosition: Item | ModelDocumentFragment | Position,
 		offset?: PositionOffset
 	): void;
 
@@ -412,7 +412,7 @@ export class Writer {
 		itemOrPositionOrOffset?: any, // Too complicated when not using `any`.
 		offset?: any // Too complicated when not using `any`.
 	): void {
-		if ( attributes instanceof DocumentFragment || attributes instanceof Element || attributes instanceof Position ) {
+		if ( attributes instanceof ModelDocumentFragment || attributes instanceof Element || attributes instanceof Position ) {
 			this.insert( this.createElement( name ), attributes, itemOrPositionOrOffset );
 		} else {
 			this.insert( this.createElement( name, attributes ), itemOrPositionOrOffset, offset );
@@ -434,7 +434,7 @@ export class Writer {
 	 *
 	 * @param item Item or document fragment to insert.
 	 */
-	public append( item: Item | DocumentFragment, parent: Element | DocumentFragment ): void {
+	public append( item: Item | ModelDocumentFragment, parent: Element | ModelDocumentFragment ): void {
 		this.insert( item, parent, 'end' );
 	}
 
@@ -450,7 +450,7 @@ export class Writer {
 	 */
 	public appendText(
 		text: string,
-		parent: Element | DocumentFragment
+		parent: Element | ModelDocumentFragment
 	): void;
 
 	/**
@@ -467,15 +467,15 @@ export class Writer {
 	public appendText(
 		text: string,
 		attributes: NodeAttributes,
-		parent: Element | DocumentFragment
+		parent: Element | ModelDocumentFragment
 	): void;
 
 	public appendText(
 		text: string,
-		attributes: NodeAttributes | Element | DocumentFragment,
-		parent?: Element | DocumentFragment
+		attributes: NodeAttributes | Element | ModelDocumentFragment,
+		parent?: Element | ModelDocumentFragment
 	): void {
-		if ( attributes instanceof DocumentFragment || attributes instanceof Element ) {
+		if ( attributes instanceof ModelDocumentFragment || attributes instanceof Element ) {
 			this.insert( this.createText( text ), attributes, 'end' );
 		} else {
 			this.insert( this.createText( text, attributes ), parent!, 'end' );
@@ -494,7 +494,7 @@ export class Writer {
 	 */
 	public appendElement(
 		name: string,
-		parent: Element | DocumentFragment
+		parent: Element | ModelDocumentFragment
 	): void;
 
 	/**
@@ -511,15 +511,15 @@ export class Writer {
 	public appendElement(
 		name: string,
 		attributes: NodeAttributes,
-		parent: Element | DocumentFragment
+		parent: Element | ModelDocumentFragment
 	): void;
 
 	public appendElement(
 		name: string,
-		attributes: NodeAttributes | Element | DocumentFragment,
-		parent?: Element | DocumentFragment
+		attributes: NodeAttributes | Element | ModelDocumentFragment,
+		parent?: Element | ModelDocumentFragment
 	): void {
-		if ( attributes instanceof DocumentFragment || attributes instanceof Element ) {
+		if ( attributes instanceof ModelDocumentFragment || attributes instanceof Element ) {
 			this.insert( this.createElement( name ), attributes, 'end' );
 		} else {
 			this.insert( this.createElement( name, attributes ), parent!, 'end' );
@@ -637,7 +637,7 @@ export class Writer {
 	 * These parameters work the same way as {@link #createPositionAt `writer.createPositionAt()`}.
 	 *
 	 * Note that items can be moved only within the same tree. It means that you can move items within the same root
-	 * (element or document fragment) or between {@link module:engine/model/document~Document#roots documents roots},
+	 * (element or document fragment) or between {@link module:engine/model/document~ModelDocument#roots documents roots},
 	 * but you cannot move items from document fragment to the document or from one detached element to another. Use
 	 * {@link module:engine/model/writer~Writer#insert} in such cases.
 	 *
@@ -765,7 +765,7 @@ export class Writer {
 	 * @param stickiness Position stickiness. See {@link module:engine/model/position~PositionStickiness}.
 	 */
 	public createPositionFromPath(
-		root: Element | DocumentFragment,
+		root: Element | ModelDocumentFragment,
 		path: ReadonlyArray<number>,
 		stickiness?: PositionStickiness
 	): Position {
@@ -778,7 +778,7 @@ export class Writer {
 	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	public createPositionAt(
-		itemOrPosition: Item | Position | DocumentFragment,
+		itemOrPosition: Item | Position | ModelDocumentFragment,
 		offset?: PositionOffset
 	): Position {
 		return this.model.createPositionAt( itemOrPosition, offset );
@@ -817,7 +817,7 @@ export class Writer {
 	 *
 	 * @param element Element which is a parent for the range.
 	 */
-	public createRangeIn( element: Element | DocumentFragment ): Range {
+	public createRangeIn( element: Element | ModelDocumentFragment ): Range {
 		return this.model.createRangeIn( element );
 	}
 
@@ -893,7 +893,7 @@ export class Writer {
 	 * @param element The element to rename.
 	 * @param newName New element name.
 	 */
-	public rename( element: Element | DocumentFragment, newName: string ): void {
+	public rename( element: Element | ModelDocumentFragment, newName: string ): void {
 		this._assertWriterUsedCorrectly();
 
 		if ( !( element instanceof Element ) ) {
@@ -928,7 +928,7 @@ export class Writer {
 	 * * `position` - Position between split elements.
 	 * * `range` - Range that stars from the end of the first split element and ends at the beginning of the first copy element.
 	 */
-	public split( position: Position, limitElement?: Node | DocumentFragment ): { position: Position; range: Range } {
+	public split( position: Position, limitElement?: Node | ModelDocumentFragment ): { position: Position; range: Range } {
 		this._assertWriterUsedCorrectly();
 
 		let splitElement = position.parent;
@@ -959,7 +959,7 @@ export class Writer {
 		// We need to cache elements that will be created as a result of the first split because
 		// we need to create a range from the end of the first split element to the beginning of the
 		// first copy element. This should be handled by LiveRange but it doesn't work on detached nodes.
-		let firstSplitElement: Element | DocumentFragment | undefined;
+		let firstSplitElement: Element | ModelDocumentFragment | undefined;
 		let firstCopyElement: Node | null | undefined;
 
 		do {
@@ -1072,8 +1072,8 @@ export class Writer {
 	 * The `options.affectsData` parameter, which defaults to `false`, allows you to define if a marker affects the data. It should be
 	 * `true` when the marker change changes the data returned by the
 	 * {@link module:core/editor/editor~Editor#getData `editor.getData()`} method.
-	 * When set to `true` it fires the {@link module:engine/model/document~Document#event:change:data `change:data`} event.
-	 * When set to `false` it fires the {@link module:engine/model/document~Document#event:change `change`} event.
+	 * When set to `true` it fires the {@link module:engine/model/document~ModelDocument#event:change:data `change:data`} event.
+	 * When set to `false` it fires the {@link module:engine/model/document~ModelDocument#event:change `change`} event.
 	 *
 	 * Create marker directly base on marker's name:
 	 *
@@ -1171,8 +1171,8 @@ export class Writer {
 	 * The `options.affectsData` parameter, which defaults to `false`, allows you to define if a marker affects the data. It should be
 	 * `true` when the marker change changes the data returned by
 	 * the {@link module:core/editor/editor~Editor#getData `editor.getData()`} method.
-	 * When set to `true` it fires the {@link module:engine/model/document~Document#event:change:data `change:data`} event.
-	 * When set to `false` it fires the {@link module:engine/model/document~Document#event:change `change`} event.
+	 * When set to `true` it fires the {@link module:engine/model/document~ModelDocument#event:change:data `change:data`} event.
+	 * When set to `false` it fires the {@link module:engine/model/document~ModelDocument#event:change `change`} event.
 	 *
 	 * Update marker directly base on marker's name:
 	 *
@@ -1895,7 +1895,7 @@ function applyRemoveOperation( position: Position, howMany: number, batch: Batch
  * collaboration may track changes on the document but ignore changes on detached fragments and should not get
  * unexpected `move` operation.
  */
-function isSameTree( rootA: Node | DocumentFragment, rootB: Node | DocumentFragment ): boolean {
+function isSameTree( rootA: Node | ModelDocumentFragment, rootB: Node | ModelDocumentFragment ): boolean {
 	// If it is the same root this is the same tree.
 	if ( rootA === rootB ) {
 		return true;

@@ -4,7 +4,7 @@
  */
 
 import { Model } from '../../src/model/model.js';
-import { DocumentFragment } from '../../src/model/documentfragment.js';
+import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { Element } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { TreeWalker } from '../../src/model/treewalker.js';
@@ -626,7 +626,7 @@ describe( 'TreeWalker', () => {
 		const foo = new Text( 'foo' );
 		const bar = new Text( 'bar' );
 		const p = new Element( 'p', null, [ foo, bar ] );
-		const docFrag = new DocumentFragment( [ p ] );
+		const docFrag = new ModelDocumentFragment( [ p ] );
 
 		const iterator = new TreeWalker( {
 			startPosition: new Position( docFrag, [ 0 ] ),

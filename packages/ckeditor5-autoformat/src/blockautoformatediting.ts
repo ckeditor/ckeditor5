@@ -34,7 +34,7 @@ import type { Delete } from 'ckeditor5/src/typing.js';
  */
 
 /**
- * Creates a listener triggered on {@link module:engine/model/document~Document#event:change:data `change:data`} event in the document.
+ * Creates a listener triggered on {@link module:engine/model/document~ModelDocument#event:change:data `change:data`} event in the document.
  * Calls the callback when inserted text matches the regular expression or the command name
  * if provided instead of the callback.
  *

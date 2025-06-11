@@ -5,7 +5,7 @@
 
 import { Client, expectClients, syncClients, clearBuffer } from './utils.js';
 
-import { DocumentFragment } from '../../../../src/model/documentfragment.js';
+import { ModelDocumentFragment } from '../../../../src/model/documentfragment.js';
 import { Element } from '../../../../src/model/element.js';
 import { Text } from '../../../../src/model/text.js';
 
@@ -716,7 +716,7 @@ describe( 'transform', () => {
 
 			function pasteContent() {
 				john.editor.model.insertContent(
-					new DocumentFragment( [
+					new ModelDocumentFragment( [
 						new Element( 'heading1', null, new Text( 'Foo' ) ),
 						new Element( 'paragraph', null, new Text( 'Bar' ) )
 					] )
@@ -730,7 +730,7 @@ describe( 'transform', () => {
 			john.setData( '<paragraph>Ab[]cd</paragraph><paragraph>Wxyz</paragraph>' );
 
 			john.editor.model.insertContent(
-				new DocumentFragment( [
+				new ModelDocumentFragment( [
 					new Element( 'paragraph', null, new Text( 'Foo' ) ),
 					new Element( 'paragraph', null, new Text( 'Bar' ) )
 				] )

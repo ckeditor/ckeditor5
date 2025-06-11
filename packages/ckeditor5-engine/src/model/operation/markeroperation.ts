@@ -10,7 +10,7 @@
 import { Operation } from './operation.js';
 import { Range } from '../range.js';
 
-import { type Document } from '../document.js';
+import { type ModelDocument } from '../document.js';
 import { type MarkerCollection } from '../markercollection.js';
 import type { Selectable } from '../selection.js';
 
@@ -56,7 +56,7 @@ export class MarkerOperation extends Operation {
 	 * @param markers Marker collection on which change should be executed.
 	 * @param affectsData Specifies whether the marker operation affects the data produced by the data pipeline
 	 * (is persisted in the editor's data).
-	 * @param baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * @param baseVersion Document {@link module:engine/model/document~ModelDocument#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor(
@@ -164,7 +164,7 @@ export class MarkerOperation extends Operation {
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.
 	 */
-	public static override fromJSON( json: any, document: Document ): MarkerOperation {
+	public static override fromJSON( json: any, document: ModelDocument ): MarkerOperation {
 		return new MarkerOperation(
 			json.name,
 			json.oldRange ? Range.fromJSON( json.oldRange, document ) : null,

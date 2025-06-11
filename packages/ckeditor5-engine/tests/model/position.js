@@ -4,7 +4,7 @@
  */
 
 import { Model } from '../../src/model/model.js';
-import { DocumentFragment } from '../../src/model/documentfragment.js';
+import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { Element } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { TextProxy } from '../../src/model/textproxy.js';
@@ -81,8 +81,8 @@ describe( 'Position', () => {
 			expect( position ).to.have.property( 'root' ).that.equals( root );
 		} );
 
-		it( 'should accept DocumentFragment as a root', () => {
-			const frag = new DocumentFragment();
+		it( 'should accept ModelDocumentFragment as a root', () => {
+			const frag = new ModelDocumentFragment();
 			const pos = new Position( frag, [ 0 ] );
 
 			expect( pos ).to.have.property( 'root', frag );
@@ -221,7 +221,7 @@ describe( 'Position', () => {
 			} );
 
 			it( 'works with a doc frag', () => {
-				const frag = new DocumentFragment();
+				const frag = new ModelDocumentFragment();
 
 				expect( Position._createAt( frag, 0 ) ).to.have.property( 'root', frag );
 			} );
@@ -307,7 +307,7 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should work with positions rooted in document fragment', () => {
-			const docFrag = new DocumentFragment();
+			const docFrag = new ModelDocumentFragment();
 
 			expect( new Position( docFrag, [ 0 ] ) ).to.have.property( 'parent' ).that.equals( docFrag );
 		} );
@@ -709,8 +709,8 @@ describe( 'Position', () => {
 			expect( new Position( root, [ 1, 1, 1 ] ).getAncestors() ).to.deep.equal( [ root, ul, li2 ] );
 		} );
 
-		it( 'should return DocumentFragment if position is directly in document fragment', () => {
-			const docFrag = new DocumentFragment();
+		it( 'should return ModelDocumentFragment if position is directly in document fragment', () => {
+			const docFrag = new ModelDocumentFragment();
 
 			expect( new Position( docFrag, [ 0 ] ).getAncestors() ).to.deep.equal( [ docFrag ] );
 		} );
@@ -730,7 +730,7 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should return null if position is not in an element', () => {
-			const docFrag = new DocumentFragment();
+			const docFrag = new ModelDocumentFragment();
 
 			expect( new Position( docFrag, [ 0 ] ).findAncestor( 'li' ) ).to.be.null;
 		} );
@@ -1339,8 +1339,8 @@ describe( 'Position', () => {
 			testAncestor( position, position, p );
 		} );
 
-		it( 'works fine with positions located in DocumentFragment', () => {
-			const docFrag = new DocumentFragment( [ p, ul ] );
+		it( 'works fine with positions located in ModelDocumentFragment', () => {
+			const docFrag = new ModelDocumentFragment( [ p, ul ] );
 			const zPosition = new Position( docFrag, [ 1, 0, 2 ] );
 			const afterLiPosition = new Position( docFrag, [ 1, 2 ] );
 

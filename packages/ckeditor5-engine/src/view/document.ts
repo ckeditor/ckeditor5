@@ -32,9 +32,9 @@ export class Document extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PURE__
 	 * Roots of the view tree. Collection of the {@link module:engine/view/element~Element view elements}.
 	 *
 	 * View roots are created as a result of binding between {@link module:engine/view/document~Document#roots} and
-	 * {@link module:engine/model/document~Document#roots} and this is handled by
+	 * {@link module:engine/model/document~ModelDocument#roots} and this is handled by
 	 * {@link module:engine/controller/editingcontroller~EditingController}, so to create view root we need to create
-	 * model root using {@link module:engine/model/document~Document#createRoot}.
+	 * model root using {@link module:engine/model/document~ModelDocument#createRoot}.
 	 */
 	public readonly roots: Collection<RootEditableElement>;
 

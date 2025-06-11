@@ -4,7 +4,7 @@
  */
 
 import { Model } from '../../src/model/model.js';
-import { DocumentFragment } from '../../src/model/documentfragment.js';
+import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { Element } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { Position } from '../../src/model/position.js';
@@ -65,7 +65,7 @@ describe( 'LivePosition', () =>
 	} );
 
 	it( 'should throw if given root is not a RootElement', () => {
-		const docFrag = new DocumentFragment();
+		const docFrag = new ModelDocumentFragment();
 
 		expectToThrowCKEditorError( () => {
 			new LivePosition( docFrag, [ 1 ] ); // eslint-disable-line no-new

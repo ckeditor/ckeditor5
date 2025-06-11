@@ -4,7 +4,7 @@
  */
 
 import { Model } from '../../../src/model/model.js';
-import { DocumentFragment } from '../../../src/model/documentfragment.js';
+import { ModelDocumentFragment } from '../../../src/model/documentfragment.js';
 import { Element } from '../../../src/model/element.js';
 import { Text } from '../../../src/model/text.js';
 import { TextProxy } from '../../../src/model/textproxy.js';
@@ -192,7 +192,7 @@ describe( 'normalizeNodes', () => {
 	it( 'should replace document fragment by the list of it\'s children', () => {
 		const nodes = [
 			new Text( 'foo', { bold: true } ),
-			new DocumentFragment( [ new Text( 'bar', { bold: true } ), new Element( 'imageBlock' ) ] ),
+			new ModelDocumentFragment( [ new Text( 'bar', { bold: true } ), new Element( 'imageBlock' ) ] ),
 			'xyz'
 		];
 

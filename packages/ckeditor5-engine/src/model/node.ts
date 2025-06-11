@@ -11,8 +11,8 @@
 
 import { TypeCheckable } from './typecheckable.js';
 
-import { type Document } from './document.js';
-import { type DocumentFragment } from './documentfragment.js';
+import { type ModelDocument } from './document.js';
+import { type ModelDocumentFragment } from './documentfragment.js';
 import { type Element } from './element.js';
 
 import { compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
@@ -29,7 +29,7 @@ import { compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
  * Changes done by `Node` methods, like {@link module:engine/model/element~Element#_insertChild _insertChild} or
  * {@link module:engine/model/node~Node#_setAttribute _setAttribute}
  * do not generate {@link module:engine/model/operation/operation~Operation operations}
- * which are essential for correct editor work if you modify nodes in {@link module:engine/model/document~Document document} root.
+ * which are essential for correct editor work if you modify nodes in {@link module:engine/model/document~ModelDocument document} root.
  *
  * The flow of working on `Node` (and classes that inherits from it) is as such:
  * 1. You can create a `Node` instance, modify it using it's API.
@@ -51,10 +51,10 @@ export abstract class Node extends TypeCheckable {
 	 * or {@link module:engine/model/documentfragment~DocumentFragment}.
 	 * Equals to `null` if the node has no parent.
 	 */
-	public readonly parent: Element | DocumentFragment | null = null;
+	public readonly parent: Element | ModelDocumentFragment | null = null;
 
 	/**
-	 * Unique root name used to identify this root element by {@link module:engine/model/document~Document}.
+	 * Unique root name used to identify this root element by {@link module:engine/model/document~ModelDocument}.
 	 */
 	declare public readonly rootName: string | undefined;
 
@@ -91,9 +91,9 @@ export abstract class Node extends TypeCheckable {
 	}
 
 	/**
-	 * {@link module:engine/model/document~Document Document} that owns this root element.
+	 * {@link module:engine/model/document~ModelDocument Document} that owns this root element.
 	 */
-	public get document(): Document | null {
+	public get document(): ModelDocument | null {
 		return null;
 	}
 
@@ -159,9 +159,9 @@ export abstract class Node extends TypeCheckable {
 	 * The top-most ancestor of the node. If node has no parent it is the root itself. If the node is a part
 	 * of {@link module:engine/model/documentfragment~DocumentFragment}, it's `root` is equal to that `DocumentFragment`.
 	 */
-	public get root(): Node | DocumentFragment {
+	public get root(): Node | ModelDocumentFragment {
 		// eslint-disable-next-line @typescript-eslint/no-this-alias, consistent-this
-		let root: Node | DocumentFragment = this;
+		let root: Node | ModelDocumentFragment = this;
 
 		while ( root.parent ) {
 			root = root.parent;
@@ -200,7 +200,7 @@ export abstract class Node extends TypeCheckable {
 	public getPath(): Array<number> {
 		const path = [];
 		// eslint-disable-next-line @typescript-eslint/no-this-alias, consistent-this
-		let node: Node | DocumentFragment = this;
+		let node: Node | ModelDocumentFragment = this;
 
 		while ( node.parent ) {
 			path.unshift( node.startOffset! );
@@ -219,8 +219,8 @@ export abstract class Node extends TypeCheckable {
 	 * otherwise root element will be the first item in the array.
 	 * @returns Array with ancestors.
 	 */
-	public getAncestors( options: { includeSelf?: boolean; parentFirst?: boolean } = {} ): Array<Node | DocumentFragment> {
-		const ancestors: Array<Node | DocumentFragment> = [];
+	public getAncestors( options: { includeSelf?: boolean; parentFirst?: boolean } = {} ): Array<Node | ModelDocumentFragment> {
+		const ancestors: Array<Node | ModelDocumentFragment> = [];
 		let parent = options.includeSelf ? this : this.parent;
 
 		while ( parent ) {
@@ -240,7 +240,7 @@ export abstract class Node extends TypeCheckable {
 	 * @param options.includeSelf When set to `true` both nodes will be considered "ancestors" too.
 	 * Which means that if e.g. node A is inside B, then their common ancestor will be B.
 	 */
-	public getCommonAncestor( node: Node, options: { includeSelf?: boolean } = {} ): Element | DocumentFragment | null {
+	public getCommonAncestor( node: Node, options: { includeSelf?: boolean } = {} ): Element | ModelDocumentFragment | null {
 		const ancestorsA = this.getAncestors( options );
 		const ancestorsB = node.getAncestors( options );
 
@@ -250,7 +250,7 @@ export abstract class Node extends TypeCheckable {
 			i++;
 		}
 
-		return i === 0 ? null : ancestorsA[ i - 1 ] as ( Element | DocumentFragment );
+		return i === 0 ? null : ancestorsA[ i - 1 ] as ( Element | ModelDocumentFragment );
 	}
 
 	/**

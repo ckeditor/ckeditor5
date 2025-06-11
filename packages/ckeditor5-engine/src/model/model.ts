@@ -8,7 +8,7 @@
  */
 
 import { Batch, type BatchType } from './batch.js';
-import { Document } from './document.js';
+import { ModelDocument } from './document.js';
 import { MarkerCollection } from './markercollection.js';
 import { ModelPosition, type PositionOffset, type PositionStickiness } from './position.js';
 import { ModelRange } from './range.js';
@@ -54,7 +54,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Model's document.
 	 */
-	public readonly document: Document;
+	public readonly document: ModelDocument;
 
 	/**
 	 * Model's schema.
@@ -79,7 +79,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 		super();
 
 		this.markers = new MarkerCollection();
-		this.document = new Document( this );
+		this.document = new ModelDocument( this );
 		this.schema = new Schema();
 
 		this._pendingChanges = [];
@@ -187,7 +187,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * The `change()` method is the primary way of changing the model. You should use it to modify all document nodes
 	 * (including detached nodes – i.e. nodes not added to the {@link module:engine/model/model~Model#document model document}),
-	 * the {@link module:engine/model/document~Document#selection document's selection}, and
+	 * the {@link module:engine/model/document~ModelDocument#selection document's selection}, and
 	 * {@link module:engine/model/model~Model#markers model markers}.
 	 *
 	 * ```ts
@@ -607,7 +607,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param element An object to be inserted into the model document.
 	 * @param selectable A selectable where the content should be inserted. If not specified, the current
-	 * {@link module:engine/model/document~Document#selection document selection} will be used instead.
+	 * {@link module:engine/model/document~ModelDocument#selection document selection} will be used instead.
 	 * @param placeOrOffset Specifies the exact place or offset for the insertion to take place, relative to `selectable`.
 	 * @param options Additional options.
 	 * @param options.findOptimalPosition An option that, when set, adjusts the insertion position (relative to
@@ -618,7 +618,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * Note that this option only works for block objects. Inline objects are inserted into text and do not split blocks.
 	 * @param options.setSelection An option that, when set, moves the
-	 * {@link module:engine/model/document~Document#selection document selection} after inserting the object.
+	 * {@link module:engine/model/document~ModelDocument#selection document selection} after inserting the object.
 	 * * When `'on'`, the document selection will be set on the inserted object.
 	 * * When `'after'`, the document selection will move to the closest text node after the inserted object. If there is no
 	 * such text node, a paragraph will be created and the document selection will be moved inside it.
@@ -1083,7 +1083,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * Removes all events listeners set by model instance and destroys {@link module:engine/model/document~Document}.
+	 * Removes all events listeners set by model instance and destroys {@link module:engine/model/document~ModelDocument}.
 	 */
 	public destroy(): void {
 		this.document.destroy();
@@ -1182,14 +1182,14 @@ export type AfterChangesEvent = {
  * using {@link ~Model#applyOperation}.
  *
  * Note that this event is suitable only for very specific use-cases. Use it if you need to listen to every single operation
- * applied on the document. However, in most cases {@link module:engine/model/document~Document#event:change} should
+ * applied on the document. However, in most cases {@link module:engine/model/document~ModelDocument#event:change} should
  * be used.
  *
  * A few callbacks are already added to this event by engine internal classes:
  *
  * * with `highest` priority operation is validated,
  * * with `normal` priority operation is executed,
- * * with `low` priority the {@link module:engine/model/document~Document} updates its version,
+ * * with `low` priority the {@link module:engine/model/document~ModelDocument} updates its version,
  * * with `low` priority {@link module:engine/model/liveposition~LivePosition} and {@link module:engine/model/liverange~LiveRange}
  * update themselves.
  *
@@ -1206,7 +1206,7 @@ export type ModelApplyOperationEvent = DecoratedMethodEvent<Model, 'applyOperati
  * listener to this event so it can be fully customized by the features.
  *
  * **Note** The `selectable` parameter for the {@link ~Model#insertContent} is optional. When `undefined` value is passed the method uses
- * {@link module:engine/model/document~Document#selection document selection}.
+ * {@link module:engine/model/document~ModelDocument#selection document selection}.
  *
  * @eventName ~Model#insertContent
  * @param args The arguments passed to the original method.
@@ -1228,7 +1228,7 @@ export type ModelInsertContentEvent = {
  * listener to this event so it can be fully customized by the features.
  *
  * **Note** The `selectable` parameter for the {@link ~Model#insertObject} is optional. When `undefined` value is passed the method uses
- * {@link module:engine/model/document~Document#selection document selection}.
+ * {@link module:engine/model/document~ModelDocument#selection document selection}.
  *
  * @eventName ~Model#insertObject
  * @param args The arguments passed to the original method.

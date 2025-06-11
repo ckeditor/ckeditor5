@@ -911,7 +911,7 @@ Corresponds to the {@link module:engine/view/document~Document#event:blur `blur`
 
 ### `input`
 
-Corresponds to the {@link module:engine/model/document~Document#event:change:data `change:data`} editor event.
+Corresponds to the {@link module:engine/model/document~ModelDocument#event:change:data `change:data`} editor event.
 
 ```html
 <ckeditor :editor="editor" @input="onEditorInput"></ckeditor>

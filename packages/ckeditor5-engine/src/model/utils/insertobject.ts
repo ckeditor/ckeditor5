@@ -29,7 +29,7 @@ import { CKEditorError, first } from '@ckeditor/ckeditor5-utils';
  * @param model The model in context of which the insertion should be performed.
  * @param object An object to be inserted into the model document.
  * @param selectable A selectable where the content should be inserted. If not specified, the current
- * {@link module:engine/model/document~Document#selection document selection} will be used instead.
+ * {@link module:engine/model/document~ModelDocument#selection document selection} will be used instead.
  * @param options Additional options.
  * @param options.findOptimalPosition An option that, when set, adjusts the insertion position (relative to
  * `selectable` and `placeOrOffset`) so that the content of `selectable` is not split upon insertion (a.k.a. non-destructive insertion).
@@ -39,7 +39,7 @@ import { CKEditorError, first } from '@ckeditor/ckeditor5-utils';
  *
  * Note that this option works only for block objects. Inline objects are inserted into text and do not split blocks.
  * @param options.setSelection An option that, when set, moves the
- * {@link module:engine/model/document~Document#selection document selection} after inserting the object.
+ * {@link module:engine/model/document~ModelDocument#selection document selection} after inserting the object.
  * * When `'on'`, the document selection will be set on the inserted object.
  * * When `'after'`, the document selection will move to the closest text node after the inserted object. If there is no
  * such text node, a paragraph will be created and the document selection will be moved inside it.

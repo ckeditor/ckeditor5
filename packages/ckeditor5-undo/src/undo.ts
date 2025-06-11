@@ -20,7 +20,7 @@ import { UndoUI } from './undoui.js';
  * Below is an explanation of the undo mechanism working together with {@link module:engine/model/history~History History}:
  *
  * Whenever an {@link module:engine/model/operation/operation~Operation operation} is applied to the
- * {@link module:engine/model/document~Document document}, it is saved to `History` as is.
+ * {@link module:engine/model/document~ModelDocument document}, it is saved to `History` as is.
  * The {@link module:engine/model/batch~Batch batch} that owns that operation is also saved, in
  * {@link module:undo/undocommand~UndoCommand}, together with the selection that was present in the document before the
  * operation was applied. A batch is saved instead of the operation because changes are undone batch-by-batch, not operation-by-operation

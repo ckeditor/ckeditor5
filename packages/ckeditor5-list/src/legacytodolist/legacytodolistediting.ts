@@ -21,7 +21,7 @@ import type {
 	AttributeOperation,
 	RenameOperation,
 	SelectionChangeRangeEvent,
-	DocumentFragment
+	ModelDocumentFragment
 } from 'ckeditor5/src/engine.js';
 
 import { Plugin } from 'ckeditor5/src/core.js';
@@ -229,7 +229,7 @@ export class LegacyTodoListEditing extends Plugin {
 	 */
 	private _initAriaAnnouncements( ) {
 		const { model, ui, t } = this.editor;
-		let lastFocusedCodeBlock: Element | DocumentFragment | null = null;
+		let lastFocusedCodeBlock: Element | ModelDocumentFragment | null = null;
 
 		if ( !ui ) {
 			return;
@@ -293,6 +293,6 @@ function jumpOverCheckmarkOnSideArrowKeyPress( model: Model, locale: Locale ): G
 /**
  * Returns true if the given element is a list item model element of a to-do list.
  */
-function isLegacyTodoListItemElement( element: Element | DocumentFragment | null ): boolean {
+function isLegacyTodoListItemElement( element: Element | ModelDocumentFragment | null ): boolean {
 	return !!element && element.is( 'element', 'listItem' ) && element.getAttribute( 'listType' ) === 'todo';
 }

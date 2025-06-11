@@ -122,7 +122,7 @@ schema.register( 'extendedChild', { inheritAllFrom: 'baseChild' } );
 schema.extend( 'baseChild', { disallowIn: 'extendedParent' } );
 ```
 
-This changes how schema rules are resolved. `baseChild` will still be disallowed in `extendedParent` as before. But now, `extendedChild` will be disallowed in `extendedParent` as well. That is because it will inherit this rule from `baseChild`, and there is no other rule that would allow `extendedChild` in `extendedParent`. 
+This changes how schema rules are resolved. `baseChild` will still be disallowed in `extendedParent` as before. But now, `extendedChild` will be disallowed in `extendedParent` as well. That is because it will inherit this rule from `baseChild`, and there is no other rule that would allow `extendedChild` in `extendedParent`.
 
 Of course, you can mix `allowIn` with `disallowChildren` as well as `allowChildren` with `disallowIn`.
 
@@ -772,7 +772,7 @@ You can also use a callback to force given item to be allowed. For example, allo
 schema.addChildCheck( () => true, '$marker' );
 ```
 
-Note that a callback may return `true`, `false`, or no value (`undefined`). If `true` or `false` is returned, the decision was made and further callbacks or declarative rules will not be checked. The item will be allowed or disallowed. If no value is returned, further checks will decide whether the item is allowed or not. 
+Note that a callback may return `true`, `false`, or no value (`undefined`). If `true` or `false` is returned, the decision was made and further callbacks or declarative rules will not be checked. The item will be allowed or disallowed. If no value is returned, further checks will decide whether the item is allowed or not.
 
 In some cases, you may need to define a generic listener that will be fired on every schema check.
 
@@ -799,7 +799,7 @@ For example, allow custom attribute `headingMarker` on all headings:
 ```js
 schema.addAttributeCheck( ( context, attributeName ) => {
 	const isHeading = context.last.name.startsWith( 'heading' );
-	
+
 	if ( isHeading ) {
 		return true;
 	}
@@ -812,7 +812,7 @@ Generic callbacks are available too. For example, disallow formatting attributes
 schema.addAttributeCheck( ( context, attributeName ) => {
 	const parent = context.getItem( context.length - 2 );
 	const insideHeading = parent && parent.name.startsWith( 'heading' );
-	
+
 	if ( insideHeading && context.endsWith( '$text' ) && schema.getAttributeProperties( attributeName ).isFormatting ) {
 		return false;
 	}
@@ -853,7 +853,7 @@ What should happen instead? There are at least 4 possible solutions: the block q
 
 While this is a relatively simple scenario (unlike most real-time collaborative editing scenarios), it turns out that it is already hard to say what should happen and who should react to fix this content.
 
-Therefore, if your editor needs to implement such rules, you should do that through {@link module:engine/model/document~Document#registerPostFixer model's post-fixers} fixing incorrect content or actively prevent such situations (for example, by disabling certain features). It means that these constraints will be defined specifically for your scenario by your code which makes their implementation much easier.
+Therefore, if your editor needs to implement such rules, you should do that through {@link module:engine/model/document~ModelDocument#registerPostFixer model's post-fixers} fixing incorrect content or actively prevent such situations (for example, by disabling certain features). It means that these constraints will be defined specifically for your scenario by your code which makes their implementation much easier.
 
 To sum up, the answer to who and how should implement additional constraints is: your features or your editor through the CKEditor&nbsp;5 API.
 
@@ -874,7 +874,7 @@ You can argue that the engine could handle this by checking the schema at the en
 * How to fix the content after a transaction is committed? It is impossible to implement a reasonable heuristic that would not break the content from the user's perspective.
 * The model can become invalid during real-time collaborative changes. Operational Transformation, while implemented by us in a rich form (with 11 types of operations instead of the base 3), ensures conflict resolution and eventual consistency, but not the model's validity.
 
-Therefore, we chose to handle such situations on a case-by-case basis, using more expressive and flexible {@link module:engine/model/document~Document#registerPostFixer model's post-fixers}. Additionally, we moved the responsibility of checking the schema to features. They can make a lot better decisions before making changes. You can read more about this in the ["Implementing additional constraints"](#implementing-additional-constraints) section above.
+Therefore, we chose to handle such situations on a case-by-case basis, using more expressive and flexible {@link module:engine/model/document~ModelDocument#registerPostFixer model's post-fixers}. Additionally, we moved the responsibility of checking the schema to features. They can make a lot better decisions before making changes. You can read more about this in the ["Implementing additional constraints"](#implementing-additional-constraints) section above.
 
 ### High-level APIs
 

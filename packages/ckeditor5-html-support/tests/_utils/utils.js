@@ -6,7 +6,7 @@
 import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 /**
- * Writes the content of a model {@link module:engine/model/document~Document document} to an HTML-like string with
+ * Writes the content of a model {@link module:engine/model/document~ModelDocument document} to an HTML-like string with
  * indexed HTML Support attributes.
  *
  *		getModelDataWithAttributes( editor.model );

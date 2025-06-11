@@ -12,16 +12,16 @@ import type { Batch } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The undo command stores {@link module:engine/model/batch~Batch batches} applied to the
- * {@link module:engine/model/document~Document document} and is able to undo a batch by reversing it and transforming by
- * batches from {@link module:engine/model/document~Document#history history} that happened after the reversed batch.
+ * {@link module:engine/model/document~ModelDocument document} and is able to undo a batch by reversing it and transforming by
+ * batches from {@link module:engine/model/document~ModelDocument#history history} that happened after the reversed batch.
  *
- * The undo command also takes care of restoring the {@link module:engine/model/document~Document#selection document selection}.
+ * The undo command also takes care of restoring the {@link module:engine/model/document~ModelDocument#selection document selection}.
  */
 export class UndoCommand extends BaseCommand {
 	/**
 	 * Executes the command. This method reverts a {@link module:engine/model/batch~Batch batch} added to the command's stack, transforms
-	 * and applies the reverted version on the {@link module:engine/model/document~Document document} and removes the batch from the stack.
-	 * Then, it restores the {@link module:engine/model/document~Document#selection document selection}.
+	 * and applies the reverted version on the {@link module:engine/model/document~ModelDocument document} and removes the batch from
+	 * the stack. Then, it restores the {@link module:engine/model/document~ModelDocument#selection document selection}.
 	 *
 	 * @fires execute
 	 * @fires revert

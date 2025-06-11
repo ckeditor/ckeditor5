@@ -599,7 +599,7 @@ export type UpcastDocumentFragmentEvent = UpcastEvent<'documentFragment', ViewDo
 
 /**
  * Traverses given model item and searches elements which marks marker range. Found element is removed from
- * DocumentFragment but path of this element is stored in a Map which is then returned.
+ * ModelDocumentFragment but path of this element is stored in a Map which is then returned.
  *
  * @param modelItem Fragment of model.
  * @returns List of static markers.
@@ -611,7 +611,7 @@ function extractMarkersFromModelFragment( modelItem: ModelDocumentFragment, writ
 	// Create ModelTreeWalker.
 	const range = ModelRange._createIn( modelItem ).getItems();
 
-	// Walk through DocumentFragment and collect marker elements.
+	// Walk through ModelDocumentFragment and collect marker elements.
 	for ( const item of range ) {
 		// Check if current element is a marker.
 		if ( item.is( 'element', '$marker' ) ) {
@@ -619,7 +619,7 @@ function extractMarkersFromModelFragment( modelItem: ModelDocumentFragment, writ
 		}
 	}
 
-	// Walk through collected marker elements store its path and remove its from the DocumentFragment.
+	// Walk through collected marker elements store its path and remove its from the ModelDocumentFragment.
 	for ( const markerElement of markerElements ) {
 		const markerName = markerElement.getAttribute( 'data-name' ) as string;
 		const currentPosition = writer.createPositionBefore( markerElement );
@@ -632,7 +632,7 @@ function extractMarkersFromModelFragment( modelItem: ModelDocumentFragment, writ
 			( markers.get( markerName ) as any ).end = currentPosition.clone();
 		}
 
-		// Remove marker element from DocumentFragment.
+		// Remove marker element from ModelDocumentFragment.
 		writer.remove( markerElement );
 	}
 

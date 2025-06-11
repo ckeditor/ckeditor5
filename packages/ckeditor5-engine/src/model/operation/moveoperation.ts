@@ -15,7 +15,7 @@ import type { Selectable } from '../selection.js';
 
 import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
-import { type Document } from '../document.js';
+import { type ModelDocument } from '../document.js';
 
 // @if CK_DEBUG_ENGINE // const ModelRange = require( '../range' ).default;
 
@@ -46,7 +46,7 @@ export class MoveOperation extends Operation {
 	 * @param howMany Offset size of moved range. Moved range will start from `sourcePosition` and end at
 	 * `sourcePosition` with offset shifted by `howMany`.
 	 * @param targetPosition Position at which moved nodes will be inserted.
-	 * @param baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * @param baseVersion Document {@link module:engine/model/document~ModelDocument#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( sourcePosition: Position, howMany: number, targetPosition: Position, baseVersion: number | null ) {
@@ -201,7 +201,7 @@ export class MoveOperation extends Operation {
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.
 	 */
-	public static override fromJSON( json: any, document: Document ): MoveOperation {
+	public static override fromJSON( json: any, document: ModelDocument ): MoveOperation {
 		const sourcePosition = Position.fromJSON( json.sourcePosition, document );
 		const targetPosition = Position.fromJSON( json.targetPosition, document );
 

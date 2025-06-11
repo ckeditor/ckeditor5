@@ -22,7 +22,7 @@ import {
 import { Plugin } from 'ckeditor5/src/core.js';
 
 import type {
-	DocumentFragment,
+	ModelDocumentFragment,
 	ModelDocumentSelection,
 	DomEventData,
 	Element,
@@ -177,7 +177,7 @@ export class TableClipboard extends Plugin {
 	 */
 	private _onInsertContent(
 		evt: EventInfo,
-		content: DocumentFragment | Item,
+		content: ModelDocumentFragment | Item,
 		selectable: Selection | ModelDocumentSelection | undefined
 	) {
 		if ( selectable && !selectable.is( 'documentSelection' ) ) {
@@ -402,7 +402,7 @@ export class TableClipboard extends Plugin {
 	 * @param content The content to insert.
 	 * @param model The editor model.
 	 */
-	public getTableIfOnlyTableInContent( content: DocumentFragment | Item, model: Model ): Element | null {
+	public getTableIfOnlyTableInContent( content: ModelDocumentFragment | Item, model: Model ): Element | null {
 		if ( !content.is( 'documentFragment' ) && !content.is( 'element' ) ) {
 			return null;
 		}

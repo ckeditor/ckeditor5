@@ -434,7 +434,7 @@ export class MultiRootEditor extends Editor {
 	 *
 	 * After a root is detached all its children are removed, all markers inside it are removed, and whenever something is inserted to it,
 	 * it is automatically removed as well. Finally, a detached root is not returned by
-	 * {@link module:engine/model/document~Document#getRootNames} by default.
+	 * {@link module:engine/model/document~ModelDocument#getRootNames} by default.
 	 *
 	 * It is possible to re-add a previously detached root calling {@link #addRoot}.
 	 *
@@ -544,7 +544,7 @@ export class MultiRootEditor extends Editor {
 	 *
 	 * When a root becomes loaded, it will be treated by the editor as though it was just added. This, among others, means that all
 	 * related events and mechanisms will be fired, including {@link ~MultiRootEditor#event:addRoot `addRoot` event},
-	 * {@link module:engine/model/document~Document#event:change `model.Document` `change` event}, model post-fixers and conversion.
+	 * {@link module:engine/model/document~ModelDocument#event:change `model.Document` `change` event}, model post-fixers and conversion.
 	 *
 	 * Until the root becomes loaded, all above mechanisms are suppressed.
 	 *

@@ -72,7 +72,7 @@ import { toMap, type EventInfo } from '@ckeditor/ckeditor5-utils';
 import { isPlainObject } from 'es-toolkit/compat';
 
 /**
- * Writes the content of a model {@link module:engine/model/document~Document document} to an HTML-like string.
+ * Writes the content of a model {@link module:engine/model/document~ModelDocument document} to an HTML-like string.
  *
  * ```ts
  * getData( editor.model ); // -> '<paragraph>Foo![]</paragraph>'
@@ -120,7 +120,7 @@ export function _getModelData(
 _getModelData._stringify = _stringifyModel;
 
 /**
- * Sets the content of a model {@link module:engine/model/document~Document document} provided as an HTML-like string.
+ * Sets the content of a model {@link module:engine/model/document~ModelDocument document} provided as an HTML-like string.
  *
  * ```ts
  * setData( editor.model, '<paragraph>Foo![]</paragraph>' );

@@ -335,7 +335,7 @@ Note that this method might be called multiple times. Apart from initialization,
 
 ### `change`
 
-Fired when the content of the editor has changed. It corresponds with the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`} event.
+Fired when the content of the editor has changed. It corresponds with the {@link module:engine/model/document~ModelDocument#event:change:data `editor.model.document#change:data`} event.
 It is fired with an object containing the editor and the CKEditor&nbsp;5 `change:data` event object.
 
 ```html

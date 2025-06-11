@@ -13,7 +13,7 @@ import { EventInfo } from '@ckeditor/ckeditor5-utils';
 
 import type {
 	DataTransfer,
-	DocumentFragment,
+	ModelDocumentFragment,
 	DomEventData,
 	Range,
 	ViewDocumentFragment,
@@ -436,7 +436,7 @@ export interface ClipboardContentInsertionData {
 	 * The content to be inserted into the editor.
 	 * Read more about the clipboard pipelines in the {@glink framework/deep-dive/clipboard clipboard deep-dive} guide.
 	 */
-	content: DocumentFragment;
+	content: ModelDocumentFragment;
 
 	/**
 	 * Whether the event was triggered by a paste or a drop operation.
@@ -537,7 +537,7 @@ export interface ClipboardOutputTransformationData {
 	 * Content to be put into the clipboard. It can be modified by the event listeners.
 	 * Read more about the clipboard pipelines in the {@glink framework/deep-dive/clipboard clipboard deep-dive} guide.
 	 */
-	content: DocumentFragment;
+	content: ModelDocumentFragment;
 
 	/**
 	 * Whether the event was triggered by a copy or cut operation.

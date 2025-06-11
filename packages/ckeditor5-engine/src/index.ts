@@ -125,11 +125,11 @@ export { Model } from './model/model.js';
 export { TreeWalker, type TreeWalkerValue } from './model/treewalker.js';
 export { Element } from './model/element.js';
 export { Position, type PositionOffset } from './model/position.js';
-export { DocumentFragment } from './model/documentfragment.js';
+export { ModelDocumentFragment } from './model/documentfragment.js';
+export { ModelDocument, type ModelPostFixer } from './model/document.js';
 export { History } from './model/history.js';
 export { Text } from './model/text.js';
 export { TextProxy } from './model/textproxy.js';
-export { Document, type ModelPostFixer } from './model/document.js';
 export { Marker } from './model/markercollection.js';
 export { Batch, type BatchType } from './model/batch.js';
 export {
@@ -167,7 +167,7 @@ export {
 } from './model/utils/autoparagraphing.js';
 
 // Model Events.
-export type { DocumentChangeEvent } from './model/document.js';
+export type { ModelDocumentChangeEvent } from './model/document.js';
 export type { ModelDocumentSelectionChangeEvent } from './model/documentselection.js';
 export type {
 	ModelApplyOperationEvent,

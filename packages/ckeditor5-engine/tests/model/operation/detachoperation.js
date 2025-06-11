@@ -7,7 +7,7 @@ import { Model } from '../../../src/model/model.js';
 import { DetachOperation } from '../../../src/model/operation/detachoperation.js';
 
 import { Position } from '../../../src/model/position.js';
-import { DocumentFragment } from '../../../src/model/documentfragment.js';
+import { ModelDocumentFragment } from '../../../src/model/documentfragment.js';
 import { Element } from '../../../src/model/element.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -18,7 +18,7 @@ describe( 'DetachOperation', () => {
 		model = new Model();
 		doc = model.document;
 		element = new Element( 'element' );
-		docFrag = new DocumentFragment( [ element ] );
+		docFrag = new ModelDocumentFragment( [ element ] );
 	} );
 
 	it( 'should have type equal to detach', () => {

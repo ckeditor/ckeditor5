@@ -10,7 +10,7 @@
  */
 
 import { type Batch } from '../batch.js';
-import { type Document } from '../document.js';
+import { type ModelDocument } from '../document.js';
 import type { Selectable } from '../selection.js';
 
 /**
@@ -18,9 +18,9 @@ import type { Selectable } from '../selection.js';
  */
 export abstract class Operation {
 	/**
-	 * {@link module:engine/model/document~Document#version} on which operation can be applied. If you try to
+	 * {@link module:engine/model/document~ModelDocument#version} on which operation can be applied. If you try to
 	 * {@link module:engine/model/model~Model#applyOperation apply} operation with different base version than the
-	 * {@link module:engine/model/document~Document#version document version} the
+	 * {@link module:engine/model/document~ModelDocument#version document version} the
 	 * {@link module:utils/ckeditorerror~CKEditorError model-document-applyOperation-wrong-version} error is thrown.
 	 */
 	public baseVersion: number | null;
@@ -47,7 +47,7 @@ export abstract class Operation {
 	/**
 	 * Base operation constructor.
 	 *
-	 * @param baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * @param baseVersion Document {@link module:engine/model/document~ModelDocument#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( baseVersion: number | null ) {
@@ -133,7 +133,7 @@ export abstract class Operation {
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.
 	 */
-	public static fromJSON( json: any, document: Document ): Operation {
+	public static fromJSON( json: any, document: ModelDocument ): Operation {
 		return new ( this as any )( json.baseVersion );
 	}
 

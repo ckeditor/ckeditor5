@@ -21,7 +21,7 @@ import { Range } from '../range.js';
 import { Position } from '../position.js';
 
 import { type Operation } from './operation.js';
-import { type Document } from '../document.js';
+import { type ModelDocument } from '../document.js';
 import { type History } from '../history.js';
 
 import { compareArrays } from '@ckeditor/ckeditor5-utils';
@@ -126,7 +126,7 @@ export function transform( a: Operation, b: Operation, context: TransformationCo
  * both transformed `operationsA` and transformed `operationsB` are returned.
  *
  * Note, that the first operation in each set should base on the same document state (
- * {@link module:engine/model/document~Document#version document version}).
+ * {@link module:engine/model/document~ModelDocument#version document version}).
  *
  * It is assumed that `operationsA` are "more important" during conflict resolution between two operations.
  *
@@ -159,7 +159,7 @@ export function transformSets(
 	operationsA: Array<Operation>,
 	operationsB: Array<Operation>,
 	options: {
-		document: Document;
+		document: ModelDocument;
 		useRelations?: boolean;
 		padWithNoOps?: boolean;
 		forceWeakRemove?: boolean;
@@ -440,7 +440,7 @@ class ContextFactory {
 	 * @param forceWeakRemove If set to `false`, remove operation will be always stronger than move operation,
 	 * so the removed nodes won't end up back in the document root. When set to `true`, context data will be used.
 	 */
-	constructor( document: Document, useRelations: boolean | undefined, forceWeakRemove = false ) {
+	constructor( document: ModelDocument, useRelations: boolean | undefined, forceWeakRemove = false ) {
 		// For each operation that is created during transformation process, we keep a reference to the original operation
 		// which it comes from. The original operation works as a kind of "identifier". Every contextual information
 		// gathered during transformation that we want to save for given operation, is actually saved for the original operation.

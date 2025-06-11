@@ -91,7 +91,7 @@ export abstract class BaseCommand extends Command {
 	}
 
 	/**
-	 * Stores a batch in the command, together with the selection state of the {@link module:engine/model/document~Document document}
+	 * Stores a batch in the command, together with the selection state of the {@link module:engine/model/document~ModelDocument document}
 	 * created by the editor which this command is registered to.
 	 *
 	 * @param batch The batch to add.
@@ -117,7 +117,7 @@ export abstract class BaseCommand extends Command {
 	}
 
 	/**
-	 * Restores the {@link module:engine/model/document~Document#selection document selection} state after a batch was undone.
+	 * Restores the {@link module:engine/model/document~ModelDocument#selection document selection} state after a batch was undone.
 	 *
 	 * @param ranges Ranges to be restored.
 	 * @param isBackward A flag describing whether the restored range was selected forward or backward.

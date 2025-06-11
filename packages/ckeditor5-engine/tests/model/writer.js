@@ -8,7 +8,7 @@ import { Writer } from '../../src/model/writer.js';
 import { Batch } from '../../src/model/batch.js';
 import { InsertOperation } from '../../src/model/operation/insertoperation.js';
 
-import { DocumentFragment } from '../../src/model/documentfragment.js';
+import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { Element } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { Position } from '../../src/model/position.js';
@@ -86,7 +86,7 @@ describe( 'Writer', () => {
 		it( 'should create element', () => {
 			const element = createDocumentFragment();
 
-			expect( element ).to.instanceof( DocumentFragment );
+			expect( element ).to.instanceof( ModelDocumentFragment );
 		} );
 	} );
 
@@ -355,7 +355,7 @@ describe( 'Writer', () => {
 			}, /^model-writer-insert-forbidden-move/, model );
 		} );
 
-		it( 'should transfer markers from given DocumentFragment', () => {
+		it( 'should transfer markers from given ModelDocumentFragment', () => {
 			const root = doc.createRoot();
 			const docFrag = createDocumentFragment();
 
@@ -1497,7 +1497,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should correctly merge in document fragment', () => {
-			const docFrag = new DocumentFragment( [
+			const docFrag = new ModelDocumentFragment( [
 				new Element( 'p', null, 'foo' ),
 				new Element( 'p', null, 'bar' )
 			] );
@@ -1888,7 +1888,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should rename in document fragment', () => {
-			const docFrag = new DocumentFragment();
+			const docFrag = new ModelDocumentFragment();
 			const p = new Element( 'p' );
 
 			docFrag._appendChild( p );
@@ -1945,7 +1945,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should split inside document fragment', () => {
-			const docFrag = new DocumentFragment();
+			const docFrag = new ModelDocumentFragment();
 			docFrag._appendChild( new Element( 'p', null, new Text( 'foobar' ) ) );
 
 			split( new Position( docFrag, [ 0, 3 ] ) );
@@ -2078,7 +2078,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should wrap inside document fragment', () => {
-			const docFrag = new DocumentFragment( new Text( 'foo' ) );
+			const docFrag = new ModelDocumentFragment( new Text( 'foo' ) );
 
 			wrap( Range._createIn( docFrag ), 'p' );
 
@@ -2140,7 +2140,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should unwrap inside document fragment', () => {
-			const docFrag = new DocumentFragment( new Element( 'p', null, new Text( 'foo' ) ) );
+			const docFrag = new ModelDocumentFragment( new Element( 'p', null, new Text( 'foo' ) ) );
 
 			unwrap( docFrag.getChild( 0 ) );
 

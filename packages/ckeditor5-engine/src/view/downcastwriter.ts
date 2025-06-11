@@ -21,7 +21,7 @@ import { EmptyElement } from './emptyelement.js';
 import { UIElement } from './uielement.js';
 import { RawElement } from './rawelement.js';
 import { CKEditorError, isIterable, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
-import { DocumentFragment } from './documentfragment.js';
+import { ModelDocumentFragment } from './documentfragment.js';
 import { Text } from './text.js';
 import { EditableElement } from './editableelement.js';
 import { isPlainObject } from 'es-toolkit/compat';
@@ -200,8 +200,8 @@ export class DowncastWriter {
 	 * @param children A list of nodes to be inserted into the created document fragment.
 	 * @returns The created document fragment.
 	 */
-	public createDocumentFragment( children?: Node | Iterable<Node> ): DocumentFragment {
-		return new DocumentFragment( this.document, children );
+	public createDocumentFragment( children?: Node | Iterable<Node> ): ModelDocumentFragment {
+		return new ModelDocumentFragment( this.document, children );
 	}
 
 	/**
@@ -686,7 +686,7 @@ export class DowncastWriter {
 	 * Sets a custom property on element. Unlike attributes, custom properties are not rendered to the DOM,
 	 * so they can be used to add special data to elements.
 	 */
-	public setCustomProperty( key: string | symbol, value: unknown, element: Element | DocumentFragment ): void {
+	public setCustomProperty( key: string | symbol, value: unknown, element: Element | ModelDocumentFragment ): void {
 		element._setCustomProperty( key, value );
 	}
 
@@ -695,7 +695,7 @@ export class DowncastWriter {
 	 *
 	 * @returns Returns true if property was removed.
 	 */
-	public removeCustomProperty( key: string | symbol, element: Element | DocumentFragment ): boolean {
+	public removeCustomProperty( key: string | symbol, element: Element | ModelDocumentFragment ): boolean {
 		return element._removeCustomProperty( key );
 	}
 
@@ -712,7 +712,7 @@ export class DowncastWriter {
 	 * <p><b>fo{o</b><u>ba}r</u></p> -> <p><b>fo</b><b>o</b><u>ba</u><u>r</u></b></p>
 	 * ```
 	 *
-	 * **Note:** {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment} is treated like a container.
+	 * **Note:** {@link module:engine/view/documentfragment~DocumentFragment ModelDocumentFragment} is treated like a container.
 	 *
 	 * **Note:** The difference between {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes breakAttributes()} and
 	 * {@link module:engine/view/downcastwriter~DowncastWriter#breakContainer breakContainer()} is that `breakAttributes()` breaks all
@@ -1003,14 +1003,14 @@ export class DowncastWriter {
 	 * to a collapsed range showing the new position.
 	 * @returns Document fragment containing removed nodes.
 	 */
-	public remove( rangeOrItem: Range | Item ): DocumentFragment {
+	public remove( rangeOrItem: Range | Item ): ModelDocumentFragment {
 		const range = rangeOrItem instanceof Range ? rangeOrItem : Range._createOn( rangeOrItem );
 
 		validateRangeContainer( range, this.document );
 
 		// If range is collapsed - nothing to remove.
 		if ( range.isCollapsed ) {
-			return new DocumentFragment( this.document );
+			return new ModelDocumentFragment( this.document );
 		}
 
 		// Break attributes at range start and end.
@@ -1032,7 +1032,7 @@ export class DowncastWriter {
 		( range as any ).end = mergePosition.clone();
 
 		// Return removed nodes.
-		return new DocumentFragment( this.document, removed );
+		return new ModelDocumentFragment( this.document, removed );
 	}
 
 	/**
@@ -1332,7 +1332,7 @@ export class DowncastWriter {
 	 *
 	 * @param element Element which is a parent for the range.
 	 */
-	public createRangeIn( element: Element | DocumentFragment ): Range {
+	public createRangeIn( element: Element | ModelDocumentFragment ): Range {
 		return Range._createIn( element );
 	}
 
@@ -1535,7 +1535,7 @@ export class DowncastWriter {
 			insertionPosition = position.parent.is( '$text' ) ? breakTextNode( position ) : position;
 		}
 
-		const length = ( parentElement as Element | DocumentFragment )._insertChild( insertionPosition.offset, nodes );
+		const length = ( parentElement as Element | ModelDocumentFragment )._insertChild( insertionPosition.offset, nodes );
 
 		for ( const node of nodes ) {
 			this._addToClonedElementsGroup( node );
@@ -2065,12 +2065,12 @@ function _hasNonUiChildren( parent: Element ): boolean {
 /**
  * Returns first parent container of specified {@link module:engine/view/position~Position Position}.
  * Position's parent node is checked as first, then next parents are checked.
- * Note that {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment} is treated like a container.
+ * Note that {@link module:engine/view/documentfragment~DocumentFragment ModelDocumentFragment} is treated like a container.
  *
  * @param position Position used as a start point to locate parent container.
  * @returns Parent container element or `undefined` if container is not found.
  */
-function getParentContainer( position: Position ): ContainerElement | DocumentFragment | undefined {
+function getParentContainer( position: Position ): ContainerElement | ModelDocumentFragment | undefined {
 	let parent = position.parent;
 
 	while ( !isContainerOrFragment( parent ) ) {
@@ -2081,7 +2081,7 @@ function getParentContainer( position: Position ): ContainerElement | DocumentFr
 		parent = parent.parent as any;
 	}
 
-	return ( parent as ContainerElement | DocumentFragment );
+	return ( parent as ContainerElement | ModelDocumentFragment );
 }
 
 /**
@@ -2218,11 +2218,11 @@ function validateNodesToInsert( nodes: Iterable<Node>, errorContext: Document ):
 }
 
 /**
- * Checks if node is ContainerElement or DocumentFragment, because in most cases they should be treated the same way.
+ * Checks if node is ContainerElement or ModelDocumentFragment, because in most cases they should be treated the same way.
  *
- * @returns Returns `true` if node is instance of ContainerElement or DocumentFragment.
+ * @returns Returns `true` if node is instance of ContainerElement or ModelDocumentFragment.
  */
-function isContainerOrFragment( node: Node | DocumentFragment ): boolean {
+function isContainerOrFragment( node: Node | ModelDocumentFragment ): boolean {
 	return node && ( node.is( 'containerElement' ) || node.is( 'documentFragment' ) );
 }
 

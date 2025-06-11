@@ -4,7 +4,7 @@
  */
 
 import { Model } from '../../../src/model/model.js';
-import { DocumentFragment } from '../../../src/model/documentfragment.js';
+import { ModelDocumentFragment } from '../../../src/model/documentfragment.js';
 import { Element } from '../../../src/model/element.js';
 import { RootAttributeOperation } from '../../../src/model/operation/rootattributeoperation.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -215,7 +215,7 @@ describe( 'RootAttributeOperation', () => {
 		it( 'should throw an error when trying to change document fragment', () => {
 			expectToThrowCKEditorError( () => {
 				const op = new RootAttributeOperation(
-					new DocumentFragment(),
+					new ModelDocumentFragment(),
 					'foo',
 					null,
 					'bar',

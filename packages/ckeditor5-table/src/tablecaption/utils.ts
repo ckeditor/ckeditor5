@@ -8,7 +8,7 @@
  */
 
 import type {
-	DocumentFragment,
+	ModelDocumentFragment,
 	ModelDocumentSelection,
 	Element,
 	ViewElement
@@ -22,7 +22,7 @@ import { getSelectionAffectedTable } from '../utils/common.js';
  * @param modelElement Element to check if it is a table.
  * @internal
  */
-export function isTable( modelElement: Element | DocumentFragment | null ): boolean {
+export function isTable( modelElement: Element | ModelDocumentFragment | null ): boolean {
 	return !!modelElement && modelElement.is( 'element', 'table' );
 }
 

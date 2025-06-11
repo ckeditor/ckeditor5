@@ -8,7 +8,7 @@
  */
 
 import type { Marker } from './markercollection.js';
-import { type DocumentFragment } from './documentfragment.js';
+import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelDocumentSelection } from './documentselection.js';
 import { type Element } from './element.js';
 import { type LivePosition } from './liveposition.js';
@@ -26,7 +26,7 @@ export abstract class TypeCheckable {
 	 * Checks whether the object is of type {@link module:engine/model/node~Node} or its subclass.
 	 *
 	 * This method is useful when processing model objects that are of unknown type. For example, a function
-	 * may return a {@link module:engine/model/documentfragment~DocumentFragment} or a {@link module:engine/model/node~Node}
+	 * may return a {@link module:engine/model/documentfragment~ModelDocumentFragment} or a {@link module:engine/model/node~Node}
 	 * that can be either a text node or an element. This method can be used to check what kind of object is returned.
 	 *
 	 * ```ts
@@ -191,7 +191,7 @@ export abstract class TypeCheckable {
 	public is( type: 'liveRange' | 'model:liveRange' ): this is LiveRange;
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/model/documentfragment~DocumentFragment}.
+	 * Checks whether the object is of type {@link module:engine/model/documentfragment~ModelDocumentFragment}.
 	 *
 	 * ```ts
 	 * docFrag.is( 'documentFragment' ); // -> true
@@ -204,7 +204,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label DOCUMENT_FRAGMENT
 	 */
-	public is( type: 'documentFragment' | 'model:documentFragment' ): this is DocumentFragment;
+	public is( type: 'documentFragment' | 'model:documentFragment' ): this is ModelDocumentFragment;
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/model/selection~Selection}

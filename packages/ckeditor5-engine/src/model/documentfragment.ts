@@ -22,18 +22,18 @@ import { isIterable } from '@ckeditor/ckeditor5-utils';
 // @if CK_DEBUG_ENGINE // const { stringifyMap } = require( '../dev-utils/utils' );
 
 /**
- * DocumentFragment represents a part of model which does not have a common root but its top-level nodes
+ * ModelDocumentFragment represents a part of model which does not have a common root but its top-level nodes
  * can be seen as siblings. In other words, it is a detached part of model tree, without a root.
  *
- * DocumentFragment has own {@link module:engine/model/markercollection~MarkerCollection}. Markers from this collection
+ * ModelDocumentFragment has own {@link module:engine/model/markercollection~MarkerCollection}. Markers from this collection
  * will be set to the {@link module:engine/model/model~Model#markers model markers} by a
  * {@link module:engine/model/writer~Writer#insert} function.
  */
-export class DocumentFragment extends TypeCheckable implements Iterable<Node> {
+export class ModelDocumentFragment extends TypeCheckable implements Iterable<Node> {
 	/**
-	 * DocumentFragment static markers map. This is a list of names and {@link module:engine/model/range~Range ranges}
+	 * ModelDocumentFragment static markers map. This is a list of names and {@link module:engine/model/range~Range ranges}
 	 * which will be set as Markers to {@link module:engine/model/model~Model#markers model markers collection}
-	 * when DocumentFragment will be inserted to the document.
+	 * when ModelDocumentFragment will be inserted to the document.
 	 */
 	public readonly markers: Map<string, Range> = new Map();
 
@@ -53,13 +53,13 @@ export class DocumentFragment extends TypeCheckable implements Iterable<Node> {
 	private readonly _children: NodeList = new NodeList();
 
 	/**
-	 * Creates an empty `DocumentFragment`.
+	 * Creates an empty `ModelDocumentFragment`.
 	 *
 	 * **Note:** Constructor of this class shouldn't be used directly in the code.
-	 * Use the {@link module:engine/model/writer~Writer#createDocumentFragment} method instead.
+	 * Use the {@link module:engine/model/writer~Writer#createModelDocumentFragment} method instead.
 	 *
 	 * @internal
-	 * @param children Nodes to be contained inside the `DocumentFragment`.
+	 * @param children Nodes to be contained inside the `ModelDocumentFragment`.
 	 */
 	constructor( children?: Node | Iterable<Node> ) {
 		super();
@@ -112,28 +112,28 @@ export class DocumentFragment extends TypeCheckable implements Iterable<Node> {
 	}
 
 	/**
-	 * Artificial root of `DocumentFragment`. Returns itself. Added for compatibility reasons.
+	 * Artificial root of `ModelDocumentFragment`. Returns itself. Added for compatibility reasons.
 	 */
-	public get root(): DocumentFragment {
+	public get root(): ModelDocumentFragment {
 		return this;
 	}
 
 	/**
-	 * Artificial parent of `DocumentFragment`. Returns `null`. Added for compatibility reasons.
+	 * Artificial parent of `ModelDocumentFragment`. Returns `null`. Added for compatibility reasons.
 	 */
 	public get parent(): null {
 		return null;
 	}
 
 	/**
-	 * Artificial owner of `DocumentFragment`. Returns `null`. Added for compatibility reasons.
+	 * Artificial owner of `ModelDocumentFragment`. Returns `null`. Added for compatibility reasons.
 	 */
 	public get document(): null {
 		return null;
 	}
 
 	/**
-	 * Returns `false` as `DocumentFragment` by definition is not attached to a document. Added for compatibility reasons.
+	 * Returns `false` as `ModelDocumentFragment` by definition is not attached to a document. Added for compatibility reasons.
 	 */
 	public isAttached(): false {
 		return false;
@@ -196,7 +196,7 @@ export class DocumentFragment extends TypeCheckable implements Iterable<Node> {
 	}
 
 	/**
-	 * Returns path to a `DocumentFragment`, which is an empty array. Added for compatibility reasons.
+	 * Returns path to a `ModelDocumentFragment`, which is an empty array. Added for compatibility reasons.
 	 */
 	public getPath(): Array<number> {
 		return [];
@@ -214,12 +214,12 @@ export class DocumentFragment extends TypeCheckable implements Iterable<Node> {
 	 *
 	 * @param relativePath Path of the node to find, relative to this element.
 	 */
-	public getNodeByPath( relativePath: Array<number> ): Node | DocumentFragment {
+	public getNodeByPath( relativePath: Array<number> ): Node | ModelDocumentFragment {
 		// eslint-disable-next-line @typescript-eslint/no-this-alias, consistent-this
-		let node: Node | DocumentFragment = this;
+		let node: Node | ModelDocumentFragment = this;
 
 		for ( const offset of relativePath ) {
-			node = ( node as Element | DocumentFragment ).getChildAtOffset( offset )!;
+			node = ( node as Element | ModelDocumentFragment ).getChildAtOffset( offset )!;
 		}
 
 		return node;
@@ -234,7 +234,7 @@ export class DocumentFragment extends TypeCheckable implements Iterable<Node> {
 	 * ```ts
 	 * const textNode = new Text( 'foo' );
 	 * const pElement = new Element( 'p' );
-	 * const docFrag = new DocumentFragment( [ textNode, pElement ] );
+	 * const docFrag = new ModelDocumentFragment( [ textNode, pElement ] );
 	 * docFrag.offsetToIndex( -1 ); // Returns 0, because offset is too low.
 	 * docFrag.offsetToIndex( 0 ); // Returns 0, because offset 0 is taken by `textNode` which is at index 0.
 	 * docFrag.offsetToIndex( 1 ); // Returns 0, because `textNode` has `offsetSize` equal to 3, so it occupies offset 1 too.
@@ -251,10 +251,10 @@ export class DocumentFragment extends TypeCheckable implements Iterable<Node> {
 	}
 
 	/**
-	 * Converts `DocumentFragment` instance to plain object and returns it.
+	 * Converts `ModelDocumentFragment` instance to plain object and returns it.
 	 * Takes care of converting all of this document fragment's children.
 	 *
-	 * @returns `DocumentFragment` instance converted to plain object.
+	 * @returns `ModelDocumentFragment` instance converted to plain object.
 	 */
 	public toJSON(): unknown {
 		const json = [];
@@ -267,13 +267,13 @@ export class DocumentFragment extends TypeCheckable implements Iterable<Node> {
 	}
 
 	/**
-	 * Creates a `DocumentFragment` instance from given plain object (i.e. parsed JSON string).
-	 * Converts `DocumentFragment` children to proper nodes.
+	 * Creates a `ModelDocumentFragment` instance from given plain object (i.e. parsed JSON string).
+	 * Converts `ModelDocumentFragment` children to proper nodes.
 	 *
-	 * @param json Plain object to be converted to `DocumentFragment`.
-	 * @returns `DocumentFragment` instance created using given plain object.
+	 * @param json Plain object to be converted to `ModelDocumentFragment`.
+	 * @returns `ModelDocumentFragment` instance created using given plain object.
 	 */
-	public static fromJSON( json: any ): DocumentFragment {
+	public static fromJSON( json: any ): ModelDocumentFragment {
 		const children = [];
 
 		for ( const child of json ) {
@@ -286,7 +286,7 @@ export class DocumentFragment extends TypeCheckable implements Iterable<Node> {
 			}
 		}
 
-		return new DocumentFragment( children );
+		return new ModelDocumentFragment( children );
 	}
 
 	/**
@@ -365,11 +365,11 @@ export class DocumentFragment extends TypeCheckable implements Iterable<Node> {
 	// @if CK_DEBUG_ENGINE // }
 
 	// @if CK_DEBUG_ENGINE // public log(): void {
-	// @if CK_DEBUG_ENGINE // 	console.log( 'ModelDocumentFragment: ' + this );
+	// @if CK_DEBUG_ENGINE // 	console.log( 'ModelModelDocumentFragment: ' + this );
 	// @if CK_DEBUG_ENGINE // }
 
 	// @if CK_DEBUG_ENGINE // public printTree(): string {
-	// @if CK_DEBUG_ENGINE // 	let string = 'ModelDocumentFragment: [';
+	// @if CK_DEBUG_ENGINE // 	let string = 'ModelModelDocumentFragment: [';
 
 	// @if CK_DEBUG_ENGINE // 	for ( const child of this.getChildren() as any ) {
 	// @if CK_DEBUG_ENGINE // 		string += '\n';
@@ -401,11 +401,9 @@ export class DocumentFragment extends TypeCheckable implements Iterable<Node> {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-DocumentFragment.prototype.is = function( type: string ): boolean {
+ModelDocumentFragment.prototype.is = function( type: string ): boolean {
 	return type === 'documentFragment' || type === 'model:documentFragment';
 };
-
-export { DocumentFragment as ModelDocumentFragment };
 
 /**
  * Converts strings to Text and non-iterables to arrays.

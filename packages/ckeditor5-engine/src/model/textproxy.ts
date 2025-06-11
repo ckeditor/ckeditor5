@@ -8,7 +8,7 @@
  */
 
 import { TypeCheckable } from './typecheckable.js';
-import { type DocumentFragment } from './documentfragment.js';
+import { type ModelDocumentFragment } from './documentfragment.js';
 import { type Element } from './element.js';
 import { type Node } from './node.js';
 import { type Text } from './text.js';
@@ -140,14 +140,14 @@ export class TextProxy extends TypeCheckable {
 	/**
 	 * Parent of this text proxy, which is same as parent of text node represented by this text proxy.
 	 */
-	public get parent(): Element | DocumentFragment | null {
+	public get parent(): Element | ModelDocumentFragment | null {
 		return this.textNode.parent;
 	}
 
 	/**
 	 * Root of this text proxy, which is same as root of text node represented by this text proxy.
 	 */
-	public get root(): Node | DocumentFragment {
+	public get root(): Node | ModelDocumentFragment {
 		return this.textNode.root;
 	}
 
@@ -178,9 +178,9 @@ export class TextProxy extends TypeCheckable {
 	public getAncestors( options: {
 		includeSelf?: boolean;
 		parentFirst?: boolean;
-	} = {} ): Array<TextProxy | Element | DocumentFragment> {
-		const ancestors: Array<TextProxy | Element | DocumentFragment> = [];
-		let parent: TextProxy | Element | DocumentFragment | null = options.includeSelf ? this : this.parent;
+	} = {} ): Array<TextProxy | Element | ModelDocumentFragment> {
+		const ancestors: Array<TextProxy | Element | ModelDocumentFragment> = [];
+		let parent: TextProxy | Element | ModelDocumentFragment | null = options.includeSelf ? this : this.parent;
 
 		while ( parent ) {
 			ancestors[ options.parentFirst ? 'push' : 'unshift' ]( parent );

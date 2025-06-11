@@ -5,7 +5,7 @@
 
 import { Model } from '../../../src/model/model.js';
 import { insertContent } from '../../../src/model/utils/insertcontent.js';
-import { DocumentFragment } from '../../../src/model/documentfragment.js';
+import { ModelDocumentFragment } from '../../../src/model/documentfragment.js';
 import { Text } from '../../../src/model/text.js';
 import { Element } from '../../../src/model/element.js';
 import { Position } from '../../../src/model/position.js';
@@ -93,12 +93,12 @@ describe( 'DataController utils', () => {
 			} );
 		} );
 
-		it( 'accepts DocumentFragment', () => {
+		it( 'accepts ModelDocumentFragment', () => {
 			model.schema.extend( '$text', { allowIn: '$root' } );
 
 			_setModelData( model, 'x[]x' );
 
-			insertContent( model, new DocumentFragment( [ new Text( 'a' ) ] ) );
+			insertContent( model, new ModelDocumentFragment( [ new Text( 'a' ) ] ) );
 
 			expect( _getModelData( model ) ).to.equal( 'xa[]x' );
 		} );
@@ -518,7 +518,7 @@ describe( 'DataController utils', () => {
 					}
 				} );
 
-				const content = new DocumentFragment( [
+				const content = new ModelDocumentFragment( [
 					new Element( 'heading1', [], [ new Text( 'bar' ) ] ),
 					new Text( 'biz' )
 				] );
@@ -543,7 +543,7 @@ describe( 'DataController utils', () => {
 					allowIn: 'limit'
 				} );
 
-				const content = new DocumentFragment( [ new Element( 'inlineWidget' ) ] );
+				const content = new ModelDocumentFragment( [ new Element( 'inlineWidget' ) ] );
 
 				_setModelData( model, '<limit>[]</limit>' );
 
@@ -2920,7 +2920,7 @@ describe( 'DataController utils', () => {
 				// <paragraph>fo{}o</paragraph>
 				_setModelData( model, '<paragraph>fo[]o</paragraph>' );
 
-				insertHelper( new DocumentFragment( [] ), {
+				insertHelper( new ModelDocumentFragment( [] ), {
 					'marker-a': { start: [ 0 ], end: [ 0 ] }
 				} );
 
@@ -3271,7 +3271,7 @@ describe( 'DataController utils', () => {
 			} );
 
 			if ( markers && !content.is( 'documentFragment' ) ) {
-				content = new DocumentFragment( [ content ] );
+				content = new ModelDocumentFragment( [ content ] );
 			}
 		}
 

@@ -7,7 +7,7 @@ import { Schema, SchemaContext } from '../../src/model/schema.js';
 
 import { Model } from '../../src/model/model.js';
 
-import { DocumentFragment } from '../../src/model/documentfragment.js';
+import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { Element } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { TextProxy } from '../../src/model/textproxy.js';
@@ -4070,16 +4070,16 @@ describe( 'SchemaContext', () => {
 			expect( ctx ).to.equal( previousCtx );
 		} );
 
-		it( 'creates context in DocumentFragment - array with string', () => {
-			const ctx = new SchemaContext( [ new DocumentFragment(), 'paragraph' ] );
+		it( 'creates context in ModelDocumentFragment - array with string', () => {
+			const ctx = new SchemaContext( [ new ModelDocumentFragment(), 'paragraph' ] );
 
 			expect( ctx.length ).to.equal( 2 );
 			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ '$documentFragment', 'paragraph' ] );
 		} );
 
-		it( 'creates context in DocumentFragment - element', () => {
+		it( 'creates context in ModelDocumentFragment - element', () => {
 			const p = new Element( 'paragraph' );
-			const docFrag = new DocumentFragment();
+			const docFrag = new ModelDocumentFragment();
 			docFrag._appendChild( p );
 
 			const ctx = new SchemaContext( p );
@@ -4088,9 +4088,9 @@ describe( 'SchemaContext', () => {
 			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ '$documentFragment', 'paragraph' ] );
 		} );
 
-		it( 'creates context in DocumentFragment - position', () => {
+		it( 'creates context in ModelDocumentFragment - position', () => {
 			const p = new Element( 'paragraph' );
-			const docFrag = new DocumentFragment( p );
+			const docFrag = new ModelDocumentFragment( p );
 			const pos = Position._createAt( docFrag.getChild( 0 ), 0 );
 			const ctx = new SchemaContext( pos );
 

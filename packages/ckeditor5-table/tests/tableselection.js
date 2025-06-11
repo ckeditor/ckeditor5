@@ -14,7 +14,7 @@ import {
 import { TableEditing } from '../src/tableediting.js';
 import { TableSelection } from '../src/tableselection.js';
 import { assertSelectedCells, modelTable } from './_utils/utils.js';
-import { DocumentFragment } from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
+import { ModelDocumentFragment } from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
 import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
 
 describe( 'TableSelection', () => {
@@ -213,7 +213,7 @@ describe( 'TableSelection', () => {
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
 
-			expect( tableSelection.getSelectionAsFragment() ).to.be.instanceOf( DocumentFragment );
+			expect( tableSelection.getSelectionAsFragment() ).to.be.instanceOf( ModelDocumentFragment );
 		} );
 
 		it( 'should return cells in the source order in case of forward selection', () => {

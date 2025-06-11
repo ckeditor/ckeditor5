@@ -15,7 +15,7 @@ import type {
 	ViewDocumentSelection,
 	Selection,
 	ViewSelection,
-	DocumentFragment,
+	ModelDocumentFragment,
 	ViewDocumentFragment,
 	DowncastWriter,
 	Model,
@@ -347,7 +347,7 @@ function isNotInsideImage( selection: ModelDocumentSelection ): boolean {
 /**
  * Returns a node that will be used to insert image with `model.insertContent`.
  */
-function getInsertImageParent( selection: Selection | ModelDocumentSelection, model: Model ): Element | DocumentFragment {
+function getInsertImageParent( selection: Selection | ModelDocumentSelection, model: Model ): Element | ModelDocumentFragment {
 	const insertionRange = findOptimalInsertionRange( selection, model );
 	const parent = insertionRange.start.parent;
 

@@ -4,7 +4,7 @@
  */
 
 import { Model } from '../../../src/model/model.js';
-import { DocumentFragment } from '../../../src/model/documentfragment.js';
+import { ModelDocumentFragment } from '../../../src/model/documentfragment.js';
 import { getSelectedContent } from '../../../src/model/utils/getselectedcontent.js';
 import { _setModelData, _stringifyModel } from '../../../src/dev-utils/model.js';
 
@@ -46,7 +46,7 @@ describe( 'DataController utils', () => {
 
 				const frag = getSelectedContent( model, doc.selection );
 
-				expect( frag ).instanceOf( DocumentFragment );
+				expect( frag ).instanceOf( ModelDocumentFragment );
 				expect( frag.isEmpty ).to.be.true;
 			} );
 
@@ -55,7 +55,7 @@ describe( 'DataController utils', () => {
 
 				const frag = getSelectedContent( model, doc.selection );
 
-				expect( frag ).instanceOf( DocumentFragment );
+				expect( frag ).instanceOf( ModelDocumentFragment );
 				expect( frag.isEmpty ).to.be.true;
 			} );
 
@@ -65,7 +65,7 @@ describe( 'DataController utils', () => {
 				const frag = getSelectedContent( model, doc.selection );
 				const content = _stringifyModel( frag );
 
-				expect( frag ).instanceOf( DocumentFragment );
+				expect( frag ).instanceOf( ModelDocumentFragment );
 				expect( content ).to.equal( 'b' );
 			} );
 

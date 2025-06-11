@@ -55,7 +55,7 @@ export class SplitOperation extends Operation {
 	 * @param insertionPosition Position at which the clone of split element (or element from graveyard) will be inserted.
 	 * @param graveyardPosition Position in the graveyard root before the element which
 	 * should be used as a parent of the nodes after `position`. If it is not set, a copy of the the `position` parent will be used.
-	 * @param baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * @param baseVersion Document {@link module:engine/model/document~ModelDocument#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor(

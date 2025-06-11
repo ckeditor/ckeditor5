@@ -23,7 +23,7 @@ import { type Range } from '../model/range.js';
  * taken into consideration when converting that item.
  *
  * `ModelConsumable` is used by {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} while analyzing the changed
- * parts of {@link module:engine/model/document~Document the document}. The added / changed / removed model items are broken down
+ * parts of {@link module:engine/model/document~ModelDocument the document}. The added / changed / removed model items are broken down
  * into singular properties (the item itself and its attributes). All those parts are saved in `ModelConsumable`. Then,
  * during conversion, when the given part of a model item is converted (i.e. the view element has been inserted into the view,
  * but without attributes), the consumable value is removed from `ModelConsumable`.

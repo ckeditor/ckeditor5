@@ -265,7 +265,7 @@ export class DataController extends /* #__PURE__ */ EmitterMixin() {
 	 * @param modelElementOrFragment Element or document fragment whose content will be converted.
 	 * @param options Additional configuration that will be available through the
 	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi#options} during the conversion process.
-	 * @returns Output view DocumentFragment.
+	 * @returns Output view ModelDocumentFragment.
 	 */
 	public toView(
 		modelElementOrFragment: ModelElement | ModelDocumentFragment,
@@ -300,7 +300,7 @@ export class DataController extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * Sets the initial input data parsed by the {@link #processor data processor} and
 	 * converted by the {@link #upcastDispatcher view-to-model converters}.
-	 * Initial data can be only set to a document whose {@link module:engine/model/document~Document#version} is equal 0.
+	 * Initial data can be only set to a document whose {@link module:engine/model/document~ModelDocument#version} is equal 0.
 	 *
 	 * **Note** This method is {@link module:utils/observablemixin~Observable#decorate decorated} which is
 	 * used by e.g. collaborative editing plugin that syncs remote data on init.
@@ -325,9 +325,9 @@ export class DataController extends /* #__PURE__ */ EmitterMixin() {
 	public init( data: string | Record<string, string> ): Promise<void> {
 		if ( this.model.document.version ) {
 			/**
-			 * Cannot set initial data to a non-empty {@link module:engine/model/document~Document}.
+			 * Cannot set initial data to a non-empty {@link module:engine/model/document~ModelDocument}.
 			 * Initial data should be set once, during the {@link module:core/editor/editor~Editor} initialization,
-			 * when the {@link module:engine/model/document~Document#version} is equal 0.
+			 * when the {@link module:engine/model/document~ModelDocument#version} is equal 0.
 			 *
 			 * @error datacontroller-init-document-not-empty
 			 */
@@ -375,7 +375,7 @@ export class DataController extends /* #__PURE__ */ EmitterMixin() {
 	 * Sets the input data parsed by the {@link #processor data processor} and
 	 * converted by the {@link #upcastDispatcher view-to-model converters}.
 	 * This method can be used any time to replace existing editor data with the new one without clearing the
-	 * {@link module:engine/model/document~Document#history document history}.
+	 * {@link module:engine/model/document~ModelDocument#history document history}.
 	 *
 	 * This method also creates a batch with all the changes applied. If all you need is to parse data, use
 	 * the {@link #parse} method.

@@ -10,7 +10,7 @@
 import { Position } from '../position.js';
 import { Range } from '../range.js';
 
-import { type DocumentFragment } from '../documentfragment.js';
+import { type ModelDocumentFragment } from '../documentfragment.js';
 import { type Model } from '../model.js';
 import { type Node } from '../node.js';
 import { type Schema } from '../schema.js';
@@ -250,7 +250,7 @@ function tryFixingNonCollapsedRage( range: Range, schema: Schema ) {
  */
 function findOutermostLimitAncestor( startingNode: Node, schema: Schema ): Node {
 	let isLimitNode = startingNode;
-	let parent: Node | DocumentFragment = isLimitNode;
+	let parent: Node | ModelDocumentFragment = isLimitNode;
 
 	// Find outer most isLimit block as such blocks might be nested (ie. in tables).
 	while ( schema.isLimit( parent ) && parent.parent ) {

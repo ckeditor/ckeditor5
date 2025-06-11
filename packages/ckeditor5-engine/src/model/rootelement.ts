@@ -9,21 +9,21 @@
 
 import { Element } from './element.js';
 
-import { type Document } from './document.js';
+import { type ModelDocument } from './document.js';
 
 /**
  * Type of {@link module:engine/model/element~Element} that is a root of a model tree.
  */
 export class RootElement extends Element {
 	/**
-	 * Unique root name used to identify this root element by {@link module:engine/model/document~Document}.
+	 * Unique root name used to identify this root element by {@link module:engine/model/document~ModelDocument}.
 	 */
 	public override readonly rootName: string;
 
 	/**
 	 * Document that is an owner of this root.
 	 */
-	private readonly _document: Document;
+	private readonly _document: ModelDocument;
 
 	/**
 	 * @internal
@@ -42,9 +42,9 @@ export class RootElement extends Element {
 	 *
 	 * @param document Document that is an owner of this root.
 	 * @param name Node name.
-	 * @param rootName Unique root name used to identify this root element by {@link module:engine/model/document~Document}.
+	 * @param rootName Unique root name used to identify this root element by {@link module:engine/model/document~ModelDocument}.
 	 */
-	constructor( document: Document, name: string, rootName: string = 'main' ) {
+	constructor( document: ModelDocument, name: string, rootName: string = 'main' ) {
 		super( name );
 
 		this._document = document;
@@ -52,9 +52,9 @@ export class RootElement extends Element {
 	}
 
 	/**
-	 * {@link module:engine/model/document~Document Document} that owns this root element.
+	 * {@link module:engine/model/document~ModelDocument Document} that owns this root element.
 	 */
-	public override get document(): Document {
+	public override get document(): ModelDocument {
 		return this._document;
 	}
 

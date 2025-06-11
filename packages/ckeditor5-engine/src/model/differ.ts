@@ -12,7 +12,7 @@ import { Range } from './range.js';
 
 import type { MarkerCollection, MarkerData } from './markercollection.js';
 import { type AttributeOperation } from './operation/attributeoperation.js';
-import { type DocumentFragment } from './documentfragment.js';
+import { type ModelDocumentFragment } from './documentfragment.js';
 import { type Element } from './element.js';
 import { type InsertOperation } from './operation/insertoperation.js';
 import { type Item } from './item.js';
@@ -52,7 +52,7 @@ export class Differ {
 	 * The keys of the map are references to the model elements.
 	 * The values of the map are arrays with changes that were done on this element.
 	 */
-	private readonly _changesInElement: Map<Element | DocumentFragment, Array<ChangeItem>> = new Map();
+	private readonly _changesInElement: Map<Element | ModelDocumentFragment, Array<ChangeItem>> = new Map();
 
 	/**
 	 * Stores a snapshot for these model nodes that might have changed.
@@ -71,7 +71,7 @@ export class Differ {
 	 *
 	 * See also {@link ~DifferSnapshot}.
 	 */
-	private readonly _elementChildrenSnapshots: Map<Element | DocumentFragment, Array<DifferSnapshot>> = new Map();
+	private readonly _elementChildrenSnapshots: Map<Element | ModelDocumentFragment, Array<DifferSnapshot>> = new Map();
 
 	/**
 	 * Keeps the state for a given element, describing how the element was changed so far. It is used to evaluate the `action` property
@@ -849,7 +849,7 @@ export class Differ {
 	/**
 	 * Saves and handles an insert change.
 	 */
-	private _markInsert( parent: Element | DocumentFragment, offset: number, howMany: number ) {
+	private _markInsert( parent: Element | ModelDocumentFragment, offset: number, howMany: number ) {
 		if ( parent.root.is( 'rootElement' ) && !parent.root._isLoaded ) {
 			return;
 		}
@@ -862,7 +862,7 @@ export class Differ {
 	/**
 	 * Saves and handles a remove change.
 	 */
-	private _markRemove( parent: Element | DocumentFragment, offset: number, howMany: number ) {
+	private _markRemove( parent: Element | ModelDocumentFragment, offset: number, howMany: number ) {
 		if ( parent.root.is( 'rootElement' ) && !parent.root._isLoaded ) {
 			return;
 		}
@@ -890,7 +890,7 @@ export class Differ {
 	/**
 	 * Saves and handles a model change.
 	 */
-	private _markChange( parent: Element | DocumentFragment, changeItem: ChangeItem ): void {
+	private _markChange( parent: Element | ModelDocumentFragment, changeItem: ChangeItem ): void {
 		// First, make a snapshot of the parent and its children (it will be made only if it was not made before).
 		this._makeSnapshots( parent );
 
@@ -968,7 +968,7 @@ export class Differ {
 	/**
 	 * Gets an array of changes that have already been saved for a given element.
 	 */
-	private _getChangesForElement( element: Element | DocumentFragment ): Array<ChangeItem> {
+	private _getChangesForElement( element: Element | ModelDocumentFragment ): Array<ChangeItem> {
 		let changes: Array<ChangeItem>;
 
 		if ( this._changesInElement.has( element ) ) {
@@ -985,7 +985,7 @@ export class Differ {
 	/**
 	 * Creates and saves a snapshot for all children of the given element.
 	 */
-	private _makeSnapshots( element: Element | DocumentFragment ): void {
+	private _makeSnapshots( element: Element | ModelDocumentFragment ): void {
 		if ( this._elementChildrenSnapshots.has( element ) ) {
 			return;
 		}
@@ -1234,7 +1234,7 @@ export class Differ {
 	 * @returns The diff item.
 	 */
 	private _getInsertDiff(
-		parent: Element | DocumentFragment,
+		parent: Element | ModelDocumentFragment,
 		offset: number,
 		action: DifferItemAction,
 		elementSnapshot: DifferSnapshot,
@@ -1270,7 +1270,7 @@ export class Differ {
 	 * @returns The diff item.
 	 */
 	private _getRemoveDiff(
-		parent: Element | DocumentFragment,
+		parent: Element | ModelDocumentFragment,
 		offset: number,
 		action: DifferItemAction,
 		elementSnapshot: DifferSnapshot
@@ -1350,7 +1350,7 @@ export class Differ {
 	/**
 	 * Checks whether given element or any of its parents is an element that is buffered as an inserted element.
 	 */
-	private _isInInsertedElement( element: Element | DocumentFragment ): boolean {
+	private _isInInsertedElement( element: Element | ModelDocumentFragment ): boolean {
 		const parent = element.parent;
 
 		if ( !parent ) {
@@ -1375,7 +1375,7 @@ export class Differ {
 	 * Removes deeply all buffered changes that are registered in elements from range specified by `parent`, `offset`
 	 * and `howMany`.
 	 */
-	private _removeAllNestedChanges( parent: Element | DocumentFragment, offset: number, howMany: number ) {
+	private _removeAllNestedChanges( parent: Element | ModelDocumentFragment, offset: number, howMany: number ) {
 		const range = new Range( Position._createAt( parent, offset ), Position._createAt( parent, offset + howMany ) );
 
 		for ( const item of range.getItems( { shallow: true } ) ) {

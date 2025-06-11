@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { type DocumentFragment } from '../documentfragment.js';
+import { type ModelDocumentFragment } from '../documentfragment.js';
 import { type ModelDocumentSelection } from '../documentselection.js';
 import { type Element } from '../element.js';
 import { type Model } from '../model.js';
@@ -37,7 +37,7 @@ import { type Writer } from '../writer.js';
 export function getSelectedContent(
 	model: Model,
 	selection: Selection | ModelDocumentSelection
-): DocumentFragment {
+): ModelDocumentFragment {
 	return model.change( writer => {
 		const frag = writer.createDocumentFragment();
 		const range = selection.getFirstRange();
@@ -119,7 +119,7 @@ export function getSelectedContent(
 // After https://github.com/ckeditor/ckeditor5-engine/issues/690 is fixed,
 // this function will, most likely, be able to rewritten using getMinimalFlatRanges().
 function removeRangeContent( range: Range, writer: Writer ) {
-	const parentsToCheck: Array<Element | DocumentFragment> = [];
+	const parentsToCheck: Array<Element | ModelDocumentFragment> = [];
 
 	Array.from( range.getItems( { direction: 'backward' } ) )
 		// We should better store ranges because text proxies will lose integrity

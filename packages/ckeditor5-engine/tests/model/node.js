@@ -4,7 +4,7 @@
  */
 
 import { Model } from '../../src/model/model.js';
-import { DocumentFragment } from '../../src/model/documentfragment.js';
+import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { Node } from '../../src/model/node.js';
 import { Element } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
@@ -294,7 +294,7 @@ describe( 'Node', () => {
 		it( 'should return document fragment', () => {
 			const foo = new Text( 'foo' );
 			const bar = new Text( 'bar' );
-			const df = new DocumentFragment( [ foo, bar ] );
+			const df = new ModelDocumentFragment( [ foo, bar ] );
 
 			expect( foo.getCommonAncestor( bar ) ).to.equal( df );
 		} );
@@ -394,7 +394,7 @@ describe( 'Node', () => {
 
 		it( 'returns false for a node attached to a document fragment', () => {
 			const foo = new Text( 'foo' );
-			new DocumentFragment( [ foo ] ); // eslint-disable-line no-new
+			new ModelDocumentFragment( [ foo ] ); // eslint-disable-line no-new
 
 			expect( foo.isAttached() ).to.equal( false );
 		} );

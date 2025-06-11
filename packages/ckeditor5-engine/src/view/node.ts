@@ -18,7 +18,7 @@ import {
 import { clone } from 'es-toolkit/compat';
 
 import type { Document, ChangeType } from './document.js';
-import { type DocumentFragment } from './documentfragment.js';
+import { type ModelDocumentFragment } from './documentfragment.js';
 import { type Element } from './element.js';
 
 /**
@@ -37,7 +37,7 @@ export abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeCheckable )
 	/**
 	 * Parent element. Null by default. Set by {@link module:engine/view/element~Element#_insertChild}.
 	 */
-	public readonly parent: Element | DocumentFragment | null;
+	public readonly parent: Element | ModelDocumentFragment | null;
 
 	/**
 	 * Creates a tree view node.
@@ -98,9 +98,9 @@ export abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeCheckable )
 	/**
 	 * Top-most ancestor of the node. If the node has no parent it is the root itself.
 	 */
-	public get root(): Element | DocumentFragment {
+	public get root(): Element | ModelDocumentFragment {
 		// eslint-disable-next-line @typescript-eslint/no-this-alias, consistent-this
-		let root: Node | DocumentFragment = this;
+		let root: Node | ModelDocumentFragment = this;
 
 		while ( root.parent ) {
 			root = root.parent;
@@ -136,7 +136,7 @@ export abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeCheckable )
 	public getPath(): Array<number> {
 		const path = [];
 		// eslint-disable-next-line @typescript-eslint/no-this-alias, consistent-this
-		let node: Node | DocumentFragment = this;
+		let node: Node | ModelDocumentFragment = this;
 
 		while ( node.parent ) {
 			path.unshift( node.index! );
@@ -155,8 +155,8 @@ export abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeCheckable )
 	 * otherwise root element will be the first item in the array.
 	 * @returns Array with ancestors.
 	 */
-	public getAncestors( options: { includeSelf?: boolean; parentFirst?: boolean } = {} ): Array<Node | DocumentFragment> {
-		const ancestors: Array<Node | DocumentFragment> = [];
+	public getAncestors( options: { includeSelf?: boolean; parentFirst?: boolean } = {} ): Array<Node | ModelDocumentFragment> {
+		const ancestors: Array<Node | ModelDocumentFragment> = [];
 		let parent = options.includeSelf ? this : this.parent;
 
 		while ( parent ) {
@@ -176,7 +176,7 @@ export abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeCheckable )
 	 * @param options.includeSelf When set to `true` both nodes will be considered "ancestors" too.
 	 * Which means that if e.g. node A is inside B, then their common ancestor will be B.
 	 */
-	public getCommonAncestor( node: Node, options: { includeSelf?: boolean } = {} ): Element | DocumentFragment | null {
+	public getCommonAncestor( node: Node, options: { includeSelf?: boolean } = {} ): Element | ModelDocumentFragment | null {
 		const ancestorsA = this.getAncestors( options );
 		const ancestorsB = node.getAncestors( options );
 
@@ -186,7 +186,7 @@ export abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeCheckable )
 			i++;
 		}
 
-		return i === 0 ? null : ancestorsA[ i - 1 ] as ( Element | DocumentFragment );
+		return i === 0 ? null : ancestorsA[ i - 1 ] as ( Element | ModelDocumentFragment );
 	}
 
 	/**

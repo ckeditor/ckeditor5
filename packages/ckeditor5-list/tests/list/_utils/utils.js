@@ -4,7 +4,7 @@
  */
 
 import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
-import { DocumentFragment } from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
+import { ModelDocumentFragment } from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
 import {
 	_getModelData,
 	_parseModel,
@@ -26,7 +26,7 @@ export function prepareTest( model, input ) {
 	// Parse data string to model.
 	const parsedResult = _parseModel( input, model.schema, { context: [ modelRoot.name ] } );
 
-	// Retrieve DocumentFragment and Selection from parsed model.
+	// Retrieve ModelDocumentFragment and Selection from parsed model.
 	const modelDocumentFragment = parsedResult.model;
 	const selection = parsedResult.selection;
 
@@ -334,7 +334,7 @@ export function stringifyList( fragmentOrElement ) {
 	const lines = [];
 
 	if ( fragmentOrElement.is( 'element' ) ) {
-		fragmentOrElement = new DocumentFragment( [ fragmentOrElement ] );
+		fragmentOrElement = new ModelDocumentFragment( [ fragmentOrElement ] );
 	}
 
 	model.change( writer => {

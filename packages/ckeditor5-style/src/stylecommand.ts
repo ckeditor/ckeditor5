@@ -137,13 +137,13 @@ export class StyleCommand extends Command {
 	 *
 	 * If the command value already contains the requested style, it will remove the style classes. Otherwise, it will set it.
 	 *
-	 * The execution result differs, depending on the {@link module:engine/model/document~Document#selection} and the
+	 * The execution result differs, depending on the {@link module:engine/model/document~ModelDocument#selection} and the
 	 * style type (inline or block):
 	 *
 	 * * When applying inline styles:
 	 *   * If the selection is on a range, the command applies the style classes to all nodes in that range.
 	 *   * If the selection is collapsed in a non-empty node, the command applies the style classes to the
-	 * {@link module:engine/model/document~Document#selection}.
+	 * {@link module:engine/model/document~ModelDocument#selection}.
 	 *
 	 * * When applying block styles:
 	 *   * If the selection is on a range, the command applies the style classes to the nearest block parent element.

@@ -10,7 +10,7 @@
 import { Range } from './range.js';
 
 import type { ModelApplyOperationEvent } from './model.js';
-import { type DocumentFragment } from './documentfragment.js';
+import { type ModelDocumentFragment } from './documentfragment.js';
 import { type Element } from './element.js';
 import { type Item } from './item.js';
 import { type MergeOperation } from './operation/mergeoperation.js';
@@ -22,7 +22,7 @@ import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 /**
  * `LiveRange` is a type of {@link module:engine/model/range~Range Range}
- * that updates itself as {@link module:engine/model/document~Document document}
+ * that updates itself as {@link module:engine/model/document~ModelDocument document}
  * is changed through operations. It may be used as a bookmark.
  *
  * **Note:** Be very careful when dealing with `LiveRange`. Each `LiveRange` instance bind events that might
@@ -68,14 +68,14 @@ export class LiveRange extends /* #__PURE__ */ EmitterMixin( Range ) {
 	 * @internal
 	 */
 
-	declare public static readonly _createIn: ( element: Element | DocumentFragment ) => LiveRange;
+	declare public static readonly _createIn: ( element: Element | ModelDocumentFragment ) => LiveRange;
 
 	/**
 	 * @see module:engine/model/range~Range._createOn
 	 * @internal
 	 */
 
-	declare public static readonly _createOn: ( element: Item | DocumentFragment ) => LiveRange;
+	declare public static readonly _createOn: ( element: Item | ModelDocumentFragment ) => LiveRange;
 
 	/**
 	 * @see module:engine/model/range~Range._createFromPositionAndShift
@@ -95,7 +95,7 @@ LiveRange.prototype.is = function( type: string ): boolean {
 
 /**
  * Fired when `LiveRange` instance boundaries have changed due to changes in the
- * {@link module:engine/model/document~Document document}.
+ * {@link module:engine/model/document~ModelDocument document}.
  *
  * @eventName ~LiveRange#change:range
  * @param oldRange Range with start and end position equal to start and end position of this live
@@ -110,7 +110,7 @@ export type LiveRangeChangeRangeEvent = {
 };
 
 /**
- * Fired when `LiveRange` instance boundaries have not changed after a change in {@link module:engine/model/document~Document document}
+ * Fired when `LiveRange` instance boundaries have not changed after a change in {@link module:engine/model/document~ModelDocument document}
  * but the change took place inside the range, effectively changing its content.
  *
  * @eventName ~LiveRange#change:content
@@ -134,7 +134,7 @@ export type LiveRangeChangeEvent = {
 };
 
 /**
- * Binds this `LiveRange` to the {@link module:engine/model/document~Document document}
+ * Binds this `LiveRange` to the {@link module:engine/model/document~ModelDocument document}
  * that owns this range's {@link module:engine/model/range~Range#root root}.
  */
 function bindWithDocument( this: LiveRange ) {

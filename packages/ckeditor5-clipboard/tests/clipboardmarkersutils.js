@@ -6,7 +6,7 @@
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import { DocumentFragment } from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
+import { ModelDocumentFragment } from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
 import { Position } from '@ckeditor/ckeditor5-engine/src/model/position.js';
 import { Range } from '@ckeditor/ckeditor5-engine/src/model/range.js';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
@@ -608,7 +608,7 @@ describe( 'Clipboard Markers Utils', () => {
 			} );
 
 			model.change( writer => {
-				const fragment = new DocumentFragment( [
+				const fragment = new ModelDocumentFragment( [
 					...createFakeMarkerElements( writer, 'comment:123', [
 						writer.createElement( 'paragraph' )
 					] ),
@@ -631,7 +631,7 @@ describe( 'Clipboard Markers Utils', () => {
 			} );
 
 			model.change( writer => {
-				const fragment = new DocumentFragment( [
+				const fragment = new ModelDocumentFragment( [
 					...createFakeMarkerElements( writer, 'comment:123', [
 						writer.createElement( 'paragraph' )
 					] ),
@@ -796,7 +796,7 @@ describe( 'Clipboard Markers Utils', () => {
 
 	describe( '_getPasteMarkersFromRangeMap', () => {
 		it( 'keeps unknown markers', () => {
-			const copyMarkers = createCopyableMarkersMap( new DocumentFragment(), {
+			const copyMarkers = createCopyableMarkersMap( new ModelDocumentFragment(), {
 				'unknown-marker': { start: [ 0, 0 ], end: [ 0, 6 ] }
 			} );
 
@@ -810,7 +810,7 @@ describe( 'Clipboard Markers Utils', () => {
 		it( 'properly filters markers Map instance', () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: [ 'cut' ] } );
 
-			const copyMarkers = createCopyableMarkersMap( new DocumentFragment(), {
+			const copyMarkers = createCopyableMarkersMap( new ModelDocumentFragment(), {
 				'comment:a': { start: [ 0, 0 ], end: [ 0, 6 ] },
 				'comment:b': { start: [ 0, 0 ], end: [ 0, 7 ] }
 			} );
@@ -829,7 +829,7 @@ describe( 'Clipboard Markers Utils', () => {
 			clipboardMarkersUtils._registerMarkerToCopy( 'comment', { allowedActions: [ 'cut' ] } );
 
 			const markers = Object.fromEntries(
-				createCopyableMarkersMap( new DocumentFragment(), {
+				createCopyableMarkersMap( new ModelDocumentFragment(), {
 					'comment:a': { start: [ 0, 0 ], end: [ 0, 6 ] },
 					'comment:b': { start: [ 0, 0 ], end: [ 0, 7 ] }
 				} ).entries()
@@ -1005,7 +1005,7 @@ describe( 'Clipboard Markers Utils', () => {
 		} );
 
 		if ( !parsedContent.is( 'documentFragment' ) ) {
-			parsedContent = new DocumentFragment( [ parsedContent ] );
+			parsedContent = new ModelDocumentFragment( [ parsedContent ] );
 		}
 
 		return parsedContent;

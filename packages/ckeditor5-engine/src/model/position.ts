@@ -10,8 +10,8 @@
 import { TypeCheckable } from './typecheckable.js';
 import { TreeWalker, type TreeWalkerOptions, type TreeWalkerValue } from './treewalker.js';
 
-import { type Document } from './document.js';
-import { type DocumentFragment } from './documentfragment.js';
+import { type ModelDocument } from './document.js';
+import { type ModelDocumentFragment } from './documentfragment.js';
 import { type Element } from './element.js';
 import { type InsertOperation } from './operation/insertoperation.js';
 import { type Item } from './item.js';
@@ -41,7 +41,7 @@ import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
  * This requirement is important for operational transformation algorithms.
  *
  * Also, {@link module:engine/model/operation/operation~Operation operations}
- * kept in the {@link module:engine/model/document~Document#history document history}
+ * kept in the {@link module:engine/model/document~ModelDocument#history document history}
  * are storing positions (and ranges) which were correct when those operations were applied, but may not be correct
  * after the document has changed.
  *
@@ -55,7 +55,7 @@ export class Position extends TypeCheckable {
 	/**
 	 * Root of the position path.
 	 */
-	public readonly root: Element | DocumentFragment;
+	public readonly root: Element | ModelDocumentFragment;
 
 	/**
 	 * Position of the node in the tree. **Path contains offsets, not indexes.**
@@ -103,7 +103,7 @@ export class Position extends TypeCheckable {
 	 * @param stickiness Position stickiness. See {@link module:engine/model/position~PositionStickiness}.
 	 */
 	constructor(
-		root: Element | DocumentFragment,
+		root: Element | ModelDocumentFragment,
 		path: ReadonlyArray<number>,
 		stickiness: PositionStickiness = 'toNone'
 	) {
@@ -173,7 +173,7 @@ export class Position extends TypeCheckable {
 	 *
 	 * Also it is a good idea to cache `parent` property if it is used frequently in an algorithm (i.e. in a long loop).
 	 */
-	public get parent(): Element | DocumentFragment {
+	public get parent(): Element | ModelDocumentFragment {
 		let parent: any = this.root;
 
 		for ( let i = 0; i < this.path.length - 1; i++ ) {
@@ -357,7 +357,7 @@ export class Position extends TypeCheckable {
 	 *
 	 * @returns Array with ancestors.
 	 */
-	public getAncestors(): Array<Element | DocumentFragment> {
+	public getAncestors(): Array<Element | ModelDocumentFragment> {
 		const parent = this.parent;
 
 		if ( parent.is( 'documentFragment' ) ) {
@@ -410,7 +410,7 @@ export class Position extends TypeCheckable {
 	 *
 	 * @param position The second position.
 	 */
-	public getCommonAncestor( position: Position ): Element | DocumentFragment | null {
+	public getCommonAncestor( position: Position ): Element | ModelDocumentFragment | null {
 		const ancestorsA = this.getAncestors();
 		const ancestorsB = position.getAncestors();
 
@@ -893,7 +893,7 @@ export class Position extends TypeCheckable {
 	 * @param stickiness Position stickiness. Used only when the first parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	public static _createAt(
-		itemOrPosition: Item | Position | DocumentFragment,
+		itemOrPosition: Item | Position | ModelDocumentFragment,
 		offset?: PositionOffset,
 		stickiness: PositionStickiness = 'toNone'
 	): Position {
@@ -945,7 +945,7 @@ export class Position extends TypeCheckable {
 	 * @param item Item after which the position should be placed.
 	 * @param stickiness Position stickiness.
 	 */
-	public static _createAfter( item: Item | DocumentFragment, stickiness?: PositionStickiness ): Position {
+	public static _createAfter( item: Item | ModelDocumentFragment, stickiness?: PositionStickiness ): Position {
 		if ( !item.parent ) {
 			/**
 			 * You cannot make a position after a root element.
@@ -970,7 +970,7 @@ export class Position extends TypeCheckable {
 	 * @param item Item before which the position should be placed.
 	 * @param stickiness Position stickiness.
 	 */
-	public static _createBefore( item: Item | DocumentFragment, stickiness?: PositionStickiness ): Position {
+	public static _createBefore( item: Item | ModelDocumentFragment, stickiness?: PositionStickiness ): Position {
 		if ( !item.parent ) {
 			/**
 			 * You cannot make a position before a root element.
@@ -995,7 +995,7 @@ export class Position extends TypeCheckable {
 	 * @param doc Document object that will be position owner.
 	 * @returns `Position` instance created using given plain object.
 	 */
-	public static fromJSON( json: any, doc: Document ): Position {
+	public static fromJSON( json: any, doc: ModelDocument ): Position {
 		if ( json.root === '$graveyard' ) {
 			const pos = new Position( doc.graveyard, json.path );
 			pos.stickiness = json.stickiness;
@@ -1098,7 +1098,7 @@ export type PositionStickiness = 'toNone' | 'toNext' | 'toPrevious';
  * @param positionParent The parent of the given position.
  * @internal
  */
-export function getTextNodeAtPosition( position: Position, positionParent: Element | DocumentFragment ): Text | null {
+export function getTextNodeAtPosition( position: Position, positionParent: Element | ModelDocumentFragment ): Text | null {
 	const node = positionParent.getChildAtOffset( position.offset );
 
 	if ( node && node.is( '$text' ) && node.startOffset! < position.offset ) {
@@ -1134,7 +1134,7 @@ export function getTextNodeAtPosition( position: Position, positionParent: Eleme
  */
 export function getNodeAfterPosition(
 	position: Position,
-	positionParent: Element | DocumentFragment,
+	positionParent: Element | ModelDocumentFragment,
 	textNode: Text | null
 ): Node | null {
 	if ( textNode !== null ) {
@@ -1161,7 +1161,7 @@ export function getNodeAfterPosition(
  */
 export function getNodeBeforePosition(
 	position: Position,
-	positionParent: Element | DocumentFragment,
+	positionParent: Element | ModelDocumentFragment,
 	textNode: Text | null
 ): Node | null {
 	if ( textNode !== null ) {

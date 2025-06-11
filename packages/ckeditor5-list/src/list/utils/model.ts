@@ -8,7 +8,7 @@
  */
 
 import type {
-	DocumentFragment,
+	ModelDocumentFragment,
 	Element,
 	Model,
 	Node,
@@ -56,7 +56,7 @@ export interface ListElement extends Element {
  *
  * @internal
  */
-export function isListItemBlock( node: Item | DocumentFragment | null ): node is ListElement {
+export function isListItemBlock( node: Item | ModelDocumentFragment | null ): node is ListElement {
 	return !!node && node.is( 'element' ) && node.hasAttribute( 'listItemId' );
 }
 

@@ -377,7 +377,7 @@ describe( 'DataController utils', () => {
 			it( 'unicode support - combining mark backward', () => {
 				_setModelData( model, '<p>foob̂[]ar</p>' );
 
-				// Creating new instance of selection instead of operation on module:engine/model/document~Document#selection.
+				// Creating new instance of selection instead of operation on module:engine/model/document~ModelDocument#selection.
 				// Document's selection will throw errors in some test cases (which are correct cases, but only for
 				// non-document selections).
 				const testSelection = model.createSelection( doc.selection );
@@ -1311,7 +1311,7 @@ describe( 'DataController utils', () => {
 
 			_setModelData( model, input );
 
-			// Creating new instance of selection instead of operation on module:engine/model/document~Document#selection.
+			// Creating new instance of selection instead of operation on module:engine/model/document~ModelDocument#selection.
 			// Document's selection will throw errors in some test cases (which are correct cases, but only for
 			// non-document selections).
 			const testSelection = model.createSelection( doc.selection );

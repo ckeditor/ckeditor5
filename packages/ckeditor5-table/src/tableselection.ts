@@ -12,7 +12,7 @@ import { type EventInfo, first } from 'ckeditor5/src/utils.js';
 
 import type {
 	Element,
-	DocumentFragment,
+	ModelDocumentFragment,
 	Selection,
 	DowncastWriter,
 	ViewElement,
@@ -107,7 +107,7 @@ export class TableSelection extends Plugin {
 	/**
 	 * Returns the selected table fragment as a document fragment.
 	 */
-	public getSelectionAsFragment(): DocumentFragment | null {
+	public getSelectionAsFragment(): ModelDocumentFragment | null {
 		const tableUtils = this.editor.plugins.get( TableUtils );
 		const selectedCells = this.getSelectedTableCells();
 

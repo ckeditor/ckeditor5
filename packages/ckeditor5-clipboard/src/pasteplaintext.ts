@@ -9,7 +9,7 @@
 
 import { Plugin } from '@ckeditor/ckeditor5-core';
 
-import type { DocumentFragment, Model, Element } from '@ckeditor/ckeditor5-engine';
+import type { ModelDocumentFragment, Model, Element } from '@ckeditor/ckeditor5-engine';
 
 import { ClipboardObserver } from './clipboardobserver.js';
 import { ClipboardPipeline, type ClipboardContentInsertionEvent } from './clipboardpipeline.js';
@@ -88,7 +88,7 @@ export class PastePlainText extends Plugin {
 /**
  * Returns true if specified `documentFragment` represents the unformatted inline content.
  */
-function isUnformattedInlineContent( documentFragment: DocumentFragment, model: Model ): boolean {
+function isUnformattedInlineContent( documentFragment: ModelDocumentFragment, model: Model ): boolean {
 	let range = model.createRangeIn( documentFragment );
 
 	// We consider three scenarios here. The document fragment may include:

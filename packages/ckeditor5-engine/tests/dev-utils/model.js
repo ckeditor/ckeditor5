@@ -5,7 +5,7 @@
 
 import { _stringifyModel, _parseModel, _getModelData, _setModelData } from '../../src/dev-utils/model.js';
 import { Model } from '../../src/model/model.js';
-import { DocumentFragment } from '../../src/model/documentfragment.js';
+import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { Element } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { Range } from '../../src/model/range.js';
@@ -241,7 +241,7 @@ describe( 'model test utils', () => {
 		} );
 
 		it( 'should stringify document fragment', () => {
-			const fragment = new DocumentFragment( [
+			const fragment = new ModelDocumentFragment( [
 				new Element( 'b', null, new Text( 'btext' ) ),
 				new Text( 'atext' )
 			] );
@@ -460,14 +460,14 @@ describe( 'model test utils', () => {
 	} );
 
 	describe( 'parse', () => {
-		test( 'creates empty DocumentFragment from empty string', {
+		test( 'creates empty ModelDocumentFragment from empty string', {
 			data: '',
 			check( fragment ) {
-				expect( fragment ).to.be.instanceOf( DocumentFragment );
+				expect( fragment ).to.be.instanceOf( ModelDocumentFragment );
 			}
 		} );
 
-		test( 'creates empty DocumentFragment with selection', {
+		test( 'creates empty ModelDocumentFragment with selection', {
 			data: '[]'
 		} );
 
@@ -476,7 +476,7 @@ describe( 'model test utils', () => {
 			check( el, selection ) {
 				const fragment = el.parent;
 				expect( el ).to.be.instanceOf( Element );
-				expect( fragment ).to.be.instanceOf( DocumentFragment );
+				expect( fragment ).to.be.instanceOf( ModelDocumentFragment );
 				expect( selection.rangeCount ).to.equal( 1 );
 
 				const range = new Range( Position._createAt( fragment, 0 ), Position._createAt( fragment, 1 ) );
@@ -484,10 +484,10 @@ describe( 'model test utils', () => {
 			}
 		} );
 
-		test( 'returns DocumentFragment when multiple elements on root', {
+		test( 'returns ModelDocumentFragment when multiple elements on root', {
 			data: '<a></a><b></b>',
 			check( fragment ) {
-				expect( fragment ).to.be.instanceOf( DocumentFragment );
+				expect( fragment ).to.be.instanceOf( ModelDocumentFragment );
 				expect( fragment.childCount ).to.equal( 2 );
 			}
 		} );
@@ -545,10 +545,10 @@ describe( 'model test utils', () => {
 			}
 		} );
 
-		test( 'returns DocumentFragment for multiple parsed elements', {
+		test( 'returns ModelDocumentFragment for multiple parsed elements', {
 			data: '<paragraph></paragraph><paragraph></paragraph>',
 			check( fragment ) {
-				expect( fragment instanceof DocumentFragment ).to.be.true;
+				expect( fragment instanceof ModelDocumentFragment ).to.be.true;
 			}
 		} );
 

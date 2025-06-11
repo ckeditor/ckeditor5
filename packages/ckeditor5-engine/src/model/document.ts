@@ -40,8 +40,8 @@ const graveyardName = '$graveyard';
  * Read more about working with the model in
  * {@glink framework/architecture/editing-engine#model introduction to the the editing engine's architecture}.
  *
- * Usually, the document contains just one {@link module:engine/model/document~Document#roots root element}, so
- * you can retrieve it by just calling {@link module:engine/model/document~Document#getRoot} without specifying its name:
+ * Usually, the document contains just one {@link module:engine/model/document~ModelDocument#roots root element}, so
+ * you can retrieve it by just calling {@link module:engine/model/document~ModelDocument#getRoot} without specifying its name:
  *
  * ```ts
  * model.document.getRoot(); // -> returns the main root
@@ -50,7 +50,7 @@ const graveyardName = '$graveyard';
  * However, the document may contain multiple roots – e.g. when the editor has multiple editable areas
  * (e.g. a title and a body of a message).
  */
-export class Document extends /* #__PURE__ */ EmitterMixin() {
+export class ModelDocument extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * The {@link module:engine/model/model~Model model} that the document is a part of.
 	 */
@@ -299,7 +299,7 @@ export class Document extends /* #__PURE__ */ EmitterMixin() {
 	 *
 	 * An execution of a feature may lead to an incorrect document tree state. The callbacks are used to fix the document tree after
 	 * it has changed. Post-fixers are fired just after all changes from the outermost change block were applied but
-	 * before the {@link module:engine/model/document~Document#event:change change event} is fired. If a post-fixer callback made
+	 * before the {@link module:engine/model/document~ModelDocument#event:change change event} is fired. If a post-fixer callback made
 	 * a change, it should return `true`. When this happens, all post-fixers are fired again to check if something else should
 	 * not be fixed in the new document tree state.
 	 *
@@ -367,9 +367,9 @@ export class Document extends /* #__PURE__ */ EmitterMixin() {
 			this.selection.refresh();
 
 			if ( this.differ.hasDataChanges() ) {
-				this.fire<DocumentChangeEvent>( 'change:data', writer.batch );
+				this.fire<ModelDocumentChangeEvent>( 'change:data', writer.batch );
 			} else {
-				this.fire<DocumentChangeEvent>( 'change', writer.batch );
+				this.fire<ModelDocumentChangeEvent>( 'change', writer.batch );
 			}
 
 			// Theoretically, it is not necessary to refresh selection after change event because
@@ -498,17 +498,17 @@ export class Document extends /* #__PURE__ */ EmitterMixin() {
  * } );
  * ```
  *
- * @eventName ~Document#change
- * @eventName ~Document#change:data
+ * @eventName ~ModelDocument#change
+ * @eventName ~ModelDocument#change:data
  * @param batch The batch that was used in the executed changes block.
  */
-export type DocumentChangeEvent = {
+export type ModelDocumentChangeEvent = {
 	name: 'change' | 'change:data';
 	args: [ batch: Batch ];
 };
 
 /**
- * Callback passed as an argument to the {@link module:engine/model/document~Document#registerPostFixer} method.
+ * Callback passed as an argument to the {@link module:engine/model/document~ModelDocument#registerPostFixer} method.
  */
 export type ModelPostFixer = ( writer: Writer ) => boolean;
 

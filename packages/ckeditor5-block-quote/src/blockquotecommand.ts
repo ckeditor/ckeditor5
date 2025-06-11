@@ -9,7 +9,7 @@
 
 import { Command } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
-import type { DocumentFragment, Element, Position, Range, Schema, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentFragment, Element, Position, Range, Schema, Writer } from 'ckeditor5/src/engine.js';
 
 /**
  * The block quote command plugin.
@@ -144,7 +144,7 @@ export class BlockQuoteCommand extends Command {
 	 * Applies the quote to given blocks.
 	 */
 	private _applyQuote( writer: Writer, blocks: Array<Element> ): void {
-		const quotesToMerge: Array<Element | DocumentFragment> = [];
+		const quotesToMerge: Array<Element | ModelDocumentFragment> = [];
 
 		// Quote all groups of block. Iterate in the reverse order to not break following ranges.
 		getRangesOfBlockGroups( writer, blocks ).reverse().forEach( groupRange => {
@@ -175,7 +175,7 @@ export class BlockQuoteCommand extends Command {
 	}
 }
 
-function findQuote( elementOrPosition: Element | Position ): Element | DocumentFragment | null {
+function findQuote( elementOrPosition: Element | Position ): Element | ModelDocumentFragment | null {
 	return elementOrPosition.parent!.name == 'blockQuote' ? elementOrPosition.parent : null;
 }
 

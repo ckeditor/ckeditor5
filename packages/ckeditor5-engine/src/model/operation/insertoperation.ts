@@ -16,7 +16,7 @@ import { Text } from '../text.js';
 import { Element } from '../element.js';
 import type { Selectable } from '../selection.js';
 
-import { type Document } from '../document.js';
+import { type ModelDocument } from '../document.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -50,7 +50,7 @@ export class InsertOperation extends Operation {
 	 *
 	 * @param position Position of insertion.
 	 * @param nodes The list of nodes to be inserted.
-	 * @param baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * @param baseVersion Document {@link module:engine/model/document~ModelDocument#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( position: Position, nodes: NodeSet, baseVersion: number | null ) {
@@ -165,7 +165,7 @@ export class InsertOperation extends Operation {
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.
 	 */
-	public static override fromJSON( json: any, document: Document ): InsertOperation {
+	public static override fromJSON( json: any, document: ModelDocument ): InsertOperation {
 		const children = [];
 
 		for ( const child of json.nodes ) {

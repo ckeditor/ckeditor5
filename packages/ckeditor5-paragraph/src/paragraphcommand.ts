@@ -50,7 +50,7 @@ export class ParagraphCommand extends Command {
 	 * @fires execute
 	 * @param options Options for the executed command.
 	 * @param options.selection The selection that the command should be applied to. By default,
-	 * if not provided, the command is applied to the {@link module:engine/model/document~Document#selection}.
+	 * if not provided, the command is applied to the {@link module:engine/model/document~ModelDocument#selection}.
 	 */
 	public override execute( options: {
 		selection?: Selection | ModelDocumentSelection;

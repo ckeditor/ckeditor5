@@ -514,7 +514,7 @@ Marker.prototype.is = function( type: string ): boolean {
 export { Marker };
 
 /**
- * Fired whenever {@link ~Marker#_liveRange marker range} is changed due to changes on {@link module:engine/model/document~Document}.
+ * Fired whenever {@link ~Marker#_liveRange marker range} is changed due to changes on {@link module:engine/model/document~ModelDocument}.
  * This is a delegated {@link module:engine/model/liverange~LiveRange#event:change:range LiveRange change:range event}.
  *
  * When marker is removed from {@link module:engine/model/markercollection~MarkerCollection MarkerCollection},
@@ -527,7 +527,7 @@ export { Marker };
 export type MarkerChangeRangeEvent = LiveRangeChangeRangeEvent;
 
 /**
- * Fired whenever change on {@link module:engine/model/document~Document} is done inside {@link ~Marker#_liveRange marker range}.
+ * Fired whenever change on {@link module:engine/model/document~ModelDocument} is done inside {@link ~Marker#_liveRange marker range}.
  * This is a delegated {@link module:engine/model/liverange~LiveRange#event:change:content LiveRange change:content event}.
  *
  * When marker is removed from {@link module:engine/model/markercollection~MarkerCollection MarkerCollection},

@@ -14,7 +14,7 @@ import { LiveRange } from '../liverange.js';
 import { Position } from '../position.js';
 import { Range } from '../range.js';
 
-import { type DocumentFragment } from '../documentfragment.js';
+import { type ModelDocumentFragment } from '../documentfragment.js';
 import { type Item } from '../item.js';
 import { type Model } from '../model.js';
 import { type Schema } from '../schema.js';
@@ -58,7 +58,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  */
 export function insertContent(
 	model: Model,
-	content: Item | DocumentFragment,
+	content: Item | ModelDocumentFragment,
 	selectable?: Selection | ModelDocumentSelection
 ): Range {
 	return model.change( writer => {
@@ -254,7 +254,7 @@ class Insertion {
 	 * 						so both its pieces will be added to this set)
 	 * ```
 	 */
-	public readonly canMergeWith: Set<Node | DocumentFragment | null>;
+	public readonly canMergeWith: Set<Node | ModelDocumentFragment | null>;
 
 	/**
 	 * Schema of the model.
@@ -262,12 +262,12 @@ class Insertion {
 	public readonly schema: Schema;
 
 	/**
-	 * The temporary DocumentFragment used for grouping multiple nodes for single insert operation.
+	 * The temporary ModelDocumentFragment used for grouping multiple nodes for single insert operation.
 	 */
-	private readonly _documentFragment: DocumentFragment;
+	private readonly _documentFragment: ModelDocumentFragment;
 
 	/**
-	 * The current position in the temporary DocumentFragment.
+	 * The current position in the temporary ModelDocumentFragment.
 	 */
 	private _documentFragmentPosition: Position;
 
@@ -324,7 +324,7 @@ class Insertion {
 			this._handleNode( node );
 		}
 
-		// Insert nodes collected in temporary DocumentFragment.
+		// Insert nodes collected in temporary ModelDocumentFragment.
 		this._insertPartialFragment();
 
 		// If there was an auto paragraph then we might need to adjust the end of insertion.
@@ -419,7 +419,7 @@ class Insertion {
 			return;
 		}
 
-		// Add node to the current temporary DocumentFragment.
+		// Add node to the current temporary ModelDocumentFragment.
 		this._appendToFragment( node );
 
 		// Store the first and last nodes for easy access for merging with sibling nodes.
@@ -431,7 +431,7 @@ class Insertion {
 	}
 
 	/**
-	 * Inserts the temporary DocumentFragment into the model.
+	 * Inserts the temporary ModelDocumentFragment into the model.
 	 */
 	private _insertPartialFragment(): void {
 		if ( this._documentFragment.isEmpty ) {
@@ -477,7 +477,7 @@ class Insertion {
 	}
 
 	/**
-	 * Append a node to the temporary DocumentFragment.
+	 * Append a node to the temporary ModelDocumentFragment.
 	 *
 	 * @param node The node to insert.
 	 */
@@ -734,7 +734,7 @@ class Insertion {
 	 * Inserts a paragraph and moves the insertion position into it.
 	 */
 	private _insertAutoParagraph(): void {
-		// Insert nodes collected in temporary DocumentFragment if the position parent needs change to process further nodes.
+		// Insert nodes collected in temporary ModelDocumentFragment if the position parent needs change to process further nodes.
 		this._insertPartialFragment();
 
 		// Insert a paragraph and move insertion position to it.
@@ -758,7 +758,7 @@ class Insertion {
 			return false;
 		}
 
-		// Insert nodes collected in temporary DocumentFragment if the position parent needs change to process further nodes.
+		// Insert nodes collected in temporary ModelDocumentFragment if the position parent needs change to process further nodes.
 		if ( allowedIn != this.position.parent ) {
 			this._insertPartialFragment();
 		}

@@ -13,7 +13,7 @@ import { Plugin, type NonEmptyArray } from '@ckeditor/ckeditor5-core';
 
 import {
 	Range,
-	type DocumentFragment,
+	type ModelDocumentFragment,
 	type Position,
 	type Element,
 	type ModelDocumentSelection,
@@ -81,9 +81,9 @@ export class ClipboardMarkersUtils extends Plugin {
 	public _copySelectedFragmentWithMarkers(
 		action: ClipboardMarkerRestrictedAction,
 		selection: Selection | ModelDocumentSelection,
-		getCopiedFragment: ( writer: Writer ) => DocumentFragment = writer =>
+		getCopiedFragment: ( writer: Writer ) => ModelDocumentFragment = writer =>
 			writer.model.getSelectedContent( writer.model.document.selection )
-	): DocumentFragment {
+	): ModelDocumentFragment {
 		return this.editor.model.change( writer => {
 			const oldSelection = writer.model.document.selection;
 
@@ -191,7 +191,7 @@ export class ClipboardMarkersUtils extends Plugin {
 	 * @param fragment Document fragment that should contain already processed by pipeline markers.
 	 * @internal
 	 */
-	public _pasteFragmentWithMarkers( fragment: DocumentFragment ): Range {
+	public _pasteFragmentWithMarkers( fragment: ModelDocumentFragment ): Range {
 		const pasteMarkers = this._getPasteMarkersFromRangeMap( fragment.markers );
 
 		fragment.markers.clear();
@@ -467,7 +467,7 @@ export class ClipboardMarkersUtils extends Plugin {
 	 * @param writer An instance of the model writer.
 	 * @param rootElement The element to be checked.
 	 */
-	private _removeFakeMarkersInsideElement( writer: Writer, rootElement: Element | DocumentFragment ): Record<string, Range> {
+	private _removeFakeMarkersInsideElement( writer: Writer, rootElement: Element | ModelDocumentFragment ): Record<string, Range> {
 		const fakeMarkersElements = this._getAllFakeMarkersFromElement( writer, rootElement );
 		const fakeMarkersRanges = fakeMarkersElements.reduce<Record<string, FakeMarkerRangeConstruct>>( ( acc, fakeMarker ) => {
 			const position = fakeMarker.markerElement && writer.createPositionBefore( fakeMarker.markerElement );
@@ -534,7 +534,7 @@ export class ClipboardMarkersUtils extends Plugin {
 	 * @param writer An instance of the model writer.
 	 * @param rootElement The element to be checked.
 	 */
-	private _getAllFakeMarkersFromElement( writer: Writer, rootElement: Element | DocumentFragment ): Array<FakeMarker> {
+	private _getAllFakeMarkersFromElement( writer: Writer, rootElement: Element | ModelDocumentFragment ): Array<FakeMarker> {
 		const foundFakeMarkers = Array
 			.from( writer.createRangeIn( rootElement ) )
 			.flatMap( ( { item } ): Array<FakeMarker> => {

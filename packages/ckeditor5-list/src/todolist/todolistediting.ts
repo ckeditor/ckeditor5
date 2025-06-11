@@ -18,7 +18,7 @@ import {
 	type MapperViewToModelPositionEvent,
 	type ViewDocumentFragment,
 	type SelectionChangeRangeEvent,
-	type DocumentFragment,
+	type ModelDocumentFragment,
 	type Element
 } from 'ckeditor5/src/engine.js';
 
@@ -381,7 +381,7 @@ export class TodoListEditing extends Plugin {
 	 */
 	private _initAriaAnnouncements( ) {
 		const { model, ui, t } = this.editor;
-		let lastFocusedCodeBlock: Element | DocumentFragment | null = null;
+		let lastFocusedCodeBlock: Element | ModelDocumentFragment | null = null;
 
 		if ( !ui ) {
 			return;
@@ -606,7 +606,7 @@ function isLabelElement( viewElement: ViewElement | ViewDocumentFragment | null 
 /**
  * Returns true if the given element is a list item model element of a to-do list.
  */
-function isTodoListItemElement( element: Element | DocumentFragment | null ): boolean {
+function isTodoListItemElement( element: Element | ModelDocumentFragment | null ): boolean {
 	if ( !element ) {
 		return false;
 	}

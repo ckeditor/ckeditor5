@@ -10,7 +10,7 @@
 import { TypeCheckable } from './typecheckable.js';
 import { Position } from './position.js';
 
-import { type DocumentFragment } from './documentfragment.js';
+import { type ModelDocumentFragment } from './documentfragment.js';
 import { type Element } from './element.js';
 import { type Item } from './item.js';
 import { type Node } from './node.js';
@@ -84,7 +84,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	/**
 	 * Range root element.
 	 */
-	public get root(): Node | DocumentFragment {
+	public get root(): Node | ModelDocumentFragment {
 		return this.start.root;
 	}
 
@@ -328,7 +328,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 * Returns a {@link module:engine/view/node~Node} or {@link module:engine/view/documentfragment~DocumentFragment}
 	 * which is a common ancestor of range's both ends (in which the entire range is contained).
 	 */
-	public getCommonAncestor(): Node | DocumentFragment | null {
+	public getCommonAncestor(): Node | ModelDocumentFragment | null {
 		return this.start.getCommonAncestor( this.end );
 	}
 
@@ -445,9 +445,9 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 * @returns Created range.
 	 */
 	public static _createFromParentsAndOffsets(
-		startElement: Element | DocumentFragment,
+		startElement: Element | ModelDocumentFragment,
 		startOffset: number,
-		endElement: Element | DocumentFragment,
+		endElement: Element | ModelDocumentFragment,
 		endOffset: number
 	): Range {
 		return new this(
@@ -478,7 +478,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 * @internal
 	 * @param element Element which is a parent for the range.
 	 */
-	public static _createIn( element: Element | DocumentFragment ): Range {
+	public static _createIn( element: Element | ModelDocumentFragment ): Range {
 		return this._createFromParentsAndOffsets( element, 0, element, element.childCount );
 	}
 

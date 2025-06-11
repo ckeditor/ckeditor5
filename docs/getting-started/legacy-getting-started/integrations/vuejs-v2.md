@@ -817,7 +817,7 @@ Corresponds to the {@link module:engine/view/document~Document#event:blur `blur`
 
 ### `input`
 
-Corresponds to the {@link module:engine/model/document~Document#event:change:data `change:data`} editor event. See the [`v-model` directive](#v-model) to learn more.
+Corresponds to the {@link module:engine/model/document~ModelDocument#event:change:data `change:data`} editor event. See the [`v-model` directive](#v-model) to learn more.
 
 ```html
 <ckeditor :editor="editor" @input="onEditorInput"></ckeditor>

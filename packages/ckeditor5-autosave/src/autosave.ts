@@ -26,7 +26,7 @@ import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
  * The {@link module:autosave/autosave~Autosave} plugin allows you to automatically save the data (e.g. send it to the server)
  * when needed (when the user changed the content).
  *
- * It listens to the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`}
+ * It listens to the {@link module:engine/model/document~ModelDocument#event:change:data `editor.model.document#change:data`}
  * and `window#beforeunload` events and calls the
  * {@link module:autosave/autosave~AutosaveAdapter#save `config.autosave.save()`} function.
  *

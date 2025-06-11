@@ -16,7 +16,7 @@ import {
 } from './position.js';
 import { TextProxy } from './textproxy.js';
 
-import { type DocumentFragment } from './documentfragment.js';
+import { type ModelDocumentFragment } from './documentfragment.js';
 import { type Item } from './item.js';
 import { type Range } from './range.js';
 
@@ -72,17 +72,17 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 	/**
 	 * Start boundary cached for optimization purposes.
 	 */
-	private _boundaryStartParent: Element | DocumentFragment | null;
+	private _boundaryStartParent: Element | ModelDocumentFragment | null;
 
 	/**
 	 * End boundary cached for optimization purposes.
 	 */
-	private _boundaryEndParent: Element | DocumentFragment | null;
+	private _boundaryEndParent: Element | ModelDocumentFragment | null;
 
 	/**
 	 * Parent of the most recently visited node. Cached for optimization purposes.
 	 */
-	private _visitedParent: Element | DocumentFragment;
+	private _visitedParent: Element | ModelDocumentFragment;
 
 	/**
 	 * Creates a range iterator. All parameters are optional, but you have to specify either `boundaries` or `startPosition`.
