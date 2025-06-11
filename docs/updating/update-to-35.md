@@ -45,7 +45,7 @@ The external data is shown in the UI, but it is not authenticated (as it comes f
 * The `@external` attribute should be read-only and possible to set only when a comment or suggestion is created.
 * Other comment and suggestion properties (like `content`) should be read-only as well, if the `@external` attribute is set.
 
-#### Templates for {@link module:comments/comments/ui/view/commentview~CommentView#getTemplate `CommentView`} and {@link module:track-changes/ui/view/suggestionthreadview~SuggestionThreadView#getTemplate `SuggestionThreadView`} have changed
+#### Templates for {@link module:comments/comments/ui/view/commentview~CommentView#getTemplate `CommentView`} and {@link module:track-changes/ui/view/suggestionthreadview~TrackChangesSuggestionThreadView#getTemplate `TrackChangesSuggestionThreadView`} have changed
 
 <info-box>
 	This information applies only to integrations that use custom annotation views or templates.
@@ -53,7 +53,7 @@ The external data is shown in the UI, but it is not authenticated (as it comes f
 
 Since the data in external comments and suggestions is not authenticated, we have added a label that informs users that a given item comes from an external source.
 
-This changes the {@link module:comments/comments/ui/view/commentview~CommentView#getTemplate `CommentView` template} and the {@link module:track-changes/ui/view/suggestionthreadview~SuggestionThreadView#getTemplate `SuggestionThreadView` template}. The label is added at the end of these templates. Check the new templates to see whether this change affects your custom view.
+This changes the {@link module:comments/comments/ui/view/commentview~CommentView#getTemplate `CommentView` template} and the {@link module:track-changes/ui/view/suggestionthreadview~TrackChangesSuggestionThreadView#getTemplate `TrackChangesSuggestionThreadView` template}. The label is added at the end of these templates. Check the new templates to see whether this change affects your custom view.
 
 ### Comment input editor is now loaded on demand
 
