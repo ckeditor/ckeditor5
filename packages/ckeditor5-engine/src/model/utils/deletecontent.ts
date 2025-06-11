@@ -8,7 +8,7 @@
  */
 
 import { ModelDocumentSelection } from '../documentselection.js';
-import { LivePosition } from '../liveposition.js';
+import { ModelLivePosition } from '../liveposition.js';
 import { Range } from '../range.js';
 
 import { type ModelDocumentFragment } from '../documentfragment.js';
@@ -125,8 +125,8 @@ export function deleteContent(
 		if ( !options.doNotFixSelection ) {
 			[ startPosition, endPosition ] = getLivePositionsForSelectedBlocks( selRange );
 		} else {
-			startPosition = LivePosition.fromPosition( selRange.start, 'toPrevious' );
-			endPosition = LivePosition.fromPosition( selRange.end, 'toNext' );
+			startPosition = ModelLivePosition.fromPosition( selRange.start, 'toPrevious' );
+			endPosition = ModelLivePosition.fromPosition( selRange.end, 'toNext' );
 		}
 
 		// 2. Remove the content if there is any.
@@ -179,7 +179,7 @@ export function deleteContent(
  *
  * This is the same behavior as in Selection#getSelectedBlocks() "special case".
  */
-function getLivePositionsForSelectedBlocks( range: Range ): [ startPosition: LivePosition, endPosition: LivePosition ] {
+function getLivePositionsForSelectedBlocks( range: Range ): [ startPosition: ModelLivePosition, endPosition: ModelLivePosition ] {
 	const model = range.root.document!.model;
 
 	const startPosition = range.start;
@@ -216,8 +216,8 @@ function getLivePositionsForSelectedBlocks( range: Range ): [ startPosition: Liv
 	}
 
 	return [
-		LivePosition.fromPosition( startPosition, 'toPrevious' ),
-		LivePosition.fromPosition( endPosition, 'toNext' )
+		ModelLivePosition.fromPosition( startPosition, 'toPrevious' ),
+		ModelLivePosition.fromPosition( endPosition, 'toNext' )
 	];
 }
 

@@ -11,7 +11,7 @@ import type { Marker } from './markercollection.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelDocumentSelection } from './documentselection.js';
 import { type ModelElement } from './element.js';
-import { type LivePosition } from './liveposition.js';
+import { type ModelLivePosition } from './liveposition.js';
 import { type LiveRange } from './liverange.js';
 import { type Node } from './node.js';
 import { type Position } from './position.js';
@@ -139,10 +139,10 @@ export abstract class TypeCheckable {
 	 *
 	 * @label POSITION
 	 */
-	public is( type: 'position' | 'model:position' ): this is Position | LivePosition;
+	public is( type: 'position' | 'model:position' ): this is Position | ModelLivePosition;
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/model/liveposition~LivePosition}.
+	 * Checks whether the object is of type {@link module:engine/model/liveposition~ModelLivePosition}.
 	 *
 	 * ```ts
 	 * livePosition.is( 'position' ); // -> true
@@ -156,7 +156,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label LIVE_POSITION
 	 */
-	public is( type: 'livePosition' | 'model:livePosition' ): this is LivePosition;
+	public is( type: 'livePosition' | 'model:livePosition' ): this is ModelLivePosition;
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/model/range~Range} or its subclass.

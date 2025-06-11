@@ -8,7 +8,7 @@ import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { Position } from '../../src/model/position.js';
-import { LivePosition } from '../../src/model/liveposition.js';
+import { ModelLivePosition } from '../../src/model/liveposition.js';
 import { Range } from '../../src/model/range.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -35,7 +35,7 @@ describe( 'LivePosition', () =>
 	} );
 
 	it( 'should be an instance of Position', () => {
-		const live = new LivePosition( root, [ 0 ] );
+		const live = new ModelLivePosition( root, [ 0 ] );
 		live.detach();
 
 		expect( live ).to.be.instanceof( Position );
@@ -45,7 +45,7 @@ describe( 'LivePosition', () =>
 		let live;
 
 		beforeEach( () => {
-			live = new LivePosition( root, [ 0 ] );
+			live = new ModelLivePosition( root, [ 0 ] );
 			live.detach();
 		} );
 
@@ -68,57 +68,57 @@ describe( 'LivePosition', () =>
 		const docFrag = new ModelDocumentFragment();
 
 		expectToThrowCKEditorError( () => {
-			new LivePosition( docFrag, [ 1 ] ); // eslint-disable-line no-new
+			new ModelLivePosition( docFrag, [ 1 ] ); // eslint-disable-line no-new
 		}, /model-liveposition-root-not-rootelement/, docFrag );
 	} );
 
 	it( 'should listen to the model applyOperation event', () => {
-		sinon.spy( LivePosition.prototype, 'listenTo' );
+		sinon.spy( ModelLivePosition.prototype, 'listenTo' );
 
-		const live = new LivePosition( root, [ 0 ] );
+		const live = new ModelLivePosition( root, [ 0 ] );
 		live.detach();
 
 		expect( live.listenTo.calledWith( model, 'applyOperation' ) ).to.be.true;
 
-		LivePosition.prototype.listenTo.restore();
+		ModelLivePosition.prototype.listenTo.restore();
 	} );
 
 	it( 'should stop listening when detached', () => {
-		sinon.spy( LivePosition.prototype, 'stopListening' );
+		sinon.spy( ModelLivePosition.prototype, 'stopListening' );
 
-		const live = new LivePosition( root, [ 0 ] );
+		const live = new ModelLivePosition( root, [ 0 ] );
 		live.detach();
 
 		expect( live.stopListening.called ).to.be.true;
 
-		LivePosition.prototype.stopListening.restore();
+		ModelLivePosition.prototype.stopListening.restore();
 	} );
 
 	describe( 'fromPosition()', () => {
 		it( 'should return LivePosition', () => {
-			const position = LivePosition.fromPosition( new Position( root, [ 0 ] ) );
-			expect( position ).to.be.instanceof( LivePosition );
+			const position = ModelLivePosition.fromPosition( new Position( root, [ 0 ] ) );
+			expect( position ).to.be.instanceof( ModelLivePosition );
 			position.detach();
 		} );
 	} );
 
 	it( '_createBefore should return LivePosition', () => {
-		const position = LivePosition._createBefore( ul, 'toPrevious' );
-		expect( position ).to.be.instanceof( LivePosition );
+		const position = ModelLivePosition._createBefore( ul, 'toPrevious' );
+		expect( position ).to.be.instanceof( ModelLivePosition );
 		expect( position.stickiness ).to.equal( 'toPrevious' );
 		position.detach();
 	} );
 
 	it( '_createAfter should return LivePosition', () => {
-		const position = LivePosition._createAfter( ul, 'toPrevious' );
-		expect( position ).to.be.instanceof( LivePosition );
+		const position = ModelLivePosition._createAfter( ul, 'toPrevious' );
+		expect( position ).to.be.instanceof( ModelLivePosition );
 		expect( position.stickiness ).to.equal( 'toPrevious' );
 		position.detach();
 	} );
 
 	it( '_createAt should return LivePosition', () => {
-		const position = LivePosition._createAt( ul, 'end', 'toPrevious' );
-		expect( position ).to.be.instanceof( LivePosition );
+		const position = ModelLivePosition._createAt( ul, 'end', 'toPrevious' );
+		expect( position ).to.be.instanceof( ModelLivePosition );
 		expect( position.stickiness ).to.equal( 'toPrevious' );
 		position.detach();
 	} );
@@ -127,7 +127,7 @@ describe( 'LivePosition', () =>
 		let live, spy;
 
 		beforeEach( () => {
-			live = new LivePosition( root, [ 1, 1, 3 ] );
+			live = new ModelLivePosition( root, [ 1, 1, 3 ] );
 
 			spy = sinon.spy();
 			live.on( 'change', spy );
@@ -268,7 +268,7 @@ describe( 'LivePosition', () =>
 		beforeEach( () => {
 			path = [ 1, 1, 3 ];
 			otherRoot = doc.createRoot( '$root', 'otherRoot' );
-			live = new LivePosition( root, path );
+			live = new ModelLivePosition( root, path );
 
 			spy = sinon.spy();
 			live.on( 'change', spy );
@@ -289,7 +289,7 @@ describe( 'LivePosition', () =>
 			} );
 
 			it( 'is at the same position and live position is sticking to left side', () => {
-				const newLive = new LivePosition( root, path, 'toPrevious' );
+				const newLive = new ModelLivePosition( root, path, 'toPrevious' );
 				spy = sinon.spy();
 				newLive.on( 'change', spy );
 
@@ -337,7 +337,7 @@ describe( 'LivePosition', () =>
 			} );
 
 			it( 'is at the same position and live position is sticking to left side', () => {
-				const newLive = new LivePosition( root, path, 'toPrevious' );
+				const newLive = new ModelLivePosition( root, path, 'toPrevious' );
 				spy = sinon.spy();
 				newLive.on( 'change', spy );
 
@@ -382,7 +382,7 @@ describe( 'LivePosition', () =>
 			} );
 
 			it( 'is from a position after a node from the live position path', () => {
-				const newLive = new LivePosition( root, [ 1, 0, 3 ] );
+				const newLive = new ModelLivePosition( root, [ 1, 0, 3 ] );
 				spy = sinon.spy();
 				newLive.on( 'change', spy );
 

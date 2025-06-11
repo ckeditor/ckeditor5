@@ -63,7 +63,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 
 	/**
 	 * Iterator position. This is always static position, even if the initial position was a
-	 * {@link module:engine/model/liveposition~LivePosition live position}. If start position is not defined then position depends
+	 * {@link module:engine/model/liveposition~ModelLivePosition live position}. If start position is not defined then position depends
 	 * on {@link #direction}. If direction is `'forward'` position starts form the beginning, when direction
 	 * is `'backward'` position starts from the end.
 	 */
@@ -145,7 +145,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 
 	/**
 	 * Iterator position. This is always static position, even if the initial position was a
-	 * {@link module:engine/model/liveposition~LivePosition live position}. If start position is not defined then position depends
+	 * {@link module:engine/model/liveposition~ModelLivePosition live position}. If start position is not defined then position depends
 	 * on {@link #direction}. If direction is `'forward'` position starts form the beginning, when direction
 	 * is `'backward'` position starts from the end.
 	 */

@@ -20,7 +20,7 @@ import { Node, type NodeAttributes } from './node.js';
  * This happens when {@link module:engine/model/writer~Writer model writer} is used to change model and the text node is merged with
  * another text node. Then, both text nodes are removed and a new text node is inserted into the model. Because of
  * this behavior, keeping references to `Text` is not recommended. Instead, consider creating
- * {@link module:engine/model/liveposition~LivePosition live position} placed before the text node.
+ * {@link module:engine/model/liveposition~ModelLivePosition live position} placed before the text node.
  */
 export class Text extends Node {
 	/**

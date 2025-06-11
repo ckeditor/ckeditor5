@@ -40,7 +40,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  *
  * **Note:** `TextProxy` instances are created on the fly, basing on the current state of model. Because of this, it is
  * highly unrecommended to store references to `TextProxy` instances. `TextProxy` instances are not refreshed when
- * model changes, so they might get invalidated. Instead, consider creating {@link module:engine/model/liveposition~LivePosition live
+ * model changes, so they might get invalidated. Instead, consider creating {@link module:engine/model/liveposition~ModelLivePosition live
  * position}.
  *
  * `TextProxy` instances are created by {@link module:engine/model/treewalker~TreeWalker model tree walker}. You should not need to create

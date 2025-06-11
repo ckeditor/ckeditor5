@@ -24,7 +24,7 @@ import { MergeOperation } from '../../src/model/operation/mergeoperation.js';
 import { SplitOperation } from '../../src/model/operation/splitoperation.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import { LivePosition } from '../../src/model/liveposition.js';
+import { ModelLivePosition } from '../../src/model/liveposition.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'Position', () => {
@@ -172,13 +172,13 @@ describe( 'Position', () => {
 			} );
 
 			it( 'should create positions from LivePosition', () => {
-				const position = new LivePosition( root, [ 0, 0 ] );
+				const position = new ModelLivePosition( root, [ 0, 0 ] );
 				const created = Position._createAt( position );
 
 				expect( created.isEqual( position ) ).to.be.true;
 				expect( created ).to.not.be.equal( position );
 				expect( created ).to.be.instanceof( Position );
-				expect( created ).to.not.be.instanceof( LivePosition );
+				expect( created ).to.not.be.instanceof( ModelLivePosition );
 			} );
 
 			it( 'should create positions from node and offset', () => {

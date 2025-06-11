@@ -9,7 +9,7 @@
 
 import { ModelDocumentSelection } from '../documentselection.js';
 import { ModelElement } from '../element.js';
-import { LivePosition } from '../liveposition.js';
+import { ModelLivePosition } from '../liveposition.js';
 import { LiveRange } from '../liverange.js';
 import { Position } from '../position.js';
 import { Range } from '../range.js';
@@ -294,12 +294,12 @@ class Insertion {
 	/**
 	 * Beginning of the affected range. See {@link module:engine/model/utils/insertcontent~Insertion#getAffectedRange}.
 	 */
-	private _affectedStart: LivePosition | null = null;
+	private _affectedStart: ModelLivePosition | null = null;
 
 	/**
 	 * End of the affected range. See {@link module:engine/model/utils/insertcontent~Insertion#getAffectedRange}.
 	 */
-	private _affectedEnd: LivePosition | null = null;
+	private _affectedEnd: ModelLivePosition | null = null;
 
 	private _nodeToSelect: Node | null = null;
 
@@ -438,7 +438,7 @@ class Insertion {
 			return;
 		}
 
-		const livePosition = LivePosition.fromPosition( this.position, 'toNext' );
+		const livePosition = ModelLivePosition.fromPosition( this.position, 'toNext' );
 
 		this._setAffectedBoundaries( this.position );
 
@@ -526,7 +526,7 @@ class Insertion {
 		// <paragraph>Foo][bar</paragraph> -> <paragraph>Foo]xx[bar</paragraph>
 		// This is why it cannot be a range but two separate positions.
 		if ( !this._affectedStart ) {
-			this._affectedStart = LivePosition.fromPosition( position, 'toPrevious' );
+			this._affectedStart = ModelLivePosition.fromPosition( position, 'toPrevious' );
 		}
 
 		// If `_affectedEnd` is before the new boundary position, expand `_affectedEnd`. This can happen if first inserted node was
@@ -538,7 +538,7 @@ class Insertion {
 				this._affectedEnd.detach();
 			}
 
-			this._affectedEnd = LivePosition.fromPosition( position, 'toNext' );
+			this._affectedEnd = ModelLivePosition.fromPosition( position, 'toNext' );
 		}
 	}
 
@@ -559,13 +559,13 @@ class Insertion {
 			return;
 		}
 
-		const mergePosLeft = LivePosition._createBefore( node );
+		const mergePosLeft = ModelLivePosition._createBefore( node );
 		mergePosLeft.stickiness = 'toNext';
 
-		const livePosition = LivePosition.fromPosition( this.position, 'toNext' );
+		const livePosition = ModelLivePosition.fromPosition( this.position, 'toNext' );
 
 		// If `_affectedStart` is sames as merge position, it means that the element "marked" by `_affectedStart` is going to be
-		// removed and its contents will be moved. This won't transform `LivePosition` so `_affectedStart` needs to be moved
+		// removed and its contents will be moved. This won't transform `ModelLivePosition` so `_affectedStart` needs to be moved
 		// by hand to properly reflect affected range. (Due to `_affectedStart` and `_affectedEnd` stickiness, the "range" is
 		// shown as `][`).
 		//
@@ -578,7 +578,7 @@ class Insertion {
 		// Note, that if we are here then something must have been inserted, so `_affectedStart` and `_affectedEnd` have to be set.
 		if ( this._affectedStart!.isEqual( mergePosLeft ) ) {
 			this._affectedStart!.detach();
-			this._affectedStart = LivePosition._createAt( mergePosLeft.nodeBefore!, 'end', 'toPrevious' );
+			this._affectedStart = ModelLivePosition._createAt( mergePosLeft.nodeBefore!, 'end', 'toPrevious' );
 		}
 
 		// We need to update the references to the first and last nodes if they will be merged into the previous sibling node
@@ -607,7 +607,7 @@ class Insertion {
 		// <paragraph>Foo]Abc[</paragraph><paragraph>Bar</paragraph>
 		if ( mergePosLeft.isEqual( this._affectedEnd! ) && this._firstNode === this._lastNode ) {
 			this._affectedEnd!.detach();
-			this._affectedEnd = LivePosition._createAt( mergePosLeft.nodeBefore!, 'end', 'toNext' );
+			this._affectedEnd = ModelLivePosition._createAt( mergePosLeft.nodeBefore!, 'end', 'toNext' );
 		}
 
 		this.position = livePosition.toPosition();
@@ -637,7 +637,7 @@ class Insertion {
 			return;
 		}
 
-		const mergePosRight = LivePosition._createAfter( node );
+		const mergePosRight = ModelLivePosition._createAfter( node );
 		mergePosRight.stickiness = 'toNext';
 
 		/* istanbul ignore if -- @preserve */
@@ -664,12 +664,12 @@ class Insertion {
 		// Explanation of setting position stickiness to `'toPrevious'`:
 		// OK:  <p>xx[]</p> + <p>yy</p> => <p>xx[]yy</p> (when sticks to previous)
 		// NOK: <p>xx[]</p> + <p>yy</p> => <p>xxyy[]</p> (when sticks to next)
-		const livePosition = LivePosition.fromPosition( this.position, 'toPrevious' );
+		const livePosition = ModelLivePosition.fromPosition( this.position, 'toPrevious' );
 
 		// See comment in `_mergeOnLeft()` on moving `_affectedStart`.
 		if ( this._affectedEnd!.isEqual( mergePosRight ) ) {
 			this._affectedEnd!.detach();
-			this._affectedEnd = LivePosition._createAt( mergePosRight.nodeBefore!, 'end', 'toNext' );
+			this._affectedEnd = ModelLivePosition._createAt( mergePosRight.nodeBefore!, 'end', 'toNext' );
 		}
 
 		// We need to update the references to the first and last nodes if they will be merged into the previous sibling node
@@ -691,7 +691,7 @@ class Insertion {
 		// See comment in `_mergeOnLeft()` on moving `_affectedStart`.
 		if ( mergePosRight.getShiftedBy( -1 ).isEqual( this._affectedStart! ) && this._firstNode === this._lastNode ) {
 			this._affectedStart!.detach();
-			this._affectedStart = LivePosition._createAt( mergePosRight.nodeBefore!, 0, 'toPrevious' );
+			this._affectedStart = ModelLivePosition._createAt( mergePosRight.nodeBefore!, 0, 'toPrevious' );
 		}
 
 		this.position = livePosition.toPosition();

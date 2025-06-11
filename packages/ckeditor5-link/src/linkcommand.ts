@@ -10,7 +10,7 @@
 import { Command } from 'ckeditor5/src/core.js';
 import { findAttributeRange } from 'ckeditor5/src/typing.js';
 import { Collection, diff, first, toMap } from 'ckeditor5/src/utils.js';
-import { LivePosition, type Range, type ModelItem } from 'ckeditor5/src/engine.js';
+import { ModelLivePosition, type Range, type ModelItem } from 'ckeditor5/src/engine.js';
 
 import { AutomaticDecorators } from './utils/automaticdecorators.js';
 import { extractTextFromLinkRange, isLinkableElement } from './utils.js';
@@ -323,8 +323,8 @@ export class LinkCommand extends Command {
 
 				// Store the selection ranges in a pseudo live range array (stickiness to the outside of the range).
 				const stickyPseudoRanges = selectionRanges.map( range => ( {
-					start: LivePosition.fromPosition( range.start, 'toPrevious' ),
-					end: LivePosition.fromPosition( range.end, 'toNext' )
+					start: ModelLivePosition.fromPosition( range.start, 'toPrevious' ),
+					end: ModelLivePosition.fromPosition( range.end, 'toNext' )
 				} ) );
 
 				// Update or set links (including text update if needed).

@@ -1190,7 +1190,7 @@ export type AfterChangesEvent = {
  * * with `highest` priority operation is validated,
  * * with `normal` priority operation is executed,
  * * with `low` priority the {@link module:engine/model/document~ModelDocument} updates its version,
- * * with `low` priority {@link module:engine/model/liveposition~LivePosition} and {@link module:engine/model/liverange~LiveRange}
+ * * with `low` priority {@link module:engine/model/liveposition~ModelLivePosition} and {@link module:engine/model/liverange~LiveRange}
  * update themselves.
  *
  * @eventName ~Model#applyOperation
