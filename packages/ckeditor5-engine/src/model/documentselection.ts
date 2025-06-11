@@ -374,7 +374,7 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCh
 	 * @see module:engine/model/writer~Writer#setSelectionFocus
 	 * @internal
 	 * @param offset Offset or one of the flags. Used only when
-	 * first parameter is a {@link module:engine/model/item~Item model item}.
+	 * first parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public _setFocus( itemOrPosition: ModelItem | Position, offset?: PositionOffset ): void {
 		this._selection.setFocus( itemOrPosition, offset );

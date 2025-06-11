@@ -875,7 +875,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * * a {@link module:engine/model/position~Position position},
 	 * * a parent element and offset in that element,
 	 * * a parent element and `'end'` (the position will be set at the end of that element),
-	 * * a {@link module:engine/model/item~Item model item} and `'before'` or `'after'`
+	 * * a {@link module:engine/model/item~ModelItem model item} and `'before'` or `'after'`
 	 * (the position will be set before or after the given model item).
 	 *
 	 * This method is a shortcut to other factory methods such as:
@@ -887,7 +887,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * {@link module:engine/model/writer~Writer#createPositionAt `Writer#createPositionAt()`},
 	 *
 	 * @param itemOrPosition
-	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public createPositionAt(
 		itemOrPosition: ModelItem | ModelPosition | ModelDocumentFragment,
@@ -897,7 +897,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * Creates a new position after the given {@link module:engine/model/item~Item model item}.
+	 * Creates a new position after the given {@link module:engine/model/item~ModelItem model item}.
 	 *
 	 * Note: This method is also available as
 	 * {@link module:engine/model/writer~Writer#createPositionAfter `Writer#createPositionAfter()`}.
@@ -909,7 +909,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * Creates a new position before the given {@link module:engine/model/item~Item model item}.
+	 * Creates a new position before the given {@link module:engine/model/item~ModelItem model item}.
 	 *
 	 * Note: This method is also available as
 	 * {@link module:engine/model/writer~Writer#createPositionBefore `Writer#createPositionBefore()`}.
@@ -959,7 +959,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * Creates a range that starts before the given {@link module:engine/model/item~Item model item} and ends after it.
+	 * Creates a range that starts before the given {@link module:engine/model/item~ModelItem model item} and ends after it.
 	 *
 	 * Note: This method is also available on `writer` instance as
 	 * {@link module:engine/model/writer~Writer#createRangeOn `Writer.createRangeOn()`}:
@@ -992,7 +992,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * // first child of that element and ends after the last child of that element.
 	 * const selection = writer.createSelection( paragraph, 'in' );
 	 *
-	 * // Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends
+	 * // Creates a range on an {@link module:engine/model/item~ModelItem item} which starts before the item and ends
 	 * // just after the item.
 	 * const selection = writer.createSelection( paragraph, 'on' );
 	 *

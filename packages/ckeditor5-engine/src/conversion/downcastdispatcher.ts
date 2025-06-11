@@ -744,7 +744,7 @@ export type DowncastEvent<TName extends keyof DowncastDispatcherEventMap<TItem>,
  *
  * @eventName ~DowncastDispatcher#insert
  * @param {Object} data Additional information about the change.
- * @param {module:engine/model/item~Item} data.item The inserted item.
+ * @param {module:engine/model/item~ModelItem} data.item The inserted item.
  * @param {module:engine/model/range~Range} data.range Range spanning over inserted item.
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
  * to be used by callback, passed in the `DowncastDispatcher` constructor.
@@ -785,7 +785,7 @@ export type DowncastRemoveEvent = DowncastEvent<'remove'>;
  *
  * @eventName ~DowncastDispatcher#attribute
  * @param {Object} data Additional information about the change.
- * @param {module:engine/model/item~Item|module:engine/model/documentselection~DocumentSelection} data.item Changed item
+ * @param {module:engine/model/item~ModelItem|module:engine/model/documentselection~DocumentSelection} data.item Changed item
  * or converted selection.
  * @param {module:engine/model/range~Range} data.range Range spanning over changed item or selection range.
  * @param {String} data.attributeKey Attribute key.
@@ -844,7 +844,7 @@ export type DowncastCleanSelectionEvent = DowncastEvent<'cleanSelection'>;
  *
  * @eventName ~DowncastDispatcher#addMarker
  * @param {Object} data Additional information about the change.
- * @param {module:engine/model/item~Item|module:engine/model/selection~Selection} data.item Item inside the new marker or
+ * @param {module:engine/model/item~ModelItem|module:engine/model/selection~Selection} data.item Item inside the new marker or
  * the selection that is being converted.
  * @param {module:engine/model/range~Range} [data.range] Range spanning over converted item. Available only in marker conversion, if
  * the marker range was not collapsed.

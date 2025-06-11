@@ -78,7 +78,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * // first child of that element and ends after the last child of that element.
 	 * const selection = writer.createSelection( paragraph, 'in' );
 	 *
-	 * // Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends
+	 * // Creates a range on an {@link module:engine/model/item~ModelItem item} which starts before the item and ends
 	 * // just after the item.
 	 * const selection = writer.createSelection( paragraph, 'on' );
 	 * ```
@@ -334,7 +334,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * selection.setTo( paragraph, 'in' );
 	 * ```
 	 *
-	 * Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends just after the item.
+	 * Creates a range on an {@link module:engine/model/item~ModelItem item} which starts before the item and ends just after the item.
 	 *
 	 * ```ts
 	 * selection.setTo( paragraph, 'on' );
@@ -473,7 +473,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * {@link module:engine/model/writer~Writer#createPositionAt writer.createPositionAt()} parameters.
 	 *
 	 * @fires change:range
-	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public setFocus( itemOrPosition: ModelItem | Position, offset?: PositionOffset ): void {
 		if ( this.anchor === null ) {

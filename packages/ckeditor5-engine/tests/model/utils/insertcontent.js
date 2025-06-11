@@ -3256,7 +3256,7 @@ describe( 'DataController utils', () => {
 
 	// Helper function that parses given content and inserts it at the cursor position.
 	//
-	// @param {module:engine/model/item~Item|String} content
+	// @param {module:engine/model/item~ModelItem|String} content
 	// @returns {module:engine/model/range~Range} range
 	function insertHelper( content, markers, customInsertionPath ) {
 		const selection = customInsertionPath ?

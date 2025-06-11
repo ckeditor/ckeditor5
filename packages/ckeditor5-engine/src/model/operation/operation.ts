@@ -26,7 +26,7 @@ export abstract class Operation {
 	public baseVersion: number | null;
 
 	/**
-	 * Defines whether operation is executed on attached or detached {@link module:engine/model/item~Item items}.
+	 * Defines whether operation is executed on attached or detached {@link module:engine/model/item~ModelItem items}.
 	 */
 	public readonly isDocumentOperation: boolean;
 

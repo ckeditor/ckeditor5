@@ -26,7 +26,7 @@ import type { Selectable } from '../selection.js';
  */
 export class DetachOperation extends Operation {
 	/**
-	 * Position before the first {@link module:engine/model/item~Item model item} to detach.
+	 * Position before the first {@link module:engine/model/item~ModelItem model item} to detach.
 	 */
 	public sourcePosition: Position;
 
@@ -42,7 +42,7 @@ export class DetachOperation extends Operation {
 	/**
 	 * Creates an insert operation.
 	 *
-	 * @param sourcePosition Position before the first {@link module:engine/model/item~Item model item} to move.
+	 * @param sourcePosition Position before the first {@link module:engine/model/item~ModelItem model item} to move.
 	 * @param howMany Offset size of moved range. Moved range will start from `sourcePosition` and end at
 	 * `sourcePosition` with offset shifted by `howMany`.
 	 */

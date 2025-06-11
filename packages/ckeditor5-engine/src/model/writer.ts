@@ -178,13 +178,13 @@ export class Writer {
 	 * `model-writer-insert-forbidden-move` is thrown.
 	 *
 	 * If you want to move {@link module:engine/model/range~Range range} instead of an
-	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/writer~Writer#move `Writer#move()`}.
+	 * {@link module:engine/model/item~ModelItem item} use {@link module:engine/model/writer~Writer#move `Writer#move()`}.
 	 *
 	 * **Note:** For a paste-like content insertion mechanism see
 	 * {@link module:engine/model/model~Model#insertContent `model.insertContent()`}.
 	 *
 	 * @param item Item or document fragment to insert.
-	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public insert(
 		item: ModelItem | ModelDocumentFragment,
@@ -288,7 +288,7 @@ export class Writer {
 	 *
 	 * @label WITHOUT_ATTRIBUTES
 	 * @param text Text data.
-	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public insertText(
 		text: string,
@@ -320,7 +320,7 @@ export class Writer {
 	 * @label WITH_ATTRIBUTES
 	 * @param text Text data.
 	 * @param attributes Text attributes.
-	 * @param offset Offset or one of the flags. Used only when third parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when third parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public insertText(
 		text: string,
@@ -365,7 +365,7 @@ export class Writer {
 	 *
 	 * @label WITHOUT_ATTRIBUTES
 	 * @param name Name of the element.
-	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public insertElement(
 		name: string,
@@ -397,7 +397,7 @@ export class Writer {
 	 * @label WITH_ATTRIBUTES
 	 * @param name Name of the element.
 	 * @param attributes Elements attributes.
-	 * @param offset Offset or one of the flags. Used only when third parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when third parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public insertElement(
 		name: string,
@@ -430,7 +430,7 @@ export class Writer {
 	 * Note that if the item already has parent it will be removed from the previous parent.
 	 *
 	 * If you want to move {@link module:engine/model/range~Range range} instead of an
-	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/writer~Writer#move `Writer#move()`}.
+	 * {@link module:engine/model/item~ModelItem item} use {@link module:engine/model/writer~Writer#move `Writer#move()`}.
 	 *
 	 * @param item Item or document fragment to insert.
 	 */
@@ -527,7 +527,7 @@ export class Writer {
 	}
 
 	/**
-	 * Sets value of the attribute with given key on a {@link module:engine/model/item~Item model item}
+	 * Sets value of the attribute with given key on a {@link module:engine/model/item~ModelItem model item}
 	 * or on a {@link module:engine/model/range~Range range}.
 	 *
 	 * @param key Attribute key.
@@ -549,7 +549,7 @@ export class Writer {
 	}
 
 	/**
-	 * Sets values of attributes on a {@link module:engine/model/item~Item model item}
+	 * Sets values of attributes on a {@link module:engine/model/item~ModelItem model item}
 	 * or on a {@link module:engine/model/range~Range range}.
 	 *
 	 * ```ts
@@ -572,7 +572,7 @@ export class Writer {
 	}
 
 	/**
-	 * Removes an attribute with given key from a {@link module:engine/model/item~Item model item}
+	 * Removes an attribute with given key from a {@link module:engine/model/item~ModelItem model item}
 	 * or from a {@link module:engine/model/range~Range range}.
 	 *
 	 * @param key Attribute key.
@@ -642,7 +642,7 @@ export class Writer {
 	 * {@link module:engine/model/writer~Writer#insert} in such cases.
 	 *
 	 * @param range Source range.
-	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public move(
 		range: Range,
@@ -697,7 +697,7 @@ export class Writer {
 	}
 
 	/**
-	 * Removes given model {@link module:engine/model/item~Item item} or {@link module:engine/model/range~Range range}.
+	 * Removes given model {@link module:engine/model/item~ModelItem item} or {@link module:engine/model/range~Range range}.
 	 *
 	 * @param itemOrRange Model item or range to remove.
 	 */
@@ -775,7 +775,7 @@ export class Writer {
 	/**
 	 * Shortcut for {@link module:engine/model/model~Model#createPositionAt `Model#createPositionAt()`}.
 	 *
-	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public createPositionAt(
 		itemOrPosition: ModelItem | Position | ModelDocumentFragment,
@@ -1428,7 +1428,7 @@ export class Writer {
 	 * writer.setSelection( paragraph, 'in' );
 	 * ```
 	 *
-	 * Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends just after the item.
+	 * Creates a range on an {@link module:engine/model/item~ModelItem item} which starts before the item and ends just after the item.
 	 *
 	 * ```ts
 	 * writer.setSelection( paragraph, 'on' );
@@ -1506,7 +1506,7 @@ export class Writer {
 	 * {@link #createPositionAt `writer.createPositionAt()`} parameters.
 	 *
 	 * @param itemOrPosition
-	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public setSelectionFocus(
 		itemOrPosition: ModelItem | Position,

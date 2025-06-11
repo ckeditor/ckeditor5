@@ -64,7 +64,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	/**
 	 * Iterable interface.
 	 *
-	 * Iterates over all {@link module:engine/model/item~Item items} that are in this range and returns
+	 * Iterates over all {@link module:engine/model/item~ModelItem items} that are in this range and returns
 	 * them together with additional information like length or {@link module:engine/model/position~Position positions},
 	 * grouped as {@link module:engine/model/treewalker~TreeWalkerValue}.
 	 * It iterates over all {@link module:engine/model/textproxy~TextProxy text contents} that are inside the range
@@ -135,7 +135,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	}
 
 	/**
-	 * Checks whether given {@link module:engine/model/item~Item} is inside this range.
+	 * Checks whether given {@link module:engine/model/item~ModelItem} is inside this range.
 	 */
 	public containsItem( item: ModelItem ): boolean {
 		const pos = Position._createBefore( item );
@@ -424,11 +424,11 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link module:engine/model/item~Item items} that are in this range and returns
+	 * Returns an iterator that iterates over all {@link module:engine/model/item~ModelItem items} that are in this range and returns
 	 * them.
 	 *
 	 * This method uses {@link module:engine/model/treewalker~TreeWalker} with `boundaries` set to this range and `ignoreElementEnd` option
-	 * set to `true`. However it returns only {@link module:engine/model/item~Item model items},
+	 * set to `true`. However it returns only {@link module:engine/model/item~ModelItem model items},
 	 * not {@link module:engine/model/treewalker~TreeWalkerValue}.
 	 *
 	 * You may specify additional options for the tree walker. See {@link module:engine/model/treewalker~TreeWalker} for
@@ -919,7 +919,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	}
 
 	/**
-	 * Creates a range that starts before given {@link module:engine/model/item~Item model item} and ends after it.
+	 * Creates a range that starts before given {@link module:engine/model/item~ModelItem model item} and ends after it.
 	 *
 	 * @internal
 	 */

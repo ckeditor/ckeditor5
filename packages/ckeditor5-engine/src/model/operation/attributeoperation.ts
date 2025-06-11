@@ -144,7 +144,7 @@ export class AttributeOperation extends Operation {
 				 * Changed node has different attribute value than operation's old attribute value.
 				 *
 				 * @error attribute-operation-wrong-old-value
-				 * @param {module:engine/model/item~Item} root The item element.
+				 * @param {module:engine/model/item~ModelItem} root The item element.
 				 * @param {string} key The key of the attribute.
 				 * @param {never} value The value.
 				 */
@@ -160,7 +160,7 @@ export class AttributeOperation extends Operation {
 				 * The attribute with given key already exists for the given node.
 				 *
 				 * @error attribute-operation-attribute-exists
-				 * @param {module:engine/model/item~Item} root The item element.
+				 * @param {module:engine/model/item~ModelItem} root The item element.
 				 * @param {string} key The key of the attribute.
 				 */
 				throw new CKEditorError(

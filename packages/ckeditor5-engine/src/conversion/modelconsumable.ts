@@ -17,7 +17,7 @@ import { type ModelDocumentSelection } from '../model/documentselection.js';
 import { type Range } from '../model/range.js';
 
 /**
- * Manages a list of consumable values for the {@link module:engine/model/item~Item model items}.
+ * Manages a list of consumable values for the {@link module:engine/model/item~ModelItem model items}.
  *
  * Consumables are various aspects of the model. A model item can be broken down into separate, single properties that might be
  * taken into consideration when converting that item.
@@ -283,7 +283,7 @@ export class ModelConsumable {
 
 		if ( items.length ) {
 			/**
-			 * Some of the {@link module:engine/model/item~Item model items} were not consumed while downcasting the model to view.
+			 * Some of the {@link module:engine/model/item~ModelItem model items} were not consumed while downcasting the model to view.
 			 *
 			 * This might be the effect of:
 			 *
@@ -296,7 +296,7 @@ export class ModelConsumable {
 			 * attributes and child nodes.
 			 *
 			 * @error conversion-model-consumable-not-consumed
-			 * @param {Array.<module:engine/model/item~Item>} items Items that were not consumed.
+			 * @param {Array.<module:engine/model/item~ModelItem>} items Items that were not consumed.
 			 */
 			throw new CKEditorError( 'conversion-model-consumable-not-consumed', null, { items } );
 		}

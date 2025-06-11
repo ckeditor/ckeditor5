@@ -881,7 +881,7 @@ export class Position extends TypeCheckable {
 	 * * a {@link module:engine/model/position~Position position},
 	 * * parent element and offset (offset defaults to `0`),
 	 * * parent element and `'end'` (sets position at the end of that element),
-	 * * {@link module:engine/model/item~Item model item} and `'before'` or `'after'` (sets position before or after given model item).
+	 * * {@link module:engine/model/item~ModelItem model item} and `'before'` or `'after'` (sets position before or after given model item).
 	 *
 	 * This method is a shortcut to other factory methods such as:
 	 *
@@ -889,8 +889,9 @@ export class Position extends TypeCheckable {
 	 * * {@link module:engine/model/position~Position._createAfter}.
 	 *
 	 * @internal
-	 * @param offset Offset or one of the flags. Used only when the first parameter is a {@link module:engine/model/item~Item model item}.
-	 * @param stickiness Position stickiness. Used only when the first parameter is a {@link module:engine/model/item~Item model item}.
+	 * @param offset Offset or one of the flags. Used only when the first parameter
+	 * is a {@link module:engine/model/item~ModelItem model item}.
+	 * @param stickiness Position stickiness. Used only when the first parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public static _createAt(
 		itemOrPosition: ModelItem | Position | ModelDocumentFragment,
@@ -939,7 +940,7 @@ export class Position extends TypeCheckable {
 	}
 
 	/**
-	 * Creates a new position, after given {@link module:engine/model/item~Item model item}.
+	 * Creates a new position, after given {@link module:engine/model/item~ModelItem model item}.
 	 *
 	 * @internal
 	 * @param item Item after which the position should be placed.
@@ -964,7 +965,7 @@ export class Position extends TypeCheckable {
 	}
 
 	/**
-	 * Creates a new position, before the given {@link module:engine/model/item~Item model item}.
+	 * Creates a new position, before the given {@link module:engine/model/item~ModelItem model item}.
 	 *
 	 * @internal
 	 * @param item Item before which the position should be placed.

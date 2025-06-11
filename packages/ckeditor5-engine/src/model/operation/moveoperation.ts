@@ -20,12 +20,12 @@ import { type ModelDocument } from '../document.js';
 // @if CK_DEBUG_ENGINE // const ModelRange = require( '../range' ).default;
 
 /**
- * Operation to move a range of {@link module:engine/model/item~Item model items}
+ * Operation to move a range of {@link module:engine/model/item~ModelItem model items}
  * to given {@link module:engine/model/position~Position target position}.
  */
 export class MoveOperation extends Operation {
 	/**
-	 * Position before the first {@link module:engine/model/item~Item model item} to move.
+	 * Position before the first {@link module:engine/model/item~ModelItem model item} to move.
 	 */
 	public sourcePosition: Position;
 
@@ -42,7 +42,7 @@ export class MoveOperation extends Operation {
 	/**
 	 * Creates a move operation.
 	 *
-	 * @param sourcePosition Position before the first {@link module:engine/model/item~Item model item} to move.
+	 * @param sourcePosition Position before the first {@link module:engine/model/item~ModelItem model item} to move.
 	 * @param howMany Offset size of moved range. Moved range will start from `sourcePosition` and end at
 	 * `sourcePosition` with offset shifted by `howMany`.
 	 * @param targetPosition Position at which moved nodes will be inserted.
