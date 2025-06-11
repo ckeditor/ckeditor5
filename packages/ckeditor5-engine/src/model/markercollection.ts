@@ -11,7 +11,7 @@ import { TypeCheckable } from './typecheckable.js';
 import {
 	ModelLiveRange,
 	type LiveRangeChangeContentEvent,
-	type LiveRangeChangeRangeEvent,
+	type ModelLiveRangeChangeRangeEvent,
 	type LiveRangeChangeEvent
 } from './liverange.js';
 
@@ -524,7 +524,7 @@ export { Marker };
  * @see module:engine/model/liverange~ModelLiveRange#event:change:range
  * @eventName ~Marker#change:range
  */
-export type MarkerChangeRangeEvent = LiveRangeChangeRangeEvent;
+export type MarkerChangeRangeEvent = ModelLiveRangeChangeRangeEvent;
 
 /**
  * Fired whenever change on {@link module:engine/model/document~ModelDocument} is done inside {@link ~Marker#_liveRange marker range}.

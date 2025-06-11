@@ -98,14 +98,14 @@ ModelLiveRange.prototype.is = function( type: string ): boolean {
  * Fired when `ModelLiveRange` instance boundaries have changed due to changes in the
  * {@link module:engine/model/document~ModelDocument document}.
  *
- * @eventName ~LiveRange#change:range
+ * @eventName ~ModelLiveRange#change:range
  * @param oldRange Range with start and end position equal to start and end position of this live
  * range before it got changed.
  * @param data Object with additional information about the change.
  * @param data.deletionPosition Source position for remove and merge changes.
  * Available if the range was moved to the graveyard root, `null` otherwise.
  */
-export type LiveRangeChangeRangeEvent = {
+export type ModelLiveRangeChangeRangeEvent = {
 	name: 'change' | 'change:range';
 	args: [ range: Range, data: { deletionPosition: Position | null } ];
 };
@@ -115,7 +115,7 @@ export type LiveRangeChangeRangeEvent = {
  * a change in {@link module:engine/model/document~ModelDocument document}
  * but the change took place inside the range, effectively changing its content.
  *
- * @eventName ~LiveRange#change:content
+ * @eventName ~ModelLiveRange#change:content
  * @param range Range with start and end position equal to start and end position of
  * change range.
  * @param data Object with additional information about the change.
@@ -187,7 +187,7 @@ function transform( this: ModelLiveRange, operation: Operation ) {
 		( this as any ).start = result.start;
 		( this as any ).end = result.end;
 
-		this.fire<LiveRangeChangeRangeEvent>( 'change:range', oldRange, { deletionPosition } );
+		this.fire<ModelLiveRangeChangeRangeEvent>( 'change:range', oldRange, { deletionPosition } );
 	} else if ( contentChanged ) {
 		// If range boundaries have not changed, but there was change inside the range, fire `change:content` event.
 		this.fire<LiveRangeChangeContentEvent>( 'change:content', this.toRange(), { deletionPosition } );
