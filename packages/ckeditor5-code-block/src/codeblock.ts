@@ -9,8 +9,8 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import CodeBlockEditing from './codeblockediting.js';
-import CodeBlockUI from './codeblockui.js';
+import { CodeBlockEditing } from './codeblockediting.js';
+import { CodeBlockUI } from './codeblockui.js';
 
 /**
  * The code block plugin.
@@ -21,7 +21,7 @@ import CodeBlockUI from './codeblockui.js';
  * This is a "glue" plugin that loads the {@link module:code-block/codeblockediting~CodeBlockEditing code block editing feature}
  * and the {@link module:code-block/codeblockui~CodeBlockUI code block UI feature}.
  */
-export default class CodeBlock extends Plugin {
+export class CodeBlock extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

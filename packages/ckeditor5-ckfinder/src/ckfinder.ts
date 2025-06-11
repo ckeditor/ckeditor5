@@ -9,8 +9,8 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import CKFinderUI from './ckfinderui.js';
-import CKFinderEditing from './ckfinderediting.js';
+import { CKFinderUI } from './ckfinderui.js';
+import { CKFinderEditing } from './ckfinderediting.js';
 
 /**
  * The CKFinder feature, a bridge between the CKEditor 5 WYSIWYG editor and the
@@ -28,7 +28,7 @@ import CKFinderEditing from './ckfinderediting.js';
  * Check out the {@glink features/images/image-upload/image-upload comprehensive "Image upload" guide} to learn about
  * other ways to upload images into CKEditor 5.
  */
-export default class CKFinder extends Plugin {
+export class CKFinder extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

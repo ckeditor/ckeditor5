@@ -7,24 +7,48 @@
  * @module html-support
  */
 
-export { default as GeneralHtmlSupport } from './generalhtmlsupport.js';
-export { default as DataFilter, type DataFilterRegisterEvent } from './datafilter.js';
-export { default as DataSchema, type DataSchemaBlockElementDefinition } from './dataschema.js';
-export { default as HtmlComment } from './htmlcomment.js';
-export { default as FullPage } from './fullpage.js';
-export { default as HtmlPageDataProcessor } from './htmlpagedataprocessor.js';
-export { default as EmptyBlock } from './emptyblock.js';
+export { GeneralHtmlSupport } from './generalhtmlsupport.js';
+export { DataFilter, type DataFilterRegisterEvent } from './datafilter.js';
+export { DataSchema, type DataSchemaBlockElementDefinition } from './dataschema.js';
+export { HtmlComment } from './htmlcomment.js';
+export { FullPage } from './fullpage.js';
+export { HtmlPageDataProcessor } from './htmlpagedataprocessor.js';
+export { EmptyBlock } from './emptyblock.js';
 export type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig.js';
-export type { default as CodeBlockElementSupport } from './integrations/codeblock.js';
-export type { default as CustomElementSupport } from './integrations/customelement.js';
-export type { default as ListElementSupport } from './integrations/list.js';
-export type { default as DualContentModelElementSupport } from './integrations/dualcontent.js';
-export type { default as HeadingElementSupport } from './integrations/heading.js';
-export type { default as ImageElementSupport } from './integrations/image.js';
-export type { default as MediaEmbedElementSupport } from './integrations/mediaembed.js';
-export type { default as ScriptElementSupport } from './integrations/script.js';
-export type { default as StyleElementSupport } from './integrations/style.js';
-export type { default as TableElementSupport } from './integrations/table.js';
-export type { default as HorizontalLineElementSupport } from './integrations/horizontalline.js';
+export type { CodeBlockElementSupport } from './integrations/codeblock.js';
+export type { CustomElementSupport } from './integrations/customelement.js';
+export type { ListElementSupport } from './integrations/list.js';
+export type { DualContentModelElementSupport } from './integrations/dualcontent.js';
+export type { HeadingElementSupport } from './integrations/heading.js';
+export type { ImageElementSupport } from './integrations/image.js';
+export type { MediaEmbedElementSupport } from './integrations/mediaembed.js';
+export type { ScriptElementSupport } from './integrations/script.js';
+export type { StyleElementSupport } from './integrations/style.js';
+export type { TableElementSupport } from './integrations/table.js';
+export type { HorizontalLineElementSupport } from './integrations/horizontalline.js';
+
+export {
+	viewToModelObjectConverter as _viewToModelObjectContentHtmlSupportConverter,
+	toObjectWidgetConverter as _toObjectWidgetHtmlSupportConverter,
+	createObjectView as _createObjectHtmlSupportView,
+	viewToAttributeInlineConverter as _viewToAttributeInlineHtmlSupportConverter,
+	emptyInlineModelElementToViewConverter as _emptyInlineModelElementToViewHtmlSupportConverter,
+	attributeToViewInlineConverter as _attributeToInlineHtmlSupportConverter,
+	viewToModelBlockAttributeConverter as _viewToModelBlockAttributeHtmlSupportConverter,
+	modelToViewBlockAttributeConverter as _modelToViewBlockAttributeHtmlSupportConverter
+} from './converters.js';
+
+export { getDescendantElement as _getHtmlSupportDescendantElement } from './integrations/integrationutils.js';
+export { defaultConfig as _HTML_SUPPORT_SCHEMA_DEFINITIONS } from './schemadefinitions.js';
+
+export {
+	updateViewAttributes as _updateHtmlSupportViewAttributes,
+	setViewAttributes as _setHtmlSupportViewAttributes,
+	removeViewAttributes as _removeHtmlSupportViewAttributes,
+	mergeViewElementAttributes as _mergeHtmlSupportViewElementAttributes,
+	modifyGhsAttribute as _modifyHtmlSupportGhsAttribute,
+	toPascalCase as _toHtmlSupportPascalCase,
+	getHtmlAttributeName as _getHtmlSupportAttributeName
+} from './utils.js';
 
 import './augmentation.js';

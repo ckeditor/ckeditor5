@@ -16,8 +16,8 @@ import type {
 	Element
 } from 'ckeditor5/src/engine.js';
 
-import type TableUtils from '../tableutils.js';
-import type TableWidthsCommand from '../../src/tablecolumnresize/tablewidthscommand.js';
+import { type TableUtils } from '../tableutils.js';
+import { type TableWidthsCommand } from '../../src/tablecolumnresize/tablewidthscommand.js';
 
 /**
  * The insert table layout command.
@@ -31,7 +31,7 @@ import type TableWidthsCommand from '../../src/tablecolumnresize/tablewidthscomm
  * editor.execute( 'insertTableLayout', { rows: 20, columns: 5 } );
  * ```
  */
-export default class InsertTableLayoutCommand extends Command {
+export class InsertTableLayoutCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

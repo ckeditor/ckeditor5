@@ -20,8 +20,9 @@ import {
  * Transforms `<br>` elements that are siblings to some block element into a paragraphs.
  *
  * @param documentFragment The view structure to be transformed.
+ * @internal
  */
-export default function transformBlockBrsToParagraphs(
+export function transformBlockBrsToParagraphs(
 	documentFragment: ViewDocumentFragment,
 	writer: UpcastWriter
 ): void {

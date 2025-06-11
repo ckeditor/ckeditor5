@@ -7,12 +7,14 @@
  * @module bookmark
  */
 
-export { default as Bookmark } from './bookmark.js';
-export { default as BookmarkEditing } from './bookmarkediting.js';
-export { default as BookmarkUI } from './bookmarkui.js';
-export { default as InsertBookmarkCommand } from './insertbookmarkcommand.js';
-export { default as UpdateBookmarkCommand } from './updatebookmarkcommand.js';
+export { Bookmark } from './bookmark.js';
+export { BookmarkEditing } from './bookmarkediting.js';
+export { BookmarkUI } from './bookmarkui.js';
+export { InsertBookmarkCommand } from './insertbookmarkcommand.js';
+export { UpdateBookmarkCommand } from './updatebookmarkcommand.js';
 
 export type { BookmarkConfig } from './bookmarkconfig.js';
+
+export { isBookmarkIdValid as _isBookmarkIdValid } from './utils.js';
 
 import './augmentation.js';

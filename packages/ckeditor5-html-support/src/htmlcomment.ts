@@ -16,7 +16,7 @@ import { uid } from 'ckeditor5/src/utils.js';
  *
  * For a detailed overview, check the {@glink features/html/html-comments HTML comment feature documentation}.
  */
-export default class HtmlComment extends Plugin {
+export class HtmlComment extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

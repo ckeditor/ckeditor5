@@ -9,10 +9,10 @@
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type { default as Element, NormalizedConsumables } from '../view/element.js';
-import type Node from '../view/node.js';
-import type Text from '../view/text.js';
-import type DocumentFragment from '../view/documentfragment.js';
+import type { Element, NormalizedConsumables } from '../view/element.js';
+import { type Node } from '../view/node.js';
+import { type Text } from '../view/text.js';
+import { type DocumentFragment } from '../view/documentfragment.js';
 import type { Match } from '../view/matcher.js';
 
 /**
@@ -40,7 +40,7 @@ import type { Match } from '../view/matcher.js';
  * viewConsumable.revert( docFragment ); // Revert already consumed document fragment.
  * ```
  */
-export default class ViewConsumable {
+export class ViewConsumable {
 	/**
 	 * Map of consumable elements. If {@link module:engine/view/element~Element element} is used as a key,
 	 * {@link module:engine/conversion/viewconsumable~ViewElementConsumables ViewElementConsumables} instance is stored as value.
@@ -327,6 +327,8 @@ export interface Consumables {
 /**
  * This is a private helper-class for {@link module:engine/conversion/viewconsumable~ViewConsumable}.
  * It represents and manipulates consumable parts of a single {@link module:engine/view/element~Element}.
+ *
+ * @internal
  */
 export class ViewElementConsumables {
 	public readonly element: Element;
@@ -604,6 +606,8 @@ export class ViewElementConsumables {
 /**
  * Normalizes a {@link module:engine/conversion/viewconsumable~Consumables} or {@link module:engine/view/matcher~Match}
  * to a {@link module:engine/view/element~NormalizedConsumables}.
+ *
+ * @internal
  */
 export function normalizeConsumables( consumables: Consumables | Match ): NormalizedConsumables {
 	const attributes: Array<[string, string?]> = [];

@@ -7,20 +7,20 @@
  * @module engine/model/position
  */
 
-import TypeCheckable from './typecheckable.js';
-import TreeWalker, { type TreeWalkerOptions, type TreeWalkerValue } from './treewalker.js';
+import { TypeCheckable } from './typecheckable.js';
+import { TreeWalker, type TreeWalkerOptions, type TreeWalkerValue } from './treewalker.js';
 
-import type Document from './document.js';
-import type DocumentFragment from './documentfragment.js';
-import type Element from './element.js';
-import type InsertOperation from './operation/insertoperation.js';
-import type Item from './item.js';
-import type MergeOperation from './operation/mergeoperation.js';
-import type MoveOperation from './operation/moveoperation.js';
-import type Node from './node.js';
-import type Operation from './operation/operation.js';
-import type SplitOperation from './operation/splitoperation.js';
-import type Text from './text.js';
+import { type Document } from './document.js';
+import { type DocumentFragment } from './documentfragment.js';
+import { type Element } from './element.js';
+import { type InsertOperation } from './operation/insertoperation.js';
+import { type Item } from './item.js';
+import { type MergeOperation } from './operation/mergeoperation.js';
+import { type MoveOperation } from './operation/moveoperation.js';
+import { type Node } from './node.js';
+import { type Operation } from './operation/operation.js';
+import { type SplitOperation } from './operation/splitoperation.js';
+import { type Text } from './text.js';
 
 import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
@@ -51,7 +51,7 @@ import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
  *
  * In most cases, position with wrong path is caused by an error in code, but it is sometimes needed, as described above.
  */
-export default class Position extends TypeCheckable {
+export class Position extends TypeCheckable {
 	/**
 	 * Root of the position path.
 	 */
@@ -1035,6 +1035,8 @@ Position.prototype.is = function( type: string ): boolean {
 	return type === 'position' || type === 'model:position';
 };
 
+export { Position as ModelPosition };
+
 /**
  * A flag indicating whether this position is `'before'` or `'after'` or `'same'` as given position.
  * If positions are in different roots `'different'` flag is returned.
@@ -1094,6 +1096,7 @@ export type PositionStickiness = 'toNone' | 'toNext' | 'toPrevious';
  *
  * @param position
  * @param positionParent The parent of the given position.
+ * @internal
  */
 export function getTextNodeAtPosition( position: Position, positionParent: Element | DocumentFragment ): Text | null {
 	const node = positionParent.getChildAtOffset( position.offset );
@@ -1127,6 +1130,7 @@ export function getTextNodeAtPosition( position: Position, positionParent: Eleme
  * @param position Position to check.
  * @param positionParent The parent of the given position.
  * @param textNode Text node at the given position.
+ * @internal
  */
 export function getNodeAfterPosition(
 	position: Position,
@@ -1153,6 +1157,7 @@ export function getNodeAfterPosition(
  * @param position Position to check.
  * @param positionParent The parent of the given position.
  * @param textNode Text node at the given position.
+ * @internal
  */
 export function getNodeBeforePosition(
 	position: Position,

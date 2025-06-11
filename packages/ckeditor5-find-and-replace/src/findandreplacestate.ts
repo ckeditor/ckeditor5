@@ -14,7 +14,7 @@ import type { ResultType } from './findandreplace.js';
 /**
  * The object storing find and replace plugin state for a given editor instance.
  */
-export default class FindAndReplaceState extends /* #__PURE__ */ ObservableMixin() {
+export class FindAndReplaceState extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * A collection of find matches.
 	 *
@@ -164,6 +164,8 @@ export default class FindAndReplaceState extends /* #__PURE__ */ ObservableMixin
  * Sorts search results by marker positions. Make sure that the results are sorted in the same order as they appear in the document
  * to avoid issues with the `find next` command. Apparently, the order of the results in the state might be different than the order
  * of the markers in the model.
+ *
+ * @internal
  */
 export function sortSearchResultsByMarkerPositions( model: Model, results: Array<ResultType> ): Array<ResultType> {
 	const sortMapping = { before: -1, same: 0, after: 1, different: 1 };

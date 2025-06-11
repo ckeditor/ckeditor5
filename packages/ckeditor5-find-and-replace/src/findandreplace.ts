@@ -8,8 +8,8 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import FindAndReplaceUI, { type SearchResetedEvent } from './findandreplaceui.js';
-import FindAndReplaceEditing from './findandreplaceediting.js';
+import { FindAndReplaceUI, type SearchResetedEvent } from './findandreplaceui.js';
+import { FindAndReplaceEditing } from './findandreplaceediting.js';
 import type { Marker } from 'ckeditor5/src/engine.js';
 import type { FindNextEvent, FindPreviousEvent, ReplaceAllEvent, ReplaceEvent } from './ui/findandreplaceformview.js';
 
@@ -31,7 +31,7 @@ export type ResultType = {
  * * The {@link module:find-and-replace/findandreplaceediting~FindAndReplaceEditing find and replace editing feature},
  * * The {@link module:find-and-replace/findandreplaceui~FindAndReplaceUI find and replace UI feature}
  */
-export default class FindAndReplace extends Plugin {
+export class FindAndReplace extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

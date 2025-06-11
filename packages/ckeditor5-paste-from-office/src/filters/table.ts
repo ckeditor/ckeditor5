@@ -17,8 +17,10 @@ import { convertCssLengthToPx } from './utils.js';
 /**
  * Applies border none for table and cells without a border specified.
  * Normalizes style length units to px.
+ *
+ * @internal
  */
-export default function transformTables(
+export function transformTables(
 	documentFragment: ViewDocumentFragment,
 	writer: UpcastWriter
 ): void {

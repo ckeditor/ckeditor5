@@ -7,20 +7,20 @@
  * @module engine/model/utils/insertcontent
  */
 
-import DocumentSelection from '../documentselection.js';
-import Element from '../element.js';
-import LivePosition from '../liveposition.js';
-import LiveRange from '../liverange.js';
-import Position from '../position.js';
-import Range from '../range.js';
+import { DocumentSelection } from '../documentselection.js';
+import { Element } from '../element.js';
+import { LivePosition } from '../liveposition.js';
+import { LiveRange } from '../liverange.js';
+import { Position } from '../position.js';
+import { Range } from '../range.js';
 
-import type DocumentFragment from '../documentfragment.js';
-import type Item from '../item.js';
-import type Model from '../model.js';
-import type Schema from '../schema.js';
-import type Writer from '../writer.js';
-import type Node from '../node.js';
-import type Selection from '../selection.js';
+import { type DocumentFragment } from '../documentfragment.js';
+import { type Item } from '../item.js';
+import { type Model } from '../model.js';
+import { type Schema } from '../schema.js';
+import { type Writer } from '../writer.js';
+import { type Node } from '../node.js';
+import { type Selection } from '../selection.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -54,8 +54,9 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  * @returns Range which contains all the performed changes. This is a range that, if removed,
  * would return the model to the state before the insertion. If no changes were preformed by `insertContent`, returns a range collapsed
  * at the insertion position.
+ * @internal
  */
-export default function insertContent(
+export function insertContent(
 	model: Model,
 	content: Item | DocumentFragment,
 	selectable?: Selection | DocumentSelection

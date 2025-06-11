@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../src/model/model.js';
-import Element from '../../src/model/element.js';
-import Text from '../../src/model/text.js';
-import Position from '../../src/model/position.js';
-import Range from '../../src/model/range.js';
+import { Model } from '../../src/model/model.js';
+import { Element } from '../../src/model/element.js';
+import { Text } from '../../src/model/text.js';
+import { Position } from '../../src/model/position.js';
+import { Range } from '../../src/model/range.js';
 
-import InsertOperation from '../../src/model/operation/insertoperation.js';
-import MoveOperation from '../../src/model/operation/moveoperation.js';
-import RenameOperation from '../../src/model/operation/renameoperation.js';
-import AttributeOperation from '../../src/model/operation/attributeoperation.js';
-import SplitOperation from '../../src/model/operation/splitoperation.js';
-import MergeOperation from '../../src/model/operation/mergeoperation.js';
-import RootOperation from '../../src/model/operation/rootoperation.js';
+import { InsertOperation } from '../../src/model/operation/insertoperation.js';
+import { MoveOperation } from '../../src/model/operation/moveoperation.js';
+import { RenameOperation } from '../../src/model/operation/renameoperation.js';
+import { AttributeOperation } from '../../src/model/operation/attributeoperation.js';
+import { SplitOperation } from '../../src/model/operation/splitoperation.js';
+import { MergeOperation } from '../../src/model/operation/mergeoperation.js';
+import { RootOperation } from '../../src/model/operation/rootoperation.js';
 
 describe( 'Differ', () => {
 	let doc, differ, root, model;

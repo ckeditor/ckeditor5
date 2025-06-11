@@ -12,7 +12,8 @@ import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { logWarning, first } from 'ckeditor5/src/utils.js';
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
-import StyleUtils, {
+import {
+	StyleUtils,
 	type BlockStyleDefinition,
 	type NormalizedStyleDefinition,
 	type NormalizedStyleDefinitions
@@ -23,7 +24,7 @@ import StyleUtils, {
  *
  * Applies and removes styles from selection and elements.
  */
-export default class StyleCommand extends Command {
+export class StyleCommand extends Command {
 	/**
 	 * Set of currently applied styles on the current selection.
 	 *

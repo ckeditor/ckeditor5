@@ -7,24 +7,24 @@
  * @module engine/model/differ
  */
 
-import Position from './position.js';
-import Range from './range.js';
+import { Position } from './position.js';
+import { Range } from './range.js';
 
-import type { default as MarkerCollection, MarkerData } from './markercollection.js';
-import type AttributeOperation from './operation/attributeoperation.js';
-import type DocumentFragment from './documentfragment.js';
-import type Element from './element.js';
-import type InsertOperation from './operation/insertoperation.js';
-import type Item from './item.js';
-import type MergeOperation from './operation/mergeoperation.js';
-import type MoveOperation from './operation/moveoperation.js';
-import type Node from './node.js';
-import type RootElement from './rootelement.js';
-import type Operation from './operation/operation.js';
-import type RenameOperation from './operation/renameoperation.js';
-import type SplitOperation from './operation/splitoperation.js';
-import type RootOperation from './operation/rootoperation.js';
-import type RootAttributeOperation from './operation/rootattributeoperation.js';
+import type { MarkerCollection, MarkerData } from './markercollection.js';
+import { type AttributeOperation } from './operation/attributeoperation.js';
+import { type DocumentFragment } from './documentfragment.js';
+import { type Element } from './element.js';
+import { type InsertOperation } from './operation/insertoperation.js';
+import { type Item } from './item.js';
+import { type MergeOperation } from './operation/mergeoperation.js';
+import { type MoveOperation } from './operation/moveoperation.js';
+import { type Node } from './node.js';
+import { type RootElement } from './rootelement.js';
+import { type Operation } from './operation/operation.js';
+import { type RenameOperation } from './operation/renameoperation.js';
+import { type SplitOperation } from './operation/splitoperation.js';
+import { type RootOperation } from './operation/rootoperation.js';
+import { type RootAttributeOperation } from './operation/rootattributeoperation.js';
 
 /**
  * Calculates the difference between two model states.
@@ -34,7 +34,7 @@ import type RootAttributeOperation from './operation/rootattributeoperation.js';
  * changed elements, after all changes are applied on the model document. Calculates the diff between saved
  * elements and new ones and returns a change set.
  */
-export default class Differ {
+export class Differ {
 	/**
 	 * Priority of the {@link ~Differ#_elementState element states}. States on higher indexes of the array can overwrite states on the lower
 	 * indexes.
@@ -1562,6 +1562,8 @@ function _changesInGraveyardFilter( entry: DiffItem ) {
 
 /**
  * A snapshot is representing state of a given element before the first change was applied on that element.
+ *
+ * @internal
  */
 export interface DifferSnapshot {
 

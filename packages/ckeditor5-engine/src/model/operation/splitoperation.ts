@@ -7,13 +7,13 @@
  * @module engine/model/operation/splitoperation
  */
 
-import Operation from './operation.js';
-import MergeOperation from './mergeoperation.js';
-import Position from '../position.js';
-import Range from '../range.js';
+import { Operation } from './operation.js';
+import { MergeOperation } from './mergeoperation.js';
+import { Position } from '../position.js';
+import { Range } from '../range.js';
 import { _insert, _move } from './utils.js';
 
-import type Document from '../document.js';
+import { type Document } from '../document.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import type { Selectable } from '../selection.js';
@@ -23,7 +23,7 @@ import type { Selectable } from '../selection.js';
  * {@link module:engine/model/operation/splitoperation~SplitOperation#splitPosition split position} into two elements,
  * both containing a part of the element's original content.
  */
-export default class SplitOperation extends Operation {
+export class SplitOperation extends Operation {
 	/**
 	 * Position at which an element should be split.
 	 */

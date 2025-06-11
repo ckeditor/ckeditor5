@@ -9,17 +9,17 @@
  * @module engine/conversion/downcasthelpers
  */
 
-import ModelRange from '../model/range.js';
-import ModelSelection from '../model/selection.js';
-import ModelDocumentSelection from '../model/documentselection.js';
-import ModelElement from '../model/element.js';
-import ModelPosition from '../model/position.js';
+import { ModelRange } from '../model/range.js';
+import { ModelSelection } from '../model/selection.js';
+import { ModelDocumentSelection } from '../model/documentselection.js';
+import { ModelElement } from '../model/element.js';
+import { ModelPosition } from '../model/position.js';
 
-import ViewAttributeElement from '../view/attributeelement.js';
-import ConversionHelpers from './conversionhelpers.js';
+import { ViewAttributeElement } from '../view/attributeelement.js';
+import { ConversionHelpers } from './conversionhelpers.js';
 
 import type {
-	default as DowncastDispatcher,
+	DowncastDispatcher,
 	DiffItemReinsert,
 	DowncastConversionApi,
 	DowncastInsertEvent,
@@ -28,24 +28,24 @@ import type {
 	DowncastReduceChangesEvent,
 	DowncastRemoveMarkerEvent
 } from './downcastdispatcher.js';
-import type ModelConsumable from './modelconsumable.js';
+import { type ModelConsumable } from './modelconsumable.js';
 import type { DiffItem } from '../model/differ.js';
-import type ModelNode from '../model/node.js';
-import type ModelItem from '../model/item.js';
-import type ModelTextProxy from '../model/textproxy.js';
-import type ModelText from '../model/text.js';
+import { type ModelNode } from '../model/node.js';
+import { type ModelItem } from '../model/item.js';
+import { type ModelTextProxy } from '../model/textproxy.js';
+import { type ModelText } from '../model/text.js';
 
-import type DowncastWriter from '../view/downcastwriter.js';
-import type ElementDefinition from '../view/elementdefinition.js';
-import type ViewDocumentFragment from '../view/documentfragment.js';
-import type UIElement from '../view/uielement.js';
-import type ViewElement from '../view/element.js';
-import type ViewNode from '../view/node.js';
-import type ViewPosition from '../view/position.js';
-import type ViewRange from '../view/range.js';
-import StylesMap from '../view/stylesmap.js';
+import { type DowncastWriter } from '../view/downcastwriter.js';
+import { type ElementDefinition } from '../view/elementdefinition.js';
+import { type ViewDocumentFragment } from '../view/documentfragment.js';
+import { type UIElement } from '../view/uielement.js';
+import { type ViewElement } from '../view/element.js';
+import { type ViewNode } from '../view/node.js';
+import { type ViewPosition } from '../view/position.js';
+import { type ViewRange } from '../view/range.js';
+import { StylesMap } from '../view/stylesmap.js';
 import type {
-	default as Mapper,
+	Mapper,
 	MapperModelToViewPositionEvent
 } from './mapper.js';
 
@@ -66,7 +66,7 @@ import { cloneDeep } from 'es-toolkit/compat';
  *
  * @extends module:engine/conversion/conversionhelpers~ConversionHelpers
  */
-export default class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
+export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 	/**
 	 * Model element to view element conversion helper.
 	 *
@@ -830,6 +830,7 @@ export default class DowncastHelpers extends ConversionHelpers<DowncastDispatche
  * ```
  *
  * @returns Insert text event converter.
+ * @internal
  */
 export function insertText() {
 	return (
@@ -853,6 +854,7 @@ export function insertText() {
  * Function factory that creates a default downcast converter for triggering attributes and children conversion.
  *
  * @returns The converter.
+ * @internal
  */
 export function insertAttributesAndChildren() {
 	return (
@@ -878,6 +880,7 @@ export function insertAttributesAndChildren() {
  * ```
  *
  * @returns Remove event converter.
+ * @internal
  */
 export function remove() {
 	return (
@@ -908,6 +911,8 @@ export function remove() {
  * Creates a `<span>` {@link module:engine/view/attributeelement~AttributeElement view attribute element} from the information
  * provided by the {@link module:engine/conversion/downcasthelpers~HighlightDescriptor highlight descriptor} object. If the priority
  * is not provided in the descriptor, the default priority will be used.
+ *
+ * @internal
  */
 export function createViewElementFromHighlightDescriptor( writer: DowncastWriter, descriptor: HighlightDescriptor ): ViewAttributeElement {
 	const viewElement = writer.createAttributeElement( 'span', descriptor.attributes );
@@ -935,6 +940,7 @@ export function createViewElementFromHighlightDescriptor( writer: DowncastWriter
  * ```
  *
  * @returns Selection converter.
+ * @internal
  */
 export function convertRangeSelection() {
 	return (
@@ -987,6 +993,7 @@ export function convertRangeSelection() {
  * by merging attributes.
  *
  * @returns Selection converter.
+ * @internal
  */
 export function convertCollapsedSelection() {
 	return (
@@ -1040,6 +1047,7 @@ export function convertCollapsedSelection() {
  * which does the opposite by breaking attributes in the selection position.
  *
  * @returns Selection converter.
+ * @internal
  */
 export function cleanSelection() {
 	return (
@@ -2971,6 +2979,7 @@ export type MarkerDataCreatorFunction = (
  *
  * @callback module:engine/conversion/downcasthelpers~ConsumerFunction
  *
+ * @internal
  * @param element The model element to be converted to the view structure.
  * @param consumable The `ModelConsumable` same as in
  * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi#consumable `DowncastConversionApi.consumable`}.

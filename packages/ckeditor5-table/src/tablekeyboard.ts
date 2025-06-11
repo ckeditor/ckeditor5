@@ -7,9 +7,9 @@
  * @module table/tablekeyboard
  */
 
-import TableSelection from './tableselection.js';
-import TableWalker from './tablewalker.js';
-import TableUtils from './tableutils.js';
+import { TableSelection } from './tableselection.js';
+import { TableWalker } from './tablewalker.js';
+import { TableUtils } from './tableutils.js';
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import {
@@ -33,7 +33,7 @@ import type {
  * This plugin enables keyboard navigation for tables.
  * It is loaded automatically by the {@link module:table/table~Table} plugin.
  */
-export default class TableKeyboard extends Plugin {
+export class TableKeyboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

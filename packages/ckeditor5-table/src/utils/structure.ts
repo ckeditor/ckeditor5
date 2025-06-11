@@ -9,9 +9,9 @@
 
 import type { Element, Node, Writer } from 'ckeditor5/src/engine.js';
 
-import { default as TableWalker, type TableSlot } from '../tablewalker.js';
+import { TableWalker, type TableSlot } from '../tablewalker.js';
 import { createEmptyTableCell, updateNumericAttribute } from './common.js';
-import type TableUtils from '../tableutils.js';
+import { type TableUtils } from '../tableutils.js';
 
 type CellAttributes = {
 	rowspan?: number;
@@ -46,6 +46,8 @@ type CellAttributes = {
  *      ├───┼───┬───┤   ├───┤                  └───────┴───┘
  *   4  │ n │ o │ p │   │ q │
  *      └───┴───┴───┴───┴───┘
+ *
+ * @internal
  */
 export function cropTableToDimensions(
 	sourceTable: Element,
@@ -129,6 +131,7 @@ export function cropTableToDimensions(
  *
  * will return slot info for cells: "j", "f", "k".
  *
+ * @internal
  * @param table The table to check.
  * @param overlapRow The index of the row to check.
  * @param startRow row to start analysis. Use it when it is known that the cells above that row will not overlap. Default value is 0.
@@ -153,6 +156,7 @@ export function getVerticallyOverlappingCells( table: Element, overlapRow: numbe
 /**
  * Splits the table cell horizontally.
  *
+ * @internal
  * @returns Created table cell, if any were created.
  */
 export function splitHorizontally( tableCell: Element, splitRow: number, writer: Writer ): Element | null {
@@ -223,6 +227,7 @@ export function splitHorizontally( tableCell: Element, splitRow: number, writer:
  *
  * will return slot info for cells: "b", "e", "i".
  *
+ * @internal
  * @param table The table to check.
  * @param overlapColumn The index of the column to check.
  */
@@ -246,6 +251,7 @@ export function getHorizontallyOverlappingCells( table: Element, overlapColumn: 
 /**
  * Splits the table cell vertically.
  *
+ * @internal
  * @param columnIndex The table cell column index.
  * @param splitColumn The index of column to split cell on.
  * @returns Created table cell.
@@ -280,6 +286,8 @@ export function splitVertically( tableCell: Element, columnIndex: number, splitC
  *
  * If table cell width (or height) covers a column (or row) that is after a limit column (or row)
  * this method will trim "colspan" (or "rowspan") attribute so the table cell will fit in a defined limits.
+ *
+ * @internal
  */
 export function trimTableCellIfNeeded(
 	tableCell: Element,
@@ -478,6 +486,7 @@ export function removeEmptyRowsColumns( table: Element, tableUtils: TableUtils )
  *      3 |   |   |   |   |
  *        +---+---+---+---+
  *
+ * @internal
  * @returns Adjusted last row index.
  */
 export function adjustLastRowIndex(
@@ -526,6 +535,7 @@ export function adjustLastRowIndex(
  *               ^
  *              last column, each cell has colspan = 2, so we need to return 3, not 2
  *
+ * @internal
  * @returns Adjusted last column index.
  */
 export function adjustLastColumnIndex(

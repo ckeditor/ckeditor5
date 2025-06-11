@@ -31,7 +31,7 @@ import '../../theme/linkprovideritems.css';
 /**
  * The link provider items view.
  */
-export default class LinkProviderItemsView extends View {
+export class LinkProviderItemsView extends View {
 	/**
 	 * Tracks information about the list of links.
 	 *

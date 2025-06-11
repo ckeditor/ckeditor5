@@ -7,8 +7,9 @@
  * @module engine/view/documentselection
  */
 
-import TypeCheckable from './typecheckable.js';
-import Selection, {
+import { TypeCheckable } from './typecheckable.js';
+import {
+	Selection,
 	type PlaceOrOffset,
 	type Selectable,
 	type SelectionOptions,
@@ -17,12 +18,12 @@ import Selection, {
 
 import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
-import type EditableElement from './editableelement.js';
-import type Element from './element.js';
-import type Node from './node.js';
-import type Item from './item.js';
-import type { default as Position, PositionOffset } from './position.js';
-import type Range from './range.js';
+import { type EditableElement } from './editableelement.js';
+import { type Element } from './element.js';
+import { type Node } from './node.js';
+import { type Item } from './item.js';
+import type { Position, PositionOffset } from './position.js';
+import { type Range } from './range.js';
 
 /**
  * Class representing the document selection in the view.
@@ -34,7 +35,7 @@ import type Range from './range.js';
  * the {@link module:engine/view/view~View#change `View#change()`} block
  * (so via {@link module:engine/view/downcastwriter~DowncastWriter#setSelection `DowncastWriter#setSelection()`}).
  */
-export default class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
+export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
 	 * Selection is used internally (`DocumentSelection` is a proxy to that selection).
 	 */
@@ -380,6 +381,8 @@ export default class DocumentSelection extends /* #__PURE__ */ EmitterMixin( Typ
 		this._selection.setFocus( itemOrPosition, offset );
 	}
 }
+
+export { DocumentSelection as ViewDocumentSelection };
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.

@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
-import FocusObserver from '../../../src/view/observer/focusobserver.js';
-import View from '../../../src/view/view.js';
-import createViewRoot from '../_utils/createroot.js';
+import { FocusObserver } from '../../../src/view/observer/focusobserver.js';
+import { View } from '../../../src/view/view.js';
+import { createViewRoot } from '../_utils/createroot.js';
 import { setData } from '../../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 

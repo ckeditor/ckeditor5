@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Schema, { SchemaContext } from '../../src/model/schema.js';
+import { Schema, SchemaContext } from '../../src/model/schema.js';
 
-import Model from '../../src/model/model.js';
+import { Model } from '../../src/model/model.js';
 
-import DocumentFragment from '../../src/model/documentfragment.js';
-import Element from '../../src/model/element.js';
-import Text from '../../src/model/text.js';
-import TextProxy from '../../src/model/textproxy.js';
-import Position from '../../src/model/position.js';
-import Range from '../../src/model/range.js';
+import { DocumentFragment } from '../../src/model/documentfragment.js';
+import { Element } from '../../src/model/element.js';
+import { Text } from '../../src/model/text.js';
+import { TextProxy } from '../../src/model/textproxy.js';
+import { Position } from '../../src/model/position.js';
+import { Range } from '../../src/model/range.js';
 
 import { getData, setData, stringify, parse } from '../../src/dev-utils/model.js';
 
-import AttributeOperation from '../../src/model/operation/attributeoperation.js';
+import { AttributeOperation } from '../../src/model/operation/attributeoperation.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 describe( 'Schema', () => {

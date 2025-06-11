@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ContextPlugin from '../src/contextplugin.js';
+import { ContextPlugin } from '../src/contextplugin.js';
 
 describe( 'ContextPlugin', () => {
 	const contextMock = {};

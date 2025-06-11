@@ -25,8 +25,10 @@ import '../../theme/charactergrid.css';
 /**
  * A grid of character tiles. It allows browsing special characters and selecting the character to
  * be inserted into the content.
+ *
+ * @internal
  */
-export default class CharacterGridView extends View<HTMLDivElement> {
+export class CharacterGridView extends View<HTMLDivElement> {
 	/**
 	 * A collection of the child tile views. Each tile represents a particular character.
 	 */

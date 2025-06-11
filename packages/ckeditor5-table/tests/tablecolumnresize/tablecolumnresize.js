@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import TableColumnResize from '../../src/tablecolumnresize.js';
+import { TableColumnResize } from '../../src/tablecolumnresize.js';
 
 describe( 'TableColumnResize', () => {
 	it( 'should have `isOfficialPlugin` static flag set to `true`', () => {

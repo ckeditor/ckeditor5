@@ -13,7 +13,7 @@ import type { ElementAttributeValue } from './element.js';
 /**
  * Token list. Allows handling (adding, removing, retrieving) a set of tokens (for example class names).
  */
-export default class TokenList implements ElementAttributeValue {
+export class TokenList implements ElementAttributeValue {
 	/**
 	 * The set of tokens.
 	 */

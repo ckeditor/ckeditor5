@@ -7,20 +7,20 @@
  * @module engine/dataprocessor/htmldataprocessor
  */
 
-import BasicHtmlWriter from './basichtmlwriter.js';
-import DomConverter from '../view/domconverter.js';
+import { BasicHtmlWriter } from './basichtmlwriter.js';
+import { DomConverter } from '../view/domconverter.js';
 
-import type DataProcessor from './dataprocessor.js';
-import type HtmlWriter from './htmlwriter.js';
-import type ViewDocument from '../view/document.js';
-import type ViewDocumentFragment from '../view/documentfragment.js';
+import { type DataProcessor } from './dataprocessor.js';
+import { type HtmlWriter } from './htmlwriter.js';
+import { type ViewDocument } from '../view/document.js';
+import { type ViewDocumentFragment } from '../view/documentfragment.js';
 import type { MatcherPattern } from '../view/matcher.js';
 
 /**
  * The HTML data processor class.
  * This data processor implementation uses HTML as input and output data.
  */
-export default class HtmlDataProcessor implements DataProcessor {
+export class HtmlDataProcessor implements DataProcessor {
 	/**
 	 * A DOM parser instance used to parse an HTML string to an HTML document.
 	 */

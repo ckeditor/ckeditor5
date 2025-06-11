@@ -23,7 +23,7 @@ import type {
  * ShiftEnter command. It is used by the {@link module:enter/shiftenter~ShiftEnter ShiftEnter feature} to handle
  * the <kbd>Shift</kbd>+<kbd>Enter</kbd> keystroke.
  */
-export default class ShiftEnterCommand extends Command {
+export class ShiftEnterCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

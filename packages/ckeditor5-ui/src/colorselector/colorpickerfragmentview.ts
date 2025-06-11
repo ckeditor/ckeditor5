@@ -7,14 +7,14 @@
  * @module ui/colorselector/colorpickerfragmentview
  */
 
-import View from '../view.js';
-import ButtonView from '../button/buttonview.js';
-import type ViewCollection from '../viewcollection.js';
+import { View } from '../view.js';
+import { ButtonView } from '../button/buttonview.js';
+import { type ViewCollection } from '../viewcollection.js';
 import type { FocusableView } from '../focuscycler.js';
-import type LabeledFieldView from '../labeledfield/labeledfieldview.js';
-import type InputTextView from '../inputtext/inputtextview.js';
+import { type LabeledFieldView } from '../labeledfield/labeledfieldview.js';
+import { type InputTextView } from '../inputtext/inputtextview.js';
 import {
-	default as ColorPickerView,
+	ColorPickerView,
 	type ColorPickerColorSelectedEvent
 } from '../colorpicker/colorpickerview.js';
 
@@ -34,7 +34,7 @@ import { IconCancel, IconCheck } from '@ckeditor/ckeditor5-icons';
  * * A text input accepting colors in HEX format,
  * * "Save" and "Cancel" action buttons.
  */
-export default class ColorPickerFragmentView extends View {
+export class ColorPickerFragmentView extends View {
 	/**
 	 * A collection of component's children.
 	 */

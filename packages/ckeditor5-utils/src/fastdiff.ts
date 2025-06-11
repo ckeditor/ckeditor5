@@ -112,7 +112,7 @@ import type { Change } from './difftochanges.js';
  * @returns Array of changes. The elements are either {@link module:utils/diff~DiffResult} or {@link module:utils/difftochanges~Change},
  * depending on `atomicChanges` parameter.
  */
-export default function fastDiff<T, AtomicChanges extends boolean = false>(
+export function fastDiff<T, AtomicChanges extends boolean = false>(
 	a: ArrayLike<T>,
 	b: ArrayLike<T>,
 	cmp?: ( a: T, b: T ) => boolean,

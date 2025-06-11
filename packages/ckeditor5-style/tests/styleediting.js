@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
-import StyleEditing from '../src/styleediting.js';
-import StyleCommand from '../src/stylecommand.js';
-import StyleUtils from '../src/styleutils.js';
-import ListStyleSupport from '../src/integrations/list.js';
-import TableStyleSupport from '../src/integrations/table.js';
-import LinkStyleSupport from '../src/integrations/link.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
+import { StyleEditing } from '../src/styleediting.js';
+import { StyleCommand } from '../src/stylecommand.js';
+import { StyleUtils } from '../src/styleutils.js';
+import { ListStyleSupport } from '../src/integrations/list.js';
+import { TableStyleSupport } from '../src/integrations/table.js';
+import { LinkStyleSupport } from '../src/integrations/link.js';
 
 describe( 'StyleEditing', () => {
 	let editor, editorElement;

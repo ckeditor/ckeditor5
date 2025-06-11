@@ -15,6 +15,7 @@
  *
  * @param htmlString HTML string in which spacing should be normalized.
  * @returns Input HTML with spaces normalized.
+ * @internal
  */
 export function normalizeSpacing( htmlString: string ): string {
 	// Run normalizeSafariSpaceSpans() two times to cover nested spans.
@@ -37,6 +38,7 @@ export function normalizeSpacing( htmlString: string ): string {
  * (see especially {@link module:engine/view/domconverter~DomConverter#_processDomInlineNodes}).
  *
  * @param htmlDocument Native `Document` object in which spacing should be normalized.
+ * @internal
  */
 export function normalizeSpacerunSpans( htmlDocument: Document ): void {
 	htmlDocument.querySelectorAll( 'span[style*=spacerun]' ).forEach( el => {
@@ -57,6 +59,7 @@ export function normalizeSpacerunSpans( htmlDocument: Document ): void {
  *
  * @param htmlString HTML string in which spacing should be normalized
  * @returns Input HTML with spaces normalized.
+ * @internal
  */
 function normalizeSafariSpaceSpans( htmlString: string ) {
 	return htmlString.replace( /<span(?: class="Apple-converted-space"|)>(\s+)<\/span>/g, ( fullMatch, spaces ) => {

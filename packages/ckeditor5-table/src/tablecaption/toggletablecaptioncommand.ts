@@ -9,7 +9,7 @@
 
 import { Command } from 'ckeditor5/src/core.js';
 import type { Writer } from 'ckeditor5/src/engine.js';
-import type TableCaptionEditing from './tablecaptionediting.js';
+import { type TableCaptionEditing } from './tablecaptionediting.js';
 
 import { getCaptionFromTableModelElement } from './utils.js';
 import { getSelectionAffectedTable } from '../utils/common.js';
@@ -37,7 +37,7 @@ import { getSelectionAffectedTable } from '../utils/common.js';
  * editor.execute( 'toggleTableCaption', { focusCaptionOnShow: true } );
  * ```
  */
-export default class ToggleTableCaptionCommand extends Command {
+export class ToggleTableCaptionCommand extends Command {
 	declare public value: boolean;
 
 	/**

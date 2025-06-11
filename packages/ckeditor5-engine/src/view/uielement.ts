@@ -7,14 +7,14 @@
  * @module engine/view/uielement
  */
 
-import Element, { type ElementAttributes } from './element.js';
-import Node from './node.js';
+import { Element, type ElementAttributes } from './element.js';
+import { Node } from './node.js';
 import { CKEditorError, keyCodes } from '@ckeditor/ckeditor5-utils';
 
-import type View from './view.js';
-import type Document from './document.js';
-import type DomConverter from './domconverter.js';
-import type Item from './item.js';
+import { type View } from './view.js';
+import { type Document } from './document.js';
+import { type DomConverter } from './domconverter.js';
+import { type Item } from './item.js';
 import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver.js';
 import type { KeyEventData } from './observer/keyobserver.js';
 
@@ -39,7 +39,7 @@ type DomElement = globalThis.HTMLElement;
  * To create a new UI element use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement `downcastWriter#createUIElement()`} method.
  */
-export default class UIElement extends Element {
+export class UIElement extends Element {
 	/**
 	 * Creates new instance of UIElement.
 	 *
@@ -145,6 +145,8 @@ UIElement.prototype.is = function( type: string, name?: string ): boolean {
 	}
 };
 
+export { UIElement as ViewUIElement };
+
 /**
  * This function injects UI element handling to the given {@link module:engine/view/document~Document document}.
  *
@@ -153,6 +155,7 @@ UIElement.prototype.is = function( type: string, name?: string ): boolean {
  * Without this handler, it would be impossible to "jump over" UI element using right arrow key.
  *
  * @param view View controller to which the quirks handling will be injected.
+ * @internal
  */
 export function injectUiElementHandling( view: View ): void {
 	view.document.on<ViewDocumentArrowKeyEvent>( 'arrowKey', ( evt, data ) =>

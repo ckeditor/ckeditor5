@@ -47,11 +47,11 @@ import {
 	isListItemView
 } from './utils/view.js';
 
-import ListWalker, { SiblingListBlocksIterator } from './utils/listwalker.js';
+import { ListWalker, SiblingListBlocksIterator } from './utils/listwalker.js';
 import { findAndAddListHeadToMap } from './utils/postfixers.js';
 
 import type {
-	default as ListEditing,
+	ListEditing,
 	ListEditingCheckAttributesEvent,
 	ListEditingCheckElementEvent,
 	ListItemAttributesMap,
@@ -369,6 +369,8 @@ export function listItemDowncastConverter(
 
 /**
  * The 'remove' downcast converter for custom markers.
+ *
+ * @internal
  */
 export function listItemDowncastRemoveConverter( schema: Schema ): GetCallback<DowncastRemoveEvent> {
 	return ( evt, data, conversionApi ) => {
@@ -451,6 +453,8 @@ export function findMappedViewElement( element: Element, mapper: Mapper, model: 
 
 /**
  * The model to view custom position mapping for cases when marker is injected at the beginning of a block.
+ *
+ * @internal
  */
 export function createModelToViewPositionMapper(
 	strategies: Array<DowncastStrategy>,

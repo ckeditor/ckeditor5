@@ -4,8 +4,8 @@
  */
 
 import { keyCodes, isText, type KeystrokeInfo } from '@ckeditor/ckeditor5-utils';
-import type View from './view.js';
-import type DomEventData from './observer/domeventdata.js';
+import { type View } from './view.js';
+import { type DomEventData } from './observer/domeventdata.js';
 import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver.js';
 
 /**
@@ -43,6 +43,7 @@ import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver.js'
  *
  * @see module:engine/view/filler~MARKED_NBSP_FILLER
  * @see module:engine/view/filler~BR_FILLER
+ * @internal
  */
 export const NBSP_FILLER = ( domDocument: Document ): Text => domDocument.createTextNode( '\u00A0' );
 
@@ -52,6 +53,7 @@ export const NBSP_FILLER = ( domDocument: Document ): Text => domDocument.create
  *
  * @see module:engine/view/filler~NBSP_FILLER
  * @see module:engine/view/filler~BR_FILLER
+ * @internal
  */
 export const MARKED_NBSP_FILLER = ( domDocument: Document ): HTMLSpanElement => {
 	const span = domDocument.createElement( 'span' );
@@ -67,6 +69,7 @@ export const MARKED_NBSP_FILLER = ( domDocument: Document ): HTMLSpanElement => 
  *
  * @see module:engine/view/filler~NBSP_FILLER
  * @see module:engine/view/filler~MARKED_NBSP_FILLER
+ * @internal
  */
 export const BR_FILLER = ( domDocument: Document ): HTMLBRElement => {
 	const fillerBr = domDocument.createElement( 'br' );
@@ -77,11 +80,15 @@ export const BR_FILLER = ( domDocument: Document ): HTMLBRElement => {
 
 /**
  * Length of the {@link module:engine/view/filler~INLINE_FILLER INLINE_FILLER}.
+ *
+ * @internal
  */
 export const INLINE_FILLER_LENGTH = 7;
 
 /**
  * Inline filler which is a sequence of the word joiners.
+ *
+ * @internal
  */
 export const INLINE_FILLER = '\u2060'.repeat( INLINE_FILLER_LENGTH );
 
@@ -97,6 +104,7 @@ export const INLINE_FILLER = '\u2060'.repeat( INLINE_FILLER_LENGTH );
  *
  * @param domNode DOM node.
  * @returns True if the text node starts with the {@link module:engine/view/filler~INLINE_FILLER inline filler}.
+ * @internal
  */
 export function startsWithFiller( domNode: Node | string ): boolean {
 	if ( typeof domNode == 'string' ) {
@@ -116,6 +124,7 @@ export function startsWithFiller( domNode: Node | string ): boolean {
  *
  * @param domText DOM text node.
  * @returns True if the text node contains only the {@link module:engine/view/filler~INLINE_FILLER inline filler}.
+ * @internal
  */
 export function isInlineFiller( domText: Text ): boolean {
 	return domText.data.length == INLINE_FILLER_LENGTH && startsWithFiller( domText );
@@ -132,6 +141,7 @@ export function isInlineFiller( domText: Text ): boolean {
  *
  * @param domText DOM text node, possible with inline filler.
  * @returns Data without filler.
+ * @internal
  */
 export function getDataWithoutFiller( domText: Text | string ): string {
 	const data = typeof domText == 'string' ? domText : domText.data;
@@ -148,6 +158,7 @@ export function getDataWithoutFiller( domText: Text | string ): string {
  * the left arrow is pressed, so the filler does not break navigation.
  *
  * @param view View controller instance we should inject quirks handling on.
+ * @internal
  */
 export function injectQuirksHandling( view: View ): void {
 	view.document.on<ViewDocumentArrowKeyEvent>( 'arrowKey', jumpOverInlineFiller, { priority: 'low' } );

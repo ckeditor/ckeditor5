@@ -14,7 +14,8 @@ import type { TemplateDefinition } from 'ckeditor5/src/ui.js';
 
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 
-import StyleUtils, {
+import {
+	StyleUtils,
 	type BlockStyleDefinition,
 	type StyleUtilsGetAffectedBlocksEvent,
 	type StyleUtilsIsActiveForBlockEvent,
@@ -24,7 +25,7 @@ import StyleUtils, {
 
 import type { StyleDefinition } from '../styleconfig.js';
 
-export default class ListStyleSupport extends Plugin {
+export class ListStyleSupport extends Plugin {
 	private _listUtils!: ListUtils;
 	private _styleUtils!: StyleUtils;
 	private _htmlSupport!: GeneralHtmlSupport;

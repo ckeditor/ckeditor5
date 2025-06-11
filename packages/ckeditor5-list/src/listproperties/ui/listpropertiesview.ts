@@ -39,7 +39,7 @@ import '../../../theme/listproperties.css';
  *
  * @internal
  */
-export default class ListPropertiesView extends View {
+export class ListPropertiesView extends View {
 	/**
 	 * @inheritDoc
 	 */
@@ -412,6 +412,11 @@ export default class ListPropertiesView extends View {
 	}
 }
 
+/**
+ * The view that renders the grid of styles.
+ *
+ * @internal
+ */
 export type StylesView = View & {
 	children: ViewCollection;
 	focusTracker: FocusTracker;

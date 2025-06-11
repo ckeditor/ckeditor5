@@ -3,18 +3,18 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import DomConverter from '../../../src/view/domconverter.js';
-import ViewEditable from '../../../src/view/editableelement.js';
-import ViewDocument from '../../../src/view/document.js';
-import ViewUIElement from '../../../src/view/uielement.js';
-import ViewContainerElement from '../../../src/view/containerelement.js';
-import DowncastWriter from '../../../src/view/downcastwriter.js';
+import { DomConverter } from '../../../src/view/domconverter.js';
+import { ViewEditableElement } from '../../../src/view/editableelement.js';
+import { ViewDocument } from '../../../src/view/document.js';
+import { ViewUIElement } from '../../../src/view/uielement.js';
+import { ViewContainerElement } from '../../../src/view/containerelement.js';
+import { DowncastWriter } from '../../../src/view/downcastwriter.js';
 import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER, MARKED_NBSP_FILLER } from '../../../src/view/filler.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
-import ViewPosition from '../../../src/view/position.js';
-import ViewRange from '../../../src/view/range.js';
+import { ViewPosition } from '../../../src/view/position.js';
+import { ViewRange } from '../../../src/view/range.js';
 import { ViewText } from '@ckeditor/ckeditor5-engine';
 
 describe( 'DomConverter', () => {
@@ -65,7 +65,7 @@ describe( 'DomConverter', () => {
 
 		beforeEach( () => {
 			viewDocument = new ViewDocument( new StylesProcessor() );
-			viewEditable = new ViewEditable( viewDocument, 'div' );
+			viewEditable = new ViewEditableElement( viewDocument, 'div' );
 
 			domEditable = document.createElement( 'div' );
 			domEditableParent = document.createElement( 'div' );
@@ -1055,7 +1055,7 @@ describe( 'DomConverter', () => {
 
 		beforeEach( () => {
 			// View structure.
-			viewEditable = new ViewEditable( viewDocument, 'div' );
+			viewEditable = new ViewEditableElement( viewDocument, 'div' );
 			viewP = new ViewContainerElement( viewDocument, 'p' );
 			viewText = new ViewText( viewDocument, 'foobar' );
 

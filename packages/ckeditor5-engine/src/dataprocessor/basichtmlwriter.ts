@@ -7,14 +7,16 @@
  * @module engine/dataprocessor/basichtmlwriter
  */
 
-import type HtmlWriter from './htmlwriter.js';
+import { type HtmlWriter } from './htmlwriter.js';
 import { global } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Basic HTML writer. It uses the native `innerHTML` property for basic conversion
  * from a document fragment to an HTML string.
+ *
+ * @internal
  */
-export default class BasicHtmlWriter implements HtmlWriter {
+export class BasicHtmlWriter implements HtmlWriter {
 	/**
 	 * Returns an HTML string created from the document fragment.
 	 */

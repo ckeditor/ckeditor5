@@ -3,17 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../src/model/model.js';
-import Element from '../../src/model/element.js';
-import Text from '../../src/model/text.js';
-import Range from '../../src/model/range.js';
-import Position from '../../src/model/position.js';
-import LiveRange from '../../src/model/liverange.js';
-import Selection from '../../src/model/selection.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
-import count from '@ckeditor/ckeditor5-utils/src/count.js';
+import { Model } from '../../src/model/model.js';
+import { Element } from '../../src/model/element.js';
+import { Text } from '../../src/model/text.js';
+import { Range } from '../../src/model/range.js';
+import { Position } from '../../src/model/position.js';
+import { LiveRange } from '../../src/model/liverange.js';
+import { Selection } from '../../src/model/selection.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 import { parse, setData } from '../../src/dev-utils/model.js';
-import Schema from '../../src/model/schema.js';
+import { Schema } from '../../src/model/schema.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 import { stringifyBlocks } from './_utils/utils.js';

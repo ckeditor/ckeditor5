@@ -7,10 +7,10 @@
  * @module engine/view/observer/fakeselectionobserver
  */
 
-import Observer from './observer.js';
+import { Observer } from './observer.js';
 import type { ViewDocumentArrowKeyEvent } from './arrowkeysobserver.js';
-import ViewSelection from '../selection.js';
-import type View from '../view.js';
+import { ViewSelection } from '../selection.js';
+import { type View } from '../view.js';
 import type {
 	ViewDocumentSelectionChangeEvent,
 	ViewDocumentSelectionChangeDoneEvent,
@@ -26,7 +26,7 @@ import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
  * Fires {@link module:engine/view/document~Document#event:selectionChange selectionChange event} simulating natural behaviour of
  * {@link module:engine/view/observer/selectionobserver~SelectionObserver SelectionObserver}.
  */
-export default class FakeSelectionObserver extends Observer {
+export class FakeSelectionObserver extends Observer {
 	/**
 	 * Fires debounced event `selectionChangeDone`. It uses `es-toolkit#debounce` method to delay function call.
 	 */

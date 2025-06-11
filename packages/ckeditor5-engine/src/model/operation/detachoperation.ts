@@ -7,11 +7,11 @@
  * @module engine/model/operation/detachoperation
  */
 
-import Operation from './operation.js';
-import Range from '../range.js';
+import { Operation } from './operation.js';
+import { Range } from '../range.js';
 import { _remove } from './utils.js';
 
-import type Position from '../position.js';
+import { type Position } from '../position.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import type { Selectable } from '../selection.js';
@@ -21,8 +21,10 @@ import type { Selectable } from '../selection.js';
 /**
  * Operation to permanently remove node from detached root.
  * Note this operation is only a local operation and won't be send to the other clients.
+ *
+ * @internal
  */
-export default class DetachOperation extends Operation {
+export class DetachOperation extends Operation {
 	/**
 	 * Position before the first {@link module:engine/model/item~Item model item} to detach.
 	 */

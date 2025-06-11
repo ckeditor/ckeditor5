@@ -55,7 +55,7 @@ const BRACKET_PAIRS = {
  * } );
  *	```
  */
-export default class MentionCommand extends Command {
+export class MentionCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

@@ -8,6 +8,7 @@ import { defineConfig } from 'eslint/config';
 import ckeditor5Rules from 'eslint-plugin-ckeditor5-rules';
 import ckeditor5Config from 'eslint-config-ckeditor5';
 import ts from 'typescript-eslint';
+import eslintPluginImport from 'eslint-plugin-import';
 
 import rootPkgJson from './package.json' with { type: 'json' };
 
@@ -76,10 +77,12 @@ export default defineConfig( [
 		files: [ 'packages/*/src/**/*.ts' ],
 
 		plugins: {
-			'ckeditor5-rules': ckeditor5Rules
+			'ckeditor5-rules': ckeditor5Rules,
+			import: eslintPluginImport
 		},
 
 		rules: {
+			'import/no-default-export': 'error',
 			'ckeditor5-rules/allow-svg-imports-only-in-icons-package': 'error',
 			'ckeditor5-rules/ckeditor-plugin-flags': [ 'error', {
 				requiredFlags: [ {

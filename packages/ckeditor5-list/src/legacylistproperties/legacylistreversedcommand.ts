@@ -15,7 +15,7 @@ import { getSelectedListItems } from '../legacylist/legacyutils.js';
  * reversed.
  * It is used by the {@link module:list/legacylistproperties~LegacyListProperties legacy list properties feature}.
  */
-export default class LegacyListReversedCommand extends Command {
+export class LegacyListReversedCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

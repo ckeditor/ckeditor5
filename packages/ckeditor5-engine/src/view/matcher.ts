@@ -7,7 +7,7 @@
  * @module engine/view/matcher
  */
 
-import type Element from './element.js';
+import { type Element } from './element.js';
 import { logWarning } from '@ckeditor/ckeditor5-utils';
 import { normalizeConsumables, type Consumables } from '../conversion/viewconsumable.js';
 
@@ -15,7 +15,7 @@ import { normalizeConsumables, type Consumables } from '../conversion/viewconsum
  * View matcher class.
  * Instance of this class can be used to find {@link module:engine/view/element~Element elements} that match given pattern.
  */
-export default class Matcher {
+export class Matcher {
 	private readonly _patterns: Array<MatcherFunctionPattern | MatcherObjectPattern> = [];
 
 	/**
@@ -763,6 +763,9 @@ export type AttributePatterns = PropertyPatterns;
 export type StylePatterns = PropertyPatterns;
 export type ClassPatterns = PropertyPatterns<never>;
 
+/**
+ * @internal
+ */
 export type NormalizedPropertyPattern = [
 	true | string | RegExp,
 	true | string | RegExp,

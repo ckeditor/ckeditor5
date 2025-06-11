@@ -24,6 +24,8 @@ import { isObject } from 'es-toolkit/compat';
  * getSingleValue( { top: 'foo', right: 'foo', bottom: 'bar', left: 'foo' } );
  * getSingleValue( { top: 'foo', right: 'foo' } );
  * ```
+ *
+ * @internal
  */
 export function getSingleValue( objectOrString: BoxSides | string | undefined ): string | undefined {
 	if ( !objectOrString || !isObject( objectOrString ) ) {
@@ -49,6 +51,7 @@ export function getSingleValue( objectOrString: BoxSides | string | undefined ):
  * getSingleValue( 'foo', 'px' ); // 'foo'
  * ```
  *
+ * @internal
  * @param defaultUnit A default unit added to a numeric value.
  */
 export function addDefaultUnitToNumericValue( value: string | number | undefined, defaultUnit: string ): string | number | undefined {
@@ -65,6 +68,11 @@ export function addDefaultUnitToNumericValue( value: string | number | undefined
 	return `${ numericValue }${ defaultUnit }`;
 }
 
+/**
+ * Interface representing the normalized default properties for table and cell elements.
+ *
+ * @internal
+ */
 export interface NormalizedDefaultProperties {
 	borderStyle: string;
 	borderWidth: string;
@@ -80,6 +88,8 @@ export interface NormalizedDefaultProperties {
 
 /**
  * Options used to determine which properties should be added to the normalized configuration.
+ *
+ * @internal
  */
 export type NormalizeTableDefaultPropertiesOptions = {
 
@@ -112,6 +122,7 @@ export type NormalizeTableDefaultPropertiesOptions = {
 /**
  * Returns the normalized configuration.
  *
+ * @internal
  * @param config The configuration to normalize.
  * @param options Options used to determine which properties should be added.
  */
@@ -151,6 +162,7 @@ export function getNormalizedDefaultProperties(
 /**
  * Returns the normalized default table properties.
  *
+ * @internal
  * @param config The configuration to normalize.
  * @param options Options used to determine which properties should be added.
  */
@@ -171,6 +183,7 @@ export function getNormalizedDefaultTableProperties(
 /**
  * Returns the normalized default cell properties.
  *
+ * @internal
  * @param config The configuration to normalize.
  * @param options Options used to determine which properties should be added.
  */

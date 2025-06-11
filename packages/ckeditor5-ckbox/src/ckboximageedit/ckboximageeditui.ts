@@ -17,7 +17,7 @@ import { IconCkboxImageEdit } from 'ckeditor5/src/icons.js';
  * It registers the `'ckboxImageEdit'` UI button in the editor's {@link module:ui/componentfactory~ComponentFactory component factory}
  * that allows you to open the CKBox dialog and edit the image.
  */
-export default class CKBoxImageEditUI extends Plugin {
+export class CKBoxImageEditUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

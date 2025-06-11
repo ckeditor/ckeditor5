@@ -7,19 +7,19 @@
  * @module ui/list/listitemgroupview
  */
 
-import View from '../view.js';
-import type ViewCollection from '../viewcollection.js';
-import ListView from './listview.js';
-import type ListItemView from './listitemview.js';
-import LabelView from '../label/labelview.js';
-import ListSeparatorView from './listseparatorview.js';
+import { View } from '../view.js';
+import { type ViewCollection } from '../viewcollection.js';
+import { ListView } from './listview.js';
+import { type ListItemView } from './listitemview.js';
+import { LabelView } from '../label/labelview.js';
+import { ListSeparatorView } from './listseparatorview.js';
 
 import { type Locale } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The list item group view class.
  */
-export default class ListItemGroupView extends View {
+export class ListItemGroupView extends View {
 	/**
 	 * The visible label of the group.
 	 *

@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import Element from '@ckeditor/ckeditor5-engine/src/view/element.js';
-import Text from '@ckeditor/ckeditor5-engine/src/view/text.js';
+import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
+import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
+import { Element } from '@ckeditor/ckeditor5-engine/src/view/element.js';
+import { Text } from '@ckeditor/ckeditor5-engine/src/view/text.js';
 
-import Mention from '../src/mention.js';
-import MentionEditing from '../src/mentionediting.js';
-import MentionUI from '../src/mentionui.js';
+import { Mention } from '../src/mention.js';
+import { MentionEditing } from '../src/mentionediting.js';
+import { MentionUI } from '../src/mentionui.js';
 
 describe( 'Mention', () => {
 	let editorElement, editor, viewDocument;

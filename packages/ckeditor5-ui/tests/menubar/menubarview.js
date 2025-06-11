@@ -24,8 +24,8 @@ import {
 	add as addTranslations,
 	_clear as clearTranslations
 } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
-import ListSeparatorView from '../../src/list/listseparatorview.js';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
+import { ListSeparatorView } from '../../src/list/listseparatorview.js';
+import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import {
 	barDump,
 	getButtonCreator,

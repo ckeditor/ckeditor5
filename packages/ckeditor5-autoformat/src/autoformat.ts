@@ -12,8 +12,8 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import type { Range, Writer } from 'ckeditor5/src/engine.js';
 import { Delete } from 'ckeditor5/src/typing.js';
 
-import blockAutoformatEditing from './blockautoformatediting.js';
-import inlineAutoformatEditing from './inlineautoformatediting.js';
+import { blockAutoformatEditing } from './blockautoformatediting.js';
+import { inlineAutoformatEditing } from './inlineautoformatediting.js';
 
 /**
  * Enables a set of predefined autoformatting actions.
@@ -21,7 +21,7 @@ import inlineAutoformatEditing from './inlineautoformatediting.js';
  * For a detailed overview, check the {@glink features/autoformat Autoformatting} feature guide
  * and the {@glink api/autoformat package page}.
  */
-export default class Autoformat extends Plugin {
+export class Autoformat extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

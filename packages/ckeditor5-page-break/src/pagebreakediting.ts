@@ -11,14 +11,14 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { toWidget } from 'ckeditor5/src/widget.js';
 import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
 
-import PageBreakCommand from './pagebreakcommand.js';
+import { PageBreakCommand } from './pagebreakcommand.js';
 
 import '../theme/pagebreak.css';
 
 /**
  * The page break editing feature.
  */
-export default class PageBreakEditing extends Plugin {
+export class PageBreakEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -111,7 +111,18 @@ export default class PageBreakEditing extends Plugin {
 						return null;
 					}
 
-					return { name: true };
+					return {
+						name: true,
+
+						styles: [
+							...( hasPageBreakBefore ? [ 'page-break-before' ] : [] ),
+							...( hasPageBreakAfter ? [ 'page-break-after' ] : [] )
+						],
+
+						...element.hasClass( 'page-break' ) && {
+							classes: [ 'page-break' ]
+						}
+					};
 				},
 				model: 'pageBreak',
 

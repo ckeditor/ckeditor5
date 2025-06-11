@@ -28,7 +28,7 @@
     "@ckeditor/ckeditor5-bookmark": "45.2.0",
     "@ckeditor/ckeditor5-cloud-services": "45.2.0",
     "@ckeditor/ckeditor5-code-block": "45.2.0",
-    "@ckeditor/ckeditor5-dev-utils": "^49.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^50.0.0",
     "@ckeditor/ckeditor5-editor-balloon": "45.2.0",
     "@ckeditor/ckeditor5-editor-inline": "45.2.0",
     "@ckeditor/ckeditor5-editor-multi-root": "45.2.0",
@@ -59,7 +59,7 @@
     "@ckeditor/ckeditor5-typing": "45.2.0",
     "typescript": "5.0.4",
     "webpack": "^5.94.0",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^6.0.1"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "SEE LICENSE IN LICENSE.md",

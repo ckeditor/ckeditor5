@@ -13,8 +13,9 @@ import { UpcastWriter, type ViewDocumentFragment, type ViewElement } from 'ckedi
  * Cleanup MS attributes like styles, attributes and elements.
  *
  * @param documentFragment element `data.content` obtained from clipboard.
+ * @internal
  */
-export default function removeMSAttributes( documentFragment: ViewDocumentFragment ): void {
+export function removeMSAttributes( documentFragment: ViewDocumentFragment ): void {
 	const elementsToUnwrap: Array<ViewElement> = [];
 
 	const writer = new UpcastWriter( documentFragment.document );

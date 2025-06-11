@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core.js';
-import type TableUtils from '../tableutils.js';
+import { type TableUtils } from '../tableutils.js';
 
 import {
 	isHeadingColumnCell,
@@ -31,7 +31,7 @@ import { getHorizontallyOverlappingCells, splitVertically } from '../utils/struc
  * **Note:** All preceding columns will also become headers. If the current column is already a header, executing this command
  * will make it a regular column back again (including the following columns).
  */
-export default class SetHeaderColumnCommand extends Command {
+export class SetHeaderColumnCommand extends Command {
 	/**
 	 * Flag indicating whether the command is active. The command is active when the
 	 * {@link module:engine/model/selection~Selection} is in a header column.

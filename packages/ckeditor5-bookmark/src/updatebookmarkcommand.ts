@@ -24,7 +24,7 @@ import { isBookmarkIdValid } from './utils.js';
  * editor.execute( 'updateBookmark', { bookmarkId: 'newId' } );
  * ```
  */
-export default class UpdateBookmarkCommand extends Command {
+export class UpdateBookmarkCommand extends Command {
 	/**
 	 * The value of the `'bookmarkId'` attribute.
 	 *

@@ -10,7 +10,7 @@
 import { View, addKeyboardHandlingForGrid, type ViewCollection, type FocusableView } from 'ckeditor5/src/ui.js';
 import { FocusTracker, KeystrokeHandler, type Locale } from 'ckeditor5/src/utils.js';
 
-import StyleGridButtonView from './stylegridbuttonview.js';
+import { StyleGridButtonView } from './stylegridbuttonview.js';
 import type { NormalizedStyleDefinition } from '../styleutils.js';
 
 import '../../theme/stylegrid.css';
@@ -18,8 +18,10 @@ import '../../theme/stylegrid.css';
 /**
  * A class representing a grid of styles ({@link module:style/ui/stylegridbuttonview~StyleGridButtonView buttons}).
  * Allows users to select a style.
+ *
+ * @internal
  */
-export default class StyleGridView extends View<HTMLDivElement> implements FocusableView {
+export class StyleGridView extends View<HTMLDivElement> implements FocusableView {
 	/**
 	 * Tracks information about the DOM focus in the view.
 	 */

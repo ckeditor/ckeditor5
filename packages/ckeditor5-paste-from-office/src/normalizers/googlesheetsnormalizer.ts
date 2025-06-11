@@ -9,18 +9,20 @@
 
 import { UpcastWriter, type ViewDocument } from 'ckeditor5/src/engine.js';
 
-import removeXmlns from '../filters/removexmlns.js';
-import removeGoogleSheetsTag from '../filters/removegooglesheetstag.js';
-import removeInvalidTableWidth from '../filters/removeinvalidtablewidth.js';
-import removeStyleBlock from '../filters/removestyleblock.js';
+import { removeXmlns } from '../filters/removexmlns.js';
+import { removeGoogleSheetsTag } from '../filters/removegooglesheetstag.js';
+import { removeInvalidTableWidth } from '../filters/removeinvalidtablewidth.js';
+import { removeStyleBlock } from '../filters/removestyleblock.js';
 import type { Normalizer, NormalizerData } from '../normalizer.js';
 
 const googleSheetsMatch = /<google-sheets-html-origin/i;
 
 /**
  * Normalizer for the content pasted from Google Sheets.
+ *
+ * @internal
  */
-export default class GoogleSheetsNormalizer implements Normalizer {
+export class GoogleSheetsNormalizer implements Normalizer {
 	public readonly document: ViewDocument;
 
 	/**

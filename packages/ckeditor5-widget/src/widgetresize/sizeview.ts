@@ -9,12 +9,14 @@
 
 import { View } from '@ckeditor/ckeditor5-ui';
 import type { ResizerOptions } from '../widgetresize.js';
-import type ResizeState from './resizerstate.js';
+import { type ResizeState } from './resizerstate.js';
 
 /**
  * A view displaying the proposed new element size during the resizing.
+ *
+ * @internal
  */
-export default class SizeView extends View {
+export class SizeView extends View {
 	/**
 	 * The visibility of the view defined based on the existence of the host proposed dimensions.
 	 *

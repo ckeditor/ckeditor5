@@ -18,12 +18,12 @@ import {
 
 import { enablePlaceholder } from 'ckeditor5/src/engine.js';
 
-import type DecoupledEditorUIView from './decouplededitoruiview.js';
+import { type DecoupledEditorUIView } from './decouplededitoruiview.js';
 
 /**
  * The decoupled editor UI class.
  */
-export default class DecoupledEditorUI extends EditorUI {
+export class DecoupledEditorUI extends EditorUI {
 	/**
 	 * The main (top–most) view of the editor UI.
 	 */

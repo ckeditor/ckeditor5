@@ -19,8 +19,10 @@ import type { Model, Writer, Element, Node } from 'ckeditor5/src/engine.js';
  *
  * * If there are many caption model element, they are merged into one model.
  * * A final, merged caption model is placed at the end of the table.
+ *
+ * @internal
  */
-export default function injectTableCaptionPostFixer( model: Model ): void {
+export function injectTableCaptionPostFixer( model: Model ): void {
 	model.document.registerPostFixer( writer => tableCaptionPostFixer( writer, model ) );
 }
 

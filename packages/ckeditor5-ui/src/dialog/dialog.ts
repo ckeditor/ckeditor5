@@ -7,9 +7,9 @@
  * @module ui/dialog/dialog
  */
 
-import type View from '../view.js';
+import { type View } from '../view.js';
 import { type Editor, Plugin } from '@ckeditor/ckeditor5-core';
-import DialogView, { type DialogViewCloseEvent, DialogViewPosition } from './dialogview.js';
+import { DialogView, type DialogViewCloseEvent, DialogViewPosition } from './dialogview.js';
 import type { DialogActionButtonDefinition } from './dialogactionsview.js';
 import type { DocumentChangeEvent } from '@ckeditor/ckeditor5-engine';
 import type { KeystrokeHandlerOptions } from '@ckeditor/ckeditor5-utils';
@@ -17,7 +17,7 @@ import type { KeystrokeHandlerOptions } from '@ckeditor/ckeditor5-utils';
 /**
  * The dialog controller class. It is used to show and hide the {@link module:ui/dialog/dialogview~DialogView}.
  */
-export default class Dialog extends Plugin {
+export class Dialog extends Plugin {
 	/**
 	 * The name of the currently visible dialog view instance.
 	 *

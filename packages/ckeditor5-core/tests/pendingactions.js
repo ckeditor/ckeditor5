@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import VirtualTestEditor from './_utils/virtualtesteditor.js';
-import PendingActions from '../src/pendingactions.js';
+import { VirtualTestEditor } from './_utils/virtualtesteditor.js';
+import { PendingActions } from '../src/pendingactions.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 let editor, pendingActions;

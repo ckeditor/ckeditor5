@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import getPositionedAncestor from '../../src/dom/getpositionedancestor.js';
+import { getPositionedAncestor } from '../../src/dom/getpositionedancestor.js';
 
 describe( 'getPositionedAncestor', () => {
 	let element;

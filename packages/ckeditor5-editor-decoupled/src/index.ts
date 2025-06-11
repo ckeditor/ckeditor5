@@ -7,4 +7,4 @@
  * @module editor-decoupled
  */
 
-export { default as DecoupledEditor } from './decouplededitor.js';
+export { DecoupledEditor } from './decouplededitor.js';

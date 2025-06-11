@@ -7,23 +7,61 @@
  * @module link
  */
 
-export { default as Link } from './link.js';
-export { default as LinkEditing } from './linkediting.js';
-export { default as LinkUI, type LinksProviderListItem, type LinksProvider, type LinksProviderDetailedItem } from './linkui.js';
-export { default as LinkImage } from './linkimage.js';
-export { default as LinkImageEditing } from './linkimageediting.js';
-export { default as LinkImageUI } from './linkimageui.js';
-export { default as AutoLink } from './autolink.js';
-export { default as LinkFormView } from './ui/linkformview.js';
-export { default as LinkCommand } from './linkcommand.js';
-export { default as UnlinkCommand } from './unlinkcommand.js';
+export { Link } from './link.js';
+export { LinkEditing } from './linkediting.js';
+export { LinkUI, type LinksProviderListItem, type LinksProvider, type LinksProviderDetailedItem } from './linkui.js';
+export { LinkImage } from './linkimage.js';
+export { LinkImageEditing } from './linkimageediting.js';
+export { LinkImageUI } from './linkimageui.js';
+export { AutoLink } from './autolink.js';
+export { LinkFormView } from './ui/linkformview.js';
+export { LinkCommand } from './linkcommand.js';
+export { UnlinkCommand } from './unlinkcommand.js';
+export { LinkButtonView as _LinkButtonView } from './ui/linkbuttonview.js';
+export { LinkPreviewButtonView as _LinkPreviewButtonView } from './ui/linkpreviewbuttonview.js';
+export { LinkPropertiesView } from './ui/linkpropertiesview.js';
+export { LinkProviderItemsView } from './ui/linkprovideritemsview.js';
+
+export type { LinkPreviewButtonNavigateEvent } from './ui/linkpreviewbuttonview.js';
+export type { BackEvent } from './ui/linkpropertiesview.js';
+export type { CancelEvent as LinkProviderItemsViewCancelEvent } from './ui/linkprovideritemsview.js';
+
+export type {
+	LinkFormValidatorCallback,
+	SubmitEvent,
+	CancelEvent as LinkFormViewCancelEvent
+} from './ui/linkformview.js';
 
 export {
 	addLinkProtocolIfApplicable,
 	ensureSafeUrl,
-	isLinkableElement
+	ensureSafeUrl as _ensureSafeLinkUrl,
+	isLinkableElement,
+	isLinkElement,
+	LINK_KEYSTROKE as _LINK_KEYSTROKE,
+	createLinkElement as _createLinkElement,
+	getLocalizedDecorators as _getLocalizedLinkDecorators,
+	normalizeDecorators as _normalizeLinkDecorators,
+	isEmail as _isEmailLink,
+	linkHasProtocol as _hasLinkProtocol,
+	openLink as _openLink,
+	extractTextFromLinkRange as _extractTextFromLinkRange
 } from './utils.js';
 
-export type { LinkConfig, LinkDecoratorDefinition } from './linkconfig.js';
+export type {
+	NormalizedLinkDecoratorAutomaticDefinition,
+	NormalizedLinkDecoratorManualDefinition,
+	NormalizedLinkDecoratorDefinition
+} from './utils.js';
+
+export { AutomaticDecorators } from './utils/automaticdecorators.js';
+export { ManualDecorator } from './utils/manualdecorator.js';
+
+export type {
+	LinkConfig,
+	LinkDecoratorDefinition,
+	LinkDecoratorAutomaticDefinition,
+	LinkDecoratorManualDefinition
+} from './linkconfig.js';
 
 import './augmentation.js';

@@ -11,7 +11,7 @@ import {
 	createDropdown,
 	addListToDropdown,
 	View,
-	ViewModel,
+	UIModel,
 	type ButtonExecuteEvent,
 	type DropdownView,
 	type ListDropdownItemDefinition
@@ -25,7 +25,7 @@ import '../../theme/emojitone.css';
 /**
  * A view responsible for selecting a skin tone for an emoji.
  */
-export default class EmojiToneView extends View {
+export class EmojiToneView extends View {
 	/**
 	 * Active skin tone.
 	 *
@@ -61,7 +61,7 @@ export default class EmojiToneView extends View {
 		for ( const { id, icon, tooltip } of this._skinTones ) {
 			const def: ListDropdownItemDefinition = {
 				type: 'button',
-				model: new ViewModel( {
+				model: new UIModel( {
 					value: id,
 					label: icon,
 					ariaLabel: tooltip,

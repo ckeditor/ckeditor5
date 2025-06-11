@@ -13,8 +13,8 @@ import { first, type GetCallback } from 'ckeditor5/src/utils.js';
 
 import { modelToViewUrlAttributeConverter } from './converters.js';
 import type { MediaEmbedConfig } from './mediaembedconfig.js';
-import MediaEmbedCommand from './mediaembedcommand.js';
-import MediaRegistry from './mediaregistry.js';
+import { MediaEmbedCommand } from './mediaembedcommand.js';
+import { MediaRegistry } from './mediaregistry.js';
 import { toMediaWidget, createMediaFigureElement } from './utils.js';
 
 import '../theme/mediaembedediting.css';
@@ -22,7 +22,7 @@ import '../theme/mediaembedediting.css';
 /**
  * The media embed editing feature.
  */
-export default class MediaEmbedEditing extends Plugin {
+export class MediaEmbedEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

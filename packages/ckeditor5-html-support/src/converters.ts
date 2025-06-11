@@ -30,7 +30,7 @@ import {
 	getHtmlAttributeName,
 	type GHSViewAttributes
 } from './utils.js';
-import type DataFilter from './datafilter.js';
+import { type DataFilter } from './datafilter.js';
 import type { DataSchemaBlockElementDefinition, DataSchemaDefinition, DataSchemaInlineElementDefinition } from './dataschema.js';
 
 /**
@@ -39,6 +39,7 @@ import type { DataSchemaBlockElementDefinition, DataSchemaDefinition, DataSchema
  * Preserves object element content in `htmlContent` attribute.
  *
  * @returns Returns a conversion callback.
+ * @internal
 */
 export function viewToModelObjectConverter( { model: modelName }: DataSchemaDefinition ) {
 	return ( viewElement: ViewElement, conversionApi: UpcastConversionApi ): Element => {
@@ -53,6 +54,7 @@ export function viewToModelObjectConverter( { model: modelName }: DataSchemaDefi
  * Conversion helper converting an object element to an HTML object widget.
  *
  * @returns Returns a conversion callback.
+ * @internal
 */
 export function toObjectWidgetConverter(
 	editor: Editor,
@@ -88,6 +90,8 @@ export function toObjectWidgetConverter(
 
 /**
 * Creates object view element from the given model element.
+*
+* @internal
 */
 export function createObjectView( viewName: string, modelElement: Element, writer: DowncastWriter ): ViewElement {
 	return writer.createRawElement( viewName, null, ( domElement, domConverter ) => {
@@ -99,6 +103,7 @@ export function createObjectView( viewName: string, modelElement: Element, write
  * View-to-attribute conversion helper preserving inline element attributes on `$text`.
  *
  * @returns Returns a conversion callback.
+ * @internal
 */
 export function viewToAttributeInlineConverter(
 	{ view: viewName, model: attributeKey, allowEmpty }: DataSchemaInlineElementDefinition,
@@ -168,6 +173,8 @@ export function viewToAttributeInlineConverter(
 
 /**
  * Conversion helper converting an empty inline model element to an HTML element or widget.
+ *
+ * @internal
  */
 export function emptyInlineModelElementToViewConverter(
 	{ model: attributeKey, view: viewName }: DataSchemaInlineElementDefinition,
@@ -194,6 +201,7 @@ export function emptyInlineModelElementToViewConverter(
  * Attribute-to-view conversion helper applying attributes to view element preserved on `$text`.
  *
  * @returns Returns a conversion callback.
+ * @internal
 */
 export function attributeToViewInlineConverter( { priority, view: viewName }: DataSchemaInlineElementDefinition ) {
 	return ( attributeValue: any, conversionApi: DowncastConversionApi ): AttributeElement | undefined => {
@@ -216,6 +224,7 @@ export function attributeToViewInlineConverter( { priority, view: viewName }: Da
  * All matched attributes will be preserved on `html*Attributes` attribute.
  *
  * @returns Returns a conversion callback.
+ * @internal
 */
 export function viewToModelBlockAttributeConverter( { view: viewName }: DataSchemaBlockElementDefinition, dataFilter: DataFilter ) {
 	return ( dispatcher: UpcastDispatcher ): void => {
@@ -248,6 +257,7 @@ export function viewToModelBlockAttributeConverter( { view: viewName }: DataSche
  * for block elements.
  *
  * @returns Returns a conversion callback.
+ * @internal
 */
 export function modelToViewBlockAttributeConverter( { view: viewName, model: modelName }: DataSchemaBlockElementDefinition ) {
 	return ( dispatcher: DowncastDispatcher ): void => {

@@ -8,7 +8,7 @@
  *
  * @memberOf tests.utils._utils
  */
-export default class Locale {
+export class Locale {
 	constructor() {
 		this.t = str => `t( ${ str } )`;
 	}

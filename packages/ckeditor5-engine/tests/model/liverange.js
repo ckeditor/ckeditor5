@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import Model from '../../src/model/model.js';
-import Element from '../../src/model/element.js';
-import Position from '../../src/model/position.js';
-import LiveRange from '../../src/model/liverange.js';
-import Range from '../../src/model/range.js';
-import Text from '../../src/model/text.js';
-import MoveOperation from '../../src/model/operation/moveoperation.js';
-import MergeOperation from '../../src/model/operation/mergeoperation.js';
+import { Model } from '../../src/model/model.js';
+import { Element } from '../../src/model/element.js';
+import { Position } from '../../src/model/position.js';
+import { LiveRange } from '../../src/model/liverange.js';
+import { Range } from '../../src/model/range.js';
+import { Text } from '../../src/model/text.js';
+import { MoveOperation } from '../../src/model/operation/moveoperation.js';
+import { MergeOperation } from '../../src/model/operation/mergeoperation.js';
 import { stringify, setData } from '../../src/dev-utils/model.js';
 
 describe( 'LiveRange', () => {

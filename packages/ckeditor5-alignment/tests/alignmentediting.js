@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import AlignmentEditing from '../src/alignmentediting.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
-import LegacyListEditing from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting.js';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
+import { AlignmentEditing } from '../src/alignmentediting.js';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
+import { ImageCaptionEditing } from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting.js';
+import { LegacyListEditing } from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
+import { HeadingEditing } from '@ckeditor/ckeditor5-heading/src/headingediting.js';
+import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-import AlignmentCommand from '../src/alignmentcommand.js';
+import { AlignmentCommand } from '../src/alignmentcommand.js';
 
 describe( 'AlignmentEditing', () => {
 	let editor, model;

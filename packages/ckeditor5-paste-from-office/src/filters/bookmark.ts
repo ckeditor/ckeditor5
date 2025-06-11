@@ -14,8 +14,10 @@ import {
 
 /**
  * Transforms `<a>` elements which are bookmarks by moving their children after the element.
+ *
+ * @internal
  */
-export default function transformBookmarks(
+export function transformBookmarks(
 	documentFragment: ViewDocumentFragment,
 	writer: UpcastWriter
 ): void {

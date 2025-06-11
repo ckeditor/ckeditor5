@@ -11,14 +11,14 @@ import { Command, type Editor } from 'ckeditor5/src/core.js';
 import type { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic';
 import type { DecoupledEditor } from '@ckeditor/ckeditor5-editor-decoupled';
 
-import AbstractEditorHandler from './handlers/abstracteditorhandler.js';
-import ClassicEditorHandler from './handlers/classiceditorhandler.js';
-import DecoupledEditorHandler from './handlers/decouplededitorhandler.js';
+import { AbstractEditorHandler } from './handlers/abstracteditorhandler.js';
+import { ClassicEditorHandler } from './handlers/classiceditorhandler.js';
+import { DecoupledEditorHandler } from './handlers/decouplededitorhandler.js';
 
 /**
  * A command toggling the fullscreen mode.
  */
-export default class FullscreenCommand extends Command {
+export class FullscreenCommand extends Command {
 	/**
 	 * Indicates whether the fullscreen mode is enabled.
 	 *

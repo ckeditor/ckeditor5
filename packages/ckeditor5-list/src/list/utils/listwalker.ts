@@ -14,8 +14,10 @@ import type { Element, Node } from 'ckeditor5/src/engine.js';
 
 /**
  * Document list blocks iterator.
+ *
+ * @internal
  */
-export default class ListWalker {
+export class ListWalker {
 	/**
 	 * The start list item block element.
 	 */
@@ -191,6 +193,8 @@ export default class ListWalker {
 
 /**
  * Iterates sibling list blocks starting from the given node.
+ *
+ * @internal
  */
 export class SiblingListBlocksIterator implements IterableIterator<ListIteratorValue> {
 	private _node: Node | null;
@@ -306,6 +310,8 @@ export interface ListIteratorValue {
 
 /**
  * Document list blocks iterator options.
+ *
+ * @internal
  */
 export type ListWalkerOptions = {
 	direction?: 'forward' | 'backward';
