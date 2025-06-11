@@ -10,7 +10,7 @@
 import { TypeCheckable } from './typecheckable.js';
 import {
 	ModelLiveRange,
-	type LiveRangeChangeContentEvent,
+	type ModelLiveRangeChangeContentEvent,
 	type ModelLiveRangeChangeRangeEvent,
 	type LiveRangeChangeEvent
 } from './liverange.js';
@@ -537,7 +537,7 @@ export type MarkerChangeRangeEvent = ModelLiveRangeChangeRangeEvent;
  * @see module:engine/model/liverange~ModelLiveRange#event:change:content
  * @eventName ~Marker#change:content
  */
-export type MarkerCollectionChangeContentEvent = LiveRangeChangeContentEvent;
+export type MarkerCollectionChangeContentEvent = ModelLiveRangeChangeContentEvent;
 
 /**
  * Describes `change:range` or `change:content` event.

@@ -122,7 +122,7 @@ export type ModelLiveRangeChangeRangeEvent = {
  * @param data.deletionPosition Due to the nature of this event, this property is always set to `null`. It is passed
  * for compatibility with the {@link module:engine/model/liverange~ModelLiveRange#event:change:range} event.
  */
-export type LiveRangeChangeContentEvent = {
+export type ModelLiveRangeChangeContentEvent = {
 	name: 'change' | 'change:content';
 	args: [ range: Range, data: { deletionPosition: null } ];
 };
@@ -190,7 +190,7 @@ function transform( this: ModelLiveRange, operation: Operation ) {
 		this.fire<ModelLiveRangeChangeRangeEvent>( 'change:range', oldRange, { deletionPosition } );
 	} else if ( contentChanged ) {
 		// If range boundaries have not changed, but there was change inside the range, fire `change:content` event.
-		this.fire<LiveRangeChangeContentEvent>( 'change:content', this.toRange(), { deletionPosition } );
+		this.fire<ModelLiveRangeChangeContentEvent>( 'change:content', this.toRange(), { deletionPosition } );
 	}
 }
 
