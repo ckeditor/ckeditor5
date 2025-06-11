@@ -4,7 +4,7 @@
  */
 
 import { Model } from '../../src/model/model.js';
-import { Document } from '../../src/model/document.js';
+import { ModelDocument } from '../../src/model/document.js';
 import { RootElement } from '../../src/model/rootelement.js';
 import { Text } from '../../src/model/text.js';
 import { Batch } from '../../src/model/batch.js';
@@ -22,7 +22,7 @@ describe( 'Document', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create Document with no data, empty graveyard and selection set to default range', () => {
-			const doc = new Document( model );
+			const doc = new ModelDocument( model );
 
 			expect( doc ).to.have.property( 'model' ).to.equal( model );
 			expect( doc ).to.have.property( 'roots' ).that.is.instanceof( Collection );
