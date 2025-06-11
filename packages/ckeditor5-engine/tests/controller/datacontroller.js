@@ -631,13 +631,13 @@ describe( 'DataController', () => {
 		it( 'should stringify a content of an element', () => {
 			const modelElement = _parseModel( '<div><paragraph>foo</paragraph></div>', schema );
 
-			expect( data._stringifyModel( modelElement ) ).to.equal( '<p>foo</p>' );
+			expect( data.stringify( modelElement ) ).to.equal( '<p>foo</p>' );
 		} );
 
 		it( 'should stringify a content of a document fragment', () => {
 			const modelDocumentFragment = _parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
 
-			expect( data._stringifyModel( modelDocumentFragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
+			expect( data.stringify( modelDocumentFragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
 
 		it( 'should allow to provide additional options to the conversion process', () => {
@@ -650,7 +650,7 @@ describe( 'DataController', () => {
 			const modelDocumentFragment = _parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
 			const options = { foo: 'bar' };
 
-			data._stringifyModel( modelDocumentFragment, options );
+			data.stringify( modelDocumentFragment, options );
 			expect( spy.lastCall.args[ 0 ] ).to.equal( options );
 		} );
 
@@ -660,7 +660,7 @@ describe( 'DataController', () => {
 			} );
 
 			const modelDocumentFragment = _parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
-			data._stringifyModel( modelDocumentFragment );
+			data.stringify( modelDocumentFragment );
 		} );
 	} );
 
