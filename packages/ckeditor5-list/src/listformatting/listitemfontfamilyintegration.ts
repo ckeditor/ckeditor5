@@ -11,6 +11,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { type ViewElement } from 'ckeditor5/src/engine.js';
 
 import ListEditing from '../list/listediting.js';
+import type ListFormatting from '../listformatting.js';
 
 /**
  * The list item font family integration plugin.
@@ -42,11 +43,14 @@ export default class ListItemFontFamilyIntegration extends Plugin {
 	 */
 	public init(): void {
 		const editor = this.editor;
+		const ListFormatting: ListFormatting = editor.plugins.get( 'ListFormatting' );
 		const listEditing = editor.plugins.get( ListEditing );
 
 		if ( !editor.plugins.has( 'FontFamilyEditing' ) ) {
 			return;
 		}
+
+		ListFormatting.registerFormatAttribute( 'listItemFontFamily', 'fontFamily' );
 
 		// Register the downcast strategy in init() so that the attribute name is registered  before the list editing
 		// registers its converters.
