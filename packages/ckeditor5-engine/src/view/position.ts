@@ -13,7 +13,7 @@ import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
 import { EditableElement } from './editableelement.js';
 
-import { type ModelDocumentFragment } from './documentfragment.js';
+import { type DocumentFragment } from './documentfragment.js';
 import { type Element } from './element.js';
 import { type Item } from './item.js';
 import { type Node } from './node.js';
@@ -32,7 +32,7 @@ export class Position extends TypeCheckable {
 	/**
 	 * Position parent.
 	 */
-	public readonly parent: Node | ModelDocumentFragment;
+	public readonly parent: Node | DocumentFragment;
 
 	/**
 	 * Position offset.
@@ -45,7 +45,7 @@ export class Position extends TypeCheckable {
 	 * @param parent Position parent.
 	 * @param offset Position offset.
 	 */
-	constructor( parent: Node | ModelDocumentFragment, offset: number ) {
+	constructor( parent: Node | DocumentFragment, offset: number ) {
 		super();
 
 		this.parent = parent;
@@ -95,7 +95,7 @@ export class Position extends TypeCheckable {
 	/**
 	 * Position's root, that is the root of the position's parent element.
 	 */
-	public get root(): Node | ModelDocumentFragment {
+	public get root(): Node | DocumentFragment {
 		return this.parent.root;
 	}
 
@@ -163,7 +163,7 @@ export class Position extends TypeCheckable {
 	 *
 	 * @returns Array with ancestors.
 	 */
-	public getAncestors(): Array<Node | ModelDocumentFragment> {
+	public getAncestors(): Array<Node | DocumentFragment> {
 		if ( this.parent.is( 'documentFragment' ) ) {
 			return [ this.parent ];
 		} else {
@@ -175,7 +175,7 @@ export class Position extends TypeCheckable {
 	 * Returns a {@link module:engine/view/node~Node} or {@link module:engine/view/documentfragment~DocumentFragment}
 	 * which is a common ancestor of both positions.
 	 */
-	public getCommonAncestor( position: Position ): Node | ModelDocumentFragment | null {
+	public getCommonAncestor( position: Position ): Node | DocumentFragment | null {
 		const ancestorsA = this.getAncestors();
 		const ancestorsB = position.getAncestors();
 

@@ -14,7 +14,7 @@ import type {
 	Batch,
 	Model,
 	Range,
-	DocumentChangeEvent,
+	ModelDocumentChangeEvent,
 	ModelDocumentSelectionChangeEvent
 } from '@ckeditor/ckeditor5-engine';
 
@@ -122,7 +122,7 @@ export class TextWatcher extends /* #__PURE__ */ ObservableMixin() {
 			this._evaluateTextBeforeSelection( 'selection' );
 		} );
 
-		this.listenTo<DocumentChangeEvent>( document, 'change:data', ( evt, batch ) => {
+		this.listenTo<ModelDocumentChangeEvent>( document, 'change:data', ( evt, batch ) => {
 			if ( batch.isUndo || !batch.isLocal ) {
 				return;
 			}

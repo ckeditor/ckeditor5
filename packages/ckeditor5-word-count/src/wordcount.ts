@@ -7,7 +7,7 @@
  * @module word-count/wordcount
  */
 
-import { type DocumentChangeEvent } from 'ckeditor5/src/engine.js';
+import { type ModelDocumentChangeEvent } from 'ckeditor5/src/engine.js';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import { Template, View } from 'ckeditor5/src/ui.js';
 import { env } from 'ckeditor5/src/utils.js';
@@ -158,7 +158,7 @@ export class WordCount extends Plugin {
 	public init(): void {
 		const editor = this.editor;
 
-		editor.model.document.on<DocumentChangeEvent>( 'change:data', throttle( this._refreshStats.bind( this ), 250 ) );
+		editor.model.document.on<ModelDocumentChangeEvent>( 'change:data', throttle( this._refreshStats.bind( this ), 250 ) );
 
 		if ( typeof this._config.onUpdate == 'function' ) {
 			this.on<WordCountUpdateEvent>( 'update', ( evt, data ) => {

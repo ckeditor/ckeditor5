@@ -13,7 +13,7 @@ import { Position } from '../position.js';
 import { Range } from '../range.js';
 import { _insert, _move } from './utils.js';
 
-import { type Document } from '../document.js';
+import { type ModelDocument } from '../document.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import type { Selectable } from '../selection.js';
@@ -249,7 +249,7 @@ export class SplitOperation extends Operation {
 	 * @param json Deserialized JSON object.
 	 * @param document Document on which this operation will be applied.
 	 */
-	public static override fromJSON( json: any, document: Document ): SplitOperation {
+	public static override fromJSON( json: any, document: ModelDocument ): SplitOperation {
 		const splitPosition = Position.fromJSON( json.splitPosition, document );
 		const insertionPosition = Position.fromJSON( json.insertionPosition, document );
 		const graveyardPosition = json.graveyardPosition ? Position.fromJSON( json.graveyardPosition, document ) : null;

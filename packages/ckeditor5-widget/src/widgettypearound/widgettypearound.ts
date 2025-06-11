@@ -35,7 +35,7 @@ import {
 
 import type {
 	BubblingEventInfo,
-	DocumentChangeEvent,
+	ModelDocumentChangeEvent,
 	DomEventData,
 	DowncastInsertEvent,
 	DowncastSelectionEvent,
@@ -336,7 +336,7 @@ export class WidgetTypeAround extends Plugin {
 
 		// Get rid of the widget type around attribute of the selection on every document change
 		// that makes widget not selected any more (i.e. widget was removed).
-		this._listenToIfEnabled<DocumentChangeEvent>( model.document, 'change:data', () => {
+		this._listenToIfEnabled<ModelDocumentChangeEvent>( model.document, 'change:data', () => {
 			const selectedModelElement = modelSelection.getSelectedElement();
 
 			if ( selectedModelElement ) {

@@ -7,7 +7,7 @@ import type { Command, Editor } from 'ckeditor5/src/core.js';
 
 import {
 	LiveRange,
-	type DocumentChangeEvent,
+	type ModelDocumentChangeEvent,
 	type Item,
 	type Text
 } from 'ckeditor5/src/engine.js';
@@ -87,7 +87,7 @@ export function blockAutoformatEditing(
 		};
 	}
 
-	editor.model.document.on<DocumentChangeEvent>( 'change:data', ( evt, batch ) => {
+	editor.model.document.on<ModelDocumentChangeEvent>( 'change:data', ( evt, batch ) => {
 		if ( command && !command.isEnabled || !plugin.isEnabled ) {
 			return;
 		}

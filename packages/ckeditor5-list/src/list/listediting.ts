@@ -15,7 +15,7 @@ import {
 
 import type {
 	DowncastAttributeEvent,
-	DocumentChangeEvent,
+	ModelDocumentChangeEvent,
 	DowncastWriter,
 	Element,
 	Model,
@@ -506,7 +506,7 @@ export class ListEditing extends Plugin {
 		editor.editing.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', modelToViewPositionMapper );
 		editor.data.mapper.on<MapperModelToViewPositionEvent>( 'modelToViewPosition', modelToViewPositionMapper );
 
-		this.listenTo<DocumentChangeEvent>(
+		this.listenTo<ModelDocumentChangeEvent>(
 			model.document,
 			'change:data',
 			reconvertItemsOnDataChange( model, editor.editing, attributeNames, this ),

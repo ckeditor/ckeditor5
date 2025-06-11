@@ -20,7 +20,7 @@
 
 import type { Editor } from 'ckeditor5/src/core.js';
 import type {
-	DocumentChangeEvent,
+	ModelDocumentChangeEvent,
 	Model,
 	Position,
 	Range,
@@ -152,7 +152,7 @@ export function inlineAutoformatEditing(
 		};
 	} );
 
-	editor.model.document.on<DocumentChangeEvent>( 'change:data', ( evt, batch ) => {
+	editor.model.document.on<ModelDocumentChangeEvent>( 'change:data', ( evt, batch ) => {
 		if ( batch.isUndo || !batch.isLocal || !plugin.isEnabled ) {
 			return;
 		}

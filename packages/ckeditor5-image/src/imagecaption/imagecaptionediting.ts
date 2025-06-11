@@ -8,7 +8,7 @@
  */
 
 import { type Editor, Plugin, type CommandExecuteEvent } from 'ckeditor5/src/core.js';
-import { Element, enablePlaceholder, type DocumentChangeEvent, type DifferItemAttribute } from 'ckeditor5/src/engine.js';
+import { Element, enablePlaceholder, type ModelDocumentChangeEvent, type DifferItemAttribute } from 'ckeditor5/src/engine.js';
 import { toWidgetEditable } from 'ckeditor5/src/widget.js';
 import type { GetCallback } from 'ckeditor5/src/utils.js';
 
@@ -256,7 +256,7 @@ export class ImageCaptionEditing extends Plugin {
 		const imageUtils: ImageUtils = editor.plugins.get( 'ImageUtils' );
 		const imageCaptionUtils: ImageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
 
-		model.document.on<DocumentChangeEvent>( 'change:data', () => {
+		model.document.on<ModelDocumentChangeEvent>( 'change:data', () => {
 			const changes = model.document.differ.getChanges();
 
 			for ( const change of changes as Array<DifferItemAttribute> ) {

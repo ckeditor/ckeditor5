@@ -42,7 +42,7 @@ import { type ModelItem } from '../model/item.js';
 import { type ModelText } from '../model/text.js';
 import { type ModelTextProxy } from '../model/textproxy.js';
 import { type Schema } from '../model/schema.js';
-import type { DocumentChangeEvent } from '../model/document.js';
+import type { ModelDocumentChangeEvent } from '../model/document.js';
 import type { Marker } from '../model/markercollection.js';
 import type { StylesProcessor } from '../view/stylesmap.js';
 import type { ViewDocumentSelectionChangeEvent } from '../view/observer/selectionobserver.js';
@@ -114,7 +114,7 @@ export class EditingController extends /* #__PURE__ */ ObservableMixin() {
 		// Whenever model document is changed, convert those changes to the view (using model.Document#differ).
 		// Do it on 'low' priority, so changes are converted after other listeners did their job.
 		// Also convert model selection.
-		this.listenTo<DocumentChangeEvent>( doc, 'change', () => {
+		this.listenTo<ModelDocumentChangeEvent>( doc, 'change', () => {
 			this.view.change( writer => {
 				this.downcastDispatcher.convertChanges( doc.differ, markers, writer );
 				this.downcastDispatcher.convertSelection( selection, markers, writer );

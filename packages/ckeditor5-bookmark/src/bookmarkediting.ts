@@ -18,7 +18,7 @@ import type {
 	DowncastWriter,
 	ViewElement,
 	Element,
-	DocumentChangeEvent,
+	ModelDocumentChangeEvent,
 	UpcastElementEvent,
 	UpcastConversionData,
 	UpcastConversionApi
@@ -75,7 +75,7 @@ export class BookmarkEditing extends Plugin {
 		editor.commands.add( 'insertBookmark', new InsertBookmarkCommand( editor ) );
 		editor.commands.add( 'updateBookmark', new UpdateBookmarkCommand( editor ) );
 
-		this.listenTo<DocumentChangeEvent>( editor.model.document, 'change:data', () => {
+		this.listenTo<ModelDocumentChangeEvent>( editor.model.document, 'change:data', () => {
 			this._trackBookmarkElements();
 		} );
 	}

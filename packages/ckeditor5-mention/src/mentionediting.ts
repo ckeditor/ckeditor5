@@ -12,7 +12,7 @@ import type {
 	Element,
 	Text,
 	Writer,
-	Document,
+	ModelDocument,
 	AttributeElement,
 	DowncastConversionApi,
 	DowncastDispatcher,
@@ -176,7 +176,7 @@ function createViewMentionElement( mention: MentionAttribute, { writer }: Downca
  * Model post-fixer that disallows typing with selection when the selection is placed after the text node with the mention attribute or
  * before a text node with mention attribute.
  */
-function selectionMentionAttributePostFixer( writer: Writer, doc: Document ): boolean {
+function selectionMentionAttributePostFixer( writer: Writer, doc: ModelDocument ): boolean {
 	const selection = doc.selection;
 	const focus = selection.focus;
 
@@ -207,7 +207,7 @@ function shouldNotTypeWithMentionAt( position: Position ): boolean {
 /**
  * Model post-fixer that removes the mention attribute from the modified text node.
  */
-function removePartialMentionPostFixer( writer: Writer, doc: Document, schema: Schema ): boolean {
+function removePartialMentionPostFixer( writer: Writer, doc: ModelDocument, schema: Schema ): boolean {
 	const changes = doc.differ.getChanges();
 
 	let wasChanged = false;
@@ -257,7 +257,7 @@ function removePartialMentionPostFixer( writer: Writer, doc: Document, schema: S
  * This post-fixer will extend the attribute applied on the part of the mention so the whole text node of the mention will have
  * the added attribute.
  */
-function extendAttributeOnMentionPostFixer( writer: Writer, doc: Document ): boolean {
+function extendAttributeOnMentionPostFixer( writer: Writer, doc: ModelDocument ): boolean {
 	const changes = doc.differ.getChanges();
 
 	let wasChanged = false;

@@ -23,7 +23,7 @@ import {
 
 import {
 	MouseObserver,
-	type DocumentChangeEvent,
+	type ModelDocumentChangeEvent,
 	type DomEventData,
 	type Element,
 	type ViewContainerElement,
@@ -122,7 +122,7 @@ export class WidgetResize extends Plugin {
 		// Remove view widget-resizer mappings for widgets that have been removed from the document.
 		// https://github.com/ckeditor/ckeditor5/issues/10156
 		// https://github.com/ckeditor/ckeditor5/issues/10266
-		this.editor.model.document.on<DocumentChangeEvent>( 'change', () => {
+		this.editor.model.document.on<ModelDocumentChangeEvent>( 'change', () => {
 			for ( const [ viewElement, resizer ] of this._resizers ) {
 				if ( !viewElement.isAttached() ) {
 					this._resizers.delete( viewElement );

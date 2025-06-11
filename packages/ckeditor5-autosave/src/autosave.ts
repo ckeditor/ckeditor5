@@ -18,7 +18,7 @@ import {
 
 import { DomEmitterMixin, type DomEmitter } from 'ckeditor5/src/utils.js';
 
-import type { DocumentChangeEvent } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentChangeEvent } from 'ckeditor5/src/engine.js';
 
 import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
 
@@ -175,7 +175,7 @@ export class Autosave extends Plugin {
 
 		// Add the listener only after the editor is initialized to prevent firing save callback on data init.
 		this.listenTo<EditorReadyEvent>( editor, 'ready', () => {
-			this.listenTo<DocumentChangeEvent>( doc, 'change:data', ( evt, batch ) => {
+			this.listenTo<ModelDocumentChangeEvent>( doc, 'change:data', ( evt, batch ) => {
 				if ( !this._saveCallbacks.length ) {
 					return;
 				}

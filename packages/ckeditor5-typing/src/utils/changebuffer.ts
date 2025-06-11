@@ -10,7 +10,7 @@
 import type {
 	Model,
 	Batch,
-	DocumentChangeEvent,
+	ModelDocumentChangeEvent,
 	ModelDocumentSelectionChangeEvent
 } from '@ckeditor/ckeditor5-engine';
 
@@ -99,7 +99,7 @@ export class ChangeBuffer {
 			this._reset();
 		};
 
-		this.model.document.on<DocumentChangeEvent>( 'change', this._changeCallback );
+		this.model.document.on<ModelDocumentChangeEvent>( 'change', this._changeCallback );
 
 		this.model.document.selection.on<ModelDocumentSelectionChangeEvent>( 'change:range', this._selectionChangeCallback );
 		this.model.document.selection.on<ModelDocumentSelectionChangeEvent>( 'change:attribute', this._selectionChangeCallback );
