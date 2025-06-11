@@ -9,6 +9,7 @@
 
 export { default as IconAccessibility } from '../theme/icons/accessibility.svg';
 export { default as IconAddComment } from '../theme/icons/add-comment.svg';
+export { default as IconAI } from '../theme/icons/ai.svg';
 export { default as IconAlignBottom } from '../theme/icons/align-bottom.svg';
 export { default as IconAlignCenter } from '../theme/icons/align-center.svg';
 export { default as IconAlignJustify } from '../theme/icons/align-justify.svg';
@@ -174,3 +175,4 @@ export { default as IconUploadcareImageUpload } from '../theme/icons/uploadcare-
 export { default as IconUploadcareLink } from '../theme/icons/uploadcare-link.svg';
 export { default as IconUser } from '../theme/icons/user.svg';
 export { default as IconWarning } from '../theme/icons/warning.svg';
+export { default as IconWeb } from '../theme/icons/web.svg';
