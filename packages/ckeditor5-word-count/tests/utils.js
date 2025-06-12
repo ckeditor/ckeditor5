@@ -6,7 +6,7 @@
 import { modelElementToPlainText } from '../src/utils.js';
 
 import { ModelElement } from '@ckeditor/ckeditor5-engine/src/model/element.js';
-import { Text } from '@ckeditor/ckeditor5-engine/src/model/text.js';
+import { ModelText } from '@ckeditor/ckeditor5-engine/src/model/text.js';
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
@@ -21,9 +21,9 @@ import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
 describe( 'utils', () => {
 	describe( 'modelElementToPlainText()', () => {
 		it( 'should extract only plain text', () => {
-			const text1 = new Text( 'Foo' );
-			const text2 = new Text( 'Bar', { bold: true } );
-			const text3 = new Text( 'Baz', { bold: true, underline: true } );
+			const text1 = new ModelText( 'Foo' );
+			const text2 = new ModelText( 'Bar', { bold: true } );
+			const text3 = new ModelText( 'Baz', { bold: true, underline: true } );
 
 			const innerElement1 = new ModelElement( 'paragraph', null, [ text1 ] );
 			const innerElement2 = new ModelElement( 'paragraph', null, [ text2, text3 ] );

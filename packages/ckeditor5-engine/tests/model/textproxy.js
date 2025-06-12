@@ -4,7 +4,7 @@
  */
 
 import { ModelElement } from '../../src/model/element.js';
-import { Text } from '../../src/model/text.js';
+import { ModelText } from '../../src/model/text.js';
 import { TextProxy } from '../../src/model/textproxy.js';
 import { Model } from '../../src/model/model.js';
 
@@ -20,11 +20,11 @@ describe( 'TextProxy', () => {
 		element = new ModelElement( 'div' );
 		root._insertChild( 0, element );
 
-		text = new Text( 'foobar', { foo: 'bar' } );
-		element._insertChild( 0, [ new Text( 'abc' ), text ] );
+		text = new ModelText( 'foobar', { foo: 'bar' } );
+		element._insertChild( 0, [ new ModelText( 'abc' ), text ] );
 		textProxy = new TextProxy( text, 2, 3 );
 
-		textNoParent = new Text( 'abcxyz' );
+		textNoParent = new ModelText( 'abcxyz' );
 		textProxyNoParent = new TextProxy( textNoParent, 1, 1 );
 	} );
 

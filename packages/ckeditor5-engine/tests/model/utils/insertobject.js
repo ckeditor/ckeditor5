@@ -6,7 +6,7 @@
 import { Model } from '../../../src/model/model.js';
 import { insertObject } from '../../../src/model/utils/insertobject.js';
 import { ModelElement } from '../../../src/model/element.js';
-import { Text } from '../../../src/model/text.js';
+import { ModelText } from '../../../src/model/text.js';
 import { _setModelData, _getModelData } from '../../../src/dev-utils/model.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
@@ -58,7 +58,7 @@ describe( 'insertObject()', () => {
 		} );
 
 		it( 'should throw an error if element is not an object', () => {
-			const paragraph = new ModelElement( 'paragraph', [], [ new Text( 'bar' ) ] );
+			const paragraph = new ModelElement( 'paragraph', [], [ new ModelText( 'bar' ) ] );
 
 			expectToThrowCKEditorError( () => insertObject( model, paragraph ), 'insertobject-element-not-an-object' );
 		} );

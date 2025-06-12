@@ -5,7 +5,7 @@
 
 import { ModelNodeList } from '../../src/model/nodelist.js';
 import { ModelElement } from '../../src/model/element.js';
-import { Text } from '../../src/model/text.js';
+import { ModelText } from '../../src/model/text.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -14,7 +14,7 @@ describe( 'NodeList', () => {
 
 	beforeEach( () => {
 		p = new ModelElement( 'p' );
-		foo = new Text( 'foo' );
+		foo = new ModelText( 'foo' );
 		img = new ModelElement( 'imageBlock' );
 		nodes = new ModelNodeList( [ p, foo, img ] );
 	} );
@@ -139,8 +139,8 @@ describe( 'NodeList', () => {
 	describe( '_insertNodes', () => {
 		it( 'should insert nodes at given index and refresh its nodes index and startOffset values', () => {
 			const newImg = new ModelElement( 'imageBlock' );
-			const bar = new Text( 'bar', { bold: true } );
-			const xyz = new Text( 'xyz' );
+			const bar = new ModelText( 'bar', { bold: true } );
+			const xyz = new ModelText( 'xyz' );
 
 			expect( newImg.index ).to.equal( null );
 			expect( bar.index ).to.equal( null );
@@ -198,7 +198,7 @@ describe( 'NodeList', () => {
 
 		it( 'should insert large number of nodes (250 000) without throwing an error', () => {
 			const numberOfNodes = 250000;
-			const largeArray = 'a'.repeat( numberOfNodes ).split( '' ).map( el => new Text( el ) );
+			const largeArray = 'a'.repeat( numberOfNodes ).split( '' ).map( el => new ModelText( el ) );
 			const expectedLength = nodes.length + largeArray.length;
 
 			nodes._insertNodes( 0, largeArray );

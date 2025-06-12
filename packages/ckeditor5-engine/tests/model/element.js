@@ -5,7 +5,7 @@
 
 import { ModelNode } from '../../src/model/node.js';
 import { ModelElement } from '../../src/model/element.js';
-import { Text } from '../../src/model/text.js';
+import { ModelText } from '../../src/model/text.js';
 import { TextProxy } from '../../src/model/textproxy.js';
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -30,7 +30,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should create element with children', () => {
-			const element = new ModelElement( 'elem', [], new Text( 'foo' ) );
+			const element = new ModelElement( 'elem', [], new ModelText( 'foo' ) );
 
 			expect( element.childCount ).to.equal( 1 );
 			expect( element.maxOffset ).to.equal( 3 );
@@ -77,7 +77,7 @@ describe( 'Element', () => {
 	describe( '_clone()', () => {
 		it( 'should return an element with same name, attributes and same instances of children if clone was not deep', () => {
 			const p = new ModelElement( 'p' );
-			const foo = new Text( 'foo' );
+			const foo = new ModelText( 'foo' );
 
 			const element = new ModelElement( 'elem', { bold: true, italic: true }, [ p, foo ] );
 			const copy = element._clone();
@@ -88,8 +88,8 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should clone children (deeply), if clone is deep', () => {
-			const foo = new Text( 'foo' );
-			const bar = new Text( 'bar' );
+			const foo = new ModelText( 'foo' );
+			const bar = new ModelText( 'bar' );
 			const p = new ModelElement( 'p', null, bar );
 
 			const element = new ModelElement( 'elem', { bold: true, italic: true }, [ p, foo ] );
@@ -111,8 +111,8 @@ describe( 'Element', () => {
 
 	describe( '_insertChild', () => {
 		it( 'should add a child to the element', () => {
-			const element = new ModelElement( 'elem', [], new Text( 'xy' ) );
-			element._insertChild( 1, new Text( 'foo' ) );
+			const element = new ModelElement( 'elem', [], new ModelText( 'xy' ) );
+			element._insertChild( 1, new ModelText( 'foo' ) );
 
 			expect( element.childCount ).to.equal( 2 );
 			expect( element.maxOffset ).to.equal( 5 );
@@ -142,14 +142,14 @@ describe( 'Element', () => {
 
 		it( 'should accept and correctly handle text proxies', () => {
 			const element = new ModelElement( 'div' );
-			const text = new Text( 'abcxyz', { bold: true } );
+			const text = new ModelText( 'abcxyz', { bold: true } );
 			const textProxy = new TextProxy( text, 2, 3 );
 
 			element._insertChild( 0, textProxy );
 
 			expect( element.childCount ).to.equal( 1 );
 			expect( element.maxOffset ).to.equal( 3 );
-			expect( element.getChild( 0 ) ).to.be.instanceof( Text );
+			expect( element.getChild( 0 ) ).to.be.instanceof( ModelText );
 			expect( element.getChild( 0 ).data ).to.equal( 'cxy' );
 			expect( element.getChild( 0 ).getAttribute( 'bold' ) ).to.equal( true );
 		} );
@@ -157,11 +157,11 @@ describe( 'Element', () => {
 
 	describe( '_appendChild', () => {
 		it( 'should use _insertChild to add children at the end of the element', () => {
-			const element = new ModelElement( 'elem', [], new Text( 'xy' ) );
+			const element = new ModelElement( 'elem', [], new ModelText( 'xy' ) );
 
 			sinon.spy( element, '_insertChild' );
 
-			const text = new Text( 'foo' );
+			const text = new ModelText( 'foo' );
 			element._appendChild( text );
 
 			expect( element._insertChild.calledWithExactly( 0, text ) );
@@ -170,7 +170,7 @@ describe( 'Element', () => {
 
 	describe( '_removeChildren', () => {
 		it( 'should remove children from the element and return them as an array', () => {
-			const element = new ModelElement( 'elem', [], [ new Text( 'foobar' ), new ModelElement( 'imageBlock' ) ] );
+			const element = new ModelElement( 'elem', [], [ new ModelText( 'foobar' ), new ModelElement( 'imageBlock' ) ] );
 			const removed = element._removeChildren( 1, 1 );
 
 			expect( element.childCount ).to.equal( 1 );
@@ -183,7 +183,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should remove one child when second parameter is not specified', () => {
-			const element = new ModelElement( 'element', [], [ new Text( 'foo' ), new ModelElement( 'imageBlock' ) ] );
+			const element = new ModelElement( 'element', [], [ new ModelText( 'foo' ), new ModelElement( 'imageBlock' ) ] );
 			const removed = element._removeChildren( 0 );
 
 			expect( element.childCount ).to.equal( 1 );
@@ -197,12 +197,12 @@ describe( 'Element', () => {
 
 	describe( '_removeChildrenArray', () => {
 		it( 'should remove children from the element', () => {
-			const _1 = new Text( '_1' );
-			const _2 = new Text( '_2' );
-			const _3 = new Text( '_3' );
-			const _4 = new Text( '_4' );
-			const _5 = new Text( '_5' );
-			const _6 = new Text( '_6' );
+			const _1 = new ModelText( '_1' );
+			const _2 = new ModelText( '_2' );
+			const _3 = new ModelText( '_3' );
+			const _4 = new ModelText( '_4' );
+			const _5 = new ModelText( '_5' );
+			const _6 = new ModelText( '_6' );
 
 			const element = new ModelElement( 'elem', [], [ _1, _2, _3, _4, _5, _6 ] );
 
@@ -225,7 +225,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should return a descendant of this node', () => {
-			const foo = new Text( 'foo' );
+			const foo = new ModelText( 'foo' );
 			const image = new ModelElement( 'imageBlock' );
 			const element = new ModelElement( 'elem', [], [
 				new ModelElement( 'elem', [], [
@@ -241,9 +241,9 @@ describe( 'Element', () => {
 		} );
 
 		it( 'works fine with offsets', () => {
-			const bar = new Text( 'bar' );
-			const foo = new Text( 'foo' );
-			const bom = new Text( 'bom' );
+			const bar = new ModelText( 'bar' );
+			const foo = new ModelText( 'foo' );
+			const bom = new ModelText( 'bom' );
 			const bold = new ModelElement( 'b', [], [
 				bar
 			] );
@@ -274,7 +274,7 @@ describe( 'Element', () => {
 		let p, td, tr, table;
 
 		beforeEach( () => {
-			p = new ModelElement( 'p', [], [ new Text( 'foo' ) ] );
+			p = new ModelElement( 'p', [], [ new ModelText( 'foo' ) ] );
 			td = new ModelElement( 'td', [], [ p ] );
 			tr = new ModelElement( 'tr', [], [ td ] );
 			table = new ModelElement( 'table', [], [ tr ] );
@@ -299,7 +299,7 @@ describe( 'Element', () => {
 
 	describe( 'getChildIndex', () => {
 		it( 'should return child index', () => {
-			const element = new ModelElement( 'elem', [], [ new ModelElement( 'p' ), new Text( 'bar' ), new ModelElement( 'h' ) ] );
+			const element = new ModelElement( 'elem', [], [ new ModelElement( 'p' ), new ModelText( 'bar' ), new ModelElement( 'h' ) ] );
 			const p = element.getChild( 0 );
 			const bar = element.getChild( 1 );
 			const h = element.getChild( 2 );
@@ -312,7 +312,7 @@ describe( 'Element', () => {
 
 	describe( 'getChildStartOffset', () => {
 		it( 'should return child offset', () => {
-			const element = new ModelElement( 'elem', [], [ new ModelElement( 'p' ), new Text( 'bar' ), new ModelElement( 'h' ) ] );
+			const element = new ModelElement( 'elem', [], [ new ModelElement( 'p' ), new ModelText( 'bar' ), new ModelElement( 'h' ) ] );
 			const p = element.getChild( 0 );
 			const bar = element.getChild( 1 );
 			const h = element.getChild( 2 );
@@ -325,7 +325,7 @@ describe( 'Element', () => {
 
 	describe( 'getChildAtOffset', () => {
 		it( 'should return child at given offset', () => {
-			const element = new ModelElement( 'elem', [], [ new ModelElement( 'p' ), new Text( 'bar' ), new ModelElement( 'h' ) ] );
+			const element = new ModelElement( 'elem', [], [ new ModelElement( 'p' ), new ModelText( 'bar' ), new ModelElement( 'h' ) ] );
 			const p = element.getChild( 0 );
 			const bar = element.getChild( 1 );
 			const h = element.getChild( 2 );
@@ -338,7 +338,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should return null for incorrect offset', () => {
-			const element = new ModelElement( 'elem', [], [ new ModelElement( 'p' ), new Text( 'bar' ), new ModelElement( 'h' ) ] );
+			const element = new ModelElement( 'elem', [], [ new ModelElement( 'p' ), new ModelText( 'bar' ), new ModelElement( 'h' ) ] );
 
 			expect( element.getChildAtOffset( -1 ) ).to.be.null;
 			expect( element.getChildAtOffset( 5 ) ).to.be.null;
@@ -347,7 +347,7 @@ describe( 'Element', () => {
 
 	describe( 'getChildCount', () => {
 		it( 'should return number of children', () => {
-			const element = new ModelElement( 'elem', [], new Text( 'bar' ) );
+			const element = new ModelElement( 'elem', [], new ModelText( 'bar' ) );
 
 			expect( element.childCount ).to.equal( 1 );
 		} );
@@ -355,7 +355,7 @@ describe( 'Element', () => {
 
 	describe( 'getMaxOffset', () => {
 		it( 'should return offset number after the last child', () => {
-			const element = new ModelElement( 'elem', [], [ new ModelElement( 'p' ), new Text( 'bar' ), new ModelElement( 'h' ) ] );
+			const element = new ModelElement( 'elem', [], [ new ModelElement( 'p' ), new ModelText( 'bar' ), new ModelElement( 'h' ) ] );
 
 			expect( element.maxOffset ).to.equal( 5 );
 		} );
@@ -364,7 +364,7 @@ describe( 'Element', () => {
 	describe( 'isEmpty', () => {
 		it( 'checks whether element has no children', () => {
 			expect( new ModelElement( 'a' ).isEmpty ).to.be.true;
-			expect( new ModelElement( 'a', null, new Text( 'x' ) ).isEmpty ).to.be.false;
+			expect( new ModelElement( 'a', null, new ModelText( 'x' ) ).isEmpty ).to.be.false;
 		} );
 	} );
 
@@ -372,7 +372,7 @@ describe( 'Element', () => {
 		let element;
 
 		beforeEach( () => {
-			element = new ModelElement( 'elem', [], [ new ModelElement( 'p' ), new Text( 'bar' ), new ModelElement( 'h' ) ] );
+			element = new ModelElement( 'elem', [], [ new ModelElement( 'p' ), new ModelText( 'bar' ), new ModelElement( 'h' ) ] );
 		} );
 
 		it( 'should return index of a node that occupies given offset in this element', () => {
@@ -420,7 +420,7 @@ describe( 'Element', () => {
 		it( 'should serialize node with children', () => {
 			const img = new ModelElement( 'img' );
 			const one = new ModelElement( 'one' );
-			const two = new ModelElement( 'two', null, [ new Text( 'ba' ), img, new Text( 'r' ) ] );
+			const two = new ModelElement( 'two', null, [ new ModelText( 'ba' ), img, new ModelText( 'r' ) ] );
 			const three = new ModelElement( 'three' );
 
 			const node = new ModelElement( null, null, [ one, two, three ] );
@@ -472,7 +472,7 @@ describe( 'Element', () => {
 
 		it( 'should create element with children', () => {
 			const p = new ModelElement( 'p' );
-			const text = new Text( 'foo' );
+			const text = new ModelText( 'foo' );
 			const el = new ModelElement( 'el', null, [ p, text ] );
 
 			const serialized = el.toJSON();

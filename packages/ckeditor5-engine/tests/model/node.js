@@ -7,7 +7,7 @@ import { Model } from '../../src/model/model.js';
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { ModelNode } from '../../src/model/node.js';
 import { ModelElement } from '../../src/model/element.js';
-import { Text } from '../../src/model/text.js';
+import { ModelText } from '../../src/model/text.js';
 import { ModelRootElement } from '../../src/model/rootelement.js';
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
@@ -23,7 +23,7 @@ describe( 'Node', () => {
 		node = new ModelNode();
 
 		one = new ModelElement( 'one' );
-		two = new ModelElement( 'two', null, [ new Text( 'ba' ), new ModelElement( 'img' ), new Text( 'r' ) ] );
+		two = new ModelElement( 'two', null, [ new ModelText( 'ba' ), new ModelElement( 'img' ), new ModelText( 'r' ) ] );
 		textBA = two.getChild( 0 );
 		img = two.getChild( 1 );
 		textR = two.getChild( 2 );
@@ -265,9 +265,9 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return proper element for nodes in different branches and on different levels', () => {
-			const foo = new Text( 'foo' );
-			const bar = new Text( 'bar' );
-			const bom = new Text( 'bom' );
+			const foo = new ModelText( 'foo' );
+			const bar = new ModelText( 'bar' );
+			const bom = new ModelText( 'bom' );
 			const d = new ModelElement( 'd', null, [ bar ] );
 			const c = new ModelElement( 'c', null, [ foo, d ] );
 			const b = new ModelElement( 'b', null, [ c ] );
@@ -292,8 +292,8 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return document fragment', () => {
-			const foo = new Text( 'foo' );
-			const bar = new Text( 'bar' );
+			const foo = new ModelText( 'foo' );
+			const bar = new ModelText( 'bar' );
 			const df = new ModelDocumentFragment( [ foo, bar ] );
 
 			expect( foo.getCommonAncestor( bar ) ).to.equal( df );
@@ -378,7 +378,7 @@ describe( 'Node', () => {
 
 	describe( 'isAttached()', () => {
 		it( 'returns false for a fresh node', () => {
-			const char = new Text( 'x' );
+			const char = new ModelText( 'x' );
 			const el = new ModelElement( 'one' );
 
 			expect( char.isAttached() ).to.equal( false );
@@ -393,7 +393,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'returns false for a node attached to a document fragment', () => {
-			const foo = new Text( 'foo' );
+			const foo = new ModelText( 'foo' );
 			new ModelDocumentFragment( [ foo ] ); // eslint-disable-line no-new
 
 			expect( foo.isAttached() ).to.equal( false );
