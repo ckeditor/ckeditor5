@@ -5,7 +5,7 @@
 
 import { ViewContainerElement, getViewFillerOffset } from '../../src/view/containerelement.js';
 import { Element } from '../../src/view/element.js';
-import { Document } from '../../src/view/document.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { _parseView } from '../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
@@ -13,7 +13,7 @@ describe( 'ContainerElement', () => {
 	let document;
 
 	beforeEach( () => {
-		document = new Document( new StylesProcessor() );
+		document = new ViewDocument( new StylesProcessor() );
 	} );
 
 	describe( 'constructor()', () => {

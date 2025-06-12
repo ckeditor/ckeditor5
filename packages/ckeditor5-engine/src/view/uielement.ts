@@ -12,7 +12,7 @@ import { Node } from './node.js';
 import { CKEditorError, keyCodes } from '@ckeditor/ckeditor5-utils';
 
 import { type View } from './view.js';
-import { type Document } from './document.js';
+import { type ViewDocument } from './document.js';
 import { type DomConverter } from './domconverter.js';
 import { type Item } from './item.js';
 import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver.js';
@@ -54,7 +54,7 @@ export class UIElement extends Element {
 	 * @param children A list of nodes to be inserted into created element.
 	 */
 	constructor(
-		document: Document,
+		document: ViewDocument,
 		name: string,
 		attrs?: ElementAttributes,
 		children?: Node | Iterable<Node>
@@ -148,9 +148,9 @@ UIElement.prototype.is = function( type: string, name?: string ): boolean {
 export { UIElement as ViewUIElement };
 
 /**
- * This function injects UI element handling to the given {@link module:engine/view/document~Document document}.
+ * This function injects UI element handling to the given {@link module:engine/view/document~ViewDocument document}.
  *
- * A callback is added to {@link module:engine/view/document~Document#event:keydown document keydown event}.
+ * A callback is added to {@link module:engine/view/document~ViewDocument#event:keydown document keydown event}.
  * The callback handles the situation when right arrow key is pressed and selection is collapsed before a UI element.
  * Without this handler, it would be impossible to "jump over" UI element using right arrow key.
  *

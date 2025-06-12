@@ -50,7 +50,7 @@ const domConverterStub: DomConverter = {
 } as any;
 
 /**
- * Writes the content of the {@link module:engine/view/document~Document document} to an HTML-like string.
+ * Writes the content of the {@link module:engine/view/document~ViewDocument document} to an HTML-like string.
  *
  * @param view The view to stringify.
  * @param options.withoutSelection Whether to write the selection. When set to `true`, the selection will
@@ -110,7 +110,7 @@ export function _getViewData(
 _getViewData._stringify = _stringifyView;
 
 /**
- * Sets the content of a view {@link module:engine/view/document~Document document} provided as an HTML-like string.
+ * Sets the content of a view {@link module:engine/view/document~ViewDocument document} provided as an HTML-like string.
  *
  * @param data An HTML-like string to write into the document.
  * @param options.rootName The root name where _parseViewd data will be stored. If not provided,
@@ -276,7 +276,7 @@ _setViewData._parse = _parseView;
  * @param options.showAttributeElementId When set to `true`, attribute element's id will be printed
  * (`<span id="marker:foo">`).
  * @param options.ignoreRoot When set to `true`, the root's element opening and closing will not be printed.
- * Mainly used by the `getData` function to ignore the {@link module:engine/view/document~Document document's} root element.
+ * Mainly used by the `getData` function to ignore the {@link module:engine/view/document~ViewDocument document's} root element.
  * @param options.sameSelectionCharacters When set to `true`, the selection inside the text will be marked as
  *  `{` and `}` and the selection outside the text as `[` and `]`. When set to `false`, both will be marked as `[` and `]` only.
  * @param options.renderUIElements When set to `true`, the inner content of each

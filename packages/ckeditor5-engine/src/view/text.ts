@@ -9,7 +9,7 @@
 
 import { Node } from './node.js';
 
-import { type Document } from './document.js';
+import { type ViewDocument } from './document.js';
 
 /**
  * Tree view text node.
@@ -36,7 +36,7 @@ export class Text extends Node {
 	 * @param document The document instance to which this text node belongs.
 	 * @param data The text's data.
 	 */
-	constructor( document: Document, data: string ) {
+	constructor( document: ViewDocument, data: string ) {
 		super( document );
 
 		this._textData = data;

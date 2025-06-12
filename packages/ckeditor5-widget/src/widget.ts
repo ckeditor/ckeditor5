@@ -281,7 +281,7 @@ export class Widget extends Plugin {
 	}
 
 	/**
-	 * Handles {@link module:engine/view/document~Document#event:mousedown mousedown} events on widget elements.
+	 * Handles {@link module:engine/view/document~ViewDocument#event:mousedown mousedown} events on widget elements.
 	 */
 	private _onMousedown( eventInfo: EventInfo, domEventData: DomEventData<MouseEvent> ) {
 		const editor = this.editor;
@@ -375,7 +375,7 @@ export class Widget extends Plugin {
 	}
 
 	/**
-	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events and changes
+	 * Handles {@link module:engine/view/document~ViewDocument#event:keydown keydown} events and changes
 	 * the model selection when:
 	 *
 	 * * arrow key is pressed when the widget is selected,
@@ -455,7 +455,7 @@ export class Widget extends Plugin {
 	}
 
 	/**
-	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events and prevents
+	 * Handles {@link module:engine/view/document~ViewDocument#event:keydown keydown} events and prevents
 	 * the default browser behavior to make sure the fake selection is not being moved from a fake selection
 	 * container.
 	 *

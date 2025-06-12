@@ -15,8 +15,8 @@ import type { ViewDocumentInputEvent } from './inputobserver.js';
 // @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
 
 /**
- * {@link module:engine/view/document~Document#event:focus Focus}
- * and {@link module:engine/view/document~Document#event:blur blur} events observer.
+ * {@link module:engine/view/document~ViewDocument#event:focus Focus}
+ * and {@link module:engine/view/document~ViewDocument#event:blur blur} events observer.
  * Focus observer handle also {@link module:engine/view/rooteditableelement~RootEditableElement#isFocused isFocused} property of the
  * {@link module:engine/view/rooteditableelement~RootEditableElement root elements}.
  *
@@ -206,7 +206,7 @@ export class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/focusobserver~FocusObserver
- * @eventName module:engine/view/document~Document#focus
+ * @eventName module:engine/view/document~ViewDocument#focus
  * @param data Event data.
  */
 export type ViewDocumentFocusEvent = {
@@ -223,7 +223,7 @@ export type ViewDocumentFocusEvent = {
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/focusobserver~FocusObserver
- * @eventName module:engine/view/document~Document#blur
+ * @eventName module:engine/view/document~ViewDocument#blur
  * @param data Event data.
  */
 export type ViewDocumentBlurEvent = {

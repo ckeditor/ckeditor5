@@ -34,7 +34,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import { type ViewNode } from './node.js';
-import { type Document } from './document.js';
+import { type ViewDocument } from './document.js';
 import { type DocumentSelection } from './documentselection.js';
 import { type EditableElement } from './editableelement.js';
 import { type ViewTextProxy } from './textproxy.js';
@@ -65,13 +65,14 @@ const UNSAFE_ELEMENT_REPLACEMENT_ATTRIBUTE = 'data-ck-unsafe-element';
  * {@link module:engine/view/view~View#domConverter `editor.editing.view.domConverter`}.
  *
  * The DOM converter does not check which nodes should be rendered (use {@link module:engine/view/renderer~Renderer}), does not keep the
- * state of a tree nor keeps the synchronization between the tree view and the DOM tree (use {@link module:engine/view/document~Document}).
+ * state of a tree nor keeps the synchronization between the tree view and
+ * the DOM tree (use {@link module:engine/view/document~ViewDocument}).
  *
  * The DOM converter keeps DOM elements to view element bindings, so when the converter gets destroyed, the bindings are lost.
  * Two converters will keep separate binding maps, so one tree view can be bound with two DOM trees.
  */
 export class DomConverter {
-	public readonly document: Document;
+	public readonly document: ViewDocument;
 
 	/**
 	 * Whether to leave the View-to-DOM conversion result unchanged or improve editing experience by filtering out interactive data.
@@ -165,7 +166,7 @@ export class DomConverter {
 	 * or improve editing experience by filtering out interactive data.
 	 */
 	constructor(
-		document: Document,
+		document: ViewDocument,
 		{ blockFillerMode, renderingMode = 'editing' }: {
 			blockFillerMode?: BlockFillerMode;
 			renderingMode?: 'data' | 'editing';

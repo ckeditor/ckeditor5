@@ -28,7 +28,7 @@ import { type Range } from './range.js';
 /**
  * Class representing the document selection in the view.
  *
- * Its instance is available in {@link module:engine/view/document~Document#selection `Document#selection`}.
+ * Its instance is available in {@link module:engine/view/document~ViewDocument#selection `Document#selection`}.
  *
  * It is similar to {@link module:engine/view/selection~Selection} but
  * it has a read-only API and can be modified only by the writer available in

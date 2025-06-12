@@ -22,7 +22,7 @@ import { type DowncastWriter } from './downcastwriter.js';
  * Document class creates an abstract layer over the content editable area, contains a tree of view elements and
  * {@link module:engine/view/documentselection~DocumentSelection view selection} associated with this document.
  */
-export class Document extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PURE__ */ ObservableMixin() ) {
+export class ViewDocument extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PURE__ */ ObservableMixin() ) {
 	/**
 	 * Selection done on this document.
 	 */
@@ -31,7 +31,7 @@ export class Document extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PURE__
 	/**
 	 * Roots of the view tree. Collection of the {@link module:engine/view/element~Element view elements}.
 	 *
-	 * View roots are created as a result of binding between {@link module:engine/view/document~Document#roots} and
+	 * View roots are created as a result of binding between {@link module:engine/view/document~ViewDocument#roots} and
 	 * {@link module:engine/model/document~ModelDocument#roots} and this is handled by
 	 * {@link module:engine/controller/editingcontroller~EditingController}, so to create view root we need to create
 	 * model root using {@link module:engine/model/document~ModelDocument#createRoot}.
@@ -109,7 +109,7 @@ export class Document extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PURE__
 	}
 
 	/**
-	 * Gets a {@link module:engine/view/document~Document#roots view root element} with the specified name. If the name is not
+	 * Gets a {@link module:engine/view/document~ViewDocument#roots view root element} with the specified name. If the name is not
 	 * specific "main" root is returned.
 	 *
 	 * @param name Name of the root.
@@ -205,14 +205,10 @@ export class Document extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PURE__
 	// @if CK_DEBUG_ENGINE // }
 }
 
-export {
-	Document as ViewDocument
-};
-
 /**
  * Document PostFixer.
  *
- * @see module:engine/view/document~Document#registerPostFixer
+ * @see module:engine/view/document~ViewDocument#registerPostFixer
  */
 export type ViewDocumentPostFixer = ( writer: DowncastWriter ) => boolean;
 

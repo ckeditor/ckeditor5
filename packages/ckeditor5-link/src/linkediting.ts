@@ -269,8 +269,8 @@ export class LinkEditing extends Plugin {
 	}
 
 	/**
-	 * Attaches handlers for {@link module:engine/view/document~Document#event:enter} and
-	 * {@link module:engine/view/document~Document#event:click} to enable link following.
+	 * Attaches handlers for {@link module:engine/view/document~ViewDocument#event:enter} and
+	 * {@link module:engine/view/document~ViewDocument#event:click} to enable link following.
 	 */
 	private _enableLinkOpen(): void {
 		const editor = this.editor;

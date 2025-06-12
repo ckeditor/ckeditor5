@@ -8,7 +8,7 @@ import { DocumentSelection } from '../../../src/view/documentselection.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 /**
- * Creates {@link module:engine/view/document~Document view Document} mock.
+ * Creates {@link module:engine/view/document~ViewDocument view Document} mock.
  *
  * @returns {utils.ObservableMixin} Document mock
  */

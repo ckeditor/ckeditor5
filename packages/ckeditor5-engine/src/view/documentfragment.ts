@@ -13,7 +13,7 @@ import { TextProxy } from './textproxy.js';
 
 import { EmitterMixin, isIterable } from '@ckeditor/ckeditor5-utils';
 
-import type { Document, ChangeType } from './document.js';
+import type { ViewDocument, ChangeType } from './document.js';
 
 import { type Item } from './item.js';
 import { type Node } from './node.js';
@@ -29,7 +29,7 @@ export class DocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeCheckabl
 	/**
 	 * The document to which this document fragment belongs.
 	 */
-	public readonly document: Document;
+	public readonly document: ViewDocument;
 
 	/**
 	 * Array of child nodes.
@@ -49,7 +49,7 @@ export class DocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeCheckabl
 	 * @param document The document to which this document fragment belongs.
 	 * @param children A list of nodes to be inserted into the created document fragment.
 	 */
-	constructor( document: Document, children?: Node | Iterable<Node> ) {
+	constructor( document: ViewDocument, children?: Node | Iterable<Node> ) {
 		super();
 
 		this.document = document;
@@ -279,7 +279,7 @@ export { DocumentFragment as ViewDocumentFragment };
 /**
  * Converts strings to Text and non-iterables to arrays.
  */
-function normalize( document: Document, nodes: Item | string | Iterable<Item | string> ): Array<Node> {
+function normalize( document: ViewDocument, nodes: Item | string | Iterable<Item | string> ): Array<Node> {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
 		return [ new Text( document, nodes ) ];

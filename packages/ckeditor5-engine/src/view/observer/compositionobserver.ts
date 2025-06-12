@@ -14,9 +14,9 @@ import { type DomEventData } from './domeventdata.js';
 // @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
 
 /**
- * {@link module:engine/view/document~Document#event:compositionstart Compositionstart},
- * {@link module:engine/view/document~Document#event:compositionupdate compositionupdate} and
- * {@link module:engine/view/document~Document#event:compositionend compositionend} events observer.
+ * {@link module:engine/view/document~ViewDocument#event:compositionstart Compositionstart},
+ * {@link module:engine/view/document~ViewDocument#event:compositionupdate compositionupdate} and
+ * {@link module:engine/view/document~ViewDocument#event:compositionend compositionend} events observer.
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  */
@@ -89,7 +89,7 @@ export interface CompositionEventData extends DomEventData<CompositionEvent> {
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/compositionobserver~CompositionObserver
- * @eventName module:engine/view/document~Document#compositionstart
+ * @eventName module:engine/view/document~ViewDocument#compositionstart
  * @param data Event data.
  */
 export type ViewDocumentCompositionStartEvent = {
@@ -106,7 +106,7 @@ export type ViewDocumentCompositionStartEvent = {
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/compositionobserver~CompositionObserver
- * @eventName module:engine/view/document~Document#compositionupdate
+ * @eventName module:engine/view/document~ViewDocument#compositionupdate
  * @param data Event data.
  */
 export type ViewDocumentCompositionUpdateEvent = {
@@ -123,7 +123,7 @@ export type ViewDocumentCompositionUpdateEvent = {
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/compositionobserver~CompositionObserver
- * @eventName module:engine/view/document~Document#compositionend
+ * @eventName module:engine/view/document~ViewDocument#compositionend
  * @param data Event data.
  */
 export type ViewDocumentCompositionEndEvent = {

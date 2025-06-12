@@ -8,7 +8,7 @@
  */
 
 import { EventInfo } from '@ckeditor/ckeditor5-utils';
-import { type Document } from '../document.js';
+import { type ViewDocument } from '../document.js';
 import { type Node } from '../node.js';
 import { type Range } from '../range.js';
 
@@ -30,7 +30,7 @@ export class BubblingEventInfo<TName extends string = string, TReturn = unknown>
 	/**
 	 * The current bubbling target.
 	 */
-	private _currentTarget: Document | Node | null;
+	private _currentTarget: ViewDocument | Node | null;
 
 	/**
 	 * @param source The emitter.
@@ -55,7 +55,7 @@ export class BubblingEventInfo<TName extends string = string, TReturn = unknown>
 	/**
 	 * The current bubbling target.
 	 */
-	public get currentTarget(): Document | Node | null {
+	public get currentTarget(): ViewDocument | Node | null {
 		return this._currentTarget;
 	}
 }

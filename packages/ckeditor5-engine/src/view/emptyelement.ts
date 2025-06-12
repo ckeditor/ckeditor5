@@ -11,7 +11,7 @@ import { Element, type ElementAttributes } from './element.js';
 import { Node } from './node.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import { type Document } from './document.js';
+import { type ViewDocument } from './document.js';
 import { type Item } from './item.js';
 
 /**
@@ -35,7 +35,7 @@ export class EmptyElement extends Element {
 	 * @param children A list of nodes to be inserted into created element.
 	 */
 	constructor(
-		document: Document,
+		document: ViewDocument,
 		name: string,
 		attributes?: ElementAttributes,
 		children?: Node | Iterable<Node>

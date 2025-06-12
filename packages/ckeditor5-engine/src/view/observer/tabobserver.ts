@@ -16,7 +16,7 @@ import type { BubblingEvent } from './bubblingemittermixin.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
 
 /**
- * Tab observer introduces the {@link module:engine/view/document~Document#event:tab `Document#tab`} event.
+ * Tab observer introduces the {@link module:engine/view/document~ViewDocument#event:tab `Document#tab`} event.
  *
  * Note that because {@link module:engine/view/observer/tabobserver~TabObserver} is attached by the
  * {@link module:engine/view/view~View}, this event is available by default.
@@ -68,7 +68,7 @@ export class TabObserver extends Observer {
  * Note that because {@link module:engine/view/observer/tabobserver~TabObserver} is attached by the
  * {@link module:engine/view/view~View}, this event is available by default.
  *
- * @eventName module:engine/view/document~Document#tab
+ * @eventName module:engine/view/document~ViewDocument#tab
  * @param data
  */
 export type ViewDocumentTabEvent = BubblingEvent<{

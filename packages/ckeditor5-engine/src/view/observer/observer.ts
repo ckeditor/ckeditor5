@@ -9,12 +9,12 @@
 
 import { DomEmitterMixin } from '@ckeditor/ckeditor5-utils';
 
-import { type Document } from '../document.js';
+import { type ViewDocument } from '../document.js';
 import { type View } from '../view.js';
 
 /**
  * Abstract base observer class. Observers are classes which listen to DOM events, do the preliminary
- * processing and fire events on the {@link module:engine/view/document~Document} objects.
+ * processing and fire events on the {@link module:engine/view/document~ViewDocument} objects.
  * Observers can also add features to the view, for instance by updating its status or marking elements
  * which need a refresh on DOM events.
  */
@@ -25,9 +25,9 @@ export abstract class Observer extends /* #__PURE__ */ DomEmitterMixin() {
 	public readonly view: View;
 
 	/**
-	 * A reference to the {@link module:engine/view/document~Document} object.
+	 * A reference to the {@link module:engine/view/document~ViewDocument} object.
 	 */
-	public readonly document: Document;
+	public readonly document: ViewDocument;
 
 	/**
 	 * The state of the observer. If it is disabled, no events will be fired.

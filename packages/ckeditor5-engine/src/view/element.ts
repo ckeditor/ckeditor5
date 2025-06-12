@@ -14,7 +14,7 @@ import { type ArrayOrItem, isIterable, toMap } from '@ckeditor/ckeditor5-utils';
 import { Matcher, isPatternMatched, type MatcherPattern, type NormalizedPropertyPattern } from './matcher.js';
 import { StylesMap, type Styles, type StyleValue } from './stylesmap.js';
 
-import { type Document } from './document.js';
+import { type ViewDocument } from './document.js';
 import { type Item } from './item.js';
 import { TokenList } from './tokenlist.js';
 
@@ -114,7 +114,7 @@ export class Element extends Node {
 	 * @param children A list of nodes to be inserted into created element.
 	 */
 	constructor(
-		document: Document,
+		document: ViewDocument,
 		name: string,
 		attrs?: ElementAttributes,
 		children?: Node | Iterable<Node>
@@ -1365,7 +1365,7 @@ export interface NormalizedConsumables {
 /**
  * Converts strings to Text and non-iterables to arrays.
  */
-function normalize( document: Document, nodes: string | Item | Iterable<string | Item> ): Array<Node> {
+function normalize( document: ViewDocument, nodes: string | Item | Iterable<string | Item> ): Array<Node> {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
 		return [ new Text( document, nodes ) ];

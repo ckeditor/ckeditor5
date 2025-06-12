@@ -25,11 +25,11 @@ type DomSelection = globalThis.Selection;
 
 /**
  * Selection observer class observes selection changes in the document. If a selection changes on the document this
- * observer checks if the DOM selection is different from the {@link module:engine/view/document~Document#selection view selection}.
- * The selection observer fires {@link module:engine/view/document~Document#event:selectionChange} event only if
+ * observer checks if the DOM selection is different from the {@link module:engine/view/document~ViewDocument#selection view selection}.
+ * The selection observer fires {@link module:engine/view/document~ViewDocument#event:selectionChange} event only if
  * a selection change was the only change in the document and the DOM selection is different from the view selection.
  *
- * This observer also manages the {@link module:engine/view/document~Document#isSelecting} property of the view document.
+ * This observer also manages the {@link module:engine/view/document~ViewDocument#isSelecting} property of the view document.
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  */
@@ -37,7 +37,7 @@ export class SelectionObserver extends Observer {
 	/**
 	 * Instance of the mutation observer. Selection observer calls
 	 * {@link module:engine/view/observer/mutationobserver~MutationObserver#flush} to ensure that the mutations will be handled
-	 * before the {@link module:engine/view/document~Document#event:selectionChange} event is fired.
+	 * before the {@link module:engine/view/document~ViewDocument#event:selectionChange} event is fired.
 	 */
 	public readonly mutationObserver: MutationObserver;
 
@@ -265,8 +265,8 @@ export class SelectionObserver extends Observer {
 
 	/**
 	 * Selection change listener. {@link module:engine/view/observer/mutationobserver~MutationObserver#flush Flush} mutations, check if
-	 * a selection changes and fires {@link module:engine/view/document~Document#event:selectionChange} event on every change
-	 * and {@link module:engine/view/document~Document#event:selectionChangeDone} when a selection stop changing.
+	 * a selection changes and fires {@link module:engine/view/document~ViewDocument#event:selectionChange} event on every change
+	 * and {@link module:engine/view/document~ViewDocument#event:selectionChangeDone} when a selection stop changing.
 	 *
 	 * @param domDocument DOM document.
 	 */
@@ -377,7 +377,7 @@ export class SelectionObserver extends Observer {
 export type ViewDocumentSelectionEventData = {
 
 	/**
-	 * Old View selection which is {@link module:engine/view/document~Document#selection}.
+	 * Old View selection which is {@link module:engine/view/document~ViewDocument#selection}.
 	 */
 	oldSelection: DocumentSelection;
 
@@ -402,7 +402,7 @@ export type ViewDocumentSelectionEventData = {
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/selectionobserver~SelectionObserver
- * @eventName module:engine/view/document~Document#selectionChange
+ * @eventName module:engine/view/document~ViewDocument#selectionChange
  */
 export type ViewDocumentSelectionChangeEvent = {
 	name: 'selectionChange';
@@ -418,7 +418,7 @@ export type ViewDocumentSelectionChangeEvent = {
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/selectionobserver~SelectionObserver
- * @eventName module:engine/view/document~Document#selectionChangeDone
+ * @eventName module:engine/view/document~ViewDocument#selectionChangeDone
  */
 export type ViewDocumentSelectionChangeDoneEvent = {
 	name: 'selectionChangeDone';

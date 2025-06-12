@@ -142,7 +142,7 @@ export class EditingController extends /* #__PURE__ */ ObservableMixin() {
 		this.downcastDispatcher.on<DowncastSelectionEvent>( 'selection', convertRangeSelection(), { priority: 'low' } );
 		this.downcastDispatcher.on<DowncastSelectionEvent>( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 
-		// Binds {@link module:engine/view/document~Document#roots view roots collection} to
+		// Binds {@link module:engine/view/document~ViewDocument#roots view roots collection} to
 		// {@link module:engine/model/document~ModelDocument#roots model roots collection} so creating
 		// model root automatically creates corresponding view root.
 		this.view.document.roots.bindTo( this.model.document.roots ).using( root => {

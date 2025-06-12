@@ -11,7 +11,7 @@ import { Element, type ElementAttributes } from './element.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { type DocumentFragment } from './documentfragment.js';
-import { type Document } from './document.js';
+import { type ViewDocument } from './document.js';
 import { type Node } from './node.js';
 
 // Default attribute priority.
@@ -68,7 +68,7 @@ export class ViewAttributeElement extends Element {
 	 * @param children A list of nodes to be inserted into created element.
 	 */
 	constructor(
-		document: Document,
+		document: ViewDocument,
 		name: string,
 		attrs?: ElementAttributes,
 		children?: Node | Iterable<Node>

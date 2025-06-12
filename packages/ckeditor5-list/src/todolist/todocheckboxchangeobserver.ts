@@ -52,7 +52,7 @@ export class TodoCheckboxChangeObserver extends DomEventObserver<'change'> {
  * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
  *
  * @see module:list/todolist/todocheckboxchangeobserver~TodoCheckboxChangeObserver
- * @eventName module:engine/view/document~Document#todoCheckboxChange
+ * @eventName module:engine/view/document~ViewDocument#todoCheckboxChange
  * @param data The event data.
  */
 export type ViewDocumentTodoCheckboxChangeEvent = {

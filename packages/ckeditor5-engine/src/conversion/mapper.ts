@@ -23,7 +23,7 @@ import { type ModelDocumentFragment } from '../model/documentfragment.js';
 import type { ViewNode, ViewNodeChangeEvent } from '../view/node.js';
 
 /**
- * Maps elements, positions and markers between the {@link module:engine/view/document~Document view} and
+ * Maps elements, positions and markers between the {@link module:engine/view/document~ViewDocument view} and
  * the {@link module:engine/model/model model}.
  *
  * The instance of the Mapper used for the editing pipeline is available in

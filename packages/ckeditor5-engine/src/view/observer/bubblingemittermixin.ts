@@ -23,7 +23,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import { BubblingEventInfo, type EventPhase } from './bubblingeventinfo.js';
-import { type Document } from '../document.js';
+import { type ViewDocument } from '../document.js';
 import { type Node } from '../node.js';
 import { type Range } from '../range.js';
 import { type Element } from '../element.js';
@@ -126,7 +126,7 @@ export function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: B
 		}
 
 		public _addEventListener(
-			this: Document,
+			this: ViewDocument,
 			event: string,
 			callback: ( ev: EventInfo, ...args: Array<any> ) => void,
 			options: BubblingCallbackOptions
@@ -146,7 +146,7 @@ export function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: B
 			}
 		}
 
-		public _removeEventListener( this: Document, event: string, callback: Function ): void {
+		public _removeEventListener( this: ViewDocument, event: string, callback: Function ): void {
 			const eventContexts = getBubblingContexts( this );
 
 			for ( const emitter of eventContexts.values() ) {

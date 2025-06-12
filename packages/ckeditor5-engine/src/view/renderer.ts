@@ -110,7 +110,7 @@ export class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * True if composition is in progress inside the document.
 	 *
-	 * This property is bound to the {@link module:engine/view/document~Document#isComposing `Document#isComposing`} property.
+	 * This property is bound to the {@link module:engine/view/document~ViewDocument#isComposing `Document#isComposing`} property.
 	 *
 	 * @observable
 	 */

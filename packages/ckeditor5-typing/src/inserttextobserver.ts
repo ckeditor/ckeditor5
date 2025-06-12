@@ -42,7 +42,7 @@ const TYPING_INPUT_TYPES_ANDROID = [
 ];
 
 /**
- * Text insertion observer introduces the {@link module:engine/view/document~Document#event:insertText} event.
+ * Text insertion observer introduces the {@link module:engine/view/document~ViewDocument#event:insertText} event.
  */
 export class InsertTextObserver extends Observer {
 	/**
@@ -150,12 +150,12 @@ export class InsertTextObserver extends Observer {
  * editing view document.
  *
  * **Note**: This event will **not** fire for keystrokes such as <kbd>Delete</kbd> or <kbd>Enter</kbd>.
- * They have dedicated events, see {@link module:engine/view/document~Document#event:delete} and
- * {@link module:engine/view/document~Document#event:enter} to learn more.
+ * They have dedicated events, see {@link module:engine/view/document~ViewDocument#event:delete} and
+ * {@link module:engine/view/document~ViewDocument#event:enter} to learn more.
  *
  * **Note**: This event is fired by the {@link module:typing/inserttextobserver~InsertTextObserver input feature}.
  *
- * @eventName module:engine/view/document~Document#insertText
+ * @eventName module:engine/view/document~ViewDocument#insertText
  * @param data The event data.
  */
 export type ViewDocumentInsertTextEvent = {
@@ -180,9 +180,9 @@ export interface InsertTextEventData extends DomEventData {
 	 * A flag indicating that event was fired during composition.
 	 *
 	 * Corresponds to the
-	 * {@link module:engine/view/document~Document#event:compositionstart},
-	 * {@link module:engine/view/document~Document#event:compositionupdate},
-	 * and {@link module:engine/view/document~Document#event:compositionend } trio.
+	 * {@link module:engine/view/document~ViewDocument#event:compositionstart},
+	 * {@link module:engine/view/document~ViewDocument#event:compositionupdate},
+	 * and {@link module:engine/view/document~ViewDocument#event:compositionend } trio.
 	 */
 	isComposing?: boolean;
 }

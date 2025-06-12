@@ -73,7 +73,7 @@ export class ContextualBalloon extends Plugin {
 	 *
 	 * By default, a function that obtains the farthest DOM
 	 * {@link module:engine/view/rooteditableelement~RootEditableElement}
-	 * of the {@link module:engine/view/document~Document#selection}.
+	 * of the {@link module:engine/view/document~ViewDocument#selection}.
 	 */
 	public positionLimiter: PositionOptions[ 'limiter' ];
 

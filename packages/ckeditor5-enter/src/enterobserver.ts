@@ -25,7 +25,7 @@ const ENTER_EVENT_TYPES: Record<string, { isSoft: boolean }> = {
 };
 
 /**
- * Enter observer introduces the {@link module:engine/view/document~Document#event:enter `Document#enter`} event.
+ * Enter observer introduces the {@link module:engine/view/document~ViewDocument#event:enter `Document#enter`} event.
  */
 export class EnterObserver extends Observer {
 	/**
@@ -92,7 +92,7 @@ export class EnterObserver extends Observer {
  * (usually registered by the {@link module:enter/enter~Enter Enter feature} and
  * {@link module:enter/shiftenter~ShiftEnter ShiftEnter feature}).
  *
- * @eventName module:engine/view/document~Document#enter
+ * @eventName module:engine/view/document~ViewDocument#enter
  */
 export type ViewDocumentEnterEvent = BubblingEvent<{
 	name: 'enter';

@@ -15,7 +15,7 @@ import { Range } from '../../../src/view/range.js';
 import { Text } from '../../../src/view/text.js';
 
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
-import { Document } from '../../../src/view/document.js';
+import { ViewDocument } from '../../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
@@ -36,7 +36,7 @@ describe( 'DowncastWriter', () => {
 		}
 
 		beforeEach( () => {
-			document = new Document( new StylesProcessor() );
+			document = new ViewDocument( new StylesProcessor() );
 			writer = new DowncastWriter( document );
 		} );
 

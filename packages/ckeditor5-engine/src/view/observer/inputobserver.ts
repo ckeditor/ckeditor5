@@ -284,7 +284,7 @@ function isFollowedByInlineFiller( node: Node, offset: number ): boolean {
  * by default in all editor instances (attached by {@link module:engine/view/view~View}).
  *
  * @see module:engine/view/observer/inputobserver~InputObserver
- * @eventName module:engine/view/document~Document#beforeinput
+ * @eventName module:engine/view/document~ViewDocument#beforeinput
  * @param data Event data containing detailed information about the event.
  */
 export type ViewDocumentInputEvent = {
@@ -330,9 +330,9 @@ export interface InputEventData extends DomEventData<InputEvent> {
 	 * A flag indicating that the `beforeinput` event was fired during composition.
 	 *
 	 * Corresponds to the
-	 * {@link module:engine/view/document~Document#event:compositionstart},
-	 * {@link module:engine/view/document~Document#event:compositionupdate},
-	 * and {@link module:engine/view/document~Document#event:compositionend } trio.
+	 * {@link module:engine/view/document~ViewDocument#event:compositionstart},
+	 * {@link module:engine/view/document~ViewDocument#event:compositionupdate},
+	 * and {@link module:engine/view/document~ViewDocument#event:compositionend } trio.
 	 */
 	readonly isComposing: boolean;
 

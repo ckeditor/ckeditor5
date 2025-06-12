@@ -10,7 +10,7 @@
 import { TypeCheckable } from './typecheckable.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import { type Document } from './document.js';
+import { type ViewDocument } from './document.js';
 import { type DocumentFragment } from './documentfragment.js';
 import { type Element } from './element.js';
 import { type Node } from './node.js';
@@ -122,10 +122,10 @@ export class TextProxy extends TypeCheckable {
 	}
 
 	/**
-	 * {@link module:engine/view/document~Document View document} that owns this text proxy, or `null` if the text proxy is inside
+	 * {@link module:engine/view/document~ViewDocument View document} that owns this text proxy, or `null` if the text proxy is inside
 	 * {@link module:engine/view/documentfragment~DocumentFragment document fragment}.
 	 */
-	public get document(): Document | null {
+	public get document(): ViewDocument | null {
 		return this.textNode.document;
 	}
 

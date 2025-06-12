@@ -9,7 +9,7 @@
 
 import '../../theme/placeholder.css';
 
-import { type Document } from './document.js';
+import { type ViewDocument } from './document.js';
 import { type DowncastWriter } from './downcastwriter.js';
 import { type EditableElement } from './editableelement.js';
 import { type Element } from './element.js';
@@ -18,7 +18,7 @@ import { type View } from './view.js';
 import { logWarning, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
 // Each document stores information about its placeholder elements and check functions.
-const documentPlaceholders = new WeakMap<Document, Map<Element, PlaceholderConfig>>();
+const documentPlaceholders = new WeakMap<ViewDocument, Map<Element, PlaceholderConfig>>();
 
 let hasDisplayedPlaceholderDeprecationWarning = false;
 

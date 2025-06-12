@@ -484,8 +484,8 @@ export class TwoStepCaretMovement extends Plugin {
 	}
 
 	/**
-	 * Starts listening to {@link module:engine/view/document~Document#event:mousedown} and
-	 * {@link module:engine/view/document~Document#event:selectionChange} and puts the selection before/after a 2-step node
+	 * Starts listening to {@link module:engine/view/document~ViewDocument#event:mousedown} and
+	 * {@link module:engine/view/document~ViewDocument#event:selectionChange} and puts the selection before/after a 2-step node
 	 * if clicked at the beginning/ending of the 2-step node.
 	 *
 	 * The purpose of this action is to allow typing around the 2-step node directly after a click.

@@ -281,7 +281,7 @@ function sameNodes( child1: ViewNode, child2: ViewNode ) {
  * This event is introduced by {@link module:engine/view/observer/mutationobserver~MutationObserver} and available
  * by default in all editor instances (attached by {@link module:engine/view/view~View}).
  *
- * @eventName module:engine/view/document~Document#mutations
+ * @eventName module:engine/view/document~ViewDocument#mutations
  * @param data Event data containing detailed information about the event.
  */
 export type ViewDocumentMutationsEvent = {

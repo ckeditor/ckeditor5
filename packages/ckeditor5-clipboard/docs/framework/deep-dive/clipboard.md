@@ -20,8 +20,8 @@ Both pipelines allow the features to process the content to be inserted or set t
 
 When the user pastes or drops content into the editor, the browser fires an event. The clipboard feature intercepts this event and starts the following mechanism:
 
-1. {@link module:clipboard/clipboardobserver~ClipboardObserver} turns this event into a synthetic {@link module:engine/view/document~Document#event:paste `view.Document#paste`} or {@link module:engine/view/document~Document#event:drop `view.Document#drop`}.
-2. The content to be inserted by both actions (paste and drop) should usually be processed in the same way and both actions have a similar effect. Both events are thus turned into a single {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} event for easier handling.
+1. {@link module:clipboard/clipboardobserver~ClipboardObserver} turns this event into a synthetic {@link module:engine/view/document~ViewDocument#event:paste `view.Document#paste`} or {@link module:engine/view/document~ViewDocument#event:drop `view.Document#drop`}.
+2. The content to be inserted by both actions (paste and drop) should usually be processed in the same way and both actions have a similar effect. Both events are thus turned into a single {@link module:engine/view/document~ViewDocument#event:clipboardInput `view.Document#clipboardInput`} event for easier handling.
 3. Next, the clipboard feature listens to the `view.Document#clipboardInput` event and retrieves and pre-processes the `text/html` or `text/plain` content which it finds in the {@link module:engine/view/datatransfer~ViewDataTransfer event's `dataTransfer`}. It then fires the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation `ClipboardPipeline#inputTransformation`} event with the retrieved content in the event data `content` property as a {@link module:engine/view/documentfragment~DocumentFragment `view.DocumentFragment`}.
 4. Then, the clipboard feature listens to the `ClipboardPipeline#inputTransformation` event. It takes the processed content and transforms it to the {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`}. It then fires the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion `ClipboardPipeline#contentInsertion`} event with the transformed content in the event data `content` property as a {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`}.
 5. Finally, the clipboard feature listens to the `ClipboardPipeline#contentInsertion` event. It takes the model fragment and {@link module:engine/model/model~Model#insertContent inserts} it into the editor. Then it stores the range which contains all the performed changes in the `resultRange` property of the event data.
@@ -58,7 +58,7 @@ The clipboard feature listens to the `view.Document#clipboardInput`, `ClipboardP
 
 By default, the clipboard feature retrieves `text/html` or `text/plain` from the clipboard. It normalizes the data a bit (for example, cleans up the [mess with whitespaces](https://github.com/ckeditor/ckeditor5-clipboard/issues/2)). It converts it to a {@link module:engine/view/documentfragment~DocumentFragment view `DocumentFragment`} and fires the `ClipboardPipeline#inputTransformation` event with the document fragment for further processing.
 
-You can use the {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} event to override this behavior. For example, you can use it to:
+You can use the {@link module:engine/view/document~ViewDocument#event:clipboardInput `view.Document#clipboardInput`} event to override this behavior. For example, you can use it to:
 
 * Handle pasted or dropped files. You can retrieve these from the `dataTransfer`.
 
@@ -152,7 +152,7 @@ The output pipeline is the equivalent of the input pipeline but for the copy and
                 └──────────────────────────┘
 ```
 
-### 1. On {@link module:engine/view/document~Document#event:copy `view.Document#copy`} and {@link module:engine/view/document~Document#event:cut `view.Document#cut`}
+### 1. On {@link module:engine/view/document~ViewDocument#event:copy `view.Document#copy`} and {@link module:engine/view/document~ViewDocument#event:cut `view.Document#cut`}
 
 The default action is to:
 
@@ -165,9 +165,9 @@ The default action is to:
 The default action is to:
 
 1. Processes `data.content` represented by a {@link module:engine/model/documentfragment~DocumentFragment model document fragment}.
-1. Fire {@link module:engine/view/document~Document#event:clipboardOutput `view.Document#clipboardOutput`} with a processed `data.content` converted to a {@link module:engine/view/documentfragment~DocumentFragment view document fragment}.
+1. Fire {@link module:engine/view/document~ViewDocument#event:clipboardOutput `view.Document#clipboardOutput`} with a processed `data.content` converted to a {@link module:engine/view/documentfragment~DocumentFragment view document fragment}.
 
-### 3. On {@link module:engine/view/document~Document#event:clipboardOutput `view.Document#clipboardOutput`}
+### 3. On {@link module:engine/view/document~ViewDocument#event:clipboardOutput `view.Document#clipboardOutput`}
 
 The default action is to put the content (`data.content`, represented by a {@link module:engine/view/documentfragment~DocumentFragment}) to the clipboard as HTML. In the case of the cut operation, the selected content is also deleted from the editor.
 

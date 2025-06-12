@@ -9,7 +9,7 @@
 
 import { EditableElement } from './editableelement.js';
 
-import { type Document } from './document.js';
+import { type ViewDocument } from './document.js';
 
 const rootNameSymbol = Symbol( 'rootName' );
 
@@ -26,7 +26,7 @@ export class RootEditableElement extends EditableElement {
 	 * @param name Node name.
 	 */
 	constructor(
-		document: Document,
+		document: ViewDocument,
 		name: string
 	) {
 		super( document, name );
@@ -35,7 +35,7 @@ export class RootEditableElement extends EditableElement {
 	}
 
 	/**
-	 * Name of this root inside {@link module:engine/view/document~Document} that is an owner of this root. If no
+	 * Name of this root inside {@link module:engine/view/document~ViewDocument} that is an owner of this root. If no
 	 * other name is set, `main` name is used.
 	 *
 	 * @readonly

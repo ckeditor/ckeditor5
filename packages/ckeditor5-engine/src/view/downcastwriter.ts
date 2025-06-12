@@ -26,7 +26,7 @@ import { Text } from './text.js';
 import { EditableElement } from './editableelement.js';
 import { isPlainObject } from 'es-toolkit/compat';
 
-import { type Document } from './document.js';
+import { type ViewDocument } from './document.js';
 import { type Node } from './node.js';
 import type { Element, ElementAttributes } from './element.js';
 import { type DomConverter } from './domconverter.js';
@@ -55,7 +55,7 @@ export class DowncastWriter {
 	/**
 	 * The view document instance in which this writer operates.
 	 */
-	public readonly document: Document;
+	public readonly document: ViewDocument;
 
 	/**
 	 * Holds references to the attribute groups that share the same {@link module:engine/view/attributeelement~ViewAttributeElement#id id}.
@@ -71,7 +71,7 @@ export class DowncastWriter {
 	/**
 	 * @param document The view document instance.
 	 */
-	constructor( document: Document ) {
+	constructor( document: ViewDocument ) {
 		this.document = document;
 	}
 
@@ -2193,7 +2193,7 @@ const validNodesToInsert = [ Text, ViewAttributeElement, ViewContainerElement, E
  * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
  * contains instances that are not supported ones (see error description for valid ones.
  */
-function validateNodesToInsert( nodes: Iterable<Node>, errorContext: Document ): void {
+function validateNodesToInsert( nodes: Iterable<Node>, errorContext: ViewDocument ): void {
 	for ( const node of nodes ) {
 		if ( !validNodesToInsert.some( validNode => node instanceof validNode ) ) {
 			/**
@@ -2234,7 +2234,7 @@ function isContainerOrFragment( node: Node | DocumentFragment ): boolean {
  * inside same {@link module:engine/view/containerelement~ViewContainerElement container element}.
  * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when validation fails.
  */
-function validateRangeContainer( range: Range, errorContext: Document ) {
+function validateRangeContainer( range: Range, errorContext: ViewDocument ) {
 	const startContainer = getParentContainer( range.start );
 	const endContainer = getParentContainer( range.end );
 

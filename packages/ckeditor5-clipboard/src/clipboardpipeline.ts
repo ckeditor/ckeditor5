@@ -92,7 +92,7 @@ import { ClipboardMarkersUtils } from './clipboardmarkersutils.js';
  * ## Event: `paste` or `drop`
  *
  * 1. Translates the event data.
- * 2. Fires the {@link module:engine/view/document~Document#event:clipboardInput `view.Document#clipboardInput`} event.
+ * 2. Fires the {@link module:engine/view/document~ViewDocument#event:clipboardInput `view.Document#clipboardInput`} event.
  *
  * ## Event: `view.Document#clipboardInput`
  *
@@ -128,7 +128,7 @@ import { ClipboardMarkersUtils } from './clipboardmarkersutils.js';
  * 1. Retrieves the selected {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`} by calling
  *    {@link module:engine/model/model~Model#getSelectedContent `model#getSelectedContent()`}.
  * 2. Converts the model document fragment to {@link module:engine/view/documentfragment~DocumentFragment `view.DocumentFragment`}.
- * 3. Fires the {@link module:engine/view/document~Document#event:clipboardOutput `view.Document#clipboardOutput`} event
+ * 3. Fires the {@link module:engine/view/document~ViewDocument#event:clipboardOutput `view.Document#clipboardOutput`} event
  *    with the view document fragment in the `data.content` event field.
  *
  * ## Event: `view.Document#clipboardOutput`
@@ -467,7 +467,7 @@ export interface ClipboardContentInsertionData {
 }
 
 /**
- * Fired on {@link module:engine/view/document~Document#event:copy} and {@link module:engine/view/document~Document#event:cut}
+ * Fired on {@link module:engine/view/document~ViewDocument#event:copy} and {@link module:engine/view/document~ViewDocument#event:cut}
  * with a copy of the selected content. The content can be processed before it ends up in the clipboard.
  *
  * It is a part of the {@glink framework/deep-dive/clipboard#output-pipeline clipboard output pipeline}.
@@ -475,7 +475,7 @@ export interface ClipboardContentInsertionData {
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboardpipeline~ClipboardPipeline
  *
- * @eventName module:engine/view/document~Document#clipboardOutput
+ * @eventName module:engine/view/document~ViewDocument#clipboardOutput
  * @param data The event data.
  */
 export type ViewDocumentClipboardOutputEvent = {
@@ -508,8 +508,8 @@ export interface ViewDocumentClipboardOutputEventData {
 }
 
 /**
- * Fired on {@link module:engine/view/document~Document#event:copy}, {@link module:engine/view/document~Document#event:cut}
- * and {@link module:engine/view/document~Document#event:dragstart}. The content can be processed before it ends up in the clipboard.
+ * Fired on {@link module:engine/view/document~ViewDocument#event:copy}, {@link module:engine/view/document~ViewDocument#event:cut}
+ * and {@link module:engine/view/document~ViewDocument#event:dragstart}. The content can be processed before it ends up in the clipboard.
  *
  * It is a part of the {@glink framework/deep-dive/clipboard#output-pipeline clipboard output pipeline}.
  *

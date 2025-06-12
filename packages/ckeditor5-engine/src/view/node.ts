@@ -17,7 +17,7 @@ import {
 
 import { clone } from 'es-toolkit/compat';
 
-import type { Document, ChangeType } from './document.js';
+import type { ViewDocument, ChangeType } from './document.js';
 import { type DocumentFragment } from './documentfragment.js';
 import { type Element } from './element.js';
 
@@ -32,7 +32,7 @@ export abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeCheckable )
 	/**
 	 * The document instance to which this node belongs.
 	 */
-	public readonly document: Document;
+	public readonly document: ViewDocument;
 
 	/**
 	 * Parent element. Null by default. Set by {@link module:engine/view/element~Element#_insertChild}.
@@ -44,7 +44,7 @@ export abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeCheckable )
 	 *
 	 * @param document The document instance to which this node belongs.
 	 */
-	protected constructor( document: Document ) {
+	protected constructor( document: ViewDocument ) {
 		super();
 
 		this.document = document;

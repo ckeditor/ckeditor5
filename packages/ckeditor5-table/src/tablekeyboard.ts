@@ -111,7 +111,7 @@ export class TableKeyboard extends Plugin {
 	}
 
 	/**
-	 * Handles {@link module:engine/view/document~Document#event:tab tab} events for the <kbd>Tab</kbd> key executed
+	 * Handles {@link module:engine/view/document~ViewDocument#event:tab tab} events for the <kbd>Tab</kbd> key executed
 	 * when the table widget is selected.
 	 */
 	private _handleTabOnSelectedTable( bubblingEventInfo: BubblingEventInfo, domEventData: DomEventData ) {
@@ -133,7 +133,7 @@ export class TableKeyboard extends Plugin {
 	}
 
 	/**
-	 * Handles {@link module:engine/view/document~Document#event:tab tab} events for the <kbd>Tab</kbd> key executed
+	 * Handles {@link module:engine/view/document~ViewDocument#event:tab tab} events for the <kbd>Tab</kbd> key executed
 	 * inside table cells.
 	 */
 	private _handleTab( bubblingEventInfo: BubblingEventInfo, domEventData: DomEventData & KeystrokeInfo ) {
@@ -217,7 +217,7 @@ export class TableKeyboard extends Plugin {
 	}
 
 	/**
-	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events.
+	 * Handles {@link module:engine/view/document~ViewDocument#event:keydown keydown} events.
 	 */
 	private _onArrowKey( eventInfo: EventInfo, domEventData: DomEventData & KeystrokeInfo ) {
 		const editor = this.editor;

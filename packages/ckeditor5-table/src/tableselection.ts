@@ -328,7 +328,7 @@ export class TableSelection extends Plugin {
 	 * yes, it's a hack).
 	 *
 	 * When multiple cells are selected in the model and the user starts to type, the
-	 * {@link module:engine/view/document~Document#event:insertText} event carries information provided by the
+	 * {@link module:engine/view/document~ViewDocument#event:insertText} event carries information provided by the
 	 * beforeinput DOM  event, that in turn only knows about this collapsed DOM selection in the last cell.
 	 *
 	 * As a result, the selected cells have no chance to be cleaned up. To fix this, this listener intercepts

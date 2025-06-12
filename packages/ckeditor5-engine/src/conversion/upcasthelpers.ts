@@ -560,7 +560,7 @@ export function convertText() {
 
 /**
  * Function factory, creates a callback function which converts a {@link module:engine/view/selection~Selection
- * view selection} taken from the {@link module:engine/view/document~Document#event:selectionChange} event
+ * view selection} taken from the {@link module:engine/view/document~ViewDocument#event:selectionChange} event
  * and sets in on the {@link module:engine/model/document~ModelDocument#selection model}.
  *
  * **Note**: because there is no view selection change dispatcher nor any other advanced view selection to model
@@ -572,7 +572,7 @@ export function convertText() {
  *
  * @param model Data model.
  * @param mapper Conversion mapper.
- * @returns {@link module:engine/view/document~Document#event:selectionChange} callback function.
+ * @returns {@link module:engine/view/document~ViewDocument#event:selectionChange} callback function.
  * @internal
  */
 export function convertSelectionChange( model: Model, mapper: Mapper ) {

@@ -18,7 +18,7 @@ import { type Node } from './node.js';
  * Editable element which can be a {@link module:engine/view/rooteditableelement~RootEditableElement root}
  * or nested editable area in the editor.
  *
- * Editable is automatically read-only when its {@link module:engine/view/document~Document Document} is read-only.
+ * Editable is automatically read-only when its {@link module:engine/view/document~ViewDocument Document} is read-only.
  *
  * The constructor of this class shouldn't be used directly. To create new `EditableElement` use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createEditableElement `downcastWriter#createEditableElement()`} method.
@@ -34,7 +34,7 @@ export class EditableElement extends /* #__PURE__ */ ObservableMixin( ViewContai
 	/**
 	 * Whether the editable is focused.
 	 *
-	 * This property updates when {@link module:engine/view/document~Document#isFocused document.isFocused} or view
+	 * This property updates when {@link module:engine/view/document~ViewDocument#isFocused document.isFocused} or view
 	 * selection is changed.
 	 *
 	 * @readonly

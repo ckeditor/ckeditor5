@@ -16,7 +16,7 @@ import type { BubblingEvent } from './bubblingemittermixin.js';
 import { isArrowKeyCode } from '@ckeditor/ckeditor5-utils';
 
 /**
- * Arrow keys observer introduces the {@link module:engine/view/document~Document#event:arrowKey `Document#arrowKey`} event.
+ * Arrow keys observer introduces the {@link module:engine/view/document~ViewDocument#event:arrowKey `Document#arrowKey`} event.
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  */
@@ -59,7 +59,7 @@ export class ArrowKeysObserver extends Observer {
  * Note that because {@link module:engine/view/observer/arrowkeysobserver~ArrowKeysObserver} is attached by the
  * {@link module:engine/view/view~View} this event is available by default.
  *
- * @eventName module:engine/view/document~Document#arrowKey
+ * @eventName module:engine/view/document~ViewDocument#arrowKey
  * @param data
  */
 

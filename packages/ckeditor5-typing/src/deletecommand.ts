@@ -62,7 +62,7 @@ export class DeleteCommand extends Command {
 	 * @param options The command options.
 	 * @param options.unit See {@link module:engine/model/utils/modifyselection~modifySelection}'s options.
 	 * @param options.sequence A number describing which subsequent delete event it is without the key being released.
-	 * See the {@link module:engine/view/document~Document#event:delete} event data.
+	 * See the {@link module:engine/view/document~ViewDocument#event:delete} event data.
 	 * @param options.selection Selection to remove. If not set, current model selection will be used.
 	 */
 	public override execute( options: {

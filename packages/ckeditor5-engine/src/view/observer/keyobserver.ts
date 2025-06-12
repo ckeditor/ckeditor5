@@ -52,7 +52,7 @@ export class KeyObserver extends DomEventObserver<'keydown' | 'keyup', Keystroke
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/keyobserver~KeyObserver
- * @eventName module:engine/view/document~Document#keydown
+ * @eventName module:engine/view/document~ViewDocument#keydown
  */
 export type ViewDocumentKeyDownEvent = {
 	name: 'keydown';
@@ -68,7 +68,7 @@ export type ViewDocumentKeyDownEvent = {
  * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/keyobserver~KeyObserver
- * @eventName module:engine/view/document~Document#keyup
+ * @eventName module:engine/view/document~ViewDocument#keyup
  */
 export type ViewDocumentKeyUpEvent = {
 	name: 'keyup';

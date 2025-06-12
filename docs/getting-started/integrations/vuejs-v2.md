@@ -297,7 +297,7 @@ Corresponds to the {@link module:core/editor/editor~Editor#event:ready `ready`} 
 
 ### `focus`
 
-Corresponds to the {@link module:engine/view/document~Document#event:focus `focus`} editor event.
+Corresponds to the {@link module:engine/view/document~ViewDocument#event:focus `focus`} editor event.
 
 ```html
 <ckeditor :editor="editor" @focus="onEditorFocus" />
@@ -305,7 +305,7 @@ Corresponds to the {@link module:engine/view/document~Document#event:focus `focu
 
 ### `blur`
 
-Corresponds to the {@link module:engine/view/document~Document#event:blur `blur`} editor event.
+Corresponds to the {@link module:engine/view/document~ViewDocument#event:blur `blur`} editor event.
 
 ```html
 <ckeditor :editor="editor" @blur="onEditorBlur" />

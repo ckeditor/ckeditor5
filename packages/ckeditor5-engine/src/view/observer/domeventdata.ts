@@ -9,12 +9,12 @@
 
 import { extend } from 'es-toolkit/compat';
 
-import { type Document } from '../document.js';
+import { type ViewDocument } from '../document.js';
 import { type Element } from '../element.js';
 import { type View } from '../view.js';
 
 /**
- * Information about a DOM event in context of the {@link module:engine/view/document~Document}.
+ * Information about a DOM event in context of the {@link module:engine/view/document~ViewDocument}.
  * It wraps the native event, which usually should not be used as the wrapper contains
  * additional data (like key code for keyboard events).
  *
@@ -29,7 +29,7 @@ export class DomEventData<TEvent extends Event = Event> {
 	/**
 	 * The instance of the document.
 	 */
-	public readonly document: Document;
+	public readonly document: ViewDocument;
 
 	/**
 	 * The DOM event.

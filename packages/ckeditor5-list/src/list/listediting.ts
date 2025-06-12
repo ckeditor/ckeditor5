@@ -245,7 +245,7 @@ export class ListEditing extends Plugin {
 	}
 
 	/**
-	 * Attaches the listener to the {@link module:engine/view/document~Document#event:delete} event and handles backspace/delete
+	 * Attaches the listener to the {@link module:engine/view/document~ViewDocument#event:delete} event and handles backspace/delete
 	 * keys in and around document lists.
 	 */
 	private _setupDeleteIntegration() {
@@ -325,7 +325,7 @@ export class ListEditing extends Plugin {
 	}
 
 	/**
-	 * Attaches a listener to the {@link module:engine/view/document~Document#event:enter} event and handles enter key press
+	 * Attaches a listener to the {@link module:engine/view/document~ViewDocument#event:enter} event and handles enter key press
 	 * in document lists.
 	 */
 	private _setupEnterIntegration() {
@@ -405,7 +405,7 @@ export class ListEditing extends Plugin {
 	}
 
 	/**
-	 * Attaches a listener to the {@link module:engine/view/document~Document#event:tab} event and handles tab key and tab+shift keys
+	 * Attaches a listener to the {@link module:engine/view/document~ViewDocument#event:tab} event and handles tab key and tab+shift keys
 	 * presses in document lists.
 	 */
 	private _setupTabIntegration() {

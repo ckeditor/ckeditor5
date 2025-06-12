@@ -39,7 +39,7 @@ export class MouseObserver extends DomEventObserver<'mousedown' | 'mouseup' | 'm
  * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
  *
  * @see module:engine/view/observer/mouseobserver~MouseObserver
- * @eventName module:engine/view/document~Document#mousedown
+ * @eventName module:engine/view/document~ViewDocument#mousedown
  * @param data The event data.
  */
 export type ViewDocumentMouseDownEvent = {
@@ -56,7 +56,7 @@ export type ViewDocumentMouseDownEvent = {
  * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
  *
  * @see module:engine/view/observer/mouseobserver~MouseObserver
- * @eventName module:engine/view/document~Document#mouseup
+ * @eventName module:engine/view/document~ViewDocument#mouseup
  * @param  data The event data.
  */
 export type ViewDocumentMouseUpEvent = {
@@ -73,7 +73,7 @@ export type ViewDocumentMouseUpEvent = {
  * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
  *
  * @see module:engine/view/observer/mouseobserver~MouseObserver
- * @eventName module:engine/view/document~Document#mouseover
+ * @eventName module:engine/view/document~ViewDocument#mouseover
  * @param  data The event data.
  */
 export type ViewDocumentMouseOverEvent = {
@@ -90,7 +90,7 @@ export type ViewDocumentMouseOverEvent = {
  * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
  *
  * @see module:engine/view/observer/mouseobserver~MouseObserver
- * @eventName module:engine/view/document~Document#mouseout
+ * @eventName module:engine/view/document~ViewDocument#mouseout
  * @param  data The event data.
  */
 export type ViewDocumentMouseOutEvent = {

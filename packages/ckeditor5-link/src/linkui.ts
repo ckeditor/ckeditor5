@@ -1207,7 +1207,7 @@ export class LinkUI extends Plugin {
 
 	/**
 	 * Returns the link {@link module:engine/view/attributeelement~ViewAttributeElement} under
-	 * the {@link module:engine/view/document~Document editing view's} selection or `null`
+	 * the {@link module:engine/view/document~ViewDocument editing view's} selection or `null`
 	 * if there is none.
 	 *
 	 * **Note**: For a non–collapsed selection, the link element is returned when **fully**

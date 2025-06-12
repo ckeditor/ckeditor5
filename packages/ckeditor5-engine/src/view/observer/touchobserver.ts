@@ -39,7 +39,7 @@ export class TouchObserver extends DomEventObserver<'touchstart' | 'touchend' | 
  * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
  *
  * @see module:engine/view/observer/touchobserver~TouchObserver
- * @eventName module:engine/view/document~Document#touchstart
+ * @eventName module:engine/view/document~ViewDocument#touchstart
  * @param data The event data.
  */
 export type ViewDocumentTouchStartEvent = {
@@ -56,7 +56,7 @@ export type ViewDocumentTouchStartEvent = {
  * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
  *
  * @see module:engine/view/observer/touchobserver~TouchObserver
- * @eventName module:engine/view/document~Document#touchend
+ * @eventName module:engine/view/document~ViewDocument#touchend
  * @param data The event data.
  */
 export type ViewDocumentTouchEndEvent = {
@@ -73,7 +73,7 @@ export type ViewDocumentTouchEndEvent = {
  * needs to be added to {@link module:engine/view/view~View} by the {@link module:engine/view/view~View#addObserver} method.
  *
  * @see module:engine/view/observer/touchobserver~TouchObserver
- * @eventName module:engine/view/document~Document#touchmove
+ * @eventName module:engine/view/document~ViewDocument#touchmove
  * @param data The event data.
  */
 export type ViewDocumentTouchMoveEvent = {

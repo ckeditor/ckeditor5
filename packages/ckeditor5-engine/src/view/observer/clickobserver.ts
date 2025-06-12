@@ -12,7 +12,7 @@ import { type DomEventData } from './domeventdata.js';
 import type { BubblingEvent } from './bubblingemittermixin.js';
 
 /**
- * {@link module:engine/view/document~Document#event:click Click} event observer.
+ * {@link module:engine/view/document~ViewDocument#event:click Click} event observer.
  *
  * Note that this observer is not available by default. To make it available it needs to be added to
  * {@link module:engine/view/view~View view controller} by a {@link module:engine/view/view~View#addObserver} method.
@@ -41,7 +41,7 @@ export class ClickObserver extends DomEventObserver<'click'> {
  * to {@link module:engine/view/view~View} by a {@link module:engine/view/view~View#addObserver} method.
  *
  * @see module:engine/view/observer/clickobserver~ClickObserver
- * @eventName module:engine/view/document~Document#click
+ * @eventName module:engine/view/document~ViewDocument#click
  * @param data Event data.
  */
 export type ViewDocumentClickEvent = BubblingEvent<{

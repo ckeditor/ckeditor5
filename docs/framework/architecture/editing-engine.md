@@ -261,7 +261,7 @@ We will explain the [conversion](#conversion) later in this guide. For now, it i
 
 Do not change the view manually, unless you really know what you are doing. If the view needs to be changed, in most cases, it means that the model should be changed first. Then the changes you apply to the model are converted ([conversion](#conversion) is covered below) to the view by specific converters.
 
-The view may need to be changed manually if the cause of such change is not represented in the model. For example, the model does not store information about the focus, which is a {@link module:engine/view/document~Document#isFocused property of the view}. When the focus changes, and you want to represent that in some element's class, you need to change that class manually.
+The view may need to be changed manually if the cause of such change is not represented in the model. For example, the model does not store information about the focus, which is a {@link module:engine/view/document~ViewDocument#isFocused property of the view}. When the focus changes, and you want to represent that in some element's class, you need to change that class manually.
 
 For that, just like in the model, you should use the `change()` block (of the view) in which you will have access to the view downcast writer.
 
@@ -321,7 +321,7 @@ The far-from-convenient representation of DOM positions is yet one more reason t
 
 To create a safer and more useful abstraction over native DOM events, the view implements the concept of {@link module:engine/view/observer/observer~Observer observers}. It improves the testability of the editor as well as simplifies the listeners added by editor features by transforming the native events into a more useful form.
 
-An observer listens to one or more DOM events, does preliminary processing of this event and then fires a custom event on the {@link module:engine/view/document~Document view document}. An observer not only creates an abstraction on the event itself but also on its data. Ideally, an event's consumer should not have any access to the native DOM.
+An observer listens to one or more DOM events, does preliminary processing of this event and then fires a custom event on the {@link module:engine/view/document~ViewDocument view document}. An observer not only creates an abstraction on the event itself but also on its data. Ideally, an event's consumer should not have any access to the native DOM.
 
 By default, the view adds the following observers:
 
@@ -336,13 +336,13 @@ By default, the view adds the following observers:
 Additionally, some features add their own observers. For instance, the {@link module:clipboard/clipboard~Clipboard clipboard feature} adds {@link module:clipboard/clipboardobserver~ClipboardObserver}.
 
 <info-box>
-	For a complete list of events fired by observers check the {@link module:engine/view/document~Document}'s list of events.
+	For a complete list of events fired by observers check the {@link module:engine/view/document~ViewDocument}'s list of events.
 </info-box>
 
 You can add your own observer (which should be a subclass of {@link module:engine/view/observer/observer~Observer}) by using the {@link module:engine/view/view~View#addObserver `view.addObserver()`} method. Check the code of existing observers to learn how to write them: [https://github.com/ckeditor/ckeditor5-engine/tree/master/src/view/observer](https://github.com/ckeditor/ckeditor5-engine/tree/master/src/view/observer).
 
 <info-box>
-	Since all events are by default fired on {@link module:engine/view/document~Document}, it is recommended that third party packages prefix their events with an identifier of the project to avoid name collisions. For example, MyApp's features should fire `myApp:keydown` instead of `keydown`.
+	Since all events are by default fired on {@link module:engine/view/document~ViewDocument}, it is recommended that third party packages prefix their events with an identifier of the project to avoid name collisions. For example, MyApp's features should fire `myApp:keydown` instead of `keydown`.
 </info-box>
 
 ## Conversion
@@ -371,7 +371,7 @@ Let's take a look at the diagram of the engine's MVC architecture and see where 
 
 * It takes place in the "editing pipeline" (the left branch of the diagram).
 * It does not have its counterpart. There is no *editing upcasting* because all user actions are handled by editor features by listening to [view events](#observers), analyzing what happened and applying necessary changes to the model. Hence, this process does not involve conversion.
-* Unlike {@link module:engine/controller/datacontroller~DataController} (which handles the *data pipeline*), {@link module:engine/controller/editingcontroller~EditingController} maintains a single instance of the {@link module:engine/view/document~Document} view document for its entire life. Every change in the model is converted to changes in that view so changes in that view can then be rendered to the DOM (if needed &ndash; that is, if the DOM actually differs from the view at this stage).
+* Unlike {@link module:engine/controller/datacontroller~DataController} (which handles the *data pipeline*), {@link module:engine/controller/editingcontroller~EditingController} maintains a single instance of the {@link module:engine/view/document~ViewDocument} view document for its entire life. Every change in the model is converted to changes in that view so changes in that view can then be rendered to the DOM (if needed &ndash; that is, if the DOM actually differs from the view at this stage).
 
 ### More information
 

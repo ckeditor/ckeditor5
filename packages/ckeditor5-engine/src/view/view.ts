@@ -7,7 +7,7 @@
  * @module engine/view/view
  */
 
-import { Document, type ViewDocumentLayoutChangedEvent } from './document.js';
+import { ViewDocument, type ViewDocumentLayoutChangedEvent } from './document.js';
 import { DowncastWriter } from './downcastwriter.js';
 import { Renderer } from './renderer.js';
 import { DomConverter } from './domconverter.js';
@@ -67,7 +67,7 @@ type DomRange = globalThis.Range;
  * ```
  *
  * View controller also register {@link module:engine/view/observer/observer~Observer observers} which observes changes
- * on DOM and fire events on the {@link module:engine/view/document~Document Document}.
+ * on DOM and fire events on the {@link module:engine/view/document~ViewDocument Document}.
  * Note that the following observers are added by the class constructor and are always available:
  *
  * * {@link module:engine/view/observer/selectionobserver~SelectionObserver},
@@ -86,9 +86,9 @@ type DomRange = globalThis.Range;
  */
 export class View extends /* #__PURE__ */ ObservableMixin() {
 	/**
-	 * Instance of the {@link module:engine/view/document~Document} associated with this view controller.
+	 * Instance of the {@link module:engine/view/document~ViewDocument} associated with this view controller.
 	 */
-	public readonly document: Document;
+	public readonly document: ViewDocument;
 
 	/**
 	 * Instance of the {@link module:engine/view/domconverter~DomConverter domConverter} used by
@@ -168,7 +168,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	constructor( stylesProcessor: StylesProcessor ) {
 		super();
 
-		this.document = new Document( stylesProcessor );
+		this.document = new ViewDocument( stylesProcessor );
 		this.domConverter = new DomConverter( this.document );
 
 		this.set( 'isRenderingInProgress', false );
@@ -548,7 +548,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 			 * * calling {@link module:engine/view/view~View#change} or {@link module:engine/view/view~View#forceRender} during rendering
 			 * process,
 			 * * calling {@link module:engine/view/view~View#change} or {@link module:engine/view/view~View#forceRender} inside of
-			 *   {@link module:engine/view/document~Document#registerPostFixer post-fixer function}.
+			 *   {@link module:engine/view/document~ViewDocument#registerPostFixer post-fixer function}.
 			 *
 			 * @error cannot-change-view-tree
 			 */
@@ -590,7 +590,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * Forces rendering {@link module:engine/view/document~Document view document} to DOM. If any view changes are
+	 * Forces rendering {@link module:engine/view/document~ViewDocument view document} to DOM. If any view changes are
 	 * currently in progress, rendering will start after all {@link #change change blocks} are processed.
 	 *
 	 * Note that this method is dedicated for special cases. All view changes should be wrapped in the {@link #change}
@@ -815,7 +815,7 @@ export { View as EditingView };
 
 /**
  * Fired after a topmost {@link module:engine/view/view~View#change change block} and all
- * {@link module:engine/view/document~Document#registerPostFixer post-fixers} are executed.
+ * {@link module:engine/view/document~ViewDocument#registerPostFixer post-fixers} are executed.
  *
  * Actual rendering is performed as a first listener on 'normal' priority.
  *
@@ -827,7 +827,7 @@ export { View as EditingView };
  *
  * This event is useful when you want to update interface elements after the rendering, e.g. position of the
  * balloon panel. If you wants to change view structure use
- * {@link module:engine/view/document~Document#registerPostFixer post-fixers}.
+ * {@link module:engine/view/document~ViewDocument#registerPostFixer post-fixers}.
  *
  * @eventName ~View#render
  */

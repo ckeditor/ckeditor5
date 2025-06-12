@@ -20,7 +20,7 @@ import {
 	type SelectionOptions
 } from './selection.js';
 
-import { type Document } from './document.js';
+import { type ViewDocument } from './document.js';
 import { type Item } from './item.js';
 import { type Node } from './node.js';
 
@@ -49,12 +49,12 @@ export class UpcastWriter {
 	/**
 	 * The view document instance in which this upcast writer operates.
 	 */
-	public readonly document: Document;
+	public readonly document: ViewDocument;
 
 	/**
 	 * @param document The view document instance in which this upcast writer operates.
 	 */
-	constructor( document: Document ) {
+	constructor( document: ViewDocument ) {
 		this.document = document;
 	}
 

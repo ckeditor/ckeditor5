@@ -6,9 +6,9 @@
 import { RootEditableElement } from '../../../src/view/rooteditableelement.js';
 
 /**
- * Creates view root element and sets it to {@link module:engine/view/document~Document#roots roots collection}.
+ * Creates view root element and sets it to {@link module:engine/view/document~ViewDocument#roots roots collection}.
  *
- * @param {module:engine/view/document~Document} doc View document.
+ * @param {module:engine/view/document~ViewDocument} doc View document.
  * @param {String} name Root element name.
  * @param {String} rootName Root name.
  * @returns {module:engine/view/rooteditableelement~RootEditableElement} Root element.
