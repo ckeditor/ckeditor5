@@ -40,7 +40,7 @@ export class WidgetHighlightStack extends /* #__PURE__ */ EmitterMixin() {
 
 		// When new object is at the top and stores different information.
 		if ( oldTop !== newTop && !compareDescriptors( oldTop, newTop ) ) {
-			this.fire<HighlightStackChangeEvent>( 'change:top', {
+			this.fire<WidgetHighlightStackChangeEvent>( 'change:top', {
 				oldDescriptor: oldTop,
 				newDescriptor: newTop,
 				writer
@@ -63,7 +63,7 @@ export class WidgetHighlightStack extends /* #__PURE__ */ EmitterMixin() {
 
 		// When new object is at the top and stores different information.
 		if ( oldTop !== newTop && !compareDescriptors( oldTop, newTop ) ) {
-			this.fire<HighlightStackChangeEvent>( 'change:top', {
+			this.fire<WidgetHighlightStackChangeEvent>( 'change:top', {
 				oldDescriptor: oldTop,
 				newDescriptor: newTop,
 				writer
@@ -150,9 +150,9 @@ function classesToString( classes: ArrayOrItem<string> ) {
 /**
  * Fired when top element on {@link module:widget/highlightstack~WidgetHighlightStack} has been changed
  *
- * @eventName ~HighlightStack#change:top
+ * @eventName ~WidgetHighlightStack#change:top
  */
-export type HighlightStackChangeEvent = {
+export type WidgetHighlightStackChangeEvent = {
 	name: 'change' | 'change:top';
 	args: [ WidgetHighlightStackChangeEventData ];
 };

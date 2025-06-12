@@ -26,7 +26,7 @@ export {
 	calculateResizeHostPercentageWidth
 } from './utils.js';
 
-export { WidgetHighlightStack, type HighlightStackChangeEvent, type WidgetHighlightStackChangeEventData } from './highlightstack.js';
+export { WidgetHighlightStack, type WidgetHighlightStackChangeEvent, type WidgetHighlightStackChangeEventData } from './highlightstack.js';
 export { verticalWidgetNavigationHandler } from './verticalnavigation.js';
 export {
 	WidgetResizer,

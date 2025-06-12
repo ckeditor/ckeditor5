@@ -71,7 +71,7 @@ export class WidgetResizer extends /* #__PURE__ */ ObservableMixin() {
 	private _viewResizerWrapper: ViewElement | null = null;
 
 	/**
-	 * The width of the resized {@link module:widget/widgetresize~ResizerOptions#viewElement viewElement} before the resizing started.
+	 * The width of the resized {@link module:widget/widgetresize~WidgetResizerOptions#viewElement viewElement} before the resizing started.
 	 */
 	private _initialViewWidth: string | undefined;
 
