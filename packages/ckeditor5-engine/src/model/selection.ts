@@ -7,7 +7,7 @@
  * @module engine/model/selection
  */
 
-import { TypeCheckable } from './typecheckable.js';
+import { ModelTypeCheckable } from './typecheckable.js';
 import { ModelNode } from './node.js';
 import { ModelPosition, type ModelPositionOffset } from './position.js';
 import { ModelRange } from './range.js';
@@ -26,7 +26,7 @@ import { CKEditorError, EmitterMixin, isIterable } from '@ckeditor/ckeditor5-uti
  * Additionally, selection may have its own attributes (think – whether text typed in in this selection
  * should have those attributes – e.g. whether you type a bolded text).
  */
-export class ModelSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
+export class ModelSelection extends /* #__PURE__ */ EmitterMixin( ModelTypeCheckable ) {
 	/**
 	 * Specifies whether the last added range was added as a backward or forward range.
 	 */

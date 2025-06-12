@@ -7,7 +7,7 @@
  * @module engine/model/range
  */
 
-import { TypeCheckable } from './typecheckable.js';
+import { ModelTypeCheckable } from './typecheckable.js';
 import { ModelPosition } from './position.js';
 import { ModelTreeWalker, type ModelTreeWalkerOptions, type ModelTreeWalkerValue } from './treewalker.js';
 
@@ -32,7 +32,7 @@ import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
  * You can create range instances via its constructor or the `createRange*()` factory methods of
  * {@link module:engine/model/model~Model} and {@link module:engine/model/writer~Writer}.
  */
-export class ModelRange extends TypeCheckable implements Iterable<ModelTreeWalkerValue> {
+export class ModelRange extends ModelTypeCheckable implements Iterable<ModelTreeWalkerValue> {
 	/**
 	 * Start position.
 	 */

@@ -7,7 +7,7 @@
  * @module engine/model/documentfragment
  */
 
-import { TypeCheckable } from './typecheckable.js';
+import { ModelTypeCheckable } from './typecheckable.js';
 import { ModelElement } from './element.js';
 import { ModelNodeList } from './nodelist.js';
 import { ModelText } from './text.js';
@@ -29,7 +29,7 @@ import { isIterable } from '@ckeditor/ckeditor5-utils';
  * will be set to the {@link module:engine/model/model~Model#markers model markers} by a
  * {@link module:engine/model/writer~Writer#insert} function.
  */
-export class ModelDocumentFragment extends TypeCheckable implements Iterable<ModelNode> {
+export class ModelDocumentFragment extends ModelTypeCheckable implements Iterable<ModelNode> {
 	/**
 	 * ModelDocumentFragment static markers map. This is a list of names and {@link module:engine/model/range~ModelRange ranges}
 	 * which will be set as Markers to {@link module:engine/model/model~Model#markers model markers collection}

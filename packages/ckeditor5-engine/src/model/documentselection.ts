@@ -7,7 +7,7 @@
  * @module engine/model/documentselection
  */
 
-import { TypeCheckable } from './typecheckable.js';
+import { ModelTypeCheckable } from './typecheckable.js';
 import { ModelLiveRange } from './liverange.js';
 import {
 	ModelSelection,
@@ -61,7 +61,7 @@ const storePrefix = 'selection:';
  * If you need to represent a selection in document fragment,
  * use {@link module:engine/model/selection~ModelSelection Selection class} instead.
  */
-export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
+export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( ModelTypeCheckable ) {
 	/**
 	 * Selection used internally by that class (`ModelDocumentSelection` is a proxy to that selection).
 	 */

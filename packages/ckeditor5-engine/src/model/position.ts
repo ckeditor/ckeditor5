@@ -7,7 +7,7 @@
  * @module engine/model/position
  */
 
-import { TypeCheckable } from './typecheckable.js';
+import { ModelTypeCheckable } from './typecheckable.js';
 import { ModelTreeWalker, type ModelTreeWalkerOptions, type ModelTreeWalkerValue } from './treewalker.js';
 
 import { type ModelDocument } from './document.js';
@@ -51,7 +51,7 @@ import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
  *
  * In most cases, position with wrong path is caused by an error in code, but it is sometimes needed, as described above.
  */
-export class ModelPosition extends TypeCheckable {
+export class ModelPosition extends ModelTypeCheckable {
 	/**
 	 * Root of the position path.
 	 */

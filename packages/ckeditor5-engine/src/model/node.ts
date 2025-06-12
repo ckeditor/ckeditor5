@@ -9,7 +9,7 @@
  * @module engine/model/node
  */
 
-import { TypeCheckable } from './typecheckable.js';
+import { ModelTypeCheckable } from './typecheckable.js';
 
 import { type ModelDocument } from './document.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
@@ -45,7 +45,7 @@ import { compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
  * In case of {@link module:engine/model/element~ModelElement element node}, adding and removing children also counts as changing a node and
  * follows same rules.
  */
-export abstract class ModelNode extends TypeCheckable {
+export abstract class ModelNode extends ModelTypeCheckable {
 	/**
 	 * Parent of this node. It could be {@link module:engine/model/element~ModelElement}
 	 * or {@link module:engine/model/documentfragment~DocumentFragment}.

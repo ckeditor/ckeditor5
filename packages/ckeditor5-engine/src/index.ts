@@ -127,7 +127,13 @@ export {
 } from './model/liverange.js';
 export { ModelLivePosition, type ModelLivePositionChangeEvent } from './model/liveposition.js';
 export { Model } from './model/model.js';
-export { ModelTreeWalker, type ModelTreeWalkerValue } from './model/treewalker.js';
+export {
+	ModelTreeWalker,
+	type ModelTreeWalkerValue,
+	type ModelTreeWalkerValueType,
+	type ModelTreeWalkerDirection,
+	type ModelTreeWalkerOptions
+} from './model/treewalker.js';
 export { ModelElement } from './model/element.js';
 export {
 	ModelPosition,
@@ -185,7 +191,7 @@ export {
 	type ModelSelectable,
 	type ModelPlaceOrOffset
 } from './model/selection.js';
-export { TypeCheckable } from './model/typecheckable.js';
+export { ModelTypeCheckable } from './model/typecheckable.js';
 export { Writer } from './model/writer.js';
 
 // Model utils.

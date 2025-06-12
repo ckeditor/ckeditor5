@@ -7,7 +7,7 @@
  * @module engine/model/markercollection
  */
 
-import { TypeCheckable } from './typecheckable.js';
+import { ModelTypeCheckable } from './typecheckable.js';
 import {
 	ModelLiveRange,
 	type ModelLiveRangeChangeContentEvent,
@@ -349,7 +349,7 @@ export interface MarkerData {
  *
  * `Marker` instances are created and destroyed only by {@link ~MarkerCollection MarkerCollection}.
  */
-class Marker extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
+class Marker extends /* #__PURE__ */ EmitterMixin( ModelTypeCheckable ) {
 	/**
 	 * Marker's name.
 	 */
