@@ -11,6 +11,6 @@ export { CKFinder } from './ckfinder.js';
 export { CKFinderEditing } from './ckfinderediting.js';
 export { CKFinderUI } from './ckfinderui.js';
 export { CKFinderCommand } from './ckfindercommand.js';
-export type { CKFinderConfig } from './ckfinderconfig.js';
+export type { CKFinderConfig, CKFinderOptions } from './ckfinderconfig.js';
 
 import './augmentation.js';

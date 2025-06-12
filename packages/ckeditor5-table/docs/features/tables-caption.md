@@ -1,6 +1,7 @@
 ---
 menu-title: Table caption
 meta-title: Table caption | CKEditor 5 Documentation
+meta-description: Add captions to tables in CKEditor 5 to provide context or descriptions, enhancing accessibility and content clarity.
 category: tables
 order: 40
 modified_at: 2022-05-19

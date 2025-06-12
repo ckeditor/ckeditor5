@@ -699,7 +699,7 @@ describe( 'ImageUploadEditing', () => {
 				sinon.assert.calledOnce( catchSpy );
 				const error = catchSpy.getCall( 0 ).args[ 0 ];
 
-				assertCKEditorError( error, /^Foo bar baz/ );
+				assertCKEditorError( error, 'Foo bar baz' );
 
 				done();
 			}, 0 );

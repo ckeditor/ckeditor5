@@ -2,6 +2,7 @@
 category: features
 menu-title: Math and chemical formulas
 meta-title: Math equations and chemical formulas | CKEditor 5 Documentation
+meta-description: Add math equations and chemical formulas to CKEditor 5 using MathType. Learn how to enable, configure, and customize math formula support.
 badges: [ premium ]
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: Text alignment
 meta-title: Text alignment | CKEditor 5 Documentation
+meta-description: Align text in CKEditor 5 with left, right, center, or justified options to control layout and enhance content presentation.
 category: features
 ---
 
