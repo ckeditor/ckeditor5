@@ -41,26 +41,27 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * A dictionary containing attribute properties.
 	 */
-	private readonly _attributeProperties: Record<string, AttributeProperties> = Object.create( null );
+	private readonly _attributeProperties: Record<string, ModelAttributeProperties> = Object.create( null );
 
 	/**
-	 * Stores additional callbacks registered for schema items, which are evaluated when {@link ~Schema#checkChild} is called.
+	 * Stores additional callbacks registered for schema items, which are evaluated when {@link ~ModelSchema#checkChild} is called.
 	 *
 	 * Keys are schema item names for which the callbacks are registered. Values are arrays with the callbacks.
 	 *
-	 * Some checks are added under {@link ~Schema#_genericCheckSymbol} key, these are evaluated for every {@link ~Schema#checkChild} call.
+	 * Some checks are added under {@link ~ModelSchema#_genericCheckSymbol} key, these are
+	 * evaluated for every {@link ~ModelSchema#checkChild} call.
 	 */
-	private readonly _customChildChecks: Map<string | symbol, Array<SchemaChildCheckCallback>> = new Map();
+	private readonly _customChildChecks: Map<string | symbol, Array<ModelSchemaChildCheckCallback>> = new Map();
 
 	/**
-	 * Stores additional callbacks registered for attribute names, which are evaluated when {@link ~Schema#checkAttribute} is called.
+	 * Stores additional callbacks registered for attribute names, which are evaluated when {@link ~ModelSchema#checkAttribute} is called.
 	 *
 	 * Keys are schema attribute names for which the callbacks are registered. Values are arrays with the callbacks.
 	 *
-	 * Some checks are added under {@link ~Schema#_genericCheckSymbol} key, these are evaluated for every
-	 * {@link ~Schema#checkAttribute} call.
+	 * Some checks are added under {@link ~ModelSchema#_genericCheckSymbol} key, these are evaluated for every
+	 * {@link ~ModelSchema#checkAttribute} call.
 	 */
-	private readonly _customAttributeChecks: Map<string | symbol, Array<SchemaAttributeCheckCallback>> = new Map();
+	private readonly _customAttributeChecks: Map<string | symbol, Array<ModelSchemaAttributeCheckCallback>> = new Map();
 
 	private readonly _genericCheckSymbol = Symbol( '$generic' );
 
@@ -591,7 +592,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param itemName Name of the schema item for which the callback is registered. If specified, the callback will be run only for
 	 * `checkChild()` calls which `def` parameter matches the `itemName`. Otherwise, the callback will run for every `checkChild` call.
 	 */
-	public addChildCheck( callback: SchemaChildCheckCallback, itemName?: string ): void {
+	public addChildCheck( callback: ModelSchemaChildCheckCallback, itemName?: string ): void {
 		const key = itemName !== undefined ? itemName : this._genericCheckSymbol;
 
 		const checks = this._customChildChecks.get( key ) || [];
@@ -663,7 +664,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param attributeName Name of the attribute for which the callback is registered. If specified, the callback will be run only for
 	 * `checkAttribute()` calls with matching `attributeName`. Otherwise, the callback will run for every `checkAttribute()` call.
 	 */
-	public addAttributeCheck( callback: SchemaAttributeCheckCallback, attributeName?: string ): void {
+	public addAttributeCheck( callback: ModelSchemaAttributeCheckCallback, attributeName?: string ): void {
 		const key = attributeName !== undefined ? attributeName : this._genericCheckSymbol;
 
 		const checks = this._customAttributeChecks.get( key ) || [];
@@ -674,7 +675,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 
 	/**
 	 * This method allows assigning additional metadata to the model attributes. For example,
-	 * {@link module:engine/model/schema~AttributeProperties `AttributeProperties#isFormatting` property} is
+	 * {@link module:engine/model/schema~ModelAttributeProperties `AttributeProperties#isFormatting` property} is
 	 * used to mark formatting attributes (like `bold` or `italic`).
 	 *
 	 * ```ts
@@ -690,7 +691,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * ```
 	 *
 	 * Properties are not limited to members defined in the
-	 * {@link module:engine/model/schema~AttributeProperties `AttributeProperties` type} and you can also use custom properties:
+	 * {@link module:engine/model/schema~ModelAttributeProperties `AttributeProperties` type} and you can also use custom properties:
 	 *
 	 * ```ts
 	 * schema.setAttributeProperties( 'blockQuote', {
@@ -716,7 +717,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param attributeName A name of the attribute to receive the properties.
 	 * @param properties A dictionary of properties.
 	 */
-	public setAttributeProperties( attributeName: string, properties: AttributeProperties ): void {
+	public setAttributeProperties( attributeName: string, properties: ModelAttributeProperties ): void {
 		this._attributeProperties[ attributeName ] = Object.assign( this.getAttributeProperties( attributeName ), properties );
 	}
 
@@ -725,7 +726,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param attributeName A name of the attribute.
 	 */
-	public getAttributeProperties( attributeName: string ): AttributeProperties {
+	public getAttributeProperties( attributeName: string ): ModelAttributeProperties {
 		return this._attributeProperties[ attributeName ] || Object.create( null );
 	}
 
@@ -1147,7 +1148,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * Takes a flat range and an attribute name. Traverses the range recursively and deeply to find and return all ranges
 	 * inside the given range on which the attribute can be applied.
 	 *
-	 * This is a helper function for {@link ~Schema#getValidRanges}.
+	 * This is a helper function for {@link ~ModelSchema#getValidRanges}.
 	 *
 	 * @param range The range to process.
 	 * @param attribute The name of the attribute to check.
@@ -1237,15 +1238,15 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 }
 
 /**
- * Event fired when the {@link ~Schema#checkChild} method is called. It allows plugging in
+ * Event fired when the {@link ~ModelSchema#checkChild} method is called. It allows plugging in
  * additional behavior, for example implementing rules which cannot be defined using the declarative
  * {@link module:engine/model/schema~ModelSchemaItemDefinition} interface.
  *
- * **Note:** The {@link ~Schema#addChildCheck} method is a more handy way to register callbacks. Internally,
+ * **Note:** The {@link ~ModelSchema#addChildCheck} method is a more handy way to register callbacks. Internally,
  * it registers a listener to this event but comes with a simpler API and it is the recommended choice
  * in most of the cases.
  *
- * The {@link ~Schema#checkChild} method fires an event because it is
+ * The {@link ~ModelSchema#checkChild} method fires an event because it is
  * {@link module:utils/observablemixin~Observable#decorate decorated} with it. Thanks to that you can
  * use this event in various ways, but the most important use case is overriding standard behavior of the
  * `checkChild()` method. Let's see a typical listener template:
@@ -1308,15 +1309,15 @@ export type ModelSchemaCheckChildEvent = {
 };
 
 /**
- * Event fired when the {@link ~Schema#checkAttribute} method is called. It allows plugging in
+ * Event fired when the {@link ~ModelSchema#checkAttribute} method is called. It allows plugging in
  * additional behavior, for example implementing rules which cannot be defined using the declarative
  * {@link module:engine/model/schema~ModelSchemaItemDefinition} interface.
  *
- * **Note:** The {@link ~Schema#addAttributeCheck} method is a more handy way to register callbacks. Internally,
+ * **Note:** The {@link ~ModelSchema#addAttributeCheck} method is a more handy way to register callbacks. Internally,
  * it registers a listener to this event but comes with a simpler API and it is the recommended choice
  * in most of the cases.
  *
- * The {@link ~Schema#checkAttribute} method fires an event because it is
+ * The {@link ~ModelSchema#checkAttribute} method fires an event because it is
  * {@link module:utils/observablemixin~Observable#decorate decorated} with it. Thanks to that you can
  * use this event in various ways, but the most important use case is overriding the standard behavior of the
  * `checkAttribute()` method. Let's see a typical listener template:
@@ -2044,7 +2045,7 @@ export interface ModelSchemaContextItem {
  *
  * See {@link module:engine/model/schema~ModelSchema#setAttributeProperties `Schema#setAttributeProperties()`} for usage examples.
  */
-export interface AttributeProperties {
+export interface ModelAttributeProperties {
 
 	/**
 	 * Indicates that the attribute should be considered as a visual formatting, like `bold`, `italic` or
@@ -2072,9 +2073,9 @@ export interface AttributeProperties {
 	[ name: string ]: unknown;
 }
 
-export type SchemaAttributeCheckCallback = ( context: ModelSchemaContext, attributeName: string ) => boolean | undefined;
+export type ModelSchemaAttributeCheckCallback = ( context: ModelSchemaContext, attributeName: string ) => boolean | undefined;
 
-export type SchemaChildCheckCallback = (
+export type ModelSchemaChildCheckCallback = (
 	context: ModelSchemaContext,
 	definition: ModelSchemaCompiledItemDefinition
 ) => boolean | undefined;

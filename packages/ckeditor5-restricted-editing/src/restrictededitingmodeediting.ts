@@ -20,8 +20,8 @@ import type {
 	ModelDeleteContentEvent,
 	ModelPostFixer,
 	ModelRange,
-	SchemaAttributeCheckCallback,
-	SchemaChildCheckCallback,
+	ModelSchemaAttributeCheckCallback,
+	ModelSchemaChildCheckCallback,
 	ViewDocumentTabEvent
 } from 'ckeditor5/src/engine.js';
 import type { BaseEvent, GetCallback } from 'ckeditor5/src/utils.js';
@@ -576,7 +576,7 @@ function ensureNewMarkerIsFlatPostFixer( editor: Editor ): ModelPostFixer {
 	};
 }
 
-function onlyAllowAttributesFromList( allowedAttributes: RestrictedEditingConfig['allowedAttributes'] ): SchemaAttributeCheckCallback {
+function onlyAllowAttributesFromList( allowedAttributes: RestrictedEditingConfig['allowedAttributes'] ): ModelSchemaAttributeCheckCallback {
 	return ( context, attributeName ) => {
 		if ( context.startsWith( '$clipboardHolder' ) ) {
 			return allowedAttributes.includes( attributeName );
@@ -584,7 +584,7 @@ function onlyAllowAttributesFromList( allowedAttributes: RestrictedEditingConfig
 	};
 }
 
-function allowTextOnlyInClipboardHolder(): SchemaChildCheckCallback {
+function allowTextOnlyInClipboardHolder(): ModelSchemaChildCheckCallback {
 	return ( context, childDefinition ) => {
 		if ( context.startsWith( '$clipboardHolder' ) ) {
 			return childDefinition.name === '$text';

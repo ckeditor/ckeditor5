@@ -11,7 +11,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { toArray } from 'ckeditor5/src/utils.js';
 import { defaultConfig } from './schemadefinitions.js';
 import { mergeWith } from 'es-toolkit/compat';
-import type { AttributeProperties, ModelSchemaItemDefinition } from 'ckeditor5/src/engine.js';
+import type { ModelAttributeProperties, ModelSchemaItemDefinition } from 'ckeditor5/src/engine.js';
 
 /**
  * Holds representation of the extended HTML document type definitions to be used by the
@@ -291,7 +291,7 @@ export interface DataSchemaInlineElementDefinition extends DataSchemaDefinition 
 	/**
 	 *  Additional metadata describing the model attribute.
 	 */
-	attributeProperties?: AttributeProperties;
+	attributeProperties?: ModelAttributeProperties;
 
 	/**
 	 * Element priority. Decides in what order elements are wrapped by
