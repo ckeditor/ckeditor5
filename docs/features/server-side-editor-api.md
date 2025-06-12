@@ -41,9 +41,13 @@ For information about setting up and using the endpoint itself, see the {TODO: l
 
 ## Working with content
 
+<info-box info>
+	Please note you need to have a bundle uploaded first with proper credentials <!-- link here--> for the service to work properly.
+</info-box>
+
 ### Getting editor data
 
-The most basic action you can perform is getting the editor's data:
+The most basic action you can perform is getting the editor's data. We use {@link module:core/editor/editor~Editor `editor`} for that, as it is a {@link getting-started/setup/editor-lifecycle globally available variable}.
 
 ```js
 // Get the editor data.
