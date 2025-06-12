@@ -20,7 +20,7 @@ import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 import { type ViewEditableElement } from './editableelement.js';
 import { type ViewElement } from './element.js';
-import { type Node } from './node.js';
+import { type ViewNode } from './node.js';
 import { type ViewItem } from './item.js';
 import type { Position, PositionOffset } from './position.js';
 import { type Range } from './range.js';
@@ -81,7 +81,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public constructor( selectable: Node, placeOrOffset: PlaceOrOffset, options?: SelectionOptions );
+	public constructor( selectable: ViewNode, placeOrOffset: PlaceOrOffset, options?: SelectionOptions );
 
 	/**
 	 * Creates new ViewDocumentSelection instance.
@@ -130,7 +130,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 	 *
 	 * @label SELECTABLE
 	 */
-	public constructor( selectable?: Exclude<Selectable, Node>, options?: SelectionOptions );
+	public constructor( selectable?: Exclude<Selectable, ViewNode>, options?: SelectionOptions );
 
 	constructor( ...args: ConstructorParameters<typeof Selection> ) {
 		super();

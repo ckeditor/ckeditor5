@@ -16,7 +16,7 @@ import { EmitterMixin, isIterable } from '@ckeditor/ckeditor5-utils';
 import type { ViewDocument, ViewDocumentChangeType } from './document.js';
 
 import { type ViewItem } from './item.js';
-import { type Node } from './node.js';
+import { type ViewNode } from './node.js';
 
 /**
  * Document fragment.
@@ -25,7 +25,7 @@ import { type Node } from './node.js';
  * {@link module:engine/view/upcastwriter~UpcastWriter#createDocumentFragment `UpcastWriter#createDocumentFragment()`}
  * method.
  */
-export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) implements Iterable<Node> {
+export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) implements Iterable<ViewNode> {
 	/**
 	 * The document to which this document fragment belongs.
 	 */
@@ -34,7 +34,7 @@ export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeChec
 	/**
 	 * Array of child nodes.
 	 */
-	private readonly _children: Array<Node> = [];
+	private readonly _children: Array<ViewNode> = [];
 
 	/**
 	 * Map of custom properties.
@@ -49,7 +49,7 @@ export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeChec
 	 * @param document The document to which this document fragment belongs.
 	 * @param children A list of nodes to be inserted into the created document fragment.
 	 */
-	constructor( document: ViewDocument, children?: Node | Iterable<Node> ) {
+	constructor( document: ViewDocument, children?: ViewNode | Iterable<ViewNode> ) {
 		super();
 
 		this.document = document;
@@ -64,7 +64,7 @@ export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeChec
 	 *
 	 * Iterates over nodes added to this document fragment.
 	 */
-	public [ Symbol.iterator ](): Iterator<Node> {
+	public [ Symbol.iterator ](): Iterator<ViewNode> {
 		return this._children[ Symbol.iterator ]();
 	}
 
@@ -143,7 +143,7 @@ export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeChec
 	 * @param index Index of child.
 	 * @returns Child node.
 	 */
-	public getChild( index: number ): Node {
+	public getChild( index: number ): ViewNode {
 		return this._children[ index ];
 	}
 
@@ -153,7 +153,7 @@ export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeChec
 	 * @param node Child node.
 	 * @returns Index of the child node.
 	 */
-	public getChildIndex( node: Node ): number {
+	public getChildIndex( node: ViewNode ): number {
 		return this._children.indexOf( node );
 	}
 
@@ -162,7 +162,7 @@ export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeChec
 	 *
 	 * @returns Child nodes iterator.
 	 */
-	public getChildren(): IterableIterator<Node> {
+	public getChildren(): IterableIterator<ViewNode> {
 		return this._children[ Symbol.iterator ]();
 	}
 
@@ -205,7 +205,7 @@ export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeChec
 	 * @param howMany Number of nodes to remove.
 	 * @returns The array of removed nodes.
 	 */
-	public _removeChildren( index: number, howMany: number = 1 ): Array<Node> {
+	public _removeChildren( index: number, howMany: number = 1 ): Array<ViewNode> {
 		this._fireChange( 'children', this, { index } );
 
 		for ( let i = index; i < index + howMany; i++ ) {
@@ -220,9 +220,9 @@ export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeChec
 	 * @param type Type of the change.
 	 * @param node Changed node.
 	 * @param data Additional data.
-	 * @fires module:engine/view/node~Node#event:change
+	 * @fires module:engine/view/node~ViewNode#event:change
 	 */
-	public _fireChange( type: ViewDocumentChangeType, node: Node | ViewDocumentFragment, data?: { index: number } ): void {
+	public _fireChange( type: ViewDocumentChangeType, node: ViewNode | ViewDocumentFragment, data?: { index: number } ): void {
 		this.fire( `change:${ type }`, node, data );
 	}
 
@@ -277,7 +277,7 @@ ViewDocumentFragment.prototype.is = function( type: string ): boolean {
 /**
  * Converts strings to Text and non-iterables to arrays.
  */
-function normalize( document: ViewDocument, nodes: ViewItem | string | Iterable<ViewItem | string> ): Array<Node> {
+function normalize( document: ViewDocument, nodes: ViewItem | string | Iterable<ViewItem | string> ): Array<ViewNode> {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
 		return [ new Text( document, nodes ) ];

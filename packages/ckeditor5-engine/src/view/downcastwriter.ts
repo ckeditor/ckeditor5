@@ -27,7 +27,7 @@ import { ViewEditableElement } from './editableelement.js';
 import { isPlainObject } from 'es-toolkit/compat';
 
 import { type ViewDocument } from './document.js';
-import { type Node } from './node.js';
+import { type ViewNode } from './node.js';
 import type { ViewElement, ViewElementAttributes } from './element.js';
 import { type ViewDomConverter } from './domconverter.js';
 import { type ViewItem } from './item.js';
@@ -121,7 +121,7 @@ export class ViewDowncastWriter {
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public setSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): void;
+	public setSelection( selectable: ViewNode, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): void;
 
 	/**
 	 * Sets {@link module:engine/view/documentselection~DocumentSelection selection's} ranges and direction to the
@@ -175,7 +175,7 @@ export class ViewDowncastWriter {
 	 *
 	 * @label SELECTABLE
 	 */
-	public setSelection( selectable: Exclude<Selectable, Node>, options?: SelectionOptions ): void;
+	public setSelection( selectable: Exclude<Selectable, ViewNode>, options?: SelectionOptions ): void;
 
 	public setSelection( ...args: Parameters<Selection[ 'setTo' ]> ): void {
 		this.document.selection._setTo( ...args );
@@ -200,7 +200,7 @@ export class ViewDowncastWriter {
 	 * @param children A list of nodes to be inserted into the created document fragment.
 	 * @returns The created document fragment.
 	 */
-	public createDocumentFragment( children?: Node | Iterable<Node> ): ViewDocumentFragment {
+	public createDocumentFragment( children?: ViewNode | Iterable<ViewNode> ): ViewDocumentFragment {
 		return new ViewDocumentFragment( this.document, children );
 	}
 
@@ -330,17 +330,17 @@ export class ViewDowncastWriter {
 	public createContainerElement(
 		name: string,
 		attributes: ViewElementAttributes,
-		children: Node | Iterable<Node>,
+		children: ViewNode | Iterable<ViewNode>,
 		options?: { renderUnsafeAttributes?: Array<string> }
 	): ViewContainerElement;
 
 	public createContainerElement(
 		name: string,
 		attributes?: ViewElementAttributes,
-		childrenOrOptions: Node | Iterable<Node> | { renderUnsafeAttributes?: Array<string> } = {},
+		childrenOrOptions: ViewNode | Iterable<ViewNode> | { renderUnsafeAttributes?: Array<string> } = {},
 		options: { renderUnsafeAttributes?: Array<string> } = {}
 	): ViewContainerElement {
-		let children: Node | Iterable<Node> | undefined = undefined;
+		let children: ViewNode | Iterable<ViewNode> | undefined = undefined;
 
 		if ( isPlainObject( childrenOrOptions ) ) {
 			options = childrenOrOptions as { renderUnsafeAttributes?: Array<string> };
@@ -946,14 +946,16 @@ export class ViewDowncastWriter {
 	 * @param nodes Node or nodes to insert.
 	 * @returns Range around inserted nodes.
 	 */
-	public insert( position: Position, nodes: Node | Iterable<Node> ): Range {
+	public insert( position: Position, nodes: ViewNode | Iterable<ViewNode> ): Range {
 		nodes = isIterable( nodes ) ? [ ...nodes ] : [ nodes ];
 
 		// Check if nodes to insert are instances of ViewAttributeElements, ViewContainerElements, EmptyElements, UIElements or Text.
 		validateNodesToInsert( nodes, this.document );
 
 		// Group nodes in batches of nodes that require or do not require breaking an ViewAttributeElements.
-		const nodeGroups = ( nodes as Array<Node> ).reduce( ( groups: Array<{ breakAttributes: boolean; nodes: Array<Node> }>, node ) => {
+		const nodeGroups = (
+			nodes as Array<ViewNode>
+		).reduce( ( groups: Array<{ breakAttributes: boolean; nodes: Array<ViewNode> }>, node ) => {
 			const lastGroup = groups[ groups.length - 1 ];
 
 			// Break attributes on nodes that do exist in the model tree so they can have attributes, other elements
@@ -1379,7 +1381,7 @@ export class ViewDowncastWriter {
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): Selection;
+	public createSelection( selectable: ViewNode, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): Selection;
 
 	/**
 	 * Creates new {@link module:engine/view/selection~Selection} instance.
@@ -1431,7 +1433,7 @@ export class ViewDowncastWriter {
 	 *
 	 * @label SELECTABLE
 	 */
-	public createSelection( selectable?: Exclude<Selectable, Node>, option?: SelectionOptions ): Selection;
+	public createSelection( selectable?: Exclude<Selectable, ViewNode>, option?: SelectionOptions ): Selection;
 
 	public createSelection( ...args: ConstructorParameters<typeof Selection> ): Selection {
 		return new Selection( ...args );
@@ -1509,7 +1511,7 @@ export class ViewDowncastWriter {
 	 * @param breakAttributes Whether attributes should be broken.
 	 * @returns Range around inserted nodes.
 	 */
-	private _insertNodes( position: Position, nodes: Iterable<Node>, breakAttributes: boolean ): Range {
+	private _insertNodes( position: Position, nodes: Iterable<ViewNode>, breakAttributes: boolean ): Range {
 		let parentElement;
 
 		// Break attributes on nodes that do exist in the model tree so they can have attributes, other elements
@@ -1984,7 +1986,7 @@ export class ViewDowncastWriter {
 	 *
 	 * @param element Attribute element to save.
 	 */
-	private _addToClonedElementsGroup( element: Node ): void {
+	private _addToClonedElementsGroup( element: ViewNode ): void {
 		// Add only if the element is in document tree.
 		if ( !element.root.is( 'rootElement' ) ) {
 			return;
@@ -2026,7 +2028,7 @@ export class ViewDowncastWriter {
 	 *
 	 * @param element Attribute element to remove.
 	 */
-	private _removeFromClonedElementsGroup( element: Node ) {
+	private _removeFromClonedElementsGroup( element: ViewNode ) {
 		// Traverse the element's children recursively to find other attribute elements that also got removed.
 		// The loop is at the beginning so we can make fast returns later in the code.
 		if ( element.is( 'element' ) ) {
@@ -2193,7 +2195,7 @@ const validNodesToInsert = [ Text, ViewAttributeElement, ViewContainerElement, V
  * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
  * contains instances that are not supported ones (see error description for valid ones.
  */
-function validateNodesToInsert( nodes: Iterable<Node>, errorContext: ViewDocument ): void {
+function validateNodesToInsert( nodes: Iterable<ViewNode>, errorContext: ViewDocument ): void {
 	for ( const node of nodes ) {
 		if ( !validNodesToInsert.some( validNode => node instanceof validNode ) ) {
 			/**
@@ -2225,7 +2227,7 @@ function validateNodesToInsert( nodes: Iterable<Node>, errorContext: ViewDocumen
  *
  * @returns Returns `true` if node is instance of ViewContainerElement or DocumentFragment.
  */
-function isContainerOrFragment( node: Node | ViewDocumentFragment ): boolean {
+function isContainerOrFragment( node: ViewNode | ViewDocumentFragment ): boolean {
 	return node && ( node.is( 'containerElement' ) || node.is( 'documentFragment' ) );
 }
 

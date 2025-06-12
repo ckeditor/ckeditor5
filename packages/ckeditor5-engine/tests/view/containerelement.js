@@ -4,7 +4,7 @@
  */
 
 import { ViewContainerElement, getViewFillerOffset } from '../../src/view/containerelement.js';
-import { Element } from '../../src/view/element.js';
+import { ViewElement } from '../../src/view/element.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { _parseView } from '../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
@@ -21,7 +21,7 @@ describe( 'ContainerElement', () => {
 			const el = new ViewContainerElement( document, 'p' );
 
 			expect( el ).to.be.an.instanceof( ViewContainerElement );
-			expect( el ).to.be.an.instanceof( Element );
+			expect( el ).to.be.an.instanceof( ViewElement );
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
 		} );
 	} );

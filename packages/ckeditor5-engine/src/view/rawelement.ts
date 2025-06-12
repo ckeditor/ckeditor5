@@ -10,7 +10,7 @@
  */
 
 import { ViewElement, type ViewElementAttributes } from './element.js';
-import { Node } from './node.js';
+import { ViewNode } from './node.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { type ViewDocument } from './document.js';
@@ -53,7 +53,7 @@ export class RawElement extends ViewElement {
 		document: ViewDocument,
 		name: string,
 		attrs?: ViewElementAttributes,
-		children?: Node | Iterable<Node>
+		children?: ViewNode | Iterable<ViewNode>
 	) {
 		super( document, name, attrs, children );
 
@@ -69,7 +69,7 @@ export class RawElement extends ViewElement {
 	 * @internal
 	 */
 	public override _insertChild( index: number, items: ViewItem | Iterable<ViewItem> ): number {
-		if ( items && ( items instanceof Node || Array.from( items as Iterable<ViewItem> ).length > 0 ) ) {
+		if ( items && ( items instanceof ViewNode || Array.from( items as Iterable<ViewItem> ).length > 0 ) ) {
 			/**
 			 * Cannot add children to a {@link module:engine/view/rawelement~RawElement} instance.
 			 *

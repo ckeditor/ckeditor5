@@ -12,7 +12,7 @@ import { ObservableMixin } from '@ckeditor/ckeditor5-utils';
 import type { ViewSelectionChangeEvent } from './selection.js';
 import type { ViewElementAttributes } from './element.js';
 import { type ViewDocument } from './document.js';
-import { type Node } from './node.js';
+import { type ViewNode } from './node.js';
 
 /**
  * Editable element which can be a {@link module:engine/view/rooteditableelement~RootEditableElement root}
@@ -67,7 +67,7 @@ export class ViewEditableElement extends /* #__PURE__ */ ObservableMixin( ViewCo
 		document: ViewDocument,
 		name: string,
 		attributes?: ViewElementAttributes,
-		children?: Node | Iterable<Node>
+		children?: ViewNode | Iterable<ViewNode>
 	) {
 		super( document, name, attributes, children );
 

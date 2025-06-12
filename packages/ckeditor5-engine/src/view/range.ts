@@ -13,7 +13,7 @@ import { Position } from './position.js';
 import { type ViewDocumentFragment } from './documentfragment.js';
 import { type ViewElement } from './element.js';
 import { type ViewItem } from './item.js';
-import { type Node } from './node.js';
+import { type ViewNode } from './node.js';
 import { TreeWalker, type TreeWalkerValue, type TreeWalkerOptions } from './treewalker.js';
 
 /**
@@ -84,7 +84,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	/**
 	 * Range root element.
 	 */
-	public get root(): Node | ViewDocumentFragment {
+	public get root(): ViewNode | ViewDocumentFragment {
 		return this.start.root;
 	}
 
@@ -325,10 +325,10 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	}
 
 	/**
-	 * Returns a {@link module:engine/view/node~Node} or {@link module:engine/view/documentfragment~ViewDocumentFragment}
+	 * Returns a {@link module:engine/view/node~ViewNode} or {@link module:engine/view/documentfragment~ViewDocumentFragment}
 	 * which is a common ancestor of range's both ends (in which the entire range is contained).
 	 */
-	public getCommonAncestor(): Node | ViewDocumentFragment | null {
+	public getCommonAncestor(): ViewNode | ViewDocumentFragment | null {
 		return this.start.getCommonAncestor( this.end );
 	}
 

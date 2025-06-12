@@ -16,7 +16,7 @@ import { ViewEditableElement } from './editableelement.js';
 import { type ViewDocumentFragment } from './documentfragment.js';
 import { type ViewElement } from './element.js';
 import { type ViewItem } from './item.js';
-import { type Node } from './node.js';
+import { type ViewNode } from './node.js';
 import { TreeWalker, type TreeWalkerValue, type TreeWalkerOptions } from './treewalker.js';
 
 /**
@@ -32,7 +32,7 @@ export class Position extends TypeCheckable {
 	/**
 	 * Position parent.
 	 */
-	public readonly parent: Node | ViewDocumentFragment;
+	public readonly parent: ViewNode | ViewDocumentFragment;
 
 	/**
 	 * Position offset.
@@ -45,7 +45,7 @@ export class Position extends TypeCheckable {
 	 * @param parent Position parent.
 	 * @param offset Position offset.
 	 */
-	constructor( parent: Node | ViewDocumentFragment, offset: number ) {
+	constructor( parent: ViewNode | ViewDocumentFragment, offset: number ) {
 		super();
 
 		this.parent = parent;
@@ -56,7 +56,7 @@ export class Position extends TypeCheckable {
 	 * Node directly after the position. Equals `null` when there is no node after position or position is located
 	 * inside text node.
 	 */
-	public get nodeAfter(): Node | null {
+	public get nodeAfter(): ViewNode | null {
 		if ( this.parent.is( '$text' ) ) {
 			return null;
 		}
@@ -68,7 +68,7 @@ export class Position extends TypeCheckable {
 	 * Node directly before the position. Equals `null` when there is no node before position or position is located
 	 * inside text node.
 	 */
-	public get nodeBefore(): Node | null {
+	public get nodeBefore(): ViewNode | null {
 		if ( this.parent.is( '$text' ) ) {
 			return null;
 		}
@@ -95,7 +95,7 @@ export class Position extends TypeCheckable {
 	/**
 	 * Position's root, that is the root of the position's parent element.
 	 */
-	public get root(): Node | ViewDocumentFragment {
+	public get root(): ViewNode | ViewDocumentFragment {
 		return this.parent.root;
 	}
 
@@ -163,7 +163,7 @@ export class Position extends TypeCheckable {
 	 *
 	 * @returns Array with ancestors.
 	 */
-	public getAncestors(): Array<Node | ViewDocumentFragment> {
+	public getAncestors(): Array<ViewNode | ViewDocumentFragment> {
 		if ( this.parent.is( 'documentFragment' ) ) {
 			return [ this.parent ];
 		} else {
@@ -172,10 +172,10 @@ export class Position extends TypeCheckable {
 	}
 
 	/**
-	 * Returns a {@link module:engine/view/node~Node} or {@link module:engine/view/documentfragment~ViewDocumentFragment}
+	 * Returns a {@link module:engine/view/node~ViewNode} or {@link module:engine/view/documentfragment~ViewDocumentFragment}
 	 * which is a common ancestor of both positions.
 	 */
-	public getCommonAncestor( position: Position ): Node | ViewDocumentFragment | null {
+	public getCommonAncestor( position: Position ): ViewNode | ViewDocumentFragment | null {
 		const ancestorsA = this.getAncestors();
 		const ancestorsB = position.getAncestors();
 
@@ -342,7 +342,7 @@ export class Position extends TypeCheckable {
 			 * You cannot make a position after a root.
 			 *
 			 * @error view-position-after-root
-			 * @param {module:engine/view/node~Node} root A root item.
+			 * @param {module:engine/view/node~ViewNode} root A root item.
 			 */
 			throw new CKEditorError( 'view-position-after-root', item, { root: item } );
 		}
@@ -367,7 +367,7 @@ export class Position extends TypeCheckable {
 			 * You cannot make a position before a root.
 			 *
 			 * @error view-position-before-root
-			 * @param {module:engine/view/node~Node} root A root item.
+			 * @param {module:engine/view/node~ViewNode} root A root item.
 			 */
 			throw new CKEditorError( 'view-position-before-root', item, { root: item } );
 		}

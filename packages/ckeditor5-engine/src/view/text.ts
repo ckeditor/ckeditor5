@@ -7,7 +7,7 @@
  * @module engine/view/text
  */
 
-import { Node } from './node.js';
+import { ViewNode } from './node.js';
 
 import { type ViewDocument } from './document.js';
 
@@ -20,11 +20,11 @@ import { type ViewDocument } from './document.js';
  * {@link module:engine/view/upcastwriter~UpcastWriter#createText `UpcastWriter#createText()`}
  * method when working on non-semantic views.
  */
-export class Text extends Node {
+export class Text extends ViewNode {
 	/**
 	 * The text content.
 	 *
-	 * Setting the data fires the {@link module:engine/view/node~Node#event:change:text change event}.
+	 * Setting the data fires the {@link module:engine/view/node~ViewNode#event:change:text change event}.
 	 */
 	private _textData: string;
 
@@ -64,7 +64,7 @@ export class Text extends Node {
 	 *
 	 * If the protected getter didn't exist, `foo._data` will return `undefined` and result of the merge will be invalid.
 	 *
-	 * The setter sets data and fires the {@link module:engine/view/node~Node#event:change:text change event}.
+	 * The setter sets data and fires the {@link module:engine/view/node~ViewNode#event:change:text change event}.
 	 *
 	 * @internal
 	 */
@@ -84,7 +84,7 @@ export class Text extends Node {
 	 *
 	 * @param otherNode Node to check if it is same as this node.
 	 */
-	public isSimilar( otherNode: Node ): boolean {
+	public isSimilar( otherNode: ViewNode ): boolean {
 		if ( !( otherNode instanceof Text ) ) {
 			return false;
 		}

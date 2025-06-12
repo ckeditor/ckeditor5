@@ -22,7 +22,7 @@ import {
 
 import { type ViewDocument } from './document.js';
 import { type ViewItem } from './item.js';
-import { type Node } from './node.js';
+import { type ViewNode } from './node.js';
 
 /**
  * View upcast writer. It provides a set of methods used to manipulate non-semantic view trees.
@@ -64,7 +64,7 @@ export class UpcastWriter {
 	 * @param children A list of nodes to be inserted into the created document fragment.
 	 * @returns The created document fragment.
 	 */
-	public createDocumentFragment( children?: Node | Iterable<Node> ): ViewDocumentFragment {
+	public createDocumentFragment( children?: ViewNode | Iterable<ViewNode> ): ViewDocumentFragment {
 		return new ViewDocumentFragment( this.document, children );
 	}
 
@@ -87,7 +87,7 @@ export class UpcastWriter {
 	public createElement(
 		name: string,
 		attrs?: ViewElementAttributes,
-		children?: Node | Iterable<Node>
+		children?: ViewNode | Iterable<ViewNode>
 	): ViewElement {
 		return new ViewElement( this.document, name, attrs, children );
 	}
@@ -151,7 +151,7 @@ export class UpcastWriter {
 	 * @param element Element which children will be removed.
 	 * @returns The array containing removed nodes.
 	 */
-	public removeChildren( index: number, howMany: number, element: ViewElement | ViewDocumentFragment ): Array<Node> {
+	public removeChildren( index: number, howMany: number, element: ViewElement | ViewDocumentFragment ): Array<ViewNode> {
 		return element._removeChildren( index, howMany );
 	}
 
@@ -161,7 +161,7 @@ export class UpcastWriter {
 	 * @param element Element which will be removed.
 	 * @returns The array containing removed nodes.
 	 */
-	public remove( element: Node ): Array<Node> {
+	public remove( element: ViewNode ): Array<ViewNode> {
 		const parent = element.parent;
 
 		if ( parent ) {
@@ -488,7 +488,7 @@ export class UpcastWriter {
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): Selection;
+	public createSelection( selectable: ViewNode, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): Selection;
 
 	/**
 	 * Creates a new {@link module:engine/view/selection~Selection} instance.
@@ -540,7 +540,7 @@ export class UpcastWriter {
 	 *
 	 * @label SELECTABLE
 	 */
-	public createSelection( selectable?: Exclude<Selectable, Node>, options?: SelectionOptions ): Selection;
+	public createSelection( selectable?: Exclude<Selectable, ViewNode>, options?: SelectionOptions ): Selection;
 
 	public createSelection( ...args: ConstructorParameters<typeof Selection> ): Selection {
 		return new Selection( ...args );

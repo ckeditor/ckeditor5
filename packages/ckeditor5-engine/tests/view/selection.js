@@ -7,7 +7,7 @@ import { Selection } from '../../src/view/selection.js';
 import { ViewDocumentSelection } from '../../src/view/documentselection.js';
 import { Range } from '../../src/view/range.js';
 import { ViewDocument } from '../../src/view/document.js';
-import { Element } from '../../src/view/element.js';
+import { ViewElement } from '../../src/view/element.js';
 import { Text } from '../../src/view/text.js';
 import { Position } from '../../src/view/position.js';
 
@@ -27,7 +27,7 @@ describe( 'Selection', () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
 
 		const text = new Text( viewDocument, 'xxxxxxxxxxxxxxxxxxxx' );
-		el = new Element( viewDocument, 'p', null, text );
+		el = new ViewElement( viewDocument, 'p', null, text );
 
 		selection = new Selection();
 
@@ -708,7 +708,7 @@ describe( 'Selection', () => {
 
 			it( 'should collapse selection at node and offset', () => {
 				const foo = new Text( viewDocument, 'foo' );
-				const p = new Element( viewDocument, 'p', null, foo );
+				const p = new ViewElement( viewDocument, 'p', null, foo );
 
 				selection.setTo( foo, 0 );
 				let range = selection.getFirstRange();
@@ -735,7 +735,7 @@ describe( 'Selection', () => {
 
 			it( 'should collapse selection at node and flag', () => {
 				const foo = new Text( viewDocument, 'foo' );
-				const p = new Element( viewDocument, 'p', null, foo );
+				const p = new ViewElement( viewDocument, 'p', null, foo );
 
 				selection.setTo( foo, 'end' );
 				let range = selection.getFirstRange();
@@ -894,7 +894,7 @@ describe( 'Selection', () => {
 			const textNode1 = new Text( viewDocument, 'foo' );
 			const textNode2 = new Text( viewDocument, 'bar' );
 			const textNode3 = new Text( viewDocument, 'baz' );
-			const element = new Element( viewDocument, 'p', null, [ textNode1, textNode2, textNode3 ] );
+			const element = new ViewElement( viewDocument, 'p', null, [ textNode1, textNode2, textNode3 ] );
 
 			selection.setTo( textNode2, 'on' );
 
@@ -907,7 +907,9 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should allow setting selection inside an element', () => {
-			const element = new Element( viewDocument, 'p', null, [ new Text( viewDocument, 'foo' ), new Text( viewDocument, 'bar' ) ] );
+			const element = new ViewElement(
+				viewDocument, 'p', null, [ new Text( viewDocument, 'foo' ), new Text( viewDocument, 'bar' ) ]
+			);
 
 			selection.setTo( element, 'in' );
 
@@ -920,7 +922,9 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should allow setting backward selection inside an element', () => {
-			const element = new Element( viewDocument, 'p', null, [ new Text( viewDocument, 'foo' ), new Text( viewDocument, 'bar' ) ] );
+			const element = new ViewElement(
+				viewDocument, 'p', null, [ new Text( viewDocument, 'foo' ), new Text( viewDocument, 'bar' ) ]
+			);
 
 			selection.setTo( element, 'in', { backward: true } );
 
@@ -948,7 +952,7 @@ describe( 'Selection', () => {
 		it( 'should return ViewEditableElement when selection is placed inside', () => {
 			selection.setTo( viewDocument.selection );
 			const root = createViewRoot( viewDocument, 'div', 'main' );
-			const element = new Element( viewDocument, 'p' );
+			const element = new ViewElement( viewDocument, 'p' );
 			root._appendChild( element );
 
 			selection.setTo( Range._createFromParentsAndOffsets( element, 0, element, 0 ) );

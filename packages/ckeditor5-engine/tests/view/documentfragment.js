@@ -4,7 +4,7 @@
  */
 
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
-import { Element } from '../../src/view/element.js';
+import { ViewElement } from '../../src/view/element.js';
 import { Node } from '../../src/view/node.js';
 import { Text } from '../../src/view/text.js';
 import { TextProxy } from '../../src/view/textproxy.js';
@@ -27,7 +27,7 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should create DocumentFragment  document,with child node', () => {
-			const child = new Element( document, 'p' );
+			const child = new ViewElement( document, 'p' );
 			const fragment = new ViewDocumentFragment( document, child );
 
 			expect( fragment.childCount ).to.equal( 1 );
@@ -35,7 +35,7 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should create DocumentFragment  document,with multiple nodes', () => {
-			const children = [ new Element( document, 'p' ), new Element( document, 'div' ) ];
+			const children = [ new ViewElement( document, 'p' ), new ViewElement( document, 'div' ) ];
 			const fragment = new ViewDocumentFragment( document, children );
 
 			expect( fragment.childCount ).to.equal( 2 );
@@ -46,7 +46,7 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'iterator', () => {
 		it( 'should iterate over all nodes added to document fragment', () => {
-			const children = [ new Element( document, 'p' ), new Element( document, 'div' ) ];
+			const children = [ new ViewElement( document, 'p' ), new ViewElement( document, 'div' ) ];
 			const fragment = new ViewDocumentFragment( document, children );
 
 			const arr = Array.from( fragment );
@@ -73,7 +73,7 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should return false if there are children in document fragment', () => {
-			const fragment = new ViewDocumentFragment( document, [ new Element( document, 'p' ) ] );
+			const fragment = new ViewDocumentFragment( document, [ new ViewElement( document, 'p' ) ] );
 
 			expect( fragment.isEmpty ).to.be.false;
 		} );
@@ -111,10 +111,10 @@ describe( 'DocumentFragment', () => {
 
 		beforeEach( () => {
 			fragment = new ViewDocumentFragment( document );
-			el1 = new Element( document, 'el1' );
-			el2 = new Element( document, 'el2' );
-			el3 = new Element( document, 'el3' );
-			el4 = new Element( document, 'el4' );
+			el1 = new ViewElement( document, 'el1' );
+			el2 = new ViewElement( document, 'el2' );
+			el3 = new ViewElement( document, 'el3' );
+			el4 = new ViewElement( document, 'el4' );
 		} );
 
 		describe( 'insertion', () => {
@@ -137,7 +137,7 @@ describe( 'DocumentFragment', () => {
 				expect( fragment.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'abc' );
 
 				fragment._removeChildren( 0, 1 );
-				fragment._insertChild( 0, [ new Element( document, 'p' ), 'abc' ] );
+				fragment._insertChild( 0, [ new ViewElement( document, 'p' ), 'abc' ] );
 
 				expect( fragment.childCount ).to.equal( 2 );
 				expect( fragment.getChild( 1 ) ).to.have.property( 'data' ).that.equals( 'abc' );

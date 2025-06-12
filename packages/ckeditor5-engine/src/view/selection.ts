@@ -10,7 +10,7 @@
 import { TypeCheckable } from './typecheckable.js';
 import { Range } from './range.js';
 import { Position, type PositionOffset } from './position.js';
-import { Node } from './node.js';
+import { ViewNode } from './node.js';
 import { ViewDocumentSelection } from './documentselection.js';
 
 import {
@@ -124,11 +124,11 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 */
 	constructor(
 		...args: [] | [
-			selectable: Node,
+			selectable: ViewNode,
 			placeOrOffset: PlaceOrOffset,
 			options?: SelectionOptions
 		] | [
-			selectable?: Exclude<Selectable, Node>,
+			selectable?: Exclude<Selectable, ViewNode>,
 			options?: SelectionOptions
 		]
 	) {
@@ -472,11 +472,11 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 */
 	public setTo(
 		...args: [
-			selectable: Node,
+			selectable: ViewNode,
 			placeOrOffset: PlaceOrOffset,
 			options?: SelectionOptions
 		] | [
-			selectable?: Exclude<Selectable, Node>,
+			selectable?: Exclude<Selectable, ViewNode>,
 			options?: SelectionOptions
 		]
 	): void {
@@ -499,7 +499,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 		} else if ( selectable instanceof Position ) {
 			this._setRanges( [ new Range( selectable ) ] );
 			this._setFakeOptions( options );
-		} else if ( selectable instanceof Node ) {
+		} else if ( selectable instanceof ViewNode ) {
 			const backward = !!options && !!options.backward;
 			let range;
 
@@ -717,4 +717,4 @@ export type ViewSelectionChangeEvent = {
  *
  * See also {@link module:engine/view/selection~Selection#setTo}
  */
-export type Selectable = Selection | ViewDocumentSelection | Position | Iterable<Range> | Range | Node | null;
+export type Selectable = Selection | ViewDocumentSelection | Position | Iterable<Range> | Range | ViewNode | null;

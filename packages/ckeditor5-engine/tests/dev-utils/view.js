@@ -7,7 +7,7 @@ import { _parseView, _stringifyView, _getViewData, _setViewData } from '../../sr
 import { ViewDocument } from '../../src/view/document.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { Position } from '../../src/view/position.js';
-import { Element } from '../../src/view/element.js';
+import { ViewElement } from '../../src/view/element.js';
 import { ViewAttributeElement } from '../../src/view/attributeelement.js';
 import { ViewContainerElement } from '../../src/view/containerelement.js';
 import { EmptyElement } from '../../src/view/emptyelement.js';
@@ -40,7 +40,7 @@ describe( 'view test utils', () => {
 					renderUIElements: false
 				};
 				const root = createAttachedRoot( viewDocument, element );
-				root._appendChild( new Element( viewDocument, 'p' ) );
+				root._appendChild( new ViewElement( viewDocument, 'p' ) );
 
 				expect( _getViewData( view, options ) ).to.equal( '<p></p>' );
 				sinon.assert.calledOnce( stringifySpy );
@@ -62,7 +62,7 @@ describe( 'view test utils', () => {
 				const viewDocument = view.document;
 				const options = { showType: false, showPriority: false };
 				const root = createAttachedRoot( viewDocument, element );
-				root._appendChild( new Element( viewDocument, 'p' ) );
+				root._appendChild( new ViewElement( viewDocument, 'p' ) );
 
 				view.change( writer => {
 					writer.setSelection( Range._createFromParentsAndOffsets( root, 0, root, 1 ) );
@@ -147,18 +147,18 @@ describe( 'view test utils', () => {
 
 		it( 'should write elements and texts', () => {
 			const text = new Text( viewDocument, 'foobar' );
-			const b = new Element( viewDocument, 'b', null, text );
-			const p = new Element( viewDocument, 'p', null, b );
+			const b = new ViewElement( viewDocument, 'b', null, text );
+			const p = new ViewElement( viewDocument, 'p', null, b );
 
 			expect( _stringifyView( p ) ).to.equal( '<p><b>foobar</b></p>' );
 		} );
 
 		it( 'should write elements with attributes (attributes in alphabetical order)', () => {
 			const text = new Text( viewDocument, 'foobar' );
-			const b = new Element( viewDocument, 'b', {
+			const b = new ViewElement( viewDocument, 'b', {
 				foo: 'bar'
 			}, text );
-			const p = new Element( viewDocument, 'p', {
+			const p = new ViewElement( viewDocument, 'p', {
 				baz: 'qux',
 				bar: 'taz',
 				class: 'short wide'
@@ -169,7 +169,7 @@ describe( 'view test utils', () => {
 
 		it( 'should write elements with attributes which values include double quotes', () => {
 			const text = new Text( viewDocument, 'foobar' );
-			const p = new Element( viewDocument, 'p', {
+			const p = new ViewElement( viewDocument, 'p', {
 				style: 'font-family: Calibri, "Times New Roman", sans-serif'
 			}, text );
 
@@ -179,9 +179,9 @@ describe( 'view test utils', () => {
 		it( 'should write selection ranges inside elements', () => {
 			const text1 = new Text( viewDocument, 'foobar' );
 			const text2 = new Text( viewDocument, 'bazqux' );
-			const b1 = new Element( viewDocument, 'b', null, text1 );
-			const b2 = new Element( viewDocument, 'b', null, text2 );
-			const p = new Element( viewDocument, 'p', null, [ b1, b2 ] );
+			const b1 = new ViewElement( viewDocument, 'b', null, text1 );
+			const b2 = new ViewElement( viewDocument, 'b', null, text2 );
+			const p = new ViewElement( viewDocument, 'p', null, [ b1, b2 ] );
 			const range = Range._createFromParentsAndOffsets( p, 1, p, 2 );
 			const selection = new ViewDocumentSelection( [ range ] );
 			expect( _stringifyView( p, selection ) ).to.equal( '<p><b>foobar</b>[<b>bazqux</b>]</p>' );
@@ -189,8 +189,8 @@ describe( 'view test utils', () => {
 
 		it( 'should support unicode', () => {
 			const text = new Text( viewDocument, 'நிலைக்கு' );
-			const b = new Element( viewDocument, 'b', null, text );
-			const p = new Element( viewDocument, 'p', null, b );
+			const b = new ViewElement( viewDocument, 'b', null, text );
+			const p = new ViewElement( viewDocument, 'p', null, b );
 			const range = Range._createFromParentsAndOffsets( p, 0, text, 4 );
 			const selection = new ViewDocumentSelection( [ range ] );
 
@@ -199,7 +199,7 @@ describe( 'view test utils', () => {
 
 		it( 'should write collapsed selection ranges inside elements', () => {
 			const text = new Text( viewDocument, 'foobar' );
-			const p = new Element( viewDocument, 'p', null, text );
+			const p = new ViewElement( viewDocument, 'p', null, text );
 			const range = Range._createFromParentsAndOffsets( p, 0, p, 0 );
 			const selection = new ViewDocumentSelection( [ range ] );
 			expect( _stringifyView( p, selection ) ).to.equal( '<p>[]foobar</p>' );
@@ -208,9 +208,9 @@ describe( 'view test utils', () => {
 		it( 'should write selection ranges inside text', () => {
 			const text1 = new Text( viewDocument, 'foobar' );
 			const text2 = new Text( viewDocument, 'bazqux' );
-			const b1 = new Element( viewDocument, 'b', null, text1 );
-			const b2 = new Element( viewDocument, 'b', null, text2 );
-			const p = new Element( viewDocument, 'p', null, [ b1, b2 ] );
+			const b1 = new ViewElement( viewDocument, 'b', null, text1 );
+			const b2 = new ViewElement( viewDocument, 'b', null, text2 );
+			const p = new ViewElement( viewDocument, 'p', null, [ b1, b2 ] );
 			const range = Range._createFromParentsAndOffsets( text1, 1, text1, 5 );
 			const selection = new ViewDocumentSelection( [ range ] );
 			expect( _stringifyView( p, selection ) ).to.equal( '<p><b>f{ooba}r</b><b>bazqux</b></p>' );
@@ -219,9 +219,9 @@ describe( 'view test utils', () => {
 		it( 'should write selection ranges inside text represented by `[` and `]` characters', () => {
 			const text1 = new Text( viewDocument, 'foobar' );
 			const text2 = new Text( viewDocument, 'bazqux' );
-			const b1 = new Element( viewDocument, 'b', null, text1 );
-			const b2 = new Element( viewDocument, 'b', null, text2 );
-			const p = new Element( viewDocument, 'p', null, [ b1, b2 ] );
+			const b1 = new ViewElement( viewDocument, 'b', null, text1 );
+			const b2 = new ViewElement( viewDocument, 'b', null, text2 );
+			const p = new ViewElement( viewDocument, 'p', null, [ b1, b2 ] );
 			const range = Range._createFromParentsAndOffsets( text1, 1, text1, 5 );
 			const selection = new ViewDocumentSelection( [ range ] );
 			expect( _stringifyView( p, selection, { sameSelectionCharacters: true } ) )
@@ -230,7 +230,7 @@ describe( 'view test utils', () => {
 
 		it( 'should write collapsed selection ranges inside texts', () => {
 			const text = new Text( viewDocument, 'foobar' );
-			const p = new Element( viewDocument, 'p', null, text );
+			const p = new ViewElement( viewDocument, 'p', null, text );
 			const range = Range._createFromParentsAndOffsets( text, 0, text, 0 );
 			const selection = new ViewDocumentSelection( [ range ] );
 			expect( _stringifyView( p, selection ) ).to.equal( '<p>{}foobar</p>' );
@@ -239,9 +239,9 @@ describe( 'view test utils', () => {
 		it( 'should write ranges that start inside text end ends between elements', () => {
 			const text1 = new Text( viewDocument, 'foobar' );
 			const text2 = new Text( viewDocument, 'bazqux' );
-			const b1 = new Element( viewDocument, 'b', null, text1 );
-			const b2 = new Element( viewDocument, 'b', null, text2 );
-			const p = new Element( viewDocument, 'p', null, [ b1, b2 ] );
+			const b1 = new ViewElement( viewDocument, 'b', null, text1 );
+			const b2 = new ViewElement( viewDocument, 'b', null, text2 );
+			const p = new ViewElement( viewDocument, 'p', null, [ b1, b2 ] );
 			const range = Range._createFromParentsAndOffsets( p, 0, text2, 5 );
 			const selection = new ViewDocumentSelection( [ range ] );
 			expect( _stringifyView( p, selection ) ).to.equal( '<p>[<b>foobar</b><b>bazqu}x</b></p>' );
@@ -257,7 +257,7 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should not write element type when type is not specified', () => {
-			const p = new Element( viewDocument, 'p' );
+			const p = new ViewElement( viewDocument, 'p' );
 			expect( _stringifyView( p, null, { showType: true } ) ).to.equal( '<p></p>' );
 		} );
 
@@ -283,16 +283,16 @@ describe( 'view test utils', () => {
 		it( 'should parse DocumentFragment as root', () => {
 			const text1 = new Text( viewDocument, 'foobar' );
 			const text2 = new Text( viewDocument, 'bazqux' );
-			const b1 = new Element( viewDocument, 'b', null, text1 );
-			const b2 = new Element( viewDocument, 'b', null, text2 );
+			const b1 = new ViewElement( viewDocument, 'b', null, text1 );
+			const b2 = new ViewElement( viewDocument, 'b', null, text2 );
 			const fragment = new ViewDocumentFragment( viewDocument, [ b1, b2 ] );
 			expect( _stringifyView( fragment, null ) ).to.equal( '<b>foobar</b><b>bazqux</b>' );
 		} );
 
 		it( 'should not write ranges outside elements - end position outside element', () => {
 			const text = new Text( viewDocument, 'foobar' );
-			const b = new Element( viewDocument, 'b', null, text );
-			const p = new Element( viewDocument, 'p', null, b );
+			const b = new ViewElement( viewDocument, 'b', null, text );
+			const p = new ViewElement( viewDocument, 'p', null, b );
 			const range = Range._createFromParentsAndOffsets( p, 0, p, 5 );
 
 			expect( _stringifyView( p, range ) ).to.equal( '<p>[<b>foobar</b></p>' );
@@ -300,8 +300,8 @@ describe( 'view test utils', () => {
 
 		it( 'should not write ranges outside elements - start position outside element', () => {
 			const text = new Text( viewDocument, 'foobar' );
-			const b = new Element( viewDocument, 'b', null, text );
-			const p = new Element( viewDocument, 'p', null, b );
+			const b = new ViewElement( viewDocument, 'b', null, text );
+			const p = new ViewElement( viewDocument, 'p', null, b );
 			const range = Range._createFromParentsAndOffsets( p, -1, p, 1 );
 
 			expect( _stringifyView( p, range ) ).to.equal( '<p><b>foobar</b>]</p>' );
@@ -309,8 +309,8 @@ describe( 'view test utils', () => {
 
 		it( 'should not write ranges outside elements - end position outside text', () => {
 			const text = new Text( viewDocument, 'foobar' );
-			const b = new Element( viewDocument, 'b', null, text );
-			const p = new Element( viewDocument, 'p', null, b );
+			const b = new ViewElement( viewDocument, 'b', null, text );
+			const p = new ViewElement( viewDocument, 'p', null, b );
 			const range = Range._createFromParentsAndOffsets( text, 0, text, 7 );
 
 			expect( _stringifyView( p, range ) ).to.equal( '<p><b>{foobar</b></p>' );
@@ -318,8 +318,8 @@ describe( 'view test utils', () => {
 
 		it( 'should not write ranges outside elements - start position outside text', () => {
 			const text = new Text( viewDocument, 'foobar' );
-			const b = new Element( viewDocument, 'b', null, text );
-			const p = new Element( viewDocument, 'p', null, b );
+			const b = new ViewElement( viewDocument, 'b', null, text );
+			const p = new ViewElement( viewDocument, 'p', null, b );
 			const range = Range._createFromParentsAndOffsets( text, -1, text, 2 );
 
 			expect( _stringifyView( p, range ) ).to.equal( '<p><b>fo}obar</b></p>' );
@@ -328,9 +328,9 @@ describe( 'view test utils', () => {
 		it( 'should write multiple ranges from selection #1', () => {
 			const text1 = new Text( viewDocument, 'foobar' );
 			const text2 = new Text( viewDocument, 'bazqux' );
-			const b1 = new Element( viewDocument, 'b', null, text1 );
-			const b2 = new Element( viewDocument, 'b', null, text2 );
-			const p = new Element( viewDocument, 'p', null, [ b1, b2 ] );
+			const b1 = new ViewElement( viewDocument, 'b', null, text1 );
+			const b2 = new ViewElement( viewDocument, 'b', null, text2 );
+			const p = new ViewElement( viewDocument, 'p', null, [ b1, b2 ] );
 			const range1 = Range._createFromParentsAndOffsets( p, 0, p, 1 );
 			const range2 = Range._createFromParentsAndOffsets( p, 1, p, 1 );
 			const selection = new ViewDocumentSelection( [ range2, range1 ] );
@@ -341,8 +341,8 @@ describe( 'view test utils', () => {
 		it( 'should write multiple ranges from selection #2', () => {
 			const text1 = new Text( viewDocument, 'foobar' );
 			const text2 = new Text( viewDocument, 'bazqux' );
-			const b = new Element( viewDocument, 'b', null, text1 );
-			const p = new Element( viewDocument, 'p', null, [ b, text2 ] );
+			const b = new ViewElement( viewDocument, 'b', null, text1 );
+			const p = new ViewElement( viewDocument, 'p', null, [ b, text2 ] );
 			const range1 = Range._createFromParentsAndOffsets( p, 0, p, 1 );
 			const range2 = Range._createFromParentsAndOffsets( text2, 0, text2, 3 );
 			const range3 = Range._createFromParentsAndOffsets( text2, 3, text2, 4 );
@@ -470,7 +470,7 @@ describe( 'view test utils', () => {
 
 		it( 'should sort classes in specified element', () => {
 			const text = new Text( viewDocument, 'foobar' );
-			const b = new Element( viewDocument, 'b', {
+			const b = new ViewElement( viewDocument, 'b', {
 				class: 'zz xx aa'
 			}, text );
 
@@ -479,7 +479,7 @@ describe( 'view test utils', () => {
 
 		it( 'should sort styles in specified element', () => {
 			const text = new Text( viewDocument, 'foobar' );
-			const i = new Element( viewDocument, 'i', {
+			const i = new ViewElement( viewDocument, 'i', {
 				style: 'text-decoration: underline; font-weight: bold'
 			}, text );
 
@@ -513,7 +513,7 @@ describe( 'view test utils', () => {
 			const { view, selection } = _parseView( '[<b>foobar</b>]' );
 			const parent = view.parent;
 
-			expect( view ).to.be.instanceOf( Element );
+			expect( view ).to.be.instanceOf( ViewElement );
 			expect( parent ).to.be.instanceOf( ViewDocumentFragment );
 			expect( selection.rangeCount ).to.equal( 1 );
 			expect( selection.getFirstRange().isEqual( Range._createFromParentsAndOffsets( parent, 0, parent, 1 ) ) ).to.be.true;
@@ -523,8 +523,8 @@ describe( 'view test utils', () => {
 			const view = _parseView( '<b></b><i></i>' );
 			expect( view ).to.be.instanceOf( ViewDocumentFragment );
 			expect( view.childCount ).to.equal( 2 );
-			expect( view.getChild( 0 ).isSimilar( new Element( viewDocument, 'b' ) ) ).to.be.true;
-			expect( view.getChild( 1 ).isSimilar( new Element( viewDocument, 'i' ) ) ).to.be.true;
+			expect( view.getChild( 0 ).isSimilar( new ViewElement( viewDocument, 'b' ) ) ).to.be.true;
+			expect( view.getChild( 1 ).isSimilar( new ViewElement( viewDocument, 'i' ) ) ).to.be.true;
 		} );
 
 		it( 'should parse text', () => {
@@ -541,9 +541,9 @@ describe( 'view test utils', () => {
 
 		it( 'should parse elements and texts', () => {
 			const view = _parseView( '<b>foobar</b>' );
-			const element = new Element( viewDocument, 'b' );
+			const element = new ViewElement( viewDocument, 'b' );
 
-			expect( view ).to.be.instanceof( Element );
+			expect( view ).to.be.instanceof( ViewElement );
 			expect( view.isSimilar( element ) ).to.be.true;
 			expect( view.childCount ).to.equal( 1 );
 			const text = view.getChild( 0 );
@@ -553,9 +553,9 @@ describe( 'view test utils', () => {
 
 		it( 'should parse element attributes', () => {
 			const view = _parseView( '<b name="foo" title="bar" class="foo bar" style="color:red;"></b>' );
-			const element = new Element( viewDocument, 'b', { name: 'foo', title: 'bar', class: 'foo bar', style: 'color:red;' } );
+			const element = new ViewElement( viewDocument, 'b', { name: 'foo', title: 'bar', class: 'foo bar', style: 'color:red;' } );
 
-			expect( view ).to.be.instanceof( Element );
+			expect( view ).to.be.instanceof( ViewElement );
 			expect( view.isSimilar( element ) ).to.be.true;
 			expect( view.childCount ).to.equal( 0 );
 		} );
@@ -629,10 +629,10 @@ describe( 'view test utils', () => {
 
 		it( 'should parse selection range between elements', () => {
 			const { view, selection } = _parseView( '<p>[<b>foobar]</b>[]</p>' );
-			expect( view ).to.be.instanceof( Element );
+			expect( view ).to.be.instanceof( ViewElement );
 			expect( view.childCount ).to.equal( 1 );
 			const b = view.getChild( 0 );
-			expect( b ).to.be.instanceof( Element );
+			expect( b ).to.be.instanceof( ViewElement );
 			expect( b.name ).to.equal( 'b' );
 			expect( b.childCount ).to.equal( 1 );
 			const text = b.getChild( 0 );
@@ -647,7 +647,7 @@ describe( 'view test utils', () => {
 		it( 'should support unicode', () => {
 			const { view, selection } = _parseView( '<p>[<b>நிலை}க்கு</b></p>' );
 
-			expect( view ).to.be.instanceof( Element );
+			expect( view ).to.be.instanceof( ViewElement );
 			expect( view.name ).to.equal( 'p' );
 			expect( view.childCount ).to.equal( 1 );
 
@@ -686,7 +686,7 @@ describe( 'view test utils', () => {
 			expect( text1 ).to.be.instanceof( Text );
 			expect( text1.data ).to.equal( 'foobar' );
 			const i = view.getChild( 1 );
-			expect( i.isSimilar( new Element( viewDocument, 'i' ) ) ).to.be.true;
+			expect( i.isSimilar( new ViewElement( viewDocument, 'i' ) ) ).to.be.true;
 			expect( i.childCount ).to.equal( 1 );
 			const text2 = i.getChild( 0 );
 			expect( text2 ).to.be.instanceof( Text );
@@ -772,14 +772,14 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should use provided root element #1', () => {
-			const root = new Element( viewDocument, 'p' );
+			const root = new ViewElement( viewDocument, 'p' );
 			const data = _parseView( '<span>text</span>', { rootElement: root } );
 
 			expect( _stringifyView( data ) ).to.equal( '<p><span>text</span></p>' );
 		} );
 
 		it( 'should use provided root element #2', () => {
-			const root = new Element( viewDocument, 'p' );
+			const root = new ViewElement( viewDocument, 'p' );
 			const data = _parseView( '<span>text</span><b>test</b>', { rootElement: root } );
 
 			expect( _stringifyView( data ) ).to.equal( '<p><span>text</span><b>test</b></p>' );

@@ -30,13 +30,13 @@ import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
  * converting a given {@link module:engine/view/documentfragment~ViewDocumentFragment view document fragment} or
  * {@link module:engine/view/element~ViewElement view element} into a correct model structure.
  *
- * During the conversion process, the dispatcher fires events for all {@link module:engine/view/node~Node view nodes}
+ * During the conversion process, the dispatcher fires events for all {@link module:engine/view/node~ViewNode view nodes}
  * from the converted view document fragment.
  * Special callbacks called "converters" should listen to these events in order to convert the view nodes.
  *
  * The second parameter of the callback is the `data` object with the following properties:
  *
- * * `data.viewItem` contains a {@link module:engine/view/node~Node view node} or a
+ * * `data.viewItem` contains a {@link module:engine/view/node~ViewNode view node} or a
  * {@link module:engine/view/documentfragment~ViewDocumentFragment view document fragment}
  * that is converted at the moment and might be handled by the callback.
  * * `data.modelRange` is used to point to the result

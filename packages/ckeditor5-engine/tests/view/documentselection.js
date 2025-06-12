@@ -7,7 +7,7 @@ import { ViewDocumentSelection } from '../../src/view/documentselection.js';
 import { Selection } from '../../src/view/selection.js';
 import { Range } from '../../src/view/range.js';
 import { ViewDocument } from '../../src/view/document.js';
-import { Element } from '../../src/view/element.js';
+import { ViewElement } from '../../src/view/element.js';
 import { Text } from '../../src/view/text.js';
 import { Position } from '../../src/view/position.js';
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
@@ -25,7 +25,7 @@ describe( 'ViewDocumentSelection', () => {
 	beforeEach( () => {
 		document = new ViewDocument( new StylesProcessor() );
 		const text = new Text( document, 'xxxxxxxxxxxxxxxxxxxx' );
-		el = new Element( document, 'p', null, text );
+		el = new ViewElement( document, 'p', null, text );
 
 		documentSelection = new ViewDocumentSelection();
 
@@ -832,7 +832,7 @@ describe( 'ViewDocumentSelection', () => {
 
 			it( 'should collapse selection at node and offset', () => {
 				const foo = new Text( document, 'foo' );
-				const p = new Element( document, 'p', null, foo );
+				const p = new ViewElement( document, 'p', null, foo );
 
 				documentSelection._setTo( foo, 0 );
 				let range = documentSelection.getFirstRange();
@@ -859,7 +859,7 @@ describe( 'ViewDocumentSelection', () => {
 
 			it( 'should collapse selection at node and flag', () => {
 				const foo = new Text( document, 'foo' );
-				const p = new Element( document, 'p', null, foo );
+				const p = new ViewElement( document, 'p', null, foo );
 
 				documentSelection._setTo( foo, 'end' );
 				let range = documentSelection.getFirstRange();
@@ -1018,7 +1018,7 @@ describe( 'ViewDocumentSelection', () => {
 			const textNode1 = new Text( document, 'foo' );
 			const textNode2 = new Text( document, 'bar' );
 			const textNode3 = new Text( document, 'baz' );
-			const element = new Element( document, 'p', null, [ textNode1, textNode2, textNode3 ] );
+			const element = new ViewElement( document, 'p', null, [ textNode1, textNode2, textNode3 ] );
 
 			documentSelection._setTo( textNode2, 'on' );
 
@@ -1031,7 +1031,7 @@ describe( 'ViewDocumentSelection', () => {
 		} );
 
 		it( 'should allow setting selection inside an element', () => {
-			const element = new Element( document, 'p', null, [ new Text( document, 'foo' ), new Text( document, 'bar' ) ] );
+			const element = new ViewElement( document, 'p', null, [ new Text( document, 'foo' ), new Text( document, 'bar' ) ] );
 
 			documentSelection._setTo( element, 'in' );
 
@@ -1044,7 +1044,7 @@ describe( 'ViewDocumentSelection', () => {
 		} );
 
 		it( 'should allow setting backward selection inside an element', () => {
-			const element = new Element( document, 'p', null, [ new Text( document, 'foo' ), new Text( document, 'bar' ) ] );
+			const element = new ViewElement( document, 'p', null, [ new Text( document, 'foo' ), new Text( document, 'bar' ) ] );
 
 			documentSelection._setTo( element, 'in', { backward: true } );
 
@@ -1073,7 +1073,7 @@ describe( 'ViewDocumentSelection', () => {
 			const viewDocument = new ViewDocument( new StylesProcessor() );
 			documentSelection._setTo( viewDocument.selection );
 			const root = createViewRoot( viewDocument, 'div', 'main' );
-			const element = new Element( document, 'p' );
+			const element = new ViewElement( document, 'p' );
 			root._appendChild( element );
 
 			documentSelection._setTo( Range._createFromParentsAndOffsets( element, 0, element, 0 ) );

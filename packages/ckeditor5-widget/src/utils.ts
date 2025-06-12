@@ -48,7 +48,7 @@ export const WIDGET_CLASS_NAME = 'ck-widget';
 export const WIDGET_SELECTED_CLASS_NAME = 'ck-widget_selected';
 
 /**
- * Returns `true` if given {@link module:engine/view/node~Node} is an {@link module:engine/view/element~ViewElement} and a widget.
+ * Returns `true` if given {@link module:engine/view/node~ViewNode} is an {@link module:engine/view/element~ViewElement} and a widget.
  */
 export function isWidget( node: ViewTypeCheckable ): boolean {
 	if ( !node.is( 'element' ) ) {

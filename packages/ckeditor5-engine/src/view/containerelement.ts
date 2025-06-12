@@ -9,7 +9,7 @@
 
 import { ViewElement, type ViewElementAttributes } from './element.js';
 import { type ViewDocument } from './document.js';
-import { type Node } from './node.js';
+import { type ViewNode } from './node.js';
 
 /**
  * Containers are elements which define document structure. They define boundaries for
@@ -47,7 +47,7 @@ export class ViewContainerElement extends ViewElement {
 		document: ViewDocument,
 		name: string,
 		attrs?: ViewElementAttributes,
-		children?: Node | Iterable<Node>
+		children?: ViewNode | Iterable<ViewNode>
 	) {
 		super( document, name, attrs, children );
 

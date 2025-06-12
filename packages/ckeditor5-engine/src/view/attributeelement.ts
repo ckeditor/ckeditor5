@@ -12,7 +12,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { type ViewDocumentFragment } from './documentfragment.js';
 import { type ViewDocument } from './document.js';
-import { type Node } from './node.js';
+import { type ViewNode } from './node.js';
 
 // Default attribute priority.
 const DEFAULT_PRIORITY = 10;
@@ -71,7 +71,7 @@ export class ViewAttributeElement extends ViewElement {
 		document: ViewDocument,
 		name: string,
 		attrs?: ViewElementAttributes,
-		children?: Node | Iterable<Node>
+		children?: ViewNode | Iterable<ViewNode>
 	) {
 		super( document, name, attrs, children );
 

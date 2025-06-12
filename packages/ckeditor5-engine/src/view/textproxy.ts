@@ -13,7 +13,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { type ViewDocument } from './document.js';
 import { type ViewDocumentFragment } from './documentfragment.js';
 import { type ViewElement } from './element.js';
-import { type Node } from './node.js';
+import { type ViewNode } from './node.js';
 import { type Text } from './text.js';
 
 /**
@@ -30,7 +30,7 @@ import { type Text } from './text.js';
  *
  * **Note:** `ViewTextProxy` instances are created on the fly basing on the current state of parent {@link module:engine/view/text~Text}.
  * Because of this it is highly unrecommended to store references to `TextProxy instances because they might get
- * invalidated due to operations on Document. Also TextProxy is not a {@link module:engine/view/node~Node} so it cannot be
+ * invalidated due to operations on Document. Also TextProxy is not a {@link module:engine/view/node~ViewNode} so it cannot be
  * inserted as a child of {@link module:engine/view/element~ViewElement}.
  *
  * `ViewTextProxy` instances are created by {@link module:engine/view/treewalker~TreeWalker view tree walker}.
@@ -117,7 +117,7 @@ export class TextProxy extends TypeCheckable {
 	/**
 	 * Root of this text proxy, which is same as root of text node represented by this text proxy.
 	 */
-	public get root(): Node | ViewDocumentFragment {
+	public get root(): ViewNode | ViewDocumentFragment {
 		return this.textNode.root;
 	}
 

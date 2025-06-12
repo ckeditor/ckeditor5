@@ -24,7 +24,7 @@ import type { Observer, ObserverConstructor } from './observer/observer.js';
 import type { ViewDocumentSelectionChangeEvent } from './documentselection.js';
 import type { StylesProcessor } from './stylesmap.js';
 import { type ViewElement } from './element.js';
-import type { Node, ViewNodeChangeEvent } from './node.js';
+import type { ViewNode, ViewNodeChangeEvent } from './node.js';
 import { type ViewItem } from './item.js';
 
 import { KeyObserver } from './observer/keyobserver.js';
@@ -724,7 +724,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public createSelection( selectable: Node, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): Selection;
+	public createSelection( selectable: ViewNode, placeOrOffset: PlaceOrOffset, options?: SelectionOptions ): Selection;
 
 	/**
 	 * Creates new {@link module:engine/view/selection~Selection} instance.
@@ -776,7 +776,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @label SELECTABLE
 	 */
-	public createSelection( selectable?: Exclude<Selectable, Node>, options?: SelectionOptions ): Selection;
+	public createSelection( selectable?: Exclude<Selectable, ViewNode>, options?: SelectionOptions ): Selection;
 
 	public createSelection( ...args: ConstructorParameters<typeof Selection> ): Selection {
 		return new Selection( ...args );

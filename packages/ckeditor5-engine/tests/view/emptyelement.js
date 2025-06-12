@@ -4,7 +4,7 @@
  */
 
 import { ViewEmptyElement } from '../../src/view/emptyelement.js';
-import { Element } from '../../src/view/element.js';
+import { ViewElement } from '../../src/view/element.js';
 import { ViewDocument } from '../../src/view/document.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -15,7 +15,7 @@ describe( 'ViewEmptyElement', () => {
 
 	beforeEach( () => {
 		document = new ViewDocument( new StylesProcessor() );
-		element = new Element( document, 'b' );
+		element = new ViewElement( document, 'b' );
 		emptyElement = new ViewEmptyElement( document, 'img', {
 			alt: 'alternative text',
 			style: 'margin-top: 2em;color: white;',
@@ -62,7 +62,7 @@ describe( 'ViewEmptyElement', () => {
 	} );
 
 	it( 'should throw if child elements are passed to constructor', () => {
-		const el = new Element( document, 'i' );
+		const el = new ViewElement( document, 'i' );
 
 		expectToThrowCKEditorError( () => {
 			new ViewEmptyElement( document, 'img', null, [ el ] ); // eslint-disable-line no-new

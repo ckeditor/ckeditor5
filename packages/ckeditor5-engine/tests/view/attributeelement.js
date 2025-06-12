@@ -4,7 +4,7 @@
  */
 
 import { ViewAttributeElement } from '../../src/view/attributeelement.js';
-import { Element } from '../../src/view/element.js';
+import { ViewElement } from '../../src/view/element.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { _parseView } from '../../src/dev-utils/view.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -22,7 +22,7 @@ describe( 'ViewAttributeElement', () => {
 			const el = new ViewAttributeElement( document, 'strong' );
 
 			expect( el ).to.be.an.instanceof( ViewAttributeElement );
-			expect( el ).to.be.an.instanceof( Element );
+			expect( el ).to.be.an.instanceof( ViewElement );
 			expect( el ).to.have.property( 'name' ).that.equals( 'strong' );
 			expect( el ).to.have.property( 'priority' ).that.equals( ViewAttributeElement.DEFAULT_PRIORITY );
 		} );

@@ -5,7 +5,7 @@
 
 import { Position } from '../../src/view/position.js';
 import { Node } from '../../src/view/node.js';
-import { Element } from '../../src/view/element.js';
+import { ViewElement } from '../../src/view/element.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewEditableElement } from '../../src/view/editableelement.js';
 import { ViewDocument } from '../../src/view/document.js';
@@ -66,16 +66,16 @@ describe( 'Position', () => {
 
 	describe( 'nodeBefore', () => {
 		it( 'should equal to node that is before position', () => {
-			const b1 = new Element( document, 'b' );
-			const el = new Element( document, 'p', null, [ b1 ] );
+			const b1 = new ViewElement( document, 'b' );
+			const el = new ViewElement( document, 'p', null, [ b1 ] );
 			const position = new Position( el, 1 );
 
 			expect( position.nodeBefore ).to.equal( b1 );
 		} );
 
 		it( 'should equal null if there is no node before', () => {
-			const b1 = new Element( document, 'b' );
-			const el = new Element( document, 'p', null, [ b1 ] );
+			const b1 = new ViewElement( document, 'b' );
+			const el = new ViewElement( document, 'p', null, [ b1 ] );
 			const position = new Position( el, 0 );
 
 			expect( position.nodeBefore ).to.be.null;
@@ -91,16 +91,16 @@ describe( 'Position', () => {
 
 	describe( 'nodeAfter', () => {
 		it( 'should equal to node that is after position', () => {
-			const b1 = new Element( document, 'b' );
-			const el = new Element( document, 'p', null, [ b1 ] );
+			const b1 = new ViewElement( document, 'b' );
+			const el = new ViewElement( document, 'p', null, [ b1 ] );
 			const position = new Position( el, 0 );
 
 			expect( position.nodeAfter ).to.equal( b1 );
 		} );
 
 		it( 'should equal null if there is no node before', () => {
-			const b1 = new Element( document, 'b' );
-			const el = new Element( document, 'p', null, [ b1 ] );
+			const b1 = new ViewElement( document, 'b' );
+			const el = new ViewElement( document, 'p', null, [ b1 ] );
 			const position = new Position( el, 1 );
 
 			expect( position.nodeAfter ).to.be.null;
@@ -163,7 +163,7 @@ describe( 'Position', () => {
 			expect( new Position( foo, 1 ).root ).to.equal( docFrag );
 
 			const bar = new Text( document, 'bar' );
-			const p = new Element( document, 'p', null, bar );
+			const p = new ViewElement( document, 'p', null, bar );
 
 			expect( new Position( bar, 2 ).root ).to.equal( p );
 			expect( new Position( p, 0 ).root ).to.equal( p );
@@ -173,8 +173,8 @@ describe( 'Position', () => {
 	describe( 'getAncestors', () => {
 		it( 'should return it\'s parent and all it\'s ancestors', () => {
 			const foo = new Text( document, 'foo' );
-			const p = new Element( document, 'p', null, foo );
-			const div = new Element( document, 'div', null, p );
+			const p = new ViewElement( document, 'p', null, foo );
+			const div = new ViewElement( document, 'div', null, p );
 			const docFrag = new ViewDocumentFragment( document, div );
 
 			expect( new Position( foo, 1 ).getAncestors() ).to.deep.equal( [ docFrag, div, p, foo ] );
@@ -228,8 +228,8 @@ describe( 'Position', () => {
 		it( 'should return false if no common ancestor is found', () => {
 			const t1 = new Text( document, 'foo' );
 			const t2 = new Text( document, 'bar' );
-			const e1 = new Element( document, 'p', null, [ t1 ] );
-			const e2 = new Element( document, 'p', null, [ t2 ] );
+			const e1 = new ViewElement( document, 'p', null, [ t1 ] );
+			const e2 = new ViewElement( document, 'p', null, [ t2 ] );
 			const position1 = new Position( e1, 0 );
 			const position2 = new Position( e2, 1 );
 
@@ -249,7 +249,7 @@ describe( 'Position', () => {
 		it( 'should compare positions that have common parent', () => {
 			const t1 = new Text( document, 'foo' );
 			const t2 = new Text( document, 'bar' );
-			const root = new Element( document, 'p', null, [ t1, t2 ] );
+			const root = new ViewElement( document, 'p', null, [ t1, t2 ] );
 			const position1 = new Position( t1, 2 );
 			const position2 = new Position( t2, 0 );
 			const position3 = new Position( root, 0 );
@@ -286,8 +286,8 @@ describe( 'Position', () => {
 		it( 'should return false if no common ancestor is found', () => {
 			const t1 = new Text( document, 'foo' );
 			const t2 = new Text( document, 'bar' );
-			const e1 = new Element( document, 'p', null, [ t1 ] );
-			const e2 = new Element( document, 'p', null, [ t2 ] );
+			const e1 = new ViewElement( document, 'p', null, [ t1 ] );
+			const e2 = new ViewElement( document, 'p', null, [ t2 ] );
 			const position1 = new Position( e1, 0 );
 			const position2 = new Position( e2, 1 );
 
@@ -307,7 +307,7 @@ describe( 'Position', () => {
 		it( 'should compare positions that have common parent', () => {
 			const t1 = new Text( document, 'foo' );
 			const t2 = new Text( document, 'bar' );
-			const root = new Element( document, 'p', null, [ t1, t2 ] );
+			const root = new ViewElement( document, 'p', null, [ t1, t2 ] );
 			const position1 = new Position( t1, 2 );
 			const position2 = new Position( t2, 0 );
 			const position3 = new Position( root, 0 );
@@ -346,7 +346,7 @@ describe( 'Position', () => {
 	describe( 'isAtEnd', () => {
 		it( 'should return true if it is at the end of it\'s parent', () => {
 			const foo = new Text( document, 'foo' );
-			const p = new Element( document, 'p', null, foo );
+			const p = new ViewElement( document, 'p', null, foo );
 
 			expect( new Position( foo, 3 ).isAtEnd ).to.be.true;
 			expect( new Position( p, 1 ).isAtEnd ).to.be.true;
@@ -354,7 +354,7 @@ describe( 'Position', () => {
 
 		it( 'should return false if it is not at the end of it\'s parent', () => {
 			const foo = new Text( document, 'foo' );
-			const p = new Element( document, 'p', null, foo );
+			const p = new ViewElement( document, 'p', null, foo );
 
 			expect( new Position( foo, 2 ).isAtEnd ).to.be.false;
 			expect( new Position( p, 0 ).isAtEnd ).to.be.false;
@@ -363,7 +363,7 @@ describe( 'Position', () => {
 
 	describe( 'compareWith', () => {
 		it( 'should return same if positions are same', () => {
-			const root = new Element( document );
+			const root = new ViewElement( document );
 			const position = new Position( root, 0 );
 			const compared = new Position( root, 0 );
 
@@ -371,7 +371,7 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should return before if the position is before compared one', () => {
-			const root = new Element( document );
+			const root = new ViewElement( document );
 			const position = new Position( root, 0 );
 			const compared = new Position( root, 1 );
 
@@ -379,7 +379,7 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should return after if the position is after compared one', () => {
-			const root = new Element( document );
+			const root = new ViewElement( document );
 			const position = new Position( root, 4 );
 			const compared = new Position( root, 1 );
 
@@ -387,8 +387,8 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should return different if positions are in different roots', () => {
-			const root1 = new Element( document );
-			const root2 = new Element( document );
+			const root1 = new ViewElement( document );
+			const root2 = new ViewElement( document );
 			const position = new Position( root1, 4 );
 			const compared = new Position( root2, 1 );
 
@@ -396,7 +396,7 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should return correct results if position is in document fragment', () => {
-			const node = new Element( document, 'name' );
+			const node = new ViewElement( document, 'name' );
 			const docFrag = new ViewDocumentFragment( document, [ node ] );
 			const position = new Position( docFrag, 0 );
 			const compared = new Position( docFrag, 1 );
@@ -413,7 +413,7 @@ describe( 'Position', () => {
 	describe( 'static creators', () => {
 		describe( '_createAt()', () => {
 			it( 'should throw if no offset is passed', () => {
-				const element = new Element( document, 'p' );
+				const element = new ViewElement( document, 'p' );
 
 				expectToThrowCKEditorError( () => {
 					Position._createAt( element );
@@ -421,7 +421,7 @@ describe( 'Position', () => {
 			} );
 
 			it( 'should create positions from positions', () => {
-				const p = new Element( document, 'p' );
+				const p = new ViewElement( document, 'p' );
 				const position = new Position( p, 0 );
 				const created = Position._createAt( position, 0 );
 
@@ -431,7 +431,7 @@ describe( 'Position', () => {
 
 			it( 'should create positions from node and offset', () => {
 				const foo = new Text( document, 'foo' );
-				const p = new Element( document, 'p', null, foo );
+				const p = new ViewElement( document, 'p', null, foo );
 
 				expect( Position._createAt( foo, 0 ).parent ).to.equal( foo );
 				expect( Position._createAt( foo, 0 ).offset ).to.equal( 0 );
@@ -445,7 +445,7 @@ describe( 'Position', () => {
 
 			it( 'should create positions from node and flag', () => {
 				const foo = new Text( document, 'foo' );
-				const p = new Element( document, 'p', null, foo );
+				const p = new ViewElement( document, 'p', null, foo );
 
 				const fooEnd = Position._createAt( foo, 'end' );
 				const fooBefore = Position._createAt( foo, 'before' );
@@ -538,13 +538,13 @@ describe( 'Position', () => {
 
 	describe( 'getEditableElement', () => {
 		it( 'should return null if position is not inside ViewEditableElement', () => {
-			const position = new Position( new Element( document, 'p' ), 0 );
+			const position = new Position( new ViewElement( document, 'p' ), 0 );
 
 			expect( position.editableElement ).to.be.null;
 		} );
 
 		it( 'should return ViewEditableElement when position is placed inside', () => {
-			const p = new Element( document, 'p' );
+			const p = new ViewElement( document, 'p' );
 			const editable = new ViewEditableElement( document, 'div', null, p );
 			const position = new Position( p, 0 );
 
@@ -582,20 +582,20 @@ describe( 'Position', () => {
 				sed: new Text( document, 'Sed id libero at libero tristique.' )
 			};
 
-			liUl1 = new Element( document, 'li', null, texts.foz );
-			liUl2 = new Element( document, 'li', null, texts.bar );
-			ul = new Element( document, 'ul', null, [ liUl1, liUl2 ] );
+			liUl1 = new ViewElement( document, 'li', null, texts.foz );
+			liUl2 = new ViewElement( document, 'li', null, texts.bar );
+			ul = new ViewElement( document, 'ul', null, [ liUl1, liUl2 ] );
 
-			liOl1 = new Element( document, 'li', null, texts.lorem );
-			liOl2 = new Element( document, 'li', null, texts.mauris );
-			ol = new Element( document, 'ol', null, [ liOl1, liOl2 ] );
+			liOl1 = new ViewElement( document, 'li', null, texts.lorem );
+			liOl2 = new ViewElement( document, 'li', null, texts.mauris );
+			ol = new ViewElement( document, 'ol', null, [ liOl1, liOl2 ] );
 
-			p = new Element( document, 'p', null, texts.maecenas );
+			p = new ViewElement( document, 'p', null, texts.maecenas );
 
-			article = new Element( document, 'article', null, [ ol, p ] );
-			section = new Element( document, 'section', null, [ texts.sed, article ] );
+			article = new ViewElement( document, 'article', null, [ ol, p ] );
+			section = new ViewElement( document, 'section', null, [ texts.sed, article ] );
 
-			div = new Element( document, 'div', null, [ ul, section ] );
+			div = new ViewElement( document, 'div', null, [ ul, section ] );
 		} );
 
 		it( 'for two the same positions returns the parent element', () => {
@@ -627,7 +627,7 @@ describe( 'Position', () => {
 		} );
 
 		it( 'for two positions in different trees returns null', () => {
-			const div = new Element( document, 'div' );
+			const div = new ViewElement( document, 'div' );
 			const posInDiv = new Position( div, 0 );
 			const firstPosition = new Position( liOl2, 10 );
 

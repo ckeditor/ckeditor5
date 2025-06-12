@@ -4,7 +4,7 @@
  */
 
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
-import { Node } from '../../src/view/node.js';
+import { ViewNode } from '../../src/view/node.js';
 import { ViewElement } from '../../src/view/element.js';
 import { Text } from '../../src/view/text.js';
 import { TextProxy } from '../../src/view/textproxy.js';
@@ -26,7 +26,7 @@ describe( 'Element', () => {
 		it( 'should create element without attributes', () => {
 			const el = new ViewElement( document, 'p' );
 
-			expect( el ).to.be.an.instanceof( Node );
+			expect( el ).to.be.an.instanceof( ViewNode );
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
 			expect( el ).to.have.property( 'parent' ).that.is.null;
 			expect( count( el.getAttributeKeys() ) ).to.equal( 0 );

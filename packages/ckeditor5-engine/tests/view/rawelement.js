@@ -4,7 +4,7 @@
  */
 
 import { RawElement } from '../../src/view/rawelement.js';
-import { Element } from '../../src/view/element.js';
+import { ViewElement } from '../../src/view/element.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
@@ -34,7 +34,7 @@ describe( 'RawElement', () => {
 
 		it( 'should throw if child elements are passed to constructor', () => {
 			expectToThrowCKEditorError( () => {
-				new RawElement( doc, 'img', null, [ new Element( doc, 'i' ) ] ); // eslint-disable-line no-new
+				new RawElement( doc, 'img', null, [ new ViewElement( doc, 'i' ) ] ); // eslint-disable-line no-new
 			}, 'view-rawelement-cannot-add' );
 		} );
 	} );
@@ -84,7 +84,7 @@ describe( 'RawElement', () => {
 	describe( '_appendChild()', () => {
 		it( 'should throw when try to append new child element', () => {
 			expectToThrowCKEditorError( () => {
-				rawElement._appendChild( new Element( doc, 'i' ) );
+				rawElement._appendChild( new ViewElement( doc, 'i' ) );
 			}, 'view-rawelement-cannot-add' );
 		} );
 	} );
@@ -92,7 +92,7 @@ describe( 'RawElement', () => {
 	describe( '_insertChild()', () => {
 		it( 'should throw when try to insert new child element', () => {
 			expectToThrowCKEditorError( () => {
-				rawElement._insertChild( 0, new Element( doc, 'i' ) );
+				rawElement._insertChild( 0, new ViewElement( doc, 'i' ) );
 			}, 'view-rawelement-cannot-add' );
 		} );
 	} );

@@ -5,7 +5,7 @@
 
 import { Range } from '../../src/view/range.js';
 import { Position } from '../../src/view/position.js';
-import { Element } from '../../src/view/element.js';
+import { ViewElement } from '../../src/view/element.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { Text } from '../../src/view/text.js';
 import { TextProxy } from '../../src/view/textproxy.js';
@@ -109,7 +109,7 @@ describe( 'Range', () => {
 
 	describe( 'getRoot', () => {
 		it( 'should return root element in which range is created', () => {
-			const viewRoot = new Element( document, 'div' );
+			const viewRoot = new ViewElement( document, 'div' );
 			const range = getRange( '<p>f{oo</p><p>ba}r</p>', { rootElement: viewRoot } );
 
 			expect( range.root ).to.equal( viewRoot );
@@ -305,7 +305,7 @@ describe( 'Range', () => {
 		let viewRoot, range;
 
 		beforeEach( () => {
-			viewRoot = new Element( document, 'div' );
+			viewRoot = new ViewElement( document, 'div' );
 			range = getRange( '<p>fo{o</p><p>bar</p><p>xy}z</p>', { rootElement: viewRoot } );
 		} );
 
@@ -332,7 +332,7 @@ describe( 'Range', () => {
 		let viewRoot, range, beforeF, afterF, beforeB, afterX;
 
 		beforeEach( () => {
-			viewRoot = new Element( document, 'div' );
+			viewRoot = new ViewElement( document, 'div' );
 			range = getRange( '<p>fo{o</p><p>bar</p><p>xy}z</p>', { rootElement: viewRoot } );
 
 			beforeF = new Position( viewRoot.getChild( 0 ).getChild( 0 ), 0 );
@@ -406,9 +406,9 @@ describe( 'Range', () => {
 			t1 = new Text( document, 'foo' );
 			t2 = new Text( document, 'bar' );
 			t3 = new Text( document, 'baz' );
-			p1 = new Element( document, 'p', null, [ t1, t2 ] );
-			p2 = new Element( document, 'p', null, t3 );
-			root = new Element( document, 'div', null, [ p1, p2 ] );
+			p1 = new ViewElement( document, 'p', null, [ t1, t2 ] );
+			p2 = new ViewElement( document, 'p', null, t3 );
+			root = new ViewElement( document, 'div', null, [ p1, p2 ] );
 		} );
 
 		describe( 'isIntersecting', () => {
@@ -453,7 +453,7 @@ describe( 'Range', () => {
 
 			it( 'should return false if ranges are in different roots', () => {
 				const range = Range._createFromParentsAndOffsets( t1, 0, t2, 3 );
-				const otherRange = Range._createFromParentsAndOffsets( new Element( document, 'div' ), 1, t3, 0 );
+				const otherRange = Range._createFromParentsAndOffsets( new ViewElement( document, 'div' ), 1, t3, 0 );
 
 				expect( range.isIntersecting( otherRange ) ).to.be.false;
 				expect( otherRange.isIntersecting( range ) ).to.be.false;
@@ -686,8 +686,8 @@ describe( 'Range', () => {
 
 		beforeEach( () => {
 			foz = new Text( document, 'foz' );
-			p = new Element( document, 'p', null, foz );
-			div = new Element( document, 'div', null, p );
+			p = new ViewElement( document, 'p', null, foz );
+			div = new ViewElement( document, 'div', null, p );
 		} );
 
 		describe( '_createIn', () => {
@@ -762,10 +762,10 @@ describe( 'Range', () => {
 			const foz = new Text( document, 'foz' );
 			const bar = new Text( document, 'bar' );
 
-			const li1 = new Element( document, 'li', null, foz );
-			const li2 = new Element( document, 'li', null, bar );
+			const li1 = new ViewElement( document, 'li', null, foz );
+			const li2 = new ViewElement( document, 'li', null, bar );
 
-			const ul = new Element( document, 'ul', null, [ li1, li2 ] );
+			const ul = new ViewElement( document, 'ul', null, [ li1, li2 ] );
 
 			const range = new Range( new Position( li1, 0 ), new Position( li2, 2 ) );
 

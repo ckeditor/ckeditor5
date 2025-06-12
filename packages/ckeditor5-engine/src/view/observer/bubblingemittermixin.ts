@@ -24,7 +24,7 @@ import {
 
 import { BubblingEventInfo, type EventPhase } from './bubblingeventinfo.js';
 import { type ViewDocument } from '../document.js';
-import { type Node } from '../node.js';
+import { type ViewNode } from '../node.js';
 import { type Range } from '../range.js';
 import { type ViewElement } from '../element.js';
 import { type ViewDocumentSelection } from '../documentselection.js';
@@ -74,7 +74,7 @@ export function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: B
 				const selectedElement = startRange ? startRange.getContainedElement() : null;
 				const isCustomContext = selectedElement ? Boolean( getCustomContext( eventContexts, selectedElement ) ) : false;
 
-				let node: Node | null = selectedElement || getDeeperRangeParent( startRange );
+				let node: ViewNode | null = selectedElement || getDeeperRangeParent( startRange );
 
 				updateEventInfo( eventInfo, 'atTarget', node );
 
@@ -107,7 +107,7 @@ export function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: B
 						return eventInfo.return;
 					}
 
-					node = node.parent as Node;
+					node = node.parent as ViewNode;
 
 					updateEventInfo( eventInfo, 'bubbling', node );
 				}
@@ -185,7 +185,7 @@ function updateEventInfo(
  */
 function fireListenerFor(
 	eventContexts: BubblingEventContexts,
-	context: string | Node,
+	context: string | ViewNode,
 	eventInfo: EventInfo,
 	...eventArgs: Array<unknown>
 ) {
@@ -203,7 +203,7 @@ function fireListenerFor(
 /**
  * Returns an emitter for a specified view node.
  */
-function getCustomContext( eventContexts: BubblingEventContexts, node: Node ): Emitter | null {
+function getCustomContext( eventContexts: BubblingEventContexts, node: ViewNode ): Emitter | null {
 	for ( const [ context, emitter ] of eventContexts ) {
 		if ( typeof context == 'function' && context( node ) ) {
 			return emitter;
@@ -227,7 +227,7 @@ function getBubblingContexts( source: { [ x: string ]: any; [ contextsSymbol ]?:
 /**
  * Returns the deeper parent element for the range.
  */
-function getDeeperRangeParent( range: Range ): Node | null {
+function getDeeperRangeParent( range: Range ): ViewNode | null {
 	if ( !range ) {
 		return null;
 	}
@@ -354,7 +354,7 @@ export type BubblingEmitter = Emitter;
  *
  * Should return true for nodes that that match the custom context.
  */
-export type BubblingEventContextFunction = ( node: Node ) => boolean;
+export type BubblingEventContextFunction = ( node: ViewNode ) => boolean;
 
 /**
  * Helper type that allows describing bubbling event. Extends `TEvent` so that:

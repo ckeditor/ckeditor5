@@ -7,7 +7,7 @@
  * @module engine/view/element
  */
 
-import { Node } from './node.js';
+import { ViewNode } from './node.js';
 import { Text } from './text.js';
 import { TextProxy } from './textproxy.js';
 import { type ArrayOrItem, isIterable, toMap } from '@ckeditor/ckeditor5-utils';
@@ -43,7 +43,7 @@ import { TokenList } from './tokenlist.js';
  * In such cases the {@link module:engine/view/upcastwriter~UpcastWriter#createElement `UpcastWriter#createElement()`} method
  * should be used to create generic view elements.
  */
-export class ViewElement extends Node {
+export class ViewElement extends ViewNode {
 	/**
 	 * Name of the element.
 	 */
@@ -70,7 +70,7 @@ export class ViewElement extends Node {
 	/**
 	 * Array of child nodes.
 	 */
-	private readonly _children: Array<Node>;
+	private readonly _children: Array<ViewNode>;
 
 	/**
 	 * Map of custom properties.
@@ -117,7 +117,7 @@ export class ViewElement extends Node {
 		document: ViewDocument,
 		name: string,
 		attrs?: ViewElementAttributes,
-		children?: Node | Iterable<Node>
+		children?: ViewNode | Iterable<ViewNode>
 	) {
 		super( document );
 
@@ -151,7 +151,7 @@ export class ViewElement extends Node {
 	 * @param index Index of child.
 	 * @returns Child node.
 	 */
-	public getChild( index: number ): Node | undefined {
+	public getChild( index: number ): ViewNode | undefined {
 		return this._children[ index ];
 	}
 
@@ -161,7 +161,7 @@ export class ViewElement extends Node {
 	 * @param node Child node.
 	 * @returns Index of the child node.
 	 */
-	public getChildIndex( node: Node ): number {
+	public getChildIndex( node: ViewNode ): number {
 		return this._children.indexOf( node );
 	}
 
@@ -170,7 +170,7 @@ export class ViewElement extends Node {
 	 *
 	 * @returns Child nodes iterator.
 	 */
-	public getChildren(): IterableIterator<Node> {
+	public getChildren(): IterableIterator<ViewNode> {
 		return this._children[ Symbol.iterator ]();
 	}
 
@@ -514,7 +514,7 @@ export class ViewElement extends Node {
 	 * @returns Clone of this element.
 	 */
 	public _clone( deep = false ): this {
-		const childrenClone: Array<Node> = [];
+		const childrenClone: Array<ViewNode> = [];
 
 		if ( deep ) {
 			for ( const child of this.getChildren() ) {
@@ -597,7 +597,7 @@ export class ViewElement extends Node {
 	 * @fires change
 	 * @returns The array of removed nodes.
 	 */
-	public _removeChildren( index: number, howMany: number = 1 ): Array<Node> {
+	public _removeChildren( index: number, howMany: number = 1 ): Array<ViewNode> {
 		this._fireChange( 'children', this, { index } );
 
 		for ( let i = index; i < index + howMany; i++ ) {
@@ -1363,7 +1363,7 @@ export interface ViewNormalizedConsumables {
 /**
  * Converts strings to Text and non-iterables to arrays.
  */
-function normalize( document: ViewDocument, nodes: string | ViewItem | Iterable<string | ViewItem> ): Array<Node> {
+function normalize( document: ViewDocument, nodes: string | ViewItem | Iterable<string | ViewItem> ): Array<ViewNode> {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
 		return [ new Text( document, nodes ) ];
@@ -1373,7 +1373,7 @@ function normalize( document: ViewDocument, nodes: string | ViewItem | Iterable<
 		nodes = [ nodes ];
 	}
 
-	const normalizedNodes: Array<Node> = [];
+	const normalizedNodes: Array<ViewNode> = [];
 
 	for ( const node of nodes ) {
 		if ( typeof node == 'string' ) {

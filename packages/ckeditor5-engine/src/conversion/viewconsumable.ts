@@ -10,7 +10,7 @@
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import type { ViewElement, ViewNormalizedConsumables } from '../view/element.js';
-import { type Node } from '../view/node.js';
+import { type ViewNode } from '../view/node.js';
 import { type Text } from '../view/text.js';
 import { type ViewDocumentFragment } from '../view/documentfragment.js';
 import type { Match } from '../view/matcher.js';
@@ -47,7 +47,7 @@ export class ViewConsumable {
 	 * For {@link module:engine/view/text~Text text nodes} and
 	 * {@link module:engine/view/documentfragment~ViewDocumentFragment document fragments} boolean value is stored as value.
 	 */
-	private _consumables = new Map<Node | ViewDocumentFragment, ViewElementConsumables | boolean>();
+	private _consumables = new Map<ViewNode | ViewDocumentFragment, ViewElementConsumables | boolean>();
 
 	/**
 	 * Adds view {@link module:engine/view/element~ViewElement element}, {@link module:engine/view/text~Text text node} or
@@ -134,7 +134,7 @@ export class ViewConsumable {
 	 * @returns Returns `true` when all items included in method's call can be consumed. Returns `false`
 	 * when first already consumed item is found and `null` when first non-consumable item is found.
 	 */
-	public test( element: Node | ViewDocumentFragment, consumables?: Consumables | Match ): boolean | null {
+	public test( element: ViewNode | ViewDocumentFragment, consumables?: Consumables | Match ): boolean | null {
 		const elementConsumables = this._consumables.get( element );
 
 		if ( elementConsumables === undefined ) {
@@ -181,7 +181,7 @@ export class ViewConsumable {
 	 * @returns Returns `true` when all items included in method's call can be consumed,
 	 * otherwise returns `false`.
 	 */
-	public consume( element: Node | ViewDocumentFragment, consumables?: Consumables | Match ): boolean {
+	public consume( element: ViewNode | ViewDocumentFragment, consumables?: Consumables | Match ): boolean {
 		if ( element.is( '$text' ) || element.is( 'documentFragment' ) ) {
 			if ( !this.test( element, consumables ) ) {
 				return false;
@@ -234,7 +234,7 @@ export class ViewConsumable {
 	 * @param consumables.classes Class name or array of class names.
 	 * @param consumables.styles Style name or array of style names.
 	 */
-	public revert( element: Node, consumables: Consumables | Match ): void {
+	public revert( element: ViewNode, consumables: Consumables | Match ): void {
 		const elementConsumables = this._consumables.get( element );
 
 		if ( elementConsumables !== undefined ) {
@@ -250,14 +250,14 @@ export class ViewConsumable {
 
 	/**
 	 * Creates {@link module:engine/conversion/viewconsumable~ViewConsumable ViewConsumable} instance from
-	 * {@link module:engine/view/node~Node node} or {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment}.
+	 * {@link module:engine/view/node~ViewNode node} or {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment}.
 	 * Instance will contain all elements, child nodes, attributes, styles and classes added for consumption.
 	 *
 	 * @param from View node or document fragment from which `ViewConsumable` will be created.
 	 * @param instance If provided, given `ViewConsumable` instance will be used
 	 * to add all consumables. It will be returned instead of a new instance.
 	 */
-	public static createFrom( from: Node | ViewDocumentFragment, instance?: ViewConsumable ): ViewConsumable {
+	public static createFrom( from: ViewNode | ViewDocumentFragment, instance?: ViewConsumable ): ViewConsumable {
 		if ( !instance ) {
 			instance = new ViewConsumable();
 		}

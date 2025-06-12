@@ -10,7 +10,7 @@ import { type ViewDocumentSelection } from './documentselection.js';
 import { type ViewEditableElement } from './editableelement.js';
 import { type ViewElement } from './element.js';
 import { type ViewEmptyElement } from './emptyelement.js';
-import { type Node } from './node.js';
+import { type ViewNode } from './node.js';
 import { type Position } from './position.js';
 import { type Range } from './range.js';
 import { type RawElement } from './rawelement.js';
@@ -26,10 +26,10 @@ import { type UIElement } from './uielement.js';
 
 export abstract class TypeCheckable {
 	/**
-	 * Checks whether this object is of type {@link module:engine/view/node~Node} or its subclass.
+	 * Checks whether this object is of type {@link module:engine/view/node~ViewNode} or its subclass.
 	 *
 	 * This method is useful when processing view objects that are of unknown type. For example, a function
-	 * may return a {@link module:engine/view/documentfragment~ViewDocumentFragment} or a {@link module:engine/view/node~Node}
+	 * may return a {@link module:engine/view/documentfragment~ViewDocumentFragment} or a {@link module:engine/view/node~ViewNode}
 	 * that can be either a text node or an element. This method can be used to check what kind of object is returned.
 	 *
 	 * ```ts
@@ -55,7 +55,7 @@ export abstract class TypeCheckable {
 	 * @label NODE
 	 */
 	public is( type: 'node' | 'view:node' ): this is (
-		Node |
+		ViewNode |
 		Text |
 		ViewElement |
 		ViewAttributeElement |

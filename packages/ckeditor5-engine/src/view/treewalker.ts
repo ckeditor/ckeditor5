@@ -14,7 +14,7 @@ import { Position } from './position.js';
 import { type ViewItem } from './item.js';
 import { type ViewDocumentFragment } from './documentfragment.js';
 import { type Range } from './range.js';
-import { type Node } from './node.js';
+import { type ViewNode } from './node.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -65,12 +65,12 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 	/**
 	 * Start boundary parent.
 	 */
-	private readonly _boundaryStartParent: Node | ViewDocumentFragment | null;
+	private readonly _boundaryStartParent: ViewNode | ViewDocumentFragment | null;
 
 	/**
 	 * End boundary parent.
 	 */
-	private readonly _boundaryEndParent: Node | ViewDocumentFragment | null;
+	private readonly _boundaryEndParent: ViewNode | ViewDocumentFragment | null;
 
 	/**
 	 * Creates a range iterator. All parameters are optional, but you have to specify either `boundaries` or `startPosition`.
