@@ -259,7 +259,7 @@ export class DataController extends /* #__PURE__ */ EmitterMixin() {
 	 * Returns the content of the given {@link module:engine/model/element~ModelElement model element} or
 	 * {@link module:engine/model/documentfragment~DocumentFragment model document fragment} converted by the downcast
 	 * converters attached to {@link #downcastDispatcher} into a
-	 * {@link module:engine/view/documentfragment~DocumentFragment view document fragment}.
+	 * {@link module:engine/view/documentfragment~ViewDocumentFragment view document fragment}.
 	 *
 	 * @fires toView
 	 * @param modelElementOrFragment Element or document fragment whose content will be converted.
@@ -474,7 +474,7 @@ export class DataController extends /* #__PURE__ */ EmitterMixin() {
 
 	/**
 	 * Returns the result of the given {@link module:engine/view/element~Element view element} or
-	 * {@link module:engine/view/documentfragment~DocumentFragment view document fragment} converted by the
+	 * {@link module:engine/view/documentfragment~ViewDocumentFragment view document fragment} converted by the
 	 * {@link #upcastDispatcher view-to-model converters}, wrapped by {@link module:engine/model/documentfragment~DocumentFragment}.
 	 *
 	 * When marker elements were converted during the conversion process, it will be set as a document fragment's

@@ -158,7 +158,7 @@ _setViewData._parse = _parseView;
  * stringify( element ); // '<p>foobar</p>'
  * ```
  *
- * or as a {@link module:engine/view/documentfragment~DocumentFragment document fragment}:
+ * or as a {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment}:
  *
  * ```ts
  * const text = downcastWriter.createText( 'foobar' );
@@ -334,7 +334,7 @@ export function _stringifyView(
  * ```
  *
  * Multiple nodes provided on root level will be converted to a
- * {@link module:engine/view/documentfragment~DocumentFragment document fragment}:
+ * {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment}:
  *
  * ```ts
  * _parseView( '<b>foo</b><i>bar</i>' ); // Returns a document fragment with two child elements.
@@ -399,7 +399,7 @@ export function _stringifyView(
  * {@link module:engine/view/documentselection~DocumentSelection selection} instance.
  * @param options.rootElement The default root to use when parsing elements.
  * When set to `null`, the root element will be created automatically. If set to
- * {@link module:engine/view/element~Element Element} or {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment},
+ * {@link module:engine/view/element~Element Element} or {@link module:engine/view/documentfragment~ViewDocumentFragment DocumentFragment},
  * this node will be used as the root for all parsed nodes.
  * @param options.sameSelectionCharacters When set to `false`, the selection inside the text should be marked using
  * `{` and `}` and the selection outside the ext using `[` and `]`. When set to `true`, both should be marked with `[` and `]` only.

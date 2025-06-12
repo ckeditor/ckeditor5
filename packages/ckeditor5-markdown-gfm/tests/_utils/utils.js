@@ -17,7 +17,7 @@ import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.j
  * @param {Object} [options] Additional options.
  * @param {Function} [options.setup] A function that receives the data processor instance before its execution.
  * markdown string (which will be used if this parameter is not provided).
- * @returns {module:engine/view/documentfragment~DocumentFragment}
+ * @returns {module:engine/view/documentfragment~ViewDocumentFragment}
  */
 export function testDataProcessor( markdown, viewString, normalizedMarkdown, options ) {
 	const viewDocument = new ViewDocument( new StylesProcessor() );

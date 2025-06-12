@@ -12,12 +12,12 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import type { Element, NormalizedConsumables } from '../view/element.js';
 import { type Node } from '../view/node.js';
 import { type Text } from '../view/text.js';
-import { type DocumentFragment } from '../view/documentfragment.js';
+import { type ViewDocumentFragment } from '../view/documentfragment.js';
 import type { Match } from '../view/matcher.js';
 
 /**
  * Class used for handling consumption of view {@link module:engine/view/element~Element elements},
- * {@link module:engine/view/text~Text text nodes} and {@link module:engine/view/documentfragment~DocumentFragment document fragments}.
+ * {@link module:engine/view/text~Text text nodes} and {@link module:engine/view/documentfragment~ViewDocumentFragment document fragments}.
  * Element's name and its parts (attributes, classes and styles) can be consumed separately. Consuming an element's name
  * does not consume its attributes, classes and styles.
  * To add items for consumption use {@link module:engine/conversion/viewconsumable~ViewConsumable#add add method}.
@@ -45,13 +45,13 @@ export class ViewConsumable {
 	 * Map of consumable elements. If {@link module:engine/view/element~Element element} is used as a key,
 	 * {@link module:engine/conversion/viewconsumable~ViewElementConsumables ViewElementConsumables} instance is stored as value.
 	 * For {@link module:engine/view/text~Text text nodes} and
-	 * {@link module:engine/view/documentfragment~DocumentFragment document fragments} boolean value is stored as value.
+	 * {@link module:engine/view/documentfragment~ViewDocumentFragment document fragments} boolean value is stored as value.
 	 */
-	private _consumables = new Map<Node | DocumentFragment, ViewElementConsumables | boolean>();
+	private _consumables = new Map<Node | ViewDocumentFragment, ViewElementConsumables | boolean>();
 
 	/**
 	 * Adds view {@link module:engine/view/element~Element element}, {@link module:engine/view/text~Text text node} or
-	 * {@link module:engine/view/documentfragment~DocumentFragment document fragment} as ready to be consumed.
+	 * {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment} as ready to be consumed.
 	 *
 	 * ```ts
 	 * viewConsumable.add( p, { name: true } ); // Adds element's name to consume.
@@ -79,7 +79,7 @@ export class ViewConsumable {
 	 * @param consumables.styles Style name or array of style names.
 	 */
 	public add(
-		element: Text | Element | DocumentFragment,
+		element: Text | Element | ViewDocumentFragment,
 		consumables?: Consumables | NormalizedConsumables
 	): void {
 		let elementConsumables: ViewElementConsumables;
@@ -104,7 +104,7 @@ export class ViewConsumable {
 
 	/**
 	 * Tests if {@link module:engine/view/element~Element view element}, {@link module:engine/view/text~Text text node} or
-	 * {@link module:engine/view/documentfragment~DocumentFragment document fragment} can be consumed.
+	 * {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment} can be consumed.
 	 * It returns `true` when all items included in method's call can be consumed. Returns `false` when
 	 * first already consumed item is found and `null` when first non-consumable item is found.
 	 *
@@ -134,7 +134,7 @@ export class ViewConsumable {
 	 * @returns Returns `true` when all items included in method's call can be consumed. Returns `false`
 	 * when first already consumed item is found and `null` when first non-consumable item is found.
 	 */
-	public test( element: Node | DocumentFragment, consumables?: Consumables | Match ): boolean | null {
+	public test( element: Node | ViewDocumentFragment, consumables?: Consumables | Match ): boolean | null {
 		const elementConsumables = this._consumables.get( element );
 
 		if ( elementConsumables === undefined ) {
@@ -152,7 +152,7 @@ export class ViewConsumable {
 
 	/**
 	 * Consumes {@link module:engine/view/element~Element view element}, {@link module:engine/view/text~Text text node} or
-	 * {@link module:engine/view/documentfragment~DocumentFragment document fragment}.
+	 * {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment}.
 	 * It returns `true` when all items included in method's call can be consumed, otherwise returns `false`.
 	 *
 	 * ```ts
@@ -181,7 +181,7 @@ export class ViewConsumable {
 	 * @returns Returns `true` when all items included in method's call can be consumed,
 	 * otherwise returns `false`.
 	 */
-	public consume( element: Node | DocumentFragment, consumables?: Consumables | Match ): boolean {
+	public consume( element: Node | ViewDocumentFragment, consumables?: Consumables | Match ): boolean {
 		if ( element.is( '$text' ) || element.is( 'documentFragment' ) ) {
 			if ( !this.test( element, consumables ) ) {
 				return false;
@@ -205,7 +205,7 @@ export class ViewConsumable {
 
 	/**
 	 * Reverts {@link module:engine/view/element~Element view element}, {@link module:engine/view/text~Text text node} or
-	 * {@link module:engine/view/documentfragment~DocumentFragment document fragment} so they can be consumed once again.
+	 * {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment} so they can be consumed once again.
 	 * Method does not revert items that were never previously added for consumption, even if they are included in
 	 * method's call.
 	 *
@@ -250,14 +250,14 @@ export class ViewConsumable {
 
 	/**
 	 * Creates {@link module:engine/conversion/viewconsumable~ViewConsumable ViewConsumable} instance from
-	 * {@link module:engine/view/node~Node node} or {@link module:engine/view/documentfragment~DocumentFragment document fragment}.
+	 * {@link module:engine/view/node~Node node} or {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment}.
 	 * Instance will contain all elements, child nodes, attributes, styles and classes added for consumption.
 	 *
 	 * @param from View node or document fragment from which `ViewConsumable` will be created.
 	 * @param instance If provided, given `ViewConsumable` instance will be used
 	 * to add all consumables. It will be returned instead of a new instance.
 	 */
-	public static createFrom( from: Node | DocumentFragment, instance?: ViewConsumable ): ViewConsumable {
+	public static createFrom( from: Node | ViewDocumentFragment, instance?: ViewConsumable ): ViewConsumable {
 		if ( !instance ) {
 			instance = new ViewConsumable();
 		}

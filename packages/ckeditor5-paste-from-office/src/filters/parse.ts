@@ -82,7 +82,7 @@ export interface ParseHtmlResult {
 }
 
 /**
- * Transforms native `Document` object into {@link module:engine/view/documentfragment~DocumentFragment}. Comments are skipped.
+ * Transforms native `Document` object into {@link module:engine/view/documentfragment~ViewDocumentFragment}. Comments are skipped.
  *
  * @param htmlDocument Native `Document` object to be transformed.
  */

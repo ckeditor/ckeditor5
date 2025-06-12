@@ -11,7 +11,7 @@ import { TypeCheckable } from './typecheckable.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { type ViewDocument } from './document.js';
-import { type DocumentFragment } from './documentfragment.js';
+import { type ViewDocumentFragment } from './documentfragment.js';
 import { type Element } from './element.js';
 import { type Node } from './node.js';
 import { type Text } from './text.js';
@@ -110,20 +110,20 @@ export class TextProxy extends TypeCheckable {
 	/**
 	 * Parent of this text proxy, which is same as parent of text node represented by this text proxy.
 	 */
-	public get parent(): Element | DocumentFragment | null {
+	public get parent(): Element | ViewDocumentFragment | null {
 		return this.textNode.parent;
 	}
 
 	/**
 	 * Root of this text proxy, which is same as root of text node represented by this text proxy.
 	 */
-	public get root(): Node | DocumentFragment {
+	public get root(): Node | ViewDocumentFragment {
 		return this.textNode.root;
 	}
 
 	/**
 	 * {@link module:engine/view/document~ViewDocument View document} that owns this text proxy, or `null` if the text proxy is inside
-	 * {@link module:engine/view/documentfragment~DocumentFragment document fragment}.
+	 * {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment}.
 	 */
 	public get document(): ViewDocument | null {
 		return this.textNode.document;
@@ -141,9 +141,9 @@ export class TextProxy extends TypeCheckable {
 	public getAncestors( options: {
 		includeSelf?: boolean;
 		parentFirst?: boolean;
-	} = {} ): Array<Text | Element | DocumentFragment> {
-		const ancestors: Array<Text | Element | DocumentFragment> = [];
-		let parent: Text | Element | DocumentFragment | null = options.includeSelf ? this.textNode : this.parent;
+	} = {} ): Array<Text | Element | ViewDocumentFragment> {
+		const ancestors: Array<Text | Element | ViewDocumentFragment> = [];
+		let parent: Text | Element | ViewDocumentFragment | null = options.includeSelf ? this.textNode : this.parent;
 
 		while ( parent !== null ) {
 			ancestors[ options.parentFirst ? 'push' : 'unshift' ]( parent );

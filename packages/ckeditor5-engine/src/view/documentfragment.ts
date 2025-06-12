@@ -25,7 +25,7 @@ import { type Node } from './node.js';
  * {@link module:engine/view/upcastwriter~UpcastWriter#createDocumentFragment `UpcastWriter#createDocumentFragment()`}
  * method.
  */
-export class DocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) implements Iterable<Node> {
+export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) implements Iterable<Node> {
 	/**
 	 * The document to which this document fragment belongs.
 	 */
@@ -126,7 +126,7 @@ export class DocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeCheckabl
 	}
 
 	/**
-	 * {@link module:engine/view/documentfragment~DocumentFragment#_insertChild Insert} a child node or a list of child nodes at the end
+	 * {@link module:engine/view/documentfragment~ViewDocumentFragment#_insertChild Insert} a child node or a list of child nodes at the end
 	 * and sets the parent of these nodes to this fragment.
 	 *
 	 * @internal
@@ -222,7 +222,7 @@ export class DocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeCheckabl
 	 * @param data Additional data.
 	 * @fires module:engine/view/node~Node#event:change
 	 */
-	public _fireChange( type: ViewDocumentChangeType, node: Node | DocumentFragment, data?: { index: number } ): void {
+	public _fireChange( type: ViewDocumentChangeType, node: Node | ViewDocumentFragment, data?: { index: number } ): void {
 		this.fire( `change:${ type }`, node, data );
 	}
 
@@ -270,11 +270,9 @@ export class DocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeCheckabl
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-DocumentFragment.prototype.is = function( type: string ): boolean {
+ViewDocumentFragment.prototype.is = function( type: string ): boolean {
 	return type === 'documentFragment' || type === 'view:documentFragment';
 };
-
-export { DocumentFragment as ViewDocumentFragment };
 
 /**
  * Converts strings to Text and non-iterables to arrays.

@@ -12,7 +12,7 @@ import { type Text } from './text.js';
 import { TextProxy } from './textproxy.js';
 import { Position } from './position.js';
 import { type Item } from './item.js';
-import { type DocumentFragment } from './documentfragment.js';
+import { type ViewDocumentFragment } from './documentfragment.js';
 import { type Range } from './range.js';
 import { type Node } from './node.js';
 
@@ -65,12 +65,12 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 	/**
 	 * Start boundary parent.
 	 */
-	private readonly _boundaryStartParent: Node | DocumentFragment | null;
+	private readonly _boundaryStartParent: Node | ViewDocumentFragment | null;
 
 	/**
 	 * End boundary parent.
 	 */
-	private readonly _boundaryEndParent: Node | DocumentFragment | null;
+	private readonly _boundaryEndParent: Node | ViewDocumentFragment | null;
 
 	/**
 	 * Creates a range iterator. All parameters are optional, but you have to specify either `boundaries` or `startPosition`.
@@ -230,7 +230,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 
 			node = parent.data[ position.offset ];
 		} else {
-			node = ( parent as Element | DocumentFragment ).getChild( position.offset );
+			node = ( parent as Element | ViewDocumentFragment ).getChild( position.offset );
 		}
 
 		if ( typeof node == 'string' ) {
@@ -340,7 +340,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 
 			node = parent.data[ position.offset - 1 ];
 		} else {
-			node = ( parent as Element | DocumentFragment ).getChild( position.offset - 1 );
+			node = ( parent as Element | ViewDocumentFragment ).getChild( position.offset - 1 );
 		}
 
 		if ( typeof node == 'string' ) {

@@ -948,7 +948,7 @@ export class DomConverter {
 
 	/**
 	 * Returns corresponding view {@link module:engine/view/element~Element Element} or
-	 * {@link module:engine/view/documentfragment~DocumentFragment} for provided DOM element or
+	 * {@link module:engine/view/documentfragment~ViewDocumentFragment} for provided DOM element or
 	 * document fragment. If there is no view item {@link module:engine/view/domconverter~DomConverter#bindElements bound}
 	 * to the given DOM - `undefined` is returned.
 	 *
@@ -1039,7 +1039,7 @@ export class DomConverter {
 
 	/**
 	 * Returns corresponding DOM item for provided {@link module:engine/view/element~Element Element} or
-	 * {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment}.
+	 * {@link module:engine/view/documentfragment~ViewDocumentFragment DocumentFragment}.
 	 * To find a corresponding text for {@link module:engine/view/text~Text view Text instance}
 	 * use {@link #findCorrespondingDomText}.
 	 *
@@ -1051,7 +1051,7 @@ export class DomConverter {
 
 	/**
 	 * Returns corresponding DOM item for provided {@link module:engine/view/element~Element Element} or
-	 * {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment}.
+	 * {@link module:engine/view/documentfragment~ViewDocumentFragment DocumentFragment}.
 	 * To find a corresponding text for {@link module:engine/view/text~Text view Text instance}
 	 * use {@link #findCorrespondingDomText}.
 	 *
@@ -1063,7 +1063,7 @@ export class DomConverter {
 
 	/**
 	 * Returns corresponding DOM item for provided {@link module:engine/view/element~Element Element} or
-	 * {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment}.
+	 * {@link module:engine/view/documentfragment~ViewDocumentFragment DocumentFragment}.
 	 * To find a corresponding text for {@link module:engine/view/text~Text view Text instance}
 	 * use {@link #findCorrespondingDomText}.
 	 *

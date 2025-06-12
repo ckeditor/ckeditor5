@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { DocumentFragment } from '../../src/view/documentfragment.js';
+import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { Element } from '../../src/view/element.js';
 import { Node } from '../../src/view/node.js';
 import { Text } from '../../src/view/text.js';
@@ -20,15 +20,15 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create DocumentFragment without children', () => {
-			const fragment = new DocumentFragment( document );
+			const fragment = new ViewDocumentFragment( document );
 
-			expect( fragment ).to.be.an.instanceof( DocumentFragment );
+			expect( fragment ).to.be.an.instanceof( ViewDocumentFragment );
 			expect( fragment.childCount ).to.equal( 0 );
 		} );
 
 		it( 'should create DocumentFragment  document,with child node', () => {
 			const child = new Element( document, 'p' );
-			const fragment = new DocumentFragment( document, child );
+			const fragment = new ViewDocumentFragment( document, child );
 
 			expect( fragment.childCount ).to.equal( 1 );
 			expect( fragment.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'p' );
@@ -36,7 +36,7 @@ describe( 'DocumentFragment', () => {
 
 		it( 'should create DocumentFragment  document,with multiple nodes', () => {
 			const children = [ new Element( document, 'p' ), new Element( document, 'div' ) ];
-			const fragment = new DocumentFragment( document, children );
+			const fragment = new ViewDocumentFragment( document, children );
 
 			expect( fragment.childCount ).to.equal( 2 );
 			expect( fragment.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'p' );
@@ -47,7 +47,7 @@ describe( 'DocumentFragment', () => {
 	describe( 'iterator', () => {
 		it( 'should iterate over all nodes added to document fragment', () => {
 			const children = [ new Element( document, 'p' ), new Element( document, 'div' ) ];
-			const fragment = new DocumentFragment( document, children );
+			const fragment = new ViewDocumentFragment( document, children );
 
 			const arr = Array.from( fragment );
 
@@ -59,7 +59,7 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'getRoot', () => {
 		it( 'should return document fragment', () => {
-			const fragment = new DocumentFragment( document );
+			const fragment = new ViewDocumentFragment( document );
 
 			expect( fragment.root ).to.equal( fragment );
 		} );
@@ -67,13 +67,13 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'isEmpty', () => {
 		it( 'should return true if there are no children in document fragment', () => {
-			const fragment = new DocumentFragment( document );
+			const fragment = new ViewDocumentFragment( document );
 
 			expect( fragment.isEmpty ).to.be.true;
 		} );
 
 		it( 'should return false if there are children in document fragment', () => {
-			const fragment = new DocumentFragment( document, [ new Element( document, 'p' ) ] );
+			const fragment = new ViewDocumentFragment( document, [ new Element( document, 'p' ) ] );
 
 			expect( fragment.isEmpty ).to.be.false;
 		} );
@@ -83,7 +83,7 @@ describe( 'DocumentFragment', () => {
 		let frag;
 
 		before( () => {
-			frag = new DocumentFragment( document );
+			frag = new ViewDocumentFragment( document );
 		} );
 
 		it( 'should return true for documentFragment', () => {
@@ -110,7 +110,7 @@ describe( 'DocumentFragment', () => {
 		let fragment, el1, el2, el3, el4;
 
 		beforeEach( () => {
-			fragment = new DocumentFragment( document );
+			fragment = new ViewDocumentFragment( document );
 			el1 = new Element( document, 'el1' );
 			el2 = new Element( document, 'el2' );
 			el3 = new Element( document, 'el3' );
@@ -176,7 +176,7 @@ describe( 'DocumentFragment', () => {
 			} );
 
 			it( 'should accept and correctly handle text proxies', () => {
-				const frag = new DocumentFragment( document );
+				const frag = new ViewDocumentFragment( document );
 				const text = new Text( document, 'abcxyz' );
 				const textProxy = new TextProxy( text, 2, 3 );
 
@@ -271,7 +271,7 @@ describe( 'DocumentFragment', () => {
 			const node1 = new Node( document );
 			const node2 = new Node( document );
 			const node3 = new Node( document );
-			const fragment = new DocumentFragment( document, [ node1, node2, node3 ] );
+			const fragment = new ViewDocumentFragment( document, [ node1, node2, node3 ] );
 
 			expect( node1.index ).to.equal( 0 );
 			expect( node2.index ).to.equal( 1 );
@@ -285,7 +285,7 @@ describe( 'DocumentFragment', () => {
 			const node1 = new Node( document );
 			const node2 = new Node( document );
 			const node3 = new Node( document );
-			new DocumentFragment( document, [ node1, node2, node3 ] ); // eslint-disable-line no-new
+			new ViewDocumentFragment( document, [ node1, node2, node3 ] ); // eslint-disable-line no-new
 
 			expect( node1.nextSibling ).to.equal( node2 );
 			expect( node2.nextSibling ).to.equal( node3 );
@@ -296,7 +296,7 @@ describe( 'DocumentFragment', () => {
 			const node1 = new Node( document );
 			const node2 = new Node( document );
 			const node3 = new Node( document );
-			new DocumentFragment( document, [ node1, node2, node3 ] ); // eslint-disable-line no-new
+			new ViewDocumentFragment( document, [ node1, node2, node3 ] ); // eslint-disable-line no-new
 
 			expect( node1.previousSibling ).to.be.null;
 			expect( node2.previousSibling ).to.equal( node1 );
@@ -307,7 +307,7 @@ describe( 'DocumentFragment', () => {
 			const node1 = new Node( document );
 			const node2 = new Node( document );
 			const node3 = new Node( document );
-			const fragment = new DocumentFragment( document, [ node1, node2, node3 ] );
+			const fragment = new ViewDocumentFragment( document, [ node1, node2, node3 ] );
 
 			node1._remove();
 			node3._remove();
@@ -321,7 +321,7 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'custom properties', () => {
 		it( 'should allow to set and get custom properties', () => {
-			const fragment = new DocumentFragment( document );
+			const fragment = new ViewDocumentFragment( document );
 
 			fragment._setCustomProperty( 'foo', 'bar' );
 
@@ -329,7 +329,7 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should allow to add symbol property', () => {
-			const fragment = new DocumentFragment( document );
+			const fragment = new ViewDocumentFragment( document );
 			const symbol = Symbol( 'custom' );
 
 			fragment._setCustomProperty( symbol, 'bar' );
@@ -338,7 +338,7 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should allow to remove custom property', () => {
-			const fragment = new DocumentFragment( document );
+			const fragment = new ViewDocumentFragment( document );
 			const symbol = Symbol( 'quix' );
 
 			fragment._setCustomProperty( 'bar', 'baz' );
@@ -355,7 +355,7 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should allow to iterate over custom properties', () => {
-			const fragment = new DocumentFragment( document );
+			const fragment = new ViewDocumentFragment( document );
 
 			fragment._setCustomProperty( 'foo', 1 );
 			fragment._setCustomProperty( 'bar', 2 );
@@ -373,7 +373,7 @@ describe( 'DocumentFragment', () => {
 	} );
 
 	it( 'name should return undefined', () => {
-		const fragment = new DocumentFragment( document );
+		const fragment = new ViewDocumentFragment( document );
 
 		expect( fragment.name ).to.be.undefined;
 	} );

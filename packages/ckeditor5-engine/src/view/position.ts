@@ -13,7 +13,7 @@ import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
 import { EditableElement } from './editableelement.js';
 
-import { type DocumentFragment } from './documentfragment.js';
+import { type ViewDocumentFragment } from './documentfragment.js';
 import { type Element } from './element.js';
 import { type Item } from './item.js';
 import { type Node } from './node.js';
@@ -32,7 +32,7 @@ export class Position extends TypeCheckable {
 	/**
 	 * Position parent.
 	 */
-	public readonly parent: Node | DocumentFragment;
+	public readonly parent: Node | ViewDocumentFragment;
 
 	/**
 	 * Position offset.
@@ -45,7 +45,7 @@ export class Position extends TypeCheckable {
 	 * @param parent Position parent.
 	 * @param offset Position offset.
 	 */
-	constructor( parent: Node | DocumentFragment, offset: number ) {
+	constructor( parent: Node | ViewDocumentFragment, offset: number ) {
 		super();
 
 		this.parent = parent;
@@ -95,7 +95,7 @@ export class Position extends TypeCheckable {
 	/**
 	 * Position's root, that is the root of the position's parent element.
 	 */
-	public get root(): Node | DocumentFragment {
+	public get root(): Node | ViewDocumentFragment {
 		return this.parent.root;
 	}
 
@@ -163,7 +163,7 @@ export class Position extends TypeCheckable {
 	 *
 	 * @returns Array with ancestors.
 	 */
-	public getAncestors(): Array<Node | DocumentFragment> {
+	public getAncestors(): Array<Node | ViewDocumentFragment> {
 		if ( this.parent.is( 'documentFragment' ) ) {
 			return [ this.parent ];
 		} else {
@@ -172,10 +172,10 @@ export class Position extends TypeCheckable {
 	}
 
 	/**
-	 * Returns a {@link module:engine/view/node~Node} or {@link module:engine/view/documentfragment~DocumentFragment}
+	 * Returns a {@link module:engine/view/node~Node} or {@link module:engine/view/documentfragment~ViewDocumentFragment}
 	 * which is a common ancestor of both positions.
 	 */
-	public getCommonAncestor( position: Position ): Node | DocumentFragment | null {
+	public getCommonAncestor( position: Position ): Node | ViewDocumentFragment | null {
 		const ancestorsA = this.getAncestors();
 		const ancestorsB = position.getAncestors();
 

@@ -7,7 +7,7 @@
  * @module engine/view/upcastwriter
  */
 
-import { DocumentFragment } from './documentfragment.js';
+import { ViewDocumentFragment } from './documentfragment.js';
 import { Element, type ElementAttributes } from './element.js';
 import { Text } from './text.js';
 import { isPlainObject } from 'es-toolkit/compat';
@@ -59,13 +59,13 @@ export class UpcastWriter {
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/documentfragment~DocumentFragment} instance.
+	 * Creates a new {@link module:engine/view/documentfragment~ViewDocumentFragment} instance.
 	 *
 	 * @param children A list of nodes to be inserted into the created document fragment.
 	 * @returns The created document fragment.
 	 */
-	public createDocumentFragment( children?: Node | Iterable<Node> ): DocumentFragment {
-		return new DocumentFragment( this.document, children );
+	public createDocumentFragment( children?: Node | Iterable<Node> ): ViewDocumentFragment {
+		return new ViewDocumentFragment( this.document, children );
 	}
 
 	/**
@@ -124,7 +124,7 @@ export class UpcastWriter {
 	 * @param element Element to which items will be appended.
 	 * @returns Number of appended nodes.
 	 */
-	public appendChild( items: Item | string | Iterable<Item | string>, element: Element | DocumentFragment ): number {
+	public appendChild( items: Item | string | Iterable<Item | string>, element: Element | ViewDocumentFragment ): number {
 		return element._appendChild( items );
 	}
 
@@ -138,7 +138,7 @@ export class UpcastWriter {
 	 * @param element Element to which items will be inserted.
 	 * @returns Number of inserted nodes.
 	 */
-	public insertChild( index: number, items: Item | Iterable<Item>, element: Element | DocumentFragment ): number {
+	public insertChild( index: number, items: Item | Iterable<Item>, element: Element | ViewDocumentFragment ): number {
 		return element._insertChild( index, items );
 	}
 
@@ -151,7 +151,7 @@ export class UpcastWriter {
 	 * @param element Element which children will be removed.
 	 * @returns The array containing removed nodes.
 	 */
-	public removeChildren( index: number, howMany: number, element: Element | DocumentFragment ): Array<Node> {
+	public removeChildren( index: number, howMany: number, element: Element | ViewDocumentFragment ): Array<Node> {
 		return element._removeChildren( index, howMany );
 	}
 
@@ -366,7 +366,7 @@ export class UpcastWriter {
 	 * @param value Custom property value to be stored.
 	 * @param element Element for which custom property will be set.
 	 */
-	public setCustomProperty( key: string | symbol, value: unknown, element: Element | DocumentFragment ): void {
+	public setCustomProperty( key: string | symbol, value: unknown, element: Element | ViewDocumentFragment ): void {
 		element._setCustomProperty( key, value );
 	}
 
@@ -378,7 +378,7 @@ export class UpcastWriter {
 	 * @param element Element from which the custom property will be removed.
 	 * @returns Returns true if property was removed.
 	 */
-	public removeCustomProperty( key: string | symbol, element: Element | DocumentFragment ): boolean {
+	public removeCustomProperty( key: string | symbol, element: Element | ViewDocumentFragment ): boolean {
 		return element._removeCustomProperty( key );
 	}
 
@@ -444,7 +444,7 @@ export class UpcastWriter {
 	 *
 	 * @param element Element which is a parent for the range.
 	 */
-	public createRangeIn( element: Element | DocumentFragment ): Range {
+	public createRangeIn( element: Element | ViewDocumentFragment ): Range {
 		return Range._createIn( element );
 	}
 

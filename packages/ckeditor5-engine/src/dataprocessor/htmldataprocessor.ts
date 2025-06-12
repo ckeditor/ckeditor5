@@ -50,7 +50,7 @@ export class HtmlDataProcessor implements DataProcessor {
 	}
 
 	/**
-	 * Converts a provided {@link module:engine/view/documentfragment~DocumentFragment document fragment}
+	 * Converts a provided {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment}
 	 * to data format &ndash; in this case to an HTML string.
 	 *
 	 * @returns HTML string.

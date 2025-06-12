@@ -10,7 +10,7 @@
 import { Element, type ElementAttributes } from './element.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import { type DocumentFragment } from './documentfragment.js';
+import { type ViewDocumentFragment } from './documentfragment.js';
 import { type ViewDocument } from './document.js';
 import { type Node } from './node.js';
 
@@ -249,6 +249,6 @@ function getFillerOffset( this: ViewAttributeElement ): number | null {
 /**
  * Returns total count of children that are not {@link module:engine/view/uielement~UIElement UIElements}.
  */
-function nonUiChildrenCount( element: Element | DocumentFragment ): number {
+function nonUiChildrenCount( element: Element | ViewDocumentFragment ): number {
 	return Array.from( element.getChildren() ).filter( element => !element.is( 'uiElement' ) ).length;
 }

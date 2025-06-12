@@ -64,7 +64,7 @@ export class XmlDataProcessor implements DataProcessor {
 	}
 
 	/**
-	 * Converts the provided {@link module:engine/view/documentfragment~DocumentFragment document fragment}
+	 * Converts the provided {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment}
 	 * to data format &ndash; in this case an XML string.
 	 *
 	 * @returns An XML string.

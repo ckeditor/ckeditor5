@@ -14,7 +14,8 @@ import type { MatcherPattern } from '../view/matcher.js';
  * The data processor interface. It should be implemented by actual data processors.
  *
  * Each data processor implements a certain format of the data. For example, {@glink features/markdown Markdown data processor}
- * will convert the data (a Markdown string) to a {@link module:engine/view/documentfragment~DocumentFragment document fragment} and back.
+ * will convert the data (a Markdown string) to a {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment}
+ * and back.
  *
  * **Note:** While the CKEditor 5 architecture supports changing the data format, in most scenarios we do recommend sticking to
  * the default format which is HTML (supported by the {@link module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}).
@@ -26,14 +27,14 @@ import type { MatcherPattern } from '../view/matcher.js';
 export interface DataProcessor {
 
 	/**
-	 * Converts a {@link module:engine/view/documentfragment~DocumentFragment document fragment} to data.
+	 * Converts a {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment} to data.
 	 *
 	 * @param viewFragment The document fragment to be processed.
 	 */
 	toData( viewFragment: ViewDocumentFragment ): string;
 
 	/**
-	 * Converts the data to a {@link module:engine/view/documentfragment~DocumentFragment document fragment}.
+	 * Converts the data to a {@link module:engine/view/documentfragment~ViewDocumentFragment document fragment}.
 	 *
 	 * @param data The data to be processed.
 	 */

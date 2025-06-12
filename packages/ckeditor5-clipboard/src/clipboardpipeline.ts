@@ -100,14 +100,14 @@ import { ClipboardMarkersUtils } from './clipboardmarkersutils.js';
  *    from the last point.
  * 2. Otherwise, it retrieves `text/html` or `text/plain` from `data.dataTransfer`.
  * 3. Normalizes the raw data by applying simple filters on string data.
- * 4. Processes the raw data to {@link module:engine/view/documentfragment~DocumentFragment `view.DocumentFragment`} with the
+ * 4. Processes the raw data to {@link module:engine/view/documentfragment~ViewDocumentFragment `view.DocumentFragment`} with the
  *    {@link module:engine/controller/datacontroller~DataController#htmlProcessor `DataController#htmlProcessor`}.
  * 5. Fires the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:inputTransformation
  *   `ClipboardPipeline#inputTransformation`} event with the view document fragment in the `data.content` event field.
  *
  * ## Event: `ClipboardPipeline#inputTransformation`
  *
- * 1. Converts {@link module:engine/view/documentfragment~DocumentFragment `view.DocumentFragment`} from the `data.content` field to
+ * 1. Converts {@link module:engine/view/documentfragment~ViewDocumentFragment `view.DocumentFragment`} from the `data.content` field to
  *    {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`}.
  * 2. Fires the {@link module:clipboard/clipboardpipeline~ClipboardPipeline#event:contentInsertion `ClipboardPipeline#contentInsertion`}
  *    event with the model document fragment in the `data.content` event field.
@@ -127,7 +127,7 @@ import { ClipboardMarkersUtils } from './clipboardmarkersutils.js';
  *
  * 1. Retrieves the selected {@link module:engine/model/documentfragment~DocumentFragment `model.DocumentFragment`} by calling
  *    {@link module:engine/model/model~Model#getSelectedContent `model#getSelectedContent()`}.
- * 2. Converts the model document fragment to {@link module:engine/view/documentfragment~DocumentFragment `view.DocumentFragment`}.
+ * 2. Converts the model document fragment to {@link module:engine/view/documentfragment~ViewDocumentFragment `view.DocumentFragment`}.
  * 3. Fires the {@link module:engine/view/document~ViewDocument#event:clipboardOutput `view.Document#clipboardOutput`} event
  *    with the view document fragment in the `data.content` event field.
  *

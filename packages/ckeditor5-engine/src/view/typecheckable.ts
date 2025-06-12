@@ -5,7 +5,7 @@
 
 import { type ViewAttributeElement } from './attributeelement.js';
 import { type ViewContainerElement } from './containerelement.js';
-import { type DocumentFragment } from './documentfragment.js';
+import { type ViewDocumentFragment } from './documentfragment.js';
 import { type DocumentSelection } from './documentselection.js';
 import { type EditableElement } from './editableelement.js';
 import { type Element } from './element.js';
@@ -29,7 +29,7 @@ export abstract class TypeCheckable {
 	 * Checks whether this object is of type {@link module:engine/view/node~Node} or its subclass.
 	 *
 	 * This method is useful when processing view objects that are of unknown type. For example, a function
-	 * may return a {@link module:engine/view/documentfragment~DocumentFragment} or a {@link module:engine/view/node~Node}
+	 * may return a {@link module:engine/view/documentfragment~ViewDocumentFragment} or a {@link module:engine/view/node~Node}
 	 * that can be either a text node or an element. This method can be used to check what kind of object is returned.
 	 *
 	 * ```ts
@@ -317,7 +317,7 @@ export abstract class TypeCheckable {
 	public is( type: '$text' | 'view:$text' ): this is Text;
 
 	/**
-	 * hecks whether this object is of type {@link module:engine/view/documentfragment~DocumentFragment}.
+	 * hecks whether this object is of type {@link module:engine/view/documentfragment~ViewDocumentFragment}.
 	 *
 	 * ```ts
 	 * docFrag.is( 'documentFragment' ); // -> true
@@ -330,7 +330,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label DOCUMENT_FRAGMENT
 	 */
-	public is( type: 'documentFragment' | 'view:documentFragment' ): this is DocumentFragment;
+	public is( type: 'documentFragment' | 'view:documentFragment' ): this is ViewDocumentFragment;
 
 	/**
 	 * Checks whether this object is of type {@link module:engine/view/textproxy~TextProxy}.
