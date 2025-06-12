@@ -6,8 +6,8 @@
 import { DowncastWriter } from '../../../src/view/downcastwriter.js';
 import { Document } from '../../../src/view/document.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
-import { ContainerElement } from '../../../src/view/containerelement.js';
-import { AttributeElement } from '../../../src/view/attributeelement.js';
+import { ViewContainerElement } from '../../../src/view/containerelement.js';
+import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
 import { EmptyElement } from '../../../src/view/emptyelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
 import { RawElement } from '../../../src/view/rawelement.js';
@@ -154,8 +154,8 @@ describe( 'DowncastWriter', () => {
 			}
 
 			it( 'should throw when range placed in two containers', () => {
-				const p1 = new ContainerElement( document, 'p' );
-				const p2 = new ContainerElement( document, 'p' );
+				const p1 = new ViewContainerElement( document, 'p' );
+				const p2 = new ViewContainerElement( document, 'p' );
 
 				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( Range._createFromParentsAndOffsets( p1, 0, p2, 0 ) );
@@ -163,7 +163,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should throw when range has no parent container', () => {
-				const el = new AttributeElement( document, 'b' );
+				const el = new ViewAttributeElement( document, 'b' );
 
 				expectToThrowCKEditorError( () => {
 					writer.breakAttributes( Range._createFromParentsAndOffsets( el, 0, el, 0 ) );
@@ -244,7 +244,7 @@ describe( 'DowncastWriter', () => {
 
 			it( 'should throw if breaking inside EmptyElement #1', () => {
 				const img = new EmptyElement( document, 'img' );
-				new ContainerElement( document, 'p', null, img ); // eslint-disable-line no-new
+				new ViewContainerElement( document, 'p', null, img ); // eslint-disable-line no-new
 				const position = new Position( img, 0 );
 
 				expectToThrowCKEditorError( () => {
@@ -254,8 +254,8 @@ describe( 'DowncastWriter', () => {
 
 			it( 'should throw if breaking inside EmptyElement #2', () => {
 				const img = new EmptyElement( document, 'img' );
-				const b = new AttributeElement( document, 'b' );
-				new ContainerElement( document, 'p', null, [ img, b ] ); // eslint-disable-line no-new
+				const b = new ViewAttributeElement( document, 'b' );
+				new ViewContainerElement( document, 'p', null, [ img, b ] ); // eslint-disable-line no-new
 				const range = Range._createFromParentsAndOffsets( img, 0, b, 0 );
 
 				expectToThrowCKEditorError( () => {
@@ -265,7 +265,7 @@ describe( 'DowncastWriter', () => {
 
 			it( 'should throw if breaking inside UIElement #1', () => {
 				const span = new UIElement( document, 'span' );
-				new ContainerElement( document, 'p', null, span ); // eslint-disable-line no-new
+				new ViewContainerElement( document, 'p', null, span ); // eslint-disable-line no-new
 				const position = new Position( span, 0 );
 
 				expectToThrowCKEditorError( () => {
@@ -275,8 +275,8 @@ describe( 'DowncastWriter', () => {
 
 			it( 'should throw if breaking inside UIElement #2', () => {
 				const span = new UIElement( document, 'span' );
-				const b = new AttributeElement( document, 'b' );
-				new ContainerElement( document, 'p', null, [ span, b ] ); // eslint-disable-line no-new
+				const b = new ViewAttributeElement( document, 'b' );
+				new ViewContainerElement( document, 'p', null, [ span, b ] ); // eslint-disable-line no-new
 				const range = Range._createFromParentsAndOffsets( span, 0, b, 0 );
 
 				expectToThrowCKEditorError( () => {
@@ -286,7 +286,7 @@ describe( 'DowncastWriter', () => {
 
 			it( 'should throw if breaking inside a RawElement #1', () => {
 				const span = new RawElement( document, 'span' );
-				new ContainerElement( document, 'p', null, span ); // eslint-disable-line no-new
+				new ViewContainerElement( document, 'p', null, span ); // eslint-disable-line no-new
 				const position = new Position( span, 0 );
 
 				expectToThrowCKEditorError( () => {
@@ -296,8 +296,8 @@ describe( 'DowncastWriter', () => {
 
 			it( 'should throw if breaking inside a RawElement #2', () => {
 				const span = new RawElement( document, 'span' );
-				const b = new AttributeElement( document, 'b' );
-				new ContainerElement( document, 'p', null, [ span, b ] ); // eslint-disable-line no-new
+				const b = new ViewAttributeElement( document, 'b' );
+				new ViewContainerElement( document, 'p', null, [ span, b ] ); // eslint-disable-line no-new
 				const range = Range._createFromParentsAndOffsets( span, 0, b, 0 );
 
 				expectToThrowCKEditorError( () => {

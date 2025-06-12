@@ -102,7 +102,7 @@ function newLinePadding(
 
 	if ( listElements.includes( element.name ) && listElements.includes( previous.name ) ) {
 		/**
-		 * Because `<ul>` and `<ol>` are AttributeElements, two consecutive lists will not have any padding between
+		 * Because `<ul>` and `<ol>` are ViewAttributeElements, two consecutive lists will not have any padding between
 		 * them (see the `if` statement below). To fix this, we need to make an exception for this case.
 		 */
 		return '\n\n';

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ContainerElement } from '../../src/view/containerelement.js';
+import { ViewContainerElement } from '../../src/view/containerelement.js';
 import { EditableElement } from '../../src/view/editableelement.js';
 import { RootEditableElement } from '../../src/view/rooteditableelement.js';
 
@@ -21,7 +21,7 @@ describe( 'RootEditableElement', () => {
 			const root = new RootEditableElement( document, 'div' );
 
 			expect( root ).to.be.instanceof( EditableElement );
-			expect( root ).to.be.instanceof( ContainerElement );
+			expect( root ).to.be.instanceof( ViewContainerElement );
 
 			expect( root.rootName ).to.equal( 'main' );
 			expect( root.name ).to.equal( 'div' );

@@ -108,7 +108,7 @@ describe( 'DowncastWriter', () => {
 	} );
 
 	describe( 'createAttributeElement()', () => {
-		it( 'should create AttributeElement', () => {
+		it( 'should create ViewAttributeElement', () => {
 			const element = writer.createAttributeElement( 'foo', attributes );
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
@@ -139,7 +139,7 @@ describe( 'DowncastWriter', () => {
 	} );
 
 	describe( 'createContainerElement()', () => {
-		it( 'should create ContainerElement', () => {
+		it( 'should create ViewContainerElement', () => {
 			const element = writer.createContainerElement( 'foo', attributes );
 
 			expect( element.is( 'containerElement' ) ).to.be.true;
@@ -607,7 +607,7 @@ describe( 'DowncastWriter', () => {
 		} );
 	} );
 
-	describe( 'manages AttributeElement#_clonesGroup', () => {
+	describe( 'manages ViewAttributeElement#_clonesGroup', () => {
 		it( 'should return all clones of a broken attribute element with id', () => {
 			const text = writer.createText( 'abccccde' );
 

@@ -5,8 +5,8 @@
 
 import { DowncastWriter } from '../../../src/view/downcastwriter.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
-import { ContainerElement } from '../../../src/view/containerelement.js';
-import { AttributeElement } from '../../../src/view/attributeelement.js';
+import { ViewContainerElement } from '../../../src/view/containerelement.js';
+import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
 import { RootEditableElement } from '../../../src/view/rooteditableelement.js';
 import { EmptyElement } from '../../../src/view/emptyelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
@@ -153,12 +153,12 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if trying to move to EmptyElement', () => {
-			const srcAttribute = new AttributeElement( document, 'b' );
-			const srcContainer = new ContainerElement( document, 'p', null, srcAttribute );
+			const srcAttribute = new ViewAttributeElement( document, 'b' );
+			const srcContainer = new ViewContainerElement( document, 'p', null, srcAttribute );
 			const srcRange = Range._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
 
 			const dstEmpty = new EmptyElement( document, 'img' );
-			new ContainerElement( document, 'p', null, dstEmpty ); // eslint-disable-line no-new
+			new ViewContainerElement( document, 'p', null, dstEmpty ); // eslint-disable-line no-new
 			const dstPosition = new Position( dstEmpty, 0 );
 
 			expectToThrowCKEditorError( () => {
@@ -176,12 +176,12 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if trying to move to UIElement', () => {
-			const srcAttribute = new AttributeElement( document, 'b' );
-			const srcContainer = new ContainerElement( document, 'p', null, srcAttribute );
+			const srcAttribute = new ViewAttributeElement( document, 'b' );
+			const srcContainer = new ViewContainerElement( document, 'p', null, srcAttribute );
 			const srcRange = Range._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
 
 			const dstUI = new UIElement( document, 'span' );
-			new ContainerElement( document, 'p', null, dstUI ); // eslint-disable-line no-new
+			new ViewContainerElement( document, 'p', null, dstUI ); // eslint-disable-line no-new
 			const dstPosition = new Position( dstUI, 0 );
 
 			expectToThrowCKEditorError( () => {
@@ -199,12 +199,12 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if trying to move to a RawElement', () => {
-			const srcAttribute = new AttributeElement( document, 'b' );
-			const srcContainer = new ContainerElement( document, 'p', null, srcAttribute );
+			const srcAttribute = new ViewAttributeElement( document, 'b' );
+			const srcContainer = new ViewContainerElement( document, 'p', null, srcAttribute );
 			const srcRange = Range._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
 
 			const dstRawElement = new RawElement( document, 'span' );
-			new ContainerElement( document, 'p', null, dstRawElement ); // eslint-disable-line no-new
+			new ViewContainerElement( document, 'p', null, dstRawElement ); // eslint-disable-line no-new
 			const dstPosition = new Position( dstRawElement, 0 );
 
 			expectToThrowCKEditorError( () => {
@@ -215,16 +215,16 @@ describe( 'DowncastWriter', () => {
 		it( 'should not break marker mappings if marker element was split and the original element was removed', () => {
 			const mapper = new Mapper();
 
-			const srcContainer = new ContainerElement( document, 'p' );
-			const dstContainer = new ContainerElement( document, 'p' );
+			const srcContainer = new ViewContainerElement( document, 'p' );
+			const dstContainer = new ViewContainerElement( document, 'p' );
 
 			const root = new RootEditableElement( document, 'div' );
 			root._appendChild( [ srcContainer, dstContainer ] );
 
-			const attrElemA = new AttributeElement( document, 'span' );
+			const attrElemA = new ViewAttributeElement( document, 'span' );
 			attrElemA._id = 'foo';
 
-			const attrElemB = new AttributeElement( document, 'span' );
+			const attrElemB = new ViewAttributeElement( document, 'span' );
 			attrElemB._id = 'foo';
 
 			writer.insert( new Position( srcContainer, 0 ), [ attrElemA, attrElemB ] );

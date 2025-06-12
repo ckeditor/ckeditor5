@@ -486,7 +486,7 @@ export function createModelToViewPositionMapper(
 		let positionAfterLastMarker = viewRange.start;
 
 		for ( const { item } of viewWalker ) {
-			// Walk only over the non-mapped elements (UIElements, AttributeElements, $text, or any other element without mapping).
+			// Walk only over the non-mapped elements (UIElements, ViewAttributeElements, $text, or any other element without mapping).
 			if ( item.is( 'element' ) && data.mapper.toModelElement( item ) || item.is( '$textProxy' ) ) {
 				break;
 			}
@@ -527,7 +527,7 @@ function removeCustomMarkerElements( viewElement: ViewElement, viewWriter: Downc
 
 	function collectMarkersToRemove( viewWalker: ViewTreeWalker ) {
 		for ( const { item } of viewWalker ) {
-			// Walk only over the non-mapped elements (UIElements, AttributeElements, $text, or any other element without mapping).
+			// Walk only over the non-mapped elements (UIElements, ViewAttributeElements, $text, or any other element without mapping).
 			if ( item.is( 'element' ) && mapper.toModelElement( item ) ) {
 				break;
 			}

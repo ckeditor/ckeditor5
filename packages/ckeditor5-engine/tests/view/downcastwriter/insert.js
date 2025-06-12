@@ -4,7 +4,7 @@
  */
 
 import { DowncastWriter } from '../../../src/view/downcastwriter.js';
-import { ContainerElement } from '../../../src/view/containerelement.js';
+import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { Element } from '../../../src/view/element.js';
 import { EmptyElement } from '../../../src/view/emptyelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
@@ -12,7 +12,7 @@ import { RawElement } from '../../../src/view/rawelement.js';
 import { Position } from '../../../src/view/position.js';
 
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
-import { AttributeElement } from '../../../src/view/attributeelement.js';
+import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
 import { Document } from '../../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
@@ -175,12 +175,12 @@ describe( 'DowncastWriter', () => {
 			);
 		} );
 
-		it( 'should not break attribute on inline ContainerElement insertion and wrapped with an attribute', () => {
+		it( 'should not break attribute on inline ViewContainerElement insertion and wrapped with an attribute', () => {
 			const { view, selection } = _parseView(
 				'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>'
 			);
 
-			const element = new ContainerElement( document, 'span', {}, 'baz' );
+			const element = new ViewContainerElement( document, 'span', {}, 'baz' );
 			const newRange = writer.insert( selection.getFirstPosition(), element );
 
 			expect( _stringifyView( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal(
@@ -191,7 +191,7 @@ describe( 'DowncastWriter', () => {
 				'</container:p>'
 			);
 
-			const attribute = new AttributeElement( document, 'b' );
+			const attribute = new ViewAttributeElement( document, 'b' );
 			attribute._priority = 1;
 
 			const finalRange = writer.wrap( newRange, attribute );
@@ -203,7 +203,7 @@ describe( 'DowncastWriter', () => {
 
 		it( 'should throw when inserting Element', () => {
 			const element = new Element( document, 'b' );
-			const container = new ContainerElement( document, 'p' );
+			const container = new ViewContainerElement( document, 'p' );
 			const position = new Position( container, 0 );
 
 			expectToThrowCKEditorError( () => {
@@ -213,8 +213,8 @@ describe( 'DowncastWriter', () => {
 
 		it( 'should throw when Element is inserted as child node', () => {
 			const element = new Element( document, 'b' );
-			const root = new ContainerElement( document, 'p', null, element );
-			const container = new ContainerElement( document, 'p' );
+			const root = new ViewContainerElement( document, 'p', null, element );
+			const container = new ViewContainerElement( document, 'p' );
 			const position = new Position( container, 0 );
 
 			expectToThrowCKEditorError( () => {
@@ -225,7 +225,7 @@ describe( 'DowncastWriter', () => {
 		it( 'should throw when position is not placed inside container', () => {
 			const element = new Element( document, 'b' );
 			const position = new Position( element, 0 );
-			const attributeElement = new AttributeElement( document, 'i' );
+			const attributeElement = new ViewAttributeElement( document, 'i' );
 
 			expectToThrowCKEditorError( () => {
 				writer.insert( position, attributeElement );
@@ -242,9 +242,9 @@ describe( 'DowncastWriter', () => {
 
 		it( 'should throw if trying to insert inside EmptyElement', () => {
 			const emptyElement = new EmptyElement( document, 'img' );
-			new ContainerElement( document, 'p', null, emptyElement ); // eslint-disable-line no-new
+			new ViewContainerElement( document, 'p', null, emptyElement ); // eslint-disable-line no-new
 			const position = new Position( emptyElement, 0 );
-			const attributeElement = new AttributeElement( document, 'i' );
+			const attributeElement = new ViewAttributeElement( document, 'i' );
 
 			expectToThrowCKEditorError( () => {
 				writer.insert( position, attributeElement );
@@ -253,9 +253,9 @@ describe( 'DowncastWriter', () => {
 
 		it( 'should throw if trying to insert inside UIElement', () => {
 			const uiElement = new UIElement( document, 'span' );
-			new ContainerElement( document, 'p', null, uiElement ); // eslint-disable-line no-new
+			new ViewContainerElement( document, 'p', null, uiElement ); // eslint-disable-line no-new
 			const position = new Position( uiElement, 0 );
-			const attributeElement = new AttributeElement( document, 'i' );
+			const attributeElement = new ViewAttributeElement( document, 'i' );
 
 			expectToThrowCKEditorError( () => {
 				writer.insert( position, attributeElement );
@@ -264,9 +264,9 @@ describe( 'DowncastWriter', () => {
 
 		it( 'should throw if trying to insert inside a RawElement', () => {
 			const rawElement = new RawElement( document, 'span' );
-			new ContainerElement( document, 'p', null, rawElement ); // eslint-disable-line no-new
+			new ViewContainerElement( document, 'p', null, rawElement ); // eslint-disable-line no-new
 			const position = new Position( rawElement, 0 );
-			const attributeElement = new AttributeElement( document, 'i' );
+			const attributeElement = new ViewAttributeElement( document, 'i' );
 
 			expectToThrowCKEditorError( () => {
 				writer.insert( position, attributeElement );

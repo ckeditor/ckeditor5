@@ -126,7 +126,7 @@ describe( 'ListEditing - conversion - custom list marker - changes', () => {
 					return 0;
 				}
 
-				// Other not-mapped elements (like AttributeElement).
+				// Other not-mapped elements (like ViewAttributeElement).
 				return Array.from( viewElement.getChildren() )
 					.reduce( ( len, child ) => len + editor.editing.mapper.getModelLength( child ), 0 );
 			} );

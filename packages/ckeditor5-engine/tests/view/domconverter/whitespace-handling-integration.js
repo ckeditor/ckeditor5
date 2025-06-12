@@ -10,7 +10,7 @@ import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
 import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
 
 import { _getModelData } from '../../../src/dev-utils/model.js';
-import { getFillerOffset } from '../../../src/index.js';
+import { getViewFillerOffset } from '../../../src/index.js';
 
 // NOTE:
 // dev utils' setData() loses white spaces so don't use it for tests here!!!
@@ -608,7 +608,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 					view: ( modelElement, { writer } ) => {
 						const viewElement = writer.createContainerElement( 'span', { class: 'foo' } );
 
-						viewElement.getFillerOffset = () => null;
+						viewElement.getViewFillerOffset = () => null;
 
 						return viewElement;
 					}
@@ -946,7 +946,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 					const viewElement = editor.data.processor.domConverter.domToView( domElement );
 					let viewData = '';
 
-					viewElement.getFillerOffset = getFillerOffset;
+					viewElement.getViewFillerOffset = getViewFillerOffset;
 
 					for ( const child of viewElement.getChildren() ) {
 						viewData += child.data.replace( /\u00A0/g, '_' );

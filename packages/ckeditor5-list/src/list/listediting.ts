@@ -709,7 +709,7 @@ export interface ItemMarkerDowncastStrategy {
 	): ViewElement | null;
 
 	/**
-	 * Creates an AttributeElement to be used for wrapping a first block of a list item.
+	 * Creates an ViewAttributeElement to be used for wrapping a first block of a list item.
 	 */
 	createWrapperElement?(
 		writer: DowncastWriter,

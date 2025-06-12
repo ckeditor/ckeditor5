@@ -5,7 +5,7 @@
 
 import { TextProxy } from '../../src/view/textproxy.js';
 import { Text } from '../../src/view/text.js';
-import { ContainerElement } from '../../src/view/containerelement.js';
+import { ViewContainerElement } from '../../src/view/containerelement.js';
 import { DocumentFragment } from '../../src/view/documentfragment.js';
 import { RootEditableElement } from '../../src/view/rooteditableelement.js';
 
@@ -20,8 +20,8 @@ describe( 'TextProxy', () => {
 	beforeEach( () => {
 		document = new Document( new StylesProcessor() );
 		text = new Text( document, 'abcdefgh' );
-		parent = new ContainerElement( document, 'p', [], [ text ] );
-		wrapper = new ContainerElement( document, 'div', [], parent );
+		parent = new ViewContainerElement( document, 'p', [], [ text ] );
+		wrapper = new ViewContainerElement( document, 'div', [], parent );
 
 		textProxy = new TextProxy( text, 2, 3 );
 	} );

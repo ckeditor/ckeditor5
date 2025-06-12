@@ -8,8 +8,8 @@ import { ViewDocument } from '../../src/view/document.js';
 import { DocumentFragment } from '../../src/view/documentfragment.js';
 import { Position } from '../../src/view/position.js';
 import { Element } from '../../src/view/element.js';
-import { AttributeElement } from '../../src/view/attributeelement.js';
-import { ContainerElement } from '../../src/view/containerelement.js';
+import { ViewAttributeElement } from '../../src/view/attributeelement.js';
+import { ViewContainerElement } from '../../src/view/containerelement.js';
 import { EmptyElement } from '../../src/view/emptyelement.js';
 import { UIElement } from '../../src/view/uielement.js';
 import { RawElement } from '../../src/view/rawelement.js';
@@ -249,8 +249,8 @@ describe( 'view test utils', () => {
 
 		it( 'should write elements types as namespaces when needed', () => {
 			const text = new Text( viewDocument, 'foobar' );
-			const b = new AttributeElement( viewDocument, 'b', null, text );
-			const p = new ContainerElement( viewDocument, 'p', null, b );
+			const b = new ViewAttributeElement( viewDocument, 'b', null, text );
+			const p = new ViewContainerElement( viewDocument, 'p', null, b );
 
 			expect( _stringifyView( p, null, { showType: true } ) )
 				.to.equal( '<container:p><attribute:b>foobar</attribute:b></container:p>' );
@@ -263,8 +263,8 @@ describe( 'view test utils', () => {
 
 		it( 'should write elements priorities when needed', () => {
 			const text = new Text( viewDocument, 'foobar' );
-			const b = new AttributeElement( viewDocument, 'b', null, text );
-			const p = new ContainerElement( viewDocument, 'p', null, b );
+			const b = new ViewAttributeElement( viewDocument, 'b', null, text );
+			const p = new ViewContainerElement( viewDocument, 'p', null, b );
 
 			expect( _stringifyView( p, null, { showPriority: true } ) )
 				.to.equal( '<p><b view-priority="10">foobar</b></p>' );
@@ -272,9 +272,9 @@ describe( 'view test utils', () => {
 
 		it( 'should write elements id when needed', () => {
 			const text = new Text( viewDocument, 'foobar' );
-			const span = new AttributeElement( viewDocument, 'span', null, text );
+			const span = new ViewAttributeElement( viewDocument, 'span', null, text );
 			span._id = 'foo';
-			const p = new ContainerElement( viewDocument, 'p', null, span );
+			const p = new ViewContainerElement( viewDocument, 'p', null, span );
 
 			expect( _stringifyView( p, null, { showAttributeElementId: true } ) )
 				.to.equal( '<p><span view-id="foo">foobar</span></p>' );
@@ -368,14 +368,14 @@ describe( 'view test utils', () => {
 
 		it( 'should stringify EmptyElement', () => {
 			const img = new EmptyElement( viewDocument, 'img' );
-			const p = new ContainerElement( viewDocument, 'p', null, img );
+			const p = new ViewContainerElement( viewDocument, 'p', null, img );
 			expect( _stringifyView( p, null, { showType: true } ) )
 				.to.equal( '<container:p><empty:img></empty:img></container:p>' );
 		} );
 
 		it( 'should stringify UIElement', () => {
 			const span = new UIElement( viewDocument, 'span' );
-			const p = new ContainerElement( viewDocument, 'p', null, span );
+			const p = new ViewContainerElement( viewDocument, 'p', null, span );
 			expect( _stringifyView( p, null, { showType: true } ) )
 				.to.equal( '<container:p><ui:span></ui:span></container:p>' );
 		} );
@@ -391,7 +391,7 @@ describe( 'view test utils', () => {
 				return domElement;
 			};
 
-			const p = new ContainerElement( viewDocument, 'p', null, span );
+			const p = new ViewContainerElement( viewDocument, 'p', null, span );
 			expect( _stringifyView( p, null, { showType: true } ) )
 				.to.equal( '<container:p><ui:span></ui:span></container:p>' );
 		} );
@@ -407,14 +407,14 @@ describe( 'view test utils', () => {
 				return domElement;
 			};
 
-			const p = new ContainerElement( viewDocument, 'p', null, span );
+			const p = new ViewContainerElement( viewDocument, 'p', null, span );
 			expect( _stringifyView( p, null, { showType: true, renderUIElements: true } ) )
 				.to.equal( '<container:p><ui:span><b>foo</b></ui:span></container:p>' );
 		} );
 
 		it( 'should stringify a RawElement', () => {
 			const span = new RawElement( viewDocument, 'span' );
-			const p = new ContainerElement( viewDocument, 'p', null, span );
+			const p = new ViewContainerElement( viewDocument, 'p', null, span );
 
 			expect( _stringifyView( p, null, { showType: true } ) )
 				.to.equal( '<container:p><raw:span></raw:span></container:p>' );
@@ -427,7 +427,7 @@ describe( 'view test utils', () => {
 				domConverter.setContentOf( domElement, '<b>foo</b>' );
 			};
 
-			const p = new ContainerElement( viewDocument, 'p', null, span );
+			const p = new ViewContainerElement( viewDocument, 'p', null, span );
 			expect( _stringifyView( p, null, { showType: true } ) )
 				.to.equal( '<container:p><raw:span></raw:span></container:p>' );
 		} );
@@ -439,30 +439,30 @@ describe( 'view test utils', () => {
 				domConverter.setContentOf( domElement, '<b>foo</b>' );
 			};
 
-			const p = new ContainerElement( viewDocument, 'p', null, span );
+			const p = new ViewContainerElement( viewDocument, 'p', null, span );
 			expect( _stringifyView( p, null, { showType: true, renderRawElements: true } ) )
 				.to.equal( '<container:p><raw:span><b>foo</b></raw:span></container:p>' );
 		} );
 
 		it( 'should not return `data-list-item-id` on <li> element by default (skipListItemIds=true)', () => {
-			const li = new ContainerElement( viewDocument, 'li', { 'data-list-item-id': 'foo' } );
-			const ol = new ContainerElement( viewDocument, 'ol', null, li );
+			const li = new ViewContainerElement( viewDocument, 'li', { 'data-list-item-id': 'foo' } );
+			const ol = new ViewContainerElement( viewDocument, 'ol', null, li );
 
 			expect( _stringifyView( ol, null, { showType: true, skipListItemIds: true } ) )
 				.to.equal( '<container:ol><container:li></container:li></container:ol>' );
 		} );
 
 		it( 'should not return `data-list-item-id` on <li> element when set (skipListItemIds=true)', () => {
-			const li = new ContainerElement( viewDocument, 'li', { 'data-list-item-id': 'foo' } );
-			const ol = new ContainerElement( viewDocument, 'ol', null, li );
+			const li = new ViewContainerElement( viewDocument, 'li', { 'data-list-item-id': 'foo' } );
+			const ol = new ViewContainerElement( viewDocument, 'ol', null, li );
 
 			expect( _stringifyView( ol, null, { showType: true, skipListItemIds: true } ) )
 				.to.equal( '<container:ol><container:li></container:li></container:ol>' );
 		} );
 
 		it( 'should return `data-list-item-id` on <li> element (skipListItemIds=true)', () => {
-			const li = new ContainerElement( viewDocument, 'li', { 'data-list-item-id': 'foo' } );
-			const ol = new ContainerElement( viewDocument, 'ol', null, li );
+			const li = new ViewContainerElement( viewDocument, 'li', { 'data-list-item-id': 'foo' } );
+			const ol = new ViewContainerElement( viewDocument, 'ol', null, li );
 
 			expect( _stringifyView( ol, null, { showType: true, skipListItemIds: false } ) )
 				.to.equal( '<container:ol><container:li data-list-item-id="foo"></container:li></container:ol>' );
@@ -562,22 +562,22 @@ describe( 'view test utils', () => {
 
 		it( 'should parse element type', () => {
 			const view1 = _parseView( '<attribute:b></attribute:b>' );
-			const attribute = new AttributeElement( viewDocument, 'b' );
+			const attribute = new ViewAttributeElement( viewDocument, 'b' );
 			const view2 = _parseView( '<container:p></container:p>' );
-			const container = new ContainerElement( viewDocument, 'p' );
+			const container = new ViewContainerElement( viewDocument, 'p' );
 
-			expect( view1 ).to.be.instanceof( AttributeElement );
+			expect( view1 ).to.be.instanceof( ViewAttributeElement );
 			expect( view1.isSimilar( attribute ) ).to.be.true;
-			expect( view2 ).to.be.instanceof( ContainerElement );
+			expect( view2 ).to.be.instanceof( ViewContainerElement );
 			expect( view2.isSimilar( container ) ).to.be.true;
 		} );
 
 		it( 'should parse element priority', () => {
 			const parsed1 = _parseView( '<b view-priority="12"></b>' );
-			const attribute1 = new AttributeElement( viewDocument, 'b' );
+			const attribute1 = new ViewAttributeElement( viewDocument, 'b' );
 			attribute1._priority = 12;
 			const parsed2 = _parseView( '<attribute:b view-priority="44"></attribute:b>' );
-			const attribute2 = new AttributeElement( viewDocument, 'b' );
+			const attribute2 = new ViewAttributeElement( viewDocument, 'b' );
 			attribute2._priority = 44;
 
 			parsed1.isSimilar( attribute1 );
@@ -602,16 +602,16 @@ describe( 'view test utils', () => {
 
 		it( 'should paste nested elements and texts', () => {
 			const parsed = _parseView( '<container:p>foo<b view-priority="12">bar<i view-priority="25">qux</i></b></container:p>' );
-			expect( parsed.isSimilar( new ContainerElement( viewDocument, 'p' ) ) ).to.be.true;
+			expect( parsed.isSimilar( new ViewContainerElement( viewDocument, 'p' ) ) ).to.be.true;
 			expect( parsed.childCount ).to.equal( 2 );
 			expect( parsed.getChild( 0 ) ).to.be.instanceof( Text ).and.have.property( 'data' ).that.equal( 'foo' );
 			const b = parsed.getChild( 1 );
-			expect( b ).to.be.instanceof( AttributeElement );
+			expect( b ).to.be.instanceof( ViewAttributeElement );
 			expect( b.priority ).to.equal( 12 );
 			expect( b.childCount ).to.equal( 2 );
 			expect( b.getChild( 0 ) ).to.be.instanceof( Text ).and.have.property( 'data' ).that.equal( 'bar' );
 			const i = b.getChild( 1 );
-			expect( i ).to.be.instanceof( AttributeElement );
+			expect( i ).to.be.instanceof( ViewAttributeElement );
 			expect( i.priority ).to.equal( 25 );
 			expect( i.getChild( 0 ) ).to.be.instanceof( Text ).and.have.property( 'data' ).that.equal( 'qux' );
 		} );
@@ -669,7 +669,7 @@ describe( 'view test utils', () => {
 
 		it( 'should parse ranges #1', () => {
 			const { view, selection } = _parseView( '<container:p>foo{bar]</container:p>' );
-			expect( view.isSimilar( new ContainerElement( viewDocument, 'p' ) ) ).to.be.true;
+			expect( view.isSimilar( new ViewContainerElement( viewDocument, 'p' ) ) ).to.be.true;
 			expect( view.childCount ).to.equal( 1 );
 			const text = view.getChild( 0 );
 			expect( text ).to.be.instanceof( Text );
@@ -680,7 +680,7 @@ describe( 'view test utils', () => {
 
 		it( 'should parse ranges #2', () => {
 			const { view, selection } = _parseView( '<attribute:b>[foob}ar<i>{baz</i>]</attribute:b>' );
-			expect( view.isSimilar( new AttributeElement( viewDocument, 'b' ) ) ).to.be.true;
+			expect( view.isSimilar( new ViewAttributeElement( viewDocument, 'b' ) ) ).to.be.true;
 			expect( view.childCount ).to.equal( 2 );
 			const text1 = view.getChild( 0 );
 			expect( text1 ).to.be.instanceof( Text );
@@ -762,7 +762,7 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should throw when wrong type is provided', () => {
-			sinon.stub( XmlDataProcessor.prototype, 'toView' ).returns( new ContainerElement( viewDocument, 'invalidType:b' ) );
+			sinon.stub( XmlDataProcessor.prototype, 'toView' ).returns( new ViewContainerElement( viewDocument, 'invalidType:b' ) );
 
 			expect( () => {
 				_parseView( 'sth' );

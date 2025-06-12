@@ -522,7 +522,7 @@ export class Element extends Node {
 			}
 		}
 
-		// ContainerElement and AttributeElement should be also cloned properly.
+		// ViewContainerElement and ViewAttributeElement should be also cloned properly.
 		const cloned = new ( this.constructor as any )( this.document, this.name, this._attrs, childrenClone );
 
 		// Clone custom properties.
@@ -969,7 +969,7 @@ export class Element extends Node {
 	 * Note that this method is extended by the {@link module:engine/view/attributeelement~ViewAttributeElement} implementation.
 	 *
 	 * This method is used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other AttributeElement.
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other ViewAttributeElement.
 	 *
 	 * @internal
 	 * @returns Returns `true` if elements can be merged.
@@ -1006,14 +1006,14 @@ export class Element extends Node {
 	 * Note that you should make sure there are no conflicts before merging (see {@link #_canMergeAttributesFrom}).
 	 *
 	 * This method is used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other AttributeElement.
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other ViewAttributeElement.
 	 *
 	 * @internal
 	 */
 	public _mergeAttributesFrom( otherElement: Element ): void {
 		this._fireChange( 'attributes', this );
 
-		// Move all attributes/classes/styles from wrapper to wrapped AttributeElement.
+		// Move all attributes/classes/styles from wrapper to wrapped ViewAttributeElement.
 		for ( const [ key, otherValue ] of otherElement._attrs ) {
 			const value = this._attrs.get( key );
 
@@ -1032,7 +1032,7 @@ export class Element extends Node {
 	 * Note that this method is extended by the {@link module:engine/view/attributeelement~ViewAttributeElement} implementation.
 	 *
 	 * This method is used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to unwrap the AttributeElement.
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to unwrap the ViewAttributeElement.
 	 *
 	 * @internal
 	 * @returns Returns `true` if elements attributes can be fully subtracted.
@@ -1070,7 +1070,7 @@ export class Element extends Node {
 	 * Note that you should make sure all attributes could be subtracted before subtracting them (see {@link #_canSubtractAttributesOf}).
 	 *
 	 * This method is used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to unwrap the AttributeElement.
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to unwrap the ViewAttributeElement.
 	 *
 	 * @internal
 	 */
@@ -1289,7 +1289,7 @@ export interface ElementAttributeValue {
 	 * Used by {@link ~Element#_canMergeAttributesFrom} to verify if the given attribute can be merged without conflicts into the attribute.
 	 *
 	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other AttributeElement.
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other ViewAttributeElement.
 	 */
 	_canMergeFrom( other: this ): boolean;
 
@@ -1297,7 +1297,7 @@ export interface ElementAttributeValue {
 	 * Used by {@link ~Element#_mergeAttributesFrom} to merge a given attribute into the attribute.
 	 *
 	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other AttributeElement.
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other ViewAttributeElement.
 	 */
 	_mergeFrom( other: this ): void;
 
@@ -1305,7 +1305,7 @@ export interface ElementAttributeValue {
 	 * Used by {@link ~Element#_canSubtractAttributesOf} to verify if the given attribute can be fully subtracted from the attribute.
 	 *
 	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to unwrap the AttributeElement.
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to unwrap the ViewAttributeElement.
 	 */
 	_isMatching( other: this ): boolean;
 }

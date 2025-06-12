@@ -6,8 +6,8 @@
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { ViewDowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
-import { AttributeElement } from '@ckeditor/ckeditor5-engine/src/view/attributeelement.js';
-import { ContainerElement } from '@ckeditor/ckeditor5-engine/src/view/containerelement.js';
+import { ViewAttributeElement } from '@ckeditor/ckeditor5-engine/src/view/attributeelement.js';
+import { ViewContainerElement } from '@ckeditor/ckeditor5-engine/src/view/containerelement.js';
 import { Text } from '@ckeditor/ckeditor5-engine/src/view/text.js';
 import { ModelSchema } from '@ckeditor/ckeditor5-engine/src/model/schema.js';
 import { ModelElement } from '@ckeditor/ckeditor5-engine/src/model/element.js';
@@ -36,12 +36,12 @@ describe( 'utils', () => {
 			expect( isLinkElement( element ) ).to.be.true;
 		} );
 
-		it( 'should return false for other AttributeElements', () => {
-			expect( isLinkElement( new AttributeElement( 'a' ) ) ).to.be.false;
+		it( 'should return false for other ViewAttributeElements', () => {
+			expect( isLinkElement( new ViewAttributeElement( 'a' ) ) ).to.be.false;
 		} );
 
-		it( 'should return false for ContainerElements', () => {
-			expect( isLinkElement( new ContainerElement( 'p' ) ) ).to.be.false;
+		it( 'should return false for ViewContainerElements', () => {
+			expect( isLinkElement( new ViewContainerElement( 'p' ) ) ).to.be.false;
 		} );
 
 		it( 'should return false for text nodes', () => {
@@ -50,7 +50,7 @@ describe( 'utils', () => {
 	} );
 
 	describe( 'createLinkElement()', () => {
-		it( 'should create link AttributeElement', () => {
+		it( 'should create link ViewAttributeElement', () => {
 			const writer = new ViewDowncastWriter( new ViewDocument() );
 			const element = createLinkElement( 'http://cksource.com', { writer } );
 

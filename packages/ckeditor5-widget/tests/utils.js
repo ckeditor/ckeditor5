@@ -147,7 +147,7 @@ describe( 'widget utils', () => {
 			expect( icon.classList.contains( 'ck-icon' ) ).to.be.true;
 		} );
 
-		it( 'should throw when attempting to create a widget out of anything but ContainerElement', () => {
+		it( 'should throw when attempting to create a widget out of anything but ViewContainerElement', () => {
 			expect( () => {
 				toWidget( writer.createRawElement( 'div' ), writer );
 			}, 'raw element' ).to.throw( /^widget-to-widget-wrong-element-type/ );

@@ -6,8 +6,8 @@
 import { DowncastWriter } from '../../../src/view/downcastwriter.js';
 import { Range } from '../../../src/view/range.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
-import { ContainerElement } from '../../../src/view/containerelement.js';
-import { AttributeElement } from '../../../src/view/attributeelement.js';
+import { ViewContainerElement } from '../../../src/view/containerelement.js';
+import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
 import { EmptyElement } from '../../../src/view/emptyelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
 import { RawElement } from '../../../src/view/rawelement.js';
@@ -39,8 +39,8 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw when range placed in two containers', () => {
-			const p1 = new ContainerElement( document, 'p' );
-			const p2 = new ContainerElement( document, 'p' );
+			const p1 = new ViewContainerElement( document, 'p' );
+			const p2 = new ViewContainerElement( document, 'p' );
 
 			expectToThrowCKEditorError( () => {
 				writer.clear( Range._createFromParentsAndOffsets( p1, 0, p2, 0 ) );
@@ -48,7 +48,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw when range has no parent container', () => {
-			const el = new AttributeElement( document, 'b' );
+			const el = new ViewAttributeElement( document, 'b' );
 
 			expectToThrowCKEditorError( () => {
 				writer.clear( Range._createFromParentsAndOffsets( el, 0, el, 0 ) );
@@ -56,7 +56,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove matched element from range', () => {
-			const elementToRemove = new AttributeElement( document, 'b' );
+			const elementToRemove = new ViewAttributeElement( document, 'b' );
 
 			testDowncast(
 				elementToRemove,
@@ -66,7 +66,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove matched element from range when range is inside text node', () => {
-			const elementToRemove = new AttributeElement( document, 'b' );
+			const elementToRemove = new ViewAttributeElement( document, 'b' );
 
 			testDowncast(
 				elementToRemove,
@@ -76,7 +76,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove multiple matched elements from range', () => {
-			const elementToRemove = new AttributeElement( document, 'b' );
+			const elementToRemove = new ViewAttributeElement( document, 'b' );
 
 			testDowncast(
 				elementToRemove,
@@ -86,7 +86,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove multiple matched elements from range when range is inside text node', () => {
-			const elementToRemove = new AttributeElement( document, 'b' );
+			const elementToRemove = new ViewAttributeElement( document, 'b' );
 
 			testDowncast(
 				elementToRemove,
@@ -96,7 +96,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove only matched element', () => {
-			const elementToRemove = new AttributeElement( document, 'b' );
+			const elementToRemove = new ViewAttributeElement( document, 'b' );
 
 			testDowncast(
 				elementToRemove,
@@ -106,7 +106,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove part of node when range ends inside this node', () => {
-			const elementToRemove = new AttributeElement( document, 'b' );
+			const elementToRemove = new ViewAttributeElement( document, 'b' );
 
 			testDowncast(
 				elementToRemove,
@@ -116,7 +116,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove part of node when range starts inside this node', () => {
-			const elementToRemove = new AttributeElement( document, 'b' );
+			const elementToRemove = new ViewAttributeElement( document, 'b' );
 
 			testDowncast(
 				elementToRemove,
@@ -126,7 +126,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove part of node when range starts and ends inside this node', () => {
-			const elementToRemove = new AttributeElement( document, 'b' );
+			const elementToRemove = new ViewAttributeElement( document, 'b' );
 
 			testDowncast(
 				elementToRemove,
@@ -136,7 +136,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should merge after removing', () => {
-			const elementToRemove = new AttributeElement( document, 'b' );
+			const elementToRemove = new ViewAttributeElement( document, 'b' );
 
 			testDowncast(
 				elementToRemove,
@@ -177,8 +177,8 @@ describe( 'DowncastWriter', () => {
 			);
 		} );
 
-		it( 'should remove ContainerElement', () => {
-			const elementToRemove = new ContainerElement( document, 'p' );
+		it( 'should remove ViewContainerElement', () => {
+			const elementToRemove = new ViewContainerElement( document, 'p' );
 
 			testDowncast(
 				elementToRemove,

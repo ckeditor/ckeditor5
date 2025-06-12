@@ -1405,7 +1405,7 @@ describe( 'DataFilter', () => {
 		it( 'should use correct priority level for existing features', () => {
 			// 'a' element is registered by data schema with priority 5.
 			// We are checking if this element will be correctly nested due to different
-			// AttributeElement priority than default.
+			// ViewAttributeElement priority than default.
 			dataFilter.allowElement( 'a' );
 			dataFilter.allowAttributes( { name: 'a', attributes: { 'data-foo': 'foo' } } );
 

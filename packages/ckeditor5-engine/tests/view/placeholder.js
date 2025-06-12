@@ -341,7 +341,7 @@ describe( 'placeholder', () => {
 			expect( viewRoot.getChild( 0 ).hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
-		it( 'should not set attributes/class when first child is an AttributeElement (isDirectHost=false)', () => {
+		it( 'should not set attributes/class when first child is an ViewAttributeElement (isDirectHost=false)', () => {
 			_setViewData( view, '<attribute:ul><attribute:li>foo</attribute:li></attribute:ul>' );
 			viewDocument.isFocused = false;
 

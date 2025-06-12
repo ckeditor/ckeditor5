@@ -4,7 +4,7 @@
  */
 
 import { DowncastWriter } from '../../../src/view/downcastwriter.js';
-import { ContainerElement } from '../../../src/view/containerelement.js';
+import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { Text } from '../../../src/view/text.js';
 import { Position } from '../../../src/view/position.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
@@ -67,7 +67,7 @@ describe( 'DowncastWriter', () => {
 			// <p>foobar</p> -> <p>foo|bar</p>
 			const t1 = new Text( document, 'foo' );
 			const t2 = new Text( document, 'bar' );
-			const p = new ContainerElement( document, 'p', null, [ t1, t2 ] );
+			const p = new ViewContainerElement( document, 'p', null, [ t1, t2 ] );
 			const position = new Position( p, 1 );
 
 			const newPosition = writer.mergeAttributes( position );

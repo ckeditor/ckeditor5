@@ -936,8 +936,8 @@ export class DowncastWriter {
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
 	 * contains instances that are not {@link module:engine/view/text~Text Texts},
-	 * {@link module:engine/view/attributeelement~ViewAttributeElement AttributeElements},
-	 * {@link module:engine/view/containerelement~ViewContainerElement ContainerElements},
+	 * {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElements},
+	 * {@link module:engine/view/containerelement~ViewContainerElement ViewContainerElements},
 	 * {@link module:engine/view/emptyelement~EmptyElement EmptyElements},
 	 * {@link module:engine/view/rawelement~RawElement RawElements} or
 	 * {@link module:engine/view/uielement~UIElement UIElements}.
@@ -949,15 +949,15 @@ export class DowncastWriter {
 	public insert( position: Position, nodes: Node | Iterable<Node> ): Range {
 		nodes = isIterable( nodes ) ? [ ...nodes ] : [ nodes ];
 
-		// Check if nodes to insert are instances of AttributeElements, ContainerElements, EmptyElements, UIElements or Text.
+		// Check if nodes to insert are instances of ViewAttributeElements, ViewContainerElements, EmptyElements, UIElements or Text.
 		validateNodesToInsert( nodes, this.document );
 
-		// Group nodes in batches of nodes that require or do not require breaking an AttributeElements.
+		// Group nodes in batches of nodes that require or do not require breaking an ViewAttributeElements.
 		const nodeGroups = ( nodes as Array<Node> ).reduce( ( groups: Array<{ breakAttributes: boolean; nodes: Array<Node> }>, node ) => {
 			const lastGroup = groups[ groups.length - 1 ];
 
 			// Break attributes on nodes that do exist in the model tree so they can have attributes, other elements
-			// can't have an attribute in model and won't get wrapped with an AttributeElement while down-casted.
+			// can't have an attribute in model and won't get wrapped with an ViewAttributeElement while down-casted.
 			const breakAttributes = !node.is( 'uiElement' );
 
 			if ( !lastGroup || lastGroup.breakAttributes != breakAttributes ) {
@@ -1131,7 +1131,7 @@ export class DowncastWriter {
 	}
 
 	/**
-	 * Wraps elements within range with provided {@link module:engine/view/attributeelement~ViewAttributeElement AttributeElement}.
+	 * Wraps elements within range with provided {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElement}.
 	 * If a collapsed range is provided, it will be wrapped only if it is equal to view selection.
 	 *
 	 * If a collapsed range was passed and is same as selection, the selection
@@ -1142,7 +1142,7 @@ export class DowncastWriter {
 	 * and {@link module:engine/view/range~Range#end} positions are not placed inside same parent container.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
-	 * an instance of {@link module:engine/view/attributeelement~ViewAttributeElement AttributeElement}.
+	 * an instance of {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElement}.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-nonselection-collapsed-range` when passed range
 	 * is collapsed and different than view selection.
@@ -1511,7 +1511,7 @@ export class DowncastWriter {
 		let parentElement;
 
 		// Break attributes on nodes that do exist in the model tree so they can have attributes, other elements
-		// can't have an attribute in model and won't get wrapped with an AttributeElement while down-casted.
+		// can't have an attribute in model and won't get wrapped with an ViewAttributeElement while down-casted.
 		if ( breakAttributes ) {
 			parentElement = getParentContainer( position );
 		} else {
@@ -1744,7 +1744,7 @@ export class DowncastWriter {
 	 * This method will also merge newly added attribute element with its siblings whenever possible.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
-	 * an instance of {@link module:engine/view/attributeelement~ViewAttributeElement AttributeElement}.
+	 * an instance of {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElement}.
 	 *
 	 * @returns New range after wrapping, spanning over wrapping attribute element.
 	 */
@@ -1773,7 +1773,7 @@ export class DowncastWriter {
 	 * This method will also merge newly added attribute element with its siblings whenever possible.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
-	 * an instance of {@link module:engine/view/attributeelement~ViewAttributeElement AttributeElement}.
+	 * an instance of {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElement}.
 	 *
 	 * @returns New position after wrapping.
 	 */
@@ -2088,7 +2088,7 @@ function getParentContainer( position: Position ): ViewContainerElement | Docume
 }
 
 /**
- * Checks if first {@link module:engine/view/attributeelement~ViewAttributeElement AttributeElement} provided to the function
+ * Checks if first {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElement} provided to the function
  * can be wrapped outside second element. It is done by comparing elements'
  * {@link module:engine/view/attributeelement~ViewAttributeElement#priority priorities}, if both have same priority
  * {@link module:engine/view/element~Element#getIdentity identities} are compared.
@@ -2202,8 +2202,8 @@ function validateNodesToInsert( nodes: Iterable<Node>, errorContext: Document ):
 			 * Nodes to be inserted with {@link module:engine/view/downcastwriter~DowncastWriter#insert `DowncastWriter#insert()`} should be
 			 * of the following types:
 			 *
-			 * * {@link module:engine/view/attributeelement~ViewAttributeElement AttributeElement},
-			 * * {@link module:engine/view/containerelement~ViewContainerElement ContainerElement},
+			 * * {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElement},
+			 * * {@link module:engine/view/containerelement~ViewContainerElement ViewContainerElement},
 			 * * {@link module:engine/view/emptyelement~EmptyElement EmptyElement},
 			 * * {@link module:engine/view/uielement~UIElement UIElement},
 			 * * {@link module:engine/view/rawelement~RawElement RawElement},
@@ -2221,9 +2221,9 @@ function validateNodesToInsert( nodes: Iterable<Node>, errorContext: Document ):
 }
 
 /**
- * Checks if node is ContainerElement or DocumentFragment, because in most cases they should be treated the same way.
+ * Checks if node is ViewContainerElement or DocumentFragment, because in most cases they should be treated the same way.
  *
- * @returns Returns `true` if node is instance of ContainerElement or DocumentFragment.
+ * @returns Returns `true` if node is instance of ViewContainerElement or DocumentFragment.
  */
 function isContainerOrFragment( node: Node | DocumentFragment ): boolean {
 	return node && ( node.is( 'containerElement' ) || node.is( 'documentFragment' ) );

@@ -5,8 +5,8 @@
 
 import { Document } from '../../src/view/document.js';
 import { DocumentFragment } from '../../src/view/documentfragment.js';
-import { AttributeElement } from '../../src/view/attributeelement.js';
-import { ContainerElement } from '../../src/view/containerelement.js';
+import { ViewAttributeElement } from '../../src/view/attributeelement.js';
+import { ViewContainerElement } from '../../src/view/containerelement.js';
 import { Text } from '../../src/view/text.js';
 import { TreeWalker } from '../../src/view/treewalker.js';
 import { Position } from '../../src/view/position.js';
@@ -35,13 +35,13 @@ describe( 'TreeWalker', () => {
 		//     |- X
 
 		textAbcd = new Text( doc, 'abcd' );
-		bold = new AttributeElement( doc, 'b', null, [ textAbcd ] );
+		bold = new ViewAttributeElement( doc, 'b', null, [ textAbcd ] );
 		charY = new Text( doc, 'y' );
-		img2 = new ContainerElement( doc, 'img2' );
+		img2 = new ViewContainerElement( doc, 'img2' );
 		charX = new Text( doc, 'x' );
 
-		paragraph = new ContainerElement( doc, 'p', null, [ bold, charY, img2, charX ] );
-		img1 = new ContainerElement( doc, 'img1' );
+		paragraph = new ViewContainerElement( doc, 'p', null, [ bold, charY, img2, charX ] );
+		img1 = new ViewContainerElement( doc, 'img1' );
 
 		root._insertChild( 0, [ img1, paragraph ] );
 
@@ -771,8 +771,8 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( '`shallow` only iterates elements in the range that ends inside some element (forward)', () => {
-			const p2 = new ContainerElement( doc, 'p', null, [ new Text( doc, 'abc' ) ] );
-			const p3 = new ContainerElement( doc, 'p', null, [ new Text( doc, 'abc' ) ] );
+			const p2 = new ViewContainerElement( doc, 'p', null, [ new Text( doc, 'abc' ) ] );
+			const p3 = new ViewContainerElement( doc, 'p', null, [ new Text( doc, 'abc' ) ] );
 
 			root._insertChild( 2, [ p2, p3 ] );
 
@@ -792,8 +792,8 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( '`shallow` only iterates elements in the range ends deep inside some element (forward)', () => {
-			const p2 = new ContainerElement( doc, 'p', null, [ new Text( doc, 'abc' ) ] );
-			const p3 = new ContainerElement( doc, 'p', null, [ new Text( doc, 'abc' ) ] );
+			const p2 = new ViewContainerElement( doc, 'p', null, [ new Text( doc, 'abc' ) ] );
+			const p3 = new ViewContainerElement( doc, 'p', null, [ new Text( doc, 'abc' ) ] );
 
 			root._insertChild( 2, [ p2, p3 ] );
 
@@ -1078,8 +1078,8 @@ describe( 'TreeWalker', () => {
 	it( 'should iterate over document fragment', () => {
 		const foo = new Text( doc, 'foo' );
 		const bar = new Text( doc, 'bar' );
-		const p = new ContainerElement( doc, 'p', null, foo );
-		const b = new AttributeElement( doc, 'b', null, bar );
+		const p = new ViewContainerElement( doc, 'p', null, foo );
+		const b = new ViewAttributeElement( doc, 'b', null, bar );
 		const docFrag = new DocumentFragment( doc, [ p, b ] );
 
 		const expected = [

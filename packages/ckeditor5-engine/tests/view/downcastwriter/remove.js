@@ -4,11 +4,11 @@
  */
 
 import { DowncastWriter } from '../../../src/view/downcastwriter.js';
-import { ContainerElement } from '../../../src/view/containerelement.js';
+import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { Range } from '../../../src/view/range.js';
 import { DocumentFragment } from '../../../src/view/documentfragment.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
-import { AttributeElement } from '../../../src/view/attributeelement.js';
+import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
 import { EmptyElement } from '../../../src/view/emptyelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
 import { RawElement } from '../../../src/view/rawelement.js';
@@ -45,8 +45,8 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw when range placed in two containers', () => {
-			const p1 = new ContainerElement( document, 'p' );
-			const p2 = new ContainerElement( document, 'p' );
+			const p1 = new ViewContainerElement( document, 'p' );
+			const p2 = new ViewContainerElement( document, 'p' );
 
 			expectToThrowCKEditorError( () => {
 				writer.remove( Range._createFromParentsAndOffsets( p1, 0, p2, 0 ) );
@@ -54,7 +54,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw when range has no parent container', () => {
-			const el = new AttributeElement( document, 'b' );
+			const el = new ViewAttributeElement( document, 'b' );
 
 			expectToThrowCKEditorError( () => {
 				writer.remove( Range._createFromParentsAndOffsets( el, 0, el, 0 ) );
@@ -62,7 +62,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should return empty DocumentFragment when range is collapsed', () => {
-			const p = new ContainerElement( document, 'p' );
+			const p = new ViewContainerElement( document, 'p' );
 			const range = Range._createFromParentsAndOffsets( p, 0, p, 0 );
 			const fragment = writer.remove( range );
 
@@ -133,8 +133,8 @@ describe( 'DowncastWriter', () => {
 
 		it( 'should throw if range is placed inside EmptyElement', () => {
 			const emptyElement = new EmptyElement( document, 'img' );
-			const attributeElement = new AttributeElement( document, 'b' );
-			new ContainerElement( document, 'p', null, [ emptyElement, attributeElement ] ); // eslint-disable-line no-new
+			const attributeElement = new ViewAttributeElement( document, 'b' );
+			new ViewContainerElement( document, 'p', null, [ emptyElement, attributeElement ] ); // eslint-disable-line no-new
 			const range = Range._createFromParentsAndOffsets( emptyElement, 0, attributeElement, 0 );
 
 			expectToThrowCKEditorError( () => {
@@ -152,8 +152,8 @@ describe( 'DowncastWriter', () => {
 
 		it( 'should throw if range is placed inside UIElement', () => {
 			const uiElement = new UIElement( document, 'span' );
-			const attributeElement = new AttributeElement( document, 'b' );
-			new ContainerElement( document, 'p', null, [ uiElement, attributeElement ] ); // eslint-disable-line no-new
+			const attributeElement = new ViewAttributeElement( document, 'b' );
+			new ViewContainerElement( document, 'p', null, [ uiElement, attributeElement ] ); // eslint-disable-line no-new
 			const range = Range._createFromParentsAndOffsets( uiElement, 0, attributeElement, 0 );
 
 			expectToThrowCKEditorError( () => {
@@ -171,8 +171,8 @@ describe( 'DowncastWriter', () => {
 
 		it( 'should throw if a range is placed inside a RawElement', () => {
 			const rawElement = new RawElement( document, 'span' );
-			const attributeElement = new AttributeElement( document, 'b' );
-			new ContainerElement( document, 'p', null, [ rawElement, attributeElement ] ); // eslint-disable-line no-new
+			const attributeElement = new ViewAttributeElement( document, 'b' );
+			new ViewContainerElement( document, 'p', null, [ rawElement, attributeElement ] ); // eslint-disable-line no-new
 			const range = Range._createFromParentsAndOffsets( rawElement, 0, attributeElement, 0 );
 
 			expectToThrowCKEditorError( () => {
@@ -231,7 +231,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw when item has no parent container', () => {
-			const el = new AttributeElement( document, 'b' );
+			const el = new ViewAttributeElement( document, 'b' );
 
 			expectToThrowCKEditorError( () => {
 				writer.remove( el );

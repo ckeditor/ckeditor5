@@ -15,8 +15,8 @@ import { TextProxy } from '../../src/view/textproxy.js';
 import { _parseView, _stringifyView } from '../../src/dev-utils/view.js';
 import { TreeWalker } from '../../src/view/treewalker.js';
 import { createViewRoot } from './_utils/createroot.js';
-import { AttributeElement } from '../../src/view/attributeelement.js';
-import { ContainerElement } from '../../src/view/containerelement.js';
+import { ViewAttributeElement } from '../../src/view/attributeelement.js';
+import { ViewContainerElement } from '../../src/view/containerelement.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
@@ -649,10 +649,10 @@ describe( 'Position', () => {
 			root = createViewRoot( doc );
 
 			const textAbcd = new Text( document, 'abcd' );
-			const bold = new AttributeElement( document, 'b', null, [ textAbcd ] );
+			const bold = new ViewAttributeElement( document, 'b', null, [ textAbcd ] );
 
-			const paragraph = new ContainerElement( document, 'p', null, [ bold ] );
-			const img = new ContainerElement( document, 'img' );
+			const paragraph = new ViewContainerElement( document, 'p', null, [ bold ] );
+			const img = new ViewContainerElement( document, 'img' );
 
 			root._insertChild( 0, [ img, paragraph ] );
 		} );

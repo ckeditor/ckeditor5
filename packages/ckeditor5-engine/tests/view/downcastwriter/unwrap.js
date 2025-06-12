@@ -5,8 +5,8 @@
 
 import { DowncastWriter } from '../../../src/view/downcastwriter.js';
 import { Element } from '../../../src/view/element.js';
-import { ContainerElement } from '../../../src/view/containerelement.js';
-import { AttributeElement } from '../../../src/view/attributeelement.js';
+import { ViewContainerElement } from '../../../src/view/containerelement.js';
+import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
 import { EmptyElement } from '../../../src/view/emptyelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
 import { RawElement } from '../../../src/view/rawelement.js';
@@ -56,8 +56,11 @@ describe( 'DowncastWriter', () => {
 			);
 		} );
 
-		it( 'should throw error when element is not instance of AttributeElement', () => {
-			const container = new ContainerElement( document, 'p', null, new AttributeElement( document, 'b', null, new Text( 'foo' ) ) );
+		it( 'should throw error when element is not instance of ViewAttributeElement', () => {
+			const container = new ViewContainerElement(
+				document, 'p', null, new ViewAttributeElement( document, 'b', null, new Text( 'foo' ) )
+			);
+
 			const range = new Range(
 				new Position( container, 0 ),
 				new Position( container, 1 )
@@ -70,13 +73,13 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw error when range placed in two containers', () => {
-			const container1 = new ContainerElement( document, 'p' );
-			const container2 = new ContainerElement( document, 'p' );
+			const container1 = new ViewContainerElement( document, 'p' );
+			const container2 = new ViewContainerElement( document, 'p' );
 			const range = new Range(
 				new Position( container1, 0 ),
 				new Position( container2, 1 )
 			);
-			const b = new AttributeElement( document, 'b' );
+			const b = new ViewAttributeElement( document, 'b' );
 
 			expectToThrowCKEditorError( () => {
 				writer.unwrap( range, b );
@@ -84,8 +87,8 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw when range has no parent container', () => {
-			const el = new AttributeElement( document, 'b' );
-			const b = new AttributeElement( document, 'b' );
+			const el = new ViewAttributeElement( document, 'b' );
+			const b = new ViewAttributeElement( document, 'b' );
 
 			expectToThrowCKEditorError( () => {
 				writer.unwrap( Range._createFromParentsAndOffsets( el, 0, el, 0 ), b );
@@ -435,8 +438,8 @@ describe( 'DowncastWriter', () => {
 
 		it( 'should throw if range is inside EmptyElement', () => {
 			const empty = new EmptyElement( document, 'img' );
-			const attribute = new AttributeElement( document, 'b' );
-			const container = new ContainerElement( document, 'p', null, [ empty, attribute ] );
+			const attribute = new ViewAttributeElement( document, 'b' );
+			const container = new ViewContainerElement( document, 'p', null, [ empty, attribute ] );
 			const range = Range._createFromParentsAndOffsets( empty, 0, container, 2 );
 
 			expectToThrowCKEditorError( () => {
@@ -454,8 +457,8 @@ describe( 'DowncastWriter', () => {
 
 		it( 'should throw if range is placed inside UIElement', () => {
 			const uiElement = new UIElement( document, 'span' );
-			const attribute = new AttributeElement( document, 'b' );
-			const container = new ContainerElement( document, 'p', null, [ uiElement, attribute ] );
+			const attribute = new ViewAttributeElement( document, 'b' );
+			const container = new ViewContainerElement( document, 'p', null, [ uiElement, attribute ] );
 			const range = Range._createFromParentsAndOffsets( uiElement, 0, container, 2 );
 
 			expectToThrowCKEditorError( () => {
@@ -473,8 +476,8 @@ describe( 'DowncastWriter', () => {
 
 		it( 'should throw if a range is placed inside a RawElement', () => {
 			const rawElement = new RawElement( document, 'span' );
-			const attribute = new AttributeElement( document, 'b' );
-			const container = new ContainerElement( document, 'p', null, [ rawElement, attribute ] );
+			const attribute = new ViewAttributeElement( document, 'b' );
+			const container = new ViewContainerElement( document, 'p', null, [ rawElement, attribute ] );
 			const range = Range._createFromParentsAndOffsets( rawElement, 0, container, 2 );
 
 			expectToThrowCKEditorError( () => {

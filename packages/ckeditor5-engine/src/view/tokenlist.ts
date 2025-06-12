@@ -195,7 +195,7 @@ export class TokenList implements ElementAttributeValue {
 	 * Used by {@link module:engine/view/element~Element#_mergeAttributesFrom} to merge a given attribute into the attribute.
 	 *
 	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other AttributeElement.
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other ViewAttributeElement.
 	 *
 	 * @internal
 	 */
@@ -212,7 +212,7 @@ export class TokenList implements ElementAttributeValue {
 	 * can be fully subtracted from the attribute.
 	 *
 	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to unwrap the AttributeElement.
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to unwrap the ViewAttributeElement.
 	 *
 	 * @internal
 	 */
