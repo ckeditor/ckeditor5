@@ -1,6 +1,7 @@
 ---
 category: examples-builds
 meta-title: Classic editor example | CKEditor 5 Documentation
+meta-description: See how to use the Classic Editor type of CKEditor 5, offering a traditional toolbar and editing experience in a compact UI.
 order: 10
 toc: false
 contributeUrl: false

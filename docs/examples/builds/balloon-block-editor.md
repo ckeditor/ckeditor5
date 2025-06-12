@@ -1,6 +1,7 @@
 ---
 category: examples-builds
 meta-title: Balloon block editor example | CKEditor 5 Documentation
+meta-description: Discover the Balloon Block Editor in CKEditor 5, combining a floating toolbar with block-level editing for a modern, distraction-free workflow.
 order: 40
 toc: false
 contributeUrl: false

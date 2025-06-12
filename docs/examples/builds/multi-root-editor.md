@@ -1,6 +1,7 @@
 ---
 category: examples-builds
 meta-title: Multi-root editor example | CKEditor 5 Documentation
+meta-description: Explore the Multi-root Editor in CKEditor 5 to edit multiple content areas simultaneously with a shared toolbar and synchronized features.
 order: 60
 toc: false
 contributeUrl: false

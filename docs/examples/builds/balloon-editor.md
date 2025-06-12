@@ -1,6 +1,7 @@
 ---
 category: examples-builds
 meta-title: Balloon editor example | CKEditor 5 Documentation
+meta-description: Try out CKEditor 5's Balloon Editor, featuring a floating toolbar that appears near selected text for a focused editing experience.
 order: 30
 toc: false
 contributeUrl: false
