@@ -5,6 +5,7 @@ classes: main__content--no-toc
 toc: false
 meta-title: Bottom toolbar with button grouping example | CKEditor 5 Documentation
 menu-title: Bottom toolbar with button grouping
+meta-description: See how to configure a bottom toolbar in CKEditor 5 for an alternative UI layout that improves accessibility and user experience.
 modified_at: 2021-12-09
 ---
 
