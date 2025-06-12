@@ -9,7 +9,7 @@
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
-import type { ViewElement, NormalizedConsumables } from '../view/element.js';
+import type { ViewElement, ViewNormalizedConsumables } from '../view/element.js';
 import { type Node } from '../view/node.js';
 import { type Text } from '../view/text.js';
 import { type ViewDocumentFragment } from '../view/documentfragment.js';
@@ -80,7 +80,7 @@ export class ViewConsumable {
 	 */
 	public add(
 		element: Text | ViewElement | ViewDocumentFragment,
-		consumables?: Consumables | NormalizedConsumables
+		consumables?: Consumables | ViewNormalizedConsumables
 	): void {
 		let elementConsumables: ViewElementConsumables;
 
@@ -279,7 +279,7 @@ export class ViewConsumable {
 
 /**
  * Object describing all features of a view element that could be consumed and converted individually.
- * This is a non-normalized form of {@link module:engine/view/element~NormalizedConsumables} generated from the view Element.
+ * This is a non-normalized form of {@link module:engine/view/element~ViewNormalizedConsumables} generated from the view Element.
  *
  * Example element:
  *
@@ -297,7 +297,7 @@ export class ViewConsumable {
  * }
  * ```
  *
- * You could convert a `Consumable` into a {@link module:engine/view/element~NormalizedConsumables}
+ * You could convert a `Consumable` into a {@link module:engine/view/element~ViewNormalizedConsumables}
  * using the {@link module:engine/conversion/viewconsumable~normalizeConsumables} helper.
  */
 export interface Consumables {
@@ -371,16 +371,16 @@ export class ViewElementConsumables {
 	 * consumables.add( { attributes: [ [ 'title' ], [ 'name' ], [ 'class', 'foo' ], [ 'class', 'bar' ] ] } );
 	 * ```
 	 *
-	 * Note: This method accepts only {@link module:engine/view/element~NormalizedConsumables}.
+	 * Note: This method accepts only {@link module:engine/view/element~ViewNormalizedConsumables}.
 	 * You can use {@link module:engine/conversion/viewconsumable~normalizeConsumables} helper to convert from
-	 * {@link module:engine/conversion/viewconsumable~Consumables} to `NormalizedConsumables`.
+	 * {@link module:engine/conversion/viewconsumable~Consumables} to `ViewNormalizedConsumables`.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
 	 * attribute is provided - it should be handled separately by providing `style` and `class` in consumables object.
 	 *
 	 * @param consumables Object describing which parts of the element can be consumed.
 	 */
-	public add( consumables: NormalizedConsumables ): void {
+	public add( consumables: ViewNormalizedConsumables ): void {
 		if ( consumables.name ) {
 			this._canConsumeName = true;
 		}
@@ -443,7 +443,7 @@ export class ViewElementConsumables {
 	 * @returns `true` when all tested items can be consumed, `null` when even one of the items
 	 * was never marked for consumption and `false` when even one of the items was already consumed.
 	 */
-	public test( consumables: NormalizedConsumables ): boolean | null {
+	public test( consumables: ViewNormalizedConsumables ): boolean | null {
 		// Check if name can be consumed.
 		if ( consumables.name && !this._canConsumeName ) {
 			return this._canConsumeName;
@@ -514,7 +514,7 @@ export class ViewElementConsumables {
 	 * @param consumables Object describing which parts of the element should be consumed.
 	 * @returns `true` when all tested items can be consumed and `false` when even one of the items could not be consumed.
 	 */
-	public consume( consumables: NormalizedConsumables ): boolean {
+	public consume( consumables: ViewNormalizedConsumables ): boolean {
 		if ( !this.test( consumables ) ) {
 			return false;
 		}
@@ -566,7 +566,7 @@ export class ViewElementConsumables {
 	 *
 	 * @param consumables Object describing which parts of the element should be reverted.
 	 */
-	public revert( consumables: NormalizedConsumables ): void {
+	public revert( consumables: ViewNormalizedConsumables ): void {
 		if ( consumables.name ) {
 			this._canConsumeName = true;
 		}
@@ -605,11 +605,11 @@ export class ViewElementConsumables {
 
 /**
  * Normalizes a {@link module:engine/conversion/viewconsumable~Consumables} or {@link module:engine/view/matcher~Match}
- * to a {@link module:engine/view/element~NormalizedConsumables}.
+ * to a {@link module:engine/view/element~ViewNormalizedConsumables}.
  *
  * @internal
  */
-export function normalizeConsumables( consumables: Consumables | Match ): NormalizedConsumables {
+export function normalizeConsumables( consumables: Consumables | Match ): ViewNormalizedConsumables {
 	const attributes: Array<[string, string?]> = [];
 
 	if ( 'attributes' in consumables && consumables.attributes ) {

@@ -65,7 +65,7 @@ export class ViewElement extends Node {
 	/**
 	 * Map of attributes, where attributes names are keys and attributes values are values.
 	 */
-	private readonly _attrs: Map<string, string | ElementAttributeValue>;
+	private readonly _attrs: Map<string, string | ViewElementAttributeValue>;
 
 	/**
 	 * Array of child nodes.
@@ -116,7 +116,7 @@ export class ViewElement extends Node {
 	constructor(
 		document: ViewDocument,
 		name: string,
-		attrs?: ElementAttributes,
+		attrs?: ViewElementAttributes,
 		children?: Node | Iterable<Node>
 	) {
 		super( document );
@@ -233,7 +233,7 @@ export class ViewElement extends Node {
 
 		if ( token !== undefined ) {
 			if ( usesStylesMap( this.name, key ) || usesTokenList( this.name, key ) ) {
-				return ( this._attrs.get( key ) as ElementAttributeValue ).has( token );
+				return ( this._attrs.get( key ) as ViewElementAttributeValue ).has( token );
 			} else {
 				return this._attrs.get( key ) === token;
 			}
@@ -621,7 +621,7 @@ export class ViewElement extends Node {
 		this._fireChange( 'attributes', this );
 
 		if ( usesStylesMap( this.name, key ) || usesTokenList( this.name, key ) ) {
-			let currentValue = this._attrs.get( key ) as ElementAttributeValue | undefined;
+			let currentValue = this._attrs.get( key ) as ViewElementAttributeValue | undefined;
 
 			if ( !currentValue ) {
 				currentValue = usesStylesMap( this.name, key ) ?
@@ -665,7 +665,7 @@ export class ViewElement extends Node {
 		this._fireChange( 'attributes', this );
 
 		if ( tokens !== undefined && ( usesStylesMap( this.name, key ) || usesTokenList( this.name, key ) ) ) {
-			const currentValue = this._attrs.get( key ) as ElementAttributeValue | undefined;
+			const currentValue = this._attrs.get( key ) as ViewElementAttributeValue | undefined;
 
 			if ( !currentValue ) {
 				return false;
@@ -922,7 +922,7 @@ export class ViewElement extends Node {
 
 	/**
 	 * Used by the {@link module:engine/conversion/viewconsumable~ViewConsumable} to collect the
-	 * {@link module:engine/view/element~NormalizedConsumables} for the element.
+	 * {@link module:engine/view/element~ViewNormalizedConsumables} for the element.
 	 *
 	 * When `key` and `token` parameters are provided the output is filtered for the specified attribute and it's tokens and related tokens.
 	 *
@@ -930,7 +930,7 @@ export class ViewElement extends Node {
 	 * @param key Attribute name.
 	 * @param token Reference token to collect all related tokens.
 	 */
-	public _getConsumables( key?: string, token?: string ): NormalizedConsumables {
+	public _getConsumables( key?: string, token?: string ): ViewNormalizedConsumables {
 		const attributes: Array<[string, string?]> = [];
 
 		if ( key ) {
@@ -1123,7 +1123,7 @@ export class ViewElement extends Node {
 	 * @param attrs Attributes to parse.
 	 * @returns Parsed attributes.
 	 */
-	private _parseAttributes( attrs?: ElementAttributes ) {
+	private _parseAttributes( attrs?: ViewElementAttributes ) {
 		const attrsMap = toMap( attrs );
 
 		for ( const [ key, value ] of attrsMap ) {
@@ -1151,7 +1151,7 @@ export class ViewElement extends Node {
 			}
 		}
 
-		return attrsMap as Map<string, string | ElementAttributeValue>;
+		return attrsMap as Map<string, string | ViewElementAttributeValue>;
 	}
 
 	/**
@@ -1201,7 +1201,7 @@ ViewElement.prototype.is = function( type: string, name?: string ): boolean {
 /**
  * Common interface for a {@link module:engine/view/tokenlist~TokenList} and {@link module:engine/view/stylesmap~StylesMap}.
  */
-export interface ElementAttributeValue {
+export interface ViewElementAttributeValue {
 
 	/**
 	 * Returns `true` if attribute has no value set.
@@ -1311,7 +1311,7 @@ export interface ElementAttributeValue {
 /**
  * Collection of attributes.
  */
-export type ElementAttributes = Record<string, unknown> | Iterable<[ string, unknown ]> | null;
+export type ViewElementAttributes = Record<string, unknown> | Iterable<[ string, unknown ]> | null;
 
 /**
  * Object describing all features of a view element that could be consumed and converted individually.
@@ -1323,7 +1323,7 @@ export type ElementAttributes = Record<string, unknown> | Iterable<[ string, unk
  * <a class="foo bar" style="color: red; margin: 5px" href="https://ckeditor.com" rel="nofollow noreferrer" target="_blank">
  * ```
  *
- * The `NormalizedConsumables` would include:
+ * The `ViewNormalizedConsumables` would include:
  *
  * ```json
  * {
@@ -1345,7 +1345,7 @@ export type ElementAttributes = Record<string, unknown> | Iterable<[ string, unk
  * }
  * ```
  */
-export interface NormalizedConsumables {
+export interface ViewNormalizedConsumables {
 
 	/**
 	 * If set to `true` element's name will be included in a consumable.

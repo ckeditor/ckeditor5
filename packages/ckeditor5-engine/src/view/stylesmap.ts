@@ -8,14 +8,14 @@
  */
 
 import { get, isObject, merge, set } from 'es-toolkit/compat';
-import type { ElementAttributeValue } from './element.js';
+import type { ViewElementAttributeValue } from './element.js';
 import { type ArrayOrItem, toArray } from '@ckeditor/ckeditor5-utils';
 import { isPatternMatched } from './matcher.js';
 
 /**
  * Styles map. Allows handling (adding, removing, retrieving) a set of style rules (usually, of an element).
  */
-export class StylesMap implements ElementAttributeValue {
+export class StylesMap implements ViewElementAttributeValue {
 	/**
 	 * Keeps an internal representation of styles map. Normalized styles are kept as object tree to allow unified modification and
 	 * value access model using lodash's get, set, unset, etc methods.

@@ -8,12 +8,12 @@
  */
 
 import { type ArrayOrItem, toArray } from '@ckeditor/ckeditor5-utils';
-import type { ElementAttributeValue } from './element.js';
+import type { ViewElementAttributeValue } from './element.js';
 
 /**
  * Token list. Allows handling (adding, removing, retrieving) a set of tokens (for example class names).
  */
-export class TokenList implements ElementAttributeValue {
+export class TokenList implements ViewElementAttributeValue {
 	/**
 	 * The set of tokens.
 	 */

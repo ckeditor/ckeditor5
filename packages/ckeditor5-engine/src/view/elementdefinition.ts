@@ -46,7 +46,7 @@ import type { ArrayOrItem } from '@ckeditor/ckeditor5-utils';
  * <span style="font-size:12px;font-weight:bold" data-id="123"></span>
  * ```
  */
-export interface ElementObjectDefinition {
+export interface ViewElementObjectDefinition {
 
 	/**
 	 * View element name.
@@ -92,6 +92,4 @@ export interface ElementObjectDefinition {
  * };
  * ```
  */
-export type ElementDefinition = string | ElementObjectDefinition;
-
-export { ElementDefinition as ViewElementDefinition };
+export type ViewElementDefinition = string | ViewElementObjectDefinition;

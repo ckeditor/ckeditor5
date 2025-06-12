@@ -7,7 +7,7 @@
  * @module engine/view/containerelement
  */
 
-import { ViewElement, type ElementAttributes } from './element.js';
+import { ViewElement, type ViewElementAttributes } from './element.js';
 import { type ViewDocument } from './document.js';
 import { type Node } from './node.js';
 
@@ -46,7 +46,7 @@ export class ViewContainerElement extends ViewElement {
 	constructor(
 		document: ViewDocument,
 		name: string,
-		attrs?: ElementAttributes,
+		attrs?: ViewElementAttributes,
 		children?: Node | Iterable<Node>
 	) {
 		super( document, name, attrs, children );

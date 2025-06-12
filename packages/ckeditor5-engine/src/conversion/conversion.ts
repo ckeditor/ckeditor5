@@ -23,7 +23,7 @@ import {
 
 import { type DowncastDispatcher } from './downcastdispatcher.js';
 import { type UpcastDispatcher } from './upcastdispatcher.js';
-import { type ElementDefinition } from '../view/elementdefinition.js';
+import { type ViewElementDefinition } from '../view/elementdefinition.js';
 import type { MatcherPattern } from '../view/matcher.js';
 
 /**
@@ -303,8 +303,8 @@ export class Conversion {
 	 */
 	public elementToElement( definition: {
 		model: string;
-		view: ElementDefinition;
-		upcastAlso?: ArrayOrItem<ElementDefinition | MatcherPattern>;
+		view: ViewElementDefinition;
+		upcastAlso?: ArrayOrItem<ViewElementDefinition | MatcherPattern>;
 		converterPriority?: PriorityString;
 	} ): void {
 		// Set up downcast converter.
@@ -486,7 +486,7 @@ export class Conversion {
 				key: string;
 				name?: string;
 			};
-			view: ElementDefinition;
+			view: ViewElementDefinition;
 			upcastAlso?: ArrayOrItem<MatcherPattern>;
 			converterPriority?: PriorityString;
 		} | {
@@ -495,7 +495,7 @@ export class Conversion {
 				name?: string;
 				values: Array<TValues>;
 			};
-			view: Record<TValues, ElementDefinition>;
+			view: Record<TValues, ViewElementDefinition>;
 			upcastAlso?: Record<TValues, ArrayOrItem<MatcherPattern>>;
 			converterPriority?: PriorityString;
 		}

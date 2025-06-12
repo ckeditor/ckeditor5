@@ -21,7 +21,7 @@ import { Range } from '../view/range.js';
 import { Position } from '../view/position.js';
 import { ViewAttributeElement } from '../view/attributeelement.js';
 import { ViewContainerElement } from '../view/containerelement.js';
-import { EmptyElement } from '../view/emptyelement.js';
+import { ViewEmptyElement } from '../view/emptyelement.js';
 import { UIElement } from '../view/uielement.js';
 import { RawElement } from '../view/rawelement.js';
 import { StylesProcessor } from '../view/stylesmap.js';
@@ -37,7 +37,7 @@ const TEXT_RANGE_END_TOKEN = '}';
 const allowedTypes = {
 	'container': ViewContainerElement,
 	'attribute': ViewAttributeElement,
-	'empty': EmptyElement,
+	'empty': ViewEmptyElement,
 	'ui': UIElement,
 	'raw': RawElement
 };

@@ -9,7 +9,7 @@
  * @module engine/view/rawelement
  */
 
-import { ViewElement, type ElementAttributes } from './element.js';
+import { ViewElement, type ViewElementAttributes } from './element.js';
 import { Node } from './node.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -52,7 +52,7 @@ export class RawElement extends ViewElement {
 	constructor(
 		document: ViewDocument,
 		name: string,
-		attrs?: ElementAttributes,
+		attrs?: ViewElementAttributes,
 		children?: Node | Iterable<Node>
 	) {
 		super( document, name, attrs, children );

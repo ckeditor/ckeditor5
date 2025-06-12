@@ -222,7 +222,13 @@ export { Renderer } from './view/renderer.js';
 export { EditingView } from './view/view.js';
 export { ViewDocument, type ViewDocumentPostFixer, type ViewDocumentChangeType } from './view/document.js';
 export { ViewText } from './view/text.js';
-export { ViewElement, type ElementAttributes as ViewElementAttributes } from './view/element.js';
+export {
+	ViewElement,
+	type ViewElementAttributes,
+	type ViewElementAttributeValue,
+	type ViewNormalizedConsumables
+} from './view/element.js';
+
 export { ViewContainerElement, getViewFillerOffset } from './view/containerelement.js';
 export { ViewEditableElement } from './view/editableelement.js';
 export { ViewRootEditableElement } from './view/rooteditableelement.js';
@@ -232,7 +238,7 @@ export { ViewRawElement } from './view/rawelement.js';
 export { ViewUIElement } from './view/uielement.js';
 export { ViewDocumentFragment } from './view/documentfragment.js';
 export { ViewTreeWalker, type TreeWalkerValue as ViewTreeWalkerValue } from './view/treewalker.js';
-export type { ViewElementDefinition, ElementObjectDefinition } from './view/elementdefinition.js';
+export type { ViewElementDefinition, ViewElementObjectDefinition } from './view/elementdefinition.js';
 export { ViewDocumentSelection } from './view/documentselection.js';
 export type { ViewItem } from './view/item.js';
 export { ViewNode } from './view/node.js';

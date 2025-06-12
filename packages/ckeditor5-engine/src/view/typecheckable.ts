@@ -9,7 +9,7 @@ import { type ViewDocumentFragment } from './documentfragment.js';
 import { type ViewDocumentSelection } from './documentselection.js';
 import { type ViewEditableElement } from './editableelement.js';
 import { type ViewElement } from './element.js';
-import { type EmptyElement } from './emptyelement.js';
+import { type ViewEmptyElement } from './emptyelement.js';
 import { type Node } from './node.js';
 import { type Position } from './position.js';
 import { type Range } from './range.js';
@@ -61,7 +61,7 @@ export abstract class TypeCheckable {
 		ViewAttributeElement |
 		ViewContainerElement |
 		ViewEditableElement |
-		EmptyElement |
+		ViewEmptyElement |
 		RawElement |
 		RootEditableElement |
 		UIElement
@@ -95,7 +95,7 @@ export abstract class TypeCheckable {
 		ViewAttributeElement |
 		ViewContainerElement |
 		ViewEditableElement |
-		EmptyElement |
+		ViewEmptyElement |
 		RawElement |
 		RootEditableElement |
 		UIElement
@@ -212,7 +212,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label EMPTY_ELEMENT
 	 */
-	public is( type: 'emptyElement' | 'view:emptyElement' ): this is EmptyElement;
+	public is( type: 'emptyElement' | 'view:emptyElement' ): this is ViewEmptyElement;
 
 	/**
 	 * Checks whether this object is of type {@link module:engine/view/rawelement~RawElement}.
@@ -429,7 +429,7 @@ export abstract class TypeCheckable {
 		ViewAttributeElement |
 		ViewContainerElement |
 		ViewEditableElement |
-		EmptyElement |
+		ViewEmptyElement |
 		RawElement |
 		RootEditableElement |
 		UIElement
@@ -470,7 +470,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label EMPTY_ELEMENT_NAME
 	 */
-	public is<N extends string>( type: 'emptyElement' | 'view:emptyElement', name: N ): this is EmptyElement & { name: N };
+	public is<N extends string>( type: 'emptyElement' | 'view:emptyElement', name: N ): this is ViewEmptyElement & { name: N };
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/view/rawelement~RawElement} and has the specified `name`.

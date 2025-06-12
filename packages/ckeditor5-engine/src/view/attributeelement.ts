@@ -7,7 +7,7 @@
  * @module engine/view/attributeelement
  */
 
-import { ViewElement, type ElementAttributes } from './element.js';
+import { ViewElement, type ViewElementAttributes } from './element.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { type ViewDocumentFragment } from './documentfragment.js';
@@ -70,7 +70,7 @@ export class ViewAttributeElement extends ViewElement {
 	constructor(
 		document: ViewDocument,
 		name: string,
-		attrs?: ElementAttributes,
+		attrs?: ViewElementAttributes,
 		children?: Node | Iterable<Node>
 	) {
 		super( document, name, attrs, children );

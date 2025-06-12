@@ -35,7 +35,7 @@ import { type ModelTextProxy } from '../model/textproxy.js';
 import { type ModelText } from '../model/text.js';
 
 import { type ViewDowncastWriter } from '../view/downcastwriter.js';
-import { type ElementDefinition } from '../view/elementdefinition.js';
+import { type ViewElementDefinition } from '../view/elementdefinition.js';
 import { type ViewDocumentFragment } from '../view/documentfragment.js';
 import { type UIElement } from '../view/uielement.js';
 import { type ViewElement } from '../view/element.js';
@@ -213,7 +213,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 			attributes?: string | Array<string>;
 			children?: boolean;
 		};
-		view: ElementDefinition | DowncastElementCreatorFunction;
+		view: ViewElementDefinition | DowncastElementCreatorFunction;
 		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( downcastElementToElement( config ) );
@@ -431,7 +431,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 				key: string;
 				name?: string;
 			};
-			view: ElementDefinition | DowncastAttributeElementCreatorFunction;
+			view: ViewElementDefinition | DowncastAttributeElementCreatorFunction;
 			converterPriority?: PriorityString;
 		} | {
 			model: {
@@ -439,7 +439,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 				name?: string;
 				values: Array<TValues>;
 			};
-			view: Record<TValues, ElementDefinition | DowncastAttributeElementCreatorFunction>;
+			view: Record<TValues, ViewElementDefinition | DowncastAttributeElementCreatorFunction>;
 			converterPriority?: PriorityString;
 		}
 	): this {
@@ -617,7 +617,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 	 */
 	public markerToElement( config: {
 		model: string;
-		view: ElementDefinition | DowncastMarkerElementCreatorFunction;
+		view: ViewElementDefinition | DowncastMarkerElementCreatorFunction;
 		converterPriority?: PriorityString;
 	} ): this {
 		return this.add( downcastMarkerToElement( config ) );
@@ -1924,7 +1924,7 @@ function downcastElementToElement( config: {
 		attributes?: string | Array<string>;
 		children?: boolean;
 	};
-	view: ElementDefinition | DowncastElementCreatorFunction;
+	view: ViewElementDefinition | DowncastElementCreatorFunction;
 	converterPriority?: PriorityString;
 } ) {
 	const model = normalizeModelElementConfig( config.model );
@@ -2053,9 +2053,9 @@ function downcastAttributeToElement( config: {
 		values?: Array<string>;
 	};
 	view:
-		| ElementDefinition
+		| ViewElementDefinition
 		| DowncastAttributeElementCreatorFunction
-		| Record<string, ElementDefinition | DowncastAttributeElementCreatorFunction>;
+		| Record<string, ViewElementDefinition | DowncastAttributeElementCreatorFunction>;
 	converterPriority?: PriorityString;
 } ) {
 	config = cloneDeep( config );
@@ -2167,7 +2167,7 @@ function downcastAttributeToAttribute( config: {
  */
 function downcastMarkerToElement( config: {
 	model: string;
-	view: ElementDefinition | DowncastMarkerElementCreatorFunction;
+	view: ViewElementDefinition | DowncastMarkerElementCreatorFunction;
 	converterPriority?: PriorityString;
 } ) {
 	const view = normalizeToElementConfig( config.view, 'ui' );
@@ -2305,7 +2305,7 @@ interface NormalizedModelElementConfig {
  * @returns Element creator function to use in lower level converters.
  */
 function normalizeToElementConfig<T extends Function>(
-	view: ElementDefinition | T,
+	view: ViewElementDefinition | T,
 	viewElementType: 'container' | 'attribute' | 'ui'
 ): T {
 	if ( typeof view == 'function' ) {
@@ -2321,7 +2321,7 @@ function normalizeToElementConfig<T extends Function>(
  * Creates a view element instance from the provided {@link module:engine/view/elementdefinition~ElementDefinition} and class.
  */
 function createViewElementFromDefinition(
-	viewElementDefinition: ElementDefinition,
+	viewElementDefinition: ViewElementDefinition,
 	conversionApi: DowncastConversionApi,
 	viewElementType: 'container' | 'attribute' | 'ui'
 ): ViewElement {

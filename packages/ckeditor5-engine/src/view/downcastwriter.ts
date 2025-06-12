@@ -17,7 +17,7 @@ import {
 } from './selection.js';
 import { ViewContainerElement } from './containerelement.js';
 import { ViewAttributeElement } from './attributeelement.js';
-import { EmptyElement } from './emptyelement.js';
+import { ViewEmptyElement } from './emptyelement.js';
 import { UIElement } from './uielement.js';
 import { RawElement } from './rawelement.js';
 import { CKEditorError, isIterable, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
@@ -28,7 +28,7 @@ import { isPlainObject } from 'es-toolkit/compat';
 
 import { type ViewDocument } from './document.js';
 import { type Node } from './node.js';
-import type { ViewElement, ElementAttributes } from './element.js';
+import type { ViewElement, ViewElementAttributes } from './element.js';
 import { type ViewDomConverter } from './domconverter.js';
 import { type Item } from './item.js';
 import type { DowncastSlotFilter } from '../conversion/downcasthelpers.js';
@@ -243,7 +243,7 @@ export class ViewDowncastWriter {
 	 */
 	public createAttributeElement(
 		name: string,
-		attributes?: ElementAttributes,
+		attributes?: ViewElementAttributes,
 		options: {
 			priority?: number;
 			id?: number | string;
@@ -296,7 +296,7 @@ export class ViewDowncastWriter {
 	 */
 	public createContainerElement(
 		name: string,
-		attributes?: ElementAttributes,
+		attributes?: ViewElementAttributes,
 		options?: { renderUnsafeAttributes?: Array<string> }
 	): ViewContainerElement;
 
@@ -329,14 +329,14 @@ export class ViewDowncastWriter {
 	 */
 	public createContainerElement(
 		name: string,
-		attributes: ElementAttributes,
+		attributes: ViewElementAttributes,
 		children: Node | Iterable<Node>,
 		options?: { renderUnsafeAttributes?: Array<string> }
 	): ViewContainerElement;
 
 	public createContainerElement(
 		name: string,
-		attributes?: ElementAttributes,
+		attributes?: ViewElementAttributes,
 		childrenOrOptions: Node | Iterable<Node> | { renderUnsafeAttributes?: Array<string> } = {},
 		options: { renderUnsafeAttributes?: Array<string> } = {}
 	): ViewContainerElement {
@@ -376,7 +376,7 @@ export class ViewDowncastWriter {
 	 */
 	public createEditableElement(
 		name: string,
-		attributes?: ElementAttributes,
+		attributes?: ViewElementAttributes,
 		options: {
 			renderUnsafeAttributes?: Array<string>;
 		} = {}
@@ -407,12 +407,12 @@ export class ViewDowncastWriter {
 	 */
 	public createEmptyElement(
 		name: string,
-		attributes?: ElementAttributes,
+		attributes?: ViewElementAttributes,
 		options: {
 			renderUnsafeAttributes?: Array<string>;
 		} = {}
-	): EmptyElement {
-		const emptyElement = new EmptyElement( this.document, name, attributes );
+	): ViewEmptyElement {
+		const emptyElement = new ViewEmptyElement( this.document, name, attributes );
 
 		if ( options.renderUnsafeAttributes ) {
 			emptyElement._unsafeAttributesToRender.push( ...options.renderUnsafeAttributes );
@@ -452,7 +452,7 @@ export class ViewDowncastWriter {
 	 */
 	public createUIElement(
 		name: string,
-		attributes?: ElementAttributes,
+		attributes?: ViewElementAttributes,
 		renderFunction?: ( this: UIElement, domDocument: DomDocument, domConverter: ViewDomConverter ) => DomElement
 	): UIElement {
 		const uiElement = new UIElement( this.document, name, attributes );
@@ -495,7 +495,7 @@ export class ViewDowncastWriter {
 	 */
 	public createRawElement(
 		name: string,
-		attributes?: ElementAttributes,
+		attributes?: ViewElementAttributes,
 		renderFunction?: ( domElement: DomElement, domConverter: ViewDomConverter ) => void,
 		options: {
 			renderUnsafeAttributes?: Array<string>;
@@ -2185,7 +2185,7 @@ function mergeTextNodes( t1: Text, t2: Text ): Position {
 	return new Position( t1, nodeBeforeLength );
 }
 
-const validNodesToInsert = [ Text, ViewAttributeElement, ViewContainerElement, EmptyElement, RawElement, UIElement ];
+const validNodesToInsert = [ Text, ViewAttributeElement, ViewContainerElement, ViewEmptyElement, RawElement, UIElement ];
 
 /**
  * Checks if provided nodes are valid to insert.

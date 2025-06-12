@@ -7,7 +7,7 @@
  * @module engine/view/emptyelement
  */
 
-import { ViewElement, type ElementAttributes } from './element.js';
+import { ViewElement, type ViewElementAttributes } from './element.js';
 import { Node } from './node.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -20,7 +20,7 @@ import { type Item } from './item.js';
  * To create a new empty element use the
  * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createEmptyElement `downcastWriter#createEmptyElement()`} method.
  */
-export class EmptyElement extends ViewElement {
+export class ViewEmptyElement extends ViewElement {
 	/**
 	 * Creates new instance of EmptyElement.
 	 *
@@ -37,7 +37,7 @@ export class EmptyElement extends ViewElement {
 	constructor(
 		document: ViewDocument,
 		name: string,
-		attributes?: ElementAttributes,
+		attributes?: ViewElementAttributes,
 		children?: Node | Iterable<Node>
 	) {
 		super( document, name, attributes, children );
@@ -71,7 +71,7 @@ export class EmptyElement extends ViewElement {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-EmptyElement.prototype.is = function( type: string, name?: string ): boolean {
+ViewEmptyElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'emptyElement' || type === 'view:emptyElement' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
@@ -84,8 +84,6 @@ EmptyElement.prototype.is = function( type: string, name?: string ): boolean {
 		);
 	}
 };
-
-export { EmptyElement as ViewEmptyElement };
 
 /**
  * Returns `null` because block filler is not needed for EmptyElements.

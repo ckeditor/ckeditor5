@@ -8,7 +8,7 @@
  */
 
 import { ViewDocumentFragment } from './documentfragment.js';
-import { ViewElement, type ElementAttributes } from './element.js';
+import { ViewElement, type ViewElementAttributes } from './element.js';
 import { Text } from './text.js';
 import { isPlainObject } from 'es-toolkit/compat';
 import { Position, type PositionOffset } from './position.js';
@@ -86,7 +86,7 @@ export class UpcastWriter {
 	 */
 	public createElement(
 		name: string,
-		attrs?: ElementAttributes,
+		attrs?: ViewElementAttributes,
 		children?: Node | Iterable<Node>
 	): ViewElement {
 		return new ViewElement( this.document, name, attrs, children );
