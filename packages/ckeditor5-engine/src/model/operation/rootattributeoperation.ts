@@ -10,7 +10,7 @@
 import { Operation } from './operation.js';
 
 import { type ModelDocument } from '../document.js';
-import { type RootElement } from '../rootelement.js';
+import { type ModelRootElement } from '../rootelement.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import type { Selectable } from '../selection.js';
@@ -29,7 +29,7 @@ export class RootAttributeOperation extends Operation {
 	/**
 	 * Root element to change.
 	 */
-	public readonly root: RootElement;
+	public readonly root: ModelRootElement;
 
 	/**
 	 * Key of an attribute to change or remove.
@@ -62,7 +62,7 @@ export class RootAttributeOperation extends Operation {
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor(
-		root: RootElement,
+		root: ModelRootElement,
 		key: string,
 		oldValue: unknown,
 		newValue: unknown,
@@ -122,7 +122,7 @@ export class RootAttributeOperation extends Operation {
 			 * The element to change is not a root element.
 			 *
 			 * @error rootattribute-operation-not-a-root
-			 * @param {module:engine/model/rootelement~RootElement} root The root element.
+			 * @param {module:engine/model/rootelement~ModelRootElement} root The root element.
 			 * @param {string} key The key of the attribute.
 			 */
 			throw new CKEditorError(
@@ -137,7 +137,7 @@ export class RootAttributeOperation extends Operation {
 			 * The attribute which should be removed does not exist for the given node.
 			 *
 			 * @error rootattribute-operation-wrong-old-value
-			 * @param {module:engine/model/rootelement~RootElement} root The root element.
+			 * @param {module:engine/model/rootelement~ModelRootElement} root The root element.
 			 * @param {string} key The key of the attribute.
 			 */
 			throw new CKEditorError(
@@ -152,7 +152,7 @@ export class RootAttributeOperation extends Operation {
 			 * The attribute with given key already exists for the given node.
 			 *
 			 * @error rootattribute-operation-attribute-exists
-			 * @param {module:engine/model/rootelement~RootElement} root The root element.
+			 * @param {module:engine/model/rootelement~ModelRootElement} root The root element.
 			 * @param {string} key The key of the attribute.
 			 */
 			throw new CKEditorError(

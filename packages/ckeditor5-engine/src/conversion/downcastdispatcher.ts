@@ -17,7 +17,7 @@ import type { MarkerCollection, Marker } from '../model/markercollection.js';
 import type { TreeWalkerValue } from '../model/treewalker.js';
 import { type ModelDocumentSelection } from '../model/documentselection.js';
 import { type DowncastWriter } from '../view/downcastwriter.js';
-import { type RootElement } from '../model/rootelement.js';
+import { type ModelRootElement } from '../model/rootelement.js';
 import { type ModelElement } from '../model/element.js';
 import { type ModelItem } from '../model/item.js';
 import { type Mapper } from './mapper.js';
@@ -260,7 +260,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 		this.fire<DowncastCleanSelectionEvent>( 'cleanSelection', { selection }, conversionApi );
 
 		// Don't convert selection if it is in a model root that does not have a view root (for now this is only the graveyard root).
-		const modelRoot = selection.getFirstPosition()!.root as RootElement;
+		const modelRoot = selection.getFirstPosition()!.root as ModelRootElement;
 
 		if ( !conversionApi.mapper.toViewElement( modelRoot ) ) {
 			return;

@@ -10,7 +10,7 @@
 import { Differ } from './differ.js';
 import { ModelDocumentSelection } from './documentselection.js';
 import { History } from './history.js';
-import { RootElement } from './rootelement.js';
+import { ModelRootElement } from './rootelement.js';
 
 import type { SelectionChangeEvent } from './selection.js';
 import type { Model, ModelApplyOperationEvent } from './model.js';
@@ -70,7 +70,7 @@ export class ModelDocument extends /* #__PURE__ */ EmitterMixin() {
 	 * A list of roots that are owned and managed by this document. Use {@link #createRoot}, {@link #getRoot} and
 	 * {@link #getRootNames} to manipulate it.
 	 */
-	public readonly roots: Collection<RootElement>;
+	public readonly roots: Collection<ModelRootElement>;
 
 	/**
 	 * The model differ object. Its role is to buffer changes done on the model document and then calculate a diff of those changes.
@@ -217,7 +217,7 @@ export class ModelDocument extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * The graveyard tree root. A document always has a graveyard root that stores removed nodes.
 	 */
-	public get graveyard(): RootElement {
+	public get graveyard(): ModelRootElement {
 		return this.getRoot( graveyardName )!;
 	}
 
@@ -232,7 +232,7 @@ export class ModelDocument extends /* #__PURE__ */ EmitterMixin() {
 	 * @param rootName A unique root name.
 	 * @returns The created root.
 	 */
-	public createRoot( elementName: string = '$root', rootName: string = 'main' ): RootElement {
+	public createRoot( elementName: string = '$root', rootName: string = 'main' ): ModelRootElement {
 		if ( this.roots.get( rootName ) ) {
 			/**
 			 * A root with the specified name already exists.
@@ -242,7 +242,7 @@ export class ModelDocument extends /* #__PURE__ */ EmitterMixin() {
 			throw new CKEditorError( 'model-document-createroot-name-exists', this, { name: rootName } );
 		}
 
-		const root = new RootElement( this, elementName, rootName );
+		const root = new ModelRootElement( this, elementName, rootName );
 		this.roots.add( root );
 
 		return root;
@@ -265,7 +265,7 @@ export class ModelDocument extends /* #__PURE__ */ EmitterMixin() {
 	 * @param name The root name of the root to return.
 	 * @returns The root registered under a given name or `null` when there is no root with the given name.
 	 */
-	public getRoot( name: string = 'main' ): RootElement | null {
+	public getRoot( name: string = 'main' ): ModelRootElement | null {
 		return this.roots.get( name );
 	}
 
@@ -289,7 +289,7 @@ export class ModelDocument extends /* #__PURE__ */ EmitterMixin() {
 	 *
 	 * @param includeDetached Specified whether detached roots should be returned as well.
 	 */
-	public getRoots( includeDetached = false ): Array<RootElement> {
+	public getRoots( includeDetached = false ): Array<ModelRootElement> {
 		return this.roots.filter( root => root != this.graveyard && ( includeDetached || root.isAttached() ) && root._isLoaded );
 	}
 
@@ -399,7 +399,7 @@ export class ModelDocument extends /* #__PURE__ */ EmitterMixin() {
 	 *
 	 * @returns The default root for this document.
 	 */
-	protected _getDefaultRoot(): RootElement {
+	protected _getDefaultRoot(): ModelRootElement {
 		const roots = this.getRoots();
 
 		return roots.length ? roots[ 0 ] : this.graveyard;

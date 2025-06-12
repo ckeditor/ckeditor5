@@ -6,7 +6,7 @@
 import { transform, transformOperationSets } from '../../../src/model/operation/transform.js';
 
 import { Model } from '../../../src/model/model.js';
-import { RootElement } from '../../../src/model/rootelement.js';
+import { ModelRootElement } from '../../../src/model/rootelement.js';
 import { ModelNode } from '../../../src/model/node.js';
 import { ModelPosition } from '../../../src/model/position.js';
 import { ModelRange } from '../../../src/model/range.js';
@@ -722,7 +722,7 @@ describe( 'transform', () => {
 	} );
 
 	describe( 'RootAttributeOperation', () => {
-		const diffRoot = new RootElement( null );
+		const diffRoot = new ModelRootElement( null );
 
 		beforeEach( () => {
 			expected = {
@@ -1648,7 +1648,7 @@ describe( 'transform', () => {
 
 			it( 'range intersects on left side of transforming range and is less important: split into two operations', () => {
 				// Get more test cases and better code coverage
-				const otherRoot = new RootElement( null );
+				const otherRoot = new ModelRootElement( null );
 
 				const transformBy = new MoveOperation(
 					new ModelPosition( root, [ 2, 2, 3 ] ),

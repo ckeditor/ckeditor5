@@ -163,7 +163,7 @@ export {
 export type { ModelItem } from './model/item.js';
 export { ModelNode, type ModelNodeAttributes } from './model/node.js';
 export { ModelNodeList } from './model/nodelist.js';
-export { RootElement } from './model/rootelement.js';
+export { ModelRootElement } from './model/rootelement.js';
 export {
 	SchemaContext,
 	type Schema,

@@ -19,7 +19,7 @@ import {
 	type ModelElement,
 	type MapperModelToViewPositionEvent,
 	type Model,
-	type RootElement,
+	type ModelRootElement,
 	type UpcastConversionApi,
 	type UpcastConversionData,
 	type UpcastElementEvent,
@@ -584,7 +584,7 @@ function fixTitleElement( title: ModelElement, writer: Writer, model: Model ) {
  * Returns true when the last paragraph in the document was created only for the placeholder
  * purpose and it's not needed anymore. Returns false otherwise.
  */
-function shouldRemoveLastParagraph( placeholder: ModelElement, root: RootElement ) {
+function shouldRemoveLastParagraph( placeholder: ModelElement, root: ModelRootElement ) {
 	if ( !placeholder || !placeholder.is( 'element', 'paragraph' ) || placeholder.childCount ) {
 		return false;
 	}

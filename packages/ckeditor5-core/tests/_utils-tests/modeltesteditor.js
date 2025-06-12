@@ -8,7 +8,7 @@ import { EditingController } from '@ckeditor/ckeditor5-engine/src/controller/edi
 import { ModelTestEditor } from '../../tests/_utils/modeltesteditor.js';
 
 import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
-import { RootElement } from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
+import { ModelRootElement } from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
 
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
@@ -44,7 +44,7 @@ describe( 'ModelTestEditor', () => {
 		it( 'creates main root element', async () => {
 			const editor = new ModelTestEditor();
 
-			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
+			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( ModelRootElement );
 
 			editor.fire( 'ready' );
 			await editor.destroy();

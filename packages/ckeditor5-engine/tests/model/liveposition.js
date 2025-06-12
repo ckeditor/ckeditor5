@@ -64,7 +64,7 @@ describe( 'LivePosition', () =>
 		} );
 	} );
 
-	it( 'should throw if given root is not a RootElement', () => {
+	it( 'should throw if given root is not a ModelRootElement', () => {
 		const docFrag = new ModelDocumentFragment();
 
 		expectToThrowCKEditorError( () => {

@@ -5,7 +5,7 @@
 
 import { Model } from '../../src/model/model.js';
 import { ModelElement } from '../../src/model/element.js';
-import { RootElement } from '../../src/model/rootelement.js';
+import { ModelRootElement } from '../../src/model/rootelement.js';
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 
 describe( 'RootElement', () => {
@@ -13,7 +13,7 @@ describe( 'RootElement', () => {
 		it( 'should create attached root element without attributes', () => {
 			const model = new Model();
 			const doc = model.document;
-			const root = new RootElement( doc );
+			const root = new ModelRootElement( doc );
 
 			expect( root ).to.be.an.instanceof( ModelElement );
 			expect( root.isAttached() ).to.be.true;
@@ -30,7 +30,7 @@ describe( 'RootElement', () => {
 			const model = new Model();
 			const doc = model.document;
 
-			root = new RootElement( doc, '$root' );
+			root = new ModelRootElement( doc, '$root' );
 		} );
 
 		it( 'should return true for rootElement, element, element with same name and element name', () => {

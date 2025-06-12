@@ -19,7 +19,7 @@ import { type ModelItem } from './item.js';
 import { type MergeOperation } from './operation/mergeoperation.js';
 import { type MoveOperation } from './operation/moveoperation.js';
 import { type ModelNode } from './node.js';
-import { type RootElement } from './rootelement.js';
+import { type ModelRootElement } from './rootelement.js';
 import { type Operation } from './operation/operation.js';
 import { type RenameOperation } from './operation/renameoperation.js';
 import { type SplitOperation } from './operation/splitoperation.js';
@@ -316,7 +316,7 @@ export class Differ {
 			}
 			case 'detachRoot':
 			case 'addRoot': {
-				const root = operation.affectedSelectable as RootElement;
+				const root = operation.affectedSelectable as ModelRootElement;
 
 				if ( !root._isLoaded ) {
 					return;
@@ -758,7 +758,7 @@ export class Differ {
 	 *
 	 * @internal
 	 */
-	public _bufferRootLoad( root: RootElement ): void {
+	public _bufferRootLoad( root: ModelRootElement ): void {
 		if ( !root.isAttached() ) {
 			return;
 		}

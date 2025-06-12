@@ -14,7 +14,7 @@ import { EditorUI } from '@ckeditor/ckeditor5-ui/src/editorui/editorui.js';
 import { BoxedEditorUIView } from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview.js';
 import { InlineEditableUIView } from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview.js';
 
-import { RootElement } from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
+import { ModelRootElement } from '@ckeditor/ckeditor5-engine/src/model/rootelement.js';
 
 import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { testUtils } from '../../tests/_utils/utils.js';
@@ -75,7 +75,7 @@ describe( 'ClassicTestEditor', () => {
 		it( 'creates main root element', async () => {
 			const editor = new ClassicTestEditor( editorElement );
 
-			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
+			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( ModelRootElement );
 
 			editor.fire( 'ready' );
 			await editor.destroy();

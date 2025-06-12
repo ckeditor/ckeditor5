@@ -13,7 +13,7 @@ import {
 	UpcastWriter,
 	type DataControllerToModelEvent,
 	type DataControllerToViewEvent,
-	type RootElement
+	type ModelRootElement
 } from 'ckeditor5/src/engine.js';
 
 import { HtmlPageDataProcessor } from './htmlpagedataprocessor.js';
@@ -173,7 +173,7 @@ export class FullPage extends Plugin {
 	 * Extracts `<style>` elements from the full page data and renders them in the main document `<head>`.
 	 * CSS content is sanitized before rendering.
 	 */
-	private _renderStyleElementsInDom( root: RootElement ): void {
+	private _renderStyleElementsInDom( root: ModelRootElement ): void {
 		const editor = this.editor;
 
 		// Get `<style>` elements list from the `<head>` from the full page data.
@@ -203,7 +203,7 @@ export class FullPage extends Plugin {
 	/**
 	 * Removes existing `<style>` elements injected by the plugin and renders new ones from the full page data.
 	 */
-	private _renderStylesFromHead( root: RootElement ): void {
+	private _renderStylesFromHead( root: ModelRootElement ): void {
 		this._removeStyleElementsFromDom();
 		this._renderStyleElementsInDom( root );
 	}

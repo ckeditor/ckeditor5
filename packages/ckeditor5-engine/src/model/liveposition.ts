@@ -13,7 +13,7 @@ import type { ModelApplyOperationEvent } from './model.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelItem } from './item.js';
 import { type Operation } from './operation/operation.js';
-import { type RootElement } from './rootelement.js';
+import { type ModelRootElement } from './rootelement.js';
 
 import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
@@ -23,7 +23,7 @@ import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
  * is changed through operations. It may be used as a bookmark.
  *
  * **Note:** Contrary to {@link module:engine/model/position~ModelPosition}, `ModelLivePosition` works only in roots that are
- * {@link module:engine/model/rootelement~RootElement}.
+ * {@link module:engine/model/rootelement~ModelRootElement}.
  * If {@link module:engine/model/documentfragment~DocumentFragment} is passed, error will be thrown.
  *
  * **Note:** Be very careful when dealing with `ModelLivePosition`. Each `ModelLivePosition` instance bind events that might
@@ -34,19 +34,19 @@ export class ModelLivePosition extends /* #__PURE__ */ EmitterMixin( ModelPositi
 	/**
 	 * Root of the position path.
 	 */
-	declare public readonly root: RootElement;
+	declare public readonly root: ModelRootElement;
 
 	/**
 	 * Creates a live position.
 	 *
 	 * @see module:engine/model/position~ModelPosition
 	 */
-	constructor( root: RootElement, path: Array<number>, stickiness: ModelPositionStickiness = 'toNone' ) {
+	constructor( root: ModelRootElement, path: Array<number>, stickiness: ModelPositionStickiness = 'toNone' ) {
 		super( root, path, stickiness );
 
 		if ( !this.root.is( 'rootElement' ) ) {
 			/**
-			 * LivePosition's root has to be an instance of RootElement.
+			 * LivePosition's root has to be an instance of ModelRootElement.
 			 *
 			 * @error model-liveposition-root-not-rootelement
 			 */
@@ -76,7 +76,7 @@ export class ModelLivePosition extends /* #__PURE__ */ EmitterMixin( ModelPositi
 	 * Creates a `ModelLivePosition` instance that is equal to position.
 	 */
 	public static fromPosition( position: ModelPosition, stickiness?: ModelPositionStickiness ): ModelLivePosition {
-		return new this( position.root as RootElement, position.path.slice(), stickiness ? stickiness : position.stickiness );
+		return new this( position.root as ModelRootElement, position.path.slice(), stickiness ? stickiness : position.stickiness );
 	}
 
 	/**

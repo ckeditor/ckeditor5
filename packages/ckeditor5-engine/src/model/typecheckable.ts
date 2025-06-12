@@ -16,7 +16,7 @@ import { type ModelLiveRange } from './liverange.js';
 import { type ModelNode } from './node.js';
 import { type ModelPosition } from './position.js';
 import { type ModelRange } from './range.js';
-import { type RootElement } from './rootelement.js';
+import { type ModelRootElement } from './rootelement.js';
 import { type Selection } from './selection.js';
 import { type Text } from './text.js';
 import { type TextProxy } from './textproxy.js';
@@ -53,7 +53,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label NODE
 	 */
-	public is( type: 'node' | 'model:node' ): this is ModelNode | ModelElement | Text | RootElement;
+	public is( type: 'node' | 'model:node' ): this is ModelNode | ModelElement | Text | ModelRootElement;
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/model/element~ModelElement} or its subclass.
@@ -78,10 +78,10 @@ export abstract class TypeCheckable {
 	 *
 	 * @label ELEMENT
 	 */
-	public is( type: 'element' | 'model:element' ): this is ModelElement | RootElement;
+	public is( type: 'element' | 'model:element' ): this is ModelElement | ModelRootElement;
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/model/rootelement~RootElement}.
+	 * Checks whether the object is of type {@link module:engine/model/rootelement~ModelRootElement}.
 	 *
 	 * ```ts
 	 * rootElement.is( 'rootElement' ); // -> true
@@ -104,7 +104,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label ROOT_ELEMENT
 	 */
-	public is( type: 'rootElement' | 'model:rootElement' ): this is RootElement;
+	public is( type: 'rootElement' | 'model:rootElement' ): this is ModelRootElement;
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/model/text~Text}.
@@ -283,10 +283,10 @@ export abstract class TypeCheckable {
 	 *
 	 * @label ELEMENT_NAME
 	 */
-	public is<N extends string>( type: 'element' | 'model:element', name: N ): this is ( ModelElement | RootElement ) & { name: N };
+	public is<N extends string>( type: 'element' | 'model:element', name: N ): this is ( ModelElement | ModelRootElement ) & { name: N };
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/model/rootelement~RootElement} and has the specified `name`.
+	 * Checks whether the object is of type {@link module:engine/model/rootelement~ModelRootElement} and has the specified `name`.
 	 *
 	 * ```ts
 	 * rootElement.is( 'rootElement', '$root' );
@@ -294,7 +294,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label ROOT_ELEMENT_NAME
 	 */
-	public is<N extends string>( type: 'rootElement' | 'model:rootElement', name: N ): this is RootElement & { name: N };
+	public is<N extends string>( type: 'rootElement' | 'model:rootElement', name: N ): this is ModelRootElement & { name: N };
 
 	/* istanbul ignore next -- @preserve */
 	public is(): boolean {

@@ -28,7 +28,7 @@ import { MultiRootEditorUIView } from './multirooteditoruiview.js';
 
 import { isElement as _isElement } from 'es-toolkit/compat';
 import {
-	type RootElement,
+	type ModelRootElement,
 	type ViewRootEditableElement,
 	type Writer,
 	type ModelCanEditAtEvent
@@ -238,7 +238,7 @@ export class MultiRootEditor extends Editor {
 			let selectionInReadOnlyRoot = false;
 
 			for ( const range of selection.getRanges() ) {
-				const root = range.root as RootElement;
+				const root = range.root as ModelRootElement;
 
 				if ( this._readOnlyRootLocks.has( root.rootName ) ) {
 					selectionInReadOnlyRoot = true;
@@ -496,7 +496,7 @@ export class MultiRootEditor extends Editor {
 	 * @param label The accessible label text describing the editable to the assistive technologies.
 	 * @returns The created DOM element. Append it in a desired place in your application.
 	 */
-	public createEditable( root: RootElement, placeholder?: string, label?: string ): HTMLElement {
+	public createEditable( root: ModelRootElement, placeholder?: string, label?: string ): HTMLElement {
 		const editable = this.ui.view.createEditable( root.rootName, undefined, label );
 
 		this.ui.addEditable( editable, placeholder );
@@ -512,7 +512,7 @@ export class MultiRootEditor extends Editor {
 	 * @param root Root for which the editable element should be detached.
 	 * @returns The DOM element that was detached. You may want to remove it from your application DOM structure.
 	 */
-	public detachEditable( root: RootElement ): HTMLElement {
+	public detachEditable( root: ModelRootElement ): HTMLElement {
 		const rootName = root.rootName;
 		const editable = this.ui.view.editables[ rootName ];
 
@@ -965,7 +965,7 @@ function isElement( value: any ): value is Element {
  */
 export type AddRootEvent = {
 	name: 'addRoot';
-	args: [ root: RootElement ];
+	args: [ root: ModelRootElement ];
 };
 
 /**
@@ -982,7 +982,7 @@ export type AddRootEvent = {
  */
 export type DetachRootEvent = {
 	name: 'detachRoot';
-	args: [ root: RootElement ];
+	args: [ root: ModelRootElement ];
 };
 
 /**

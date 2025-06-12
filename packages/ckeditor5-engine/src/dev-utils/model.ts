@@ -11,7 +11,7 @@
  * Collection of methods for manipulating the {@link module:engine/model/model model} for testing purposes.
  */
 
-import { RootElement } from '../model/rootelement.js';
+import { ModelRootElement } from '../model/rootelement.js';
 import { Model } from '../model/model.js';
 import { ModelRange } from '../model/range.js';
 import { ModelPosition } from '../model/position.js';
@@ -245,7 +245,7 @@ export function _stringifyModel(
 	let range: ModelRange;
 
 	// Create a range witch wraps passed node.
-	if ( node instanceof RootElement || node instanceof ModelDocumentFragment ) {
+	if ( node instanceof ModelRootElement || node instanceof ModelDocumentFragment ) {
 		range = model.createRangeIn( node );
 	} else {
 		// Node is detached - create new document fragment.
@@ -348,7 +348,7 @@ export function _stringifyModel(
 }
 
 /**
- * Parses an HTML-like string and returns the model {@link module:engine/model/rootelement~RootElement rootElement}.
+ * Parses an HTML-like string and returns the model {@link module:engine/model/rootelement~ModelRootElement rootElement}.
  *
  * **Note:** To create a {@link module:engine/model/text~Text text} node that contains attributes use:
  *

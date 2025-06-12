@@ -23,7 +23,7 @@ import { ModelDocumentSelection } from './documentselection.js';
 import { ModelElement } from './element.js';
 import { ModelPosition, type ModelPositionOffset, type ModelPositionStickiness } from './position.js';
 import { ModelRange } from './range.js';
-import { RootElement } from './rootelement.js';
+import { ModelRootElement } from './rootelement.js';
 import { Text } from './text.js';
 
 import type { Marker } from './markercollection.js';
@@ -1339,7 +1339,7 @@ export class Writer {
 	 * (e.g. `$block` elements are allowed inside the `$root`). Make sure to define a proper schema if you use a different name.
 	 * @returns The added root element.
 	 */
-	public addRoot( rootName: string, elementName = '$root' ): RootElement {
+	public addRoot( rootName: string, elementName = '$root' ): ModelRootElement {
 		this._assertWriterUsedCorrectly();
 
 		const root = this.model.document.getRoot( rootName );
@@ -1377,7 +1377,7 @@ export class Writer {
 	 *
 	 * @param rootOrName Name of the detached root.
 	 */
-	public detachRoot( rootOrName: string | RootElement ): void {
+	public detachRoot( rootOrName: string | ModelRootElement ): void {
 		this._assertWriterUsedCorrectly();
 
 		const root = typeof rootOrName == 'string' ? this.model.document.getRoot( rootOrName ) : rootOrName;
@@ -1905,7 +1905,7 @@ function isSameTree( rootA: ModelNode | ModelDocumentFragment, rootB: ModelNode 
 	}
 
 	// If both roots are documents root it is operation within the document what we still treat as the same tree.
-	if ( rootA instanceof RootElement && rootB instanceof RootElement ) {
+	if ( rootA instanceof ModelRootElement && rootB instanceof ModelRootElement ) {
 		return true;
 	}
 

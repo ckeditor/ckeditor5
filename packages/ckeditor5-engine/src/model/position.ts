@@ -953,7 +953,7 @@ export class ModelPosition extends TypeCheckable {
 			 * You cannot make a position after a root element.
 			 *
 			 * @error model-position-after-root
-			 * @param {module:engine/model/rootelement~RootElement} root The root element..
+			 * @param {module:engine/model/rootelement~ModelRootElement} root The root element..
 			 */
 			throw new CKEditorError(
 				'model-position-after-root',
@@ -978,7 +978,7 @@ export class ModelPosition extends TypeCheckable {
 			 * You cannot make a position before a root element.
 			 *
 			 * @error model-position-before-root
-			 * @param {module:engine/model/rootelement~RootElement} root The root element..
+			 * @param {module:engine/model/rootelement~ModelRootElement} root The root element..
 			 */
 			throw new CKEditorError(
 				'model-position-before-root',

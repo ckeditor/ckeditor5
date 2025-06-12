@@ -14,7 +14,7 @@ import { type ModelDocument } from './document.js';
 /**
  * Type of {@link module:engine/model/element~ModelElement} that is a root of a model tree.
  */
-export class RootElement extends ModelElement {
+export class ModelRootElement extends ModelElement {
 	/**
 	 * Unique root name used to identify this root element by {@link module:engine/model/document~ModelDocument}.
 	 */
@@ -89,11 +89,9 @@ export class RootElement extends ModelElement {
 	// @if CK_DEBUG_ENGINE // }
 }
 
-export { RootElement as ModelRootElement } from './rootelement.js';
-
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-RootElement.prototype.is = function( type: string, name?: string ): boolean {
+ModelRootElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'rootElement' || type === 'model:rootElement' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.

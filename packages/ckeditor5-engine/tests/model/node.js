@@ -8,7 +8,7 @@ import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { ModelNode } from '../../src/model/node.js';
 import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
-import { RootElement } from '../../src/model/rootelement.js';
+import { ModelRootElement } from '../../src/model/rootelement.js';
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor.js';
 
@@ -387,7 +387,7 @@ describe( 'Node', () => {
 
 		it( 'returns true for the root element', () => {
 			const model = new Model();
-			const root = new RootElement( model.document, 'root' );
+			const root = new ModelRootElement( model.document, 'root' );
 
 			expect( root.isAttached() ).to.equal( true );
 		} );
