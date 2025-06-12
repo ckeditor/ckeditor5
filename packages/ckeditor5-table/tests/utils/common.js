@@ -11,7 +11,7 @@ import { TableEditing } from '../../src/tableediting.js';
 import { modelTable } from '../_utils/utils.js';
 
 import { getSelectionAffectedTable, isHeadingColumnCell } from '../../src/utils/common.js';
-import { Selection } from '@ckeditor/ckeditor5-engine/src/model/selection.js';
+import { ModelSelection } from '@ckeditor/ckeditor5-engine/src/model/selection.js';
 
 describe( 'table utils', () => {
 	let editor, model, modelRoot, tableUtils;
@@ -78,7 +78,7 @@ describe( 'table utils', () => {
 		describe( 'getSelectionAffectedTable', () => {
 			it( 'should return null if table is not present', () => {
 				_setModelData( model, '<paragraph>Foo[]</paragraph>' );
-				const selection = new Selection( model.createPositionFromPath( modelRoot, [ 0 ] ) );
+				const selection = new ModelSelection( model.createPositionFromPath( modelRoot, [ 0 ] ) );
 
 				const tableElement = getSelectionAffectedTable( selection );
 
@@ -91,7 +91,7 @@ describe( 'table utils', () => {
 					[ '10', '11' ]
 				] ) );
 
-				const selection = new Selection( model.createPositionFromPath( modelRoot, [ 0, 0, 0 ] ) );
+				const selection = new ModelSelection( model.createPositionFromPath( modelRoot, [ 0, 0, 0 ] ) );
 				const tableElement = getSelectionAffectedTable( selection );
 
 				expect( tableElement ).to.equal( modelRoot.getNodeByPath( [ 0 ] ) );
@@ -103,7 +103,7 @@ describe( 'table utils', () => {
 					[ '10', '11' ]
 				] ) );
 
-				const selection = new Selection( model.createRangeOn( modelRoot.getChild( 0 ) ) );
+				const selection = new ModelSelection( model.createRangeOn( modelRoot.getChild( 0 ) ) );
 				const tableElement = getSelectionAffectedTable( selection );
 
 				expect( tableElement ).to.equal( modelRoot.getNodeByPath( [ 0 ] ) );
@@ -119,7 +119,7 @@ describe( 'table utils', () => {
 					[ '10', '11' ]
 				] ) );
 
-				const selection = new Selection( model.createRangeOn( modelRoot.getNodeByPath( [ 0, 0, 0, 0 ] ) ) );
+				const selection = new ModelSelection( model.createRangeOn( modelRoot.getNodeByPath( [ 0, 0, 0, 0 ] ) ) );
 				const tableElement = getSelectionAffectedTable( selection );
 
 				expect( tableElement ).to.equal( modelRoot.getNodeByPath( [ 0, 0, 0, 0 ] ) );
