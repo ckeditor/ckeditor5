@@ -2,6 +2,7 @@
 category: features
 menu-title: Math and chemical formulas
 meta-title: Math equations and chemical formulas | CKEditor 5 Documentation
+meta-description: Add math equations and chemical formulas to CKEditor 5 using MathType. Learn how to enable, configure, and customize math formula support.
 badges: [ premium ]
 ---
 
@@ -202,5 +203,5 @@ To install the Ruby on Rails service, follow the steps below:
 
 By default, MathType returns equations in MathML which is [not supported by all browsers](https://developer.mozilla.org/en-US/docs/Web/MathML#browser_compatibility). To display equations on a page, you will need to use an engine that will handle the rendering process.
 
-Fortunately, MathType introduces the full MathML mode that handles the unsupported markup and converts it into a form that can be properly recognized by browsers. You can read more about the full MathML mode [in the documentation](https://docs.wiris.com/en/mathtype/mathtype_web/integrations/mathml-mode).
+Fortunately, MathType introduces the full MathML mode that handles the unsupported markup and converts it into a form that can be properly recognized by browsers. You can read more about the full MathML mode [in the documentation](https://docs.wiris.com/mathtype-web-interface-features/full-mathml-mode-wirispluginsjs).
 

@@ -2,6 +2,7 @@
 category: features
 menu-title: Document title
 meta-title: Document title | CKEditor 5 Documentation
+meta-description: Add and configure a document title in CKEditor 5 to define the main heading, thereby improving content structure and accessibility.
 ---
 
 # Document title

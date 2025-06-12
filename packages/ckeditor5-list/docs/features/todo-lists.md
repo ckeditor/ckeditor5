@@ -1,6 +1,7 @@
 ---
 menu-title: To-do lists
 meta-title: To-do lists | CKEditor 5 Documentation
+meta-description: Add interactive to-do lists in CKEditor 5 to track tasks and boost productivity with checkable list items directly in your content.
 category: features-lists
 order: 20
 ---
