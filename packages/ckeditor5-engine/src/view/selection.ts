@@ -11,7 +11,7 @@ import { TypeCheckable } from './typecheckable.js';
 import { Range } from './range.js';
 import { Position, type PositionOffset } from './position.js';
 import { Node } from './node.js';
-import { DocumentSelection } from './documentselection.js';
+import { ViewDocumentSelection } from './documentselection.js';
 
 import {
 	CKEditorError,
@@ -304,7 +304,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * @param otherSelection Selection to compare with.
 	 * @returns `true` if selections are equal, `false` otherwise.
 	 */
-	public isEqual( otherSelection: Selection | DocumentSelection ): boolean {
+	public isEqual( otherSelection: Selection | ViewDocumentSelection ): boolean {
 		if ( this.isFake != otherSelection.isFake ) {
 			return false;
 		}
@@ -349,7 +349,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * @param otherSelection Selection to compare with.
 	 * @returns `true` if selections are similar, `false` otherwise.
 	 */
-	public isSimilar( otherSelection: Selection | DocumentSelection ): boolean {
+	public isSimilar( otherSelection: Selection | ViewDocumentSelection ): boolean {
 		if ( this.isBackward != otherSelection.isBackward ) {
 			return false;
 		}
@@ -490,7 +490,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 		if ( selectable === null ) {
 			this._setRanges( [] );
 			this._setFakeOptions( options );
-		} else if ( selectable instanceof Selection || selectable instanceof DocumentSelection ) {
+		} else if ( selectable instanceof Selection || selectable instanceof ViewDocumentSelection ) {
 			this._setRanges( selectable.getRanges(), selectable.isBackward );
 			this._setFakeOptions( { fake: selectable.isFake, label: selectable.fakeSelectionLabel } );
 		} else if ( selectable instanceof Range ) {
@@ -717,4 +717,4 @@ export type ViewSelectionChangeEvent = {
  *
  * See also {@link module:engine/view/selection~Selection#setTo}
  */
-export type Selectable = Selection | DocumentSelection | Position | Iterable<Range> | Range | Node | null;
+export type Selectable = Selection | ViewDocumentSelection | Position | Iterable<Range> | Range | Node | null;

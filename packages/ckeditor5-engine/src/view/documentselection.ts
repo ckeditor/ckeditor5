@@ -35,34 +35,34 @@ import { type Range } from './range.js';
  * the {@link module:engine/view/view~View#change `View#change()`} block
  * (so via {@link module:engine/view/downcastwriter~DowncastWriter#setSelection `DowncastWriter#setSelection()`}).
  */
-export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
+export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
-	 * Selection is used internally (`DocumentSelection` is a proxy to that selection).
+	 * Selection is used internally (`ViewDocumentSelection` is a proxy to that selection).
 	 */
 	private readonly _selection: Selection;
 
 	/**
-	 * Creates new DocumentSelection instance.
+	 * Creates new ViewDocumentSelection instance.
 	 *
 	 * ```ts
 	 * // Creates collapsed selection at the position of given item and offset.
 	 * const paragraph = writer.createContainerElement( 'paragraph' );
-	 * const selection = new DocumentSelection( paragraph, offset );
+	 * const selection = new ViewDocumentSelection( paragraph, offset );
 	 *
 	 * // Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
 	 * // first child of that element and ends after the last child of that element.
-	 * const selection = new DocumentSelection( paragraph, 'in' );
+	 * const selection = new ViewDocumentSelection( paragraph, 'in' );
 	 *
 	 * // Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
 	 * // just after the item.
-	 * const selection = new DocumentSelection( paragraph, 'on' );
+	 * const selection = new ViewDocumentSelection( paragraph, 'on' );
 	 * ```
 	 *
 	 * `Selection`'s constructor allow passing additional options (`backward`, `fake` and `label`) as the last argument.
 	 *
 	 * ```ts
 	 * // Creates backward selection.
-	 * const selection = new DocumentSelection( element, 'in', { backward: true } );
+	 * const selection = new ViewDocumentSelection( element, 'in', { backward: true } );
 	 * ```
 	 *
 	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
@@ -74,7 +74,7 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	 *
 	 * ```ts
 	 * // Creates fake selection with label.
-	 * const selection = new DocumentSelection( element, 'in', { fake: true, label: 'foo' } );
+	 * const selection = new ViewDocumentSelection( element, 'in', { fake: true, label: 'foo' } );
 	 * ```
 	 *
 	 * See also: {@link #constructor:SELECTABLE `constructor( selectable, options )`}.
@@ -84,34 +84,34 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	public constructor( selectable: Node, placeOrOffset: PlaceOrOffset, options?: SelectionOptions );
 
 	/**
-	 * Creates new DocumentSelection instance.
+	 * Creates new ViewDocumentSelection instance.
 	 *
 	 * ```ts
 	 * // Creates empty selection without ranges.
-	 * const selection = new DocumentSelection();
+	 * const selection = new ViewDocumentSelection();
 	 *
 	 * // Creates selection at the given range.
 	 * const range = writer.createRange( start, end );
-	 * const selection = new DocumentSelection( range );
+	 * const selection = new ViewDocumentSelection( range );
 	 *
 	 * // Creates selection at the given ranges
 	 * const ranges = [ writer.createRange( start1, end2 ), writer.createRange( start2, end2 ) ];
-	 * const selection = new DocumentSelection( ranges );
+	 * const selection = new ViewDocumentSelection( ranges );
 	 *
 	 * // Creates selection from the other selection.
 	 * const otherSelection = writer.createSelection();
-	 * const selection = new DocumentSelection( otherSelection );
+	 * const selection = new ViewDocumentSelection( otherSelection );
 	 *
 	 * // Creates selection at the given position.
 	 * const position = writer.createPositionAt( root, offset );
-	 * const selection = new DocumentSelection( position );
+	 * const selection = new ViewDocumentSelection( position );
 	 * ```
 	 *
 	 * `Selection`'s constructor allow passing additional options (`backward`, `fake` and `label`) as the last argument.
 	 *
 	 * ```ts
 	 * // Creates backward selection.
-	 * const selection = new DocumentSelection( range, { backward: true } );
+	 * const selection = new ViewDocumentSelection( range, { backward: true } );
 	 * ```
 	 *
 	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
@@ -123,7 +123,7 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	 *
 	 * ```ts
 	 * // Creates fake selection with label.
-	 * const selection = new DocumentSelection( range, { fake: true, label: 'foo' } );
+	 * const selection = new ViewDocumentSelection( range, { fake: true, label: 'foo' } );
 	 * ```
 	 *
 	 * See also: {@link #constructor:NODE_OFFSET `constructor( node, placeOrOffset, options )`}.
@@ -137,7 +137,7 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 
 		this._selection = new Selection();
 
-		// Delegate change event to be fired on DocumentSelection instance.
+		// Delegate change event to be fired on ViewDocumentSelection instance.
 		this._selection.delegate( 'change' ).to( this );
 
 		// Set selection data.
@@ -284,7 +284,7 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	 * @param otherSelection Selection to compare with.
 	 * @returns `true` if selections are equal, `false` otherwise.
 	 */
-	public isEqual( otherSelection: Selection | DocumentSelection ): boolean {
+	public isEqual( otherSelection: Selection | ViewDocumentSelection ): boolean {
 		return this._selection.isEqual( otherSelection );
 	}
 
@@ -296,7 +296,7 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	 * @param otherSelection Selection to compare with.
 	 * @returns `true` if selections are similar, `false` otherwise.
 	 */
-	public isSimilar( otherSelection: Selection | DocumentSelection ): boolean {
+	public isSimilar( otherSelection: Selection | ViewDocumentSelection ): boolean {
 		return this._selection.isSimilar( otherSelection );
 	}
 
@@ -382,11 +382,9 @@ export class DocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckab
 	}
 }
 
-export { DocumentSelection as ViewDocumentSelection };
-
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-DocumentSelection.prototype.is = function( type: string ): boolean {
+ViewDocumentSelection.prototype.is = function( type: string ): boolean {
 	return type === 'selection' ||
 		type == 'documentSelection' ||
 		type == 'view:selection' ||
@@ -394,8 +392,8 @@ DocumentSelection.prototype.is = function( type: string ): boolean {
 };
 
 /**
- * Fired whenever selection ranges are changed through {@link ~DocumentSelection Selection API}.
+ * Fired whenever selection ranges are changed through {@link ~ViewDocumentSelection Selection API}.
  *
- * @eventName ~DocumentSelection#change
+ * @eventName ~ViewDocumentSelection#change
  */
 export type ViewDocumentSelectionChangeEvent = ViewSelectionChangeEvent;

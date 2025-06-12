@@ -287,7 +287,7 @@ export type {
 } from './view/observer/touchobserver.js';
 export type { ViewDocumentTabEvent } from './view/observer/tabobserver.js';
 export type { ViewDocumentClickEvent } from './view/observer/clickobserver.js';
-export type { ViewDocumentSelectionChangeEvent } from './view/observer/selectionobserver.js';
+export type { ViewDocumentSelectionChangeEvent, ViewDocumentSelectionChangeDoneEvent } from './view/observer/selectionobserver.js';
 export type { ViewRenderEvent, ViewScrollToTheSelectionEvent } from './view/view.js';
 
 // View / Styles.

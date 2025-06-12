@@ -16,7 +16,7 @@ import { ViewDocument } from '../view/document.js';
 import { ViewDocumentFragment } from '../view/documentfragment.js';
 import { XmlDataProcessor } from '../dataprocessor/xmldataprocessor.js';
 import { ViewElement } from '../view/element.js';
-import { DocumentSelection } from '../view/documentselection.js';
+import { ViewDocumentSelection } from '../view/documentselection.js';
 import { Range } from '../view/range.js';
 import { Position } from '../view/position.js';
 import { ViewAttributeElement } from '../view/attributeelement.js';
@@ -290,7 +290,7 @@ _setViewData._parse = _parseView;
  */
 export function _stringifyView(
 	node: ViewNode | ViewDocumentFragment,
-	selectionOrPositionOrRange: DocumentSelection | Position | Range | null = null,
+	selectionOrPositionOrRange: ViewDocumentSelection | Position | Range | null = null,
 	options: {
 		showType?: boolean;
 		showPriority?: boolean;
@@ -309,7 +309,7 @@ export function _stringifyView(
 		selectionOrPositionOrRange instanceof Position ||
 		selectionOrPositionOrRange instanceof Range
 	) {
-		selection = new DocumentSelection( selectionOrPositionOrRange );
+		selection = new ViewDocumentSelection( selectionOrPositionOrRange );
 	} else {
 		selection = selectionOrPositionOrRange;
 	}
@@ -415,7 +415,7 @@ export function _parseView(
 		sameSelectionCharacters?: boolean;
 		inlineObjectElements?: Array<string>;
 	} = {}
-): ViewNode | ViewDocumentFragment | { view: ViewNode | ViewDocumentFragment; selection: DocumentSelection } {
+): ViewNode | ViewDocumentFragment | { view: ViewNode | ViewDocumentFragment; selection: ViewDocumentSelection } {
 	const viewDocument = new ViewDocument( new StylesProcessor() );
 
 	options.order = options.order || [];
@@ -458,7 +458,7 @@ export function _parseView(
 
 	// When ranges are present - return object containing view, and selection.
 	if ( ranges.length ) {
-		const selection = new DocumentSelection( ranges, { backward: !!options.lastRangeBackward } );
+		const selection = new ViewDocumentSelection( ranges, { backward: !!options.lastRangeBackward } );
 
 		return {
 			view,
@@ -692,7 +692,7 @@ class RangeParser {
  */
 class ViewStringify {
 	public root: ViewNode | ViewDocumentFragment;
-	public selection: DocumentSelection | null;
+	public selection: ViewDocumentSelection | null;
 	public ranges: Array<Range>;
 	public showType: boolean;
 	public showPriority: boolean;
@@ -728,7 +728,7 @@ class ViewStringify {
 	 */
 	constructor(
 		root: ViewNode | ViewDocumentFragment,
-		selection: DocumentSelection | null,
+		selection: ViewDocumentSelection | null,
 		options: {
 			showType?: boolean;
 			showPriority?: boolean;

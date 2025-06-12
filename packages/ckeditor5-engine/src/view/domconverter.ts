@@ -35,7 +35,7 @@ import {
 
 import { type ViewNode } from './node.js';
 import { type ViewDocument } from './document.js';
-import { type DocumentSelection } from './documentselection.js';
+import { type ViewDocumentSelection } from './documentselection.js';
 import { type EditableElement } from './editableelement.js';
 import { type ViewTextProxy } from './textproxy.js';
 import { type ViewRawElement } from './rawelement.js';
@@ -203,7 +203,7 @@ export class DomConverter {
 	 * Document selection copy is stored and can be retrieved by the
 	 * {@link module:engine/view/domconverter~DomConverter#fakeSelectionToView} method.
 	 */
-	public bindFakeSelection( domElement: DomElement, viewDocumentSelection: DocumentSelection ): void {
+	public bindFakeSelection( domElement: DomElement, viewDocumentSelection: ViewDocumentSelection ): void {
 		this._fakeSelectionMapping.set( domElement, new ViewSelection( viewDocumentSelection ) );
 	}
 

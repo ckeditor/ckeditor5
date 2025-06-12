@@ -27,7 +27,7 @@ import { type ViewDocument } from '../document.js';
 import { type Node } from '../node.js';
 import { type Range } from '../range.js';
 import { type Element } from '../element.js';
-import { type DocumentSelection } from '../documentselection.js';
+import { type ViewDocumentSelection } from '../documentselection.js';
 
 const contextsSymbol = Symbol( 'bubbling contexts' );
 
@@ -49,7 +49,7 @@ const contextsSymbol = Symbol( 'bubbling contexts' );
  */
 export function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: Base ): Mixed<Base, BubblingEmitter> {
 	abstract class Mixin extends base implements BubblingEmitter {
-		public abstract get selection(): DocumentSelection;
+		public abstract get selection(): ViewDocumentSelection;
 
 		public override fire<TEvent extends BaseEvent>(
 			eventOrInfo: GetNameOrEventInfo<TEvent>,

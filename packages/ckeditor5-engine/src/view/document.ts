@@ -7,7 +7,7 @@
  * @module engine/view/document
  */
 
-import { DocumentSelection } from './documentselection.js';
+import { ViewDocumentSelection } from './documentselection.js';
 import { BubblingEmitterMixin } from './observer/bubblingemittermixin.js';
 
 import { Collection, ObservableMixin } from '@ckeditor/ckeditor5-utils';
@@ -26,7 +26,7 @@ export class ViewDocument extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PU
 	/**
 	 * Selection done on this document.
 	 */
-	public readonly selection: DocumentSelection;
+	public readonly selection: ViewDocumentSelection;
 
 	/**
 	 * Roots of the view tree. Collection of the {@link module:engine/view/element~Element view elements}.
@@ -98,7 +98,7 @@ export class ViewDocument extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PU
 	constructor( stylesProcessor: StylesProcessor ) {
 		super();
 
-		this.selection = new DocumentSelection();
+		this.selection = new ViewDocumentSelection();
 		this.roots = new Collection( { idProperty: 'rootName' } );
 		this.stylesProcessor = stylesProcessor;
 

@@ -14,7 +14,7 @@ import { env, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
 
 import { type View } from '../view.js';
-import { type DocumentSelection } from '../documentselection.js';
+import { type ViewDocumentSelection } from '../documentselection.js';
 import { type DomConverter } from '../domconverter.js';
 import { type Selection } from '../selection.js';
 import type { ViewDocumentCompositionStartEvent } from './compositionobserver.js';
@@ -51,7 +51,7 @@ export class SelectionObserver extends Observer {
 	 * Reference to the view {@link module:engine/view/documentselection~DocumentSelection} object used to compare
 	 * new selection with it.
 	 */
-	public readonly selection: DocumentSelection;
+	public readonly selection: ViewDocumentSelection;
 
 	/**
 	 * Reference to the {@link module:engine/view/view~View#domConverter}.
@@ -379,7 +379,7 @@ export type ViewDocumentSelectionEventData = {
 	/**
 	 * Old View selection which is {@link module:engine/view/document~ViewDocument#selection}.
 	 */
-	oldSelection: DocumentSelection;
+	oldSelection: ViewDocumentSelection;
 
 	/**
 	 * New View selection which is converted DOM selection.

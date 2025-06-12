@@ -6,7 +6,7 @@
 import { type ViewAttributeElement } from './attributeelement.js';
 import { type ViewContainerElement } from './containerelement.js';
 import { type ViewDocumentFragment } from './documentfragment.js';
-import { type DocumentSelection } from './documentselection.js';
+import { type ViewDocumentSelection } from './documentselection.js';
 import { type EditableElement } from './editableelement.js';
 import { type Element } from './element.js';
 import { type EmptyElement } from './emptyelement.js';
@@ -398,7 +398,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label SELECTION
 	 */
-	public is( type: 'selection' | 'view:selection' ): this is Selection | DocumentSelection;
+	public is( type: 'selection' | 'view:selection' ): this is Selection | ViewDocumentSelection;
 
 	/**
 	 * Checks whether this object is of type {@link module:engine/view/documentselection~DocumentSelection}.
@@ -416,7 +416,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label DOCUMENT_SELECTION
 	 */
-	public is( type: 'documentSelection' | 'view:documentSelection' ): this is DocumentSelection;
+	public is( type: 'documentSelection' | 'view:documentSelection' ): this is ViewDocumentSelection;
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/view/element~Element} or its subclass and has the specified `name`.

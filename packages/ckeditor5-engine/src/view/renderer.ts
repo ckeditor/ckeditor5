@@ -28,7 +28,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import type { ViewDocumentChangeType } from './document.js';
-import { type DocumentSelection } from './documentselection.js';
+import { type ViewDocumentSelection } from './documentselection.js';
 import { type DomConverter } from './domconverter.js';
 import { type ViewElement } from './element.js';
 import { type ViewNode } from './node.js';
@@ -85,7 +85,7 @@ export class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * View selection. Renderer updates DOM selection based on the view selection.
 	 */
-	public readonly selection: DocumentSelection;
+	public readonly selection: ViewDocumentSelection;
 
 	/**
 	 * Indicates if the view document is focused and selection can be rendered. Selection will not be rendered if
@@ -132,7 +132,7 @@ export class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	 * @param domConverter Converter instance.
 	 * @param selection View selection.
 	 */
-	constructor( domConverter: DomConverter, selection: DocumentSelection ) {
+	constructor( domConverter: DomConverter, selection: ViewDocumentSelection ) {
 		super();
 
 		this.domConverter = domConverter;
