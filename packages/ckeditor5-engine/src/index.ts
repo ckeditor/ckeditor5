@@ -280,7 +280,14 @@ export { BubblingEventInfo } from './view/observer/bubblingeventinfo.js';
 export { DomEventData } from './view/observer/domeventdata.js';
 
 // View / Events.
-export type { BubblingEvent } from './view/observer/bubblingemittermixin.js';
+export {
+	type BubblingEvent,
+	type BubblingEmitter,
+	type BubblingEventContextFunction,
+	type BubblingCallbackOptions,
+	BubblingEmitterMixin
+} from './view/observer/bubblingemittermixin.js';
+
 export type { ViewDocumentArrowKeyEvent } from './view/observer/arrowkeysobserver.js';
 export type {
 	ViewDocumentCompositionStartEvent,
