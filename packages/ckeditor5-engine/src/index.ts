@@ -165,7 +165,7 @@ export { ModelNode, type ModelNodeAttributes } from './model/node.js';
 export { ModelNodeList } from './model/nodelist.js';
 export { ModelRootElement } from './model/rootelement.js';
 export {
-	SchemaContext,
+	ModelSchemaContext,
 	type ModelSchema,
 	type ModelSchemaCheckChildEvent,
 	type ModelSchemaCheckAttributeEvent,
@@ -174,7 +174,8 @@ export {
 	type AttributeProperties,
 	type ModelSchemaItemDefinition,
 	type ModelSchemaCompiledItemDefinition,
-	type SchemaContextDefinition
+	type ModelSchemaContextDefinition,
+	type ModelSchemaContextItem
 } from './model/schema.js';
 export { Selection, type Selectable } from './model/selection.js';
 export { TypeCheckable } from './model/typecheckable.js';

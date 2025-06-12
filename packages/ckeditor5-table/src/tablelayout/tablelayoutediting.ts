@@ -14,7 +14,7 @@ import type {
 	UpcastDispatcher,
 	UpcastElementEvent,
 	ViewElement,
-	SchemaContext,
+	ModelSchemaContext,
 	Writer
 } from 'ckeditor5/src/engine.js';
 
@@ -342,7 +342,7 @@ function resolveTableType( viewTable: ViewElement, preferredExternalTableType: T
  * Checks if the element is a layout table.
  * It is used to disallow attributes or children that is managed by `Schema`.
  */
-function layoutTableCheck( context: SchemaContext ) {
+function layoutTableCheck( context: ModelSchemaContext ) {
 	if ( context.endsWith( 'table' ) && context.last.getAttribute( 'tableType' ) == 'layout' ) {
 		return false;
 	}

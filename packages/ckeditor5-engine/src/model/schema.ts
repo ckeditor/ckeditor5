@@ -76,11 +76,11 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 		this.decorate( 'checkAttribute' );
 
 		this.on( 'checkAttribute', ( evt, args ) => {
-			args[ 0 ] = new SchemaContext( args[ 0 ] );
+			args[ 0 ] = new ModelSchemaContext( args[ 0 ] );
 		}, { priority: 'highest' } );
 
 		this.on( 'checkChild', ( evt, args ) => {
-			args[ 0 ] = new SchemaContext( args[ 0 ] );
+			args[ 0 ] = new ModelSchemaContext( args[ 0 ] );
 			args[ 1 ] = this.getDefinition( args[ 1 ] );
 		}, { priority: 'highest' } );
 	}
@@ -200,7 +200,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * in other cases.
 	 */
 	public getDefinition(
-		item: string | ModelItem | ModelDocumentFragment | SchemaContextItem
+		item: string | ModelItem | ModelDocumentFragment | ModelSchemaContextItem
 	): ModelSchemaCompiledItemDefinition | undefined {
 		let itemName: string;
 
@@ -226,7 +226,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * schema.isRegistered( 'foo' ); // -> false
 	 * ```
 	 */
-	public isRegistered( item: string | ModelItem | ModelDocumentFragment | SchemaContextItem ): boolean {
+	public isRegistered( item: string | ModelItem | ModelDocumentFragment | ModelSchemaContextItem ): boolean {
 		return !!this.getDefinition( item );
 	}
 
@@ -245,7 +245,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * See the {@glink framework/deep-dive/schema#block-elements Block elements} section of
 	 * the {@glink framework/deep-dive/schema Schema deep-dive} guide for more details.
 	 */
-	public isBlock( item: string | ModelItem | ModelDocumentFragment | SchemaContextItem ): boolean {
+	public isBlock( item: string | ModelItem | ModelDocumentFragment | ModelSchemaContextItem ): boolean {
 		const def = this.getDefinition( item );
 
 		return !!( def && def.isBlock );
@@ -270,7 +270,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * See the {@glink framework/deep-dive/schema#limit-elements Limit elements} section of
 	 * the {@glink framework/deep-dive/schema Schema deep-dive} guide for more details.
 	 */
-	public isLimit( item: string | ModelItem | ModelDocumentFragment | SchemaContextItem ): boolean {
+	public isLimit( item: string | ModelItem | ModelDocumentFragment | ModelSchemaContextItem ): boolean {
 		const def = this.getDefinition( item );
 
 		if ( !def ) {
@@ -299,7 +299,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * See the {@glink framework/deep-dive/schema#object-elements Object elements} section of
 	 * the {@glink framework/deep-dive/schema Schema deep-dive} guide for more details.
 	 */
-	public isObject( item: string | ModelItem | ModelDocumentFragment | SchemaContextItem ): boolean {
+	public isObject( item: string | ModelItem | ModelDocumentFragment | ModelSchemaContextItem ): boolean {
 		const def = this.getDefinition( item );
 
 		if ( !def ) {
@@ -326,7 +326,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * See the {@glink framework/deep-dive/schema#inline-elements Inline elements} section of
 	 * the {@glink framework/deep-dive/schema Schema deep-dive} guide for more details.
 	 */
-	public isInline( item: string | ModelItem | ModelDocumentFragment | SchemaContextItem ): boolean {
+	public isInline( item: string | ModelItem | ModelDocumentFragment | ModelSchemaContextItem ): boolean {
 		const def = this.getDefinition( item );
 
 		return !!( def && def.isInline );
@@ -349,7 +349,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * See the {@glink framework/deep-dive/schema#selectable-elements Selectable elements section} of
 	 * the {@glink framework/deep-dive/schema Schema deep-dive} guide for more details.
 	 */
-	public isSelectable( item: string | ModelItem | ModelDocumentFragment | SchemaContextItem ): boolean {
+	public isSelectable( item: string | ModelItem | ModelDocumentFragment | ModelSchemaContextItem ): boolean {
 		const def = this.getDefinition( item );
 
 		if ( !def ) {
@@ -376,7 +376,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * See the {@glink framework/deep-dive/schema#content-elements Content elements section} of
 	 * the {@glink framework/deep-dive/schema Schema deep-dive} guide for more details.
 	 */
-	public isContent( item: string | ModelItem | ModelDocumentFragment | SchemaContextItem ): boolean {
+	public isContent( item: string | ModelItem | ModelDocumentFragment | ModelSchemaContextItem ): boolean {
 		const def = this.getDefinition( item );
 
 		if ( !def ) {
@@ -415,13 +415,13 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param context The context in which the child will be checked.
 	 * @param def The child to check.
 	 */
-	public checkChild( context: SchemaContextDefinition, def: string | ModelNode | ModelDocumentFragment ): boolean {
-		// Note: `context` and `def` are already normalized here to `SchemaContext` and `ModelSchemaCompiledItemDefinition`.
+	public checkChild( context: ModelSchemaContextDefinition, def: string | ModelNode | ModelDocumentFragment ): boolean {
+		// Note: `context` and `def` are already normalized here to `ModelSchemaContext` and `ModelSchemaCompiledItemDefinition`.
 		if ( !def ) {
 			return false;
 		}
 
-		return this._checkContextMatch( context as SchemaContext, def as unknown as ModelSchemaCompiledItemDefinition );
+		return this._checkContextMatch( context as ModelSchemaContext, def as unknown as ModelSchemaCompiledItemDefinition );
 	}
 
 	/**
@@ -448,9 +448,9 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param context The context in which the attribute will be checked.
 	 * @param attributeName Name of attribute to check in the given context.
 	 */
-	public checkAttribute( context: SchemaContextDefinition, attributeName: string ): boolean {
-		// Note: `context` is already normalized here to `SchemaContext`.
-		const def = this.getDefinition( ( context as SchemaContext ).last );
+	public checkAttribute( context: ModelSchemaContextDefinition, attributeName: string ): boolean {
+		// Note: `context` is already normalized here to `ModelSchemaContext`.
+		const def = this.getDefinition( ( context as ModelSchemaContext ).last );
 
 		if ( !def ) {
 			return false;
@@ -458,7 +458,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 
 		// First, check all attribute checks declared as callbacks.
 		// Note that `_evaluateAttributeChecks()` will return `undefined` if neither child check was applicable (no decision was made).
-		const isAllowed = this._evaluateAttributeChecks( context as SchemaContext, attributeName );
+		const isAllowed = this._evaluateAttributeChecks( context as ModelSchemaContext, attributeName );
 
 		// If the decision was not made inside attribute check callbacks, then use declarative rules.
 		return isAllowed !== undefined ? isAllowed : def.allowAttributes.includes( attributeName );
@@ -1001,8 +1001,8 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Creates an instance of the schema context.
 	 */
-	public createContext( context: SchemaContextDefinition ): SchemaContext {
-		return new SchemaContext( context );
+	public createContext( context: ModelSchemaContextDefinition ): ModelSchemaContext {
+		return new ModelSchemaContext( context );
 	}
 
 	private _clearCache(): void {
@@ -1070,7 +1070,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 		this._compiledDefinitions = compileDefinitions( definitions );
 	}
 
-	private _checkContextMatch( context: SchemaContext, def: ModelSchemaCompiledItemDefinition ): boolean {
+	private _checkContextMatch( context: ModelSchemaContext, def: ModelSchemaCompiledItemDefinition ): boolean {
 		const parentItem = context.last;
 
 		// First, check all child checks declared as callbacks.
@@ -1110,7 +1110,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * Note that the first callback that makes a decision "wins", i.e., if any callback returns `true` or `false`, then the processing
 	 * is over and that result is returned.
 	 */
-	private _evaluateChildChecks( context: SchemaContext, def: ModelSchemaCompiledItemDefinition ): boolean | undefined {
+	private _evaluateChildChecks( context: ModelSchemaContext, def: ModelSchemaCompiledItemDefinition ): boolean | undefined {
 		const genericChecks = this._customChildChecks.get( this._genericCheckSymbol ) || [];
 		const childChecks = this._customChildChecks.get( def.name ) || [];
 
@@ -1130,7 +1130,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * Note that the first callback that makes a decision "wins", i.e., if any callback returns `true` or `false`, then the processing
 	 * is over and that result is returned.
 	 */
-	private _evaluateAttributeChecks( context: SchemaContext, attributeName: string ): boolean | undefined {
+	private _evaluateAttributeChecks( context: ModelSchemaContext, attributeName: string ): boolean | undefined {
 		const genericChecks = this._customAttributeChecks.get( this._genericCheckSymbol ) || [];
 		const childChecks = this._customAttributeChecks.get( attributeName ) || [];
 
@@ -1304,7 +1304,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
  */
 export type ModelSchemaCheckChildEvent = {
 	name: 'checkChild';
-	args: [ [ context: SchemaContext, def: ModelSchemaCompiledItemDefinition ] ];
+	args: [ [ context: ModelSchemaContext, def: ModelSchemaCompiledItemDefinition ] ];
 };
 
 /**
@@ -1372,7 +1372,7 @@ export type ModelSchemaCheckChildEvent = {
  */
 export type ModelSchemaCheckAttributeEvent = {
 	name: 'checkAttribute';
-	args: [ [ context: SchemaContext, attributeName: string ] ];
+	args: [ [ context: ModelSchemaContext, attributeName: string ] ];
 };
 
 /**
@@ -1783,14 +1783,14 @@ type TypeNames = Array<'isBlock' | 'isContent' | 'isInline' | 'isLimit' | 'isObj
  * {@link module:engine/model/schema~ModelSchema#checkAttribute `Schema#checkAttribute()`} methods so when
  * using these methods you need to use {@link module:engine/model/schema~ModelSchemaContextDefinition}s.
  */
-export class SchemaContext implements Iterable<SchemaContextItem> {
-	private _items!: Array<SchemaContextItem>;
+export class ModelSchemaContext implements Iterable<ModelSchemaContextItem> {
+	private _items!: Array<ModelSchemaContextItem>;
 
 	/**
 	 * Creates an instance of the context.
 	 */
-	constructor( context: SchemaContextDefinition ) {
-		if ( context instanceof SchemaContext ) {
+	constructor( context: ModelSchemaContextDefinition ) {
+		if ( context instanceof ModelSchemaContext ) {
 			return context;
 		}
 
@@ -1819,7 +1819,7 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
 	/**
 	 * The last item (the lowest node).
 	 */
-	public get last(): SchemaContextItem {
+	public get last(): ModelSchemaContextItem {
 		return this._items[ this._items.length - 1 ]!;
 	}
 
@@ -1828,7 +1828,7 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
 	 *
 	 * Iterates over all context items.
 	 */
-	public [ Symbol.iterator ](): IterableIterator<SchemaContextItem> {
+	public [ Symbol.iterator ](): IterableIterator<ModelSchemaContextItem> {
 		return this._items[ Symbol.iterator ]();
 	}
 
@@ -1838,7 +1838,7 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
 	 * Item can be added as:
 	 *
 	 * ```ts
-	 * const context = new SchemaContext( [ '$root' ] );
+	 * const context = new ModelSchemaContext( [ '$root' ] );
 	 *
 	 * // An element.
 	 * const fooElement = writer.createElement( 'fooElement' );
@@ -1858,8 +1858,8 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
 	 * @param item An item that will be added to the current context.
 	 * @returns A new schema context instance with an additional item.
 	 */
-	public push( item: string | ModelNode ): SchemaContext {
-		const ctx = new SchemaContext( [ item ] );
+	public push( item: string | ModelNode ): ModelSchemaContext {
+		const ctx = new ModelSchemaContext( [ item ] );
 
 		ctx._items = [ ...this._items, ...ctx._items ];
 
@@ -1870,15 +1870,15 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
 	 * Returns a new schema context that is based on this context but has the last item removed.
 	 *
 	 * ```ts
-	 * const ctxParagraph = new SchemaContext( [ '$root', 'blockQuote', 'paragraph' ] );
+	 * const ctxParagraph = new ModelSchemaContext( [ '$root', 'blockQuote', 'paragraph' ] );
 	 * const ctxBlockQuote = ctxParagraph.trimLast(); // Items in `ctxBlockQuote` are: `$root` an `blockQuote`.
 	 * const ctxRoot = ctxBlockQuote.trimLast(); // Items in `ctxRoot` are: `$root`.
 	 * ```
 	 *
 	 * @returns A new reduced schema context instance.
 	 */
-	public trimLast(): SchemaContext {
-		const ctx = new SchemaContext( [] );
+	public trimLast(): ModelSchemaContext {
+		const ctx = new ModelSchemaContext( [] );
 
 		ctx._items = this._items.slice( 0, -1 );
 
@@ -1888,7 +1888,7 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
 	/**
 	 * Gets an item on the given index.
 	 */
-	public getItem( index: number ): SchemaContextItem {
+	public getItem( index: number ): ModelSchemaContextItem {
 		return this._items[ index ];
 	}
 
@@ -1903,7 +1903,7 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
 	 * Checks whether the context ends with the given nodes.
 	 *
 	 * ```ts
-	 * const ctx = new SchemaContext( [ rootElement, paragraphElement, textNode ] );
+	 * const ctx = new ModelSchemaContext( [ rootElement, paragraphElement, textNode ] );
 	 *
 	 * ctx.endsWith( '$text' ); // -> true
 	 * ctx.endsWith( 'paragraph $text' ); // -> true
@@ -1919,7 +1919,7 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
 	 * Checks whether the context starts with the given nodes.
 	 *
 	 * ```ts
-	 * const ctx = new SchemaContext( [ rootElement, paragraphElement, textNode ] );
+	 * const ctx = new ModelSchemaContext( [ rootElement, paragraphElement, textNode ] );
 	 *
 	 * ctx.endsWith( '$root' ); // -> true
 	 * ctx.endsWith( '$root paragraph' ); // -> true
@@ -2007,7 +2007,7 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
  * schema.checkChild( [ ...positionInParagraph.getAncestors(), '$text' ], 'bold' );
  * ```
  */
-export type SchemaContextDefinition = ModelItem | ModelPosition | SchemaContext | string | Array<string | ModelItem>;
+export type ModelSchemaContextDefinition = ModelItem | ModelPosition | ModelSchemaContext | string | Array<string | ModelItem>;
 
 /**
  * An item of the {@link module:engine/model/schema~ModelSchemaContext schema context}.
@@ -2033,7 +2033,7 @@ export type SchemaContextDefinition = ModelItem | ModelPosition | SchemaContext 
  * } );
  * ```
  */
-export interface SchemaContextItem {
+export interface ModelSchemaContextItem {
 	name: string;
 	getAttributeKeys(): Generator<string>;
 	getAttribute( keyName: string ): unknown;
@@ -2072,9 +2072,12 @@ export interface AttributeProperties {
 	[ name: string ]: unknown;
 }
 
-export type SchemaAttributeCheckCallback = ( context: SchemaContext, attributeName: string ) => boolean | undefined;
+export type SchemaAttributeCheckCallback = ( context: ModelSchemaContext, attributeName: string ) => boolean | undefined;
 
-export type SchemaChildCheckCallback = ( context: SchemaContext, definition: ModelSchemaCompiledItemDefinition ) => boolean | undefined;
+export type SchemaChildCheckCallback = (
+	context: ModelSchemaContext,
+	definition: ModelSchemaCompiledItemDefinition
+) => boolean | undefined;
 
 function compileBaseItemRule(
 	sourceItemRules: Array<ModelSchemaItemDefinition>,
@@ -2396,7 +2399,7 @@ function resolveInheritAll( sourceItemRules: Array<ModelSchemaItemDefinition>, i
 	}
 }
 
-function mapContextItem( ctxItem: string | ModelItem | ModelDocumentFragment ): SchemaContextItem {
+function mapContextItem( ctxItem: string | ModelItem | ModelDocumentFragment ): ModelSchemaContextItem {
 	if ( typeof ctxItem == 'string' || ctxItem.is( 'documentFragment' ) ) {
 		return {
 			name: typeof ctxItem == 'string' ? ctxItem : '$documentFragment',

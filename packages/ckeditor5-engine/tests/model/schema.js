@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ModelSchema, SchemaContext } from '../../src/model/schema.js';
+import { ModelSchema, ModelSchemaContext } from '../../src/model/schema.js';
 
 import { Model } from '../../src/model/model.js';
 
@@ -335,7 +335,7 @@ describe( 'Schema', () => {
 			schema.register( 'foo', {
 				isBlock: true
 			} );
-			const ctx = new SchemaContext( [ '$root', 'foo' ] );
+			const ctx = new ModelSchemaContext( [ '$root', 'foo' ] );
 
 			expect( schema.getDefinition( ctx.last ).isBlock ).to.be.true;
 		} );
@@ -626,8 +626,8 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'accepts a schemaContext instance as a context', () => {
-			const rootContext = new SchemaContext( ModelPosition._createAt( root1, 0 ) );
-			const paragraphContext = new SchemaContext( ModelPosition._createAt( r1p1, 0 ) );
+			const rootContext = new ModelSchemaContext( ModelPosition._createAt( root1, 0 ) );
+			const paragraphContext = new ModelSchemaContext( ModelPosition._createAt( r1p1, 0 ) );
 
 			expect( schema.checkChild( rootContext, 'paragraph' ) ).to.be.true;
 			expect( schema.checkChild( rootContext, '$text' ) ).to.be.false;
@@ -687,7 +687,7 @@ describe( 'Schema', () => {
 
 		it( 'fires the checkChild event with already normalized params', done => {
 			schema.on( 'checkChild', ( evt, [ ctx, child ] ) => {
-				expect( ctx ).to.be.instanceof( SchemaContext );
+				expect( ctx ).to.be.instanceof( ModelSchemaContext );
 				expect( child ).to.equal( schema.getDefinition( 'paragraph' ) );
 
 				done();
@@ -748,8 +748,8 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'accepts a schemaContext instance as a context', () => {
-			const rootContext = new SchemaContext( ModelPosition._createAt( root1, 0 ) );
-			const paragraphContext = new SchemaContext( ModelPosition._createAt( r1p1, 0 ) );
+			const rootContext = new ModelSchemaContext( ModelPosition._createAt( root1, 0 ) );
+			const paragraphContext = new ModelSchemaContext( ModelPosition._createAt( r1p1, 0 ) );
 
 			expect( schema.checkAttribute( rootContext, 'align' ) ).to.be.false;
 			expect( schema.checkAttribute( paragraphContext, 'align' ) ).to.be.true;
@@ -777,7 +777,7 @@ describe( 'Schema', () => {
 
 		it( 'fires the checkAttribute event with already normalized context', done => {
 			schema.on( 'checkAttribute', ( evt, [ ctx, attributeName ] ) => {
-				expect( ctx ).to.be.instanceof( SchemaContext );
+				expect( ctx ).to.be.instanceof( ModelSchemaContext );
 				expect( attributeName ).to.equal( 'bold' );
 
 				done();
@@ -857,7 +857,7 @@ describe( 'Schema', () => {
 
 		it( 'receives context and child definition as params', () => {
 			schema.addChildCheck( ( ctx, childDef ) => {
-				expect( ctx ).to.be.instanceOf( SchemaContext );
+				expect( ctx ).to.be.instanceOf( ModelSchemaContext );
 				expect( childDef ).to.equal( schema.getDefinition( 'paragraph' ) );
 			} );
 
@@ -939,7 +939,7 @@ describe( 'Schema', () => {
 
 		it( 'receives context and attribute name as params', () => {
 			schema.addAttributeCheck( ( ctx, attributeName ) => {
-				expect( ctx ).to.be.instanceOf( SchemaContext );
+				expect( ctx ).to.be.instanceOf( ModelSchemaContext );
 				expect( attributeName ).to.equal( 'foo' );
 			} );
 
@@ -3937,15 +3937,15 @@ describe( 'Schema', () => {
 	} );
 
 	describe( 'createContext()', () => {
-		it( 'should return SchemaContext instance', () => {
+		it( 'should return ModelSchemaContext instance', () => {
 			const ctx = schema.createContext( [ 'a', 'b', 'c' ] );
 
-			expect( ctx ).to.be.instanceof( SchemaContext );
+			expect( ctx ).to.be.instanceof( ModelSchemaContext );
 		} );
 	} );
 } );
 
-describe( 'SchemaContext', () => {
+describe( 'ModelSchemaContext', () => {
 	let root;
 
 	beforeEach( () => {
@@ -3960,7 +3960,7 @@ describe( 'SchemaContext', () => {
 
 	describe( 'constructor()', () => {
 		it( 'creates context based on an array of strings', () => {
-			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+			const ctx = new ModelSchemaContext( [ 'a', 'b', 'c' ] );
 
 			expect( ctx.length ).to.equal( 3 );
 
@@ -3975,7 +3975,7 @@ describe( 'SchemaContext', () => {
 			const blockQuote = root.getChild( 0 );
 			const text = blockQuote.getChild( 0 ).getChild( 0 );
 
-			const ctx = new SchemaContext( [ blockQuote, text ] );
+			const ctx = new ModelSchemaContext( [ blockQuote, text ] );
 
 			expect( ctx.length ).to.equal( 2 );
 
@@ -3990,7 +3990,7 @@ describe( 'SchemaContext', () => {
 			const blockQuote = root.getChild( 0 );
 			const text = blockQuote.getChild( 0 ).getChild( 0 );
 
-			const ctx = new SchemaContext( [ blockQuote, 'paragraph', text ] );
+			const ctx = new ModelSchemaContext( [ blockQuote, 'paragraph', text ] );
 
 			expect( ctx.length ).to.equal( 3 );
 
@@ -3998,7 +3998,7 @@ describe( 'SchemaContext', () => {
 		} );
 
 		it( 'creates context based on a root element', () => {
-			const ctx = new SchemaContext( root );
+			const ctx = new ModelSchemaContext( root );
 
 			expect( ctx.length ).to.equal( 1 );
 
@@ -4009,7 +4009,7 @@ describe( 'SchemaContext', () => {
 		} );
 
 		it( 'creates context based on a nested element', () => {
-			const ctx = new SchemaContext( root.getChild( 0 ).getChild( 0 ) );
+			const ctx = new ModelSchemaContext( root.getChild( 0 ).getChild( 0 ) );
 
 			expect( ctx.length ).to.equal( 3 );
 
@@ -4022,7 +4022,7 @@ describe( 'SchemaContext', () => {
 		} );
 
 		it( 'creates context based on a text node', () => {
-			const ctx = new SchemaContext( root.getChild( 0 ).getChild( 0 ).getChild( 0 ) );
+			const ctx = new ModelSchemaContext( root.getChild( 0 ).getChild( 0 ).getChild( 0 ) );
 
 			expect( ctx.length ).to.equal( 4 );
 
@@ -4035,7 +4035,7 @@ describe( 'SchemaContext', () => {
 		it( 'creates context based on a text proxy', () => {
 			const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
 			const textProxy = new TextProxy( text, 0, 1 );
-			const ctx = new SchemaContext( textProxy );
+			const ctx = new ModelSchemaContext( textProxy );
 
 			expect( ctx.length ).to.equal( 4 );
 
@@ -4047,7 +4047,7 @@ describe( 'SchemaContext', () => {
 
 		it( 'creates context based on a position', () => {
 			const pos = ModelPosition._createAt( root.getChild( 0 ).getChild( 0 ), 0 );
-			const ctx = new SchemaContext( pos );
+			const ctx = new ModelSchemaContext( pos );
 
 			expect( ctx.length ).to.equal( 3 );
 
@@ -4057,21 +4057,21 @@ describe( 'SchemaContext', () => {
 		} );
 
 		it( 'creates context based on a string', () => {
-			const ctx = new SchemaContext( 'paragraph' );
+			const ctx = new ModelSchemaContext( 'paragraph' );
 
 			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'paragraph' ] );
 		} );
 
-		it( 'creates context based on a SchemaContext instance', () => {
-			const previousCtx = new SchemaContext( [ 'a', 'b', 'c' ] );
+		it( 'creates context based on a ModelSchemaContext instance', () => {
+			const previousCtx = new ModelSchemaContext( [ 'a', 'b', 'c' ] );
 
-			const ctx = new SchemaContext( previousCtx );
+			const ctx = new ModelSchemaContext( previousCtx );
 
 			expect( ctx ).to.equal( previousCtx );
 		} );
 
 		it( 'creates context in ModelDocumentFragment - array with string', () => {
-			const ctx = new SchemaContext( [ new ModelDocumentFragment(), 'paragraph' ] );
+			const ctx = new ModelSchemaContext( [ new ModelDocumentFragment(), 'paragraph' ] );
 
 			expect( ctx.length ).to.equal( 2 );
 			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ '$documentFragment', 'paragraph' ] );
@@ -4082,7 +4082,7 @@ describe( 'SchemaContext', () => {
 			const docFrag = new ModelDocumentFragment();
 			docFrag._appendChild( p );
 
-			const ctx = new SchemaContext( p );
+			const ctx = new ModelSchemaContext( p );
 
 			expect( ctx.length ).to.equal( 2 );
 			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ '$documentFragment', 'paragraph' ] );
@@ -4092,7 +4092,7 @@ describe( 'SchemaContext', () => {
 			const p = new ModelElement( 'paragraph' );
 			const docFrag = new ModelDocumentFragment( p );
 			const pos = ModelPosition._createAt( docFrag.getChild( 0 ), 0 );
-			const ctx = new SchemaContext( pos );
+			const ctx = new ModelSchemaContext( pos );
 
 			expect( ctx.length ).to.equal( 2 );
 			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ '$documentFragment', 'paragraph' ] );
@@ -4101,7 +4101,7 @@ describe( 'SchemaContext', () => {
 
 	describe( 'length', () => {
 		it( 'gets the number of items', () => {
-			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+			const ctx = new ModelSchemaContext( [ 'a', 'b', 'c' ] );
 
 			expect( ctx.length ).to.equal( 3 );
 		} );
@@ -4109,7 +4109,7 @@ describe( 'SchemaContext', () => {
 
 	describe( 'last', () => {
 		it( 'gets the last item', () => {
-			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+			const ctx = new ModelSchemaContext( [ 'a', 'b', 'c' ] );
 
 			expect( ctx.last ).to.be.an( 'object' );
 			expect( ctx.last.name ).to.equal( 'c' );
@@ -4118,7 +4118,7 @@ describe( 'SchemaContext', () => {
 
 	describe( 'Symbol.iterator', () => {
 		it( 'exists', () => {
-			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+			const ctx = new ModelSchemaContext( [ 'a', 'b', 'c' ] );
 
 			expect( ctx[ Symbol.iterator ] ).to.be.a( 'function' );
 			expect( Array.from( ctx ).map( item => item.name ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
@@ -4127,50 +4127,50 @@ describe( 'SchemaContext', () => {
 
 	describe( 'getItem()', () => {
 		it( 'returns item by index', () => {
-			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+			const ctx = new ModelSchemaContext( [ 'a', 'b', 'c' ] );
 
 			expect( ctx.getItem( 1 ) ).to.be.an( 'object' );
 			expect( ctx.getItem( 1 ).name ).to.equal( 'b' );
 		} );
 
 		it( 'returns undefined if index exceeds the range', () => {
-			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+			const ctx = new ModelSchemaContext( [ 'a', 'b', 'c' ] );
 
 			expect( ctx.getItem( 3 ) ).to.be.undefined;
 		} );
 	} );
 
 	describe( 'push()', () => {
-		it( 'creates new SchemaContext instance with new item - #string', () => {
-			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+		it( 'creates new ModelSchemaContext instance with new item - #string', () => {
+			const ctx = new ModelSchemaContext( [ 'a', 'b', 'c' ] );
 
 			const newCtx = ctx.push( 'd' );
 
-			expect( newCtx ).to.instanceof( SchemaContext );
+			expect( newCtx ).to.instanceof( ModelSchemaContext );
 			expect( newCtx ).to.not.equal( ctx );
 			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c', 'd' ] );
 			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
 		} );
 
-		it( 'creates new SchemaContext instance with new item - #text', () => {
+		it( 'creates new ModelSchemaContext instance with new item - #text', () => {
 			const node = new Text( 'd' );
-			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+			const ctx = new ModelSchemaContext( [ 'a', 'b', 'c' ] );
 
 			const newCtx = ctx.push( node );
 
-			expect( newCtx ).to.instanceof( SchemaContext );
+			expect( newCtx ).to.instanceof( ModelSchemaContext );
 			expect( newCtx ).to.not.equal( ctx );
 			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c', '$text' ] );
 			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
 		} );
 
-		it( 'creates new SchemaContext instance with new item - #element', () => {
-			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+		it( 'creates new ModelSchemaContext instance with new item - #element', () => {
+			const ctx = new ModelSchemaContext( [ 'a', 'b', 'c' ] );
 			const parent = new ModelElement( 'parent', null, new ModelElement( 'd' ) );
 
 			const newCtx = ctx.push( parent.getChild( 0 ) );
 
-			expect( newCtx ).to.instanceof( SchemaContext );
+			expect( newCtx ).to.instanceof( ModelSchemaContext );
 			expect( newCtx ).to.not.equal( ctx );
 			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c', 'd' ] );
 			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
@@ -4178,12 +4178,12 @@ describe( 'SchemaContext', () => {
 	} );
 
 	describe( 'trimLast()', () => {
-		it( 'creates new SchemaContext instance without the last item - #string', () => {
-			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+		it( 'creates new ModelSchemaContext instance without the last item - #string', () => {
+			const ctx = new ModelSchemaContext( [ 'a', 'b', 'c' ] );
 
 			const newCtx = ctx.trimLast();
 
-			expect( newCtx ).to.instanceof( SchemaContext );
+			expect( newCtx ).to.instanceof( ModelSchemaContext );
 			expect( newCtx ).to.not.equal( ctx );
 			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b' ] );
 			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
@@ -4192,13 +4192,13 @@ describe( 'SchemaContext', () => {
 
 	describe( 'getNames()', () => {
 		it( 'returns an iterator', () => {
-			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+			const ctx = new ModelSchemaContext( [ 'a', 'b', 'c' ] );
 
 			expect( ctx.getNames().next ).to.be.a( 'function' );
 		} );
 
 		it( 'returns an iterator which returns all item names', () => {
-			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+			const ctx = new ModelSchemaContext( [ 'a', 'b', 'c' ] );
 
 			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
 		} );
@@ -4206,55 +4206,55 @@ describe( 'SchemaContext', () => {
 
 	describe( 'endsWith()', () => {
 		it( 'returns true if the end of the context matches the query - 1 item', () => {
-			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
+			const ctx = new ModelSchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
 
 			expect( ctx.endsWith( 'dom' ) ).to.be.true;
 		} );
 
 		it( 'returns true if the end of the context matches the query - 2 items', () => {
-			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
+			const ctx = new ModelSchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
 
 			expect( ctx.endsWith( 'bom dom' ) ).to.be.true;
 		} );
 
 		it( 'returns true if the end of the context matches the query - full match of 3 items', () => {
-			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom' ] );
+			const ctx = new ModelSchemaContext( [ 'foo', 'bar', 'bom' ] );
 
 			expect( ctx.endsWith( 'foo bar bom' ) ).to.be.true;
 		} );
 
 		it( 'returns true if the end of the context matches the query - full match of 1 items', () => {
-			const ctx = new SchemaContext( [ 'foo' ] );
+			const ctx = new ModelSchemaContext( [ 'foo' ] );
 
 			expect( ctx.endsWith( 'foo' ) ).to.be.true;
 		} );
 
 		it( 'returns true if not only the end of the context matches the query', () => {
-			const ctx = new SchemaContext( [ 'foo', 'foo', 'foo', 'foo' ] );
+			const ctx = new ModelSchemaContext( [ 'foo', 'foo', 'foo', 'foo' ] );
 
 			expect( ctx.endsWith( 'foo foo' ) ).to.be.true;
 		} );
 
 		it( 'returns false if query matches the middle of the context', () => {
-			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
+			const ctx = new ModelSchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
 
 			expect( ctx.endsWith( 'bom' ) ).to.be.false;
 		} );
 
 		it( 'returns false if query matches the start of the context', () => {
-			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
+			const ctx = new ModelSchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
 
 			expect( ctx.endsWith( 'foo' ) ).to.be.false;
 		} );
 
 		it( 'returns false if query does not match', () => {
-			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
+			const ctx = new ModelSchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
 
 			expect( ctx.endsWith( 'dom bar' ) ).to.be.false;
 		} );
 
 		it( 'returns false if query is longer than context', () => {
-			const ctx = new SchemaContext( [ 'foo' ] );
+			const ctx = new ModelSchemaContext( [ 'foo' ] );
 
 			expect( ctx.endsWith( 'bar', 'foo' ) ).to.be.false;
 		} );
@@ -4262,55 +4262,55 @@ describe( 'SchemaContext', () => {
 
 	describe( 'startsWith()', () => {
 		it( 'returns true if the start of the context matches the query - 1 item', () => {
-			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
+			const ctx = new ModelSchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
 
 			expect( ctx.startsWith( 'foo' ) ).to.be.true;
 		} );
 
 		it( 'returns true if the start of the context matches the query - 2 items', () => {
-			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
+			const ctx = new ModelSchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
 
 			expect( ctx.startsWith( 'foo bar' ) ).to.be.true;
 		} );
 
 		it( 'returns true if the start of the context matches the query - full match of 3 items', () => {
-			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom' ] );
+			const ctx = new ModelSchemaContext( [ 'foo', 'bar', 'bom' ] );
 
 			expect( ctx.startsWith( 'foo bar bom' ) ).to.be.true;
 		} );
 
 		it( 'returns true if the start of the context matches the query - full match of 1 items', () => {
-			const ctx = new SchemaContext( [ 'foo' ] );
+			const ctx = new ModelSchemaContext( [ 'foo' ] );
 
 			expect( ctx.startsWith( 'foo' ) ).to.be.true;
 		} );
 
 		it( 'returns true if not only the start of the context matches the query', () => {
-			const ctx = new SchemaContext( [ 'foo', 'foo', 'foo', 'foo' ] );
+			const ctx = new ModelSchemaContext( [ 'foo', 'foo', 'foo', 'foo' ] );
 
 			expect( ctx.startsWith( 'foo foo' ) ).to.be.true;
 		} );
 
 		it( 'returns false if query matches the middle of the context', () => {
-			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
+			const ctx = new ModelSchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
 
 			expect( ctx.startsWith( 'bom' ) ).to.be.false;
 		} );
 
 		it( 'returns false if query matches the end of the context', () => {
-			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
+			const ctx = new ModelSchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
 
 			expect( ctx.startsWith( 'dom' ) ).to.be.false;
 		} );
 
 		it( 'returns false if query does not match', () => {
-			const ctx = new SchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
+			const ctx = new ModelSchemaContext( [ 'foo', 'bar', 'bom', 'dom' ] );
 
 			expect( ctx.startsWith( 'dom bar' ) ).to.be.false;
 		} );
 
 		it( 'returns false if query is longer than context', () => {
-			const ctx = new SchemaContext( [ 'foo' ] );
+			const ctx = new ModelSchemaContext( [ 'foo' ] );
 
 			expect( ctx.startsWith( 'bar', 'foo' ) ).to.be.false;
 		} );

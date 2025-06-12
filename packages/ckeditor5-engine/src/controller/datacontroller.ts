@@ -40,7 +40,7 @@ import { type ModelText } from '../model/text.js';
 import { type ModelElement } from '../model/element.js';
 import { type ModelTextProxy } from '../model/textproxy.js';
 import { type ModelDocumentFragment } from '../model/documentfragment.js';
-import type { SchemaContextDefinition } from '../model/schema.js';
+import type { ModelSchemaContextDefinition } from '../model/schema.js';
 import type { BatchType } from '../model/batch.js';
 import { autoParagraphEmptyRoots } from '../model/utils/autoparagraphing.js';
 
@@ -464,7 +464,7 @@ export class DataController extends /* #__PURE__ */ EmitterMixin() {
 	 * See: {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher#convert}.
 	 * @returns Parsed data.
 	 */
-	public parse( data: string, context: SchemaContextDefinition = '$root' ): ModelDocumentFragment {
+	public parse( data: string, context: ModelSchemaContextDefinition = '$root' ): ModelDocumentFragment {
 		// data -> view
 		const viewDocumentFragment = this.processor.toView( data );
 
@@ -488,7 +488,7 @@ export class DataController extends /* #__PURE__ */ EmitterMixin() {
 	 */
 	public toModel(
 		viewElementOrFragment: ViewElement | ViewDocumentFragment,
-		context: SchemaContextDefinition = '$root'
+		context: ModelSchemaContextDefinition = '$root'
 	): ModelDocumentFragment {
 		return this.model.change( writer => {
 			return this.upcastDispatcher.convert( viewElementOrFragment, writer, context );

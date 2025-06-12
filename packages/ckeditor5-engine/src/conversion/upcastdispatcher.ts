@@ -16,8 +16,8 @@ import { type ViewElement } from '../view/element.js';
 import { type ViewText } from '../view/text.js';
 import { type ViewDocumentFragment } from '../view/documentfragment.js';
 import { type ModelDocumentFragment } from '../model/documentfragment.js';
-import type { ModelSchema, SchemaContextDefinition } from '../model/schema.js';
-import { SchemaContext } from '../model/schema.js'; // eslint-disable-line no-duplicate-imports
+import type { ModelSchema, ModelSchemaContextDefinition } from '../model/schema.js';
+import { ModelSchemaContext } from '../model/schema.js'; // eslint-disable-line no-duplicate-imports
 import { type ModelWriter } from '../model/writer.js';
 import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphing.js';
 
@@ -197,7 +197,7 @@ export class UpcastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	public convert(
 		viewElement: ViewElement | ViewDocumentFragment,
 		writer: ModelWriter,
-		context: SchemaContextDefinition = [ '$root' ]
+		context: ModelSchemaContextDefinition = [ '$root' ]
 	): ModelDocumentFragment {
 		this.fire<UpcastViewCleanupEvent>( 'viewCleanup', viewElement );
 
@@ -643,12 +643,12 @@ function extractMarkersFromModelFragment( modelItem: ModelDocumentFragment, writ
  * Creates model fragment according to given context and returns position in the bottom (the deepest) element.
  */
 function createContextTree(
-	contextDefinition: SchemaContextDefinition,
+	contextDefinition: ModelSchemaContextDefinition,
 	writer: ModelWriter
 ): ModelPosition | undefined {
 	let position: ModelPosition | undefined;
 
-	for ( const item of new SchemaContext( contextDefinition ) ) {
+	for ( const item of new ModelSchemaContext( contextDefinition ) ) {
 		const attributes: Record<string, unknown> = {};
 
 		for ( const key of item.getAttributeKeys() ) {
