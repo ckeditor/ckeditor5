@@ -129,7 +129,7 @@ export { ModelLivePosition, type ModelLivePositionChangeEvent } from './model/li
 export { Model } from './model/model.js';
 export { TreeWalker, type TreeWalkerValue } from './model/treewalker.js';
 export { ModelElement } from './model/element.js';
-export { Position, type PositionOffset } from './model/position.js';
+export { ModelPosition as Position, type PositionOffset } from './model/position.js';
 export { ModelDocumentFragment } from './model/documentfragment.js';
 export { ModelDocument, type ModelPostFixer } from './model/document.js';
 export { History } from './model/history.js';

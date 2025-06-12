@@ -9,7 +9,7 @@
 
 import { Operation } from './operation.js';
 import { MergeOperation } from './mergeoperation.js';
-import { Position } from '../position.js';
+import { ModelPosition } from '../position.js';
 import { Range } from '../range.js';
 import { _insert, _move } from './utils.js';
 
@@ -27,7 +27,7 @@ export class SplitOperation extends Operation {
 	/**
 	 * Position at which an element should be split.
 	 */
-	public splitPosition: Position;
+	public splitPosition: ModelPosition;
 
 	/**
 	 * Total offset size of elements that are in the split element after `position`.
@@ -37,7 +37,7 @@ export class SplitOperation extends Operation {
 	/**
 	 * Position at which the clone of split element (or element from graveyard) will be inserted.
 	 */
-	public insertionPosition: Position;
+	public insertionPosition: ModelPosition;
 
 	/**
 	 * Position in the graveyard root before the element which should be used as a parent of the nodes after `position`.
@@ -45,7 +45,7 @@ export class SplitOperation extends Operation {
 	 *
 	 * The default behavior is to clone the split element. Element from graveyard is used during undo.
 	 */
-	public graveyardPosition: Position | null;
+	public graveyardPosition: ModelPosition | null;
 
 	/**
 	 * Creates a split operation.
@@ -59,10 +59,10 @@ export class SplitOperation extends Operation {
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor(
-		splitPosition: Position,
+		splitPosition: ModelPosition,
 		howMany: number,
-		insertionPosition: Position,
-		graveyardPosition: Position | null,
+		insertionPosition: ModelPosition,
+		graveyardPosition: ModelPosition | null,
 		baseVersion: number | null
 	) {
 		super( baseVersion );
@@ -93,11 +93,11 @@ export class SplitOperation extends Operation {
 	 *
 	 * This is a position where nodes that are after the split position will be moved to.
 	 */
-	public get moveTargetPosition(): Position {
+	public get moveTargetPosition(): ModelPosition {
 		const path = this.insertionPosition.path.slice();
 		path.push( 0 );
 
-		return new Position( this.insertionPosition.root, path );
+		return new ModelPosition( this.insertionPosition.root, path );
 	}
 
 	/**
@@ -141,7 +141,7 @@ export class SplitOperation extends Operation {
 	 */
 	public getReversed(): Operation {
 		const graveyard = this.splitPosition.root.document!.graveyard;
-		const graveyardPosition = new Position( graveyard, [ 0 ] );
+		const graveyardPosition = new ModelPosition( graveyard, [ 0 ] );
 
 		return new MergeOperation( this.moveTargetPosition, this.howMany, this.splitPosition, graveyardPosition, this.baseVersion! + 1 );
 	}
@@ -202,8 +202,8 @@ export class SplitOperation extends Operation {
 		}
 
 		const sourceRange = new Range(
-			Position._createAt( splitElement, this.splitPosition.offset ),
-			Position._createAt( splitElement, splitElement.maxOffset )
+			ModelPosition._createAt( splitElement, this.splitPosition.offset ),
+			ModelPosition._createAt( splitElement, splitElement.maxOffset )
 		);
 
 		_move( sourceRange, this.moveTargetPosition );
@@ -236,11 +236,11 @@ export class SplitOperation extends Operation {
 	 * Helper function that returns a default insertion position basing on given `splitPosition`. The default insertion
 	 * position is after the split element.
 	 */
-	public static getInsertionPosition( splitPosition: Position ): Position {
+	public static getInsertionPosition( splitPosition: ModelPosition ): ModelPosition {
 		const path = splitPosition.path.slice( 0, -1 );
 		path[ path.length - 1 ]++;
 
-		return new Position( splitPosition.root, path, 'toPrevious' );
+		return new ModelPosition( splitPosition.root, path, 'toPrevious' );
 	}
 
 	/**
@@ -250,9 +250,9 @@ export class SplitOperation extends Operation {
 	 * @param document Document on which this operation will be applied.
 	 */
 	public static override fromJSON( json: any, document: ModelDocument ): SplitOperation {
-		const splitPosition = Position.fromJSON( json.splitPosition, document );
-		const insertionPosition = Position.fromJSON( json.insertionPosition, document );
-		const graveyardPosition = json.graveyardPosition ? Position.fromJSON( json.graveyardPosition, document ) : null;
+		const splitPosition = ModelPosition.fromJSON( json.splitPosition, document );
+		const insertionPosition = ModelPosition.fromJSON( json.insertionPosition, document );
+		const graveyardPosition = json.graveyardPosition ? ModelPosition.fromJSON( json.graveyardPosition, document ) : null;
 
 		return new this( splitPosition, json.howMany, insertionPosition, graveyardPosition, json.baseVersion );
 	}

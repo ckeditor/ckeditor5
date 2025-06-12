@@ -11,7 +11,7 @@ import { Operation } from './operation.js';
 import { Range } from '../range.js';
 import { _remove } from './utils.js';
 
-import { type Position } from '../position.js';
+import { type ModelPosition } from '../position.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import type { Selectable } from '../selection.js';
@@ -28,7 +28,7 @@ export class DetachOperation extends Operation {
 	/**
 	 * Position before the first {@link module:engine/model/item~ModelItem model item} to detach.
 	 */
-	public sourcePosition: Position;
+	public sourcePosition: ModelPosition;
 
 	/**
 	 * Offset size of moved range.
@@ -46,7 +46,7 @@ export class DetachOperation extends Operation {
 	 * @param howMany Offset size of moved range. Moved range will start from `sourcePosition` and end at
 	 * `sourcePosition` with offset shifted by `howMany`.
 	 */
-	constructor( sourcePosition: Position, howMany: number ) {
+	constructor( sourcePosition: ModelPosition, howMany: number ) {
 		super( null );
 
 		this.sourcePosition = sourcePosition.clone();

@@ -23,7 +23,7 @@ import type { Marker, MarkerCollectionUpdateEvent } from './markercollection.js'
 import { type Batch } from './batch.js';
 import { type ModelElement } from './element.js';
 import { type ModelItem } from './item.js';
-import type { Position, PositionOffset } from './position.js';
+import type { ModelPosition, PositionOffset } from './position.js';
 import { type Range } from './range.js';
 import { type Schema } from './schema.js';
 
@@ -100,7 +100,7 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCh
 	 *
 	 * @see #focus
 	 */
-	public get anchor(): Position | null {
+	public get anchor(): ModelPosition | null {
 		return this._selection.anchor;
 	}
 
@@ -111,7 +111,7 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCh
 	 *
 	 * @see #anchor
 	 */
-	public get focus(): Position | null {
+	public get focus(): ModelPosition | null {
 		return this._selection.focus;
 	}
 
@@ -178,30 +178,30 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCh
 
 	/**
 	 * Returns the first position in the selection.
-	 * First position is the position that {@link module:engine/model/position~Position#isBefore is before}
+	 * First position is the position that {@link module:engine/model/position~ModelPosition#isBefore is before}
 	 * any other position in the selection.
 	 *
 	 * Returns `null` if there are no ranges in selection.
 	 */
-	public getFirstPosition(): Position | null {
+	public getFirstPosition(): ModelPosition | null {
 		return this._selection.getFirstPosition();
 	}
 
 	/**
 	 * Returns the last position in the selection.
-	 * Last position is the position that {@link module:engine/model/position~Position#isAfter is after}
+	 * Last position is the position that {@link module:engine/model/position~ModelPosition#isAfter is after}
 	 * any other position in the selection.
 	 *
 	 * Returns `null` if there are no ranges in selection.
 	 */
-	public getLastPosition(): Position | null {
+	public getLastPosition(): ModelPosition | null {
 		return this._selection.getLastPosition();
 	}
 
 	/**
 	 * Returns a copy of the first range in the selection.
 	 * First range is the one which {@link module:engine/model/range~Range#start start} position
-	 * {@link module:engine/model/position~Position#isBefore is before} start position of all other ranges
+	 * {@link module:engine/model/position~ModelPosition#isBefore is before} start position of all other ranges
 	 * (not to confuse with the first range added to the selection).
 	 *
 	 * Returns `null` if there are no ranges in selection.
@@ -213,8 +213,8 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCh
 	/**
 	 * Returns a copy of the last range in the selection.
 	 * Last range is the one which {@link module:engine/model/range~Range#end end} position
-	 * {@link module:engine/model/position~Position#isAfter is after} end position of all other ranges (not to confuse with the range most
-	 * recently added to the selection).
+	 * {@link module:engine/model/position~ModelPosition#isAfter is after} end position of all
+	 * other ranges (not to confuse with the range most recently added to the selection).
 	 *
 	 * Returns `null` if there are no ranges in selection.
 	 */
@@ -290,7 +290,7 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCh
 
 	/**
 	 * Checks whether the selection contains the entire content of the given element. This means that selection must start
-	 * at a position {@link module:engine/model/position~Position#isTouching touching} the element's start and ends at position
+	 * at a position {@link module:engine/model/position~ModelPosition#isTouching touching} the element's start and ends at position
 	 * touching the element's end.
 	 *
 	 * By default, this method will check whether the entire content of the selection's current root is selected.
@@ -376,7 +376,7 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCh
 	 * @param offset Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
-	public _setFocus( itemOrPosition: ModelItem | Position, offset?: PositionOffset ): void {
+	public _setFocus( itemOrPosition: ModelItem | ModelPosition, offset?: PositionOffset ): void {
 		this._selection.setFocus( itemOrPosition, offset );
 	}
 
@@ -607,7 +607,7 @@ class LiveSelection extends Selection {
 	/**
 	 * Position to which the selection should be set if the last selection range was moved to the graveyard.
 	 */
-	private _selectionRestorePosition: Position | null = null;
+	private _selectionRestorePosition: ModelPosition | null = null;
 
 	/**
 	 * Flag that informs whether the selection ranges have changed. It is changed on true when `LiveRange#change:range` event is fired.
@@ -683,11 +683,11 @@ class LiveSelection extends Selection {
 		return length === 0 ? this._document._getDefaultRange().isCollapsed : super.isCollapsed;
 	}
 
-	public override get anchor(): Position {
+	public override get anchor(): ModelPosition {
 		return super.anchor || this._document._getDefaultRange().start;
 	}
 
-	public override get focus(): Position {
+	public override get focus(): ModelPosition {
 		return super.focus || this._document._getDefaultRange().end;
 	}
 
@@ -744,7 +744,7 @@ class LiveSelection extends Selection {
 		this.updateMarkers();
 	}
 
-	public override setFocus( itemOrPosition: ModelItem | Position, offset?: PositionOffset ): void {
+	public override setFocus( itemOrPosition: ModelItem | ModelPosition, offset?: PositionOffset ): void {
 		super.setFocus( itemOrPosition, offset );
 		this._updateAttributes( true );
 		this.updateMarkers();
@@ -1204,7 +1204,7 @@ class LiveSelection extends Selection {
 	 * Fixes the selection after all its ranges got removed.
 	 * @param deletionPosition Position where the deletion happened.
 	 */
-	private _fixGraveyardSelection( deletionPosition: Position ): void {
+	private _fixGraveyardSelection( deletionPosition: ModelPosition ): void {
 		// Find a range that is a correct selection range and is closest to the position where the deletion happened.
 		const selectionRange = this._model.schema.getNearestSelectionRange( deletionPosition );
 

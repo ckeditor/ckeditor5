@@ -125,7 +125,7 @@ export class OutdentCodeBlockCommand extends Command {
 //		<codeBlock>    ^foo    bar</codeBlock>                      ->          <codeBlock>[    ]foo    bar</codeBlock>
 //
 // @param {<module:engine/model/model~Model>} model
-// @param {<module:engine/model/position~Position>} position
+// @param {<module:engine/model/position~ModelPosition>} position
 // @param {String} sequence
 // @returns {<module:engine/model/range~Range>|null}
 function getLastOutdentableSequenceRange( model: Model, position: Position, sequence: string ): Range | null {

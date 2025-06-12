@@ -8,7 +8,7 @@
  */
 
 import { ModelElement } from './element.js';
-import { Position } from './position.js';
+import { ModelPosition } from './position.js';
 import { Range } from './range.js';
 import { Text } from './text.js';
 import { TreeWalker } from './treewalker.js';
@@ -460,7 +460,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 		return isAllowed !== undefined ? isAllowed : def.allowAttributes.includes( attributeName );
 	}
 
-	public checkMerge( position: Position ): boolean;
+	public checkMerge( position: ModelPosition ): boolean;
 	public checkMerge( baseElement: ModelElement, elementToMerge: ModelElement ): boolean;
 
 	/**
@@ -472,14 +472,14 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * This check ensures that elements merged with {@link module:engine/model/writer~Writer#merge `Writer#merge()`}
 	 * will be valid.
 	 *
-	 * Instead of elements, you can pass the instance of the {@link module:engine/model/position~Position} class as the
+	 * Instead of elements, you can pass the instance of the {@link module:engine/model/position~ModelPosition} class as the
 	 * `positionOrBaseElement`. It means that the elements before and after the position will be checked whether they can be merged.
 	 *
 	 * @param positionOrBaseElement The position or base element to which the `elementToMerge` will be merged.
 	 * @param elementToMerge The element to merge. Required if `positionOrBaseElement` is an element.
 	 */
-	public checkMerge( positionOrBaseElement: Position | ModelElement, elementToMerge?: ModelElement ): boolean {
-		if ( positionOrBaseElement instanceof Position ) {
+	public checkMerge( positionOrBaseElement: ModelPosition | ModelElement, elementToMerge?: ModelElement ): boolean {
+		if ( positionOrBaseElement instanceof ModelPosition ) {
 			const nodeBefore = positionOrBaseElement.nodeBefore;
 			const nodeAfter = positionOrBaseElement.nodeAfter;
 
@@ -732,10 +732,10 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param selectionOrRangeOrPosition The selection/range/position to check.
 	 * @returns The lowest limit element containing the entire `selectionOrRangeOrPosition`.
 	 */
-	public getLimitElement( selectionOrRangeOrPosition: Selection | ModelDocumentSelection | Range | Position ): ModelElement {
+	public getLimitElement( selectionOrRangeOrPosition: Selection | ModelDocumentSelection | Range | ModelPosition ): ModelElement {
 		let element: ModelElement;
 
-		if ( selectionOrRangeOrPosition instanceof Position ) {
+		if ( selectionOrRangeOrPosition instanceof ModelPosition ) {
 			element = selectionOrRangeOrPosition.parent as ModelElement;
 		} else {
 			const ranges = selectionOrRangeOrPosition instanceof Range ?
@@ -839,7 +839,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param direction Search direction.
 	 * @returns Nearest selection range or `null` if one cannot be found.
 	 */
-	public getNearestSelectionRange( position: Position, direction: 'both' | 'forward' | 'backward' = 'both' ): Range | null {
+	public getNearestSelectionRange( position: ModelPosition, direction: 'both' | 'forward' | 'backward' = 'both' ): Range | null {
 		if ( position.root.rootName == '$graveyard' ) {
 			// No valid selection range in the graveyard.
 			// This is important when getting the document selection default range.
@@ -898,7 +898,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param node The node for which an allowed parent should be found or its name.
 	 * @returns Allowed parent or null if nothing was found.
 	 */
-	public findAllowedParent( position: Position, node: ModelNode | string ): ModelElement | null {
+	public findAllowedParent( position: ModelPosition, node: ModelNode | string ): ModelElement | null {
 		let parent = position.parent as ( ModelElement | null );
 
 		while ( parent ) {
@@ -1163,10 +1163,10 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 					yield new Range( start, end );
 				}
 
-				start = Position._createAfter( item );
+				start = ModelPosition._createAfter( item );
 			}
 
-			end = Position._createAfter( item );
+			end = ModelPosition._createAfter( item );
 		}
 
 		if ( !start.isEqual( end ) ) {
@@ -1201,7 +1201,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 
 		if ( selectedElement && this.isObject( selectedElement ) && !this.isInline( selectedElement ) ) {
 			if ( place == 'before' || place == 'after' ) {
-				return new Range( Position._createAt( selectedElement, place ) );
+				return new Range( ModelPosition._createAt( selectedElement, place ) );
 			}
 
 			return Range._createOn( selectedElement );
@@ -1217,10 +1217,10 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 		// If inserting into an empty block – return position in that block. It will get
 		// replaced with the image by insertContent(). #42.
 		if ( firstBlock.isEmpty ) {
-			return new Range( Position._createAt( firstBlock, 0 ) );
+			return new Range( ModelPosition._createAt( firstBlock, 0 ) );
 		}
 
-		const positionAfter = Position._createAfter( firstBlock );
+		const positionAfter = ModelPosition._createAfter( firstBlock );
 
 		// If selection is at the end of the block - return position after the block.
 		if ( selection.focus!.isTouching( positionAfter ) ) {
@@ -1228,7 +1228,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 		}
 
 		// Otherwise, return position before the block.
-		return new Range( Position._createBefore( firstBlock ) );
+		return new Range( ModelPosition._createBefore( firstBlock ) );
 	}
 }
 
@@ -1767,7 +1767,7 @@ type TypeNames = Array<'isBlock' | 'isContent' | 'isInline' | 'isLimit' | 'isObj
  * </$root>
  * ```
  *
- * The context of this position is its {@link module:engine/model/position~Position#getAncestors lists of ancestors}:
+ * The context of this position is its {@link module:engine/model/position~ModelPosition#getAncestors lists of ancestors}:
  *
  *		[ rootElement, blockQuoteElement, paragraphElement ]
  *
@@ -2002,7 +2002,7 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
  * schema.checkChild( [ ...positionInParagraph.getAncestors(), '$text' ], 'bold' );
  * ```
  */
-export type SchemaContextDefinition = ModelItem | Position | SchemaContext | string | Array<string | ModelItem>;
+export type SchemaContextDefinition = ModelItem | ModelPosition | SchemaContext | string | Array<string | ModelItem>;
 
 /**
  * An item of the {@link module:engine/model/schema~SchemaContext schema context}.

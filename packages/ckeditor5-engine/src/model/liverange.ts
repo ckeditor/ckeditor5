@@ -16,7 +16,7 @@ import { type ModelItem } from './item.js';
 import { type MergeOperation } from './operation/mergeoperation.js';
 import { type MoveOperation } from './operation/moveoperation.js';
 import { type Operation } from './operation/operation.js';
-import { type Position } from './position.js';
+import { type ModelPosition } from './position.js';
 
 import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
@@ -35,7 +35,7 @@ export class ModelLiveRange extends /* #__PURE__ */ EmitterMixin( Range ) {
 	 *
 	 * @see module:engine/model/range~Range
 	 */
-	constructor( start: Position, end?: Position | null ) {
+	constructor( start: ModelPosition, end?: ModelPosition | null ) {
 		super( start, end );
 
 		bindWithDocument.call( this );
@@ -83,7 +83,7 @@ export class ModelLiveRange extends /* #__PURE__ */ EmitterMixin( Range ) {
 	 * @internal
 	 */
 
-	declare public static readonly _createFromPositionAndShift: ( position: Position, shift: number ) => ModelLiveRange;
+	declare public static readonly _createFromPositionAndShift: ( position: ModelPosition, shift: number ) => ModelLiveRange;
 }
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
@@ -107,7 +107,7 @@ ModelLiveRange.prototype.is = function( type: string ): boolean {
  */
 export type ModelLiveRangeChangeRangeEvent = {
 	name: 'change' | 'change:range';
-	args: [ range: Range, data: { deletionPosition: Position | null } ];
+	args: [ range: Range, data: { deletionPosition: ModelPosition | null } ];
 };
 
 /**
@@ -134,7 +134,7 @@ export type ModelLiveRangeChangeContentEvent = {
  */
 export type ModelLiveRangeChangeEvent = {
 	name: 'change' | 'change:range' | 'change:content';
-	args: [ range: Range, data: { deletionPosition: Position | null } ];
+	args: [ range: Range, data: { deletionPosition: ModelPosition | null } ];
 };
 
 /**

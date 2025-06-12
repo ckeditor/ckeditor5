@@ -7,7 +7,7 @@
  * @module engine/model/differ
  */
 
-import { Position } from './position.js';
+import { ModelPosition } from './position.js';
 import { Range } from './range.js';
 
 import type { MarkerCollection, MarkerData } from './markercollection.js';
@@ -483,7 +483,7 @@ export class Differ {
 	 *
 	 * The diff set is returned as an array of {@link module:engine/model/differ~DifferItem diff items}, each describing a change done
 	 * on the model. The items are sorted by the position on which the change happened. If a position
-	 * {@link module:engine/model/position~Position#isBefore is before} another one, it will be on an earlier index in the diff set.
+	 * {@link module:engine/model/position~ModelPosition#isBefore is before} another one, it will be on an earlier index in the diff set.
 	 *
 	 * **Note**: Elements inside inserted element will not have a separate diff item, only the top most element change will be reported.
 	 *
@@ -561,10 +561,13 @@ export class Differ {
 					let range;
 
 					if ( childrenAfter[ i ].name == '$text' ) {
-						range = new Range( Position._createAt( element, i ), Position._createAt( element, i + 1 ) );
+						range = new Range( ModelPosition._createAt( element, i ), ModelPosition._createAt( element, i + 1 ) );
 					} else {
 						const index = element.offsetToIndex( i );
-						range = new Range( Position._createAt( element, i ), Position._createAt( element.getChild( index )!, 0 ) );
+						range = new Range(
+							ModelPosition._createAt( element, i ),
+							ModelPosition._createAt( element.getChild( index )!, 0 )
+						);
 					}
 
 					// Generate diff items for this change (there might be multiple attributes changed and
@@ -1242,7 +1245,7 @@ export class Differ {
 	): DifferItemInsert & DifferItemInternal {
 		const diffItem: DifferItemInsert & DifferItemInternal = {
 			type: 'insert',
-			position: Position._createAt( parent, offset ),
+			position: ModelPosition._createAt( parent, offset ),
 			name: elementSnapshot.name,
 			attributes: new Map( elementSnapshot.attributes ),
 			length: 1,
@@ -1278,7 +1281,7 @@ export class Differ {
 		return {
 			type: 'remove',
 			action,
-			position: Position._createAt( parent, offset ),
+			position: ModelPosition._createAt( parent, offset ),
 			name: elementSnapshot.name,
 			attributes: new Map( elementSnapshot.attributes ),
 			length: 1,
@@ -1376,7 +1379,7 @@ export class Differ {
 	 * and `howMany`.
 	 */
 	private _removeAllNestedChanges( parent: ModelElement | ModelDocumentFragment, offset: number, howMany: number ) {
-		const range = new Range( Position._createAt( parent, offset ), Position._createAt( parent, offset + howMany ) );
+		const range = new Range( ModelPosition._createAt( parent, offset ), ModelPosition._createAt( parent, offset + howMany ) );
 
 		for ( const item of range.getItems( { shallow: true } ) ) {
 			if ( item.is( 'element' ) ) {
@@ -1626,7 +1629,7 @@ export interface DifferItemInsert {
 	/**
 	 * The position where the node was inserted.
 	 */
-	position: Position;
+	position: ModelPosition;
 
 	/**
 	 * The length of an inserted text node. For elements, it is always 1 as each inserted element is counted as a one.
@@ -1674,7 +1677,7 @@ export interface DifferItemReinsert {
 	/**
 	 * The position where the node was reinserted.
 	 */
-	position: Position;
+	position: ModelPosition;
 
 	/**
 	 * The length of a re-inserted text node. For elements, it is always 1 as each re-inserted element is counted as a one.
@@ -1714,7 +1717,7 @@ export interface DifferItemRemove {
 	/**
 	 * The position where the node was removed.
 	 */
-	position: Position;
+	position: ModelPosition;
 
 	/**
 	 * The length of a removed text node. For elements, it is always 1, as each removed element is counted as a one.
@@ -1782,6 +1785,6 @@ export interface DifferItemRoot {
 
 interface DifferItemInternal {
 	changeCount?: number;
-	position?: Position;
+	position?: ModelPosition;
 	length?: number;
 }

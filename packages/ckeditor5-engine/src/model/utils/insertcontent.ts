@@ -11,7 +11,7 @@ import { ModelDocumentSelection } from '../documentselection.js';
 import { ModelElement } from '../element.js';
 import { ModelLivePosition } from '../liveposition.js';
 import { ModelLiveRange } from '../liverange.js';
-import { Position } from '../position.js';
+import { ModelPosition } from '../position.js';
 import { Range } from '../range.js';
 
 import { type ModelDocumentFragment } from '../documentfragment.js';
@@ -140,7 +140,7 @@ export function insertContent(
 			const selectionLiveRange = newRange ? ModelLiveRange.fromRange( newRange ) : null;
 
 			// Marker name -> [ start position, end position ].
-			const markersData: Record<string, Array<Position>> = {};
+			const markersData: Record<string, Array<ModelPosition>> = {};
 
 			// Note: `fakeMarkerElements` are sorted backwards. However, now, we want to handle the markers
 			// from the beginning, so that existing <$marker> elements do not affect markers positions.
@@ -242,7 +242,7 @@ class Insertion {
 	/**
 	 * The position at which (or near which) the next node will be inserted.
 	 */
-	public position: Position;
+	public position: ModelPosition;
 
 	/**
 	 * Elements with which the inserted elements can be merged.
@@ -269,7 +269,7 @@ class Insertion {
 	/**
 	 * The current position in the temporary ModelDocumentFragment.
 	 */
-	private _documentFragmentPosition: Position;
+	private _documentFragmentPosition: ModelPosition;
 
 	/**
 	 * The reference to the first inserted node.
@@ -303,7 +303,7 @@ class Insertion {
 
 	private _nodeToSelect: ModelNode | null = null;
 
-	constructor( model: Model, writer: Writer, position: Position ) {
+	constructor( model: Model, writer: Writer, position: ModelPosition ) {
 		this.model = model;
 		this.writer = writer;
 		this.position = position;
@@ -492,7 +492,7 @@ class Insertion {
 			 *
 			 * @error insertcontent-wrong-position
 			 * @param {module:engine/model/node~ModelNode} node Node to insert.
-			 * @param {module:engine/model/position~Position} position Position to insert the node at.
+			 * @param {module:engine/model/position~ModelPosition} position Position to insert the node at.
 			 */
 			throw new CKEditorError(
 				'insertcontent-wrong-position',
@@ -521,7 +521,7 @@ class Insertion {
 	 * This method is used before inserting a node or splitting a parent node. `_affectedStart` and `_affectedEnd` are also changed
 	 * during merging, but the logic there is more complicated so it is left out of this function.
 	 */
-	private _setAffectedBoundaries( position: Position ): void {
+	private _setAffectedBoundaries( position: ModelPosition ): void {
 		// Set affected boundaries stickiness so that those position will "expand" when something is inserted in between them:
 		// <paragraph>Foo][bar</paragraph> -> <paragraph>Foo]xx[bar</paragraph>
 		// This is why it cannot be a range but two separate positions.
@@ -659,7 +659,7 @@ class Insertion {
 
 		// Move the position to the previous node, so it isn't moved to the graveyard on merge.
 		// <p>x</p>[]<p>y</p> => <p>x[]</p><p>y</p>
-		this.position = Position._createAt( mergePosRight.nodeBefore!, 'end' );
+		this.position = ModelPosition._createAt( mergePosRight.nodeBefore!, 'end' );
 
 		// Explanation of setting position stickiness to `'toPrevious'`:
 		// OK:  <p>xx[]</p> + <p>yy</p> => <p>xx[]yy</p> (when sticks to previous)

@@ -8,7 +8,7 @@ import { ModelNodeList } from '../../../src/model/nodelist.js';
 import { ModelElement } from '../../../src/model/element.js';
 import { InsertOperation } from '../../../src/model/operation/insertoperation.js';
 import { MoveOperation } from '../../../src/model/operation/moveoperation.js';
-import { Position } from '../../../src/model/position.js';
+import { ModelPosition } from '../../../src/model/position.js';
 import { Text } from '../../../src/model/text.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -23,7 +23,7 @@ describe( 'InsertOperation', () => {
 
 	it( 'should have proper type', () => {
 		const op = new InsertOperation(
-			new Position( root, [ 0 ] ),
+			new ModelPosition( root, [ 0 ] ),
 			new Text( 'x' ),
 			doc.version
 		);
@@ -32,11 +32,11 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should have proper position stickiness', () => {
-		const pos = new Position( root, [ 0 ] );
+		const pos = new ModelPosition( root, [ 0 ] );
 		pos.stickiness = 'toNext';
 
 		const op = new InsertOperation(
-			new Position( root, [ 0 ] ),
+			new ModelPosition( root, [ 0 ] ),
 			new Text( 'x' ),
 			doc.version
 		);
@@ -47,7 +47,7 @@ describe( 'InsertOperation', () => {
 	it( 'should insert text node', () => {
 		model.applyOperation(
 			new InsertOperation(
-				new Position( root, [ 0 ] ),
+				new ModelPosition( root, [ 0 ] ),
 				new Text( 'x' ),
 				doc.version
 			)
@@ -61,7 +61,7 @@ describe( 'InsertOperation', () => {
 	it( 'should insert element', () => {
 		model.applyOperation(
 			new InsertOperation(
-				new Position( root, [ 0 ] ),
+				new ModelPosition( root, [ 0 ] ),
 				new ModelElement( 'p' ),
 				doc.version
 			)
@@ -75,7 +75,7 @@ describe( 'InsertOperation', () => {
 	it( 'should insert set of nodes', () => {
 		model.applyOperation(
 			new InsertOperation(
-				new Position( root, [ 0 ] ),
+				new ModelPosition( root, [ 0 ] ),
 				[ 'bar', new ModelElement( 'p' ), 'foo' ],
 				doc.version
 			)
@@ -90,7 +90,7 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should return position on affectedSelectable', () => {
-		const pos = new Position( root, [ 1 ] );
+		const pos = new ModelPosition( root, [ 1 ] );
 		const op = new InsertOperation( pos, 'bar',	doc.version );
 		expect( op.affectedSelectable ).to.deep.equal( pos );
 	} );
@@ -100,7 +100,7 @@ describe( 'InsertOperation', () => {
 
 		model.applyOperation(
 			new InsertOperation(
-				new Position( root, [ 1 ] ),
+				new ModelPosition( root, [ 1 ] ),
 				'bar',
 				doc.version
 			)
@@ -114,7 +114,7 @@ describe( 'InsertOperation', () => {
 	it( 'should insert text', () => {
 		model.applyOperation(
 			new InsertOperation(
-				new Position( root, [ 0 ] ),
+				new ModelPosition( root, [ 0 ] ),
 				[ 'foo', new Text( 'x' ), 'bar' ],
 				doc.version
 			)
@@ -126,7 +126,7 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should create a MoveOperation as a reverse', () => {
-		const position = new Position( root, [ 0 ] );
+		const position = new ModelPosition( root, [ 0 ] );
 		const operation = new InsertOperation(
 			position,
 			[ 'foo', new Text( 'x' ), 'bar' ],
@@ -143,7 +143,7 @@ describe( 'InsertOperation', () => {
 
 	it( 'should undo insert node by applying reverse operation', () => {
 		const operation = new InsertOperation(
-			new Position( root, [ 0 ] ),
+			new ModelPosition( root, [ 0 ] ),
 			new Text( 'x' ),
 			doc.version
 		);
@@ -162,7 +162,7 @@ describe( 'InsertOperation', () => {
 
 	it( 'should undo insert set of nodes by applying reverse operation', () => {
 		const operation = new InsertOperation(
-			new Position( root, [ 0 ] ),
+			new ModelPosition( root, [ 0 ] ),
 			'bar',
 			doc.version
 		);
@@ -180,7 +180,7 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should create operation with the same parameters when cloned', () => {
-		const position = new Position( root, [ 0 ] );
+		const position = new ModelPosition( root, [ 0 ] );
 		const nodeA = new ModelElement( 'a' );
 		const nodeB = new ModelElement( 'b' );
 		const nodes = [ nodeA, nodeB ];
@@ -209,11 +209,11 @@ describe( 'InsertOperation', () => {
 	it( 'should save copies of inserted nodes after it is executed', () => {
 		const element = new ModelElement( 'p', { key: 'value' } );
 
-		const op = new InsertOperation( new Position( root, [ 0 ] ), element, doc.version );
+		const op = new InsertOperation( new ModelPosition( root, [ 0 ] ), element, doc.version );
 		model.applyOperation( op );
 
 		const text = new Text( 'text' );
-		const op2 = new InsertOperation( new Position( root, [ 0, 0 ] ), text, doc.version );
+		const op2 = new InsertOperation( new ModelPosition( root, [ 0, 0 ] ), text, doc.version );
 		model.applyOperation( op2 );
 
 		expect( op.nodes.getNode( 0 ) ).not.to.equal( element );
@@ -229,7 +229,7 @@ describe( 'InsertOperation', () => {
 	describe( '_validate()', () => {
 		it( 'should throw an error if target position does not exist', () => {
 			const element = new ModelElement( 'p' );
-			const op = new InsertOperation( new Position( root, [ 4 ] ), element, doc.version );
+			const op = new InsertOperation( new ModelPosition( root, [ 4 ] ), element, doc.version );
 
 			expectToThrowCKEditorError( () => op._validate(), /insert-operation-position-invalid/, model );
 		} );
@@ -237,7 +237,7 @@ describe( 'InsertOperation', () => {
 
 	describe( 'toJSON', () => {
 		it( 'should create proper json object', () => {
-			const position = new Position( root, [ 0 ] );
+			const position = new ModelPosition( root, [ 0 ] );
 			const op = new InsertOperation( position, new Text( 'x' ), doc.version );
 			op.shouldReceiveAttributes = true;
 
@@ -255,7 +255,7 @@ describe( 'InsertOperation', () => {
 
 	describe( 'fromJSON', () => {
 		it( 'should create proper InsertOperation from json object', () => {
-			const position = new Position( root, [ 0 ] );
+			const position = new ModelPosition( root, [ 0 ] );
 			const op = new InsertOperation(
 				position,
 				[ new Text( 'x' ), new ModelElement( 'p', [], new Text( 'foo' ) ), 'y' ],

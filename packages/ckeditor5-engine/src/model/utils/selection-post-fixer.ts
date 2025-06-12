@@ -7,7 +7,7 @@
  * @module engine/model/utils/selection-post-fixer
  */
 
-import { Position } from '../position.js';
+import { ModelPosition } from '../position.js';
 import { Range } from '../range.js';
 
 import { type ModelDocumentFragment } from '../documentfragment.js';
@@ -231,11 +231,11 @@ function tryFixingNonCollapsedRage( range: Range, schema: Schema ) {
 		let fixedEnd = end;
 
 		if ( expandStart ) {
-			fixedStart = Position._createBefore( findOutermostLimitAncestor( startLimitElement, schema ) );
+			fixedStart = ModelPosition._createBefore( findOutermostLimitAncestor( startLimitElement, schema ) );
 		}
 
 		if ( expandEnd ) {
-			fixedEnd = Position._createAfter( findOutermostLimitAncestor( endLimitElement, schema ) );
+			fixedEnd = ModelPosition._createAfter( findOutermostLimitAncestor( endLimitElement, schema ) );
 		}
 
 		return new Range( fixedStart, fixedEnd );
@@ -264,7 +264,7 @@ function findOutermostLimitAncestor( startingNode: ModelNode, schema: Schema ): 
 /**
  * Checks whether any of range boundaries is placed around non-limit elements.
  */
-function checkSelectionOnNonLimitElements( start: Position, end: Position, schema: Schema ) {
+function checkSelectionOnNonLimitElements( start: ModelPosition, end: ModelPosition, schema: Schema ) {
 	const startIsOnBlock = ( start.nodeAfter && !schema.isLimit( start.nodeAfter ) ) || schema.checkChild( start, '$text' );
 	const endIsOnBlock = ( end.nodeBefore && !schema.isLimit( end.nodeBefore ) ) || schema.checkChild( end, '$text' );
 

@@ -8,7 +8,7 @@
  */
 
 import { ModelDocumentSelection } from '../documentselection.js';
-import { Position } from '../position.js';
+import { ModelPosition } from '../position.js';
 import { Range } from '../range.js';
 import { TreeWalker, type TreeWalkerValue } from '../treewalker.js';
 
@@ -115,7 +115,7 @@ function tryExtendingTo(
 		treatEmojiAsSingleUnit: boolean;
 	},
 	value: TreeWalkerValue
-): Position | undefined {
+): ModelPosition | undefined {
 	const { isForward, walker, unit, schema, treatEmojiAsSingleUnit } = data;
 	const { type, item, nextPosition } = value;
 
@@ -133,7 +133,7 @@ function tryExtendingTo(
 	if ( type == ( isForward ? 'elementStart' : 'elementEnd' ) ) {
 		// If it's a selectable, we can select it now.
 		if ( schema.isSelectable( item ) ) {
-			return Position._createAt( item, isForward ? 'after' : 'before' );
+			return ModelPosition._createAt( item, isForward ? 'after' : 'before' );
 		}
 
 		// If text allowed on this position, extend to this place.
@@ -166,7 +166,7 @@ function getCorrectPosition(
 	walker: TreeWalker,
 	unit: 'character' | 'codePoint' | 'word',
 	treatEmojiAsSingleUnit: boolean
-): Position {
+): ModelPosition {
 	const textNode = walker.position.textNode;
 
 	if ( textNode ) {
@@ -191,7 +191,7 @@ function getCorrectPosition(
  * Finds a correct position of a word break by walking in a text node and checking whether selection can be extended to given position
  * or should be extended further.
  */
-function getCorrectWordBreakPosition( walker: TreeWalker, isForward: boolean ): Position {
+function getCorrectWordBreakPosition( walker: TreeWalker, isForward: boolean ): ModelPosition {
 	let textNode: ModelNode | null = walker.position.textNode;
 
 	if ( !textNode ) {
@@ -220,9 +220,9 @@ function getCorrectWordBreakPosition( walker: TreeWalker, isForward: boolean ): 
 	return walker.position;
 }
 
-function getSearchRange( start: Position, isForward: boolean ) {
+function getSearchRange( start: ModelPosition, isForward: boolean ) {
 	const root = start.root;
-	const searchEnd = Position._createAt( root, isForward ? 'end' : 0 );
+	const searchEnd = ModelPosition._createAt( root, isForward ? 'end' : 0 );
 
 	if ( isForward ) {
 		return new Range( start, searchEnd );

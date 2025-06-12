@@ -18,7 +18,7 @@ import { MergeOperation } from './mergeoperation.js';
 import { SplitOperation } from './splitoperation.js';
 import { NoOperation } from './nooperation.js';
 import { Range } from '../range.js';
-import { Position } from '../position.js';
+import { ModelPosition } from '../position.js';
 
 import { type Operation } from './operation.js';
 import { type ModelDocument } from '../document.js';
@@ -1270,14 +1270,14 @@ setTransformation( MarkerOperation, SplitOperation, ( a, b, context ) => {
 					// <p>Foo</p>[<p>Bar]</p>  -- merge ->  <p>Foo[Bar]</p>  -- default split ->  <p>Foo</p><p>[Bar]</p>
 					// <p>Foo</p>[<p>Bar]</p>  -- merge ->  <p>Foo[Bar]</p>  --- fixed split -->  <p>Foo</p>[<p>Bar]</p>
 					//
-					( a.newRange as any ).start = Position._createAt( b.insertionPosition );
+					( a.newRange as any ).start = ModelPosition._createAt( b.insertionPosition );
 				} else if ( context.abRelation.wasInLeftElement ) {
 					// If the marker start was initially in the "left" element, keep the start position there.
 					//
 					// <p>Foo[</p><p>Bar]</p>  -- merge ->  <p>Foo[Bar]</p>  -- default split ->  <p>Foo</p><p>[Bar]</p>
 					// <p>Foo[</p><p>Bar]</p>  -- merge ->  <p>Foo[Bar]</p>  --- fixed split -->  <p>Foo[</p><p>Bar]</p>
 					//
-					( a.newRange as any ).start = Position._createAt( a.newRange.start );
+					( a.newRange as any ).start = ModelPosition._createAt( a.newRange.start );
 				} else {
 					// Finally, the start position must have been at the beginning of the "right" (merged) element.
 					// In this case, move it back to the "right" element.
@@ -1289,7 +1289,7 @@ setTransformation( MarkerOperation, SplitOperation, ( a, b, context ) => {
 					// <p>Foo</p><p>[]Bar</p>  -- merge ->  <p>Foo[]Bar</p>  -- default split ->  <p>Foo[]</p><p>Bar</p>
 					// <p>Foo</p><p>[]Bar</p>  -- merge ->  <p>Foo[]Bar</p>  --- fixed split -->  <p>Foo</p><p>[]Bar</p>
 					//
-					( a.newRange as any ).start = Position._createAt( b.moveTargetPosition );
+					( a.newRange as any ).start = ModelPosition._createAt( b.moveTargetPosition );
 				}
 			} else {
 				// If marker range start is not the same as split position, simply use the default transformation, as there is no
@@ -1307,21 +1307,21 @@ setTransformation( MarkerOperation, SplitOperation, ( a, b, context ) => {
 					// <p>[Foo</p>]<p>Bar</p>  -- merge ->  <p>[Foo]Bar</p>  -- default split ->  <p>[Foo]</p><p>Bar</p>
 					// <p>[Foo</p>]<p>Bar</p>  -- merge ->  <p>[Foo]Bar</p>  --- fixed split -->  <p>[Foo</p>]<p>Bar</p>
 					//
-					( a.newRange as any ).end = Position._createAt( b.insertionPosition );
+					( a.newRange as any ).end = ModelPosition._createAt( b.insertionPosition );
 				} else if ( context.abRelation.wasInRightElement ) {
 					// If the marker was initially in the "right" element, keep the end position there.
 					//
 					// <p>[Foo</p><p>]Bar</p>  -- merge ->  <p>[Foo]Bar</p>  -- default split ->  <p>[Foo]</p><p>Bar</p>
 					// <p>[Foo</p><p>]Bar</p>  -- merge ->  <p>[Foo]Bar</p>  --- fixed split -->  <p>[Foo</p><p>]Bar</p>
 					//
-					( a.newRange as any ).end = Position._createAt( b.moveTargetPosition );
+					( a.newRange as any ).end = ModelPosition._createAt( b.moveTargetPosition );
 				} else {
 					// Finally, the end position must have been at the end of the "left" (merged) element.
 					// In this case, keep it where it is.
 					//
 					// Note, that this is what the default transformation does, so we could use `aNewRange.end`, but this is more clear.
 					//
-					( a.newRange as any ).end = Position._createAt( a.newRange.end );
+					( a.newRange as any ).end = ModelPosition._createAt( a.newRange.end );
 				}
 			} else {
 				// If marker range end is not the same as split position, simply use the default transformation, as there is no
@@ -1377,7 +1377,7 @@ setTransformation( MergeOperation, MergeOperation, ( a, b, context ) => {
 			const path = b.graveyardPosition.path.slice();
 			path.push( 0 );
 
-			a.sourcePosition = new Position( b.graveyardPosition.root, path );
+			a.sourcePosition = new ModelPosition( b.graveyardPosition.root, path );
 			a.howMany = 0;
 
 			return [ a ];
@@ -2048,7 +2048,7 @@ setTransformation( MoveOperation, MergeOperation, ( a, b, context ) => {
 				const splitNodesMoveTargetPath = gyMove.getMovedRangeStart().path.slice();
 				splitNodesMoveTargetPath.push( 0 );
 
-				const splitNodesMoveTarget = new Position( gyMove.targetPosition.root, splitNodesMoveTargetPath );
+				const splitNodesMoveTarget = new ModelPosition( gyMove.targetPosition.root, splitNodesMoveTargetPath );
 				splitNodesMoveSource = splitNodesMoveSource._getTransformedByMove( gyMoveSource, gyMoveTarget, 1 );
 				const splitNodesMove = new MoveOperation( splitNodesMoveSource, b.howMany, splitNodesMoveTarget, 0 );
 
@@ -2258,8 +2258,8 @@ setTransformation( SplitOperation, MergeOperation, ( a, b, context ) => {
 		const splitPath = b.graveyardPosition.path.slice();
 		splitPath.push( 0 );
 
-		const splitPosition = new Position( b.graveyardPosition.root, splitPath );
-		const insertionPosition = SplitOperation.getInsertionPosition( new Position( b.graveyardPosition.root, splitPath ) );
+		const splitPosition = new ModelPosition( b.graveyardPosition.root, splitPath );
+		const insertionPosition = SplitOperation.getInsertionPosition( new ModelPosition( b.graveyardPosition.root, splitPath ) );
 
 		const additionalSplit = new SplitOperation( splitPosition, 0, insertionPosition, null, 0 );
 
@@ -2310,7 +2310,7 @@ setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
 			const newTargetPath = newParentPosition.path.slice();
 			newTargetPath.push( 0 );
 
-			const newTargetPosition = new Position( newParentPosition.root, newTargetPath );
+			const newTargetPosition = new ModelPosition( newParentPosition.root, newTargetPath );
 			const moveOp = new MoveOperation( sourcePosition, a.howMany, newTargetPosition, 0 );
 
 			return [ moveOp ];
@@ -2513,7 +2513,7 @@ setTransformation( SplitOperation, SplitOperation, ( a, b, context ) => {
 		const newPositionPath = b.insertionPosition.path.slice();
 		newPositionPath.push( 0 );
 
-		const newPosition = new Position( b.insertionPosition.root, newPositionPath );
+		const newPosition = new ModelPosition( b.insertionPosition.root, newPositionPath );
 		const moveOp = new MoveOperation( a.insertionPosition, 1, newPosition, 0 );
 
 		return [ a, moveOp ];
@@ -2548,7 +2548,7 @@ function _moveTargetIntoMovedRange( a: MoveOperation, b: MoveOperation ) {
  *
  * Given `targetPosition` is the target position of the first range from `ranges`.
  */
-function _makeMoveOperationsFromRanges( ranges: Array<Range>, targetPosition: Position ) {
+function _makeMoveOperationsFromRanges( ranges: Array<Range>, targetPosition: ModelPosition ) {
 	// At this moment we have some ranges and a target position, to which those ranges should be moved.
 	// Order in `ranges` array is the go-to order of after transformation.
 	//

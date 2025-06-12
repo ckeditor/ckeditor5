@@ -15,7 +15,7 @@ import {
 	type ModelLiveRangeChangeEvent
 } from './liverange.js';
 
-import { type Position } from './position.js';
+import { type ModelPosition } from './position.js';
 import { type Range } from './range.js';
 
 import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
@@ -198,9 +198,10 @@ export class MarkerCollection extends /* #__PURE__ */ EmitterMixin() implements 
 	}
 
 	/**
-	 * Returns iterator that iterates over all markers, which ranges contain given {@link module:engine/model/position~Position position}.
+	 * Returns iterator that iterates over all markers, which ranges
+	 * contain given {@link module:engine/model/position~ModelPosition position}.
 	 */
-	public* getMarkersAtPosition( position: Position ): IterableIterator<Marker> {
+	public* getMarkersAtPosition( position: ModelPosition ): IterableIterator<Marker> {
 		for ( const marker of this ) {
 			if ( marker.getRange().containsPosition( position ) ) {
 				yield marker;
@@ -434,7 +435,7 @@ class Marker extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
 	 * Returns current marker start position.
 	 */
-	public getStart(): Position {
+	public getStart(): ModelPosition {
 		if ( !this._liveRange ) {
 			throw new CKEditorError( 'marker-destroyed', this );
 		}
@@ -445,7 +446,7 @@ class Marker extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
 	 * Returns current marker end position.
 	 */
-	public getEnd(): Position {
+	public getEnd(): ModelPosition {
 		if ( !this._liveRange ) {
 			throw new CKEditorError( 'marker-destroyed', this );
 		}

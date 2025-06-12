@@ -9,7 +9,7 @@
 
 import { Operation } from './operation.js';
 import { ModelElement } from '../element.js';
-import { Position } from '../position.js';
+import { ModelPosition } from '../position.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -25,7 +25,7 @@ export class RenameOperation extends Operation {
 	/**
 	 * Position before an element to change.
 	 */
-	public position: Position;
+	public position: ModelPosition;
 
 	/**
 	 * Current name of the element.
@@ -46,7 +46,7 @@ export class RenameOperation extends Operation {
 	 * @param baseVersion Document {@link module:engine/model/document~ModelDocument#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
-	constructor( position: Position, oldName: string, newName: string, baseVersion: number | null ) {
+	constructor( position: ModelPosition, oldName: string, newName: string, baseVersion: number | null ) {
 		super( baseVersion );
 
 		this.position = position;
@@ -152,7 +152,7 @@ export class RenameOperation extends Operation {
 	 * @param document Document on which this operation will be applied.
 	 */
 	public static override fromJSON( json: any, document: ModelDocument ): RenameOperation {
-		return new RenameOperation( Position.fromJSON( json.position, document ), json.oldName, json.newName, json.baseVersion );
+		return new RenameOperation( ModelPosition.fromJSON( json.position, document ), json.oldName, json.newName, json.baseVersion );
 	}
 
 	// @if CK_DEBUG_ENGINE // public override toString(): string {

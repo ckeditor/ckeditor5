@@ -21,7 +21,7 @@ import { type RootElement } from '../model/rootelement.js';
 import { type ModelElement } from '../model/element.js';
 import { type ModelItem } from '../model/item.js';
 import { type Mapper } from './mapper.js';
-import { type Position } from '../model/position.js';
+import { type ModelPosition } from '../model/position.js';
 import { type Schema } from '../model/schema.js';
 import { type Selection } from '../model/selection.js';
 import { type ViewElement } from '../view/element.js';
@@ -350,7 +350,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 * @param conversionApi The conversion API object.
 	 */
 	private _convertRemove(
-		position: Position,
+		position: ModelPosition,
 		length: number,
 		name: string,
 		conversionApi: DowncastConversionApi
@@ -700,7 +700,7 @@ export type DowncastDispatcherEventMap<TItem = ModelItem> = {
 		reconversion?: boolean;
 	};
 	remove: {
-		position: Position;
+		position: ModelPosition;
 		length: number;
 	};
 	attribute: {
@@ -762,7 +762,7 @@ export type DowncastInsertEvent<TItem extends ModelItem = ModelItem> = DowncastE
  *
  * @eventName ~DowncastDispatcher#remove
  * @param {Object} data Additional information about the change.
- * @param {module:engine/model/position~Position} data.position Position from which the node has been removed.
+ * @param {module:engine/model/position~ModelPosition} data.position Position from which the node has been removed.
  * @param {Number} data.length Offset size of the removed node.
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
  * to be used by callback, passed in `DowncastDispatcher` constructor.
@@ -877,7 +877,7 @@ export type DowncastRemoveMarkerEvent = DowncastEvent<'removeMarker'>;
  * converted if they happen inside an element with custom conversion method.
  */
 function shouldMarkerChangeBeConverted(
-	modelPosition: Position,
+	modelPosition: ModelPosition,
 	marker: Marker,
 	mapper: Mapper
 ): boolean {

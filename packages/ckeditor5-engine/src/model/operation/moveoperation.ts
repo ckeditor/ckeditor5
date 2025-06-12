@@ -8,7 +8,7 @@
  */
 
 import { Operation } from './operation.js';
-import { Position } from '../position.js';
+import { ModelPosition } from '../position.js';
 import { Range } from '../range.js';
 import { _move } from './utils.js';
 import type { Selectable } from '../selection.js';
@@ -21,13 +21,13 @@ import { type ModelDocument } from '../document.js';
 
 /**
  * Operation to move a range of {@link module:engine/model/item~ModelItem model items}
- * to given {@link module:engine/model/position~Position target position}.
+ * to given {@link module:engine/model/position~ModelPosition target position}.
  */
 export class MoveOperation extends Operation {
 	/**
 	 * Position before the first {@link module:engine/model/item~ModelItem model item} to move.
 	 */
-	public sourcePosition: Position;
+	public sourcePosition: ModelPosition;
 
 	/**
 	 * Offset size of moved range.
@@ -37,7 +37,7 @@ export class MoveOperation extends Operation {
 	/**
 	 * Position at which moved nodes will be inserted.
 	 */
-	public targetPosition: Position;
+	public targetPosition: ModelPosition;
 
 	/**
 	 * Creates a move operation.
@@ -49,7 +49,7 @@ export class MoveOperation extends Operation {
 	 * @param baseVersion Document {@link module:engine/model/document~ModelDocument#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
-	constructor( sourcePosition: Position, howMany: number, targetPosition: Position, baseVersion: number | null ) {
+	constructor( sourcePosition: ModelPosition, howMany: number, targetPosition: ModelPosition, baseVersion: number | null ) {
 		super( baseVersion );
 
 		this.sourcePosition = sourcePosition.clone();
@@ -106,7 +106,7 @@ export class MoveOperation extends Operation {
 	 *      offset 6   offset 4
 	 *```
 	 */
-	public getMovedRangeStart(): Position {
+	public getMovedRangeStart(): ModelPosition {
 		return this.targetPosition._getTransformedByDeletion( this.sourcePosition, this.howMany )!;
 	}
 
@@ -202,8 +202,8 @@ export class MoveOperation extends Operation {
 	 * @param document Document on which this operation will be applied.
 	 */
 	public static override fromJSON( json: any, document: ModelDocument ): MoveOperation {
-		const sourcePosition = Position.fromJSON( json.sourcePosition, document );
-		const targetPosition = Position.fromJSON( json.targetPosition, document );
+		const sourcePosition = ModelPosition.fromJSON( json.sourcePosition, document );
+		const targetPosition = ModelPosition.fromJSON( json.targetPosition, document );
 
 		return new this( sourcePosition, json.howMany, targetPosition, json.baseVersion );
 	}

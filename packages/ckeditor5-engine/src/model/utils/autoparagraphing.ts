@@ -4,7 +4,7 @@
  */
 
 import { type ModelNode } from '../node.js';
-import { type Position } from '../position.js';
+import { type ModelPosition } from '../position.js';
 import { type Schema } from '../schema.js';
 import { type Writer } from '../writer.js';
 
@@ -48,7 +48,7 @@ export function autoParagraphEmptyRoots( writer: Writer ): boolean {
  * @param schema A schema instance used for element validation.
  */
 export function isParagraphable(
-	position: Position,
+	position: ModelPosition,
 	nodeOrType: ModelNode | string,
 	schema: Schema
 ): boolean {
@@ -75,7 +75,7 @@ export function isParagraphable(
  * @param writer The model writer.
  * @returns  Position inside the created paragraph.
  */
-export function wrapInParagraph( position: Position, writer: Writer ): Position {
+export function wrapInParagraph( position: ModelPosition, writer: Writer ): ModelPosition {
 	const paragraph = writer.createElement( 'paragraph' );
 
 	writer.insert( paragraph, position );

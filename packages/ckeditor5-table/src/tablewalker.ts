@@ -589,7 +589,7 @@ class TableSlot {
 	}
 
 	/**
-	 * Returns the {@link module:engine/model/position~Position} before the table slot.
+	 * Returns the {@link module:engine/model/position~ModelPosition} before the table slot.
 	 */
 	public getPositionBefore(): Position {
 		const model = this._table.root.document!.model;

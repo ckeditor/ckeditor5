@@ -116,9 +116,9 @@ export abstract class ModelNode extends TypeCheckable {
 	 * Offset size of this node.
 	 *
 	 * Represents how much "offset space" is occupied by the node in its parent. It is important for
-	 * {@link module:engine/model/position~Position position}. When node has `offsetSize` greater than `1`, position can be placed between
-	 * that node start and end. `offsetSize` greater than `1` is for nodes that represents more than one entity, i.e.
-	 * a {@link module:engine/model/text~Text text node}.
+	 * {@link module:engine/model/position~ModelPosition position}. When node has `offsetSize` greater
+	 * than `1`, position can be placed between that node start and end. `offsetSize` greater than `1` is for
+	 * nodes that represents more than one entity, i.e. a {@link module:engine/model/text~Text text node}.
 	 */
 	public get offsetSize(): number {
 		return 1;
@@ -184,7 +184,7 @@ export abstract class ModelNode extends TypeCheckable {
 	/**
 	 * Gets path to the node. The path is an array containing starting offsets of consecutive ancestors of this node,
 	 * beginning from {@link module:engine/model/node~ModelNode#root root}, down to this node's starting offset. The path can be used to
-	 * create {@link module:engine/model/position~Position Position} instance.
+	 * create {@link module:engine/model/position~ModelPosition Position} instance.
 	 *
 	 * ```ts
 	 * const abc = new Text( 'abc' );

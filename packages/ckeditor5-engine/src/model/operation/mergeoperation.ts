@@ -9,7 +9,7 @@
 
 import { Operation } from './operation.js';
 import { SplitOperation } from './splitoperation.js';
-import { Position } from '../position.js';
+import { ModelPosition } from '../position.js';
 import { Range } from '../range.js';
 import { _move } from './utils.js';
 
@@ -31,7 +31,7 @@ export class MergeOperation extends Operation {
 	/**
 	 * Position inside the merged element. All nodes from that element after that position will be moved to {@link #targetPosition}.
 	 */
-	public sourcePosition: Position;
+	public sourcePosition: ModelPosition;
 
 	/**
 	 * Summary offset size of nodes which will be moved from the merged element to the new parent.
@@ -41,12 +41,12 @@ export class MergeOperation extends Operation {
 	/**
 	 * Position which the nodes from the merged elements will be moved to.
 	 */
-	public targetPosition: Position;
+	public targetPosition: ModelPosition;
 
 	/**
 	 * Position in graveyard to which the merged element will be moved.
 	 */
-	public graveyardPosition: Position;
+	public graveyardPosition: ModelPosition;
 
 	/**
 	 * Creates a merge operation.
@@ -60,10 +60,10 @@ export class MergeOperation extends Operation {
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor(
-		sourcePosition: Position,
+		sourcePosition: ModelPosition,
 		howMany: number,
-		targetPosition: Position,
-		graveyardPosition: Position,
+		targetPosition: ModelPosition,
+		graveyardPosition: ModelPosition,
 		baseVersion: number | null
 	) {
 		super( baseVersion );
@@ -91,8 +91,8 @@ export class MergeOperation extends Operation {
 	/**
 	 * Position before the merged element (which will be deleted).
 	 */
-	public get deletionPosition(): Position {
-		return new Position( this.sourcePosition.root, this.sourcePosition.path.slice( 0, -1 ) );
+	public get deletionPosition(): ModelPosition {
+		return new ModelPosition( this.sourcePosition.root, this.sourcePosition.path.slice( 0, -1 ) );
 	}
 
 	/**
@@ -137,7 +137,7 @@ export class MergeOperation extends Operation {
 		const targetPosition = this.targetPosition._getTransformedByMergeOperation( this );
 
 		const path = this.sourcePosition.path.slice( 0, -1 );
-		const insertionPosition = new Position( this.sourcePosition.root, path )._getTransformedByMergeOperation( this );
+		const insertionPosition = new ModelPosition( this.sourcePosition.root, path )._getTransformedByMergeOperation( this );
 
 		return new SplitOperation( targetPosition, this.howMany, insertionPosition, this.graveyardPosition, this.baseVersion! + 1 );
 	}
@@ -214,9 +214,9 @@ export class MergeOperation extends Operation {
 	 * @param document Document on which this operation will be applied.
 	 */
 	public static override fromJSON( json: any, document: ModelDocument ): MergeOperation {
-		const sourcePosition = Position.fromJSON( json.sourcePosition, document );
-		const targetPosition = Position.fromJSON( json.targetPosition, document );
-		const graveyardPosition = Position.fromJSON( json.graveyardPosition, document );
+		const sourcePosition = ModelPosition.fromJSON( json.sourcePosition, document );
+		const targetPosition = ModelPosition.fromJSON( json.targetPosition, document );
+		const graveyardPosition = ModelPosition.fromJSON( json.graveyardPosition, document );
 
 		return new this( sourcePosition, json.howMany, targetPosition, graveyardPosition, json.baseVersion );
 	}

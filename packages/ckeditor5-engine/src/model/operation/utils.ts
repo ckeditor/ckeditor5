@@ -16,7 +16,7 @@ import { type ModelDocumentFragment } from '../documentfragment.js';
 import { type ModelElement } from '../element.js';
 import { type ModelItem } from '../item.js';
 import { type ModelNodeList } from '../nodelist.js';
-import { type Position } from '../position.js';
+import { type ModelPosition } from '../position.js';
 
 import { CKEditorError, isIterable } from '@ckeditor/ckeditor5-utils';
 
@@ -28,7 +28,7 @@ import { CKEditorError, isIterable } from '@ckeditor/ckeditor5-utils';
  * @param nodes Nodes to insert.
  * @returns Range spanning over inserted elements.
  */
-export function _insert( position: Position, nodes: ModelNodeSet ): Range {
+export function _insert( position: ModelPosition, nodes: ModelNodeSet ): Range {
 	const normalizedNodes = _normalizeNodes( nodes );
 
 	// We have to count offset before inserting nodes because they can get merged and we would get wrong offsets.
@@ -93,7 +93,7 @@ export function _remove( this: any, range: Range ): Array<ModelNode> {
  * @param targetPosition Position to which nodes should be moved.
  * @returns Range containing moved nodes.
  */
-export function _move( this: any, sourceRange: Range, targetPosition: Position ): Range {
+export function _move( this: any, sourceRange: Range, targetPosition: ModelPosition ): Range {
 	if ( !sourceRange.isFlat ) {
 		/**
 		 * Trying to move a range which starts and ends in different element.
@@ -227,7 +227,7 @@ function _mergeNodesAtIndex( element: ModelElement | ModelDocumentFragment, inde
  *
  * @param position Position at which node should be split.
  */
-function _splitNodeAtPosition( position: Position ): void {
+function _splitNodeAtPosition( position: ModelPosition ): void {
 	const textNode = position.textNode;
 	const element = position.parent;
 

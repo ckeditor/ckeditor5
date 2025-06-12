@@ -17,7 +17,7 @@ import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imagebloc
 
 import { _getModelData, _parseModel } from '../../../../src/dev-utils/model.js';
 import { transformOperationSets } from '../../../../src/model/operation/transform.js';
-import { Position } from '../../../../src/model/position.js';
+import { ModelPosition } from '../../../../src/model/position.js';
 import { Range } from '../../../../src/model/range.js';
 import { OperationFactory } from '../../../../src/model/operation/operationfactory.js';
 
@@ -71,8 +71,8 @@ export class Client {
 		const ranges = [];
 
 		for ( const range of selection.getRanges() ) {
-			const start = new Position( modelRoot, range.start.path );
-			const end = new Position( modelRoot, range.end.path );
+			const start = new ModelPosition( modelRoot, range.start.path );
+			const end = new ModelPosition( modelRoot, range.end.path );
 
 			ranges.push( new Range( start, end ) );
 		}
@@ -243,7 +243,7 @@ export class Client {
 			return this._getPositionFromSelection( type );
 		}
 
-		return new Position( this.document.getRoot(), path );
+		return new ModelPosition( this.document.getRoot(), path );
 	}
 
 	_getPositionFromSelection( type ) {
@@ -256,7 +256,7 @@ export class Client {
 			case 'end':
 				return selRange.end.clone();
 			case 'beforeParent':
-				return Position._createBefore( selRange.start.parent );
+				return ModelPosition._createBefore( selRange.start.parent );
 		}
 	}
 

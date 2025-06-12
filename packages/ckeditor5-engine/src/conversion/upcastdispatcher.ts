@@ -42,7 +42,7 @@ import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
  * * `data.modelRange` is used to point to the result
  * of the current conversion (e.g. the element that is being inserted)
  * and is always a {@link module:engine/model/range~Range} when the conversion succeeds.
- * * `data.modelCursor` is a {@link module:engine/model/position~Position position} on which the converter should insert
+ * * `data.modelCursor` is a {@link module:engine/model/position~ModelPosition position} on which the converter should insert
  * the newly created items.
  *
  * The third parameter of the callback is an instance of {@link module:engine/conversion/upcastdispatcher~UpcastConversionApi}

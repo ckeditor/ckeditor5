@@ -21,7 +21,7 @@ import { SplitOperation } from './operation/splitoperation.js';
 import { ModelDocumentFragment } from './documentfragment.js';
 import { ModelDocumentSelection } from './documentselection.js';
 import { ModelElement } from './element.js';
-import { Position, type PositionOffset, type PositionStickiness } from './position.js';
+import { ModelPosition, type PositionOffset, type PositionStickiness } from './position.js';
 import { Range } from './range.js';
 import { RootElement } from './rootelement.js';
 import { Text } from './text.js';
@@ -188,7 +188,7 @@ export class Writer {
 	 */
 	public insert(
 		item: ModelItem | ModelDocumentFragment,
-		itemOrPosition: ModelItem | ModelDocumentFragment | Position,
+		itemOrPosition: ModelItem | ModelDocumentFragment | ModelPosition,
 		offset: PositionOffset = 0
 	): void {
 		this._assertWriterUsedCorrectly();
@@ -197,7 +197,7 @@ export class Writer {
 			return;
 		}
 
-		const position = Position._createAt( itemOrPosition, offset );
+		const position = ModelPosition._createAt( itemOrPosition, offset );
 
 		// If item has a parent already.
 		if ( item.parent ) {
@@ -248,7 +248,7 @@ export class Writer {
 		if ( item instanceof ModelDocumentFragment ) {
 			for ( const [ markerName, markerRange ] of item.markers ) {
 				// We need to migrate marker range from ModelDocumentFragment to Document.
-				const rangeRootPosition = Position._createAt( markerRange.root, 0 );
+				const rangeRootPosition = ModelPosition._createAt( markerRange.root, 0 );
 				const range = new Range(
 					markerRange.start._getCombined( rangeRootPosition, position ),
 					markerRange.end._getCombined( rangeRootPosition, position )
@@ -292,7 +292,7 @@ export class Writer {
 	 */
 	public insertText(
 		text: string,
-		itemOrPosition?: ModelItem | Position,
+		itemOrPosition?: ModelItem | ModelPosition,
 		offset?: PositionOffset
 	): void;
 
@@ -325,7 +325,7 @@ export class Writer {
 	public insertText(
 		text: string,
 		attributes?: ModelNodeAttributes,
-		itemOrPosition?: ModelItem | Position,
+		itemOrPosition?: ModelItem | ModelPosition,
 		offset?: PositionOffset
 	): void;
 
@@ -335,7 +335,7 @@ export class Writer {
 		itemOrPosition?: any, // Too complicated when not using `any`.
 		offset?: any // Too complicated when not using `any`.
 	): void {
-		if ( attributes instanceof ModelDocumentFragment || attributes instanceof ModelElement || attributes instanceof Position ) {
+		if ( attributes instanceof ModelDocumentFragment || attributes instanceof ModelElement || attributes instanceof ModelPosition ) {
 			this.insert( this.createText( text ), attributes, itemOrPosition );
 		} else {
 			this.insert( this.createText( text, attributes ), itemOrPosition, offset );
@@ -369,7 +369,7 @@ export class Writer {
 	 */
 	public insertElement(
 		name: string,
-		itemOrPosition: ModelItem | ModelDocumentFragment | Position,
+		itemOrPosition: ModelItem | ModelDocumentFragment | ModelPosition,
 		offset?: PositionOffset
 	): void;
 
@@ -402,7 +402,7 @@ export class Writer {
 	public insertElement(
 		name: string,
 		attributes: ModelNodeAttributes,
-		itemOrPosition: ModelItem | ModelDocumentFragment | Position,
+		itemOrPosition: ModelItem | ModelDocumentFragment | ModelPosition,
 		offset?: PositionOffset
 	): void;
 
@@ -412,7 +412,7 @@ export class Writer {
 		itemOrPositionOrOffset?: any, // Too complicated when not using `any`.
 		offset?: any // Too complicated when not using `any`.
 	): void {
-		if ( attributes instanceof ModelDocumentFragment || attributes instanceof ModelElement || attributes instanceof Position ) {
+		if ( attributes instanceof ModelDocumentFragment || attributes instanceof ModelElement || attributes instanceof ModelPosition ) {
 			this.insert( this.createElement( name ), attributes, itemOrPositionOrOffset );
 		} else {
 			this.insert( this.createElement( name, attributes ), itemOrPositionOrOffset, offset );
@@ -646,7 +646,7 @@ export class Writer {
 	 */
 	public move(
 		range: Range,
-		itemOrPosition: ModelItem | Position,
+		itemOrPosition: ModelItem | ModelPosition,
 		offset?: PositionOffset
 	): void {
 		this._assertWriterUsedCorrectly();
@@ -669,7 +669,7 @@ export class Writer {
 			throw new CKEditorError( 'writer-move-range-not-flat', this );
 		}
 
-		const position = Position._createAt( itemOrPosition, offset );
+		const position = ModelPosition._createAt( itemOrPosition, offset );
 
 		// Do not move anything if the move target is same as moved range start.
 		if ( position.isEqual( range.start ) ) {
@@ -723,7 +723,7 @@ export class Writer {
 	 *
 	 * @param position Position between merged elements.
 	 */
-	public merge( position: Position ): void {
+	public merge( position: ModelPosition ): void {
 		this._assertWriterUsedCorrectly();
 
 		const nodeBefore = position.nodeBefore;
@@ -761,14 +761,14 @@ export class Writer {
 	 * Shortcut for {@link module:engine/model/model~Model#createPositionFromPath `Model#createPositionFromPath()`}.
 	 *
 	 * @param root Root of the position.
-	 * @param path Position path. See {@link module:engine/model/position~Position#path}.
-	 * @param stickiness Position stickiness. See {@link module:engine/model/position~PositionStickiness}.
+	 * @param path Position path. See {@link module:engine/model/position~ModelPosition#path}.
+	 * @param stickiness Position stickiness. See {@link module:engine/model/position~ModelPositionStickiness}.
 	 */
 	public createPositionFromPath(
 		root: ModelElement | ModelDocumentFragment,
 		path: ReadonlyArray<number>,
 		stickiness?: PositionStickiness
-	): Position {
+	): ModelPosition {
 		return this.model.createPositionFromPath( root, path, stickiness );
 	}
 
@@ -778,9 +778,9 @@ export class Writer {
 	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public createPositionAt(
-		itemOrPosition: ModelItem | Position | ModelDocumentFragment,
+		itemOrPosition: ModelItem | ModelPosition | ModelDocumentFragment,
 		offset?: PositionOffset
-	): Position {
+	): ModelPosition {
 		return this.model.createPositionAt( itemOrPosition, offset );
 	}
 
@@ -789,7 +789,7 @@ export class Writer {
 	 *
 	 * @param item Item after which the position should be placed.
 	 */
-	public createPositionAfter( item: ModelItem ): Position {
+	public createPositionAfter( item: ModelItem ): ModelPosition {
 		return this.model.createPositionAfter( item );
 	}
 
@@ -798,7 +798,7 @@ export class Writer {
 	 *
 	 * @param item Item after which the position should be placed.
 	 */
-	public createPositionBefore( item: ModelItem ): Position {
+	public createPositionBefore( item: ModelItem ): ModelPosition {
 		return this.model.createPositionBefore( item );
 	}
 
@@ -808,7 +808,7 @@ export class Writer {
 	 * @param start Start position.
 	 * @param end End position. If not set, range will be collapsed at `start` position.
 	 */
-	public createRange( start: Position, end?: Position ): Range {
+	public createRange( start: ModelPosition, end?: ModelPosition ): Range {
 		return this.model.createRange( start, end );
 	}
 
@@ -853,11 +853,11 @@ export class Writer {
 	 *
 	 * @param position Position between merged elements.
 	 */
-	private _mergeDetached( position: Position ): void {
+	private _mergeDetached( position: ModelPosition ): void {
 		const nodeBefore = position.nodeBefore;
 		const nodeAfter = position.nodeAfter;
 
-		this.move( Range._createIn( nodeAfter as any ), Position._createAt( nodeBefore!, 'end' ) );
+		this.move( Range._createIn( nodeAfter as any ), ModelPosition._createAt( nodeBefore!, 'end' ) );
 		this.remove( nodeAfter! );
 	}
 
@@ -866,12 +866,12 @@ export class Writer {
 	 *
 	 * @param position Position between merged elements.
 	 */
-	private _merge( position: Position ): void {
-		const targetPosition = Position._createAt( position.nodeBefore!, 'end' );
-		const sourcePosition = Position._createAt( position.nodeAfter!, 0 );
+	private _merge( position: ModelPosition ): void {
+		const targetPosition = ModelPosition._createAt( position.nodeBefore!, 'end' );
+		const sourcePosition = ModelPosition._createAt( position.nodeAfter!, 0 );
 
 		const graveyard = position.root.document!.graveyard;
-		const graveyardPosition = new Position( graveyard, [ 0 ] );
+		const graveyardPosition = new ModelPosition( graveyard, [ 0 ] );
 
 		const version = position.root.document!.version;
 
@@ -909,7 +909,7 @@ export class Writer {
 		}
 
 		const version = element.root.document ? element.root.document.version : null;
-		const renameOperation = new RenameOperation( Position._createBefore( element ), element.name, newName, version );
+		const renameOperation = new RenameOperation( ModelPosition._createBefore( element ), element.name, newName, version );
 
 		this.batch.addOperation( renameOperation );
 		this.model.applyOperation( renameOperation );
@@ -928,7 +928,7 @@ export class Writer {
 	 * * `position` - Position between split elements.
 	 * * `range` - Range that stars from the end of the first split element and ends at the beginning of the first copy element.
 	 */
-	public split( position: Position, limitElement?: ModelNode | ModelDocumentFragment ): { position: Position; range: Range } {
+	public split( position: ModelPosition, limitElement?: ModelNode | ModelDocumentFragment ): { position: ModelPosition; range: Range } {
 		this._assertWriterUsedCorrectly();
 
 		let splitElement = position.parent;
@@ -984,7 +984,7 @@ export class Writer {
 
 		return {
 			position,
-			range: new Range( Position._createAt( firstSplitElement!, 'end' ), Position._createAt( firstCopyElement!, 0 ) )
+			range: new Range( ModelPosition._createAt( firstSplitElement!, 'end' ), ModelPosition._createAt( firstCopyElement!, 0 ) )
 		};
 	}
 
@@ -1034,7 +1034,7 @@ export class Writer {
 		// Shift the range-to-wrap because we just inserted an element before that range.
 		const shiftedRange = new Range( range.start.getShiftedBy( 1 ), range.end.getShiftedBy( 1 ) );
 
-		this.move( shiftedRange, Position._createAt( element, 0 ) );
+		this.move( shiftedRange, ModelPosition._createAt( element, 0 ) );
 	}
 
 	/**
@@ -1509,7 +1509,7 @@ export class Writer {
 	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public setSelectionFocus(
-		itemOrPosition: ModelItem | Position,
+		itemOrPosition: ModelItem | ModelPosition,
 		offset?: PositionOffset
 	): void {
 		this._assertWriterUsedCorrectly();
@@ -1694,7 +1694,7 @@ export class Writer {
 	 */
 	private _addOperationForAffectedMarkers(
 		type: 'move' | 'merge',
-		positionOrRange: Position | Range
+		positionOrRange: ModelPosition | Range
 	): void {
 		for ( const marker of this.model.markers ) {
 			if ( !marker.managedUsingOperations ) {
@@ -1713,7 +1713,7 @@ export class Writer {
 					range.end.isEqual( markerRange.end );
 			} else {
 				// if type === 'merge'.
-				const position = positionOrRange as Position;
+				const position = positionOrRange as ModelPosition;
 				const elementBefore = position.nodeBefore;
 				const elementAfter = position.nodeAfter;
 
@@ -1770,7 +1770,7 @@ function setAttributeOnRange( writer: Writer, key: string, value: unknown, range
 
 	// Currently position in the scanning range. Because we need value after the position, it is not a current
 	// position of the iterator but the previous one (we need to iterate one more time to get the value after).
-	let position: Position | undefined;
+	let position: ModelPosition | undefined;
 
 	// Value before the currently position.
 	let valueBefore: unknown;
@@ -1798,7 +1798,7 @@ function setAttributeOnRange( writer: Writer, key: string, value: unknown, range
 
 	// Because position in the loop is not the iterator position (see let position comment), the last position in
 	// the while loop will be last but one position in the range. We need to check the last position manually.
-	if ( position instanceof Position && position != lastSplitPosition && valueBefore != value ) {
+	if ( position instanceof ModelPosition && position != lastSplitPosition && valueBefore != value ) {
 		addOperation();
 	}
 
@@ -1830,7 +1830,7 @@ function setAttributeOnItem( writer: Writer, key: string, value: unknown, item: 
 
 			operation = new RootAttributeOperation( item as any, key, previousValue, value, version );
 		} else {
-			range = new Range( Position._createBefore( item ), writer.createPositionAfter( item ) );
+			range = new Range( ModelPosition._createBefore( item ), writer.createPositionAfter( item ) );
 
 			const version = range.root.document ? doc.version : null;
 
@@ -1870,12 +1870,12 @@ function applyMarkerOperation(
  * @param batch Batch to which the operation will be added.
  * @param model Model instance on which operation will be applied.
  */
-function applyRemoveOperation( position: Position, howMany: number, batch: Batch, model: Model ) {
+function applyRemoveOperation( position: ModelPosition, howMany: number, batch: Batch, model: Model ) {
 	let operation;
 
 	if ( position.root.document ) {
 		const doc = model.document;
-		const graveyardPosition = new Position( doc.graveyard, [ 0 ] );
+		const graveyardPosition = new ModelPosition( doc.graveyard, [ 0 ] );
 
 		operation = new MoveOperation( position, howMany, graveyardPosition, doc.version );
 	} else {

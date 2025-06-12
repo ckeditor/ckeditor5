@@ -22,8 +22,8 @@ import type { Selectable } from '../selection.js';
  * {@link module:engine/model/operation/attributeoperation~AttributeOperation}.
  * It is because {@link module:engine/model/operation/attributeoperation~AttributeOperation}
  * requires a range to change and root element can't
- * be a part of range because every {@link module:engine/model/position~Position} has to be inside a root.
- * {@link module:engine/model/position~Position} can't be created before a root element.
+ * be a part of range because every {@link module:engine/model/position~ModelPosition} has to be inside a root.
+ * {@link module:engine/model/position~ModelPosition} can't be created before a root element.
  */
 export class RootAttributeOperation extends Operation {
 	/**

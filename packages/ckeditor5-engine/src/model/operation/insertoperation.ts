@@ -8,7 +8,7 @@
  */
 
 import { Operation } from './operation.js';
-import { Position } from '../position.js';
+import { ModelPosition } from '../position.js';
 import { ModelNodeList } from '../nodelist.js';
 import { MoveOperation } from './moveoperation.js';
 import { _insert, _normalizeNodes, type ModelNodeSet } from './utils.js';
@@ -29,7 +29,7 @@ export class InsertOperation extends Operation {
 	 *
 	 * @readonly
 	 */
-	public position: Position;
+	public position: ModelPosition;
 
 	/**
 	 * List of nodes to insert.
@@ -53,7 +53,7 @@ export class InsertOperation extends Operation {
 	 * @param baseVersion Document {@link module:engine/model/document~ModelDocument#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
-	constructor( position: Position, nodes: ModelNodeSet, baseVersion: number | null ) {
+	constructor( position: ModelPosition, nodes: ModelNodeSet, baseVersion: number | null ) {
 		super( baseVersion );
 
 		this.position = position.clone();
@@ -100,7 +100,7 @@ export class InsertOperation extends Operation {
 	 */
 	public getReversed(): Operation {
 		const graveyard = this.position.root.document!.graveyard;
-		const gyPosition = new Position( graveyard, [ 0 ] );
+		const gyPosition = new ModelPosition( graveyard, [ 0 ] );
 
 		return new MoveOperation( this.position, this.nodes.maxOffset, gyPosition, this.baseVersion! + 1 );
 	}
@@ -178,7 +178,7 @@ export class InsertOperation extends Operation {
 			}
 		}
 
-		const insert = new InsertOperation( Position.fromJSON( json.position, document ), children, json.baseVersion );
+		const insert = new InsertOperation( ModelPosition.fromJSON( json.position, document ), children, json.baseVersion );
 		insert.shouldReceiveAttributes = json.shouldReceiveAttributes;
 
 		return insert;

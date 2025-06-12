@@ -858,8 +858,8 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * {@link module:engine/model/writer~Writer#createPositionFromPath `Writer#createPositionFromPath()`}.
 	 *
 	 * @param root Root of the position.
-	 * @param path Position path. See {@link module:engine/model/position~Position#path}.
-	 * @param stickiness Position stickiness. See {@link module:engine/model/position~PositionStickiness}.
+	 * @param path Position path. See {@link module:engine/model/position~ModelPosition#path}.
+	 * @param stickiness Position stickiness. See {@link module:engine/model/position~ModelPositionStickiness}.
 	 */
 	public createPositionFromPath(
 		root: ModelElement | ModelDocumentFragment,
@@ -872,7 +872,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Creates position at the given location. The location can be specified as:
 	 *
-	 * * a {@link module:engine/model/position~Position position},
+	 * * a {@link module:engine/model/position~ModelPosition position},
 	 * * a parent element and offset in that element,
 	 * * a parent element and `'end'` (the position will be set at the end of that element),
 	 * * a {@link module:engine/model/item~ModelItem model item} and `'before'` or `'after'`

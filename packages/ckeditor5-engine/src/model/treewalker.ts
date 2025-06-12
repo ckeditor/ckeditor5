@@ -9,7 +9,7 @@
 
 import { type ModelElement } from './element.js';
 import {
-	Position,
+	ModelPosition,
 	getTextNodeAtPosition,
 	getNodeAfterPosition,
 	getNodeBeforePosition
@@ -67,7 +67,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 	 * on {@link #direction}. If direction is `'forward'` position starts form the beginning, when direction
 	 * is `'backward'` position starts from the end.
 	 */
-	private _position: Position;
+	private _position: ModelPosition;
 
 	/**
 	 * Start boundary cached for optimization purposes.
@@ -119,7 +119,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 		if ( options.startPosition ) {
 			this._position = options.startPosition.clone();
 		} else {
-			this._position = Position._createAt( this.boundaries![ this.direction == 'backward' ? 'end' : 'start' ] );
+			this._position = ModelPosition._createAt( this.boundaries![ this.direction == 'backward' ? 'end' : 'start' ] );
 		}
 
 		// Reset position stickiness in case it was set to other value, as the stickiness is kept after cloning.
@@ -149,7 +149,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 	 * on {@link #direction}. If direction is `'forward'` position starts form the beginning, when direction
 	 * is `'backward'` position starts from the end.
 	 */
-	public get position(): Position {
+	public get position(): ModelPosition {
 		return this._position;
 	}
 
@@ -198,7 +198,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 	 *
 	 * @param position Position to jump to.
 	 */
-	public jumpTo( position: Position ): void {
+	public jumpTo( position: ModelPosition ): void {
 		if ( this._boundaryStartParent && position.isBefore( this.boundaries!.start ) ) {
 			position = this.boundaries!.start;
 		} else if ( this._boundaryEndParent && position.isAfter( this.boundaries!.end ) ) {
@@ -379,8 +379,8 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 function formatReturnValue(
 	type: TreeWalkerValueType,
 	item: ModelItem,
-	previousPosition: Position,
-	nextPosition: Position,
+	previousPosition: ModelPosition,
+	nextPosition: ModelPosition,
 	length?: number
 ): IteratorYieldResult<TreeWalkerValue> {
 	return {
@@ -420,7 +420,7 @@ export interface TreeWalkerValue {
 	 * * Backward iteration: For `'elementStart'` it is the first position inside the element. For all other types it is
 	 * the position after item.
 	 */
-	previousPosition: Position;
+	previousPosition: ModelPosition;
 
 	/**
 	 * Next position of the iterator.
@@ -429,7 +429,7 @@ export interface TreeWalkerValue {
 	 * * Backward iteration: For `'elementEnd'` it is last position inside element. For all other types it is the position
 	 * before the item.
 	 */
-	nextPosition: Position;
+	nextPosition: ModelPosition;
 
 	/**
 	 * Length of the item. For `'elementStart'` it is 1. For `'text'` it is the length of the text. For `'elementEnd'` it is `undefined`.
@@ -464,7 +464,7 @@ export interface TreeWalkerOptions {
 	/**
 	 * Starting position.
 	 */
-	startPosition?: Position;
+	startPosition?: ModelPosition;
 
 	/**
 	 * Flag indicating whether all consecutive characters with the same attributes

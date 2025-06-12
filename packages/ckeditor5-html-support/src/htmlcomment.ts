@@ -282,7 +282,7 @@ export class HtmlComment extends Plugin {
 /**
  * An interface for the HTML comments data.
  *
- * It consists of the {@link module:engine/model/position~Position `position`} and `content`.
+ * It consists of the {@link module:engine/model/position~ModelPosition `position`} and `content`.
  */
 export interface HtmlCommentData {
 	position: Position;

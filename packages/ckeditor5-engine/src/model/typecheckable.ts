@@ -14,7 +14,7 @@ import { type ModelElement } from './element.js';
 import { type ModelLivePosition } from './liveposition.js';
 import { type ModelLiveRange } from './liverange.js';
 import { type ModelNode } from './node.js';
-import { type Position } from './position.js';
+import { type ModelPosition } from './position.js';
 import { type Range } from './range.js';
 import { type RootElement } from './rootelement.js';
 import { type Selection } from './selection.js';
@@ -127,7 +127,7 @@ export abstract class TypeCheckable {
 	public is( type: '$text' | 'model:$text' ): this is Text;
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/model/position~Position} or its subclass.
+	 * Checks whether the object is of type {@link module:engine/model/position~ModelPosition} or its subclass.
 	 *
 	 * ```ts
 	 * position.is( 'position' ); // -> true
@@ -139,7 +139,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label POSITION
 	 */
-	public is( type: 'position' | 'model:position' ): this is Position | ModelLivePosition;
+	public is( type: 'position' | 'model:position' ): this is ModelPosition | ModelLivePosition;
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/model/liveposition~ModelLivePosition}.

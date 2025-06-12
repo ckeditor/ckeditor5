@@ -9,7 +9,7 @@
 
 import { TypeCheckable } from './typecheckable.js';
 import { ModelNode } from './node.js';
-import { Position, type PositionOffset } from './position.js';
+import { ModelPosition, type PositionOffset } from './position.js';
 import { Range } from './range.js';
 
 import { type ModelDocumentFragment } from './documentfragment.js';
@@ -126,7 +126,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 *
 	 * @see #focus
 	 */
-	public get anchor(): Position | null {
+	public get anchor(): ModelPosition | null {
 		if ( this._ranges.length > 0 ) {
 			const range = this._ranges[ this._ranges.length - 1 ];
 
@@ -144,7 +144,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 *
 	 * @see #anchor
 	 */
-	public get focus(): Position | null {
+	public get focus(): ModelPosition | null {
 		if ( this._ranges.length > 0 ) {
 			const range = this._ranges[ this._ranges.length - 1 ];
 
@@ -230,7 +230,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
 	 * Returns a copy of the first range in the selection.
 	 * First range is the one which {@link module:engine/model/range~Range#start start} position
-	 * {@link module:engine/model/position~Position#isBefore is before} start position of all other ranges
+	 * {@link module:engine/model/position~ModelPosition#isBefore is before} start position of all other ranges
 	 * (not to confuse with the first range added to the selection).
 	 *
 	 * Returns `null` if there are no ranges in selection.
@@ -250,8 +250,8 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
 	 * Returns a copy of the last range in the selection.
 	 * Last range is the one which {@link module:engine/model/range~Range#end end} position
-	 * {@link module:engine/model/position~Position#isAfter is after} end position of all other ranges (not to confuse with the range most
-	 * recently added to the selection).
+	 * {@link module:engine/model/position~ModelPosition#isAfter is after} end position of all other
+	 * ranges (not to confuse with the range most recently added to the selection).
 	 *
 	 * Returns `null` if there are no ranges in selection.
 	 */
@@ -269,12 +269,12 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 
 	/**
 	 * Returns the first position in the selection.
-	 * First position is the position that {@link module:engine/model/position~Position#isBefore is before}
+	 * First position is the position that {@link module:engine/model/position~ModelPosition#isBefore is before}
 	 * any other position in the selection.
 	 *
 	 * Returns `null` if there are no ranges in selection.
 	 */
-	public getFirstPosition(): Position | null {
+	public getFirstPosition(): ModelPosition | null {
 		const first = this.getFirstRange();
 
 		return first ? first.start.clone() : null;
@@ -282,12 +282,12 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 
 	/**
 	 * Returns the last position in the selection.
-	 * Last position is the position that {@link module:engine/model/position~Position#isAfter is after}
+	 * Last position is the position that {@link module:engine/model/position~ModelPosition#isAfter is after}
 	 * any other position in the selection.
 	 *
 	 * Returns `null` if there are no ranges in selection.
 	 */
-	public getLastPosition(): Position | null {
+	public getLastPosition(): ModelPosition | null {
 		const lastRange = this.getLastRange();
 
 		return lastRange ? lastRange.end.clone() : null;
@@ -374,7 +374,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 			this._setRanges( ( selectable as ModelDocumentSelection ).getRanges(), ( selectable as ModelDocumentSelection ).isBackward );
 		} else if ( selectable instanceof Range ) {
 			this._setRanges( [ selectable ], !!options && !!options.backward );
-		} else if ( selectable instanceof Position ) {
+		} else if ( selectable instanceof ModelPosition ) {
 			this._setRanges( [ new Range( selectable ) ] );
 		} else if ( selectable instanceof ModelNode ) {
 			const backward = !!options && !!options.backward;
@@ -385,7 +385,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 			} else if ( placeOrOffset == 'on' ) {
 				range = Range._createOn( selectable );
 			} else if ( placeOrOffset !== undefined ) {
-				range = new Range( Position._createAt( selectable, placeOrOffset ) );
+				range = new Range( ModelPosition._createAt( selectable, placeOrOffset ) );
 			} else {
 				/**
 				 * selection.setTo requires the second parameter when the first parameter is a node.
@@ -475,7 +475,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * @fires change:range
 	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
-	public setFocus( itemOrPosition: ModelItem | Position, offset?: PositionOffset ): void {
+	public setFocus( itemOrPosition: ModelItem | ModelPosition, offset?: PositionOffset ): void {
 		if ( this.anchor === null ) {
 			/**
 			 * Cannot set selection focus if there are no ranges in selection.
@@ -485,7 +485,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 			throw new CKEditorError( 'model-selection-setfocus-no-ranges', [ this, itemOrPosition ] );
 		}
 
-		const newFocus = Position._createAt( itemOrPosition, offset );
+		const newFocus = ModelPosition._createAt( itemOrPosition, offset );
 
 		if ( newFocus.compareWith( this.focus! ) == 'same' ) {
 			return;
@@ -681,7 +681,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 					block.is( 'model:element' ) &&
 					block.root.document!.model.schema.isBlock( block )
 				) {
-					treewalker.jumpTo( Position._createAt( block, 'end' ) );
+					treewalker.jumpTo( ModelPosition._createAt( block, 'end' ) );
 				}
 			}
 
@@ -695,15 +695,15 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 
 	/**
 	 * Checks whether the selection contains the entire content of the given element. This means that selection must start
-	 * at a position {@link module:engine/model/position~Position#isTouching touching} the element's start and ends at position
+	 * at a position {@link module:engine/model/position~ModelPosition#isTouching touching} the element's start and ends at position
 	 * touching the element's end.
 	 *
 	 * By default, this method will check whether the entire content of the selection's current root is selected.
 	 * Useful to check if e.g. the user has just pressed <kbd>Ctrl</kbd> + <kbd>A</kbd>.
 	 */
 	public containsEntireContent( element: ModelElement = this.anchor!.root as ModelElement ): boolean {
-		const limitStartPosition = Position._createAt( element, 0 );
-		const limitEndPosition = Position._createAt( element, 'end' );
+		const limitStartPosition = ModelPosition._createAt( element, 0 );
+		const limitEndPosition = ModelPosition._createAt( element, 'end' );
 
 		return limitStartPosition.isTouching( this.getFirstPosition()! ) &&
 			limitEndPosition.isTouching( this.getLastPosition()! );
@@ -855,7 +855,7 @@ function isUnvisitedTopBlock( element: ModelElement, visited: WeakSet<ModelNode 
  * It will search until first ancestor that is a limit element.
  * Marks all ancestors as already visited to not include any of them later on.
  */
-function getParentBlock( position: Position, visited: WeakSet<ModelNode | ModelDocumentFragment> ) {
+function getParentBlock( position: ModelPosition, visited: WeakSet<ModelNode | ModelDocumentFragment> ) {
 	const element = position.parent;
 	const schema = element.root.document!.model.schema;
 
@@ -922,7 +922,7 @@ function isStartBlockSelected( startBlock: ModelElement | undefined, range: Rang
 		return true;
 	}
 
-	if ( range.start.isTouching( Position._createAt( startBlock, startBlock.maxOffset ) ) ) {
+	if ( range.start.isTouching( ModelPosition._createAt( startBlock, startBlock.maxOffset ) ) ) {
 		return false;
 	}
 
@@ -954,7 +954,7 @@ function isEndBlockSelected( endBlock: ModelElement | undefined, range: Range ):
 		return true;
 	}
 
-	if ( range.end.isTouching( Position._createAt( endBlock, 0 ) ) ) {
+	if ( range.end.isTouching( ModelPosition._createAt( endBlock, 0 ) ) ) {
 		return false;
 	}
 
@@ -983,7 +983,7 @@ function findAncestorBlock( node: ModelNode | ModelDocumentFragment ) {
  *
  * See also {@link module:engine/model/selection~Selection#setTo}.
  */
-export type Selectable = Selection | ModelDocumentSelection | Position | Range | ModelNode | Iterable<Range> | null;
+export type Selectable = Selection | ModelDocumentSelection | ModelPosition | Range | ModelNode | Iterable<Range> | null;
 
 /**
  * The place or offset of the selection.

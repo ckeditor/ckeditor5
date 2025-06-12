@@ -16,7 +16,7 @@ import type { SelectionChangeEvent } from './selection.js';
 import type { Model, ModelApplyOperationEvent } from './model.js';
 import type { MarkerCollectionUpdateEvent, MarkerChangeEvent } from './markercollection.js';
 import { type Batch } from './batch.js';
-import { type Position } from './position.js';
+import { type ModelPosition } from './position.js';
 import { type Range } from './range.js';
 import { type Writer } from './writer.js';
 
@@ -516,7 +516,7 @@ export type ModelPostFixer = ( writer: Writer ) => boolean;
  * Checks whether given range boundary position is valid for document selection, meaning that is not between
  * unicode surrogate pairs or base character and combining marks.
  */
-function validateTextNodePosition( rangeBoundary: Position ) {
+function validateTextNodePosition( rangeBoundary: ModelPosition ) {
 	const textNode = rangeBoundary.textNode;
 
 	if ( textNode ) {

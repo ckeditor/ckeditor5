@@ -14,7 +14,7 @@ import { Range } from '../range.js';
 import { type ModelDocumentFragment } from '../documentfragment.js';
 import { type ModelElement } from '../element.js';
 import { type Model } from '../model.js';
-import { type Position } from '../position.js';
+import { type ModelPosition } from '../position.js';
 import { type Schema } from '../schema.js';
 import { type Selection } from '../selection.js';
 import { type Writer } from '../writer.js';
@@ -225,7 +225,7 @@ function getLivePositionsForSelectedBlocks( range: Range ): [ startPosition: Mod
  * Finds the lowest element in position's ancestors which is a block.
  * Returns null if a limit element is encountered before reaching a block element.
  */
-function getParentBlock( position: Position ): ModelElement | null | undefined {
+function getParentBlock( position: ModelPosition ): ModelElement | null | undefined {
 	const element = position.parent;
 	const schema = element.root.document!.model.schema;
 	const ancestors = element.getAncestors( { parentFirst: true, includeSelf: true } );
@@ -245,7 +245,7 @@ function getParentBlock( position: Position ): ModelElement | null | undefined {
  * This function is a result of reaching the Ballmer's peak for just the right amount of time.
  * Even I had troubles documenting it after a while and after reading it again I couldn't believe that it really works.
  */
-function mergeBranches( writer: Writer, startPosition: Position, endPosition: Position ) {
+function mergeBranches( writer: Writer, startPosition: ModelPosition, endPosition: ModelPosition ) {
 	const model = writer.model;
 
 	// Verify if there is a need and possibility to merge.
@@ -321,8 +321,8 @@ function mergeBranches( writer: Writer, startPosition: Position, endPosition: Po
  */
 function mergeBranchesLeft(
 	writer: Writer,
-	startPosition: Position,
-	endPosition: Position,
+	startPosition: ModelPosition,
+	endPosition: ModelPosition,
 	commonAncestor: ModelElement | ModelDocumentFragment | null
 ) {
 	const startElement = startPosition.parent as ModelElement;
@@ -412,8 +412,8 @@ function mergeBranchesLeft(
  */
 function mergeBranchesRight(
 	writer: Writer,
-	startPosition: Position,
-	endPosition: Position,
+	startPosition: ModelPosition,
+	endPosition: ModelPosition,
 	commonAncestor: ModelElement | ModelDocumentFragment | null
 ) {
 	const startElement = startPosition.parent as ModelElement;
@@ -486,7 +486,7 @@ function mergeBranchesRight(
 /**
  * There is no right merge operation so we need to simulate it.
  */
-function mergeRight( writer: Writer, position: Position ) {
+function mergeRight( writer: Writer, position: ModelPosition ) {
 	const startElement: any = position.nodeBefore;
 	const endElement: any = position.nodeAfter;
 
@@ -504,7 +504,7 @@ function mergeRight( writer: Writer, position: Position ) {
  * Verifies if merging is needed and possible. It's not needed if both positions are in the same element
  * and it's not possible if some element is a limit or the range crosses a limit element.
  */
-function checkShouldMerge( schema: Schema, startPosition: Position, endPosition: Position ): boolean {
+function checkShouldMerge( schema: Schema, startPosition: ModelPosition, endPosition: ModelPosition ): boolean {
 	const startElement = startPosition.parent;
 	const endElement = endPosition.parent;
 
@@ -528,7 +528,7 @@ function checkShouldMerge( schema: Schema, startPosition: Position, endPosition:
 /**
  * Returns the elements that are the ancestors of the provided positions that are direct children of the common ancestor.
  */
-function getAncestorsJustBelowCommonAncestor( positionA: Position, positionB: Position ) {
+function getAncestorsJustBelowCommonAncestor( positionA: ModelPosition, positionB: ModelPosition ) {
 	const ancestorsA = positionA.getAncestors();
 	const ancestorsB = positionB.getAncestors();
 
@@ -541,7 +541,7 @@ function getAncestorsJustBelowCommonAncestor( positionA: Position, positionB: Po
 	return [ ancestorsA[ i ], ancestorsB[ i ] ];
 }
 
-function shouldAutoparagraph( schema: Schema, position: Position ) {
+function shouldAutoparagraph( schema: Schema, position: ModelPosition ) {
 	const isTextAllowed = schema.checkChild( position, '$text' );
 	const isParagraphAllowed = schema.checkChild( position, 'paragraph' );
 
@@ -556,7 +556,7 @@ function shouldAutoparagraph( schema: Schema, position: Position ) {
  * we'll check <p>, <bQ>, <widget> and <caption>.
  * Usually, widget and caption are marked as objects/limits in the schema, so in this case merging will be blocked.
  */
-function isCrossingLimitElement( leftPos: Position, rightPos: Position, schema: Schema ) {
+function isCrossingLimitElement( leftPos: ModelPosition, rightPos: ModelPosition, schema: Schema ) {
 	const rangeToCheck = new Range( leftPos, rightPos );
 
 	for ( const value of rangeToCheck.getWalker() ) {
@@ -570,7 +570,7 @@ function isCrossingLimitElement( leftPos: Position, rightPos: Position, schema: 
 
 function insertParagraph(
 	writer: Writer,
-	position: Position,
+	position: ModelPosition,
 	selection: Selection | ModelDocumentSelection,
 	attributes = {}
 ) {
@@ -619,7 +619,7 @@ function shouldEntireContentBeReplacedWithParagraph( schema: Schema, selection: 
 function collapseSelectionAt(
 	writer: Writer,
 	selection: Selection | ModelDocumentSelection,
-	positionOrRange: Position | Range
+	positionOrRange: ModelPosition | Range
 ) {
 	if ( selection instanceof ModelDocumentSelection ) {
 		writer.setSelection( positionOrRange );

@@ -12,7 +12,7 @@ import type { ModelElement, Position, Writer } from '@ckeditor/ckeditor5-engine'
 
 /**
  * The insert paragraph command. It inserts a new paragraph at a specific
- * {@link module:engine/model/position~Position document position}.
+ * {@link module:engine/model/position~ModelPosition document position}.
  *
  * ```ts
  * // Insert a new paragraph before an element in the document.
