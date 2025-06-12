@@ -21,7 +21,7 @@ import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 import { type ViewEditableElement } from './editableelement.js';
 import { type ViewElement } from './element.js';
 import { type Node } from './node.js';
-import { type Item } from './item.js';
+import { type ViewItem } from './item.js';
 import type { Position, PositionOffset } from './position.js';
 import { type Range } from './range.js';
 
@@ -377,7 +377,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 	 * @fires change
 	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	public _setFocus( itemOrPosition: Item | Position, offset?: PositionOffset ): void {
+	public _setFocus( itemOrPosition: ViewItem | Position, offset?: PositionOffset ): void {
 		this._selection.setFocus( itemOrPosition, offset );
 	}
 }

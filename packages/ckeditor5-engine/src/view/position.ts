@@ -15,7 +15,7 @@ import { ViewEditableElement } from './editableelement.js';
 
 import { type ViewDocumentFragment } from './documentfragment.js';
 import { type ViewElement } from './element.js';
-import { type Item } from './item.js';
+import { type ViewItem } from './item.js';
 import { type Node } from './node.js';
 import { TreeWalker, type TreeWalkerValue, type TreeWalkerOptions } from './treewalker.js';
 
@@ -299,7 +299,7 @@ export class Position extends TypeCheckable {
 	 * @internal
 	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	public static _createAt( itemOrPosition: Item | Position, offset?: PositionOffset ): Position {
+	public static _createAt( itemOrPosition: ViewItem | Position, offset?: PositionOffset ): Position {
 		if ( itemOrPosition instanceof Position ) {
 			return new this( itemOrPosition.parent, itemOrPosition.offset );
 		} else {
@@ -331,7 +331,7 @@ export class Position extends TypeCheckable {
 	 * @internal
 	 * @param item View item after which the position should be located.
 	 */
-	public static _createAfter( item: Item ): Position {
+	public static _createAfter( item: ViewItem ): Position {
 		// TextProxy is not a instance of Node so we need do handle it in specific way.
 		if ( item.is( '$textProxy' ) ) {
 			return new Position( item.textNode, item.offsetInText + item.data.length );
@@ -356,7 +356,7 @@ export class Position extends TypeCheckable {
 	 * @internal
 	 * @param item View item before which the position should be located.
 	 */
-	public static _createBefore( item: Item ): Position {
+	public static _createBefore( item: ViewItem ): Position {
 		// TextProxy is not a instance of Node so we need do handle it in specific way.
 		if ( item.is( '$textProxy' ) ) {
 			return new Position( item.textNode, item.offsetInText );

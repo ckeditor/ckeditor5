@@ -21,7 +21,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 
 import { type ViewElement } from './element.js';
-import { type Item } from './item.js';
+import { type ViewItem } from './item.js';
 import { type ViewEditableElement } from './editableelement.js';
 
 /**
@@ -546,7 +546,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * @fires change
 	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	public setFocus( itemOrPosition: Item | Position, offset?: PositionOffset ): void {
+	public setFocus( itemOrPosition: ViewItem | Position, offset?: PositionOffset ): void {
 		if ( this.anchor === null ) {
 			/**
 			 * Cannot set selection focus if there are no ranges in selection.

@@ -15,7 +15,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { type ViewDocument } from './document.js';
 import { type ViewDomConverter } from './domconverter.js';
-import { type Item } from './item.js';
+import { type ViewItem } from './item.js';
 
 type DomElement = globalThis.HTMLElement;
 
@@ -68,8 +68,8 @@ export class RawElement extends ViewElement {
 	 *
 	 * @internal
 	 */
-	public override _insertChild( index: number, items: Item | Iterable<Item> ): number {
-		if ( items && ( items instanceof Node || Array.from( items as Iterable<Item> ).length > 0 ) ) {
+	public override _insertChild( index: number, items: ViewItem | Iterable<ViewItem> ): number {
+		if ( items && ( items instanceof Node || Array.from( items as Iterable<ViewItem> ).length > 0 ) ) {
 			/**
 			 * Cannot add children to a {@link module:engine/view/rawelement~RawElement} instance.
 			 *

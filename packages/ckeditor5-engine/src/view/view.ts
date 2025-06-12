@@ -25,7 +25,7 @@ import type { ViewDocumentSelectionChangeEvent } from './documentselection.js';
 import type { StylesProcessor } from './stylesmap.js';
 import { type ViewElement } from './element.js';
 import type { Node, ViewNodeChangeEvent } from './node.js';
-import { type Item } from './item.js';
+import { type ViewItem } from './item.js';
 
 import { KeyObserver } from './observer/keyobserver.js';
 import { FakeSelectionObserver } from './observer/fakeselectionobserver.js';
@@ -633,7 +633,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	public createPositionAt( itemOrPosition: Item | Position, offset?: PositionOffset ): Position {
+	public createPositionAt( itemOrPosition: ViewItem | Position, offset?: PositionOffset ): Position {
 		return Position._createAt( itemOrPosition, offset );
 	}
 
@@ -642,7 +642,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param item View item after which the position should be located.
 	 */
-	public createPositionAfter( item: Item ): Position {
+	public createPositionAfter( item: ViewItem ): Position {
 		return Position._createAfter( item );
 	}
 
@@ -651,7 +651,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param item View item before which the position should be located.
 	 */
-	public createPositionBefore( item: Item ): Position {
+	public createPositionBefore( item: ViewItem ): Position {
 		return Position._createBefore( item );
 	}
 
@@ -670,7 +670,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Creates a range that starts before given {@link module:engine/view/item~Item view item} and ends after it.
 	 */
-	public createRangeOn( item: Item ): Range {
+	public createRangeOn( item: ViewItem ): Range {
 		return Range._createOn( item );
 	}
 

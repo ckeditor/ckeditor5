@@ -21,7 +21,7 @@ import {
 } from './selection.js';
 
 import { type ViewDocument } from './document.js';
-import { type Item } from './item.js';
+import { type ViewItem } from './item.js';
 import { type Node } from './node.js';
 
 /**
@@ -124,7 +124,7 @@ export class UpcastWriter {
 	 * @param element Element to which items will be appended.
 	 * @returns Number of appended nodes.
 	 */
-	public appendChild( items: Item | string | Iterable<Item | string>, element: ViewElement | ViewDocumentFragment ): number {
+	public appendChild( items: ViewItem | string | Iterable<ViewItem | string>, element: ViewElement | ViewDocumentFragment ): number {
 		return element._appendChild( items );
 	}
 
@@ -138,7 +138,7 @@ export class UpcastWriter {
 	 * @param element Element to which items will be inserted.
 	 * @returns Number of inserted nodes.
 	 */
-	public insertChild( index: number, items: Item | Iterable<Item>, element: ViewElement | ViewDocumentFragment ): number {
+	public insertChild( index: number, items: ViewItem | Iterable<ViewItem>, element: ViewElement | ViewDocumentFragment ): number {
 		return element._insertChild( index, items );
 	}
 
@@ -397,7 +397,7 @@ export class UpcastWriter {
 	 *
 	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	public createPositionAt( itemOrPosition: Item | Position, offset?: PositionOffset ): Position {
+	public createPositionAt( itemOrPosition: ViewItem | Position, offset?: PositionOffset ): Position {
 		return Position._createAt( itemOrPosition, offset );
 	}
 
@@ -406,7 +406,7 @@ export class UpcastWriter {
 	 *
 	 * @param item View item after which the position should be located.
 	 */
-	public createPositionAfter( item: Item ): Position {
+	public createPositionAfter( item: ViewItem ): Position {
 		return Position._createAfter( item );
 	}
 
@@ -415,7 +415,7 @@ export class UpcastWriter {
 	 *
 	 * @param item View item before which the position should be located.
 	 */
-	public createPositionBefore( item: Item ): Position {
+	public createPositionBefore( item: ViewItem ): Position {
 		return Position._createBefore( item );
 	}
 
@@ -434,7 +434,7 @@ export class UpcastWriter {
 	/**
 	 * Creates a range that starts before given {@link module:engine/view/item~Item view item} and ends after it.
 	 */
-	public createRangeOn( item: Item ): Range {
+	public createRangeOn( item: ViewItem ): Range {
 		return Range._createOn( item );
 	}
 

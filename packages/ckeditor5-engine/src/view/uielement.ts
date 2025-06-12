@@ -14,7 +14,7 @@ import { CKEditorError, keyCodes } from '@ckeditor/ckeditor5-utils';
 import { type View } from './view.js';
 import { type ViewDocument } from './document.js';
 import { type ViewDomConverter } from './domconverter.js';
-import { type Item } from './item.js';
+import { type ViewItem } from './item.js';
 import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver.js';
 import type { KeyEventData } from './observer/keyobserver.js';
 
@@ -71,8 +71,8 @@ export class UIElement extends ViewElement {
 	 *
 	 * @internal
 	 */
-	public override _insertChild( index: number, items: Item | Iterable<Item> ): number {
-		if ( items && ( items instanceof Node || Array.from( items as Iterable<Item> ).length > 0 ) ) {
+	public override _insertChild( index: number, items: ViewItem | Iterable<ViewItem> ): number {
+		if ( items && ( items instanceof Node || Array.from( items as Iterable<ViewItem> ).length > 0 ) ) {
 			/**
 			 * Cannot add children to {@link module:engine/view/uielement~UIElement}.
 			 *

@@ -15,7 +15,7 @@ import { Matcher, isPatternMatched, type MatcherPattern, type NormalizedProperty
 import { StylesMap, type Styles, type StyleValue } from './stylesmap.js';
 
 import { type ViewDocument } from './document.js';
-import { type Item } from './item.js';
+import { type ViewItem } from './item.js';
 import { TokenList } from './tokenlist.js';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToTags } = require( '../dev-utils/utils' );
@@ -247,7 +247,7 @@ export class ViewElement extends Node {
 	 * Both elements should have the same name and attributes to be considered as similar. Two similar elements
 	 * can contain different set of children nodes.
 	 */
-	public isSimilar( otherElement: Item ): boolean {
+	public isSimilar( otherElement: ViewItem ): boolean {
 		if ( !( otherElement instanceof ViewElement ) ) {
 			return false;
 		}
@@ -549,7 +549,7 @@ export class ViewElement extends Node {
 	 * @fires change
 	 * @returns Number of appended nodes.
 	 */
-	public _appendChild( items: Item | string | Iterable<Item | string> ): number {
+	public _appendChild( items: ViewItem | string | Iterable<ViewItem | string> ): number {
 		return this._insertChild( this.childCount, items );
 	}
 
@@ -564,7 +564,7 @@ export class ViewElement extends Node {
 	 * @fires change
 	 * @returns Number of inserted nodes.
 	 */
-	public _insertChild( index: number, items: Item | string | Iterable<Item | string> ): number {
+	public _insertChild( index: number, items: ViewItem | string | Iterable<ViewItem | string> ): number {
 		this._fireChange( 'children', this, { index } );
 		let count = 0;
 
@@ -1363,7 +1363,7 @@ export interface ViewNormalizedConsumables {
 /**
  * Converts strings to Text and non-iterables to arrays.
  */
-function normalize( document: ViewDocument, nodes: string | Item | Iterable<string | Item> ): Array<Node> {
+function normalize( document: ViewDocument, nodes: string | ViewItem | Iterable<string | ViewItem> ): Array<Node> {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
 		return [ new Text( document, nodes ) ];

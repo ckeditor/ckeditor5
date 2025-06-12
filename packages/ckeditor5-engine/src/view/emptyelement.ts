@@ -12,7 +12,7 @@ import { Node } from './node.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { type ViewDocument } from './document.js';
-import { type Item } from './item.js';
+import { type ViewItem } from './item.js';
 
 /**
  * Empty element class. It is used to represent elements that cannot contain any child nodes (for example `<img>` elements).
@@ -52,8 +52,8 @@ export class ViewEmptyElement extends ViewElement {
 	 *
 	 * @internal
 	 */
-	public override _insertChild( index: number, items: Item | Iterable<Item> ): number {
-		if ( items && ( items instanceof Node || Array.from( items as Iterable<Item> ).length > 0 ) ) {
+	public override _insertChild( index: number, items: ViewItem | Iterable<ViewItem> ): number {
+		if ( items && ( items instanceof Node || Array.from( items as Iterable<ViewItem> ).length > 0 ) ) {
 			/**
 			 * Cannot add children to {@link module:engine/view/emptyelement~EmptyElement}.
 			 *

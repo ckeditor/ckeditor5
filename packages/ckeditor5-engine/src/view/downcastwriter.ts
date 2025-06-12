@@ -30,7 +30,7 @@ import { type ViewDocument } from './document.js';
 import { type Node } from './node.js';
 import type { ViewElement, ViewElementAttributes } from './element.js';
 import { type ViewDomConverter } from './domconverter.js';
-import { type Item } from './item.js';
+import { type ViewItem } from './item.js';
 import type { DowncastSlotFilter } from '../conversion/downcasthelpers.js';
 
 type DomDocument = globalThis.Document;
@@ -190,7 +190,7 @@ export class ViewDowncastWriter {
 	 * @param itemOrPosition
 	 * @param offset Offset or one of the flags. Used only when the first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	public setSelectionFocus( itemOrPosition: Item | Position, offset?: PositionOffset ): void {
+	public setSelectionFocus( itemOrPosition: ViewItem | Position, offset?: PositionOffset ): void {
 		this.document.selection._setFocus( itemOrPosition, offset );
 	}
 
@@ -1006,7 +1006,7 @@ export class ViewDowncastWriter {
 	 * to a collapsed range showing the new position.
 	 * @returns Document fragment containing removed nodes.
 	 */
-	public remove( rangeOrItem: Range | Item ): ViewDocumentFragment {
+	public remove( rangeOrItem: Range | ViewItem ): ViewDocumentFragment {
 		const range = rangeOrItem instanceof Range ? rangeOrItem : Range._createOn( rangeOrItem );
 
 		validateRangeContainer( range, this.document );
@@ -1288,7 +1288,7 @@ export class ViewDowncastWriter {
 	 *
 	 * @param offset Offset or one of the flags. Used only when the first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	public createPositionAt( itemOrPosition: Item | Position, offset?: PositionOffset ): Position {
+	public createPositionAt( itemOrPosition: ViewItem | Position, offset?: PositionOffset ): Position {
 		return Position._createAt( itemOrPosition, offset );
 	}
 
@@ -1297,7 +1297,7 @@ export class ViewDowncastWriter {
 	 *
 	 * @param item View item after which the position should be located.
 	 */
-	public createPositionAfter( item: Item ): Position {
+	public createPositionAfter( item: ViewItem ): Position {
 		return Position._createAfter( item );
 	}
 
@@ -1306,7 +1306,7 @@ export class ViewDowncastWriter {
 	 *
 	 * @param item View item before which the position should be located.
 	 */
-	public createPositionBefore( item: Item ): Position {
+	public createPositionBefore( item: ViewItem ): Position {
 		return Position._createBefore( item );
 	}
 
@@ -1325,7 +1325,7 @@ export class ViewDowncastWriter {
 	/**
 	 * Creates a range that starts before given {@link module:engine/view/item~Item view item} and ends after it.
 	 */
-	public createRangeOn( item: Item ): Range {
+	public createRangeOn( item: ViewItem ): Range {
 		return Range._createOn( item );
 	}
 

@@ -15,7 +15,7 @@ import { EmitterMixin, isIterable } from '@ckeditor/ckeditor5-utils';
 
 import type { ViewDocument, ViewDocumentChangeType } from './document.js';
 
-import { type Item } from './item.js';
+import { type ViewItem } from './item.js';
 import { type Node } from './node.js';
 
 /**
@@ -133,7 +133,7 @@ export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeChec
 	 * @param items Items to be inserted.
 	 * @returns Number of appended nodes.
 	 */
-	public _appendChild( items: Item | string | Iterable<Item | string> ): number {
+	public _appendChild( items: ViewItem | string | Iterable<ViewItem | string> ): number {
 		return this._insertChild( this.childCount, items );
 	}
 
@@ -175,7 +175,7 @@ export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeChec
 	 * @param items Items to be inserted.
 	 * @returns Number of inserted nodes.
 	 */
-	public _insertChild( index: number, items: Item | string | Iterable<Item | string> ): number {
+	public _insertChild( index: number, items: ViewItem | string | Iterable<ViewItem | string> ): number {
 		this._fireChange( 'children', this, { index } );
 		let count = 0;
 
@@ -277,7 +277,7 @@ ViewDocumentFragment.prototype.is = function( type: string ): boolean {
 /**
  * Converts strings to Text and non-iterables to arrays.
  */
-function normalize( document: ViewDocument, nodes: Item | string | Iterable<Item | string> ): Array<Node> {
+function normalize( document: ViewDocument, nodes: ViewItem | string | Iterable<ViewItem | string> ): Array<Node> {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
 		return [ new Text( document, nodes ) ];

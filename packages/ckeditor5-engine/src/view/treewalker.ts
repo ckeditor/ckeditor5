@@ -11,7 +11,7 @@ import { type ViewElement } from './element.js';
 import { type Text } from './text.js';
 import { TextProxy } from './textproxy.js';
 import { Position } from './position.js';
-import { type Item } from './item.js';
+import { type ViewItem } from './item.js';
 import { type ViewDocumentFragment } from './documentfragment.js';
 import { type Range } from './range.js';
 import { type Node } from './node.js';
@@ -429,7 +429,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 	 */
 	private _formatReturnValue(
 		type: TreeWalkerValueType,
-		item: Item,
+		item: ViewItem,
 		previousPosition: Position,
 		nextPosition: Position,
 		length?: number
@@ -498,7 +498,7 @@ export interface TreeWalkerValue {
 	/**
 	 * Item between the old and the new positions of the tree walker.
 	 */
-	item: Item;
+	item: ViewItem;
 
 	/**
 	 * Previous position of the iterator.

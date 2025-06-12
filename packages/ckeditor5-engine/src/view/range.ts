@@ -12,7 +12,7 @@ import { Position } from './position.js';
 
 import { type ViewDocumentFragment } from './documentfragment.js';
 import { type ViewElement } from './element.js';
-import { type Item } from './item.js';
+import { type ViewItem } from './item.js';
 import { type Node } from './node.js';
 import { TreeWalker, type TreeWalkerValue, type TreeWalkerOptions } from './treewalker.js';
 
@@ -389,7 +389,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 *
 	 * @param options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
 	 */
-	public* getItems( options: TreeWalkerOptions = {} ): IterableIterator<Item> {
+	public* getItems( options: TreeWalkerOptions = {} ): IterableIterator<ViewItem> {
 		options.boundaries = this;
 		options.ignoreElementEnd = true;
 
@@ -487,7 +487,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 *
 	 * @internal
 	 */
-	public static _createOn( item: Item ): Range {
+	public static _createOn( item: ViewItem ): Range {
 		const size = item.is( '$textProxy' ) ? item.offsetSize : 1;
 
 		return this._createFromPositionAndShift( Position._createBefore( item ), size );
