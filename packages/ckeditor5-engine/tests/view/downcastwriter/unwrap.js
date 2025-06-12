@@ -4,10 +4,10 @@
  */
 
 import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
-import { Element } from '../../../src/view/element.js';
+import { ViewElement } from '../../../src/view/element.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
-import { EmptyElement } from '../../../src/view/emptyelement.js';
+import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
 import { RawElement } from '../../../src/view/rawelement.js';
 import { Position } from '../../../src/view/position.js';
@@ -65,7 +65,7 @@ describe( 'DowncastWriter', () => {
 				new Position( container, 0 ),
 				new Position( container, 1 )
 			);
-			const b = new Element( document, 'b' );
+			const b = new ViewElement( document, 'b' );
 
 			expectToThrowCKEditorError( () => {
 				writer.unwrap( range, b );
@@ -428,7 +428,7 @@ describe( 'DowncastWriter', () => {
 			);
 		} );
 
-		it( 'should unwrap EmptyElement', () => {
+		it( 'should unwrap ViewEmptyElement', () => {
 			testUnwrap(
 				'<container:p>[<attribute:b><empty:img></empty:img></attribute:b>]</container:p>',
 				'<attribute:b></attribute:b>',
@@ -436,8 +436,8 @@ describe( 'DowncastWriter', () => {
 			);
 		} );
 
-		it( 'should throw if range is inside EmptyElement', () => {
-			const empty = new EmptyElement( document, 'img' );
+		it( 'should throw if range is inside ViewEmptyElement', () => {
+			const empty = new ViewEmptyElement( document, 'img' );
 			const attribute = new ViewAttributeElement( document, 'b' );
 			const container = new ViewContainerElement( document, 'p', null, [ empty, attribute ] );
 			const range = Range._createFromParentsAndOffsets( empty, 0, container, 2 );

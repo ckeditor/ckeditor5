@@ -5,8 +5,8 @@
 
 import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
-import { Element } from '../../../src/view/element.js';
-import { EmptyElement } from '../../../src/view/emptyelement.js';
+import { ViewElement } from '../../../src/view/element.js';
+import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
 import { RawElement } from '../../../src/view/rawelement.js';
 import { Position } from '../../../src/view/position.js';
@@ -202,7 +202,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw when inserting Element', () => {
-			const element = new Element( document, 'b' );
+			const element = new ViewElement( document, 'b' );
 			const container = new ViewContainerElement( document, 'p' );
 			const position = new Position( container, 0 );
 
@@ -212,7 +212,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw when Element is inserted as child node', () => {
-			const element = new Element( document, 'b' );
+			const element = new ViewElement( document, 'b' );
 			const root = new ViewContainerElement( document, 'p', null, element );
 			const container = new ViewContainerElement( document, 'p' );
 			const position = new Position( container, 0 );
@@ -223,7 +223,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw when position is not placed inside container', () => {
-			const element = new Element( document, 'b' );
+			const element = new ViewElement( document, 'b' );
 			const position = new Position( element, 0 );
 			const attributeElement = new ViewAttributeElement( document, 'i' );
 
@@ -232,7 +232,7 @@ describe( 'DowncastWriter', () => {
 			}, 'view-writer-invalid-position-container', document );
 		} );
 
-		it( 'should allow to insert EmptyElement into container', () => {
+		it( 'should allow to insert ViewEmptyElement into container', () => {
 			testInsert(
 				'<container:p>[]</container:p>',
 				[ '<empty:img></empty:img>' ],
@@ -240,8 +240,8 @@ describe( 'DowncastWriter', () => {
 			);
 		} );
 
-		it( 'should throw if trying to insert inside EmptyElement', () => {
-			const emptyElement = new EmptyElement( document, 'img' );
+		it( 'should throw if trying to insert inside ViewEmptyElement', () => {
+			const emptyElement = new ViewEmptyElement( document, 'img' );
 			new ViewContainerElement( document, 'p', null, emptyElement ); // eslint-disable-line no-new
 			const position = new Position( emptyElement, 0 );
 			const attributeElement = new ViewAttributeElement( document, 'i' );

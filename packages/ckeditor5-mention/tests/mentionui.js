@@ -10,7 +10,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
 import { ContextualBalloon } from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon.js';
 import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
@@ -2654,7 +2654,7 @@ describe( 'MentionUI', () => {
 
 	function fireKeyDownEvent( options ) {
 		const eventInfo = new EventInfo( editingView.document, 'keydown' );
-		const eventData = new DomEventData( editingView.document, {
+		const eventData = new ObserverDomEventData( editingView.document, {
 			target: document.body
 		}, options );
 

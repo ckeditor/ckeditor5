@@ -224,7 +224,7 @@ describe( 'DowncastWriter', () => {
 	} );
 
 	describe( 'createEmptyElement()', () => {
-		it( 'should create EmptyElement', () => {
+		it( 'should create ViewEmptyElement', () => {
 			const element = writer.createEmptyElement( 'foo', attributes );
 
 			expect( element.is( 'emptyElement' ) ).to.be.true;

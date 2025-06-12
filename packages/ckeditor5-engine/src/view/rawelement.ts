@@ -29,7 +29,7 @@ type DomElement = globalThis.HTMLElement;
  *
  * Unlike {@link module:engine/view/uielement~UIElement UI elements}, raw elements act like real editor
  * content (similar to {@link module:engine/view/containerelement~ViewContainerElement} or
- * {@link module:engine/view/emptyelement~EmptyElement}), they are considered by the editor selection and
+ * {@link module:engine/view/emptyelement~ViewEmptyElement}), they are considered by the editor selection and
  * {@link module:widget/utils~toWidget they can work as widgets}.
  *
  * To create a new raw element, use the

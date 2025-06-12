@@ -187,7 +187,7 @@ export abstract class TypeCheckable {
 	public is( type: 'editableElement' | 'view:editableElement' ): this is ViewEditableElement | RootEditableElement;
 
 	/**
-	 * Checks whether this object is of type {@link module:engine/view/emptyelement~EmptyElement}.
+	 * Checks whether this object is of type {@link module:engine/view/emptyelement~ViewEmptyElement}.
 	 *
 	 * ```ts
 	 * emptyElement.is( 'emptyElement' ); // -> true
@@ -202,7 +202,7 @@ export abstract class TypeCheckable {
 	 * ```
 	 *
 	 * Assuming that the object being checked is an empty element, you can also check its
-	 * {@link module:engine/view/emptyelement~EmptyElement#name name}:
+	 * {@link module:engine/view/emptyelement~ViewEmptyElement#name name}:
 	 *
 	 * ```ts
 	 * emptyElement.is( 'element', 'img' ); // -> true if this is a img element
@@ -466,7 +466,7 @@ export abstract class TypeCheckable {
 	) & { name: N };
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/view/emptyelement~EmptyElement} has the specified `name`.
+	 * Checks whether the object is of type {@link module:engine/view/emptyelement~ViewEmptyElement} has the specified `name`.
 	 *
 	 * @label EMPTY_ELEMENT_NAME
 	 */

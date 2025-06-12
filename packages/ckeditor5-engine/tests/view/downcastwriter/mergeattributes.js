@@ -137,7 +137,7 @@ describe( 'DowncastWriter', () => {
 			);
 		} );
 
-		it( 'should not merge when placed between EmptyElements', () => {
+		it( 'should not merge when placed between ViewEmptyElements', () => {
 			testMerge(
 				'<container:p><empty:img></empty:img>[]<empty:img></empty:img></container:p>',
 				'<container:p><empty:img></empty:img>[]<empty:img></empty:img></container:p>'

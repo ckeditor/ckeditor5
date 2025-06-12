@@ -257,9 +257,9 @@ export { TouchObserver } from './view/observer/touchobserver.js';
 export { FakeSelectionObserver } from './view/observer/fakeselectionobserver.js';
 export {
 	KeyObserver,
-	ViewDocumentKeyDownEvent,
-	ViewDocumentKeyUpEvent,
-	KeyObserverEventData
+	type ViewDocumentKeyDownEvent,
+	type ViewDocumentKeyUpEvent,
+	type KeyObserverEventData
 } from './view/observer/keyobserver.js';
 
 export {

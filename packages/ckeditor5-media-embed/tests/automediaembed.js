@@ -15,7 +15,7 @@ import { Image } from '@ckeditor/ckeditor5-image/src/image.js';
 import { ImageCaption } from '@ckeditor/ckeditor5-image/src/imagecaption.js';
 import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
 import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 describe( 'AutoMediaEmbed - integration', () => {
@@ -105,7 +105,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 
 		it( 'can undo auto-embeding by pressing backspace', () => {
 			const viewDocument = editor.editing.view.document;
-			const deleteEvent = new DomEventData(
+			const deleteEvent = new ObserverDomEventData(
 				viewDocument,
 				{ preventDefault: sinon.spy() },
 				{ direction: 'backward', unit: 'codePoint', sequence: 1 }

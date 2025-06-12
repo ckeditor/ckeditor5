@@ -22,10 +22,10 @@ import { type ViewItem } from './item.js';
  */
 export class ViewEmptyElement extends ViewElement {
 	/**
-	 * Creates new instance of EmptyElement.
+	 * Creates new instance of ViewEmptyElement.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-emptyelement-cannot-add` when third parameter is passed,
-	 * to inform that usage of EmptyElement is incorrect (adding child nodes to EmptyElement is forbidden).
+	 * to inform that usage of ViewEmptyElement is incorrect (adding child nodes to ViewEmptyElement is forbidden).
 	 *
 	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#createEmptyElement
 	 * @internal
@@ -48,14 +48,14 @@ export class ViewEmptyElement extends ViewElement {
 	/**
 	 * Overrides {@link module:engine/view/element~ViewElement#_insertChild} method.
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-emptyelement-cannot-add` to prevent
-	 * adding any child nodes to EmptyElement.
+	 * adding any child nodes to ViewEmptyElement.
 	 *
 	 * @internal
 	 */
 	public override _insertChild( index: number, items: ViewItem | Iterable<ViewItem> ): number {
 		if ( items && ( items instanceof ViewNode || Array.from( items as Iterable<ViewItem> ).length > 0 ) ) {
 			/**
-			 * Cannot add children to {@link module:engine/view/emptyelement~EmptyElement}.
+			 * Cannot add children to {@link module:engine/view/emptyelement~ViewEmptyElement}.
 			 *
 			 * @error view-emptyelement-cannot-add
 			 */
@@ -86,7 +86,7 @@ ViewEmptyElement.prototype.is = function( type: string, name?: string ): boolean
 };
 
 /**
- * Returns `null` because block filler is not needed for EmptyElements.
+ * Returns `null` because block filler is not needed for ViewEmptyElements.
  */
 function getFillerOffset() {
 	return null;

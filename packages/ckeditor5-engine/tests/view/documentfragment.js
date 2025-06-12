@@ -5,7 +5,7 @@
 
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewElement } from '../../src/view/element.js';
-import { Node } from '../../src/view/node.js';
+import { ViewNode } from '../../src/view/node.js';
 import { Text } from '../../src/view/text.js';
 import { TextProxy } from '../../src/view/textproxy.js';
 import { ViewDocument } from '../../src/view/document.js';
@@ -268,9 +268,9 @@ describe( 'DocumentFragment', () => {
 
 	describe( 'node methods when inserted to fragment', () => {
 		it( 'index should return proper value', () => {
-			const node1 = new Node( document );
-			const node2 = new Node( document );
-			const node3 = new Node( document );
+			const node1 = new ViewNode( document );
+			const node2 = new ViewNode( document );
+			const node3 = new ViewNode( document );
 			const fragment = new ViewDocumentFragment( document, [ node1, node2, node3 ] );
 
 			expect( node1.index ).to.equal( 0 );
@@ -282,9 +282,9 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'nextSibling should return proper node', () => {
-			const node1 = new Node( document );
-			const node2 = new Node( document );
-			const node3 = new Node( document );
+			const node1 = new ViewNode( document );
+			const node2 = new ViewNode( document );
+			const node3 = new ViewNode( document );
 			new ViewDocumentFragment( document, [ node1, node2, node3 ] ); // eslint-disable-line no-new
 
 			expect( node1.nextSibling ).to.equal( node2 );
@@ -293,9 +293,9 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'previousSibling should return proper node', () => {
-			const node1 = new Node( document );
-			const node2 = new Node( document );
-			const node3 = new Node( document );
+			const node1 = new ViewNode( document );
+			const node2 = new ViewNode( document );
+			const node3 = new ViewNode( document );
 			new ViewDocumentFragment( document, [ node1, node2, node3 ] ); // eslint-disable-line no-new
 
 			expect( node1.previousSibling ).to.be.null;
@@ -304,9 +304,9 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( '_remove() should remove node from fragment', () => {
-			const node1 = new Node( document );
-			const node2 = new Node( document );
-			const node3 = new Node( document );
+			const node1 = new ViewNode( document );
+			const node2 = new ViewNode( document );
+			const node3 = new ViewNode( document );
 			const fragment = new ViewDocumentFragment( document, [ node1, node2, node3 ] );
 
 			node1._remove();

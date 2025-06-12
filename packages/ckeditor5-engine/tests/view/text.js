@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Node } from '../../src/view/node.js';
+import { ViewNode } from '../../src/view/node.js';
 import { Text } from '../../src/view/text.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
@@ -19,7 +19,7 @@ describe( 'Text', () => {
 		it( 'should create element without attributes', () => {
 			const text = new Text( document, 'foo' );
 
-			expect( text ).to.be.an.instanceof( Node );
+			expect( text ).to.be.an.instanceof( ViewNode );
 			expect( text.data ).to.equal( 'foo' );
 			expect( text ).to.have.property( 'parent' ).that.is.null;
 		} );

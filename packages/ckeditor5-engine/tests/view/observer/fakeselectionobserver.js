@@ -6,7 +6,7 @@
 import { createElement } from '@ckeditor/ckeditor5-utils/src/dom/createelement.js';
 import { FakeSelectionObserver } from '../../../src/view/observer/fakeselectionobserver.js';
 import { View } from '../../../src/view/view.js';
-import { DomEventData } from '../../../src/view/observer/domeventdata.js';
+import { ObserverDomEventData } from '../../../src/view/observer/domeventdata.js';
 import { createViewRoot } from '../_utils/createroot.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { _setViewData, _stringifyView } from '../../../src/dev-utils/view.js';
@@ -174,7 +174,7 @@ describe( 'FakeSelectionObserver', () => {
 				resolve();
 			}, { priority: 'lowest' } );
 
-			viewDocument.fire( 'keydown', new DomEventData( viewDocument, { target: document.body }, data ) );
+			viewDocument.fire( 'keydown', new ObserverDomEventData( viewDocument, { target: document.body }, data ) );
 		} );
 	}
 
@@ -210,6 +210,6 @@ describe( 'FakeSelectionObserver', () => {
 			preventDefault: sinon.spy()
 		};
 
-		viewDocument.fire( 'keydown', new DomEventData( viewDocument, { target: document.body }, data ) );
+		viewDocument.fire( 'keydown', new ObserverDomEventData( viewDocument, { target: document.body }, data ) );
 	}
 } );

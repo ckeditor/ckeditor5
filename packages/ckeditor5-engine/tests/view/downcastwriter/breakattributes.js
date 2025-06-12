@@ -8,7 +8,7 @@ import { ViewDocument } from '../../../src/view/document.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
-import { EmptyElement } from '../../../src/view/emptyelement.js';
+import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
 import { RawElement } from '../../../src/view/rawelement.js';
 import { Range } from '../../../src/view/range.js';
@@ -242,8 +242,8 @@ describe( 'DowncastWriter', () => {
 				);
 			} );
 
-			it( 'should throw if breaking inside EmptyElement #1', () => {
-				const img = new EmptyElement( document, 'img' );
+			it( 'should throw if breaking inside ViewEmptyElement #1', () => {
+				const img = new ViewEmptyElement( document, 'img' );
 				new ViewContainerElement( document, 'p', null, img ); // eslint-disable-line no-new
 				const position = new Position( img, 0 );
 
@@ -252,8 +252,8 @@ describe( 'DowncastWriter', () => {
 				}, 'view-writer-cannot-break-empty-element', writer );
 			} );
 
-			it( 'should throw if breaking inside EmptyElement #2', () => {
-				const img = new EmptyElement( document, 'img' );
+			it( 'should throw if breaking inside ViewEmptyElement #2', () => {
+				const img = new ViewEmptyElement( document, 'img' );
 				const b = new ViewAttributeElement( document, 'b' );
 				new ViewContainerElement( document, 'p', null, [ img, b ] ); // eslint-disable-line no-new
 				const range = Range._createFromParentsAndOffsets( img, 0, b, 0 );

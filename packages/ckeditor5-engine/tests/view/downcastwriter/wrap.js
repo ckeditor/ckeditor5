@@ -6,10 +6,10 @@
 import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { View } from '../../../src/view/view.js';
 import { ViewDocumentFragment } from '../../../src/view/documentfragment.js';
-import { Element } from '../../../src/view/element.js';
+import { ViewElement } from '../../../src/view/element.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
-import { EmptyElement } from '../../../src/view/emptyelement.js';
+import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
 import { RawElement } from '../../../src/view/rawelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
 import { Position } from '../../../src/view/position.js';
@@ -69,7 +69,7 @@ describe( 'DowncastWriter', () => {
 					new Position( container, 0 ),
 					new Position( container, 1 )
 				);
-				const b = new Element( document, 'b' );
+				const b = new ViewElement( document, 'b' );
 
 				expectToThrowCKEditorError( () => {
 					writer.wrap( range, b );
@@ -387,7 +387,7 @@ describe( 'DowncastWriter', () => {
 				);
 			} );
 
-			it( 'should wrap EmptyElement', () => {
+			it( 'should wrap ViewEmptyElement', () => {
 				testWrap(
 					'<container:p>[<empty:img></empty:img>]</container:p>',
 					'<attribute:b></attribute:b>',
@@ -395,8 +395,8 @@ describe( 'DowncastWriter', () => {
 				);
 			} );
 
-			it( 'should throw if range is inside EmptyElement', () => {
-				const emptyElement = new EmptyElement( document, 'img' );
+			it( 'should throw if range is inside ViewEmptyElement', () => {
+				const emptyElement = new ViewEmptyElement( document, 'img' );
 				const container = new ViewContainerElement( document, 'p', null, emptyElement );
 				const range = Range._createFromParentsAndOffsets( emptyElement, 0, container, 1 );
 
@@ -588,7 +588,7 @@ describe( 'DowncastWriter', () => {
 			it( 'should throw error when element is not instance of ViewAttributeElement', () => {
 				const container = new ViewContainerElement( document, 'p', null, new Text( 'foo' ) );
 				const position = new Position( container, 0 );
-				const b = new Element( document, 'b' );
+				const b = new ViewElement( document, 'b' );
 
 				expectToThrowCKEditorError( () => {
 					writer.wrap( new Range( position ), b );

@@ -391,7 +391,7 @@ export class ViewDowncastWriter {
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/emptyelement~EmptyElement}.
+	 * Creates a new {@link module:engine/view/emptyelement~ViewEmptyElement}.
 	 *
 	 * ```ts
 	 * writer.createEmptyElement( 'img' );
@@ -479,7 +479,7 @@ export class ViewDowncastWriter {
 	 * Raw elements are a perfect tool for integration with external frameworks and data sources.
 	 *
 	 * Unlike {@link #createUIElement UI elements}, raw elements act like "real" editor content (similar to
-	 * {@link module:engine/view/containerelement~ViewContainerElement} or {@link module:engine/view/emptyelement~EmptyElement}),
+	 * {@link module:engine/view/containerelement~ViewContainerElement} or {@link module:engine/view/emptyelement~ViewEmptyElement}),
 	 * and they are considered by the editor selection.
 	 *
 	 * You should not use raw elements to render the UI in the editor content. Check out {@link #createUIElement `#createUIElement()`}
@@ -725,7 +725,7 @@ export class ViewDowncastWriter {
 	 * and {@link module:engine/view/range~Range#end end} positions of a passed range are not placed inside same parent container.
 	 *
 	 * Throws the `view-writer-cannot-break-empty-element` {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
-	 * when trying to break attributes inside an {@link module:engine/view/emptyelement~EmptyElement EmptyElement}.
+	 * when trying to break attributes inside an {@link module:engine/view/emptyelement~ViewEmptyElement ViewEmptyElement}.
 	 *
 	 * Throws the `view-writer-cannot-break-ui-element` {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
 	 * when trying to break attributes inside a {@link module:engine/view/uielement~UIElement UIElement}.
@@ -938,7 +938,7 @@ export class ViewDowncastWriter {
 	 * contains instances that are not {@link module:engine/view/text~Text Texts},
 	 * {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElements},
 	 * {@link module:engine/view/containerelement~ViewContainerElement ViewContainerElements},
-	 * {@link module:engine/view/emptyelement~EmptyElement EmptyElements},
+	 * {@link module:engine/view/emptyelement~ViewEmptyElement ViewEmptyElements},
 	 * {@link module:engine/view/rawelement~RawElement RawElements} or
 	 * {@link module:engine/view/uielement~UIElement UIElements}.
 	 *
@@ -949,7 +949,7 @@ export class ViewDowncastWriter {
 	public insert( position: Position, nodes: ViewNode | Iterable<ViewNode> ): Range {
 		nodes = isIterable( nodes ) ? [ ...nodes ] : [ nodes ];
 
-		// Check if nodes to insert are instances of ViewAttributeElements, ViewContainerElements, EmptyElements, UIElements or Text.
+		// Check if nodes to insert are instances of ViewAttributeElements, ViewContainerElements, ViewEmptyElements, UIElements or Text.
 		validateNodesToInsert( nodes, this.document );
 
 		// Group nodes in batches of nodes that require or do not require breaking an ViewAttributeElements.
@@ -1857,7 +1857,7 @@ export class ViewDowncastWriter {
 	 * Helper function used by other `DowncastWriter` methods. Breaks attribute elements at given position.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-empty-element` when break position
-	 * is placed inside {@link module:engine/view/emptyelement~EmptyElement EmptyElement}.
+	 * is placed inside {@link module:engine/view/emptyelement~ViewEmptyElement ViewEmptyElement}.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-ui-element` when break position
 	 * is placed inside {@link module:engine/view/uielement~UIElement UIElement}.
@@ -1871,7 +1871,7 @@ export class ViewDowncastWriter {
 		const positionOffset = position.offset;
 		const positionParent = position.parent;
 
-		// If position is placed inside EmptyElement - throw an exception as we cannot break inside.
+		// If position is placed inside ViewEmptyElement - throw an exception as we cannot break inside.
 		if ( position.parent.is( 'emptyElement' ) ) {
 			/**
 			 * Cannot break an `EmptyElement` instance.
@@ -2206,7 +2206,7 @@ function validateNodesToInsert( nodes: Iterable<ViewNode>, errorContext: ViewDoc
 			 *
 			 * * {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElement},
 			 * * {@link module:engine/view/containerelement~ViewContainerElement ViewContainerElement},
-			 * * {@link module:engine/view/emptyelement~EmptyElement EmptyElement},
+			 * * {@link module:engine/view/emptyelement~ViewEmptyElement ViewEmptyElement},
 			 * * {@link module:engine/view/uielement~UIElement UIElement},
 			 * * {@link module:engine/view/rawelement~RawElement RawElement},
 			 * * {@link module:engine/view/text~Text Text}.

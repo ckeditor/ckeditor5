@@ -32,7 +32,7 @@ import { TokenList } from './tokenlist.js';
  * * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createAttributeElement `downcastWriter#createAttributeElement()`}
  * in order to create a {@link module:engine/view/attributeelement~ViewAttributeElement},
  * * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createEmptyElement `downcastWriter#createEmptyElement()`}
- * in order to create a {@link module:engine/view/emptyelement~EmptyElement}.
+ * in order to create a {@link module:engine/view/emptyelement~ViewEmptyElement}.
  * * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createUIElement `downcastWriter#createUIElement()`}
  * in order to create a {@link module:engine/view/uielement~UIElement}.
  * * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createEditableElement `downcastWriter#createEditableElement()`}

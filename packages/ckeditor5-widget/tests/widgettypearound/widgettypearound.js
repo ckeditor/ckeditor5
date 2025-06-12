@@ -5,7 +5,7 @@
 
 import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
 import { ArticlePluginSet } from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset.js';
-import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
 import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 import { BubblingEventInfo } from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo.js';
@@ -317,7 +317,7 @@ describe( 'WidgetTypeAround', () => {
 
 					const eventInfo = new EventInfo( viewDocument, 'mousedown' );
 					const stopSpy = sinon.stub( eventInfo, 'stop' );
-					const domEventDataMock = new DomEventData( editingView, {
+					const domEventDataMock = new ObserverDomEventData( editingView, {
 						target: buttonBefore,
 						preventDefault: preventDefaultSpy
 					} );
@@ -334,7 +334,7 @@ describe( 'WidgetTypeAround', () => {
 					const typeAroundSpy = sinon.spy( plugin, '_insertParagraph' );
 
 					const eventInfo = new EventInfo( viewDocument, 'mousedown' );
-					const domEventDataMock = new DomEventData( editingView, {
+					const domEventDataMock = new ObserverDomEventData( editingView, {
 						// Clicking a widget.
 						target: editingView.domConverter.mapViewToDom( viewRoot.getChild( 0 ) ),
 						preventDefault: sinon.spy()
@@ -360,7 +360,7 @@ describe( 'WidgetTypeAround', () => {
 
 					const eventInfo = new EventInfo( viewDocument, 'mousedown' );
 					const stopSpy = sinon.stub( eventInfo, 'stop' );
-					const domEventDataMock = new DomEventData( editingView, {
+					const domEventDataMock = new ObserverDomEventData( editingView, {
 						target: buttonAfter,
 						preventDefault: preventDefaultSpy
 					} );
@@ -1745,7 +1745,7 @@ describe( 'WidgetTypeAround', () => {
 					targetRanges: []
 				};
 
-				domEventDataStub = new DomEventData( viewDocument, getDomEvent(), data );
+				domEventDataStub = new ObserverDomEventData( viewDocument, getDomEvent(), data );
 
 				viewDocument.fire( eventInfoStub, domEventDataStub );
 			}
@@ -1808,14 +1808,14 @@ describe( 'WidgetTypeAround', () => {
 
 			Object.assign( data, modifiers );
 
-			domEventDataStub = new DomEventData( viewDocument, getDomEvent(), data );
+			domEventDataStub = new ObserverDomEventData( viewDocument, getDomEvent(), data );
 
 			viewDocument.fire( eventInfoStub, domEventDataStub );
 		}
 
 		function fireCompositionStartEvent() {
 			eventInfoStub = new BubblingEventInfo( viewDocument, 'compositionstart' );
-			domEventDataStub = new DomEventData( viewDocument, getDomEvent(), {} );
+			domEventDataStub = new ObserverDomEventData( viewDocument, getDomEvent(), {} );
 
 			viewDocument.fire( eventInfoStub, domEventDataStub );
 		}
@@ -1831,13 +1831,13 @@ describe( 'WidgetTypeAround', () => {
 				keyCode: 229
 			};
 
-			domEventDataStub = new DomEventData( viewDocument, getDomEvent(), data );
+			domEventDataStub = new ObserverDomEventData( viewDocument, getDomEvent(), data );
 
 			viewDocument.fire( eventInfoStub, domEventDataStub );
 		}
 
 		function fireEnter( isSoft ) {
-			viewDocument.fire( new BubblingEventInfo( viewDocument, 'enter' ), new DomEventData( viewDocument, {
+			viewDocument.fire( new BubblingEventInfo( viewDocument, 'enter' ), new ObserverDomEventData( viewDocument, {
 				preventDefault: sinon.spy()
 			}, { isSoft } ) );
 		}

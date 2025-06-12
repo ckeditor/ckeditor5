@@ -21,7 +21,7 @@ import { ModelTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/modeltest
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { DomEventData } from '@ckeditor/ckeditor5-engine';
+import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Autoformat undo integration', () => {
@@ -207,7 +207,7 @@ describe( 'Autoformat undo integration', () => {
 			model = editor.model;
 			doc = model.document;
 			viewDocument = editor.editing.view.document;
-			deleteEvent = new DomEventData(
+			deleteEvent = new ObserverDomEventData(
 				viewDocument,
 				{ preventDefault: sinon.spy() },
 				{ direction: 'backward', unit: 'codePoint', sequence: 1 }

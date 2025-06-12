@@ -232,7 +232,7 @@ _setViewData._parse = _parseView;
  * If `options.showType` is set to `true`, element's types will be
  * presented for {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements},
  * {@link module:engine/view/containerelement~ViewContainerElement container elements}
- * {@link module:engine/view/emptyelement~EmptyElement empty elements}
+ * {@link module:engine/view/emptyelement~ViewEmptyElement empty elements}
  * and {@link module:engine/view/uielement~UIElement UI elements}:
  *
  * ```ts
@@ -941,7 +941,7 @@ class ViewStringify {
 	 * Returns:
 	 * * 'attribute' for {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements},
 	 * * 'container' for {@link module:engine/view/containerelement~ViewContainerElement container elements},
-	 * * 'empty' for {@link module:engine/view/emptyelement~EmptyElement empty elements},
+	 * * 'empty' for {@link module:engine/view/emptyelement~ViewEmptyElement empty elements},
 	 * * 'ui' for {@link module:engine/view/uielement~UIElement UI elements},
 	 * * 'raw' for {@link module:engine/view/rawelement~RawElement raw elements},
 	 * * an empty string when the current configuration is preventing showing elements' types.
@@ -1023,7 +1023,7 @@ class ViewStringify {
  * Converts {@link module:engine/view/element~ViewElement elements} to
  * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements},
  * {@link module:engine/view/containerelement~ViewContainerElement container elements},
- * {@link module:engine/view/emptyelement~EmptyElement empty elements} or
+ * {@link module:engine/view/emptyelement~ViewEmptyElement empty elements} or
  * {@link module:engine/view/uielement~UIElement UI elements}.
  * It converts the whole tree starting from the `rootNode`. The conversion is based on element names.
  * See the `_convertElement` method for more details.
@@ -1044,7 +1044,7 @@ function _convertViewElements( rootNode: ViewNode | ViewDocumentFragment ) {
 		// from `rootNode` to `convertedElement`. This would interfere with iteration.
 		for ( const child of [ ...rootNode.getChildren() ] ) {
 			if ( convertedElement.is( 'emptyElement' ) ) {
-				throw new Error( 'Parse error - cannot parse inside EmptyElement.' );
+				throw new Error( 'Parse error - cannot parse inside ViewEmptyElement.' );
 			} else if ( convertedElement.is( 'uiElement' ) ) {
 				throw new Error( 'Parse error - cannot parse inside UIElement.' );
 			} else if ( convertedElement.is( 'rawElement' ) ) {
@@ -1064,7 +1064,7 @@ function _convertViewElements( rootNode: ViewNode | ViewDocumentFragment ) {
  * Converts an {@link module:engine/view/element~ViewElement element} to
  * {@link module:engine/view/attributeelement~ViewAttributeElement attribute element},
  * {@link module:engine/view/containerelement~ViewContainerElement container element},
- * {@link module:engine/view/emptyelement~EmptyElement empty element} or
+ * {@link module:engine/view/emptyelement~ViewEmptyElement empty element} or
  * {@link module:engine/view/uielement~UIElement UI element}.
  * If the element's name is in the format of `attribute:b`, it will be converted to
  * an {@link module:engine/view/attributeelement~ViewAttributeElement attribute element} with a priority of 11.
@@ -1073,7 +1073,7 @@ function _convertViewElements( rootNode: ViewNode | ViewDocumentFragment ) {
  * If the element's name is in the format of `container:p`, it will be converted to
  * a {@link module:engine/view/containerelement~ViewContainerElement container element}.
  * If the element's name is in the format of `empty:img`, it will be converted to
- * an {@link module:engine/view/emptyelement~EmptyElement empty element}.
+ * an {@link module:engine/view/emptyelement~ViewEmptyElement empty element}.
  * If the element's name is in the format of `ui:span`, it will be converted to
  * a {@link module:engine/view/uielement~UIElement UI element}.
  * If the element's name does not contain any additional information, a {@link module:engine/view/element~ViewElement view Element} will be
@@ -1109,7 +1109,7 @@ function _convertElement( viewDocument: ViewDocument, viewElement: ViewElement )
  * Converts the `view-priority` attribute and the {@link module:engine/view/element~ViewElement#name element's name} information needed for
  * creating {@link module:engine/view/attributeelement~ViewAttributeElement attribute element},
  * {@link module:engine/view/containerelement~ViewContainerElement container element},
- * {@link module:engine/view/emptyelement~EmptyElement empty element} or
+ * {@link module:engine/view/emptyelement~ViewEmptyElement empty element} or
  * {@link module:engine/view/uielement~UIElement UI element}.
  * The name can be provided in two formats: as a simple element's name (`div`), or as a type and name (`container:div`,
  * `attribute:span`, `empty:img`, `ui:span`);

@@ -8,7 +8,7 @@ import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
 import { RootEditableElement } from '../../../src/view/rooteditableelement.js';
-import { EmptyElement } from '../../../src/view/emptyelement.js';
+import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
 import { RawElement } from '../../../src/view/rawelement.js';
 import { Range } from '../../../src/view/range.js';
@@ -143,7 +143,7 @@ describe( 'DowncastWriter', () => {
 			);
 		} );
 
-		it( 'should move EmptyElement', () => {
+		it( 'should move ViewEmptyElement', () => {
 			testMove(
 				'<container:p>foo[<empty:img></empty:img>]bar</container:p>',
 				'<container:div>baz{}quix</container:div>',
@@ -152,12 +152,12 @@ describe( 'DowncastWriter', () => {
 			);
 		} );
 
-		it( 'should throw if trying to move to EmptyElement', () => {
+		it( 'should throw if trying to move to ViewEmptyElement', () => {
 			const srcAttribute = new ViewAttributeElement( document, 'b' );
 			const srcContainer = new ViewContainerElement( document, 'p', null, srcAttribute );
 			const srcRange = Range._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
 
-			const dstEmpty = new EmptyElement( document, 'img' );
+			const dstEmpty = new ViewEmptyElement( document, 'img' );
 			new ViewContainerElement( document, 'p', null, dstEmpty ); // eslint-disable-line no-new
 			const dstPosition = new Position( dstEmpty, 0 );
 

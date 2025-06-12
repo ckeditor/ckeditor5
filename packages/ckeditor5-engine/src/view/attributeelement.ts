@@ -23,7 +23,7 @@ const DEFAULT_PRIORITY = 10;
  *
  * Editing engine does not define a fixed HTML DTD. This is why a feature developer needs to choose between various
  * types (container element, {@link module:engine/view/attributeelement~ViewAttributeElement attribute element},
- * {@link module:engine/view/emptyelement~EmptyElement empty element}, etc) when developing a feature.
+ * {@link module:engine/view/emptyelement~ViewEmptyElement empty element}, etc) when developing a feature.
  *
  * To create a new attribute element instance use the
  * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createAttributeElement `DowncastWriter#createAttributeElement()`} method.

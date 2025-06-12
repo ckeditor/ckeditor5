@@ -4,7 +4,7 @@
  */
 
 import { Position } from '../../src/view/position.js';
-import { Node } from '../../src/view/node.js';
+import { ViewNode } from '../../src/view/node.js';
 import { ViewElement } from '../../src/view/element.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewEditableElement } from '../../src/view/editableelement.js';
@@ -216,7 +216,7 @@ describe( 'Position', () => {
 
 	describe( 'isBefore', () => {
 		it( 'should return false for same positions', () => {
-			const node = new Node();
+			const node = new ViewNode();
 			const position1 = new Position( node, 10 );
 			const position2 = new Position( node, 10 );
 
@@ -238,7 +238,7 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should return true if position is before in same node', () => {
-			const node = new Node();
+			const node = new ViewNode();
 			const p1 = new Position( node, 10 );
 			const p2 = new Position( node, 5 );
 
@@ -274,7 +274,7 @@ describe( 'Position', () => {
 
 	describe( 'isAfter', () => {
 		it( 'should return false for same positions', () => {
-			const node = new Node();
+			const node = new ViewNode();
 			const position1 = new Position( node, 10 );
 			const position2 = new Position( node, 10 );
 
@@ -296,7 +296,7 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should return true if position is after in same node', () => {
-			const node = new Node();
+			const node = new ViewNode();
 			const p1 = new Position( node, 10 );
 			const p2 = new Position( node, 5 );
 

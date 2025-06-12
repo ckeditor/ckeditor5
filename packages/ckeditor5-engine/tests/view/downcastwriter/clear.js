@@ -8,7 +8,7 @@ import { Range } from '../../../src/view/range.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
-import { EmptyElement } from '../../../src/view/emptyelement.js';
+import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
 import { RawElement } from '../../../src/view/rawelement.js';
 
@@ -147,8 +147,8 @@ describe( 'DowncastWriter', () => {
 			);
 		} );
 
-		it( 'should remove EmptyElement', () => {
-			const elementToRemove = new EmptyElement( document, 'img' );
+		it( 'should remove ViewEmptyElement', () => {
+			const elementToRemove = new ViewEmptyElement( document, 'img' );
 
 			testDowncast(
 				elementToRemove,

@@ -13,7 +13,7 @@ import { Input } from '@ckeditor/ckeditor5-typing/src/input.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { LinkEditing } from '../src/linkediting.js';
 import { AutoLink } from '../src/autolink.js';
@@ -666,7 +666,7 @@ describe( 'AutoLink', () => {
 
 		it( 'should undo auto-linking by pressing backspace', () => {
 			const viewDocument = editor.editing.view.document;
-			const deleteEvent = new DomEventData(
+			const deleteEvent = new ObserverDomEventData(
 				viewDocument,
 				{ preventDefault: sinon.spy() },
 				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
@@ -684,7 +684,7 @@ describe( 'AutoLink', () => {
 		// https://github.com/ckeditor/ckeditor5/issues/12447
 		it( 'should not undo auto-linking by pressing backspace after any other change has been made', () => {
 			const viewDocument = editor.editing.view.document;
-			const deleteEvent = new DomEventData(
+			const deleteEvent = new ObserverDomEventData(
 				viewDocument,
 				{ preventDefault: sinon.spy() },
 				{ direction: 'backward', unit: 'codePoint', sequence: 1 }

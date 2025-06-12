@@ -9,7 +9,7 @@ import { Range } from '../../../src/view/range.js';
 import { ViewDocumentFragment } from '../../../src/view/documentfragment.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
-import { EmptyElement } from '../../../src/view/emptyelement.js';
+import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
 import { RawElement } from '../../../src/view/rawelement.js';
 
@@ -123,7 +123,7 @@ describe( 'DowncastWriter', () => {
 			testRemove( 'fo{ob}ar', 'fo{}ar', 'ob' );
 		} );
 
-		it( 'should remove EmptyElement', () => {
+		it( 'should remove ViewEmptyElement', () => {
 			testRemove(
 				'<container:p>foo[<empty:img></empty:img>]bar</container:p>',
 				'<container:p>foo{}bar</container:p>',
@@ -131,8 +131,8 @@ describe( 'DowncastWriter', () => {
 			);
 		} );
 
-		it( 'should throw if range is placed inside EmptyElement', () => {
-			const emptyElement = new EmptyElement( document, 'img' );
+		it( 'should throw if range is placed inside ViewEmptyElement', () => {
+			const emptyElement = new ViewEmptyElement( document, 'img' );
 			const attributeElement = new ViewAttributeElement( document, 'b' );
 			new ViewContainerElement( document, 'p', null, [ emptyElement, attributeElement ] ); // eslint-disable-line no-new
 			const range = Range._createFromParentsAndOffsets( emptyElement, 0, attributeElement, 0 );
@@ -203,7 +203,7 @@ describe( 'DowncastWriter', () => {
 			);
 		} );
 
-		it( 'should remove EmptyElement (as item)', () => {
+		it( 'should remove ViewEmptyElement (as item)', () => {
 			testRemove(
 				'<container:p>foo[<empty:img></empty:img>]bar</container:p>',
 				'<container:p>foobar</container:p>',

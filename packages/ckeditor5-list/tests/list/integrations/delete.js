@@ -16,7 +16,7 @@ import {
 	_getModelData,
 	_setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { DomEventData } from '@ckeditor/ckeditor5-engine';
+import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine';
 
 import { stubUid } from '../_utils/uid.js';
 import { modelList } from '../_utils/utils.js';
@@ -133,7 +133,7 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 
 	describe( 'backspace (backward)', () => {
 		beforeEach( () => {
-			domEventData = new DomEventData( view, {
+			domEventData = new ObserverDomEventData( view, {
 				preventDefault: sinon.spy()
 			}, {
 				direction: 'backward',
@@ -3554,7 +3554,7 @@ describe( 'ListEditing integrations: backspace & delete', () => {
 
 	describe( 'delete (forward)', () => {
 		beforeEach( () => {
-			domEventData = new DomEventData( view, {
+			domEventData = new ObserverDomEventData( view, {
 				preventDefault: sinon.spy()
 			}, {
 				direction: 'forward',

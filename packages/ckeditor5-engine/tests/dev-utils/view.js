@@ -10,7 +10,7 @@ import { Position } from '../../src/view/position.js';
 import { ViewElement } from '../../src/view/element.js';
 import { ViewAttributeElement } from '../../src/view/attributeelement.js';
 import { ViewContainerElement } from '../../src/view/containerelement.js';
-import { EmptyElement } from '../../src/view/emptyelement.js';
+import { ViewEmptyElement } from '../../src/view/emptyelement.js';
 import { UIElement } from '../../src/view/uielement.js';
 import { RawElement } from '../../src/view/rawelement.js';
 import { Text } from '../../src/view/text.js';
@@ -366,8 +366,8 @@ describe( 'view test utils', () => {
 			expect( string ).to.equal( 'foo{b}ar' );
 		} );
 
-		it( 'should stringify EmptyElement', () => {
-			const img = new EmptyElement( viewDocument, 'img' );
+		it( 'should stringify ViewEmptyElement', () => {
+			const img = new ViewEmptyElement( viewDocument, 'img' );
 			const p = new ViewContainerElement( viewDocument, 'p', null, img );
 			expect( _stringifyView( p, null, { showType: true } ) )
 				.to.equal( '<container:p><empty:img></empty:img></container:p>' );
@@ -785,10 +785,10 @@ describe( 'view test utils', () => {
 			expect( _stringifyView( data ) ).to.equal( '<p><span>text</span><b>test</b></p>' );
 		} );
 
-		it( 'should parse an EmptyElement', () => {
+		it( 'should parse an ViewEmptyElement', () => {
 			const parsed = _parseView( '<empty:img></empty:img>' );
 
-			expect( parsed ).to.be.instanceof( EmptyElement );
+			expect( parsed ).to.be.instanceof( ViewEmptyElement );
 		} );
 
 		it( 'should parse a UIElement', () => {
@@ -803,10 +803,10 @@ describe( 'view test utils', () => {
 			expect( parsed ).to.be.instanceof( RawElement );
 		} );
 
-		it( 'should throw an error if EmptyElement is not empty', () => {
+		it( 'should throw an error if ViewEmptyElement is not empty', () => {
 			expect( () => {
 				_parseView( '<empty:img>foo bar</empty:img>' );
-			} ).to.throw( Error, 'Parse error - cannot parse inside EmptyElement.' );
+			} ).to.throw( Error, 'Parse error - cannot parse inside ViewEmptyElement.' );
 		} );
 
 		it( 'should throw an error if a UIElement is not empty', () => {

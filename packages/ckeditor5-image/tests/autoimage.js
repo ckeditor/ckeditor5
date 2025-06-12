@@ -12,7 +12,7 @@ import { Table } from '@ckeditor/ckeditor5-table/src/table.js';
 import { Typing } from '@ckeditor/ckeditor5-typing/src/typing.js';
 import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
 import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
-import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 import { Image } from '../src/image.js';
@@ -112,7 +112,7 @@ describe( 'AutoImage - integration', () => {
 
 		it( 'can undo auto-embeding by pressing backspace', () => {
 			const viewDocument = editor.editing.view.document;
-			const deleteEvent = new DomEventData(
+			const deleteEvent = new ObserverDomEventData(
 				viewDocument,
 				{ preventDefault: sinon.spy() },
 				{ direction: 'backward', unit: 'codePoint', sequence: 1 }

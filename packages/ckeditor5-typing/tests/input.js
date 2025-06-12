@@ -7,7 +7,7 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
+import { ObserverDomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { toWidget, Widget } from '@ckeditor/ckeditor5-widget';
 import { insertAt } from '@ckeditor/ckeditor5-utils';
 
@@ -264,7 +264,7 @@ describe( 'Input', () => {
 
 				expect( modelSelection.getFirstRange().isEqual( expectedRange ) ).to.be.true;
 
-				viewDocument.fire( 'compositionend', new DomEventData( view, {
+				viewDocument.fire( 'compositionend', new ObserverDomEventData( view, {
 					preventDefault() {}
 				}, {
 					data: 'bar'
@@ -379,7 +379,7 @@ describe( 'Input', () => {
 					sinon.assert.calledOnce( typingQueuePushSpy );
 					sinon.assert.notCalled( typingQueueFlushSpy );
 
-					viewDocument.fire( 'beforeinput', new DomEventData( view, {
+					viewDocument.fire( 'beforeinput', new ObserverDomEventData( view, {
 						target: view.getDomRoot(),
 						preventDefault: () => {}
 					}, {
@@ -1385,7 +1385,7 @@ describe( 'Input', () => {
 			fireBeforeInputEvent( data, range, inputType = 'insertCompositionText', isComposing = true ) {
 				const preventDefaultSpy = sinon.spy();
 
-				viewDocument.fire( 'beforeinput', new DomEventData( view, {
+				viewDocument.fire( 'beforeinput', new ObserverDomEventData( view, {
 					target: view.getDomRoot()
 				}, {
 					data: data.replace( /\u00A0/g, ' ' ),
@@ -1426,7 +1426,7 @@ describe( 'Input', () => {
 
 				viewDocument.fire(
 					'compositionend',
-					new DomEventData( view, {
+					new ObserverDomEventData( view, {
 						preventDefault: sinon.spy()
 					}, {
 						data
