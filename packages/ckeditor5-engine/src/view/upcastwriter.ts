@@ -8,7 +8,7 @@
  */
 
 import { ViewDocumentFragment } from './documentfragment.js';
-import { Element, type ElementAttributes } from './element.js';
+import { ViewElement, type ElementAttributes } from './element.js';
 import { Text } from './text.js';
 import { isPlainObject } from 'es-toolkit/compat';
 import { Position, type PositionOffset } from './position.js';
@@ -69,7 +69,7 @@ export class UpcastWriter {
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/element~Element} instance.
+	 * Creates a new {@link module:engine/view/element~ViewElement} instance.
 	 *
 	 * Attributes can be passed in various formats:
 	 *
@@ -88,8 +88,8 @@ export class UpcastWriter {
 		name: string,
 		attrs?: ElementAttributes,
 		children?: Node | Iterable<Node>
-	): Element {
-		return new Element( this.document, name, attrs, children );
+	): ViewElement {
+		return new ViewElement( this.document, name, attrs, children );
 	}
 
 	/**
@@ -105,13 +105,13 @@ export class UpcastWriter {
 	/**
 	 * Clones the provided element.
 	 *
-	 * @see module:engine/view/element~Element#_clone
+	 * @see module:engine/view/element~ViewElement#_clone
 	 * @param element Element to be cloned.
 	 * @param deep If set to `true` clones element and all its children recursively. When set to `false`,
 	 * element will be cloned without any children.
 	 * @returns Clone of this element.
 	 */
-	public clone( element: Element, deep: boolean = false ): Element {
+	public clone( element: ViewElement, deep: boolean = false ): ViewElement {
 		return element._clone( deep );
 	}
 
@@ -119,12 +119,12 @@ export class UpcastWriter {
 	 * Appends a child node or a list of child nodes at the end of this node
 	 * and sets the parent of these nodes to this element.
 	 *
-	 * @see module:engine/view/element~Element#_appendChild
+	 * @see module:engine/view/element~ViewElement#_appendChild
 	 * @param items Items to be inserted.
 	 * @param element Element to which items will be appended.
 	 * @returns Number of appended nodes.
 	 */
-	public appendChild( items: Item | string | Iterable<Item | string>, element: Element | ViewDocumentFragment ): number {
+	public appendChild( items: Item | string | Iterable<Item | string>, element: ViewElement | ViewDocumentFragment ): number {
 		return element._appendChild( items );
 	}
 
@@ -132,26 +132,26 @@ export class UpcastWriter {
 	 * Inserts a child node or a list of child nodes on the given index and sets the parent of these nodes to
 	 * this element.
 	 *
-	 * @see module:engine/view/element~Element#_insertChild
+	 * @see module:engine/view/element~ViewElement#_insertChild
 	 * @param index Offset at which nodes should be inserted.
 	 * @param items Items to be inserted.
 	 * @param element Element to which items will be inserted.
 	 * @returns Number of inserted nodes.
 	 */
-	public insertChild( index: number, items: Item | Iterable<Item>, element: Element | ViewDocumentFragment ): number {
+	public insertChild( index: number, items: Item | Iterable<Item>, element: ViewElement | ViewDocumentFragment ): number {
 		return element._insertChild( index, items );
 	}
 
 	/**
 	 * Removes the given number of child nodes starting at the given index and set the parent of these nodes to `null`.
 	 *
-	 * @see module:engine/view/element~Element#_removeChildren
+	 * @see module:engine/view/element~ViewElement#_removeChildren
 	 * @param index Offset from which nodes will be removed.
 	 * @param howMany Number of nodes to remove.
 	 * @param element Element which children will be removed.
 	 * @returns The array containing removed nodes.
 	 */
-	public removeChildren( index: number, howMany: number, element: Element | ViewDocumentFragment ): Array<Node> {
+	public removeChildren( index: number, howMany: number, element: ViewElement | ViewDocumentFragment ): Array<Node> {
 		return element._removeChildren( index, howMany );
 	}
 
@@ -178,7 +178,7 @@ export class UpcastWriter {
 	 * @param newElement Element which will be inserted in the place of the old element.
 	 * @returns Whether old element was successfully replaced.
 	 */
-	public replace( oldElement: Element, newElement: Element ): boolean {
+	public replace( oldElement: ViewElement, newElement: ViewElement ): boolean {
 		const parent = oldElement.parent;
 
 		if ( parent ) {
@@ -199,7 +199,7 @@ export class UpcastWriter {
 	 *
 	 * @param element Element to unwrap.
 	 */
-	public unwrapElement( element: Element ): void {
+	public unwrapElement( element: ViewElement ): void {
 		const parent = element.parent;
 
 		if ( parent ) {
@@ -220,8 +220,8 @@ export class UpcastWriter {
 	 * @param  element Element to be renamed.
 	 * @returns New element or null if the old element was not replaced (happens for detached elements).
 	 */
-	public rename( newName: string, element: Element ): Element | null {
-		const newElement = new Element( this.document, newName, element.getAttributes(), element.getChildren() );
+	public rename( newName: string, element: ViewElement ): ViewElement | null {
+		const newElement = new ViewElement( this.document, newName, element.getAttributes(), element.getChildren() );
 
 		return this.replace( element, newElement ) ? newElement : null;
 	}
@@ -233,12 +233,12 @@ export class UpcastWriter {
 	 * writer.setAttribute( 'href', 'http://ckeditor.com', linkElement );
 	 * ```
 	 *
-	 * @see module:engine/view/element~Element#_setAttribute
+	 * @see module:engine/view/element~ViewElement#_setAttribute
 	 * @param key Attribute key.
 	 * @param value Attribute value.
 	 * @param element Element for which attribute will be set.
 	 */
-	public setAttribute( key: string, value: unknown, element: Element ): void {
+	public setAttribute( key: string, value: unknown, element: ViewElement ): void {
 		element._setAttribute( key, value );
 	}
 
@@ -249,11 +249,11 @@ export class UpcastWriter {
 	 * writer.removeAttribute( 'href', linkElement );
 	 * ```
 	 *
-	 * @see module:engine/view/element~Element#_removeAttribute
+	 * @see module:engine/view/element~ViewElement#_removeAttribute
 	 * @param key Attribute key.
 	 * @param element Element from which attribute will be removed.
 	 */
-	public removeAttribute( key: string, element: Element ): void {
+	public removeAttribute( key: string, element: ViewElement ): void {
 		element._removeAttribute( key );
 	}
 
@@ -265,11 +265,11 @@ export class UpcastWriter {
 	 * writer.addClass( [ 'foo', 'bar' ], linkElement );
 	 * ```
 	 *
-	 * @see module:engine/view/element~Element#_addClass
+	 * @see module:engine/view/element~ViewElement#_addClass
 	 * @param className Single class name or array of class names which will be added.
 	 * @param element Element for which class will be added.
 	 */
-	public addClass( className: string | Array<string>, element: Element ): void {
+	public addClass( className: string | Array<string>, element: ViewElement ): void {
 		element._addClass( className );
 	}
 
@@ -281,11 +281,11 @@ export class UpcastWriter {
 	 * writer.removeClass( [ 'foo', 'bar' ], linkElement );
 	 * ```
 	 *
-	 * @see module:engine/view/element~Element#_removeClass
+	 * @see module:engine/view/element~ViewElement#_removeClass
 	 * @param className Single class name or array of class names which will be removed.
 	 * @param element Element from which class will be removed.
 	 */
-	public removeClass( className: string | Array<string>, element: Element ): void {
+	public removeClass( className: string | Array<string>, element: ViewElement ): void {
 		element._removeClass( className );
 	}
 
@@ -300,13 +300,13 @@ export class UpcastWriter {
 	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
 	 *
-	 * @see module:engine/view/element~Element#_setStyle
+	 * @see module:engine/view/element~ViewElement#_setStyle
 	 * @label KEY_VALUE
 	 * @param property Property name.
 	 * @param value Value to set.
 	 * @param element Element for which style will be added.
 	 */
-	public setStyle( property: string, value: string, element: Element ): void;
+	public setStyle( property: string, value: string, element: ViewElement ): void;
 
 	/**
 	 * Adds style to the element.
@@ -322,16 +322,16 @@ export class UpcastWriter {
 	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
 	 *
-	 * @see module:engine/view/element~Element#_setStyle
+	 * @see module:engine/view/element~ViewElement#_setStyle
 	 * @label OBJECT
 	 * @param properties Object with key - value pairs.
 	 * @param element Element for which style will be added.
 	 */
-	public setStyle( properties: Record<string, string>, element: Element ): void;
+	public setStyle( properties: Record<string, string>, element: ViewElement ): void;
 
-	public setStyle( property: string | Record<string, string>, valueOrElement: string | Element, element?: Element ): void {
+	public setStyle( property: string | Record<string, string>, valueOrElement: string | ViewElement, element?: ViewElement ): void {
 		if ( isPlainObject( property ) && element === undefined ) {
-			( valueOrElement as Element )._setStyle( property as Record<string, string> );
+			( valueOrElement as ViewElement )._setStyle( property as Record<string, string> );
 		} else {
 			element!._setStyle( property as string, valueOrElement as string );
 		}
@@ -349,11 +349,11 @@ export class UpcastWriter {
 	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#remove `StylesMap#remove()`} for details.
 	 *
-	 * @see module:engine/view/element~Element#_removeStyle
+	 * @see module:engine/view/element~ViewElement#_removeStyle
 	 * @param property Style property name or names to be removed.
 	 * @param element Element from which style will be removed.
 	 */
-	public removeStyle( property: string | Array<string>, element: Element ): void {
+	public removeStyle( property: string | Array<string>, element: ViewElement ): void {
 		element._removeStyle( property );
 	}
 
@@ -361,24 +361,24 @@ export class UpcastWriter {
 	 * Sets a custom property on element. Unlike attributes, custom properties are not rendered to the DOM,
 	 * so they can be used to add special data to elements.
 	 *
-	 * @see module:engine/view/element~Element#_setCustomProperty
+	 * @see module:engine/view/element~ViewElement#_setCustomProperty
 	 * @param key Custom property name/key.
 	 * @param value Custom property value to be stored.
 	 * @param element Element for which custom property will be set.
 	 */
-	public setCustomProperty( key: string | symbol, value: unknown, element: Element | ViewDocumentFragment ): void {
+	public setCustomProperty( key: string | symbol, value: unknown, element: ViewElement | ViewDocumentFragment ): void {
 		element._setCustomProperty( key, value );
 	}
 
 	/**
 	 * Removes a custom property stored under the given key.
 	 *
-	 * @see module:engine/view/element~Element#_removeCustomProperty
+	 * @see module:engine/view/element~ViewElement#_removeCustomProperty
 	 * @param key Name/key of the custom property to be removed.
 	 * @param element Element from which the custom property will be removed.
 	 * @returns Returns true if property was removed.
 	 */
-	public removeCustomProperty( key: string | symbol, element: Element | ViewDocumentFragment ): boolean {
+	public removeCustomProperty( key: string | symbol, element: ViewElement | ViewDocumentFragment ): boolean {
 		return element._removeCustomProperty( key );
 	}
 
@@ -439,12 +439,12 @@ export class UpcastWriter {
 	}
 
 	/**
-	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
+	 * Creates a range inside an {@link module:engine/view/element~ViewElement element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
 	 * @param element Element which is a parent for the range.
 	 */
-	public createRangeIn( element: Element | ViewDocumentFragment ): Range {
+	public createRangeIn( element: ViewElement | ViewDocumentFragment ): Range {
 		return Range._createIn( element );
 	}
 
@@ -456,7 +456,7 @@ export class UpcastWriter {
 	 * const paragraph = writer.createContainerElement( 'paragraph' );
 	 * const selection = writer.createSelection( paragraph, offset );
 	 *
-	 * // Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
+	 * // Creates a range inside an {@link module:engine/view/element~ViewElement element} which starts before the
 	 * // first child of that element and ends after the last child of that element.
 	 * const selection = writer.createSelection( paragraph, 'in' );
 	 *

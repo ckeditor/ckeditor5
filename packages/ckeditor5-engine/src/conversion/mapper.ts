@@ -61,7 +61,7 @@ export class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * Model marker name to view elements mapping.
 	 *
-	 * Keys are `String`s while values are `Set`s with {@link module:engine/view/element~Element view elements}.
+	 * Keys are `String`s while values are `Set`s with {@link module:engine/view/element~ViewElement view elements}.
 	 * One marker (name) can be mapped to multiple elements.
 	 */
 	private _markerNameToElements = new Map<string, Set<ViewElement>>();
@@ -150,7 +150,7 @@ export class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	}
 
 	/**
-	 * Unbinds the given {@link module:engine/view/element~Element view element} from the map.
+	 * Unbinds the given {@link module:engine/view/element~ViewElement view element} from the map.
 	 *
 	 * **Note:** view-to-model binding will be removed, if it existed. However, corresponding model-to-view binding
 	 * will be removed only if model element is still bound to the passed `viewElement`.
@@ -218,7 +218,7 @@ export class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	}
 
 	/**
-	 * Binds the given marker name with the given {@link module:engine/view/element~Element view element}. The element
+	 * Binds the given marker name with the given {@link module:engine/view/element~ViewElement view element}. The element
 	 * will be added to the current set of elements bound with the given marker name.
 	 *
 	 * @param element Element to bind.
@@ -560,8 +560,8 @@ export class Mapper extends /* #__PURE__ */ EmitterMixin() {
 	 * * length of a {@link module:engine/view/text~Text text node} is equal to the length of its
 	 * {@link module:engine/view/text~Text#data data},
 	 * * length of a {@link module:engine/view/uielement~UIElement ui element} is equal to 0,
-	 * * length of a mapped {@link module:engine/view/element~Element element} is equal to 1,
-	 * * length of a non-mapped {@link module:engine/view/element~Element element} is equal to the length of its children.
+	 * * length of a mapped {@link module:engine/view/element~ViewElement element} is equal to 1,
+	 * * length of a non-mapped {@link module:engine/view/element~ViewElement element} is equal to the length of its children.
 	 *
 	 * Examples:
 	 *

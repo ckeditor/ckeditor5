@@ -10,7 +10,7 @@
 import { extend } from 'es-toolkit/compat';
 
 import { type ViewDocument } from '../document.js';
-import { type Element } from '../element.js';
+import { type ViewElement } from '../element.js';
 import { type View } from '../view.js';
 
 /**
@@ -58,8 +58,8 @@ export class DomEventData<TEvent extends Event = Event> {
 	/**
 	 * The tree view element representing the target.
 	 */
-	public get target(): Element {
-		return this.view.domConverter.mapDomToView( this.domTarget ) as Element;
+	public get target(): ViewElement {
+		return this.view.domConverter.mapDomToView( this.domTarget ) as ViewElement;
 	}
 
 	/**

@@ -20,7 +20,7 @@ const mediaPlaceholderIconViewBox = '0 0 64 42';
 /**
  * A bridge between the raw media content provider definitions and the editor view content.
  *
- * It helps translating media URLs to corresponding {@link module:engine/view/element~Element view elements}.
+ * It helps translating media URLs to corresponding {@link module:engine/view/element~ViewElement view elements}.
  *
  * Mostly used by the {@link module:media-embed/mediaembedediting~MediaEmbedEditing} plugin.
  */
@@ -81,7 +81,7 @@ export class MediaRegistry {
 	}
 
 	/**
-	 * For the given media URL string and options, it returns the {@link module:engine/view/element~Element view element}
+	 * For the given media URL string and options, it returns the {@link module:engine/view/element~ViewElement view element}
 	 * representing that media.
 	 *
 	 * **Note:** If no URL is specified, an empty view element is returned.
@@ -163,7 +163,7 @@ export class MediaRegistry {
 /**
  * Represents media defined by the provider configuration.
  *
- * It can be rendered to the {@link module:engine/view/element~Element view element} and used in the editing or data pipeline.
+ * It can be rendered to the {@link module:engine/view/element~ViewElement view element} and used in the editing or data pipeline.
  */
 class Media {
 	/**

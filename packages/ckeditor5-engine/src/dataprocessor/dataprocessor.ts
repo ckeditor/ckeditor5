@@ -43,7 +43,7 @@ export interface DataProcessor {
 	/**
 	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as raw data
 	 * and its content should be converted to a
-	 * {@link module:engine/view/element~Element#getCustomProperty custom property of a view element} called `"$rawContent"` while
+	 * {@link module:engine/view/element~ViewElement#getCustomProperty custom property of a view element} called `"$rawContent"` while
 	 * converting {@link #toView to view}.
 	 *
 	 * @param pattern Pattern matching all view elements whose content should be treated as plain text.

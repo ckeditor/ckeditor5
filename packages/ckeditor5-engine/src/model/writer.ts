@@ -1164,7 +1164,8 @@ export class ModelWriter {
 	 * As the first parameter you can set marker name or instance. If none of them is provided, new marker, with a unique
 	 * name is created and returned.
 	 *
-	 * **Note**: If you want to change the {@link module:engine/view/element~Element view element} of the marker while its data in the model
+	 * **Note**: If you want to change the {@link module:engine/view/element~ViewElement view element}
+	 * of the marker while its data in the model
 	 * remains the same, use the dedicated {@link module:engine/controller/editingcontroller~EditingController#reconvertMarker} method.
 	 *
 	 * The `options.usingOperation` parameter lets you change if the marker should be managed by operations or not. See

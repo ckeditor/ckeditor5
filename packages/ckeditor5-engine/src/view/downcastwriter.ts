@@ -28,7 +28,7 @@ import { isPlainObject } from 'es-toolkit/compat';
 
 import { type ViewDocument } from './document.js';
 import { type Node } from './node.js';
-import type { Element, ElementAttributes } from './element.js';
+import type { ViewElement, ElementAttributes } from './element.js';
 import { type ViewDomConverter } from './domconverter.js';
 import { type Item } from './item.js';
 import type { DowncastSlotFilter } from '../conversion/downcasthelpers.js';
@@ -66,7 +66,7 @@ export class ViewDowncastWriter {
 	/**
 	 * The slot factory used by the `elementToStructure` downcast helper.
 	 */
-	private _slotFactory: ( ( writer: ViewDowncastWriter, modeOrFilter: 'children' | DowncastSlotFilter ) => Element ) | null = null;
+	private _slotFactory: ( ( writer: ViewDowncastWriter, modeOrFilter: 'children' | DowncastSlotFilter ) => ViewElement ) | null = null;
 
 	/**
 	 * @param document The view document instance.
@@ -87,7 +87,7 @@ export class ViewDowncastWriter {
 	 * writer.setSelection( paragraph, offset );
 	 * ```
 	 *
-	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
+	 * Creates a range inside an {@link module:engine/view/element~ViewElement element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
 	 * ```ts
@@ -525,7 +525,7 @@ export class ViewDowncastWriter {
 	 * @param value The attribute value.
 	 * @param element The element to set an attribute on.
 	 */
-	public setAttribute( key: string, value: unknown, element: Element ): void;
+	public setAttribute( key: string, value: unknown, element: ViewElement ): void;
 
 	/**
 	 * Adds or overwrites the element's attribute with a specified key and value.
@@ -542,18 +542,18 @@ export class ViewDowncastWriter {
 	 * @param overwrite Whether tokenized attribute should overwrite the attribute value or just add a token.
 	 * @param element The element to set an attribute on.
 	 */
-	public setAttribute( key: string, value: unknown, overwrite: boolean, element: Element ): void;
+	public setAttribute( key: string, value: unknown, overwrite: boolean, element: ViewElement ): void;
 
 	public setAttribute(
 		key: string,
 		value: unknown,
-		elementOrOverwrite: Element | boolean,
-		element?: Element
+		elementOrOverwrite: ViewElement | boolean,
+		element?: ViewElement
 	): void {
 		if ( element !== undefined ) {
 			element._setAttribute( key, value, elementOrOverwrite as boolean );
 		} else {
-			( elementOrOverwrite as Element )._setAttribute( key, value );
+			( elementOrOverwrite as ViewElement )._setAttribute( key, value );
 		}
 	}
 
@@ -567,7 +567,7 @@ export class ViewDowncastWriter {
 	 * @param key Attribute key.
 	 * @param element The element to remove an attribute of.
 	 */
-	public removeAttribute( key: string, element: Element ): void;
+	public removeAttribute( key: string, element: ViewElement ): void;
 
 	/**
 	 * Removes specified tokens from an attribute value (for example class names, style properties).
@@ -581,13 +581,13 @@ export class ViewDowncastWriter {
 	 * @param tokens Tokens to partly remove from attribute value. For example class names or style property names.
 	 * @param element The element to remove an attribute of.
 	 */
-	public removeAttribute( key: string, tokens: ArrayOrItem<string>, element: Element ): void;
+	public removeAttribute( key: string, tokens: ArrayOrItem<string>, element: ViewElement ): void;
 
-	public removeAttribute( key: string, elementOrTokens: Element | ArrayOrItem<string>, element?: Element ): void {
+	public removeAttribute( key: string, elementOrTokens: ViewElement | ArrayOrItem<string>, element?: ViewElement ): void {
 		if ( element !== undefined ) {
 			element._removeAttribute( key, elementOrTokens as ArrayOrItem<string> );
 		} else {
-			( elementOrTokens as Element )._removeAttribute( key );
+			( elementOrTokens as ViewElement )._removeAttribute( key );
 		}
 	}
 
@@ -599,7 +599,7 @@ export class ViewDowncastWriter {
 	 * writer.addClass( [ 'foo', 'bar' ], linkElement );
 	 * ```
 	 */
-	public addClass( className: string | Array<string>, element: Element ): void {
+	public addClass( className: string | Array<string>, element: ViewElement ): void {
 		element._addClass( className );
 	}
 
@@ -611,7 +611,7 @@ export class ViewDowncastWriter {
 	 * writer.removeClass( [ 'foo', 'bar' ], linkElement );
 	 * ```
 	 */
-	public removeClass( className: string | Array<string>, element: Element ): void {
+	public removeClass( className: string | Array<string>, element: ViewElement ): void {
 		element._removeClass( className );
 	}
 
@@ -631,7 +631,7 @@ export class ViewDowncastWriter {
 	 * @param value Value to set.
 	 * @param element Element to set styles on.
 	 */
-	public setStyle( property: string, value: string, element: Element ): void;
+	public setStyle( property: string, value: string, element: ViewElement ): void;
 
 	/**
 	 * Adds many styles to the element.
@@ -651,16 +651,16 @@ export class ViewDowncastWriter {
 	 * @param property Object with key - value pairs.
 	 * @param element Element to set styles on.
 	 */
-	public setStyle( property: Record<string, string>, element: Element ): void;
+	public setStyle( property: Record<string, string>, element: ViewElement ): void;
 
 	public setStyle(
 		property: string | Record<string, string>,
-		value: string | Element,
-		element?: Element
+		value: string | ViewElement,
+		element?: ViewElement
 	): void
 	{
 		if ( isPlainObject( property ) && element === undefined ) {
-			( value as Element )._setStyle( property as Record<string, string> );
+			( value as ViewElement )._setStyle( property as Record<string, string> );
 		} else {
 			element!._setStyle( property as string, value as string );
 		}
@@ -678,7 +678,7 @@ export class ViewDowncastWriter {
 	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#remove `StylesMap#remove()`} for details.
 	 */
-	public removeStyle( property: string | Array<string>, element: Element ): void {
+	public removeStyle( property: string | Array<string>, element: ViewElement ): void {
 		element._removeStyle( property );
 	}
 
@@ -686,7 +686,7 @@ export class ViewDowncastWriter {
 	 * Sets a custom property on element. Unlike attributes, custom properties are not rendered to the DOM,
 	 * so they can be used to add special data to elements.
 	 */
-	public setCustomProperty( key: string | symbol, value: unknown, element: Element | ViewDocumentFragment ): void {
+	public setCustomProperty( key: string | symbol, value: unknown, element: ViewElement | ViewDocumentFragment ): void {
 		element._setCustomProperty( key, value );
 	}
 
@@ -695,7 +695,7 @@ export class ViewDowncastWriter {
 	 *
 	 * @returns Returns true if property was removed.
 	 */
-	public removeCustomProperty( key: string | symbol, element: Element | ViewDocumentFragment ): boolean {
+	public removeCustomProperty( key: string | symbol, element: ViewElement | ViewDocumentFragment ): boolean {
 		return element._removeCustomProperty( key );
 	}
 
@@ -857,8 +857,8 @@ export class ViewDowncastWriter {
 			return this.mergeAttributes( new Position( parent!, offset! ) );
 		}
 
-		const nodeBefore = ( positionParent as Element ).getChild( positionOffset - 1 );
-		const nodeAfter = ( positionParent as Element ).getChild( positionOffset );
+		const nodeBefore = ( positionParent as ViewElement ).getChild( positionOffset - 1 );
+		const nodeAfter = ( positionParent as ViewElement ).getChild( positionOffset );
 
 		// Position should be placed between two nodes.
 		if ( !nodeBefore || !nodeAfter ) {
@@ -1018,7 +1018,7 @@ export class ViewDowncastWriter {
 
 		// Break attributes at range start and end.
 		const { start: breakStart, end: breakEnd } = this._breakAttributesRange( range, true );
-		const parentContainer = breakStart.parent as Element;
+		const parentContainer = breakStart.parent as ViewElement;
 
 		const count = breakEnd.offset - breakStart.offset;
 
@@ -1048,7 +1048,7 @@ export class ViewDowncastWriter {
 	 * @param range Range to clear.
 	 * @param element Element to remove.
 	 */
-	public clear( range: Range, element: Element ): void {
+	public clear( range: Range, element: ViewElement ): void {
 		validateRangeContainer( range, this.document );
 
 		// Create walker on given range.
@@ -1076,7 +1076,7 @@ export class ViewDowncastWriter {
 
 				// If it is then create range inside this element.
 				if ( parentElement ) {
-					rangeToRemove = Range._createIn( parentElement as Element );
+					rangeToRemove = Range._createIn( parentElement as ViewElement );
 				}
 			}
 
@@ -1115,7 +1115,7 @@ export class ViewDowncastWriter {
 		if ( targetPosition.isAfter( sourceRange.end ) ) {
 			targetPosition = this._breakAttributes( targetPosition, true );
 
-			const parent = targetPosition.parent as Element;
+			const parent = targetPosition.parent as ViewElement;
 			const countBefore = parent.childCount;
 
 			sourceRange = this._breakAttributesRange( sourceRange, true );
@@ -1214,7 +1214,7 @@ export class ViewDowncastWriter {
 
 		// Break attributes at range start and end.
 		const { start: breakStart, end: breakEnd } = this._breakAttributesRange( range, true );
-		const parentContainer = breakStart.parent as Element;
+		const parentContainer = breakStart.parent as ViewElement;
 
 		// Unwrap children located between break points.
 		const newRange = this._unwrapChildren( parentContainer, breakStart.offset, breakEnd.offset, attribute );
@@ -1330,12 +1330,12 @@ export class ViewDowncastWriter {
 	}
 
 	/**
-	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
+	 * Creates a range inside an {@link module:engine/view/element~ViewElement element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
 	 * @param element Element which is a parent for the range.
 	 */
-	public createRangeIn( element: Element | ViewDocumentFragment ): Range {
+	public createRangeIn( element: ViewElement | ViewDocumentFragment ): Range {
 		return Range._createIn( element );
 	}
 
@@ -1347,7 +1347,7 @@ export class ViewDowncastWriter {
 	 * const paragraph = writer.createContainerElement( 'p' );
 	 * const selection = writer.createSelection( paragraph, offset );
 	 *
-	 * // Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
+	 * // Creates a range inside an {@link module:engine/view/element~ViewElement element} which starts before the
 	 * // first child of that element and ends after the last child of that element.
 	 * const selection = writer.createSelection( paragraph, 'in' );
 	 *
@@ -1466,7 +1466,7 @@ export class ViewDowncastWriter {
 	 * @returns The slot element to be placed in to the view structure while processing
 	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure `elementToStructure()`}.
 	 */
-	public createSlot( modeOrFilter: 'children' | DowncastSlotFilter = 'children' ): Element {
+	public createSlot( modeOrFilter: 'children' | DowncastSlotFilter = 'children' ): ViewElement {
 		if ( !this._slotFactory ) {
 			/**
 			 * The `createSlot()` method is only allowed inside the `elementToStructure` downcast helper callback.
@@ -1486,7 +1486,7 @@ export class ViewDowncastWriter {
 	 * @param slotFactory The slot factory.
 	 */
 	public _registerSlotFactory(
-		slotFactory: ( writer: ViewDowncastWriter, modeOrFilter: 'children' | DowncastSlotFilter ) => Element
+		slotFactory: ( writer: ViewDowncastWriter, modeOrFilter: 'children' | DowncastSlotFilter ) => ViewElement
 	): void {
 		this._slotFactory = slotFactory;
 	}
@@ -1540,7 +1540,7 @@ export class ViewDowncastWriter {
 			insertionPosition = position.parent.is( '$text' ) ? breakTextNode( position ) : position;
 		}
 
-		const length = ( parentElement as Element | ViewDocumentFragment )._insertChild( insertionPosition.offset, nodes );
+		const length = ( parentElement as ViewElement | ViewDocumentFragment )._insertChild( insertionPosition.offset, nodes );
 
 		for ( const node of nodes ) {
 			this._addToClonedElementsGroup( node );
@@ -1563,7 +1563,7 @@ export class ViewDowncastWriter {
 	 * Wraps children with provided `wrapElement`. Only children contained in `parent` element between
 	 * `startOffset` and `endOffset` will be wrapped.
 	 */
-	private _wrapChildren( parent: Element, startOffset: number, endOffset: number, wrapElement: ViewAttributeElement ) {
+	private _wrapChildren( parent: ViewElement, startOffset: number, endOffset: number, wrapElement: ViewAttributeElement ) {
 		let i = startOffset;
 		const wrapPositions: Array<Position> = [];
 
@@ -1642,7 +1642,7 @@ export class ViewDowncastWriter {
 	 * Unwraps children from provided `unwrapElement`. Only children contained in `parent` element between
 	 * `startOffset` and `endOffset` will be unwrapped.
 	 */
-	private _unwrapChildren( parent: Element, startOffset: number, endOffset: number, unwrapElement: ViewAttributeElement ) {
+	private _unwrapChildren( parent: ViewElement, startOffset: number, endOffset: number, unwrapElement: ViewAttributeElement ) {
 		let i = startOffset;
 		const unwrapPositions: Array<Position> = [];
 
@@ -1753,7 +1753,7 @@ export class ViewDowncastWriter {
 	private _wrapRange( range: Range, attribute: ViewAttributeElement ): Range {
 		// Break attributes at range start and end.
 		const { start: breakStart, end: breakEnd } = this._breakAttributesRange( range, true );
-		const parentContainer = breakStart.parent as Element;
+		const parentContainer = breakStart.parent as ViewElement;
 
 		// Wrap all children with attribute.
 		const newRange = this._wrapChildren( parentContainer, breakStart.offset, breakEnd.offset, attribute );
@@ -1796,7 +1796,7 @@ export class ViewDowncastWriter {
 		fakeElement.isSimilar = () => false;
 
 		// Insert fake element in position location.
-		( position.parent as Element )._insertChild( position.offset, fakeElement );
+		( position.parent as ViewElement )._insertChild( position.offset, fakeElement );
 
 		// Range around inserted fake attribute element.
 		const wrapRange = new Range( position, position.getShiftedBy( 1 ) );
@@ -1842,11 +1842,11 @@ export class ViewDowncastWriter {
 		}
 
 		const breakEnd = this._breakAttributes( rangeEnd, forceSplitText );
-		const count = ( breakEnd.parent as Element ).childCount;
+		const count = ( breakEnd.parent as ViewElement ).childCount;
 		const breakStart = this._breakAttributes( rangeStart, forceSplitText );
 
 		// Calculate new break end offset.
-		breakEnd.offset += ( breakEnd.parent as Element ).childCount - count;
+		breakEnd.offset += ( breakEnd.parent as ViewElement ).childCount - count;
 
 		return new Range( breakStart, breakEnd );
 	}
@@ -1940,7 +1940,7 @@ export class ViewDowncastWriter {
 			// <p>foo<b>[]<u>bar</u></b></p>
 			// <p>foo{}<b><u>bar</u></b></p>
 			if ( positionOffset === 0 ) {
-				const newPosition = new Position( positionParent.parent as Element, ( positionParent as any ).index );
+				const newPosition = new Position( positionParent.parent as ViewElement, ( positionParent as any ).index );
 
 				return this._breakAttributes( newPosition, forceSplitText );
 			}
@@ -2054,7 +2054,7 @@ export class ViewDowncastWriter {
 }
 
 // Helper function for `view.writer.wrap`. Checks if given element has any children that are not ui elements.
-function _hasNonUiChildren( parent: Element ): boolean {
+function _hasNonUiChildren( parent: ViewElement ): boolean {
 	return Array.from( parent.getChildren() ).some( child => !child.is( 'uiElement' ) );
 }
 
@@ -2091,7 +2091,7 @@ function getParentContainer( position: Position ): ViewContainerElement | ViewDo
  * Checks if first {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElement} provided to the function
  * can be wrapped outside second element. It is done by comparing elements'
  * {@link module:engine/view/attributeelement~ViewAttributeElement#priority priorities}, if both have same priority
- * {@link module:engine/view/element~Element#getIdentity identities} are compared.
+ * {@link module:engine/view/element~ViewElement#getIdentity identities} are compared.
  */
 function shouldABeOutsideB( a: ViewAttributeElement, b: ViewAttributeElement ): boolean {
 	if ( a.priority < b.priority ) {
@@ -2215,7 +2215,7 @@ function validateNodesToInsert( nodes: Iterable<Node>, errorContext: ViewDocumen
 		}
 
 		if ( !node.is( '$text' ) ) {
-			validateNodesToInsert( ( node as Element ).getChildren(), errorContext );
+			validateNodesToInsert( ( node as ViewElement ).getChildren(), errorContext );
 		}
 	}
 }

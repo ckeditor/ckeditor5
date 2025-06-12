@@ -181,8 +181,9 @@ export function isSingleParagraphWithoutAttributes( modelElement: ModelElement )
 }
 
 /**
- * Converts a given {@link module:engine/view/element~Element} to a table widget:
- * * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the table widget element.
+ * Converts a given {@link module:engine/view/element~ViewElement} to a table widget:
+ * * Adds a {@link module:engine/view/element~ViewElement#_setCustomProperty custom property}
+ * allowing to recognize the table widget element.
  * * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
  *
  * @param writer An instance of the view writer.

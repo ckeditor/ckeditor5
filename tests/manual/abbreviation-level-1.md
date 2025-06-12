@@ -276,7 +276,7 @@ export default class AbbreviationEditing extends Plugin {
 
 In the upcast conversion, we're telling the editor how the view `<abbr>` element is supposed to look like in the model. We will transform it using another conversion helper - {@link framework/deep-dive/conversion/helpers/upcast#element-to-attribute-conversion-helper `elementToAttribute()`}.
 
-We also need to grab the title value from content and use it in the model. We can do that thanks to a callback function, which gives us the access to the {@link module:engine/view/element~Element view element}.
+We also need to grab the title value from content and use it in the model. We can do that thanks to a callback function, which gives us the access to the {@link module:engine/view/element~ViewElement view element}.
 
 ```js
 // abbreviation/abbreviationediting.js

@@ -20,7 +20,7 @@ import {
 	isIterable
 } from '@ckeditor/ckeditor5-utils';
 
-import { type Element } from './element.js';
+import { type ViewElement } from './element.js';
 import { type Item } from './item.js';
 import { type ViewEditableElement } from './editableelement.js';
 
@@ -92,7 +92,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * const paragraph = writer.createContainerElement( 'paragraph' );
 	 * const selection = writer.createSelection( paragraph, offset );
 	 *
-	 * // Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
+	 * // Creates a range inside an {@link module:engine/view/element~ViewElement element} which starts before the
 	 * // first child of that element and ends after the last child of that element.
 	 * const selection = writer.createSelection( paragraph, 'in' );
 	 *
@@ -393,11 +393,11 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	}
 
 	/**
-	 * Returns the selected element. {@link module:engine/view/element~Element Element} is considered as selected if there is only
+	 * Returns the selected element. {@link module:engine/view/element~ViewElement Element} is considered as selected if there is only
 	 * one range in the selection, and that range contains exactly one element.
 	 * Returns `null` if there is no selected element.
 	 */
-	public getSelectedElement(): Element | null {
+	public getSelectedElement(): ViewElement | null {
 		if ( this.rangeCount !== 1 ) {
 			return null;
 		}
@@ -433,7 +433,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * selection.setTo( paragraph, offset );
 	 * ```
 	 *
-	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
+	 * Creates a range inside an {@link module:engine/view/element~ViewElement element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
 	 * ```ts
@@ -511,7 +511,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 				 */
 				throw new CKEditorError( 'view-selection-setto-required-second-parameter', this );
 			} else if ( placeOrOffset == 'in' ) {
-				range = Range._createIn( selectable as Element );
+				range = Range._createIn( selectable as ViewElement );
 			} else if ( placeOrOffset == 'on' ) {
 				range = Range._createOn( selectable );
 			} else {

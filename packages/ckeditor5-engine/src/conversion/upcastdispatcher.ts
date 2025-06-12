@@ -28,7 +28,7 @@ import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 /**
  * Upcast dispatcher is a central point of the view-to-model conversion, which is a process of
  * converting a given {@link module:engine/view/documentfragment~ViewDocumentFragment view document fragment} or
- * {@link module:engine/view/element~Element view element} into a correct model structure.
+ * {@link module:engine/view/element~ViewElement view element} into a correct model structure.
  *
  * During the conversion process, the dispatcher fires events for all {@link module:engine/view/node~Node view nodes}
  * from the converted view document fragment.
@@ -567,7 +567,7 @@ export interface UpcastConversionData<TItem extends ViewItem | ViewDocumentFragm
 }
 
 /**
- * Fired when an {@link module:engine/view/element~Element} is converted.
+ * Fired when an {@link module:engine/view/element~ViewElement} is converted.
  *
  * `element` is a namespace event for a class of events. Names of actually called events follow the pattern of
  * `element:<elementName>` where `elementName` is the name of the converted element. This way listeners may listen to

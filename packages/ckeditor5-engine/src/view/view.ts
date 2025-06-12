@@ -23,7 +23,7 @@ import {
 import type { Observer, ObserverConstructor } from './observer/observer.js';
 import type { ViewDocumentSelectionChangeEvent } from './documentselection.js';
 import type { StylesProcessor } from './stylesmap.js';
-import { type Element } from './element.js';
+import { type ViewElement } from './element.js';
 import type { Node, ViewNodeChangeEvent } from './node.js';
 import { type Item } from './item.js';
 
@@ -675,12 +675,12 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
+	 * Creates a range inside an {@link module:engine/view/element~ViewElement element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
 	 * @param element Element which is a parent for the range.
 	 */
-	public createRangeIn( element: Element ): Range {
+	public createRangeIn( element: ViewElement ): Range {
 		return Range._createIn( element );
 	}
 
@@ -692,7 +692,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	 * const paragraph = view.createContainerElement( 'paragraph' );
 	 * const selection = view.createSelection( paragraph, offset );
 	 *
-	 * // Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
+	 * // Creates a range inside an {@link module:engine/view/element~ViewElement element} which starts before the
 	 * // first child of that element and ends after the last child of that element.
 	 * const selection = view.createSelection( paragraph, 'in' );
 	 *

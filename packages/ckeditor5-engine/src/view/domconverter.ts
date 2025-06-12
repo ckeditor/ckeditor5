@@ -948,7 +948,7 @@ export class ViewDomConverter {
 	}
 
 	/**
-	 * Returns corresponding view {@link module:engine/view/element~Element Element} or
+	 * Returns corresponding view {@link module:engine/view/element~ViewElement Element} or
 	 * {@link module:engine/view/documentfragment~ViewDocumentFragment} for provided DOM element or
 	 * document fragment. If there is no view item {@link module:engine/view/domconverter~ViewDomConverter#bindElements bound}
 	 * to the given DOM - `undefined` is returned.
@@ -1040,7 +1040,7 @@ export class ViewDomConverter {
 	}
 
 	/**
-	 * Returns corresponding DOM item for provided {@link module:engine/view/element~Element Element} or
+	 * Returns corresponding DOM item for provided {@link module:engine/view/element~ViewElement Element} or
 	 * {@link module:engine/view/documentfragment~ViewDocumentFragment DocumentFragment}.
 	 * To find a corresponding text for {@link module:engine/view/text~Text view Text instance}
 	 * use {@link #findCorrespondingDomText}.
@@ -1052,7 +1052,7 @@ export class ViewDomConverter {
 	public mapViewToDom( element: ViewElement ): DomElement | undefined;
 
 	/**
-	 * Returns corresponding DOM item for provided {@link module:engine/view/element~Element Element} or
+	 * Returns corresponding DOM item for provided {@link module:engine/view/element~ViewElement Element} or
 	 * {@link module:engine/view/documentfragment~ViewDocumentFragment DocumentFragment}.
 	 * To find a corresponding text for {@link module:engine/view/text~Text view Text instance}
 	 * use {@link #findCorrespondingDomText}.
@@ -1064,7 +1064,7 @@ export class ViewDomConverter {
 	public mapViewToDom( documentFragment: ViewDocumentFragment ): DomDocumentFragment | undefined;
 
 	/**
-	 * Returns corresponding DOM item for provided {@link module:engine/view/element~Element Element} or
+	 * Returns corresponding DOM item for provided {@link module:engine/view/element~ViewElement Element} or
 	 * {@link module:engine/view/documentfragment~ViewDocumentFragment DocumentFragment}.
 	 * To find a corresponding text for {@link module:engine/view/text~Text view Text instance}
 	 * use {@link #findCorrespondingDomText}.
@@ -1314,7 +1314,7 @@ export class ViewDomConverter {
 	 * {@link module:engine/view/domconverter~ViewDomConverter#domChildrenToView} process DOM nodes.
 	 *
 	 * The raw data can be later accessed by a
-	 * {@link module:engine/view/element~Element#getCustomProperty custom property of a view element} called `"$rawContent"`.
+	 * {@link module:engine/view/element~ViewElement#getCustomProperty custom property of a view element} called `"$rawContent"`.
 	 *
 	 * @param pattern Pattern matching a view element whose content should
 	 * be treated as raw data.

@@ -12,7 +12,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { type ViewDocument } from './document.js';
 import { type ViewDocumentFragment } from './documentfragment.js';
-import { type Element } from './element.js';
+import { type ViewElement } from './element.js';
 import { type Node } from './node.js';
 import { type Text } from './text.js';
 
@@ -31,7 +31,7 @@ import { type Text } from './text.js';
  * **Note:** `ViewTextProxy` instances are created on the fly basing on the current state of parent {@link module:engine/view/text~Text}.
  * Because of this it is highly unrecommended to store references to `TextProxy instances because they might get
  * invalidated due to operations on Document. Also TextProxy is not a {@link module:engine/view/node~Node} so it cannot be
- * inserted as a child of {@link module:engine/view/element~Element}.
+ * inserted as a child of {@link module:engine/view/element~ViewElement}.
  *
  * `ViewTextProxy` instances are created by {@link module:engine/view/treewalker~TreeWalker view tree walker}.
  * You should not need to create an instance of this class by your own.
@@ -110,7 +110,7 @@ export class TextProxy extends TypeCheckable {
 	/**
 	 * Parent of this text proxy, which is same as parent of text node represented by this text proxy.
 	 */
-	public get parent(): Element | ViewDocumentFragment | null {
+	public get parent(): ViewElement | ViewDocumentFragment | null {
 		return this.textNode.parent;
 	}
 
@@ -141,9 +141,9 @@ export class TextProxy extends TypeCheckable {
 	public getAncestors( options: {
 		includeSelf?: boolean;
 		parentFirst?: boolean;
-	} = {} ): Array<Text | Element | ViewDocumentFragment> {
-		const ancestors: Array<Text | Element | ViewDocumentFragment> = [];
-		let parent: Text | Element | ViewDocumentFragment | null = options.includeSelf ? this.textNode : this.parent;
+	} = {} ): Array<Text | ViewElement | ViewDocumentFragment> {
+		const ancestors: Array<Text | ViewElement | ViewDocumentFragment> = [];
+		let parent: Text | ViewElement | ViewDocumentFragment | null = options.includeSelf ? this.textNode : this.parent;
 
 		while ( parent !== null ) {
 			ancestors[ options.parentFirst ? 'push' : 'unshift' ]( parent );

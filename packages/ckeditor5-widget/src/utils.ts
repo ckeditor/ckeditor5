@@ -48,7 +48,7 @@ export const WIDGET_CLASS_NAME = 'ck-widget';
 export const WIDGET_SELECTED_CLASS_NAME = 'ck-widget_selected';
 
 /**
- * Returns `true` if given {@link module:engine/view/node~Node} is an {@link module:engine/view/element~Element} and a widget.
+ * Returns `true` if given {@link module:engine/view/node~Node} is an {@link module:engine/view/element~ViewElement} and a widget.
  */
 export function isWidget( node: ViewTypeCheckable ): boolean {
 	if ( !node.is( 'element' ) ) {
@@ -59,11 +59,11 @@ export function isWidget( node: ViewTypeCheckable ): boolean {
 }
 
 /**
- * Converts the given {@link module:engine/view/element~Element} to a widget in the following way:
+ * Converts the given {@link module:engine/view/element~ViewElement} to a widget in the following way:
  *
  * * sets the `contenteditable` attribute to `"false"`,
  * * adds the `ck-widget` CSS class,
- * * adds a custom {@link module:engine/view/element~Element#getFillerOffset `getFillerOffset()`} method returning `null`,
+ * * adds a custom {@link module:engine/view/element~ViewElement#getFillerOffset `getFillerOffset()`} method returning `null`,
  * * adds a custom property allowing to recognize widget elements by using {@link ~isWidget `isWidget()`},
  * * implements the {@link ~setHighlightHandling view highlight on widgets}.
  *

@@ -11,7 +11,7 @@ import { TypeCheckable } from './typecheckable.js';
 import { Position } from './position.js';
 
 import { type ViewDocumentFragment } from './documentfragment.js';
-import { type Element } from './element.js';
+import { type ViewElement } from './element.js';
 import { type Item } from './item.js';
 import { type Node } from './node.js';
 import { TreeWalker, type TreeWalkerValue, type TreeWalkerOptions } from './treewalker.js';
@@ -333,11 +333,11 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	}
 
 	/**
-	 * Returns an {@link module:engine/view/element~Element Element} contained by the range.
+	 * Returns an {@link module:engine/view/element~ViewElement Element} contained by the range.
 	 * The element will be returned when it is the **only** node within the range and **fully–contained**
 	 * at the same time.
 	 */
-	public getContainedElement(): Element | null {
+	public getContainedElement(): ViewElement | null {
 		if ( this.isCollapsed ) {
 			return null;
 		}
@@ -445,9 +445,9 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 * @returns Created range.
 	 */
 	public static _createFromParentsAndOffsets(
-		startElement: Element | ViewDocumentFragment,
+		startElement: ViewElement | ViewDocumentFragment,
 		startOffset: number,
-		endElement: Element | ViewDocumentFragment,
+		endElement: ViewElement | ViewDocumentFragment,
 		endOffset: number
 	): Range {
 		return new this(
@@ -472,13 +472,13 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	}
 
 	/**
-	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
+	 * Creates a range inside an {@link module:engine/view/element~ViewElement element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
 	 * @internal
 	 * @param element Element which is a parent for the range.
 	 */
-	public static _createIn( element: Element | ViewDocumentFragment ): Range {
+	public static _createIn( element: ViewElement | ViewDocumentFragment ): Range {
 		return this._createFromParentsAndOffsets( element, 0, element, element.childCount );
 	}
 

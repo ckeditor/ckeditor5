@@ -182,7 +182,7 @@ export class EditingController extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Calling this method will refresh the marker by triggering the downcast conversion for it.
 	 *
-	 * Reconverting the marker is useful when you want to change its {@link module:engine/view/element~Element view element}
+	 * Reconverting the marker is useful when you want to change its {@link module:engine/view/element~ViewElement view element}
 	 * without changing any marker data. For instance:
 	 *
 	 * ```ts

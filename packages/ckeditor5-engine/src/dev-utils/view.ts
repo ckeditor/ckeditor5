@@ -151,7 +151,7 @@ _setViewData._parse = _parseView;
  * stringify( text ); // 'foobar'
  * ```
  *
- * or as an {@link module:engine/view/element~Element element}:
+ * or as an {@link module:engine/view/element~ViewElement element}:
  *
  * ```ts
  * const element = downcastWriter.createElement( 'p', null, downcastWriter.createText( 'foobar' ) );
@@ -327,7 +327,7 @@ export function _stringifyView(
  * _parseView( 'foobar' ); // Returns an instance of text.
  * ```
  *
- * {@link module:engine/view/element~Element Elements} will be _parseViewd with attributes as children:
+ * {@link module:engine/view/element~ViewElement Elements} will be _parseViewd with attributes as children:
  *
  * ```ts
  * _parseView( '<b name="baz">foobar</b>' ); // Returns an instance of element with the `baz` attribute and a text child node.
@@ -399,7 +399,8 @@ export function _stringifyView(
  * {@link module:engine/view/documentselection~DocumentSelection selection} instance.
  * @param options.rootElement The default root to use when parsing elements.
  * When set to `null`, the root element will be created automatically. If set to
- * {@link module:engine/view/element~Element Element} or {@link module:engine/view/documentfragment~ViewDocumentFragment DocumentFragment},
+ * {@link module:engine/view/element~ViewElement Element} or
+ * {@link module:engine/view/documentfragment~ViewDocumentFragment DocumentFragment},
  * this node will be used as the root for all parsed nodes.
  * @param options.sameSelectionCharacters When set to `false`, the selection inside the text should be marked using
  * `{` and `}` and the selection outside the ext using `[` and `]`. When set to `true`, both should be marked with `[` and `]` only.
@@ -824,7 +825,8 @@ class ViewStringify {
 	}
 
 	/**
-	 * Checks if a given {@link module:engine/view/element~Element element} has a {@link module:engine/view/range~Range#start range start}
+	 * Checks if a given {@link module:engine/view/element~ViewElement element} has
+	 * a {@link module:engine/view/range~Range#start range start}
 	 * or a {@link module:engine/view/range~Range#start range end} placed at a given offset and returns its string representation.
 	 */
 	private _stringifyElementRanges( element: ViewElement | ViewDocumentFragment, offset: number ): string {
@@ -850,7 +852,7 @@ class ViewStringify {
 	}
 
 	/**
-	 * Checks if a given {@link module:engine/view/element~Element Text node} has a
+	 * Checks if a given {@link module:engine/view/element~ViewElement Text node} has a
 	 * {@link module:engine/view/range~Range#start range start} or a
 	 * {@link module:engine/view/range~Range#start range end} placed somewhere inside. Returns a string representation of text
 	 * with range delimiters placed inside.
@@ -902,7 +904,7 @@ class ViewStringify {
 	}
 
 	/**
-	 * Converts the passed {@link module:engine/view/element~Element element} to an opening tag.
+	 * Converts the passed {@link module:engine/view/element~ViewElement element} to an opening tag.
 	 *
 	 * Depending on the current configuration, the opening tag can be simple (`<a>`), contain a type prefix (`<container:p>`,
 	 * `<attribute:a>` or `<empty:img>`), contain priority information ( `<attribute:a view-priority="20">` ),
@@ -922,7 +924,7 @@ class ViewStringify {
 	}
 
 	/**
-	 * Converts the passed {@link module:engine/view/element~Element element} to a closing tag.
+	 * Converts the passed {@link module:engine/view/element~ViewElement element} to a closing tag.
 	 * Depending on the current configuration, the closing tag can be simple (`</a>`) or contain a type prefix (`</container:p>`,
 	 * `</attribute:a>` or `</empty:img>`).
 	 */
@@ -934,7 +936,7 @@ class ViewStringify {
 	}
 
 	/**
-	 * Converts the passed {@link module:engine/view/element~Element element's} type to its string representation
+	 * Converts the passed {@link module:engine/view/element~ViewElement element's} type to its string representation
 	 *
 	 * Returns:
 	 * * 'attribute' for {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements},
@@ -957,7 +959,7 @@ class ViewStringify {
 	}
 
 	/**
-	 * Converts the passed {@link module:engine/view/element~Element element} to its priority representation.
+	 * Converts the passed {@link module:engine/view/element~ViewElement element} to its priority representation.
 	 *
 	 * The priority string representation will be returned when the passed element is an instance of
 	 * {@link module:engine/view/attributeelement~ViewAttributeElement attribute element} and the current configuration allows to show the
@@ -972,7 +974,7 @@ class ViewStringify {
 	}
 
 	/**
-	 * Converts the passed {@link module:engine/view/element~Element element} to its id representation.
+	 * Converts the passed {@link module:engine/view/element~ViewElement element} to its id representation.
 	 *
 	 * The id string representation will be returned when the passed element is an instance of
 	 * {@link module:engine/view/attributeelement~ViewAttributeElement attribute element}, the element has an id
@@ -987,7 +989,7 @@ class ViewStringify {
 	}
 
 	/**
-	 * Converts the passed {@link module:engine/view/element~Element element} attributes to their string representation.
+	 * Converts the passed {@link module:engine/view/element~ViewElement element} attributes to their string representation.
 	 * If an element has no attributes, an empty string is returned.
 	 */
 	private _stringifyElementAttributes( element: ViewElement ): string {
@@ -1018,7 +1020,7 @@ class ViewStringify {
 }
 
 /**
- * Converts {@link module:engine/view/element~Element elements} to
+ * Converts {@link module:engine/view/element~ViewElement elements} to
  * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements},
  * {@link module:engine/view/containerelement~ViewContainerElement container elements},
  * {@link module:engine/view/emptyelement~EmptyElement empty elements} or
@@ -1059,7 +1061,7 @@ function _convertViewElements( rootNode: ViewNode | ViewDocumentFragment ) {
 }
 
 /**
- * Converts an {@link module:engine/view/element~Element element} to
+ * Converts an {@link module:engine/view/element~ViewElement element} to
  * {@link module:engine/view/attributeelement~ViewAttributeElement attribute element},
  * {@link module:engine/view/containerelement~ViewContainerElement container element},
  * {@link module:engine/view/emptyelement~EmptyElement empty element} or
@@ -1074,7 +1076,7 @@ function _convertViewElements( rootNode: ViewNode | ViewDocumentFragment ) {
  * an {@link module:engine/view/emptyelement~EmptyElement empty element}.
  * If the element's name is in the format of `ui:span`, it will be converted to
  * a {@link module:engine/view/uielement~UIElement UI element}.
- * If the element's name does not contain any additional information, a {@link module:engine/view/element~Element view Element} will be
+ * If the element's name does not contain any additional information, a {@link module:engine/view/element~ViewElement view Element} will be
  * returned.
  *
  * @param viewElement A view element to convert.
@@ -1104,7 +1106,7 @@ function _convertElement( viewDocument: ViewDocument, viewElement: ViewElement )
 }
 
 /**
- * Converts the `view-priority` attribute and the {@link module:engine/view/element~Element#name element's name} information needed for
+ * Converts the `view-priority` attribute and the {@link module:engine/view/element~ViewElement#name element's name} information needed for
  * creating {@link module:engine/view/attributeelement~ViewAttributeElement attribute element},
  * {@link module:engine/view/containerelement~ViewContainerElement container element},
  * {@link module:engine/view/emptyelement~EmptyElement empty element} or

@@ -7,7 +7,7 @@
  * @module engine/view/uielement
  */
 
-import { Element, type ElementAttributes } from './element.js';
+import { ViewElement, type ElementAttributes } from './element.js';
 import { Node } from './node.js';
 import { CKEditorError, keyCodes } from '@ckeditor/ckeditor5-utils';
 
@@ -39,7 +39,7 @@ type DomElement = globalThis.HTMLElement;
  * To create a new UI element use the
  * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createUIElement `downcastWriter#createUIElement()`} method.
  */
-export class UIElement extends Element {
+export class UIElement extends ViewElement {
 	/**
 	 * Creates new instance of UIElement.
 	 *
@@ -65,7 +65,7 @@ export class UIElement extends Element {
 	}
 
 	/**
-	 * Overrides {@link module:engine/view/element~Element#_insertChild} method.
+	 * Overrides {@link module:engine/view/element~ViewElement#_insertChild} method.
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-uielement-cannot-add` to prevent adding any child nodes
 	 * to UIElement.
 	 *

@@ -7,7 +7,7 @@
  * @module engine/view/emptyelement
  */
 
-import { Element, type ElementAttributes } from './element.js';
+import { ViewElement, type ElementAttributes } from './element.js';
 import { Node } from './node.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -20,7 +20,7 @@ import { type Item } from './item.js';
  * To create a new empty element use the
  * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createEmptyElement `downcastWriter#createEmptyElement()`} method.
  */
-export class EmptyElement extends Element {
+export class EmptyElement extends ViewElement {
 	/**
 	 * Creates new instance of EmptyElement.
 	 *
@@ -46,7 +46,7 @@ export class EmptyElement extends Element {
 	}
 
 	/**
-	 * Overrides {@link module:engine/view/element~Element#_insertChild} method.
+	 * Overrides {@link module:engine/view/element~ViewElement#_insertChild} method.
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-emptyelement-cannot-add` to prevent
 	 * adding any child nodes to EmptyElement.
 	 *

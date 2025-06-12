@@ -136,8 +136,8 @@ export class PageBreakEditing extends Plugin {
 }
 
 /**
- * Converts a given {@link module:engine/view/element~Element} to a page break widget:
- * * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to
+ * Converts a given {@link module:engine/view/element~ViewElement} to a page break widget:
+ * * Adds a {@link module:engine/view/element~ViewElement#_setCustomProperty custom property} allowing to
  *   recognize the page break widget element.
  * * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
  */

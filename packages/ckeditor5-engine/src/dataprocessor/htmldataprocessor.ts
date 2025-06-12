@@ -82,7 +82,7 @@ export class HtmlDataProcessor implements DataProcessor {
 	 * and not processed during the conversion from the DOM to the view elements.
 	 *
 	 * The raw data can be later accessed by a
-	 * {@link module:engine/view/element~Element#getCustomProperty custom property of a view element} called `"$rawContent"`.
+	 * {@link module:engine/view/element~ViewElement#getCustomProperty custom property of a view element} called `"$rawContent"`.
 	 *
 	 * @param pattern Pattern matching all view elements whose content should be treated as raw data.
 	 */

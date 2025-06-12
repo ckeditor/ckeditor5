@@ -14,7 +14,7 @@ import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 import { ViewEditableElement } from './editableelement.js';
 
 import { type ViewDocumentFragment } from './documentfragment.js';
-import { type Element } from './element.js';
+import { type ViewElement } from './element.js';
 import { type Item } from './item.js';
 import { type Node } from './node.js';
 import { TreeWalker, type TreeWalkerValue, type TreeWalkerOptions } from './treewalker.js';
@@ -61,7 +61,7 @@ export class Position extends TypeCheckable {
 			return null;
 		}
 
-		return ( this.parent as Element ).getChild( this.offset ) || null;
+		return ( this.parent as ViewElement ).getChild( this.offset ) || null;
 	}
 
 	/**
@@ -73,7 +73,7 @@ export class Position extends TypeCheckable {
 			return null;
 		}
 
-		return ( this.parent as Element ).getChild( this.offset - 1 ) || null;
+		return ( this.parent as ViewElement ).getChild( this.offset - 1 ) || null;
 	}
 
 	/**

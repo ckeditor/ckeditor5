@@ -24,7 +24,7 @@ import { TokenList } from './tokenlist.js';
  * View element.
  *
  * The editing engine does not define a fixed semantics of its elements (it is "DTD-free").
- * This is why the type of the {@link module:engine/view/element~Element} need to
+ * This is why the type of the {@link module:engine/view/element~ViewElement} need to
  * be defined by the feature developer. When creating an element you should use one of the following methods:
  *
  * * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createContainerElement `downcastWriter#createContainerElement()`}
@@ -43,7 +43,7 @@ import { TokenList } from './tokenlist.js';
  * In such cases the {@link module:engine/view/upcastwriter~UpcastWriter#createElement `UpcastWriter#createElement()`} method
  * should be used to create generic view elements.
  */
-export class Element extends Node {
+export class ViewElement extends Node {
 	/**
 	 * Name of the element.
 	 */
@@ -248,7 +248,7 @@ export class Element extends Node {
 	 * can contain different set of children nodes.
 	 */
 	public isSimilar( otherElement: Item ): boolean {
-		if ( !( otherElement instanceof Element ) ) {
+		if ( !( otherElement instanceof ViewElement ) ) {
 			return false;
 		}
 
@@ -424,7 +424,7 @@ export class Element extends Node {
 	 * @param patterns Patterns used to match correct ancestor. See {@link module:engine/view/matcher~Matcher}.
 	 * @returns Found element or `null` if no matching ancestor was found.
 	 */
-	public findAncestor( ...patterns: Array<MatcherPattern | ( ( element: Element ) => boolean )> ): Element | null {
+	public findAncestor( ...patterns: Array<MatcherPattern | ( ( element: ViewElement ) => boolean )> ): ViewElement | null {
 		const matcher = new Matcher( ...patterns as any );
 		let parent = this.parent;
 
@@ -540,7 +540,7 @@ export class Element extends Node {
 	}
 
 	/**
-	 * {@link module:engine/view/element~Element#_insertChild Insert} a child node or a list of child nodes at the end of this node
+	 * {@link module:engine/view/element~ViewElement#_insertChild Insert} a child node or a list of child nodes at the end of this node
 	 * and sets the parent of these nodes to this element.
 	 *
 	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#insert
@@ -974,7 +974,7 @@ export class Element extends Node {
 	 * @internal
 	 * @returns Returns `true` if elements can be merged.
 	 */
-	public _canMergeAttributesFrom( otherElement: Element ): boolean {
+	public _canMergeAttributesFrom( otherElement: ViewElement ): boolean {
 		if ( this.name != otherElement.name ) {
 			return false;
 		}
@@ -1010,7 +1010,7 @@ export class Element extends Node {
 	 *
 	 * @internal
 	 */
-	public _mergeAttributesFrom( otherElement: Element ): void {
+	public _mergeAttributesFrom( otherElement: ViewElement ): void {
 		this._fireChange( 'attributes', this );
 
 		// Move all attributes/classes/styles from wrapper to wrapped ViewAttributeElement.
@@ -1037,7 +1037,7 @@ export class Element extends Node {
 	 * @internal
 	 * @returns Returns `true` if elements attributes can be fully subtracted.
 	 */
-	public _canSubtractAttributesOf( otherElement: Element ): boolean {
+	public _canSubtractAttributesOf( otherElement: ViewElement ): boolean {
 		if ( this.name != otherElement.name ) {
 			return false;
 		}
@@ -1074,7 +1074,7 @@ export class Element extends Node {
 	 *
 	 * @internal
 	 */
-	public _subtractAttributesOf( otherElement: Element ): void {
+	public _subtractAttributesOf( otherElement: ViewElement ): void {
 		this._fireChange( 'attributes', this );
 
 		for ( const [ key, otherValue ] of otherElement._attrs ) {
@@ -1188,7 +1188,7 @@ export class Element extends Node {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-Element.prototype.is = function( type: string, name?: string ): boolean {
+ViewElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'element' || type === 'view:element' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
@@ -1197,8 +1197,6 @@ Element.prototype.is = function( type: string, name?: string ): boolean {
 		return name === this.name && ( type === 'element' || type === 'view:element' );
 	}
 };
-
-export { Element as ViewElement };
 
 /**
  * Common interface for a {@link module:engine/view/tokenlist~TokenList} and {@link module:engine/view/stylesmap~StylesMap}.

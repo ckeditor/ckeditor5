@@ -29,7 +29,7 @@ export class ViewDocument extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PU
 	public readonly selection: ViewDocumentSelection;
 
 	/**
-	 * Roots of the view tree. Collection of the {@link module:engine/view/element~Element view elements}.
+	 * Roots of the view tree. Collection of the {@link module:engine/view/element~ViewElement view elements}.
 	 *
 	 * View roots are created as a result of binding between {@link module:engine/view/document~ViewDocument#roots} and
 	 * {@link module:engine/model/document~ModelDocument#roots} and this is handled by

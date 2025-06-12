@@ -1094,7 +1094,7 @@ export function cleanSelection() {
  *
  * Passed `Function` will be provided with the attribute value and then all the parameters of the
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute `attribute` event}.
- * It is expected that the function returns an {@link module:engine/view/element~Element}.
+ * It is expected that the function returns an {@link module:engine/view/element~ViewElement}.
  * The result of the function will be the wrapping element.
  * When the provided `Function` does not return any element, no conversion will take place.
  *
@@ -1166,7 +1166,7 @@ export function wrap( elementCreator: DowncastAttributeElementCreatorFunction ) 
  * Function factory that creates a converter which converts node insertion changes from the model to the view.
  * The function passed will be provided with all the parameters of the dispatcher's
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert `insert` event}.
- * It is expected that the function returns an {@link module:engine/view/element~Element}.
+ * It is expected that the function returns an {@link module:engine/view/element~ViewElement}.
  * The result of the function will be inserted into the view.
  *
  * The converter automatically consumes the corresponding value from the consumables list and binds the model and view elements.
@@ -1226,7 +1226,7 @@ export function insertElement( elementCreator: DowncastElementCreatorFunction, c
 /**
  * Function factory that creates a converter which converts a single model node insertion to a view structure.
  *
- * It is expected that the passed element creator function returns an {@link module:engine/view/element~Element} with attached slots
+ * It is expected that the passed element creator function returns an {@link module:engine/view/element~ViewElement} with attached slots
  * created with `writer.createSlot()` to indicate where child nodes should be converted.
  *
  * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
@@ -1591,7 +1591,7 @@ function removeMarkerData( viewCreator: DowncastMarkerDataCreatorFunction ) {
  * ```
  *
  * @param attributeCreator Function returning an object with two properties: `key` and `value`, which
- * represent the attribute key and attribute value to be set on a {@link module:engine/view/element~Element view element}.
+ * represent the attribute key and attribute value to be set on a {@link module:engine/view/element~ViewElement view element}.
  * The function is passed the model attribute value as the first parameter and additional data about the change as the second parameter.
  * @returns Set/change attribute converter.
  */
@@ -1776,7 +1776,7 @@ function highlightText( highlightDescriptor: DowncastHighlightDescriptor | Downc
  * Converter function factory. It creates a function which applies the marker's highlight to an element inside the marker's range.
  *
  * The converter checks if an element has the `addHighlight` function stored as a
- * {@link module:engine/view/element~Element#_setCustomProperty custom property} and, if so, uses it to apply the highlight.
+ * {@link module:engine/view/element~ViewElement#_setCustomProperty custom property} and, if so, uses it to apply the highlight.
  * In such case the converter will consume all element's children, assuming that they were handled by the element itself.
  *
  * When the `addHighlight` custom property is not present, the element is not converted in any special way.
@@ -1846,7 +1846,7 @@ function highlightElement( highlightDescriptor: DowncastHighlightDescriptor | Do
  * provided highlight descriptor. See {link module:engine/conversion/downcasthelpers~DowncastHighlightDescriptor}.
  *
  * For elements, the converter checks if an element has the `removeHighlight` function stored as a
- * {@link module:engine/view/element~Element#_setCustomProperty custom property}. If so, it uses it to remove the highlight.
+ * {@link module:engine/view/element~ViewElement#_setCustomProperty custom property}. If so, it uses it to remove the highlight.
  * In such case, the children of that element will not be converted.
  *
  * When `removeHighlight` is not present, the element is not converted in any special way.

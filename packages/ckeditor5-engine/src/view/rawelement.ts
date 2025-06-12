@@ -9,7 +9,7 @@
  * @module engine/view/rawelement
  */
 
-import { Element, type ElementAttributes } from './element.js';
+import { ViewElement, type ElementAttributes } from './element.js';
 import { Node } from './node.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -35,7 +35,7 @@ type DomElement = globalThis.HTMLElement;
  * To create a new raw element, use the
  * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createRawElement `downcastWriter#createRawElement()`} method.
  */
-export class RawElement extends Element {
+export class RawElement extends ViewElement {
 	/**
 	 * Creates a new instance of a raw element.
 	 *
@@ -62,7 +62,7 @@ export class RawElement extends Element {
 	}
 
 	/**
-	 * Overrides the {@link module:engine/view/element~Element#_insertChild} method.
+	 * Overrides the {@link module:engine/view/element~ViewElement#_insertChild} method.
 	 * Throws the `view-rawelement-cannot-add` {@link module:utils/ckeditorerror~CKEditorError CKEditorError} to prevent
 	 * adding any child nodes to a raw element.
 	 *

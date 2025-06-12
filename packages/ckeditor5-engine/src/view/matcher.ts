@@ -7,13 +7,13 @@
  * @module engine/view/matcher
  */
 
-import { type Element } from './element.js';
+import { type ViewElement } from './element.js';
 import { logWarning } from '@ckeditor/ckeditor5-utils';
 import { normalizeConsumables, type Consumables } from '../conversion/viewconsumable.js';
 
 /**
  * View matcher class.
- * Instance of this class can be used to find {@link module:engine/view/element~Element elements} that match given pattern.
+ * Instance of this class can be used to find {@link module:engine/view/element~ViewElement elements} that match given pattern.
  */
 export class Matcher {
 	private readonly _patterns: Array<MatcherFunctionPattern | MatcherObjectPattern> = [];
@@ -53,7 +53,7 @@ export class Matcher {
 	 *
 	 * @param pattern Object describing pattern details. If string or regular expression
 	 * is provided it will be used to match element's name. Pattern can be also provided in a form
-	 * of a function - then this function will be called with each {@link module:engine/view/element~Element element} as a parameter.
+	 * of a function - then this function will be called with each {@link module:engine/view/element~ViewElement element} as a parameter.
 	 * Function's return value will be stored under `match` key of the object returned from
 	 * {@link module:engine/view/matcher~Matcher#match match} or {@link module:engine/view/matcher~Matcher#matchAll matchAll} methods.
 	 */
@@ -70,7 +70,7 @@ export class Matcher {
 
 	/**
 	 * Matches elements for currently stored patterns. Returns match information about first found
-	 * {@link module:engine/view/element~Element element}, otherwise returns `null`.
+	 * {@link module:engine/view/element~ViewElement element}, otherwise returns `null`.
 	 *
 	 * Example of returned object:
 	 *
@@ -100,7 +100,7 @@ export class Matcher {
 	 * @param element View element to match against stored patterns.
 	 * @returns The match information about found element or `null`.
 	 */
-	public match( ...element: Array<Element> ): MatchResult | null {
+	public match( ...element: Array<ViewElement> ): MatchResult | null {
 		for ( const singleElement of element ) {
 			for ( const pattern of this._patterns ) {
 				const match = this._isElementMatching( singleElement, pattern );
@@ -120,7 +120,7 @@ export class Matcher {
 
 	/**
 	 * Matches elements for currently stored patterns. Returns array of match information with all found
-	 * {@link module:engine/view/element~Element elements}. If no element is found - returns `null`.
+	 * {@link module:engine/view/element~ViewElement elements}. If no element is found - returns `null`.
 	 *
 	 * @see module:engine/view/matcher~Matcher#add
 	 * @see module:engine/view/matcher~Matcher#match
@@ -128,7 +128,7 @@ export class Matcher {
 	 * @returns Array with match information about found elements or `null`. For more information
 	 * see {@link module:engine/view/matcher~Matcher#match match method} description.
 	 */
-	public matchAll( ...element: Array<Element> ): Array<MatchResult> | null {
+	public matchAll( ...element: Array<ViewElement> ): Array<MatchResult> | null {
 		const results: Array<MatchResult> = [];
 
 		for ( const singleElement of element ) {
@@ -166,12 +166,12 @@ export class Matcher {
 	}
 
 	/**
-	 * Returns match information if {@link module:engine/view/element~Element element} is matching provided pattern.
+	 * Returns match information if {@link module:engine/view/element~ViewElement element} is matching provided pattern.
 	 * If element cannot be matched to provided pattern - returns `null`.
 	 *
 	 * @returns Returns object with match information or null if element is not matching.
 	 */
-	private _isElementMatching( element: Element, pattern: MatcherFunctionPattern | MatcherObjectPattern ): Match | null {
+	private _isElementMatching( element: ViewElement, pattern: MatcherFunctionPattern | MatcherObjectPattern ): Match | null {
 		// If pattern is provided as function - return result of that function;
 		if ( typeof pattern == 'function' ) {
 			const match = pattern( element );
@@ -374,7 +374,7 @@ function normalizePatterns( patterns: PropertyPatterns, prefix?: string ): Array
  */
 function matchAttributes(
 	patterns: AttributePatterns,
-	element: Element,
+	element: ViewElement,
 	match: Array<[ string, string? ]>
 ): boolean {
 	let excludeAttributes;
@@ -407,7 +407,7 @@ function matchAttributes(
  */
 function matchClasses(
 	patterns: ClassPatterns,
-	element: Element,
+	element: ViewElement,
 	match: Array<[ string, string? ]>
 ): boolean {
 	return element._collectAttributesMatch( normalizePatterns( patterns, 'class' ), match );
@@ -424,7 +424,7 @@ function matchClasses(
  */
 function matchStyles(
 	patterns: StylePatterns,
-	element: Element,
+	element: ViewElement,
 	match: Array<[ string, string? ]>
 ): boolean {
 	return element._collectAttributesMatch( normalizePatterns( patterns, 'style' ), match );
@@ -686,7 +686,7 @@ export type MatcherPattern = string | RegExp | MatcherFunctionPattern | MatcherO
 /**
  * A function describing `MatcherPattern`. See {@link ~MatcherPattern} for examples and other options.
  */
-export type MatcherFunctionPattern = ( element: Element ) => Match | Consumables | null;
+export type MatcherFunctionPattern = ( element: ViewElement ) => Match | Consumables | null;
 
 /**
  * An object describing `MatcherPattern`. See {@link ~MatcherPattern} for examples and other options.
@@ -739,7 +739,7 @@ export interface MatchResult {
 	/**
 	 * Matched view element.
 	 */
-	element: Element;
+	element: ViewElement;
 
 	/**
 	 * Pattern that was used to find matched element.

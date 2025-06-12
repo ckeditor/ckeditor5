@@ -7,7 +7,7 @@
  * @module engine/view/containerelement
  */
 
-import { Element, type ElementAttributes } from './element.js';
+import { ViewElement, type ElementAttributes } from './element.js';
 import { type ViewDocument } from './document.js';
 import { type Node } from './node.js';
 
@@ -31,12 +31,12 @@ import { type Node } from './node.js';
  * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createContainerElement `DowncastWriter#createContainerElement()`}
  * method.
  */
-export class ViewContainerElement extends Element {
+export class ViewContainerElement extends ViewElement {
 	/**
 	 * Creates a container element.
 	 *
 	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#createContainerElement
-	 * @see module:engine/view/element~Element
+	 * @see module:engine/view/element~ViewElement
 	 * @internal
 	 * @param document The document instance to which this element belongs.
 	 * @param name Node name.

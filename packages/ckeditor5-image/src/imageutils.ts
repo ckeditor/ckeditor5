@@ -247,8 +247,8 @@ export class ImageUtils extends Plugin {
 	}
 
 	/**
-	 * Converts a given {@link module:engine/view/element~Element} to an image widget:
-	 * * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the image widget
+	 * Converts a given {@link module:engine/view/element~ViewElement} to an image widget:
+	 * * Adds a {@link module:engine/view/element~ViewElement#_setCustomProperty custom property} allowing to recognize the image widget
 	 * element.
 	 * * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
 	 *

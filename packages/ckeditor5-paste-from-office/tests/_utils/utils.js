@@ -283,7 +283,7 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip, only ) {
 //
 // 	because tab preceding `03` text will be treated as formatting character and will be removed.
 //
-// @param {module:engine/view/text~Text|module:engine/view/element~Element|module:engine/view/documentfragment~ViewDocumentFragment}
+// @param {module:engine/view/text~Text|module:engine/view/element~ViewElement|module:engine/view/documentfragment~ViewDocumentFragment}
 // actualView Actual HTML.
 // @param {String} expectedHtml Expected HTML.
 function expectNormalized( actualView, expectedHtml ) {

@@ -19,7 +19,7 @@ import { clone } from 'es-toolkit/compat';
 
 import type { ViewDocument, ViewDocumentChangeType } from './document.js';
 import { type ViewDocumentFragment } from './documentfragment.js';
-import { type Element } from './element.js';
+import { type ViewElement } from './element.js';
 
 /**
  * Abstract view node class.
@@ -35,9 +35,9 @@ export abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeCheckable )
 	public readonly document: ViewDocument;
 
 	/**
-	 * Parent element. Null by default. Set by {@link module:engine/view/element~Element#_insertChild}.
+	 * Parent element. Null by default. Set by {@link module:engine/view/element~ViewElement#_insertChild}.
 	 */
-	public readonly parent: Element | ViewDocumentFragment | null;
+	public readonly parent: ViewElement | ViewDocumentFragment | null;
 
 	/**
 	 * Creates a tree view node.
@@ -98,7 +98,7 @@ export abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeCheckable )
 	/**
 	 * Top-most ancestor of the node. If the node has no parent it is the root itself.
 	 */
-	public get root(): Element | ViewDocumentFragment {
+	public get root(): ViewElement | ViewDocumentFragment {
 		// eslint-disable-next-line @typescript-eslint/no-this-alias, consistent-this
 		let root: Node | ViewDocumentFragment = this;
 
@@ -168,7 +168,7 @@ export abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeCheckable )
 	}
 
 	/**
-	 * Returns a {@link module:engine/view/element~Element} or {@link module:engine/view/documentfragment~ViewDocumentFragment}
+	 * Returns a {@link module:engine/view/element~ViewElement} or {@link module:engine/view/documentfragment~ViewDocumentFragment}
 	 * which is a common ancestor of both nodes.
 	 *
 	 * @param node The second node.
@@ -176,7 +176,7 @@ export abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeCheckable )
 	 * @param options.includeSelf When set to `true` both nodes will be considered "ancestors" too.
 	 * Which means that if e.g. node A is inside B, then their common ancestor will be B.
 	 */
-	public getCommonAncestor( node: Node, options: { includeSelf?: boolean } = {} ): Element | ViewDocumentFragment | null {
+	public getCommonAncestor( node: Node, options: { includeSelf?: boolean } = {} ): ViewElement | ViewDocumentFragment | null {
 		const ancestorsA = this.getAncestors( options );
 		const ancestorsB = node.getAncestors( options );
 
@@ -186,7 +186,7 @@ export abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeCheckable )
 			i++;
 		}
 
-		return i === 0 ? null : ancestorsA[ i - 1 ] as ( Element | ViewDocumentFragment );
+		return i === 0 ? null : ancestorsA[ i - 1 ] as ( ViewElement | ViewDocumentFragment );
 	}
 
 	/**
@@ -307,7 +307,7 @@ Node.prototype.is = function( type: string ): boolean {
 export { Node as ViewNode };
 
 /**
- * Fired when list of {@link module:engine/view/element~Element elements} children, attributes or text changes.
+ * Fired when list of {@link module:engine/view/element~ViewElement elements} children, attributes or text changes.
  *
  * Change event is bubbled – it is fired on all ancestors.
  *

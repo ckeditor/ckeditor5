@@ -26,7 +26,7 @@ import { BubblingEventInfo, type EventPhase } from './bubblingeventinfo.js';
 import { type ViewDocument } from '../document.js';
 import { type Node } from '../node.js';
 import { type Range } from '../range.js';
-import { type Element } from '../element.js';
+import { type ViewElement } from '../element.js';
 import { type ViewDocumentSelection } from '../documentselection.js';
 
 const contextsSymbol = Symbol( 'bubbling contexts' );
@@ -232,8 +232,8 @@ function getDeeperRangeParent( range: Range ): Node | null {
 		return null;
 	}
 
-	const startParent = range.start.parent as Element;
-	const endParent = range.end.parent as Element;
+	const startParent = range.start.parent as ViewElement;
+	const endParent = range.end.parent as ViewElement;
 
 	const startPath = startParent.getPath();
 	const endPath = endParent.getPath();
@@ -244,7 +244,7 @@ function getDeeperRangeParent( range: Range ): Node | null {
 /**
  * Bubbling emitter for the view document.
  *
- * Bubbling emitter is triggering events in the context of specified {@link module:engine/view/element~Element view element} name,
+ * Bubbling emitter is triggering events in the context of specified {@link module:engine/view/element~ViewElement view element} name,
  * predefined `'$text'`, `'$root'`, `'$document'` and `'$capture'` contexts, and context matchers provided as a function.
  *
  * Before bubbling starts, listeners for `'$capture'` context are triggered. Then the bubbling starts from the deeper selection

@@ -19,7 +19,7 @@ import {
 import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 import { type ViewEditableElement } from './editableelement.js';
-import { type Element } from './element.js';
+import { type ViewElement } from './element.js';
 import { type Node } from './node.js';
 import { type Item } from './item.js';
 import type { Position, PositionOffset } from './position.js';
@@ -49,7 +49,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 	 * const paragraph = writer.createContainerElement( 'paragraph' );
 	 * const selection = new ViewDocumentSelection( paragraph, offset );
 	 *
-	 * // Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
+	 * // Creates a range inside an {@link module:engine/view/element~ViewElement element} which starts before the
 	 * // first child of that element and ends after the last child of that element.
 	 * const selection = new ViewDocumentSelection( paragraph, 'in' );
 	 *
@@ -269,11 +269,11 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 	}
 
 	/**
-	 * Returns the selected element. {@link module:engine/view/element~Element Element} is considered as selected if there is only
+	 * Returns the selected element. {@link module:engine/view/element~ViewElement Element} is considered as selected if there is only
 	 * one range in the selection, and that range contains exactly one element.
 	 * Returns `null` if there is no selected element.
 	 */
-	public getSelectedElement(): Element | null {
+	public getSelectedElement(): ViewElement | null {
 		return this._selection.getSelectedElement();
 	}
 
@@ -325,7 +325,7 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 	 * documentSelection._setTo( paragraph, offset );
 	 * ```
 	 *
-	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
+	 * Creates a range inside an {@link module:engine/view/element~ViewElement element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
 	 * ```ts

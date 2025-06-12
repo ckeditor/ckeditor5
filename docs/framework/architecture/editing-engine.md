@@ -232,7 +232,7 @@ editor.data;                    // The data pipeline (DataController).
 
 ### Element types and custom data
 
-The structure of the view resembles the structure in the DOM closely. The semantics of HTML is defined in its specification. The view structure comes "DTD-free," so to provide additional information and to better express the semantics of the content, the view structure implements six element types ({@link module:engine/view/containerelement~ViewContainerElement}, {@link module:engine/view/attributeelement~ViewAttributeElement}, {@link module:engine/view/emptyelement~EmptyElement}, {@link module:engine/view/rawelement~RawElement}, {@link module:engine/view/uielement~UIElement}, and {@link module:engine/view/editableelement~ViewEditableElement}) and so-called {@link module:engine/view/element~Element#getCustomProperty "custom properties"} (that is custom element properties which are not rendered). This additional information provided by the editor features is then used by the {@link module:engine/view/renderer~Renderer} and [converters](#conversion).
+The structure of the view resembles the structure in the DOM closely. The semantics of HTML is defined in its specification. The view structure comes "DTD-free," so to provide additional information and to better express the semantics of the content, the view structure implements six element types ({@link module:engine/view/containerelement~ViewContainerElement}, {@link module:engine/view/attributeelement~ViewAttributeElement}, {@link module:engine/view/emptyelement~EmptyElement}, {@link module:engine/view/rawelement~RawElement}, {@link module:engine/view/uielement~UIElement}, and {@link module:engine/view/editableelement~ViewEditableElement}) and so-called {@link module:engine/view/element~ViewElement#getCustomProperty "custom properties"} (that is custom element properties which are not rendered). This additional information provided by the editor features is then used by the {@link module:engine/view/renderer~Renderer} and [converters](#conversion).
 
 The element types can be defined as follows:
 
@@ -243,7 +243,7 @@ The element types can be defined as follows:
 * **Raw element** &ndash; The elements that work as data containers ("wrappers," "sandboxes") but their children are transparent to the editor. Useful when non-standard data must be rendered but the editor should not be concerned what it is and how it works. Users cannot put the selection inside a raw element, split it into smaller chunks or directly modify its content.
 * **Editable element** &ndash; The elements used as "nested editable elements" of non-editable fragments of the content. For example, a caption in the image widget, where the `<figure>` wrapping the image is not editable (it is a widget) and the `<figcaption>` inside it is an editable element.
 
-Additionally, you can define {@link module:engine/view/element~Element#getCustomProperty custom properties} which may be used to store information like:
+Additionally, you can define {@link module:engine/view/element~ViewElement#getCustomProperty custom properties} which may be used to store information like:
 
 * Whether an element is a widget (added by {@link module:widget/utils~toWidget `toWidget()`}).
 * How an element should be marked when a [marker](#markers) highlights it.
@@ -251,7 +251,7 @@ Additionally, you can define {@link module:engine/view/element~Element#getCustom
 
 #### Non-semantic views
 
-Not all view trees need to (and can) be built with semantic element types. View structures generated straight from input data (for instance, pasted HTML or with `editor.setData()`) consists only of {@link module:engine/view/element~Element base element} instances. Those view structures are (usually) [converted to model structures](#conversion) and then converted back to view structures for editing or data retrieval purposes, at which point they become semantic views again.
+Not all view trees need to (and can) be built with semantic element types. View structures generated straight from input data (for instance, pasted HTML or with `editor.setData()`) consists only of {@link module:engine/view/element~ViewElement base element} instances. Those view structures are (usually) [converted to model structures](#conversion) and then converted back to view structures for editing or data retrieval purposes, at which point they become semantic views again.
 
 The additional information conveyed in the semantic views and special types of operations that feature developers want to perform on those trees (compared to simple tree operations on non-semantic views) means that both structures need to be [modified by different tools](#changing-the-view).
 

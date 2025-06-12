@@ -482,7 +482,7 @@ export class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 /**
  * Function factory, creates a converter that converts
  * {@link module:engine/view/documentfragment~ViewDocumentFragment view document fragment}
- * or all children of {@link module:engine/view/element~Element} into
+ * or all children of {@link module:engine/view/element~ViewElement} into
  * {@link module:engine/model/documentfragment~DocumentFragment model document fragment}.
  * This is the "entry-point" converter for upcast (view to model conversion). This converter starts the conversion of all children
  * of passed view document fragment. Those children {@link module:engine/view/node~Node view nodes} are then handled by other converters.
@@ -492,7 +492,7 @@ export class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
  * will be converted to {@link module:engine/model/documentfragment~DocumentFragment model document fragment} and returned.
  *
  * @returns Universal converter for view {@link module:engine/view/documentfragment~ViewDocumentFragment fragments} and
- * {@link module:engine/view/element~Element elements} that returns
+ * {@link module:engine/view/element~ViewElement elements} that returns
  * {@link module:engine/model/documentfragment~DocumentFragment model fragment} with children of converted view item.
  *
  * @internal

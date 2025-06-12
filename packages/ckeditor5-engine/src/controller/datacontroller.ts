@@ -473,7 +473,7 @@ export class DataController extends /* #__PURE__ */ EmitterMixin() {
 	}
 
 	/**
-	 * Returns the result of the given {@link module:engine/view/element~Element view element} or
+	 * Returns the result of the given {@link module:engine/view/element~ViewElement view element} or
 	 * {@link module:engine/view/documentfragment~ViewDocumentFragment view document fragment} converted by the
 	 * {@link #upcastDispatcher view-to-model converters}, wrapped by {@link module:engine/model/documentfragment~DocumentFragment}.
 	 *
@@ -514,7 +514,8 @@ export class DataController extends /* #__PURE__ */ EmitterMixin() {
 	 * and a {@link #processor processor} for view elements whose content should be treated as raw data
 	 * and not processed during the conversion from DOM to view elements.
 	 *
-	 * The raw data can be later accessed by the {@link module:engine/view/element~Element#getCustomProperty view element custom property}
+	 * The raw data can be later accessed by the
+	 * {@link module:engine/view/element~ViewElement#getCustomProperty view element custom property}
 	 * `"$rawContent"`.
 	 *
 	 * @param pattern Pattern matching all view elements whose content should be treated as a raw data.

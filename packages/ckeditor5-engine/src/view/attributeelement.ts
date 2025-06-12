@@ -7,7 +7,7 @@
  * @module engine/view/attributeelement
  */
 
-import { Element, type ElementAttributes } from './element.js';
+import { ViewElement, type ElementAttributes } from './element.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { type ViewDocumentFragment } from './documentfragment.js';
@@ -28,7 +28,7 @@ const DEFAULT_PRIORITY = 10;
  * To create a new attribute element instance use the
  * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createAttributeElement `DowncastWriter#createAttributeElement()`} method.
  */
-export class ViewAttributeElement extends Element {
+export class ViewAttributeElement extends ViewElement {
 	public static readonly DEFAULT_PRIORITY: number = DEFAULT_PRIORITY;
 
 	/**
@@ -40,7 +40,7 @@ export class ViewAttributeElement extends Element {
 	public _priority: number = DEFAULT_PRIORITY;
 
 	/**
-	 * Element identifier. If set, it is used by {@link module:engine/view/element~Element#isSimilar},
+	 * Element identifier. If set, it is used by {@link module:engine/view/element~ViewElement#isSimilar},
 	 * and then two elements are considered similar if, and only if they have the same `_id`.
 	 *
 	 * @internal
@@ -60,7 +60,7 @@ export class ViewAttributeElement extends Element {
 	 * Creates an attribute element.
 	 *
 	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#createAttributeElement
-	 * @see module:engine/view/element~Element
+	 * @see module:engine/view/element~ViewElement
 	 * @protected
 	 * @param document The document instance to which this element belongs.
 	 * @param name Node name.
@@ -86,7 +86,7 @@ export class ViewAttributeElement extends Element {
 	}
 
 	/**
-	 * Element identifier. If set, it is used by {@link module:engine/view/element~Element#isSimilar},
+	 * Element identifier. If set, it is used by {@link module:engine/view/element~ViewElement#isSimilar},
 	 * and then two elements are considered similar if, and only if they have the same `id`.
 	 */
 	public get id(): string | number | null {
@@ -139,7 +139,7 @@ export class ViewAttributeElement extends Element {
 	 * decide whether processed element should be unwrapped,
 	 * * etc.
 	 */
-	public override isSimilar( otherElement: Element ): boolean {
+	public override isSimilar( otherElement: ViewElement ): boolean {
 		// If any element has an `id` set, just compare the ids.
 		if ( this.id !== null || ( otherElement as any ).id !== null ) {
 			return this.id === ( otherElement as any ).id;
@@ -169,7 +169,7 @@ export class ViewAttributeElement extends Element {
 	}
 
 	/**
-	 * Used by {@link module:engine/view/element~Element#_mergeAttributesFrom} to verify if the given element can be merged without
+	 * Used by {@link module:engine/view/element~ViewElement#_mergeAttributesFrom} to verify if the given element can be merged without
 	 * conflicts into this element.
 	 *
 	 * @internal
@@ -184,7 +184,7 @@ export class ViewAttributeElement extends Element {
 	}
 
 	/**
-	 * Used by {@link module:engine/view/element~Element#_subtractAttributesOf} to verify if the given element attributes
+	 * Used by {@link module:engine/view/element~ViewElement#_subtractAttributesOf} to verify if the given element attributes
 	 * can be fully subtracted from this element.
 	 *
 	 * @internal
@@ -249,6 +249,6 @@ function getFillerOffset( this: ViewAttributeElement ): number | null {
 /**
  * Returns total count of children that are not {@link module:engine/view/uielement~UIElement UIElements}.
  */
-function nonUiChildrenCount( element: Element | ViewDocumentFragment ): number {
+function nonUiChildrenCount( element: ViewElement | ViewDocumentFragment ): number {
 	return Array.from( element.getChildren() ).filter( element => !element.is( 'uiElement' ) ).length;
 }

@@ -22,8 +22,9 @@ import { isWidget, toWidget } from 'ckeditor5/src/widget.js';
 import { type MediaRegistry } from './mediaregistry.js';
 
 /**
- * Converts a given {@link module:engine/view/element~Element} to a media embed widget:
- * * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the media widget element.
+ * Converts a given {@link module:engine/view/element~ViewElement} to a media embed widget:
+ * * Adds a {@link module:engine/view/element~ViewElement#_setCustomProperty custom property}
+ * allowing to recognize the media widget element.
  * * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
  *
  * @param writer An instance of the view writer.

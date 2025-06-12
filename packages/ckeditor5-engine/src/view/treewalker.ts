@@ -7,7 +7,7 @@
  * @module engine/view/treewalker
  */
 
-import { type Element } from './element.js';
+import { type ViewElement } from './element.js';
 import { type Text } from './text.js';
 import { TextProxy } from './textproxy.js';
 import { Position } from './position.js';
@@ -51,7 +51,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 
 	/**
 	 * Flag indicating whether iterator should ignore `elementEnd` tags. If set to `true`, walker will not
-	 * return a parent node of the start position. Each {@link module:engine/view/element~Element} will be returned once.
+	 * return a parent node of the start position. Each {@link module:engine/view/element~ViewElement} will be returned once.
 	 * When set to `false` each element might be returned twice: for `'elementStart'` and `'elementEnd'`.
 	 */
 	public readonly ignoreElementEnd: boolean;
@@ -230,7 +230,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 
 			node = parent.data[ position.offset ];
 		} else {
-			node = ( parent as Element | ViewDocumentFragment ).getChild( position.offset );
+			node = ( parent as ViewElement | ViewDocumentFragment ).getChild( position.offset );
 		}
 
 		if ( typeof node == 'string' ) {
@@ -340,7 +340,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 
 			node = parent.data[ position.offset - 1 ];
 		} else {
-			node = ( parent as Element | ViewDocumentFragment ).getChild( position.offset - 1 );
+			node = ( parent as ViewElement | ViewDocumentFragment ).getChild( position.offset - 1 );
 		}
 
 		if ( typeof node == 'string' ) {
@@ -415,7 +415,7 @@ export class TreeWalker implements IterableIterator<TreeWalkerValue> {
 		position = Position._createBefore( parent as any );
 		this._position = position;
 
-		return this._formatReturnValue( 'elementStart', parent as Element, previousPosition, position, 1 );
+		return this._formatReturnValue( 'elementStart', parent as ViewElement, previousPosition, position, 1 );
 	}
 
 	/**
@@ -572,7 +572,7 @@ export interface TreeWalkerOptions {
 	/**
 	 * Flag indicating whether iterator should ignore `elementEnd`
 	 * tags. If the option is true walker will not return a parent node of start position. If this option is `true`
-	 * each {@link module:engine/view/element~Element} will be returned once, while if the option is `false` they might be returned
+	 * each {@link module:engine/view/element~ViewElement} will be returned once, while if the option is `false` they might be returned
 	 * twice: for `'elementStart'` and `'elementEnd'`.
 	 */
 	ignoreElementEnd?: boolean;

@@ -8,7 +8,7 @@ import { type ViewContainerElement } from './containerelement.js';
 import { type ViewDocumentFragment } from './documentfragment.js';
 import { type ViewDocumentSelection } from './documentselection.js';
 import { type ViewEditableElement } from './editableelement.js';
-import { type Element } from './element.js';
+import { type ViewElement } from './element.js';
 import { type EmptyElement } from './emptyelement.js';
 import { type Node } from './node.js';
 import { type Position } from './position.js';
@@ -57,7 +57,7 @@ export abstract class TypeCheckable {
 	public is( type: 'node' | 'view:node' ): this is (
 		Node |
 		Text |
-		Element |
+		ViewElement |
 		ViewAttributeElement |
 		ViewContainerElement |
 		ViewEditableElement |
@@ -68,7 +68,7 @@ export abstract class TypeCheckable {
 	);
 
 	/**
-	 * Checks whether this object is of type {@link module:engine/view/element~Element} or its subclass.
+	 * Checks whether this object is of type {@link module:engine/view/element~ViewElement} or its subclass.
 	 *
 	 * ```ts
 	 * element.is( 'element' ); // -> true
@@ -81,7 +81,7 @@ export abstract class TypeCheckable {
 	 * ```
 	 *
 	 * Assuming that the object being checked is an element, you can also check its
-	 * {@link module:engine/view/element~Element#name name}:
+	 * {@link module:engine/view/element~ViewElement#name name}:
 	 *
 	 * ```ts
 	 * element.is( 'element', 'img' ); // -> true if this is an <img> element
@@ -91,7 +91,7 @@ export abstract class TypeCheckable {
 	 * @label ELEMENT
 	 */
 	public is( type: 'element' | 'view:element' ): this is (
-		Element |
+		ViewElement |
 		ViewAttributeElement |
 		ViewContainerElement |
 		ViewEditableElement |
@@ -420,12 +420,12 @@ export abstract class TypeCheckable {
 	public is( type: 'documentSelection' | 'view:documentSelection' ): this is ViewDocumentSelection;
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/view/element~Element} or its subclass and has the specified `name`.
+	 * Checks whether the object is of type {@link module:engine/view/element~ViewElement} or its subclass and has the specified `name`.
 	 *
 	 * @label ELEMENT_NAME
 	 */
 	public is<N extends string>( type: 'element' | 'view:element', name: N ): this is (
-		Element |
+		ViewElement |
 		ViewAttributeElement |
 		ViewContainerElement |
 		ViewEditableElement |

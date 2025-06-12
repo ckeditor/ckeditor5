@@ -12,13 +12,13 @@ import '../../theme/placeholder.css';
 import { type ViewDocument } from './document.js';
 import { type ViewDowncastWriter } from './downcastwriter.js';
 import { type ViewEditableElement } from './editableelement.js';
-import { type Element } from './element.js';
+import { type ViewElement } from './element.js';
 import { type View } from './view.js';
 
 import { logWarning, type ObservableChangeEvent } from '@ckeditor/ckeditor5-utils';
 
 // Each document stores information about its placeholder elements and check functions.
-const documentPlaceholders = new WeakMap<ViewDocument, Map<Element, PlaceholderConfig>>();
+const documentPlaceholders = new WeakMap<ViewDocument, Map<ViewElement, PlaceholderConfig>>();
 
 let hasDisplayedPlaceholderDeprecationWarning = false;
 
@@ -99,7 +99,7 @@ export function enablePlaceholder( { view, element, text, isDirectHost = true, k
  *
  * See {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} to learn more.
  */
-export function disablePlaceholder( view: View, element: Element ): void {
+export function disablePlaceholder( view: View, element: ViewElement ): void {
 	const doc = element.document;
 
 	if ( !documentPlaceholders.has( doc ) ) {
@@ -133,7 +133,7 @@ export function disablePlaceholder( view: View, element: Element ): void {
  *
  * @returns `true`, if any changes were made to the `element`.
  */
-export function showPlaceholder( writer: ViewDowncastWriter, element: Element ): boolean {
+export function showPlaceholder( writer: ViewDowncastWriter, element: ViewElement ): boolean {
 	if ( !element.hasClass( 'ck-placeholder' ) ) {
 		writer.addClass( 'ck-placeholder', element );
 
@@ -154,7 +154,7 @@ export function showPlaceholder( writer: ViewDowncastWriter, element: Element ):
  *
  * @returns `true`, if any changes were made to the `element`.
  */
-export function hidePlaceholder( writer: ViewDowncastWriter, element: Element ): boolean {
+export function hidePlaceholder( writer: ViewDowncastWriter, element: ViewElement ): boolean {
 	if ( element.hasClass( 'ck-placeholder' ) ) {
 		writer.removeClass( 'ck-placeholder', element );
 
@@ -177,7 +177,7 @@ export function hidePlaceholder( writer: ViewDowncastWriter, element: Element ):
  * @param element Element that holds the placeholder.
  * @param keepOnFocus Focusing the element will keep the placeholder visible.
  */
-export function needsPlaceholder( element: Element, keepOnFocus: boolean ): boolean {
+export function needsPlaceholder( element: ViewElement, keepOnFocus: boolean ): boolean {
 	if ( !element.isAttached() ) {
 		return false;
 	}
@@ -211,7 +211,7 @@ export function needsPlaceholder( element: Element, keepOnFocus: boolean ): bool
 /**
  * Anything but uiElement(s) counts as content.
  */
-function hasContent( element: Element ): boolean {
+function hasContent( element: ViewElement ): boolean {
 	for ( const child of element.getChildren() ) {
 		if ( !child.is( 'uiElement' ) ) {
 			return true;
@@ -227,10 +227,10 @@ function hasContent( element: Element ): boolean {
  * @returns True if any changes were made to the view document.
  */
 function updateDocumentPlaceholders(
-	placeholders: Iterable<[ Element, PlaceholderConfig ]>,
+	placeholders: Iterable<[ ViewElement, PlaceholderConfig ]>,
 	writer: ViewDowncastWriter
 ): boolean {
-	const directHostElements: Array<Element> = [];
+	const directHostElements: Array<ViewElement> = [];
 	let wasViewModified = false;
 
 	// First set placeholders on the direct hosts.
@@ -279,7 +279,7 @@ function updateDocumentPlaceholders(
  *
  * @returns True if any changes were made to the view document.
  */
-function updatePlaceholder( writer: ViewDowncastWriter, element: Element, config: PlaceholderConfig ) {
+function updatePlaceholder( writer: ViewDowncastWriter, element: ViewElement, config: PlaceholderConfig ) {
 	const { text, isDirectHost, hostElement } = config;
 
 	let wasViewModified = false;
@@ -309,7 +309,7 @@ function updatePlaceholder( writer: ViewDowncastWriter, element: Element, config
  * than just text (for instance, when it is a root editable element). The child element
  * can then be used in other placeholder helpers as a substitute of its parent.
  */
-function getChildPlaceholderHostSubstitute( parent: Element ): Element | null {
+function getChildPlaceholderHostSubstitute( parent: ViewElement ): ViewElement | null {
 	if ( parent.childCount ) {
 		const firstChild = parent.getChild( 0 )!;
 
@@ -348,13 +348,13 @@ interface PlaceholderConfig {
 	text: string;
 	isDirectHost: boolean;
 	keepOnFocus: boolean;
-	hostElement: Element | null;
+	hostElement: ViewElement | null;
 }
 
 /**
  * Element that could have a placeholder.
  */
-export interface PlaceholderableElement extends Element {
+export interface PlaceholderableElement extends ViewElement {
 
 	/**
 	 * The text of element's placeholder.
