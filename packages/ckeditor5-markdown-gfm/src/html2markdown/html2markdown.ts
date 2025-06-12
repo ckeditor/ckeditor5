@@ -11,11 +11,10 @@ import { unified, type Plugin } from 'unified';
 import rehypeParse from 'rehype-dom-parse';
 import rehypeRemark from 'rehype-remark';
 import remarkBreaks from 'remark-breaks';
-import remarkGfm from 'remark-gfm-no-autolink';
+import remarkGfm from 'remark-gfm';
 import remarkStringify from 'remark-stringify';
 import { visit } from 'unist-util-visit';
 import { toHtml } from 'hast-util-to-html';
-import type { Handle as MarkdownHandle } from 'mdast-util-to-markdown';
 import type { Handle as MdastHandle } from 'hast-util-to-mdast';
 
 export class HtmlToMarkdown {
@@ -38,6 +37,9 @@ export class HtmlToMarkdown {
 			.trim();
 	}
 
+	/**
+	 * Returns handlers for raw HTML tags that should be kept in the Markdown output.
+	 */
 	private getRawTagsHandlers(): Record<string, MdastHandle> {
 		return this._keepRawTags.reduce( ( handlers: any, tagName: any ) => {
 			handlers[ tagName ] = ( state: any, node: any ) => {
@@ -47,37 +49,12 @@ export class HtmlToMarkdown {
 				};
 
 				state.patch( node, result );
+
 				return result;
 			};
 
 			return handlers;
 		}, {} as Record<string, MdastHandle> );
-	}
-
-	private getLinkHandler(): MarkdownHandle {
-		const urlPattern = [
-			String.raw`\b(?:(?:https?|ftp):\/\/|www\.)`,
-			String.raw`(?![-_])(?:[-_a-z0-9\u00a1-\uffff]{1,63}\.)+(?:[a-z\u00a1-\uffff]{2,63})`,
-			String.raw`(?:[^\s<>]*)`
-		].join( '' );
-
-		const urlOrTextRegex = new RegExp( `(${ urlPattern })|([\\s\\S]+?)(?=(?:${ urlPattern })|$)`, 'gi' );
-
-		return (
-			node: { type: 'text'; value: string },
-			_: any,
-			state: any
-		): string => {
-			return node.value.replaceAll( urlOrTextRegex, ( match, urlChunk, textChunk ) => {
-				if ( urlChunk ) {
-					return urlChunk;
-				}
-
-				return state
-					.safe( textChunk, { before: '', after: '' } )
-					.replaceAll( /(?<!\\)</g, '\\<' );
-			} );
-		};
 	}
 
 	/**
@@ -102,6 +79,7 @@ export class HtmlToMarkdown {
 			.use( this.removeLabelFromCheckboxes )
 			// Turns HTML syntax tree to markdown syntax tree.
 			.use( rehypeRemark, {
+				// Keeps allowed HTML tags.
 				handlers: this.getRawTagsHandlers()
 			} )
 			// Adds support for GitHub Flavored Markdown (GFM).
@@ -116,8 +94,7 @@ export class HtmlToMarkdown {
 				emphasis: '_',
 				rule: '-',
 				handlers: {
-					break: () => '\n',
-					text: this.getLinkHandler()
+					break: () => '\n'
 				}
 			} );
 	}

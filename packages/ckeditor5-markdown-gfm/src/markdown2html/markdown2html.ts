@@ -8,7 +8,7 @@
  */
 
 import { unified, type Plugin } from 'unified';
-import remarkGfm from 'remark-gfm-no-autolink';
+import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
