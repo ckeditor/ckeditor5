@@ -109,7 +109,7 @@ export { RenameOperation } from './model/operation/renameoperation.js';
 export { RootAttributeOperation } from './model/operation/rootattributeoperation.js';
 export { RootOperation } from './model/operation/rootoperation.js';
 export { NoOperation } from './model/operation/nooperation.js';
-export { transformOperationSets } from './model/operation/transform.js';
+export { transformOperationSets, type TransformOperationSetsResult } from './model/operation/transform.js';
 
 // Model.
 export {
@@ -365,7 +365,8 @@ export {
 	_remove as _removeFromModelNodeList,
 	_move as _moveInModelNodeList,
 	_setAttribute as _setAttributeInModelNodeList,
-	_normalizeNodes as _normalizeInModelNodeList
+	_normalizeNodes as _normalizeInModelNodeList,
+	type ModelNodeSet
 } from './model/operation/utils.js';
 
 export {

@@ -11,7 +11,7 @@ import { Operation } from './operation.js';
 import { Position } from '../position.js';
 import { ModelNodeList } from '../nodelist.js';
 import { MoveOperation } from './moveoperation.js';
-import { _insert, _normalizeNodes, type NodeSet } from './utils.js';
+import { _insert, _normalizeNodes, type ModelNodeSet } from './utils.js';
 import { Text } from '../text.js';
 import { ModelElement } from '../element.js';
 import type { Selectable } from '../selection.js';
@@ -53,7 +53,7 @@ export class InsertOperation extends Operation {
 	 * @param baseVersion Document {@link module:engine/model/document~ModelDocument#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
-	constructor( position: Position, nodes: NodeSet, baseVersion: number | null ) {
+	constructor( position: Position, nodes: ModelNodeSet, baseVersion: number | null ) {
 		super( baseVersion );
 
 		this.position = position.clone();

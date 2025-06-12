@@ -164,7 +164,7 @@ export function transformOperationSets(
 		padWithNoOps?: boolean;
 		forceWeakRemove?: boolean;
 	}
-): TransformSetsResult {
+): TransformOperationSetsResult {
 	// Create new arrays so the originally passed arguments are not changed.
 	// No need to clone operations, they are cloned as they are transformed.
 	operationsA = operationsA.slice();
@@ -400,7 +400,7 @@ export function transformOperationSets(
 /**
  * The result of {@link module:engine/model/operation/transform~transformSets}.
  */
-export interface TransformSetsResult {
+export interface TransformOperationSetsResult {
 
 	/**
 	 * Transformed `operationsA`.

@@ -28,7 +28,7 @@ import { CKEditorError, isIterable } from '@ckeditor/ckeditor5-utils';
  * @param nodes Nodes to insert.
  * @returns Range spanning over inserted elements.
  */
-export function _insert( position: Position, nodes: NodeSet ): Range {
+export function _insert( position: Position, nodes: ModelNodeSet ): Range {
 	const normalizedNodes = _normalizeNodes( nodes );
 
 	// We have to count offset before inserting nodes because they can get merged and we would get wrong offsets.
@@ -157,10 +157,10 @@ export function _setAttribute( range: Range, key: string, value: unknown ): void
  * @param nodes Objects to normalize.
  * @returns Normalized nodes.
  */
-export function _normalizeNodes( nodes: NodeSet ): Array<ModelNode> {
+export function _normalizeNodes( nodes: ModelNodeSet ): Array<ModelNode> {
 	const normalized: Array<ModelNode> = [];
 
-	function convert( nodes: NodeSet ) {
+	function convert( nodes: ModelNodeSet ) {
 		if ( typeof nodes == 'string' ) {
 			normalized.push( new Text( nodes ) );
 		} else if ( nodes instanceof TextProxy ) {
@@ -280,7 +280,7 @@ function _haveSameAttributes( nodeA: ModelNode, nodeB: ModelNode ): boolean | un
  * a flat array of {@link module:engine/model/node~ModelNode nodes}. Consecutive text nodes (or items normalized to text nodes) will be
  * merged if they have same attributes.
  */
-export type NodeSet =
+export type ModelNodeSet =
 	| ModelItem
 	| string
 	| ModelNodeList
