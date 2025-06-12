@@ -20,10 +20,10 @@ import { type Node } from './node.js';
  *
  * Editable is automatically read-only when its {@link module:engine/view/document~ViewDocument Document} is read-only.
  *
- * The constructor of this class shouldn't be used directly. To create new `EditableElement` use the
+ * The constructor of this class shouldn't be used directly. To create new `ViewEditableElement` use the
  * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createEditableElement `downcastWriter#createEditableElement()`} method.
  */
-export class EditableElement extends /* #__PURE__ */ ObservableMixin( ViewContainerElement ) {
+export class ViewEditableElement extends /* #__PURE__ */ ObservableMixin( ViewContainerElement ) {
 	/**
 	 * Whether the editable is in read-write or read-only mode.
 	 *
@@ -96,7 +96,7 @@ export class EditableElement extends /* #__PURE__ */ ObservableMixin( ViewContai
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-EditableElement.prototype.is = function( type: string, name?: string ): boolean {
+ViewEditableElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'editableElement' || type === 'view:editableElement' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
@@ -112,5 +112,3 @@ EditableElement.prototype.is = function( type: string, name?: string ): boolean 
 		);
 	}
 };
-
-export { EditableElement as ViewEditableElement };

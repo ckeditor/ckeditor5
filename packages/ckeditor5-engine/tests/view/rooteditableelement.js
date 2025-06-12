@@ -4,7 +4,7 @@
  */
 
 import { ViewContainerElement } from '../../src/view/containerelement.js';
-import { EditableElement } from '../../src/view/editableelement.js';
+import { ViewEditableElement } from '../../src/view/editableelement.js';
 import { RootEditableElement } from '../../src/view/rooteditableelement.js';
 
 import { createViewDocumentMock } from '../../tests/view/_utils/createdocumentmock.js';
@@ -20,7 +20,7 @@ describe( 'RootEditableElement', () => {
 		it( 'should create an element with default root name', () => {
 			const root = new RootEditableElement( document, 'div' );
 
-			expect( root ).to.be.instanceof( EditableElement );
+			expect( root ).to.be.instanceof( ViewEditableElement );
 			expect( root ).to.be.instanceof( ViewContainerElement );
 
 			expect( root.rootName ).to.equal( 'main' );

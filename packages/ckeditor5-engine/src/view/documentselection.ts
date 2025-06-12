@@ -18,7 +18,7 @@ import {
 
 import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
-import { type EditableElement } from './editableelement.js';
+import { type ViewEditableElement } from './editableelement.js';
 import { type Element } from './element.js';
 import { type Node } from './node.js';
 import { type Item } from './item.js';
@@ -208,10 +208,10 @@ export class ViewDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeChe
 	}
 
 	/**
-	 * {@link module:engine/view/editableelement~EditableElement EditableElement} instance that contains this selection, or `null`
+	 * {@link module:engine/view/editableelement~ViewEditableElement ViewEditableElement} instance that contains this selection, or `null`
 	 * if the selection is not inside an editable element.
 	 */
-	public get editableElement(): EditableElement | null {
+	public get editableElement(): ViewEditableElement | null {
 		return this._selection.editableElement;
 	}
 

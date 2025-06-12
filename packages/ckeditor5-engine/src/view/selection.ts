@@ -22,7 +22,7 @@ import {
 
 import { type Element } from './element.js';
 import { type Item } from './item.js';
-import { type EditableElement } from './editableelement.js';
+import { type ViewEditableElement } from './editableelement.js';
 
 /**
  * Class representing an arbirtary selection in the view.
@@ -220,10 +220,10 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	}
 
 	/**
-	 * {@link module:engine/view/editableelement~EditableElement EditableElement} instance that contains this selection, or `null`
+	 * {@link module:engine/view/editableelement~ViewEditableElement ViewEditableElement} instance that contains this selection, or `null`
 	 * if the selection is not inside an editable element.
 	 */
-	public get editableElement(): EditableElement | null {
+	public get editableElement(): ViewEditableElement | null {
 		if ( this.anchor ) {
 			return this.anchor.editableElement;
 		}

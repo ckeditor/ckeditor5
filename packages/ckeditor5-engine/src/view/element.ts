@@ -36,7 +36,7 @@ import { TokenList } from './tokenlist.js';
  * * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createUIElement `downcastWriter#createUIElement()`}
  * in order to create a {@link module:engine/view/uielement~UIElement}.
  * * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createEditableElement `downcastWriter#createEditableElement()`}
- * in order to create a {@link module:engine/view/editableelement~EditableElement}.
+ * in order to create a {@link module:engine/view/editableelement~ViewEditableElement}.
  *
  * Note that for view elements which are not created from the model, like elements from mutations, paste or
  * {@link module:engine/controller/datacontroller~DataController#set data.set} it is not possible to define the type of the element.

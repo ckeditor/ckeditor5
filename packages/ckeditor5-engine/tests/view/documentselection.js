@@ -1063,13 +1063,13 @@ describe( 'ViewDocumentSelection', () => {
 			expect( documentSelection.editableElement ).to.be.null;
 		} );
 
-		it( 'should return null if selection is placed in container that is not EditableElement', () => {
+		it( 'should return null if selection is placed in container that is not ViewEditableElement', () => {
 			documentSelection._setTo( range1 );
 
 			expect( documentSelection.editableElement ).to.be.null;
 		} );
 
-		it( 'should return EditableElement when selection is placed inside', () => {
+		it( 'should return ViewEditableElement when selection is placed inside', () => {
 			const viewDocument = new ViewDocument( new StylesProcessor() );
 			documentSelection._setTo( viewDocument.selection );
 			const root = createViewRoot( viewDocument, 'div', 'main' );

@@ -23,7 +23,7 @@ import { RawElement } from './rawelement.js';
 import { CKEditorError, isIterable, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 import { ViewDocumentFragment } from './documentfragment.js';
 import { Text } from './text.js';
-import { EditableElement } from './editableelement.js';
+import { ViewEditableElement } from './editableelement.js';
 import { isPlainObject } from 'es-toolkit/compat';
 
 import { type ViewDocument } from './document.js';
@@ -357,7 +357,7 @@ export class ViewDowncastWriter {
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/editableelement~EditableElement}.
+	 * Creates a new {@link module:engine/view/editableelement~ViewEditableElement}.
 	 *
 	 * ```ts
 	 * writer.createEditableElement( 'div' );
@@ -380,8 +380,8 @@ export class ViewDowncastWriter {
 		options: {
 			renderUnsafeAttributes?: Array<string>;
 		} = {}
-	): EditableElement {
-		const editableElement = new EditableElement( this.document, name, attributes );
+	): ViewEditableElement {
+		const editableElement = new ViewEditableElement( this.document, name, attributes );
 
 		if ( options.renderUnsafeAttributes ) {
 			editableElement._unsafeAttributesToRender.push( ...options.renderUnsafeAttributes );

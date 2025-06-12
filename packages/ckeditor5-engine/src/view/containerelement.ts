@@ -25,7 +25,7 @@ import { type Node } from './node.js';
  * * this element represents a model text attribute (then use {@link module:engine/view/attributeelement~ViewAttributeElement}),
  * * this is an empty element like `<img>` (then use {@link module:engine/view/emptyelement~EmptyElement}),
  * * this is a root element,
- * * this is a nested editable element (then use  {@link module:engine/view/editableelement~EditableElement}).
+ * * this is a nested editable element (then use  {@link module:engine/view/editableelement~ViewEditableElement}).
  *
  * To create a new container element instance use the
  * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createContainerElement `DowncastWriter#createContainerElement()`}

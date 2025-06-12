@@ -487,7 +487,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * It will focus DOM element representing {@link module:engine/view/editableelement~EditableElement EditableElement}
+	 * It will focus DOM element representing {@link module:engine/view/editableelement~ViewEditableElement ViewEditableElement}
 	 * that is currently having selection inside.
 	 */
 	public focus(): void {

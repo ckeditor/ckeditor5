@@ -7,7 +7,7 @@
  * @module engine/view/rooteditableelement
  */
 
-import { EditableElement } from './editableelement.js';
+import { ViewEditableElement } from './editableelement.js';
 
 import { type ViewDocument } from './document.js';
 
@@ -15,10 +15,10 @@ const rootNameSymbol = Symbol( 'rootName' );
 
 /**
  * Class representing a single root in the data view. A root can be either {@link ~RootEditableElement#isReadOnly editable or read-only},
- * but in both cases it is called "an editable". Roots can contain other {@link module:engine/view/editableelement~EditableElement
+ * but in both cases it is called "an editable". Roots can contain other {@link module:engine/view/editableelement~ViewEditableElement
  * editable elements} making them "nested editables".
  */
-export class RootEditableElement extends EditableElement {
+export class RootEditableElement extends ViewEditableElement {
 	/**
 	 * Creates root editable element.
 	 *

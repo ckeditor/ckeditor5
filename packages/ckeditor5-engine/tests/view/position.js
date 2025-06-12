@@ -7,7 +7,7 @@ import { Position } from '../../src/view/position.js';
 import { Node } from '../../src/view/node.js';
 import { Element } from '../../src/view/element.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
-import { EditableElement } from '../../src/view/editableelement.js';
+import { ViewEditableElement } from '../../src/view/editableelement.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { Text } from '../../src/view/text.js';
 import { TextProxy } from '../../src/view/textproxy.js';
@@ -537,15 +537,15 @@ describe( 'Position', () => {
 	} );
 
 	describe( 'getEditableElement', () => {
-		it( 'should return null if position is not inside EditableElement', () => {
+		it( 'should return null if position is not inside ViewEditableElement', () => {
 			const position = new Position( new Element( document, 'p' ), 0 );
 
 			expect( position.editableElement ).to.be.null;
 		} );
 
-		it( 'should return EditableElement when position is placed inside', () => {
+		it( 'should return ViewEditableElement when position is placed inside', () => {
 			const p = new Element( document, 'p' );
-			const editable = new EditableElement( document, 'div', null, p );
+			const editable = new ViewEditableElement( document, 'div', null, p );
 			const position = new Position( p, 0 );
 
 			expect( position.editableElement ).to.equal( editable );

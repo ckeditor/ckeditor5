@@ -7,7 +7,7 @@ import { type ViewAttributeElement } from './attributeelement.js';
 import { type ViewContainerElement } from './containerelement.js';
 import { type ViewDocumentFragment } from './documentfragment.js';
 import { type ViewDocumentSelection } from './documentselection.js';
-import { type EditableElement } from './editableelement.js';
+import { type ViewEditableElement } from './editableelement.js';
 import { type Element } from './element.js';
 import { type EmptyElement } from './emptyelement.js';
 import { type Node } from './node.js';
@@ -60,7 +60,7 @@ export abstract class TypeCheckable {
 		Element |
 		ViewAttributeElement |
 		ViewContainerElement |
-		EditableElement |
+		ViewEditableElement |
 		EmptyElement |
 		RawElement |
 		RootEditableElement |
@@ -94,7 +94,7 @@ export abstract class TypeCheckable {
 		Element |
 		ViewAttributeElement |
 		ViewContainerElement |
-		EditableElement |
+		ViewEditableElement |
 		EmptyElement |
 		RawElement |
 		RootEditableElement |
@@ -155,10 +155,11 @@ export abstract class TypeCheckable {
 	 *
 	 * @label CONTAINER_ELEMENT
 	 */
-	public is( type: 'containerElement' | 'view:containerElement' ): this is ViewContainerElement | EditableElement | RootEditableElement;
+	public is( type: 'containerElement' | 'view:containerElement' ):
+		this is ViewContainerElement | ViewEditableElement | RootEditableElement;
 
 	/**
-	 * Checks whether this object is of type {@link module:engine/view/editableelement~EditableElement} or its subclass.
+	 * Checks whether this object is of type {@link module:engine/view/editableelement~ViewEditableElement} or its subclass.
 	 *
 	 * ```ts
 	 * editableElement.is( 'editableElement' ); // -> true
@@ -173,7 +174,7 @@ export abstract class TypeCheckable {
 	 * ```
 	 *
 	 * Assuming that the object being checked is an editbale element, you can also check its
-	 * {@link module:engine/view/editableelement~EditableElement#name name}:
+	 * {@link module:engine/view/editableelement~ViewEditableElement#name name}:
 	 *
 	 * ```ts
 	 * editableElement.is( 'element', 'div' ); // -> true if this is a div element
@@ -183,7 +184,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label EDITABLE_ELEMENT
 	 */
-	public is( type: 'editableElement' | 'view:editableElement' ): this is EditableElement | RootEditableElement;
+	public is( type: 'editableElement' | 'view:editableElement' ): this is ViewEditableElement | RootEditableElement;
 
 	/**
 	 * Checks whether this object is of type {@link module:engine/view/emptyelement~EmptyElement}.
@@ -427,7 +428,7 @@ export abstract class TypeCheckable {
 		Element |
 		ViewAttributeElement |
 		ViewContainerElement |
-		EditableElement |
+		ViewEditableElement |
 		EmptyElement |
 		RawElement |
 		RootEditableElement |
@@ -449,18 +450,18 @@ export abstract class TypeCheckable {
 	 */
 	public is<N extends string>( type: 'containerElement' | 'view:containerElement', name: N ): this is (
 		ViewContainerElement |
-		EditableElement |
+		ViewEditableElement |
 		RootEditableElement
 	) & { name: N };
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/view/editableelement~EditableElement}
+	 * Checks whether the object is of type {@link module:engine/view/editableelement~ViewEditableElement}
 	 * or its subclass and has the specified `name`.
 	 *
 	 * @label EDITABLE_ELEMENT_NAME
 	 */
 	public is<N extends string>( type: 'editableElement' | 'view:editableElement', name: N ): this is (
-		EditableElement |
+		ViewEditableElement |
 		RootEditableElement
 	) & { name: N };
 

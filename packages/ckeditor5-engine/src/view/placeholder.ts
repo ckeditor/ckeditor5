@@ -11,7 +11,7 @@ import '../../theme/placeholder.css';
 
 import { type ViewDocument } from './document.js';
 import { type ViewDowncastWriter } from './downcastwriter.js';
-import { type EditableElement } from './editableelement.js';
+import { type ViewEditableElement } from './editableelement.js';
 import { type Element } from './element.js';
 import { type View } from './view.js';
 
@@ -43,7 +43,7 @@ let hasDisplayedPlaceholderDeprecationWarning = false;
  */
 export function enablePlaceholder( { view, element, text, isDirectHost = true, keepOnFocus = false }: {
 	view: View;
-	element: PlaceholderableElement | EditableElement;
+	element: PlaceholderableElement | ViewEditableElement;
 	isDirectHost?: boolean;
 	text?: string;
 	keepOnFocus?: boolean;

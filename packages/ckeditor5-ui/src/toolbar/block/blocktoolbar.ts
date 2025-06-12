@@ -47,7 +47,7 @@ const toPx = /* #__PURE__ */ toUnit( 'px' );
  * as `$block` for which the toolbar provides at least one option.
  *
  * By default, the button is attached so its right boundary is touching the
- * {@link module:engine/view/editableelement~EditableElement}:
+ * {@link module:engine/view/editableelement~ViewEditableElement}:
  *
  * ```
  *  __ |

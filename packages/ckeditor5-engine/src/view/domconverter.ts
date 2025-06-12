@@ -36,7 +36,7 @@ import {
 import { type ViewNode } from './node.js';
 import { type ViewDocument } from './document.js';
 import { type ViewDocumentSelection } from './documentselection.js';
-import { type EditableElement } from './editableelement.js';
+import { type ViewEditableElement } from './editableelement.js';
 import { type ViewTextProxy } from './textproxy.js';
 import { type ViewRawElement } from './rawelement.js';
 
@@ -1112,9 +1112,9 @@ export class ViewDomConverter {
 	}
 
 	/**
-	 * Focuses DOM editable that is corresponding to provided {@link module:engine/view/editableelement~EditableElement}.
+	 * Focuses DOM editable that is corresponding to provided {@link module:engine/view/editableelement~ViewEditableElement}.
 	 */
-	public focus( viewEditable: EditableElement ): void {
+	public focus( viewEditable: ViewEditableElement ): void {
 		const domEditable = this.mapViewToDom( viewEditable );
 
 		if ( !domEditable || domEditable.ownerDocument.activeElement === domEditable ) {

@@ -21,7 +21,7 @@ import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 import { View } from '@ckeditor/ckeditor5-engine/src/view/view.js';
 import { RootEditableElement } from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement.js';
-import { EditableElement } from '@ckeditor/ckeditor5-engine/src/view/editableelement.js';
+import { ViewEditableElement } from '@ckeditor/ckeditor5-engine/src/view/editableelement.js';
 
 describe( 'Widget', () => {
 	let element, editor, model, view, viewDocument;
@@ -232,7 +232,7 @@ describe( 'Widget', () => {
 		} );
 
 		const isEditableElementStub = sinon
-			.stub( EditableElement.prototype, 'is' )
+			.stub( ViewEditableElement.prototype, 'is' )
 			.withArgs( 'editableElement' )
 			.returns( false );
 

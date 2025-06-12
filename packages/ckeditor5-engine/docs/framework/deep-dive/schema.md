@@ -483,7 +483,7 @@ schema.register( 'myCaption', {
 The engine and various features then check it via {@link module:engine/model/schema~ModelSchema#isLimit `Schema#isLimit()`} and can act accordingly.
 
 <info-box>
-	"Limit element" does not mean "editable element." The concept of "editable element" is reserved for the view and expressed by the {@link module:engine/view/editableelement~EditableElement `EditableElement` class}.
+	"Limit element" does not mean "editable element." The concept of "editable element" is reserved for the view and expressed by the {@link module:engine/view/editableelement~ViewEditableElement `ViewEditableElement` class}.
 </info-box>
 
 ### Object elements

@@ -11,7 +11,7 @@ import { TypeCheckable } from './typecheckable.js';
 
 import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
-import { EditableElement } from './editableelement.js';
+import { ViewEditableElement } from './editableelement.js';
 
 import { type ViewDocumentFragment } from './documentfragment.js';
 import { type Element } from './element.js';
@@ -100,13 +100,13 @@ export class Position extends TypeCheckable {
 	}
 
 	/**
-	 * {@link module:engine/view/editableelement~EditableElement EditableElement} instance that contains this position, or `null` if
+	 * {@link module:engine/view/editableelement~ViewEditableElement ViewEditableElement} instance that contains this position, or `null` if
 	 * position is not inside an editable element.
 	 */
-	public get editableElement(): EditableElement | null {
+	public get editableElement(): ViewEditableElement | null {
 		let editable = this.parent;
 
-		while ( !( editable instanceof EditableElement ) ) {
+		while ( !( editable instanceof ViewEditableElement ) ) {
 			if ( editable.parent ) {
 				editable = editable.parent;
 			} else {

@@ -939,13 +939,13 @@ describe( 'Selection', () => {
 			expect( selection.editableElement ).to.be.null;
 		} );
 
-		it( 'should return null if selection is placed in container that is not EditableElement', () => {
+		it( 'should return null if selection is placed in container that is not ViewEditableElement', () => {
 			selection.setTo( range1 );
 
 			expect( selection.editableElement ).to.be.null;
 		} );
 
-		it( 'should return EditableElement when selection is placed inside', () => {
+		it( 'should return ViewEditableElement when selection is placed inside', () => {
 			selection.setTo( viewDocument.selection );
 			const root = createViewRoot( viewDocument, 'div', 'main' );
 			const element = new Element( viewDocument, 'p' );

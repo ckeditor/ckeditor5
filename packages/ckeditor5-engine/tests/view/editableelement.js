@@ -5,17 +5,17 @@
 
 import { createViewDocumentMock } from '../../tests/view/_utils/createdocumentmock.js';
 
-import { EditableElement } from '../../src/view/editableelement.js';
+import { ViewEditableElement } from '../../src/view/editableelement.js';
 import { Range } from '../../src/view/range.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
-describe( 'EditableElement', () => {
+describe( 'ViewEditableElement', () => {
 	describe( 'is', () => {
 		let el;
 
 		before( () => {
-			el = new EditableElement( new ViewDocument( new StylesProcessor() ), 'div' );
+			el = new ViewEditableElement( new ViewDocument( new StylesProcessor() ), 'div' );
 		} );
 
 		it( 'should return true for containerElement/editable/element, also with correct name and element name', () => {
@@ -58,14 +58,14 @@ describe( 'EditableElement', () => {
 		beforeEach( () => {
 			docMock = createViewDocumentMock();
 
-			viewMain = new EditableElement( docMock, 'div' );
+			viewMain = new ViewEditableElement( docMock, 'div' );
 
-			viewHeader = new EditableElement( docMock, 'h1' );
+			viewHeader = new ViewEditableElement( docMock, 'h1' );
 			viewHeader.rootName = 'header';
 		} );
 
 		it( 'should be observable', () => {
-			const root = new EditableElement( docMock, 'div' );
+			const root = new ViewEditableElement( docMock, 'div' );
 
 			expect( root.isFocused ).to.be.false;
 
@@ -124,7 +124,7 @@ describe( 'EditableElement', () => {
 		} );
 
 		it( 'should be observable', () => {
-			const root = new EditableElement( docMock, 'div' );
+			const root = new ViewEditableElement( docMock, 'div' );
 
 			expect( root.isReadOnly ).to.be.false;
 
@@ -140,7 +140,7 @@ describe( 'EditableElement', () => {
 		} );
 
 		it( 'should be bound to the document#isReadOnly', () => {
-			const root = new EditableElement( docMock, 'div' );
+			const root = new ViewEditableElement( docMock, 'div' );
 
 			root.document.isReadOnly = false;
 
@@ -157,7 +157,7 @@ describe( 'EditableElement', () => {
 
 		beforeEach( () => {
 			docMock = createViewDocumentMock();
-			element = new EditableElement( docMock, 'div' );
+			element = new ViewEditableElement( docMock, 'div' );
 		} );
 
 		it( 'should be cloned properly', () => {

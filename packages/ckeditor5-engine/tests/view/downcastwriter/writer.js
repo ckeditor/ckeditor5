@@ -5,7 +5,7 @@
 
 import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { ViewDocument } from '../../../src/view/document.js';
-import { EditableElement } from '../../../src/view/editableelement.js';
+import { ViewEditableElement } from '../../../src/view/editableelement.js';
 import { ViewPosition } from '../../../src/view/position.js';
 import { ViewRange } from '../../../src/view/range.js';
 import { createViewRoot } from '../_utils/createroot.js';
@@ -206,10 +206,10 @@ describe( 'DowncastWriter', () => {
 	} );
 
 	describe( 'createEditableElement()', () => {
-		it( 'should create EditableElement', () => {
+		it( 'should create ViewEditableElement', () => {
 			const element = writer.createEditableElement( 'foo', attributes );
 
-			expect( element ).to.be.instanceOf( EditableElement );
+			expect( element ).to.be.instanceOf( ViewEditableElement );
 			expect( element.name ).to.equal( 'foo' );
 			assertElementAttributes( element, attributes );
 		} );
