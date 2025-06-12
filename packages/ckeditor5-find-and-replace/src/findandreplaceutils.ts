@@ -11,7 +11,7 @@ import type { Element, Item, Marker, Model, Range } from 'ckeditor5/src/engine.j
 import { Plugin } from 'ckeditor5/src/core.js';
 import { Collection, uid } from 'ckeditor5/src/utils.js';
 import { escapeRegExp } from 'es-toolkit/compat';
-import type { ResultType } from './findandreplace.js';
+import type { FindResultType } from './findandreplace.js';
 
 /**
  * A set of helpers related to find and replace.
@@ -54,9 +54,9 @@ export class FindAndReplaceUtils extends Plugin {
 	public updateFindResultFromRange(
 		range: Range,
 		model: Model,
-		findCallback: ( { item, text }: { item: Item; text: string } ) => Array<ResultType> | { results: Array<ResultType> },
-		startResults: Collection<ResultType> | null
-	): Collection<ResultType> {
+		findCallback: ( { item, text }: { item: Item; text: string } ) => Array<FindResultType> | { results: Array<FindResultType> },
+		startResults: Collection<FindResultType> | null
+	): Collection<FindResultType> {
 		const results = startResults || new Collection();
 
 		const checkIfResultAlreadyOnList = ( marker: Marker ) => results.find(
@@ -150,7 +150,7 @@ export class FindAndReplaceUtils extends Plugin {
 	public findByTextCallback(
 		searchTerm: string,
 		options: { matchCase?: boolean; wholeWords?: boolean }
-	): ( { item, text }: { item: Item; text: string } ) => Array<ResultType> {
+	): ( { item, text }: { item: Item; text: string } ) => Array<FindResultType> {
 		let flags = 'gu';
 
 		if ( !options.matchCase ) {
@@ -195,7 +195,7 @@ function findInsertIndex( resultsList: Collection<any>, markerToInsert: Marker )
 /**
  *  Maps RegExp match result to find result.
  */
-function regexpMatchToFindResult( matchResult: RegExpMatchArray ): ResultType {
+function regexpMatchToFindResult( matchResult: RegExpMatchArray ): FindResultType {
 	const lastGroupIndex = matchResult.length - 1;
 
 	let startOffset = matchResult.index!;
