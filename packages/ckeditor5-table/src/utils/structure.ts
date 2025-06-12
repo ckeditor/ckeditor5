@@ -7,7 +7,7 @@
  * @module table/utils/structure
  */
 
-import type { ModelElement, ModelNode, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelNode, ModelWriter } from 'ckeditor5/src/engine.js';
 
 import { TableWalker, type TableSlot } from '../tablewalker.js';
 import { createEmptyTableCell, updateNumericAttribute } from './common.js';
@@ -57,7 +57,7 @@ export function cropTableToDimensions(
 		endRow: number;
 		endColumn: number;
 	},
-	writer: Writer
+	writer: ModelWriter
 ): ModelElement {
 	const { startRow, startColumn, endRow, endColumn } = cropDimensions;
 
@@ -159,7 +159,7 @@ export function getVerticallyOverlappingCells( table: ModelElement, overlapRow: 
  * @internal
  * @returns Created table cell, if any were created.
  */
-export function splitHorizontally( tableCell: ModelElement, splitRow: number, writer: Writer ): ModelElement | null {
+export function splitHorizontally( tableCell: ModelElement, splitRow: number, writer: ModelWriter ): ModelElement | null {
 	const tableRow = tableCell.parent as ModelNode;
 	const table = tableRow.parent as ModelElement;
 	const rowIndex = tableRow.index!;
@@ -256,7 +256,7 @@ export function getHorizontallyOverlappingCells( table: ModelElement, overlapCol
  * @param splitColumn The index of column to split cell on.
  * @returns Created table cell.
  */
-export function splitVertically( tableCell: ModelElement, columnIndex: number, splitColumn: number, writer: Writer ): ModelElement {
+export function splitVertically( tableCell: ModelElement, columnIndex: number, splitColumn: number, writer: ModelWriter ): ModelElement {
 	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) as string );
 	const newColspan = splitColumn - columnIndex;
 
@@ -295,7 +295,7 @@ export function trimTableCellIfNeeded(
 	cellColumn: number,
 	limitRow: number,
 	limitColumn: number,
-	writer: Writer
+	writer: ModelWriter
 ): void {
 	const colspan = parseInt( tableCell.getAttribute( 'colspan' ) as string || '1' );
 	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) as string || '1' );
@@ -321,7 +321,7 @@ export function trimTableCellIfNeeded(
  * Sets proper heading attributes to a cropped table.
  */
 function addHeadingsToCroppedTable(
-	croppedTable: ModelElement, sourceTable: ModelElement, startRow: number, startColumn: number, writer: Writer
+	croppedTable: ModelElement, sourceTable: ModelElement, startRow: number, startColumn: number, writer: ModelWriter
 ) {
 	const headingRows = parseInt( sourceTable.getAttribute( 'headingRows' ) as string || '0' );
 

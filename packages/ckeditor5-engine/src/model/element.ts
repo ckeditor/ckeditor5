@@ -39,7 +39,7 @@ export class ModelElement extends ModelNode {
 	 * Creates a model element.
 	 *
 	 * **Note:** Constructor of this class shouldn't be used directly in the code.
-	 * Use the {@link module:engine/model/writer~Writer#createElement} method instead.
+	 * Use the {@link module:engine/model/writer~ModelWriter#createElement} method instead.
 	 *
 	 * @internal
 	 * @param name Element's name.
@@ -232,7 +232,7 @@ export class ModelElement extends ModelNode {
 	/**
 	 * {@link module:engine/model/element~ModelElement#_insertChild Inserts} one or more nodes at the end of this element.
 	 *
-	 * @see module:engine/model/writer~Writer#append
+	 * @see module:engine/model/writer~ModelWriter#append
 	 * @internal
 	 * @param nodes Nodes to be inserted.
 	 */
@@ -244,7 +244,7 @@ export class ModelElement extends ModelNode {
 	 * Inserts one or more nodes at the given index and sets {@link module:engine/model/node~ModelNode#parent parent} of these nodes
 	 * to this element.
 	 *
-	 * @see module:engine/model/writer~Writer#insert
+	 * @see module:engine/model/writer~ModelWriter#insert
 	 * @internal
 	 * @param index Index at which nodes should be inserted.
 	 * @param items Items to be inserted.
@@ -268,7 +268,7 @@ export class ModelElement extends ModelNode {
 	 * Removes one or more nodes starting at the given index and sets
 	 * {@link module:engine/model/node~ModelNode#parent parent} of these nodes to `null`.
 	 *
-	 * @see module:engine/model/writer~Writer#remove
+	 * @see module:engine/model/writer~ModelWriter#remove
 	 * @internal
 	 * @param index Index of the first node to remove.
 	 * @param howMany Number of nodes to remove.

@@ -13,7 +13,7 @@ import { type ModelSelection } from '../selection.js';
 import { type ModelElement } from '../element.js';
 import { type Model } from '../model.js';
 import { type ModelRange } from '../range.js';
-import { type Writer } from '../writer.js';
+import { type ModelWriter } from '../writer.js';
 
 import { CKEditorError, first } from '@ckeditor/ckeditor5-utils';
 
@@ -139,7 +139,7 @@ export function insertObject(
  * `place` parameter is equal to `after` but there is no element with `$text` node to set selection in.
  */
 function updateSelection(
-	writer: Writer,
+	writer: ModelWriter,
 	contextElement: ModelElement,
 	place: 'after' | 'on',
 	paragraphAttributes: Record<string, unknown>

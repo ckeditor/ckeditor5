@@ -7,7 +7,7 @@
  * @module table/converters/table-cell-paragraph-post-fixer
  */
 
-import type { Model, Writer, ModelElement, DifferItemInsert, DifferItemRemove } from 'ckeditor5/src/engine.js';
+import type { Model, ModelWriter, ModelElement, DifferItemInsert, DifferItemRemove } from 'ckeditor5/src/engine.js';
 
 /**
  * Injects a table cell post-fixer into the model which inserts a `paragraph` element into empty table cells.
@@ -41,7 +41,7 @@ export function injectTableCellParagraphPostFixer( model: Model ): void {
 /**
  * The table cell contents post-fixer.
  */
-function tableCellContentsPostFixer( writer: Writer, model: Model ) {
+function tableCellContentsPostFixer( writer: ModelWriter, model: Model ) {
 	const changes = model.document.differ.getChanges();
 
 	let wasFixed = false;
@@ -70,7 +70,7 @@ function tableCellContentsPostFixer( writer: Writer, model: Model ) {
 /**
  * Fixes all table cells in a table.
  */
-function fixTable( table: ModelElement, writer: Writer ) {
+function fixTable( table: ModelElement, writer: ModelWriter ) {
 	let wasFixed = false;
 
 	for ( const row of table.getChildren() ) {
@@ -85,7 +85,7 @@ function fixTable( table: ModelElement, writer: Writer ) {
 /**
  * Fixes all table cells in a table row.
  */
-function fixTableRow( tableRow: ModelElement, writer: Writer ) {
+function fixTableRow( tableRow: ModelElement, writer: ModelWriter ) {
 	let wasFixed = false;
 
 	for ( const tableCell of tableRow.getChildren() as IterableIterator<ModelElement> ) {
@@ -100,7 +100,7 @@ function fixTableRow( tableRow: ModelElement, writer: Writer ) {
  * - Adding a paragraph to a table cell without any child.
  * - Wrapping direct $text in a `<paragraph>`.
  */
-function fixTableCellContent( tableCell: ModelElement, writer: Writer ) {
+function fixTableCellContent( tableCell: ModelElement, writer: ModelWriter ) {
 	// Insert paragraph to an empty table cell.
 	if ( tableCell.childCount == 0 ) {
 		// @if CK_DEBUG_TABLE // console.log( 'Post-fixing table: insert paragraph in empty cell.' );

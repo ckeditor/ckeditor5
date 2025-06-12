@@ -14,7 +14,7 @@ import { type ModelDocumentFragment } from '../documentfragment.js';
 import { type Model } from '../model.js';
 import { type ModelNode } from '../node.js';
 import { type ModelSchema } from '../schema.js';
-import { type Writer } from '../writer.js';
+import { type ModelWriter } from '../writer.js';
 import { type ModelElement } from '../element.js';
 
 /**
@@ -77,7 +77,7 @@ export function injectSelectionPostFixer( model: Model ): void {
 /**
  * The selection post-fixer.
  */
-function selectionPostFixer( writer: Writer, model: Model ): boolean {
+function selectionPostFixer( writer: ModelWriter, model: Model ): boolean {
 	const selection = model.document.selection;
 	const schema = model.schema;
 

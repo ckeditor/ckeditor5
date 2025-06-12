@@ -25,7 +25,7 @@ import {
 	type UpcastElementEvent,
 	type EditingView,
 	type ViewElement,
-	type Writer,
+	type ModelWriter,
 	type PlaceholderableElement
 } from 'ckeditor5/src/engine.js';
 
@@ -218,7 +218,7 @@ export class Title extends Plugin {
 	 * Model post-fixer callback that ensures that `title` has only one `title-content` child.
 	 * All additional children should be moved after the `title` element and renamed to a paragraph.
 	 */
-	private _fixTitleContent( writer: Writer ) {
+	private _fixTitleContent( writer: ModelWriter ) {
 		let changed = false;
 
 		for ( const rootName of this.editor.model.document.getRootNames() ) {
@@ -250,7 +250,7 @@ export class Title extends Plugin {
 	 * Model post-fixer callback that creates a title element when it is missing,
 	 * takes care of the correct position of it and removes additional title elements.
 	 */
-	private _fixTitleElement( writer: Writer ) {
+	private _fixTitleElement( writer: ModelWriter ) {
 		let changed = false;
 		const model = this.editor.model;
 
@@ -303,7 +303,7 @@ export class Title extends Plugin {
 	 * Model post-fixer callback that adds an empty paragraph at the end of the document
 	 * when it is needed for the placeholder purposes.
 	 */
-	private _fixBodyElement( writer: Writer ) {
+	private _fixBodyElement( writer: ModelWriter ) {
 		let changed = false;
 
 		for ( const rootName of this.editor.model.document.getRootNames() ) {
@@ -326,7 +326,7 @@ export class Title extends Plugin {
 	 * Model post-fixer callback that removes a paragraph from the end of the document
 	 * if it was created for the placeholder purposes and is not needed anymore.
 	 */
-	private _fixExtraParagraph( writer: Writer ) {
+	private _fixExtraParagraph( writer: ModelWriter ) {
 		let changed = false;
 
 		for ( const rootName of this.editor.model.document.getRootNames() ) {
@@ -532,7 +532,7 @@ function isTitle( element: ModelElement ) {
 /**
  * Changes the given element to the title element.
  */
-function changeElementToTitle( element: ModelElement, writer: Writer, model: Model ) {
+function changeElementToTitle( element: ModelElement, writer: ModelWriter, model: Model ) {
 	const title = writer.createElement( 'title' );
 
 	writer.insert( title, element, 'before' );
@@ -546,7 +546,7 @@ function changeElementToTitle( element: ModelElement, writer: Writer, model: Mod
  *
  * @returns Returns true when there was any change. Returns false otherwise.
  */
-function fixAdditionalTitleElements( titleElements: Array<ModelElement>, writer: Writer, model: Model ) {
+function fixAdditionalTitleElements( titleElements: Array<ModelElement>, writer: ModelWriter, model: Model ) {
 	let hasChanged = false;
 
 	for ( const title of titleElements ) {
@@ -563,7 +563,7 @@ function fixAdditionalTitleElements( titleElements: Array<ModelElement>, writer:
 /**
  * Changes given title element to a paragraph or removes it when it is empty.
  */
-function fixTitleElement( title: ModelElement, writer: Writer, model: Model ) {
+function fixTitleElement( title: ModelElement, writer: ModelWriter, model: Model ) {
 	const child = title.getChild( 0 ) as ModelElement;
 
 	// Empty title should be removed.

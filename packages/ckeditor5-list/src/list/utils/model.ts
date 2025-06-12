@@ -12,7 +12,7 @@ import type {
 	ModelElement,
 	Model,
 	ModelNode,
-	Writer,
+	ModelWriter,
 	ModelItem,
 	ModelSchema
 } from 'ckeditor5/src/engine.js';
@@ -246,7 +246,7 @@ export function expandListBlocksToCompleteList( blocks: ArrayOrItem<ModelElement
  */
 export function splitListItemBefore(
 	listBlock: ModelElement,
-	writer: Writer
+	writer: ModelWriter
 ): Array<ListElement> {
 	const blocks = getListItemBlocks( listBlock, { direction: 'forward' } );
 	const id = ListItemUid.next();
@@ -270,7 +270,7 @@ export function splitListItemBefore(
 export function mergeListItemBefore(
 	listBlock: ModelNode,
 	parentBlock: ModelElement,
-	writer: Writer
+	writer: ModelWriter
 ): Array<ListElement> {
 	const attributes: Record<string, unknown> = {};
 
@@ -301,7 +301,7 @@ export function mergeListItemBefore(
  */
 export function indentBlocks(
 	blocks: ArrayOrItem<ListElement>,
-	writer: Writer,
+	writer: ModelWriter,
 	{ expand, indentBy = 1 }: { expand?: boolean; indentBy?: number } = {}
 ): Array<ListElement> {
 	blocks = toArray( blocks );
@@ -332,7 +332,7 @@ export function indentBlocks(
  */
 export function outdentBlocksWithMerge(
 	blocks: ArrayOrItem<ListElement>,
-	writer: Writer
+	writer: ModelWriter
 ): Array<ListElement> {
 	blocks = toArray( blocks );
 
@@ -394,7 +394,7 @@ export function outdentBlocksWithMerge(
  */
 export function removeListAttributes(
 	blocks: ArrayOrItem<ModelElement>,
-	writer: Writer
+	writer: ModelWriter
 ): Array<ModelElement> {
 	blocks = toArray( blocks );
 
@@ -446,7 +446,7 @@ export function isSingleListItem( blocks: Array<ModelNode> ): boolean {
  * @param writer The model writer.
  * @returns Array of altered blocks.
  */
-export function outdentFollowingItems( lastBlock: ModelElement, writer: Writer ): Array<ListElement> {
+export function outdentFollowingItems( lastBlock: ModelElement, writer: ModelWriter ): Array<ListElement> {
 	const changedBlocks = [];
 
 	// Start from the model item that is just after the last turned-off item.
@@ -589,7 +589,7 @@ export function isNumberedListType( listType: ListType ): boolean {
 function mergeListItemIfNotLast(
 	block: ListElement,
 	parentBlock: ListElement,
-	writer: Writer
+	writer: ModelWriter
 ) {
 	const parentItemBlocks = getListItemBlocks( parentBlock, { direction: 'forward' } );
 

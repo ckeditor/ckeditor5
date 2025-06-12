@@ -24,7 +24,7 @@ import { compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
  *
  * **Note:** If a node is detached from the model tree, you can manipulate it using it's API.
  * However, it is **very important** that nodes already attached to model tree should be only changed through
- * {@link module:engine/model/writer~Writer Writer API}.
+ * {@link module:engine/model/writer~ModelWriter Writer API}.
  *
  * Changes done by `Node` methods, like {@link module:engine/model/element~ModelElement#_insertChild _insertChild} or
  * {@link module:engine/model/node~ModelNode#_setAttribute _setAttribute}
@@ -37,9 +37,9 @@ import { compareArrays, toMap } from '@ckeditor/ckeditor5-utils';
  * 3. Change `Node` that was already added to the model using `Batch` API.
  *
  * Similarly, you cannot use `Batch` API on a node that has not been added to the model tree, with the exception
- * of {@link module:engine/model/writer~Writer#insert inserting} that node to the model tree.
+ * of {@link module:engine/model/writer~ModelWriter#insert inserting} that node to the model tree.
  *
- * Be aware that using {@link module:engine/model/writer~Writer#remove remove from Batch API} does not allow to use `Node` API because
+ * Be aware that using {@link module:engine/model/writer~ModelWriter#remove remove from Batch API} does not allow to use `Node` API because
  * the information about `Node` is still kept in model document.
  *
  * In case of {@link module:engine/model/element~ModelElement element node}, adding and removing children also counts as changing a node and
@@ -380,7 +380,7 @@ export abstract class ModelNode extends ModelTypeCheckable {
 	 * Removes this node from its parent.
 	 *
 	 * @internal
-	 * @see module:engine/model/writer~Writer#remove
+	 * @see module:engine/model/writer~ModelWriter#remove
 	 */
 	public _remove(): void {
 		this.parent!._removeChildren( this.index! );
@@ -389,7 +389,7 @@ export abstract class ModelNode extends ModelTypeCheckable {
 	/**
 	 * Sets attribute on the node. If attribute with the same key already is set, it's value is overwritten.
 	 *
-	 * @see module:engine/model/writer~Writer#setAttribute
+	 * @see module:engine/model/writer~ModelWriter#setAttribute
 	 * @internal
 	 * @param key Key of attribute to set.
 	 * @param value Attribute value.
@@ -401,7 +401,7 @@ export abstract class ModelNode extends ModelTypeCheckable {
 	/**
 	 * Removes all attributes from the node and sets given attributes.
 	 *
-	 * @see module:engine/model/writer~Writer#setAttributes
+	 * @see module:engine/model/writer~ModelWriter#setAttributes
 	 * @internal
 	 * @param attrs Attributes to set. See {@link module:utils/tomap~toMap} for a list of accepted values.
 	 */
@@ -412,7 +412,7 @@ export abstract class ModelNode extends ModelTypeCheckable {
 	/**
 	 * Removes an attribute with given key from the node.
 	 *
-	 * @see module:engine/model/writer~Writer#removeAttribute
+	 * @see module:engine/model/writer~ModelWriter#removeAttribute
 	 * @internal
 	 * @param key Key of attribute to remove.
 	 * @returns `true` if the attribute was set on the element, `false` otherwise.
@@ -424,7 +424,7 @@ export abstract class ModelNode extends ModelTypeCheckable {
 	/**
 	 * Removes all attributes from the node.
 	 *
-	 * @see module:engine/model/writer~Writer#clearAttributes
+	 * @see module:engine/model/writer~ModelWriter#clearAttributes
 	 * @internal
 	 */
 	public _clearAttributes(): void {

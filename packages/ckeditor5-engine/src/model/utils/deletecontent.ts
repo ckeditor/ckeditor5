@@ -17,7 +17,7 @@ import { type Model } from '../model.js';
 import { type ModelPosition } from '../position.js';
 import { type ModelSchema } from '../schema.js';
 import { type ModelSelection } from '../selection.js';
-import { type Writer } from '../writer.js';
+import { type ModelWriter } from '../writer.js';
 
 /**
  * Deletes content of the selection and merge siblings. The resulting selection is always collapsed.
@@ -245,7 +245,7 @@ function getParentBlock( position: ModelPosition ): ModelElement | null | undefi
  * This function is a result of reaching the Ballmer's peak for just the right amount of time.
  * Even I had troubles documenting it after a while and after reading it again I couldn't believe that it really works.
  */
-function mergeBranches( writer: Writer, startPosition: ModelPosition, endPosition: ModelPosition ) {
+function mergeBranches( writer: ModelWriter, startPosition: ModelPosition, endPosition: ModelPosition ) {
 	const model = writer.model;
 
 	// Verify if there is a need and possibility to merge.
@@ -320,7 +320,7 @@ function mergeBranches( writer: Writer, startPosition: ModelPosition, endPositio
  * ```
  */
 function mergeBranchesLeft(
-	writer: Writer,
+	writer: ModelWriter,
 	startPosition: ModelPosition,
 	endPosition: ModelPosition,
 	commonAncestor: ModelElement | ModelDocumentFragment | null
@@ -411,7 +411,7 @@ function mergeBranchesLeft(
  * ```
  */
 function mergeBranchesRight(
-	writer: Writer,
+	writer: ModelWriter,
 	startPosition: ModelPosition,
 	endPosition: ModelPosition,
 	commonAncestor: ModelElement | ModelDocumentFragment | null
@@ -486,7 +486,7 @@ function mergeBranchesRight(
 /**
  * There is no right merge operation so we need to simulate it.
  */
-function mergeRight( writer: Writer, position: ModelPosition ) {
+function mergeRight( writer: ModelWriter, position: ModelPosition ) {
 	const startElement: any = position.nodeBefore;
 	const endElement: any = position.nodeAfter;
 
@@ -569,7 +569,7 @@ function isCrossingLimitElement( leftPos: ModelPosition, rightPos: ModelPosition
 }
 
 function insertParagraph(
-	writer: Writer,
+	writer: ModelWriter,
 	position: ModelPosition,
 	selection: ModelSelection | ModelDocumentSelection,
 	attributes = {}
@@ -583,7 +583,7 @@ function insertParagraph(
 	collapseSelectionAt( writer, selection, writer.createPositionAt( paragraph, 0 ) );
 }
 
-function replaceEntireContentWithParagraph( writer: Writer, selection: ModelSelection | ModelDocumentSelection ) {
+function replaceEntireContentWithParagraph( writer: ModelWriter, selection: ModelSelection | ModelDocumentSelection ) {
 	const limitElement = writer.model.schema.getLimitElement( selection );
 
 	writer.remove( writer.createRangeIn( limitElement ) );
@@ -617,7 +617,7 @@ function shouldEntireContentBeReplacedWithParagraph( schema: ModelSchema, select
  * uses a different method to set it.
  */
 function collapseSelectionAt(
-	writer: Writer,
+	writer: ModelWriter,
 	selection: ModelSelection | ModelDocumentSelection,
 	positionOrRange: ModelPosition | ModelRange
 ) {

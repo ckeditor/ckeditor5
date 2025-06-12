@@ -18,7 +18,7 @@ import type { MarkerCollectionUpdateEvent, MarkerChangeEvent } from './markercol
 import { type Batch } from './batch.js';
 import { type ModelPosition } from './position.js';
 import { type ModelRange } from './range.js';
-import { type Writer } from './writer.js';
+import { type ModelWriter } from './writer.js';
 
 import {
 	CKEditorError,
@@ -225,7 +225,7 @@ export class ModelDocument extends /* #__PURE__ */ EmitterMixin() {
 	 * Creates a new root.
 	 *
 	 * **Note:** do not use this method after the editor has been initialized! If you want to dynamically add a root, use
-	 * {@link module:engine/model/writer~Writer#addRoot `model.Writer#addRoot`} instead.
+	 * {@link module:engine/model/writer~ModelWriter#addRoot `model.Writer#addRoot`} instead.
 	 *
 	 * @param elementName The element name. Defaults to `'$root'` which also has some basic schema defined
 	 * (e.g. `$block` elements are allowed inside the `$root`). Make sure to define a proper schema if you use a different name.
@@ -303,7 +303,7 @@ export class ModelDocument extends /* #__PURE__ */ EmitterMixin() {
 	 * a change, it should return `true`. When this happens, all post-fixers are fired again to check if something else should
 	 * not be fixed in the new document tree state.
 	 *
-	 * As a parameter, a post-fixer callback receives a {@link module:engine/model/writer~Writer writer} instance connected with the
+	 * As a parameter, a post-fixer callback receives a {@link module:engine/model/writer~ModelWriter writer} instance connected with the
 	 * executed changes block. Thanks to that, all changes done by the callback will be added to the same
 	 * {@link module:engine/model/batch~Batch batch} (and undo step) as the original changes. This makes post-fixer changes transparent
 	 * for the user.
@@ -359,7 +359,7 @@ export class ModelDocument extends /* #__PURE__ */ EmitterMixin() {
 	 * @fires change:data
 	 * @param writer The writer on which post-fixers will be called.
 	 */
-	public _handleChangeBlock( writer: Writer ): void {
+	public _handleChangeBlock( writer: ModelWriter ): void {
 		if ( this._hasDocumentChangedFromTheLastChangeBlock() ) {
 			this._callPostFixers( writer );
 
@@ -442,7 +442,7 @@ export class ModelDocument extends /* #__PURE__ */ EmitterMixin() {
 	 *
 	 * @param writer The writer on which post-fixer callbacks will be called.
 	 */
-	private _callPostFixers( writer: Writer ) {
+	private _callPostFixers( writer: ModelWriter ) {
 		let wasFixed = false;
 
 		do {
@@ -510,7 +510,7 @@ export type ModelDocumentChangeEvent = {
 /**
  * Callback passed as an argument to the {@link module:engine/model/document~ModelDocument#registerPostFixer} method.
  */
-export type ModelPostFixer = ( writer: Writer ) => boolean;
+export type ModelPostFixer = ( writer: ModelWriter ) => boolean;
 
 /**
  * Checks whether given range boundary position is valid for document selection, meaning that is not between

@@ -9,7 +9,7 @@
 
 import type {
 	ModelElement,
-	Writer
+	ModelWriter
 } from 'ckeditor5/src/engine.js';
 
 import { Command } from 'ckeditor5/src/core.js';
@@ -78,7 +78,7 @@ export class MergeCellsCommand extends Command {
  * paragraph. If one of the merged table cells is empty, the merged table cell will have contents of the non-empty table cell.
  * If both are empty, the merged table cell will have only one empty paragraph.
  */
-function mergeTableCells( cellBeingMerged: ModelElement, targetCell: ModelElement, writer: Writer ) {
+function mergeTableCells( cellBeingMerged: ModelElement, targetCell: ModelElement, writer: ModelWriter ) {
 	if ( !isEmpty( cellBeingMerged ) ) {
 		if ( isEmpty( targetCell ) ) {
 			writer.remove( writer.createRangeIn( targetCell ) );

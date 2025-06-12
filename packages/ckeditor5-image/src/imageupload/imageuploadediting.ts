@@ -13,7 +13,7 @@ import {
 	UpcastWriter,
 	type ModelElement,
 	type ModelItem,
-	type Writer,
+	type ModelWriter,
 	type DataTransfer,
 	type ViewElement,
 	type ModelNodeAttributes,
@@ -498,7 +498,7 @@ export class ImageUploadEditing extends Plugin {
 	 * @param data Data object from which `srcset` will be created.
 	 * @param image The image element on which the `srcset` attribute will be set.
 	 */
-	protected _parseAndSetSrcsetAttributeOnImage( data: Record<string, unknown>, image: ModelElement, writer: Writer ): void {
+	protected _parseAndSetSrcsetAttributeOnImage( data: Record<string, unknown>, image: ModelElement, writer: ModelWriter ): void {
 		// Srcset attribute for responsive images support.
 		let maxWidth = 0;
 

@@ -18,7 +18,7 @@ import { ModelNode, type ModelNodeAttributes } from './node.js';
  * **Important:** see {@link module:engine/model/node~ModelNode} to read about restrictions using `Text` and `Node` API.
  *
  * **Note:** keep in mind that `Text` instances might indirectly got removed from model tree when model is changed.
- * This happens when {@link module:engine/model/writer~Writer model writer} is used to change model and the text node is merged with
+ * This happens when {@link module:engine/model/writer~ModelWriter model writer} is used to change model and the text node is merged with
  * another text node. Then, both text nodes are removed and a new text node is inserted into the model. Because of
  * this behavior, keeping references to `Text` is not recommended. Instead, consider creating
  * {@link module:engine/model/liveposition~ModelLivePosition live position} placed before the text node.
@@ -35,7 +35,7 @@ export class ModelText extends ModelNode {
 	 * Creates a text node.
 	 *
 	 * **Note:** Constructor of this class shouldn't be used directly in the code.
-	 * Use the {@link module:engine/model/writer~Writer#createText} method instead.
+	 * Use the {@link module:engine/model/writer~ModelWriter#createText} method instead.
 	 *
 	 * @internal
 	 * @param data Node's text.

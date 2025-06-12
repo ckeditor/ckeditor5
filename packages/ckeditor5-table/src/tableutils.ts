@@ -16,7 +16,7 @@ import type {
 	ModelPosition,
 	ModelRange,
 	ModelSelection,
-	Writer
+	ModelWriter
 } from 'ckeditor5/src/engine.js';
 
 import { TableWalker, type TableWalkerOptions } from './tablewalker.js';
@@ -125,7 +125,7 @@ export class TableUtils extends Plugin {
 	 * @returns The created table element.
 	 */
 	public createTable(
-		writer: Writer,
+		writer: ModelWriter,
 		options: {
 			rows?: number;
 			columns?: number;
@@ -1102,7 +1102,7 @@ export class TableUtils extends Plugin {
  * @param tableCellToInsert The number of cells to insert in each row.
  */
 function createEmptyRows(
-	writer: Writer, table: ModelElement, insertAt: number, rows: number, tableCellToInsert: number, attributes = {}
+	writer: ModelWriter, table: ModelElement, insertAt: number, rows: number, tableCellToInsert: number, attributes = {}
 ) {
 	for ( let i = 0; i < rows; i++ ) {
 		const tableRow = writer.createElement( 'tableRow' );
@@ -1118,7 +1118,7 @@ function createEmptyRows(
  *
  * @param cells The number of cells to create
  */
-function createCells( cells: number, writer: Writer, insertPosition: ModelPosition, attributes = {} ) {
+function createCells( cells: number, writer: ModelWriter, insertPosition: ModelPosition, attributes = {} ) {
 	for ( let i = 0; i < cells; i++ ) {
 		createEmptyTableCell( writer, insertPosition, attributes );
 	}
@@ -1153,7 +1153,7 @@ function breakSpanEvenly( span: number, numberOfCells: number ): { newCellsSpan:
 /**
  * Updates heading columns attribute if removing a row from head section.
  */
-function adjustHeadingColumns( table: ModelElement, removedColumnIndexes: IndexesObject, writer: Writer ) {
+function adjustHeadingColumns( table: ModelElement, removedColumnIndexes: IndexesObject, writer: ModelWriter ) {
 	const headingColumns = table.getAttribute( 'headingColumns' ) as number || 0;
 
 	if ( headingColumns && removedColumnIndexes.first < headingColumns ) {
@@ -1167,7 +1167,7 @@ function adjustHeadingColumns( table: ModelElement, removedColumnIndexes: Indexe
 /**
  * Calculates a new heading rows value for removing rows from heading section.
  */
-function updateHeadingRows( table: ModelElement, { first, last }: IndexesObject, writer: Writer ) {
+function updateHeadingRows( table: ModelElement, { first, last }: IndexesObject, writer: ModelWriter ) {
 	const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 
 	if ( first < headingRows ) {
@@ -1243,7 +1243,7 @@ function getCellsToMoveAndTrimOnRemoveRow( table: ModelElement, { first, last }:
 	return { cellsToMove, cellsToTrim };
 }
 
-function moveCellsToRow( table: ModelElement, targetRowIndex: number, cellsToMove: CellsToMove, writer: Writer ) {
+function moveCellsToRow( table: ModelElement, targetRowIndex: number, cellsToMove: CellsToMove, writer: ModelWriter ) {
 	const tableWalker = new TableWalker( table, {
 		includeAllSlots: true,
 		row: targetRowIndex

@@ -686,7 +686,7 @@ export interface UpcastConversionApi {
 	schema: ModelSchema;
 
 	/**
-	 * The {@link module:engine/model/writer~Writer} instance used to manipulate the data during conversion.
+	 * The {@link module:engine/model/writer~ModelWriter} instance used to manipulate the data during conversion.
 	 */
 	writer: ModelWriter;
 

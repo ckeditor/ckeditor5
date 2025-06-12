@@ -20,7 +20,7 @@ import type {
 	UpcastDispatcher,
 	UpcastElementEvent,
 	ViewElement,
-	Writer
+	ModelWriter
 } from 'ckeditor5/src/engine.js';
 
 import { LegacyListEditing } from '../legacylist/legacylistediting.js';
@@ -611,7 +611,7 @@ function fixListAfterOutdentListCommand( editor: Editor, attributeStrategies: Ar
  * ■ List item 3.  // ...
  */
 function fixListAttributesOnListItemElements( editor: Editor, attributeStrategies: Array<AttributeStrategy> ) {
-	return ( writer: Writer ) => {
+	return ( writer: ModelWriter ) => {
 		let wasFixed = false;
 
 		const insertedListItems = getChangedListItems( editor.model.document.differ.getChanges() )
@@ -773,7 +773,7 @@ function shouldInheritListTypeFromPreviousItem( previousItem: ModelNode | null, 
  * Removes the `listStyle`, `listReversed` and `listStart` attributes from "todo" list items.
  */
 function removeListItemAttributesFromTodoList( editor: Editor ) {
-	return ( writer: Writer ) => {
+	return ( writer: ModelWriter ) => {
 		const todoListItems = getChangedListItems( editor.model.document.differ.getChanges() )
 			.filter( item => {
 				// Handle the todo lists only. The rest is handled in another post-fixer.

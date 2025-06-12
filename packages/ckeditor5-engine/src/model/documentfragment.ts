@@ -27,7 +27,7 @@ import { isIterable } from '@ckeditor/ckeditor5-utils';
  *
  * ModelDocumentFragment has own {@link module:engine/model/markercollection~MarkerCollection}. Markers from this collection
  * will be set to the {@link module:engine/model/model~Model#markers model markers} by a
- * {@link module:engine/model/writer~Writer#insert} function.
+ * {@link module:engine/model/writer~ModelWriter#insert} function.
  */
 export class ModelDocumentFragment extends ModelTypeCheckable implements Iterable<ModelNode> {
 	/**
@@ -56,7 +56,7 @@ export class ModelDocumentFragment extends ModelTypeCheckable implements Iterabl
 	 * Creates an empty `ModelDocumentFragment`.
 	 *
 	 * **Note:** Constructor of this class shouldn't be used directly in the code.
-	 * Use the {@link module:engine/model/writer~Writer#createModelDocumentFragment} method instead.
+	 * Use the {@link module:engine/model/writer~ModelWriter#createModelDocumentFragment} method instead.
 	 *
 	 * @internal
 	 * @param children Nodes to be contained inside the `ModelDocumentFragment`.

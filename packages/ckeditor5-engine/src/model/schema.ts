@@ -18,7 +18,7 @@ import { type ModelDocumentSelection } from './documentselection.js';
 import { type ModelItem } from './item.js';
 import { type ModelNode } from './node.js';
 import { type ModelSelection } from './selection.js';
-import { type Writer } from './writer.js';
+import { type ModelWriter } from './writer.js';
 
 import { CKEditorError, first, ObservableMixin } from '@ckeditor/ckeditor5-utils';
 
@@ -474,7 +474,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * In other words &ndash; both elements are not a limit elements and whether `elementToMerge`'s children
 	 * {@link #checkChild are allowed} in the `positionOrBaseElement`.
 	 *
-	 * This check ensures that elements merged with {@link module:engine/model/writer~Writer#merge `Writer#merge()`}
+	 * This check ensures that elements merged with {@link module:engine/model/writer~ModelWriter#merge `Writer#merge()`}
 	 * will be valid.
 	 *
 	 * Instead of elements, you can pass the instance of the {@link module:engine/model/position~ModelPosition} class as the
@@ -934,7 +934,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	public setAllowedAttributes(
 		node: ModelNode,
 		attributes: Record<string, unknown>,
-		writer: Writer
+		writer: ModelWriter
 	): void {
 		const model = writer.model;
 
@@ -950,7 +950,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param nodes Nodes that will be filtered.
 	 */
-	public removeDisallowedAttributes( nodes: Iterable<ModelNode>, writer: Writer ): void {
+	public removeDisallowedAttributes( nodes: Iterable<ModelNode>, writer: ModelWriter ): void {
 		for ( const node of nodes ) {
 			// When node is a `Text` it has no children, so just filter it out.
 			if ( node.is( '$text' ) ) {
@@ -2481,7 +2481,7 @@ function* convertToMinimalFlatRanges( ranges: Iterable<ModelRange> ): Iterable<M
 	}
 }
 
-function removeDisallowedAttributeFromNode( schema: ModelSchema, node: ModelNode, writer: Writer ) {
+function removeDisallowedAttributeFromNode( schema: ModelSchema, node: ModelNode, writer: ModelWriter ) {
 	for ( const attribute of node.getAttributeKeys() ) {
 		if ( !schema.checkAttribute( node, attribute ) ) {
 			writer.removeAttribute( attribute, node );

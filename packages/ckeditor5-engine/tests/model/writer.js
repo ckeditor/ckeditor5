@@ -4,7 +4,7 @@
  */
 
 import { Model } from '../../src/model/model.js';
-import { Writer } from '../../src/model/writer.js';
+import { ModelWriter } from '../../src/model/writer.js';
 import { Batch } from '../../src/model/batch.js';
 import { InsertOperation } from '../../src/model/operation/insertoperation.js';
 
@@ -38,7 +38,7 @@ describe( 'Writer', () => {
 		let writer;
 
 		beforeEach( () => {
-			writer = new Writer( model, batch );
+			writer = new ModelWriter( model, batch );
 		} );
 
 		it( 'should have model instance', () => {
@@ -417,7 +417,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 			const root = doc.createRoot();
 			const node = createText( 'foo' );
 
@@ -544,7 +544,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 			const parent = createDocumentFragment();
 
 			expectToThrowCKEditorError( () => {
@@ -666,7 +666,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 			const child = createElement( 'child' );
 
 			expectToThrowCKEditorError( () => {
@@ -852,7 +852,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 			const parent = createDocumentFragment();
 
 			expectToThrowCKEditorError( () => {
@@ -906,7 +906,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 			const parent = createDocumentFragment();
 
 			expectToThrowCKEditorError( () => {
@@ -967,7 +967,7 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
-					const writer = new Writer( model, batch );
+					const writer = new ModelWriter( model, batch );
 
 					expectToThrowCKEditorError( () => {
 						writer.setAttribute( 'a', 1, node );
@@ -994,7 +994,7 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
-					const writer = new Writer( model, batch );
+					const writer = new ModelWriter( model, batch );
 
 					expectToThrowCKEditorError( () => {
 						writer.removeAttribute( 'b', node );
@@ -1139,7 +1139,7 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
-					const writer = new Writer( model, batch );
+					const writer = new ModelWriter( model, batch );
 
 					expectToThrowCKEditorError( () => {
 						writer.setAttribute( 'a', 1, getRange( 0, 20 ) );
@@ -1215,7 +1215,7 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
-					const writer = new Writer( model, batch );
+					const writer = new ModelWriter( model, batch );
 
 					expectToThrowCKEditorError( () => {
 						writer.removeAttribute( 'a', getRange( 3, 15 ) );
@@ -1274,7 +1274,7 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
-					const writer = new Writer( model, batch );
+					const writer = new ModelWriter( model, batch );
 
 					expectToThrowCKEditorError( () => {
 						writer.setAttribute( 'a', 1, p );
@@ -1297,7 +1297,7 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
-					const writer = new Writer( model, batch );
+					const writer = new ModelWriter( model, batch );
 
 					expectToThrowCKEditorError( () => {
 						writer.removeAttribute( 'b', root );
@@ -1360,7 +1360,7 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
-					const writer = new Writer( model, batch );
+					const writer = new ModelWriter( model, batch );
 					const element = createElement( 'x' );
 
 					expectToThrowCKEditorError( () => {
@@ -1467,7 +1467,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 
 			expectToThrowCKEditorError( () => {
 				writer.setAttributes( new Map( [ [ 'a', 3 ], [ 'c', null ] ] ), item );
@@ -1589,7 +1589,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 
 			expectToThrowCKEditorError( () => {
 				writer.merge( new ModelPosition( root, [ 1 ] ) );
@@ -1689,7 +1689,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 
 			expectToThrowCKEditorError( () => {
 				writer.move( range, new ModelPosition( root, [ 1, 3 ] ) );
@@ -1810,7 +1810,7 @@ describe( 'Writer', () => {
 			} );
 
 			it( 'should throw when trying to use detached writer', () => {
-				const writer = new Writer( model, batch );
+				const writer = new ModelWriter( model, batch );
 
 				expectToThrowCKEditorError( () => {
 					writer.remove( range );
@@ -1867,7 +1867,7 @@ describe( 'Writer', () => {
 			} );
 
 			it( 'should throw when trying to use detached writer', () => {
-				const writer = new Writer( model, batch );
+				const writer = new ModelWriter( model, batch );
 
 				expectToThrowCKEditorError( () => {
 					writer.remove( range );
@@ -1908,7 +1908,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 			const p = new ModelElement( 'p', null, new ModelText( 'abc' ) );
 
 			expectToThrowCKEditorError( () => {
@@ -2039,7 +2039,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 
 			expectToThrowCKEditorError( () => {
 				writer.split( new ModelPosition( root, [ 0, 3 ] ) );
@@ -2116,7 +2116,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 
 			expectToThrowCKEditorError( () => {
 				writer.wrap( range, 'p' );
@@ -2159,7 +2159,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 
 			expectToThrowCKEditorError( () => {
 				writer.unwrap( p );
@@ -2268,7 +2268,7 @@ describe( 'Writer', () => {
 
 		it( 'should throw when trying to use detached writer', () => {
 			const marker = addMarker( 'name', { range, usingOperation: false } );
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 
 			expectToThrowCKEditorError( () => {
 				writer.addMarker( marker, null, { usingOperation: true } );
@@ -2548,7 +2548,7 @@ describe( 'Writer', () => {
 
 		it( 'should throw when trying to use detached writer', () => {
 			const marker = addMarker( 'name', { range, usingOperation: false } );
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 
 			expectToThrowCKEditorError( () => {
 				writer.updateMarker( marker, { usingOperation: true } );
@@ -2579,7 +2579,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const writer = new Writer( model, batch );
+			const writer = new ModelWriter( model, batch );
 
 			expectToThrowCKEditorError( () => {
 				writer.removeMarker( 'name' );

@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
-import type { ModelElement, ModelPosition, Writer } from '@ckeditor/ckeditor5-engine';
+import type { ModelElement, ModelPosition, ModelWriter } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The insert paragraph command. It inserts a new paragraph at a specific
@@ -80,7 +80,7 @@ export class InsertParagraphCommand extends Command {
 	/**
 	 * Returns the best position to insert a new paragraph.
 	 */
-	private _findPositionToInsertParagraph( position: ModelPosition, writer: Writer ): ModelPosition | null {
+	private _findPositionToInsertParagraph( position: ModelPosition, writer: ModelWriter ): ModelPosition | null {
 		const model = this.editor.model;
 
 		if ( model.schema.checkChild( position, 'paragraph' ) ) {

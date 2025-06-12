@@ -30,7 +30,7 @@ import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
  * positions.
  *
  * You can create range instances via its constructor or the `createRange*()` factory methods of
- * {@link module:engine/model/model~Model} and {@link module:engine/model/writer~Writer}.
+ * {@link module:engine/model/model~Model} and {@link module:engine/model/writer~ModelWriter}.
  */
 export class ModelRange extends ModelTypeCheckable implements Iterable<ModelTreeWalkerValue> {
 	/**

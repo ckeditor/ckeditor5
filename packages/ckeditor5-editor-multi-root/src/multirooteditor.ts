@@ -30,7 +30,7 @@ import { isElement as _isElement } from 'es-toolkit/compat';
 import {
 	type ModelRootElement,
 	type ViewRootEditableElement,
-	type Writer,
+	type ModelWriter,
 	type ModelCanEditAtEvent
 } from 'ckeditor5/src/engine.js';
 
@@ -403,7 +403,7 @@ export class MultiRootEditor extends Editor {
 		rootName: string,
 		{ data = '', attributes = {}, elementName = '$root', isUndoable = false }: AddRootOptions = {}
 	): void {
-		const _addRoot = ( writer: Writer ) => {
+		const _addRoot = ( writer: ModelWriter ) => {
 			const root = writer.addRoot( rootName, elementName );
 
 			if ( data ) {

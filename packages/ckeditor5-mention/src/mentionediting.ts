@@ -11,7 +11,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import type {
 	ModelElement,
 	ModelText,
-	Writer,
+	ModelWriter,
 	ModelDocument,
 	AttributeElement,
 	DowncastConversionApi,
@@ -176,7 +176,7 @@ function createViewMentionElement( mention: MentionAttribute, { writer }: Downca
  * Model post-fixer that disallows typing with selection when the selection is placed after the text node with the mention attribute or
  * before a text node with mention attribute.
  */
-function selectionMentionAttributePostFixer( writer: Writer, doc: ModelDocument ): boolean {
+function selectionMentionAttributePostFixer( writer: ModelWriter, doc: ModelDocument ): boolean {
 	const selection = doc.selection;
 	const focus = selection.focus;
 
@@ -207,7 +207,7 @@ function shouldNotTypeWithMentionAt( position: ModelPosition ): boolean {
 /**
  * Model post-fixer that removes the mention attribute from the modified text node.
  */
-function removePartialMentionPostFixer( writer: Writer, doc: ModelDocument, schema: ModelSchema ): boolean {
+function removePartialMentionPostFixer( writer: ModelWriter, doc: ModelDocument, schema: ModelSchema ): boolean {
 	const changes = doc.differ.getChanges();
 
 	let wasChanged = false;
@@ -257,7 +257,7 @@ function removePartialMentionPostFixer( writer: Writer, doc: ModelDocument, sche
  * This post-fixer will extend the attribute applied on the part of the mention so the whole text node of the mention will have
  * the added attribute.
  */
-function extendAttributeOnMentionPostFixer( writer: Writer, doc: ModelDocument ): boolean {
+function extendAttributeOnMentionPostFixer( writer: ModelWriter, doc: ModelDocument ): boolean {
 	const changes = doc.differ.getChanges();
 
 	let wasChanged = false;
@@ -302,7 +302,7 @@ function isBrokenMentionNode( node: ModelItem | null ): boolean {
 /**
  * Fixes a mention on a text node if it needs a fix.
  */
-function checkAndFix( textNode: ModelItem | null, writer: Writer ): boolean {
+function checkAndFix( textNode: ModelItem | null, writer: ModelWriter ): boolean {
 	if ( isBrokenMentionNode( textNode ) ) {
 		writer.removeAttribute( 'mention', textNode! );
 

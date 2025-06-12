@@ -24,7 +24,7 @@ import type {
 	Model,
 	ModelPosition,
 	ModelRange,
-	Writer
+	ModelWriter
 } from 'ckeditor5/src/engine.js';
 import type { Delete, LastTextLineData } from 'ckeditor5/src/typing.js';
 
@@ -96,7 +96,7 @@ export function inlineAutoformatEditing(
 	editor: Editor,
 	plugin: Autoformat,
 	testRegexpOrCallback: RegExp | AutoformatTestCallback,
-	formatCallback: ( writer: Writer, rangesToFormat: Array<ModelRange> ) => boolean | undefined
+	formatCallback: ( writer: ModelWriter, rangesToFormat: Array<ModelRange> ) => boolean | undefined
 ): void {
 	let regExp: RegExp;
 	let testCallback: AutoformatTestCallback | undefined;

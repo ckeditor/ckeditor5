@@ -15,7 +15,7 @@ import {
 	type ModelPostFixer,
 	type ModelPosition,
 	type UpcastDispatcher,
-	type Writer,
+	type ModelWriter,
 	type ViewElement
 } from 'ckeditor5/src/engine.js';
 
@@ -170,7 +170,7 @@ export function upcastHighlightToMarker( config: { view: MatcherPattern; model: 
 /**
  * Extend marker if change detected on marker's start position.
  */
-function _tryExtendMarkerStart( editor: Editor, position: ModelPosition, length: number, writer: Writer ): boolean {
+function _tryExtendMarkerStart( editor: Editor, position: ModelPosition, length: number, writer: ModelWriter ): boolean {
 	const markerAtStart = getMarkerAtPosition( editor, position.getShiftedBy( length ) );
 
 	if ( markerAtStart && markerAtStart.getStart().isEqual( position.getShiftedBy( length ) ) ) {
@@ -187,7 +187,7 @@ function _tryExtendMarkerStart( editor: Editor, position: ModelPosition, length:
 /**
  * Extend marker if change detected on marker's end position.
  */
-function _tryExtendMarkedEnd( editor: Editor, position: ModelPosition, length: number, writer: Writer ): boolean {
+function _tryExtendMarkedEnd( editor: Editor, position: ModelPosition, length: number, writer: ModelWriter ): boolean {
 	const markerAtEnd = getMarkerAtPosition( editor, position );
 
 	if ( markerAtEnd && markerAtEnd.getEnd().isEqual( position ) ) {

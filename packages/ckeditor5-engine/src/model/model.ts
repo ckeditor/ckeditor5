@@ -16,7 +16,7 @@ import { ModelSelection, type ModelPlaceOrOffset, type ModelSelectable } from '.
 import { OperationFactory } from './operation/operationfactory.js';
 import { ModelDocumentSelection } from './documentselection.js';
 import { ModelSchema } from './schema.js';
-import { Writer } from './writer.js';
+import { ModelWriter } from './writer.js';
 import { ModelNode } from './node.js';
 
 import { autoParagraphEmptyRoots } from './utils/autoparagraphing.js';
@@ -65,12 +65,12 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * All callbacks added by {@link module:engine/model/model~Model#change} or
 	 * {@link module:engine/model/model~Model#enqueueChange} methods waiting to be executed.
 	 */
-	private readonly _pendingChanges: Array<{ batch: Batch; callback: ( writer: Writer ) => any }>;
+	private readonly _pendingChanges: Array<{ batch: Batch; callback: ( writer: ModelWriter ) => any }>;
 
 	/**
 	 * The last created and currently used writer instance.
 	 */
-	private _currentWriter: Writer | null;
+	private _currentWriter: ModelWriter | null;
 
 	// @if CK_DEBUG_ENGINE // private _operationLogs: Array<string>;
 	// @if CK_DEBUG_ENGINE // private _appliedOperations: Array<Operation>;
@@ -225,7 +225,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * @typeParam TReturn The return type of the provided callback.
 	 * @param callback Callback function which may modify the model.
 	 */
-	public change<TReturn>( callback: ( writer: Writer ) => TReturn ): TReturn {
+	public change<TReturn>( callback: ( writer: ModelWriter ) => TReturn ): TReturn {
 		try {
 			if ( this._pendingChanges.length === 0 ) {
 				// If this is the outermost block, create a new batch and start `_runPendingChanges` execution flow.
@@ -273,7 +273,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * @param callback Callback function which may modify the model.
 	 */
 	public enqueueChange(
-		callback: ( writer: Writer ) => unknown
+		callback: ( writer: ModelWriter ) => unknown
 	): void;
 
 	/**
@@ -317,7 +317,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * ```
 	 *
 	 * In order to make a nested `enqueueChange()` create a single undo step together with the changes done in the outer `change()`
-	 * block, you can obtain the batch instance from the  {@link module:engine/model/writer~Writer#batch writer} of the outer block.
+	 * block, you can obtain the batch instance from the  {@link module:engine/model/writer~ModelWriter#batch writer} of the outer block.
 	 *
 	 * @label CUSTOM_BATCH
 	 * @param batchOrType A batch or a {@link module:engine/model/batch~Batch#constructor batch type} that should be used in the callback.
@@ -326,12 +326,12 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 */
 	public enqueueChange(
 		batchOrType: Batch | BatchType | undefined,
-		callback: ( writer: Writer ) => unknown
+		callback: ( writer: ModelWriter ) => unknown
 	): void;
 
 	public enqueueChange(
-		batchOrType: Batch | BatchType | ( ( writer: Writer ) => unknown ) | undefined,
-		callback?: ( writer: Writer ) => unknown
+		batchOrType: Batch | BatchType | ( ( writer: ModelWriter ) => unknown ) | undefined,
+		callback?: ( writer: ModelWriter ) => unknown
 	): void {
 		try {
 			if ( !batchOrType ) {
@@ -360,7 +360,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * {@link module:engine/model/operation/operation~Operation operations} to the model.
 	 *
 	 * This is a low-level way of changing the model. It is exposed for very specific use cases (like the undo feature).
-	 * Normally, to modify the model, you will want to use {@link module:engine/model/writer~Writer `Writer`}.
+	 * Normally, to modify the model, you will want to use {@link module:engine/model/writer~ModelWriter `Writer`}.
 	 * See also {@glink framework/architecture/editing-engine#changing-the-model Changing the model} section
 	 * of the {@glink framework/architecture/editing-engine Editing architecture} guide.
 	 *
@@ -400,9 +400,9 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * It can split elements, merge them, wrap bare text nodes with paragraphs, etc. &ndash; just like the
 	 * pasting feature should do.
 	 *
-	 * For lower-level methods see {@link module:engine/model/writer~Writer `Writer`}.
+	 * For lower-level methods see {@link module:engine/model/writer~ModelWriter `Writer`}.
 	 *
-	 * This method, unlike {@link module:engine/model/writer~Writer `Writer`}'s methods, does not have to be used
+	 * This method, unlike {@link module:engine/model/writer~ModelWriter `Writer`}'s methods, does not have to be used
 	 * inside a {@link #change `change()` block}.
 	 *
 	 * # Conversion and schema
@@ -489,7 +489,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * ```
 	 *
 	 * If you want the document selection to be moved to the inserted content, use the
-	 * {@link module:engine/model/writer~Writer#setSelection `setSelection()`} method of the writer after inserting
+	 * {@link module:engine/model/writer~ModelWriter#setSelection `setSelection()`} method of the writer after inserting
 	 * the content:
 	 *
 	 * ```ts
@@ -555,8 +555,8 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * # Notes
 	 *
 	 * * If you want to insert a non-object content, see {@link #insertContent} instead.
-	 * * For lower-level API, see {@link module:engine/model/writer~Writer `Writer`}.
-	 * * Unlike {@link module:engine/model/writer~Writer `Writer`}, this method does not have to be used inside
+	 * * For lower-level API, see {@link module:engine/model/writer~ModelWriter `Writer`}.
+	 * * Unlike {@link module:engine/model/writer~ModelWriter `Writer`}, this method does not have to be used inside
 	 * a {@link #change `change()` block}.
 	 * * Inserting object into the model is not enough to make CKEditor 5 render that content to the user.
 	 * CKEditor 5 implements a model-view-controller architecture and what `model.insertObject()` does
@@ -855,7 +855,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * Creates a position from the given root and path in that root.
 	 *
 	 * Note: This method is also available as
-	 * {@link module:engine/model/writer~Writer#createPositionFromPath `Writer#createPositionFromPath()`}.
+	 * {@link module:engine/model/writer~ModelWriter#createPositionFromPath `Writer#createPositionFromPath()`}.
 	 *
 	 * @param root Root of the position.
 	 * @param path Position path. See {@link module:engine/model/position~ModelPosition#path}.
@@ -884,7 +884,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * * {@link module:engine/model/model~Model#createPositionAfter `createPositionAfter()`}.
 	 *
 	 * Note: This method is also available as
-	 * {@link module:engine/model/writer~Writer#createPositionAt `Writer#createPositionAt()`},
+	 * {@link module:engine/model/writer~ModelWriter#createPositionAt `Writer#createPositionAt()`},
 	 *
 	 * @param itemOrPosition
 	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~ModelItem model item}.
@@ -900,7 +900,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * Creates a new position after the given {@link module:engine/model/item~ModelItem model item}.
 	 *
 	 * Note: This method is also available as
-	 * {@link module:engine/model/writer~Writer#createPositionAfter `Writer#createPositionAfter()`}.
+	 * {@link module:engine/model/writer~ModelWriter#createPositionAfter `Writer#createPositionAfter()`}.
 	 *
 	 * @param item Item after which the position should be placed.
 	 */
@@ -912,7 +912,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * Creates a new position before the given {@link module:engine/model/item~ModelItem model item}.
 	 *
 	 * Note: This method is also available as
-	 * {@link module:engine/model/writer~Writer#createPositionBefore `Writer#createPositionBefore()`}.
+	 * {@link module:engine/model/writer~ModelWriter#createPositionBefore `Writer#createPositionBefore()`}.
 	 *
 	 * @param item Item before which the position should be placed.
 	 */
@@ -924,7 +924,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * Creates a range spanning from the `start` position to the `end` position.
 	 *
 	 * Note: This method is also available as
-	 * {@link module:engine/model/writer~Writer#createRange `Writer#createRange()`}:
+	 * {@link module:engine/model/writer~ModelWriter#createRange `Writer#createRange()`}:
 	 *
 	 * ```ts
 	 * model.change( writer => {
@@ -944,7 +944,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * that element and ends after the last child of that element.
 	 *
 	 * Note: This method is also available as
-	 * {@link module:engine/model/writer~Writer#createRangeIn `Writer#createRangeIn()`}:
+	 * {@link module:engine/model/writer~ModelWriter#createRangeIn `Writer#createRangeIn()`}:
 	 *
 	 * ```ts
 	 * model.change( writer => {
@@ -962,7 +962,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * Creates a range that starts before the given {@link module:engine/model/item~ModelItem model item} and ends after it.
 	 *
 	 * Note: This method is also available on `writer` instance as
-	 * {@link module:engine/model/writer~Writer#createRangeOn `Writer.createRangeOn()`}:
+	 * {@link module:engine/model/writer~ModelWriter#createRangeOn `Writer.createRangeOn()`}:
 	 *
 	 * ```ts
 	 * model.change( writer => {
@@ -981,7 +981,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * or creates an empty selection if no arguments were passed.
 	 *
 	 * Note: This method is also available as
-	 * {@link module:engine/model/writer~Writer#createSelection `Writer#createSelection()`}.
+	 * {@link module:engine/model/writer~ModelWriter#createSelection `Writer#createSelection()`}.
 	 *
 	 * ```ts
 	 * // Creates selection at the given offset in the given element.
@@ -1013,7 +1013,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * or creates an empty selection if no arguments were passed.
 	 *
 	 * Note: This method is also available as
-	 * {@link module:engine/model/writer~Writer#createSelection `Writer#createSelection()`}.
+	 * {@link module:engine/model/writer~ModelWriter#createSelection `Writer#createSelection()`}.
 	 *
 	 * ```ts
 	 * // Creates empty selection without ranges.
@@ -1103,7 +1103,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 			while ( this._pendingChanges.length ) {
 				// Create a new writer using batch instance created for this chain of changes.
 				const currentBatch = this._pendingChanges[ 0 ].batch;
-				this._currentWriter = new Writer( this, currentBatch );
+				this._currentWriter = new ModelWriter( this, currentBatch );
 
 				// Execute changes callback and gather the returned value.
 				const callbackReturnValue = this._pendingChanges[ 0 ].callback( this._currentWriter );

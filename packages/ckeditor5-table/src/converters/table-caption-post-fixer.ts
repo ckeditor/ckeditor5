@@ -7,7 +7,7 @@
  * @module table/converters/table-caption-post-fixer
  */
 
-import type { Model, Writer, ModelElement, ModelNode } from 'ckeditor5/src/engine.js';
+import type { Model, ModelWriter, ModelElement, ModelNode } from 'ckeditor5/src/engine.js';
 
 /**
  * Injects a table caption post-fixer into the model.
@@ -29,7 +29,7 @@ export function injectTableCaptionPostFixer( model: Model ): void {
 /**
  * The table caption post-fixer.
  */
-function tableCaptionPostFixer( writer: Writer, model: Model ) {
+function tableCaptionPostFixer( writer: ModelWriter, model: Model ) {
 	const changes = model.document.differ.getChanges();
 	let wasFixed = false;
 

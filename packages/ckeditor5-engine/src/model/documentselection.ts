@@ -42,7 +42,7 @@ const storePrefix = 'selection:';
  * {@link module:engine/model/document~ModelDocument#selection document's selection}.
  * There can be only one instance of `ModelDocumentSelection` per document.
  *
- * Document selection can only be changed by using the {@link module:engine/model/writer~Writer} instance
+ * Document selection can only be changed by using the {@link module:engine/model/writer~ModelWriter} instance
  * inside the {@link module:engine/model/model~Model#change `change()`} block, as it provides a secure way to modify model.
  *
  * `ModelDocumentSelection` is automatically updated upon changes in the {@link module:engine/model/document~ModelDocument document}
@@ -142,7 +142,7 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( ModelT
 	}
 
 	/**
-	 * Describes whether the gravity is overridden (using {@link module:engine/model/writer~Writer#overrideSelectionGravity}) or not.
+	 * Describes whether the gravity is overridden (using {@link module:engine/model/writer~ModelWriter#overrideSelectionGravity}) or not.
 	 *
 	 * Note that the gravity remains overridden as long as will not be restored the same number of times as it was overridden.
 	 */
@@ -366,12 +366,12 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( ModelT
 
 	/**
 	 * Moves {@link module:engine/model/documentselection~ModelDocumentSelection#focus} to the specified location.
-	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelectionFocus} method.
+	 * Should be used only within the {@link module:engine/model/writer~ModelWriter#setSelectionFocus} method.
 	 *
 	 * The location can be specified in the same form as
-	 * {@link module:engine/model/writer~Writer#createPositionAt writer.createPositionAt()} parameters.
+	 * {@link module:engine/model/writer~ModelWriter#createPositionAt writer.createPositionAt()} parameters.
 	 *
-	 * @see module:engine/model/writer~Writer#setSelectionFocus
+	 * @see module:engine/model/writer~ModelWriter#setSelectionFocus
 	 * @internal
 	 * @param offset Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/model/item~ModelItem model item}.
@@ -383,9 +383,9 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( ModelT
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
 	 * {@link module:engine/model/selection~Selectable selectable}.
-	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelection} method.
+	 * Should be used only within the {@link module:engine/model/writer~ModelWriter#setSelection} method.
 	 *
-	 * @see module:engine/model/writer~Writer#setSelection
+	 * @see module:engine/model/writer~ModelWriter#setSelection
 	 * @internal
 	 */
 	public _setTo( ...args: Parameters<ModelSelection[ 'setTo' ]> ): void {
@@ -394,9 +394,9 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( ModelT
 
 	/**
 	 * Sets attribute on the selection. If attribute with the same key already is set, it's value is overwritten.
-	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelectionAttribute} method.
+	 * Should be used only within the {@link module:engine/model/writer~ModelWriter#setSelectionAttribute} method.
 	 *
-	 * @see module:engine/model/writer~Writer#setSelectionAttribute
+	 * @see module:engine/model/writer~ModelWriter#setSelectionAttribute
 	 * @internal
 	 * @param key Key of the attribute to set.
 	 * @param value Attribute value.
@@ -409,9 +409,9 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( ModelT
 	 * Removes an attribute with given key from the selection.
 	 * If the given attribute was set on the selection, fires the {@link module:engine/model/selection~ModelSelection#event:change:range}
 	 * event with removed attribute key.
-	 * Should be used only within the {@link module:engine/model/writer~Writer#removeSelectionAttribute} method.
+	 * Should be used only within the {@link module:engine/model/writer~ModelWriter#removeSelectionAttribute} method.
 	 *
-	 * @see module:engine/model/writer~Writer#removeSelectionAttribute
+	 * @see module:engine/model/writer~ModelWriter#removeSelectionAttribute
 	 * @internal
 	 * @param key Key of the attribute to remove.
 	 */
@@ -438,7 +438,7 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( ModelT
 	 * It returns an unique identifier which is required to restore the gravity. It guarantees the symmetry
 	 * of the process.
 	 *
-	 * @see module:engine/model/writer~Writer#overrideSelectionGravity
+	 * @see module:engine/model/writer~ModelWriter#overrideSelectionGravity
 	 * @internal
 	 * @returns The unique id which allows restoring the gravity.
 	 */
@@ -453,7 +453,7 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( ModelT
 	 * {@link ~ModelDocumentSelection#_overrideGravity}. Note that the gravity remains overridden as long as won't be restored
 	 * the same number of times it was overridden.
 	 *
-	 * @see module:engine/model/writer~Writer#restoreSelectionGravity
+	 * @see module:engine/model/writer~ModelWriter#restoreSelectionGravity
 	 * @internal
 	 * @param uid The unique id returned by {@link #_overrideGravity}.
 	 */
@@ -498,7 +498,7 @@ ModelDocumentSelection.prototype.is = function( type: string ): boolean {
  * @param directChange In case of {@link module:engine/model/selection~ModelSelection} class it is always set
  * to `true` which indicates that the selection change was caused by a direct use of selection's API.
  * The {@link module:engine/model/documentselection~ModelDocumentSelection}, however, may change because its position
- * was directly changed through the {@link module:engine/model/writer~Writer writer} or because its position was
+ * was directly changed through the {@link module:engine/model/writer~ModelWriter writer} or because its position was
  * changed because the structure of the model has been changed (which means an indirect change).
  * The indirect change does not occur in case of normal (detached) selections because they are "static" (as "not live")
  * which mean that they are not updated once the document changes.
@@ -512,7 +512,7 @@ export type ModelDocumentSelectionChangeRangeEvent = ModelSelectionChangeRangeEv
  * @param directChange In case of {@link module:engine/model/selection~ModelSelection} class it is always set
  * to `true` which indicates that the selection change was caused by a direct use of selection's API.
  * The {@link module:engine/model/documentselection~ModelDocumentSelection}, however, may change because its attributes
- * were directly changed through the {@link module:engine/model/writer~Writer writer} or because its position was
+ * were directly changed through the {@link module:engine/model/writer~ModelWriter writer} or because its position was
  * changed in the model and its attributes were refreshed (which means an indirect change).
  * The indirect change does not occur in case of normal (detached) selections because they are "static" (as "not live")
  * which mean that they are not updated once the document changes.
@@ -784,7 +784,7 @@ class LiveSelection extends ModelSelection {
 		if ( !this._overriddenGravityRegister.has( uid ) ) {
 			/**
 			 * Restoring gravity for an unknown UID is not possible. Make sure you are using a correct
-			 * UID obtained from the {@link module:engine/model/writer~Writer#overrideSelectionGravity} to restore.
+			 * UID obtained from the {@link module:engine/model/writer~ModelWriter#overrideSelectionGravity} to restore.
 			 *
 			 * @error document-selection-gravity-wrong-restore
 			 * @param {string} uid The unique identifier returned by

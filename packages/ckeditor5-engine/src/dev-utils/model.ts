@@ -63,7 +63,7 @@ import type { ModelSchema, ModelSchemaContextDefinition } from '../model/schema.
 import type { ViewDocumentFragment, ViewElement } from '../index.js';
 import { type ViewNode } from '../view/node.js';
 import { type ViewText } from '../view/text.js';
-import { type Writer } from '../model/writer.js';
+import { type ModelWriter } from '../model/writer.js';
 import { type ModelNode } from '../model/node.js';
 import { type ModelElement } from '../model/element.js';
 
@@ -186,7 +186,7 @@ export function _setModelData(
 		model.change( writeToModel );
 	}
 
-	function writeToModel( writer: Writer ) {
+	function writeToModel( writer: ModelWriter ) {
 		// Replace existing model in document by new one.
 		writer.remove( writer.createRangeIn( modelRoot ) );
 		writer.insert( modelDocumentFragment, modelRoot );

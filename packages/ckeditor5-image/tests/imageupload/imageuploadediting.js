@@ -25,7 +25,7 @@ import { _setModelData, _getModelData } from '@ckeditor/ckeditor5-engine/src/dev
 import { _getViewData, _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
 import { Notification } from '@ckeditor/ckeditor5-ui/src/notification/notification.js';
-import { Writer } from '@ckeditor/ckeditor5-engine/src/model/writer.js';
+import { ModelWriter } from '@ckeditor/ckeditor5-engine/src/model/writer.js';
 import { downcastImageAttribute } from '../../src/image/converters.js';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -1565,7 +1565,7 @@ describe( 'ImageUploadEditing', () => {
 
 			editor.execute( 'undo' );
 
-			const removeMock = sinon.spy( Writer.prototype, 'remove' );
+			const removeMock = sinon.spy( ModelWriter.prototype, 'remove' );
 
 			model.document.once( 'change', () => {
 				tryExpect( done, () => {

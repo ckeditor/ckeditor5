@@ -13,7 +13,7 @@ import type {
 	ModelItem,
 	ModelRange,
 	ViewElement,
-	Writer
+	ModelWriter
 } from 'ckeditor5/src/engine.js';
 import { startCase, cloneDeep } from 'es-toolkit/compat';
 
@@ -131,7 +131,7 @@ type ModifyGhsStylesCallback = ( t: Map<string, string> ) => void;
  * @internal
  */
 export function modifyGhsAttribute(
-	writer: Writer,
+	writer: ModelWriter,
 	item: ModelItem | ModelDocumentSelection,
 	ghsAttributeName: string,
 	subject: 'attributes',
@@ -145,7 +145,7 @@ export function modifyGhsAttribute(
  * @internal
  */
 export function modifyGhsAttribute(
-	writer: Writer,
+	writer: ModelWriter,
 	item: ModelItem | ModelDocumentSelection,
 	ghsAttributeName: string,
 	subject: 'classes',
@@ -157,7 +157,7 @@ export function modifyGhsAttribute(
  * @param callback That receives a map as an argument and should modify it (add or remove entries).
  */
 export function modifyGhsAttribute(
-	writer: Writer,
+	writer: ModelWriter,
 	item: ModelItem | ModelDocumentSelection,
 	ghsAttributeName: string,
 	subject: 'styles',
@@ -165,7 +165,7 @@ export function modifyGhsAttribute(
 ): void;
 
 export function modifyGhsAttribute(
-	writer: Writer,
+	writer: ModelWriter,
 	item: ModelItem | ModelDocumentSelection,
 	ghsAttributeName: string,
 	subject: 'attributes' | 'styles' | 'classes',
@@ -220,7 +220,7 @@ export function modifyGhsAttribute(
  *
  * @internal
  */
-export function removeFormatting( ghsAttributeName: string, itemRange: ModelRange, writer: Writer ): void {
+export function removeFormatting( ghsAttributeName: string, itemRange: ModelRange, writer: ModelWriter ): void {
 	for ( const item of itemRange.getItems( { shallow: true } ) ) {
 		const value = item.getAttribute( ghsAttributeName ) as Record<string, any>;
 

@@ -25,8 +25,8 @@ import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
  * It lets you {@link module:engine/model/markercollection~MarkerCollection#get get} markers or track them using
  * {@link module:engine/model/markercollection~MarkerCollection#event:update} event.
  *
- * To create, change or remove makers use {@link module:engine/model/writer~Writer model writers'} methods:
- * {@link module:engine/model/writer~Writer#addMarker} or {@link module:engine/model/writer~Writer#removeMarker}. Since
+ * To create, change or remove makers use {@link module:engine/model/writer~ModelWriter model writers'} methods:
+ * {@link module:engine/model/writer~ModelWriter#addMarker} or {@link module:engine/model/writer~ModelWriter#removeMarker}. Since
  * the writer is the only proper way to change the data model it is not possible to change markers directly using this
  * collection. All markers created by the writer will be automatically added to this collection.
  *
@@ -311,7 +311,7 @@ export interface MarkerData {
  *
  * There are two types of markers.
  *
- * 1. Markers managed directly, without using operations. They are added directly by {@link module:engine/model/writer~Writer}
+ * 1. Markers managed directly, without using operations. They are added directly by {@link module:engine/model/writer~ModelWriter}
  * to the {@link module:engine/model/markercollection~MarkerCollection} without any additional mechanism. They can be used
  * as bookmarks or visual markers. They are great for showing results of the find, or select link when the focus is in the input.
  *
@@ -320,8 +320,8 @@ export interface MarkerData {
  * Therefore, they are handled in the undo stack and synchronized between clients if the collaboration plugin is enabled.
  * This type of markers is useful for solutions like spell checking or comments.
  *
- * Both type of them should be added / updated by {@link module:engine/model/writer~Writer#addMarker}
- * and removed by {@link module:engine/model/writer~Writer#removeMarker} methods.
+ * Both type of them should be added / updated by {@link module:engine/model/writer~ModelWriter#addMarker}
+ * and removed by {@link module:engine/model/writer~ModelWriter#removeMarker} methods.
  *
  * ```ts
  * model.change( ( writer ) => {
@@ -333,7 +333,7 @@ export interface MarkerData {
  * } );
  * ```
  *
- * See {@link module:engine/model/writer~Writer} to find more examples.
+ * See {@link module:engine/model/writer~ModelWriter} to find more examples.
  *
  * Since markers need to track change in the document, for efficiency reasons, it is best to create and keep as little
  * markers as possible and remove them as soon as they are not needed anymore.
@@ -400,7 +400,7 @@ class Marker extends /* #__PURE__ */ EmitterMixin( ModelTypeCheckable ) {
 	/**
 	 * A value indicating if the marker is managed using operations.
 	 * See {@link ~Marker marker class description} to learn more about marker types.
-	 * See {@link module:engine/model/writer~Writer#addMarker}.
+	 * See {@link module:engine/model/writer~ModelWriter#addMarker}.
 	 */
 	public get managedUsingOperations(): boolean {
 		if ( !this._liveRange ) {

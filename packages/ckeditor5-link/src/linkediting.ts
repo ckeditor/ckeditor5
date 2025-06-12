@@ -13,7 +13,7 @@ import {
 } from 'ckeditor5/src/core.js';
 import type {
 	ModelSchema,
-	Writer,
+	ModelWriter,
 	ViewElement,
 	ViewDocumentKeyDownEvent,
 	ViewDocumentClickEvent,
@@ -389,7 +389,7 @@ type LinkOpener = ( url: string ) => boolean;
  * All link-related model attributes start with "link". That includes not only "linkHref"
  * but also all decorator attributes (they have dynamic names), or even custom plugins.
  */
-function removeLinkAttributesFromSelection( writer: Writer, linkAttributes: Array<string> ): void {
+function removeLinkAttributesFromSelection( writer: ModelWriter, linkAttributes: Array<string> ): void {
 	writer.removeSelectionAttribute( 'linkHref' );
 
 	for ( const attribute of linkAttributes ) {

@@ -10,7 +10,7 @@
 import type {
 	ModelElement,
 	ModelNode,
-	Writer
+	ModelWriter
 } from 'ckeditor5/src/engine.js';
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
@@ -250,7 +250,7 @@ function getVerticalCell( tableCell: ModelElement, direction: ArrowKeyCodeDirect
  * paragraph. If one of the merged table cells is empty, the merged table cell will have the contents of the non-empty table cell.
  * If both are empty, the merged table cell will have only one empty paragraph.
  */
-function mergeTableCells( cellToRemove: ModelElement, cellToExpand: ModelElement, writer: Writer ) {
+function mergeTableCells( cellToRemove: ModelElement, cellToExpand: ModelElement, writer: ModelWriter ) {
 	if ( !isEmpty( cellToRemove ) ) {
 		if ( isEmpty( cellToExpand ) ) {
 			writer.remove( writer.createRangeIn( cellToExpand ) );

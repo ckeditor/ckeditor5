@@ -15,7 +15,7 @@ import type {
 	UpcastElementEvent,
 	ViewElement,
 	ModelSchemaContext,
-	Writer
+	ModelWriter
 } from 'ckeditor5/src/engine.js';
 
 import { InsertTableLayoutCommand } from './../commands/inserttablelayoutcommand.js';
@@ -156,7 +156,7 @@ export class TableLayoutEditing extends Plugin {
 	private _registerTableTypeAttributePostfixer() {
 		const editor = this.editor;
 
-		editor.model.document.registerPostFixer( ( writer: Writer ) => {
+		editor.model.document.registerPostFixer( ( writer: ModelWriter ) => {
 			const changes = editor.model.document.differ.getChanges();
 			let hasChanged = false;
 

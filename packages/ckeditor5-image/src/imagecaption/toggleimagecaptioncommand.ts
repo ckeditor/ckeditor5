@@ -7,7 +7,7 @@
  * @module image/imagecaption/toggleimagecaptioncommand
  */
 
-import type { ModelElement, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelWriter } from 'ckeditor5/src/engine.js';
 import { Command } from 'ckeditor5/src/core.js';
 
 import { ImageBlockEditing } from '../image/imageblockediting.js';
@@ -112,7 +112,7 @@ export class ToggleImageCaptionCommand extends Command {
 	 * * it attempts to restore the caption content from the `ImageCaptionEditing` caption registry,
 	 * * it moves the selection to the caption right away, it the `focusCaptionOnShow` option was set.
 	 */
-	private _showImageCaption( writer: Writer, focusCaptionOnShow?: boolean ): void {
+	private _showImageCaption( writer: ModelWriter, focusCaptionOnShow?: boolean ): void {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const imageCaptionEditing: ImageCaptionEditing = this.editor.plugins.get( 'ImageCaptionEditing' );
@@ -146,7 +146,7 @@ export class ToggleImageCaptionCommand extends Command {
 	 * The content of the caption is stored in the `ImageCaptionEditing` caption registry to make this
 	 * a reversible action.
 	 */
-	private _hideImageCaption( writer: Writer ): void {
+	private _hideImageCaption( writer: ModelWriter ): void {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 		const imageCaptionEditing: ImageCaptionEditing = editor.plugins.get( 'ImageCaptionEditing' );

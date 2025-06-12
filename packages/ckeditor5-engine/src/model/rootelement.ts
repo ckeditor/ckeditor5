@@ -64,8 +64,8 @@ export class ModelRootElement extends ModelElement {
 	 * A detached root is equivalent to being removed and cannot contain any children or markers.
 	 *
 	 * By default, a newly added root is attached. It can be detached using
-	 * {@link module:engine/model/writer~Writer#detachRoot `Writer#detachRoot`}. A detached root can be re-attached again using
-	 * {@link module:engine/model/writer~Writer#addRoot `Writer#addRoot`}.
+	 * {@link module:engine/model/writer~ModelWriter#detachRoot `Writer#detachRoot`}. A detached root can be re-attached again using
+	 * {@link module:engine/model/writer~ModelWriter#addRoot `Writer#addRoot`}.
 	 */
 	public override isAttached(): boolean {
 		return this._isAttached;

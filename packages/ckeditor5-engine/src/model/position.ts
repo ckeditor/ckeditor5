@@ -31,7 +31,7 @@ import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
  * a {@link module:engine/model/position~ModelPosition#path} in that root.
  *
  * You can create position instances via its constructor or the `createPosition*()` factory methods of
- * {@link module:engine/model/model~Model} and {@link module:engine/model/writer~Writer}.
+ * {@link module:engine/model/model~Model} and {@link module:engine/model/writer~ModelWriter}.
  *
  * **Note:** Position is based on offsets, not indexes. This means that a position between two text nodes
  * `foo` and `bar` has offset `3`, not `1`. See {@link module:engine/model/position~ModelPosition#path} for more information.

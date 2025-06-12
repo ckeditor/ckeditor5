@@ -8,7 +8,7 @@
  */
 
 import type { Editor } from 'ckeditor5/src/core.js';
-import type { ModelElement, Model, ViewElement, ViewNode, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelElement, Model, ViewElement, ViewNode, ModelWriter } from 'ckeditor5/src/engine.js';
 import { global } from 'ckeditor5/src/utils.js';
 import { type TableUtils } from '../tableutils.js';
 import {
@@ -348,7 +348,7 @@ export function updateColumnElements(
 	columns: Array<ModelElement>,
 	tableColumnGroup: ModelElement,
 	normalizedWidths: Array<string>,
-	writer: Writer
+	writer: ModelWriter
 ): void {
 	for ( let i = 0; i < Math.max( normalizedWidths.length, columns.length ); i++ ) {
 		const column = columns[ i ];
@@ -422,7 +422,7 @@ export function getTableColumnsWidths( element: ModelElement ): Array<string> {
  * @param writer A writer instance.
  * @returns An array of table column widths.
  */
-export function translateColSpanAttribute( element: ModelElement, writer: Writer ): Array<string> {
+export function translateColSpanAttribute( element: ModelElement, writer: ModelWriter ): Array<string> {
 	const tableColumnElements = getTableColumnElements( element );
 
 	return tableColumnElements.reduce( ( acc: Array<string>, element ) => {

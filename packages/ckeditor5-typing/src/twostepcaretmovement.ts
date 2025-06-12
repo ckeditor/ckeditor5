@@ -160,7 +160,7 @@ export class TwoStepCaretMovement extends Plugin {
 
 	/**
 	 * The current UID of the overridden gravity, as returned by
-	 * {@link module:engine/model/writer~Writer#overrideSelectionGravity}.
+	 * {@link module:engine/model/writer~ModelWriter#overrideSelectionGravity}.
 	 */
 	private _overrideUid: string | null;
 
@@ -669,10 +669,10 @@ export class TwoStepCaretMovement extends Plugin {
 	}
 
 	/**
-	 * Overrides the gravity using the {@link module:engine/model/writer~Writer model writer}
+	 * Overrides the gravity using the {@link module:engine/model/writer~ModelWriter model writer}
 	 * and stores the information about this fact in the {@link #_overrideUid}.
 	 *
-	 * A shorthand for {@link module:engine/model/writer~Writer#overrideSelectionGravity}.
+	 * A shorthand for {@link module:engine/model/writer~ModelWriter#overrideSelectionGravity}.
 	 */
 	private _overrideGravity(): void {
 		this._overrideUid = this.editor.model.change( writer => {
@@ -681,9 +681,9 @@ export class TwoStepCaretMovement extends Plugin {
 	}
 
 	/**
-	 * Restores the gravity using the {@link module:engine/model/writer~Writer model writer}.
+	 * Restores the gravity using the {@link module:engine/model/writer~ModelWriter model writer}.
 	 *
-	 * A shorthand for {@link module:engine/model/writer~Writer#restoreSelectionGravity}.
+	 * A shorthand for {@link module:engine/model/writer~ModelWriter#restoreSelectionGravity}.
 	 */
 	private _restoreGravity(): void {
 		this.editor.model.change( writer => {
@@ -709,7 +709,7 @@ function hasAnyAttribute( selection: ModelDocumentSelection, attributes: Set<str
 /**
  * Applies the given attributes to the current selection using using the
  * values from the node before the current position. Uses
- * the {@link module:engine/model/writer~Writer model writer}.
+ * the {@link module:engine/model/writer~ModelWriter model writer}.
  */
 function setSelectionAttributesFromTheNodeBefore( model: Model, attributes: Set<string>, position: ModelPosition ) {
 	const nodeBefore = position.nodeBefore;

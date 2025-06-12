@@ -28,7 +28,7 @@ import {
 	type ViewNode,
 	type ViewPosition,
 	type ViewTypeCheckable,
-	type Writer
+	type ModelWriter
 } from 'ckeditor5/src/engine.js';
 
 import type { GetCallback } from 'ckeditor5/src/utils.js';
@@ -596,7 +596,7 @@ export function viewToModelPosition( model: Model ): GetCallback<MapperViewToMod
  * @param writer The writer to do changes with.
  * @returns `true` if any change has been applied, `false` otherwise.
  */
-export function modelChangePostFixer( model: Model, writer: Writer ): boolean {
+export function modelChangePostFixer( model: Model, writer: ModelWriter ): boolean {
 	const changes = model.document.differ.getChanges();
 	const itemToListHead = new Map<ModelElement, ModelElement>();
 

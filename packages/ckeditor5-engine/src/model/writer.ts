@@ -58,7 +58,7 @@ import { CKEditorError, logWarning, toMap } from '@ckeditor/ckeditor5-utils';
  * @see module:engine/model/model~Model#change
  * @see module:engine/model/model~Model#enqueueChange
  */
-export class Writer {
+export class ModelWriter {
 	/**
 	 * Instance of the model on which this writer operates.
 	 */
@@ -178,7 +178,7 @@ export class Writer {
 	 * `model-writer-insert-forbidden-move` is thrown.
 	 *
 	 * If you want to move {@link module:engine/model/range~ModelRange range} instead of an
-	 * {@link module:engine/model/item~ModelItem item} use {@link module:engine/model/writer~Writer#move `Writer#move()`}.
+	 * {@link module:engine/model/item~ModelItem item} use {@link module:engine/model/writer~ModelWriter#move `Writer#move()`}.
 	 *
 	 * **Note:** For a paste-like content insertion mechanism see
 	 * {@link module:engine/model/model~Model#insertContent `model.insertContent()`}.
@@ -430,7 +430,7 @@ export class Writer {
 	 * Note that if the item already has parent it will be removed from the previous parent.
 	 *
 	 * If you want to move {@link module:engine/model/range~ModelRange range} instead of an
-	 * {@link module:engine/model/item~ModelItem item} use {@link module:engine/model/writer~Writer#move `Writer#move()`}.
+	 * {@link module:engine/model/item~ModelItem item} use {@link module:engine/model/writer~ModelWriter#move `Writer#move()`}.
 	 *
 	 * @param item Item or document fragment to insert.
 	 */
@@ -639,7 +639,7 @@ export class Writer {
 	 * Note that items can be moved only within the same tree. It means that you can move items within the same root
 	 * (element or document fragment) or between {@link module:engine/model/document~ModelDocument#roots documents roots},
 	 * but you cannot move items from document fragment to the document or from one detached element to another. Use
-	 * {@link module:engine/model/writer~Writer#insert} in such cases.
+	 * {@link module:engine/model/writer~ModelWriter#insert} in such cases.
 	 *
 	 * @param range Source range.
 	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~ModelItem model item}.
@@ -682,7 +682,7 @@ export class Writer {
 		if ( !isSameTree( range.root, position.root ) ) {
 			/**
 			 * Range is going to be moved within not the same document. Please use
-			 * {@link module:engine/model/writer~Writer#insert insert} instead.
+			 * {@link module:engine/model/writer~ModelWriter#insert insert} instead.
 			 *
 			 * @error writer-move-different-document
 			 */
@@ -1754,8 +1754,6 @@ export class Writer {
 	}
 }
 
-export { Writer as ModelWriter };
-
 /**
  * Sets given attribute to each node in given range. When attribute value is null then attribute will be removed.
  *
@@ -1764,7 +1762,7 @@ export { Writer as ModelWriter };
  *
  * Given `range` must be flat.
  */
-function setAttributeOnRange( writer: Writer, key: string, value: unknown, range: ModelRange ) {
+function setAttributeOnRange( writer: ModelWriter, key: string, value: unknown, range: ModelRange ) {
 	const model = writer.model;
 	const doc = model.document;
 
@@ -1818,7 +1816,7 @@ function setAttributeOnRange( writer: Writer, key: string, value: unknown, range
 /**
  * Sets given attribute to the given node. When attribute value is null then attribute will be removed.
  */
-function setAttributeOnItem( writer: Writer, key: string, value: unknown, item: ModelItem ) {
+function setAttributeOnItem( writer: ModelWriter, key: string, value: unknown, item: ModelItem ) {
 	const model = writer.model;
 	const doc = model.document;
 	const previousValue = item.getAttribute( key );
@@ -1849,7 +1847,7 @@ function setAttributeOnItem( writer: Writer, key: string, value: unknown, item: 
  * Creates and applies marker operation to {@link module:engine/model/operation/operation~Operation operation}.
  */
 function applyMarkerOperation(
-	writer: Writer,
+	writer: ModelWriter,
 	name: string,
 	oldRange: ModelRange | null,
 	newRange: ModelRange | null,

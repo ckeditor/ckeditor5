@@ -6,7 +6,7 @@
 import { type ModelNode } from '../node.js';
 import { type ModelPosition } from '../position.js';
 import { type ModelSchema } from '../schema.js';
-import { type Writer } from '../writer.js';
+import { type ModelWriter } from '../writer.js';
 
 /**
  * @module engine/model/utils/autoparagraphing
@@ -19,7 +19,7 @@ import { type Writer } from '../writer.js';
  * @param writer The model writer.
  * @returns `true` if any change has been applied, `false` otherwise.
  */
-export function autoParagraphEmptyRoots( writer: Writer ): boolean {
+export function autoParagraphEmptyRoots( writer: ModelWriter ): boolean {
 	const { schema, document } = writer.model;
 
 	for ( const root of document.getRoots() ) {
@@ -75,7 +75,7 @@ export function isParagraphable(
  * @param writer The model writer.
  * @returns  Position inside the created paragraph.
  */
-export function wrapInParagraph( position: ModelPosition, writer: Writer ): ModelPosition {
+export function wrapInParagraph( position: ModelPosition, writer: ModelWriter ): ModelPosition {
 	const paragraph = writer.createElement( 'paragraph' );
 
 	writer.insert( paragraph, position );

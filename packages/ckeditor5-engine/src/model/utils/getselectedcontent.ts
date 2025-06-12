@@ -9,7 +9,7 @@ import { type ModelElement } from '../element.js';
 import { type Model } from '../model.js';
 import { type ModelRange } from '../range.js';
 import { type ModelSelection } from '../selection.js';
-import { type Writer } from '../writer.js';
+import { type ModelWriter } from '../writer.js';
 
 /**
  * @module engine/model/utils/getselectedcontent
@@ -118,7 +118,7 @@ export function getSelectedContent(
 
 // After https://github.com/ckeditor/ckeditor5-engine/issues/690 is fixed,
 // this function will, most likely, be able to rewritten using getMinimalFlatRanges().
-function removeRangeContent( range: ModelRange, writer: Writer ) {
+function removeRangeContent( range: ModelRange, writer: ModelWriter ) {
 	const parentsToCheck: Array<ModelElement | ModelDocumentFragment> = [];
 
 	Array.from( range.getItems( { direction: 'backward' } ) )

@@ -13,7 +13,7 @@ import { getCopyOnEnterAttributes } from './utils.js';
 import type {
 	ModelElement,
 	ModelPosition,
-	Writer
+	ModelWriter
 } from '@ckeditor/ckeditor5-engine';
 
 /**
@@ -52,7 +52,7 @@ export class EnterCommand extends Command {
 	 * @param writer Writer to use when performing the enter action.
 	 * @returns Boolean indicating if the block was split.
 	 */
-	public enterBlock( writer: Writer ): boolean {
+	public enterBlock( writer: ModelWriter ): boolean {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const schema = model.schema;
@@ -116,10 +116,10 @@ export class EnterCommand extends Command {
  */
 export type EnterCommandAfterExecuteEvent = {
 	name: 'afterExecute';
-	args: [ { writer: Writer } ];
+	args: [ { writer: ModelWriter } ];
 };
 
-function splitBlock( writer: Writer, splitPos: ModelPosition ): void {
+function splitBlock( writer: ModelWriter, splitPos: ModelPosition ): void {
 	writer.split( splitPos );
 	writer.setSelection( splitPos.parent.nextSibling!, 0 );
 }

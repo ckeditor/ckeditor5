@@ -82,7 +82,7 @@ editor.editing.view.focus();
 This snippet focuses the editable that has the selection. If the editor has not been focused yet, this will focus the first editable. If an editor has many editing roots and the user was editing content, focus will be brought back where the user left off.
 
 <info-box>
-	Focusing the editor does not change its selection. If you want to focus the editor and move the caret to a specific position, you should call `editor.editing.view.focus()` first and then use the {@link module:engine/model/writer~Writer#setSelection `setSelection()`} method of the {@link framework/architecture/editing-engine#model model writer} to change the selection.
+	Focusing the editor does not change its selection. If you want to focus the editor and move the caret to a specific position, you should call `editor.editing.view.focus()` first and then use the {@link module:engine/model/writer~ModelWriter#setSelection `setSelection()`} method of the {@link framework/architecture/editing-engine#model model writer} to change the selection.
 </info-box>
 
 ## Focus in the editor UI

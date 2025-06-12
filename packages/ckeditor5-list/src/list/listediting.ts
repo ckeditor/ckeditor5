@@ -24,7 +24,7 @@ import type {
 	ViewDocumentTabEvent,
 	ViewElement,
 	ViewAttributeElement,
-	Writer,
+	ModelWriter,
 	DowncastRemoveEvent,
 	MapperModelToViewPositionEvent
 } from 'ckeditor5/src/engine.js';
@@ -769,7 +769,7 @@ export type DowncastStrategy = AttributeDowncastStrategy | ItemMarkerDowncastStr
  */
 function modelChangePostFixer(
 	model: Model,
-	writer: Writer,
+	writer: ModelWriter,
 	attributeNames: Array<string>,
 	listEditing: ListEditing
 ) {
@@ -980,7 +980,7 @@ export type ListEditingPostFixerEvent = {
 	args: [ {
 		listNodes: ListBlocksIterable;
 		listHead: ModelElement;
-		writer: Writer;
+		writer: ModelWriter;
 		seenIds: Set<string>;
 	} ];
 	return: boolean;

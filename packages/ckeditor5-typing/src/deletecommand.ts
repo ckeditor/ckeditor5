@@ -9,7 +9,7 @@
 
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import { count } from '@ckeditor/ckeditor5-utils';
-import type { ModelDocumentSelection, ModelElement, ModelSelection, Writer } from '@ckeditor/ckeditor5-engine';
+import type { ModelDocumentSelection, ModelElement, ModelSelection, ModelWriter } from '@ckeditor/ckeditor5-engine';
 
 import { ChangeBuffer } from './utils/changebuffer.js';
 
@@ -206,7 +206,7 @@ export class DeleteCommand extends Command {
 	 *
 	 * @param writer The model writer.
 	 */
-	private _replaceEntireContentWithParagraph( writer: Writer ): void {
+	private _replaceEntireContentWithParagraph( writer: ModelWriter ): void {
 		const model = this.editor.model;
 		const doc = model.document;
 		const selection = doc.selection;

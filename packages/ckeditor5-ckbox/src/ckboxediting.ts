@@ -18,7 +18,7 @@ import {
 	type ModelNode,
 	type UpcastElementEvent,
 	type ViewElement,
-	type Writer
+	type ModelWriter
 } from 'ckeditor5/src/engine.js';
 import { logError, type DecoratedMethodEvent } from 'ckeditor5/src/utils.js';
 
@@ -342,7 +342,7 @@ export class CKBoxEditing extends Plugin {
  * A post-fixer that synchronizes the asset ID with the model element.
  */
 function syncDataIdPostFixer( editor: Editor ) {
-	return ( writer: Writer ) => {
+	return ( writer: ModelWriter ) => {
 		let changed = false;
 
 		const model = editor.model;
@@ -403,7 +403,7 @@ function syncDataIdPostFixer( editor: Editor ) {
  * A post-fixer that removes the `ckboxLinkId` from the selection if it does not represent a link anymore.
  */
 function injectSelectionPostFixer( selection: ModelDocumentSelection ) {
-	return ( writer: Writer ) => {
+	return ( writer: ModelWriter ) => {
 		const shouldRemoveLinkIdAttribute = !selection.hasAttribute( 'linkHref' ) && selection.hasAttribute( 'ckboxLinkId' );
 
 		if ( shouldRemoveLinkIdAttribute ) {

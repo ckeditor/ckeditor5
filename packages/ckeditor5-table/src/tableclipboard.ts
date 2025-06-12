@@ -31,7 +31,7 @@ import type {
 	ModelInsertContentEvent,
 	ModelPosition,
 	ModelSelection,
-	Writer
+	ModelWriter
 } from 'ckeditor5/src/engine.js';
 
 import { TableSelection } from './tableselection.js';
@@ -221,7 +221,7 @@ export class TableClipboard extends Plugin {
 	/**
 	 * Inserts provided `selectedTableCells` into `pastedTable`.
 	 */
-	private _replaceSelectedCells( pastedTable: ModelElement, selectedTableCells: Array<ModelElement>, writer: Writer ) {
+	private _replaceSelectedCells( pastedTable: ModelElement, selectedTableCells: Array<ModelElement>, writer: ModelWriter ) {
 		const tableUtils = this.editor.plugins.get( TableUtils );
 
 		const pastedDimensions = {
@@ -280,7 +280,7 @@ export class TableClipboard extends Plugin {
 		pastedDimensions: Record<string, number>,
 		selectedTable: ModelElement,
 		selection: Record<string, number>,
-		writer: Writer
+		writer: ModelWriter
 	) {
 		const { width: pastedWidth, height: pastedHeight } = pastedDimensions;
 
@@ -376,7 +376,7 @@ export class TableClipboard extends Plugin {
 		tableSlot: TableSlot,
 		cellToInsert: ModelElement | null,
 		insertPosition: ModelPosition,
-		writer: Writer
+		writer: ModelWriter
 	): ModelElement | null {
 		const { cell, isAnchor } = tableSlot;
 
@@ -458,7 +458,7 @@ function prepareTableForPasting(
 		height: number;
 		width: number;
 	},
-	writer: Writer,
+	writer: ModelWriter,
 	tableUtils: TableUtils
 ) {
 	const selectedTable = selectedTableCells[ 0 ].findAncestor( 'table' )!;
@@ -620,7 +620,7 @@ function createLocationMap( table: ModelElement, width: number, height: number )
  * - Cells "00", "03" & "30" which cannot be cut by this algorithm as they are outside the trimmed area.
  * - Cell "13" cannot be cut as it is inside the trimmed area.
  */
-function splitCellsToRectangularSelection( table: ModelElement, dimensions: Record<string, number>, writer: Writer ) {
+function splitCellsToRectangularSelection( table: ModelElement, dimensions: Record<string, number>, writer: ModelWriter ) {
 	const { firstRow, lastRow, firstColumn, lastColumn } = dimensions;
 
 	const rowIndexes = { first: firstRow, last: lastRow };
@@ -639,7 +639,7 @@ function doHorizontalSplit(
 	table: ModelElement,
 	splitRow: number,
 	limitColumns: Record<string, number>,
-	writer: Writer,
+	writer: ModelWriter,
 	startRow: number = 0
 ) {
 	// If selection starts at first row then no split is needed.
@@ -655,7 +655,7 @@ function doHorizontalSplit(
 	return cellsToSplit.map( ( { cell } ) => splitHorizontally( cell, splitRow, writer ) );
 }
 
-function doVerticalSplit( table: ModelElement, splitColumn: number, limitRows: Record<string, number>, writer: Writer ) {
+function doVerticalSplit( table: ModelElement, splitColumn: number, limitRows: Record<string, number>, writer: ModelWriter ) {
 	// If selection starts at first column then no split is needed.
 	if ( splitColumn < 1 ) {
 		return;

@@ -29,7 +29,7 @@ import { Mapper } from '../../src/conversion/mapper.js';
 import { ViewSelection } from '../../src/view/selection.js';
 import { ViewRange } from '../../src/view/range.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
-import { Writer } from '../../src/model/writer.js';
+import { ModelWriter } from '../../src/model/writer.js';
 
 import { toArray } from '@ckeditor/ckeditor5-utils/src/toarray.js';
 
@@ -256,7 +256,7 @@ describe( 'UpcastHelpers', () => {
 						const value = fontSize.substr( 0, fontSize.length - 2 );
 
 						// To ensure conversion API is provided.
-						expect( conversionApi.writer ).to.instanceof( Writer );
+						expect( conversionApi.writer ).to.instanceof( ModelWriter );
 
 						// To ensure upcast conversion data is provided.
 						expect( data.modelCursor ).to.be.instanceof( ModelPosition );
@@ -739,7 +739,7 @@ describe( 'UpcastHelpers', () => {
 						const match = viewElement.getAttribute( 'class' ).match( regexp );
 
 						// To ensure conversion API is provided.
-						expect( conversionApi.writer ).to.instanceof( Writer );
+						expect( conversionApi.writer ).to.instanceof( ModelWriter );
 
 						// To ensure upcast conversion data is provided.
 						expect( data.modelCursor ).to.be.instanceof( ModelPosition );
@@ -988,7 +988,7 @@ describe( 'UpcastHelpers', () => {
 				view: 'comment',
 				model: ( viewElement, conversionApi ) => {
 					// To ensure conversion API is provided.
-					expect( conversionApi.writer ).to.instanceof( Writer );
+					expect( conversionApi.writer ).to.instanceof( ModelWriter );
 
 					return 'comment:' + viewElement.getAttribute( 'data-comment-id' );
 				}
@@ -1172,7 +1172,7 @@ describe( 'UpcastHelpers', () => {
 				view: 'g',
 				model: ( name, conversionApi ) => {
 					// To ensure conversion API is provided.
-					expect( conversionApi.writer ).to.instanceof( Writer );
+					expect( conversionApi.writer ).to.instanceof( ModelWriter );
 
 					return 'group:' + name.split( '_' )[ 0 ];
 				}

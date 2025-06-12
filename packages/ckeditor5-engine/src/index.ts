@@ -192,7 +192,7 @@ export {
 	type ModelPlaceOrOffset
 } from './model/selection.js';
 export { ModelTypeCheckable } from './model/typecheckable.js';
-export { Writer } from './model/writer.js';
+export { ModelWriter } from './model/writer.js';
 
 // Model utils.
 export {

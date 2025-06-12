@@ -13,7 +13,7 @@ import type {
 	ModelItem,
 	ModelPosition,
 	ModelSchema,
-	Writer,
+	ModelWriter,
 	ModelDocumentSelection
 } from 'ckeditor5/src/engine.js';
 
@@ -29,7 +29,9 @@ import { type TableUtils } from '../tableutils.js';
  * @param item A model item on which the attribute will be set.
  * @param defaultValue The default attribute value. If a value is lower or equal, it will be unset.
  */
-export function updateNumericAttribute( key: string, value: unknown, item: ModelItem, writer: Writer, defaultValue: unknown = 1 ): void {
+export function updateNumericAttribute(
+	key: string, value: unknown, item: ModelItem, writer: ModelWriter, defaultValue: unknown = 1
+): void {
 	if ( value !== undefined && value !== null && defaultValue !== undefined && defaultValue !== null && value > defaultValue ) {
 		writer.setAttribute( key, value, item );
 	} else {
@@ -47,7 +49,7 @@ export function updateNumericAttribute( key: string, value: unknown, item: Model
  * @returns Created table cell.
  */
 export function createEmptyTableCell(
-	writer: Writer,
+	writer: ModelWriter,
 	insertPosition: ModelPosition,
 	attributes: Record<string, unknown> = {}
 ): ModelElement {

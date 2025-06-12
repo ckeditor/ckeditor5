@@ -10,7 +10,7 @@
 import type {
 	ModelElement,
 	Model,
-	Writer,
+	ModelWriter,
 	DifferItem,
 	DifferItemAttribute
 } from 'ckeditor5/src/engine.js';
@@ -244,7 +244,7 @@ export function injectTableLayoutPostFixer( model: Model ): void {
 /**
  * The table layout post-fixer.
  */
-function tableLayoutPostFixer( writer: Writer, model: Model ) {
+function tableLayoutPostFixer( writer: ModelWriter, model: Model ) {
 	const changes = model.document.differ.getChanges();
 
 	let wasFixed = false;
@@ -288,7 +288,7 @@ function tableLayoutPostFixer( writer: Writer, model: Model ) {
  *
  * @returns Returns `true` if the table was fixed.
  */
-function fixTableCellsRowspan( table: ModelElement, writer: Writer ) {
+function fixTableCellsRowspan( table: ModelElement, writer: ModelWriter ) {
 	let wasFixed = false;
 
 	const cellsToTrim = findCellsToTrim( table );
@@ -311,7 +311,7 @@ function fixTableCellsRowspan( table: ModelElement, writer: Writer ) {
  *
  * @returns Returns `true` if the table was fixed.
  */
-function fixTableRowsSizes( table: ModelElement, writer: Writer ) {
+function fixTableRowsSizes( table: ModelElement, writer: ModelWriter ) {
 	let wasFixed = false;
 
 	const childrenLengths = getChildrenLengths( table );

@@ -16,7 +16,7 @@ import type {
 	ModelPosition,
 	ModelSchema,
 	ModelElement,
-	Writer
+	ModelWriter
 } from '@ckeditor/ckeditor5-engine';
 
 /**
@@ -55,7 +55,7 @@ export class ShiftEnterCommand extends Command {
  */
 export type ShiftEnterCommandAfterExecuteEvent = {
 	name: 'afterExecute';
-	args: [ { writer: Writer } ];
+	args: [ { writer: ModelWriter } ];
 };
 
 /**
@@ -90,7 +90,7 @@ function isEnabled( schema: ModelSchema, selection: ModelDocumentSelection ): bo
 /**
  * Creates a break in the way that the <kbd>Shift</kbd>+<kbd>Enter</kbd> keystroke is expected to work.
  */
-function softBreakAction( model: Model, writer: Writer, selection: ModelDocumentSelection ): void {
+function softBreakAction( model: Model, writer: ModelWriter, selection: ModelDocumentSelection ): void {
 	const isSelectionEmpty = selection.isCollapsed;
 	const range = selection.getFirstRange()!;
 	const startElement = range.start.parent as ModelElement;
@@ -134,7 +134,7 @@ function softBreakAction( model: Model, writer: Writer, selection: ModelDocument
 	}
 }
 
-function insertBreak( model: Model, writer: Writer, position: ModelPosition ): void {
+function insertBreak( model: Model, writer: ModelWriter, position: ModelPosition ): void {
 	const breakLineElement = writer.createElement( 'softBreak' );
 
 	model.insertContent( breakLineElement, position );

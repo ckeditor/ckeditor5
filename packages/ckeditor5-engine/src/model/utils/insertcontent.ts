@@ -18,7 +18,7 @@ import { type ModelDocumentFragment } from '../documentfragment.js';
 import { type ModelItem } from '../item.js';
 import { type Model } from '../model.js';
 import { type ModelSchema } from '../schema.js';
-import { type Writer } from '../writer.js';
+import { type ModelWriter } from '../writer.js';
 import { type ModelNode } from '../node.js';
 import { type ModelSelection } from '../selection.js';
 
@@ -237,7 +237,7 @@ class Insertion {
 	/**
 	 * Batch to which operations will be added.
 	 */
-	public readonly writer: Writer;
+	public readonly writer: ModelWriter;
 
 	/**
 	 * The position at which (or near which) the next node will be inserted.
@@ -303,7 +303,7 @@ class Insertion {
 
 	private _nodeToSelect: ModelNode | null = null;
 
-	constructor( model: Model, writer: Writer, position: ModelPosition ) {
+	constructor( model: Model, writer: ModelWriter, position: ModelPosition ) {
 		this.model = model;
 		this.writer = writer;
 		this.position = position;

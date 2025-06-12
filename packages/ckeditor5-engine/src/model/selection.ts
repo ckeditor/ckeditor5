@@ -470,7 +470,7 @@ export class ModelSelection extends /* #__PURE__ */ EmitterMixin( ModelTypeCheck
 	 * Moves {@link module:engine/model/selection~ModelSelection#focus} to the specified location.
 	 *
 	 * The location can be specified in the same form as
-	 * {@link module:engine/model/writer~Writer#createPositionAt writer.createPositionAt()} parameters.
+	 * {@link module:engine/model/writer~ModelWriter#createPositionAt writer.createPositionAt()} parameters.
 	 *
 	 * @fires change:range
 	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~ModelItem model item}.
@@ -794,7 +794,7 @@ export type ModelSelectionChangeEvent = {
  * @param directChange In case of {@link module:engine/model/selection~ModelSelection} class it is always set
  * to `true` which indicates that the selection change was caused by a direct use of selection's API.
  * The {@link module:engine/model/documentselection~DocumentSelection}, however, may change because its position
- * was directly changed through the {@link module:engine/model/writer~Writer writer} or because its position was
+ * was directly changed through the {@link module:engine/model/writer~ModelWriter writer} or because its position was
  * changed because the structure of the model has been changed (which means an indirect change).
  * The indirect change does not occur in case of normal (detached) selections because they are "static" (as "not live")
  * which mean that they are not updated once the document changes.
@@ -813,7 +813,7 @@ export type ModelSelectionChangeRangeEvent = {
  * @param directChange In case of {@link module:engine/model/selection~ModelSelection} class it is always set
  * to `true` which indicates that the selection change was caused by a direct use of selection's API.
  * The {@link module:engine/model/documentselection~DocumentSelection}, however, may change because its attributes
- * were directly changed through the {@link module:engine/model/writer~Writer writer} or because its position was
+ * were directly changed through the {@link module:engine/model/writer~ModelWriter writer} or because its position was
  * changed in the model and its attributes were refreshed (which means an indirect change).
  * The indirect change does not occur in case of normal (detached) selections because they are "static" (as "not live")
  * which mean that they are not updated once the document changes.

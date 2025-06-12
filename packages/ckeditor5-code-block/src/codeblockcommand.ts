@@ -7,7 +7,7 @@
  * @module code-block/codeblockcommand
  */
 
-import type { ModelElement, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelWriter } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
 
@@ -118,7 +118,7 @@ export class CodeBlockCommand extends Command {
 		return canBeCodeBlock( schema, firstBlock );
 	}
 
-	private _applyCodeBlock( writer: Writer, blocks: Array<ModelElement>, language: string ): void {
+	private _applyCodeBlock( writer: ModelWriter, blocks: Array<ModelElement>, language: string ): void {
 		this._lastLanguage = language;
 
 		const schema = this.editor.model.schema;
@@ -145,7 +145,7 @@ export class CodeBlockCommand extends Command {
 		} );
 	}
 
-	private _removeCodeBlock( writer: Writer, blocks: Array<ModelElement> ): void {
+	private _removeCodeBlock( writer: ModelWriter, blocks: Array<ModelElement> ): void {
 		const codeBlocks = blocks.filter( block => block.is( 'element', 'codeBlock' ) );
 
 		for ( const block of codeBlocks ) {

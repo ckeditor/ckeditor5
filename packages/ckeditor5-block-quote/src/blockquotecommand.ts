@@ -9,7 +9,7 @@
 
 import { Command } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
-import type { ModelDocumentFragment, ModelElement, ModelPosition, ModelRange, ModelSchema, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentFragment, ModelElement, ModelPosition, ModelRange, ModelSchema, ModelWriter } from 'ckeditor5/src/engine.js';
 
 /**
  * The block quote command plugin.
@@ -108,7 +108,7 @@ export class BlockQuoteCommand extends Command {
 	 * start it or end it, then the quote will be split (if needed) and the blocks
 	 * will be moved out of it, so other quoted blocks remained quoted.
 	 */
-	private _removeQuote( writer: Writer, blocks: Array<ModelElement> ): void {
+	private _removeQuote( writer: ModelWriter, blocks: Array<ModelElement> ): void {
 		// Unquote all groups of block. Iterate in the reverse order to not break following ranges.
 		getRangesOfBlockGroups( writer, blocks ).reverse().forEach( groupRange => {
 			if ( groupRange.start.isAtStart && groupRange.end.isAtEnd ) {
@@ -143,7 +143,7 @@ export class BlockQuoteCommand extends Command {
 	/**
 	 * Applies the quote to given blocks.
 	 */
-	private _applyQuote( writer: Writer, blocks: Array<ModelElement> ): void {
+	private _applyQuote( writer: ModelWriter, blocks: Array<ModelElement> ): void {
 		const quotesToMerge: Array<ModelElement | ModelDocumentFragment> = [];
 
 		// Quote all groups of block. Iterate in the reverse order to not break following ranges.
@@ -186,7 +186,7 @@ function findQuote( elementOrPosition: ModelElement | ModelPosition ): ModelElem
  * blocks:          [ a, b, d, f, g, h ]
  * output ranges:   [ab]c[d]e[fgh]
  */
-function getRangesOfBlockGroups( writer: Writer, blocks: Array<ModelElement> ): Array<ModelRange> {
+function getRangesOfBlockGroups( writer: ModelWriter, blocks: Array<ModelElement> ): Array<ModelRange> {
 	let startPosition;
 	let i = 0;
 	const ranges = [];
