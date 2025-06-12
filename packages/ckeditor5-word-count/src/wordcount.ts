@@ -20,7 +20,7 @@ import { throttle, isElement } from 'es-toolkit/compat';
 /**
  * The word count plugin.
  *
- * This plugin calculates all words and characters in all {@link module:engine/model/text~Text text nodes} available in the model.
+ * This plugin calculates all words and characters in all {@link module:engine/model/text~ModelText text nodes} available in the model.
  * It also provides an HTML element that updates its state whenever the editor content is changed.
  *
  * The model's data is first converted to plain text using {@link module:word-count/utils~modelElementToPlainText}.

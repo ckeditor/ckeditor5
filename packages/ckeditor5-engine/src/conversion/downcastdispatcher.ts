@@ -741,7 +741,7 @@ export type DowncastEvent<TName extends keyof DowncastDispatcherEventMap<TItem>,
  * Fired for inserted nodes.
  *
  * `insert` is a namespace for a class of events. Names of actually called events follow this pattern:
- * `insert:name`. `name` is either `'$text'`, when {@link module:engine/model/text~Text a text node} has been inserted,
+ * `insert:name`. `name` is either `'$text'`, when {@link module:engine/model/text~ModelText a text node} has been inserted,
  * or {@link module:engine/model/element~ModelElement#name name} of inserted element.
  *
  * This way, the listeners can either listen to a general `insert` event or specific event (for example `insert:paragraph`).
@@ -759,7 +759,7 @@ export type DowncastInsertEvent<TItem extends ModelItem = ModelItem> = DowncastE
  * Fired for removed nodes.
  *
  * `remove` is a namespace for a class of events. Names of actually called events follow this pattern:
- * `remove:name`. `name` is either `'$text'`, when a {@link module:engine/model/text~Text a text node} has been removed,
+ * `remove:name`. `name` is either `'$text'`, when a {@link module:engine/model/text~ModelText a text node} has been removed,
  * or the {@link module:engine/model/element~ModelElement#name name} of removed element.
  *
  * This way, listeners can either listen to a general `remove` event or specific event (for example `remove:paragraph`).
@@ -782,7 +782,7 @@ export type DowncastRemoveEvent = DowncastEvent<'remove'>;
  *
  * `attribute` is a namespace for a class of events. Names of actually called events follow this pattern:
  * `attribute:attributeKey:name`. `attributeKey` is the key of added/changed/removed attribute.
- * `name` is either `'$text'` if change was on {@link module:engine/model/text~Text a text node},
+ * `name` is either `'$text'` if change was on {@link module:engine/model/text~ModelText a text node},
  * or the {@link module:engine/model/element~ModelElement#name name} of element which attribute has changed.
  *
  * This way listeners can either listen to a general `attribute:bold` event or specific event (for example `attribute:src:imageBlock`).

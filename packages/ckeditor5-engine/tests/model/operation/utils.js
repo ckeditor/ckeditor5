@@ -6,7 +6,7 @@
 import { Model } from '../../../src/model/model.js';
 import { ModelDocumentFragment } from '../../../src/model/documentfragment.js';
 import { ModelElement } from '../../../src/model/element.js';
-import { Text } from '../../../src/model/text.js';
+import { ModelText } from '../../../src/model/text.js';
 import { TextProxy } from '../../../src/model/textproxy.js';
 import { ModelPosition } from '../../../src/model/position.js';
 import { ModelRange } from '../../../src/model/range.js';
@@ -29,10 +29,10 @@ describe( 'Operation utils', () => {
 		// data:	foobarIxyz
 		// bold:	___BBBB___
 		root._appendChild( [
-			new Text( 'foo' ),
-			new Text( 'bar', { bold: true } ),
+			new ModelText( 'foo' ),
+			new ModelText( 'bar', { bold: true } ),
 			new ModelElement( 'imageBlock', { src: 'img.jpg' } ),
-			new Text( 'xyz' )
+			new ModelText( 'xyz' )
 		] );
 	} );
 
@@ -50,7 +50,7 @@ describe( 'Operation utils', () => {
 		} );
 
 		it( 'should merge text nodes if possible', () => {
-			utils._insert( ModelPosition._createAt( root, 3 ), new Text( 'xxx', { bold: true } ) );
+			utils._insert( ModelPosition._createAt( root, 3 ), new ModelText( 'xxx', { bold: true } ) );
 
 			expectData( 'foo<$text bold="true">xxxbar</$text><imageBlock src="img.jpg"></imageBlock>xyz' );
 		} );
@@ -145,17 +145,17 @@ describe( 'normalizeNodes', () => {
 	it( 'should change strings to text nodes', () => {
 		const text = utils._normalizeNodes( 'abc' )[ 0 ];
 
-		expect( text ).to.be.instanceof( Text );
+		expect( text ).to.be.instanceof( ModelText );
 		expect( text.data ).to.equal( 'abc' );
 	} );
 
 	it( 'should change text proxies to text nodes', () => {
-		const textNode = new Text( 'abc' );
+		const textNode = new ModelText( 'abc' );
 		const textProxy = new TextProxy( textNode, 1, 1 );
 
 		const text = utils._normalizeNodes( textProxy )[ 0 ];
 
-		expect( text ).to.be.instanceof( Text );
+		expect( text ).to.be.instanceof( ModelText );
 		expect( text.data ).to.equal( 'b' );
 	} );
 
@@ -170,16 +170,16 @@ describe( 'normalizeNodes', () => {
 	} );
 
 	it( 'should accept arrays', () => {
-		const text = new Text( 'foo', { bold: true } );
+		const text = new ModelText( 'foo', { bold: true } );
 		const image = new ModelElement( 'imageBlock' );
 		const nodes = [ 'abc', text, image, 1, 'xyz' ];
 
 		const normalized = utils._normalizeNodes( nodes );
 
-		expect( normalized[ 0 ] ).to.be.instanceof( Text );
+		expect( normalized[ 0 ] ).to.be.instanceof( ModelText );
 		expect( normalized[ 1 ] ).to.equal( text );
 		expect( normalized[ 2 ] ).to.equal( image );
-		expect( normalized[ 3 ] ).to.be.instanceof( Text );
+		expect( normalized[ 3 ] ).to.be.instanceof( ModelText );
 	} );
 
 	it( 'should merge text nodes if mergeTextNodes flag is set to true', () => {
@@ -191,14 +191,14 @@ describe( 'normalizeNodes', () => {
 
 	it( 'should replace document fragment by the list of it\'s children', () => {
 		const nodes = [
-			new Text( 'foo', { bold: true } ),
-			new ModelDocumentFragment( [ new Text( 'bar', { bold: true } ), new ModelElement( 'imageBlock' ) ] ),
+			new ModelText( 'foo', { bold: true } ),
+			new ModelDocumentFragment( [ new ModelText( 'bar', { bold: true } ), new ModelElement( 'imageBlock' ) ] ),
 			'xyz'
 		];
 
 		const normalized = utils._normalizeNodes( nodes, true );
 
-		expect( normalized[ 0 ] ).to.be.instanceof( Text );
+		expect( normalized[ 0 ] ).to.be.instanceof( ModelText );
 		expect( normalized[ 0 ].getAttribute( 'bold' ) ).to.be.true;
 		expect( normalized[ 0 ].data ).to.equal( 'foobar' );
 		expect( normalized[ 1 ].name ).to.equal( 'imageBlock' );

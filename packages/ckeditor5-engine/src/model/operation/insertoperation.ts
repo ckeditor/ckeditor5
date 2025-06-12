@@ -12,7 +12,7 @@ import { ModelPosition } from '../position.js';
 import { ModelNodeList } from '../nodelist.js';
 import { MoveOperation } from './moveoperation.js';
 import { _insert, _normalizeNodes, type ModelNodeSet } from './utils.js';
-import { Text } from '../text.js';
+import { ModelText } from '../text.js';
 import { ModelElement } from '../element.js';
 import type { ModelSelectable } from '../selection.js';
 
@@ -174,7 +174,7 @@ export class InsertOperation extends Operation {
 				children.push( ModelElement.fromJSON( child ) );
 			} else {
 				// Otherwise, it is a Text node.
-				children.push( Text.fromJSON( child ) );
+				children.push( ModelText.fromJSON( child ) );
 			}
 		}
 

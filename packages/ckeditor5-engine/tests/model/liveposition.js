@@ -6,7 +6,7 @@
 import { Model } from '../../src/model/model.js';
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { ModelElement } from '../../src/model/element.js';
-import { Text } from '../../src/model/text.js';
+import { ModelText } from '../../src/model/text.js';
 import { ModelPosition } from '../../src/model/position.js';
 import { ModelLivePosition } from '../../src/model/liveposition.js';
 import { ModelRange } from '../../src/model/range.js';
@@ -22,10 +22,10 @@ describe( 'LivePosition', () =>
 		doc = model.document;
 		root = doc.createRoot();
 
-		li1 = new ModelElement( 'li', [], new Text( 'abcdef' ) );
-		li2 = new ModelElement( 'li', [], new Text( 'foobar' ) );
+		li1 = new ModelElement( 'li', [], new ModelText( 'abcdef' ) );
+		li2 = new ModelElement( 'li', [], new ModelText( 'foobar' ) );
 		ul = new ModelElement( 'ul', [], [ li1, li2 ] );
-		p = new ModelElement( 'p', [], new Text( 'qwerty' ) );
+		p = new ModelElement( 'p', [], new ModelText( 'qwerty' ) );
 
 		root._insertChild( 0, [ p, ul ] );
 	} );

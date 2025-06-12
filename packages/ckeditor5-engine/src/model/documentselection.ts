@@ -14,7 +14,7 @@ import {
 	type ModelSelectionChangeAttributeEvent,
 	type ModelSelectionChangeRangeEvent
 } from './selection.js';
-import { Text } from './text.js';
+import { ModelText } from './text.js';
 import { TextProxy } from './textproxy.js';
 
 import type { ModelDocumentChangeEvent, ModelDocument } from './document.js';
@@ -1228,7 +1228,7 @@ function getTextAttributes( node: ModelItem | null, schema: ModelSchema ): Itera
 		return null;
 	}
 
-	if ( node instanceof TextProxy || node instanceof Text ) {
+	if ( node instanceof TextProxy || node instanceof ModelText ) {
 		return node.getAttributes();
 	}
 

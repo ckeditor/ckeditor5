@@ -9,7 +9,7 @@ import {
 	ModelLiveRange,
 	type ModelDocumentChangeEvent,
 	type ModelItem,
-	type Text
+	type ModelText
 } from 'ckeditor5/src/engine.js';
 
 import { first } from 'ckeditor5/src/utils.js';
@@ -131,7 +131,7 @@ export function blockAutoformatEditing(
 			return;
 		}
 
-		const firstNode = blockToFormat.getChild( 0 ) as Text;
+		const firstNode = blockToFormat.getChild( 0 ) as ModelText;
 
 		const firstNodeRange = editor.model.createRangeOn( firstNode );
 

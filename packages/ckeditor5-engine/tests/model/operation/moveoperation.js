@@ -7,7 +7,7 @@ import { Model } from '../../../src/model/model.js';
 import { MoveOperation } from '../../../src/model/operation/moveoperation.js';
 import { ModelPosition } from '../../../src/model/position.js';
 import { ModelElement } from '../../../src/model/element.js';
-import { Text } from '../../../src/model/text.js';
+import { ModelText } from '../../../src/model/text.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -60,7 +60,7 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should move position of children in one node backward', () => {
-		root._insertChild( 0, new Text( 'xbarx' ) );
+		root._insertChild( 0, new ModelText( 'xbarx' ) );
 
 		model.applyOperation(
 			new MoveOperation(
@@ -77,7 +77,7 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should move position of children in one node forward', () => {
-		root._insertChild( 0, new Text( 'xbarx' ) );
+		root._insertChild( 0, new ModelText( 'xbarx' ) );
 
 		model.applyOperation(
 			new MoveOperation(
@@ -145,7 +145,7 @@ describe( 'MoveOperation', () => {
 
 	describe( '_validate()', () => {
 		it( 'should throw an error if number of nodes to move exceeds the number of existing nodes in given element', () => {
-			root._insertChild( 0, new Text( 'xbarx' ) );
+			root._insertChild( 0, new ModelText( 'xbarx' ) );
 
 			const operation = new MoveOperation(
 				new ModelPosition( root, [ 3 ] ),
@@ -159,8 +159,8 @@ describe( 'MoveOperation', () => {
 
 		it( 'should throw an error if target or source parent-element specified by position does not exist', () => {
 			const p = new ModelElement( 'p' );
-			p._insertChild( 0, new Text( 'foo' ) );
-			root._insertChild( 0, [ new Text( 'ab' ), p ] );
+			p._insertChild( 0, new ModelText( 'foo' ) );
+			root._insertChild( 0, [ new ModelText( 'ab' ), p ] );
 
 			const operation = new MoveOperation(
 				new ModelPosition( root, [ 2, 0 ] ),
@@ -175,7 +175,7 @@ describe( 'MoveOperation', () => {
 		} );
 
 		it( 'should throw an error if operation tries to move a range between the beginning and the end of that range', () => {
-			root._insertChild( 0, new Text( 'xbarx' ) );
+			root._insertChild( 0, new ModelText( 'xbarx' ) );
 
 			const operation = new MoveOperation(
 				new ModelPosition( root, [ 1 ] ),
@@ -189,7 +189,7 @@ describe( 'MoveOperation', () => {
 
 		it( 'should throw an error if operation tries to move a range into a sub-tree of a node that is in that range', () => {
 			const p = new ModelElement( 'p', [], [ new ModelElement( 'p' ) ] );
-			root._insertChild( 0, [ new Text( 'ab' ), p, new Text( 'xy' ) ] );
+			root._insertChild( 0, [ new ModelText( 'ab' ), p, new ModelText( 'xy' ) ] );
 
 			const operation = new MoveOperation(
 				new ModelPosition( root, [ 1 ] ),
@@ -203,7 +203,7 @@ describe( 'MoveOperation', () => {
 
 		it( 'should not throw an error if operation move a range into a sibling', () => {
 			const p = new ModelElement( 'p' );
-			root._insertChild( 0, [ new Text( 'ab' ), p, new Text( 'xy' ) ] );
+			root._insertChild( 0, [ new ModelText( 'ab' ), p, new ModelText( 'xy' ) ] );
 
 			const operation = new MoveOperation(
 				new ModelPosition( root, [ 1 ] ),
@@ -217,8 +217,8 @@ describe( 'MoveOperation', () => {
 
 		it( 'should not throw when operation paths looks like incorrect but move is between different roots', () => {
 			const p = new ModelElement( 'p' );
-			root._insertChild( 0, [ new Text( 'a' ), p, new Text( 'b' ) ] );
-			doc.graveyard._insertChild( 0, new Text( 'abc' ) );
+			root._insertChild( 0, [ new ModelText( 'a' ), p, new ModelText( 'b' ) ] );
+			doc.graveyard._insertChild( 0, new ModelText( 'abc' ) );
 
 			const operation = new MoveOperation(
 				new ModelPosition( doc.graveyard, [ 0 ] ),

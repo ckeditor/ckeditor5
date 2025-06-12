@@ -6,7 +6,7 @@
 import { Model } from '../../../src/model/model.js';
 import { insertContent } from '../../../src/model/utils/insertcontent.js';
 import { ModelDocumentFragment } from '../../../src/model/documentfragment.js';
-import { Text } from '../../../src/model/text.js';
+import { ModelText } from '../../../src/model/text.js';
 import { ModelElement } from '../../../src/model/element.js';
 import { ModelPosition } from '../../../src/model/position.js';
 
@@ -98,7 +98,7 @@ describe( 'DataController utils', () => {
 
 			_setModelData( model, 'x[]x' );
 
-			insertContent( model, new ModelDocumentFragment( [ new Text( 'a' ) ] ) );
+			insertContent( model, new ModelDocumentFragment( [ new ModelText( 'a' ) ] ) );
 
 			expect( _getModelData( model ) ).to.equal( 'xa[]x' );
 		} );
@@ -108,7 +108,7 @@ describe( 'DataController utils', () => {
 
 			_setModelData( model, 'x[]x' );
 
-			insertContent( model, new Text( 'a' ) );
+			insertContent( model, new ModelText( 'a' ) );
 
 			expect( _getModelData( model ) ).to.equal( 'xa[]x' );
 		} );
@@ -320,31 +320,31 @@ describe( 'DataController utils', () => {
 
 				it( 'inserts one space', () => {
 					_setModelData( model, 'f[]oo' );
-					insertHelper( new Text( ' ' ) );
+					insertHelper( new ModelText( ' ' ) );
 					expect( _getModelData( model ) ).to.equal( 'f []oo' );
 				} );
 
 				it( 'inserts three spaces', () => {
 					_setModelData( model, 'f[]oo' );
-					insertHelper( new Text( '   ' ) );
+					insertHelper( new ModelText( '   ' ) );
 					expect( _getModelData( model ) ).to.equal( 'f   []oo' );
 				} );
 
 				it( 'inserts spaces at the end', () => {
 					_setModelData( model, 'foo[]' );
-					insertHelper( new Text( '   ' ) );
+					insertHelper( new ModelText( '   ' ) );
 					expect( _getModelData( model ) ).to.equal( 'foo   []' );
 				} );
 
 				it( 'inserts one nbsp', () => {
 					_setModelData( model, 'f[]oo' );
-					insertHelper( new Text( '\u200a' ) );
+					insertHelper( new ModelText( '\u200a' ) );
 					expect( _getModelData( model ) ).to.equal( 'f\u200a[]oo' );
 				} );
 
 				it( 'inserts word surrounded by spaces', () => {
 					_setModelData( model, 'f[]oo' );
-					insertHelper( new Text( ' xyz  ' ) );
+					insertHelper( new ModelText( ' xyz  ' ) );
 					expect( _getModelData( model ) ).to.equal( 'f xyz  []oo' );
 				} );
 			} );
@@ -519,8 +519,8 @@ describe( 'DataController utils', () => {
 				} );
 
 				const content = new ModelDocumentFragment( [
-					new ModelElement( 'heading1', [], [ new Text( 'bar' ) ] ),
-					new Text( 'biz' )
+					new ModelElement( 'heading1', [], [ new ModelText( 'bar' ) ] ),
+					new ModelText( 'biz' )
 				] );
 
 				_setModelData( model, '[<heading2>foo</heading2>]' );

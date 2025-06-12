@@ -138,7 +138,7 @@ export {
 export { ModelDocumentFragment } from './model/documentfragment.js';
 export { ModelDocument, type ModelPostFixer } from './model/document.js';
 export { History } from './model/history.js';
-export { Text } from './model/text.js';
+export { ModelText } from './model/text.js';
 export { TextProxy } from './model/textproxy.js';
 export {
 	MarkerCollection,

@@ -10,7 +10,7 @@
 import { TypeCheckable } from './typecheckable.js';
 import { ModelElement } from './element.js';
 import { ModelNodeList } from './nodelist.js';
-import { Text } from './text.js';
+import { ModelText } from './text.js';
 import { TextProxy } from './textproxy.js';
 
 import { type ModelItem } from './item.js';
@@ -282,7 +282,7 @@ export class ModelDocumentFragment extends TypeCheckable implements Iterable<Mod
 				children.push( ModelElement.fromJSON( child ) );
 			} else {
 				// Otherwise, it is a Text node.
-				children.push( Text.fromJSON( child ) );
+				children.push( ModelText.fromJSON( child ) );
 			}
 		}
 
@@ -411,7 +411,7 @@ ModelDocumentFragment.prototype.is = function( type: string ): boolean {
 function normalize( nodes: string | ModelItem | Iterable<string | ModelItem> ): Array<ModelNode> {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
-		return [ new Text( nodes ) ];
+		return [ new ModelText( nodes ) ];
 	}
 
 	if ( !isIterable( nodes ) ) {
@@ -422,11 +422,11 @@ function normalize( nodes: string | ModelItem | Iterable<string | ModelItem> ): 
 	return Array.from( nodes )
 		.map( node => {
 			if ( typeof node == 'string' ) {
-				return new Text( node );
+				return new ModelText( node );
 			}
 
 			if ( node instanceof TextProxy ) {
-				return new Text( node.data, node.getAttributes() );
+				return new ModelText( node.data, node.getAttributes() );
 			}
 
 			return node;

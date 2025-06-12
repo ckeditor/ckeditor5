@@ -10,7 +10,7 @@
 import { ModelElement } from './element.js';
 import { ModelPosition } from './position.js';
 import { ModelRange } from './range.js';
-import { Text } from './text.js';
+import { ModelText } from './text.js';
 import { TreeWalker } from './treewalker.js';
 
 import { type ModelDocumentFragment } from './documentfragment.js';
@@ -788,7 +788,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 			const firstPosition = selection.getFirstPosition()!;
 			const context = [
 				...firstPosition.getAncestors() as Array<ModelElement>,
-				new Text( '', selection.getAttributes() )
+				new ModelText( '', selection.getAttributes() )
 			];
 
 			// Check whether schema allows for a text with the attribute in the selection.
@@ -1995,7 +1995,7 @@ export class ModelSchemaContext implements Iterable<ModelSchemaContextItem> {
  * ```
  *
  * Note: When using the {@link module:engine/model/schema~ModelSchema#checkAttribute `Schema#checkAttribute()`} method
- * you may want to check whether a text node may have an attribute. A {@link module:engine/model/text~Text} is a
+ * you may want to check whether a text node may have an attribute. A {@link module:engine/model/text~ModelText} is a
  * correct way to define a context so you can do this:
  *
  * ```ts

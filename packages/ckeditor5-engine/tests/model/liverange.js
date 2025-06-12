@@ -8,7 +8,7 @@ import { ModelElement } from '../../src/model/element.js';
 import { ModelPosition } from '../../src/model/position.js';
 import { ModelLiveRange } from '../../src/model/liverange.js';
 import { ModelRange } from '../../src/model/range.js';
-import { Text } from '../../src/model/text.js';
+import { ModelText } from '../../src/model/text.js';
 import { MoveOperation } from '../../src/model/operation/moveoperation.js';
 import { MergeOperation } from '../../src/model/operation/mergeoperation.js';
 import { _stringifyModel, _setModelData } from '../../src/dev-utils/model.js';
@@ -22,20 +22,20 @@ describe( 'LiveRange', () => {
 		root = doc.createRoot();
 
 		const lis = [
-			new ModelElement( 'li', [], new Text( 'aaaaaaaaaa' ) ),
-			new ModelElement( 'li', [], new Text( 'bbbbbbbbbb' ) ),
-			new ModelElement( 'li', [], new Text( 'cccccccccc' ) ),
-			new ModelElement( 'li', [], new Text( 'dddddddddd' ) ),
-			new ModelElement( 'li', [], new Text( 'eeeeeeeeee' ) ),
-			new ModelElement( 'li', [], new Text( 'ffffffffff' ) ),
-			new ModelElement( 'li', [], new Text( 'gggggggggg' ) ),
-			new ModelElement( 'li', [], new Text( 'hhhhhhhhhh' ) )
+			new ModelElement( 'li', [], new ModelText( 'aaaaaaaaaa' ) ),
+			new ModelElement( 'li', [], new ModelText( 'bbbbbbbbbb' ) ),
+			new ModelElement( 'li', [], new ModelText( 'cccccccccc' ) ),
+			new ModelElement( 'li', [], new ModelText( 'dddddddddd' ) ),
+			new ModelElement( 'li', [], new ModelText( 'eeeeeeeeee' ) ),
+			new ModelElement( 'li', [], new ModelText( 'ffffffffff' ) ),
+			new ModelElement( 'li', [], new ModelText( 'gggggggggg' ) ),
+			new ModelElement( 'li', [], new ModelText( 'hhhhhhhhhh' ) )
 		];
 
 		ul = new ModelElement( 'ul', [], lis );
-		p = new ModelElement( 'p', [], new Text( 'qwertyuiop' ) );
+		p = new ModelElement( 'p', [], new ModelText( 'qwertyuiop' ) );
 
-		root._insertChild( 0, [ ul, p, new Text( 'xyzxyz' ) ] );
+		root._insertChild( 0, [ ul, p, new ModelText( 'xyzxyz' ) ] );
 	} );
 
 	it( 'should be an instance of Range', () => {

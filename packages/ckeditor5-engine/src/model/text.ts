@@ -13,7 +13,7 @@ import { ModelNode, type ModelNodeAttributes } from './node.js';
 
 /**
  * Model text node. Type of {@link module:engine/model/node~ModelNode node} that
- * contains {@link module:engine/model/text~Text#data text data}.
+ * contains {@link module:engine/model/text~ModelText#data text data}.
  *
  * **Important:** see {@link module:engine/model/node~ModelNode} to read about restrictions using `Text` and `Node` API.
  *
@@ -23,7 +23,7 @@ import { ModelNode, type ModelNodeAttributes } from './node.js';
  * this behavior, keeping references to `Text` is not recommended. Instead, consider creating
  * {@link module:engine/model/liveposition~ModelLivePosition live position} placed before the text node.
  */
-export class Text extends ModelNode {
+export class ModelText extends ModelNode {
 	/**
 	 * Text data contained in this text node.
 	 *
@@ -79,8 +79,8 @@ export class Text extends ModelNode {
 	 * @internal
 	 * @returns `Text` instance created using given plain object.
 	 */
-	public override _clone(): Text {
-		return new Text( this.data, this.getAttributes() );
+	public override _clone(): ModelText {
+		return new ModelText( this.data, this.getAttributes() );
 	}
 
 	/**
@@ -89,8 +89,8 @@ export class Text extends ModelNode {
 	 * @param json Plain object to be converted to `Text`.
 	 * @returns `Text` instance created using given plain object.
 	 */
-	public static fromJSON( json: any ): Text {
-		return new Text( json.data, json.attributes );
+	public static fromJSON( json: any ): ModelText {
+		return new ModelText( json.data, json.attributes );
 	}
 
 	// @if CK_DEBUG_ENGINE // public override toString(): string {
@@ -108,12 +108,10 @@ export class Text extends ModelNode {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-Text.prototype.is = function( type: string ): boolean {
+ModelText.prototype.is = function( type: string ): boolean {
 	return type === '$text' || type === 'model:$text' ||
 		// This are legacy values kept for backward compatibility.
 		type === 'text' || type === 'model:text' ||
 		// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
 		type === 'node' || type === 'model:node';
 };
-
-export { Text as ModelText };

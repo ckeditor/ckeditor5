@@ -118,7 +118,7 @@ export abstract class ModelNode extends TypeCheckable {
 	 * Represents how much "offset space" is occupied by the node in its parent. It is important for
 	 * {@link module:engine/model/position~ModelPosition position}. When node has `offsetSize` greater
 	 * than `1`, position can be placed between that node start and end. `offsetSize` greater than `1` is for
-	 * nodes that represents more than one entity, i.e. a {@link module:engine/model/text~Text text node}.
+	 * nodes that represents more than one entity, i.e. a {@link module:engine/model/text~ModelText text node}.
 	 */
 	public get offsetSize(): number {
 		return 1;

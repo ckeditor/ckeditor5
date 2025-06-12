@@ -24,7 +24,7 @@ import { ModelElement } from './element.js';
 import { ModelPosition, type ModelPositionOffset, type ModelPositionStickiness } from './position.js';
 import { ModelRange } from './range.js';
 import { ModelRootElement } from './rootelement.js';
-import { Text } from './text.js';
+import { ModelText } from './text.js';
 
 import type { Marker } from './markercollection.js';
 import type { ModelSelection, ModelPlaceOrOffset, ModelSelectable } from './selection.js';
@@ -83,7 +83,7 @@ export class Writer {
 	}
 
 	/**
-	 * Creates a new {@link module:engine/model/text~Text text node}.
+	 * Creates a new {@link module:engine/model/text~ModelText text node}.
 	 *
 	 * ```ts
 	 * writer.createText( 'foo' );
@@ -92,13 +92,13 @@ export class Writer {
 	 *
 	 * @param data Text data.
 	 * @param attributes Text attributes.
-	 * @returns {module:engine/model/text~Text} Created text node.
+	 * @returns {module:engine/model/text~ModelText} Created text node.
 	 */
 	public createText(
 		data: string,
 		attributes?: ModelNodeAttributes
-	): Text {
-		return new Text( data, attributes );
+	): ModelText {
+		return new ModelText( data, attributes );
 	}
 
 	/**
@@ -193,7 +193,7 @@ export class Writer {
 	): void {
 		this._assertWriterUsedCorrectly();
 
-		if ( item instanceof Text && item.data == '' ) {
+		if ( item instanceof ModelText && item.data == '' ) {
 			return;
 		}
 
@@ -237,7 +237,7 @@ export class Writer {
 
 		const insert = new InsertOperation( position, children, version );
 
-		if ( item instanceof Text ) {
+		if ( item instanceof ModelText ) {
 			insert.shouldReceiveAttributes = true;
 		}
 

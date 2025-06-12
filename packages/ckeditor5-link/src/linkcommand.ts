@@ -81,7 +81,7 @@ export class LinkCommand extends Command {
 	 * those nodes where the `linkHref` attribute is allowed (disallowed nodes will be omitted).
 	 *
 	 * When the selection is collapsed and is not inside the text with the `linkHref` attribute, a
-	 * new {@link module:engine/model/text~Text text node} with the `linkHref` attribute will be inserted in place of the caret, but
+	 * new {@link module:engine/model/text~ModelText text node} with the `linkHref` attribute will be inserted in place of the caret, but
 	 * only if such element is allowed in this place. The `_data` of the inserted text will equal the `href` parameter.
 	 * The selection will be updated to wrap the just inserted text node.
 	 *

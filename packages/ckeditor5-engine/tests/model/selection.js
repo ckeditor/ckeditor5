@@ -5,7 +5,7 @@
 
 import { Model } from '../../src/model/model.js';
 import { ModelElement } from '../../src/model/element.js';
-import { Text } from '../../src/model/text.js';
+import { ModelText } from '../../src/model/text.js';
 import { ModelRange } from '../../src/model/range.js';
 import { ModelPosition } from '../../src/model/position.js';
 import { ModelLiveRange } from '../../src/model/liverange.js';
@@ -30,11 +30,11 @@ describe( 'Selection', () => {
 		root._appendChild( [
 			new ModelElement( 'p' ),
 			new ModelElement( 'p' ),
-			new ModelElement( 'p', [], new Text( 'foobar' ) ),
+			new ModelElement( 'p', [], new ModelText( 'foobar' ) ),
 			new ModelElement( 'p' ),
 			new ModelElement( 'p' ),
 			new ModelElement( 'p' ),
-			new ModelElement( 'p', [], new Text( 'foobar' ) )
+			new ModelElement( 'p', [], new ModelText( 'foobar' ) )
 		] );
 		selection = new ModelSelection();
 
@@ -319,7 +319,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should allow setting selection inside an element', () => {
-			const element = new ModelElement( 'p', null, [ new Text( 'foo' ), new Text( 'bar' ) ] );
+			const element = new ModelElement( 'p', null, [ new ModelText( 'foo' ), new ModelText( 'bar' ) ] );
 
 			selection.setTo( element, 'in' );
 
@@ -332,9 +332,9 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should allow setting selection on an item', () => {
-			const textNode1 = new Text( 'foo' );
-			const textNode2 = new Text( 'bar' );
-			const textNode3 = new Text( 'baz' );
+			const textNode1 = new ModelText( 'foo' );
+			const textNode2 = new ModelText( 'bar' );
+			const textNode3 = new ModelText( 'baz' );
 			const element = new ModelElement( 'p', null, [ textNode1, textNode2, textNode3 ] );
 
 			selection.setTo( textNode2, 'on' );
@@ -348,9 +348,9 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should allow setting backward selection on an item', () => {
-			const textNode1 = new Text( 'foo' );
-			const textNode2 = new Text( 'bar' );
-			const textNode3 = new Text( 'baz' );
+			const textNode1 = new ModelText( 'foo' );
+			const textNode2 = new ModelText( 'bar' );
+			const textNode3 = new ModelText( 'baz' );
 			const element = new ModelElement( 'p', null, [ textNode1, textNode2, textNode3 ] );
 
 			selection.setTo( textNode2, 'on', { backward: true } );
@@ -1140,7 +1140,7 @@ describe( 'Selection', () => {
 
 		beforeEach( () => {
 			root._insertChild( 0, [
-				new ModelElement( 'p', [], new Text( 'foobar' ) ),
+				new ModelElement( 'p', [], new ModelText( 'foobar' ) ),
 				new ModelElement( 'p', [], [] )
 			] );
 

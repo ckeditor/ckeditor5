@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core.js';
 import type {
 	ModelElement,
-	Text,
+	ModelText,
 	Writer,
 	ModelDocument,
 	AttributeElement,
@@ -111,7 +111,7 @@ export function _toMentionAttribute(
 ): MentionAttribute | undefined {
 	const dataMention = viewElementOrMention.getAttribute( 'data-mention' ) as string;
 
-	const textNode = viewElementOrMention.getChild( 0 ) as Text;
+	const textNode = viewElementOrMention.getChild( 0 ) as ModelText;
 
 	// Do not convert empty mentions.
 	if ( !textNode ) {
@@ -142,7 +142,7 @@ function preventPartialMentionDowncast( dispatcher: DowncastDispatcher ) {
 		}
 
 		const start = data.range.start;
-		const textNode = start.textNode || start.nodeAfter as Text;
+		const textNode = start.textNode || start.nodeAfter as ModelText;
 
 		if ( textNode!.data != mention._text ) {
 			// Consume item to prevent partial mention conversion.

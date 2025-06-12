@@ -12,7 +12,7 @@ import {
 import { Model } from '../../../src/model/model.js';
 import { ModelRange } from '../../../src/model/range.js';
 import { ModelElement } from '../../../src/model/element.js';
-import { Text } from '../../../src/model/text.js';
+import { ModelText } from '../../../src/model/text.js';
 import { ModelNode } from '../../../src/model/node.js';
 import { TextProxy } from '../../../src/model/textproxy.js';
 
@@ -25,8 +25,8 @@ describe( 'getNodesAndText', () => {
 		doc = model.document;
 		root = doc.createRoot();
 
-		div = new ModelElement( 'div', [], new Text( 'foobar' ) );
-		p = new ModelElement( 'p', [], new Text( 'abcxyz' ) );
+		div = new ModelElement( 'div', [], new ModelText( 'foobar' ) );
+		p = new ModelElement( 'p', [], new ModelText( 'abcxyz' ) );
 
 		root._insertChild( 0, [ div, p ] );
 	} );
@@ -40,9 +40,9 @@ describe( 'itemAt', () => {
 	let foo, img, bar, element;
 
 	beforeEach( () => {
-		foo = new Text( 'foo' );
+		foo = new ModelText( 'foo' );
 		img = new ModelElement( 'imageBlock' );
-		bar = new Text( 'bar' );
+		bar = new ModelText( 'bar' );
 
 		element = new ModelElement( 'p', null, [ foo, img, bar ] );
 	} );
@@ -72,13 +72,13 @@ describe( 'getText', () => {
 	it( 'should deeply visit each child of given element and concat text data of all visited text nodes', () => {
 		const div = new ModelElement( 'div', null, [
 			new ModelElement( 'p', null, [
-				new Text( 'aaa', { bold: true } ),
-				new Text( ' bbb' )
+				new ModelText( 'aaa', { bold: true } ),
+				new ModelText( ' bbb' )
 			] ),
-			new Text( 'ccc' ),
+			new ModelText( 'ccc' ),
 			new ModelNode( { attr: 'value' } ),
 			new ModelElement( 'p', null, [
-				new Text( 'ddd' )
+				new ModelText( 'ddd' )
 			] )
 		] );
 

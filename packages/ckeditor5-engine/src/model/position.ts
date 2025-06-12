@@ -20,7 +20,7 @@ import { type MoveOperation } from './operation/moveoperation.js';
 import { type ModelNode } from './node.js';
 import { type Operation } from './operation/operation.js';
 import { type SplitOperation } from './operation/splitoperation.js';
-import { type Text } from './text.js';
+import { type ModelText } from './text.js';
 
 import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
@@ -75,7 +75,7 @@ export class ModelPosition extends TypeCheckable {
 	 *        |- bar    before: [ 1, 1, 0 ]   after: [ 1, 1, 3 ]
 	 * ```
 	 *
-	 * `foo` and `bar` are representing {@link module:engine/model/text~Text text nodes}. Since text nodes has offset size
+	 * `foo` and `bar` are representing {@link module:engine/model/text~ModelText text nodes}. Since text nodes has offset size
 	 * greater than `1` you can place position offset between their start and end:
 	 *
 	 * ```
@@ -217,10 +217,10 @@ export class ModelPosition extends TypeCheckable {
 	}
 
 	/**
-	 * Returns {@link module:engine/model/text~Text text node} instance in which this position is placed or `null` if this
+	 * Returns {@link module:engine/model/text~ModelText text node} instance in which this position is placed or `null` if this
 	 * position is not in a text node.
 	 */
-	public get textNode(): Text | null {
+	public get textNode(): ModelText | null {
 		return getTextNodeAtPosition( this, this.parent );
 	}
 
@@ -1098,7 +1098,7 @@ export type ModelPositionStickiness = 'toNone' | 'toNext' | 'toPrevious';
  * @param positionParent The parent of the given position.
  * @internal
  */
-export function getTextNodeAtPosition( position: ModelPosition, positionParent: ModelElement | ModelDocumentFragment ): Text | null {
+export function getTextNodeAtPosition( position: ModelPosition, positionParent: ModelElement | ModelDocumentFragment ): ModelText | null {
 	const node = positionParent.getChildAtOffset( position.offset );
 
 	if ( node && node.is( '$text' ) && node.startOffset! < position.offset ) {
@@ -1135,7 +1135,7 @@ export function getTextNodeAtPosition( position: ModelPosition, positionParent: 
 export function getNodeAfterPosition(
 	position: ModelPosition,
 	positionParent: ModelElement | ModelDocumentFragment,
-	textNode: Text | null
+	textNode: ModelText | null
 ): ModelNode | null {
 	if ( textNode !== null ) {
 		return null;
@@ -1162,7 +1162,7 @@ export function getNodeAfterPosition(
 export function getNodeBeforePosition(
 	position: ModelPosition,
 	positionParent: ModelElement | ModelDocumentFragment,
-	textNode: Text | null
+	textNode: ModelText | null
 ): ModelNode | null {
 	if ( textNode !== null ) {
 		return null;

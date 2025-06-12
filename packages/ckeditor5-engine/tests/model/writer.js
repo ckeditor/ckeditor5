@@ -10,7 +10,7 @@ import { InsertOperation } from '../../src/model/operation/insertoperation.js';
 
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { ModelElement } from '../../src/model/element.js';
-import { Text } from '../../src/model/text.js';
+import { ModelText } from '../../src/model/text.js';
 import { ModelPosition } from '../../src/model/position.js';
 import { ModelRange } from '../../src/model/range.js';
 
@@ -54,7 +54,7 @@ describe( 'Writer', () => {
 		it( 'should create text node', () => {
 			const text = createText( 'foo' );
 
-			expect( text ).to.instanceof( Text );
+			expect( text ).to.instanceof( ModelText );
 			expect( text.data ).to.equal( 'foo' );
 			expect( Array.from( text.getAttributes() ) ).to.length( 0 );
 		} );
@@ -434,7 +434,7 @@ describe( 'Writer', () => {
 			insertText( 'foo', { bar: 'biz' }, new ModelPosition( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Text );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelText );
 			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'bar', 'biz' ] ] );
 		} );
@@ -445,7 +445,7 @@ describe( 'Writer', () => {
 			insertText( 'foo', null, new ModelPosition( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Text );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelText );
 			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
 		} );
@@ -456,7 +456,7 @@ describe( 'Writer', () => {
 			insertText( 'foo', new ModelPosition( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Text );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelText );
 			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
 		} );
@@ -469,7 +469,7 @@ describe( 'Writer', () => {
 			insertText( 'foo', parent );
 
 			expect( parent.childCount ).to.equal( 2 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Text );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelText );
 			expect( parent.getChild( 1 ) ).to.instanceof( ModelElement );
 		} );
 
@@ -481,7 +481,7 @@ describe( 'Writer', () => {
 
 			expect( parent.childCount ).to.equal( 2 );
 			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
-			expect( parent.getChild( 1 ) ).to.instanceof( Text );
+			expect( parent.getChild( 1 ) ).to.instanceof( ModelText );
 		} );
 
 		it( 'should create and insert text node at the given offset of given element', () => {
@@ -494,7 +494,7 @@ describe( 'Writer', () => {
 
 			expect( parent.childCount ).to.equal( 3 );
 			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
-			expect( parent.getChild( 1 ) ).to.instanceof( Text );
+			expect( parent.getChild( 1 ) ).to.instanceof( ModelText );
 			expect( parent.getChild( 2 ) ).to.instanceof( ModelElement );
 		} );
 
@@ -510,7 +510,7 @@ describe( 'Writer', () => {
 
 			expect( parent.childCount ).to.equal( 3 );
 			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
-			expect( parent.getChild( 1 ) ).to.instanceof( Text );
+			expect( parent.getChild( 1 ) ).to.instanceof( ModelText );
 			expect( parent.getChild( 2 ) ).to.instanceof( ModelElement );
 		} );
 
@@ -526,7 +526,7 @@ describe( 'Writer', () => {
 
 			expect( parent.childCount ).to.equal( 3 );
 			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
-			expect( parent.getChild( 1 ) ).to.instanceof( Text );
+			expect( parent.getChild( 1 ) ).to.instanceof( ModelText );
 			expect( parent.getChild( 2 ) ).to.instanceof( ModelElement );
 		} );
 
@@ -823,7 +823,7 @@ describe( 'Writer', () => {
 			appendText( 'foo', null, parent );
 
 			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Text );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelText );
 			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
 		} );
@@ -833,7 +833,7 @@ describe( 'Writer', () => {
 			appendText( 'foo', parent );
 
 			expect( parent.childCount ).to.equal( 1 );
-			expect( parent.getChild( 0 ) ).to.instanceof( Text );
+			expect( parent.getChild( 0 ) ).to.instanceof( ModelText );
 			expect( parent.getChild( 0 ).data ).to.equal( 'foo' );
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
 		} );
@@ -1481,8 +1481,8 @@ describe( 'Writer', () => {
 		beforeEach( () => {
 			root = doc.createRoot();
 
-			p1 = new ModelElement( 'p', { key1: 'value1' }, new Text( 'foo' ) );
-			p2 = new ModelElement( 'p', { key2: 'value2' }, new Text( 'bar' ) );
+			p1 = new ModelElement( 'p', { key1: 'value1' }, new ModelText( 'foo' ) );
+			p2 = new ModelElement( 'p', { key2: 'value2' }, new ModelText( 'bar' ) );
 
 			root._insertChild( 0, [ p1, p2 ] );
 		} );
@@ -1603,11 +1603,11 @@ describe( 'Writer', () => {
 		beforeEach( () => {
 			root = doc.createRoot();
 
-			div = new ModelElement( 'div', [], new Text( 'foobar' ) );
-			p = new ModelElement( 'p', [], new Text( 'abcxyz' ) );
+			div = new ModelElement( 'div', [], new ModelText( 'foobar' ) );
+			p = new ModelElement( 'p', [], new ModelText( 'abcxyz' ) );
 
-			div._insertChild( 0, [ new ModelElement( 'p', [], new Text( 'gggg' ) ) ] );
-			div._insertChild( 2, [ new ModelElement( 'p', [], new Text( 'hhhh' ) ) ] );
+			div._insertChild( 0, [ new ModelElement( 'p', [], new ModelText( 'gggg' ) ) ] );
+			div._insertChild( 2, [ new ModelElement( 'p', [], new ModelText( 'hhhh' ) ) ] );
 
 			root._insertChild( 0, [ div, p ] );
 
@@ -1879,7 +1879,7 @@ describe( 'Writer', () => {
 	describe( 'rename()', () => {
 		it( 'should rename given element', () => {
 			const root = doc.createRoot();
-			const p = new ModelElement( 'p', null, new Text( 'abc' ) );
+			const p = new ModelElement( 'p', null, new ModelText( 'abc' ) );
 
 			root._appendChild( p );
 
@@ -1903,13 +1903,13 @@ describe( 'Writer', () => {
 
 		it( 'should throw if not an Element instance is passed', () => {
 			expectToThrowCKEditorError( () => {
-				rename( new Text( 'abc' ), 'h' );
+				rename( new ModelText( 'abc' ), 'h' );
 			}, /^writer-rename-not-element-instance/, model );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
 			const writer = new Writer( model, batch );
-			const p = new ModelElement( 'p', null, new Text( 'abc' ) );
+			const p = new ModelElement( 'p', null, new ModelText( 'abc' ) );
 
 			expectToThrowCKEditorError( () => {
 				writer.rename( p, 'h' );
@@ -1923,7 +1923,7 @@ describe( 'Writer', () => {
 		beforeEach( () => {
 			root = doc.createRoot();
 
-			p = new ModelElement( 'p', { key: 'value' }, new Text( 'foobar' ) );
+			p = new ModelElement( 'p', { key: 'value' }, new ModelText( 'foobar' ) );
 
 			root._insertChild( 0, p );
 		} );
@@ -1948,7 +1948,7 @@ describe( 'Writer', () => {
 
 		it( 'should split inside document fragment', () => {
 			const docFrag = new ModelDocumentFragment();
-			docFrag._appendChild( new ModelElement( 'p', null, new Text( 'foobar' ) ) );
+			docFrag._appendChild( new ModelElement( 'p', null, new ModelText( 'foobar' ) ) );
 
 			split( new ModelPosition( docFrag, [ 0, 3 ] ) );
 
@@ -2053,7 +2053,7 @@ describe( 'Writer', () => {
 		beforeEach( () => {
 			root = doc.createRoot();
 
-			root._insertChild( 0, new Text( 'foobar' ) );
+			root._insertChild( 0, new ModelText( 'foobar' ) );
 
 			range = new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 4 ] ) );
 		} );
@@ -2080,7 +2080,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should wrap inside document fragment', () => {
-			const docFrag = new ModelDocumentFragment( new Text( 'foo' ) );
+			const docFrag = new ModelDocumentFragment( new ModelText( 'foo' ) );
 
 			wrap( ModelRange._createIn( docFrag ), 'p' );
 
@@ -2090,7 +2090,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw if range to wrap is not flat', () => {
-			root._insertChild( 1, [ new ModelElement( 'p', [], new Text( 'xyz' ) ) ] );
+			root._insertChild( 1, [ new ModelElement( 'p', [], new ModelText( 'xyz' ) ) ] );
 			const notFlatRange = new ModelRange( new ModelPosition( root, [ 3 ] ), new ModelPosition( root, [ 6, 2 ] ) );
 
 			expectToThrowCKEditorError( () => {
@@ -2099,7 +2099,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw if element to wrap with has children #1', () => {
-			const p = new ModelElement( 'p', [], new Text( 'a' ) );
+			const p = new ModelElement( 'p', [], new ModelText( 'a' ) );
 
 			expectToThrowCKEditorError( () => {
 				wrap( range, p );
@@ -2130,8 +2130,8 @@ describe( 'Writer', () => {
 		beforeEach( () => {
 			root = doc.createRoot();
 
-			p = new ModelElement( 'p', [], new Text( 'xyz' ) );
-			root._insertChild( 0, [ new Text( 'a' ), p, new Text( 'b' ) ] );
+			p = new ModelElement( 'p', [], new ModelText( 'xyz' ) );
+			root._insertChild( 0, [ new ModelText( 'a' ), p, new ModelText( 'b' ) ] );
 		} );
 
 		it( 'should unwrap given element', () => {
@@ -2142,7 +2142,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should unwrap inside document fragment', () => {
-			const docFrag = new ModelDocumentFragment( new ModelElement( 'p', null, new Text( 'foo' ) ) );
+			const docFrag = new ModelDocumentFragment( new ModelElement( 'p', null, new ModelText( 'foo' ) ) );
 
 			unwrap( docFrag.getChild( 0 ) );
 
@@ -2172,7 +2172,7 @@ describe( 'Writer', () => {
 
 		beforeEach( () => {
 			root = doc.createRoot();
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 			range = ModelRange._createIn( root );
 		} );
 
@@ -2281,7 +2281,7 @@ describe( 'Writer', () => {
 
 		beforeEach( () => {
 			root = doc.createRoot();
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 			range = ModelRange._createIn( root );
 		} );
 
@@ -2561,7 +2561,7 @@ describe( 'Writer', () => {
 
 		beforeEach( () => {
 			root = doc.createRoot();
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 			range = ModelRange._createIn( root );
 		} );
 
@@ -2767,7 +2767,7 @@ describe( 'Writer', () => {
 			root._appendChild( [
 				new ModelElement( 'p' ),
 				new ModelElement( 'p' ),
-				new ModelElement( 'p', [], new Text( 'foo' ) )
+				new ModelElement( 'p', [], new ModelText( 'foo' ) )
 			] );
 		} );
 
@@ -2804,7 +2804,7 @@ describe( 'Writer', () => {
 			root._appendChild( [
 				new ModelElement( 'p' ),
 				new ModelElement( 'p' ),
-				new ModelElement( 'p', [], new Text( 'foo' ) )
+				new ModelElement( 'p', [], new ModelText( 'foo' ) )
 			] );
 		} );
 
@@ -2840,7 +2840,7 @@ describe( 'Writer', () => {
 			root._appendChild( [
 				new ModelElement( 'p', [], [] ),
 				new ModelElement( 'p' ),
-				new ModelElement( 'p', [], new Text( 'foo' ) )
+				new ModelElement( 'p', [], new ModelText( 'foo' ) )
 			] );
 
 			rangeInEmptyP = new ModelRange( new ModelPosition( root, [ 0, 0 ] ), new ModelPosition( root, [ 0, 0 ] ) );
@@ -2885,7 +2885,7 @@ describe( 'Writer', () => {
 			root._appendChild( [
 				new ModelElement( 'p', [], [] ),
 				new ModelElement( 'p' ),
-				new ModelElement( 'p', [], new Text( 'foo' ) )
+				new ModelElement( 'p', [], new ModelText( 'foo' ) )
 			] );
 
 			rangeInEmptyP = new ModelRange( new ModelPosition( root, [ 0, 0 ] ), new ModelPosition( root, [ 0, 0 ] ) );
@@ -2944,9 +2944,9 @@ describe( 'Writer', () => {
 		it( 'should not get attributes from the node before the caret when gravity is overridden', () => {
 			const root = doc.createRoot();
 			root._appendChild( [
-				new Text( 'foo', { foo: true } ),
-				new Text( 'bar', { foo: true, bar: true } ),
-				new Text( 'biz', { foo: true } )
+				new ModelText( 'foo', { foo: true } ),
+				new ModelText( 'bar', { foo: true, bar: true } ),
+				new ModelText( 'biz', { foo: true } )
 			] );
 
 			setSelection( new ModelPosition( root, [ 6 ] ) );
@@ -2980,9 +2980,9 @@ describe( 'Writer', () => {
 		it( 'should restore overridden gravity to default', () => {
 			const root = doc.createRoot();
 			root._appendChild( [
-				new Text( 'foo', { foo: true } ),
-				new Text( 'bar', { foo: true, bar: true } ),
-				new Text( 'biz', { foo: true } )
+				new ModelText( 'foo', { foo: true } ),
+				new ModelText( 'bar', { foo: true, bar: true } ),
+				new ModelText( 'biz', { foo: true } )
 			] );
 
 			setSelection( new ModelPosition( root, [ 6 ] ) );

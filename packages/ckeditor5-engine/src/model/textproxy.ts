@@ -11,14 +11,14 @@ import { TypeCheckable } from './typecheckable.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelElement } from './element.js';
 import { type ModelNode } from './node.js';
-import { type Text } from './text.js';
+import { type ModelText } from './text.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 // @if CK_DEBUG_ENGINE // const { convertMapToStringifiedObject } = require( '../dev-utils/utils' );
 
 /**
- * `TextProxy` represents a part of {@link module:engine/model/text~Text text node}.
+ * `TextProxy` represents a part of {@link module:engine/model/text~ModelText text node}.
  *
  * Since {@link module:engine/model/position~ModelPosition positions} can be placed between characters of a text node,
  * {@link module:engine/model/range~ModelRange ranges} may contain only parts of text nodes.
@@ -26,7 +26,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  * contained in such range, we need to represent a part of that text node, since returning the whole text node would be incorrect.
  * `TextProxy` solves this issue.
  *
- * `TextProxy` has an API similar to {@link module:engine/model/text~Text Text} and allows to do most of the common tasks performed
+ * `TextProxy` has an API similar to {@link module:engine/model/text~ModelText Text} and allows to do most of the common tasks performed
  * on model nodes.
  *
  * **Note:** Some `TextProxy` instances may represent whole text node, not just a part of it.
@@ -50,7 +50,7 @@ export class TextProxy extends TypeCheckable {
 	/**
 	 * Text node which part is represented by this text proxy.
 	 */
-	public readonly textNode: Text;
+	public readonly textNode: ModelText;
 
 	/**
 	 * Text data represented by this text proxy.
@@ -71,7 +71,7 @@ export class TextProxy extends TypeCheckable {
 	 * starts.
 	 * @param length Text proxy length, that is how many text node's characters, starting from `offsetInText` it represents.
 	 */
-	constructor( textNode: Text, offsetInText: number, length: number ) {
+	constructor( textNode: ModelText, offsetInText: number, length: number ) {
 		super();
 
 		this.textNode = textNode;
@@ -126,7 +126,7 @@ export class TextProxy extends TypeCheckable {
 	}
 
 	/**
-	 * Flag indicating whether `TextProxy` instance covers only part of the original {@link module:engine/model/text~Text text node}
+	 * Flag indicating whether `TextProxy` instance covers only part of the original {@link module:engine/model/text~ModelText text node}
 	 * (`true`) or the whole text node (`false`).
 	 *
 	 * This is `false` when text proxy starts at the very beginning of {@link module:engine/model/textproxy~TextProxy#textNode textNode}

@@ -6,7 +6,7 @@
 import { ModelRange } from '../../src/model/range.js';
 import { ModelPosition } from '../../src/model/position.js';
 import { ModelElement } from '../../src/model/element.js';
-import { Text } from '../../src/model/text.js';
+import { ModelText } from '../../src/model/text.js';
 import { Model } from '../../src/model/model.js';
 import { TreeWalker } from '../../src/model/treewalker.js';
 import { MarkerOperation } from '../../src/model/operation/markeroperation.js';
@@ -172,7 +172,7 @@ describe( 'Range', () => {
 		//  |- p
 		//     |- foz
 		beforeEach( () => {
-			p = new ModelElement( 'p', [], new Text( 'foz' ) );
+			p = new ModelElement( 'p', [], new ModelText( 'foz' ) );
 
 			root._insertChild( 0, [ p ] );
 		} );
@@ -231,7 +231,7 @@ describe( 'Range', () => {
 			}
 
 			beforeEach( () => {
-				root._appendChild( new Text( 'abcdefghijklmnopqrtuvwxyz' ) );
+				root._appendChild( new ModelText( 'abcdefghijklmnopqrtuvwxyz' ) );
 			} );
 
 			it( 'should throw if empty array is passed', () => {
@@ -322,10 +322,10 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should iterate over all items in the range as single characters', () => {
-			const a = new Text( 'a' );
-			const b = new Text( 'b' );
-			const x = new Text( 'x' );
-			const y = new Text( 'y' );
+			const a = new ModelText( 'a' );
+			const b = new ModelText( 'b' );
+			const x = new ModelText( 'x' );
+			const y = new ModelText( 'y' );
 
 			const e1 = new ModelElement( 'e1' );
 			const e2 = new ModelElement( 'e2' );
@@ -454,7 +454,7 @@ describe( 'Range', () => {
 			c = new ModelElement( 'c' );
 			d = new ModelElement( 'd' );
 
-			xxx = new Text( 'xxx' );
+			xxx = new ModelText( 'xxx' );
 			b._appendChild( xxx );
 
 			root._appendChild( [ a, b, c, d ] );
@@ -939,21 +939,21 @@ describe( 'Range', () => {
 
 		describe( 'by InsertOperation', () => {
 			it( 'insert before range', () => {
-				const op = new InsertOperation( new ModelPosition( root, [ 1 ] ), new Text( 'abc' ), 1 );
+				const op = new InsertOperation( new ModelPosition( root, [ 1 ] ), new ModelText( 'abc' ), 1 );
 				const transformed = range.getTransformedByOperation( op );
 
 				expectRange( transformed[ 0 ], 5, 8 );
 			} );
 
 			it( 'insert inside range', () => {
-				const op = new InsertOperation( new ModelPosition( root, [ 3 ] ), new Text( 'abc' ), 1 );
+				const op = new InsertOperation( new ModelPosition( root, [ 3 ] ), new ModelText( 'abc' ), 1 );
 				const transformed = range.getTransformedByOperation( op );
 
 				expectRange( transformed[ 0 ], 2, 8 );
 			} );
 
 			it( 'insert after range', () => {
-				const op = new InsertOperation( new ModelPosition( root, [ 6 ] ), new Text( 'abc' ), 1 );
+				const op = new InsertOperation( new ModelPosition( root, [ 6 ] ), new ModelText( 'abc' ), 1 );
 				const transformed = range.getTransformedByOperation( op );
 
 				expectRange( transformed[ 0 ], 2, 5 );
@@ -1369,7 +1369,7 @@ describe( 'Range', () => {
 
 	describe( 'getTransformedByOperations()', () => {
 		beforeEach( () => {
-			root._appendChild( new Text( 'foobar' ) );
+			root._appendChild( new ModelText( 'foobar' ) );
 			range = new ModelRange( ModelPosition._createAt( root, 2 ), ModelPosition._createAt( root, 5 ) );
 		} );
 
@@ -1380,8 +1380,8 @@ describe( 'Range', () => {
 
 		it( 'should return a range transformed by multiple operations', () => {
 			const transformed = range.getTransformedByOperations( [
-				new InsertOperation( new ModelPosition( root, [ 1 ] ), new Text( 'abc' ), 1 ), // Range becomes 5..8.
-				new InsertOperation( new ModelPosition( root, [ 6 ] ), new Text( 'xx' ), 2 ) // Range becomes 5..10.
+				new InsertOperation( new ModelPosition( root, [ 1 ] ), new ModelText( 'abc' ), 1 ), // Range becomes 5..8.
+				new InsertOperation( new ModelPosition( root, [ 6 ] ), new ModelText( 'xx' ), 2 ) // Range becomes 5..10.
 			] );
 
 			expectRange( transformed[ 0 ], 5, 10 );
@@ -1390,14 +1390,14 @@ describe( 'Range', () => {
 		it( 'should correctly handle breaking transformed range and all range "pieces"', () => {
 			const transformed = range.getTransformedByOperations( [
 				new InsertOperation(
-					new ModelPosition( root, [ 3 ] ), new Text( 'abc' ), 1
+					new ModelPosition( root, [ 3 ] ), new ModelText( 'abc' ), 1
 				), // Range becomes 2..8.
 
 				new MoveOperation(
 					new ModelPosition( root, [ 4 ] ), 3, new ModelPosition( root, [ 9 ] ), 2
 				), // Range becomes 2..5 and 6..9.
 
-				new InsertOperation( new ModelPosition( root, [ 0 ] ), new Text( 'x' ), 3 ), // Range becomes 3..6 and 7..10.
+				new InsertOperation( new ModelPosition( root, [ 0 ] ), new ModelText( 'x' ), 3 ), // Range becomes 3..6 and 7..10.
 				new MoveOperation(
 					new ModelPosition( root, [ 9 ] ), 1, new ModelPosition( root, [ 4 ] ), 4
 				), // Range becomes 3..7 and 8..10.
@@ -1561,14 +1561,14 @@ describe( 'Range', () => {
 	function prepareRichRoot() {
 		root._insertChild( 0, [
 			new ModelElement( 'div', [], [
-				new ModelElement( 'h', [], new Text( 'first' ) ),
-				new ModelElement( 'p', [], new Text( 'lorem ipsum' ) )
+				new ModelElement( 'h', [], new ModelText( 'first' ) ),
+				new ModelElement( 'p', [], new ModelText( 'lorem ipsum' ) )
 			] ),
-			new ModelElement( 'p', [], new Text( 'foo' ) ),
-			new ModelElement( 'p', [], new Text( 'bar' ) ),
+			new ModelElement( 'p', [], new ModelText( 'foo' ) ),
+			new ModelElement( 'p', [], new ModelText( 'bar' ) ),
 			new ModelElement( 'div', [], [
-				new ModelElement( 'h', [], new Text( 'second' ) ),
-				new ModelElement( 'p', [], new Text( 'lorem' ) )
+				new ModelElement( 'h', [], new ModelText( 'second' ) ),
+				new ModelElement( 'p', [], new ModelText( 'lorem' ) )
 			] )
 		] );
 	}

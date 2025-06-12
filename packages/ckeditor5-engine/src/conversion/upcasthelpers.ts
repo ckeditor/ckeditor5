@@ -101,7 +101,7 @@ export class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 * View element to model attribute conversion helper.
 	 *
 	 * This conversion results in setting an attribute on a model node. For example, view `<strong>Foo</strong>` becomes
-	 * `Foo` {@link module:engine/model/text~Text model text node} with `bold` attribute set to `true`.
+	 * `Foo` {@link module:engine/model/text~ModelText model text node} with `bold` attribute set to `true`.
 	 *
 	 * This helper is meant to set a model attribute on all the elements that are inside the converted element:
 	 *
@@ -513,7 +513,7 @@ export function convertToModelFragment() {
 }
 
 /**
- * Function factory, creates a converter that converts {@link module:engine/view/text~Text} to {@link module:engine/model/text~Text}.
+ * Function factory, creates a converter that converts {@link module:engine/view/text~Text} to {@link module:engine/model/text~ModelText}.
  *
  * @returns {@link module:engine/view/text~Text View text} converter.
  * @internal

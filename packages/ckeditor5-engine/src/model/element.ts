@@ -9,7 +9,7 @@
 
 import { ModelNode, type ModelNodeAttributes } from './node.js';
 import { ModelNodeList } from './nodelist.js';
-import { Text } from './text.js';
+import { ModelText } from './text.js';
 import { TextProxy } from './textproxy.js';
 
 import { type ModelItem } from './item.js';
@@ -322,7 +322,7 @@ export class ModelElement extends ModelNode {
 					children.push( ModelElement.fromJSON( child ) );
 				} else {
 					// Otherwise, it is a Text node.
-					children.push( Text.fromJSON( child ) );
+					children.push( ModelText.fromJSON( child ) );
 				}
 			}
 		}
@@ -410,7 +410,7 @@ ModelElement.prototype.is = function( type: string, name?: string ): boolean {
 function normalize( nodes: string | ModelItem | Iterable<string | ModelItem> ): Array<ModelNode> {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {
-		return [ new Text( nodes ) ];
+		return [ new ModelText( nodes ) ];
 	}
 
 	if ( !isIterable( nodes ) ) {
@@ -421,9 +421,9 @@ function normalize( nodes: string | ModelItem | Iterable<string | ModelItem> ): 
 
 	for ( const node of nodes ) {
 		if ( typeof node == 'string' ) {
-			normalizedNodes.push( new Text( node ) );
+			normalizedNodes.push( new ModelText( node ) );
 		} else if ( node instanceof TextProxy ) {
-			normalizedNodes.push( new Text( node.data, node.getAttributes() ) );
+			normalizedNodes.push( new ModelText( node.data, node.getAttributes() ) );
 		} else {
 			normalizedNodes.push( node );
 		}

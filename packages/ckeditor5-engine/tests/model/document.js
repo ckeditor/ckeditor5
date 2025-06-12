@@ -6,7 +6,7 @@
 import { Model } from '../../src/model/model.js';
 import { ModelDocument } from '../../src/model/document.js';
 import { ModelRootElement } from '../../src/model/rootelement.js';
-import { Text } from '../../src/model/text.js';
+import { ModelText } from '../../src/model/text.js';
 import { Batch } from '../../src/model/batch.js';
 import { Collection } from '@ckeditor/ckeditor5-utils/src/collection.js';
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
@@ -451,7 +451,7 @@ describe( 'Document', () => {
 			const root = doc.createRoot();
 			const spy = sinon.spy();
 
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			doc.on( 'change', spy );
 
@@ -500,7 +500,7 @@ describe( 'Document', () => {
 			const root = doc.createRoot();
 			const spy = sinon.spy();
 
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			doc.on( 'change:data', spy );
 
@@ -515,7 +515,7 @@ describe( 'Document', () => {
 			const root = doc.createRoot();
 			const spy = sinon.spy();
 
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			doc.on( 'change:data', spy );
 
@@ -531,7 +531,7 @@ describe( 'Document', () => {
 			const root = doc.createRoot();
 			const spy = sinon.spy();
 
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			doc.on( 'change:data', spy );
 
@@ -547,7 +547,7 @@ describe( 'Document', () => {
 			const root = doc.createRoot();
 			const spy = sinon.spy();
 
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			doc.on( 'change:data', spy );
 
@@ -563,7 +563,7 @@ describe( 'Document', () => {
 			const root = doc.createRoot();
 			const spy = sinon.spy();
 
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			doc.on( 'change:data', spy );
 
@@ -593,7 +593,7 @@ describe( 'Document', () => {
 
 		it( 'should be fired when marker changes affecting data', () => {
 			const root = doc.createRoot();
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			const sandbox = sinon.createSandbox();
 			const changeDataSpy = sandbox.spy();
@@ -628,7 +628,7 @@ describe( 'Document', () => {
 
 		it( 'should not be fired when marker does not affect data', () => {
 			const root = doc.createRoot();
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			const sandbox = sinon.createSandbox();
 			const changeDataSpy = sandbox.spy();
@@ -653,7 +653,7 @@ describe( 'Document', () => {
 
 		it( 'should not be fired when the marker range does not change', () => {
 			const root = doc.createRoot();
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			const changeDataSpy = sinon.spy();
 
@@ -677,7 +677,7 @@ describe( 'Document', () => {
 		// even when the marker is empty. But if there is a problem with it, this behavior can be easily changed.
 		it( 'should be fired when the marker updates range from null to null', () => {
 			const root = doc.createRoot();
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			const changeDataSpy = sinon.spy();
 
@@ -701,7 +701,7 @@ describe( 'Document', () => {
 
 		it( 'should be fired when the marker updates range from non-null range to null', () => {
 			const root = doc.createRoot();
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			const changeDataSpy = sinon.spy();
 
@@ -721,7 +721,7 @@ describe( 'Document', () => {
 
 		it( 'should be fired when the marker updates range from null to a non-null range', () => {
 			const root = doc.createRoot();
-			root._appendChild( new Text( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 
 			const changeDataSpy = sinon.spy();
 

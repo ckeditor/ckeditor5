@@ -15,7 +15,7 @@ import { TreeWalker, type TreeWalkerValue } from '../treewalker.js';
 import { type Model } from '../model.js';
 import { type ModelSchema } from '../schema.js';
 import { type ModelSelection } from '../selection.js';
-import { type Text } from '../text.js';
+import { type ModelText } from '../text.js';
 import { type ModelNode } from '../node.js';
 
 import { isInsideSurrogatePair, isInsideCombinedSymbol, isInsideEmojiSequence } from '@ckeditor/ckeditor5-utils';
@@ -244,6 +244,6 @@ function isAtWordBoundary( data: string, offset: number, isForward: boolean ) {
 /**
  * Checks if selection is on node boundary.
  */
-function isAtNodeBoundary( textNode: Text, offset: number, isForward: boolean ) {
+function isAtNodeBoundary( textNode: ModelText, offset: number, isForward: boolean ) {
 	return offset === ( isForward ? textNode.offsetSize : 0 );
 }

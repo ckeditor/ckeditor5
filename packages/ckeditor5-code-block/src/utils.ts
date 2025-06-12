@@ -15,7 +15,7 @@ import type {
 	Model,
 	ModelPosition,
 	ModelSchema,
-	Text,
+	ModelText,
 	UpcastWriter,
 	ViewDocumentFragment,
 	ViewElement
@@ -118,7 +118,7 @@ export function getPropertyAssociation(
  *
  * @internal
  */
-export function getLeadingWhiteSpaces( textNode: Text ): string {
+export function getLeadingWhiteSpaces( textNode: ModelText ): string {
 	return textNode.data.match( /^(\s*)/ )![ 0 ];
 }
 
@@ -344,7 +344,7 @@ export function getCodeBlockAriaAnnouncement(
  *
  * @internal
  */
-export function getTextNodeAtLineStart( position: ModelPosition, model: Model ): Text | null {
+export function getTextNodeAtLineStart( position: ModelPosition, model: Model ): ModelText | null {
 	// First, move position before a text node, if it is inside a text node.
 	if ( position.textNode ) {
 		position = model.createPositionBefore( position.textNode );

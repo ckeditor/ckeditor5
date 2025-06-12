@@ -9,7 +9,7 @@ import { Model } from '../../src/model/model.js';
 
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { ModelElement } from '../../src/model/element.js';
-import { Text } from '../../src/model/text.js';
+import { ModelText } from '../../src/model/text.js';
 import { TextProxy } from '../../src/model/textproxy.js';
 import { ModelPosition } from '../../src/model/position.js';
 import { ModelRange } from '../../src/model/range.js';
@@ -317,7 +317,7 @@ describe( 'Schema', () => {
 				isBlock: true
 			} );
 
-			expect( schema.getDefinition( new Text( 'foo' ) ).isBlock ).to.be.true;
+			expect( schema.getDefinition( new ModelText( 'foo' ) ).isBlock ).to.be.true;
 		} );
 
 		it( 'returns a definition based on a text proxy', () => {
@@ -325,7 +325,7 @@ describe( 'Schema', () => {
 				isBlock: true
 			} );
 
-			const text = new Text( 'foo' );
+			const text = new ModelText( 'foo' );
 			const textProxy = new TextProxy( text, 0, 1 );
 
 			expect( schema.getDefinition( textProxy ).isBlock ).to.be.true;
@@ -682,7 +682,7 @@ describe( 'Schema', () => {
 
 		it( 'accepts a node as a child', () => {
 			expect( schema.checkChild( root1, r1p1 ) ).to.be.true;
-			expect( schema.checkChild( root1, new Text( 'foo' ) ) ).to.be.false;
+			expect( schema.checkChild( root1, new ModelText( 'foo' ) ) ).to.be.false;
 		} );
 
 		it( 'fires the checkChild event with already normalized params', done => {
@@ -735,8 +735,8 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'accepts a text as a context', () => {
-			expect( schema.checkAttribute( new Text( 'foo' ), 'bold' ) ).to.be.true;
-			expect( schema.checkAttribute( new Text( 'foo' ), 'align' ) ).to.be.false;
+			expect( schema.checkAttribute( new ModelText( 'foo' ), 'bold' ) ).to.be.true;
+			expect( schema.checkAttribute( new ModelText( 'foo' ), 'align' ) ).to.be.false;
 		} );
 
 		it( 'accepts a position as a context', () => {
@@ -982,7 +982,7 @@ describe( 'Schema', () => {
 
 		it( 'returns false if a block cannot be merged with other block (disallowed element is the first child)', () => {
 			const paragraph = new ModelElement( 'paragraph', null, [
-				new Text( 'xyz' )
+				new ModelText( 'xyz' )
 			] );
 			const blockQuote = new ModelElement( 'blockQuote', null, [ paragraph ] );
 			const listItem = new ModelElement( 'listItem' );
@@ -992,11 +992,11 @@ describe( 'Schema', () => {
 
 		it( 'returns false if a block cannot be merged with other block (disallowed element is not the first child)', () => {
 			const paragraph = new ModelElement( 'paragraph', null, [
-				new Text( 'foo' )
+				new ModelText( 'foo' )
 			] );
 			const blockQuote = new ModelElement( 'blockQuote', null, [
-				new Text( 'bar', { bold: true } ),
-				new Text( 'xyz' ),
+				new ModelText( 'bar', { bold: true } ),
+				new ModelText( 'xyz' ),
 				paragraph
 			] );
 			const listItem = new ModelElement( 'listItem' );
@@ -1007,7 +1007,7 @@ describe( 'Schema', () => {
 		it( 'returns true if a block can be merged with other block', () => {
 			const listItem = new ModelElement( 'listItem' );
 			const listItemToMerge = new ModelElement( 'listItem', null, [
-				new Text( 'xyz' )
+				new ModelText( 'xyz' )
 			] );
 
 			expect( schema.checkMerge( listItem, listItemToMerge ) ).to.be.true;
@@ -1015,10 +1015,10 @@ describe( 'Schema', () => {
 
 		it( 'return true if two elements between the position can be merged', () => {
 			const listItem = new ModelElement( 'listItem', null, [
-				new Text( 'foo' )
+				new ModelText( 'foo' )
 			] );
 			const listItemToMerge = new ModelElement( 'listItem', null, [
-				new Text( 'bar' )
+				new ModelText( 'bar' )
 			] );
 
 			// eslint-disable-next-line no-new
@@ -1060,7 +1060,7 @@ describe( 'Schema', () => {
 
 		it( 'throws an error if there is no element before the position', () => {
 			const listItem = new ModelElement( 'listItem', null, [
-				new Text( 'foo' )
+				new ModelText( 'foo' )
 			] );
 
 			// eslint-disable-next-line no-new
@@ -1077,12 +1077,12 @@ describe( 'Schema', () => {
 
 		it( 'throws an error if the node before the position is not the element', () => {
 			const listItem = new ModelElement( 'listItem', null, [
-				new Text( 'foo' )
+				new ModelText( 'foo' )
 			] );
 
 			// eslint-disable-next-line no-new
 			new ModelElement( '$root', null, [
-				new Text( 'bar' ),
+				new ModelText( 'bar' ),
 				listItem
 			] );
 
@@ -1095,7 +1095,7 @@ describe( 'Schema', () => {
 
 		it( 'throws an error if there is no element after the position', () => {
 			const listItem = new ModelElement( 'listItem', null, [
-				new Text( 'foo' )
+				new ModelText( 'foo' )
 			] );
 
 			// eslint-disable-next-line no-new
@@ -1112,13 +1112,13 @@ describe( 'Schema', () => {
 
 		it( 'throws an error if the node after the position is not the element', () => {
 			const listItem = new ModelElement( 'listItem', null, [
-				new Text( 'foo' )
+				new ModelText( 'foo' )
 			] );
 
 			// eslint-disable-next-line no-new
 			new ModelElement( '$root', null, [
 				listItem,
-				new Text( 'bar' )
+				new ModelText( 'bar' )
 			] );
 
 			const position = ModelPosition._createBefore( listItem );
@@ -1133,13 +1133,13 @@ describe( 'Schema', () => {
 		// that only them counts.
 		it( 'returns true if element to merge contains a valid content but base element contains disallowed elements', () => {
 			const listItem = new ModelElement( 'listItem', null, [
-				new Text( 'foo' ),
+				new ModelText( 'foo' ),
 				new ModelElement( 'paragraph', null, [
-					new Text( 'bar' )
+					new ModelText( 'bar' )
 				] )
 			] );
 			const listItemToMerge = new ModelElement( 'listItem', null, [
-				new Text( 'xyz' )
+				new ModelText( 'xyz' )
 			] );
 
 			expect( schema.checkMerge( listItem, listItemToMerge ) ).to.be.true;
@@ -1957,7 +1957,7 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'should return position ancestor that allows to insert given node to it when position is already i such an element', () => {
-			const node = new Text( 'text' );
+			const node = new ModelText( 'text' );
 
 			const parent = schema.findAllowedParent( ModelPosition._createAt( r1bQp, 0 ), node );
 
@@ -2034,7 +2034,7 @@ describe( 'Schema', () => {
 			schema.extend( '$text', { allowAttributes: 'a' } );
 			schema.extend( 'imageBlock', { allowAttributes: 'b' } );
 
-			const text = new Text( 'foo', { a: 1, b: 1 } );
+			const text = new ModelText( 'foo', { a: 1, b: 1 } );
 			const image = new ModelElement( 'imageBlock', { a: 1, b: 1 } );
 
 			root._appendChild( [ text, image ] );
@@ -2097,8 +2097,8 @@ describe( 'Schema', () => {
 				}
 			} );
 
-			const foo = new Text( 'foo', { a: 1, b: 1 } );
-			const bar = new Text( 'bar', { a: 1, b: 1 } );
+			const foo = new ModelText( 'foo', { a: 1, b: 1 } );
+			const bar = new ModelText( 'bar', { a: 1, b: 1 } );
 			const imageInDiv = new ModelElement( 'imageBlock', { a: 1, b: 1 } );
 			const imageInParagraph = new ModelElement( 'imageBlock', { a: 1, b: 1 } );
 			const paragraph = new ModelElement( 'paragraph', { a: 1, b: 1 }, [ foo, imageInParagraph ] );
@@ -2127,7 +2127,7 @@ describe( 'Schema', () => {
 			schema.extend( 'div', { allowAttributes: 'a' } );
 			schema.extend( '$text', { allowAttributes: 'b' } );
 
-			const foo = new Text( 'foo', { a: 1, b: 1 } );
+			const foo = new ModelText( 'foo', { a: 1, b: 1 } );
 			const div = new ModelElement( 'div', { a: 1, b: 1 }, [ foo ] );
 
 			root._appendChild( [ div ] );
@@ -2141,9 +2141,9 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'should filter out all attributes from nodes that are merged while clearing', () => {
-			const a = new Text( 'a', { a: 1, b: 1 } );
-			const b = new Text( 'b', { b: 1 } );
-			const c = new Text( 'c', { a: 1, b: 1 } );
+			const a = new ModelText( 'a', { a: 1, b: 1 } );
+			const b = new ModelText( 'b', { b: 1 } );
+			const c = new ModelText( 'c', { a: 1, b: 1 } );
 			const div = new ModelElement( 'div', [], [ a, b, c ] );
 
 			root._appendChild( [ div ] );
@@ -2156,9 +2156,9 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'should do not filter out sibling nodes', () => {
-			const foo = new Text( 'foo', { a: 1 } );
-			const bar = new Text( 'bar', { a: 1, b: 1 } );
-			const biz = new Text( 'biz', { a: 1 } );
+			const foo = new ModelText( 'foo', { a: 1 } );
+			const bar = new ModelText( 'bar', { a: 1, b: 1 } );
+			const biz = new ModelText( 'biz', { a: 1 } );
 			const div = new ModelElement( 'div', [], [ foo, bar, biz ] );
 
 			root._appendChild( [ div ] );
@@ -2208,7 +2208,7 @@ describe( 'Schema', () => {
 				isFooable: true
 			} );
 
-			const text = new Text( 'foo', { a: 1 } );
+			const text = new ModelText( 'foo', { a: 1 } );
 
 			root._appendChild( text );
 
@@ -2228,7 +2228,7 @@ describe( 'Schema', () => {
 				isFooable: true
 			} );
 
-			const text = new Text( 'foo', { a: 1, b: 2 } );
+			const text = new ModelText( 'foo', { a: 1, b: 2 } );
 
 			root._appendChild( text );
 
@@ -2244,7 +2244,7 @@ describe( 'Schema', () => {
 				isFooable: 'yes'
 			} );
 
-			const text = new Text( 'foo', { a: 1 } );
+			const text = new ModelText( 'foo', { a: 1 } );
 
 			root._appendChild( text );
 
@@ -2264,7 +2264,7 @@ describe( 'Schema', () => {
 				isFooable: 'yes'
 			} );
 
-			const text = new Text( 'foo', { a: 1, b: 2 } );
+			const text = new ModelText( 'foo', { a: 1, b: 2 } );
 
 			root._appendChild( text );
 
@@ -2280,7 +2280,7 @@ describe( 'Schema', () => {
 				isFooable: true
 			} );
 
-			const text = new Text( 'foo', { a: 1 } );
+			const text = new ModelText( 'foo', { a: 1 } );
 
 			root._appendChild( text );
 
@@ -2292,7 +2292,7 @@ describe( 'Schema', () => {
 		it( 'should not return an attribute if it does not have given property', () => {
 			schema.extend( '$text', { allowAttributes: [ 'a' ] } );
 
-			const text = new Text( 'foo', { a: 1 } );
+			const text = new ModelText( 'foo', { a: 1 } );
 
 			root._appendChild( text );
 
@@ -2308,7 +2308,7 @@ describe( 'Schema', () => {
 				isFooable: 'no'
 			} );
 
-			const text = new Text( 'foo', { a: 1 } );
+			const text = new ModelText( 'foo', { a: 1 } );
 
 			root._appendChild( text );
 
@@ -2328,7 +2328,7 @@ describe( 'Schema', () => {
 				isFooable: 'yes'
 			} );
 
-			const text = new Text( 'foo', { a: 1, b: 2 } );
+			const text = new ModelText( 'foo', { a: 1, b: 2 } );
 
 			root._appendChild( text );
 
@@ -3952,7 +3952,7 @@ describe( 'ModelSchemaContext', () => {
 		root = new ModelElement( '$root', null, [
 			new ModelElement( 'blockQuote', { foo: 1 }, [
 				new ModelElement( 'paragraph', { align: 'left' }, [
-					new Text( 'foo', { bold: true, italic: true } )
+					new ModelText( 'foo', { bold: true, italic: true } )
 				] )
 			] )
 		] );
@@ -4153,7 +4153,7 @@ describe( 'ModelSchemaContext', () => {
 		} );
 
 		it( 'creates new ModelSchemaContext instance with new item - #text', () => {
-			const node = new Text( 'd' );
+			const node = new ModelText( 'd' );
 			const ctx = new ModelSchemaContext( [ 'a', 'b', 'c' ] );
 
 			const newCtx = ctx.push( node );

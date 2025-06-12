@@ -6,7 +6,7 @@
 import { Model } from '../../src/model/model.js';
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { ModelElement } from '../../src/model/element.js';
-import { Text } from '../../src/model/text.js';
+import { ModelText } from '../../src/model/text.js';
 import { TreeWalker } from '../../src/model/treewalker.js';
 import { ModelPosition } from '../../src/model/position.js';
 import { ModelRange } from '../../src/model/range.js';
@@ -33,10 +33,10 @@ describe( 'TreeWalker', () => {
 		//     |
 		//     |- X
 
-		ba = new Text( 'ba', { bold: true } );
-		r = new Text( 'r' );
+		ba = new ModelText( 'ba', { bold: true } );
+		r = new ModelText( 'r' );
 		img2 = new ModelElement( 'img2' );
-		x = new Text( 'x' );
+		x = new ModelText( 'x' );
 
 		paragraph = new ModelElement( 'p', [], [ ba, r, img2, x ] );
 		img1 = new ModelElement( 'img1' );
@@ -623,8 +623,8 @@ describe( 'TreeWalker', () => {
 	} );
 
 	it( 'should iterate over document fragment', () => {
-		const foo = new Text( 'foo' );
-		const bar = new Text( 'bar' );
+		const foo = new ModelText( 'foo' );
+		const bar = new ModelText( 'bar' );
 		const p = new ModelElement( 'p', null, [ foo, bar ] );
 		const docFrag = new ModelDocumentFragment( [ p ] );
 

@@ -7,7 +7,7 @@ import { MarkerCollection } from '../../src/model/markercollection.js';
 import { ModelPosition } from '../../src/model/position.js';
 import { ModelRange } from '../../src/model/range.js';
 import { ModelLiveRange } from '../../src/model/liverange.js';
-import { Text } from '../../src/model/text.js';
+import { ModelText } from '../../src/model/text.js';
 import { Model } from '../../src/model/model.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -324,7 +324,7 @@ describe( 'Marker', () => {
 	} );
 
 	it( 'should provide API that returns up-to-date marker range parameters', () => {
-		root._appendChild( new Text( 'foo' ) );
+		root._appendChild( new ModelText( 'foo' ) );
 
 		const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
 		const marker = model.markers._set( 'name', range );

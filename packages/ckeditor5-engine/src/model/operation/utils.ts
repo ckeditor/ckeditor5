@@ -9,7 +9,7 @@
 
 import { ModelNode } from '../node.js';
 import { ModelRange } from '../range.js';
-import { Text } from '../text.js';
+import { ModelText } from '../text.js';
 import { TextProxy } from '../textproxy.js';
 
 import { type ModelDocumentFragment } from '../documentfragment.js';
@@ -162,9 +162,9 @@ export function _normalizeNodes( nodes: ModelNodeSet ): Array<ModelNode> {
 
 	function convert( nodes: ModelNodeSet ) {
 		if ( typeof nodes == 'string' ) {
-			normalized.push( new Text( nodes ) );
+			normalized.push( new ModelText( nodes ) );
 		} else if ( nodes instanceof TextProxy ) {
-			normalized.push( new Text( nodes.data, nodes.getAttributes() ) );
+			normalized.push( new ModelText( nodes.data, nodes.getAttributes() ) );
 		} else if ( nodes instanceof ModelNode ) {
 			normalized.push( nodes );
 		} else if ( isIterable( nodes ) ) {
@@ -185,9 +185,9 @@ export function _normalizeNodes( nodes: ModelNodeSet ): Array<ModelNode> {
 		const node = normalized[ i ];
 		const prev = normalized[ i - 1 ];
 
-		if ( node instanceof Text && prev instanceof Text && _haveSameAttributes( node, prev ) ) {
+		if ( node instanceof ModelText && prev instanceof ModelText && _haveSameAttributes( node, prev ) ) {
 			// Doing this instead changing `prev.data` because `data` is readonly.
-			normalized.splice( i - 1, 2, new Text( prev.data + node.data, prev.getAttributes() ) );
+			normalized.splice( i - 1, 2, new ModelText( prev.data + node.data, prev.getAttributes() ) );
 			i--;
 		}
 	}
@@ -196,7 +196,7 @@ export function _normalizeNodes( nodes: ModelNodeSet ): Array<ModelNode> {
 }
 
 /**
- * Checks if nodes before and after given index in given element are {@link module:engine/model/text~Text text nodes} and
+ * Checks if nodes before and after given index in given element are {@link module:engine/model/text~ModelText text nodes} and
  * merges them into one node if they have same attributes.
  *
  * Merging is done by removing two text nodes and inserting a new text node containing data from both merged text nodes.
@@ -211,7 +211,7 @@ function _mergeNodesAtIndex( element: ModelElement | ModelDocumentFragment, inde
 	// Check if both of those nodes are text objects with same attributes.
 	if ( nodeBefore && nodeAfter && nodeBefore.is( '$text' ) && nodeAfter.is( '$text' ) && _haveSameAttributes( nodeBefore, nodeAfter ) ) {
 		// Append text of text node after index to the before one.
-		const mergedNode = new Text( nodeBefore.data + nodeAfter.data, nodeBefore.getAttributes() );
+		const mergedNode = new ModelText( nodeBefore.data + nodeAfter.data, nodeBefore.getAttributes() );
 
 		// Remove separate text nodes.
 		element._removeChildren( index - 1, 2 );
@@ -237,8 +237,8 @@ function _splitNodeAtPosition( position: ModelPosition ): void {
 
 		element._removeChildren( index, 1 );
 
-		const firstPart = new Text( textNode.data.substr( 0, offsetDiff ), textNode.getAttributes() );
-		const secondPart = new Text( textNode.data.substr( offsetDiff ), textNode.getAttributes() );
+		const firstPart = new ModelText( textNode.data.substr( 0, offsetDiff ), textNode.getAttributes() );
+		const secondPart = new ModelText( textNode.data.substr( offsetDiff ), textNode.getAttributes() );
 
 		element._insertChild( index, [ firstPart, secondPart ] );
 	}
@@ -271,7 +271,8 @@ function _haveSameAttributes( nodeA: ModelNode, nodeB: ModelNode ): boolean | un
  *
  * Non-arrays are normalized as follows:
  * * {@link module:engine/model/node~ModelNode Node} is left as is,
- * * {@link module:engine/model/textproxy~TextProxy TextProxy} and `string` are normalized to {@link module:engine/model/text~Text Text},
+ * * {@link module:engine/model/textproxy~TextProxy TextProxy} and `string` are normalized to
+ * {@link module:engine/model/text~ModelText Text},
  * * {@link module:engine/model/nodelist~ModelNodeList NodeList} is normalized to an array containing all nodes that are in that node list,
  * * {@link module:engine/model/documentfragment~DocumentFragment ModelDocumentFragment} is normalized to an array containing all of it's
  * * children.

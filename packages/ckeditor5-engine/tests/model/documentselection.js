@@ -6,7 +6,7 @@
 import { Model } from '../../src/model/model.js';
 import { Batch } from '../../src/model/batch.js';
 import { ModelElement } from '../../src/model/element.js';
-import { Text } from '../../src/model/text.js';
+import { ModelText } from '../../src/model/text.js';
 import { ModelRange } from '../../src/model/range.js';
 import { ModelPosition } from '../../src/model/position.js';
 import { ModelLiveRange } from '../../src/model/liverange.js';
@@ -33,11 +33,11 @@ describe( 'DocumentSelection', () => {
 		root._appendChild( [
 			new ModelElement( 'p' ),
 			new ModelElement( 'p' ),
-			new ModelElement( 'p', [], new Text( 'foobar' ) ),
+			new ModelElement( 'p', [], new ModelText( 'foobar' ) ),
 			new ModelElement( 'p' ),
 			new ModelElement( 'p' ),
 			new ModelElement( 'p' ),
-			new ModelElement( 'p', [], new Text( 'foobar' ) )
+			new ModelElement( 'p', [], new ModelText( 'foobar' ) )
 		] );
 		selection = doc.selection;
 		model.schema.register( 'p', { inheritAllFrom: '$block' } );
@@ -74,7 +74,7 @@ describe( 'DocumentSelection', () => {
 			model = new Model();
 			doc = model.document;
 			root = doc.createRoot();
-			root._insertChild( 0, new Text( 'foobar' ) );
+			root._insertChild( 0, new ModelText( 'foobar' ) );
 			selection = doc.selection;
 
 			const ranges = Array.from( selection.getRanges() );
@@ -92,7 +92,7 @@ describe( 'DocumentSelection', () => {
 			root = doc.createRoot();
 			root._insertChild( 0, [
 				new ModelElement( 'img' ),
-				new ModelElement( 'p', [], new Text( 'foobar' ) )
+				new ModelElement( 'p', [], new ModelText( 'foobar' ) )
 			] );
 			model.schema.register( 'img' );
 			model.schema.register( 'p', { inheritAllFrom: '$block' } );
@@ -1052,7 +1052,7 @@ describe( 'DocumentSelection', () => {
 		beforeEach( () => {
 			root._removeChildren( 0, root.childCount );
 			root._appendChild( [
-				new ModelElement( 'p', [], new Text( 'foobar' ) ),
+				new ModelElement( 'p', [], new ModelText( 'foobar' ) ),
 				new ModelElement( 'p', [], [] )
 			] );
 
@@ -1113,15 +1113,15 @@ describe( 'DocumentSelection', () => {
 			beforeEach( () => {
 				root._insertChild( 0, [
 					new ModelElement( 'p', { p: true } ),
-					new Text( 'a', { a: true } ),
+					new ModelText( 'a', { a: true } ),
 					new ModelElement( 'p', { p: true } ),
-					new Text( 'b', { b: true } ),
-					new Text( 'c', { c: true } ),
+					new ModelText( 'b', { b: true } ),
+					new ModelText( 'c', { c: true } ),
 					new ModelElement( 'p', [], [
-						new Text( 'd', { d: true } )
+						new ModelText( 'd', { d: true } )
 					] ),
 					new ModelElement( 'p', { p: true } ),
-					new Text( 'e', { e: true } )
+					new ModelText( 'e', { e: true } )
 				] );
 			} );
 
@@ -1754,9 +1754,9 @@ describe( 'DocumentSelection', () => {
 		beforeEach( () => {
 			root._removeChildren( 0, root.childCount );
 			root._insertChild( 0, [
-				new ModelElement( 'p', [], new Text( 'abcdef' ) ),
-				new ModelElement( 'p', [], new Text( 'foobar' ) ),
-				new Text( 'xyz' )
+				new ModelElement( 'p', [], new ModelText( 'abcdef' ) ),
+				new ModelElement( 'p', [], new ModelText( 'foobar' ) ),
+				new ModelText( 'xyz' )
 			] );
 
 			selection._setTo( new ModelRange( new ModelPosition( root, [ 0, 2 ] ), new ModelPosition( root, [ 1, 4 ] ) ) );
@@ -2158,9 +2158,9 @@ describe( 'DocumentSelection', () => {
 		it( '`DocumentSelection#change:range` event should be fire once even if selection contains multi-ranges', () => {
 			root._removeChildren( 0, root.childCount );
 			root._insertChild( 0, [
-				new ModelElement( 'p', [], new Text( 'abcdef' ) ),
-				new ModelElement( 'p', [], new Text( 'foobar' ) ),
-				new Text( 'xyz #2' )
+				new ModelElement( 'p', [], new ModelText( 'abcdef' ) ),
+				new ModelElement( 'p', [], new ModelText( 'foobar' ) ),
+				new ModelText( 'xyz #2' )
 			] );
 
 			selection._setTo( [

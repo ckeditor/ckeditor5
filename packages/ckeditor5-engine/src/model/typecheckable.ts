@@ -18,7 +18,7 @@ import { type ModelPosition } from './position.js';
 import { type ModelRange } from './range.js';
 import { type ModelRootElement } from './rootelement.js';
 import { type ModelSelection } from './selection.js';
-import { type Text } from './text.js';
+import { type ModelText } from './text.js';
 import { type TextProxy } from './textproxy.js';
 
 export abstract class TypeCheckable {
@@ -53,7 +53,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label NODE
 	 */
-	public is( type: 'node' | 'model:node' ): this is ModelNode | ModelElement | Text | ModelRootElement;
+	public is( type: 'node' | 'model:node' ): this is ModelNode | ModelElement | ModelText | ModelRootElement;
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/model/element~ModelElement} or its subclass.
@@ -107,7 +107,7 @@ export abstract class TypeCheckable {
 	public is( type: 'rootElement' | 'model:rootElement' ): this is ModelRootElement;
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/model/text~Text}.
+	 * Checks whether the object is of type {@link module:engine/model/text~ModelText}.
 	 *
 	 * ```ts
 	 * text.is( '$text' ); // -> true
@@ -124,7 +124,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label TEXT
 	 */
-	public is( type: '$text' | 'model:$text' ): this is Text;
+	public is( type: '$text' | 'model:$text' ): this is ModelText;
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/model/position~ModelPosition} or its subclass.

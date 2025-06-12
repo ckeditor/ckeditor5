@@ -78,7 +78,7 @@ import { isPlainObject } from 'es-toolkit/compat';
  * getData( editor.model ); // -> '<paragraph>Foo![]</paragraph>'
  * ```
  *
- * **Note:** A {@link module:engine/model/text~Text text} node that contains attributes will be represented as:
+ * **Note:** A {@link module:engine/model/text~ModelText text} node that contains attributes will be represented as:
  *
  * ```xml
  * <$text attribute="value">Text data</$text>
@@ -129,7 +129,7 @@ _getModelData._stringify = _stringifyModel;
  * **Note:** Remember to register elements in the {@link module:engine/model/model~Model#schema model's schema} before
  * trying to use them.
  *
- * **Note:** To create a {@link module:engine/model/text~Text text} node that contains attributes use:
+ * **Note:** To create a {@link module:engine/model/text~ModelText text} node that contains attributes use:
  *
  * ```xml
  * <$text attribute="value">Text data</$text>
@@ -221,7 +221,7 @@ _setModelData._parse = _parseModel;
 /**
  * Converts model nodes to HTML-like string representation.
  *
- * **Note:** A {@link module:engine/model/text~Text text} node that contains attributes will be represented as:
+ * **Note:** A {@link module:engine/model/text~ModelText text} node that contains attributes will be represented as:
  *
  * ```xml
  * <$text attribute="value">Text data</$text>
@@ -350,7 +350,7 @@ export function _stringifyModel(
 /**
  * Parses an HTML-like string and returns the model {@link module:engine/model/rootelement~ModelRootElement rootElement}.
  *
- * **Note:** To create a {@link module:engine/model/text~Text text} node that contains attributes use:
+ * **Note:** To create a {@link module:engine/model/text~ModelText text} node that contains attributes use:
  *
  * ```xml
  * <$text attribute="value">Text data</$text>

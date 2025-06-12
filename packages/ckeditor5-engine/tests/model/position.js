@@ -6,7 +6,7 @@
 import { Model } from '../../src/model/model.js';
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { ModelElement } from '../../src/model/element.js';
-import { Text } from '../../src/model/text.js';
+import { ModelText } from '../../src/model/text.js';
 import { TextProxy } from '../../src/model/textproxy.js';
 import {
 	ModelPosition,
@@ -50,7 +50,7 @@ describe( 'Position', () => {
 		root = doc.createRoot();
 		otherRoot = doc.createRoot( '$root', 'otherRoot' );
 
-		foz = new Text( 'foz' );
+		foz = new ModelText( 'foz' );
 
 		li1 = new ModelElement( 'li', [], foz );
 
@@ -58,7 +58,7 @@ describe( 'Position', () => {
 		o = new TextProxy( foz, 1, 1 );
 		z = new TextProxy( foz, 2, 1 );
 
-		bar = new Text( 'bar' );
+		bar = new ModelText( 'bar' );
 
 		li2 = new ModelElement( 'li', [], bar );
 
@@ -124,7 +124,7 @@ describe( 'Position', () => {
 
 		it( 'should throw error if given root is invalid', () => {
 			expectToThrowCKEditorError( () => {
-				new ModelPosition( new Text( 'a' ) ); // eslint-disable-line no-new
+				new ModelPosition( new ModelText( 'a' ) ); // eslint-disable-line no-new
 			}, /model-position-root-invalid/ );
 
 			expect( () => {

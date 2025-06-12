@@ -7,7 +7,7 @@ import { _stringifyModel, _parseModel, _getModelData, _setModelData } from '../.
 import { Model } from '../../src/model/model.js';
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { ModelElement } from '../../src/model/element.js';
-import { Text } from '../../src/model/text.js';
+import { ModelText } from '../../src/model/text.js';
 import { ModelRange } from '../../src/model/range.js';
 import { ModelPosition } from '../../src/model/position.js';
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
@@ -56,7 +56,7 @@ describe( 'model test utils', () => {
 	describe( 'getData', () => {
 		it( 'should use stringify method', () => {
 			const stringifySpy = sinon.spy( _getModelData, '_stringify' );
-			root._appendChild( new ModelElement( 'b', null, new Text( 'btext' ) ) );
+			root._appendChild( new ModelElement( 'b', null, new ModelText( 'btext' ) ) );
 
 			expect( _getModelData( model, { withoutSelection: true } ) ).to.equal( '<b>btext</b>' );
 			sinon.assert.calledOnce( stringifySpy );
@@ -65,7 +65,7 @@ describe( 'model test utils', () => {
 
 		it( 'should use stringify method with selection', () => {
 			const stringifySpy = sinon.spy( _getModelData, '_stringify' );
-			root._appendChild( new ModelElement( 'b', null, new Text( 'btext' ) ) );
+			root._appendChild( new ModelElement( 'b', null, new ModelText( 'btext' ) ) );
 			model.change( writer => {
 				writer.setSelection( new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 1 ) ) );
 			} );
@@ -229,15 +229,15 @@ describe( 'model test utils', () => {
 
 	describe( 'stringify', () => {
 		it( 'should stringify text', () => {
-			const text = new Text( 'text', { underline: true, bold: true } );
+			const text = new ModelText( 'text', { underline: true, bold: true } );
 
 			expect( _stringifyModel( text ) ).to.equal( '<$text bold="true" underline="true">text</$text>' );
 		} );
 
 		it( 'should stringify element', () => {
 			const element = new ModelElement( 'a', null, [
-				new ModelElement( 'b', null, new Text( 'btext' ) ),
-				new Text( 'atext' )
+				new ModelElement( 'b', null, new ModelText( 'btext' ) ),
+				new ModelText( 'atext' )
 			] );
 
 			expect( _stringifyModel( element ) ).to.equal( '<a><b>btext</b>atext</a>' );
@@ -245,8 +245,8 @@ describe( 'model test utils', () => {
 
 		it( 'should stringify document fragment', () => {
 			const fragment = new ModelDocumentFragment( [
-				new ModelElement( 'b', null, new Text( 'btext' ) ),
-				new Text( 'atext' )
+				new ModelElement( 'b', null, new ModelText( 'btext' ) ),
+				new ModelText( 'atext' )
 			] );
 
 			expect( _stringifyModel( fragment ) ).to.equal( '<b>btext</b>atext' );
@@ -254,10 +254,10 @@ describe( 'model test utils', () => {
 
 		it( 'writes elements and texts', () => {
 			root._appendChild( [
-				new ModelElement( 'a', null, new Text( 'atext' ) ),
+				new ModelElement( 'a', null, new ModelText( 'atext' ) ),
 				new ModelElement( 'b', null, [
 					new ModelElement( 'c1' ),
-					new Text( 'ctext' ),
+					new ModelText( 'ctext' ),
 					new ModelElement( 'c2' )
 				] ),
 				new ModelElement( 'd' )
@@ -284,11 +284,11 @@ describe( 'model test utils', () => {
 
 		it( 'writes text attributes', () => {
 			root._appendChild( [
-				new Text( 'foo', { bold: true } ),
-				new Text( 'bar' ),
-				new Text( 'bom', { bold: true, italic: true } ),
+				new ModelText( 'foo', { bold: true } ),
+				new ModelText( 'bar' ),
+				new ModelText( 'bom', { bold: true, italic: true } ),
 				new ModelElement( 'a', null, [
-					new Text( 'pom', { underline: true, bold: true } )
+					new ModelText( 'pom', { underline: true, bold: true } )
 				] )
 			] );
 
@@ -299,7 +299,7 @@ describe( 'model test utils', () => {
 		} );
 
 		it( 'writes unicode text', () => {
-			root._appendChild( new Text( 'நிலைக்கு' ) );
+			root._appendChild( new ModelText( 'நிலைக்கு' ) );
 
 			expect( _stringifyModel( root ) ).to.equal( 'நிலைக்கு' );
 		} );
@@ -313,8 +313,8 @@ describe( 'model test utils', () => {
 
 				root._appendChild( [
 					elA,
-					new Text( 'foo' ),
-					new Text( 'bar', { bold: true } ),
+					new ModelText( 'foo' ),
+					new ModelText( 'bar', { bold: true } ),
 					elB
 				] );
 			} );
@@ -438,7 +438,7 @@ describe( 'model test utils', () => {
 			it( 'writes selection in unicode text', () => {
 				const root = document.createRoot( '$root', 'empty' );
 
-				root._appendChild( new Text( 'நிலைக்கு' ) );
+				root._appendChild( new ModelText( 'நிலைக்கு' ) );
 				model.change( writer => {
 					writer.setSelection( new ModelRange( ModelPosition._createAt( root, 2 ), ModelPosition._createAt( root, 6 ) ) );
 				} );

@@ -5,7 +5,7 @@
 
 import { Model } from '../../src/model/model.js';
 import { ModelElement } from '../../src/model/element.js';
-import { Text } from '../../src/model/text.js';
+import { ModelText } from '../../src/model/text.js';
 import { ModelPosition } from '../../src/model/position.js';
 import { ModelLiveRange } from '../../src/model/liverange.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -25,11 +25,11 @@ describe( '#11585', () => {
 		root._appendChild( [
 			new ModelElement( 'p' ),
 			new ModelElement( 'p' ),
-			new ModelElement( 'p', [], new Text( 'foobar' ) ),
+			new ModelElement( 'p', [], new ModelText( 'foobar' ) ),
 			new ModelElement( 'p' ),
 			new ModelElement( 'p' ),
 			new ModelElement( 'p' ),
-			new ModelElement( 'p', [], new Text( 'foobar' ) )
+			new ModelElement( 'p', [], new ModelText( 'foobar' ) )
 		] );
 
 		liveRange = new ModelLiveRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) );

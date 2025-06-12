@@ -6,7 +6,7 @@
 import { ModelRange } from '../../../src/model/range.js';
 import { ModelPosition } from '../../../src/model/position.js';
 import { TreeWalker } from '../../../src/model/treewalker.js';
-import { Text } from '../../../src/model/text.js';
+import { ModelText } from '../../../src/model/text.js';
 import { TextProxy } from '../../../src/model/textproxy.js';
 
 /**
@@ -49,7 +49,7 @@ export function itemAt( parent, offset ) {
 	const index = parent.offsetToIndex( offset );
 	const node = parent.getChild( index );
 
-	if ( node instanceof Text ) {
+	if ( node instanceof ModelText ) {
 		const offsetInText = offset - node.startOffset;
 
 		return new TextProxy( node, offsetInText, 1 );
