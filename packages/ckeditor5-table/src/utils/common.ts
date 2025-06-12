@@ -12,7 +12,7 @@ import type {
 	ModelElement,
 	ModelItem,
 	Position,
-	Schema,
+	ModelSchema,
 	Writer,
 	ModelDocumentSelection
 } from 'ckeditor5/src/engine.js';
@@ -75,7 +75,7 @@ export function isHeadingColumnCell( tableUtils: TableUtils, tableCell: ModelEle
  * @param options.defaultValue The default value for the specified `modelAttribute`.
  */
 export function enableProperty(
-	schema: Schema,
+	schema: ModelSchema,
 	conversion: Conversion,
 	options: {
 		modelAttribute: string;

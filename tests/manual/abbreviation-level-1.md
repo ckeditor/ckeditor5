@@ -192,7 +192,7 @@ We can do it by defining the model's schema. Thanks to a couple lines of code, w
 	Schema defines what is allowed in the model in terms of structures, attributes, and other characteristics. This information is then used by the features and the engine to make decisions on how to process the model, so it is crucial that your custom plugins have a well-defined schema. Read more about it in our{@link framework/architecture/editing-engine#schema introduction to the editing engine architecture}.
 </info-box>
 
-So, we will just extend the text node's schema to accept our abbreviation attribute, using the {@link module:engine/model/schema~Schema#extend `Schema#extend()`} method.
+So, we will just extend the text node's schema to accept our abbreviation attribute, using the {@link module:engine/model/schema~ModelSchema#extend `Schema#extend()`} method.
 
 Update the `AbbreviationEditing` plugin with this definition:
 

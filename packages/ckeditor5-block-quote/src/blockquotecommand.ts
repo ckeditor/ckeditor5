@@ -9,7 +9,7 @@
 
 import { Command } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
-import type { ModelDocumentFragment, ModelElement, Position, ModelRange, Schema, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentFragment, ModelElement, Position, ModelRange, ModelSchema, Writer } from 'ckeditor5/src/engine.js';
 
 /**
  * The block quote command plugin.
@@ -213,7 +213,7 @@ function getRangesOfBlockGroups( writer: Writer, blocks: Array<ModelElement> ): 
 /**
  * Checks whether <bQ> can wrap the block.
  */
-function checkCanBeQuoted( schema: Schema, block: ModelElement ): boolean {
+function checkCanBeQuoted( schema: ModelSchema, block: ModelElement ): boolean {
 	// TMP will be replaced with schema.checkWrap().
 	const isBQAllowed = schema.checkChild( block.parent as ModelElement, 'blockQuote' );
 	const isBlockAllowedInBQ = schema.checkChild( [ '$root', 'blockQuote' ], block );

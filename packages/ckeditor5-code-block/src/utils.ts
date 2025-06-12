@@ -14,7 +14,7 @@ import type {
 	ModelElement,
 	Model,
 	Position,
-	Schema,
+	ModelSchema,
 	Text,
 	UpcastWriter,
 	ViewDocumentFragment,
@@ -270,7 +270,7 @@ export function isModelSelectionInCodeBlock( selection: ModelDocumentSelection )
  * @returns Check result.
  * @internal
  */
-export function canBeCodeBlock( schema: Schema, element: ModelElement ): boolean {
+export function canBeCodeBlock( schema: ModelSchema, element: ModelElement ): boolean {
 	if ( element.is( 'rootElement' ) || schema.isLimit( element ) ) {
 		return false;
 	}

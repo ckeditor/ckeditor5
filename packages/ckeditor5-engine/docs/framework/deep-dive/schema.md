@@ -12,13 +12,13 @@ This article assumes that you have already read the {@link framework/architectur
 
 The editor's schema is available in the {@link module:engine/model/model~Model#schema `editor.model.schema`} property. It defines allowed model structures (how model elements can be nested), allowed attributes (of both elements and text nodes), and other characteristics (inline vs. block, atomicity in regards of external actions). This information is later used by editing features and the editing engine to decide how to process the model, where to enable features, etc.
 
-Schema rules can be defined by using the {@link module:engine/model/schema~Schema#register `Schema#register()`} or the {@link module:engine/model/schema~Schema#extend `Schema#extend()`} methods. The former can be used only once for a given item name which ensures that only a single editing feature can introduce this item. Similarly, `extend()` can only be used for defined items.
+Schema rules can be defined by using the {@link module:engine/model/schema~ModelSchema#register `Schema#register()`} or the {@link module:engine/model/schema~ModelSchema#extend `Schema#extend()`} methods. The former can be used only once for a given item name which ensures that only a single editing feature can introduce this item. Similarly, `extend()` can only be used for defined items.
 
-Elements and attributes are checked by features separately by using the {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`} and the {@link module:engine/model/schema~Schema#checkAttribute `Schema#checkAttribute()`} methods.
+Elements and attributes are checked by features separately by using the {@link module:engine/model/schema~ModelSchema#checkChild `Schema#checkChild()`} and the {@link module:engine/model/schema~ModelSchema#checkAttribute `Schema#checkAttribute()`} methods.
 
 ## Defining allowed structures
 
-When a feature introduces a model element, it should register it in the schema. Besides defining that such an element may exist in the model, the feature also needs to define where this element can be placed. This information is provided by the {@link module:engine/model/schema~SchemaItemDefinition#allowIn} property of the {@link module:engine/model/schema~SchemaItemDefinition}:
+When a feature introduces a model element, it should register it in the schema. Besides defining that such an element may exist in the model, the feature also needs to define where this element can be placed. This information is provided by the {@link module:engine/model/schema~ModelSchemaItemDefinition#allowIn} property of the {@link module:engine/model/schema~ModelSchemaItemDefinition}:
 
 ```js
 schema.register( 'myElement', {
@@ -46,7 +46,7 @@ While this would be incorrect:
 </$root>
 ```
 
-To declare which nodes are allowed inside the registered element, the {@link module:engine/model/schema~SchemaItemDefinition#allowChildren} property could be used:
+To declare which nodes are allowed inside the registered element, the {@link module:engine/model/schema~ModelSchemaItemDefinition#allowChildren} property could be used:
 
 ```js
 schema.register( 'myElement', {
@@ -65,17 +65,17 @@ To allow the following structure:
 </$root>
 ```
 
-Both the `{@link module:engine/model/schema~SchemaItemDefinition#allowIn}` and `{@link module:engine/model/schema~SchemaItemDefinition#allowChildren}` properties can also be inherited from other `SchemaItemDefinition` items.
+Both the `{@link module:engine/model/schema~ModelSchemaItemDefinition#allowIn}` and `{@link module:engine/model/schema~ModelSchemaItemDefinition#allowChildren}` properties can also be inherited from other `SchemaItemDefinition` items.
 
 <info-box>
-	You can read more about the format of the item definition in the {@link module:engine/model/schema~SchemaItemDefinition} API guide.
+	You can read more about the format of the item definition in the {@link module:engine/model/schema~ModelSchemaItemDefinition} API guide.
 </info-box>
 
 ## Disallowing structures
 
 The schema, in addition to allowing certain structures, can also be used to ensure some structures are explicitly disallowed. This can be achieved with the use of disallow rules.
 
-Typically, you will use {@link module:engine/model/schema~SchemaItemDefinition#disallowChildren} property for that. It can be used to define which nodes are disallowed inside given element:
+Typically, you will use {@link module:engine/model/schema~ModelSchemaItemDefinition#disallowChildren} property for that. It can be used to define which nodes are disallowed inside given element:
 
 ```js
 schema.register( 'myElement', {
@@ -472,7 +472,7 @@ Consider a feature like an image caption. The caption text area should construct
 
 It should also act as a boundary for external actions. This is mostly enforced by a selection post-fixer that ensures that a selection that starts outside, should not end inside. It means that most actions will either apply to the "outside" of such an element or to the content inside it.
 
-Taken these characteristics, the image caption should be defined as a limit element by using the {@link module:engine/model/schema~SchemaItemDefinition#isLimit `isLimit`} property.
+Taken these characteristics, the image caption should be defined as a limit element by using the {@link module:engine/model/schema~ModelSchemaItemDefinition#isLimit `isLimit`} property.
 
 ```js
 schema.register( 'myCaption', {
@@ -480,7 +480,7 @@ schema.register( 'myCaption', {
 } );
 ```
 
-The engine and various features then check it via {@link module:engine/model/schema~Schema#isLimit `Schema#isLimit()`} and can act accordingly.
+The engine and various features then check it via {@link module:engine/model/schema~ModelSchema#isLimit `Schema#isLimit()`} and can act accordingly.
 
 <info-box>
 	"Limit element" does not mean "editable element." The concept of "editable element" is reserved for the view and expressed by the {@link module:engine/view/editableelement~EditableElement `EditableElement` class}.
@@ -490,14 +490,14 @@ The engine and various features then check it via {@link module:engine/model/sch
 
 For an image caption like in the example above it does not make much sense to select the caption box, then copy or drag it somewhere else.
 
-A caption without the image it describes makes little sense. The image, however, is more self-sufficient. Most likely users should be able to select the entire image (with all its internals), then copy or move it around. The {@link module:engine/model/schema~SchemaItemDefinition#isObject `isObject`} property should be used to mark such behavior.
+A caption without the image it describes makes little sense. The image, however, is more self-sufficient. Most likely users should be able to select the entire image (with all its internals), then copy or move it around. The {@link module:engine/model/schema~ModelSchemaItemDefinition#isObject `isObject`} property should be used to mark such behavior.
 
 ```js
 schema.register( 'myImage', {
 	isObject: true
 } );
 ```
-The {@link module:engine/model/schema~Schema#isObject `Schema#isObject()`} can later be used to check this property.
+The {@link module:engine/model/schema~ModelSchema#isObject `Schema#isObject()`} can later be used to check this property.
 
 <info-box>
 	There are also the `$blockObject` and the `$inlineObject` generic items which have the `isObject` property set to `true`. Most object-type items will inherit from `$blockObject` or `$inlineObject` (through `inheritAllFrom`).
@@ -506,14 +506,14 @@ The {@link module:engine/model/schema~Schema#isObject `Schema#isObject()`} can l
 <info-box>
 	Every object is automatically also:
 
-	* A [limit element](#limit-elements) &ndash; For every element with `isObject` set to `true`, {@link module:engine/model/schema~Schema#isLimit `Schema#isLimit( element )`} will always return `true`.
-	* A [selectable element](#selectable-elements) &ndash; For every element with `isObject` set to `true`, {@link module:engine/model/schema~Schema#isSelectable `Schema#isSelectable( element )`} will always return `true`.
-	* A [content element](#content-elements) &ndash; For every element with `isObject` set to `true`, {@link module:engine/model/schema~Schema#isContent `Schema#isContent( element )`} will always return `true`.
+	* A [limit element](#limit-elements) &ndash; For every element with `isObject` set to `true`, {@link module:engine/model/schema~ModelSchema#isLimit `Schema#isLimit( element )`} will always return `true`.
+	* A [selectable element](#selectable-elements) &ndash; For every element with `isObject` set to `true`, {@link module:engine/model/schema~ModelSchema#isSelectable `Schema#isSelectable( element )`} will always return `true`.
+	* A [content element](#content-elements) &ndash; For every element with `isObject` set to `true`, {@link module:engine/model/schema~ModelSchema#isContent `Schema#isContent( element )`} will always return `true`.
 </info-box>
 
 ### Block elements
 
-Generally speaking, content is usually made out of blocks like paragraphs, list items, images, headings, etc. All these elements should be marked as blocks by using {@link module:engine/model/schema~SchemaItemDefinition#isBlock `isBlock`}.
+Generally speaking, content is usually made out of blocks like paragraphs, list items, images, headings, etc. All these elements should be marked as blocks by using {@link module:engine/model/schema~ModelSchemaItemDefinition#isBlock `isBlock`}.
 
 Schema items with the `isBlock` property set are (among others) affecting the {@link module:engine/model/documentselection~DocumentSelection#getSelectedBlocks `Selection#getSelectedBlocks()`} behavior and by that allow setting block level attributes like `alignment` to appropriate elements.
 
@@ -529,7 +529,7 @@ It is important to remember that a block should not allow another block inside. 
 
 In the editor, all HTML formatting elements such as `<strong>` or `<code>` are represented by text attributes. Therefore, inline model elements are not supposed to be used for these scenarios.
 
-Currently, the {@link module:engine/model/schema~SchemaItemDefinition#isInline `isInline`} property is used for the `$text` token (so, text nodes) and elements such as `<softBreak>`, `<imageInline>` or placeholder elements such as described in the {@link tutorials/widgets/implementing-an-inline-widget Implementing an inline widget} tutorial.
+Currently, the {@link module:engine/model/schema~ModelSchemaItemDefinition#isInline `isInline`} property is used for the `$text` token (so, text nodes) and elements such as `<softBreak>`, `<imageInline>` or placeholder elements such as described in the {@link tutorials/widgets/implementing-an-inline-widget Implementing an inline widget} tutorial.
 
 The support for inline elements in CKEditor&nbsp;5 is so far limited to self-contained elements. Because of this, all elements marked with `isInline` should also be marked with `isObject`.
 
@@ -539,7 +539,7 @@ The support for inline elements in CKEditor&nbsp;5 is so far limited to self-con
 
 ### Selectable elements
 
-Elements that users can select as a whole (with all their internals) and then, for instance, copy them or apply formatting, are marked with the {@link module:engine/model/schema~SchemaItemDefinition#isSelectable `isSelectable`} property in the schema:
+Elements that users can select as a whole (with all their internals) and then, for instance, copy them or apply formatting, are marked with the {@link module:engine/model/schema~ModelSchemaItemDefinition#isSelectable `isSelectable`} property in the schema:
 
 ```js
 schema.register( 'mySelectable', {
@@ -547,7 +547,7 @@ schema.register( 'mySelectable', {
 } );
 ```
 
-The {@link module:engine/model/schema~Schema#isSelectable `Schema#isSelectable()`} method can later be used to check this property.
+The {@link module:engine/model/schema~ModelSchema#isSelectable `Schema#isSelectable()`} method can later be used to check this property.
 
 <info-box>
 	All [object elements](#object-elements) are selectable by default. There are other selectable elements registered in the editor, though. For instance, there is also the `tableCell` model element (rendered as a `<td>` in the editing view) that is selectable while **not** registered as an object. The {@link features/tables#table-selection table selection} plugin takes advantage of this fact and allows users to create rectangular selections made of multiple table cells.
@@ -557,7 +557,7 @@ The {@link module:engine/model/schema~Schema#isSelectable `Schema#isSelectable()
 
 You can tell content model elements from other elements by looking at their representation in the editor data (you can use {@link module:editor-classic/classiceditor~ClassicEditor#getData `editor.getData()`} or {@link module:engine/model/model~Model#hasContent `Model#hasContent()`} to check this out).
 
-Elements such as images or media will **always** find their way into the editor data and this is what makes them content elements. They are marked with the {@link module:engine/model/schema~SchemaItemDefinition#isContent `isContent`} property in the schema:
+Elements such as images or media will **always** find their way into the editor data and this is what makes them content elements. They are marked with the {@link module:engine/model/schema~ModelSchemaItemDefinition#isContent `isContent`} property in the schema:
 
 ```js
 schema.register( 'myImage', {
@@ -565,7 +565,7 @@ schema.register( 'myImage', {
 } );
 ```
 
-The {@link module:engine/model/schema~Schema#isContent `Schema#isContent()`} method can later be used to check this property.
+The {@link module:engine/model/schema~ModelSchema#isContent `Schema#isContent()`} method can later be used to check this property.
 
 At the same time, elements like paragraphs, list items, or headings **are not** content elements because they are skipped in the editor output when they are empty. From the data perspective, they are transparent unless they contain other content elements (an empty paragraph is as good as no paragraph).
 
@@ -650,7 +650,7 @@ Because `<$block>` is allowed in `<$container>` (see `schema.register( '$block' 
 Taking this even further, if anyone registers a `<section>` element (with the `allowContentOf: '$root'` rule), because `<$container>` is also allowed in `<$root>` (see `schema.register( '$container' ...)`) the `<section>` elements will allow block quotes out–of–the–box.
 
 <info-box>
-	You can read more about the format of the item definition in {@link module:engine/model/schema~SchemaItemDefinition}.
+	You can read more about the format of the item definition in {@link module:engine/model/schema~ModelSchemaItemDefinition}.
 </info-box>
 
 ### Relations between generic items
@@ -740,7 +740,7 @@ Which, in turn, has these [semantics](#defining-additional-semantics):
 
 ## Defining advanced rules using callbacks
 
-The base {@link module:engine/model/schema~SchemaItemDefinition declarative `SchemaItemDefinition` API} is by its nature limited, and some custom rules might not be possible to be implemented this way.
+The base {@link module:engine/model/schema~ModelSchemaItemDefinition declarative `SchemaItemDefinition` API} is by its nature limited, and some custom rules might not be possible to be implemented this way.
 
 For this reason, it is also possible to define schema checks by providing callbacks. This gives you flexibility to implement any logic that you need.
 
@@ -750,7 +750,7 @@ Note that the callbacks take precedence over the rules defined through the decla
 
 ### Child checks (structure checks)
 
-Using {@link module:engine/model/schema~Schema#addChildCheck `Schema#addChildCheck()`} you can provide function callbacks to implement specific advanced rules for checking the model structure.
+Using {@link module:engine/model/schema~ModelSchema#addChildCheck `Schema#addChildCheck()`} you can provide function callbacks to implement specific advanced rules for checking the model structure.
 
 You can provide callbacks that are fired only when a specific child is checked, or generic callbacks fired for all checks performed by the schema.
 
@@ -792,7 +792,7 @@ The above will trigger on every `checkChild()` call giving you more flexibility.
 
 Similarly, you can define callbacks to check whether given attribute is or is not allowed on given item.
 
-This time, you will use {@link module:engine/model/schema~Schema#addAttributeCheck `Schema#addAttributeCheck()`} to provide the callback.
+This time, you will use {@link module:engine/model/schema~ModelSchema#addAttributeCheck `Schema#addAttributeCheck()`} to provide the callback.
 
 For example, allow custom attribute `headingMarker` on all headings:
 
@@ -823,7 +823,7 @@ All notes related to child check callbacks apply to attribute callbacks as well.
 
 ## Implementing additional constraints
 
-Schema's capabilities are limited to simple (and atomic) {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`} and {@link module:engine/model/schema~Schema#checkAttribute `Schema#checkAttribute()`} checks on purpose. One may imagine that the schema should support defining more complex rules such as "element `<x>` must be always followed by `<y>`." While it is feasible to create an API that would enable feeding the schema with such definitions, it is unfortunately unrealistic to then expect that every editing feature will consider these rules when processing the model. It is also unrealistic to expect that it will be done automatically by the schema and the editing engine themselves.
+Schema's capabilities are limited to simple (and atomic) {@link module:engine/model/schema~ModelSchema#checkChild `Schema#checkChild()`} and {@link module:engine/model/schema~ModelSchema#checkAttribute `Schema#checkAttribute()`} checks on purpose. One may imagine that the schema should support defining more complex rules such as "element `<x>` must be always followed by `<y>`." While it is feasible to create an API that would enable feeding the schema with such definitions, it is unfortunately unrealistic to then expect that every editing feature will consider these rules when processing the model. It is also unrealistic to expect that it will be done automatically by the schema and the editing engine themselves.
 
 For instance, let's get back to the "element `<x>` must be always followed by `<y>`" rule and this initial content:
 

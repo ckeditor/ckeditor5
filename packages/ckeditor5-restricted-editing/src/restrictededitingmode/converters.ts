@@ -13,7 +13,7 @@ import {
 	type DowncastWriter,
 	type MatcherPattern,
 	type ModelPostFixer,
-	type Position,
+	type ModelPosition,
 	type UpcastDispatcher,
 	type Writer,
 	type ViewElement
@@ -170,7 +170,7 @@ export function upcastHighlightToMarker( config: { view: MatcherPattern; model: 
 /**
  * Extend marker if change detected on marker's start position.
  */
-function _tryExtendMarkerStart( editor: Editor, position: Position, length: number, writer: Writer ): boolean {
+function _tryExtendMarkerStart( editor: Editor, position: ModelPosition, length: number, writer: Writer ): boolean {
 	const markerAtStart = getMarkerAtPosition( editor, position.getShiftedBy( length ) );
 
 	if ( markerAtStart && markerAtStart.getStart().isEqual( position.getShiftedBy( length ) ) ) {
@@ -187,7 +187,7 @@ function _tryExtendMarkerStart( editor: Editor, position: Position, length: numb
 /**
  * Extend marker if change detected on marker's end position.
  */
-function _tryExtendMarkedEnd( editor: Editor, position: Position, length: number, writer: Writer ): boolean {
+function _tryExtendMarkedEnd( editor: Editor, position: ModelPosition, length: number, writer: Writer ): boolean {
 	const markerAtEnd = getMarkerAtPosition( editor, position );
 
 	if ( markerAtEnd && markerAtEnd.getEnd().isEqual( position ) ) {

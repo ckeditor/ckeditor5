@@ -19,7 +19,7 @@ import type {
 	Model,
 	Position,
 	ModelRange,
-	Schema,
+	ModelSchema,
 	Selection,
 	ViewDocumentArrowKeyEvent
 } from '@ckeditor/ckeditor5-engine';
@@ -183,7 +183,7 @@ function getNearestNonInlineLimit( model: Model, startPosition: Position, direct
  * @returns The nearest selection position.
  *
  */
-function getNearestTextPosition( schema: Schema, range: ModelRange, direction: 'forward' | 'backward' ) {
+function getNearestTextPosition( schema: ModelSchema, range: ModelRange, direction: 'forward' | 'backward' ) {
 	const position = direction == 'backward' ? range.end : range.start;
 
 	if ( schema.checkChild( position, '$text' ) ) {

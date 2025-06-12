@@ -15,7 +15,7 @@ import { ModelRange } from './range.js';
 import { ModelSelection, type PlaceOrOffset, type Selectable } from './selection.js';
 import { OperationFactory } from './operation/operationfactory.js';
 import { ModelDocumentSelection } from './documentselection.js';
-import { Schema } from './schema.js';
+import { ModelSchema } from './schema.js';
 import { Writer } from './writer.js';
 import { ModelNode } from './node.js';
 
@@ -59,7 +59,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Model's schema.
 	 */
-	public readonly schema: Schema;
+	public readonly schema: ModelSchema;
 
 	/**
 	 * All callbacks added by {@link module:engine/model/model~Model#change} or
@@ -80,7 +80,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 
 		this.markers = new MarkerCollection();
 		this.document = new ModelDocument( this );
-		this.schema = new Schema();
+		this.schema = new ModelSchema();
 
 		this._pendingChanges = [];
 		this._currentWriter = null;
@@ -661,7 +661,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * * `<heading1>x^y</heading1>` with the option disabled (`leaveUnmerged == false`)
 	 * * `<heading1>x^</heading1><paragraph>y</paragraph>` with enabled (`leaveUnmerged == true`).
 	 *
-	 * Note: {@link module:engine/model/schema~Schema#isObject object} and {@link module:engine/model/schema~Schema#isLimit limit}
+	 * Note: {@link module:engine/model/schema~ModelSchema#isObject object} and {@link module:engine/model/schema~ModelSchema#isLimit limit}
 	 * elements will not be merged.
 	 *
 	 * @param options.doNotResetEntireContent Whether to skip replacing the entire content with a
@@ -779,7 +779,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * * any text node (`options.ignoreWhitespaces` allows controlling whether this text node must also contain
 	 * any non-whitespace characters),
-	 * * or any {@link module:engine/model/schema~Schema#isContent content element},
+	 * * or any {@link module:engine/model/schema~ModelSchema#isContent content element},
 	 * * or any {@link module:engine/model/markercollection~Marker marker} which
 	 * {@link module:engine/model/markercollection~Marker#_affectsData affects data}.
 	 *

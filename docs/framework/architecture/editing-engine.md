@@ -30,7 +30,7 @@ The model is implemented by a DOM-like tree structure of {@link module:engine/mo
 
 Like in the DOM, the model structure is contained within a {@link module:engine/model/document~ModelDocument document} that contains {@link module:engine/model/document~ModelDocument#roots root elements} (the model, as well as the view, may have multiple roots). The document also holds its {@link module:engine/model/documentselection~DocumentSelection selection} and the {@link module:engine/model/history~History history of its changes}.
 
-Finally, the document, its {@link module:engine/model/schema~Schema schema} and {@link module:engine/model/markercollection~MarkerCollection document markers} are properties of the {@link module:engine/model/model~Model}. An instance of the `Model` class is available in the {@link module:core/editor/editor~Editor#model `editor.model`} property. The model, besides holding the properties described above, provides the API for changing the document and its markers, too.
+Finally, the document, its {@link module:engine/model/schema~ModelSchema schema} and {@link module:engine/model/markercollection~MarkerCollection document markers} are properties of the {@link module:engine/model/model~Model}. An instance of the `Model` class is available in the {@link module:core/editor/editor~Editor#model `editor.model`} property. The model, besides holding the properties described above, provides the API for changing the document and its markers, too.
 
 ```js
 editor.model;                       // -> The data model.
@@ -168,7 +168,7 @@ Markers are perfect for storing and maintaining additional data related to porti
 
 ### Schema
 
-The {@link module:engine/model/schema~Schema model's schema} defines several aspects of how the model should look:
+The {@link module:engine/model/schema~ModelSchema model's schema} defines several aspects of how the model should look:
 
 * Where a node is allowed or disallowed. For example, `paragraph` is allowed in `$root`, but not in `heading1`.
 * What attributes are allowed for a certain node. For example, `image` can have the `src` and `alt` attributes.

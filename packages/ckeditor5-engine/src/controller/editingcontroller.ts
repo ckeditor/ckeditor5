@@ -41,7 +41,7 @@ import type { Model, AfterChangesEvent, BeforeChangesEvent } from '../model/mode
 import { type ModelItem } from '../model/item.js';
 import { type ModelText } from '../model/text.js';
 import { type ModelTextProxy } from '../model/textproxy.js';
-import { type Schema } from '../model/schema.js';
+import { type ModelSchema } from '../model/schema.js';
 import type { ModelDocumentChangeEvent } from '../model/document.js';
 import type { Marker } from '../model/markercollection.js';
 import type { StylesProcessor } from '../view/stylesmap.js';
@@ -255,7 +255,7 @@ export class EditingController extends /* #__PURE__ */ ObservableMixin() {
  *
  * This is using the same logic as the selection post-fixer.
  */
-function fixTargetRanges( mapper: Mapper, schema: Schema, view: View ): GetCallback<ViewDocumentInputEvent> {
+function fixTargetRanges( mapper: Mapper, schema: ModelSchema, view: View ): GetCallback<ViewDocumentInputEvent> {
 	return ( evt, data ) => {
 		// The Renderer is disabled while composing on non-android browsers, so we can't be sure that target ranges
 		// could be properly mapped to view and model because the DOM and view tree drifted apart.

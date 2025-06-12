@@ -7,7 +7,7 @@
  * @module list/legacylist/legacylistcommand
  */
 
-import type { ModelElement, ModelNode, Schema } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelNode, ModelSchema } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 
 import { first } from 'ckeditor5/src/utils.js';
@@ -325,6 +325,6 @@ function _fixType(
  * @param block A block to be tested.
  * @param schema The schema of the document.
  */
-function checkCanBecomeListItem( block: ModelElement, schema: Schema ) {
+function checkCanBecomeListItem( block: ModelElement, schema: ModelSchema ) {
 	return schema.checkChild( block.parent as any, 'listItem' ) && !schema.isObject( block );
 }

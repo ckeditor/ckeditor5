@@ -9,7 +9,7 @@ import { ViewDowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcast
 import { AttributeElement } from '@ckeditor/ckeditor5-engine/src/view/attributeelement.js';
 import { ContainerElement } from '@ckeditor/ckeditor5-engine/src/view/containerelement.js';
 import { Text } from '@ckeditor/ckeditor5-engine/src/view/text.js';
-import { Schema } from '@ckeditor/ckeditor5-engine/src/model/schema.js';
+import { ModelSchema } from '@ckeditor/ckeditor5-engine/src/model/schema.js';
 import { ModelElement } from '@ckeditor/ckeditor5-engine/src/model/element.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { BoldEditing } from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting.js';
@@ -276,27 +276,27 @@ describe( 'utils', () => {
 
 	describe( 'isLinkableElement()', () => {
 		it( 'returns false when passed "null" as element', () => {
-			expect( isLinkableElement( null, new Schema() ) ).to.equal( false );
+			expect( isLinkableElement( null, new ModelSchema() ) ).to.equal( false );
 		} );
 
 		it( 'returns false when passed an element that is not the image element', () => {
 			const element = new ModelElement( 'paragraph' );
-			expect( isLinkableElement( element, new Schema() ) ).to.equal( false );
+			expect( isLinkableElement( element, new ModelSchema() ) ).to.equal( false );
 		} );
 
 		it( 'returns false when schema does not allow linking images (block image)', () => {
 			const element = new ModelElement( 'imageBlock' );
-			expect( isLinkableElement( element, new Schema() ) ).to.equal( false );
+			expect( isLinkableElement( element, new ModelSchema() ) ).to.equal( false );
 		} );
 
 		it( 'returns false when schema does not allow linking images (inline image)', () => {
 			const element = new ModelElement( 'imageInline' );
-			expect( isLinkableElement( element, new Schema() ) ).to.equal( false );
+			expect( isLinkableElement( element, new ModelSchema() ) ).to.equal( false );
 		} );
 
 		it( 'returns true when passed a block image element and it can be linked', () => {
 			const element = new ModelElement( 'imageBlock' );
-			const schema = new Schema();
+			const schema = new ModelSchema();
 
 			schema.register( 'imageBlock', {
 				allowIn: '$root',
@@ -308,7 +308,7 @@ describe( 'utils', () => {
 
 		it( 'returns true when passed an inline image element and it can be linked', () => {
 			const element = new ModelElement( 'imageInline' );
-			const schema = new Schema();
+			const schema = new ModelSchema();
 
 			schema.register( 'imageInline', {
 				allowIn: '$root',

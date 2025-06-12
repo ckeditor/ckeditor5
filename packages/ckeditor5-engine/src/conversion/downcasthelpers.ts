@@ -1977,7 +1977,7 @@ function downcastElementToStructure(
 			/**
 			 * This error occurs when a {@link module:engine/model/element~ModelElement model element} is downcasted
 			 * via {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} helper but the element was
-			 * allowed to host `$text` by the {@link module:engine/model/schema~Schema model schema}.
+			 * allowed to host `$text` by the {@link module:engine/model/schema~ModelSchema model schema}.
 			 *
 			 * For instance, this may be the result of `myElement` allowing the content of
 			 * {@glink framework/deep-dive/schema#generic-items `$block`} in its schema definition:

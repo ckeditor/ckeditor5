@@ -12,7 +12,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import type {
 	UpcastElementEvent,
 	ModelElement,
-	Schema,
+	ModelSchema,
 	DowncastDispatcher,
 	UpcastDispatcher,
 	DowncastAttributeEvent
@@ -149,7 +149,7 @@ function createEmptyBlockDowncastConverter() {
  * Creates an upcast converter for handling empty blocks.
  * The converter detects empty elements and marks them with the empty block attribute.
  */
-function createEmptyBlockUpcastConverter( schema: Schema ) {
+function createEmptyBlockUpcastConverter( schema: ModelSchema ) {
 	return ( dispatcher: UpcastDispatcher ) => {
 		dispatcher.on<UpcastElementEvent>( 'element', ( evt, data, conversionApi ) => {
 			const { viewItem, modelRange } = data;

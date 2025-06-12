@@ -9,7 +9,7 @@
 
 import { Command } from 'ckeditor5/src/core.js';
 import { findOptimalInsertionRange } from 'ckeditor5/src/widget.js';
-import type { ModelDocumentSelection, ModelElement, Model, Schema } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, ModelElement, Model, ModelSchema } from 'ckeditor5/src/engine.js';
 
 /**
  * The page break command.
@@ -53,7 +53,7 @@ export class PageBreakCommand extends Command {
 /**
  * Checks if a page break is allowed by the schema in the optimal insertion parent.
  */
-function isPageBreakAllowedInParent( selection: ModelDocumentSelection, schema: Schema, model: Model ): boolean {
+function isPageBreakAllowedInParent( selection: ModelDocumentSelection, schema: ModelSchema, model: Model ): boolean {
 	const parent = getInsertPageBreakParent( selection, model );
 
 	return schema.checkChild( parent, 'pageBreak' );

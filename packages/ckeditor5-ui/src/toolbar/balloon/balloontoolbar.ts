@@ -37,7 +37,7 @@ import {
 	Observer,
 	type ModelDocumentSelection,
 	type ModelDocumentSelectionChangeRangeEvent,
-	type Schema
+	type ModelSchema
 } from '@ckeditor/ckeditor5-engine';
 
 import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
@@ -421,7 +421,7 @@ export class BalloonToolbar extends Plugin {
  * Returns "true" when the selection has multiple ranges and each range contains a selectable element
  * and nothing else.
  */
-function selectionContainsOnlyMultipleSelectables( selection: ModelDocumentSelection, schema: Schema ) {
+function selectionContainsOnlyMultipleSelectables( selection: ModelDocumentSelection, schema: ModelSchema ) {
 	// It doesn't contain multiple objects if there is only one range.
 	if ( selection.rangeCount === 1 ) {
 		return false;

@@ -35,7 +35,7 @@ import { CKEditorError, first, ObservableMixin } from '@ckeditor/ckeditor5-utils
  * {@glink framework/architecture/editing-engine Introduction to the Editing engine architecture} guide.
  * * The {@glink framework/deep-dive/schema Schema deep-dive} guide.
  */
-export class Schema extends /* #__PURE__ */ ObservableMixin() {
+export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	private readonly _sourceDefinitions: Record<string, Array<SchemaItemDefinition>> = {};
 
 	/**
@@ -101,7 +101,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 			 *
 			 * This situation may happen when:
 			 *
-			 * * Two or more plugins called {@link module:engine/model/schema~Schema#register `register()`} with the same name.
+			 * * Two or more plugins called {@link module:engine/model/schema~ModelSchema#register `register()`} with the same name.
 			 * This will usually mean that there is a collision between plugins which try to use the same element in the model.
 			 * Unfortunately, the only way to solve this is by modifying one of these plugins to use a unique model element name.
 			 * * A single plugin was loaded twice. This happens when it is installed by npm/yarn in two versions
@@ -160,7 +160,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 			 * Cannot extend an item which was not registered yet.
 			 *
 			 * This error happens when a plugin tries to extend the schema definition of an item which was not
-			 * {@link module:engine/model/schema~Schema#register registered} yet.
+			 * {@link module:engine/model/schema~ModelSchema#register registered} yet.
 			 *
 			 * @param itemName The name of the model element which is being extended.
 			 * @error schema-cannot-extend-missing-item
@@ -207,7 +207,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 		} else if ( 'is' in item && ( item.is( '$text' ) || item.is( '$textProxy' ) ) ) {
 			itemName = '$text';
 		}
-		// Element or module:engine/model/schema~SchemaContextItem.
+		// Element or module:engine/model/schema~ModelSchemaContextItem.
 		else {
 			itemName = ( item as any ).name;
 		}
@@ -230,7 +230,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 
 	/**
 	 * Returns `true` if the given item is defined to be
-	 * a block by the {@link module:engine/model/schema~SchemaItemDefinition}'s `isBlock` property.
+	 * a block by the {@link module:engine/model/schema~ModelSchemaItemDefinition}'s `isBlock` property.
 	 *
 	 * ```ts
 	 * schema.isBlock( 'paragraph' ); // -> true
@@ -253,9 +253,9 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * Returns `true` if the given item should be treated as a limit element.
 	 *
 	 * It considers an item to be a limit element if its
-	 * {@link module:engine/model/schema~SchemaItemDefinition}'s
-	 * {@link module:engine/model/schema~SchemaItemDefinition#isLimit `isLimit`} or
-	 * {@link module:engine/model/schema~SchemaItemDefinition#isObject `isObject`} property
+	 * {@link module:engine/model/schema~ModelSchemaItemDefinition}'s
+	 * {@link module:engine/model/schema~ModelSchemaItemDefinition#isLimit `isLimit`} or
+	 * {@link module:engine/model/schema~ModelSchemaItemDefinition#isObject `isObject`} property
 	 * was set to `true`.
 	 *
 	 * ```ts
@@ -282,8 +282,8 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * Returns `true` if the given item should be treated as an object element.
 	 *
 	 * It considers an item to be an object element if its
-	 * {@link module:engine/model/schema~SchemaItemDefinition}'s
-	 * {@link module:engine/model/schema~SchemaItemDefinition#isObject `isObject`} property
+	 * {@link module:engine/model/schema~ModelSchemaItemDefinition}'s
+	 * {@link module:engine/model/schema~ModelSchemaItemDefinition#isObject `isObject`} property
 	 * was set to `true`.
 	 *
 	 * ```ts
@@ -311,7 +311,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 
 	/**
 	 * Returns `true` if the given item is defined to be
-	 * an inline element by the {@link module:engine/model/schema~SchemaItemDefinition}'s `isInline` property.
+	 * an inline element by the {@link module:engine/model/schema~ModelSchemaItemDefinition}'s `isInline` property.
 	 *
 	 * ```ts
 	 * schema.isInline( 'paragraph' ); // -> false
@@ -332,7 +332,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 
 	/**
 	 * Returns `true` if the given item is defined to be
-	 * a selectable element by the {@link module:engine/model/schema~SchemaItemDefinition}'s `isSelectable` property.
+	 * a selectable element by the {@link module:engine/model/schema~ModelSchemaItemDefinition}'s `isSelectable` property.
 	 *
 	 * ```ts
 	 * schema.isSelectable( 'paragraph' ); // -> false
@@ -359,7 +359,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 
 	/**
 	 * Returns `true` if the given item is defined to be
-	 * a content by the {@link module:engine/model/schema~SchemaItemDefinition}'s `isContent` property.
+	 * a content by the {@link module:engine/model/schema~ModelSchemaItemDefinition}'s `isContent` property.
 	 *
 	 * ```ts
 	 * schema.isContent( 'paragraph' ); // -> false
@@ -397,8 +397,9 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * schema.checkChild( model.document.getRoot(), paragraph ); // -> true
 	 * ```
 	 *
-	 * Both {@link module:engine/model/schema~Schema#addChildCheck callback checks} and declarative rules (added when
-	 * {@link module:engine/model/schema~Schema#register registering} and {@link module:engine/model/schema~Schema#extend extending} items)
+	 * Both {@link module:engine/model/schema~ModelSchema#addChildCheck callback checks} and declarative rules (added when
+	 * {@link module:engine/model/schema~ModelSchema#register registering} and
+	 * {@link module:engine/model/schema~ModelSchema#extend extending} items)
 	 * are evaluated when this method is called.
 	 *
 	 * Note that callback checks have bigger priority than declarative rules checks and may overwrite them.
@@ -406,7 +407,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * Note that when verifying whether the given node can be a child of the given context, the schema also verifies the entire
 	 * context &ndash; from its root to its last element. Therefore, it is possible for `checkChild()` to return `false` even though
 	 * the `context` last element can contain the checked child. It happens if one of the `context` elements does not allow its child.
-	 * When `context` is verified, {@link module:engine/model/schema~Schema#addChildCheck custom checks} are considered as well.
+	 * When `context` is verified, {@link module:engine/model/schema~ModelSchema#addChildCheck custom checks} are considered as well.
 	 *
 	 * @fires checkChild
 	 * @param context The context in which the child will be checked.
@@ -434,8 +435,9 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * schema.checkAttribute( textNode, 'bold' ); // -> true
 	 * ```
 	 *
-	 * Both {@link module:engine/model/schema~Schema#addAttributeCheck callback checks} and declarative rules (added when
-	 * {@link module:engine/model/schema~Schema#register registering} and {@link module:engine/model/schema~Schema#extend extending} items)
+	 * Both {@link module:engine/model/schema~ModelSchema#addAttributeCheck callback checks} and declarative rules (added when
+	 * {@link module:engine/model/schema~ModelSchema#register registering} and
+	 * {@link module:engine/model/schema~ModelSchema#extend extending} items)
 	 * are evaluated when this method is called.
 	 *
 	 * Note that callback checks have bigger priority than declarative rules checks and may overwrite them.
@@ -527,7 +529,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * Allows registering a callback to the {@link #checkChild} method calls.
 	 *
 	 * Callbacks allow you to implement rules which are not otherwise possible to achieve
-	 * by using the declarative API of {@link module:engine/model/schema~SchemaItemDefinition}.
+	 * by using the declarative API of {@link module:engine/model/schema~ModelSchemaItemDefinition}.
 	 *
 	 * Note that callback checks have bigger priority than declarative rules checks and may overwrite them.
 	 *
@@ -580,8 +582,8 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * Adding callbacks this way can also negatively impact editor performance.
 	 *
 	 * @param callback The callback to be called. It is called with two parameters:
-	 * {@link module:engine/model/schema~SchemaContext} (context) instance and
-	 * {@link module:engine/model/schema~SchemaCompiledItemDefinition} (definition). The callback may return `true/false` to override
+	 * {@link module:engine/model/schema~ModelSchemaContext} (context) instance and
+	 * {@link module:engine/model/schema~ModelSchemaCompiledItemDefinition} (definition). The callback may return `true/false` to override
 	 * `checkChild()`'s return value. If it does not return a boolean value, the default algorithm (or other callbacks) will define
 	 * `checkChild()`'s return value.
 	 * @param itemName Name of the schema item for which the callback is registered. If specified, the callback will be run only for
@@ -600,7 +602,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * Allows registering a callback to the {@link #checkAttribute} method calls.
 	 *
 	 * Callbacks allow you to implement rules which are not otherwise possible to achieve
-	 * by using the declarative API of {@link module:engine/model/schema~SchemaItemDefinition}.
+	 * by using the declarative API of {@link module:engine/model/schema~ModelSchemaItemDefinition}.
 	 *
 	 * Note that callback checks have bigger priority than declarative rules checks and may overwrite them.
 	 *
@@ -653,7 +655,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * Adding callbacks this way can also negatively impact editor performance.
 	 *
 	 * @param callback The callback to be called. It is called with two parameters:
-	 * {@link module:engine/model/schema~SchemaContext `context`} and attribute name. The callback may return `true` or `false`, to
+	 * {@link module:engine/model/schema~ModelSchemaContext `context`} and attribute name. The callback may return `true` or `false`, to
 	 * override `checkAttribute()`'s return value. If it does not return a boolean value, the default algorithm (or other callbacks)
 	 * will define `checkAttribute()`'s return value.
 	 * @param attributeName Name of the attribute for which the callback is registered. If specified, the callback will be run only for
@@ -726,7 +728,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * Returns the lowest {@link module:engine/model/schema~Schema#isLimit limit element} containing the entire
+	 * Returns the lowest {@link module:engine/model/schema~ModelSchema#isLimit limit element} containing the entire
 	 * selection/range/position or the root otherwise.
 	 *
 	 * @param selectionOrRangeOrPosition The selection/range/position to check.
@@ -825,7 +827,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * The correct selection range might be collapsed when it is located in a position where the text node can be placed.
 	 * Non-collapsed range is returned when selection can be placed around element marked as an "object" in
-	 * the {@link module:engine/model/schema~Schema schema}.
+	 * the {@link module:engine/model/schema~ModelSchema schema}.
 	 *
 	 * Direction of searching for the nearest correct selection range can be specified as:
 	 *
@@ -891,8 +893,8 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Tries to find position ancestors that allow to insert a given node.
 	 * It starts searching from the given position and goes node by node to the top of the model tree
-	 * as long as a {@link module:engine/model/schema~Schema#isLimit limit element}, an
-	 * {@link module:engine/model/schema~Schema#isObject object element} or a topmost ancestor is not reached.
+	 * as long as a {@link module:engine/model/schema~ModelSchema#isLimit limit element}, an
+	 * {@link module:engine/model/schema~ModelSchema#isObject object element} or a topmost ancestor is not reached.
 	 *
 	 * @param position The position that the search will start from.
 	 * @param node The node for which an allowed parent should be found or its name.
@@ -1235,7 +1237,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 /**
  * Event fired when the {@link ~Schema#checkChild} method is called. It allows plugging in
  * additional behavior, for example implementing rules which cannot be defined using the declarative
- * {@link module:engine/model/schema~SchemaItemDefinition} interface.
+ * {@link module:engine/model/schema~ModelSchemaItemDefinition} interface.
  *
  * **Note:** The {@link ~Schema#addChildCheck} method is a more handy way to register callbacks. Internally,
  * it registers a listener to this event but comes with a simpler API and it is the recommended choice
@@ -1255,8 +1257,8 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
  *
  * The listener is added with a `high` priority to be executed before the default method is really called. The `args` callback
  * parameter contains arguments passed to `checkChild( context, child )`. However, the `context` parameter is already
- * normalized to a {@link module:engine/model/schema~SchemaContext} instance and `child` to a
- * {@link module:engine/model/schema~SchemaCompiledItemDefinition} instance, so you do not have to worry about
+ * normalized to a {@link module:engine/model/schema~ModelSchemaContext} instance and `child` to a
+ * {@link module:engine/model/schema~ModelSchemaCompiledItemDefinition} instance, so you do not have to worry about
  * the various ways how `context` and `child` may be passed to `checkChild()`.
  *
  * **Note:** `childDefinition` may be `undefined` if `checkChild()` was called with a non-registered element.
@@ -1278,7 +1280,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
  * ```
  *
  * Allowing elements in specific contexts will be a far less common use case, because it is normally handled by the
- * `allowIn` rule from {@link module:engine/model/schema~SchemaItemDefinition}. But if you have a complex scenario
+ * `allowIn` rule from {@link module:engine/model/schema~ModelSchemaItemDefinition}. But if you have a complex scenario
  * where `listItem` should be allowed only in element `foo` which must be in element `bar`, then this would be the way:
  *
  * ```ts
@@ -1306,7 +1308,7 @@ export type SchemaCheckChildEvent = {
 /**
  * Event fired when the {@link ~Schema#checkAttribute} method is called. It allows plugging in
  * additional behavior, for example implementing rules which cannot be defined using the declarative
- * {@link module:engine/model/schema~SchemaItemDefinition} interface.
+ * {@link module:engine/model/schema~ModelSchemaItemDefinition} interface.
  *
  * **Note:** The {@link ~Schema#addAttributeCheck} method is a more handy way to register callbacks. Internally,
  * it registers a listener to this event but comes with a simpler API and it is the recommended choice
@@ -1326,7 +1328,7 @@ export type SchemaCheckChildEvent = {
  *
  * The listener is added with a `high` priority to be executed before the default method is really called. The `args` callback
  * parameter contains arguments passed to `checkAttribute( context, attributeName )`. However, the `context` parameter is already
- * normalized to a {@link module:engine/model/schema~SchemaContext} instance, so you do not have to worry about
+ * normalized to a {@link module:engine/model/schema~ModelSchemaContext} instance, so you do not have to worry about
  * the various ways how `context` may be passed to `checkAttribute()`.
  *
  * So, in order to implement a rule "disallow `bold` in a text which is in a `heading1`, you can add such a listener:
@@ -1346,7 +1348,7 @@ export type SchemaCheckChildEvent = {
  * ```
  *
  * Allowing attributes in specific contexts will be a far less common use case, because it is normally handled by the
- * `allowAttributes` rule from {@link module:engine/model/schema~SchemaItemDefinition}. But if you have a complex scenario
+ * `allowAttributes` rule from {@link module:engine/model/schema~ModelSchemaItemDefinition}. But if you have a complex scenario
  * where `bold` should be allowed only in element `foo` which must be in element `bar`, then this would be the way:
  *
  * ```ts
@@ -1372,7 +1374,7 @@ export type SchemaCheckAttributeEvent = {
 };
 
 /**
- * A definition of a {@link module:engine/model/schema~Schema schema} item.
+ * A definition of a {@link module:engine/model/schema~ModelSchema schema} item.
  *
  * You can define the following rules:
  *
@@ -1406,7 +1408,7 @@ export type SchemaCheckAttributeEvent = {
  * All objects are treated as limit elements, too.
  * * {@link ~SchemaItemDefinition#isObject `isObject`} &ndash; Whether an item is "self-contained" and should be treated as a whole.
  * Examples of object elements: `imageBlock`, `table`, `video`, etc. An object is also a limit, so
- * {@link module:engine/model/schema~Schema#isLimit `isLimit()`} returns `true` for object elements automatically.
+ * {@link module:engine/model/schema~ModelSchema#isLimit `isLimit()`} returns `true` for object elements automatically.
  *
  * Read more about the meaning of these types in the
  * {@glink framework/deep-dive/schema#defining-additional-semantics dedicated section of the Schema deep-dive} guide.
@@ -1658,7 +1660,7 @@ export interface SchemaItemDefinition {
 	 * `imageBlock`, `table`, `video`, etc.
 	 *
 	 * **Note:** An object is also a limit, so
-	 * {@link module:engine/model/schema~Schema#isLimit `isLimit()`} returns `true` for object elements automatically.
+	 * {@link module:engine/model/schema~ModelSchema#isLimit `isLimit()`} returns `true` for object elements automatically.
 	 *
 	 * Read more about the object elements in the
 	 * {@glink framework/deep-dive/schema#object-elements Object elements section} of the Schema deep-dive guide.
@@ -1670,7 +1672,7 @@ export interface SchemaItemDefinition {
 	 * Examples of selectable elements: `imageBlock`, `table`, `tableCell`, etc.
 	 *
 	 * **Note:** An object is also a selectable element, so
-	 * {@link module:engine/model/schema~Schema#isSelectable `isSelectable()`} returns `true` for object elements automatically.
+	 * {@link module:engine/model/schema~ModelSchema#isSelectable `isSelectable()`} returns `true` for object elements automatically.
 	 *
 	 * Read more about selectable elements in the
 	 * {@glink framework/deep-dive/schema#selectable-elements Selectable elements section} of
@@ -1683,7 +1685,7 @@ export interface SchemaItemDefinition {
 	 * Examples of content elements: `$text`, `imageBlock`, `table`, etc. (but not `paragraph`, `heading1` or `tableCell`).
 	 *
 	 * **Note:** An object is also a content element, so
-	 * {@link module:engine/model/schema~Schema#isContent `isContent()`} returns `true` for object elements automatically.
+	 * {@link module:engine/model/schema~ModelSchema#isContent `isContent()`} returns `true` for object elements automatically.
 	 *
 	 * Read more about content elements in the
 	 * {@glink framework/deep-dive/schema#content-elements Content elements section} of
@@ -1693,13 +1695,13 @@ export interface SchemaItemDefinition {
 }
 
 /**
- * A simplified version of {@link module:engine/model/schema~SchemaItemDefinition} after
- * compilation by the {@link module:engine/model/schema~Schema schema}.
- * Rules fed to the schema by {@link module:engine/model/schema~Schema#register}
- * and {@link module:engine/model/schema~Schema#extend} methods are defined in the
- * {@link module:engine/model/schema~SchemaItemDefinition} format.
+ * A simplified version of {@link module:engine/model/schema~ModelSchemaItemDefinition} after
+ * compilation by the {@link module:engine/model/schema~ModelSchema schema}.
+ * Rules fed to the schema by {@link module:engine/model/schema~ModelSchema#register}
+ * and {@link module:engine/model/schema~ModelSchema#extend} methods are defined in the
+ * {@link module:engine/model/schema~ModelSchemaItemDefinition} format.
  * Later on, they are compiled to `SchemaCompiledItemDefinition` so when you use e.g.
- * the {@link module:engine/model/schema~Schema#getDefinition} method you get the compiled version.
+ * the {@link module:engine/model/schema~ModelSchema#getDefinition} method you get the compiled version.
  *
  * The compiled version contains only the following properties:
  *
@@ -1771,12 +1773,12 @@ type TypeNames = Array<'isBlock' | 'isContent' | 'isInline' | 'isLimit' | 'isObj
  *
  *		[ rootElement, blockQuoteElement, paragraphElement ]
  *
- * Contexts are used in the {@link module:engine/model/schema~Schema#event:checkChild `Schema#checkChild`} and
- * {@link module:engine/model/schema~Schema#event:checkAttribute `Schema#checkAttribute`} events as a definition
+ * Contexts are used in the {@link module:engine/model/schema~ModelSchema#event:checkChild `Schema#checkChild`} and
+ * {@link module:engine/model/schema~ModelSchema#event:checkAttribute `Schema#checkAttribute`} events as a definition
  * of a place in the document where the check occurs. The context instances are created based on the first arguments
- * of the {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`} and
- * {@link module:engine/model/schema~Schema#checkAttribute `Schema#checkAttribute()`} methods so when
- * using these methods you need to use {@link module:engine/model/schema~SchemaContextDefinition}s.
+ * of the {@link module:engine/model/schema~ModelSchema#checkChild `Schema#checkChild()`} and
+ * {@link module:engine/model/schema~ModelSchema#checkAttribute `Schema#checkAttribute()`} methods so when
+ * using these methods you need to use {@link module:engine/model/schema~ModelSchemaContextDefinition}s.
  */
 export class SchemaContext implements Iterable<SchemaContextItem> {
 	private _items!: Array<SchemaContextItem>;
@@ -1928,7 +1930,7 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
 }
 
 /**
- * The definition of a {@link module:engine/model/schema~SchemaContext schema context}.
+ * The definition of a {@link module:engine/model/schema~ModelSchemaContext schema context}.
  *
  * Contexts can be created in multiple ways:
  *
@@ -1940,10 +1942,10 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
  * way to define the context (e.g. when checking some hypothetical situation).
  * * By defining an **array of node names** (potentially, mixed with real nodes) – The same as **name of node**
  * but it is possible to create a path.
- * * By defining a {@link module:engine/model/schema~SchemaContext} instance - in this case the same instance as provided
+ * * By defining a {@link module:engine/model/schema~ModelSchemaContext} instance - in this case the same instance as provided
  * will be returned.
  *
- * Examples of context definitions passed to the {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`}
+ * Examples of context definitions passed to the {@link module:engine/model/schema~ModelSchema#checkChild `Schema#checkChild()`}
  * method:
  *
  * ```ts
@@ -1967,7 +1969,7 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
  * schema.checkChild( [ '$root', 'bar', paragraphElement ], 'foo' );
  * ```
  *
- * All these `checkChild()` calls will fire {@link module:engine/model/schema~Schema#event:checkChild `Schema#checkChild`}
+ * All these `checkChild()` calls will fire {@link module:engine/model/schema~ModelSchema#event:checkChild `Schema#checkChild`}
  * events in which `args[ 0 ]` is an instance of the context. Therefore, you can write a listener like this:
  *
  * ```ts
@@ -1986,7 +1988,7 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
  * [ '$root', 'bar', 'paragraph' ]
  * ```
  *
- * Note: When using the {@link module:engine/model/schema~Schema#checkAttribute `Schema#checkAttribute()`} method
+ * Note: When using the {@link module:engine/model/schema~ModelSchema#checkAttribute `Schema#checkAttribute()`} method
  * you may want to check whether a text node may have an attribute. A {@link module:engine/model/text~Text} is a
  * correct way to define a context so you can do this:
  *
@@ -2005,7 +2007,7 @@ export class SchemaContext implements Iterable<SchemaContextItem> {
 export type SchemaContextDefinition = ModelItem | ModelPosition | SchemaContext | string | Array<string | ModelItem>;
 
 /**
- * An item of the {@link module:engine/model/schema~SchemaContext schema context}.
+ * An item of the {@link module:engine/model/schema~ModelSchemaContext schema context}.
  *
  * It contains 3 properties:
  *
@@ -2037,7 +2039,7 @@ export interface SchemaContextItem {
 /**
  * A structure containing additional metadata describing the attribute.
  *
- * See {@link module:engine/model/schema~Schema#setAttributeProperties `Schema#setAttributeProperties()`} for usage examples.
+ * See {@link module:engine/model/schema~ModelSchema#setAttributeProperties `Schema#setAttributeProperties()`} for usage examples.
  */
 export interface AttributeProperties {
 
@@ -2467,7 +2469,7 @@ function* convertToMinimalFlatRanges( ranges: Iterable<ModelRange> ): Iterable<M
 	}
 }
 
-function removeDisallowedAttributeFromNode( schema: Schema, node: ModelNode, writer: Writer ) {
+function removeDisallowedAttributeFromNode( schema: ModelSchema, node: ModelNode, writer: Writer ) {
 	for ( const attribute of node.getAttributeKeys() ) {
 		if ( !schema.checkAttribute( node, attribute ) ) {
 			writer.removeAttribute( attribute, node );

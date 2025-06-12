@@ -594,7 +594,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	}
 
 	/**
-	 * Gets elements of type {@link module:engine/model/schema~Schema#isBlock "block"} touched by the selection.
+	 * Gets elements of type {@link module:engine/model/schema~ModelSchema#isBlock "block"} touched by the selection.
 	 *
 	 * This method's result can be used for example to apply block styling to all blocks covered by this selection.
 	 *

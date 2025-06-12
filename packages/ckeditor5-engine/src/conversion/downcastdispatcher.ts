@@ -22,7 +22,7 @@ import { type ModelElement } from '../model/element.js';
 import { type ModelItem } from '../model/item.js';
 import { type Mapper } from './mapper.js';
 import { type ModelPosition } from '../model/position.js';
-import { type Schema } from '../model/schema.js';
+import { type ModelSchema } from '../model/schema.js';
 import { type Selection } from '../model/selection.js';
 import { type ViewElement } from '../view/element.js';
 
@@ -939,9 +939,9 @@ export interface DowncastConversionApi {
 	mapper: Mapper;
 
 	/**
-	 * The {@link module:engine/model/schema~Schema} instance set for the model that is downcast.
+	 * The {@link module:engine/model/schema~ModelSchema} instance set for the model that is downcast.
 	 */
-	schema: Schema;
+	schema: ModelSchema;
 
 	/**
 	 * The {@link module:engine/view/downcastwriter~DowncastWriter} instance used to manipulate the data during conversion.

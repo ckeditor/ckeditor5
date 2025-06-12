@@ -20,8 +20,8 @@ import {
 	type ViewDocumentArrowKeyEvent,
 	type ViewDocumentMouseDownEvent,
 	type ViewElement,
-	type Schema,
-	type Position,
+	type ModelSchema,
+	type ModelPosition,
 	type EditingView,
 	type ViewDocumentTabEvent,
 	type ViewDocumentKeyDownEvent,
@@ -528,7 +528,7 @@ export class Widget extends Plugin {
 	/**
 	 * Checks if {@link module:engine/model/element~ModelElement element} placed next to the current
 	 * {@link module:engine/model/selection~Selection model selection} exists and is marked in
-	 * {@link module:engine/model/schema~Schema schema} as `object`.
+	 * {@link module:engine/model/schema~ModelSchema schema} as `object`.
 	 *
 	 * @internal
 	 * @param forward Direction of checking.
@@ -722,7 +722,7 @@ function isChild( element: ViewElement, parent: ViewElement | null ) {
 /**
  * Returns nearest text block ancestor.
  */
-function findTextBlockAncestor( modelElement: ModelElement, schema: Schema ): ModelElement | null {
+function findTextBlockAncestor( modelElement: ModelElement, schema: ModelSchema ): ModelElement | null {
 	for ( const element of modelElement.getAncestors( { includeSelf: true, parentFirst: true } ) ) {
 		if ( schema.checkChild( element as ModelElement, '$text' ) ) {
 			return element as ModelElement;
@@ -740,7 +740,7 @@ function findTextBlockAncestor( modelElement: ModelElement, schema: Schema ): Mo
 /**
  * Returns next text block where could put selection.
  */
-function findNextTextBlock( position: Position, schema: Schema ): ModelElement | null {
+function findNextTextBlock( position: ModelPosition, schema: ModelSchema ): ModelElement | null {
 	const treeWalker = new TreeWalker( { startPosition: position } );
 
 	for ( const { item } of treeWalker ) {

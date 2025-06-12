@@ -60,7 +60,7 @@ export function insertObject(
 		/**
 		 * Tried to insert an element with {@link module:engine/model/utils/insertobject insertObject()} function
 		 * that is not defined as an object in schema.
-		 * See {@link module:engine/model/schema~SchemaItemDefinition#isObject `SchemaItemDefinition`}.
+		 * See {@link module:engine/model/schema~ModelSchemaItemDefinition#isObject `SchemaItemDefinition`}.
 		 * If you want to insert content that is not an object you might want to use
 		 * {@link module:engine/model/utils/insertcontent insertContent()} function.
 		 * @error insertobject-element-not-an-object

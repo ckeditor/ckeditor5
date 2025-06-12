@@ -51,7 +51,7 @@ import { CKEditorError, logWarning, toMap } from '@ckeditor/ckeditor5-utils';
  * Note that the writer should never be stored and used outside of the `change()` and
  * `enqueueChange()` blocks.
  *
- * Note that writer's methods do not check the {@link module:engine/model/schema~Schema}. It is possible
+ * Note that writer's methods do not check the {@link module:engine/model/schema~ModelSchema}. It is possible
  * to create incorrect model structures by using the writer. Read more about in
  * {@glink framework/deep-dive/schema#who-checks-the-schema "Who checks the schema?"}.
  *

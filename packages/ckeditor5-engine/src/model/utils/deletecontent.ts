@@ -15,7 +15,7 @@ import { type ModelDocumentFragment } from '../documentfragment.js';
 import { type ModelElement } from '../element.js';
 import { type Model } from '../model.js';
 import { type ModelPosition } from '../position.js';
-import { type Schema } from '../schema.js';
+import { type ModelSchema } from '../schema.js';
 import { type Selection } from '../selection.js';
 import { type Writer } from '../writer.js';
 
@@ -36,7 +36,7 @@ import { type Writer } from '../writer.js';
  * * `<heading>x^y</heading>` with the option disabled (`leaveUnmerged == false`)
  * * `<heading>x^</heading><paragraph>y</paragraph>` with enabled (`leaveUnmerged == true`).
  *
- * Note: {@link module:engine/model/schema~Schema#isObject object} and {@link module:engine/model/schema~Schema#isLimit limit}
+ * Note: {@link module:engine/model/schema~ModelSchema#isObject object} and {@link module:engine/model/schema~ModelSchema#isLimit limit}
  * elements will not be merged.
  *
  * @param options.doNotResetEntireContent Whether to skip replacing the entire content with a
@@ -504,7 +504,7 @@ function mergeRight( writer: Writer, position: ModelPosition ) {
  * Verifies if merging is needed and possible. It's not needed if both positions are in the same element
  * and it's not possible if some element is a limit or the range crosses a limit element.
  */
-function checkShouldMerge( schema: Schema, startPosition: ModelPosition, endPosition: ModelPosition ): boolean {
+function checkShouldMerge( schema: ModelSchema, startPosition: ModelPosition, endPosition: ModelPosition ): boolean {
 	const startElement = startPosition.parent;
 	const endElement = endPosition.parent;
 
@@ -541,7 +541,7 @@ function getAncestorsJustBelowCommonAncestor( positionA: ModelPosition, position
 	return [ ancestorsA[ i ], ancestorsB[ i ] ];
 }
 
-function shouldAutoparagraph( schema: Schema, position: ModelPosition ) {
+function shouldAutoparagraph( schema: ModelSchema, position: ModelPosition ) {
 	const isTextAllowed = schema.checkChild( position, '$text' );
 	const isParagraphAllowed = schema.checkChild( position, 'paragraph' );
 
@@ -556,7 +556,7 @@ function shouldAutoparagraph( schema: Schema, position: ModelPosition ) {
  * we'll check <p>, <bQ>, <widget> and <caption>.
  * Usually, widget and caption are marked as objects/limits in the schema, so in this case merging will be blocked.
  */
-function isCrossingLimitElement( leftPos: ModelPosition, rightPos: ModelPosition, schema: Schema ) {
+function isCrossingLimitElement( leftPos: ModelPosition, rightPos: ModelPosition, schema: ModelSchema ) {
 	const rangeToCheck = new ModelRange( leftPos, rightPos );
 
 	for ( const value of rangeToCheck.getWalker() ) {
@@ -596,7 +596,7 @@ function replaceEntireContentWithParagraph( writer: Writer, selection: Selection
  * * selection contains at least two elements,
  * * whether the paragraph is allowed in schema in the common ancestor.
  */
-function shouldEntireContentBeReplacedWithParagraph( schema: Schema, selection: Selection | ModelDocumentSelection ) {
+function shouldEntireContentBeReplacedWithParagraph( schema: ModelSchema, selection: Selection | ModelDocumentSelection ) {
 	const limitElement = schema.getLimitElement( selection );
 
 	if ( !selection.containsEntireContent( limitElement ) ) {

@@ -18,7 +18,7 @@ import {
 	type ModelDocumentSelectionChangeRangeEvent,
 	type DomEventData,
 	type Model,
-	type Position,
+	type ModelPosition,
 	type ViewDocumentArrowKeyEvent,
 	type ViewDocumentMouseDownEvent,
 	type ViewDocumentSelectionChangeEvent,
@@ -711,7 +711,7 @@ function hasAnyAttribute( selection: ModelDocumentSelection, attributes: Set<str
  * values from the node before the current position. Uses
  * the {@link module:engine/model/writer~Writer model writer}.
  */
-function setSelectionAttributesFromTheNodeBefore( model: Model, attributes: Set<string>, position: Position ) {
+function setSelectionAttributesFromTheNodeBefore( model: Model, attributes: Set<string>, position: ModelPosition ) {
 	const nodeBefore = position.nodeBefore;
 
 	model.change( writer => {
@@ -756,7 +756,7 @@ function preventCaretMovement( data: DomEventData ) {
 /**
  * Checks whether the step before `isBetweenDifferentAttributes()`.
  */
-function isStepAfterAnyAttributeBoundary( position: Position, attributes: Set<string> ): boolean {
+function isStepAfterAnyAttributeBoundary( position: ModelPosition, attributes: Set<string> ): boolean {
 	const positionBefore = position.getShiftedBy( -1 );
 	return isBetweenDifferentAttributes( positionBefore, attributes );
 }
@@ -764,7 +764,7 @@ function isStepAfterAnyAttributeBoundary( position: Position, attributes: Set<st
 /**
  * Checks whether the given position is between different values of given attributes.
  */
-function isBetweenDifferentAttributes( position: Position, attributes: Set<string>, isStrict: boolean = false ): boolean {
+function isBetweenDifferentAttributes( position: ModelPosition, attributes: Set<string>, isStrict: boolean = false ): boolean {
 	const { nodeBefore, nodeAfter } = position;
 
 	for ( const observedAttribute of attributes ) {

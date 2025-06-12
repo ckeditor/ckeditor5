@@ -7,7 +7,7 @@
  * @module remove-format/removeformatcommand
  */
 
-import type { ModelDocumentSelection, ModelItem, Schema, ModelRange, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, ModelItem, ModelSchema, ModelRange, Writer } from 'ckeditor5/src/engine.js';
 import { Command } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
 
@@ -103,7 +103,7 @@ export class RemoveFormatCommand extends Command {
 	 *
 	 * @param schema The schema describing the item.
 	 */
-	private* _getFormattingItems( selection: ModelDocumentSelection, schema: Schema ) {
+	private* _getFormattingItems( selection: ModelDocumentSelection, schema: ModelSchema ) {
 		const itemHasRemovableFormatting = ( item: ModelItem | ModelDocumentSelection ) => {
 			return !!first( this._getFormattingAttributes( item, schema ) );
 		};
@@ -138,7 +138,7 @@ export class RemoveFormatCommand extends Command {
 	 * @param schema The schema describing the item.
 	 * @returns The names of formatting attributes found in a given item.
 	 */
-	private* _getFormattingAttributes( item: ModelItem | ModelDocumentSelection, schema: Schema ) {
+	private* _getFormattingAttributes( item: ModelItem | ModelDocumentSelection, schema: ModelSchema ) {
 		for ( const [ attributeName ] of item.getAttributes() ) {
 			for ( const { isFormatting } of this._customAttributesHandlers ) {
 				if ( isFormatting( attributeName, item ) ) {

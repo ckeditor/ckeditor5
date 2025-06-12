@@ -10,7 +10,7 @@
 import type {
 	ModelDocumentSelection,
 	MatcherPattern,
-	Schema,
+	ModelSchema,
 	Selection,
 	ViewContainerElement,
 	DowncastWriter,
@@ -116,7 +116,7 @@ export function getImgViewElementMatcher( editor: Editor, matchImageType: 'image
  * @internal
  */
 export function determineImageTypeForInsertionAtSelection(
-	schema: Schema,
+	schema: ModelSchema,
 	selection: Selection | ModelDocumentSelection
 ): 'imageBlock' | 'imageInline' {
 	const firstBlock = first( selection.getSelectedBlocks() );

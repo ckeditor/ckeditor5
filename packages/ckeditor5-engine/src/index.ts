@@ -166,7 +166,7 @@ export { ModelNodeList } from './model/nodelist.js';
 export { ModelRootElement } from './model/rootelement.js';
 export {
 	SchemaContext,
-	type Schema,
+	type ModelSchema,
 	type SchemaAttributeCheckCallback,
 	type SchemaChildCheckCallback,
 	type AttributeProperties,

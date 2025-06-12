@@ -43,7 +43,7 @@ const toPx = /* #__PURE__ */ toUnit( 'px' );
  * Upon clicking the button, a dropdown providing access to editor features shows up, as configured in
  * {@link module:core/editor/editorconfig~EditorConfig#blockToolbar}.
  *
- * By default, the button is displayed next to all elements marked in {@link module:engine/model/schema~Schema}
+ * By default, the button is displayed next to all elements marked in {@link module:engine/model/schema~ModelSchema}
  * as `$block` for which the toolbar provides at least one option.
  *
  * By default, the button is attached so its right boundary is touching the

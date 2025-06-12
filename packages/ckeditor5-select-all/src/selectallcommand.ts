@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
-import type { ModelElement, Schema } from '@ckeditor/ckeditor5-engine';
+import type { ModelElement, ModelSchema } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The select all command.
@@ -64,11 +64,11 @@ export class SelectAllCommand extends Command {
 
 /**
  * Checks whether the element is a valid select-all scope. Returns true, if the element is a
- * {@link module:engine/model/schema~Schema#isLimit limit}, and can contain any text or paragraph.
+ * {@link module:engine/model/schema~ModelSchema#isLimit limit}, and can contain any text or paragraph.
  *
  * @param schema Schema to check against.
  * @param element Model element.
  */
-function isSelectAllScope( schema: Schema, element: ModelElement ): boolean {
+function isSelectAllScope( schema: ModelSchema, element: ModelElement ): boolean {
 	return schema.isLimit( element ) && ( schema.checkChild( element, '$text' ) || schema.checkChild( element, 'paragraph' ) );
 }

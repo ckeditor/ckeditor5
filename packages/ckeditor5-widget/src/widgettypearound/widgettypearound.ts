@@ -41,7 +41,7 @@ import type {
 	DowncastSelectionEvent,
 	DowncastWriter,
 	ModelElement,
-	Schema,
+	ModelSchema,
 	SelectionChangeRangeEvent,
 	ViewDocumentArrowKeyEvent,
 	ViewDocumentCompositionStartEvent,
@@ -950,7 +950,7 @@ function injectFakeCaret( wrapperDomElement: HTMLElement ) {
  *
  * it returns `<bar>`.
  */
-function getDeepestEmptyElementAncestor( schema: Schema, element: ModelElement ) {
+function getDeepestEmptyElementAncestor( schema: ModelSchema, element: ModelElement ) {
 	let deepestEmptyAncestor = element;
 
 	for ( const ancestor of element.getAncestors( { parentFirst: true } ) ) {

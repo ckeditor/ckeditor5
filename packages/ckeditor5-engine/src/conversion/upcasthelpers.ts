@@ -43,7 +43,7 @@ export class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 * view `<p>Foo</p>` becomes `<paragraph>Foo</paragraph>` in the model.
 	 *
 	 * Keep in mind that the element will be inserted only if it is allowed
-	 * by {@link module:engine/model/schema~Schema schema} configuration.
+	 * by {@link module:engine/model/schema~ModelSchema schema} configuration.
 	 *
 	 * ```ts
 	 * editor.conversion.for( 'upcast' ).elementToElement( {
@@ -113,7 +113,8 @@ export class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 * Even though `<strong>` is over `<p>` element, `bold="true"` was added to the text. See
 	 * {@link module:engine/conversion/upcasthelpers~UpcastHelpers#attributeToAttribute} for comparison.
 	 *
-	 * Keep in mind that the attribute will be set only if it is allowed by {@link module:engine/model/schema~Schema schema} configuration.
+	 * Keep in mind that the attribute will be set only if it is allowed by
+	 * {@link module:engine/model/schema~ModelSchema schema} configuration.
 	 *
 	 * ```ts
 	 * editor.conversion.for( 'upcast' ).elementToAttribute( {
@@ -217,7 +218,8 @@ export class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 	 * Above is a sample of HTML code, that goes through autoparagraphing (first step) and then is converted (second step).
 	 * Even though `<strong>` is over `<p>` element, `bold="true"` was added to the text.
 	 *
-	 * Keep in mind that the attribute will be set only if it is allowed by {@link module:engine/model/schema~Schema schema} configuration.
+	 * Keep in mind that the attribute will be set only if it is allowed by
+	 * {@link module:engine/model/schema~ModelSchema schema} configuration.
 	 *
 	 * ```ts
 	 * editor.conversion.for( 'upcast' ).attributeToAttribute( {
@@ -1123,8 +1125,8 @@ function onlyViewNameIsDefined( viewConfig: any, viewItem: ViewElement ): boolea
 }
 
 /**
- * Helper function for to-model-attribute converter. Sets model attribute on given range. Checks {@link module:engine/model/schema~Schema}
- * to ensure proper model structure.
+ * Helper function for to-model-attribute converter. Sets model attribute on given range.
+ * Checks {@link module:engine/model/schema~ModelSchema} to ensure proper model structure.
  *
  * If any node on the given range has already defined an attribute with the same name, its value will not be updated.
  *

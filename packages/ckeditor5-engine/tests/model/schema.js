@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Schema, SchemaContext } from '../../src/model/schema.js';
+import { ModelSchema, SchemaContext } from '../../src/model/schema.js';
 
 import { Model } from '../../src/model/model.js';
 
@@ -23,7 +23,7 @@ describe( 'Schema', () => {
 	let schema, root1, r1p1, r1p2, r1bQ, r1bQp, root2;
 
 	beforeEach( () => {
-		schema = new Schema();
+		schema = new ModelSchema();
 
 		root1 = new ModelElement( '$root', null, [
 			new ModelElement( 'paragraph', null, 'foo' ),

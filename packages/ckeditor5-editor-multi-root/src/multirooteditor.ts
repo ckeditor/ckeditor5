@@ -645,7 +645,7 @@ export class MultiRootEditor extends Editor {
 
 	/**
 	 * Registers given string as a root attribute key. Registered root attributes are added to
-	 * {@link module:engine/model/schema~Schema schema}, and also returned by
+	 * {@link module:engine/model/schema~ModelSchema schema}, and also returned by
 	 * {@link ~MultiRootEditor#getRootAttributes `getRootAttributes()`} and
 	 * {@link ~MultiRootEditor#getRootsAttributes `getRootsAttributes()`}.
 	 *

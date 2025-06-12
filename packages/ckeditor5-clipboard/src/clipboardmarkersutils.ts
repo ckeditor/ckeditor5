@@ -14,7 +14,7 @@ import { Plugin, type NonEmptyArray } from '@ckeditor/ckeditor5-core';
 import {
 	ModelRange,
 	type ModelDocumentFragment,
-	type Position,
+	type ModelPosition,
 	type ModelElement,
 	type ModelDocumentSelection,
 	type Selection,
@@ -680,8 +680,8 @@ type FakeMarker = {
  * @internal
  */
 type FakeMarkerRangeConstruct = {
-	start: Position | null;
-	end: Position | null;
+	start: ModelPosition | null;
+	end: ModelPosition | null;
 };
 
 /**

@@ -15,7 +15,7 @@ import {
 	type ModelElement,
 	type ModelItem,
 	type Model,
-	type Position,
+	type ModelPosition,
 	type ViewContainerElement,
 	type ViewElement,
 	type ViewItem,
@@ -294,7 +294,7 @@ export function findNestedList( viewElement: ViewElement ): ViewElement | null {
  * @param position Starting position.
  * @param direction Walking direction.
  */
-export function getSiblingNodes( position: Position, direction: 'forward' | 'backward' ): Array<ModelElement> {
+export function getSiblingNodes( position: ModelPosition, direction: 'forward' | 'backward' ): Array<ModelElement> {
 	const items: Array<ModelElement> = [];
 	const listItem = position.parent as ModelElement;
 	const walkerOptions = {

@@ -14,7 +14,7 @@ import type {
 	ModelNode,
 	Writer,
 	ModelItem,
-	Schema
+	ModelSchema
 } from 'ckeditor5/src/engine.js';
 
 import { uid, toArray, type ArrayOrItem } from 'ckeditor5/src/utils.js';
@@ -568,7 +568,7 @@ export function getSelectedBlockObject( model: Model ): ModelElement | null {
  * @param schema The schema of the document.
  * @internal
  */
-export function canBecomeSimpleListItem( block: ModelElement, schema: Schema ): boolean {
+export function canBecomeSimpleListItem( block: ModelElement, schema: ModelSchema ): boolean {
 	return schema.checkChild( block.parent as ModelElement, 'listItem' ) &&
 		schema.checkChild( block, '$text' ) &&
 		!schema.isObject( block );

@@ -12,7 +12,7 @@ import {
 	type Editor
 } from 'ckeditor5/src/core.js';
 import type {
-	Schema,
+	ModelSchema,
 	Writer,
 	ViewElement,
 	ViewDocumentKeyDownEvent,
@@ -210,7 +210,7 @@ export class LinkEditing extends Plugin {
 	 * {@link module:link/linkcommand~LinkCommand#manualDecorators} collection (a model for manual decorators state).
 	 *
 	 * Also registers an {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement attribute-to-element}
-	 * converter for each manual decorator and extends the {@link module:engine/model/schema~Schema model's schema}
+	 * converter for each manual decorator and extends the {@link module:engine/model/schema~ModelSchema model's schema}
 	 * with adequate model attributes.
 	 */
 	private _enableManualDecorators( manualDecoratorDefinitions: Array<NormalizedLinkDecoratorManualDefinition> ): void {
@@ -400,7 +400,7 @@ function removeLinkAttributesFromSelection( writer: Writer, linkAttributes: Arra
 /**
  * Returns an array containing names of the attributes allowed on `$text` that describes the link item.
  */
-function getLinkAttributesAllowedOnText( schema: Schema ): Array<string> {
+function getLinkAttributesAllowedOnText( schema: ModelSchema ): Array<string> {
 	const textAttributes = schema.getDefinition( '$text' )!.allowAttributes;
 
 	return textAttributes.filter( attribute => attribute.startsWith( 'link' ) );

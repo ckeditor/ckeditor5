@@ -88,7 +88,7 @@ export class ImageUtils extends Plugin {
 	 * ```
 	 *
 	 * @param attributes Attributes of the inserted image.
-	 * This method filters out the attributes which are disallowed by the {@link module:engine/model/schema~Schema}.
+	 * This method filters out the attributes which are disallowed by the {@link module:engine/model/schema~ModelSchema}.
 	 * @param selectable Place to insert the image. If not specified,
 	 * the {@link module:widget/utils~findOptimalInsertionRange} logic will be applied for the block images
 	 * and `model.document.selection` for the inline images.

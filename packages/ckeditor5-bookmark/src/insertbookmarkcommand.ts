@@ -11,7 +11,7 @@ import type {
 	ModelDocumentSelection,
 	Selection,
 	Position,
-	Schema,
+	ModelSchema,
 	SchemaContextDefinition
 } from 'ckeditor5/src/engine.js';
 import { logWarning } from 'ckeditor5/src/utils.js';
@@ -138,7 +138,7 @@ export class InsertBookmarkCommand extends Command {
 /**
  * Verify if the given position allows for bookmark insertion. Verify if auto-paragraphing could help.
  */
-function isBookmarkAllowed( position: SchemaContextDefinition, schema: Schema ): boolean {
+function isBookmarkAllowed( position: SchemaContextDefinition, schema: ModelSchema ): boolean {
 	if ( schema.checkChild( position, 'bookmark' ) ) {
 		return true;
 	}

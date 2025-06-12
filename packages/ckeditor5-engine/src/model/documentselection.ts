@@ -25,7 +25,7 @@ import { type ModelElement } from './element.js';
 import { type ModelItem } from './item.js';
 import type { ModelPosition, ModelPositionOffset } from './position.js';
 import { type ModelRange } from './range.js';
-import { type Schema } from './schema.js';
+import { type ModelSchema } from './schema.js';
 
 import {
 	CKEditorError,
@@ -223,7 +223,7 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCh
 	}
 
 	/**
-	 * Gets elements of type {@link module:engine/model/schema~Schema#isBlock "block"} touched by the selection.
+	 * Gets elements of type {@link module:engine/model/schema~ModelSchema#isBlock "block"} touched by the selection.
 	 *
 	 * This method's result can be used for example to apply block styling to all blocks covered by this selection.
 	 *
@@ -1223,7 +1223,7 @@ class LiveSelection extends Selection {
  * It checks if the passed model item is a text node (or text proxy) and, if so, returns it's attributes.
  * If not, it checks if item is an inline object and does the same. Otherwise it returns `null`.
  */
-function getTextAttributes( node: ModelItem | null, schema: Schema ): Iterable<[string, unknown]> | null {
+function getTextAttributes( node: ModelItem | null, schema: ModelSchema ): Iterable<[string, unknown]> | null {
 	if ( !node ) {
 		return null;
 	}

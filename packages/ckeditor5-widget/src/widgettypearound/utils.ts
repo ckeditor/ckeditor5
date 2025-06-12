@@ -13,7 +13,7 @@ import type {
 	ModelDocumentSelection,
 	DomConverter,
 	ModelElement,
-	Schema,
+	ModelSchema,
 	Selection,
 	ViewElement
 } from '@ckeditor/ckeditor5-engine';
@@ -29,7 +29,7 @@ export const TYPE_AROUND_SELECTION_ATTRIBUTE = 'widget-type-around';
 /**
  * Checks if an element is a widget that qualifies to get the widget type around UI.
  */
-export function isTypeAroundWidget( viewElement: ViewElement | undefined, modelElement: ModelElement, schema: Schema ): boolean {
+export function isTypeAroundWidget( viewElement: ViewElement | undefined, modelElement: ModelElement, schema: ModelSchema ): boolean {
 	return !!viewElement && isWidget( viewElement ) && !schema.isInline( modelElement );
 }
 

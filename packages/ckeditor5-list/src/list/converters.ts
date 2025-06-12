@@ -25,7 +25,7 @@ import {
 	type EditingView,
 	type MapperModelToViewPositionEvent,
 	type ViewTreeWalker,
-	type Schema
+	type ModelSchema
 } from 'ckeditor5/src/engine.js';
 
 import type { GetCallback } from 'ckeditor5/src/utils.js';
@@ -372,7 +372,7 @@ export function listItemDowncastConverter(
  *
  * @internal
  */
-export function listItemDowncastRemoveConverter( schema: Schema ): GetCallback<DowncastRemoveEvent> {
+export function listItemDowncastRemoveConverter( schema: ModelSchema ): GetCallback<DowncastRemoveEvent> {
 	return ( evt, data, conversionApi ) => {
 		const { writer, mapper } = conversionApi;
 		const elementName = evt.name.split( ':' )[ 1 ];

@@ -13,7 +13,7 @@ import { ModelRange } from '../range.js';
 import { TreeWalker, type TreeWalkerValue } from '../treewalker.js';
 
 import { type Model } from '../model.js';
-import { type Schema } from '../schema.js';
+import { type ModelSchema } from '../schema.js';
 import { type Selection } from '../selection.js';
 import { type Text } from '../text.js';
 import { type ModelNode } from '../node.js';
@@ -109,7 +109,7 @@ export function modifySelection(
 function tryExtendingTo(
 	data: {
 		walker: TreeWalker;
-		schema: Schema;
+		schema: ModelSchema;
 		isForward: boolean;
 		unit: 'character' | 'codePoint' | 'word';
 		treatEmojiAsSingleUnit: boolean;

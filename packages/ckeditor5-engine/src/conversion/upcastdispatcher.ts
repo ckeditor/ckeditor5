@@ -16,7 +16,7 @@ import { type ViewElement } from '../view/element.js';
 import { type ViewText } from '../view/text.js';
 import { type ViewDocumentFragment } from '../view/documentfragment.js';
 import { type ModelDocumentFragment } from '../model/documentfragment.js';
-import type { Schema, SchemaContextDefinition } from '../model/schema.js';
+import type { ModelSchema, SchemaContextDefinition } from '../model/schema.js';
 import { SchemaContext } from '../model/schema.js'; // eslint-disable-line no-duplicate-imports
 import { type ModelWriter } from '../model/writer.js';
 import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphing.js';
@@ -683,7 +683,7 @@ export interface UpcastConversionApi {
 	/**
 	 * The model's schema instance.
 	 */
-	schema: Schema;
+	schema: ModelSchema;
 
 	/**
 	 * The {@link module:engine/model/writer~Writer} instance used to manipulate the data during conversion.
@@ -742,7 +742,8 @@ export interface UpcastConversionApi {
 	};
 
 	/**
-	 * Safely inserts an element to the document, checking the {@link module:engine/model/schema~Schema schema} to find an allowed parent
+	 * Safely inserts an element to the document, checking the
+	 * {@link module:engine/model/schema~ModelSchema schema} to find an allowed parent
 	 * for an element that you are going to insert, starting from the given position. If the current parent does not allow to insert
 	 * the element but one of the ancestors does, then splits the nodes to allowed parent.
 	 *
@@ -805,9 +806,9 @@ export interface UpcastConversionApi {
 	updateConversionResult( modelElement: ModelElement, data: UpcastConversionData ): void;
 
 	/**
-	 * Checks the {@link module:engine/model/schema~Schema schema} to find an allowed parent for an element that is going to be inserted
-	 * starting from the given position. If the current parent does not allow inserting an element but one of the ancestors does, the method
-	 * splits nodes to allowed parent.
+	 * Checks the {@link module:engine/model/schema~ModelSchema schema} to find an allowed parent for an element
+	 * that is going to be inserted starting from the given position. If the current parent does not allow
+	 * inserting an element but one of the ancestors does, the method splits nodes to allowed parent.
 	 *
 	 * If the schema allows inserting the node in the given position, nothing is split and an object with that position is returned.
 	 *

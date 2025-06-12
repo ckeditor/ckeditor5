@@ -5,7 +5,7 @@
 
 import { type ModelNode } from '../node.js';
 import { type ModelPosition } from '../position.js';
-import { type Schema } from '../schema.js';
+import { type ModelSchema } from '../schema.js';
 import { type Writer } from '../writer.js';
 
 /**
@@ -50,7 +50,7 @@ export function autoParagraphEmptyRoots( writer: Writer ): boolean {
 export function isParagraphable(
 	position: ModelPosition,
 	nodeOrType: ModelNode | string,
-	schema: Schema
+	schema: ModelSchema
 ): boolean {
 	const context = schema.createContext( position );
 

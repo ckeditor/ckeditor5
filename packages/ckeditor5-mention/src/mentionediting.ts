@@ -17,7 +17,7 @@ import type {
 	DowncastConversionApi,
 	DowncastDispatcher,
 	Position,
-	Schema,
+	ModelSchema,
 	DowncastAttributeEvent,
 	ModelItem
 } from 'ckeditor5/src/engine.js';
@@ -207,7 +207,7 @@ function shouldNotTypeWithMentionAt( position: Position ): boolean {
 /**
  * Model post-fixer that removes the mention attribute from the modified text node.
  */
-function removePartialMentionPostFixer( writer: Writer, doc: ModelDocument, schema: Schema ): boolean {
+function removePartialMentionPostFixer( writer: Writer, doc: ModelDocument, schema: ModelSchema ): boolean {
 	const changes = doc.differ.getChanges();
 
 	let wasChanged = false;

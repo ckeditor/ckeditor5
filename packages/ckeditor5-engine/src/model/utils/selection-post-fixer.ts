@@ -13,7 +13,7 @@ import { ModelRange } from '../range.js';
 import { type ModelDocumentFragment } from '../documentfragment.js';
 import { type Model } from '../model.js';
 import { type ModelNode } from '../node.js';
-import { type Schema } from '../schema.js';
+import { type ModelSchema } from '../schema.js';
 import { type Writer } from '../writer.js';
 import { type ModelElement } from '../element.js';
 
@@ -25,11 +25,11 @@ import { type ModelElement } from '../element.js';
  *
  * The correct position means that:
  *
- * * All collapsed selection ranges are in a place where the {@link module:engine/model/schema~Schema}
+ * * All collapsed selection ranges are in a place where the {@link module:engine/model/schema~ModelSchema}
  * allows a `$text`.
- * * None of the selection's non-collapsed ranges crosses a {@link module:engine/model/schema~Schema#isLimit limit element}
+ * * None of the selection's non-collapsed ranges crosses a {@link module:engine/model/schema~ModelSchema#isLimit limit element}
  * boundary (a range must be rooted within one limit element).
- * * Only {@link module:engine/model/schema~Schema#isSelectable selectable elements} can be selected from the outside
+ * * Only {@link module:engine/model/schema~ModelSchema#isSelectable selectable elements} can be selected from the outside
  * (e.g. `[<paragraph>foo</paragraph>]` is invalid). This rule applies independently to both selection ends, so this
  * selection is correct: `<paragraph>f[oo</paragraph><imageBlock></imageBlock>]`.
  *
@@ -121,7 +121,7 @@ function selectionPostFixer( writer: Writer, model: Model ): boolean {
  * @returns Returns fixed range or null if range is valid.
  * @internal
  */
-export function tryFixingRange( range: ModelRange, schema: Schema ): ModelRange | null {
+export function tryFixingRange( range: ModelRange, schema: ModelSchema ): ModelRange | null {
 	if ( range.isCollapsed ) {
 		return tryFixingCollapsedRange( range, schema );
 	}
@@ -137,7 +137,7 @@ export function tryFixingRange( range: ModelRange, schema: Schema ): ModelRange 
  * @param range Collapsed range to fix.
  * @returns Returns fixed range or null if range is valid.
  */
-function tryFixingCollapsedRange( range: ModelRange, schema: Schema ) {
+function tryFixingCollapsedRange( range: ModelRange, schema: ModelSchema ) {
 	const originalPosition = range.start;
 
 	const nearestSelectionRange = schema.getNearestSelectionRange( originalPosition );
@@ -176,7 +176,7 @@ function tryFixingCollapsedRange( range: ModelRange, schema: Schema ) {
  * @param range Expanded range to fix.
  * @returns Returns fixed range or null if range is valid.
  */
-function tryFixingNonCollapsedRage( range: ModelRange, schema: Schema ) {
+function tryFixingNonCollapsedRage( range: ModelRange, schema: ModelSchema ) {
 	const { start, end } = range;
 
 	const isTextAllowedOnStart = schema.checkChild( start, '$text' );
@@ -248,7 +248,7 @@ function tryFixingNonCollapsedRage( range: ModelRange, schema: Schema ) {
 /**
  * Finds the outer-most ancestor.
  */
-function findOutermostLimitAncestor( startingNode: ModelNode, schema: Schema ): ModelNode {
+function findOutermostLimitAncestor( startingNode: ModelNode, schema: ModelSchema ): ModelNode {
 	let isLimitNode = startingNode;
 	let parent: ModelNode | ModelDocumentFragment = isLimitNode;
 
@@ -264,7 +264,7 @@ function findOutermostLimitAncestor( startingNode: ModelNode, schema: Schema ): 
 /**
  * Checks whether any of range boundaries is placed around non-limit elements.
  */
-function checkSelectionOnNonLimitElements( start: ModelPosition, end: ModelPosition, schema: Schema ) {
+function checkSelectionOnNonLimitElements( start: ModelPosition, end: ModelPosition, schema: ModelSchema ) {
 	const startIsOnBlock = ( start.nodeAfter && !schema.isLimit( start.nodeAfter ) ) || schema.checkChild( start, '$text' );
 	const endIsOnBlock = ( end.nodeBefore && !schema.isLimit( end.nodeBefore ) ) || schema.checkChild( end, '$text' );
 
@@ -315,6 +315,6 @@ export function mergeIntersectingRanges( ranges: Array<ModelRange> ): Array<Mode
 /**
  * Checks if node exists and if it's a selectable.
  */
-function isSelectable( node: ModelNode, schema: Schema ) {
+function isSelectable( node: ModelNode, schema: ModelSchema ) {
 	return node && schema.isSelectable( node );
 }

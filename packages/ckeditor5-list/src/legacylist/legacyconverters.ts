@@ -19,7 +19,7 @@ import {
 	type Model,
 	type ModelInsertContentEvent,
 	type ModelNode,
-	type Position,
+	type ModelPosition,
 	type UpcastConversionApi,
 	type UpcastElementEvent,
 	type EditingView,
@@ -664,7 +664,7 @@ export function modelChangePostFixer( model: Model, writer: Writer ): boolean {
 
 	return applied;
 
-	function _addListToFix( position: Position ) {
+	function _addListToFix( position: ModelPosition ) {
 		const previousNode = position.nodeBefore;
 
 		if ( !previousNode || !previousNode.is( 'element', 'listItem' ) ) {
@@ -917,7 +917,7 @@ function viewToModelListItemChildrenConverter(
 /**
  * Helper function that seeks for a next list item starting from given `startPosition`.
  */
-function findNextListItem( startPosition: Position ) {
+function findNextListItem( startPosition: ModelPosition ) {
 	const treeWalker = new TreeWalker( { startPosition } );
 
 	let value;
@@ -935,7 +935,7 @@ function findNextListItem( startPosition: Position ) {
  */
 function hoistNestedLists(
 	nextIndent: number,
-	modelRemoveStartPosition: Position,
+	modelRemoveStartPosition: ModelPosition,
 	viewRemoveStartPosition: ViewPosition,
 	viewRemovedItem: ViewElement,
 	conversionApi: DowncastConversionApi,

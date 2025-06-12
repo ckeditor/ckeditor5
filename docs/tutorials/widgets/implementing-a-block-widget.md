@@ -661,7 +661,7 @@ console.log( editor.commands.get( 'insertSimpleBox' ).isEnabled );
 
 It is always `true` except when the selection is in one place &ndash; in other simple box's title. You can also observe that executing the command when the selection is in that place takes no effect.
 
-Change one more thing before you move forward &ndash; disallow `simpleBox` inside `simpleBoxDescription`, too. This can be done by {@link module:engine/model/schema~Schema#addChildCheck defining a custom child check}:
+Change one more thing before you move forward &ndash; disallow `simpleBox` inside `simpleBoxDescription`, too. This can be done by {@link module:engine/model/schema~ModelSchema#addChildCheck defining a custom child check}:
 
 ```js
 // simplebox/simpleboxediting.js

@@ -14,7 +14,7 @@ import type {
 	ModelDocumentSelection,
 	Model,
 	Position,
-	Schema,
+	ModelSchema,
 	ModelElement,
 	Writer
 } from '@ckeditor/ckeditor5-engine';
@@ -61,7 +61,7 @@ export type ShiftEnterCommandAfterExecuteEvent = {
 /**
  * Checks whether the ShiftEnter command should be enabled in the specified selection.
  */
-function isEnabled( schema: Schema, selection: ModelDocumentSelection ): boolean {
+function isEnabled( schema: ModelSchema, selection: ModelDocumentSelection ): boolean {
 	// At this moment it is okay to support single range selections only.
 	// But in the future we may need to change that.
 	if ( selection.rangeCount > 1 ) {
@@ -148,7 +148,7 @@ function insertBreak( model: Model, writer: Writer, position: Position ): void {
  *   - `<$root><p>Text.</p></$root> => false`
  *   - `<$root><limitElement><p>Text</p></limitElement></$root> => true`
  */
-function isInsideLimitElement( element: ModelElement, schema: Schema ): boolean {
+function isInsideLimitElement( element: ModelElement, schema: ModelSchema ): boolean {
 	// `$root` is a limit element but in this case is an invalid element.
 	if ( element.is( 'rootElement' ) ) {
 		return false;

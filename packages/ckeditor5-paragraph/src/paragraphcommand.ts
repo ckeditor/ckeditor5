@@ -10,7 +10,7 @@
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import { first } from '@ckeditor/ckeditor5-utils';
 
-import type { Schema, Selection, ModelDocumentSelection, ModelElement } from '@ckeditor/ckeditor5-engine';
+import type { ModelSchema, Selection, ModelDocumentSelection, ModelElement } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The paragraph command.
@@ -44,7 +44,7 @@ export class ParagraphCommand extends Command {
 	}
 
 	/**
-	 * Executes the command. All the blocks (see {@link module:engine/model/schema~Schema}) in the selection
+	 * Executes the command. All the blocks (see {@link module:engine/model/schema~ModelSchema}) in the selection
 	 * will be turned to paragraphs.
 	 *
 	 * @fires execute
@@ -83,6 +83,6 @@ export class ParagraphCommand extends Command {
  * @param block A block to be tested.
  * @param schema The schema of the document.
  */
-function checkCanBecomeParagraph( block: ModelElement, schema: Schema ): boolean {
+function checkCanBecomeParagraph( block: ModelElement, schema: ModelSchema ): boolean {
 	return schema.checkChild( block.parent as ModelElement, 'paragraph' ) && !schema.isObject( block );
 }

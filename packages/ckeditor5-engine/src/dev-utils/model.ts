@@ -59,7 +59,7 @@ import { type MarkerCollection } from '../model/markercollection.js';
 import { type ModelText } from '../model/text.js';
 import { type ModelTextProxy } from '../model/textproxy.js';
 import { type DowncastWriter } from '../view/downcastwriter.js';
-import type { Schema, SchemaContextDefinition } from '../model/schema.js';
+import type { ModelSchema, SchemaContextDefinition } from '../model/schema.js';
 import type { ViewDocumentFragment, ViewElement } from '../index.js';
 import { type ViewNode } from '../view/node.js';
 import { type ViewText } from '../view/text.js';
@@ -367,7 +367,7 @@ export function _stringifyModel(
  */
 export function _parseModel(
 	data: string,
-	schema: Schema,
+	schema: ModelSchema,
 	options: {
 		selectionAttributes?: Record<string, unknown> | Iterable<[ string, unknown ]>;
 		lastRangeBackward?: boolean;

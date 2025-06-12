@@ -16,7 +16,7 @@ import {
 	type ModelElement,
 	type Model,
 	type ModelRange,
-	type Position,
+	type ModelPosition,
 	type ViewDocumentMouseDownEvent,
 	type ViewDocumentMouseUpEvent,
 	type ViewElement,
@@ -774,8 +774,8 @@ function getRangeIncludingFullySelectedParents( model: Model, elements: Array<Mo
 	const firstElement = elements[ 0 ];
 	const lastElement = elements[ elements.length - 1 ];
 	const parent = firstElement.getCommonAncestor( lastElement );
-	const startPosition: Position = model.createPositionBefore( firstElement );
-	const endPosition: Position = model.createPositionAfter( lastElement );
+	const startPosition: ModelPosition = model.createPositionBefore( firstElement );
+	const endPosition: ModelPosition = model.createPositionAfter( lastElement );
 
 	if (
 		parent &&

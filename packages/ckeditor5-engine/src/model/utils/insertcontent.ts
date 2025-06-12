@@ -17,7 +17,7 @@ import { ModelRange } from '../range.js';
 import { type ModelDocumentFragment } from '../documentfragment.js';
 import { type ModelItem } from '../item.js';
 import { type Model } from '../model.js';
-import { type Schema } from '../schema.js';
+import { type ModelSchema } from '../schema.js';
 import { type Writer } from '../writer.js';
 import { type ModelNode } from '../node.js';
 import { type Selection } from '../selection.js';
@@ -259,7 +259,7 @@ class Insertion {
 	/**
 	 * Schema of the model.
 	 */
-	public readonly schema: Schema;
+	public readonly schema: ModelSchema;
 
 	/**
 	 * The temporary ModelDocumentFragment used for grouping multiple nodes for single insert operation.

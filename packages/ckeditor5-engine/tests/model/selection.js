@@ -13,7 +13,7 @@ import { Selection } from '../../src/model/selection.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 import { _parseModel, _setModelData } from '../../src/dev-utils/model.js';
-import { Schema } from '../../src/model/schema.js';
+import { ModelSchema } from '../../src/model/schema.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
 import { stringifyBlocks } from './_utils/utils.js';
@@ -909,7 +909,7 @@ describe( 'Selection', () => {
 		let schema;
 
 		beforeEach( () => {
-			schema = new Schema();
+			schema = new ModelSchema();
 			schema.register( '$root' );
 			schema.register( 'p', { allowIn: '$root' } );
 			schema.register( '$text', { allowIn: 'p' } );
