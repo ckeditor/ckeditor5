@@ -6,7 +6,7 @@
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { DataTransfer } from '@ckeditor/ckeditor5-engine/src/view/datatransfer.js';
+import { ViewDataTransfer } from '@ckeditor/ckeditor5-engine/src/view/datatransfer.js';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 import { LinkImage } from '@ckeditor/ckeditor5-link/src/linkimage.js';
 import { LegacyListEditing } from '@ckeditor/ckeditor5-list/src/legacylist/legacylistediting.js';
@@ -654,7 +654,7 @@ describe( 'ImageInlineEditing', () => {
 		} );
 
 		it( 'should paste or drop a block image as inline in the middle of a non-empty paragraph', () => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<figure class="image"><img src="/assets/sample.png" /></figure>'
 			} );
@@ -669,7 +669,7 @@ describe( 'ImageInlineEditing', () => {
 		} );
 
 		it( 'should paste or drop a block image as inline in the empty list item', () => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<figure class="image"><img src="/assets/sample.png" /></figure>'
 			} );
@@ -686,7 +686,7 @@ describe( 'ImageInlineEditing', () => {
 		} );
 
 		it( 'should not work if there are elements other than block images in the pipeline data', () => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<figure class="image"><img src="/assets/sample.png?id=A" /></figure><img src="/assets/sample.png?id=B" />'
 			} );
@@ -703,7 +703,7 @@ describe( 'ImageInlineEditing', () => {
 		} );
 
 		it( 'should use targetRanges from the data when present (when dropping)', () => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<figure class="image"><img src="/assets/sample.png" /></figure>'
 			} );
@@ -730,7 +730,7 @@ describe( 'ImageInlineEditing', () => {
 		} );
 
 		it( 'should not interfere if dropped or pasted in the middle of a non-empty paragraph when the image has caption', () => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<figure class="image"><img src="/assets/sample.png" /><figcaption>abc</figcaption></figure>'
 			} );
@@ -747,7 +747,7 @@ describe( 'ImageInlineEditing', () => {
 		} );
 
 		it( 'should not interfere if pasted or dropped in an empty paragraph', () => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<figure class="image"><img src="/assets/sample.png" /></figure>'
 			} );
@@ -762,7 +762,7 @@ describe( 'ImageInlineEditing', () => {
 		} );
 
 		it( 'should not interfere if pasted or dropped on another block widget', () => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<figure class="image"><img src="/assets/sample.png?id=A" /></figure>'
 			} );
@@ -777,7 +777,7 @@ describe( 'ImageInlineEditing', () => {
 		} );
 
 		it( 'should preserve image attributes (such as alt) when converting to an inline image', () => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<figure class="image"><img src="/assets/sample.png" alt="abc" /></figure>'
 			} );
@@ -792,7 +792,7 @@ describe( 'ImageInlineEditing', () => {
 		} );
 
 		it( 'should preserve image link when converting to an inline image (LinkImage integration)', () => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<figure class="image"><a href="https://cksource.com"><img src="/assets/sample.png" /></a></figure>'
 			} );
@@ -810,7 +810,7 @@ describe( 'ImageInlineEditing', () => {
 			model.schema.extend( 'imageInline', { allowAttributes: [ 'foo' ] } );
 			editor.conversion.for( 'upcast' ).attributeToAttribute( { model: 'foo', view: 'foo' } );
 
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => (
 					'<figure class="image" foo="bar">' +
@@ -828,7 +828,7 @@ describe( 'ImageInlineEditing', () => {
 		} );
 
 		it( 'should pass the style#width from figure when converting to an inline image (ImageResize integration)', () => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => (
 					'<figure class="image image_resized" style="width:25%">' +
@@ -846,7 +846,7 @@ describe( 'ImageInlineEditing', () => {
 		} );
 
 		it( 'should add image width and height on image paste', done => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<img src="/assets/sample.png" />'
 			} );
@@ -865,7 +865,7 @@ describe( 'ImageInlineEditing', () => {
 		} );
 
 		it( 'should not add image width and height on image method other than paste', done => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<img src="/assets/sample.png" />'
 			} );
@@ -940,7 +940,7 @@ describe( 'ImageInlineEditing', () => {
 		} );
 
 		it( 'should disallow pasting inline images into the caption', () => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<img src="/assets/sample.png" />'
 			} );
@@ -955,7 +955,7 @@ describe( 'ImageInlineEditing', () => {
 		} );
 
 		it( 'should disallow pasting linked inline images into the caption', () => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<a href="https://cksource.com"><img src="/assets/sample.png" /></a>'
 			} );

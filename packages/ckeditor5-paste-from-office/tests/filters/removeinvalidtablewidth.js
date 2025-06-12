@@ -6,17 +6,17 @@
 import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
 import { removeInvalidTableWidth } from '../../src/filters/removeinvalidtablewidth.js';
 import { UpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
-import { Document } from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
 describe( 'PasteFromOffice - filters', () => {
-	const htmlDataProcessor = new HtmlDataProcessor( new Document( new StylesProcessor() ) );
+	const htmlDataProcessor = new HtmlDataProcessor( new ViewDocument( new StylesProcessor() ) );
 
 	describe( 'removeInvalidTableWidth', () => {
 		let writer, viewDocument;
 
 		before( () => {
-			viewDocument = new Document();
+			viewDocument = new ViewDocument();
 			writer = new UpcastWriter( viewDocument );
 		} );
 

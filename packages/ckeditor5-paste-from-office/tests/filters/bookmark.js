@@ -7,15 +7,15 @@ import { transformBookmarks } from '../../src/filters/bookmark.js';
 
 import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
 import { UpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
-import { Document } from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
 
 describe( 'PasteFromOffice - filters - bookmark', () => {
 	let writer, viewDocument;
-	const htmlDataProcessor = new HtmlDataProcessor( new Document( new StylesProcessor() ) );
+	const htmlDataProcessor = new HtmlDataProcessor( new ViewDocument( new StylesProcessor() ) );
 
 	before( () => {
-		viewDocument = new Document();
+		viewDocument = new ViewDocument();
 		writer = new UpcastWriter( viewDocument );
 	} );
 

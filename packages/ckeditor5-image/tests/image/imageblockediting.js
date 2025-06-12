@@ -6,7 +6,7 @@
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import { DataTransfer } from '@ckeditor/ckeditor5-engine/src/view/datatransfer.js';
+import { ViewDataTransfer } from '@ckeditor/ckeditor5-engine/src/view/datatransfer.js';
 import { Clipboard } from '@ckeditor/ckeditor5-clipboard/src/clipboard.js';
 
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -614,7 +614,7 @@ describe( 'ImageBlockEditing', () => {
 		} );
 
 		it( 'should paste or drop an inline image as block in an empty paragraph', () => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<img src="/assets/sample.png" />'
 			} );
@@ -629,7 +629,7 @@ describe( 'ImageBlockEditing', () => {
 		} );
 
 		it( 'should paste or drop an inline image as block if another block widget is selected', () => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<img src="/assets/sample.png?id=A" />'
 			} );
@@ -644,7 +644,7 @@ describe( 'ImageBlockEditing', () => {
 		} );
 
 		it( 'should not work if there are elements other than inline images in the pipeline data', () => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<figure class="image"><img src="/assets/sample.png?id=A" /></figure><img src="/assets/sample.png?id=B" />'
 			} );
@@ -661,7 +661,7 @@ describe( 'ImageBlockEditing', () => {
 		} );
 
 		it( 'should use targetRanges from the data when present (when dropping)', () => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<img src="/assets/sample.png" />'
 			} );
@@ -688,7 +688,7 @@ describe( 'ImageBlockEditing', () => {
 		} );
 
 		it( 'should not interfere if pasted or dropped in a non-empty paragraph', () => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<img src="/assets/sample.png" />'
 			} );
@@ -703,7 +703,7 @@ describe( 'ImageBlockEditing', () => {
 		} );
 
 		it( 'should preserve image attributes (such as alt) when converting to a block image', () => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<img src="/assets/sample.png" alt="abc" />'
 			} );
@@ -718,7 +718,7 @@ describe( 'ImageBlockEditing', () => {
 		} );
 
 		it( 'should add image width and height on image paste', done => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<figure class="image"><img src="/assets/sample.png" /></figure>'
 			} );
@@ -737,7 +737,7 @@ describe( 'ImageBlockEditing', () => {
 		} );
 
 		it( 'should not add image width and height on image method other than paste', done => {
-			const dataTransfer = new DataTransfer( {
+			const dataTransfer = new ViewDataTransfer( {
 				types: [ 'text/html' ],
 				getData: () => '<figure class="image"><img src="/assets/sample.png" /></figure>'
 			} );

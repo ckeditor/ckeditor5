@@ -5,7 +5,7 @@
 
 import { ClipboardPipeline } from '../src/clipboardpipeline.js';
 import { ClipboardObserver } from '../src/clipboardobserver.js';
-import { DataTransfer } from '@ckeditor/ckeditor5-engine/src/view/datatransfer.js';
+import { ViewDataTransfer } from '@ckeditor/ckeditor5-engine/src/view/datatransfer.js';
 
 import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -439,7 +439,7 @@ describe( 'ClipboardPipeline feature', () => {
 				type: 'application/zip',
 				size: 1024
 			};
-			const dataTransferMock = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ], getData: () => {} } );
+			const dataTransferMock = new ViewDataTransfer( { files: [ fileMock ], types: [ 'Files' ], getData: () => {} } );
 			const spy = sinon.spy();
 
 			viewDocument.fire( 'drop', {

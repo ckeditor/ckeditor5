@@ -5,7 +5,7 @@
 
 import { HtmlDataProcessor } from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor.js';
 import { _stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
-import { Document } from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { UpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
@@ -19,7 +19,7 @@ describe( 'PasteFromOffice - filters', () => {
 	testUtils.createSinonSandbox();
 
 	describe( 'list - paste from MS Word', () => {
-		const htmlDataProcessor = new HtmlDataProcessor( new Document( new StylesProcessor() ) );
+		const htmlDataProcessor = new HtmlDataProcessor( new ViewDocument( new StylesProcessor() ) );
 
 		describe( 'transformListItemLikeElementsIntoLists()', () => {
 			it( 'replaces list-like elements with semantic lists', () => {
@@ -645,7 +645,7 @@ describe( 'PasteFromOffice - filters', () => {
 		let writer, viewDocument, htmlDataProcessor;
 
 		beforeEach( () => {
-			viewDocument = new Document( new StylesProcessor() );
+			viewDocument = new ViewDocument( new StylesProcessor() );
 			writer = new UpcastWriter( viewDocument );
 			htmlDataProcessor = new HtmlDataProcessor( viewDocument );
 		} );

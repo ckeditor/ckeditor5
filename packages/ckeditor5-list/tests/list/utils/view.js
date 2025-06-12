@@ -16,7 +16,7 @@ import {
 import { UpcastWriter } from '@ckeditor/ckeditor5-engine/src/view/upcastwriter.js';
 import { DowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap.js';
-import { Document } from '@ckeditor/ckeditor5-engine/src/view/document.js';
+import { ViewDocument } from '@ckeditor/ckeditor5-engine/src/view/document.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
 
@@ -26,7 +26,7 @@ describe( 'List - utils - view', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		const viewDocument = new Document( new StylesProcessor() );
+		const viewDocument = new ViewDocument( new StylesProcessor() );
 
 		viewUpcastWriter = new UpcastWriter( viewDocument );
 		viewDowncastWriter = new DowncastWriter( viewDocument );
