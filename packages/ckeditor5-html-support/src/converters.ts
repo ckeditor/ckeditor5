@@ -31,7 +31,11 @@ import {
 	type GHSViewAttributes
 } from './utils.js';
 import { type DataFilter } from './datafilter.js';
-import type { DataSchemaBlockElementDefinition, DataSchemaDefinition, DataSchemaInlineElementDefinition } from './dataschema.js';
+import type {
+	HtmlSupportDataSchemaBlockElementDefinition,
+	HtmlSupportDataSchemaDefinition,
+	HtmlSupportDataSchemaInlineElementDefinition
+} from './dataschema.js';
 
 /**
  * View-to-model conversion helper for object elements.
@@ -41,7 +45,7 @@ import type { DataSchemaBlockElementDefinition, DataSchemaDefinition, DataSchema
  * @returns Returns a conversion callback.
  * @internal
 */
-export function viewToModelObjectConverter( { model: modelName }: DataSchemaDefinition ) {
+export function viewToModelObjectConverter( { model: modelName }: HtmlSupportDataSchemaDefinition ) {
 	return ( viewElement: ViewElement, conversionApi: UpcastConversionApi ): Element => {
 		// Let's keep element HTML and its attributes, so we can rebuild element in downcast conversions.
 		return conversionApi.writer.createElement( modelName, {
@@ -58,7 +62,7 @@ export function viewToModelObjectConverter( { model: modelName }: DataSchemaDefi
 */
 export function toObjectWidgetConverter(
 	editor: Editor,
-	{ view: viewName, isInline }: DataSchemaInlineElementDefinition
+	{ view: viewName, isInline }: HtmlSupportDataSchemaInlineElementDefinition
 ): ElementCreatorFunction {
 	const t = editor.t;
 
@@ -106,7 +110,7 @@ export function createObjectView( viewName: string, modelElement: Element, write
  * @internal
 */
 export function viewToAttributeInlineConverter(
-	{ view: viewName, model: attributeKey, allowEmpty }: DataSchemaInlineElementDefinition,
+	{ view: viewName, model: attributeKey, allowEmpty }: HtmlSupportDataSchemaInlineElementDefinition,
 	dataFilter: DataFilter
 ): ( dispatcher: UpcastDispatcher ) => void {
 	return dispatcher => {
@@ -177,7 +181,7 @@ export function viewToAttributeInlineConverter(
  * @internal
  */
 export function emptyInlineModelElementToViewConverter(
-	{ model: attributeKey, view: viewName }: DataSchemaInlineElementDefinition,
+	{ model: attributeKey, view: viewName }: HtmlSupportDataSchemaInlineElementDefinition,
 	asWidget?: boolean
 ): ElementCreatorFunction {
 	return ( item, { writer, consumable } ) => {
@@ -203,7 +207,7 @@ export function emptyInlineModelElementToViewConverter(
  * @returns Returns a conversion callback.
  * @internal
 */
-export function attributeToViewInlineConverter( { priority, view: viewName }: DataSchemaInlineElementDefinition ) {
+export function attributeToViewInlineConverter( { priority, view: viewName }: HtmlSupportDataSchemaInlineElementDefinition ) {
 	return ( attributeValue: any, conversionApi: DowncastConversionApi ): AttributeElement | undefined => {
 		if ( !attributeValue ) {
 			return;
@@ -226,7 +230,10 @@ export function attributeToViewInlineConverter( { priority, view: viewName }: Da
  * @returns Returns a conversion callback.
  * @internal
 */
-export function viewToModelBlockAttributeConverter( { view: viewName }: DataSchemaBlockElementDefinition, dataFilter: DataFilter ) {
+export function viewToModelBlockAttributeConverter(
+	{ view: viewName }: HtmlSupportDataSchemaBlockElementDefinition,
+	dataFilter: DataFilter
+) {
 	return ( dispatcher: UpcastDispatcher ): void => {
 		dispatcher.on<UpcastElementEvent>( `element:${ viewName }`, ( evt, data, conversionApi ) => {
 			// Converting an attribute of an element that has not been converted to anything does not make sense
@@ -259,7 +266,7 @@ export function viewToModelBlockAttributeConverter( { view: viewName }: DataSche
  * @returns Returns a conversion callback.
  * @internal
 */
-export function modelToViewBlockAttributeConverter( { view: viewName, model: modelName }: DataSchemaBlockElementDefinition ) {
+export function modelToViewBlockAttributeConverter( { view: viewName, model: modelName }: HtmlSupportDataSchemaBlockElementDefinition ) {
 	return ( dispatcher: DowncastDispatcher ): void => {
 		dispatcher.on<DowncastAttributeEvent>(
 			`attribute:${ getHtmlAttributeName( viewName! ) }:${ modelName }`,
