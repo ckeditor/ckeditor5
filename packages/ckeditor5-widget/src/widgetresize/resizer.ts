@@ -477,22 +477,22 @@ export class WidgetResizer extends /* #__PURE__ */ ObservableMixin() {
 }
 
 /**
- * @eventName ~Resizer#begin
+ * @eventName ~WidgetResizer#begin
  */
 export type WidgetResizerBeginEvent = DecoratedMethodEvent<WidgetResizer, 'begin'>;
 
 /**
- * @eventName ~Resizer#cancel
+ * @eventName ~WidgetResizer#cancel
  */
 export type WidgetResizerCancelEvent = DecoratedMethodEvent<WidgetResizer, 'cancel'>;
 
 /**
- * @eventName ~Resizer#commit
+ * @eventName ~WidgetResizer#commit
  */
 export type WidgetResizerCommitEvent = DecoratedMethodEvent<WidgetResizer, 'commit'>;
 
 /**
- * @eventName ~Resizer#updateSize
+ * @eventName ~WidgetResizer#updateSize
  */
 export type WidgetResizerUpdateSizeEvent = DecoratedMethodEvent<WidgetResizer, 'updateSize'>;
 
