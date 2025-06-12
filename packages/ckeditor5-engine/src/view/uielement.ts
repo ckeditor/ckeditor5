@@ -13,7 +13,7 @@ import { CKEditorError, keyCodes } from '@ckeditor/ckeditor5-utils';
 
 import { type View } from './view.js';
 import { type ViewDocument } from './document.js';
-import { type DomConverter } from './domconverter.js';
+import { type ViewDomConverter } from './domconverter.js';
 import { type Item } from './item.js';
 import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver.js';
 import type { KeyEventData } from './observer/keyobserver.js';
@@ -108,7 +108,7 @@ export class UIElement extends Element {
 	 */
 	public render(
 		domDocument: DomDocument,
-		domConverter: DomConverter // eslint-disable-line @typescript-eslint/no-unused-vars
+		domConverter: ViewDomConverter // eslint-disable-line @typescript-eslint/no-unused-vars
 	): DomElement {
 		// Provide basic, default output.
 		return this.toDomElement( domDocument );
@@ -174,7 +174,7 @@ function getFillerOffset() {
  * causes a situation when it is impossible to jump over `UIElement` using right arrow key, because the selection
  * ends up in ui element (in DOM) and is moved back to the left. This handler fixes this situation.
  */
-function jumpOverUiElement( evt: unknown, data: KeyEventData, domConverter: DomConverter ) {
+function jumpOverUiElement( evt: unknown, data: KeyEventData, domConverter: ViewDomConverter ) {
 	if ( data.keyCode == keyCodes.arrowright ) {
 		const domSelection = data.domTarget.ownerDocument.defaultView!.getSelection()!;
 		const domSelectionCollapsed = domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed;

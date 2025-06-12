@@ -29,7 +29,7 @@ import {
 
 import type { ViewDocumentChangeType } from './document.js';
 import { type ViewDocumentSelection } from './documentselection.js';
-import { type DomConverter } from './domconverter.js';
+import { type ViewDomConverter } from './domconverter.js';
 import { type ViewElement } from './element.js';
 import { type ViewNode } from './node.js';
 
@@ -65,7 +65,7 @@ export class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	/**
 	 * Converter instance.
 	 */
-	public readonly domConverter: DomConverter;
+	public readonly domConverter: ViewDomConverter;
 
 	/**
 	 * Set of nodes which attributes changed and may need to be rendered.
@@ -132,7 +132,7 @@ export class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	 * @param domConverter Converter instance.
 	 * @param selection View selection.
 	 */
-	constructor( domConverter: DomConverter, selection: ViewDocumentSelection ) {
+	constructor( domConverter: ViewDomConverter, selection: ViewDocumentSelection ) {
 		super();
 
 		this.domConverter = domConverter;
@@ -1296,7 +1296,7 @@ function areTextNodes( node1: DomNode, node2: DomNode ): boolean {
  *
  * @param blockFillerMode Block filler mode, see {@link module:engine/view/domconverter~DomConverter#blockFillerMode}.
  */
-function sameNodes( domConverter: DomConverter, actualDomChild: DomNode, expectedDomChild: DomNode ): boolean {
+function sameNodes( domConverter: ViewDomConverter, actualDomChild: DomNode, expectedDomChild: DomNode ): boolean {
 	// Elements.
 	if ( actualDomChild === expectedDomChild ) {
 		return true;
@@ -1326,7 +1326,7 @@ function sameNodes( domConverter: DomConverter, actualDomChild: DomNode, expecte
  * which happens a lot when using the soft line break, the browser fails to (visually) move the
  * caret to the new line. A quick fix is as simple as force–refreshing the selection with the same range.
  */
-function fixGeckoSelectionAfterBr( focus: ReturnType<DomConverter[ 'viewPositionToDom' ]>, domSelection: DomSelection ) {
+function fixGeckoSelectionAfterBr( focus: ReturnType<ViewDomConverter[ 'viewPositionToDom' ]>, domSelection: DomSelection ) {
 	let parent = focus!.parent;
 	let offset = focus!.offset;
 

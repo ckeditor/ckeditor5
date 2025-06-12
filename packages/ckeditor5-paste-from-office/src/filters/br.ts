@@ -8,7 +8,7 @@
  */
 
 import {
-	DomConverter,
+	ViewDomConverter,
 	ViewDocument,
 	type UpcastWriter,
 	type ViewDocumentFragment,
@@ -27,7 +27,7 @@ export function transformBlockBrsToParagraphs(
 	writer: UpcastWriter
 ): void {
 	const viewDocument = new ViewDocument( writer.document.stylesProcessor );
-	const domConverter = new DomConverter( viewDocument, { renderingMode: 'data' } );
+	const domConverter = new ViewDomConverter( viewDocument, { renderingMode: 'data' } );
 
 	const blockElements = domConverter.blockElements;
 	const inlineObjectElements = domConverter.inlineObjectElements;

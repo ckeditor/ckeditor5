@@ -14,7 +14,7 @@ import { Node } from './node.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { type ViewDocument } from './document.js';
-import { type DomConverter } from './domconverter.js';
+import { type ViewDomConverter } from './domconverter.js';
 import { type Item } from './item.js';
 
 type DomElement = globalThis.HTMLElement;
@@ -102,7 +102,7 @@ export class RawElement extends Element {
 	 * @param domElement The native DOM element representing the raw view element.
 	 * @param domConverter Instance of the DomConverter used to optimize the output.
 	 */
-	public render( domElement: DomElement, domConverter: DomConverter ): void {}
+	public render( domElement: DomElement, domConverter: ViewDomConverter ): void {}
 }
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.

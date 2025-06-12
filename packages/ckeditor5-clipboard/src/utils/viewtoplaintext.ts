@@ -7,7 +7,7 @@
  * @module clipboard/utils/viewtoplaintext
  */
 
-import type { DomConverter, ViewDocumentFragment, ViewElement, ViewItem } from '@ckeditor/ckeditor5-engine';
+import type { ViewDomConverter, ViewDocumentFragment, ViewElement, ViewItem } from '@ckeditor/ckeditor5-engine';
 
 // Elements which should not have empty-line padding.
 // Most `view.ContainerElement` want to be separate by new-line, but some are creating one structure
@@ -24,7 +24,7 @@ const listElements = [ 'ol', 'ul' ];
  * @returns Plain text representation of `viewItem`.
  */
 export function viewToPlainText(
-	converter: DomConverter,
+	converter: ViewDomConverter,
 	viewItem: ViewItem | ViewDocumentFragment
 ): string {
 	if ( viewItem.is( '$text' ) || viewItem.is( '$textProxy' ) ) {

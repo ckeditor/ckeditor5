@@ -58,8 +58,8 @@ const UNSAFE_ATTRIBUTE_NAME_PREFIX = 'data-ck-unsafe-attribute-';
 const UNSAFE_ELEMENT_REPLACEMENT_ATTRIBUTE = 'data-ck-unsafe-element';
 
 /**
- * `DomConverter` is a set of tools to do transformations between DOM nodes and view nodes. It also handles
- * {@link module:engine/view/domconverter~DomConverter#bindElements bindings} between these nodes.
+ * `ViewDomConverter` is a set of tools to do transformations between DOM nodes and view nodes. It also handles
+ * {@link module:engine/view/domconverter~ViewDomConverter#bindElements bindings} between these nodes.
  *
  * An instance of the DOM converter is available under
  * {@link module:engine/view/view~View#domConverter `editor.editing.view.domConverter`}.
@@ -71,7 +71,7 @@ const UNSAFE_ELEMENT_REPLACEMENT_ATTRIBUTE = 'data-ck-unsafe-element';
  * The DOM converter keeps DOM elements to view element bindings, so when the converter gets destroyed, the bindings are lost.
  * Two converters will keep separate binding maps, so one tree view can be bound with two DOM trees.
  */
-export class DomConverter {
+export class ViewDomConverter {
 	public readonly document: ViewDocument;
 
 	/**
@@ -118,7 +118,7 @@ export class DomConverter {
 	public readonly unsafeElements: Array<string>;
 
 	/**
-	 * The DOM Document used by `DomConverter` to create DOM nodes.
+	 * The DOM Document used by `ViewDomConverter` to create DOM nodes.
 	 */
 	private readonly _domDocument: DomDocument;
 
@@ -191,7 +191,7 @@ export class DomConverter {
 	}
 
 	/**
-	 * The DOM Document used by `DomConverter` to create DOM nodes.
+	 * The DOM Document used by `ViewDomConverter` to create DOM nodes.
 	 */
 	public get domDocument(): DomDocument {
 		return this._domDocument;
@@ -201,7 +201,7 @@ export class DomConverter {
 	 * Binds a given DOM element that represents fake selection to a **position** of a
 	 * {@link module:engine/view/documentselection~DocumentSelection document selection}.
 	 * Document selection copy is stored and can be retrieved by the
-	 * {@link module:engine/view/domconverter~DomConverter#fakeSelectionToView} method.
+	 * {@link module:engine/view/domconverter~ViewDomConverter#fakeSelectionToView} method.
 	 */
 	public bindFakeSelection( domElement: DomElement, viewDocumentSelection: ViewDocumentSelection ): void {
 		this._fakeSelectionMapping.set( domElement, new ViewSelection( viewDocumentSelection ) );
@@ -217,8 +217,8 @@ export class DomConverter {
 
 	/**
 	 * Binds DOM and view elements, so it will be possible to get corresponding elements using
-	 * {@link module:engine/view/domconverter~DomConverter#mapDomToView} and
-	 * {@link module:engine/view/domconverter~DomConverter#mapViewToDom}.
+	 * {@link module:engine/view/domconverter~ViewDomConverter#mapDomToView} and
+	 * {@link module:engine/view/domconverter~ViewDomConverter#mapViewToDom}.
 	 *
 	 * @param domElement The DOM element to bind.
 	 * @param viewElement The view element to bind.
@@ -249,8 +249,8 @@ export class DomConverter {
 
 	/**
 	 * Binds DOM and view document fragments, so it will be possible to get corresponding document fragments using
-	 * {@link module:engine/view/domconverter~DomConverter#mapDomToView} and
-	 * {@link module:engine/view/domconverter~DomConverter#mapViewToDom}.
+	 * {@link module:engine/view/domconverter~ViewDomConverter#mapDomToView} and
+	 * {@link module:engine/view/domconverter~ViewDomConverter#mapViewToDom}.
 	 *
 	 * @param domFragment The DOM document fragment to bind.
 	 * @param viewFragment The view document fragment to bind.
@@ -547,11 +547,11 @@ export class DomConverter {
 
 	/**
 	 * Converts children of the view element to DOM using the
-	 * {@link module:engine/view/domconverter~DomConverter#viewToDom} method.
+	 * {@link module:engine/view/domconverter~ViewDomConverter#viewToDom} method.
 	 * Additionally, this method adds block {@link module:engine/view/filler filler} to the list of children, if needed.
 	 *
 	 * @param viewElement Parent view element.
-	 * @param options See {@link module:engine/view/domconverter~DomConverter#viewToDom} options parameter.
+	 * @param options See {@link module:engine/view/domconverter~ViewDomConverter#viewToDom} options parameter.
 	 * @returns DOM nodes.
 	 */
 	public* viewChildrenToDom(
@@ -756,17 +756,17 @@ export class DomConverter {
 
 	/**
 	 * Converts children of the DOM element to view nodes using
-	 * the {@link module:engine/view/domconverter~DomConverter#domToView} method.
+	 * the {@link module:engine/view/domconverter~ViewDomConverter#domToView} method.
 	 * Additionally this method omits block {@link module:engine/view/filler filler}, if it exists in the DOM parent.
 	 *
 	 * @param domElement Parent DOM element.
-	 * @param options See {@link module:engine/view/domconverter~DomConverter#domToView} options parameter.
+	 * @param options See {@link module:engine/view/domconverter~ViewDomConverter#domToView} options parameter.
 	 * @param inlineNodes An array that will be populated with inline nodes. It's used internally for whitespace processing.
 	 * @returns View nodes.
 	 */
 	public* domChildrenToView(
 		domElement: DomElement,
-		options: Parameters<DomConverter[ 'domToView' ]>[ 1 ] = {},
+		options: Parameters<ViewDomConverter[ 'domToView' ]>[ 1 ] = {},
 		inlineNodes: Array<ViewNode> = []
 	): IterableIterator<ViewNode> {
 		// Get child nodes from content document fragment if element is template
@@ -949,7 +949,7 @@ export class DomConverter {
 	/**
 	 * Returns corresponding view {@link module:engine/view/element~Element Element} or
 	 * {@link module:engine/view/documentfragment~ViewDocumentFragment} for provided DOM element or
-	 * document fragment. If there is no view item {@link module:engine/view/domconverter~DomConverter#bindElements bound}
+	 * document fragment. If there is no view item {@link module:engine/view/domconverter~ViewDomConverter#bindElements bound}
 	 * to the given DOM - `undefined` is returned.
 	 *
 	 * For all DOM elements rendered by a {@link module:engine/view/uielement~UIElement} or
@@ -965,13 +965,14 @@ export class DomConverter {
 	}
 
 	/**
-	 * Finds corresponding text node. Text nodes are not {@link module:engine/view/domconverter~DomConverter#bindElements bound},
+	 * Finds corresponding text node. Text nodes are not {@link module:engine/view/domconverter~ViewDomConverter#bindElements bound},
 	 * corresponding text node is returned based on the sibling or parent.
 	 *
-	 * If the directly previous sibling is a {@link module:engine/view/domconverter~DomConverter#bindElements bound} element, it is used
+	 * If the directly previous sibling is a {@link module:engine/view/domconverter~ViewDomConverter#bindElements bound} element, it is used
 	 * to find the corresponding text node.
 	 *
-	 * If this is a first child in the parent and the parent is a {@link module:engine/view/domconverter~DomConverter#bindElements bound}
+	 * If this is a first child in the parent and the parent is a
+	 * {@link module:engine/view/domconverter~ViewDomConverter#bindElements bound}
 	 * element, it is used to find the corresponding text node.
 	 *
 	 * For all text nodes rendered by a {@link module:engine/view/uielement~UIElement} or
@@ -1078,13 +1079,14 @@ export class DomConverter {
 	}
 
 	/**
-	 * Finds corresponding text node. Text nodes are not {@link module:engine/view/domconverter~DomConverter#bindElements bound},
+	 * Finds corresponding text node. Text nodes are not {@link module:engine/view/domconverter~ViewDomConverter#bindElements bound},
 	 * corresponding text node is returned based on the sibling or parent.
 	 *
-	 * If the directly previous sibling is a {@link module:engine/view/domconverter~DomConverter#bindElements bound} element, it is used
+	 * If the directly previous sibling is a {@link module:engine/view/domconverter~ViewDomConverter#bindElements bound} element, it is used
 	 * to find the corresponding text node.
 	 *
-	 * If this is a first child in the parent and the parent is a {@link module:engine/view/domconverter~DomConverter#bindElements bound}
+	 * If this is a first child in the parent and the parent is a
+	 * {@link module:engine/view/domconverter~ViewDomConverter#bindElements bound}
 	 * element, it is used to find the corresponding text node.
 	 *
 	 * Otherwise `null` is returned.
@@ -1116,7 +1118,7 @@ export class DomConverter {
 
 		if ( !domEditable || domEditable.ownerDocument.activeElement === domEditable ) {
 			// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'DomConverter',
+			// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'ViewDomConverter',
 			// @if CK_DEBUG_TYPING // 		'%cDOM editable is already active or does not exist',
 			// @if CK_DEBUG_TYPING // 		'font-style: italic'
 			// @if CK_DEBUG_TYPING // 	) );
@@ -1126,7 +1128,7 @@ export class DomConverter {
 		}
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
-		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'DomConverter',
+		// @if CK_DEBUG_TYPING // 	console.info( ..._buildLogMessage( this, 'ViewDomConverter',
 		// @if CK_DEBUG_TYPING // 		'Focus DOM editable:',
 		// @if CK_DEBUG_TYPING // 		{ domEditable }
 		// @if CK_DEBUG_TYPING // 	) );
@@ -1206,7 +1208,7 @@ export class DomConverter {
 	 * Checks if the node is an instance of the block filler for this DOM converter.
 	 *
 	 * ```ts
-	 * const converter = new DomConverter( viewDocument, { blockFillerMode: 'br' } );
+	 * const converter = new ViewDomConverter( viewDocument, { blockFillerMode: 'br' } );
 	 *
 	 * converter.isBlockFiller( BR_FILLER( document ) ); // true
 	 * converter.isBlockFiller( NBSP_FILLER( document ) ); // false
@@ -1307,8 +1309,8 @@ export class DomConverter {
 	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as raw data
 	 * and not processed during the conversion from DOM nodes to view elements.
 	 *
-	 * This is affecting how {@link module:engine/view/domconverter~DomConverter#domToView} and
-	 * {@link module:engine/view/domconverter~DomConverter#domChildrenToView} process DOM nodes.
+	 * This is affecting how {@link module:engine/view/domconverter~ViewDomConverter#domToView} and
+	 * {@link module:engine/view/domconverter~ViewDomConverter#domChildrenToView} process DOM nodes.
 	 *
 	 * The raw data can be later accessed by a
 	 * {@link module:engine/view/element~Element#getCustomProperty custom property of a view element} called `"$rawContent"`.
@@ -1323,8 +1325,8 @@ export class DomConverter {
 	/**
 	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for inline object view elements.
 	 *
-	 * This is affecting how {@link module:engine/view/domconverter~DomConverter#domToView} and
-	 * {@link module:engine/view/domconverter~DomConverter#domChildrenToView} process DOM nodes.
+	 * This is affecting how {@link module:engine/view/domconverter~ViewDomConverter#domToView} and
+	 * {@link module:engine/view/domconverter~ViewDomConverter#domChildrenToView} process DOM nodes.
 	 *
 	 * This is an extension of a simple {@link #inlineObjectElements} array of element names.
 	 *
@@ -1826,7 +1828,7 @@ export class DomConverter {
 	 * Creates view element basing on the node type.
 	 *
 	 * @param node DOM node to check.
-	 * @param options Conversion options. See {@link module:engine/view/domconverter~DomConverter#domToView} options parameter.
+	 * @param options Conversion options. See {@link module:engine/view/domconverter~ViewDomConverter#domToView} options parameter.
 	 */
 	private _createViewElement( node: DomNode, options: { keepOriginalCase?: boolean } ): ViewElement {
 		if ( isComment( node ) ) {
@@ -1842,7 +1844,7 @@ export class DomConverter {
 	 * Checks if view element's content should be treated as a raw data.
 	 *
 	 * @param viewElement View element to check.
-	 * @param options Conversion options. See {@link module:engine/view/domconverter~DomConverter#domToView} options parameter.
+	 * @param options Conversion options. See {@link module:engine/view/domconverter~ViewDomConverter#domToView} options parameter.
 	 */
 	private _isViewElementWithRawContent( viewElement: ViewElement | ViewDocumentFragment, options: { withChildren?: boolean } ): boolean {
 		return options.withChildren !== false && viewElement.is( 'element' ) && !!this._rawContentElementMatcher.match( viewElement );
@@ -2043,21 +2045,22 @@ function isGeckoRestrictedDomSelection( domSelection: DomSelection ): boolean {
 export type BlockFillerMode = 'br' | 'nbsp' | 'markedNbsp';
 
 /**
- * While rendering the editor content, the {@link module:engine/view/domconverter~DomConverter} detected a `<script>` element that may
+ * While rendering the editor content, the {@link module:engine/view/domconverter~ViewDomConverter} detected a `<script>` element that may
  * disrupt the editing experience. To avoid this, the `<script>` element was replaced with `<span data-ck-unsafe-element="script"></span>`.
  *
  * @error domconverter-unsafe-script-element-detected
  */
 
 /**
- * While rendering the editor content, the {@link module:engine/view/domconverter~DomConverter} detected a `<style>` element that may affect
+ * While rendering the editor content, the
+ * {@link module:engine/view/domconverter~ViewDomConverter} detected a `<style>` element that may affect
  * the editing experience. To avoid this, the `<style>` element was replaced with `<span data-ck-unsafe-element="style"></span>`.
  *
  * @error domconverter-unsafe-style-element-detected
  */
 
 /**
- * The {@link module:engine/view/domconverter~DomConverter} detected an interactive attribute in the
+ * The {@link module:engine/view/domconverter~ViewDomConverter} detected an interactive attribute in the
  * {@glink framework/architecture/editing-engine#editing-pipeline editing pipeline}. For the best
  * editing experience, the attribute was renamed to `data-ck-unsafe-attribute-[original attribute name]`.
  *

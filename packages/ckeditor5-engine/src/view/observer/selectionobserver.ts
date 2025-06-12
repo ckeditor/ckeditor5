@@ -15,7 +15,7 @@ import { debounce, type DebouncedFunction } from 'es-toolkit/compat';
 
 import { type View } from '../view.js';
 import { type ViewDocumentSelection } from '../documentselection.js';
-import { type DomConverter } from '../domconverter.js';
+import { type ViewDomConverter } from '../domconverter.js';
 import { type Selection } from '../selection.js';
 import type { ViewDocumentCompositionStartEvent } from './compositionobserver.js';
 
@@ -56,7 +56,7 @@ export class SelectionObserver extends Observer {
 	/**
 	 * Reference to the {@link module:engine/view/view~View#domConverter}.
 	 */
-	public readonly domConverter: DomConverter;
+	public readonly domConverter: ViewDomConverter;
 
 	/**
 	 * A set of documents which have added `selectionchange` listener to avoid adding a listener twice to the same

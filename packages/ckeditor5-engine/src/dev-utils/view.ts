@@ -28,7 +28,7 @@ import { StylesProcessor } from '../view/stylesmap.js';
 
 import { type ViewNode } from '../view/node.js';
 import { type ViewText } from '../view/text.js';
-import { type DomConverter } from '../view/domconverter.js';
+import { type ViewDomConverter } from '../view/domconverter.js';
 
 const ELEMENT_RANGE_START_TOKEN = '[';
 const ELEMENT_RANGE_END_TOKEN = ']';
@@ -43,7 +43,7 @@ const allowedTypes = {
 };
 // Returns simplified implementation of {@link module:engine/view/domconverter~DomConverter#setContentOf DomConverter.setContentOf} method.
 // Used to render UIElement and RawElement.
-const domConverterStub: DomConverter = {
+const domConverterStub: ViewDomConverter = {
 	setContentOf: ( node: any, html: string ) => {
 		node.innerHTML = html;
 	}
@@ -79,7 +79,7 @@ export function _getViewData(
 		showPriority?: boolean;
 		renderUIElements?: boolean;
 		renderRawElements?: boolean;
-		domConverter?: DomConverter;
+		domConverter?: ViewDomConverter;
 		skipListItemIds?: boolean;
 	} = {}
 ): string {
@@ -299,7 +299,7 @@ export function _stringifyView(
 		sameSelectionCharacters?: boolean;
 		renderUIElements?: boolean;
 		renderRawElements?: boolean;
-		domConverter?: DomConverter;
+		domConverter?: ViewDomConverter;
 		skipListItemIds?: boolean;
 	} = {}
 ): string {
@@ -701,7 +701,7 @@ class ViewStringify {
 	public sameSelectionCharacters: boolean;
 	public renderUIElements: boolean;
 	public renderRawElements: boolean;
-	public domConverter: DomConverter;
+	public domConverter: ViewDomConverter;
 	public skipListItemIds: boolean;
 
 	/**
@@ -737,7 +737,7 @@ class ViewStringify {
 			sameSelectionCharacters?: boolean;
 			renderUIElements?: boolean;
 			renderRawElements?: boolean;
-			domConverter?: DomConverter;
+			domConverter?: ViewDomConverter;
 			skipListItemIds?: boolean;
 		}
 	) {

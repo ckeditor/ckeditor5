@@ -8,7 +8,7 @@
  */
 
 import { BasicHtmlWriter } from './basichtmlwriter.js';
-import { DomConverter } from '../view/domconverter.js';
+import { ViewDomConverter } from '../view/domconverter.js';
 
 import { type DataProcessor } from './dataprocessor.js';
 import { type DataProcessorHtmlWriter } from './htmlwriter.js';
@@ -29,7 +29,7 @@ export class HtmlDataProcessor implements DataProcessor {
 	/**
 	 * A DOM converter used to convert DOM elements to view elements.
 	 */
-	public domConverter: DomConverter;
+	public domConverter: ViewDomConverter;
 
 	/**
 	 * A basic HTML writer instance used to convert DOM elements to an HTML string.
@@ -45,7 +45,7 @@ export class HtmlDataProcessor implements DataProcessor {
 	 */
 	constructor( document: ViewDocument ) {
 		this.domParser = new DOMParser();
-		this.domConverter = new DomConverter( document, { renderingMode: 'data' } );
+		this.domConverter = new ViewDomConverter( document, { renderingMode: 'data' } );
 		this.htmlWriter = new BasicHtmlWriter();
 	}
 

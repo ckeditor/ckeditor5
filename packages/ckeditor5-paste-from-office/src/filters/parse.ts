@@ -8,7 +8,7 @@
  */
 
 import {
-	DomConverter,
+	ViewDomConverter,
 	ViewDocument,
 	type StylesProcessor,
 	type ViewDocumentFragment
@@ -88,7 +88,7 @@ export interface ParseHtmlResult {
  */
 function documentToView( htmlDocument: Document, stylesProcessor: StylesProcessor ) {
 	const viewDocument = new ViewDocument( stylesProcessor );
-	const domConverter = new DomConverter( viewDocument, { renderingMode: 'data' } );
+	const domConverter = new ViewDomConverter( viewDocument, { renderingMode: 'data' } );
 	const fragment = htmlDocument.createDocumentFragment();
 	const nodes = htmlDocument.body.childNodes;
 

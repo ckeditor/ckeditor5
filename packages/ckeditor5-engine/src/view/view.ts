@@ -10,7 +10,7 @@
 import { ViewDocument, type ViewDocumentLayoutChangedEvent } from './document.js';
 import { DowncastWriter } from './downcastwriter.js';
 import { Renderer } from './renderer.js';
-import { DomConverter } from './domconverter.js';
+import { ViewDomConverter } from './domconverter.js';
 import { Position, type PositionOffset } from './position.js';
 import { Range } from './range.js';
 import {
@@ -95,7 +95,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	 * {@link module:engine/view/view~View#_renderer renderer}
 	 * and {@link module:engine/view/observer/observer~Observer observers}.
 	 */
-	public readonly domConverter: DomConverter;
+	public readonly domConverter: ViewDomConverter;
 
 	/**
 	 * Roots of the DOM tree. Map on the `HTMLElement`s with roots names as keys.
@@ -169,7 +169,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 		super();
 
 		this.document = new ViewDocument( stylesProcessor );
-		this.domConverter = new DomConverter( this.document );
+		this.domConverter = new ViewDomConverter( this.document );
 
 		this.set( 'isRenderingInProgress', false );
 		this.set( 'hasDomSelection', false );

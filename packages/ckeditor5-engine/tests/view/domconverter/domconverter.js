@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { DomConverter } from '../../../src/view/domconverter.js';
+import { ViewDomConverter } from '../../../src/view/domconverter.js';
 import { ViewEditableElement } from '../../../src/view/editableelement.js';
 import { ViewDocument } from '../../../src/view/document.js';
 import { ViewUIElement } from '../../../src/view/uielement.js';
@@ -17,14 +17,14 @@ import { ViewPosition } from '../../../src/view/position.js';
 import { ViewRange } from '../../../src/view/range.js';
 import { ViewText } from '@ckeditor/ckeditor5-engine';
 
-describe( 'DomConverter', () => {
+describe( 'ViewDomConverter', () => {
 	let converter, viewDocument;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
-		converter = new DomConverter( viewDocument );
+		converter = new ViewDomConverter( viewDocument );
 	} );
 
 	describe( 'constructor()', () => {
@@ -33,15 +33,15 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should create converter with defined block mode filler', () => {
-			converter = new DomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
+			converter = new ViewDomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
 			expect( converter.blockFillerMode ).to.equal( 'nbsp' );
 		} );
 
 		it( 'should create converter with proper default block mode filler - depending on the rendering mode', () => {
-			converter = new DomConverter( viewDocument, { renderingMode: 'data' } );
+			converter = new ViewDomConverter( viewDocument, { renderingMode: 'data' } );
 			expect( converter.blockFillerMode ).to.equal( 'nbsp' );
 
-			converter = new DomConverter( viewDocument, { renderingMode: 'editing' } );
+			converter = new ViewDomConverter( viewDocument, { renderingMode: 'editing' } );
 			expect( converter.blockFillerMode ).to.equal( 'br' );
 		} );
 	} );
@@ -52,7 +52,7 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should return DOM document instance used by the DomConverter #2 - rendering mode editing', () => {
-			const converterEditing = new DomConverter( viewDocument, {
+			const converterEditing = new ViewDomConverter( viewDocument, {
 				renderingMode: 'editing'
 			} );
 
@@ -310,7 +310,7 @@ describe( 'DomConverter', () => {
 		for ( const mode of [ 'nbsp', 'markedNbsp' ] ) {
 			describe( 'mode "' + mode + '"', () => {
 				beforeEach( () => {
-					converter = new DomConverter( viewDocument, { blockFillerMode: mode } );
+					converter = new ViewDomConverter( viewDocument, { blockFillerMode: mode } );
 				} );
 
 				for ( const elementName of blockElements ) {
@@ -404,7 +404,7 @@ describe( 'DomConverter', () => {
 
 		describe( 'mode "br"', () => {
 			beforeEach( () => {
-				converter = new DomConverter( viewDocument, { blockFillerMode: 'br' } );
+				converter = new ViewDomConverter( viewDocument, { blockFillerMode: 'br' } );
 			} );
 
 			it( 'should return true if the node is an instance of the BR block filler', () => {
@@ -416,7 +416,7 @@ describe( 'DomConverter', () => {
 			} );
 
 			it( 'should return false if the node is an instance of the NBSP block filler', () => {
-				converter = new DomConverter( viewDocument, { blockFillerMode: 'br' } );
+				converter = new ViewDomConverter( viewDocument, { blockFillerMode: 'br' } );
 				const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
 				// NBSP must be check inside a context.
 				const context = document.createElement( 'div' );
@@ -788,7 +788,7 @@ describe( 'DomConverter', () => {
 
 		beforeEach( () => {
 			writer = new DowncastWriter( viewDocument );
-			converter = new DomConverter( viewDocument, {
+			converter = new ViewDomConverter( viewDocument, {
 				renderingMode: 'editing'
 			} );
 

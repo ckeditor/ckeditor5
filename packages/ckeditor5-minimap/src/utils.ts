@@ -8,7 +8,7 @@
  */
 
 import { Rect, global } from 'ckeditor5/src/utils.js';
-import { DomConverter, Renderer } from 'ckeditor5/src/engine.js';
+import { ViewDomConverter, Renderer } from 'ckeditor5/src/engine.js';
 import type { Editor } from 'ckeditor5/src/core.js';
 
 /**
@@ -24,7 +24,7 @@ import type { Editor } from 'ckeditor5/src/core.js';
 export function cloneEditingViewDomRoot( editor: Editor, rootName?: string ): HTMLElement {
 	const viewDocument = editor.editing.view.document;
 	const viewRoot = viewDocument.getRoot( rootName )!;
-	const domConverter = new DomConverter( viewDocument );
+	const domConverter = new ViewDomConverter( viewDocument );
 	const renderer = new Renderer( domConverter, viewDocument.selection );
 	const domRootClone = editor.editing.view.getDomRoot()!.cloneNode() as HTMLElement;
 

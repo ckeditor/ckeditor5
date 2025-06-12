@@ -11,7 +11,7 @@ import { Observer } from './observer.js';
 import { startsWithFiller } from '../filler.js';
 import { isEqualWith } from 'es-toolkit/compat';
 
-import { type DomConverter } from '../domconverter.js';
+import { type ViewDomConverter } from '../domconverter.js';
 import { type View } from '../view.js';
 import { type ViewElement } from '../element.js';
 import { type ViewNode } from '../node.js';
@@ -35,7 +35,7 @@ export class MutationObserver extends Observer {
 	/**
 	 * Reference to the {@link module:engine/view/view~View#domConverter}.
 	 */
-	public readonly domConverter: DomConverter;
+	public readonly domConverter: ViewDomConverter;
 
 	/**
 	 * Native mutation observer config.

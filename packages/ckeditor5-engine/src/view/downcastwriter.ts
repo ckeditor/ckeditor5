@@ -29,7 +29,7 @@ import { isPlainObject } from 'es-toolkit/compat';
 import { type ViewDocument } from './document.js';
 import { type Node } from './node.js';
 import type { Element, ElementAttributes } from './element.js';
-import { type DomConverter } from './domconverter.js';
+import { type ViewDomConverter } from './domconverter.js';
 import { type Item } from './item.js';
 import type { DowncastSlotFilter } from '../conversion/downcasthelpers.js';
 
@@ -453,7 +453,7 @@ export class DowncastWriter {
 	public createUIElement(
 		name: string,
 		attributes?: ElementAttributes,
-		renderFunction?: ( this: UIElement, domDocument: DomDocument, domConverter: DomConverter ) => DomElement
+		renderFunction?: ( this: UIElement, domDocument: DomDocument, domConverter: ViewDomConverter ) => DomElement
 	): UIElement {
 		const uiElement = new UIElement( this.document, name, attributes );
 
@@ -496,7 +496,7 @@ export class DowncastWriter {
 	public createRawElement(
 		name: string,
 		attributes?: ElementAttributes,
-		renderFunction?: ( domElement: DomElement, domConverter: DomConverter ) => void,
+		renderFunction?: ( domElement: DomElement, domConverter: ViewDomConverter ) => void,
 		options: {
 			renderUnsafeAttributes?: Array<string>;
 		} = {}

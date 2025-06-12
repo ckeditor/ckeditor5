@@ -11,7 +11,7 @@ import { isWidget } from '../utils.js';
 
 import type {
 	ModelDocumentSelection,
-	DomConverter,
+	ViewDomConverter,
 	ModelElement,
 	ModelSchema,
 	ModelSelection,
@@ -59,7 +59,7 @@ export function getTypeAroundButtonPosition( domElement: HTMLElement ): 'before'
  *
  * @internal
  */
-export function getClosestWidgetViewElement( domElement: HTMLElement, domConverter: DomConverter ): ViewElement {
+export function getClosestWidgetViewElement( domElement: HTMLElement, domConverter: ViewDomConverter ): ViewElement {
 	const widgetDomElement = domElement.closest( '.ck-widget' );
 
 	return domConverter.mapDomToView( widgetDomElement as any ) as ViewElement;
