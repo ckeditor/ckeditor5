@@ -34,7 +34,7 @@ type DomElement = globalThis.HTMLElement;
  *
  * The limitation is that you cannot convert a model element to a UI element. UI elements need to be
  * created for {@link module:engine/model/markercollection~Marker markers} or as additinal elements
- * inside normal {@link module:engine/view/containerelement~ContainerElement container elements}.
+ * inside normal {@link module:engine/view/containerelement~ViewContainerElement container elements}.
  *
  * To create a new UI element use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement `downcastWriter#createUIElement()`} method.

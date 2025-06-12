@@ -28,7 +28,7 @@ import { TokenList } from './tokenlist.js';
  * be defined by the feature developer. When creating an element you should use one of the following methods:
  *
  * * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement `downcastWriter#createContainerElement()`}
- * in order to create a {@link module:engine/view/containerelement~ContainerElement},
+ * in order to create a {@link module:engine/view/containerelement~ViewContainerElement},
  * * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement `downcastWriter#createAttributeElement()`}
  * in order to create a {@link module:engine/view/attributeelement~ViewAttributeElement},
  * * {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement `downcastWriter#createEmptyElement()`}

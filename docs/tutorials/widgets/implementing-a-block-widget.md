@@ -422,7 +422,7 @@ See what else you can improve.
 	CKEditor&nbsp;5 implementation is, therefore, open for extensions and recomposition. You can choose the behaviors that you want (just like you did so far in this tutorial by defining a schema) and skip others or implement them by yourself.
 </info-box>
 
-The converters that you defined convert the model `<simpleBox*>` elements to plain {@link module:engine/view/containerelement~ContainerElement `ContainerElement`}s in the view (and back during upcasting).
+The converters that you defined convert the model `<simpleBox*>` elements to plain {@link module:engine/view/containerelement~ViewContainerElement `ContainerElement`}s in the view (and back during upcasting).
 
 You want to change this behavior a bit so the structure created in the editing view is enhanced with the {@link module:widget/utils~toWidget `toWidget()`} and {@link module:widget/utils~toWidgetEditable `toWidgetEditable()`} utilities. You do not want to affect the data view, though. Therefore, you will need to define converters for the editing and data downcasting separately.
 

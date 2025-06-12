@@ -9,7 +9,7 @@
 
 import {
 	ModelTreeWalker,
-	getFillerOffset,
+	getViewFillerOffset,
 	type DowncastConversionApi,
 	type DowncastWriter,
 	type ModelElement,
@@ -23,7 +23,7 @@ import {
 } from 'ckeditor5/src/engine.js';
 
 /**
- * Creates a list item {@link module:engine/view/containerelement~ContainerElement}.
+ * Creates a list item {@link module:engine/view/containerelement~ViewContainerElement}.
  *
  * @param writer The writer instance.
  */
@@ -449,5 +449,5 @@ function getListItemFillerOffset( this: any ): number | null {
 		return 0;
 	}
 
-	return getFillerOffset.call( this );
+	return getViewFillerOffset.call( this );
 }

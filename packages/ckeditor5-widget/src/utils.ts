@@ -114,7 +114,7 @@ export function toWidget(
 ): ViewElement {
 	if ( !element.is( 'containerElement' ) ) {
 		/**
-		 * The element passed to `toWidget()` must be a {@link module:engine/view/containerelement~ContainerElement}
+		 * The element passed to `toWidget()` must be a {@link module:engine/view/containerelement~ViewContainerElement}
 		 * instance.
 		 *
 		 * @error widget-to-widget-wrong-element-type

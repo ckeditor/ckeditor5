@@ -31,7 +31,7 @@ import { type Node } from './node.js';
  * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement `DowncastWriter#createContainerElement()`}
  * method.
  */
-export class ContainerElement extends Element {
+export class ViewContainerElement extends Element {
 	/**
 	 * Creates a container element.
 	 *
@@ -51,13 +51,13 @@ export class ContainerElement extends Element {
 	) {
 		super( document, name, attrs, children );
 
-		this.getFillerOffset = getFillerOffset;
+		this.getFillerOffset = getViewFillerOffset;
 	}
 }
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-ContainerElement.prototype.is = function( type: string, name?: string ): boolean {
+ViewContainerElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'containerElement' || type === 'view:containerElement' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
@@ -72,14 +72,12 @@ ContainerElement.prototype.is = function( type: string, name?: string ): boolean
 	}
 };
 
-export { ContainerElement as ViewContainerElement };
-
 /**
  * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
  *
  * @returns Block filler offset or `null` if block filler is not needed.
  */
-export function getFillerOffset( this: ContainerElement ): number | null {
+export function getViewFillerOffset( this: ViewContainerElement ): number | null {
 	const children = [ ...this.getChildren() ];
 	const lastChild = children[ this.childCount - 1 ];
 

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ContainerElement, getFillerOffset } from '../../src/view/containerelement.js';
+import { ViewContainerElement, getViewFillerOffset } from '../../src/view/containerelement.js';
 import { Element } from '../../src/view/element.js';
 import { Document } from '../../src/view/document.js';
 import { _parseView } from '../../src/dev-utils/view.js';
@@ -18,9 +18,9 @@ describe( 'ContainerElement', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create element with default priority', () => {
-			const el = new ContainerElement( document, 'p' );
+			const el = new ViewContainerElement( document, 'p' );
 
-			expect( el ).to.be.an.instanceof( ContainerElement );
+			expect( el ).to.be.an.instanceof( ViewContainerElement );
 			expect( el ).to.be.an.instanceof( Element );
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
 		} );
@@ -30,7 +30,7 @@ describe( 'ContainerElement', () => {
 		let el;
 
 		before( () => {
-			el = new ContainerElement( document, 'p' );
+			el = new ViewContainerElement( document, 'p' );
 		} );
 
 		it( 'should return true for containerElement/element, also with correct name and element name', () => {
@@ -115,6 +115,6 @@ describe( 'ContainerElement', () => {
 
 describe( 'getFillerOffset()', () => {
 	it( 'should be a function that can be used in other places', () => {
-		expect( getFillerOffset ).is.a( 'function' );
+		expect( getViewFillerOffset ).is.a( 'function' );
 	} );
 } );

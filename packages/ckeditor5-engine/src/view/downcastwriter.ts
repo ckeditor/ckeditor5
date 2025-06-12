@@ -15,7 +15,7 @@ import {
 	type Selectable,
 	type SelectionOptions
 } from './selection.js';
-import { ContainerElement } from './containerelement.js';
+import { ViewContainerElement } from './containerelement.js';
 import { ViewAttributeElement } from './attributeelement.js';
 import { EmptyElement } from './emptyelement.js';
 import { UIElement } from './uielement.js';
@@ -268,7 +268,7 @@ export class DowncastWriter {
 	}
 
 	/**
-	 * Creates a new {@link module:engine/view/containerelement~ContainerElement}.
+	 * Creates a new {@link module:engine/view/containerelement~ViewContainerElement}.
 	 *
 	 * ```ts
 	 * writer.createContainerElement( 'p' );
@@ -298,10 +298,10 @@ export class DowncastWriter {
 		name: string,
 		attributes?: ElementAttributes,
 		options?: { renderUnsafeAttributes?: Array<string> }
-	): ContainerElement;
+	): ViewContainerElement;
 
 	/**
-	 * Creates a new {@link module:engine/view/containerelement~ContainerElement} with children.
+	 * Creates a new {@link module:engine/view/containerelement~ViewContainerElement} with children.
 	 *
 	 * ```ts
 	 * // Create element with children.
@@ -332,14 +332,14 @@ export class DowncastWriter {
 		attributes: ElementAttributes,
 		children: Node | Iterable<Node>,
 		options?: { renderUnsafeAttributes?: Array<string> }
-	): ContainerElement;
+	): ViewContainerElement;
 
 	public createContainerElement(
 		name: string,
 		attributes?: ElementAttributes,
 		childrenOrOptions: Node | Iterable<Node> | { renderUnsafeAttributes?: Array<string> } = {},
 		options: { renderUnsafeAttributes?: Array<string> } = {}
-	): ContainerElement {
+	): ViewContainerElement {
 		let children: Node | Iterable<Node> | undefined = undefined;
 
 		if ( isPlainObject( childrenOrOptions ) ) {
@@ -348,7 +348,7 @@ export class DowncastWriter {
 			children = childrenOrOptions;
 		}
 
-		const containerElement = new ContainerElement( this.document, name, attributes, children );
+		const containerElement = new ViewContainerElement( this.document, name, attributes, children );
 		if ( options.renderUnsafeAttributes ) {
 			containerElement._unsafeAttributesToRender.push( ...options.renderUnsafeAttributes );
 		}
@@ -479,7 +479,7 @@ export class DowncastWriter {
 	 * Raw elements are a perfect tool for integration with external frameworks and data sources.
 	 *
 	 * Unlike {@link #createUIElement UI elements}, raw elements act like "real" editor content (similar to
-	 * {@link module:engine/view/containerelement~ContainerElement} or {@link module:engine/view/emptyelement~EmptyElement}),
+	 * {@link module:engine/view/containerelement~ViewContainerElement} or {@link module:engine/view/emptyelement~EmptyElement}),
 	 * and they are considered by the editor selection.
 	 *
 	 * You should not use raw elements to render the UI in the editor content. Check out {@link #createUIElement `#createUIElement()`}
@@ -717,7 +717,7 @@ export class DowncastWriter {
 	 * **Note:** The difference between {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes breakAttributes()} and
 	 * {@link module:engine/view/downcastwriter~DowncastWriter#breakContainer breakContainer()} is that `breakAttributes()` breaks all
 	 * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements} that are ancestors of a given `position`,
-	 * up to the first encountered {@link module:engine/view/containerelement~ContainerElement container element}.
+	 * up to the first encountered {@link module:engine/view/containerelement~ViewContainerElement container element}.
 	 * `breakContainer()` assumes that a given `position` is directly in the container element and breaks that container element.
 	 *
 	 * Throws the `view-writer-invalid-range-container` {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
@@ -731,7 +731,7 @@ export class DowncastWriter {
 	 * when trying to break attributes inside a {@link module:engine/view/uielement~UIElement UIElement}.
 	 *
 	 * @see module:engine/view/attributeelement~ViewAttributeElement
-	 * @see module:engine/view/containerelement~ContainerElement
+	 * @see module:engine/view/containerelement~ViewContainerElement
 	 * @see module:engine/view/downcastwriter~DowncastWriter#breakContainer
 	 * @param positionOrRange The position where to break attribute elements.
 	 * @returns The new position or range, after breaking the attribute elements.
@@ -745,7 +745,7 @@ export class DowncastWriter {
 	}
 
 	/**
-	 * Breaks a {@link module:engine/view/containerelement~ContainerElement container view element} into two, at the given position.
+	 * Breaks a {@link module:engine/view/containerelement~ViewContainerElement container view element} into two, at the given position.
 	 * The position has to be directly inside the container element and cannot be in the root. It does not break the conrainer view element
 	 * if the position is at the beginning or at the end of its parent element.
 	 *
@@ -759,11 +759,11 @@ export class DowncastWriter {
 	 * **Note:** The difference between {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes breakAttributes()} and
 	 * {@link module:engine/view/downcastwriter~DowncastWriter#breakContainer breakContainer()} is that `breakAttributes()` breaks all
 	 * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements} that are ancestors of a given `position`,
-	 * up to the first encountered {@link module:engine/view/containerelement~ContainerElement container element}.
+	 * up to the first encountered {@link module:engine/view/containerelement~ViewContainerElement container element}.
 	 * `breakContainer()` assumes that the given `position` is directly in the container element and breaks that container element.
 	 *
 	 * @see module:engine/view/attributeelement~ViewAttributeElement
-	 * @see module:engine/view/containerelement~ContainerElement
+	 * @see module:engine/view/containerelement~ViewContainerElement
 	 * @see module:engine/view/downcastwriter~DowncastWriter#breakAttributes
 	 * @param position The position where to break the element.
 	 * @returns The position between broken elements. If an element has not been broken,
@@ -829,10 +829,10 @@ export class DowncastWriter {
 	 * {@link module:engine/view/downcastwriter~DowncastWriter#mergeContainers mergeContainers} is that `mergeAttributes` merges two
 	 * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements} or
 	 * {@link module:engine/view/text~Text text nodes} while `mergeContainer` merges two
-	 * {@link module:engine/view/containerelement~ContainerElement container elements}.
+	 * {@link module:engine/view/containerelement~ViewContainerElement container elements}.
 	 *
 	 * @see module:engine/view/attributeelement~ViewAttributeElement
-	 * @see module:engine/view/containerelement~ContainerElement
+	 * @see module:engine/view/containerelement~ViewContainerElement
 	 * @see module:engine/view/downcastwriter~DowncastWriter#mergeContainers
 	 * @param position Merge position.
 	 * @returns Position after merge.
@@ -887,8 +887,9 @@ export class DowncastWriter {
 	}
 
 	/**
-	 * Merges two {@link module:engine/view/containerelement~ContainerElement container elements} that are before and after given position.
-	 * Precisely, the element after the position is removed and it's contents are moved to element before the position.
+	 * Merges two {@link module:engine/view/containerelement~ViewContainerElement container elements} that are
+	 * before and after given position. Precisely, the element after the position is removed and it's contents are
+	 * moved to element before the position.
 	 *
 	 * ```html
 	 * <p>foo</p>^<p>bar</p> -> <p>foo^bar</p>
@@ -899,10 +900,10 @@ export class DowncastWriter {
 	 * {@link module:engine/view/downcastwriter~DowncastWriter#mergeContainers mergeContainers} is that `mergeAttributes` merges two
 	 * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements} or
 	 * {@link module:engine/view/text~Text text nodes} while `mergeContainer` merges two
-	 * {@link module:engine/view/containerelement~ContainerElement container elements}.
+	 * {@link module:engine/view/containerelement~ViewContainerElement container elements}.
 	 *
 	 * @see module:engine/view/attributeelement~ViewAttributeElement
-	 * @see module:engine/view/containerelement~ContainerElement
+	 * @see module:engine/view/containerelement~ViewContainerElement
 	 * @see module:engine/view/downcastwriter~DowncastWriter#mergeAttributes
 	 * @param position Merge position.
 	 * @returns Position after merge.
@@ -936,7 +937,7 @@ export class DowncastWriter {
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
 	 * contains instances that are not {@link module:engine/view/text~Text Texts},
 	 * {@link module:engine/view/attributeelement~ViewAttributeElement AttributeElements},
-	 * {@link module:engine/view/containerelement~ContainerElement ContainerElements},
+	 * {@link module:engine/view/containerelement~ViewContainerElement ContainerElements},
 	 * {@link module:engine/view/emptyelement~EmptyElement EmptyElements},
 	 * {@link module:engine/view/rawelement~RawElement RawElements} or
 	 * {@link module:engine/view/uielement~UIElement UIElements}.
@@ -1244,8 +1245,8 @@ export class DowncastWriter {
 	 * @param viewElement Element to be renamed.
 	 * @returns Element created due to rename.
 	 */
-	public rename( newName: string, viewElement: ContainerElement ): ContainerElement {
-		const newElement = new ContainerElement( this.document, newName, viewElement.getAttributes() );
+	public rename( newName: string, viewElement: ViewContainerElement ): ViewContainerElement {
+		const newElement = new ViewContainerElement( this.document, newName, viewElement.getAttributes() );
 
 		this.insert( Position._createAfter( viewElement ), newElement );
 		this.move( Range._createIn( viewElement ), Position._createAt( newElement, 0 ) );
@@ -2072,7 +2073,7 @@ function _hasNonUiChildren( parent: Element ): boolean {
  * @param position Position used as a start point to locate parent container.
  * @returns Parent container element or `undefined` if container is not found.
  */
-function getParentContainer( position: Position ): ContainerElement | DocumentFragment | undefined {
+function getParentContainer( position: Position ): ViewContainerElement | DocumentFragment | undefined {
 	let parent = position.parent;
 
 	while ( !isContainerOrFragment( parent ) ) {
@@ -2083,7 +2084,7 @@ function getParentContainer( position: Position ): ContainerElement | DocumentFr
 		parent = parent.parent as any;
 	}
 
-	return ( parent as ContainerElement | DocumentFragment );
+	return ( parent as ViewContainerElement | DocumentFragment );
 }
 
 /**
@@ -2184,7 +2185,7 @@ function mergeTextNodes( t1: Text, t2: Text ): Position {
 	return new Position( t1, nodeBeforeLength );
 }
 
-const validNodesToInsert = [ Text, ViewAttributeElement, ContainerElement, EmptyElement, RawElement, UIElement ];
+const validNodesToInsert = [ Text, ViewAttributeElement, ViewContainerElement, EmptyElement, RawElement, UIElement ];
 
 /**
  * Checks if provided nodes are valid to insert.
@@ -2202,7 +2203,7 @@ function validateNodesToInsert( nodes: Iterable<Node>, errorContext: Document ):
 			 * of the following types:
 			 *
 			 * * {@link module:engine/view/attributeelement~ViewAttributeElement AttributeElement},
-			 * * {@link module:engine/view/containerelement~ContainerElement ContainerElement},
+			 * * {@link module:engine/view/containerelement~ViewContainerElement ContainerElement},
 			 * * {@link module:engine/view/emptyelement~EmptyElement EmptyElement},
 			 * * {@link module:engine/view/uielement~UIElement UIElement},
 			 * * {@link module:engine/view/rawelement~RawElement RawElement},
@@ -2230,7 +2231,7 @@ function isContainerOrFragment( node: Node | DocumentFragment ): boolean {
 
 /**
  * Checks if {@link module:engine/view/range~Range#start range start} and {@link module:engine/view/range~Range#end range end} are placed
- * inside same {@link module:engine/view/containerelement~ContainerElement container element}.
+ * inside same {@link module:engine/view/containerelement~ViewContainerElement container element}.
  * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when validation fails.
  */
 function validateRangeContainer( range: Range, errorContext: Document ) {

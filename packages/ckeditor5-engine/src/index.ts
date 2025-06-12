@@ -223,7 +223,7 @@ export { EditingView } from './view/view.js';
 export { ViewDocument } from './view/document.js';
 export { ViewText } from './view/text.js';
 export { ViewElement, type ElementAttributes as ViewElementAttributes } from './view/element.js';
-export { ViewContainerElement } from './view/containerelement.js';
+export { ViewContainerElement, getViewFillerOffset } from './view/containerelement.js';
 export { ViewEditableElement } from './view/editableelement.js';
 export { ViewRootEditableElement } from './view/rooteditableelement.js';
 export { ViewAttributeElement } from './view/attributeelement.js';
@@ -240,8 +240,6 @@ export { ViewPosition, type PositionOffset as ViewPositionOffset } from './view/
 export { ViewRange } from './view/range.js';
 export { ViewSelection, type ViewSelectionChangeEvent, type Selectable as ViewSelectable } from './view/selection.js';
 export type { ViewTypeCheckable } from './view/typecheckable.js';
-
-export { getFillerOffset } from './view/containerelement.js';
 
 // View / Observer.
 export { Observer } from './view/observer/observer.js';

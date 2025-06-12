@@ -633,7 +633,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 	 * in the converted marker range. For example, a model marker set like this: `<paragraph>F[oo b]ar</paragraph>` becomes
 	 * `<p>F<span class="comment">oo b</span>ar</p>` in the view.
 	 *
-	 * {@link module:engine/view/containerelement~ContainerElement} may provide a custom way of handling highlight. Most often,
+	 * {@link module:engine/view/containerelement~ViewContainerElement} may provide a custom way of handling highlight. Most often,
 	 * the element itself is given classes and attributes described in the highlight descriptor (instead of being wrapped in `<span>`).
 	 * For example, a model marker set like this:
 	 * `[<imageInline src="foo.jpg"></imageInline>]` becomes `<img src="foo.jpg" class="comment"></img>` in the view.
@@ -1786,8 +1786,8 @@ function highlightText( highlightDescriptor: DowncastHighlightDescriptor | Downc
  *
  * If the highlight descriptor does not provide the `id` property, the name of the marker will be used.
  *
- * This converter binds altered {@link module:engine/view/containerelement~ContainerElement container elements} with the marker name using
- * the {@link module:engine/conversion/mapper~Mapper#bindElementToMarker} method.
+ * This converter binds altered {@link module:engine/view/containerelement~ViewContainerElement container elements}
+ * with the marker name using the {@link module:engine/conversion/mapper~Mapper#bindElementToMarker} method.
  */
 function highlightElement( highlightDescriptor: DowncastHighlightDescriptor | DowncastHighlightDescriptorCreatorFunction ) {
 	return (
@@ -2773,7 +2773,7 @@ function defaultConsumer(
  * {@link module:engine/view/attributeelement~ViewAttributeElement view attribute element} with CSS class(es), attributes and a priority
  * described by this object.
  *
- * Additionally, each {@link module:engine/view/containerelement~ContainerElement container element} can handle displaying the highlight
+ * Additionally, each {@link module:engine/view/containerelement~ViewContainerElement container element} can handle displaying the highlight
  * separately by providing the `addHighlight` and `removeHighlight` custom properties. In this case:
  *
  *  * The `DowncastHighlightDescriptor` object is passed to the `addHighlight` function upon conversion and

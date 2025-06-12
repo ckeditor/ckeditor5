@@ -4,7 +4,7 @@
  */
 
 import { type ViewAttributeElement } from './attributeelement.js';
-import { type ContainerElement } from './containerelement.js';
+import { type ViewContainerElement } from './containerelement.js';
 import { type DocumentFragment } from './documentfragment.js';
 import { type DocumentSelection } from './documentselection.js';
 import { type EditableElement } from './editableelement.js';
@@ -59,7 +59,7 @@ export abstract class TypeCheckable {
 		Text |
 		Element |
 		ViewAttributeElement |
-		ContainerElement |
+		ViewContainerElement |
 		EditableElement |
 		EmptyElement |
 		RawElement |
@@ -93,7 +93,7 @@ export abstract class TypeCheckable {
 	public is( type: 'element' | 'view:element' ): this is (
 		Element |
 		ViewAttributeElement |
-		ContainerElement |
+		ViewContainerElement |
 		EditableElement |
 		EmptyElement |
 		RawElement |
@@ -130,7 +130,7 @@ export abstract class TypeCheckable {
 	public is( type: 'attributeElement' | 'view:attributeElement' ): this is ViewAttributeElement;
 
 	/**
-	 * Checks whether this object is of type {@link module:engine/view/containerelement~ContainerElement} or its subclass.
+	 * Checks whether this object is of type {@link module:engine/view/containerelement~ViewContainerElement} or its subclass.
 	 *
 	 * ```ts
 	 * containerElement.is( 'containerElement' ); // -> true
@@ -145,7 +145,7 @@ export abstract class TypeCheckable {
 	 * ```
 	 *
 	 * Assuming that the object being checked is a container element, you can also check its
-	 * {@link module:engine/view/containerelement~ContainerElement#name name}:
+	 * {@link module:engine/view/containerelement~ViewContainerElement#name name}:
 	 *
 	 * ```ts
 	 * containerElement.is( 'element', 'div' ); // -> true if this is a div container element
@@ -155,7 +155,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label CONTAINER_ELEMENT
 	 */
-	public is( type: 'containerElement' | 'view:containerElement' ): this is ContainerElement | EditableElement | RootEditableElement;
+	public is( type: 'containerElement' | 'view:containerElement' ): this is ViewContainerElement | EditableElement | RootEditableElement;
 
 	/**
 	 * Checks whether this object is of type {@link module:engine/view/editableelement~EditableElement} or its subclass.
@@ -426,7 +426,7 @@ export abstract class TypeCheckable {
 	public is<N extends string>( type: 'element' | 'view:element', name: N ): this is (
 		Element |
 		ViewAttributeElement |
-		ContainerElement |
+		ViewContainerElement |
 		EditableElement |
 		EmptyElement |
 		RawElement |
@@ -442,13 +442,13 @@ export abstract class TypeCheckable {
 	public is<N extends string>( type: 'attributeElement' | 'view:attributeElement', name: N ): this is ViewAttributeElement & { name: N };
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/view/containerelement~ContainerElement}
+	 * Checks whether the object is of type {@link module:engine/view/containerelement~ViewContainerElement}
 	 * or its subclass and has the specified `name`.
 	 *
 	 * @label CONTAINER_ELEMENT_NAME
 	 */
 	public is<N extends string>( type: 'containerElement' | 'view:containerElement', name: N ): this is (
-		ContainerElement |
+		ViewContainerElement |
 		EditableElement |
 		RootEditableElement
 	) & { name: N };

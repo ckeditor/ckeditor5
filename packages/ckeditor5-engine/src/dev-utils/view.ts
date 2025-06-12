@@ -20,7 +20,7 @@ import { DocumentSelection } from '../view/documentselection.js';
 import { Range } from '../view/range.js';
 import { Position } from '../view/position.js';
 import { ViewAttributeElement } from '../view/attributeelement.js';
-import { ContainerElement } from '../view/containerelement.js';
+import { ViewContainerElement } from '../view/containerelement.js';
 import { EmptyElement } from '../view/emptyelement.js';
 import { UIElement } from '../view/uielement.js';
 import { RawElement } from '../view/rawelement.js';
@@ -35,7 +35,7 @@ const ELEMENT_RANGE_END_TOKEN = ']';
 const TEXT_RANGE_START_TOKEN = '{';
 const TEXT_RANGE_END_TOKEN = '}';
 const allowedTypes = {
-	'container': ContainerElement,
+	'container': ViewContainerElement,
 	'attribute': ViewAttributeElement,
 	'empty': EmptyElement,
 	'ui': UIElement,
@@ -231,7 +231,7 @@ _setViewData._parse = _parseView;
  * An additional `options` object can be provided.
  * If `options.showType` is set to `true`, element's types will be
  * presented for {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements},
- * {@link module:engine/view/containerelement~ContainerElement container elements}
+ * {@link module:engine/view/containerelement~ViewContainerElement container elements}
  * {@link module:engine/view/emptyelement~EmptyElement empty elements}
  * and {@link module:engine/view/uielement~UIElement UI elements}:
  *
@@ -938,7 +938,7 @@ class ViewStringify {
 	 *
 	 * Returns:
 	 * * 'attribute' for {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements},
-	 * * 'container' for {@link module:engine/view/containerelement~ContainerElement container elements},
+	 * * 'container' for {@link module:engine/view/containerelement~ViewContainerElement container elements},
 	 * * 'empty' for {@link module:engine/view/emptyelement~EmptyElement empty elements},
 	 * * 'ui' for {@link module:engine/view/uielement~UIElement UI elements},
 	 * * 'raw' for {@link module:engine/view/rawelement~RawElement raw elements},
@@ -1020,7 +1020,7 @@ class ViewStringify {
 /**
  * Converts {@link module:engine/view/element~Element elements} to
  * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements},
- * {@link module:engine/view/containerelement~ContainerElement container elements},
+ * {@link module:engine/view/containerelement~ViewContainerElement container elements},
  * {@link module:engine/view/emptyelement~EmptyElement empty elements} or
  * {@link module:engine/view/uielement~UIElement UI elements}.
  * It converts the whole tree starting from the `rootNode`. The conversion is based on element names.
@@ -1061,7 +1061,7 @@ function _convertViewElements( rootNode: ViewNode | ViewDocumentFragment ) {
 /**
  * Converts an {@link module:engine/view/element~Element element} to
  * {@link module:engine/view/attributeelement~ViewAttributeElement attribute element},
- * {@link module:engine/view/containerelement~ContainerElement container element},
+ * {@link module:engine/view/containerelement~ViewContainerElement container element},
  * {@link module:engine/view/emptyelement~EmptyElement empty element} or
  * {@link module:engine/view/uielement~UIElement UI element}.
  * If the element's name is in the format of `attribute:b`, it will be converted to
@@ -1069,7 +1069,7 @@ function _convertViewElements( rootNode: ViewNode | ViewDocumentFragment ) {
  * Additionally, attribute elements may have specified priority (for example `view-priority="11"`) and/or
  * id (for example `view-id="foo"`).
  * If the element's name is in the format of `container:p`, it will be converted to
- * a {@link module:engine/view/containerelement~ContainerElement container element}.
+ * a {@link module:engine/view/containerelement~ViewContainerElement container element}.
  * If the element's name is in the format of `empty:img`, it will be converted to
  * an {@link module:engine/view/emptyelement~EmptyElement empty element}.
  * If the element's name is in the format of `ui:span`, it will be converted to
@@ -1106,7 +1106,7 @@ function _convertElement( viewDocument: ViewDocument, viewElement: ViewElement )
 /**
  * Converts the `view-priority` attribute and the {@link module:engine/view/element~Element#name element's name} information needed for
  * creating {@link module:engine/view/attributeelement~ViewAttributeElement attribute element},
- * {@link module:engine/view/containerelement~ContainerElement container element},
+ * {@link module:engine/view/containerelement~ViewContainerElement container element},
  * {@link module:engine/view/emptyelement~EmptyElement empty element} or
  * {@link module:engine/view/uielement~UIElement UI element}.
  * The name can be provided in two formats: as a simple element's name (`div`), or as a type and name (`container:div`,
