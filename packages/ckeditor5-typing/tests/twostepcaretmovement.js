@@ -8,7 +8,7 @@ import { DomEmitterMixin } from '@ckeditor/ckeditor5-utils/src/dom/emittermixin.
 import { DomEventData } from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata.js';
 import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
 import { TwoStepCaretMovement } from '../src/twostepcaretmovement.js';
-import { Position } from '@ckeditor/ckeditor5-engine/src/model/position.js';
+import { ModelPosition } from '@ckeditor/ckeditor5-engine/src/model/position.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard.js';
 import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -1469,7 +1469,7 @@ describe( 'TwoStepCaretMovement', () => {
 									const nextBlock = position.parent.nextSibling;
 
 									if ( nextBlock ) {
-										writer.setSelection( Position._createAt( nextBlock, 0 ) );
+										writer.setSelection( ModelPosition._createAt( nextBlock, 0 ) );
 									}
 								} else {
 									writer.setSelection( selection.getFirstPosition().getShiftedBy( 1 ) );
@@ -1481,7 +1481,7 @@ describe( 'TwoStepCaretMovement', () => {
 									const previousBlock = position.parent.previousSibling;
 
 									if ( previousBlock ) {
-										writer.setSelection( Position._createAt( previousBlock, 'end' ) );
+										writer.setSelection( ModelPosition._createAt( previousBlock, 'end' ) );
 									}
 								} else {
 									writer.setSelection( selection.getFirstPosition().getShiftedBy( -1 ) );

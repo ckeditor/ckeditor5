@@ -17,7 +17,7 @@ import type { Model, ModelApplyOperationEvent } from './model.js';
 import type { MarkerCollectionUpdateEvent, MarkerChangeEvent } from './markercollection.js';
 import { type Batch } from './batch.js';
 import { type ModelPosition } from './position.js';
-import { type Range } from './range.js';
+import { type ModelRange } from './range.js';
 import { type Writer } from './writer.js';
 
 import {
@@ -411,7 +411,7 @@ export class ModelDocument extends /* #__PURE__ */ EmitterMixin() {
 	 *
 	 * @internal
 	 */
-	public _getDefaultRange(): Range {
+	public _getDefaultRange(): ModelRange {
 		const defaultRoot = this._getDefaultRoot();
 		const model = this.model;
 		const schema = model.schema;
@@ -425,14 +425,14 @@ export class ModelDocument extends /* #__PURE__ */ EmitterMixin() {
 	}
 
 	/**
-	 * Checks whether a given {@link module:engine/model/range~Range range} is a valid range for
+	 * Checks whether a given {@link module:engine/model/range~ModelRange range} is a valid range for
 	 * the {@link #selection document's selection}.
 	 *
 	 * @internal
 	 * @param range A range to check.
 	 * @returns `true` if `range` is valid, `false` otherwise.
 	 */
-	public _validateSelectionRange( range: Range ): boolean {
+	public _validateSelectionRange( range: ModelRange ): boolean {
 		return range.start.isValid() && range.end.isValid() &&
 			validateTextNodePosition( range.start ) && validateTextNodePosition( range.end );
 	}

@@ -10,7 +10,7 @@
 import { Command } from 'ckeditor5/src/core.js';
 import { findAttributeRange } from 'ckeditor5/src/typing.js';
 import { Collection, diff, first, toMap } from 'ckeditor5/src/utils.js';
-import { ModelLivePosition, type Range, type ModelItem } from 'ckeditor5/src/engine.js';
+import { ModelLivePosition, type ModelRange, type ModelItem } from 'ckeditor5/src/engine.js';
 
 import { AutomaticDecorators } from './utils/automaticdecorators.js';
 import { extractTextFromLinkRange, isLinkableElement } from './utils.js';
@@ -176,14 +176,14 @@ export class LinkCommand extends Command {
 		}
 
 		model.change( writer => {
-			const updateLinkAttributes = ( itemOrRange: ModelItem | Range ): void => {
+			const updateLinkAttributes = ( itemOrRange: ModelItem | ModelRange ): void => {
 				writer.setAttribute( 'linkHref', href, itemOrRange );
 
 				truthyManualDecorators.forEach( item => writer.setAttribute( item, true, itemOrRange ) );
 				falsyManualDecorators.forEach( item => writer.removeAttribute( item, itemOrRange ) );
 			};
 
-			const updateLinkTextIfNeeded = ( range: Range, linkHref?: string ): Range | undefined => {
+			const updateLinkTextIfNeeded = ( range: ModelRange, linkHref?: string ): ModelRange | undefined => {
 				const linkText = extractTextFromLinkRange( range );
 
 				if ( !linkText ) {
@@ -235,7 +235,7 @@ export class LinkCommand extends Command {
 				}
 			};
 
-			const collapseSelectionAtLinkEnd = ( linkRange: Range ): void => {
+			const collapseSelectionAtLinkEnd = ( linkRange: ModelRange ): void => {
 				const { plugins } = this.editor;
 
 				writer.setSelection( linkRange.end );
@@ -376,7 +376,7 @@ export class LinkCommand extends Command {
 	 * @param range A range to check.
 	 * @param allowedRanges An array of ranges created on elements where the attribute is accepted.
 	 */
-	private _isRangeToUpdate( range: Range, allowedRanges: Array<Range> ): boolean {
+	private _isRangeToUpdate( range: ModelRange, allowedRanges: Array<ModelRange> ): boolean {
 		for ( const allowedRange of allowedRanges ) {
 			// A range is inside an element that will have the `linkHref` attribute. Do not modify its nodes.
 			if ( allowedRange.containsRange( range ) ) {
@@ -471,7 +471,7 @@ function findChanges( oldText: string, newText: string ): Array<{ offset: number
  * @param linkRange Range of the entire link.
  * @returns Text node.
  */
-function getLinkPartTextNode( range: Range, linkRange: Range ): ModelItem | null {
+function getLinkPartTextNode( range: ModelRange, linkRange: ModelRange ): ModelItem | null {
 	if ( !range.isCollapsed ) {
 		return first( range.getItems() );
 	}

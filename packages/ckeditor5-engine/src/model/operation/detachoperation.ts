@@ -8,7 +8,7 @@
  */
 
 import { Operation } from './operation.js';
-import { Range } from '../range.js';
+import { ModelRange } from '../range.js';
 import { _remove } from './utils.js';
 
 import { type ModelPosition } from '../position.js';
@@ -98,7 +98,7 @@ export class DetachOperation extends Operation {
 	 * @internal
 	 */
 	public _execute(): void {
-		_remove( Range._createFromPositionAndShift( this.sourcePosition, this.howMany ) );
+		_remove( ModelRange._createFromPositionAndShift( this.sourcePosition, this.howMany ) );
 	}
 
 	/**

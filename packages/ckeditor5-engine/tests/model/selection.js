@@ -6,8 +6,8 @@
 import { Model } from '../../src/model/model.js';
 import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
-import { Range } from '../../src/model/range.js';
-import { Position } from '../../src/model/position.js';
+import { ModelRange } from '../../src/model/range.js';
+import { ModelPosition } from '../../src/model/position.js';
 import { ModelLiveRange } from '../../src/model/liverange.js';
 import { Selection } from '../../src/model/selection.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
@@ -38,12 +38,12 @@ describe( 'Selection', () => {
 		] );
 		selection = new Selection();
 
-		liveRange = new ModelLiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
-		range = new Range( new Position( root, [ 2 ] ), new Position( root, [ 2, 2 ] ) );
+		liveRange = new ModelLiveRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) );
+		range = new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 2, 2 ] ) );
 
-		range1 = new Range( new Position( root, [ 1 ] ), new Position( root, [ 4 ] ) );
-		range2 = new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) );
-		range3 = new Range( new Position( root, [ 6 ] ), new Position( root, [ 7 ] ) );
+		range1 = new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 4 ] ) );
+		range2 = new ModelRange( new ModelPosition( root, [ 4 ] ), new ModelPosition( root, [ 5 ] ) );
+		range3 = new ModelRange( new ModelPosition( root, [ 6 ] ), new ModelPosition( root, [ 7 ] ) );
 	} );
 
 	afterEach( () => {
@@ -113,9 +113,9 @@ describe( 'Selection', () => {
 				// eslint-disable-next-line no-new
 				new Selection( [
 					liveRange,
-					new Range(
-						new Position( root, [ 0, 4 ] ),
-						new Position( root, [ 1, 2 ] )
+					new ModelRange(
+						new ModelPosition( root, [ 0, 4 ] ),
+						new ModelPosition( root, [ 1, 2 ] )
 					)
 				] );
 			}, /model-selection-range-intersects/, model );
@@ -160,15 +160,15 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return true when there is single collapsed ranges', () => {
-			selection.setTo( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
+			selection.setTo( new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 0 ] ) ) );
 
 			expect( selection.isCollapsed ).to.be.true;
 		} );
 
 		it( 'should return false when there are multiple ranges', () => {
 			selection.setTo( [
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ),
-				new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) )
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 0 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 2 ] ) )
 			] );
 
 			expect( selection.isCollapsed ).to.be.false;
@@ -185,13 +185,13 @@ describe( 'Selection', () => {
 		it( 'should return proper range count', () => {
 			expect( selection.rangeCount ).to.equal( 0 );
 
-			selection.setTo( new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) );
+			selection.setTo( new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 0 ] ) ) );
 
 			expect( selection.rangeCount ).to.equal( 1 );
 
 			selection.setTo( [
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ),
-				new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) )
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 0 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 2 ] ) )
 			] );
 
 			expect( selection.rangeCount ).to.equal( 2 );
@@ -208,7 +208,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'is false when last range is collapsed', () => {
-			const pos = Position._createAt( root, 0 );
+			const pos = ModelPosition._createAt( root, 0 );
 
 			selection.setTo( pos );
 
@@ -220,9 +220,9 @@ describe( 'Selection', () => {
 		let r1, r2, r3;
 
 		beforeEach( () => {
-			r1 = new Range( Position._createAt( root, 2 ), Position._createAt( root, 4 ) );
-			r2 = new Range( Position._createAt( root, 4 ), Position._createAt( root, 6 ) );
-			r3 = new Range( Position._createAt( root, 1 ), Position._createAt( root, 2 ) );
+			r1 = new ModelRange( ModelPosition._createAt( root, 2 ), ModelPosition._createAt( root, 4 ) );
+			r2 = new ModelRange( ModelPosition._createAt( root, 4 ), ModelPosition._createAt( root, 6 ) );
+			r3 = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 2 ) );
 			selection.setTo( [ r1, r2 ] );
 		} );
 
@@ -282,7 +282,7 @@ describe( 'Selection', () => {
 
 		it( 'should set collapsed selection on the given Position using _setRanges method', () => {
 			const spy = sinon.spy( selection, '_setRanges' );
-			const position = new Position( root, [ 4 ] );
+			const position = new ModelPosition( root, [ 4 ] );
 
 			selection.setTo( position );
 
@@ -298,9 +298,9 @@ describe( 'Selection', () => {
 			expectToThrowCKEditorError( () => {
 				selection.setTo( [
 					liveRange,
-					new Range(
-						new Position( root, [ 0, 4 ] ),
-						new Position( root, [ 1, 2 ] )
+					new ModelRange(
+						new ModelPosition( root, [ 0, 4 ] ),
+						new ModelPosition( root, [ 1, 2 ] )
 					)
 				] );
 			}, /model-selection-range-intersects/, model );
@@ -425,7 +425,7 @@ describe( 'Selection', () => {
 			} );
 
 			it( 'should set selection at the specified position', () => {
-				const pos = Position._createAt( root, 3 );
+				const pos = ModelPosition._createAt( root, 3 );
 
 				selection.setTo( pos );
 
@@ -457,13 +457,13 @@ describe( 'Selection', () => {
 			const spy = sinon.spy();
 			selection.on( 'change:range', spy );
 
-			selection.setFocus( Position._createAt( root, 'end' ) );
+			selection.setFocus( ModelPosition._createAt( root, 'end' ) );
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
 		it( 'throws if there are no ranges in selection', () => {
-			const endPos = Position._createAt( root, 'end' );
+			const endPos = ModelPosition._createAt( root, 'end' );
 
 			expectToThrowCKEditorError( () => {
 				selection.setFocus( endPos );
@@ -471,8 +471,8 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'modifies existing collapsed selection', () => {
-			const startPos = Position._createAt( root, 1 );
-			const endPos = Position._createAt( root, 2 );
+			const startPos = ModelPosition._createAt( root, 1 );
+			const endPos = ModelPosition._createAt( root, 2 );
 
 			selection.setTo( startPos );
 
@@ -483,8 +483,8 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'makes existing collapsed selection a backward selection', () => {
-			const startPos = Position._createAt( root, 1 );
-			const endPos = Position._createAt( root, 0 );
+			const startPos = ModelPosition._createAt( root, 1 );
+			const endPos = ModelPosition._createAt( root, 0 );
 
 			selection.setTo( startPos );
 
@@ -496,11 +496,11 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'modifies existing non-collapsed selection', () => {
-			const startPos = Position._createAt( root, 1 );
-			const endPos = Position._createAt( root, 2 );
-			const newEndPos = Position._createAt( root, 3 );
+			const startPos = ModelPosition._createAt( root, 1 );
+			const endPos = ModelPosition._createAt( root, 2 );
+			const newEndPos = ModelPosition._createAt( root, 3 );
 
-			selection.setTo( new Range( startPos, endPos ) );
+			selection.setTo( new ModelRange( startPos, endPos ) );
 
 			selection.setFocus( newEndPos );
 
@@ -509,11 +509,11 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'makes existing non-collapsed selection a backward selection', () => {
-			const startPos = Position._createAt( root, 1 );
-			const endPos = Position._createAt( root, 2 );
-			const newEndPos = Position._createAt( root, 0 );
+			const startPos = ModelPosition._createAt( root, 1 );
+			const endPos = ModelPosition._createAt( root, 2 );
+			const newEndPos = ModelPosition._createAt( root, 0 );
 
-			selection.setTo( new Range( startPos, endPos ) );
+			selection.setTo( new ModelRange( startPos, endPos ) );
 
 			selection.setFocus( newEndPos );
 
@@ -523,11 +523,11 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'makes existing backward selection a forward selection', () => {
-			const startPos = Position._createAt( root, 1 );
-			const endPos = Position._createAt( root, 2 );
-			const newEndPos = Position._createAt( root, 3 );
+			const startPos = ModelPosition._createAt( root, 1 );
+			const endPos = ModelPosition._createAt( root, 2 );
+			const newEndPos = ModelPosition._createAt( root, 3 );
 
-			selection.setTo( new Range( startPos, endPos ), { backward: true } );
+			selection.setTo( new ModelRange( startPos, endPos ), { backward: true } );
 
 			selection.setFocus( newEndPos );
 
@@ -537,11 +537,11 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'modifies existing backward selection', () => {
-			const startPos = Position._createAt( root, 1 );
-			const endPos = Position._createAt( root, 2 );
-			const newEndPos = Position._createAt( root, 0 );
+			const startPos = ModelPosition._createAt( root, 1 );
+			const endPos = ModelPosition._createAt( root, 2 );
+			const newEndPos = ModelPosition._createAt( root, 0 );
 
-			selection.setTo( new Range( startPos, endPos ), { backward: true } );
+			selection.setTo( new ModelRange( startPos, endPos ), { backward: true } );
 
 			selection.setFocus( newEndPos );
 
@@ -552,16 +552,16 @@ describe( 'Selection', () => {
 
 		it( 'modifies only the last range', () => {
 			// Offsets are chosen in this way that the order of adding ranges must count, not their document order.
-			const startPos1 = Position._createAt( root, 4 );
-			const endPos1 = Position._createAt( root, 5 );
-			const startPos2 = Position._createAt( root, 1 );
-			const endPos2 = Position._createAt( root, 2 );
+			const startPos1 = ModelPosition._createAt( root, 4 );
+			const endPos1 = ModelPosition._createAt( root, 5 );
+			const startPos2 = ModelPosition._createAt( root, 1 );
+			const endPos2 = ModelPosition._createAt( root, 2 );
 
-			const newEndPos = Position._createAt( root, 0 );
+			const newEndPos = ModelPosition._createAt( root, 0 );
 
 			selection.setTo( [
-				new Range( startPos1, endPos1 ),
-				new Range( startPos2, endPos2 )
+				new ModelRange( startPos1, endPos1 ),
+				new ModelRange( startPos2, endPos2 )
 			] );
 
 			const spy = sinon.spy();
@@ -584,10 +584,10 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'collapses the selection when extending to the anchor', () => {
-			const startPos = Position._createAt( root, 1 );
-			const endPos = Position._createAt( root, 2 );
+			const startPos = ModelPosition._createAt( root, 1 );
+			const endPos = ModelPosition._createAt( root, 2 );
 
-			selection.setTo( new Range( startPos, endPos ) );
+			selection.setTo( new ModelRange( startPos, endPos ) );
 
 			selection.setFocus( startPos );
 
@@ -633,8 +633,8 @@ describe( 'Selection', () => {
 
 		beforeEach( () => {
 			newRanges = [
-				new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) ),
-				new Range( new Position( root, [ 5, 0 ] ), new Position( root, [ 6, 0 ] ) )
+				new ModelRange( new ModelPosition( root, [ 4 ] ), new ModelPosition( root, [ 5 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 5, 0 ] ), new ModelPosition( root, [ 6, 0 ] ) )
 			];
 
 			selection.setTo( [ liveRange, range ] );
@@ -1144,7 +1144,7 @@ describe( 'Selection', () => {
 				new ModelElement( 'p', [], [] )
 			] );
 
-			rangeInFullP = new Range( new Position( root, [ 0, 4 ] ), new Position( root, [ 0, 4 ] ) );
+			rangeInFullP = new ModelRange( new ModelPosition( root, [ 0, 4 ] ), new ModelPosition( root, [ 0, 4 ] ) );
 		} );
 
 		describe( 'setAttribute()', () => {

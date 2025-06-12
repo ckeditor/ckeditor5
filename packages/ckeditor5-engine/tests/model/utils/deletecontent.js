@@ -4,8 +4,8 @@
  */
 
 import { Model } from '../../../src/model/model.js';
-import { Position } from '../../../src/model/position.js';
-import { Range } from '../../../src/model/range.js';
+import { ModelPosition } from '../../../src/model/position.js';
+import { ModelRange } from '../../../src/model/range.js';
 import { Selection } from '../../../src/model/selection.js';
 import { ModelElement } from '../../../src/model/element.js';
 import { deleteContent } from '../../../src/model/utils/deletecontent.js';
@@ -68,9 +68,9 @@ describe( 'DataController utils', () => {
 			it( 'should be able to delete content at custom selection', () => {
 				_setModelData( model, 'a[]bcd' );
 
-				const range = new Range(
-					new Position( doc.getRoot(), [ 2 ] ),
-					new Position( doc.getRoot(), [ 3 ] )
+				const range = new ModelRange(
+					new ModelPosition( doc.getRoot(), [ 2 ] ),
+					new ModelPosition( doc.getRoot(), [ 3 ] )
 				);
 
 				const selection = new Selection( [ range ] );
@@ -872,7 +872,7 @@ describe( 'DataController utils', () => {
 
 				// [<paragraph>yyy</paragraph>]
 				const selection = new Selection( [
-					new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) )
+					new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 2 ] ) )
 				] );
 
 				deleteContent( model, selection );
@@ -905,9 +905,9 @@ describe( 'DataController utils', () => {
 				);
 
 				// [<heading1>yyy</heading1>]
-				const range = new Range(
-					new Position( doc.getRoot( 'bodyRoot' ), [ 1 ] ),
-					new Position( doc.getRoot( 'bodyRoot' ), [ 2 ] )
+				const range = new ModelRange(
+					new ModelPosition( doc.getRoot( 'bodyRoot' ), [ 1 ] ),
+					new ModelPosition( doc.getRoot( 'bodyRoot' ), [ 2 ] )
 				);
 
 				deleteContent( model, new Selection( range ) );
@@ -924,9 +924,9 @@ describe( 'DataController utils', () => {
 				);
 
 				// [<heading1>yyy</heading1><paragraph>yyy</paragraph>]
-				const range = new Range(
-					new Position( doc.getRoot( 'bodyRoot' ), [ 1 ] ),
-					new Position( doc.getRoot( 'bodyRoot' ), [ 3 ] )
+				const range = new ModelRange(
+					new ModelPosition( doc.getRoot( 'bodyRoot' ), [ 1 ] ),
+					new ModelPosition( doc.getRoot( 'bodyRoot' ), [ 3 ] )
 				);
 
 				deleteContent( model, new Selection( range ) );

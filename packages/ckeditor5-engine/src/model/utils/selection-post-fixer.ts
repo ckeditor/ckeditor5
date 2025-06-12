@@ -8,7 +8,7 @@
  */
 
 import { ModelPosition } from '../position.js';
-import { Range } from '../range.js';
+import { ModelRange } from '../range.js';
 
 import { type ModelDocumentFragment } from '../documentfragment.js';
 import { type Model } from '../model.js';
@@ -121,7 +121,7 @@ function selectionPostFixer( writer: Writer, model: Model ): boolean {
  * @returns Returns fixed range or null if range is valid.
  * @internal
  */
-export function tryFixingRange( range: Range, schema: Schema ): Range | null {
+export function tryFixingRange( range: ModelRange, schema: Schema ): ModelRange | null {
 	if ( range.isCollapsed ) {
 		return tryFixingCollapsedRange( range, schema );
 	}
@@ -137,7 +137,7 @@ export function tryFixingRange( range: Range, schema: Schema ): Range | null {
  * @param range Collapsed range to fix.
  * @returns Returns fixed range or null if range is valid.
  */
-function tryFixingCollapsedRange( range: Range, schema: Schema ) {
+function tryFixingCollapsedRange( range: ModelRange, schema: Schema ) {
 	const originalPosition = range.start;
 
 	const nearestSelectionRange = schema.getNearestSelectionRange( originalPosition );
@@ -150,7 +150,7 @@ function tryFixingCollapsedRange( range: Range, schema: Schema ) {
 		const ancestorObject = originalPosition.getAncestors().reverse().find( ( item ): item is ModelElement => schema.isObject( item ) );
 
 		if ( ancestorObject ) {
-			return Range._createOn( ancestorObject );
+			return ModelRange._createOn( ancestorObject );
 		}
 
 		return null;
@@ -167,7 +167,7 @@ function tryFixingCollapsedRange( range: Range, schema: Schema ) {
 		return null;
 	}
 
-	return new Range( fixedPosition );
+	return new ModelRange( fixedPosition );
 }
 
 /**
@@ -176,7 +176,7 @@ function tryFixingCollapsedRange( range: Range, schema: Schema ) {
  * @param range Expanded range to fix.
  * @returns Returns fixed range or null if range is valid.
  */
-function tryFixingNonCollapsedRage( range: Range, schema: Schema ) {
+function tryFixingNonCollapsedRage( range: ModelRange, schema: Schema ) {
 	const { start, end } = range;
 
 	const isTextAllowedOnStart = schema.checkChild( start, '$text' );
@@ -210,7 +210,7 @@ function tryFixingNonCollapsedRage( range: Range, schema: Schema ) {
 			const rangeStart = fixedStart ? fixedStart.start : start;
 			const rangeEnd = fixedEnd ? fixedEnd.end : end;
 
-			return new Range( rangeStart, rangeEnd );
+			return new ModelRange( rangeStart, rangeEnd );
 		}
 	}
 
@@ -238,7 +238,7 @@ function tryFixingNonCollapsedRage( range: Range, schema: Schema ) {
 			fixedEnd = ModelPosition._createAfter( findOutermostLimitAncestor( endLimitElement, schema ) );
 		}
 
-		return new Range( fixedStart, fixedEnd );
+		return new ModelRange( fixedStart, fixedEnd );
 	}
 
 	// Range was not fixed at this point so it is valid - ie it was placed around limit element already.
@@ -279,7 +279,7 @@ function checkSelectionOnNonLimitElements( start: ModelPosition, end: ModelPosit
  * @returns Array of unique and non-intersecting ranges.
  * @internal
  */
-export function mergeIntersectingRanges( ranges: Array<Range> ): Array<Range> {
+export function mergeIntersectingRanges( ranges: Array<ModelRange> ): Array<ModelRange> {
 	const rangesToMerge = [ ...ranges ];
 	const rangeIndexesToRemove = new Set();
 	let currentRangeIndex = 1;

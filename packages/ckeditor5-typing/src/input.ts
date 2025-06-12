@@ -18,7 +18,7 @@ import {
 	type Model,
 	type Mapper,
 	type ModelElement,
-	type Range,
+	type ModelRange,
 	type ViewNode,
 	type ViewElement,
 	type MutationData,
@@ -415,7 +415,7 @@ class TypingQueue {
 		if ( commandLiveData.selectionRanges ) {
 			const ranges = commandLiveData.selectionRanges
 				.map( liveRange => detachLiveRange( liveRange ) )
-				.filter( ( range ): range is Range => !!range );
+				.filter( ( range ): range is ModelRange => !!range );
 
 			if ( ranges.length ) {
 				commandData.selection = this.editor.model.createSelection( ranges );
@@ -545,7 +545,7 @@ function deleteSelectionContent( model: Model, insertTextCommand: InsertTextComm
 /**
  * Detaches a ModelLiveRange and returns the static range from it.
  */
-function detachLiveRange( liveRange: ModelLiveRange ): Range | null {
+function detachLiveRange( liveRange: ModelLiveRange ): ModelRange | null {
 	const range = liveRange.toRange();
 
 	liveRange.detach();

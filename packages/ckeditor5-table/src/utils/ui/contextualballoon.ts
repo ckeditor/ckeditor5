@@ -10,7 +10,7 @@
 import { Rect, type PositionOptions } from 'ckeditor5/src/utils.js';
 import { BalloonPanelView, type ContextualBalloon } from 'ckeditor5/src/ui.js';
 import type { Editor } from 'ckeditor5/src/core.js';
-import type { ModelElement, Position, Range } from 'ckeditor5/src/engine.js';
+import type { ModelElement, Position, ModelRange } from 'ckeditor5/src/engine.js';
 
 import { getSelectionAffectedTableWidget, getTableWidgetAncestor } from './widget.js';
 import { getSelectionAffectedTable } from '../common.js';
@@ -116,7 +116,7 @@ function getTableCellAtPosition( position: Position ): ModelElement {
  * @param ranges Model ranges that the bounding rect should be returned for.
  * @param editor The editor instance.
  */
-function createBoundingRect( ranges: Iterable<Range>, editor: Editor ): Rect {
+function createBoundingRect( ranges: Iterable<ModelRange>, editor: Editor ): Rect {
 	const mapper = editor.editing.mapper;
 	const domConverter = editor.editing.view.domConverter;
 	const rects = Array.from( ranges ).map( range => {

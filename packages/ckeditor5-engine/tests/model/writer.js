@@ -11,8 +11,8 @@ import { InsertOperation } from '../../src/model/operation/insertoperation.js';
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
-import { Position } from '../../src/model/position.js';
-import { Range } from '../../src/model/range.js';
+import { ModelPosition } from '../../src/model/position.js';
+import { ModelRange } from '../../src/model/range.js';
 
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 
@@ -125,8 +125,8 @@ describe( 'Writer', () => {
 			const child = createElement( 'child' );
 			const textChild = createText( 'textChild' );
 
-			insert( child, new Position( parent, [ 0 ] ) );
-			insert( textChild, new Position( parent, [ 1 ] ) );
+			insert( child, new ModelPosition( parent, [ 0 ] ) );
+			insert( textChild, new ModelPosition( parent, [ 1 ] ) );
 
 			expect( Array.from( parent ) ).to.deep.equal( [ child, textChild ] );
 		} );
@@ -362,13 +362,13 @@ describe( 'Writer', () => {
 			appendText( 'abcd', root );
 
 			appendElement( 'p', docFrag );
-			insertText( 'foo bar', new Position( docFrag, [ 0, 0 ] ) );
+			insertText( 'foo bar', new ModelPosition( docFrag, [ 0, 0 ] ) );
 
-			const marker = new Range( new Position( docFrag, [ 0, 1 ] ), new Position( docFrag, [ 0, 5 ] ) );
+			const marker = new ModelRange( new ModelPosition( docFrag, [ 0, 1 ] ), new ModelPosition( docFrag, [ 0, 5 ] ) );
 
 			docFrag.markers.set( 'marker', marker );
 
-			insert( docFrag, new Position( root, [ 2 ] ) );
+			insert( docFrag, new ModelPosition( root, [ 2 ] ) );
 
 			expect( Array.from( model.markers ).length ).to.equal( 1 );
 
@@ -391,17 +391,19 @@ describe( 'Writer', () => {
 
 			// <docFrag><p>f[oo b]ar</p></docFrag>.
 			appendElement( 'p', docFrag );
-			insertText( 'foo bar', new Position( docFrag, [ 0, 0 ] ) );
+			insertText( 'foo bar', new ModelPosition( docFrag, [ 0, 0 ] ) );
 
 			model.change( writer => {
-				const range = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 2 ] ) );
+				const range = new ModelRange( new ModelPosition( root, [ 1, 0 ] ), new ModelPosition( root, [ 1, 2 ] ) );
 
 				writer.addMarker( 'marker', { range, usingOperation: true } );
 			} );
 
-			docFrag.markers.set( 'marker', new Range( new Position( docFrag, [ 0, 1 ] ), new Position( docFrag, [ 0, 5 ] ) ) );
+			docFrag.markers.set(
+				'marker', new ModelRange( new ModelPosition( docFrag, [ 0, 1 ] ), new ModelPosition( docFrag, [ 0, 5 ] ) )
+			);
 
-			insert( docFrag, new Position( root, [ 2 ] ) );
+			insert( docFrag, new ModelPosition( root, [ 2 ] ) );
 
 			expect( Array.from( model.markers ).length ).to.equal( 1 );
 
@@ -429,7 +431,7 @@ describe( 'Writer', () => {
 		it( 'should create and insert text node with attributes at given position', () => {
 			const parent = createDocumentFragment();
 
-			insertText( 'foo', { bar: 'biz' }, new Position( parent, [ 0 ] ) );
+			insertText( 'foo', { bar: 'biz' }, new ModelPosition( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Text );
@@ -440,7 +442,7 @@ describe( 'Writer', () => {
 		it( 'should create and insert text node with no attributes at given position', () => {
 			const parent = createDocumentFragment();
 
-			insertText( 'foo', null, new Position( parent, [ 0 ] ) );
+			insertText( 'foo', null, new ModelPosition( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Text );
@@ -451,7 +453,7 @@ describe( 'Writer', () => {
 		it( 'should create and insert text node omitting attributes param', () => {
 			const parent = createDocumentFragment();
 
-			insertText( 'foo', new Position( parent, [ 0 ] ) );
+			insertText( 'foo', new ModelPosition( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
 			expect( parent.getChild( 0 ) ).to.instanceof( Text );
@@ -555,7 +557,7 @@ describe( 'Writer', () => {
 		it( 'should create and insert element with attributes at given position', () => {
 			const parent = createDocumentFragment();
 
-			insertElement( 'foo', { bar: 'biz' }, new Position( parent, [ 0 ] ) );
+			insertElement( 'foo', { bar: 'biz' }, new ModelPosition( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
 			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
@@ -565,7 +567,7 @@ describe( 'Writer', () => {
 
 		it( 'should create and insert element with no attributes at given position', () => {
 			const parent = createDocumentFragment();
-			insertElement( 'foo', null, new Position( parent, [ 0 ] ) );
+			insertElement( 'foo', null, new ModelPosition( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
 			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
@@ -575,7 +577,7 @@ describe( 'Writer', () => {
 
 		it( 'should create and insert element with no attributes omitting attributes param', () => {
 			const parent = createDocumentFragment();
-			insertElement( 'foo', new Position( parent, [ 0 ] ) );
+			insertElement( 'foo', new ModelPosition( parent, [ 0 ] ) );
 
 			expect( parent.childCount ).to.equal( 1 );
 			expect( parent.getChild( 0 ) ).to.instanceof( ModelElement );
@@ -1019,9 +1021,9 @@ describe( 'Writer', () => {
 			} );
 
 			function getRange( startIndex, endIndex ) {
-				return new Range(
-					Position._createAt( root, startIndex ),
-					Position._createAt( root, endIndex )
+				return new ModelRange(
+					ModelPosition._createAt( root, startIndex ),
+					ModelPosition._createAt( root, endIndex )
 				);
 			}
 
@@ -1039,7 +1041,7 @@ describe( 'Writer', () => {
 
 			function getCompressedAttrs() {
 				// default: 111---111222---1112------
-				const range = Range._createIn( root );
+				const range = ModelRange._createIn( root );
 
 				return Array.from( range.getItems( { singleCharacters: true } ) )
 					.map( item => item.getAttribute( 'a' ) || '-' )
@@ -1089,9 +1091,9 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should not check range\'s start position node when creating operations', () => {
-					const range = new Range(
-						new Position( root, [ 18, 1 ] ),
-						new Position( root, [ 19 ] )
+					const range = new ModelRange(
+						new ModelPosition( root, [ 18, 1 ] ),
+						new ModelPosition( root, [ 19 ] )
 					);
 
 					setAttribute( 'a', 1, range );
@@ -1101,9 +1103,9 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should not change elements attribute if range contains closing tag', () => {
-					const range = new Range(
-						new Position( root, [ 18, 1 ] ),
-						new Position( root, [ 21 ] )
+					const range = new ModelRange(
+						new ModelPosition( root, [ 18, 1 ] ),
+						new ModelPosition( root, [ 21 ] )
 					);
 
 					setAttribute( 'a', 1, range );
@@ -1113,9 +1115,9 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should not create an operation if the range contains only closing tag', () => {
-					const range = new Range(
-						new Position( root, [ 18, 3 ] ),
-						new Position( root, [ 19 ] )
+					const range = new ModelRange(
+						new ModelPosition( root, [ 18, 3 ] ),
+						new ModelPosition( root, [ 19 ] )
 					);
 
 					setAttribute( 'a', 3, range );
@@ -1188,9 +1190,9 @@ describe( 'Writer', () => {
 				} );
 
 				it( 'should not check range\'s start position node when creating operations', () => {
-					const range = new Range(
-						new Position( root, [ 18, 3 ] ),
-						new Position( root, [ 19 ] )
+					const range = new ModelRange(
+						new ModelPosition( root, [ 18, 3 ] ),
+						new ModelPosition( root, [ 19 ] )
 					);
 
 					removeAttribute( 'a', range );
@@ -1313,7 +1315,7 @@ describe( 'Writer', () => {
 					appendElement( 'e', { a: 1 }, root );
 					appendText( 'xxx', root );
 
-					const range = Range._createIn( root );
+					const range = ModelRange._createIn( root );
 
 					clearAttributes( range );
 
@@ -1381,7 +1383,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should set attributes one by one on range', () => {
-			const range = Range._createIn( frag );
+			const range = ModelRange._createIn( frag );
 			let spy;
 
 			model.change( writer => {
@@ -1403,7 +1405,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should set attributes one by one on range for map as attributes list', () => {
-			const range = Range._createIn( frag );
+			const range = ModelRange._createIn( frag );
 			let spy;
 
 			model.change( writer => {
@@ -1486,7 +1488,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should merge foo and bar into foobar', () => {
-			merge( new Position( root, [ 1 ] ) );
+			merge( new ModelPosition( root, [ 1 ] ) );
 
 			expect( root.maxOffset ).to.equal( 1 );
 			expect( root.getChild( 0 ).name ).to.equal( 'p' );
@@ -1502,7 +1504,7 @@ describe( 'Writer', () => {
 				new ModelElement( 'p', null, 'bar' )
 			] );
 
-			merge( new Position( docFrag, [ 1 ] ) );
+			merge( new ModelPosition( docFrag, [ 1 ] ) );
 
 			expect( docFrag.getChild( 0 ).name ).to.equal( 'p' );
 			expect( docFrag.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foobar' );
@@ -1526,9 +1528,9 @@ describe( 'Writer', () => {
 			} );
 
 			function testMerge( startElement, startOffset, endElement, endOffset ) {
-				const markerRange = new Range(
-					Position._createAt( startElement, startOffset ),
-					Position._createAt( endElement, endOffset )
+				const markerRange = new ModelRange(
+					ModelPosition._createAt( startElement, startOffset ),
+					ModelPosition._createAt( endElement, endOffset )
 				);
 
 				addMarker( 'name', {
@@ -1538,7 +1540,7 @@ describe( 'Writer', () => {
 
 				const documentVersion = model.document.version;
 
-				merge( Position._createAfter( p1 ) );
+				merge( ModelPosition._createAfter( p1 ) );
 
 				const history = model.document.history;
 
@@ -1555,7 +1557,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should not create a marker operation if affected marker was not using operations', () => {
-			const markerRange = new Range( Position._createAt( p2, 0 ), Position._createAt( p2, 2 ) );
+			const markerRange = new ModelRange( ModelPosition._createAt( p2, 0 ), ModelPosition._createAt( p2, 2 ) );
 
 			addMarker( 'name', {
 				range: markerRange,
@@ -1564,7 +1566,7 @@ describe( 'Writer', () => {
 
 			const documentVersion = model.document.version;
 
-			merge( Position._createAfter( p1 ) );
+			merge( ModelPosition._createAfter( p1 ) );
 
 			const history = model.document.history;
 
@@ -1576,13 +1578,13 @@ describe( 'Writer', () => {
 
 		it( 'should throw if there is no element after', () => {
 			expectToThrowCKEditorError( () => {
-				merge( new Position( root, [ 2 ] ) );
+				merge( new ModelPosition( root, [ 2 ] ) );
 			}, /^writer-merge-no-element-after/, model );
 		} );
 
 		it( 'should throw if there is no element before', () => {
 			expectToThrowCKEditorError( () => {
-				merge( new Position( root, [ 0, 2 ] ) );
+				merge( new ModelPosition( root, [ 0, 2 ] ) );
 			}, /^writer-merge-no-element-before/, model );
 		} );
 
@@ -1590,7 +1592,7 @@ describe( 'Writer', () => {
 			const writer = new Writer( model, batch );
 
 			expectToThrowCKEditorError( () => {
-				writer.merge( new Position( root, [ 1 ] ) );
+				writer.merge( new ModelPosition( root, [ 1 ] ) );
 			}, /^writer-incorrect-use/, model );
 		} );
 	} );
@@ -1609,18 +1611,18 @@ describe( 'Writer', () => {
 
 			root._insertChild( 0, [ div, p ] );
 
-			range = new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 7 ] ) );
+			range = new ModelRange( new ModelPosition( root, [ 0, 3 ] ), new ModelPosition( root, [ 0, 7 ] ) );
 		} );
 
 		it( 'should move flat range of nodes', () => {
-			move( range, new Position( root, [ 1, 3 ] ) );
+			move( range, new ModelPosition( root, [ 1, 3 ] ) );
 
-			expect( getNodesAndText( Range._createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggggPfoPhhhhP' );
-			expect( getNodesAndText( Range._createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcobarxyz' );
+			expect( getNodesAndText( ModelRange._createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggggPfoPhhhhP' );
+			expect( getNodesAndText( ModelRange._createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcobarxyz' );
 		} );
 
 		it( 'should create a marker operation if a marker was affected', () => {
-			const markerRange = new Range( Position._createAt( p, 1 ), Position._createAt( p, 4 ) );
+			const markerRange = new ModelRange( ModelPosition._createAt( p, 1 ), ModelPosition._createAt( p, 4 ) );
 
 			addMarker( 'name', {
 				range: markerRange,
@@ -1629,7 +1631,7 @@ describe( 'Writer', () => {
 
 			const documentVersion = model.document.version;
 
-			move( new Range( Position._createAt( p, 0 ), Position._createAt( p, 2 ) ), Position._createAt( div, 0 ) );
+			move( new ModelRange( ModelPosition._createAt( p, 0 ), ModelPosition._createAt( p, 2 ) ), ModelPosition._createAt( div, 0 ) );
 
 			const history = model.document.history;
 
@@ -1645,7 +1647,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should not create a marker operation if affected marker was not using operations', () => {
-			const markerRange = new Range( Position._createAt( p, 1 ), Position._createAt( p, 4 ) );
+			const markerRange = new ModelRange( ModelPosition._createAt( p, 1 ), ModelPosition._createAt( p, 4 ) );
 
 			addMarker( 'name', {
 				range: markerRange,
@@ -1654,7 +1656,7 @@ describe( 'Writer', () => {
 
 			const documentVersion = model.document.version;
 
-			move( new Range( Position._createAt( p, 0 ), Position._createAt( p, 2 ) ), Position._createAt( div, 0 ) );
+			move( new ModelRange( ModelPosition._createAt( p, 0 ), ModelPosition._createAt( p, 2 ) ), ModelPosition._createAt( div, 0 ) );
 
 			const history = model.document.history;
 
@@ -1666,15 +1668,15 @@ describe( 'Writer', () => {
 
 		it( 'should throw if object to move is not a range', () => {
 			expectToThrowCKEditorError( () => {
-				move( root.getChild( 0 ), new Position( root, [ 1, 3 ] ) );
+				move( root.getChild( 0 ), new ModelPosition( root, [ 1, 3 ] ) );
 			}, /^writer-move-invalid-range/, model );
 		} );
 
 		it( 'should throw if given range is not flat', () => {
-			const notFlatRange = new Range( new Position( root, [ 0, 2, 2 ] ), new Position( root, [ 0, 6 ] ) );
+			const notFlatRange = new ModelRange( new ModelPosition( root, [ 0, 2, 2 ] ), new ModelPosition( root, [ 0, 6 ] ) );
 
 			expectToThrowCKEditorError( () => {
-				move( notFlatRange, new Position( root, [ 1, 3 ] ) );
+				move( notFlatRange, new ModelPosition( root, [ 1, 3 ] ) );
 			}, /^writer-move-range-not-flat/, model );
 		} );
 
@@ -1690,7 +1692,7 @@ describe( 'Writer', () => {
 			const writer = new Writer( model, batch );
 
 			expectToThrowCKEditorError( () => {
-				writer.move( range, new Position( root, [ 1, 3 ] ) );
+				writer.move( range, new ModelPosition( root, [ 1, 3 ] ) );
 			}, /^writer-incorrect-use/, model );
 		} );
 	} );
@@ -1708,8 +1710,8 @@ describe( 'Writer', () => {
 			insertElement( 'p', div );
 			appendElement( 'p', div );
 
-			insertText( 'gggg', new Position( div, [ 0, 0 ] ) );
-			insertText( 'hhhh', new Position( div, [ 7, 0 ] ) );
+			insertText( 'gggg', new ModelPosition( div, [ 0, 0 ] ) );
+			insertText( 'hhhh', new ModelPosition( div, [ 7, 0 ] ) );
 		} );
 
 		describe( 'remove from document', () => {
@@ -1723,7 +1725,7 @@ describe( 'Writer', () => {
 
 				// Range starts in ROOT > DIV > P > gg|gg.
 				// Range ends in ROOT > DIV > ...|ar.
-				range = new Range( new Position( root, [ 0, 0, 2 ] ), new Position( root, [ 0, 5 ] ) );
+				range = new ModelRange( new ModelPosition( root, [ 0, 0, 2 ] ), new ModelPosition( root, [ 0, 5 ] ) );
 			} );
 
 			it( 'should remove specified node', () => {
@@ -1731,20 +1733,20 @@ describe( 'Writer', () => {
 
 				expect( root.maxOffset ).to.equal( 1 );
 				expect( root.childCount ).to.equal( 1 );
-				expect( getNodesAndText( Range._createIn( root.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
+				expect( getNodesAndText( ModelRange._createIn( root.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
 			} );
 
 			it( 'should remove specified text node', () => {
 				remove( p.getChild( 0 ) );
 
-				expect( getNodesAndText( Range._createOn( p ) ) ).to.equal( 'PP' );
+				expect( getNodesAndText( ModelRange._createOn( p ) ) ).to.equal( 'PP' );
 			} );
 
 			it( 'should remove any range of nodes', () => {
 				remove( range );
 
-				expect( getNodesAndText( Range._createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
-				expect( getNodesAndText( Range._createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
+				expect( getNodesAndText( ModelRange._createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
+				expect( getNodesAndText( ModelRange._createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
 			} );
 
 			it( 'should create minimal number of remove operations, each with only one operation', () => {
@@ -1762,7 +1764,7 @@ describe( 'Writer', () => {
 			} );
 
 			it( 'should create a marker operation if a marker was affected', () => {
-				const markerRange = new Range( Position._createAt( p, 1 ), Position._createAt( p, 4 ) );
+				const markerRange = new ModelRange( ModelPosition._createAt( p, 1 ), ModelPosition._createAt( p, 4 ) );
 
 				addMarker( 'name', {
 					range: markerRange,
@@ -1771,7 +1773,7 @@ describe( 'Writer', () => {
 
 				const documentVersion = model.document.version;
 
-				remove( new Range( Position._createAt( p, 0 ), Position._createAt( p, 2 ) ) );
+				remove( new ModelRange( ModelPosition._createAt( p, 0 ), ModelPosition._createAt( p, 2 ) ) );
 
 				const history = model.document.history;
 
@@ -1788,7 +1790,7 @@ describe( 'Writer', () => {
 			} );
 
 			it( 'should not create a marker operation if affected marker was not using operations', () => {
-				const markerRange = new Range( Position._createAt( p, 1 ), Position._createAt( p, 4 ) );
+				const markerRange = new ModelRange( ModelPosition._createAt( p, 1 ), ModelPosition._createAt( p, 4 ) );
 
 				addMarker( 'name', {
 					range: markerRange,
@@ -1797,7 +1799,7 @@ describe( 'Writer', () => {
 
 				const documentVersion = model.document.version;
 
-				remove( new Range( Position._createAt( p, 0 ), Position._createAt( p, 2 ) ) );
+				remove( new ModelRange( ModelPosition._createAt( p, 0 ), ModelPosition._createAt( p, 2 ) ) );
 
 				const history = model.document.history;
 
@@ -1826,7 +1828,7 @@ describe( 'Writer', () => {
 
 				// Range starts in FRAG > DIV > P > gg|gg.
 				// Range ends in FRAG > DIV > ...|ar.
-				range = new Range( new Position( frag, [ 0, 0, 2 ] ), new Position( frag, [ 0, 5 ] ) );
+				range = new ModelRange( new ModelPosition( frag, [ 0, 0, 2 ] ), new ModelPosition( frag, [ 0, 5 ] ) );
 			} );
 
 			it( 'should remove specified node', () => {
@@ -1834,20 +1836,20 @@ describe( 'Writer', () => {
 
 				expect( frag.maxOffset ).to.equal( 1 );
 				expect( frag.childCount ).to.equal( 1 );
-				expect( getNodesAndText( Range._createIn( frag.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
+				expect( getNodesAndText( ModelRange._createIn( frag.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
 			} );
 
 			it( 'should remove specified text node', () => {
 				remove( p.getChild( 0 ) );
 
-				expect( getNodesAndText( Range._createOn( p ) ) ).to.equal( 'PP' );
+				expect( getNodesAndText( ModelRange._createOn( p ) ) ).to.equal( 'PP' );
 			} );
 
 			it( 'should remove any range of nodes', () => {
 				remove( range );
 
-				expect( getNodesAndText( Range._createIn( frag.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
-				expect( getNodesAndText( Range._createIn( frag.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
+				expect( getNodesAndText( ModelRange._createIn( frag.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
+				expect( getNodesAndText( ModelRange._createIn( frag.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
 			} );
 
 			it( 'should create minimal number of remove operations, each with only one operation', () => {
@@ -1927,7 +1929,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should split foobar to foo and bar', () => {
-			split( new Position( root, [ 0, 3 ] ) );
+			split( new ModelPosition( root, [ 0, 3 ] ) );
 
 			expect( root.maxOffset ).to.equal( 2 );
 
@@ -1948,7 +1950,7 @@ describe( 'Writer', () => {
 			const docFrag = new ModelDocumentFragment();
 			docFrag._appendChild( new ModelElement( 'p', null, new Text( 'foobar' ) ) );
 
-			split( new Position( docFrag, [ 0, 3 ] ) );
+			split( new ModelPosition( docFrag, [ 0, 3 ] ) );
 
 			expect( docFrag.maxOffset ).to.equal( 2 );
 
@@ -1962,7 +1964,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create an empty paragraph if we split at the end', () => {
-			split( new Position( root, [ 0, 6 ] ) );
+			split( new ModelPosition( root, [ 0, 6 ] ) );
 
 			expect( root.maxOffset ).to.equal( 2 );
 
@@ -1980,7 +1982,7 @@ describe( 'Writer', () => {
 
 		it( 'should throw if we try to split a root', () => {
 			expectToThrowCKEditorError( () => {
-				split( new Position( root, [ 0 ] ) );
+				split( new ModelPosition( root, [ 0 ] ) );
 			}, /^writer-split-element-no-parent/, model );
 		} );
 
@@ -1988,7 +1990,7 @@ describe( 'Writer', () => {
 			expectToThrowCKEditorError( () => {
 				const element = createElement( 'p' );
 
-				split( new Position( element, [ 0 ] ) );
+				split( new ModelPosition( element, [ 0 ] ) );
 			}, /^writer-split-element-no-parent/, model );
 		} );
 
@@ -1996,7 +1998,7 @@ describe( 'Writer', () => {
 			expectToThrowCKEditorError( () => {
 				const documentFragment = createDocumentFragment();
 
-				split( new Position( documentFragment, [ 0 ] ) );
+				split( new ModelPosition( documentFragment, [ 0 ] ) );
 			}, /^writer-split-element-no-parent/, model );
 		} );
 
@@ -2006,7 +2008,7 @@ describe( 'Writer', () => {
 
 			root._insertChild( 0, section );
 
-			split( new Position( p, [ 3 ] ), section );
+			split( new ModelPosition( p, [ 3 ] ), section );
 
 			expect( root.maxOffset ).to.equal( 1 );
 			expect( section.maxOffset ).to.equal( 2 );
@@ -2032,7 +2034,7 @@ describe( 'Writer', () => {
 			root._insertChild( 1, section );
 
 			expectToThrowCKEditorError( () => {
-				split( new Position( p, [ 3 ] ), section );
+				split( new ModelPosition( p, [ 3 ] ), section );
 			}, /^writer-split-invalid-limit-element/, model );
 		} );
 
@@ -2040,7 +2042,7 @@ describe( 'Writer', () => {
 			const writer = new Writer( model, batch );
 
 			expectToThrowCKEditorError( () => {
-				writer.split( new Position( root, [ 0, 3 ] ) );
+				writer.split( new ModelPosition( root, [ 0, 3 ] ) );
 			}, /^writer-incorrect-use/, model );
 		} );
 	} );
@@ -2053,7 +2055,7 @@ describe( 'Writer', () => {
 
 			root._insertChild( 0, new Text( 'foobar' ) );
 
-			range = new Range( new Position( root, [ 2 ] ), new Position( root, [ 4 ] ) );
+			range = new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 4 ] ) );
 		} );
 
 		it( 'should wrap flat range with given element', () => {
@@ -2080,7 +2082,7 @@ describe( 'Writer', () => {
 		it( 'should wrap inside document fragment', () => {
 			const docFrag = new ModelDocumentFragment( new Text( 'foo' ) );
 
-			wrap( Range._createIn( docFrag ), 'p' );
+			wrap( ModelRange._createIn( docFrag ), 'p' );
 
 			expect( docFrag.maxOffset ).to.equal( 1 );
 			expect( docFrag.getChild( 0 ).name ).to.equal( 'p' );
@@ -2089,7 +2091,7 @@ describe( 'Writer', () => {
 
 		it( 'should throw if range to wrap is not flat', () => {
 			root._insertChild( 1, [ new ModelElement( 'p', [], new Text( 'xyz' ) ) ] );
-			const notFlatRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 6, 2 ] ) );
+			const notFlatRange = new ModelRange( new ModelPosition( root, [ 3 ] ), new ModelPosition( root, [ 6, 2 ] ) );
 
 			expectToThrowCKEditorError( () => {
 				wrap( notFlatRange, 'p' );
@@ -2171,7 +2173,7 @@ describe( 'Writer', () => {
 		beforeEach( () => {
 			root = doc.createRoot();
 			root._appendChild( new Text( 'foo' ) );
-			range = Range._createIn( root );
+			range = ModelRange._createIn( root );
 		} );
 
 		it( 'should throw if options.usingOperation is not defined', () => {
@@ -2231,7 +2233,7 @@ describe( 'Writer', () => {
 		it( 'should throw when trying to update existing marker in the document marker collection', () => {
 			addMarker( 'name', { range, usingOperation: false } );
 
-			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
+			const range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 0 ) );
 
 			expectToThrowCKEditorError( () => {
 				addMarker( 'name', { range: range2, usingOperation: false } );
@@ -2280,12 +2282,12 @@ describe( 'Writer', () => {
 		beforeEach( () => {
 			root = doc.createRoot();
 			root._appendChild( new Text( 'foo' ) );
-			range = Range._createIn( root );
+			range = ModelRange._createIn( root );
 		} );
 
 		it( 'should update managed marker\'s range by marker instance using operations', () => {
 			const marker = addMarker( 'name', { range, usingOperation: true } );
-			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
+			const range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 0 ) );
 
 			updateMarker( marker, { range: range2 } );
 
@@ -2300,7 +2302,7 @@ describe( 'Writer', () => {
 
 		it( 'should update managed marker\'s range by marker name using operations', () => {
 			const marker = addMarker( 'name', { range, usingOperation: true } );
-			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
+			const range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 0 ) );
 
 			updateMarker( 'name', { range: range2 } );
 
@@ -2315,7 +2317,7 @@ describe( 'Writer', () => {
 
 		it( 'should update managed marker\'s range by marker instance using operations and usingOperation explicitly passed', () => {
 			const marker = addMarker( 'name', { range, usingOperation: true } );
-			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
+			const range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 0 ) );
 
 			updateMarker( marker, { range: range2, usingOperation: true } );
 
@@ -2330,7 +2332,7 @@ describe( 'Writer', () => {
 
 		it( 'should update managed marker\'s range by marker name using operations and usingOperation explicitly passed', () => {
 			const marker = addMarker( 'name', { range, usingOperation: true } );
-			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
+			const range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 0 ) );
 
 			updateMarker( 'name', { range: range2, usingOperation: true } );
 
@@ -2348,7 +2350,7 @@ describe( 'Writer', () => {
 			model.on( 'applyOperation', spy );
 
 			const marker = addMarker( 'name', { range, usingOperation: false } );
-			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
+			const range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 0 ) );
 
 			updateMarker( marker, { range: range2 } );
 
@@ -2383,7 +2385,7 @@ describe( 'Writer', () => {
 		it( 'should create additional operation when marker type changes to not managed using operation and changing its range', () => {
 			const spy = sinon.spy();
 			model.on( 'applyOperation', spy );
-			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
+			const range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 0 ) );
 
 			addMarker( 'name', { range, usingOperation: true } );
 			updateMarker( 'name', { range: range2, usingOperation: false } );
@@ -2426,7 +2428,7 @@ describe( 'Writer', () => {
 		it( 'should enable changing marker to be managed using operation while changing range', () => {
 			const spy = sinon.spy();
 			model.on( 'applyOperation', spy );
-			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
+			const range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 0 ) );
 
 			addMarker( 'name', { range, usingOperation: false } );
 			updateMarker( 'name', { range: range2, usingOperation: true } );
@@ -2464,7 +2466,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should not change affectsData property if not provided', () => {
-			const range2 = new Range( Position._createAt( root, 0 ), Position._createAt( root, 0 ) );
+			const range2 = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 0 ) );
 
 			addMarker( 'name', { range, affectsData: false, usingOperation: false } );
 			updateMarker( 'name', { range: range2 } );
@@ -2560,7 +2562,7 @@ describe( 'Writer', () => {
 		beforeEach( () => {
 			root = doc.createRoot();
 			root._appendChild( new Text( 'foo' ) );
-			range = Range._createIn( root );
+			range = ModelRange._createIn( root );
 		} );
 
 		it( 'should remove marker from the document marker collection', () => {
@@ -2780,7 +2782,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should change document selection ranges', () => {
-			const range = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 2, 2 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 1, 0 ] ), new ModelPosition( root, [ 2, 2 ] ) );
 
 			setSelection( range, { backward: true } );
 
@@ -2817,8 +2819,8 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should change document selection ranges', () => {
-			setSelection( new Position( root, [ 0, 0 ] ) );
-			setSelectionFocus( new Position( root, [ 2, 2 ] ) );
+			setSelection( new ModelPosition( root, [ 0, 0 ] ) );
+			setSelectionFocus( new ModelPosition( root, [ 2, 2 ] ) );
 
 			expect( model.document.selection._ranges.length ).to.equal( 1 );
 			expect( model.document.selection._ranges[ 0 ].start.path ).to.deep.equal( [ 0, 0 ] );
@@ -2841,7 +2843,7 @@ describe( 'Writer', () => {
 				new ModelElement( 'p', [], new Text( 'foo' ) )
 			] );
 
-			rangeInEmptyP = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 0 ] ) );
+			rangeInEmptyP = new ModelRange( new ModelPosition( root, [ 0, 0 ] ), new ModelPosition( root, [ 0, 0 ] ) );
 			emptyP = root.getChild( 0 );
 		} );
 
@@ -2886,7 +2888,7 @@ describe( 'Writer', () => {
 				new ModelElement( 'p', [], new Text( 'foo' ) )
 			] );
 
-			rangeInEmptyP = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 0 ] ) );
+			rangeInEmptyP = new ModelRange( new ModelPosition( root, [ 0, 0 ] ), new ModelPosition( root, [ 0, 0 ] ) );
 			emptyP = root.getChild( 0 );
 		} );
 
@@ -2947,7 +2949,7 @@ describe( 'Writer', () => {
 				new Text( 'biz', { foo: true } )
 			] );
 
-			setSelection( new Position( root, [ 6 ] ) );
+			setSelection( new ModelPosition( root, [ 6 ] ) );
 
 			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo', 'bar' ] );
 
@@ -2957,7 +2959,7 @@ describe( 'Writer', () => {
 			expect( model.document.selection.isGravityOverridden ).to.true;
 
 			// Moving selection should not restore the gravity.
-			setSelection( new Position( root, [ 5 ] ) );
+			setSelection( new ModelPosition( root, [ 5 ] ) );
 
 			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo', 'bar' ] );
 			expect( model.document.selection.isGravityOverridden ).to.true;
@@ -2983,7 +2985,7 @@ describe( 'Writer', () => {
 				new Text( 'biz', { foo: true } )
 			] );
 
-			setSelection( new Position( root, [ 6 ] ) );
+			setSelection( new ModelPosition( root, [ 6 ] ) );
 
 			const overrideUid = overrideSelectionGravity();
 

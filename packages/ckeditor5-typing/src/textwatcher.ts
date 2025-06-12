@@ -13,7 +13,7 @@ import { getLastTextLine } from './utils/getlasttextline.js';
 import type {
 	Batch,
 	Model,
-	Range,
+	ModelRange,
 	ModelDocumentChangeEvent,
 	ModelDocumentSelectionChangeEvent
 } from '@ckeditor/ckeditor5-engine';
@@ -175,7 +175,7 @@ export type TextWatcherMatchedEvent<TCallbackResult extends Record<string, unkno
 	name: 'matched' | 'matched:data' | 'matched:selection';
 	args: [ {
 		text: string;
-		range: Range;
+		range: ModelRange;
 		batch?: Batch;
 	} & TCallbackResult ];
 };
@@ -202,7 +202,7 @@ export interface TextWatcherMatchedDataEventData {
 	/**
 	 * The range representing the position of the `data.text`.
 	 */
-	range: Range;
+	range: ModelRange;
 
 	batch: Batch;
 }
@@ -229,7 +229,7 @@ export interface TextWatcherMatchedSelectionEventData {
 	/**
 	 * The range representing the position of the `data.text`.
 	 */
-	range: Range;
+	range: ModelRange;
 }
 
 /**

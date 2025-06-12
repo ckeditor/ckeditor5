@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Range } from '../../src/model/range.js';
-import { Position } from '../../src/model/position.js';
+import { ModelRange } from '../../src/model/range.js';
+import { ModelPosition } from '../../src/model/position.js';
 import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { Model } from '../../src/model/model.js';
@@ -30,10 +30,10 @@ describe( 'Range', () => {
 		otherRoot = doc.createRoot( '$root', 'otherRoot' );
 		gy = doc.graveyard;
 
-		start = new Position( root, [ 1 ] );
-		end = new Position( root, [ 2 ] );
+		start = new ModelPosition( root, [ 1 ] );
+		end = new ModelPosition( root, [ 2 ] );
 
-		range = new Range( start, end );
+		range = new ModelRange( start, end );
 	} );
 
 	describe( 'constructor()', () => {
@@ -43,7 +43,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should create collapsed range', () => {
-			const collapsed = new Range( start );
+			const collapsed = new ModelRange( start );
 
 			expect( collapsed.start.isEqual( start ) ).to.be.true;
 			expect( collapsed.isCollapsed ).to.be.true;
@@ -72,7 +72,7 @@ describe( 'Range', () => {
 
 	describe( 'isCollapsed', () => {
 		it( 'should be true if range start and end positions are equal', () => {
-			const collapsedRange = new Range( start, start );
+			const collapsedRange = new ModelRange( start, start );
 			expect( collapsedRange.isCollapsed ).to.be.true;
 		} );
 
@@ -83,39 +83,39 @@ describe( 'Range', () => {
 
 	describe( 'isEqual()', () => {
 		it( 'should return true if the ranges are the same', () => {
-			const sameStart = Position._createAt( start );
-			const sameEnd = Position._createAt( end );
+			const sameStart = ModelPosition._createAt( start );
+			const sameEnd = ModelPosition._createAt( end );
 
-			const sameRange = new Range( sameStart, sameEnd );
+			const sameRange = new ModelRange( sameStart, sameEnd );
 
 			expect( range.isEqual( sameRange ) ).to.be.true;
 		} );
 
 		it( 'should return false if the start position is different', () => {
-			const range = new Range( start, end );
+			const range = new ModelRange( start, end );
 
-			const diffStart = new Position( root, [ 0 ] );
-			const sameEnd = Position._createAt( end );
+			const diffStart = new ModelPosition( root, [ 0 ] );
+			const sameEnd = ModelPosition._createAt( end );
 
-			const diffRange = new Range( diffStart, sameEnd );
+			const diffRange = new ModelRange( diffStart, sameEnd );
 
 			expect( range.isEqual( diffRange ) ).to.be.false;
 		} );
 
 		it( 'should return false if the end position is different', () => {
-			const sameStart = new Position( root, [ 0 ] );
-			const diffEnd = new Position( root, [ 0 ] );
+			const sameStart = new ModelPosition( root, [ 0 ] );
+			const diffEnd = new ModelPosition( root, [ 0 ] );
 
-			const diffRange = new Range( sameStart, diffEnd );
+			const diffRange = new ModelRange( sameStart, diffEnd );
 
 			expect( range.isEqual( diffRange ) ).to.be.false;
 		} );
 
 		it( 'should return false if ranges are in different roots', () => {
-			const otherRootStart = new Position( otherRoot, start.path.slice() );
-			const otherRootEnd = new Position( otherRoot, end.path.slice() );
+			const otherRootStart = new ModelPosition( otherRoot, start.path.slice() );
+			const otherRootEnd = new ModelPosition( otherRoot, end.path.slice() );
 
-			const otherRootRange = new Range( otherRootStart, otherRootEnd );
+			const otherRootRange = new ModelRange( otherRootStart, otherRootEnd );
 
 			expect( range.isEqual( otherRootRange ) ).to.be.false;
 		} );
@@ -128,38 +128,38 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return true if given range contains this range', () => {
-			const otherRange = new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 3 ] ) );
 			expect( range.isIntersecting( otherRange ) ).to.be.true;
 		} );
 
 		it( 'should return true if given range ends in this range', () => {
-			const otherRange = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1, 4 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1, 4 ] ) );
 			expect( range.isIntersecting( otherRange ) ).to.be.true;
 		} );
 
 		it( 'should return true if given range starts in this range', () => {
-			const otherRange = new Range( new Position( root, [ 1, 4 ] ), new Position( root, [ 3 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( root, [ 1, 4 ] ), new ModelPosition( root, [ 3 ] ) );
 			expect( range.isIntersecting( otherRange ) ).to.be.true;
 		} );
 
 		it( 'should return false if given range is fully before this range', () => {
-			const otherRange = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) );
 			expect( range.isIntersecting( otherRange ) ).to.be.false;
 		} );
 
 		it( 'should return false if given range is fully after this range', () => {
-			const otherRange = new Range( new Position( root, [ 2 ] ), new Position( root, [ 2, 0 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 2, 0 ] ) );
 			expect( range.isIntersecting( otherRange ) ).to.be.false;
 		} );
 
 		it( 'should return false if ranges are in different roots', () => {
-			const otherRange = new Range( new Position( otherRoot, [ 0 ] ), new Position( otherRoot, [ 1, 4 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( otherRoot, [ 0 ] ), new ModelPosition( otherRoot, [ 1, 4 ] ) );
 			expect( range.isIntersecting( otherRange ) ).to.be.false;
 		} );
 
 		it( 'should return false if ranges are collapsed and equal', () => {
-			range = new Range( new Position( root, [ 1, 1 ] ) );
-			const otherRange = new Range( new Position( otherRoot, [ 1, 1 ] ) );
+			range = new ModelRange( new ModelPosition( root, [ 1, 1 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( otherRoot, [ 1, 1 ] ) );
 
 			expect( range.isIntersecting( otherRange ) ).to.be.false;
 		} );
@@ -179,7 +179,7 @@ describe( 'Range', () => {
 
 		describe( '_createIn()', () => {
 			it( 'should return range', () => {
-				const range = Range._createIn( p );
+				const range = ModelRange._createIn( p );
 
 				expect( range.start.path ).to.deep.equal( [ 0, 0 ] );
 				expect( range.end.path ).to.deep.equal( [ 0, 3 ] );
@@ -188,7 +188,7 @@ describe( 'Range', () => {
 
 		describe( '_createOn()', () => {
 			it( 'should return range', () => {
-				const range = Range._createOn( p );
+				const range = ModelRange._createOn( p );
 
 				expect( range.start.path ).to.deep.equal( [ 0 ] );
 				expect( range.end.path ).to.deep.equal( [ 1 ] );
@@ -197,10 +197,10 @@ describe( 'Range', () => {
 
 		describe( '_createFromPositionAndShift()', () => {
 			it( 'should make range from start position and offset', () => {
-				const position = new Position( root, [ 1, 2, 3 ] );
-				const range = Range._createFromPositionAndShift( position, 4 );
+				const position = new ModelPosition( root, [ 1, 2, 3 ] );
+				const range = ModelRange._createFromPositionAndShift( position, 4 );
 
-				expect( range ).to.be.instanceof( Range );
+				expect( range ).to.be.instanceof( ModelRange );
 				expect( range.start.isEqual( position ) ).to.be.true;
 				expect( range.end.root ).to.equal( range.start.root );
 				expect( range.end.path ).to.deep.equal( [ 1, 2, 7 ] );
@@ -221,7 +221,10 @@ describe( 'Range', () => {
 				const ranges = [];
 
 				for ( let i = 0; i < points.length; i += 2 ) {
-					ranges.push( new Range( Position._createAt( root, points[ i ] ), Position._createAt( root, points[ i + 1 ] ) ) );
+					ranges.push( new ModelRange(
+						ModelPosition._createAt( root, points[ i ] ),
+						ModelPosition._createAt( root, points[ i + 1 ] )
+					) );
 				}
 
 				return ranges;
@@ -233,27 +236,27 @@ describe( 'Range', () => {
 
 			it( 'should throw if empty array is passed', () => {
 				expectToThrowCKEditorError( () => {
-					Range._createFromRanges( [] );
+					ModelRange._createFromRanges( [] );
 				}, /^range-create-from-ranges-empty-array/ );
 			} );
 
 			it( 'should return a copy of the range if only one range was passed', () => {
-				const original = new Range( Position._createAt( root, 2 ), Position._createAt( root, 3 ) );
-				const range = Range._createFromRanges( [ original ] );
+				const original = new ModelRange( ModelPosition._createAt( root, 2 ), ModelPosition._createAt( root, 3 ) );
+				const range = ModelRange._createFromRanges( [ original ] );
 
 				expect( range.isEqual( original ) ).to.be.true;
 				expect( range ).not.to.equal( original );
 			} );
 
 			it( 'should combine ranges with reference range', () => {
-				const range = Range._createFromRanges( makeRanges( root, 3, 7, 2, 3, 7, 9, 11, 14, 0, 1 ) );
+				const range = ModelRange._createFromRanges( makeRanges( root, 3, 7, 2, 3, 7, 9, 11, 14, 0, 1 ) );
 
 				expect( range.start.offset ).to.equal( 2 );
 				expect( range.end.offset ).to.equal( 9 );
 			} );
 
 			it( 'should combine ranges with reference range #2 - multiple backwards', () => {
-				const range = Range._createFromRanges( makeRanges( root, 4, 6, 3, 4, 2, 3, 6, 7, 1, 2 ) );
+				const range = ModelRange._createFromRanges( makeRanges( root, 4, 6, 3, 4, 2, 3, 6, 7, 1, 2 ) );
 
 				expect( range.start.offset ).to.equal( 1 );
 				expect( range.end.offset ).to.equal( 7 );
@@ -265,7 +268,7 @@ describe( 'Range', () => {
 		it( 'should iterate over the range returning tree walker values', () => {
 			prepareRichRoot( root );
 
-			const range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 0, 0, 3 ] ), new ModelPosition( root, [ 3, 0, 2 ] ) );
 			const nodes = Array.from( range ).map( value => value.item );
 			const lengths = Array.from( range ).map( value => value.length );
 			const nodeNames = mapNodesToNames( nodes );
@@ -280,7 +283,7 @@ describe( 'Range', () => {
 		it( 'should be possible to iterate using this method', () => {
 			prepareRichRoot( root );
 
-			const range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 0, 0, 3 ] ), new ModelPosition( root, [ 3, 0, 2 ] ) );
 			const items = [];
 			const walker = range.getWalker();
 
@@ -296,7 +299,7 @@ describe( 'Range', () => {
 		it( 'should return treewalker with given options', () => {
 			prepareRichRoot( root );
 
-			const range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 0, 0, 3 ] ), new ModelPosition( root, [ 3, 0, 2 ] ) );
 			const walker = range.getWalker( { singleCharacters: true } );
 
 			expect( walker ).to.be.instanceof( TreeWalker );
@@ -310,7 +313,7 @@ describe( 'Range', () => {
 		it( 'should iterate over all items in the range', () => {
 			prepareRichRoot( root );
 
-			const range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 0, 0, 3 ] ), new ModelPosition( root, [ 3, 0, 2 ] ) );
 			const items = Array.from( range.getItems() );
 			const nodeNames = mapNodesToNames( items );
 
@@ -331,9 +334,9 @@ describe( 'Range', () => {
 			e2._insertChild( 0, [ x, y ] );
 			root._insertChild( 0, [ e1, e2 ] );
 
-			const range = new Range(
-				new Position( root, [ 0, 1 ] ),
-				new Position( root, [ 1, 1 ] )
+			const range = new ModelRange(
+				new ModelPosition( root, [ 0, 1 ] ),
+				new ModelPosition( root, [ 1, 1 ] )
 			);
 
 			const items = Array.from( range.getItems( { singleCharacters: true } ) );
@@ -356,7 +359,7 @@ describe( 'Range', () => {
 				[ 2 ], [ 2, 0 ], [ 2, 3 ],
 				[ 3 ], [ 3, 0 ], [ 3, 0, 0 ], [ 3, 0, 2 ]
 			];
-			const range = new Range( new Position( root, [ 1, 2 ] ), new Position( root, [ 3, 0, 2 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 1, 2 ] ), new ModelPosition( root, [ 3, 0, 2 ] ) );
 			let i = 0;
 
 			for ( const position of range.getPositions() ) {
@@ -373,7 +376,7 @@ describe( 'Range', () => {
 				[ 2 ], [ 2, 0 ], [ 2, 1 ], [ 2, 2 ], [ 2, 3 ],
 				[ 3 ], [ 3, 0 ], [ 3, 0, 0 ], [ 3, 0, 1 ], [ 3, 0, 2 ]
 			];
-			const range = new Range( new Position( root, [ 1, 2 ] ), new Position( root, [ 3, 0, 2 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 1, 2 ] ), new ModelPosition( root, [ 3, 0, 2 ] ) );
 			let i = 0;
 
 			for ( const position of range.getPositions( { singleCharacters: true } ) ) {
@@ -387,23 +390,23 @@ describe( 'Range', () => {
 
 	describe( 'containsPosition()', () => {
 		beforeEach( () => {
-			range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) );
+			range = new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 3 ] ) );
 		} );
 
 		it( 'should return false if position is before range', () => {
-			const position = new Position( root, [ 0, 4 ] );
+			const position = new ModelPosition( root, [ 0, 4 ] );
 
 			expect( range.containsPosition( position ) ).to.be.false;
 		} );
 
 		it( 'should return false if position is after range', () => {
-			const position = new Position( root, [ 3, 0 ] );
+			const position = new ModelPosition( root, [ 3, 0 ] );
 
 			expect( range.containsPosition( position ) ).to.be.false;
 		} );
 
 		it( 'should return true if position is inside range', () => {
-			const position = new Position( root, [ 2, 2 ] );
+			const position = new ModelPosition( root, [ 2, 2 ] );
 
 			expect( range.containsPosition( position ) ).to.be.true;
 		} );
@@ -411,7 +414,7 @@ describe( 'Range', () => {
 
 	describe( 'containsRange()', () => {
 		beforeEach( () => {
-			range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) );
+			range = new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 3 ] ) );
 		} );
 
 		it( 'should return true if ranges are equal and check is not strict', () => {
@@ -421,24 +424,24 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return true if ranges start at the same position and check is not strict', () => {
-			const otherRange = new Range( range.start, new Position( root, [ 2 ] ) );
+			const otherRange = new ModelRange( range.start, new ModelPosition( root, [ 2 ] ) );
 
 			expect( range.containsRange( otherRange, true ) ).to.be.true;
 		} );
 
 		it( 'should return true if ranges end at the same position and check is not strict', () => {
-			const otherRange = new Range( new Position( root, [ 2 ] ), range.end );
+			const otherRange = new ModelRange( new ModelPosition( root, [ 2 ] ), range.end );
 
 			expect( range.containsRange( otherRange, true ) ).to.be.true;
 		} );
 
 		it( 'should return false if given range is collapsed and starts or ends at another range boundary', () => {
-			expect( range.containsRange( new Range( range.start, range.start ) ) ).to.be.false;
-			expect( range.containsRange( new Range( range.end, range.end ) ) ).to.be.false;
+			expect( range.containsRange( new ModelRange( range.start, range.start ) ) ).to.be.false;
+			expect( range.containsRange( new ModelRange( range.end, range.end ) ) ).to.be.false;
 
 			// Collapsed range should always be checked in strict mode.
-			expect( range.containsRange( new Range( range.start, range.start ), true ) ).to.be.false;
-			expect( range.containsRange( new Range( range.end, range.end ), true ) ).to.be.false;
+			expect( range.containsRange( new ModelRange( range.start, range.start ), true ) ).to.be.false;
+			expect( range.containsRange( new ModelRange( range.end, range.end ), true ) ).to.be.false;
 		} );
 	} );
 
@@ -458,7 +461,10 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return true if element is inside range and false when it is not inside range', () => {
-			const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 3 ) ); // Range over `b` and `c`.
+			const range = new ModelRange(
+				ModelPosition._createAt( root, 1 ),
+				ModelPosition._createAt( root, 3 )
+			); // Range over `b` and `c`.
 
 			expect( range.containsItem( a ) ).to.be.false;
 			expect( range.containsItem( b ) ).to.be.true;
@@ -470,32 +476,32 @@ describe( 'Range', () => {
 
 	describe( '_getTransformedByInsertion()', () => {
 		it( 'should return an array of Range objects', () => {
-			const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
-			const transformed = range._getTransformedByInsertion( new Position( root, [ 2 ] ), 2 );
+			const range = new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) );
+			const transformed = range._getTransformedByInsertion( new ModelPosition( root, [ 2 ] ), 2 );
 
 			expect( transformed ).to.be.instanceof( Array );
-			expect( transformed[ 0 ] ).to.be.instanceof( Range );
+			expect( transformed[ 0 ] ).to.be.instanceof( ModelRange );
 		} );
 
 		it( 'should update it\'s positions offsets if insertion is before range and they are affected', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 4 ] ) );
-			const transformed = range._getTransformedByInsertion( new Position( root, [ 3, 1 ] ), 2 );
+			const range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 3, 4 ] ) );
+			const transformed = range._getTransformedByInsertion( new ModelPosition( root, [ 3, 1 ] ), 2 );
 
 			expect( transformed[ 0 ].start.offset ).to.equal( 4 );
 			expect( transformed[ 0 ].end.offset ).to.equal( 6 );
 		} );
 
 		it( 'should update it\'s positions paths if insertion is before range and they are affected', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
-			const transformed = range._getTransformedByInsertion( new Position( root, [ 0 ] ), 2 );
+			const range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 4, 4 ] ) );
+			const transformed = range._getTransformedByInsertion( new ModelPosition( root, [ 0 ] ), 2 );
 
 			expect( transformed[ 0 ].start.path[ 0 ] ).to.equal( 5 );
 			expect( transformed[ 0 ].end.path[ 0 ] ).to.equal( 6 );
 		} );
 
 		it( 'should expand range if insertion was in the middle of range', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
-			const transformed = range._getTransformedByInsertion( new Position( root, [ 5, 0 ] ), 4 );
+			const range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 5, 4 ] ) );
+			const transformed = range._getTransformedByInsertion( new ModelPosition( root, [ 5, 0 ] ), 4 );
 
 			expect( transformed.length ).to.equal( 1 );
 
@@ -504,8 +510,8 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return array with two ranges if insertion was in the middle of range and spread flag was set', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
-			const transformed = range._getTransformedByInsertion( new Position( root, [ 4, 1, 6 ] ), 4, true );
+			const range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 5, 4 ] ) );
+			const transformed = range._getTransformedByInsertion( new ModelPosition( root, [ 4, 1, 6 ] ), 4, true );
 
 			expect( transformed.length ).to.equal( 2 );
 
@@ -517,32 +523,32 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should not expand range if insertion is equal to start boundary of the range', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 8 ] ) );
-			const transformed = range._getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 3 );
+			const range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 3, 8 ] ) );
+			const transformed = range._getTransformedByInsertion( new ModelPosition( root, [ 3, 2 ] ), 3 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 5 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 11 ] );
 		} );
 
 		it( 'should not update positions if insertion is before range (but not equal to the start boundary)', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 8 ] ) );
-			const transformed = range._getTransformedByInsertion( new Position( root, [ 3, 1 ] ), 3 );
+			const range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 3, 8 ] ) );
+			const transformed = range._getTransformedByInsertion( new ModelPosition( root, [ 3, 1 ] ), 3 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 5 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 11 ] );
 		} );
 
 		it( 'should not expand range if insertion is equal to end boundary of the range', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
-			const transformed = range._getTransformedByInsertion( new Position( root, [ 4, 4 ] ), 3 );
+			const range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 4, 4 ] ) );
+			const transformed = range._getTransformedByInsertion( new ModelPosition( root, [ 4, 4 ] ), 3 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 4 ] );
 		} );
 
 		it( 'should not update positions if insertion is after range (but not equal to the end boundary)', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
-			const transformed = range._getTransformedByInsertion( new Position( root, [ 4, 5 ] ), 3 );
+			const range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 4, 4 ] ) );
+			const transformed = range._getTransformedByInsertion( new ModelPosition( root, [ 4, 5 ] ), 3 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 4 ] );
@@ -551,32 +557,32 @@ describe( 'Range', () => {
 
 	describe( '_getTransformedByMove()', () => {
 		it( 'should return an array of Range objects', () => {
-			const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
-			const transformed = range._getTransformedByMove( new Position( root, [ 2 ] ), new Position( root, [ 5 ] ), 2 );
+			const range = new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) );
+			const transformed = range._getTransformedByMove( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 5 ] ), 2 );
 
 			expect( transformed ).to.be.instanceof( Array );
-			expect( transformed[ 0 ] ).to.be.instanceof( Range );
+			expect( transformed[ 0 ] ).to.be.instanceof( ModelRange );
 		} );
 
 		it( 'should update it\'s positions offsets if target is before range and they are affected', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 4 ] ) );
-			const transformed = range._getTransformedByMove( new Position( root, [ 8, 1 ] ), new Position( root, [ 3, 1 ] ), 2 );
+			const range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 3, 4 ] ) );
+			const transformed = range._getTransformedByMove( new ModelPosition( root, [ 8, 1 ] ), new ModelPosition( root, [ 3, 1 ] ), 2 );
 
 			expect( transformed[ 0 ].start.offset ).to.equal( 4 );
 			expect( transformed[ 0 ].end.offset ).to.equal( 6 );
 		} );
 
 		it( 'should update it\'s positions paths if target is before range and they are affected', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
-			const transformed = range._getTransformedByMove( new Position( root, [ 8 ] ), new Position( root, [ 0 ] ), 2 );
+			const range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 4, 4 ] ) );
+			const transformed = range._getTransformedByMove( new ModelPosition( root, [ 8 ] ), new ModelPosition( root, [ 0 ] ), 2 );
 
 			expect( transformed[ 0 ].start.path[ 0 ] ).to.equal( 5 );
 			expect( transformed[ 0 ].end.path[ 0 ] ).to.equal( 6 );
 		} );
 
 		it( 'should expand range if target was in the middle of range', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
-			const transformed = range._getTransformedByMove( new Position( root, [ 8 ] ), new Position( root, [ 5, 0 ] ), 4 );
+			const range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 5, 4 ] ) );
+			const transformed = range._getTransformedByMove( new ModelPosition( root, [ 8 ] ), new ModelPosition( root, [ 5, 0 ] ), 4 );
 
 			expect( transformed.length ).to.equal( 1 );
 
@@ -585,72 +591,72 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should not expand range if insertion is equal to start boundary of the range', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 8 ] ) );
-			const transformed = range._getTransformedByMove( new Position( root, [ 8, 2 ] ), new Position( root, [ 3, 2 ] ), 3 );
+			const range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 3, 8 ] ) );
+			const transformed = range._getTransformedByMove( new ModelPosition( root, [ 8, 2 ] ), new ModelPosition( root, [ 3, 2 ] ), 3 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 5 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 11 ] );
 		} );
 
 		it( 'should not expand range if insertion is equal to end boundary of the range', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
-			const transformed = range._getTransformedByMove( new Position( root, [ 8, 4 ] ), new Position( root, [ 4, 4 ] ), 3 );
+			const range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 4, 4 ] ) );
+			const transformed = range._getTransformedByMove( new ModelPosition( root, [ 8, 4 ] ), new ModelPosition( root, [ 4, 4 ] ), 3 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 4 ] );
 		} );
 
 		it( 'should update it\'s positions offsets if source is before range and they are affected', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 4 ] ) );
-			const transformed = range._getTransformedByMove( new Position( root, [ 3, 0 ] ), new Position( root, [ 8, 1 ] ), 2 );
+			const range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 3, 4 ] ) );
+			const transformed = range._getTransformedByMove( new ModelPosition( root, [ 3, 0 ] ), new ModelPosition( root, [ 8, 1 ] ), 2 );
 
 			expect( transformed[ 0 ].start.offset ).to.equal( 0 );
 			expect( transformed[ 0 ].end.offset ).to.equal( 2 );
 		} );
 
 		it( 'should update it\'s positions paths if source is before range and they are affected', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
-			const transformed = range._getTransformedByMove( new Position( root, [ 0 ] ), new Position( root, [ 8 ] ), 2 );
+			const range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 4, 4 ] ) );
+			const transformed = range._getTransformedByMove( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 8 ] ), 2 );
 
 			expect( transformed[ 0 ].start.path[ 0 ] ).to.equal( 1 );
 			expect( transformed[ 0 ].end.path[ 0 ] ).to.equal( 2 );
 		} );
 
 		it( 'should shrink range if source was in the middle of range', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
-			const transformed = range._getTransformedByMove( new Position( root, [ 5, 0 ] ), new Position( root, [ 8 ] ), 4 );
+			const range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 5, 4 ] ) );
+			const transformed = range._getTransformedByMove( new ModelPosition( root, [ 5, 0 ] ), new ModelPosition( root, [ 8 ] ), 4 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 5, 0 ] );
 		} );
 
 		it( 'should shrink range if source contained range start position', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
-			const transformed = range._getTransformedByMove( new Position( root, [ 3, 1 ] ), new Position( root, [ 8 ] ), 2 );
+			const range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 5, 4 ] ) );
+			const transformed = range._getTransformedByMove( new ModelPosition( root, [ 3, 1 ] ), new ModelPosition( root, [ 8 ] ), 2 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 1 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 5, 4 ] );
 		} );
 
 		it( 'should shrink range if source contained range end position', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
-			const transformed = range._getTransformedByMove( new Position( root, [ 5, 3 ] ), new Position( root, [ 8 ] ), 2 );
+			const range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 5, 4 ] ) );
+			const transformed = range._getTransformedByMove( new ModelPosition( root, [ 5, 3 ] ), new ModelPosition( root, [ 8 ] ), 2 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 5, 3 ] );
 		} );
 
 		it( 'should move range if it was contained in moved range', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 7 ] ) );
-			const transformed = range._getTransformedByMove( new Position( root, [ 3 ] ), new Position( root, [ 6 ] ), 2 );
+			const range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 3, 7 ] ) );
+			const transformed = range._getTransformedByMove( new ModelPosition( root, [ 3 ] ), new ModelPosition( root, [ 6 ] ), 2 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 4, 2 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 7 ] );
 		} );
 
 		it( 'should not stick to moved range, if the transformed range is collapsed #1', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 2 ] ) );
-			const transformed = range._getTransformedByMove( new Position( root, [ 3, 0 ] ), new Position( root, [ 6 ] ), 2 );
+			const range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 3, 2 ] ) );
+			const transformed = range._getTransformedByMove( new ModelPosition( root, [ 3, 0 ] ), new ModelPosition( root, [ 6 ] ), 2 );
 
 			expect( transformed.length ).to.equal( 1 );
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 0 ] );
@@ -658,8 +664,8 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should not stick to moved range, if the transformed range is collapsed #2', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 2 ] ) );
-			const transformed = range._getTransformedByMove( new Position( root, [ 3, 2 ] ), new Position( root, [ 6 ] ), 2 );
+			const range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 3, 2 ] ) );
+			const transformed = range._getTransformedByMove( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 6 ] ), 2 );
 
 			expect( transformed.length ).to.equal( 1 );
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
@@ -669,32 +675,32 @@ describe( 'Range', () => {
 
 	describe( '_getTransformedByDeletion()', () => {
 		it( 'should return a transformed range', () => {
-			const range = new Range( new Position( root, [ 3 ] ), new Position( root, [ 5 ] ) );
-			const transformed = range._getTransformedByDeletion( new Position( root, [ 1 ] ), 1 );
+			const range = new ModelRange( new ModelPosition( root, [ 3 ] ), new ModelPosition( root, [ 5 ] ) );
+			const transformed = range._getTransformedByDeletion( new ModelPosition( root, [ 1 ] ), 1 );
 
 			expect( transformed.start.offset ).to.equal( 2 );
 			expect( transformed.end.offset ).to.equal( 4 );
 		} );
 
 		it( 'should shrink the range if removed range was intersecting #1', () => {
-			const range = new Range( new Position( root, [ 3 ] ), new Position( root, [ 5 ] ) );
-			const transformed = range._getTransformedByDeletion( new Position( root, [ 2 ] ), 2 );
+			const range = new ModelRange( new ModelPosition( root, [ 3 ] ), new ModelPosition( root, [ 5 ] ) );
+			const transformed = range._getTransformedByDeletion( new ModelPosition( root, [ 2 ] ), 2 );
 
 			expect( transformed.start.offset ).to.equal( 2 );
 			expect( transformed.end.offset ).to.equal( 3 );
 		} );
 
 		it( 'should shrink the range if removed range was intersecting #2', () => {
-			const range = new Range( new Position( root, [ 3 ] ), new Position( root, [ 5 ] ) );
-			const transformed = range._getTransformedByDeletion( new Position( root, [ 4 ] ), 2 );
+			const range = new ModelRange( new ModelPosition( root, [ 3 ] ), new ModelPosition( root, [ 5 ] ) );
+			const transformed = range._getTransformedByDeletion( new ModelPosition( root, [ 4 ] ), 2 );
 
 			expect( transformed.start.offset ).to.equal( 3 );
 			expect( transformed.end.offset ).to.equal( 4 );
 		} );
 
 		it( 'should return null if the transformed range was contained in the removed range', () => {
-			const range = new Range( new Position( root, [ 3 ] ), new Position( root, [ 5 ] ) );
-			const transformed = range._getTransformedByDeletion( new Position( root, [ 2 ] ), 7 );
+			const range = new ModelRange( new ModelPosition( root, [ 3 ] ), new ModelPosition( root, [ 5 ] ) );
+			const transformed = range._getTransformedByDeletion( new ModelPosition( root, [ 2 ] ), 7 );
 
 			expect( transformed ).to.be.null;
 		} );
@@ -704,19 +710,19 @@ describe( 'Range', () => {
 		let range;
 
 		beforeEach( () => {
-			range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
+			range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 5, 4 ] ) );
 		} );
 
 		it( 'should return an array of Range objects', () => {
-			const otherRange = new Range( new Position( root, [ 6 ] ), new Position( root, [ 7 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( root, [ 6 ] ), new ModelPosition( root, [ 7 ] ) );
 			const diff = range.getDifference( otherRange );
 
 			expect( diff ).to.be.instanceof( Array );
-			expect( diff[ 0 ] ).to.be.instanceof( Range );
+			expect( diff[ 0 ] ).to.be.instanceof( ModelRange );
 		} );
 
 		it( 'should return original range if other range does not intersect with it', () => {
-			const otherRange = new Range( new Position( root, [ 6 ] ), new Position( root, [ 7 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( root, [ 6 ] ), new ModelPosition( root, [ 7 ] ) );
 			const diff = range.getDifference( otherRange );
 
 			expect( diff[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
@@ -724,7 +730,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return shrunken range if other range intersects with it', () => {
-			const otherRange = new Range( new Position( root, [ 4, 1 ] ), new Position( root, [ 7 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( root, [ 4, 1 ] ), new ModelPosition( root, [ 7 ] ) );
 			const diff = range.getDifference( otherRange );
 
 			expect( diff[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
@@ -732,14 +738,14 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return an empty array if other range contains or is same as the original range', () => {
-			const otherRange = new Range( new Position( root, [ 2 ] ), new Position( root, [ 6 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 6 ] ) );
 			const diff = range.getDifference( otherRange );
 
 			expect( diff.length ).to.equal( 0 );
 		} );
 
 		it( 'should two ranges if other range is contained by the original range', () => {
-			const otherRange = new Range( new Position( root, [ 3, 7 ] ), new Position( root, [ 4, 1 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( root, [ 3, 7 ] ), new ModelPosition( root, [ 4, 1 ] ) );
 			const diff = range.getDifference( otherRange );
 
 			expect( diff.length ).to.equal( 2 );
@@ -756,32 +762,32 @@ describe( 'Range', () => {
 		let range;
 
 		beforeEach( () => {
-			range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
+			range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 5, 4 ] ) );
 		} );
 
 		it( 'should return null if ranges do not intersect', () => {
-			const otherRange = new Range( new Position( root, [ 5, 4 ] ), new Position( root, [ 7 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( root, [ 5, 4 ] ), new ModelPosition( root, [ 7 ] ) );
 			const common = range.getIntersection( otherRange );
 
 			expect( common ).to.be.null;
 		} );
 
 		it( 'should return a range equal to the common part of ranges - original range contains the other range', () => {
-			const otherRange = new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( root, [ 4 ] ), new ModelPosition( root, [ 5 ] ) );
 			const common = range.getIntersection( otherRange );
 
 			expect( common.isEqual( otherRange ) ).to.be.true;
 		} );
 
 		it( 'should return a range equal to the common part of ranges - original range is contained by the other range', () => {
-			const otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 6 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( root, [ 3 ] ), new ModelPosition( root, [ 6 ] ) );
 			const common = range.getIntersection( otherRange );
 
 			expect( common.isEqual( range ) ).to.be.true;
 		} );
 
 		it( 'should return a range equal to the common part of ranges - original range intersects with the other range', () => {
-			const otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 4, 7 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( root, [ 3 ] ), new ModelPosition( root, [ 4, 7 ] ) );
 			const common = range.getIntersection( otherRange );
 
 			expect( common.start.path ).to.deep.equal( [ 3, 2 ] );
@@ -800,18 +806,18 @@ describe( 'Range', () => {
 		let range;
 
 		beforeEach( () => {
-			range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
+			range = new ModelRange( new ModelPosition( root, [ 3, 2 ] ), new ModelPosition( root, [ 5, 4 ] ) );
 		} );
 
 		it( 'should return null if ranges do not intersect nor have equal start/end', () => {
-			const otherRange = new Range( new Position( root, [ 5, 5 ] ), new Position( root, [ 7 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( root, [ 5, 5 ] ), new ModelPosition( root, [ 7 ] ) );
 			const sum = range.getJoined( otherRange );
 
 			expect( sum ).to.be.null;
 		} );
 
 		it( 'should return a range spanning both of the ranges if the ranges have equal start/end positions', () => {
-			const otherRange = new Range( new Position( root, [ 5, 4 ] ), new Position( root, [ 7 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( root, [ 5, 4 ] ), new ModelPosition( root, [ 7 ] ) );
 			const sum = range.getJoined( otherRange );
 
 			expect( sum.start.path ).to.deep.equal( [ 3, 2 ] );
@@ -819,7 +825,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return a range spanning both of the ranges if the ranges have equal start/end positions (different order)', () => {
-			const otherRange = new Range( new Position( root, [ 1, 4 ] ), new Position( root, [ 3, 2 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( root, [ 1, 4 ] ), new ModelPosition( root, [ 3, 2 ] ) );
 			const sum = range.getJoined( otherRange );
 
 			expect( sum.start.path ).to.deep.equal( [ 1, 4 ] );
@@ -827,21 +833,21 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return a range spanning both of the ranges - original range contains the other range', () => {
-			const otherRange = new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( root, [ 4 ] ), new ModelPosition( root, [ 5 ] ) );
 			const sum = range.getJoined( otherRange );
 
 			expect( sum.isEqual( range ) ).to.be.true;
 		} );
 
 		it( 'should return a range spanning both of the ranges - original range is contained by the other range', () => {
-			const otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 6 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( root, [ 3 ] ), new ModelPosition( root, [ 6 ] ) );
 			const sum = range.getJoined( otherRange );
 
 			expect( sum.isEqual( otherRange ) ).to.be.true;
 		} );
 
 		it( 'should return a range spanning both of the ranges - original range intersects with the other range', () => {
-			const otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 4, 7 ] ) );
+			const otherRange = new ModelRange( new ModelPosition( root, [ 3 ] ), new ModelPosition( root, [ 4, 7 ] ) );
 			const sum = range.getJoined( otherRange );
 
 			expect( sum.start.path ).to.deep.equal( [ 3 ] );
@@ -861,16 +867,16 @@ describe( 'Range', () => {
 			} );
 
 			it( 'should return null if ranges are not intersecting nor touching', () => {
-				const range = new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 3 ] ) );
-				const otherRange = new Range( new Position( root, [ 3, 1 ] ), new Position( root, [ 3, 2 ] ) );
+				const range = new ModelRange( new ModelPosition( root, [ 0, 1 ] ), new ModelPosition( root, [ 3 ] ) );
+				const otherRange = new ModelRange( new ModelPosition( root, [ 3, 1 ] ), new ModelPosition( root, [ 3, 2 ] ) );
 				const sum = range.getJoined( otherRange, true );
 
 				expect( sum ).to.be.null;
 			} );
 
 			it( 'should return a range spanning both of the ranges - original range end is equal to other range start position', () => {
-				const range = new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 3 ] ) );
-				const otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 3, 2 ] ) );
+				const range = new ModelRange( new ModelPosition( root, [ 0, 1 ] ), new ModelPosition( root, [ 3 ] ) );
+				const otherRange = new ModelRange( new ModelPosition( root, [ 3 ] ), new ModelPosition( root, [ 3, 2 ] ) );
 				const sum = range.getJoined( otherRange, true );
 
 				expect( sum.start.path ).to.deep.equal( [ 0, 1 ] );
@@ -878,8 +884,8 @@ describe( 'Range', () => {
 			} );
 
 			it( 'should return a range spanning both of the ranges - original range start is equal to other range end position', () => {
-				const range = new Range( new Position( root, [ 3 ] ), new Position( root, [ 3, 2 ] ) );
-				const otherRange = new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 3 ] ) );
+				const range = new ModelRange( new ModelPosition( root, [ 3 ] ), new ModelPosition( root, [ 3, 2 ] ) );
+				const otherRange = new ModelRange( new ModelPosition( root, [ 0, 1 ] ), new ModelPosition( root, [ 3 ] ) );
 				const sum = range.getJoined( otherRange, true );
 
 				expect( sum.start.path ).to.deep.equal( [ 0, 1 ] );
@@ -887,8 +893,8 @@ describe( 'Range', () => {
 			} );
 
 			it( 'should return a range spanning both of the ranges - original range is touching other range on the right side', () => {
-				const range = new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 3 ] ) );
-				const otherRange = new Range( new Position( root, [ 3, 0 ] ), new Position( root, [ 3, 2 ] ) );
+				const range = new ModelRange( new ModelPosition( root, [ 0, 1 ] ), new ModelPosition( root, [ 3 ] ) );
+				const otherRange = new ModelRange( new ModelPosition( root, [ 3, 0 ] ), new ModelPosition( root, [ 3, 2 ] ) );
 				const sum = range.getJoined( otherRange, true );
 
 				expect( sum.start.path ).to.deep.equal( [ 0, 1 ] );
@@ -896,8 +902,8 @@ describe( 'Range', () => {
 			} );
 
 			it( 'should return a range spanning both of the ranges - original range is touching other range on the left side', () => {
-				const range = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 3, 2 ] ) );
-				const otherRange = new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 2 ] ) );
+				const range = new ModelRange( new ModelPosition( root, [ 1, 0 ] ), new ModelPosition( root, [ 3, 2 ] ) );
+				const otherRange = new ModelRange( new ModelPosition( root, [ 0, 1 ] ), new ModelPosition( root, [ 0, 2 ] ) );
 				const sum = range.getJoined( otherRange, true );
 
 				expect( sum.start.path ).to.deep.equal( [ 0, 1 ] );
@@ -912,8 +918,8 @@ describe( 'Range', () => {
 		let gyPos;
 
 		beforeEach( () => {
-			range = new Range( Position._createAt( root, 2 ), Position._createAt( root, 5 ) );
-			gyPos = new Position( gy, [ 0 ] );
+			range = new ModelRange( ModelPosition._createAt( root, 2 ), ModelPosition._createAt( root, 5 ) );
+			gyPos = new ModelPosition( gy, [ 0 ] );
 		} );
 
 		function expectRange( range, startOffset, endOffset ) {
@@ -923,7 +929,7 @@ describe( 'Range', () => {
 
 		describe( 'by AttributeOperation', () => {
 			it( 'nothing should change', () => {
-				const opRange = new Range( Position._createAt( root, 1 ), Position._createAt( root, 6 ) );
+				const opRange = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 6 ) );
 				const op = new AttributeOperation( opRange, 'key', true, false, 1 );
 				const transformed = range.getTransformedByOperation( op );
 
@@ -933,21 +939,21 @@ describe( 'Range', () => {
 
 		describe( 'by InsertOperation', () => {
 			it( 'insert before range', () => {
-				const op = new InsertOperation( new Position( root, [ 1 ] ), new Text( 'abc' ), 1 );
+				const op = new InsertOperation( new ModelPosition( root, [ 1 ] ), new Text( 'abc' ), 1 );
 				const transformed = range.getTransformedByOperation( op );
 
 				expectRange( transformed[ 0 ], 5, 8 );
 			} );
 
 			it( 'insert inside range', () => {
-				const op = new InsertOperation( new Position( root, [ 3 ] ), new Text( 'abc' ), 1 );
+				const op = new InsertOperation( new ModelPosition( root, [ 3 ] ), new Text( 'abc' ), 1 );
 				const transformed = range.getTransformedByOperation( op );
 
 				expectRange( transformed[ 0 ], 2, 8 );
 			} );
 
 			it( 'insert after range', () => {
-				const op = new InsertOperation( new Position( root, [ 6 ] ), new Text( 'abc' ), 1 );
+				const op = new InsertOperation( new ModelPosition( root, [ 6 ] ), new Text( 'abc' ), 1 );
 				const transformed = range.getTransformedByOperation( op );
 
 				expectRange( transformed[ 0 ], 2, 5 );
@@ -957,7 +963,8 @@ describe( 'Range', () => {
 		describe( 'by MarkerOperation', () => {
 			it( 'nothing should change', () => {
 				const op = new MarkerOperation(
-					'marker', null, new Range( Position._createAt( root, 1 ), Position._createAt( root, 6 ) ), model.markers, true, 1
+					'marker', null,
+					new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 6 ) ), model.markers, true, 1
 				);
 
 				const transformed = range.getTransformedByOperation( op );
@@ -968,8 +975,8 @@ describe( 'Range', () => {
 
 		describe( 'by MoveOperation', () => {
 			it( 'move before range', () => {
-				const start = new Position( root, [ 0 ] );
-				const target = new Position( otherRoot, [ 0 ] );
+				const start = new ModelPosition( root, [ 0 ] );
+				const target = new ModelPosition( otherRoot, [ 0 ] );
 				const op = new MoveOperation( start, 2, target, 1 );
 
 				const transformed = range.getTransformedByOperation( op );
@@ -978,8 +985,8 @@ describe( 'Range', () => {
 			} );
 
 			it( 'move intersecting with range (and targeting before range)', () => {
-				const start = new Position( root, [ 4 ] );
-				const target = new Position( root, [ 0 ] );
+				const start = new ModelPosition( root, [ 4 ] );
+				const target = new ModelPosition( root, [ 0 ] );
 				const op = new MoveOperation( start, 2, target, 1 );
 
 				const transformed = range.getTransformedByOperation( op );
@@ -990,8 +997,8 @@ describe( 'Range', () => {
 
 			it( 'move inside the range', () => {
 				range.end.offset = 6;
-				const start = new Position( root, [ 3 ] );
-				const target = new Position( root, [ 5 ] );
+				const start = new ModelPosition( root, [ 3 ] );
+				const target = new ModelPosition( root, [ 5 ] );
 				const op = new MoveOperation( start, 1, target, 1 );
 
 				const transformed = range.getTransformedByOperation( op );
@@ -1010,8 +1017,8 @@ describe( 'Range', () => {
 
 				// <w><p>abc</p>{</w>}<p>x[x</p><p>d]ef</p>
 
-				const range = new Range( new Position( root, [ 0, 1, 1 ] ), new Position( root, [ 1, 1 ] ) );
-				const op = new MoveOperation( new Position( root, [ 0, 1 ] ), 1, new Position( root, [ 1 ] ), 1 );
+				const range = new ModelRange( new ModelPosition( root, [ 0, 1, 1 ] ), new ModelPosition( root, [ 1, 1 ] ) );
+				const op = new MoveOperation( new ModelPosition( root, [ 0, 1 ] ), 1, new ModelPosition( root, [ 1 ] ), 1 );
 
 				const transformed = range.getTransformedByOperation( op );
 
@@ -1026,8 +1033,8 @@ describe( 'Range', () => {
 				// Expected state after moving:
 				// <p>a[bc</p><p>x]x</p><p>def</p>
 
-				const range = new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 2, 1 ] ) );
-				const op = new MoveOperation( new Position( root, [ 2 ] ), 1, new Position( root, [ 1 ] ), 1 );
+				const range = new ModelRange( new ModelPosition( root, [ 0, 1 ] ), new ModelPosition( root, [ 2, 1 ] ) );
+				const op = new MoveOperation( new ModelPosition( root, [ 2 ] ), 1, new ModelPosition( root, [ 1 ] ), 1 );
 
 				const transformed = range.getTransformedByOperation( op );
 
@@ -1038,8 +1045,8 @@ describe( 'Range', () => {
 
 			// #1358
 			it( 'should not crash and not transform the range if move operation moves 0 nodes', () => {
-				const range = new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 4 ] ) );
-				const op = new MoveOperation( new Position( root, [ 0, 1 ] ), 0, new Position( root, [ 0, 3 ] ), 1 );
+				const range = new ModelRange( new ModelPosition( root, [ 0, 2 ] ), new ModelPosition( root, [ 0, 4 ] ) );
+				const op = new MoveOperation( new ModelPosition( root, [ 0, 1 ] ), 0, new ModelPosition( root, [ 0, 3 ] ), 1 );
 
 				const transformed = range.getTransformedByOperation( op );
 
@@ -1051,7 +1058,7 @@ describe( 'Range', () => {
 
 		describe( 'by MoveOperation to graveyard', () => {
 			it( 'remove before range', () => {
-				const start = new Position( root, [ 0 ] );
+				const start = new ModelPosition( root, [ 0 ] );
 				const op = new MoveOperation( start, 2, gyPos, 1 );
 
 				const transformed = range.getTransformedByOperation( op );
@@ -1060,7 +1067,7 @@ describe( 'Range', () => {
 			} );
 
 			it( 'remove intersecting with range', () => {
-				const start = new Position( root, [ 4 ] );
+				const start = new ModelPosition( root, [ 4 ] );
 				const op = new MoveOperation( start, 2, gyPos, 1 );
 
 				const transformed = range.getTransformedByOperation( op );
@@ -1071,7 +1078,7 @@ describe( 'Range', () => {
 			} );
 
 			it( 'remove inside the range', () => {
-				const start = new Position( root, [ 3 ] );
+				const start = new ModelPosition( root, [ 3 ] );
 
 				const op = new MoveOperation( start, 2, gyPos, 1 );
 
@@ -1085,7 +1092,7 @@ describe( 'Range', () => {
 
 		describe( 'by RenameOperation', () => {
 			it( 'nothing should change', () => {
-				const op = new RenameOperation( new Position( root, [ 3 ] ), 'old', 'new', 1 );
+				const op = new RenameOperation( new ModelPosition( root, [ 3 ] ), 'old', 'new', 1 );
 				const transformed = range.getTransformedByOperation( op );
 
 				expectRange( transformed[ 0 ], 2, 5 );
@@ -1094,9 +1101,9 @@ describe( 'Range', () => {
 
 		describe( 'by SplitOperation', () => {
 			it( 'split inside range', () => {
-				range = new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 4 ] ) );
+				range = new ModelRange( new ModelPosition( root, [ 0, 2 ] ), new ModelPosition( root, [ 0, 4 ] ) );
 
-				const splitPosition = new Position( root, [ 0, 3 ] );
+				const splitPosition = new ModelPosition( root, [ 0, 3 ] );
 				const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
 
 				const op = new SplitOperation( splitPosition, 6, insertionPosition, gyPos, 1 );
@@ -1108,9 +1115,9 @@ describe( 'Range', () => {
 			} );
 
 			it( 'split at the beginning of multi-element range', () => {
-				range = new Range( new Position( root, [ 0, 4 ] ), new Position( root, [ 1, 2 ] ) );
+				range = new ModelRange( new ModelPosition( root, [ 0, 4 ] ), new ModelPosition( root, [ 1, 2 ] ) );
 
-				const splitPosition = new Position( root, [ 0, 4 ] );
+				const splitPosition = new ModelPosition( root, [ 0, 4 ] );
 				const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
 
 				const op = new SplitOperation( splitPosition, 5, insertionPosition, gyPos, 1 );
@@ -1122,9 +1129,9 @@ describe( 'Range', () => {
 			} );
 
 			it( 'split inside range which starts at the beginning of split element', () => {
-				range = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 4 ] ) );
+				range = new ModelRange( new ModelPosition( root, [ 0, 0 ] ), new ModelPosition( root, [ 0, 4 ] ) );
 
-				const splitPosition = new Position( root, [ 0, 3 ] );
+				const splitPosition = new ModelPosition( root, [ 0, 3 ] );
 				const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
 
 				const op = new SplitOperation( splitPosition, 6, insertionPosition, gyPos, 1 );
@@ -1136,9 +1143,9 @@ describe( 'Range', () => {
 			} );
 
 			it( 'split inside range which end is at the end of split element', () => {
-				range = new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 6 ] ) );
+				range = new ModelRange( new ModelPosition( root, [ 0, 3 ] ), new ModelPosition( root, [ 0, 6 ] ) );
 
-				const splitPosition = new Position( root, [ 0, 4 ] );
+				const splitPosition = new ModelPosition( root, [ 0, 4 ] );
 				const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
 
 				const op = new SplitOperation( splitPosition, 5, insertionPosition, gyPos, 1 );
@@ -1150,9 +1157,9 @@ describe( 'Range', () => {
 			} );
 
 			it( 'split element which has collapsed range at the end', () => {
-				range = new Range( new Position( root, [ 0, 6 ] ), new Position( root, [ 0, 6 ] ) );
+				range = new ModelRange( new ModelPosition( root, [ 0, 6 ] ), new ModelPosition( root, [ 0, 6 ] ) );
 
-				const splitPosition = new Position( root, [ 0, 3 ] );
+				const splitPosition = new ModelPosition( root, [ 0, 3 ] );
 				const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
 
 				const op = new SplitOperation( splitPosition, 6, insertionPosition, gyPos, 1 );
@@ -1164,9 +1171,9 @@ describe( 'Range', () => {
 			} );
 
 			it( 'split element which is the last element in the range', () => {
-				range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) );
+				range = new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 3 ] ) );
 
-				const splitPosition = new Position( root, [ 2, 0 ] );
+				const splitPosition = new ModelPosition( root, [ 2, 0 ] );
 				const insertionPosition = SplitOperation.getInsertionPosition( splitPosition );
 
 				const op = new SplitOperation( splitPosition, 6, insertionPosition, gyPos, 1 );
@@ -1180,13 +1187,13 @@ describe( 'Range', () => {
 
 		describe( 'by MergeOperation', () => {
 			it( 'merge element with collapsed range', () => {
-				range.start = new Position( root, [ 1, 0 ] );
-				range.end = new Position( root, [ 1, 0 ] );
+				range.start = new ModelPosition( root, [ 1, 0 ] );
+				range.end = new ModelPosition( root, [ 1, 0 ] );
 
 				const op = new MergeOperation(
-					new Position( root, [ 1, 0 ] ),
+					new ModelPosition( root, [ 1, 0 ] ),
 					4,
-					new Position( root, [ 0, 3 ] ),
+					new ModelPosition( root, [ 0, 3 ] ),
 					gyPos,
 					1
 				);
@@ -1199,13 +1206,13 @@ describe( 'Range', () => {
 			} );
 
 			it( 'merge element with collapsed range #2', () => {
-				range.start = new Position( root, [ 1, 3 ] );
-				range.end = new Position( root, [ 1, 3 ] );
+				range.start = new ModelPosition( root, [ 1, 3 ] );
+				range.end = new ModelPosition( root, [ 1, 3 ] );
 
 				const op = new MergeOperation(
-					new Position( root, [ 0, 0 ] ),
+					new ModelPosition( root, [ 0, 0 ] ),
 					4,
-					new Position( root, [ 1, 3 ] ),
+					new ModelPosition( root, [ 1, 3 ] ),
 					gyPos,
 					1
 				);
@@ -1224,12 +1231,12 @@ describe( 'Range', () => {
 				// Expected state after merge:
 				// <w><p>x[x</p><p>y]y</p></w>
 
-				const range = new Range( new Position( root, [ 0, 0, 1 ] ), new Position( root, [ 1, 0, 1 ] ) );
+				const range = new ModelRange( new ModelPosition( root, [ 0, 0, 1 ] ), new ModelPosition( root, [ 1, 0, 1 ] ) );
 
 				const op = new MergeOperation(
-					new Position( root, [ 1, 0 ] ),
+					new ModelPosition( root, [ 1, 0 ] ),
 					4,
-					new Position( root, [ 0, 1 ] ),
+					new ModelPosition( root, [ 0, 1 ] ),
 					gyPos,
 					1
 				);
@@ -1242,12 +1249,12 @@ describe( 'Range', () => {
 			} );
 
 			it( 'merge at the beginning of the range', () => {
-				const range = new Range( new Position( root, [ 2 ] ), new Position( root, [ 4 ] ) );
+				const range = new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 4 ] ) );
 
 				const op = new MergeOperation(
-					new Position( root, [ 2, 0 ] ),
+					new ModelPosition( root, [ 2, 0 ] ),
 					4,
-					new Position( root, [ 1, 1 ] ),
+					new ModelPosition( root, [ 1, 1 ] ),
 					gyPos,
 					1
 				);
@@ -1260,12 +1267,12 @@ describe( 'Range', () => {
 			} );
 
 			it( 'merge at the end of the range', () => {
-				const range = new Range( new Position( root, [ 2 ] ), new Position( root, [ 4 ] ) );
+				const range = new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 4 ] ) );
 
 				const op = new MergeOperation(
-					new Position( root, [ 3, 0 ] ),
+					new ModelPosition( root, [ 3, 0 ] ),
 					4,
-					new Position( root, [ 2, 1 ] ),
+					new ModelPosition( root, [ 2, 1 ] ),
 					gyPos,
 					1
 				);
@@ -1278,12 +1285,12 @@ describe( 'Range', () => {
 			} );
 
 			it( 'merged element is the only node in the range', () => {
-				const range = new Range( new Position( root, [ 2 ] ), new Position( root, [ 3 ] ) );
+				const range = new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 3 ] ) );
 
 				const op = new MergeOperation(
-					new Position( root, [ 2, 0 ] ),
+					new ModelPosition( root, [ 2, 0 ] ),
 					4,
-					new Position( root, [ 1, 1 ] ),
+					new ModelPosition( root, [ 1, 1 ] ),
 					gyPos,
 					1
 				);
@@ -1297,12 +1304,12 @@ describe( 'Range', () => {
 
 			it( 'range start is between merged elements #1', () => {
 				// <p>aa</p>{<p>b}b</p><p>cc</p>
-				const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 1, 1 ] ) );
+				const range = new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 1, 1 ] ) );
 
 				const op = new MergeOperation(
-					new Position( root, [ 1, 0 ] ),
+					new ModelPosition( root, [ 1, 0 ] ),
 					2,
-					new Position( root, [ 0, 2 ] ),
+					new ModelPosition( root, [ 0, 2 ] ),
 					gyPos,
 					1
 				);
@@ -1318,12 +1325,12 @@ describe( 'Range', () => {
 
 			it( 'range start is between merged elements #2', () => {
 				// <p>aa</p>{<p>cc</p><p>b}b</p>
-				const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2, 1 ] ) );
+				const range = new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 2, 1 ] ) );
 
 				const op = new MergeOperation(
-					new Position( root, [ 2, 0 ] ),
+					new ModelPosition( root, [ 2, 0 ] ),
 					2,
-					new Position( root, [ 0, 2 ] ),
+					new ModelPosition( root, [ 0, 2 ] ),
 					gyPos,
 					1
 				);
@@ -1339,12 +1346,12 @@ describe( 'Range', () => {
 
 			it( 'range is set on closing tag of merge target element', () => {
 				// <p>aa{</p>}<p>bb</p>
-				const range = new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 1 ] ) );
+				const range = new ModelRange( new ModelPosition( root, [ 0, 2 ] ), new ModelPosition( root, [ 1 ] ) );
 
 				const op = new MergeOperation(
-					new Position( root, [ 1, 0 ] ),
+					new ModelPosition( root, [ 1, 0 ] ),
 					2,
-					new Position( root, [ 0, 2 ] ),
+					new ModelPosition( root, [ 0, 2 ] ),
 					gyPos,
 					1
 				);
@@ -1363,7 +1370,7 @@ describe( 'Range', () => {
 	describe( 'getTransformedByOperations()', () => {
 		beforeEach( () => {
 			root._appendChild( new Text( 'foobar' ) );
-			range = new Range( Position._createAt( root, 2 ), Position._createAt( root, 5 ) );
+			range = new ModelRange( ModelPosition._createAt( root, 2 ), ModelPosition._createAt( root, 5 ) );
 		} );
 
 		function expectRange( range, startOffset, endOffset ) {
@@ -1373,8 +1380,8 @@ describe( 'Range', () => {
 
 		it( 'should return a range transformed by multiple operations', () => {
 			const transformed = range.getTransformedByOperations( [
-				new InsertOperation( new Position( root, [ 1 ] ), new Text( 'abc' ), 1 ), // Range becomes 5..8.
-				new InsertOperation( new Position( root, [ 6 ] ), new Text( 'xx' ), 2 ) // Range becomes 5..10.
+				new InsertOperation( new ModelPosition( root, [ 1 ] ), new Text( 'abc' ), 1 ), // Range becomes 5..8.
+				new InsertOperation( new ModelPosition( root, [ 6 ] ), new Text( 'xx' ), 2 ) // Range becomes 5..10.
 			] );
 
 			expectRange( transformed[ 0 ], 5, 10 );
@@ -1382,11 +1389,22 @@ describe( 'Range', () => {
 
 		it( 'should correctly handle breaking transformed range and all range "pieces"', () => {
 			const transformed = range.getTransformedByOperations( [
-				new InsertOperation( new Position( root, [ 3 ] ), new Text( 'abc' ), 1 ), // Range becomes 2..8.
-				new MoveOperation( new Position( root, [ 4 ] ), 3, new Position( root, [ 9 ] ), 2 ), // Range becomes 2..5 and 6..9.
-				new InsertOperation( new Position( root, [ 0 ] ), new Text( 'x' ), 3 ), // Range becomes 3..6 and 7..10.
-				new MoveOperation( new Position( root, [ 9 ] ), 1, new Position( root, [ 4 ] ), 4 ), // Range becomes 3..7 and 8..10.
-				new MoveOperation( new Position( root, [ 6 ] ), 1, new Position( root, [ 1 ] ), 5 ) // Range becomes 1..2, 4..7 and 8..10.
+				new InsertOperation(
+					new ModelPosition( root, [ 3 ] ), new Text( 'abc' ), 1
+				), // Range becomes 2..8.
+
+				new MoveOperation(
+					new ModelPosition( root, [ 4 ] ), 3, new ModelPosition( root, [ 9 ] ), 2
+				), // Range becomes 2..5 and 6..9.
+
+				new InsertOperation( new ModelPosition( root, [ 0 ] ), new Text( 'x' ), 3 ), // Range becomes 3..6 and 7..10.
+				new MoveOperation(
+					new ModelPosition( root, [ 9 ] ), 1, new ModelPosition( root, [ 4 ] ), 4
+				), // Range becomes 3..7 and 8..10.
+
+				new MoveOperation(
+					new ModelPosition( root, [ 6 ] ), 1, new ModelPosition( root, [ 1 ] ), 5
+				) // Range becomes 1..2, 4..7 and 8..10.
 			] );
 
 			expect( transformed.length ).to.equal( 3 );
@@ -1409,21 +1427,21 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return empty array if range is collapsed', () => {
-			const range = new Range( new Position( root, [ 1, 3 ] ), new Position( root, [ 1, 3 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 1, 3 ] ), new ModelPosition( root, [ 1, 3 ] ) );
 			const flat = range.getMinimalFlatRanges();
 
 			expect( flat.length ).to.equal( 0 );
 		} );
 
 		it( 'should return empty array if range does not contain any node', () => {
-			const range = new Range( new Position( root, [ 1, 3 ] ), new Position( root, [ 2, 0 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 1, 3 ] ), new ModelPosition( root, [ 2, 0 ] ) );
 			const flat = range.getMinimalFlatRanges();
 
 			expect( flat.length ).to.equal( 0 );
 		} );
 
 		it( 'should return a minimal set of flat ranges that covers the range (start and end in different sub-trees)', () => {
-			const range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 0, 0, 3 ] ), new ModelPosition( root, [ 3, 0, 2 ] ) );
 			const flat = range.getMinimalFlatRanges();
 
 			expect( flat.length ).to.equal( 4 );
@@ -1438,7 +1456,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return a minimal set of flat ranges that covers the range (start.path is prefix of end.path)', () => {
-			const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 0, 1, 4 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 0, 1, 4 ] ) );
 			const flat = range.getMinimalFlatRanges();
 
 			expect( flat.length ).to.equal( 2 );
@@ -1455,19 +1473,19 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should be true if start and end position are in the same parent', () => {
-			const range = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 2 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 0, 0 ] ), new ModelPosition( root, [ 0, 2 ] ) );
 			expect( range.isFlat ).to.be.true;
 		} );
 
 		it( 'should be false if start and end position are in different parents', () => {
-			const range = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 3, 0, 1 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 0, 0 ] ), new ModelPosition( root, [ 3, 0, 1 ] ) );
 			expect( range.isFlat ).to.be.false;
 		} );
 	} );
 
 	describe( 'toJSON()', () => {
 		it( 'should serialize range', () => {
-			const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 3 ] ) );
 
 			const serialized = range.toJSON();
 
@@ -1481,7 +1499,7 @@ describe( 'Range', () => {
 	describe( 'fromJSON()', () => {
 		it( 'should create range from given JSON object', () => {
 			const serialized = range.toJSON();
-			const deserialized = Range.fromJSON( serialized, doc );
+			const deserialized = ModelRange.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.deep.equal( range );
 		} );
@@ -1500,35 +1518,35 @@ describe( 'Range', () => {
 
 		it( 'should return an element when it is fully contained by the range', () => {
 			// <div><h>first</h><p>lorem ipsum</p></div>[<p>foo</p>]<p>bar</p><div><h>second</h><p>lorem</p></div>
-			const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 2 ] ) );
 
 			expect( range.getContainedElement() ).to.equal( root.getNodeByPath( [ 1 ] ) );
 		} );
 
 		it( 'should return "null" if the range is collapsed', () => {
 			// <div><h>first</h><p>lorem ipsum</p></div>[]<p>foo</p><p>bar</p><div><h>second</h><p>lorem</p></div>
-			const range = new Range( new Position( root, [ 1 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 1 ] ) );
 
 			expect( range.getContainedElement() ).to.be.null;
 		} );
 
 		it( 'should return "null" if it contains 2+ elements', () => {
 			// <div><h>first</h><p>lorem ipsum</p></div>[<p>foo</p><p>bar</p>]<div><h>second</h><p>lorem</p></div>
-			const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 3 ] ) );
 
 			expect( range.getContainedElement() ).to.be.null;
 		} );
 
 		it( 'should return "null" if it contains an element and some other nodes', () => {
 			// <div><h>first</h><p>lorem ipsum</p></div>[<p>foo</p><p>ba]r</p><div><h>second</h><p>lorem</p></div>
-			const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2, 2 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 2, 2 ] ) );
 
 			expect( range.getContainedElement() ).to.be.null;
 		} );
 
 		it( 'should return "null" if it fully contains a node but the node is not an element', () => {
 			// <div><h>first</h><p>lorem ipsum</p></div><p>foo</p><p>[bar]</p><div><h>second</h><p>lorem</p></div>
-			const range = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 3 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 2, 0 ] ), new ModelPosition( root, [ 2, 3 ] ) );
 
 			expect( range.getContainedElement() ).to.be.null;
 		} );

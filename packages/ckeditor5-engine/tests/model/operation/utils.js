@@ -8,8 +8,8 @@ import { ModelDocumentFragment } from '../../../src/model/documentfragment.js';
 import { ModelElement } from '../../../src/model/element.js';
 import { Text } from '../../../src/model/text.js';
 import { TextProxy } from '../../../src/model/textproxy.js';
-import { Position } from '../../../src/model/position.js';
-import { Range } from '../../../src/model/range.js';
+import { ModelPosition } from '../../../src/model/position.js';
+import { ModelRange } from '../../../src/model/range.js';
 import * as utils from '../../../src/model/operation/utils.js';
 import { _getModelData } from '../../../src/dev-utils/model.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -38,19 +38,19 @@ describe( 'Operation utils', () => {
 
 	describe( 'insert', () => {
 		it( 'should insert nodes between nodes', () => {
-			utils._insert( Position._createAt( root, 3 ), [ 'xxx', new ModelElement( 'p' ) ] );
+			utils._insert( ModelPosition._createAt( root, 3 ), [ 'xxx', new ModelElement( 'p' ) ] );
 
 			expectData( 'fooxxx<p></p><$text bold="true">bar</$text><imageBlock src="img.jpg"></imageBlock>xyz' );
 		} );
 
 		it( 'should split text node if nodes at inserted at offset inside text node', () => {
-			utils._insert( Position._createAt( root, 5 ), new ModelElement( 'p' ) );
+			utils._insert( ModelPosition._createAt( root, 5 ), new ModelElement( 'p' ) );
 
 			expectData( 'foo<$text bold="true">ba</$text><p></p><$text bold="true">r</$text><imageBlock src="img.jpg"></imageBlock>xyz' );
 		} );
 
 		it( 'should merge text nodes if possible', () => {
-			utils._insert( Position._createAt( root, 3 ), new Text( 'xxx', { bold: true } ) );
+			utils._insert( ModelPosition._createAt( root, 3 ), new Text( 'xxx', { bold: true } ) );
 
 			expectData( 'foo<$text bold="true">xxxbar</$text><imageBlock src="img.jpg"></imageBlock>xyz' );
 		} );
@@ -58,21 +58,21 @@ describe( 'Operation utils', () => {
 
 	describe( 'remove', () => {
 		it( 'should remove nodes in given range', () => {
-			const range = new Range( Position._createAt( root, 3 ), Position._createAt( root, 6 ) );
+			const range = new ModelRange( ModelPosition._createAt( root, 3 ), ModelPosition._createAt( root, 6 ) );
 			utils._remove( range );
 
 			expectData( 'foo<imageBlock src="img.jpg"></imageBlock>xyz' );
 		} );
 
 		it( 'should split text node if range starts or ends inside text node', () => {
-			const range = new Range( Position._createAt( root, 1 ), Position._createAt( root, 5 ) );
+			const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 5 ) );
 			utils._remove( range );
 
 			expectData( 'f<$text bold="true">r</$text><imageBlock src="img.jpg"></imageBlock>xyz' );
 		} );
 
 		it( 'should merge text nodes if possible', () => {
-			const range = new Range( Position._createAt( root, 3 ), Position._createAt( root, 7 ) );
+			const range = new ModelRange( ModelPosition._createAt( root, 3 ), ModelPosition._createAt( root, 7 ) );
 			utils._remove( range );
 
 			expectData( 'fooxyz' );
@@ -81,36 +81,36 @@ describe( 'Operation utils', () => {
 
 		it( 'should throw if given range is not flat', () => {
 			expectToThrowCKEditorError( () => {
-				utils._remove( new Range( new Position( root, [ 0 ] ), new Position( root, [ 1, 2 ] ) ) );
+				utils._remove( new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1, 2 ] ) ) );
 			}, /operation-utils-remove-range-not-flat/ );
 		} );
 	} );
 
 	describe( 'move', () => {
 		it( 'should move a range of nodes', () => {
-			const range = new Range( Position._createAt( root, 3 ), Position._createAt( root, 6 ) );
-			utils._move( range, Position._createAt( root, 0 ) );
+			const range = new ModelRange( ModelPosition._createAt( root, 3 ), ModelPosition._createAt( root, 6 ) );
+			utils._move( range, ModelPosition._createAt( root, 0 ) );
 
 			expectData( '<$text bold="true">bar</$text>foo<imageBlock src="img.jpg"></imageBlock>xyz' );
 		} );
 
 		it( 'should correctly move if target position is in same element as moved range, but after range', () => {
-			const range = new Range( Position._createAt( root, 3 ), Position._createAt( root, 6 ) );
-			utils._move( range, Position._createAt( root, 10 ) );
+			const range = new ModelRange( ModelPosition._createAt( root, 3 ), ModelPosition._createAt( root, 6 ) );
+			utils._move( range, ModelPosition._createAt( root, 10 ) );
 
 			expectData( 'foo<imageBlock src="img.jpg"></imageBlock>xyz<$text bold="true">bar</$text>' );
 		} );
 
 		it( 'should throw if given range is not flat', () => {
 			expectToThrowCKEditorError( () => {
-				utils._move( new Range( new Position( root, [ 0 ] ), new Position( root, [ 1, 2 ] ) ), null );
+				utils._move( new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1, 2 ] ) ), null );
 			}, /operation-utils-move-range-not-flat/ );
 		} );
 	} );
 
 	describe( 'setAttribute', () => {
 		it( 'should set attribute on given range of nodes', () => {
-			const range = new Range( Position._createAt( root, 6 ), Position._createAt( root, 8 ) );
+			const range = new ModelRange( ModelPosition._createAt( root, 6 ), ModelPosition._createAt( root, 8 ) );
 			utils._setAttribute( range, 'newAttr', true );
 
 			expectData( 'foo<$text bold="true">bar</$text>' +
@@ -120,14 +120,14 @@ describe( 'Operation utils', () => {
 		} );
 
 		it( 'should remove attribute if null was passed as a value', () => {
-			const range = new Range( Position._createAt( root, 6 ), Position._createAt( root, 7 ) );
+			const range = new ModelRange( ModelPosition._createAt( root, 6 ), ModelPosition._createAt( root, 7 ) );
 			utils._setAttribute( range, 'src', null );
 
 			expectData( 'foo<$text bold="true">bar</$text><imageBlock></imageBlock>xyz' );
 		} );
 
 		it( 'should merge nodes if possible', () => {
-			const range = new Range( Position._createAt( root, 0 ), Position._createAt( root, 3 ) );
+			const range = new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 3 ) );
 			utils._setAttribute( range, 'bold', true );
 
 			expectData( '<$text bold="true">foobar</$text><imageBlock src="img.jpg"></imageBlock>xyz' );

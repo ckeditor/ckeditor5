@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Range } from '../../../src/model/range.js';
-import { Position } from '../../../src/model/position.js';
+import { ModelRange } from '../../../src/model/range.js';
+import { ModelPosition } from '../../../src/model/position.js';
 import { TreeWalker } from '../../../src/model/treewalker.js';
 import { Text } from '../../../src/model/text.js';
 import { TextProxy } from '../../../src/model/textproxy.js';
@@ -108,5 +108,5 @@ export function stringifyBlocks( elements ) {
  * @returns {engine.model.Range}
  */
 export function createRangeOnElementOnly( element ) {
-	return new Range( Position._createAt( element.parent, element.startOffset ), Position._createAt( element, 0 ) );
+	return new ModelRange( ModelPosition._createAt( element.parent, element.startOffset ), ModelPosition._createAt( element, 0 ) );
 }

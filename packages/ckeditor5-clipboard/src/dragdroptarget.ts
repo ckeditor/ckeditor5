@@ -15,7 +15,7 @@ import {
 import {
 	type ModelNode,
 	type ModelElement,
-	type Range,
+	type ModelRange,
 	type ModelLiveRange,
 	type ViewElement,
 	type ViewRange,
@@ -171,7 +171,7 @@ export class DragDropTarget extends Plugin {
 		clientY: number,
 		blockMode: boolean,
 		draggedRange: ModelLiveRange | null
-	): Range | null {
+	): ModelRange | null {
 		const targetRange = findDropTargetRange(
 			this.editor,
 			targetViewElement,
@@ -250,7 +250,7 @@ export class DragDropTarget extends Plugin {
 	 *
 	 * @param targetRange The range to set the marker to.
 	 */
-	private _updateDropMarker( targetRange: Range ): void {
+	private _updateDropMarker( targetRange: ModelRange ): void {
 		const editor = this.editor;
 		const markers = editor.model.markers;
 
@@ -286,7 +286,7 @@ export class DragDropTarget extends Plugin {
 	/**
 	 * Updates the horizontal drop target line.
 	 */
-	private _updateDropTargetLine( range: Range ): void {
+	private _updateDropTargetLine( range: ModelRange ): void {
 		const editing = this.editor.editing;
 
 		const nodeBefore = range.start.nodeBefore as ModelElement | null;
@@ -377,7 +377,7 @@ function findDropTargetRange(
 	clientY: number,
 	blockMode: boolean,
 	draggedRange: ModelLiveRange | null
-): Range | null {
+): ModelRange | null {
 	const model = editor.model;
 	const mapper = editor.editing.mapper;
 
@@ -470,7 +470,7 @@ function shouldIgnoreElement( editor: Editor, modelElement: ModelElement ): bool
 /**
  * Returns target range relative to the given element.
  */
-function findDropTargetRangeForElement( editor: Editor, modelElement: ModelElement, clientX: number, clientY: number ): Range {
+function findDropTargetRangeForElement( editor: Editor, modelElement: ModelElement, clientX: number, clientY: number ): ModelRange {
 	const model = editor.model;
 
 	return model.createRange(

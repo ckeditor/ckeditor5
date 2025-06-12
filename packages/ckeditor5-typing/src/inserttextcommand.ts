@@ -11,7 +11,7 @@ import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 
 import { ChangeBuffer } from './utils/changebuffer.js';
 
-import type { ModelDocumentSelection, Range, Selection } from '@ckeditor/ckeditor5-engine';
+import type { ModelDocumentSelection, ModelRange, Selection } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The insert text command. Used by the {@link module:typing/input~Input input feature} to handle typing.
@@ -131,13 +131,13 @@ export interface InsertTextCommandOptions {
 	/**
 	 * The range in which the text is inserted. Defaults to the first range in the current selection.
 	 */
-	range?: Range;
+	range?: ModelRange;
 
 	/**
 	 * The range where the selection should be placed after the insertion.
 	 * If not specified, the selection will be placed right after the inserted text.
 	 */
-	resultRange?: Range;
+	resultRange?: ModelRange;
 }
 
 export interface InsertTextCommandExecuteEvent {

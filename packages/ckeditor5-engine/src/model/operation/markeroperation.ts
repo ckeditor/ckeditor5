@@ -8,7 +8,7 @@
  */
 
 import { Operation } from './operation.js';
-import { Range } from '../range.js';
+import { ModelRange } from '../range.js';
 
 import { type ModelDocument } from '../document.js';
 import { type MarkerCollection } from '../markercollection.js';
@@ -27,14 +27,14 @@ export class MarkerOperation extends Operation {
 	 *
 	 * @readonly
 	 */
-	public oldRange: Range | null;
+	public oldRange: ModelRange | null;
 
 	/**
 	 * Marker range after the change.
 	 *
 	 * @readonly
 	 */
-	public newRange: Range | null;
+	public newRange: ModelRange | null;
 
 	/**
 	 * Specifies whether the marker operation affects the data produced by the data pipeline
@@ -61,8 +61,8 @@ export class MarkerOperation extends Operation {
 	 */
 	constructor(
 		name: string,
-		oldRange: Range | null,
-		newRange: Range | null,
+		oldRange: ModelRange | null,
+		newRange: ModelRange | null,
 		markers: MarkerCollection,
 		affectsData: boolean,
 		baseVersion: number | null
@@ -167,8 +167,8 @@ export class MarkerOperation extends Operation {
 	public static override fromJSON( json: any, document: ModelDocument ): MarkerOperation {
 		return new MarkerOperation(
 			json.name,
-			json.oldRange ? Range.fromJSON( json.oldRange, document ) : null,
-			json.newRange ? Range.fromJSON( json.newRange, document ) : null,
+			json.oldRange ? ModelRange.fromJSON( json.oldRange, document ) : null,
+			json.newRange ? ModelRange.fromJSON( json.newRange, document ) : null,
 			document.model.markers,
 			json.affectsData,
 			json.baseVersion

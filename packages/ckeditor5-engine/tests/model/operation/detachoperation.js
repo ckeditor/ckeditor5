@@ -6,7 +6,7 @@
 import { Model } from '../../../src/model/model.js';
 import { DetachOperation } from '../../../src/model/operation/detachoperation.js';
 
-import { Position } from '../../../src/model/position.js';
+import { ModelPosition } from '../../../src/model/position.js';
 import { ModelDocumentFragment } from '../../../src/model/documentfragment.js';
 import { ModelElement } from '../../../src/model/element.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -22,18 +22,18 @@ describe( 'DetachOperation', () => {
 	} );
 
 	it( 'should have type equal to detach', () => {
-		const op = new DetachOperation( Position._createBefore( element ), 1 );
+		const op = new DetachOperation( ModelPosition._createBefore( element ), 1 );
 
 		expect( op.type ).to.equal( 'detach' );
 	} );
 
 	it( 'should return null on affectedSelectable', () => {
-		const op = new DetachOperation( Position._createBefore( element ), 1 );
+		const op = new DetachOperation( ModelPosition._createBefore( element ), 1 );
 		expect( op.affectedSelectable ).to.equal( null );
 	} );
 
 	it( 'should remove given element from parent', () => {
-		const op = new DetachOperation( Position._createBefore( element ), 1 );
+		const op = new DetachOperation( ModelPosition._createBefore( element ), 1 );
 
 		model.applyOperation( op );
 
@@ -47,7 +47,7 @@ describe( 'DetachOperation', () => {
 
 			root._appendChild( [ element ] );
 
-			const op = new DetachOperation( Position._createBefore( element ), 1 );
+			const op = new DetachOperation( ModelPosition._createBefore( element ), 1 );
 
 			expectToThrowCKEditorError( () => {
 				op._validate();
@@ -56,14 +56,14 @@ describe( 'DetachOperation', () => {
 	} );
 
 	it( 'should be not a document operation', () => {
-		const op = new DetachOperation( Position._createBefore( element ), 1 );
+		const op = new DetachOperation( ModelPosition._createBefore( element ), 1 );
 
 		expect( op.isDocumentOperation ).to.false;
 	} );
 
 	describe( 'toJSON', () => {
 		it( 'should create proper json object', () => {
-			const position = Position._createBefore( element );
+			const position = ModelPosition._createBefore( element );
 			const op = new DetachOperation( position, 1 );
 
 			const serialized = op.toJSON();

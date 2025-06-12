@@ -14,7 +14,7 @@ import {
 	type Batch,
 	type Operation,
 	type DataControllerSetEvent,
-	type Range,
+	type ModelRange,
 	NoOperation
 } from '@ckeditor/ckeditor5-engine';
 
@@ -28,7 +28,7 @@ export abstract class BaseCommand extends Command {
 	 * * {@link module:engine/model/batch~Batch batch} saved by the command,
 	 * * {@link module:engine/model/selection~Selection selection} state at the moment of saving the batch.
 	 */
-	protected _stack: Array<{ batch: Batch; selection: { ranges: Array<Range>; isBackward: boolean } }> = [];
+	protected _stack: Array<{ batch: Batch; selection: { ranges: Array<ModelRange>; isBackward: boolean } }> = [];
 
 	/**
 	 * Stores all batches that were created by this command.
@@ -124,7 +124,7 @@ export abstract class BaseCommand extends Command {
 	 * @param operations Operations which has been applied since selection has been stored.
 	 */
 	protected _restoreSelection(
-		ranges: Array<Range>,
+		ranges: Array<ModelRange>,
 		isBackward: boolean,
 		operations: Array<Operation>
 	): void {
@@ -132,7 +132,7 @@ export abstract class BaseCommand extends Command {
 		const document = model.document;
 
 		// This will keep the transformed selection ranges.
-		const selectionRanges: Array<Range> = [];
+		const selectionRanges: Array<ModelRange> = [];
 
 		// Transform all ranges from the restored selection.
 		const transformedRangeGroups = ranges.map( range => range.getTransformedByOperations( operations ) );
@@ -229,7 +229,7 @@ export abstract class BaseCommand extends Command {
  *
  * @param ranges Ranges to be normalized.
  */
-function normalizeRanges( ranges: Array<Range> ): void {
+function normalizeRanges( ranges: Array<ModelRange> ): void {
 	ranges.sort( ( a, b ) => a.start.isBefore( b.start ) ? -1 : 1 );
 
 	for ( let i = 1; i < ranges.length; i++ ) {
@@ -244,6 +244,6 @@ function normalizeRanges( ranges: Array<Range> ): void {
 	}
 }
 
-function isRangeContainedByAnyOtherRange( range: Range, ranges: Array<Range> ): boolean {
+function isRangeContainedByAnyOtherRange( range: ModelRange, ranges: Array<ModelRange> ): boolean {
 	return ranges.some( otherRange => otherRange !== range && otherRange.containsRange( range, true ) );
 }

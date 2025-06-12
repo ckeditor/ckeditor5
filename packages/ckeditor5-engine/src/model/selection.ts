@@ -10,7 +10,7 @@
 import { TypeCheckable } from './typecheckable.js';
 import { ModelNode } from './node.js';
 import { ModelPosition, type ModelPositionOffset } from './position.js';
-import { Range } from './range.js';
+import { ModelRange } from './range.js';
 
 import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelDocumentSelection } from './documentselection.js';
@@ -20,7 +20,7 @@ import { type ModelItem } from './item.js';
 import { CKEditorError, EmitterMixin, isIterable } from '@ckeditor/ckeditor5-utils';
 
 /**
- * Selection is a set of {@link module:engine/model/range~Range ranges}. It has a direction specified by its
+ * Selection is a set of {@link module:engine/model/range~ModelRange ranges}. It has a direction specified by its
  * {@link module:engine/model/selection~Selection#anchor anchor} and {@link module:engine/model/selection~Selection#focus focus}
  * (it can be {@link module:engine/model/selection~Selection#isBackward forward or backward}).
  * Additionally, selection may have its own attributes (think – whether text typed in in this selection
@@ -38,7 +38,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	protected _attrs: Map<string, unknown> = new Map();
 
 	/** @internal */
-	public _ranges: Array<Range> = [];
+	public _ranges: Array<ModelRange> = [];
 
 	/**
 	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
@@ -118,8 +118,8 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * Anchor and {@link #focus} define the direction of the selection, which is important
 	 * when expanding/shrinking selection. The focus moves, while the anchor should remain in the same place.
 	 *
-	 * Anchor is always set to the {@link module:engine/model/range~Range#start start} or
-	 * {@link module:engine/model/range~Range#end end} position of the last of selection's ranges. Whether it is
+	 * Anchor is always set to the {@link module:engine/model/range~ModelRange#start start} or
+	 * {@link module:engine/model/range~ModelRange#end end} position of the last of selection's ranges. Whether it is
 	 * the `start` or `end` depends on the specified `options.backward`. See the {@link #setTo `setTo()`} method.
 	 *
 	 * May be set to `null` if there are no ranges in the selection.
@@ -221,21 +221,21 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
 	 * Returns an iterable object that iterates over copies of selection ranges.
 	 */
-	public* getRanges(): IterableIterator<Range> {
+	public* getRanges(): IterableIterator<ModelRange> {
 		for ( const range of this._ranges ) {
-			yield new Range( range.start, range.end );
+			yield new ModelRange( range.start, range.end );
 		}
 	}
 
 	/**
 	 * Returns a copy of the first range in the selection.
-	 * First range is the one which {@link module:engine/model/range~Range#start start} position
+	 * First range is the one which {@link module:engine/model/range~ModelRange#start start} position
 	 * {@link module:engine/model/position~ModelPosition#isBefore is before} start position of all other ranges
 	 * (not to confuse with the first range added to the selection).
 	 *
 	 * Returns `null` if there are no ranges in selection.
 	 */
-	public getFirstRange(): Range | null {
+	public getFirstRange(): ModelRange | null {
 		let first = null;
 
 		for ( const range of this._ranges ) {
@@ -244,18 +244,18 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 			}
 		}
 
-		return first ? new Range( first.start, first.end ) : null;
+		return first ? new ModelRange( first.start, first.end ) : null;
 	}
 
 	/**
 	 * Returns a copy of the last range in the selection.
-	 * Last range is the one which {@link module:engine/model/range~Range#end end} position
+	 * Last range is the one which {@link module:engine/model/range~ModelRange#end end} position
 	 * {@link module:engine/model/position~ModelPosition#isAfter is after} end position of all other
 	 * ranges (not to confuse with the range most recently added to the selection).
 	 *
 	 * Returns `null` if there are no ranges in selection.
 	 */
-	public getLastRange(): Range | null {
+	public getLastRange(): ModelRange | null {
 		let last = null;
 
 		for ( const range of this._ranges ) {
@@ -264,7 +264,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 			}
 		}
 
-		return last ? new Range( last.start, last.end ) : null;
+		return last ? new ModelRange( last.start, last.end ) : null;
 	}
 
 	/**
@@ -372,20 +372,20 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 			// We assume that the selectable is a ModelDocumentSelection.
 			// It can't be imported here, because it would lead to circular imports.
 			this._setRanges( ( selectable as ModelDocumentSelection ).getRanges(), ( selectable as ModelDocumentSelection ).isBackward );
-		} else if ( selectable instanceof Range ) {
+		} else if ( selectable instanceof ModelRange ) {
 			this._setRanges( [ selectable ], !!options && !!options.backward );
 		} else if ( selectable instanceof ModelPosition ) {
-			this._setRanges( [ new Range( selectable ) ] );
+			this._setRanges( [ new ModelRange( selectable ) ] );
 		} else if ( selectable instanceof ModelNode ) {
 			const backward = !!options && !!options.backward;
 			let range;
 
 			if ( placeOrOffset == 'in' ) {
-				range = Range._createIn( selectable as ModelElement );
+				range = ModelRange._createIn( selectable as ModelElement );
 			} else if ( placeOrOffset == 'on' ) {
-				range = Range._createOn( selectable );
+				range = ModelRange._createOn( selectable );
 			} else if ( placeOrOffset !== undefined ) {
-				range = new Range( ModelPosition._createAt( selectable, placeOrOffset ) );
+				range = new ModelRange( ModelPosition._createAt( selectable, placeOrOffset ) );
 			} else {
 				/**
 				 * selection.setTo requires the second parameter when the first parameter is a node.
@@ -426,16 +426,16 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * @param isLastBackward Flag describing if last added range was selected forward - from start to end (`false`)
 	 * or backward - from end to start (`true`).
 	 */
-	protected _setRanges( newRanges: Iterable<Range>, isLastBackward: boolean = false ): void {
+	protected _setRanges( newRanges: Iterable<ModelRange>, isLastBackward: boolean = false ): void {
 		const ranges = Array.from( newRanges );
 
 		// Check whether there is any range in new ranges set that is different than all already added ranges.
 		const anyNewRange = ranges.some( newRange => {
-			if ( !( newRange instanceof Range ) ) {
+			if ( !( newRange instanceof ModelRange ) ) {
 				/**
-				 * Selection range set to an object that is not an instance of {@link module:engine/model/range~Range}.
+				 * Selection range set to an object that is not an instance of {@link module:engine/model/range~ModelRange}.
 				 *
-				 * Only {@link module:engine/model/range~Range} instances can be used to set a selection.
+				 * Only {@link module:engine/model/range~ModelRange} instances can be used to set a selection.
 				 * Common mistakes leading to this error are:
 				 *
 				 * * using DOM `Range` object,
@@ -498,10 +498,10 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 		}
 
 		if ( newFocus.compareWith( anchor ) == 'before' ) {
-			this._pushRange( new Range( newFocus, anchor ) );
+			this._pushRange( new ModelRange( newFocus, anchor ) );
 			this._lastRangeBackward = true;
 		} else {
-			this._pushRange( new Range( anchor, newFocus ) );
+			this._pushRange( new ModelRange( anchor, newFocus ) );
 			this._lastRangeBackward = false;
 		}
 
@@ -713,23 +713,23 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * Adds given range to internal {@link #_ranges ranges array}. Throws an error
 	 * if given range is intersecting with any range that is already stored in this selection.
 	 */
-	protected _pushRange( range: Range ): void {
+	protected _pushRange( range: ModelRange ): void {
 		this._checkRange( range );
-		this._ranges.push( new Range( range.start, range.end ) );
+		this._ranges.push( new ModelRange( range.start, range.end ) );
 	}
 
 	/**
 	 * Checks if given range intersects with ranges that are already in the selection. Throws an error if it does.
 	 */
-	protected _checkRange( range: Range ): void {
+	protected _checkRange( range: ModelRange ): void {
 		for ( let i = 0; i < this._ranges.length; i++ ) {
 			if ( range.isIntersecting( this._ranges[ i ] ) ) {
 				/**
 				 * Trying to add a range that intersects with another range in the selection.
 				 *
 				 * @error model-selection-range-intersects
-				 * @param {module:engine/model/range~Range} addedRange Range that was added to the selection.
-				 * @param {module:engine/model/range~Range} intersectingRange Range in the selection that intersects with `addedRange`.
+				 * @param {module:engine/model/range~ModelRange} addedRange Range that was added to the selection.
+				 * @param {module:engine/model/range~ModelRange} intersectingRange Range in the selection that intersects with `addedRange`.
 				 */
 				throw new CKEditorError(
 					'model-selection-range-intersects',
@@ -744,7 +744,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * Replaces all the ranges by the given ones.
 	 * Uses {@link #_popRange _popRange} and {@link #_pushRange _pushRange} to ensure proper ranges removal and addition.
 	 */
-	protected _replaceAllRanges( ranges: Array<Range> ): void {
+	protected _replaceAllRanges( ranges: Array<ModelRange> ): void {
 		this._removeAllRanges();
 
 		for ( const range of ranges ) {
@@ -846,7 +846,7 @@ function isUnvisitedBlock( element: ModelNode | ModelDocumentFragment, visited: 
 /**
  * Checks if the given element is a $block was not previously visited and is a top block in a range.
  */
-function isUnvisitedTopBlock( element: ModelElement, visited: WeakSet<ModelNode | ModelDocumentFragment>, range: Range ) {
+function isUnvisitedTopBlock( element: ModelElement, visited: WeakSet<ModelNode | ModelDocumentFragment>, range: ModelRange ) {
 	return isUnvisitedBlock( element, visited ) && isTopBlockInRange( element, range );
 }
 
@@ -884,7 +884,7 @@ function getParentBlock( position: ModelPosition, visited: WeakSet<ModelNode | M
 /**
  * Checks if the blocks is not nested in other block inside a range.
  */
-function isTopBlockInRange( block: ModelNode, range: Range ) {
+function isTopBlockInRange( block: ModelNode, range: ModelRange ) {
 	const parentBlock = findAncestorBlock( block );
 
 	if ( !parentBlock ) {
@@ -892,7 +892,7 @@ function isTopBlockInRange( block: ModelNode, range: Range ) {
 	}
 
 	// Add loose flag to check as parentRange can be equal to range.
-	const isParentInRange = range.containsRange( Range._createOn( parentBlock ), true );
+	const isParentInRange = range.containsRange( ModelRange._createOn( parentBlock ), true );
 
 	return !isParentInRange;
 }
@@ -913,7 +913,7 @@ function isTopBlockInRange( block: ModelNode, range: Range ) {
  * <paragraph>a[]</paragraph> // This block will be returned
  * ```
  */
-function isStartBlockSelected( startBlock: ModelElement | undefined, range: Range ): boolean {
+function isStartBlockSelected( startBlock: ModelElement | undefined, range: ModelRange ): boolean {
 	if ( !startBlock ) {
 		return false;
 	}
@@ -945,7 +945,7 @@ function isStartBlockSelected( startBlock: ModelElement | undefined, range: Rang
  * <paragraph>[]a</paragraph> // this block will be returned
  * ```
  */
-function isEndBlockSelected( endBlock: ModelElement | undefined, range: Range ): boolean {
+function isEndBlockSelected( endBlock: ModelElement | undefined, range: ModelRange ): boolean {
 	if ( !endBlock ) {
 		return false;
 	}
@@ -983,7 +983,7 @@ function findAncestorBlock( node: ModelNode | ModelDocumentFragment ) {
  *
  * See also {@link module:engine/model/selection~Selection#setTo}.
  */
-export type Selectable = Selection | ModelDocumentSelection | ModelPosition | Range | ModelNode | Iterable<Range> | null;
+export type Selectable = Selection | ModelDocumentSelection | ModelPosition | ModelRange | ModelNode | Iterable<ModelRange> | null;
 
 /**
  * The place or offset of the selection.

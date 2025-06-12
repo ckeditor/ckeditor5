@@ -23,7 +23,7 @@ import type {
 	ModelDocumentChangeEvent,
 	Model,
 	Position,
-	Range,
+	ModelRange,
 	Writer
 } from 'ckeditor5/src/engine.js';
 import type { Delete, LastTextLineData } from 'ckeditor5/src/typing.js';
@@ -96,7 +96,7 @@ export function inlineAutoformatEditing(
 	editor: Editor,
 	plugin: Autoformat,
 	testRegexpOrCallback: RegExp | TestCallback,
-	formatCallback: ( writer: Writer, rangesToFormat: Array<Range> ) => boolean | undefined
+	formatCallback: ( writer: Writer, rangesToFormat: Array<ModelRange> ) => boolean | undefined
 ): void {
 	let regExp: RegExp;
 	let testCallback: TestCallback | undefined;
@@ -225,7 +225,7 @@ function testOutputToRanges( start: Position, arrays: Array<Array<number>>, mode
  * It is similar to {@link module:typing/utils/getlasttextline.getLastTextLine `getLastTextLine()`},
  * but it ignores any text before the last `code`.
  */
-function getTextAfterCode( range: Range, model: Model ): LastTextLineData {
+function getTextAfterCode( range: ModelRange, model: Model ): LastTextLineData {
 	let start = range.start;
 
 	const text = Array.from( range.getItems() ).reduce( ( rangeText, node ) => {

@@ -8,8 +8,8 @@ import { Model } from '../../src/model/model.js';
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
-import { Range } from '../../src/model/range.js';
-import { Position } from '../../src/model/position.js';
+import { ModelRange } from '../../src/model/range.js';
+import { ModelPosition } from '../../src/model/position.js';
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 
 describe( 'model test utils', () => {
@@ -67,7 +67,7 @@ describe( 'model test utils', () => {
 			const stringifySpy = sinon.spy( _getModelData, '_stringify' );
 			root._appendChild( new ModelElement( 'b', null, new Text( 'btext' ) ) );
 			model.change( writer => {
-				writer.setSelection( new Range( Position._createAt( root, 0 ), Position._createAt( root, 1 ) ) );
+				writer.setSelection( new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 1 ) ) );
 			} );
 			expect( _getModelData( model ) ).to.equal( '[<b>btext</b>]' );
 			sinon.assert.calledOnce( stringifySpy );
@@ -84,7 +84,7 @@ describe( 'model test utils', () => {
 			it( 'should stringify collapsed marker', () => {
 				_setModelData( model, '<paragraph>bar</paragraph>' );
 
-				model.markers._set( 'foo', new Range( Position._createAt( document.getRoot(), 0 ) ) );
+				model.markers._set( 'foo', new ModelRange( ModelPosition._createAt( document.getRoot(), 0 ) ) );
 
 				expect( _getModelData( model, { convertMarkers: true, withoutSelection: true } ) )
 					.to.equal( '<foo:start></foo:start><paragraph>bar</paragraph>' );
@@ -93,7 +93,10 @@ describe( 'model test utils', () => {
 			it( 'should stringify non-collapsed marker', () => {
 				_setModelData( model, '<paragraph>bar</paragraph>' );
 
-				const markerRange = new Range( Position._createAt( document.getRoot(), 0 ), Position._createAt( document.getRoot(), 1 ) );
+				const markerRange = new ModelRange(
+					ModelPosition._createAt( document.getRoot(), 0 ),
+					ModelPosition._createAt( document.getRoot(), 1 )
+				);
 
 				model.markers._set( 'foo', markerRange );
 
@@ -392,7 +395,7 @@ describe( 'model test utils', () => {
 
 			it( 'writes flat selection containing couple of nodes', () => {
 				model.change( writer => {
-					writer.setSelection( new Range( Position._createAt( root, 0 ), Position._createAt( root, 4 ) ) );
+					writer.setSelection( new ModelRange( ModelPosition._createAt( root, 0 ), ModelPosition._createAt( root, 4 ) ) );
 				} );
 
 				expect( _stringifyModel( root, selection ) ).to.equal(
@@ -402,7 +405,7 @@ describe( 'model test utils', () => {
 
 			it( 'writes flat selection within text', () => {
 				model.change( writer => {
-					writer.setSelection( new Range( Position._createAt( root, 2 ), Position._createAt( root, 3 ) ) );
+					writer.setSelection( new ModelRange( ModelPosition._createAt( root, 2 ), ModelPosition._createAt( root, 3 ) ) );
 				} );
 
 				expect( _stringifyModel( root, selection ) ).to.equal(
@@ -412,7 +415,7 @@ describe( 'model test utils', () => {
 
 			it( 'writes multi-level selection', () => {
 				model.change( writer => {
-					writer.setSelection( new Range( Position._createAt( elA, 0 ), Position._createAt( elB, 0 ) ) );
+					writer.setSelection( new ModelRange( ModelPosition._createAt( elA, 0 ), ModelPosition._createAt( elB, 0 ) ) );
 				} );
 
 				expect( _stringifyModel( root, selection ) ).to.equal(
@@ -422,7 +425,9 @@ describe( 'model test utils', () => {
 
 			it( 'writes selection when is backward', () => {
 				model.change( writer => {
-					writer.setSelection( new Range( Position._createAt( elA, 0 ), Position._createAt( elB, 0 ) ), { backward: true } );
+					writer.setSelection(
+						new ModelRange( ModelPosition._createAt( elA, 0 ), ModelPosition._createAt( elB, 0 ) ), { backward: true }
+					);
 				} );
 
 				expect( _stringifyModel( root, selection ) ).to.equal(
@@ -435,14 +440,14 @@ describe( 'model test utils', () => {
 
 				root._appendChild( new Text( 'நிலைக்கு' ) );
 				model.change( writer => {
-					writer.setSelection( new Range( Position._createAt( root, 2 ), Position._createAt( root, 6 ) ) );
+					writer.setSelection( new ModelRange( ModelPosition._createAt( root, 2 ), ModelPosition._createAt( root, 6 ) ) );
 				} );
 
 				expect( _stringifyModel( root, selection ) ).to.equal( 'நி[லைக்]கு' );
 			} );
 
 			it( 'uses range and coverts it to selection', () => {
-				const range = new Range( Position._createAt( elA, 0 ), Position._createAt( elB, 0 ) );
+				const range = new ModelRange( ModelPosition._createAt( elA, 0 ), ModelPosition._createAt( elB, 0 ) );
 
 				expect( _stringifyModel( root, range ) ).to.equal(
 					'<a>[</a>foo<$text bold="true">bar</$text><b>]</b>'
@@ -450,7 +455,7 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'uses position and converts it to collapsed selection', () => {
-				const position = new Position( root, [ 0 ] );
+				const position = new ModelPosition( root, [ 0 ] );
 
 				expect( _stringifyModel( root, position ) ).to.equal(
 					'[]<a></a>foo<$text bold="true">bar</$text><b></b>'
@@ -479,7 +484,7 @@ describe( 'model test utils', () => {
 				expect( fragment ).to.be.instanceOf( ModelDocumentFragment );
 				expect( selection.rangeCount ).to.equal( 1 );
 
-				const range = new Range( Position._createAt( fragment, 0 ), Position._createAt( fragment, 1 ) );
+				const range = new ModelRange( ModelPosition._createAt( fragment, 0 ), ModelPosition._createAt( fragment, 1 ) );
 				expect( selection.getFirstRange().isEqual( range ) ).to.be.true;
 			}
 		} );

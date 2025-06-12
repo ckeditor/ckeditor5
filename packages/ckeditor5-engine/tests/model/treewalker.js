@@ -8,8 +8,8 @@ import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { TreeWalker } from '../../src/model/treewalker.js';
-import { Position } from '../../src/model/position.js';
-import { Range } from '../../src/model/range.js';
+import { ModelPosition } from '../../src/model/position.js';
+import { ModelRange } from '../../src/model/range.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -43,8 +43,8 @@ describe( 'TreeWalker', () => {
 
 		root._insertChild( 0, [ img1, paragraph ] );
 
-		rootBeginning = new Position( root, [ 0 ] );
-		rootEnding = new Position( root, [ 2 ] );
+		rootBeginning = new ModelPosition( root, [ 0 ] );
+		rootEnding = new ModelPosition( root, [ 2 ] );
 	} );
 
 	afterEach( () => {
@@ -126,7 +126,7 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( 'should start iterating at the startPosition witch is not a root bound', () => {
-			const iterator = new TreeWalker( { startPosition: new Position( root, [ 1 ] ) } );
+			const iterator = new TreeWalker( { startPosition: new ModelPosition( root, [ 1 ] ) } );
 			let i = 2;
 
 			for ( const value of iterator ) {
@@ -143,7 +143,7 @@ describe( 'TreeWalker', () => {
 				{ type: 'elementEnd', item: img1 }
 			];
 
-			const iterator = new TreeWalker( { startPosition: new Position( root, [ 1 ] ), direction: 'backward' } );
+			const iterator = new TreeWalker( { startPosition: new ModelPosition( root, [ 1 ] ), direction: 'backward' } );
 			let i = expected.length;
 
 			for ( const value of iterator ) {
@@ -167,7 +167,7 @@ describe( 'TreeWalker', () => {
 					{ type: 'elementEnd', item: img2 }
 				];
 
-				range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 1, 4 ] ) );
+				range = new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 1, 4 ] ) );
 			} );
 
 			it( 'should iterate over the range', () => {
@@ -205,7 +205,7 @@ describe( 'TreeWalker', () => {
 					{ type: 'elementEnd', item: img2 }
 				];
 
-				range = new Range( new Position( root, [ 1, 1 ] ), new Position( root, [ 1, 4 ] ) );
+				range = new ModelRange( new ModelPosition( root, [ 1, 1 ] ), new ModelPosition( root, [ 1, 4 ] ) );
 			} );
 
 			it( 'should return part of the text', () => {
@@ -246,7 +246,7 @@ describe( 'TreeWalker', () => {
 					{ type: 'text', data: 'b', attrs: [ [ 'bold', true ] ] }
 				];
 
-				range = new Range( rootBeginning, new Position( root, [ 1, 1 ] ) );
+				range = new ModelRange( rootBeginning, new ModelPosition( root, [ 1, 1 ] ) );
 			} );
 
 			it( 'should return part of the text', () => {
@@ -285,11 +285,11 @@ describe( 'TreeWalker', () => {
 					{ type: 'elementEnd', item: img2 }
 				];
 
-				const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 1, 4 ] ) );
+				const range = new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 1, 4 ] ) );
 
 				const iterator = new TreeWalker( {
 					boundaries: range,
-					startPosition: new Position( root, [ 1, 2 ] )
+					startPosition: new ModelPosition( root, [ 1, 2 ] )
 				} );
 				let i = 0;
 
@@ -308,11 +308,11 @@ describe( 'TreeWalker', () => {
 					{ type: 'elementEnd', item: img2 }
 				];
 
-				const range = new Range( new Position( root, [ 1, 2 ] ), new Position( root, [ 1, 6 ] ) );
+				const range = new ModelRange( new ModelPosition( root, [ 1, 2 ] ), new ModelPosition( root, [ 1, 6 ] ) );
 
 				const iterator = new TreeWalker( {
 					boundaries: range,
-					startPosition: new Position( root, [ 1, 4 ] ),
+					startPosition: new ModelPosition( root, [ 1, 4 ] ),
 					direction: 'backward'
 				} );
 				let i = expected.length;
@@ -384,9 +384,9 @@ describe( 'TreeWalker', () => {
 					{ type: 'elementStart', item: img2 }
 				];
 
-				start = new Position( root, [ 1, 0 ] ); // p, 0
-				end = new Position( root, [ 1, 3, 0 ] ); // img2, 0
-				range = new Range( start, end );
+				start = new ModelPosition( root, [ 1, 0 ] ); // p, 0
+				end = new ModelPosition( root, [ 1, 3, 0 ] ); // img2, 0
+				range = new ModelRange( start, end );
 			} );
 
 			it( 'should respect boundaries', () => {
@@ -422,9 +422,9 @@ describe( 'TreeWalker', () => {
 	describe( '`shallow` iterates only through elements in the range', () => {
 		it( '`shallow` only iterates elements in the range (forward)', () => {
 			const walker = new TreeWalker( {
-				boundaries: new Range(
-					new Position( root, [ 0 ] ),
-					new Position( root, [ 0, 0 ] )
+				boundaries: new ModelRange(
+					new ModelPosition( root, [ 0 ] ),
+					new ModelPosition( root, [ 0, 0 ] )
 				),
 				shallow: true
 			} );
@@ -443,9 +443,9 @@ describe( 'TreeWalker', () => {
 			root._insertChild( 2, [ p2, p3 ] );
 
 			const walker = new TreeWalker( {
-				boundaries: new Range(
-					new Position( root, [ 1 ] ),
-					new Position( root, [ 1, 3 ] )
+				boundaries: new ModelRange(
+					new ModelPosition( root, [ 1 ] ),
+					new ModelPosition( root, [ 1, 3 ] )
 				),
 				shallow: true
 			} );
@@ -464,9 +464,9 @@ describe( 'TreeWalker', () => {
 			root._insertChild( 2, [ p2, p3 ] );
 
 			const walker = new TreeWalker( {
-				boundaries: new Range(
-					new Position( root, [ 1 ] ),
-					new Position( root, [ 1, 3, 0 ] )
+				boundaries: new ModelRange(
+					new ModelPosition( root, [ 1 ] ),
+					new ModelPosition( root, [ 1, 3, 0 ] )
 				),
 				shallow: true
 			} );
@@ -480,9 +480,9 @@ describe( 'TreeWalker', () => {
 
 		it( '`shallow` only iterates elements in the range (backwards)', () => {
 			const walker = new TreeWalker( {
-				boundaries: new Range(
-					new Position( root, [ 0 ] ),
-					new Position( root, [ 0, 0 ] )
+				boundaries: new ModelRange(
+					new ModelPosition( root, [ 0 ] ),
+					new ModelPosition( root, [ 0, 0 ] )
 				),
 				shallow: true,
 				direction: 'backward'
@@ -629,7 +629,7 @@ describe( 'TreeWalker', () => {
 		const docFrag = new ModelDocumentFragment( [ p ] );
 
 		const iterator = new TreeWalker( {
-			startPosition: new Position( docFrag, [ 0 ] ),
+			startPosition: new ModelPosition( docFrag, [ 0 ] ),
 			ignoreElementEnd: true
 		} );
 
@@ -650,7 +650,7 @@ describe( 'TreeWalker', () => {
 		describe( 'forward treewalker', () => {
 			it( 'should jump over all text nodes', () => {
 				const walker = new TreeWalker( {
-					startPosition: Position._createAt( paragraph, 0 )
+					startPosition: ModelPosition._createAt( paragraph, 0 )
 				} );
 
 				walker.skip( value => value.type == 'text' );
@@ -661,7 +661,7 @@ describe( 'TreeWalker', () => {
 
 			it( 'should do not move if the condition is false', () => {
 				const walker = new TreeWalker( {
-					startPosition: Position._createAt( paragraph, 1 )
+					startPosition: ModelPosition._createAt( paragraph, 1 )
 				} );
 
 				walker.skip( () => false );
@@ -672,7 +672,7 @@ describe( 'TreeWalker', () => {
 
 			it( 'should move to the end if the condition is true', () => {
 				const walker = new TreeWalker( {
-					startPosition: Position._createAt( paragraph, 1 )
+					startPosition: ModelPosition._createAt( paragraph, 1 )
 				} );
 
 				walker.skip( () => true );
@@ -685,7 +685,7 @@ describe( 'TreeWalker', () => {
 		describe( 'backward treewalker', () => {
 			it( 'should jump over all text nodes', () => {
 				const walker = new TreeWalker( {
-					startPosition: Position._createAt( paragraph, 3 ),
+					startPosition: ModelPosition._createAt( paragraph, 3 ),
 					direction: 'backward'
 				} );
 
@@ -697,7 +697,7 @@ describe( 'TreeWalker', () => {
 
 			it( 'should do not move if the condition is false', () => {
 				const walker = new TreeWalker( {
-					startPosition: Position._createAt( paragraph, 1 ),
+					startPosition: ModelPosition._createAt( paragraph, 1 ),
 					direction: 'backward'
 				} );
 
@@ -709,7 +709,7 @@ describe( 'TreeWalker', () => {
 
 			it( 'should move to the end if the condition is true', () => {
 				const walker = new TreeWalker( {
-					startPosition: Position._createAt( paragraph, 1 ),
+					startPosition: ModelPosition._createAt( paragraph, 1 ),
 					direction: 'backward'
 				} );
 
@@ -724,10 +724,10 @@ describe( 'TreeWalker', () => {
 	describe( 'jumpTo', () => {
 		it( 'should jump to the given position', () => {
 			const walker = new TreeWalker( {
-				startPosition: Position._createAt( paragraph, 0 )
+				startPosition: ModelPosition._createAt( paragraph, 0 )
 			} );
 
-			walker.jumpTo( new Position( paragraph, [ 2 ] ) );
+			walker.jumpTo( new ModelPosition( paragraph, [ 2 ] ) );
 
 			expect( walker.position.parent ).to.equal( paragraph );
 			expect( walker.position.offset ).to.equal( 2 );
@@ -739,15 +739,15 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( 'cannot move position before the #_boundaryStartParent', () => {
-			const range = new Range(
-				new Position( paragraph, [ 2 ] ),
-				new Position( paragraph, [ 4 ] )
+			const range = new ModelRange(
+				new ModelPosition( paragraph, [ 2 ] ),
+				new ModelPosition( paragraph, [ 4 ] )
 			);
 			const walker = new TreeWalker( {
 				boundaries: range
 			} );
 
-			const positionBeforeAllowedRange = new Position( paragraph, [ 0 ] );
+			const positionBeforeAllowedRange = new ModelPosition( paragraph, [ 0 ] );
 
 			walker.jumpTo( positionBeforeAllowedRange );
 
@@ -762,15 +762,15 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( 'cannot move position after the #_boundaryEndParent', () => {
-			const range = new Range(
-				new Position( paragraph, [ 0 ] ),
-				new Position( paragraph, [ 2 ] )
+			const range = new ModelRange(
+				new ModelPosition( paragraph, [ 0 ] ),
+				new ModelPosition( paragraph, [ 2 ] )
 			);
 			const walker = new TreeWalker( {
 				boundaries: range
 			} );
 
-			const positionAfterAllowedRange = new Position( paragraph, [ 4 ] );
+			const positionAfterAllowedRange = new ModelPosition( paragraph, [ 4 ] );
 
 			// `jumpTo()` autocorrected the position to the last allowed position.
 			walker.jumpTo( positionAfterAllowedRange );
@@ -806,11 +806,11 @@ function expectText( value, expected, options = {} ) {
 	expect( value.length ).to.equal( value.item.data.length );
 
 	if ( options.direction == 'backward' ) {
-		previousPosition = Position._createAfter( value.item );
-		nextPosition = Position._createBefore( value.item );
+		previousPosition = ModelPosition._createAfter( value.item );
+		nextPosition = ModelPosition._createBefore( value.item );
 	} else {
-		previousPosition = Position._createBefore( value.item );
-		nextPosition = Position._createAfter( value.item );
+		previousPosition = ModelPosition._createBefore( value.item );
+		nextPosition = ModelPosition._createAfter( value.item );
 	}
 
 	expect( value.previousPosition ).to.deep.equal( previousPosition );
@@ -824,11 +824,11 @@ function expectStart( value, expected, options = {} ) {
 	expect( value.length ).to.equal( 1 );
 
 	if ( options.direction == 'backward' ) {
-		previousPosition = Position._createAfter( value.item );
-		nextPosition = Position._createBefore( value.item );
+		previousPosition = ModelPosition._createAfter( value.item );
+		nextPosition = ModelPosition._createBefore( value.item );
 	} else {
-		previousPosition = Position._createBefore( value.item );
-		nextPosition = Position._createAt( value.item, 0 );
+		previousPosition = ModelPosition._createBefore( value.item );
+		nextPosition = ModelPosition._createAt( value.item, 0 );
 	}
 
 	if ( options.shallow ) {
@@ -845,11 +845,11 @@ function expectEnd( value, expected, options = {} ) {
 	expect( value.length ).to.be.undefined;
 
 	if ( options.direction == 'backward' ) {
-		previousPosition = Position._createAfter( value.item );
-		nextPosition = Position._createAt( value.item, value.item.maxOffset );
+		previousPosition = ModelPosition._createAfter( value.item );
+		nextPosition = ModelPosition._createAt( value.item, value.item.maxOffset );
 	} else {
-		previousPosition = Position._createAt( value.item, value.item.maxOffset );
-		nextPosition = Position._createAfter( value.item );
+		previousPosition = ModelPosition._createAt( value.item, value.item.maxOffset );
+		nextPosition = ModelPosition._createAfter( value.item );
 	}
 
 	expect( value.previousPosition ).to.deep.equal( previousPosition );

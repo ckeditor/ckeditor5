@@ -7,8 +7,8 @@ import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classic
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { ModelDocumentFragment } from '@ckeditor/ckeditor5-engine/src/model/documentfragment.js';
-import { Position } from '@ckeditor/ckeditor5-engine/src/model/position.js';
-import { Range } from '@ckeditor/ckeditor5-engine/src/model/range.js';
+import { ModelPosition } from '@ckeditor/ckeditor5-engine/src/model/position.js';
+import { ModelRange } from '@ckeditor/ckeditor5-engine/src/model/range.js';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { _parseModel, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
@@ -1015,8 +1015,8 @@ describe( 'Clipboard Markers Utils', () => {
 		const markersMap = new Map();
 
 		for ( const [ name, value ] of Object.entries( markers ) ) {
-			markersMap.set( name, new Range(
-				new Position( fragment, value.start ), new Position( fragment, value.end )
+			markersMap.set( name, new ModelRange(
+				new ModelPosition( fragment, value.start ), new ModelPosition( fragment, value.end )
 			) );
 		}
 
@@ -1043,7 +1043,7 @@ describe( 'Clipboard Markers Utils', () => {
 
 		expect( marker ).to.not.be.null;
 
-		if ( range instanceof Range ) {
+		if ( range instanceof ModelRange ) {
 			expect( marker.getRange().isEqual( range ) ).to.be.true;
 		} else {
 			const markerRange = marker.getRange();

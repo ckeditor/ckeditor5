@@ -18,7 +18,7 @@ import type {
 	EditingController,
 	Model,
 	Position,
-	Range,
+	ModelRange,
 	Schema,
 	Selection,
 	ViewDocumentArrowKeyEvent
@@ -183,7 +183,7 @@ function getNearestNonInlineLimit( model: Model, startPosition: Position, direct
  * @returns The nearest selection position.
  *
  */
-function getNearestTextPosition( schema: Schema, range: Range, direction: 'forward' | 'backward' ) {
+function getNearestTextPosition( schema: Schema, range: ModelRange, direction: 'forward' | 'backward' ) {
 	const position = direction == 'backward' ? range.end : range.start;
 
 	if ( schema.checkChild( position, '$text' ) ) {
@@ -207,7 +207,7 @@ function getNearestTextPosition( schema: Schema, range: Range, direction: 'forwa
  * @param modelRange The current table cell content range.
  * @param isForward The expected navigation direction.
  */
-function isSingleLineRange( editing: EditingController, modelRange: Range, isForward: boolean ) {
+function isSingleLineRange( editing: EditingController, modelRange: ModelRange, isForward: boolean ) {
 	const model = editing.model;
 	const domConverter = editing.view.domConverter;
 

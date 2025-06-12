@@ -9,7 +9,7 @@
 
 import { ModelElement } from './element.js';
 import { ModelPosition } from './position.js';
-import { Range } from './range.js';
+import { ModelRange } from './range.js';
 import { Text } from './text.js';
 import { TreeWalker } from './treewalker.js';
 
@@ -732,13 +732,13 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param selectionOrRangeOrPosition The selection/range/position to check.
 	 * @returns The lowest limit element containing the entire `selectionOrRangeOrPosition`.
 	 */
-	public getLimitElement( selectionOrRangeOrPosition: Selection | ModelDocumentSelection | Range | ModelPosition ): ModelElement {
+	public getLimitElement( selectionOrRangeOrPosition: Selection | ModelDocumentSelection | ModelRange | ModelPosition ): ModelElement {
 		let element: ModelElement;
 
 		if ( selectionOrRangeOrPosition instanceof ModelPosition ) {
 			element = selectionOrRangeOrPosition.parent as ModelElement;
 		} else {
-			const ranges = selectionOrRangeOrPosition instanceof Range ?
+			const ranges = selectionOrRangeOrPosition instanceof ModelRange ?
 				[ selectionOrRangeOrPosition ] :
 				Array.from( selectionOrRangeOrPosition.getRanges() );
 
@@ -811,7 +811,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param attribute The name of the attribute to check.
 	 * @returns Ranges in which the attribute is allowed.
 	 */
-	public* getValidRanges( ranges: Iterable<Range>, attribute: string ): IterableIterator<Range> {
+	public* getValidRanges( ranges: Iterable<ModelRange>, attribute: string ): IterableIterator<ModelRange> {
 		ranges = convertToMinimalFlatRanges( ranges );
 
 		for ( const range of ranges ) {
@@ -820,7 +820,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * Basing on given `position`, finds and returns a {@link module:engine/model/range~Range range} which is
+	 * Basing on given `position`, finds and returns a {@link module:engine/model/range~ModelRange range} which is
 	 * nearest to that `position` and is a correct range for selection.
 	 *
 	 * The correct selection range might be collapsed when it is located in a position where the text node can be placed.
@@ -839,7 +839,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param direction Search direction.
 	 * @returns Nearest selection range or `null` if one cannot be found.
 	 */
-	public getNearestSelectionRange( position: ModelPosition, direction: 'both' | 'forward' | 'backward' = 'both' ): Range | null {
+	public getNearestSelectionRange( position: ModelPosition, direction: 'both' | 'forward' | 'backward' = 'both' ): ModelRange | null {
 		if ( position.root.rootName == '$graveyard' ) {
 			// No valid selection range in the graveyard.
 			// This is important when getting the document selection default range.
@@ -848,7 +848,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 
 		// Return collapsed range if provided position is valid.
 		if ( this.checkChild( position, '$text' ) ) {
-			return new Range( position );
+			return new ModelRange( position );
 		}
 
 		let backwardWalker, forwardWalker;
@@ -859,7 +859,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 
 		if ( direction == 'both' || direction == 'backward' ) {
 			backwardWalker = new TreeWalker( {
-				boundaries: Range._createIn( limitElement ),
+				boundaries: ModelRange._createIn( limitElement ),
 				startPosition: position,
 				direction: 'backward'
 			} );
@@ -867,7 +867,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 
 		if ( direction == 'both' || direction == 'forward' ) {
 			forwardWalker = new TreeWalker( {
-				boundaries: Range._createIn( limitElement ),
+				boundaries: ModelRange._createIn( limitElement ),
 				startPosition: position
 			} );
 		}
@@ -877,11 +877,11 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 			const value = data.value;
 
 			if ( value.type == type && this.isObject( value.item ) ) {
-				return Range._createOn( value.item );
+				return ModelRange._createOn( value.item );
 			}
 
 			if ( this.checkChild( value.nextPosition, '$text' ) ) {
-				return new Range( value.nextPosition );
+				return new ModelRange( value.nextPosition );
 			}
 		}
 
@@ -954,7 +954,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 			// is at start of an element. Using positions prevent from omitting merged nodes
 			// see https://github.com/ckeditor/ckeditor5-engine/issues/1789.
 			else {
-				const rangeInNode = Range._createIn( node as ModelElement );
+				const rangeInNode = ModelRange._createIn( node as ModelElement );
 				const positionsInRange = rangeInNode.getPositions();
 
 				for ( const position of positionsInRange ) {
@@ -1149,18 +1149,18 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param attribute The name of the attribute to check.
 	 * @returns Ranges in which the attribute is allowed.
 	 */
-	private* _getValidRangesForRange( range: Range, attribute: string ): Iterable<Range> {
+	private* _getValidRangesForRange( range: ModelRange, attribute: string ): Iterable<ModelRange> {
 		let start = range.start;
 		let end = range.start;
 
 		for ( const item of range.getItems( { shallow: true } ) ) {
 			if ( item.is( 'element' ) ) {
-				yield* this._getValidRangesForRange( Range._createIn( item ), attribute );
+				yield* this._getValidRangesForRange( ModelRange._createIn( item ), attribute );
 			}
 
 			if ( !this.checkAttribute( item, attribute ) ) {
 				if ( !start.isEqual( end ) ) {
-					yield new Range( start, end );
+					yield new ModelRange( start, end );
 				}
 
 				start = ModelPosition._createAfter( item );
@@ -1170,7 +1170,7 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 		}
 
 		if ( !start.isEqual( end ) ) {
-			yield new Range( start, end );
+			yield new ModelRange( start, end );
 		}
 	}
 
@@ -1196,39 +1196,39 @@ export class Schema extends /* #__PURE__ */ ObservableMixin() {
 	public findOptimalInsertionRange(
 		selection: Selection | ModelDocumentSelection,
 		place?: 'auto' | 'before' | 'after'
-	): Range {
+	): ModelRange {
 		const selectedElement = selection.getSelectedElement();
 
 		if ( selectedElement && this.isObject( selectedElement ) && !this.isInline( selectedElement ) ) {
 			if ( place == 'before' || place == 'after' ) {
-				return new Range( ModelPosition._createAt( selectedElement, place ) );
+				return new ModelRange( ModelPosition._createAt( selectedElement, place ) );
 			}
 
-			return Range._createOn( selectedElement );
+			return ModelRange._createOn( selectedElement );
 		}
 
 		const firstBlock = first( selection.getSelectedBlocks() );
 
 		// There are no block elements within ancestors (in the current limit element).
 		if ( !firstBlock ) {
-			return new Range( selection.focus! );
+			return new ModelRange( selection.focus! );
 		}
 
 		// If inserting into an empty block – return position in that block. It will get
 		// replaced with the image by insertContent(). #42.
 		if ( firstBlock.isEmpty ) {
-			return new Range( ModelPosition._createAt( firstBlock, 0 ) );
+			return new ModelRange( ModelPosition._createAt( firstBlock, 0 ) );
 		}
 
 		const positionAfter = ModelPosition._createAfter( firstBlock );
 
 		// If selection is at the end of the block - return position after the block.
 		if ( selection.focus!.isTouching( positionAfter ) ) {
-			return new Range( positionAfter );
+			return new ModelRange( positionAfter );
 		}
 
 		// Otherwise, return position before the block.
-		return new Range( ModelPosition._createBefore( firstBlock ) );
+		return new ModelRange( ModelPosition._createBefore( firstBlock ) );
 	}
 }
 
@@ -2461,7 +2461,7 @@ function* combineWalkers( backward: TreeWalker | undefined, forward: TreeWalker 
  * @param ranges Ranges to process.
  * @returns Minimal flat ranges of given `ranges`.
  */
-function* convertToMinimalFlatRanges( ranges: Iterable<Range> ): Iterable<Range> {
+function* convertToMinimalFlatRanges( ranges: Iterable<ModelRange> ): Iterable<ModelRange> {
 	for ( const range of ranges ) {
 		yield* range.getMinimalFlatRanges();
 	}

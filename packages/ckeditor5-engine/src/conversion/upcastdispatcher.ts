@@ -41,7 +41,7 @@ import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
  * that is converted at the moment and might be handled by the callback.
  * * `data.modelRange` is used to point to the result
  * of the current conversion (e.g. the element that is being inserted)
- * and is always a {@link module:engine/model/range~Range} when the conversion succeeds.
+ * and is always a {@link module:engine/model/range~ModelRange} when the conversion succeeds.
  * * `data.modelCursor` is a {@link module:engine/model/position~ModelPosition position} on which the converter should insert
  * the newly created items.
  *
@@ -286,7 +286,7 @@ export class UpcastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 			/**
 			 * Incorrect conversion result was dropped.
 			 *
-			 * {@link module:engine/model/range~Range Model range} should be a conversion result.
+			 * {@link module:engine/model/range~ModelRange Model range} should be a conversion result.
 			 *
 			 * @error view-conversion-dispatcher-incorrect-result
 			 */
@@ -705,7 +705,7 @@ export interface UpcastConversionApi {
 	 *
 	 * Every fired event is passed (as the first parameter) an object with the `modelRange` property. Every event may set and/or
 	 * modify that property. When all callbacks are done, the final value of the `modelRange` property is returned by this method.
-	 * The `modelRange` must be a {@link module:engine/model/range~Range model range} or `null` (as set by default).
+	 * The `modelRange` must be a {@link module:engine/model/range~ModelRange model range} or `null` (as set by default).
 	 *
 	 * @fires module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
 	 * @fires module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:text

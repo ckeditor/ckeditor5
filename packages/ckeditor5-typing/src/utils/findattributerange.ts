@@ -7,7 +7,7 @@
  * @module typing/utils/findattributerange
  */
 
-import type { Position, Model, Range } from '@ckeditor/ckeditor5-engine';
+import type { Position, Model, ModelRange } from '@ckeditor/ckeditor5-engine';
 
 /**
  * Returns a model range that covers all consecutive nodes with the same `attributeName` and its `value`
@@ -27,7 +27,7 @@ export function findAttributeRange(
 	attributeName: string,
 	value: unknown,
 	model: Model
-): Range {
+): ModelRange {
 	return model.createRange(
 		findAttributeRangeBound( position, attributeName, value, true, model ),
 		findAttributeRangeBound( position, attributeName, value, false, model )

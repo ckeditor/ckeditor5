@@ -7,7 +7,7 @@
  * @module find-and-replace/findandreplaceutils
  */
 
-import type { ModelElement, ModelItem, Marker, Model, Range } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelItem, Marker, Model, ModelRange } from 'ckeditor5/src/engine.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 import { Collection, uid } from 'ckeditor5/src/utils.js';
 import { escapeRegExp } from 'es-toolkit/compat';
@@ -52,7 +52,7 @@ export class FindAndReplaceUtils extends Plugin {
 	 * ```
 	 */
 	public updateFindResultFromRange(
-		range: Range,
+		range: ModelRange,
 		model: Model,
 		findCallback: ( { item, text }: { item: ModelItem; text: string } ) => Array<ResultType> | { results: Array<ResultType> },
 		startResults: Collection<ResultType> | null
@@ -126,7 +126,7 @@ export class FindAndReplaceUtils extends Plugin {
 	 * @param range The model range.
 	 * @returns The text content of the provided range.
 	 */
-	public rangeToText( range: Range ): string {
+	public rangeToText( range: ModelRange ): string {
 		return Array.from( range.getItems( { shallow: true } ) ).reduce( ( rangeText, node ) => {
 			// Trim text to a last occurrence of an inline element and update range start.
 			if ( !( node.is( '$text' ) || node.is( '$textProxy' ) ) ) {

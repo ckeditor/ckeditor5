@@ -14,7 +14,7 @@ import type {
 	ModelElement,
 	ModelNode,
 	Position,
-	Range,
+	ModelRange,
 	Selection,
 	Writer
 } from 'ckeditor5/src/engine.js';
@@ -886,7 +886,7 @@ export class TableUtils extends Plugin {
 
 	/**
 	 * Returns all model table cells that the provided model selection's ranges
-	 * {@link module:engine/model/range~Range#start} inside.
+	 * {@link module:engine/model/range~ModelRange#start} inside.
 	 *
 	 * To obtain the cells selected from the outside, use
 	 * {@link #getSelectedTableCells}.
@@ -908,7 +908,7 @@ export class TableUtils extends Plugin {
 	/**
 	 * Returns all model table cells that are either completely selected
 	 * by selection ranges or host selection range
-	 * {@link module:engine/model/range~Range#start start positions} inside them.
+	 * {@link module:engine/model/range~ModelRange#start start positions} inside them.
 	 *
 	 * Combines {@link #getTableCellsContainingSelection} and
 	 * {@link #getSelectedTableCells}.
@@ -1033,7 +1033,7 @@ export class TableUtils extends Plugin {
 	/**
 	 * Returns array of sorted ranges.
 	 */
-	public sortRanges( ranges: Iterable<Range> ): Array<Range> {
+	public sortRanges( ranges: Iterable<ModelRange> ): Array<ModelRange> {
 		return Array.from( ranges ).sort( compareRangeOrder );
 	}
 
@@ -1273,7 +1273,7 @@ function moveCellsToRow( table: ModelElement, targetRowIndex: number, cellsToMov
 	}
 }
 
-function compareRangeOrder( rangeA: Range, rangeB: Range ) {
+function compareRangeOrder( rangeA: ModelRange, rangeB: ModelRange ) {
 	// Since table cell ranges are disjoint, it's enough to check their start positions.
 	const posA = rangeA.start;
 	const posB = rangeB.start;

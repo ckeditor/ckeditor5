@@ -10,7 +10,7 @@
 import { Operation } from './operation.js';
 import { SplitOperation } from './splitoperation.js';
 import { ModelPosition } from '../position.js';
-import { Range } from '../range.js';
+import { ModelRange } from '../range.js';
 import { _move } from './utils.js';
 
 import { type ModelDocument } from '../document.js';
@@ -99,10 +99,10 @@ export class MergeOperation extends Operation {
 	 * Artificial range that contains all the nodes from the merged element that will be moved to {@link ~MergeOperation#sourcePosition}.
 	 * The range starts at {@link ~MergeOperation#sourcePosition} and ends in the same parent, at `POSITIVE_INFINITY` offset.
 	 */
-	public get movedRange(): Range {
+	public get movedRange(): ModelRange {
 		const end = this.sourcePosition.getShiftedBy( Number.POSITIVE_INFINITY );
 
-		return new Range( this.sourcePosition, end );
+		return new ModelRange( this.sourcePosition, end );
 	}
 
 	/**
@@ -112,11 +112,11 @@ export class MergeOperation extends Operation {
 		const mergedElement = this.sourcePosition.parent as ModelElement;
 
 		return [
-			Range._createOn( mergedElement ),
+			ModelRange._createOn( mergedElement ),
 
 			// These could be positions but `Selectable` type only supports `Iterable<Range>`.
-			Range._createFromPositionAndShift( this.targetPosition, 0 ),
-			Range._createFromPositionAndShift( this.graveyardPosition, 0 )
+			ModelRange._createFromPositionAndShift( this.targetPosition, 0 ),
+			ModelRange._createFromPositionAndShift( this.graveyardPosition, 0 )
 		];
 	}
 
@@ -181,10 +181,10 @@ export class MergeOperation extends Operation {
 	 */
 	public _execute(): void {
 		const mergedElement = this.sourcePosition.parent as ModelElement;
-		const sourceRange = Range._createIn( mergedElement );
+		const sourceRange = ModelRange._createIn( mergedElement );
 
 		_move( sourceRange, this.targetPosition );
-		_move( Range._createOn( mergedElement ), this.graveyardPosition );
+		_move( ModelRange._createOn( mergedElement ), this.graveyardPosition );
 	}
 
 	/**

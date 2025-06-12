@@ -9,7 +9,7 @@ import { Model } from '../../../src/model/model.js';
 import { RootElement } from '../../../src/model/rootelement.js';
 import { ModelNode } from '../../../src/model/node.js';
 import { ModelPosition } from '../../../src/model/position.js';
-import { Range } from '../../../src/model/range.js';
+import { ModelRange } from '../../../src/model/range.js';
 
 import { InsertOperation } from '../../../src/model/operation/insertoperation.js';
 import { AttributeOperation } from '../../../src/model/operation/attributeoperation.js';
@@ -46,7 +46,7 @@ describe( 'transform', () => {
 					for ( let j = 0; j < params[ i ].length; j++ ) {
 						expect( op[ i ][ j ] ).to.equal( params[ i ][ j ] );
 					}
-				} else if ( params[ i ] instanceof ModelPosition || params[ i ] instanceof Range ) {
+				} else if ( params[ i ] instanceof ModelPosition || params[ i ] instanceof ModelRange ) {
 					expect( op[ i ].isEqual( params[ i ] ), i ).to.be.true;
 				} else {
 					expect( op[ i ], i ).to.equal( params[ i ] );
@@ -215,7 +215,7 @@ describe( 'transform', () => {
 		describe( 'by AttributeOperation', () => {
 			it( 'no position update', () => {
 				const transformBy = new AttributeOperation(
-					Range._createFromPositionAndShift( position, 2 ),
+					ModelRange._createFromPositionAndShift( position, 2 ),
 					'foo',
 					null,
 					'bar',
@@ -462,7 +462,7 @@ describe( 'transform', () => {
 
 		describe( 'by MarkerOperation', () => {
 			it( 'no position update', () => {
-				const newRange = new Range( new ModelPosition( root, [ 0, 2, 0 ] ), new ModelPosition( root, [ 0, 2, 4 ] ) );
+				const newRange = new ModelRange( new ModelPosition( root, [ 0, 2, 0 ] ), new ModelPosition( root, [ 0, 2, 4 ] ) );
 				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy );
@@ -480,7 +480,7 @@ describe( 'transform', () => {
 			start = new ModelPosition( root, [ 0, 2, 1 ] );
 			end = new ModelPosition( root, [ 0, 2, 4 ] );
 
-			range = new Range( start, end );
+			range = new ModelRange( start, end );
 
 			op = new AttributeOperation( range, 'foo', 'abc', 'bar', 0 );
 
@@ -753,7 +753,7 @@ describe( 'transform', () => {
 		describe( 'by AttributeOperation', () => {
 			it( 'no operation update', () => {
 				const transformBy = new AttributeOperation(
-					new Range(
+					new ModelRange(
 						new ModelPosition( root, [ 0 ] ),
 						new ModelPosition( root, [ 1 ] )
 					),
@@ -893,7 +893,7 @@ describe( 'transform', () => {
 
 		describe( 'by MarkerOperation', () => {
 			it( 'no position update', () => {
-				const newRange = new Range( new ModelPosition( root, [ 0, 2, 0 ] ), new ModelPosition( root, [ 0, 2, 8 ] ) );
+				const newRange = new ModelRange( new ModelPosition( root, [ 0, 2, 0 ] ), new ModelPosition( root, [ 0, 2, 8 ] ) );
 				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy );
@@ -1123,7 +1123,7 @@ describe( 'transform', () => {
 		describe( 'by AttributeOperation', () => {
 			it( 'no operation update', () => {
 				const transformBy = new AttributeOperation(
-					new Range( sourcePosition, rangeEnd ),
+					new ModelRange( sourcePosition, rangeEnd ),
 					'abc',
 					true,
 					false,
@@ -1958,7 +1958,7 @@ describe( 'transform', () => {
 
 		describe( 'by MarkerOperation', () => {
 			it( 'no position update', () => {
-				const newRange = new Range( new ModelPosition( root, [ 2, 2, 3 ] ), new ModelPosition( root, [ 2, 2, 8 ] ) );
+				const newRange = new ModelRange( new ModelPosition( root, [ 2, 2, 3 ] ), new ModelPosition( root, [ 2, 2, 8 ] ) );
 				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy );
@@ -2021,7 +2021,7 @@ describe( 'transform', () => {
 		describe( 'by AttributeOperation', () => {
 			it( 'no operation update', () => {
 				const transformBy = new AttributeOperation(
-					new Range(
+					new ModelRange(
 						new ModelPosition( root, [ 0 ] ),
 						new ModelPosition( root, [ 1 ] )
 					),
@@ -2095,7 +2095,7 @@ describe( 'transform', () => {
 
 		describe( 'by MarkerOperation', () => {
 			it( 'no position update', () => {
-				const newRange = new Range( new ModelPosition( root, [ 0, 2, 0 ] ), new ModelPosition( root, [ 0, 2, 8 ] ) );
+				const newRange = new ModelRange( new ModelPosition( root, [ 0, 2, 0 ] ), new ModelPosition( root, [ 0, 2, 8 ] ) );
 				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy );
@@ -2182,7 +2182,7 @@ describe( 'transform', () => {
 		describe( 'by AttributeOperation', () => {
 			it( 'no operation update', () => {
 				const transformBy = new AttributeOperation(
-					new Range(
+					new ModelRange(
 						new ModelPosition( root, [ 0, 2, 1 ] ),
 						new ModelPosition( root, [ 1, 3 ] )
 					),
@@ -2218,7 +2218,7 @@ describe( 'transform', () => {
 
 		describe( 'by MarkerOperation', () => {
 			it( 'no operation update', () => {
-				const newRange = new Range( new ModelPosition( root, [ 0, 2, 0 ] ), new ModelPosition( root, [ 0, 2, 8 ] ) );
+				const newRange = new ModelRange( new ModelPosition( root, [ 0, 2, 0 ] ), new ModelPosition( root, [ 0, 2, 8 ] ) );
 				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy );
@@ -2385,8 +2385,8 @@ describe( 'transform', () => {
 		let oldRange, newRange;
 
 		beforeEach( () => {
-			oldRange = new Range( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 4 ) );
-			newRange = new Range( ModelPosition._createAt( root, 10 ), ModelPosition._createAt( root, 12 ) );
+			oldRange = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 4 ) );
+			newRange = new ModelRange( ModelPosition._createAt( root, 10 ), ModelPosition._createAt( root, 12 ) );
 			op = new MarkerOperation( 'name', oldRange, newRange, model.markers, false, 0 );
 
 			expected = {
@@ -2431,7 +2431,7 @@ describe( 'transform', () => {
 		describe( 'by AttributeOperation', () => {
 			it( 'no operation update', () => {
 				const transformBy = new AttributeOperation(
-					new Range(
+					new ModelRange(
 						new ModelPosition( root, [ 2 ] ),
 						new ModelPosition( root, [ 11 ] )
 					),
@@ -2545,7 +2545,7 @@ describe( 'transform', () => {
 			} );
 
 			it( 'same marker name and is important: convert to NoOperation', () => {
-				const anotherRange = new Range( ModelPosition._createAt( root, 2 ), ModelPosition._createAt( root, 2 ) );
+				const anotherRange = new ModelRange( ModelPosition._createAt( root, 2 ), ModelPosition._createAt( root, 2 ) );
 				const transformBy = new MarkerOperation( 'name', oldRange, anotherRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy );
@@ -2557,7 +2557,7 @@ describe( 'transform', () => {
 			} );
 
 			it( 'same marker name and is less important: update oldRange parameter', () => {
-				const anotherRange = new Range( ModelPosition._createAt( root, 2 ), ModelPosition._createAt( root, 2 ) );
+				const anotherRange = new ModelRange( ModelPosition._createAt( root, 2 ), ModelPosition._createAt( root, 2 ) );
 				const transformBy = new MarkerOperation( 'name', oldRange, anotherRange, model.markers, false, 0 );
 
 				const transOp = transform( op, transformBy, strongContext );
@@ -2615,7 +2615,7 @@ describe( 'transformOperationSets', () => {
 
 		const a = new InsertOperation( position, [ node ], 0 );
 		const b = new AttributeOperation(
-			new Range(
+			new ModelRange(
 				new ModelPosition( root, [ 2 ] ),
 				new ModelPosition( root, [ 11 ] )
 			),

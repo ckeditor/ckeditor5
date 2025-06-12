@@ -5,9 +5,9 @@
 
 import { findAttributeRange, findAttributeRangeBound } from '../../src/utils/findattributerange.js';
 import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
-import { Range } from '@ckeditor/ckeditor5-engine/src/model/range.js';
+import { ModelRange } from '@ckeditor/ckeditor5-engine/src/model/range.js';
 import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
-import { Position } from '@ckeditor/ckeditor5-engine';
+import { ModelPosition } from '@ckeditor/ckeditor5-engine';
 
 describe( 'findAttributeRange', () => {
 	let model, document, root;
@@ -26,7 +26,7 @@ describe( 'findAttributeRange', () => {
 		const startPosition = model.createPositionAt( root, [ 3 ] );
 		const result = findAttributeRange( startPosition, 'linkHref', 'url', model );
 
-		expect( result ).to.instanceOf( Range );
+		expect( result ).to.instanceOf( ModelRange );
 		expect( result.isEqual( model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 6 ) ) ) ).to.true;
 	} );
 
@@ -36,7 +36,7 @@ describe( 'findAttributeRange', () => {
 		const startPosition = model.createPositionAt( root, [ 7 ] );
 		const result = findAttributeRange( startPosition, 'linkHref', 'url', model );
 
-		expect( result ).to.instanceOf( Range );
+		expect( result ).to.instanceOf( ModelRange );
 		expect( result.isEqual( model.createRange( model.createPositionAt( root, 4 ), model.createPositionAt( root, 10 ) ) ) ).to.true;
 	} );
 
@@ -46,7 +46,7 @@ describe( 'findAttributeRange', () => {
 		const startPosition = model.createPositionAt( root, [ 0 ] );
 		const result = findAttributeRange( startPosition, 'linkHref', 'url', model );
 
-		expect( result ).to.instanceOf( Range );
+		expect( result ).to.instanceOf( ModelRange );
 		expect( result.isEqual( model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 6 ) ) ) ).to.true;
 	} );
 
@@ -56,7 +56,7 @@ describe( 'findAttributeRange', () => {
 		const startPosition = model.createPositionAt( root, [ 4 ] );
 		const result = findAttributeRange( startPosition, 'linkHref', 'url', model );
 
-		expect( result ).to.instanceOf( Range );
+		expect( result ).to.instanceOf( ModelRange );
 		expect( result.isEqual( model.createRange( model.createPositionAt( root, 4 ), model.createPositionAt( root, 10 ) ) ) ).to.true;
 	} );
 
@@ -66,7 +66,7 @@ describe( 'findAttributeRange', () => {
 		const startPosition = model.createPositionAt( root, [ 6 ] );
 		const result = findAttributeRange( startPosition, 'linkHref', 'url', model );
 
-		expect( result ).to.instanceOf( Range );
+		expect( result ).to.instanceOf( ModelRange );
 		expect( result.isEqual( model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 6 ) ) ) ).to.true;
 	} );
 
@@ -76,7 +76,7 @@ describe( 'findAttributeRange', () => {
 		const startPosition = model.createPositionAt( root, [ 10 ] );
 		const result = findAttributeRange( startPosition, 'linkHref', 'url', model );
 
-		expect( result ).to.instanceOf( Range );
+		expect( result ).to.instanceOf( ModelRange );
 		expect( result.isEqual( model.createRange( model.createPositionAt( root, 4 ), model.createPositionAt( root, 10 ) ) ) ).to.true;
 	} );
 
@@ -88,7 +88,7 @@ describe( 'findAttributeRange', () => {
 		const startPosition = model.createPositionAt( root, [ 6 ] );
 		const result = findAttributeRange( startPosition, 'linkHref', 'url', model );
 
-		expect( result ).to.instanceOf( Range );
+		expect( result ).to.instanceOf( ModelRange );
 		expect( result.isEqual( model.createRange( model.createPositionAt( root, 3 ), model.createPositionAt( root, 9 ) ) ) ).to.true;
 	} );
 
@@ -100,7 +100,7 @@ describe( 'findAttributeRange', () => {
 		const startPosition = model.createPositionAt( root, [ 3 ] );
 		const result = findAttributeRange( startPosition, 'linkHref', 'url', model );
 
-		expect( result ).to.instanceOf( Range );
+		expect( result ).to.instanceOf( ModelRange );
 		expect( result.isEqual( model.createRange( model.createPositionAt( root, 3 ), model.createPositionAt( root, 9 ) ) ) ).to.true;
 	} );
 
@@ -112,7 +112,7 @@ describe( 'findAttributeRange', () => {
 		const startPosition = model.createPositionAt( root, [ 9 ] );
 		const result = findAttributeRange( startPosition, 'linkHref', 'url', model );
 
-		expect( result ).to.instanceOf( Range );
+		expect( result ).to.instanceOf( ModelRange );
 		expect( result.isEqual( model.createRange( model.createPositionAt( root, 3 ), model.createPositionAt( root, 9 ) ) ) ).to.true;
 	} );
 
@@ -127,7 +127,7 @@ describe( 'findAttributeRange', () => {
 		const startPosition = model.createPositionAt( root.getNodeByPath( [ 1 ] ), 3 );
 		const result = findAttributeRange( startPosition, 'linkHref', 'url', model );
 
-		expect( result ).to.instanceOf( Range );
+		expect( result ).to.instanceOf( ModelRange );
 		const expectedRange = model.createRange(
 			model.createPositionAt( root.getNodeByPath( [ 1 ] ), 0 ),
 			model.createPositionAt( root.getNodeByPath( [ 1 ] ), 6 )
@@ -153,7 +153,7 @@ describe( 'findAttributeRangeBound', () => {
 		const startPosition = model.createPositionAt( root, [ 3 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', true, model );
 
-		expect( result ).to.instanceOf( Position );
+		expect( result ).to.instanceOf( ModelPosition );
 		expect( result.isEqual( model.createPositionAt( root, 0 ) ) ).to.true;
 	} );
 
@@ -163,7 +163,7 @@ describe( 'findAttributeRangeBound', () => {
 		const startPosition = model.createPositionAt( root, [ 3 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', false, model );
 
-		expect( result ).to.instanceOf( Position );
+		expect( result ).to.instanceOf( ModelPosition );
 		expect( result.isEqual( model.createPositionAt( root, 6 ) ) ).to.true;
 	} );
 
@@ -173,7 +173,7 @@ describe( 'findAttributeRangeBound', () => {
 		const startPosition = model.createPositionAt( root, [ 7 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', true, model );
 
-		expect( result ).to.instanceOf( Position );
+		expect( result ).to.instanceOf( ModelPosition );
 		expect( result.isEqual( model.createPositionAt( root, 4 ) ) ).to.true;
 	} );
 
@@ -183,7 +183,7 @@ describe( 'findAttributeRangeBound', () => {
 		const startPosition = model.createPositionAt( root, [ 7 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', false, model );
 
-		expect( result ).to.instanceOf( Position );
+		expect( result ).to.instanceOf( ModelPosition );
 		expect( result.isEqual( model.createPositionAt( root, 10 ) ) ).to.true;
 	} );
 
@@ -193,7 +193,7 @@ describe( 'findAttributeRangeBound', () => {
 		const startPosition = model.createPositionAt( root, [ 0 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', true, model );
 
-		expect( result ).to.instanceOf( Position );
+		expect( result ).to.instanceOf( ModelPosition );
 		expect( result.isEqual( model.createPositionAt( root, 0 ) ) ).to.true;
 	} );
 
@@ -203,7 +203,7 @@ describe( 'findAttributeRangeBound', () => {
 		const startPosition = model.createPositionAt( root, [ 0 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', false, model );
 
-		expect( result ).to.instanceOf( Position );
+		expect( result ).to.instanceOf( ModelPosition );
 		expect( result.isEqual( model.createPositionAt( root, 6 ) ) ).to.true;
 	} );
 
@@ -213,7 +213,7 @@ describe( 'findAttributeRangeBound', () => {
 		const startPosition = model.createPositionAt( root, [ 4 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', true, model );
 
-		expect( result ).to.instanceOf( Position );
+		expect( result ).to.instanceOf( ModelPosition );
 		expect( result.isEqual( model.createPositionAt( root, 4 ) ) ).to.true;
 	} );
 
@@ -223,7 +223,7 @@ describe( 'findAttributeRangeBound', () => {
 		const startPosition = model.createPositionAt( root, [ 4 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', false, model );
 
-		expect( result ).to.instanceOf( Position );
+		expect( result ).to.instanceOf( ModelPosition );
 		expect( result.isEqual( model.createPositionAt( root, 10 ) ) ).to.true;
 	} );
 
@@ -233,7 +233,7 @@ describe( 'findAttributeRangeBound', () => {
 		const startPosition = model.createPositionAt( root, [ 6 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', true, model );
 
-		expect( result ).to.instanceOf( Position );
+		expect( result ).to.instanceOf( ModelPosition );
 		expect( result.isEqual( model.createPositionAt( root, 0 ) ) ).to.true;
 	} );
 
@@ -243,7 +243,7 @@ describe( 'findAttributeRangeBound', () => {
 		const startPosition = model.createPositionAt( root, [ 6 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', false, model );
 
-		expect( result ).to.instanceOf( Position );
+		expect( result ).to.instanceOf( ModelPosition );
 		expect( result.isEqual( model.createPositionAt( root, 6 ) ) ).to.true;
 	} );
 
@@ -253,7 +253,7 @@ describe( 'findAttributeRangeBound', () => {
 		const startPosition = model.createPositionAt( root, [ 10 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', true, model );
 
-		expect( result ).to.instanceOf( Position );
+		expect( result ).to.instanceOf( ModelPosition );
 		expect( result.isEqual( model.createPositionAt( root, 4 ) ) ).to.true;
 	} );
 
@@ -263,7 +263,7 @@ describe( 'findAttributeRangeBound', () => {
 		const startPosition = model.createPositionAt( root, [ 10 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', false, model );
 
-		expect( result ).to.instanceOf( Position );
+		expect( result ).to.instanceOf( ModelPosition );
 		expect( result.isEqual( model.createPositionAt( root, 10 ) ) ).to.true;
 	} );
 
@@ -275,7 +275,7 @@ describe( 'findAttributeRangeBound', () => {
 		const startPosition = model.createPositionAt( root, [ 6 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', true, model );
 
-		expect( result ).to.instanceOf( Position );
+		expect( result ).to.instanceOf( ModelPosition );
 		expect( result.isEqual( model.createPositionAt( root, 3 ) ) ).to.true;
 	} );
 
@@ -287,7 +287,7 @@ describe( 'findAttributeRangeBound', () => {
 		const startPosition = model.createPositionAt( root, [ 6 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', false, model );
 
-		expect( result ).to.instanceOf( Position );
+		expect( result ).to.instanceOf( ModelPosition );
 		expect( result.isEqual( model.createPositionAt( root, 9 ) ) ).to.true;
 	} );
 
@@ -299,7 +299,7 @@ describe( 'findAttributeRangeBound', () => {
 		const startPosition = model.createPositionAt( root, [ 3 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', true, model );
 
-		expect( result ).to.instanceOf( Position );
+		expect( result ).to.instanceOf( ModelPosition );
 		expect( result.isEqual( model.createPositionAt( root, 3 ) ) ).to.true;
 	} );
 
@@ -311,7 +311,7 @@ describe( 'findAttributeRangeBound', () => {
 		const startPosition = model.createPositionAt( root, [ 3 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', false, model );
 
-		expect( result ).to.instanceOf( Position );
+		expect( result ).to.instanceOf( ModelPosition );
 		expect( result.isEqual( model.createPositionAt( root, 9 ) ) ).to.true;
 	} );
 
@@ -323,7 +323,7 @@ describe( 'findAttributeRangeBound', () => {
 		const startPosition = model.createPositionAt( root, [ 9 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', true, model );
 
-		expect( result ).to.instanceOf( Position );
+		expect( result ).to.instanceOf( ModelPosition );
 		expect( result.isEqual( model.createPositionAt( root, 3 ) ) ).to.true;
 	} );
 
@@ -335,7 +335,7 @@ describe( 'findAttributeRangeBound', () => {
 		const startPosition = model.createPositionAt( root, [ 9 ] );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', false, model );
 
-		expect( result ).to.instanceOf( Position );
+		expect( result ).to.instanceOf( ModelPosition );
 		expect( result.isEqual( model.createPositionAt( root, 9 ) ) ).to.true;
 	} );
 
@@ -350,7 +350,7 @@ describe( 'findAttributeRangeBound', () => {
 		const startPosition = model.createPositionAt( root.getNodeByPath( [ 1 ] ), 3 );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', true, model );
 
-		expect( result ).to.instanceOf( Position );
+		expect( result ).to.instanceOf( ModelPosition );
 		expect( result.isEqual( model.createPositionAt( root.getNodeByPath( [ 1 ] ), 0 ) ) ).to.true;
 	} );
 
@@ -365,7 +365,7 @@ describe( 'findAttributeRangeBound', () => {
 		const startPosition = model.createPositionAt( root.getNodeByPath( [ 1 ] ), 3 );
 		const result = findAttributeRangeBound( startPosition, 'linkHref', 'url', false, model );
 
-		expect( result ).to.instanceOf( Position );
+		expect( result ).to.instanceOf( ModelPosition );
 		expect( result.isEqual( model.createPositionAt( root.getNodeByPath( [ 1 ] ), 6 ) ) ).to.true;
 	} );
 } );

@@ -21,8 +21,8 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  * `TextProxy` represents a part of {@link module:engine/model/text~Text text node}.
  *
  * Since {@link module:engine/model/position~ModelPosition positions} can be placed between characters of a text node,
- * {@link module:engine/model/range~Range ranges} may contain only parts of text nodes. When {@link module:engine/model/range~Range#getItems
- * getting items}
+ * {@link module:engine/model/range~ModelRange ranges} may contain only parts of text nodes.
+ * When {@link module:engine/model/range~ModelRange#getItems getting items}
  * contained in such range, we need to represent a part of that text node, since returning the whole text node would be incorrect.
  * `TextProxy` solves this issue.
  *

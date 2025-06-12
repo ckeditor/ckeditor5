@@ -14,7 +14,7 @@ import {
 	getNodeAfterPosition,
 	getNodeBeforePosition
 } from '../../src/model/position.js';
-import { Range } from '../../src/model/range.js';
+import { ModelRange } from '../../src/model/range.js';
 import { MarkerOperation } from '../../src/model/operation/markeroperation.js';
 import { AttributeOperation } from '../../src/model/operation/attributeoperation.js';
 import { InsertOperation } from '../../src/model/operation/insertoperation.js';
@@ -842,7 +842,7 @@ describe( 'Position', () => {
 
 		describe( 'by AttributeOperation', () => {
 			it( 'nothing should change', () => {
-				const range = new Range( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 6 ) );
+				const range = new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 6 ) );
 				const op = new AttributeOperation( range, 'key', true, false, 1 );
 				const transformed = pos.getTransformedByOperation( op );
 
@@ -865,7 +865,7 @@ describe( 'Position', () => {
 			it( 'nothing should change', () => {
 				const op = new MarkerOperation(
 					'marker', null,
-					new Range( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 6 ) ), model.markers, true, 1
+					new ModelRange( ModelPosition._createAt( root, 1 ), ModelPosition._createAt( root, 6 ) ), model.markers, true, 1
 				);
 				const transformed = pos.getTransformedByOperation( op );
 

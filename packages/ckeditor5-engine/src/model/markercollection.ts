@@ -16,7 +16,7 @@ import {
 } from './liverange.js';
 
 import { type ModelPosition } from './position.js';
-import { type Range } from './range.js';
+import { type ModelRange } from './range.js';
 
 import { CKEditorError, EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
@@ -74,7 +74,7 @@ export class MarkerCollection extends /* #__PURE__ */ EmitterMixin() implements 
 
 	/**
 	 * Creates and adds a {@link ~Marker marker} to the `MarkerCollection` with given name on given
-	 * {@link module:engine/model/range~Range range}.
+	 * {@link module:engine/model/range~ModelRange range}.
 	 *
 	 * If `MarkerCollection` already had a marker with given name (or {@link ~Marker marker} was passed), the marker in
 	 * collection is updated and {@link module:engine/model/markercollection~MarkerCollection#event:update} event is fired
@@ -92,7 +92,7 @@ export class MarkerCollection extends /* #__PURE__ */ EmitterMixin() implements 
 	 */
 	public _set(
 		markerOrName: string | Marker,
-		range: Range,
+		range: ModelRange,
 		managedUsingOperations: boolean = false,
 		affectsData: boolean = false
 	): Marker {
@@ -210,9 +210,9 @@ export class MarkerCollection extends /* #__PURE__ */ EmitterMixin() implements 
 	}
 
 	/**
-	 * Returns iterator that iterates over all markers, which intersects with given {@link module:engine/model/range~Range range}.
+	 * Returns iterator that iterates over all markers, which intersects with given {@link module:engine/model/range~ModelRange range}.
 	 */
-	public* getMarkersIntersectingRange( range: Range ): Iterable<Marker> {
+	public* getMarkersIntersectingRange( range: ModelRange ): Iterable<Marker> {
 		for ( const marker of this ) {
 			if ( marker.getRange().getIntersection( range ) !== null ) {
 				yield marker;
@@ -267,7 +267,7 @@ export interface MarkerData {
 	/**
 	 * Marker range. `null` if the marker was removed.
 	 */
-	range: Range | null;
+	range: ModelRange | null;
 
 	/**
 	 * A property defining if the marker affects data.
@@ -457,14 +457,14 @@ class Marker extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
 	 * Returns a range that represents the current state of the marker.
 	 *
-	 * Keep in mind that returned value is a {@link module:engine/model/range~Range Range}, not a
+	 * Keep in mind that returned value is a {@link module:engine/model/range~ModelRange Range}, not a
 	 * {@link module:engine/model/liverange~ModelLiveRange ModelLiveRange}. This means that it is up-to-date and relevant only
 	 * until next model document change. Do not store values returned by this method. Instead, store {@link ~Marker#name}
 	 * and get `Marker` instance from {@link module:engine/model/markercollection~MarkerCollection MarkerCollection} every
 	 * time there is a need to read marker properties. This will guarantee that the marker has not been removed and
 	 * that it's data is up-to-date.
 	 */
-	public getRange(): Range {
+	public getRange(): ModelRange {
 		if ( !this._liveRange ) {
 			throw new CKEditorError( 'marker-destroyed', this );
 		}
@@ -558,7 +558,7 @@ export type MarkerChangeEvent = ModelLiveRangeChangeEvent;
  */
 export type MarkerCollectionUpdateEvent = {
 	name: 'update' | `update:${ string }`;
-	args: [ marker: Marker, oldRange: Range | null, newRange: Range | null, oldMarkerData: MarkerData ];
+	args: [ marker: Marker, oldRange: ModelRange | null, newRange: ModelRange | null, oldMarkerData: MarkerData ];
 };
 
 /**

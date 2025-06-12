@@ -24,7 +24,7 @@ import {
 	type ModelDocumentSelection,
 	type DowncastWriter,
 	type Model,
-	type Range,
+	type ModelRange,
 	type Selection,
 	type ViewContainerElement,
 	type ViewEditableElement,
@@ -339,7 +339,7 @@ export function toWidgetEditable(
 export function findOptimalInsertionRange(
 	selection: Selection | ModelDocumentSelection,
 	model: Model
-): Range {
+): ModelRange {
 	const selectedElement = selection.getSelectedElement();
 
 	if ( selectedElement ) {

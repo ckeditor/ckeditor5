@@ -15,7 +15,7 @@ import type {
 	DataTransfer,
 	ModelDocumentFragment,
 	DomEventData,
-	Range,
+	ModelRange,
 	ViewDocumentFragment,
 	ViewRange,
 	Selection,
@@ -463,7 +463,7 @@ export interface ClipboardContentInsertionData {
 	 * The result of the `model.insertContent()` call
 	 * (inserted by the event handler at a low priority).
 	 */
-	resultRange?: Range;
+	resultRange?: ModelRange;
 }
 
 /**

@@ -24,7 +24,7 @@ import { ListElementSupport } from './integrations/list.js';
 import { HorizontalLineElementSupport } from './integrations/horizontalline.js';
 import { CustomElementSupport } from './integrations/customelement.js';
 import type { DataSchemaInlineElementDefinition } from './dataschema.js';
-import type { ModelDocumentSelection, ModelItem, Model, Range, Selectable } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, ModelItem, Model, ModelRange, Selectable } from 'ckeditor5/src/engine.js';
 import { getHtmlAttributeName, modifyGhsAttribute, removeFormatting } from './utils.js';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig.js';
@@ -284,7 +284,7 @@ function getValidRangesForSelectable(
 	model: Model,
 	selectable: NonNullable<Selectable>,
 	ghsAttributeName: string
-): Iterable<Range> {
+): Iterable<ModelRange> {
 	if (
 		!( Symbol.iterator in selectable ) &&
 		(

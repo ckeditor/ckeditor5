@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type { Selectable, ModelDocumentSelection, Range, Position, Model } from 'ckeditor5/src/engine.js';
+import type { Selectable, ModelDocumentSelection, ModelRange, Position, Model } from 'ckeditor5/src/engine.js';
 import { findAttributeRange, findAttributeRangeBound } from 'ckeditor5/src/typing.js';
 
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
@@ -173,7 +173,7 @@ export class LinkStyleSupport extends Plugin {
 		}
 
 		// Non-collapsed selection.
-		const ranges: Array<Range> = [];
+		const ranges: Array<ModelRange> = [];
 
 		for ( const range of selection.getRanges() ) {
 			// First expand range to include the whole link.
@@ -217,7 +217,7 @@ function expandAttributePosition( position: Position, attributeName: string, loo
  *
  * Note: It assumes that ranges are sorted.
  */
-function normalizeRanges( ranges: Array<Range> ): Array<Range> {
+function normalizeRanges( ranges: Array<ModelRange> ): Array<ModelRange> {
 	for ( let i = 1; i < ranges.length; i++ ) {
 		const joinedRange = ranges[ i - 1 ].getJoined( ranges[ i ] );
 

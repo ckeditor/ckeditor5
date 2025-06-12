@@ -8,7 +8,7 @@
  */
 
 import { ModelPosition } from './position.js';
-import { Range } from './range.js';
+import { ModelRange } from './range.js';
 
 import type { MarkerCollection, MarkerData } from './markercollection.js';
 import { type AttributeOperation } from './operation/attributeoperation.js';
@@ -226,7 +226,7 @@ export class Differ {
 				}
 
 				// Remember -- operation is buffered before it is executed. So, it was not executed yet.
-				const range = Range._createFromPositionAndShift( operation.sourcePosition, operation.howMany );
+				const range = ModelRange._createFromPositionAndShift( operation.sourcePosition, operation.howMany );
 
 				for ( const node of range.getItems( { shallow: true } ) ) {
 					this._setElementState( node, 'move' );
@@ -242,7 +242,7 @@ export class Differ {
 				this._markRemove( operation.position.parent, operation.position.offset, 1 );
 				this._markInsert( operation.position.parent, operation.position.offset, 1 );
 
-				const range = Range._createFromPositionAndShift( operation.position, 1 );
+				const range = ModelRange._createFromPositionAndShift( operation.position, 1 );
 
 				for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
 					const markerData = marker.getData();
@@ -262,7 +262,7 @@ export class Differ {
 					this._markRemove( splitElement, operation.splitPosition.offset, operation.howMany );
 
 					// Remember -- operation is buffered before it is executed. So, it was not executed yet.
-					const range = Range._createFromPositionAndShift( operation.splitPosition, operation.howMany );
+					const range = ModelRange._createFromPositionAndShift( operation.splitPosition, operation.howMany );
 
 					for ( const node of range.getItems( { shallow: true } ) ) {
 						this._setElementState( node, 'move' );
@@ -305,7 +305,7 @@ export class Differ {
 					this._markInsert( mergedIntoElement, operation.targetPosition.offset, mergedElement.maxOffset );
 
 					// Remember -- operation is buffered before it is executed. So, it was not executed yet.
-					const range = Range._createFromPositionAndShift( operation.sourcePosition, operation.howMany );
+					const range = ModelRange._createFromPositionAndShift( operation.sourcePosition, operation.howMany );
 
 					for ( const node of range.getItems( { shallow: true } ) ) {
 						this._setElementState( node, 'move' );
@@ -388,7 +388,7 @@ export class Differ {
 	 *
 	 * @returns Markers to remove. Each array item is an object containing the `name` and `range` properties.
 	 */
-	public getMarkersToRemove(): Array<{ name: string; range: Range }> {
+	public getMarkersToRemove(): Array<{ name: string; range: ModelRange }> {
 		const result = [];
 
 		for ( const [ name, change ] of this._changedMarkers ) {
@@ -405,7 +405,7 @@ export class Differ {
 	 *
 	 * @returns Markers to add. Each array item is an object containing the `name` and `range` properties.
 	 */
-	public getMarkersToAdd(): Array<{ name: string; range: Range }> {
+	public getMarkersToAdd(): Array<{ name: string; range: ModelRange }> {
 		const result = [];
 
 		for ( const [ name, change ] of this._changedMarkers ) {
@@ -423,8 +423,8 @@ export class Differ {
 	public getChangedMarkers(): Array<{
 		name: string;
 		data: {
-			oldRange: Range | null;
-			newRange: Range | null;
+			oldRange: ModelRange | null;
+			newRange: ModelRange | null;
 		};
 	}> {
 		return Array.from( this._changedMarkers ).map( ( [ name, change ] ) => (
@@ -561,10 +561,10 @@ export class Differ {
 					let range;
 
 					if ( childrenAfter[ i ].name == '$text' ) {
-						range = new Range( ModelPosition._createAt( element, i ), ModelPosition._createAt( element, i + 1 ) );
+						range = new ModelRange( ModelPosition._createAt( element, i ), ModelPosition._createAt( element, i + 1 ) );
 					} else {
 						const index = element.offsetToIndex( i );
-						range = new Range(
+						range = new ModelRange(
 							ModelPosition._createAt( element, i ),
 							ModelPosition._createAt( element.getChild( index )!, 0 )
 						);
@@ -734,7 +734,7 @@ export class Differ {
 		this._refreshedItems.add( item );
 		this._setElementState( item, 'refresh' );
 
-		const range = Range._createOn( item );
+		const range = ModelRange._createOn( item );
 
 		for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
 			const markerData = marker.getData();
@@ -1298,7 +1298,7 @@ export class Differ {
 	 * @returns An array containing one or more diff items.
 	 */
 	private _getAttributesDiff(
-		range: Range,
+		range: ModelRange,
 		oldAttributes: Map<string, unknown>,
 		newAttributes: Map<string, unknown>
 	): Array<DifferItemAttribute & DifferItemInternal> {
@@ -1379,7 +1379,7 @@ export class Differ {
 	 * and `howMany`.
 	 */
 	private _removeAllNestedChanges( parent: ModelElement | ModelDocumentFragment, offset: number, howMany: number ) {
-		const range = new Range( ModelPosition._createAt( parent, offset ), ModelPosition._createAt( parent, offset + howMany ) );
+		const range = new ModelRange( ModelPosition._createAt( parent, offset ), ModelPosition._createAt( parent, offset + howMany ) );
 
 		for ( const item of range.getItems( { shallow: true } ) ) {
 			if ( item.is( 'element' ) ) {
@@ -1753,7 +1753,7 @@ export interface DifferItemAttribute {
 	/**
 	 * The range where the change happened.
 	 */
-	range: Range;
+	range: ModelRange;
 }
 
 /**

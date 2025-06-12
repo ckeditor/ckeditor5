@@ -12,7 +12,7 @@ import { ModelElement } from '../element.js';
 import { ModelLivePosition } from '../liveposition.js';
 import { ModelLiveRange } from '../liverange.js';
 import { ModelPosition } from '../position.js';
-import { Range } from '../range.js';
+import { ModelRange } from '../range.js';
 
 import { type ModelDocumentFragment } from '../documentfragment.js';
 import { type ModelItem } from '../item.js';
@@ -60,7 +60,7 @@ export function insertContent(
 	model: Model,
 	content: ModelItem | ModelDocumentFragment,
 	selectable?: Selection | ModelDocumentSelection
-): Range {
+): ModelRange {
 	return model.change( writer => {
 		const selection: Selection | ModelDocumentSelection = selectable ? selectable : model.document.selection;
 
@@ -192,7 +192,7 @@ export function insertContent(
 					writer.addMarker( name, {
 						usingOperation: true,
 						affectsData: true,
-						range: new Range( start, end )
+						range: new ModelRange( start, end )
 					} );
 				}
 			}
@@ -371,9 +371,9 @@ class Insertion {
 	 * Returns range to be selected after insertion.
 	 * Returns `null` if there is no valid range to select after insertion.
 	 */
-	public getSelectionRange(): Range | null {
+	public getSelectionRange(): ModelRange | null {
 		if ( this._nodeToSelect ) {
-			return Range._createOn( this._nodeToSelect );
+			return ModelRange._createOn( this._nodeToSelect );
 		}
 
 		return this.model.schema.getNearestSelectionRange( this.position );
@@ -383,12 +383,12 @@ class Insertion {
 	 * Returns a range which contains all the performed changes. This is a range that, if removed, would return the model to the state
 	 * before the insertion. Returns `null` if no changes were done.
 	 */
-	public getAffectedRange(): Range | null {
+	public getAffectedRange(): ModelRange | null {
 		if ( !this._affectedStart ) {
 			return null;
 		}
 
-		return new Range( this._affectedStart, this._affectedEnd );
+		return new ModelRange( this._affectedStart, this._affectedEnd );
 	}
 
 	/**

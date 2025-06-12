@@ -15,7 +15,7 @@ import { Input } from '@ckeditor/ckeditor5-typing/src/input.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _getModelData, _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { assertSelectedCells, formatAttributes, modelTable, viewTable } from './_utils/utils.js';
-import { Range } from '@ckeditor/ckeditor5-engine';
+import { ModelRange } from '@ckeditor/ckeditor5-engine';
 import { TableEditing } from '../src/tableediting.js';
 import { TableCellPropertiesEditing } from '../src/tablecellproperties/tablecellpropertiesediting.js';
 import { TableCellWidthEditing } from '../src/tablecellwidth/tablecellwidthediting.js';
@@ -4561,7 +4561,7 @@ describe( 'table clipboard', () => {
 
 			expect( marker ).to.not.be.null;
 
-			if ( range instanceof Range ) {
+			if ( range instanceof ModelRange ) {
 				expect( marker.getRange().isEqual( range ) ).to.be.true;
 			} else {
 				const markerRange = marker.getRange();

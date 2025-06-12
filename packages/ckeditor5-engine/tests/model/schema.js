@@ -11,8 +11,8 @@ import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { ModelElement } from '../../src/model/element.js';
 import { Text } from '../../src/model/text.js';
 import { TextProxy } from '../../src/model/textproxy.js';
-import { Position } from '../../src/model/position.js';
-import { Range } from '../../src/model/range.js';
+import { ModelPosition } from '../../src/model/position.js';
+import { ModelRange } from '../../src/model/range.js';
 
 import { _getModelData, _setModelData, _stringifyModel, _parseModel } from '../../src/dev-utils/model.js';
 
@@ -626,8 +626,8 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'accepts a schemaContext instance as a context', () => {
-			const rootContext = new SchemaContext( Position._createAt( root1, 0 ) );
-			const paragraphContext = new SchemaContext( Position._createAt( r1p1, 0 ) );
+			const rootContext = new SchemaContext( ModelPosition._createAt( root1, 0 ) );
+			const paragraphContext = new SchemaContext( ModelPosition._createAt( r1p1, 0 ) );
 
 			expect( schema.checkChild( rootContext, 'paragraph' ) ).to.be.true;
 			expect( schema.checkChild( rootContext, '$text' ) ).to.be.false;
@@ -637,8 +637,8 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'accepts a position as a context', () => {
-			const posInRoot = Position._createAt( root1, 0 );
-			const posInParagraph = Position._createAt( r1p1, 0 );
+			const posInRoot = ModelPosition._createAt( root1, 0 );
+			const posInParagraph = ModelPosition._createAt( r1p1, 0 );
 
 			expect( schema.checkChild( posInRoot, 'paragraph' ) ).to.be.true;
 			expect( schema.checkChild( posInRoot, '$text' ) ).to.be.false;
@@ -740,16 +740,16 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'accepts a position as a context', () => {
-			const posInRoot = Position._createAt( root1, 0 );
-			const posInParagraph = Position._createAt( r1p1, 0 );
+			const posInRoot = ModelPosition._createAt( root1, 0 );
+			const posInParagraph = ModelPosition._createAt( r1p1, 0 );
 
 			expect( schema.checkAttribute( posInRoot, 'align' ) ).to.be.false;
 			expect( schema.checkAttribute( posInParagraph, 'align' ) ).to.be.true;
 		} );
 
 		it( 'accepts a schemaContext instance as a context', () => {
-			const rootContext = new SchemaContext( Position._createAt( root1, 0 ) );
-			const paragraphContext = new SchemaContext( Position._createAt( r1p1, 0 ) );
+			const rootContext = new SchemaContext( ModelPosition._createAt( root1, 0 ) );
+			const paragraphContext = new SchemaContext( ModelPosition._createAt( r1p1, 0 ) );
 
 			expect( schema.checkAttribute( rootContext, 'align' ) ).to.be.false;
 			expect( schema.checkAttribute( paragraphContext, 'align' ) ).to.be.true;
@@ -1025,7 +1025,7 @@ describe( 'Schema', () => {
 			new ModelElement( '$root', null, [
 				listItem, listItemToMerge
 			] );
-			const position = Position._createAfter( listItem );
+			const position = ModelPosition._createAfter( listItem );
 
 			expect( schema.checkMerge( position ) ).to.be.true;
 		} );
@@ -1068,7 +1068,7 @@ describe( 'Schema', () => {
 				listItem
 			] );
 
-			const position = Position._createBefore( listItem );
+			const position = ModelPosition._createBefore( listItem );
 
 			expectToThrowCKEditorError( () => {
 				expect( schema.checkMerge( position ) );
@@ -1086,7 +1086,7 @@ describe( 'Schema', () => {
 				listItem
 			] );
 
-			const position = Position._createBefore( listItem );
+			const position = ModelPosition._createBefore( listItem );
 
 			expectToThrowCKEditorError( () => {
 				expect( schema.checkMerge( position ) );
@@ -1103,7 +1103,7 @@ describe( 'Schema', () => {
 				listItem
 			] );
 
-			const position = Position._createAfter( listItem );
+			const position = ModelPosition._createAfter( listItem );
 
 			expectToThrowCKEditorError( () => {
 				expect( schema.checkMerge( position ) );
@@ -1121,7 +1121,7 @@ describe( 'Schema', () => {
 				new Text( 'bar' )
 			] );
 
-			const position = Position._createBefore( listItem );
+			const position = ModelPosition._createBefore( listItem );
 
 			expectToThrowCKEditorError( () => {
 				expect( schema.checkMerge( position ) );
@@ -1307,7 +1307,7 @@ describe( 'Schema', () => {
 
 			const article = root.getNodeByPath( [ 0, 0, 0 ] );
 
-			expect( schema.getLimitElement( new Range( new Position( root, [ 0, 0, 0, 0, 2 ] ) ) ) ).to.equal( article );
+			expect( schema.getLimitElement( new ModelRange( new ModelPosition( root, [ 0, 0, 0, 0, 2 ] ) ) ) ).to.equal( article );
 		} );
 
 		it( 'accepts position as an argument', () => {
@@ -1323,7 +1323,7 @@ describe( 'Schema', () => {
 
 			const article = root.getNodeByPath( [ 0, 0, 0 ] );
 
-			expect( schema.getLimitElement( new Position( root, [ 0, 0, 0, 0, 2 ] ) ) ).to.equal( article );
+			expect( schema.getLimitElement( new ModelPosition( root, [ 0, 0, 0, 0, 2 ] ) ) ).to.equal( article );
 		} );
 	} );
 
@@ -1945,13 +1945,13 @@ describe( 'Schema', () => {
 		it( 'should return position ancestor that allows to insert given node to it', () => {
 			const node = new ModelElement( 'paragraph' );
 
-			const allowedParent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), node );
+			const allowedParent = schema.findAllowedParent( ModelPosition._createAt( r1bQp, 0 ), node );
 
 			expect( allowedParent ).to.equal( r1bQ );
 		} );
 
 		it( 'should return position ancestor that allows to insert given node to it - works with a string too', () => {
-			const allowedParent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), 'paragraph' );
+			const allowedParent = schema.findAllowedParent( ModelPosition._createAt( r1bQp, 0 ), 'paragraph' );
 
 			expect( allowedParent ).to.equal( r1bQ );
 		} );
@@ -1959,7 +1959,7 @@ describe( 'Schema', () => {
 		it( 'should return position ancestor that allows to insert given node to it when position is already i such an element', () => {
 			const node = new Text( 'text' );
 
-			const parent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), node );
+			const parent = schema.findAllowedParent( ModelPosition._createAt( r1bQp, 0 ), node );
 
 			expect( parent ).to.equal( r1bQp );
 		} );
@@ -1973,7 +1973,7 @@ describe( 'Schema', () => {
 			} );
 			const node = new ModelElement( 'div' );
 
-			const parent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), node );
+			const parent = schema.findAllowedParent( ModelPosition._createAt( r1bQp, 0 ), node );
 
 			expect( parent ).to.null;
 		} );
@@ -1987,7 +1987,7 @@ describe( 'Schema', () => {
 			} );
 			const node = new ModelElement( 'div' );
 
-			const parent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), node );
+			const parent = schema.findAllowedParent( ModelPosition._createAt( r1bQp, 0 ), node );
 
 			expect( parent ).to.null;
 		} );
@@ -1995,13 +1995,13 @@ describe( 'Schema', () => {
 		it( 'should return null when there is no allowed ancestor for given position', () => {
 			const node = new ModelElement( 'section' );
 
-			const parent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), node );
+			const parent = schema.findAllowedParent( ModelPosition._createAt( r1bQp, 0 ), node );
 
 			expect( parent ).to.null;
 		} );
 
 		it( 'should return null when there is no allowed ancestor for given position – works with a string too', () => {
-			const parent = schema.findAllowedParent( Position._createAt( r1bQp, 0 ), 'section' );
+			const parent = schema.findAllowedParent( ModelPosition._createAt( r1bQp, 0 ), 'section' );
 
 			expect( parent ).to.null;
 		} );
@@ -4046,7 +4046,7 @@ describe( 'SchemaContext', () => {
 		} );
 
 		it( 'creates context based on a position', () => {
-			const pos = Position._createAt( root.getChild( 0 ).getChild( 0 ), 0 );
+			const pos = ModelPosition._createAt( root.getChild( 0 ).getChild( 0 ), 0 );
 			const ctx = new SchemaContext( pos );
 
 			expect( ctx.length ).to.equal( 3 );
@@ -4091,7 +4091,7 @@ describe( 'SchemaContext', () => {
 		it( 'creates context in ModelDocumentFragment - position', () => {
 			const p = new ModelElement( 'paragraph' );
 			const docFrag = new ModelDocumentFragment( p );
-			const pos = Position._createAt( docFrag.getChild( 0 ), 0 );
+			const pos = ModelPosition._createAt( docFrag.getChild( 0 ), 0 );
 			const ctx = new SchemaContext( pos );
 
 			expect( ctx.length ).to.equal( 2 );

@@ -12,7 +12,7 @@ import { ShiftEnter, type ViewDocumentEnterEvent } from 'ckeditor5/src/enter.js'
 
 import {
 	UpcastWriter,
-	type Range,
+	type ModelRange,
 	type ModelNode,
 	type ModelGetSelectedContentEvent,
 	type ViewDocumentTabEvent,
@@ -460,7 +460,7 @@ function leaveBlockEndOnEnter( editor: Editor, isSoftEnter: boolean ): boolean {
 	const lastSelectionPosition = modelDoc.selection.getLastPosition()!;
 	const nodeBefore = lastSelectionPosition.nodeBefore;
 
-	let emptyLineRangeToRemoveOnEnter: Range;
+	let emptyLineRangeToRemoveOnEnter: ModelRange;
 
 	if ( isSoftEnter || !modelDoc.selection.isCollapsed || !lastSelectionPosition.isAtEnd || !nodeBefore || !nodeBefore.previousSibling ) {
 		return false;

@@ -9,7 +9,7 @@
 
 import { ModelDocumentSelection } from '../documentselection.js';
 import { ModelPosition } from '../position.js';
-import { Range } from '../range.js';
+import { ModelRange } from '../range.js';
 import { TreeWalker, type TreeWalkerValue } from '../treewalker.js';
 
 import { type Model } from '../model.js';
@@ -225,9 +225,9 @@ function getSearchRange( start: ModelPosition, isForward: boolean ) {
 	const searchEnd = ModelPosition._createAt( root, isForward ? 'end' : 0 );
 
 	if ( isForward ) {
-		return new Range( start, searchEnd );
+		return new ModelRange( start, searchEnd );
 	} else {
-		return new Range( searchEnd, start );
+		return new ModelRange( searchEnd, start );
 	}
 }
 

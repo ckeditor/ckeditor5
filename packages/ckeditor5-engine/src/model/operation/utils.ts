@@ -8,7 +8,7 @@
  */
 
 import { ModelNode } from '../node.js';
-import { Range } from '../range.js';
+import { ModelRange } from '../range.js';
 import { Text } from '../text.js';
 import { TextProxy } from '../textproxy.js';
 
@@ -28,7 +28,7 @@ import { CKEditorError, isIterable } from '@ckeditor/ckeditor5-utils';
  * @param nodes Nodes to insert.
  * @returns Range spanning over inserted elements.
  */
-export function _insert( position: ModelPosition, nodes: ModelNodeSet ): Range {
+export function _insert( position: ModelPosition, nodes: ModelNodeSet ): ModelRange {
 	const normalizedNodes = _normalizeNodes( nodes );
 
 	// We have to count offset before inserting nodes because they can get merged and we would get wrong offsets.
@@ -47,16 +47,16 @@ export function _insert( position: ModelPosition, nodes: ModelNodeSet ): Range {
 	_mergeNodesAtIndex( parent, index + normalizedNodes.length );
 	_mergeNodesAtIndex( parent, index );
 
-	return new Range( position, position.getShiftedBy( offset ) );
+	return new ModelRange( position, position.getShiftedBy( offset ) );
 }
 
 /**
- * Removed nodes in given range. Only {@link module:engine/model/range~Range#isFlat flat} ranges are accepted.
+ * Removed nodes in given range. Only {@link module:engine/model/range~ModelRange#isFlat flat} ranges are accepted.
  *
  * @internal
  * @param range Range containing nodes to remove.
  */
-export function _remove( this: any, range: Range ): Array<ModelNode> {
+export function _remove( this: any, range: ModelRange ): Array<ModelNode> {
 	if ( !range.isFlat ) {
 		/**
 		 * Trying to remove a range which starts and ends in different element.
@@ -86,14 +86,14 @@ export function _remove( this: any, range: Range ): Array<ModelNode> {
 }
 
 /**
- * Moves nodes in given range to given target position. Only {@link module:engine/model/range~Range#isFlat flat} ranges are accepted.
+ * Moves nodes in given range to given target position. Only {@link module:engine/model/range~ModelRange#isFlat flat} ranges are accepted.
  *
  * @internal
  * @param sourceRange Range containing nodes to move.
  * @param targetPosition Position to which nodes should be moved.
  * @returns Range containing moved nodes.
  */
-export function _move( this: any, sourceRange: Range, targetPosition: ModelPosition ): Range {
+export function _move( this: any, sourceRange: ModelRange, targetPosition: ModelPosition ): ModelRange {
 	if ( !sourceRange.isFlat ) {
 		/**
 		 * Trying to move a range which starts and ends in different element.
@@ -123,7 +123,7 @@ export function _move( this: any, sourceRange: Range, targetPosition: ModelPosit
  * @param key Key of attribute to set.
  * @param value Attribute value.
  */
-export function _setAttribute( range: Range, key: string, value: unknown ): void {
+export function _setAttribute( range: ModelRange, key: string, value: unknown ): void {
 	// Range might start or end in text nodes, so we have to split them.
 	_splitNodeAtPosition( range.start );
 	_splitNodeAtPosition( range.end );

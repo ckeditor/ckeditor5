@@ -8,10 +8,10 @@ import { insertContent } from '../../../src/model/utils/insertcontent.js';
 import { ModelDocumentFragment } from '../../../src/model/documentfragment.js';
 import { Text } from '../../../src/model/text.js';
 import { ModelElement } from '../../../src/model/element.js';
-import { Position } from '../../../src/model/position.js';
+import { ModelPosition } from '../../../src/model/position.js';
 
 import { _setModelData, _getModelData, _parseModel, _stringifyModel } from '../../../src/dev-utils/model.js';
-import { Range } from '../../../src/model/range.js';
+import { ModelRange } from '../../../src/model/range.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'DataController utils', () => {
@@ -3257,7 +3257,7 @@ describe( 'DataController utils', () => {
 	// Helper function that parses given content and inserts it at the cursor position.
 	//
 	// @param {module:engine/model/item~ModelItem|String} content
-	// @returns {module:engine/model/range~Range} range
+	// @returns {module:engine/model/range~ModelRange} range
 	function insertHelper( content, markers, customInsertionPath ) {
 		const selection = customInsertionPath ?
 			model.createSelection( model.createPositionFromPath( doc.getRoot(), customInsertionPath ) ) :
@@ -3277,8 +3277,8 @@ describe( 'DataController utils', () => {
 
 		if ( markers ) {
 			for ( const [ name, value ] of Object.entries( markers ) ) {
-				markersMap.set( name, new Range(
-					new Position( content, value.start ), new Position( content, value.end )
+				markersMap.set( name, new ModelRange(
+					new ModelPosition( content, value.start ), new ModelPosition( content, value.end )
 				) );
 			}
 

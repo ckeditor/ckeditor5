@@ -7,7 +7,7 @@
  * @module html-support/htmlcomment
  */
 
-import type { Marker, Position, Range, ModelElement } from 'ckeditor5/src/engine.js';
+import type { Marker, Position, ModelRange, ModelElement } from 'ckeditor5/src/engine.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 import { uid } from 'ckeditor5/src/utils.js';
 
@@ -260,7 +260,7 @@ export class HtmlComment extends Plugin {
 	 * @param options.skipBoundaries When set to `true` the range boundaries will be skipped.
 	 * @returns HTML comment IDs
 	 */
-	public getHtmlCommentsInRange( range: Range, { skipBoundaries = false } = {} ): Array<string> {
+	public getHtmlCommentsInRange( range: ModelRange, { skipBoundaries = false } = {} ): Array<string> {
 		const includeBoundaries = !skipBoundaries;
 
 		// Unfortunately, MarkerCollection#getMarkersAtPosition() filters out collapsed markers.
@@ -268,7 +268,7 @@ export class HtmlComment extends Plugin {
 			.filter( marker => isCommentMarkerInRange( marker, range ) )
 			.map( marker => marker.name );
 
-		function isCommentMarkerInRange( commentMarker: Marker, range: Range ) {
+		function isCommentMarkerInRange( commentMarker: Marker, range: ModelRange ) {
 			const position = commentMarker.getRange().start;
 
 			return (

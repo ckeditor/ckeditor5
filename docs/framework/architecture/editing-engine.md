@@ -149,7 +149,7 @@ On the other hand, offset `x` in `<paragraph>` translates to:
 The engine also defines three levels of classes that operate on offsets:
 
 * A {@link module:engine/model/position~ModelPosition} instance contains an {@link module:engine/model/position~ModelPosition#path array of offsets} (which is called a "path"). See the examples in the {@link module:engine/model/position~ModelPosition#path `Position#path` API documentation} to better understand how paths work.
-* A {@link module:engine/model/range~Range} contains two positions: {@link module:engine/model/range~Range#start start} and {@link module:engine/model/range~Range#end end} ones.
+* A {@link module:engine/model/range~ModelRange} contains two positions: {@link module:engine/model/range~ModelRange#start start} and {@link module:engine/model/range~ModelRange#end end} ones.
 * Finally, there is a {@link module:engine/model/selection~Selection} which contains one or more ranges, attributes, and has a direction (whether it was done from left to right or right to left). You can make as many instances of it as you need and you can freely modify it whenever you want. Additionally, there is a single {@link module:engine/model/documentselection~DocumentSelection}. It represents the document's selection and can only be changed through the {@link module:engine/model/writer~Writer model writer}. It is automatically updated when the document's structure is changed.
 
 ### Markers

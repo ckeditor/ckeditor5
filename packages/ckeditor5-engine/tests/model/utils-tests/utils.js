@@ -10,7 +10,7 @@ import {
 	createRangeOnElementOnly
 } from '../../../tests/model/_utils/utils.js';
 import { Model } from '../../../src/model/model.js';
-import { Range } from '../../../src/model/range.js';
+import { ModelRange } from '../../../src/model/range.js';
 import { ModelElement } from '../../../src/model/element.js';
 import { Text } from '../../../src/model/text.js';
 import { ModelNode } from '../../../src/model/node.js';
@@ -32,7 +32,7 @@ describe( 'getNodesAndText', () => {
 	} );
 
 	it( 'reads two elements with text', () => {
-		expect( getNodesAndText( Range._createIn( root ) ) ).to.equal( 'DIVfoobarDIVPabcxyzP' );
+		expect( getNodesAndText( ModelRange._createIn( root ) ) ).to.equal( 'DIVfoobarDIVPabcxyzP' );
 	} );
 } );
 

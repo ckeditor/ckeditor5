@@ -11,7 +11,7 @@ import { MultiRootEditor } from '@ckeditor/ckeditor5-editor-multi-root';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { _setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
-import { Position } from '@ckeditor/ckeditor5-engine/src/model/position.js';
+import { ModelPosition } from '@ckeditor/ckeditor5-engine/src/model/position.js';
 import { ShiftEnter } from '@ckeditor/ckeditor5-enter/src/shiftenter.js';
 import { TableEditing } from '@ckeditor/ckeditor5-table/src/tableediting.js';
 import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
@@ -463,13 +463,13 @@ describe( 'WordCount', () => {
 			model.document.on( 'change', fakeSelectionChange );
 
 			model.change( writer => {
-				const range = writer.createRange( new Position( model.document.getRoot(), [ 0, 1 ] ) );
+				const range = writer.createRange( new ModelPosition( model.document.getRoot(), [ 0, 1 ] ) );
 
 				writer.setSelection( range );
 			} );
 
 			model.change( writer => {
-				const range = writer.createRange( new Position( model.document.getRoot(), [ 0, 10 ] ) );
+				const range = writer.createRange( new ModelPosition( model.document.getRoot(), [ 0, 10 ] ) );
 
 				writer.setSelection( range );
 			} );

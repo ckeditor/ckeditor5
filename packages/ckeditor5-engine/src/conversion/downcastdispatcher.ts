@@ -8,7 +8,7 @@
  */
 
 import { ModelConsumable } from './modelconsumable.js';
-import { Range } from '../model/range.js';
+import { ModelRange } from '../model/range.js';
 
 import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
@@ -177,9 +177,9 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 		// Convert changes that happened on model tree.
 		for ( const entry of changes ) {
 			if ( entry.type === 'insert' ) {
-				this._convertInsert( Range._createFromPositionAndShift( entry.position, entry.length ), conversionApi );
+				this._convertInsert( ModelRange._createFromPositionAndShift( entry.position, entry.length ), conversionApi );
 			} else if ( entry.type === 'reinsert' ) {
-				this._convertReinsert( Range._createFromPositionAndShift( entry.position, entry.length ), conversionApi );
+				this._convertReinsert( ModelRange._createFromPositionAndShift( entry.position, entry.length ), conversionApi );
 			} else if ( entry.type === 'remove' ) {
 				this._convertRemove( entry.position, entry.length, entry.name, conversionApi );
 			} else {
@@ -220,8 +220,8 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 * @param options Optional options object passed to `convertionApi.options`.
 	 */
 	public convert(
-		range: Range,
-		markers: Map<string, Range>,
+		range: ModelRange,
+		markers: Map<string, ModelRange>,
 		writer: DowncastWriter,
 		options: DowncastConversionApi[ 'options' ] = {}
 	): void {
@@ -326,7 +326,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 * for items in the provided range.
 	 */
 	private _convertInsert(
-		range: Range,
+		range: ModelRange,
 		conversionApi: DowncastConversionApi,
 		options: { doNotAddConsumables?: boolean } = {}
 	): void {
@@ -371,7 +371,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 * @param conversionApi The conversion API object.
 	 */
 	private _convertAttribute(
-		range: Range,
+		range: ModelRange,
 		key: string,
 		oldValue: unknown,
 		newValue: unknown,
@@ -384,7 +384,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 		for ( const value of range ) {
 			const data = {
 				item: value.item,
-				range: Range._createFromPositionAndShift( value.previousPosition, value.length! ),
+				range: ModelRange._createFromPositionAndShift( value.previousPosition, value.length! ),
 				attributeKey: key,
 				attributeOldValue: oldValue,
 				attributeNewValue: newValue
@@ -406,7 +406,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 * @param range The range to reinsert.
 	 * @param conversionApi The conversion API object.
 	 */
-	private _convertReinsert( range: Range, conversionApi: DowncastConversionApi ): void {
+	private _convertReinsert( range: ModelRange, conversionApi: DowncastConversionApi ): void {
 		// Convert the elements - without converting children.
 		const walkerValues = Array.from( range.getWalker( { shallow: true } ) );
 
@@ -430,7 +430,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 */
 	private _convertMarkerAdd(
 		markerName: string,
-		markerRange: Range,
+		markerRange: ModelRange,
 		conversionApi: DowncastConversionApi
 	): void {
 		// Do not convert if range is in graveyard.
@@ -467,7 +467,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 				continue;
 			}
 
-			const data = { item, range: Range._createOn( item ), markerName, markerRange };
+			const data = { item, range: ModelRange._createOn( item ), markerName, markerRange };
 
 			this.fire<DowncastAddMarkerEvent>( eventName, data, conversionApi );
 		}
@@ -481,7 +481,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 * @param markerRange The marker range.
 	 * @param conversionApi The conversion API object.
 	 */
-	private _convertMarkerRemove( markerName: string, markerRange: Range, conversionApi: DowncastConversionApi ) {
+	private _convertMarkerRemove( markerName: string, markerRange: ModelRange, conversionApi: DowncastConversionApi ) {
 		// Do not convert if range is in graveyard.
 		if ( markerRange.root.rootName == '$graveyard' ) {
 			return;
@@ -545,7 +545,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 */
 	private _addConsumablesForRange(
 		consumable: ModelConsumable,
-		range: Range,
+		range: ModelRange,
 		type: string
 	): ModelConsumable {
 		for ( const item of range.getItems() ) {
@@ -624,7 +624,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	): void {
 		const data: DowncastDispatcherEventMap[ 'attribute' ] = {
 			item,
-			range: Range._createOn( item )
+			range: ModelRange._createOn( item )
 		} as any;
 
 		for ( const key of data.item.getAttributeKeys() ) {
@@ -656,8 +656,12 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 			consumable: new ModelConsumable(),
 			writer,
 			options,
-			convertItem: item => this._convertInsert( Range._createOn( item ), conversionApi ),
-			convertChildren: element => this._convertInsert( Range._createIn( element ), conversionApi, { doNotAddConsumables: true } ),
+			convertItem: item => this._convertInsert( ModelRange._createOn( item ), conversionApi ),
+			convertChildren: element => this._convertInsert(
+				ModelRange._createIn( element ),
+				conversionApi,
+				{ doNotAddConsumables: true }
+			),
 			convertAttributes: item => this._testAndFireAddAttributes( item, conversionApi ),
 			canReuseView: viewElement => !refreshedItems.has( conversionApi.mapper.toModelElement( viewElement )! )
 		};
@@ -696,7 +700,7 @@ export type DowncastReduceChangesEventData = {
 export type DowncastDispatcherEventMap<TItem = ModelItem> = {
 	insert: {
 		item: TItem;
-		range: Range;
+		range: ModelRange;
 		reconversion?: boolean;
 	};
 	remove: {
@@ -705,7 +709,7 @@ export type DowncastDispatcherEventMap<TItem = ModelItem> = {
 	};
 	attribute: {
 		item: TItem;
-		range: Range;
+		range: ModelRange;
 		attributeKey: string;
 		attributeOldValue: unknown;
 		attributeNewValue: unknown;
@@ -718,12 +722,12 @@ export type DowncastDispatcherEventMap<TItem = ModelItem> = {
 	};
 	addMarker: {
 		item?: ModelItem | Selection | ModelDocumentSelection;
-		range?: Range;
-		markerRange: Range;
+		range?: ModelRange;
+		markerRange: ModelRange;
 		markerName: string;
 	};
 	removeMarker: {
-		markerRange: Range;
+		markerRange: ModelRange;
 		markerName: string;
 	};
 };
@@ -745,7 +749,7 @@ export type DowncastEvent<TName extends keyof DowncastDispatcherEventMap<TItem>,
  * @eventName ~DowncastDispatcher#insert
  * @param {Object} data Additional information about the change.
  * @param {module:engine/model/item~ModelItem} data.item The inserted item.
- * @param {module:engine/model/range~Range} data.range Range spanning over inserted item.
+ * @param {module:engine/model/range~ModelRange} data.range Range spanning over inserted item.
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
  * to be used by callback, passed in the `DowncastDispatcher` constructor.
  */
@@ -787,7 +791,7 @@ export type DowncastRemoveEvent = DowncastEvent<'remove'>;
  * @param {Object} data Additional information about the change.
  * @param {module:engine/model/item~ModelItem|module:engine/model/documentselection~DocumentSelection} data.item Changed item
  * or converted selection.
- * @param {module:engine/model/range~Range} data.range Range spanning over changed item or selection range.
+ * @param {module:engine/model/range~ModelRange} data.range Range spanning over changed item or selection range.
  * @param {String} data.attributeKey Attribute key.
  * @param {*} data.attributeOldValue Attribute value before the change. This is `null` when selection attribute is converted.
  * @param {*} data.attributeNewValue New attribute value.
@@ -846,9 +850,9 @@ export type DowncastCleanSelectionEvent = DowncastEvent<'cleanSelection'>;
  * @param {Object} data Additional information about the change.
  * @param {module:engine/model/item~ModelItem|module:engine/model/selection~Selection} data.item Item inside the new marker or
  * the selection that is being converted.
- * @param {module:engine/model/range~Range} [data.range] Range spanning over converted item. Available only in marker conversion, if
+ * @param {module:engine/model/range~ModelRange} [data.range] Range spanning over converted item. Available only in marker conversion, if
  * the marker range was not collapsed.
- * @param {module:engine/model/range~Range} data.markerRange Marker range.
+ * @param {module:engine/model/range~ModelRange} data.markerRange Marker range.
  * @param {String} data.markerName Marker name.
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
  * to be used by callback, passed in `DowncastDispatcher` constructor.
@@ -865,7 +869,7 @@ export type DowncastAddMarkerEvent = DowncastEvent<'addMarker'>;
  *
  * @eventName ~DowncastDispatcher#removeMarker
  * @param {Object} data Additional information about the change.
- * @param {module:engine/model/range~Range} data.markerRange Marker range.
+ * @param {module:engine/model/range~ModelRange} data.markerRange Marker range.
  * @param {String} data.markerName Marker name.
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
  * to be used by callback, passed in `DowncastDispatcher` constructor.
@@ -906,7 +910,7 @@ function getEventName<TType extends string>( type: TType, data: { item: ModelIte
 function walkerValueToEventData( value: TreeWalkerValue ) {
 	return {
 		item: value.item,
-		range: Range._createFromPositionAndShift( value.previousPosition, value.length! )
+		range: ModelRange._createFromPositionAndShift( value.previousPosition, value.length! )
 	};
 }
 

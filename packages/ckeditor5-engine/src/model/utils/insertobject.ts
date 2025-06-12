@@ -12,7 +12,7 @@ import { type Selection } from '../selection.js';
 
 import { type ModelElement } from '../element.js';
 import { type Model } from '../model.js';
-import { type Range } from '../range.js';
+import { type ModelRange } from '../range.js';
 import { type Writer } from '../writer.js';
 
 import { CKEditorError, first } from '@ckeditor/ckeditor5-utils';
@@ -55,7 +55,7 @@ export function insertObject(
 		findOptimalPosition?: 'auto' | 'before' | 'after';
 		setSelection?: 'on' | 'after';
 	} = {}
-): Range {
+): ModelRange {
 	if ( !model.schema.isObject( object ) ) {
 		/**
 		 * Tried to insert an element with {@link module:engine/model/utils/insertobject insertObject()} function

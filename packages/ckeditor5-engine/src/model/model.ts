@@ -772,7 +772,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	/**
-	 * Checks whether the given {@link module:engine/model/range~Range range} or
+	 * Checks whether the given {@link module:engine/model/range~ModelRange range} or
 	 * {@link module:engine/model/element~ModelElement element} has any meaningful content.
 	 *
 	 * Meaningful content is:

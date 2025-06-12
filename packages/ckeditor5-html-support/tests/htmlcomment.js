@@ -7,7 +7,7 @@ import { VirtualTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/virtual
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { _getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 import { HtmlComment } from '../src/htmlcomment.js';
-import { Range } from '@ckeditor/ckeditor5-engine/src/model/range.js';
+import { ModelRange } from '@ckeditor/ckeditor5-engine/src/model/range.js';
 
 describe( 'HtmlComment', () => {
 	let model, root, editor, htmlCommentPlugin;
@@ -485,7 +485,7 @@ describe( 'HtmlComment', () => {
 			const posStart = model.createPositionFromPath( root, [ 2, 1 ] );
 			const posEnd = model.createPositionFromPath( root, [ 2, 3 ] );
 
-			const range = new Range( posStart, posEnd );
+			const range = new ModelRange( posStart, posEnd );
 
 			// Comments at the range boundaries.
 			const id3 = htmlCommentPlugin.createHtmlComment( posStart, 'baz' );
@@ -503,7 +503,7 @@ describe( 'HtmlComment', () => {
 			const posStart = model.createPositionFromPath( root, [ 2, 1 ] );
 			const posEnd = model.createPositionFromPath( root, [ 2, 3 ] );
 
-			const range = new Range( posStart, posEnd );
+			const range = new ModelRange( posStart, posEnd );
 
 			// Comments at the range boundaries.
 			htmlCommentPlugin.createHtmlComment( posStart, 'baz' );
@@ -520,7 +520,7 @@ describe( 'HtmlComment', () => {
 
 			const position = model.createPositionFromPath( root, [ 2, 1 ] );
 
-			const range = new Range( position, position );
+			const range = new ModelRange( position, position );
 
 			// Two comments at the position of the collapsed range.
 			const id1 = htmlCommentPlugin.createHtmlComment( position, 'baz' );

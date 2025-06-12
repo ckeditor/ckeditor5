@@ -9,7 +9,7 @@
 
 import { Operation } from './operation.js';
 import { ModelPosition } from '../position.js';
-import { Range } from '../range.js';
+import { ModelRange } from '../range.js';
 import { _move } from './utils.js';
 import type { Selectable } from '../selection.js';
 
@@ -80,8 +80,8 @@ export class MoveOperation extends Operation {
 	 */
 	public get affectedSelectable(): Selectable {
 		return [
-			Range._createFromPositionAndShift( this.sourcePosition, this.howMany ),
-			Range._createFromPositionAndShift( this.targetPosition, 0 )
+			ModelRange._createFromPositionAndShift( this.sourcePosition, this.howMany ),
+			ModelRange._createFromPositionAndShift( this.targetPosition, 0 )
 		];
 	}
 
@@ -173,7 +173,7 @@ export class MoveOperation extends Operation {
 	 * @internal
 	 */
 	public _execute(): void {
-		_move( Range._createFromPositionAndShift( this.sourcePosition, this.howMany ), this.targetPosition );
+		_move( ModelRange._createFromPositionAndShift( this.sourcePosition, this.howMany ), this.targetPosition );
 	}
 
 	/**

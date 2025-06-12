@@ -22,7 +22,7 @@ import { ModelDocumentFragment } from './documentfragment.js';
 import { ModelDocumentSelection } from './documentselection.js';
 import { ModelElement } from './element.js';
 import { ModelPosition, type ModelPositionOffset, type ModelPositionStickiness } from './position.js';
-import { Range } from './range.js';
+import { ModelRange } from './range.js';
 import { RootElement } from './rootelement.js';
 import { Text } from './text.js';
 
@@ -177,7 +177,7 @@ export class Writer {
 	 * Note that you cannot re-insert a node from a document to a different document or a document fragment. In this case,
 	 * `model-writer-insert-forbidden-move` is thrown.
 	 *
-	 * If you want to move {@link module:engine/model/range~Range range} instead of an
+	 * If you want to move {@link module:engine/model/range~ModelRange range} instead of an
 	 * {@link module:engine/model/item~ModelItem item} use {@link module:engine/model/writer~Writer#move `Writer#move()`}.
 	 *
 	 * **Note:** For a paste-like content insertion mechanism see
@@ -204,7 +204,7 @@ export class Writer {
 			// We need to check if item is going to be inserted within the same document.
 			if ( isSameTree( item.root, position.root ) ) {
 				// If it's we just need to move it.
-				this.move( Range._createOn( item ), position );
+				this.move( ModelRange._createOn( item ), position );
 
 				return;
 			}
@@ -249,7 +249,7 @@ export class Writer {
 			for ( const [ markerName, markerRange ] of item.markers ) {
 				// We need to migrate marker range from ModelDocumentFragment to Document.
 				const rangeRootPosition = ModelPosition._createAt( markerRange.root, 0 );
-				const range = new Range(
+				const range = new ModelRange(
 					markerRange.start._getCombined( rangeRootPosition, position ),
 					markerRange.end._getCombined( rangeRootPosition, position )
 				);
@@ -429,7 +429,7 @@ export class Writer {
 	 *
 	 * Note that if the item already has parent it will be removed from the previous parent.
 	 *
-	 * If you want to move {@link module:engine/model/range~Range range} instead of an
+	 * If you want to move {@link module:engine/model/range~ModelRange range} instead of an
 	 * {@link module:engine/model/item~ModelItem item} use {@link module:engine/model/writer~Writer#move `Writer#move()`}.
 	 *
 	 * @param item Item or document fragment to insert.
@@ -528,16 +528,16 @@ export class Writer {
 
 	/**
 	 * Sets value of the attribute with given key on a {@link module:engine/model/item~ModelItem model item}
-	 * or on a {@link module:engine/model/range~Range range}.
+	 * or on a {@link module:engine/model/range~ModelRange range}.
 	 *
 	 * @param key Attribute key.
 	 * @param value Attribute new value.
 	 * @param itemOrRange Model item or range on which the attribute will be set.
 	 */
-	public setAttribute( key: string, value: unknown, itemOrRange: ModelItem | Range ): void {
+	public setAttribute( key: string, value: unknown, itemOrRange: ModelItem | ModelRange ): void {
 		this._assertWriterUsedCorrectly();
 
-		if ( itemOrRange instanceof Range ) {
+		if ( itemOrRange instanceof ModelRange ) {
 			const ranges = itemOrRange.getMinimalFlatRanges();
 
 			for ( const range of ranges ) {
@@ -550,7 +550,7 @@ export class Writer {
 
 	/**
 	 * Sets values of attributes on a {@link module:engine/model/item~ModelItem model item}
-	 * or on a {@link module:engine/model/range~Range range}.
+	 * or on a {@link module:engine/model/range~ModelRange range}.
 	 *
 	 * ```ts
 	 * writer.setAttributes( {
@@ -564,7 +564,7 @@ export class Writer {
 	 */
 	public setAttributes(
 		attributes: ModelNodeAttributes,
-		itemOrRange: ModelItem | Range
+		itemOrRange: ModelItem | ModelRange
 	): void {
 		for ( const [ key, val ] of toMap( attributes ) ) {
 			this.setAttribute( key, val, itemOrRange );
@@ -573,15 +573,15 @@ export class Writer {
 
 	/**
 	 * Removes an attribute with given key from a {@link module:engine/model/item~ModelItem model item}
-	 * or from a {@link module:engine/model/range~Range range}.
+	 * or from a {@link module:engine/model/range~ModelRange range}.
 	 *
 	 * @param key Attribute key.
 	 * @param itemOrRange Model item or range from which the attribute will be removed.
 	 */
-	public removeAttribute( key: string, itemOrRange: ModelItem | Range ): void {
+	public removeAttribute( key: string, itemOrRange: ModelItem | ModelRange ): void {
 		this._assertWriterUsedCorrectly();
 
-		if ( itemOrRange instanceof Range ) {
+		if ( itemOrRange instanceof ModelRange ) {
 			const ranges = itemOrRange.getMinimalFlatRanges();
 
 			for ( const range of ranges ) {
@@ -597,7 +597,7 @@ export class Writer {
 	 *
 	 * @param itemOrRange Model item or range from which all attributes will be removed.
 	 */
-	public clearAttributes( itemOrRange: ModelItem | Range ): void {
+	public clearAttributes( itemOrRange: ModelItem | ModelRange ): void {
 		this._assertWriterUsedCorrectly();
 
 		const removeAttributesFromItem = ( item: ModelItem ) => {
@@ -606,7 +606,7 @@ export class Writer {
 			}
 		};
 
-		if ( !( itemOrRange instanceof Range ) ) {
+		if ( !( itemOrRange instanceof ModelRange ) ) {
 			removeAttributesFromItem( itemOrRange );
 		} else {
 			for ( const item of itemOrRange.getItems() ) {
@@ -645,13 +645,13 @@ export class Writer {
 	 * @param offset Offset or one of the flags. Used only when second parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
 	public move(
-		range: Range,
+		range: ModelRange,
 		itemOrPosition: ModelItem | ModelPosition,
 		offset?: ModelPositionOffset
 	): void {
 		this._assertWriterUsedCorrectly();
 
-		if ( !( range instanceof Range ) ) {
+		if ( !( range instanceof ModelRange ) ) {
 			/**
 			 * Invalid range to move.
 			 *
@@ -697,14 +697,14 @@ export class Writer {
 	}
 
 	/**
-	 * Removes given model {@link module:engine/model/item~ModelItem item} or {@link module:engine/model/range~Range range}.
+	 * Removes given model {@link module:engine/model/item~ModelItem item} or {@link module:engine/model/range~ModelRange range}.
 	 *
 	 * @param itemOrRange Model item or range to remove.
 	 */
-	public remove( itemOrRange: ModelItem | Range ): void {
+	public remove( itemOrRange: ModelItem | ModelRange ): void {
 		this._assertWriterUsedCorrectly();
 
-		const rangeToRemove = itemOrRange instanceof Range ? itemOrRange : Range._createOn( itemOrRange );
+		const rangeToRemove = itemOrRange instanceof ModelRange ? itemOrRange : ModelRange._createOn( itemOrRange );
 		const ranges = rangeToRemove.getMinimalFlatRanges().reverse();
 
 		for ( const flat of ranges ) {
@@ -808,7 +808,7 @@ export class Writer {
 	 * @param start Start position.
 	 * @param end End position. If not set, range will be collapsed at `start` position.
 	 */
-	public createRange( start: ModelPosition, end?: ModelPosition ): Range {
+	public createRange( start: ModelPosition, end?: ModelPosition ): ModelRange {
 		return this.model.createRange( start, end );
 	}
 
@@ -817,7 +817,7 @@ export class Writer {
 	 *
 	 * @param element Element which is a parent for the range.
 	 */
-	public createRangeIn( element: ModelElement | ModelDocumentFragment ): Range {
+	public createRangeIn( element: ModelElement | ModelDocumentFragment ): ModelRange {
 		return this.model.createRangeIn( element );
 	}
 
@@ -826,7 +826,7 @@ export class Writer {
 	 *
 	 * @param element Element which is a parent for the range.
 	 */
-	public createRangeOn( element: ModelItem ): Range {
+	public createRangeOn( element: ModelItem ): ModelRange {
 		return this.model.createRangeOn( element );
 	}
 
@@ -857,7 +857,7 @@ export class Writer {
 		const nodeBefore = position.nodeBefore;
 		const nodeAfter = position.nodeAfter;
 
-		this.move( Range._createIn( nodeAfter as any ), ModelPosition._createAt( nodeBefore!, 'end' ) );
+		this.move( ModelRange._createIn( nodeAfter as any ), ModelPosition._createAt( nodeBefore!, 'end' ) );
 		this.remove( nodeAfter! );
 	}
 
@@ -928,7 +928,10 @@ export class Writer {
 	 * * `position` - Position between split elements.
 	 * * `range` - Range that stars from the end of the first split element and ends at the beginning of the first copy element.
 	 */
-	public split( position: ModelPosition, limitElement?: ModelNode | ModelDocumentFragment ): { position: ModelPosition; range: Range } {
+	public split(
+		position: ModelPosition,
+		limitElement?: ModelNode | ModelDocumentFragment
+	): { position: ModelPosition; range: ModelRange } {
 		this._assertWriterUsedCorrectly();
 
 		let splitElement = position.parent;
@@ -984,20 +987,20 @@ export class Writer {
 
 		return {
 			position,
-			range: new Range( ModelPosition._createAt( firstSplitElement!, 'end' ), ModelPosition._createAt( firstCopyElement!, 0 ) )
+			range: new ModelRange( ModelPosition._createAt( firstSplitElement!, 'end' ), ModelPosition._createAt( firstCopyElement!, 0 ) )
 		};
 	}
 
 	/**
 	 * Wraps the given range with the given element or with a new element (if a string was passed).
 	 *
-	 * **Note:** range to wrap should be a "flat range" (see {@link module:engine/model/range~Range#isFlat `Range#isFlat`}).
+	 * **Note:** range to wrap should be a "flat range" (see {@link module:engine/model/range~ModelRange#isFlat `Range#isFlat`}).
 	 * If not, an error will be thrown.
 	 *
 	 * @param range Range to wrap.
 	 * @param elementOrString Element or name of element to wrap the range with.
 	 */
-	public wrap( range: Range, elementOrString: ModelElement | string ): void {
+	public wrap( range: ModelRange, elementOrString: ModelElement | string ): void {
 		this._assertWriterUsedCorrectly();
 
 		if ( !range.isFlat ) {
@@ -1032,7 +1035,7 @@ export class Writer {
 		this.insert( element, range.start );
 
 		// Shift the range-to-wrap because we just inserted an element before that range.
-		const shiftedRange = new Range( range.start.getShiftedBy( 1 ), range.end.getShiftedBy( 1 ) );
+		const shiftedRange = new ModelRange( range.start.getShiftedBy( 1 ), range.end.getShiftedBy( 1 ) );
 
 		this.move( shiftedRange, ModelPosition._createAt( element, 0 ) );
 	}
@@ -1055,7 +1058,7 @@ export class Writer {
 			throw new CKEditorError( 'writer-unwrap-element-no-parent', this );
 		}
 
-		this.move( Range._createIn( element ), this.createPositionAfter( element ) );
+		this.move( ModelRange._createIn( element ), this.createPositionAfter( element ) );
 		this.remove( element );
 	}
 
@@ -1108,7 +1111,7 @@ export class Writer {
 		options: {
 			usingOperation: boolean;
 			affectsData?: boolean;
-			range: Range;
+			range: ModelRange;
 		}
 	): Marker {
 		this._assertWriterUsedCorrectly();
@@ -1211,7 +1214,7 @@ export class Writer {
 	public updateMarker(
 		markerOrName: string | Marker,
 		options?: {
-			range?: Range;
+			range?: ModelRange;
 			usingOperation?: boolean;
 			affectsData?: boolean;
 		}
@@ -1694,7 +1697,7 @@ export class Writer {
 	 */
 	private _addOperationForAffectedMarkers(
 		type: 'move' | 'merge',
-		positionOrRange: ModelPosition | Range
+		positionOrRange: ModelPosition | ModelRange
 	): void {
 		for ( const marker of this.model.markers ) {
 			if ( !marker.managedUsingOperations ) {
@@ -1705,7 +1708,7 @@ export class Writer {
 			let isAffected = false;
 
 			if ( type === 'move' ) {
-				const range = positionOrRange as Range;
+				const range = positionOrRange as ModelRange;
 				isAffected =
 					range.containsPosition( markerRange.start ) ||
 					range.start.isEqual( markerRange.start ) ||
@@ -1761,7 +1764,7 @@ export { Writer as ModelWriter };
  *
  * Given `range` must be flat.
  */
-function setAttributeOnRange( writer: Writer, key: string, value: unknown, range: Range ) {
+function setAttributeOnRange( writer: Writer, key: string, value: unknown, range: ModelRange ) {
 	const model = writer.model;
 	const doc = model.document;
 
@@ -1803,7 +1806,7 @@ function setAttributeOnRange( writer: Writer, key: string, value: unknown, range
 	}
 
 	function addOperation() {
-		const range = new Range( lastSplitPosition, position );
+		const range = new ModelRange( lastSplitPosition, position );
 		const version = range.root.document ? doc.version : null;
 		const operation = new AttributeOperation( range, key, valueBefore, value, version );
 
@@ -1830,7 +1833,7 @@ function setAttributeOnItem( writer: Writer, key: string, value: unknown, item: 
 
 			operation = new RootAttributeOperation( item as any, key, previousValue, value, version );
 		} else {
-			range = new Range( ModelPosition._createBefore( item ), writer.createPositionAfter( item ) );
+			range = new ModelRange( ModelPosition._createBefore( item ), writer.createPositionAfter( item ) );
 
 			const version = range.root.document ? doc.version : null;
 
@@ -1848,8 +1851,8 @@ function setAttributeOnItem( writer: Writer, key: string, value: unknown, item: 
 function applyMarkerOperation(
 	writer: Writer,
 	name: string,
-	oldRange: Range | null,
-	newRange: Range | null,
+	oldRange: ModelRange | null,
+	newRange: ModelRange | null,
 	affectsData: boolean | undefined
 ) {
 	const model = writer.model;

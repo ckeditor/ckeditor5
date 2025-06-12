@@ -15,7 +15,7 @@ import {
 	type DataTransfer,
 	type ModelElement,
 	type Model,
-	type Range,
+	type ModelRange,
 	type Position,
 	type ViewDocumentMouseDownEvent,
 	type ViewDocumentMouseUpEvent,
@@ -770,7 +770,7 @@ function findDraggableWidget( target: ViewElement ): ViewElement | null {
  * Because all elements inside the `blockQuote` are selected, the range is extended to include the `blockQuote` too.
  * If only first and second paragraphs would be selected, the range would not include it.
  */
-function getRangeIncludingFullySelectedParents( model: Model, elements: Array<ModelElement> ): Range {
+function getRangeIncludingFullySelectedParents( model: Model, elements: Array<ModelElement> ): ModelRange {
 	const firstElement = elements[ 0 ];
 	const lastElement = elements[ elements.length - 1 ];
 	const parent = firstElement.getCommonAncestor( lastElement );

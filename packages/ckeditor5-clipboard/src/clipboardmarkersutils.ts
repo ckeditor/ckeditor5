@@ -12,7 +12,7 @@ import { uid } from '@ckeditor/ckeditor5-utils';
 import { Plugin, type NonEmptyArray } from '@ckeditor/ckeditor5-core';
 
 import {
-	Range,
+	ModelRange,
 	type ModelDocumentFragment,
 	type Position,
 	type ModelElement,
@@ -148,7 +148,7 @@ export class ClipboardMarkersUtils extends Plugin {
 	 * @internal
 	 */
 	public _pasteMarkersIntoTransformedElement(
-		markers: Record<string, Range> | Map<string, Range>,
+		markers: Record<string, ModelRange> | Map<string, ModelRange>,
 		getPastedDocumentElement: ( writer: Writer ) => ModelElement
 	): ModelElement {
 		const pasteMarkers = this._getPasteMarkersFromRangeMap( markers );
@@ -191,7 +191,7 @@ export class ClipboardMarkersUtils extends Plugin {
 	 * @param fragment Document fragment that should contain already processed by pipeline markers.
 	 * @internal
 	 */
-	public _pasteFragmentWithMarkers( fragment: ModelDocumentFragment ): Range {
+	public _pasteFragmentWithMarkers( fragment: ModelDocumentFragment ): ModelRange {
 		const pasteMarkers = this._getPasteMarkersFromRangeMap( fragment.markers );
 
 		fragment.markers.clear();
@@ -378,7 +378,7 @@ export class ClipboardMarkersUtils extends Plugin {
 	 * @param action Type of clipboard action. If null then checks only if marker is registered as copyable.
 	 */
 	private _getPasteMarkersFromRangeMap(
-		markers: Record<string, Range> | Map<string, Range>,
+		markers: Record<string, ModelRange> | Map<string, ModelRange>,
 		action: ClipboardMarkerRestrictedAction | null = null
 	): Array<CopyableMarker> {
 		const { model } = this.editor;
@@ -467,7 +467,10 @@ export class ClipboardMarkersUtils extends Plugin {
 	 * @param writer An instance of the model writer.
 	 * @param rootElement The element to be checked.
 	 */
-	private _removeFakeMarkersInsideElement( writer: Writer, rootElement: ModelElement | ModelDocumentFragment ): Record<string, Range> {
+	private _removeFakeMarkersInsideElement(
+		writer: Writer,
+		rootElement: ModelElement | ModelDocumentFragment
+	): Record<string, ModelRange> {
 		const fakeMarkersElements = this._getAllFakeMarkersFromElement( writer, rootElement );
 		const fakeMarkersRanges = fakeMarkersElements.reduce<Record<string, FakeMarkerRangeConstruct>>( ( acc, fakeMarker ) => {
 			const position = fakeMarker.markerElement && writer.createPositionBefore( fakeMarker.markerElement );
@@ -518,7 +521,7 @@ export class ClipboardMarkersUtils extends Plugin {
 		// connection between `fake-marker-start` and `fake-marker-end` without iterating whole set firstly.
 		return mapValues(
 			fakeMarkersRanges,
-			range => new Range(
+			range => new ModelRange(
 				range.start || writer.createPositionFromPath( rootElement, [ 0 ] ),
 				range.end || writer.createPositionAt( rootElement, 'end' )
 			)
@@ -688,5 +691,5 @@ type FakeMarkerRangeConstruct = {
  */
 type CopyableMarker = {
 	name: string;
-	range: Range;
+	range: ModelRange;
 };

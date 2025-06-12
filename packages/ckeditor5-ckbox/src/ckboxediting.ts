@@ -9,7 +9,7 @@
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 import {
-	Range,
+	ModelRange,
 	type ModelDocumentSelection,
 	type DowncastAttributeEvent,
 	type DowncastWriter,
@@ -360,7 +360,7 @@ function syncDataIdPostFixer( editor: Editor ) {
 			}
 
 			const range = entry.type === 'insert' ?
-				new Range( entry.position, entry.position.getShiftedBy( entry.length ) ) :
+				new ModelRange( entry.position, entry.position.getShiftedBy( entry.length ) ) :
 				entry.range;
 
 			const isLinkHrefAttributeRemoval = entry.type === 'attribute' &&

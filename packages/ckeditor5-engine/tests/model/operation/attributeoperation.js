@@ -7,8 +7,8 @@ import { Model } from '../../../src/model/model.js';
 import { Text } from '../../../src/model/text.js';
 import { ModelElement } from '../../../src/model/element.js';
 import { AttributeOperation } from '../../../src/model/operation/attributeoperation.js';
-import { Position } from '../../../src/model/position.js';
-import { Range } from '../../../src/model/range.js';
+import { ModelPosition } from '../../../src/model/position.js';
+import { ModelRange } from '../../../src/model/range.js';
 
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -25,7 +25,7 @@ describe( 'AttributeOperation', () => {
 	describe( 'type', () => {
 		it( 'should be addAttribute for adding attribute', () => {
 			const op = new AttributeOperation(
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 2 ] ) ),
 				'key',
 				null,
 				'newValue',
@@ -37,7 +37,7 @@ describe( 'AttributeOperation', () => {
 
 		it( 'should be removeAttribute for removing attribute', () => {
 			const op = new AttributeOperation(
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 2 ] ) ),
 				'key',
 				'oldValue',
 				undefined, // `undefined` should also be accepted as a value, it is same as `null`.
@@ -49,7 +49,7 @@ describe( 'AttributeOperation', () => {
 
 		it( 'should be changeAttribute for removing attribute', () => {
 			const op = new AttributeOperation(
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 2 ] ) ),
 				'key',
 				'oldValue',
 				'newValue',
@@ -65,7 +65,7 @@ describe( 'AttributeOperation', () => {
 
 		model.applyOperation(
 			new AttributeOperation(
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 2 ] ) ),
 				'isNew',
 				undefined, // `undefined` should also be accepted as a value, it is same as `null`.
 				true,
@@ -86,7 +86,7 @@ describe( 'AttributeOperation', () => {
 
 		model.applyOperation(
 			new AttributeOperation(
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) ),
 				'isNew',
 				null,
 				true,
@@ -107,7 +107,7 @@ describe( 'AttributeOperation', () => {
 
 		model.applyOperation(
 			new AttributeOperation(
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 2 ] ) ),
 				'isNew',
 				false,
 				true,
@@ -128,7 +128,7 @@ describe( 'AttributeOperation', () => {
 
 		model.applyOperation(
 			new AttributeOperation(
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) ),
 				'x',
 				1,
 				2,
@@ -149,7 +149,7 @@ describe( 'AttributeOperation', () => {
 
 		model.applyOperation(
 			new AttributeOperation(
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 2 ] ) ),
 				'foo',
 				'bar',
 				'bar',
@@ -168,7 +168,7 @@ describe( 'AttributeOperation', () => {
 
 		model.applyOperation(
 			new AttributeOperation(
-				new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) ),
 				'x',
 				true,
 				null,
@@ -189,7 +189,7 @@ describe( 'AttributeOperation', () => {
 
 			expect( () => {
 				const operation = new AttributeOperation(
-					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
+					new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) ),
 					'foo',
 					[ 'bar', 'xyz' ],
 					true,
@@ -205,7 +205,7 @@ describe( 'AttributeOperation', () => {
 
 			expectToThrowCKEditorError( () => {
 				const operation = new AttributeOperation(
-					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
+					new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) ),
 					'foo',
 					true,
 					null,
@@ -221,7 +221,7 @@ describe( 'AttributeOperation', () => {
 
 			expectToThrowCKEditorError( () => {
 				const operation = new AttributeOperation(
-					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
+					new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) ),
 					'x',
 					null,
 					2,
@@ -237,7 +237,7 @@ describe( 'AttributeOperation', () => {
 
 			expect( () => {
 				const operation = new AttributeOperation(
-					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
+					new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) ),
 					'foo',
 					true,
 					true,
@@ -256,7 +256,7 @@ describe( 'AttributeOperation', () => {
 
 			expectToThrowCKEditorError( () => {
 				const operation = new AttributeOperation(
-					new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 1, 1 ] ) ),
+					new ModelRange( new ModelPosition( root, [ 0, 1 ] ), new ModelPosition( root, [ 1, 1 ] ) ),
 					'x',
 					null,
 					2,
@@ -269,7 +269,7 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should create an AttributeOperation as a reverse', () => {
-		const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) );
+		const range = new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 3 ] ) );
 		const operation = new AttributeOperation( range, 'x', 'old', 'new', doc.version );
 		const reverse = operation.getReversed();
 
@@ -285,7 +285,7 @@ describe( 'AttributeOperation', () => {
 		root._insertChild( 0, new Text( 'bar' ) );
 
 		const operation = new AttributeOperation(
-			new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ),
+			new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 3 ] ) ),
 			'isNew',
 			null,
 			true,
@@ -306,7 +306,7 @@ describe( 'AttributeOperation', () => {
 		root._insertChild( 0, new Text( 'bar', { isNew: false } ) );
 
 		const operation = new AttributeOperation(
-			new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ),
+			new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 3 ] ) ),
 			'isNew',
 			false,
 			true,
@@ -328,7 +328,7 @@ describe( 'AttributeOperation', () => {
 		root._insertChild( 0, new Text( 'bar', { foo: true } ) );
 
 		const operation = new AttributeOperation(
-			new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ),
+			new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 3 ] ) ),
 			'foo',
 			true,
 			null,
@@ -347,7 +347,7 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should create an AttributeOperation with the same parameters when cloned', () => {
-		const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
+		const range = new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) );
 		const baseVersion = doc.version;
 
 		const op = new AttributeOperation( range, 'foo', 'old', 'new', baseVersion );
@@ -374,7 +374,7 @@ describe( 'AttributeOperation', () => {
 
 		model.applyOperation(
 			new AttributeOperation(
-				new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) ),
+				new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 3 ] ) ),
 				'foo',
 				'a',
 				'b',
@@ -388,7 +388,7 @@ describe( 'AttributeOperation', () => {
 
 	describe( 'toJSON', () => {
 		it( 'should create proper serialized object', () => {
-			const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 2 ] ) );
 			const op = new AttributeOperation(
 				range,
 				'key',
@@ -414,7 +414,7 @@ describe( 'AttributeOperation', () => {
 
 	describe( 'fromJSON', () => {
 		it( 'should create proper AttributeOperation from json object', () => {
-			const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) );
+			const range = new ModelRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 2 ] ) );
 			const op = new AttributeOperation(
 				range,
 				'key',

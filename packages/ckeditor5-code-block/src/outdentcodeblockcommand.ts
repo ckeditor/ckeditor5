@@ -7,7 +7,7 @@
  * @module code-block/outdentcodeblockcommand
  */
 
-import type { Model, Position, Range } from 'ckeditor5/src/engine.js';
+import type { Model, Position, ModelRange } from 'ckeditor5/src/engine.js';
 import { Command, type Editor } from 'ckeditor5/src/core.js';
 
 import {
@@ -127,8 +127,8 @@ export class OutdentCodeBlockCommand extends Command {
 // @param {<module:engine/model/model~Model>} model
 // @param {<module:engine/model/position~ModelPosition>} position
 // @param {String} sequence
-// @returns {<module:engine/model/range~Range>|null}
-function getLastOutdentableSequenceRange( model: Model, position: Position, sequence: string ): Range | null {
+// @returns {<module:engine/model/range~ModelRange>|null}
+function getLastOutdentableSequenceRange( model: Model, position: Position, sequence: string ): ModelRange | null {
 	// Positions start before each text node (code line). Get the node corresponding to the position.
 	const nodeAtPosition = getTextNodeAtLineStart( position, model );
 

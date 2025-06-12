@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from 'ckeditor5/src/core.js';
-import type { Range, ModelElement } from 'ckeditor5/src/engine.js';
+import type { ModelRange, ModelElement } from 'ckeditor5/src/engine.js';
 import { type TableUtils } from '../tableutils.js';
 
 /**
@@ -53,7 +53,7 @@ export class SelectRowCommand extends Command {
 		const rowIndexes = tableUtils.getRowIndexes( referenceCells );
 
 		const table = referenceCells[ 0 ].findAncestor( 'table' )!;
-		const rangesToSelect: Array<Range> = [];
+		const rangesToSelect: Array<ModelRange> = [];
 
 		for ( let rowIndex = rowIndexes.first; rowIndex <= rowIndexes.last; rowIndex++ ) {
 			for ( const cell of ( table.getChild( rowIndex ) as ModelElement ).getChildren() ) {

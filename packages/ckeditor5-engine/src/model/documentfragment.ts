@@ -15,7 +15,7 @@ import { TextProxy } from './textproxy.js';
 
 import { type ModelItem } from './item.js';
 import { type ModelNode } from './node.js';
-import { type Range } from './range.js';
+import { type ModelRange } from './range.js';
 
 import { isIterable } from '@ckeditor/ckeditor5-utils';
 
@@ -31,11 +31,11 @@ import { isIterable } from '@ckeditor/ckeditor5-utils';
  */
 export class ModelDocumentFragment extends TypeCheckable implements Iterable<ModelNode> {
 	/**
-	 * ModelDocumentFragment static markers map. This is a list of names and {@link module:engine/model/range~Range ranges}
+	 * ModelDocumentFragment static markers map. This is a list of names and {@link module:engine/model/range~ModelRange ranges}
 	 * which will be set as Markers to {@link module:engine/model/model~Model#markers model markers collection}
 	 * when ModelDocumentFragment will be inserted to the document.
 	 */
-	public readonly markers: Map<string, Range> = new Map();
+	public readonly markers: Map<string, ModelRange> = new Map();
 
 	/**
 	 * Artificial element name. Returns `undefined`. Added for compatibility reasons.

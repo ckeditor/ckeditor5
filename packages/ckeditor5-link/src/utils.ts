@@ -14,7 +14,7 @@ import type {
 	ViewAttributeElement,
 	ViewNode,
 	ViewDocumentFragment,
-	Range
+	ModelRange
 } from 'ckeditor5/src/engine.js';
 
 import type { LocaleTranslate } from 'ckeditor5/src/utils.js';
@@ -199,7 +199,7 @@ export function openLink( link: string ): void {
  *
  * If the returned value is `undefined`, the range contains elements other than text nodes.
  */
-export function extractTextFromLinkRange( range: Range ): string | undefined {
+export function extractTextFromLinkRange( range: ModelRange ): string | undefined {
 	let text = '';
 
 	for ( const item of range.getItems() ) {

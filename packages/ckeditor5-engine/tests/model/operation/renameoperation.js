@@ -6,7 +6,7 @@
 import { Model } from '../../../src/model/model.js';
 import { ModelElement } from '../../../src/model/element.js';
 import { RenameOperation } from '../../../src/model/operation/renameoperation.js';
-import { Position } from '../../../src/model/position.js';
+import { ModelPosition } from '../../../src/model/position.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -24,7 +24,7 @@ describe( 'RenameOperation', () => {
 		element = new ModelElement( oldName );
 		root._appendChild( element );
 
-		position = Position._createBefore( element );
+		position = ModelPosition._createBefore( element );
 	} );
 
 	it( 'should have type equal to rename', () => {
@@ -65,7 +65,7 @@ describe( 'RenameOperation', () => {
 
 	describe( '_validate()', () => {
 		it( 'should throw an error if position is not before an element', () => {
-			const op = new RenameOperation( Position._createAt( root, 'end' ), oldName, newName, doc.version );
+			const op = new RenameOperation( ModelPosition._createAt( root, 'end' ), oldName, newName, doc.version );
 
 			expectToThrowCKEditorError( () => {
 				op._validate();
@@ -90,7 +90,7 @@ describe( 'RenameOperation', () => {
 	} );
 
 	it( 'should create a RenameOperation with the same parameters when cloned', () => {
-		const op = new RenameOperation( Position._createAt( root, 'end' ), oldName, newName, doc.version );
+		const op = new RenameOperation( ModelPosition._createAt( root, 'end' ), oldName, newName, doc.version );
 		const clone = op.clone();
 
 		// New instance rather than a pointer to the old instance.
@@ -105,7 +105,7 @@ describe( 'RenameOperation', () => {
 
 	describe( 'toJSON', () => {
 		it( 'should create proper serialized object', () => {
-			const op = new RenameOperation( Position._createAt( root, 'end' ), oldName, newName, doc.version );
+			const op = new RenameOperation( ModelPosition._createAt( root, 'end' ), oldName, newName, doc.version );
 			const serialized = op.toJSON();
 
 			expect( serialized ).to.deep.equal( {
@@ -120,7 +120,7 @@ describe( 'RenameOperation', () => {
 
 	describe( 'fromJSON', () => {
 		it( 'should create proper AttributeOperation from json object', () => {
-			const op = new RenameOperation( Position._createAt( root, 'end' ), oldName, newName, doc.version );
+			const op = new RenameOperation( ModelPosition._createAt( root, 'end' ), oldName, newName, doc.version );
 
 			const serialized = op.toJSON();
 			const deserialized = RenameOperation.fromJSON( serialized, doc );

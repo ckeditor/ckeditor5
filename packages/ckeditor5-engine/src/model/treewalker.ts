@@ -18,7 +18,7 @@ import { TextProxy } from './textproxy.js';
 
 import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelItem } from './item.js';
-import { type Range } from './range.js';
+import { type ModelRange } from './range.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -39,7 +39,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 	 *
 	 * If boundaries are not defined they are set before first and after last child of the root node.
 	 */
-	public readonly boundaries: Range | null;
+	public readonly boundaries: ModelRange | null;
 
 	/**
 	 * Flag indicating whether all consecutive characters with the same attributes should be
@@ -459,7 +459,7 @@ export interface TreeWalkerOptions {
 	/**
 	 * Range to define boundaries of the iterator.
 	 */
-	boundaries?: Range | null;
+	boundaries?: ModelRange | null;
 
 	/**
 	 * Starting position.

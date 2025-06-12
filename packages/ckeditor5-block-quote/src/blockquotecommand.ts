@@ -9,7 +9,7 @@
 
 import { Command } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
-import type { ModelDocumentFragment, ModelElement, Position, Range, Schema, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentFragment, ModelElement, Position, ModelRange, Schema, Writer } from 'ckeditor5/src/engine.js';
 
 /**
  * The block quote command plugin.
@@ -186,7 +186,7 @@ function findQuote( elementOrPosition: ModelElement | Position ): ModelElement |
  * blocks:          [ a, b, d, f, g, h ]
  * output ranges:   [ab]c[d]e[fgh]
  */
-function getRangesOfBlockGroups( writer: Writer, blocks: Array<ModelElement> ): Array<Range> {
+function getRangesOfBlockGroups( writer: Writer, blocks: Array<ModelElement> ): Array<ModelRange> {
 	let startPosition;
 	let i = 0;
 	const ranges = [];

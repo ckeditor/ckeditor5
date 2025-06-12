@@ -9,7 +9,7 @@
 
 import { ModelDocumentSelection } from '../documentselection.js';
 import { ModelLivePosition } from '../liveposition.js';
-import { Range } from '../range.js';
+import { ModelRange } from '../range.js';
 
 import { type ModelDocumentFragment } from '../documentfragment.js';
 import { type ModelElement } from '../element.js';
@@ -179,7 +179,7 @@ export function deleteContent(
  *
  * This is the same behavior as in Selection#getSelectedBlocks() "special case".
  */
-function getLivePositionsForSelectedBlocks( range: Range ): [ startPosition: ModelLivePosition, endPosition: ModelLivePosition ] {
+function getLivePositionsForSelectedBlocks( range: ModelRange ): [ startPosition: ModelLivePosition, endPosition: ModelLivePosition ] {
 	const model = range.root.document!.model;
 
 	const startPosition = range.start;
@@ -557,7 +557,7 @@ function shouldAutoparagraph( schema: Schema, position: ModelPosition ) {
  * Usually, widget and caption are marked as objects/limits in the schema, so in this case merging will be blocked.
  */
 function isCrossingLimitElement( leftPos: ModelPosition, rightPos: ModelPosition, schema: Schema ) {
-	const rangeToCheck = new Range( leftPos, rightPos );
+	const rangeToCheck = new ModelRange( leftPos, rightPos );
 
 	for ( const value of rangeToCheck.getWalker() ) {
 		if ( schema.isLimit( value.item ) ) {
@@ -619,7 +619,7 @@ function shouldEntireContentBeReplacedWithParagraph( schema: Schema, selection: 
 function collapseSelectionAt(
 	writer: Writer,
 	selection: Selection | ModelDocumentSelection,
-	positionOrRange: ModelPosition | Range
+	positionOrRange: ModelPosition | ModelRange
 ) {
 	if ( selection instanceof ModelDocumentSelection ) {
 		writer.setSelection( positionOrRange );

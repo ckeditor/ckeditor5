@@ -24,7 +24,7 @@ import { type Batch } from './batch.js';
 import { type ModelElement } from './element.js';
 import { type ModelItem } from './item.js';
 import type { ModelPosition, ModelPositionOffset } from './position.js';
-import { type Range } from './range.js';
+import { type ModelRange } from './range.js';
 import { type Schema } from './schema.js';
 
 import {
@@ -93,8 +93,8 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCh
 	/**
 	 * Selection anchor. Anchor may be described as a position where the most recent part of the selection starts.
 	 * Together with {@link #focus} they define the direction of selection, which is important
-	 * when expanding/shrinking selection. Anchor is always {@link module:engine/model/range~Range#start start} or
-	 * {@link module:engine/model/range~Range#end end} position of the most recently added range.
+	 * when expanding/shrinking selection. Anchor is always {@link module:engine/model/range~ModelRange#start start} or
+	 * {@link module:engine/model/range~ModelRange#end end} position of the most recently added range.
 	 *
 	 * Is set to `null` if there are no ranges in selection.
 	 *
@@ -165,14 +165,14 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCh
 	 *
 	 * @internal
 	 */
-	public get _ranges(): Array<Range> {
+	public get _ranges(): Array<ModelRange> {
 		return this._selection._ranges;
 	}
 
 	/**
 	 * Returns an iterable that iterates over copies of selection ranges.
 	 */
-	public getRanges(): IterableIterator<Range> {
+	public getRanges(): IterableIterator<ModelRange> {
 		return this._selection.getRanges();
 	}
 
@@ -200,25 +200,25 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCh
 
 	/**
 	 * Returns a copy of the first range in the selection.
-	 * First range is the one which {@link module:engine/model/range~Range#start start} position
+	 * First range is the one which {@link module:engine/model/range~ModelRange#start start} position
 	 * {@link module:engine/model/position~ModelPosition#isBefore is before} start position of all other ranges
 	 * (not to confuse with the first range added to the selection).
 	 *
 	 * Returns `null` if there are no ranges in selection.
 	 */
-	public getFirstRange(): Range | null {
+	public getFirstRange(): ModelRange | null {
 		return this._selection.getFirstRange();
 	}
 
 	/**
 	 * Returns a copy of the last range in the selection.
-	 * Last range is the one which {@link module:engine/model/range~Range#end end} position
+	 * Last range is the one which {@link module:engine/model/range~ModelRange#end end} position
 	 * {@link module:engine/model/position~ModelPosition#isAfter is after} end position of all
 	 * other ranges (not to confuse with the range most recently added to the selection).
 	 *
 	 * Returns `null` if there are no ranges in selection.
 	 */
-	public getLastRange(): Range | null {
+	public getLastRange(): ModelRange | null {
 		return this._selection.getLastRange();
 	}
 
@@ -722,7 +722,7 @@ class LiveSelection extends Selection {
 		this.stopListening();
 	}
 
-	public override* getRanges(): IterableIterator<Range> {
+	public override* getRanges(): IterableIterator<ModelRange> {
 		if ( this._ranges.length ) {
 			yield* super.getRanges();
 		} else {
@@ -730,11 +730,11 @@ class LiveSelection extends Selection {
 		}
 	}
 
-	public override getFirstRange(): Range {
+	public override getFirstRange(): ModelRange {
 		return super.getFirstRange() || this._document._getDefaultRange();
 	}
 
-	public override getLastRange(): Range {
+	public override getLastRange(): ModelRange {
 		return super.getLastRange() || this._document._getDefaultRange();
 	}
 
@@ -810,7 +810,7 @@ class LiveSelection extends Selection {
 		this.updateMarkers();
 	}
 
-	protected override _replaceAllRanges( ranges: Array<Range> ): void {
+	protected override _replaceAllRanges( ranges: Array<ModelRange> ): void {
 		this._validateSelectionRanges( ranges );
 
 		super._replaceAllRanges( ranges );
@@ -820,7 +820,7 @@ class LiveSelection extends Selection {
 		this._ranges.pop()!.detach();
 	}
 
-	protected override _pushRange( range: Range ): void {
+	protected override _pushRange( range: ModelRange ): void {
 		const liveRange = this._prepareRange( range );
 
 		// `undefined` is returned when given `range` is in graveyard root.
@@ -829,7 +829,7 @@ class LiveSelection extends Selection {
 		}
 	}
 
-	private _validateSelectionRanges( ranges: Iterable<Range> ) {
+	private _validateSelectionRanges( ranges: Iterable<ModelRange> ) {
 		for ( const range of ranges ) {
 			if ( !this._document._validateSelectionRange( range ) ) {
 				/**
@@ -837,7 +837,7 @@ class LiveSelection extends Selection {
 				 * starts or ends at incorrect position.
 				 *
 				 * @error document-selection-wrong-position
-				 * @param {module:engine/model/range~Range} range The invalid range.
+				 * @param {module:engine/model/range~ModelRange} range The invalid range.
 				 */
 				throw new CKEditorError(
 					'document-selection-wrong-position',
@@ -853,7 +853,7 @@ class LiveSelection extends Selection {
 	 * converts it to {@link module:engine/model/liverange~ModelLiveRange ModelLiveRange}
 	 * and sets listeners listening to the range's change event.
 	 */
-	private _prepareRange( range: Range ): ModelLiveRange | undefined {
+	private _prepareRange( range: ModelRange ): ModelLiveRange | undefined {
 		this._checkRange( range );
 
 		if ( range.root == this._document.graveyard ) {
@@ -928,7 +928,7 @@ class LiveSelection extends Selection {
 		}
 	}
 
-	private _updateMarker( marker: Marker, markerRange: Range | null ): void {
+	private _updateMarker( marker: Marker, markerRange: ModelRange | null ): void {
 		const markerGroup = marker.name.split( ':', 1 )[ 0 ];
 
 		if ( !this._observedMarkers.has( markerGroup ) ) {

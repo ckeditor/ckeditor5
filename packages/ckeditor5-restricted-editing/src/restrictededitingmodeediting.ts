@@ -19,7 +19,7 @@ import type {
 	DowncastAddMarkerEvent,
 	ModelDeleteContentEvent,
 	ModelPostFixer,
-	Range,
+	ModelRange,
 	SchemaAttributeCheckCallback,
 	SchemaChildCheckCallback,
 	ViewDocumentTabEvent
@@ -450,7 +450,7 @@ function getSelectAllHandler( editor: Editor ): EditingKeystrokeCallback {
  * - is on marker start - "delete" - to prevent removing content before marker
  * - is on marker end - "deleteForward" - to prevent removing content after marker
  */
-function isDeleteCommandOnMarkerBoundaries( commandName: string, selection: ModelDocumentSelection, markerRange: Range ) {
+function isDeleteCommandOnMarkerBoundaries( commandName: string, selection: ModelDocumentSelection, markerRange: ModelRange ) {
 	if ( commandName == 'delete' && markerRange.start.isEqual( selection.focus! ) ) {
 		return true;
 	}
@@ -527,7 +527,7 @@ function disallowInputExecForWrongRange( editor: Editor ): GetCallback<InsertTex
 	};
 }
 
-function isRangeInsideSingleMarker( editor: Editor, range: Range ) {
+function isRangeInsideSingleMarker( editor: Editor, range: ModelRange ) {
 	const markerAtStart = getMarkerAtPosition( editor, range.start );
 	const markerAtEnd = getMarkerAtPosition( editor, range.end );
 

@@ -7,7 +7,7 @@
  * @module remove-format/removeformatcommand
  */
 
-import type { ModelDocumentSelection, ModelItem, Schema, Range, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, ModelItem, Schema, ModelRange, Writer } from 'ckeditor5/src/engine.js';
 import { Command } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
 
@@ -82,7 +82,7 @@ export class RemoveFormatCommand extends Command {
 	/**
 	 * Helper method that removes a formatting attribute from an item either using custom callbacks or writer remove attribute.
 	 */
-	private _removeFormatting( attributeName: string, item: ModelItem, itemRange: Range, writer: Writer ) {
+	private _removeFormatting( attributeName: string, item: ModelItem, itemRange: ModelRange, writer: Writer ) {
 		let customHandled = false;
 
 		for ( const { isFormatting, removeFormatting } of this._customAttributesHandlers ) {
@@ -167,4 +167,4 @@ export type IsFormattingCallback = ( attributeName: string, item: ModelItem | Mo
  *
  * @internal
  */
-export type RemoveFormattingCallback = ( attributeName: string, range: Range, writer: Writer ) => void;
+export type RemoveFormattingCallback = ( attributeName: string, range: ModelRange, writer: Writer ) => void;

@@ -18,7 +18,7 @@ import { ImageBlockEditing } from '@ckeditor/ckeditor5-image/src/image/imagebloc
 import { _getModelData, _parseModel } from '../../../../src/dev-utils/model.js';
 import { transformOperationSets } from '../../../../src/model/operation/transform.js';
 import { ModelPosition } from '../../../../src/model/position.js';
-import { Range } from '../../../../src/model/range.js';
+import { ModelRange } from '../../../../src/model/range.js';
 import { OperationFactory } from '../../../../src/model/operation/operationfactory.js';
 
 const clients = new Set();
@@ -74,7 +74,7 @@ export class Client {
 			const start = new ModelPosition( modelRoot, range.start.path );
 			const end = new ModelPosition( modelRoot, range.end.path );
 
-			ranges.push( new Range( start, end ) );
+			ranges.push( new ModelRange( start, end ) );
 		}
 
 		model.document.selection._setTo( ranges );
@@ -95,7 +95,7 @@ export class Client {
 		const startPos = this._getPosition( start );
 		const endPos = this._getPosition( end );
 
-		this.editor.model.document.selection._setTo( new Range( startPos, endPos ) );
+		this.editor.model.document.selection._setTo( new ModelRange( startPos, endPos ) );
 	}
 
 	insert( itemString, path ) {
@@ -115,7 +115,7 @@ export class Client {
 		const startPos = this._getPosition( start, 'start' );
 		const endPos = this._getPosition( end, 'end' );
 
-		this._processAction( 'remove', new Range( startPos, endPos ) );
+		this._processAction( 'remove', new ModelRange( startPos, endPos ) );
 	}
 
 	delete() {
@@ -127,7 +127,7 @@ export class Client {
 		const startPos = this._getPosition( start, 'start' );
 		const endPos = this._getPosition( end, 'end' );
 
-		this._processAction( 'move', new Range( startPos, endPos ), targetPos );
+		this._processAction( 'move', new ModelRange( startPos, endPos ), targetPos );
 	}
 
 	rename( newName, path ) {
@@ -141,14 +141,14 @@ export class Client {
 		const startPos = this._getPosition( start, 'start' );
 		const endPos = this._getPosition( end, 'end' );
 
-		this._processAction( 'setAttribute', key, value, new Range( startPos, endPos ) );
+		this._processAction( 'setAttribute', key, value, new ModelRange( startPos, endPos ) );
 	}
 
 	removeAttribute( key, start, end ) {
 		const startPos = this._getPosition( start, 'start' );
 		const endPos = this._getPosition( end, 'end' );
 
-		this._processAction( 'removeAttribute', key, new Range( startPos, endPos ) );
+		this._processAction( 'removeAttribute', key, new ModelRange( startPos, endPos ) );
 	}
 
 	setMarker( name, start, end ) {
@@ -163,7 +163,7 @@ export class Client {
 			actionName = 'addMarker';
 		}
 
-		const range = new Range( startPos, endPos );
+		const range = new ModelRange( startPos, endPos );
 
 		this._processAction( actionName, name, { range, usingOperation: true } );
 	}
@@ -176,7 +176,7 @@ export class Client {
 		const startPos = this._getPosition( start, 'start' );
 		const endPos = this._getPosition( end, 'end' );
 
-		this._processAction( 'wrap', new Range( startPos, endPos ), elementName );
+		this._processAction( 'wrap', new ModelRange( startPos, endPos ), elementName );
 	}
 
 	unwrap( path ) {

@@ -11,7 +11,7 @@ import type {
 	ModelDocumentSelection,
 	DowncastWriter,
 	ModelItem,
-	Range,
+	ModelRange,
 	ViewElement,
 	Writer
 } from 'ckeditor5/src/engine.js';
@@ -220,7 +220,7 @@ export function modifyGhsAttribute(
  *
  * @internal
  */
-export function removeFormatting( ghsAttributeName: string, itemRange: Range, writer: Writer ): void {
+export function removeFormatting( ghsAttributeName: string, itemRange: ModelRange, writer: Writer ): void {
 	for ( const item of itemRange.getItems( { shallow: true } ) ) {
 		const value = item.getAttribute( ghsAttributeName ) as Record<string, any>;
 

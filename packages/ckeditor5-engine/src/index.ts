@@ -118,7 +118,7 @@ export {
 	type ModelDocumentSelectionChangeMarkerEvent,
 	type ModelDocumentSelectionChangeAttributeEvent
 } from './model/documentselection.js';
-export { Range } from './model/range.js';
+export { ModelRange } from './model/range.js';
 export {
 	ModelLiveRange,
 	type ModelLiveRangeChangeRangeEvent,

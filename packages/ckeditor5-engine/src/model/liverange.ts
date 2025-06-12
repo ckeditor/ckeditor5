@@ -7,7 +7,7 @@
  * @module engine/model/liverange
  */
 
-import { Range } from './range.js';
+import { ModelRange } from './range.js';
 
 import type { ModelApplyOperationEvent } from './model.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
@@ -21,7 +21,7 @@ import { type ModelPosition } from './position.js';
 import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 /**
- * `ModelLiveRange` is a type of {@link module:engine/model/range~Range Range}
+ * `ModelLiveRange` is a type of {@link module:engine/model/range~ModelRange Range}
  * that updates itself as {@link module:engine/model/document~ModelDocument document}
  * is changed through operations. It may be used as a bookmark.
  *
@@ -29,11 +29,11 @@ import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
  * have to be unbound. Use {@link module:engine/model/liverange~ModelLiveRange#detach detach} whenever you don't need
  * `ModelLiveRange` anymore.
  */
-export class ModelLiveRange extends /* #__PURE__ */ EmitterMixin( Range ) {
+export class ModelLiveRange extends /* #__PURE__ */ EmitterMixin( ModelRange ) {
 	/**
 	 * Creates a live range.
 	 *
-	 * @see module:engine/model/range~Range
+	 * @see module:engine/model/range~ModelRange
 	 */
 	constructor( start: ModelPosition, end?: ModelPosition | null ) {
 		super( start, end );
@@ -51,35 +51,35 @@ export class ModelLiveRange extends /* #__PURE__ */ EmitterMixin( Range ) {
 	}
 
 	/**
-	 * Creates a {@link module:engine/model/range~Range range instance} that is equal to this live range.
+	 * Creates a {@link module:engine/model/range~ModelRange range instance} that is equal to this live range.
 	 */
-	public toRange(): Range {
-		return new Range( this.start, this.end );
+	public toRange(): ModelRange {
+		return new ModelRange( this.start, this.end );
 	}
 
 	/**
 	 * Creates a `ModelLiveRange` instance that is equal to the given range.
 	 */
-	public static fromRange( range: Range ): ModelLiveRange {
+	public static fromRange( range: ModelRange ): ModelLiveRange {
 		return new ModelLiveRange( range.start, range.end );
 	}
 
 	/**
-	 * @see module:engine/model/range~Range._createIn
+	 * @see module:engine/model/range~ModelRange._createIn
 	 * @internal
 	 */
 
 	declare public static readonly _createIn: ( element: ModelElement | ModelDocumentFragment ) => ModelLiveRange;
 
 	/**
-	 * @see module:engine/model/range~Range._createOn
+	 * @see module:engine/model/range~ModelRange._createOn
 	 * @internal
 	 */
 
 	declare public static readonly _createOn: ( element: ModelItem | ModelDocumentFragment ) => ModelLiveRange;
 
 	/**
-	 * @see module:engine/model/range~Range._createFromPositionAndShift
+	 * @see module:engine/model/range~ModelRange._createFromPositionAndShift
 	 * @internal
 	 */
 
@@ -107,7 +107,7 @@ ModelLiveRange.prototype.is = function( type: string ): boolean {
  */
 export type ModelLiveRangeChangeRangeEvent = {
 	name: 'change' | 'change:range';
-	args: [ range: Range, data: { deletionPosition: ModelPosition | null } ];
+	args: [ range: ModelRange, data: { deletionPosition: ModelPosition | null } ];
 };
 
 /**
@@ -124,7 +124,7 @@ export type ModelLiveRangeChangeRangeEvent = {
  */
 export type ModelLiveRangeChangeContentEvent = {
 	name: 'change' | 'change:content';
-	args: [ range: Range, data: { deletionPosition: null } ];
+	args: [ range: ModelRange, data: { deletionPosition: null } ];
 };
 
 /**
@@ -134,12 +134,12 @@ export type ModelLiveRangeChangeContentEvent = {
  */
 export type ModelLiveRangeChangeEvent = {
 	name: 'change' | 'change:range' | 'change:content';
-	args: [ range: Range, data: { deletionPosition: ModelPosition | null } ];
+	args: [ range: ModelRange, data: { deletionPosition: ModelPosition | null } ];
 };
 
 /**
  * Binds this `ModelLiveRange` to the {@link module:engine/model/document~ModelDocument document}
- * that owns this range's {@link module:engine/model/range~Range#root root}.
+ * that owns this range's {@link module:engine/model/range~ModelRange#root root}.
  */
 function bindWithDocument( this: ModelLiveRange ) {
 	this.listenTo<ModelApplyOperationEvent>(
@@ -164,7 +164,7 @@ function bindWithDocument( this: ModelLiveRange ) {
 function transform( this: ModelLiveRange, operation: Operation ) {
 	// Transform the range by the operation. Join the result ranges if needed.
 	const ranges = this.getTransformedByOperation( operation );
-	const result = Range._createFromRanges( ranges );
+	const result = ModelRange._createFromRanges( ranges );
 
 	const boundariesChanged = !result.isEqual( this );
 	const contentChanged = doesOperationChangeRangeContent( this, operation );
@@ -199,7 +199,7 @@ function transform( this: ModelLiveRange, operation: Operation ) {
 /**
  * Checks whether given operation changes something inside the range (even if it does not change boundaries).
  */
-function doesOperationChangeRangeContent( range: Range, operation: any ) {
+function doesOperationChangeRangeContent( range: ModelRange, operation: any ) {
 	switch ( operation.type ) {
 		case 'insert':
 			return range.containsPosition( operation.position );

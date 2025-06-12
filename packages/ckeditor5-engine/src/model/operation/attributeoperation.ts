@@ -9,7 +9,7 @@
 
 import { Operation } from './operation.js';
 import { _setAttribute } from './utils.js';
-import { Range } from '../range.js';
+import { ModelRange } from '../range.js';
 
 import { type ModelDocument } from '../document.js';
 
@@ -28,7 +28,7 @@ export class AttributeOperation extends Operation {
 	 *
 	 * @readonly
 	 */
-	public range: Range;
+	public range: ModelRange;
 
 	/**
 	 * Key of an attribute to change or remove.
@@ -70,7 +70,7 @@ export class AttributeOperation extends Operation {
 	 * @param baseVersion Document {@link module:engine/model/document~ModelDocument#version} on which operation
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
-	constructor( range: Range, key: string, oldValue: unknown, newValue: unknown, baseVersion: number | null ) {
+	constructor( range: ModelRange, key: string, oldValue: unknown, newValue: unknown, baseVersion: number | null ) {
 		super( baseVersion );
 
 		this.range = range.clone();
@@ -198,7 +198,10 @@ export class AttributeOperation extends Operation {
 	 * @param document Document on which this operation will be applied.
 	 */
 	public static override fromJSON( json: any, document: ModelDocument ): AttributeOperation {
-		return new AttributeOperation( Range.fromJSON( json.range, document ), json.key, json.oldValue, json.newValue, json.baseVersion );
+		return new AttributeOperation(
+			ModelRange.fromJSON( json.range, document ),
+			json.key, json.oldValue, json.newValue, json.baseVersion
+		);
 	}
 
 	// @if CK_DEBUG_ENGINE // public override toString(): string {

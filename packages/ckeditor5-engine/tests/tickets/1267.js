@@ -6,8 +6,8 @@
 import { ClassicTestEditor } from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { Bold } from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import { Position } from '../../src/model/position.js';
-import { Range } from '../../src/model/range.js';
+import { ModelPosition } from '../../src/model/position.js';
+import { ModelRange } from '../../src/model/range.js';
 import { _setModelData, _getModelData } from '../../src/dev-utils/model.js';
 
 describe( 'Bug ckeditor5-engine#1267', () => {
@@ -39,7 +39,7 @@ describe( 'Bug ckeditor5-engine#1267', () => {
 
 		// Remove second paragraph where selection is placed.
 		model.enqueueChange( { isUndoable: false }, writer => {
-			writer.remove( Range._createFromPositionAndShift( new Position( model.document.getRoot(), [ 1 ] ), 1 ) );
+			writer.remove( ModelRange._createFromPositionAndShift( new ModelPosition( model.document.getRoot(), [ 1 ] ), 1 ) );
 		} );
 
 		expect( _getModelData( model ) ).to.equal( '<paragraph>foo bar baz[]</paragraph>' );
@@ -62,7 +62,7 @@ describe( 'Bug ckeditor5-engine#1267', () => {
 
 		// Remove second paragraph.
 		model.enqueueChange( { isUndoable: false }, writer => {
-			writer.remove( Range._createFromPositionAndShift( new Position( model.document.getRoot(), [ 1 ] ), 1 ) );
+			writer.remove( ModelRange._createFromPositionAndShift( new ModelPosition( model.document.getRoot(), [ 1 ] ), 1 ) );
 		} );
 
 		// Selection attributes set by command should stay as they were.

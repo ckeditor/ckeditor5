@@ -10,7 +10,7 @@
 import { Operation } from './operation.js';
 import { MergeOperation } from './mergeoperation.js';
 import { ModelPosition } from '../position.js';
-import { Range } from '../range.js';
+import { ModelRange } from '../range.js';
 import { _insert, _move } from './utils.js';
 
 import { type ModelDocument } from '../document.js';
@@ -104,10 +104,10 @@ export class SplitOperation extends Operation {
 	 * Artificial range that contains all the nodes from the split element that will be moved to the new element.
 	 * The range starts at {@link #splitPosition} and ends in the same parent, at `POSITIVE_INFINITY` offset.
 	 */
-	public get movedRange(): Range {
+	public get movedRange(): ModelRange {
 		const end = this.splitPosition.getShiftedBy( Number.POSITIVE_INFINITY );
 
-		return new Range( this.splitPosition, end );
+		return new ModelRange( this.splitPosition, end );
 	}
 
 	/**
@@ -116,12 +116,12 @@ export class SplitOperation extends Operation {
 	public get affectedSelectable(): Selectable {
 		// These could be positions but `Selectable` type only supports `Iterable<Range>`.
 		const ranges = [
-			Range._createFromPositionAndShift( this.splitPosition, 0 ),
-			Range._createFromPositionAndShift( this.insertionPosition, 0 )
+			ModelRange._createFromPositionAndShift( this.splitPosition, 0 ),
+			ModelRange._createFromPositionAndShift( this.insertionPosition, 0 )
 		];
 
 		if ( this.graveyardPosition ) {
-			ranges.push( Range._createFromPositionAndShift( this.graveyardPosition, 0 ) );
+			ranges.push( ModelRange._createFromPositionAndShift( this.graveyardPosition, 0 ) );
 		}
 
 		return ranges;
@@ -194,14 +194,14 @@ export class SplitOperation extends Operation {
 		const splitElement = this.splitPosition.parent;
 
 		if ( this.graveyardPosition ) {
-			_move( Range._createFromPositionAndShift( this.graveyardPosition, 1 ), this.insertionPosition );
+			_move( ModelRange._createFromPositionAndShift( this.graveyardPosition, 1 ), this.insertionPosition );
 		} else {
 			const newElement = ( splitElement as any )._clone();
 
 			_insert( this.insertionPosition, newElement );
 		}
 
-		const sourceRange = new Range(
+		const sourceRange = new ModelRange(
 			ModelPosition._createAt( splitElement, this.splitPosition.offset ),
 			ModelPosition._createAt( splitElement, splitElement.maxOffset )
 		);

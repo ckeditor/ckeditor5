@@ -17,7 +17,7 @@ import { RootOperation } from './rootoperation.js';
 import { MergeOperation } from './mergeoperation.js';
 import { SplitOperation } from './splitoperation.js';
 import { NoOperation } from './nooperation.js';
-import { Range } from '../range.js';
+import { ModelRange } from '../range.js';
 import { ModelPosition } from '../position.js';
 
 import { type Operation } from './operation.js';
@@ -525,7 +525,7 @@ class ContextFactory {
 				if ( opA.splitPosition.isEqual( opB.sourcePosition ) || opA.splitPosition.isBefore( opB.sourcePosition ) ) {
 					this._setRelation( opA, opB, 'splitBefore' );
 				} else {
-					const range = Range._createFromPositionAndShift( opB.sourcePosition, opB.howMany );
+					const range = ModelRange._createFromPositionAndShift( opB.sourcePosition, opB.howMany );
 
 					if ( opA.splitPosition.hasSameParentAs( opB.sourcePosition ) && range.containsPosition( opA.splitPosition ) ) {
 						// TODO: Potential bug -- we are saving offset value directly and it is not later updated during OT.
@@ -760,7 +760,7 @@ function padWithNoOps( operations: Array<Operation>, howMany: number ) {
  * See also https://github.com/ckeditor/ckeditor5/pull/17071.
  */
 function handlePartialMarkerOperations( operations: Array<Operation> ) {
-	const markerOps: Map<string, { op: MarkerOperation; ranges: Array<Range> }> = new Map();
+	const markerOps: Map<string, { op: MarkerOperation; ranges: Array<ModelRange> }> = new Map();
 
 	for ( let i = 0; i < operations.length; i++ ) {
 		const op = operations[ i ];
@@ -789,7 +789,7 @@ function handlePartialMarkerOperations( operations: Array<Operation> ) {
 
 	for ( const { op, ranges } of markerOps.values() ) {
 		if ( ranges.length ) {
-			op.newRange = Range._createFromRanges( ranges );
+			op.newRange = ModelRange._createFromRanges( ranges );
 		} else {
 			op.newRange = null;
 		}
@@ -927,7 +927,7 @@ function _getComplementaryAttributeOperations( insertOperation: InsertOperation,
 		return null;
 	}
 
-	const range = new Range( insertOperation.position, insertOperation.position.getShiftedBy( insertOperation.howMany ) );
+	const range = new ModelRange( insertOperation.position, insertOperation.position.getShiftedBy( insertOperation.howMany ) );
 
 	return new AttributeOperation( range, key, insertValue, newValue, 0 );
 }
@@ -942,7 +942,7 @@ setTransformation( AttributeOperation, MergeOperation, ( a, b ) => {
 	//
 	if ( a.range.start.hasSameParentAs( b.deletionPosition ) ) {
 		if ( a.range.containsPosition( b.deletionPosition ) || a.range.start.isEqual( b.deletionPosition ) ) {
-			ranges.push( Range._createFromPositionAndShift( b.graveyardPosition, 1 ) );
+			ranges.push( ModelRange._createFromPositionAndShift( b.graveyardPosition, 1 ) );
 		}
 	}
 
@@ -977,13 +977,13 @@ setTransformation( AttributeOperation, MoveOperation, ( a, b ) => {
  * This is important for `AttributeOperation` because, for its range, it changes only the top-level nodes. So we need to
  * track only how those nodes have been affected by `MoveOperation`.
  */
-function _breakRangeByMoveOperation( range: Range, moveOp: MoveOperation ) {
-	const moveRange = Range._createFromPositionAndShift( moveOp.sourcePosition, moveOp.howMany );
+function _breakRangeByMoveOperation( range: ModelRange, moveOp: MoveOperation ) {
+	const moveRange = ModelRange._createFromPositionAndShift( moveOp.sourcePosition, moveOp.howMany );
 
 	// We are transforming `range` (original range) by `moveRange` (range moved by move operation). As usual when it comes to
 	// transforming a ranges, we may have a common part of the ranges and we may have a difference part (zero to two ranges).
 	let common = null;
-	let difference: Array<Range> = [];
+	let difference: Array<ModelRange> = [];
 
 	// Let's compare the ranges.
 	if ( moveRange.containsRange( range, true ) ) {
@@ -1003,7 +1003,7 @@ function _breakRangeByMoveOperation( range: Range, moveOp: MoveOperation ) {
 		difference = [ range ];
 	}
 
-	const result: Array<Range> = [];
+	const result: Array<ModelRange> = [];
 
 	// The default behaviour of `_getTransformedByMove` might get wrong results for difference part, though, so
 	// we do it by hand.
@@ -1075,7 +1075,7 @@ setTransformation( AttributeOperation, SplitOperation, ( a, b ) => {
 	if ( a.range.start.hasSameParentAs( b.splitPosition ) && a.range.containsPosition( b.splitPosition ) ) {
 		const secondPart = a.clone();
 
-		secondPart.range = new Range(
+		secondPart.range = new ModelRange(
 			b.moveTargetPosition.clone(),
 			a.range.end._getCombined( b.splitPosition, b.moveTargetPosition )
 		);
@@ -1205,7 +1205,7 @@ setTransformation( MarkerOperation, MoveOperation, ( a, b ) => {
 	const result = [ a ];
 
 	if ( a.oldRange ) {
-		a.oldRange = Range._createFromRanges( a.oldRange._getTransformedByMoveOperation( b ) );
+		a.oldRange = ModelRange._createFromRanges( a.oldRange._getTransformedByMoveOperation( b ) );
 	}
 
 	if ( a.newRange ) {
@@ -1468,7 +1468,7 @@ setTransformation( MergeOperation, MoveOperation, ( a, b, context ) => {
 	//
 	// The exception to this rule would be if the remove operation was later undone.
 	//
-	const removedRange = Range._createFromPositionAndShift( b.sourcePosition, b.howMany );
+	const removedRange = ModelRange._createFromPositionAndShift( b.sourcePosition, b.howMany );
 
 	if ( b.type == 'remove' && !context.bWasUndone ) {
 		if ( a.deletionPosition.hasSameParentAs( b.sourcePosition ) && removedRange.containsPosition( a.sourcePosition ) ) {
@@ -1695,7 +1695,7 @@ setTransformation( MergeOperation, SplitOperation, ( a, b, context ) => {
 // -----------------------
 
 setTransformation( MoveOperation, InsertOperation, ( a, b ) => {
-	const moveRange = Range._createFromPositionAndShift( a.sourcePosition, a.howMany );
+	const moveRange = ModelRange._createFromPositionAndShift( a.sourcePosition, a.howMany );
 	const transformed = moveRange._getTransformedByInsertOperation( b, false )[ 0 ];
 
 	a.sourcePosition = transformed.start;
@@ -1719,8 +1719,8 @@ setTransformation( MoveOperation, MoveOperation, ( a, b, context ) => {
 	// Setting and evaluating some variables that will be used in special cases and default algorithm.
 	//
 	// Create ranges from `MoveOperations` properties.
-	const rangeA = Range._createFromPositionAndShift( a.sourcePosition, a.howMany );
-	const rangeB = Range._createFromPositionAndShift( b.sourcePosition, b.howMany );
+	const rangeA = ModelRange._createFromPositionAndShift( a.sourcePosition, a.howMany );
+	const rangeB = ModelRange._createFromPositionAndShift( b.sourcePosition, b.howMany );
 
 	// Assign `context.aIsStrong` to a different variable, because the value may change during execution of
 	// this algorithm and we do not want to override original `context.aIsStrong` that will be used in later transformations.
@@ -1916,7 +1916,7 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 	// In this case the default range transformation will not work correctly as the element created by
 	// split operation would be outside the range. The range to move needs to be fixed manually.
 	//
-	const moveRange = Range._createFromPositionAndShift( a.sourcePosition, a.howMany );
+	const moveRange = ModelRange._createFromPositionAndShift( a.sourcePosition, a.howMany );
 
 	if ( moveRange.end.isEqual( b.insertionPosition ) ) {
 		// Do it only if this is a "natural" split, not a one that comes from undo.
@@ -1947,11 +1947,11 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 	// <p>F</p><p>r</p><p>Xyzozba</p>
 	//
 	if ( moveRange.start.hasSameParentAs( b.splitPosition ) && moveRange.containsPosition( b.splitPosition ) ) {
-		let rightRange = new Range( b.splitPosition, moveRange.end );
+		let rightRange = new ModelRange( b.splitPosition, moveRange.end );
 		rightRange = rightRange._getTransformedBySplitOperation( b );
 
 		const ranges = [
-			new Range( moveRange.start, b.splitPosition ),
+			new ModelRange( moveRange.start, b.splitPosition ),
 			rightRange
 		];
 
@@ -2005,7 +2005,7 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 		const movesGraveyardElement = moveRange.start.isEqual( b.graveyardPosition ) || moveRange.containsPosition( b.graveyardPosition );
 
 		if ( a.howMany > 1 && movesGraveyardElement && !context.aWasUndone ) {
-			ranges.push( Range._createFromPositionAndShift( b.insertionPosition, 1 ) );
+			ranges.push( ModelRange._createFromPositionAndShift( b.insertionPosition, 1 ) );
 		}
 	}
 
@@ -2013,7 +2013,7 @@ setTransformation( MoveOperation, SplitOperation, ( a, b, context ) => {
 } );
 
 setTransformation( MoveOperation, MergeOperation, ( a, b, context ) => {
-	const movedRange = Range._createFromPositionAndShift( a.sourcePosition, a.howMany );
+	const movedRange = ModelRange._createFromPositionAndShift( a.sourcePosition, a.howMany );
 
 	if ( b.deletionPosition.hasSameParentAs( a.sourcePosition ) && movedRange.containsPosition( b.sourcePosition ) ) {
 		if ( a.type == 'remove' && !context.forceWeakRemove ) {
@@ -2079,7 +2079,7 @@ setTransformation( MoveOperation, MergeOperation, ( a, b, context ) => {
 
 	// The default case.
 	//
-	const moveRange = Range._createFromPositionAndShift( a.sourcePosition, a.howMany );
+	const moveRange = ModelRange._createFromPositionAndShift( a.sourcePosition, a.howMany );
 	const transformed = moveRange._getTransformedByMergeOperation( b );
 
 	a.sourcePosition = transformed.start;
@@ -2292,7 +2292,7 @@ setTransformation( SplitOperation, MergeOperation, ( a, b, context ) => {
 } );
 
 setTransformation( SplitOperation, MoveOperation, ( a, b, context ) => {
-	const rangeToMove = Range._createFromPositionAndShift( b.sourcePosition, b.howMany );
+	const rangeToMove = ModelRange._createFromPositionAndShift( b.sourcePosition, b.howMany );
 
 	if ( a.graveyardPosition ) {
 		// Case 1:
@@ -2548,7 +2548,7 @@ function _moveTargetIntoMovedRange( a: MoveOperation, b: MoveOperation ) {
  *
  * Given `targetPosition` is the target position of the first range from `ranges`.
  */
-function _makeMoveOperationsFromRanges( ranges: Array<Range>, targetPosition: ModelPosition ) {
+function _makeMoveOperationsFromRanges( ranges: Array<ModelRange>, targetPosition: ModelPosition ) {
 	// At this moment we have some ranges and a target position, to which those ranges should be moved.
 	// Order in `ranges` array is the go-to order of after transformation.
 	//
