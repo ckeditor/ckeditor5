@@ -167,10 +167,12 @@ export { ModelRootElement } from './model/rootelement.js';
 export {
 	SchemaContext,
 	type ModelSchema,
+	type ModelSchemaCheckChildEvent,
+	type ModelSchemaCheckAttributeEvent,
 	type SchemaAttributeCheckCallback,
 	type SchemaChildCheckCallback,
 	type AttributeProperties,
-	type SchemaItemDefinition,
+	type ModelSchemaItemDefinition,
 	type SchemaCompiledItemDefinition,
 	type SchemaContextDefinition
 } from './model/schema.js';

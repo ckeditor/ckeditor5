@@ -11,7 +11,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { toArray } from 'ckeditor5/src/utils.js';
 import { defaultConfig } from './schemadefinitions.js';
 import { mergeWith } from 'es-toolkit/compat';
-import type { AttributeProperties, SchemaItemDefinition } from 'ckeditor5/src/engine.js';
+import type { AttributeProperties, ModelSchemaItemDefinition } from 'ckeditor5/src/engine.js';
 
 /**
  * Holds representation of the extended HTML document type definitions to be used by the
@@ -251,7 +251,7 @@ export interface DataSchemaDefinition {
 	/**
 	 * The model schema item definition describing registered model.
 	 */
-	modelSchema?: SchemaItemDefinition;
+	modelSchema?: ModelSchemaItemDefinition;
 
 	/**
 	 * Indicates that the definition describes block element.

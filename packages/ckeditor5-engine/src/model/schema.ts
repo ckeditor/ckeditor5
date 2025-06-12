@@ -36,7 +36,7 @@ import { CKEditorError, first, ObservableMixin } from '@ckeditor/ckeditor5-utils
  * * The {@glink framework/deep-dive/schema Schema deep-dive} guide.
  */
 export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
-	private readonly _sourceDefinitions: Record<string, Array<SchemaItemDefinition>> = {};
+	private readonly _sourceDefinitions: Record<string, Array<ModelSchemaItemDefinition>> = {};
 
 	/**
 	 * A dictionary containing attribute properties.
@@ -94,7 +94,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * } );
 	 * ```
 	 */
-	public register( itemName: string, definition?: SchemaItemDefinition ): void {
+	public register( itemName: string, definition?: ModelSchemaItemDefinition ): void {
 		if ( this._sourceDefinitions[ itemName ] ) {
 			/**
 			 * A single item cannot be registered twice in the schema.
@@ -154,7 +154,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * //	}
 	 * ```
 	 */
-	public extend( itemName: string, definition: SchemaItemDefinition ): void {
+	public extend( itemName: string, definition: ModelSchemaItemDefinition ): void {
 		if ( !this._sourceDefinitions[ itemName ] ) {
 			/**
 			 * Cannot extend an item which was not registered yet.
@@ -1300,7 +1300,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
  * @eventName ~Schema#checkChild
  * @param args The `checkChild()`'s arguments.
  */
-export type SchemaCheckChildEvent = {
+export type ModelSchemaCheckChildEvent = {
 	name: 'checkChild';
 	args: [ [ context: SchemaContext, def: SchemaCompiledItemDefinition ] ];
 };
@@ -1368,7 +1368,7 @@ export type SchemaCheckChildEvent = {
  * @eventName ~Schema#checkAttribute
  * @param args The `checkAttribute()`'s arguments.
  */
-export type SchemaCheckAttributeEvent = {
+export type ModelSchemaCheckAttributeEvent = {
 	name: 'checkAttribute';
 	args: [ [ context: SchemaContext, attributeName: string ] ];
 };
@@ -1378,35 +1378,36 @@ export type SchemaCheckAttributeEvent = {
  *
  * You can define the following rules:
  *
- * * {@link ~SchemaItemDefinition#allowIn `allowIn`} &ndash; Defines in which other items this item will be allowed.
- * * {@link ~SchemaItemDefinition#allowChildren `allowChildren`} &ndash; Defines which other items are allowed inside this item.
- * * {@link ~SchemaItemDefinition#allowAttributes `allowAttributes`} &ndash; Defines allowed attributes of the given item.
- * * {@link ~SchemaItemDefinition#disallowIn `disallowIn`} &ndash; Defines in which other items this item will be disallowed.
- * * {@link ~SchemaItemDefinition#disallowChildren `disallowChildren`} &ndash; Defines which other items are disallowed inside this item.
- * * {@link ~SchemaItemDefinition#disallowAttributes `disallowAttributes`} &ndash; Defines disallowed attributes of the given item.
- * * {@link ~SchemaItemDefinition#allowContentOf `allowContentOf`} &ndash; Makes this item allow children that are also allowed in the
+ * * {@link ~ModelSchemaItemDefinition#allowIn `allowIn`} &ndash; Defines in which other items this item will be allowed.
+ * * {@link ~ModelSchemaItemDefinition#allowChildren `allowChildren`} &ndash; Defines which other items are allowed inside this item.
+ * * {@link ~ModelSchemaItemDefinition#allowAttributes `allowAttributes`} &ndash; Defines allowed attributes of the given item.
+ * * {@link ~ModelSchemaItemDefinition#disallowIn `disallowIn`} &ndash; Defines in which other items this item will be disallowed.
+ * * {@link ~ModelSchemaItemDefinition#disallowChildren `disallowChildren`} &ndash; Defines which other items are
+ * disallowed inside this item.
+ * * {@link ~ModelSchemaItemDefinition#disallowAttributes `disallowAttributes`} &ndash; Defines disallowed attributes of the given item.
+ * * {@link ~ModelSchemaItemDefinition#allowContentOf `allowContentOf`} &ndash; Makes this item allow children that are also allowed in the
  * specified items. This acknowledges disallow rules.
- * * {@link ~SchemaItemDefinition#allowWhere `allowWhere`} &ndash; Makes this item allowed where the specified items are allowed. This
+ * * {@link ~ModelSchemaItemDefinition#allowWhere `allowWhere`} &ndash; Makes this item allowed where the specified items are allowed. This
  * acknowledges disallow rules.
- * * {@link ~SchemaItemDefinition#allowAttributesOf `allowAttributesOf`} &ndash; Inherits attributes from other items. This acknowledges
- * disallow rules.
- * * {@link ~SchemaItemDefinition#inheritTypesFrom `inheritTypesFrom`} &ndash; Inherits `is*` properties of other items.
- * * {@link ~SchemaItemDefinition#inheritAllFrom `inheritAllFrom`} &ndash;
+ * * {@link ~ModelSchemaItemDefinition#allowAttributesOf `allowAttributesOf`} &ndash; Inherits attributes from other items.
+ * This acknowledges disallow rules.
+ * * {@link ~ModelSchemaItemDefinition#inheritTypesFrom `inheritTypesFrom`} &ndash; Inherits `is*` properties of other items.
+ * * {@link ~ModelSchemaItemDefinition#inheritAllFrom `inheritAllFrom`} &ndash;
  * A shorthand for `allowContentOf`, `allowWhere`, `allowAttributesOf`, `inheritTypesFrom`.
  *
  * # The `is*` properties
  *
  * There are a couple commonly used `is*` properties. Their role is to assign additional semantics to schema items.
  *
- * * {@link ~SchemaItemDefinition#isBlock `isBlock`} &ndash; Whether this item is paragraph-like.
+ * * {@link ~ModelSchemaItemDefinition#isBlock `isBlock`} &ndash; Whether this item is paragraph-like.
  * Generally speaking, content is usually made out of blocks like paragraphs, list items, images, headings, etc.
- * * {@link ~SchemaItemDefinition#isInline `isInline`} &ndash; Whether an item is "text-like" and should be treated as an inline node.
+ * * {@link ~ModelSchemaItemDefinition#isInline `isInline`} &ndash; Whether an item is "text-like" and should be treated as an inline node.
  * Examples of inline elements: `$text`, `softBreak` (`<br>`), etc.
- * * {@link ~SchemaItemDefinition#isLimit `isLimit`} &ndash; It can be understood as whether this element
+ * * {@link ~ModelSchemaItemDefinition#isLimit `isLimit`} &ndash; It can be understood as whether this element
  * should not be split by <kbd>Enter</kbd>. Examples of limit elements: `$root`, table cell, image caption, etc.
  * In other words, all actions that happen inside a limit element are limited to its content.
  * All objects are treated as limit elements, too.
- * * {@link ~SchemaItemDefinition#isObject `isObject`} &ndash; Whether an item is "self-contained" and should be treated as a whole.
+ * * {@link ~ModelSchemaItemDefinition#isObject `isObject`} &ndash; Whether an item is "self-contained" and should be treated as a whole.
  * Examples of object elements: `imageBlock`, `table`, `video`, etc. An object is also a limit, so
  * {@link module:engine/model/schema~ModelSchema#isLimit `isLimit()`} returns `true` for object elements automatically.
  *
@@ -1556,7 +1557,7 @@ export type SchemaCheckAttributeEvent = {
  * * Remember about defining the `is*` properties. They do not affect the allowed structures, but they can
  * affect how the editor features treat your elements.
  */
-export interface SchemaItemDefinition {
+export interface ModelSchemaItemDefinition {
 
 	/**
 	 * Defines in which other items this item will be allowed.
@@ -2073,7 +2074,7 @@ export type SchemaAttributeCheckCallback = ( context: SchemaContext, attributeNa
 
 export type SchemaChildCheckCallback = ( context: SchemaContext, definition: SchemaCompiledItemDefinition ) => boolean | undefined;
 
-function compileBaseItemRule( sourceItemRules: Array<SchemaItemDefinition>, itemName: string ): SchemaCompiledItemDefinitionInternal {
+function compileBaseItemRule( sourceItemRules: Array<ModelSchemaItemDefinition>, itemName: string ): SchemaCompiledItemDefinitionInternal {
 	const itemRule: SchemaCompiledItemDefinitionInternal = {
 		name: itemName,
 
@@ -2337,7 +2338,7 @@ function compileInheritPropertiesFrom(
 	}
 }
 
-function copyTypes( sourceItemRules: Array<SchemaItemDefinition>, itemRule: SchemaCompiledItemDefinitionInternal ) {
+function copyTypes( sourceItemRules: Array<ModelSchemaItemDefinition>, itemRule: SchemaCompiledItemDefinitionInternal ) {
 	for ( const sourceItemRule of sourceItemRules ) {
 		const typeNames = Object.keys( sourceItemRule ).filter( name => name.startsWith( 'is' ) ) as TypeNames;
 
@@ -2348,7 +2349,7 @@ function copyTypes( sourceItemRules: Array<SchemaItemDefinition>, itemRule: Sche
 }
 
 function copyProperty(
-	sourceItemRules: Array<SchemaItemDefinition>,
+	sourceItemRules: Array<ModelSchemaItemDefinition>,
 	itemRule: SchemaCompiledItemDefinitionInternal,
 	propertyName:
 		'allowIn' |
@@ -2377,7 +2378,7 @@ function copyProperty(
 	}
 }
 
-function resolveInheritAll( sourceItemRules: Array<SchemaItemDefinition>, itemRule: SchemaCompiledItemDefinitionInternal ) {
+function resolveInheritAll( sourceItemRules: Array<ModelSchemaItemDefinition>, itemRule: SchemaCompiledItemDefinitionInternal ) {
 	for ( const sourceItemRule of sourceItemRules ) {
 		const inheritFrom = sourceItemRule.inheritAllFrom;
 
