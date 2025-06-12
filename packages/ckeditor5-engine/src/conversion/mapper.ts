@@ -729,62 +729,51 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 			viewOffset++;
 		}
 
-		let hoistedViewPosition: ViewPosition | null = null;
+		let viewPosition = new ViewPosition( viewParent, viewOffset );
 
 		if ( useCache ) {
-			// Make sure to save cache for all other view positions that have the same `modelOffset`.
+			// Make sure to hoist view position and save cache for all view positions along the way that have the same `modelOffset`.
 			//
 			// Consider example view:
 			//
 			// <p>Foo<strong><i>bar<em>xyz</em></i></strong>abc</p>
 			//
-			// Lets assume that position after "bar" was cached, and we start from that position, and we look for model offset `9`.
-			// In this case we will only traverse over `<em>xyz</em>` and cache view positions after "xyz" and after `</em>`. At that point,
-			// we will stop processing this view as we will already reach target model offset `9`.
+			// Lets assume that we looked for model offset `9`, starting  from `6` (as it was previously cached value).
+			// In this case we will only traverse over `<em>xyz</em>` and cache view positions after "xyz" and after `</em>`.
+			// After stepping over `<em>xyz</em>`, we will stop processing this view, as we will reach target model offset `9`.
 			//
-			// However, position before `</strong>` and before `abc` are also valid positions for model offset `9`. Additionally, there may
-			// be a view change at these positions (e.g. between `</i>` and `</strong>`). In such case, we need to make sure that all
-			// these view positions are cached, otherwise cache invalidation may work incorrectly.
+			// However, position before `</strong>` and before `abc` are also valid positions for model offset `9`.
+			// Additionally, `Mapper` is supposed to return "hoisted" view positions, that is, we prefer positions that are closer to
+			// the mapped `viewContainer`. If a position is nested inside attribute elements, it should be "moved up" if possible.
 			//
-			// In the code above, we make sure to "go up" as long as the position is at the end of a non-mapped view element and cache
-			// all necessary values:
+			// As we hoist the view position, we need to make sure that all view positions valid for model offset `9` are cached.
+			// This is necessary for cache invalidation to work correctly.
+			//
+			// To hoist a view position, we "go up" as long as the position is at the end of a non-mapped view element. We also cache
+			// all necessary values. See example:
 			//
 			// <p>Foo<strong><i>bar<em>xyz</em>^</i></strong>abc</p>
 			// <p>Foo<strong><i>bar<em>xyz</em></i>^</strong>abc</p>
 			// <p>Foo<strong><i>bar<em>xyz</em></i></strong>^abc</p>
 			//
-			// Note, that this process is the same as hoisting a view position (see `_hoistViewPosition()`). For performance reasons,
-			// we will store the hoisted view position to avoid doing it again later on (it saves a few percents in some performance tests).
-			//
-			hoistedViewPosition = new ViewPosition( viewParent, viewOffset );
-
-			while ( hoistedViewPosition.isAtEnd && hoistedViewPosition.parent !== viewContainer && hoistedViewPosition.parent.parent ) {
-				const cacheViewParent: ViewElement | ViewDocumentFragment = hoistedViewPosition.parent.parent;
-				const cacheViewOffset: number = cacheViewParent.getChildIndex( hoistedViewPosition.parent ) + 1;
+			while ( viewPosition.isAtEnd && viewPosition.parent !== viewContainer && viewPosition.parent.parent ) {
+				const cacheViewParent: ViewElement | ViewDocumentFragment = viewPosition.parent.parent;
+				const cacheViewOffset: number = cacheViewParent.getChildIndex( viewPosition.parent ) + 1;
 
 				this._cache.save( cacheViewParent, cacheViewOffset, viewContainer, traversedModelOffset );
 
-				hoistedViewPosition = new ViewPosition( cacheViewParent, cacheViewOffset );
+				viewPosition = new ViewPosition( cacheViewParent, cacheViewOffset );
 			}
 		}
 
 		if ( traversedModelOffset == targetModelOffset ) {
 			// If it equals we found the position.
 			//
-			// First, hoist view position, as `Mapper` should always return a position closest to the `viewContainer`.
-			//
-			// <p>Foo<strong><i>bar<em>xyz</em>[]</i></strong>abc</p>    -->     <p>Foo<strong><i>bar<em>xyz</em></i></strong>[]abc</p>
-			//
-			// Then, try moving view position into a text node if possible, as the editor engine prefers positions inside view text nodes.
+			// Try moving view position into a text node if possible, as the editor engine prefers positions inside view text nodes.
 			//
 			// <p>Foo<strong><i>bar<em>xyz</em></i></strong>[]abc</p>    -->     <p>Foo<strong><i>bar<em>xyz</em></i></strong>{}abc</p>
 			//
-			if ( !hoistedViewPosition ) {
-				// If `useCache == false` we don't have the hoisted view position yet. Let's do it now.
-				hoistedViewPosition = this._hoistViewPosition( new ViewPosition( viewParent, viewOffset ), viewContainer );
-			}
-
-			return this._moveViewPositionToTextNode( hoistedViewPosition );
+			return this._moveViewPositionToTextNode( viewPosition );
 		} else {
 			// If it is higher we overstepped with the last traversed view node.
 			// We need to "enter" it, and look for the view position / model offset inside the last visited view node.
@@ -852,35 +841,6 @@ export default class Mapper extends /* #__PURE__ */ EmitterMixin() {
 		}
 
 		// Otherwise, just return the given position.
-		return viewPosition;
-	}
-
-	/**
-	 * Moves a view position to a preferred location.
-	 *
-	 * The view position is moved up from a non-mapped view element as long as it remains at the end of its current parent.
-	 *
-	 * Consider view position at `^` which is inside mapped element `<p>`. Other elements are not mapped:
-	 *
-	 * ```
-	 * <p>This is <strong>some <em>heavily <u>formatted</u>^</em></strong> text.</p>
-	 * ```
-	 *
-	 * Position `^` could be returned from cache. `Mapper` should return a position that is closest to the mapped element `<p>`. In this
-	 * example, we need to "hoist" position, so it is closer to `<p>`:
-	 *
-	 * ```
-	 * <p>This is <strong>some <em>heavily <u>formatted</u></em></strong>^ text.</p>
-	 * ```
-	 */
-	private _hoistViewPosition( viewPosition: ViewPosition, viewContainer: ViewElement | ViewDocumentFragment ): ViewPosition {
-		while ( viewPosition.isAtEnd && viewPosition.parent != viewContainer && viewPosition.parent.parent ) {
-			const parent = viewPosition.parent.parent;
-			const offset = parent.getChildIndex( viewPosition.parent ) + 1;
-
-			viewPosition = new ViewPosition( parent, offset );
-		}
-
 		return viewPosition;
 	}
 }
