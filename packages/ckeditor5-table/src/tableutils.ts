@@ -13,7 +13,7 @@ import type {
 	ModelDocumentSelection,
 	ModelElement,
 	ModelNode,
-	Position,
+	ModelPosition,
 	ModelRange,
 	Selection,
 	Writer
@@ -1118,7 +1118,7 @@ function createEmptyRows(
  *
  * @param cells The number of cells to create
  */
-function createCells( cells: number, writer: Writer, insertPosition: Position, attributes = {} ) {
+function createCells( cells: number, writer: Writer, insertPosition: ModelPosition, attributes = {} ) {
 	for ( let i = 0; i < cells; i++ ) {
 		createEmptyTableCell( writer, insertPosition, attributes );
 	}

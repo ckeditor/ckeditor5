@@ -7,7 +7,7 @@
  * @module list/list/utils/postfixers
  */
 
-import type { ModelElement, Position, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelPosition, Writer } from 'ckeditor5/src/engine.js';
 import { SiblingListBlocksIterator, type ListIteratorValue } from './listwalker.js';
 import { getListItemBlocks, isListItemBlock, ListItemUid, type ListElement } from './model.js';
 
@@ -20,7 +20,7 @@ import { getListItemBlocks, isListItemBlock, ListItemUid, type ListElement } fro
  * @param visited A set of elements that were already visited.
  */
 export function findAndAddListHeadToMap(
-	position: Position,
+	position: ModelPosition,
 	itemToListHead: Set<ListElement>,
 	visited: Set<ModelElement>
 ): void {

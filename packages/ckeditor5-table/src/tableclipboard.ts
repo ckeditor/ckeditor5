@@ -29,7 +29,7 @@ import type {
 	ModelItem,
 	Model,
 	ModelInsertContentEvent,
-	Position,
+	ModelPosition,
 	Selection,
 	Writer
 } from 'ckeditor5/src/engine.js';
@@ -299,7 +299,7 @@ export class TableClipboard extends Plugin {
 		const cellsToSelect: Array<ModelElement> = [];
 
 		// Store next cell insert position.
-		let insertPosition: Position;
+		let insertPosition: ModelPosition;
 
 		// Content table replace cells algorithm iterates over a selected table fragment and:
 		//
@@ -375,7 +375,7 @@ export class TableClipboard extends Plugin {
 	public _replaceTableSlotCell(
 		tableSlot: TableSlot,
 		cellToInsert: ModelElement | null,
-		insertPosition: Position,
+		insertPosition: ModelPosition,
 		writer: Writer
 	): ModelElement | null {
 		const { cell, isAnchor } = tableSlot;
