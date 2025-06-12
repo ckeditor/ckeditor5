@@ -21,7 +21,7 @@ import { SplitOperation } from './operation/splitoperation.js';
 import { ModelDocumentFragment } from './documentfragment.js';
 import { ModelDocumentSelection } from './documentselection.js';
 import { ModelElement } from './element.js';
-import { ModelPosition, type PositionOffset, type PositionStickiness } from './position.js';
+import { ModelPosition, type ModelPositionOffset, type ModelPositionStickiness } from './position.js';
 import { Range } from './range.js';
 import { RootElement } from './rootelement.js';
 import { Text } from './text.js';
@@ -189,7 +189,7 @@ export class Writer {
 	public insert(
 		item: ModelItem | ModelDocumentFragment,
 		itemOrPosition: ModelItem | ModelDocumentFragment | ModelPosition,
-		offset: PositionOffset = 0
+		offset: ModelPositionOffset = 0
 	): void {
 		this._assertWriterUsedCorrectly();
 
@@ -293,7 +293,7 @@ export class Writer {
 	public insertText(
 		text: string,
 		itemOrPosition?: ModelItem | ModelPosition,
-		offset?: PositionOffset
+		offset?: ModelPositionOffset
 	): void;
 
 	/**
@@ -326,7 +326,7 @@ export class Writer {
 		text: string,
 		attributes?: ModelNodeAttributes,
 		itemOrPosition?: ModelItem | ModelPosition,
-		offset?: PositionOffset
+		offset?: ModelPositionOffset
 	): void;
 
 	public insertText(
@@ -370,7 +370,7 @@ export class Writer {
 	public insertElement(
 		name: string,
 		itemOrPosition: ModelItem | ModelDocumentFragment | ModelPosition,
-		offset?: PositionOffset
+		offset?: ModelPositionOffset
 	): void;
 
 	/**
@@ -403,7 +403,7 @@ export class Writer {
 		name: string,
 		attributes: ModelNodeAttributes,
 		itemOrPosition: ModelItem | ModelDocumentFragment | ModelPosition,
-		offset?: PositionOffset
+		offset?: ModelPositionOffset
 	): void;
 
 	public insertElement(
@@ -647,7 +647,7 @@ export class Writer {
 	public move(
 		range: Range,
 		itemOrPosition: ModelItem | ModelPosition,
-		offset?: PositionOffset
+		offset?: ModelPositionOffset
 	): void {
 		this._assertWriterUsedCorrectly();
 
@@ -767,7 +767,7 @@ export class Writer {
 	public createPositionFromPath(
 		root: ModelElement | ModelDocumentFragment,
 		path: ReadonlyArray<number>,
-		stickiness?: PositionStickiness
+		stickiness?: ModelPositionStickiness
 	): ModelPosition {
 		return this.model.createPositionFromPath( root, path, stickiness );
 	}
@@ -779,7 +779,7 @@ export class Writer {
 	 */
 	public createPositionAt(
 		itemOrPosition: ModelItem | ModelPosition | ModelDocumentFragment,
-		offset?: PositionOffset
+		offset?: ModelPositionOffset
 	): ModelPosition {
 		return this.model.createPositionAt( itemOrPosition, offset );
 	}
@@ -1510,7 +1510,7 @@ export class Writer {
 	 */
 	public setSelectionFocus(
 		itemOrPosition: ModelItem | ModelPosition,
-		offset?: PositionOffset
+		offset?: ModelPositionOffset
 	): void {
 		this._assertWriterUsedCorrectly();
 

@@ -10,7 +10,7 @@
 import { Batch, type BatchType } from './batch.js';
 import { ModelDocument } from './document.js';
 import { MarkerCollection } from './markercollection.js';
-import { ModelPosition, type PositionOffset, type PositionStickiness } from './position.js';
+import { ModelPosition, type ModelPositionOffset, type ModelPositionStickiness } from './position.js';
 import { ModelRange } from './range.js';
 import { ModelSelection, type PlaceOrOffset, type Selectable } from './selection.js';
 import { OperationFactory } from './operation/operationfactory.js';
@@ -864,7 +864,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	public createPositionFromPath(
 		root: ModelElement | ModelDocumentFragment,
 		path: ReadonlyArray<number>,
-		stickiness?: PositionStickiness
+		stickiness?: ModelPositionStickiness
 	): ModelPosition {
 		return new ModelPosition( root, path, stickiness );
 	}
@@ -891,7 +891,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 */
 	public createPositionAt(
 		itemOrPosition: ModelItem | ModelPosition | ModelDocumentFragment,
-		offset?: PositionOffset
+		offset?: ModelPositionOffset
 	): ModelPosition {
 		return ModelPosition._createAt( itemOrPosition, offset );
 	}

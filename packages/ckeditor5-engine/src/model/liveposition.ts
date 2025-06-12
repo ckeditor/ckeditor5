@@ -7,7 +7,7 @@
  * @module engine/model/liveposition
  */
 
-import { ModelPosition, type PositionOffset, type PositionStickiness } from './position.js';
+import { ModelPosition, type ModelPositionOffset, type ModelPositionStickiness } from './position.js';
 
 import type { ModelApplyOperationEvent } from './model.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
@@ -41,7 +41,7 @@ export class ModelLivePosition extends /* #__PURE__ */ EmitterMixin( ModelPositi
 	 *
 	 * @see module:engine/model/position~ModelPosition
 	 */
-	constructor( root: RootElement, path: Array<number>, stickiness: PositionStickiness = 'toNone' ) {
+	constructor( root: RootElement, path: Array<number>, stickiness: ModelPositionStickiness = 'toNone' ) {
 		super( root, path, stickiness );
 
 		if ( !this.root.is( 'rootElement' ) ) {
@@ -75,7 +75,7 @@ export class ModelLivePosition extends /* #__PURE__ */ EmitterMixin( ModelPositi
 	/**
 	 * Creates a `ModelLivePosition` instance that is equal to position.
 	 */
-	public static fromPosition( position: ModelPosition, stickiness?: PositionStickiness ): ModelLivePosition {
+	public static fromPosition( position: ModelPosition, stickiness?: ModelPositionStickiness ): ModelLivePosition {
 		return new this( position.root as RootElement, position.path.slice(), stickiness ? stickiness : position.stickiness );
 	}
 
@@ -85,7 +85,7 @@ export class ModelLivePosition extends /* #__PURE__ */ EmitterMixin( ModelPositi
 	 */
 	declare public static readonly _createAfter: (
 		item: ModelItem | ModelDocumentFragment,
-		stickiness?: PositionStickiness
+		stickiness?: ModelPositionStickiness
 	) => ModelLivePosition;
 
 	/**
@@ -94,7 +94,7 @@ export class ModelLivePosition extends /* #__PURE__ */ EmitterMixin( ModelPositi
 	 */
 	declare public static readonly _createBefore: (
 		item: ModelItem | ModelDocumentFragment,
-		stickiness?: PositionStickiness
+		stickiness?: ModelPositionStickiness
 	) => ModelLivePosition;
 
 	/**
@@ -103,8 +103,8 @@ export class ModelLivePosition extends /* #__PURE__ */ EmitterMixin( ModelPositi
 	 */
 	declare public static readonly _createAt: (
 		itemOrPosition: ModelItem | ModelPosition | ModelDocumentFragment,
-		offset?: PositionOffset,
-		stickiness?: PositionStickiness
+		offset?: ModelPositionOffset,
+		stickiness?: ModelPositionStickiness
 	) => ModelLivePosition;
 }
 

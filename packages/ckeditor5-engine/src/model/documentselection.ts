@@ -23,7 +23,7 @@ import type { Marker, MarkerCollectionUpdateEvent } from './markercollection.js'
 import { type Batch } from './batch.js';
 import { type ModelElement } from './element.js';
 import { type ModelItem } from './item.js';
-import type { ModelPosition, PositionOffset } from './position.js';
+import type { ModelPosition, ModelPositionOffset } from './position.js';
 import { type Range } from './range.js';
 import { type Schema } from './schema.js';
 
@@ -376,7 +376,7 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCh
 	 * @param offset Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
-	public _setFocus( itemOrPosition: ModelItem | ModelPosition, offset?: PositionOffset ): void {
+	public _setFocus( itemOrPosition: ModelItem | ModelPosition, offset?: ModelPositionOffset ): void {
 		this._selection.setFocus( itemOrPosition, offset );
 	}
 
@@ -744,7 +744,7 @@ class LiveSelection extends Selection {
 		this.updateMarkers();
 	}
 
-	public override setFocus( itemOrPosition: ModelItem | ModelPosition, offset?: PositionOffset ): void {
+	public override setFocus( itemOrPosition: ModelItem | ModelPosition, offset?: ModelPositionOffset ): void {
 		super.setFocus( itemOrPosition, offset );
 		this._updateAttributes( true );
 		this.updateMarkers();

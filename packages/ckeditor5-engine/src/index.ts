@@ -129,7 +129,7 @@ export { ModelLivePosition, type ModelLivePositionChangeEvent } from './model/li
 export { Model } from './model/model.js';
 export { TreeWalker, type TreeWalkerValue } from './model/treewalker.js';
 export { ModelElement } from './model/element.js';
-export { ModelPosition as Position, type PositionOffset } from './model/position.js';
+export { ModelPosition as Position, type ModelPositionOffset as PositionOffset } from './model/position.js';
 export { ModelDocumentFragment } from './model/documentfragment.js';
 export { ModelDocument, type ModelPostFixer } from './model/document.js';
 export { History } from './model/history.js';
@@ -372,7 +372,10 @@ export {
 export {
 	getTextNodeAtPosition as _getModelTextNodeAtPosition,
 	getNodeAfterPosition as _getModelNodeAfterPosition,
-	getNodeBeforePosition as _getModelNodeBeforePosition
+	getNodeBeforePosition as _getModelNodeBeforePosition,
+	type ModelPositionRelation,
+	type ModelPositionOffset,
+	type ModelPositionStickiness
 } from './model/position.js';
 
 export {

@@ -9,7 +9,7 @@
 
 import { TypeCheckable } from './typecheckable.js';
 import { ModelNode } from './node.js';
-import { ModelPosition, type PositionOffset } from './position.js';
+import { ModelPosition, type ModelPositionOffset } from './position.js';
 import { Range } from './range.js';
 
 import { type ModelDocumentFragment } from './documentfragment.js';
@@ -475,7 +475,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * @fires change:range
 	 * @param offset Offset or one of the flags. Used only when first parameter is a {@link module:engine/model/item~ModelItem model item}.
 	 */
-	public setFocus( itemOrPosition: ModelItem | ModelPosition, offset?: PositionOffset ): void {
+	public setFocus( itemOrPosition: ModelItem | ModelPosition, offset?: ModelPositionOffset ): void {
 		if ( this.anchor === null ) {
 			/**
 			 * Cannot set selection focus if there are no ranges in selection.

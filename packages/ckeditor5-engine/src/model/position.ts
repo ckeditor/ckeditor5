@@ -93,7 +93,7 @@ export class ModelPosition extends TypeCheckable {
 	/**
 	 * Position stickiness. See {@link module:engine/model/position~ModelPositionStickiness}.
 	 */
-	public stickiness: PositionStickiness;
+	public stickiness: ModelPositionStickiness;
 
 	/**
 	 * Creates a position.
@@ -105,7 +105,7 @@ export class ModelPosition extends TypeCheckable {
 	constructor(
 		root: ModelElement | ModelDocumentFragment,
 		path: ReadonlyArray<number>,
-		stickiness: PositionStickiness = 'toNone'
+		stickiness: ModelPositionStickiness = 'toNone'
 	) {
 		super();
 
@@ -284,7 +284,7 @@ export class ModelPosition extends TypeCheckable {
 	 *
 	 * This method is safe to use it on non-existing positions (for example during operational transformation).
 	 */
-	public compareWith( otherPosition: ModelPosition ): PositionRelation {
+	public compareWith( otherPosition: ModelPosition ): ModelPositionRelation {
 		if ( this.root != otherPosition.root ) {
 			return 'different';
 		}
@@ -896,8 +896,8 @@ export class ModelPosition extends TypeCheckable {
 	 */
 	public static _createAt(
 		itemOrPosition: ModelItem | ModelPosition | ModelDocumentFragment,
-		offset?: PositionOffset,
-		stickiness: PositionStickiness = 'toNone'
+		offset?: ModelPositionOffset,
+		stickiness: ModelPositionStickiness = 'toNone'
 	): ModelPosition {
 		if ( itemOrPosition.is( 'model:position' ) ) {
 			return new ModelPosition( itemOrPosition.root, itemOrPosition.path, itemOrPosition.stickiness );
@@ -947,7 +947,7 @@ export class ModelPosition extends TypeCheckable {
 	 * @param item Item after which the position should be placed.
 	 * @param stickiness Position stickiness.
 	 */
-	public static _createAfter( item: ModelItem | ModelDocumentFragment, stickiness?: PositionStickiness ): ModelPosition {
+	public static _createAfter( item: ModelItem | ModelDocumentFragment, stickiness?: ModelPositionStickiness ): ModelPosition {
 		if ( !item.parent ) {
 			/**
 			 * You cannot make a position after a root element.
@@ -972,7 +972,7 @@ export class ModelPosition extends TypeCheckable {
 	 * @param item Item before which the position should be placed.
 	 * @param stickiness Position stickiness.
 	 */
-	public static _createBefore( item: ModelItem | ModelDocumentFragment, stickiness?: PositionStickiness ): ModelPosition {
+	public static _createBefore( item: ModelItem | ModelDocumentFragment, stickiness?: ModelPositionStickiness ): ModelPosition {
 		if ( !item.parent ) {
 			/**
 			 * You cannot make a position before a root element.
@@ -1041,12 +1041,12 @@ ModelPosition.prototype.is = function( type: string ): boolean {
  * A flag indicating whether this position is `'before'` or `'after'` or `'same'` as given position.
  * If positions are in different roots `'different'` flag is returned.
  */
-export type PositionRelation = 'before' | 'after' | 'same' | 'different';
+export type ModelPositionRelation = 'before' | 'after' | 'same' | 'different';
 
 /**
  * Offset or one of the flags.
  */
-export type PositionOffset = number | 'before' | 'after' | 'end';
+export type ModelPositionOffset = number | 'before' | 'after' | 'end';
 
 /**
  * Represents how position is "sticking" with neighbour nodes. Used to define how position should be transformed (moved)
@@ -1076,7 +1076,7 @@ export type PositionOffset = number | 'before' | 'after' | 'end';
  * - sticks to previous node:  <p>f[oo]|</p><p>b^ar</p>  ->  <p>f</p><p>boo|ar</p>
  * ```
  */
-export type PositionStickiness = 'toNone' | 'toNext' | 'toPrevious';
+export type ModelPositionStickiness = 'toNone' | 'toNext' | 'toPrevious';
 
 /**
  * Returns a text node at the given position.
