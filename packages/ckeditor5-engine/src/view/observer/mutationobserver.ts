@@ -199,7 +199,7 @@ export class MutationObserver extends Observer {
 		// Now we build the list of mutations to mark elements. We did not do it earlier to avoid marking the
 		// same node multiple times in case of duplication.
 
-		const mutations: Array<MutationData> = [];
+		const mutations: Array<ObserverMutationData> = [];
 
 		for ( const textNode of mutatedTextNodes ) {
 			mutations.push( { type: 'text', node: textNode } );
@@ -286,20 +286,20 @@ function sameNodes( child1: ViewNode, child2: ViewNode ) {
  */
 export type ViewDocumentMutationsEvent = {
 	name: 'mutations';
-	args: [ data: MutationsEventData ];
+	args: [ data: MutationObserverEventData ];
 };
 
 /**
  * The value of {@link ~ViewDocumentMutationsEvent}.
  */
-export type MutationsEventData = {
-	mutations: Array<MutationData>;
+export type MutationObserverEventData = {
+	mutations: Array<ObserverMutationData>;
 };
 
 /**
- * A single entry in {@link ~MutationsEventData} mutations array.
+ * A single entry in {@link ~MutationObserverEventData} mutations array.
  */
-export type MutationData = {
+export type ObserverMutationData = {
 
 	/**
 	 * Type of mutation detected.

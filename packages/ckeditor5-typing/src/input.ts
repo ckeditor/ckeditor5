@@ -21,7 +21,7 @@ import {
 	type ModelRange,
 	type ViewNode,
 	type ViewElement,
-	type MutationData,
+	type ObserverMutationData,
 	type ViewDocumentCompositionStartEvent,
 	type ViewDocumentCompositionEndEvent,
 	type ViewDocumentKeyDownEvent,
@@ -269,7 +269,7 @@ export class Input extends Plugin {
 			// There could be new item queued on the composition end, so flush it.
 			this._typingQueue.flush( 'after composition end' );
 
-			const mutations: Array<MutationData> = [];
+			const mutations: Array<ObserverMutationData> = [];
 
 			if ( this._typingQueue.hasAffectedElements() ) {
 				for ( const element of this._typingQueue.flushAffectedElements() ) {

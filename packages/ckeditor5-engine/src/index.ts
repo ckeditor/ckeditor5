@@ -248,7 +248,7 @@ export { ViewSelection, type ViewSelectionChangeEvent, type Selectable as ViewSe
 export type { ViewTypeCheckable } from './view/typecheckable.js';
 
 // View / Observer.
-export { Observer } from './view/observer/observer.js';
+export { Observer, type ObserverConstructor } from './view/observer/observer.js';
 export { ClickObserver } from './view/observer/clickobserver.js';
 export { DomEventObserver } from './view/observer/domeventobserver.js';
 export { MouseObserver } from './view/observer/mouseobserver.js';
@@ -261,6 +261,17 @@ export {
 	ViewDocumentKeyUpEvent,
 	KeyObserverEventData
 } from './view/observer/keyobserver.js';
+
+export {
+	MutationObserver,
+	type MutationObserverEventData,
+	type ObserverMutationData
+} from './view/observer/mutationobserver.js';
+
+export {
+	SelectionObserver,
+	type ViewDocumentSelectionEventData
+} from './view/observer/selectionobserver.js';
 
 export { CompositionObserver, type ObserverCompositionEventData } from './view/observer/compositionobserver.js';
 export { InputObserver, type InputObserverEventData, type ViewDocumentInputEvent } from './view/observer/inputobserver.js';
@@ -304,7 +315,7 @@ export type {
 	ViewDocumentCompositionUpdateEvent,
 	ViewDocumentCompositionEndEvent
 } from './view/observer/compositionobserver.js';
-export type { ViewDocumentMutationsEvent, MutationData } from './view/observer/mutationobserver.js';
+export type { ViewDocumentMutationsEvent } from './view/observer/mutationobserver.js';
 export type { ViewDocumentLayoutChangedEvent } from './view/document.js';
 export type {
 	ViewDocumentMouseDownEvent,
