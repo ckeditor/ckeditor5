@@ -14,7 +14,7 @@ import { _remove } from './utils.js';
 import { type ModelPosition } from '../position.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
-import type { Selectable } from '../selection.js';
+import type { ModelSelectable } from '../selection.js';
 
 // @if CK_DEBUG_ENGINE // const ModelRange = require( '../range' ).default;
 
@@ -63,7 +63,7 @@ export class DetachOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	public get affectedSelectable(): Selectable {
+	public get affectedSelectable(): ModelSelectable {
 		return null;
 	}
 

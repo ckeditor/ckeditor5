@@ -6,7 +6,7 @@
 import { Model } from '../../../src/model/model.js';
 import { ModelPosition } from '../../../src/model/position.js';
 import { ModelRange } from '../../../src/model/range.js';
-import { Selection } from '../../../src/model/selection.js';
+import { ModelSelection } from '../../../src/model/selection.js';
 import { ModelElement } from '../../../src/model/element.js';
 import { deleteContent } from '../../../src/model/utils/deletecontent.js';
 import { _setModelData, _getModelData } from '../../../src/dev-utils/model.js';
@@ -73,7 +73,7 @@ describe( 'DataController utils', () => {
 					new ModelPosition( doc.getRoot(), [ 3 ] )
 				);
 
-				const selection = new Selection( [ range ] );
+				const selection = new ModelSelection( [ range ] );
 
 				model.change( () => {
 					deleteContent( model, selection );
@@ -871,7 +871,7 @@ describe( 'DataController utils', () => {
 				const root = doc.getRoot( 'bodyRoot' );
 
 				// [<paragraph>yyy</paragraph>]
-				const selection = new Selection( [
+				const selection = new ModelSelection( [
 					new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 2 ] ) )
 				] );
 
@@ -910,7 +910,7 @@ describe( 'DataController utils', () => {
 					new ModelPosition( doc.getRoot( 'bodyRoot' ), [ 2 ] )
 				);
 
-				deleteContent( model, new Selection( range ) );
+				deleteContent( model, new ModelSelection( range ) );
 
 				expect( _getModelData( model, { rootName: 'bodyRoot', withoutSelection: true } ) )
 					.to.equal( '<paragraph>x</paragraph><paragraph></paragraph><paragraph>z</paragraph>' );
@@ -929,7 +929,7 @@ describe( 'DataController utils', () => {
 					new ModelPosition( doc.getRoot( 'bodyRoot' ), [ 3 ] )
 				);
 
-				deleteContent( model, new Selection( range ) );
+				deleteContent( model, new ModelSelection( range ) );
 
 				expect( _getModelData( model, { rootName: 'bodyRoot', withoutSelection: true } ) )
 					.to.equal( '<paragraph>x</paragraph><paragraph></paragraph><paragraph>z</paragraph>' );

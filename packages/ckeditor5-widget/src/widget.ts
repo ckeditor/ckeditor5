@@ -515,7 +515,7 @@ export class Widget extends Plugin {
 	}
 
 	/**
-	 * Sets {@link module:engine/model/selection~Selection document's selection} over given element.
+	 * Sets {@link module:engine/model/selection~ModelSelection document's selection} over given element.
 	 *
 	 * @internal
 	 */
@@ -527,7 +527,7 @@ export class Widget extends Plugin {
 
 	/**
 	 * Checks if {@link module:engine/model/element~ModelElement element} placed next to the current
-	 * {@link module:engine/model/selection~Selection model selection} exists and is marked in
+	 * {@link module:engine/model/selection~ModelSelection model selection} exists and is marked in
 	 * {@link module:engine/model/schema~ModelSchema schema} as `object`.
 	 *
 	 * @internal

@@ -11,7 +11,7 @@ import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 
 import { ChangeBuffer } from './utils/changebuffer.js';
 
-import type { ModelDocumentSelection, ModelRange, Selection } from '@ckeditor/ckeditor5-engine';
+import type { ModelDocumentSelection, ModelRange, ModelSelection } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The insert text command. Used by the {@link module:typing/input~Input input feature} to handle typing.
@@ -67,7 +67,7 @@ export class InsertTextCommand extends Command {
 		const text = options.text || '';
 		const textInsertions = text.length;
 
-		let selection: Selection | ModelDocumentSelection = doc.selection;
+		let selection: ModelSelection | ModelDocumentSelection = doc.selection;
 
 		if ( options.selection ) {
 			selection = options.selection;
@@ -126,7 +126,7 @@ export interface InsertTextCommandOptions {
 	 * Inserting a text into a selection deletes the current content within selection ranges. If the selection is not specified,
 	 * the current selection in the model will be used instead.
 	 */
-	selection?: Selection | ModelDocumentSelection;
+	selection?: ModelSelection | ModelDocumentSelection;
 
 	/**
 	 * The range in which the text is inserted. Defaults to the first range in the current selection.

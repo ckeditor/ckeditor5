@@ -9,7 +9,7 @@ import { Text } from '../../src/model/text.js';
 import { ModelRange } from '../../src/model/range.js';
 import { ModelPosition } from '../../src/model/position.js';
 import { ModelLiveRange } from '../../src/model/liverange.js';
-import { Selection } from '../../src/model/selection.js';
+import { ModelSelection } from '../../src/model/selection.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 import { _parseModel, _setModelData } from '../../src/dev-utils/model.js';
@@ -36,7 +36,7 @@ describe( 'Selection', () => {
 			new ModelElement( 'p' ),
 			new ModelElement( 'p', [], new Text( 'foobar' ) )
 		] );
-		selection = new Selection();
+		selection = new ModelSelection();
 
 		liveRange = new ModelLiveRange( new ModelPosition( root, [ 0 ] ), new ModelPosition( root, [ 1 ] ) );
 		range = new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 2, 2 ] ) );
@@ -53,20 +53,20 @@ describe( 'Selection', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should be able to create an empty selection', () => {
-			const selection = new Selection();
+			const selection = new ModelSelection();
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [] );
 		} );
 
 		it( 'should be able to create a selection from the given ranges', () => {
 			const ranges = [ range1, range2, range3 ];
-			const selection = new Selection( ranges );
+			const selection = new ModelSelection( ranges );
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( ranges );
 		} );
 
 		it( 'should be able to create a selection from the given range and isLastBackward flag', () => {
-			const selection = new Selection( range1, { backward: true } );
+			const selection = new ModelSelection( range1, { backward: true } );
 
 			expect( selection.isBackward ).to.be.true;
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1 ] );
@@ -74,7 +74,7 @@ describe( 'Selection', () => {
 
 		it( 'should be able to create a selection from the given ranges and isLastBackward flag', () => {
 			const ranges = new Set( [ range1, range2, range3 ] );
-			const selection = new Selection( ranges, { backward: true } );
+			const selection = new ModelSelection( ranges, { backward: true } );
 
 			expect( selection.isBackward ).to.be.true;
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2, range3 ] );
@@ -82,15 +82,15 @@ describe( 'Selection', () => {
 
 		it( 'should be able to create a selection from the other selection', () => {
 			const ranges = [ range1, range2, range3 ];
-			const otherSelection = new Selection( ranges, { backward: true } );
-			const selection = new Selection( otherSelection );
+			const otherSelection = new ModelSelection( ranges, { backward: true } );
+			const selection = new ModelSelection( otherSelection );
 
 			expect( selection.isBackward ).to.be.true;
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2, range3 ] );
 		} );
 
 		it( 'should be able to create a selection at the start position of an item', () => {
-			const selection = new Selection( root, 0 );
+			const selection = new ModelSelection( root, 0 );
 			const focus = selection.focus;
 
 			expect( selection ).to.have.property( 'isCollapsed', true );
@@ -99,7 +99,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should be able to create a selection before the specified element', () => {
-			const selection = new Selection( root.getChild( 1 ), 'before' );
+			const selection = new ModelSelection( root.getChild( 1 ), 'before' );
 			const focus = selection.focus;
 
 			expect( selection ).to.have.property( 'isCollapsed', true );
@@ -111,7 +111,7 @@ describe( 'Selection', () => {
 		it( 'should throw an error if added ranges intersects', () => {
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
-				new Selection( [
+				new ModelSelection( [
 					liveRange,
 					new ModelRange(
 						new ModelPosition( root, [ 0, 4 ] ),
@@ -124,7 +124,7 @@ describe( 'Selection', () => {
 		it( 'should throw an error when trying to set selection to not selectable', () => {
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
-				new Selection( {} );
+				new ModelSelection( {} );
 			}, 'model-selection-setto-not-selectable' );
 		} );
 	} );
@@ -133,7 +133,7 @@ describe( 'Selection', () => {
 		let selection;
 
 		beforeEach( () => {
-			selection = new Selection();
+			selection = new ModelSelection();
 		} );
 
 		it( 'should return true for "selection"', () => {
@@ -248,7 +248,7 @@ describe( 'Selection', () => {
 		it( 'should set selection to be same as given selection, using _setRanges method', () => {
 			const spy = sinon.spy( selection, '_setRanges' );
 
-			const otherSelection = new Selection( [ range1, range2 ], { backward: true } );
+			const otherSelection = new ModelSelection( [ range1, range2 ], { backward: true } );
 
 			selection.setTo( otherSelection );
 
@@ -789,7 +789,7 @@ describe( 'Selection', () => {
 		it( 'should return true if selections equal', () => {
 			selection.setTo( [ range1, range2 ] );
 
-			const otherSelection = new Selection( [ range1, range2 ] );
+			const otherSelection = new ModelSelection( [ range1, range2 ] );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
 		} );
@@ -797,13 +797,13 @@ describe( 'Selection', () => {
 		it( 'should return true if backward selections equal', () => {
 			selection.setTo( [ range1 ], { backward: true } );
 
-			const otherSelection = new Selection( [ range1 ], { backward: true } );
+			const otherSelection = new ModelSelection( [ range1 ], { backward: true } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
 		} );
 
 		it( 'should return true if both selections have no ranges', () => {
-			const otherSelection = new Selection();
+			const otherSelection = new ModelSelection();
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
 		} );
@@ -811,7 +811,7 @@ describe( 'Selection', () => {
 		it( 'should return false if ranges count does not equal', () => {
 			selection.setTo( [ range1, range2 ] );
 
-			const otherSelection = new Selection( [ range2 ] );
+			const otherSelection = new ModelSelection( [ range2 ] );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
@@ -819,7 +819,7 @@ describe( 'Selection', () => {
 		it( 'should return false if ranges (other than the last added range) do not equal', () => {
 			selection.setTo( [ range1, range3 ] );
 
-			const otherSelection = new Selection( [ range2, range3 ] );
+			const otherSelection = new ModelSelection( [ range2, range3 ] );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
@@ -827,7 +827,7 @@ describe( 'Selection', () => {
 		it( 'should return false if directions do not equal', () => {
 			selection.setTo( range1 );
 
-			const otherSelection = new Selection( [ range1 ], { backward: true } );
+			const otherSelection = new ModelSelection( [ range1 ], { backward: true } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );

@@ -17,7 +17,7 @@ import {
 	type ModelPosition,
 	type ModelElement,
 	type ModelDocumentSelection,
-	type Selection,
+	type ModelSelection,
 	type Writer,
 	type Marker
 } from '@ckeditor/ckeditor5-engine';
@@ -80,7 +80,7 @@ export class ClipboardMarkersUtils extends Plugin {
 	 */
 	public _copySelectedFragmentWithMarkers(
 		action: ClipboardMarkerRestrictedAction,
-		selection: Selection | ModelDocumentSelection,
+		selection: ModelSelection | ModelDocumentSelection,
 		getCopiedFragment: ( writer: Writer ) => ModelDocumentFragment = writer =>
 			writer.model.getSelectedContent( writer.model.document.selection )
 	): ModelDocumentFragment {
@@ -293,7 +293,7 @@ export class ClipboardMarkersUtils extends Plugin {
 	 */
 	private _insertFakeMarkersIntoSelection(
 		writer: Writer,
-		selection: Selection | ModelDocumentSelection,
+		selection: ModelSelection | ModelDocumentSelection,
 		action: ClipboardMarkerRestrictedAction
 	): Record<string, Array<ModelElement>> {
 		const copyableMarkers = this._getCopyableMarkersFromSelection( writer, selection, action );
@@ -313,7 +313,7 @@ export class ClipboardMarkersUtils extends Plugin {
 	 */
 	private _getCopyableMarkersFromSelection(
 		writer: Writer,
-		selection: Selection | ModelDocumentSelection,
+		selection: ModelSelection | ModelDocumentSelection,
 		action: ClipboardMarkerRestrictedAction | null
 	): Array<CopyableMarker> {
 		const selectionRanges = Array.from( selection.getRanges()! );

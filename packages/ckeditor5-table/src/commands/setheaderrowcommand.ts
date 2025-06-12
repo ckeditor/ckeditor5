@@ -31,7 +31,7 @@ import { getVerticallyOverlappingCells, splitHorizontally } from '../utils/struc
 export class SetHeaderRowCommand extends Command {
 	/**
 	 * Flag indicating whether the command is active. The command is active when the
-	 * {@link module:engine/model/selection~Selection} is in a header row.
+	 * {@link module:engine/model/selection~ModelSelection} is in a header row.
 	 *
 	 * @observable
 	 */

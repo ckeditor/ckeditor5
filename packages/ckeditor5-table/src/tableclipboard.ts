@@ -30,7 +30,7 @@ import type {
 	Model,
 	ModelInsertContentEvent,
 	ModelPosition,
-	Selection,
+	ModelSelection,
 	Writer
 } from 'ckeditor5/src/engine.js';
 
@@ -178,7 +178,7 @@ export class TableClipboard extends Plugin {
 	private _onInsertContent(
 		evt: EventInfo,
 		content: ModelDocumentFragment | ModelItem,
-		selectable: Selection | ModelDocumentSelection | undefined
+		selectable: ModelSelection | ModelDocumentSelection | undefined
 	) {
 		if ( selectable && !selectable.is( 'documentSelection' ) ) {
 			return;

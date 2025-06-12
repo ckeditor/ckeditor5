@@ -11,8 +11,8 @@ import type {
 	ViewContainerElement,
 	ModelElement,
 	Model,
-	Selectable,
-	Selection,
+	ModelSelectable,
+	ModelSelection,
 	DowncastWriter,
 	ViewDocumentSelection,
 	ViewElement,
@@ -96,7 +96,7 @@ export function createMediaFigureElement(
  *
  * @internal
  */
-export function getSelectedMediaModelWidget( selection: Selection | ModelDocumentSelection ): ModelElement | null {
+export function getSelectedMediaModelWidget( selection: ModelSelection | ModelDocumentSelection ): ModelElement | null {
 	const selectedElement = selection.getSelectedElement();
 
 	if ( selectedElement && selectedElement.is( 'element', 'media' ) ) {
@@ -117,7 +117,7 @@ export function getSelectedMediaModelWidget( selection: Selection | ModelDocumen
  * in which a selection is.
  * @internal
  */
-export function insertMedia( model: Model, url: string, selectable: Selectable, findOptimalPosition: boolean ): void {
+export function insertMedia( model: Model, url: string, selectable: ModelSelectable, findOptimalPosition: boolean ): void {
 	model.change( writer => {
 		const mediaElement = writer.createElement( 'media', { url } );
 

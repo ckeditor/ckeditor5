@@ -12,7 +12,7 @@ import { TextProxy } from '../model/textproxy.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { type ModelItem } from '../model/item.js';
-import { type Selection } from '../model/selection.js';
+import { type ModelSelection } from '../model/selection.js';
 import { type ModelDocumentSelection } from '../model/documentselection.js';
 import { type ModelRange } from '../model/range.js';
 
@@ -128,7 +128,7 @@ export class ModelConsumable {
 	 * Second colon and everything after will be cut. Passing event name is a safe and good practice.
 	 */
 	public add(
-		item: ModelItem | Selection | ModelDocumentSelection | ModelRange,
+		item: ModelItem | ModelSelection | ModelDocumentSelection | ModelRange,
 		type: string
 	): void {
 		type = _normalizeConsumableType( type );
@@ -161,7 +161,7 @@ export class ModelConsumable {
 	 * @returns `true` if consumable value was available and was consumed, `false` otherwise.
 	 */
 	public consume(
-		item: ModelItem | Selection | ModelDocumentSelection | ModelRange,
+		item: ModelItem | ModelSelection | ModelDocumentSelection | ModelRange,
 		type: string
 	): boolean {
 		type = _normalizeConsumableType( type );
@@ -197,7 +197,7 @@ export class ModelConsumable {
 	 * already consumed or `true` if it was added and not consumed yet.
 	 */
 	public test(
-		item: ModelItem | Selection | ModelDocumentSelection | ModelRange,
+		item: ModelItem | ModelSelection | ModelDocumentSelection | ModelRange,
 		type: string
 	): boolean | null {
 		type = _normalizeConsumableType( type );
@@ -238,7 +238,7 @@ export class ModelConsumable {
 	 * never been added.
 	 */
 	public revert(
-		item: ModelItem | Selection | ModelDocumentSelection | ModelRange,
+		item: ModelItem | ModelSelection | ModelDocumentSelection | ModelRange,
 		type: string
 	): boolean | null {
 		type = _normalizeConsumableType( type );

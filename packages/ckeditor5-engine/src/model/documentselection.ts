@@ -10,9 +10,9 @@
 import { TypeCheckable } from './typecheckable.js';
 import { ModelLiveRange } from './liverange.js';
 import {
-	Selection,
-	type SelectionChangeAttributeEvent,
-	type SelectionChangeRangeEvent
+	ModelSelection,
+	type ModelSelectionChangeAttributeEvent,
+	type ModelSelectionChangeRangeEvent
 } from './selection.js';
 import { Text } from './text.js';
 import { TextProxy } from './textproxy.js';
@@ -48,7 +48,7 @@ const storePrefix = 'selection:';
  * `ModelDocumentSelection` is automatically updated upon changes in the {@link module:engine/model/document~ModelDocument document}
  * to always contain valid ranges. Its attributes are inherited from the text unless set explicitly.
  *
- * Differences between {@link module:engine/model/selection~Selection} and `ModelDocumentSelection` are:
+ * Differences between {@link module:engine/model/selection~ModelSelection} and `ModelDocumentSelection` are:
  * * there is always a range in `ModelDocumentSelection` - even if no ranges were added there is a "default range"
  * present in the selection,
  * * ranges added to this selection updates automatically when the document changes,
@@ -59,7 +59,7 @@ const storePrefix = 'selection:';
  * changes, it cannot be set on {@link module:engine/model/node~ModelNode nodes}
  * that are inside {@link module:engine/model/documentfragment~DocumentFragment document fragment}.
  * If you need to represent a selection in document fragment,
- * use {@link module:engine/model/selection~Selection Selection class} instead.
+ * use {@link module:engine/model/selection~ModelSelection Selection class} instead.
  */
 export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
@@ -161,7 +161,7 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCh
 	}
 
 	/**
-	 * Used for the compatibility with the {@link module:engine/model/selection~Selection#isEqual} method.
+	 * Used for the compatibility with the {@link module:engine/model/selection~ModelSelection#isEqual} method.
 	 *
 	 * @internal
 	 */
@@ -388,7 +388,7 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCh
 	 * @see module:engine/model/writer~Writer#setSelection
 	 * @internal
 	 */
-	public _setTo( ...args: Parameters<Selection[ 'setTo' ]> ): void {
+	public _setTo( ...args: Parameters<ModelSelection[ 'setTo' ]> ): void {
 		this._selection.setTo( ...args );
 	}
 
@@ -407,7 +407,7 @@ export class ModelDocumentSelection extends /* #__PURE__ */ EmitterMixin( TypeCh
 
 	/**
 	 * Removes an attribute with given key from the selection.
-	 * If the given attribute was set on the selection, fires the {@link module:engine/model/selection~Selection#event:change:range}
+	 * If the given attribute was set on the selection, fires the {@link module:engine/model/selection~ModelSelection#event:change:range}
 	 * event with removed attribute key.
 	 * Should be used only within the {@link module:engine/model/writer~Writer#removeSelectionAttribute} method.
 	 *
@@ -495,7 +495,7 @@ ModelDocumentSelection.prototype.is = function( type: string ): boolean {
  * Fired when selection range(s) changed.
  *
  * @eventName ~ModelDocumentSelection#change:range
- * @param directChange In case of {@link module:engine/model/selection~Selection} class it is always set
+ * @param directChange In case of {@link module:engine/model/selection~ModelSelection} class it is always set
  * to `true` which indicates that the selection change was caused by a direct use of selection's API.
  * The {@link module:engine/model/documentselection~ModelDocumentSelection}, however, may change because its position
  * was directly changed through the {@link module:engine/model/writer~Writer writer} or because its position was
@@ -503,13 +503,13 @@ ModelDocumentSelection.prototype.is = function( type: string ): boolean {
  * The indirect change does not occur in case of normal (detached) selections because they are "static" (as "not live")
  * which mean that they are not updated once the document changes.
  */
-export type ModelDocumentSelectionChangeRangeEvent = SelectionChangeRangeEvent;
+export type ModelDocumentSelectionChangeRangeEvent = ModelSelectionChangeRangeEvent;
 
 /**
  * Fired when selection attribute changed.
  *
  * @eventName ~ModelDocumentSelection#change:attribute
- * @param directChange In case of {@link module:engine/model/selection~Selection} class it is always set
+ * @param directChange In case of {@link module:engine/model/selection~ModelSelection} class it is always set
  * to `true` which indicates that the selection change was caused by a direct use of selection's API.
  * The {@link module:engine/model/documentselection~ModelDocumentSelection}, however, may change because its attributes
  * were directly changed through the {@link module:engine/model/writer~Writer writer} or because its position was
@@ -518,7 +518,7 @@ export type ModelDocumentSelectionChangeRangeEvent = SelectionChangeRangeEvent;
  * which mean that they are not updated once the document changes.
  * @param attributeKeys Array containing keys of attributes that changed.
 */
-export type ModelDocumentSelectionChangeAttributeEvent = SelectionChangeAttributeEvent;
+export type ModelDocumentSelectionChangeAttributeEvent = ModelSelectionChangeAttributeEvent;
 
 /**
  * Fired when selection marker(s) changed.
@@ -565,13 +565,13 @@ export type ModelDocumentSelectionChangeEvent = {
  * `LiveSelection` is automatically updated upon changes in the {@link module:engine/model/document~ModelDocument document}
  * to always contain valid ranges. Its attributes are inherited from the text unless set explicitly.
  *
- * Differences between {@link module:engine/model/selection~Selection} and `LiveSelection` are:
+ * Differences between {@link module:engine/model/selection~ModelSelection} and `LiveSelection` are:
  * * there is always a range in `LiveSelection` - even if no ranges were added there is a "default range"
  * present in the selection,
  * * ranges added to this selection updates automatically when the document changes,
  * * attributes of `LiveSelection` are updated automatically according to selection ranges.
  */
-class LiveSelection extends Selection {
+class LiveSelection extends ModelSelection {
 	/**
 	 * List of selection markers.
 	 * Marker is a selection marker when selection range is inside the marker range.
@@ -738,7 +738,7 @@ class LiveSelection extends Selection {
 		return super.getLastRange() || this._document._getDefaultRange();
 	}
 
-	public override setTo( ...args: Parameters<Selection[ 'setTo' ]> ) {
+	public override setTo( ...args: Parameters<ModelSelection[ 'setTo' ]> ) {
 		super.setTo( ...args );
 		this._updateAttributes( true );
 		this.updateMarkers();

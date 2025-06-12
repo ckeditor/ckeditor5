@@ -20,7 +20,7 @@ import type {
 	ModelPosition,
 	ModelRange,
 	ModelSchema,
-	Selection,
+	ModelSelection,
 	ViewDocumentArrowKeyEvent
 } from '@ckeditor/ckeditor5-engine';
 
@@ -108,7 +108,7 @@ export function verticalNavigationHandler(
  * @param selection The current selection.
  * @param isForward The expected navigation direction.
  */
-function findTextRangeFromSelection( editing: EditingController, selection: Selection | ModelDocumentSelection, isForward: boolean ) {
+function findTextRangeFromSelection( editing: EditingController, selection: ModelSelection | ModelDocumentSelection, isForward: boolean ) {
 	const model = editing.model;
 
 	if ( isForward ) {

@@ -7,7 +7,7 @@
  * @module html-embed/htmlembedcommand
  */
 
-import type { ModelDocumentSelection, ModelElement, Model, ModelSchema, Selection } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, ModelElement, Model, ModelSchema, ModelSelection } from 'ckeditor5/src/engine.js';
 import { Command } from 'ckeditor5/src/core.js';
 import { findOptimalInsertionRange } from 'ckeditor5/src/widget.js';
 
@@ -90,7 +90,7 @@ function isHtmlEmbedAllowedInParent( selection: ModelDocumentSelection, schema: 
 /**
  * Returns a node that will be used to insert a html embed with `model.insertContent` to check if a html embed element can be placed there.
  */
-function getInsertHtmlEmbedParent( selection: Selection | ModelDocumentSelection, model: Model ): ModelElement {
+function getInsertHtmlEmbedParent( selection: ModelSelection | ModelDocumentSelection, model: Model ): ModelElement {
 	const insertionRange = findOptimalInsertionRange( selection, model );
 	const parent = insertionRange.start.parent as ModelElement;
 

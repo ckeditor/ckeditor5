@@ -933,7 +933,8 @@ export function createViewElementFromDowncastHighlightDescriptor(
 }
 
 /**
- * Function factory that creates a converter which converts a non-collapsed {@link module:engine/model/selection~Selection model selection}
+ * Function factory that creates a converter which converts a non-collapsed
+ * {@link module:engine/model/selection~ModelSelection model selection}
  * to a {@link module:engine/view/documentselection~DocumentSelection view selection}. The converter consumes appropriate
  * value from the `consumable` object and maps model positions from the selection to view positions.
  *
@@ -971,7 +972,8 @@ export function convertRangeSelection() {
 }
 
 /**
- * Function factory that creates a converter which converts a collapsed {@link module:engine/model/selection~Selection model selection} to
+ * Function factory that creates a converter which converts a collapsed
+ * {@link module:engine/model/selection~ModelSelection model selection} to
  * a {@link module:engine/view/documentselection~DocumentSelection view selection}. The converter consumes appropriate
  * value from the `consumable` object, maps the model selection position to the view position and breaks
  * {@link module:engine/view/attributeelement~AttributeElement attribute elements} at the selection position.
@@ -1024,7 +1026,7 @@ export function convertCollapsedSelection() {
 
 /**
  * Function factory that creates a converter which cleans artifacts after the previous
- * {@link module:engine/model/selection~Selection model selection} conversion. It removes all empty
+ * {@link module:engine/model/selection~ModelSelection model selection} conversion. It removes all empty
  * {@link module:engine/view/attributeelement~AttributeElement view attribute elements} and merges sibling attributes at all start and end
  * positions of all ranges.
  *

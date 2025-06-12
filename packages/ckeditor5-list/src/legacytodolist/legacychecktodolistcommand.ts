@@ -20,7 +20,7 @@ const attributeKey = 'todoListChecked';
  */
 export class LegacyCheckTodoListCommand extends Command {
 	/**
-	 * A list of to-do list items selected by the {@link module:engine/model/selection~Selection}.
+	 * A list of to-do list items selected by the {@link module:engine/model/selection~ModelSelection}.
 	 *
 	 * @observable
 	 * @readonly
@@ -28,7 +28,7 @@ export class LegacyCheckTodoListCommand extends Command {
 	declare public value: boolean;
 
 	/**
-	 * A list of to-do list items selected by the {@link module:engine/model/selection~Selection}.
+	 * A list of to-do list items selected by the {@link module:engine/model/selection~ModelSelection}.
 	 *
 	 * @internal
 	 */
@@ -59,7 +59,7 @@ export class LegacyCheckTodoListCommand extends Command {
 	}
 
 	/**
-	 * Gets all to-do list items selected by the {@link module:engine/model/selection~Selection}.
+	 * Gets all to-do list items selected by the {@link module:engine/model/selection~ModelSelection}.
 	 */
 	private _getSelectedItems() {
 		const model = this.editor.model;

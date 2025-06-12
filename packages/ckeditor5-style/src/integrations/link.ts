@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type { Selectable, ModelDocumentSelection, ModelRange, ModelPosition, Model } from 'ckeditor5/src/engine.js';
+import type { ModelSelectable, ModelDocumentSelection, ModelRange, ModelPosition, Model } from 'ckeditor5/src/engine.js';
 import { findAttributeRange, findAttributeRangeBound } from 'ckeditor5/src/typing.js';
 
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
@@ -162,7 +162,7 @@ export class LinkStyleSupport extends Plugin {
 	/**
 	 * Returns a selectable that given style should be applied to.
 	 */
-	private _getAffectedSelectable( definition: InlineStyleDefinition, selection: ModelDocumentSelection ): Selectable {
+	private _getAffectedSelectable( definition: InlineStyleDefinition, selection: ModelDocumentSelection ): ModelSelectable {
 		const model = this.editor.model;
 
 		// Handle collapsed selection.

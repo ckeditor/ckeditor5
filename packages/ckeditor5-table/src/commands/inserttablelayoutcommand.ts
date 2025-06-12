@@ -12,7 +12,7 @@ import { Command } from 'ckeditor5/src/core.js';
 import type {
 	ModelDocumentSelection,
 	ModelSchema,
-	Selection,
+	ModelSelection,
 	ModelElement
 } from 'ckeditor5/src/engine.js';
 
@@ -85,7 +85,7 @@ export class InsertTableLayoutCommand extends Command {
 /**
  * Checks if the table is allowed in the parent.
  */
-function isAllowedInParent( selection: Selection | ModelDocumentSelection, schema: ModelSchema ) {
+function isAllowedInParent( selection: ModelSelection | ModelDocumentSelection, schema: ModelSchema ) {
 	const positionParent = selection.getFirstPosition()!.parent;
 	const validParent = positionParent === positionParent.root ? positionParent : positionParent.parent;
 

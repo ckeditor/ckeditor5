@@ -24,7 +24,7 @@ import { ListElementSupport } from './integrations/list.js';
 import { HorizontalLineElementSupport } from './integrations/horizontalline.js';
 import { CustomElementSupport } from './integrations/customelement.js';
 import type { DataSchemaInlineElementDefinition } from './dataschema.js';
-import type { ModelDocumentSelection, ModelItem, Model, ModelRange, Selectable } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, ModelItem, Model, ModelRange, ModelSelectable } from 'ckeditor5/src/engine.js';
 import { getHtmlAttributeName, modifyGhsAttribute, removeFormatting } from './utils.js';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { GeneralHtmlSupportConfig } from './generalhtmlsupportconfig.js';
@@ -127,7 +127,7 @@ export class GeneralHtmlSupport extends Plugin {
 	 * @param className The css class to add.
 	 * @param selectable The selection or element to update.
 	 */
-	public addModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: Selectable ): void {
+	public addModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: ModelSelectable ): void {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -150,7 +150,7 @@ export class GeneralHtmlSupport extends Plugin {
 	 * @param className The css class to remove.
 	 * @param selectable The selection or element to update.
 	 */
-	public removeModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: Selectable ): void {
+	public removeModelHtmlClass( viewElementName: string, className: ArrayOrItem<string>, selectable: ModelSelectable ): void {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -172,7 +172,7 @@ export class GeneralHtmlSupport extends Plugin {
 	 * @param attributes The object with attributes to set.
 	 * @param selectable The selection or element to update.
 	 */
-	private setModelHtmlAttributes( viewElementName: string, attributes: Record<string, unknown>, selectable: Selectable ) {
+	private setModelHtmlAttributes( viewElementName: string, attributes: Record<string, unknown>, selectable: ModelSelectable ) {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -194,7 +194,7 @@ export class GeneralHtmlSupport extends Plugin {
 	 * @param attributeName The attribute name (or names) to remove.
 	 * @param selectable The selection or element to update.
 	 */
-	private removeModelHtmlAttributes( viewElementName: string, attributeName: ArrayOrItem<string>, selectable: Selectable ) {
+	private removeModelHtmlAttributes( viewElementName: string, attributeName: ArrayOrItem<string>, selectable: ModelSelectable ) {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -216,7 +216,7 @@ export class GeneralHtmlSupport extends Plugin {
 	 * @param styles The object with styles to set.
 	 * @param selectable The selection or element to update.
 	 */
-	private setModelHtmlStyles( viewElementName: string, styles: Record<string, string>, selectable: Selectable ) {
+	private setModelHtmlStyles( viewElementName: string, styles: Record<string, string>, selectable: ModelSelectable ) {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -238,7 +238,7 @@ export class GeneralHtmlSupport extends Plugin {
 	 * @param properties The style (or styles list) to remove.
 	 * @param selectable The selection or element to update.
 	 */
-	private removeModelHtmlStyles( viewElementName: string, properties: ArrayOrItem<string>, selectable: Selectable ) {
+	private removeModelHtmlStyles( viewElementName: string, properties: ArrayOrItem<string>, selectable: ModelSelectable ) {
 		const model = this.editor.model;
 		const ghsAttributeName = this.getGhsAttributeNameForElement( viewElementName );
 
@@ -259,7 +259,7 @@ export class GeneralHtmlSupport extends Plugin {
  */
 function* getItemsToUpdateGhsAttribute(
 	model: Model,
-	selectable: Selectable,
+	selectable: ModelSelectable,
 	ghsAttributeName: string
 ): IterableIterator<ModelItem | ModelDocumentSelection> {
 	if ( !selectable ) {
@@ -282,7 +282,7 @@ function* getItemsToUpdateGhsAttribute(
  */
 function getValidRangesForSelectable(
 	model: Model,
-	selectable: NonNullable<Selectable>,
+	selectable: NonNullable<ModelSelectable>,
 	ghsAttributeName: string
 ): Iterable<ModelRange> {
 	if (

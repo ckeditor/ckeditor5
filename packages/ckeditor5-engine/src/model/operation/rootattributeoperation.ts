@@ -13,7 +13,7 @@ import { type ModelDocument } from '../document.js';
 import { type ModelRootElement } from '../rootelement.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
-import type { Selectable } from '../selection.js';
+import type { ModelSelectable } from '../selection.js';
 
 /**
  * Operation to change root element's attribute. Using this class you can add, remove or change value of the attribute.
@@ -92,7 +92,7 @@ export class RootAttributeOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	public get affectedSelectable(): Selectable {
+	public get affectedSelectable(): ModelSelectable {
 		return this.root;
 	}
 

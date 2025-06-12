@@ -17,7 +17,7 @@ import { type ModelNode } from './node.js';
 import { type ModelPosition } from './position.js';
 import { type ModelRange } from './range.js';
 import { type ModelRootElement } from './rootelement.js';
-import { type Selection } from './selection.js';
+import { type ModelSelection } from './selection.js';
 import { type Text } from './text.js';
 import { type TextProxy } from './textproxy.js';
 
@@ -207,7 +207,7 @@ export abstract class TypeCheckable {
 	public is( type: 'documentFragment' | 'model:documentFragment' ): this is ModelDocumentFragment;
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/model/selection~Selection}
+	 * Checks whether the object is of type {@link module:engine/model/selection~ModelSelection}
 	 * or {@link module:engine/model/documentselection~DocumentSelection}.
 	 *
 	 * ```ts
@@ -220,7 +220,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label SELECTION
 	 */
-	public is( type: 'selection' | 'model:selection' ): this is Selection | ModelDocumentSelection;
+	public is( type: 'selection' | 'model:selection' ): this is ModelSelection | ModelDocumentSelection;
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/model/documentselection~DocumentSelection}.

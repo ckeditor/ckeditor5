@@ -23,7 +23,7 @@ import { type ModelItem } from '../model/item.js';
 import { type Mapper } from './mapper.js';
 import { type ModelPosition } from '../model/position.js';
 import { type ModelSchema } from '../model/schema.js';
-import { type Selection } from '../model/selection.js';
+import { type ModelSelection } from '../model/selection.js';
 import { type ViewElement } from '../view/element.js';
 
 /**
@@ -240,7 +240,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	/**
 	 * Starts the model selection conversion.
 	 *
-	 * Fires events for a given {@link module:engine/model/selection~Selection selection} to start the selection conversion.
+	 * Fires events for a given {@link module:engine/model/selection~ModelSelection selection} to start the selection conversion.
 	 *
 	 * @fires selection
 	 * @fires addMarker
@@ -250,7 +250,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 * @param writer View writer that should be used to modify the view document.
 	 */
 	public convertSelection(
-		selection: Selection | ModelDocumentSelection,
+		selection: ModelSelection | ModelDocumentSelection,
 		markers: MarkerCollection,
 		writer: DowncastWriter
 	): void {
@@ -565,7 +565,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 */
 	private _addConsumablesForSelection(
 		consumable: ModelConsumable,
-		selection: Selection | ModelDocumentSelection,
+		selection: ModelSelection | ModelDocumentSelection,
 		markers: Iterable<Marker>
 	): ModelConsumable {
 		consumable.add( selection, 'selection' );
@@ -715,13 +715,13 @@ export type DowncastDispatcherEventMap<TItem = ModelItem> = {
 		attributeNewValue: unknown;
 	};
 	cleanSelection: {
-		selection: Selection | ModelDocumentSelection;
+		selection: ModelSelection | ModelDocumentSelection;
 	};
 	selection: {
-		selection: Selection | ModelDocumentSelection;
+		selection: ModelSelection | ModelDocumentSelection;
 	};
 	addMarker: {
-		item?: ModelItem | Selection | ModelDocumentSelection;
+		item?: ModelItem | ModelSelection | ModelDocumentSelection;
 		range?: ModelRange;
 		markerRange: ModelRange;
 		markerName: string;
@@ -798,13 +798,13 @@ export type DowncastRemoveEvent = DowncastEvent<'remove'>;
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
  * to be used by callback, passed in `DowncastDispatcher` constructor.
  */
-export type DowncastAttributeEvent<TItem = ModelItem | Selection | ModelDocumentSelection> = DowncastEvent<'attribute', TItem>;
+export type DowncastAttributeEvent<TItem = ModelItem | ModelSelection | ModelDocumentSelection> = DowncastEvent<'attribute', TItem>;
 
 /**
- * Fired for {@link module:engine/model/selection~Selection selection} changes.
+ * Fired for {@link module:engine/model/selection~ModelSelection selection} changes.
  *
  * @eventName ~DowncastDispatcher#selection
- * @param {module:engine/model/selection~Selection} selection Selection that is converted.
+ * @param {module:engine/model/selection~ModelSelection} selection Selection that is converted.
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
  * to be used by callback, passed in `DowncastDispatcher` constructor.
  */
@@ -817,7 +817,7 @@ export type DowncastSelectionEvent = DowncastEvent<'selection'>;
  * Should be used to clean up the view state at the current selection position, before the selection is moved to another place.
  *
  * @eventName ~DowncastDispatcher#cleanSelection
- * @param {module:engine/model/selection~Selection} selection Selection that is converted.
+ * @param {module:engine/model/selection~ModelSelection} selection Selection that is converted.
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface
  * to be used by callback, passed in `DowncastDispatcher` constructor.
  */
@@ -848,7 +848,7 @@ export type DowncastCleanSelectionEvent = DowncastEvent<'cleanSelection'>;
  *
  * @eventName ~DowncastDispatcher#addMarker
  * @param {Object} data Additional information about the change.
- * @param {module:engine/model/item~ModelItem|module:engine/model/selection~Selection} data.item Item inside the new marker or
+ * @param {module:engine/model/item~ModelItem|module:engine/model/selection~ModelSelection} data.item Item inside the new marker or
  * the selection that is being converted.
  * @param {module:engine/model/range~ModelRange} [data.range] Range spanning over converted item. Available only in marker conversion, if
  * the marker range was not collapsed.
@@ -901,7 +901,7 @@ function shouldMarkerChangeBeConverted(
 	return !hasCustomHandling;
 }
 
-function getEventName<TType extends string>( type: TType, data: { item: ModelItem | Selection | ModelDocumentSelection } ) {
+function getEventName<TType extends string>( type: TType, data: { item: ModelItem | ModelSelection | ModelDocumentSelection } ) {
 	const name = data.item.is( 'element' ) ? data.item.name : '$text';
 
 	return `${ type }:${ name }` as const;

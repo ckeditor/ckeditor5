@@ -13,7 +13,7 @@ import type {
 	ViewNode,
 	ModelDocumentSelection,
 	ViewDocumentSelection,
-	Selection,
+	ModelSelection,
 	ViewSelection,
 	ModelDocumentFragment,
 	ViewDocumentFragment,
@@ -104,7 +104,7 @@ export class ImageUtils extends Plugin {
 	 */
 	public insertImage(
 		attributes: Record<string, unknown> = {},
-		selectable: Selection | ModelPosition | null = null,
+		selectable: ModelSelection | ModelPosition | null = null,
 		imageType: ( 'imageBlock' | 'imageInline' | null ) = null,
 		options: { setImageSizes?: boolean } = {}
 	): ModelElement | null {
@@ -221,7 +221,7 @@ export class ImageUtils extends Plugin {
 	/**
 	 * Returns a image model element if one is selected or is among the selection's ancestors.
 	 */
-	public getClosestSelectedImageElement( selection: Selection | ModelDocumentSelection ): ModelElement | null {
+	public getClosestSelectedImageElement( selection: ModelSelection | ModelDocumentSelection ): ModelElement | null {
 		const selectedElement = selection.getSelectedElement();
 
 		return this.isImage( selectedElement ) ? selectedElement : selection.getFirstPosition()!.findAncestor( 'imageBlock' );
@@ -321,7 +321,7 @@ export class ImageUtils extends Plugin {
 /**
  * Checks if image is allowed by schema in optimal insertion parent.
  */
-function isImageAllowedInParent( editor: Editor, selection: Selection | ModelDocumentSelection ): boolean {
+function isImageAllowedInParent( editor: Editor, selection: ModelSelection | ModelDocumentSelection ): boolean {
 	const imageType = determineImageTypeForInsertion( editor, selection, null );
 
 	if ( imageType == 'imageBlock' ) {
@@ -347,7 +347,7 @@ function isNotInsideImage( selection: ModelDocumentSelection ): boolean {
 /**
  * Returns a node that will be used to insert image with `model.insertContent`.
  */
-function getInsertImageParent( selection: Selection | ModelDocumentSelection, model: Model ): ModelElement | ModelDocumentFragment {
+function getInsertImageParent( selection: ModelSelection | ModelDocumentSelection, model: Model ): ModelElement | ModelDocumentFragment {
 	const insertionRange = findOptimalInsertionRange( selection, model );
 	const parent = insertionRange.start.parent;
 
@@ -366,7 +366,7 @@ function getInsertImageParent( selection: Selection | ModelDocumentSelection, mo
  */
 function determineImageTypeForInsertion(
 	editor: Editor,
-	selectable: ModelPosition | Selection | ModelDocumentSelection,
+	selectable: ModelPosition | ModelSelection | ModelDocumentSelection,
 	imageType: 'imageBlock' | 'imageInline' | null
 ): 'imageBlock' | 'imageInline' {
 	const schema = editor.model.schema;

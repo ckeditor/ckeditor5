@@ -11,7 +11,7 @@
 
 import { type Batch } from '../batch.js';
 import { type ModelDocument } from '../document.js';
-import type { Selectable } from '../selection.js';
+import type { ModelSelectable } from '../selection.js';
 
 /**
  * Abstract base operation class.
@@ -61,7 +61,7 @@ export abstract class Operation {
 	 *
 	 * The exact returned parameter differs between operation types.
 	 */
-	public abstract get affectedSelectable(): Selectable;
+	public abstract get affectedSelectable(): ModelSelectable;
 
 	/**
 	 * Creates and returns an operation that has the same parameters as this operation.

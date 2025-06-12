@@ -16,7 +16,7 @@ import { _insert, _move } from './utils.js';
 import { type ModelDocument } from '../document.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
-import type { Selectable } from '../selection.js';
+import type { ModelSelectable } from '../selection.js';
 
 /**
  * Operation to split {@link module:engine/model/element~ModelElement an element} at given
@@ -113,7 +113,7 @@ export class SplitOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	public get affectedSelectable(): Selectable {
+	public get affectedSelectable(): ModelSelectable {
 		// These could be positions but `Selectable` type only supports `Iterable<Range>`.
 		const ranges = [
 			ModelRange._createFromPositionAndShift( this.splitPosition, 0 ),

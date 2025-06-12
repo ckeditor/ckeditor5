@@ -24,7 +24,7 @@ import type {
 	ModelDocumentSelection,
 	DomEventData,
 	ModelElement,
-	Selection,
+	ModelSelection,
 	ViewDocumentArrowKeyEvent,
 	ViewDocumentTabEvent
 } from 'ckeditor5/src/engine.js';
@@ -311,7 +311,7 @@ export class TableKeyboard extends Plugin {
 	 * @param tableCell The current table cell element.
 	 * @param isForward The expected navigation direction.
 	 */
-	private _isSelectionAtCellEdge( selection: Selection | ModelDocumentSelection, tableCell: ModelElement, isForward: boolean ) {
+	private _isSelectionAtCellEdge( selection: ModelSelection | ModelDocumentSelection, tableCell: ModelElement, isForward: boolean ) {
 		const model = this.editor.model;
 		const schema = this.editor.model.schema;
 

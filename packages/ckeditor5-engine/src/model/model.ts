@@ -12,7 +12,7 @@ import { ModelDocument } from './document.js';
 import { MarkerCollection } from './markercollection.js';
 import { ModelPosition, type ModelPositionOffset, type ModelPositionStickiness } from './position.js';
 import { ModelRange } from './range.js';
-import { ModelSelection, type PlaceOrOffset, type Selectable } from './selection.js';
+import { ModelSelection, type ModelPlaceOrOffset, type ModelSelectable } from './selection.js';
 import { OperationFactory } from './operation/operationfactory.js';
 import { ModelDocumentSelection } from './documentselection.js';
 import { ModelSchema } from './schema.js';
@@ -504,7 +504,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 * } );
 	 * ```
 	 *
-	 * If an instance of the {@link module:engine/model/selection~Selection model selection} is passed as `selectable`,
+	 * If an instance of the {@link module:engine/model/selection~ModelSelection model selection} is passed as `selectable`,
 	 * the new content will be inserted at the passed selection (instead of document selection):
 	 *
 	 * ```ts
@@ -531,8 +531,8 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 */
 	public insertContent(
 		content: ModelItem | ModelDocumentFragment,
-		selectable?: Selectable,
-		placeOrOffset?: PlaceOrOffset,
+		selectable?: ModelSelectable,
+		placeOrOffset?: ModelPlaceOrOffset,
 		...rest: Array<unknown>
 	): ModelRange {
 		const selection = normalizeSelectable( selectable, placeOrOffset );
@@ -626,8 +626,8 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 */
 	public insertObject(
 		element: ModelElement,
-		selectable?: Selectable,
-		placeOrOffset?: PlaceOrOffset | null,
+		selectable?: ModelSelectable,
+		placeOrOffset?: ModelPlaceOrOffset | null,
 		options?: {
 			findOptimalPosition?: 'auto' | 'before' | 'after';
 			setSelection?: 'on' | 'after';
@@ -841,11 +841,11 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * This method is decorated. Although this method accepts any parameter of `Selectable` type, the
 	 * {@link ~Model#event:canEditAt `canEditAt` event} is fired with `selectable` normalized to an instance of
-	 * {@link module:engine/model/selection~Selection} or {@link module:engine/model/documentselection~DocumentSelection}
+	 * {@link module:engine/model/selection~ModelSelection} or {@link module:engine/model/documentselection~DocumentSelection}
 	 *
 	 * @fires canEditAt
 	 */
-	public canEditAt( selectable: Selectable ): boolean {
+	public canEditAt( selectable: ModelSelectable ): boolean {
 		const selection = normalizeSelectable( selectable );
 
 		return this.fire<ModelCanEditAtEvent>( 'canEditAt', [ selection ] )!;
@@ -1006,7 +1006,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public createSelection( selectable: ModelNode, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): ModelSelection;
+	public createSelection( selectable: ModelNode, placeOrOffset: ModelPlaceOrOffset, options?: { backward?: boolean } ): ModelSelection;
 
 	/**
 	 * Creates a new selection instance based on the given {@link module:engine/model/selection~Selectable selectable}
@@ -1051,7 +1051,7 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @label SELECTABLE
 	 */
-	public createSelection( selectable?: Exclude<Selectable, ModelNode>, options?: { backward?: boolean } ): ModelSelection;
+	public createSelection( selectable?: Exclude<ModelSelectable, ModelNode>, options?: { backward?: boolean } ): ModelSelection;
 
 	public createSelection( ...args: ConstructorParameters<typeof ModelSelection> ): ModelSelection {
 		return new ModelSelection( ...args );
@@ -1129,8 +1129,8 @@ export class Model extends /* #__PURE__ */ ObservableMixin() {
  * Normalizes a selectable to a Selection or ModelDocumentSelection.
  */
 function normalizeSelectable(
-	selectable?: Selectable,
-	placeOrOffset?: PlaceOrOffset | null
+	selectable?: ModelSelectable,
+	placeOrOffset?: ModelPlaceOrOffset | null
 ): ModelSelection | ModelDocumentSelection | undefined {
 	if ( !selectable ) {
 		return;
@@ -1287,7 +1287,8 @@ export type ModelGetSelectedContentEvent = DecoratedMethodEvent<Model, 'getSelec
  * listener to this event, so it can be fully customized by the features.
  *
  * Although the original method accepts any parameter of `Selectable` type, this event is fired with `selectable` normalized
- * to an instance of {@link module:engine/model/selection~Selection} or {@link module:engine/model/documentselection~DocumentSelection}.
+ * to an instance of {@link module:engine/model/selection~ModelSelection} or
+ * {@link module:engine/model/documentselection~DocumentSelection}.
  *
  * @eventName ~Model#canEditAt
  * @param args The arguments passed to the original method.

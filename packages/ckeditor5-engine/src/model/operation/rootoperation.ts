@@ -10,7 +10,7 @@
 import { Operation } from './operation.js';
 
 import { type ModelDocument } from '../document.js';
-import type { Selectable } from '../selection.js';
+import type { ModelSelectable } from '../selection.js';
 
 /**
  * Operation that creates (or attaches) or detaches a root element.
@@ -80,7 +80,7 @@ export class RootOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	public get affectedSelectable(): Selectable {
+	public get affectedSelectable(): ModelSelectable {
 		return this._document.getRoot( this.rootName );
 	}
 

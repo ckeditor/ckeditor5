@@ -15,7 +15,7 @@ import { _move } from './utils.js';
 
 import { type ModelDocument } from '../document.js';
 import { type ModelElement } from '../element.js';
-import type { Selectable } from '../selection.js';
+import type { ModelSelectable } from '../selection.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -108,7 +108,7 @@ export class MergeOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	public get affectedSelectable(): Selectable {
+	public get affectedSelectable(): ModelSelectable {
 		const mergedElement = this.sourcePosition.parent as ModelElement;
 
 		return [

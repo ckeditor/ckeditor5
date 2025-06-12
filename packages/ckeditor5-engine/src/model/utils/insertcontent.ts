@@ -20,7 +20,7 @@ import { type Model } from '../model.js';
 import { type ModelSchema } from '../schema.js';
 import { type Writer } from '../writer.js';
 import { type ModelNode } from '../node.js';
-import { type Selection } from '../selection.js';
+import { type ModelSelection } from '../selection.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -39,7 +39,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  * <p>x</p>[<img />]<p>z</p> + <p>y</p> => <p>x</p>^<p>z</p> + <p>y</p> => <p>x</p><p>y[]</p><p>z</p>
  * ```
  *
- * If an instance of {@link module:engine/model/selection~Selection} is passed as `selectable` it will be modified
+ * If an instance of {@link module:engine/model/selection~ModelSelection} is passed as `selectable` it will be modified
  * to the insertion selection (equal to a range to be selected after insertion).
  *
  * If `selectable` is not passed, the content will be inserted using the current selection of the model document.
@@ -59,10 +59,10 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 export function insertContent(
 	model: Model,
 	content: ModelItem | ModelDocumentFragment,
-	selectable?: Selection | ModelDocumentSelection
+	selectable?: ModelSelection | ModelDocumentSelection
 ): ModelRange {
 	return model.change( writer => {
-		const selection: Selection | ModelDocumentSelection = selectable ? selectable : model.document.selection;
+		const selection: ModelSelection | ModelDocumentSelection = selectable ? selectable : model.document.selection;
 
 		if ( !selection.isCollapsed ) {
 			model.deleteContent( selection, { doNotAutoparagraph: true } );

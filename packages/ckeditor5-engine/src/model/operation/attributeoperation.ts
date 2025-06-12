@@ -15,7 +15,7 @@ import { type ModelDocument } from '../document.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 import { isEqual } from 'es-toolkit/compat';
-import type { Selectable } from '../selection.js';
+import type { ModelSelectable } from '../selection.js';
 
 /**
  * Operation to change nodes' attribute.
@@ -95,7 +95,7 @@ export class AttributeOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	public get affectedSelectable(): Selectable {
+	public get affectedSelectable(): ModelSelectable {
 		return this.range.clone();
 	}
 

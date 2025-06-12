@@ -14,7 +14,7 @@ import { MoveOperation } from './moveoperation.js';
 import { _insert, _normalizeNodes, type ModelNodeSet } from './utils.js';
 import { Text } from '../text.js';
 import { ModelElement } from '../element.js';
-import type { Selectable } from '../selection.js';
+import type { ModelSelectable } from '../selection.js';
 
 import { type ModelDocument } from '../document.js';
 
@@ -79,7 +79,7 @@ export class InsertOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	public get affectedSelectable(): Selectable {
+	public get affectedSelectable(): ModelSelectable {
 		return this.position.clone();
 	}
 

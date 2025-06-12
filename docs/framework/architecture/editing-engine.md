@@ -115,7 +115,7 @@ and you have a selection before the letter `"b"` (`"Foo ^bar"`), is this positio
 
 OK, but how to let CKEditor&nbsp;5 know that I want the selection to "be bold" in the case described above? This is important information because it affects whether or not the typed text will be bold, too.
 
-To handle that, the selection also {@link module:engine/model/selection~Selection#setAttribute has attributes}. If the selection is placed in `"Foo ^bar"` and it has the attribute `bold=true`, you know that the user will type bold text.
+To handle that, the selection also {@link module:engine/model/selection~ModelSelection#setAttribute has attributes}. If the selection is placed in `"Foo ^bar"` and it has the attribute `bold=true`, you know that the user will type bold text.
 
 ### Indexes and offsets
 
@@ -150,7 +150,7 @@ The engine also defines three levels of classes that operate on offsets:
 
 * A {@link module:engine/model/position~ModelPosition} instance contains an {@link module:engine/model/position~ModelPosition#path array of offsets} (which is called a "path"). See the examples in the {@link module:engine/model/position~ModelPosition#path `Position#path` API documentation} to better understand how paths work.
 * A {@link module:engine/model/range~ModelRange} contains two positions: {@link module:engine/model/range~ModelRange#start start} and {@link module:engine/model/range~ModelRange#end end} ones.
-* Finally, there is a {@link module:engine/model/selection~Selection} which contains one or more ranges, attributes, and has a direction (whether it was done from left to right or right to left). You can make as many instances of it as you need and you can freely modify it whenever you want. Additionally, there is a single {@link module:engine/model/documentselection~DocumentSelection}. It represents the document's selection and can only be changed through the {@link module:engine/model/writer~Writer model writer}. It is automatically updated when the document's structure is changed.
+* Finally, there is a {@link module:engine/model/selection~ModelSelection} which contains one or more ranges, attributes, and has a direction (whether it was done from left to right or right to left). You can make as many instances of it as you need and you can freely modify it whenever you want. Additionally, there is a single {@link module:engine/model/documentselection~DocumentSelection}. It represents the document's selection and can only be changed through the {@link module:engine/model/writer~Writer model writer}. It is automatically updated when the document's structure is changed.
 
 ### Markers
 

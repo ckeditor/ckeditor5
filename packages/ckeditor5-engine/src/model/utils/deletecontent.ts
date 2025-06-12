@@ -16,7 +16,7 @@ import { type ModelElement } from '../element.js';
 import { type Model } from '../model.js';
 import { type ModelPosition } from '../position.js';
 import { type ModelSchema } from '../schema.js';
-import { type Selection } from '../selection.js';
+import { type ModelSelection } from '../selection.js';
 import { type Writer } from '../writer.js';
 
 /**
@@ -78,7 +78,7 @@ import { type Writer } from '../writer.js';
  */
 export function deleteContent(
 	model: Model,
-	selection: Selection | ModelDocumentSelection,
+	selection: ModelSelection | ModelDocumentSelection,
 	options: {
 		leaveUnmerged?: boolean;
 		doNotResetEntireContent?: boolean;
@@ -571,7 +571,7 @@ function isCrossingLimitElement( leftPos: ModelPosition, rightPos: ModelPosition
 function insertParagraph(
 	writer: Writer,
 	position: ModelPosition,
-	selection: Selection | ModelDocumentSelection,
+	selection: ModelSelection | ModelDocumentSelection,
 	attributes = {}
 ) {
 	const paragraph = writer.createElement( 'paragraph' );
@@ -583,7 +583,7 @@ function insertParagraph(
 	collapseSelectionAt( writer, selection, writer.createPositionAt( paragraph, 0 ) );
 }
 
-function replaceEntireContentWithParagraph( writer: Writer, selection: Selection | ModelDocumentSelection ) {
+function replaceEntireContentWithParagraph( writer: Writer, selection: ModelSelection | ModelDocumentSelection ) {
 	const limitElement = writer.model.schema.getLimitElement( selection );
 
 	writer.remove( writer.createRangeIn( limitElement ) );
@@ -596,7 +596,7 @@ function replaceEntireContentWithParagraph( writer: Writer, selection: Selection
  * * selection contains at least two elements,
  * * whether the paragraph is allowed in schema in the common ancestor.
  */
-function shouldEntireContentBeReplacedWithParagraph( schema: ModelSchema, selection: Selection | ModelDocumentSelection ) {
+function shouldEntireContentBeReplacedWithParagraph( schema: ModelSchema, selection: ModelSelection | ModelDocumentSelection ) {
 	const limitElement = schema.getLimitElement( selection );
 
 	if ( !selection.containsEntireContent( limitElement ) ) {
@@ -618,7 +618,7 @@ function shouldEntireContentBeReplacedWithParagraph( schema: ModelSchema, select
  */
 function collapseSelectionAt(
 	writer: Writer,
-	selection: Selection | ModelDocumentSelection,
+	selection: ModelSelection | ModelDocumentSelection,
 	positionOrRange: ModelPosition | ModelRange
 ) {
 	if ( selection instanceof ModelDocumentSelection ) {

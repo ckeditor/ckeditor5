@@ -22,7 +22,7 @@ import { Command, type Editor } from 'ckeditor5/src/core.js';
 export class AttributeCommand extends Command {
 	/**
 	 * Flag indicating whether the command is active. The command is active when the
-	 * {@link module:engine/model/selection~Selection#hasAttribute selection has the attribute} which means that:
+	 * {@link module:engine/model/selection~ModelSelection#hasAttribute selection has the attribute} which means that:
 	 *
 	 * * If the selection is not empty &ndash; That the attribute is set on the first node in the selection that allows this attribute.
 	 * * If the selection is empty &ndash; That the selection has the attribute itself (which means that newly typed

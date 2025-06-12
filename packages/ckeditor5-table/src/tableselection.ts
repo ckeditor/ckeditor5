@@ -13,7 +13,7 @@ import { type EventInfo, first } from 'ckeditor5/src/utils.js';
 import type {
 	ModelElement,
 	ModelDocumentFragment,
-	Selection,
+	ModelSelection,
 	DowncastWriter,
 	ViewElement,
 	ModelDeleteContentEvent
@@ -287,7 +287,7 @@ export class TableSelection extends Plugin {
 	 */
 	private _handleDeleteContent( event: EventInfo, args: Array<unknown> ) {
 		const tableUtils = this.editor.plugins.get( TableUtils );
-		const selection = args[ 0 ] as Selection;
+		const selection = args[ 0 ] as ModelSelection;
 		const options = args[ 1 ] as { direction?: string };
 		const model = this.editor.model;
 		const isBackward = !options || options.direction == 'backward';

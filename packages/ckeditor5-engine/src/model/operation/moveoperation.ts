@@ -11,7 +11,7 @@ import { Operation } from './operation.js';
 import { ModelPosition } from '../position.js';
 import { ModelRange } from '../range.js';
 import { _move } from './utils.js';
-import type { Selectable } from '../selection.js';
+import type { ModelSelectable } from '../selection.js';
 
 import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
 
@@ -78,7 +78,7 @@ export class MoveOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	public get affectedSelectable(): Selectable {
+	public get affectedSelectable(): ModelSelectable {
 		return [
 			ModelRange._createFromPositionAndShift( this.sourcePosition, this.howMany ),
 			ModelRange._createFromPositionAndShift( this.targetPosition, 0 )

@@ -18,7 +18,7 @@ import { ListWalker } from '../../../src/list/utils/listwalker.js';
  *
  * @param {module:engine/model/model~Model} model
  * @param {String} input
- * @returns {module:engine/model/selection~Selection} The selection marked in input string.
+ * @returns {module:engine/model/selection~ModelSelection} The selection marked in input string.
  */
 export function prepareTest( model, input ) {
 	const modelRoot = model.document.getRoot( 'main' );

@@ -8,7 +8,7 @@
  */
 
 import { type ModelDocumentSelection } from '../documentselection.js';
-import { type Selection } from '../selection.js';
+import { type ModelSelection } from '../selection.js';
 
 import { type ModelElement } from '../element.js';
 import { type Model } from '../model.js';
@@ -50,7 +50,7 @@ import { CKEditorError, first } from '@ckeditor/ckeditor5-utils';
 export function insertObject(
 	model: Model,
 	object: ModelElement,
-	selectable?: Selection | ModelDocumentSelection | null,
+	selectable?: ModelSelection | ModelDocumentSelection | null,
 	options: {
 		findOptimalPosition?: 'auto' | 'before' | 'after';
 		setSelection?: 'on' | 'after';
@@ -69,7 +69,7 @@ export function insertObject(
 	}
 
 	// Normalize selectable to a selection instance.
-	const originalSelection: Selection | ModelDocumentSelection = selectable ? selectable : model.document.selection;
+	const originalSelection: ModelSelection | ModelDocumentSelection = selectable ? selectable : model.document.selection;
 
 	// Adjust the insertion selection.
 	let insertionSelection = originalSelection;

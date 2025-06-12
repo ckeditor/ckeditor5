@@ -17,7 +17,7 @@ import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelDocumentSelection } from './documentselection.js';
 import { type ModelItem } from './item.js';
 import { type ModelNode } from './node.js';
-import { type Selection } from './selection.js';
+import { type ModelSelection } from './selection.js';
 import { type Writer } from './writer.js';
 
 import { CKEditorError, first, ObservableMixin } from '@ckeditor/ckeditor5-utils';
@@ -737,7 +737,9 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param selectionOrRangeOrPosition The selection/range/position to check.
 	 * @returns The lowest limit element containing the entire `selectionOrRangeOrPosition`.
 	 */
-	public getLimitElement( selectionOrRangeOrPosition: Selection | ModelDocumentSelection | ModelRange | ModelPosition ): ModelElement {
+	public getLimitElement(
+		selectionOrRangeOrPosition: ModelSelection | ModelDocumentSelection | ModelRange | ModelPosition
+	): ModelElement {
 		let element: ModelElement;
 
 		if ( selectionOrRangeOrPosition instanceof ModelPosition ) {
@@ -781,7 +783,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param selection Selection which will be checked.
 	 * @param attribute The name of the attribute to check.
 	 */
-	public checkAttributeInSelection( selection: Selection | ModelDocumentSelection, attribute: string ): boolean {
+	public checkAttributeInSelection( selection: ModelSelection | ModelDocumentSelection, attribute: string ): boolean {
 		if ( selection.isCollapsed ) {
 			const firstPosition = selection.getFirstPosition()!;
 			const context = [
@@ -1199,7 +1201,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * @returns The optimal range.
 	 */
 	public findOptimalInsertionRange(
-		selection: Selection | ModelDocumentSelection,
+		selection: ModelSelection | ModelDocumentSelection,
 		place?: 'auto' | 'before' | 'after'
 	): ModelRange {
 		const selectedElement = selection.getSelectedElement();

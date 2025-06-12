@@ -9,7 +9,7 @@
 
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import { count } from '@ckeditor/ckeditor5-utils';
-import type { ModelDocumentSelection, ModelElement, Selection, Writer } from '@ckeditor/ckeditor5-engine';
+import type { ModelDocumentSelection, ModelElement, ModelSelection, Writer } from '@ckeditor/ckeditor5-engine';
 
 import { ChangeBuffer } from './utils/changebuffer.js';
 
@@ -68,7 +68,7 @@ export class DeleteCommand extends Command {
 	public override execute( options: {
 		unit?: 'character' | 'codePoint' | 'word';
 		sequence?: number;
-		selection?: Selection | ModelDocumentSelection;
+		selection?: ModelSelection | ModelDocumentSelection;
 	} = {} ): void {
 		const model = this.editor.model;
 		const doc = model.document;
@@ -226,7 +226,7 @@ export class DeleteCommand extends Command {
 	 * @param selection The selection.
 	 * @param sequence A number describing which subsequent delete event it is without the key being released.
 	 */
-	private _shouldReplaceFirstBlockWithParagraph( selection: Selection, sequence: number ): boolean {
+	private _shouldReplaceFirstBlockWithParagraph( selection: ModelSelection, sequence: number ): boolean {
 		const model = this.editor.model;
 
 		// Does nothing if user pressed and held the "Backspace" key or it was a "Delete" button.

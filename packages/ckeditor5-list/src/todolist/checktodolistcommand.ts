@@ -19,7 +19,7 @@ import { getAllListItemBlocks } from '../list/utils/model.js';
  */
 export class CheckTodoListCommand extends Command {
 	/**
-	 * A list of to-do list items selected by the {@link module:engine/model/selection~Selection}.
+	 * A list of to-do list items selected by the {@link module:engine/model/selection~ModelSelection}.
 	 *
 	 * @observable
 	 * @readonly
@@ -79,7 +79,7 @@ export class CheckTodoListCommand extends Command {
 	}
 
 	/**
-	 * Gets all to-do list items selected by the {@link module:engine/model/selection~Selection}.
+	 * Gets all to-do list items selected by the {@link module:engine/model/selection~ModelSelection}.
 	 */
 	private _getSelectedItems() {
 		const model = this.editor.model;

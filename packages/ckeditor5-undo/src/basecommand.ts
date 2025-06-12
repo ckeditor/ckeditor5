@@ -26,7 +26,7 @@ export abstract class BaseCommand extends Command {
 	 * Stack of items stored by the command. These are pairs of:
 	 *
 	 * * {@link module:engine/model/batch~Batch batch} saved by the command,
-	 * * {@link module:engine/model/selection~Selection selection} state at the moment of saving the batch.
+	 * * {@link module:engine/model/selection~ModelSelection selection} state at the moment of saving the batch.
 	 */
 	protected _stack: Array<{ batch: Batch; selection: { ranges: Array<ModelRange>; isBackward: boolean } }> = [];
 

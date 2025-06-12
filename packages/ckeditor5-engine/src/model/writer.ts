@@ -27,7 +27,7 @@ import { ModelRootElement } from './rootelement.js';
 import { Text } from './text.js';
 
 import type { Marker } from './markercollection.js';
-import type { Selection, PlaceOrOffset, Selectable } from './selection.js';
+import type { ModelSelection, ModelPlaceOrOffset, ModelSelectable } from './selection.js';
 import { type Batch } from './batch.js';
 import { type ModelItem } from './item.js';
 import { type Model } from './model.js';
@@ -835,16 +835,16 @@ export class Writer {
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public createSelection( selectable: ModelNode, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): Selection;
+	public createSelection( selectable: ModelNode, placeOrOffset: ModelPlaceOrOffset, options?: { backward?: boolean } ): ModelSelection;
 
 	/**
 	 * Shortcut for {@link module:engine/model/model~Model#createSelection:SELECTABLE `Model#createSelection()`}.
 	 *
 	 * @label SELECTABLE
 	 */
-	public createSelection( selectable?: Exclude<Selectable, ModelNode>, options?: { backward?: boolean } ): Selection;
+	public createSelection( selectable?: Exclude<ModelSelectable, ModelNode>, options?: { backward?: boolean } ): ModelSelection;
 
-	public createSelection( ...args: [ any?, any?, any? ] ): Selection {
+	public createSelection( ...args: [ any?, any?, any? ] ): ModelSelection {
 		return this.model.createSelection( ...args );
 	}
 
@@ -1450,7 +1450,7 @@ export class Writer {
 	 *
 	 * @label NODE_OFFSET
 	 */
-	public setSelection( selectable: ModelNode, placeOrOffset: PlaceOrOffset, options?: { backward?: boolean } ): void;
+	public setSelection( selectable: ModelNode, placeOrOffset: ModelPlaceOrOffset, options?: { backward?: boolean } ): void;
 
 	/**
 	 * Sets the document's selection (ranges and direction) to the specified location based on the given
@@ -1494,9 +1494,9 @@ export class Writer {
 	 *
 	 * @label SELECTABLE
 	 */
-	public setSelection( selectable: Exclude<Selectable, ModelNode>, options?: { backward?: boolean } ): void;
+	public setSelection( selectable: Exclude<ModelSelectable, ModelNode>, options?: { backward?: boolean } ): void;
 
-	public setSelection( ...args: Parameters<Selection[ 'setTo' ]> ): void {
+	public setSelection( ...args: Parameters<ModelSelection[ 'setTo' ]> ): void {
 		this._assertWriterUsedCorrectly();
 
 		this.model.document.selection._setTo( ...args );

@@ -8,7 +8,7 @@ import { type ModelDocumentSelection } from '../documentselection.js';
 import { type ModelElement } from '../element.js';
 import { type Model } from '../model.js';
 import { type ModelRange } from '../range.js';
-import { type Selection } from '../selection.js';
+import { type ModelSelection } from '../selection.js';
 import { type Writer } from '../writer.js';
 
 /**
@@ -36,7 +36,7 @@ import { type Writer } from '../writer.js';
  */
 export function getSelectedContent(
 	model: Model,
-	selection: Selection | ModelDocumentSelection
+	selection: ModelSelection | ModelDocumentSelection
 ): ModelDocumentFragment {
 	return model.change( writer => {
 		const frag = writer.createDocumentFragment();

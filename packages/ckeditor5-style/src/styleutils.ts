@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import type { ModelElement, MatcherObjectPattern, ModelDocumentSelection, Selectable } from 'ckeditor5/src/engine.js';
+import type { ModelElement, MatcherObjectPattern, ModelDocumentSelection, ModelSelectable } from 'ckeditor5/src/engine.js';
 import type { DecoratedMethodEvent } from 'ckeditor5/src/utils.js';
 import type { TemplateDefinition } from 'ckeditor5/src/ui.js';
 
@@ -222,7 +222,7 @@ export class StyleUtils extends Plugin {
 	 *
 	 * @internal
 	 */
-	public getAffectedInlineSelectable( definition: InlineStyleDefinition, selection: ModelDocumentSelection ): Selectable {
+	public getAffectedInlineSelectable( definition: InlineStyleDefinition, selection: ModelDocumentSelection ): ModelSelectable {
 		return selection;
 	}
 

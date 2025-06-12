@@ -10,7 +10,7 @@
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 import { first } from '@ckeditor/ckeditor5-utils';
 
-import type { ModelSchema, Selection, ModelDocumentSelection, ModelElement } from '@ckeditor/ckeditor5-engine';
+import type { ModelSchema, ModelSelection, ModelDocumentSelection, ModelElement } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The paragraph command.
@@ -53,7 +53,7 @@ export class ParagraphCommand extends Command {
 	 * if not provided, the command is applied to the {@link module:engine/model/document~ModelDocument#selection}.
 	 */
 	public override execute( options: {
-		selection?: Selection | ModelDocumentSelection;
+		selection?: ModelSelection | ModelDocumentSelection;
 	} = {} ): void {
 		const model = this.editor.model;
 		const document = model.document;

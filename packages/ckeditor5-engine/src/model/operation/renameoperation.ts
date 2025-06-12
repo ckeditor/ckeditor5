@@ -14,7 +14,7 @@ import { ModelPosition } from '../position.js';
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
 import { type ModelDocument } from '../document.js';
-import type { Selectable } from '../selection.js';
+import type { ModelSelectable } from '../selection.js';
 
 /**
  * Operation to change element's name.
@@ -67,7 +67,7 @@ export class RenameOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	public get affectedSelectable(): Selectable {
+	public get affectedSelectable(): ModelSelectable {
 		return this.position.nodeAfter;
 	}
 

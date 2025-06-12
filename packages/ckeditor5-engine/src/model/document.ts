@@ -12,7 +12,7 @@ import { ModelDocumentSelection } from './documentselection.js';
 import { History } from './history.js';
 import { ModelRootElement } from './rootelement.js';
 
-import type { SelectionChangeEvent } from './selection.js';
+import type { ModelSelectionChangeEvent } from './selection.js';
 import type { Model, ModelApplyOperationEvent } from './model.js';
 import type { MarkerCollectionUpdateEvent, MarkerChangeEvent } from './markercollection.js';
 import { type Batch } from './batch.js';
@@ -135,7 +135,7 @@ export class ModelDocument extends /* #__PURE__ */ EmitterMixin() {
 		}, { priority: 'low' } );
 
 		// Listen to selection changes. If selection changed, mark it.
-		this.listenTo<SelectionChangeEvent>( this.selection, 'change', () => {
+		this.listenTo<ModelSelectionChangeEvent>( this.selection, 'change', () => {
 			this._hasSelectionChangedFromTheLastChangeBlock = true;
 		} );
 

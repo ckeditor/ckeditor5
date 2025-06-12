@@ -21,12 +21,12 @@ import { CKEditorError, EmitterMixin, isIterable } from '@ckeditor/ckeditor5-uti
 
 /**
  * Selection is a set of {@link module:engine/model/range~ModelRange ranges}. It has a direction specified by its
- * {@link module:engine/model/selection~Selection#anchor anchor} and {@link module:engine/model/selection~Selection#focus focus}
- * (it can be {@link module:engine/model/selection~Selection#isBackward forward or backward}).
+ * {@link module:engine/model/selection~ModelSelection#anchor anchor} and {@link module:engine/model/selection~ModelSelection#focus focus}
+ * (it can be {@link module:engine/model/selection~ModelSelection#isBackward forward or backward}).
  * Additionally, selection may have its own attributes (think – whether text typed in in this selection
  * should have those attributes – e.g. whether you type a bolded text).
  */
-export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
+export class ModelSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	/**
 	 * Specifies whether the last added range was added as a backward or forward range.
 	 */
@@ -96,11 +96,11 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 		...args: [] |
 		[
 			selectable: ModelNode,
-			placeOrOffset: PlaceOrOffset,
+			placeOrOffset: ModelPlaceOrOffset,
 			options?: { backward?: boolean }
 		] |
 		[
-			selectable?: Exclude<Selectable, ModelNode>,
+			selectable?: Exclude<ModelSelectable, ModelNode>,
 			options?: { backward?: boolean }
 		]
 	) {
@@ -189,7 +189,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * @param otherSelection Selection to compare with.
 	 * @returns `true` if selections are equal, `false` otherwise.
 	 */
-	public isEqual( otherSelection: Selection | ModelDocumentSelection ): boolean {
+	public isEqual( otherSelection: ModelSelection | ModelDocumentSelection ): boolean {
 		if ( this.rangeCount != otherSelection.rangeCount ) {
 			return false;
 		} else if ( this.rangeCount === 0 ) {
@@ -350,10 +350,10 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	public setTo(
 		...args: [
 			selectable: ModelNode,
-			placeOrOffset: PlaceOrOffset,
+			placeOrOffset: ModelPlaceOrOffset,
 			options?: { backward?: boolean }
 		] | [
-			selectable?: Exclude<Selectable, ModelNode>,
+			selectable?: Exclude<ModelSelectable, ModelNode>,
 			options?: { backward?: boolean }
 		]
 	): void {
@@ -366,7 +366,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 
 		if ( selectable === null ) {
 			this._setRanges( [] );
-		} else if ( selectable instanceof Selection ) {
+		} else if ( selectable instanceof ModelSelection ) {
 			this._setRanges( selectable.getRanges(), selectable.isBackward );
 		} else if ( selectable && typeof ( selectable as any ).getRanges == 'function' ) {
 			// We assume that the selectable is a ModelDocumentSelection.
@@ -418,8 +418,8 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 
 	/**
 	 * Replaces all ranges that were added to the selection with given array of ranges. Last range of the array
-	 * is treated like the last added range and is used to set {@link module:engine/model/selection~Selection#anchor} and
-	 * {@link module:engine/model/selection~Selection#focus}. Accepts a flag describing in which direction the selection is made.
+	 * is treated like the last added range and is used to set {@link module:engine/model/selection~ModelSelection#anchor} and
+	 * {@link module:engine/model/selection~ModelSelection#focus}. Accepts a flag describing in which direction the selection is made.
 	 *
 	 * @fires change:range
 	 * @param newRanges Ranges to set.
@@ -463,11 +463,11 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 
 		this._lastRangeBackward = !!isLastBackward;
 
-		this.fire<SelectionChangeRangeEvent>( 'change:range', { directChange: true } );
+		this.fire<ModelSelectionChangeRangeEvent>( 'change:range', { directChange: true } );
 	}
 
 	/**
-	 * Moves {@link module:engine/model/selection~Selection#focus} to the specified location.
+	 * Moves {@link module:engine/model/selection~ModelSelection#focus} to the specified location.
 	 *
 	 * The location can be specified in the same form as
 	 * {@link module:engine/model/writer~Writer#createPositionAt writer.createPositionAt()} parameters.
@@ -505,7 +505,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 			this._lastRangeBackward = false;
 		}
 
-		this.fire<SelectionChangeRangeEvent>( 'change:range', { directChange: true } );
+		this.fire<ModelSelectionChangeRangeEvent>( 'change:range', { directChange: true } );
 	}
 
 	/**
@@ -558,7 +558,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 		if ( this.hasAttribute( key ) ) {
 			this._attrs.delete( key );
 
-			this.fire<SelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys: [ key ], directChange: true } );
+			this.fire<ModelSelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys: [ key ], directChange: true } );
 		}
 	}
 
@@ -576,7 +576,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 		if ( this.getAttribute( key ) !== value ) {
 			this._attrs.set( key, value );
 
-			this.fire<SelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys: [ key ], directChange: true } );
+			this.fire<ModelSelectionChangeAttributeEvent>( 'change:attribute', { attributeKeys: [ key ], directChange: true } );
 		}
 	}
 
@@ -772,16 +772,14 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-Selection.prototype.is = function( type: string ): boolean {
+ModelSelection.prototype.is = function( type: string ): boolean {
 	return type === 'selection' || type === 'model:selection';
 };
-
-export { Selection as ModelSelection };
 
 /**
  * Describes one of the events: `change:range` or `change:attribute`.
  */
-export type SelectionChangeEvent = {
+export type ModelSelectionChangeEvent = {
 	name: 'change' | 'change:range' | 'change:attribute';
 	args: [ {
 		directChange: boolean;
@@ -793,7 +791,7 @@ export type SelectionChangeEvent = {
  * Fired when selection range(s) changed.
  *
  * @eventName ~Selection#change:range
- * @param directChange In case of {@link module:engine/model/selection~Selection} class it is always set
+ * @param directChange In case of {@link module:engine/model/selection~ModelSelection} class it is always set
  * to `true` which indicates that the selection change was caused by a direct use of selection's API.
  * The {@link module:engine/model/documentselection~DocumentSelection}, however, may change because its position
  * was directly changed through the {@link module:engine/model/writer~Writer writer} or because its position was
@@ -801,7 +799,7 @@ export type SelectionChangeEvent = {
  * The indirect change does not occur in case of normal (detached) selections because they are "static" (as "not live")
  * which mean that they are not updated once the document changes.
  */
-export type SelectionChangeRangeEvent = {
+export type ModelSelectionChangeRangeEvent = {
 	name: 'change' | 'change:range';
 	args: [ {
 		directChange: boolean;
@@ -812,7 +810,7 @@ export type SelectionChangeRangeEvent = {
  * Fired when selection attribute changed.
  *
  * @eventName ~Selection#change:attribute
- * @param directChange In case of {@link module:engine/model/selection~Selection} class it is always set
+ * @param directChange In case of {@link module:engine/model/selection~ModelSelection} class it is always set
  * to `true` which indicates that the selection change was caused by a direct use of selection's API.
  * The {@link module:engine/model/documentselection~DocumentSelection}, however, may change because its attributes
  * were directly changed through the {@link module:engine/model/writer~Writer writer} or because its position was
@@ -821,7 +819,7 @@ export type SelectionChangeRangeEvent = {
  * which mean that they are not updated once the document changes.
  * @param attributeKeys Array containing keys of attributes that changed.
  */
-export type SelectionChangeAttributeEvent = {
+export type ModelSelectionChangeAttributeEvent = {
 	name: 'change' | 'change:attribute';
 	args: [ {
 		directChange: boolean;
@@ -981,11 +979,17 @@ function findAncestorBlock( node: ModelNode | ModelDocumentFragment ) {
 /**
  * An entity that is used to set selection.
  *
- * See also {@link module:engine/model/selection~Selection#setTo}.
+ * See also {@link module:engine/model/selection~ModelSelection#setTo}.
  */
-export type Selectable = Selection | ModelDocumentSelection | ModelPosition | ModelRange | ModelNode | Iterable<ModelRange> | null;
+export type ModelSelectable =
+	| ModelSelection
+	| ModelDocumentSelection
+	| ModelPosition
+	| ModelRange
+	| ModelNode
+	| Iterable<ModelRange> | null;
 
 /**
  * The place or offset of the selection.
  */
-export type PlaceOrOffset = number | 'before' | 'end' | 'after' | 'on' | 'in';
+export type ModelPlaceOrOffset = number | 'before' | 'end' | 'after' | 'on' | 'in';

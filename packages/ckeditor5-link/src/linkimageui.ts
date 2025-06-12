@@ -12,7 +12,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { IconLink } from 'ckeditor5/src/icons.js';
 import type {
 	ModelDocumentSelection,
-	Selection,
+	ModelSelection,
 	ViewDocumentClickEvent
 } from 'ckeditor5/src/engine.js';
 
@@ -119,7 +119,7 @@ export class LinkImageUI extends Plugin {
 	 * Returns true if a linked image (either block or inline) is the only selected element
 	 * in the model document.
 	 */
-	private _isSelectedLinkedImage( selection: ModelDocumentSelection | Selection ): boolean {
+	private _isSelectedLinkedImage( selection: ModelDocumentSelection | ModelSelection ): boolean {
 		const selectedModelElement = selection.getSelectedElement();
 		const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
 

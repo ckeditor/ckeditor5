@@ -12,7 +12,7 @@ import { ModelRange } from '../range.js';
 
 import { type ModelDocument } from '../document.js';
 import { type MarkerCollection } from '../markercollection.js';
-import type { Selectable } from '../selection.js';
+import type { ModelSelectable } from '../selection.js';
 
 export class MarkerOperation extends Operation {
 	/**
@@ -87,7 +87,7 @@ export class MarkerOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	public get affectedSelectable(): Selectable {
+	public get affectedSelectable(): ModelSelectable {
 		const ranges = [];
 
 		if ( this.oldRange ) {

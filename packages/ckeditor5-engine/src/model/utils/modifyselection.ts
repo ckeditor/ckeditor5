@@ -14,7 +14,7 @@ import { TreeWalker, type TreeWalkerValue } from '../treewalker.js';
 
 import { type Model } from '../model.js';
 import { type ModelSchema } from '../schema.js';
-import { type Selection } from '../selection.js';
+import { type ModelSelection } from '../selection.js';
 import { type Text } from '../text.js';
 import { type ModelNode } from '../node.js';
 
@@ -58,7 +58,7 @@ const wordBoundaryCharacters = ' ,.?!:;"-()';
  */
 export function modifySelection(
 	model: Model,
-	selection: Selection | ModelDocumentSelection,
+	selection: ModelSelection | ModelDocumentSelection,
 	options: {
 		direction?: 'forward' | 'backward';
 		unit?: 'character' | 'codePoint' | 'word';

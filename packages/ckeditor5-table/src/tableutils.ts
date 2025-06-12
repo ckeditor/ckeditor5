@@ -15,7 +15,7 @@ import type {
 	ModelNode,
 	ModelPosition,
 	ModelRange,
-	Selection,
+	ModelSelection,
 	Writer
 } from 'ckeditor5/src/engine.js';
 
@@ -870,7 +870,7 @@ export class TableUtils extends Plugin {
 	 * To obtain the cells selected from the inside, use
 	 * {@link #getTableCellsContainingSelection}.
 	 */
-	public getSelectedTableCells( selection: Selection | ModelDocumentSelection ): Array<ModelElement> {
+	public getSelectedTableCells( selection: ModelSelection | ModelDocumentSelection ): Array<ModelElement> {
 		const cells = [];
 
 		for ( const range of this.sortRanges( selection.getRanges() ) ) {
@@ -891,7 +891,7 @@ export class TableUtils extends Plugin {
 	 * To obtain the cells selected from the outside, use
 	 * {@link #getSelectedTableCells}.
 	 */
-	public getTableCellsContainingSelection( selection: Selection | ModelDocumentSelection ): Array<ModelElement> {
+	public getTableCellsContainingSelection( selection: ModelSelection | ModelDocumentSelection ): Array<ModelElement> {
 		const cells = [];
 
 		for ( const range of selection.getRanges() ) {
@@ -913,7 +913,7 @@ export class TableUtils extends Plugin {
 	 * Combines {@link #getTableCellsContainingSelection} and
 	 * {@link #getSelectedTableCells}.
 	 */
-	public getSelectionAffectedTableCells( selection: Selection | ModelDocumentSelection ): Array<ModelElement> {
+	public getSelectionAffectedTableCells( selection: ModelSelection | ModelDocumentSelection ): Array<ModelElement> {
 		const selectedCells = this.getSelectedTableCells( selection );
 
 		if ( selectedCells.length ) {

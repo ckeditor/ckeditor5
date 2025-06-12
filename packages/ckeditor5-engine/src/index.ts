@@ -177,7 +177,14 @@ export {
 	type ModelSchemaContextDefinition,
 	type ModelSchemaContextItem
 } from './model/schema.js';
-export { Selection, type Selectable } from './model/selection.js';
+export {
+	ModelSelection,
+	type ModelSelectionChangeEvent,
+	type ModelSelectionChangeRangeEvent,
+	type ModelSelectionChangeAttributeEvent,
+	type ModelSelectable,
+	type ModelPlaceOrOffset
+} from './model/selection.js';
 export { TypeCheckable } from './model/typecheckable.js';
 export { Writer } from './model/writer.js';
 
@@ -200,7 +207,7 @@ export type {
 	ModelModifySelectionEvent,
 	ModelCanEditAtEvent
 } from './model/model.js';
-export type { SelectionChangeRangeEvent } from './model/selection.js';
+export type { ModelSelectionChangeRangeEvent as SelectionChangeRangeEvent } from './model/selection.js';
 
 // View.
 export { DataTransfer } from './view/datatransfer.js';

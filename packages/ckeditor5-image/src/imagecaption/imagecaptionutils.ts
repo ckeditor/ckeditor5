@@ -7,7 +7,7 @@
  * @module image/imagecaption/imagecaptionutils
  */
 
-import type { ModelDocumentSelection, ModelElement, Selection, ViewElement, Match } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelection, ModelElement, ModelSelection, ViewElement, Match } from 'ckeditor5/src/engine.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 
 import { ImageUtils } from '../imageutils.js';
@@ -53,7 +53,7 @@ export class ImageCaptionUtils extends Plugin {
 	/**
 	 * Returns the caption model element for a model selection. Returns `null` if the selection has no caption element ancestor.
 	 */
-	public getCaptionFromModelSelection( selection: Selection | ModelDocumentSelection ): ModelElement | null {
+	public getCaptionFromModelSelection( selection: ModelSelection | ModelDocumentSelection ): ModelElement | null {
 		const imageUtils: ImageUtils = this.editor.plugins.get( 'ImageUtils' );
 		const captionElement = selection.getFirstPosition()!.findAncestor( 'caption' );
 
