@@ -12,6 +12,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import stubUid from './list/_utils/uid.js';
 import ListFormatting from '../src/listformatting.js';
 import ListItemFontFamilyIntegration from '../src/listformatting/listitemfontfamilyintegration.js';
+import ListItemFontColorIntegration from '../src/listformatting/listitemfontcolorintegration.js';
 
 describe( 'ListFormatting', () => {
 	let editor, model, docSelection;
@@ -67,7 +68,8 @@ describe( 'ListFormatting', () => {
 
 	it( 'should require integration plugins', () => {
 		expect( ListFormatting.requires ).to.deep.equal( [
-			ListItemFontFamilyIntegration
+			ListItemFontFamilyIntegration,
+			ListItemFontColorIntegration
 		] );
 	} );
 
