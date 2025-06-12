@@ -19,7 +19,7 @@ import { type ModelRange } from './range.js';
 import { type ModelRootElement } from './rootelement.js';
 import { type ModelSelection } from './selection.js';
 import { type ModelText } from './text.js';
-import { type TextProxy } from './textproxy.js';
+import { type ModelTextProxy } from './textproxy.js';
 
 export abstract class TypeCheckable {
 	/**
@@ -256,7 +256,7 @@ export abstract class TypeCheckable {
 	public is( type: 'marker' | 'model:marker' ): this is Marker;
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/model/textproxy~TextProxy}.
+	 * Checks whether the object is of type {@link module:engine/model/textproxy~ModelTextProxy}.
 	 *
 	 * ```ts
 	 * textProxy.is( '$textProxy' ); // -> true
@@ -271,7 +271,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label TEXT_PROXY
 	 */
-	public is( type: '$textProxy' | 'model:$textProxy' ): this is TextProxy;
+	public is( type: '$textProxy' | 'model:$textProxy' ): this is ModelTextProxy;
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/model/element~ModelElement} or its subclass and has the specified `name`.

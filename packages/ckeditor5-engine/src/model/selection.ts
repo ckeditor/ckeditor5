@@ -405,7 +405,7 @@ export class ModelSelection extends /* #__PURE__ */ EmitterMixin( TypeCheckable 
 			 *
 			 * Invalid parameters were specified when setting the selection. Common issues:
 			 *
-			 * * A {@link module:engine/model/textproxy~TextProxy} instance was passed instead of
+			 * * A {@link module:engine/model/textproxy~ModelTextProxy} instance was passed instead of
 			 * a real {@link module:engine/model/text~ModelText}.
 			 * * View nodes were passed instead of model nodes.
 			 * * `null`/`undefined` was passed.

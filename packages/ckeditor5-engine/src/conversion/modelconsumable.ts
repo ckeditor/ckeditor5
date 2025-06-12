@@ -7,7 +7,7 @@
  * @module engine/conversion/modelconsumable
  */
 
-import { TextProxy } from '../model/textproxy.js';
+import { ModelTextProxy } from '../model/textproxy.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 
@@ -103,12 +103,12 @@ export class ModelConsumable {
 	private _consumable = new Map<any, Map<string, boolean>>();
 
 	/**
-	 * For each {@link module:engine/model/textproxy~TextProxy} added to `ModelConsumable`, this registry holds a parent
-	 * of that `TextProxy` and the start and end indices of that `TextProxy`. This allows identification of the `TextProxy`
-	 * instances that point to the same part of the model but are different instances. Each distinct `TextProxy`
+	 * For each {@link module:engine/model/textproxy~ModelTextProxy} added to `ModelConsumable`, this registry holds a parent
+	 * of that `ModelTextProxy` and the start and end indices of that `ModelTextProxy`. This allows identification of the `ModelTextProxy`
+	 * instances that point to the same part of the model but are different instances. Each distinct `ModelTextProxy`
 	 * is given a unique `Symbol` which is then registered as consumable. This process is transparent for the `ModelConsumable`
-	 * API user because whenever `TextProxy` is added, tested, consumed or reverted, the internal mechanisms of
-	 * `ModelConsumable` translate `TextProxy` to that unique `Symbol`.
+	 * API user because whenever `ModelTextProxy` is added, tested, consumed or reverted, the internal mechanisms of
+	 * `ModelConsumable` translate `ModelTextProxy` to that unique `Symbol`.
 	 */
 	private _textProxyRegistry = new Map<number | null, Map<number | null, Map<unknown, symbol>>>();
 
@@ -133,7 +133,7 @@ export class ModelConsumable {
 	): void {
 		type = _normalizeConsumableType( type );
 
-		if ( item instanceof TextProxy ) {
+		if ( item instanceof ModelTextProxy ) {
 			item = this._getSymbolForTextProxy( item ) as any;
 		}
 
@@ -166,7 +166,7 @@ export class ModelConsumable {
 	): boolean {
 		type = _normalizeConsumableType( type );
 
-		if ( item instanceof TextProxy ) {
+		if ( item instanceof ModelTextProxy ) {
 			item = this._getSymbolForTextProxy( item ) as any;
 		}
 
@@ -202,7 +202,7 @@ export class ModelConsumable {
 	): boolean | null {
 		type = _normalizeConsumableType( type );
 
-		if ( item instanceof TextProxy ) {
+		if ( item instanceof ModelTextProxy ) {
 			item = this._getSymbolForTextProxy( item ) as any;
 		}
 
@@ -243,7 +243,7 @@ export class ModelConsumable {
 	): boolean | null {
 		type = _normalizeConsumableType( type );
 
-		if ( item instanceof TextProxy ) {
+		if ( item instanceof ModelTextProxy ) {
 			item = this._getSymbolForTextProxy( item ) as any;
 		}
 
@@ -303,16 +303,16 @@ export class ModelConsumable {
 	}
 
 	/**
-	 * Gets a unique symbol for the passed {@link module:engine/model/textproxy~TextProxy} instance. All `TextProxy` instances that
-	 * have same parent, same start index and same end index will get the same symbol.
+	 * Gets a unique symbol for the passed {@link module:engine/model/textproxy~ModelTextProxy} instance.
+	 * All `ModelTextProxy` instances that have same parent, same start index and same end index will get the same symbol.
 	 *
-	 * Used internally to correctly consume `TextProxy` instances.
+	 * Used internally to correctly consume `ModelTextProxy` instances.
 	 *
 	 * @internal
-	 * @param textProxy `TextProxy` instance to get a symbol for.
-	 * @returns Symbol representing all equal instances of `TextProxy`.
+	 * @param textProxy `ModelTextProxy` instance to get a symbol for.
+	 * @returns Symbol representing all equal instances of `ModelTextProxy`.
 	 */
-	public _getSymbolForTextProxy( textProxy: TextProxy ): symbol {
+	public _getSymbolForTextProxy( textProxy: ModelTextProxy ): symbol {
 		let symbol = null;
 
 		const startMap = this._textProxyRegistry.get( textProxy.startOffset );
@@ -333,14 +333,14 @@ export class ModelConsumable {
 	}
 
 	/**
-	 * Adds a symbol for the given {@link module:engine/model/textproxy~TextProxy} instance.
+	 * Adds a symbol for the given {@link module:engine/model/textproxy~ModelTextProxy} instance.
 	 *
-	 * Used internally to correctly consume `TextProxy` instances.
+	 * Used internally to correctly consume `ModelTextProxy` instances.
 	 *
 	 * @param textProxy Text proxy instance.
-	 * @returns Symbol generated for given `TextProxy`.
+	 * @returns Symbol generated for given `ModelTextProxy`.
 	 */
-	private _addSymbolForTextProxy( textProxy: TextProxy ): symbol {
+	private _addSymbolForTextProxy( textProxy: ModelTextProxy ): symbol {
 		const start = textProxy.startOffset;
 		const end = textProxy.endOffset;
 		const parent = textProxy.parent;

@@ -18,35 +18,35 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 // @if CK_DEBUG_ENGINE // const { convertMapToStringifiedObject } = require( '../dev-utils/utils' );
 
 /**
- * `TextProxy` represents a part of {@link module:engine/model/text~ModelText text node}.
+ * `ModelTextProxy` represents a part of {@link module:engine/model/text~ModelText text node}.
  *
  * Since {@link module:engine/model/position~ModelPosition positions} can be placed between characters of a text node,
  * {@link module:engine/model/range~ModelRange ranges} may contain only parts of text nodes.
  * When {@link module:engine/model/range~ModelRange#getItems getting items}
  * contained in such range, we need to represent a part of that text node, since returning the whole text node would be incorrect.
- * `TextProxy` solves this issue.
+ * `ModelTextProxy` solves this issue.
  *
- * `TextProxy` has an API similar to {@link module:engine/model/text~ModelText Text} and allows to do most of the common tasks performed
- * on model nodes.
+ * `ModelTextProxy` has an API similar to {@link module:engine/model/text~ModelText Text} and allows to do
+ * most of the common tasks performed on model nodes.
  *
- * **Note:** Some `TextProxy` instances may represent whole text node, not just a part of it.
- * See {@link module:engine/model/textproxy~TextProxy#isPartial}.
+ * **Note:** Some `ModelTextProxy` instances may represent whole text node, not just a part of it.
+ * See {@link module:engine/model/textproxy~ModelTextProxy#isPartial}.
  *
- * **Note:** `TextProxy` is not an instance of {@link module:engine/model/node~ModelNode node}. Keep this in mind when using it as a
+ * **Note:** `ModelTextProxy` is not an instance of {@link module:engine/model/node~ModelNode node}. Keep this in mind when using it as a
  * parameter of methods.
  *
- * **Note:** `TextProxy` is a readonly interface. If you want to perform changes on model data represented by a `TextProxy`
+ * **Note:** `ModelTextProxy` is a readonly interface. If you want to perform changes on model data represented by a `ModelTextProxy`
  * use {@link module:engine/model/writer~Writer model writer API}.
  *
- * **Note:** `TextProxy` instances are created on the fly, basing on the current state of model. Because of this, it is
- * highly unrecommended to store references to `TextProxy` instances. `TextProxy` instances are not refreshed when
+ * **Note:** `ModelTextProxy` instances are created on the fly, basing on the current state of model. Because of this, it is
+ * highly unrecommended to store references to `ModelTextProxy` instances. `ModelTextProxy` instances are not refreshed when
  * model changes, so they might get invalidated. Instead, consider creating {@link module:engine/model/liveposition~ModelLivePosition live
  * position}.
  *
- * `TextProxy` instances are created by {@link module:engine/model/treewalker~TreeWalker model tree walker}. You should not need to create
- * an instance of this class by your own.
+ * `ModelTextProxy` instances are created by {@link module:engine/model/treewalker~TreeWalker model tree walker}.
+ * You should not need to create an instance of this class by your own.
  */
-export class TextProxy extends TypeCheckable {
+export class ModelTextProxy extends TypeCheckable {
 	/**
 	 * Text node which part is represented by this text proxy.
 	 */
@@ -58,7 +58,7 @@ export class TextProxy extends TypeCheckable {
 	public readonly data: string;
 
 	/**
-	 * Offset in {@link module:engine/model/textproxy~TextProxy#textNode text node} from which the text proxy starts.
+	 * Offset in {@link module:engine/model/textproxy~ModelTextProxy#textNode text node} from which the text proxy starts.
 	 */
 	public readonly offsetInText: number;
 
@@ -67,7 +67,7 @@ export class TextProxy extends TypeCheckable {
 	 *
 	 * @internal
 	 * @param textNode Text node which part is represented by this text proxy.
-	 * @param offsetInText Offset in {@link module:engine/model/textproxy~TextProxy#textNode text node} from which the text proxy
+	 * @param offsetInText Offset in {@link module:engine/model/textproxy~ModelTextProxy#textNode text node} from which the text proxy
 	 * starts.
 	 * @param length Text proxy length, that is how many text node's characters, starting from `offsetInText` it represents.
 	 */
@@ -126,11 +126,12 @@ export class TextProxy extends TypeCheckable {
 	}
 
 	/**
-	 * Flag indicating whether `TextProxy` instance covers only part of the original {@link module:engine/model/text~ModelText text node}
-	 * (`true`) or the whole text node (`false`).
+	 * Flag indicating whether `ModelTextProxy` instance covers only part of the original
+	 * {@link module:engine/model/text~ModelText text node} (`true`) or the whole text node (`false`).
 	 *
-	 * This is `false` when text proxy starts at the very beginning of {@link module:engine/model/textproxy~TextProxy#textNode textNode}
-	 * ({@link module:engine/model/textproxy~TextProxy#offsetInText offsetInText} equals `0`) and text proxy sizes is equal to
+	 * This is `false` when text proxy starts at the very beginning of
+	 * {@link module:engine/model/textproxy~ModelTextProxy#textNode textNode}
+	 * ({@link module:engine/model/textproxy~ModelTextProxy#offsetInText offsetInText} equals `0`) and text proxy sizes is equal to
 	 * text node size.
 	 */
 	public get isPartial(): boolean {
@@ -178,9 +179,9 @@ export class TextProxy extends TypeCheckable {
 	public getAncestors( options: {
 		includeSelf?: boolean;
 		parentFirst?: boolean;
-	} = {} ): Array<TextProxy | ModelElement | ModelDocumentFragment> {
-		const ancestors: Array<TextProxy | ModelElement | ModelDocumentFragment> = [];
-		let parent: TextProxy | ModelElement | ModelDocumentFragment | null = options.includeSelf ? this : this.parent;
+	} = {} ): Array<ModelTextProxy | ModelElement | ModelDocumentFragment> {
+		const ancestors: Array<ModelTextProxy | ModelElement | ModelDocumentFragment> = [];
+		let parent: ModelTextProxy | ModelElement | ModelDocumentFragment | null = options.includeSelf ? this : this.parent;
 
 		while ( parent ) {
 			ancestors[ options.parentFirst ? 'push' : 'unshift' ]( parent );
@@ -243,10 +244,8 @@ export class TextProxy extends TypeCheckable {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-TextProxy.prototype.is = function( type: string ): boolean {
+ModelTextProxy.prototype.is = function( type: string ): boolean {
 	return type === '$textProxy' || type === 'model:$textProxy' ||
 		// This are legacy values kept for backward compatibility.
 		type === 'textProxy' || type === 'model:textProxy';
 };
-
-export { TextProxy as ModelTextProxy };

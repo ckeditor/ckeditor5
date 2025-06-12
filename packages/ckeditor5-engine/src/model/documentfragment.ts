@@ -11,7 +11,7 @@ import { TypeCheckable } from './typecheckable.js';
 import { ModelElement } from './element.js';
 import { ModelNodeList } from './nodelist.js';
 import { ModelText } from './text.js';
-import { TextProxy } from './textproxy.js';
+import { ModelTextProxy } from './textproxy.js';
 
 import { type ModelItem } from './item.js';
 import { type ModelNode } from './node.js';
@@ -425,7 +425,7 @@ function normalize( nodes: string | ModelItem | Iterable<string | ModelItem> ): 
 				return new ModelText( node );
 			}
 
-			if ( node instanceof TextProxy ) {
+			if ( node instanceof ModelTextProxy ) {
 				return new ModelText( node.data, node.getAttributes() );
 			}
 

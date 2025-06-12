@@ -1623,11 +1623,11 @@ function changeAttribute( attributeCreator: DowncastAttributeCreatorFunction ) {
 		const viewElement = conversionApi.mapper.toViewElement( data.item );
 		const viewWriter = conversionApi.writer;
 
-		// If model item cannot be mapped to a view element, it means item is not an `Element` instance but a `TextProxy` node.
+		// If model item cannot be mapped to a view element, it means item is not an `Element` instance but a `ModelTextProxy` node.
 		// Only elements can have attributes in a view so do not proceed for anything else (#1587).
 		if ( !viewElement ) {
 			/**
-			 * This error occurs when a {@link module:engine/model/textproxy~TextProxy text node's} attribute is to be downcasted
+			 * This error occurs when a {@link module:engine/model/textproxy~ModelTextProxy text node's} attribute is to be downcasted
 			 * by an {@link module:engine/conversion/conversion~Conversion#attributeToAttribute `Attribute to Attribute converter`}.
 			 * In most cases it is caused by converters misconfiguration when only "generic" converter is defined:
 			 *
@@ -1647,7 +1647,7 @@ function changeAttribute( attributeCreator: DowncastAttributeCreatorFunction ) {
 			 * ```
 			 *
 			 * In such cases, to convert the same attribute for both {@link module:engine/model/element~ModelElement}
-			 * and {@link module:engine/model/textproxy~TextProxy `Text`} nodes, text specific
+			 * and {@link module:engine/model/textproxy~ModelTextProxy `Text`} nodes, text specific
 			 * {@link module:engine/conversion/conversion~Conversion#attributeToElement `Attribute to Element converter`}
 			 * with higher {@link module:utils/priorities~PriorityString priority} must also be defined:
 			 *

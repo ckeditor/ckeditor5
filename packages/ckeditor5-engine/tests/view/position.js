@@ -498,7 +498,7 @@ describe( 'Position', () => {
 				expect( Position._createBefore( nodeAfter ).isEqual( position ) ).to.be.true;
 			} );
 
-			it( 'should create positions before `TextProxy`', () => {
+			it( 'should create positions before `ModelTextProxy`', () => {
 				const text = new Text( document, 'abc' );
 
 				const textProxy = new TextProxy( text, 1, 1 );
@@ -525,7 +525,7 @@ describe( 'Position', () => {
 				expect( Position._createAfter( nodeBefore ).isEqual( position ) ).to.be.true;
 			} );
 
-			it( 'should create positions after `TextProxy`', () => {
+			it( 'should create positions after `ModelTextProxy`', () => {
 				const text = new Text( document, 'abcd' );
 
 				const textProxy = new TextProxy( text, 1, 2 );

@@ -10,7 +10,7 @@
 import { ModelNode, type ModelNodeAttributes } from './node.js';
 import { ModelNodeList } from './nodelist.js';
 import { ModelText } from './text.js';
-import { TextProxy } from './textproxy.js';
+import { ModelTextProxy } from './textproxy.js';
 
 import { type ModelItem } from './item.js';
 
@@ -422,7 +422,7 @@ function normalize( nodes: string | ModelItem | Iterable<string | ModelItem> ): 
 	for ( const node of nodes ) {
 		if ( typeof node == 'string' ) {
 			normalizedNodes.push( new ModelText( node ) );
-		} else if ( node instanceof TextProxy ) {
+		} else if ( node instanceof ModelTextProxy ) {
 			normalizedNodes.push( new ModelText( node.data, node.getAttributes() ) );
 		} else {
 			normalizedNodes.push( node );

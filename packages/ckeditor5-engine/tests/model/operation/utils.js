@@ -7,7 +7,7 @@ import { Model } from '../../../src/model/model.js';
 import { ModelDocumentFragment } from '../../../src/model/documentfragment.js';
 import { ModelElement } from '../../../src/model/element.js';
 import { ModelText } from '../../../src/model/text.js';
-import { TextProxy } from '../../../src/model/textproxy.js';
+import { ModelTextProxy } from '../../../src/model/textproxy.js';
 import { ModelPosition } from '../../../src/model/position.js';
 import { ModelRange } from '../../../src/model/range.js';
 import * as utils from '../../../src/model/operation/utils.js';
@@ -151,7 +151,7 @@ describe( 'normalizeNodes', () => {
 
 	it( 'should change text proxies to text nodes', () => {
 		const textNode = new ModelText( 'abc' );
-		const textProxy = new TextProxy( textNode, 1, 1 );
+		const textProxy = new ModelTextProxy( textNode, 1, 1 );
 
 		const text = utils._normalizeNodes( textProxy )[ 0 ];
 

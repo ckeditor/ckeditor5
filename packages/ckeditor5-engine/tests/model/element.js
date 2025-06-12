@@ -6,7 +6,7 @@
 import { ModelNode } from '../../src/model/node.js';
 import { ModelElement } from '../../src/model/element.js';
 import { ModelText } from '../../src/model/text.js';
-import { TextProxy } from '../../src/model/textproxy.js';
+import { ModelTextProxy } from '../../src/model/textproxy.js';
 import { count } from '@ckeditor/ckeditor5-utils/src/count.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -143,7 +143,7 @@ describe( 'Element', () => {
 		it( 'should accept and correctly handle text proxies', () => {
 			const element = new ModelElement( 'div' );
 			const text = new ModelText( 'abcxyz', { bold: true } );
-			const textProxy = new TextProxy( text, 2, 3 );
+			const textProxy = new ModelTextProxy( text, 2, 3 );
 
 			element._insertChild( 0, textProxy );
 

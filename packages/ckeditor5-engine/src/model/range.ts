@@ -67,7 +67,7 @@ export class ModelRange extends TypeCheckable implements Iterable<TreeWalkerValu
 	 * Iterates over all {@link module:engine/model/item~ModelItem items} that are in this range and returns
 	 * them together with additional information like length or {@link module:engine/model/position~ModelPosition positions},
 	 * grouped as {@link module:engine/model/treewalker~TreeWalkerValue}.
-	 * It iterates over all {@link module:engine/model/textproxy~TextProxy text contents} that are inside the range
+	 * It iterates over all {@link module:engine/model/textproxy~ModelTextProxy text contents} that are inside the range
 	 * and all the {@link module:engine/model/element~ModelElement}s that are entered into when iterating over this range.
 	 *
 	 * This iterator uses {@link module:engine/model/treewalker~TreeWalker} with `boundaries` set to this range

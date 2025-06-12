@@ -4,13 +4,13 @@
  */
 
 import { type ModelNode } from './node.js';
-import { type TextProxy } from './textproxy.js';
+import { type ModelTextProxy } from './textproxy.js';
 
 /**
  * @module engine/model/item
  */
 
 /**
- * Item is a {@link module:engine/model/node~ModelNode} or {@link module:engine/model/textproxy~TextProxy}.
+ * Item is a {@link module:engine/model/node~ModelNode} or {@link module:engine/model/textproxy~ModelTextProxy}.
  */
-export type ModelItem = ModelNode | TextProxy;
+export type ModelItem = ModelNode | ModelTextProxy;

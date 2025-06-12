@@ -7,7 +7,7 @@ import { Model } from '../../src/model/model.js';
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { ModelElement } from '../../src/model/element.js';
 import { ModelText } from '../../src/model/text.js';
-import { TextProxy } from '../../src/model/textproxy.js';
+import { ModelTextProxy } from '../../src/model/textproxy.js';
 import {
 	ModelPosition,
 	getTextNodeAtPosition,
@@ -54,17 +54,17 @@ describe( 'Position', () => {
 
 		li1 = new ModelElement( 'li', [], foz );
 
-		f = new TextProxy( foz, 0, 1 );
-		o = new TextProxy( foz, 1, 1 );
-		z = new TextProxy( foz, 2, 1 );
+		f = new ModelTextProxy( foz, 0, 1 );
+		o = new ModelTextProxy( foz, 1, 1 );
+		z = new ModelTextProxy( foz, 2, 1 );
 
 		bar = new ModelText( 'bar' );
 
 		li2 = new ModelElement( 'li', [], bar );
 
-		b = new TextProxy( bar, 0, 1 );
-		a = new TextProxy( bar, 1, 1 );
-		r = new TextProxy( bar, 2, 1 );
+		b = new ModelTextProxy( bar, 0, 1 );
+		a = new ModelTextProxy( bar, 1, 1 );
+		r = new ModelTextProxy( bar, 2, 1 );
 
 		ul = new ModelElement( 'ul', [], [ li1, li2 ] );
 

@@ -14,7 +14,7 @@ import { ModelRange } from '../../../src/model/range.js';
 import { ModelElement } from '../../../src/model/element.js';
 import { ModelText } from '../../../src/model/text.js';
 import { ModelNode } from '../../../src/model/node.js';
-import { TextProxy } from '../../../src/model/textproxy.js';
+import { ModelTextProxy } from '../../../src/model/textproxy.js';
 
 describe( 'getNodesAndText', () => {
 	let doc, root, div, p;
@@ -54,7 +54,7 @@ describe( 'itemAt', () => {
 	it( 'should return text proxy with one character if text node starts at given offset', () => {
 		const text = itemAt( element, 4 );
 
-		expect( text ).to.be.instanceof( TextProxy );
+		expect( text ).to.be.instanceof( ModelTextProxy );
 		expect( text.data ).to.equal( 'b' );
 		expect( text.textNode ).to.equal( bar );
 	} );
@@ -62,7 +62,7 @@ describe( 'itemAt', () => {
 	it( 'should return text proxy with one character if text node occupies given offset', () => {
 		const text = itemAt( element, 1 );
 
-		expect( text ).to.be.instanceof( TextProxy );
+		expect( text ).to.be.instanceof( ModelTextProxy );
 		expect( text.data ).to.equal( 'o' );
 		expect( text.textNode ).to.equal( foo );
 	} );

@@ -14,7 +14,7 @@ import {
 	getNodeAfterPosition,
 	getNodeBeforePosition
 } from './position.js';
-import { TextProxy } from './textproxy.js';
+import { ModelTextProxy } from './textproxy.js';
 
 import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelItem } from './item.js';
@@ -43,7 +43,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 
 	/**
 	 * Flag indicating whether all consecutive characters with the same attributes should be
-	 * returned as one {@link module:engine/model/textproxy~TextProxy} (`true`) or one by one (`false`).
+	 * returned as one {@link module:engine/model/textproxy~ModelTextProxy} (`true`) or one by one (`false`).
 	 */
 	public readonly singleCharacters: boolean;
 
@@ -278,7 +278,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 			}
 
 			const offsetInTextNode = position.offset - node.startOffset!;
-			const item = new TextProxy( node, offsetInTextNode, charactersCount );
+			const item = new ModelTextProxy( node, offsetInTextNode, charactersCount );
 
 			position.offset += charactersCount;
 			this._position = position;
@@ -359,7 +359,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 			}
 
 			const offsetInTextNode = position.offset - node.startOffset!;
-			const item = new TextProxy( node, offsetInTextNode - charactersCount, charactersCount );
+			const item = new ModelTextProxy( node, offsetInTextNode - charactersCount, charactersCount );
 
 			position.offset -= charactersCount;
 			this._position = position;
@@ -468,8 +468,8 @@ export interface TreeWalkerOptions {
 
 	/**
 	 * Flag indicating whether all consecutive characters with the same attributes
-	 * should be returned one by one as multiple {@link module:engine/model/textproxy~TextProxy} (`true`) objects or as one
-	 * {@link module:engine/model/textproxy~TextProxy} (`false`).
+	 * should be returned one by one as multiple {@link module:engine/model/textproxy~ModelTextProxy} (`true`) objects or as one
+	 * {@link module:engine/model/textproxy~ModelTextProxy} (`false`).
 	 */
 	singleCharacters?: boolean;
 

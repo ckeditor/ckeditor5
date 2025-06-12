@@ -10,7 +10,7 @@ import { Model } from '../../src/model/model.js';
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { ModelElement } from '../../src/model/element.js';
 import { ModelText } from '../../src/model/text.js';
-import { TextProxy } from '../../src/model/textproxy.js';
+import { ModelTextProxy } from '../../src/model/textproxy.js';
 import { ModelPosition } from '../../src/model/position.js';
 import { ModelRange } from '../../src/model/range.js';
 
@@ -326,7 +326,7 @@ describe( 'Schema', () => {
 			} );
 
 			const text = new ModelText( 'foo' );
-			const textProxy = new TextProxy( text, 0, 1 );
+			const textProxy = new ModelTextProxy( text, 0, 1 );
 
 			expect( schema.getDefinition( textProxy ).isBlock ).to.be.true;
 		} );
@@ -4034,7 +4034,7 @@ describe( 'ModelSchemaContext', () => {
 
 		it( 'creates context based on a text proxy', () => {
 			const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
-			const textProxy = new TextProxy( text, 0, 1 );
+			const textProxy = new ModelTextProxy( text, 0, 1 );
 			const ctx = new ModelSchemaContext( textProxy );
 
 			expect( ctx.length ).to.equal( 4 );

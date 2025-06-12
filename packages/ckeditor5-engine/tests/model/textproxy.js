@@ -5,12 +5,12 @@
 
 import { ModelElement } from '../../src/model/element.js';
 import { ModelText } from '../../src/model/text.js';
-import { TextProxy } from '../../src/model/textproxy.js';
+import { ModelTextProxy } from '../../src/model/textproxy.js';
 import { Model } from '../../src/model/model.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
-describe( 'TextProxy', () => {
+describe( 'ModelTextProxy', () => {
 	let model, doc, element, textProxy, root, textProxyNoParent, text, textNoParent;
 
 	beforeEach( () => {
@@ -22,10 +22,10 @@ describe( 'TextProxy', () => {
 
 		text = new ModelText( 'foobar', { foo: 'bar' } );
 		element._insertChild( 0, [ new ModelText( 'abc' ), text ] );
-		textProxy = new TextProxy( text, 2, 3 );
+		textProxy = new ModelTextProxy( text, 2, 3 );
 
 		textNoParent = new ModelText( 'abcxyz' );
-		textProxyNoParent = new TextProxy( textNoParent, 1, 1 );
+		textProxyNoParent = new ModelTextProxy( textNoParent, 1, 1 );
 	} );
 
 	it( 'should have data property', () => {
@@ -69,8 +69,8 @@ describe( 'TextProxy', () => {
 	} );
 
 	it( 'should have isPartial property', () => {
-		const startTextProxy = new TextProxy( text, 0, 4 );
-		const fullTextProxy = new TextProxy( text, 0, 6 );
+		const startTextProxy = new ModelTextProxy( text, 0, 4 );
+		const fullTextProxy = new ModelTextProxy( text, 0, 6 );
 
 		expect( textProxy.isPartial ).to.be.true;
 		expect( startTextProxy.isPartial ).to.be.true;
@@ -79,21 +79,21 @@ describe( 'TextProxy', () => {
 
 	it( 'should throw if wrong offsetInText is passed', () => {
 		expectToThrowCKEditorError( () => {
-			new TextProxy( text, -1, 2 ); // eslint-disable-line no-new
+			new ModelTextProxy( text, -1, 2 ); // eslint-disable-line no-new
 		}, /model-textproxy-wrong-offsetintext/, model );
 
 		expectToThrowCKEditorError( () => {
-			new TextProxy( text, 9, 1 ); // eslint-disable-line no-new
+			new ModelTextProxy( text, 9, 1 ); // eslint-disable-line no-new
 		}, /model-textproxy-wrong-offsetintext/, model );
 	} );
 
 	it( 'should throw if wrong length is passed', () => {
 		expectToThrowCKEditorError( () => {
-			new TextProxy( text, 2, -1 ); // eslint-disable-line no-new
+			new ModelTextProxy( text, 2, -1 ); // eslint-disable-line no-new
 		}, /model-textproxy-wrong-length/, model );
 
 		expectToThrowCKEditorError( () => {
-			new TextProxy( text, 2, 9 ); // eslint-disable-line no-new
+			new ModelTextProxy( text, 2, 9 ); // eslint-disable-line no-new
 		}, /model-textproxy-wrong-length/, model );
 	} );
 

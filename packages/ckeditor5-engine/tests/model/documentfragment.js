@@ -5,7 +5,7 @@
 
 import { ModelElement } from '../../src/model/element.js';
 import { ModelText } from '../../src/model/text.js';
-import { TextProxy } from '../../src/model/textproxy.js';
+import { ModelTextProxy } from '../../src/model/textproxy.js';
 import { ModelDocumentFragment } from '../../src/model/documentfragment.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 
@@ -176,7 +176,7 @@ describe( 'DocumentFragment', () => {
 		it( 'should accept and correctly handle text proxies', () => {
 			const frag = new ModelDocumentFragment();
 			const text = new ModelText( 'abcxyz', { bold: true } );
-			const textProxy = new TextProxy( text, 2, 3 );
+			const textProxy = new ModelTextProxy( text, 2, 3 );
 
 			frag._insertChild( 0, textProxy );
 

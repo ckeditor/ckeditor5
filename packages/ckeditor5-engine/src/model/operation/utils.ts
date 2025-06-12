@@ -10,7 +10,7 @@
 import { ModelNode } from '../node.js';
 import { ModelRange } from '../range.js';
 import { ModelText } from '../text.js';
-import { TextProxy } from '../textproxy.js';
+import { ModelTextProxy } from '../textproxy.js';
 
 import { type ModelDocumentFragment } from '../documentfragment.js';
 import { type ModelElement } from '../element.js';
@@ -130,7 +130,7 @@ export function _setAttribute( range: ModelRange, key: string, value: unknown ):
 
 	// Iterate over all items in the range.
 	for ( const item of range.getItems( { shallow: true } ) ) {
-		// Iterator will return `TextProxy` instances but we know that those text proxies will
+		// Iterator will return `ModelTextProxy` instances but we know that those text proxies will
 		// always represent full text nodes (this is guaranteed thanks to splitting we did before).
 		// So, we can operate on those text proxies' text nodes.
 		const node = item.is( '$textProxy' ) ? item.textNode : item;
@@ -163,7 +163,7 @@ export function _normalizeNodes( nodes: ModelNodeSet ): Array<ModelNode> {
 	function convert( nodes: ModelNodeSet ) {
 		if ( typeof nodes == 'string' ) {
 			normalized.push( new ModelText( nodes ) );
-		} else if ( nodes instanceof TextProxy ) {
+		} else if ( nodes instanceof ModelTextProxy ) {
 			normalized.push( new ModelText( nodes.data, nodes.getAttributes() ) );
 		} else if ( nodes instanceof ModelNode ) {
 			normalized.push( nodes );
@@ -271,7 +271,7 @@ function _haveSameAttributes( nodeA: ModelNode, nodeB: ModelNode ): boolean | un
  *
  * Non-arrays are normalized as follows:
  * * {@link module:engine/model/node~ModelNode Node} is left as is,
- * * {@link module:engine/model/textproxy~TextProxy TextProxy} and `string` are normalized to
+ * * {@link module:engine/model/textproxy~ModelTextProxy TextProxy} and `string` are normalized to
  * {@link module:engine/model/text~ModelText Text},
  * * {@link module:engine/model/nodelist~ModelNodeList NodeList} is normalized to an array containing all nodes that are in that node list,
  * * {@link module:engine/model/documentfragment~DocumentFragment ModelDocumentFragment} is normalized to an array containing all of it's

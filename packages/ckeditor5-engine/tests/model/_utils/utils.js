@@ -7,7 +7,7 @@ import { ModelRange } from '../../../src/model/range.js';
 import { ModelPosition } from '../../../src/model/position.js';
 import { TreeWalker } from '../../../src/model/treewalker.js';
 import { ModelText } from '../../../src/model/text.js';
-import { TextProxy } from '../../../src/model/textproxy.js';
+import { ModelTextProxy } from '../../../src/model/textproxy.js';
 
 /**
  * Returns tree structure as a simplified string. Elements are uppercase and characters are lowercase.
@@ -52,7 +52,7 @@ export function itemAt( parent, offset ) {
 	if ( node instanceof ModelText ) {
 		const offsetInText = offset - node.startOffset;
 
-		return new TextProxy( node, offsetInText, 1 );
+		return new ModelTextProxy( node, offsetInText, 1 );
 	}
 
 	return node;
