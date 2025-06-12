@@ -17,7 +17,7 @@ import {
 
 import { clone } from 'es-toolkit/compat';
 
-import type { ViewDocument, ChangeType } from './document.js';
+import type { ViewDocument, ViewDocumentChangeType } from './document.js';
 import { type DocumentFragment } from './documentfragment.js';
 import { type Element } from './element.js';
 
@@ -260,7 +260,7 @@ export abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeCheckable )
 	 * @param data Additional data.
 	 * @fires change
 	 */
-	public _fireChange( type: ChangeType, node: Node, data?: { index: number } ): void {
+	public _fireChange( type: ViewDocumentChangeType, node: Node, data?: { index: number } ): void {
 		this.fire( `change:${ type }`, node, data );
 
 		if ( this.parent ) {
@@ -321,6 +321,6 @@ export { Node as ViewNode };
  * @eventName ~Node#change:text
  */
 export type ViewNodeChangeEvent = {
-	name: 'change' | `change:${ ChangeType }`;
+	name: 'change' | `change:${ ViewDocumentChangeType }`;
 	args: [ changedNode: Node, data?: { index: number } ];
 };

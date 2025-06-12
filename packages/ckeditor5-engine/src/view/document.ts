@@ -221,7 +221,7 @@ export type ViewDocumentPostFixer = ( writer: DowncastWriter ) => boolean;
  * * `attributes` - for element attributes changes,
  * * `text` - for text nodes changes.
  */
-export type ChangeType = 'children' | 'attributes' | 'text';
+export type ViewDocumentChangeType = 'children' | 'attributes' | 'text';
 
 /**
  * Event fired whenever document content layout changes. It is fired whenever content is

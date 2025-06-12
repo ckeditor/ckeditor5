@@ -27,7 +27,7 @@ import {
 	type ObservableChangeEvent
 } from '@ckeditor/ckeditor5-utils';
 
-import type { ChangeType } from './document.js';
+import type { ViewDocumentChangeType } from './document.js';
 import { type DocumentSelection } from './documentselection.js';
 import { type DomConverter } from './domconverter.js';
 import { type ViewElement } from './element.js';
@@ -167,7 +167,7 @@ export class Renderer extends /* #__PURE__ */ ObservableMixin() {
 	 * @param type Type of the change.
 	 * @param node ViewNode to be marked.
 	 */
-	public markToSync( type: ChangeType, node: ViewNode ): void {
+	public markToSync( type: ViewDocumentChangeType, node: ViewNode ): void {
 		if ( type === 'text' ) {
 			if ( this.domConverter.mapViewToDom( node.parent! ) ) {
 				this.markedTexts.add( node );

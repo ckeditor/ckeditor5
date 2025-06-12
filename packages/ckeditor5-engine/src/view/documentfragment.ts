@@ -13,7 +13,7 @@ import { TextProxy } from './textproxy.js';
 
 import { EmitterMixin, isIterable } from '@ckeditor/ckeditor5-utils';
 
-import type { ViewDocument, ChangeType } from './document.js';
+import type { ViewDocument, ViewDocumentChangeType } from './document.js';
 
 import { type Item } from './item.js';
 import { type Node } from './node.js';
@@ -222,7 +222,7 @@ export class DocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeCheckabl
 	 * @param data Additional data.
 	 * @fires module:engine/view/node~Node#event:change
 	 */
-	public _fireChange( type: ChangeType, node: Node | DocumentFragment, data?: { index: number } ): void {
+	public _fireChange( type: ViewDocumentChangeType, node: Node | DocumentFragment, data?: { index: number } ): void {
 		this.fire( `change:${ type }`, node, data );
 	}
 

@@ -16,7 +16,7 @@ import { type View } from '../view.js';
 import { type ViewElement } from '../element.js';
 import { type ViewNode } from '../node.js';
 import { type ViewText } from '../text.js';
-import type { ChangeType } from '../document.js';
+import type { ViewDocumentChangeType } from '../document.js';
 
 // @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
 
@@ -304,7 +304,7 @@ export type MutationData = {
 	/**
 	 * Type of mutation detected.
 	 */
-	type: ChangeType;
+	type: ViewDocumentChangeType;
 
 	/**
 	 * The view node related to the detected mutation.

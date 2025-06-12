@@ -220,7 +220,7 @@ export { ViewDataTransfer, type ViewDropEffect, type ViewEffectAllowed } from '.
 export { DomConverter, type BlockFillerMode } from './view/domconverter.js';
 export { Renderer } from './view/renderer.js';
 export { EditingView } from './view/view.js';
-export { ViewDocument } from './view/document.js';
+export { ViewDocument, type ViewDocumentPostFixer, type ViewDocumentChangeType } from './view/document.js';
 export { ViewText } from './view/text.js';
 export { ViewElement, type ElementAttributes as ViewElementAttributes } from './view/element.js';
 export { ViewContainerElement, getViewFillerOffset } from './view/containerelement.js';
