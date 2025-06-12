@@ -22,7 +22,7 @@ import {
 	type DowncastRemoveHighlightCallback,
 	type MapperViewToModelPositionEvent,
 	type ModelDocumentSelection,
-	type DowncastWriter,
+	type ViewDowncastWriter,
 	type Model,
 	type ModelRange,
 	type ModelSelection,
@@ -106,7 +106,7 @@ export function isWidget( node: ViewTypeCheckable ): boolean {
  */
 export function toWidget(
 	element: ViewElement,
-	writer: DowncastWriter,
+	writer: ViewDowncastWriter,
 	options: {
 		label?: string | ( () => string );
 		hasSelectionHandle?: boolean;
@@ -152,7 +152,7 @@ export function toWidget(
  * Default handler for adding a highlight on a widget.
  * It adds CSS class and attributes basing on the given highlight descriptor.
  */
-function addHighlight( element: ViewElement, descriptor: DowncastHighlightDescriptor, writer: DowncastWriter ) {
+function addHighlight( element: ViewElement, descriptor: DowncastHighlightDescriptor, writer: ViewDowncastWriter ) {
 	if ( descriptor.classes ) {
 		writer.addClass( toArray( descriptor.classes ), element );
 	}
@@ -168,7 +168,7 @@ function addHighlight( element: ViewElement, descriptor: DowncastHighlightDescri
  * Default handler for removing a highlight from a widget.
  * It removes CSS class and attributes basing on the given highlight descriptor.
  */
-function removeHighlight( element: ViewElement, descriptor: DowncastHighlightDescriptor, writer: DowncastWriter ) {
+function removeHighlight( element: ViewElement, descriptor: DowncastHighlightDescriptor, writer: ViewDowncastWriter ) {
 	if ( descriptor.classes ) {
 		writer.removeClass( toArray( descriptor.classes ), element );
 	}
@@ -186,9 +186,9 @@ function removeHighlight( element: ViewElement, descriptor: DowncastHighlightDes
  */
 export function setHighlightHandling(
 	element: ViewElement,
-	writer: DowncastWriter,
-	add: ( element: ViewElement, descriptor: DowncastHighlightDescriptor, writer: DowncastWriter ) => void = addHighlight,
-	remove: ( element: ViewElement, descriptor: DowncastHighlightDescriptor, writer: DowncastWriter ) => void = removeHighlight
+	writer: ViewDowncastWriter,
+	add: ( element: ViewElement, descriptor: DowncastHighlightDescriptor, writer: ViewDowncastWriter ) => void = addHighlight,
+	remove: ( element: ViewElement, descriptor: DowncastHighlightDescriptor, writer: ViewDowncastWriter ) => void = removeHighlight
 ): void {
 	const stack = new HighlightStack();
 
@@ -281,7 +281,7 @@ export function getLabel( element: ViewElement ): string {
  */
 export function toWidgetEditable(
 	editable: ViewEditableElement,
-	writer: DowncastWriter,
+	writer: ViewDowncastWriter,
 	options: {
 		label?: string;
 		withAriaRole?: boolean;
@@ -434,7 +434,7 @@ function getFillerOffset() {
 /**
  * Adds a drag handle to the widget.
  */
-function addSelectionHandle( widgetElement: ViewContainerElement, writer: DowncastWriter ) {
+function addSelectionHandle( widgetElement: ViewContainerElement, writer: ViewDowncastWriter ) {
 	const selectionHandle = writer.createUIElement( 'div', { class: 'ck ck-widget__selection-handle' }, function( domDocument ) {
 		const domElement = this.toDomElement( domDocument );
 

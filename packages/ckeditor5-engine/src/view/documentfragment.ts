@@ -229,7 +229,7 @@ export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeChec
 	/**
 	 * Sets a custom property. They can be used to add special data to elements.
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#setCustomProperty
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#setCustomProperty
 	 * @internal
 	 */
 	public _setCustomProperty( key: string | symbol, value: unknown ): void {
@@ -239,7 +239,7 @@ export class ViewDocumentFragment extends /* #__PURE__ */ EmitterMixin( TypeChec
 	/**
 	 * Removes the custom property stored under the given key.
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#removeCustomProperty
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#removeCustomProperty
 	 * @internal
 	 * @returns Returns true if property was removed.
 	 */

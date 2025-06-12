@@ -93,7 +93,7 @@ export type MentionAttribute = {
 
 	/**
 	 * A unique ID of this mention instance. Should be passed as an `option.id` when using
-	 * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement writer.createAttributeElement()}.
+	 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createAttributeElement writer.createAttributeElement()}.
 	 */
 	uid: string;
 

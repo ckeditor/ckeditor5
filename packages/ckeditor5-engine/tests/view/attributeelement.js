@@ -125,7 +125,7 @@ describe( 'ViewAttributeElement', () => {
 		} );
 	} );
 
-	// More tests are available in DowncastWriter tests.
+	// More tests are available in ViewDowncastWriter tests.
 	describe( 'getElementsWithSameId', () => {
 		it( 'should return a copy of _clonesGroup set', () => {
 			const attributeA = new ViewAttributeElement( document, 'b' );

@@ -19,7 +19,7 @@ import {
 	type ModelLiveRange,
 	type ViewElement,
 	type ViewRange,
-	type DowncastWriter,
+	type ViewDowncastWriter,
 	type ViewRootEditableElement
 } from '@ckeditor/ckeditor5-engine';
 
@@ -272,7 +272,7 @@ export class DragDropTarget extends Plugin {
 	/**
 	 * Creates the UI element for vertical (in-line) drop target.
 	 */
-	private _createDropTargetPosition( writer: DowncastWriter ): ViewElement {
+	private _createDropTargetPosition( writer: ViewDowncastWriter ): ViewElement {
 		return writer.createUIElement( 'span', { class: 'ck ck-clipboard-drop-target-position' }, function( domDocument ) {
 			const domElement = this.toDomElement( domDocument );
 

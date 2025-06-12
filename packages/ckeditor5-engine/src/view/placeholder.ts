@@ -10,7 +10,7 @@
 import '../../theme/placeholder.css';
 
 import { type ViewDocument } from './document.js';
-import { type DowncastWriter } from './downcastwriter.js';
+import { type ViewDowncastWriter } from './downcastwriter.js';
 import { type EditableElement } from './editableelement.js';
 import { type Element } from './element.js';
 import { type View } from './view.js';
@@ -133,7 +133,7 @@ export function disablePlaceholder( view: View, element: Element ): void {
  *
  * @returns `true`, if any changes were made to the `element`.
  */
-export function showPlaceholder( writer: DowncastWriter, element: Element ): boolean {
+export function showPlaceholder( writer: ViewDowncastWriter, element: Element ): boolean {
 	if ( !element.hasClass( 'ck-placeholder' ) ) {
 		writer.addClass( 'ck-placeholder', element );
 
@@ -154,7 +154,7 @@ export function showPlaceholder( writer: DowncastWriter, element: Element ): boo
  *
  * @returns `true`, if any changes were made to the `element`.
  */
-export function hidePlaceholder( writer: DowncastWriter, element: Element ): boolean {
+export function hidePlaceholder( writer: ViewDowncastWriter, element: Element ): boolean {
 	if ( element.hasClass( 'ck-placeholder' ) ) {
 		writer.removeClass( 'ck-placeholder', element );
 
@@ -228,7 +228,7 @@ function hasContent( element: Element ): boolean {
  */
 function updateDocumentPlaceholders(
 	placeholders: Iterable<[ Element, PlaceholderConfig ]>,
-	writer: DowncastWriter
+	writer: ViewDowncastWriter
 ): boolean {
 	const directHostElements: Array<Element> = [];
 	let wasViewModified = false;
@@ -279,7 +279,7 @@ function updateDocumentPlaceholders(
  *
  * @returns True if any changes were made to the view document.
  */
-function updatePlaceholder( writer: DowncastWriter, element: Element, config: PlaceholderConfig ) {
+function updatePlaceholder( writer: ViewDowncastWriter, element: Element, config: PlaceholderConfig ) {
 	const { text, isDirectHost, hostElement } = config;
 
 	let wasViewModified = false;

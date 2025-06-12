@@ -51,7 +51,7 @@ type DomElement = globalThis.HTMLElement;
  * Read more about changing the view in the {@glink framework/architecture/editing-engine#changing-the-view Changing the view}
  * section of the {@glink framework/architecture/editing-engine Editing engine architecture} guide.
  */
-export class DowncastWriter {
+export class ViewDowncastWriter {
 	/**
 	 * The view document instance in which this writer operates.
 	 */
@@ -66,7 +66,7 @@ export class DowncastWriter {
 	/**
 	 * The slot factory used by the `elementToStructure` downcast helper.
 	 */
-	private _slotFactory: ( ( writer: DowncastWriter, modeOrFilter: 'children' | DowncastSlotFilter ) => Element ) | null = null;
+	private _slotFactory: ( ( writer: ViewDowncastWriter, modeOrFilter: 'children' | DowncastSlotFilter ) => Element ) | null = null;
 
 	/**
 	 * @param document The view document instance.
@@ -714,8 +714,8 @@ export class DowncastWriter {
 	 *
 	 * **Note:** {@link module:engine/view/documentfragment~ViewDocumentFragment DocumentFragment} is treated like a container.
 	 *
-	 * **Note:** The difference between {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes breakAttributes()} and
-	 * {@link module:engine/view/downcastwriter~DowncastWriter#breakContainer breakContainer()} is that `breakAttributes()` breaks all
+	 * **Note:** The difference between {@link module:engine/view/downcastwriter~ViewDowncastWriter#breakAttributes breakAttributes()} and
+	 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#breakContainer breakContainer()} is that `breakAttributes()` breaks all
 	 * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements} that are ancestors of a given `position`,
 	 * up to the first encountered {@link module:engine/view/containerelement~ViewContainerElement container element}.
 	 * `breakContainer()` assumes that a given `position` is directly in the container element and breaks that container element.
@@ -732,7 +732,7 @@ export class DowncastWriter {
 	 *
 	 * @see module:engine/view/attributeelement~ViewAttributeElement
 	 * @see module:engine/view/containerelement~ViewContainerElement
-	 * @see module:engine/view/downcastwriter~DowncastWriter#breakContainer
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#breakContainer
 	 * @param positionOrRange The position where to break attribute elements.
 	 * @returns The new position or range, after breaking the attribute elements.
 	 */
@@ -756,15 +756,15 @@ export class DowncastWriter {
 	 * <p>foobar^</p> -> <p>foobar</p>^
 	 * ```
 	 *
-	 * **Note:** The difference between {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes breakAttributes()} and
-	 * {@link module:engine/view/downcastwriter~DowncastWriter#breakContainer breakContainer()} is that `breakAttributes()` breaks all
+	 * **Note:** The difference between {@link module:engine/view/downcastwriter~ViewDowncastWriter#breakAttributes breakAttributes()} and
+	 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#breakContainer breakContainer()} is that `breakAttributes()` breaks all
 	 * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements} that are ancestors of a given `position`,
 	 * up to the first encountered {@link module:engine/view/containerelement~ViewContainerElement container element}.
 	 * `breakContainer()` assumes that the given `position` is directly in the container element and breaks that container element.
 	 *
 	 * @see module:engine/view/attributeelement~ViewAttributeElement
 	 * @see module:engine/view/containerelement~ViewContainerElement
-	 * @see module:engine/view/downcastwriter~DowncastWriter#breakAttributes
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#breakAttributes
 	 * @param position The position where to break the element.
 	 * @returns The position between broken elements. If an element has not been broken,
 	 * the returned position is placed either before or after it.
@@ -825,15 +825,15 @@ export class DowncastWriter {
 	 * <p><b>foo</b><i>[]</i><b>bar</b></p> -> <p><b>foo{}bar</b></p>
 	 * ```
 	 *
-	 * **Note:** Difference between {@link module:engine/view/downcastwriter~DowncastWriter#mergeAttributes mergeAttributes} and
-	 * {@link module:engine/view/downcastwriter~DowncastWriter#mergeContainers mergeContainers} is that `mergeAttributes` merges two
+	 * **Note:** Difference between {@link module:engine/view/downcastwriter~ViewDowncastWriter#mergeAttributes mergeAttributes} and
+	 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#mergeContainers mergeContainers} is that `mergeAttributes` merges two
 	 * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements} or
 	 * {@link module:engine/view/text~Text text nodes} while `mergeContainer` merges two
 	 * {@link module:engine/view/containerelement~ViewContainerElement container elements}.
 	 *
 	 * @see module:engine/view/attributeelement~ViewAttributeElement
 	 * @see module:engine/view/containerelement~ViewContainerElement
-	 * @see module:engine/view/downcastwriter~DowncastWriter#mergeContainers
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#mergeContainers
 	 * @param position Merge position.
 	 * @returns Position after merge.
 	 */
@@ -896,15 +896,15 @@ export class DowncastWriter {
 	 * <div>foo</div>^<p>bar</p> -> <div>foo^bar</div>
 	 * ```
 	 *
-	 * **Note:** Difference between {@link module:engine/view/downcastwriter~DowncastWriter#mergeAttributes mergeAttributes} and
-	 * {@link module:engine/view/downcastwriter~DowncastWriter#mergeContainers mergeContainers} is that `mergeAttributes` merges two
+	 * **Note:** Difference between {@link module:engine/view/downcastwriter~ViewDowncastWriter#mergeAttributes mergeAttributes} and
+	 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#mergeContainers mergeContainers} is that `mergeAttributes` merges two
 	 * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements} or
 	 * {@link module:engine/view/text~Text text nodes} while `mergeContainer` merges two
 	 * {@link module:engine/view/containerelement~ViewContainerElement container elements}.
 	 *
 	 * @see module:engine/view/attributeelement~ViewAttributeElement
 	 * @see module:engine/view/containerelement~ViewContainerElement
-	 * @see module:engine/view/downcastwriter~DowncastWriter#mergeAttributes
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#mergeAttributes
 	 * @param position Merge position.
 	 * @returns Position after merge.
 	 */
@@ -1194,7 +1194,7 @@ export class DowncastWriter {
 	public unwrap( range: Range, attribute: ViewAttributeElement ): Range {
 		if ( !( attribute instanceof ViewAttributeElement ) ) {
 			/**
-			 * The `attribute` passed to {@link module:engine/view/downcastwriter~DowncastWriter#unwrap `DowncastWriter#unwrap()`}
+			 * The `attribute` passed to {@link module:engine/view/downcastwriter~ViewDowncastWriter#unwrap `DowncastWriter#unwrap()`}
 			 * must be an instance of {@link module:engine/view/attributeelement~ViewAttributeElement `AttributeElement`}.
 			 *
 			 * @error view-writer-unwrap-invalid-attribute
@@ -1485,7 +1485,9 @@ export class DowncastWriter {
 	 * @internal
 	 * @param slotFactory The slot factory.
 	 */
-	public _registerSlotFactory( slotFactory: ( writer: DowncastWriter, modeOrFilter: 'children' | DowncastSlotFilter ) => Element ): void {
+	public _registerSlotFactory(
+		slotFactory: ( writer: ViewDowncastWriter, modeOrFilter: 'children' | DowncastSlotFilter ) => Element
+	): void {
 		this._slotFactory = slotFactory;
 	}
 
@@ -1873,7 +1875,7 @@ export class DowncastWriter {
 			 * Cannot break an `EmptyElement` instance.
 			 *
 			 * This error is thrown if
-			 * {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes `DowncastWriter#breakAttributes()`}
+			 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#breakAttributes `DowncastWriter#breakAttributes()`}
 			 * was executed in an incorrect position.
 			 *
 			 * @error view-writer-cannot-break-empty-element
@@ -1887,7 +1889,7 @@ export class DowncastWriter {
 			 * Cannot break a `UIElement` instance.
 			 *
 			 * This error is thrown if
-			 * {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes `DowncastWriter#breakAttributes()`}
+			 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#breakAttributes `DowncastWriter#breakAttributes()`}
 			 * was executed in an incorrect position.
 			 *
 			 * @error view-writer-cannot-break-ui-element
@@ -1901,7 +1903,7 @@ export class DowncastWriter {
 			 * Cannot break a `RawElement` instance.
 			 *
 			 * This error is thrown if
-			 * {@link module:engine/view/downcastwriter~DowncastWriter#breakAttributes `DowncastWriter#breakAttributes()`}
+			 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#breakAttributes `DowncastWriter#breakAttributes()`}
 			 * was executed in an incorrect position.
 			 *
 			 * @error view-writer-cannot-break-raw-element
@@ -2051,15 +2053,13 @@ export class DowncastWriter {
 	}
 }
 
-export { DowncastWriter as ViewDowncastWriter };
-
 // Helper function for `view.writer.wrap`. Checks if given element has any children that are not ui elements.
 function _hasNonUiChildren( parent: Element ): boolean {
 	return Array.from( parent.getChildren() ).some( child => !child.is( 'uiElement' ) );
 }
 
 /**
- * The `attribute` passed to {@link module:engine/view/downcastwriter~DowncastWriter#wrap `DowncastWriter#wrap()`}
+ * The `attribute` passed to {@link module:engine/view/downcastwriter~ViewDowncastWriter#wrap `DowncastWriter#wrap()`}
  * must be an instance of {@link module:engine/view/attributeelement~ViewAttributeElement `AttributeElement`}.
  *
  * @error view-writer-wrap-invalid-attribute
@@ -2199,8 +2199,8 @@ function validateNodesToInsert( nodes: Iterable<Node>, errorContext: ViewDocumen
 			/**
 			 * One of the nodes to be inserted is of an invalid type.
 			 *
-			 * Nodes to be inserted with {@link module:engine/view/downcastwriter~DowncastWriter#insert `DowncastWriter#insert()`} should be
-			 * of the following types:
+			 * Nodes to be inserted with {@link module:engine/view/downcastwriter~ViewDowncastWriter#insert `DowncastWriter#insert()`}
+			 * should be of the following types:
 			 *
 			 * * {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElement},
 			 * * {@link module:engine/view/containerelement~ViewContainerElement ViewContainerElement},
@@ -2246,10 +2246,10 @@ function validateRangeContainer( range: Range, errorContext: ViewDocument ) {
 		 * {@link module:engine/view/range~Range#end range end} positions are not placed inside the same container element or
 		 * a parent container for these positions cannot be found.
 		 *
-		 * Methods like {@link module:engine/view/downcastwriter~DowncastWriter#wrap `DowncastWriter#remove()`},
-		 * {@link module:engine/view/downcastwriter~DowncastWriter#wrap `DowncastWriter#clean()`},
-		 * {@link module:engine/view/downcastwriter~DowncastWriter#wrap `DowncastWriter#wrap()`},
-		 * {@link module:engine/view/downcastwriter~DowncastWriter#wrap `DowncastWriter#unwrap()`} need to be called
+		 * Methods like {@link module:engine/view/downcastwriter~ViewDowncastWriter#wrap `DowncastWriter#remove()`},
+		 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#wrap `DowncastWriter#clean()`},
+		 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#wrap `DowncastWriter#wrap()`},
+		 * {@link module:engine/view/downcastwriter~ViewDowncastWriter#wrap `DowncastWriter#unwrap()`} need to be called
 		 * on a range that has its start and end positions located in the same container element. Both positions can be
 		 * nested within other elements (e.g. an attribute element) but the closest container ancestor must be the same.
 		 *

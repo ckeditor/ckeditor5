@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { DowncastWriter } from '../../../src/view/downcastwriter.js';
+import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
@@ -41,7 +41,7 @@ describe( 'DowncastWriter', () => {
 
 		before( () => {
 			document = new ViewDocument( new StylesProcessor() );
-			writer = new DowncastWriter( document );
+			writer = new ViewDowncastWriter( document );
 		} );
 
 		it( 'should move single text node', () => {

@@ -14,7 +14,7 @@ import {
 	ModelTreeWalker,
 	type DomEventData,
 	type DowncastSelectionEvent,
-	type DowncastWriter,
+	type ViewDowncastWriter,
 	type ModelElement,
 	type ModelNode,
 	type ViewDocumentArrowKeyEvent,
@@ -560,7 +560,7 @@ export class Widget extends Plugin {
 	/**
 	 * Removes CSS class from previously selected widgets.
 	 */
-	private _clearPreviouslySelectedWidgets( writer: DowncastWriter ) {
+	private _clearPreviouslySelectedWidgets( writer: ViewDowncastWriter ) {
 		for ( const widget of this._previouslySelected ) {
 			writer.removeClass( WIDGET_SELECTED_CLASS_NAME, widget );
 		}

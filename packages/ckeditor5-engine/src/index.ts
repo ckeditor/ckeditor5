@@ -255,7 +255,7 @@ export {
 	type ViewDocumentFocusEvent
 } from './view/observer/focusobserver.js';
 
-export { DowncastWriter } from './view/downcastwriter.js';
+export { ViewDowncastWriter } from './view/downcastwriter.js';
 export { UpcastWriter } from './view/upcastwriter.js';
 export { Matcher, type MatcherPattern, type MatcherObjectPattern, type Match, type MatchResult } from './view/matcher.js';
 

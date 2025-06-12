@@ -10,7 +10,7 @@
 import type {
 	DowncastAttributeEvent,
 	DowncastInsertEvent,
-	DowncastWriter,
+	ViewDowncastWriter,
 	ModelElement,
 	MapperModelToViewPositionEvent,
 	Model,
@@ -303,7 +303,7 @@ export function mapModelToViewPosition( view: EditingView ): GetCallback<MapperM
  */
 function createCheckmarkElement(
 	modelItem: ModelElement,
-	viewWriter: DowncastWriter,
+	viewWriter: ViewDowncastWriter,
 	isChecked: boolean,
 	onChange: ( element: ModelElement ) => void
 ) {

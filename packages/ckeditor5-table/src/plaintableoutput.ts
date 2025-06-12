@@ -8,7 +8,7 @@
  */
 
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
-import type { DowncastWriter, ModelElement, ModelNode, ViewContainerElement, UpcastElementEvent } from 'ckeditor5/src/engine.js';
+import type { ViewDowncastWriter, ModelElement, ModelNode, ViewContainerElement, UpcastElementEvent } from 'ckeditor5/src/engine.js';
 
 import { Table } from './table.js';
 
@@ -89,7 +89,7 @@ export class PlainTableOutput extends Plugin {
  * @param conversionApi The conversion API object.
  * @returns Created element.
  */
-function downcastTableElement( table: ModelElement, { writer }: { writer: DowncastWriter } ) {
+function downcastTableElement( table: ModelElement, { writer }: { writer: ViewDowncastWriter } ) {
 	const headingRows = table.getAttribute( 'headingRows' ) as number || 0;
 
 	// Table head rows slot.

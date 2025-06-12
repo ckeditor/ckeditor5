@@ -490,7 +490,8 @@ export class ViewDomConverter {
 	 * @param value The value of the attribute.
 	 * @param relatedViewElement The view element related to the `domElement` (if there is any).
 	 * It helps decide whether the attribute set is unsafe. For instance, view elements created via the
-	 * {@link module:engine/view/downcastwriter~DowncastWriter} methods can allow certain attributes that would normally be filtered out.
+	 * {@link module:engine/view/downcastwriter~ViewDowncastWriter} methods can allow certain attributes
+	 * that would normally be filtered out.
 	 */
 	public setDomElementAttribute( domElement: DomElement, key: string, value: string, relatedViewElement?: ViewElement ): void {
 		const shouldRenderAttribute = this.shouldRenderAttribute( key, value, domElement.tagName.toLowerCase() ) ||
@@ -2066,11 +2067,11 @@ export type BlockFillerMode = 'br' | 'nbsp' | 'markedNbsp';
  *
  * If you are the author of the plugin that generated this attribute and you want it to be preserved
  * in the editing pipeline, you can configure this when creating the element
- * using {@link module:engine/view/downcastwriter~DowncastWriter} during the
+ * using {@link module:engine/view/downcastwriter~ViewDowncastWriter} during the
  * {@glink framework/architecture/editing-engine#conversion model–view conversion}. Methods such as
- * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement},
- * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement}, or
- * {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement}
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createContainerElement},
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createAttributeElement}, or
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createEmptyElement}
  * accept an option that will disable filtering of specific attributes:
  *
  * ```ts

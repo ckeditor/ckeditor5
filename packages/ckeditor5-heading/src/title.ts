@@ -10,7 +10,7 @@
 import { Plugin, type Editor, type ElementApi } from 'ckeditor5/src/core.js';
 import { first, type GetCallback } from 'ckeditor5/src/utils.js';
 import {
-	DowncastWriter,
+	ViewDowncastWriter,
 	enablePlaceholder,
 	hidePlaceholder,
 	needsPlaceholder,
@@ -170,7 +170,7 @@ export class Title extends Plugin {
 		const rootName = options.rootName ? options.rootName as string : undefined;
 		const root = editor.model.document.getRoot( rootName )!;
 		const view = editor.editing.view;
-		const viewWriter = new DowncastWriter( view.document );
+		const viewWriter = new ViewDowncastWriter( view.document );
 
 		const rootRange = model.createRangeIn( root );
 		const viewDocumentFragment = viewWriter.createDocumentFragment();

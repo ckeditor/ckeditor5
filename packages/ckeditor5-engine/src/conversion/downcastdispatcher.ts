@@ -16,7 +16,7 @@ import type { Differ, DifferItem, DifferItemReinsert } from '../model/differ.js'
 import type { MarkerCollection, Marker } from '../model/markercollection.js';
 import type { ModelTreeWalkerValue } from '../model/treewalker.js';
 import { type ModelDocumentSelection } from '../model/documentselection.js';
-import { type DowncastWriter } from '../view/downcastwriter.js';
+import { type ViewDowncastWriter } from '../view/downcastwriter.js';
 import { type ModelRootElement } from '../model/rootelement.js';
 import { type ModelElement } from '../model/element.js';
 import { type ModelItem } from '../model/item.js';
@@ -87,7 +87,7 @@ import { type ViewElement } from '../view/element.js';
  * then the default converter at the `lowest` priority will not trigger the conversion of this node's attributes and child nodes.
  *
  * When providing custom listeners for a downcast dispatcher, remember to use the provided
- * {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer} to apply changes to the view document.
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter view downcast writer} to apply changes to the view document.
  *
  * You can read more about conversion in the following guide:
  *
@@ -162,7 +162,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	public convertChanges(
 		differ: Differ,
 		markers: MarkerCollection,
-		writer: DowncastWriter
+		writer: ViewDowncastWriter
 	): void {
 		const conversionApi = this._createConversionApi( writer, differ.getRefreshedItems() );
 
@@ -222,7 +222,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	public convert(
 		range: ModelRange,
 		markers: Map<string, ModelRange>,
-		writer: DowncastWriter,
+		writer: ViewDowncastWriter,
 		options: DowncastConversionApi[ 'options' ] = {}
 	): void {
 		const conversionApi = this._createConversionApi( writer, undefined, options );
@@ -252,7 +252,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	public convertSelection(
 		selection: ModelSelection | ModelDocumentSelection,
 		markers: MarkerCollection,
-		writer: DowncastWriter
+		writer: ViewDowncastWriter
 	): void {
 		const conversionApi = this._createConversionApi( writer );
 
@@ -638,7 +638,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 
 	/**
 	 * Builds an instance of the {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi} from a template and a given
-	 * {@link module:engine/view/downcastwriter~DowncastWriter `DowncastWriter`} and options object.
+	 * {@link module:engine/view/downcastwriter~ViewDowncastWriter `DowncastWriter`} and options object.
 	 *
 	 * @param writer View writer that should be used to modify the view document.
 	 * @param refreshedItems A set of model elements that should not reuse their
@@ -647,7 +647,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 * @return The conversion API object.
 	 */
 	private _createConversionApi(
-		writer: DowncastWriter,
+		writer: ViewDowncastWriter,
 		refreshedItems: Set<ModelItem> = new Set(),
 		options: DowncastConversionApi[ 'options' ] = {}
 	): DowncastConversionApi {
@@ -944,9 +944,9 @@ export interface DowncastConversionApi {
 	schema: ModelSchema;
 
 	/**
-	 * The {@link module:engine/view/downcastwriter~DowncastWriter} instance used to manipulate the data during conversion.
+	 * The {@link module:engine/view/downcastwriter~ViewDowncastWriter} instance used to manipulate the data during conversion.
 	 */
-	writer: DowncastWriter;
+	writer: ViewDowncastWriter;
 
 	/**
 	 * An object with an additional configuration which can be used during the conversion process.

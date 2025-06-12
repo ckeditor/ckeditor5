@@ -22,7 +22,7 @@ import { TreeWalker, type TreeWalkerValue, type TreeWalkerOptions } from './tree
  * In order to create a new position instance use the `createPosition*()` factory methods available in:
  *
  * * {@link module:engine/view/view~View}
- * * {@link module:engine/view/downcastwriter~DowncastWriter}
+ * * {@link module:engine/view/downcastwriter~ViewDowncastWriter}
  * * {@link module:engine/view/upcastwriter~UpcastWriter}
  */
 export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {

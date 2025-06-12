@@ -18,7 +18,7 @@ import { ViewDomConverter } from '../../src/view/domconverter.js';
 import { Renderer } from '../../src/view/renderer.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewDocument } from '../../src/view/document.js';
-import { DowncastWriter } from '../../src/view/downcastwriter.js';
+import { ViewDowncastWriter } from '../../src/view/downcastwriter.js';
 
 import { _parseView, _stringifyView, _setViewData, _getViewData } from '../../src/dev-utils/view.js';
 import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH } from '../../src/view/filler.js';
@@ -4104,7 +4104,7 @@ describe( 'Renderer', () => {
 		// #1560
 		describe( 'attributes manipulation on replaced element', () => {
 			it( 'should rerender element if it was removed after having its attributes removed (attribute)', () => {
-				const writer = new DowncastWriter( viewDocument );
+				const writer = new ViewDowncastWriter( viewDocument );
 
 				// 1. Setup initial view/DOM.
 				viewRoot._appendChild( _parseView( '<container:p>1</container:p>' ) );
@@ -4133,7 +4133,7 @@ describe( 'Renderer', () => {
 			} );
 
 			it( 'should rerender element if it was removed after having its attributes removed (classes)', () => {
-				const writer = new DowncastWriter( viewDocument );
+				const writer = new ViewDowncastWriter( viewDocument );
 
 				// 1. Setup initial view/DOM.
 				viewRoot._appendChild( _parseView( '<container:h1>h1</container:h1><container:p>p</container:p>' ) );
@@ -4163,7 +4163,7 @@ describe( 'Renderer', () => {
 			} );
 
 			it( 'should rerender element if it was removed and have its attributes removed after', () => {
-				const writer = new DowncastWriter( viewDocument );
+				const writer = new ViewDowncastWriter( viewDocument );
 
 				// 1. Setup initial view/DOM.
 				viewRoot._appendChild( _parseView( '<container:p>1</container:p>' ) );

@@ -9,7 +9,7 @@
 
 import { EmitterMixin, type ArrayOrItem } from '@ckeditor/ckeditor5-utils';
 
-import type { DowncastWriter, DowncastHighlightDescriptor } from '@ckeditor/ckeditor5-engine';
+import type { ViewDowncastWriter, DowncastHighlightDescriptor } from '@ckeditor/ckeditor5-engine';
 
 /**
  * Class used to handle the correct order of highlights on elements.
@@ -30,7 +30,7 @@ export class HighlightStack extends /* #__PURE__ */ EmitterMixin() {
 	 *
 	 * @fires change:top
 	 */
-	public add( descriptor: DowncastHighlightDescriptor, writer: DowncastWriter ): void {
+	public add( descriptor: DowncastHighlightDescriptor, writer: ViewDowncastWriter ): void {
 		const stack = this._stack;
 
 		// Save top descriptor and insert new one. If top is changed - fire event.
@@ -54,7 +54,7 @@ export class HighlightStack extends /* #__PURE__ */ EmitterMixin() {
 	 * @fires change:top
 	 * @param id Id of the descriptor to remove.
 	 */
-	public remove( id: string, writer: DowncastWriter ): void {
+	public remove( id: string, writer: ViewDowncastWriter ): void {
 		const stack = this._stack;
 
 		const oldTop = stack[ 0 ];
@@ -175,5 +175,5 @@ export type HighlightStackChangeEventData = {
 	/**
 	 * View writer that can be used to modify element.
 	 */
-	writer: DowncastWriter;
+	writer: ViewDowncastWriter;
 };

@@ -9,7 +9,7 @@
 
 import {
 	type DowncastAttributeEvent,
-	type DowncastWriter,
+	type ViewDowncastWriter,
 	type EditingController,
 	type ModelElement,
 	type DowncastElementCreatorFunction,
@@ -506,7 +506,7 @@ export function createModelToViewPositionMapper(
 /**
  * Removes a custom marker elements and item wrappers related to that marker.
  */
-function removeCustomMarkerElements( viewElement: ViewElement, viewWriter: DowncastWriter, mapper: Mapper ): void {
+function removeCustomMarkerElements( viewElement: ViewElement, viewWriter: ViewDowncastWriter, mapper: Mapper ): void {
 	// Remove item wrapper.
 	while ( viewElement.parent!.is( 'attributeElement' ) && viewElement.parent!.getCustomProperty( 'listItemWrapper' ) ) {
 		viewWriter.unwrap( viewWriter.createRangeOn( viewElement ), viewElement.parent );
@@ -546,7 +546,7 @@ function insertCustomMarkerElements(
 	listItem: ModelElement,
 	viewElement: ViewElement,
 	strategies: Array<DowncastStrategy>,
-	writer: DowncastWriter,
+	writer: ViewDowncastWriter,
 	{ dataPipeline }: { dataPipeline?: boolean }
 ): ViewRange {
 	let viewRange = writer.createRangeOn( viewElement );
@@ -610,7 +610,7 @@ function insertCustomMarkerElements(
 /**
  * Unwraps all ol, ul, and li attribute elements that are wrapping the provided view element.
  */
-function unwrapListItemBlock( viewElement: ViewElement, viewWriter: DowncastWriter ) {
+function unwrapListItemBlock( viewElement: ViewElement, viewWriter: ViewDowncastWriter ) {
 	let attributeElement: ViewElement | ViewDocumentFragment = viewElement.parent!;
 
 	while ( attributeElement.is( 'attributeElement' ) && [ 'ul', 'ol', 'li' ].includes( attributeElement.name ) ) {
@@ -629,7 +629,7 @@ function wrapListItemBlock(
 	listItem: ListElement,
 	viewRange: ViewRange,
 	strategies: Array<DowncastStrategy>,
-	writer: DowncastWriter,
+	writer: ViewDowncastWriter,
 	options?: Record<string, unknown>
 ) {
 	if ( !listItem.hasAttribute( 'listIndent' ) ) {

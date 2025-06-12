@@ -8,7 +8,7 @@
  */
 
 import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget.js';
-import type { ModelNode, ViewElement, ModelElement, DowncastWriter, DowncastElementCreatorFunction } from 'ckeditor5/src/engine.js';
+import type { ModelNode, ViewElement, ModelElement, ViewDowncastWriter, DowncastElementCreatorFunction } from 'ckeditor5/src/engine.js';
 
 import { TableWalker } from './../tablewalker.js';
 import { type TableUtils } from '../tableutils.js';
@@ -188,7 +188,7 @@ export function isSingleParagraphWithoutAttributes( modelElement: ModelElement )
  * @param writer An instance of the view writer.
  * @param label The element's label. It will be concatenated with the table `alt` attribute if one is present.
  */
-function toTableWidget( viewElement: ViewElement, writer: DowncastWriter ): ViewElement {
+function toTableWidget( viewElement: ViewElement, writer: ViewDowncastWriter ): ViewElement {
 	writer.setCustomProperty( 'table', true, viewElement );
 
 	return toWidget( viewElement, writer, { hasSelectionHandle: true } );

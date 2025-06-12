@@ -13,7 +13,7 @@ import type {
 	DowncastAttributeEvent,
 	DowncastConversionApi,
 	DowncastDispatcher,
-	DowncastWriter,
+	ViewDowncastWriter,
 	ModelElement,
 	DowncastElementCreatorFunction,
 	UpcastConversionApi,
@@ -93,7 +93,7 @@ export function toObjectWidgetConverter(
 *
 * @internal
 */
-export function createObjectView( viewName: string, modelElement: ModelElement, writer: DowncastWriter ): ViewElement {
+export function createObjectView( viewName: string, modelElement: ModelElement, writer: ViewDowncastWriter ): ViewElement {
 	return writer.createRawElement( viewName, null, ( domElement, domConverter ) => {
 		domConverter.setContentOf( domElement, modelElement.getAttribute( 'htmlContent' ) as string );
 	} );

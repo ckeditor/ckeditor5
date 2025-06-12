@@ -11,7 +11,7 @@ import {
 	ModelTreeWalker,
 	getViewFillerOffset,
 	type DowncastConversionApi,
-	type DowncastWriter,
+	type ViewDowncastWriter,
 	type ModelElement,
 	type ModelItem,
 	type Model,
@@ -27,7 +27,7 @@ import {
  *
  * @param writer The writer instance.
  */
-export function createViewListItemElement( writer: DowncastWriter ): ViewContainerElement {
+export function createViewListItemElement( writer: ViewDowncastWriter ): ViewContainerElement {
 	const viewItem = writer.createContainerElement( 'li' );
 
 	viewItem.getFillerOffset = getListItemFillerOffset;
@@ -193,13 +193,13 @@ export function injectViewList(
  * @returns The position after merge or `null` when there was no merge.
  */
 export function mergeViewLists(
-	viewWriter: DowncastWriter,
+	viewWriter: ViewDowncastWriter,
 	firstList: ViewItem,
 	secondList: ViewItem
 ): ViewPosition | null;
 
 export function mergeViewLists(
-	viewWriter: DowncastWriter,
+	viewWriter: ViewDowncastWriter,
 	firstList: any,
 	secondList: any
 ): ViewPosition | null {

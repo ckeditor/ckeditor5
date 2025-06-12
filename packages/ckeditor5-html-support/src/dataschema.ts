@@ -295,7 +295,7 @@ export interface DataSchemaInlineElementDefinition extends DataSchemaDefinition 
 
 	/**
 	 * Element priority. Decides in what order elements are wrapped by
-	 * {@link module:engine/view/downcastwriter~DowncastWriter}.
+	 * {@link module:engine/view/downcastwriter~ViewDowncastWriter}.
 	 * Set by {@link module:html-support/dataschema~DataSchema#registerInlineElement} method.
 	 */
 	priority?: number;

@@ -15,7 +15,7 @@ import type { EventInfo } from 'ckeditor5/src/utils.js';
 
 import type {
 	ViewUIElement,
-	DowncastWriter,
+	ViewDowncastWriter,
 	ViewElement,
 	ModelElement,
 	ModelDocumentChangeEvent,
@@ -173,7 +173,7 @@ export class BookmarkEditing extends Plugin {
 	/**
 	 * Creates a UI element for the `bookmark` representation in editing view.
 	 */
-	private _createBookmarkUIElement( writer: DowncastWriter ): ViewUIElement {
+	private _createBookmarkUIElement( writer: ViewDowncastWriter ): ViewUIElement {
 		return writer.createUIElement( 'span', { class: 'ck-bookmark__icon' }, function( domDocument ) {
 			const domElement = this.toDomElement( domDocument );
 

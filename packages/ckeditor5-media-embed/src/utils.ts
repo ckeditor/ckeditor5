@@ -13,7 +13,7 @@ import type {
 	Model,
 	ModelSelectable,
 	ModelSelection,
-	DowncastWriter,
+	ViewDowncastWriter,
 	ViewDocumentSelection,
 	ViewElement,
 	ModelDocumentSelection
@@ -30,7 +30,7 @@ import { type MediaRegistry } from './mediaregistry.js';
  * @param label The element's label.
  * @internal
  */
-export function toMediaWidget( viewElement: ViewElement, writer: DowncastWriter, label: string ): ViewElement {
+export function toMediaWidget( viewElement: ViewElement, writer: ViewDowncastWriter, label: string ): ViewElement {
 	writer.setCustomProperty( 'media', true, viewElement );
 
 	return toWidget( viewElement, writer, { label } );
@@ -80,7 +80,7 @@ export function isMediaWidget( viewElement: ViewElement ): boolean {
  * @internal
  */
 export function createMediaFigureElement(
-	writer: DowncastWriter,
+	writer: ViewDowncastWriter,
 	registry: MediaRegistry,
 	url: string,
 	options: MediaOptions

@@ -19,7 +19,7 @@ import { ModelConsumable } from '../../src/conversion/modelconsumable.js';
 import { View } from '../../src/view/view.js';
 import { ViewRootEditableElement } from '../../src/view/rooteditableelement.js';
 import { ViewContainerElement } from '../../src/view/containerelement.js';
-import { DowncastWriter } from '../../src/view/downcastwriter.js';
+import { ViewDowncastWriter } from '../../src/view/downcastwriter.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 import { insertAttributesAndChildren } from '../../src/conversion/downcasthelpers.js';
 
@@ -1523,7 +1523,7 @@ describe( 'DowncastDispatcher', () => {
 	} );
 
 	function assertConversionApi( conversionApi ) {
-		expect( conversionApi ).to.have.property( 'writer' ).that.is.instanceof( DowncastWriter );
+		expect( conversionApi ).to.have.property( 'writer' ).that.is.instanceof( ViewDowncastWriter );
 		expect( conversionApi ).to.have.property( 'consumable' ).that.is.instanceof( ModelConsumable );
 		expect( conversionApi ).to.have.property( 'mapper' ).that.is.equal( mapper );
 		expect( conversionApi ).to.have.property( 'apiObj' ).that.is.equal( apiObj );

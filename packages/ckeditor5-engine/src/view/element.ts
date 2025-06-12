@@ -27,15 +27,15 @@ import { TokenList } from './tokenlist.js';
  * This is why the type of the {@link module:engine/view/element~Element} need to
  * be defined by the feature developer. When creating an element you should use one of the following methods:
  *
- * * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement `downcastWriter#createContainerElement()`}
+ * * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createContainerElement `downcastWriter#createContainerElement()`}
  * in order to create a {@link module:engine/view/containerelement~ViewContainerElement},
- * * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement `downcastWriter#createAttributeElement()`}
+ * * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createAttributeElement `downcastWriter#createAttributeElement()`}
  * in order to create a {@link module:engine/view/attributeelement~ViewAttributeElement},
- * * {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement `downcastWriter#createEmptyElement()`}
+ * * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createEmptyElement `downcastWriter#createEmptyElement()`}
  * in order to create a {@link module:engine/view/emptyelement~EmptyElement}.
- * * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement `downcastWriter#createUIElement()`}
+ * * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createUIElement `downcastWriter#createUIElement()`}
  * in order to create a {@link module:engine/view/uielement~UIElement}.
- * * {@link module:engine/view/downcastwriter~DowncastWriter#createEditableElement `downcastWriter#createEditableElement()`}
+ * * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createEditableElement `downcastWriter#createEditableElement()`}
  * in order to create a {@link module:engine/view/editableelement~EditableElement}.
  *
  * Note that for view elements which are not created from the model, like elements from mutations, paste or
@@ -55,7 +55,7 @@ export class Element extends Node {
 	 * {@link module:engine/view/domconverter~DomConverter#shouldRenderAttribute}) would filter them out.
 	 *
 	 * These attributes can be specified as an option when the element is created by
-	 * the {@link module:engine/view/downcastwriter~DowncastWriter}. To check whether an unsafe an attribute should
+	 * the {@link module:engine/view/downcastwriter~ViewDowncastWriter}. To check whether an unsafe an attribute should
 	 * be permitted, use the {@link #shouldRenderUnsafeAttribute} method.
 	 *
 	 * @internal
@@ -497,7 +497,7 @@ export class Element extends Node {
 	 * Decides whether an unsafe attribute is whitelisted and should be rendered in the editing pipeline even though filtering mechanisms
 	 * like {@link module:engine/view/domconverter~DomConverter#shouldRenderAttribute} say it should not.
 	 *
-	 * Unsafe attribute names can be specified when creating an element via {@link module:engine/view/downcastwriter~DowncastWriter}.
+	 * Unsafe attribute names can be specified when creating an element via {@link module:engine/view/downcastwriter~ViewDowncastWriter}.
 	 *
 	 * @param attributeName The name of the attribute to be checked.
 	 */
@@ -543,7 +543,7 @@ export class Element extends Node {
 	 * {@link module:engine/view/element~Element#_insertChild Insert} a child node or a list of child nodes at the end of this node
 	 * and sets the parent of these nodes to this element.
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#insert
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#insert
 	 * @internal
 	 * @param items Items to be inserted.
 	 * @fires change
@@ -558,7 +558,7 @@ export class Element extends Node {
 	 * this element.
 	 *
 	 * @internal
-	 * @see module:engine/view/downcastwriter~DowncastWriter#insert
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#insert
 	 * @param index Position where nodes should be inserted.
 	 * @param items Items to be inserted.
 	 * @fires change
@@ -590,7 +590,7 @@ export class Element extends Node {
 	/**
 	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#remove
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#remove
 	 * @internal
 	 * @param index Number of the first node to remove.
 	 * @param howMany Number of nodes to remove.
@@ -610,7 +610,7 @@ export class Element extends Node {
 	/**
 	 * Adds or overwrite attribute with a specified key and value.
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#setAttribute
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#setAttribute
 	 * @internal
 	 * @param key Attribute key.
 	 * @param value Attribute value.
@@ -654,7 +654,7 @@ export class Element extends Node {
 	/**
 	 * Removes attribute from the element.
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#removeAttribute
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#removeAttribute
 	 * @internal
 	 * @param key Attribute key.
 	 * @param tokens Attribute value tokens to remove. The whole attribute is removed if not specified.
@@ -695,7 +695,7 @@ export class Element extends Node {
 	 * element._addClass( [ 'foo', 'bar' ] ); // Adds 'foo' and 'bar' classes.
 	 * ```
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#addClass
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#addClass
 	 * @internal
 	 * @fires change
 	 */
@@ -711,7 +711,7 @@ export class Element extends Node {
 	 * element._removeClass( [ 'foo', 'bar' ] ); // Removes both 'foo' and 'bar' classes.
 	 * ```
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#removeClass
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#removeClass
 	 * @internal
 	 * @fires change
 	 */
@@ -730,7 +730,7 @@ export class Element extends Node {
 	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#setStyle
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#setStyle
 	 * @label KEY_VALUE
 	 * @internal
 	 * @param property Property name.
@@ -753,7 +753,7 @@ export class Element extends Node {
 	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#set `StylesMap#set()`} for details.
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#setStyle
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#setStyle
 	 * @label OBJECT
 	 * @internal
 	 * @param properties Object with key - value pairs.
@@ -781,7 +781,7 @@ export class Element extends Node {
 	 * {@link module:engine/controller/datacontroller~DataController#addStyleProcessorRules a particular style processor rule is enabled}.
 	 * See {@link module:engine/view/stylesmap~StylesMap#remove `StylesMap#remove()`} for details.
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#removeStyle
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#removeStyle
 	 * @internal
 	 * @fires change
 	 */
@@ -968,7 +968,7 @@ export class Element extends Node {
 	 *
 	 * Note that this method is extended by the {@link module:engine/view/attributeelement~ViewAttributeElement} implementation.
 	 *
-	 * This method is used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * This method is used by the {@link module:engine/view/downcastwriter~ViewDowncastWriter} while down-casting
 	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other ViewAttributeElement.
 	 *
 	 * @internal
@@ -1005,7 +1005,7 @@ export class Element extends Node {
 	 *
 	 * Note that you should make sure there are no conflicts before merging (see {@link #_canMergeAttributesFrom}).
 	 *
-	 * This method is used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * This method is used by the {@link module:engine/view/downcastwriter~ViewDowncastWriter} while down-casting
 	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other ViewAttributeElement.
 	 *
 	 * @internal
@@ -1031,7 +1031,7 @@ export class Element extends Node {
 	 *
 	 * Note that this method is extended by the {@link module:engine/view/attributeelement~ViewAttributeElement} implementation.
 	 *
-	 * This method is used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * This method is used by the {@link module:engine/view/downcastwriter~ViewDowncastWriter} while down-casting
 	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to unwrap the ViewAttributeElement.
 	 *
 	 * @internal
@@ -1069,7 +1069,7 @@ export class Element extends Node {
 	 *
 	 * Note that you should make sure all attributes could be subtracted before subtracting them (see {@link #_canSubtractAttributesOf}).
 	 *
-	 * This method is used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * This method is used by the {@link module:engine/view/downcastwriter~ViewDowncastWriter} while down-casting
 	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to unwrap the ViewAttributeElement.
 	 *
 	 * @internal
@@ -1097,7 +1097,7 @@ export class Element extends Node {
 	 * Sets a custom property. Unlike attributes, custom properties are not rendered to the DOM,
 	 * so they can be used to add special data to elements.
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#setCustomProperty
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#setCustomProperty
 	 * @internal
 	 */
 	public _setCustomProperty( key: string | symbol, value: unknown ): void {
@@ -1107,7 +1107,7 @@ export class Element extends Node {
 	/**
 	 * Removes the custom property stored under the given key.
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#removeCustomProperty
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#removeCustomProperty
 	 * @internal
 	 * @returns Returns true if property was removed.
 	 */
@@ -1288,7 +1288,7 @@ export interface ElementAttributeValue {
 	/**
 	 * Used by {@link ~Element#_canMergeAttributesFrom} to verify if the given attribute can be merged without conflicts into the attribute.
 	 *
-	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~ViewDowncastWriter} while down-casting
 	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other ViewAttributeElement.
 	 */
 	_canMergeFrom( other: this ): boolean;
@@ -1296,7 +1296,7 @@ export interface ElementAttributeValue {
 	/**
 	 * Used by {@link ~Element#_mergeAttributesFrom} to merge a given attribute into the attribute.
 	 *
-	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~ViewDowncastWriter} while down-casting
 	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other ViewAttributeElement.
 	 */
 	_mergeFrom( other: this ): void;
@@ -1304,7 +1304,7 @@ export interface ElementAttributeValue {
 	/**
 	 * Used by {@link ~Element#_canSubtractAttributesOf} to verify if the given attribute can be fully subtracted from the attribute.
 	 *
-	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
+	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~ViewDowncastWriter} while down-casting
 	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to unwrap the ViewAttributeElement.
 	 */
 	_isMatching( other: this ): boolean;

@@ -13,7 +13,7 @@ import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
 import { ViewDomConverter } from '../../../src/view/domconverter.js';
 import { ViewDocumentFragment } from '../../../src/view/documentfragment.js';
 import { ViewDocument } from '../../../src/view/document.js';
-import { DowncastWriter } from '../../../src/view/downcastwriter.js';
+import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, BR_FILLER, NBSP_FILLER, MARKED_NBSP_FILLER } from '../../../src/view/filler.js';
 
 import { _parseView, _getViewData } from '../../../src/dev-utils/view.js';
@@ -460,7 +460,7 @@ describe( 'DomConverter', () => {
 				let writer;
 
 				beforeEach( () => {
-					writer = new DowncastWriter( viewDocument );
+					writer = new ViewDowncastWriter( viewDocument );
 					converter = new ViewDomConverter( viewDocument, {
 						renderingMode: 'editing'
 					} );
@@ -1235,7 +1235,7 @@ describe( 'DomConverter', () => {
 			} );
 
 			it( 'should yield the `RawElement` children properly', () => {
-				const downcastWriter = new DowncastWriter( viewDocument );
+				const downcastWriter = new ViewDowncastWriter( viewDocument );
 				const dataConverter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'data'
 				} );

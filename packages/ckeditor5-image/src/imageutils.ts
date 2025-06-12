@@ -17,7 +17,7 @@ import type {
 	ViewSelection,
 	ModelDocumentFragment,
 	ViewDocumentFragment,
-	DowncastWriter,
+	ViewDowncastWriter,
 	Model,
 	ModelPosition,
 	ViewContainerElement
@@ -255,7 +255,7 @@ export class ImageUtils extends Plugin {
 	 * @param writer An instance of the view writer.
 	 * @param label The element's label. It will be concatenated with the image `alt` attribute if one is present.
 	 */
-	public toImageWidget( viewElement: ViewElement, writer: DowncastWriter, label: string ): ViewElement {
+	public toImageWidget( viewElement: ViewElement, writer: ViewDowncastWriter, label: string ): ViewElement {
 		writer.setCustomProperty( 'image', true, viewElement );
 
 		const labelCreator = () => {

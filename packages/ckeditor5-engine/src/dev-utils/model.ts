@@ -58,7 +58,7 @@ import type { BatchType } from '../model/batch.js';
 import { type MarkerCollection } from '../model/markercollection.js';
 import { type ModelText } from '../model/text.js';
 import { type ModelTextProxy } from '../model/textproxy.js';
-import { type DowncastWriter } from '../view/downcastwriter.js';
+import { type ViewDowncastWriter } from '../view/downcastwriter.js';
 import type { ModelSchema, ModelSchemaContextDefinition } from '../model/schema.js';
 import type { ViewDocumentFragment, ViewElement } from '../index.js';
 import { type ViewNode } from '../view/node.js';
@@ -327,7 +327,7 @@ export function _stringifyModel(
 	}
 
 	// Convert model to view.
-	const writer: DowncastWriter = ( view as any )._writer;
+	const writer: ViewDowncastWriter = ( view as any )._writer;
 	downcastDispatcher.convert( range, markersMap, writer );
 
 	// Convert model selection to view selection.

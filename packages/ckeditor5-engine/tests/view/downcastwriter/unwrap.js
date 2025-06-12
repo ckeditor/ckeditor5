@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { DowncastWriter } from '../../../src/view/downcastwriter.js';
+import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { Element } from '../../../src/view/element.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
@@ -37,7 +37,7 @@ describe( 'DowncastWriter', () => {
 
 		beforeEach( () => {
 			document = new ViewDocument( new StylesProcessor() );
-			writer = new DowncastWriter( document );
+			writer = new ViewDowncastWriter( document );
 		} );
 
 		it( 'should do nothing on collapsed ranges', () => {

@@ -14,7 +14,7 @@ import { Collection, ObservableMixin } from '@ckeditor/ckeditor5-utils';
 
 import type { StylesProcessor } from './stylesmap.js';
 import { type RootEditableElement } from './rooteditableelement.js';
-import { type DowncastWriter } from './downcastwriter.js';
+import { type ViewDowncastWriter } from './downcastwriter.js';
 
 // @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
 
@@ -143,7 +143,7 @@ export class ViewDocument extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PU
 	 * * you should not add or remove nor wrap or unwrap any view elements,
 	 * * you should not change the editor data model in a view post-fixer.
 	 *
-	 * As a parameter, a post-fixer callback receives a {@link module:engine/view/downcastwriter~DowncastWriter downcast writer}.
+	 * As a parameter, a post-fixer callback receives a {@link module:engine/view/downcastwriter~ViewDowncastWriter downcast writer}.
 	 *
 	 * Typically, a post-fixer will look like this:
 	 *
@@ -186,7 +186,7 @@ export class ViewDocument extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PU
 	 *
 	 * @internal
 	 */
-	public _callPostFixers( writer: DowncastWriter ): void {
+	public _callPostFixers( writer: ViewDowncastWriter ): void {
 		let wasFixed = false;
 
 		do {
@@ -210,7 +210,7 @@ export class ViewDocument extends /* #__PURE__ */ BubblingEmitterMixin( /* #__PU
  *
  * @see module:engine/view/document~ViewDocument#registerPostFixer
  */
-export type ViewDocumentPostFixer = ( writer: DowncastWriter ) => boolean;
+export type ViewDocumentPostFixer = ( writer: ViewDowncastWriter ) => boolean;
 
 /**
  * Enum representing type of the change.

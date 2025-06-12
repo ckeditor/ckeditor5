@@ -27,7 +27,7 @@ type DomElement = globalThis.HTMLElement;
  * UI elements can be used.
  *
  * How a UI element is rendered is in your control (you pass a callback to
- * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement `downcastWriter#createUIElement()`}).
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createUIElement `downcastWriter#createUIElement()`}).
  * The editor will ignore your UI element – the selection cannot be placed in it, it is skipped (invisible) when
  * the user modifies the selection by using arrow keys and the editor does not listen to any mutations which
  * happen inside your UI elements.
@@ -37,7 +37,7 @@ type DomElement = globalThis.HTMLElement;
  * inside normal {@link module:engine/view/containerelement~ViewContainerElement container elements}.
  *
  * To create a new UI element use the
- * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement `downcastWriter#createUIElement()`} method.
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createUIElement `downcastWriter#createUIElement()`} method.
  */
 export class UIElement extends Element {
 	/**
@@ -46,7 +46,7 @@ export class UIElement extends Element {
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-uielement-cannot-add` when third parameter is passed,
 	 * to inform that usage of UIElement is incorrect (adding child nodes to UIElement is forbidden).
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#createUIElement
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#createUIElement
 	 * @internal
 	 * @param document The document instance to which this element belongs.
 	 * @param name Node name.

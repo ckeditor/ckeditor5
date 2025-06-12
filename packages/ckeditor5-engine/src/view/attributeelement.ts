@@ -26,13 +26,13 @@ const DEFAULT_PRIORITY = 10;
  * {@link module:engine/view/emptyelement~EmptyElement empty element}, etc) when developing a feature.
  *
  * To create a new attribute element instance use the
- * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement `DowncastWriter#createAttributeElement()`} method.
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createAttributeElement `DowncastWriter#createAttributeElement()`} method.
  */
 export class ViewAttributeElement extends Element {
 	public static readonly DEFAULT_PRIORITY: number = DEFAULT_PRIORITY;
 
 	/**
-	 * Element priority. Decides in what order elements are wrapped by {@link module:engine/view/downcastwriter~DowncastWriter}.
+	 * Element priority. Decides in what order elements are wrapped by {@link module:engine/view/downcastwriter~ViewDowncastWriter}.
 	 *
 	 * @internal
 	 * @readonly
@@ -52,14 +52,14 @@ export class ViewAttributeElement extends Element {
 	 * Keeps all the attribute elements that have the same {@link module:engine/view/attributeelement~ViewAttributeElement#id ids}
 	 * and still exist in the view tree.
 	 *
-	 * This property is managed by {@link module:engine/view/downcastwriter~DowncastWriter}.
+	 * This property is managed by {@link module:engine/view/downcastwriter~ViewDowncastWriter}.
 	 */
 	private readonly _clonesGroup: Set<ViewAttributeElement> | null = null;
 
 	/**
 	 * Creates an attribute element.
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#createAttributeElement
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#createAttributeElement
 	 * @see module:engine/view/element~Element
 	 * @protected
 	 * @param document The document instance to which this element belongs.
@@ -79,7 +79,7 @@ export class ViewAttributeElement extends Element {
 	}
 
 	/**
-	 * Element priority. Decides in what order elements are wrapped by {@link module:engine/view/downcastwriter~DowncastWriter}.
+	 * Element priority. Decides in what order elements are wrapped by {@link module:engine/view/downcastwriter~ViewDowncastWriter}.
 	 */
 	public get priority(): number {
 		return this._priority;
@@ -132,10 +132,10 @@ export class ViewAttributeElement extends Element {
 	 * elements have to have the same {@link module:engine/view/attributeelement~ViewAttributeElement#id} value to be
 	 * considered similar.
 	 *
-	 * Similarity is important for {@link module:engine/view/downcastwriter~DowncastWriter}. For example:
+	 * Similarity is important for {@link module:engine/view/downcastwriter~ViewDowncastWriter}. For example:
 	 *
 	 * * two following similar elements can be merged together into one, longer element,
-	 * * {@link module:engine/view/downcastwriter~DowncastWriter#unwrap} checks similarity of passed element and processed element to
+	 * * {@link module:engine/view/downcastwriter~ViewDowncastWriter#unwrap} checks similarity of passed element and processed element to
 	 * decide whether processed element should be unwrapped,
 	 * * etc.
 	 */

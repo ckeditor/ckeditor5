@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ViewDomConverter, StylesProcessor, ViewDocument, DowncastWriter } from '@ckeditor/ckeditor5-engine';
+import { ViewDomConverter, StylesProcessor, ViewDocument, ViewDowncastWriter } from '@ckeditor/ckeditor5-engine';
 import { viewToPlainText } from '../../src/utils/viewtoplaintext.js';
 
 import { _parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
@@ -140,7 +140,7 @@ describe( 'viewToPlainText()', () => {
 	} );
 
 	it( 'should convert a view RawElement', () => {
-		const writer = new DowncastWriter( viewDocument );
+		const writer = new ViewDowncastWriter( viewDocument );
 		const rawElement = writer.createRawElement( 'div', { 'data-foo': 'bar' }, function( domElement ) {
 			domElement.innerHTML = '<p>Foo</p><br><p>Bar</p>';
 		} );

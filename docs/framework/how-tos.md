@@ -41,7 +41,7 @@ Learn more about {@link getting-started/advanced/integrating-from-source-webpack
 
 ### How to add an attribute to the editor editable in DOM?
 
-If you have a reference to the editor instance, use the {@link framework/architecture/editing-engine#changing-the-view `change()`} method of the view and set the new attribute via the {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}:
+If you have a reference to the editor instance, use the {@link framework/architecture/editing-engine#changing-the-view `change()`} method of the view and set the new attribute via the {@link module:engine/view/downcastwriter~ViewDowncastWriter view downcast writer}:
 
 ```js
 editor.editing.view.change( writer => {

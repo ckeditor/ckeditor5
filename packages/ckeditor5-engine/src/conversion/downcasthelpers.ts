@@ -34,7 +34,7 @@ import { type ModelItem } from '../model/item.js';
 import { type ModelTextProxy } from '../model/textproxy.js';
 import { type ModelText } from '../model/text.js';
 
-import { type DowncastWriter } from '../view/downcastwriter.js';
+import { type ViewDowncastWriter } from '../view/downcastwriter.js';
 import { type ElementDefinition } from '../view/elementdefinition.js';
 import { type ViewDocumentFragment } from '../view/documentfragment.js';
 import { type UIElement } from '../view/uielement.js';
@@ -914,7 +914,7 @@ export function remove() {
  * @internal
  */
 export function createViewElementFromDowncastHighlightDescriptor(
-	writer: DowncastWriter,
+	writer: ViewDowncastWriter,
 	descriptor: DowncastHighlightDescriptor
 ): ViewAttributeElement {
 	const viewElement = writer.createAttributeElement( 'span', descriptor.attributes );
@@ -2040,7 +2040,7 @@ function downcastElementToStructure(
  * @param config.model The key of the attribute to convert from or a `{ key, values }` object. `values` is an array
  * of `String`s with possible values if the model attribute is an enumerable.
  * @param config.view A view element definition or a function that takes the model attribute value and
- * {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer} as parameters and returns a view attribute element.
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter view downcast writer} as parameters and returns a view attribute element.
  * If `config.model.values` is given, `config.view` should be an object assigning values from `config.model.values` to view element
  * definitions or functions.
  * @param config.converterPriority Converter priority.
@@ -2581,7 +2581,7 @@ function createConsumer( model: NormalizedModelElementConfig ): ConsumerFunction
  * @returns Function exposed by the writer as `createSlot()`.
  */
 function createSlotFactory( element: ModelElement, slotsMap: Map<ViewElement, Array<ModelNode>>, conversionApi: DowncastConversionApi ) {
-	return ( writer: DowncastWriter, modeOrFilter: 'children' | DowncastSlotFilter ) => {
+	return ( writer: ViewDowncastWriter, modeOrFilter: 'children' | DowncastSlotFilter ) => {
 		const slot = writer.createContainerElement( '$slot' );
 
 		let children: Array<ModelNode> | null = null;
@@ -2815,7 +2815,7 @@ export interface DowncastHighlightDescriptor {
 
 /**
  * A filtering function used to choose model child nodes to be downcasted into the specific view
- * {@link module:engine/view/downcastwriter~DowncastWriter#createSlot "slot"} while executing the
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createSlot "slot"} while executing the
  * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure `elementToStructure()`} converter.
  *
  * @callback module:engine/conversion/downcasthelpers~DowncastSlotFilter
@@ -2823,7 +2823,7 @@ export interface DowncastHighlightDescriptor {
  * @param node A model node.
  * @returns Whether the provided model node should be downcasted into this slot.
  *
- * @see module:engine/view/downcastwriter~DowncastWriter#createSlot
+ * @see module:engine/view/downcastwriter~ViewDowncastWriter#createSlot
  * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
  * @see module:engine/conversion/downcasthelpers~insertStructure
  */
@@ -2971,13 +2971,13 @@ export type DowncastHighlightDescriptorCreatorFunction = (
 export type DowncastAddHighlightCallback = (
 	viewElement: ViewElement,
 	descriptor: DowncastHighlightDescriptor,
-	writer: DowncastWriter
+	writer: ViewDowncastWriter
 ) => void;
 
 export type DowncastRemoveHighlightCallback = (
 	viewElement: ViewElement,
 	id: string,
-	writer: DowncastWriter
+	writer: ViewDowncastWriter
 ) => void;
 
 export type DowncastMarkerDataCreatorFunction = (

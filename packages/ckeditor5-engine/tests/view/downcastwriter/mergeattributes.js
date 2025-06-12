@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { DowncastWriter } from '../../../src/view/downcastwriter.js';
+import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { Text } from '../../../src/view/text.js';
 import { Position } from '../../../src/view/position.js';
@@ -28,7 +28,7 @@ describe( 'DowncastWriter', () => {
 
 		before( () => {
 			document = new ViewDocument( new StylesProcessor() );
-			writer = new DowncastWriter( document );
+			writer = new ViewDowncastWriter( document );
 		} );
 
 		it( 'should not merge if inside text node', () => {

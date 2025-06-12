@@ -14,7 +14,7 @@ import type {
 	ModelElement,
 	ModelDocumentFragment,
 	ModelSelection,
-	DowncastWriter,
+	ViewDowncastWriter,
 	ViewElement,
 	ModelDeleteContentEvent
 } from 'ckeditor5/src/engine.js';
@@ -243,7 +243,7 @@ export class TableSelection extends Plugin {
 			viewWriter.setSelection( lastViewCell, 0 );
 		}, { priority: 'lowest' } ) );
 
-		function clearHighlightedTableCells( viewWriter: DowncastWriter ) {
+		function clearHighlightedTableCells( viewWriter: ViewDowncastWriter ) {
 			for ( const previouslyHighlighted of highlighted ) {
 				viewWriter.removeClass( 'ck-editor__editable_selected', previouslyHighlighted );
 			}

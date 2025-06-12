@@ -8,7 +8,7 @@
  */
 
 import { ViewDocument, type ViewDocumentLayoutChangedEvent } from './document.js';
-import { DowncastWriter } from './downcastwriter.js';
+import { ViewDowncastWriter } from './downcastwriter.js';
 import { Renderer } from './renderer.js';
 import { ViewDomConverter } from './domconverter.js';
 import { Position, type PositionOffset } from './position.js';
@@ -58,7 +58,7 @@ type DomRange = globalThis.Range;
  *
  * View controller renders view document to DOM whenever view structure changes. To determine when view can be rendered,
  * all changes need to be done using the {@link module:engine/view/view~View#change} method, using
- * {@link module:engine/view/downcastwriter~DowncastWriter}:
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter}:
  *
  * ```ts
  * view.change( writer => {
@@ -137,9 +137,9 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	private readonly _observers: Map<ObserverConstructor, Observer> = new Map();
 
 	/**
-	 * DowncastWriter instance used in {@link #change change method} callbacks.
+	 * ViewDowncastWriter instance used in {@link #change change method} callbacks.
 	 */
-	private readonly _writer: DowncastWriter;
+	private readonly _writer: ViewDowncastWriter;
 
 	/**
 	 * Is set to `true` when {@link #change view changes} are currently in progress.
@@ -178,7 +178,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 		this._renderer.bind( 'isFocused', 'isSelecting', 'isComposing' )
 			.to( this.document, 'isFocused', 'isSelecting', 'isComposing' );
 
-		this._writer = new DowncastWriter( this.document );
+		this._writer = new ViewDowncastWriter( this.document );
 
 		// Add default observers.
 		// Make sure that this list matches AlwaysRegisteredObservers type.
@@ -538,7 +538,7 @@ export class View extends /* #__PURE__ */ ObservableMixin() {
 	 * @param callback Callback function which may modify the view.
 	 * @returns Value returned by the callback.
 	 */
-	public change<TReturn>( callback: ( writer: DowncastWriter ) => TReturn ): TReturn {
+	public change<TReturn>( callback: ( writer: ViewDowncastWriter ) => TReturn ): TReturn {
 		if ( this.isRenderingInProgress || this._postFixersInProgress ) {
 			/**
 			 * Thrown when there is an attempt to make changes to the view tree when it is in incorrect state. This may

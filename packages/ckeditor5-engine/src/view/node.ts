@@ -25,7 +25,7 @@ import { type Element } from './element.js';
  * Abstract view node class.
  *
  * This is an abstract class. Its constructor should not be used directly.
- * Use the {@link module:engine/view/downcastwriter~DowncastWriter} or {@link module:engine/view/upcastwriter~UpcastWriter}
+ * Use the {@link module:engine/view/downcastwriter~ViewDowncastWriter} or {@link module:engine/view/upcastwriter~UpcastWriter}
  * to create new instances of view nodes.
  */
 export abstract class Node extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {

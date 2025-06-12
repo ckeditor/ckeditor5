@@ -10,7 +10,7 @@
 import type { Editor } from 'ckeditor5/src/core.js';
 import {
 	Matcher,
-	type DowncastWriter,
+	type ViewDowncastWriter,
 	type MatcherPattern,
 	type ModelPostFixer,
 	type ModelPosition,
@@ -43,7 +43,7 @@ export function setupExceptionHighlighting( editor: Editor ): void {
 	const highlightedMarkers = new Set<ViewElement>();
 
 	// Adding the class.
-	view.document.registerPostFixer( ( writer: DowncastWriter ): boolean => {
+	view.document.registerPostFixer( ( writer: ViewDowncastWriter ): boolean => {
 		const modelSelection = model.document.selection;
 
 		const marker = getMarkerAtPosition( editor, modelSelection.anchor! );

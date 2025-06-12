@@ -13,7 +13,7 @@ import type {
 	DifferItem,
 	DowncastAttributeEvent,
 	DowncastDispatcher,
-	DowncastWriter,
+	ViewDowncastWriter,
 	ModelElement,
 	ModelDeleteContentEvent,
 	ModelNode,
@@ -276,7 +276,7 @@ interface AttributeStrategy {
 	defaultValue: unknown;
 	addCommand: ( editor: Editor ) => void;
 	appliesToListItem: ( element: ModelNode ) => boolean;
-	setAttributeOnDowncast: ( writer: DowncastWriter, value: any, element: ViewElement ) => void;
+	setAttributeOnDowncast: ( writer: ViewDowncastWriter, value: any, element: ViewElement ) => void;
 	getAttributeOnUpcast: ( element: ViewElement ) => unknown;
 }
 

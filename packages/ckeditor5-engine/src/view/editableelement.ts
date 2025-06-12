@@ -21,7 +21,7 @@ import { type Node } from './node.js';
  * Editable is automatically read-only when its {@link module:engine/view/document~ViewDocument Document} is read-only.
  *
  * The constructor of this class shouldn't be used directly. To create new `EditableElement` use the
- * {@link module:engine/view/downcastwriter~DowncastWriter#createEditableElement `downcastWriter#createEditableElement()`} method.
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createEditableElement `downcastWriter#createEditableElement()`} method.
  */
 export class EditableElement extends /* #__PURE__ */ ObservableMixin( ViewContainerElement ) {
 	/**
@@ -56,7 +56,7 @@ export class EditableElement extends /* #__PURE__ */ ObservableMixin( ViewContai
 	/**
 	 * Creates an editable element.
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#createEditableElement
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#createEditableElement
 	 * @internal
 	 * @param document The document instance to which this element belongs.
 	 * @param name Node name.

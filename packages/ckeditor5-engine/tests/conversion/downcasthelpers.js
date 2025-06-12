@@ -37,7 +37,7 @@ import { createViewRoot } from '../view/_utils/createroot.js';
 import { _setModelData } from '../../src/dev-utils/model.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
-import { DowncastWriter } from '../../src/view/downcastwriter.js';
+import { ViewDowncastWriter } from '../../src/view/downcastwriter.js';
 
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils.js';
 
@@ -3200,7 +3200,7 @@ describe( 'DowncastHelpers', () => {
 				model: 'styled',
 				view: ( attributeValue, conversionApi ) => {
 					// To ensure conversion API is provided.
-					expect( conversionApi.writer ).to.instanceof( DowncastWriter );
+					expect( conversionApi.writer ).to.instanceof( ViewDowncastWriter );
 
 					return { key: 'class', value: 'styled-' + attributeValue };
 				}
@@ -3218,7 +3218,7 @@ describe( 'DowncastHelpers', () => {
 				model: 'styled',
 				view: ( attributeValue, conversionApi, data ) => {
 					// To ensure conversion API is provided.
-					expect( conversionApi.writer ).to.instanceof( DowncastWriter );
+					expect( conversionApi.writer ).to.instanceof( ViewDowncastWriter );
 
 					expect( data.item.is( 'element', 'imageBlock' ) ).to.be.true;
 					expect( data.range.is( 'range' ) ).to.be.true;
@@ -4014,7 +4014,7 @@ describe( 'DowncastHelpers', () => {
 					const namePart = markerName.split( ':' )[ 1 ];
 
 					// To ensure conversion API is provided.
-					expect( conversionApi.writer ).to.instanceof( DowncastWriter );
+					expect( conversionApi.writer ).to.instanceof( ViewDowncastWriter );
 
 					return {
 						group: 'g',
@@ -4933,7 +4933,7 @@ describe( 'downcast converters', () => {
 		let viewWriter;
 
 		beforeEach( () => {
-			viewWriter = new DowncastWriter( controller.view.document );
+			viewWriter = new ViewDowncastWriter( controller.view.document );
 		} );
 
 		it( 'should return attribute element from descriptor object', () => {

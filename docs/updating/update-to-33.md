@@ -300,7 +300,7 @@ The new syntax of the `model` property is available in the {@link module:engine/
 
 ### Improved API of `DowncastWriter#createContainerElement()`
 
-Starting from v33.0.0, you can specify the children of a container element directly in the {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement} method:
+Starting from v33.0.0, you can specify the children of a container element directly in the {@link module:engine/view/downcastwriter~ViewDowncastWriter#createContainerElement} method:
 
 ```js
 // ❌ Old API:

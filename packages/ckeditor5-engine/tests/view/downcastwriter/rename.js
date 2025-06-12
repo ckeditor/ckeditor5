@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { DowncastWriter } from '../../../src/view/downcastwriter.js';
+import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { _parseView } from '../../../src/dev-utils/view.js';
 import { ViewDocument } from '../../../src/view/document.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
@@ -13,7 +13,7 @@ describe( 'DowncastWriter', () => {
 		let root, foo, writer;
 
 		before( () => {
-			writer = new DowncastWriter( new ViewDocument( new StylesProcessor() ) );
+			writer = new ViewDowncastWriter( new ViewDocument( new StylesProcessor() ) );
 		} );
 
 		beforeEach( () => {

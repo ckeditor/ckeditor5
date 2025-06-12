@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { DowncastWriter } from '../../../src/view/downcastwriter.js';
+import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { ViewDocument } from '../../../src/view/document.js';
 import { EditableElement } from '../../../src/view/editableelement.js';
 import { ViewPosition } from '../../../src/view/position.js';
@@ -27,7 +27,7 @@ describe( 'DowncastWriter', () => {
 		attributes = { foo: 'bar', baz: 'quz' };
 		doc = new ViewDocument( new StylesProcessor() );
 		root = createViewRoot( doc );
-		writer = new DowncastWriter( doc );
+		writer = new ViewDowncastWriter( doc );
 	} );
 
 	describe( 'setSelection()', () => {

@@ -33,7 +33,7 @@ type DomElement = globalThis.HTMLElement;
  * {@link module:widget/utils~toWidget they can work as widgets}.
  *
  * To create a new raw element, use the
- * {@link module:engine/view/downcastwriter~DowncastWriter#createRawElement `downcastWriter#createRawElement()`} method.
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createRawElement `downcastWriter#createRawElement()`} method.
  */
 export class RawElement extends Element {
 	/**
@@ -42,7 +42,7 @@ export class RawElement extends Element {
 	 * Throws the `view-rawelement-cannot-add` {@link module:utils/ckeditorerror~CKEditorError CKEditorError} when the `children`
 	 * parameter is passed to inform that the usage of `RawElement` is incorrect (adding child nodes to `RawElement` is forbidden).
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#createRawElement
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#createRawElement
 	 * @internal
 	 * @param document The document instance to which this element belongs.
 	 * @param name Node name.

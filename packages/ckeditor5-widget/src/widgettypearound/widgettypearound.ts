@@ -39,7 +39,7 @@ import type {
 	DomEventData,
 	DowncastInsertEvent,
 	DowncastSelectionEvent,
-	DowncastWriter,
+	ViewDowncastWriter,
 	ModelElement,
 	ModelSchema,
 	SelectionChangeRangeEvent,
@@ -881,7 +881,7 @@ export class WidgetTypeAround extends Plugin {
  * Injects the type around UI into a view widget instance.
  */
 function injectUIIntoWidget(
-	viewWriter: DowncastWriter,
+	viewWriter: ViewDowncastWriter,
 	buttonTitles: { before: string; after: string },
 	widgetViewElement: ViewElement ) {
 	const typeAroundWrapper = viewWriter.createUIElement( 'div', {

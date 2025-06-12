@@ -12,7 +12,7 @@ import {
 	ModelRange,
 	type ModelDocumentSelection,
 	type DowncastAttributeEvent,
-	type DowncastWriter,
+	type ViewDowncastWriter,
 	type ModelElement,
 	type ModelItem,
 	type ModelNode,
@@ -442,7 +442,7 @@ function findAssetsForItem( item: ModelItem, assets: Set<CKBoxAssetDefinition> )
 /**
  * Creates view link element with the requested ID.
  */
-function createLinkElement( writer: DowncastWriter, id: string ) {
+function createLinkElement( writer: ViewDowncastWriter, id: string ) {
 	// Priority equal 5 is needed to merge adjacent `<a>` elements together.
 	const viewElement = writer.createAttributeElement( 'a', { 'data-ckbox-resource-id': id }, { priority: 5 } );
 

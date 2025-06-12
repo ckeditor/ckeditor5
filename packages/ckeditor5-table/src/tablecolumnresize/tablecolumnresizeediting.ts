@@ -25,7 +25,7 @@ import type {
 	Differ,
 	DomEventData,
 	DowncastInsertEvent,
-	DowncastWriter,
+	ViewDowncastWriter,
 	ModelElement,
 	ViewElement,
 	ViewNode
@@ -677,7 +677,7 @@ export class TableColumnResizeEditing extends Plugin {
 		 * @param columnWidthsInPx Column widths.
 		 * @param viewTable A table view element.
 		 */
-		function _insertColgroupElement( viewWriter: DowncastWriter, columnWidthsInPx: Array<number>, viewTable: ViewElement ) {
+		function _insertColgroupElement( viewWriter: ViewDowncastWriter, columnWidthsInPx: Array<number>, viewTable: ViewElement ) {
 			const colgroup = viewWriter.createContainerElement( 'colgroup' );
 
 			for ( let i = 0; i < columnWidthsInPx.length; i++ ) {
@@ -698,7 +698,7 @@ export class TableColumnResizeEditing extends Plugin {
 		 * @param viewTable A table containing the clicked resizer.
 		 * @param resizingData Data related to the resizing.
 		 */
-		function _applyResizingAttributesToTable( viewWriter: DowncastWriter, viewTable: ViewElement, resizingData: ResizingData ) {
+		function _applyResizingAttributesToTable( viewWriter: ViewDowncastWriter, viewTable: ViewElement, resizingData: ResizingData ) {
 			const figureInitialPcWidth = resizingData.widths.viewFigureWidth / resizingData.widths.viewFigureParentWidth;
 
 			viewWriter.addClass( 'ck-table-resized', viewTable );

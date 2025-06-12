@@ -28,14 +28,14 @@ import { type Node } from './node.js';
  * * this is a nested editable element (then use  {@link module:engine/view/editableelement~EditableElement}).
  *
  * To create a new container element instance use the
- * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement `DowncastWriter#createContainerElement()`}
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter#createContainerElement `DowncastWriter#createContainerElement()`}
  * method.
  */
 export class ViewContainerElement extends Element {
 	/**
 	 * Creates a container element.
 	 *
-	 * @see module:engine/view/downcastwriter~DowncastWriter#createContainerElement
+	 * @see module:engine/view/downcastwriter~ViewDowncastWriter#createContainerElement
 	 * @see module:engine/view/element~Element
 	 * @internal
 	 * @param document The document instance to which this element belongs.

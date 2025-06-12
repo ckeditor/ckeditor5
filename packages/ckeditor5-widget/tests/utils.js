@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { DowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
+import { ViewDowncastWriter } from '@ckeditor/ckeditor5-engine/src/view/downcastwriter.js';
 import { ViewText } from '@ckeditor/ckeditor5-engine/src/view/text.js';
 import { ViewElement } from '@ckeditor/ckeditor5-engine/src/view/element.js';
 import { ViewPosition } from '@ckeditor/ckeditor5-engine/src/view/position.js';
@@ -37,7 +37,7 @@ describe( 'widget utils', () => {
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument();
-		writer = new DowncastWriter( viewDocument );
+		writer = new ViewDowncastWriter( viewDocument );
 
 		element = writer.createContainerElement( 'div' );
 		toWidget( element, writer );

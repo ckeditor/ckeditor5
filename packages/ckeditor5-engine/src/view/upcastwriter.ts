@@ -30,7 +30,7 @@ import { type Node } from './node.js';
  * It should be used only while working on a non-semantic view
  * (e.g. a view created from HTML string on paste).
  * To manipulate a view which was or is being downcasted from the the model use the
- * {@link module:engine/view/downcastwriter~DowncastWriter downcast writer}.
+ * {@link module:engine/view/downcastwriter~ViewDowncastWriter downcast writer}.
  *
  * Read more about changing the view in the {@glink framework/architecture/editing-engine#changing-the-view Changing the view}
  * section of the {@glink framework/architecture/editing-engine Editing engine architecture} guide.

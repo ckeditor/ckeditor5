@@ -11,7 +11,7 @@ import { IconView, Template } from 'ckeditor5/src/ui.js';
 import { IconMediaPlaceholder } from 'ckeditor5/src/icons.js';
 import { logWarning, toArray, type Locale } from 'ckeditor5/src/utils.js';
 
-import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
+import type { ViewDowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
 import type { MediaEmbedConfig, MediaEmbedProvider } from './mediaembedconfig.js';
 import type { MediaOptions } from './utils.js';
 
@@ -90,7 +90,7 @@ export class MediaRegistry {
 	 * @param url The URL to be translated into a view element.
 	 */
 	public getMediaViewElement(
-		writer: DowncastWriter,
+		writer: ViewDowncastWriter,
 		url: string,
 		options: MediaOptions
 	): ViewElement {
@@ -201,7 +201,7 @@ class Media {
 	 * @param writer The view writer used to produce a view element.
 	 */
 	public getViewElement(
-		writer: DowncastWriter,
+		writer: ViewDowncastWriter,
 		options: MediaOptions
 	): ViewElement {
 		const attributes: Record<string, unknown> = {};

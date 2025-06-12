@@ -9,7 +9,7 @@
 
 import type {
 	ModelDocumentSelection,
-	DowncastWriter,
+	ViewDowncastWriter,
 	ModelItem,
 	ModelRange,
 	ViewElement,
@@ -33,7 +33,7 @@ export interface GHSViewAttributes {
 * @internal
 */
 export function updateViewAttributes(
-	writer: DowncastWriter,
+	writer: ViewDowncastWriter,
 	oldViewAttributes: GHSViewAttributes,
 	newViewAttributes: GHSViewAttributes,
 	viewElement: ViewElement
@@ -55,7 +55,7 @@ export function updateViewAttributes(
  * @param viewElement The view element to update.
  * @internal
  */
-export function setViewAttributes( writer: DowncastWriter, viewAttributes: GHSViewAttributes, viewElement: ViewElement ): void {
+export function setViewAttributes( writer: ViewDowncastWriter, viewAttributes: GHSViewAttributes, viewElement: ViewElement ): void {
 	if ( viewAttributes.attributes ) {
 		for ( const [ key, value ] of Object.entries( viewAttributes.attributes ) ) {
 			writer.setAttribute( key, value, viewElement );
@@ -79,7 +79,7 @@ export function setViewAttributes( writer: DowncastWriter, viewAttributes: GHSVi
  * @param viewElement The view element to update.
  * @internal
  */
-export function removeViewAttributes( writer: DowncastWriter, viewAttributes: GHSViewAttributes, viewElement: ViewElement ): void {
+export function removeViewAttributes( writer: ViewDowncastWriter, viewAttributes: GHSViewAttributes, viewElement: ViewElement ): void {
 	if ( viewAttributes.attributes ) {
 		for ( const [ key ] of Object.entries( viewAttributes.attributes ) ) {
 			writer.removeAttribute( key, viewElement );

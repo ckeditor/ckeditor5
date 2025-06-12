@@ -13,7 +13,7 @@ import type {
 	ModelSchema,
 	ModelSelection,
 	ViewContainerElement,
-	DowncastWriter,
+	ViewDowncastWriter,
 	ViewElement
 } from 'ckeditor5/src/engine.js';
 import type { Editor } from 'ckeditor5/src/core.js';
@@ -32,7 +32,7 @@ import { type ImageUtils } from '../imageutils.js';
  *
  * @internal
  */
-export function createInlineImageViewElement( writer: DowncastWriter ): ViewContainerElement {
+export function createInlineImageViewElement( writer: ViewDowncastWriter ): ViewContainerElement {
 	return writer.createContainerElement( 'span', { class: 'image-inline' },
 		writer.createEmptyElement( 'img' )
 	);
@@ -49,7 +49,7 @@ export function createInlineImageViewElement( writer: DowncastWriter ): ViewCont
  *
  * @internal
  */
-export function createBlockImageViewElement( writer: DowncastWriter ): ViewContainerElement {
+export function createBlockImageViewElement( writer: ViewDowncastWriter ): ViewContainerElement {
 	return writer.createContainerElement( 'figure', { class: 'image' }, [
 		writer.createEmptyElement( 'img' ),
 		writer.createSlot( 'children' )

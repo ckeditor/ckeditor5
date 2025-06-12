@@ -11,7 +11,7 @@ import { Plugin, type Editor } from 'ckeditor5/src/core.js';
 
 import type {
 	Consumables,
-	DowncastWriter,
+	ViewDowncastWriter,
 	ModelElement,
 	ModelItem,
 	UpcastElementEvent,
@@ -253,7 +253,7 @@ export interface AttributeStrategy {
 	/**
 	 * Sets the property on the view element.
 	 */
-	setAttributeOnDowncast( writer: DowncastWriter, value: unknown, element: ViewElement ): void;
+	setAttributeOnDowncast( writer: ViewDowncastWriter, value: unknown, element: ViewElement ): void;
 
 	/**
 	 * Retrieves the property value from the view element.

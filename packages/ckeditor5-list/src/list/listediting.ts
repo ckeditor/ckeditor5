@@ -16,7 +16,7 @@ import {
 import type {
 	DowncastAttributeEvent,
 	ModelDocumentChangeEvent,
-	DowncastWriter,
+	ViewDowncastWriter,
 	ModelElement,
 	Model,
 	ModelInsertContentEvent,
@@ -681,7 +681,7 @@ export interface AttributeDowncastStrategy {
 	/**
 	 * Sets the property on the view element.
 	 */
-	setAttributeOnDowncast( writer: DowncastWriter, value: unknown, element: ViewElement, options?: Record<string, unknown> ): void;
+	setAttributeOnDowncast( writer: ViewDowncastWriter, value: unknown, element: ViewElement, options?: Record<string, unknown> ): void;
 }
 
 /**
@@ -703,7 +703,7 @@ export interface ItemMarkerDowncastStrategy {
 	 * Creates a view element for a custom item marker.
 	 */
 	createElement(
-		writer: DowncastWriter,
+		writer: ViewDowncastWriter,
 		modelElement: ModelElement,
 		{ dataPipeline }: { dataPipeline?: boolean }
 	): ViewElement | null;
@@ -712,7 +712,7 @@ export interface ItemMarkerDowncastStrategy {
 	 * Creates an ViewAttributeElement to be used for wrapping a first block of a list item.
 	 */
 	createWrapperElement?(
-		writer: DowncastWriter,
+		writer: ViewDowncastWriter,
 		modelElement: ModelElement,
 		{ dataPipeline }: { dataPipeline?: boolean }
 	): ViewAttributeElement;

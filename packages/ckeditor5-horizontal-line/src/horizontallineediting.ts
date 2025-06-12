@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import { toWidget } from 'ckeditor5/src/widget.js';
-import type { DowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
+import type { ViewDowncastWriter, ViewElement } from 'ckeditor5/src/engine.js';
 
 import { HorizontalLineCommand } from './horizontallinecommand.js';
 
@@ -83,7 +83,7 @@ export class HorizontalLineEditing extends Plugin {
  *
  * @param writer An instance of the view writer.
  */
-function toHorizontalLineWidget( viewElement: ViewElement, writer: DowncastWriter, label: string ): ViewElement {
+function toHorizontalLineWidget( viewElement: ViewElement, writer: ViewDowncastWriter, label: string ): ViewElement {
 	writer.setCustomProperty( 'horizontalLine', true, viewElement );
 
 	return toWidget( viewElement, writer, { label } );

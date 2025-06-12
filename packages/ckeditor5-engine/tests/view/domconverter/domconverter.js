@@ -8,7 +8,7 @@ import { ViewEditableElement } from '../../../src/view/editableelement.js';
 import { ViewDocument } from '../../../src/view/document.js';
 import { ViewUIElement } from '../../../src/view/uielement.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
-import { DowncastWriter } from '../../../src/view/downcastwriter.js';
+import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER, MARKED_NBSP_FILLER } from '../../../src/view/filler.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
@@ -787,7 +787,7 @@ describe( 'ViewDomConverter', () => {
 		let writer, warnStub;
 
 		beforeEach( () => {
-			writer = new DowncastWriter( viewDocument );
+			writer = new ViewDowncastWriter( viewDocument );
 			converter = new ViewDomConverter( viewDocument, {
 				renderingMode: 'editing'
 			} );
