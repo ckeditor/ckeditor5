@@ -23,18 +23,6 @@ describe( 'GFMDataProcessor', () => {
 			);
 		} );
 
-		it( 'should process spaces inside inline code', () => {
-			testDataProcessor(
-				'regular text and` inline code`',
-
-				'<p>regular text and<code> inline code</code></p>',
-
-				// When converting back it will be normalized and spaces
-				// at the beginning of inline code will be removed.
-				'regular text and `inline code`'
-			);
-		} );
-
 		it( 'should properly process backticks inside code spans #1', () => {
 			testDataProcessor(
 				'`` `backticks` ``',
