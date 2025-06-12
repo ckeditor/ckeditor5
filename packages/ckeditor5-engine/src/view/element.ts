@@ -30,7 +30,7 @@ import { TokenList } from './tokenlist.js';
  * * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement `downcastWriter#createContainerElement()`}
  * in order to create a {@link module:engine/view/containerelement~ContainerElement},
  * * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement `downcastWriter#createAttributeElement()`}
- * in order to create a {@link module:engine/view/attributeelement~AttributeElement},
+ * in order to create a {@link module:engine/view/attributeelement~ViewAttributeElement},
  * * {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement `downcastWriter#createEmptyElement()`}
  * in order to create a {@link module:engine/view/emptyelement~EmptyElement}.
  * * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement `downcastWriter#createUIElement()`}
@@ -966,10 +966,10 @@ export class Element extends Node {
 	/**
 	 * Verify if the given element can be merged without conflicts into the element.
 	 *
-	 * Note that this method is extended by the {@link module:engine/view/attributeelement~AttributeElement} implementation.
+	 * Note that this method is extended by the {@link module:engine/view/attributeelement~ViewAttributeElement} implementation.
 	 *
 	 * This method is used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~AttributeElement} to merge it with other AttributeElement.
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other AttributeElement.
 	 *
 	 * @internal
 	 * @returns Returns `true` if elements can be merged.
@@ -1006,7 +1006,7 @@ export class Element extends Node {
 	 * Note that you should make sure there are no conflicts before merging (see {@link #_canMergeAttributesFrom}).
 	 *
 	 * This method is used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~AttributeElement} to merge it with other AttributeElement.
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other AttributeElement.
 	 *
 	 * @internal
 	 */
@@ -1029,10 +1029,10 @@ export class Element extends Node {
 	/**
 	 * Verify if the given element attributes can be fully subtracted from the element.
 	 *
-	 * Note that this method is extended by the {@link module:engine/view/attributeelement~AttributeElement} implementation.
+	 * Note that this method is extended by the {@link module:engine/view/attributeelement~ViewAttributeElement} implementation.
 	 *
 	 * This method is used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~AttributeElement} to unwrap the AttributeElement.
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to unwrap the AttributeElement.
 	 *
 	 * @internal
 	 * @returns Returns `true` if elements attributes can be fully subtracted.
@@ -1070,7 +1070,7 @@ export class Element extends Node {
 	 * Note that you should make sure all attributes could be subtracted before subtracting them (see {@link #_canSubtractAttributesOf}).
 	 *
 	 * This method is used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~AttributeElement} to unwrap the AttributeElement.
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to unwrap the AttributeElement.
 	 *
 	 * @internal
 	 */
@@ -1289,7 +1289,7 @@ export interface ElementAttributeValue {
 	 * Used by {@link ~Element#_canMergeAttributesFrom} to verify if the given attribute can be merged without conflicts into the attribute.
 	 *
 	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~AttributeElement} to merge it with other AttributeElement.
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other AttributeElement.
 	 */
 	_canMergeFrom( other: this ): boolean;
 
@@ -1297,7 +1297,7 @@ export interface ElementAttributeValue {
 	 * Used by {@link ~Element#_mergeAttributesFrom} to merge a given attribute into the attribute.
 	 *
 	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~AttributeElement} to merge it with other AttributeElement.
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to merge it with other AttributeElement.
 	 */
 	_mergeFrom( other: this ): void;
 
@@ -1305,7 +1305,7 @@ export interface ElementAttributeValue {
 	 * Used by {@link ~Element#_canSubtractAttributesOf} to verify if the given attribute can be fully subtracted from the attribute.
 	 *
 	 * This method is indirectly used by the {@link module:engine/view/downcastwriter~DowncastWriter} while down-casting
-	 * an {@link module:engine/view/attributeelement~AttributeElement} to unwrap the AttributeElement.
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement} to unwrap the AttributeElement.
 	 */
 	_isMatching( other: this ): boolean;
 }

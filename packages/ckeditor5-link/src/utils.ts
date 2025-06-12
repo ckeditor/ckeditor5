@@ -57,7 +57,7 @@ export function isLinkElement( node: ViewNode | ViewDocumentFragment ): boolean 
 }
 
 /**
- * Creates a link {@link module:engine/view/attributeelement~AttributeElement} with the provided `href` attribute.
+ * Creates a link {@link module:engine/view/attributeelement~ViewAttributeElement} with the provided `href` attribute.
  */
 export function createLinkElement( href: string, { writer }: DowncastConversionApi ): ViewAttributeElement {
 	// Priority 5 - https://github.com/ckeditor/ckeditor5-link/issues/121.

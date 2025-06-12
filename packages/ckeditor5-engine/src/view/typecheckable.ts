@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { type AttributeElement } from './attributeelement.js';
+import { type ViewAttributeElement } from './attributeelement.js';
 import { type ContainerElement } from './containerelement.js';
 import { type DocumentFragment } from './documentfragment.js';
 import { type DocumentSelection } from './documentselection.js';
@@ -58,7 +58,7 @@ export abstract class TypeCheckable {
 		Node |
 		Text |
 		Element |
-		AttributeElement |
+		ViewAttributeElement |
 		ContainerElement |
 		EditableElement |
 		EmptyElement |
@@ -92,7 +92,7 @@ export abstract class TypeCheckable {
 	 */
 	public is( type: 'element' | 'view:element' ): this is (
 		Element |
-		AttributeElement |
+		ViewAttributeElement |
 		ContainerElement |
 		EditableElement |
 		EmptyElement |
@@ -102,7 +102,7 @@ export abstract class TypeCheckable {
 	);
 
 	/**
-	 * Checks whether this object is of type {@link module:engine/view/attributeelement~AttributeElement}.
+	 * Checks whether this object is of type {@link module:engine/view/attributeelement~ViewAttributeElement}.
 	 *
 	 * ```ts
 	 * attributeElement.is( 'attributeElement' ); // -> true
@@ -117,7 +117,7 @@ export abstract class TypeCheckable {
 	 * ```
 	 *
 	 * Assuming that the object being checked is an attribute element, you can also check its
-	 * {@link module:engine/view/attributeelement~AttributeElement#name name}:
+	 * {@link module:engine/view/attributeelement~ViewAttributeElement#name name}:
 	 *
 	 * ```ts
 	 * attributeElement.is( 'element', 'b' ); // -> true if this is a bold element
@@ -127,7 +127,7 @@ export abstract class TypeCheckable {
 	 *
 	 * @label ATTRIBUTE_ELEMENT
 	 */
-	public is( type: 'attributeElement' | 'view:attributeElement' ): this is AttributeElement;
+	public is( type: 'attributeElement' | 'view:attributeElement' ): this is ViewAttributeElement;
 
 	/**
 	 * Checks whether this object is of type {@link module:engine/view/containerelement~ContainerElement} or its subclass.
@@ -425,7 +425,7 @@ export abstract class TypeCheckable {
 	 */
 	public is<N extends string>( type: 'element' | 'view:element', name: N ): this is (
 		Element |
-		AttributeElement |
+		ViewAttributeElement |
 		ContainerElement |
 		EditableElement |
 		EmptyElement |
@@ -435,11 +435,11 @@ export abstract class TypeCheckable {
 	) & { name: N };
 
 	/**
-	 * Checks whether the object is of type {@link module:engine/view/attributeelement~AttributeElement} and has the specified `name`.
+	 * Checks whether the object is of type {@link module:engine/view/attributeelement~ViewAttributeElement} and has the specified `name`.
 	 *
 	 * @label ATTRIBUTE_ELEMENT_NAME
 	 */
-	public is<N extends string>( type: 'attributeElement' | 'view:attributeElement', name: N ): this is AttributeElement & { name: N };
+	public is<N extends string>( type: 'attributeElement' | 'view:attributeElement', name: N ): this is ViewAttributeElement & { name: N };
 
 	/**
 	 * Checks whether the object is of type {@link module:engine/view/containerelement~ContainerElement}

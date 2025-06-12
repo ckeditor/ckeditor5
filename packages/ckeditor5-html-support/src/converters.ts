@@ -9,7 +9,7 @@
 
 import type { Editor } from 'ckeditor5/src/core.js';
 import type {
-	AttributeElement,
+	ViewAttributeElement,
 	DowncastAttributeEvent,
 	DowncastConversionApi,
 	DowncastDispatcher,
@@ -204,7 +204,7 @@ export function emptyInlineModelElementToViewConverter(
  * @internal
 */
 export function attributeToViewInlineConverter( { priority, view: viewName }: DataSchemaInlineElementDefinition ) {
-	return ( attributeValue: any, conversionApi: DowncastConversionApi ): AttributeElement | undefined => {
+	return ( attributeValue: any, conversionApi: DowncastConversionApi ): ViewAttributeElement | undefined => {
 		if ( !attributeValue ) {
 			return;
 		}

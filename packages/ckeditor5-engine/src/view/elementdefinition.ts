@@ -70,7 +70,7 @@ export interface ElementObjectDefinition {
 	attributes?: Record<string, string>;
 
 	/**
-	 * Element's {@link module:engine/view/attributeelement~AttributeElement#priority priority}.
+	 * Element's {@link module:engine/view/attributeelement~ViewAttributeElement#priority priority}.
 	 */
 	priority?: number;
 }

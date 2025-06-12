@@ -19,7 +19,7 @@ import { ViewElement } from '../view/element.js';
 import { DocumentSelection } from '../view/documentselection.js';
 import { Range } from '../view/range.js';
 import { Position } from '../view/position.js';
-import { AttributeElement } from '../view/attributeelement.js';
+import { ViewAttributeElement } from '../view/attributeelement.js';
 import { ContainerElement } from '../view/containerelement.js';
 import { EmptyElement } from '../view/emptyelement.js';
 import { UIElement } from '../view/uielement.js';
@@ -36,7 +36,7 @@ const TEXT_RANGE_START_TOKEN = '{';
 const TEXT_RANGE_END_TOKEN = '}';
 const allowedTypes = {
 	'container': ContainerElement,
-	'attribute': AttributeElement,
+	'attribute': ViewAttributeElement,
 	'empty': EmptyElement,
 	'ui': UIElement,
 	'raw': RawElement
@@ -230,7 +230,7 @@ _setViewData._parse = _parseView;
  *
  * An additional `options` object can be provided.
  * If `options.showType` is set to `true`, element's types will be
- * presented for {@link module:engine/view/attributeelement~AttributeElement attribute elements},
+ * presented for {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements},
  * {@link module:engine/view/containerelement~ContainerElement container elements}
  * {@link module:engine/view/emptyelement~EmptyElement empty elements}
  * and {@link module:engine/view/uielement~UIElement UI elements}:
@@ -247,7 +247,7 @@ _setViewData._parse = _parseView;
  * ```
  *
  * If `options.showPriority` is set to `true`, a priority will be displayed for all
- * {@link module:engine/view/attributeelement~AttributeElement attribute elements}.
+ * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements}.
  *
  * ```ts
  * const attribute = downcastWriter.createAttributeElement( 'b' );
@@ -256,7 +256,7 @@ _setViewData._parse = _parseView;
  * ```
  *
  * If `options.showAttributeElementId` is set to `true`, the attribute element's id will be displayed for all
- * {@link module:engine/view/attributeelement~AttributeElement attribute elements} that have it set.
+ * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements} that have it set.
  *
  * ```ts
  * const attribute = downcastWriter.createAttributeElement( 'span' );
@@ -937,7 +937,7 @@ class ViewStringify {
 	 * Converts the passed {@link module:engine/view/element~Element element's} type to its string representation
 	 *
 	 * Returns:
-	 * * 'attribute' for {@link module:engine/view/attributeelement~AttributeElement attribute elements},
+	 * * 'attribute' for {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements},
 	 * * 'container' for {@link module:engine/view/containerelement~ContainerElement container elements},
 	 * * 'empty' for {@link module:engine/view/emptyelement~EmptyElement empty elements},
 	 * * 'ui' for {@link module:engine/view/uielement~UIElement UI elements},
@@ -960,7 +960,7 @@ class ViewStringify {
 	 * Converts the passed {@link module:engine/view/element~Element element} to its priority representation.
 	 *
 	 * The priority string representation will be returned when the passed element is an instance of
-	 * {@link module:engine/view/attributeelement~AttributeElement attribute element} and the current configuration allows to show the
+	 * {@link module:engine/view/attributeelement~ViewAttributeElement attribute element} and the current configuration allows to show the
 	 * priority. Otherwise returns an empty string.
 	 */
 	private _stringifyElementPriority( element: ViewElement ): string {
@@ -975,7 +975,7 @@ class ViewStringify {
 	 * Converts the passed {@link module:engine/view/element~Element element} to its id representation.
 	 *
 	 * The id string representation will be returned when the passed element is an instance of
-	 * {@link module:engine/view/attributeelement~AttributeElement attribute element}, the element has an id
+	 * {@link module:engine/view/attributeelement~ViewAttributeElement attribute element}, the element has an id
 	 * and the current configuration allows to show the id. Otherwise returns an empty string.
 	 */
 	private _stringifyElementId( element: ViewElement ): string {
@@ -1019,7 +1019,7 @@ class ViewStringify {
 
 /**
  * Converts {@link module:engine/view/element~Element elements} to
- * {@link module:engine/view/attributeelement~AttributeElement attribute elements},
+ * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements},
  * {@link module:engine/view/containerelement~ContainerElement container elements},
  * {@link module:engine/view/emptyelement~EmptyElement empty elements} or
  * {@link module:engine/view/uielement~UIElement UI elements}.
@@ -1060,12 +1060,12 @@ function _convertViewElements( rootNode: ViewNode | ViewDocumentFragment ) {
 
 /**
  * Converts an {@link module:engine/view/element~Element element} to
- * {@link module:engine/view/attributeelement~AttributeElement attribute element},
+ * {@link module:engine/view/attributeelement~ViewAttributeElement attribute element},
  * {@link module:engine/view/containerelement~ContainerElement container element},
  * {@link module:engine/view/emptyelement~EmptyElement empty element} or
  * {@link module:engine/view/uielement~UIElement UI element}.
  * If the element's name is in the format of `attribute:b`, it will be converted to
- * an {@link module:engine/view/attributeelement~AttributeElement attribute element} with a priority of 11.
+ * an {@link module:engine/view/attributeelement~ViewAttributeElement attribute element} with a priority of 11.
  * Additionally, attribute elements may have specified priority (for example `view-priority="11"`) and/or
  * id (for example `view-id="foo"`).
  * If the element's name is in the format of `container:p`, it will be converted to
@@ -1105,7 +1105,7 @@ function _convertElement( viewDocument: ViewDocument, viewElement: ViewElement )
 
 /**
  * Converts the `view-priority` attribute and the {@link module:engine/view/element~Element#name element's name} information needed for
- * creating {@link module:engine/view/attributeelement~AttributeElement attribute element},
+ * creating {@link module:engine/view/attributeelement~ViewAttributeElement attribute element},
  * {@link module:engine/view/containerelement~ContainerElement container element},
  * {@link module:engine/view/emptyelement~EmptyElement empty element} or
  * {@link module:engine/view/uielement~UIElement UI element}.

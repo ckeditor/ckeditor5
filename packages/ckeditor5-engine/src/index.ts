@@ -234,7 +234,6 @@ export { ViewDocumentFragment } from './view/documentfragment.js';
 export { ViewTreeWalker, type TreeWalkerValue as ViewTreeWalkerValue } from './view/treewalker.js';
 export type { ViewElementDefinition, ElementObjectDefinition } from './view/elementdefinition.js';
 export { ViewDocumentSelection } from './view/documentselection.js';
-export { AttributeElement } from './view/attributeelement.js';
 export type { ViewItem } from './view/item.js';
 export { ViewNode } from './view/node.js';
 export { ViewPosition, type PositionOffset as ViewPositionOffset } from './view/position.js';

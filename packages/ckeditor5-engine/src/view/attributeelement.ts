@@ -22,13 +22,13 @@ const DEFAULT_PRIORITY = 10;
  * Most often they are created when downcasting model text attributes.
  *
  * Editing engine does not define a fixed HTML DTD. This is why a feature developer needs to choose between various
- * types (container element, {@link module:engine/view/attributeelement~AttributeElement attribute element},
+ * types (container element, {@link module:engine/view/attributeelement~ViewAttributeElement attribute element},
  * {@link module:engine/view/emptyelement~EmptyElement empty element}, etc) when developing a feature.
  *
  * To create a new attribute element instance use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement `DowncastWriter#createAttributeElement()`} method.
  */
-export class AttributeElement extends Element {
+export class ViewAttributeElement extends Element {
 	public static readonly DEFAULT_PRIORITY: number = DEFAULT_PRIORITY;
 
 	/**
@@ -49,12 +49,12 @@ export class AttributeElement extends Element {
 	public _id: string | number | null = null;
 
 	/**
-	 * Keeps all the attribute elements that have the same {@link module:engine/view/attributeelement~AttributeElement#id ids}
+	 * Keeps all the attribute elements that have the same {@link module:engine/view/attributeelement~ViewAttributeElement#id ids}
 	 * and still exist in the view tree.
 	 *
 	 * This property is managed by {@link module:engine/view/downcastwriter~DowncastWriter}.
 	 */
-	private readonly _clonesGroup: Set<AttributeElement> | null = null;
+	private readonly _clonesGroup: Set<ViewAttributeElement> | null = null;
 
 	/**
 	 * Creates an attribute element.
@@ -94,8 +94,8 @@ export class AttributeElement extends Element {
 	}
 
 	/**
-	 * Returns all {@link module:engine/view/attributeelement~AttributeElement attribute elements} that has the
-	 * same {@link module:engine/view/attributeelement~AttributeElement#id id} and are in the view tree (were not removed).
+	 * Returns all {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements} that has the
+	 * same {@link module:engine/view/attributeelement~ViewAttributeElement#id id} and are in the view tree (were not removed).
 	 *
 	 * Note: If this element has been removed from the tree, returned set will not include it.
 	 *
@@ -105,7 +105,7 @@ export class AttributeElement extends Element {
 	 * @returns Set containing all the attribute elements
 	 * with the same `id` that were added and not removed from the view tree.
 	 */
-	public getElementsWithSameId(): Set<AttributeElement> {
+	public getElementsWithSameId(): Set<ViewAttributeElement> {
 		if ( this.id === null ) {
 			/**
 			 * Cannot get elements with the same id for an attribute element without id.
@@ -124,12 +124,12 @@ export class AttributeElement extends Element {
 	/**
 	 * Checks if this element is similar to other element.
 	 *
-	 * If none of elements has set {@link module:engine/view/attributeelement~AttributeElement#id}, then both elements
+	 * If none of elements has set {@link module:engine/view/attributeelement~ViewAttributeElement#id}, then both elements
 	 * should have the same name, attributes and priority to be considered as similar. Two similar elements can contain
 	 * different set of children nodes.
 	 *
-	 * If at least one element has {@link module:engine/view/attributeelement~AttributeElement#id} set, then both
-	 * elements have to have the same {@link module:engine/view/attributeelement~AttributeElement#id} value to be
+	 * If at least one element has {@link module:engine/view/attributeelement~ViewAttributeElement#id} set, then both
+	 * elements have to have the same {@link module:engine/view/attributeelement~ViewAttributeElement#id} value to be
 	 * considered similar.
 	 *
 	 * Similarity is important for {@link module:engine/view/downcastwriter~DowncastWriter}. For example:
@@ -174,7 +174,7 @@ export class AttributeElement extends Element {
 	 *
 	 * @internal
 	 */
-	public override _canMergeAttributesFrom( otherElement: AttributeElement ): boolean {
+	public override _canMergeAttributesFrom( otherElement: ViewAttributeElement ): boolean {
 		// Can't merge if any of elements have an id or a difference of priority.
 		if ( this.id !== null || otherElement.id !== null || this.priority !== otherElement.priority ) {
 			return false;
@@ -189,7 +189,7 @@ export class AttributeElement extends Element {
 	 *
 	 * @internal
 	 */
-	public override _canSubtractAttributesOf( otherElement: AttributeElement ): boolean {
+	public override _canSubtractAttributesOf( otherElement: ViewAttributeElement ): boolean {
 		// Can't subtract if any of elements have an id or a difference of priority.
 		if ( this.id !== null || otherElement.id !== null || this.priority !== otherElement.priority ) {
 			return false;
@@ -201,7 +201,7 @@ export class AttributeElement extends Element {
 
 // The magic of type inference using `is` method is centralized in `TypeCheckable` class.
 // Proper overload would interfere with that.
-AttributeElement.prototype.is = function( type: string, name?: string ): boolean {
+ViewAttributeElement.prototype.is = function( type: string, name?: string ): boolean {
 	if ( !name ) {
 		return type === 'attributeElement' || type === 'view:attributeElement' ||
 			// From super.is(). This is highly utilised method and cannot call super. See ckeditor/ckeditor5#6529.
@@ -216,14 +216,12 @@ AttributeElement.prototype.is = function( type: string, name?: string ): boolean
 	}
 };
 
-export { AttributeElement as ViewAttributeElement };
-
 /**
  * Returns block {@link module:engine/view/filler~Filler filler} offset or `null` if block filler is not needed.
  *
  * @returns Block filler offset or `null` if block filler is not needed.
  */
-function getFillerOffset( this: AttributeElement ): number | null {
+function getFillerOffset( this: ViewAttributeElement ): number | null {
 	// <b>foo</b> does not need filler.
 	if ( nonUiChildrenCount( this ) ) {
 		return null;

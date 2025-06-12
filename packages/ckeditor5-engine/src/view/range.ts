@@ -102,7 +102,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 * Note that in the sample above:
 	 *
 	 * - `<p>` have type of {@link module:engine/view/containerelement~ContainerElement},
-	 * - `<b>` have type of {@link module:engine/view/attributeelement~AttributeElement},
+	 * - `<b>` have type of {@link module:engine/view/attributeelement~ViewAttributeElement},
 	 * - `<span>` have type of {@link module:engine/view/uielement~UIElement}.
 	 *
 	 * @returns Enlarged range.
@@ -137,7 +137,7 @@ export class Range extends TypeCheckable implements Iterable<TreeWalkerValue> {
 	 * Note that in the sample above:
 	 *
 	 * - `<p>` have type of {@link module:engine/view/containerelement~ContainerElement},
-	 * - `<b>` have type of {@link module:engine/view/attributeelement~AttributeElement},
+	 * - `<b>` have type of {@link module:engine/view/attributeelement~ViewAttributeElement},
 	 * - `<span>` have type of {@link module:engine/view/uielement~UIElement}.
 	 *
 	 * @returns Shrunk range.

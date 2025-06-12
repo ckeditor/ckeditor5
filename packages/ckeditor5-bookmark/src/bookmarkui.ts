@@ -655,7 +655,7 @@ export class BookmarkUI extends Plugin {
 	}
 
 	/**
-	 * Returns the bookmark {@link module:engine/view/attributeelement~AttributeElement} under
+	 * Returns the bookmark {@link module:engine/view/attributeelement~ViewAttributeElement} under
 	 * the {@link module:engine/view/document~Document editing view's} selection or `null`
 	 * if there is none.
 	 */

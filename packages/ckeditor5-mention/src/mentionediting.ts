@@ -13,7 +13,7 @@ import type {
 	ModelText,
 	ModelWriter,
 	ModelDocument,
-	AttributeElement,
+	ViewAttributeElement,
 	DowncastConversionApi,
 	DowncastDispatcher,
 	ModelPosition,
@@ -154,7 +154,7 @@ function preventPartialMentionDowncast( dispatcher: DowncastDispatcher ) {
 /**
  * Creates a mention element from the mention data.
  */
-function createViewMentionElement( mention: MentionAttribute, { writer }: DowncastConversionApi ): AttributeElement | undefined {
+function createViewMentionElement( mention: MentionAttribute, { writer }: DowncastConversionApi ): ViewAttributeElement | undefined {
 	if ( !mention ) {
 		return;
 	}

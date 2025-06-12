@@ -629,7 +629,7 @@ export class DowncastHelpers extends ConversionHelpers<DowncastDispatcher> {
 	 * This conversion results in creating a highlight on view nodes. For this kind of conversion,
 	 * the {@link module:engine/conversion/downcasthelpers~DowncastHighlightDescriptor} should be provided.
 	 *
-	 * For text nodes, a `<span>` {@link module:engine/view/attributeelement~AttributeElement} is created and it wraps all text nodes
+	 * For text nodes, a `<span>` {@link module:engine/view/attributeelement~ViewAttributeElement} is created and it wraps all text nodes
 	 * in the converted marker range. For example, a model marker set like this: `<paragraph>F[oo b]ar</paragraph>` becomes
 	 * `<p>F<span class="comment">oo b</span>ar</p>` in the view.
 	 *
@@ -907,7 +907,7 @@ export function remove() {
 }
 
 /**
- * Creates a `<span>` {@link module:engine/view/attributeelement~AttributeElement view attribute element} from the information
+ * Creates a `<span>` {@link module:engine/view/attributeelement~ViewAttributeElement view attribute element} from the information
  * provided by the {@link module:engine/conversion/downcasthelpers~DowncastHighlightDescriptor highlight descriptor} object. If the priority
  * is not provided in the descriptor, the default priority will be used.
  *
@@ -976,7 +976,7 @@ export function convertRangeSelection() {
  * {@link module:engine/model/selection~ModelSelection model selection} to
  * a {@link module:engine/view/documentselection~DocumentSelection view selection}. The converter consumes appropriate
  * value from the `consumable` object, maps the model selection position to the view position and breaks
- * {@link module:engine/view/attributeelement~AttributeElement attribute elements} at the selection position.
+ * {@link module:engine/view/attributeelement~ViewAttributeElement attribute elements} at the selection position.
  *
  * ```ts
  * modelDispatcher.on( 'selection', convertCollapsedSelection() );
@@ -1027,8 +1027,8 @@ export function convertCollapsedSelection() {
 /**
  * Function factory that creates a converter which cleans artifacts after the previous
  * {@link module:engine/model/selection~ModelSelection model selection} conversion. It removes all empty
- * {@link module:engine/view/attributeelement~AttributeElement view attribute elements} and merges sibling attributes at all start and end
- * positions of all ranges.
+ * {@link module:engine/view/attributeelement~ViewAttributeElement view attribute elements} and merges
+ * sibling attributes at all start and end positions of all ranges.
  *
  * ```
  *    <p><strong>^</strong></p>
@@ -1707,7 +1707,7 @@ function changeAttribute( attributeCreator: DowncastAttributeCreatorFunction ) {
 
 /**
  * Function factory that creates a converter which converts the text inside marker's range. The converter wraps the text with
- * {@link module:engine/view/attributeelement~AttributeElement} created from the provided descriptor.
+ * {@link module:engine/view/attributeelement~ViewAttributeElement} created from the provided descriptor.
  * See {link module:engine/conversion/downcasthelpers~createViewElementFromDowncastHighlightDescriptor}.
  *
  * It can also be used to convert the selection that is inside a marker. In that case, an empty attribute element will be
@@ -1717,7 +1717,7 @@ function changeAttribute( attributeCreator: DowncastAttributeCreatorFunction ) {
  *
  * If the highlight descriptor does not provide the `id` property, the name of the marker will be used.
  *
- * This converter binds the created {@link module:engine/view/attributeelement~AttributeElement attribute elemens} with the marker name
+ * This converter binds the created {@link module:engine/view/attributeelement~ViewAttributeElement attribute elemens} with the marker name
  * using the {@link module:engine/conversion/mapper~Mapper#bindElementToMarker} method.
  */
 function highlightText( highlightDescriptor: DowncastHighlightDescriptor | DowncastHighlightDescriptorCreatorFunction ) {
@@ -1842,7 +1842,7 @@ function highlightElement( highlightDescriptor: DowncastHighlightDescriptor | Do
  *
  * Both text nodes and elements are handled by this converter but they are handled a bit differently.
  *
- * Text nodes are unwrapped using the {@link module:engine/view/attributeelement~AttributeElement attribute element} created from the
+ * Text nodes are unwrapped using the {@link module:engine/view/attributeelement~ViewAttributeElement attribute element} created from the
  * provided highlight descriptor. See {link module:engine/conversion/downcasthelpers~DowncastHighlightDescriptor}.
  *
  * For elements, the converter checks if an element has the `removeHighlight` function stored as a
@@ -2770,7 +2770,7 @@ function defaultConsumer(
  * An object describing how the marker highlight should be represented in the view.
  *
  * Each text node contained in a highlighted range will be wrapped in a `<span>`
- * {@link module:engine/view/attributeelement~AttributeElement view attribute element} with CSS class(es), attributes and a priority
+ * {@link module:engine/view/attributeelement~ViewAttributeElement view attribute element} with CSS class(es), attributes and a priority
  * described by this object.
  *
  * Additionally, each {@link module:engine/view/containerelement~ContainerElement container element} can handle displaying the highlight
@@ -2785,9 +2785,9 @@ export interface DowncastHighlightDescriptor {
 
 	/**
 	 * A CSS class or an array of classes to set. If the descriptor is used to
-	 * create an {@link module:engine/view/attributeelement~AttributeElement attribute element} over text nodes, these classes will be set
-	 * on that attribute element. If the descriptor is applied to an element, usually these classes will be set on that element, however,
-	 * this depends on how the element converts the descriptor.
+	 * create an {@link module:engine/view/attributeelement~ViewAttributeElement attribute element} over text nodes,
+	 * these classes will be set on that attribute element. If the descriptor is applied to an element, usually these
+	 * classes will be set on that element, however, this depends on how the element converts the descriptor.
 	 */
 	classes: string | Array<string>;
 
@@ -2798,15 +2798,15 @@ export interface DowncastHighlightDescriptor {
 
 	/**
 	 * Descriptor priority. If not provided, it defaults to `10`. If the descriptor is used to create
-	 * an {@link module:engine/view/attributeelement~AttributeElement attribute element}, it will be that element's
-	 * {@link module:engine/view/attributeelement~AttributeElement#priority priority}. If the descriptor is applied to an element,
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement attribute element}, it will be that element's
+	 * {@link module:engine/view/attributeelement~ViewAttributeElement#priority priority}. If the descriptor is applied to an element,
 	 * the priority will be used to determine which descriptor is more important.
 	 */
 	priority?: number;
 
 	/**
 	 * Attributes to set. If the descriptor is used to create
-	 * an {@link module:engine/view/attributeelement~AttributeElement attribute element} over text nodes, these attributes will be set
+	 * an {@link module:engine/view/attributeelement~ViewAttributeElement attribute element} over text nodes, these attributes will be set
 	 * on that attribute element. If the descriptor is applied to an element, usually these attributes will be set on that element, however,
 	 * this depends on how the element converts the descriptor.
 	 */

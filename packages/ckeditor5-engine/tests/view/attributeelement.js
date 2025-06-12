@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { AttributeElement } from '../../src/view/attributeelement.js';
+import { ViewAttributeElement } from '../../src/view/attributeelement.js';
 import { Element } from '../../src/view/element.js';
 import { Document } from '../../src/view/document.js';
 import { _parseView } from '../../src/dev-utils/view.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
-describe( 'AttributeElement', () => {
+describe( 'ViewAttributeElement', () => {
 	let document;
 
 	beforeEach( () => {
@@ -19,12 +19,12 @@ describe( 'AttributeElement', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create element with default priority', () => {
-			const el = new AttributeElement( document, 'strong' );
+			const el = new ViewAttributeElement( document, 'strong' );
 
-			expect( el ).to.be.an.instanceof( AttributeElement );
+			expect( el ).to.be.an.instanceof( ViewAttributeElement );
 			expect( el ).to.be.an.instanceof( Element );
 			expect( el ).to.have.property( 'name' ).that.equals( 'strong' );
-			expect( el ).to.have.property( 'priority' ).that.equals( AttributeElement.DEFAULT_PRIORITY );
+			expect( el ).to.have.property( 'priority' ).that.equals( ViewAttributeElement.DEFAULT_PRIORITY );
 		} );
 	} );
 
@@ -32,7 +32,7 @@ describe( 'AttributeElement', () => {
 		let el;
 
 		before( () => {
-			el = new AttributeElement( document, 'span' );
+			el = new ViewAttributeElement( document, 'span' );
 		} );
 
 		it( 'should return true for attributeElement/element, also with correct name and element name', () => {
@@ -67,7 +67,7 @@ describe( 'AttributeElement', () => {
 
 	describe( '_clone()', () => {
 		it( 'should clone element with priority', () => {
-			const el = new AttributeElement( document, 'b' );
+			const el = new ViewAttributeElement( document, 'b' );
 			el._priority = 7;
 
 			const clone = el._clone();
@@ -80,32 +80,32 @@ describe( 'AttributeElement', () => {
 
 	describe( 'isSimilar', () => {
 		it( 'should return true if priorities are the same', () => {
-			const b1 = new AttributeElement( document, 'b' );
+			const b1 = new ViewAttributeElement( document, 'b' );
 			b1._priority = 7;
 
-			const b2 = new AttributeElement( document, 'b' );
+			const b2 = new ViewAttributeElement( document, 'b' );
 			b2._priority = 7;
 
 			expect( b1.isSimilar( b2 ) ).to.be.true;
 		} );
 
 		it( 'should return false if priorities are different', () => {
-			const b1 = new AttributeElement( document, 'b' );
+			const b1 = new ViewAttributeElement( document, 'b' );
 			b1._priority = 7;
 
-			const b2 = new AttributeElement( document, 'b' ); // default priority
+			const b2 = new ViewAttributeElement( document, 'b' ); // default priority
 
 			expect( b1.isSimilar( b2 ) ).to.be.false;
 		} );
 
 		it( 'should return true if ids are the same even if other properties are different', () => {
-			const element1 = new AttributeElement( document, 'b' );
+			const element1 = new ViewAttributeElement( document, 'b' );
 			element1._id = 'xyz';
 
-			const element2 = new AttributeElement( document, 'b', { foo: 'bar' } );
+			const element2 = new ViewAttributeElement( document, 'b', { foo: 'bar' } );
 			element2._id = 'xyz';
 
-			const element3 = new AttributeElement( document, 'span' );
+			const element3 = new ViewAttributeElement( document, 'span' );
 			element3._id = 'xyz';
 
 			expect( element1.isSimilar( element2 ) ).to.be.true;
@@ -113,11 +113,11 @@ describe( 'AttributeElement', () => {
 		} );
 
 		it( 'should return false if ids are different even if other properties are same', () => {
-			const element1 = new AttributeElement( document, 'span', { foo: 'bar' } );
+			const element1 = new ViewAttributeElement( document, 'span', { foo: 'bar' } );
 			element1._priority = 3;
 			element1._id = 'foo';
 
-			const element2 = new AttributeElement( document, 'span', { foo: 'bar' } );
+			const element2 = new ViewAttributeElement( document, 'span', { foo: 'bar' } );
 			element2._priority = 3;
 			element2._id = 'bar';
 
@@ -128,8 +128,8 @@ describe( 'AttributeElement', () => {
 	// More tests are available in DowncastWriter tests.
 	describe( 'getElementsWithSameId', () => {
 		it( 'should return a copy of _clonesGroup set', () => {
-			const attributeA = new AttributeElement( document, 'b' );
-			const attributeB = new AttributeElement( document, 'b' );
+			const attributeA = new ViewAttributeElement( document, 'b' );
+			const attributeB = new ViewAttributeElement( document, 'b' );
 
 			attributeA._id = 'foo';
 			attributeB._id = 'foo';
@@ -142,7 +142,7 @@ describe( 'AttributeElement', () => {
 		} );
 
 		it( 'should throw if attribute element has no id', () => {
-			const attribute = new AttributeElement( document, 'b' );
+			const attribute = new ViewAttributeElement( document, 'b' );
 
 			expectToThrowCKEditorError( () => {
 				attribute.getElementsWithSameId();
@@ -201,7 +201,7 @@ describe( 'AttributeElement', () => {
 		} );
 
 		it( 'should return null if there is no parent', () => {
-			const attribute = new AttributeElement( document, 'b' );
+			const attribute = new ViewAttributeElement( document, 'b' );
 
 			expect( attribute.getFillerOffset() ).to.be.null;
 		} );
