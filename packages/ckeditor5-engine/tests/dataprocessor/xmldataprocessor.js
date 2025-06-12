@@ -5,7 +5,7 @@
 
 import { XmlDataProcessor } from '../../src/dataprocessor/xmldataprocessor.js';
 import { BasicHtmlWriter } from '../../src/dataprocessor/basichtmlwriter.js';
-import { DomConverter } from '../../src/view/domconverter.js';
+import { ViewDomConverter } from '../../src/view/domconverter.js';
 import { xssTemplates } from '../../tests/dataprocessor/_utils/xsstemplates.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewDocument } from '../../src/view/document.js';
@@ -30,7 +30,7 @@ describe( 'XmlDataProcessor', () => {
 
 			expect( dataProcessor.namespaces ).to.be.an.instanceOf( Array );
 			expect( dataProcessor.domParser ).to.be.an.instanceOf( DOMParser );
-			expect( dataProcessor.domConverter ).to.be.an.instanceOf( DomConverter );
+			expect( dataProcessor.domConverter ).to.be.an.instanceOf( ViewDomConverter );
 			expect( dataProcessor.htmlWriter ).to.be.an.instanceOf( BasicHtmlWriter );
 			expect( dataProcessor.skipComments ).to.be.true;
 		} );

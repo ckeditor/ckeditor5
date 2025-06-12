@@ -6,7 +6,7 @@
 import { Element } from '../../src/view/element.js';
 import { Text } from '../../src/view/text.js';
 import { Node } from '../../src/view/node.js';
-import { DocumentFragment } from '../../src/view/documentfragment.js';
+import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { RootEditableElement } from '../../src/view/rooteditableelement.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -128,7 +128,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return ancestors including DocumentFragment', () => {
-			const fragment = new DocumentFragment( document, root );
+			const fragment = new ViewDocumentFragment( document, root );
 			const result = img.getAncestors();
 			root._remove();
 
@@ -208,7 +208,7 @@ describe( 'Node', () => {
 		it( 'should return document fragment', () => {
 			const foo = new Text( document, 'foo' );
 			const bar = new Text( document, 'bar' );
-			const df = new DocumentFragment( document, [ foo, bar ] );
+			const df = new ViewDocumentFragment( document, [ foo, bar ] );
 
 			expect( foo.getCommonAncestor( bar ) ).to.equal( df );
 		} );
@@ -367,7 +367,7 @@ describe( 'Node', () => {
 
 		it( 'returns false for a node attached to a document fragment', () => {
 			const foo = new Text( document, 'foo' );
-			new DocumentFragment( document, [ foo ] ); // eslint-disable-line no-new
+			new ViewDocumentFragment( document, [ foo ] ); // eslint-disable-line no-new
 
 			expect( foo.isAttached() ).to.equal( false );
 		} );

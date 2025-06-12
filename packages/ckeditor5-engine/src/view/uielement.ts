@@ -104,7 +104,7 @@ export class UIElement extends Element {
 	 * the {@link module:ui/editorui/editorui~EditorUI#update `editor.ui.update()`} method
 	 * after rendering your UI element.
 	 *
-	 * @param domConverter Instance of the DomConverter used to optimize the output.
+	 * @param domConverter Instance of the ViewDomConverter used to optimize the output.
 	 */
 	public render(
 		domDocument: DomDocument,

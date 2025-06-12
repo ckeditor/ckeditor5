@@ -10,7 +10,7 @@ import { ViewPosition } from '../../../src/view/position.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
 import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
-import { DomConverter } from '../../../src/view/domconverter.js';
+import { ViewDomConverter } from '../../../src/view/domconverter.js';
 import { ViewDocumentFragment } from '../../../src/view/documentfragment.js';
 import { ViewDocument } from '../../../src/view/document.js';
 import { DowncastWriter } from '../../../src/view/downcastwriter.js';
@@ -34,7 +34,7 @@ describe( 'DomConverter', () => {
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
-		converter = new DomConverter( viewDocument );
+		converter = new ViewDomConverter( viewDocument );
 	} );
 
 	describe( 'viewToDom()', () => {
@@ -228,7 +228,7 @@ describe( 'DomConverter', () => {
 					new ViewElement( viewDocument, 'audio', { src: 'x', onerror: 'alert(1)' } )
 				] );
 
-				converter = new DomConverter( viewDocument, {
+				converter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'data'
 				} );
 
@@ -245,7 +245,7 @@ describe( 'DomConverter', () => {
 					new ViewText( viewDocument, 'foobar' )
 				] );
 
-				converter = new DomConverter( viewDocument, {
+				converter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'data'
 				} );
 
@@ -264,7 +264,7 @@ describe( 'DomConverter', () => {
 					] )
 				] );
 
-				converter = new DomConverter( viewDocument, {
+				converter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'data'
 				} );
 
@@ -295,7 +295,7 @@ describe( 'DomConverter', () => {
 
 				const domImg = document.createElement( 'img' );
 
-				converter = new DomConverter( viewDocument, {
+				converter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'editing'
 				} );
 
@@ -319,7 +319,7 @@ describe( 'DomConverter', () => {
 			it( 'should warn when an unsafe attribute was filtered out', () => {
 				const viewP = new ViewElement( viewDocument, 'p', { onclick: 'bar' } );
 
-				converter = new DomConverter( viewDocument, {
+				converter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'editing'
 				} );
 
@@ -345,7 +345,7 @@ describe( 'DomConverter', () => {
 				viewP._appendChild( viewScript );
 				viewP._appendChild( viewText );
 
-				converter = new DomConverter( viewDocument, {
+				converter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'editing'
 				} );
 
@@ -370,7 +370,7 @@ describe( 'DomConverter', () => {
 				viewP._appendChild( viewScript );
 				viewP._appendChild( viewText );
 
-				converter = new DomConverter( viewDocument, {
+				converter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'editing'
 				} );
 
@@ -391,7 +391,7 @@ describe( 'DomConverter', () => {
 				viewP._appendChild( viewScript );
 				viewP._appendChild( viewText );
 
-				converter = new DomConverter( viewDocument, {
+				converter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'editing'
 				} );
 
@@ -416,7 +416,7 @@ describe( 'DomConverter', () => {
 				viewP._appendChild( viewStyle );
 				viewP._appendChild( viewText );
 
-				converter = new DomConverter( viewDocument, {
+				converter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'editing'
 				} );
 
@@ -437,7 +437,7 @@ describe( 'DomConverter', () => {
 				viewP._appendChild( viewScript );
 				viewP._appendChild( viewText );
 
-				converter = new DomConverter( viewDocument, {
+				converter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'editing'
 				} );
 
@@ -461,7 +461,7 @@ describe( 'DomConverter', () => {
 
 				beforeEach( () => {
 					writer = new DowncastWriter( viewDocument );
-					converter = new DomConverter( viewDocument, {
+					converter = new ViewDomConverter( viewDocument, {
 						renderingMode: 'editing'
 					} );
 				} );
@@ -1236,7 +1236,7 @@ describe( 'DomConverter', () => {
 
 			it( 'should yield the `RawElement` children properly', () => {
 				const downcastWriter = new DowncastWriter( viewDocument );
-				const dataConverter = new DomConverter( viewDocument, {
+				const dataConverter = new ViewDomConverter( viewDocument, {
 					renderingMode: 'data'
 				} );
 				const parentElement = downcastWriter.createContainerElement( 'p' );

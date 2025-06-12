@@ -5,7 +5,7 @@
 
 import { HtmlDataProcessor } from '../../src/dataprocessor/htmldataprocessor.js';
 import { BasicHtmlWriter } from '../../src/dataprocessor/basichtmlwriter.js';
-import { DomConverter } from '../../src/view/domconverter.js';
+import { ViewDomConverter } from '../../src/view/domconverter.js';
 import { xssTemplates } from '../../tests/dataprocessor/_utils/xsstemplates.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { _parseView, _stringifyView } from '../../src/dev-utils/view.js';
@@ -28,7 +28,7 @@ describe( 'HtmlDataProcessor', () => {
 			expect( dataProcessor ).to.have.property( 'skipComments' );
 
 			expect( dataProcessor.domParser ).to.be.an.instanceOf( DOMParser );
-			expect( dataProcessor.domConverter ).to.be.an.instanceOf( DomConverter );
+			expect( dataProcessor.domConverter ).to.be.an.instanceOf( ViewDomConverter );
 			expect( dataProcessor.htmlWriter ).to.be.an.instanceOf( BasicHtmlWriter );
 			expect( dataProcessor.skipComments ).to.be.true;
 		} );

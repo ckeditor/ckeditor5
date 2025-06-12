@@ -34,7 +34,7 @@ export class MarkdownToHtml {
 			renderer: {
 				checkbox( ...args: Array<any> ) {
 					// Remove bogus space after <input type="checkbox"> because it would be preserved
-					// by DomConverter as it's next to an inline object.
+					// by ViewDomConverter as it's next to an inline object.
 					return Object.getPrototypeOf( this ).checkbox.call( this, ...args ).trimRight();
 				},
 

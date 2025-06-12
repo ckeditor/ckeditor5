@@ -8,7 +8,7 @@ import { ViewUIElement } from '../../../src/view/uielement.js';
 import { ViewDocument } from '../../../src/view/document.js';
 import { ViewDocumentSelection } from '../../../src/view/documentselection.js';
 import { ViewSelection } from '../../../src/view/selection.js';
-import { DomConverter } from '../../../src/view/domconverter.js';
+import { ViewDomConverter } from '../../../src/view/domconverter.js';
 import { ViewDocumentFragment } from '../../../src/view/documentfragment.js';
 import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER } from '../../../src/view/filler.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
@@ -26,7 +26,7 @@ describe( 'DomConverter', () => {
 
 	before( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
-		converter = new DomConverter( viewDocument );
+		converter = new ViewDomConverter( viewDocument );
 	} );
 
 	describe( 'domToView()', () => {
@@ -823,7 +823,7 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should converter position inside block filler', () => {
-			const converter = new DomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
+			const converter = new ViewDomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
 			const domFiller = NBSP_FILLER( document ); // eslint-disable-line new-cap
 			const domP = createElement( document, 'p', null, domFiller );
 

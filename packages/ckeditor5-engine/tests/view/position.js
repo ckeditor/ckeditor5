@@ -6,7 +6,7 @@
 import { Position } from '../../src/view/position.js';
 import { Node } from '../../src/view/node.js';
 import { Element } from '../../src/view/element.js';
-import { DocumentFragment } from '../../src/view/documentfragment.js';
+import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { EditableElement } from '../../src/view/editableelement.js';
 import { Document } from '../../src/view/document.js';
 import { Text } from '../../src/view/text.js';
@@ -158,7 +158,7 @@ describe( 'Position', () => {
 	describe( 'getRoot', () => {
 		it( 'should return it\'s parent root', () => {
 			const foo = new Text( document, 'foo' );
-			const docFrag = new DocumentFragment( document, foo );
+			const docFrag = new ViewDocumentFragment( document, foo );
 
 			expect( new Position( foo, 1 ).root ).to.equal( docFrag );
 
@@ -175,13 +175,13 @@ describe( 'Position', () => {
 			const foo = new Text( document, 'foo' );
 			const p = new Element( document, 'p', null, foo );
 			const div = new Element( document, 'div', null, p );
-			const docFrag = new DocumentFragment( document, div );
+			const docFrag = new ViewDocumentFragment( document, div );
 
 			expect( new Position( foo, 1 ).getAncestors() ).to.deep.equal( [ docFrag, div, p, foo ] );
 		} );
 
 		it( 'should return DocumentFragment if position is directly in document fragment', () => {
-			const docFrag = new DocumentFragment( document );
+			const docFrag = new ViewDocumentFragment( document );
 
 			expect( new Position( docFrag, 0 ).getAncestors() ).to.deep.equal( [ docFrag ] );
 		} );
@@ -397,7 +397,7 @@ describe( 'Position', () => {
 
 		it( 'should return correct results if position is in document fragment', () => {
 			const node = new Element( document, 'name' );
-			const docFrag = new DocumentFragment( document, [ node ] );
+			const docFrag = new ViewDocumentFragment( document, [ node ] );
 			const position = new Position( docFrag, 0 );
 			const compared = new Position( docFrag, 1 );
 			const posInNode = new Position( node, 0 );
@@ -469,7 +469,7 @@ describe( 'Position', () => {
 
 			it( 'should create positions in document fragment', () => {
 				const foo = new Text( document, 'foo' );
-				const docFrag = new DocumentFragment( document, [ foo ] );
+				const docFrag = new ViewDocumentFragment( document, [ foo ] );
 
 				const pStart = Position._createAt( docFrag, 0 );
 				const pEnd = Position._createAt( docFrag, 'end' );

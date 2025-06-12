@@ -5,7 +5,7 @@
 
 import { ViewElement } from '../../../src/view/element.js';
 import { ViewDocumentSelection } from '../../../src/view/documentselection.js';
-import { DomConverter } from '../../../src/view/domconverter.js';
+import { ViewDomConverter } from '../../../src/view/domconverter.js';
 import { ViewDocumentFragment } from '../../../src/view/documentfragment.js';
 import { ViewDocument } from '../../../src/view/document.js';
 import { INLINE_FILLER } from '../../../src/view/filler.js';
@@ -20,7 +20,7 @@ describe( 'DomConverter', () => {
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
-		converter = new DomConverter( viewDocument );
+		converter = new ViewDomConverter( viewDocument );
 	} );
 
 	describe( 'bindElements()', () => {

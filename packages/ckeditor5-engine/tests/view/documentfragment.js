@@ -8,14 +8,14 @@ import { Element } from '../../src/view/element.js';
 import { Node } from '../../src/view/node.js';
 import { Text } from '../../src/view/text.js';
 import { TextProxy } from '../../src/view/textproxy.js';
-import { Document } from '../../src/view/document.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'DocumentFragment', () => {
 	let document;
 
 	beforeEach( () => {
-		document = new Document( new StylesProcessor() );
+		document = new ViewDocument( new StylesProcessor() );
 	} );
 
 	describe( 'constructor()', () => {

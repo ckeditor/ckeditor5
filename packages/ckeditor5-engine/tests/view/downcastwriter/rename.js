@@ -5,7 +5,7 @@
 
 import { DowncastWriter } from '../../../src/view/downcastwriter.js';
 import { _parseView } from '../../../src/dev-utils/view.js';
-import { Document } from '../../../src/view/document.js';
+import { ViewDocument } from '../../../src/view/document.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'DowncastWriter', () => {
@@ -13,7 +13,7 @@ describe( 'DowncastWriter', () => {
 		let root, foo, writer;
 
 		before( () => {
-			writer = new DowncastWriter( new Document( new StylesProcessor() ) );
+			writer = new DowncastWriter( new ViewDocument( new StylesProcessor() ) );
 		} );
 
 		beforeEach( () => {

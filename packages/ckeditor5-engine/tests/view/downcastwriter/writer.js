@@ -4,7 +4,7 @@
  */
 
 import { DowncastWriter } from '../../../src/view/downcastwriter.js';
-import { Document } from '../../../src/view/document.js';
+import { ViewDocument } from '../../../src/view/document.js';
 import { EditableElement } from '../../../src/view/editableelement.js';
 import { ViewPosition } from '../../../src/view/position.js';
 import { ViewRange } from '../../../src/view/range.js';
@@ -12,7 +12,7 @@ import { createViewRoot } from '../_utils/createroot.js';
 import { ViewElement } from '../../../src/view/element.js';
 import { ViewSelection } from '../../../src/view/selection.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
-import { DocumentFragment } from '../../../src/view/documentfragment.js';
+import { ViewDocumentFragment } from '../../../src/view/documentfragment.js';
 import { HtmlDataProcessor } from '../../../src/dataprocessor/htmldataprocessor.js';
 
 import { CKEditorError } from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
@@ -25,7 +25,7 @@ describe( 'DowncastWriter', () => {
 
 	beforeEach( () => {
 		attributes = { foo: 'bar', baz: 'quz' };
-		doc = new Document( new StylesProcessor() );
+		doc = new ViewDocument( new StylesProcessor() );
 		root = createViewRoot( doc );
 		writer = new DowncastWriter( doc );
 	} );
@@ -86,14 +86,14 @@ describe( 'DowncastWriter', () => {
 		it( 'should create empty document fragment', () => {
 			const df = writer.createDocumentFragment();
 
-			expect( df ).to.instanceOf( DocumentFragment );
+			expect( df ).to.instanceOf( ViewDocumentFragment );
 			expect( df.childCount ).to.equal( 0 );
 		} );
 
 		it( 'should create document fragment with children', () => {
 			const df = writer.createDocumentFragment( [ view.getChild( 0 ), view.getChild( 1 ) ] );
 
-			expect( df ).to.instanceOf( DocumentFragment );
+			expect( df ).to.instanceOf( ViewDocumentFragment );
 			expect( df.childCount ).to.equal( 2 );
 		} );
 	} );

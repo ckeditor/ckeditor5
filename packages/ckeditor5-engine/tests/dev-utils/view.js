@@ -5,7 +5,7 @@
 
 import { _parseView, _stringifyView, _getViewData, _setViewData } from '../../src/dev-utils/view.js';
 import { ViewDocument } from '../../src/view/document.js';
-import { DocumentFragment } from '../../src/view/documentfragment.js';
+import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { Position } from '../../src/view/position.js';
 import { Element } from '../../src/view/element.js';
 import { ViewAttributeElement } from '../../src/view/attributeelement.js';
@@ -14,7 +14,7 @@ import { EmptyElement } from '../../src/view/emptyelement.js';
 import { UIElement } from '../../src/view/uielement.js';
 import { RawElement } from '../../src/view/rawelement.js';
 import { Text } from '../../src/view/text.js';
-import { DocumentSelection } from '../../src/view/documentselection.js';
+import { ViewDocumentSelection } from '../../src/view/documentselection.js';
 import { Range } from '../../src/view/range.js';
 import { View } from '../../src/view/view.js';
 import { XmlDataProcessor } from '../../src/dataprocessor/xmldataprocessor.js';
@@ -183,7 +183,7 @@ describe( 'view test utils', () => {
 			const b2 = new Element( viewDocument, 'b', null, text2 );
 			const p = new Element( viewDocument, 'p', null, [ b1, b2 ] );
 			const range = Range._createFromParentsAndOffsets( p, 1, p, 2 );
-			const selection = new DocumentSelection( [ range ] );
+			const selection = new ViewDocumentSelection( [ range ] );
 			expect( _stringifyView( p, selection ) ).to.equal( '<p><b>foobar</b>[<b>bazqux</b>]</p>' );
 		} );
 
@@ -192,7 +192,7 @@ describe( 'view test utils', () => {
 			const b = new Element( viewDocument, 'b', null, text );
 			const p = new Element( viewDocument, 'p', null, b );
 			const range = Range._createFromParentsAndOffsets( p, 0, text, 4 );
-			const selection = new DocumentSelection( [ range ] );
+			const selection = new ViewDocumentSelection( [ range ] );
 
 			expect( _stringifyView( p, selection ) ).to.equal( '<p>[<b>நிலை}க்கு</b></p>' );
 		} );
@@ -201,7 +201,7 @@ describe( 'view test utils', () => {
 			const text = new Text( viewDocument, 'foobar' );
 			const p = new Element( viewDocument, 'p', null, text );
 			const range = Range._createFromParentsAndOffsets( p, 0, p, 0 );
-			const selection = new DocumentSelection( [ range ] );
+			const selection = new ViewDocumentSelection( [ range ] );
 			expect( _stringifyView( p, selection ) ).to.equal( '<p>[]foobar</p>' );
 		} );
 
@@ -212,7 +212,7 @@ describe( 'view test utils', () => {
 			const b2 = new Element( viewDocument, 'b', null, text2 );
 			const p = new Element( viewDocument, 'p', null, [ b1, b2 ] );
 			const range = Range._createFromParentsAndOffsets( text1, 1, text1, 5 );
-			const selection = new DocumentSelection( [ range ] );
+			const selection = new ViewDocumentSelection( [ range ] );
 			expect( _stringifyView( p, selection ) ).to.equal( '<p><b>f{ooba}r</b><b>bazqux</b></p>' );
 		} );
 
@@ -223,7 +223,7 @@ describe( 'view test utils', () => {
 			const b2 = new Element( viewDocument, 'b', null, text2 );
 			const p = new Element( viewDocument, 'p', null, [ b1, b2 ] );
 			const range = Range._createFromParentsAndOffsets( text1, 1, text1, 5 );
-			const selection = new DocumentSelection( [ range ] );
+			const selection = new ViewDocumentSelection( [ range ] );
 			expect( _stringifyView( p, selection, { sameSelectionCharacters: true } ) )
 				.to.equal( '<p><b>f[ooba]r</b><b>bazqux</b></p>' );
 		} );
@@ -232,7 +232,7 @@ describe( 'view test utils', () => {
 			const text = new Text( viewDocument, 'foobar' );
 			const p = new Element( viewDocument, 'p', null, text );
 			const range = Range._createFromParentsAndOffsets( text, 0, text, 0 );
-			const selection = new DocumentSelection( [ range ] );
+			const selection = new ViewDocumentSelection( [ range ] );
 			expect( _stringifyView( p, selection ) ).to.equal( '<p>{}foobar</p>' );
 		} );
 
@@ -243,7 +243,7 @@ describe( 'view test utils', () => {
 			const b2 = new Element( viewDocument, 'b', null, text2 );
 			const p = new Element( viewDocument, 'p', null, [ b1, b2 ] );
 			const range = Range._createFromParentsAndOffsets( p, 0, text2, 5 );
-			const selection = new DocumentSelection( [ range ] );
+			const selection = new ViewDocumentSelection( [ range ] );
 			expect( _stringifyView( p, selection ) ).to.equal( '<p>[<b>foobar</b><b>bazqu}x</b></p>' );
 		} );
 
@@ -285,7 +285,7 @@ describe( 'view test utils', () => {
 			const text2 = new Text( viewDocument, 'bazqux' );
 			const b1 = new Element( viewDocument, 'b', null, text1 );
 			const b2 = new Element( viewDocument, 'b', null, text2 );
-			const fragment = new DocumentFragment( viewDocument, [ b1, b2 ] );
+			const fragment = new ViewDocumentFragment( viewDocument, [ b1, b2 ] );
 			expect( _stringifyView( fragment, null ) ).to.equal( '<b>foobar</b><b>bazqux</b>' );
 		} );
 
@@ -333,7 +333,7 @@ describe( 'view test utils', () => {
 			const p = new Element( viewDocument, 'p', null, [ b1, b2 ] );
 			const range1 = Range._createFromParentsAndOffsets( p, 0, p, 1 );
 			const range2 = Range._createFromParentsAndOffsets( p, 1, p, 1 );
-			const selection = new DocumentSelection( [ range2, range1 ] );
+			const selection = new ViewDocumentSelection( [ range2, range1 ] );
 
 			expect( _stringifyView( p, selection ) ).to.equal( '<p>[<b>foobar</b>][]<b>bazqux</b></p>' );
 		} );
@@ -347,7 +347,7 @@ describe( 'view test utils', () => {
 			const range2 = Range._createFromParentsAndOffsets( text2, 0, text2, 3 );
 			const range3 = Range._createFromParentsAndOffsets( text2, 3, text2, 4 );
 			const range4 = Range._createFromParentsAndOffsets( p, 1, p, 1 );
-			const selection = new DocumentSelection( [ range1, range2, range3, range4 ] );
+			const selection = new ViewDocumentSelection( [ range1, range2, range3, range4 ] );
 
 			expect( _stringifyView( p, selection ) ).to.equal( '<p>[<b>foobar</b>][]{baz}{q}ux</p>' );
 		} );
@@ -497,14 +497,14 @@ describe( 'view test utils', () => {
 		it( 'should return empty DocumentFragment for empty string', () => {
 			const fragment = _parseView( '' );
 
-			expect( fragment ).to.be.instanceOf( DocumentFragment );
+			expect( fragment ).to.be.instanceOf( ViewDocumentFragment );
 			expect( fragment.childCount ).to.equal( 0 );
 		} );
 
 		it( 'should return empty DocumentFragment and Selection for string containing range only', () => {
 			const { view, selection } = _parseView( '[]' );
 
-			expect( view ).to.be.instanceOf( DocumentFragment );
+			expect( view ).to.be.instanceOf( ViewDocumentFragment );
 			expect( selection.rangeCount ).to.equal( 1 );
 			expect( selection.getFirstRange().isEqual( Range._createFromParentsAndOffsets( view, 0, view, 0 ) ) ).to.be.true;
 		} );
@@ -514,14 +514,14 @@ describe( 'view test utils', () => {
 			const parent = view.parent;
 
 			expect( view ).to.be.instanceOf( Element );
-			expect( parent ).to.be.instanceOf( DocumentFragment );
+			expect( parent ).to.be.instanceOf( ViewDocumentFragment );
 			expect( selection.rangeCount ).to.equal( 1 );
 			expect( selection.getFirstRange().isEqual( Range._createFromParentsAndOffsets( parent, 0, parent, 1 ) ) ).to.be.true;
 		} );
 
 		it( 'should create DocumentFragment when multiple elements on root', () => {
 			const view = _parseView( '<b></b><i></i>' );
-			expect( view ).to.be.instanceOf( DocumentFragment );
+			expect( view ).to.be.instanceOf( ViewDocumentFragment );
 			expect( view.childCount ).to.equal( 2 );
 			expect( view.getChild( 0 ).isSimilar( new Element( viewDocument, 'b' ) ) ).to.be.true;
 			expect( view.getChild( 1 ).isSimilar( new Element( viewDocument, 'i' ) ) ).to.be.true;

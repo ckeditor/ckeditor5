@@ -5,7 +5,7 @@
 
 import { DowncastWriter } from '../../../src/view/downcastwriter.js';
 import { View } from '../../../src/view/view.js';
-import { DocumentFragment } from '../../../src/view/documentfragment.js';
+import { ViewDocumentFragment } from '../../../src/view/documentfragment.js';
 import { Element } from '../../../src/view/element.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
@@ -18,7 +18,7 @@ import { Text } from '../../../src/view/text.js';
 
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { createViewRoot } from '../_utils/createroot.js';
-import { Document } from '../../../src/view/document.js';
+import { ViewDocument } from '../../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
@@ -27,7 +27,7 @@ describe( 'DowncastWriter', () => {
 		let writer, document;
 
 		beforeEach( () => {
-			document = new Document( new StylesProcessor() );
+			document = new ViewDocument( new StylesProcessor() );
 			writer = new DowncastWriter( document );
 		} );
 
@@ -580,7 +580,7 @@ describe( 'DowncastWriter', () => {
 				const newPosition = writer.wrap( selection.getFirstRange(), _parseView( wrapAttribute ) );
 
 				// Moving parsed elements to a document fragment so the view root is not shown in `stringify`.
-				const viewChildren = new DocumentFragment( viewDocument, view.getChildren() );
+				const viewChildren = new ViewDocumentFragment( viewDocument, view.getChildren() );
 
 				expect( _stringifyView( viewChildren, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
 			}

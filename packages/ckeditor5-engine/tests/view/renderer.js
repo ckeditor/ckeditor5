@@ -13,10 +13,10 @@ import { ViewUIElement } from '../../src/view/uielement.js';
 import { ViewText } from '../../src/view/text.js';
 import { ViewRange } from '../../src/view/range.js';
 import { ViewPosition } from '../../src/view/position.js';
-import { DocumentSelection } from '../../src/view/documentselection.js';
-import { DomConverter } from '../../src/view/domconverter.js';
+import { ViewDocumentSelection } from '../../src/view/documentselection.js';
+import { ViewDomConverter } from '../../src/view/domconverter.js';
 import { Renderer } from '../../src/view/renderer.js';
-import { DocumentFragment } from '../../src/view/documentfragment.js';
+import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { DowncastWriter } from '../../src/view/downcastwriter.js';
 
@@ -37,8 +37,8 @@ describe( 'Renderer', () => {
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
-		selection = new DocumentSelection();
-		domConverter = new DomConverter( viewDocument );
+		selection = new ViewDocumentSelection();
+		domConverter = new ViewDomConverter( viewDocument );
 		renderer = new Renderer( domConverter, selection );
 		renderer.domDocuments.add( document );
 	} );
@@ -4793,8 +4793,8 @@ describe( 'Renderer', () => {
 				testUtils.sinon.stub( env, 'isBlink' ).get( () => true );
 
 				viewDocument = new ViewDocument( new StylesProcessor() );
-				selection = new DocumentSelection();
-				domConverter = new DomConverter( viewDocument, { renderingMode: 'editing' } );
+				selection = new ViewDocumentSelection();
+				domConverter = new ViewDomConverter( viewDocument, { renderingMode: 'editing' } );
 				renderer = new Renderer( domConverter, selection );
 				renderer.domDocuments.add( document );
 
@@ -4813,8 +4813,8 @@ describe( 'Renderer', () => {
 				testUtils.sinon.stub( env, 'isAndroid' ).get( () => true );
 
 				viewDocument = new ViewDocument( new StylesProcessor() );
-				selection = new DocumentSelection();
-				domConverter = new DomConverter( viewDocument, { renderingMode: 'editing' } );
+				selection = new ViewDocumentSelection();
+				domConverter = new ViewDomConverter( viewDocument, { renderingMode: 'editing' } );
 				renderer = new Renderer( domConverter, selection );
 				renderer.domDocuments.add( document );
 
@@ -4832,8 +4832,8 @@ describe( 'Renderer', () => {
 				testUtils.sinon.stub( env, 'isBlink' ).get( () => false );
 
 				viewDocument = new ViewDocument( new StylesProcessor() );
-				selection = new DocumentSelection();
-				domConverter = new DomConverter( viewDocument, { renderingMode: 'editing' } );
+				selection = new ViewDocumentSelection();
+				domConverter = new ViewDomConverter( viewDocument, { renderingMode: 'editing' } );
 				renderer = new Renderer( domConverter, selection );
 				renderer.domDocuments.add( document );
 
@@ -5875,7 +5875,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should handle document fragment', () => {
-			const fragment = new DocumentFragment();
+			const fragment = new ViewDocumentFragment();
 
 			renderer._markDescendantTextToSync( fragment );
 

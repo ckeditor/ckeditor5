@@ -262,7 +262,7 @@ export class Renderer extends /* #__PURE__ */ ObservableMixin() {
 				this.markedChildren.add( inlineFillerPosition.parent as ViewElement );
 			}
 		}
-		// Make sure the inline filler has any parent, so it can be mapped to view position by DomConverter.
+		// Make sure the inline filler has any parent, so it can be mapped to view position by ViewDomConverter.
 		else if ( this._inlineFiller && this._inlineFiller.parentNode ) {
 			// While the user is making selection, preserve the inline filler at its original position.
 			inlineFillerPosition = this.domConverter.domPositionToView( this._inlineFiller )!;

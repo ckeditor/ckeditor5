@@ -6,11 +6,11 @@
 import { Range } from '../../src/view/range.js';
 import { Position } from '../../src/view/position.js';
 import { Element } from '../../src/view/element.js';
-import { DocumentFragment } from '../../src/view/documentfragment.js';
+import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { Text } from '../../src/view/text.js';
 import { TextProxy } from '../../src/view/textproxy.js';
 import { TreeWalker } from '../../src/view/treewalker.js';
-import { Document } from '../../src/view/document.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { _parseView, _stringifyView } from '../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
@@ -24,7 +24,7 @@ describe( 'Range', () => {
 	let document;
 
 	beforeEach( () => {
-		document = new Document( new StylesProcessor() );
+		document = new ViewDocument( new StylesProcessor() );
 	} );
 
 	describe( 'constructor()', () => {
@@ -116,7 +116,7 @@ describe( 'Range', () => {
 		} );
 
 		it( 'should return document fragment in which range is created', () => {
-			const viewFrag = new DocumentFragment();
+			const viewFrag = new ViewDocumentFragment();
 			const range = getRange( '<p>f{oo</p><p>ba}r</p>', { rootElement: viewFrag } );
 
 			expect( range.root ).to.equal( viewFrag );
@@ -163,7 +163,7 @@ describe( 'Range', () => {
 				.replace( /<img><\/img>/g, '<empty:img></empty:img>' )
 				.replace( /<span><\/span>/g, '<ui:span></ui:span>' );
 
-			const viewFrag = new DocumentFragment();
+			const viewFrag = new ViewDocumentFragment();
 			const { view, selection } = _parseView( data, { rootElement: viewFrag } );
 			const range = selection.getFirstRange();
 
@@ -244,7 +244,7 @@ describe( 'Range', () => {
 				.replace( /<img><\/img>/g, '<empty:img></empty:img>' )
 				.replace( /<span><\/span>/g, '<ui:span></ui:span>' );
 
-			const viewFrag = new DocumentFragment();
+			const viewFrag = new ViewDocumentFragment();
 			const { view, selection } = _parseView( data, { rootElement: viewFrag } );
 			const range = selection.getFirstRange();
 
@@ -638,7 +638,7 @@ describe( 'Range', () => {
 			expect( positions[ 1 ].parent.name ).to.equal( 'p' ); // At the end of the first P element.
 			expect( positions[ 1 ].offset ).to.equal( 1 );
 
-			expect( positions[ 2 ].parent ).to.be.instanceof( DocumentFragment ); // In document fragment, between Ps.
+			expect( positions[ 2 ].parent ).to.be.instanceof( ViewDocumentFragment ); // In document fragment, between Ps.
 			expect( positions[ 2 ].offset ).to.equal( 1 );
 
 			expect( positions[ 3 ].parent.name ).to.equal( 'p' ); // At the beginning of the second P element.
@@ -667,7 +667,7 @@ describe( 'Range', () => {
 			expect( positions[ 2 ].parent.name ).to.equal( 'p' ); // <p>bar^</p> -- at the end of P node.
 			expect( positions[ 2 ].offset ).to.equal( 1 );
 
-			expect( positions[ 3 ].parent ).to.be.instanceof( DocumentFragment ); // "</p>^<p>" -- between P nodes.
+			expect( positions[ 3 ].parent ).to.be.instanceof( ViewDocumentFragment ); // "</p>^<p>" -- between P nodes.
 			expect( positions[ 3 ].offset ).to.equal( 2 );
 
 			expect( positions[ 4 ].parent.name ).to.equal( 'p' ); // <p>^xyz</p> -- at the start of P node.

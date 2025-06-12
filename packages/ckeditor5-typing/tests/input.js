@@ -477,7 +477,7 @@ describe( 'Input', () => {
 				composition.start();
 
 				// Simulate DOM changes triggered by IME. Flush MutationObserver as it is async.
-				// Note that NBSP is in different order than expected by the DomConverter and Renderer.
+				// Note that NBSP is in different order than expected by the ViewDomConverter and Renderer.
 				composition.update( '\u00A0 abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Make sure that model is not modified by DOM changes.
@@ -918,7 +918,7 @@ describe( 'Input', () => {
 				composition.start();
 
 				// Simulate DOM changes triggered by IME. Flush MutationObserver as it is async.
-				// Note that NBSP is in different order than expected by the DomConverter and Renderer.
+				// Note that NBSP is in different order than expected by the ViewDomConverter and Renderer.
 				composition.update( '\u00A0 abc', view.createRange( view.createPositionAt( viewParagraph.getChild( 0 ), 'end' ) ) );
 
 				// Make sure that model is not modified by DOM changes.

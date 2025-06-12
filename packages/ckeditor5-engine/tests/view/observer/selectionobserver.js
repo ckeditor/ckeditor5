@@ -6,7 +6,7 @@
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 import { ViewRange } from '../../../src/view/range.js';
-import { DocumentSelection } from '../../../src/view/documentselection.js';
+import { ViewDocumentSelection } from '../../../src/view/documentselection.js';
 import { ViewSelection } from '../../../src/view/selection.js';
 import { View } from '../../../src/view/view.js';
 import { SelectionObserver } from '../../../src/view/observer/selectionobserver.js';
@@ -70,7 +70,7 @@ describe( 'SelectionObserver', () => {
 		viewDocument.on( 'selectionChange', ( evt, data ) => {
 			expect( data ).to.have.property( 'domSelection' ).that.equals( domDocument.getSelection() );
 
-			expect( data ).to.have.property( 'oldSelection' ).that.is.instanceof( DocumentSelection );
+			expect( data ).to.have.property( 'oldSelection' ).that.is.instanceof( ViewDocumentSelection );
 			expect( data.oldSelection.rangeCount ).to.equal( 0 );
 
 			expect( data ).to.have.property( 'newSelection' ).that.is.instanceof( ViewSelection );
@@ -178,7 +178,7 @@ describe( 'SelectionObserver', () => {
 		viewDocument.on( 'selectionChange', ( evt, data ) => {
 			expect( data ).to.have.property( 'domSelection' ).that.equals( domDocument.getSelection() );
 
-			expect( data ).to.have.property( 'oldSelection' ).that.is.instanceof( DocumentSelection );
+			expect( data ).to.have.property( 'oldSelection' ).that.is.instanceof( ViewDocumentSelection );
 			expect( data.oldSelection.rangeCount ).to.equal( 0 );
 
 			expect( data ).to.have.property( 'newSelection' ).that.is.instanceof( ViewSelection );
@@ -236,7 +236,7 @@ describe( 'SelectionObserver', () => {
 		viewDocument.on( 'selectionChange', ( evt, data ) => {
 			expect( data ).to.have.property( 'domSelection' ).that.equals( domDocument.getSelection() );
 
-			expect( data ).to.have.property( 'oldSelection' ).that.is.instanceof( DocumentSelection );
+			expect( data ).to.have.property( 'oldSelection' ).that.is.instanceof( ViewDocumentSelection );
 			expect( data.oldSelection.rangeCount ).to.equal( 0 );
 
 			expect( data ).to.have.property( 'newSelection' ).that.is.instanceof( ViewSelection );
@@ -458,7 +458,7 @@ describe( 'SelectionObserver', () => {
 				expect( spy.calledOnce ).to.true;
 				expect( data ).to.have.property( 'domSelection' ).to.equal( domDocument.getSelection() );
 
-				expect( data ).to.have.property( 'oldSelection' ).to.instanceof( DocumentSelection );
+				expect( data ).to.have.property( 'oldSelection' ).to.instanceof( ViewDocumentSelection );
 				expect( data.oldSelection.rangeCount ).to.equal( 0 );
 
 				expect( data ).to.have.property( 'newSelection' ).to.instanceof( ViewSelection );
@@ -619,7 +619,7 @@ describe( 'SelectionObserver', () => {
 			viewDocument.on( 'selectionChange', ( evt, data ) => {
 				expect( data ).to.have.property( 'domSelection' ).that.equals( domDocument.getSelection() );
 
-				expect( data ).to.have.property( 'oldSelection' ).that.is.instanceof( DocumentSelection );
+				expect( data ).to.have.property( 'oldSelection' ).that.is.instanceof( ViewDocumentSelection );
 				expect( data.oldSelection.rangeCount ).to.equal( 0 );
 
 				expect( data ).to.have.property( 'newSelection' ).that.is.instanceof( ViewSelection );

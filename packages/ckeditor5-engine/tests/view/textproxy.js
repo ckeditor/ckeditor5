@@ -6,7 +6,7 @@
 import { TextProxy } from '../../src/view/textproxy.js';
 import { Text } from '../../src/view/text.js';
 import { ViewContainerElement } from '../../src/view/containerelement.js';
-import { DocumentFragment } from '../../src/view/documentfragment.js';
+import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { RootEditableElement } from '../../src/view/rooteditableelement.js';
 
 import { createViewDocumentMock } from '../../tests/view/_utils/createdocumentmock.js';
@@ -104,7 +104,7 @@ describe( 'TextProxy', () => {
 		} );
 
 		it( 'should return Document if element is inside DocumentFragment', () => {
-			new DocumentFragment( document, [ wrapper ] ); // eslint-disable-line no-new
+			new ViewDocumentFragment( document, [ wrapper ] ); // eslint-disable-line no-new
 
 			expect( textProxy.document ).to.equal( document );
 		} );

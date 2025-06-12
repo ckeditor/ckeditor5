@@ -82,7 +82,7 @@ type DomRange = globalThis.Range;
  * This class also {@link module:engine/view/view~View#attachDomRoot binds the DOM and the view elements}.
  *
  * If you do not need full a DOM - view management, and only want to transform a tree of view elements to a tree of DOM
- * elements you do not need this controller. You can use the {@link module:engine/view/domconverter~DomConverter DomConverter} instead.
+ * elements you do not need this controller. You can use the {@link module:engine/view/domconverter~DomConverter ViewDomConverter} instead.
  */
 export class View extends /* #__PURE__ */ ObservableMixin() {
 	/**

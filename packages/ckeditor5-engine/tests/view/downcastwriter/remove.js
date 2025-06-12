@@ -6,14 +6,14 @@
 import { DowncastWriter } from '../../../src/view/downcastwriter.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { Range } from '../../../src/view/range.js';
-import { DocumentFragment } from '../../../src/view/documentfragment.js';
+import { ViewDocumentFragment } from '../../../src/view/documentfragment.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
 import { EmptyElement } from '../../../src/view/emptyelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
 import { RawElement } from '../../../src/view/rawelement.js';
 
-import { Document } from '../../../src/view/document.js';
+import { ViewDocument } from '../../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
@@ -40,7 +40,7 @@ describe( 'DowncastWriter', () => {
 		}
 
 		beforeEach( () => {
-			document = new Document( new StylesProcessor() );
+			document = new ViewDocument( new StylesProcessor() );
 			writer = new DowncastWriter( document );
 		} );
 
@@ -66,7 +66,7 @@ describe( 'DowncastWriter', () => {
 			const range = Range._createFromParentsAndOffsets( p, 0, p, 0 );
 			const fragment = writer.remove( range );
 
-			expect( fragment ).to.be.instanceof( DocumentFragment );
+			expect( fragment ).to.be.instanceof( ViewDocumentFragment );
 			expect( fragment.childCount ).to.equal( 0 );
 			expect( range.isCollapsed ).to.be.true;
 		} );

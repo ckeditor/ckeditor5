@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Document } from '../../../src/view/document.js';
+import { ViewDocument } from '../../../src/view/document.js';
 import { ViewRootEditableElement } from '../../../src/view/rooteditableelement.js';
 import { createViewRoot } from '../_utils/createroot.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
@@ -12,7 +12,7 @@ describe( 'createRoot', () => {
 	let viewDoc;
 
 	beforeEach( () => {
-		viewDoc = new Document( new StylesProcessor() );
+		viewDoc = new ViewDocument( new StylesProcessor() );
 	} );
 
 	it( 'should create view root element with given data', () => {

@@ -100,7 +100,7 @@ export class RawElement extends Element {
 	 * ```
 	 *
 	 * @param domElement The native DOM element representing the raw view element.
-	 * @param domConverter Instance of the DomConverter used to optimize the output.
+	 * @param domConverter Instance of the ViewDomConverter used to optimize the output.
 	 */
 	public render( domElement: DomElement, domConverter: ViewDomConverter ): void {}
 }

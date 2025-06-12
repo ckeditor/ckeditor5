@@ -6,7 +6,7 @@
 import { ViewDocumentSelection } from '../../src/view/documentselection.js';
 import { Selection } from '../../src/view/selection.js';
 import { Range } from '../../src/view/range.js';
-import { Document } from '../../src/view/document.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { Element } from '../../src/view/element.js';
 import { Text } from '../../src/view/text.js';
 import { Position } from '../../src/view/position.js';
@@ -23,7 +23,7 @@ describe( 'ViewDocumentSelection', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		document = new Document( new StylesProcessor() );
+		document = new ViewDocument( new StylesProcessor() );
 		const text = new Text( document, 'xxxxxxxxxxxxxxxxxxxx' );
 		el = new Element( document, 'p', null, text );
 
@@ -464,7 +464,7 @@ describe( 'ViewDocumentSelection', () => {
 			expect( documentSelection.isEqual( otherSelection ) ).to.be.true;
 		} );
 
-		it( 'should return true if selections equal - DocumentSelection and Selection', () => {
+		it( 'should return true if selections equal - ViewDocumentSelection and Selection', () => {
 			documentSelection._setTo( [ range1, range2 ] );
 
 			const otherSelection = new Selection();
@@ -481,7 +481,7 @@ describe( 'ViewDocumentSelection', () => {
 			expect( documentSelection.isEqual( otherSelection ) ).to.be.true;
 		} );
 
-		it( 'should return true if backward selections equal - DocumentSelection and Selection', () => {
+		it( 'should return true if backward selections equal - ViewDocumentSelection and Selection', () => {
 			documentSelection._setTo( range1, { backward: true } );
 
 			const otherSelection = new Selection( [ range1 ], { backward: true } );
@@ -497,7 +497,7 @@ describe( 'ViewDocumentSelection', () => {
 			expect( documentSelection.isEqual( otherSelection ) ).to.be.false;
 		} );
 
-		it( 'should return false if ranges count does not equal - DocumentSelection and Selection', () => {
+		it( 'should return false if ranges count does not equal - ViewDocumentSelection and Selection', () => {
 			documentSelection._setTo( [ range1, range2 ] );
 
 			const otherSelection = new Selection( [ range1 ] );
@@ -513,7 +513,7 @@ describe( 'ViewDocumentSelection', () => {
 			expect( documentSelection.isEqual( otherSelection ) ).to.be.false;
 		} );
 
-		it( 'should return false if ranges (other than the last added one) do not equal - DocumentSelection and Selection', () => {
+		it( 'should return false if ranges (other than the last added one) do not equal - ViewDocumentSelection and Selection', () => {
 			documentSelection._setTo( [ range1, range3 ] );
 
 			const otherSelection = new Selection( [ range2, range3 ] );
@@ -529,7 +529,7 @@ describe( 'ViewDocumentSelection', () => {
 			expect( documentSelection.isEqual( otherSelection ) ).to.be.false;
 		} );
 
-		it( 'should return false if directions do not equal - DocumentSelection and Selection', () => {
+		it( 'should return false if directions do not equal - ViewDocumentSelection and Selection', () => {
 			documentSelection._setTo( range1 );
 
 			const otherSelection = new Selection( [ range1 ], { backward: true } );
@@ -543,7 +543,7 @@ describe( 'ViewDocumentSelection', () => {
 			expect( documentSelection.isEqual( otherSelection ) ).to.be.false;
 		} );
 
-		it( 'should return true if both selection are fake - DocumentSelection and Selection', () => {
+		it( 'should return true if both selection are fake - ViewDocumentSelection and Selection', () => {
 			const otherSelection = new Selection( range1, { fake: true } );
 			documentSelection._setTo( range1, { fake: true } );
 
@@ -557,7 +557,7 @@ describe( 'ViewDocumentSelection', () => {
 			expect( documentSelection.isEqual( otherSelection ) ).to.be.false;
 		} );
 
-		it( 'should return false if both selection are fake but have different label - DocumentSelection and Selection', () => {
+		it( 'should return false if both selection are fake but have different label - ViewDocumentSelection and Selection', () => {
 			const otherSelection = new Selection( [ range1 ], { fake: true, label: 'foo bar baz' } );
 			documentSelection._setTo( range1, { fake: true, label: 'foo' } );
 
@@ -570,7 +570,7 @@ describe( 'ViewDocumentSelection', () => {
 			expect( documentSelection.isEqual( otherSelection ) ).to.be.true;
 		} );
 
-		it( 'should return true if both selections are empty - DocumentSelection and Selection', () => {
+		it( 'should return true if both selections are empty - ViewDocumentSelection and Selection', () => {
 			const otherSelection = new Selection();
 
 			expect( documentSelection.isEqual( otherSelection ) ).to.be.true;
@@ -586,7 +586,7 @@ describe( 'ViewDocumentSelection', () => {
 			expect( documentSelection.isSimilar( otherSelection ) ).to.be.true;
 		} );
 
-		it( 'should return true if selections equal - DocumentSelection and Selection', () => {
+		it( 'should return true if selections equal - ViewDocumentSelection and Selection', () => {
 			documentSelection._setTo( [ range1, range2 ] );
 
 			const otherSelection = new Selection( [ range1, range2 ] );
@@ -602,7 +602,7 @@ describe( 'ViewDocumentSelection', () => {
 			expect( documentSelection.isSimilar( otherSelection ) ).to.be.false;
 		} );
 
-		it( 'should return false if ranges count does not equal - DocumentSelection and Selection', () => {
+		it( 'should return false if ranges count does not equal - ViewDocumentSelection and Selection', () => {
 			documentSelection._setTo( [ range1, range2 ] );
 
 			const otherSelection = new Selection( [ range1 ] );
@@ -634,7 +634,7 @@ describe( 'ViewDocumentSelection', () => {
 			expect( documentSelection.isSimilar( otherSelection ) ).to.be.false;
 		} );
 
-		it( 'should return false if directions are not equal - DocumentSelection and Selection', () => {
+		it( 'should return false if directions are not equal - ViewDocumentSelection and Selection', () => {
 			documentSelection._setTo( range1 );
 
 			const otherSelection = new Selection( [ range1 ], { backward: true } );
@@ -648,7 +648,7 @@ describe( 'ViewDocumentSelection', () => {
 			expect( documentSelection.isSimilar( otherSelection ) ).to.be.true;
 		} );
 
-		it( 'should return true if both selections are empty - DocumentSelection and Selection', () => {
+		it( 'should return true if both selections are empty - ViewDocumentSelection and Selection', () => {
 			const otherSelection = new Selection();
 
 			expect( documentSelection.isSimilar( otherSelection ) ).to.be.true;
@@ -682,7 +682,7 @@ describe( 'ViewDocumentSelection', () => {
 			expect( otherSelection.isEqual( documentSelection ) ).to.be.false;
 		} );
 
-		it( 'should return true if all ranges trimmed from both selections are equal - DocumentSelection and Selection', () => {
+		it( 'should return true if all ranges trimmed from both selections are equal - ViewDocumentSelection and Selection', () => {
 			const view = _parseView(
 				'<container:p><attribute:span></attribute:span></container:p>' +
 				'<container:p><attribute:span>xx</attribute:span></container:p>'
@@ -1070,7 +1070,7 @@ describe( 'ViewDocumentSelection', () => {
 		} );
 
 		it( 'should return EditableElement when selection is placed inside', () => {
-			const viewDocument = new Document( new StylesProcessor() );
+			const viewDocument = new ViewDocument( new StylesProcessor() );
 			documentSelection._setTo( viewDocument.selection );
 			const root = createViewRoot( viewDocument, 'div', 'main' );
 			const element = new Element( document, 'p' );

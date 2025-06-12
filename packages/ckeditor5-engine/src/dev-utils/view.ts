@@ -41,8 +41,8 @@ const allowedTypes = {
 	'ui': UIElement,
 	'raw': RawElement
 };
-// Returns simplified implementation of {@link module:engine/view/domconverter~DomConverter#setContentOf DomConverter.setContentOf} method.
-// Used to render UIElement and RawElement.
+// Returns simplified implementation of {@link module:engine/view/domconverter~DomConverter#setContentOf ViewDomConverter.setContentOf}
+// method. Used to render UIElement and RawElement.
 const domConverterStub: ViewDomConverter = {
 	setContentOf: ( node: any, html: string ) => {
 		node.innerHTML = html;
@@ -65,7 +65,7 @@ const domConverterStub: ViewDomConverter = {
  * {@link module:engine/view/uielement~UIElement} will be printed.
  * @param options.renderRawElements When set to `true`, the inner content of each
  * {@link module:engine/view/rawelement~RawElement} will be printed.
- * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~DomConverter DomConverter}
+ * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~DomConverter ViewDomConverter}
  * instance, it lets the conversion go through exactly the same flow the editing view is going through,
  * i.e. with view data filtering. Otherwise the simple stub is used.
  * @returns The stringified data.
@@ -283,7 +283,7 @@ _setViewData._parse = _parseView;
  * {@link module:engine/view/uielement~UIElement} will be printed.
  * @param options.renderRawElements When set to `true`, the inner content of each
  * {@link module:engine/view/rawelement~RawElement} will be printed.
- * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~DomConverter DomConverter}
+ * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~DomConverter ViewDomConverter}
  * instance, it lets the conversion go through exactly the same flow the editing view is going through,
  * i.e. with view data filtering. Otherwise the simple stub is used.
  * @returns An HTML-like string representing the view.
@@ -719,7 +719,7 @@ class ViewStringify {
 	 * @param options.renderUIElements When set to `true`, the inner content of each
 	 * {@link module:engine/view/uielement~UIElement} will be printed.
 	 * @param options.renderRawElements When set to `true`, the inner content of each
-	 * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~DomConverter DomConverter}
+	 * @param options.domConverter When set to an actual {@link module:engine/view/domconverter~DomConverter ViewDomConverter}
 	 * instance, it lets the conversion go through exactly the same flow the editing view is going through,
 	 * i.e. with view data filtering. Otherwise the simple stub is used.
 	 * {@link module:engine/view/rawelement~RawElement} will be printed.

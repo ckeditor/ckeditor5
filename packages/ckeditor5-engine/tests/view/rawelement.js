@@ -5,7 +5,7 @@
 
 import { RawElement } from '../../src/view/rawelement.js';
 import { Element } from '../../src/view/element.js';
-import { Document } from '../../src/view/document.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
@@ -13,7 +13,7 @@ describe( 'RawElement', () => {
 	let rawElement, doc;
 
 	beforeEach( () => {
-		doc = new Document( new StylesProcessor() );
+		doc = new ViewDocument( new StylesProcessor() );
 
 		rawElement = new RawElement( doc, 'span', {
 			foo: 'bar',

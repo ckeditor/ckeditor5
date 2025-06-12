@@ -12,7 +12,7 @@ import { EmptyElement } from '../../../src/view/emptyelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
 import { RawElement } from '../../../src/view/rawelement.js';
 
-import { Document } from '../../../src/view/document.js';
+import { ViewDocument } from '../../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
@@ -34,7 +34,7 @@ describe( 'DowncastWriter', () => {
 		}
 
 		beforeEach( () => {
-			document = new Document( new StylesProcessor() );
+			document = new ViewDocument( new StylesProcessor() );
 			writer = new DowncastWriter( document );
 		} );
 

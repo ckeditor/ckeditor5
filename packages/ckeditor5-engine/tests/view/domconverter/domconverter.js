@@ -47,11 +47,11 @@ describe( 'ViewDomConverter', () => {
 	} );
 
 	describe( 'domDocument', () => {
-		it( 'should return DOM document instance used by the DomConverter #1 - rendering mode data', () => {
+		it( 'should return DOM document instance used by the ViewDomConverter #1 - rendering mode data', () => {
 			expect( converter.domDocument ).to.be.instanceof( globalThis.Document );
 		} );
 
-		it( 'should return DOM document instance used by the DomConverter #2 - rendering mode editing', () => {
+		it( 'should return DOM document instance used by the ViewDomConverter #2 - rendering mode editing', () => {
 			const converterEditing = new ViewDomConverter( viewDocument, {
 				renderingMode: 'editing'
 			} );
@@ -967,7 +967,7 @@ describe( 'ViewDomConverter', () => {
 
 	describe( 'removeDomElementAttribute()', () => {
 		beforeEach( () => {
-			// Silence warnings about unsafe attributes and elements created by the DomConverter.
+			// Silence warnings about unsafe attributes and elements created by the ViewDomConverter.
 			testUtils.sinon.stub( console, 'warn' )
 				.withArgs( sinon.match( /^domconverter-unsafe-attribute-detected/ ) )
 				.callsFake( () => {} );

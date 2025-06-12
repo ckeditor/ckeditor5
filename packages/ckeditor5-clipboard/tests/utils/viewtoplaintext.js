@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { DomConverter, StylesProcessor, ViewDocument, DowncastWriter } from '@ckeditor/ckeditor5-engine';
+import { ViewDomConverter, StylesProcessor, ViewDocument, DowncastWriter } from '@ckeditor/ckeditor5-engine';
 import { viewToPlainText } from '../../src/utils/viewtoplaintext.js';
 
 import { _parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view.js';
@@ -13,7 +13,7 @@ describe( 'viewToPlainText()', () => {
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
-		converter = new DomConverter( viewDocument );
+		converter = new ViewDomConverter( viewDocument );
 	} );
 
 	afterEach( () => {

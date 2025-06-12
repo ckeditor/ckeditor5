@@ -5,7 +5,7 @@
 
 import { ViewRawElement } from '../../../src/view/rawelement.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
-import { DomConverter } from '../../../src/view/domconverter.js';
+import { ViewDomConverter } from '../../../src/view/domconverter.js';
 import { ViewDocument } from '../../../src/view/document.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
@@ -24,7 +24,7 @@ describe( 'DOMConverter RawElement integration', () => {
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
-		converter = new DomConverter( viewDocument );
+		converter = new ViewDomConverter( viewDocument );
 	} );
 
 	describe( 'viewToDom()', () => {

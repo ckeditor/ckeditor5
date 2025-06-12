@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { DocumentFragment } from '../../src/view/documentfragment.js';
+import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { Element } from '../../src/view/element.js';
 import { Text } from '../../src/view/text.js';
 import { UpcastWriter } from '../../src/view/upcastwriter.js';
@@ -39,14 +39,14 @@ describe( 'UpcastWriter', () => {
 		it( 'should create empty document fragment', () => {
 			const df = writer.createDocumentFragment();
 
-			expect( df ).to.instanceOf( DocumentFragment );
+			expect( df ).to.instanceOf( ViewDocumentFragment );
 			expect( df.childCount ).to.equal( 0 );
 		} );
 
 		it( 'should create document fragment with children', () => {
 			const df = writer.createDocumentFragment( [ view.getChild( 0 ), view.getChild( 1 ) ] );
 
-			expect( df ).to.instanceOf( DocumentFragment );
+			expect( df ).to.instanceOf( ViewDocumentFragment );
 			expect( df.childCount ).to.equal( 2 );
 		} );
 	} );
@@ -555,7 +555,7 @@ describe( 'UpcastWriter', () => {
 		} );
 
 		it( 'should add or update custom property on document fragment', () => {
-			const fragment = new DocumentFragment();
+			const fragment = new ViewDocumentFragment();
 
 			writer.setCustomProperty( 'prop1', 'foo', fragment );
 			writer.setCustomProperty( 'prop2', 'bar', fragment );
@@ -590,7 +590,7 @@ describe( 'UpcastWriter', () => {
 		} );
 
 		it( 'should remove existing custom property from document fragment', () => {
-			const fragment = new DocumentFragment();
+			const fragment = new ViewDocumentFragment();
 
 			writer.setCustomProperty( 'prop1', 'foo', fragment );
 

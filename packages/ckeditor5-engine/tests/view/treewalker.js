@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Document } from '../../src/view/document.js';
-import { DocumentFragment } from '../../src/view/documentfragment.js';
+import { ViewDocument } from '../../src/view/document.js';
+import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewAttributeElement } from '../../src/view/attributeelement.js';
 import { ViewContainerElement } from '../../src/view/containerelement.js';
 import { Text } from '../../src/view/text.js';
@@ -19,7 +19,7 @@ describe( 'TreeWalker', () => {
 	let doc, root, img1, paragraph, bold, textAbcd, charY, img2, charX, rootBeginning, rootEnding;
 
 	beforeEach( () => {
-		doc = new Document( new StylesProcessor() );
+		doc = new ViewDocument( new StylesProcessor() );
 		root = createViewRoot( doc );
 
 		// root
@@ -1080,7 +1080,7 @@ describe( 'TreeWalker', () => {
 		const bar = new Text( doc, 'bar' );
 		const p = new ViewContainerElement( doc, 'p', null, foo );
 		const b = new ViewAttributeElement( doc, 'b', null, bar );
-		const docFrag = new DocumentFragment( doc, [ p, b ] );
+		const docFrag = new ViewDocumentFragment( doc, [ p, b ] );
 
 		const expected = [
 			{

@@ -4,7 +4,7 @@
  */
 
 import { ObservableMixin } from '@ckeditor/ckeditor5-utils/src/observablemixin.js';
-import { DocumentSelection } from '../../../src/view/documentselection.js';
+import { ViewDocumentSelection } from '../../../src/view/documentselection.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 /**
@@ -16,7 +16,7 @@ export function createViewDocumentMock() {
 	const doc = new ( ObservableMixin() )();
 	doc.set( 'isFocused', false );
 	doc.set( 'isReadOnly', false );
-	doc.selection = new DocumentSelection();
+	doc.selection = new ViewDocumentSelection();
 	doc.stylesProcessor = new StylesProcessor();
 
 	return doc;

@@ -422,7 +422,7 @@ export class Selection extends /* #__PURE__ */ EmitterMixin( TypeCheckable ) {
 	 * const otherSelection = writer.createSelection();
 	 * selection.setTo( otherSelection );
 	 *
-	 * // Sets selection to contents of DocumentSelection.
+	 * // Sets selection to contents of ViewDocumentSelection.
 	 * selection.setTo( editor.editing.view.document.selection );
 	 *
 	 * // Sets collapsed selection at the given position.

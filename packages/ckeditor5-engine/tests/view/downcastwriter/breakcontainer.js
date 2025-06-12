@@ -8,7 +8,7 @@ import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { Position } from '../../../src/view/position.js';
-import { Document } from '../../../src/view/document.js';
+import { ViewDocument } from '../../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
@@ -29,7 +29,7 @@ describe( 'DowncastWriter', () => {
 		}
 
 		before( () => {
-			document = new Document( new StylesProcessor() );
+			document = new ViewDocument( new StylesProcessor() );
 			writer = new DowncastWriter( document );
 		} );
 

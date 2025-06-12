@@ -4,7 +4,7 @@
  */
 
 import { Selection } from '../../src/view/selection.js';
-import { DocumentSelection } from '../../src/view/documentselection.js';
+import { ViewDocumentSelection } from '../../src/view/documentselection.js';
 import { Range } from '../../src/view/range.js';
 import { Document } from '../../src/view/document.js';
 import { Element } from '../../src/view/element.js';
@@ -91,7 +91,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should be able to create a selection from the other document selection', () => {
-			const otherSelection = new DocumentSelection( [ range2, range3 ], { backward: true } );
+			const otherSelection = new ViewDocumentSelection( [ range2, range3 ], { backward: true } );
 			const selection = new Selection( otherSelection );
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range2, range3 ] );

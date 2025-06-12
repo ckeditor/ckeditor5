@@ -8,7 +8,7 @@ import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { Text } from '../../../src/view/text.js';
 import { Position } from '../../../src/view/position.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
-import { Document } from '../../../src/view/document.js';
+import { ViewDocument } from '../../../src/view/document.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
 
 describe( 'DowncastWriter', () => {
@@ -27,7 +27,7 @@ describe( 'DowncastWriter', () => {
 		}
 
 		before( () => {
-			document = new Document( new StylesProcessor() );
+			document = new ViewDocument( new StylesProcessor() );
 			writer = new DowncastWriter( document );
 		} );
 

@@ -111,7 +111,8 @@ export class CustomElementSupport extends Plugin {
 					if ( viewElement.is( 'element', 'template' ) && viewElement.getCustomProperty( '$rawContent' ) ) {
 						htmlContent = viewElement.getCustomProperty( '$rawContent' );
 					} else {
-						// Store the whole element in the attribute so that DomConverter will be able to use the pre like element context.
+						// Store the whole element in the attribute so that ViewDomConverter
+						// will be able to use the pre like element context.
 						const viewWriter = new UpcastWriter( viewElement.document );
 						const documentFragment = viewWriter.createDocumentFragment( viewElement );
 						const domFragment = editor.data.htmlProcessor.domConverter.viewToDom( documentFragment );

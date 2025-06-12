@@ -211,7 +211,7 @@ export class SelectionObserver extends Observer {
 			this._documentIsSelectingInactivityTimeoutDebounced();
 		} );
 
-		// Update the model DocumentSelection just after the Renderer and the SelectionObserver are locked.
+		// Update the model ViewDocumentSelection just after the Renderer and the SelectionObserver are locked.
 		// We do this synchronously (without waiting for the `selectionchange` DOM event) as browser updates
 		// the DOM selection (but not visually) to span the text that is under composition and could be replaced.
 		this.listenTo<ViewDocumentCompositionStartEvent>( this.view.document, 'compositionstart', () => {
