@@ -5,7 +5,7 @@
 
 import { ModelRange } from '../../../src/model/range.js';
 import { ModelPosition } from '../../../src/model/position.js';
-import { TreeWalker } from '../../../src/model/treewalker.js';
+import { ModelTreeWalker } from '../../../src/model/treewalker.js';
 import { ModelText } from '../../../src/model/text.js';
 import { ModelTextProxy } from '../../../src/model/textproxy.js';
 
@@ -21,7 +21,7 @@ import { ModelTextProxy } from '../../../src/model/textproxy.js';
  */
 export function getNodesAndText( range ) {
 	let txt = '';
-	const treeWalker = new TreeWalker( { boundaries: range } );
+	const treeWalker = new ModelTreeWalker( { boundaries: range } );
 
 	for ( const value of treeWalker ) {
 		const node = value.item;

@@ -25,11 +25,11 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
 /**
  * Position iterator class. It allows to iterate forward and backward over the document.
  */
-export class TreeWalker implements Iterable<TreeWalkerValue> {
+export class ModelTreeWalker implements Iterable<ModelTreeWalkerValue> {
 	/**
 	 * Walking direction. Defaults `'forward'`.
 	 */
-	public readonly direction: TreeWalkerDirection;
+	public readonly direction: ModelTreeWalkerDirection;
 
 	/**
 	 * Iterator boundaries.
@@ -89,7 +89,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 	 *
 	 * @param options Object with configuration.
 	 */
-	constructor( options: TreeWalkerOptions ) {
+	constructor( options: ModelTreeWalkerOptions ) {
 		if ( !options || ( !options.boundaries && !options.startPosition ) ) {
 			/**
 			 * Neither boundaries nor starting position of a `TreeWalker` have been defined.
@@ -137,9 +137,9 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 	/**
 	 * Iterable interface.
 	 *
-	 * @returns {Iterable.<module:engine/model/treewalker~TreeWalkerValue>}
+	 * @returns {Iterable.<module:engine/model/treewalker~ModelTreeWalkerValue>}
 	 */
-	public [ Symbol.iterator ](): IterableIterator<TreeWalkerValue> {
+	public [ Symbol.iterator ](): IterableIterator<ModelTreeWalkerValue> {
 		return this;
 	}
 
@@ -164,10 +164,10 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 	 * walker.skip( () => false ); // Do not move the position.
 	 * ```
 	 *
-	 * @param skip Callback function. Gets {@link module:engine/model/treewalker~TreeWalkerValue} and should
+	 * @param skip Callback function. Gets {@link module:engine/model/treewalker~ModelTreeWalkerValue} and should
 	 * return `true` if the value should be skipped or `false` if not.
 	 */
-	public skip( skip: ( value: TreeWalkerValue ) => boolean ): void {
+	public skip( skip: ( value: ModelTreeWalkerValue ) => boolean ): void {
 		let done, value, prevPosition, prevVisitedParent;
 
 		do {
@@ -212,7 +212,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 	/**
 	 * Gets the next tree walker's value.
 	 */
-	public next(): IteratorResult<TreeWalkerValue> {
+	public next(): IteratorResult<ModelTreeWalkerValue> {
 		if ( this.direction == 'forward' ) {
 			return this._next();
 		} else {
@@ -223,7 +223,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 	/**
 	 * Makes a step forward in model. Moves the {@link #position} to the next position and returns the encountered value.
 	 */
-	private _next(): IteratorResult<TreeWalkerValue> {
+	private _next(): IteratorResult<ModelTreeWalkerValue> {
 		const previousPosition = this.position;
 		const position = this.position.clone();
 		const parent = this._visitedParent;
@@ -302,7 +302,7 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 	/**
 	 * Makes a step backward in model. Moves the {@link #position} to the previous position and returns the encountered value.
 	 */
-	private _previous(): IteratorResult<TreeWalkerValue> {
+	private _previous(): IteratorResult<ModelTreeWalkerValue> {
 		const previousPosition = this.position;
 		const position = this.position.clone();
 		const parent = this._visitedParent;
@@ -377,12 +377,12 @@ export class TreeWalker implements Iterable<TreeWalkerValue> {
 }
 
 function formatReturnValue(
-	type: TreeWalkerValueType,
+	type: ModelTreeWalkerValueType,
 	item: ModelItem,
 	previousPosition: ModelPosition,
 	nextPosition: ModelPosition,
 	length?: number
-): IteratorYieldResult<TreeWalkerValue> {
+): IteratorYieldResult<ModelTreeWalkerValue> {
 	return {
 		done: false,
 		value: {
@@ -396,20 +396,20 @@ function formatReturnValue(
 }
 
 /**
- * Type of the step made by {@link module:engine/model/treewalker~TreeWalker}.
+ * Type of the step made by {@link module:engine/model/treewalker~ModelTreeWalker}.
  * Possible values: `'elementStart'` if walker is at the beginning of a node, `'elementEnd'` if walker is at the end of node,
  * or `'text'` if walker traversed over text.
  */
-export type TreeWalkerValueType = 'elementStart' | 'elementEnd' | 'text';
+export type ModelTreeWalkerValueType = 'elementStart' | 'elementEnd' | 'text';
 
 /**
- * Object returned by {@link module:engine/model/treewalker~TreeWalker} when traversing tree model.
+ * Object returned by {@link module:engine/model/treewalker~ModelTreeWalker} when traversing tree model.
  */
-export interface TreeWalkerValue {
-	type: TreeWalkerValueType;
+export interface ModelTreeWalkerValue {
+	type: ModelTreeWalkerValueType;
 
 	/**
-	 * Item between old and new positions of {@link module:engine/model/treewalker~TreeWalker}.
+	 * Item between old and new positions of {@link module:engine/model/treewalker~ModelTreeWalker}.
 	 */
 	item: ModelItem;
 
@@ -440,21 +440,21 @@ export interface TreeWalkerValue {
 /**
  * Tree walking direction.
  */
-export type TreeWalkerDirection = 'forward' | 'backward';
+export type ModelTreeWalkerDirection = 'forward' | 'backward';
 
 /**
  * The configuration of TreeWalker.
  *
  * All parameters are optional, but you have to specify either `boundaries` or `startPosition`.
  */
-export interface TreeWalkerOptions {
+export interface ModelTreeWalkerOptions {
 
 	/**
 	 * Walking direction.
 	 *
 	 * @default 'forward'
 	 */
-	direction?: TreeWalkerDirection;
+	direction?: ModelTreeWalkerDirection;
 
 	/**
 	 * Range to define boundaries of the iterator.

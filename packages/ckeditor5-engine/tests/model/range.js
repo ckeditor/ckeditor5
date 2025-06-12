@@ -8,7 +8,7 @@ import { ModelPosition } from '../../src/model/position.js';
 import { ModelElement } from '../../src/model/element.js';
 import { ModelText } from '../../src/model/text.js';
 import { Model } from '../../src/model/model.js';
-import { TreeWalker } from '../../src/model/treewalker.js';
+import { ModelTreeWalker } from '../../src/model/treewalker.js';
 import { MarkerOperation } from '../../src/model/operation/markeroperation.js';
 import { AttributeOperation } from '../../src/model/operation/attributeoperation.js';
 import { InsertOperation } from '../../src/model/operation/insertoperation.js';
@@ -302,7 +302,7 @@ describe( 'Range', () => {
 			const range = new ModelRange( new ModelPosition( root, [ 0, 0, 3 ] ), new ModelPosition( root, [ 3, 0, 2 ] ) );
 			const walker = range.getWalker( { singleCharacters: true } );
 
-			expect( walker ).to.be.instanceof( TreeWalker );
+			expect( walker ).to.be.instanceof( ModelTreeWalker );
 			expect( walker ).to.have.property( 'singleCharacters' ).that.is.true;
 			expect( walker ).to.have.property( 'boundaries' ).that.equals( range );
 			expect( walker ).to.have.property( 'shallow' ).that.is.false;

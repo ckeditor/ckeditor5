@@ -14,7 +14,7 @@ import { EmitterMixin } from '@ckeditor/ckeditor5-utils';
 
 import type { Differ, DifferItem, DifferItemReinsert } from '../model/differ.js';
 import type { MarkerCollection, Marker } from '../model/markercollection.js';
-import type { TreeWalkerValue } from '../model/treewalker.js';
+import type { ModelTreeWalkerValue } from '../model/treewalker.js';
 import { type ModelDocumentSelection } from '../model/documentselection.js';
 import { type DowncastWriter } from '../view/downcastwriter.js';
 import { type ModelRootElement } from '../model/rootelement.js';
@@ -517,7 +517,7 @@ export class DowncastDispatcher extends /* #__PURE__ */ EmitterMixin() {
 	 */
 	private _addConsumablesForInsert(
 		consumable: ModelConsumable,
-		walkerValues: Iterable<TreeWalkerValue>
+		walkerValues: Iterable<ModelTreeWalkerValue>
 	): ModelConsumable {
 		for ( const value of walkerValues ) {
 			const item = value.item;
@@ -907,7 +907,7 @@ function getEventName<TType extends string>( type: TType, data: { item: ModelIte
 	return `${ type }:${ name }` as const;
 }
 
-function walkerValueToEventData( value: TreeWalkerValue ) {
+function walkerValueToEventData( value: ModelTreeWalkerValue ) {
 	return {
 		item: value.item,
 		range: ModelRange._createFromPositionAndShift( value.previousPosition, value.length! )

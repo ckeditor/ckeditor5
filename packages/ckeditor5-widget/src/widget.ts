@@ -11,7 +11,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 
 import {
 	MouseObserver,
-	TreeWalker,
+	ModelTreeWalker,
 	type DomEventData,
 	type DowncastSelectionEvent,
 	type DowncastWriter,
@@ -741,7 +741,7 @@ function findTextBlockAncestor( modelElement: ModelElement, schema: ModelSchema 
  * Returns next text block where could put selection.
  */
 function findNextTextBlock( position: ModelPosition, schema: ModelSchema ): ModelElement | null {
-	const treeWalker = new TreeWalker( { startPosition: position } );
+	const treeWalker = new ModelTreeWalker( { startPosition: position } );
 
 	for ( const { item } of treeWalker ) {
 		if ( schema.isLimit( item ) || !item.is( 'element' ) ) {

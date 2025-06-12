@@ -10,7 +10,7 @@
 import { ModelDocumentSelection } from '../documentselection.js';
 import { ModelPosition } from '../position.js';
 import { ModelRange } from '../range.js';
-import { TreeWalker, type TreeWalkerValue } from '../treewalker.js';
+import { ModelTreeWalker, type ModelTreeWalkerValue } from '../treewalker.js';
 
 import { type Model } from '../model.js';
 import { type ModelSchema } from '../schema.js';
@@ -72,7 +72,7 @@ export function modifySelection(
 
 	const focus = selection.focus!;
 
-	const walker = new TreeWalker( {
+	const walker = new ModelTreeWalker( {
 		boundaries: getSearchRange( focus, isForward ),
 		singleCharacters: true,
 		direction: isForward ? 'forward' : 'backward'
@@ -108,13 +108,13 @@ export function modifySelection(
  */
 function tryExtendingTo(
 	data: {
-		walker: TreeWalker;
+		walker: ModelTreeWalker;
 		schema: ModelSchema;
 		isForward: boolean;
 		unit: 'character' | 'codePoint' | 'word';
 		treatEmojiAsSingleUnit: boolean;
 	},
-	value: TreeWalkerValue
+	value: ModelTreeWalkerValue
 ): ModelPosition | undefined {
 	const { isForward, walker, unit, schema, treatEmojiAsSingleUnit } = data;
 	const { type, item, nextPosition } = value;
@@ -163,7 +163,7 @@ function tryExtendingTo(
  * or should be extended further.
  */
 function getCorrectPosition(
-	walker: TreeWalker,
+	walker: ModelTreeWalker,
 	unit: 'character' | 'codePoint' | 'word',
 	treatEmojiAsSingleUnit: boolean
 ): ModelPosition {
@@ -191,7 +191,7 @@ function getCorrectPosition(
  * Finds a correct position of a word break by walking in a text node and checking whether selection can be extended to given position
  * or should be extended further.
  */
-function getCorrectWordBreakPosition( walker: TreeWalker, isForward: boolean ): ModelPosition {
+function getCorrectWordBreakPosition( walker: ModelTreeWalker, isForward: boolean ): ModelPosition {
 	let textNode: ModelNode | null = walker.position.textNode;
 
 	if ( !textNode ) {

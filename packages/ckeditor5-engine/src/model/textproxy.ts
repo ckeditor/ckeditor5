@@ -43,7 +43,7 @@ import { CKEditorError } from '@ckeditor/ckeditor5-utils';
  * model changes, so they might get invalidated. Instead, consider creating {@link module:engine/model/liveposition~ModelLivePosition live
  * position}.
  *
- * `ModelTextProxy` instances are created by {@link module:engine/model/treewalker~TreeWalker model tree walker}.
+ * `ModelTextProxy` instances are created by {@link module:engine/model/treewalker~ModelTreeWalker model tree walker}.
  * You should not need to create an instance of this class by your own.
  */
 export class ModelTextProxy extends TypeCheckable {

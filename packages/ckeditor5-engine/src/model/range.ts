@@ -9,7 +9,7 @@
 
 import { TypeCheckable } from './typecheckable.js';
 import { ModelPosition } from './position.js';
-import { TreeWalker, type TreeWalkerOptions, type TreeWalkerValue } from './treewalker.js';
+import { ModelTreeWalker, type ModelTreeWalkerOptions, type ModelTreeWalkerValue } from './treewalker.js';
 
 import { type ModelDocument } from './document.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
@@ -32,7 +32,7 @@ import { CKEditorError, compareArrays } from '@ckeditor/ckeditor5-utils';
  * You can create range instances via its constructor or the `createRange*()` factory methods of
  * {@link module:engine/model/model~Model} and {@link module:engine/model/writer~Writer}.
  */
-export class ModelRange extends TypeCheckable implements Iterable<TreeWalkerValue> {
+export class ModelRange extends TypeCheckable implements Iterable<ModelTreeWalkerValue> {
 	/**
 	 * Start position.
 	 */
@@ -66,15 +66,15 @@ export class ModelRange extends TypeCheckable implements Iterable<TreeWalkerValu
 	 *
 	 * Iterates over all {@link module:engine/model/item~ModelItem items} that are in this range and returns
 	 * them together with additional information like length or {@link module:engine/model/position~ModelPosition positions},
-	 * grouped as {@link module:engine/model/treewalker~TreeWalkerValue}.
+	 * grouped as {@link module:engine/model/treewalker~ModelTreeWalkerValue}.
 	 * It iterates over all {@link module:engine/model/textproxy~ModelTextProxy text contents} that are inside the range
 	 * and all the {@link module:engine/model/element~ModelElement}s that are entered into when iterating over this range.
 	 *
-	 * This iterator uses {@link module:engine/model/treewalker~TreeWalker} with `boundaries` set to this range
+	 * This iterator uses {@link module:engine/model/treewalker~ModelTreeWalker} with `boundaries` set to this range
 	 * and `ignoreElementEnd` option set to `true`.
 	 */
-	public* [ Symbol.iterator ](): IterableIterator<TreeWalkerValue> {
-		yield* new TreeWalker( { boundaries: this, ignoreElementEnd: true } );
+	public* [ Symbol.iterator ](): IterableIterator<ModelTreeWalkerValue> {
+		yield* new ModelTreeWalker( { boundaries: this, ignoreElementEnd: true } );
 	}
 
 	/**
@@ -401,7 +401,7 @@ export class ModelRange extends TypeCheckable implements Iterable<TreeWalkerValu
 	}
 
 	/**
-	 * Creates a {@link module:engine/model/treewalker~TreeWalker TreeWalker} instance with this range as a boundary.
+	 * Creates a {@link module:engine/model/treewalker~ModelTreeWalker TreeWalker} instance with this range as a boundary.
 	 *
 	 * For example, to iterate over all items in the entire document root:
 	 *
@@ -415,32 +415,32 @@ export class ModelRange extends TypeCheckable implements Iterable<TreeWalkerValu
 	 * }
 	 * ```
 	 *
-	 * @param options Object with configuration options. See {@link module:engine/model/treewalker~TreeWalker}.
+	 * @param options Object with configuration options. See {@link module:engine/model/treewalker~ModelTreeWalker}.
 	 */
-	public getWalker( options: TreeWalkerOptions = {} ): TreeWalker {
+	public getWalker( options: ModelTreeWalkerOptions = {} ): ModelTreeWalker {
 		options.boundaries = this;
 
-		return new TreeWalker( options );
+		return new ModelTreeWalker( options );
 	}
 
 	/**
 	 * Returns an iterator that iterates over all {@link module:engine/model/item~ModelItem items} that are in this range and returns
 	 * them.
 	 *
-	 * This method uses {@link module:engine/model/treewalker~TreeWalker} with `boundaries` set to this range and `ignoreElementEnd` option
-	 * set to `true`. However it returns only {@link module:engine/model/item~ModelItem model items},
-	 * not {@link module:engine/model/treewalker~TreeWalkerValue}.
+	 * This method uses {@link module:engine/model/treewalker~ModelTreeWalker} with `boundaries` set to this range and
+	 * `ignoreElementEnd` option set to `true`. However it returns only {@link module:engine/model/item~ModelItem model items},
+	 * not {@link module:engine/model/treewalker~ModelTreeWalkerValue}.
 	 *
-	 * You may specify additional options for the tree walker. See {@link module:engine/model/treewalker~TreeWalker} for
+	 * You may specify additional options for the tree walker. See {@link module:engine/model/treewalker~ModelTreeWalker} for
 	 * a full list of available options.
 	 *
-	 * @param options Object with configuration options. See {@link module:engine/model/treewalker~TreeWalker}.
+	 * @param options Object with configuration options. See {@link module:engine/model/treewalker~ModelTreeWalker}.
 	 */
-	public* getItems( options: TreeWalkerOptions = {} ): IterableIterator<ModelItem> {
+	public* getItems( options: ModelTreeWalkerOptions = {} ): IterableIterator<ModelItem> {
 		options.boundaries = this;
 		options.ignoreElementEnd = true;
 
-		const treeWalker = new TreeWalker( options );
+		const treeWalker = new ModelTreeWalker( options );
 
 		for ( const value of treeWalker ) {
 			yield value.item;
@@ -451,18 +451,18 @@ export class ModelRange extends TypeCheckable implements Iterable<TreeWalkerValu
 	 * Returns an iterator that iterates over all {@link module:engine/model/position~ModelPosition positions} that are boundaries or
 	 * contained in this range.
 	 *
-	 * This method uses {@link module:engine/model/treewalker~TreeWalker} with `boundaries` set to this range. However it returns only
-	 * {@link module:engine/model/position~ModelPosition positions}, not {@link module:engine/model/treewalker~TreeWalkerValue}.
+	 * This method uses {@link module:engine/model/treewalker~ModelTreeWalker} with `boundaries` set to this range. However it returns only
+	 * {@link module:engine/model/position~ModelPosition positions}, not {@link module:engine/model/treewalker~ModelTreeWalkerValue}.
 	 *
-	 * You may specify additional options for the tree walker. See {@link module:engine/model/treewalker~TreeWalker} for
+	 * You may specify additional options for the tree walker. See {@link module:engine/model/treewalker~ModelTreeWalker} for
 	 * a full list of available options.
 	 *
-	 * @param options Object with configuration options. See {@link module:engine/model/treewalker~TreeWalker}.
+	 * @param options Object with configuration options. See {@link module:engine/model/treewalker~ModelTreeWalker}.
 	 */
-	public* getPositions( options: TreeWalkerOptions = {} ): IterableIterator<ModelPosition> {
+	public* getPositions( options: ModelTreeWalkerOptions = {} ): IterableIterator<ModelPosition> {
 		options.boundaries = this;
 
-		const treeWalker = new TreeWalker( options );
+		const treeWalker = new ModelTreeWalker( options );
 
 		yield treeWalker.position;
 

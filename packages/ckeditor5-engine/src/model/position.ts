@@ -8,7 +8,7 @@
  */
 
 import { TypeCheckable } from './typecheckable.js';
-import { TreeWalker, type TreeWalkerOptions, type TreeWalkerValue } from './treewalker.js';
+import { ModelTreeWalker, type ModelTreeWalkerOptions, type ModelTreeWalkerValue } from './treewalker.js';
 
 import { type ModelDocument } from './document.js';
 import { type ModelDocumentFragment } from './documentfragment.js';
@@ -308,7 +308,7 @@ export class ModelPosition extends TypeCheckable {
 
 	/**
 	 * Gets the farthest position which matches the callback using
-	 * {@link module:engine/model/treewalker~TreeWalker TreeWalker}.
+	 * {@link module:engine/model/treewalker~ModelTreeWalker TreeWalker}.
 	 *
 	 * For example:
 	 *
@@ -323,19 +323,19 @@ export class ModelPosition extends TypeCheckable {
 	 * // Do not move the position.
 	 * ```
 	 *
-	 * @param skip Callback function. Gets {@link module:engine/model/treewalker~TreeWalkerValue} and should
+	 * @param skip Callback function. Gets {@link module:engine/model/treewalker~ModelTreeWalkerValue} and should
 	 * return `true` if the value should be skipped or `false` if not.
-	 * @param options Object with configuration options. See {@link module:engine/model/treewalker~TreeWalker}.
+	 * @param options Object with configuration options. See {@link module:engine/model/treewalker~ModelTreeWalker}.
 	 *
 	 * @returns The position after the last item which matches the `skip` callback test.
 	 */
 	public getLastMatchingPosition(
-		skip: ( value: TreeWalkerValue ) => boolean,
-		options: TreeWalkerOptions = {}
+		skip: ( value: ModelTreeWalkerValue ) => boolean,
+		options: ModelTreeWalkerOptions = {}
 	): ModelPosition {
 		options.startPosition = this;
 
-		const treeWalker = new TreeWalker( options );
+		const treeWalker = new ModelTreeWalker( options );
 		treeWalker.skip( skip );
 
 		return treeWalker.position;

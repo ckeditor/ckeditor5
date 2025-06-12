@@ -8,7 +8,7 @@
  */
 
 import {
-	TreeWalker,
+	ModelTreeWalker,
 	type DowncastAttributeEvent,
 	type DowncastConversionApi,
 	type DowncastInsertEvent,
@@ -918,7 +918,7 @@ function viewToModelListItemChildrenConverter(
  * Helper function that seeks for a next list item starting from given `startPosition`.
  */
 function findNextListItem( startPosition: ModelPosition ) {
-	const treeWalker = new TreeWalker( { startPosition } );
+	const treeWalker = new ModelTreeWalker( { startPosition } );
 
 	let value;
 

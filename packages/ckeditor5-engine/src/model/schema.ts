@@ -11,7 +11,7 @@ import { ModelElement } from './element.js';
 import { ModelPosition } from './position.js';
 import { ModelRange } from './range.js';
 import { ModelText } from './text.js';
-import { TreeWalker } from './treewalker.js';
+import { ModelTreeWalker } from './treewalker.js';
 
 import { type ModelDocumentFragment } from './documentfragment.js';
 import { type ModelDocumentSelection } from './documentselection.js';
@@ -865,7 +865,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 			position.root as ModelElement;
 
 		if ( direction == 'both' || direction == 'backward' ) {
-			backwardWalker = new TreeWalker( {
+			backwardWalker = new ModelTreeWalker( {
 				boundaries: ModelRange._createIn( limitElement ),
 				startPosition: position,
 				direction: 'backward'
@@ -873,7 +873,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 		}
 
 		if ( direction == 'both' || direction == 'forward' ) {
-			forwardWalker = new TreeWalker( {
+			forwardWalker = new ModelTreeWalker( {
 				boundaries: ModelRange._createIn( limitElement ),
 				startPosition: position
 			} );
@@ -2436,7 +2436,7 @@ function mapContextItem( ctxItem: string | ModelItem | ModelDocumentFragment ): 
  * @returns Object returned at each iteration contains `value` and `walker` (informing which walker returned
  * given value) fields.
  */
-function* combineWalkers( backward: TreeWalker | undefined, forward: TreeWalker | undefined ) {
+function* combineWalkers( backward: ModelTreeWalker | undefined, forward: ModelTreeWalker | undefined ) {
 	let done = false;
 
 	while ( !done ) {

@@ -8,7 +8,7 @@
  */
 
 import {
-	TreeWalker,
+	ModelTreeWalker,
 	getFillerOffset,
 	type DowncastConversionApi,
 	type DowncastWriter,
@@ -304,7 +304,7 @@ export function getSiblingNodes( position: ModelPosition, direction: 'forward' |
 		direction
 	};
 	const limitIndent = listItem.getAttribute( 'listIndent' ) as number;
-	const nodes = [ ...new TreeWalker( walkerOptions ) ]
+	const nodes = [ ...new ModelTreeWalker( walkerOptions ) ]
 		.filter( value => value.item.is( 'element' ) )
 		.map( value => value.item );
 
