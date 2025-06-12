@@ -8,7 +8,7 @@
  */
 
 import { ButtonView, clickOutsideHandler, ContextualBalloon, Dialog, MenuBarMenuListItemButtonView } from 'ckeditor5/src/ui.js';
-import type { PositionOptions } from 'ckeditor5/src/utils.js';
+import type { DomOptimalPositionOptions } from 'ckeditor5/src/utils.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 import { Typing } from 'ckeditor5/src/typing.js';
 import { IconEmoji } from 'ckeditor5/src/icons.js';
@@ -314,7 +314,7 @@ export class EmojiPicker extends Plugin {
 	 * Returns positioning options for the {@link #balloonPlugin}. They control the way the balloon is attached
 	 * to the target element or selection.
 	 */
-	private _getBalloonPositionData(): Partial<PositionOptions> {
+	private _getBalloonPositionData(): Partial<DomOptimalPositionOptions> {
 		const view = this.editor.editing.view;
 		const viewDocument = view.document;
 

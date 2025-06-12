@@ -21,7 +21,7 @@ import {
 	toUnit,
 	type Locale,
 	type ObservableChangeEvent,
-	type PositionOptions,
+	type DomOptimalPositionOptions,
 	type DecoratedMethodEvent
 } from '@ckeditor/ckeditor5-utils';
 import { IconNextArrow, IconPreviousArrow } from '@ckeditor/ckeditor5-icons';
@@ -67,7 +67,7 @@ const toPx = /* #__PURE__ */ toUnit( 'px' );
  */
 export class ContextualBalloon extends Plugin {
 	/**
-	 * The {@link module:utils/dom/position~Options#limiter position limiter}
+	 * The {@link module:utils/dom/position~DomOptimalPositionOptions#limiter position limiter}
 	 * for the {@link #view balloon}, used when no `limiter` has been passed into {@link #add}
 	 * or {@link #updatePosition}.
 	 *
@@ -75,7 +75,7 @@ export class ContextualBalloon extends Plugin {
 	 * {@link module:engine/view/rooteditableelement~RootEditableElement}
 	 * of the {@link module:engine/view/document~Document#selection}.
 	 */
-	public positionLimiter: PositionOptions[ 'limiter' ];
+	public positionLimiter: DomOptimalPositionOptions[ 'limiter' ];
 
 	public visibleStack?: string;
 
@@ -326,7 +326,7 @@ export class ContextualBalloon extends Plugin {
 	 *
 	 * @param position Position options.
 	 */
-	public updatePosition( position?: Partial<PositionOptions> ): void {
+	public updatePosition( position?: Partial<DomOptimalPositionOptions> ): void {
 		if ( position ) {
 			this._visibleStack.get( this.visibleView! )!.position = position;
 		}
@@ -339,7 +339,7 @@ export class ContextualBalloon extends Plugin {
 	 * Returns position options of the last view in the stack.
 	 * This keeps the balloon in the same position when the view is changed.
 	 */
-	public getPositionOptions(): Partial<PositionOptions> | undefined {
+	public getPositionOptions(): Partial<DomOptimalPositionOptions> | undefined {
 		let position = Array.from( this._visibleStack.values() ).pop()!.position;
 
 		if ( position ) {
@@ -569,7 +569,7 @@ export interface ViewConfiguration {
 	/**
 	 * Positioning options.
 	 */
-	position?: Partial<PositionOptions>;
+	position?: Partial<DomOptimalPositionOptions>;
 
 	/**
 	 * An additional CSS class added to the {@link #view balloon} when visible.
