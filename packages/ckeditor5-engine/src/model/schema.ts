@@ -64,7 +64,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 
 	private readonly _genericCheckSymbol = Symbol( '$generic' );
 
-	private _compiledDefinitions?: Record<string, SchemaCompiledItemDefinition> | null;
+	private _compiledDefinitions?: Record<string, ModelSchemaCompiledItemDefinition> | null;
 
 	/**
 	 * Creates a schema instance.
@@ -183,7 +183,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * Use specific methods (such as {@link #checkChild `checkChild()`} or {@link #isLimit `isLimit()`})
 	 * in other cases.
 	 */
-	public getDefinitions(): Record<string, SchemaCompiledItemDefinition> {
+	public getDefinitions(): Record<string, ModelSchemaCompiledItemDefinition> {
 		if ( !this._compiledDefinitions ) {
 			this._compile();
 		}
@@ -199,7 +199,9 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * Use specific methods (such as {@link #checkChild `checkChild()`} or {@link #isLimit `isLimit()`})
 	 * in other cases.
 	 */
-	public getDefinition( item: string | ModelItem | ModelDocumentFragment | SchemaContextItem ): SchemaCompiledItemDefinition | undefined {
+	public getDefinition(
+		item: string | ModelItem | ModelDocumentFragment | SchemaContextItem
+	): ModelSchemaCompiledItemDefinition | undefined {
 		let itemName: string;
 
 		if ( typeof item == 'string' ) {
@@ -414,12 +416,12 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * @param def The child to check.
 	 */
 	public checkChild( context: SchemaContextDefinition, def: string | ModelNode | ModelDocumentFragment ): boolean {
-		// Note: `context` and `def` are already normalized here to `SchemaContext` and `SchemaCompiledItemDefinition`.
+		// Note: `context` and `def` are already normalized here to `SchemaContext` and `ModelSchemaCompiledItemDefinition`.
 		if ( !def ) {
 			return false;
 		}
 
-		return this._checkContextMatch( context as SchemaContext, def as unknown as SchemaCompiledItemDefinition );
+		return this._checkContextMatch( context as SchemaContext, def as unknown as ModelSchemaCompiledItemDefinition );
 	}
 
 	/**
@@ -583,8 +585,8 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 *
 	 * @param callback The callback to be called. It is called with two parameters:
 	 * {@link module:engine/model/schema~ModelSchemaContext} (context) instance and
-	 * {@link module:engine/model/schema~ModelSchemaCompiledItemDefinition} (definition). The callback may return `true/false` to override
-	 * `checkChild()`'s return value. If it does not return a boolean value, the default algorithm (or other callbacks) will define
+	 * {@link module:engine/model/schema~ModelModelSchemaCompiledItemDefinition} (definition). The callback may return `true/false` to
+	 * override `checkChild()`'s return value. If it does not return a boolean value, the default algorithm (or other callbacks) will define
 	 * `checkChild()`'s return value.
 	 * @param itemName Name of the schema item for which the callback is registered. If specified, the callback will be run only for
 	 * `checkChild()` calls which `def` parameter matches the `itemName`. Otherwise, the callback will run for every `checkChild` call.
@@ -1008,7 +1010,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	}
 
 	private _compile(): void {
-		const definitions: Record<string, SchemaCompiledItemDefinitionInternal> = {};
+		const definitions: Record<string, ModelSchemaCompiledItemDefinitionInternal> = {};
 		const sourceRules = this._sourceDefinitions;
 		const itemNames = Object.keys( sourceRules );
 
@@ -1068,7 +1070,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 		this._compiledDefinitions = compileDefinitions( definitions );
 	}
 
-	private _checkContextMatch( context: SchemaContext, def: SchemaCompiledItemDefinition ): boolean {
+	private _checkContextMatch( context: SchemaContext, def: ModelSchemaCompiledItemDefinition ): boolean {
 		const parentItem = context.last;
 
 		// First, check all child checks declared as callbacks.
@@ -1108,7 +1110,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
 	 * Note that the first callback that makes a decision "wins", i.e., if any callback returns `true` or `false`, then the processing
 	 * is over and that result is returned.
 	 */
-	private _evaluateChildChecks( context: SchemaContext, def: SchemaCompiledItemDefinition ): boolean | undefined {
+	private _evaluateChildChecks( context: SchemaContext, def: ModelSchemaCompiledItemDefinition ): boolean | undefined {
 		const genericChecks = this._customChildChecks.get( this._genericCheckSymbol ) || [];
 		const childChecks = this._customChildChecks.get( def.name ) || [];
 
@@ -1258,7 +1260,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
  * The listener is added with a `high` priority to be executed before the default method is really called. The `args` callback
  * parameter contains arguments passed to `checkChild( context, child )`. However, the `context` parameter is already
  * normalized to a {@link module:engine/model/schema~ModelSchemaContext} instance and `child` to a
- * {@link module:engine/model/schema~ModelSchemaCompiledItemDefinition} instance, so you do not have to worry about
+ * {@link module:engine/model/schema~ModelModelSchemaCompiledItemDefinition} instance, so you do not have to worry about
  * the various ways how `context` and `child` may be passed to `checkChild()`.
  *
  * **Note:** `childDefinition` may be `undefined` if `checkChild()` was called with a non-registered element.
@@ -1302,7 +1304,7 @@ export class ModelSchema extends /* #__PURE__ */ ObservableMixin() {
  */
 export type ModelSchemaCheckChildEvent = {
 	name: 'checkChild';
-	args: [ [ context: SchemaContext, def: SchemaCompiledItemDefinition ] ];
+	args: [ [ context: SchemaContext, def: ModelSchemaCompiledItemDefinition ] ];
 };
 
 /**
@@ -1701,7 +1703,7 @@ export interface ModelSchemaItemDefinition {
  * Rules fed to the schema by {@link module:engine/model/schema~ModelSchema#register}
  * and {@link module:engine/model/schema~ModelSchema#extend} methods are defined in the
  * {@link module:engine/model/schema~ModelSchemaItemDefinition} format.
- * Later on, they are compiled to `SchemaCompiledItemDefinition` so when you use e.g.
+ * Later on, they are compiled to `ModelSchemaCompiledItemDefinition` so when you use e.g.
  * the {@link module:engine/model/schema~ModelSchema#getDefinition} method you get the compiled version.
  *
  * The compiled version contains only the following properties:
@@ -1712,7 +1714,7 @@ export interface ModelSchemaItemDefinition {
  * * The `allowChildren` array,
  * * The `allowAttributes` array.
  */
-export interface SchemaCompiledItemDefinition {
+export interface ModelSchemaCompiledItemDefinition {
 	name: string;
 
 	isBlock: boolean;
@@ -1727,7 +1729,7 @@ export interface SchemaCompiledItemDefinition {
 	allowAttributes: Array<string>;
 }
 
-interface SchemaCompiledItemDefinitionInternal {
+interface ModelSchemaCompiledItemDefinitionInternal {
 	name: string;
 
 	// We need to distinguish `false` from `undefined` to allow inheritance.
@@ -2072,10 +2074,13 @@ export interface AttributeProperties {
 
 export type SchemaAttributeCheckCallback = ( context: SchemaContext, attributeName: string ) => boolean | undefined;
 
-export type SchemaChildCheckCallback = ( context: SchemaContext, definition: SchemaCompiledItemDefinition ) => boolean | undefined;
+export type SchemaChildCheckCallback = ( context: SchemaContext, definition: ModelSchemaCompiledItemDefinition ) => boolean | undefined;
 
-function compileBaseItemRule( sourceItemRules: Array<ModelSchemaItemDefinition>, itemName: string ): SchemaCompiledItemDefinitionInternal {
-	const itemRule: SchemaCompiledItemDefinitionInternal = {
+function compileBaseItemRule(
+	sourceItemRules: Array<ModelSchemaItemDefinition>,
+	itemName: string
+): ModelSchemaCompiledItemDefinitionInternal {
+	const itemRule: ModelSchemaCompiledItemDefinitionInternal = {
 		name: itemName,
 
 		allowIn: new Set<string>(),
@@ -2117,8 +2122,8 @@ function compileBaseItemRule( sourceItemRules: Array<ModelSchemaItemDefinition>,
 }
 
 function propagateAllowIn(
-	definitions: Record<string, SchemaCompiledItemDefinitionInternal>,
-	item: SchemaCompiledItemDefinitionInternal
+	definitions: Record<string, ModelSchemaCompiledItemDefinitionInternal>,
+	item: ModelSchemaCompiledItemDefinitionInternal
 ) {
 	for ( const parentName of item.allowIn ) {
 		const parentItem = definitions[ parentName ];
@@ -2132,8 +2137,8 @@ function propagateAllowIn(
 }
 
 function propagateAllowChildren(
-	definitions: Record<string, SchemaCompiledItemDefinitionInternal>,
-	item: SchemaCompiledItemDefinitionInternal
+	definitions: Record<string, ModelSchemaCompiledItemDefinitionInternal>,
+	item: ModelSchemaCompiledItemDefinitionInternal
 ) {
 	for ( const childName of item.allowChildren ) {
 		const childItem = definitions[ childName ];
@@ -2147,8 +2152,8 @@ function propagateAllowChildren(
 }
 
 function propagateDisallowIn(
-	definitions: Record<string, SchemaCompiledItemDefinitionInternal>,
-	item: SchemaCompiledItemDefinitionInternal
+	definitions: Record<string, ModelSchemaCompiledItemDefinitionInternal>,
+	item: ModelSchemaCompiledItemDefinitionInternal
 ) {
 	for ( const parentName of item.disallowIn ) {
 		const parentItem = definitions[ parentName ];
@@ -2162,8 +2167,8 @@ function propagateDisallowIn(
 }
 
 function propagateDisallowChildren(
-	definitions: Record<string, SchemaCompiledItemDefinitionInternal>,
-	item: SchemaCompiledItemDefinitionInternal
+	definitions: Record<string, ModelSchemaCompiledItemDefinitionInternal>,
+	item: ModelSchemaCompiledItemDefinitionInternal
 ) {
 	for ( const childName of item.disallowChildren ) {
 		const childItem = definitions[ childName ];
@@ -2177,8 +2182,8 @@ function propagateDisallowChildren(
 }
 
 function resolveDisallows(
-	definitions: Record<string, SchemaCompiledItemDefinitionInternal>,
-	item: SchemaCompiledItemDefinitionInternal
+	definitions: Record<string, ModelSchemaCompiledItemDefinitionInternal>,
+	item: ModelSchemaCompiledItemDefinitionInternal
 ) {
 	for ( const childName of item.disallowChildren ) {
 		item.allowChildren.delete( childName );
@@ -2194,8 +2199,8 @@ function resolveDisallows(
 }
 
 function compileAllowContentOf(
-	definitions: Record<string, SchemaCompiledItemDefinitionInternal>,
-	item: SchemaCompiledItemDefinitionInternal
+	definitions: Record<string, ModelSchemaCompiledItemDefinitionInternal>,
+	item: ModelSchemaCompiledItemDefinitionInternal
 ) {
 	for ( const allowContentOfItemName of item.allowContentOf ) {
 		const baseItem = definitions[ allowContentOfItemName ];
@@ -2234,8 +2239,8 @@ function compileAllowContentOf(
 }
 
 function compileAllowWhere(
-	definitions: Record<string, SchemaCompiledItemDefinitionInternal>,
-	item: SchemaCompiledItemDefinitionInternal
+	definitions: Record<string, ModelSchemaCompiledItemDefinitionInternal>,
+	item: ModelSchemaCompiledItemDefinitionInternal
 ) {
 	for ( const allowWhereItemName of item.allowWhere ) {
 		const baseItem = definitions[ allowWhereItemName ];
@@ -2273,8 +2278,8 @@ function compileAllowWhere(
 	}
 }
 
-function compileDefinitions( definitions: Record<string, SchemaCompiledItemDefinitionInternal> ) {
-	const finalDefinitions: Record<string, SchemaCompiledItemDefinition> = {};
+function compileDefinitions( definitions: Record<string, ModelSchemaCompiledItemDefinitionInternal> ) {
+	const finalDefinitions: Record<string, ModelSchemaCompiledItemDefinition> = {};
 
 	for ( const item of Object.values( definitions ) ) {
 		finalDefinitions[ item.name ] = {
@@ -2299,8 +2304,8 @@ function compileDefinitions( definitions: Record<string, SchemaCompiledItemDefin
 }
 
 function compileAllowAttributesOf(
-	definitions: Record<string, SchemaCompiledItemDefinitionInternal>,
-	item: SchemaCompiledItemDefinitionInternal
+	definitions: Record<string, ModelSchemaCompiledItemDefinitionInternal>,
+	item: ModelSchemaCompiledItemDefinitionInternal
 ) {
 	for ( const allowAttributeOfItemName of item.allowAttributesOf ) {
 		const baseItem = definitions[ allowAttributeOfItemName ];
@@ -2320,8 +2325,8 @@ function compileAllowAttributesOf(
 }
 
 function compileInheritPropertiesFrom(
-	definitions: Record<string, SchemaCompiledItemDefinitionInternal>,
-	item: SchemaCompiledItemDefinitionInternal
+	definitions: Record<string, ModelSchemaCompiledItemDefinitionInternal>,
+	item: ModelSchemaCompiledItemDefinitionInternal
 ) {
 	for ( const inheritPropertiesOfItemName of item.inheritTypesFrom! ) {
 		const inheritFrom = definitions[ inheritPropertiesOfItemName ];
@@ -2338,7 +2343,7 @@ function compileInheritPropertiesFrom(
 	}
 }
 
-function copyTypes( sourceItemRules: Array<ModelSchemaItemDefinition>, itemRule: SchemaCompiledItemDefinitionInternal ) {
+function copyTypes( sourceItemRules: Array<ModelSchemaItemDefinition>, itemRule: ModelSchemaCompiledItemDefinitionInternal ) {
 	for ( const sourceItemRule of sourceItemRules ) {
 		const typeNames = Object.keys( sourceItemRule ).filter( name => name.startsWith( 'is' ) ) as TypeNames;
 
@@ -2350,7 +2355,7 @@ function copyTypes( sourceItemRules: Array<ModelSchemaItemDefinition>, itemRule:
 
 function copyProperty(
 	sourceItemRules: Array<ModelSchemaItemDefinition>,
-	itemRule: SchemaCompiledItemDefinitionInternal,
+	itemRule: ModelSchemaCompiledItemDefinitionInternal,
 	propertyName:
 		'allowIn' |
 		'allowChildren' |
@@ -2378,7 +2383,7 @@ function copyProperty(
 	}
 }
 
-function resolveInheritAll( sourceItemRules: Array<ModelSchemaItemDefinition>, itemRule: SchemaCompiledItemDefinitionInternal ) {
+function resolveInheritAll( sourceItemRules: Array<ModelSchemaItemDefinition>, itemRule: ModelSchemaCompiledItemDefinitionInternal ) {
 	for ( const sourceItemRule of sourceItemRules ) {
 		const inheritFrom = sourceItemRule.inheritAllFrom;
 

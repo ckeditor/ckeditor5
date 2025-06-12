@@ -173,7 +173,7 @@ export {
 	type SchemaChildCheckCallback,
 	type AttributeProperties,
 	type ModelSchemaItemDefinition,
-	type SchemaCompiledItemDefinition,
+	type ModelSchemaCompiledItemDefinition,
 	type SchemaContextDefinition
 } from './model/schema.js';
 export { Selection, type Selectable } from './model/selection.js';
