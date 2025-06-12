@@ -10,7 +10,7 @@
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
 
 import {
-	transformSets,
+	transformOperationSets,
 	type Batch,
 	type Operation,
 	type DataControllerSetEvent,
@@ -192,7 +192,7 @@ export abstract class BaseCommand extends Command {
 			const nextBaseVersion = operationToUndo.baseVersion! + 1;
 			const historyOperations = Array.from( document.history.getOperations( nextBaseVersion ) );
 
-			const transformedSets = transformSets(
+			const transformedSets = transformOperationSets(
 				[ operationToUndo.getReversed() ],
 				historyOperations,
 				{

@@ -155,7 +155,7 @@ export function transform( a: Operation, b: Operation, context: TransformationCo
  * so the removed nodes won't end up back in the document root. When set to `true`, context data will be used.
  * @returns Transformation result.
  */
-export function transformSets(
+export function transformOperationSets(
 	operationsA: Array<Operation>,
 	operationsB: Array<Operation>,
 	options: {

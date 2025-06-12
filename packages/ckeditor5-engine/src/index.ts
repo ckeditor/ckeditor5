@@ -109,7 +109,7 @@ export { RenameOperation } from './model/operation/renameoperation.js';
 export { RootAttributeOperation } from './model/operation/rootattributeoperation.js';
 export { RootOperation } from './model/operation/rootoperation.js';
 export { NoOperation } from './model/operation/nooperation.js';
-export { transformSets } from './model/operation/transform.js';
+export { transformOperationSets } from './model/operation/transform.js';
 
 // Model.
 export {

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { transform, transformSets } from '../../../src/model/operation/transform.js';
+import { transform, transformOperationSets } from '../../../src/model/operation/transform.js';
 
 import { Model } from '../../../src/model/model.js';
 import { RootElement } from '../../../src/model/rootelement.js';
@@ -2571,7 +2571,7 @@ describe( 'transform', () => {
 	} );
 } );
 
-describe( 'transformSets', () => {
+describe( 'transformOperationSets', () => {
 	let model, doc, root, node;
 
 	beforeEach( () => {
@@ -2587,7 +2587,7 @@ describe( 'transformSets', () => {
 
 		const a = new InsertOperation( position, [ node ], 0 );
 
-		const { operationsA, originalOperations } = transformSets( [ a ], [], {
+		const { operationsA, originalOperations } = transformOperationSets( [ a ], [], {
 			document: doc,
 			useRelations: false,
 			padWithNoOps: false
@@ -2601,7 +2601,7 @@ describe( 'transformSets', () => {
 
 		const b = new InsertOperation( position, [ node ], 0 );
 
-		const { operationsB, originalOperations } = transformSets( [], [ b ], {
+		const { operationsB, originalOperations } = transformOperationSets( [], [ b ], {
 			document: doc,
 			useRelations: false,
 			padWithNoOps: false
@@ -2625,7 +2625,7 @@ describe( 'transformSets', () => {
 			0
 		);
 
-		const { operationsA, operationsB, originalOperations } = transformSets( [ a ], [ b ], {
+		const { operationsA, operationsB, originalOperations } = transformOperationSets( [ a ], [ b ], {
 			document: doc,
 			useRelations: false,
 			padWithNoOps: false
