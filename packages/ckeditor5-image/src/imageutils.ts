@@ -19,7 +19,7 @@ import type {
 	ViewDocumentFragment,
 	DowncastWriter,
 	Model,
-	Position,
+	ModelPosition,
 	ViewContainerElement
 } from 'ckeditor5/src/engine.js';
 import { Plugin, type Editor } from 'ckeditor5/src/core.js';
@@ -104,7 +104,7 @@ export class ImageUtils extends Plugin {
 	 */
 	public insertImage(
 		attributes: Record<string, unknown> = {},
-		selectable: Selection | Position | null = null,
+		selectable: Selection | ModelPosition | null = null,
 		imageType: ( 'imageBlock' | 'imageInline' | null ) = null,
 		options: { setImageSizes?: boolean } = {}
 	): ModelElement | null {
@@ -366,7 +366,7 @@ function getInsertImageParent( selection: Selection | ModelDocumentSelection, mo
  */
 function determineImageTypeForInsertion(
 	editor: Editor,
-	selectable: Position | Selection | ModelDocumentSelection,
+	selectable: ModelPosition | Selection | ModelDocumentSelection,
 	imageType: 'imageBlock' | 'imageInline' | null
 ): 'imageBlock' | 'imageInline' {
 	const schema = editor.model.schema;

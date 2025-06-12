@@ -11,7 +11,7 @@ import type {
 	Conversion,
 	ModelElement,
 	ModelItem,
-	Position,
+	ModelPosition,
 	ModelSchema,
 	Writer,
 	ModelDocumentSelection
@@ -46,7 +46,11 @@ export function updateNumericAttribute( key: string, value: unknown, item: Model
  * @param attributes The element attributes.
  * @returns Created table cell.
  */
-export function createEmptyTableCell( writer: Writer, insertPosition: Position, attributes: Record<string, unknown> = {} ): ModelElement {
+export function createEmptyTableCell(
+	writer: Writer,
+	insertPosition: ModelPosition,
+	attributes: Record<string, unknown> = {}
+): ModelElement {
 	const tableCell = writer.createElement( 'tableCell', attributes );
 
 	writer.insertElement( 'paragraph', tableCell );

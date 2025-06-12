@@ -8,7 +8,7 @@
  */
 
 import { Command, type Editor } from '@ckeditor/ckeditor5-core';
-import type { ModelElement, Position, Writer } from '@ckeditor/ckeditor5-engine';
+import type { ModelElement, ModelPosition, Writer } from '@ckeditor/ckeditor5-engine';
 
 /**
  * The insert paragraph command. It inserts a new paragraph at a specific
@@ -44,13 +44,13 @@ export class InsertParagraphCommand extends Command {
 	 * @fires execute
 	 */
 	public override execute( options: {
-		position: Position;
+		position: ModelPosition;
 		attributes?: Record<string, unknown>;
-	} ): Position | null {
+	} ): ModelPosition | null {
 		const model = this.editor.model;
 		const attributes = options.attributes;
 
-		let position: Position | null = options.position;
+		let position: ModelPosition | null = options.position;
 
 		// Don't execute command if position is in non-editable place.
 		if ( !model.canEditAt( position ) ) {
@@ -80,7 +80,7 @@ export class InsertParagraphCommand extends Command {
 	/**
 	 * Returns the best position to insert a new paragraph.
 	 */
-	private _findPositionToInsertParagraph( position: Position, writer: Writer ): Position | null {
+	private _findPositionToInsertParagraph( position: ModelPosition, writer: Writer ): ModelPosition | null {
 		const model = this.editor.model;
 
 		if ( model.schema.checkChild( position, 'paragraph' ) ) {

@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import type { ClipboardInputTransformationData } from 'ckeditor5/src/clipboard.js';
-import type { ModelDocumentSelectionChangeEvent, Model, Position, ModelRange, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentSelectionChangeEvent, Model, ModelPosition, ModelRange, Writer } from 'ckeditor5/src/engine.js';
 import { Delete, TextWatcher, getLastTextLine, findAttributeRange, type TextWatcherMatchedDataEvent } from 'ckeditor5/src/typing.js';
 import type { EnterCommand, ShiftEnterCommand } from 'ckeditor5/src/enter.js';
 
@@ -124,7 +124,7 @@ export class AutoLink extends Plugin {
 	 *
 	 * If position is not inside a link, returns `null`.
 	 */
-	private _expandLinkRange( model: Model, position: Position ): ModelRange | null {
+	private _expandLinkRange( model: Model, position: ModelPosition ): ModelRange | null {
 		if ( position.textNode && position.textNode.hasAttribute( 'linkHref' ) ) {
 			return findAttributeRange( position, 'linkHref', position.textNode.getAttribute( 'linkHref' ), model );
 		} else {

@@ -22,7 +22,7 @@ import type { Editor } from 'ckeditor5/src/core.js';
 import type {
 	ModelDocumentChangeEvent,
 	Model,
-	Position,
+	ModelPosition,
 	ModelRange,
 	Writer
 } from 'ckeditor5/src/engine.js';
@@ -212,7 +212,7 @@ export function inlineAutoformatEditing(
  * Converts output of the test function provided to the inlineAutoformatEditing and converts it to the model ranges
  * inside provided block.
  */
-function testOutputToRanges( start: Position, arrays: Array<Array<number>>, model: Model ) {
+function testOutputToRanges( start: ModelPosition, arrays: Array<Array<number>>, model: Model ) {
 	return arrays
 		.filter( array => ( array[ 0 ] !== undefined && array[ 1 ] !== undefined ) )
 		.map( array => {

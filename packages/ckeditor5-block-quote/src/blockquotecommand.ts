@@ -9,7 +9,7 @@
 
 import { Command } from 'ckeditor5/src/core.js';
 import { first } from 'ckeditor5/src/utils.js';
-import type { ModelDocumentFragment, ModelElement, Position, ModelRange, ModelSchema, Writer } from 'ckeditor5/src/engine.js';
+import type { ModelDocumentFragment, ModelElement, ModelPosition, ModelRange, ModelSchema, Writer } from 'ckeditor5/src/engine.js';
 
 /**
  * The block quote command plugin.
@@ -175,7 +175,7 @@ export class BlockQuoteCommand extends Command {
 	}
 }
 
-function findQuote( elementOrPosition: ModelElement | Position ): ModelElement | ModelDocumentFragment | null {
+function findQuote( elementOrPosition: ModelElement | ModelPosition ): ModelElement | ModelDocumentFragment | null {
 	return elementOrPosition.parent!.name == 'blockQuote' ? elementOrPosition.parent : null;
 }
 

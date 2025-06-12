@@ -7,7 +7,7 @@
  * @module typing/utils/findattributerange
  */
 
-import type { Position, Model, ModelRange } from '@ckeditor/ckeditor5-engine';
+import type { ModelPosition, Model, ModelRange } from '@ckeditor/ckeditor5-engine';
 
 /**
  * Returns a model range that covers all consecutive nodes with the same `attributeName` and its `value`
@@ -23,7 +23,7 @@ import type { Position, Model, ModelRange } from '@ckeditor/ckeditor5-engine';
  * @returns The link range.
  */
 export function findAttributeRange(
-	position: Position,
+	position: ModelPosition,
 	attributeName: string,
 	value: unknown,
 	model: Model
@@ -45,12 +45,12 @@ export function findAttributeRange(
  * @returns The position just before the last matched node.
  */
 export function findAttributeRangeBound(
-	position: Position,
+	position: ModelPosition,
 	attributeName: string,
 	value: unknown,
 	lookBack: boolean,
 	model: Model
-): Position {
+): ModelPosition {
 	// Get node before or after position (depends on `lookBack` flag).
 	// When position is inside text node then start searching from text node.
 	let node = position.textNode || ( lookBack ? position.nodeBefore : position.nodeAfter );

@@ -13,7 +13,7 @@ import type {
 	ModelDocumentSelection,
 	ModelElement,
 	Model,
-	Position,
+	ModelPosition,
 	ModelSchema,
 	Text,
 	UpcastWriter,
@@ -204,9 +204,9 @@ export function rawSnippetTextToViewDocumentFragment( writer: UpcastWriter, text
  *
  * @internal
  */
-export function getIndentOutdentPositions( model: Model ): Array<Position> {
+export function getIndentOutdentPositions( model: Model ): Array<ModelPosition> {
 	const selection = model.document.selection;
-	const positions: Array<Position> = [];
+	const positions: Array<ModelPosition> = [];
 
 	// When the selection is collapsed, there's only one position we can indent or outdent.
 	if ( selection.isCollapsed ) {
@@ -344,7 +344,7 @@ export function getCodeBlockAriaAnnouncement(
  *
  * @internal
  */
-export function getTextNodeAtLineStart( position: Position, model: Model ): Text | null {
+export function getTextNodeAtLineStart( position: ModelPosition, model: Model ): Text | null {
 	// First, move position before a text node, if it is inside a text node.
 	if ( position.textNode ) {
 		position = model.createPositionBefore( position.textNode );

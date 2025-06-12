@@ -10,7 +10,7 @@
 import { Rect, type PositionOptions } from 'ckeditor5/src/utils.js';
 import { BalloonPanelView, type ContextualBalloon } from 'ckeditor5/src/ui.js';
 import type { Editor } from 'ckeditor5/src/core.js';
-import type { ModelElement, Position, ModelRange } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelPosition, ModelRange } from 'ckeditor5/src/engine.js';
 
 import { getSelectionAffectedTableWidget, getTableWidgetAncestor } from './widget.js';
 import { getSelectionAffectedTable } from '../common.js';
@@ -104,7 +104,7 @@ export function getBalloonCellPositionData( editor: Editor ): Partial<PositionOp
  *
  * @param position Document position.
  */
-function getTableCellAtPosition( position: Position ): ModelElement {
+function getTableCellAtPosition( position: ModelPosition ): ModelElement {
 	const isTableCellSelected = position.nodeAfter && position.nodeAfter.is( 'element', 'tableCell' );
 
 	return isTableCellSelected ? position.nodeAfter : position.findAncestor( 'tableCell' )!;

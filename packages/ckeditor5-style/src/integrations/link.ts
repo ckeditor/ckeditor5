@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core.js';
-import type { Selectable, ModelDocumentSelection, ModelRange, Position, Model } from 'ckeditor5/src/engine.js';
+import type { Selectable, ModelDocumentSelection, ModelRange, ModelPosition, Model } from 'ckeditor5/src/engine.js';
 import { findAttributeRange, findAttributeRangeBound } from 'ckeditor5/src/typing.js';
 
 import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
@@ -200,7 +200,7 @@ export class LinkStyleSupport extends Plugin {
  * Walks forward or backward (depends on the `lookBack` flag), node by node, as long as they have the same attribute value
  * and returns a position just before or after (depends on the `lookBack` flag) the last matched node.
  */
-function expandAttributePosition( position: Position, attributeName: string, lookBack: boolean, model: Model ): Position {
+function expandAttributePosition( position: ModelPosition, attributeName: string, lookBack: boolean, model: Model ): ModelPosition {
 	const referenceNode = position.textNode || ( lookBack ? position.nodeAfter : position.nodeBefore );
 
 	if ( !referenceNode || !referenceNode.hasAttribute( attributeName ) ) {

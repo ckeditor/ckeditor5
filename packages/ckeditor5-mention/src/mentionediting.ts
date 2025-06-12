@@ -16,7 +16,7 @@ import type {
 	AttributeElement,
 	DowncastConversionApi,
 	DowncastDispatcher,
-	Position,
+	ModelPosition,
 	ModelSchema,
 	DowncastAttributeEvent,
 	ModelItem
@@ -197,7 +197,7 @@ function selectionMentionAttributePostFixer( writer: Writer, doc: ModelDocument 
  * a) after a text node
  * b) the position is at parents start - the selection will set attributes from node after.
  */
-function shouldNotTypeWithMentionAt( position: Position ): boolean {
+function shouldNotTypeWithMentionAt( position: ModelPosition ): boolean {
 	const isAtStart = position.isAtStart;
 	const isAfterAMention = position.nodeBefore && position.nodeBefore.is( '$text' );
 

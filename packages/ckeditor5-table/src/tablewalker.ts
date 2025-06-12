@@ -6,7 +6,7 @@
 /**
  * @module table/tablewalker
  */
-import type { ModelElement, Position } from 'ckeditor5/src/engine.js';
+import type { ModelElement, ModelPosition } from 'ckeditor5/src/engine.js';
 
 // @if CK_DEBUG // const CKEditorError = require( '@ckeditor/ckeditor5-utils/src/ckeditorerror' ).default;
 
@@ -591,7 +591,7 @@ class TableSlot {
 	/**
 	 * Returns the {@link module:engine/model/position~ModelPosition} before the table slot.
 	 */
-	public getPositionBefore(): Position {
+	public getPositionBefore(): ModelPosition {
 		const model = this._table.root.document!.model;
 
 		return model.createPositionAt( this._table.getChild( this.row ) as ModelElement, this._cellIndex );

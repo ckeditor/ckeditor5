@@ -17,7 +17,7 @@ import type {
 	ModelDocumentSelection,
 	EditingController,
 	Model,
-	Position,
+	ModelPosition,
 	ModelRange,
 	ModelSchema,
 	Selection,
@@ -153,7 +153,7 @@ function findTextRangeFromSelection( editing: EditingController, selection: Sele
  *
  * @param direction Search direction.
  */
-function getNearestNonInlineLimit( model: Model, startPosition: Position, direction: 'forward' | 'backward' ) {
+function getNearestNonInlineLimit( model: Model, startPosition: ModelPosition, direction: 'forward' | 'backward' ) {
 	const schema = model.schema;
 	const range = model.createRangeIn( startPosition.root );
 

@@ -12,7 +12,7 @@ import {
 	type Editor
 } from '@ckeditor/ckeditor5-core';
 
-import type { Position } from '@ckeditor/ckeditor5-engine';
+import type { ModelPosition } from '@ckeditor/ckeditor5-engine';
 
 import { TextWatcher, type TextWatcherMatchedDataEvent } from './textwatcher.js';
 import type { TextTransformationConfig, TextTransformationDescription } from './typingconfig.js';
@@ -232,7 +232,7 @@ function normalizeTo( to: TextTransformationDescription[ 'to' ] ) {
  * For given `position` returns attributes for the text that is after that position.
  * The text can be in the same text node as the position (`foo[]bar`) or in the next text node (`foo[]<$text bold="true">bar</$text>`).
  */
-function getTextAttributesAfterPosition( position: Position ) {
+function getTextAttributesAfterPosition( position: ModelPosition ) {
 	const textNode = position.textNode ? position.textNode : position.nodeAfter;
 
 	return textNode!.getAttributes();

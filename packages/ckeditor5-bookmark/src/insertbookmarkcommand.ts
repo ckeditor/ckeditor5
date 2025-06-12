@@ -10,7 +10,7 @@
 import type {
 	ModelDocumentSelection,
 	Selection,
-	Position,
+	ModelPosition,
 	ModelSchema,
 	SchemaContextDefinition
 } from 'ckeditor5/src/engine.js';
@@ -82,7 +82,7 @@ export class InsertBookmarkCommand extends Command {
 			// If the position does not allow for `bookmark` but allows for a `paragraph`
 			// then insert a `paragraph` then we will insert a `bookmark` inside.
 			if ( !isBookmarkAllowed ) {
-				const newPosition = editor.execute( 'insertParagraph', { position } ) as Position | null;
+				const newPosition = editor.execute( 'insertParagraph', { position } ) as ModelPosition | null;
 
 				if ( !newPosition ) {
 					return;
@@ -104,7 +104,7 @@ export class InsertBookmarkCommand extends Command {
 	 * Returns the position where the bookmark can be inserted. And if it is not possible to insert a bookmark,
 	 * check if it is possible to insert a paragraph.
 	 */
-	private _getPositionToInsertBookmark( selection: Selection | ModelDocumentSelection ): Position | null {
+	private _getPositionToInsertBookmark( selection: Selection | ModelDocumentSelection ): ModelPosition | null {
 		const model = this.editor.model;
 		const schema = model.schema;
 

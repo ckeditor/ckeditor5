@@ -13,7 +13,7 @@ import { getCopyOnEnterAttributes } from './utils.js';
 import type {
 	ModelDocumentSelection,
 	Model,
-	Position,
+	ModelPosition,
 	ModelSchema,
 	ModelElement,
 	Writer
@@ -134,7 +134,7 @@ function softBreakAction( model: Model, writer: Writer, selection: ModelDocument
 	}
 }
 
-function insertBreak( model: Model, writer: Writer, position: Position ): void {
+function insertBreak( model: Model, writer: Writer, position: ModelPosition ): void {
 	const breakLineElement = writer.createElement( 'softBreak' );
 
 	model.insertContent( breakLineElement, position );

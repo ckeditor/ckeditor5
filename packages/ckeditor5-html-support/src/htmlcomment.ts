@@ -7,7 +7,7 @@
  * @module html-support/htmlcomment
  */
 
-import type { Marker, Position, ModelRange, ModelElement } from 'ckeditor5/src/engine.js';
+import type { Marker, ModelPosition, ModelRange, ModelElement } from 'ckeditor5/src/engine.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 import { uid } from 'ckeditor5/src/utils.js';
 
@@ -173,7 +173,7 @@ export class HtmlComment extends Plugin {
 	 *
 	 * @returns Comment ID. This ID can be later used to e.g. remove the comment from the content.
 	 */
-	public createHtmlComment( position: Position, content: string ): string {
+	public createHtmlComment( position: ModelPosition, content: string ): string {
 		const id = uid();
 		const editor = this.editor;
 		const model = editor.model;
@@ -285,6 +285,6 @@ export class HtmlComment extends Plugin {
  * It consists of the {@link module:engine/model/position~ModelPosition `position`} and `content`.
  */
 export interface HtmlCommentData {
-	position: Position;
+	position: ModelPosition;
 	content: string;
 }

@@ -12,7 +12,7 @@ import { getCopyOnEnterAttributes } from './utils.js';
 
 import type {
 	ModelElement,
-	Position,
+	ModelPosition,
 	Writer
 } from '@ckeditor/ckeditor5-engine';
 
@@ -119,7 +119,7 @@ export type EnterCommandAfterExecuteEvent = {
 	args: [ { writer: Writer } ];
 };
 
-function splitBlock( writer: Writer, splitPos: Position ): void {
+function splitBlock( writer: Writer, splitPos: ModelPosition ): void {
 	writer.split( splitPos );
 	writer.setSelection( splitPos.parent.nextSibling!, 0 );
 }

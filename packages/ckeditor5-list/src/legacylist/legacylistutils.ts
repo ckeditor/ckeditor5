@@ -7,7 +7,7 @@
  * @module list/legacylist/legacylistutils
  */
 
-import type { ModelElement, Model, Position } from 'ckeditor5/src/engine.js';
+import type { ModelElement, Model, ModelPosition } from 'ckeditor5/src/engine.js';
 import { Plugin } from 'ckeditor5/src/core.js';
 
 import {
@@ -62,7 +62,7 @@ export class LegacyListUtils extends Plugin {
 	 * @param position Starting position.
 	 * @param direction Walking direction.
 	 */
-	public getSiblingNodes( position: Position, direction: 'forward' | 'backward' ): Array<ModelElement> {
+	public getSiblingNodes( position: ModelPosition, direction: 'forward' | 'backward' ): Array<ModelElement> {
 		return getSiblingNodes( position, direction );
 	}
 }
