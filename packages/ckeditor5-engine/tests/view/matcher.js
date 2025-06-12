@@ -5,7 +5,7 @@
 
 import { Matcher } from '../../src/view/matcher.js';
 import { Element } from '../../src/view/element.js';
-import { Document } from '../../src/view/document.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 import { addMarginRules } from '../../src/view/styles/margin.js';
@@ -18,7 +18,7 @@ describe( 'Matcher', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		document = new Document( new StylesProcessor() );
+		document = new ViewDocument( new StylesProcessor() );
 
 		addMarginRules( document.stylesProcessor );
 		addBorderRules( document.stylesProcessor );

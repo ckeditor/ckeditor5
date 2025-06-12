@@ -10,7 +10,7 @@ import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { RootEditableElement } from '../../src/view/rooteditableelement.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import { Document } from '../../src/view/document.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'Node', () => {
@@ -19,7 +19,7 @@ describe( 'Node', () => {
 		charB, charA, charR, img;
 
 	before( () => {
-		document = new Document( new StylesProcessor() );
+		document = new ViewDocument( new StylesProcessor() );
 
 		charB = new Text( document, 'b' );
 		charA = new Text( document, 'a' );

@@ -6,7 +6,7 @@
 import { global } from '@ckeditor/ckeditor5-utils/src/dom/global.js';
 
 import { InputObserver } from '../../../src/view/observer/inputobserver.js';
-import { DataTransfer } from '../../../src/view/datatransfer.js';
+import { ViewDataTransfer } from '../../../src/view/datatransfer.js';
 import { Range } from '../../../src/view/range.js';
 import { View } from '../../../src/view/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
@@ -80,7 +80,7 @@ describe( 'InputObserver', () => {
 					}
 				} );
 
-				expect( evtData.dataTransfer ).to.be.instanceOf( DataTransfer );
+				expect( evtData.dataTransfer ).to.be.instanceOf( ViewDataTransfer );
 				expect( evtData.dataTransfer.getData( 'foo/bar' ) ).to.equal( 'baz' );
 			} );
 

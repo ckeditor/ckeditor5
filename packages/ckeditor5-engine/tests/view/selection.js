@@ -6,7 +6,7 @@
 import { Selection } from '../../src/view/selection.js';
 import { ViewDocumentSelection } from '../../src/view/documentselection.js';
 import { Range } from '../../src/view/range.js';
-import { Document } from '../../src/view/document.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { Element } from '../../src/view/element.js';
 import { Text } from '../../src/view/text.js';
 import { Position } from '../../src/view/position.js';
@@ -24,7 +24,7 @@ describe( 'Selection', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		viewDocument = new Document( new StylesProcessor() );
+		viewDocument = new ViewDocument( new StylesProcessor() );
 
 		const text = new Text( viewDocument, 'xxxxxxxxxxxxxxxxxxxx' );
 		el = new Element( viewDocument, 'p', null, text );

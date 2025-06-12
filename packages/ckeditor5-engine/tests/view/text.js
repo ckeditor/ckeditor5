@@ -5,14 +5,14 @@
 
 import { Node } from '../../src/view/node.js';
 import { Text } from '../../src/view/text.js';
-import { Document } from '../../src/view/document.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'Text', () => {
 	let document;
 
 	beforeEach( () => {
-		document = new Document( new StylesProcessor() );
+		document = new ViewDocument( new StylesProcessor() );
 	} );
 
 	describe( 'constructor()', () => {

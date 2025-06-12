@@ -7,7 +7,7 @@ import { createViewDocumentMock } from '../../tests/view/_utils/createdocumentmo
 
 import { EditableElement } from '../../src/view/editableelement.js';
 import { Range } from '../../src/view/range.js';
-import { Document } from '../../src/view/document.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'EditableElement', () => {
@@ -15,7 +15,7 @@ describe( 'EditableElement', () => {
 		let el;
 
 		before( () => {
-			el = new EditableElement( new Document( new StylesProcessor() ), 'div' );
+			el = new EditableElement( new ViewDocument( new StylesProcessor() ), 'div' );
 		} );
 
 		it( 'should return true for containerElement/editable/element, also with correct name and element name', () => {

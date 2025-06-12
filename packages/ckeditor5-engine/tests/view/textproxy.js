@@ -11,14 +11,14 @@ import { RootEditableElement } from '../../src/view/rooteditableelement.js';
 
 import { createViewDocumentMock } from '../../tests/view/_utils/createdocumentmock.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
-import { Document } from '../../src/view/document.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'TextProxy', () => {
 	let text, parent, wrapper, textProxy, document;
 
 	beforeEach( () => {
-		document = new Document( new StylesProcessor() );
+		document = new ViewDocument( new StylesProcessor() );
 		text = new Text( document, 'abcdefgh' );
 		parent = new ViewContainerElement( document, 'p', [], [ text ] );
 		wrapper = new ViewContainerElement( document, 'div', [], parent );

@@ -5,7 +5,7 @@
 
 import { UIElement } from '../../src/view/uielement.js';
 import { Element } from '../../src/view/element.js';
-import { Document } from '../../src/view/document.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
@@ -13,7 +13,7 @@ describe( 'UIElement', () => {
 	let uiElement, doc;
 
 	beforeEach( () => {
-		doc = new Document( new StylesProcessor() );
+		doc = new ViewDocument( new StylesProcessor() );
 
 		uiElement = new UIElement( doc, 'span', {
 			foo: 'bar',

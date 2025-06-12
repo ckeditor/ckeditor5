@@ -8,7 +8,7 @@ import { Node } from '../../src/view/node.js';
 import { Element } from '../../src/view/element.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { EditableElement } from '../../src/view/editableelement.js';
-import { Document } from '../../src/view/document.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { Text } from '../../src/view/text.js';
 import { TextProxy } from '../../src/view/textproxy.js';
 
@@ -25,7 +25,7 @@ describe( 'Position', () => {
 	let document;
 
 	before( () => {
-		document = new Document( new StylesProcessor() );
+		document = new ViewDocument( new StylesProcessor() );
 	} );
 
 	describe( 'constructor()', () => {
@@ -644,7 +644,7 @@ describe( 'Position', () => {
 		let root;
 
 		beforeEach( () => {
-			const doc = new Document( new StylesProcessor() );
+			const doc = new ViewDocument( new StylesProcessor() );
 
 			root = createViewRoot( doc );
 

@@ -11,14 +11,14 @@ import { HtmlDataProcessor } from '../../src/dataprocessor/htmldataprocessor.js'
 import { ViewPosition } from '../../src/view/position.js';
 import { ViewRange } from '../../src/view/range.js';
 import { ViewSelection } from '../../src/view/selection.js';
-import { Document } from '../../src/view/document.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
 
 describe( 'UpcastWriter', () => {
 	let writer, view, dataprocessor, document;
 
 	beforeEach( () => {
-		document = new Document( new StylesProcessor() );
+		document = new ViewDocument( new StylesProcessor() );
 		writer = new UpcastWriter( document );
 		dataprocessor = new HtmlDataProcessor( document );
 

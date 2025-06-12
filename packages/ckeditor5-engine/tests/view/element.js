@@ -8,7 +8,7 @@ import { Node } from '../../src/view/node.js';
 import { Element } from '../../src/view/element.js';
 import { Text } from '../../src/view/text.js';
 import { TextProxy } from '../../src/view/textproxy.js';
-import { Document } from '../../src/view/document.js';
+import { ViewDocument } from '../../src/view/document.js';
 import { addBorderRules } from '../../src/view/styles/border.js';
 import { addMarginRules } from '../../src/view/styles/margin.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
@@ -19,7 +19,7 @@ describe( 'Element', () => {
 	let document;
 
 	beforeEach( () => {
-		document = new Document( new StylesProcessor() );
+		document = new ViewDocument( new StylesProcessor() );
 	} );
 
 	describe( 'constructor()', () => {
@@ -415,7 +415,7 @@ describe( 'Element', () => {
 			} );
 
 			it( 'set proper #document on inserted children', () => {
-				const anotherDocument = new Document( new StylesProcessor() );
+				const anotherDocument = new ViewDocument( new StylesProcessor() );
 				const anotherEl = new Element( anotherDocument, 'p' );
 
 				parent._insertChild( 0, anotherEl );
