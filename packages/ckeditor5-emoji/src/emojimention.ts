@@ -14,7 +14,7 @@ import type { MentionFeed, MentionFeedObjectItem, ItemRenderer } from '@ckeditor
 
 import { EmojiRepository } from './emojirepository.js';
 import { type EmojiPicker } from './emojipicker.js';
-import type { SkinToneId } from './emojiconfig.js';
+import type { EmojiSkinToneId } from './emojiconfig.js';
 
 const EMOJI_MENTION_MARKER = ':';
 const EMOJI_SHOW_ALL_OPTION_ID = ':__EMOJI_SHOW_ALL:';
@@ -51,7 +51,7 @@ export class EmojiMention extends Plugin {
 	/**
 	 * Defines a skin tone that is set in the emoji config.
 	 */
-	private readonly _skinTone: SkinToneId;
+	private readonly _skinTone: EmojiSkinToneId;
 
 	/**
 	 * @inheritDoc

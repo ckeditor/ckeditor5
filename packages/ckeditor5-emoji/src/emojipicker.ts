@@ -18,7 +18,7 @@ import { EmojiRepository } from './emojirepository.js';
 import { EmojiPickerView, type EmojiPickerViewUpdateEvent } from './ui/emojipickerview.js';
 import { EmojiPickerFormView, type EmojiPickerFormViewCancelEvent } from './ui/emojipickerformview.js';
 import { type EmojiGridViewExecuteEvent } from './ui/emojigridview.js';
-import type { SkinToneId } from './emojiconfig.js';
+import type { EmojiSkinToneId } from './emojiconfig.js';
 
 import '../theme/emojipicker.css';
 
@@ -123,7 +123,7 @@ export class EmojiPicker extends Plugin {
 	 * Before opening the UI for the first time, the returned value is read from the editor configuration.
 	 * Otherwise, it reflects the user's intention.
 	 */
-	public get skinTone(): SkinToneId {
+	public get skinTone(): EmojiSkinToneId {
 		if ( !this.emojiPickerView ) {
 			return this.editor.config.get( 'emoji.skinTone' )!;
 		}

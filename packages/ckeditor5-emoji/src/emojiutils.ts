@@ -5,14 +5,14 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 import type { EmojiCdnResource, EmojiEntry } from './emojirepository.js';
-import type { SkinToneId } from './emojiconfig.js';
+import type { EmojiSkinToneId } from './emojiconfig.js';
 import { isEmojiSupported } from './utils/isemojisupported.js';
 
 /**
  * @module emoji/emojiutils
  */
 
-const SKIN_TONE_MAP: Record<number, SkinToneId> = {
+const SKIN_TONE_MAP: Record<number, EmojiSkinToneId> = {
 	0: 'default',
 	1: 'light',
 	2: 'medium-light',
