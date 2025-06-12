@@ -15,6 +15,7 @@ export { ImageCaption } from './imagecaption.js';
 export { ImageCaptionEditing } from './imagecaption/imagecaptionediting.js';
 export { ImageInsert } from './imageinsert.js';
 export { ImageInsertUI } from './imageinsert/imageinsertui.js';
+export { ImageInsertViaUrlUI } from './imageinsert/imageinsertviaurlui.js';
 export { ImageResize } from './imageresize.js';
 export { ImageResizeButtons } from './imageresize/imageresizebuttons.js';
 export { ImageResizeEditing } from './imageresize/imageresizeediting.js';
@@ -29,7 +30,7 @@ export { ImageTextAlternativeEditing } from './imagetextalternative/imagetextalt
 export { ImageTextAlternativeUI } from './imagetextalternative/imagetextalternativeui.js';
 export { ImageToolbar } from './imagetoolbar.js';
 export { ImageUpload } from './imageupload.js';
-export { ImageUploadEditing, type ImageUploadCompleteEvent } from './imageupload/imageuploadediting.js';
+export { ImageUploadEditing, type ImageUploadCompleteEvent, type ImageUploadCompleteData } from './imageupload/imageuploadediting.js';
 export { ImageUploadProgress } from './imageupload/imageuploadprogress.js';
 export { ImageUploadUI } from './imageupload/imageuploadui.js';
 export { PictureEditing } from './pictureediting.js';
@@ -39,11 +40,22 @@ export { ImageInsertViaUrl } from './imageinsertviaurl.js';
 export { ImageUtils } from './imageutils.js';
 export { ImageBlockEditing } from './image/imageblockediting.js';
 export { ImageCaptionUI } from './imagecaption/imagecaptionui.js';
+export { ImageInlineEditing } from './image/imageinlineediting.js';
+export { ImagePlaceholder } from './image/imageplaceholder.js';
 
 export { createImageTypeRegExp } from './imageupload/utils.js';
 
-export type { ImageConfig } from './imageconfig.js';
-export type { ImageLoadedEvent } from './image/imageloadobserver.js';
+export type {
+	ImageConfig,
+	ImageInsertConfig,
+	ImageResizeOption,
+	ImageStyleDropdownDefinition,
+	ImageStyleConfig,
+	ImageStyleOptionDefinition,
+	ImageUploadConfig
+} from './imageconfig.js';
+
+export { ImageLoadObserver, type ImageLoadedEvent } from './image/imageloadobserver.js';
 export { ImageTypeCommand } from './image/imagetypecommand.js';
 export { InsertImageCommand } from './image/insertimagecommand.js';
 export { ReplaceImageSourceCommand } from './image/replaceimagesourcecommand.js';
@@ -80,6 +92,8 @@ export { ImageInsertUrlView as _ImageInsertUrlView } from './imageinsert/ui/imag
 
 export { ImageCustomResizeFormView as _ImageCustomResizeFormView } from './imageresize/ui/imagecustomresizeformview.js';
 export type {
+	ImageCustomResizeFormViewSubmitEvent,
+	ImageCustomResizeFormViewCancelEvent,
 	ImageCustomResizeFormValidatorCallback as _ImageCustomResizeFormValidatorCallback
 } from './imageresize/ui/imagecustomresizeformview.js';
 
