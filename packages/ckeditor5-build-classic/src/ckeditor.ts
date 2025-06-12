@@ -153,7 +153,6 @@ export default class ClassicEditor extends ClassicEditorBase {
 				'|',
 				'emoji',
 				'|',
-				'uploadImage',
 				'mediaEmbed',
 				'|',
 				'htmlEmbed'
