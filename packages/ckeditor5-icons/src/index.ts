@@ -42,6 +42,7 @@ export { default as IconColorTileCheck } from '../theme/icons/color-tile-check.s
 export { default as IconCommentsArchive } from '../theme/icons/comments-archive.svg';
 export { default as IconContentLock } from '../theme/icons/content-lock.svg';
 export { default as IconContentUnlock } from '../theme/icons/content-unlock.svg';
+export { default as IconContext } from '../theme/icons/context.svg';
 export { default as IconCopy } from '../theme/icons/copy.svg';
 export { default as IconDocument } from '../theme/icons/document.svg';
 export { default as IconDragHandle } from '../theme/icons/drag-handle.svg';
