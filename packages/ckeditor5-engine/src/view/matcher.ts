@@ -318,7 +318,7 @@ function matchName( pattern: string | RegExp, name: string ): boolean {
  *
  * @returns Returns an array of objects or null if provided patterns were not in an expected form.
  */
-function normalizePatterns( patterns: PropertyPatterns, prefix?: string ): Array<NormalizedPropertyPattern> {
+function normalizePatterns( patterns: MatchPropertyPatterns, prefix?: string ): Array<NormalizedPropertyPattern> {
 	if ( Array.isArray( patterns ) ) {
 		return patterns.map( pattern => {
 			if ( typeof pattern !== 'object' || pattern instanceof RegExp ) {
@@ -373,7 +373,7 @@ function normalizePatterns( patterns: PropertyPatterns, prefix?: string ): Array
  * @returns Returns array with matched attribute names or `null` if no attributes were matched.
  */
 function matchAttributes(
-	patterns: AttributePatterns,
+	patterns: MatchAttributePatterns,
 	element: ViewElement,
 	match: Array<[ string, string? ]>
 ): boolean {
@@ -406,7 +406,7 @@ function matchAttributes(
  * @returns Returns array with matched class names or `null` if no classes were matched.
  */
 function matchClasses(
-	patterns: ClassPatterns,
+	patterns: MatchClassPatterns,
 	element: ViewElement,
 	match: Array<[ string, string? ]>
 ): boolean {
@@ -423,7 +423,7 @@ function matchClasses(
  * @returns Returns array with matched style names or `null` if no styles were matched.
  */
 function matchStyles(
-	patterns: StylePatterns,
+	patterns: MatchStylePatterns,
 	element: ViewElement,
 	match: Array<[ string, string? ]>
 ): boolean {
@@ -701,17 +701,17 @@ export interface MatcherObjectPattern {
 	/**
 	 * View element's classes to match.
 	 */
-	classes?: ClassPatterns;
+	classes?: MatchClassPatterns;
 
 	/**
 	 * View element's styles to match.
 	 */
-	styles?: StylePatterns;
+	styles?: MatchStylePatterns;
 
 	/**
 	 * View element's attributes to match.
 	 */
-	attributes?: AttributePatterns;
+	attributes?: MatchAttributePatterns;
 }
 
 /**
@@ -752,16 +752,16 @@ export interface MatchResult {
 	match: Match;
 }
 
-export type PropertyPatterns<ValuePattern = string | RegExp> =
+export type MatchPropertyPatterns<ValuePattern = string | RegExp> =
 	true |
 	string |
 	RegExp |
 	Record<string, true | ValuePattern> |
 	Array<string | RegExp | { key: string | RegExp; value: true | ValuePattern }>;
 
-export type AttributePatterns = PropertyPatterns;
-export type StylePatterns = PropertyPatterns;
-export type ClassPatterns = PropertyPatterns<never>;
+export type MatchAttributePatterns = MatchPropertyPatterns;
+export type MatchStylePatterns = MatchPropertyPatterns;
+export type MatchClassPatterns = MatchPropertyPatterns<never>;
 
 /**
  * @internal

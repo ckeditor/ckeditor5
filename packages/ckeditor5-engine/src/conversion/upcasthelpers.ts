@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { Matcher, type ClassPatterns, type MatcherPattern, type PropertyPatterns } from '../view/matcher.js';
+import { Matcher, type MatchClassPatterns, type MatcherPattern, type MatchPropertyPatterns } from '../view/matcher.js';
 import { ConversionHelpers } from './conversionhelpers.js';
 
 import type { UpcastDispatcher, UpcastElementEvent, UpcastConversionApi, UpcastConversionData } from './upcastdispatcher.js';
@@ -326,9 +326,9 @@ export class UpcastHelpers extends ConversionHelpers<UpcastDispatcher> {
 			name?: string;
 		} | {
 			name?: string | RegExp;
-			styles?: PropertyPatterns;
-			classes?: ClassPatterns;
-			attributes?: PropertyPatterns;
+			styles?: MatchPropertyPatterns;
+			classes?: MatchClassPatterns;
+			attributes?: MatchPropertyPatterns;
 		};
 		model: string | {
 			key: string;
@@ -686,9 +686,9 @@ function upcastAttributeToAttribute( config: {
 		key?: string;
 		value?: string | RegExp | Array<string> | Record<string, string> | Record<string, RegExp> | ( ( value: unknown ) => boolean );
 		name?: string | RegExp;
-		styles?: PropertyPatterns;
-		classes?: ClassPatterns;
-		attributes?: PropertyPatterns;
+		styles?: MatchPropertyPatterns;
+		classes?: MatchClassPatterns;
+		attributes?: MatchPropertyPatterns;
 	};
 	model: string | {
 		key: string;

@@ -263,7 +263,18 @@ export {
 
 export { ViewDowncastWriter } from './view/downcastwriter.js';
 export { UpcastWriter } from './view/upcastwriter.js';
-export { Matcher, type MatcherPattern, type MatcherObjectPattern, type Match, type MatchResult } from './view/matcher.js';
+export {
+	Matcher,
+	type MatcherPattern,
+	type MatcherObjectPattern,
+	type MatcherFunctionPattern,
+	type Match,
+	type MatchResult,
+	type MatchPropertyPatterns,
+	type MatchAttributePatterns,
+	type MatchStylePatterns,
+	type MatchClassPatterns
+} from './view/matcher.js';
 
 export { BubblingEventInfo } from './view/observer/bubblingeventinfo.js';
 export { DomEventData } from './view/observer/domeventdata.js';
