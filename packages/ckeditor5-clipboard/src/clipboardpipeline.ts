@@ -12,7 +12,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 import { EventInfo } from '@ckeditor/ckeditor5-utils';
 
 import type {
-	DataTransfer,
+	ViewDataTransfer,
 	ModelDocumentFragment,
 	DomEventData,
 	ModelRange,
@@ -182,7 +182,7 @@ export class ClipboardPipeline extends Plugin {
 	 * @internal
 	 */
 	public _fireOutputTransformationEvent(
-		dataTransfer: DataTransfer,
+		dataTransfer: ViewDataTransfer,
 		selection: ModelSelection | ModelDocumentSelection,
 		method: 'copy' | 'cut' | 'dragstart'
 	): void {
@@ -383,7 +383,7 @@ export interface ClipboardInputTransformationData {
 	/**
 	 * The data transfer instance.
 	 */
-	dataTransfer: DataTransfer;
+	dataTransfer: ViewDataTransfer;
 
 	/**
 	 * The target drop ranges.
@@ -452,7 +452,7 @@ export interface ClipboardContentInsertionData {
 	 * The data transfer instance.
 	 */
 
-	dataTransfer: DataTransfer;
+	dataTransfer: ViewDataTransfer;
 
 	/**
 	 * The target drop ranges.
@@ -493,7 +493,7 @@ export interface ViewDocumentClipboardOutputEventData {
 	 *
 	 * @readonly
 	 */
-	dataTransfer: DataTransfer;
+	dataTransfer: ViewDataTransfer;
 
 	/**
 	 * Content to be put into the clipboard. It can be modified by the event listeners.
@@ -531,7 +531,7 @@ export interface ClipboardOutputTransformationData {
 	 *
 	 * @readonly
 	 */
-	dataTransfer: DataTransfer;
+	dataTransfer: ViewDataTransfer;
 
 	/**
 	 * Content to be put into the clipboard. It can be modified by the event listeners.

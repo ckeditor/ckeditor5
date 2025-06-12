@@ -10,7 +10,7 @@
 import { DomEventObserver } from './domeventobserver.js';
 import { type DomEventData } from './domeventdata.js';
 import { type ViewRange } from '../range.js';
-import { DataTransfer } from '../datatransfer.js';
+import { ViewDataTransfer } from '../datatransfer.js';
 import { env, isText, indexOf } from '@ckeditor/ckeditor5-utils';
 import { INLINE_FILLER_LENGTH, startsWithFiller } from '../filler.js';
 
@@ -43,12 +43,12 @@ export class InputObserver extends DomEventObserver<'beforeinput'> {
 		const view = this.view;
 		const viewDocument = view.document;
 
-		let dataTransfer: DataTransfer | null = null;
+		let dataTransfer: ViewDataTransfer | null = null;
 		let data: string | null = null;
 		let targetRanges: Array<ViewRange> = [];
 
 		if ( domEvent.dataTransfer ) {
-			dataTransfer = new DataTransfer( domEvent.dataTransfer );
+			dataTransfer = new ViewDataTransfer( domEvent.dataTransfer );
 		}
 
 		if ( domEvent.data !== null ) {
@@ -324,7 +324,7 @@ export interface InputEventData extends DomEventData<InputEvent> {
 	 *
 	 * The value is `null` when no `dataTransfer` was passed along with the input event.
 	 */
-	readonly dataTransfer: DataTransfer;
+	readonly dataTransfer: ViewDataTransfer;
 
 	/**
 	 * A flag indicating that the `beforeinput` event was fired during composition.

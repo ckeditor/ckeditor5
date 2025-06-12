@@ -14,7 +14,7 @@ import { ImageUploadEditing } from '../../src/imageupload/imageuploadediting.js'
 import { UploadImageCommand } from '../../src/imageupload/uploadimagecommand.js';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import { UndoEditing } from '@ckeditor/ckeditor5-undo/src/undoediting.js';
-import { DataTransfer } from '@ckeditor/ckeditor5-engine/src/view/datatransfer.js';
+import { ViewDataTransfer } from '@ckeditor/ckeditor5-engine/src/view/datatransfer.js';
 import { EventInfo } from '@ckeditor/ckeditor5-utils/src/eventinfo.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
@@ -159,7 +159,7 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should insert image when is pasted', () => {
 		const fileMock = createNativeFileMock();
-		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
+		const dataTransfer = new ViewDataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
 		_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 		const eventInfo = new EventInfo( viewDocument, 'clipboardInput' );
@@ -174,7 +174,7 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should insert image when is dropped', () => {
 		const fileMock = createNativeFileMock();
-		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
+		const dataTransfer = new ViewDataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
 		_setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
@@ -192,7 +192,7 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should insert image at optimized position when is pasted', () => {
 		const fileMock = createNativeFileMock();
-		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
+		const dataTransfer = new ViewDataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
 		_setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 		const paragraph = doc.getRoot().getChild( 0 );
@@ -209,7 +209,7 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should insert multiple image files when are pasted (inline image type)', () => {
 		const files = [ createNativeFileMock(), createNativeFileMock() ];
-		const dataTransfer = new DataTransfer( { files, types: [ 'Files' ] } );
+		const dataTransfer = new ViewDataTransfer( { files, types: [ 'Files' ] } );
 		_setModelData( model, '<paragraph>[]foo</paragraph>' );
 
 		const targetRange = model.createRange(
@@ -233,7 +233,7 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should insert multiple image files when are pasted', () => {
 		const files = [ createNativeFileMock(), createNativeFileMock() ];
-		const dataTransfer = new DataTransfer( { files, types: [ 'Files' ] } );
+		const dataTransfer = new ViewDataTransfer( { files, types: [ 'Files' ] } );
 		_setModelData( model, '[]' );
 
 		const targetRange = model.createRange( model.createPositionAt( doc.getRoot(), 1 ), model.createPositionAt( doc.getRoot(), 1 ) );
@@ -253,7 +253,7 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should display notification when no permission to upload from computer.', done => {
 		const files = [ createNativeFileMock(), createNativeFileMock() ];
-		const dataTransfer = new DataTransfer( { files, types: [ 'Files' ] } );
+		const dataTransfer = new ViewDataTransfer( { files, types: [ 'Files' ] } );
 		const uploadImageCommand = editor.commands.get( 'uploadImage' );
 		const notification = editor.plugins.get( Notification );
 
@@ -278,7 +278,7 @@ describe( 'ImageUploadEditing', () => {
 		_setModelData( model, '<paragraph>foo</paragraph>[<imageBlock></imageBlock>]' );
 
 		const fileMock = createNativeFileMock();
-		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
+		const dataTransfer = new ViewDataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
 
 		const command = editor.commands.get( 'uploadImage' );
 
@@ -306,7 +306,7 @@ describe( 'ImageUploadEditing', () => {
 			} )
 			.then( editor => {
 				const fileMock = createNativeFileMock();
-				const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
+				const dataTransfer = new ViewDataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
 				_setModelData( editor.model, '<paragraph>[]foo</paragraph>' );
 
 				const targetRange = editor.model.document.selection.getFirstRange();
@@ -328,7 +328,7 @@ describe( 'ImageUploadEditing', () => {
 			type: 'media/mp3',
 			size: 1024
 		};
-		const dataTransfer = new DataTransfer( {
+		const dataTransfer = new ViewDataTransfer( {
 			files: [ fileMock ],
 			types: [ 'Files' ],
 			getData: () => ''
@@ -352,7 +352,7 @@ describe( 'ImageUploadEditing', () => {
 			type: 'image/svg+xml',
 			size: 1024
 		};
-		const dataTransfer = new DataTransfer( {
+		const dataTransfer = new ViewDataTransfer( {
 			files: [ fileMock ],
 			types: [ 'Files' ],
 			getData: () => ''
@@ -372,7 +372,7 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should not insert image when file is null', () => {
 		const viewDocument = editor.editing.view.document;
-		const dataTransfer = new DataTransfer( { files: [ null ], types: [ 'Files' ], getData: () => null } );
+		const dataTransfer = new ViewDataTransfer( { files: [ null ], types: [ 'Files' ], getData: () => null } );
 
 		_setModelData( model, '<paragraph>foo[]</paragraph>' );
 
@@ -386,7 +386,7 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should not insert image when there is non-empty HTML content pasted', () => {
 		const fileMock = createNativeFileMock();
-		const dataTransfer = new DataTransfer( {
+		const dataTransfer = new ViewDataTransfer( {
 			files: [ fileMock ],
 			types: [ 'Files', 'text/html' ],
 			getData: type => type === 'text/html' ? '<p>SomeData</p>' : ''
@@ -419,7 +419,7 @@ describe( 'ImageUploadEditing', () => {
 		_setModelData( model, '<other>[]</other>' );
 
 		const fileMock = createNativeFileMock();
-		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
+		const dataTransfer = new ViewDataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
 
 		const targetRange = doc.selection.getFirstRange();
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
@@ -431,7 +431,7 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should not throw when upload adapter is not set (FileRepository will log an warn anyway) when image is pasted', () => {
 		const fileMock = createNativeFileMock();
-		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
+		const dataTransfer = new ViewDataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
 		const consoleWarnStub = sinon.stub( console, 'warn' );
 
 		_setModelData( model, '<paragraph>[]foo</paragraph>' );
@@ -456,7 +456,7 @@ describe( 'ImageUploadEditing', () => {
 			'0': 'text/html',
 			'1': 'text/plain'
 		};
-		const dataTransfer = new DataTransfer( {
+		const dataTransfer = new ViewDataTransfer( {
 			types: typesDomStringListMock,
 			getData: type => type === 'text/html' ? '<p>SomeData</p>' : 'SomeData'
 		} );
@@ -1846,9 +1846,9 @@ function tryExpect( doneFn, expectFn ) {
 // Creates data transfer object with predefined data.
 //
 // @param {String} content The content returned as `text/html` when queried.
-// @returns {module:engine/view/datatransfer~DataTransfer} DataTransfer object.
+// @returns {module:engine/view/datatransfer~ViewDataTransfer} DataTransfer object.
 function mockDataTransfer( content ) {
-	return new DataTransfer( {
+	return new ViewDataTransfer( {
 		types: [ 'text/html' ],
 		getData: type => type === 'text/html' ? content : ''
 	} );

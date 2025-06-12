@@ -12,7 +12,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 import {
 	ModelLiveRange,
 	MouseObserver,
-	type DataTransfer,
+	type ViewDataTransfer,
 	type ModelElement,
 	type Model,
 	type ModelRange,
@@ -664,7 +664,7 @@ export class DragDrop extends Plugin {
 		domTarget,
 		clientX
 	}: {
-		dataTransfer: DataTransfer;
+		dataTransfer: ViewDataTransfer;
 		domTarget: HTMLElement;
 		clientX: number;
 	} ): void {
@@ -717,7 +717,7 @@ export class DragDrop extends Plugin {
  * Returns the drop effect that should be a result of dragging the content.
  * This function is handling a quirk when checking the effect in the 'drop' DOM event.
  */
-function getFinalDropEffect( dataTransfer: DataTransfer ): DataTransfer[ 'dropEffect' ] {
+function getFinalDropEffect( dataTransfer: ViewDataTransfer ): ViewDataTransfer[ 'dropEffect' ] {
 	if ( env.isGecko ) {
 		return dataTransfer.dropEffect;
 	}

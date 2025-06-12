@@ -216,7 +216,7 @@ export type {
 export type { ModelSelectionChangeRangeEvent as SelectionChangeRangeEvent } from './model/selection.js';
 
 // View.
-export { DataTransfer } from './view/datatransfer.js';
+export { ViewDataTransfer } from './view/datatransfer.js';
 export { DomConverter, type BlockFillerMode } from './view/domconverter.js';
 export { Renderer } from './view/renderer.js';
 export { EditingView } from './view/view.js';

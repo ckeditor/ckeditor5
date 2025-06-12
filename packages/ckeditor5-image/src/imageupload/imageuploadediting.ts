@@ -14,7 +14,7 @@ import {
 	type ModelElement,
 	type ModelItem,
 	type ModelWriter,
-	type DataTransfer,
+	type ViewDataTransfer,
 	type ViewElement,
 	type ModelNodeAttributes,
 	type DowncastAttributeEvent,
@@ -574,7 +574,7 @@ export class ImageUploadEditing extends Plugin {
 /**
  * Returns `true` if non-empty `text/html` is included in the data transfer.
  */
-export function isHtmlIncluded( dataTransfer: DataTransfer ): boolean {
+export function isHtmlIncluded( dataTransfer: ViewDataTransfer ): boolean {
 	return Array.from( dataTransfer.types ).includes( 'text/html' ) && dataTransfer.getData( 'text/html' ) !== '';
 }
 

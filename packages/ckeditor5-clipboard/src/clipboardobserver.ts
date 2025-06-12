@@ -10,7 +10,7 @@
 import { EventInfo, getRangeFromMouseEvent } from '@ckeditor/ckeditor5-utils';
 
 import {
-	DataTransfer,
+	ViewDataTransfer,
 	DomEventObserver,
 	type DomEventData,
 	type EditingView,
@@ -88,7 +88,7 @@ export class ClipboardObserver extends DomEventObserver<
 		const cacheFiles = domEvent.type == 'drop' || domEvent.type == 'paste';
 
 		const evtData: ClipboardEventData = {
-			dataTransfer: new DataTransfer( nativeDataTransfer, { cacheFiles } )
+			dataTransfer: new ViewDataTransfer( nativeDataTransfer, { cacheFiles } )
 		};
 
 		if ( domEvent.type == 'drop' || domEvent.type == 'dragover' ) {
@@ -109,7 +109,7 @@ export interface ClipboardEventData {
 	/**
 	 * The data transfer instance.
 	 */
-	dataTransfer: DataTransfer;
+	dataTransfer: ViewDataTransfer;
 
 	/**
 	 * The position into which the content is dropped.
@@ -153,7 +153,7 @@ export interface ClipboardInputEventData {
 	/**
 	 * Data transfer instance.
 	 */
-	dataTransfer: DataTransfer;
+	dataTransfer: ViewDataTransfer;
 
 	/**
 	 * Whether the event was triggered by a paste or a drop operation.
@@ -307,7 +307,7 @@ export interface DraggingEventData {
 	/**
 	 * The data transfer instance.
 	 */
-	dataTransfer: DataTransfer;
+	dataTransfer: ViewDataTransfer;
 
 	/**
 	 * Whether the event was triggered by a paste or a drop operation.
