@@ -16,7 +16,7 @@ import { type ViewDocument } from './document.js';
 import { type ViewDomConverter } from './domconverter.js';
 import { type ViewItem } from './item.js';
 import type { ViewDocumentArrowKeyEvent } from './observer/arrowkeysobserver.js';
-import type { KeyEventData } from './observer/keyobserver.js';
+import type { KeyObserverEventData } from './observer/keyobserver.js';
 
 type DomDocument = globalThis.Document;
 type DomElement = globalThis.HTMLElement;
@@ -174,7 +174,7 @@ function getFillerOffset() {
  * causes a situation when it is impossible to jump over `UIElement` using right arrow key, because the selection
  * ends up in ui element (in DOM) and is moved back to the left. This handler fixes this situation.
  */
-function jumpOverUiElement( evt: unknown, data: KeyEventData, domConverter: ViewDomConverter ) {
+function jumpOverUiElement( evt: unknown, data: KeyObserverEventData, domConverter: ViewDomConverter ) {
 	if ( data.keyCode == keyCodes.arrowright ) {
 		const domSelection = data.domTarget.ownerDocument.defaultView!.getSelection()!;
 		const domSelectionCollapsed = domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed;

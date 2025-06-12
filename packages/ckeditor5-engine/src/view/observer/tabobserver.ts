@@ -10,7 +10,7 @@
 import { type View } from '../view.js';
 import { Observer } from './observer.js';
 import { BubblingEventInfo } from './bubblingeventinfo.js';
-import type { KeyEventData, ViewDocumentKeyDownEvent } from './keyobserver.js';
+import type { KeyObserverEventData, ViewDocumentKeyDownEvent } from './keyobserver.js';
 import type { BubblingEvent } from './bubblingemittermixin.js';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils';
@@ -73,5 +73,5 @@ export class TabObserver extends Observer {
  */
 export type ViewDocumentTabEvent = BubblingEvent<{
 	name: 'tab';
-	args: [ data: KeyEventData ];
+	args: [ data: KeyObserverEventData ];
 }>;

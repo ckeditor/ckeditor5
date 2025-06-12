@@ -10,7 +10,7 @@
 import { Observer } from './observer.js';
 import { BubblingEventInfo } from './bubblingeventinfo.js';
 import { type View } from '../view.js';
-import type { KeyEventData, ViewDocumentKeyDownEvent } from './keyobserver.js';
+import type { KeyObserverEventData, ViewDocumentKeyDownEvent } from './keyobserver.js';
 import type { BubblingEvent } from './bubblingemittermixin.js';
 
 import { isArrowKeyCode } from '@ckeditor/ckeditor5-utils';
@@ -65,5 +65,5 @@ export class ArrowKeysObserver extends Observer {
 
 export type ViewDocumentArrowKeyEvent = BubblingEvent<{
 	name: 'arrowKey';
-	args: [ data: KeyEventData ];
+	args: [ data: KeyObserverEventData ];
 }>;

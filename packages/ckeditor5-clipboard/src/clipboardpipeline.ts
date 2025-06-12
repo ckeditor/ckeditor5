@@ -14,7 +14,7 @@ import { EventInfo } from '@ckeditor/ckeditor5-utils';
 import type {
 	ViewDataTransfer,
 	ModelDocumentFragment,
-	DomEventData,
+	ObserverDomEventData,
 	ModelRange,
 	ViewDocumentFragment,
 	ViewRange,
@@ -302,7 +302,7 @@ export class ClipboardPipeline extends Plugin {
 		const view = editor.editing.view;
 		const viewDocument = view.document;
 
-		const onCopyCut = ( evt: EventInfo<'copy' | 'cut'>, data: DomEventData<ClipboardEvent> & ClipboardEventData ) => {
+		const onCopyCut = ( evt: EventInfo<'copy' | 'cut'>, data: ObserverDomEventData<ClipboardEvent> & ClipboardEventData ) => {
 			const dataTransfer = data.dataTransfer;
 
 			data.preventDefault();

@@ -22,7 +22,7 @@ import {
 	type Mixed
 } from '@ckeditor/ckeditor5-utils';
 
-import { BubblingEventInfo, type EventPhase } from './bubblingeventinfo.js';
+import { BubblingEventInfo, type BubblingEventPhase } from './bubblingeventinfo.js';
 import { type ViewDocument } from '../document.js';
 import { type ViewNode } from '../node.js';
 import { type Range } from '../range.js';
@@ -167,7 +167,7 @@ export function BubblingEmitterMixin<Base extends Constructor<Emitter>>( base: B
  */
 function updateEventInfo(
 	eventInfo: EventInfo,
-	eventPhase: EventPhase,
+	eventPhase: BubblingEventPhase,
 	currentTarget: unknown
 ) {
 	if ( eventInfo instanceof BubblingEventInfo ) {

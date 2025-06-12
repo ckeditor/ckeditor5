@@ -12,7 +12,7 @@ import { EventInfo, getRangeFromMouseEvent } from '@ckeditor/ckeditor5-utils';
 import {
 	ViewDataTransfer,
 	DomEventObserver,
-	type DomEventData,
+	type ObserverDomEventData,
 	type EditingView,
 	type ViewDocumentFragment,
 	type ViewElement,
@@ -59,7 +59,7 @@ export class ClipboardObserver extends DomEventObserver<
 		this.listenTo<ViewDocumentDragOverEvent>( viewDocument, 'dragover', handleInput( 'dragging' ), { priority: 'low' } );
 
 		function handleInput( type: 'clipboardInput' | 'dragging' ) {
-			return ( evt: EventInfo, data: DomEventData & ClipboardEventData ) => {
+			return ( evt: EventInfo, data: ObserverDomEventData & ClipboardEventData ) => {
 				data.preventDefault();
 
 				const targetRanges = data.dropRange ? [ data.dropRange ] : null;
@@ -139,7 +139,7 @@ export interface ClipboardEventData {
  */
 export type ViewDocumentClipboardInputEvent = {
 	name: 'clipboardInput';
-	args: [ data: DomEventData<ClipboardEvent | DragEvent> & ClipboardInputEventData ];
+	args: [ data: ObserverDomEventData<ClipboardEvent | DragEvent> & ClipboardInputEventData ];
 };
 
 /**
@@ -195,7 +195,7 @@ export interface ClipboardInputEventData {
  */
 export type ViewDocumentDragOverEvent = {
 	name: 'dragover';
-	args: [ data: DomEventData<DragEvent> & ClipboardEventData ];
+	args: [ data: ObserverDomEventData<DragEvent> & ClipboardEventData ];
 };
 
 /**
@@ -215,7 +215,7 @@ export type ViewDocumentDragOverEvent = {
  */
 export type ViewDocumentDropEvent = {
 	name: 'drop';
-	args: [ data: DomEventData<DragEvent> & ClipboardEventData ];
+	args: [ data: ObserverDomEventData<DragEvent> & ClipboardEventData ];
 };
 
 /**
@@ -235,7 +235,7 @@ export type ViewDocumentDropEvent = {
  */
 export type ViewDocumentPasteEvent = {
 	name: 'paste';
-	args: [ data: DomEventData<ClipboardEvent> & ClipboardEventData ];
+	args: [ data: ObserverDomEventData<ClipboardEvent> & ClipboardEventData ];
 };
 
 /**
@@ -255,7 +255,7 @@ export type ViewDocumentPasteEvent = {
  */
 export type ViewDocumentCopyEvent = {
 	name: 'copy';
-	args: [ data: DomEventData<ClipboardEvent> & ClipboardEventData ];
+	args: [ data: ObserverDomEventData<ClipboardEvent> & ClipboardEventData ];
 };
 
 /**
@@ -275,7 +275,7 @@ export type ViewDocumentCopyEvent = {
  */
 export type ViewDocumentCutEvent = {
 	name: 'cut';
-	args: [ data: DomEventData<ClipboardEvent> & ClipboardEventData ];
+	args: [ data: ObserverDomEventData<ClipboardEvent> & ClipboardEventData ];
 };
 
 /**
@@ -299,7 +299,7 @@ export type ViewDocumentCutEvent = {
  */
 export type ViewDocumentDraggingEvent = {
 	name: 'dragging';
-	args: [ data: DomEventData<DragEvent> & DraggingEventData ];
+	args: [ data: ObserverDomEventData<DragEvent> & DraggingEventData ];
 };
 
 export interface DraggingEventData {
@@ -343,7 +343,7 @@ export interface DraggingEventData {
  */
 export type ViewDocumentDragStartEvent = {
 	name: 'dragstart';
-	args: [ data: DomEventData<DragEvent> & ClipboardEventData ];
+	args: [ data: ObserverDomEventData<DragEvent> & ClipboardEventData ];
 };
 
 /**
@@ -363,7 +363,7 @@ export type ViewDocumentDragStartEvent = {
  */
 export type ViewDocumentDragEndEvent = {
 	name: 'dragend';
-	args: [ data: DomEventData<DragEvent> & ClipboardEventData ];
+	args: [ data: ObserverDomEventData<DragEvent> & ClipboardEventData ];
 };
 
 /**
@@ -383,7 +383,7 @@ export type ViewDocumentDragEndEvent = {
  */
 export type ViewDocumentDragEnterEvent = {
 	name: 'dragenter';
-	args: [ data: DomEventData<DragEvent> & ClipboardEventData ];
+	args: [ data: ObserverDomEventData<DragEvent> & ClipboardEventData ];
 };
 
 /**
@@ -403,5 +403,5 @@ export type ViewDocumentDragEnterEvent = {
  */
 export type ViewDocumentDragLeaveEvent = {
 	name: 'dragleave';
-	args: [ data: DomEventData<DragEvent> & ClipboardEventData ];
+	args: [ data: ObserverDomEventData<DragEvent> & ClipboardEventData ];
 };

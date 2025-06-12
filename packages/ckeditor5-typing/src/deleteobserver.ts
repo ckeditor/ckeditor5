@@ -16,7 +16,7 @@ import {
 } from '@ckeditor/ckeditor5-utils';
 import {
 	BubblingEventInfo,
-	DomEventData,
+	ObserverDomEventData,
 	Observer,
 	type BubblingEvent,
 	type ViewDocumentInputEvent,
@@ -193,7 +193,7 @@ export class DeleteObserver extends Observer {
 
 			const eventInfo = new BubblingEventInfo( document, 'delete', targetRanges[ 0 ] );
 
-			document.fire( eventInfo, new DomEventData( view, domEvent, deleteData ) );
+			document.fire( eventInfo, new ObserverDomEventData( view, domEvent, deleteData ) );
 
 			// Stop the beforeinput event if `delete` event was stopped.
 			// https://github.com/ckeditor/ckeditor5/issues/753
@@ -233,7 +233,7 @@ export type ViewDocumentDeleteEvent = BubblingEvent<{
 	args: [ data: DeleteEventData ];
 }>;
 
-export interface DeleteEventData extends DomEventData<InputEvent> {
+export interface DeleteEventData extends ObserverDomEventData<InputEvent> {
 
 	/**
 	 * The direction in which the deletion should happen.
@@ -292,7 +292,7 @@ function enableChromeWorkaround( observer: DeleteObserver ) {
 				selectionToRemove: selection
 			};
 
-			document.fire( eventInfo, new DomEventData( view, domEvent, deleteData ) );
+			document.fire( eventInfo, new ObserverDomEventData( view, domEvent, deleteData ) );
 		}
 	} );
 

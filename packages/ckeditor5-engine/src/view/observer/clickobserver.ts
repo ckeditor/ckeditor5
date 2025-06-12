@@ -8,7 +8,7 @@
  */
 
 import { DomEventObserver } from './domeventobserver.js';
-import { type DomEventData } from './domeventdata.js';
+import { type ObserverDomEventData } from './domeventdata.js';
 import type { BubblingEvent } from './bubblingemittermixin.js';
 
 /**
@@ -46,5 +46,5 @@ export class ClickObserver extends DomEventObserver<'click'> {
  */
 export type ViewDocumentClickEvent = BubblingEvent<{
 	name: 'click';
-	args: [ data: DomEventData<MouseEvent> ];
+	args: [ data: ObserverDomEventData<MouseEvent> ];
 }>;

@@ -8,7 +8,7 @@
  */
 
 import { DomEventObserver } from './domeventobserver.js';
-import { type DomEventData } from './domeventdata.js';
+import { type ObserverDomEventData } from './domeventdata.js';
 
 /**
  * Mouse events observer.
@@ -44,7 +44,7 @@ export class MouseObserver extends DomEventObserver<'mousedown' | 'mouseup' | 'm
  */
 export type ViewDocumentMouseDownEvent = {
 	name: 'mousedown';
-	args: [ data: DomEventData<MouseEvent> ];
+	args: [ data: ObserverDomEventData<MouseEvent> ];
 };
 
 /**
@@ -61,7 +61,7 @@ export type ViewDocumentMouseDownEvent = {
  */
 export type ViewDocumentMouseUpEvent = {
 	name: 'mouseup';
-	args: [ data: DomEventData<MouseEvent> ];
+	args: [ data: ObserverDomEventData<MouseEvent> ];
 };
 
 /**
@@ -78,7 +78,7 @@ export type ViewDocumentMouseUpEvent = {
  */
 export type ViewDocumentMouseOverEvent = {
 	name: 'mouseover';
-	args: [ data: DomEventData<MouseEvent> ];
+	args: [ data: ObserverDomEventData<MouseEvent> ];
 };
 
 /**
@@ -95,5 +95,5 @@ export type ViewDocumentMouseOverEvent = {
  */
 export type ViewDocumentMouseOutEvent = {
 	name: 'mouseout';
-	args: [ data: DomEventData<MouseEvent> ];
+	args: [ data: ObserverDomEventData<MouseEvent> ];
 };

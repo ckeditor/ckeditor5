@@ -12,7 +12,7 @@ import { Plugin } from '@ckeditor/ckeditor5-core';
 import {
 	MouseObserver,
 	ModelTreeWalker,
-	type DomEventData,
+	type ObserverDomEventData,
 	type DowncastSelectionEvent,
 	type ViewDowncastWriter,
 	type ModelElement,
@@ -283,7 +283,7 @@ export class Widget extends Plugin {
 	/**
 	 * Handles {@link module:engine/view/document~ViewDocument#event:mousedown mousedown} events on widget elements.
 	 */
-	private _onMousedown( eventInfo: EventInfo, domEventData: DomEventData<MouseEvent> ) {
+	private _onMousedown( eventInfo: EventInfo, domEventData: ObserverDomEventData<MouseEvent> ) {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
@@ -383,7 +383,7 @@ export class Widget extends Plugin {
 	 *
 	 * See {@link #_preventDefaultOnArrowKeyPress}.
 	 */
-	private _handleSelectionChangeOnArrowKeyPress( eventInfo: EventInfo, domEventData: DomEventData & KeystrokeInfo ) {
+	private _handleSelectionChangeOnArrowKeyPress( eventInfo: EventInfo, domEventData: ObserverDomEventData & KeystrokeInfo ) {
 		const keyCode = domEventData.keyCode;
 
 		const model = this.editor.model;
@@ -461,7 +461,7 @@ export class Widget extends Plugin {
 	 *
 	 * See {@link #_handleSelectionChangeOnArrowKeyPress}.
 	 */
-	private _preventDefaultOnArrowKeyPress( eventInfo: EventInfo, domEventData: DomEventData ) {
+	private _preventDefaultOnArrowKeyPress( eventInfo: EventInfo, domEventData: ObserverDomEventData ) {
 		const model = this.editor.model;
 		const schema = model.schema;
 		const objectElement = model.document.selection.getSelectedElement();
@@ -661,7 +661,7 @@ function findClosestEditableOrWidgetAncestor( element: ViewElement ): ViewElemen
  * @param domEventData The DOM event data containing the mouse event.
  * @returns The ViewElement associated with the mouse event, or null if not found.
  */
-function getElementFromMouseEvent( view: EditingView, domEventData: DomEventData<MouseEvent> ): ViewElement | null {
+function getElementFromMouseEvent( view: EditingView, domEventData: ObserverDomEventData<MouseEvent> ): ViewElement | null {
 	const domRange = getRangeFromMouseEvent( domEventData.domEvent );
 	let viewRange: ViewRange | null = null;
 

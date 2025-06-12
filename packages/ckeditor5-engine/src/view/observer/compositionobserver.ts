@@ -9,7 +9,7 @@
 
 import { DomEventObserver } from './domeventobserver.js';
 import { type View } from '../view.js';
-import { type DomEventData } from './domeventdata.js';
+import { type ObserverDomEventData } from './domeventdata.js';
 
 // @if CK_DEBUG_TYPING // const { _debouncedLine, _buildLogMessage } = require( '../../dev-utils/utils.js' );
 
@@ -76,7 +76,7 @@ export class CompositionObserver extends DomEventObserver<'compositionstart' | '
 	}
 }
 
-export interface CompositionEventData extends DomEventData<CompositionEvent> {
+export interface ObserverCompositionEventData extends ObserverDomEventData<CompositionEvent> {
 	data: string | null;
 }
 
@@ -94,7 +94,7 @@ export interface CompositionEventData extends DomEventData<CompositionEvent> {
  */
 export type ViewDocumentCompositionStartEvent = {
 	name: 'compositionstart';
-	args: [ data: CompositionEventData ];
+	args: [ data: ObserverCompositionEventData ];
 };
 
 /**
@@ -111,7 +111,7 @@ export type ViewDocumentCompositionStartEvent = {
  */
 export type ViewDocumentCompositionUpdateEvent = {
 	name: 'compositionupdate';
-	args: [ data: CompositionEventData ];
+	args: [ data: ObserverCompositionEventData ];
 };
 
 /**
@@ -128,5 +128,5 @@ export type ViewDocumentCompositionUpdateEvent = {
  */
 export type ViewDocumentCompositionEndEvent = {
 	name: 'compositionend';
-	args: [ data: CompositionEventData ];
+	args: [ data: ObserverCompositionEventData ];
 };

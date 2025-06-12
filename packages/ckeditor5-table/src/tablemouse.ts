@@ -12,7 +12,7 @@ import { Plugin } from 'ckeditor5/src/core.js';
 import { TableSelection } from './tableselection.js';
 import { MouseEventsObserver } from './tablemouse/mouseeventsobserver.js';
 import { TableUtils } from './tableutils.js';
-import type { DomEventData, ModelElement } from 'ckeditor5/src/engine.js';
+import type { ObserverDomEventData, ModelElement } from 'ckeditor5/src/engine.js';
 
 /**
  * This plugin enables a table cells' selection with the mouse.
@@ -204,7 +204,7 @@ export class TableMouse extends Plugin {
 	 *
 	 * @returns Returns the table cell or `undefined`.
 	 */
-	private _getModelTableCellFromDomEvent( domEventData: DomEventData ) {
+	private _getModelTableCellFromDomEvent( domEventData: ObserverDomEventData ) {
 		// Note: Work with positions (not element mapping) because the target element can be an attribute or other non-mapped element.
 		const viewTargetElement = domEventData.target;
 		const viewPosition = this.editor.editing.view.createPositionAt( viewTargetElement, 0 );

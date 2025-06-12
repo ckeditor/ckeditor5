@@ -25,7 +25,7 @@ export class BubblingEventInfo<TName extends string = string, TReturn = unknown>
 	/**
 	 * The current event phase.
 	 */
-	private _eventPhase: EventPhase;
+	private _eventPhase: BubblingEventPhase;
 
 	/**
 	 * The current bubbling target.
@@ -48,7 +48,7 @@ export class BubblingEventInfo<TName extends string = string, TReturn = unknown>
 	/**
 	 * The current event phase.
 	 */
-	public get eventPhase(): EventPhase {
+	public get eventPhase(): BubblingEventPhase {
 		return this._eventPhase;
 	}
 
@@ -63,4 +63,4 @@ export class BubblingEventInfo<TName extends string = string, TReturn = unknown>
 /**
  * The phase the event is in.
  */
-export type EventPhase = 'none' | 'capturing' | 'atTarget' | 'bubbling';
+export type BubblingEventPhase = 'none' | 'capturing' | 'atTarget' | 'bubbling';

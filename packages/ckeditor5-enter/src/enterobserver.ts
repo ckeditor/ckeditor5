@@ -9,7 +9,7 @@
 
 import {
 	Observer,
-	DomEventData,
+	ObserverDomEventData,
 	BubblingEventInfo,
 	type EditingView,
 	type ViewDocumentInputEvent,
@@ -62,7 +62,7 @@ export class EnterObserver extends Observer {
 
 			const event = new BubblingEventInfo( doc, 'enter', data.targetRanges[ 0 ] );
 
-			doc.fire( event, new DomEventData( view, domEvent, {
+			doc.fire( event, new ObserverDomEventData( view, domEvent, {
 				isSoft: enterEventSpec.isSoft
 			} ) );
 
@@ -99,7 +99,7 @@ export type ViewDocumentEnterEvent = BubblingEvent<{
 	args: [ EnterEventData ];
 }>;
 
-export interface EnterEventData extends DomEventData<InputEvent> {
+export interface EnterEventData extends ObserverDomEventData<InputEvent> {
 
 	/**
 	 * Whether it is a soft enter (<kbd>Shift</kbd>+<kbd>Enter</kbd>) or a hard enter (<kbd>Enter</kbd>).

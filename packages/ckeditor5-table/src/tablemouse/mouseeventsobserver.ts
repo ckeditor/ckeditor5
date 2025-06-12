@@ -7,7 +7,7 @@
  * @module table/tablemouse/mouseeventsobserver
  */
 
-import { DomEventObserver, type DomEventData } from 'ckeditor5/src/engine.js';
+import { DomEventObserver, type ObserverDomEventData } from 'ckeditor5/src/engine.js';
 
 /**
  * The mouse selection event observer.
@@ -52,7 +52,7 @@ export class MouseEventsObserver extends DomEventObserver<'mousemove' | 'mousele
  */
 export type ViewDocumentMouseMoveEvent = {
 	name: 'mousemove';
-	args: [ data: DomEventData<MouseEvent> ];
+	args: [ data: ObserverDomEventData<MouseEvent> ];
 };
 
 /**
@@ -70,5 +70,5 @@ export type ViewDocumentMouseMoveEvent = {
  */
 export type ViewDocumentMouseLeaveEvent = {
 	name: 'mouseleave';
-	args: [ data: DomEventData<MouseEvent> ];
+	args: [ data: ObserverDomEventData<MouseEvent> ];
 };

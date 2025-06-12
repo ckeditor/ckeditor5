@@ -8,7 +8,7 @@
  */
 
 import { DomEventObserver } from './domeventobserver.js';
-import { type DomEventData } from './domeventdata.js';
+import { type ObserverDomEventData } from './domeventdata.js';
 import { type View } from '../view.js';
 import type { ViewDocumentInputEvent } from './inputobserver.js';
 
@@ -156,7 +156,7 @@ export class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
 	/**
 	 * The `blur` event handler.
 	 */
-	private _handleBlur( data: DomEventData<FocusEvent> ): void {
+	private _handleBlur( data: ObserverDomEventData<FocusEvent> ): void {
 		const selectedEditable = this.document.selection.editableElement;
 
 		// @if CK_DEBUG_TYPING // if ( ( window as any ).logCKETyping ) {
@@ -211,7 +211,7 @@ export class FocusObserver extends DomEventObserver<'focus' | 'blur'> {
  */
 export type ViewDocumentFocusEvent = {
 	name: 'focus';
-	args: [ data: DomEventData<FocusEvent> ];
+	args: [ data: ObserverDomEventData<FocusEvent> ];
 };
 
 /**
@@ -228,5 +228,5 @@ export type ViewDocumentFocusEvent = {
  */
 export type ViewDocumentBlurEvent = {
 	name: 'blur';
-	args: [ data: DomEventData<FocusEvent> ];
+	args: [ data: ObserverDomEventData<FocusEvent> ];
 };

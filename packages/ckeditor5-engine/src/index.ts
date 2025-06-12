@@ -254,6 +254,16 @@ export { DomEventObserver } from './view/observer/domeventobserver.js';
 export { MouseObserver } from './view/observer/mouseobserver.js';
 export { TabObserver } from './view/observer/tabobserver.js';
 export { TouchObserver } from './view/observer/touchobserver.js';
+export { FakeSelectionObserver } from './view/observer/fakeselectionobserver.js';
+export {
+	KeyObserver,
+	ViewDocumentKeyDownEvent,
+	ViewDocumentKeyUpEvent,
+	KeyObserverEventData
+} from './view/observer/keyobserver.js';
+
+export { CompositionObserver, type ObserverCompositionEventData } from './view/observer/compositionobserver.js';
+export { InputObserver, type InputObserverEventData, type ViewDocumentInputEvent } from './view/observer/inputobserver.js';
 
 export {
 	FocusObserver,
@@ -276,8 +286,8 @@ export {
 	type MatchClassPatterns
 } from './view/matcher.js';
 
-export { BubblingEventInfo } from './view/observer/bubblingeventinfo.js';
-export { DomEventData } from './view/observer/domeventdata.js';
+export { BubblingEventInfo, type BubblingEventPhase } from './view/observer/bubblingeventinfo.js';
+export { ObserverDomEventData } from './view/observer/domeventdata.js';
 
 // View / Events.
 export {
@@ -294,9 +304,7 @@ export type {
 	ViewDocumentCompositionUpdateEvent,
 	ViewDocumentCompositionEndEvent
 } from './view/observer/compositionobserver.js';
-export type { ViewDocumentInputEvent } from './view/observer/inputobserver.js';
 export type { ViewDocumentMutationsEvent, MutationData } from './view/observer/mutationobserver.js';
-export type { ViewDocumentKeyDownEvent, ViewDocumentKeyUpEvent, KeyEventData } from './view/observer/keyobserver.js';
 export type { ViewDocumentLayoutChangedEvent } from './view/document.js';
 export type {
 	ViewDocumentMouseDownEvent,
