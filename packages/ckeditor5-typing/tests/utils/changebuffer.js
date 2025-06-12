@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ChangeBuffer } from '../../src/utils/changebuffer.js';
+import { TypingChangeBuffer } from '../../src/utils/changebuffer.js';
 import { Model } from '@ckeditor/ckeditor5-engine/src/model/model.js';
 import { Batch } from '@ckeditor/ckeditor5-engine/src/model/batch.js';
 
@@ -15,7 +15,7 @@ describe( 'ChangeBuffer', () => {
 		model = new Model();
 		doc = model.document;
 		root = doc.createRoot();
-		buffer = new ChangeBuffer( model, CHANGE_LIMIT );
+		buffer = new TypingChangeBuffer( model, CHANGE_LIMIT );
 	} );
 
 	describe( 'constructor()', () => {
@@ -27,7 +27,7 @@ describe( 'ChangeBuffer', () => {
 		} );
 
 		it( 'sets limit property according to default value', () => {
-			buffer = new ChangeBuffer( model );
+			buffer = new TypingChangeBuffer( model );
 
 			expect( buffer ).to.have.property( 'limit', 20 );
 		} );
