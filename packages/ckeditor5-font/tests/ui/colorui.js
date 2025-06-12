@@ -13,7 +13,7 @@ import { Undo } from '@ckeditor/ckeditor5-undo/src/undo.js';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service.js';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-describe( 'ColorUI', () => {
+describe( 'FontColorUIBase', () => {
 	const testColorConfig = {
 		colors: [
 			'yellow',

@@ -127,7 +127,7 @@ export function addColorSelectorToDropdown(
 		dropdownView, colors, columns, removeButtonLabel, colorPickerLabel,
 		documentColorsLabel, documentColorsCount, colorPickerViewConfig
 	}: {
-		dropdownView: ColorSelectorDropdownView;
+		dropdownView: FontColorSelectorDropdownView;
 		colors: Array<ColorDefinition>;
 		columns: number;
 		removeButtonLabel: string;
@@ -161,6 +161,6 @@ function normalizeColorCode( value: string ): string {
 	return value.replace( /\s/g, '' );
 }
 
-export type ColorSelectorDropdownView = DropdownView & {
+export type FontColorSelectorDropdownView = DropdownView & {
 	colorSelectorView?: ColorSelectorView;
 };
