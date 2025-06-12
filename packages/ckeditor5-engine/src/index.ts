@@ -241,7 +241,7 @@ export { ViewTreeWalker, type TreeWalkerValue as ViewTreeWalkerValue } from './v
 export type { ViewElementDefinition, ViewElementObjectDefinition } from './view/elementdefinition.js';
 export { ViewDocumentSelection } from './view/documentselection.js';
 export type { ViewItem } from './view/item.js';
-export { ViewNode } from './view/node.js';
+export { ViewNode, type ViewNodeChangeEvent } from './view/node.js';
 export { ViewPosition, type PositionOffset as ViewPositionOffset } from './view/position.js';
 export { ViewRange } from './view/range.js';
 export { ViewSelection, type ViewSelectionChangeEvent, type Selectable as ViewSelectable } from './view/selection.js';
