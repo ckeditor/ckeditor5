@@ -15,7 +15,7 @@ import type { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support';
 import {
 	StyleUtils,
 	type BlockStyleDefinition,
-	type NormalizedStyleDefinition,
+	type _NormalizedStyleDefinition,
 	type NormalizedStyleDefinitions
 } from './styleutils.js';
 
@@ -178,13 +178,13 @@ export class StyleCommand extends Command {
 		const selection = model.document.selection;
 		const htmlSupport: GeneralHtmlSupport = this.editor.plugins.get( 'GeneralHtmlSupport' );
 
-		const allDefinitions: Array<NormalizedStyleDefinition> = [
+		const allDefinitions: Array<_NormalizedStyleDefinition> = [
 			...this._styleDefinitions.inline,
 			...this._styleDefinitions.block
 		];
 
 		const activeDefinitions = allDefinitions.filter( ( { name } ) => this.value.includes( name ) );
-		const definition: NormalizedStyleDefinition = allDefinitions.find( ( { name } ) => name == styleName )!;
+		const definition: _NormalizedStyleDefinition = allDefinitions.find( ( { name } ) => name == styleName )!;
 		const shouldAddStyle = forceValue === undefined ? !this.value.includes( definition.name ) : forceValue;
 
 		model.change( () => {
@@ -254,10 +254,10 @@ export class StyleCommand extends Command {
  * @returns Array of classes exclusive to the supplied definition.
  */
 function getDefinitionExclusiveClasses(
-	activeDefinitions: Array<NormalizedStyleDefinition>,
-	definition: NormalizedStyleDefinition
+	activeDefinitions: Array<_NormalizedStyleDefinition>,
+	definition: _NormalizedStyleDefinition
 ): Array<string> {
-	return activeDefinitions.reduce( ( classes: Array<string>, currentDefinition: NormalizedStyleDefinition ) => {
+	return activeDefinitions.reduce( ( classes: Array<string>, currentDefinition: _NormalizedStyleDefinition ) => {
 		if ( currentDefinition.name === definition.name ) {
 			return classes;
 		}
@@ -269,7 +269,7 @@ function getDefinitionExclusiveClasses(
 /**
  * Checks if provided style definition is of type block.
  */
-function isBlockStyleDefinition( definition: NormalizedStyleDefinition ): definition is BlockStyleDefinition {
+function isBlockStyleDefinition( definition: _NormalizedStyleDefinition ): definition is BlockStyleDefinition {
 	return 'isBlock' in definition;
 }
 
