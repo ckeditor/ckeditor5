@@ -8,7 +8,7 @@
  */
 
 import type { BoxSides, Extractor, Normalizer, Reducer, StylesProcessor, Styles, StyleValue, PropertyDescriptor } from '../stylesmap.js';
-import { getShorthandValues, getBoxSidesValueReducer, getBoxSidesValues, isLength, isLineStyle } from './utils.js';
+import { getShorthandValues, getBoxSidesValueReducer, getBoxSidesValues, isLengthStyleValue, isLineStyleValue } from './utils.js';
 
 /**
  * Adds a border CSS styles processing rules.
@@ -232,9 +232,9 @@ function normalizeBorderShorthand( string: string ) {
 	const parts = getShorthandValues( string );
 
 	for ( const part of parts ) {
-		if ( isLength( part ) || /thin|medium|thick/.test( part ) ) {
+		if ( isLengthStyleValue( part ) || /thin|medium|thick/.test( part ) ) {
 			result.width = part;
-		} else if ( isLineStyle( part ) ) {
+		} else if ( isLineStyleValue( part ) ) {
 			result.style = part;
 		} else {
 			result.color = part;

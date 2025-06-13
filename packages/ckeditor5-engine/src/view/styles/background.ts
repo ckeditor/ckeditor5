@@ -8,7 +8,14 @@
  */
 
 import type { StylesProcessor, PropertyDescriptor, Styles, Normalizer, Reducer } from '../stylesmap.js';
-import { getShorthandValues, isAttachment, isColor, isPosition, isRepeat, isURL } from './utils.js';
+import {
+	getShorthandValues,
+	isAttachmentStyleValue,
+	isColorStyleValue,
+	isPositionStyleValue,
+	isRepeatStyleValue,
+	isURLStyleValue
+} from './utils.js';
 
 /**
  * Adds a background CSS styles processing rules.
@@ -55,19 +62,19 @@ function getBackgroundNormalizer(): Normalizer {
 		const parts = getShorthandValues( value );
 
 		for ( const part of parts ) {
-			if ( isRepeat( part ) ) {
+			if ( isRepeatStyleValue( part ) ) {
 				background.repeat = background.repeat || [];
 
 				background.repeat.push( part );
-			} else if ( isPosition( part ) ) {
+			} else if ( isPositionStyleValue( part ) ) {
 				background.position = background.position || [];
 
 				background.position.push( part );
-			} else if ( isAttachment( part ) ) {
+			} else if ( isAttachmentStyleValue( part ) ) {
 				background.attachment = part;
-			} else if ( isColor( part ) ) {
+			} else if ( isColorStyleValue( part ) ) {
 				background.color = part;
-			} else if ( isURL( part ) ) {
+			} else if ( isURLStyleValue( part ) ) {
 				background.image = part;
 			}
 		}

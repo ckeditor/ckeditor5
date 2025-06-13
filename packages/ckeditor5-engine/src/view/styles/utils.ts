@@ -57,16 +57,16 @@ const COLOR_NAMES = new Set( [
  * Checks if string contains [color](https://developer.mozilla.org/en-US/docs/Web/CSS/color) CSS value.
  *
  * ```ts
- * isColor( '#f00' );						// true
- * isColor( '#AA00BB33' );					// true
- * isColor( 'rgb(0, 0, 250)' );				// true
- * isColor( 'hsla(240, 100%, 50%, .7)' );	// true
- * isColor( 'deepskyblue' );				// true
+ * isColorStyleValue( '#f00' );						// true
+ * isColorStyleValue( '#AA00BB33' );				// true
+ * isColorStyleValue( 'rgb(0, 0, 250)' );			// true
+ * isColorStyleValue( 'hsla(240, 100%, 50%, .7)' );	// true
+ * isColorStyleValue( 'deepskyblue' );				// true
  * ```
  *
  * **Note**: It does not support CSS Level 4 whitespace syntax, system colors and radius values for HSL colors.
  */
-export function isColor( string: string ): boolean {
+export function isColorStyleValue( string: string ): boolean {
 	// As far as I was able to test checking some pre-conditions is faster than joining each test with ||.
 	if ( string.startsWith( '#' ) ) {
 		return HEX_COLOR_REGEXP.test( string );
@@ -89,7 +89,7 @@ const lineStyleValues = [ 'none', 'hidden', 'dotted', 'dashed', 'solid', 'double
 /**
  * Checks if string contains [line style](https://developer.mozilla.org/en-US/docs/Web/CSS/border-style) CSS value.
  */
-export function isLineStyle( string: string ): boolean {
+export function isLineStyleValue( string: string ): boolean {
 	return lineStyleValues.includes( string );
 }
 
@@ -98,7 +98,7 @@ const lengthRegExp = /^([+-]?[0-9]*([.][0-9]+)?(px|cm|mm|in|pc|pt|ch|em|ex|rem|v
 /**
  * Checks if string contains [length](https://developer.mozilla.org/en-US/docs/Web/CSS/length) CSS value.
  */
-export function isLength( string: string ): boolean {
+export function isLengthStyleValue( string: string ): boolean {
 	return lengthRegExp.test( string );
 }
 
@@ -107,7 +107,7 @@ const PERCENTAGE_VALUE_REGEXP = /^[+-]?[0-9]*([.][0-9]+)?%$/;
 /**
  * Checks if string contains [percentage](https://developer.mozilla.org/en-US/docs/Web/CSS/percentage) CSS value.
  */
-export function isPercentage( string: string ): boolean {
+export function isPercentageStyleValue( string: string ): boolean {
 	return PERCENTAGE_VALUE_REGEXP.test( string );
 }
 
@@ -116,7 +116,7 @@ const repeatValues = [ 'repeat-x', 'repeat-y', 'repeat', 'space', 'round', 'no-r
 /**
  * Checks if string contains [background repeat](https://developer.mozilla.org/en-US/docs/Web/CSS/background-repeat) CSS value.
  */
-export function isRepeat( string: string ): boolean {
+export function isRepeatStyleValue( string: string ): boolean {
 	return repeatValues.includes( string );
 }
 
@@ -125,7 +125,7 @@ const positionValues = [ 'center', 'top', 'bottom', 'left', 'right' ];
 /**
  * Checks if string contains [background position](https://developer.mozilla.org/en-US/docs/Web/CSS/background-position) CSS value.
  */
-export function isPosition( string: string ): boolean {
+export function isPositionStyleValue( string: string ): boolean {
 	return positionValues.includes( string );
 }
 
@@ -134,7 +134,7 @@ const attachmentValues = [ 'fixed', 'scroll', 'local' ];
 /**
  * Checks if string contains [background attachment](https://developer.mozilla.org/en-US/docs/Web/CSS/background-attachment) CSS value.
  */
-export function isAttachment( string: string ): boolean {
+export function isAttachmentStyleValue( string: string ): boolean {
 	return attachmentValues.includes( string );
 }
 
@@ -143,7 +143,7 @@ const urlRegExp = /^url\(/;
 /**
  * Checks if string contains [URL](https://developer.mozilla.org/en-US/docs/Web/CSS/url) CSS value.
  */
-export function isURL( string: string ): boolean {
+export function isURLStyleValue( string: string ): boolean {
 	return urlRegExp.test( string );
 }
 

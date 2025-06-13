@@ -356,14 +356,14 @@ export { addBorderStylesRules } from './view/styles/border.js';
 export { addMarginStylesRules } from './view/styles/margin.js';
 export { addPaddingStylesRules } from './view/styles/padding.js';
 export {
-	isColor,
-	isLineStyle,
-	isLength,
-	isPercentage,
-	isRepeat,
-	isPosition,
-	isAttachment,
-	isURL,
+	isColorStyleValue,
+	isLineStyleValue,
+	isLengthStyleValue,
+	isPercentageStyleValue,
+	isRepeatStyleValue,
+	isPositionStyleValue,
+	isAttachmentStyleValue,
+	isURLStyleValue,
 	getBoxSidesValues,
 	getBoxSidesValueReducer,
 	getBoxSidesShorthandValue,

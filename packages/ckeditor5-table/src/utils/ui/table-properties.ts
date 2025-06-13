@@ -20,7 +20,7 @@ import {
 } from 'ckeditor5/src/ui.js';
 
 import { Collection, type LocaleTranslate } from 'ckeditor5/src/utils.js';
-import { isColor, isLength, isPercentage } from 'ckeditor5/src/engine.js';
+import { isColorStyleValue, isLength, isPercentage } from 'ckeditor5/src/engine.js';
 
 import { type TableCellPropertiesView } from '../../tablecellproperties/ui/tablecellpropertiesview.js';
 import { type TablePropertiesView } from '../../tableproperties/ui/tablepropertiesview.js';
@@ -84,7 +84,7 @@ export function getLocalizedLengthErrorText( t: LocaleTranslate ): string {
 export function colorFieldValidator( value: string ): boolean {
 	value = value.trim().toLowerCase();
 
-	return isEmpty( value ) || isColor( value );
+	return isEmpty( value ) || isColorStyleValue( value );
 }
 
 /**
