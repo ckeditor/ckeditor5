@@ -18,7 +18,7 @@ import { type ViewText } from './text.js';
 
 /**
  * ViewTextProxy is a wrapper for substring of {@link module:engine/view/text~ViewText}. Instance of this class is created by
- * {@link module:engine/view/treewalker~TreeWalker} when only a part of {@link module:engine/view/text~ViewText} needs to be returned.
+ * {@link module:engine/view/treewalker~ViewTreeWalker} when only a part of {@link module:engine/view/text~ViewText} needs to be returned.
  *
  * `ViewTextProxy` has an API similar to {@link module:engine/view/text~ViewText Text} and allows to do most of the common tasks performed
  * on view nodes.
@@ -34,7 +34,7 @@ import { type ViewText } from './text.js';
  * invalidated due to operations on Document. Also ViewTextProxy is not a {@link module:engine/view/node~ViewNode} so it cannot be
  * inserted as a child of {@link module:engine/view/element~ViewElement}.
  *
- * `ViewTextProxy` instances are created by {@link module:engine/view/treewalker~TreeWalker view tree walker}.
+ * `ViewTextProxy` instances are created by {@link module:engine/view/treewalker~ViewTreeWalker view tree walker}.
  * You should not need to create an instance of this class by your own.
  */
 export class ViewTextProxy extends TypeCheckable {

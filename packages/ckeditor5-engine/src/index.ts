@@ -239,7 +239,6 @@ export { ViewEmptyElement } from './view/emptyelement.js';
 export { ViewRawElement } from './view/rawelement.js';
 export { ViewUIElement } from './view/uielement.js';
 export { ViewDocumentFragment } from './view/documentfragment.js';
-export { ViewTreeWalker, type TreeWalkerValue as ViewTreeWalkerValue } from './view/treewalker.js';
 export type { ViewElementDefinition, ViewElementObjectDefinition } from './view/elementdefinition.js';
 export { ViewDocumentSelection } from './view/documentselection.js';
 export type { ViewItem } from './view/item.js';
@@ -259,7 +258,15 @@ export {
 	type ViewPlaceOrOffset
 } from './view/selection.js';
 
-export type { ViewTypeCheckable } from './view/typecheckable.js';
+export {
+	ViewTreeWalker,
+	type ViewTreeWalkerValueType,
+	type ViewTreeWalkerValue,
+	type ViewTreeWalkerDirection,
+	type ViewTreeWalkerOptions
+} from './view/treewalker.js';
+
+export { ViewTypeCheckable } from './view/typecheckable.js';
 
 // View / Observer.
 export { Observer, type ObserverConstructor } from './view/observer/observer.js';

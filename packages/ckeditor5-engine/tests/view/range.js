@@ -9,7 +9,7 @@ import { ViewElement } from '../../src/view/element.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewText } from '../../src/view/text.js';
 import { ViewTextProxy } from '../../src/view/textproxy.js';
-import { TreeWalker } from '../../src/view/treewalker.js';
+import { ViewTreeWalker } from '../../src/view/treewalker.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { _parseView, _stringifyView } from '../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../src/view/stylesmap.js';
@@ -575,7 +575,7 @@ describe( 'Range', () => {
 				values.push( value );
 			}
 
-			expect( walker ).to.be.instanceof( TreeWalker );
+			expect( walker ).to.be.instanceof( ViewTreeWalker );
 			expect( walker ).to.have.property( 'singleCharacters' ).that.is.true;
 
 			expect( values.length ).to.equal( 5 );

@@ -13,7 +13,7 @@ import { ViewText } from '../../src/view/text.js';
 import { ViewTextProxy } from '../../src/view/textproxy.js';
 
 import { _parseView, _stringifyView } from '../../src/dev-utils/view.js';
-import { TreeWalker } from '../../src/view/treewalker.js';
+import { ViewTreeWalker } from '../../src/view/treewalker.js';
 import { createViewRoot } from './_utils/createroot.js';
 import { ViewAttributeElement } from '../../src/view/attributeelement.js';
 import { ViewContainerElement } from '../../src/view/containerelement.js';
@@ -682,7 +682,7 @@ describe( 'ViewPosition', () => {
 			const position = new ViewPosition( root, 0 );
 			const walker = position.getWalker( { singleCharacters: true } );
 
-			expect( walker ).to.be.instanceof( TreeWalker );
+			expect( walker ).to.be.instanceof( ViewTreeWalker );
 			expect( walker ).to.have.property( 'singleCharacters' ).that.is.true;
 			expect( walker ).to.have.property( 'position' );
 			expect( walker.position.isEqual( position ) ).to.be.true;

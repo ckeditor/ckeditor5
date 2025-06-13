@@ -8,7 +8,7 @@ import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
 import { ViewAttributeElement } from '../../src/view/attributeelement.js';
 import { ViewContainerElement } from '../../src/view/containerelement.js';
 import { ViewText } from '../../src/view/text.js';
-import { TreeWalker } from '../../src/view/treewalker.js';
+import { ViewTreeWalker } from '../../src/view/treewalker.js';
 import { ViewPosition } from '../../src/view/position.js';
 import { ViewRange } from '../../src/view/range.js';
 import { createViewRoot } from './_utils/createroot.js';
@@ -56,21 +56,21 @@ describe( 'TreeWalker', () => {
 	describe( 'constructor()', () => {
 		it( 'should throw if neither boundaries nor starting position is set', () => {
 			expectToThrowCKEditorError( () => {
-				new TreeWalker(); // eslint-disable-line no-new
+				new ViewTreeWalker(); // eslint-disable-line no-new
 			}, /^view-tree-walker-no-start-position/, null );
 
 			expectToThrowCKEditorError( () => {
-				new TreeWalker( {} ); // eslint-disable-line no-new
+				new ViewTreeWalker( {} ); // eslint-disable-line no-new
 			}, /^view-tree-walker-no-start-position/, null );
 
 			expectToThrowCKEditorError( () => {
-				new TreeWalker( { singleCharacters: true } ); // eslint-disable-line no-new
+				new ViewTreeWalker( { singleCharacters: true } ); // eslint-disable-line no-new
 			}, /^view-tree-walker-no-start-position/, null );
 		} );
 
 		it( 'should throw if walking direction is unknown', () => {
 			expectToThrowCKEditorError( () => {
-				new TreeWalker( { startPosition: rootBeginning, direction: 'unknown' } ); // eslint-disable-line no-new
+				new ViewTreeWalker( { startPosition: rootBeginning, direction: 'unknown' } ); // eslint-disable-line no-new
 			}, /^view-tree-walker-unknown-direction/, doc );
 		} );
 	} );
@@ -150,7 +150,7 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( 'should provide iterator interface with default forward direction', () => {
-			const iterator = new TreeWalker( { startPosition: rootBeginning } );
+			const iterator = new ViewTreeWalker( { startPosition: rootBeginning } );
 			let i = 0;
 
 			for ( const value of iterator ) {
@@ -161,7 +161,7 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( 'should provide iterator interface with forward direction', () => {
-			const iterator = new TreeWalker( { startPosition: rootBeginning, direction: 'forward' } );
+			const iterator = new ViewTreeWalker( { startPosition: rootBeginning, direction: 'forward' } );
 			let i = 0;
 
 			for ( const value of iterator ) {
@@ -172,7 +172,7 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( 'should provide iterator interface which backward direction', () => {
-			const iterator = new TreeWalker( { startPosition: rootEnding, direction: 'backward' } );
+			const iterator = new ViewTreeWalker( { startPosition: rootEnding, direction: 'backward' } );
 			let i = expected.length;
 
 			for ( const value of iterator ) {
@@ -183,7 +183,7 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( 'should start iterating at the startPosition witch is not a root bound', () => {
-			const iterator = new TreeWalker( { startPosition: new ViewPosition( root, 1 ) } );
+			const iterator = new ViewTreeWalker( { startPosition: new ViewPosition( root, 1 ) } );
 			let i = 2;
 
 			for ( const value of iterator ) {
@@ -209,7 +209,7 @@ describe( 'TreeWalker', () => {
 				}
 			];
 
-			const iterator = new TreeWalker( { startPosition: new ViewPosition( root, 1 ), direction: 'backward' } );
+			const iterator = new ViewTreeWalker( { startPosition: new ViewPosition( root, 1 ), direction: 'backward' } );
 			let i = expected.length;
 
 			for ( const value of iterator ) {
@@ -274,7 +274,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should iterating over the range', () => {
-				const iterator = new TreeWalker( { boundaries: range } );
+				const iterator = new ViewTreeWalker( { boundaries: range } );
 				let i = 0;
 
 				for ( const value of iterator ) {
@@ -285,7 +285,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should iterating over the range going backward', () => {
-				const iterator = new TreeWalker( { boundaries: range, direction: 'backward' } );
+				const iterator = new ViewTreeWalker( { boundaries: range, direction: 'backward' } );
 				let i = expected.length;
 
 				for ( const value of iterator ) {
@@ -337,7 +337,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return part of the text', () => {
-				const iterator = new TreeWalker( { boundaries: range } );
+				const iterator = new ViewTreeWalker( { boundaries: range } );
 				let i = 0;
 
 				for ( const value of iterator ) {
@@ -348,7 +348,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return part of the text going backward', () => {
-				const iterator = new TreeWalker( {
+				const iterator = new ViewTreeWalker( {
 					boundaries: range,
 					direction: 'backward'
 				}
@@ -404,7 +404,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return part of the text', () => {
-				const iterator = new TreeWalker( { boundaries: range } );
+				const iterator = new ViewTreeWalker( { boundaries: range } );
 				let i = 0;
 
 				for ( const value of iterator ) {
@@ -415,7 +415,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return part of the text going backward', () => {
-				const iterator = new TreeWalker( {
+				const iterator = new ViewTreeWalker( {
 					boundaries: range,
 					startPosition: range.end,
 					direction: 'backward'
@@ -448,7 +448,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return part of the text', () => {
-				const iterator = new TreeWalker( { boundaries: range } );
+				const iterator = new ViewTreeWalker( { boundaries: range } );
 				let i = 0;
 
 				for ( const value of iterator ) {
@@ -459,7 +459,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return part of the text going backward', () => {
-				const iterator = new TreeWalker( {
+				const iterator = new ViewTreeWalker( {
 					boundaries: range,
 					startPosition: range.end,
 					direction: 'backward'
@@ -500,7 +500,7 @@ describe( 'TreeWalker', () => {
 
 				const range = ViewRange._createFromParentsAndOffsets( bold, 1, paragraph, 3 );
 
-				const iterator = new TreeWalker( {
+				const iterator = new ViewTreeWalker( {
 					boundaries: range,
 					startPosition: new ViewPosition( paragraph, 1 )
 				} );
@@ -537,7 +537,7 @@ describe( 'TreeWalker', () => {
 
 				const range = new ViewRange( new ViewPosition( textAbcd, 1 ), new ViewPosition( paragraph, 3 ) );
 
-				const iterator = new TreeWalker( {
+				const iterator = new ViewTreeWalker( {
 					boundaries: range,
 					startPosition: new ViewPosition( paragraph, 2 ),
 					direction: 'backward'
@@ -647,7 +647,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return single characters', () => {
-				const iterator = new TreeWalker( { startPosition: rootBeginning, singleCharacters: true } );
+				const iterator = new ViewTreeWalker( { startPosition: rootBeginning, singleCharacters: true } );
 				let i = 0;
 
 				for ( const value of iterator ) {
@@ -658,7 +658,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return single characters going backward', () => {
-				const iterator = new TreeWalker( {
+				const iterator = new ViewTreeWalker( {
 					startPosition: rootEnding,
 					singleCharacters: true,
 					direction: 'backward'
@@ -726,7 +726,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should respect boundaries', () => {
-				const iterator = new TreeWalker( { boundaries: range, singleCharacters: true } );
+				const iterator = new ViewTreeWalker( { boundaries: range, singleCharacters: true } );
 				let i = 0;
 
 				for ( const value of iterator ) {
@@ -737,7 +737,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should respect boundaries going backward', () => {
-				const iterator = new TreeWalker( {
+				const iterator = new ViewTreeWalker( {
 					boundaries: range,
 					singleCharacters: true,
 					direction: 'backward'
@@ -755,7 +755,7 @@ describe( 'TreeWalker', () => {
 
 	describe( '`shallow` iterates only through elements in the range', () => {
 		it( '`shallow` only iterates elements in the range (forward)', () => {
-			const walker = new TreeWalker( {
+			const walker = new ViewTreeWalker( {
 				boundaries: new ViewRange(
 					new ViewPosition( root, 0 ),
 					new ViewPosition( img1, 0 )
@@ -776,7 +776,7 @@ describe( 'TreeWalker', () => {
 
 			root._insertChild( 2, [ p2, p3 ] );
 
-			const walker = new TreeWalker( {
+			const walker = new ViewTreeWalker( {
 				boundaries: new ViewRange(
 					new ViewPosition( root, 1 ),
 					new ViewPosition( paragraph, 3 )
@@ -797,7 +797,7 @@ describe( 'TreeWalker', () => {
 
 			root._insertChild( 2, [ p2, p3 ] );
 
-			const walker = new TreeWalker( {
+			const walker = new ViewTreeWalker( {
 				boundaries: new ViewRange(
 					new ViewPosition( root, 1 ),
 					new ViewPosition( img2, 0 )
@@ -813,7 +813,7 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( '`shallow` only iterates elements in the range (backwards)', () => {
-			const walker = new TreeWalker( {
+			const walker = new ViewTreeWalker( {
 				boundaries: new ViewRange(
 					new ViewPosition( root, 0 ),
 					new ViewPosition( img1, 0 )
@@ -851,7 +851,7 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( 'should not enter elements', () => {
-			const iterator = new TreeWalker( { startPosition: rootBeginning, shallow: true } );
+			const iterator = new ViewTreeWalker( { startPosition: rootBeginning, shallow: true } );
 			let i = 0;
 
 			for ( const value of iterator ) {
@@ -862,7 +862,7 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( 'should not enter elements going backward', () => {
-			const iterator = new TreeWalker( { startPosition: rootEnding, shallow: true, direction: 'backward' } );
+			const iterator = new ViewTreeWalker( { startPosition: rootEnding, shallow: true, direction: 'backward' } );
 			let i = expected.length;
 
 			for ( const value of iterator ) {
@@ -925,7 +925,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should iterate ignoring elementEnd', () => {
-				const iterator = new TreeWalker( { startPosition: rootBeginning, ignoreElementEnd: true } );
+				const iterator = new ViewTreeWalker( { startPosition: rootBeginning, ignoreElementEnd: true } );
 				let i = 0;
 
 				for ( const value of iterator ) {
@@ -936,7 +936,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should iterate ignoring elementEnd going backward', () => {
-				const iterator = new TreeWalker( {
+				const iterator = new ViewTreeWalker( {
 					startPosition: rootEnding,
 					ignoreElementEnd: true,
 					direction: 'backward'
@@ -1020,7 +1020,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return single characters ignoring elementEnd', () => {
-				const iterator = new TreeWalker( {
+				const iterator = new ViewTreeWalker( {
 					startPosition: rootBeginning,
 					singleCharacters: true,
 					ignoreElementEnd: true
@@ -1035,7 +1035,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return single characters ignoring elementEnd going backward', () => {
-				const iterator = new TreeWalker( {
+				const iterator = new ViewTreeWalker( {
 					startPosition: rootEnding,
 					singleCharacters: true,
 					ignoreElementEnd: true,
@@ -1053,7 +1053,7 @@ describe( 'TreeWalker', () => {
 	} );
 
 	it( 'should not return elementEnd for a text node when iteration begins at the end of that text node', () => {
-		const iterator = new TreeWalker( {
+		const iterator = new ViewTreeWalker( {
 			startPosition: ViewPosition._createAt( textAbcd, 'end' )
 		} );
 
@@ -1064,7 +1064,7 @@ describe( 'TreeWalker', () => {
 	} );
 
 	it( 'should not return elementStart for a text node when iteration begins at the start of that text node', () => {
-		const iterator = new TreeWalker( {
+		const iterator = new ViewTreeWalker( {
 			startPosition: ViewPosition._createAt( textAbcd, 0 ),
 			direction: 'backward'
 		} );
@@ -1121,7 +1121,7 @@ describe( 'TreeWalker', () => {
 			}
 		];
 
-		const iterator = new TreeWalker( { boundaries: ViewRange._createIn( docFrag ) } );
+		const iterator = new ViewTreeWalker( { boundaries: ViewRange._createIn( docFrag ) } );
 		let i = 0;
 
 		for ( const value of iterator ) {
@@ -1134,7 +1134,7 @@ describe( 'TreeWalker', () => {
 	describe( 'skip', () => {
 		describe( 'forward treewalker', () => {
 			it( 'should jump over all text nodes', () => {
-				const walker = new TreeWalker( {
+				const walker = new ViewTreeWalker( {
 					startPosition: new ViewPosition( paragraph, 0 )
 				} );
 
@@ -1145,7 +1145,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should do not move if the condition is false', () => {
-				const walker = new TreeWalker( {
+				const walker = new ViewTreeWalker( {
 					startPosition: new ViewPosition( bold, 0 )
 				} );
 
@@ -1156,7 +1156,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should do not move if the condition is false and the position is in text node', () => {
-				const walker = new TreeWalker( {
+				const walker = new ViewTreeWalker( {
 					startPosition: new ViewPosition( bold.getChild( 0 ), 2 )
 				} );
 
@@ -1167,7 +1167,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should move to the end if the condition is true', () => {
-				const walker = new TreeWalker( {
+				const walker = new ViewTreeWalker( {
 					startPosition: new ViewPosition( bold, 0 )
 				} );
 
@@ -1180,7 +1180,7 @@ describe( 'TreeWalker', () => {
 
 		describe( 'backward treewalker', () => {
 			it( 'should jump over all text nodes', () => {
-				const walker = new TreeWalker( {
+				const walker = new ViewTreeWalker( {
 					startPosition: new ViewPosition( bold.getChild( 0 ), 2 ),
 					direction: 'backward'
 				} );
@@ -1192,7 +1192,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should do not move if the condition is false', () => {
-				const walker = new TreeWalker( {
+				const walker = new ViewTreeWalker( {
 					startPosition: new ViewPosition( bold, 0 ),
 					direction: 'backward'
 				} );
@@ -1204,7 +1204,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should move to the end if the condition is true', () => {
-				const walker = new TreeWalker( {
+				const walker = new ViewTreeWalker( {
 					startPosition: new ViewPosition( bold, 0 ),
 					direction: 'backward'
 				} );
@@ -1219,7 +1219,7 @@ describe( 'TreeWalker', () => {
 
 	describe( 'jumpTo', () => {
 		it( 'should jump to the given position', () => {
-			const walker = new TreeWalker( {
+			const walker = new ViewTreeWalker( {
 				startPosition: ViewPosition._createAt( paragraph, 0 )
 			} );
 
@@ -1239,7 +1239,7 @@ describe( 'TreeWalker', () => {
 				new ViewPosition( paragraph, 2 ),
 				new ViewPosition( paragraph, 4 )
 			);
-			const walker = new TreeWalker( {
+			const walker = new ViewTreeWalker( {
 				boundaries: range
 			} );
 
@@ -1262,7 +1262,7 @@ describe( 'TreeWalker', () => {
 				new ViewPosition( paragraph, 0 ),
 				new ViewPosition( paragraph, 2 )
 			);
-			const walker = new TreeWalker( {
+			const walker = new ViewTreeWalker( {
 				boundaries: range
 			} );
 

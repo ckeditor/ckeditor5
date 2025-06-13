@@ -17,7 +17,7 @@ import { type ViewDocumentFragment } from './documentfragment.js';
 import { type ViewElement } from './element.js';
 import { type ViewItem } from './item.js';
 import { type ViewNode } from './node.js';
-import { TreeWalker, type TreeWalkerValue, type TreeWalkerOptions } from './treewalker.js';
+import { ViewTreeWalker, type ViewTreeWalkerValue, type ViewTreeWalkerOptions } from './treewalker.js';
 
 /**
  * Position in the view tree. Position is represented by its parent node and an offset in this parent.
@@ -134,7 +134,7 @@ export class ViewPosition extends TypeCheckable {
 
 	/**
 	 * Gets the farthest position which matches the callback using
-	 * {@link module:engine/view/treewalker~TreeWalker TreeWalker}.
+	 * {@link module:engine/view/treewalker~ViewTreeWalker TreeWalker}.
 	 *
 	 * For example:
 	 *
@@ -144,15 +144,15 @@ export class ViewPosition extends TypeCheckable {
 	 * getLastMatchingPosition( value => false ); // Do not move the position.
 	 * ```
 	 *
-	 * @param skip Callback function. Gets {@link module:engine/view/treewalker~TreeWalkerValue} and should
+	 * @param skip Callback function. Gets {@link module:engine/view/treewalker~ViewTreeWalkerValue} and should
 	 * return `true` if the value should be skipped or `false` if not.
-	 * @param options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
+	 * @param options Object with configuration options. See {@link module:engine/view/treewalker~ViewTreeWalker}.
 	 * @returns The position after the last item which matches the `skip` callback test.
 	 */
-	public getLastMatchingPosition( skip: ( value: TreeWalkerValue ) => boolean, options: TreeWalkerOptions = {} ): ViewPosition {
+	public getLastMatchingPosition( skip: ( value: ViewTreeWalkerValue ) => boolean, options: ViewTreeWalkerOptions = {} ): ViewPosition {
 		options.startPosition = this;
 
-		const treeWalker = new TreeWalker( options );
+		const treeWalker = new ViewTreeWalker( options );
 		treeWalker.skip( skip );
 
 		return treeWalker.position;
@@ -266,14 +266,14 @@ export class ViewPosition extends TypeCheckable {
 	}
 
 	/**
-	 * Creates a {@link module:engine/view/treewalker~TreeWalker TreeWalker} instance with this positions as a start position.
+	 * Creates a {@link module:engine/view/treewalker~ViewTreeWalker TreeWalker} instance with this positions as a start position.
 	 *
-	 * @param options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}
+	 * @param options Object with configuration options. See {@link module:engine/view/treewalker~ViewTreeWalker}
 	 */
-	public getWalker( options: TreeWalkerOptions = {} ): TreeWalker {
+	public getWalker( options: ViewTreeWalkerOptions = {} ): ViewTreeWalker {
 		options.startPosition = this;
 
-		return new TreeWalker( options );
+		return new ViewTreeWalker( options );
 	}
 
 	/**

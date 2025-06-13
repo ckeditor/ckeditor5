@@ -14,7 +14,7 @@ import { type ViewDocumentFragment } from './documentfragment.js';
 import { type ViewElement } from './element.js';
 import { type ViewItem } from './item.js';
 import { type ViewNode } from './node.js';
-import { TreeWalker, type TreeWalkerValue, type TreeWalkerOptions } from './treewalker.js';
+import { ViewTreeWalker, type ViewTreeWalkerValue, type ViewTreeWalkerOptions } from './treewalker.js';
 
 /**
  * Range in the view tree. A range is represented by its start and end {@link module:engine/view/position~ViewPosition positions}.
@@ -25,7 +25,7 @@ import { TreeWalker, type TreeWalkerValue, type TreeWalkerOptions } from './tree
  * * {@link module:engine/view/downcastwriter~ViewDowncastWriter}
  * * {@link module:engine/view/upcastwriter~UpcastWriter}
  */
-export class ViewRange extends TypeCheckable implements Iterable<TreeWalkerValue> {
+export class ViewRange extends TypeCheckable implements Iterable<ViewTreeWalkerValue> {
 	/**
 	 * Start position.
 	 */
@@ -56,14 +56,14 @@ export class ViewRange extends TypeCheckable implements Iterable<TreeWalkerValue
 	 *
 	 * Iterates over all {@link module:engine/view/item~Item view items} that are in this range and returns
 	 * them together with additional information like length or {@link module:engine/view/position~ViewPosition positions},
-	 * grouped as {@link module:engine/view/treewalker~TreeWalkerValue}.
+	 * grouped as {@link module:engine/view/treewalker~ViewTreeWalkerValue}.
 	 *
-	 * This iterator uses {@link module:engine/view/treewalker~TreeWalker TreeWalker} with `boundaries` set to this range and
+	 * This iterator uses {@link module:engine/view/treewalker~ViewTreeWalker TreeWalker} with `boundaries` set to this range and
 	 * `ignoreElementEnd` option
 	 * set to `true`.
 	 */
-	public* [ Symbol.iterator ](): IterableIterator<TreeWalkerValue> {
-		yield* new TreeWalker( { boundaries: this, ignoreElementEnd: true } );
+	public* [ Symbol.iterator ](): IterableIterator<ViewTreeWalkerValue> {
+		yield* new ViewTreeWalker( { boundaries: this, ignoreElementEnd: true } );
 	}
 
 	/**
@@ -316,14 +316,14 @@ export class ViewRange extends TypeCheckable implements Iterable<TreeWalkerValue
 	}
 
 	/**
-	 * Creates a {@link module:engine/view/treewalker~TreeWalker TreeWalker} instance with this range as a boundary.
+	 * Creates a {@link module:engine/view/treewalker~ViewTreeWalker TreeWalker} instance with this range as a boundary.
 	 *
-	 * @param options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
+	 * @param options Object with configuration options. See {@link module:engine/view/treewalker~ViewTreeWalker}.
 	 */
-	public getWalker( options: TreeWalkerOptions = {} ): TreeWalker {
+	public getWalker( options: ViewTreeWalkerOptions = {} ): ViewTreeWalker {
 		options.boundaries = this;
 
-		return new TreeWalker( options );
+		return new ViewTreeWalker( options );
 	}
 
 	/**
@@ -382,20 +382,20 @@ export class ViewRange extends TypeCheckable implements Iterable<TreeWalkerValue
 	 * Returns an iterator that iterates over all {@link module:engine/view/item~Item view items} that are in this range and returns
 	 * them.
 	 *
-	 * This method uses {@link module:engine/view/treewalker~TreeWalker} with `boundaries` set to this range and `ignoreElementEnd` option
-	 * set to `true`. However it returns only {@link module:engine/view/item~Item items},
-	 * not {@link module:engine/view/treewalker~TreeWalkerValue}.
+	 * This method uses {@link module:engine/view/treewalker~ViewTreeWalker} with `boundaries` set to this range
+	 * and `ignoreElementEnd` option set to `true`. However it returns only {@link module:engine/view/item~Item items},
+	 * not {@link module:engine/view/treewalker~ViewTreeWalkerValue}.
 	 *
-	 * You may specify additional options for the tree walker. See {@link module:engine/view/treewalker~TreeWalker} for
+	 * You may specify additional options for the tree walker. See {@link module:engine/view/treewalker~ViewTreeWalker} for
 	 * a full list of available options.
 	 *
-	 * @param options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
+	 * @param options Object with configuration options. See {@link module:engine/view/treewalker~ViewTreeWalker}.
 	 */
-	public* getItems( options: TreeWalkerOptions = {} ): IterableIterator<ViewItem> {
+	public* getItems( options: ViewTreeWalkerOptions = {} ): IterableIterator<ViewItem> {
 		options.boundaries = this;
 		options.ignoreElementEnd = true;
 
-		const treeWalker = new TreeWalker( options );
+		const treeWalker = new ViewTreeWalker( options );
 
 		for ( const value of treeWalker ) {
 			yield value.item;
@@ -406,18 +406,18 @@ export class ViewRange extends TypeCheckable implements Iterable<TreeWalkerValue
 	 * Returns an iterator that iterates over all {@link module:engine/view/position~ViewPosition positions} that are boundaries or
 	 * contained in this range.
 	 *
-	 * This method uses {@link module:engine/view/treewalker~TreeWalker} with `boundaries` set to this range. However it returns only
-	 * {@link module:engine/view/position~ViewPosition positions}, not {@link module:engine/view/treewalker~TreeWalkerValue}.
+	 * This method uses {@link module:engine/view/treewalker~ViewTreeWalker} with `boundaries` set to this range. However it returns only
+	 * {@link module:engine/view/position~ViewPosition positions}, not {@link module:engine/view/treewalker~ViewTreeWalkerValue}.
 	 *
-	 * You may specify additional options for the tree walker. See {@link module:engine/view/treewalker~TreeWalker} for
+	 * You may specify additional options for the tree walker. See {@link module:engine/view/treewalker~ViewTreeWalker} for
 	 * a full list of available options.
 	 *
-	 * @param options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
+	 * @param options Object with configuration options. See {@link module:engine/view/treewalker~ViewTreeWalker}.
 	 */
-	public* getPositions( options: TreeWalkerOptions = {} ): IterableIterator<ViewPosition> {
+	public* getPositions( options: ViewTreeWalkerOptions = {} ): IterableIterator<ViewPosition> {
 		options.boundaries = this;
 
-		const treeWalker = new TreeWalker( options );
+		const treeWalker = new ViewTreeWalker( options );
 
 		yield treeWalker.position;
 
@@ -505,7 +505,7 @@ ViewRange.prototype.is = function( type: string ): boolean {
 /**
  * Function used by getEnlarged and getTrimmed methods.
  */
-function enlargeTrimSkip( value: TreeWalkerValue ): boolean {
+function enlargeTrimSkip( value: ViewTreeWalkerValue ): boolean {
 	if ( value.item.is( 'attributeElement' ) || value.item.is( 'uiElement' ) ) {
 		return true;
 	}
