@@ -54,11 +54,30 @@ If a given plugin does not generate any output, the "HTML output" is described a
 The data used to generate the following tables comes from the package metadata. You can read more about it in the {@link framework/contributing/package-metadata package metadata} guide.
 
 <style>
-	.b-table__cell:first-child {
+	.doc.b-table__cell:first-child {
 		width: 33.333%;
 	}
-	.b-table__cell:last-child {
+	.doc.b-table__cell:last-child {
 		width: 66.667%;
+	}
+	.doc.html-output-default {
+		position: relative;
+		padding-right: var(--spacing-18);
+	}
+	.doc.html-output-default::after {
+		content: "Default";
+		border: 1px solid var(--color-primary-400);
+		color: var(--color-primary-400);
+		border-radius: var(--radius-1);
+		display: inline-block;
+		padding: var(--spacing-0) var(--spacing-1);
+		font-weight: var(--font-weight-semibold);
+		text-transform: uppercase;
+		font-size: var(--font-size-xs);
+		line-height: var(--line-height-sm);
+		position: absolute;
+		right: var(--spacing-1-5);
+		top: var(--spacing-1-5);
 	}
 </style>
 

@@ -69,10 +69,15 @@ module.exports = function createHtmlOutputMarkup() {
 								`<td class="b-table__cell" ${ pluginNameRowspan }>${ plugin.pluginNameMarkup }</td>` :
 								'';
 
+							const classNames = [
+								'html-output',
+								htmlOutput.isAlternative ? '' : 'html-output-default'
+							].filter( className => !!className ).join( ' ' );
+
 							return (
 								'<tr>' +
 									pluginNameCell +
-									`<td class="b-table__cell">${ htmlOutput.markup }</td>` +
+									`<td class="b-table__cell ${ classNames }">${ htmlOutput.markup }</td>` +
 								'</tr>'
 							);
 						} )
