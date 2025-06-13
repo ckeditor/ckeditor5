@@ -608,7 +608,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 					view: ( modelElement, { writer } ) => {
 						const viewElement = writer.createContainerElement( 'span', { class: 'foo' } );
 
-						viewElement.getViewFillerOffset = () => null;
+						viewElement.getFillerOffset = () => null;
 
 						return viewElement;
 					}
@@ -946,7 +946,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 					const viewElement = editor.data.processor.domConverter.domToView( domElement );
 					let viewData = '';
 
-					viewElement.getViewFillerOffset = getViewFillerOffset;
+					viewElement.getFillerOffset = getViewFillerOffset;
 
 					for ( const child of viewElement.getChildren() ) {
 						viewData += child.data.replace( /\u00A0/g, '_' );
