@@ -23,13 +23,13 @@ export { LinkPropertiesView } from './ui/linkpropertiesview.js';
 export { LinkProviderItemsView } from './ui/linkprovideritemsview.js';
 
 export type { LinkPreviewButtonNavigateEvent } from './ui/linkpreviewbuttonview.js';
-export type { BackEvent } from './ui/linkpropertiesview.js';
-export type { CancelEvent as LinkProviderItemsViewCancelEvent } from './ui/linkprovideritemsview.js';
+export type { LinkPropertiesBackEvent } from './ui/linkpropertiesview.js';
+export type { LinkProvidersCancelEvent as LinkProviderItemsViewCancelEvent } from './ui/linkprovideritemsview.js';
 
 export type {
 	LinkFormValidatorCallback,
-	SubmitEvent,
-	CancelEvent as LinkFormViewCancelEvent
+	LinkFormSubmitEvent,
+	LinkFormCancelEvent as LinkFormViewCancelEvent
 } from './ui/linkformview.js';
 
 export {
@@ -55,7 +55,7 @@ export type {
 } from './utils.js';
 
 export { AutomaticDecorators } from './utils/automaticdecorators.js';
-export { ManualDecorator } from './utils/manualdecorator.js';
+export { LinkManualDecorator } from './utils/manualdecorator.js';
 
 export type {
 	LinkConfig,

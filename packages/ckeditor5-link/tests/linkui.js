@@ -29,7 +29,7 @@ import { LinkUI } from '../src/linkui.js';
 import { LinkFormView } from '../src/ui/linkformview.js';
 import { LinkPreviewButtonView } from '../src/ui/linkpreviewbuttonview.js';
 import { LinkPropertiesView } from '../src/ui/linkpropertiesview.js';
-import { ManualDecorator } from '../src/utils/manualdecorator.js';
+import { LinkManualDecorator } from '../src/utils/manualdecorator.js';
 import { MenuBarMenuListItemButtonView, ToolbarView } from '@ckeditor/ckeditor5-ui';
 
 describe( 'LinkUI', () => {
@@ -348,7 +348,7 @@ describe( 'LinkUI', () => {
 
 			beforeEach( () => {
 				button = editor.ui.componentFactory.create( 'linkProperties' );
-				editor.commands.get( 'link' ).manualDecorators.add( new ManualDecorator( {
+				editor.commands.get( 'link' ).manualDecorators.add( new LinkManualDecorator( {
 					id: 'linkIsBar',
 					label: 'Bar',
 					attributes: {
@@ -1219,7 +1219,7 @@ describe( 'LinkUI', () => {
 	describe( '_addPropertiesView()', () => {
 		beforeEach( () => {
 			editor.editing.view.document.isFocused = true;
-			editor.commands.get( 'link' ).manualDecorators.add( new ManualDecorator( {
+			editor.commands.get( 'link' ).manualDecorators.add( new LinkManualDecorator( {
 				id: 'linkIsBar',
 				label: 'Bar',
 				attributes: {
@@ -2864,7 +2864,7 @@ describe( 'LinkUI', () => {
 
 	describe( 'properties view', () => {
 		beforeEach( () => {
-			editor.commands.get( 'link' ).manualDecorators.add( new ManualDecorator( {
+			editor.commands.get( 'link' ).manualDecorators.add( new LinkManualDecorator( {
 				id: 'linkIsBar',
 				label: 'Bar',
 				attributes: {

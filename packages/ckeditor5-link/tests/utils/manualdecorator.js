@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-licensing-options
  */
 
-import { ManualDecorator } from '../../src/utils/manualdecorator.js';
+import { LinkManualDecorator } from '../../src/utils/manualdecorator.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 
 describe( 'Manual Decorator', () => {
@@ -11,7 +11,7 @@ describe( 'Manual Decorator', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		manualDecorator = new ManualDecorator( {
+		manualDecorator = new LinkManualDecorator( {
 			id: 'foo',
 			label: 'bar',
 			attributes: {
@@ -28,7 +28,7 @@ describe( 'Manual Decorator', () => {
 	} );
 
 	it( 'constructor with defaultValue', () => {
-		manualDecorator = new ManualDecorator( {
+		manualDecorator = new LinkManualDecorator( {
 			id: 'foo',
 			label: 'bar',
 			attributes: {
