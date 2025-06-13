@@ -7,7 +7,7 @@ import { TextProxy } from '../../src/view/textproxy.js';
 import { Text } from '../../src/view/text.js';
 import { ViewContainerElement } from '../../src/view/containerelement.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
-import { RootEditableElement } from '../../src/view/rooteditableelement.js';
+import { ViewRootEditableElement } from '../../src/view/rooteditableelement.js';
 
 import { createViewDocumentMock } from '../../tests/view/_utils/createdocumentmock.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -96,7 +96,7 @@ describe( 'TextProxy', () => {
 
 	describe( 'getDocument', () => {
 		it( 'should return Document attached to the parent element', () => {
-			const root = new RootEditableElement( document, 'div' );
+			const root = new ViewRootEditableElement( document, 'div' );
 
 			wrapper.parent = root;
 
@@ -113,7 +113,7 @@ describe( 'TextProxy', () => {
 	describe( 'getRoot', () => {
 		it( 'should return root element', () => {
 			const docMock = createViewDocumentMock();
-			const root = new RootEditableElement( docMock, 'div' );
+			const root = new ViewRootEditableElement( docMock, 'div' );
 
 			wrapper.parent = root;
 

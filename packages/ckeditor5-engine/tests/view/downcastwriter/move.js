@@ -7,10 +7,10 @@ import { ViewDowncastWriter } from '../../../src/view/downcastwriter.js';
 import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
-import { RootEditableElement } from '../../../src/view/rooteditableelement.js';
+import { ViewRootEditableElement } from '../../../src/view/rooteditableelement.js';
 import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
-import { RawElement } from '../../../src/view/rawelement.js';
+import { ViewRawElement } from '../../../src/view/rawelement.js';
 import { ViewRange } from '../../../src/view/range.js';
 import { ViewPosition } from '../../../src/view/position.js';
 
@@ -203,7 +203,7 @@ describe( 'DowncastWriter', () => {
 			const srcContainer = new ViewContainerElement( document, 'p', null, srcAttribute );
 			const srcRange = ViewRange._createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
 
-			const dstRawElement = new RawElement( document, 'span' );
+			const dstRawElement = new ViewRawElement( document, 'span' );
 			new ViewContainerElement( document, 'p', null, dstRawElement ); // eslint-disable-line no-new
 			const dstPosition = new ViewPosition( dstRawElement, 0 );
 
@@ -218,7 +218,7 @@ describe( 'DowncastWriter', () => {
 			const srcContainer = new ViewContainerElement( document, 'p' );
 			const dstContainer = new ViewContainerElement( document, 'p' );
 
-			const root = new RootEditableElement( document, 'div' );
+			const root = new ViewRootEditableElement( document, 'div' );
 			root._appendChild( [ srcContainer, dstContainer ] );
 
 			const attrElemA = new ViewAttributeElement( document, 'span' );

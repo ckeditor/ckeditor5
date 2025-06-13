@@ -6,7 +6,7 @@
 import { View } from '../../../src/view/view.js';
 import { MutationObserver } from '../../../src/view/observer/mutationobserver.js';
 import { UIElement } from '../../../src/view/uielement.js';
-import { RawElement } from '../../../src/view/rawelement.js';
+import { ViewRawElement } from '../../../src/view/rawelement.js';
 import { createViewRoot } from '../_utils/createroot.js';
 import { _parseView } from '../../../src/dev-utils/view.js';
 import { StylesProcessor } from '../../../src/view/stylesmap.js';
@@ -570,7 +570,7 @@ describe( 'MutationObserver', () => {
 		const renderStub = sinon.stub();
 
 		function createRawElement( name ) {
-			const element = new RawElement( viewDocument, name );
+			const element = new ViewRawElement( viewDocument, name );
 
 			element.render = function( domElement ) {
 				domElement.innerHTML = 'foo bar';

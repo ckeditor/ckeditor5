@@ -12,7 +12,7 @@ import { ViewAttributeElement } from '../../src/view/attributeelement.js';
 import { ViewContainerElement } from '../../src/view/containerelement.js';
 import { ViewEmptyElement } from '../../src/view/emptyelement.js';
 import { UIElement } from '../../src/view/uielement.js';
-import { RawElement } from '../../src/view/rawelement.js';
+import { ViewRawElement } from '../../src/view/rawelement.js';
 import { Text } from '../../src/view/text.js';
 import { ViewDocumentSelection } from '../../src/view/documentselection.js';
 import { ViewRange } from '../../src/view/range.js';
@@ -413,7 +413,7 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should stringify a RawElement', () => {
-			const span = new RawElement( viewDocument, 'span' );
+			const span = new ViewRawElement( viewDocument, 'span' );
 			const p = new ViewContainerElement( viewDocument, 'p', null, span );
 
 			expect( _stringifyView( p, null, { showType: true } ) )
@@ -421,7 +421,7 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should not stringify the inner RawElement content (renderRawElements=false)', () => {
-			const span = new RawElement( viewDocument, 'span' );
+			const span = new ViewRawElement( viewDocument, 'span' );
 
 			span.render = function( domElement, domConverter ) {
 				domConverter.setContentOf( domElement, '<b>foo</b>' );
@@ -433,7 +433,7 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should stringify a RawElement, (renderRawElements=true)', () => {
-			const span = new RawElement( viewDocument, 'span' );
+			const span = new ViewRawElement( viewDocument, 'span' );
 
 			span.render = function( domElement, domConverter ) {
 				domConverter.setContentOf( domElement, '<b>foo</b>' );
@@ -800,7 +800,7 @@ describe( 'view test utils', () => {
 		it( 'should parse a RawElement', () => {
 			const parsed = _parseView( '<raw:span></raw:span>' );
 
-			expect( parsed ).to.be.instanceof( RawElement );
+			expect( parsed ).to.be.instanceof( ViewRawElement );
 		} );
 
 		it( 'should throw an error if ViewEmptyElement is not empty', () => {

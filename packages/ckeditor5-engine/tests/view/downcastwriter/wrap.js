@@ -10,7 +10,7 @@ import { ViewElement } from '../../../src/view/element.js';
 import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
 import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
-import { RawElement } from '../../../src/view/rawelement.js';
+import { ViewRawElement } from '../../../src/view/rawelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
 import { ViewPosition } from '../../../src/view/position.js';
 import { ViewRange } from '../../../src/view/range.js';
@@ -432,7 +432,7 @@ describe( 'DowncastWriter', () => {
 			} );
 
 			it( 'should throw if a range is inside a RawElement', () => {
-				const rawElement = new RawElement( document, 'span' );
+				const rawElement = new ViewRawElement( document, 'span' );
 				const container = new ViewContainerElement( document, 'p', null, rawElement );
 				const range = ViewRange._createFromParentsAndOffsets( rawElement, 0, container, 1 );
 

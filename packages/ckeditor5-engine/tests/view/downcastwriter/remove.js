@@ -11,7 +11,7 @@ import { _stringifyView, _parseView } from '../../../src/dev-utils/view.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
 import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
-import { RawElement } from '../../../src/view/rawelement.js';
+import { ViewRawElement } from '../../../src/view/rawelement.js';
 
 import { ViewDocument } from '../../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -170,7 +170,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should throw if a range is placed inside a RawElement', () => {
-			const rawElement = new RawElement( document, 'span' );
+			const rawElement = new ViewRawElement( document, 'span' );
 			const attributeElement = new ViewAttributeElement( document, 'b' );
 			new ViewContainerElement( document, 'p', null, [ rawElement, attributeElement ] ); // eslint-disable-line no-new
 			const range = ViewRange._createFromParentsAndOffsets( rawElement, 0, attributeElement, 0 );

@@ -4,7 +4,7 @@
  */
 
 import { ViewDocumentSelection } from '../../src/view/documentselection.js';
-import { Selection } from '../../src/view/selection.js';
+import { ViewSelection } from '../../src/view/selection.js';
 import { ViewRange } from '../../src/view/range.js';
 import { ViewDocument } from '../../src/view/document.js';
 import { ViewElement } from '../../src/view/element.js';
@@ -89,7 +89,7 @@ describe( 'ViewDocumentSelection', () => {
 		} );
 
 		it( 'should be able to create a selection from the other selection', () => {
-			const otherSelection = new Selection( [ range2, range3 ], { backward: true } );
+			const otherSelection = new ViewSelection( [ range2, range3 ], { backward: true } );
 			const selection = new ViewDocumentSelection( otherSelection );
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range2, range3 ] );
@@ -467,7 +467,7 @@ describe( 'ViewDocumentSelection', () => {
 		it( 'should return true if selections equal - ViewDocumentSelection and Selection', () => {
 			documentSelection._setTo( [ range1, range2 ] );
 
-			const otherSelection = new Selection();
+			const otherSelection = new ViewSelection();
 			otherSelection.setTo( [ range1, range2 ] );
 
 			expect( documentSelection.isEqual( otherSelection ) ).to.be.true;
@@ -484,7 +484,7 @@ describe( 'ViewDocumentSelection', () => {
 		it( 'should return true if backward selections equal - ViewDocumentSelection and Selection', () => {
 			documentSelection._setTo( range1, { backward: true } );
 
-			const otherSelection = new Selection( [ range1 ], { backward: true } );
+			const otherSelection = new ViewSelection( [ range1 ], { backward: true } );
 
 			expect( documentSelection.isEqual( otherSelection ) ).to.be.true;
 		} );
@@ -500,7 +500,7 @@ describe( 'ViewDocumentSelection', () => {
 		it( 'should return false if ranges count does not equal - ViewDocumentSelection and Selection', () => {
 			documentSelection._setTo( [ range1, range2 ] );
 
-			const otherSelection = new Selection( [ range1 ] );
+			const otherSelection = new ViewSelection( [ range1 ] );
 
 			expect( documentSelection.isEqual( otherSelection ) ).to.be.false;
 		} );
@@ -516,7 +516,7 @@ describe( 'ViewDocumentSelection', () => {
 		it( 'should return false if ranges (other than the last added one) do not equal - ViewDocumentSelection and Selection', () => {
 			documentSelection._setTo( [ range1, range3 ] );
 
-			const otherSelection = new Selection( [ range2, range3 ] );
+			const otherSelection = new ViewSelection( [ range2, range3 ] );
 
 			expect( documentSelection.isEqual( otherSelection ) ).to.be.false;
 		} );
@@ -532,7 +532,7 @@ describe( 'ViewDocumentSelection', () => {
 		it( 'should return false if directions do not equal - ViewDocumentSelection and Selection', () => {
 			documentSelection._setTo( range1 );
 
-			const otherSelection = new Selection( [ range1 ], { backward: true } );
+			const otherSelection = new ViewSelection( [ range1 ], { backward: true } );
 
 			expect( documentSelection.isEqual( otherSelection ) ).to.be.false;
 		} );
@@ -544,7 +544,7 @@ describe( 'ViewDocumentSelection', () => {
 		} );
 
 		it( 'should return true if both selection are fake - ViewDocumentSelection and Selection', () => {
-			const otherSelection = new Selection( range1, { fake: true } );
+			const otherSelection = new ViewSelection( range1, { fake: true } );
 			documentSelection._setTo( range1, { fake: true } );
 
 			expect( documentSelection.isEqual( otherSelection ) ).to.be.true;
@@ -558,7 +558,7 @@ describe( 'ViewDocumentSelection', () => {
 		} );
 
 		it( 'should return false if both selection are fake but have different label - ViewDocumentSelection and Selection', () => {
-			const otherSelection = new Selection( [ range1 ], { fake: true, label: 'foo bar baz' } );
+			const otherSelection = new ViewSelection( [ range1 ], { fake: true, label: 'foo bar baz' } );
 			documentSelection._setTo( range1, { fake: true, label: 'foo' } );
 
 			expect( documentSelection.isEqual( otherSelection ) ).to.be.false;
@@ -571,7 +571,7 @@ describe( 'ViewDocumentSelection', () => {
 		} );
 
 		it( 'should return true if both selections are empty - ViewDocumentSelection and Selection', () => {
-			const otherSelection = new Selection();
+			const otherSelection = new ViewSelection();
 
 			expect( documentSelection.isEqual( otherSelection ) ).to.be.true;
 		} );
@@ -589,7 +589,7 @@ describe( 'ViewDocumentSelection', () => {
 		it( 'should return true if selections equal - ViewDocumentSelection and Selection', () => {
 			documentSelection._setTo( [ range1, range2 ] );
 
-			const otherSelection = new Selection( [ range1, range2 ] );
+			const otherSelection = new ViewSelection( [ range1, range2 ] );
 
 			expect( documentSelection.isSimilar( otherSelection ) ).to.be.true;
 		} );
@@ -605,7 +605,7 @@ describe( 'ViewDocumentSelection', () => {
 		it( 'should return false if ranges count does not equal - ViewDocumentSelection and Selection', () => {
 			documentSelection._setTo( [ range1, range2 ] );
 
-			const otherSelection = new Selection( [ range1 ] );
+			const otherSelection = new ViewSelection( [ range1 ] );
 
 			expect( documentSelection.isSimilar( otherSelection ) ).to.be.false;
 		} );
@@ -621,7 +621,7 @@ describe( 'ViewDocumentSelection', () => {
 		it( 'should return false if trimmed ranges (other than the last added one) are not equal - with Selection', () => {
 			documentSelection._setTo( [ range1, range3 ] );
 
-			const otherSelection = new Selection( [ range2, range3 ] );
+			const otherSelection = new ViewSelection( [ range2, range3 ] );
 
 			expect( documentSelection.isSimilar( otherSelection ) ).to.be.false;
 		} );
@@ -637,7 +637,7 @@ describe( 'ViewDocumentSelection', () => {
 		it( 'should return false if directions are not equal - ViewDocumentSelection and Selection', () => {
 			documentSelection._setTo( range1 );
 
-			const otherSelection = new Selection( [ range1 ], { backward: true } );
+			const otherSelection = new ViewSelection( [ range1 ], { backward: true } );
 
 			expect( documentSelection.isSimilar( otherSelection ) ).to.be.false;
 		} );
@@ -649,7 +649,7 @@ describe( 'ViewDocumentSelection', () => {
 		} );
 
 		it( 'should return true if both selections are empty - ViewDocumentSelection and Selection', () => {
-			const otherSelection = new Selection();
+			const otherSelection = new ViewSelection();
 
 			expect( documentSelection.isSimilar( otherSelection ) ).to.be.true;
 		} );
@@ -701,7 +701,7 @@ describe( 'ViewDocumentSelection', () => {
 
 			documentSelection._setTo( [ rangeA1, rangeA2 ] );
 
-			const otherSelection = new Selection( [ rangeB2, rangeB1 ] );
+			const otherSelection = new ViewSelection( [ rangeB2, rangeB1 ] );
 
 			expect( documentSelection.isSimilar( otherSelection ) ).to.be.true;
 			expect( otherSelection.isSimilar( documentSelection ) ).to.be.true;

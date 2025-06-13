@@ -10,7 +10,7 @@ import { ViewContainerElement } from '../../../src/view/containerelement.js';
 import { ViewAttributeElement } from '../../../src/view/attributeelement.js';
 import { ViewEmptyElement } from '../../../src/view/emptyelement.js';
 import { UIElement } from '../../../src/view/uielement.js';
-import { RawElement } from '../../../src/view/rawelement.js';
+import { ViewRawElement } from '../../../src/view/rawelement.js';
 
 import { ViewDocument } from '../../../src/view/document.js';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
@@ -168,7 +168,7 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should remove a RawElement', () => {
-			const elementToRemove = new RawElement( document, 'span' );
+			const elementToRemove = new ViewRawElement( document, 'span' );
 
 			testDowncast(
 				elementToRemove,

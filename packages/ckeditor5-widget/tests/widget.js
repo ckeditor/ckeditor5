@@ -20,7 +20,7 @@ import { toArray } from '@ckeditor/ckeditor5-utils/src/toarray.js';
 import { testUtils } from '@ckeditor/ckeditor5-core/tests/_utils/utils.js';
 import { env } from '@ckeditor/ckeditor5-utils/src/env.js';
 import { View } from '@ckeditor/ckeditor5-engine/src/view/view.js';
-import { RootEditableElement } from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement.js';
+import { ViewRootEditableElement } from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement.js';
 import { ViewEditableElement } from '@ckeditor/ckeditor5-engine/src/view/editableelement.js';
 
 describe( 'Widget', () => {
@@ -205,7 +205,7 @@ describe( 'Widget', () => {
 		} );
 
 		const isEditableElementStub = sinon
-			.stub( RootEditableElement.prototype, 'is' )
+			.stub( ViewRootEditableElement.prototype, 'is' )
 			.withArgs( 'editableElement' )
 			.returns( false );
 

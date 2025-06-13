@@ -7,7 +7,7 @@ import { ViewElement } from '../../src/view/element.js';
 import { Text } from '../../src/view/text.js';
 import { ViewNode } from '../../src/view/node.js';
 import { ViewDocumentFragment } from '../../src/view/documentfragment.js';
-import { RootEditableElement } from '../../src/view/rooteditableelement.js';
+import { ViewRootEditableElement } from '../../src/view/rooteditableelement.js';
 
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils.js';
 import { ViewDocument } from '../../src/view/document.js';
@@ -264,7 +264,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return root element', () => {
-			const parent = new RootEditableElement( document, 'div' );
+			const parent = new ViewRootEditableElement( document, 'div' );
 			const child = new ViewElement( document, 'p' );
 
 			child.parent = parent;
@@ -360,7 +360,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'returns true for the root element', () => {
-			const root = new RootEditableElement( document, 'div' );
+			const root = new ViewRootEditableElement( document, 'div' );
 
 			expect( root.isAttached() ).to.equal( true );
 		} );
