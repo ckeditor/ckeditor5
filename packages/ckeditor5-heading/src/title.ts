@@ -614,12 +614,12 @@ function shouldRemoveLastParagraph( placeholder: ModelElement, root: ModelRootEl
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
  */
-export interface TitleConfig {
+export interface HeadingTitleConfig {
 
 	/**
 	 * Defines a custom value of the placeholder for the title field.
 	 *
-	 * Read more in {@link module:heading/title~TitleConfig}.
+	 * Read more in {@link module:heading/title~HeadingTitleConfig}.
 	 */
 	placeholder?: string;
 }

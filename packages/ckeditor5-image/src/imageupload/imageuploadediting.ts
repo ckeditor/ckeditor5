@@ -154,7 +154,7 @@ export class ImageUploadEditing extends Plugin {
 		this.listenTo<ViewDocumentClipboardInputEvent>( editor.editing.view.document, 'clipboardInput', ( evt, data ) => {
 			// Skip if non empty HTML data is included.
 			// https://github.com/ckeditor/ckeditor5-upload/issues/68
-			if ( isHtmlIncluded( data.dataTransfer ) ) {
+			if ( isHtmlInDataTransfer( data.dataTransfer ) ) {
 				return;
 			}
 
@@ -574,7 +574,7 @@ export class ImageUploadEditing extends Plugin {
 /**
  * Returns `true` if non-empty `text/html` is included in the data transfer.
  */
-export function isHtmlIncluded( dataTransfer: ViewDataTransfer ): boolean {
+export function isHtmlInDataTransfer( dataTransfer: ViewDataTransfer ): boolean {
 	return Array.from( dataTransfer.types ).includes( 'text/html' ) && dataTransfer.getData( 'text/html' ) !== '';
 }
 

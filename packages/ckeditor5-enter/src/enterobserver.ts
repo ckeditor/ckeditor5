@@ -96,10 +96,9 @@ export class EnterObserver extends Observer {
  */
 export type ViewDocumentEnterEvent = BubblingEvent<{
 	name: 'enter';
-	args: [ EnterEventData ];
+	args: [ ViewDocumentEnterEventData ];
 }>;
-
-export interface EnterEventData extends ObserverDomEventData<InputEvent> {
+export interface ViewDocumentEnterEventData extends ObserverDomEventData<InputEvent> {
 
 	/**
 	 * Whether it is a soft enter (<kbd>Shift</kbd>+<kbd>Enter</kbd>) or a hard enter (<kbd>Enter</kbd>).

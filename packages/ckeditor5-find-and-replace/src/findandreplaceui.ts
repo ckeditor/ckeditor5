@@ -356,7 +356,7 @@ export class FindAndReplaceUI extends Plugin {
  *
  * @eventName ~FindAndReplaceUI#searchReseted
  */
-export type SearchResetedEvent = {
+export type FindResetedEvent = {
 	name: 'searchReseted';
 	args: [];
 };

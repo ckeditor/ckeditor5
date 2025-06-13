@@ -23,7 +23,7 @@ import { StyleElementSupport } from './integrations/style.js';
 import { ListElementSupport } from './integrations/list.js';
 import { HorizontalLineElementSupport } from './integrations/horizontalline.js';
 import { CustomElementSupport } from './integrations/customelement.js';
-import type { DataSchemaInlineElementDefinition } from './dataschema.js';
+import type { HtmlSupportDataSchemaInlineElementDefinition } from './dataschema.js';
 import type { ModelDocumentSelection, ModelItem, Model, ModelRange, ModelSelectable } from 'ckeditor5/src/engine.js';
 import { getHtmlAttributeName, modifyGhsAttribute, removeFormatting } from './utils.js';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -109,7 +109,7 @@ export class GeneralHtmlSupport extends Plugin {
 		const definitions = Array.from( dataSchema.getDefinitionsForView( viewElementName, false ) );
 
 		const inlineDefinition = definitions.find( definition => (
-			( definition as DataSchemaInlineElementDefinition ).isInline && !definitions[ 0 ].isObject
+			( definition as HtmlSupportDataSchemaInlineElementDefinition ).isInline && !definitions[ 0 ].isObject
 		) );
 
 		if ( inlineDefinition ) {

@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core.js';
 
-import { DataFilter, type DataFilterRegisterEvent } from '../datafilter.js';
+import { DataFilter, type HtmlSupportDataFilterRegisterEvent } from '../datafilter.js';
 import { DataSchema } from '../dataschema.js';
 import { updateViewAttributes, type GHSViewAttributes, getHtmlAttributeName } from '../utils.js';
 import type {
@@ -71,11 +71,11 @@ export class MediaEmbedElementSupport extends Plugin {
 			view: mediaElementName
 		} );
 
-		dataFilter.on<DataFilterRegisterEvent>( 'register:figure', ( ) => {
+		dataFilter.on<HtmlSupportDataFilterRegisterEvent>( 'register:figure', ( ) => {
 			conversion.for( 'upcast' ).add( viewToModelFigureAttributesConverter( dataFilter ) );
 		} );
 
-		dataFilter.on<DataFilterRegisterEvent>( `register:${ mediaElementName }`, ( evt, definition ) => {
+		dataFilter.on<HtmlSupportDataFilterRegisterEvent>( `register:${ mediaElementName }`, ( evt, definition ) => {
 			if ( definition.model !== 'media' ) {
 				return;
 			}
