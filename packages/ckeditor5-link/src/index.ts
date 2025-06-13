@@ -24,12 +24,12 @@ export { LinkProviderItemsView } from './ui/linkprovideritemsview.js';
 
 export type { LinkPreviewButtonNavigateEvent } from './ui/linkpreviewbuttonview.js';
 export type { LinkPropertiesBackEvent } from './ui/linkpropertiesview.js';
-export type { LinkProvidersCancelEvent as LinkProviderItemsViewCancelEvent } from './ui/linkprovideritemsview.js';
+export type { LinkProvidersCancelEvent } from './ui/linkprovideritemsview.js';
 
 export type {
 	LinkFormValidatorCallback,
 	LinkFormSubmitEvent,
-	LinkFormCancelEvent as LinkFormViewCancelEvent
+	LinkFormCancelEvent
 } from './ui/linkformview.js';
 
 export {
